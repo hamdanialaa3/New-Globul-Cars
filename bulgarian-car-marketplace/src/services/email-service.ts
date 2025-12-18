@@ -3,7 +3,7 @@
 
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 interface EmailAttachment {
   filename: string;

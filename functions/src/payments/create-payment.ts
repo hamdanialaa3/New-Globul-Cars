@@ -6,6 +6,7 @@
 
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import { logger } from '../logger-service';
 
 interface CreatePaymentRequest {
   carId: string;
@@ -153,7 +154,7 @@ export const createCarPaymentIntent = functions.https.onCall(
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
       });
 
-      console.log(`Payment intent created: ${paymentIntent.id} for car ${data.carId}`);
+      logger.info(`Payment intent created`, { paymentIntentId: paymentIntent.id, carId: data.carId });
 
       return {
         success: true,
@@ -168,7 +169,7 @@ export const createCarPaymentIntent = functions.https.onCall(
       // Mock response (Stripe not configured)
       const mockPaymentId = `pay_${Date.now()}_${sellerId.substring(0, 8)}`;
 
-      console.log(`Would create payment for car ${data.carId}: EUR ${data.amount}`);
+      logger.info(`Would create payment for car ${data.carId}`, { amount: data.amount, currency: 'EUR' });
 
       return {
         success: true,
@@ -180,8 +181,9 @@ export const createCarPaymentIntent = functions.https.onCall(
         status: 'mock'
       };
 
-    } catch (error: any) {
-      console.error('Error creating payment intent:', error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error('Error creating payment intent', err);
       
       if (error instanceof functions.https.HttpsError) {
         throw error;
@@ -190,7 +192,7 @@ export const createCarPaymentIntent = functions.https.onCall(
       throw new functions.https.HttpsError(
         'internal',
         'Failed to create payment',
-        error.message
+        err.message
       );
     }
   }
@@ -241,7 +243,7 @@ export const confirmCarPayment = functions.https.onCall(
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
       });
 
-      console.log(`Car ${paymentData.carId} marked as sold`);
+      logger.info(`Car marked as sold`, { carId: paymentData.carId });
 
       return {
         success: true,
@@ -249,12 +251,13 @@ export const confirmCarPayment = functions.https.onCall(
         status: 'sold'
       };
 
-    } catch (error: any) {
-      console.error('Error confirming payment:', error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error('Error confirming payment', err);
       throw new functions.https.HttpsError(
         'internal',
         'Failed to confirm payment',
-        error.message
+        err.message
       );
     }
   }

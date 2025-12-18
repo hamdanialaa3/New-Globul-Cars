@@ -4,7 +4,7 @@
 
 import { doc, getDoc, updateDoc, serverTimestamp, collection, query, where, orderBy, limit, startAfter, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
-import { serviceLogger } from '../logger-wrapper';
+import { serviceLogger } from '../logger-service';
 
 // ==================== INTERFACES ====================
 

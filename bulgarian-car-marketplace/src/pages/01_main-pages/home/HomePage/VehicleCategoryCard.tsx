@@ -37,26 +37,41 @@ const Card = styled.button<{ $active: boolean }>`
   transform: skewX(-8deg);
   transform-origin: center;
   
-  /* Background with gradient */
-  background: ${props => props.$active 
-    ? 'linear-gradient(135deg, #FF7900 0%, #FF8F10 50%, #FFB900 100%)' 
-    : 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)'};
-  
-  border: 2px solid ${props => props.$active 
-    ? 'transparent' 
-    : 'rgba(255, 121, 0, 0.2)'};
+  /* Glassmorphism background */
+  background: ${({ theme, $active }) =>
+    $active
+      ? `linear-gradient(135deg,
+          rgba(255, 121, 0, ${theme.mode === 'dark' ? 0.28 : 0.18}) 0%,
+          rgba(255, 143, 16, ${theme.mode === 'dark' ? 0.22 : 0.14}) 55%,
+          rgba(255, 185, 0, ${theme.mode === 'dark' ? 0.18 : 0.12}) 100%
+        )`
+      : theme.mode === 'dark'
+        ? 'rgba(255, 255, 255, 0.06)'
+        : 'rgba(255, 255, 255, 0.55)'};
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  border: 1px solid ${({ theme, $active }) =>
+    $active
+      ? (theme.mode === 'dark' ? 'rgba(255, 143, 16, 0.55)' : 'rgba(255, 121, 0, 0.35)')
+      : (theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.14)' : 'rgba(15, 23, 42, 0.10)')};
   
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   
   /* Enhanced shadows */
-  box-shadow: ${props => props.$active 
-    ? '0 8px 24px rgba(255, 121, 0, 0.35), 0 4px 12px rgba(255, 121, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)' 
-    : '0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04)'};
+  box-shadow: ${({ theme, $active }) =>
+    $active
+      ? (theme.mode === 'dark'
+        ? '0 18px 40px rgba(0, 0, 0, 0.45), 0 8px 18px rgba(255, 121, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.10)'
+        : '0 14px 34px rgba(15, 23, 42, 0.12), 0 6px 14px rgba(255, 121, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.35)')
+      : (theme.mode === 'dark'
+        ? '0 14px 30px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.06)'
+        : '0 10px 26px rgba(15, 23, 42, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.35)')};
   
-  color: ${props => props.$active 
-    ? '#ffffff' 
-    : '#1e293b'};
+  color: ${({ theme, $active }) =>
+    $active ? (theme.mode === 'dark' ? '#ffffff' : theme.colors.text.primary) : theme.colors.text.primary};
   
   height: 100%;
   width: 100%;
@@ -75,18 +90,18 @@ const Card = styled.button<{ $active: boolean }>`
   /* Hover effects */
   &:hover {
     transform: skewX(-8deg) translateY(-6px) scale(1.02);
-    box-shadow: ${props => props.$active 
-      ? '0 12px 32px rgba(255, 121, 0, 0.45), 0 6px 16px rgba(255, 121, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3)' 
-      : '0 8px 20px rgba(255, 121, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.1)'};
-    border-color: ${props => props.$active 
-      ? 'transparent' 
-      : 'rgba(255, 121, 0, 0.4)'};
-    background: ${props => props.$active 
-      ? 'linear-gradient(135deg, #FF8F10 0%, #FF7900 50%, #FF8F10 100%)' 
-      : 'linear-gradient(135deg, #fff5eb 0%, #ffe8d1 100%)'};
-    color: ${props => props.$active 
-      ? '#ffffff' 
-      : '#FF7900'};
+    box-shadow: ${({ theme, $active }) =>
+      $active
+        ? (theme.mode === 'dark'
+          ? '0 22px 50px rgba(0, 0, 0, 0.52), 0 10px 24px rgba(255, 121, 0, 0.22)'
+          : '0 18px 44px rgba(15, 23, 42, 0.16), 0 10px 22px rgba(255, 121, 0, 0.18)')
+        : (theme.mode === 'dark'
+          ? '0 18px 38px rgba(0, 0, 0, 0.46)'
+          : '0 14px 34px rgba(15, 23, 42, 0.14)')};
+    border-color: ${({ theme, $active }) =>
+      $active
+        ? (theme.mode === 'dark' ? 'rgba(255, 143, 16, 0.65)' : 'rgba(255, 121, 0, 0.45)')
+        : (theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.22)' : 'rgba(15, 23, 42, 0.16)')};
   }
 
   &:active {
@@ -116,43 +131,27 @@ const Card = styled.button<{ $active: boolean }>`
     }
   `}
 
-  /* Dark mode support */
-  html[data-theme="dark"] & {
-    background: ${props => props.$active 
-      ? 'linear-gradient(135deg, #FF7900 0%, #FF8F10 50%, #FFB900 100%)' 
-      : 'linear-gradient(135deg, #1e293b 0%, #334155 100%)'};
-    border-color: ${props => props.$active 
-      ? 'transparent' 
-      : 'rgba(255, 121, 0, 0.3)'};
-    color: ${props => props.$active 
-      ? '#ffffff' 
-      : '#e2e8f0'};
-    box-shadow: ${props => props.$active 
-      ? '0 8px 24px rgba(255, 121, 0, 0.4), 0 4px 12px rgba(255, 121, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2)' 
-      : '0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)'};
-    
-    &:hover {
-      background: ${props => props.$active 
-        ? 'linear-gradient(135deg, #FF8F10 0%, #FF7900 50%, #FF8F10 100%)' 
-        : 'linear-gradient(135deg, #334155 0%, #475569 100%)'};
-      border-color: ${props => props.$active 
-        ? 'transparent' 
-        : 'rgba(255, 121, 0, 0.5)'};
-      color: ${props => props.$active 
-        ? '#ffffff' 
-        : '#FF7900'};
-      box-shadow: ${props => props.$active 
-        ? '0 12px 32px rgba(255, 121, 0, 0.5), 0 6px 16px rgba(255, 121, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3)' 
-        : '0 8px 20px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.3)'};
-    }
+  /* Subtle glass shine */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.22) 0%,
+      rgba(255, 255, 255, 0.10) 25%,
+      rgba(255, 255, 255, 0.05) 55%,
+      rgba(255, 255, 255, 0.00) 100%
+    );
+    opacity: ${({ theme }) => (theme.mode === 'dark' ? 0.16 : 0.22)};
+    pointer-events: none;
   }
 
   svg {
     margin-bottom: 12px;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    color: ${props => props.$active 
-      ? '#ffffff' 
-      : '#FF7900'};
+    color: ${({ theme, $active }) =>
+      $active ? '#ffffff' : (theme.mode === 'dark' ? '#FF8F10' : '#FF7900')};
     filter: ${props => props.$active 
       ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))' 
       : 'none'};

@@ -58,9 +58,10 @@ export const monitoringAlertWebhook = functions
         success: true,
         alertId: alertRef.id,
       });
-    } catch (error: any) {
-      console.error('❌ Webhook error:', error);
-      res.status(500).send({ error: error.message });
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      console.error('❌ Webhook error:', err.message);
+      res.status(500).send({ error: err.message });
     }
   });
 
@@ -270,9 +271,10 @@ export const getMonitoringStats = functions
         bySource,
         recentAlerts: alerts.slice(0, 10), // Latest 10
       };
-    } catch (error: any) {
-      console.error('Failed to get monitoring stats:', error);
-      throw new functions.https.HttpsError('internal', error.message);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      console.error('Failed to get monitoring stats:', err.message);
+      throw new functions.https.HttpsError('internal', err.message);
     }
   });
 
@@ -308,7 +310,8 @@ export const acknowledgeAlert = functions
       });
       
       return { success: true };
-    } catch (error: any) {
-      throw new functions.https.HttpsError('internal', error.message);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      throw new functions.https.HttpsError('internal', err.message);
     }
   });

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import { db } from '../firebase';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { logger } from '../services/logger-service';
 
 const NumericCarRedirect: React.FC = () => {
     const { sellerId, carId } = useParams<{ sellerId: string; carId: string }>();
@@ -22,7 +23,7 @@ const NumericCarRedirect: React.FC = () => {
                     return;
                 }
 
-                console.log(`🔍 Looking up car: User #${sellerNum}, Car #${carNum}`);
+                logger.debug('Looking up car', { sellerNum, carNum });
 
                 // 1. Find the seller by numericId
                 const usersRef = collection(db, 'users');
@@ -78,7 +79,7 @@ const NumericCarRedirect: React.FC = () => {
                 navigate(`/cars/${carDoc.id}`, { replace: true });
 
             } catch (err) {
-                console.error('Error resolving numeric car URL:', err);
+                logger.error('Error resolving numeric car URL', err as Error);
                 setError('Error loading car');
             }
         };

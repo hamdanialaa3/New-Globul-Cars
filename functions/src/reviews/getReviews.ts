@@ -138,14 +138,15 @@ export const getReviews = onCall<GetReviewsRequest>(async (request) => {
         : null,
     };
 
-  } catch (error: any) {
-    logger.error('Failed to fetch reviews', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to fetch reviews', { error: err.message });
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
-    throw new HttpsError('internal', `Failed to fetch reviews: ${error.message}`);
+    throw new HttpsError('internal', `Failed to fetch reviews: ${err.message}`);
   }
 });
 
@@ -210,13 +211,14 @@ export const getMyReviews = onCall(async (request) => {
       },
     };
 
-  } catch (error: any) {
-    logger.error('Failed to fetch user reviews', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to fetch user reviews', { error: err.message });
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
-    throw new HttpsError('internal', `Failed to fetch reviews: ${error.message}`);
+    throw new HttpsError('internal', `Failed to fetch reviews: ${err.message}`);
   }
 });

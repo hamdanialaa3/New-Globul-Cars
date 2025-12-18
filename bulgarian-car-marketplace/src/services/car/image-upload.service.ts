@@ -5,7 +5,7 @@
 
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { storage } from '../../firebase/firebase-config';
-import { serviceLogger } from '../logger-wrapper';
+import { serviceLogger } from '../logger-service';
 
 class ImageUploadService {
   /**

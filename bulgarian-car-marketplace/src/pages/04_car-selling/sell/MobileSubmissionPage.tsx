@@ -9,7 +9,7 @@ import { logger } from '../../../services/logger-service';
 import { S } from './MobileSubmissionPage.styles';
 import { SellProgressBar } from '../../../components/SellWorkflow';
 import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
-import SellWorkflowService from '../../../services/sellWorkflowService';
+import SellWorkflowService from '../../../services/sell-workflow-service';
 
 const ProgressWrapper = styled.div`
   padding: 0.75rem 1rem 0;

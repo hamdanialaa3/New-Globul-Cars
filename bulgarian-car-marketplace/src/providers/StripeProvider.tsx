@@ -3,7 +3,7 @@
 
 import React, { useMemo } from 'react';
 import { Elements } from '@stripe/react-stripe-js';
-import { getStripeInstance } from '../services/stripe-client-service';
+import { getStripeInstance } from '../services/billing-service';
 
 interface StripeProviderProps {
   children: React.ReactNode;

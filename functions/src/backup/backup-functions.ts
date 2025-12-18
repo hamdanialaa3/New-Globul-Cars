@@ -34,9 +34,10 @@ export const manualBackup = functions
         ...result,
         message: 'Backup started successfully'
       };
-    } catch (error: any) {
-      console.error('❌ Manual backup failed:', error);
-      throw new functions.https.HttpsError('internal', error.message);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      console.error('❌ Manual backup failed:', err.message);
+      throw new functions.https.HttpsError('internal', err.message);
     }
   });
 
@@ -64,15 +65,16 @@ export const dailyBackup = functions
       }, 5 * 60 * 1000);
       
       return { success: true, ...result };
-    } catch (error: any) {
-      console.error('❌ Daily backup failed:', error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      console.error('❌ Daily backup failed:', err.message);
       
       // Send alert
       await admin.firestore().collection('monitoring_alerts').add({
         source: 'custom',
         severity: 'high',
         title: 'Daily Backup Failed',
-        message: error.message,
+        message: err.message,
         timestamp: admin.firestore.FieldValue.serverTimestamp(),
         acknowledged: false,
       });
@@ -99,8 +101,9 @@ export const weeklyBackupCleanup = functions
       console.log(`✅ Cleanup complete: ${deletedCount} old backups deleted`);
       
       return { success: true, deletedCount };
-    } catch (error: any) {
-      console.error('❌ Backup cleanup failed:', error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      console.error('❌ Backup cleanup failed:', err.message);
       throw error;
     }
   });
@@ -129,9 +132,10 @@ export const listBackups = functions
         backups,
         total: backups.length,
       };
-    } catch (error: any) {
-      console.error('❌ Failed to list backups:', error);
-      throw new functions.https.HttpsError('internal', error.message);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      console.error('❌ Failed to list backups:', err.message);
+      throw new functions.https.HttpsError('internal', err.message);
     }
   });
 
@@ -180,8 +184,9 @@ export const restoreBackup = functions
         operationName: result.name,
         message: 'Restore started successfully. This may take several minutes.',
       };
-    } catch (error: any) {
-      console.error('❌ Restore failed:', error);
-      throw new functions.https.HttpsError('internal', error.message);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      console.error('❌ Restore failed:', err.message);
+      throw new functions.https.HttpsError('internal', err.message);
     }
   });

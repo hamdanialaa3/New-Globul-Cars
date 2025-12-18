@@ -6,7 +6,7 @@
 import { Timestamp } from 'firebase/firestore';
 import { pointsLevelsService } from './points-levels.service';
 import { successStoriesService } from './success-stories.service';
-import { serviceLogger } from '../logger-wrapper';
+import { serviceLogger } from '../logger-service';
 import type { PointsActivity } from '../../types/profile-enhancements.types';
 
 export class PointsAutomationService {

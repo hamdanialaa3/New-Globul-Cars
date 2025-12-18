@@ -19,41 +19,47 @@ const ErrorContainer = styled.div`
   align-items: center;
   justify-content: center;
   min-height: 50vh;
-  padding: ${({ theme }) => theme.spacing.xl};
+  padding: 2rem;
   text-align: center;
+  background: var(--bg-primary, #1a1a1a);
+  color: var(--text-primary, #ffffff);
 `;
 
 const ErrorTitle = styled.h1`
-  color: ${({ theme }) => theme.colors.error.main};
-  font-size: ${({ theme }) => theme.typography.fontSize['3xl']};
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
+  color: #ef4444;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
 `;
 
 const ErrorMessage = styled.p`
-  color: ${({ theme }) => theme.colors.text.secondary};
-  font-size: ${({ theme }) => theme.typography.fontSize.lg};
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
+  color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
   max-width: 600px;
+  line-height: 1.6;
 `;
 
 const RetryButton = styled.button`
-  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.xl};
-  background: ${({ theme }) => theme.colors.primary.main};
+  padding: 0.75rem 2rem;
+  background: linear-gradient(135deg, #FF7900, #FF8F10);
   color: white;
   border: none;
-  border-radius: ${({ theme }) => theme.borderRadius.base};
-  font-size: ${({ theme }) => theme.typography.fontSize.base};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
 
   &:hover {
-    background: ${({ theme }) => theme.colors.primary.dark};
+    background: linear-gradient(135deg, #e67e00, #e67e00);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.4);
   }
 `;
 
 const ErrorDetails = styled.details`
-  margin-top: ${({ theme }) => theme.spacing.xl};
+  margin-top: 2rem;
   text-align: left;
   max-width: 800px;
   width: 100%;
@@ -61,18 +67,27 @@ const ErrorDetails = styled.details`
 
 const ErrorSummary = styled.summary`
   cursor: pointer;
-  color: ${({ theme }) => theme.colors.text.secondary};
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  margin-bottom: ${({ theme }) => theme.spacing.md};
+  color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
 `;
 
 const ErrorCode = styled.pre`
-  background: ${({ theme }) => theme.colors.grey[100]};
-  padding: ${({ theme }) => theme.spacing.md};
-  border-radius: ${({ theme }) => theme.borderRadius.base};
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1rem;
+  border-radius: 8px;
   overflow-x: auto;
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  color: ${({ theme }) => theme.colors.text.primary};
+  font-size: 0.875rem;
+  color: var(--text-primary, #ffffff);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  line-height: 1.5;
 `;
 
 class ErrorBoundary extends Component<Props, State> {

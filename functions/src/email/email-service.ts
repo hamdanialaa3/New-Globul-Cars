@@ -834,16 +834,17 @@ export class EmailService {
         messageId: response.headers['x-message-id'] as string
       };
       
-    } catch (error: any) {
-      console.error('Failed to send email:', error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      console.error('Failed to send email:', err.message);
       
       // Log error
       await admin.firestore().collection('emailLogs').add({
         to: data.to,
         templateId: data.templateId,
         status: 'failed',
-        error: error.message,
-        createdAt: admin.firestore.FieldValue.serverTimestamp()
+        error: err.message,
+        createdAt: admin.firestore.FieldValue.serverTimestamp())
       });
       
       return {

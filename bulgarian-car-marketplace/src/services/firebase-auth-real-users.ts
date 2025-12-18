@@ -2,7 +2,7 @@
 // This calls Cloud Functions that read from the actual Firebase Auth system
 
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 interface AuthUser {
   uid: string;

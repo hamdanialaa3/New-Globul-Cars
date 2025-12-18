@@ -4,7 +4,7 @@
  */
 
 import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 // Map of major cities to their region IDs
 export const CITY_TO_REGION_MAP: Record<string, string> = {

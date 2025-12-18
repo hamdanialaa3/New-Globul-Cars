@@ -145,14 +145,15 @@ export const removeMember = onCall<RemoveMemberRequest>(async (request) => {
       success: true,
       message: 'Team member removed successfully',
     };
-  } catch (error: any) {
-    logger.error('Failed to remove team member', { memberId, error });
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to remove team member', { memberId, error: err.message });
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
-    throw new HttpsError('internal', `Failed to remove team member: ${error.message}`);
+    throw new HttpsError('internal', `Failed to remove team member: ${err.message}`);
   }
 });
 
@@ -224,7 +225,7 @@ export const updateMember = onCall<UpdateMemberRequest>(async (request) => {
     }
 
     // 6. Prepare update data
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       updatedAt: FieldValue.serverTimestamp(),
       updatedBy: requesterId,
     };
@@ -283,14 +284,15 @@ export const updateMember = onCall<UpdateMemberRequest>(async (request) => {
       success: true,
       message: 'Team member updated successfully',
     };
-  } catch (error: any) {
-    logger.error('Failed to update team member', { memberId, error });
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to update team member', { memberId, error: err.message });
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
-    throw new HttpsError('internal', `Failed to update team member: ${error.message}`);
+    throw new HttpsError('internal', `Failed to update team member: ${err.message}`);
   }
 });
 
@@ -372,14 +374,15 @@ export const leaveTeam = onCall(async (request) => {
       success: true,
       message: 'Successfully left the team',
     };
-  } catch (error: any) {
-    logger.error('Failed to leave team', { userId, error });
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to leave team', { userId, error: err.message });
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
-    throw new HttpsError('internal', `Failed to leave team: ${error.message}`);
+    throw new HttpsError('internal', `Failed to leave team: ${err.message}`);
   }
 });
 

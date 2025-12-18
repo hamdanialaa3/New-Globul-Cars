@@ -22,7 +22,7 @@ export const getAuthUsersCount = functions.https.onCall(async (data, context) =>
   try {
     let totalUsers = 0;
     let nextPageToken: string | undefined = undefined;
-    const users: any[] = [];
+    const users: Record<string, unknown>[] = [];
     
     // List all users from Firebase Authentication
     // This reads from the REAL Firebase Auth, not Firestore!
@@ -61,9 +61,10 @@ export const getAuthUsersCount = functions.https.onCall(async (data, context) =>
       source: 'Firebase Authentication (Real Data)'
     };
     
-  } catch (error: any) {
-    console.error('Error getting auth users:', error);
-    throw new functions.https.HttpsError('internal', `Failed to get users: ${error.message}`);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error getting auth users:', err.message);
+    throw new functions.https.HttpsError('internal', `Failed to get users: ${err.message}`);
   }
 });
 
@@ -105,9 +106,10 @@ export const getActiveAuthUsers = functions.https.onCall(async (data, context) =
       timestamp: new Date().toISOString()
     };
     
-  } catch (error: any) {
-    console.error('Error getting active users:', error);
-    throw new functions.https.HttpsError('internal', `Failed to get active users: ${error.message}`);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error getting active users:', err.message);
+    throw new functions.https.HttpsError('internal', `Failed to get active users: ${err.message}`);
   }
 });
 
@@ -185,9 +187,10 @@ export const syncAuthToFirestore = functions.https.onCall(async (data, context) 
       message: `Successfully synced ${syncedUsers} users to Firestore`
     };
     
-  } catch (error: any) {
-    console.error('Error syncing users:', error);
-    throw new functions.https.HttpsError('internal', `Failed to sync users: ${error.message}`);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error syncing users:', err.message);
+    throw new functions.https.HttpsError('internal', `Failed to sync users: ${err.message}`);
   }
 });
 

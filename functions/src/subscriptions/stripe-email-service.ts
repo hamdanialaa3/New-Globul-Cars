@@ -16,8 +16,16 @@ interface SubscriptionEmailData {
  * Placeholder for email sending
  * TODO: Implement with Sendgrid API
  */
-async function sendEmailHelper(options: any) {
-  console.log('Email service not yet implemented:', options);
+interface EmailOptions {
+  subject: string;
+  html: string;
+  to: string;
+  from?: string;
+}
+
+async function sendEmailHelper(options: EmailOptions): Promise<void> {
+  const { logger } = require('firebase-functions');
+  logger.info('Email service not yet implemented:', options);
   // Implement with Sendgrid or other email service
   return Promise.resolve();
 }

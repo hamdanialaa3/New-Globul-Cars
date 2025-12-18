@@ -13,7 +13,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { CarListing } from '../types/CarListing';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 import { queryAllCollections } from './search/multi-collection-helper';
 
 export interface DashboardStats {

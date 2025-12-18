@@ -19,7 +19,7 @@ import {
 } from 'firebase/firestore';
 import { ref, deleteObject, listAll } from 'firebase/storage';
 import { db, storage } from '../../firebase/firebase-config';
-import { serviceLogger } from '../logger-wrapper';
+import { serviceLogger } from '../logger-service';
 
 interface DeleteResult {
   success: boolean;

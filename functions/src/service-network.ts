@@ -395,7 +395,7 @@ async function getMockServiceCenters(
   latitude: number,
   longitude: number,
   radius: number,
-  filters: any
+  filters: Record<string, unknown>
 ): Promise<ServiceCenter[]> {
   const centers: ServiceCenter[] = [];
 
@@ -500,7 +500,7 @@ async function getMockServiceCenterDetails(centerId: string): Promise<ServiceCen
   return centers.find(c => c.id === centerId) || null;
 }
 
-async function calculateEstimatedCost(serviceCenterId: string, services: any[]): Promise<number> {
+async function calculateEstimatedCost(serviceCenterId: string, services: unknown[]): Promise<number> {
   // Mock cost calculation
   let total = 0;
   services.forEach(() => {

@@ -19,7 +19,7 @@ jest.mock('../../rate-limiting/rateLimiter.service', () => ({
     follow: { windowMs: 60000, maxRequests: 10 },
   },
 }));
-jest.mock('../../logger-wrapper', () => ({
+jest.mock('../../logger-service', () => ({
   serviceLogger: {
     info: jest.fn(),
     warn: jest.fn(),

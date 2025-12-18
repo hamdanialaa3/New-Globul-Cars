@@ -1,6 +1,6 @@
 import { collection, doc, setDoc, updateDoc, getDoc, query, where, getDocs, Timestamp, orderBy } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 export interface MaintenanceAlert {
   id: string;

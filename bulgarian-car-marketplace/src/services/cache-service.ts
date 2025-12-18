@@ -2,7 +2,7 @@
 // Professional Cache Service for Bulgarian Car Marketplace
 // (Comment removed - was in Arabic)
 
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 export interface CacheConfig {
   ttl: number; // Time to live in milliseconds

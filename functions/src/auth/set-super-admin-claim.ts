@@ -52,9 +52,10 @@ export const setSuperAdminClaim = functions.https.onCall(async (data, context) =
         role: 'SUPER_ADMIN'
       }
     };
-  } catch (error: any) {
-    console.error('Error setting custom claims:', error);
-    throw new functions.https.HttpsError('internal', `Failed to set claims: ${error.message}`);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error setting custom claims:', err.message);
+    throw new functions.https.HttpsError('internal', `Failed to set claims: ${err.message}`);
   }
 });
 

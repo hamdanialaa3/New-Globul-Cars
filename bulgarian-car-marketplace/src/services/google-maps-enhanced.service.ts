@@ -12,7 +12,7 @@
  * 7. Maps Embed API - Static maps
  */
 
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 import { logger } from './logger-service';
 
 const API_KEY = process.env.REACT_APP_GOOGLE_BROWSER_KEY || process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'AIzaSyAchmKCk8ipzv0dDwbQ2xU1Pa6o4CQsEu8';

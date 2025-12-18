@@ -86,9 +86,10 @@ export const createQuickReply = onCall<CreateQuickReplyRequest>(async (request) 
       success: true,
       template,
     };
-  } catch (error: any) {
-    console.error('Error creating quick reply:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error creating quick reply:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 
@@ -117,9 +118,10 @@ export const getQuickReplies = onCall(async (request) => {
       templates,
       count: templates.length,
     };
-  } catch (error: any) {
-    console.error('Error getting quick replies:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error getting quick replies:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 
@@ -152,7 +154,7 @@ export const updateQuickReply = onCall<UpdateQuickReplyRequest>(async (request) 
       throw new HttpsError('permission-denied', 'You can only update your own templates');
     }
 
-    const updates: any = {
+    const updates: Record<string, unknown> = {
       updatedAt: Timestamp.now(),
     };
 
@@ -197,9 +199,10 @@ export const updateQuickReply = onCall<UpdateQuickReplyRequest>(async (request) 
       success: true,
       message: 'Template updated successfully',
     };
-  } catch (error: any) {
-    console.error('Error updating quick reply:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error updating quick reply:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 
@@ -251,9 +254,10 @@ export const deleteQuickReply = onCall<{ templateId: string }>(async (request) =
       success: true,
       message: 'Template deleted successfully',
     };
-  } catch (error: any) {
-    console.error('Error deleting quick reply:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error deleting quick reply:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 
@@ -296,8 +300,9 @@ export const useQuickReply = onCall<{ templateId: string }>(async (request) => {
       success: true,
       content: templateData?.content,
     };
-  } catch (error: any) {
-    console.error('Error using quick reply:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error using quick reply:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });

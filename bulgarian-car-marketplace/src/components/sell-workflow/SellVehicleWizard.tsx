@@ -9,7 +9,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthProvider';
 import { SELL_WORKFLOW_STEPS, SellWorkflowStepId } from '../../constants/sellWorkflowSteps';
 import useSellWorkflow from '../../hooks/useSellWorkflow';
-import SellWorkflowService from '../../services/sellWorkflowService';
+import SellWorkflowService from '../../services/sell-workflow-service';
 import { ImageStorageService } from '../../services/ImageStorageService';
 import { WorkflowPersistenceService } from '../../services/unified-workflow-persistence.service';
 import { toast } from 'react-toastify';

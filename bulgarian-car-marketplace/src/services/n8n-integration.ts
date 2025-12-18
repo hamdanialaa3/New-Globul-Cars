@@ -1,7 +1,7 @@
 // src/services/n8n-integration.ts
 // N8N Integration Service for Globul Cars
 
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 import { logger } from './logger-service';
 
 export class N8nIntegrationService {

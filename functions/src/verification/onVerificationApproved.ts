@@ -170,8 +170,10 @@ export const onVerificationApproved = onDocumentUpdated(
         requestId 
       });
 
-    } catch (error: any) {
-      logger.error('Verification approval trigger failed', error, {
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error('Verification approval trigger failed', { 
+        error: err.message,
         userId,
         requestId,
       });

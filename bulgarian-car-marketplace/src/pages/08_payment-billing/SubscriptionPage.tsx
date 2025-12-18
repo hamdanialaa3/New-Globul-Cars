@@ -8,6 +8,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import SubscriptionManager from '../../components/subscription/SubscriptionManager';
 import { useAuth } from '../../contexts/AuthProvider';
 import { subscriptionService } from '../../services/billing/subscription-service';
+import { logger } from '../../services/logger-service';
 import { toast } from 'react-toastify';
 // ✅ استيراد ملف الإعدادات المركزي
 import subscriptionTheme, { getPrimaryGradient, getPrimaryGradientWithMiddle, getShadowColor } from '../../components/subscription/subscription-theme';
@@ -708,7 +709,7 @@ const SubscriptionPage: React.FC = () => {
         throw new Error('No checkout URL');
       }
     } catch (error) {
-      console.error(error);
+      logger.error('Failed to start checkout', error as Error);
       toast.error(isBg ? 'Грешка при стартиране на плащане' : 'Failed to start checkout');
     } finally {
       setLoadingPlan(null);

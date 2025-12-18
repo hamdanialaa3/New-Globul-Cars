@@ -317,7 +317,7 @@ const MessagesPage: React.FC = () => {
   // ✅ Redirect to login if not authenticated
   useEffect(() => {
     if (!user) {
-      console.log('❌ User not logged in, redirecting to login...');
+      logger.warn('User not logged in, redirecting to login');
       const currentPath = window.location.pathname + window.location.search;
       navigate(`/login?redirect=${encodeURIComponent(currentPath)}`);
     }
@@ -377,7 +377,7 @@ const MessagesPage: React.FC = () => {
   // Load conversations and select from URL
   useEffect(() => {
     if (!user) {
-      console.log('❌ MessagesPage: No user logged in');
+      logger.debug('MessagesPage: No user logged in');
       return;
     }
     
@@ -390,7 +390,7 @@ const MessagesPage: React.FC = () => {
         const conversationIdParam = searchParams.get('conversation');
         const carIdParam = searchParams.get('carId');
         
-        console.log('🔍 MessagesPage useEffect:', { 
+        logger.debug('MessagesPage useEffect', { 
           userIdParam, 
           conversationIdParam, 
           carIdParam,
@@ -400,13 +400,12 @@ const MessagesPage: React.FC = () => {
         logger.debug('Loading conversations for user', { userId: user.uid, conversationId: conversationIdParam });
         
         const chatRooms = await realtimeMessagingService.getUserChatRooms(user.uid);
-        console.log('📦 Loaded chatRooms:', chatRooms.length);
         logger.debug('Loaded chatRooms', { count: chatRooms.length, rooms: chatRooms.map(r => r.id) });
         setConversations(chatRooms);
         
         // ✅ FIX: If userId in URL, find or create conversation
         if (userIdParam && userIdParam !== user.uid) {
-          console.log('👤 Creating conversation with user:', {
+          logger.debug('Creating conversation with user', {
             userIdParam,
             'current user.uid': user.uid,
             'are they different?': userIdParam !== user.uid,
@@ -419,20 +418,20 @@ const MessagesPage: React.FC = () => {
           );
           
           if (existingConv) {
-            console.log('✅ Found existing conversation:', existingConv.id);
+            logger.debug('Found existing conversation', { conversationId: existingConv.id });
             logger.debug('Found existing conversation with user', { conversationId: existingConv.id, userId: userIdParam });
             setSelectedConversation(existingConv);
             setShowMobileChat(true);
           } else {
-            console.log('➕ Creating new placeholder conversation');
+            logger.debug('Creating new placeholder conversation');
             // Create a placeholder conversation
             logger.debug('Creating placeholder conversation with user', { userId: userIdParam });
             try {
               // Get recipient's name
-              console.log('📞 Fetching recipient profile...');
+              logger.debug('Fetching recipient profile');
               const recipientProfile = await userService.getUserProfile(userIdParam);
               const recipientName = recipientProfile?.displayName || 'User';
-              console.log('👤 Recipient name:', recipientName);
+              logger.debug('Recipient name retrieved', { recipientName });
               
               // Create a temporary conversation ID
               const tempConversationId = `${user.uid}_${userIdParam}`.split('').sort().join('');
@@ -453,35 +452,35 @@ const MessagesPage: React.FC = () => {
                 updatedAt: new Date()
               };
               
-              console.log('✅ Created placeholder conversation:', newConversation);
+              logger.debug('Created placeholder conversation', { conversationId: newConversation.id });
               logger.debug('Created placeholder conversation', { conversationId: newConversation.id });
               // Add to conversations list
               setConversations([newConversation, ...chatRooms]);
-              console.log('✅ Set conversations with new conversation');
+              logger.debug('Set conversations with new conversation');
               setSelectedConversation(newConversation);
-              console.log('✅ Set selected conversation:', newConversation.id);
+              logger.debug('Set selected conversation', { conversationId: newConversation.id });
               setShowMobileChat(true);
-              console.log('✅ Set showMobileChat to true');
+              logger.debug('Set showMobileChat to true');
             } catch (error) {
-              console.error('❌ Failed to create placeholder conversation:', error);
+              logger.error('Failed to create placeholder conversation', error as Error);
               logger.error('Failed to create placeholder conversation', { userId: userIdParam, error });
             }
           }
         }
         // ✅ FIX: If conversationId in URL, try to find it
         else if (conversationIdParam) {
-          console.log('🔍 Looking for conversation:', conversationIdParam);
+          logger.debug('Looking for conversation', { conversationIdParam });
           logger.debug('Looking for conversation from URL', { conversationId: conversationIdParam });
           let found = chatRooms.find(room => room.id === conversationIdParam);
           
           if (found) {
-            console.log('✅ Found conversation in chatRooms');
+            logger.debug('Found conversation in chatRooms');
             logger.debug('Found conversation in chatRooms', { conversationId: conversationIdParam });
             setSelectedConversation(found);
             setShowMobileChat(true);
           } else {
             // ✅ FIX: Try to get conversation directly from conversations collection
-            console.log('🔍 Trying conversations collection...');
+            logger.debug('Trying conversations collection');
             logger.debug('Conversation not found in chatRooms, trying conversations collection', { conversationId: conversationIdParam });
             const conversation = await realtimeMessagingService.getConversationById(conversationIdParam);
             
@@ -633,7 +632,7 @@ const MessagesPage: React.FC = () => {
   );
   
   const renderMainContent = () => {
-    console.log('🎨 renderMainContent:', { 
+    logger.debug('renderMainContent', { 
       conversationIdFromUrl, 
       userIdFromUrl, 
       selectedConversation: selectedConversation?.id,
@@ -643,7 +642,7 @@ const MessagesPage: React.FC = () => {
     
     // ✅ FIX: If conversationId or userId in URL but not selected yet, show loading
     if ((conversationIdFromUrl || userIdFromUrl) && !selectedConversation) {
-      console.log('⏳ Waiting for conversation to load...');
+      logger.debug('Waiting for conversation to load');
       if (loading) {
         return (
           <MainContent>
@@ -655,7 +654,7 @@ const MessagesPage: React.FC = () => {
       }
       
       // If we have conversationId/userId but couldn't load it, show error state
-      console.log('⚠️ Showing loading message (loading=false but no conversation)');
+      logger.debug('Showing loading message (loading=false but no conversation)');
       return (
         <MainContent>
           <EmptyState>
@@ -668,7 +667,7 @@ const MessagesPage: React.FC = () => {
     }
     
     if (!selectedConversation) {
-      console.log('📭 No selected conversation - showing empty state');
+      logger.debug('No selected conversation - showing empty state');
       return (
         <MainContent>
           <EmptyState>
@@ -687,7 +686,7 @@ const MessagesPage: React.FC = () => {
     const carId = carIdFromUrl || selectedConversation.carId;
     const carTitle = selectedConversation.carTitle;
     
-    console.log('💬 Conversation details:', {
+    logger.debug('Conversation details', {
       'selectedConversation.id': selectedConversation.id,
       'participants': selectedConversation.participants,
       'current user.uid': user?.uid,

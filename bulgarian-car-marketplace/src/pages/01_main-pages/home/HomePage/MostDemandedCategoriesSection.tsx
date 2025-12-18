@@ -15,7 +15,7 @@ const SectionContainer = styled.section<{ $isDark: boolean }>`
   padding: 80px 20px;
   background: ${props => props.$isDark
     ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)'
-    : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'};
+    : 'linear-gradient(135deg,rgb(168, 174, 184) 0%, #c3cfe2 100%)'};
   position: relative;
   overflow: hidden;
   transition: background 0.3s ease;
@@ -170,37 +170,65 @@ const RankBadge = styled.span<{ $rank: number; $active: boolean; $isDark: boolea
 const CategoryTab = styled.button<{ $active: boolean; $rank?: number; $isDark: boolean }>`
   padding: 12px 24px;
   border-radius: 30px;
-  border: 2px solid ${props => props.$active 
-    ? '#f093fb' 
-    : props.$isDark ? '#334155' : '#e2e8f0'};
-  background: ${props => props.$active
-    ? 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
-    : props.$isDark ? '#1e293b' : 'white'
-  };
-  color: ${props => props.$active ? 'white' : props.$isDark ? '#cbd5e1' : '#64748b'};
+  border: 1px solid ${props =>
+    props.$active
+      ? (props.$isDark ? 'rgba(240, 147, 251, 0.55)' : 'rgba(240, 147, 251, 0.40)')
+      : (props.$isDark ? 'rgba(255, 255, 255, 0.14)' : 'rgba(15, 23, 42, 0.10)')};
+  background: ${props =>
+    props.$active
+      ? `linear-gradient(135deg,
+          rgba(240, 147, 251, ${props.$isDark ? 0.26 : 0.18}) 0%,
+          rgba(245, 87, 108, ${props.$isDark ? 0.22 : 0.14}) 100%
+        )`
+      : (props.$isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.55)')};
+  color: ${props => (props.$active ? '#ffffff' : props.$isDark ? '#e2e8f0' : '#1e293b')};
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   font-size: 0.9375rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: ${props => props.active
-    ? '0 4px 15px rgba(240, 147, 251, 0.3)'
-    : props.$isDark 
-      ? '0 2px 8px rgba(0, 0, 0, 0.3)' 
-      : '0 2px 8px rgba(0, 0, 0, 0.05)'
-  };
+  box-shadow: ${props =>
+    props.$active
+      ? (props.$isDark
+        ? '0 18px 42px rgba(0, 0, 0, 0.45), 0 8px 18px rgba(240, 147, 251, 0.16)'
+        : '0 14px 34px rgba(15, 23, 42, 0.12), 0 6px 14px rgba(240, 147, 251, 0.14)')
+      : (props.$isDark
+        ? '0 14px 30px rgba(0, 0, 0, 0.38)'
+        : '0 10px 26px rgba(15, 23, 42, 0.10)')};
   position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
 
+  /* subtle glass shine */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.22) 0%,
+      rgba(255, 255, 255, 0.10) 25%,
+      rgba(255, 255, 255, 0.05) 55%,
+      rgba(255, 255, 255, 0.00) 100%
+    );
+    opacity: ${props => (props.$isDark ? 0.16 : 0.22)};
+    pointer-events: none;
+  }
+
   &:hover {
     transform: translateY(-2px);
-    box-shadow: ${props => props.active
-      ? '0 6px 20px rgba(240, 147, 251, 0.4)'
-      : props.$isDark 
-        ? '0 4px 12px rgba(0, 0, 0, 0.4)' 
-        : '0 4px 12px rgba(240, 147, 251, 0.2)'};
-    border-color: #f093fb;
+    box-shadow: ${props =>
+      props.$active
+        ? (props.$isDark
+          ? '0 22px 50px rgba(0, 0, 0, 0.52), 0 10px 24px rgba(240, 147, 251, 0.22)'
+          : '0 18px 44px rgba(15, 23, 42, 0.16), 0 10px 22px rgba(240, 147, 251, 0.18)')
+        : (props.$isDark
+          ? '0 18px 38px rgba(0, 0, 0, 0.46)'
+          : '0 14px 34px rgba(15, 23, 42, 0.14)')};
+    border-color: ${props => (props.$isDark ? 'rgba(240, 147, 251, 0.65)' : 'rgba(240, 147, 251, 0.55)')};
   }
 
   @media (max-width: 768px) {

@@ -6,6 +6,7 @@
 
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import { logger } from '../logger-service';
 
 const db = admin.firestore();
 
@@ -48,9 +49,9 @@ export class BackupService {
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const backupName = `backup-${timestamp}`;
       
-      console.log(`🔄 Backup requested: ${backupName}`);
-      console.log(`⚠️ Note: Actual backup requires gcloud CLI or Firestore Admin API`);
-      console.log(`Run manually: gcloud firestore export gs://${this.bucketName}/firestore-backups/${timestamp}`);
+      logger.info('Backup requested', { backupName });
+      logger.info('Note: Actual backup requires gcloud CLI or Firestore Admin API');
+      logger.info('Run manually: gcloud firestore export gs://' + this.bucketName + '/firestore-backups/' + timestamp);
 
       // Log backup request to Firestore
       await this.logBackup({
@@ -104,9 +105,10 @@ export class BackupService {
         status: 'pending',
       };
       */
-    } catch (error: any) {
-      console.error('❌ Backup failed:', error);
-      throw new Error(`Backup failed: ${error.message}`);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error('Backup failed', err);
+      throw new Error(`Backup failed: ${err.message}`);
     }
   }
 
@@ -115,7 +117,7 @@ export class BackupService {
    * Note: Requires googleapis in production
    */
   async getBackupStatus(operationName: string): Promise<any> {
-    console.log(`⚠️ getBackupStatus requires googleapis - check logs manually`);
+    logger.info('getBackupStatus requires googleapis - check logs manually');
     return { done: false, name: operationName };
     
     /* PRODUCTION VERSION:
@@ -128,8 +130,9 @@ export class BackupService {
       });
 
       return response.data;
-    } catch (error: any) {
-      console.error('❌ Failed to get backup status:', error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error('Failed to get backup status', err);
       throw error;
     }
     */
@@ -166,8 +169,9 @@ export class BackupService {
         }));
 
       return backups;
-    } catch (error: any) {
-      console.error('❌ Failed to list backups:', error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error('Failed to list backups', err);
       throw error;
     }
   }
@@ -177,8 +181,8 @@ export class BackupService {
    * Note: Requires googleapis in production
    */
   async restoreBackup(inputUriPrefix: string): Promise<any> {
-    console.log(`⚠️ restoreBackup requires googleapis`);
-    console.log(`Run manually: gcloud firestore import ${inputUriPrefix}`);
+    logger.warn('restoreBackup requires googleapis');
+    logger.info(`Run manually: gcloud firestore import ${inputUriPrefix}`);
     
     await this.logRestore({
       operationName: `manual-restore-${Date.now()}`,
@@ -215,8 +219,9 @@ export class BackupService {
       });
 
       return response.data;
-    } catch (error: any) {
-      console.error('❌ Restore failed:', error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error('Restore failed', err);
       throw error;
     }
     */
@@ -247,10 +252,11 @@ export class BackupService {
         }
       }
 
-      console.log(`✅ Deleted ${deletedCount} old backup files (older than ${daysOld} days)`);
+      logger.info(`Deleted ${deletedCount} old backup files (older than ${daysOld} days)`);
       return deletedCount;
-    } catch (error: any) {
-      console.error('❌ Failed to delete old backups:', error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error('Failed to delete old backups', err);
       throw error;
     }
   }
@@ -278,28 +284,28 @@ export class BackupService {
   /**
    * Log backup to Firestore
    */
-  private async logBackup(data: any) {
+  private async logBackup(data: Record<string, unknown>) {
     try {
       await db.collection('backup_logs').add({
         ...data,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
     } catch (error) {
-      console.error('Failed to log backup:', error);
+      logger.error('Failed to log backup', error instanceof Error ? error : new Error(String(error)));
     }
   }
 
   /**
    * Log restore to Firestore
    */
-  private async logRestore(data: any) {
+  private async logRestore(data: Record<string, unknown>) {
     try {
       await db.collection('restore_logs').add({
         ...data,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
     } catch (error) {
-      console.error('Failed to log restore:', error);
+      logger.error('Failed to log restore', error instanceof Error ? error : new Error(String(error)));
     }
   }
 }

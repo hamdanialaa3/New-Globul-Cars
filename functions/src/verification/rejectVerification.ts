@@ -144,8 +144,9 @@ export const rejectVerification = onCall<{
     };
 
     return result;
-  } catch (error: any) {
-    logger.error('Verification rejection failed', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Verification rejection failed', { error: err.message });
     
     if (error instanceof HttpsError) {
       throw error;
@@ -153,7 +154,7 @@ export const rejectVerification = onCall<{
     
     throw new HttpsError(
       'internal',
-      `Failed to reject verification: ${error.message}`
+      `Failed to reject verification: ${err.message}`
     );
   }
 });

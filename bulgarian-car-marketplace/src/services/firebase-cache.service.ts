@@ -2,7 +2,7 @@
 // Firebase Query Caching Service
 // خدمة التخزين المؤقت لـ Firebase
 
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 interface CacheEntry<T> {
   data: T;

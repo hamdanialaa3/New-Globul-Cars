@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { useAuth } from '../../contexts/AuthProvider';
 import { Database, RefreshCw, Trash2, CheckCircle, AlertCircle } from 'lucide-react';
-import { serviceLogger } from '../../services/logger-wrapper';
+import { serviceLogger } from '../../services/logger-service';
 
 const Panel = styled.div`
   max-width: 800px;

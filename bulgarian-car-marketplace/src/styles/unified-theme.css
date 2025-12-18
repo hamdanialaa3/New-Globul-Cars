@@ -16,15 +16,15 @@ html[data-theme="light"],
   /* ─────────────────────────────────────────
      الخلفيات - Backgrounds
      ───────────────────────────────────────── */
-  --bg-primary: #F4F1EA;
+  --bg-primary: #c7c0b9;
   /* صفحة رئيسية - بيج واضح */
-  --bg-secondary: #F9F6F0;
+  --bg-secondary: #b4b1aa;
   /* بطاقات وأقسام - بيج فاتح جداً */
-  --bg-card: #FFFFFF;
+  --bg-card: #a09090;
   /* بطاقات السيارات - أبيض */
-  --bg-hover: #F5F7FA;
+  --bg-hover: #9ea7b5;
   /* تحويم - رمادي فاتح */
-  --bg-accent: #FFF8F5;
+  --bg-accent: #eed0c3;
   /* خلفية مميزة - برتقالي فاتح جداً */
   --bg-header: #1A1D2E;
   /* هيدر داكن ثابت */
@@ -612,7 +612,6 @@ article,
 main,
 aside {
   color: var(--text-primary);
-  background-color: transparent;
 }
 
 /* Force all text elements to use theme colors */

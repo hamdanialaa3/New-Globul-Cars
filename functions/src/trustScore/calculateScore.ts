@@ -7,6 +7,31 @@ import { TrustScoreFactors, TrustScoreResult } from './types';
 
 const db = getFirestore();
 
+// Helper type interfaces
+interface Car {
+  make?: string;
+  model?: string;
+  year?: number | string;
+  price?: number;
+  mileage?: number | string;
+  fuelType?: string;
+  transmission?: string;
+  condition?: string;
+  description?: string;
+  images?: unknown[];
+  location?: unknown;
+  [key: string]: unknown;
+}
+
+interface UserProfile {
+  displayName?: string;
+  email?: string;
+  phoneNumber?: string;
+  profileType?: string;
+  location?: unknown;
+  [key: string]: unknown;
+}
+
 /**
  * Calculate Trust Score for User
  * 
@@ -188,8 +213,9 @@ export async function calculateTrustScore(userId: string): Promise<TrustScoreRes
     });
 
     return result;
-  } catch (error: any) {
-    logger.error('Failed to calculate trust score', { userId, error });
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to calculate trust score', { userId, error: err.message });
     throw error;
   }
 }
@@ -197,7 +223,7 @@ export async function calculateTrustScore(userId: string): Promise<TrustScoreRes
 /**
  * Calculate listing completeness (0-1)
  */
-function calculateListingCompleteness(listing: any): number {
+function calculateListingCompleteness(listing: Car): number {
   const requiredFields = [
     'make',
     'model',
@@ -230,7 +256,7 @@ function calculateListingCompleteness(listing: any): number {
 /**
  * Calculate profile completeness (0-1)
  */
-function calculateProfileCompleteness(userData: any): number {
+function calculateProfileCompleteness(userData: UserProfile): number {
   const requiredFields = [
     'displayName',
     'email',

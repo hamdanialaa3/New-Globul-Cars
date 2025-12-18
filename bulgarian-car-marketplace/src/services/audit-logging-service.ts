@@ -14,7 +14,7 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 // Audit Logging Interfaces
 export interface AuditLog {

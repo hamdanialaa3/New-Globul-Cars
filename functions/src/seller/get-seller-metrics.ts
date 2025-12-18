@@ -6,6 +6,7 @@
 
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import { logger } from '../logger-service';
 
 interface SellerMetrics {
   totalCars: number;
@@ -139,15 +140,16 @@ export const getSellerMetrics = functions.https.onCall(
         lastUpdated: new Date().toISOString()
       };
 
-      console.log(`Seller metrics calculated for ${sellerId}`);
+      logger.info(`Seller metrics calculated for ${sellerId}`);
       return metrics;
 
-    } catch (error: any) {
-      console.error(`Error getting seller metrics for ${sellerId}:`, error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error(`Error getting seller metrics for ${sellerId}`, err);
       throw new functions.https.HttpsError(
         'internal',
         'Failed to get seller metrics',
-        error.message
+        err.message
       );
     }
   }

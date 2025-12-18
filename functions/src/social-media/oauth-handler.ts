@@ -96,11 +96,12 @@ export const exchangeOAuthToken = functions.https.onCall(
         accountHandle: tokenResponse.accountHandle
       };
 
-    } catch (error: any) {
-      console.error(`Error exchanging ${platform} token:`, error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error('Error exchanging token', { platform, message: err.message });
       throw new functions.https.HttpsError(
         'internal',
-        `Failed to connect ${platform}: ${error.message}`
+        `Failed to connect ${platform}: ${err.message}`
       );
     }
   }

@@ -1,7 +1,7 @@
 // Super Admin - Project Analysis Service
 // Analyzes project structure, files, sizes, and code metrics
 
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 interface FileStats {
   path: string;

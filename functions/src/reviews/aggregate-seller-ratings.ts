@@ -6,6 +6,7 @@
 
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import { logger } from '../logger-service';
 
 interface Review {
   carId: string;
@@ -40,7 +41,7 @@ export const aggregateSellerRating = functions.firestore
       : change.before.data() as Review;
     
     if (!reviewData || !reviewData.sellerId) {
-      console.log('No seller ID found in review');
+      logger.warn('No seller ID found in review');
       return null;
     }
     
@@ -67,7 +68,7 @@ export const aggregateSellerRating = functions.firestore
             lastUpdated: admin.firestore.FieldValue.serverTimestamp()
           }, { merge: true });
         
-        console.log(`Reset ratings for seller ${sellerId} (no reviews)`);
+        logger.info(`Reset ratings for seller ${sellerId} (no reviews)`);
         return null;
       }
       
@@ -102,7 +103,7 @@ export const aggregateSellerRating = functions.firestore
           lastUpdated: admin.firestore.FieldValue.serverTimestamp()
         }, { merge: true });
       
-      console.log(`Updated seller ${sellerId}: ${averageRating.toFixed(2)} avg (${totalReviews} reviews)`);
+      logger.info(`Updated seller ${sellerId}: ${averageRating.toFixed(2)} avg (${totalReviews} reviews)`);
       
       // Also update user document for quick access
       await admin.firestore()
@@ -120,7 +121,7 @@ export const aggregateSellerRating = functions.firestore
       };
       
     } catch (error) {
-      console.error(`Error aggregating ratings for seller ${sellerId}:`, error);
+      logger.error(`Error aggregating ratings for seller ${sellerId}`, error instanceof Error ? error : new Error(String(error)));
       return null;
     }
   });
@@ -146,17 +147,17 @@ export const validateReview = functions.firestore
       
       // If more than one review found (including current), it's a duplicate
       if (existingReviewsSnapshot.size > 1) {
-        console.warn(`Duplicate review detected for seller ${reviewData.sellerId}`);
+        logger.warn(`Duplicate review detected for seller ${reviewData.sellerId}`);
         
         // Delete the duplicate
         await snap.ref.delete();
-        console.log(`Deleted duplicate review ${reviewId}`);
+        logger.info(`Deleted duplicate review ${reviewId}`);
         return null;
       }
       
       // 2. Validate rating range
       if (reviewData.rating < 1 || reviewData.rating > 5) {
-        console.warn(`Invalid rating ${reviewData.rating} in review ${reviewId}`);
+        logger.warn(`Invalid rating ${reviewData.rating} in review ${reviewId}`);
         await snap.ref.delete();
         return null;
       }
@@ -164,11 +165,11 @@ export const validateReview = functions.firestore
       // 3. Check if reviewer actually interacted with this seller
       // Optional: Add logic to verify if reviewer contacted this seller
       
-      console.log(`Review ${reviewId} validated successfully`);
+      logger.info(`Review ${reviewId} validated successfully`);
       return null;
       
     } catch (error) {
-      console.error(`Error validating review ${reviewId}:`, error);
+      logger.error(`Error validating review ${reviewId}`, error instanceof Error ? error : new Error(String(error)));
       return null;
     }
   });

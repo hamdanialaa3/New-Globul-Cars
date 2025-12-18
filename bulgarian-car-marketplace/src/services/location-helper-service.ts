@@ -3,7 +3,7 @@
 
 import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
 import { BULGARIA_REGIONS } from '../data/bulgaria-locations';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 export interface UnifiedLocation {
   cityId: string;

@@ -84,8 +84,9 @@ export const getSuperAdminAnalytics = functions.https.onCall(async (data, contex
       revenue,
       lastUpdated: new Date().toISOString(),
     };
-  } catch (err: any) {
-    console.error('getSuperAdminAnalytics error', err);
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error(String(err));
+    logger.error('getSuperAdminAnalytics error', error);
     throw new functions.https.HttpsError('internal', err?.message || 'Failed to compute analytics');
   }
 });
@@ -119,8 +120,9 @@ export const incrementCarViewCount = functions.https.onCall(async (data, context
       }, { merge: true });
     });
     return { success: true, newViewCount: (await carRef.get()).data()?.viewCount };
-  } catch (error) {
-    console.error('Error incrementing view count:', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Error incrementing view count', err);
     throw new functions.https.HttpsError('internal', 'Failed to increment view count.');
   }
 });

@@ -14,7 +14,7 @@ import {
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { db, storage } from '../../firebase/firebase-config';
-import { serviceLogger } from '../logger-wrapper';
+import { serviceLogger } from '../logger-service';
 import type { IntroVideo } from '../../types/profile-enhancements.types';
 
 export class IntroVideoService {

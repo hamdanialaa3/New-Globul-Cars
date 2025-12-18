@@ -206,6 +206,7 @@ export const bulgarianTheme: DefaultTheme = {
   breakpoints: bulgarianBreakpoints,
   shadows: bulgarianShadows,
   borderRadius: bulgarianBorderRadius,
+  mode: 'light', // Default mode, will be overridden by ThemeContext
 
   // Component specific styles
   components: {

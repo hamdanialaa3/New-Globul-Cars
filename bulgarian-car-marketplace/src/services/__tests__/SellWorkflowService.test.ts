@@ -1,4 +1,4 @@
-import { SellWorkflowService, WorkflowData } from '../sellWorkflowService';
+import { SellWorkflowService, WorkflowData } from '../sell-workflow-service';
 
 describe('SellWorkflowService', () => {
     describe('validateWorkflowData', () => {

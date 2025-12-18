@@ -8,7 +8,7 @@
 
 import { useEffect, useCallback, useState } from 'react';
 import { StrictWorkflowAutoSaveService, StrictTimerState } from '../services/strictWorkflowAutoSave.service';
-import { serviceLogger } from '../services/logger-wrapper';
+import { serviceLogger } from '../services/logger-service';
 
 export function useStrictAutoSave(pageName: string) {
   const [timerState, setTimerState] = useState<StrictTimerState>({

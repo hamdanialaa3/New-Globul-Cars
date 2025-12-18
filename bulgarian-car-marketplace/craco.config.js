@@ -9,9 +9,27 @@ module.exports = {
       mode: 'file',
     },
   },
+  // Ensure dev server sends no-cache headers to avoid stale assets in browsers
+  devServer: (devServerConfig) => {
+    devServerConfig.headers = {
+      ...(devServerConfig.headers || {}),
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      Pragma: 'no-cache',
+      Expires: '0',
+      'Surrogate-Control': 'no-store',
+    };
+    // Optional: reduce compression to make rebuilds more predictable in dev
+    devServerConfig.compress = false;
+    // Ensure file watching remains active and responsive
+    devServerConfig.watchFiles = {
+      paths: ['src/**/*', 'public/**/*'],
+      options: { usePolling: false, interval: 100, ignored: ['**/node_modules/**'] },
+    };
+    return devServerConfig;
+  },
   webpack: {
     configure: (config) => {
-      console.log('🔧 CRACO: Configuring webpack...');
+      console.log('CRACO: Configuring webpack...');
 
       // Disable minification in production to ease debugging
       if (config.mode === 'production') {
@@ -23,7 +41,7 @@ module.exports = {
         config.resolve.plugins = config.resolve.plugins.filter(
           plugin => plugin.constructor.name !== 'ModuleScopePlugin'
         );
-        console.log('✅ Removed ModuleScopePlugin');
+        console.log('CRACO: Removed ModuleScopePlugin');
       }
 
       // Also remove ESLint and TypeScript checker plugins
@@ -35,10 +53,12 @@ module.exports = {
         });
       }
 
-      // Monorepo package aliases - ONLY for @globul-cars/* packages
+      // Aliases
       config.resolve = config.resolve || {};
       config.resolve.alias = {
         ...(config.resolve.alias || {}),
+        // App src alias to support imports like '@/services/...'
+        '@': path.resolve(__dirname, 'src'),
         // DO NOT add '@' alias here - it conflicts with ts config baseUrl
         '@globul-cars/core': path.resolve(__dirname, '../packages/core/src'),
         '@globul-cars/ui': path.resolve(__dirname, '../packages/ui/src'),
@@ -87,7 +107,7 @@ module.exports = {
         })
       );
 
-      console.log('✅ CRACO: Webpack configuration complete');
+      console.log('CRACO: Webpack configuration complete');
       return config;
     }
   },

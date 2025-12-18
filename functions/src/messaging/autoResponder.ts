@@ -59,9 +59,10 @@ export const getAutoResponderSettings = onCall(async (request) => {
       success: true,
       settings: settingsDoc.data(),
     };
-  } catch (error: any) {
-    console.error('Error getting auto-responder settings:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error getting auto-responder settings:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 
@@ -124,7 +125,7 @@ export const updateAutoResponderSettings = onCall<UpdateAutoResponderRequest>(as
       await settingsRef.set(newSettings);
     } else {
       // Update existing settings
-      const updates: any = {};
+      const updates: Record<string, unknown> = {};
 
       if (data.enabled !== undefined) updates.enabled = data.enabled;
       if (data.workingHours) updates.workingHours = data.workingHours;
@@ -147,9 +148,10 @@ export const updateAutoResponderSettings = onCall<UpdateAutoResponderRequest>(as
       success: true,
       message: 'Auto-responder settings updated successfully',
     };
-  } catch (error: any) {
-    console.error('Error updating auto-responder settings:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error updating auto-responder settings:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 

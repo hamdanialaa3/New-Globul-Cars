@@ -129,14 +129,15 @@ export const respondToReview = onCall<RespondToReviewRequest>(async (request) =>
       message: 'Response added successfully',
     };
 
-  } catch (error: any) {
-    logger.error('Failed to respond to review', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to respond to review', { error: err.message });
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
-    throw new HttpsError('internal', `Failed to respond to review: ${error.message}`);
+    throw new HttpsError('internal', `Failed to respond to review: ${err.message}`);
   }
 });
 
@@ -205,14 +206,15 @@ export const updateReviewResponse = onCall<RespondToReviewRequest>(async (reques
       message: 'Response updated successfully',
     };
 
-  } catch (error: any) {
-    logger.error('Failed to update review response', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to update review response', { error: err.message });
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
-    throw new HttpsError('internal', `Failed to update response: ${error.message}`);
+    throw new HttpsError('internal', `Failed to update response: ${err.message}`);
   }
 });
 
@@ -276,14 +278,15 @@ export const deleteReviewResponse = onCall<{ reviewId: string }>(async (request)
       message: 'Response deleted successfully',
     };
 
-  } catch (error: any) {
-    logger.error('Failed to delete review response', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to delete review response', { error: err.message });
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
-    throw new HttpsError('internal', `Failed to delete response: ${error.message}`);
+    throw new HttpsError('internal', `Failed to delete response: ${err.message}`);
   }
 });
 

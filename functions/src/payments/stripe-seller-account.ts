@@ -6,6 +6,7 @@
 
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import { logger } from '../logger-service';
 
 /**
  * Note: Stripe integration requires:
@@ -112,7 +113,7 @@ export const createStripeSellerAccount = functions.https.onCall(
         type: 'account_onboarding'
       });
 
-      console.log(`Stripe account created for seller ${sellerId}: ${account.id}`);
+      logger.info(`Stripe account created for seller ${sellerId}`, { accountId: account.id });
 
       return {
         success: true,
@@ -122,7 +123,7 @@ export const createStripeSellerAccount = functions.https.onCall(
       */
 
       // For now, return mock response
-      console.log(`Would create Stripe account for seller ${sellerId}`);
+      logger.info(`Would create Stripe account for seller ${sellerId}`);
       
       return {
         success: true,
@@ -131,8 +132,9 @@ export const createStripeSellerAccount = functions.https.onCall(
         onboardingUrl: data.returnUrl
       };
 
-    } catch (error: any) {
-      console.error(`Error creating Stripe account for seller ${sellerId}:`, error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error(`Error creating Stripe account for seller ${sellerId}`, err);
       
       if (error instanceof functions.https.HttpsError) {
         throw error;
@@ -141,7 +143,7 @@ export const createStripeSellerAccount = functions.https.onCall(
       throw new functions.https.HttpsError(
         'internal',
         'Failed to create Stripe account',
-        error.message
+        err.message
       );
     }
   }
@@ -185,12 +187,13 @@ export const createStripeAccountLink = functions.https.onCall(
         url: data.returnUrl
       };
 
-    } catch (error: any) {
-      console.error('Error creating account link:', error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error('Error creating account link', err);
       throw new functions.https.HttpsError(
         'internal',
         'Failed to create account link',
-        error.message
+        err.message
       );
     }
   }
@@ -255,12 +258,13 @@ export const getStripeAccountStatus = functions.https.onCall(
         payoutsEnabled: sellerData?.payoutsEnabled || false
       };
 
-    } catch (error: any) {
-      console.error('Error getting Stripe account status:', error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error('Error getting Stripe account status', err);
       throw new functions.https.HttpsError(
         'internal',
         'Failed to get account status',
-        error.message
+        err.message
       );
     }
   }

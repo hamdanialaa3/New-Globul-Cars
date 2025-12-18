@@ -21,12 +21,17 @@ const getStripe = () => {
 };
 
 // Helper to safely access Stripe properties that may not be in type definitions
-const getSubscriptionPeriod = (sub: any) => ({
+interface SubscriptionPeriod {
+  start: number;
+  end: number;
+}
+
+const getSubscriptionPeriod = (sub: Stripe.Subscription): SubscriptionPeriod => ({
   start: sub.current_period_start,
   end: sub.current_period_end,
 });
 
-const getInvoiceSubscription = (invoice: any): string | null => {
+const getInvoiceSubscription = (invoice: Stripe.Invoice): string | null => {
   return invoice.subscription as string | null;
 };
 
@@ -70,9 +75,10 @@ export const stripeWebhook = onRequest({ region: 'europe-west1' }, async (reques
       sig,
       STRIPE_CONFIG.webhookSecret
     );
-  } catch (err: any) {
-    logger.error('Webhook signature verification failed', err);
-    response.status(400).send(`Webhook Error: ${err.message}`);
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error(String(err));
+    logger.error('Webhook signature verification failed', error);
+    response.status(400).send(`Webhook Error: ${error.message}`);
     return;
   }
 
@@ -109,8 +115,9 @@ export const stripeWebhook = onRequest({ region: 'europe-west1' }, async (reques
     }
 
     response.json({ received: true });
-  } catch (error: any) {
-    logger.error('Error processing webhook', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Error processing webhook', err);
     response.status(500).send('Webhook processing failed');
   }
 });
@@ -185,9 +192,10 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
     logger.info('Subscription activated', { userId, subscriptionId });
 
-  } catch (error: any) {
-    logger.error('Error handling checkout completion', error);
-    throw error;
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Error handling checkout completion', err);
+    throw err;
   }
 }
 
@@ -241,9 +249,10 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
 
     logger.info('Subscription renewed', { userId, subscriptionId });
 
-  } catch (error: any) {
-    logger.error('Error handling payment success', error);
-    throw error;
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Error handling payment success', err);
+    throw err;
   }
 }
 
@@ -296,9 +305,10 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
 
     logger.info('Subscription canceled', { userId, subscriptionId });
 
-  } catch (error: any) {
-    logger.error('Error handling subscription deletion', error);
-    throw error;
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Error handling subscription deletion', err);
+    throw err;
   }
 }
 
@@ -338,9 +348,10 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
 
     logger.info('Subscription updated', { userId, subscriptionId, status: subscription.status });
 
-  } catch (error: any) {
-    logger.error('Error handling subscription update', error);
-    throw error;
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Error handling subscription update', err);
+    throw err;
   }
 }
 
@@ -395,8 +406,9 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
 
     logger.info('Subscription marked as past_due', { userId, subscriptionId });
 
-  } catch (error: any) {
-    logger.error('Error handling payment failure', error);
-    throw error;
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Error handling payment failure', err);
+    throw err;
   }
 }

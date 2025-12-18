@@ -6,7 +6,7 @@
 import algoliasearch, { SearchClient, SearchIndex } from 'algoliasearch/lite';
 import { SearchData } from '../pages/AdvancedSearchPage/types';
 import { CarListing } from '../types/CarListing';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 // Algolia configuration from environment
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID || 'RTGDK12KTJ';

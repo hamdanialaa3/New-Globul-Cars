@@ -132,8 +132,9 @@ export const upgradeToSeller = functions.https.onCall(
         accountType: 'business'
       };
       
-    } catch (error: any) {
-      console.error(`Error upgrading user ${uid} to seller:`, error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      console.error(`Error upgrading user ${uid} to seller:`, err.message);
       
       if (error instanceof functions.https.HttpsError) {
         throw error;
@@ -142,7 +143,7 @@ export const upgradeToSeller = functions.https.onCall(
       throw new functions.https.HttpsError(
         'internal',
         'Failed to upgrade to seller account',
-        error.message
+        err.message
       );
     }
   }
@@ -205,12 +206,13 @@ export const checkSellerEligibility = functions.https.onCall(
         ]
       };
       
-    } catch (error: any) {
-      console.error(`Error checking seller eligibility for ${uid}:`, error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      console.error(`Error checking seller eligibility for ${uid}:`, err.message);
       throw new functions.https.HttpsError(
         'internal',
         'Failed to check eligibility',
-        error.message
+        err.message
       );
     }
   }

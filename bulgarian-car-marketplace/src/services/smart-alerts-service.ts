@@ -3,7 +3,7 @@
 
 import { collection, addDoc, query, where, orderBy, limit, getDocs, updateDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 export interface Alert {
   id?: string;

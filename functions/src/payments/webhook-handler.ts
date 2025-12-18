@@ -6,6 +6,23 @@
 
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import { logger } from '../logger-service';
+
+interface PaymentIntent {
+  id: string;
+  amount: number;
+  currency: string;
+  metadata: Record<string, string>;
+  status: string;
+  [key: string]: unknown;
+}
+
+interface ConnectAccount {
+  id: string;
+  type: string;
+  metadata?: Record<string, string>;
+  [key: string]: unknown;
+}
 
 /**
  * Handle Stripe webhooks
@@ -41,12 +58,12 @@ export const handleStripeWebhook = functions.https.onRequest(
           webhookSecret
         );
       } catch (err) {
-        console.error('Webhook signature verification failed:', err);
+        logger.error('Webhook signature verification failed', err instanceof Error ? err : new Error(String(err)));
         res.status(400).send('Webhook signature verification failed');
         return;
       }
 
-      console.log('Webhook event received:', event.type);
+      logger.info('Webhook event received', { eventType: event.type });
 
       // Handle different event types
       switch (event.type) {
@@ -67,18 +84,18 @@ export const handleStripeWebhook = functions.https.onRequest(
           break;
 
         default:
-          console.log(`Unhandled event type: ${event.type}`);
+          logger.warn(`Unhandled event type: ${event.type}`);
       }
 
       res.json({ received: true });
       */
 
       // Mock response (Stripe not configured)
-      console.log('Webhook received (Stripe not configured)');
+      logger.info('Webhook received (Stripe not configured)');
       res.json({ received: true, status: 'mock' });
 
     } catch (error) {
-      console.error('Webhook handler error:', error);
+      logger.error('Webhook handler error', error instanceof Error ? error : new Error(String(error)));
       res.status(500).send('Webhook handler failed');
     }
   }
@@ -87,7 +104,7 @@ export const handleStripeWebhook = functions.https.onRequest(
 /**
  * Handle successful payment
  */
-async function handlePaymentSuccess(paymentIntent: any): Promise<void> {
+async function handlePaymentSuccess(paymentIntent: PaymentIntent): Promise<void> {
   const metadata = paymentIntent.metadata;
   const carId = metadata.carId;
   const buyerId = metadata.buyerId;
@@ -133,17 +150,17 @@ async function handlePaymentSuccess(paymentIntent: any): Promise<void> {
         read: false
       });
 
-    console.log(`Payment succeeded for car ${carId}`);
+    logger.info(`Payment succeeded for car ${carId}`);
 
   } catch (error) {
-    console.error('Error handling payment success:', error);
+    logger.error('Error handling payment success', error instanceof Error ? error : new Error(String(error)));
   }
 }
 
 /**
  * Handle failed payment
  */
-async function handlePaymentFailed(paymentIntent: any): Promise<void> {
+async function handlePaymentFailed(paymentIntent: PaymentIntent): Promise<void> {
   try {
     const paymentsSnapshot = await admin.firestore()
       .collection('payments')
@@ -158,17 +175,17 @@ async function handlePaymentFailed(paymentIntent: any): Promise<void> {
       });
     }
 
-    console.log(`Payment failed for intent ${paymentIntent.id}`);
+    logger.warn(`Payment failed for intent ${paymentIntent.id}`);
 
   } catch (error) {
-    console.error('Error handling payment failure:', error);
+    logger.error('Error handling payment failure', error instanceof Error ? error : new Error(String(error)));
   }
 }
 
 /**
  * Handle canceled payment
  */
-async function handlePaymentCanceled(paymentIntent: any): Promise<void> {
+async function handlePaymentCanceled(paymentIntent: PaymentIntent): Promise<void> {
   try {
     const paymentsSnapshot = await admin.firestore()
       .collection('payments')
@@ -182,17 +199,17 @@ async function handlePaymentCanceled(paymentIntent: any): Promise<void> {
       });
     }
 
-    console.log(`Payment canceled for intent ${paymentIntent.id}`);
+    logger.info(`Payment canceled for intent ${paymentIntent.id}`);
 
   } catch (error) {
-    console.error('Error handling payment cancelation:', error);
+    logger.error('Error handling payment cancelation', error instanceof Error ? error : new Error(String(error)));
   }
 }
 
 /**
  * Handle Stripe account updates
  */
-async function handleAccountUpdated(account: any): Promise<void> {
+async function handleAccountUpdated(account: ConnectAccount): Promise<void> {
   try {
     const accountId = account.id;
 
@@ -210,11 +227,11 @@ async function handleAccountUpdated(account: any): Promise<void> {
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
       });
 
-      console.log(`Stripe account ${accountId} status updated`);
+      logger.info(`Stripe account ${accountId} status updated`);
     }
 
   } catch (error) {
-    console.error('Error handling account update:', error);
+    logger.error('Error handling account update', error instanceof Error ? error : new Error(String(error)));
   }
 }
 

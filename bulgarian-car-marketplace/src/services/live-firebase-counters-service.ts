@@ -9,7 +9,7 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 import { countAllVehicles, queryAllCollections } from './search/multi-collection-helper';
 
 // Live Firebase Counters Service

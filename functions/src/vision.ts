@@ -59,7 +59,7 @@ export const analyzeCarImage = functions.storage
 
       // 3. Update Firestore
       const carDocRef = db.collection('cars').doc(carId);
-      const updateData: { [key: string]: any } = {
+      const updateData: Record<string, unknown> = {
         imageAnalysis: {
           isSafe: isSafe,
           labels: admin.firestore.FieldValue.arrayUnion(...labels),

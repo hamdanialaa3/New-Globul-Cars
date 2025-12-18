@@ -2,7 +2,7 @@
 // خدمة موحدة لحفظ بيانات workflow بيع السيارات
 // يستبدل: WorkflowPersistenceService + StrictWorkflowAutoSaveService
 
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 // 20 دقيقة (كافية لإكمال كل الخطوات بدون ضغط)
 const TIMER_DURATION = 20 * 60 * 1000; // 1200000ms = 20 minutes

@@ -91,14 +91,15 @@ export const markHelpful = onCall<MarkHelpfulRequest>(async (request) => {
       message: 'Review marked as helpful',
     };
 
-  } catch (error: any) {
-    logger.error('Failed to mark review as helpful', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to mark review as helpful', { error: err.message });
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
-    throw new HttpsError('internal', `Failed to mark review as helpful: ${error.message}`);
+    throw new HttpsError('internal', `Failed to mark review as helpful: ${err.message}`);
   }
 });
 
@@ -166,13 +167,14 @@ export const unmarkHelpful = onCall<MarkHelpfulRequest>(async (request) => {
       message: 'Helpful mark removed',
     };
 
-  } catch (error: any) {
-    logger.error('Failed to unmark review as helpful', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to unmark review as helpful', { error: err.message });
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
-    throw new HttpsError('internal', `Failed to unmark review: ${error.message}`);
+    throw new HttpsError('internal', `Failed to unmark review: ${err.message}`);
   }
 });

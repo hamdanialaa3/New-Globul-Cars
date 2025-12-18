@@ -33,7 +33,7 @@
  * );
  */
 
-import React, { Suspense } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
@@ -43,7 +43,7 @@ import { bulgarianTheme, GlobalStyles } from '../styles/theme';
 
 // Contexts
 import { LanguageProvider } from '../contexts/LanguageContext';
-import { ThemeProvider as CustomThemeProvider } from '../contexts/ThemeContext';
+import { ThemeProvider as CustomThemeProvider, useTheme as useCustomTheme } from '../contexts/ThemeContext';
 import { AuthProvider } from '../contexts/AuthProvider';
 import { ProfileTypeProvider } from '../contexts/ProfileTypeContext';
 import { ToastProvider } from '../components/Toast';
@@ -73,6 +73,60 @@ interface AppProvidersProps {
 }
 
 /**
+ * Inner component that has access to CustomThemeProvider
+ */
+const ThemedApp: React.FC<{ children: React.ReactNode; recaptchaKey: string }> = ({ children, recaptchaKey }) => {
+    const { theme: themeMode } = useCustomTheme();
+    
+    // Create dynamic theme object with current mode
+    const currentTheme = useMemo(() => ({
+        ...bulgarianTheme,
+        mode: themeMode
+    }), [themeMode]);
+
+    return (
+        <ThemeProvider theme={currentTheme}>
+            <GlobalStyles />
+            <AuthProvider>
+                <StripeProvider>
+                    <ProfileTypeProvider>
+                        <ToastProvider>
+                            <GoogleReCaptchaProvider reCaptchaKey={recaptchaKey}>
+                                <Router>
+                                    <FilterProvider>
+                                        {/* Facebook Pixel - Analytics */}
+                                        <Suspense fallback={<div style={{ height: '0' }} />}>
+                                            <FacebookPixel />
+                                        </Suspense>
+
+                                        {/* Skip Navigation - Accessibility */}
+                                        <SkipNavigation />
+
+                                        {/* Notification Handler - Real-time notifications */}
+                                        <NotificationHandler />
+
+                                        {/* Progress Bar - Loading indicator */}
+                                        <Suspense
+                                            fallback={
+                                                <Suspense fallback={<div>Loading...</div>}>
+                                                    <ProgressBar duration={2000} />
+                                                </Suspense>
+                                            }
+                                        >
+                                            {children}
+                                        </Suspense>
+                                    </FilterProvider>
+                                </Router>
+                            </GoogleReCaptchaProvider>
+                        </ToastProvider>
+                    </ProfileTypeProvider>
+                </StripeProvider>
+            </AuthProvider>
+        </ThemeProvider>
+    );
+};
+
+/**
  * Application Providers Component
  * 
  * Wraps the entire application with all necessary providers in the correct order.
@@ -96,50 +150,15 @@ export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
     }
 
     return (
-        <ThemeProvider theme={bulgarianTheme}>
-            <GlobalStyles />
-            <ErrorBoundary>
-                <LanguageProvider>
-                    <CustomThemeProvider>
-                        <AuthProvider>
-                            <StripeProvider>
-                                <ProfileTypeProvider>
-                                    <ToastProvider>
-                                        <GoogleReCaptchaProvider reCaptchaKey={recaptchaKey || 'dummy-key'}>
-                                            <Router>
-                                                <FilterProvider>
-                                                {/* Facebook Pixel - Analytics */}
-                                                <Suspense fallback={<div style={{ height: '0' }} />}>
-                                                    <FacebookPixel />
-                                                </Suspense>
-
-                                                {/* Skip Navigation - Accessibility */}
-                                                <SkipNavigation />
-
-                                                {/* Notification Handler - Real-time notifications */}
-                                                <NotificationHandler />
-
-                                                {/* Progress Bar - Loading indicator */}
-                                                <Suspense
-                                                    fallback={
-                                                        <Suspense fallback={<div>Loading...</div>}>
-                                                            <ProgressBar duration={2000} />
-                                                        </Suspense>
-                                                    }
-                                                >
-                                                    {children}
-                                                </Suspense>
-                                            </FilterProvider>
-                                        </Router>
-                                    </GoogleReCaptchaProvider>
-                                </ToastProvider>
-                            </ProfileTypeProvider>
-                        </StripeProvider>
-                    </AuthProvider>
+        <ErrorBoundary>
+            <LanguageProvider>
+                <CustomThemeProvider>
+                    <ThemedApp recaptchaKey={recaptchaKey || 'dummy-key'}>
+                        {children}
+                    </ThemedApp>
                 </CustomThemeProvider>
             </LanguageProvider>
         </ErrorBoundary>
-        </ThemeProvider>
     );
 };
 

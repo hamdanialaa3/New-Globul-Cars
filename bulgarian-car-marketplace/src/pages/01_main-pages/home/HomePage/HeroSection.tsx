@@ -57,6 +57,30 @@ const HeroContent = styled.div`
   align-items: center;
 `;
 
+const HeroTitleWrap = styled.div`
+  display: inline-flex;
+  justify-content: center;
+  padding: 0.75rem 1.25rem;
+  border-radius: 16px;
+  background: ${({ theme }) =>
+    theme.mode === 'light'
+      ? 'rgba(15, 23, 42, 0.26)'
+      : 'rgba(0, 0, 0, 0.18)'};
+  border: 1px solid
+    ${({ theme }) =>
+      theme.mode === 'light' ? 'rgba(15, 23, 42, 0.16)' : 'rgba(255, 255, 255, 0.08)'};
+  box-shadow: ${({ theme }) =>
+    theme.mode === 'light'
+      ? '0 14px 40px rgba(15, 23, 42, 0.18)'
+      : '0 18px 46px rgba(0, 0, 0, 0.45)'};
+  backdrop-filter: blur(10px);
+
+  @media (max-width: 576px) {
+    padding: 0.6rem 0.9rem;
+    border-radius: 14px;
+  }
+`;
+
 const HeroTitle = styled.h1`
   font-family: 'Exo 2', sans-serif;
   font-size: 3.5rem;
@@ -97,7 +121,9 @@ const HeroSectionComponent: React.FC = () => {
       </BgGearContainer>
 
       <HeroContent>
-        <HeroTitle dangerouslySetInnerHTML={{ __html: t('home.hero.title').replace(/\n/g, '<br/>') }} />
+        <HeroTitleWrap>
+          <HeroTitle dangerouslySetInnerHTML={{ __html: t('home.hero.title').replace(/\n/g, '<br/>') }} />
+        </HeroTitleWrap>
         <HeroSubtitle>{t('home.hero.subtitle')}</HeroSubtitle>
 
         {/* The new Search Dashboard Widget including Quick Brands inside */}

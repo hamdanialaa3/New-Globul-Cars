@@ -5,6 +5,7 @@
 
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import { logger } from '../logger-service';
 
 const db = admin.firestore();
 const SAVED_SEARCHES = 'savedSearches';
@@ -95,7 +96,7 @@ async function executeSavedSearch(docId: string, data: SavedSearch) {
   }
 
   // TODO: Integrate push/email sending via separate functions or third-party provider.
-  console.log('[savedSearchAlert] Executed search', { docId, runId: runRef.id, matches: matched.length });
+  logger.info('Executed saved search alert', { docId, runId: runRef.id, matches: matched.length });
 }
 
 // Scheduled function: runs every 30 minutes to process enabled saved searches.
@@ -110,7 +111,7 @@ export const savedSearchAlertScheduler = functions.region('europe-west1').pubsub
     tasks.push(executeSavedSearch(doc.id, data));
   });
   await Promise.all(tasks);
-  console.log('[savedSearchAlertScheduler] Completed batch', { count: tasks.length });
+  logger.info('Completed saved search alert batch', { count: tasks.length });
 });
 
 // Trigger when a saved search is created: perform an immediate first run to give instant feedback.
@@ -119,6 +120,6 @@ export const savedSearchOnCreate = functions.region('europe-west1').firestore.do
     const data = snap.data() as SavedSearch;
     await executeSavedSearch(snap.id, data);
   } catch (e) {
-    console.error('[savedSearchOnCreate] Error executing initial search', e);
+    logger.error('Error executing initial saved search', e instanceof Error ? e : new Error(String(e)));
   }
 });

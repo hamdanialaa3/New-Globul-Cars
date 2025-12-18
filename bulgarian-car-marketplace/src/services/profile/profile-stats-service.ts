@@ -5,7 +5,7 @@
 import { doc, getDoc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { trustScoreService } from './trust-score-service';
-import { serviceLogger } from '../logger-wrapper';
+import { serviceLogger } from '../logger-service';
 
 // ==================== INTERFACES ====================
 

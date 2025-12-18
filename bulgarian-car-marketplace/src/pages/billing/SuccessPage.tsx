@@ -9,7 +9,7 @@ import { useAuth } from '../../contexts/AuthProvider';
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '../../firebase/firebase-config';
 import styled from 'styled-components';
-import { serviceLogger } from '../../services/logger-wrapper';
+import { serviceLogger } from '../../services/logger-service';
 
 // ==================== TYPES ====================
 

@@ -131,8 +131,8 @@ export const inviteMember = onCall<InviteMemberRequest>(async (request) => {
       businessId: businessOwnerId,
 
       status: 'pending',
-      invitedAt: FieldValue.serverTimestamp() as any,
-      expiresAt: expiresAt as any,
+      invitedAt: new Date().toISOString(),
+      expiresAt: expiresAt.toISOString(),
     };
 
     const invitationRef = await db.collection('teamInvitations').add(invitation);
@@ -179,21 +179,22 @@ export const inviteMember = onCall<InviteMemberRequest>(async (request) => {
       message: `Invitation sent to ${email}`,
       expiresAt: expiresAt.toISOString(),
     };
-  } catch (error: any) {
-    logger.error('Failed to invite team member', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to invite team member', err.message);
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
-    throw new HttpsError('internal', `Failed to invite team member: ${error.message}`);
+    throw new HttpsError('internal', `Failed to invite team member: ${err.message}`);
   }
 });
 
 /**
  * Send invitation email
  */
-async function sendInvitationEmail(invitationId: string, invitation: any) {
+async function sendInvitationEmail(invitationId: string, invitation: Omit<TeamInvitation, 'id'>) {
   try {
   const invitationLink = `https://mobilebg.eu/team/accept-invite/${invitationId}`;
 
@@ -279,14 +280,15 @@ export const resendInvitation = onCall<{ invitationId: string }>(async (request)
       success: true,
       message: 'Invitation resent',
     };
-  } catch (error: any) {
-    logger.error('Failed to resend invitation', { invitationId, error });
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to resend invitation', { invitationId, error: err.message });
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
-    throw new HttpsError('internal', `Failed to resend invitation: ${error.message}`);
+    throw new HttpsError('internal', `Failed to resend invitation: ${err.message}`);
   }
 });
 
@@ -345,13 +347,14 @@ export const cancelInvitation = onCall<{ invitationId: string }>(async (request)
       success: true,
       message: 'Invitation canceled',
     };
-  } catch (error: any) {
-    logger.error('Failed to cancel invitation', { invitationId, error });
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to cancel invitation', { invitationId, error: err.message });
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
-    throw new HttpsError('internal', `Failed to cancel invitation: ${error.message}`);
+    throw new HttpsError('internal', `Failed to cancel invitation: ${err.message}`);
   }
 });

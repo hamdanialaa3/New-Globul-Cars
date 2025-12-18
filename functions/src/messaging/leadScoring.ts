@@ -16,7 +16,7 @@ const db = getFirestore();
  * - Seriousness: 25 points (quality of questions, mentioned budget)
  * - Budget: 25 points (mentioned price range, financing interest)
  */
-function calculateScore(conversationData: any, messages: any[]): { score: number; breakdown: any; priority: 'hot' | 'warm' | 'cold' } {
+function calculateScore(conversationData: Record<string, unknown>, messages: Record<string, unknown>[]): { score: number; breakdown: Record<string, unknown>; priority: 'hot' | 'warm' | 'cold' } {
   let engagement = 0;
   let responseTime = 0;
   let seriousness = 0;
@@ -220,9 +220,10 @@ export const calculateLeadScore = onCall<CalculateLeadScoreRequest>(async (reque
       priority,
       leadId: leadRef.id,
     };
-  } catch (error: any) {
-    console.error('Error calculating lead score:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error calculating lead score:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 
@@ -255,7 +256,7 @@ export const getLeads = onCall(async (request) => {
 
     // Get leads for these conversations
     // Firestore 'in' query limit is 10, so we need to batch
-    const leads: any[] = [];
+    const leads: Record<string, unknown>[] = [];
     for (let i = 0; i < conversationIds.length; i += 10) {
       const batch = conversationIds.slice(i, i + 10);
       const leadsSnapshot = await db
@@ -282,9 +283,10 @@ export const getLeads = onCall(async (request) => {
       leads,
       stats,
     };
-  } catch (error: any) {
-    console.error('Error getting leads:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error getting leads:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 
@@ -325,7 +327,7 @@ export const updateLeadStatus = onCall<UpdateLeadStatusRequest>(async (request) 
       throw new HttpsError('permission-denied', 'You can only update your own leads');
     }
 
-    const updates: any = {
+    const updates: Record<string, unknown> = {
       status,
       updatedAt: Timestamp.now(),
     };
@@ -349,9 +351,10 @@ export const updateLeadStatus = onCall<UpdateLeadStatusRequest>(async (request) 
       success: true,
       message: 'Lead status updated successfully',
     };
-  } catch (error: any) {
-    console.error('Error updating lead status:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error updating lead status:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 

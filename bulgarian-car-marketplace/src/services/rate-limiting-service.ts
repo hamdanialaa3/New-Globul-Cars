@@ -1,7 +1,7 @@
 // src/services/rate-limiting-service.ts
 // Rate Limiting Service for Bulgarian Car Marketplace
 
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 export interface RateLimitConfig {
   windowMs: number; // Time window in milliseconds

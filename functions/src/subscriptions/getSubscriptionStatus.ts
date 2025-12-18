@@ -8,6 +8,16 @@ import * as logger from 'firebase-functions/logger';
 
 const db = getFirestore();
 
+interface SubscriptionData {
+  id: string;
+  status: string;
+  current_period_start?: number | Date;
+  current_period_end?: number | Date;
+  cancel_at_period_end?: boolean;
+  planTier?: string;
+  [key: string]: unknown;
+}
+
 export const getSubscriptionStatus = onCall<{
   userId?: string;
 }>({ region: 'europe-west1' }, async (request) => {
@@ -59,7 +69,7 @@ export const getSubscriptionStatus = onCall<{
 
       if (!subsSnap.empty) {
         // Prefer active subscription
-        const subs = subsSnap.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
+        const subs = subsSnap.docs.map(d => ({ id: d.id, ...d.data() })) as SubscriptionData[];
         const pick = (statuses: string[]) => subs.find(s => statuses.includes(s.status));
         const chosen = pick(['active']) || pick(['trialing']) || pick(['past_due']) || subs[0];
 
@@ -85,8 +95,9 @@ export const getSubscriptionStatus = onCall<{
     // 3) Nothing found
     logger.info('No subscription found in users or extension data', { userId });
     return { success: true, subscription: null };
-  } catch (error: any) {
-    logger.error('Error fetching subscription status', { userId, error: error.message });
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Error fetching subscription status', { userId, error: err.message });
     throw new HttpsError('internal', 'Failed to fetch subscription status');
   }
 });

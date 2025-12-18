@@ -22,7 +22,7 @@ jest.mock('../../firebase/firebase-config', () => ({
   auth: { currentUser: { uid: 'test-user-123' } },
 }));
 
-jest.mock('../../logger-wrapper', () => ({
+jest.mock('../../logger-service', () => ({
   serviceLogger: {
     info: jest.fn(),
     warn: jest.fn(),

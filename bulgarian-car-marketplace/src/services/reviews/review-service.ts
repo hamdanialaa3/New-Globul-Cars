@@ -19,7 +19,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { trustScoreService } from '../profile/trust-score-service';
-import { serviceLogger } from '../logger-wrapper';
+import { serviceLogger } from '../logger-service';
 import { rateLimiter, RATE_LIMIT_CONFIGS } from '../rate-limiting/rateLimiter.service';
 
 // ==================== INTERFACES ====================

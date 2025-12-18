@@ -30,7 +30,7 @@ import {
 } from 'firebase/auth';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { auth, db, storage } from '../firebase/firebase-config';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 // ✅ NEW: Import from canonical types file
 import type { BulgarianUser, DealerProfile as DealerUserProfile } from '../types/user/bulgarian-user.types';

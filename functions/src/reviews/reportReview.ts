@@ -111,14 +111,15 @@ export const reportReview = onCall<ReportReviewRequest>(async (request) => {
       message: 'Review reported successfully',
     };
 
-  } catch (error: any) {
-    logger.error('Failed to report review', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to report review', { error: err.message });
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
-    throw new HttpsError('internal', `Failed to report review: ${error.message}`);
+    throw new HttpsError('internal', `Failed to report review: ${err.message}`);
   }
 });
 
@@ -127,7 +128,7 @@ export const reportReview = onCall<ReportReviewRequest>(async (request) => {
  */
 async function notifyAdminsReviewFlagged(
   reviewId: string,
-  reviewData: any,
+  reviewData: Record<string, unknown>,
   reportCount: number
 ) {
   try {
@@ -174,7 +175,7 @@ async function notifyAdminsReviewFlagged(
  */
 async function sendAdminFlagEmail(
   reviewId: string,
-  reviewData: any,
+  reviewData: Record<string, unknown>,
   reportCount: number
 ) {
   try {

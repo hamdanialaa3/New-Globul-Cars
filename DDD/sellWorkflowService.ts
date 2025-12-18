@@ -17,7 +17,7 @@ import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
 import { CarListing } from '../types/CarListing';
 import LocationHelperService from './location-helper-service';
 import { logger } from './logger-service';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 import { rateLimiter, RATE_LIMIT_CONFIGS } from './rate-limiting/rateLimiter.service';
 
 // Extended location structure for new system

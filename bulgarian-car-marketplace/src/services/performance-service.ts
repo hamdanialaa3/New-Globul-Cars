@@ -2,7 +2,7 @@
 // Performance Optimization Service for Bulgarian Car Marketplace
 
 import { monitoring } from './monitoring-service';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 export interface PerformanceConfig {
   enableLazyLoading: boolean;

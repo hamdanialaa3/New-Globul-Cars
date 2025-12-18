@@ -201,9 +201,10 @@ export const triggerCommissionCharging = onCall<{ period: string }>(async (reque
       charged,
       failed,
     };
-  } catch (error: any) {
-    console.error('Error triggering commission charging:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error triggering commission charging:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 
@@ -256,9 +257,10 @@ export const markCommissionPaid = onCall<{ periodId: string }>(async (request) =
       success: true,
       message: 'Commission period marked as paid',
     };
-  } catch (error: any) {
-    console.error('Error marking commission as paid:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error marking commission as paid:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 
@@ -354,8 +356,9 @@ export const generateCommissionStatement = onCall<{ periodId: string }>(async (r
       success: true,
       statement,
     };
-  } catch (error: any) {
-    console.error('Error generating commission statement:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error generating commission statement:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });

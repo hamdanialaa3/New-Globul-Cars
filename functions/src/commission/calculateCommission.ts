@@ -158,9 +158,10 @@ export const getCommissionPeriods = onCall(async (request) => {
       periods,
       totals,
     };
-  } catch (error: any) {
-    console.error('Error getting commission periods:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error getting commission periods:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 
@@ -203,9 +204,10 @@ export const getCommissionPeriod = onCall<{ periodId: string }>(async (request) 
         ...periodData,
       },
     };
-  } catch (error: any) {
-    console.error('Error getting commission period:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error getting commission period:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 
@@ -248,9 +250,10 @@ export const getAllCommissionPeriods = onCall(async (request) => {
       periods,
       totals,
     };
-  } catch (error: any) {
-    console.error('Error getting all commission periods:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error getting all commission periods:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 
@@ -280,8 +283,9 @@ export const getCommissionRate = onCall(async (request) => {
       percentage: rate * 100,
       profileType,
     };
-  } catch (error: any) {
-    console.error('Error getting commission rate:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error getting commission rate:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });

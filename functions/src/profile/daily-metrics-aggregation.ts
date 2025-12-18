@@ -5,6 +5,7 @@
 
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import { logger } from '../logger-service';
 
 const db = admin.firestore();
 const PROFILES = 'profiles';
@@ -125,10 +126,10 @@ export const dailyProfileMetricsAggregation = functions.region('europe-west1').p
       if (batchCount >= 450) {
         await batch.commit();
         batchCount = 0;
-        console.log(`[dailyProfileMetricsAggregation] Committed batch, processed: ${processed}`);
+        logger.info(`Committed batch, processed: ${processed}`);
       }
     } catch (e) {
-      console.error(`[dailyProfileMetricsAggregation] Error processing profile ${profileDoc.id}`, e);
+      logger.error(`Error processing profile ${profileDoc.id}`, e instanceof Error ? e : new Error(String(e)));
     }
   }
 
@@ -138,7 +139,7 @@ export const dailyProfileMetricsAggregation = functions.region('europe-west1').p
   }
 
   const duration = Date.now() - startTime;
-  console.log(`[dailyProfileMetricsAggregation] Completed. Processed: ${processed}/${profilesSnap.size}, Duration: ${duration}ms`);
+  logger.info(`Completed profile metrics aggregation. Processed: ${processed}/${profilesSnap.size}, Duration: ${duration}ms`);
 });
 
 /**

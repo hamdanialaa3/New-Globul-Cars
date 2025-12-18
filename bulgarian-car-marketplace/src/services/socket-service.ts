@@ -19,7 +19,7 @@ import { logger } from './logger-service';
  */
 
 import { io, Socket } from 'socket.io-client';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 // Socket.io configuration
 const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || 'http://localhost:3001';

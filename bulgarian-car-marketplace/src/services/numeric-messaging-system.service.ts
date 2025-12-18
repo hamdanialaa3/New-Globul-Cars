@@ -34,7 +34,7 @@ import {
   or
 } from 'firebase/firestore';
 import { db, auth } from '../firebase/firebase-config';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 import { SocialAuthService } from '../firebase/social-auth-service';
 
 export type MessageType = 'inquiry' | 'offer' | 'general';

@@ -43,6 +43,7 @@ import StaticMapEmbed from '../../../components/StaticMapEmbed';
 import GlobulCarLogo from '../../../components/icons/GlobulCarLogo';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { useAuth } from '../../../contexts/AuthProvider';
+import { logger } from '../../../services/logger-service';
 import CarSuggestionsList from './CarSuggestionsList';
 
 interface CarDetailsGermanStyleProps {
@@ -1559,7 +1560,7 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
   };
 
   const handleContactDealer = async () => {
-    console.log('🚀 handleContactDealer called:', {
+    logger.debug('handleContactDealer called', {
       sellerId,
       profileId,
       carId: car.id,
@@ -1585,11 +1586,11 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
       if (sellerId) {
         navigate(`/messages?userId=${sellerId}`);
       } else {
-        console.error('❌ No sellerId available!');
+        logger.error('No sellerId available');
         onContact('phone');
       }
     } catch (error) {
-      console.error('Error navigating to messages:', error);
+      logger.error('Error navigating to messages', error as Error);
       // Fallback to phone contact
       onContact('phone');
     }

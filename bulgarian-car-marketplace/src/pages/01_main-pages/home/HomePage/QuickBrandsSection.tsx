@@ -22,20 +22,29 @@ const BrandPill = styled.div`
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(2, 6, 23, 0.04)'};
+  border: 1px solid
+    ${({ theme }) =>
+      theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : theme.colors.grey[200]};
   border-radius: 30px;
-  color: #8899aa;
+  color: ${({ theme }) => theme.colors.text.secondary};
   font-size: 0.9rem;
   font-family: 'Exo 2', sans-serif;
   cursor: pointer;
   transition: all 0.3s;
 
   &:hover {
-      background: rgba(0, 204, 255, 0.1);
-      border-color: #00ccff;
-      color: #fff;
-      box-shadow: 0 0 10px rgba(0, 204, 255, 0.4);
+      background: ${({ theme }) =>
+        theme.mode === 'dark'
+          ? 'rgba(0, 204, 255, 0.1)'
+          : `rgba(37, 99, 235, 0.08)`};
+      border-color: ${({ theme }) => (theme.mode === 'dark' ? '#00ccff' : theme.colors.primary.main)};
+      color: ${({ theme }) => theme.colors.text.primary};
+      box-shadow: ${({ theme }) =>
+        theme.mode === 'dark'
+          ? '0 0 10px rgba(0, 204, 255, 0.4)'
+          : `0 0 0 4px ${theme.colors.primary.light}22`};
       transform: translateY(-2px);
   }
 

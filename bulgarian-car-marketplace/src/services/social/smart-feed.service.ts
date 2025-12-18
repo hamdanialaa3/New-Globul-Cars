@@ -23,7 +23,7 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
-import { serviceLogger } from '../logger-wrapper';
+import { serviceLogger } from '../logger-service';
 import { introVideoService } from '../profile/intro-video.service';
 import { successStoriesService } from '../profile/success-stories.service';
 import { achievementsGalleryService } from '../profile/achievements-gallery.service';

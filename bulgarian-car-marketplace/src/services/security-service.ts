@@ -3,7 +3,7 @@
 
 import { errorHandler } from './error-handling-service';
 import { rateLimiter } from './rate-limiting-service';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 export interface SecurityConfig {
   enableCSRFProtection: boolean;

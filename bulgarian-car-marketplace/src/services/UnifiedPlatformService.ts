@@ -9,7 +9,7 @@
 import { logger } from './logger-service';
 import { geminiVisionService } from './ai/gemini-vision.service';
 import { algoliaSearchService } from './search/algolia.service';
-import { stripeService } from './payments/stripe.service';
+import { stripeService } from './billing-service';
 import { iotService } from './iotService';
 import { analyticsService } from './analytics/UnifiedAnalyticsService';
 

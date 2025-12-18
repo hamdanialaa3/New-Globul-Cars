@@ -95,9 +95,10 @@ export const trackEvent = onCall<TrackEventRequest>(async (request) => {
 
     return { success: true, message: 'Event tracked' };
 
-  } catch (error: any) {
-    logger.error('Event tracking failed', error);
-    throw new HttpsError('internal', `Failed to track event: ${error.message}`);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Event tracking failed', { error: err.message });
+    throw new HttpsError('internal', `Failed to track event: ${err.message}`);
   }
 });
 

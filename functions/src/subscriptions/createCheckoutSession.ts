@@ -19,7 +19,7 @@ const getStripe = (): Stripe => {
       throw new Error('Stripe secret key is not configured. Set STRIPE_SECRET_KEY environment variable.');
     }
     stripeInstance = new Stripe(STRIPE_CONFIG.secretKey, {
-      apiVersion: '2025-09-30.clover' as any,
+      apiVersion: '2024-11-20' as const,
     });
   }
   return stripeInstance;
@@ -187,21 +187,22 @@ export const createCheckoutSession = onCall<{
 
     return result;
 
-  } catch (error: any) {
-    logger.error('Checkout session creation failed', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Checkout session creation failed', err);
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
     // Stripe errors
-    if (error.type === 'StripeCardError') {
-      throw new HttpsError('invalid-argument', `Payment error: ${error.message}`);
+    if (error && typeof error === 'object' && 'type' in error && error.type === 'StripeCardError') {
+      throw new HttpsError('invalid-argument', `Payment error: ${err.message}`);
     }
 
     throw new HttpsError(
       'internal',
-      `Failed to create checkout session: ${error.message}`
+      `Failed to create checkout session: ${err.message}`
     );
   }
 });

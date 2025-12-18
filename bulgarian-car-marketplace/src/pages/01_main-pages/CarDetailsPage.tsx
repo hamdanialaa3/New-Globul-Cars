@@ -3,6 +3,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useTheme } from '../../contexts/ThemeContext';
+import { logger } from '../../services/logger-service';
 import { useCarViewTracking } from '../../hooks/useProfileTracking';
 import { unifiedCarService } from '../../services/car';
 import DistanceIndicator from '../../components/DistanceIndicator';
@@ -55,10 +56,10 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId }) => {
       import('../../services/user/canonical-user.service').then(({ userService }) => {
         userService.getUserProfile(car.sellerId).then(profile => {
           if (profile && profile.numericId) {
-            console.log('🔄 Hydrating seller numericId:', profile.numericId);
+            logger.debug('Hydrating seller numericId', { numericId: profile.numericId });
             setCar(prev => prev ? { ...prev, sellerNumericId: profile.numericId } : null);
           }
-        }).catch(err => console.error('Failed to hydrate seller numeric ID', err));
+        }).catch(err => logger.error('Failed to hydrate seller numeric ID', err as Error));
       });
     }
   }, [car?.id, car?.sellerId, loading, setCar]);

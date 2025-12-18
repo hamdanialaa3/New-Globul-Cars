@@ -362,7 +362,7 @@ async function getCustomerData(customerId: string): Promise<any> {
   };
 }
 
-function calculateBasePremium(vehicleData: any, customerData: any, coverageType: string): number {
+function calculateBasePremium(vehicleData: Record<string, unknown>, customerData: Record<string, unknown>, coverageType: string): number {
   let basePremium = vehicleData.value * 0.035; // 3.5% of vehicle value
 
   // Risk factors
@@ -455,7 +455,7 @@ async function getCustomerInsurancePolicies(customerId: string): Promise<Insuran
   return policies;
 }
 
-async function submitInsuranceClaim(policyId: string, claimData: any): Promise<string> {
+async function submitInsuranceClaim(policyId: string, claimData: Record<string, unknown>): Promise<string> {
   // Mock implementation - in production, submit to insurance provider
   const claimId = `claim_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 

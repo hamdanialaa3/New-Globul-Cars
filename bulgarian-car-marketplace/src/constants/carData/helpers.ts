@@ -32,4 +32,19 @@ export const getGenerationsByModel = (
   }));
 };
 
+export const getBodyStylesByGeneration = (
+  brands: CarMake[],
+  makeId: string,
+  modelId: string,
+  generationId: string
+): { id: string; name: string }[] => {
+  const make = brands.find(m => m.id === makeId);
+  if (!make) return [];
+  const model = make.models.find(m => m.id === modelId);
+  if (!model) return [];
+  const generation = model.generations.find(g => g.id === generationId);
+  if (!generation) return [];
+  return generation.bodyStyles.map(style => ({ id: style.id, name: style.name }));
+};
+
 

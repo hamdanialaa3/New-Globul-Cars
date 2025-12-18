@@ -4,7 +4,7 @@
 
 import { doc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
-import { serviceLogger } from '../logger-wrapper';
+import { serviceLogger } from './logger-service';
 import { permissionsService } from '../profile/permissions-service';
 import type { ProfileType, PlanTier, ProfilePermissions } from '../../types/user/bulgarian-user.types';
 

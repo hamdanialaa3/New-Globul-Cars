@@ -5,7 +5,7 @@ import { collection, query, where, getDocs, getCountFromServer } from 'firebase/
 import { queryAllCollections, countAllVehicles, VEHICLE_COLLECTIONS } from './search/multi-collection-helper';
 import { db } from '../firebase/firebase-config';
 import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 interface CityCount {
   count: number;

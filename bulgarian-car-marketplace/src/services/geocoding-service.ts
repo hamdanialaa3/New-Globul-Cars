@@ -1,7 +1,7 @@
 // Geocoding Service for Bulgarian Car Marketplace
 // Convert addresses to coordinates using Google Maps Geocoding API
 
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 export interface GeocodeResult {
   latitude: number;

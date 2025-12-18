@@ -5,7 +5,7 @@
 import { User } from 'firebase/auth';
 import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
-import { serviceLogger } from '../logger-wrapper';
+import { serviceLogger } from '../logger-service';
 
 interface GoogleProfileData {
   id: string;

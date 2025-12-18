@@ -220,9 +220,10 @@ export const generateInvoice = onCall<GenerateInvoiceRequest>(async (request) =>
       },
       message: 'Invoice generated successfully',
     };
-  } catch (error: any) {
-    console.error('Error generating invoice:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error generating invoice:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 
@@ -265,9 +266,10 @@ export const getInvoices = onCall(async (request) => {
       invoices,
       count: invoices.length,
     };
-  } catch (error: any) {
-    console.error('Error getting invoices:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error getting invoices:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 
@@ -310,9 +312,10 @@ export const getInvoice = onCall<{ invoiceId: string }>(async (request) => {
         ...invoiceData,
       },
     };
-  } catch (error: any) {
-    console.error('Error getting invoice:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error getting invoice:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 
@@ -375,9 +378,10 @@ export const updateInvoiceStatus = onCall<UpdateInvoiceStatusRequest>(async (req
       success: true,
       message: 'Invoice status updated successfully',
     };
-  } catch (error: any) {
-    console.error('Error updating invoice status:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error updating invoice status:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 
@@ -449,8 +453,9 @@ export const sendInvoiceEmail = onCall<SendInvoiceEmailRequest>(async (request) 
       success: true,
       message: 'Invoice sent successfully',
     };
-  } catch (error: any) {
-    console.error('Error sending invoice:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error sending invoice:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });

@@ -10,8 +10,8 @@ export interface QuickReplyTemplate {
   language: 'bg' | 'en';
   isActive: boolean;
   usageCount: number;
-  createdAt: any;
-  updatedAt: any;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface AutoResponderSettings {
@@ -29,8 +29,8 @@ export interface AutoResponderSettings {
   awayMessage: string;
   holidayMode: {
     enabled: boolean;
-    startDate: any;
-    endDate: any;
+    startDate: Date;
+    endDate: Date;
     message: string;
   };
   instantReply: {
@@ -60,16 +60,16 @@ export interface Lead {
   priority: 'hot' | 'warm' | 'cold';
   assignedTo?: string;
   notes: string[];
-  lastContactAt: any;
-  createdAt: any;
-  updatedAt: any;
+  lastContactAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface MessageAssignment {
   conversationId: string;
   assignedTo: string;
   assignedBy: string;
-  assignedAt: any;
+  assignedAt: Date;
   notes?: string;
 }
 
@@ -80,7 +80,7 @@ export interface InternalNote {
   authorName: string;
   content: string;
   isPrivate: boolean;
-  createdAt: any;
+  createdAt: Date;
 }
 
 export interface CreateQuickReplyRequest {
@@ -100,10 +100,10 @@ export interface UpdateQuickReplyRequest {
 
 export interface UpdateAutoResponderRequest {
   enabled?: boolean;
-  workingHours?: any;
+  workingHours?: Record<string, unknown>;
   awayMessage?: string;
-  holidayMode?: any;
-  instantReply?: any;
+  holidayMode?: Record<string, unknown>;
+  instantReply?: Record<string, unknown>;
 }
 
 export interface CalculateLeadScoreRequest {

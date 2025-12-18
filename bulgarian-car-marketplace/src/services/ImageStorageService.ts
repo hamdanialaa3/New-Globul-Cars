@@ -16,7 +16,7 @@
  * @since 2025-12 - Unified from image-storage.service.ts
  */
 
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 interface ImageData {
   files: File[];

@@ -28,8 +28,7 @@ import {
   BusinessBackground,
   GarageSection,
   ProfileTypeConfirmModal,  // ⚡ NEW: Confirmation Modal
-  AddPersonalVehicleModal,  // ⚡ NEW: Personal Vehicle Modal
-  PersonalVehicleCard  // ⚡ NEW: Personal Vehicle Card
+  AddPersonalVehicleModal  // ⚡ NEW: Personal Vehicle Modal
 } from '../../../../components/Profile';
 import type { GarageCar } from '../../../../components/Profile';
 import { TrustLevel } from '../../../../services/profile/trust-score-service';
@@ -79,6 +78,7 @@ import CommunityFeedWidget from '../../../../components/Profile/CommunityFeedWid
 import SocialMediaSettings from '../../../../components/Profile/SocialMedia/SocialMediaSettings';
 import { PersonalVehicleService } from '../../../../services/personal-vehicle.service';
 import { PersonalVehicle } from '../../../../types/personal-vehicle.types';
+import PersonalVehiclesSection from './PersonalVehiclesSection';
 
 // ==================== ANIMATIONS ====================
 // ⚡ OPTIMIZED: Simplified animations - run once on mount, not infinite
@@ -922,125 +922,16 @@ const ProfilePage: React.FC = () => {
               </S.ContentSection>
             )}
 
-            {/* Personal Vehicles Section - ⚡ NEW: Mobile.de style */}
+            {/* Personal Vehicles Section - extracted */}
             {isOwnProfile && (
-              <S.ContentSection $themeColor={theme.primary} style={{ marginTop: '24px' }}>
-                <S.SectionHeader>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                    <div>
-                      <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
-                        <Car size={24} />
-                        {language === 'bg' ? 'Моите превозни средства' : 'My Personal Vehicles'}
-                        {personalVehicles.length > 0 && (
-                          <span style={{ 
-                            fontSize: '0.9rem', 
-                            color: 'var(--text-secondary)',
-                            fontWeight: 'normal',
-                            marginLeft: '0.5rem'
-                          }}>
-                            ({personalVehicles.length})
-                          </span>
-                        )}
-                      </h2>
-                    </div>
-                    <button
-                      onClick={() => setIsAddVehicleModalOpen(true)}
-                      style={{
-                        padding: '0.75rem 1.5rem',
-                        background: 'var(--accent-primary)',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '12px',
-                        fontSize: '0.95rem',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        transition: 'all 0.3s ease',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 8px 24px rgba(59, 130, 246, 0.4)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = 'none';
-                      }}
-                    >
-                      <Plus size={18} />
-                      {language === 'bg' ? 'Добави превозно средство' : 'Add Vehicle'}
-                    </button>
-                  </div>
-                </S.SectionHeader>
-
-                {isPersonalVehiclesLoading ? (
-                  <div style={{ textAlign: 'center', padding: '3rem' }}>
-                    {language === 'bg' ? 'Зареждане...' : 'Loading...'}
-                  </div>
-                ) : personalVehicles.length > 0 ? (
-                  <div style={{ 
-                    display: 'grid', 
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
-                    gap: '1.5rem',
-                    marginTop: '1.5rem'
-                  }}>
-                    {personalVehicles.map(vehicle => (
-                      <PersonalVehicleCard
-                        key={vehicle.id}
-                        vehicle={vehicle}
-                        onDelete={handleVehicleDelete}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <div style={{
-                    textAlign: 'center',
-                    padding: '3rem',
-                    background: 'var(--bg-secondary)',
-                    borderRadius: '12px',
-                    border: '2px dashed var(--border)',
-                  }}>
-                    <Car size={48} color="var(--text-tertiary)" style={{ marginBottom: '1rem' }} />
-                    <h3 style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-                      {language === 'bg' ? 'Няма добавени превозни средства' : 'No vehicles added'}
-                    </h3>
-                    <p style={{ fontSize: '0.9rem', color: 'var(--text-tertiary)', marginBottom: '1.5rem' }}>
-                      {language === 'bg'
-                        ? 'Добавете вашето превозно средство, за да следите неговите данни и получавате напомняния.'
-                        : 'Add your vehicle to track its data and receive reminders.'}
-                    </p>
-                    <button
-                      onClick={() => setIsAddVehicleModalOpen(true)}
-                      style={{
-                        padding: '0.875rem 1.75rem',
-                        background: 'var(--accent-primary)',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '12px',
-                        fontSize: '1rem',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        transition: 'all 0.3s ease',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 8px 24px rgba(59, 130, 246, 0.4)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = 'none';
-                      }}
-                    >
-                      <Plus size={20} />
-                      {language === 'bg' ? 'Добави превозно средство сега' : 'Add vehicle now'}
-                    </button>
-                  </div>
-                )}
-              </S.ContentSection>
+              <PersonalVehiclesSection
+                language={language as 'bg' | 'en'}
+                themePrimary={theme.primary}
+                personalVehicles={personalVehicles}
+                isLoading={isPersonalVehiclesLoading}
+                onAddVehicle={() => setIsAddVehicleModalOpen(true)}
+                onDeleteVehicle={handleVehicleDelete}
+              />
             )}
 
             {/* User's Cars - For other users (sellers) */}

@@ -1,53 +1,199 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
     // ==================== HELPER FUNCTIONS ====================
-    
+
     // Check if user is authenticated
     function isAuthenticated() {
       return request.auth != null;
     }
-    
+
     // Check if user owns the document
     function isOwner(userId) {
       return isAuthenticated() && request.auth.uid == userId;
     }
-    
+
     // Check if user is admin
     function isAdmin() {
-      return isAuthenticated() && 
-             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      return isAuthenticated() &&
+             exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
-    
-    // Validate profile type (Phase 0 Day 4)
+
+    // Check if user has active subscription
+    function hasActiveSubscription(userId) {
+      return exists(/databases/$(database)/documents/subscriptions/$(userId)) &&
+             get(/databases/$(database)/documents/subscriptions/$(userId)).data.status == 'active';
+    }
+
+    // Validate profile type
     function isValidProfileType(profileType) {
       return profileType in ['private', 'dealer', 'company'];
     }
-    
-    // Validate plan tier (Phase 0 Day 4)
+
+    // Validate plan tier (9 tiers)
     function isValidPlanTier(tier) {
-      return tier in ['free', 'dealer', 'company'];
+      return tier in ['basic', 'premium', 'enterprise', 'dealer_basic', 'dealer_premium', 'dealer_enterprise', 'company_basic', 'company_premium', 'company_enterprise'];
     }
-    
-    // Check if plan tier matches profile type (Phase 0 Day 4)
+
+    // Check if plan tier matches profile type
     function planTierMatchesProfileType(profileType, planTier) {
-      return (profileType == 'private' && planTier == 'free') ||
-             (profileType == 'dealer' && planTier == 'dealer') ||
-             (profileType == 'company' && planTier == 'company');
+      return (profileType == 'private' && planTier in ['basic', 'premium', 'enterprise']) ||
+             (profileType == 'dealer' && planTier.matches('dealer_.*')) ||
+             (profileType == 'company' && planTier.matches('company_.*'));
     }
-    
-    // Validate dealer profile requirements (Phase 0 Day 4)
-    function hasDealerRequirements(data) {
-      return data.dealershipRef is string && 
-             data.dealershipRef.matches('dealerships/.*') &&
-             data.dealerSnapshot is map;
+
+    // ==================== USERS COLLECTION ====================
+
+    match /users/{userId} {
+      allow read: if isAuthenticated() &&
+                     (request.auth.uid == userId || // Own profile
+                      isAdmin()); // Admin access
+
+      allow create: if isAuthenticated() &&
+                       request.auth.uid == userId &&
+                       request.resource.data.email is string &&
+                       request.resource.data.displayName is string &&
+                       isValidProfileType(request.resource.data.profileType) &&
+                       (!('numericId' in request.resource.data) || request.resource.data.numericId == null);
+
+      allow update: if (isOwner(userId) || isAdmin()) &&
+                       (!('numericId' in request.resource.data) ||
+                        request.resource.data.numericId == resource.data.numericId) &&
+                       (!('plan' in request.resource.data) ||
+                        isValidPlanTier(request.resource.data.plan.tier));
+
+      allow delete: if isAdmin();
     }
-    
-    // Validate company profile requirements (Phase 0 Day 4)
-    function hasCompanyRequirements(data) {
-      return data.companyRef is string && 
+
+    // ==================== CARS COLLECTION ====================
+
+    match /cars/{carId} {
+      allow read: if true; // Public read for browsing
+
+      allow create: if isAuthenticated() &&
+                       request.auth.uid == request.resource.data.sellerId &&
+                       hasActiveSubscription(request.auth.uid);
+
+      allow update: if isOwner(resource.data.sellerId) || isAdmin();
+
+      allow delete: if isOwner(resource.data.sellerId) || isAdmin();
+    }
+
+    // ==================== SUBSCRIPTIONS COLLECTION ====================
+
+    match /subscriptions/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+
+      allow write: if isOwner(userId) || isAdmin();
+    }
+
+    // ==================== MESSAGES COLLECTION ====================
+
+    match /messages/{messageId} {
+      allow read, write: if isAuthenticated() &&
+                           (request.auth.uid in [resource.data.senderId, resource.data.receiverId]);
+    }
+
+    // ==================== REVIEWS COLLECTION ====================
+
+    match /reviews/{reviewId} {
+      allow read: if true;
+
+      allow create: if isAuthenticated() && hasActiveSubscription(request.auth.uid);
+
+      allow update, delete: if isOwner(resource.data.reviewerId) || isAdmin();
+    }
+
+    // ==================== ADMINS COLLECTION (RESTRICTED) ====================
+
+    match /admins/{adminId} {
+      allow read: if false; // Never allow direct reads
+      allow write: if false; // Managed by Firebase Admin SDK only
+    }
+
+    // ==================== BILLING LOGS ====================
+
+    match /billing_logs/{logId} {
+      allow read: if isAdmin();
+      allow write: if isAuthenticated(); // Allow functions to write logs
+    }
+
+    // ==================== DEALERSHIPS COLLECTION ====================
+
+    match /dealerships/{dealershipId} {
+      allow read: if true;
+
+      allow create: if isAuthenticated() &&
+                       request.auth.uid == request.resource.data.ownerId &&
+                       hasActiveSubscription(request.auth.uid);
+
+      allow update: if isOwner(resource.data.ownerId) || isAdmin();
+
+      allow delete: if isOwner(resource.data.ownerId) || isAdmin();
+    }
+
+    // ==================== COMPANIES COLLECTION ====================
+
+    match /companies/{companyId} {
+      allow read: if true;
+
+      allow create: if isAuthenticated() &&
+                       request.auth.uid == request.resource.data.ownerId &&
+                       hasActiveSubscription(request.auth.uid);
+
+      allow update: if isOwner(resource.data.ownerId) || isAdmin();
+
+      allow delete: if isOwner(resource.data.ownerId) || isAdmin();
+    }
+
+    // ==================== INVOICES COLLECTION ====================
+
+    match /invoices/{invoiceId} {
+      allow read: if isOwner(resource.data.userId) || isAdmin();
+
+      allow create: if isAuthenticated() &&
+                       request.auth.uid == request.resource.data.userId;
+
+      allow update: if isOwner(resource.data.userId) || isAdmin();
+
+      allow delete: if isAdmin();
+    }
+
+    // ==================== MAIL COLLECTION ====================
+
+    match /mail/{mailId} {
+      allow read: if isAdmin();
+      allow write: if isAuthenticated(); // Allow functions to send emails
+    }
+
+    // ==================== STORIES COLLECTION ====================
+
+    match /stories/{storyId} {
+      allow read: if true;
+
+      allow create: if isAuthenticated() &&
+                       request.auth.uid == request.resource.data.userId;
+
+      allow update: if isOwner(resource.data.userId) || isAdmin();
+
+      allow delete: if isOwner(resource.data.userId) || isAdmin();
+    }
+
+    // ==================== ANALYTICS COLLECTION ====================
+
+    match /analytics/{analyticId} {
+      allow read: if isAdmin();
+      allow write: if isAuthenticated(); // Allow functions to write analytics
+    }
+
+    // ==================== BACKUP LOGS COLLECTION ====================
+
+    match /backup_logs/{logId} {
+      allow read: if isAdmin();
+      allow write: if isAuthenticated(); // Allow functions to write backup logs
+    }
+  }
+} 
              data.companyRef.matches('companies/.*') &&
              data.companySnapshot is map;
     }
@@ -75,8 +221,7 @@ service cloud.firestore {
       allow read: if isAuthenticated() && 
                      (request.auth.uid == userId || // Own profile - full access
                       isAdmin() || // Admin - full access for moderation
-                      isProfilePublic(resource.data) || // Public profile
-                      true); // Allow all authenticated users to view other profiles (for discovery/listings)
+                      isProfilePublic(resource.data)); // Public profile only
       
       // Allow create if:
       // - User is creating their own profile
@@ -197,6 +342,8 @@ service cloud.firestore {
                        request.resource.data.sellerEmail == request.auth.token.email &&
                        request.resource.data.status == 'active' &&
                        request.resource.data.isActive == true &&
+                       // 🔢 VALIDATION: carNumericId must NOT be provided by client (auto-assigned by function)
+                       (!('carNumericId' in request.resource.data) || request.resource.data.carNumericId == null) &&
                        // 🔢 VALIDATION: numericId must NOT be provided by client (auto-assigned by function)
                        (!('numericId' in request.resource.data) || request.resource.data.numericId == null) &&
                        // 🔢 VALIDATION: sellerNumericId must NOT be provided by client (auto-assigned by function)
@@ -211,6 +358,9 @@ service cloud.firestore {
                        // Prevent changing sellerId
                        (!('sellerId' in request.resource.data.diff(resource.data)) ||
                         request.resource.data.sellerId == resource.data.sellerId) &&
+                       // 🔢 VALIDATION: carNumericId cannot be changed after creation
+                       (!('carNumericId' in request.resource.data) || 
+                        request.resource.data.carNumericId == resource.data.carNumericId) &&
                        // 🔢 VALIDATION: numericId cannot be changed after creation
                        (!('numericId' in request.resource.data) || 
                         request.resource.data.numericId == resource.data.numericId) &&
@@ -222,18 +372,22 @@ service cloud.firestore {
       allow delete: if isOwner(resource.data.sellerId) || isAdmin();
       
       // Check if user can add more listings (Phase 0 Day 4)
+      // ✅ CRITICAL FIX: Unified limits matching sellWorkflowService and PermissionsService
       function canAddListing(userId) {
         let userDoc = get(/databases/$(database)/documents/users/$(userId));
         let activeListings = userDoc.data.get('stats', {}).get('activeListings', 0);
-        let planTier = userDoc.data.get('plan', {}).get('tier', 'free');
+        // ✅ FIX: Use planTier directly (not plan.tier)
+        let planTier = userDoc.data.get('planTier', 'free');
         
-        // Listing limits by plan tier
+        // ✅ FIXED: Unified listing limits by plan tier
         return (planTier == 'free' && activeListings < 3) ||
-               (planTier == 'premium' && activeListings < 10) ||
-               (planTier == 'dealer_basic' && activeListings < 50) ||
-               (planTier == 'dealer_pro' && activeListings < 150) ||
-               (planTier in ['dealer_enterprise', 'company_pro', 'company_enterprise']) || // Unlimited
-               (planTier == 'company_starter' && activeListings < 100);
+               (planTier == 'dealer' && activeListings < 10) ||
+               (planTier == 'company') || // Unlimited for company
+               (planTier == 'premium' && activeListings < 10) || // Legacy support
+               (planTier == 'dealer_basic' && activeListings < 50) || // Legacy support
+               (planTier == 'dealer_pro' && activeListings < 150) || // Legacy support
+               (planTier in ['dealer_enterprise', 'company_pro', 'company_enterprise']) || // Legacy support
+               (planTier == 'company_starter' && activeListings < 100); // Legacy support
       }
       
       // AI processing logs subcollection (Cloud Functions only)
@@ -244,55 +398,169 @@ service cloud.firestore {
     }
     
     // ==================== NEW VEHICLE COLLECTIONS ====================
+    // ✅ CRITICAL FIX: Same strict rules as cars collection
     // Rules for new vehicle type collections (Dec 2025)
     // Collections: passenger_cars, suvs, vans, motorcycles, trucks, buses
     
     match /passenger_cars/{carId} {
-      allow read: if true; // Public read for all cars
+      // Allow public read for ACTIVE listings only
+      allow read: if resource.data.status == 'active' 
+                  && resource.data.isActive == true
+                  && !(resource.data.isSold == true);
+      
+      // Allow authenticated users to read their own listings (even if inactive)
+      allow read: if isAuthenticated() && 
+                     resource.data.sellerId == request.auth.uid;
+      
+      // Allow admins to read all listings
+      allow read: if isAdmin();
+      
+      // Allow create with strict validation (same as cars collection)
       allow create: if isAuthenticated() &&
-                       request.resource.data.sellerId == request.auth.uid;
-      allow update, delete: if isAuthenticated() && 
-                               (resource.data.sellerId == request.auth.uid || isAdmin());
+                       request.resource.data.sellerId is string &&
+                       request.resource.data.sellerId == request.auth.uid &&
+                       request.resource.data.status == 'active' &&
+                       request.resource.data.isActive == true &&
+                       (!('carNumericId' in request.resource.data) || request.resource.data.carNumericId == null) &&
+                       (!('sellerNumericId' in request.resource.data) || request.resource.data.sellerNumericId == null) &&
+                       canAddListing(request.auth.uid);
+      
+      // Allow update if owner or admin (prevent changing sellerId)
+      allow update: if (isOwner(resource.data.sellerId) || isAdmin()) &&
+                       (!('sellerId' in request.resource.data.diff(resource.data)) ||
+                        request.resource.data.sellerId == resource.data.sellerId) &&
+                       (!('carNumericId' in request.resource.data) || 
+                        request.resource.data.carNumericId == resource.data.carNumericId) &&
+                       (!('sellerNumericId' in request.resource.data) || 
+                        request.resource.data.sellerNumericId == resource.data.sellerNumericId);
+      
+      // Allow delete if owner or admin
+      allow delete: if isOwner(resource.data.sellerId) || isAdmin();
     }
     
     match /suvs/{carId} {
-      allow read: if true;
+      allow read: if resource.data.status == 'active' 
+                  && resource.data.isActive == true
+                  && !(resource.data.isSold == true);
+      allow read: if isAuthenticated() && 
+                     resource.data.sellerId == request.auth.uid;
+      allow read: if isAdmin();
       allow create: if isAuthenticated() &&
-                       request.resource.data.sellerId == request.auth.uid;
-      allow update, delete: if isAuthenticated() && 
-                               (resource.data.sellerId == request.auth.uid || isAdmin());
+                       request.resource.data.sellerId is string &&
+                       request.resource.data.sellerId == request.auth.uid &&
+                       request.resource.data.status == 'active' &&
+                       request.resource.data.isActive == true &&
+                       (!('carNumericId' in request.resource.data) || request.resource.data.carNumericId == null) &&
+                       (!('sellerNumericId' in request.resource.data) || request.resource.data.sellerNumericId == null) &&
+                       canAddListing(request.auth.uid);
+      allow update: if (isOwner(resource.data.sellerId) || isAdmin()) &&
+                       (!('sellerId' in request.resource.data.diff(resource.data)) ||
+                        request.resource.data.sellerId == resource.data.sellerId) &&
+                       (!('carNumericId' in request.resource.data) || 
+                        request.resource.data.carNumericId == resource.data.carNumericId) &&
+                       (!('sellerNumericId' in request.resource.data) || 
+                        request.resource.data.sellerNumericId == resource.data.sellerNumericId);
+      allow delete: if isOwner(resource.data.sellerId) || isAdmin();
     }
     
     match /vans/{carId} {
-      allow read: if true;
+      allow read: if resource.data.status == 'active' 
+                  && resource.data.isActive == true
+                  && !(resource.data.isSold == true);
+      allow read: if isAuthenticated() && 
+                     resource.data.sellerId == request.auth.uid;
+      allow read: if isAdmin();
       allow create: if isAuthenticated() &&
-                       request.resource.data.sellerId == request.auth.uid;
-      allow update, delete: if isAuthenticated() && 
-                               (resource.data.sellerId == request.auth.uid || isAdmin());
+                       request.resource.data.sellerId is string &&
+                       request.resource.data.sellerId == request.auth.uid &&
+                       request.resource.data.status == 'active' &&
+                       request.resource.data.isActive == true &&
+                       (!('carNumericId' in request.resource.data) || request.resource.data.carNumericId == null) &&
+                       (!('sellerNumericId' in request.resource.data) || request.resource.data.sellerNumericId == null) &&
+                       canAddListing(request.auth.uid);
+      allow update: if (isOwner(resource.data.sellerId) || isAdmin()) &&
+                       (!('sellerId' in request.resource.data.diff(resource.data)) ||
+                        request.resource.data.sellerId == resource.data.sellerId) &&
+                       (!('carNumericId' in request.resource.data) || 
+                        request.resource.data.carNumericId == resource.data.carNumericId) &&
+                       (!('sellerNumericId' in request.resource.data) || 
+                        request.resource.data.sellerNumericId == resource.data.sellerNumericId);
+      allow delete: if isOwner(resource.data.sellerId) || isAdmin();
     }
     
     match /motorcycles/{carId} {
-      allow read: if true;
+      allow read: if resource.data.status == 'active' 
+                  && resource.data.isActive == true
+                  && !(resource.data.isSold == true);
+      allow read: if isAuthenticated() && 
+                     resource.data.sellerId == request.auth.uid;
+      allow read: if isAdmin();
       allow create: if isAuthenticated() &&
-                       request.resource.data.sellerId == request.auth.uid;
-      allow update, delete: if isAuthenticated() && 
-                               (resource.data.sellerId == request.auth.uid || isAdmin());
+                       request.resource.data.sellerId is string &&
+                       request.resource.data.sellerId == request.auth.uid &&
+                       request.resource.data.status == 'active' &&
+                       request.resource.data.isActive == true &&
+                       (!('carNumericId' in request.resource.data) || request.resource.data.carNumericId == null) &&
+                       (!('sellerNumericId' in request.resource.data) || request.resource.data.sellerNumericId == null) &&
+                       canAddListing(request.auth.uid);
+      allow update: if (isOwner(resource.data.sellerId) || isAdmin()) &&
+                       (!('sellerId' in request.resource.data.diff(resource.data)) ||
+                        request.resource.data.sellerId == resource.data.sellerId) &&
+                       (!('carNumericId' in request.resource.data) || 
+                        request.resource.data.carNumericId == resource.data.carNumericId) &&
+                       (!('sellerNumericId' in request.resource.data) || 
+                        request.resource.data.sellerNumericId == resource.data.sellerNumericId);
+      allow delete: if isOwner(resource.data.sellerId) || isAdmin();
     }
     
     match /trucks/{carId} {
-      allow read: if true;
+      allow read: if resource.data.status == 'active' 
+                  && resource.data.isActive == true
+                  && !(resource.data.isSold == true);
+      allow read: if isAuthenticated() && 
+                     resource.data.sellerId == request.auth.uid;
+      allow read: if isAdmin();
       allow create: if isAuthenticated() &&
-                       request.resource.data.sellerId == request.auth.uid;
-      allow update, delete: if isAuthenticated() && 
-                               (resource.data.sellerId == request.auth.uid || isAdmin());
+                       request.resource.data.sellerId is string &&
+                       request.resource.data.sellerId == request.auth.uid &&
+                       request.resource.data.status == 'active' &&
+                       request.resource.data.isActive == true &&
+                       (!('carNumericId' in request.resource.data) || request.resource.data.carNumericId == null) &&
+                       (!('sellerNumericId' in request.resource.data) || request.resource.data.sellerNumericId == null) &&
+                       canAddListing(request.auth.uid);
+      allow update: if (isOwner(resource.data.sellerId) || isAdmin()) &&
+                       (!('sellerId' in request.resource.data.diff(resource.data)) ||
+                        request.resource.data.sellerId == resource.data.sellerId) &&
+                       (!('carNumericId' in request.resource.data) || 
+                        request.resource.data.carNumericId == resource.data.carNumericId) &&
+                       (!('sellerNumericId' in request.resource.data) || 
+                        request.resource.data.sellerNumericId == resource.data.sellerNumericId);
+      allow delete: if isOwner(resource.data.sellerId) || isAdmin();
     }
     
     match /buses/{carId} {
-      allow read: if true;
+      allow read: if resource.data.status == 'active' 
+                  && resource.data.isActive == true
+                  && !(resource.data.isSold == true);
+      allow read: if isAuthenticated() && 
+                     resource.data.sellerId == request.auth.uid;
+      allow read: if isAdmin();
       allow create: if isAuthenticated() &&
-                       request.resource.data.sellerId == request.auth.uid;
-      allow update, delete: if isAuthenticated() && 
-                               (resource.data.sellerId == request.auth.uid || isAdmin());
+                       request.resource.data.sellerId is string &&
+                       request.resource.data.sellerId == request.auth.uid &&
+                       request.resource.data.status == 'active' &&
+                       request.resource.data.isActive == true &&
+                       (!('carNumericId' in request.resource.data) || request.resource.data.carNumericId == null) &&
+                       (!('sellerNumericId' in request.resource.data) || request.resource.data.sellerNumericId == null) &&
+                       canAddListing(request.auth.uid);
+      allow update: if (isOwner(resource.data.sellerId) || isAdmin()) &&
+                       (!('sellerId' in request.resource.data.diff(resource.data)) ||
+                        request.resource.data.sellerId == resource.data.sellerId) &&
+                       (!('carNumericId' in request.resource.data) || 
+                        request.resource.data.carNumericId == resource.data.carNumericId) &&
+                       (!('sellerNumericId' in request.resource.data) || 
+                        request.resource.data.sellerNumericId == resource.data.sellerNumericId);
+      allow delete: if isOwner(resource.data.sellerId) || isAdmin();
     }
     
     // ==================== POSTS COLLECTION ====================
@@ -611,7 +879,8 @@ service cloud.firestore {
       // Anyone can read leaderboards
       allow read: if true;
       
-      // Only system can write (via Cloud Functions)
+      // Allow authenticated users to write leaderboards (for caching)
+      // Also allow Cloud Functions (admin) to write
       allow write: if isAdmin();
     }
     

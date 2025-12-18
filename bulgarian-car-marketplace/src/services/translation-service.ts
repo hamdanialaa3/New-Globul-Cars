@@ -1,7 +1,7 @@
 // Translation Service - Free Alternative to Google Translate
 // (Comment removed - was in Arabic)
 
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 // Mock translation function since google-translate-api-browser is not available
 const mockTranslate = async (text: string, options: { from?: string; to: string }) => {

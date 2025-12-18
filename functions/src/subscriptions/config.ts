@@ -16,9 +16,9 @@ import * as functions from 'firebase-functions';
  * firebase functions:config:set stripe.secret_key="sk_test_..." stripe.webhook_secret="whsec_..."
  */
 
-const getConfig = () => {
+const getConfig = (): Record<string, unknown> => {
   try {
-    return ((functions as any).config && (functions as any).config()) ? (functions as any).config() : {};
+    return (functions as any).config && typeof (functions as any).config === 'function' ? (functions as any).config() : {};
   } catch {
     return {};
   }

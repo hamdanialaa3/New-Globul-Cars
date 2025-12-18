@@ -110,9 +110,10 @@ export const assignConversation = onCall<AssignConversationRequest>(async (reque
       success: true,
       message: 'Conversation assigned successfully',
     };
-  } catch (error: any) {
-    console.error('Error assigning conversation:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error assigning conversation:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 
@@ -165,9 +166,9 @@ export const getSharedInbox = onCall(async (request) => {
       .limit(50)
       .get();
 
-    const conversations: any[] = [];
+    const conversations: Record<string, unknown>[] = [];
     for (const doc of conversationsSnapshot.docs) {
-      const conv: any = { id: doc.id, ...doc.data() };
+      const conv: Record<string, unknown> = { id: doc.id, ...doc.data() };
 
       // Get unread count
       const unreadSnapshot = await db
@@ -213,9 +214,10 @@ export const getSharedInbox = onCall(async (request) => {
         totalUnread: conversations.reduce((sum, c) => sum + (c.unreadCount || 0), 0),
       },
     };
-  } catch (error: any) {
-    console.error('Error getting shared inbox:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error getting shared inbox:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 
@@ -290,9 +292,10 @@ export const addInternalNote = onCall<AddInternalNoteRequest>(async (request) =>
       noteId: noteRef.id,
       message: 'Internal note added successfully',
     };
-  } catch (error: any) {
-    console.error('Error adding internal note:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error adding internal note:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });
 
@@ -356,8 +359,9 @@ export const getInternalNotes = onCall<{ conversationId: string }>(async (reques
       notes,
       count: notes.length,
     };
-  } catch (error: any) {
-    console.error('Error getting internal notes:', error);
-    throw new HttpsError('internal', error.message);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error('Error getting internal notes:', err.message);
+    throw new HttpsError('internal', err.message);
   }
 });

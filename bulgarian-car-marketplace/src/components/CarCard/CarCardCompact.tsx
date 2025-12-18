@@ -2,13 +2,15 @@
 // بطاقة سيارة مضغوطة - نمط mobile.de
 // Applied across all car listing pages
 
-import React, { memo } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { MapPin, Gauge, Fuel, Calendar, MessageCircle, User } from 'lucide-react';
+import { MapPin, Gauge, Fuel, Calendar, MessageCircle, User, Heart } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthProvider';
+import { useFavorites } from '../../hooks/useFavorites';
 import { CarListing } from '../../types/CarListing';
+import { logger } from '../../services/logger-service';
 
 interface CarCardCompactProps {
   car: CarListing | any; // Support both CarListing and BulgarianCar types
@@ -26,12 +28,47 @@ const CarCard = styled(Link)`
   border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
+  position: relative;
 
   &:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
     border-color: var(--accent-primary);
   }
+`;
+
+const FavoriteButton = styled.button`
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+    transition: all 0.3s ease;
+  }
+`;
+
+const CarCardContent = styled.div`
+  pointer-events: none;
 `;
 
 const CarImageWrapper = styled.div`
@@ -183,7 +220,14 @@ const CarLocation = styled.div`
 
 const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
   const { language } = useLanguage();
-  const { user } = useAuth();
+  const { currentUser } = useAuth();
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const [isHearted, setIsHearted] = useState(false);
+
+  // Check if car is favorited on mount and when favorites change
+  useEffect(() => {
+    setIsHearted(isFavorite(car.id));
+  }, [car.id, isFavorite]);
 
   const calculateMonthlyPayment = (price: number): number => {
     return Math.round(price / 24);
@@ -266,8 +310,53 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
     return `/cars/${car.id}`;
   };
 
+  // Handle favorite toggle
+  const handleFavoriteClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!currentUser) {
+      alert('Please login to add favorites');
+      return;
+    }
+
+    try {
+      const carData = {
+        title: `${car.make} ${car.model}`,
+        make: car.make,
+        model: car.model,
+        year: car.year,
+        price: car.price,
+        image: getMainImage() || '/placeholder-car.jpg',
+        mileage: car.mileage || 0,
+        location: getLocationName(),
+        fuelType: car.fuelType,
+        transmission: car.transmission
+      };
+
+      const result = await toggleFavorite(car.id, carData);
+      setIsHearted(result);
+      logger.info('Favorite toggled', { carId: car.id, isFavorited: result });
+    } catch (error) {
+      logger.error('Error toggling favorite', error as Error, { carId: car.id });
+      alert('Failed to update favorites');
+    }
+  };
+
   return (
     <CarCard to={getCarUrl()}>
+      <FavoriteButton 
+        onClick={handleFavoriteClick}
+        title={isHearted ? 'Remove from favorites' : 'Add to favorites'}
+      >
+        <Heart 
+          size={24} 
+          fill={isHearted ? '#FF0000' : 'none'} 
+          color={isHearted ? '#FF0000' : '#666'}
+          strokeWidth={2}
+        />
+      </FavoriteButton>
+
       <CarImageWrapper>
         {getMainImage() ? (
           <CarImage 

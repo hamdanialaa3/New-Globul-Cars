@@ -50,6 +50,6 @@ export interface CancelSubscriptionResult {
 export interface StripeWebhookEvent {
   type: string;
   data: {
-    object: any;
+    object: Record<string, unknown>;
   };
 }

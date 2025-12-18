@@ -15,13 +15,13 @@ try { if (!admin.apps.length) { admin.initializeApp(); } } catch { /* noop */ }
 // Optional Secret Manager integration (lazy required)
 // Using 'any' to avoid needing @types; dynamic import keeps optional nature.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-let secretManagerClient: any = null;
+let secretManagerClient: unknown = null;
 async function getSecretManager() {
   if (!process.env.ENABLE_SECRET_MANAGER) return null;
   if (!secretManagerClient) {
     try {
       // Dynamically import to avoid cold-start penalty if unused
-  const sm: any = await import('@google-cloud/secret-manager');
+  const sm: unknown = await import('@google-cloud/secret-manager');
   secretManagerClient = new sm.SecretManagerServiceClient();
     } catch (e) {
       logger.warn('[social-tokens] Secret Manager unavailable, continuing with env tokens');
@@ -240,7 +240,8 @@ export function verifyEphemeralToken(token: string): EphemeralVerificationResult
       metrics.ephemeralVerified++;
     }
     return { valid: true, platform: obj.p, issuedAt: obj.iat, expiresAt: obj.exp, version: obj.v };
-  } catch (e: any) {
+  } catch (e: unknown) {
+    const error = e instanceof Error ? e : new Error(String(e));
     metrics.ephemeralInvalid++;
     return { valid: false, reason: 'exception' };
   }
@@ -405,8 +406,9 @@ export const fetchSocialAccessToken = onRequest({ cors: true, region: 'europe-we
   const response = await coreGetToken(platform, { purpose: req.query.purpose as string });
     res.setHeader('X-Social-Token-Issuer', response.issuer || 'unknown');
     res.status(200).json(response as TokenResponse);
-  } catch (e: any) {
-    res.status(500).json({ error: e?.message || 'internal error' });
+  } catch (e: unknown) {
+    const error = e instanceof Error ? e : new Error(String(e));
+    res.status(500).json({ error: error.message || 'internal error' });
   }
 });
 

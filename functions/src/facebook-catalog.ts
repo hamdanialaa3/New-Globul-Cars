@@ -38,7 +38,7 @@ export const facebookCatalogXML = functions.https.onRequest(async (req, res) => 
     xml += '    <link>https://mobilebg.eu</link>\n';
     xml += '    <description>Premium car listings from Bulgaria</description>\n';
     
-    cars.forEach((car: any) => {
+    cars.forEach((car: Record<string, unknown>) => {
       const title = `${car.make || ''} ${car.model || ''} ${car.year || ''}`.trim();
       const description = car.description || `${car.make} ${car.model}, ${car.mileage} km, ${car.fuelType}`;
       const price = `${car.price} ${car.currency || 'EUR'}`;
@@ -120,7 +120,7 @@ export const facebookCatalogCSV = functions.https.onRequest(async (req, res) => 
     let csv = 'id,title,description,availability,condition,price,link,image_link,brand,year,make,model,mileage,vehicle_type,fuel_type,transmission,exterior_color,city,region\n';
     
     // CSV Rows
-    cars.forEach((car: any) => {
+    cars.forEach((car: Record<string, unknown>) => {
       const title = `${car.make || ''} ${car.model || ''} ${car.year || ''}`.trim();
       const description = car.description || `${car.make} ${car.model}, ${car.mileage} km`;
       const price = `${car.price} ${car.currency || 'EUR'}`;

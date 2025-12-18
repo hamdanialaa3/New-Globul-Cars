@@ -10,7 +10,7 @@ import {
 } from 'firebase/storage';
 import { storage } from '../../firebase/firebase-config';
 import imageCompression from 'browser-image-compression';
-import { serviceLogger } from '../logger-wrapper';
+import { serviceLogger } from '../logger-service';
 
 // ==================== INTERFACES ====================
 

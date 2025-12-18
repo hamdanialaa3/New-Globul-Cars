@@ -5,6 +5,7 @@ import { logger } from '../../../../services/logger-service';
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useTheme } from 'styled-components';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { collection, query, getDocs, orderBy, where } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase-config';
@@ -26,6 +27,7 @@ const VEHICLE_COLLECTIONS = [
 
 const AllCarsPage: React.FC = () => {
   const { language } = useLanguage();
+  const theme = useTheme() as any;
   const [cars, setCars] = useState<CarListing[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -256,6 +258,9 @@ const Container = styled.div`
   max-width: 1400px;
   margin: 0 auto;
   padding: 24px;
+  background: ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[900] : '#ffffff'};
+  min-height: 100vh;
+  transition: background-color 0.3s ease;
 
   @media (max-width: 768px) {
     padding: 16px;
@@ -276,22 +281,25 @@ const Header = styled.div`
     margin: 0;
     font-size: 1.75rem;
     font-weight: 700;
-    color: #333;
+    color: ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[100] : '#333'};
+    transition: color 0.3s ease;
   }
 
   p {
     margin: 4px 0 0 0;
     font-size: 0.95rem;
-    color: #666;
+    color: ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[400] : '#666'};
+    transition: color 0.3s ease;
   }
 `;
 
 const FilterBar = styled.div`
   margin-bottom: 20px;
   padding: 16px;
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[800] : 'white'};
+  border: 1px solid ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[700] : '#e0e0e0'};
   border-radius: 10px;
+  transition: all 0.3s ease;
 `;
 
 const SearchWrapper = styled.div`
@@ -299,14 +307,16 @@ const SearchWrapper = styled.div`
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
-  background: #f9f9f9;
-  border: 1px solid #e0e0e0;
+  background: ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[700] : '#f9f9f9'};
+  border: 1px solid ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[600] : '#e0e0e0'};
   border-radius: 8px;
   margin-bottom: 16px;
+  transition: all 0.3s ease;
 
   svg {
-    color: #999;
+    color: ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[400] : '#999'};
     flex-shrink: 0;
+    transition: color 0.3s ease;
   }
 `;
 
@@ -316,10 +326,12 @@ const SearchInput = styled.input`
   outline: none;
   background: transparent;
   font-size: 0.9rem;
-  color: #333;
+  color: ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[100] : '#333'};
+  transition: color 0.3s ease;
 
   &::placeholder {
-    color: #999;
+    color: ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[400] : '#999'};
+    transition: color 0.3s ease;
   }
 `;
 
@@ -327,13 +339,14 @@ const ClearButton = styled.button`
   background: none;
   border: none;
   padding: 4px;
-  color: #999;
+  color: ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[400] : '#999'};
   cursor: pointer;
   display: flex;
   align-items: center;
+  transition: color 0.3s ease;
   
   &:hover {
-    color: #333;
+    color: ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[200] : '#333'};
   }
 `;
 
@@ -359,16 +372,17 @@ const FilterGroup = styled.div`
 const FilterLabel = styled.label`
   font-size: 0.8rem;
   font-weight: 600;
-  color: #666;
+  color: ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[300] : '#666'};
+  transition: color 0.3s ease;
 `;
 
 const FilterSelect = styled.select`
   padding: 10px 12px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[600] : '#e0e0e0'};
   border-radius: 8px;
-  background: white;
+  background: ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[700] : 'white'};
   font-size: 0.9rem;
-  color: #333;
+  color: ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[100] : '#333'};
   cursor: pointer;
   transition: all 0.15s ease;
 
@@ -381,16 +395,23 @@ const FilterSelect = styled.select`
     border-color: #FF8F10;
     box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.1);
   }
+
+  option {
+    background: ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[800] : 'white'};
+    color: ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[100] : '#333'};
+  }
 `;
 
 const ResultsSummary = styled.div`
   font-size: 0.9rem;
-  color: #666;
+  color: ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[400] : '#666'};
   margin-bottom: 16px;
+  transition: color 0.3s ease;
 
   strong {
-    color: #333;
+    color: ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[200] : '#333'};
     font-weight: 600;
+    transition: color 0.3s ease;
   }
 `;
 
@@ -403,7 +424,8 @@ const LoadingState = styled.div`
   justify-content: center;
   align-items: center;
   min-height: 400px;
-  color: #999;
+  color: ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[400] : '#999'};
+  transition: color 0.3s ease;
 `;
 
 const EmptyState = styled.div`
@@ -417,7 +439,8 @@ const EmptyState = styled.div`
   h3 {
     margin: 16px 0 0 0;
     font-size: 1.2rem;
-    color: #999;
+    color: ${props => (props.theme as any).mode === 'dark' ? (props.theme as any).colors.grey[400] : '#999'};
+    transition: color 0.3s ease;
   }
 `;
 

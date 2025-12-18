@@ -4,7 +4,7 @@
 import { ref, uploadBytesResumable, getDownloadURL, UploadTask } from 'firebase/storage';
 import { storage } from '../firebase/firebase-config';
 import imageCompression from 'browser-image-compression';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 export interface UploadProgress {
   fileName: string;

@@ -4,7 +4,7 @@
 
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '../firebase/firebase-config';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 // ==================== TYPES ====================
 

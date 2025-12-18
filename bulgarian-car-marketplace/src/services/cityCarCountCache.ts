@@ -1,7 +1,7 @@
 // City Car Count Caching Service
 // localStorage caching للـ city counts لتقليل Firestore reads بنسبة 99%
 
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 interface CachedData {
   data: Record<string, number>;

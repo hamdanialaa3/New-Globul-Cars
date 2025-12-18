@@ -24,6 +24,16 @@ import { smartSearchService } from '../../services/search/smart-search.service';
 import { searchHistoryService } from '../../services/search/search-history.service';
 import { Search, X, Clock, TrendingUp, Sparkles, SlidersHorizontal } from 'lucide-react';
 
+const PALETTE = {
+  primary: '#0B5FFF',
+  primaryHover: '#0A4FDB',
+  accent: '#00C48C',
+  text: '#0F172A',
+  muted: '#475569',
+  surface: '#FFFFFF',
+  gradient: 'linear-gradient(135deg, #0B5FFF 0%, #061B4F 100%)',
+};
+
 // ============================================================================
 // ANIMATIONS
 // ============================================================================
@@ -39,21 +49,12 @@ const fadeInUp = keyframes`
   }
 `;
 
-const shimmer = keyframes`
-  0% {
-    background-position: -1000px 0;
+const rotateGear = keyframes`
+  from {
+    transform: rotate(0deg);
   }
-  100% {
-    background-position: 1000px 0;
-  }
-`;
-
-const glow = keyframes`
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(255, 143, 16, 0.3), 0 0 40px rgba(0, 92, 169, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(255, 143, 16, 0.5), 0 0 60px rgba(0, 92, 169, 0.3);
+  to {
+    transform: rotate(360deg);
   }
 `;
 
@@ -63,71 +64,148 @@ const glow = keyframes`
 
 const CarsContainer = styled.div`
   min-height: 100vh;
-  background: ${({ theme }) => theme.mode === 'dark' 
-    ? 'linear-gradient(180deg, #1a1d2e 0%, #0f1117 100%)'
-    : 'linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%)'};
-  padding: ${({ theme }) => theme.spacing['2xl']} 0;
+  position: relative;
+  overflow: hidden;
+  background: ${({ theme }) =>
+    theme.mode === 'dark'
+      ? 'linear-gradient(160deg, #050914 0%, #0b1224 40%, #05070f 100%)'
+      : `linear-gradient(160deg, ${theme.colors.grey[50]} 0%, ${theme.colors.grey[100]} 45%, ${theme.colors.background.default} 100%)`};
+  padding: 72px 0 96px;
   transition: background 0.3s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -120px;
+    background-image:
+      linear-gradient(
+        ${({ theme }) => (theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.04)' : 'rgba(2, 6, 23, 0.06)')} 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        ${({ theme }) => (theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.04)' : 'rgba(2, 6, 23, 0.06)')} 1px,
+        transparent 1px
+      );
+    background-size: 160px 160px;
+    opacity: ${({ theme }) => (theme.mode === 'dark' ? 0.6 : 0.35)};
+    mask-image: radial-gradient(circle at 50% 50%, rgba(0,0,0,0.9), transparent 70%);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 520px;
+    height: 520px;
+    border-radius: 50%;
+    top: -110px;
+    right: -150px;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 0 30%, transparent 32%),
+      radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.35) 0 6%, transparent 7% 12%, rgba(255, 255, 255, 0.18) 13% 16%, transparent 17% 100%),
+      conic-gradient(from 0deg,
+        rgba(255,255,255,0.35) 0deg 10deg,
+        transparent 10deg 20deg,
+        rgba(255,255,255,0.3) 20deg 30deg,
+        transparent 30deg 40deg,
+        rgba(255,255,255,0.25) 40deg 50deg,
+        transparent 50deg 60deg,
+        rgba(255,255,255,0.3) 60deg 70deg,
+        transparent 70deg 80deg,
+        rgba(255,255,255,0.22) 80deg 90deg,
+        transparent 90deg 100deg,
+        rgba(255,255,255,0.3) 100deg 110deg,
+        transparent 110deg 120deg,
+        rgba(255,255,255,0.25) 120deg 130deg,
+        transparent 130deg 140deg,
+        rgba(255,255,255,0.3) 140deg 150deg,
+        transparent 150deg 360deg);
+    mask-image: radial-gradient(circle at 50% 50%, rgba(0,0,0,1) 0 68%, transparent 74% 100%);
+    animation: ${rotateGear} 22s linear infinite;
+    opacity: 0.75;
+    mix-blend-mode: screen;
+    filter: drop-shadow(0 18px 60px rgba(0,0,0,0.45));
+  }
   
   @media (max-width: 768px) {
-    padding: 16px 0 80px;
-    background: ${({ theme }) => theme.mode === 'dark' ? '#1a1d2e' : '#f0f2f5'};
+    padding: 48px 0 80px;
   }
   
   @media (max-width: 480px) {
-    padding: 12px 0 70px;
+    padding: 36px 0 70px;
   }
 `;
 
 const PageContainer = styled.div`
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 ${({ theme }) => theme.spacing.lg};
+  padding: 0 20px;
+  position: relative;
+  z-index: 1;
 
   @media (max-width: 768px) {
-    padding: 0;
+    padding: 0 14px;
     max-width: 100%;
   }
 `;
 
 const PageHeader = styled.div`
+  position: relative;
   text-align: center;
-  margin-bottom: ${({ theme }) => theme.spacing['3xl']};
+  margin: 0 auto 32px;
+  max-width: 1000px;
+  padding: 40px 32px;
+  background: ${({ theme }) =>
+    theme.mode === 'dark'
+      ? 'rgba(12, 18, 32, 0.78)'
+      : 'rgba(255, 255, 255, 0.88)'};
+  border-radius: 18px;
+  border: 1px solid
+    ${({ theme }) => (theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : theme.colors.grey[200])};
+  box-shadow: ${({ theme }) =>
+    theme.mode === 'dark'
+      ? '0 25px 70px rgba(0, 0, 0, 0.4)'
+      : '0 22px 60px rgba(15, 23, 42, 0.10)'};
+  color: ${({ theme }) => (theme.mode === 'dark' ? '#f8fbff' : theme.colors.text.primary)};
+  backdrop-filter: blur(14px);
   ${css`animation: ${fadeInUp} 0.6s ease-out;`}
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    pointer-events: none;
+  }
 
   @media (max-width: 768px) {
     margin-bottom: 20px;
-    padding: 16px 20px;
-    background: ${({ theme }) => theme.mode === 'dark' ? '#1e2330' : 'white'};
-    box-shadow: 0 2px 8px ${({ theme }) => theme.mode === 'dark' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.05)'};
+    padding: 24px 18px;
   }
 
   h1 {
-    font-size: clamp(1.75rem, 4vw, 3rem);
+    font-size: clamp(1.9rem, 4vw, 2.8rem);
     font-weight: 800;
-    background: linear-gradient(135deg, #005ca9 0%, #ff8f10 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 1rem;
-    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+    color: ${({ theme }) => (theme.mode === 'dark' ? '#fefefe' : theme.colors.text.primary)};
 
     @media (max-width: 768px) {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       margin-bottom: 8px;
     }
   }
 
   p {
-    font-size: clamp(0.875rem, 2vw, 1.125rem);
-    color: ${({ theme }) => theme.mode === 'dark' ? '#a0aec0' : theme.colors.text.secondary};
-    max-width: 600px;
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
+    color: ${({ theme }) => (theme.mode === 'dark' ? '#e0e8ff' : theme.colors.text.secondary)};
+    max-width: 680px;
     margin: 0 auto;
-    line-height: 1.6;
+    line-height: 1.5;
     
     @media (max-width: 768px) {
-      font-size: 0.875rem;
-      margin-bottom: 0;
+      font-size: 0.9rem;
     }
   }
 `;
@@ -136,20 +214,21 @@ const CityBadge = styled.div`
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, #ff8f10, #005ca9);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 50px;
-  font-size: 1.1rem;
+  background: ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(2, 6, 23, 0.06)'};
+  color: ${({ theme }) => (theme.mode === 'dark' ? '#fefefe' : theme.colors.text.primary)};
+  padding: 0.65rem 1.35rem;
+  border-radius: 999px;
+  font-size: 1rem;
   font-weight: 600;
-  margin: 1rem auto;
-  box-shadow: 0 4px 15px rgba(255, 143, 16, 0.3);
-  ${css`animation: ${glow} 3s ease-in-out infinite;`}
-  
-  svg {
-    width: 20px;
-    height: 20px;
-  }
+  margin: 1rem auto 0;
+  border: 1px solid
+    ${({ theme }) => (theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.22)' : theme.colors.grey[200])};
+  box-shadow: ${({ theme }) =>
+    theme.mode === 'dark'
+      ? '0 16px 36px rgba(0, 0, 0, 0.28)'
+      : '0 14px 30px rgba(15, 23, 42, 0.08)'};
+  backdrop-filter: blur(10px);
 `;
 
 // ============================================================================
@@ -157,13 +236,15 @@ const CityBadge = styled.div`
 // ============================================================================
 
 const SearchSection = styled.div`
-  max-width: 900px;
-  margin: 0 auto 3rem;
+  max-width: 1000px;
+  margin: 20px auto 32px;
   ${css`animation: ${fadeInUp} 0.7s ease-out 0.1s both;`}
+  position: relative;
+  z-index: 1;
   
   @media (max-width: 768px) {
-    margin-bottom: 1.5rem;
-    padding: 0 1rem;
+    margin: 14px auto 20px;
+    padding: 0 8px;
   }
 `;
 
@@ -176,23 +257,27 @@ const SearchInputContainer = styled.div`
   position: relative;
   display: flex;
   align-items: stretch;
-  background: ${({ theme }) => theme.mode === 'dark' ? '#1e2330' : 'white'};
-  border: 2px solid transparent;
+  background: ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.92)'};
+  border: 1px solid
+    ${({ theme }) => (theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.14)' : theme.colors.grey[200])};
   border-radius: 16px;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: ${({ theme }) => theme.mode === 'dark' 
-    ? '0 4px 20px rgba(0, 0, 0, 0.3)' 
-    : '0 4px 20px rgba(0, 0, 0, 0.08)'};
+  transition: all 0.25s ease;
+  box-shadow: ${({ theme }) =>
+    theme.mode === 'dark'
+      ? '0 20px 50px rgba(0, 0, 0, 0.35)'
+      : '0 14px 34px rgba(15, 23, 42, 0.10)'};
+  backdrop-filter: blur(12px);
   
   &:focus-within {
-    border-color: #005ca9;
-    box-shadow: 0 8px 30px rgba(0, 92, 169, 0.2);
+    border-color: rgba(11, 95, 255, 0.6);
+    box-shadow: 0 22px 60px rgba(11, 95, 255, 0.16);
     transform: translateY(-2px);
   }
   
   &:hover {
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 22px 55px rgba(0, 0, 0, 0.42);
   }
 `;
 
@@ -200,7 +285,8 @@ const SearchIconWrapper = styled.div`
   display: flex;
   align-items: center;
   padding: 0 1.25rem;
-  color: ${({ theme }) => theme.mode === 'dark' ? '#a0aec0' : '#6c757d'};
+  color: ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.75)' : theme.colors.text.secondary};
   
   svg {
     width: 22px;
@@ -216,10 +302,11 @@ const SearchInput = styled.input`
   padding: 1.25rem 0.5rem;
   font-weight: 500;
   background: transparent;
-  color: ${({ theme }) => theme.mode === 'dark' ? '#e8eaed' : '#212529'};
+  color: ${({ theme }) => (theme.mode === 'dark' ? '#f8fbff' : theme.colors.text.primary)};
   
   &::placeholder {
-    color: ${({ theme }) => theme.mode === 'dark' ? '#6c7a8d' : '#adb5bd'};
+    color: ${({ theme }) =>
+      theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.65)' : theme.colors.text.secondary};
     font-weight: 400;
   }
   
@@ -240,16 +327,18 @@ const ClearButton = styled.button`
   background: none;
   border: none;
   padding: 0.5rem;
-  color: ${({ theme }) => theme.mode === 'dark' ? '#a0aec0' : '#6c757d'};
+  color: ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : theme.colors.text.secondary};
   cursor: pointer;
   display: flex;
   align-items: center;
   border-radius: 8px;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   
   &:hover {
-    background: ${({ theme }) => theme.mode === 'dark' ? '#2d3548' : '#f8f9fa'};
-    color: ${({ theme }) => theme.mode === 'dark' ? '#e8eaed' : '#495057'};
+    background: ${({ theme }) =>
+      theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(2, 6, 23, 0.05)'};
+    color: ${PALETTE.primary};
   }
   
   svg {
@@ -259,8 +348,8 @@ const ClearButton = styled.button`
 `;
 
 const SearchButton = styled.button`
-  background: linear-gradient(135deg, #005ca9, #0066cc);
-  border: none;
+  background: linear-gradient(135deg, rgba(11, 95, 255, 0.92), rgba(10, 79, 219, 0.92));
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 10px;
   padding: 0.75rem 1.5rem;
   color: white;
@@ -268,15 +357,16 @@ const SearchButton = styled.button`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.95rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 8px rgba(0, 92, 169, 0.3);
+  transition: all 0.2s ease;
+  box-shadow: 0 18px 36px rgba(11, 95, 255, 0.32);
+  backdrop-filter: blur(6px);
   
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 92, 169, 0.4);
-    background: linear-gradient(135deg, #0066cc, #005ca9);
+    background: linear-gradient(135deg, rgba(11, 95, 255, 1), rgba(10, 79, 219, 1));
+    box-shadow: 0 22px 44px rgba(11, 95, 255, 0.4);
   }
   
   &:active:not(:disabled) {
@@ -305,6 +395,7 @@ const ActionButtonsRow = styled.div`
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
+  margin-bottom: 16px;
   
   @media (max-width: 768px) {
     gap: 0.75rem;
@@ -321,64 +412,47 @@ const ActionButton = styled.button<{ variant?: 'primary' | 'secondary' | 'ai' }>
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 2px solid transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   position: relative;
   overflow: hidden;
+  color: #f6f8ff;
+  backdrop-filter: blur(10px);
   
   /* Primary - Advanced Search */
   ${props => props.variant === 'primary' && css`
-    background: linear-gradient(135deg, #ff8f10, #ffb347);
-    color: white;
-    box-shadow: 0 4px 15px rgba(255, 143, 16, 0.3);
+    background: linear-gradient(135deg, rgba(11, 95, 255, 0.9), rgba(10, 79, 219, 0.9));
+    box-shadow: 0 20px 40px rgba(11, 95, 255, 0.25);
     
     &:hover {
       transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(255, 143, 16, 0.4);
+      background: linear-gradient(135deg, rgba(11, 95, 255, 1), rgba(10, 79, 219, 1));
+      box-shadow: 0 24px 48px rgba(11, 95, 255, 0.35);
     }
   `}
   
   /* AI Search */
   ${props => props.variant === 'ai' && css`
-    background: linear-gradient(135deg, #8b5cf6, #6366f1);
-    color: white;
-    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
-    animation: ${glow} 4s ease-in-out infinite;
+    background: linear-gradient(135deg, rgba(0, 196, 140, 0.9), rgba(0, 168, 120, 0.9));
+    color: #052f1f;
+    box-shadow: 0 18px 38px rgba(0, 196, 140, 0.3);
     
     &:hover {
       transform: translateY(-3px);
-      box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
-    }
-    
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.3),
-        transparent
-      );
-      animation: ${shimmer} 3s infinite;
+      box-shadow: 0 22px 42px rgba(0, 196, 140, 0.38);
     }
   `}
   
   /* Secondary - Filter Results */
   ${props => props.variant === 'secondary' && css`
-    background: ${({ theme }) => theme.mode === 'dark' ? '#1e2330' : 'white'};
-    color: ${({ theme }) => theme.mode === 'dark' ? '#e8eaed' : '#495057'};
-    border: 2px solid ${({ theme }) => theme.mode === 'dark' ? '#3d4554' : '#dee2e6'};
-    box-shadow: ${({ theme }) => theme.mode === 'dark' 
-      ? '0 2px 8px rgba(0, 0, 0, 0.3)' 
-      : '0 2px 8px rgba(0, 0, 0, 0.05)'};
+    background: rgba(255, 255, 255, 0.08);
+    color: #e9edf6;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.25);
     
     &:hover {
-      border-color: #005ca9;
-      color: #005ca9;
-      box-shadow: 0 4px 12px rgba(0, 92, 169, 0.15);
+      border-color: rgba(11, 95, 255, 0.6);
+      color: #f6f8ff;
+      box-shadow: 0 20px 34px rgba(0, 0, 0, 0.35);
     }
   `}
   
@@ -437,11 +511,13 @@ const EmptyState = styled.div`
   h3 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
+    color: ${({ theme }) => theme.colors.text.primary};
   }
   
   p {
     font-size: 1rem;
     line-height: 1.6;
+    color: ${({ theme }) => theme.colors.text.secondary};
   }
 `;
 
@@ -450,12 +526,16 @@ const SuggestionsDropdown = styled.div`
   top: calc(100% + 8px);
   left: 0;
   right: 0;
-  background: ${({ theme }) => theme.mode === 'dark' ? '#1e2330' : 'white'};
-  border: 1px solid ${({ theme }) => theme.mode === 'dark' ? '#3d4554' : '#e9ecef'};
+  background: ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(12, 18, 32, 0.94)' : 'rgba(255, 255, 255, 0.96)'};
+  border: 1px solid
+    ${({ theme }) => (theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.12)' : theme.colors.grey[200])};
   border-radius: 12px;
-  box-shadow: ${({ theme }) => theme.mode === 'dark' 
-    ? '0 8px 24px rgba(0, 0, 0, 0.5)' 
-    : '0 8px 24px rgba(0, 0, 0, 0.12)'};
+  box-shadow: ${({ theme }) =>
+    theme.mode === 'dark'
+      ? '0 24px 60px rgba(0, 0, 0, 0.45)'
+      : '0 18px 44px rgba(15, 23, 42, 0.14)'};
+  backdrop-filter: blur(12px);
   max-height: 400px;
   overflow-y: auto;
   z-index: 100;
@@ -485,7 +565,7 @@ const SuggestionSection = styled.div`
   padding: 0.75rem 0;
   
   &:not(:last-child) {
-    border-bottom: 1px solid ${({ theme }) => theme.mode === 'dark' ? '#3d4554' : '#f1f3f5'};
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 `;
 
@@ -496,7 +576,8 @@ const SuggestionHeader = styled.div`
   padding: 0.5rem 1rem;
   font-size: 0.75rem;
   font-weight: 600;
-  color: ${({ theme }) => theme.mode === 'dark' ? '#a0aec0' : '#6c757d'};
+  color: ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : theme.colors.text.secondary};
   text-transform: uppercase;
   
   svg {
@@ -513,11 +594,12 @@ const SuggestionItem = styled.button`
   background: none;
   cursor: pointer;
   font-size: 0.9rem;
-  color: ${({ theme }) => theme.mode === 'dark' ? '#e8eaed' : '#212529'};
+  color: ${({ theme }) => (theme.mode === 'dark' ? '#f5f7ff' : theme.colors.text.primary)};
   transition: background 0.15s;
   
   &:hover {
-    background: ${({ theme }) => theme.mode === 'dark' ? '#2d3548' : '#f8f9fa'};
+    background: ${({ theme }) =>
+      theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.06)' : 'rgba(2, 6, 23, 0.05)'};
   }
   
   &:active {
@@ -844,21 +926,21 @@ const CarsPage: React.FC = () => {
           {/* City Badge */}
           {cityData && (
             <CityBadge>
-              📍 {cityDisplayName} · {cars.length} {carsCountText}
+              {language === 'bg' ? 'Локация' : 'Location'}: {cityDisplayName} · {cars.length} {carsCountText}
             </CityBadge>
           )}
           
           {/* Brand/Make Badge */}
           {makeParam && !cityData && (
             <CityBadge>
-              {makeParam} · {cars.length} {carsCountText}
+              {language === 'bg' ? 'Марка' : 'Make'}: {makeParam} · {cars.length} {carsCountText}
             </CityBadge>
           )}
           
           {/* Combined Badge (Region + Brand) */}
           {cityData && makeParam && (
             <CityBadge>
-              📍 {cityDisplayName} · {makeParam} · {cars.length} {carsCountText}
+              {language === 'bg' ? 'Локация' : 'Location'}: {cityDisplayName} · {language === 'bg' ? 'Марка' : 'Make'}: {makeParam} · {cars.length} {carsCountText}
             </CityBadge>
           )}
         </PageHeader>
@@ -996,7 +1078,7 @@ const CarsPage: React.FC = () => {
         {/* Empty State */}
         {!loading && !error && cars.length === 0 && (
           <EmptyState>
-            <CarIcon size={64} color="#FF7900" style={{ marginBottom: '16px', opacity: 0.6 }} />
+            <CarIcon size={64} color={PALETTE.accent} style={{ marginBottom: '16px', opacity: 0.65 }} />
             <h3>{language === 'bg' ? 'Няма намерени автомобили' : 'No cars found'}</h3>
             <p>
               {cityData && makeParam

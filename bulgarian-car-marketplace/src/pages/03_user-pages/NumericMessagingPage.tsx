@@ -21,7 +21,7 @@ import {
 import { SocialAuthService } from '../../firebase/social-auth-service';
 import { db } from '../../firebase/firebase-config';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { serviceLogger } from '../../services/logger-wrapper';
+import { serviceLogger } from '../../services/logger-service';
 import { logger } from '../../services/logger-service';
 
 const PageContainer = styled.div`

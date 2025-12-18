@@ -16,7 +16,7 @@ import {
   getDoc
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 // Types
 export interface SavedSearchFilters {

@@ -64,8 +64,9 @@ export const sendWelcomeEmail = functions.auth.user().onCreate(async (user) => {
         timestamp: admin.firestore.FieldValue.serverTimestamp()
       });
 
-    } catch (error: any) {
-      console.error('❌ Failed to send welcome email:', error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      console.error('❌ Failed to send welcome email:', err.message);
       
       // Log error
       await admin.firestore().collection('email_logs').add({
@@ -73,7 +74,7 @@ export const sendWelcomeEmail = functions.auth.user().onCreate(async (user) => {
         to: user.email,
         userId: user.uid,
         status: 'failed',
-        error: error.message,
+        error: err.message,
         timestamp: admin.firestore.FieldValue.serverTimestamp()
       });
     }
@@ -132,13 +133,14 @@ export const sendCarListingEmail = functions.firestore.document('cars/{carId}').
         timestamp: admin.firestore.FieldValue.serverTimestamp()
       });
 
-    } catch (error: any) {
-      console.error('❌ Failed to send car listing email:', error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      console.error('❌ Failed to send car listing email:', err.message);
       
       await admin.firestore().collection('email_logs').add({
         type: 'car_listing',
         status: 'failed',
-        error: error.message,
+        error: err.message,
         timestamp: admin.firestore.FieldValue.serverTimestamp()
       });
     }
@@ -189,17 +191,18 @@ export const sendVerificationEmail = functions.https.onCall(async (data, context
 
       return { success: true };
 
-    } catch (error: any) {
-      console.error('❌ Failed to send verification email:', error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      console.error('❌ Failed to send verification email:', err.message);
       
       await admin.firestore().collection('email_logs').add({
         type: 'verification',
         status: 'failed',
-        error: error.message,
+        error: err.message,
         timestamp: admin.firestore.FieldValue.serverTimestamp()
       });
 
-      throw new functions.https.HttpsError('internal', error.message);
+      throw new functions.https.HttpsError('internal', err.message);
     }
   });
 
@@ -245,9 +248,10 @@ export const sendSubscriptionEmail = functions.https.onCall(async (data, context
 
       return { success: true };
 
-    } catch (error: any) {
-      console.error('❌ Failed to send subscription email:', error);
-      throw new functions.https.HttpsError('internal', error.message);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      console.error('❌ Failed to send subscription email:', err.message);
+      throw new functions.https.HttpsError('internal', err.message);
     }
   });
 

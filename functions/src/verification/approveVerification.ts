@@ -157,8 +157,9 @@ export const approveVerification = onCall<{
     };
 
     return result;
-  } catch (error: any) {
-    logger.error('Verification approval failed', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Verification approval failed', { error: err.message });
     
     if (error instanceof HttpsError) {
       throw error;
@@ -166,7 +167,7 @@ export const approveVerification = onCall<{
     
     throw new HttpsError(
       'internal',
-      `Failed to approve verification: ${error.message}`
+      `Failed to approve verification: ${err.message}`
     );
   }
 });

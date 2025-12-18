@@ -17,7 +17,7 @@ import {
 import { db } from '../../firebase/firebase-config';
 import { CarListing } from '../../types/CarListing';
 import { UnifiedCar } from '../car/unified-car.service';
-import { serviceLogger } from '../logger-wrapper';
+import { serviceLogger } from '../logger-service';
 import { homePageCache, CACHE_KEYS } from '../homepage-cache.service';
 import { searchHistoryService } from './search-history.service';
 import { searchPersonalizationService } from './search-personalization.service';

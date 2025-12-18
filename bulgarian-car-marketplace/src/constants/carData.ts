@@ -2,7 +2,7 @@
 // (Comment removed - was in Arabic)
 
 // (Comment removed - was in Arabic)
-import { CAR_DATA as STATIC_CAR_DATA } from './carData_static';
+import { CAR_DATA as STATIC_CAR_DATA } from './carData';
 
 export interface CarMake {
   id: string;

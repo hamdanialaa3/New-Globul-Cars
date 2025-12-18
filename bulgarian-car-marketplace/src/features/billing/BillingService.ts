@@ -32,12 +32,11 @@ class BillingService {
         pricing: { monthly: 0, annual: 0 },
         listingCap: 3,  // 3 cars per month
         features: [
-          'basic_listing',
-          'standard_photos',
-          'contact_buyers',
-          'trust_score',
+          'limit_3_cars',
+          'no_brand_edit',
+          'basic_support',
           'search_visibility',
-          'no_brand_edit' // Custom feature flag
+          'standard_photos'
         ],
         popular: false
       },
@@ -51,14 +50,12 @@ class BillingService {
         pricing: { monthly: 27.78, annual: 278 },
         listingCap: 25,  // 25 cars per month
         features: [
+          'limit_25_cars',
+          'limit_10_brand_edits',
           'ai_valuation_30',
-          'analytics_dashboard',
-          'quick_replies',
-          'featured_badge',
           'priority_support',
-          'bulk_edit',
-          'advanced_search',
-          'limited_brand_edit' // Custom feature flag
+          'analytics_dashboard',
+          'featured_badge'
         ],
         popular: true,
         recommended: false
@@ -68,25 +65,19 @@ class BillingService {
       {
         id: 'company',
         name: { bg: 'Компания', en: 'Company' },
-        description: { bg: '€187.88/месец - 200 автомобила месечно', en: '€187.88/month - 200 cars monthly' },
+        description: { bg: '€187.88/месец - 100 автомобила месечно', en: '€187.88/month - 100 cars monthly' },
         profileType: 'company',
         pricing: { monthly: 187.88, annual: 1288 },
-        listingCap: 200,  // 200 cars per month
+        listingCap: 100,  // 100 cars per month
         features: [
+          'limit_100_cars',
+          'unlimited_brand_edits',
           'ai_unlimited',
-          'unlimited_listings',
-          'team_management',
-          'multi_location',
-          'api_access',
-          'custom_branding',
+          'car_valuation',
           'dedicated_manager',
-          'crm_integration',
-          'advanced_analytics',
-          'white_label',
-          'priority_phone_support',
-          'custom_reports',
-          'sla_guarantee',
-          'full_brand_edit' // Custom feature flag
+          'api_access',
+          'team_management',
+          'custom_branding'
         ],
         popular: false,
         recommended: true

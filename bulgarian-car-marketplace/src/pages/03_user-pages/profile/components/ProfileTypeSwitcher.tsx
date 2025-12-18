@@ -5,6 +5,7 @@ import { Shield, Briefcase, Building, Check, X, Crown, Info } from 'lucide-react
 import { useAuth } from '../../../../hooks/useAuth';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase-config';
+import { logger } from '../../../../services/logger-service';
 import { toast } from 'react-toastify';
 
 // Colors & Gradients
@@ -237,7 +238,7 @@ export const ProfileTypeSwitcher = () => {
             toast.success(`Profile updated to ${newType.toUpperCase()}`);
             // Optimistic update handled by Firestore listener in AuthProvider usually
         } catch (error) {
-            console.error('Failed to update profile type:', error);
+            logger.error('Failed to update profile type', error as Error);
             toast.error('Failed to update profile type');
         } finally {
             setIsLoading(false);

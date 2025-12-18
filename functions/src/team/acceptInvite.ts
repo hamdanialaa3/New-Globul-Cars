@@ -185,14 +185,15 @@ export const acceptInvite = onCall<AcceptInviteRequest>(async (request) => {
       businessId: invitation.businessId,
       role: invitation.role,
     };
-  } catch (error: any) {
-    logger.error('Failed to accept invitation', { invitationId, error });
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to accept invitation', { invitationId, error: err.message });
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
-    throw new HttpsError('internal', `Failed to accept invitation: ${error.message}`);
+    throw new HttpsError('internal', `Failed to accept invitation: ${err.message}`);
   }
 });
 
@@ -273,14 +274,15 @@ export const declineInvite = onCall<AcceptInviteRequest>(async (request) => {
       success: true,
       message: 'Invitation declined',
     };
-  } catch (error: any) {
-    logger.error('Failed to decline invitation', { invitationId, error });
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to decline invitation', { invitationId, error: err.message });
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
-    throw new HttpsError('internal', `Failed to decline invitation: ${error.message}`);
+    throw new HttpsError('internal', `Failed to decline invitation: ${err.message}`);
   }
 });
 

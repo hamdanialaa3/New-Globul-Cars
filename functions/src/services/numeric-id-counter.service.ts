@@ -30,10 +30,10 @@ export const getNextUserNumericId = async (): Promise<number> => {
       return nextId;
     });
     
-    console.log('Generated new user numeric ID', { numericId: newId });
+    logger.info('Generated new user numeric ID', { numericId: newId });
     return newId;
   } catch (error) {
-    console.error('Failed to generate user numeric ID', error);
+    logger.error('Failed to generate user numeric ID', error);
     throw new Error('Failed to generate numeric ID');
   }
 };
@@ -61,10 +61,10 @@ export const getNextCarNumericId = async (userId: string): Promise<number> => {
       return nextId;
     });
     
-    console.log('Generated new car numeric ID', { userId, numericId: newId });
+    logger.info('Generated new car numeric ID', { userId, numericId: newId });
     return newId;
   } catch (error) {
-    console.error('Failed to generate car numeric ID', error);
+    logger.error('Failed to generate car numeric ID', error);
     throw new Error('Failed to generate numeric ID');
   }
 };

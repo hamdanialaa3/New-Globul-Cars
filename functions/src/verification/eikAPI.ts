@@ -2,7 +2,7 @@
 // EIK/BULSTAT API Integration with Bulgarian Trade Registry
 
 import axios from 'axios';
-import { logger } from 'firebase-functions';
+import { logger } from '../logger-service';
 
 /**
  * EIK/BULSTAT verification response
@@ -64,12 +64,13 @@ export async function verifyEIKViaAPI(eik: string): Promise<EIKVerificationResul
     logger.warn(`⚠️  EIK API not configured. Using mock verification for EIK: ${cleanEIK}`);
     return getMockEIKVerification(cleanEIK);
 
-  } catch (error: any) {
-    logger.error('Error verifying EIK via API:', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Error verifying EIK via API:', { error: err.message });
     return {
       success: false,
       eik,
-      error: error.message || 'API verification failed',
+      error: err.message || 'API verification failed',
       source: 'api',
     };
   }
@@ -183,8 +184,9 @@ export async function queryPublicRegistry(eik: string): Promise<EIKVerificationR
     
     return getMockEIKVerification(eik);
 
-  } catch (error: any) {
-    logger.error('Error querying public registry:', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Error querying public registry:', { error: err.message });
     return {
       success: false,
       eik,

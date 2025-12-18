@@ -1114,6 +1114,33 @@ export class SocialAuthService {
   }
 
   /**
+   * Convert guest account to registered account (after email/phone verification)
+   * This is called after email or phone verification is complete
+   */
+  static async convertGuestToRegistered(uid: string): Promise<void> {
+    try {
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Converting guest account to registered...', { uid });
+      }
+
+      // Update user document in Firestore
+      await updateDoc(doc(db, 'users', uid), {
+        accountType: 'registered',
+        isGuest: false,
+        accountUpgradedAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Guest account converted to registered successfully');
+      }
+    } catch (error: any) {
+      logger.error('Convert guest to registered error', error as Error);
+      throw new Error(this.getErrorMessage(error.code, 'Account Upgrade'));
+    }
+  }
+
+  /**
    * Get error message based on error code
    */
   private static getErrorMessage(errorCode: string, provider: string): string {

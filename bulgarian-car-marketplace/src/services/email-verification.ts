@@ -9,7 +9,7 @@ import {
   User
 } from 'firebase/auth';
 import { auth } from '../firebase/firebase-config';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 export interface EmailVerificationResult {
   success: boolean;

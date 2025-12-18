@@ -18,7 +18,7 @@ import {
 } from 'firebase/firestore';
 import { db, auth } from '../../firebase/firebase-config';
 import { homePageCache, CACHE_KEYS } from '../homepage-cache.service';
-import { serviceLogger } from '../logger-wrapper';
+import { serviceLogger } from '../logger-service';
 
 // Unified Car Interface
 export interface UnifiedCar {

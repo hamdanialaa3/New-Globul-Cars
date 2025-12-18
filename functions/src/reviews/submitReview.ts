@@ -187,14 +187,15 @@ export const submitReview = onCall<SubmitReviewRequest>(async (request) => {
       message: 'Review submitted successfully. It will be published after moderation.',
     };
 
-  } catch (error: any) {
-    logger.error('Review submission failed', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Review submission failed', { error: err.message });
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
-    throw new HttpsError('internal', `Failed to submit review: ${error.message}`);
+    throw new HttpsError('internal', `Failed to submit review: ${err.message}`);
   }
 });
 

@@ -137,8 +137,9 @@ export const getUserAnalytics = onCall<GetAnalyticsRequest>(async (request) => {
 
     return response;
 
-  } catch (error: any) {
-    logger.error('Failed to get user analytics', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to get user analytics', { error: err.message });
     
     if (error instanceof HttpsError) {
       throw error;
@@ -146,7 +147,7 @@ export const getUserAnalytics = onCall<GetAnalyticsRequest>(async (request) => {
     
     throw new HttpsError(
       'internal',
-      `Failed to get analytics: ${error.message}`
+      `Failed to get analytics: ${err.message}`
     );
   }
 });

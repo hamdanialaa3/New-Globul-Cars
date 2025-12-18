@@ -14,7 +14,7 @@ import {
   writeBatch
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 export interface ContentReport {
   id: string;

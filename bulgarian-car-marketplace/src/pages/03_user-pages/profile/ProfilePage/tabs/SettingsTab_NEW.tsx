@@ -1,10 +1,12 @@
 // ✅ NEW SIMPLIFIED VERSION - November 9, 2025 at 3:20 PM
 import React from 'react';
 import styled from 'styled-components';
+import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
+import type { ProfileTheme } from '../../../../../contexts/ProfileTypeContext';
 
 interface SettingsTabProps {
-  user: any | null;
-  theme: any;
+  user: BulgarianUser | null;
+  theme: ProfileTheme;
 }
 
 export const SettingsTab: React.FC<SettingsTabProps> = () => {

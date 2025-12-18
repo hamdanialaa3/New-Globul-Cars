@@ -1,7 +1,7 @@
 // src/services/error-handling-service.ts
 // Unified Error Handling Service for Bulgarian Car Marketplace
 
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 export interface ErrorDetails {
   code: string;

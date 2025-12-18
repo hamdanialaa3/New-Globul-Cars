@@ -1,6 +1,6 @@
 // Image Optimization Service
 // خدمة تحسين وضغط الصور قبل الرفع
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 export interface ImageOptimizationOptions {
   maxWidth?: number;

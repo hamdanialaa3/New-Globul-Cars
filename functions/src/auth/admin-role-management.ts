@@ -124,8 +124,9 @@ export const setUserRole = functions.https.onCall(
         newRole: data.newRole
       };
       
-    } catch (error: any) {
-      console.error(`Error setting role for ${data.targetUserId}:`, error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      console.error(`Error setting role for ${data.targetUserId}:`, err.message);
       
       if (error instanceof functions.https.HttpsError) {
         throw error;
@@ -134,7 +135,7 @@ export const setUserRole = functions.https.onCall(
       throw new functions.https.HttpsError(
         'internal',
         'Failed to set user role',
-        error.message
+        err.message
       );
     }
   }
@@ -182,8 +183,9 @@ export const getUserClaims = functions.https.onCall(
         isAdmin: customClaims.admin === true
       };
       
-    } catch (error: any) {
-      console.error(`Error getting claims for ${targetUid}:`, error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      console.error(`Error getting claims for ${targetUid}:`, err.message);
       
       if (error instanceof functions.https.HttpsError) {
         throw error;
@@ -192,7 +194,7 @@ export const getUserClaims = functions.https.onCall(
       throw new functions.https.HttpsError(
         'internal',
         'Failed to get user claims',
-        error.message
+        err.message
       );
     }
   }
@@ -251,12 +253,13 @@ export const listUsersWithRoles = functions.https.onCall(
         nextPageToken: listUsersResult.pageToken
       };
       
-    } catch (error: any) {
-      console.error('Error listing users:', error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      console.error('Error listing users:', err.message);
       throw new functions.https.HttpsError(
         'internal',
         'Failed to list users',
-        error.message
+        err.message
       );
     }
   }

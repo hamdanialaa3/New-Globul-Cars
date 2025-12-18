@@ -1,5 +1,6 @@
 // Logger Service - Unified Logging System
 // خدمة السجلات الموحدة - بديل لـ console.log/error/warn
+// (no React imports needed in logger-service)
 
 /**
  * Unified Logger Service
@@ -35,6 +36,138 @@ interface LogEntry {
   userId?: string;
   sessionId?: string;
 }
+
+// ==================== ERROR TRACKING INTEGRATION ====================
+
+export function sendToErrorTracking(
+  message: string,
+  error?: Error,
+  context?: Record<string, unknown>,
+  extra?: Record<string, unknown>
+) {
+  try {
+    if (typeof window !== 'undefined' && (window as any).Sentry) {
+      const Sentry = (window as any).Sentry;
+      if (error) {
+        Sentry.captureException(error, {
+          tags: { logger: 'custom', ...(context || {}) },
+          extra: extra || {},
+        });
+      } else {
+        Sentry.captureMessage(message, {
+          level: 'error',
+          tags: context,
+          extra: extra || {},
+        });
+      }
+    }
+  } catch (err) {
+    // Silent failure
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.error('Failed to send to error tracking:', err);
+    }
+  }
+}
+
+// ==================== LOCAL STORAGE HELPERS ====================
+
+export interface StoredLogEntry {
+  level: string;
+  message: string;
+  timestamp: string;
+  context?: Record<string, unknown>;
+  error?: { message: string; stack?: string };
+}
+
+const STORAGE_KEY = 'app_error_logs';
+
+export function storeLocally(entry: StoredLogEntry) {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    const logs: StoredLogEntry[] = stored ? JSON.parse(stored) : [];
+    logs.push(entry);
+    if (logs.length > 50) logs.shift();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
+  } catch {
+    // ignore
+  }
+}
+
+export function getStoredLogs(): StoredLogEntry[] {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function clearStoredLogs() {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // ignore
+  }
+}
+
+// ==================== SERVICE LOGGER WRAPPER ====================
+
+export const serviceLogger = {
+  /**
+   * Log error - Always logged
+   */
+  error: (message: string, error?: Error, context?: Record<string, any>) => {
+    logger.error(message, error, context);
+  },
+
+  /**
+   * Log info - Production safe
+   */
+  info: (message: string, context?: Record<string, any>) => {
+    logger.info(message, context);
+  },
+
+  /**
+   * Log warning - Production safe
+   */
+  warn: (message: string, context?: Record<string, any>) => {
+    logger.warn(message, context);
+  },
+
+  /**
+   * Log debug - Development only
+   */
+  debug: (message: string, context?: Record<string, any>) => {
+    logger.debug(message, context);
+  },
+
+  /**
+   * Log fatal - Critical errors
+   */
+  fatal: (message: string, error?: Error, context?: Record<string, any>) => {
+    logger.fatal(message, error, context);
+  },
+};
+
+/**
+ * Unified Logger Service
+ * 
+ * Purpose:
+ * - Replace all console.log/error/warn in production
+ * - Send errors to Sentry (when configured)
+ * - Log to Firebase Analytics (optional)
+ * - Provide structured logging
+ * 
+ * Usage:
+ * ```typescript
+ * import { logger } from './services/logger-service';
+ * 
+ * logger.info('User logged in', { userId: '123' });
+ * logger.error('Payment failed', error, { orderId: '456' });
+ * logger.warn('Deprecated API used', { api: 'old-endpoint' });
+ * ```
+ */
 
 class LoggerService {
   private static instance: LoggerService | null = null;
@@ -91,9 +224,8 @@ class LoggerService {
    */
   error(message: string, error?: Error, context?: LogContext) {
     this.log('error', message, error, context);
-    
     // Send to error tracking service (Sentry)
-    this.sendToErrorTracking(message, error, context);
+    sendToErrorTracking(message, error, context, { userId: this.userId || undefined, sessionId: this.sessionId });
   }
 
   /**
@@ -101,9 +233,8 @@ class LoggerService {
    */
   fatal(message: string, error?: Error, context?: LogContext) {
     this.log('fatal', message, error, context);
-    
     // Send to error tracking service with high priority
-    this.sendToErrorTracking(message, error, { ...context, severity: 'fatal' });
+    sendToErrorTracking(message, error, { ...context, severity: 'fatal' }, { userId: this.userId || undefined, sessionId: this.sessionId });
   }
 
   /**
@@ -137,7 +268,13 @@ class LoggerService {
 
     // 3. Store critical logs locally (for debugging)
     if (level === 'error' || level === 'fatal') {
-      this.storeLocally(entry);
+      storeLocally({
+        level,
+        message,
+        timestamp: entry.timestamp.toISOString(),
+        context,
+        error: entry.error ? { message: entry.error.message, stack: entry.error.stack } : undefined,
+      });
     }
   }
 
@@ -204,101 +341,17 @@ class LoggerService {
   }
 
   /**
-   * Send to error tracking service (Sentry)
-   * This will only work when Sentry is configured
-   */
-  private sendToErrorTracking(
-    message: string,
-    error?: Error,
-    context?: LogContext
-  ) {
-    try {
-      // Check if Sentry is available
-      if (typeof window !== 'undefined' && (window as any).Sentry) {
-        const Sentry = (window as any).Sentry;
-        
-        if (error) {
-          Sentry.captureException(error, {
-            tags: {
-              logger: 'custom',
-              ...context
-            },
-            extra: {
-              message,
-              userId: this.userId,
-              sessionId: this.sessionId
-            }
-          });
-        } else {
-          Sentry.captureMessage(message, {
-            level: 'error',
-            tags: context,
-            extra: {
-              userId: this.userId,
-              sessionId: this.sessionId
-            }
-          });
-        }
-      }
-    } catch (err) {
-      // Fail silently
-      if (this.isDevelopment) {
-        console.error('Failed to send to error tracking:', err);
-      }
-    }
-  }
-
-  /**
-   * Store logs locally for debugging
-   */
-  private storeLocally(entry: LogEntry) {
-    try {
-      const key = 'app_error_logs';
-      const stored = localStorage.getItem(key);
-      const logs = stored ? JSON.parse(stored) : [];
-      
-      // Keep only last 50 logs
-      logs.push({
-        ...entry,
-        timestamp: entry.timestamp.toISOString(),
-        error: entry.error ? {
-          message: entry.error.message,
-          stack: entry.error.stack
-        } : undefined
-      });
-      
-      if (logs.length > 50) {
-        logs.shift();
-      }
-      
-      localStorage.setItem(key, JSON.stringify(logs));
-    } catch (error) {
-      // LocalStorage might be full or disabled
-      // Fail silently
-    }
-  }
-
-  /**
    * Get stored logs (for debugging)
    */
   getStoredLogs(): LogEntry[] {
-    try {
-      const stored = localStorage.getItem('app_error_logs');
-      return stored ? JSON.parse(stored) : [];
-    } catch {
-      return [];
-    }
+    return (getLogs() as unknown) as LogEntry[];
   }
 
   /**
    * Clear stored logs
    */
   clearStoredLogs() {
-    try {
-      localStorage.removeItem('app_error_logs');
-    } catch {
-      // Fail silently
-    }
+    clearLogs();
   }
 
   /**

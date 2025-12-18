@@ -140,6 +140,7 @@ export interface BulgarianTheme {
     '3xl': string;
     full: string;
   };
+  mode: 'light' | 'dark';
   components: {
     button: any;
     input: any;

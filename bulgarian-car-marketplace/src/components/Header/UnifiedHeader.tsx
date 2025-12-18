@@ -33,14 +33,14 @@ const HeaderContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: ${spacing.md};
-  max-width: 1280px;
+  padding: ${spacing.md} 20px;
+  max-width: 1100px;
   margin: 0 auto;
   height: 64px;
 
   ${media.maxMobile} {
     height: 60px;
-    padding: ${spacing.sm} ${spacing.md};
+    padding: ${spacing.sm} 14px;
   }
 `;
 
@@ -53,7 +53,6 @@ const Logo = styled.div<{ $isDark?: boolean }>`
   font-weight: 700;
   color: ${({ $isDark }) => $isDark ? '#f1f5f9' : colors.primary.main};
   transition: color 0.3s ease;
-  margin-left: -24px; /* تقريب من الوسط بمقدار 3 أحرف */
 
   img {
     width: 50px;
@@ -63,7 +62,6 @@ const Logo = styled.div<{ $isDark?: boolean }>`
 
   ${media.maxMobile} {
     font-size: 18px;
-    margin-left: -18px; /* تقليل المسافة في الموبايل */
     img {
       width: 40px;
       height: 40px;
@@ -134,11 +132,6 @@ const Actions = styled.div`
   gap: ${spacing.sm};
   position: relative;
   z-index: ${zIndex.sticky + 1};
-  margin-right: -24px; /* تقريب من الوسط بمقدار 3 أحرف */
-
-  ${media.maxMobile} {
-    margin-right: -18px; /* تقليل المسافة في الموبايل */
-  }
 `;
 
 const IconButton = styled.button<{ $isDark?: boolean }>`

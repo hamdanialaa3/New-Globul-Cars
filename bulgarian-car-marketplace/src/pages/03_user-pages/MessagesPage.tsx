@@ -3,6 +3,7 @@ import styled, { useTheme } from 'styled-components';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useAuth } from '../../contexts/AuthProvider';
+import { logger } from '../../services/logger-service';
 import { advancedMessagingService, Conversation, Message } from '../../services/messaging/advanced-messaging-service';
 import { userService } from '../../services/user/canonical-user.service';
 import { Avatar } from '../../components/design-system/Avatar';
@@ -29,11 +30,11 @@ const PageContainer = styled.div`
   margin: 0 auto;
   height: 85vh;
   display: flex;
-  background: ${({ theme }) => theme.colors.background.paper};
+  background: ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[900] : theme.colors.background.paper};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   box-shadow: ${({ theme }) => theme.shadows.lg};
   overflow: hidden;
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  border: 1px solid ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[200]};
 
   @media (max-width: 768px) {
     height: 100%;
@@ -45,10 +46,10 @@ const PageContainer = styled.div`
 
 const Sidebar = styled.div<{ $visible: boolean }>`
   width: 350px;
-  border-right: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  border-right: 1px solid ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[200]};
   display: flex;
   flex-direction: column;
-  background: ${({ theme }) => theme.colors.background.paper};
+  background: ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[900] : theme.colors.background.paper};
 
   @media (max-width: 768px) {
     width: 100%;
@@ -62,7 +63,7 @@ const ChatArea = styled.div<{ $visible: boolean }>`
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: ${({ theme }) => theme.colors.grey[50]};
+  background: ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[900] : theme.colors.grey[50]};
 
   @media (max-width: 768px) {
     width: 100%;
@@ -73,16 +74,16 @@ const ChatArea = styled.div<{ $visible: boolean }>`
 
 const SidebarHeader = styled.div`
   padding: ${({ theme }) => theme.spacing.lg};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  border-bottom: 1px solid ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[200]};
 `;
 
 const SearchInput = styled.input`
   width: 100%;
   padding: ${({ theme }) => theme.spacing.md};
   padding-left: 2.5rem;
-  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border: 1px solid ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[700] : theme.colors.grey[300]};
   border-radius: ${({ theme }) => theme.borderRadius.full};
-  background: ${({ theme }) => theme.colors.background.input};
+  background: ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.background.input};
   color: ${({ theme }) => theme.colors.text.primary};
   
   &:focus {
@@ -98,15 +99,15 @@ const ConversationList = styled.div`
 
 const ConversationItem = styled.div<{ $active: boolean }>`
   padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[100]};
+  border-bottom: 1px solid ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[200]};
   cursor: pointer;
-  background: ${({ $active, theme }) => $active ? theme.colors.primary.light + '10' : 'transparent'};
+  background: ${({ $active, theme }) => $active ? (theme.mode === 'dark' ? theme.colors.primary.dark + '30' : theme.colors.primary.light + '10') : 'transparent'};
   transition: background 0.2s;
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
 
   &:hover {
-    background: ${({ theme }) => theme.colors.grey[100]};
+    background: ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[100]};
   }
 `;
 
@@ -147,8 +148,8 @@ const LastMessage = styled.p`
 
 const ChatHeader = styled.div`
   padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-  background: ${({ theme }) => theme.colors.background.paper};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  background: ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[900] : theme.colors.background.paper};
+  border-bottom: 1px solid ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[200]};
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.md};
@@ -167,12 +168,13 @@ const MessageBubble = styled.div<{ $sent: boolean }>`
   max-width: 70%;
   padding: ${({ theme }) => theme.spacing.md};
   border-radius: 12px;
-  background: ${({ $sent, theme }) => $sent ? theme.colors.primary.main : theme.colors.background.paper};
-  color: ${({ $sent }) => $sent ? 'white' : 'inherit'};
+  background: ${({ $sent, theme }) => $sent ? theme.colors.primary.main : (theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[100])};
+  color: ${({ $sent, theme }) => $sent ? 'white' : theme.colors.text.primary};
   align-self: ${({ $sent }) => $sent ? 'flex-end' : 'flex-start'};
   box-shadow: ${({ theme }) => theme.shadows.sm};
   position: relative;
   word-wrap: break-word;
+  border: 1px solid ${({ $sent, theme }) => $sent ? 'transparent' : (theme.mode === 'dark' ? theme.colors.grey[700] : 'transparent')};
 
   ${({ $sent }) => !$sent && `
     border-bottom-left-radius: 4px;
@@ -184,8 +186,8 @@ const MessageBubble = styled.div<{ $sent: boolean }>`
 
 const InputArea = styled.form`
   padding: ${({ theme }) => theme.spacing.lg};
-  background: ${({ theme }) => theme.colors.background.paper};
-  border-top: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  background: ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[900] : theme.colors.background.paper};
+  border-top: 1px solid ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[200]};
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
   align-items: center;
@@ -194,8 +196,10 @@ const InputArea = styled.form`
 const MessageInput = styled.input`
   flex: 1;
   padding: ${({ theme }) => theme.spacing.md};
-  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border: 1px solid ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[700] : theme.colors.grey[300]};
   border-radius: ${({ theme }) => theme.borderRadius.full};
+  background: ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.background.input};
+  color: ${({ theme }) => theme.colors.text.primary};
   
   &:focus {
     outline: none;
@@ -212,7 +216,7 @@ const IconButton = styled.button`
   border-radius: 50%;
   
   &:hover {
-    background: ${({ theme }) => theme.colors.grey[100]};
+    background: ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[100]};
     color: ${({ theme }) => theme.colors.primary.main};
   }
 
@@ -298,7 +302,7 @@ const MessagesPage: React.FC = () => {
               changed = true;
             }
           } catch (e) {
-            console.error('Failed to fetch profile', uid, e);
+            logger.error('Failed to fetch profile', e as Error, { userId: uid });
           }
         }
       }));
@@ -363,7 +367,7 @@ const MessagesPage: React.FC = () => {
           // Wait for subscription to catch up
         }
       } catch (error) {
-        console.error('Failed to initialize chat:', error);
+        logger.error('Failed to initialize chat', error as Error);
       } finally {
         setInitializing(false);
       }
@@ -409,7 +413,7 @@ const MessagesPage: React.FC = () => {
         );
       }
     } catch (error) {
-      console.error('Failed to send message:', error);
+      logger.error('Failed to send message', error as Error);
       setNewMessage(text); // Restore on error
       alert(t('messages.sendFailed', 'Failed to send message'));
     }
@@ -564,7 +568,7 @@ const MessagesPage: React.FC = () => {
             </>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: theme.colors.text.disabled, gap: '1rem' }}>
-              <div style={{ padding: '2rem', background: theme.colors.grey[200], borderRadius: '50%' }}>
+              <div style={{ padding: '2rem', background: theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[200], borderRadius: '50%' }}>
                 <Send size={48} />
               </div>
               <h3>{t('messages.selectToStart', 'Select a conversation to start messaging')}</h3>

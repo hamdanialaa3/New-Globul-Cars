@@ -9,7 +9,7 @@ import { CarListing } from '../../../types/CarListing';
 import { UnifiedCar } from '../../../services/car/unified-car.service';
 import { ChevronRight, Heart } from 'lucide-react';
 import { useTheme } from '../../../contexts/ThemeContext';
-import { serviceLogger } from '../../../services/logger-wrapper';
+import { serviceLogger } from '../../../services/logger-service';
 
 interface CarSuggestionsListProps {
   currentCar: CarListing;

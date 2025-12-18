@@ -1,0 +1,40 @@
+# Root Documentation Cleanup (2025-12-16)
+
+This folder holds documentation moved out of the repository root to keep the top-level clean. Nothing was deleted; only relocated. Arabic-named files in the root were intentionally left untouched per request.
+
+## Moved Files
+
+- CHANGELOG_DEC_13_2025.md
+- COMMIT_MESSAGE.md
+- COMPLETE_FIXES_REPORT_FINAL_DEC_15_2025.md
+- COMPLETE_REPAIR_PLAN_FINAL_DEC_15_2025.md
+- COPY_TO_FIREBASE_CONSOLE.txt
+- DAILY_FIXES_REPORT_DEC_16_2025.md
+- DEEP_TECHNICAL_ANALYSIS_REPORT_DEC_15_2025.md
+- DEPLOYMENT_NUMERIC_ID_CHECKLIST.md
+- DOCUMENTATION_CLEANUP_COMPLETE_DEC_15_2025.md
+- ERROR_REPORT_DEC_15_2025.md
+- FIREBASE_STORAGE_CORS_FIX.md
+- FIRESTORE_INDEXES_UPDATE_PLAN.md
+- LOADING_OVERLAY_PROBLEM_ANALYSIS_AR.md
+- MIGRATION_QUICK_START_AR.md
+- NUMERIC_ID_404_DIAGNOSIS.md
+- NUMERIC_ID_SYSTEM_README.md
+- PERFORMANCE_OPTIMIZATION_LOADING_OVERLAY.md
+- PROFILE_AUDIT_COMPLETE_AR_DEC_16_2025.md
+- PROFILE_AUDIT_COMPLETE_DEC_16_2025.md
+- PROFILE_TABS_FIX_AR.md
+- PROFILE_TABS_SUMMARY.md
+- PROFILE_TABS_TEST_GUIDE.md
+- QUICK_FIX_GUIDE_AR.md
+- QUICK_FIX_README.md
+- SELL_WORKFLOW_DOCUMENTATION.md
+- STRIPE_SETUP_COMPLETE_GUIDE.md
+- TESTING_COMPLETE_GUIDE.md
+- TESTING_PHASE_2_COMPLETE_DEC_15_2025.md
+
+## Notes
+
+- Core entry points left in root: README.md, INDEX.md, START_HERE.md, START_HERE_NUMERIC_IDS.md, ENV_SETUP_GUIDE.md, DEPLOYMENT_READY_INSTRUCTIONS.md, FIREBASE_INFO.txt, SECURITY.md.
+- Arabic-named documents in root remain unchanged.
+- If you need any of the moved docs at the root again, copy/link from this folder instead of recreating duplicates.

@@ -1,7 +1,7 @@
 import { collection, getDocs, query, limit } from 'firebase/firestore';
 import { queryAllCollections, countAllVehicles, VEHICLE_COLLECTIONS } from './search/multi-collection-helper';
 import { db } from '../firebase/firebase-config';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 class FirebaseDebugService {
   private static instance: FirebaseDebugService;

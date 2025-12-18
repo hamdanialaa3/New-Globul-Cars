@@ -11,7 +11,7 @@ import {
   serverTimestamp
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 // Firebase Connection Test Service
 // This service tests the real connection to Firebase and Firestore

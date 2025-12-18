@@ -35,8 +35,9 @@ export const resetDailyCounters = onSchedule('0 0 * * *', async () => {
     await batch.commit();
     logger.info(`Daily counters reset for ${count} users`);
 
-  } catch (error: any) {
-    logger.error('Failed to reset daily counters', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to reset daily counters', { error: err.message });
   }
 });
 
@@ -68,8 +69,9 @@ export const resetWeeklyCounters = onSchedule('0 0 * * 1', async () => {
     await batch.commit();
     logger.info(`Weekly counters reset for ${count} users`);
 
-  } catch (error: any) {
-    logger.error('Failed to reset weekly counters', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to reset weekly counters', { error: err.message });
   }
 });
 
@@ -101,8 +103,9 @@ export const resetMonthlyCounters = onSchedule('0 0 1 * *', async () => {
     await batch.commit();
     logger.info(`Monthly counters reset for ${count} users`);
 
-  } catch (error: any) {
-    logger.error('Failed to reset monthly counters', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to reset monthly counters', { error: err.message });
   }
 });
 
@@ -175,8 +178,9 @@ export const calculateResponseMetrics = onSchedule('0 2 * * *', async () => {
 
     logger.info('Response metrics calculated successfully');
 
-  } catch (error: any) {
-    logger.error('Failed to calculate response metrics', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to calculate response metrics', { error: err.message });
   }
 });
 
@@ -208,7 +212,8 @@ export const calculateConversionRates = onSchedule('0 3 * * *', async () => {
 
     logger.info('Conversion rates calculated successfully');
 
-  } catch (error: any) {
-    logger.error('Failed to calculate conversion rates', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to calculate conversion rates', { error: err.message });
   }
 });

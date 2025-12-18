@@ -9,7 +9,7 @@ import UnifiedWorkflowPersistenceService, {
   ValidationResult
 } from '../services/unified-workflow-persistence.service';
 import { ImageStorageService } from '../services/ImageStorageService';
-import { serviceLogger } from '../services/logger-wrapper';
+import { serviceLogger } from '../services/logger-service';
 
 export const useUnifiedWorkflow = (currentStep: number) => {
   const [workflowData, setWorkflowData] = useState<UnifiedWorkflowData | null>(null);

@@ -5,7 +5,7 @@
  */
 
 import { CarListing } from '../../types/CarListing';
-import { serviceLogger } from '../logger-wrapper';
+import { serviceLogger } from '../logger-service';
 
 interface AlgoliaConfig {
   appId: string;

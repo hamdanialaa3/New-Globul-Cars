@@ -9,7 +9,7 @@ import { useLanguage } from '../../../../../contexts/LanguageContext';
 import { useAuth } from '../../../../../contexts/AuthProvider';
 import billingService from '../../../../../features/billing/BillingService';
 import { Subscription } from '../../../../../features/billing/types';
-import { serviceLogger } from '../../../../../services/logger-wrapper';
+import { serviceLogger } from '../../../../../services/logger-service';
 
 const Card = styled.div`
   background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
@@ -247,7 +247,7 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({ profileType })
   const getPlanConfig = () => {
     const planId = subscription?.planId || 'free';
 
-    const configs: Record<string, { icon: any; color: string; name: string; nameBg: string }> = {
+    const configs: Record<string, { icon: React.ComponentType<{ size?: number; className?: string }>; color: string; name: string; nameBg: string }> = {
       free: {
         icon: Crown,
         color: 'linear-gradient(135deg, #94a3b8 0%, #64748b 100%)',

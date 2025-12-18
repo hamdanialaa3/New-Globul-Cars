@@ -4,7 +4,7 @@
 import { collection, query, where, getDocs, getCountFromServer } from 'firebase/firestore';
 import { queryAllCollections, countAllVehicles, VEHICLE_COLLECTIONS } from './search/multi-collection-helper';
 import { db } from '../firebase/firebase-config';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 interface RegionCount {
   count: number;

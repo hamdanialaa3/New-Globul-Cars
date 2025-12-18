@@ -4,6 +4,20 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import Stripe from 'stripe';
+import { logger } from './utils/logger';
+
+// Initialize Stripe with secret key
+const stripe = new Stripe(functions.config().stripe.secret_key, {
+  apiVersion: '2025-10-29.clover',
+});
+
+// functions/src/stripe-checkout.ts
+// Cloud Function for creating Stripe Checkout Sessions
+
+import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
+import Stripe from 'stripe';
+import { logger } from './utils/logger';
 
 // Initialize Stripe with secret key
 const stripe = new Stripe(functions.config().stripe.secret_key, {
@@ -12,10 +26,10 @@ const stripe = new Stripe(functions.config().stripe.secret_key, {
 
 interface CheckoutRequest {
   userId: string;
-  planId: 'free' | 'dealer' | 'company';
-  interval?: 'monthly' | 'annual';
+  priceId: string; // Changed from planId to priceId for direct Stripe price IDs
   successUrl: string;
   cancelUrl: string;
+  metadata?: Record<string, string>;
 }
 
 interface CheckoutResponse {
@@ -23,16 +37,30 @@ interface CheckoutResponse {
   checkoutUrl: string;
 }
 
-// Plan pricing configuration
-const PLAN_PRICES = {
-  dealer: {
-    monthly: 'price_dealer_monthly', // Replace with actual Stripe Price ID
-    annual: 'price_dealer_annual',   // Replace with actual Stripe Price ID
-  },
-  company: {
-    monthly: 'price_company_monthly', // Replace with actual Stripe Price ID
-    annual: 'price_company_annual',   // Replace with actual Stripe Price ID
-  },
+// Updated pricing configuration for 9 tiers
+const TIER_PRICES = {
+  basic: functions.config().stripe.price_basic,
+  premium: functions.config().stripe.price_premium,
+  enterprise: functions.config().stripe.price_enterprise,
+  dealer_basic: functions.config().stripe.price_dealer_basic,
+  dealer_premium: functions.config().stripe.price_dealer_premium,
+  dealer_enterprise: functions.config().stripe.price_dealer_enterprise,
+  company_basic: functions.config().stripe.price_company_basic,
+  company_premium: functions.config().stripe.price_company_premium,
+  company_enterprise: functions.config().stripe.price_company_enterprise,
+};
+
+// Tier mapping for metadata
+const TIER_MAPPING = {
+  [functions.config().stripe.price_basic]: 'basic',
+  [functions.config().stripe.price_premium]: 'premium',
+  [functions.config().stripe.price_enterprise]: 'enterprise',
+  [functions.config().stripe.price_dealer_basic]: 'dealer_basic',
+  [functions.config().stripe.price_dealer_premium]: 'dealer_premium',
+  [functions.config().stripe.price_dealer_enterprise]: 'dealer_enterprise',
+  [functions.config().stripe.price_company_basic]: 'company_basic',
+  [functions.config().stripe.price_company_premium]: 'company_premium',
+  [functions.config().stripe.price_company_enterprise]: 'company_enterprise',
 };
 
 export const createCheckoutSession = functions.https.onCall(
@@ -45,21 +73,22 @@ export const createCheckoutSession = functions.https.onCall(
       );
     }
 
-    const { userId, planId, interval = 'monthly', successUrl, cancelUrl } = data;
+    const { userId, priceId, successUrl, cancelUrl, metadata = {} } = data;
 
     // Validate input
-    if (!userId || !planId) {
+    if (!userId || !priceId) {
       throw new functions.https.HttpsError(
         'invalid-argument',
-        'Missing required parameters: userId, planId'
+        'Missing required parameters: userId, priceId'
       );
     }
 
-    // Free plan doesn't need checkout
-    if (planId === 'free') {
+    // Validate priceId is one of our supported tiers
+    const validPriceIds = Object.values(TIER_PRICES);
+    if (!validPriceIds.includes(priceId)) {
       throw new functions.https.HttpsError(
         'invalid-argument',
-        'Free plan does not require payment'
+        'Invalid price ID provided'
       );
     }
 
@@ -88,15 +117,8 @@ export const createCheckoutSession = functions.https.onCall(
         });
       }
 
-      // Get price ID for the selected plan and interval
-      const priceId = PLAN_PRICES[planId as keyof typeof PLAN_PRICES]?.[interval];
-
-      if (!priceId) {
-        throw new functions.https.HttpsError(
-          'invalid-argument',
-          `Invalid plan or interval: ${planId}/${interval}`
-        );
-      }
+      // Get tier name from priceId
+      const tierId = TIER_MAPPING[priceId];
 
       // Create Stripe Checkout Session
       const session = await stripe.checkout.sessions.create({
@@ -113,14 +135,13 @@ export const createCheckoutSession = functions.https.onCall(
         cancel_url: cancelUrl,
         metadata: {
           firebaseUID: userId,
-          planId,
-          interval,
+          tierId,
+          ...metadata
         },
         subscription_data: {
           metadata: {
             firebaseUID: userId,
-            planId,
-            interval,
+            tierId,
           },
         },
         allow_promotion_codes: true,
@@ -135,8 +156,7 @@ export const createCheckoutSession = functions.https.onCall(
         userId,
         action: 'checkout_session_created',
         sessionId: session.id,
-        planId,
-        interval,
+        tierId,
         amount: session.amount_total,
         currency: session.currency,
         timestamp: admin.firestore.FieldValue.serverTimestamp(),
@@ -147,22 +167,22 @@ export const createCheckoutSession = functions.https.onCall(
         checkoutUrl: session.url!,
       };
 
-    } catch (error: any) {
-      console.error('Error creating checkout session:', error);
-      
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error('Error creating checkout session', { error: err.message });
+
       // Log the error
       await admin.firestore().collection('billing_logs').add({
         userId,
         action: 'checkout_session_error',
-        error: error.message,
-        planId,
-        interval,
+        error: err.message,
+        priceId,
         timestamp: admin.firestore.FieldValue.serverTimestamp(),
       });
 
       throw new functions.https.HttpsError(
         'internal',
-        `Failed to create checkout session: ${error.message}`
+        `Failed to create checkout session: ${err.message}`
       );
     }
   }
@@ -177,8 +197,9 @@ export const stripeWebhook = functions.https.onRequest(async (req, res) => {
 
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
-  } catch (err: any) {
-    console.error('Webhook signature verification failed:', err.message);
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error(String(err));
+    logger.error('Webhook signature verification failed', { message: error.message });
     res.status(400).send(`Webhook Error: ${err.message}`);
     return;
   }
@@ -210,7 +231,7 @@ export const stripeWebhook = functions.https.onRequest(async (req, res) => {
       break;
 
     default:
-      console.log(`Unhandled event type: ${event.type}`);
+      logger.info('Unhandled event type', { eventType: event.type });
   }
 
   res.json({ received: true });
@@ -219,25 +240,23 @@ export const stripeWebhook = functions.https.onRequest(async (req, res) => {
 // Helper functions for webhook events
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   const userId = session.metadata?.firebaseUID;
-  const planId = session.metadata?.planId;
-  const interval = session.metadata?.interval;
+  const tierId = session.metadata?.tierId;
 
-  if (!userId || !planId) {
-    console.error('Missing metadata in checkout session:', session.id);
+  if (!userId || !tierId) {
+    logger.error('Missing metadata in checkout session', { sessionId: session.id });
     return;
   }
 
   // Update user's plan in Firestore
   await admin.firestore().doc(`users/${userId}`).update({
     plan: {
-      tier: planId,
+      tier: tierId,
       status: 'active',
-      interval,
       stripeSubscriptionId: session.subscription,
       stripeCustomerId: session.customer,
       activatedAt: admin.firestore.FieldValue.serverTimestamp(),
       renewsAt: admin.firestore.Timestamp.fromDate(
-        new Date(Date.now() + (interval === 'annual' ? 365 : 30) * 24 * 60 * 60 * 1000)
+        new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
       ),
     },
   });
@@ -248,23 +267,24 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     action: 'subscription_activated',
     sessionId: session.id,
     subscriptionId: session.subscription,
-    planId,
-    interval,
+    tierId,
     timestamp: admin.firestore.FieldValue.serverTimestamp(),
   });
 }
 
 async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
   const userId = subscription.metadata?.firebaseUID;
-  
+  const tierId = subscription.metadata?.tierId;
+
   if (!userId) {
-    console.error('Missing firebaseUID in subscription metadata:', subscription.id);
+    logger.error('Missing firebaseUID in subscription metadata', { subscriptionId: subscription.id });
     return;
   }
 
   // Update subscription status
   await admin.firestore().doc(`users/${userId}`).update({
     'plan.status': subscription.status,
+    'plan.tier': tierId,
     'plan.stripeSubscriptionId': subscription.id,
     'plan.currentPeriodStart': admin.firestore.Timestamp.fromDate(
       new Date((subscription as any).current_period_start * 1000)
@@ -277,7 +297,7 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
 
 async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
   const userId = subscription.metadata?.firebaseUID;
-  
+
   if (!userId) return;
 
   await admin.firestore().doc(`users/${userId}`).update({
@@ -352,3 +372,135 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
 
   // TODO: Send email notification about failed payment
 }
+
+// Additional Cloud Functions for subscription management
+export const getSubscriptionStatus = functions.https.onCall(
+  async (data: { userId: string }, context) => {
+    if (!context.auth) {
+      throw new functions.https.HttpsError(
+        'unauthenticated',
+        'User must be authenticated'
+      );
+    }
+
+    const { userId } = data;
+
+    try {
+      const userDoc = await admin.firestore().doc(`users/${userId}`).get();
+      const userData = userDoc.data();
+
+      if (!userData?.stripeCustomerId) {
+        return { status: 'inactive', tier: null };
+      }
+
+      // Get subscriptions from Stripe
+      const subscriptions = await stripe.subscriptions.list({
+        customer: userData.stripeCustomerId,
+        status: 'active',
+        limit: 1,
+      });
+
+      if (subscriptions.data.length === 0) {
+        return { status: 'inactive', tier: null };
+      }
+
+      const subscription = subscriptions.data[0];
+      const tierId = subscription.metadata?.tierId;
+
+      return {
+        status: subscription.status,
+        tier: tierId,
+        currentPeriodStart: subscription.current_period_start,
+        currentPeriodEnd: subscription.current_period_end,
+        cancelAtPeriodEnd: subscription.cancel_at_period_end,
+      };
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error('Error getting subscription status', { error: err.message, userId });
+      throw new functions.https.HttpsError('internal', err.message);
+    }
+  }
+);
+
+export const cancelSubscription = functions.https.onCall(
+  async (data: { userId: string }, context) => {
+    if (!context.auth) {
+      throw new functions.https.HttpsError(
+        'unauthenticated',
+        'User must be authenticated'
+      );
+    }
+
+    const { userId } = data;
+
+    try {
+      const userDoc = await admin.firestore().doc(`users/${userId}`).get();
+      const userData = userDoc.data();
+
+      if (!userData?.plan?.stripeSubscriptionId) {
+        throw new functions.https.HttpsError(
+          'failed-precondition',
+          'No active subscription found'
+        );
+      }
+
+      // Cancel subscription at period end
+      await stripe.subscriptions.update(userData.plan.stripeSubscriptionId, {
+        cancel_at_period_end: true,
+      });
+
+      // Update Firestore
+      await admin.firestore().doc(`users/${userId}`).update({
+        'plan.cancelAtPeriodEnd': true,
+        'plan.cancelledAt': admin.firestore.FieldValue.serverTimestamp(),
+      });
+
+      logger.info('Subscription cancelled', { userId });
+      return { success: true };
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error('Error cancelling subscription', { error: err.message, userId });
+      throw new functions.https.HttpsError('internal', err.message);
+    }
+  }
+);
+
+export const updatePaymentMethod = functions.https.onCall(
+  async (data: { userId: string }, context) => {
+    if (!context.auth) {
+      throw new functions.https.HttpsError(
+        'unauthenticated',
+        'User must be authenticated'
+      );
+    }
+
+    const { userId } = data;
+
+    try {
+      const userDoc = await admin.firestore().doc(`users/${userId}`).get();
+      const userData = userDoc.data();
+
+      if (!userData?.stripeCustomerId) {
+        throw new functions.https.HttpsError(
+          'failed-precondition',
+          'No Stripe customer found'
+        );
+      }
+
+      // Create setup intent for updating payment method
+      const setupIntent = await stripe.setupIntents.create({
+        customer: userData.stripeCustomerId,
+        payment_method_types: ['card'],
+      });
+
+      return {
+        clientSecret: setupIntent.client_secret,
+        setupIntentId: setupIntent.id,
+      };
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error('Error creating setup intent', { error: err.message, userId });
+      throw new functions.https.HttpsError('internal', err.message);
+    }
+  }
+);

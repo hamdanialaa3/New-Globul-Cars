@@ -3,7 +3,7 @@
  * Tracks user activity to prevent silent data deletion
  */
 
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 const ACTIVITY_KEY = 'indexeddb-last-activity';
 const WARNING_DISMISSED_KEY = 'indexeddb-warning-dismissed';

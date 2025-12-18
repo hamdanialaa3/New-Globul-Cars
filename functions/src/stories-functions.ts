@@ -136,14 +136,14 @@ export const onStoryViewed = functions.firestore
       const storyDoc = await storyRef.get();
       
       if (!storyDoc.exists) {
-        console.log('Story not found');
+        logger.info('Story not found', { storyId });
         return null;
       }
       
       const story = storyDoc.data();
       
       if (!story) {
-        console.log('Story data is undefined');
+        logger.info('Story data is undefined', { storyId });
         return null;
       }
       
@@ -161,7 +161,7 @@ export const onStoryViewed = functions.firestore
       
       return null;
     } catch (error) {
-      console.error('Error in onStoryViewed:', error);
+      logger.error('Error in onStoryViewed', error, { storyId });
       return null;
     }
   });
@@ -188,7 +188,7 @@ export const deleteOldExpiredStories = functions.pubsub
         .get();
       
       if (oldStoriesSnapshot.empty) {
-        console.log('No old expired stories to delete');
+        logger.info('No old expired stories to delete');
         return null;
       }
       
@@ -200,10 +200,10 @@ export const deleteOldExpiredStories = functions.pubsub
       
       await batch.commit();
       
-      console.log(`Deleted ${oldStoriesSnapshot.size} old expired stories`);
+    logger.info('Deleted old expired stories', { count: oldStoriesSnapshot.size });
       return null;
     } catch (error) {
-      console.error('Error deleting old expired stories:', error);
+      logger.error('Error deleting old expired stories', error);
       throw error;
     }
   });

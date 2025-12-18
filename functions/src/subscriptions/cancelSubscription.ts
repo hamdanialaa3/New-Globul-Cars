@@ -15,7 +15,7 @@ let stripe: Stripe | null = null;
 const getStripe = () => {
   if (!stripe && STRIPE_CONFIG.secretKey) {
     stripe = new Stripe(STRIPE_CONFIG.secretKey, {
-      apiVersion: '2025-09-30.clover' as any,
+      apiVersion: '2024-11-20' as const,
     });
   }
   return stripe;
@@ -101,7 +101,7 @@ export const cancelSubscription = onCall<{
       const result: CancelSubscriptionResult = {
         success: true,
         message: 'Subscription canceled immediately',
-        canceledAt: FieldValue.serverTimestamp() as any,
+        canceledAt: new Date().toISOString(),
       };
 
       return result;
@@ -119,7 +119,7 @@ export const cancelSubscription = onCall<{
         updatedAt: FieldValue.serverTimestamp(),
       });
 
-      const periodEnd = (canceledSubscription as any).current_period_end;
+      const periodEnd = (canceledSubscription as Stripe.Subscription).current_period_end;
       logger.info('Subscription set to cancel at period end', { 
         userId, 
         subscriptionId,
@@ -129,27 +129,28 @@ export const cancelSubscription = onCall<{
       const result: CancelSubscriptionResult = {
         success: true,
         message: 'Subscription will cancel at the end of the billing period',
-        canceledAt: periodEnd ? (new Date(periodEnd * 1000) as any) : (new Date() as any),
+        canceledAt: periodEnd ? new Date(periodEnd * 1000).toISOString() : new Date().toISOString(),
       };
 
       return result;
     }
 
-  } catch (error: any) {
-    logger.error('Subscription cancellation failed', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Subscription cancellation failed', err);
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
     // Stripe errors
-    if (error.type === 'StripeInvalidRequestError') {
+    if (error && typeof error === 'object' && 'type' in error && error.type === 'StripeInvalidRequestError') {
       throw new HttpsError('not-found', 'Subscription not found in Stripe');
     }
 
     throw new HttpsError(
       'internal',
-      `Failed to cancel subscription: ${error.message}`
+      `Failed to cancel subscription: ${err.message}`
     );
   }
 });

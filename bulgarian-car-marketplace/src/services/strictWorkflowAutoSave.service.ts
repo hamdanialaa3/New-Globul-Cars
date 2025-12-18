@@ -10,7 +10,7 @@
  * 5. Millisecond precision - دقة بالميلي ثانية
  */
 
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 import SellWorkflowStepStateService from './sellWorkflowStepState';
 
 // ============================================================

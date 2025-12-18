@@ -9,7 +9,7 @@ import { useLanguage } from '../../../contexts/LanguageContext';
 import { useAuth } from '../../../contexts/AuthProvider';
 import { useIsMobile } from '../../../hooks/useBreakpoint';
 import SplitScreenLayout from '../../../components/SplitScreenLayout';
-import SellWorkflowService from '../../../services/sellWorkflowService';
+import SellWorkflowService from '../../../services/sell-workflow-service';
 import SelectWithOther from '../../../components/shared/SelectWithOther';
 import { CURRENCIES, PRICE_TYPES, AVAILABLE_HOURS } from '../../../data/dropdown-options';
 import { toast } from 'react-toastify';

@@ -1,7 +1,7 @@
 // hCaptcha Service - Free Alternative to Google reCAPTCHA
 // (Comment removed - was in Arabic)
 
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 export interface CaptchaResult {
   success: boolean;

@@ -9,7 +9,7 @@ import { useLanguage } from '../../../contexts/LanguageContext';
 import { useToast } from '../../../components/Toast';
 import { logger } from '../../../services/logger-service';
 import { subscriptionService } from '../../../services/billing/subscription-service';
-import { stripeClientService } from '../../../services/stripe-client-service';
+import { stripeClientService } from '../../../services/billing-service';
 
 const Container = styled.div`
   max-width: 600px;

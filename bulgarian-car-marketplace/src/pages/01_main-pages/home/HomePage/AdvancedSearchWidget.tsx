@@ -14,14 +14,25 @@ import QuickBrandsSection from './QuickBrandsSection'; // Integrated here now
 
 const SearchDashboard = styled.div`
   width: 100%;
-  background: rgba(20, 20, 25, 0.85);
+  background: ${({ theme }) =>
+    theme.mode === 'dark'
+      ? 'rgba(20, 20, 25, 0.85)'
+      : 'rgba(255, 255, 255, 0.92)'};
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid
+    ${({ theme }) =>
+      theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.15)' : theme.colors.grey[200]};
   border-radius: 20px;
   padding: 30px;
   box-shadow: 
-      0 20px 50px -10px rgba(0,0,0,0.5),
-      inset 0 0 0 1px rgba(255,255,255,0.05);
+      ${({ theme }) =>
+        theme.mode === 'dark'
+          ? '0 20px 50px -10px rgba(0,0,0,0.5)'
+          : '0 18px 46px -14px rgba(15,23,42,0.16)'},
+      ${({ theme }) =>
+        theme.mode === 'dark'
+          ? 'inset 0 0 0 1px rgba(255,255,255,0.05)'
+          : 'inset 0 0 0 1px rgba(2,6,23,0.04)'};
   position: relative;
   overflow: hidden;
 
@@ -32,8 +43,11 @@ const SearchDashboard = styled.div`
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #333;
-      box-shadow: inset 1px 1px 2px rgba(0,0,0,0.8), 0 0 5px rgba(0, 204, 255, 0.2);
+      background: ${({ theme }) => (theme.mode === 'dark' ? '#333' : theme.colors.grey[300])};
+      box-shadow: ${({ theme }) =>
+        theme.mode === 'dark'
+          ? 'inset 1px 1px 2px rgba(0,0,0,0.8), 0 0 5px rgba(0, 204, 255, 0.2)'
+          : 'inset 1px 1px 2px rgba(2,6,23,0.12), 0 0 6px rgba(37, 99, 235, 0.14)'};
   }
   &::before { left: 15px; }
   &::after { right: 15px; }
@@ -54,7 +68,8 @@ const DashboardTabs = styled.div`
 const TabBtn = styled.button<{ active?: boolean }>`
   background: transparent;
   border: none;
-  color: ${props => props.active ? '#00ccff' : '#8899aa'};
+  color: ${({ theme, active }) =>
+    active ? (theme.mode === 'dark' ? '#00ccff' : theme.colors.primary.main) : theme.colors.text.secondary};
   font-family: 'Exo 2', sans-serif;
   font-size: 1.1rem;
   font-weight: 600;
@@ -64,9 +79,10 @@ const TabBtn = styled.button<{ active?: boolean }>`
   transition: all 0.3s;
   text-transform: uppercase;
   letter-spacing: 1px;
-  text-shadow: ${props => props.active ? '0 0 10px rgba(0, 204, 255, 0.4)' : 'none'};
+  text-shadow: ${({ theme, active }) =>
+    active ? (theme.mode === 'dark' ? '0 0 10px rgba(0, 204, 255, 0.4)' : '0 0 10px rgba(37, 99, 235, 0.18)') : 'none'};
 
-  &:hover { color: #fff; }
+  &:hover { color: ${({ theme }) => theme.colors.text.primary}; }
 
   &::after {
       content: '';
@@ -75,8 +91,9 @@ const TabBtn = styled.button<{ active?: boolean }>`
       left: 0;
       width: 100%;
       height: 2px;
-      background: #00ccff;
-      box-shadow: 0 0 10px #00ccff;
+      background: ${({ theme }) => (theme.mode === 'dark' ? '#00ccff' : theme.colors.primary.main)};
+      box-shadow: ${({ theme }) =>
+        theme.mode === 'dark' ? '0 0 10px #00ccff' : `0 0 10px ${theme.colors.primary.main}`};
       opacity: ${props => props.active ? 1 : 0};
       transition: opacity 0.3s;
   }
@@ -103,7 +120,7 @@ const FormGroup = styled.div`
 const FormLabel = styled.label`
   display: block;
   font-size: 0.8rem;
-  color: #8899aa;
+  color: ${({ theme }) => theme.colors.text.secondary};
   margin-bottom: 8px;
   margin-left: 5px;
   font-weight: 600;
@@ -114,24 +131,29 @@ const FormLabel = styled.label`
 const FormSelect = styled.select`
   width: 100%;
   height: 55px;
-  background: #0f0f13;
-  border: 1px solid #333;
+  background: ${({ theme }) => (theme.mode === 'dark' ? '#0f0f13' : theme.colors.background.paper)};
+  border: 1px solid ${({ theme }) => (theme.mode === 'dark' ? '#333' : theme.colors.grey[200])};
   border-radius: 10px;
-  color: #fff;
+  color: ${({ theme }) => theme.colors.text.primary};
   padding: 0 15px;
   font-family: 'Exo 2', sans-serif;
   font-size: 1rem;
   cursor: pointer;
   appearance: none;
   transition: all 0.3s;
-  background-image: linear-gradient(to bottom, #1a1a20, #0a0a0e);
+  background-image: ${({ theme }) =>
+    theme.mode === 'dark'
+      ? 'linear-gradient(to bottom, #1a1a20, #0a0a0e)'
+      : `linear-gradient(to bottom, ${theme.colors.grey[50]}, ${theme.colors.background.paper})`};
 
-  &:hover { border-color: #555; }
+  &:hover { border-color: ${({ theme }) => (theme.mode === 'dark' ? '#555' : theme.colors.primary.light)}; }
   &:focus {
       outline: none;
-      border-color: #00ccff;
-      box-shadow: 0 0 15px rgba(0, 204, 255, 0.4);
-      color: #00ccff;
+      border-color: ${({ theme }) => (theme.mode === 'dark' ? '#00ccff' : theme.colors.primary.main)};
+      box-shadow: ${({ theme }) =>
+        theme.mode === 'dark'
+          ? '0 0 15px rgba(0, 204, 255, 0.4)'
+          : `0 0 0 4px ${theme.colors.primary.light}33`};
   }
   &:disabled { opacity: 0.5; cursor: not-allowed; }
 `;
@@ -188,11 +210,29 @@ const SelectWrapper = styled.div`
       right: 15px;
       top: 50%;
       transform: translateY(-50%);
-      color: #00ccff;
+      color: ${({ theme }) => (theme.mode === 'dark' ? '#00ccff' : theme.colors.primary.main)};
       pointer-events: none;
       transition: transform 0.3s;
   }
   &:hover::after { transform: translateY(-50%) rotate(180deg); }
+`;
+
+const CarCountPanel = styled.div`
+  text-align: center;
+  margin-top: 20px;
+  padding: 15px;
+  background: ${({ theme }) =>
+    theme.mode === 'dark'
+      ? 'rgba(0, 204, 255, 0.1)'
+      : `rgba(37, 99, 235, 0.08)`};
+  border: 1px solid
+    ${({ theme }) =>
+      theme.mode === 'dark' ? 'rgba(0, 204, 255, 0.3)' : `${theme.colors.primary.light}55`};
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: ${({ theme }) => (theme.mode === 'dark' ? '#00ccff' : theme.colors.primary.main)};
+  font-weight: 600;
+  letter-spacing: 0.5px;
 `;
 
 
@@ -406,24 +446,13 @@ const AdvancedSearchWidget: React.FC<AdvancedSearchWidgetProps> = ({ onSearchCom
 
       {/* Car count display */}
       {carCount !== null && (
-        <div style={{
-          textAlign: 'center',
-          marginTop: '20px',
-          padding: '15px',
-          background: 'rgba(0, 204, 255, 0.1)',
-          border: '1px solid rgba(0, 204, 255, 0.3)',
-          borderRadius: '12px',
-          fontSize: '0.95rem',
-          color: '#00ccff',
-          fontWeight: 600,
-          letterSpacing: '0.5px'
-        }}>
+        <CarCountPanel>
           <span style={{ marginRight: '8px' }}>🚗</span>
           {language === 'bg' 
             ? `Намерени ${carCount} ${carCount === 1 ? 'автомобил' : 'автомобила'} по критериите`
             : `Found ${carCount} ${carCount === 1 ? 'car' : 'cars'} matching criteria`
           }
-        </div>
+        </CarCountPanel>
       )}
 
       {/* integrated QuickBrandsSection */}

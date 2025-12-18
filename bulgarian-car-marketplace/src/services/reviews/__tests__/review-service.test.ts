@@ -25,7 +25,7 @@ jest.mock('../../profile/trust-score-service', () => ({
     calculateTrustScore: jest.fn(),
   },
 }));
-jest.mock('../../logger-wrapper', () => ({
+jest.mock('../../logger-service', () => ({
   serviceLogger: {
     info: jest.fn(),
     warn: jest.fn(),

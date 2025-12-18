@@ -76,6 +76,7 @@ const Badge = styled.div<{ type: 'popular' | 'current' }>`
   }
 `;
 
+
 const PlanName = styled.h3`
   font-size: 1.75rem;
   font-weight: 800;
@@ -84,6 +85,19 @@ const PlanName = styled.h3`
 
   @media (prefers-color-scheme: dark) {
     color: ${({ theme }) => theme.colors?.textDark || '#f1f5f9'};
+  }
+`;
+
+const PlanDescription = styled.p`
+  font-size: 1rem;
+  color: ${({ theme }) => theme.colors?.textSecondary || '#64748b'};
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+  opacity: 0.9;
+  min-height: 3rem;
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }) => theme.colors?.textSecondaryDark || '#94a3b8'};
   }
 `;
 
@@ -192,6 +206,40 @@ const SelectButton = styled.button<{ selected?: boolean }>`
   `}
 `;
 
+
+const FEATURE_LABELS: Record<string, { bg: string; en: string }> = {
+  // Limits
+  limit_3_cars: { bg: 'До 3 автомобила месечно', en: 'Up to 3 cars monthly' },
+  limit_25_cars: { bg: 'До 25 автомобила месечно', en: 'Up to 25 cars monthly' },
+  limit_100_cars: { bg: 'До 100 автомобила месечно', en: 'Up to 100 cars monthly' },
+
+  // Brand Editing
+  no_brand_edit: { bg: 'Без редакция на Марка/Модел', en: 'No Brand/Model editing' },
+  limit_10_brand_edits: { bg: 'Редакция на Марка/Модел (10/месец)', en: 'Brand/Model editing (10/month)' },
+  unlimited_brand_edits: { bg: 'Неограничена редакция на Марка/Модел', en: 'Unlimited Brand/Model editing' },
+
+  // General
+  basic_support: { bg: 'Базова поддръжка', en: 'Basic Support' },
+  priority_support: { bg: 'Приоритетна поддръжка', en: 'Priority Support' },
+  dedicated_manager: { bg: 'Личен акаунт мениджър', en: 'Dedicated Account Manager' },
+
+  // AI & Analytics
+  ai_valuation_30: { bg: 'AI Оценка (30/месец)', en: 'AI Valuation (30/month)' },
+  ai_unlimited: { bg: 'Неограничен AI', en: 'Unlimited AI' },
+  car_valuation: { bg: 'Оценка на автомобили', en: 'Car Valuation' },
+  analytics_dashboard: { bg: 'Аналитичен дашборд', en: 'Analytics Dashboard' },
+
+  // Visibility
+  search_visibility: { bg: 'Видимост в търсенето', en: 'Search Visibility' },
+  featured_badge: { bg: 'Значка "Препоръчан"', en: 'Featured Badge' },
+  standard_photos: { bg: 'Стандартни снимки', en: 'Standard Photos' },
+  custom_branding: { bg: 'Собствено брандиране', en: 'Custom Branding' },
+
+  // Advanced
+  api_access: { bg: 'API Достъп', en: 'API Access' },
+  team_management: { bg: 'Управление на екип', en: 'Team Management' }
+};
+
 /**
  * Subscription Plans Component
  * Displays all available plans with pricing
@@ -202,8 +250,14 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
 }) => {
   const { language } = useLanguage();
   const [interval, setInterval] = React.useState<BillingInterval>('monthly');
-  
+
   const plans = billingService.getAvailablePlans();
+
+  const getFeatureLabel = (key: string) => {
+    const label = FEATURE_LABELS[key];
+    if (!label) return key.replace(/_/g, ' '); // Fallback to formatted key
+    return language === 'bg' ? label.bg : label.en;
+  };
 
   return (
     <>
@@ -211,7 +265,7 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
         {plans.map(plan => {
           const isCurrent = currentPlan === plan.id;
           const price = interval === 'monthly' ? plan.pricing.monthly : plan.pricing.annual;
-          
+
           return (
             <PlanCard key={plan.id} popular={plan.popular} current={isCurrent}>
               {plan.popular && (
@@ -220,18 +274,22 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
                   {language === 'bg' ? 'Популярен' : 'Popular'}
                 </Badge>
               )}
-              
+
               {isCurrent && (
                 <Badge type="current">
                   <Check />
                   {language === 'bg' ? 'Текущ план' : 'Current Plan'}
                 </Badge>
               )}
-              
+
               <PlanName>
                 {language === 'bg' ? plan.name.bg : plan.name.en}
               </PlanName>
-              
+
+              <PlanDescription>
+                {language === 'bg' ? plan.description.bg : plan.description.en}
+              </PlanDescription>
+
               <PlanPrice>
                 <span className="currency">€</span>
                 {price}
@@ -239,29 +297,22 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
                   /{language === 'bg' ? 'месец' : 'month'}
                 </span>
               </PlanPrice>
-              
+
               <FeaturesList>
-                <FeatureItem>
-                  <Check />
-                  {plan.listingCap === -1 
-                    ? (language === 'bg' ? 'Неограничени обяви' : 'Unlimited listings')
-                    : `${plan.listingCap} ${language === 'bg' ? 'обяви' : 'listings'}`
-                  }
-                </FeatureItem>
-                
+                {/* Removed separate listing cap check since it's now a feature key */}
                 {plan.features.map(feature => (
                   <FeatureItem key={feature}>
                     <Check />
-                    {feature}
+                    {getFeatureLabel(feature)}
                   </FeatureItem>
                 ))}
               </FeaturesList>
-              
-              <SelectButton 
+
+              <SelectButton
                 selected={isCurrent}
                 onClick={() => !isCurrent && onSelectPlan(plan.id, interval)}
               >
-                {isCurrent 
+                {isCurrent
                   ? (language === 'bg' ? 'Текущ план' : 'Current Plan')
                   : (language === 'bg' ? 'Избери' : 'Select Plan')}
               </SelectButton>

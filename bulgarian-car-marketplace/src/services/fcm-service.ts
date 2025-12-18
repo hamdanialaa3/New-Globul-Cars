@@ -11,7 +11,7 @@ import {
 } from 'firebase/messaging';
 import { initializeApp } from 'firebase/app';
 import { BULGARIAN_CONFIG } from '../config/bulgarian-config';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 // Firebase configuration
 const firebaseConfig = {

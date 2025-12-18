@@ -15,7 +15,7 @@ let stripe: Stripe | null = null;
 const getStripe = () => {
   if (!stripe && STRIPE_CONFIG.secretKey) {
     stripe = new Stripe(STRIPE_CONFIG.secretKey, {
-      apiVersion: '2025-09-30.clover' as any,
+      apiVersion: '2024-11-20' as const,
     });
   }
   return stripe;
@@ -103,7 +103,7 @@ export const verifyCheckoutSession = onCall<{
           id: subscription.id,
           planTier: sessionMetadata.planTier || 'unknown',
           status: subscription.status,
-          currentPeriodEnd: new Date((subscription as any).current_period_end * 1000).toISOString(),
+          currentPeriodEnd: new Date((subscription as Stripe.Subscription).current_period_end * 1000).toISOString(),
         },
       };
     }
@@ -127,21 +127,22 @@ export const verifyCheckoutSession = onCall<{
       },
     };
 
-  } catch (error: any) {
-    logger.error('Checkout session verification failed', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Checkout session verification failed', err);
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
     // Stripe errors
-    if (error.type === 'StripeInvalidRequestError') {
-      throw new HttpsError('not-found', `Invalid session ID: ${error.message}`);
+    if (error && typeof error === 'object' && 'type' in error && error.type === 'StripeInvalidRequestError') {
+      throw new HttpsError('not-found', `Invalid session ID: ${err.message}`);
     }
 
     throw new HttpsError(
       'internal',
-      `Failed to verify checkout session: ${error.message}`
+      `Failed to verify checkout session: ${err.message}`
     );
   }
 });

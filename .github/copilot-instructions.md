@@ -1,200 +1,188 @@
-## Copilot Instructions for AI Agents
+# Copilot Instructions for AI Agents
 
-### 🎯 Big Picture
-**Structure**: Monorepo with frontend-first architecture
-- **Frontend**: `bulgarian-car-marketplace/` (React 19 + TypeScript + CRA via CRACO). Entirely self-contained—imports can reference local services, contexts, pages
-- **Backend**: `functions/src/` (Firebase Cloud Functions, 98+ Node.js functions across ~25 domains)
-- **ML**: `ai-valuation-model/` (Python/XGBoost, deployed via Vertex AI; called by backend autonomously-resale.ts)
-- **Data**: Firestore collections (10+), Firebase Storage (images), Algolia (car search indexing)
-- **Archive**: `ARCHIVE/` (organized cleanup Dec 2025; never auto-delete; manual review required before recreating archived features)
-- **Documentation**: `DOCUMENTATION_ORGANIZED/` (master index: [MASTER_INDEX.md](DOCUMENTATION_ORGANIZED/MASTER_INDEX.md); essential docs, guides, technical, Arabic docs)
-- **Packages**: `packages/` (monorepo workspaces: core, services, ui, auth, cars, profile)
-- **Optimization**: 77% build size reduction (664MB → 150MB) achieved via service consolidation, lazy loading, tree-shaking
+**Project Status** (Dec 2025): ✅ **96% Complete | Security: 100% | Tests: 40-45% | Code Quality: A+**
 
-**Key Success Metrics**: 
-- Avoid deprecated location fields (`location`, `city`, `region`). Use unified `locationData` (cityId/cityName/coordinates) from `types/LocationData.ts`
-- Never use `console.*` in production—always use `logger-service.ts` for structured logging
-- Project is **96% complete** (Dec 2025); check [README.md](README.md) and [COMPLETE_REPAIR_PLAN_FINAL_DEC_15_2025.md](COMPLETE_REPAIR_PLAN_FINAL_DEC_15_2025.md) for current status
-- **Testing Coverage**: 40-45% (475+ tests across 40 files); see [TESTING_PHASE_2_COMPLETE_DEC_15_2025.md](TESTING_PHASE_2_COMPLETE_DEC_15_2025.md)
-- **Security**: 100% secure—all 8 security issues resolved; see [FIXES_REPORT_DEC_15_2025.md](FIXES_REPORT_DEC_15_2025.md)
+---
 
-### Frontend Architecture
-**Provider Stack** (order is critical—do not reorder):
-1. `ThemeProvider` (styled-components theme from `src/styles/theme.ts`)
-2. `GlobalStyles` (stylesheet injection)
-3. `LanguageProvider` (bilingual context: BG/EN; persists to localStorage `globul-cars-language`; updates `<html lang>` automatically)
-4. `AuthProvider` (Firebase Auth; handles session, user claims, seller upgrades)
-5. `ProfileTypeProvider` (context for Private/Dealer/Company profile types; controls feature access)
-6. `ToastProvider` (notification system)
-7. `GoogleReCaptchaProvider` (reCAPTCHA v3 integration)
-8. `Router` (React Router v7; lazy-loaded routes via Suspense)
-9. `FilterProvider` (search/filter state across car listings)
+## 🎯 Big Picture Architecture
 
-**Routing Architecture** (`src/routes/` + `src/pages/`):
-- **Layouts**: `MainLayout` (regular pages: header, footer), `FullScreenLayout` (auth, admin, fullscreen: Outlet pattern only)
-- **Guards**: `components/guards/AuthGuard.tsx` wraps protected routes; checks auth state, admin flag, seller verification status
-- **Lazy Loading**: Critical—use `safeLazy()` utility or `React.lazy + Suspense` for pages. Examples: `FacebookPixel`, `FloatingAddButton`, `WorkflowProgressBar` deferred to reduce initial bundle
-- **Sell Workflow**: Dedicated multi-step flow in `pages/sell/` (steps: vehicle → seller → data → equipment → images → pricing → contact). Draft persistence via `workflowPersistenceService.ts`; analytics via `workflow-analytics-service.ts`
+**Monorepo Structure**:
+- **Frontend**: `bulgarian-car-marketplace/` (React 19 + TypeScript, CRA via CRACO)
+- **Backend**: `functions/src/` (Firebase Cloud Functions, 98+ functions across ~25 domains)
+- **ML**: `ai-valuation-model/` (Python/XGBoost, deployed via Vertex AI)
+- **Data**: Firestore (collections), Firebase Storage (images), Algolia (search indexing)
+- **Documentation**: [DOCUMENTATION_ORGANIZED/MASTER_INDEX.md](DOCUMENTATION_ORGANIZED/MASTER_INDEX.md)
 
-**State Management**:
-- **Contexts only**—no Redux/Zustand. Contexts live in `src/contexts/` (6 core contexts: Language, Auth, ProfileType, Theme, Filter, Toast)
-- **Local state** for component-level needs
-- **Services layer** (`src/services/`, 103+ files) for business logic; import and call in components rather than fetching inline
+**Why This Matters**:
+- **77% build size reduction** (664MB → 150MB) via lazy loading + service consolidation
+- **Context-based state** (no Redux) keeps frontend lightweight; 6 core contexts
+- **Service layer** (103+ files) centralizes all business logic—never fetch in components
+- **Critical constraint**: **Provider order in `AppProviders.tsx` is hardcoded—changing it breaks auth/language/theme**
 
-### UI/Styles/Translations
-**Styling approach**:
-- **Styled-components** with theme from `src/styles/theme.ts`
-- **Font stack**: `'Martica', 'Arial', sans-serif` (custom Martica font for brand identity)
-- **Page styles**: Co-located as `styles.ts` exporting `S.*` namespace (e.g., `S.Container`, `S.Title`)
-- **Mobile overrides**: `src/styles/mobile-responsive.css` (breakpoints and responsive tweaks)
-- **Dynamic theme**: Theme switches in real-time via context (theme toggle in header)
+---
 
-**Bilingual (Bulgarian/English)**:
-- **All strings must exist in both languages** in `src/locales/translations.ts`; missing keys cause fallback chain issues
-- **Access pattern**: `const { t } = useLanguage(); t('namespace.key')`
-- **Language persistence**: Stored in `localStorage` key `globul-cars-language`
-- **Automatic `<html lang>` updates** when language changes
-- **Currency/formatting**: EUR for Bulgaria; check `constants/` for locale-specific formats
+## 🔥 Critical Patterns for AI Agents
 
-**Translation structure** (example):
+### 1. Services + Structured Logging (MANDATORY)
+**Rule**: All business logic → services; all logging → `logger-service.ts`; never `console.*` in production.
+
 ```typescript
-// src/locales/translations.ts
-export const translations = {
-  'sell.step1.title': { bg: 'Марка на автомобила', en: 'Vehicle Make' },
-  'sell.step1.description': { bg: 'Изберете марката...', en: 'Select the make...' },
-};
+// ✅ Correct
+import { logger } from '@/services/logger-service';
+import { getCarsByLocation } from '@/services/car-search-service';
+
+async function loadCars(cityId: string) {
+  try {
+    const cars = await getCarsByLocation(cityId);
+    logger.info('Loaded cars', { cityId, count: cars.length });
+    return cars;
+  } catch (error) {
+    logger.error('Failed to load cars', error, { cityId });
+    throw error;
+  }
+}
+
+// ❌ Wrong (direct fetch + console)
+const [cars, setCars] = useState([]);
+useEffect(() => {
+  fetch('/api/cars').then(r => r.json()).then(setCars);
+  console.log('Loaded'); // ← Never do this
+}, []);
 ```
 
-### Data + Domain Patterns
-**Unified Location Data** (CRITICAL):
-- Always use `src/types/LocationData.ts` with `locationData` object containing:
-  - `cityId`: City identifier (numeric/string)
-  - `cityName`: Display name (e.g., "Sofia")
-  - `coordinates`: `{ lat, lng }` for map display
-- **Deprecated fields—NEVER use**: `location`, `city`, `region` (legacy; removed in Phase 5)
-- **City services**: `unified-cities-service.ts`, `cityRegionMapper.ts`, `regionCarCountService.ts`
-- If you see old fields in code, it's a bug—report and fix immediately
+### 2. Provider Order (HARDCODED - DO NOT CHANGE)
+All providers in `src/providers/AppProviders.tsx`. **Exact order required** (outer → inner):
+1. `ThemeProvider` (styled-components)
+2. `GlobalStyles`
+3. `ErrorBoundary`
+4. `LanguageProvider` (MUST be before AuthProvider—auth uses translations)
+5. `CustomThemeProvider` (Dark/Light mode)
+6. `AuthProvider` (MUST be before ProfileTypeProvider)
+7. `ProfileTypeProvider` (Private/Dealer/Company)
+8. `ToastProvider`
+9. `GoogleReCaptchaProvider`
+10. `Router` (BrowserRouter)
+11. `FilterProvider` (depends on Router)
 
-**Sell Workflow** (`pages/sell/`):
-- Multi-step flow inspired by mobile.de (German standard)
-- **Steps order**: Vehicle → Seller → Data → Equipment → Images → Pricing → Contact
-- **Draft persistence**: `workflowPersistenceService.ts` (auto-save to localStorage/Firestore)
-- **Analytics tracking**: `workflow-analytics-service.ts` (step completion, abandonment, time spent)
-- Each step component receives props: `{ currentStep, totalSteps, onNext, onPrev, draftData }`
+**If you reorder these, the app breaks.** Check the file for detailed dependency documentation.
 
-**Profile Types** (Private/Dealer/Company):
-- Controlled by `ProfileTypeProvider` context
-- Route logic in `pages/ProfilePage/ProfileRouter.tsx`
-- Different features/permissions per type:
-  - **Private**: Basic listing, no team, limited to 50 listings/year
+### 3. Unified Location Data (REPLACE DEPRECATED FIELDS)
+- **Use**: `locationData` from `src/types/LocationData.ts` with `{ cityId, cityName, coordinates: { lat, lng } }`
+- **Deprecated**: `location`, `city`, `region` (legacy; remove if found)
+- **Services**: `unified-cities-service.ts`, `cityRegionMapper.ts`, `regionCarCountService.ts`
+
+### 4. Path Aliases (ALWAYS USE)
+```typescript
+// ✅ Correct
+import { logger } from '@/services/logger-service';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { CarCard } from '@/components/CarCard';
+
+// ❌ Wrong (brittle relative paths)
+import { logger } from '../../services/logger-service';
+```
+
+**Available aliases**: `@/services/*`, `@/components/*`, `@/contexts/*`, `@/utils/*`, `@/types/*`, `@/hooks/*`, `@/pages/*`, `@/firebase/*`, `@/data/*`, `@/constants/*`, `@/features/*`, `@/assets/*`
+
+### 5. Bilingual (Bulgarian/English)
+- **All UI strings** must have both BG + EN translations in `src/locales/translations.ts`
+- **Missing keys** cause fallback chain issues
+- **Usage**: `const { t } = useLanguage(); t('namespace.key')`
+- **Structure**: 
+  ```typescript
+  export const translations = {
+    'sell.step1.title': { bg: 'Марка на автомобила', en: 'Vehicle Make' },
+  };
+  ```
+
+---
+
+## 📦 Frontend Architecture Deep Dive
+
+### State Management (Contexts Only)
+- **6 core contexts**: Language, Auth, ProfileType, Theme, Filter, Toast (all in `src/contexts/`)
+- **Local state**: Use React `useState` for component-level UI
+- **No Redux/Zustand** (complexity not needed at this scale)
+
+### Routing + Lazy Loading
+- **Routes**: `src/routes/` and `src/pages/`
+- **Layouts**: 
+  - `MainLayout` (header + footer for regular pages)
+  - `FullScreenLayout` (auth, admin—Outlet pattern only)
+- **Lazy loading CRITICAL**: Use `safeLazy()` or `React.lazy + Suspense` for pages (reduces initial bundle)
+  - Examples: FacebookPixel, FloatingAddButton, WorkflowProgressBar all deferred
+- **Guards**: `components/guards/AuthGuard.tsx` wraps protected routes (checks auth, admin flag, seller verification)
+
+### Sell Workflow (Multi-Step Form)
+- **Location**: `pages/sell/` (inspired by mobile.de German standard)
+- **Steps** (in order): Vehicle → Seller → Data → Equipment → Images → Pricing → Contact
+- **Draft persistence**: `workflowPersistenceService.ts` (auto-saves to localStorage + Firestore)
+- **Analytics**: `workflow-analytics-service.ts` (tracks step completion, abandonment, time spent)
+- **Props per step**: `{ currentStep, totalSteps, onNext, onPrev, draftData }`
+
+### Styling (Styled-Components + Theme)
+- **Theme**: `src/styles/theme.ts` (single source of truth for colors, spacing, fonts)
+- **Font stack**: `'Martica', 'Arial', sans-serif` (custom Martica for brand)
+- **Page styles**: Co-located as `styles.ts` exporting `S.*` namespace (`S.Container`, `S.Title`)
+- **Mobile responsive**: `src/styles/mobile-responsive.css` (breakpoint overrides)
+- **Theme toggle**: Real-time dark/light mode via context
+
+### Profile Types (Private/Dealer/Company)
+- **Controlled by**: `ProfileTypeProvider` context (depends on auth)
+- **Route logic**: `pages/ProfilePage/ProfileRouter.tsx`
+- **Permissions**:
+  - **Private**: Basic listing, no team, ≤50 listings/year
   - **Dealer**: Team features, unlimited listings, financing integration
   - **Company**: Enhanced trust score, ratings, business verification
-- Check `ProfileTypeContext.ts` before accessing profile-specific features
+- **Check before accessing** profile-specific features in `ProfileTypeContext.ts`
 
-**Services Layer** (`src/services/`, 103+ files):
-- **Rule**: Never fetch or call APIs directly in components; use services
-- **Patterns**: Singletons for stateless services (Firebase, APIs); classes for stateful (Socket, Messaging)
-- **Import style**: `import { getCarById } from '@/services/car-service'` (or via full paths during migration)
-- **Logging**: CRITICAL—use `logger-service.ts` instead of `console.*` in all code:
-  ```typescript
-  // ❌ Wrong (console in production)
-  console.log('User logged in', userId);
-  console.error('Failed to load', error);
-  
-  // ✅ Right (structured logging)
-  import { logger } from '@/services/logger-service';
-  logger.info('User logged in', { userId });
-  logger.error('Failed to load', error, { context: 'carService' });
-  ```
-- **Socket.io cleanup mandatory**: Always `removeEventListener` in `useEffect` cleanup
-- **Example**:
-  ```typescript
-  // ❌ Wrong (direct fetch in component)
-  const [cars, setCars] = useState([]);
-  useEffect(() => {
-    fetch('/api/cars').then(r => r.json()).then(setCars);
-  }, []);
-  
-  // ✅ Right (via service)
-  import { getCarsByLocation } from '@/services/car-search-service';
-  const [cars, setCars] = useState([]);
-  useEffect(() => {
-    getCarsByLocation(cityId).then(setCars);
-  }, [cityId]);
-  ```
+---
 
-### Firebase/Infra
-**Frontend Firebase Configuration** (`src/firebase/index.ts`):
-- Initialized with `initializeFirestore({ experimentalAutoDetectLongPolling: true, cacheSizeBytes: -1 })`
-- Unlimited cache enabled to support offline-first patterns
-- App Check **disabled** (can enable later if needed)
-- Separate service files for domain-specific Firebase operations
+## ⚙️ Backend (Cloud Functions)
 
-**Environment Variables** (`.env` in `bulgarian-car-marketplace/` root):
-- `REACT_APP_FIREBASE_*` (API key, project ID, etc.)
-- `REACT_APP_HCAPTCHA_SITE_KEY` (for form protection)
-- `REACT_APP_GOOGLE_MAPS_API_KEY` (maps & geocoding)
-- `REACT_APP_ALGOLIA_*` (search indexing)
-- **Rule**: Never commit `.env`; use `.env.example` for reference
+### Domain Structure (`functions/src/`)
+98+ functions organized by domain (~25 domains):
 
-**Local Development** (`npm run emulate`):
-- **Ports**: Auth 9099, Firestore 8081, Functions 5001, Storage 8082, Emulator UI 4000
-- **Benefits**: No cloud costs, full fidelity with production, instant feedback
-- **Firestore emulator**: Auto-populates from `firestore.rules`; supports queries
-- **Cloud Functions emulator**: Runs locally on port 5001 with live reloading
+**Core Domains**:
+- `subscriptions/` — Stripe checkout, session verification, cancellation, status, webhook handling
+- `verification/` — Phone OTP, ID documents, EIK validation (Bulgarian company registry), email verification
+- `auth/` — Admin role assignment, seller upgrades, user claims, JWT generation
+- `billing/` — Invoices, payment history, plan management, invoice generation, prorated billing
 
-**Deployment Checklist**:
-- Frontend: `npm run deploy` (builds → Firebase Hosting)
-- Functions: `npm run deploy:functions` (region: `europe-west1` ONLY)
-- Security rules: Update `firestore.rules` / `storage.rules` before deploy
-- Verify indexes in `firestore.indexes.json` exist in production
-- Check `DEPLOYMENT_READY_INSTRUCTIONS.md` for pre-flight steps
+**User & Commerce**:
+- `messaging/` — Real-time messaging, notifications, auto-responders, message history
+- `team/` — Member invitations, roles, permissions, audit logs, team management
+- `seller/` — Profile management, trust score updates, seller verification
+- `reviews/` — Rating aggregation, moderation, helpful voting, review analytics
 
-### Dev Workflows
-**Installation & Local Development**:
-- **Install**: `npm install` at repo root (installs both frontend & functions dependencies)
-- **Dev server**: `cd bulgarian-car-marketplace && npm start` (hot reload, can take 2-5 min on first compile due to CRACO)
-- **Build**: `npm run build` (production build with optimizations)
-- **Optimized build**: `npm run build:optimized` (+ image compression)
-- **Tests**: `npm test` (watch mode) or `npm run test:ci` (coverage, CI-safe)
-- **TypeScript**: Errors shown in VSCode; no ESLint (disabled via CRACO)
-- **Linting**: Run separately if needed; focus on type safety
+**Search & Analytics**:
+- `search/` — Algolia indexing, search analytics, autocomplete, faceted search
+- `analytics/` — User behavior tracking, search analytics, conversion funnels, event tracking
+- `catalog-feeds/` — XML/CSV feed generation for external marketplaces
 
-**Build Optimization Wins**:
-- CRACO config disables ESLint (rely on TypeScript)
-- Service deduplication: 120 services → 103 services
-- Lazy-load components: FacebookPixel, FloatingAddButton, maps, progress bars
-- Tree-shake unused code via `terser-webpack-plugin`
-- Image optimization: `optimize-images.js` script for production
+**Social & Content**:
+- `social-media/` — OAuth handlers (Facebook, TikTok), token exchange, profile sync
+- `facebook-catalog/` — Facebook Catalog product sync, marketplace integration
 
-**Docker & Production**:
-- **Dev**: `docker compose --profile dev up frontend-dev` (mounts source, hot-reload)
-- **Prod**: `docker compose --profile prod up -d frontend` (builds optimized image, serves on port 3000)
-- Frontend Dockerfile uses `--legacy-peer-deps` for React 19 compatibility
-- Build uses `serve` package for production-like server
+**Business Integration**:
+- `adapters/` — `financial-services-manager.js` orchestrates Bulgarian partners (DSK, UniCredit, Raiffeisen)
+- `payments/` — Payment processing, invoice generation, refunds
+- `commission/` — Commission calculation, payout management
+- `vehicle-history/` — Vehicle history lookup, market analysis
 
-**Debugging in Production**:
-- Check `logger-service.ts` output (avoids noisy `console.log`)
-- Use `window.checkCarsStatus()` and `window.fixCarsStatus()` dev helpers (console only)
-- Firestore Emulator UI at http://localhost:4000 for data inspection
+**Utilities & Services**:
+- `utils/` — Shared helpers, validation, transformations, error handling
+- `ai/` — AI valuation model integration (Python/XGBoost)
+- `monitoring/` — System health checks, error tracking, performance monitoring
 
-### Cloud Functions Organization (`functions/src/`)
-**Domain Structure** (98+ functions across ~25 domains):
-- **`subscriptions/`**: Stripe checkout, session verification, cancellation, status
-- **`verification/`**: Phone OTP, ID documents, EIK validation (Bulgarian company registry)
-- **`analytics/`**: User behavior tracking, search analytics, conversion funnels
-- **`auth/`**: Admin role assignment, user claims, seller upgrades
-- **`billing/`**: Invoice generation, payment history, plan management
-- **`messaging/`**: Real-time messaging, notifications, auto-responders
-- **`team/`**: Member invitations, role management, permissions, audit logs
-- **`social-media/`**: OAuth handlers (Facebook, TikTok), token exchange
-- **`reviews/`**: Rating aggregation, moderation, helpful voting
-- **`search/`**: Algolia indexing, search analytics
-- **`seller/`**: Seller profile management, trust score updates
-- **`adapters/`**: `financial-services-manager.js` orchestrates Bulgarian financial partners (DSK, UniCredit, Raiffeisen)
-- **`utils/`**: Shared helpers, validation, transformations
+**Other Domains**:
+- `stats.ts` — Statistical aggregation, reporting
+- `insurance-service.ts` — Insurance partner integration
+- `ev-charging.ts` — EV charging network integration
+- `service-network.ts` — Service provider network management
+- `recaptcha.ts` — reCAPTCHA validation
 
-**Function Export Pattern**:
+### Function Export Pattern
 ```typescript
 // functions/src/my-domain/my-function.ts
 import { onCall } from 'firebase-functions/v2/https';
@@ -208,154 +196,499 @@ export const myFunction = onCall(async (request) => {
 export { myFunction } from './my-domain/my-function';
 ```
 
-**Frontend Invocation**:
+### Frontend Invocation
 ```typescript
 import { httpsCallable } from 'firebase/functions';
+import { functions } from '@/firebase/index';
+
 const result = await httpsCallable(functions, 'myFunction')({ data: 'value' });
 ```
 
-### Workflows & Commands
-- **Local dev**: from repo root run `npm install`; then `cd bulgarian-car-marketplace && npm start`.
-- **Full emulator suite**: `npm run emulate` (Auth 9099, Firestore 8081, Functions 5001, Storage 8082, UI 4000). See [firebase.json](firebase.json) and [FIREBASE_INFO.txt](FIREBASE_INFO.txt).
-- **Deploy hosting**: `npm run deploy`. **Deploy functions**: `npm run deploy:functions` (region europe-west1 ONLY). See [deploy.ps1](deploy.ps1), [deploy-to-firebase.ps1](deploy-to-firebase.ps1), and guidance in [DEPLOYMENT_READY_INSTRUCTIONS.md](DEPLOYMENT_READY_INSTRUCTIONS.md).
-- **Tests**: run React tests via `npm test` or `npm run test:ci` in `bulgarian-car-marketplace/`. Backend tests use ad-hoc scripts; validate with emulator.
-- **TypeScript checks**: rely on compiler; ESLint is disabled via CRACO. See [tsconfig.json](tsconfig.json).
-- **Documentation updates**: Auto-update docs with `node auto-update-documentation.js --quick` (1 second) or `--analyze` (full analysis). Watch mode available via `--watch`.
+---
 
-### Import Paths & Path Aliases (Critical)
-**Always use path aliases** defined in `tsconfig.json` to keep imports clean and relocatable:
-```typescript
-// ✅ Correct (use path aliases)
-import { logger } from '@/services/logger-service';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { CarCard } from '@/components/CarCard';
-import { LocationData } from '@/types/LocationData';
+## 🚀 Developer Workflows
 
-// ❌ Wrong (relative imports make refactoring painful)
-import { logger } from '../../services/logger-service';
-import { useLanguage } from '../../contexts/LanguageContext';
+### Installation & Local Dev
+```bash
+# Install (from repo root; installs frontend + functions)
+npm install
+
+# Start frontend dev server (hot reload)
+cd bulgarian-car-marketplace && npm start
+# Note: First compile takes 2-5 min due to CRACO overhead (normal)
+
+# Or with optimized memory
+npm run start:dev  # Uses 4GB heap
 ```
 
-**Available aliases** (from `tsconfig.json`):
-- `@/services/*` → local services
-- `@/components/*` → local components
-- `@/contexts/*` → contexts
-- `@/utils/*` → utility functions
-- `@/types/*` → TypeScript types
-- `@/hooks/*` → custom hooks
-- `@/pages/*` → page components
-- `@/firebase/*` → Firebase config
-- `@/data/*` → static data
-- `@/constants/*` → constants
-- `@/features/*` → feature modules
-- `@/assets/*` → media assets
-- `@globul-cars/core/*` → monorepo core (when available)
-- `@globul-cars/services/*` → monorepo services (when available)
+### Firebase Emulator Suite
+```bash
+npm run emulate
+# Ports: Auth 9099, Firestore 8081, Functions 5001, Storage 8082, UI 4000
+# Zero cloud costs; full production fidelity
+# Firestore emulator auto-populates from firestore.rules
+```
 
-### Cross-Component Integrations
-**Frontend → Cloud Functions**:
-- Import: `functions` from `src/firebase/index.ts`
-- Call pattern: `httpsCallable(functions, 'functionName')`
-- Backend exports in `functions/src/index.ts`
-- Example:
-  ```typescript
-  // Frontend (React)
-  import { httpsCallable } from 'firebase/functions';
-  const functions = getFunctions();
-  const result = await httpsCallable(functions, 'myFunction')({ data: 'value' });
-  ```
+### Testing
+```bash
+# Frontend watch mode
+npm test
 
-**AI Valuation**:
-- Service in `ai-valuation-model/` (Python/XGBoost)
-- Consumed by `functions/src/autonomous-resale-engine.ts`
-- Returns pricing suggestions and market analysis
+# CI mode with coverage
+npm run test:ci
 
-**Social OAuth**:
-- Frontend callback: `pages/OAuthCallback`
-- Backend handlers: `functions/src/social-media/oauth-handler.ts`
-- Function: `exchangeOAuthToken` (Cloud Function)
+# Type checking only
+npm run type-check
+```
 
-### Third-Party Integrations
+### Testing Workflows (40-45% Coverage)
 
-**Google Maps API**:
-- Service: `services/google/google-maps-enhanced.service.ts`
-- Features: Geocoding, autocomplete, distance matrix, directions
-- Required: `REACT_APP_GOOGLE_MAPS_API_KEY` in `.env`
-- Fallback: `components/LeafletBulgariaMap` if no API key
+**Test File Structure**:
+- **Unit Tests**: `src/__tests__/` or co-located `*.test.ts(x)` alongside source
+- **Service Tests**: `src/services/__tests__/` (375+ tests across 40 files)
+- **Component Tests**: `src/components/__tests__/` (Jest + React Testing Library)
+- **Context Tests**: `src/contexts/__tests__/` (provider, consumer, hooks)
+- **Utility Tests**: `src/utils/__tests__/` (logic, validators, helpers)
 
-**hCaptcha**:
-- Service: `services/hcaptcha-service.tsx`
-- Usage: Registration, login, contact forms
-- Required: `REACT_APP_HCAPTCHA_SITE_KEY` in `.env`
+**Test Pattern Examples**:
+```typescript
+// ✅ Service Test Example
+import { getCarsByLocation } from '@/services/car-search-service';
+import { logger } from '@/services/logger-service';
 
-**Stripe** (Billing):
-- Frontend: `features/billing/BillingPage`
-- Backend: `functions/src/subscriptions/*` and `functions/src/billing/*`
-- Guides: [STRIPE_SETUP_COMPLETE_GUIDE.md](STRIPE_SETUP_COMPLETE_GUIDE.md), [STRIPE_QUICK_START.md](STRIPE_QUICK_START.md)
+describe('CarSearchService', () => {
+  it('should fetch cars for given location', async () => {
+    const cars = await getCarsByLocation('sofia-123');
+    expect(cars).toEqual(expect.arrayContaining([
+      expect.objectContaining({ cityId: 'sofia-123' })
+    ]));
+    expect(logger.info).toHaveBeenCalledWith('Loaded cars', expect.any(Object));
+  });
 
-**Socket.io** (Real-time):
-- Service: `services/socket-service.ts`
-- Separate server outside Firebase
-- CRITICAL: Always implement reconnection + cleanup in `useEffect`
+  it('should handle errors gracefully', async () => {
+    await expect(getCarsByLocation('invalid')).rejects.toThrow();
+    expect(logger.error).toHaveBeenCalled();
+  });
+});
 
-**Supabase** (Optional):
-- Supplementary storage for large files
-- Config: `services/supabase-config.ts`
-- Primary: Firebase Storage (do not replace)
+// ✅ Context Test Example
+import { renderHook, act } from '@testing-library/react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
-**Facebook Pixel**:
-- Component: `components/FacebookPixel` (lazy-loaded)
-- Included in `App.tsx`
-- Events: pageview, addToCart, purchase, search
+describe('LanguageContext', () => {
+  it('should toggle language between BG and EN', () => {
+    const { result } = renderHook(() => useLanguage());
+    expect(result.current.language).toBe('bg');
+    
+    act(() => result.current.toggleLanguage());
+    expect(result.current.language).toBe('en');
+  });
+});
 
-### Feature Modules
-**Analytics** (`features/analytics/AnalyticsDashboard`):
-- Admin-only; Firebase Analytics + custom event tracking
+// ✅ Component Test Example
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { CarCard } from '@/components/CarCard';
 
-**Billing** (`features/billing/BillingPage`):
-- 9 subscription tiers; invoices; prorated billing
+describe('CarCard', () => {
+  it('should display car information', () => {
+    render(<CarCard car={{ id: '1', title: 'BMW X5', price: 50000 }} />);
+    expect(screen.getByText('BMW X5')).toBeInTheDocument();
+    expect(screen.getByText('€50,000')).toBeInTheDocument();
+  });
 
-**Verification** (`features/verification/VerificationPage`):
-- SMS OTP, ID document upload, EIK validation (Bulgarian company registry)
+  it('should call onClick when clicked', async () => {
+    const onClick = jest.fn();
+    render(<CarCard car={{ id: '1' }} onClick={onClick} />);
+    await userEvent.click(screen.getByRole('button'));
+    expect(onClick).toHaveBeenCalled();
+  });
+});
+```
 
-**Team Management** (`features/team/TeamManagement`):
-- Dealer/Company only; members, roles, permissions, audit logs
+**Coverage Goals** (Phase 3 & 4):
+- Phase 1 (Done): Core services + utils (40-45%)
+- Phase 2 (In Progress): Context + hooks integration
+- Phase 3 (Jan 2026): E2E tests with Cypress (major user flows)
+- Phase 4 (Feb 2026): UI component snapshot tests
+- Target: 70%+ coverage by March 2026
 
-**Reviews** (`features/reviews/`):
-- 1-5 star ratings; moderation; helpful voting
+**Running Tests by Category**:
+```bash
+# All tests
+npm test
 
-### Monorepo Packages (`packages/`)
-**Structure**: Workspaces-based monorepo for shared code
-- `packages/core/` - Common utilities, helpers, constants
-- `packages/services/` - Shared business logic services
-- `packages/ui/` - Reusable UI components library
-- `packages/auth/` - Authentication logic and components
-- `packages/cars/` - Car-related domain logic
-- `packages/profile/` - Profile management logic
+# Specific test file
+npm test -- CarCard.test.tsx
 
-**Status**: Path aliases configured in tsconfig (`@globul-cars/core`, `@globul-cars/services`), but packages not yet fully implemented. Currently using local services in `bulgarian-car-marketplace/src/services/`.
+# Services only
+npm test -- services/
 
-**Future**: Migrate shared services to monorepo packages for better code reuse across potential future apps (dealer portal, admin panel, mobile app).
+# Watch mode (development)
+npm test -- --watch
 
-### Critical Gotchas
-1. **Provider Order**: Changing context hierarchy breaks auth/language/theme—order in `App.tsx` is critical
-2. **Translation Keys**: Missing `bg` or `en` causes fallback chain — add **both** languages
-3. **Socket Cleanup**: Always `removeEventListener` in `useEffect` cleanup to prevent memory leaks
-4. **Location Fields**: Never use deprecated `location`, `city`, `region` — use `locationData` only
-5. **Build Process**: CRACO disables ESLint; rely on TypeScript compiler errors
-6. **Console Logs**: Use `logger-service.ts` in production; never `console.*` (enforced in PROGRAMMING_PRIORITIES)
-7. **Image Optimization**: Use optimized versions from `assets/` hierarchy
-8. **Mobile Responsive**: Check `styles/mobile-responsive.css` for breakpoint overrides
-9. **Service Duplication**: Extend existing services instead of creating duplicates (103 services already exist)
-10. **Monorepo Future**: `@globul-cars/core` and `@globul-cars/services` paths prepared in tsconfig but not yet implemented
-11. **Archive Files**: Never auto-delete files in `ARCHIVE/` directory—manual review required before recreating archived features
+# Coverage report (HTML)
+npm run test:ci -- --coverage
+# Open: coverage/lcov-report/index.html
+```
 
-### Key References
-- **Project Overview**: [README.md](README.md), [INDEX.md](INDEX.md), [START_HERE.md](START_HERE.md)
-- **Architecture**: [ARCHITECTURE_DIAGRAM.html](docs/ARCHITECTURE_DIAGRAM.html), [ARCHITECTURE_GUIDE.md](docs/architecture/ARCHITECTURE_GUIDE.md)
-- **Deployment**: [DEPLOYMENT_READY_INSTRUCTIONS.md](DEPLOYMENT_READY_INSTRUCTIONS.md)
-- **Sell Workflow**: [SELL_WORKFLOW_DOCUMENTATION.md](docs/06_PLANS/ACTIVE_PLANS/SELL_WORKFLOW_DOCUMENTATION.md)
-- **Billing/Payments**: [STRIPE_SETUP_COMPLETE_GUIDE.md](STRIPE_SETUP_COMPLETE_GUIDE.md), [BILLING_DEPLOYMENT_GUIDE.md](BILLING_DEPLOYMENT_GUIDE.md)
-- **Security**: [SECURITY.md](SECURITY.md), [firestore.rules](firestore.rules)
-- **Testing**: [TESTING_COMPLETE_GUIDE.md](TESTING_COMPLETE_GUIDE.md)
+### Build & Deployment
+```bash
+# Production build
+npm run build
+
+# Build + image compression
+npm run build:optimized
+
+# Deploy frontend to Firebase Hosting
+npm run deploy
+
+# Deploy functions (region: europe-west1 ONLY)
+npm run deploy:functions
+
+# Build optimization wins:
+# - CRACO: ESLint disabled (rely on TypeScript compiler)
+# - Services: 120 → 103 (deduplication)
+# - Lazy loading: FacebookPixel, FloatingAddButton, maps, progress bars
+# - Tree-shaking: terser-webpack-plugin removes unused code
+```
+
+### Documentation Scripts
+```bash
+# Quick update (1 second)
+node auto-update-documentation.js --quick
+
+# Full analysis
+node auto-update-documentation.js --analyze
+
+# Watch mode
+node auto-update-documentation.js --watch
+```
+
+---
+
+## 🔌 Third-Party Integrations
+
+| Service | Location | Key Details |
+|---------|----------|-------------|
+| **Google Maps** | `services/google/google-maps-enhanced.service.ts` | Geocoding, autocomplete, distance matrix, directions. Requires `REACT_APP_GOOGLE_MAPS_API_KEY` |
+| **hCaptcha** | `services/hcaptcha-service.tsx` | Registration, login, contact forms. Requires `REACT_APP_HCAPTCHA_SITE_KEY` |
+| **Stripe** | `features/billing/BillingPage` + `functions/src/subscriptions/*` | 9 tiers, invoices, prorated billing. Guides: STRIPE_SETUP_COMPLETE_GUIDE.md, STRIPE_QUICK_START.md |
+| **Socket.io** | `services/socket-service.ts` | Real-time messaging. CRITICAL: Always implement cleanup + reconnection in `useEffect` |
+| **Algolia** | `functions/src/search/` | Car search indexing. Requires `REACT_APP_ALGOLIA_*` vars |
+| **Facebook Pixel** | `components/FacebookPixel` (lazy-loaded) | Events: pageview, addToCart, purchase, search |
+| **Supabase** | `services/supabase-config.ts` | Optional—supplementary storage for large files (primary: Firebase Storage) |
+
+---
+
+## ⚡ Performance Optimization Guide
+
+### Bundle Analysis
+```bash
+# Analyze bundle size
+npm run build -- --analyze
+
+# Visual breakdown
+# Look for: components/FacebookPixel, google-maps (large dependencies)
+# These are already lazy-loaded—check imports in App.tsx
+```
+
+**Current Optimizations** (achieved 77% reduction):
+- **Service Deduplication**: 120 → 103 services (removed ~2000 LOC)
+- **Lazy Loading**: FacebookPixel, FloatingAddButton, maps, progress bars deferred
+- **Code Splitting**: Routes split automatically by `React.lazy()`
+- **Tree-Shaking**: Terser removes unused exports
+- **Image Optimization**: `optimize-images.js` script compresses assets
+
+### Performance Bottlenecks to Avoid
+1. **Don't fetch in render**: Always use services + `useEffect`
+2. **Don't create new objects in render**: Memoize contexts, callbacks (`useMemo`, `useCallback`)
+3. **Don't import everything**: Use path aliases to enable tree-shaking
+4. **Don't re-render on state change**: Use context wisely (split contexts if needed)
+5. **Don't load all images at once**: Use `loading="lazy"` on `<img>` tags
+
+### Monitoring Performance
+```typescript
+// Use reportWebVitals.ts to track metrics
+import { reportWebVitals } from './reportWebVitals';
+
+reportWebVitals((metric) => {
+  // Send to analytics: LCP, FID, CLS, TTFB
+  console.log(metric); // ← Log only in dev; use logger service in prod
+});
+```
+
+---
+
+## 🐛 Debugging Guide
+
+### Local Development Setup
+```bash
+# Start with emulator (best for debugging)
+npm run emulate
+
+# In another terminal, start frontend
+cd bulgarian-car-marketplace && npm start
+```
+
+**Emulator Ports**:
+- Firebase Auth: http://localhost:9099
+- Firestore: http://localhost:8081
+- Cloud Functions: http://localhost:5001
+- Storage: http://localhost:8082
+- **Emulator UI**: http://localhost:4000 (inspect data, run queries)
+
+### Debugging Strategies
+
+**1. Logger Service (Recommended)**
+```typescript
+import { logger } from '@/services/logger-service';
+
+// Structured logging with context
+logger.debug('Starting car search', { cityId, filters });
+logger.info('Cars loaded successfully', { count: cars.length, duration: 234 });
+logger.warn('API rate limit approaching', { remaining: 50 });
+logger.error('Payment failed', paymentError, { orderId: '12345', userId });
+
+// Check logs in browser console (filtered by level)
+// In production: sent to error tracking (Sentry if configured)
+```
+
+**2. Developer Helpers (Console)**
+```typescript
+// Available in browser console only
+window.checkCarsStatus()    // Check Firestore car data
+window.fixCarsStatus()      // Manual repair utility
+window.__logger__           // Access logger instance directly
+```
+
+**3. Firebase Emulator UI**
+- Navigate to http://localhost:4000
+- Browse Firestore collections
+- Run custom queries
+- Inspect authentication state
+- View Cloud Function logs
+
+**4. React DevTools**
+```typescript
+// Install: "React Developer Tools" Chrome extension
+// Features:
+// - Inspect component tree and props
+// - Track context changes
+// - Profile rendering performance
+// - Trigger re-renders manually
+```
+
+**5. Network Inspector (DevTools)**
+```typescript
+// Chrome DevTools → Network tab
+// Filter by XHR/Fetch to see:
+// - Firebase requests
+// - Cloud Function calls
+// - Algolia search queries
+// - Check response times, payloads, errors
+```
+
+### Common Debugging Scenarios
+
+**Problem**: "Provider not found" error
+- **Cause**: Component using context outside of provider
+- **Fix**: Check AppProviders.tsx wraps App root; verify provider order
+
+**Problem**: Translation key shows as `'namespace.key'` (fallback)
+- **Cause**: Missing translation in src/locales/translations.ts
+- **Fix**: Add both `bg` and `en` keys for the language
+
+**Problem**: Socket.io memory leak
+- **Cause**: EventListener not cleaned up in useEffect
+- **Fix**: Always `removeEventListener` in cleanup function
+
+**Problem**: Build process slow (2-5 min)
+- **Cause**: CRACO rebuilds entire app
+- **Fix**: This is normal; use `npm run start:dev` for optimized memory
+
+**Problem**: Firestore queries returning unexpected results
+- **Cause**: Composite index missing or query constraints wrong
+- **Fix**: Check firestore.indexes.json; deploy missing indexes via Firebase CLI
+
+---
+
+## ✨ Quick Tasks Guide
+
+### Add a New Page
+```typescript
+// 1. Create page component
+// src/pages/MyPage/index.tsx
+import { useLanguage } from '@/contexts/LanguageContext';
+
+export const MyPage = () => {
+  const { t } = useLanguage();
+  
+  return (
+    <div>
+      <h1>{t('myPage.title')}</h1>
+      {/* Use services for data, not direct fetches */}
+    </div>
+  );
+};
+
+// 2. Add route
+// src/routes/AppRoutes.tsx or relevant route file
+<Route path="/my-page" element={<MyPage />} />
+
+// 3. Add translations (BOTH languages required!)
+// src/locales/translations.ts
+export const translations = {
+  'myPage.title': { bg: 'Моята страница', en: 'My Page' },
+};
+```
+
+### Add a New Service
+```typescript
+// 1. Create service
+// src/services/my-service.ts
+import { logger } from '@/services/logger-service';
+
+export const myService = {
+  async getData(id: string) {
+    try {
+      // Your logic here
+      logger.info('Data fetched', { id });
+      return data;
+    } catch (error) {
+      logger.error('Failed to fetch data', error, { id });
+      throw error;
+    }
+  }
+};
+
+// 2. Use in component
+import { myService } from '@/services/my-service';
+
+useEffect(() => {
+  myService.getData(id).then(setData);
+}, [id]);
+```
+
+### Add a New Cloud Function
+```typescript
+// 1. Create function
+// functions/src/my-domain/my-function.ts
+import { onCall } from 'firebase-functions/v2/https';
+
+export const myFunction = onCall(async (request) => {
+  const { userId } = request.auth;
+  const { data } = request.data;
+  
+  // Validate, process, return
+  return { success: true, result: data };
+});
+
+// 2. Export in index.ts
+// functions/src/index.ts
+export { myFunction } from './my-domain/my-function';
+
+// 3. Call from frontend
+import { httpsCallable } from 'firebase/functions';
+const myFunc = httpsCallable(functions, 'myFunction');
+const result = await myFunc({ data: 'value' });
+```
+
+### Add Bilingual Content
+```typescript
+// 1. Always add BOTH languages in translations.ts
+export const translations = {
+  'feature.label': { 
+    bg: 'Етикет на български', 
+    en: 'Label in English' 
+  },
+  'feature.description': { 
+    bg: 'Описание...', 
+    en: 'Description...' 
+  },
+};
+
+// 2. Use in component
+const { t } = useLanguage();
+<label>{t('feature.label')}</label>
+<p>{t('feature.description')}</p>
+
+// 3. Verify both languages work:
+// - Toggle language in header
+// - Check UI updates in real-time
+```
+
+### Deploy Changes
+```bash
+# 1. Commit to git
+git add .
+git commit -m "feat: add new feature"
+
+# 2. Build & test
+npm run build
+npm run test
+
+# 3. Deploy frontend
+npm run deploy
+
+# 4. Deploy functions (if changed)
+npm run deploy:functions
+
+# 5. Verify in production
+# - Check Firebase Hosting URL
+# - Test key workflows
+# - Monitor logs via Firebase Console
+```
+
+---
+
+1. **Provider Order**: Never reorder `AppProviders.tsx`—breaks auth/language/theme
+2. **Translation Keys**: Missing BG or EN → fallback chain issues; add **both languages**
+3. **Socket Cleanup**: Always `removeEventListener` in `useEffect` cleanup (prevents memory leaks)
+4. **Location Fields**: Never use deprecated `location`, `city`, `region`—use `locationData` only
+5. **Console Logs**: Never `console.*` in production—use `logger-service.ts` (enforced)
+6. **Build Process**: CRACO disables ESLint; rely on TypeScript compiler for errors
+7. **Service Duplication**: Extend existing services (103 exist) instead of creating duplicates
+8. **Image Optimization**: Use optimized versions from `assets/` hierarchy
+9. **Mobile Responsive**: Check `styles/mobile-responsive.css` for breakpoint overrides
+10. **Archive Files**: Never auto-delete `ARCHIVE/`—manual review required before recreating features
+11. **Monorepo Packages**: Paths (`@globul-cars/core`, `@globul-cars/services`) prepared in tsconfig but not yet fully implemented; currently use `src/services/`
+
+---
+
+## 📚 Essential Documentation
+
+### Quick Start
+- [DOCUMENTATION_ORGANIZED/MASTER_INDEX.md](DOCUMENTATION_ORGANIZED/MASTER_INDEX.md) ⭐ — Master index to all docs
+- [README.md](README.md) — Project overview
+- [START_HERE.md](DOCUMENTATION_ORGANIZED/01_ESSENTIAL/START_HERE.md) — Getting started guide
+- [INDEX.md](INDEX.md) — Complete file index
+
+### Guides
+- [DEPLOYMENT_READY_INSTRUCTIONS.md](DOCUMENTATION_ORGANIZED/02_GUIDES/DEPLOYMENT_READY_INSTRUCTIONS.md) — Pre-flight deployment checklist
+- [SECURITY.md](SECURITY.md) — Security policies + best practices
+- [firestore.rules](firestore.rules) & [storage.rules](storage.rules) — Security rules
+
+### Technical
+- [ARCHITECTURE_GUIDE.md](DOCUMENTATION_ORGANIZED/03_TECHNICAL/architecture/ARCHITECTURE_GUIDE.md) — Detailed architecture
+- [COMPLETE_REPAIR_PLAN_FINAL_DEC_15_2025.md](COMPLETE_REPAIR_PLAN_FINAL_DEC_15_2025.md) — Status report (96% complete)
+
+### Firebase Configuration
+- **Frontend**: `src/firebase/index.ts` (auto-detect long polling enabled, unlimited cache for offline-first)
+- **Environment vars**: `.env` in `bulgarian-car-marketplace/` root (Firebase, hCaptcha, Google Maps, Algolia)
+- **Never commit** `.env`; use `.env.example` for reference
+- **App Check**: Currently disabled (can enable later if needed)
+
+---
+
+## 🧠 VS Code Context Tips for AI Agents
+
+- **Start chats with `@workspace`** in Copilot Chat/Cursor to load full repo context
+- **Keep these files open** in tabs to boost model priority:
+  - `bulgarian-car-marketplace/src/providers/AppProviders.tsx`
+  - `bulgarian-car-marketplace/src/routes/`
+  - `bulgarian-car-marketplace/src/types/LocationData.ts`
+  - `bulgarian-car-marketplace/src/services/logger-service.ts`
+  - `functions/src/index.ts` + relevant domain folders
+- **Why**: Models prioritize open tabs + recent edits for context retrieval
 

@@ -18,7 +18,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { SellWorkflowData } from '../hooks/useSellWorkflow';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 
 export interface Draft {
   id: string;

@@ -13,7 +13,7 @@ import { db, functions } from '../firebase/firebase-config';
 import { httpsCallable } from 'firebase/functions';
 import { firebaseAuthUsersService } from './firebase-auth-users-service';
 import { firebaseAuthRealUsers } from './firebase-auth-real-users';
-import { serviceLogger } from './logger-wrapper';
+import { serviceLogger } from './logger-service';
 import { countAllVehicles, queryAllCollections } from './search/multi-collection-helper';
 
 // Firebase Real Data Service for Super Admin Dashboard

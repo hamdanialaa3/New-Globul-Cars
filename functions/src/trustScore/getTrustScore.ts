@@ -82,14 +82,15 @@ export const getTrustScore = onCall<{ userId?: string }>(async (request) => {
       badge: getTrustBadge(scoreResult.level),
       cached: false,
     };
-  } catch (error: any) {
-    logger.error('Failed to get trust score', { targetUserId, error });
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to get trust score', { targetUserId, error: err.message });
 
     if (error instanceof HttpsError) {
       throw error;
     }
 
-    throw new HttpsError('internal', `Failed to get trust score: ${error.message}`);
+    throw new HttpsError('internal', `Failed to get trust score: ${err.message}`);
   }
 });
 
@@ -146,8 +147,9 @@ export const recalculateTrustScore = onCall<{ userId: string }>(async (request) 
       ...scoreResult,
       badge: getTrustBadge(scoreResult.level),
     };
-  } catch (error: any) {
-    logger.error('Failed to recalculate trust score', { userId, error });
-    throw new HttpsError('internal', `Failed to recalculate trust score: ${error.message}`);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('Failed to recalculate trust score', { userId, error: err.message });
+    throw new HttpsError('internal', `Failed to recalculate trust score: ${err.message}`);
   }
 });

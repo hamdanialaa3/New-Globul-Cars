@@ -108,12 +108,13 @@ export const verifyEIK = onCall<{
       return result;
     }
 
-  } catch (error: any) {
-    logger.error('EIK verification error', error);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('EIK verification error', { error: err.message });
     
     throw new HttpsError(
       'internal',
-      `Failed to verify EIK: ${error.message}`
+      `Failed to verify EIK: ${err.message}`
     );
   }
 });
