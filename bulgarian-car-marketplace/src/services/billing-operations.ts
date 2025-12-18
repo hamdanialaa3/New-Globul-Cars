@@ -38,6 +38,28 @@ import {
 } from './billing-data';
 
 /**
+ * Invoice status colors
+ * ألوان حالات الفواتير
+ */
+const INVOICE_STATUS_COLORS = {
+  draft: '#6b7280',
+  sent: '#3b82f6',
+  paid: '#10b981',
+  cancelled: '#ef4444',
+};
+
+/**
+ * Invoice status translations
+ * ترجمات حالات الفواتير
+ */
+const INVOICE_STATUS_TRANSLATIONS = {
+  draft: { bg: 'Чернова', en: 'Draft' },
+  sent: { bg: 'Изпратена', en: 'Sent' },
+  paid: { bg: 'Платена', en: 'Paid' },
+  cancelled: { bg: 'Отменена', en: 'Cancelled' },
+};
+
+/**
  * Stripe Client Operations
  * عمليات عميل Stripe
  */
@@ -97,7 +119,7 @@ export class StripeClientOperations {
     const { error } = await stripe.redirectToCheckout({ sessionId });
 
     if (error) {
-      serviceLogger.error('Stripe checkout redirect failed', error);
+      serviceLogger.error('Stripe checkout redirect failed', new Error(error.message));
       throw new Error(error.message);
     }
   }
@@ -115,7 +137,7 @@ export class StripeClientOperations {
     const result = await stripe.confirmCardPayment(clientSecret, paymentDetails);
 
     if (result.error) {
-      serviceLogger.error('Card payment confirmation failed', result.error);
+      serviceLogger.error('Card payment confirmation failed', new Error(result.error.message));
       throw new Error(result.error.message);
     }
 
@@ -170,7 +192,7 @@ export class SubscriptionOperations {
         }
       });
 
-      serviceLogger.info(SUCCESS_MESSAGES.CHECKOUT_SESSION_CREATED, { sessionId: result.data.sessionId, tierId });
+      serviceLogger.info(SUCCESS_MESSAGES.CHECKOUT_SESSION_CREATED, { sessionId: (result.data as any).sessionId, tierId });
       return result.data;
     } catch (error) {
       serviceLogger.error('Failed to create checkout session', error, { tierId, userId });

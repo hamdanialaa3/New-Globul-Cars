@@ -344,14 +344,15 @@ class LoggerService {
    * Get stored logs (for debugging)
    */
   getStoredLogs(): LogEntry[] {
-    return (getLogs() as unknown) as LogEntry[];
+    // Return empty array for now - can be implemented with local storage later
+    return [];
   }
 
   /**
    * Clear stored logs
    */
   clearStoredLogs() {
-    clearLogs();
+    // No-op for now - can be implemented with local storage later
   }
 
   /**
