@@ -1,277 +1,78 @@
-import { 
-  collection, 
-  query, 
-  where, 
-  orderBy, 
-  limit, 
-  getDocs, 
-  doc, 
-  getDoc,
-  updateDoc,
-  onSnapshot,
-  Unsubscribe
-} from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
-import { CarListing } from '../types/CarListing';
+// dashboard-service.ts
+// Orchestrator service for dashboard functionality
+
 import { serviceLogger } from './logger-service';
-import { queryAllCollections } from './search/multi-collection-helper';
 
-export interface DashboardStats {
-  totalListings: number;
-  activeListings: number;
-  soldListings: number;
-  pendingListings: number;
-  totalViews: number;
-  potentialSales: number;
-  weeklyViews: number;
-}
+import {
+  DashboardStats,
+  DashboardCar,
+  DashboardMessage,
+  DashboardNotification,
+  DashboardUpdateCallbacks
+} from './dashboard-types';
+import { DEFAULT_DASHBOARD_STATS } from './dashboard-data';
+import {
+  StatsOperations,
+  CarsOperations,
+  MessagesOperations,
+  NotificationsOperations,
+  RealtimeOperations
+} from './dashboard-operations';
 
-export interface DashboardMessage {
-  id: string;
-  senderId: string;
-  senderName: string;
-  carId: string;
-  carTitle: string;
-  message: string;
-  timestamp: Date;
-  isRead: boolean;
-}
+export class DashboardService {
+  private static instance: DashboardService;
 
-export interface DashboardNotification {
-  id: string;
-  type: 'listing_approved' | 'new_inquiry' | 'price_update' | 'system';
-  title: string;
-  message: string;
-  timestamp: Date;
-  isRead: boolean;
-  carId?: string;
-}
+  private constructor() {}
 
-export interface DashboardCar {
-  id: string;
-  title: string;
-  make: string;
-  model: string;
-  year: number;
-  price: number;
-  status: 'active' | 'pending' | 'sold' | 'draft';
-  views: number;
-  inquiries: number;
-  createdAt: Date;
-  updatedAt: Date;
-  imageUrl?: string;
-}
-
-class DashboardService {
-  private unsubscribeFunctions: Unsubscribe[] = [];
+  public static getInstance(): DashboardService {
+    if (!DashboardService.instance) {
+      DashboardService.instance = new DashboardService();
+    }
+    return DashboardService.instance;
+  }
 
   // Get dashboard statistics
   async getDashboardStats(userId: string | null | undefined): Promise<DashboardStats> {
-    // ✅ FIX: Guard against null/undefined userId
+    // Guard against null/undefined userId
     if (!userId) {
       serviceLogger.warn('[DashboardService] getDashboardStats called with null/undefined userId');
-      return {
-        totalListings: 0,
-        activeListings: 0,
-        soldListings: 0,
-        pendingListings: 0,
-        totalViews: 0,
-        potentialSales: 0,
-        weeklyViews: 0
-      };
+      return DEFAULT_DASHBOARD_STATS;
     }
 
-    try {
-      // Get user's cars - ✅ ALL COLLECTIONS
-      const cars = await queryAllCollections(
-        where('sellerId', '==', userId)
-      ) as CarListing[];
-
-      // Calculate stats
-      const totalListings = cars.length;
-      const activeListings = cars.filter(car => car.status === 'active').length;
-      const soldListings = cars.filter(car => car.status === 'sold').length;
-      const pendingListings = cars.filter(car => car.status === 'draft').length;
-      
-      const totalViews = cars.reduce((sum, car) => sum + (car.views || 0), 0);
-      const potentialSales = cars
-        .filter(car => car.status === 'active')
-        .reduce((sum, car) => sum + car.price, 0);
-
-      // Get weekly stats (last 7 days)
-      const oneWeekAgo = new Date();
-      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-      
-      const weeklyCars = cars.filter(car => 
-        car.createdAt && car.createdAt >= oneWeekAgo
-      );
-      
-      const weeklyViews = weeklyCars.reduce((sum, car) => sum + (car.views || 0), 0);
-
-      return {
-        totalListings,
-        activeListings,
-        soldListings,
-        pendingListings,
-        totalViews,
-        potentialSales,
-        weeklyViews
-      };
-    } catch (error) {
-      serviceLogger.error('[SERVICE] Error fetching dashboard stats', error as Error, { userId });
-      throw error;
-    }
+    return StatsOperations.getDashboardStats(userId);
   }
 
   // Get recent cars
   async getRecentCars(userId: string | null | undefined, limitCount: number = 5): Promise<DashboardCar[]> {
-    // ✅ FIX: Guard against null/undefined userId
+    // Guard against null/undefined userId
     if (!userId) {
       serviceLogger.warn('[DashboardService] getRecentCars called with null/undefined userId');
       return [];
     }
 
-    try {
-      // Get user's cars - ✅ ALL COLLECTIONS
-      const cars = await queryAllCollections(
-        where('sellerId', '==', userId),
-        orderBy('updatedAt', 'desc'),
-        limit(limitCount)
-      ) as DashboardCar[];
-      
-      return cars.map(car => ({
-        id: car.id,
-        title: car.title || `${car.make} ${car.model}`,
-        make: car.make || '',
-        model: car.model || '',
-        year: car.year || 0,
-        price: car.price || 0,
-        status: car.status || 'draft',
-        views: car.views || 0,
-        inquiries: car.inquiries || 0,
-        createdAt: car.createdAt || new Date(),
-        updatedAt: car.updatedAt || new Date(),
-        imageUrl: car.imageUrl
-      }));
-    } catch (error) {
-      const code = (error as { code?: string })?.code;
-      if (code === 'permission-denied') {
-        serviceLogger.warn('[DashboardService] Permission denied for recent cars - check Firestore rules');
-        return [];
-      }
-      if (code === 'failed-precondition') {
-        serviceLogger.warn('[DashboardService] Recent cars index building in progress');
-        return [];
-      }
-      serviceLogger.error('[SERVICE] Error fetching recent cars', error as Error, { userId });
-      return [];
-    }
+    return CarsOperations.getRecentCars(userId, limitCount);
   }
 
   // Get recent messages
   async getRecentMessages(userId: string | null | undefined, limitCount: number = 5): Promise<DashboardMessage[]> {
-    // ✅ FIX: Guard against null/undefined userId
+    // Guard against null/undefined userId
     if (!userId) {
       serviceLogger.warn('[DashboardService] getRecentMessages called with null/undefined userId');
       return [];
     }
 
-    try {
-      const messagesQuery = query(
-        collection(db, 'messages'),
-        where('receiverId', '==', userId),
-        orderBy('timestamp', 'desc'),
-        limit(limitCount)
-      );
-      
-      const messagesSnapshot = await getDocs(messagesQuery);
-      
-      const messages = await Promise.all(
-        messagesSnapshot.docs.map(async (messageDoc) => {
-          const data = messageDoc.data();
-          
-          // Get sender info
-          const senderRef = doc(db, 'users', data.senderId);
-          const senderDoc = await getDoc(senderRef);
-          const senderData = senderDoc.data();
-          
-          // Get car info
-          const carRef = doc(db, 'cars', data.carId);
-          const carDoc = await getDoc(carRef);
-          const carData = carDoc.data();
-          
-          return {
-            id: messageDoc.id,
-            senderId: data.senderId,
-            senderName: senderData?.displayName || senderData?.email || 'Unknown',
-            carId: data.carId,
-            carTitle: carData?.title || `${carData?.make} ${carData?.model}` || 'Unknown Car',
-            message: data.text || '',
-            timestamp: data.timestamp?.toDate() || new Date(),
-            isRead: data.isRead || false
-          };
-        })
-      );
-      
-      return messages;
-    } catch (error) {
-      const code = (error as { code?: string })?.code;
-      if (code === 'permission-denied') {
-        serviceLogger.warn('[DashboardService] Permission denied for recent messages - check Firestore rules');
-        return [];
-      }
-      if (code === 'failed-precondition') {
-        serviceLogger.warn('[DashboardService] Recent messages index building');
-        return [];
-      }
-      serviceLogger.error('[SERVICE] Error fetching recent messages', error as Error, { userId });
-      return [];
-    }
+    return MessagesOperations.getRecentMessages(userId, limitCount);
   }
 
   // Get notifications
   async getNotifications(userId: string | null | undefined, limitCount: number = 5): Promise<DashboardNotification[]> {
-    // ✅ FIX: Guard against null/undefined userId
+    // Guard against null/undefined userId
     if (!userId) {
       serviceLogger.warn('[DashboardService] getNotifications called with null/undefined userId');
       return [];
     }
 
-    try {
-      const notificationsQuery = query(
-        collection(db, 'notifications'),
-        where('userId', '==', userId),
-        orderBy('timestamp', 'desc'),
-        limit(limitCount)
-      );
-      
-      const notificationsSnapshot = await getDocs(notificationsQuery);
-      
-      return notificationsSnapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          type: data.type || 'system',
-          title: data.title || 'Notification',
-          message: data.message || '',
-          timestamp: data.timestamp?.toDate() || new Date(),
-          isRead: data.isRead || false,
-          carId: data.carId || undefined
-        };
-      });
-    } catch (error) {
-      const code = (error as { code?: string })?.code;
-      if (code === 'permission-denied') {
-        serviceLogger.warn('[DashboardService] Permission denied for notifications - check Firestore rules');
-        return [];
-      }
-      if (code === 'failed-precondition') {
-        serviceLogger.warn('[DashboardService] Notifications index building');
-        return [];
-      }
-      serviceLogger.error('[SERVICE] Error fetching notifications', error as Error, { userId });
-      return [];
-    }
+    return NotificationsOperations.getNotifications(userId, limitCount);
   }
 
   // Real-time updates
@@ -282,189 +83,28 @@ class DashboardService {
     onMessagesUpdate: (messages: DashboardMessage[]) => void,
     onNotificationsUpdate: (notifications: DashboardNotification[]) => void
   ): () => void {
-    // ✅ FIX: Guard against null/undefined userId
+    // Guard against null/undefined userId
     if (!userId) {
       serviceLogger.warn('[DashboardService] subscribeToDashboardUpdates called with null/undefined userId');
       return () => {}; // Return empty unsubscribe function
     }
 
-    // Note: Multi-collection queries don't support onSnapshot, so we'll poll for cars
-    // and use real-time listeners only for messages/notifications
-    const messagesQueryRef = query(
-      collection(db, 'messages'),
-      where('receiverId', '==', userId),
-      orderBy('timestamp', 'desc'),
-      limit(5)
-    );
-    const notificationsQueryRef = query(
-      collection(db, 'notifications'),
-      where('userId', '==', userId),
-      orderBy('timestamp', 'desc'),
-      limit(5)
-    );
-
-    const preflightCheck = async () => {
-      try {
-        await Promise.all([
-          getDocs(messagesQueryRef),
-          getDocs(notificationsQueryRef)
-        ]);
-        return true;
-      } catch (err: any) {
-        const code = err?.code;
-        if (code === 'failed-precondition') {
-          serviceLogger.warn('[DashboardService] Firestore indexes still building - retrying listener attachment');
-          return false;
-        }
-        if (code === 'permission-denied') {
-          serviceLogger.warn('[DashboardService] Permission denied during preflight - check rules');
-          return false;
-        }
-        serviceLogger.error('[SERVICE] [DashboardService] Unexpected preflight error', err as Error);
-        return false;
-      }
-    };
-
-    let cancelled = false;
-    let carsPollingInterval: NodeJS.Timeout | null = null;
-    
-    const attachListeners = () => {
-      if (cancelled) return;
-      
-      // Poll cars data every 10 seconds (can't use onSnapshot with multi-collection)
-      const pollCars = async () => {
-        try {
-          const cars = await this.getRecentCars(userId, 5);
-          onCarsUpdate(cars);
-          const stats = await this.calculateStatsFromCars(cars);
-          onStatsUpdate(stats);
-        } catch (error) {
-          serviceLogger.error('[SERVICE] Error polling cars', error as Error);
-        }
-      };
-      pollCars(); // Initial fetch
-      carsPollingInterval = setInterval(pollCars, 10000);
-
-      const messagesUnsub = onSnapshot(messagesQueryRef, async (snapshot) => {
-        const messages = await Promise.all(
-          snapshot.docs.map(async (messageDoc) => {
-            const data = messageDoc.data();
-            const senderRef = doc(db, 'users', data.senderId);
-            const senderDoc = await getDoc(senderRef);
-            const senderData = senderDoc.data();
-            const carRef = doc(db, 'cars', data.carId);
-            const carDoc = await getDoc(carRef);
-            const carData = carDoc.data();
-            return {
-              id: messageDoc.id,
-              senderId: data.senderId,
-              senderName: senderData?.displayName || senderData?.email || 'Unknown',
-              carId: data.carId,
-              carTitle: carData?.title || `${carData?.make} ${carData?.model}` || 'Unknown Car',
-              message: data.text || '',
-              timestamp: data.timestamp?.toDate() || new Date(),
-              isRead: data.isRead || false
-            };
-          })
-        );
-        onMessagesUpdate(messages);
-      }, (err) => {
-        serviceLogger.warn('[DashboardService] Messages snapshot error', { error: err });
-      });
-
-      const notificationsUnsub = onSnapshot(notificationsQueryRef, (snapshot) => {
-        const notifications = snapshot.docs.map(doc => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            type: data.type || 'system',
-            title: data.title || 'Notification',
-            message: data.message || '',
-            timestamp: data.timestamp?.toDate() || new Date(),
-            isRead: data.isRead || false,
-            carId: data.carId || undefined
-          };
-        });
-        onNotificationsUpdate(notifications);
-      }, (err) => {
-        serviceLogger.warn('[DashboardService] Notifications snapshot error', { error: err });
-      });
-
-      this.unsubscribeFunctions = [messagesUnsub, notificationsUnsub];
-    };
-
-    // Retry loop with exponential-ish backoff (fixed step + cap)
-    let attempt = 0;
-    const tryAttach = async () => {
-      if (cancelled) return;
-      const ready = await preflightCheck();
-      if (ready) {
-        attachListeners();
-      } else {
-        attempt++;
-        const delay = Math.min(5000, 1000 + attempt * 1000);
-        setTimeout(tryAttach, delay);
-      }
-    };
-    tryAttach();
-
-    return () => {
-      cancelled = true;
-      if (carsPollingInterval) clearInterval(carsPollingInterval);
-      this.unsubscribeFunctions.forEach(u => u && u());
-      this.unsubscribeFunctions = [];
-    };
-  }
-
-  private async calculateStatsFromCars(cars: DashboardCar[]): Promise<DashboardStats> {
-    const totalListings = cars.length;
-    const activeListings = cars.filter(car => car.status === 'active').length;
-    const soldListings = cars.filter(car => car.status === 'sold').length;
-    const pendingListings = cars.filter(car => car.status === 'pending').length;
-    
-    const totalViews = cars.reduce((sum, car) => sum + car.views, 0);
-    const potentialSales = cars
-      .filter(car => car.status === 'active')
-      .reduce((sum, car) => sum + car.price, 0);
-
-    // Get weekly stats (last 7 days)
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-    
-    const weeklyCars = cars.filter(car => car.createdAt >= oneWeekAgo);
-    const weeklyViews = weeklyCars.reduce((sum, car) => sum + car.views, 0);
-
-    return {
-      totalListings,
-      activeListings,
-      soldListings,
-      pendingListings,
-      totalViews,
-      potentialSales,
-      weeklyViews
-    };
+    return RealtimeOperations.subscribeToDashboardUpdates(userId, {
+      onStatsUpdate,
+      onCarsUpdate,
+      onMessagesUpdate,
+      onNotificationsUpdate
+    });
   }
 
   // Mark message as read
   async markMessageAsRead(messageId: string): Promise<void> {
-    try {
-      const messageRef = doc(db, 'messages', messageId);
-      await updateDoc(messageRef, { isRead: true });
-    } catch (error) {
-      serviceLogger.error('[SERVICE] Error marking message as read', error as Error, { messageId });
-      throw error;
-    }
+    return MessagesOperations.markMessageAsRead(messageId);
   }
 
   // Mark notification as read
   async markNotificationAsRead(notificationId: string): Promise<void> {
-    try {
-      const notificationRef = doc(db, 'notifications', notificationId);
-      await updateDoc(notificationRef, { isRead: true });
-    } catch (error) {
-      serviceLogger.error('[SERVICE] Error marking notification as read', error as Error, { notificationId });
-      throw error;
-    }
+    return NotificationsOperations.markNotificationAsRead(notificationId);
   }
 
   /**
@@ -483,141 +123,14 @@ class DashboardService {
     onMessagesUpdate: (messages: DashboardMessage[]) => void,
     onNotificationsUpdate: (notifications: DashboardNotification[]) => void
   ): () => void {
-    // Preflight: wait for indexes to be ready before attaching realtime listeners (reduces console spam)
-    // Note: Multi-collection queries don't use onSnapshot, so we'll use polling for cars
-    const messagesQueryRef = query(
-      collection(db, 'messages'),
-      where('receiverId', '==', userId),
-      orderBy('timestamp', 'desc'),
-      limit(5)
+    return this.subscribeToDashboardUpdates(
+      userId,
+      onStatsUpdate,
+      onCarsUpdate,
+      onMessagesUpdate,
+      onNotificationsUpdate
     );
-    const notificationsQueryRef = query(
-      collection(db, 'notifications'),
-      where('userId', '==', userId),
-      orderBy('timestamp', 'desc'),
-      limit(5)
-    );
-
-    const preflightCheck = async () => {
-      try {
-        await Promise.all([
-          getDocs(carsQueryRef),
-          getDocs(messagesQueryRef),
-          getDocs(notificationsQueryRef)
-        ]);
-        return true;
-      } catch (err: any) {
-        const code = err?.code;
-        if (code === 'failed-precondition') {
-          serviceLogger.warn('[DashboardService] Firestore indexes still building - retrying listener attachment');
-          return false;
-        }
-        if (code === 'permission-denied') {
-          serviceLogger.warn('[DashboardService] Permission denied during preflight - check rules');
-          return false;
-        }
-        serviceLogger.error('[SERVICE] [DashboardService] Unexpected preflight error', err as Error);
-        return false;
-      }
-    };
-
-    let cancelled = false;
-    const attachListeners = () => {
-      if (cancelled) return;
-      const carsUnsub = onSnapshot(carsQueryRef, async (snapshot) => {
-        const cars = snapshot.docs.map(doc => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            title: data.title || `${data.make} ${data.model}`,
-            make: data.make || '',
-            model: data.model || '',
-            year: data.year || 0,
-            price: data.price || 0,
-            status: data.status || 'draft',
-            views: data.views || 0,
-            inquiries: data.inquiries || 0,
-            createdAt: data.createdAt?.toDate() || new Date(),
-            updatedAt: data.updatedAt?.toDate() || new Date(),
-            imageUrl: data.images?.[0] || undefined
-          };
-        });
-        onCarsUpdate(cars);
-        const stats = await this.calculateStatsFromCars(cars);
-        onStatsUpdate(stats);
-      }, (err) => {
-        serviceLogger.warn('[DashboardService] Cars snapshot error', { error: err });
-      });
-
-      const messagesUnsub = onSnapshot(messagesQueryRef, async (snapshot) => {
-        const messages = await Promise.all(
-          snapshot.docs.map(async (messageDoc) => {
-            const data = messageDoc.data();
-            const senderRef = doc(db, 'users', data.senderId);
-            const senderDoc = await getDoc(senderRef);
-            const senderData = senderDoc.data();
-            const carRef = doc(db, 'cars', data.carId);
-            const carDoc = await getDoc(carRef);
-            const carData = carDoc.data();
-            return {
-              id: messageDoc.id,
-              senderId: data.senderId,
-              senderName: senderData?.displayName || senderData?.email || 'Unknown',
-              carId: data.carId,
-              carTitle: carData?.title || `${carData?.make} ${carData?.model}` || 'Unknown Car',
-              message: data.text || '',
-              timestamp: data.timestamp?.toDate() || new Date(),
-              isRead: data.isRead || false
-            };
-          })
-        );
-        onMessagesUpdate(messages);
-      }, (err) => {
-        serviceLogger.warn('[DashboardService] Messages snapshot error', { error: err });
-      });
-
-      const notificationsUnsub = onSnapshot(notificationsQueryRef, (snapshot) => {
-        const notifications = snapshot.docs.map(doc => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            type: data.type || 'system',
-            title: data.title || 'Notification',
-            message: data.message || '',
-            timestamp: data.timestamp?.toDate() || new Date(),
-            isRead: data.isRead || false,
-            carId: data.carId || undefined
-          };
-        });
-        onNotificationsUpdate(notifications);
-      }, (err) => {
-        serviceLogger.warn('[DashboardService] Notifications snapshot error', { error: err });
-      });
-
-      this.unsubscribeFunctions = [carsUnsub, messagesUnsub, notificationsUnsub];
-    };
-
-    // Retry loop with exponential-ish backoff (fixed step + cap)
-    let attempt = 0;
-    const tryAttach = async () => {
-      if (cancelled) return;
-      const ready = await preflightCheck();
-      if (ready) {
-        attachListeners();
-      } else {
-        attempt++;
-        const delay = Math.min(5000, 1000 + attempt * 1000);
-        setTimeout(tryAttach, delay);
-      }
-    };
-    tryAttach();
-
-    return () => {
-      cancelled = true;
-      this.unsubscribeFunctions.forEach(u => u && u());
-      this.unsubscribeFunctions = [];
-    };
   }
 }
 
-export const dashboardService = new DashboardService();
+export const dashboardService = DashboardService.getInstance();
