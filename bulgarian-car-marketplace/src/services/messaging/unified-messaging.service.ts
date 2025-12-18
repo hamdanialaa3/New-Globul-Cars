@@ -10,11 +10,11 @@
  * @since 2025-11-03 (Phase 1.3)
  */
 
-// Re-export everything from realtimeMessaging as the canonical source
-export * from '../realtimeMessaging';
-export { default as messagingService } from '../realtimeMessaging';
+// Re-export everything from realtime-messaging-service as the canonical source
+export * from '../realtime-messaging-service';
+export { realtimeMessagingService as messagingService } from '../realtime-messaging-service';
 
 // For backward compatibility, also export as UnifiedMessagingService
-import realtimeMessaging from '../realtimeMessaging';
-export const unifiedMessagingService = realtimeMessaging;
+import { realtimeMessagingService } from '../realtime-messaging-service';
+export const unifiedMessagingService = realtimeMessagingService;
 
