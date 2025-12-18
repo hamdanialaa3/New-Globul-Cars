@@ -27,7 +27,7 @@ import AccountStatusLED from '../../../../../components/Profile/AccountStatusLED
 import EmailVerificationFlow from '../../../../../components/Profile/EmailVerificationFlow';
 import PhoneVerificationFlow from '../../../../../components/Profile/PhoneVerificationFlow';
 import { profileService } from '../../../../../services/profile/UnifiedProfileService';
-import { unifiedCarService } from '../../../../../services/car/unified-car.service';
+import { unifiedCarService } from '../../../../../services/car/unified-car-service';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { storage, auth, db } from '../../../../../firebase/firebase-config';
 import { toast } from 'react-toastify';

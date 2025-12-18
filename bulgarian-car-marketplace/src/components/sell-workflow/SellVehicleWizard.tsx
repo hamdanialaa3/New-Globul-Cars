@@ -283,7 +283,7 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
         try {
           clearWorkflowData();
 
-          const { unifiedCarService } = await import('../../services/car/unified-car.service');
+          const { unifiedCarService } = await import('../../services/car/unified-car-service');
           const car = await unifiedCarService.getCarById(existingCarId);
 
           if (car) {
@@ -511,7 +511,7 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
         }
 
         if (mode === 'edit' && existingCarId) {
-          const { unifiedCarService } = await import('../../services/car/unified-car.service');
+          const { unifiedCarService } = await import('../../services/car/unified-car-service');
           // For update, we pass the merged payload.
 
           // Upload new images logic...

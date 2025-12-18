@@ -4,7 +4,7 @@
 import React, { useState , memo} from 'react';
 import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 import styled from 'styled-components';
-import { UnifiedCar } from '../services/car/unified-car.service';
+import { UnifiedCar } from '../services/car/unified-car-types';
 
 const MapContainer = styled.div`
   width: 100%;

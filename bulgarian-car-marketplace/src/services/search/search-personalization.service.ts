@@ -14,7 +14,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { CarListing } from '../../types/CarListing';
-import { UnifiedCar } from '../car/unified-car.service';
+import { UnifiedCar } from '../car/unified-car-types';
 import { serviceLogger } from '../logger-service';
 
 interface UserPreferences {

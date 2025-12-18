@@ -11,7 +11,7 @@ import { useLanguage } from '../../../../contexts/LanguageContext';
 import { ProfileMediaService } from '../../../../services/profile/ProfileMediaService';
 import { updateProfile } from 'firebase/auth';
 import { useToast } from '../../../../components/Toast';
-import { unifiedCarService } from '../../../../services/car/unified-car.service';
+import { unifiedCarService } from '../../../../services/car/unified-car-service';
 import { logger } from '../../../../services/logger-service';
 import * as S from './ProfileSettingsMobileDe.styles';
 

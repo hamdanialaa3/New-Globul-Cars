@@ -2,7 +2,7 @@
 // Unit Tests for Unified Car Service
 // Coverage Target: 80%+
 
-import { UnifiedCarService } from '../unified-car.service';
+import { UnifiedCarService } from '../unified-car-service';
 import { collection, query, where, getDocs, getDoc, doc } from 'firebase/firestore';
 
 // Mock Firestore

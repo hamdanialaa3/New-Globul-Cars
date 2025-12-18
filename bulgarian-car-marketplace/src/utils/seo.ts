@@ -1,7 +1,7 @@
 // src/utils/seo.ts
 // SEO utilities for Bulgarian Car Marketplace
 
-import { UnifiedCar } from '../services/car/unified-car.service';
+import { UnifiedCar } from '../services/car/unified-car-types';
 
 // Generate meta tags for car pages
 export const generateCarMetaTags = (car: UnifiedCar) => {
