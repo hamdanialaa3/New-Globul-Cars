@@ -315,10 +315,11 @@ export class PaymentRetryManager {
         const result = await operation();
         this.reset();
         return result;
-      } catch (error: any) {
-        const paymentError = (error && error.type)
-          ? PaymentErrorHandler.handleStripeError(error)
-          : PaymentErrorHandler.handleGenericError(error);
+      } catch (error: unknown) {
+        const stripeError = error as { type?: string; code?: string; message?: string };
+        const paymentError = (stripeError && stripeError.type)
+          ? PaymentErrorHandler.handleStripeError(stripeError)
+          : PaymentErrorHandler.handleGenericError(error instanceof Error ? error : new Error(String(error)));
 
         this.lastError = paymentError;
         this.retryCount++;

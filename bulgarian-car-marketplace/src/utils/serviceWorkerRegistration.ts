@@ -21,7 +21,7 @@ export function registerServiceWorker(config?: ServiceWorkerConfig): void {
       navigator.serviceWorker
         .register(swUrl)
         .then((registration) => {
-          logger.info('✅ Service Worker registered successfully:', registration.scope);
+          logger.info('✅ Service Worker registered successfully:', { scope: registration.scope });
 
           // Check for updates every hour
           setInterval(() => {
@@ -39,19 +39,19 @@ export function registerServiceWorker(config?: ServiceWorkerConfig): void {
                 if (navigator.serviceWorker.controller) {
                   // New update available
                   logger.info('🔄 New content available; please refresh.');
-                  
+
                   if (config?.onUpdate) {
                     config.onUpdate(registration);
                   } else {
                     // Default: prompt user to refresh
-                    if (window.confirm('نسخة جديدة متاحة! هل تريد تحديث الصفحة؟')) {
+                    if (window.confirm('Нова версия е налична! Искате ли да опресните страницата? / New version available! Do you want to refresh?')) {
                       window.location.reload();
                     }
                   }
                 } else {
                   // Content cached for offline use
                   logger.info('✅ Content is cached for offline use.');
-                  
+
                   if (config?.onSuccess) {
                     config.onSuccess(registration);
                   }
@@ -62,7 +62,7 @@ export function registerServiceWorker(config?: ServiceWorkerConfig): void {
         })
         .catch((error) => {
           logger.error('❌ Service Worker registration failed:', error);
-          
+
           if (config?.onError) {
             config.onError(error);
           }
@@ -103,7 +103,7 @@ export async function checkForUpdates(): Promise<boolean> {
         return registration.waiting !== null;
       }
     } catch (error) {
-      logger.error('Error checking for updates:', error);
+      logger.error('Error checking for updates:', error as Error);
     }
   }
   return false;
@@ -123,7 +123,7 @@ export async function getCacheStats(): Promise<{
       for (const cacheName of cacheNames) {
         const cache = await caches.open(cacheName);
         const requests = await cache.keys();
-        
+
         for (const request of requests) {
           const response = await cache.match(request);
           if (response) {
@@ -139,7 +139,7 @@ export async function getCacheStats(): Promise<{
         cacheNames: cacheNames,
       };
     } catch (error) {
-      logger.error('Error getting cache stats:', error);
+      logger.error('Error getting cache stats:', error as Error);
     }
   }
 

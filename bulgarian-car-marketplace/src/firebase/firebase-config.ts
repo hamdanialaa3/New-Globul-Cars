@@ -3,7 +3,7 @@
 
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { initializeFirestore, CACHE_SIZE_UNLIMITED } from 'firebase/firestore';
+import { initializeFirestore, memoryLocalCache } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getFunctions } from 'firebase/functions';
 import { getAnalytics, Analytics } from 'firebase/analytics';
@@ -70,21 +70,15 @@ try {
 }
 export { auth };
 
-// Initialize Firestore with custom settings to prevent state errors
-// OPTIMIZED: Cache enabled for better performance
+// FIX: Explicitly using memory cache to prevent "INTERNAL ASSERTION FAILED"
+// This forces the app to ignore any corrupted IndexedDB data.
 let db: any;
 try {
-  if (typeof initializeFirestore === 'function') {
-    db = initializeFirestore(app, {
-      cacheSizeBytes: CACHE_SIZE_UNLIMITED,
-      ignoreUndefinedProperties: true,
-      experimentalAutoDetectLongPolling: true,  // Better connection handling
-      experimentalForceLongPolling: false        // Auto-detect for best performance
-    });
-  } else {
-    db = {};
-  }
-  logger.info('Firestore initialized successfully');
+  db = initializeFirestore(app, {
+    localCache: memoryLocalCache(),
+    ignoreUndefinedProperties: true
+  });
+  logger.info('Firestore initialized with MEMORY CACHE (Persistence Disabled)');
 } catch (error) {
   logger.error('Failed to initialize Firestore', error as Error);
   db = {};
@@ -101,13 +95,13 @@ export { appCheck };
 // Initialize Analytics (only in production and if measurement ID is provided)
 const analytics: Analytics | null = (typeof window !== 'undefined' && process.env.VITE_FIREBASE_MEASUREMENT_ID)
   ? (() => {
-      try {
-        return getAnalytics(app);
-      } catch (error) {
-        logger.warn('Analytics initialization failed', { error: (error as Error)?.message });
-        return null;
-      }
-    })()
+    try {
+      return getAnalytics(app);
+    } catch (error) {
+      logger.warn('Analytics initialization failed', { error: (error as Error)?.message });
+      return null;
+    }
+  })()
   : null;
 export { analytics };
 

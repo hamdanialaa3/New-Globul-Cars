@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { SellVehicleWizard } from '../../components/sell-workflow/SellVehicleWizard';
+import { SellVehicleWizard } from '../../components/SellWorkflow/SellVehicleWizard';
 
 const PageContainer = styled.div`
   min-height: 100vh;

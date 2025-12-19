@@ -67,32 +67,32 @@ export interface VehicleFormData {
 }
 
 export const FUEL_TYPES = [
-  'Petrol', 'Diesel', 'Electric', 'Hybrid', 'LPG', 'CNG', 'Hydrogen'
+  'Бензин (Petrol)', 'Дизел (Diesel)', 'Електрически (Electric)', 'Хибрид (Hybrid)', 'Газ/Бензин (LPG)', 'Метан (CNG)', 'Водород (Hydrogen)'
 ];
 
 export const TRANSMISSION_TYPES = [
-  'Manual', 'Automatic', 'Semi-automatic'
+  'Ръчна (Manual)', 'Автоматична (Automatic)', 'Полуавтоматична (Semi-auto)'
 ];
 
 export const COLORS = [
-  'Black', 'White', 'Silver', 'Gray', 'Red', 'Blue',
-  'Green', 'Yellow', 'Orange', 'Brown', 'Beige', 'Other'
+  'Черен (Black)', 'Бял (White)', 'Сребрист (Silver)', 'Сив (Gray)', 'Червен (Red)', 'Син (Blue)',
+  'Зелен (Green)', 'Жълт (Yellow)', 'Оранжев (Orange)', 'Кафяв (Brown)', 'Бежов (Beige)', 'Друг (Other)'
 ];
 
-export const DOOR_OPTIONS = ['2', '3', '4', '5', '6+'];
-export const SEAT_OPTIONS = ['2', '4', '5', '6', '7', '8+'];
-export const OWNER_OPTIONS = ['1', '2', '3', '4', '5+'];
+export const DOOR_OPTIONS = ['2/3', '4/5', '6+']; // Popular shorthand
+export const SEAT_OPTIONS = ['1', '2', '3', '4', '5', '6', '7', '8', '9+'];
+export const OWNER_OPTIONS = ['1', '2', '3', '4+'];
 
 // Body Type Options - خيارات نوع الهيكل
 export const BODY_TYPES = [
   { value: 'sedan', labelBg: 'Седан', labelEn: 'Sedan' },
-  { value: 'suv', labelBg: 'Джип / SUV', labelEn: 'SUV' },
+  { value: 'suv', labelBg: 'Джип', labelEn: 'SUV' }, // "Jeep" is generic for SUV in BG
   { value: 'hatchback', labelBg: 'Хечбек', labelEn: 'Hatchback' },
-  { value: 'coupe', labelBg: 'Купе', labelEn: 'Coupe' },
   { value: 'wagon', labelBg: 'Комби', labelEn: 'Wagon' },
+  { value: 'coupe', labelBg: 'Купе', labelEn: 'Coupe' },
   { value: 'convertible', labelBg: 'Кабрио', labelEn: 'Convertible' },
   { value: 'pickup', labelBg: 'Пикап', labelEn: 'Pickup' },
-  { value: 'minivan', labelBg: 'Миниван', labelEn: 'Minivan' },
+  { value: 'minivan', labelBg: 'Ван / Миниван', labelEn: 'Minivan' },
   { value: 'other', labelBg: 'Друг', labelEn: 'Other' }
 ];
 
@@ -103,16 +103,16 @@ export const ANNUAL_MILEAGE_OPTIONS = [
 
 // Common exterior colors - Pеална палитра от цветове
 export const EXTERIOR_COLORS = [
-  'Black', 'White', 'Silver', 'Gray', 'Metallic Gray', 'Dark Gray', 'Matte Black', 'Pearl White',
-  'Red', 'Cherry Red', 'Dark Red', 'Burgundy', 'Wine Red',
-  'Blue', 'Dark Blue', 'Navy Blue', 'Metallic Blue', 'Sky Blue', 'Teal', 'Turquoise', 'Cyan',
-  'Green', 'Dark Green', 'Olive Green', 'Lime Green', 'Emerald', 'Forest Green',
-  'Yellow', 'Canary Yellow', 'Gold', 'Mustard',
-  'Orange', 'Burnt Orange', 'Copper',
-  'Brown', 'Chocolate', 'Beige', 'Cream', 'Tan', 'Sand', 'Champagne',
-  'Purple', 'Violet', 'Lavender', 'Dark Purple', 'Plum',
-  'Pink', 'Rose Gold', 'Magenta',
-  'Bronze', 'Titanium', 'Graphite', 'Charcoal',
-  'Other' // Special value to trigger custom input
+  'Черен (Black)', 'Бял (White)', 'Сребрист (Silver)', 'Сив (Gray)', 'Графит (Graphite)', 'Матов (Matte)', 'Перлен (Pearl)',
+  'Червен (Red)', 'Вишнев (Dark Red)', 'Бордо (Burgundy)',
+  'Син (Blue)', 'Тъмно син (Dark Blue)', 'Светло син (Sky Blue)',
+  'Зелен (Green)', 'Тъмно зелен (Dark Green)',
+  'Жълт (Yellow)', 'Златист (Gold)',
+  'Оранжев (Orange)',
+  'Кафяв (Brown)', 'Бежов (Beige)', 'Шампанско (Champagne)',
+  'Лилав (Purple)',
+  'Розов (Pink)',
+  'Бронзов (Bronze)',
+  'Друг (Other)'
 ];
 

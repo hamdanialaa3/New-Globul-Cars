@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { Menu, X, User, Settings, Heart, MessageCircle, Calendar, LogOut, Search, Car, ChevronDown, Bell, Map } from 'lucide-react';
+import { Menu, X, User, Settings, Heart, MessageCircle, Calendar, LogOut, Search, Car, ChevronDown, Bell, Map, Code } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { media, spacing, colors, zIndex, shadows, borderRadius } from '../../styles/design-system';
 import LanguageToggle from '../LanguageToggle/LanguageToggle';
 import CyberToggle from '../CyberToggle/CyberToggle';
+import { useFirestoreNotifications } from '../../hooks/useFirestoreNotifications';
 
 const HeaderContainer = styled.header<{ $isDark?: boolean }>`
   position: fixed !important;
@@ -49,19 +50,22 @@ const Logo = styled.div<{ $isDark?: boolean }>`
   align-items: center;
   gap: ${spacing.sm};
   cursor: pointer;
-  font-size: 20px;
+  // Fluid font size: scales between 16px and 22px based on viewport
+  font-size: clamp(16px, 2vw, 22px);
   font-weight: 700;
   color: ${({ $isDark }) => $isDark ? '#f1f5f9' : colors.primary.main};
   transition: color 0.3s ease;
+  white-space: nowrap; // Prevent wrapping
 
   img {
-    width: 50px;
-    height: 50px;
+    // Fluid image size
+    width: clamp(32px, 5vw, 50px);
+    height: clamp(32px, 5vw, 50px);
     object-fit: contain;
   }
 
   ${media.maxMobile} {
-    font-size: 18px;
+    font-size: 18px; // Fallback or specific mobile adjustment if needed
     img {
       width: 40px;
       height: 40px;
@@ -72,8 +76,9 @@ const Logo = styled.div<{ $isDark?: boolean }>`
 const LeftNav = styled.nav`
   display: flex;
   align-items: center;
-  gap: ${spacing.md};
-  margin-left: ${spacing.lg};
+  // Fluid gap to prevent collision
+  gap: clamp(8px, 1.5vw, ${spacing.md});
+  margin-left: clamp(10px, 2vw, ${spacing.lg});
 
   ${media.maxMobile} {
     display: none;
@@ -84,7 +89,8 @@ const MainNavButton = styled.button<{ $isDark?: boolean; $primary?: boolean }>`
   display: flex;
   align-items: center;
   gap: ${spacing.sm};
-  padding: ${spacing.sm} ${spacing.lg};
+  // Fluid padding
+  padding: ${spacing.sm} clamp(8px, 1.5vw, ${spacing.lg});
   border: 2px solid ${({ $isDark, $primary }) =>
     $primary
       ? ($isDark ? 'rgba(255, 107, 53, 0.5)' : colors.primary.main)
@@ -99,11 +105,13 @@ const MainNavButton = styled.button<{ $isDark?: boolean; $primary?: boolean }>`
       : ($isDark ? '#cbd5e1' : colors.neutral.gray700)};
   border-radius: ${borderRadius.md};
   cursor: pointer;
-  font-size: 15px;
+  // Fluid font size
+  font-size: clamp(12px, 1.2vw, 15px);
   font-weight: 600;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  white-space: nowrap;
 
   &:hover {
     transform: translateY(-2px);
@@ -179,9 +187,12 @@ const SettingsButton = styled.button<{ $isDark?: boolean }>`
   border-radius: ${borderRadius.md};
   cursor: pointer;
   font-weight: 600;
+  // Fluid font size
+  font-size: clamp(12px, 1.2vw, 15px);
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  white-space: nowrap;
 
   &:hover {
     background: ${({ $isDark }) =>
@@ -495,6 +506,75 @@ const Overlay = styled.div<{ $isOpen: boolean }>`
   transition: opacity 0.3s, visibility 0.3s;
 `;
 
+const DevModal = styled.div<{ $isOpen: boolean; $isDark?: boolean }>`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: ${({ $isDark }) => $isDark ? 'rgba(15, 23, 42, 0.98)' : 'white'};
+  border: 2px solid ${({ $isDark }) => $isDark ? 'rgba(255, 107, 53, 0.3)' : '#ff6b35'};
+  border-radius: 16px;
+  padding: 32px;
+  z-index: ${zIndex.modal + 1};
+  min-width: 400px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  opacity: ${props => props.$isOpen ? 1 : 0};
+  visibility: ${props => props.$isOpen ? 'visible' : 'hidden'};
+  transition: all 0.3s ease;
+`;
+
+const DevModalTitle = styled.h2<{ $isDark?: boolean }>`
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: ${({ $isDark }) => $isDark ? '#f1f5f9' : '#1e293b'};
+  margin-bottom: 16px;
+  text-align: center;
+`;
+
+const DevModalInput = styled.input<{ $isDark?: boolean }>`
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid ${({ $isDark }) => $isDark ? 'rgba(148, 163, 184, 0.3)' : 'rgba(0, 0, 0, 0.1)'};
+  background: ${({ $isDark }) => $isDark ? 'rgba(148, 163, 184, 0.1)' : 'white'};
+  color: ${({ $isDark }) => $isDark ? '#f1f5f9' : '#1e293b'};
+  border-radius: 8px;
+  font-size: 1.125rem;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #ff6b35;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+  }
+`;
+
+const DevModalButton = styled.button<{ $isDark?: boolean }>`
+  width: 100%;
+  padding: 12px 24px;
+  background: #ff6b35;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #e55a2b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+`;
+
 const UnifiedHeader: React.FC = () => {
   const { user, logout } = useAuth();
   const { t, language } = useLanguage();
@@ -504,7 +584,10 @@ const UnifiedHeader: React.FC = () => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [showDevModal, setShowDevModal] = useState(false);
+  const [devCode, setDevCode] = useState('');
   const settingsRef = useRef<HTMLDivElement>(null);
+  const { unreadCount } = useFirestoreNotifications();
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -554,6 +637,22 @@ const UnifiedHeader: React.FC = () => {
   const handleSettingsItemClick = (path: string) => {
     navigate(path);
     setIsSettingsOpen(false);
+  };
+
+  const handleDevClick = () => {
+    setIsSettingsOpen(false);
+    setShowDevModal(true);
+    setDevCode('');
+  };
+
+  const handleDevCodeSubmit = () => {
+    if (devCode === '2026') {
+      setShowDevModal(false);
+      navigate('/development-tools');
+    } else {
+      setDevCode('');
+      alert(language === 'bg' ? 'Неверен код' : 'Invalid code');
+    }
   };
 
   return (
@@ -671,7 +770,7 @@ const UnifiedHeader: React.FC = () => {
                     {language === 'bg' ? 'Прегледайте всички известия' : 'View all notifications'}
                   </RowSubtitle>
                 </RowContent>
-                <RowBadge $isDark={isDark}>3</RowBadge>
+                {unreadCount > 0 && <RowBadge $isDark={isDark}>{unreadCount > 99 ? '99+' : unreadCount}</RowBadge>}
               </SettingsRow>
 
               {/* 3. Messages Row */}
@@ -745,6 +844,25 @@ const UnifiedHeader: React.FC = () => {
                 <CyberToggle />
               </ThemeLanguageRow>
 
+              {/* Development Tools Row */}
+              <Divider $isDark={isDark} />
+              <SettingsRow
+                $isDark={isDark}
+                onClick={handleDevClick}
+              >
+                <RowIcon $isDark={isDark} className="row-icon">
+                  <Code size={20} />
+                </RowIcon>
+                <RowContent>
+                  <RowTitle $isDark={isDark} className="row-text">
+                    {language === 'bg' ? 'Разработка' : 'Development'}
+                  </RowTitle>
+                  <RowSubtitle $isDark={isDark}>
+                    {language === 'bg' ? 'Инструменти за разработка' : 'Development tools'}
+                  </RowSubtitle>
+                </RowContent>
+              </SettingsRow>
+
               {/* Logout Row (if user is logged in) */}
               {user && (
                 <>
@@ -773,6 +891,34 @@ const UnifiedHeader: React.FC = () => {
       </HeaderContainer>
 
       <Overlay $isOpen={isMenuOpen} onClick={() => setIsMenuOpen(false)} />
+
+      {/* Development Modal */}
+      {showDevModal && (
+        <>
+          <Overlay $isOpen={showDevModal} onClick={() => setShowDevModal(false)} />
+          <DevModal $isOpen={showDevModal} $isDark={isDark}>
+            <DevModalTitle $isDark={isDark}>
+              {language === 'bg' ? 'Код за достъп' : 'Access Code'}
+            </DevModalTitle>
+            <DevModalInput
+              $isDark={isDark}
+              type="text"
+              value={devCode}
+              onChange={(e) => setDevCode(e.target.value)}
+              placeholder={language === 'bg' ? 'Въведете кода' : 'Enter code'}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  handleDevCodeSubmit();
+                }
+              }}
+              autoFocus
+            />
+            <DevModalButton $isDark={isDark} onClick={handleDevCodeSubmit}>
+              {language === 'bg' ? 'Потвърди' : 'Confirm'}
+            </DevModalButton>
+          </DevModal>
+        </>
+      )}
 
       <MobileMenu $isOpen={isMenuOpen} $isDark={isDark}>
         <MobileMenuItem $isDark={isDark} onClick={() => navigate('/')}>

@@ -1,27 +1,45 @@
-import { 
-  collection, 
-  getDocs, 
-  query, 
-  where, 
-  orderBy, 
-  limit,
-  onSnapshot,
-  doc,
-  getDoc
-} from 'firebase/firestore';
-import { db, functions } from '../firebase/firebase-config';
-import { httpsCallable } from 'firebase/functions';
-import { firebaseAuthUsersService } from './firebase-auth-users-service';
-import { firebaseAuthRealUsers } from './firebase-auth-real-users';
-import { serviceLogger } from './logger-service';
-import { countAllVehicles, queryAllCollections } from './search/multi-collection-helper';
+/**
+ * FIREBASE REAL DATA SERVICE
+ * خدمة بيانات Firebase الحقيقية
+ *
+ * للوحة تحكم Super Admin - بيانات حقيقية فقط
+ */
 
-// Firebase Real Data Service for Super Admin Dashboard
+import { 
+  UserActivity, 
+  RealTimeAnalytics,
+  AnalyticsCallback,
+  UnsubscribeFunction
+} from './firebase-data-types';
+import {
+  FIREBASE_CONSOLE_URLS
+} from './firebase-data-config';
+import {
+  getRealUsersCount,
+  getRealActiveUsersCount,
+  getRealCarsCount,
+  getRealActiveCarsCount,
+  getRealMessagesCount,
+  getRealViewsCount,
+  getRealRevenue,
+  getRealUserActivity,
+  getRealAnalytics,
+  subscribeToRealTimeUpdates
+} from './firebase-data-operations';
+
+/**
+ * Firebase Real Data Service for Super Admin Dashboard
+ * خدمة بيانات Firebase الحقيقية للوحة تحكم Super Admin
+ */
 class FirebaseRealDataService {
   private static instance: FirebaseRealDataService;
 
   private constructor() {}
 
+  /**
+   * Get singleton instance
+   * الحصول على مثيل singleton
+   */
   public static getInstance(): FirebaseRealDataService {
     if (!FirebaseRealDataService.instance) {
       FirebaseRealDataService.instance = new FirebaseRealDataService();
@@ -29,278 +47,111 @@ class FirebaseRealDataService {
     return FirebaseRealDataService.instance;
   }
 
-  // Get real users count from Firebase Authentication (NOT Firestore!)
+  /**
+   * Get real users count from Firebase Authentication (NOT Firestore!)
+   * الحصول على عدد المستخدمين الحقيقيين من Firebase Authentication
+   */
   public async getRealUsersCount(): Promise<number> {
-    try {
-      serviceLogger.debug('Fetching REAL users count from Firebase Authentication');
-      
-      // Try to get from Firebase Auth first (the REAL source!)
-      try {
-        const authUsersCount = await firebaseAuthRealUsers.getRealAuthUsersCount();
-        serviceLogger.info('REAL users from Firebase Auth', { count: authUsersCount });
-        return authUsersCount;
-      } catch (authError) {
-        serviceLogger.warn('Could not get from Firebase Auth - falling back to Firestore');
-      }
-      
-      // Fallback: Get from Firestore users collection
-      const usersSnapshot = await getDocs(collection(db, 'users'));
-      const firestoreUsers = usersSnapshot.docs.length;
-      
-      serviceLogger.info('Firestore users found', { count: firestoreUsers });
-      serviceLogger.warn('Note: This may be less than Firebase Auth users if sync not run');
-      
-      return firestoreUsers;
-    } catch (error) {
-      serviceLogger.error('Error getting users count', error as Error);
-      return 0; // Return 0 instead of throwing
-    }
+    return getRealUsersCount();
   }
 
-  // Get real active users count
+  /**
+   * Get real active users count
+   * الحصول على عدد المستخدمين النشطين الحقيقيين
+   */
   public async getRealActiveUsersCount(): Promise<number> {
-    try {
-      // Try to get from Firebase Auth first
-      try {
-        const activeAuthUsers = await firebaseAuthRealUsers.getActiveAuthUsers();
-        serviceLogger.info('Active users from Firebase Auth', { count: activeAuthUsers });
-        return activeAuthUsers;
-      } catch (authError) {
-        serviceLogger.warn('Could not get active users from Auth - using Firestore');
-      }
-      
-      // Fallback: Get from Firestore
-      const now = new Date();
-      const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-      
-      const q = query(
-        collection(db, 'users'),
-        where('lastLogin', '>=', yesterday)
-      );
-      
-      const snapshot = await getDocs(q);
-      return snapshot.docs.length;
-    } catch (error) {
-      serviceLogger.error('Error getting active users count', error as Error);
-      return 0;
-    }
+    return getRealActiveUsersCount();
   }
 
-  // Get real cars count from Firebase - ✅ ALL COLLECTIONS
+  /**
+   * Get real cars count from Firebase - ALL COLLECTIONS
+   * الحصول على عدد السيارات الحقيقي من Firebase - جميع المجموعات
+   */
   public async getRealCarsCount(): Promise<number> {
-    try {
-      const count = await countAllVehicles();
-      serviceLogger.info('Total vehicles count across all collections', { count });
-      return count;
-    } catch (error) {
-      serviceLogger.error('Error getting cars count', error as Error);
-      throw error; // Don't use mock data - throw the real error
-    }
+    return getRealCarsCount();
   }
 
-  // Get real active cars count - ✅ ALL COLLECTIONS
+  /**
+   * Get real active cars count - ALL COLLECTIONS
+   * الحصول على عدد السيارات النشطة الحقيقي - جميع المجموعات
+   */
   public async getRealActiveCarsCount(): Promise<number> {
-    try {
-      const activeCars = await queryAllCollections(
-        where('isActive', '==', true)
-      );
-      
-      serviceLogger.info('Active vehicles count across all collections', { count: activeCars.length });
-      return activeCars.length;
-    } catch (error) {
-      serviceLogger.error('Error getting active cars count', error as Error);
-      throw error; // Don't use mock data - throw the real error
-    }
+    return getRealActiveCarsCount();
   }
 
-  // Get real messages count from Firebase
+  /**
+   * Get real messages count from Firebase
+   * الحصول على عدد الرسائل الحقيقي من Firebase
+   */
   public async getRealMessagesCount(): Promise<number> {
-    try {
-      const messagesSnapshot = await getDocs(collection(db, 'messages'));
-      return messagesSnapshot.docs.length;
-    } catch (error: unknown) {
-      // ⚡ FIX: Silently fail for permission errors (non-critical data)
-      if (error?.code !== 'permission-denied') {
-        serviceLogger.error('Error getting messages count', error as Error);
-      }
-      return 0; // Return 0 instead of throwing
-    }
+    return getRealMessagesCount();
   }
 
-  // Get real views count from Firebase
+  /**
+   * Get real views count from Firebase
+   * الحصول على عدد المشاهدات الحقيقي من Firebase
+   */
   public async getRealViewsCount(): Promise<number> {
-    try {
-      const viewsSnapshot = await getDocs(collection(db, 'views'));
-      return viewsSnapshot.docs.length;
-    } catch (error: unknown) {
-      // ⚡ FIX: Silently fail for permission errors (non-critical data)
-      if (error?.code !== 'permission-denied') {
-        serviceLogger.error('Error getting views count', error as Error);
-      }
-      return 0; // Return 0 instead of throwing
-    }
+    return getRealViewsCount();
   }
 
-  // Get real revenue from Firebase
+  /**
+   * Get real revenue from Firebase
+   * الحصول على الإيرادات الحقيقية من Firebase
+   */
   public async getRealRevenue(): Promise<number> {
-    try {
-      const carsSnapshot = await queryAllCollections();
-      let totalRevenue = 0;
-      
-      carsSnapshot.docs.forEach(doc => {
-        const data = doc.data();
-        if (data.isSold && data.price) {
-          totalRevenue += data.price * 0.05; // 5% commission
-        }
-      });
-      
-      return totalRevenue;
-    } catch (error) {
-      serviceLogger.error('Error getting revenue', error as Error);
-      throw error; // Don't use mock data - throw the real error
-    }
+    return getRealRevenue();
   }
 
-  // Get real user activity data
-  public async getRealUserActivity(): Promise<any[]> {
-    try {
-      serviceLogger.debug('Fetching real user activity');
-      
-      // Use the new Firebase Auth Users Service
-      const realUsers = await firebaseAuthUsersService.getRealFirebaseUsers();
-      
-      return realUsers.map(user => ({
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        lastLogin: user.lastLogin,
-        loginCount: user.loginCount,
-        location: `${user.location?.city || 'Unknown'}, ${user.location?.country || 'Bulgaria'}`,
-        device: user.device,
-        browser: user.browser,
-        isOnline: user.isOnline,
-        lastActivity: user.lastActivity,
-        stats: user.stats
-      }));
-      
-    } catch (error) {
-      serviceLogger.error('Error getting user activity', error as Error);
-      // Return fallback data
-      return [
-        {
-          uid: 'firebase-auth-user-1',
-          email: 'user1@example.com',
-          displayName: 'John Smith',
-          lastLogin: new Date(),
-          loginCount: 15,
-          location: 'Sofia, Bulgaria',
-          device: 'Desktop',
-          browser: 'Chrome',
-          isOnline: true,
-          lastActivity: new Date(),
-          stats: { carsListed: 3, carsSold: 1, totalViews: 45 }
-        },
-        {
-          uid: 'firebase-auth-user-2',
-          email: 'user2@example.com',
-          displayName: 'Maria Petrova',
-          lastLogin: new Date(Date.now() - 2 * 60 * 60 * 1000),
-          loginCount: 8,
-          location: 'Plovdiv, Bulgaria',
-          device: 'Mobile',
-          browser: 'Safari',
-          isOnline: false,
-          lastActivity: new Date(Date.now() - 2 * 60 * 60 * 1000),
-          stats: { carsListed: 7, carsSold: 3, totalViews: 89 }
-        }
-      ];
-    }
+  /**
+   * Get real user activity data
+   * الحصول على بيانات نشاط المستخدم الحقيقي
+   */
+  public async getRealUserActivity(): Promise<UserActivity[]> {
+    return getRealUserActivity();
   }
 
-  // Prefer server-side computed analytics via callable; fallback to client aggregation
-  public async getRealAnalytics(): Promise<any> {
-    // 1) Try callable function (admin-safe, fastest, bypasses rules)
-    try {
-      const getAnalytics = httpsCallable(functions, 'getSuperAdminAnalytics');
-      const res = await getAnalytics({});
-      if (res && (res as any).data) {
-        const data: Record<string, unknown> = (res as any).data;
-        return {
-          ...data,
-          lastUpdated: data.lastUpdated ? new Date(data.lastUpdated) : new Date(),
-        };
-      }
-    } catch (fnErr) {
-      serviceLogger.warn('Callable getSuperAdminAnalytics failed; falling back to client aggregation');
-    }
-
-    // 2) Fallback: aggregate via direct reads
-    try {
-      const [
-        totalUsers,
-        activeUsers,
-        totalCars,
-        activeCars,
-        totalMessages,
-        totalViews,
-        revenue
-      ] = await Promise.all([
-        this.getRealUsersCount(),
-        this.getRealActiveUsersCount(),
-        this.getRealCarsCount(),
-        this.getRealActiveCarsCount(),
-        this.getRealMessagesCount(),
-        this.getRealViewsCount(),
-        this.getRealRevenue()
-      ]);
-
-      return {
-        totalUsers,
-        activeUsers,
-        totalCars,
-        activeCars,
-        totalMessages,
-        totalViews,
-        revenue,
-        lastUpdated: new Date()
-      };
-    } catch (error) {
-      serviceLogger.error('Error getting analytics', error as Error);
-      return {
-        totalUsers: 0,
-        activeUsers: 0,
-        totalCars: 0,
-        activeCars: 0,
-        totalMessages: 0,
-        totalViews: 0,
-        revenue: 0,
-        lastUpdated: new Date()
-      };
-    }
+  /**
+   * Prefer server-side computed analytics via callable; fallback to client aggregation
+   * تفضيل التحليلات المحسوبة من جانب الخادم؛ التراجع إلى التجميع من جانب العميل
+   */
+  public async getRealAnalytics(): Promise<RealTimeAnalytics> {
+    return getRealAnalytics();
   }
 
-  // Subscribe to real-time updates
-  public subscribeToRealTimeUpdates(callback: (data: unknown) => void): () => void {
-    const unsubscribe = onSnapshot(
-      collection(db, 'users'),
-      (snapshot) => {
-        const users = snapshot.docs.map(doc => doc.data());
-        callback({ users, timestamp: new Date() });
-      }
-    );
-
-    return unsubscribe;
+  /**
+   * Subscribe to real-time updates
+   * الاشتراك في التحديثات في الوقت الفعلي
+   */
+  public subscribeToRealTimeUpdates(callback: AnalyticsCallback): UnsubscribeFunction {
+    return subscribeToRealTimeUpdates(callback);
   }
 
-  // Get Firebase Console URL for user management
+  /**
+   * Get Firebase Console URL for user management
+   * الحصول على رابط وحدة تحكم Firebase لإدارة المستخدمين
+   */
   public getFirebaseConsoleUrl(): string {
-    return 'https://console.firebase.google.com/u/0/project/studio-448742006-a3493/authentication/users';
+    return FIREBASE_CONSOLE_URLS.AUTHENTICATION;
   }
 
-  // Get Firebase Console URL for Firestore
+  /**
+   * Get Firebase Console URL for Firestore
+   * الحصول على رابط وحدة تحكم Firebase لـ Firestore
+   */
   public getFirestoreConsoleUrl(): string {
-    return 'https://console.firebase.google.com/u/0/project/studio-448742006-a3493/firestore/data';
+    return FIREBASE_CONSOLE_URLS.FIRESTORE;
   }
 }
 
+// ==================== EXPORTS ====================
+
 export const firebaseRealDataService = FirebaseRealDataService.getInstance();
+export default firebaseRealDataService;
+
+// Re-export types for convenience
+export type { 
+  UserActivity, 
+  RealTimeAnalytics, 
+  UserStats 
+} from './firebase-data-types';

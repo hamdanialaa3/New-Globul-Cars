@@ -321,12 +321,12 @@ const ModelBadge = styled.div<{ $isVisible: boolean }>`
   
   /* Entrance animation - simple slide in */
   opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: ${props => props.$isVisible 
-    ? 'translateX(0) translateY(0) rotate(8deg) scale(1)' 
+  transform: ${props => props.$isVisible
+    ? 'translateX(0) translateY(0) rotate(8deg) scale(1)'
     : 'translateX(-100px) translateY(40px) rotate(45deg) scale(0.2)'
   };
-  transition: ${props => props.$isVisible 
-    ? 'none' 
+  transition: ${props => props.$isVisible
+    ? 'none'
     : 'opacity 0.3s ease, transform 0.3s ease'
   };
   
@@ -549,155 +549,155 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
   }, [model]);
 
   const titleText = t('sell.vehicleData.brandModelTitle');
-  const brandLabel = t('sell.vehicleData.brand');
-  const modelLabel = t('sell.vehicleData.model');
+  const brandLabel = language === 'bg' ? 'Марка' : t('sell.vehicleData.brand');
+  const modelLabel = language === 'bg' ? 'Модел' : t('sell.vehicleData.model');
   const hintText = t('sell.vehicleData.sourceMarkdown');
   const exampleText = language === 'bg' ? 'Пример: ' : 'Example: ';
   const exampleBrand = 'Mercedes-Benz';
   const exampleModel = 'C-Class';
-  const selectBrandText = `${exampleText}${exampleBrand} | ${t('sell.vehicleData.selectBrand')}`;
-  const selectModelText = selectedBrand ? `${exampleText}${exampleModel} | ${t('sell.vehicleData.selectModel')}` : t('sell.vehicleData.selectModel');
-  const otherText = t('sell.vehicleData.other');
-  const enterOtherBrandText = t('sell.vehicleData.enterOtherBrand');
+  const selectBrandText = language === 'bg' ? 'Изберете марка' : `${exampleText}${exampleBrand} | ${t('sell.vehicleData.selectBrand')}`;
+  const selectModelText = language === 'bg' ? 'Изберете модел' : (selectedBrand ? `${exampleText}${exampleModel} | ${t('sell.vehicleData.selectModel')}` : t('sell.vehicleData.selectModel'));
+  const otherText = language === 'bg' ? 'Друга (въведи ръчно)' : t('sell.vehicleData.other');
+  const enterOtherBrandText = language === 'bg' ? 'Въведете марка' : t('sell.vehicleData.enterOtherBrand');
   const enterOtherBrandPlaceholder = language === 'bg' ? 'Пример: Tesla' : 'Example: Tesla';
-  const enterOtherModelText = t('sell.vehicleData.enterOtherModel');
+  const enterOtherModelText = language === 'bg' ? 'Въведете модел' : t('sell.vehicleData.enterOtherModel');
   const enterOtherModelPlaceholder = language === 'bg' ? 'Пример: Model 3' : 'Example: Model 3';
 
   return (
     <Container aria-label="Brand and model picker (markdown)">
       <FieldsColumn>
         <Field>
-        <Label htmlFor="markdown-brand">{brandLabel}</Label>
-        <Select
-          id="markdown-brand"
-          aria-label={brandLabel}
-          value={showOtherBrand ? '__OTHER__' : selectedBrand}
-          onChange={(e) => {
-            const value = e.target.value;
-            if (value === '__OTHER__') {
-              setShowOtherBrand(true);
-              setSelectedBrand('');
-              setSelectedModel('');
-              setOtherBrandValue('');
-              onBrandChange && onBrandChange('');
-              onModelChange && onModelChange('');
-            } else {
-              setShowOtherBrand(false);
-              setOtherBrandValue('');
-              setSelectedBrand(value);
-              setSelectedModel('');
-              onBrandChange && onBrandChange(value);
-              onModelChange && onModelChange('');
-            }
-          }}
-          disabled={loading || !!error}
-        >
-          <option value="">{selectBrandText}</option>
-          
-          {/* Top Brands Section */}
-          <option disabled className="top-brands-separator">
-            ★ {language === 'bg' ? 'ТОП МАРКИ' : 'TOP BRANDS'} ★
-          </option>
-          {brands.filter(b => TOP_BRANDS.includes(b)).map((b) => (
-            <option 
-              key={`top-${b}`} 
-              value={b}
-              className="top-brand"
-            >
-              {b}
-            </option>
-          ))}
-          
-          {/* All Other Brands */}
-          <option disabled className="top-brands-separator">
-            {language === 'bg' ? '────── ВСИЧКИ МАРКИ ──────' : '────── ALL BRANDS ──────'}
-          </option>
-          {brands.filter(b => !TOP_BRANDS.includes(b)).map((b) => (
-            <option 
-              key={b} 
-              value={b}
-            >
-              {b}
-            </option>
-          ))}
-          
-          <option value="__OTHER__" className="other-option">{otherText}</option>
-        </Select>
-        
-        {showOtherBrand && (
-          <Field>
-            <Label htmlFor="other-brand">{enterOtherBrandText}</Label>
-            <Input
-              id="other-brand"
-              type="text"
-              value={otherBrandValue}
-              onChange={(e) => {
-                const value = e.target.value;
-                setOtherBrandValue(value);
+          <Label htmlFor="markdown-brand">{brandLabel}</Label>
+          <Select
+            id="markdown-brand"
+            aria-label={brandLabel}
+            value={showOtherBrand ? '__OTHER__' : selectedBrand}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value === '__OTHER__') {
+                setShowOtherBrand(true);
+                setSelectedBrand('');
+                setSelectedModel('');
+                setOtherBrandValue('');
+                onBrandChange && onBrandChange('');
+                onModelChange && onModelChange('');
+              } else {
+                setShowOtherBrand(false);
+                setOtherBrandValue('');
+                setSelectedBrand(value);
+                setSelectedModel('');
                 onBrandChange && onBrandChange(value);
-              }}
-              placeholder={enterOtherBrandPlaceholder}
-            />
-          </Field>
-        )}
-        
-        <Hint>{hintText}</Hint>
+                onModelChange && onModelChange('');
+              }
+            }}
+            disabled={loading || !!error}
+          >
+            <option value="">{selectBrandText}</option>
+
+            {/* Top Brands Section */}
+            <option disabled className="top-brands-separator">
+              ★ {language === 'bg' ? 'ПОПУЛЯРНИ МАРКИ' : 'TOP BRANDS'} ★
+            </option>
+            {brands.filter(b => TOP_BRANDS.includes(b)).map((b) => (
+              <option
+                key={`top-${b}`}
+                value={b}
+                className="top-brand"
+              >
+                {b}
+              </option>
+            ))}
+
+            {/* All Other Brands */}
+            <option disabled className="top-brands-separator">
+              {language === 'bg' ? '────── ВСИЧКИ МАРКИ ──────' : '────── ALL BRANDS ──────'}
+            </option>
+            {brands.filter(b => !TOP_BRANDS.includes(b)).map((b) => (
+              <option
+                key={b}
+                value={b}
+              >
+                {b}
+              </option>
+            ))}
+
+            <option value="__OTHER__" className="other-option">{otherText}</option>
+          </Select>
+
+          {showOtherBrand && (
+            <Field>
+              <Label htmlFor="other-brand">{enterOtherBrandText}</Label>
+              <Input
+                id="other-brand"
+                type="text"
+                value={otherBrandValue}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setOtherBrandValue(value);
+                  onBrandChange && onBrandChange(value);
+                }}
+                placeholder={enterOtherBrandPlaceholder}
+              />
+            </Field>
+          )}
+
+          <Hint>{hintText}</Hint>
         </Field>
 
         <Field>
-        <Label htmlFor="markdown-model">{modelLabel}</Label>
-        <Select
-          id="markdown-model"
-          aria-label={modelLabel}
-          value={showOtherModel ? '__OTHER__' : selectedModel}
-          onChange={(e) => {
-            const value = e.target.value;
-            if (value === '__OTHER__') {
-              setShowOtherModel(true);
-              setSelectedModel('');
-              setOtherModelValue('');
-              onModelChange && onModelChange('');
-            } else {
-              setShowOtherModel(false);
-              setOtherModelValue('');
-              setSelectedModel(value);
-              onModelChange && onModelChange(value);
-            }
-          }}
-          disabled={loading || !!error || (!selectedBrand && !showOtherBrand)}
-        >
-          {!selectedBrand && !showOtherBrand && <option value="">{selectModelText}</option>}
-          {selectedBrand && models.length === 0 && <option value="">{language === 'bg' ? 'Няма налични модели' : 'No models found'}</option>}
-          {(selectedBrand || showOtherBrand) && models.length === 0 && <option value="">{selectModelText}</option>}
-          {models.map((m) => (
-            <option key={m} value={m}>{m}</option>
-          ))}
-          {(selectedBrand || showOtherBrand) && <option value="__OTHER__" className="other-option">{otherText}</option>}
-        </Select>
-        
-        {showOtherModel && (
-          <Field>
-            <Label htmlFor="other-model">{enterOtherModelText}</Label>
-            <Input
-              id="other-model"
-              type="text"
-              value={otherModelValue}
-              onChange={(e) => {
-                const value = e.target.value;
-                setOtherModelValue(value);
+          <Label htmlFor="markdown-model">{modelLabel}</Label>
+          <Select
+            id="markdown-model"
+            aria-label={modelLabel}
+            value={showOtherModel ? '__OTHER__' : selectedModel}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value === '__OTHER__') {
+                setShowOtherModel(true);
+                setSelectedModel('');
+                setOtherModelValue('');
+                onModelChange && onModelChange('');
+              } else {
+                setShowOtherModel(false);
+                setOtherModelValue('');
+                setSelectedModel(value);
                 onModelChange && onModelChange(value);
-              }}
-              placeholder={enterOtherModelPlaceholder}
-            />
-          </Field>
-        )}
-        
-        {selectedBrand && models.length > 0 && (
-          <Hint>
-            {language === 'bg' ? `Показани са ${models.length} модела за` : `Showing ${models.length} models for`} <strong>{selectedBrand}</strong>
-          </Hint>
-        )}
-        {error && <Hint>{language === 'bg' ? 'Грешка при зареждане' : 'Failed to load'}: {error}</Hint>}
+              }
+            }}
+            disabled={loading || !!error || (!selectedBrand && !showOtherBrand)}
+          >
+            {!selectedBrand && !showOtherBrand && <option value="">{selectModelText}</option>}
+            {selectedBrand && models.length === 0 && <option value="">{language === 'bg' ? 'Няма намерени модели' : 'No models found'}</option>}
+            {(selectedBrand || showOtherBrand) && models.length === 0 && <option value="">{selectModelText}</option>}
+            {models.map((m) => (
+              <option key={m} value={m}>{m}</option>
+            ))}
+            {(selectedBrand || showOtherBrand) && <option value="__OTHER__" className="other-option">{otherText}</option>}
+          </Select>
+
+          {showOtherModel && (
+            <Field>
+              <Label htmlFor="other-model">{enterOtherModelText}</Label>
+              <Input
+                id="other-model"
+                type="text"
+                value={otherModelValue}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setOtherModelValue(value);
+                  onModelChange && onModelChange(value);
+                }}
+                placeholder={enterOtherModelPlaceholder}
+              />
+            </Field>
+          )}
+
+          {selectedBrand && models.length > 0 && (
+            <Hint>
+              {language === 'bg' ? `Показани са ${models.length} модела за` : `Showing ${models.length} models for`} <strong>{selectedBrand}</strong>
+            </Hint>
+          )}
+          {error && <Hint>{language === 'bg' ? 'Грешка при зареждане' : 'Failed to load'}: {error}</Hint>}
         </Field>
       </FieldsColumn>
 
@@ -707,9 +707,9 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
             {selectedBrand && !showOtherBrand && <CarBrandLogo make={selectedBrand} size={192} showName={false} />}
             {showOtherBrand && otherBrandValue && <CarBrandLogo make={otherBrandValue} size={192} showName={false} />}
             {!selectedBrand && !showOtherBrand && (
-              <div style={{ 
-                color: 'var(--text-muted)', 
-                fontSize: '0.9rem', 
+              <div style={{
+                color: 'var(--text-muted)',
+                fontSize: '0.9rem',
                 textAlign: 'center',
                 padding: '1rem'
               }}>

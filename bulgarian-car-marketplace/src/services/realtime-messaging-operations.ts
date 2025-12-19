@@ -237,8 +237,11 @@ export async function getMessages(
         updatedAt: convertTimestampToDate(doc.data().updatedAt)
       } as Message));
       return { messages: fallbackMessages, lastDoc: querySnapshot.docs[querySnapshot.docs.length - 1] };
-    } catch (fallbackError: any) {
-      throw new Error(`Failed to get messages: ${(error as Error).message}`);
+    } catch (fallbackError: unknown) {
+      const errorMessage = fallbackError instanceof Error 
+        ? fallbackError.message 
+        : String(fallbackError);
+      throw new Error(`Failed to get messages: ${errorMessage}`);
     }
   }
 }

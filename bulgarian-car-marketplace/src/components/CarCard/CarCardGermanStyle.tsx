@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { CarListing } from '../../types/CarListing';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { getCarDetailsUrl } from '../../utils/routing-utils';
 
 interface CarCardProps {
   car: CarListing;
@@ -148,7 +149,12 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
   const { language } = useLanguage();
 
   const handleClick = () => {
-    navigate(`/car-details/${car.id}`);
+    navigate(getCarDetailsUrl({
+      sellerNumericId: (car as any).sellerNumericId,
+      carNumericId: (car as any).carNumericId,
+      sellerId: car.sellerId,
+      id: car.id
+    }));
   };
 
   const formatPrice = (price: number, currency: string) => {

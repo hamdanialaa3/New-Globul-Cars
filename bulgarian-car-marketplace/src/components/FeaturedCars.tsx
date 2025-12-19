@@ -11,6 +11,7 @@ import { useAuth } from '../contexts/AuthProvider';
 import { MapPin, Fuel, Gauge, Calendar, MessageCircle, User } from 'lucide-react';
 import { homePageCache, CACHE_KEYS } from '../services/homepage-cache.service';
 import HorizontalScrollContainer from './HorizontalScrollContainer/HorizontalScrollContainer';
+import { getCarUrlFromUnifiedCar, getMessagesUrl } from '../utils/routing-utils';
 
 interface FeaturedCarsProps {
   limit?: number;
@@ -243,7 +244,7 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
     }
   };
 
-  const handleMessageClick = (e: React.MouseEvent, sellerId: string) => {
+  const handleMessageClick = async (e: React.MouseEvent, car: UnifiedCar) => {
     e.preventDefault();
     e.stopPropagation();
     
@@ -252,7 +253,14 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
       return;
     }
     
-    navigate(`/messages?userId=${sellerId}`);
+    // Get numeric IDs for both users
+    const sellerNumericId = (car as any).sellerNumericId;
+    const currentUserNumericId = (user as any).numericId;
+    
+    navigate(getMessagesUrl(
+      { numericId: currentUserNumericId, uid: user.uid },
+      { numericId: sellerNumericId, uid: car.sellerId }
+    ));
   };
 
   const formatPrice = (price: number): string => {
@@ -308,18 +316,8 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
           showArrows={true}
         >
           {visibleCars.map((car) => {
-            // ✅ CRITICAL FIX: Generate numeric URL if available, fallback to legacy URL
-            const getCarUrl = (): string => {
-              // Use numeric IDs if available (strict numeric ID system)
-              if ((car as any).sellerNumericId && (car as any).carNumericId) {
-                return `/car/${(car as any).sellerNumericId}/${(car as any).carNumericId}`;
-              }
-              // Fallback to legacy URL format
-              return `/cars/${car.id}`;
-            };
-            
             return (
-            <CarCard key={car.id} to={getCarUrl()}>
+            <CarCard key={car.id} to={getCarUrlFromUnifiedCar(car)}>
             <CarImageWrapper>
               {car.images && car.images.length > 0 ? (
               <CarImage 

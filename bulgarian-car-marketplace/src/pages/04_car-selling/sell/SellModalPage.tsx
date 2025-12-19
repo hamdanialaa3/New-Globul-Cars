@@ -3,13 +3,13 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import SellVehicleModal from '../../../components/sell-workflow/SellVehicleModal';
+import SellVehicleModal from '../../../components/SellWorkflow/SellVehicleModal';
 
 const SellModalPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState(true);
-  
+
   // Get initial step and vehicleType from URL params if exists
   const stepParam = searchParams.get('step');
   const vehicleTypeParam = searchParams.get('vt');

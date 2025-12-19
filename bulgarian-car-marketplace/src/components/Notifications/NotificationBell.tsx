@@ -1,14 +1,10 @@
-import { logger } from '../../services/logger-service';
-// src/components/Notifications/NotificationBell.tsx
-// Notifications Bell Component
-// الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
-
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Bell } from 'lucide-react';
-import { collection, query, where, onSnapshot, updateDoc, doc, orderBy, limit } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useFirestoreNotifications } from '../../hooks/useFirestoreNotifications';
+import { formatDistanceToNow } from 'date-fns';
+import { bg, enUS } from 'date-fns/locale';
 
 const BellContainer = styled.div`
   position: relative;
@@ -142,52 +138,16 @@ const EmptyState = styled.div`
   }
 `;
 
-interface Notification {
-  id: string;
-  userId: string;
-  type: string;
-  title: string;
-  message: string;
-  read: boolean;
-  createdAt: Date;
-  data?: any;
-}
-
 interface NotificationBellProps {
-  userId: string;
+  userId?: string; // Optional now since hook handles it
 }
 
-export const NotificationBell: React.FC<NotificationBellProps> = ({ userId }) => {
+export const NotificationBell: React.FC<NotificationBellProps> = () => {
   const { language } = useLanguage();
   const [show, setShow] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    // ✅ FIX: Guard against null/undefined userId BEFORE constructing query
-    if (!userId) return;
-
-    const q = query(
-      collection(db, 'notifications'),
-      where('userId', '==', userId),
-      orderBy('createdAt', 'desc'),
-      limit(20)
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const notifs = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate() || new Date()
-      })) as Notification[];
-
-      setNotifications(notifs);
-      setUnreadCount(notifs.filter(n => !n.read).length);
-    });
-
-    return () => unsubscribe();
-  }, [userId]);
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useFirestoreNotifications();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -200,40 +160,11 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId }) =>
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleMarkAsRead = async (notificationId: string) => {
-    try {
-      await updateDoc(doc(db, 'notifications', notificationId), {
-        read: true
-      });
-    } catch (error) {
-      logger.error('Error marking as read:', error);
-    }
-  };
-
-  const handleMarkAllAsRead = async () => {
-    try {
-      const unreadNotifications = notifications.filter(n => !n.read);
-      await Promise.all(
-        unreadNotifications.map(n => 
-          updateDoc(doc(db, 'notifications', n.id), { read: true })
-        )
-      );
-    } catch (error) {
-      logger.error('Error marking all as read:', error);
-    }
-  };
-
   const formatTime = (date: Date) => {
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-    const minutes = Math.floor(diff / 60000);
-    const hours = Math.floor(diff / 3600000);
-    const days = Math.floor(diff / 86400000);
-
-    if (minutes < 1) return language === 'bg' ? 'Сега' : 'Now';
-    if (minutes < 60) return `${minutes}${language === 'bg' ? 'м' : 'm'}`;
-    if (hours < 24) return `${hours}${language === 'bg' ? 'ч' : 'h'}`;
-    return `${days}${language === 'bg' ? 'д' : 'd'}`;
+    return formatDistanceToNow(date, {
+      addSuffix: true,
+      locale: language === 'bg' ? bg : enUS
+    });
   };
 
   return (
@@ -247,7 +178,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId }) =>
         <DropdownHeader>
           <h3>{language === 'bg' ? 'Известия' : 'Notifications'}</h3>
           {unreadCount > 0 && (
-            <MarkAllRead onClick={handleMarkAllAsRead}>
+            <MarkAllRead onClick={() => markAllAsRead()}>
               {language === 'bg' ? 'Маркирай всички' : 'Mark all read'}
             </MarkAllRead>
           )}
@@ -264,7 +195,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId }) =>
               <NotificationItem
                 key={notification.id}
                 $read={notification.read}
-                onClick={() => handleMarkAsRead(notification.id)}
+                onClick={() => markAsRead(notification.id)}
               >
                 <NotificationTitle>{notification.title}</NotificationTitle>
                 <NotificationMessage>{notification.message}</NotificationMessage>
@@ -279,4 +210,3 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId }) =>
 };
 
 export default NotificationBell;
-

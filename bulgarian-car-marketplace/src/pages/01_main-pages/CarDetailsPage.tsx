@@ -65,10 +65,11 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId }) => {
   }, [car?.id, car?.sellerId, loading, setCar]);
 
   // Check if current user is the owner
+  // Type-safe check: car may have sellerId, userId, or ownerId
   const isOwner = currentUser && car && (
     currentUser.uid === car.sellerId ||
-    currentUser.uid === (car as any).userId ||
-    currentUser.uid === (car as any).ownerId
+    currentUser.uid === (car as CarListing & { userId?: string }).userId ||
+    currentUser.uid === (car as CarListing & { ownerId?: string }).ownerId
   );
 
   // Use edit hook
@@ -81,18 +82,20 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId }) => {
       if (carId) {
         unifiedCarService.getCarById(carId).then(updatedCar => {
           if (updatedCar) {
-            const carData = {
+            // Type-safe mapping: UnifiedCar to CarListing
+            const extendedCar = updatedCar as UnifiedCar & Partial<CarListing>;
+            const carData: CarListing = {
               ...updatedCar,
-              vehicleType: (updatedCar as any).vehicleType || 'car',
+              vehicleType: extendedCar.vehicleType || 'car',
               sellerType: updatedCar.sellerType || 'private',
-              sellerName: (updatedCar as any).sellerName || '',
-              sellerEmail: (updatedCar as any).sellerEmail || '',
-              sellerPhone: (updatedCar as any).sellerPhone || '',
-              city: (updatedCar as any).city || '',
-              region: (updatedCar as any).region || '',
-              accidentHistory: (updatedCar as any).accidentHistory || false,
-              serviceHistory: (updatedCar as any).serviceHistory || false,
-            } as CarListing;
+              sellerName: extendedCar.sellerName || '',
+              sellerEmail: extendedCar.sellerEmail || '',
+              sellerPhone: extendedCar.sellerPhone || '',
+              city: extendedCar.city || '',
+              region: extendedCar.region || '',
+              accidentHistory: extendedCar.accidentHistory ?? false,
+              serviceHistory: extendedCar.serviceHistory ?? false,
+            };
             setCar(carData);
           }
         });

@@ -126,8 +126,10 @@ export class WorkflowOperations {
           isPublished: data.isPublished
         });
         // ✅ CRITICAL: clearData now clears images from IndexedDB automatically
-        this.clearData().catch((error: any) => {
-          serviceLogger.warn('Error clearing expired data (non-critical)', { error });
+        this.clearData().catch((error: unknown) => {
+          serviceLogger.warn('Error clearing expired data (non-critical)', { 
+            error: error instanceof Error ? error : new Error(String(error))
+          });
         });
         return null;
       }
@@ -391,9 +393,12 @@ export class WorkflowOperations {
           if (draftId) {
             try {
               const { default: DraftsService } = require('./drafts-service');
-              DraftsService.deleteDraft(draftId).catch((error: any) => {
+              DraftsService.deleteDraft(draftId).catch((error: unknown) => {
                 // Non-critical - continue with local cleanup
-                serviceLogger.warn('Failed to delete Firestore draft on timer expiry (non-critical)', { error, draftId });
+                serviceLogger.warn('Failed to delete Firestore draft on timer expiry (non-critical)', { 
+                  error: error instanceof Error ? error : new Error(String(error)), 
+                  draftId 
+                });
               });
               localStorage.removeItem('current_draft_id');
             } catch (error) {
@@ -403,8 +408,10 @@ export class WorkflowOperations {
           }
 
           // ✅ CRITICAL: clearData now clears images from IndexedDB
-          this.clearData().catch((error: any) => {
-            serviceLogger.warn('Error clearing data on timer expiry (non-critical)', { error });
+          this.clearData().catch((error: unknown) => {
+            serviceLogger.warn('Error clearing data on timer expiry (non-critical)', { 
+              error: error instanceof Error ? error : new Error(String(error))
+            });
           });
           serviceLogger.info('Workflow auto-deleted after timer expiry', { draftId: draftId || 'none' });
         }

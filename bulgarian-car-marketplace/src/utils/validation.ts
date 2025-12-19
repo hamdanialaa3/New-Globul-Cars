@@ -1,6 +1,6 @@
 // src/utils/validation.ts
-// Validation Utilities - أدوات التحقق من الصحة
-// الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
+// Validation Utilities
+// Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 // ==================== VALIDATION FUNCTIONS ====================
 
@@ -13,7 +13,7 @@ export const validateBulgarianPhone = (phone: string): { valid: boolean; message
   }
 
   const cleanPhone = phone.replace(/\s/g, '');
-  
+
   if (!cleanPhone.startsWith('+359')) {
     return {
       valid: false,
@@ -40,7 +40,7 @@ export const validateEmail = (email: string): { valid: boolean; message?: string
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
+
   if (!emailRegex.test(email)) {
     return {
       valid: false,
@@ -60,7 +60,7 @@ export const validateBULSTAT = (bulstat: string): { valid: boolean; message?: st
   }
 
   const cleanBulstat = bulstat.replace(/\s/g, '');
-  
+
   if (!/^\d{9,13}$/.test(cleanBulstat)) {
     return {
       valid: false,
@@ -80,7 +80,7 @@ export const validateVAT = (vat: string): { valid: boolean; message?: string } =
   }
 
   const vatRegex = /^BG\d{9,10}$/;
-  
+
   if (!vatRegex.test(vat.replace(/\s/g, ''))) {
     return {
       valid: false,
@@ -109,7 +109,7 @@ export const validateWebsite = (url: string): { valid: boolean; message?: string
     }
     return { valid: true };
   } catch {
-  return {
+    return {
       valid: false,
       message: 'Invalid URL format / Невалиден URL формат'
     };
@@ -159,7 +159,7 @@ export const validateDateOfBirth = (dateStr: string): { valid: boolean; message?
   const today = new Date();
   let age = today.getFullYear() - birthDate.getFullYear();
   const monthDiff = today.getMonth() - birthDate.getMonth();
-  
+
   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
     age--;
   }

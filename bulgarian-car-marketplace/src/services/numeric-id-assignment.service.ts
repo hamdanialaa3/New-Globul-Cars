@@ -76,8 +76,9 @@ export const ensureUserNumericId = async (uid: string): Promise<number | null> =
         return numericId;
       }
 
-    } catch (error: any) {
-      if (error.message === 'RETRY_NEEDED') {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage === 'RETRY_NEEDED') {
         logger.debug(`ensureUserNumericId: User doc not found, retrying attempt ${attempt}/${MAX_RETRIES}`);
         await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
         continue;

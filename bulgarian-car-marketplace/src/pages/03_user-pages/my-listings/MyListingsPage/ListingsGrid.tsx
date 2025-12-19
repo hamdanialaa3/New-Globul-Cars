@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { MyListing } from './types';
 import { SectionContainer, ListingsGrid, CardContainer, ListingCard, ListingImage, ListingInfo, ActionButton, ActionBar, EmptyState, LoadingState } from './styles';
 import { CarIcon } from '../../../../components/icons/CarIcon';
+import { getCarDetailsUrl } from '../../../../utils/routing-utils';
 
 interface ListingsGridProps {
   listings: MyListing[];
@@ -78,7 +79,14 @@ const ListingsGridComponent: React.FC<ListingsGridProps> = ({
               </ListingImage>
 
               <ListingInfo>
-                <Link to={`/car/${listing.id}`} className="title">
+                <Link 
+                  to={getCarDetailsUrl({
+                    sellerNumericId: (listing as any).sellerNumericId,
+                    carNumericId: (listing as any).carNumericId,
+                    id: listing.id
+                  })} 
+                  className="title"
+                >
                   {listing.title}
                 </Link>
 
@@ -175,7 +183,14 @@ const ListingsGridComponent: React.FC<ListingsGridProps> = ({
             <ActionBar>
               <ActionButton
                 className="view"
-                onClick={() => window.open(`/car/${listing.id}`, '_blank')}
+                onClick={() => window.open(
+                  getCarDetailsUrl({
+                    sellerNumericId: (listing as any).sellerNumericId,
+                    carNumericId: (listing as any).carNumericId,
+                    id: listing.id
+                  }), 
+                  '_blank'
+                )}
                 title="View Listing"
               >
                 👁️

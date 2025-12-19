@@ -302,8 +302,9 @@ export class RealtimeOperations {
         getDocs(notificationsQueryRef)
       ]);
       return { ready: true };
-    } catch (err: any) {
-      const code = err?.code;
+    } catch (err: unknown) {
+      const firebaseError = err as { code?: string; message?: string };
+      const code = firebaseError?.code;
       if (code === GRACEFUL_ERROR_CODES.FAILED_PRECONDITION) {
         serviceLogger.warn('[RealtimeOperations] Firestore indexes still building - retrying listener attachment');
         return { ready: false, error: 'Indexes building' };

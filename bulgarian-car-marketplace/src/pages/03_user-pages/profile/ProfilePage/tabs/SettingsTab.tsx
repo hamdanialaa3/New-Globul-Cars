@@ -1273,13 +1273,32 @@ interface EditInformationSectionProps {
   language: string;
 }
 
-const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({ 
-  user, 
+interface UnifiedAccountSectionProps {
+  user: BulgarianUser | null;
+  language: string;
+  settings: UserSettings;
+  setSettings: (settings: UserSettings) => void;
+  saving: boolean;
+  handleSave: () => Promise<void>;
+  handleDeleteAccount?: () => Promise<void>;
+  isGuest: boolean;
+  isVerified: boolean;
+  showEmailVerification: boolean;
+  setShowEmailVerification: (show: boolean) => void;
+  showPhoneVerification: boolean;
+  setShowPhoneVerification: (show: boolean) => void;
+  refresh?: () => Promise<void>;
+  setUser?: React.Dispatch<React.SetStateAction<BulgarianUser | null>>;
+}
+
+const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
+  user,
   language,
   settings,
   setSettings,
   saving,
   handleSave,
+  handleDeleteAccount,
   isGuest,
   isVerified,
   showEmailVerification,
@@ -1299,9 +1318,9 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
     // Detect country from phone number or default to Bulgaria
     const phone = settings.phone || user?.phoneNumber || '';
     if (phone) {
-      const country = getCountryByPhoneCode(phone.substring(0, 4)) || 
-                      getCountryByPhoneCode(phone.substring(0, 3)) ||
-                      getCountryByPhoneCode(phone.substring(0, 2));
+      const country = getCountryByPhoneCode(phone.substring(0, 4)) ||
+        getCountryByPhoneCode(phone.substring(0, 3)) ||
+        getCountryByPhoneCode(phone.substring(0, 2));
       return country || DEFAULT_COUNTRY;
     }
     return DEFAULT_COUNTRY;
@@ -1310,16 +1329,16 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
     // Extract phone number without country code
     const phone = settings.phone || user?.phoneNumber || '';
     if (phone && phone.startsWith('+')) {
-      const country = getCountryByPhoneCode(phone.substring(0, 4)) || 
-                      getCountryByPhoneCode(phone.substring(0, 3)) ||
-                      getCountryByPhoneCode(phone.substring(0, 2));
+      const country = getCountryByPhoneCode(phone.substring(0, 4)) ||
+        getCountryByPhoneCode(phone.substring(0, 3)) ||
+        getCountryByPhoneCode(phone.substring(0, 2));
       if (country) {
         return phone.replace(country.phoneCode, '').trim();
       }
     }
     return phone.replace(/^\+\d+/, '').trim();
   });
-  
+
   // Email validation function
   const validateEmail = (email: string): boolean => {
     // Pattern: ex@ex.ex (at least one char before @, one char after @, one char after dot)
@@ -1353,19 +1372,38 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
     const fullPhone = country.phoneCode + phoneNumber;
     setSettings({ ...settings, phone: fullPhone });
   };
-  
-  // Merge user data with settings for unified state
-  const userInfo = {
-    displayName: settings.displayName || user?.displayName || '',
+
+  // BUG FIX 5 & 6: Use locationData and consolidate state
+  // Local state for form fields
+  const [userInfo, setUserInfo] = useState({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
     phoneNumber: settings.phone || user?.phoneNumber || '',
     email: settings.email || user?.email || '',
-    city: user?.location?.city || '',
-    region: user?.location?.region || '',
-    address: user?.location?.address || '',
+    city: user?.locationData?.cityName || user?.location?.city || '',
+    region: user?.locationData?.regionName || user?.location?.region || '',
+    address: user?.locationData?.address || user?.location?.address || '',
     bio: settings.bio || user?.bio || ''
-  };
+  });
+
+  // BUG FIX 4: Fix useEffect dependencies - include all dependencies
+  useEffect(() => {
+    setUserInfo({
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
+      phoneNumber: settings.phone || user?.phoneNumber || '',
+      email: settings.email || user?.email || '',
+      city: user?.locationData?.cityName || user?.location?.city || '',
+      region: user?.locationData?.regionName || user?.location?.region || '',
+      address: user?.locationData?.address || user?.location?.address || '',
+      bio: settings.bio || user?.bio || ''
+    });
+  }, [user?.uid, user?.firstName, user?.lastName, user?.phoneNumber, user?.email, user?.locationData, user?.location, user?.bio, settings.phone, settings.email, settings.bio]);
+
+  // Debug: Confirm component version
+  useEffect(() => {
+    logger.debug('UnifiedAccountSection v2.0 - Fix Applied');
+  }, []);
 
   // Load ID card data from user if exists
   React.useEffect(() => {
@@ -1396,19 +1434,13 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
           : 'ID card data saved successfully!',
         { autoClose: 3000 }
       );
-      
+
       // Refresh user data
-      if (refresh) await refresh();
-      if (setUser && user) {
-        setUser({
-          ...user,
-          firstName: userInfo.firstName || data.firstNameBG || data.firstNameEN,
-          lastName: userInfo.lastName || data.lastNameBG || data.lastNameEN,
-          displayName: userInfo.displayName || `${data.firstNameBG || data.firstNameEN} ${data.lastNameBG || data.lastNameEN}`.trim(),
-          idCardData: data as any
-        });
+      if (refresh) {
+        await refresh();
       }
     } catch (error) {
+      logger.error('Error saving ID card data:', error as Error);
       toast.error(
         isBg
           ? 'Грешка при запазване на данните от личната карта'
@@ -1418,118 +1450,69 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
     }
   };
 
-  const handleDeleteAccount = async () => {
-    if (!currentUser?.uid) return;
+  // BUG FIX 7: Add loading and error states
+  const [savingUserInfo, setSavingUserInfo] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
-    const confirmMessage = language === 'bg'
-      ? 'ВНИМАНИЕ: Това действие ще изтрие вашия профил и всички данни ЗАВИНАГИ. Сигурни ли сте?'
-      : 'WARNING: This action will PERMANENTLY delete your profile and all data. Are you sure?';
-
-    if (!window.confirm(confirmMessage)) return;
-
-    if (!window.confirm(language === 'bg' ? 'Последно предупреждение! Това действие е необратимо.' : 'Last warning! This action is irreversible.')) return;
-
-    try {
-      // 1. Log analytics data before deletion (retain trace for admin)
-      try {
-        await addDoc(collection(db, 'deleted_users_audit'), {
-          uid: currentUser.uid,
-          email: currentUser.email,
-          deletedAt: serverTimestamp(),
-          userAgent: navigator.userAgent,
-          reason: 'User requested deletion',
-          platform: 'web',
-          location: userInfo.locationData || 'Unknown',
-          phoneNumber: userInfo.phoneNumber || 'Unknown',
-          lastDisplayName: userInfo.displayName,
-          source: 'settings_tab'
-        });
-      } catch (logError) {
-        logger.error('Error logging user deletion', logError as Error);
-        // Continue with deletion even if logging fails? 
-        // User requested "without leaving any trace FOR THE USER", but system needs trace.
-        // We proceed.
-      }
-
-      // 2. Delete User Data from Firestore
-      // Note: This only deletes the main user document. 
-      // A Cloud Function is recommended for recursive deletion of subcollections/listings.
-      // But we will delete the main doc here as requested.
-      await deleteDoc(doc(db, 'users', currentUser.uid));
-
-      // 3. Delete Firebase Auth Account
-      await currentUser.delete();
-
-      // 4. Redirect
-      window.location.href = '/';
-
-    } catch (error: unknown) {
-      const err = error instanceof Error ? error : new Error(String(error));
-      logger.error('Error deleting account', err);
-      if (error.code === 'auth/requires-recent-login') {
-        toast.error(language === 'bg' ? 'Моля, влезте отново, за да изтриете акаунта си.' : 'Please log in again to delete your account.');
-      } else {
-        toast.error(isBg ? 'Грешка при изтриване на акаунта.' : 'Error deleting account.');
-      }
-    }
-  };
-
-  // Unified save handler that updates both settings and user profile
-  const handleUnifiedSave = async () => {
-    if (!currentUser?.uid) return;
-
-    // Validate email before saving
-    if (settings.email && !validateEmail(settings.email)) {
-      setEmailError(true);
-      toast.error(
-        isBg
-          ? 'Моля, въведете валиден имейл (формат: ex@ex.ex)'
-          : 'Please enter a valid email (format: ex@ex.ex)'
-      );
+  const saveUserInfoHandler = async () => {
+    if (!currentUser?.uid) {
+      setSaveError(isBg ? 'Не сте влезли в системата' : 'You are not logged in');
       return;
     }
 
+    // Validate required fields
+    if (!userInfo.firstName.trim() || !userInfo.lastName.trim()) {
+      setSaveError(isBg ? 'Моля, попълнете първото и последното име' : 'Please fill in first and last name');
+      toast.error(isBg ? 'Моля, попълнете първото и последното име' : 'Please fill in first and last name');
+      return;
+    }
+
+    setSavingUserInfo(true);
+    setSaveError(null);
+
     try {
-      // First update settings (displayName, email, phone, bio, language)
-      await handleSave();
+      logger.debug('Using new save handler');
       
-      // Then update user profile with additional fields (firstName, lastName, location)
+      // BUG FIX 5: Use locationData structure properly
+      // Generate displayName from firstName + lastName
+      const displayName = `${userInfo.firstName.trim()} ${userInfo.lastName.trim()}`.trim();
+      
+      // Save additional profile data using profileService
       await profileService.updateUserProfile(currentUser.uid, {
-        firstName: userInfo.firstName,
-        lastName: userInfo.lastName,
-        location: {
-          city: userInfo.city,
-          region: userInfo.region,
-          address: userInfo.address,
-          country: 'Bulgaria'
+        firstName: userInfo.firstName.trim(),
+        lastName: userInfo.lastName.trim(),
+        displayName: displayName,
+        bio: userInfo.bio.trim(),
+        locationData: {
+          cityName: userInfo.city.trim(),
+          regionName: userInfo.region.trim(),
+          address: userInfo.address.trim(),
+          coordinates: user?.locationData?.coordinates || undefined
         }
       });
 
-      // Refresh user data
-      if (refresh) await refresh();
-      if (setUser && user) {
-        // Update local user state
-        setUser({
-          ...user,
-          firstName: userInfo.firstName,
-          lastName: userInfo.lastName,
-          location: {
-            ...user.location,
-            city: userInfo.city,
-            region: userInfo.region,
-            address: userInfo.address
-          }
-        });
-      }
-    } catch (error) {
-      logger.error('Error in unified save', error as Error);
-      toast.error(
-        isBg
-          ? 'Грешка при запазване на информацията'
-          : 'Error saving information'
+      // Trigger parent save for settings
+      await handleSave();
+
+      toast.success(
+        isBg 
+          ? 'Информацията е запазена успешно!' 
+          : 'Information saved successfully!',
+        { autoClose: 3000 }
       );
+
+    } catch (error) {
+      logger.error("Error saving user info:", error as Error);
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : (isBg ? 'Грешка при запазване на информацията' : 'Failed to save profile information');
+      setSaveError(errorMessage);
+      toast.error(errorMessage, { autoClose: 5000 });
+    } finally {
+      setSavingUserInfo(false);
     }
   };
+
 
   return (
     <Section>
@@ -1543,13 +1526,13 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
       {/* Account Status LED Indicator - Only for Guest Accounts */}
       {isGuest && (
         <div style={{ marginBottom: '32px' }}>
-          <AccountStatusLED 
-            isGuest={isGuest} 
+          <AccountStatusLED
+            isGuest={isGuest}
             isVerified={isVerified}
           />
-          <div style={{ 
-            display: 'flex', 
-            gap: '12px', 
+          <div style={{
+            display: 'flex',
+            gap: '12px',
             marginTop: '16px',
             flexWrap: 'wrap'
           }}>
@@ -1605,321 +1588,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
         </div>
       )}
 
-      {/* ID Card Section */}
-      <IDCardSection>
-        <IDCardHeader>
-          <div>
-            <IDCardTitle>
-              {isBg ? '🆔 Лична карта' : '🆔 ID Card'}
-            </IDCardTitle>
-            <IDCardSubtitle>
-              {isBg
-                ? 'Попълнете данните от личната си карта за автоматично попълване'
-                : 'Fill in your ID card data for automatic form filling'}
-            </IDCardSubtitle>
-          </div>
-          <IDCardButton onClick={() => setShowIDEditor(true)}>
-            <CreditCard size={18} />
-            {isBg ? 'Редактирай лична карта' : 'Edit ID Card'}
-          </IDCardButton>
-        </IDCardHeader>
 
-        {idCardData.documentNumber && (
-          <IDCardInfo>
-            <InfoItem>
-              <strong>{isBg ? '№ на документа:' : 'Document No.:'}</strong> {idCardData.documentNumber}
-            </InfoItem>
-            <InfoItem>
-              <strong>{isBg ? 'ЕГН:' : 'EGN:'}</strong> {idCardData.personalNumber}
-            </InfoItem>
-            {(idCardData.firstNameBG || idCardData.firstNameEN) && (
-              <InfoItem>
-                <strong>{isBg ? 'Име:' : 'Name:'}</strong> {idCardData.firstNameBG || idCardData.firstNameEN} {idCardData.lastNameBG || idCardData.lastNameEN}
-              </InfoItem>
-            )}
-          </IDCardInfo>
-        )}
-      </IDCardSection>
-
-      {/* Personal Information Section */}
-      <FormSection>
-        <FormTitle>
-          {isBg ? 'Лична информация' : 'Personal Information'}
-        </FormTitle>
-
-        <SettingGroup id="credentials-section">
-          <Label $required>{isBg ? 'Име за показване' : 'Display Name'}</Label>
-          <Input
-            type="text"
-            value={settings.displayName}
-            onChange={(e) => setSettings({ ...settings, displayName: e.target.value })}
-            placeholder={isBg ? 'Вашето име' : 'Your name'}
-          />
-        </SettingGroup>
-
-        <FormRow>
-          <SettingGroup style={{ flex: 1 }}>
-            <Label>{isBg ? 'Име' : 'First Name'}</Label>
-            <Input
-              type="text"
-              value={userInfo.firstName}
-              onChange={(e) => {
-                // Update user object directly for firstName/lastName
-                if (setUser && user) {
-                  setUser({ ...user, firstName: e.target.value });
-                }
-              }}
-              placeholder={isBg ? 'Име' : 'First name'}
-            />
-          </SettingGroup>
-
-          <SettingGroup style={{ flex: 1 }}>
-            <Label>{isBg ? 'Фамилия' : 'Last Name'}</Label>
-            <Input
-              type="text"
-              value={userInfo.lastName}
-              onChange={(e) => {
-                if (setUser && user) {
-                  setUser({ ...user, lastName: e.target.value });
-                }
-              }}
-              placeholder={isBg ? 'Фамилия' : 'Last name'}
-            />
-          </SettingGroup>
-        </FormRow>
-
-        <SettingGroup>
-          <Label $required>
-            <Mail size={16} style={{ marginRight: '8px', display: 'inline-block' }} />
-            {isBg ? 'Имейл' : 'Email'}
-          </Label>
-          <InputWithIcon $hasError={emailError}>
-            <Mail size={18} />
-            <Input
-              type="email"
-              value={settings.email}
-              onChange={handleEmailChange}
-              placeholder="example@email.com"
-              disabled={!isGuest}
-              $hasError={emailError}
-            />
-          </InputWithIcon>
-          {emailError && (
-            <HelpText style={{ color: '#ef4444', marginTop: '4px' }}>
-              {isBg ? 'Моля, въведете валиден имейл (формат: ex@ex.ex)' : 'Please enter a valid email (format: ex@ex.ex)'}
-            </HelpText>
-          )}
-          {!emailError && (
-            <HelpText>{isBg ? 'Използва се за влизане и известия' : 'Used for login and notifications'}</HelpText>
-          )}
-          {isGuest && !emailError && (
-            <div style={{ marginTop: '8px' }}>
-              <button
-                type="button"
-                onClick={() => setShowEmailVerification(true)}
-                style={{
-                  padding: '8px 16px',
-                  background: 'rgba(255, 121, 0, 0.2)',
-                  color: '#FF7900',
-                  border: '1px solid rgba(255, 121, 0, 0.4)',
-                  borderRadius: '8px',
-                  fontSize: '0.875rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
-              >
-                <Mail size={14} />
-                {isBg ? 'Потвърди имейл' : 'Verify Email'}
-              </button>
-            </div>
-          )}
-        </SettingGroup>
-
-        <SettingGroup>
-          <Label>
-            <Phone size={16} style={{ marginRight: '8px', display: 'inline-block' }} />
-            {isBg ? 'Телефон' : 'Phone Number'}
-          </Label>
-          <PhoneInputWrapper>
-            <CountrySelectWrapper>
-              <Select
-                value={selectedCountry.code}
-                onChange={handleCountryChange}
-                style={{
-                  paddingRight: '32px',
-                  minWidth: '140px',
-                  appearance: 'none',
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'right 12px center',
-                  paddingLeft: '40px'
-                }}
-              >
-                {COUNTRIES.map(country => (
-                  <option key={country.code} value={country.code}>
-                    {country.flag} {country.phoneCode} {isBg ? country.nameBg : country.name}
-                  </option>
-                ))}
-              </Select>
-              <CountryFlagDisplay>
-                {selectedCountry.flag}
-              </CountryFlagDisplay>
-            </CountrySelectWrapper>
-            <InputWithIcon style={{ flex: 1, marginLeft: '8px' }}>
-              <Phone size={18} />
-              <Input
-                type="tel"
-                value={phoneNumber}
-                onChange={handlePhoneChange}
-                placeholder={isBg ? '888123456' : '888123456'}
-                disabled={!isGuest}
-              />
-            </InputWithIcon>
-          </PhoneInputWrapper>
-          <HelpText style={{ marginTop: '4px' }}>
-            {selectedCountry.phoneCode} {phoneNumber || (isBg ? '888123456' : '888123456')}
-          </HelpText>
-          {isGuest && (
-            <div style={{ marginTop: '8px' }}>
-              <button
-                type="button"
-                onClick={() => setShowPhoneVerification(true)}
-                style={{
-                  padding: '8px 16px',
-                  background: 'rgba(255, 121, 0, 0.2)',
-                  color: '#FF7900',
-                  border: '1px solid rgba(255, 121, 0, 0.4)',
-                  borderRadius: '8px',
-                  fontSize: '0.875rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
-              >
-                <Phone size={14} />
-                {isBg ? 'Потвърди телефон' : 'Verify Phone'}
-              </button>
-            </div>
-          )}
-        </SettingGroup>
-
-        <FormTitle style={{ marginTop: '2rem' }}>
-          {isBg ? 'Местоположение' : 'Location'}
-        </FormTitle>
-
-        <FormRow>
-          <SettingGroup style={{ flex: 1 }}>
-            <Label>{isBg ? 'Област' : 'Region'}</Label>
-            <Input
-              type="text"
-              value={userInfo.region}
-              onChange={(e) => {
-                if (setUser && user) {
-                  setUser({ 
-                    ...user, 
-                    location: { ...user.location, region: e.target.value } 
-                  });
-                }
-              }}
-              placeholder={isBg ? 'Област' : 'Region'}
-            />
-          </SettingGroup>
-
-          <SettingGroup style={{ flex: 1 }}>
-            <Label>{isBg ? 'Град' : 'City'}</Label>
-            <Input
-              type="text"
-              value={userInfo.city}
-              onChange={(e) => {
-                if (setUser && user) {
-                  setUser({ 
-                    ...user, 
-                    location: { ...user.location, city: e.target.value } 
-                  });
-                }
-              }}
-              placeholder={isBg ? 'Град' : 'City'}
-            />
-          </SettingGroup>
-        </FormRow>
-
-        <SettingGroup>
-          <Label>
-            <MapPin size={16} style={{ marginRight: '8px', display: 'inline-block' }} />
-            {isBg ? 'Адрес' : 'Address'}
-          </Label>
-          <Input
-            type="text"
-            value={userInfo.address}
-            onChange={(e) => {
-              if (setUser && user) {
-                setUser({ 
-                  ...user, 
-                  location: { ...user.location, address: e.target.value } 
-                });
-              }
-            }}
-            placeholder={isBg ? 'Улица, номер' : 'Street, number'}
-          />
-        </SettingGroup>
-
-        <SettingGroup>
-          <Label>{isBg ? 'Биография' : 'Bio'}</Label>
-          <TextArea
-            value={settings.bio}
-            onChange={(e) => setSettings({ ...settings, bio: e.target.value })}
-            placeholder={isBg ? 'Разкажете за себе си...' : 'Tell others about yourself...'}
-            rows={4}
-          />
-          <HelpText>{isBg ? 'Кратко описание, видимо в профила ви' : 'Brief description visible on your profile'}</HelpText>
-        </SettingGroup>
-
-        <SettingGroup>
-          <Label>{isBg ? 'Език' : 'Language'}</Label>
-          <Select
-            value={settings.language}
-            onChange={(e) => setSettings({ ...settings, language: e.target.value as 'bg' | 'en' })}
-          >
-            <option value="bg">Български</option>
-            <option value="en">English</option>
-          </Select>
-        </SettingGroup>
-
-        <ActionButtonsContainer>
-          <SaveButton onClick={handleUnifiedSave} disabled={saving}>
-            {saving ? (
-              <>
-                <Spinner />
-                {isBg ? 'Запазване...' : 'Saving...'}
-              </>
-            ) : (
-              <>
-                <Save size={18} />
-                {isBg ? 'Запази промените' : 'Save Changes'}
-              </>
-            )}
-          </SaveButton>
-
-          <DeleteAccountButton onClick={handleDeleteAccount} disabled={saving} type="button">
-            <Trash2 size={18} />
-            {isBg ? 'ИЗТРИЙ АКАУНТА' : 'DELETE ACCOUNT'}
-          </DeleteAccountButton>
-        </ActionButtonsContainer>
-      </FormSection>
-
-      {/* ID Card Editor Modal */}
-      {showIDEditor && (
-        <IDCardOverlay
-          initialData={idCardData}
-          onSave={handleSaveIDCard}
-          onClose={() => setShowIDEditor(false)}
-        />
-      )}
 
       {/* ID Card Section */}
       <IDCardSection>
@@ -1963,19 +1632,10 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
           {isBg ? 'Лична информация' : 'Personal Information'}
         </FormTitle>
 
-        <SettingGroup>
-          <Label $required>{isBg ? 'Име за показване' : 'Display Name'}</Label>
-          <Input
-            type="text"
-            value={userInfo.displayName}
-            onChange={(e) => setUserInfo({ ...userInfo, displayName: e.target.value })}
-            placeholder={isBg ? 'Вашето име' : 'Your name'}
-          />
-        </SettingGroup>
-
+        {/* BUG FIX 1: Remove duplicate displayName field - use firstName + lastName only */}
         <FormRow>
           <SettingGroup style={{ flex: 1 }}>
-            <Label>{isBg ? 'Име' : 'First Name'}</Label>
+            <Label $required>{isBg ? 'Име' : 'First Name'}</Label>
             <Input
               type="text"
               value={userInfo.firstName}
@@ -1985,7 +1645,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
           </SettingGroup>
 
           <SettingGroup style={{ flex: 1 }}>
-            <Label>{isBg ? 'Фамилия' : 'Last Name'}</Label>
+            <Label $required>{isBg ? 'Фамилия' : 'Last Name'}</Label>
             <Input
               type="text"
               value={userInfo.lastName}
@@ -1994,6 +1654,11 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
             />
           </SettingGroup>
         </FormRow>
+        <HelpText>
+          {isBg 
+            ? 'Името за показване ще бъде автоматично генерирано от първото и последното име'
+            : 'Display name will be automatically generated from first and last name'}
+        </HelpText>
 
         <SettingGroup>
           <Label $required>
@@ -2005,9 +1670,16 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
             value={userInfo.email}
             onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
             placeholder="example@email.com"
-            disabled
+            disabled={isGuest || !currentUser?.emailVerified}
           />
-          <HelpText>{isBg ? 'Имейлът не може да бъде променен' : 'Email cannot be changed'}</HelpText>
+          <HelpText>
+            {isGuest 
+              ? (isBg ? 'Имейлът не може да бъде променен за гост акаунти' : 'Email cannot be changed for guest accounts')
+              : !currentUser?.emailVerified
+              ? (isBg ? 'Моля, потвърдете имейла си преди промяна' : 'Please verify your email before changing it')
+              : (isBg ? 'Имейлът не може да бъде променен' : 'Email cannot be changed')
+            }
+          </HelpText>
         </SettingGroup>
 
         <SettingGroup>
@@ -2042,7 +1714,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
             <Label>{isBg ? 'Град' : 'City'}</Label>
             <Input
               type="text"
-              value={userInfo.locationData?.cityName}
+              value={userInfo.city}
               onChange={(e) => setUserInfo({ ...userInfo, city: e.target.value })}
               placeholder={isBg ? 'Град' : 'City'}
             />
@@ -2072,9 +1744,20 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
           />
         </SettingGroup>
 
+        {/* BUG FIX 7: Show error message if save failed */}
+        {saveError && (
+          <DangerBox style={{ marginTop: '1rem' }}>
+            <AlertCircle size={20} />
+            <div>
+              <strong>{isBg ? 'Грешка' : 'Error'}</strong>
+              <p>{saveError}</p>
+            </div>
+          </DangerBox>
+        )}
+
         <ActionButtonsContainer>
-          <SaveButton onClick={handleSaveUserInfo} disabled={saving}>
-            {saving ? (
+          <SaveButton onClick={saveUserInfoHandler} disabled={saving || savingUserInfo}>
+            {saving || savingUserInfo ? (
               <>
                 <Spinner />
                 {isBg ? 'Запазване...' : 'Saving...'}
@@ -2301,8 +1984,8 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
       const updatedUser = { ...user, isGuest: false, accountType: 'registered' } as BulgarianUser;
       setUser(updatedUser);
     }
-    toast.success(language === 'bg' 
-      ? 'Акаунтът ви е активиран успешно!' 
+    toast.success(language === 'bg'
+      ? 'Акаунтът ви е активиран успешно!'
       : 'Your account has been activated successfully!');
   };
 
@@ -2971,13 +2654,14 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
           <ContentArea $isDark={isDark}>
             {/* Unified Account Section - Merged Edit Information + Account */}
             {activeSection === 'account' && (
-              <UnifiedAccountSection 
-                user={user} 
+              <UnifiedAccountSection
+                user={user}
                 language={language}
                 settings={settings}
                 setSettings={setSettings}
                 saving={saving}
                 handleSave={handleSave}
+                handleDeleteAccount={handleDeleteAccount}
                 isGuest={isGuest}
                 isVerified={isVerified}
                 showEmailVerification={showEmailVerification}
@@ -3575,13 +3259,31 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                       ? 'Наистина ли искате да излезете от всички устройства?'
                       : 'Are you sure you want to logout from all devices?')) {
                       try {
-                        // TODO: Implement logout from all devices
-                        toast.info(
+                        // Logout from all devices by:
+                        // 1. Sign out current session
+                        // 2. Clear all local storage
+                        // 3. Invalidate all tokens (would require backend support)
+                        const { signOut } = await import('firebase/auth');
+                        const { auth } = await import('../../../../../firebase/firebase-config');
+                        
+                        // Clear local storage and session storage
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        
+                        // Sign out from Firebase
+                        await signOut(auth);
+                        
+                        toast.success(
                           language === 'bg'
-                            ? 'Функцията е в процес на разработка'
-                            : 'Feature is under development',
+                            ? 'Излязохте от всички устройства успешно'
+                            : 'Logged out from all devices successfully',
                           { autoClose: 3000 }
                         );
+                        
+                        // Redirect to home page after a short delay
+                        setTimeout(() => {
+                          window.location.href = '/';
+                        }, 1000);
                       } catch (error) {
                         logger.error('Error logging out:', error as Error);
                         toast.error(

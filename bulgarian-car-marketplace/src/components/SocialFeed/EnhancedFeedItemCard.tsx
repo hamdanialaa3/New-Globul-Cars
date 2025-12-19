@@ -15,11 +15,11 @@ import { logger } from '../../services/logger-service';
 
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { 
-  Heart, 
-  MessageCircle, 
-  Share2, 
-  Bookmark, 
+import {
+  Heart,
+  MessageCircle,
+  Share2,
+  Bookmark,
   MoreVertical,
   Send,
   ThumbsUp,
@@ -28,27 +28,19 @@ import {
   Eye,
   TrendingUp,
   Flag,
-  Reply
+  Reply,
+  Play
 } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useNavigate } from 'react-router-dom';
-import { postsEngagementService } from '../../services/social/posts-engagement.service';
+import { usePostEngagement } from '../../hooks/usePostEngagement';
 import { FeedStatsModal } from './FeedStatsModal';
+import { ReportModal } from './ReportModal';
 import type { FeedItem } from '../../services/social/smart-feed.service';
-import type { PostComment } from '../../services/social/posts-engagement.service';
-import {
-  collection,
-  query,
-  where,
-  orderBy,
-  limit,
-  onSnapshot,
-  doc,
-  getDoc
-} from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { getProfileUrl } from '../../utils/routing-utils';
 
 const CardContainer = styled.div<{ $isDark: boolean }>`
   background: ${props => props.$isDark ? '#1e293b' : '#ffffff'};
@@ -61,9 +53,9 @@ const CardContainer = styled.div<{ $isDark: boolean }>`
   overflow: hidden;
 
   &:hover {
-    box-shadow: ${props => props.$isDark 
-      ? '0 8px 24px rgba(0, 0, 0, 0.4)' 
-      : '0 8px 24px rgba(0, 0, 0, 0.12)'};
+    box-shadow: ${props => props.$isDark
+    ? '0 8px 24px rgba(0, 0, 0, 0.4)'
+    : '0 8px 24px rgba(0, 0, 0, 0.12)'};
     transform: translateY(-4px);
     border-color: ${props => props.$isDark ? '#475569' : '#cbd5e1'};
   }
@@ -105,8 +97,8 @@ const AuthorAvatar = styled.div<{ $imageUrl?: string; $isDark: boolean }>`
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: ${props => props.$imageUrl 
-    ? `url(${props.$imageUrl}) center/cover` 
+  background: ${props => props.$imageUrl
+    ? `url(${props.$imageUrl}) center/cover`
     : props.$isDark ? '#334155' : '#e2e8f0'};
   border: 2px solid ${props => props.$isDark ? '#475569' : '#cbd5e1'};
   position: relative;
@@ -282,8 +274,8 @@ const VideoThumbnail = styled.div<{ $thumbnailUrl?: string; $isDark: boolean }>`
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  background: ${props => props.$thumbnailUrl 
-    ? `url(${props.$thumbnailUrl}) center/cover` 
+  background: ${props => props.$thumbnailUrl
+    ? `url(${props.$thumbnailUrl}) center/cover`
     : props.$isDark ? '#0f172a' : '#f8fafc'};
   border-radius: 12px;
   display: flex;
@@ -525,8 +517,8 @@ const CommentAvatar = styled.div<{ $imageUrl?: string; $isDark: boolean }>`
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: ${props => props.$imageUrl 
-    ? `url(${props.$imageUrl}) center/cover` 
+  background: ${props => props.$imageUrl
+    ? `url(${props.$imageUrl}) center/cover`
     : props.$isDark ? '#334155' : '#e2e8f0'};
   flex-shrink: 0;
 `;
@@ -602,87 +594,36 @@ export const EnhancedFeedItemCard: React.FC<EnhancedFeedItemCardProps> = ({
   const { user } = useAuth();
   const navigate = useNavigate();
   const isDark = theme === 'dark';
-  
-  const [liked, setLiked] = useState(false);
-  const [saved, setSaved] = useState(false);
+
+  const {
+    liked,
+    saved,
+    engagement,
+    comments,
+    isLiking,
+    isCommenting,
+    toggleLike,
+    toggleSave,
+    sharePost,
+    submitComment,
+    loadComments
+  } = usePostEngagement(item);
+
+  // Local UI state (not handled by hook)
   const [showComments, setShowComments] = useState(false);
-  const [comments, setComments] = useState<PostComment[]>([]);
   const [commentText, setCommentText] = useState('');
-  const [engagement, setEngagement] = useState(item.engagement);
-  const [isLiking, setIsLiking] = useState(false);
-  const [isCommenting, setIsCommenting] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
-  const [showReportMenu, setShowReportMenu] = useState(false);
-  
   const commentInputRef = useRef<HTMLInputElement>(null);
-  const hasTrackedView = useRef(false);
 
-  // Track view on mount
+  const [showReportModal, setShowReportModal] = useState(false);
+
+  // Load comments when section is expanded
   useEffect(() => {
-    if (!hasTrackedView.current && item.type === 'post' && item.id) {
-      postsEngagementService.incrementViews(item.id);
-      hasTrackedView.current = true;
+    if (showComments) {
+      loadComments();
     }
-  }, [item.id, item.type]);
-
-  // Real-time engagement updates
-  useEffect(() => {
-    if (item.type !== 'post' || !item.id) return;
-
-    const postRef = doc(db, 'posts', item.id);
-    const unsubscribe = onSnapshot(postRef, (snap) => {
-      if (snap.exists()) {
-        const data = snap.data();
-        setEngagement(data.engagement || item.engagement);
-        
-        // Check if user liked
-        if (user?.uid) {
-          const reactions = data.reactions || {};
-          setLiked(!!reactions[user.uid]);
-        }
-      }
-    });
-
-    return () => unsubscribe();
-  }, [item.id, item.type, user?.uid]);
-
-  // Load comments
-  useEffect(() => {
-    if (!showComments || item.type !== 'post' || !item.id) return;
-
-    const commentsQuery = query(
-      collection(db, 'posts', item.id, 'comments'),
-      where('status', '==', 'active'),
-      orderBy('createdAt', 'desc'),
-      limit(20)
-    );
-
-    const unsubscribe = onSnapshot(commentsQuery, (snapshot) => {
-      const commentsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as PostComment));
-      setComments(commentsData);
-    });
-
-    return () => unsubscribe();
-  }, [showComments, item.id, item.type]);
-
-  const handleLike = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!user || item.type !== 'post' || !item.id || isLiking) return;
-
-    setIsLiking(true);
-    try {
-      const newLiked = await postsEngagementService.toggleLike(item.id, user.uid);
-      setLiked(newLiked);
-    } catch (error) {
-      logger.error('Error toggling like:', error);
-    } finally {
-      setIsLiking(false);
-    }
-  };
+  }, [showComments, loadComments]);
 
   const handleComment = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -696,63 +637,39 @@ export const EnhancedFeedItemCard: React.FC<EnhancedFeedItemCardProps> = ({
     }
   };
 
+  const handleSubmitComment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      await submitComment(commentText, replyingTo || undefined);
+      setCommentText('');
+      setReplyingTo(null);
+    } catch (error) {
+      // Error logged in hook
+    }
+  };
+
+  // Handlers for share/save/report are simplified as they mostly wrap the hook
+  // or handle local UI state (like navigating/showing modals)
+
+  const handleLike = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    await toggleLike();
+  };
+
+
+
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!user || item.type !== 'post' || !item.id) return;
-
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: item.content.title || item.content.text || 'Check this out!',
-          text: item.content.text,
-          url: `${window.location.origin}/posts/${item.id}`
-        });
-      } else {
-        // Fallback: copy to clipboard
-        await navigator.clipboard.writeText(`${window.location.origin}/posts/${item.id}`);
-        // Show toast notification (you can implement this)
-      }
-      await postsEngagementService.sharePost(item.id, user.uid);
-    } catch (error) {
-      logger.error('Error sharing:', error);
-    }
+    await sharePost();
   };
 
   const handleSave = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!user || item.type !== 'post' || !item.id) return;
-
-    try {
-      await postsEngagementService.savePost(item.id, user.uid);
-      setSaved(!saved);
-    } catch (error) {
-      logger.error('Error saving post:', error);
-    }
+    await toggleSave();
   };
 
-  const handleSubmitComment = async (e: React.FormEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    if (!user || !commentText.trim() || item.type !== 'post' || !item.id || isCommenting) return;
 
-    setIsCommenting(true);
-    try {
-      await postsEngagementService.addComment(
-        item.id, 
-        user.uid, 
-        commentText.trim(),
-        replyingTo || undefined
-      );
-      setCommentText('');
-      setReplyingTo(null);
-      setShowComments(true);
-    } catch (error) {
-      logger.error('Error adding comment:', error);
-    } finally {
-      setIsCommenting(false);
-    }
-  };
 
   const handleReply = (commentId: string, authorName: string) => {
     setReplyingTo(commentId);
@@ -760,19 +677,18 @@ export const EnhancedFeedItemCard: React.FC<EnhancedFeedItemCardProps> = ({
     commentInputRef.current?.focus();
   };
 
+  const [showReportMenu, setShowReportMenu] = useState(false);
+
   const handleReport = async () => {
     if (!user || !item.id) return;
-    // Implement report functionality
-    alert(language === 'bg' 
-      ? 'Благодарим ви за докладването. Ще прегледаме това съдържание.'
-      : 'Thank you for reporting. We will review this content.');
     setShowReportMenu(false);
+    setShowReportModal(true);
   };
 
   const formatTimestamp = (timestamp: any) => {
     if (!timestamp) return language === 'bg' ? 'Току-що' : 'Just now';
-    const date = timestamp instanceof Date 
-      ? timestamp 
+    const date = timestamp instanceof Date
+      ? timestamp
       : timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
     const now = new Date();
     const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
@@ -788,250 +704,267 @@ export const EnhancedFeedItemCard: React.FC<EnhancedFeedItemCardProps> = ({
     if (item.type === 'post') {
       navigate(`/posts/${item.id}`);
     } else if (item.type === 'intro_video' || item.type === 'success_story' || item.type === 'achievement') {
-      navigate(`/profile/${item.userId}`);
+      navigate(getProfileUrl({
+        numericId: (item as any).userNumericId,
+        uid: item.userId
+      }));
     }
   };
 
   return (
-    <CardContainer $isDark={isDark} onClick={handleCardClick}>
-      <CardHeader>
-        <AuthorSection onClick={(e) => {
-          e.stopPropagation();
-          navigate(`/profile/${item.userId}`);
-        }}>
-          <AuthorAvatar 
-            $imageUrl={item.authorInfo.profileImage} 
-            $isDark={isDark}
-          />
-          <AuthorInfo>
-            <AuthorName $isDark={isDark}>
-              {item.authorInfo.displayName}
-              {item.authorInfo.isVerified && <VerifiedBadge>✓</VerifiedBadge>}
-            </AuthorName>
-            <PostMeta $isDark={isDark}>
-              <span>{formatTimestamp(item.createdAt)}</span>
-              <TypeBadge $type={item.type} $isDark={isDark}>
-                {item.type.replace('_', ' ')}
-              </TypeBadge>
-            </PostMeta>
-          </AuthorInfo>
-        </AuthorSection>
-        <MoreButton 
-          $isDark={isDark}
-          onClick={(e) => {
-            e.stopPropagation();
-            setShowReportMenu(!showReportMenu);
-          }}
-        >
-          <MoreVertical size={18} />
-        </MoreButton>
-        
-        {showReportMenu && (
-          <ReportMenu $isDark={isDark}>
-            <ReportMenuItem $isDark={isDark} onClick={handleReport}>
-              <Flag size={16} />
-              {language === 'bg' ? 'Докладвай' : 'Report'}
-            </ReportMenuItem>
-          </ReportMenu>
-        )}
-      </CardHeader>
-
-      <CardContent>
-        {item.content.title && (
-          <ContentTitle $isDark={isDark}>{item.content.title}</ContentTitle>
-        )}
-        {item.content.text && (
-          <ContentText $isDark={isDark}>{item.content.text}</ContentText>
-        )}
-
-        {item.type === 'intro_video' && item.content.videoUrl && (
-          <MediaContainer>
-            <VideoThumbnail 
-              $thumbnailUrl={item.content.thumbnailUrl} 
-              $isDark={isDark}
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/profile/${item.userId}`);
-              }}
-            >
-              <PlayButton $isDark={isDark}>
-                <Play size={32} fill="currentColor" />
-              </PlayButton>
-            </VideoThumbnail>
-          </MediaContainer>
-        )}
-
-        {item.content.media && item.content.media.urls && item.content.media.urls.length > 0 && (
-          <MediaContainer>
-            <PostImages>
-              {item.content.media.urls.map((url, idx) => (
-                <PostImage key={idx} src={url} alt="" />
-              ))}
-            </PostImages>
-          </MediaContainer>
-        )}
-      </CardContent>
-
-      <EngagementBar>
-        <EngagementStats $isDark={isDark} onClick={(e) => {
-          e.stopPropagation();
-          setShowStats(true);
-        }}>
-          {engagement.likes > 0 && (
-            <StatItem $isDark={isDark}>
-              <ThumbsUp size={16} />
-              {engagement.likes}
-            </StatItem>
-          )}
-          {engagement.comments > 0 && (
-            <StatItem $isDark={isDark}>
-              <MessageCircle size={16} />
-              {engagement.comments}
-            </StatItem>
-          )}
-          {engagement.shares > 0 && (
-            <StatItem $isDark={isDark}>
-              <Share2 size={16} />
-              {engagement.shares}
-            </StatItem>
-          )}
-          {engagement.views > 0 && (
-            <StatItem $isDark={isDark}>
-              <Eye size={16} />
-              {engagement.views}
-            </StatItem>
-          )}
-        </EngagementStats>
-      </EngagementBar>
-
-      <ActionButtons>
-        <ActionButton 
-          $isDark={isDark} 
-          $active={liked}
-          onClick={handleLike}
-          disabled={isLiking || !user}
-        >
-          <Heart size={18} fill={liked ? 'currentColor' : 'none'} />
-          {language === 'bg' ? 'Харесай' : 'Like'}
-        </ActionButton>
-        
-        <ActionButton 
-          $isDark={isDark} 
-          $active={showComments}
-          onClick={handleComment}
-        >
-          <MessageCircle size={18} />
-          {language === 'bg' ? 'Коментирай' : 'Comment'}
-        </ActionButton>
-        
-        <ActionButton $isDark={isDark} onClick={handleShare}>
-          <Share2 size={18} />
-          {language === 'bg' ? 'Сподели' : 'Share'}
-        </ActionButton>
-        
-        <ActionButton 
-          $isDark={isDark} 
-          $active={saved}
-          onClick={handleSave}
-        >
-          <Bookmark size={18} fill={saved ? 'currentColor' : 'none'} />
-        </ActionButton>
-      </ActionButtons>
-
-      {showComments && item.type === 'post' && item.id && (
-        <CommentsSection $isDark={isDark} $expanded={showComments}>
-          <CommentForm $isDark={isDark} onSubmit={handleSubmitComment}>
-            {replyingTo && (
-              <ReplyIndicator $isDark={isDark}>
-                <Reply size={14} />
-                {language === 'bg' ? 'Отговаряш на коментар' : 'Replying to comment'}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setReplyingTo(null);
-                    setCommentText('');
-                  }}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: 'inherit',
-                    cursor: 'pointer',
-                    marginLeft: 'auto'
-                  }}
-                >
-                  <X size={14} />
-                </button>
-              </ReplyIndicator>
-            )}
-            <CommentInput
-              ref={commentInputRef}
-              $isDark={isDark}
-              type="text"
-              placeholder={
-                replyingTo 
-                  ? (language === 'bg' ? 'Напиши отговор...' : 'Write a reply...')
-                  : (language === 'bg' ? 'Напиши коментар...' : 'Write a comment...')
-              }
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-              onClick={(e) => e.stopPropagation()}
-            />
-            <SendButton 
-              $isDark={isDark} 
-              type="submit"
-              disabled={!commentText.trim() || isCommenting}
-            >
-              <Send size={18} />
-            </SendButton>
-          </CommentForm>
-
-          <CommentsList $isDark={isDark}>
-            {comments.map(comment => (
-              <CommentItem key={comment.id} $isDark={isDark}>
-                <CommentAvatar 
-                  $imageUrl={comment.authorInfo.profileImage} 
-                  $isDark={isDark}
-                />
-                <CommentContent>
-                  <CommentAuthor $isDark={isDark}>
-                    {comment.authorInfo.displayName}
-                  </CommentAuthor>
-                  <CommentText $isDark={isDark}>
-                    {comment.content}
-                  </CommentText>
-                  <CommentActions>
-                    <CommentAction 
-                      $isDark={isDark}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleReply(comment.id, comment.authorInfo.displayName);
-                      }}
-                    >
-                      <Reply size={12} />
-                      {language === 'bg' ? 'Отговори' : 'Reply'}
-                    </CommentAction>
-                    <CommentAction $isDark={isDark}>
-                      {formatTimestamp(comment.createdAt)}
-                    </CommentAction>
-                    {comment.likes > 0 && (
-                      <CommentAction $isDark={isDark}>
-                        👍 {comment.likes}
-                      </CommentAction>
-                    )}
-                  </CommentActions>
-                </CommentContent>
-              </CommentItem>
-            ))}
-          </CommentsList>
-        </CommentsSection>
-      )}
-
-      <FeedStatsModal
-        item={item}
-        isOpen={showStats}
-        onClose={() => setShowStats(false)}
+    <>
+      <ReportModal
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        targetId={item.id}
+        targetType="post"
       />
-    </CardContainer>
+      <CardContainer $isDark={isDark} onClick={handleCardClick}>
+        <CardHeader>
+          <AuthorSection onClick={(e) => {
+            e.stopPropagation();
+            navigate(getProfileUrl({
+              numericId: (item as any).userNumericId,
+              uid: item.userId
+            }));
+          }}>
+            <AuthorAvatar
+              $imageUrl={item.authorInfo.profileImage}
+              $isDark={isDark}
+            />
+            <AuthorInfo>
+              <AuthorName $isDark={isDark}>
+                {item.authorInfo.displayName}
+                {item.authorInfo.isVerified && <VerifiedBadge>✓</VerifiedBadge>}
+              </AuthorName>
+              <PostMeta $isDark={isDark}>
+                <span>{formatTimestamp(item.createdAt)}</span>
+                <TypeBadge $type={item.type} $isDark={isDark}>
+                  {item.type.replace('_', ' ')}
+                </TypeBadge>
+              </PostMeta>
+            </AuthorInfo>
+          </AuthorSection>
+          <MoreButton
+            $isDark={isDark}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowReportMenu(!showReportMenu);
+            }}
+          >
+            <MoreVertical size={18} />
+          </MoreButton>
+
+          {showReportMenu && (
+            <ReportMenu $isDark={isDark}>
+              <ReportMenuItem $isDark={isDark} onClick={handleReport}>
+                <Flag size={16} />
+                {language === 'bg' ? 'Докладвай' : 'Report'}
+              </ReportMenuItem>
+            </ReportMenu>
+          )}
+        </CardHeader>
+
+        <CardContent>
+          {item.content.title && (
+            <ContentTitle $isDark={isDark}>{item.content.title}</ContentTitle>
+          )}
+          {item.content.text && (
+            <ContentText $isDark={isDark}>{item.content.text}</ContentText>
+          )}
+
+          {item.type === 'intro_video' && item.content.videoUrl && (
+            <MediaContainer>
+              <VideoThumbnail
+                $thumbnailUrl={item.content.thumbnailUrl}
+                $isDark={isDark}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(getProfileUrl({
+                    numericId: (item as any).userNumericId,
+                    uid: item.userId
+                  }));
+                }}
+              >
+                <PlayButton $isDark={isDark}>
+                  <Play size={32} fill="currentColor" />
+                </PlayButton>
+              </VideoThumbnail>
+            </MediaContainer>
+          )}
+
+          {item.content.media && item.content.media.urls && item.content.media.urls.length > 0 && (
+            <MediaContainer>
+              <PostImages>
+                {item.content.media.urls.map((url, idx) => (
+                  <PostImage key={idx} src={url} alt="" />
+                ))}
+              </PostImages>
+            </MediaContainer>
+          )}
+        </CardContent>
+
+        <EngagementBar>
+          <EngagementStats $isDark={isDark} onClick={(e) => {
+            e.stopPropagation();
+            setShowStats(true);
+          }}>
+            {engagement.likes > 0 && (
+              <StatItem $isDark={isDark}>
+                <ThumbsUp size={16} />
+                {engagement.likes}
+              </StatItem>
+            )}
+            {engagement.comments > 0 && (
+              <StatItem $isDark={isDark}>
+                <MessageCircle size={16} />
+                {engagement.comments}
+              </StatItem>
+            )}
+            {engagement.shares > 0 && (
+              <StatItem $isDark={isDark}>
+                <Share2 size={16} />
+                {engagement.shares}
+              </StatItem>
+            )}
+            {engagement.views > 0 && (
+              <StatItem $isDark={isDark}>
+                <Eye size={16} />
+                {engagement.views}
+              </StatItem>
+            )}
+          </EngagementStats>
+        </EngagementBar>
+
+        <ActionButtons>
+          <ActionButton
+            $isDark={isDark}
+            $active={liked}
+            onClick={handleLike}
+            disabled={isLiking || !user}
+          >
+            <Heart size={18} fill={liked ? 'currentColor' : 'none'} />
+            {language === 'bg' ? 'Харесай' : 'Like'}
+          </ActionButton>
+
+          <ActionButton
+            $isDark={isDark}
+            $active={showComments}
+            onClick={handleComment}
+          >
+            <MessageCircle size={18} />
+            {language === 'bg' ? 'Коментирай' : 'Comment'}
+          </ActionButton>
+
+          <ActionButton $isDark={isDark} onClick={handleShare}>
+            <Share2 size={18} />
+            {language === 'bg' ? 'Сподели' : 'Share'}
+          </ActionButton>
+
+          <ActionButton
+            $isDark={isDark}
+            $active={saved}
+            onClick={handleSave}
+          >
+            <Bookmark size={18} fill={saved ? 'currentColor' : 'none'} />
+          </ActionButton>
+        </ActionButtons>
+
+        {showComments && item.type === 'post' && item.id && (
+          <CommentsSection $isDark={isDark} $expanded={showComments}>
+            <CommentForm $isDark={isDark} onSubmit={handleSubmitComment}>
+              {replyingTo && (
+                <ReplyIndicator $isDark={isDark}>
+                  <Reply size={14} />
+                  {language === 'bg' ? 'Отговаряш на коментар' : 'Replying to comment'}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setReplyingTo(null);
+                      setCommentText('');
+                    }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'inherit',
+                      cursor: 'pointer',
+                      marginLeft: 'auto'
+                    }}
+                  >
+                    <X size={14} />
+                  </button>
+                </ReplyIndicator>
+              )}
+              <CommentInput
+                ref={commentInputRef}
+                $isDark={isDark}
+                type="text"
+                placeholder={
+                  replyingTo
+                    ? (language === 'bg' ? 'Напиши отговор...' : 'Write a reply...')
+                    : (language === 'bg' ? 'Напиши коментар...' : 'Write a comment...')
+                }
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                onClick={(e) => e.stopPropagation()}
+              />
+              <SendButton
+                $isDark={isDark}
+                type="submit"
+                disabled={!commentText.trim() || isCommenting}
+              >
+                <Send size={18} />
+              </SendButton>
+            </CommentForm>
+
+            <CommentsList $isDark={isDark}>
+              {comments.map(comment => (
+                <CommentItem key={comment.id} $isDark={isDark}>
+                  <CommentAvatar
+                    $imageUrl={comment.authorInfo.profileImage}
+                    $isDark={isDark}
+                  />
+                  <CommentContent>
+                    <CommentAuthor $isDark={isDark}>
+                      {comment.authorInfo.displayName}
+                    </CommentAuthor>
+                    <CommentText $isDark={isDark}>
+                      {comment.content}
+                    </CommentText>
+                    <CommentActions>
+                      <CommentAction
+                        $isDark={isDark}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleReply(comment.id, comment.authorInfo.displayName);
+                        }}
+                      >
+                        <Reply size={12} />
+                        {language === 'bg' ? 'Отговори' : 'Reply'}
+                      </CommentAction>
+                      <CommentAction $isDark={isDark}>
+                        {formatTimestamp(comment.createdAt)}
+                      </CommentAction>
+                      {comment.likes > 0 && (
+                        <CommentAction $isDark={isDark}>
+                          👍 {comment.likes}
+                        </CommentAction>
+                      )}
+                    </CommentActions>
+                  </CommentContent>
+                </CommentItem>
+              ))}
+            </CommentsList>
+          </CommentsSection>
+        )}
+
+        <FeedStatsModal
+          item={item}
+          isOpen={showStats}
+          onClose={() => setShowStats(false)}
+        />
+      </CardContainer>
+    </>
   );
 };
 

@@ -213,12 +213,11 @@ gap: 0.65rem;
 const BrandChip = styled.button<{ $active: boolean }>`
 padding: 0.65rem 1.2rem;
 border - radius: 999px;
-border: 1px solid ${ ({ $active }) => ($active ? '#ff8f10' : 'rgba(20, 30, 55, 0.12)') };
-background: ${
-  ({ $active }) =>
+border: 1px solid ${({ $active }) => ($active ? '#ff8f10' : 'rgba(20, 30, 55, 0.12)')};
+background: ${({ $active }) =>
     $active ? 'rgba(255, 143, 16, 0.12)' : 'rgba(255, 255, 255, 0.9)'
-};
-color: ${ ({ $active }) => ($active ? '#d26b00' : '#1f2b3c') };
+  };
+color: ${({ $active }) => ($active ? '#d26b00' : '#1f2b3c')};
 font - weight: 600;
 cursor: pointer;
 transition: all 0.2s ease;
@@ -297,14 +296,14 @@ const FieldSelect = styled.select.attrs<{ title?: string; 'aria-label'?: string 
     title: fallback,
     'aria-label': props['aria-label'] ?? fallback
   };
-})<ValidationProps>`
+}) <ValidationProps>`
 width: 100 %;
 border - radius: 14px;
 border: 1px solid rgba(15, 23, 42, 0.15);
 padding: 0.85rem 1rem;
 font - size: 0.95rem;
 color: #1c2536;
-background: ${ ({ $validation }) => getValidationBackground($validation) };
+background: ${({ $validation }) => getValidationBackground($validation)};
 transition: border 0.2s ease;
 
   &:focus {
@@ -321,7 +320,7 @@ border: 1px solid rgba(15, 23, 42, 0.15);
 padding: 0.85rem 1rem;
 font-size: 0.95rem;
 color: #1c2536;
-background: ${ ({ $validation }) => getValidationBackground($validation) };
+background: ${({ $validation }) => getValidationBackground($validation)};
 transition: border 0.2s ease;
 
   &:focus {
@@ -496,6 +495,18 @@ const SellPageNew: React.FC = () => {
   const brandOptions = useMemo(() => getAllBrands(), []);
   const popularBrands = useMemo(() => getFeaturedBrands().slice(0, 6), []);
 
+  // Predefined Mileage Options
+  const MILEAGE_OPTIONS = [
+    5000, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000,
+    100000, 125000, 150000, 175000, 200000, 250000, 300000, 400000, 500000, 1000000
+  ];
+
+  // Predefined Power Options (HP) - 30, 60, 90... pattern
+  const POWER_OPTIONS = [
+    30, 60, 90, 120, 150, 180, 210, 240, 270, 300,
+    350, 400, 450, 500, 600, 700, 800, 900, 1000
+  ];
+
   const [formState, setFormState] = useState({
     brand: '',
     class: '',
@@ -517,6 +528,20 @@ const SellPageNew: React.FC = () => {
     country: '',
     saleLocation: ''
   });
+
+  // Track if custom mileage/power is selected
+  const [isCustomMileage, setIsCustomMileage] = useState(false);
+  const [isCustomPower, setIsCustomPower] = useState(false);
+
+  // Initialize custom state based on initial formState
+  useEffect(() => {
+    if (formState.mileage && !MILEAGE_OPTIONS.includes(Number(formState.mileage))) {
+      setIsCustomMileage(true);
+    }
+    if (formState.power && !POWER_OPTIONS.includes(Number(formState.power))) {
+      setIsCustomPower(true);
+    }
+  }, []); // Run once on mount
 
   const classOptions = useMemo(() => {
     if (!formState.brand) return [];
@@ -905,17 +930,52 @@ const SellPageNew: React.FC = () => {
 
           <FieldGroup>
             <FieldLabel>{t('sell.listingSection.mileageLabel')}</FieldLabel>
-            <InputWrapper $validation={formState.mileage ? 'valid' : 'invalid'}>
-              <FieldInput
-                type="number"
-                value={formState.mileage}
-                placeholder={t('sell.vehicleData.mileagePlaceholder')}
-                onChange={event => handleFormChange('mileage', event.target.value)}
-                $validation={formState.mileage ? 'valid' : 'invalid'}
-              />
-              <InputSuffix>{t('sell.listingSection.mileageUnitKm')}</InputSuffix>
-            </InputWrapper>
-            <FieldHint>{t('sell.vehicleData.mileageHint')}</FieldHint>
+
+            {/* Mileage Dropdown */}
+            <FieldSelect
+              value={isCustomMileage ? '__other__' : (formState.mileage || '')}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === '__other__') {
+                  setIsCustomMileage(true);
+                  handleFormChange('mileage', ''); // Clear for custom input
+                } else {
+                  setIsCustomMileage(false);
+                  handleFormChange('mileage', val);
+                }
+              }}
+              $validation={formState.mileage || isCustomMileage ? 'valid' : 'invalid'}
+            >
+              <option value="">{t('sell.listingSection.selectMileage') || 'Select Mileage'}</option>
+              {MILEAGE_OPTIONS.map(opt => (
+                <option key={opt} value={opt}>
+                  {opt.toLocaleString()} km
+                </option>
+              ))}
+              <option value="__other__">{t('sell.vehicleData.other')}</option>
+            </FieldSelect>
+
+            {/* Custom Input for 'Other' */}
+            {isCustomMileage && (
+              <div style={{ marginTop: '0.5rem' }}>
+                <InputWrapper $validation={formState.mileage ? 'valid' : 'invalid'}>
+                  <FieldInput
+                    type="number"
+                    value={formState.mileage}
+                    placeholder={t('sell.vehicleData.mileagePlaceholder')}
+                    onChange={event => {
+                      // Limit to 8 digits
+                      const val = event.target.value.slice(0, 8);
+                      handleFormChange('mileage', val);
+                    }}
+                    $validation={formState.mileage ? 'valid' : 'invalid'}
+                  />
+                  <InputSuffix>{t('sell.listingSection.mileageUnitKm')}</InputSuffix>
+                </InputWrapper>
+              </div>
+            )}
+
+            {!isCustomMileage && <FieldHint>{t('sell.vehicleData.mileageHint')}</FieldHint>}
           </FieldGroup>
         </VerticalFieldStack>
 
@@ -971,13 +1031,47 @@ const SellPageNew: React.FC = () => {
 
           <FieldGroup>
             <FieldLabel>{t('sell.listingSection.powerLabel')}</FieldLabel>
-            <FieldInput
-              type="number"
-              value={formState.power}
-              placeholder={t('sell.listingSection.powerPlaceholder')}
-              onChange={event => handleFormChange('power', event.target.value)}
-              $validation={formState.power ? 'valid' : 'invalid'}
-            />
+
+            {/* Power Dropdown */}
+            <FieldSelect
+              value={isCustomPower ? '__other__' : (formState.power || '')}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === '__other__') {
+                  setIsCustomPower(true);
+                  handleFormChange('power', '');
+                } else {
+                  setIsCustomPower(false);
+                  handleFormChange('power', val);
+                }
+              }}
+              $validation={formState.power || isCustomPower ? 'valid' : 'invalid'}
+            >
+              <option value="">{t('sell.listingSection.selectPower') || 'Select Power (hp)'}</option>
+              {POWER_OPTIONS.map(opt => (
+                <option key={opt} value={opt}>
+                  {opt} hp
+                </option>
+              ))}
+              <option value="__other__">{t('sell.vehicleData.other')}</option>
+            </FieldSelect>
+
+            {/* Custom Input for 'Other' Power */}
+            {isCustomPower && (
+              <div style={{ marginTop: '0.5rem' }}>
+                <FieldInput
+                  type="number"
+                  value={formState.power}
+                  placeholder={t('sell.listingSection.powerPlaceholder') || 'Enter horsepower'}
+                  onChange={event => {
+                    // Limit to 4 digits
+                    const val = event.target.value.slice(0, 4);
+                    handleFormChange('power', val);
+                  }}
+                  $validation={formState.power ? 'valid' : 'invalid'}
+                />
+              </div>
+            )}
           </FieldGroup>
         </FormGrid>
 

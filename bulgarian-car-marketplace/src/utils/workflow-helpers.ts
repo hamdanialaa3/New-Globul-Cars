@@ -1,5 +1,5 @@
 // Shared Utility Functions for Workflow
-// دوال مساعدة مشتركة لتجنب التكرار
+// Shared helper functions to avoid repetition
 
 /**
  * Parse array from string or array

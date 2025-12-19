@@ -35,11 +35,12 @@ export class DeleteAccountService {
     try {
       await deleteUser(user);
       return;
-    } catch (err: any) {
-      if (err?.code === 'auth/requires-recent-login') {
+    } catch (err: unknown) {
+      const firebaseError = err as { code?: string; message?: string };
+      if (firebaseError?.code === 'auth/requires-recent-login') {
         if (!options) {
           const e = new Error('REAUTH_REQUIRED');
-          (e as any).code = 'REAUTH_REQUIRED';
+          (e as { code?: string }).code = 'REAUTH_REQUIRED';
           throw e;
         }
 
@@ -71,9 +72,10 @@ export async function deleteAccount(options?: ReauthOptions): Promise<{ success:
   try {
     await deleteAccountService.deleteCurrentUser(options);
     return { success: true };
-  } catch (err: any) {
-    if (err?.code === 'REAUTH_REQUIRED' || err?.code === 'auth/requires-recent-login') {
-      return { success: false, reauthNeeded: true, error: err?.message };
+  } catch (err: unknown) {
+    const firebaseError = err as { code?: string; message?: string };
+    if (firebaseError?.code === 'REAUTH_REQUIRED' || firebaseError?.code === 'auth/requires-recent-login') {
+      return { success: false, reauthNeeded: true, error: firebaseError?.message || 'Unknown error' };
     }
     return { success: false, error: err?.message || 'Unknown error' };
   }

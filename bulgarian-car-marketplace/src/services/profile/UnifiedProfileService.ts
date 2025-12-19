@@ -43,8 +43,22 @@ export class UnifiedProfileService {
 
   /**
    * Setup dealer profile
+   * Creates a dealership document and updates user profile to dealer type
    * Merges functionality from bulgarian-profile-service.setupDealerProfile()
    * and dealership.service.saveDealershipInfo()
+   * 
+   * @param userId - Firebase UID of the user
+   * @param dealershipData - Dealership information (name, address, license, etc.)
+   * @returns Promise that resolves when setup is complete
+   * @throws Error if validation fails or database write fails
+   * 
+   * @example
+   * await profileService.setupDealerProfile('user-123', {
+   *   dealershipNameBG: 'Автосалон БГ',
+   *   dealershipNameEN: 'BG Auto Dealer',
+   *   address: 'Sofia, Bulgaria',
+   *   licenseNumber: 'BG-12345'
+   * });
    */
   async setupDealerProfile(userId: string, dealershipData: DealershipInfo): Promise<void> {
     try {
@@ -87,7 +101,18 @@ export class UnifiedProfileService {
 
   /**
    * Get dealership information
+   * Retrieves dealership data from the dealerships collection
    * Merged from dealership.service.getDealershipInfo()
+   * 
+   * @param dealershipId - Firebase UID of the dealership owner
+   * @returns Promise resolving to dealership info or null if not found
+   * @throws Error if database query fails
+   * 
+   * @example
+   * const dealer = await profileService.getDealershipInfo('user-123');
+   * if (dealer) {
+   *   console.log(`Dealership: ${dealer.dealershipNameBG}`);
+   * }
    */
   async getDealershipInfo(dealershipId: string): Promise<DealershipInfo | null> {
     try {
@@ -109,7 +134,19 @@ export class UnifiedProfileService {
 
   /**
    * Update dealership information
+   * Updates dealership document and syncs changes to user profile snapshot
    * Merged from dealership.service.saveDealershipInfo()
+   * 
+   * @param dealershipId - Firebase UID of the dealership owner
+   * @param updates - Partial dealership data to update
+   * @returns Promise that resolves when update is complete
+   * @throws Error if dealership not found or database write fails
+   * 
+   * @example
+   * await profileService.updateDealershipInfo('user-123', {
+   *   dealershipNameBG: 'Ново име',
+   *   address: 'New address'
+   * });
    */
   async updateDealershipInfo(
     dealershipId: string,
@@ -147,7 +184,17 @@ export class UnifiedProfileService {
 
   /**
    * Upload profile picture
+   * Uploads a user's profile picture to Firebase Storage and updates profile
    * Merged from bulgarian-profile-service.uploadProfilePicture()
+   * 
+   * @param userId - Firebase UID of the user
+   * @param file - Image file to upload (max 5MB, must be image type)
+   * @returns Promise resolving to the download URL of the uploaded image
+   * @throws Error if file validation fails, upload fails, or profile update fails
+   * 
+   * @example
+   * const url = await profileService.uploadProfilePicture('user-123', imageFile);
+   * console.log(`Profile picture URL: ${url}`);
    */
   async uploadProfilePicture(userId: string, file: File): Promise<string> {
     try {

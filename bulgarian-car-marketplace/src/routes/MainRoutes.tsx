@@ -3,7 +3,7 @@ import { Route, Routes, Navigate } from 'react-router-dom';
 import { safeLazy } from '../utils/lazyImport';
 import { AuthGuard } from '../components/guards';
 import LoadingSpinner from '../components/LoadingSpinner'; // Assuming this is used or generic fallback
-import SellRouteRedirect from '../components/sell-workflow/SellRouteRedirect';
+import SellRouteRedirect from '../components/SellWorkflow/SellRouteRedirect';
 import InactivityWarning from '../components/InactivityWarning';
 
 // Lazy Loaded Components
@@ -82,7 +82,18 @@ const AIQuotaManager = safeLazy(() => import('../pages/06_admin/AIQuotaManager')
 const IntegrationStatusDashboard = safeLazy(() => import('../components/admin/IntegrationStatusDashboard'));
 const QuickSetupPage = safeLazy(() => import('../pages/06_admin/QuickSetupPage'));
 const CloudServicesManager = safeLazy(() => import('../pages/06_admin/CloudServicesManager'));
+const DevelopmentToolsPage = safeLazy(() => import('../pages/11_testing-dev/DevelopmentToolsPage'));
 const NotFoundPage = safeLazy(() => import('../components/NotFoundPage'));
+
+// Helper for dev tools components
+const BackupManagement = safeLazy(() => import('../components/admin/BackupManagement'));
+const LeadScoringDashboard = safeLazy(() => import('../components/messaging/LeadScoringDashboard'));
+const QuickReplyManager = safeLazy(() => import('../components/messaging/QuickReplyManager'));
+const AutoResponderSettings = safeLazy(() => import('../components/messaging/AutoResponderSettings'));
+const AuthUsersPage = safeLazy(() => import('../pages/06_admin/AuthUsersPage'));
+const SharedInboxPage = safeLazy(() => import('../pages/06_admin/SharedInboxPage'));
+const StripeSetupPage = safeLazy(() => import('../pages/09_dealer-company/StripeSetupPage'));
+const InsurancePage = safeLazy(() => import('../pages/11_testing-dev/InsurancePage'));
 
 
 
@@ -271,6 +282,17 @@ export const MainRoutes: React.FC = () => {
             <Route path="/admin/setup" element={<AuthGuard requireAuth={true}><QuickSetupPage /></AuthGuard>} />
             <Route path="/admin/cloud-services" element={<AuthGuard requireAuth={true}><CloudServicesManager /></AuthGuard>} />
             <Route path="/admin/algolia-sync" element={<AuthGuard requireAuth={true} requireAdmin={true}><AlgoliaSyncManager /></AuthGuard>} />
+            <Route path="/development-tools" element={<DevelopmentToolsPage />} />
+
+            {/* Development Tools Routes */}
+            <Route path="/admin/backup" element={<AuthGuard requireAuth={true} requireAdmin={true}><BackupManagement /></AuthGuard>} />
+            <Route path="/admin/leads" element={<AuthGuard requireAuth={true} requireAdmin={true}><LeadScoringDashboard /></AuthGuard>} />
+            <Route path="/messages/quick-replies" element={<AuthGuard requireAuth={true}><QuickReplyManager /></AuthGuard>} />
+            <Route path="/messages/auto-responder" element={<AuthGuard requireAuth={true}><AutoResponderSettings /></AuthGuard>} />
+            <Route path="/admin/auth-users" element={<AuthGuard requireAuth={true} requireAdmin={true}><AuthUsersPage /></AuthGuard>} />
+            <Route path="/admin/shared-inbox" element={<AuthGuard requireAuth={true} requireAdmin={true}><SharedInboxPage /></AuthGuard>} />
+            <Route path="/dealer/stripe-setup" element={<AuthGuard requireAuth={true}><StripeSetupPage /></AuthGuard>} />
+            <Route path="/insurance" element={<InsurancePage />} />
 
             <Route path="/n8n-test" element={<N8nTestPage />} />
             <Route path="/test-dropdowns" element={<TestDropdownsPage />} />

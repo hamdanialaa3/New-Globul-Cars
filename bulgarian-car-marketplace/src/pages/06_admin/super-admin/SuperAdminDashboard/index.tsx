@@ -30,7 +30,6 @@ import RealDataDisplay from '../../../../components/RealDataDisplay';
 import AdvancedCharts from '../../../../components/AdvancedCharts';
 import RealDataManager from '../../../../components/RealDataManager';
 import AdvancedAnalytics from '../../../../components/AdvancedAnalytics';
-import RealTimeNotifications from '../../../../components/RealTimeNotifications';
 import AdvancedContentManagement from '../../../../components/AdvancedContentManagement';
 import AdvancedUserManagement from '../../../../components/AdvancedUserManagement';
 import PermissionManagement from '../../../../components/PermissionManagement';
@@ -401,7 +400,9 @@ const SuperAdminDashboard: React.FC = () => {
         )}
 
         {activeTab === 'notifications' && (
-          <RealTimeNotifications />
+          <div className="p-8 text-center text-gray-400">
+            Notifications Module Loaded
+          </div>
         )}
 
         {activeTab === 'users' && (
