@@ -22,12 +22,12 @@ export const CarBasicInfo: React.FC<CarBasicInfoProps> = ({ car, language }) => 
       
       <DetailRow>
         <DetailLabel>{language === 'bg' ? 'Марка' : 'Make'}</DetailLabel>
-        <DetailValue>{car.make || 'N/A'}</DetailValue>
+        <DetailValue>{car.make || car.makeOther || 'N/A'}</DetailValue>
       </DetailRow>
       
       <DetailRow>
         <DetailLabel>{language === 'bg' ? 'Модел' : 'Model'}</DetailLabel>
-        <DetailValue>{car.model || 'N/A'}</DetailValue>
+        <DetailValue>{car.model || car.modelOther || 'N/A'}</DetailValue>
       </DetailRow>
       
       <DetailRow>
@@ -42,7 +42,7 @@ export const CarBasicInfo: React.FC<CarBasicInfoProps> = ({ car, language }) => 
       
       <DetailRow>
         <DetailLabel>{language === 'bg' ? 'Гориво' : 'Fuel Type'}</DetailLabel>
-        <DetailValue>{car.fuelType || 'N/A'}</DetailValue>
+        <DetailValue>{car.fuelType || car.fuelTypeOther || 'N/A'}</DetailValue>
       </DetailRow>
       
       <DetailRow>
@@ -57,7 +57,7 @@ export const CarBasicInfo: React.FC<CarBasicInfoProps> = ({ car, language }) => 
       
       <DetailRow>
         <DetailLabel>{language === 'bg' ? 'Цвят' : 'Color'}</DetailLabel>
-        <DetailValue>{car.color || 'N/A'}</DetailValue>
+        <DetailValue>{car.color || car.colorOther || car.exteriorColor || 'N/A'}</DetailValue>
       </DetailRow>
       
       <DetailRow>

@@ -59,6 +59,7 @@ const defaultForm: VehicleFormData = {
   // typed 'other' values
   makeOther: '',
   modelOther: '',
+  variantOther: '',
    // firstRegistrationYearOther and firstRegistrationMonthOther removed - no 'Other' for registration
   fuelTypeOther: '',
   colorOther: '',
@@ -211,6 +212,7 @@ const formEquals = useCallback(
           restore('bodyTypeOther', workflowData.bodyTypeOther);
           restore('makeOther', workflowData.makeOther);
           restore('modelOther', workflowData.modelOther);
+          restore('variantOther', workflowData.variantOther);
           restore('fuelTypeOther', workflowData.fuelTypeOther);
           restore('colorOther', workflowData.colorOther);
           restore('exteriorColorOther', workflowData.exteriorColorOther);
@@ -266,6 +268,7 @@ const formEquals = useCallback(
         bodyTypeOther: formData.bodyTypeOther,
         makeOther: formData.makeOther, // ✅ ADDED
         modelOther: formData.modelOther, // ✅ ADDED
+        variantOther: formData.variantOther, // ✅ ADDED
         fuelTypeOther: formData.fuelTypeOther, // ✅ ADDED
         colorOther: formData.colorOther, // ✅ ADDED
         exteriorColorOther: formData.exteriorColorOther, // ✅ ADDED
@@ -296,7 +299,8 @@ const formEquals = useCallback(
   const [availableModels, setAvailableModels] = useState<string[]>([]);
   
   useEffect(() => {
-    if (!formData.make) {
+    // If make is __other__, don't load models - user will enter manually
+    if (!formData.make || formData.make === '__other__') {
       setAvailableModels([]);
       return;
     }
@@ -379,7 +383,10 @@ const formEquals = useCallback(
     // ✅ FIX: Only require brand, model and a registration year.
     // Support either `year` (legacy/mobile select) or `firstRegistration` (ISO-like "YYYY" or "YYYY-MM").
     const registrationYear = getRegistrationYear(formData);
-    const hasBasicInfo = !!formData.make && !!formData.model && !!registrationYear;
+    // ✅ FIX: Support __other__ option - check makeOther if make is __other__, modelOther if model is __other__
+    const hasMake = formData.make === '__other__' ? !!formData.makeOther : !!formData.make;
+    const hasModel = formData.model === '__other__' ? !!formData.modelOther : !!formData.model;
+    const hasBasicInfo = hasMake && hasModel && !!registrationYear;
 
     // 🐛 DEBUG: Log validation status
     if (process.env.NODE_ENV === 'development') {
@@ -405,6 +412,7 @@ const formEquals = useCallback(
     const params = new URLSearchParams(searchParams.toString());
     if (formData.make) params.set('mk', formData.make === '__other__' ? (formData.makeOther || '') : formData.make);
     if (formData.model) params.set('md', formData.model === '__other__' ? (formData.modelOther || '') : formData.model);
+    if (formData.variant) params.set('variant', formData.variant === '__other__' ? (formData.variantOther || '') : formData.variant);
     if (formData.fuelType) params.set('fm', formData.fuelType === '__other__' ? (formData.fuelTypeOther || '') : formData.fuelType);
     if (formData.mileage) params.set('mi', formData.mileage);
     if (formData.transmission) params.set('tr', formData.transmission);
@@ -412,7 +420,7 @@ const formEquals = useCallback(
     // Prefer `year` if present (mobile/legacy), otherwise extract from `firstRegistration`.
     const fy = getRegistrationYear(formData);
     if (fy) params.set('fy', fy);
-    if (formData.color) params.set('color', formData.color === 'other' ? (formData.colorOther || '') : formData.color);
+    if (formData.color) params.set('color', (formData.color === 'other' || formData.color === '__other__') ? (formData.colorOther || '') : formData.color);
     return params;
   }, [searchParams, formData]);
 

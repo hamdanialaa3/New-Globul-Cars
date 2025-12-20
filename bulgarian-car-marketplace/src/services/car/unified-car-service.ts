@@ -114,11 +114,11 @@ class UnifiedCarService {
    * Automatically assigns numeric IDs via Cloud Functions
    * 
    * @param carData - Partial car data (sellerId, make, model, price, etc. are required)
-   * @returns Promise resolving to the created car ID
+   * @returns Promise resolving to the created car object with IDs
    * @throws Error if validation fails or database write fails
    * 
    * @example
-   * const carId = await unifiedCarService.createCar({
+   * const car = await unifiedCarService.createCar({
    *   sellerId: 'user-123',
    *   make: 'BMW',
    *   model: 'X5',
@@ -126,10 +126,10 @@ class UnifiedCarService {
    *   status: 'active'
    * });
    */
-  async createCar(carData: Partial<UnifiedCar>): Promise<string> {
-    const carId = await createCar(carData);
+  async createCar(carData: Partial<UnifiedCar>): Promise<{ id: string; sellerNumericId: number; carNumericId: number }> {
+    const carResult = await createCar(carData);
     invalidateCarCache();
-    return carId;
+    return carResult;
   }
 
   /**

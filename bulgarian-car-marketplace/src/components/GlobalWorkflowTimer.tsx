@@ -126,6 +126,10 @@ export const GlobalWorkflowTimer: React.FC = () => {
   // ✅ FIX: Check if we're in a sell workflow page
   const isInSellWorkflow = location.pathname.startsWith('/sell/inserat/') || 
                            location.pathname.startsWith('/sell/auto');
+  
+  // ✅ FIX: Hide global timer when modal is open (modal has its own timer)
+  // Check if modal is open by checking if route is /sell/auto (which opens modal)
+  const isModalOpen = location.pathname === '/sell/auto';
 
   useEffect(() => {
     // تحميل حالة الإيقاف من localStorage
@@ -148,7 +152,8 @@ export const GlobalWorkflowTimer: React.FC = () => {
   // 1. Not in sell workflow pages
   // 2. Timer is not active (no active draft)
   // 3. No workflow data exists
-  if (!isInSellWorkflow || !timerState.isActive) {
+  // 4. Modal is open (modal has its own timer)
+  if (!isInSellWorkflow || !timerState.isActive || isModalOpen) {
     return null;
   }
 

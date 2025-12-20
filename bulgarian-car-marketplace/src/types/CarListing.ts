@@ -4,11 +4,18 @@ export interface CarListing {
 
   // ✅ NEW: Numeric ID system for clean URLs
   numericId?: number;           // Unique numeric ID per seller (e.g., 1, 2, 3...)
+  carNumericId?: number;        // Alias for numericId, matches DB field name
   sellerNumericId?: number;     // Seller's numeric ID
 
   vehicleType: string;
   make: string;
   model: string;
+  // ✅ "Other" fields for custom brand/model entries
+  makeOther?: string;        // Custom brand when make is "__other__"
+  modelOther?: string;       // Custom model when model is "__other__"
+  variantOther?: string;     // Custom variant when variant is "__other__"
+  fuelTypeOther?: string;    // Custom fuel type when fuelType is "__other__"
+  colorOther?: string;       // Custom color when color is "__other__"
   year: number;
   mileage: number;
   fuelType: string;

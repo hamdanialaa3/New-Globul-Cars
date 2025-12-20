@@ -1,0 +1,96 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if user is the owner
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Workflow Images - Used during car listing creation
+    match /workflow-images/{userId}/{allPaths=**} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // User Profile Pictures & Photos
+    match /profile-pictures/{userId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if isOwner(userId);
+    }
+    match /profile-photos/{userId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if isOwner(userId);
+    }
+    match /users/{userId}/profile/{allPaths=**} {
+      allow read: if true;
+      allow write: if isOwner(userId);
+    }
+    match /users/{userId}/cover/{allPaths=**} {
+      allow read: if true;
+      allow write: if isOwner(userId);
+    }
+
+    // User Documents & Private Data
+    match /users/{userId}/documents/{allPaths=**} {
+      allow read, write: if isOwner(userId);
+    }
+    match /verification-documents/{userId}/{allPaths=**} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // Dealership Documents (Private)
+    match /dealerships/{userId}/documents/{allPaths=**} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Dealership Logos (Public Read, Owner Write)
+    // Matches files like dealerships/{userId}/logo-123456
+    match /dealerships/{userId}/{filename} {
+      allow read: if filename.matches('logo-.*');
+      allow write: if isOwner(userId);
+    }
+
+    // Dealership Media (Public Read)
+    match /dealerships/{userId}/media/{allPaths=**} {
+      allow read: if true;
+      allow write: if isOwner(userId);
+    }
+
+    // Social & Shared Content
+    match /stories/{userId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if isOwner(userId);
+    }
+    match /events/{userId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if isOwner(userId);
+    }
+    match /intro-videos/{userId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if isOwner(userId);
+    }
+
+    // Car Images (General)
+    match /car-images/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    // Messages
+    match /messages/{allPaths=**} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    // Fallback for other potential paths during development
+    // WARNING: This is permissive for authenticated users to avoid blocking other features
+    match /{allPaths=**} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+  }
+}

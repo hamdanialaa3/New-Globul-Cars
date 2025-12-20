@@ -11,9 +11,10 @@ import { SELL_WORKFLOW_STEPS, SellWorkflowStepId } from '../../constants/sellWor
 import useSellWorkflow from '../../hooks/useSellWorkflow';
 import SellWorkflowService from '../../services/sell-workflow-service';
 import { ImageStorageService } from '../../services/ImageStorageService';
-import { WorkflowPersistenceService } from '../../services/unified-workflow-persistence.service';
+import UnifiedWorkflowPersistenceService, { WorkflowPersistenceService } from '../../services/unified-workflow-persistence.service';
 import { toast } from 'react-toastify';
 import { logger } from '../../services/logger-service';
+import DraftsService from '../../services/drafts-service';
 import SellVehicleStep1 from './steps/SellVehicleStep1';
 import SellVehicleStep2 from './steps/SellVehicleStep2';
 import SellVehicleStep3 from './steps/SellVehicleStep3';
@@ -100,6 +101,22 @@ const NavigationButtons = styled.div`
   padding-top: 2rem;
   border-top: 1px solid var(--border);
   position: relative;
+  flex-wrap: wrap;
+
+  @media (max-width: 640px) {
+    flex-direction: column-reverse;
+    gap: 1.5rem;
+    
+    & > div {
+      width: 100%;
+      justify-content: center;
+    }
+
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
 `;
 
 const ResetButton = styled.button`
@@ -115,6 +132,7 @@ const ResetButton = styled.button`
   border: 2px solid var(--border);
   background: var(--bg-card);
   color: var(--text-secondary);
+  position: relative;
   
   &:hover:not(:disabled) {
     border-color: #ef4444;
@@ -135,6 +153,50 @@ const ResetButton = styled.button`
   svg {
     width: 16px;
     height: 16px;
+    flex-shrink: 0;
+  }
+  
+  /* ✅ FIX: Hide text and show only icon in portrait mobile */
+  @media (max-width: 640px) and (orientation: portrait) {
+    padding: 0.625rem 0.875rem;
+    font-size: 0;
+    min-width: 44px;
+    width: auto;
+    justify-content: center;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+    }
+    
+    span {
+      display: none;
+    }
+  }
+  
+  /* ✅ FIX: Smaller text in landscape mobile */
+  @media (max-width: 896px) and (orientation: landscape) {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    gap: 0.375rem;
+    
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+  
+  /* ✅ FIX: Very small screens - icon only */
+  @media (max-width: 480px) {
+    padding: 0.5rem 0.75rem;
+    font-size: 0;
+    min-width: 40px;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
   }
 `;
 
@@ -217,6 +279,7 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   align-items: center;
   gap: 0.5rem;
   border: none;
+  position: relative;
   
   ${props => props.$variant === 'primary' ? `
     background: var(--accent-primary);
@@ -246,6 +309,51 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   &:active:not(:disabled) {
     transform: translateY(0);
   }
+  
+  /* ✅ FIX: Hide text and show only icons in portrait mobile */
+  @media (max-width: 640px) and (orientation: portrait) {
+    padding: 0.75rem 1rem;
+    font-size: 0;
+    min-width: 48px;
+    width: auto;
+    justify-content: center;
+    
+    /* Show icon only */
+    svg {
+      width: 20px;
+      height: 20px;
+      margin: 0;
+    }
+    
+    /* Hide text span if exists */
+    span {
+      display: none;
+    }
+  }
+  
+  /* ✅ FIX: Smaller text in landscape mobile */
+  @media (max-width: 896px) and (orientation: landscape) {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    gap: 0.375rem;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+  
+  /* ✅ FIX: Very small screens - icons only */
+  @media (max-width: 480px) {
+    padding: 0.625rem 0.875rem;
+    font-size: 0;
+    min-width: 44px;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
 `;
 
 
@@ -261,8 +369,34 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
   const { language } = useLanguage();
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  const { workflowData, updateWorkflowData, clearWorkflowData } = useSellWorkflow();
+  const { workflowData, updateWorkflowData, clearWorkflowData, remoteDraftId } = useSellWorkflow();
   const [currentStep, setCurrentStep] = useState(initialStep);
+
+  // ✅ FIX: Ensure timer starts automatically when wizard opens
+  useEffect(() => {
+    // Check if there's existing workflow data
+    const existingData = UnifiedWorkflowPersistenceService.loadData();
+
+    if (existingData && !existingData.isPublished) {
+      // Timer will start automatically via startTimer() when data exists
+      // This ensures timer continues even if user navigated away and came back
+      const timerState = UnifiedWorkflowPersistenceService.getTimerState();
+      if (timerState.isActive && timerState.remainingSeconds > 0) {
+        // Timer is already running - no action needed
+        return;
+      }
+    } else if (!existingData) {
+      // No existing data - initialize empty workflow to start timer
+      // This ensures timer starts even if user hasn't filled any data yet
+      UnifiedWorkflowPersistenceService.saveData({
+        currentStep: initialStep,
+        startedAt: Date.now(),
+        lastSavedAt: Date.now(),
+        isPublished: false,
+        completedSteps: []
+      }, initialStep);
+    }
+  }, [initialStep]);
 
   // Dropdown menu states
   const [showMenu, setShowMenu] = useState(false);
@@ -397,21 +531,21 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
     try {
       // Validate required fields
       if (!workflowData.make || !workflowData.year) {
-        toast.error(
-          language === 'bg'
-            ? 'Липсва критична информация за превозното средство'
-            : 'Missing critical vehicle information'
-        );
+        const msg = language === 'bg'
+          ? 'Липсва критична информация за превозното средство'
+          : 'Missing critical vehicle information';
+        toast.error(msg);
+        alert(msg); // Fallback for mobile
         setIsPublishing(false);
         return;
       }
 
       if (!currentUser?.uid) {
-        toast.error(
-          language === 'bg'
-            ? 'Моля влезте в профила си'
-            : 'Please log in to your account'
-        );
+        const msg = language === 'bg'
+          ? 'Моля влезте в профила си'
+          : 'Please log in to your account';
+        toast.error(msg);
+        alert(msg); // Fallback for mobile
         setIsPublishing(false);
         return;
       }
@@ -420,11 +554,9 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
       let imageFiles: File[] = [];
       try {
         imageFiles = await ImageStorageService.getImages();
-        if (process.env.NODE_ENV === 'development') {
-          logger.debug('Images loaded from IndexedDB', { count: imageFiles.length });
-        }
+        logger.info('Images loaded from IndexedDB', { count: imageFiles.length });
       } catch (error) {
-        logger.warn('Failed to load images from IndexedDB', error as Error);
+        logger.warn('Failed to load images from IndexedDB', { error: error as Error });
       }
 
       // Prepare payload - merge all workflow data
@@ -432,19 +564,26 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
         ...workflowData,
         vehicleType: workflowData.vehicleType || 'car',
         sellerType: workflowData.sellerType || 'private',
-        // Ensure equipment arrays are converted to strings if needed
+        // Ensure equipment arrays are converted to strings if needed AND preserved as arrays for UI
         safety: Array.isArray(workflowData.safetyEquipment)
           ? workflowData.safetyEquipment.join(',')
           : (workflowData.safety || ''),
+        safetyEquipment: Array.isArray(workflowData.safetyEquipment) ? workflowData.safetyEquipment : [],
+
         comfort: Array.isArray(workflowData.comfortEquipment)
           ? workflowData.comfortEquipment.join(',')
           : (workflowData.comfort || ''),
+        comfortEquipment: Array.isArray(workflowData.comfortEquipment) ? workflowData.comfortEquipment : [],
+
         infotainment: Array.isArray(workflowData.infotainmentEquipment)
           ? workflowData.infotainmentEquipment.join(',')
           : (workflowData.infotainment || ''),
+        infotainmentEquipment: Array.isArray(workflowData.infotainmentEquipment) ? workflowData.infotainmentEquipment : [],
+
         extras: Array.isArray(workflowData.extrasEquipment)
           ? workflowData.extrasEquipment.join(',')
           : (workflowData.extras || ''),
+        extrasEquipment: Array.isArray(workflowData.extrasEquipment) ? workflowData.extrasEquipment : [],
         // Ensure preferredContact is a string
         preferredContact: Array.isArray(workflowData.preferredContact)
           ? workflowData.preferredContact.join(',')
@@ -466,14 +605,15 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
       }
 
       const validation = SellWorkflowService.validateWorkflowData(payload, false);
+      const validationResult = validation as any;
 
-      if (validation.criticalMissing) {
-        logger.error('Validation failed - critical fields missing', new Error('Missing required fields'), { missingFields: validation.missingFields });
-        toast.error(
-          language === 'bg'
-            ? `Критична информация липсва: ${validation.missingFields.join(', ')}`
-            : `Critical information missing: ${validation.missingFields.join(', ')}`
-        );
+      if (validationResult.criticalMissing) {
+        logger.error('Validation failed - critical fields missing', new Error('Missing required fields'), { missingFields: validationResult.missingFields });
+        const msg = language === 'bg'
+          ? `Критична информация липсва: ${validationResult.missingFields.join(', ')}`
+          : `Critical information missing: ${validationResult.missingFields.join(', ')}`;
+        toast.error(msg);
+        alert(msg); // Fallback
         setIsPublishing(false);
         return;
       }
@@ -490,7 +630,7 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
           imageCount: imageFiles.length,
           make: payload.make,
           model: payload.model,
-          year: payload.year,
+          year: Number(payload.year),
           vehicleType: payload.vehicleType
         });
       }
@@ -501,7 +641,8 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
       try {
         const createOrUpdatePayload = {
           ...payload,
-          images: undefined, // Images are handled separately
+          // images: undefined, // REMOVED: Keep existing images from workflowData so they can be merged in the service
+          images: workflowData.images, // Explicitly pass existing images string/array
           imagesCount: imageFiles.length,
           status: 'pending' // Default status for new listings
         };
@@ -523,10 +664,11 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
 
           const updatePayload = {
             ...createOrUpdatePayload,
+            year: Number(createOrUpdatePayload.year),
             images: undefined
           };
 
-          await unifiedCarService.updateCar(existingCarId, updatePayload);
+          await unifiedCarService.updateCar(existingCarId, updatePayload as any);
           carId = existingCarId;
 
           toast.success(language === 'bg' ? 'Промените са запазени!' : 'Changes saved!');
@@ -541,7 +683,7 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
           } else if (typeof result === 'string') {
             carId = result;
           } else {
-            logger.error('Unexpected return type from createCarListing', { result });
+            logger.error('Unexpected return type from createCarListing', undefined, { result: result as any });
             throw new Error('Unexpected return type from server');
           }
         }
@@ -613,13 +755,16 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
       localStorage.removeItem('current_draft_id');
 
       // Delete draft from Firestore if exists
-      if (draftId && currentUser) {
+      // Use remoteDraftId from hook first, fallback to localStorage
+      const draftToDelete = remoteDraftId || draftId;
+
+      if (draftToDelete && currentUser) {
         try {
           const DraftsService = await import('../../services/drafts-service');
-          await DraftsService.default.deleteDraft(draftId);
-          logger.info('Draft deleted from Firestore after publishing', { draftId });
+          await DraftsService.default.deleteDraft(draftToDelete);
+          logger.info('Draft deleted from Firestore after publishing', { draftId: draftToDelete });
         } catch (error) {
-          logger.warn('Failed to delete Firestore draft (non-critical)', { error, draftId });
+          logger.warn('Failed to delete Firestore draft (non-critical)', { error, draftId: draftToDelete });
         }
       }
 
@@ -666,6 +811,8 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
         autoClose: 5000,
         position: 'top-center'
       });
+      console.error("PUBLISH ERROR:", error); // Console error as backup
+      alert(`Error: ${errorMessage}`); // Explicit alert for mobile debugging
 
       setIsPublishing(false);
     }
@@ -910,7 +1057,7 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
           {currentStep > 0 && (
             <Button $variant="secondary" onClick={handleBack}>
               <ArrowLeft size={18} />
-              {language === 'bg' ? 'Назад' : 'Back'}
+              <span>{language === 'bg' ? 'Назад' : 'Back'}</span>
             </Button>
           )}
           <ResetButton
@@ -919,7 +1066,7 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
             title={language === 'bg' ? 'Изчисти паметта и започни отново' : 'Reset memory and start fresh'}
           >
             <RotateCcw size={16} />
-            {language === 'bg' ? 'Изчисти паметта' : 'Reset Memory'}
+            <span>{language === 'bg' ? 'Изчисти паметта' : 'Reset Memory'}</span>
           </ResetButton>
           {showResetConfirm && (
             <ResetConfirmDialog>
@@ -956,22 +1103,24 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
         </div>
         <div style={{ display: 'flex', gap: '1rem' }}>
           <Button $variant="secondary" onClick={onCancel} disabled={isPublishing || isResetting}>
-            {language === 'bg' ? 'Отказ' : 'Cancel'}
+            <span>{language === 'bg' ? 'Отказ' : 'Cancel'}</span>
           </Button>
           {currentStep < TOTAL_STEPS - 1 ? (
             // Hide Next button on step 0 (vehicle selection) as it auto-advances
             currentStep !== 0 && (
               <Button $variant="primary" onClick={handleNext} disabled={!canProceed || isPublishing || isResetting}>
-                {language === 'bg' ? 'Напред' : 'Next'}
+                <span>{language === 'bg' ? 'Напред' : 'Next'}</span>
                 <ArrowRight size={18} />
               </Button>
             )
           ) : (
             <Button $variant="primary" onClick={handleComplete} disabled={!canProceed || isPublishing || isResetting}>
-              {isPublishing
-                ? (language === 'bg' ? 'Публикуване...' : 'Publishing...')
-                : (language === 'bg' ? 'Публикувай' : 'Publish')
-              }
+              <span>
+                {isPublishing
+                  ? (language === 'bg' ? 'Публикуване...' : 'Publishing...')
+                  : (language === 'bg' ? 'Публикувай' : 'Publish')
+                }
+              </span>
               {!isPublishing && <Check size={18} />}
             </Button>
           )}

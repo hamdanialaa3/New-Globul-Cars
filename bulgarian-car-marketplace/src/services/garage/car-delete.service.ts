@@ -50,8 +50,35 @@ class CarDeleteService {
       serviceLogger.info('Starting car deletion process', { carId, userId });
 
       // 1. Verify ownership
-      const carDoc = await getDoc(doc(db, 'cars', carId));
-      if (!carDoc.exists()) {
+      const collections = [
+        'cars',
+        'passenger_cars',
+        'suvs',
+        'vans',
+        'motorcycles',
+        'trucks',
+        'buses'
+      ];
+
+      let foundCollection: string | null = null;
+      let carDoc: any = null;
+
+      // Search all collections to find the car
+      for (const collectionName of collections) {
+        try {
+          const docRef = doc(db, collectionName, carId);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            foundCollection = collectionName;
+            carDoc = docSnap;
+            break;
+          }
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (!foundCollection || !carDoc) {
         return {
           success: false,
           message: 'Колата не е намерена / Car not found'
@@ -59,7 +86,10 @@ class CarDeleteService {
       }
 
       const carData = carDoc.data();
-      if (carData.userId !== userId) {
+      // Check ownership (support multiple field names)
+      const isOwner = carData.userId === userId || carData.sellerId === userId || carData.ownerId === userId;
+
+      if (!isOwner) {
         return {
           success: false,
           message: 'Нямате права да изтриете тази кола / No permission to delete this car'
@@ -130,7 +160,11 @@ class CarDeleteService {
       }
 
       // 8. Finally, delete the car document
-      await deleteDoc(doc(db, 'cars', carId));
+      if (foundCollection) {
+        await deleteDoc(doc(db, foundCollection, carId));
+      } else {
+        await deleteDoc(doc(db, 'cars', carId)); // Fallback
+      }
 
       serviceLogger.info('Car deleted successfully', { carId, userId });
 
@@ -162,7 +196,7 @@ class CarDeleteService {
         const imageRef = ref(storage, imageUrl);
         deletePromises.push(deleteObject(imageRef));
       } catch (error) {
-        logger.error('Error deleting image:', imageUrl, error);
+        logger.error('Error deleting image', error as Error, { imageUrl });
       }
     }
 

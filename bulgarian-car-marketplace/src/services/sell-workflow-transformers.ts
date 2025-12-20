@@ -57,15 +57,42 @@ export class SellWorkflowTransformers {
     // Get image URLs from workflow
     const imageUrls = parseArray(workflowData.images);
 
+    // ✅ FIX: Handle "Other" fields - use custom values if "__other__" is selected
+    const finalMake = workflowData.make === '__other__'
+      ? (workflowData.makeOther || workflowData.make || '')
+      : (workflowData.make || '');
+
+    const finalModel = workflowData.model === '__other__'
+      ? (workflowData.modelOther || workflowData.model || '')
+      : (workflowData.model || '');
+
+    const finalFuelType = workflowData.fuelType === '__other__'
+      ? (workflowData.fuelTypeOther || workflowData.fuelType || '')
+      : (workflowData.fuelType || '');
+
+    const finalColor = workflowData.color === '__other__' || workflowData.color === 'Other'
+      ? (workflowData.colorOther || workflowData.exteriorColorOther || workflowData.color || '')
+      : (workflowData.color || workflowData.exteriorColor || '');
+
     // Return structured car listing
     return {
       // Basic info
-      make: workflowData.make,
-      model: workflowData.model,
+      make: finalMake,
+      model: finalModel,
+      // ✅ Save "Other" fields for reference and search
+      makeOther: workflowData.make === '__other__' ? workflowData.makeOther : undefined,
+      modelOther: workflowData.model === '__other__' ? workflowData.modelOther : undefined,
+      variantOther: workflowData.variant === '__other__' ? workflowData.variantOther : undefined,
+      fuelTypeOther: workflowData.fuelType === '__other__' ? workflowData.fuelTypeOther : undefined,
+      colorOther: (workflowData.color === '__other__' || workflowData.color === 'Other')
+        ? (workflowData.colorOther || workflowData.exteriorColorOther)
+        : undefined,
       year: typeof workflowData.year === 'string' ? parseInt(workflowData.year) : workflowData.year,
       mileage: typeof workflowData.mileage === 'string' ? parseInt(workflowData.mileage) : workflowData.mileage,
-      fuelType: workflowData.fuelType,
+      fuelType: finalFuelType,
       transmission: workflowData.transmission,
+      color: finalColor,
+      exteriorColor: finalColor,
 
       // Location
       locationData: regionData ? {
@@ -94,11 +121,18 @@ export class SellWorkflowTransformers {
       numericId: workflowData.numericId,
       sellerNumericId: workflowData.sellerNumericId,
 
-      // Equipment
+      // Equipment (Legacy + New Array Support)
       safety: workflowData.safety || {},
+      safetyEquipment: workflowData.safetyEquipment || [],
+
       comfort: workflowData.comfort || {},
+      comfortEquipment: workflowData.comfortEquipment || [],
+
       infotainment: workflowData.infotainment || {},
+      infotainmentEquipment: workflowData.infotainmentEquipment || [],
+
       extras: workflowData.extras || {},
+      extrasEquipment: workflowData.extrasEquipment || [],
 
       // Metadata
       vehicleType: workflowData.vehicleType,

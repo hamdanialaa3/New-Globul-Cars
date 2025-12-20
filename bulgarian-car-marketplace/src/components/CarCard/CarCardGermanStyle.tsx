@@ -151,7 +151,7 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
   const handleClick = () => {
     navigate(getCarDetailsUrl({
       sellerNumericId: (car as any).sellerNumericId,
-      carNumericId: (car as any).carNumericId,
+      carNumericId: (car as any).carNumericId || (car as any).numericId,
       sellerId: car.sellerId,
       id: car.id
     }));
@@ -171,7 +171,7 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
 
   const getSpecs = () => {
     const specs = [];
-    
+
     if (car.power) specs.push(`${car.power} kW`);
     if (car.engineSize) specs.push(`${car.engineSize}L`);
     if (car.fuelType) {
@@ -196,7 +196,7 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
       specs.push(`${mileage} km`);
     }
     if (car.year) specs.push(`${car.year}`);
-    
+
     return specs;
   };
 
@@ -215,9 +215,9 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
     <CardWrapper onClick={handleClick}>
       <ImageContainer>
         {car.images && car.images.length > 0 ? (
-          <CarImage 
-            src={car.images[0]} 
-            alt={car.make + ' ' + car.model}
+          <CarImage
+            src={car.images[0]}
+            alt={(car.make || car.makeOther || 'N/A') + ' ' + (car.model || car.modelOther || 'N/A')}
             onError={(e) => {
               (e.target as HTMLImageElement).src = '/images/placeholder-car.jpg';
             }}
@@ -232,19 +232,14 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
 
       <CardContent>
         <CarTitle>
-          {car.make} {car.model}
+          {car.make || car.makeOther || 'N/A'} {car.model || car.modelOther || 'N/A'}
         </CarTitle>
 
         <PriceSection>
           <MonthlyPrice>
-            {formatMonthlyPrice(car.price, car.currency || 'EUR')}
+            {formatPrice(car.price, car.currency || 'EUR')}
           </MonthlyPrice>
-          <PriceDetails>
-            {language === 'bg' 
-              ? 'вкл. ДДС. 36 месеца срок. 5,000 км годишно.'
-              : 'inkl. MwSt. 36 Monate Laufzeit. 5.000 KM pro Jahr.'
-            }
-          </PriceDetails>
+          {/* Removed synthetic monthly price text */}
         </PriceSection>
 
         <SpecsSection>

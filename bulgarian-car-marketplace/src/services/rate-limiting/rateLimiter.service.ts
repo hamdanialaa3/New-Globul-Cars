@@ -121,7 +121,7 @@ class RateLimiterService {
   getRemaining(userId: string, action: string): number {
     const key = `${userId}:${action}`;
     const record = this.rateLimitMap.get(key);
-    
+
     if (!record || Date.now() > record.resetTime) {
       // Window expired or doesn't exist, return max
       return 10; // Default max
@@ -188,6 +188,11 @@ export const RATE_LIMIT_CONFIGS: Record<string, RateLimitConfig> = {
     maxRequests: 60,       // 60 searches per minute
     windowMs: 60 * 1000,    // 1 minute
     action: 'search'
+  },
+  IMAGE_UPLOAD: {
+    maxRequests: 100,      // 100 images per hour
+    windowMs: 60 * 60 * 1000, // 1 hour
+    action: 'imageUpload'
   }
 };
 

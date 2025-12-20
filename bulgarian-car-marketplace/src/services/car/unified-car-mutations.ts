@@ -17,7 +17,7 @@ import { UnifiedCar, VEHICLE_COLLECTIONS } from './unified-car-types';
  * Create new car (with numeric IDs support)
  * ✅ NEW: Uses numeric-car-system-service for strict numeric URL structure
  */
-export async function createCar(carData: Partial<UnifiedCar>): Promise<string> {
+export async function createCar(carData: Partial<UnifiedCar>): Promise<{ id: string; sellerNumericId: number; carNumericId: number }> {
   const currentUser = auth.currentUser;
   if (!currentUser?.uid) {
     throw new Error('Not authenticated');
@@ -51,7 +51,11 @@ export async function createCar(carData: Partial<UnifiedCar>): Promise<string> {
       serviceLogger.error('Failed to award points for listing creation', error as Error);
     }
 
-    return numericCarData.id;
+    return {
+      id: numericCarData.id,
+      sellerNumericId: numericCarData.sellerNumericId,
+      carNumericId: numericCarData.carNumericId
+    };
   } catch (error) {
     serviceLogger.error('Error creating car', error as Error);
     throw error;
@@ -66,7 +70,7 @@ export async function updateCar(carId: string, updates: Partial<UnifiedCar>): Pr
   try {
     // ✅ FIX: Find which collection contains this car
     let foundCollection: string | null = null;
-    let carData: Record<string, unknown> = null;
+    let carData: Record<string, unknown> = {};
 
     // Search all collections to find the car
     for (const collectionName of VEHICLE_COLLECTIONS) {

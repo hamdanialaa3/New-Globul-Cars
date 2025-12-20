@@ -49,13 +49,16 @@ class AlgoliaSearchService {
     // Status filter - only active listings
     filters.push('status:active');
 
-    // Basic categorical filters
+    // Basic categorical filters - ✅ FIX: Support "Other" fields in search
+    // Note: Algolia should index both make and makeOther, model and modelOther
     if (searchData.make) {
-      filters.push(`make:"${searchData.make}"`);
+      // Search in both make and makeOther fields
+      filters.push(`(make:"${searchData.make}" OR makeOther:"${searchData.make}")`);
     }
 
     if (searchData.model) {
-      filters.push(`model:"${searchData.model}"`);
+      // Search in both model and modelOther fields
+      filters.push(`(model:"${searchData.model}" OR modelOther:"${searchData.model}")`);
     }
 
     if (searchData.vehicleType) {

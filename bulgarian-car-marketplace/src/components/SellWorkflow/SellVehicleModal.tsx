@@ -6,6 +6,7 @@ import styled, { keyframes } from 'styled-components';
 import { X } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import SellVehicleWizard from './SellVehicleWizard';
+import ModalWorkflowTimer from './ModalWorkflowTimer';
 
 interface SellVehicleModalProps {
   isOpen: boolean;
@@ -77,6 +78,12 @@ const ModalContainer = styled.div<{ $isClosing: boolean }>`
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   animation: ${props => props.$isClosing ? modalExit : modalEnter} 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   
+  @media (max-width: 640px) {
+    max-height: 100vh;
+    border-radius: 0;
+    height: 100%;
+  }
+  
   /* Custom scrollbar */
   &::-webkit-scrollbar {
     width: 8px;
@@ -142,6 +149,11 @@ const WizardContainer = styled.div`
   padding: 2.5rem 2rem 2rem 2rem;
   min-height: 500px;
   position: relative;
+
+  @media (max-width: 640px) {
+    padding: 1.5rem 1rem;
+    min-height: 100%;
+  }
 `;
 
 export const SellVehicleModal: React.FC<SellVehicleModalProps> = ({
@@ -194,6 +206,9 @@ export const SellVehicleModal: React.FC<SellVehicleModalProps> = ({
         <CloseButton onClick={handleClose} aria-label={language === 'bg' ? 'Затвори' : 'Close'}>
           <X size={20} />
         </CloseButton>
+
+        {/* ✅ Timer integrated inside modal */}
+        <ModalWorkflowTimer />
 
         <WizardContainer>
           <SellVehicleWizard

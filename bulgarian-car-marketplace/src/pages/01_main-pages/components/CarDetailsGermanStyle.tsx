@@ -36,7 +36,8 @@ import {
   ChevronLeft,
   ChevronRight,
   User,
-  Trash2
+  Trash2,
+  ZoomIn
 } from 'lucide-react';
 import { CarListing } from '../../../types/CarListing';
 import StaticMapEmbed from '../../../components/StaticMapEmbed';
@@ -45,6 +46,7 @@ import { useTheme } from '../../../contexts/ThemeContext';
 import { useAuth } from '../../../contexts/AuthProvider';
 import { logger } from '../../../services/logger-service';
 import CarSuggestionsList from './CarSuggestionsList';
+import ImageLightbox from '../../../components/common/ImageLightbox/ImageLightbox';
 
 interface CarDetailsGermanStyleProps {
   car: CarListing;
@@ -1505,6 +1507,7 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
   const { currentUser } = useAuth();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showAllFeatures, setShowAllFeatures] = useState(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   // ✅ FIX: Add previewUrlsRef for File objects
   const previewUrlsRef = useRef<Map<number, string>>(new Map());
@@ -1575,13 +1578,13 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
         // Get current user's numeric ID
         const { SocialAuthService } = await import('../../../firebase/social-auth-service');
         const currentUserProfile = await SocialAuthService.getBulgarianUserProfile(currentUser.uid);
-        
+
         if (currentUserProfile?.numericId) {
           navigate(`/messages/${currentUserProfile.numericId}/${car.sellerNumericId}`);
           return;
         }
       }
-      
+
       // Fallback to legacy URL
       if (sellerId) {
         navigate(`/messages?userId=${sellerId}`);
@@ -1825,29 +1828,113 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
             <ImageSection $isDark={isDark}>
               {hasImages ? (
                 <>
-                  <MainImageContainer $isDark={isDark}>
+                  <MainImageContainer $isDark={isDark} onClick={() => setIsLightboxOpen(true)}>
                     <MainImage
                       src={images[selectedImageIndex] || ''}
                       alt={`${car.make} ${car.model}`}
                       loading={selectedImageIndex === 0 ? "eager" : "lazy"}
                       decoding="sync"
                       onLoad={(e) => {
-                        // ✅ FIX: Ensure image maintains size
                         const img = e.target as HTMLImageElement;
                         img.style.width = '100%';
                         img.style.height = '100%';
                         img.style.objectFit = 'cover';
                       }}
                     />
+
+                    {/* Zoom Indicator */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      backgroundColor: 'rgba(0,0,0,0.3)',
+                      borderRadius: '50%',
+                      padding: '20px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      opacity: 0,
+                      transition: 'opacity 0.3s ease',
+                      pointerEvents: 'none',
+                      className: 'zoom-indicator' // We'll target this with hover
+                    }}
+                      className="zoom-overlay"
+                    >
+                      <ZoomIn size={48} color="white" />
+                    </div>
+
+                    {/* Add hover effect via style tag for simplicity or styled component */}
+                    <style>{`
+                        .zoom-overlay { opacity: 0; }
+                        div:hover > .zoom-overlay { opacity: 1; }
+                      `}</style>
+
                     {images.length > 1 && (
                       <>
-                        <ImageNavButton $position="left" $isDark={isDark} onClick={prevImage}>
+                        <ImageNavButton $position="left" $isDark={isDark} onClick={(e) => { e.stopPropagation(); prevImage(); }}>
                           <ChevronLeft size={24} />
                         </ImageNavButton>
-                        <ImageNavButton $position="right" $isDark={isDark} onClick={nextImage}>
+                        <ImageNavButton $position="right" $isDark={isDark} onClick={(e) => { e.stopPropagation(); nextImage(); }}>
                           <ChevronRight size={24} />
                         </ImageNavButton>
                       </>
+                    )}
+
+                    {/* ✅ New: Make Main Photo Button */}
+                    {isOwner && selectedImageIndex !== 0 && (
+                      <button
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          if (!car.id) return;
+
+                          try {
+                            const newImages = [...images];
+                            const [selected] = newImages.splice(selectedImageIndex, 1);
+                            newImages.unshift(selected);
+
+                            // Optimistic update
+                            setResolvedImages(newImages);
+                            setSelectedImageIndex(0);
+
+                            const { unifiedCarService } = await import('../../../services/car/unified-car-service');
+                            await unifiedCarService.updateCar(car.id, { images: newImages });
+
+                            // Use toast or alert based on availability
+                            const msg = language === 'bg' ? 'Снимката е зададена като основна' : 'Main photo updated';
+                            // try/catch for toast if not available
+                            try { require('react-toastify').toast.success(msg); } catch (e) { alert(msg); }
+
+                          } catch (error) {
+                            console.error('Failed to update main photo', error);
+                            // Revert on error would go here ideally
+                            const msg = language === 'bg' ? 'Грешка при обновяване' : 'Update failed';
+                            try { require('react-toastify').toast.error(msg); } catch (e) { alert(msg); }
+                          }
+                        }}
+                        style={{
+                          position: 'absolute',
+                          bottom: '20px',
+                          right: '20px',
+                          zIndex: 10,
+                          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                          border: '1px solid rgba(255, 255, 255, 0.3)',
+                          borderRadius: '8px',
+                          padding: '8px 16px',
+                          color: 'white',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          fontWeight: 600,
+                          fontSize: '14px',
+                          backdropFilter: 'blur(4px)',
+                          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                        }}
+                      >
+                        <Star size={16} fill="white" />
+                        {language === 'bg' ? 'Направи основна' : 'Set as Main Photo'}
+                      </button>
                     )}
                   </MainImageContainer>
                   <ThumbnailGrid $isDark={isDark}>
@@ -2289,6 +2376,14 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
           />
         )}
       </Container>
+
+      {/* Lightbox Overlay */}
+      <ImageLightbox
+        images={images.filter(img => typeof img === 'string') as string[]}
+        initialIndex={selectedImageIndex}
+        isOpen={isLightboxOpen}
+        onClose={() => setIsLightboxOpen(false)}
+      />
     </PageWrapper>
   );
 };

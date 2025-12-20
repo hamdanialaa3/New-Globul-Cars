@@ -240,8 +240,9 @@ export const SellVehicleStep2: React.FC<SellVehicleStep2Props> = ({
   const yearOptions = Array.from({ length: currentYear - 1949 }, (_, i) => currentYear - i);
 
   // Progressive Reveal Logic - Chain of dependencies
-  const hasBrand = !!workflowData.make;
-  const hasModel = !!workflowData.model;
+  // ✅ FIX: Support "Other" option - check if make/model has any value (including manual entry)
+  const hasBrand = !!(workflowData.make && workflowData.make.trim() !== '');
+  const hasModel = !!(workflowData.model && workflowData.model.trim() !== '');
   // Step 2 unlocks when Model is selected
   // Step 3 unlocked when Year is selected
   const hasYear = !!workflowData.year;

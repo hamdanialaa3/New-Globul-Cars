@@ -100,9 +100,15 @@ export const CarHeader: React.FC<CarHeaderProps> = ({
         </SellerInfo>
 
         <VehicleInfo>
-          <VehicleBrand>{car.make}</VehicleBrand>
+          <VehicleBrand>{car.make || car.makeOther || 'N/A'}</VehicleBrand>
           <div style={{ color: 'var(--border-primary)', fontSize: '1.25rem', fontWeight: '300' }}>•</div>
-          <VehicleModel>{car.model}</VehicleModel>
+          <VehicleModel>{car.model || car.modelOther || 'N/A'}</VehicleModel>
+          {car.variantOther && (
+            <>
+              <div style={{ color: 'var(--border-primary)', fontSize: '1.25rem', fontWeight: '300' }}>•</div>
+              <VehicleModel>{car.variantOther}</VehicleModel>
+            </>
+          )}
           <div style={{ color: 'var(--border-primary)', fontSize: '1.25rem', fontWeight: '300' }}>•</div>
           <VehicleModel>{car.year}</VehicleModel>
         </VehicleInfo>

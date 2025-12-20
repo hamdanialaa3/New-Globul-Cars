@@ -321,16 +321,18 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
     }
 
     try {
+      const carMake = car.make || car.makeOther || 'N/A';
+      const carModel = car.model || car.modelOther || 'N/A';
       const carData = {
-        title: `${car.make} ${car.model}`,
-        make: car.make,
-        model: car.model,
+        title: `${carMake} ${carModel}`,
+        make: carMake,
+        model: carModel,
         year: car.year,
         price: car.price,
         image: getMainImage() || '/placeholder-car.jpg',
         mileage: car.mileage || 0,
         location: getLocationName(),
-        fuelType: car.fuelType,
+        fuelType: car.fuelType || car.fuelTypeOther || '',
         transmission: car.transmission
       };
 
@@ -361,7 +363,7 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
         {getMainImage() ? (
           <CarImage 
             src={getMainImage()!} 
-            alt={`${car.make} ${car.model}`}
+            alt={`${car.make || car.makeOther || 'N/A'} ${car.model || car.modelOther || 'N/A'}`}
             loading="lazy"
             onError={(e) => {
               (e.target as HTMLImageElement).src = '/placeholder-car.jpg';
@@ -415,7 +417,7 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
       </PriceTag>
       
       <CarInfo>
-        <CarTitle>{car.make} {car.model}</CarTitle>
+        <CarTitle>{car.make || car.makeOther || 'N/A'} {car.model || car.modelOther || 'N/A'}</CarTitle>
         
         {price < 20000 && (
           <LeasingInfo>

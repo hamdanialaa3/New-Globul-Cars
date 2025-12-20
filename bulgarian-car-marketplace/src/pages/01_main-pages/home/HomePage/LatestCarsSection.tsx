@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { MapPin, Calendar, Gauge, TrendingUp, Clock } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { getFirestore, collection, query, orderBy, limit, getDocs, where } from 'firebase/firestore';
-import { UnifiedCar } from '../../../../services/car';
+import { UnifiedCar, mapDocToCar } from '../../../../services/car';
 import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
 import { logger } from '../../../../services/logger-service';
 
@@ -241,7 +241,7 @@ const LatestCarsSection: React.FC = () => {
       try {
         const db = getFirestore();
         const carsRef = collection(db, 'cars');
-        
+
         // Get latest published cars
         const q = query(
           carsRef,
@@ -254,11 +254,14 @@ const LatestCarsSection: React.FC = () => {
         const latestCars: UnifiedCar[] = [];
 
         querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          latestCars.push({
-            id: doc.id,
-            ...data
-          } as UnifiedCar);
+          try {
+            const car = mapDocToCar(doc);
+            if (car.isActive !== false && car.isSold !== true) {
+              latestCars.push(car);
+            }
+          } catch (e) {
+            console.error('Error mapping car in LatestCarsSection', e);
+          }
         });
 
         setCars(latestCars);
@@ -295,20 +298,21 @@ const LatestCarsSection: React.FC = () => {
   };
 
   const getLocation = (car: UnifiedCar): string => {
-    return car.location?.cityName || 
-           car.location?.cityNameBg || 
-           car.location?.cityNameEn ||
-           car.locationData?.cityName ||
-           (language === 'bg' ? 'България' : 'Bulgaria');
+    return car.location?.cityName ||
+      car.location?.cityNameBg ||
+      car.location?.cityNameEn ||
+      car.locationData?.cityName ||
+      (language === 'bg' ? 'България' : 'Bulgaria');
   };
 
   const isBestOffer = (car: UnifiedCar): boolean => {
     // Mark as BEST if featured or created within last 3 hours
     if (car.featured) return true;
-    
+
     if (car.createdAt) {
       const now = new Date();
-      const carDate = car.createdAt.toDate ? car.createdAt.toDate() : new Date(car.createdAt);
+      // Handle both Firestore Timestamp and JS Date
+      const carDate = (car.createdAt as any).toDate ? (car.createdAt as any).toDate() : new Date(car.createdAt);
       const diffHours = (now.getTime() - carDate.getTime()) / 3600000;
       return diffHours < 3;
     }
@@ -382,72 +386,86 @@ const LatestCarsSection: React.FC = () => {
               }
               return `/cars/${car.id}`;
             };
-            
+
             return (
-            <CarCard key={car.id} to={getCarUrl()}>
-              <ImageWrapper>
-                {car.images && car.images.length > 0 ? (
-                  <CarImage
-                    src={car.images[0]}
-                    alt={`${car.make} ${car.model}`}
-                    loading="lazy"
-                  />
-                ) : (
-                  <CarImage
-                    as="div"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      background: 'var(--bg-secondary)',
-                      color: 'var(--text-tertiary)',
-                      fontSize: '3rem'
-                    }}
-                  >
-                    🚗
-                  </CarImage>
-                )}
-
-                {isBestOffer(car) && (
-                  <BestBadge>BEST</BestBadge>
-                )}
-
-                {car.createdAt && (
-                  <TimeStamp>
-                    <Clock size={12} />
-                    {getTimeAgo(car.createdAt)}
-                  </TimeStamp>
-                )}
-              </ImageWrapper>
-
-              <CardContent>
-                <CarTitle>{car.make} {car.model}</CarTitle>
-
-                <CarSpecs>
-                  {car.year && (
-                    <SpecItem>
-                      <Calendar />
-                      {car.year}
-                    </SpecItem>
+              <CarCard key={car.id} to={getCarUrl()}>
+                <ImageWrapper>
+                  {car.images && car.images.length > 0 ? (
+                    <CarImage
+                      src={car.images[0]}
+                      alt={`${car.make} ${car.model}`}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <CarImage
+                      as="div"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: 'var(--bg-secondary)',
+                        color: 'var(--text-tertiary)'
+                      }}
+                    >
+                      <svg
+                        width="48"
+                        height="48"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        style={{ opacity: 0.6 }}
+                      >
+                        <path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path>
+                        <polygon points="12 15 17 21 7 21 12 15"></polygon>
+                        <circle cx="7" cy="17" r="2"></circle>
+                        <circle cx="17" cy="17" r="2"></circle>
+                      </svg>
+                    </CarImage>
                   )}
-                  {car.mileage && (
-                    <SpecItem>
-                      <Gauge />
-                      {car.mileage.toLocaleString()} km
-                    </SpecItem>
-                  )}
-                </CarSpecs>
 
-                <PriceLocation>
-                  <Price>{car.price?.toLocaleString() || '—'} €</Price>
-                  <Location>
-                    <MapPin />
-                    {getLocation(car)}
-                  </Location>
-                </PriceLocation>
-              </CardContent>
-            </CarCard>
-          );
+                  {isBestOffer(car) && (
+                    <BestBadge>BEST</BestBadge>
+                  )}
+
+                  {car.createdAt && (
+                    <TimeStamp>
+                      <Clock size={12} />
+                      {getTimeAgo(car.createdAt)}
+                    </TimeStamp>
+                  )}
+                </ImageWrapper>
+
+                <CardContent>
+                  <CarTitle>{car.make} {car.model}</CarTitle>
+
+                  <CarSpecs>
+                    {car.year && (
+                      <SpecItem>
+                        <Calendar />
+                        {car.year}
+                      </SpecItem>
+                    )}
+                    {car.mileage && (
+                      <SpecItem>
+                        <Gauge />
+                        {car.mileage.toLocaleString()} km
+                      </SpecItem>
+                    )}
+                  </CarSpecs>
+
+                  <PriceLocation>
+                    <Price>{car.price?.toLocaleString() || '—'} €</Price>
+                    <Location>
+                      <MapPin />
+                      {getLocation(car)}
+                    </Location>
+                  </PriceLocation>
+                </CardContent>
+              </CarCard>
+            );
           })}
         </HorizontalScrollContainer>
       </CarsContainer>

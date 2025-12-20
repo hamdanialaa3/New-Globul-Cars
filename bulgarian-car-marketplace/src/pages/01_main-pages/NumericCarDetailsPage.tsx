@@ -4,7 +4,7 @@ import { doc, collection, query, where, getDocs, limit } from 'firebase/firestor
 import { db } from '../../firebase/firebase-config';
 import { logger } from '../../services/logger-service';
 import CarDetailsPage from './CarDetailsPage';
-import LoadingSpinner from '../../components/common/LoadingSpinner';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 // Route: /car/:sellerNumericId/:carNumericId
 // Example: /car/1/1
@@ -54,7 +54,7 @@ const NumericCarDetailsPage: React.FC = () => {
                 const carQuery = query(
                     carsRef,
                     where('sellerId', '==', sellerId),
-                    where('numericId', '==', carNum),
+                    where('carNumericId', '==', carNum),
                     limit(1)
                 );
 

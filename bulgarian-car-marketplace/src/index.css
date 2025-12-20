@@ -424,3 +424,24 @@ textarea:focus {
 body.bold-text {
   font-weight: 700;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Dark Mode - Select Dropdown Options
+   تحسين ألوان النصوص في القوائم المنسدلة للوضع الليلي
+   ═══════════════════════════════════════════════════════════════════ */
+[data-theme="dark"] select,
+.dark-theme select {
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] select option,
+.dark-theme select option {
+  background: #1a1a20 !important;
+  color: #f1f5f9 !important;
+}
+
+/* Ensure select text is visible in dark mode */
+[data-theme="dark"] select:not(:disabled),
+.dark-theme select:not(:disabled) {
+  color: #f1f5f9 !important;
+}

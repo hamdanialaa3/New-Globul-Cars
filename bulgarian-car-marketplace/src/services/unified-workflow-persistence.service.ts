@@ -293,6 +293,62 @@ export class UnifiedWorkflowPersistenceService {
   }
 
   /**
+   * ✅ NEW: Execute full reset (same as Reset Memory button)
+   * Clears all workflow data, images, drafts, and localStorage items
+   */
+  static async executeFullReset(): Promise<void> {
+    try {
+      // Get draftId BEFORE clearing localStorage
+      const draftId = localStorage.getItem('current_draft_id');
+      
+      // Clear unified workflow data
+      await this.clearData();
+      
+      // Clear WorkflowPersistenceService (legacy)
+      try {
+        const { WorkflowPersistenceService } = await import('./unified-workflow-persistence.service');
+        if (WorkflowPersistenceService && typeof WorkflowPersistenceService.clearState === 'function') {
+          WorkflowPersistenceService.clearState();
+        }
+      } catch (error) {
+        // Non-critical
+      }
+      
+      // Clear all localStorage items related to workflow
+      localStorage.removeItem('current_draft_id');
+      localStorage.removeItem('workflow_state');
+      localStorage.removeItem('workflow_images');
+      localStorage.removeItem('globul_sell_workflow_state');
+      localStorage.removeItem('globul_unified_workflow');
+      localStorage.removeItem('globul_workflow_timer_paused');
+      
+      // Clear sessionStorage items
+      sessionStorage.removeItem('edit_mode');
+      sessionStorage.removeItem('edit_car_id');
+      sessionStorage.removeItem('edit_car_data');
+      
+      // Delete draft from Firestore if exists
+      if (draftId) {
+        try {
+          const { default: DraftsService } = await import('./drafts-service');
+          await DraftsService.deleteDraft(draftId);
+          serviceLogger.info('Draft deleted from Firestore during auto-reset', { draftId });
+        } catch (error) {
+          serviceLogger.warn('Failed to delete Firestore draft during auto-reset (non-critical)', { 
+            error: error instanceof Error ? error : new Error(String(error)), 
+            draftId 
+          });
+        }
+      }
+      
+      serviceLogger.info('Full workflow reset completed (timer expiry)', { draftId: draftId || 'none' });
+    } catch (error) {
+      serviceLogger.error('Error executing full reset', error as Error);
+      throw error;
+    }
+  }
+
+  /**
    * Get timer state
    */
   static getTimerState(): TimerState {
@@ -400,7 +456,25 @@ export class UnifiedWorkflowPersistenceService {
       // Notify all listeners
       this.listeners.forEach(callback => callback(state));
 
-      // Auto-delete if expired
+      // ✅ FIX: Auto-delete if expired (timer reached zero)
+      if (state.isActive && state.remainingSeconds === 0) {
+        const data = this.loadData();
+        if (data && !data.isPublished) {
+          serviceLogger.info('Timer reached zero - auto-deleting draft', { 
+            startedAt: new Date(data.startedAt).toISOString(),
+            lastSavedAt: new Date(data.lastSavedAt).toISOString()
+          });
+          
+          // ✅ CRITICAL: Execute full reset (same as Reset Memory button)
+          this.executeFullReset().catch((error: unknown) => {
+            serviceLogger.warn('Error executing full reset on timer expiry (non-critical)', { 
+              error: error instanceof Error ? error : new Error(String(error))
+            });
+          });
+        }
+      }
+      
+      // Also check for expired data (older than 20 minutes)
       if (!state.isActive && state.remainingSeconds === 0) {
         const data = this.loadData();
         if (data && !data.isPublished) {

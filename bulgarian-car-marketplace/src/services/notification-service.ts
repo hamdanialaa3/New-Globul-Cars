@@ -79,14 +79,14 @@ class NotificationService {
 
     try {
       const vapidKey = process.env.REACT_APP_VAPID_KEY;
-      
+
       if (!vapidKey) {
         logger.error('VAPID key not configured - check .env file for REACT_APP_VAPID_KEY');
         return null;
       }
 
       const token = await getToken(this.messaging, { vapidKey });
-      
+
       if (token) {
         logger.info('FCM Token received', { tokenLength: token.length });
         return token;
@@ -94,7 +94,11 @@ class NotificationService {
         logger.warn('No FCM token received - check Firebase configuration');
         return null;
       }
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.message?.includes('Invalid raw ECDSA P-256 public key')) {
+        logger.warn('FCM VAPID Key Error: The provided VAPID key is invalid or malformed. Push notifications will be disabled.');
+        return null;
+      }
       logger.error('Token error', error as Error);
       return null;
     }
@@ -108,15 +112,15 @@ class NotificationService {
 
     try {
       const permission = await Notification.requestPermission();
-      
+
       if (permission === 'granted') {
         logger.info('Notification permission granted');
         const token = await this.getToken();
-        
+
         if (token && userId) {
           await this.saveToken(userId, token);
         }
-        
+
         return token;
       } else {
         logger.info('Notification permission denied');
@@ -132,12 +136,12 @@ class NotificationService {
     if (!this.messaging) {
       this.messaging = getMessaging();
     }
-    
+
     if (!this.messaging) {
       logger.warn('Messaging not available');
-      return () => {}; // Return no-op unsubscribe
+      return () => { }; // Return no-op unsubscribe
     }
-    
+
     return onMessage(this.messaging, callback);
   }
 
@@ -158,12 +162,12 @@ class NotificationService {
     if (!this.messaging) {
       this.messaging = getMessaging();
     }
-    
+
     if (!this.messaging) {
       logger.warn('Messaging not available for listening');
       return;
     }
-    
+
     onMessage(this.messaging, (payload: MessagePayload) => {
       logger.info('📬 Foreground Message:', payload);
       this.showNotification(payload);
@@ -175,9 +179,9 @@ class NotificationService {
       logger.warn('Notification payload missing notification field');
       return;
     }
-    
+
     const { title, body, icon } = payload.notification;
-    
+
     if ('Notification' in window && Notification.permission === 'granted') {
       new Notification(title, {
         body,
@@ -289,18 +293,18 @@ class NotificationService {
   private async sendNotification(userId: string, notification: any) {
     try {
       const tokenDoc = await getDoc(doc(db, 'userTokens', userId));
-      
+
       if (!tokenDoc.exists()) {
         logger.info('❌ No token for user:', userId);
         return;
       }
 
       const token = tokenDoc.data().token;
-      
+
       // هنا سنستخدم Firebase Cloud Functions لإرسال الإشعار
       // سيتم إضافته في الخطوة التالية
       logger.info('📤 Sending notification to:', userId, notification);
-      
+
       return { success: true };
     } catch (error) {
       logger.error('❌ Send notification failed:', error);

@@ -60,6 +60,9 @@ export interface MediaData {
 // Complete Car Listing Interface
 export interface MyListing {
   id: string;
+  sellerNumericId?: number;
+  carNumericId?: number;
+  numericId?: number; // Legacy support
   title: string;
   price: number;
   currency: 'EUR';
@@ -71,19 +74,19 @@ export interface MyListing {
   updatedAt: Date;
   featured: boolean;
   isUrgent: boolean;
-  
+
   // Vehicle Data
   vehicle: VehicleData;
-  
+
   // Equipment Data
   equipment: EquipmentData;
-  
+
   // Location Data
   location: LocationData;
-  
+
   // Media Data
   media: MediaData;
-  
+
   // Contact Data
   contact: {
     sellerName: string;
@@ -92,7 +95,7 @@ export interface MyListing {
     email: string;
     preferredContact: 'phone' | 'email' | 'both';
   };
-  
+
   // Description
   description?: string;
 }

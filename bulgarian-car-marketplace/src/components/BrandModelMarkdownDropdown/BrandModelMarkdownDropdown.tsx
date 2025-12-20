@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { useLanguage } from '../../contexts/LanguageContext';
 import CarBrandLogo from '../../components/CarBrandLogo';
@@ -463,6 +463,13 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
   const [showOtherModel, setShowOtherModel] = useState(false);
   const [otherBrandValue, setOtherBrandValue] = useState('');
   const [otherModelValue, setOtherModelValue] = useState('');
+  
+  // ✅ FIX: Use refs to track if user is actively typing in "Other" fields
+  // This prevents useEffect from resetting state while user is typing
+  const isTypingBrandRef = useRef(false);
+  const isTypingModelRef = useRef(false);
+  const brandInputRef = useRef<HTMLInputElement>(null);
+  const modelInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -517,13 +524,24 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
   const models = useMemo(() => (selectedBrand ? (brandModels[selectedBrand] || []) : []), [brandModels, selectedBrand]);
 
   // Sync with external brand prop only if explicitly provided (not empty)
+  // ✅ FIX: Don't sync if user is actively typing in "Other" field
   useEffect(() => {
-    if (brand !== undefined) {
-      if (brand && brand !== selectedBrand) {
+    if (brand !== undefined && !isTypingBrandRef.current) {
+      // Check if brand is from "Other" field (not in brands list)
+      const isOtherBrand = brand && !Object.keys(brandModels).includes(brand);
+      
+      if (brand && brand !== selectedBrand && !isOtherBrand) {
+        // Only sync if it's a known brand from the list
         setSelectedBrand(brand);
         setShowOtherBrand(false);
-      } else if (!brand && selectedBrand) {
-        // Reset to empty if brand prop is cleared
+        setOtherBrandValue('');
+      } else if (brand && isOtherBrand && brand !== otherBrandValue) {
+        // If it's an "Other" brand, sync to otherBrandValue
+        setOtherBrandValue(brand);
+        setShowOtherBrand(true);
+        setSelectedBrand('');
+      } else if (!brand && selectedBrand && !showOtherBrand) {
+        // Reset to empty if brand prop is cleared and not typing
         setSelectedBrand('');
         setSelectedModel('');
         setShowOtherBrand(false);
@@ -531,22 +549,33 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [brand]);
+  }, [brand, brandModels]);
 
   // Sync with external model prop only if explicitly provided (not empty)
+  // ✅ FIX: Don't sync if user is actively typing in "Other" field
   useEffect(() => {
-    if (model !== undefined) {
-      if (model && model !== selectedModel) {
+    if (model !== undefined && !isTypingModelRef.current) {
+      // Check if model is from "Other" field (not in models list)
+      const isOtherModel = model && selectedBrand && !(brandModels[selectedBrand] || []).includes(model);
+      
+      if (model && model !== selectedModel && !isOtherModel) {
+        // Only sync if it's a known model from the list
         setSelectedModel(model);
         setShowOtherModel(false);
-      } else if (!model && selectedModel) {
-        // Reset to empty if model prop is cleared
+        setOtherModelValue('');
+      } else if (model && isOtherModel && model !== otherModelValue) {
+        // If it's an "Other" model, sync to otherModelValue
+        setOtherModelValue(model);
+        setShowOtherModel(true);
+        setSelectedModel('');
+      } else if (!model && selectedModel && !showOtherModel) {
+        // Reset to empty if model prop is cleared and not typing
         setSelectedModel('');
         setShowOtherModel(false);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [model]);
+  }, [model, selectedBrand, brandModels]);
 
   const titleText = t('sell.vehicleData.brandModelTitle');
   const brandLabel = language === 'bg' ? 'Марка' : t('sell.vehicleData.brand');
@@ -628,15 +657,68 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
             <Field>
               <Label htmlFor="other-brand">{enterOtherBrandText}</Label>
               <Input
+                ref={brandInputRef}
                 id="other-brand"
                 type="text"
                 value={otherBrandValue}
                 onChange={(e) => {
+                  e.stopPropagation(); // ✅ FIX: Prevent event bubbling
                   const value = e.target.value;
+                  
+                  // ✅ FIX: Mark that user is actively typing
+                  isTypingBrandRef.current = true;
+                  
                   setOtherBrandValue(value);
-                  onBrandChange && onBrandChange(value);
+                  
+                  // ✅ FIX: Don't call onBrandChange during typing - only on blur
+                  // This prevents re-render and state reset while user is typing
+                  
+                  // ✅ FIX: If user types any character, enable model field by clearing model
+                  // This allows model field to be enabled when brand "Other" is being filled
+                  if (value && selectedModel && !showOtherModel) {
+                    setSelectedModel('');
+                    setOtherModelValue('');
+                  }
+                }}
+                onKeyDown={(e) => {
+                  e.stopPropagation(); // ✅ FIX: Prevent event bubbling on key press
+                  // Allow normal typing - don't interfere with input
+                }}
+                onKeyUp={(e) => {
+                  e.stopPropagation(); // ✅ FIX: Prevent event bubbling on key release
+                }}
+                onFocus={(e) => {
+                  e.stopPropagation(); // ✅ FIX: Prevent event bubbling on focus
+                  // ✅ FIX: Mark that user is actively typing
+                  isTypingBrandRef.current = true;
+                  
+                  // ✅ FIX: When user focuses on brand input, ensure it's ready
+                  // Clear model selection to allow fresh input
+                  if (selectedModel && !showOtherModel) {
+                    setSelectedModel('');
+                  }
+                }}
+                onBlur={(e) => {
+                  e.stopPropagation(); // ✅ FIX: Prevent event bubbling on blur
+                  
+                  // ✅ FIX: Mark that user finished typing
+                  setTimeout(() => {
+                    isTypingBrandRef.current = false;
+                  }, 100);
+                  
+                  // ✅ FIX: Ensure value is saved when user leaves the field
+                  if (otherBrandValue && otherBrandValue.trim().length > 0) {
+                    onBrandChange && onBrandChange(otherBrandValue.trim());
+                  } else if (!otherBrandValue) {
+                    // If field is empty, clear the brand
+                    onBrandChange && onBrandChange('');
+                  }
+                }}
+                onClick={(e) => {
+                  e.stopPropagation(); // ✅ FIX: Prevent event bubbling on click
                 }}
                 placeholder={enterOtherBrandPlaceholder}
+                autoFocus={showOtherBrand && !otherBrandValue}
               />
             </Field>
           )}
@@ -664,30 +746,77 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
                 onModelChange && onModelChange(value);
               }
             }}
-            disabled={loading || !!error || (!selectedBrand && !showOtherBrand)}
+            disabled={loading || !!error || (!selectedBrand && !showOtherBrand && !otherBrandValue)}
           >
-            {!selectedBrand && !showOtherBrand && <option value="">{selectModelText}</option>}
+            {!selectedBrand && !showOtherBrand && !otherBrandValue && <option value="">{selectModelText}</option>}
             {selectedBrand && models.length === 0 && <option value="">{language === 'bg' ? 'Няма намерени модели' : 'No models found'}</option>}
-            {(selectedBrand || showOtherBrand) && models.length === 0 && <option value="">{selectModelText}</option>}
+            {(selectedBrand || showOtherBrand || otherBrandValue) && models.length === 0 && <option value="">{selectModelText}</option>}
             {models.map((m) => (
               <option key={m} value={m}>{m}</option>
             ))}
-            {(selectedBrand || showOtherBrand) && <option value="__OTHER__" className="other-option">{otherText}</option>}
+            {(selectedBrand || showOtherBrand || otherBrandValue) && <option value="__OTHER__" className="other-option">{otherText}</option>}
           </Select>
 
-          {showOtherModel && (
+          {/* ✅ FIX: Show model input if "Other" is selected OR if brand "Other" is being filled */}
+          {(showOtherModel || (showOtherBrand && otherBrandValue && otherBrandValue.trim().length > 0)) && (
             <Field>
               <Label htmlFor="other-model">{enterOtherModelText}</Label>
               <Input
+                ref={modelInputRef}
                 id="other-model"
                 type="text"
                 value={otherModelValue}
                 onChange={(e) => {
+                  e.stopPropagation(); // ✅ FIX: Prevent event bubbling
                   const value = e.target.value;
+                  
+                  // ✅ FIX: Mark that user is actively typing
+                  isTypingModelRef.current = true;
+                  
                   setOtherModelValue(value);
-                  onModelChange && onModelChange(value);
+                  
+                  // ✅ FIX: Don't call onModelChange during typing - only on blur
+                  // This prevents re-render and state reset while user is typing
+                }}
+                onKeyDown={(e) => {
+                  e.stopPropagation(); // ✅ FIX: Prevent event bubbling on key press
+                }}
+                onKeyUp={(e) => {
+                  e.stopPropagation(); // ✅ FIX: Prevent event bubbling on key release
+                }}
+                onFocus={(e) => {
+                  e.stopPropagation(); // ✅ FIX: Prevent event bubbling on focus
+                  
+                  // ✅ FIX: Mark that user is actively typing
+                  isTypingModelRef.current = true;
+                  
+                  // ✅ FIX: When user focuses on model input, ensure it's ready
+                  // This helps with form validation
+                  if (!showOtherModel && showOtherBrand) {
+                    setShowOtherModel(true);
+                  }
+                }}
+                onBlur={(e) => {
+                  e.stopPropagation(); // ✅ FIX: Prevent event bubbling on blur
+                  
+                  // ✅ FIX: Mark that user finished typing
+                  setTimeout(() => {
+                    isTypingModelRef.current = false;
+                  }, 100);
+                  
+                  // ✅ FIX: Ensure value is saved when user leaves the field
+                  if (otherModelValue && otherModelValue.trim().length > 0) {
+                    onModelChange && onModelChange(otherModelValue.trim());
+                  } else if (!otherModelValue) {
+                    // If field is empty, clear the model
+                    onModelChange && onModelChange('');
+                  }
+                }}
+                onClick={(e) => {
+                  e.stopPropagation(); // ✅ FIX: Prevent event bubbling on click
                 }}
                 placeholder={enterOtherModelPlaceholder}
+                autoFocus={showOtherModel || (showOtherBrand && otherBrandValue && otherBrandValue.trim().length > 0)}
               />
             </Field>
           )}

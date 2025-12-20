@@ -102,7 +102,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <div style={{ position: 'fixed', top: 0, right: 0, zIndex: 10000 }}>
+      <div style={{ position: 'fixed', top: 0, right: 0, zIndex: 11000 }}>
         {toasts.map((toast, index) => (
           <div key={toast.id} style={{ marginBottom: index > 0 ? '12px' : '0' }}>
             <Toast

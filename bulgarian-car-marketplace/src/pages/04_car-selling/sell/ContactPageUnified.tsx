@@ -225,17 +225,43 @@ const ContactPageUnified: React.FC = () => {
         model ||
         fallbackModel;
 
+      // ✅ FIX: Handle "Other" fields - use custom values if "__other__" is selected
+      const finalMake = workflowData.make === '__other__' 
+        ? (workflowData.makeOther || workflowData.make || '')
+        : (workflowData.make || make || '');
+      
+      const finalModelValue = workflowData.model === '__other__'
+        ? (workflowData.modelOther || workflowData.model || '')
+        : finalModel;
+      
+      const finalFuelType = workflowData.fuelType === '__other__'
+        ? (workflowData.fuelTypeOther || workflowData.fuelType || '')
+        : (workflowData.fuelType || fuelType || '');
+      
+      const finalColor = (workflowData.color === '__other__' || workflowData.color === 'Other')
+        ? (workflowData.colorOther || workflowData.exteriorColorOther || workflowData.color || '')
+        : (workflowData.color || color || '');
+
       const payload = {
         ...workflowData,
         vehicleType: workflowData.vehicleType || vehicleType || 'car',
         sellerType: workflowData.sellerType || sellerType || 'private',
-        make: workflowData.make || make || '',
-        model: finalModel,
+        make: finalMake,
+        model: finalModelValue,
+        // ✅ Save "Other" fields for reference and search
+        makeOther: workflowData.make === '__other__' ? workflowData.makeOther : undefined,
+        modelOther: workflowData.model === '__other__' ? workflowData.modelOther : undefined,
+        variantOther: workflowData.variant === '__other__' ? workflowData.variantOther : undefined,
+        fuelTypeOther: workflowData.fuelType === '__other__' ? workflowData.fuelTypeOther : undefined,
+        colorOther: (workflowData.color === '__other__' || workflowData.color === 'Other')
+          ? (workflowData.colorOther || workflowData.exteriorColorOther)
+          : undefined,
         year: workflowData.year || year || '',
         mileage: workflowData.mileage || mileage || '0',
-        fuelType: workflowData.fuelType || fuelType || '',
+        fuelType: finalFuelType,
         transmission: workflowData.transmission || transmission || '',
-        color: workflowData.color || color || '',
+        color: finalColor,
+        exteriorColor: finalColor,
         price: pricingData.price || workflowData.price || '',
         currency: pricingData.currency || workflowData.currency || 'EUR',
         priceType: pricingData.priceType || workflowData.priceType || 'fixed',

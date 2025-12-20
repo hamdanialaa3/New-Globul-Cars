@@ -21,20 +21,20 @@ export const CarEquipmentDisplay: React.FC<CarEquipmentDisplayProps> = ({ car, l
         <SectionTitle>
           {language === 'bg' ? 'История' : 'History'}
         </SectionTitle>
-        
+
         <DetailRow>
           <DetailLabel>{language === 'bg' ? 'Има история на аварии' : 'Has accident history'}</DetailLabel>
           <DetailValue>
-            {car.accidentHistory === true ? (language === 'bg' ? 'Да' : 'Yes') : 
-             car.accidentHistory === false ? (language === 'bg' ? 'Не' : 'No') : 'N/A'}
+            {car.accidentHistory === true ? (language === 'bg' ? 'Да' : 'Yes') :
+              car.accidentHistory === false ? (language === 'bg' ? 'Не' : 'No') : 'N/A'}
           </DetailValue>
         </DetailRow>
-        
+
         <DetailRow>
           <DetailLabel>{language === 'bg' ? 'Има сервизна история' : 'Has service history'}</DetailLabel>
           <DetailValue>
-            {car.serviceHistory === true ? (language === 'bg' ? 'Да' : 'Yes') : 
-             car.serviceHistory === false ? (language === 'bg' ? 'Не' : 'No') : 'N/A'}
+            {car.serviceHistory === true ? (language === 'bg' ? 'Да' : 'Yes') :
+              car.serviceHistory === false ? (language === 'bg' ? 'Не' : 'No') : 'N/A'}
           </DetailValue>
         </DetailRow>
       </EquipmentSection>
@@ -58,7 +58,7 @@ export const CarEquipmentDisplay: React.FC<CarEquipmentDisplayProps> = ({ car, l
             <div key={option.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: '0.813rem', color: 'var(--text-secondary)', fontWeight: '500' }}>{option.label}</span>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
-                {car[option.key as keyof CarListing] ? '✓' : '✗'}
+                {(car.safetyEquipment?.includes(option.key) || car[option.key as keyof CarListing]) ? '✓' : '✗'}
               </span>
             </div>
           ))}
@@ -84,7 +84,7 @@ export const CarEquipmentDisplay: React.FC<CarEquipmentDisplayProps> = ({ car, l
             <div key={option.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: '0.813rem', color: 'var(--text-secondary)', fontWeight: '500' }}>{option.label}</span>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
-                {car[option.key as keyof CarListing] ? '✓' : '✗'}
+                {(car.comfortEquipment?.includes(option.key) || car[option.key as keyof CarListing]) ? '✓' : '✗'}
               </span>
             </div>
           ))}
@@ -110,7 +110,7 @@ export const CarEquipmentDisplay: React.FC<CarEquipmentDisplayProps> = ({ car, l
             <div key={option.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: '0.813rem', color: 'var(--text-secondary)', fontWeight: '500' }}>{option.label}</span>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
-                {car[option.key as keyof CarListing] ? '✓' : '✗'}
+                {(car.infotainmentEquipment?.includes(option.key) || car[option.key as keyof CarListing]) ? '✓' : '✗'}
               </span>
             </div>
           ))}
@@ -136,7 +136,7 @@ export const CarEquipmentDisplay: React.FC<CarEquipmentDisplayProps> = ({ car, l
             <div key={option.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: '0.813rem', color: 'var(--text-secondary)', fontWeight: '500' }}>{option.label}</span>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
-                {car[option.key as keyof CarListing] ? '✓' : '✗'}
+                {(car.extras?.includes(option.key) || car.exteriorEquipment?.includes(option.key) || car[option.key as keyof CarListing]) ? '✓' : '✗'}
               </span>
             </div>
           ))}

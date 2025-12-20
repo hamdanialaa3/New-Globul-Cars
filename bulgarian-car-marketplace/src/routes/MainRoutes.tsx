@@ -16,7 +16,7 @@ const MessagesPage = safeLazy(() => import('../pages/03_user-pages/MessagesPage'
 const AdminPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminPage'));
 const AdminLoginPage = safeLazy(() => import('../pages/02_authentication/admin-login/AdminLoginPage'));
 const AdminDataFix = safeLazy(() => import('../pages/06_admin/regular-admin/AdminDataFix'));
-const NumericCarDetailsPage = safeLazy(() => import('../pages/01_main-pages/NumericCarDetailsPageNew'));
+const NumericCarDetailsPage = safeLazy(() => import('../pages/01_main-pages/NumericCarDetailsPage'));
 const NumericMessagingPage = safeLazy(() => import('../pages/03_user-pages/NumericMessagingPage'));
 const NumericProfileRouter = safeLazy(() => import('./NumericProfileRouter'));
 const VerificationPage = safeLazy(() => import('../features/verification/VerificationPage'));

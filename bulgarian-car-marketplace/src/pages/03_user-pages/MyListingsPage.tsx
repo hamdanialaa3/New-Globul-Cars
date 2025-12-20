@@ -217,10 +217,10 @@ const ActionButton = styled.button<{ $variant?: 'view' | 'edit' | 'delete' }>`
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
     background: ${props => {
-      if (props.$variant === 'delete') return '#c0392b';
-      if (props.$variant === 'edit') return '#e66a00';
-      return '#5568d3';
-    }};
+    if (props.$variant === 'delete') return '#c0392b';
+    if (props.$variant === 'edit') return '#e66a00';
+    return '#5568d3';
+  }};
   }
   
   &:active {
@@ -283,29 +283,48 @@ const MyListingsPage: React.FC = () => {
     navigate('/sell');
   };
 
-  const handleViewDetails = (carId: string) => {
-    navigate(`/car-details/${carId}`);
+  const handleViewDetails = (listing: CarListing) => {
+    // ✅ FIX: Use numeric URLs strictly if available
+    // Check both sellerNumericId AND carNumericId (or numericId for legacy)
+    const sellerNumId = listing.sellerNumericId;
+    const carNumId = listing.carNumericId || listing.numericId;
+
+    if (sellerNumId && carNumId) {
+      navigate(`/car/${sellerNumId}/${carNumId}`);
+    } else {
+      // Only fallback to UUID if absolutely necessary (should be rare)
+      navigate(`/car-details/${listing.id}`);
+    }
   };
 
-  const handleEditListing = (carId: string) => {
-    navigate(`/car-details/${carId}?edit=true`);
+  const handleEditListing = (listing: CarListing) => {
+    navigate(`/edit-car/${listing.id}`);
   };
 
   const handleDeleteListing = async (carId: string) => {
-    if (!window.confirm(language === 'bg' 
-      ? 'Сигурни ли сте, че искате да изтриете тази обява?' 
+    // Add logging
+    logger.info('Delete requested for car', { carId });
+
+    if (!window.confirm(language === 'bg'
+      ? 'Сигурни ли сте, че искате да изтриете тази обява?'
       : 'Are you sure you want to delete this listing?')) {
+      logger.info('Delete cancelled by user');
       return;
     }
 
     try {
+      setLoading(true); // Show loading state briefly
       await unifiedCarService.deleteCar(carId);
-      // Refresh listings
-      loadListings();
+      logger.info('Delete successful');
+
+      // Refresh listings immediately
+      await loadListings();
       alert(language === 'bg' ? 'Обявата е изтрита успешно!' : 'Listing deleted successfully!');
     } catch (err) {
       logger.error('Error deleting listing', err as Error, { carId });
-      alert(language === 'bg' ? 'Грешка при изтриване' : 'Error deleting listing');
+      alert(language === 'bg' ? 'Грешка при изтриване: ' + (err as Error).message : 'Error deleting listing: ' + (err as Error).message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -322,8 +341,8 @@ const MyListingsPage: React.FC = () => {
             {language === 'bg' ? 'Моите обяви' : 'My Listings'}
           </Title>
           <Subtitle>
-            {language === 'bg' 
-              ? 'Управлявайте вашите обяви за автомобили' 
+            {language === 'bg'
+              ? 'Управлявайте вашите обяви за автомобили'
               : 'Manage your car listings'}
           </Subtitle>
         </Header>
@@ -361,7 +380,7 @@ const MyListingsPage: React.FC = () => {
         {/* Error State */}
         {error && !loading && (
           <ErrorCard>
-            <strong>⚠️ {language === 'bg' ? 'Грешка' : 'Error'}</strong><br/>
+            <strong>⚠️ {language === 'bg' ? 'Грешка' : 'Error'}</strong><br />
             {error}
           </ErrorCard>
         )}
@@ -394,31 +413,35 @@ const MyListingsPage: React.FC = () => {
             <CarsGrid>
               {listings.map(listing => (
                 <ListingCardWrapper key={listing.id}>
-                  <ActionButtons>
-                    <ActionButton 
+                  <ActionButtons style={{ zIndex: 100 }}>
+                    <ActionButton
                       $variant="view"
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (listing.id) handleViewDetails(listing.id);
+                        // @ts-ignore
+                        if (listing.id) handleViewDetails(listing);
                       }}
                       title={language === 'bg' ? 'Преглед' : 'View Details'}
                     >
                       👁️ {language === 'bg' ? 'Преглед' : 'View'}
                     </ActionButton>
-                    <ActionButton 
+                    <ActionButton
                       $variant="edit"
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (listing.id) handleEditListing(listing.id);
+                        // @ts-ignore
+                        if (listing.id) handleEditListing(listing);
                       }}
                       title={language === 'bg' ? 'Редактирай' : 'Edit'}
                     >
                       ✏️ {language === 'bg' ? 'Редактирай' : 'Edit'}
                     </ActionButton>
-                    <ActionButton 
+                    <ActionButton
                       $variant="delete"
                       onClick={(e) => {
                         e.stopPropagation();
+                        e.nativeEvent.stopImmediatePropagation();
+                        logger.info('Delete button clicked', { id: listing.id });
                         if (listing.id) handleDeleteListing(listing.id);
                       }}
                       title={language === 'bg' ? 'Изтрий' : 'Delete'}

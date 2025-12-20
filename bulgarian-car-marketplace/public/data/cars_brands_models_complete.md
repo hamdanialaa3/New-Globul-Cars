@@ -13,28 +13,46 @@
 - S3
 - RS3
 - A4
+- A4 1.8
+- A4 2.0
+- A4 2.4
+- A4 2.8
+- A4 3.0
+- A4 3.2
 - A4 Sedan
 - A4 Avant
 - A4 Allroad
 - S4
 - RS4
 - A5
+- A5 2.0
+- A5 3.2
 - A5 Coupe
 - A5 Sportback
 - A5 Cabriolet
 - S5
 - RS5
 - A6
+- A6 2.0
+- A6 2.4
+- A6 2.8
+- A6 3.0
+- A6 3.2
+- A6 4.2
 - A6 Sedan
 - A6 Avant
 - A6 Allroad
 - S6
 - RS6
 - A7
+- A7 3.0
 - A7 Sportback
 - S7
 - RS7
 - A8
+- A8 3.0
+- A8 4.2
+- A8 6.0
 - A8 L
 - S8
 - Q2
@@ -90,6 +108,7 @@
 - 318i
 - 320i
 - 320d
+- 323i
 - 325i
 - 325d
 - 328i
@@ -116,6 +135,7 @@
 - 4 Series Convertible
 - 520i
 - 520d
+- 523i
 - 525i
 - 525d
 - 528i
@@ -125,6 +145,7 @@
 - 535d
 - 540i
 - 540d
+- 545i
 - 550i
 - M550i
 - M5
@@ -137,8 +158,10 @@
 - M6 Gran Coupe
 - 730i
 - 730d
+- 735i
 - 740i
 - 740d
+- 745i
 - 750i
 - 750d
 - 760i
@@ -197,25 +220,41 @@
 - C 180
 - C 200
 - C 220
+- C 230
+- C 240
 - C 250
+- C 280
 - C 300
+- C 320
 - C 350
+- C 400
+- C 450 AMG
 - C 43 AMG
+- C 55 AMG
 - C 63 AMG
 - E 200
 - E 220
+- E 230
+- E 240
 - E 250
+- E 280
 - E 300
+- E 320
 - E 350
 - E 400
+- E 450
+- E 500
+- E 55 AMG
 - E 53 AMG
 - E 63 AMG
 - S 280
 - S 300
+- S 320
 - S 350
 - S 400
 - S 450
 - S 500
+- S 550
 - S 600
 - S 63 AMG
 - S 65 AMG
@@ -235,6 +274,7 @@
 - GLC 250
 - GLC 300
 - GLC 350
+- GLC 400
 - GLC 43 AMG
 - GLC 63 AMG
 - GLC Coupe
@@ -242,6 +282,7 @@
 - GLE 350
 - GLE 400
 - GLE 450
+- GLE 500
 - GLE 53 AMG
 - GLE 63 AMG
 - GLE Coupe
@@ -249,11 +290,15 @@
 - GLS 400
 - GLS 450
 - GLS 500
+- GLS 550
+- GLS 600
 - GLS 63 AMG
 - G 350
 - G 400
 - G 500
+- G 550
 - G 63 AMG
+- G 65 AMG
 - CLA 180
 - CLA 200
 - CLA 220
@@ -263,21 +308,30 @@
 - CLS 220
 - CLS 250
 - CLS 300
+- CLS 320
 - CLS 350
 - CLS 400
+- CLS 450
+- CLS 500
+- CLS 55 AMG
 - CLS 53 AMG
 - CLS 63 AMG
 - SL 280
 - SL 300
+- SL 320
 - SL 350
 - SL 400
+- SL 450
 - SL 500
+- SL 550
+- SL 55 AMG
 - SL 63 AMG
 - SL 65 AMG
 - SLC 180
 - SLC 200
 - SLC 250
 - SLC 300
+- SLC 43 AMG
 - EQC 400
 - EQS 450
 - EQS 500
@@ -291,6 +345,10 @@
 
 ## Toyota
 - Corolla
+- Corolla 1.3
+- Corolla 1.6
+- Corolla 1.8
+- Corolla 2.0
 - Corolla Altis
 - Corolla Hybrid
 - Corolla Cross
@@ -298,8 +356,14 @@
 - Corolla Sedan
 - Corolla Touring Sports
 - Camry
+- Camry 2.0
+- Camry 2.5
+- Camry 3.5
 - Camry Hybrid
 - Yaris
+- Yaris 1.0
+- Yaris 1.3
+- Yaris 1.5
 - Yaris Cross
 - Yaris GR Sport
 - GR Yaris
@@ -370,6 +434,9 @@
 
 ## Volkswagen
 - Golf
+- Golf 1.4
+- Golf 1.6
+- Golf 2.0
 - Golf GTI
 - Golf R
 - Golf GTE
@@ -379,10 +446,19 @@
 - Golf Variant
 - Golf Cabriolet
 - Passat
+- Passat 1.4
+- Passat 1.8
+- Passat 2.0
+- Passat 2.8
+- Passat 3.6
 - Passat Variant
 - Passat Alltrack
 - Passat CC
 - Polo
+- Polo 1.0
+- Polo 1.2
+- Polo 1.4
+- Polo 1.6
 - Polo GTI
 - Polo Beats
 - Tiguan
@@ -435,17 +511,31 @@
 
 ## Ford
 - Focus
+- Focus 1.0
+- Focus 1.5
+- Focus 1.6
+- Focus 2.0
 - Focus ST
 - Focus RS
 - Focus Active
 - Focus Estate
 - Focus C-MAX
 - Fiesta
+- Fiesta 1.0
+- Fiesta 1.25
+- Fiesta 1.4
+- Fiesta 1.6
 - Fiesta ST
 - Fiesta Active
 - Mondeo
+- Mondeo 1.5
+- Mondeo 2.0
+- Mondeo 2.5
 - Mondeo Hybrid
 - Mustang
+- Mustang 2.3
+- Mustang 3.7
+- Mustang 5.0
 - Mustang GT
 - Mustang Mach-E
 - Mustang Mach-E GT
@@ -520,12 +610,20 @@
 
 ## Honda
 - Civic
+- Civic 1.0
+- Civic 1.5
+- Civic 1.6
+- Civic 2.0
 - Civic Type R
 - Civic Si
 - Civic Hatchback
 - Civic Sedan
 - Civic Coupe
 - Accord
+- Accord 1.5
+- Accord 2.0
+- Accord 2.4
+- Accord 3.5
 - Accord Hybrid
 - Accord Coupe
 - CR-V
@@ -563,9 +661,16 @@
 
 ## Nissan
 - Sentra
+- Sentra 1.6
+- Sentra 1.8
+- Sentra 2.0
 - Altima
+- Altima 2.5
+- Altima 3.5
 - Maxima
+- Maxima 3.5
 - Versa
+- Versa 1.6
 - Leaf
 - Leaf e+
 - GT-R
@@ -617,17 +722,35 @@
 
 ## Hyundai
 - Elantra
+- Elantra 1.6
+- Elantra 1.8
+- Elantra 2.0
 - Elantra N
 - Sonata
+- Sonata 2.0
+- Sonata 2.4
+- Sonata 3.3
 - Sonata Hybrid
 - Accent
+- Accent 1.4
+- Accent 1.6
 - Veloster
+- Veloster 1.6
+- Veloster 2.0
 - Veloster N
 - i10
+- i10 1.0
+- i10 1.2
 - i20
+- i20 1.0
+- i20 1.2
+- i20 1.4
 - i20 N
 - i20 Active
 - i30
+- i30 1.4
+- i30 1.6
+- i30 2.0
 - i30 N
 - i30 Fastback
 - i30 Wagon
@@ -671,15 +794,35 @@
 
 ## Kia
 - Forte
+- Forte 1.6
+- Forte 2.0
 - Cerato
+- Cerato 1.6
+- Cerato 2.0
 - Optima
+- Optima 2.0
+- Optima 2.4
+- Optima 3.3
 - K5
+- K5 1.6
+- K5 2.0
+- K5 2.5
 - Stinger
+- Stinger 2.0
+- Stinger 3.3
 - Rio
+- Rio 1.0
+- Rio 1.2
+- Rio 1.4
 - Rio Hatchback
 - Rio Sedan
 - Picanto
+- Picanto 1.0
+- Picanto 1.2
 - Sportage
+- Sportage 1.6
+- Sportage 2.0
+- Sportage 2.4
 - Sportage Hybrid
 - Sportage PHEV
 - Sorento
@@ -720,10 +863,18 @@
 
 ## Mazda
 - Mazda2
+- Mazda2 1.3
+- Mazda2 1.5
 - Mazda3
+- Mazda3 1.5
+- Mazda3 2.0
+- Mazda3 2.5
 - Mazda3 Sedan
 - Mazda3 Hatchback
 - Mazda6
+- Mazda6 2.0
+- Mazda6 2.5
+- Mazda6 3.7
 - Mazda6 Sedan
 - Mazda6 Wagon
 - MX-5 Miata
@@ -768,11 +919,25 @@
 
 ## Chevrolet
 - Spark
+- Spark 1.2
+- Spark 1.4
 - Sonic
+- Sonic 1.4
+- Sonic 1.8
 - Cruze
+- Cruze 1.4
+- Cruze 1.6
+- Cruze 1.8
+- Cruze 2.0
 - Malibu
+- Malibu 1.5
+- Malibu 2.0
+- Malibu 2.5
 - Impala
+- Impala 3.6
 - Camaro
+- Camaro 2.0
+- Camaro 3.6
 - Camaro SS
 - Camaro ZL1
 - Corvette
@@ -807,29 +972,53 @@
 
 ## Porsche
 - 911 Carrera
+- 911 Carrera S
+- 911 Carrera 4
+- 911 Carrera 4S
 - 911 Turbo
+- 911 Turbo S
 - 911 GT3
+- 911 GT3 RS
+- 911 GT2
 - 911 GT2 RS
+- 911 Targa
+- 911 Targa 4
+- 911 Targa 4S
 - Taycan
+- Taycan 4S
+- Taycan Turbo
 - Taycan Turbo S
 - Panamera
+- Panamera 4
+- Panamera S
 - Panamera Turbo
+- Panamera Turbo S
 - Cayenne
+- Cayenne S
 - Cayenne Turbo
+- Cayenne Turbo S
 - Macan
+- Macan S
 - Macan GTS
+- Macan Turbo
 - 718 Boxster
+- 718 Boxster S
 - 718 Cayman
+- 718 Cayman S
 
 ## Lexus
 - IS 200
+- IS 200t
+- IS 250
 - IS 300
 - IS 350
 - IS 500
+- IS F
 - ES 250
 - ES 300
-- ES 350
 - ES 300h
+- ES 350
+- ES 350h
 - LS 400
 - LS 430
 - LS 460
@@ -874,17 +1063,31 @@
 
 ## Peugeot
 - 108
+- 108 1.0
+- 108 1.2
 - 208
+- 208 1.0
+- 208 1.2
+- 208 1.6
 - e-208
 - 208 GTI
 - 301
+- 301 1.2
+- 301 1.6
 - 308
+- 308 1.2
+- 308 1.6
+- 308 2.0
 - e-308
 - 308 GTI
 - 308 SW
 - 408
+- 408 1.2
+- 408 1.6
 - e-408
 - 508
+- 508 1.6
+- 508 2.0
 - 508 SW
 - 508 PSE
 - 2008
@@ -916,15 +1119,29 @@
 
 ## Renault
 - Clio
+- Clio 1.0
+- Clio 1.2
+- Clio 1.5
 - Clio RS
 - Clio Estate
 - Megane
+- Megane 1.2
+- Megane 1.6
+- Megane 2.0
 - Megane RS
 - Megane Estate
 - Talisman
+- Talisman 1.6
+- Talisman 2.0
 - Talisman Estate
 - Captur
+- Captur 1.0
+- Captur 1.2
+- Captur 1.3
 - Kadjar
+- Kadjar 1.2
+- Kadjar 1.5
+- Kadjar 1.6
 - Austral
 - Arkana
 - Scenic
@@ -957,17 +1174,30 @@
 
 ## Citroën
 - C1
+- C1 1.0
+- C1 1.2
 - C2
+- C2 1.1
+- C2 1.4
 - C3
+- C3 1.0
+- C3 1.2
+- C3 1.6
 - C3 Aircross
 - C3 Picasso
 - C3-XR
 - C4
+- C4 1.2
+- C4 1.6
+- C4 2.0
 - C4 Cactus
 - C4 Picasso
 - C4 Grand Picasso
 - ë-C4
 - C5
+- C5 1.6
+- C5 2.0
+- C5 3.0
 - C5 Aircross
 - C5 X
 - C6
@@ -987,13 +1217,21 @@
 
 ## Fiat
 - 500
+- 500 1.0
+- 500 1.2
 - 500e
 - 500L
 - 500X
+- 500X 1.0
+- 500X 1.4
 - 500 Abarth
 - Panda
+- Panda 1.0
+- Panda 1.2
 - Panda Cross
 - Tipo
+- Tipo 1.4
+- Tipo 1.6
 - Tipo Station Wagon
 - Punto
 - Punto Evo
@@ -1289,20 +1527,45 @@
 
 ## Volvo
 - S60
+- S60 T4
+- S60 T5
+- S60 T6
+- S60 T8
 - S60 Recharge
 - S90
+- S90 T4
+- S90 T5
+- S90 T6
+- S90 T8
 - S90 Recharge
 - V60
+- V60 T4
+- V60 T5
+- V60 T6
+- V60 T8
 - V60 Cross Country
 - V60 Recharge
 - V90
+- V90 T4
+- V90 T5
+- V90 T6
+- V90 T8
 - V90 Cross Country
 - V90 Recharge
 - XC40
+- XC40 T3
+- XC40 T4
+- XC40 T5
 - XC40 Recharge
 - XC60
+- XC60 T5
+- XC60 T6
+- XC60 T8
 - XC60 Recharge
 - XC90
+- XC90 T5
+- XC90 T6
+- XC90 T8
 - XC90 Recharge
 - C40 Recharge
 - EX30
@@ -1345,19 +1608,38 @@
 
 ## Skoda
 - Fabia
+- Fabia 1.0
+- Fabia 1.2
+- Fabia 1.4
 - Fabia Combi
 - Fabia RS
 - Scala
+- Scala 1.0
+- Scala 1.5
 - Octavia
+- Octavia 1.0
+- Octavia 1.4
+- Octavia 1.5
+- Octavia 2.0
 - Octavia Combi
 - Octavia RS
 - Octavia vRS
 - Superb
+- Superb 1.4
+- Superb 2.0
+- Superb 3.6
 - Superb Combi
 - Kodiaq
+- Kodiaq 1.4
+- Kodiaq 2.0
 - Kodiaq RS
 - Karoq
+- Karoq 1.0
+- Karoq 1.5
+- Karoq 2.0
 - Kamiq
+- Kamiq 1.0
+- Kamiq 1.5
 - Enyaq
 - Enyaq iV
 - Enyaq Coupe
@@ -1370,16 +1652,28 @@
 
 ## Seat
 - Ibiza
+- Ibiza 1.0
+- Ibiza 1.2
+- Ibiza 1.4
 - Ibiza FR
 - Ibiza Cupra
 - Leon
+- Leon 1.0
+- Leon 1.4
+- Leon 1.5
+- Leon 2.0
 - Leon FR
 - Leon Cupra
 - Leon ST
 - Ateca
+- Ateca 1.4
+- Ateca 1.5
+- Ateca 2.0
 - Ateca FR
 - Ateca Cupra
 - Arona
+- Arona 1.0
+- Arona 1.5
 - Arona FR
 - Tarraco
 - Tarraco FR
@@ -1547,21 +1841,39 @@
 
 ## Opel
 - Corsa
+- Corsa 1.0
+- Corsa 1.2
+- Corsa 1.4
 - Corsa-e
 - Corsa OPC
 - Astra
+- Astra 1.0
+- Astra 1.2
+- Astra 1.4
+- Astra 1.6
+- Astra 2.0
 - Astra GTC
 - Astra Sports Tourer
 - Astra OPC
 - Insignia
+- Insignia 1.5
+- Insignia 2.0
 - Insignia Sports Tourer
 - Insignia OPC
 - Mokka
+- Mokka 1.2
+- Mokka 1.4
+- Mokka 1.6
 - Mokka-e
 - Mokka X
 - Crossland
+- Crossland 1.2
+- Crossland 1.6
 - Crossland X
 - Grandland
+- Grandland 1.2
+- Grandland 1.6
+- Grandland 2.0
 - Grandland X
 - Combo
 - Combo Life

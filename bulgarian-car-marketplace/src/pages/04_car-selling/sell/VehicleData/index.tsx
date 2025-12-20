@@ -248,7 +248,13 @@ const VehicleDataPageNew: React.FC = () => {
               aria-label={language === 'bg' ? 'Марка' : 'Make'}
               title={language === 'bg' ? 'Марка' : 'Make'}
               value={formData.make}
-              onChange={(e) => handleInputChange('make', e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                handleInputChange('make', value);
+                if (value !== '__other__') {
+                  handleInputChange('makeOther', '');
+                }
+              }}
             >
               <option value="">{language === 'bg' ? 'Изберете марка' : 'Select Make'}</option>
               {availableBrands.map(brand => (
@@ -264,7 +270,17 @@ const VehicleDataPageNew: React.FC = () => {
                   {isFeaturedBrand(brand) ? `● ${brand}` : brand}
                 </option>
               ))}
+              <option value="__other__">{language === 'bg' ? '◆ Друга марка (въведете ръчно)' : '◆ Other make (enter manually)'}</option>
             </S.Select>
+            {formData.make === '__other__' && (
+              <S.Input
+                type="text"
+                value={formData.makeOther || ''}
+                onChange={(e) => handleInputChange('makeOther', e.target.value)}
+                placeholder={language === 'bg' ? 'Въведете марка ръчно' : 'Enter make manually'}
+                style={{ marginTop: '0.75rem' }}
+              />
+            )}
             <S.HintText style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Star size={14} color="#ff8f10" />
               {language === 'bg' 
@@ -299,21 +315,58 @@ const VehicleDataPageNew: React.FC = () => {
         <S.FormGrid>
           <S.FormGroup>
             <S.Label htmlFor="model">{language === 'bg' ? 'Модел' : 'Model'}</S.Label>
-            {availableModels.length > 0 ? (
-              <S.Select
+            {/* If make is __other__, always show free text input */}
+            {formData.make === '__other__' ? (
+              <S.Input
                 id="model"
-                aria-label={language === 'bg' ? 'Модел' : 'Model'}
-                title={language === 'bg' ? 'Модел' : 'Model'}
-                value={formData.model}
-                onChange={(e) => handleInputChange('model', e.target.value)}
-                disabled={!formData.make}
-              >
-                <option value="">{language === 'bg' ? 'Изберете модел' : 'Select Model'}</option>
-                {availableModels.map(model => (
-                  <option key={model} value={model}>{model}</option>
-                ))}
-                <option value="__other__">{language === 'bg' ? '◆ Друг модел (въведете ръчно)' : '◆ Other model (enter manually)'}</option>
-              </S.Select>
+                type="text"
+                value={formData.modelOther || formData.model || ''}
+                onChange={(e) => {
+                  // If make is __other__, save to modelOther
+                  if (formData.make === '__other__') {
+                    handleInputChange('modelOther', e.target.value);
+                    // Also set model to __other__ to indicate manual entry
+                    if (e.target.value && formData.model !== '__other__') {
+                      handleInputChange('model', '__other__');
+                    }
+                  } else {
+                    handleInputChange('model', e.target.value);
+                  }
+                }}
+                placeholder={language === 'bg' ? 'Въведете модел ръчно' : 'Enter model manually'}
+              />
+            ) : availableModels.length > 0 ? (
+              <>
+                <S.Select
+                  id="model"
+                  aria-label={language === 'bg' ? 'Модел' : 'Model'}
+                  title={language === 'bg' ? 'Модел' : 'Model'}
+                  value={formData.model}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    handleInputChange('model', value);
+                    if (value !== '__other__') {
+                      handleInputChange('modelOther', '');
+                    }
+                  }}
+                  disabled={!formData.make && !formData.makeOther}
+                >
+                  <option value="">{language === 'bg' ? 'Изберете модел' : 'Select Model'}</option>
+                  {availableModels.map(model => (
+                    <option key={model} value={model}>{model}</option>
+                  ))}
+                  <option value="__other__">{language === 'bg' ? '◆ Друг модел (въведете ръчно)' : '◆ Other model (enter manually)'}</option>
+                </S.Select>
+                {formData.model === '__other__' && (
+                  <S.Input
+                    type="text"
+                    value={formData.modelOther || ''}
+                    onChange={(e) => handleInputChange('modelOther', e.target.value)}
+                    placeholder={language === 'bg' ? 'Въведете модел ръчно' : 'Enter model manually'}
+                    style={{ marginTop: '0.75rem' }}
+                  />
+                )}
+              </>
             ) : (
               <S.Input
                 id="model"
@@ -321,19 +374,10 @@ const VehicleDataPageNew: React.FC = () => {
                 value={formData.model}
                 onChange={(e) => handleInputChange('model', e.target.value)}
                 placeholder={language === 'bg' ? 'Например: X5' : 'Example: X5'}
-                disabled={!formData.make}
+                disabled={!formData.make && !formData.makeOther}
               />
             )}
-            {formData.model === '__other__' && (
-              <S.Input
-                type="text"
-                value={formData.model}
-                onChange={(e) => handleInputChange('model', e.target.value)}
-                placeholder={language === 'bg' ? 'Въведете модел ръчно' : 'Enter model manually'}
-                style={{ marginTop: '0.75rem' }}
-              />
-            )}
-            {!formData.make && (
+            {!formData.make && !formData.makeOther && (
               <S.HintText style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Zap size={12} color="#7f8c8d" />
                 {language === 'bg' ? 'Първо изберете марка' : 'Select make first'}
@@ -358,21 +402,58 @@ const VehicleDataPageNew: React.FC = () => {
         <S.FormGrid>
           <S.FormGroup>
             <S.Label htmlFor="model">{language === 'bg' ? 'Модел' : 'Model'}</S.Label>
-            {availableModels.length > 0 ? (
-              <S.Select
+            {/* If make is __other__, always show free text input */}
+            {formData.make === '__other__' ? (
+              <S.Input
                 id="model"
-                aria-label={language === 'bg' ? 'Модел' : 'Model'}
-                title={language === 'bg' ? 'Модел' : 'Model'}
-                value={formData.model}
-                onChange={(e) => handleInputChange('model', e.target.value)}
-                disabled={!formData.make}
-              >
-                <option value="">{language === 'bg' ? 'Изберете модел' : 'Select Model'}</option>
-                {availableModels.map(model => (
-                  <option key={model} value={model}>{model}</option>
-                ))}
-                <option value="__other__">{language === 'bg' ? '◆ Друг модел (въведете ръчно)' : '◆ Other model (enter manually)'}</option>
-              </S.Select>
+                type="text"
+                value={formData.modelOther || formData.model || ''}
+                onChange={(e) => {
+                  // If make is __other__, save to modelOther
+                  if (formData.make === '__other__') {
+                    handleInputChange('modelOther', e.target.value);
+                    // Also set model to __other__ to indicate manual entry
+                    if (e.target.value && formData.model !== '__other__') {
+                      handleInputChange('model', '__other__');
+                    }
+                  } else {
+                    handleInputChange('model', e.target.value);
+                  }
+                }}
+                placeholder={language === 'bg' ? 'Въведете модел ръчно' : 'Enter model manually'}
+              />
+            ) : availableModels.length > 0 ? (
+              <>
+                <S.Select
+                  id="model"
+                  aria-label={language === 'bg' ? 'Модел' : 'Model'}
+                  title={language === 'bg' ? 'Модел' : 'Model'}
+                  value={formData.model}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    handleInputChange('model', value);
+                    if (value !== '__other__') {
+                      handleInputChange('modelOther', '');
+                    }
+                  }}
+                  disabled={!formData.make && !formData.makeOther}
+                >
+                  <option value="">{language === 'bg' ? 'Изберете модел' : 'Select Model'}</option>
+                  {availableModels.map(model => (
+                    <option key={model} value={model}>{model}</option>
+                  ))}
+                  <option value="__other__">{language === 'bg' ? '◆ Друг модел (въведете ръчно)' : '◆ Other model (enter manually)'}</option>
+                </S.Select>
+                {formData.model === '__other__' && (
+                  <S.Input
+                    type="text"
+                    value={formData.modelOther || ''}
+                    onChange={(e) => handleInputChange('modelOther', e.target.value)}
+                    placeholder={language === 'bg' ? 'Въведете модел ръчно' : 'Enter model manually'}
+                    style={{ marginTop: '0.75rem' }}
+                  />
+                )}
+              </>
             ) : (
               <S.Input
                 id="model"
@@ -380,19 +461,10 @@ const VehicleDataPageNew: React.FC = () => {
                 value={formData.model}
                 onChange={(e) => handleInputChange('model', e.target.value)}
                 placeholder={language === 'bg' ? 'Например: X5' : 'Example: X5'}
-                disabled={!formData.make}
+                disabled={!formData.make && !formData.makeOther}
               />
             )}
-            {formData.model === '__other__' && (
-              <S.Input
-                type="text"
-                value={formData.model}
-                onChange={(e) => handleInputChange('model', e.target.value)}
-                placeholder={language === 'bg' ? 'Въведете модел ръчно' : 'Enter model manually'}
-                style={{ marginTop: '0.75rem' }}
-              />
-            )}
-            {!formData.make && (
+            {!formData.make && !formData.makeOther && (
               <S.HintText style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Zap size={12} color="#7f8c8d" />
                 {language === 'bg' ? 'Първо изберете марка' : 'Select make first'}
@@ -408,8 +480,14 @@ const VehicleDataPageNew: React.FC = () => {
                 aria-label={language === 'bg' ? 'Вариант / Версия' : 'Variant / Version'}
                 title={language === 'bg' ? 'Вариант / Версия' : 'Variant / Version'}
                 value={formData.variant}
-                onChange={(e) => handleInputChange('variant', e.target.value)}
-                disabled={!formData.model || availableVariants.length === 0}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  handleInputChange('variant', value);
+                  if (value !== '__other__') {
+                    handleInputChange('variantOther', '');
+                  }
+                }}
+                disabled={(!formData.model && !formData.modelOther) || availableVariants.length === 0}
               >
                 <option value="">{language === 'bg' ? 'Изберете вариант' : 'Select Variant'}</option>
                 {availableVariants.map(variant => (
@@ -420,8 +498,8 @@ const VehicleDataPageNew: React.FC = () => {
               {formData.variant === '__other__' && (
                 <S.Input
                   type="text"
-                  value={formData.variant}
-                  onChange={(e) => handleInputChange('variant', e.target.value)}
+                  value={formData.variantOther || ''}
+                  onChange={(e) => handleInputChange('variantOther', e.target.value)}
                   placeholder={language === 'bg' ? 'Въведете вариант ръчно' : 'Enter variant manually'}
                   style={{ marginTop: '0.75rem' }}
                 />
@@ -458,13 +536,29 @@ const VehicleDataPageNew: React.FC = () => {
               aria-label={language === 'bg' ? 'Гориво' : 'Fuel Type'}
               title={language === 'bg' ? 'Гориво' : 'Fuel Type'}
               value={formData.fuelType}
-              onChange={(e) => handleInputChange('fuelType', e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                handleInputChange('fuelType', value);
+                if (value !== '__other__') {
+                  handleInputChange('fuelTypeOther', '');
+                }
+              }}
             >
               <option value="">{language === 'bg' ? 'Изберете' : 'Select'}</option>
               {FUEL_TYPES.map(fuel => (
                 <option key={fuel} value={fuel}>{fuel}</option>
               ))}
+              <option value="__other__">{language === 'bg' ? '◆ Друг тип гориво (въведете ръчно)' : '◆ Other fuel type (enter manually)'}</option>
             </S.Select>
+            {formData.fuelType === '__other__' && (
+              <S.Input
+                type="text"
+                value={formData.fuelTypeOther || ''}
+                onChange={(e) => handleInputChange('fuelTypeOther', e.target.value)}
+                placeholder={language === 'bg' ? 'Въведете тип гориво ръчно' : 'Enter fuel type manually'}
+                style={{ marginTop: '0.75rem' }}
+              />
+            )}
           </S.FormGroup>
 
           <S.FormGroup>
@@ -502,13 +596,30 @@ const VehicleDataPageNew: React.FC = () => {
               aria-label={language === 'bg' ? 'Цвят' : 'Color'}
               title={language === 'bg' ? 'Цвят' : 'Color'}
               value={formData.color}
-              onChange={(e) => handleInputChange('color', e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                handleInputChange('color', value);
+                if (value !== '__other__' && value !== 'other') {
+                  handleInputChange('colorOther', '');
+                }
+              }}
             >
               <option value="">{language === 'bg' ? 'Изберете' : 'Select'}</option>
               {COLORS.map(color => (
-                <option key={color} value={color}>{color}</option>
+                <option key={color} value={color === 'Друг (Other)' ? '__other__' : color}>
+                  {color}
+                </option>
               ))}
             </S.Select>
+            {(formData.color === '__other__' || formData.color === 'other') && (
+              <S.Input
+                type="text"
+                value={formData.colorOther || ''}
+                onChange={(e) => handleInputChange('colorOther', e.target.value)}
+                placeholder={language === 'bg' ? 'Въведете цвят ръчно' : 'Enter color manually'}
+                style={{ marginTop: '0.75rem' }}
+              />
+            )}
           </S.FormGroup>
 
           <S.FormGroup>

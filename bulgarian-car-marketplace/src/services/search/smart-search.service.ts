@@ -381,16 +381,19 @@ class SmartSearchService {
         return false;
       }
       
-      // ⚡ ENHANCED: Case-insensitive keyword matching
+      // ⚡ ENHANCED: Case-insensitive keyword matching with "Other" fields support
       if (parsed.keywords.length > 0) {
-        const carMake = (car.make || '').toLowerCase();
-        const carModel = (car.model || '').toLowerCase();
+        // ✅ FIX: Include "Other" fields in search
+        const carMake = ((car.make || (car as any).makeOther) || '').toLowerCase();
+        const carModel = ((car.model || (car as any).modelOther) || '').toLowerCase();
+        const carVariant = ((car as any).variantOther || '').toLowerCase();
         const carDescription = ((car as any).description || '').toLowerCase();
-        const carFuelType = (car.fuelType || '').toLowerCase();
+        const carFuelType = ((car.fuelType || (car as any).fuelTypeOther) || '').toLowerCase();
+        const carColor = ((car.color || (car as any).colorOther || (car as any).exteriorColor) || '').toLowerCase();
         const carTrim = ((car as any).trim || '').toLowerCase();
         const carCategory = ((car as any).category || '').toLowerCase();
         
-        const searchText = `${carMake} ${carModel} ${carDescription} ${carFuelType} ${carTrim} ${carCategory}`;
+        const searchText = `${carMake} ${carModel} ${carVariant} ${carDescription} ${carFuelType} ${carColor} ${carTrim} ${carCategory}`;
         
         // ⚡ SMART: Match if ANY keyword is found (OR logic, case-insensitive)
         const hasMatch = parsed.keywords.some(keyword => {

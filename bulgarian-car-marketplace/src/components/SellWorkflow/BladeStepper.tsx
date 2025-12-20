@@ -53,6 +53,8 @@ const ProgressPercent = styled.div`
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--text-primary);
+  /* ✅ FIX: Move percentage to the left by 4 characters */
+  margin-right: calc(1ch * 4);
 `;
 
 const StepperBlade = styled.div`

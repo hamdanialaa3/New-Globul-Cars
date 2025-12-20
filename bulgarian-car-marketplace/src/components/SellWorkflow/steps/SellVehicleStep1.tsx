@@ -78,6 +78,27 @@ const VehicleOption = styled.div<{ $selected: boolean; $disabled: boolean }>`
       background: var(--bg-hover);
     `}
   }
+  
+  /* ✅ FIX: Adjust padding when text is hidden in portrait mobile */
+  @media (max-width: 640px) and (orientation: portrait) {
+    padding: 1rem;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* ✅ FIX: Smaller padding in landscape mobile */
+  @media (max-width: 896px) and (orientation: landscape) {
+    padding: 1rem 0.75rem;
+  }
+  
+  /* ✅ FIX: Very small screens */
+  @media (max-width: 480px) {
+    padding: 0.875rem;
+    min-height: 90px;
+  }
 `;
 
 const VehicleIcon = styled.div<{ $selected: boolean; $disabled: boolean }>`
@@ -94,6 +115,36 @@ const VehicleIcon = styled.div<{ $selected: boolean; $disabled: boolean }>`
     width: 32px;
     height: 32px;
   }
+  
+  /* ✅ FIX: Larger icons when text is hidden in portrait mobile */
+  @media (max-width: 640px) and (orientation: portrait) {
+    margin-bottom: 0;
+    
+    svg {
+      width: 40px;
+      height: 40px;
+    }
+  }
+  
+  /* ✅ FIX: Medium icons in landscape mobile */
+  @media (max-width: 896px) and (orientation: landscape) {
+    margin-bottom: 0.5rem;
+    
+    svg {
+      width: 28px;
+      height: 28px;
+    }
+  }
+  
+  /* ✅ FIX: Larger icons in very small screens */
+  @media (max-width: 480px) {
+    margin-bottom: 0;
+    
+    svg {
+      width: 36px;
+      height: 36px;
+    }
+  }
 `;
 
 const VehicleLabel = styled.div<{ $disabled: boolean }>`
@@ -101,6 +152,21 @@ const VehicleLabel = styled.div<{ $disabled: boolean }>`
   font-size: 0.95rem;
   opacity: ${props => props.$disabled ? 0.6 : 1};
   color: ${props => props.$disabled ? 'var(--text-disabled)' : 'inherit'};
+  
+  /* ✅ FIX: Hide text in portrait mobile, show only icons */
+  @media (max-width: 640px) and (orientation: portrait) {
+    display: none;
+  }
+  
+  /* ✅ FIX: Smaller text in landscape mobile */
+  @media (max-width: 896px) and (orientation: landscape) {
+    font-size: 0.75rem;
+  }
+  
+  /* ✅ FIX: Very small screens - hide text */
+  @media (max-width: 480px) {
+    display: none;
+  }
 `;
 
 export const SellVehicleStep1: React.FC<SellVehicleStep1Props> = ({

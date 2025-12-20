@@ -50,8 +50,8 @@ const SectionTitle = styled.h2<{ $isDark: boolean }>`
   color: ${props => props.$isDark ? '#f1f5f9' : '#1e293b'};
   margin-bottom: 20px;
   letter-spacing: -0.5px;
-  text-shadow: ${props => props.$isDark 
-    ? '0 4px 20px rgba(0, 0, 0, 0.5)' 
+  text-shadow: ${props => props.$isDark
+    ? '0 4px 20px rgba(0, 0, 0, 0.5)'
     : '0 2px 10px rgba(0, 0, 0, 0.1)'};
   transition: color 0.3s ease;
   
@@ -336,8 +336,8 @@ const RecentBrowsingSection: React.FC = () => {
             <Search />
           </EmptyIcon>
           <EmptyTitle $isDark={isDark}>
-            {language === 'bg' 
-              ? 'Все още не сте разглеждали автомобили' 
+            {language === 'bg'
+              ? 'Все още не сте разглеждали автомобили'
               : "You haven't viewed any cars yet"}
           </EmptyTitle>
           <EmptyText $isDark={isDark}>
@@ -382,17 +382,16 @@ const RecentBrowsingSection: React.FC = () => {
         >
           {sortedHistory.map((item, index) => (
             <div key={`${item.listing.id}-${index}`} style={{ position: 'relative' }}>
-              <ModernCarCard
-                car={item.listing}
-                showStatus={false}
-              />
+// No changes needed here because ModernCarCard inside handles the navigation logic and the 'listing' object from history should contain the IDs if they were saved.
+              // However, if we want to force hydration or validation, we could. 
+              // But let's skip this for now and focus on LatestCarsSection which had clear hardcoding issues.
               <TimeBadgeOverlay>
                 <Clock size={14} />
                 {formatTimeAgo(item.viewedAt)}
               </TimeBadgeOverlay>
               <ViewCountBadge>
                 <Eye size={14} />
-                {item.viewCount} {language === 'bg' 
+                {item.viewCount} {language === 'bg'
                   ? (item.viewCount === 1 ? 'преглед' : 'прегледа')
                   : (item.viewCount === 1 ? 'view' : 'views')}
               </ViewCountBadge>

@@ -43,10 +43,10 @@ export function mapDocToCar(doc: DocumentSnapshot): UnifiedCar {
   const car = {
     id: doc.id,
     ...data,
-    // ✅ FIX: Prioritize netPrice or finalPrice over price if they exist
-    price: typeof data.netPrice === 'number' ? data.netPrice :
-           typeof data.finalPrice === 'number' ? data.finalPrice :
-           typeof data.price === 'number' ? data.price : 0,
+    // ✅ FIX: Prioritize netPrice or finalPrice over price if they exist, handling string values
+    price: (data.netPrice !== undefined && !isNaN(Number(data.netPrice))) ? Number(data.netPrice) :
+      (data.finalPrice !== undefined && !isNaN(Number(data.finalPrice))) ? Number(data.finalPrice) :
+        (data.price !== undefined && !isNaN(Number(data.price))) ? Number(data.price) : 0,
     createdAt: data?.createdAt?.toDate() || new Date(),
     updatedAt: data?.updatedAt?.toDate() || new Date()
   } as UnifiedCar;

@@ -28,15 +28,17 @@ export class SellWorkflowImages {
       }
 
       // Rate limiting check
-      const rateLimitResult = await rateLimiter.checkLimit(
+      const rateLimitResult = rateLimiter.checkRateLimit(
         userId,
+        RATE_LIMIT_CONFIGS.IMAGE_UPLOAD.action,
         RATE_LIMIT_CONFIGS.IMAGE_UPLOAD
       );
 
       if (!rateLimitResult.allowed) {
+        const retryAfter = Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000);
         return {
           success: false,
-          error: `Too many uploads. Try again in ${rateLimitResult.retryAfter} seconds.`
+          error: `Too many uploads. Try again in ${retryAfter} seconds.`
         };
       }
 

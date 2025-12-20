@@ -9,6 +9,7 @@ import { SellWorkflowOperations } from './sell-workflow-operations';
 import { SellWorkflowImages } from './sell-workflow-images';
 import { SellWorkflowValidation } from './sell-workflow-validation';
 import { WorkflowData, WorkflowProgress, WorkflowValidationResult } from './sell-workflow-types';
+import { unifiedCarService } from './car/unified-car-service';
 
 export class SellWorkflowService {
   // ==================== COLLECTION MANAGEMENT ====================
@@ -28,6 +29,92 @@ export class SellWorkflowService {
   }
 
   // ==================== DATA TRANSFORMATION ====================
+
+  /**
+   * Create a new car listing with images
+   * Orchestrates image upload and car creation
+   */
+  static async createCarListing(
+    payload: any,
+    userId: string,
+    imageFiles: File[]
+  ): Promise<{ carId: string; redirectUrl?: string }> {
+    try {
+      // 1. Upload images if any
+      let imageUrls: string[] = [];
+      if (imageFiles && imageFiles.length > 0) {
+        logger.info('Starting image upload in createCarListing', { count: imageFiles.length, userId });
+        const workflowId = this.generateWorkflowId(userId);
+        const uploadResults = await SellWorkflowImages.uploadMultipleImages(imageFiles, userId, workflowId);
+
+        // Filter successful uploads
+        imageUrls = uploadResults
+          .filter(r => r.uploaded && r.url)
+          .map(r => r.url as string);
+
+        if (imageUrls.length !== imageFiles.length) {
+          const failedCount = imageFiles.length - imageUrls.length;
+          logger.error('Image upload incomplete - aborting listing creation', new Error(`${failedCount} images failed to upload`), {
+            attempted: imageFiles.length,
+            successful: imageUrls.length
+          });
+          throw new Error(`Image upload failed: ${failedCount} images could not be uploaded. Please check your connection and try again.`);
+        }
+      }
+
+      // 2. Prepare car data
+      // Ensure payload doesn't contain Files or other non-serializable data
+      const carData = {
+        ...payload,
+        sellerId: userId,
+        // Merge existing images with newly uploaded ones
+        // Handle payload.images as string (comma-separated) or array
+        images: [
+          ...(Array.isArray(payload.images)
+            ? payload.images
+            : (typeof payload.images === 'string' && payload.images.length > 0)
+              ? payload.images.split(',').map((u: string) => u.trim())
+              : []
+          ),
+          ...imageUrls
+        ].filter((url) => {
+          const isValid = typeof url === 'string' && url.length > 0 && !url.startsWith('blob:');
+          if (typeof url === 'string' && url.startsWith('blob:')) {
+            logger.warn('Skipping blob URL in car payload', { url });
+          }
+          return isValid;
+        }),
+        status: 'active',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+
+      // 3. Create car document via UnifiedCarService
+      // This service handles the database write and cache invalidation
+      logger.info('Calling unifyCarService.createCar', {
+        imagesCount: imageUrls.length,
+        carDataImagesCount: carData.images.length
+      });
+      const carResult = await unifiedCarService.createCar(carData);
+
+      logger.info('Car listing created successfully via SellWorkflowService', {
+        carId: carResult.id,
+        userId,
+        sellerNumericId: carResult.sellerNumericId,
+        carNumericId: carResult.carNumericId
+      });
+
+      // 4. Return result
+      return {
+        carId: carResult.id,
+        redirectUrl: `/car/${carResult.sellerNumericId}/${carResult.carNumericId}`
+      };
+
+    } catch (error) {
+      logger.error('SellWorkflowService.createCarListing failed', error as Error);
+      throw error;
+    }
+  }
 
   /**
    * Transform workflow data to car listing

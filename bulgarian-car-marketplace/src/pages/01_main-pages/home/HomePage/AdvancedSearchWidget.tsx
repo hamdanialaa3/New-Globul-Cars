@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { Search, DollarSign, Calculator } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { brandsModelsDataService } from '../../../../services/brands-models-data.service';
 import { unifiedCarService } from '../../../../services/car';
@@ -63,6 +64,14 @@ const DashboardTabs = styled.div`
   gap: 20px;
   margin-bottom: 30px;
   position: relative;
+
+  @media (max-width: 480px) and (orientation: portrait) {
+    gap: 12px;
+  }
+
+  @media (max-width: 360px) and (orientation: portrait) {
+    gap: 8px;
+  }
 `;
 
 const TabBtn = styled.button<{ active?: boolean }>`
@@ -79,6 +88,11 @@ const TabBtn = styled.button<{ active?: boolean }>`
   transition: all 0.3s;
   text-transform: uppercase;
   letter-spacing: 1px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   text-shadow: ${({ theme, active }) =>
     active ? (theme.mode === 'dark' ? '0 0 10px rgba(0, 204, 255, 0.4)' : '0 0 10px rgba(37, 99, 235, 0.18)') : 'none'};
 
@@ -96,6 +110,71 @@ const TabBtn = styled.button<{ active?: boolean }>`
         theme.mode === 'dark' ? '0 0 10px #00ccff' : `0 0 10px ${theme.colors.primary.main}`};
       opacity: ${props => props.active ? 1 : 0};
       transition: opacity 0.3s;
+  }
+
+  /* Icon styling */
+  svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    display: none; /* Hidden by default, shown on very narrow screens */
+  }
+
+  span {
+    white-space: nowrap;
+  }
+
+  /* Mobile portrait mode - reduce font size to keep text horizontal */
+  @media (max-width: 480px) and (orientation: portrait) {
+    font-size: 0.7rem;
+    padding: 8px 10px;
+    letter-spacing: 0.3px;
+    gap: 4px;
+    
+    svg {
+      display: block;
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  /* Very narrow screens - show icons with smaller text */
+  @media (max-width: 360px) and (orientation: portrait) {
+    font-size: 0.6rem;
+    padding: 6px 8px;
+    letter-spacing: 0.2px;
+    gap: 3px;
+    
+    svg {
+      display: block;
+      width: 12px;
+      height: 12px;
+    }
+  }
+
+  /* Extra narrow screens - icons only with tooltip text */
+  @media (max-width: 320px) and (orientation: portrait) {
+    font-size: 0.55rem;
+    padding: 6px 6px;
+    letter-spacing: 0;
+    
+    svg {
+      display: block;
+      width: 14px;
+      height: 14px;
+    }
+    
+    span {
+      font-size: 0.5rem;
+    }
+  }
+
+  /* Ensure text stays on one line */
+  @media (max-width: 600px) {
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+    min-width: fit-content;
   }
 `;
 
@@ -134,7 +213,7 @@ const FormSelect = styled.select`
   background: ${({ theme }) => (theme.mode === 'dark' ? '#0f0f13' : theme.colors.background.paper)};
   border: 1px solid ${({ theme }) => (theme.mode === 'dark' ? '#333' : theme.colors.grey[200])};
   border-radius: 10px;
-  color: ${({ theme }) => theme.colors.text.primary};
+  color: ${({ theme }) => (theme.mode === 'dark' ? '#e2e8f0' : theme.colors.text.primary)};
   padding: 0 15px;
   font-family: 'Exo 2', sans-serif;
   font-size: 1rem;
@@ -145,6 +224,32 @@ const FormSelect = styled.select`
     theme.mode === 'dark'
       ? 'linear-gradient(to bottom, #1a1a20, #0a0a0e)'
       : `linear-gradient(to bottom, ${theme.colors.grey[50]}, ${theme.colors.background.paper})`};
+
+  /* Light text color for dark mode - brighter for better visibility */
+  [data-theme="dark"] & {
+    color: #f1f5f9 !important;
+  }
+
+  .dark-theme & {
+    color: #f1f5f9 !important;
+  }
+
+  /* Style options for dark mode - brighter text */
+  option {
+    background: ${({ theme }) => (theme.mode === 'dark' ? '#1a1a20' : theme.colors.background.paper)};
+    color: ${({ theme }) => (theme.mode === 'dark' ? '#f1f5f9' : theme.colors.text.primary)};
+    padding: 12px 15px;
+  }
+
+  [data-theme="dark"] & option {
+    background: #1a1a20 !important;
+    color: #f1f5f9 !important;
+  }
+
+  .dark-theme & option {
+    background: #1a1a20 !important;
+    color: #f1f5f9 !important;
+  }
 
   &:hover { border-color: ${({ theme }) => (theme.mode === 'dark' ? '#555' : theme.colors.primary.light)}; }
   &:focus {
@@ -369,13 +474,16 @@ const AdvancedSearchWidget: React.FC<AdvancedSearchWidgetProps> = ({ onSearchCom
 
       <DashboardTabs>
         <TabBtn active={activeTab === 'search'} onClick={() => handleTabClick('search')}>
-          {language === 'bg' ? 'Търсене' : 'Search'}
+          <Search size={18} />
+          <span>{language === 'bg' ? 'Търсене' : 'Search'}</span>
         </TabBtn>
         <TabBtn active={activeTab === 'sell'} onClick={() => handleTabClick('sell')}>
-          {language === 'bg' ? 'Продажба' : 'Sell'}
+          <DollarSign size={18} />
+          <span>{language === 'bg' ? 'Продажба' : 'Sell'}</span>
         </TabBtn>
         <TabBtn active={activeTab === 'evaluate'} onClick={() => handleTabClick('evaluate')}>
-          {language === 'bg' ? 'Оценка' : 'Evaluate'}
+          <Calculator size={18} />
+          <span>{language === 'bg' ? 'Оценка' : 'Evaluate'}</span>
         </TabBtn>
       </DashboardTabs>
 
@@ -447,7 +555,20 @@ const AdvancedSearchWidget: React.FC<AdvancedSearchWidgetProps> = ({ onSearchCom
       {/* Car count display */}
       {carCount !== null && (
         <CarCountPanel>
-          <span style={{ marginRight: '8px' }}>🚗</span>
+          <svg 
+            width="20" 
+            height="20" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+            style={{ marginRight: '8px', display: 'inline-block', verticalAlign: 'middle' }}
+          >
+            <path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path>
+            <polygon points="12 15 17 21 7 21 12 15"></polygon>
+          </svg>
           {language === 'bg' 
             ? `Намерени ${carCount} ${carCount === 1 ? 'автомобил' : 'автомобила'} по критериите`
             : `Found ${carCount} ${carCount === 1 ? 'car' : 'cars'} matching criteria`

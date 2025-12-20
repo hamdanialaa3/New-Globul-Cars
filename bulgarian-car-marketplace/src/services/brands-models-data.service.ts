@@ -38,6 +38,8 @@ export class BrandsModelsDataService {
   private brandModelsCache: BrandModelsMap | null = null;
   private loading = false;
   private loadPromise: Promise<BrandModelsMap> | null = null;
+  private lastLoadTime: number = 0;
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
 
   private constructor() {}
 
@@ -81,10 +83,21 @@ export class BrandsModelsDataService {
   /**
    * Load and parse brands/models data from Markdown file
    * Returns cached data if already loaded
+   * @param forceReload - If true, bypasses cache and reloads from file
    */
-  async loadBrandsModels(): Promise<BrandModelsMap> {
-    // Return cached data if available
-    if (this.brandModelsCache) {
+  async loadBrandsModels(forceReload: boolean = false): Promise<BrandModelsMap> {
+    // Clear cache if force reload is requested or cache is expired
+    const now = Date.now();
+    const cacheExpired = this.lastLoadTime > 0 && (now - this.lastLoadTime) > this.CACHE_DURATION;
+    
+    if (forceReload || cacheExpired) {
+      this.brandModelsCache = null;
+      this.loadPromise = null;
+      this.lastLoadTime = 0;
+    }
+
+    // Return cached data if available and not expired
+    if (this.brandModelsCache && !cacheExpired) {
       return this.brandModelsCache;
     }
 
@@ -97,8 +110,16 @@ export class BrandsModelsDataService {
     this.loading = true;
     this.loadPromise = (async () => {
       try {
-        const response = await fetch('/data/cars_brands_models_complete.md', { 
-          cache: 'no-cache' 
+        // Add timestamp to force browser cache bypass - use build time or current time
+        // This ensures fresh data is loaded on each page load
+        const timestamp = `?v=${Date.now()}`;
+        const response = await fetch(`/data/cars_brands_models_complete.md${timestamp}`, { 
+          cache: 'no-cache',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
         });
         
         if (!response.ok) {
@@ -108,12 +129,14 @@ export class BrandsModelsDataService {
         const text = await response.text();
         const parsed = this.parseBrandsMarkdown(text);
         
-        // Cache the result
+        // Cache the result and update load time
         this.brandModelsCache = parsed;
+        this.lastLoadTime = Date.now();
         
         logger.info('Brands/Models data loaded successfully', {
           totalBrands: Object.keys(parsed).length,
-          totalModels: Object.values(parsed).reduce((sum, models) => sum + models.length, 0)
+          totalModels: Object.values(parsed).reduce((sum, models) => sum + models.length, 0),
+          cacheTime: new Date(this.lastLoadTime).toISOString()
         });
 
         return parsed;
@@ -131,9 +154,10 @@ export class BrandsModelsDataService {
 
   /**
    * Get all brand names sorted (popular brands first, then alphabetically)
+   * @param forceReload - If true, bypasses cache and reloads from file
    */
-  async getAllBrands(): Promise<string[]> {
-    const data = await this.loadBrandsModels();
+  async getAllBrands(forceReload: boolean = false): Promise<string[]> {
+    const data = await this.loadBrandsModels(forceReload);
     const allBrands = Object.keys(data);
     
     const popular = allBrands
@@ -153,9 +177,11 @@ export class BrandsModelsDataService {
 
   /**
    * Get models for a specific brand
+   * @param brand - Brand name
+   * @param forceReload - If true, bypasses cache and reloads from file
    */
-  async getModelsForBrand(brand: string): Promise<string[]> {
-    const data = await this.loadBrandsModels();
+  async getModelsForBrand(brand: string, forceReload: boolean = false): Promise<string[]> {
+    const data = await this.loadBrandsModels(forceReload);
     return data[brand] || [];
   }
 

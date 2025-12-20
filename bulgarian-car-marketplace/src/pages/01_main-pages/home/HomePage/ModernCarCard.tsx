@@ -300,7 +300,6 @@ const ModernCarCard: React.FC<ModernCarCardProps> = ({
   const isDark = theme === 'dark';
 
   const handleCardClick = () => {
-    // ✅ CRITICAL FIX: Use numeric URL if available, fallback to legacy URL
     if ((car as any).sellerNumericId && (car as any).carNumericId) {
       navigate(`/car/${(car as any).sellerNumericId}/${(car as any).carNumericId}`);
     } else {

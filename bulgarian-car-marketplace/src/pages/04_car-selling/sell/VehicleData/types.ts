@@ -59,6 +59,7 @@ export interface VehicleFormData {
   // Free-text 'Other' fields
   makeOther?: string;
   modelOther?: string;
+  variantOther?: string; // Custom variant when "__other__" is selected
   // Keep no 'other' for firstRegistration as months/years are fixed calendar values.
   fuelTypeOther?: string;
   colorOther?: string;

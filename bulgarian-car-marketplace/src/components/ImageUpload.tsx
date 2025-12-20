@@ -5,6 +5,7 @@
 import React, { useState, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface ImageUploadProps {
   images: string[];
@@ -39,9 +40,9 @@ const UploadArea = styled.div<{ isDragOver: boolean; disabled: boolean }>`
 
   &:hover {
     border-color: ${({ theme, disabled }) =>
-      disabled ? theme.colors.grey[300] : theme.colors.primary.main};
+    disabled ? theme.colors.grey[300] : theme.colors.primary.main};
     background: ${({ theme, disabled }) =>
-      disabled ? theme.colors.grey[50] : theme.colors.primary.main + '05'};
+    disabled ? theme.colors.grey[50] : theme.colors.primary.main + '05'};
   }
 `;
 
@@ -127,7 +128,7 @@ const ActionButton = styled.button<{ variant: 'primary' | 'danger' }>`
 
   &:hover {
     background: ${({ theme, variant }) =>
-      variant === 'danger' ? theme.colors.error.dark : theme.colors.primary.dark};
+    variant === 'danger' ? theme.colors.error.dark : theme.colors.primary.dark};
   }
 
   &:disabled {
@@ -167,6 +168,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   className
 }) => {
   const { t } = useTranslation();
+  const { language } = useLanguage();
   const [isDragOver, setIsDragOver] = useState(false);
   const [imageFiles, setImageFiles] = useState<ImageFile[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -347,8 +349,49 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           {images.map((image, index) => (
             <ImageItem key={`uploaded-${index}`}>
               <ImagePreview src={image} alt={`Car image ${index + 1}`} />
+
+              {/* Main Image Badge */}
+              {index === 0 && (
+                <div style={{
+                  position: 'absolute',
+                  top: '8px',
+                  left: '8px',
+                  background: '#22c55e', // Green
+                  color: 'white',
+                  padding: '4px 8px',
+                  borderRadius: '4px',
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                  zIndex: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                }}>
+                  <span>★</span> {t('current_main_image') || (language === 'bg' ? 'Основна' : 'Main')}
+                </div>
+              )}
+
               <ImageOverlay>
                 <ImageActions>
+                  {/* Make Main Button */}
+                  {index > 0 && (
+                    <ActionButton
+                      variant="primary"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // Move this image to index 0
+                        const newImages = [...images];
+                        const [selectedImage] = newImages.splice(index, 1);
+                        newImages.unshift(selectedImage);
+                        onImagesChange(newImages);
+                      }}
+                      title={t('set_as_main_image') || (language === 'bg' ? 'Направи основна' : 'Set Main')}
+                    >
+                      ★
+                    </ActionButton>
+                  )}
+
                   <ActionButton
                     variant="danger"
                     onClick={(e) => {

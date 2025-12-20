@@ -264,7 +264,7 @@ export const useCarEdit = (
         logger.debug('Starting car deletion process', { carId, userId });
       }
 
-      const result = await carDeleteService.softDeleteCar(carId, userId);
+      const result = await carDeleteService.deleteCar(carId, userId);
 
       if (result.success) {
         if (process.env.NODE_ENV === 'development') {
