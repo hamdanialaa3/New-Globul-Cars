@@ -18,6 +18,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-service';
+import { queryAllCollections } from './search/multi-collection-helper';
 import {
   RealTimeAnalytics,
   UserActivity,
@@ -66,10 +67,9 @@ export class SuperAdminOperations {
    */
   static async fetchCarsData() {
     try {
-      // Note: queryAllCollections is assumed to be imported from another service
-      // For now, we'll use a placeholder - this needs to be implemented
-      const carsSnapshot = await getDocs(collection(db, SUPER_ADMIN_COLLECTIONS.CARS));
-      return carsSnapshot;
+      // ✅ STRICT FIX: Use queryAllCollections to fetch from all vehicle collections
+      const allCars = await queryAllCollections();
+      return allCars;
     } catch (error) {
       serviceLogger.error('Error fetching cars data', error as Error);
       throw error;
@@ -122,10 +122,17 @@ export class SuperAdminOperations {
    * حساب السيارات النشطة
    */
   static calculateActiveCars(carsSnapshot: any): number {
-    const activeCars = carsSnapshot.docs.filter((doc: any) =>
-      doc.data().isActive === true
-    ).length;
-    return activeCars;
+    // Handle array (from queryAllCollections)
+    if (Array.isArray(carsSnapshot)) {
+      return carsSnapshot.filter((car: any) => car.isActive === true).length;
+    }
+    // Handle Snapshot (legacy)
+    if (carsSnapshot?.docs) {
+      return carsSnapshot.docs.filter((doc: any) =>
+        doc.data().isActive === true
+      ).length;
+    }
+    return 0;
   }
 
   /**
@@ -133,6 +140,7 @@ export class SuperAdminOperations {
    * حساب إجمالي المشاهدات
    */
   static calculateTotalViews(analyticsSnapshot: any): number {
+    if (!analyticsSnapshot?.docs) return 0;
     const totalViews = analyticsSnapshot.docs.reduce((sum: number, doc: any) =>
       sum + (doc.data().views || 0), 0
     );
@@ -147,15 +155,17 @@ export class SuperAdminOperations {
     const countries = new Map<string, number>();
     const cities = new Map<string, number>();
 
-    usersSnapshot.docs.forEach((doc: any) => {
-      const data = doc.data();
-      if (data.location?.country) {
-        countries.set(data.location.country, (countries.get(data.location.country) || 0) + 1);
-      }
-      if (data.location?.city) {
-        cities.set(data.location.city, (cities.get(data.location.city) || 0) + 1);
-      }
-    });
+    if (usersSnapshot?.docs) {
+      usersSnapshot.docs.forEach((doc: any) => {
+        const data = doc.data();
+        if (data.location?.country) {
+          countries.set(data.location.country, (countries.get(data.location.country) || 0) + 1);
+        }
+        if (data.location?.city) {
+          cities.set(data.location.city, (cities.get(data.location.city) || 0) + 1);
+        }
+      });
+    }
 
     const topCountries = Array.from(countries.entries())
       .map(([country, count]) => ({ country, count }))
@@ -209,9 +219,26 @@ export class SuperAdminOperations {
    */
   static async calculateRevenue(): Promise<number> {
     try {
-      // Implementation for revenue calculation
-      // This would typically sum up transaction amounts
-      return 0;
+      // ✅ STRICT FIX: Estimate revenue from current active promotions on items
+      // This sums up potential revenue from Featured and Urgent listings
+      const allCars = await queryAllCollections();
+      let totalRevenue = 0;
+
+      allCars.forEach((doc: any) => {
+        // Check if it's a doc with data() or plain object
+        const car = typeof doc.data === 'function' ? doc.data() : doc;
+
+        if (car.isActive) {
+          if (car.isFeatured) {
+            totalRevenue += REVENUE_PARAMS.FEATURED_LISTING_FEE;
+          }
+          if (car.isUrgent) {
+            totalRevenue += REVENUE_PARAMS.PREMIUM_LISTING_FEE;
+          }
+        }
+      });
+
+      return totalRevenue;
     } catch (error) {
       serviceLogger.error('Error calculating revenue', error as Error);
       return 0;
@@ -375,17 +402,18 @@ export class SuperAdminOperations {
    */
   static async getContentModeration(): Promise<ContentModeration> {
     try {
-      // Placeholder implementation - needs queryAllCollections
-      const [pendingReviews, bannedUsers, deletedContent, flaggedMessages] = await Promise.all([
-        // queryAllCollections(where('isReported', '==', true)),
+      // ✅ STRICT FIX: Use separate collections for reported content instead of querying non-existent car fields
+      const [pendingReviews, bannedUsers, deletedContent, flaggedMessages, flaggedContent] = await Promise.all([
         getDocs(query(collection(db, SUPER_ADMIN_COLLECTIONS.REVIEWS), where('status', '==', 'pending'))),
         getDocs(query(collection(db, SUPER_ADMIN_COLLECTIONS.USERS), where('isBanned', '==', true))),
         getDocs(collection(db, SUPER_ADMIN_COLLECTIONS.DELETED_CONTENT)),
-        getDocs(query(collection(db, SUPER_ADMIN_COLLECTIONS.MESSAGES), where('isFlagged', '==', true)))
+        getDocs(query(collection(db, SUPER_ADMIN_COLLECTIONS.MESSAGES), where('isFlagged', '==', true))),
+        // Use Flagged Content collection to count reported items/cars
+        getDocs(query(collection(db, SUPER_ADMIN_COLLECTIONS.FLAGGED_CONTENT), where('status', '==', 'pending')))
       ]);
 
       return {
-        reportedCars: 0, // Placeholder
+        reportedCars: flaggedContent.size, // Using the flagged content collection count
         pendingReviews: pendingReviews.size,
         bannedUsers: bannedUsers.size,
         deletedContent: deletedContent.size,

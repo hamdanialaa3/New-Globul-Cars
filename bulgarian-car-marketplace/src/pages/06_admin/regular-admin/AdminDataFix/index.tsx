@@ -88,7 +88,7 @@ const handleFixCarSequences = async () => {
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import DataOwnershipFixer from '../../../../scripts/fix-old-data-ownership';
+import { DataOwnershipFixer } from '../../../../utils/fix-old-data-ownership';
 import { Shield, AlertTriangle, CheckCircle, Loader } from 'lucide-react';
 
 const AdminDataFix: React.FC = () => {

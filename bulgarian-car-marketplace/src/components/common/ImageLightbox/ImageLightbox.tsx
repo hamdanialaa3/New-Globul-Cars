@@ -3,10 +3,10 @@ import styled, { keyframes, css } from 'styled-components';
 import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 
 interface ImageLightboxProps {
-    images: string[];
-    initialIndex?: number;
-    isOpen: boolean;
-    onClose: () => void;
+  images: string[];
+  initialIndex?: number;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 // Fade animation for modal
@@ -76,6 +76,8 @@ const CloseButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 44px; /* Ensure 44px touch target */
+  height: 44px;
 
   &:hover {
     background: rgba(255, 255, 255, 0.2);
@@ -85,6 +87,12 @@ const CloseButton = styled.button`
   svg {
     width: 24px;
     height: 24px;
+  }
+
+  /* Mobile adjustment for better visibility/reachability */
+  @media (max-width: 768px) {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255,255,255,0.2);
   }
 `;
 
@@ -127,13 +135,14 @@ const NavButton = styled.button<{ $position: 'left' | 'right' }>`
   }
 
   @media (max-width: 768px) {
-    width: 40px;
-    height: 40px;
+    width: 44px; /* Minimum touch target size */
+    height: 44px;
     ${props => props.$position}: 10px;
+    background: rgba(0,0,0,0.5); /* Better visibility on mobile */
     
     svg {
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
     }
   }
 `;
@@ -170,6 +179,7 @@ const ThumbnailStrip = styled.div`
   padding: 20px;
   gap: 10px;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 
   /* Custom Scrollbar */
   &::-webkit-scrollbar {
@@ -210,114 +220,116 @@ const Thumbnail = styled.button<{ $isActive: boolean }>`
 `;
 
 const ImageLightbox: React.FC<ImageLightboxProps> = ({
-    images,
-    initialIndex = 0,
-    isOpen,
-    onClose
+  images,
+  initialIndex = 0,
+  isOpen,
+  onClose
 }) => {
-    const [currentIndex, setCurrentIndex] = useState(initialIndex);
-    const [animationKey, setAnimationKey] = useState(0); // Force re-render for animation
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [animationKey, setAnimationKey] = useState(0); // Force re-render for animation
 
-    // Sync internal state when props change
-    useEffect(() => {
-        if (isOpen) {
-            setCurrentIndex(initialIndex);
-        }
-    }, [isOpen, initialIndex]);
+  // Sync internal state when props change
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentIndex(initialIndex);
+    }
+  }, [isOpen, initialIndex]);
 
-    const handleNext = useCallback(() => {
-        setCurrentIndex((prev) => (prev + 1) % images.length);
-        setAnimationKey(prev => prev + 1);
-    }, [images.length]);
+  const handleNext = useCallback(() => {
+    setCurrentIndex((prev) => (prev + 1) % images.length);
+    setAnimationKey(prev => prev + 1);
+  }, [images.length]);
 
-    const handlePrev = useCallback(() => {
-        setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
-        setAnimationKey(prev => prev + 1);
-    }, [images.length]);
+  const handlePrev = useCallback(() => {
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+    setAnimationKey(prev => prev + 1);
+  }, [images.length]);
 
-    // Keyboard navigation
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (!isOpen) return;
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isOpen) return;
 
-            switch (e.key) {
-                case 'ArrowRight':
-                    handleNext();
-                    break;
-                case 'ArrowLeft':
-                    handlePrev();
-                    break;
-                case 'Escape':
-                    onClose();
-                    break;
-                default:
-                    break;
-            }
-        };
+      switch (e.key) {
+        case 'ArrowRight':
+          handleNext();
+          break;
+        case 'ArrowLeft':
+          handlePrev();
+          break;
+        case 'Escape':
+          onClose();
+          break;
+        default:
+          break;
+      }
+    };
 
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isOpen, handleNext, handlePrev, onClose]);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, handleNext, handlePrev, onClose]);
 
-    // Prevent scroll when open
-    useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'unset';
-        }
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
-    }, [isOpen]);
+  // Prevent scroll when open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      // Also prevent touchmove to stop pull-to-refresh on mobile if needed, 
+      // but might interfere with thumbnail scrolling.
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
-    if (!isOpen) return null;
+  if (!isOpen) return null;
 
-    return (
-        <Overlay $isOpen={isOpen} onClick={onClose}>
-            <ControlsHeader onClick={(e) => e.stopPropagation()}>
-                <ImageCounter>
-                    {currentIndex + 1} / {images.length}
-                </ImageCounter>
-                <CloseButton onClick={onClose}>
-                    <X />
-                </CloseButton>
-            </ControlsHeader>
+  return (
+    <Overlay $isOpen={isOpen} onClick={onClose}>
+      <ControlsHeader onClick={(e) => e.stopPropagation()}>
+        <ImageCounter>
+          {currentIndex + 1} / {images.length}
+        </ImageCounter>
+        <CloseButton onClick={onClose} aria-label="Close Gallery">
+          <X />
+        </CloseButton>
+      </ControlsHeader>
 
-            <MainImageArea onClick={(e) => e.stopPropagation()}>
-                <NavButton $position="left" onClick={handlePrev}>
-                    <ChevronLeft />
-                </NavButton>
+      <MainImageArea onClick={(e) => e.stopPropagation()}>
+        <NavButton $position="left" onClick={handlePrev} aria-label="Previous Image">
+          <ChevronLeft />
+        </NavButton>
 
-                <ImageWrapper $animationKey={animationKey} key={animationKey}>
-                    <MainImage
-                        src={images[currentIndex]}
-                        alt={`Image ${currentIndex + 1}`}
-                        draggable={false}
-                    />
-                </ImageWrapper>
+        <ImageWrapper $animationKey={animationKey} key={animationKey}>
+          <MainImage
+            src={images[currentIndex]}
+            alt={`Image ${currentIndex + 1}`}
+            draggable={false}
+          />
+        </ImageWrapper>
 
-                <NavButton $position="right" onClick={handleNext}>
-                    <ChevronRight />
-                </NavButton>
-            </MainImageArea>
+        <NavButton $position="right" onClick={handleNext} aria-label="Next Image">
+          <ChevronRight />
+        </NavButton>
+      </MainImageArea>
 
-            <ThumbnailStrip onClick={(e) => e.stopPropagation()}>
-                {images.map((img, idx) => (
-                    <Thumbnail
-                        key={idx}
-                        $isActive={idx === currentIndex}
-                        onClick={() => {
-                            setCurrentIndex(idx);
-                            setAnimationKey(prev => prev + 1);
-                        }}
-                    >
-                        <img src={img} alt={`Thumb ${idx}`} />
-                    </Thumbnail>
-                ))}
-            </ThumbnailStrip>
-        </Overlay>
-    );
+      <ThumbnailStrip onClick={(e) => e.stopPropagation()}>
+        {images.map((img, idx) => (
+          <Thumbnail
+            key={idx}
+            $isActive={idx === currentIndex}
+            onClick={() => {
+              setCurrentIndex(idx);
+              setAnimationKey(prev => prev + 1);
+            }}
+          >
+            <img src={img} alt={`Thumb ${idx}`} />
+          </Thumbnail>
+        ))}
+      </ThumbnailStrip>
+    </Overlay>
+  );
 };
 
 export default ImageLightbox;

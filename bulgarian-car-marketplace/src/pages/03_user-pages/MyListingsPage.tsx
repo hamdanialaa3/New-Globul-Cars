@@ -11,6 +11,7 @@ import { CarListing } from '../../types/CarListing';
 import { CarIcon } from '../../components/icons/CarIcon';
 import CarCardGermanStyle from '../../components/CarCard/CarCardGermanStyle';
 import { logger } from '../../services/logger-service';
+import { getCarDetailsUrl } from '../../utils/routing-utils';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -256,6 +257,14 @@ const MyListingsPage: React.FC = () => {
       setListings(userListings as any[]);
 
       if (process.env.NODE_ENV === 'development') {
+        // Debug first listing to check if numeric IDs are present
+        if (userListings.length > 0) {
+          logger.debug('User listings loaded. Check IDs:', {
+            firstCarId: userListings[0].id,
+            sellerNumericId: userListings[0].sellerNumericId,
+            carNumericId: userListings[0].carNumericId
+          });
+        }
         logger.debug('Loaded user listings successfully', { count: userListings.length });
       }
     } catch (err: any) {
@@ -284,17 +293,15 @@ const MyListingsPage: React.FC = () => {
   };
 
   const handleViewDetails = (listing: CarListing) => {
-    // ✅ FIX: Use numeric URLs strictly if available
-    // Check both sellerNumericId AND carNumericId (or numericId for legacy)
-    const sellerNumId = listing.sellerNumericId;
-    const carNumId = listing.carNumericId || listing.numericId;
-
-    if (sellerNumId && carNumId) {
-      navigate(`/car/${sellerNumId}/${carNumId}`);
-    } else {
-      // Only fallback to UUID if absolutely necessary (should be rare)
-      navigate(`/car-details/${listing.id}`);
-    }
+    // ✅ FIX: Use unified URL generation logic to prevent mismatches
+    // This ensures we always prioritize numeric IDs if available
+    const url = getCarDetailsUrl({
+      sellerNumericId: listing.sellerNumericId,
+      carNumericId: listing.carNumericId || listing.numericId,
+      sellerId: listing.sellerId,
+      id: listing.id
+    });
+    navigate(url);
   };
 
   const handleEditListing = (listing: CarListing) => {

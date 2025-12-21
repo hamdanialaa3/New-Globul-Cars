@@ -128,12 +128,25 @@ class CarDeleteService {
         errors.push('Analytics deletion failed');
       }
 
-      // 6. Update user stats
+      // 6. ✅ CRITICAL FIX: Update user stats using ProfileService
+      // Decrements activeListings only (totalListings remains for historical record)
+      // Only decrement if car was active (not already sold/deleted)
       try {
-        await updateDoc(doc(db, 'users', userId), {
-          'stats.cars': increment(-1),
-          'stats.carsListed': increment(-1)
-        });
+        const wasActive = carData.isActive === true && carData.isSold !== true && carData.status !== 'sold';
+        
+        if (wasActive) {
+          const { ProfileService } = await import('../profile/ProfileService');
+          await ProfileService.decrementActiveListings(userId);
+          serviceLogger.info('User stats updated: active listings decremented', { userId, carId });
+        } else {
+          serviceLogger.debug('Skipping stats update - car was not active', { 
+            userId, 
+            carId,
+            isActive: carData.isActive,
+            isSold: carData.isSold,
+            status: carData.status
+          });
+        }
       } catch (error) {
         serviceLogger.error('Error updating user stats', error as Error, { userId, carId });
         errors.push('Stats update failed');

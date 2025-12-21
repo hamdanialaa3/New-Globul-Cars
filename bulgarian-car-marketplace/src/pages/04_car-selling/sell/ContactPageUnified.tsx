@@ -276,6 +276,7 @@ const ContactPageUnified: React.FC = () => {
         additionalPhone: contactData.additionalPhone || workflowData.additionalPhone || '',
         preferredContact: contactData.preferredContact.join(','),
         availableHours: contactData.availableHours || workflowData.availableHours || '',
+        description: contactData.notes || workflowData.description || workflowData.additionalInfo || '',
         additionalInfo: contactData.notes || workflowData.additionalInfo || '',
         region: contactData.region || workflowData.region || '',
         city: contactData.locationData?.cityName || workflowData.locationData?.cityName || '',
@@ -480,6 +481,29 @@ const ContactPageUnified: React.FC = () => {
                       />
                     </MobileContactStyles.default.FieldGroup>
                   </MobileContactStyles.default.Grid>
+                </MobileContactStyles.default.Card>
+
+                {/* Vehicle Description */}
+                <MobileContactStyles.default.Card>
+                  <MobileContactStyles.default.FieldGroup>
+                    <MobileContactStyles.default.Label>
+                      {language === 'bg' ? 'Описание на превозното средство' : 'Vehicle Description'}
+                    </MobileContactStyles.default.Label>
+                    <MobileContactStyles.default.TextArea
+                      value={contactData.notes || ''}
+                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                        handleFieldChange('notes', e.target.value)}
+                      placeholder={language === 'bg'
+                        ? 'Опишете подробно вашето превозно средство: състояние, особености, оборудване, история на обслужването и всичко друго, което купувачът трябва да знае...'
+                        : 'Describe your vehicle in detail: condition, features, equipment, service history and everything else a buyer should know...'}
+                      rows={8}
+                    />
+                    <MobileContactStyles.default.HelpText style={{ marginTop: '0.5rem' }}>
+                      {language === 'bg'
+                        ? 'Детайлното описание помага на купувачите да разберат по-добре вашето превозно средство и увеличава шансовете за продажба.'
+                        : 'A detailed description helps buyers better understand your vehicle and increases the chances of sale.'}
+                    </MobileContactStyles.default.HelpText>
+                  </MobileContactStyles.default.FieldGroup>
                 </MobileContactStyles.default.Card>
 
                 <MobileContactStyles.default.InfoCard>
@@ -799,19 +823,25 @@ const ContactPageUnified: React.FC = () => {
                   />
                 </UnifiedContactStyles.default.FormGroup>
 
-                {/* Additional Notes */}
+                {/* Vehicle Description - Similar to mobile.de */}
                 <UnifiedContactStyles.default.FormGroup>
                   <UnifiedContactStyles.default.Label>
-                    {language === 'bg' ? 'Допълнителна информация' : 'Additional Information'}
+                    {language === 'bg' ? 'Описание на превозното средство' : 'Vehicle Description'}
                   </UnifiedContactStyles.default.Label>
                   <UnifiedContactStyles.default.TextArea
-                    value={contactData.notes}
+                    value={contactData.notes || ''}
                     onChange={(e) => handleFieldChange('notes', e.target.value)}
                     placeholder={language === 'bg'
-                      ? 'Допълнителни детайли за контакта...'
-                      : 'Additional contact details...'}
-                    rows={3}
+                      ? 'Опишете подробно вашето превозно средство: състояние, особености, оборудване, история на обслужването и всичко друго, което купувачът трябва да знае...'
+                      : 'Describe your vehicle in detail: condition, features, equipment, service history and everything else a buyer should know...'}
+                    rows={8}
+                    style={{ minHeight: '150px', resize: 'vertical' }}
                   />
+                  <UnifiedContactStyles.default.HelpText style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: '#6b7280' }}>
+                    {language === 'bg'
+                      ? 'Детайлното описание помага на купувачите да разберат по-добре вашето превозно средство и увеличава шансовете за продажба.'
+                      : 'A detailed description helps buyers better understand your vehicle and increases the chances of sale.'}
+                  </UnifiedContactStyles.default.HelpText>
                 </UnifiedContactStyles.default.FormGroup>
               </UnifiedContactStyles.default.SectionCard>
             </UnifiedContactStyles.default.ContentSection>

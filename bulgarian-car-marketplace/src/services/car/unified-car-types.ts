@@ -22,6 +22,9 @@ export interface UnifiedCar {
   favorites: number;
   createdAt: Date;
   updatedAt: Date;
+  sellerNumericId?: number;
+  carNumericId?: number;
+  numericId?: number;
   [key: string]: any;
 }
 

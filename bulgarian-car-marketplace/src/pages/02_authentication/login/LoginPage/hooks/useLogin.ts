@@ -129,6 +129,18 @@ export const useLogin = (): UseLoginReturn => {
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
       const errorWithCode = error as Error & { code?: string; message?: string };
+      
+      // Handle redirect case (especially for Cursor browser)
+      if (error.message === 'REDIRECT_INITIATED' || error.message.includes('REDIRECT')) {
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('OAuth redirect initiated - waiting for redirect result');
+        }
+        setSuccess(t('auth.redirecting', 'جاري التحويل لتسجيل الدخول...'));
+        setLoading(true); // Keep loading state during redirect
+        // Don't set error - redirect is expected behavior
+        return; // Exit early, redirect will be handled by AuthProvider
+      }
+      
       logger.error('Google login error', error, {
         errorCode: errorWithCode?.code,
         currentURL: window.location.href,
@@ -141,7 +153,6 @@ export const useLogin = (): UseLoginReturn => {
       // User-friendly error message
       const userMessage = errorWithCode?.message || 'حدث خطأ أثناء تسجيل الدخول مع Google. يرجى المحاولة مرة أخرى.';
       setError(userMessage);
-    } finally {
       setLoading(false);
     }
   };

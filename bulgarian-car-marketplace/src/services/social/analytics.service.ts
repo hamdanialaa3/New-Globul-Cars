@@ -86,7 +86,7 @@ class AnalyticsService {
   async getUserAnalytics(userId: string, period: UserAnalytics['period']): Promise<UserAnalytics> {
     try {
       const dateRange = this.getDateRange(period);
-      
+
       const [
         profileViews,
         posts,
@@ -98,12 +98,12 @@ class AnalyticsService {
         this.getNewFollowers(userId, dateRange),
         this.getNewMessages(userId, dateRange)
       ]);
-      
+
       const postMetrics = this.calculatePostMetrics(posts);
-      
+
       const followerGrowth = await this.getFollowerGrowth(userId, dateRange);
       const engagementTrend = this.calculateEngagementTrend(posts);
-      
+
       return {
         userId,
         period,
@@ -132,7 +132,7 @@ class AnalyticsService {
   async getBusinessAnalytics(userId: string, period: BusinessAnalytics['period']): Promise<BusinessAnalytics> {
     try {
       const dateRange = this.getDateRange(period);
-      
+
       // ✅ DONE: Implement actual aggregation across user's cars
       const [cars, allUserCars] = await Promise.all([
         getDocs(
@@ -150,13 +150,13 @@ class AnalyticsService {
           )
         )
       ]);
-      
+
       let totalViews = 0;
       let totalSaves = 0;
       let totalShares = 0;
       let totalInquiries = 0;
       const topCars: TopCar[] = [];
-      
+
       // Aggregate metrics from all user's cars (not just period cars)
       for (const carDoc of allUserCars.docs) {
         const car = carDoc.data();
@@ -164,14 +164,14 @@ class AnalyticsService {
         const saves = car.analytics?.totalSaves || car.saves || 0;
         const shares = car.analytics?.totalShares || car.shares || 0;
         const inquiries = car.analytics?.totalInquiries || car.inquiries || 0;
-        
+
         totalViews += views;
         totalSaves += saves;
         totalShares += shares;
         totalInquiries += inquiries;
-        
+
         const conversionRate = views > 0 ? (inquiries / views) * 100 : 0;
-        
+
         topCars.push({
           carId: carDoc.id,
           make: car.make,
@@ -182,14 +182,14 @@ class AnalyticsService {
           conversionRate
         });
       }
-      
+
       topCars.sort((a, b) => b.views - a.views);
-      
+
       const viewsTrend = await this.getCarViewsTrend(userId, dateRange);
       const inquiriesTrend = await this.getInquiriesTrend(userId, dateRange);
-      
+
       const conversionRate = totalViews > 0 ? (totalInquiries / totalViews) * 100 : 0;
-      
+
       return {
         userId,
         period,
@@ -214,7 +214,7 @@ class AnalyticsService {
   private getDateRange(period: string): { start: Date; end: Date } {
     const end = new Date();
     const start = new Date();
-    
+
     switch (period) {
       case 'day':
         start.setDate(start.getDate() - 1);
@@ -229,7 +229,7 @@ class AnalyticsService {
         start.setFullYear(start.getFullYear() - 1);
         break;
     }
-    
+
     return { start, end };
   }
 
@@ -242,7 +242,7 @@ class AnalyticsService {
           where('timestamp', '<=', Timestamp.fromDate(dateRange.end))
         )
       );
-      
+
       return viewsSnapshot.size;
     } catch (error) {
       return 0;
@@ -258,7 +258,7 @@ class AnalyticsService {
         where('createdAt', '<=', Timestamp.fromDate(dateRange.end))
       )
     );
-    
+
     return postsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   }
 
@@ -271,7 +271,7 @@ class AnalyticsService {
         where('createdAt', '<=', Timestamp.fromDate(dateRange.end))
       )
     );
-    
+
     return followersSnapshot.docs;
   }
 
@@ -284,7 +284,7 @@ class AnalyticsService {
         where('createdAt', '<=', Timestamp.fromDate(dateRange.end))
       )
     );
-    
+
     return messagesSnapshot.docs;
   }
 
@@ -293,19 +293,19 @@ class AnalyticsService {
     let totalLikes = 0;
     let totalComments = 0;
     let totalShares = 0;
-    
+
     const topPosts: TopPost[] = posts.map(post => {
       const views = post.views || 0;
       const likes = post.likes || 0;
       const comments = post.comments || 0;
-      
+
       totalViews += views;
       totalLikes += likes;
       totalComments += comments;
       totalShares += post.shares || 0;
-      
+
       const engagementRate = views > 0 ? ((likes + comments) / views) * 100 : 0;
-      
+
       return {
         postId: post.id,
         content: post.content?.substring(0, 100) || '',
@@ -315,13 +315,13 @@ class AnalyticsService {
         engagementRate
       };
     });
-    
+
     topPosts.sort((a, b) => b.engagementRate - a.engagementRate);
-    
-    const engagementRate = totalViews > 0 
-      ? ((totalLikes + totalComments) / totalViews) * 100 
+
+    const engagementRate = totalViews > 0
+      ? ((totalLikes + totalComments) / totalViews) * 100
       : 0;
-    
+
     return {
       totalViews,
       totalLikes,
@@ -336,16 +336,16 @@ class AnalyticsService {
     // ✅ DONE: Daily follower growth tracking
     const days = Math.ceil((dateRange.end.getTime() - dateRange.start.getTime()) / (1000 * 60 * 60 * 24));
     const growth: DataPoint[] = [];
-    
+
     for (let i = 0; i < days; i++) {
       const date = new Date(dateRange.start);
       date.setDate(date.getDate() + i);
-      
+
       const dayStart = new Date(date);
       dayStart.setHours(0, 0, 0, 0);
       const dayEnd = new Date(date);
       dayEnd.setHours(23, 59, 59, 999);
-      
+
       try {
         const followersSnapshot = await getDocs(
           query(
@@ -355,7 +355,7 @@ class AnalyticsService {
             where('createdAt', '<=', Timestamp.fromDate(dayEnd))
           )
         );
-        
+
         growth.push({
           date: date.toISOString().split('T')[0],
           value: followersSnapshot.size
@@ -364,26 +364,26 @@ class AnalyticsService {
         growth.push({ date: date.toISOString().split('T')[0], value: 0 });
       }
     }
-    
+
     return growth;
   }
 
   private calculateEngagementTrend(posts: unknown[]): DataPoint[] {
     // ✅ DONE: Engagement trend calculation
     const dailyEngagement = new Map<string, { views: number; interactions: number }>();
-    
+
     posts.forEach(post => {
       const date = post.createdAt?.toDate?.()?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0];
       const views = post.views || 0;
       const interactions = (post.likes || 0) + (post.comments || 0);
-      
+
       const existing = dailyEngagement.get(date) || { views: 0, interactions: 0 };
       dailyEngagement.set(date, {
         views: existing.views + views,
         interactions: existing.interactions + interactions
       });
     });
-    
+
     return Array.from(dailyEngagement.entries()).map(([date, data]) => ({
       date,
       value: data.views > 0 ? (data.interactions / data.views) * 100 : 0
@@ -394,11 +394,11 @@ class AnalyticsService {
     // ✅ DONE: Car views trend tracking
     const days = Math.ceil((dateRange.end.getTime() - dateRange.start.getTime()) / (1000 * 60 * 60 * 24));
     const trend: DataPoint[] = [];
-    
+
     for (let i = 0; i < days; i++) {
       const date = new Date(dateRange.start);
       date.setDate(date.getDate() + i);
-      
+
       try {
         const viewsSnapshot = await getDocs(
           query(
@@ -406,12 +406,12 @@ class AnalyticsService {
             where('date', '==', date.toISOString().split('T')[0])
           )
         );
-        
+
         let totalViews = 0;
         viewsSnapshot.docs.forEach(doc => {
           totalViews += doc.data().views || 0;
         });
-        
+
         trend.push({
           date: date.toISOString().split('T')[0],
           value: totalViews
@@ -420,7 +420,7 @@ class AnalyticsService {
         trend.push({ date: date.toISOString().split('T')[0], value: 0 });
       }
     }
-    
+
     return trend;
   }
 
@@ -428,16 +428,16 @@ class AnalyticsService {
     // ✅ DONE: Inquiries trend tracking
     const days = Math.ceil((dateRange.end.getTime() - dateRange.start.getTime()) / (1000 * 60 * 60 * 24));
     const trend: DataPoint[] = [];
-    
+
     for (let i = 0; i < days; i++) {
       const date = new Date(dateRange.start);
       date.setDate(date.getDate() + i);
-      
+
       const dayStart = new Date(date);
       dayStart.setHours(0, 0, 0, 0);
       const dayEnd = new Date(date);
       dayEnd.setHours(23, 59, 59, 999);
-      
+
       try {
         const inquiriesSnapshot = await getDocs(
           query(
@@ -447,7 +447,7 @@ class AnalyticsService {
             where('createdAt', '<=', Timestamp.fromDate(dayEnd))
           )
         );
-        
+
         trend.push({
           date: date.toISOString().split('T')[0],
           value: inquiriesSnapshot.size
@@ -456,10 +456,9 @@ class AnalyticsService {
         trend.push({ date: date.toISOString().split('T')[0], value: 0 });
       }
     }
-    
+
     return trend;
   }
-}
 
   /**
    * ✅ NEW: Track analytics events
@@ -470,7 +469,7 @@ class AnalyticsService {
       if (typeof window !== 'undefined' && (window as any).gtag) {
         (window as any).gtag('event', eventName, properties);
       }
-      
+
       // Store in Firestore for internal analytics
       await addDoc(collection(db, 'analytics_events'), {
         event: eventName,
@@ -479,7 +478,7 @@ class AnalyticsService {
         userId: properties.userId || null,
         sessionId: this.getSessionId()
       });
-      
+
       logger.info('[ANALYTICS] Event tracked:', { eventName, properties });
     } catch (error) {
       logger.error('[ANALYTICS] Error tracking event:', error);
@@ -514,7 +513,7 @@ class AnalyticsService {
    */
   private getSessionId(): string {
     if (typeof window === 'undefined') return 'server';
-    
+
     let sessionId = sessionStorage.getItem('analytics_session_id');
     if (!sessionId) {
       sessionId = Date.now().toString() + Math.random().toString(36).substr(2, 9);

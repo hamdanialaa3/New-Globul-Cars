@@ -111,12 +111,53 @@ export async function updateCar(carId: string, updates: Partial<UnifiedCar>): Pr
       }
     }
 
+    // ✅ CRITICAL FIX: Track state changes for stats updates
+    const wasActive = carData?.isActive === true && carData?.isSold !== true && carData?.status !== 'sold';
+    const isNowActive = updates.isActive !== false && (updates.isSold !== true && updates.status !== 'sold');
+    const isNowSold = updates.isSold === true || updates.status === 'sold';
+    const isNowInactive = updates.isActive === false;
+
     await updateDoc(docRef, {
       ...updates,
       updatedAt: serverTimestamp()
     });
 
     serviceLogger.info('Car updated', { carId });
+
+    // ✅ CRITICAL FIX: Update user stats based on state changes
+    if (carData?.sellerId) {
+      try {
+        const { ProfileService } = await import('../profile/ProfileService');
+        const sellerId = carData.sellerId as string;
+
+        // Case 1: Car was sold (was active, now sold)
+        if (wasActive && isNowSold) {
+          await ProfileService.decrementActiveListings(sellerId);
+          serviceLogger.info('User stats: active listings decremented (car sold)', { sellerId, carId });
+        }
+        
+        // Case 2: Car was deactivated (was active, now inactive)
+        else if (wasActive && isNowInactive) {
+          await ProfileService.decrementActiveListings(sellerId);
+          serviceLogger.info('User stats: active listings decremented (car deactivated)', { sellerId, carId });
+        }
+        
+        // Case 3: Car was reactivated (was inactive/sold, now active)
+        else if (!wasActive && isNowActive && !isNowSold) {
+          await ProfileService.incrementActiveListings(sellerId);
+          serviceLogger.info('User stats: active listings incremented (car reactivated)', { sellerId, carId });
+        }
+        
+        // Case 4: Car sale was reversed (was sold, now active again)
+        else if (carData?.isSold === true && isNowActive) {
+          await ProfileService.incrementActiveListings(sellerId);
+          serviceLogger.info('User stats: active listings incremented (sale reversed)', { sellerId, carId });
+        }
+      } catch (statsError) {
+        // Log error but don't fail the update operation
+        serviceLogger.error('Failed to update user stats during car update', statsError as Error, { carId });
+      }
+    }
 
     // Award points if car was sold
     if (wasSold) {
@@ -140,11 +181,13 @@ export async function updateCar(carId: string, updates: Partial<UnifiedCar>): Pr
 
 /**
  * Delete car
+ * ✅ CRITICAL FIX: Updates user stats when deleting active cars
  */
 export async function deleteCar(carId: string): Promise<void> {
   try {
     // Find which collection contains this car
     let foundCollection: string | null = null;
+    let carData: Record<string, unknown> | null = null;
 
     for (const collectionName of VEHICLE_COLLECTIONS) {
       try {
@@ -152,6 +195,7 @@ export async function deleteCar(carId: string): Promise<void> {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           foundCollection = collectionName;
+          carData = docSnap.data();
           break;
         }
       } catch (error) {
@@ -161,6 +205,25 @@ export async function deleteCar(carId: string): Promise<void> {
 
     if (!foundCollection) {
       throw new Error(`Car with ID ${carId} not found in any collection`);
+    }
+
+    // ✅ CRITICAL FIX: Update user stats before deleting (if car was active)
+    if (carData?.sellerId) {
+      const wasActive = carData.isActive === true && carData.isSold !== true && carData.status !== 'sold';
+      
+      if (wasActive) {
+        try {
+          const { ProfileService } = await import('../profile/ProfileService');
+          await ProfileService.decrementActiveListings(carData.sellerId as string);
+          serviceLogger.info('User stats: active listings decremented (car deleted)', { 
+            sellerId: carData.sellerId, 
+            carId 
+          });
+        } catch (statsError) {
+          // Log error but continue with deletion
+          serviceLogger.error('Failed to update user stats before car deletion', statsError as Error, { carId });
+        }
+      }
     }
 
     const docRef = doc(db, foundCollection, carId);

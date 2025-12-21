@@ -47,6 +47,7 @@ import { useAuth } from '../../../contexts/AuthProvider';
 import { logger } from '../../../services/logger-service';
 import CarSuggestionsList from './CarSuggestionsList';
 import ImageLightbox from '../../../components/common/ImageLightbox/ImageLightbox';
+import { getCarLogoUrl } from '../../../services/car-logo-service';
 
 interface CarDetailsGermanStyleProps {
   car: CarListing;
@@ -1115,6 +1116,10 @@ const DescriptionText = styled.div<{ $isDark: boolean }>`
 const DealerSection = styled(Card) <{ $isDark: boolean }>`
   background: ${props => props.$isDark ? '#1e293b' : '#fff'};
   border: ${props => props.$isDark ? '1px solid #334155' : 'none'};
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  width: 100%;
+  box-sizing: border-box;
 `;
 
 const DealerHeader = styled.div`
@@ -1122,10 +1127,20 @@ const DealerHeader = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
 `;
 
 const DealerInfo = styled.div`
   flex: 1;
+  min-width: 0; /* Allow flex item to shrink below content size */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 `;
 
 const DealerName = styled.h3<{ $isDark: boolean }>`
@@ -1141,6 +1156,8 @@ const DealerName = styled.h3<{ $isDark: boolean }>`
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
+  width: 100%;
+  min-width: 0;
 
   &:hover {
     color: var(--accent-primary);
@@ -1149,6 +1166,17 @@ const DealerName = styled.h3<{ $isDark: boolean }>`
   @media (max-width: 768px) {
     font-size: 16px;
     margin: 0 0 0.375rem 0;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 15px;
+    gap: 0.375rem;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
   }
 `;
 
@@ -1160,6 +1188,10 @@ const ProfileLink = styled.a<{ $isDark: boolean }>`
   text-decoration: none;
   transition: color 0.3s ease;
   cursor: pointer;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  min-width: 0;
 
   &:hover {
     color: var(--accent-primary);
@@ -1180,12 +1212,89 @@ const DealerRating = styled.div`
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+
+  @media (max-width: 480px) {
+    gap: 0.375rem;
+  }
+`;
+
+const BrandInfo = styled.div<{ $isDark: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)'};
+  border-radius: 8px;
+  transition: background 0.3s ease;
+
+  @media (max-width: 480px) {
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+`;
+
+const BrandLogoContainer = styled.div<{ $isDark: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  background: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.1)' : '#fff'};
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  flex-shrink: 0;
+
+  @media (max-width: 480px) {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+`;
+
+const BrandLogoImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 8px;
+
+  @media (max-width: 480px) {
+    padding: 6px;
+  }
+`;
+
+const BrandNameText = styled.span<{ $isDark: boolean }>`
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+  }
 `;
 
 const RatingStars = styled.div`
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  flex-shrink: 0;
+
+  @media (max-width: 480px) {
+    gap: 0.125rem;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
 `;
 
 const StarIcon = styled(Star)`
@@ -1200,11 +1309,16 @@ const RatingValue = styled.span<{ $isDark: boolean }>`
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.4;
-  white-space: nowrap;
   transition: color 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 
   @media (max-width: 768px) {
     font-size: 15px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 14px;
   }
 `;
 
@@ -1213,18 +1327,41 @@ const RatingCount = styled.span<{ $isDark: boolean }>`
   color: var(--text-tertiary);
   margin-left: 0.5rem;
   line-height: 1.4;
-  white-space: nowrap;
   transition: color 0.3s ease;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  flex-shrink: 1;
+  min-width: 0;
 
   @media (max-width: 768px) {
     font-size: 13px;
     margin-left: 0.375rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 12px;
+    margin-left: 0.25rem;
+    display: block;
+    margin-left: 0;
+    margin-top: 0.25rem;
+    width: 100%;
   }
 `;
 
 const DealerButtons = styled.div`
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  @media (max-width: 480px) {
+    gap: 0.375rem;
+  }
 `;
 
 const DealerButton = styled.button<{ $isDark: boolean }>`
@@ -1237,14 +1374,27 @@ const DealerButton = styled.button<{ $isDark: boolean }>`
   color: var(--btn-secondary-text);
   cursor: pointer;
   transition: all 0.2s;
-  white-space: nowrap;
   line-height: 1.4;
   text-decoration: none;
   display: inline-block;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  text-align: center;
+  min-width: fit-content;
 
   @media (max-width: 768px) {
     padding: 6px 12px;
     font-size: 13px;
+    flex: 1 1 auto;
+    min-width: calc(50% - 0.25rem);
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px 10px;
+    font-size: 12px;
+    flex: 1 1 100%;
+    min-width: 100%;
   }
 
   &:hover {
@@ -1371,17 +1521,24 @@ const FinancingButton = styled.button<{ $isDark: boolean }>`
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   line-height: 1.4;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  text-align: center;
   box-shadow: ${props => props.$isDark
     ? '0 2px 4px rgba(124, 58, 237, 0.4)'
     : '0 2px 4px rgba(139, 92, 246, 0.2)'};
+  box-sizing: border-box;
 
   @media (max-width: 768px) {
     padding: 10px;
     font-size: 14px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px 8px;
+    font-size: 13px;
   }
 
   &:hover {
@@ -1395,6 +1552,10 @@ const FinancingButton = styled.button<{ $isDark: boolean }>`
 const MapSection = styled(Card) <{ $isDark: boolean }>`
   background: ${props => props.$isDark ? '#1e293b' : '#fff'};
   border: ${props => props.$isDark ? '1px solid #334155' : 'none'};
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  width: 100%;
+  box-sizing: border-box;
 `;
 
 const MapTitle = styled.h3<{ $isDark: boolean }>`
@@ -1404,16 +1565,28 @@ const MapTitle = styled.h3<{ $isDark: boolean }>`
   margin: 0 0 1rem 0;
   line-height: 1.3;
   transition: color 0.3s ease;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  width: 100%;
+  min-width: 0;
 
   @media (max-width: 768px) {
     font-size: 16px;
     margin: 0 0 0.75rem 0;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 15px;
   }
 `;
 
 const ServicesSection = styled(Card) <{ $isDark: boolean }>`
   background: ${props => props.$isDark ? '#1e293b' : '#fff'};
   border: ${props => props.$isDark ? '1px solid #334155' : 'none'};
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  width: 100%;
+  box-sizing: border-box;
 `;
 
 const ServicesTitle = styled.h3<{ $isDark: boolean }>`
@@ -1423,10 +1596,18 @@ const ServicesTitle = styled.h3<{ $isDark: boolean }>`
   margin: 0 0 1rem 0;
   line-height: 1.3;
   transition: color 0.3s ease;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  width: 100%;
+  min-width: 0;
 
   @media (max-width: 768px) {
     font-size: 16px;
     margin: 0 0 0.75rem 0;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 15px;
   }
 `;
 
@@ -1434,6 +1615,13 @@ const ServicesGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.75rem;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
 `;
 
 const ServiceCheckbox = styled.label<{ $isDark: boolean }>`
@@ -1447,10 +1635,25 @@ const ServiceCheckbox = styled.label<{ $isDark: boolean }>`
   word-wrap: break-word;
   overflow-wrap: break-word;
   transition: color 0.3s ease;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 
   @media (max-width: 768px) {
     font-size: 13px;
     gap: 0.375rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 12px;
+    gap: 0.5rem;
+  }
+
+  span {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-width: 0;
+    flex: 1;
   }
 
   input[type="checkbox"] {
@@ -1472,15 +1675,22 @@ const UpdateButton = styled.button<{ $isDark: boolean }>`
   color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   line-height: 1.4;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  text-align: center;
+  box-sizing: border-box;
 
   @media (max-width: 768px) {
     padding: 8px;
     font-size: 13px;
     margin-top: 0.75rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px 6px;
+    font-size: 12px;
   }
 
   &:hover {
@@ -2235,13 +2445,19 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
               </FeaturesSection>
             )}
 
-            {/* Description */}
-            {car.description && (
-              <DescriptionSection $isDark={isDark}>
-                <DescriptionTitle $isDark={isDark}>{t.vehicleDescription}</DescriptionTitle>
+            {/* Vehicle Description - Similar to mobile.de */}
+            <DescriptionSection $isDark={isDark}>
+              <DescriptionTitle $isDark={isDark}>{t.vehicleDescription}</DescriptionTitle>
+              {car.description ? (
                 <DescriptionText $isDark={isDark}>{car.description}</DescriptionText>
-              </DescriptionSection>
-            )}
+              ) : (
+                <DescriptionText $isDark={isDark} style={{ fontStyle: 'italic', color: 'var(--text-tertiary)' }}>
+                  {language === 'bg' 
+                    ? 'Продавачът не е добавил описание за това превозно средство.'
+                    : 'The seller has not added a description for this vehicle.'}
+                </DescriptionText>
+              )}
+            </DescriptionSection>
           </LeftColumn>
 
           <RightColumn $isDark={isDark}>
@@ -2258,6 +2474,26 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
                     <RatingValue $isDark={isDark}>4.7</RatingValue>
                     <RatingCount $isDark={isDark}>(119 {t.reviews})</RatingCount>
                   </DealerRating>
+                  
+                  {/* Brand Logo and Name */}
+                  {car.make && (
+                    <BrandInfo $isDark={isDark}>
+                      <BrandLogoContainer $isDark={isDark}>
+                        <BrandLogoImage
+                          src={getCarLogoUrl(car.make)}
+                          alt={car.make}
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = '/assets/images/professional_car_logos/mein_logo_rest.png';
+                          }}
+                        />
+                      </BrandLogoContainer>
+                      <BrandNameText $isDark={isDark}>
+                        {car.make}
+                      </BrandNameText>
+                    </BrandInfo>
+                  )}
+                  
                   <DealerName $isDark={isDark} onClick={handleProfileClick}>
                     {sellerId && (
                       <User size={20} style={{ flexShrink: 0 }} />

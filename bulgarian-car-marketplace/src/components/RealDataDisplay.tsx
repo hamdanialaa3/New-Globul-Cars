@@ -1,9 +1,10 @@
 import { logger } from '../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, limit, where } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { Database, Users, Car, Activity, TrendingUp } from 'lucide-react';
+import { queryAllCollections, countAllVehicles } from '../services/search/multi-collection-helper';
 
 const Container = styled.div`
   padding: 2rem;
@@ -85,20 +86,32 @@ const RealDataDisplay: React.FC = () => {
       const usersData = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setUsers(usersData);
 
-      // Load cars
+      // Load cars - Use queryAllCollections to fetch recent cars from ALL types
+      // Since queryAllCollections doesn't support easy global sort/limit across collections efficiently without an index on a parent group path,
+      // we will fetch recent ones from 'cars' as a proxy OR strictly fetch all and slice (heavy).
+      // BETTER: For this summary view, we'll fetch from 'cars' (most common) + use countAllVehicles for stats.
+      // But queryAllCollections supports orderBy if we query each independently and merge.
+
+      // Strict fix: Query all active cars to show accurate list? Too heavy for client.
+      // Compromise: Fetch recent from 'cars' collection for the list display, but ensure STATS are accurate.
+
       const carsQuery = query(collection(db, 'cars'), orderBy('createdAt', 'desc'), limit(10));
       const carsSnapshot = await getDocs(carsQuery);
       const carsData = carsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setCars(carsData);
 
-      // Calculate stats
+      // Calculate stats - STRICTLY CORRECT
       const allUsersSnapshot = await getDocs(collection(db, 'users'));
-      const allCarsSnapshot = await getDocs(collection(db, 'cars'));
-      
       const totalUsers = allUsersSnapshot.size;
-      const totalCars = allCarsSnapshot.size;
-      const activeCars = carsData.filter(car => car.status === 'active').length;
-      const verifiedUsers = usersData.filter(user => user.emailVerified).length;
+
+      // Use helper for total vehicles count across ALL collections
+      const totalCars = await countAllVehicles();
+
+      // Active cars across all collections
+      const activeCarsList = await queryAllCollections(where('status', '==', 'active'));
+      const activeCars = activeCarsList.length;
+
+      const verifiedUsers = usersData.filter((user: any) => user.emailVerified).length;
 
       setStats({ totalUsers, totalCars, activeCars, verifiedUsers });
     } catch (error) {
@@ -119,7 +132,7 @@ const RealDataDisplay: React.FC = () => {
   return (
     <Container>
       <Title><Database size={24} />البيانات الحقيقية من Firebase</Title>
-      
+
       <DataGrid>
         <DataCard>
           <CardTitle><TrendingUp size={20} />إحصائيات عامة</CardTitle>

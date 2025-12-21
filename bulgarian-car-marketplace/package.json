@@ -25,6 +25,7 @@
     "browser-image-compression": "^2.0.2",
     "date-fns": "^4.1.0",
     "firebase": "^12.3.0",
+    "firebase-admin": "^13.6.0",
     "instantsearch.css": "^8.9.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.544.0",

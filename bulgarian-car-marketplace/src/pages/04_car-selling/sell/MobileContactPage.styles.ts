@@ -111,6 +111,45 @@ const Input = styled.input`
   }
 `;
 
+const TextArea = styled.textarea`
+  ${mobileMixins.preventZoom};
+  font-size: ${mobileTypography.input.fontSize};
+  line-height: ${mobileTypography.input.lineHeight};
+  width: 100%;
+  min-height: 150px;
+  padding: ${mobileSpacing.md};
+  background: ${mobileColors.neutral.white};
+  border: 2px solid ${mobileColors.surface.border};
+  border-radius: ${mobileBorderRadius.md};
+  color: ${mobileColors.neutral.gray900};
+  transition: all ${mobileAnimations.duration.normal} ${mobileAnimations.easing.easeInOut};
+  font-family: inherit;
+  resize: vertical;
+  
+  &:focus {
+    outline: none;
+    border-color: ${mobileColors.primary.main};
+    box-shadow: 0 0 0 3px ${mobileColors.primary.pale};
+  }
+  
+  &::placeholder {
+    color: ${mobileColors.neutral.gray500};
+  }
+  
+  &:disabled {
+    background: ${mobileColors.neutral.gray100};
+    color: ${mobileColors.neutral.gray500};
+    cursor: not-allowed;
+  }
+`;
+
+const HelpText = styled.p`
+  font-size: ${mobileTypography.bodySmall.fontSize};
+  line-height: ${mobileTypography.bodySmall.lineHeight};
+  color: ${mobileColors.neutral.gray600};
+  margin: 0;
+`;
+
 const InfoCard = styled.div`
   background: ${mobileColors.primary.pale};
   border-left: 4px solid ${mobileColors.primary.main};
@@ -181,9 +220,13 @@ export const S = {
   FieldGroup,
   Label,
   Input,
+  TextArea,
+  HelpText,
   InfoCard,
   InfoTitle,
   InfoText,
   StickyFooter,
   PrimaryButton
 };
+
+export default S;

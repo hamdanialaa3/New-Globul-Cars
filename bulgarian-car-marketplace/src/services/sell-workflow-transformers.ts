@@ -134,6 +134,9 @@ export class SellWorkflowTransformers {
       extras: workflowData.extras || {},
       extrasEquipment: workflowData.extrasEquipment || [],
 
+      // Description
+      description: workflowData.description || workflowData.additionalInfo || '',
+
       // Metadata
       vehicleType: workflowData.vehicleType,
       sellerType: workflowData.sellerType,
@@ -172,7 +175,9 @@ export class SellWorkflowTransformers {
       safety: carListing.safety,
       comfort: carListing.comfort,
       infotainment: carListing.infotainment,
-      extras: carListing.extras
+      extras: carListing.extras,
+      description: carListing.description || '',
+      additionalInfo: carListing.description || ''
     };
   }
 

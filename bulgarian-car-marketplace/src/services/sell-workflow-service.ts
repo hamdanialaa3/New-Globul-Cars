@@ -33,6 +33,7 @@ export class SellWorkflowService {
   /**
    * Create a new car listing with images
    * Orchestrates image upload and car creation
+   * ✅ CRITICAL FIX: Now validates subscription limits before creating listing
    */
   static async createCarListing(
     payload: any,
@@ -40,6 +41,28 @@ export class SellWorkflowService {
     imageFiles: File[]
   ): Promise<{ carId: string; redirectUrl?: string }> {
     try {
+      // ✅ CRITICAL FIX: Check listing limits BEFORE creating listing
+      // This prevents users from exceeding their plan limits
+      const { canAddListing, getRemainingListings } = await import('../utils/listing-limits');
+      
+      const canAdd = await canAddListing(userId);
+      if (!canAdd) {
+        const remaining = await getRemainingListings(userId);
+        const errorMessage = remaining === 0
+          ? 'Listing limit reached. Please upgrade your plan or delete existing listings.'
+          : `You have ${remaining} listing slot${remaining > 1 ? 's' : ''} remaining. Please delete existing listings or upgrade your plan.`;
+        
+        logger.warn('Listing creation blocked - limit reached', { 
+          userId, 
+          remaining,
+          message: errorMessage
+        });
+        
+        throw new Error(errorMessage);
+      }
+      
+      logger.info('Listing limit check passed', { userId });
+
       // 1. Upload images if any
       let imageUrls: string[] = [];
       if (imageFiles && imageFiles.length > 0) {
@@ -103,6 +126,28 @@ export class SellWorkflowService {
         sellerNumericId: carResult.sellerNumericId,
         carNumericId: carResult.carNumericId
       });
+
+      // 3.5 ✅ CRITICAL FIX: Update user stats (Active Listings count)
+      // This ensures the user's profile reflects the new listing immediately
+      // IMPORTANT: This is now blocking to ensure data consistency
+      // If stats update fails, we should know about it (but don't rollback car creation)
+      try {
+        const { ProfileService } = await import('./profile/ProfileService');
+        await ProfileService.incrementActiveListings(userId);
+        logger.info('User stats updated successfully after listing creation', { userId, carId: carResult.id });
+      } catch (statsError) {
+        // Log error but don't fail the entire operation
+        // The car was created successfully, but stats update failed
+        // This should be monitored and fixed, but doesn't block user experience
+        logger.error('Failed to update user stats after listing creation', statsError as Error, { 
+          userId, 
+          carId: carResult.id,
+          errorMessage: (statsError as Error).message
+        });
+        
+        // TODO: Consider adding a retry mechanism or background job to sync stats
+        // For now, we continue execution to not block the user
+      }
 
       // 4. Return result
       return {

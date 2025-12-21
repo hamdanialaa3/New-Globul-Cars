@@ -8,6 +8,7 @@ import { Phone, X, Check, Loader, AlertCircle } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 import { SocialAuthService } from '../firebase/social-auth-service';
 import { RecaptchaVerifier, ConfirmationResult } from 'firebase/auth';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface PhoneAuthModalProps {
   isOpen: boolean;
@@ -15,13 +16,13 @@ interface PhoneAuthModalProps {
   onSuccess: () => void;
 }
 
-const ModalOverlay = styled.div<{ $isOpen: boolean }>`
+const ModalOverlay = styled.div<{ $isOpen: boolean; $isDark: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: ${({ $isDark }) => ($isDark ? 'rgba(0, 0, 0, 0.85)' : 'rgba(0, 0, 0, 0.7)')};
   display: ${({ $isOpen }) => ($isOpen ? 'flex' : 'none')};
   align-items: center;
   justify-content: center;
@@ -29,15 +30,19 @@ const ModalOverlay = styled.div<{ $isOpen: boolean }>`
   padding: 20px;
 `;
 
-const ModalContent = styled.div`
-  background: white;
+const ModalContent = styled.div<{ $isDark: boolean }>`
+  background: ${({ $isDark }) => ($isDark ? '#252936' : '#ffffff')};
   border-radius: 16px;
   padding: 32px;
   max-width: 480px;
   width: 100%;
   position: relative;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: ${({ $isDark }) =>
+    $isDark
+      ? '0 20px 60px rgba(0, 0, 0, 0.6)'
+      : '0 20px 60px rgba(0, 0, 0, 0.3)'};
   animation: slideUp 0.3s ease;
+  border: ${({ $isDark }) => ($isDark ? '1px solid rgba(255, 255, 255, 0.1)' : 'none')};
 
   @keyframes slideUp {
     from {
@@ -51,7 +56,7 @@ const ModalContent = styled.div`
   }
 `;
 
-const CloseButton = styled.button`
+const CloseButton = styled.button<{ $isDark: boolean }>`
   position: absolute;
   top: 16px;
   right: 16px;
@@ -64,9 +69,11 @@ const CloseButton = styled.button`
   justify-content: center;
   border-radius: 50%;
   transition: background 0.2s;
+  color: ${({ $isDark }) => ($isDark ? '#d1d5db' : '#718096')};
 
   &:hover {
-    background: rgba(0, 0, 0, 0.05);
+    background: ${({ $isDark }) =>
+    $isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'};
   }
 `;
 
@@ -88,15 +95,15 @@ const IconWrapper = styled.div`
   color: white;
 `;
 
-const ModalTitle = styled.h2`
+const ModalTitle = styled.h2<{ $isDark: boolean }>`
   font-size: 24px;
   font-weight: 700;
-  color: #1a202c;
+  color: ${({ $isDark }) => ($isDark ? '#f9fafb' : '#1a202c')};
   margin: 0;
 `;
 
-const ModalSubtitle = styled.p`
-  color: #718096;
+const ModalSubtitle = styled.p<{ $isDark: boolean }>`
+  color: ${({ $isDark }) => ($isDark ? '#d1d5db' : '#718096')};
   font-size: 14px;
   margin: 0 0 24px 0;
 `;
@@ -105,11 +112,11 @@ const FormGroup = styled.div`
   margin-bottom: 20px;
 `;
 
-const Label = styled.label`
+const Label = styled.label<{ $isDark: boolean }>`
   display: block;
   font-size: 14px;
   font-weight: 600;
-  color: #2d3748;
+  color: ${({ $isDark }) => ($isDark ? '#e5e7eb' : '#2d3748')};
   margin-bottom: 8px;
 `;
 
@@ -118,37 +125,45 @@ const PhoneInputWrapper = styled.div`
   gap: 8px;
 `;
 
-const CountryCode = styled.div`
-  background: #f7fafc;
-  border: 2px solid #e2e8f0;
+const CountryCode = styled.div<{ $isDark: boolean }>`
+  background: ${({ $isDark }) => ($isDark ? '#374151' : '#f7fafc')};
+  border: 2px solid ${({ $isDark }) => ($isDark ? '#4b5563' : '#e2e8f0')};
   border-radius: 8px;
   padding: 12px 16px;
   font-size: 16px;
   font-weight: 600;
-  color: #2d3748;
+  color: ${({ $isDark }) => ($isDark ? '#e5e7eb' : '#2d3748')};
   min-width: 70px;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-const Input = styled.input`
+const Input = styled.input<{ $isDark: boolean }>`
   flex: 1;
   padding: 12px 16px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid ${({ $isDark }) => ($isDark ? '#4b5563' : '#e2e8f0')};
   border-radius: 8px;
   font-size: 16px;
   transition: all 0.2s;
+  background: ${({ $isDark }) => ($isDark ? '#374151' : '#ffffff')};
+  color: ${({ $isDark }) => ($isDark ? '#f9fafb' : '#1a202c')};
+
+  &::placeholder {
+    color: ${({ $isDark }) => ($isDark ? '#9ca3af' : '#9ca3af')};
+  }
 
   &:focus {
     outline: none;
     border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    box-shadow: 0 0 0 3px ${({ $isDark }) =>
+    $isDark ? 'rgba(102, 126, 234, 0.2)' : 'rgba(102, 126, 234, 0.1)'};
   }
 
   &:disabled {
-    background: #f7fafc;
+    background: ${({ $isDark }) => ($isDark ? '#1f2937' : '#f7fafc')};
     cursor: not-allowed;
+    opacity: 0.6;
   }
 `;
 
@@ -158,7 +173,7 @@ const RecaptchaContainer = styled.div`
   justify-content: center;
 `;
 
-const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
+const Button = styled.button<{ $variant?: 'primary' | 'secondary'; $isDark: boolean }>`
   width: 100%;
   padding: 14px 24px;
   border: none;
@@ -172,7 +187,7 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   gap: 8px;
   transition: all 0.2s;
 
-  ${({ $variant }) =>
+  ${({ $variant, $isDark }) =>
     $variant === 'primary'
       ? `
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -184,11 +199,12 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
     }
   `
       : `
-    background: #f7fafc;
-    color: #2d3748;
+    background: ${$isDark ? '#374151' : '#f7fafc'};
+    color: ${$isDark ? '#e5e7eb' : '#2d3748'};
+    border: 1px solid ${$isDark ? '#4b5563' : '#e2e8f0'};
 
     &:hover:not(:disabled) {
-      background: #e2e8f0;
+      background: ${$isDark ? '#4b5563' : '#e2e8f0'};
     }
   `}
 
@@ -199,34 +215,58 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   }
 `;
 
-const ErrorMessage = styled.div`
+const ErrorMessage = styled.div<{ $isDark: boolean }>`
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 12px 16px;
-  background: #fff5f5;
-  border: 1px solid #fc8181;
+  background: ${({ $isDark }) => ($isDark ? '#7f1d1d' : '#fff5f5')};
+  border: 1px solid ${({ $isDark }) => ($isDark ? '#dc2626' : '#fc8181')};
   border-radius: 8px;
-  color: #c53030;
+  color: ${({ $isDark }) => ($isDark ? '#fca5a5' : '#c53030')};
   font-size: 14px;
   margin-bottom: 16px;
 `;
 
-const SuccessMessage = styled.div`
+const SuccessMessage = styled.div<{ $isDark: boolean }>`
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 12px 16px;
-  background: #f0fff4;
-  border: 1px solid #68d391;
+  background: ${({ $isDark }) => ($isDark ? '#064e3b' : '#f0fff4')};
+  border: 1px solid ${({ $isDark }) => ($isDark ? '#10b981' : '#68d391')};
   border-radius: 8px;
-  color: #22543d;
+  color: ${({ $isDark }) => ($isDark ? '#6ee7b7' : '#22543d')};
   font-size: 14px;
   margin-bottom: 16px;
 `;
 
 const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({ isOpen, onClose, onSuccess }) => {
   const { t, language } = useTranslation();
+  const { theme } = useTheme();
+
+  // Get theme from multiple sources for reliability
+  const getIsDark = (): boolean => {
+    // First try useTheme hook
+    if (theme === 'dark') return true;
+    if (theme === 'light') return false;
+
+    // Fallback to document attribute
+    const dataTheme = document.documentElement.getAttribute('data-theme');
+    if (dataTheme === 'dark') return true;
+    if (dataTheme === 'light') return false;
+
+    // Fallback to classList
+    if (document.documentElement.classList.contains('dark-theme')) return true;
+    if (document.documentElement.classList.contains('light-theme')) return false;
+
+    // Default to light
+    return false;
+  };
+
+  // Use state to track theme changes
+  const [isDark, setIsDark] = useState(() => getIsDark());
+
   const [step, setStep] = useState<'phone' | 'code'>('phone');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
@@ -235,24 +275,75 @@ const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({ isOpen, onClose, onSucc
   const [success, setSuccess] = useState('');
   const [recaptchaVerifier, setRecaptchaVerifier] = useState<RecaptchaVerifier | null>(null);
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const [recaptchaId, setRecaptchaId] = useState(0); // Add state to force re-render/reset
+
+  // Update theme state when theme changes
+  useEffect(() => {
+    const currentIsDark = getIsDark();
+    setIsDark(currentIsDark);
+
+    if (process.env.NODE_ENV === 'development') {
+      logger.debug('PhoneAuthModal theme updated', {
+        theme,
+        isDark: currentIsDark,
+        dataTheme: document.documentElement.getAttribute('data-theme'),
+        hasDarkClass: document.documentElement.classList.contains('dark-theme')
+      });
+    }
+  }, [theme]);
+
+  // Also listen to DOM changes for theme
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const currentIsDark = getIsDark();
+      if (currentIsDark !== isDark) {
+        setIsDark(currentIsDark);
+      }
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme', 'class']
+    });
+
+    return () => observer.disconnect();
+  }, [isDark]);
 
   useEffect(() => {
-    if (isOpen && !recaptchaVerifier) {
+    // Clean up previous verifier if exists
+    if (recaptchaVerifier) {
       try {
-        const verifier = SocialAuthService.setupRecaptchaVerifier('recaptcha-container');
-        setRecaptchaVerifier(verifier);
-      } catch (err) {
-        logger.error('Failed to setup reCAPTCHA:', err);
-        setError('Failed to initialize phone authentication. Please refresh and try again.');
+        recaptchaVerifier.clear();
+      } catch (e) {
+        console.warn('Error clearing recaptcha', e);
       }
+    }
+
+    if (isOpen) {
+      // Small delay to ensure DOM is ready
+      const timeoutId = setTimeout(() => {
+        try {
+          const verifier = SocialAuthService.setupRecaptchaVerifier('recaptcha-container');
+          setRecaptchaVerifier(verifier);
+        } catch (err) {
+          logger.error('Failed to setup reCAPTCHA:', err);
+          setError('Failed to initialize phone authentication. Please refresh and try again.');
+        }
+      }, 500);
+
+      return () => clearTimeout(timeoutId);
     }
 
     return () => {
       if (recaptchaVerifier) {
-        recaptchaVerifier.clear();
+        try {
+          recaptchaVerifier.clear();
+        } catch (e) {
+          // ignore clean up errors
+        }
       }
     };
-  }, [isOpen]);
+  }, [isOpen, recaptchaId]);
 
   const handleSendCode = async () => {
     if (!phoneNumber || !recaptchaVerifier) {
@@ -270,7 +361,27 @@ const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({ isOpen, onClose, onSucc
       setStep('code');
       setSuccess(language === 'bg' ? 'Кодът за потвърждение е изпратен!' : 'Verification code sent!');
     } catch (err: any) {
-      setError(err.message || (language === 'bg' ? 'Грешка при изпращане на код' : 'Error sending code'));
+      // ✅ FIX: Enhanced Error Handling for Common Issues
+      if (err.code === 'auth/operation-not-allowed') {
+        setError(language === 'bg'
+          ? 'Входът с телефон не е активиран в Firebase Search Console.'
+          : 'Phone Sign-in is not enabled in Firebase Console. Please enable it in Authentication > Sign-in method.');
+        logger.error('Phone Auth Provider disabled', err);
+      } else if (err.code === 'auth/invalid-app-credential') {
+        // Try to give a more helpful message even if we can't fix it from here
+        setError(language === 'bg'
+          ? 'Защитата на Google блокира заявката. Уверете се, че не използвате VPN и localhost е одорен в Firebase Console.'
+          : 'Google Security blocked this request (Invalid App Credential). Ensure localhost is authorized in Firebase Console and no VPN is active.');
+        logger.error('Invalid App Credential - Check Authorized Domains', err);
+      } else if (err.message && err.message.includes('reCAPTCHA')) {
+        setError(language === 'bg'
+          ? 'Проблем с reCAPTCHA. Моля, опреснете страницата и опитайте пак.'
+          : 'reCAPTCHA issue. Please refresh and try again.');
+        // Force reset on next open
+        setRecaptchaId(prev => prev + 1);
+      } else {
+        setError(err.message || (language === 'bg' ? 'Грешка при изпращане на код' : 'Error sending code'));
+      }
     } finally {
       setLoading(false);
     }
@@ -305,18 +416,32 @@ const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({ isOpen, onClose, onSucc
     setVerificationCode('');
     setError('');
     setSuccess('');
+    // Clean up verifier on close so it re-initializes cleanly next time
     if (recaptchaVerifier) {
-      recaptchaVerifier.clear();
+      try {
+        recaptchaVerifier.clear();
+      } catch (e) {
+        // ignore
+      }
       setRecaptchaVerifier(null);
     }
     onClose();
   };
 
   return (
-    <ModalOverlay $isOpen={isOpen} onClick={handleClose}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
-        <CloseButton onClick={handleClose}>
-          <X size={24} color="#718096" />
+    <ModalOverlay
+      key={`modal-overlay-${theme}`}
+      $isOpen={isOpen}
+      $isDark={isDark}
+      onClick={handleClose}
+    >
+      <ModalContent
+        key={`modal-content-${theme}`}
+        $isDark={isDark}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <CloseButton $isDark={isDark} onClick={handleClose}>
+          <X size={24} color={isDark ? '#d1d5db' : '#718096'} />
         </CloseButton>
 
         <ModalHeader>
@@ -324,31 +449,31 @@ const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({ isOpen, onClose, onSucc
             <Phone size={24} />
           </IconWrapper>
           <div>
-            <ModalTitle>
+            <ModalTitle $isDark={isDark}>
               {language === 'bg' ? 'Вход с телефон' : 'Phone Sign-In'}
             </ModalTitle>
           </div>
         </ModalHeader>
 
-        <ModalSubtitle>
+        <ModalSubtitle $isDark={isDark}>
           {step === 'phone'
             ? language === 'bg'
               ? 'Въведете вашия телефонен номер за да получите код за потвърждение'
               : 'Enter your phone number to receive a verification code'
             : language === 'bg'
-            ? 'Въведете 6-цифрения код, изпратен на вашия телефон'
-            : 'Enter the 6-digit code sent to your phone'}
+              ? 'Въведете 6-цифрения код, изпратен на вашия телефон'
+              : 'Enter the 6-digit code sent to your phone'}
         </ModalSubtitle>
 
         {error && (
-          <ErrorMessage>
+          <ErrorMessage $isDark={isDark}>
             <AlertCircle size={18} />
             <span>{error}</span>
           </ErrorMessage>
         )}
 
         {success && (
-          <SuccessMessage>
+          <SuccessMessage $isDark={isDark}>
             <Check size={18} />
             <span>{success}</span>
           </SuccessMessage>
@@ -357,10 +482,11 @@ const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({ isOpen, onClose, onSucc
         {step === 'phone' ? (
           <>
             <FormGroup>
-              <Label>{language === 'bg' ? 'Телефонен номер' : 'Phone Number'}</Label>
+              <Label $isDark={isDark}>{language === 'bg' ? 'Телефонен номер' : 'Phone Number'}</Label>
               <PhoneInputWrapper>
-                <CountryCode>+359</CountryCode>
+                <CountryCode $isDark={isDark}>+359</CountryCode>
                 <Input
+                  $isDark={isDark}
                   type="tel"
                   placeholder={language === 'bg' ? '8XXXXXXXX' : '8XXXXXXXX'}
                   value={phoneNumber}
@@ -373,7 +499,7 @@ const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({ isOpen, onClose, onSucc
 
             <RecaptchaContainer id="recaptcha-container" />
 
-            <Button $variant="primary" onClick={handleSendCode} disabled={loading || !phoneNumber}>
+            <Button $variant="primary" $isDark={isDark} onClick={handleSendCode} disabled={loading || !phoneNumber}>
               {loading ? (
                 <>
                   <Loader size={20} className="spin" />
@@ -390,8 +516,9 @@ const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({ isOpen, onClose, onSucc
         ) : (
           <>
             <FormGroup>
-              <Label>{language === 'bg' ? 'Код за потвърждение' : 'Verification Code'}</Label>
+              <Label $isDark={isDark}>{language === 'bg' ? 'Код за потвърждение' : 'Verification Code'}</Label>
               <Input
+                $isDark={isDark}
                 type="text"
                 placeholder={language === 'bg' ? '000000' : '000000'}
                 value={verificationCode}
@@ -402,7 +529,7 @@ const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({ isOpen, onClose, onSucc
               />
             </FormGroup>
 
-            <Button $variant="primary" onClick={handleVerifyCode} disabled={loading || verificationCode.length !== 6}>
+            <Button $variant="primary" $isDark={isDark} onClick={handleVerifyCode} disabled={loading || verificationCode.length !== 6}>
               {loading ? (
                 <>
                   <Loader size={20} className="spin" />
@@ -418,6 +545,7 @@ const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({ isOpen, onClose, onSucc
 
             <Button
               $variant="secondary"
+              $isDark={isDark}
               onClick={() => setStep('phone')}
               disabled={loading}
               style={{ marginTop: '12px' }}
@@ -432,4 +560,3 @@ const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({ isOpen, onClose, onSucc
 };
 
 export default PhoneAuthModal;
-

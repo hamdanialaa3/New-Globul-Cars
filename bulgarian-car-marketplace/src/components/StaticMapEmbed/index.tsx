@@ -14,6 +14,8 @@ const Container = styled.div`
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   background: #f8f9fa;
   margin: 1.5rem 0;
+  width: 100%;
+  box-sizing: border-box;
 `;
 
 const Header = styled.div`
@@ -23,6 +25,21 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+
+  @media (max-width: 768px) {
+    padding: 0.875rem 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.75rem 0.875rem;
+  }
 `;
 
 const Title = styled.div`
@@ -31,10 +48,30 @@ const Title = styled.div`
   gap: 0.5rem;
   font-weight: 700;
   font-size: 1.1rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
+  flex: 1;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    width: 100%;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.95rem;
+    gap: 0.375rem;
+  }
 
   svg {
     width: 22px;
     height: 22px;
+    flex-shrink: 0;
+
+    @media (max-width: 480px) {
+      width: 20px;
+      height: 20px;
+    }
   }
 `;
 
@@ -42,6 +79,18 @@ const LocationText = styled.div`
   font-size: 0.85rem;
   opacity: 0.9;
   margin-top: 0.25rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  width: 100%;
+  min-width: 0;
+
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.75rem;
+  }
 `;
 
 const OpenMapButton = styled.a`
@@ -57,10 +106,34 @@ const OpenMapButton = styled.a`
   font-size: 0.85rem;
   font-weight: 600;
   transition: all 0.3s ease;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-align: center;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    justify-content: center;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    gap: 0.375rem;
+  }
 
   svg {
     width: 16px;
     height: 16px;
+    flex-shrink: 0;
+
+    @media (max-width: 480px) {
+      width: 14px;
+      height: 14px;
+    }
   }
 
   &:hover {

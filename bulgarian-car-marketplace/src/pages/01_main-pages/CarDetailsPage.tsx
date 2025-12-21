@@ -26,12 +26,14 @@ import {
   LocationMapContainer,
 } from './CarDetailsPage.styles';
 import { CarListing } from '../../types/CarListing';
+import { UnifiedCar } from '../../services/car/unified-car-types';
 
 interface CarDetailsPageProps {
   forcedCarId?: string;
+  initialEditMode?: boolean; // ✅ Support for URL-based edit state
 }
 
-const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId }) => {
+const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEditMode = false }) => {
   const { id: paramId } = useParams<{ id: string }>();
   const carId = forcedCarId || paramId;
   const navigate = useNavigate();
@@ -50,7 +52,6 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId }) => {
   useCarViewTracking(carId, car?.sellerId);
 
   // ✅ FIX: Hydrate seller numeric ID if missing (for legacy listings)
-  // This ensures profile links work correctly even for old car documents
   useEffect(() => {
     if (car && car.sellerId && !car.sellerNumericId && !loading) {
       import('../../services/user/canonical-user.service').then(({ userService }) => {
@@ -65,7 +66,6 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId }) => {
   }, [car?.id, car?.sellerId, loading, setCar]);
 
   // Check if current user is the owner
-  // Type-safe check: car may have sellerId, userId, or ownerId
   const isOwner = currentUser && car && (
     currentUser.uid === car.sellerId ||
     currentUser.uid === (car as CarListing & { userId?: string }).userId ||
@@ -82,7 +82,6 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId }) => {
       if (carId) {
         unifiedCarService.getCarById(carId).then(updatedCar => {
           if (updatedCar) {
-            // Type-safe mapping: UnifiedCar to CarListing
             const extendedCar = updatedCar as UnifiedCar & Partial<CarListing>;
             const carData: CarListing = {
               ...updatedCar,
@@ -103,21 +102,52 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId }) => {
     }
   );
 
-  // Handle edit mode from URL
+  // ✅ NEW: Sync internal edit state with prop or URL param
   useEffect(() => {
-    const editParam = searchParams.get('edit');
-    if (editParam === 'true' && currentUser && car) {
-      const isCarOwner = currentUser.uid === car.sellerId ||
-        currentUser.uid === (car as any).userId ||
-        currentUser.uid === (car as any).ownerId;
-      if (isCarOwner) {
+    // If initialEditMode prop is explicitly passed (e.g. from NumericCarDetailsPage on /edit route)
+    if (initialEditMode) {
+      if (!editHook.isEditMode) {
         editHook.setIsEditMode(true);
-      } else {
-        navigate(`/cars/${carId}`, { replace: true });
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, currentUser, car, carId, navigate]);
+    // Backward compatibility for ?edit=true
+    else if (searchParams.get('edit') === 'true') {
+      if (!editHook.isEditMode) {
+        editHook.setIsEditMode(true);
+      }
+    }
+  }, [initialEditMode, searchParams, editHook.isEditMode]);
+
+  // ✅ NEW: Handle Edit Button Click -> Navigate to /edit URL
+  const handleEditClick = () => {
+    if (!car) return;
+
+    // Construct Edit URL
+    // Priority: Numeric ID URL -> Legacy ID URL
+    if (car.sellerNumericId && (car.carNumericId || car.numericId)) {
+      const url = `/car/${car.sellerNumericId}/${car.carNumericId || car.numericId}/edit`;
+      navigate(url);
+    } else {
+      // Fallback to legacy edit pattern if no numeric IDs (should be rare)
+      navigate(`/edit-car/${car.id}`);
+    }
+  };
+
+  // ✅ NEW: Handle Cancel -> Navigate back to View URL
+  const handleCancelClick = () => {
+    editHook.handleCancel();
+
+    // If we are on /edit URL, navigate back
+    if (window.location.pathname.endsWith('/edit')) {
+      navigate(-1); // Go back to view page
+    }
+    // If using ?edit=true, remove it
+    if (searchParams.get('edit') === 'true') {
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete('edit');
+      navigate({ search: newParams.toString() }, { replace: true });
+    }
+  };
 
   // Contact Method Handlers
   const handleContactClick = (method: string) => {
@@ -132,9 +162,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId }) => {
         if (currentUser) {
           navigate(`/messages?userId=${car?.sellerId}&carId=${car?.id}&carTitle=${encodeURIComponent(`${car?.make} ${car?.model}`)}`);
         } else {
-          // Redirect to login or show alert
           alert(language === 'bg' ? 'Моля влезте в профила си, за да изпратите съобщение.' : 'Please log in to send a message.');
-          // Optional: navigate('/login');
         }
         break;
 
@@ -249,7 +277,6 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId }) => {
 
     setShowDeleteDialog(false);
 
-    // Show loading indicator
     const confirmed = window.confirm(
       language === 'bg'
         ? 'Моля потвърдете изтриването. Това действие е необратимо!'
@@ -261,7 +288,6 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId }) => {
     const success = await editHook.handleDelete(currentUser.uid);
 
     if (success) {
-      // Show success message
       alert(
         language === 'bg'
           ? isSold
@@ -271,8 +297,6 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId }) => {
             ? '✅ Congratulations on the sale! Listing deleted successfully.'
             : '✅ Listing deleted successfully.'
       );
-
-      // Navigate to profile
       navigate('/profile/my-ads');
     }
   };
@@ -293,9 +317,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId }) => {
             {language === 'bg' ? 'Автомобилът не е намерен' : 'Car not found'}
           </h2>
           <p style={{ marginBottom: '1rem', color: 'var(--text-tertiary)' }}>
-            {language === 'bg'
-              ? `ID: ${carId}`
-              : `ID: ${carId}`}
+            {language === 'bg' ? `ID: ${carId}` : `ID: ${carId}`}
           </p>
           <button
             onClick={() => navigate(-1)}
@@ -317,14 +339,13 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId }) => {
     );
   }
 
-  // View mode - use CarDetailsGermanStyle
   if (!editHook.isEditMode) {
     return (
       <CarDetailsGermanStyle
         car={car}
         language={(language as 'bg' | 'en')}
         onBack={() => navigate(-1)}
-        onEdit={isOwner ? editHook.handleEdit : undefined}
+        onEdit={isOwner ? handleEditClick : undefined}
         onDelete={isOwner ? handleDeleteClick : undefined}
         isOwner={Boolean(isOwner)}
         onContact={handleContactClick}
@@ -332,7 +353,6 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId }) => {
     );
   }
 
-  // Edit mode
   return (
     <Container>
       <ThemeToggleButton onClick={toggleTheme}>
@@ -347,9 +367,9 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId }) => {
         saving={editHook.saving}
         language={language as 'bg' | 'en'}
         onBack={() => navigate(-1)}
-        onEdit={editHook.handleEdit}
+        onEdit={handleEditClick}
         onSave={editHook.handleSave}
-        onCancel={editHook.handleCancel}
+        onCancel={handleCancelClick}
       />
 
       <MainContent>
@@ -402,34 +422,15 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId }) => {
         )}
       </MainContent>
 
-      {editHook.isEditMode ? (
-        <CarContactMethods
-          car={car}
-          editedCar={editHook.editedCar}
-          isEditMode={editHook.isEditMode}
-          language={language as 'bg' | 'en'}
-          onContactClick={handleContactClick}
-          onToggleContact={handleToggleContact}
-        />
-      ) : (
-        <>
-          <CarEquipmentDisplay
-            car={car}
-            language={language as 'bg' | 'en'}
-          />
+      <CarContactMethods
+        car={car}
+        editedCar={editHook.editedCar}
+        isEditMode={editHook.isEditMode}
+        language={language as 'bg' | 'en'}
+        onContactClick={handleContactClick}
+        onToggleContact={handleToggleContact}
+      />
 
-          <CarContactMethods
-            car={car}
-            editedCar={editHook.editedCar}
-            isEditMode={editHook.isEditMode}
-            language={language as 'bg' | 'en'}
-            onContactClick={handleContactClick}
-            onToggleContact={handleToggleContact}
-          />
-        </>
-      )}
-
-      {/* Distance & Directions - Only in view mode */}
       {!editHook.isEditMode && car && car.locationData?.cityName && (
         <LocationMapContainer>
           <StaticMapEmbed
@@ -451,7 +452,6 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId }) => {
         </LocationMapContainer>
       )}
 
-      {/* Delete Confirmation Dialog */}
       <DeleteConfirmDialog
         isOpen={showDeleteDialog}
         language={language as 'bg' | 'en'}

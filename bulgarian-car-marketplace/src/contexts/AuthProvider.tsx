@@ -79,15 +79,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     });
 
     // Handle redirect result on app load
+    // Enhanced for Cursor browser compatibility
     const handleRedirectResult = async () => {
       try {
         if (process.env.NODE_ENV === 'development') {
           logger.debug('Checking for OAuth redirect result');
         }
+        
+        // Check for pending redirect intent (especially useful for Cursor)
+        const redirectIntent = sessionStorage.getItem('oauth-redirect-intent');
+        if (redirectIntent && process.env.NODE_ENV === 'development') {
+          logger.debug('Pending OAuth redirect detected', { provider: redirectIntent });
+        }
+        
         const result = await SocialAuthService.handleRedirectResult();
         if (result && result.user) {
           if (process.env.NODE_ENV === 'development') {
-            logger.debug('Redirect sign-in successful', { email: result.user.email });
+            logger.debug('Redirect sign-in successful', { 
+              email: result.user.email,
+              provider: result.providerId 
+            });
           }
           
           // AUTO-SYNC: Save user to Firestore after redirect
@@ -108,28 +119,48 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               logger.info('OAuth login success', { message: successMessage });
             }
             
-            // CRITICAL FIX: Navigate after successful OAuth redirect (Mobile fix!)
+            // CRITICAL FIX: Navigate after successful OAuth redirect
+            // Enhanced for Cursor browser - use longer delay if needed
+            const delay = redirectIntent ? 1200 : 800; // Longer delay for Cursor
             setTimeout(() => {
               const currentPath = window.location.pathname;
               if (process.env.NODE_ENV === 'development') {
-                logger.debug('Current path after OAuth', { currentPath });
+                logger.debug('Current path after OAuth', { currentPath, delay });
               }
               
               // If still on login/register page, redirect to profile
-              if (currentPath === '/login' || currentPath === '/register') {
+              if (currentPath === '/login' || currentPath === '/register' || currentPath === '/') {
                 if (process.env.NODE_ENV === 'development') {
                   logger.debug('Navigating to /profile after OAuth redirect');
                 }
-                window.location.href = '/profile';  // Changed from /dashboard to /profile
+                // Use window.location.href for more reliable redirect in Cursor
+                window.location.href = '/profile';
               }
-            }, 800);  // 800ms delay to ensure auth state is fully set
+            }, delay);
           }
         } else {
           if (process.env.NODE_ENV === 'development') {
             logger.debug('No redirect result found (normal on direct page loads)');
           }
+          
+          // Clear any stale redirect intents if no result
+          const redirectIntent = sessionStorage.getItem('oauth-redirect-intent');
+          if (redirectIntent) {
+            const redirectTimestamp = sessionStorage.getItem('oauth-redirect-timestamp');
+            if (redirectTimestamp) {
+              const timeDiff = Date.now() - parseInt(redirectTimestamp, 10);
+              // Clear if older than 2 minutes (redirect likely failed or timed out)
+              if (timeDiff > 2 * 60 * 1000) {
+                sessionStorage.removeItem('oauth-redirect-intent');
+                sessionStorage.removeItem('oauth-redirect-timestamp');
+                if (process.env.NODE_ENV === 'development') {
+                  logger.debug('Cleared stale OAuth redirect intent');
+                }
+              }
+            }
+          }
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         logger.error('Redirect result error', error as Error);
         if (error.code !== 'auth/no-auth-event') {
           // Only log actual errors, not the normal "no redirect pending" case
@@ -138,6 +169,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             message: error.message
           });
         }
+        
+        // Clear redirect intent on error
+        sessionStorage.removeItem('oauth-redirect-intent');
+        sessionStorage.removeItem('oauth-redirect-timestamp');
       }
     };
 

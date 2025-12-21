@@ -639,6 +639,43 @@ export const CarEditForm: React.FC<CarEditFormProps> = ({
         </DetailRow>
       </EquipmentSection>
 
+      {/* Vehicle Description */}
+      <EquipmentSection>
+        <SectionTitle style={{ display: 'flex', alignItems: 'center' }}>
+          <SectionIcon>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.89 22 5.99 22H18C19.1 22 20 21.1 20 20V8L14 2ZM16 18H8V16H16V18ZM16 14H8V12H16V14ZM13 9V3.5L18.5 9H13Z" fill="white"/>
+            </svg>
+          </SectionIcon>
+          {language === 'bg' ? 'Описание на превозното средство' : 'Vehicle Description'}
+        </SectionTitle>
+        
+        <DetailRow>
+          <DetailLabel>{language === 'bg' ? 'Описание' : 'Description'}</DetailLabel>
+          <textarea
+            value={editedCar.description || ''}
+            onChange={(e) => onInputChange('description', e.target.value)}
+            placeholder={language === 'bg'
+              ? 'Опишете подробно вашето превозно средство: състояние, особености, оборудване, история на обслужването и всичко друго, което купувачът трябва да знае...'
+              : 'Describe your vehicle in detail: condition, features, equipment, service history and everything else a buyer should know...'}
+            rows={8}
+            style={{
+              width: '100%',
+              padding: '0.4rem 0.625rem',
+              border: '1px solid var(--border-primary)',
+              borderRadius: '5px',
+              fontSize: '0.813rem',
+              transition: 'all 0.3s ease',
+              background: 'var(--bg-secondary)',
+              color: 'var(--text-primary)',
+              fontFamily: 'inherit',
+              resize: 'vertical',
+              minHeight: '150px'
+            }}
+          />
+        </DetailRow>
+      </EquipmentSection>
+
       {/* Delete Button Section */}
       {onDelete && (
         <EquipmentSection style={{ 

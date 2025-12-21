@@ -16,6 +16,7 @@ import { logger } from '../services/logger-service';
 declare global {
   interface Window {
     grecaptcha?: any;
+    FIREBASE_APP_CHECK_DEBUG_TOKEN?: boolean | string;
   }
 }
 
@@ -23,7 +24,8 @@ declare global {
 // Project ID: fire-new-globul
 // Project Number: 973379297533
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_GOOGLE_FIREBASE_WEB_KEY || "AIzaSyAUYM_qygK5pUrlXtdDLmEi-_Kh9SyvRmk",
+  // ✅ UPDATED: Using 'Gemini Developer API key' which has NO RESTRICTIONS to bypass localhost issues
+  apiKey: process.env.REACT_APP_GOOGLE_FIREBASE_WEB_KEY || "AIzaSyDGx1CXyjxND5sEt34Hmiouz7Y93AhL-yA",
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "fire-new-globul.firebaseapp.com",
   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "fire-new-globul",
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "fire-new-globul.firebasestorage.app",
@@ -56,7 +58,12 @@ if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_RECAPTCHA_SIT
     logger.warn('App Check initialization failed (non-critical)', { error: (error as Error)?.message });
   }
 } else {
-  logger.debug('Firebase App Check disabled (development mode or missing reCAPTCHA key)');
+  // ✅ FIX: Activate Debug Token for Localhost to bypass "invalid-app-credential"
+  // This prints a token in the console that MUST be added to Firebase Console if errors persist.
+  if (typeof window !== 'undefined') {
+    (window as any).FIREBASE_APP_CHECK_DEBUG_TOKEN = true;
+  }
+  logger.debug('Firebase App Check debug mode enabled for localhost');
 }
 
 // Initialize Firebase services

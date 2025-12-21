@@ -3,11 +3,11 @@
  * عمليات بيانات Firebase
  */
 
-import { 
-  collection, 
-  getDocs, 
-  query, 
-  where, 
+import {
+  collection,
+  getDocs,
+  query,
+  where,
   onSnapshot
 } from 'firebase/firestore';
 import { db, functions } from '../firebase/firebase-config';
@@ -16,9 +16,9 @@ import { firebaseAuthUsersService } from './firebase-auth-users-service';
 import { firebaseAuthRealUsers } from './firebase-auth-real-users';
 import { serviceLogger } from './logger-service';
 import { countAllVehicles, queryAllCollections } from './search/multi-collection-helper';
-import { 
-  UserActivity, 
-  RealTimeAnalytics, 
+import {
+  UserActivity,
+  RealTimeAnalytics,
   RealTimeUpdate,
   AnalyticsCallback,
   UnsubscribeFunction
@@ -31,6 +31,8 @@ import {
   DEFAULT_ANALYTICS,
   IGNORED_ERROR_CODES
 } from './firebase-data-config';
+// Import updated parameters for consistent revenue logic
+import { REVENUE_PARAMS } from './super-admin-data';
 
 /**
  * Get real users count from Firebase Authentication
@@ -39,7 +41,7 @@ import {
 export async function getRealUsersCount(): Promise<number> {
   try {
     serviceLogger.debug('Fetching REAL users count from Firebase Authentication');
-    
+
     // Try to get from Firebase Auth first (the REAL source!)
     try {
       const authUsersCount = await firebaseAuthRealUsers.getRealAuthUsersCount();
@@ -48,14 +50,14 @@ export async function getRealUsersCount(): Promise<number> {
     } catch (authError) {
       serviceLogger.warn('Could not get from Firebase Auth - falling back to Firestore');
     }
-    
+
     // Fallback: Get from Firestore users collection
     const usersSnapshot = await getDocs(collection(db, COLLECTIONS.USERS));
     const firestoreUsers = usersSnapshot.docs.length;
-    
+
     serviceLogger.info('Firestore users found', { count: firestoreUsers });
     serviceLogger.warn('Note: This may be less than Firebase Auth users if sync not run');
-    
+
     return firestoreUsers;
   } catch (error) {
     serviceLogger.error('Error getting users count', error as Error);
@@ -77,16 +79,16 @@ export async function getRealActiveUsersCount(): Promise<number> {
     } catch (authError) {
       serviceLogger.warn('Could not get active users from Auth - using Firestore');
     }
-    
+
     // Fallback: Get from Firestore
     const now = new Date();
     const yesterday = new Date(now.getTime() - TIME_CONSTANTS.ONE_DAY_MS);
-    
+
     const q = query(
       collection(db, COLLECTIONS.USERS),
       where('lastLogin', '>=', yesterday)
     );
-    
+
     const snapshot = await getDocs(q);
     return snapshot.docs.length;
   } catch (error) {
@@ -119,7 +121,7 @@ export async function getRealActiveCarsCount(): Promise<number> {
     const activeCars = await queryAllCollections(
       where('isActive', '==', true)
     );
-    
+
     serviceLogger.info('Active vehicles count across all collections', { count: activeCars.length });
     return activeCars.length;
   } catch (error) {
@@ -170,16 +172,27 @@ export async function getRealViewsCount(): Promise<number> {
  */
 export async function getRealRevenue(): Promise<number> {
   try {
-    const carsSnapshot = await queryAllCollections();
+    // queryAllCollections returns an array, NOT a snapshot with .docs
+    const allCars = await queryAllCollections();
     let totalRevenue = 0;
-    
-    carsSnapshot.docs.forEach(doc => {
-      const data = doc.data();
-      if (data.isSold && data.price) {
-        totalRevenue += data.price * COMMISSION_RATE;
+
+    allCars.forEach((car: any) => {
+      // 1. Commission from sold cars
+      if (car.isSold && car.price) {
+        totalRevenue += car.price * COMMISSION_RATE;
+      }
+
+      // 2. Fees from active promotions (Strict Fix)
+      if (car.isActive) {
+        if (car.isFeatured) {
+          totalRevenue += REVENUE_PARAMS.FEATURED_LISTING_FEE;
+        }
+        if (car.isUrgent) {
+          totalRevenue += REVENUE_PARAMS.PREMIUM_LISTING_FEE;
+        }
       }
     });
-    
+
     return totalRevenue;
   } catch (error) {
     serviceLogger.error('Error getting revenue', error as Error);
@@ -194,10 +207,10 @@ export async function getRealRevenue(): Promise<number> {
 export async function getRealUserActivity(): Promise<UserActivity[]> {
   try {
     serviceLogger.debug('Fetching real user activity');
-    
+
     // Use the new Firebase Auth Users Service
     const realUsers = await firebaseAuthUsersService.getRealFirebaseUsers();
-    
+
     return realUsers.map(user => ({
       uid: user.uid,
       email: user.email,
@@ -211,7 +224,7 @@ export async function getRealUserActivity(): Promise<UserActivity[]> {
       lastActivity: user.lastActivity,
       stats: user.stats
     }));
-    
+
   } catch (error) {
     serviceLogger.error('Error getting user activity', error as Error);
     return FALLBACK_USER_ACTIVITY;
@@ -283,9 +296,9 @@ export function subscribeToRealTimeUpdates(callback: AnalyticsCallback): Unsubsc
     collection(db, COLLECTIONS.USERS),
     (snapshot) => {
       const users = snapshot.docs.map(doc => doc.data());
-      const data: RealTimeUpdate = { 
-        users, 
-        timestamp: new Date() 
+      const data: RealTimeUpdate = {
+        users,
+        timestamp: new Date()
       };
       callback(data);
     }

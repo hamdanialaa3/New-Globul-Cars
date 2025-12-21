@@ -2,7 +2,7 @@ import { logger } from '../../../../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { RealTimeAnalytics, UserActivity, ContentModeration } from '../../../../services/super-admin-service';
+import { RealTimeAnalytics, UserActivity, ContentModeration } from '../../../../services/super-admin-types';
 import { realDataInitializer } from '../../../../services/real-data-initializer';
 import { advancedRealDataService } from '../../../../services/advanced-real-data-service';
 import { firebaseRealDataService } from '../../../../services/firebase-real-data-service';
@@ -34,6 +34,7 @@ import AdvancedContentManagement from '../../../../components/AdvancedContentMan
 import AdvancedUserManagement from '../../../../components/AdvancedUserManagement';
 import PermissionManagement from '../../../../components/PermissionManagement';
 import AuditLogging from '../../../../components/AuditLogging';
+import NotificationsManagement from '../../../../components/NotificationsManagement';
 import UserDetailsModal from '../../../../components/UserDetailsModal';
 import FacebookAdminPanel from '../../../../components/SuperAdmin/FacebookAdminPanel';
 import ArchitecturePanel from '../../../../components/SuperAdmin/ArchitecturePanel';
@@ -400,9 +401,7 @@ const SuperAdminDashboard: React.FC = () => {
         )}
 
         {activeTab === 'notifications' && (
-          <div className="p-8 text-center text-gray-400">
-            Notifications Module Loaded
-          </div>
+          <NotificationsManagement />
         )}
 
         {activeTab === 'users' && (

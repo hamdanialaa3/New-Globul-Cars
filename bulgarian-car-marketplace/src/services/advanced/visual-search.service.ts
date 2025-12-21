@@ -37,7 +37,7 @@ class VisualSearchService {
 
   // Car makes database for recognition
   private readonly CAR_MAKES = [
-    'BMW', 'Mercedes', 'Audi', 'Volkswagen', 'Toyota', 'Honda', 'Ford', 
+    'BMW', 'Mercedes', 'Audi', 'Volkswagen', 'Toyota', 'Honda', 'Ford',
     'Nissan', 'Mazda', 'Hyundai', 'Kia', 'Peugeot', 'Renault', 'Skoda',
     'Seat', 'Opel', 'Volvo', 'Porsche', 'Lexus', 'Infiniti', 'Acura'
   ];
@@ -50,11 +50,11 @@ class VisualSearchService {
 
   // Colors
   private readonly COLORS = [
-    'black', 'white', 'silver', 'gray', 'red', 'blue', 
+    'black', 'white', 'silver', 'gray', 'red', 'blue',
     'green', 'yellow', 'orange', 'brown', 'beige'
   ];
 
-  private constructor() {}
+  private constructor() { }
 
   static getInstance(): VisualSearchService {
     if (!VisualSearchService.instance) {
@@ -71,7 +71,7 @@ class VisualSearchService {
       const startTime = performance.now();
 
       // Convert image to base64
-      const base64Image = typeof imageFile === 'string' 
+      const base64Image = typeof imageFile === 'string'
         ? await this.urlToBase64(imageFile)
         : await this.fileToBase64(imageFile);
 
@@ -113,7 +113,7 @@ class VisualSearchService {
           const y = vertices[0]?.y || 0;
           const width = vertices[2]?.x ? (vertices[2].x - x) : 0;
           const height = vertices[2]?.y ? (vertices[2].y - y) : 0;
-          
+
           return {
             name: obj.name || '',
             score: obj.score || 0,
@@ -121,7 +121,7 @@ class VisualSearchService {
           };
         }),
         colors: this.extractDominantColors(annotations.imagePropertiesAnnotation),
-        text: annotations.textAnnotations 
+        text: annotations.textAnnotations
           ? [annotations.textAnnotations[0]?.description]
           : []
       };
@@ -181,7 +181,7 @@ class VisualSearchService {
     // Detect make from labels
     for (const label of analysis.labels) {
       const labelLower = label.description.toLowerCase();
-      
+
       for (const make of this.CAR_MAKES) {
         if (labelLower.includes(make.toLowerCase())) {
           features.make = make;
@@ -195,7 +195,7 @@ class VisualSearchService {
     // Detect body type
     for (const label of analysis.labels) {
       const labelLower = label.description.toLowerCase();
-      
+
       for (const bodyType of this.BODY_TYPES) {
         if (labelLower.includes(bodyType)) {
           features.bodyType = bodyType;
@@ -324,7 +324,7 @@ class VisualSearchService {
   /**
    * Extract dominant colors from Vision API response
    */
-  private extractDominantColors(imageProperties: { dominantColors?: { colors?: Array<{ color?: { red?: number; green?: number; blue?: number }; score?: number; pixelFraction?: number }> } } }): ImageAnalysisResult['colors'] {
+  private extractDominantColors(imageProperties: { dominantColors?: { colors?: Array<{ color?: { red?: number; green?: number; blue?: number }; score?: number; pixelFraction?: number }> } }): ImageAnalysisResult['colors'] {
     if (!imageProperties || !imageProperties.dominantColors) {
       return [];
     }
@@ -334,7 +334,7 @@ class VisualSearchService {
       const red = color.color?.red || 0;
       const green = color.color?.green || 0;
       const blue = color.color?.blue || 0;
-      
+
       return {
         color: this.rgbToHex(red, green, blue),
         score: color.score || 0,

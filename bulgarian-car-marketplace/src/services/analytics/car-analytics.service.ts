@@ -2,21 +2,21 @@
 // Real Car Analytics Service
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
-import { 
-  collection, 
-  addDoc, 
-  serverTimestamp, 
-  query, 
-  where, 
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  query,
+  where,
   getDocs,
   updateDoc,
   doc,
   increment,
-  Timestamp,
-  
+  Timestamp
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { logger } from '../logger-service';
+import { queryAllCollections } from '../search/multi-collection-helper';
 
 interface CarView {
   carId: string;
@@ -42,9 +42,9 @@ interface CarPerformance {
 
 class CarAnalyticsService {
   private static instance: CarAnalyticsService;
-  
-  private constructor() {}
-  
+
+  private constructor() { }
+
   static getInstance(): CarAnalyticsService {
     if (!this.instance) {
       this.instance = new CarAnalyticsService();
@@ -85,8 +85,8 @@ class CarAnalyticsService {
    * Track car inquiry/message
    */
   async trackInquiry(
-    carId: string, 
-    fromUserId: string, 
+    carId: string,
+    fromUserId: string,
     toUserId: string,
     message: string
   ): Promise<void> {
@@ -158,8 +158,12 @@ class CarAnalyticsService {
       const inquiriesSnapshot = await getDocs(inquiriesQuery);
 
       // Get favorites count
-      const carDoc = await queryAllCollections( where('__name__', '==', carId)));
-      const carData = carDoc.docs[0]?.data();
+      // Using queryAllCollections to be safe if car is not in 'cars'
+      const carResults = await queryAllCollections(where('__name__', '==', carId));
+      // queryAllCollections returns array of data objects, NOT snapshot with .docs
+      // But queryAllCollections returns T[]
+
+      const carData = carResults[0];
       const favorites = carData?.favorites || 0;
 
       // Calculate metrics
@@ -218,7 +222,7 @@ class CarAnalyticsService {
       );
       const userCarsSnapshot = await getDocs(userCarsQuery);
       const carIds = userCarsSnapshot.docs.map(doc => doc.id);
-      
+
       if (carIds.length === 0) {
         return result;
       }
@@ -226,7 +230,7 @@ class CarAnalyticsService {
       // Aggregate views across all user's cars
       let totalViews = 0;
       let totalFavorites = 0;
-      
+
       for (const carId of carIds) {
         const viewsQuery = query(
           collection(db, 'car_views'),
@@ -235,7 +239,7 @@ class CarAnalyticsService {
         const viewsSnapshot = await getDocs(viewsQuery);
         totalViews += viewsSnapshot.size;
       }
-      
+
       // Aggregate from car documents (faster for favorites)
       userCarsSnapshot.docs.forEach(doc => {
         const carData = doc.data();
@@ -260,7 +264,7 @@ class CarAnalyticsService {
           const responded = inq.respondedAt.toDate();
           return (responded.getTime() - created.getTime()) / (1000 * 60 * 60); // hours
         });
-      
+
       const avgResponseTime = responseTimes.length > 0
         ? responseTimes.reduce((sum, time) => sum + time, 0) / responseTimes.length
         : 0;
@@ -271,7 +275,7 @@ class CarAnalyticsService {
         totalFavorites,
         avgResponseTime: Math.round(avgResponseTime * 100) / 100
       };
-      
+
       logger.debug('User car analytics calculated', { userId, result });
     } catch (error) {
       logger.error('Get user analytics error', error as Error, { userId });
@@ -298,7 +302,7 @@ class CarAnalyticsService {
   private calculateAvgDuration(views: CarView[]): number {
     const durationsWithData = views.filter(v => v.duration);
     if (durationsWithData.length === 0) return 0;
-    
+
     const total = durationsWithData.reduce((sum, v) => sum + (v.duration || 0), 0);
     return Math.round(total / durationsWithData.length);
   }
@@ -308,7 +312,7 @@ class CarAnalyticsService {
    */
   private calculatePopularTimes(views: CarView[]): Record<string, number> {
     const times: Record<string, number> = {};
-    
+
     views.forEach(view => {
       const hour = view.viewedAt.toDate().getHours();
       const timeRange = `${hour}:00-${hour + 1}:00`;
@@ -323,7 +327,7 @@ class CarAnalyticsService {
    */
   private groupByDay(views: CarView[]): Record<string, number> {
     const groups: Record<string, number> = {};
-    
+
     views.forEach(view => {
       const date = view.viewedAt.toDate().toISOString().split('T')[0];
       groups[date] = (groups[date] || 0) + 1;
@@ -334,4 +338,3 @@ class CarAnalyticsService {
 }
 
 export const carAnalyticsService = CarAnalyticsService.getInstance();
-

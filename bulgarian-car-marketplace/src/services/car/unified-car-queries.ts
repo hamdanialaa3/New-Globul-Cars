@@ -28,17 +28,10 @@ export function mapDocToCar(doc: DocumentSnapshot): UnifiedCar {
   }
 
   // Debug: Log raw data from Firestore
-  serviceLogger.debug('Mapping car document', {
-    docId: doc.id,
-    rawStatus: data.status,
-    rawIsActive: data.isActive,
-    rawIsSold: data.isSold,
-    make: data.make,
-    model: data.model,
-    rawPrice: data.price,
-    netPrice: data.netPrice,
-    finalPrice: data.finalPrice
-  });
+  if (process.env.NODE_ENV === 'development') {
+    // Only log in dev to reduce noise
+    // serviceLogger.debug('Mapping car document', { docId: doc.id, ... });
+  }
 
   const car = {
     id: doc.id,
@@ -47,6 +40,12 @@ export function mapDocToCar(doc: DocumentSnapshot): UnifiedCar {
     price: (data.netPrice !== undefined && !isNaN(Number(data.netPrice))) ? Number(data.netPrice) :
       (data.finalPrice !== undefined && !isNaN(Number(data.finalPrice))) ? Number(data.finalPrice) :
         (data.price !== undefined && !isNaN(Number(data.price))) ? Number(data.price) : 0,
+
+    // ✅ FIX: Ensure numeric IDs are properly mapped and typed
+    sellerNumericId: data.sellerNumericId ? Number(data.sellerNumericId) : undefined,
+    carNumericId: data.carNumericId ? Number(data.carNumericId) : (data.numericId ? Number(data.numericId) : undefined),
+    numericId: data.numericId ? Number(data.numericId) : (data.carNumericId ? Number(data.carNumericId) : undefined),
+
     createdAt: data?.createdAt?.toDate() || new Date(),
     updatedAt: data?.updatedAt?.toDate() || new Date()
   } as UnifiedCar;
@@ -97,12 +96,6 @@ export async function getFeaturedCars(limitCount: number = 4): Promise<UnifiedCa
 
     // Sort by date (newest first) and limit
     const sorted = activeCars.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-
-    serviceLogger.info('getFeaturedCars: found cars across all collections', {
-      totalCars: sorted.length,
-      limitCount,
-      perCollection: results.map((cars, i) => ({ collection: VEHICLE_COLLECTIONS[i], count: cars.length }))
-    });
 
     return sorted.slice(0, limitCount);
   } catch (error) {
@@ -212,7 +205,6 @@ export async function searchCars(filters: CarFilters = {}, limitCount: number = 
         return cars;
       } catch (error) {
         serviceLogger.warn(`⚠️ Error querying ${collectionName}`, { error });
-        serviceLogger.warn(`Error querying ${collectionName} for search`, { error, filters });
         return [];
       }
     });
@@ -220,149 +212,70 @@ export async function searchCars(filters: CarFilters = {}, limitCount: number = 
     const results = await Promise.all(queryPromises);
     results.forEach(cars => allCars.push(...cars));
 
-    // Debug: Print first few cars with ALL fields
-    if (allCars.length > 0) {
-      serviceLogger.info('🚗 Sample cars from database (first 3):');
-      allCars.slice(0, 3).forEach((car, idx) => {
-        serviceLogger.info(`Car ${idx + 1}:`, {
-          id: car.id,
-          make: car.make,
-          model: car.model,
-          year: car.year,
-          price: car.price,
-          status: (car as any).status,
-          isActive: car.isActive,
-          isSold: car.isSold,
-          createdAt: car.createdAt
-        });
-      });
-    } else {
-      serviceLogger.info('📋 Collections checked:', { collections: VEHICLE_COLLECTIONS });
-    }
-
-    // Client-side filters with detailed logging
+    // Client-side filters
     let filteredCars = allCars;
-    const initialCount = filteredCars.length;
-    serviceLogger.info('🔍 Starting client-side filtering', { initialCount });
 
     // Filter 0: Make (case-insensitive)
     if (filters.make) {
-      const beforeCount = filteredCars.length;
       const searchMake = filters.make.toLowerCase().trim();
       filteredCars = filteredCars.filter(c => {
         const carMake = (c.make || '').toLowerCase().trim();
         return carMake === searchMake;
       });
-      serviceLogger.info('✅ make filter (case-insensitive)', {
-        beforeCount,
-        afterCount: filteredCars.length,
-        searchMake: filters.make,
-        matched: filteredCars.slice(0, 3).map(c => c.make)
-      });
     }
 
     // Filter 0.5: Model (case-insensitive)
     if (filters.model) {
-      const beforeCount = filteredCars.length;
       const searchModel = filters.model.toLowerCase().trim();
       filteredCars = filteredCars.filter(c => {
         const carModel = (c.model || '').toLowerCase().trim();
         return carModel === searchModel;
       });
-      serviceLogger.info('✅ model filter (case-insensitive)', {
-        beforeCount,
-        afterCount: filteredCars.length,
-        searchModel: filters.model
-      });
     }
 
     // Filter 1: isActive
     if (filters.isActive !== undefined) {
-      const beforeCount = filteredCars.length;
       filteredCars = filteredCars.filter(c => (c.isActive !== false) === filters.isActive);
-      serviceLogger.info('✅ isActive filter', { beforeCount, afterCount: filteredCars.length, filterValue: filters.isActive });
     } else {
       // Default: show only active cars
-      const beforeCount = filteredCars.length;
       filteredCars = filteredCars.filter(c => c.isActive !== false);
-      serviceLogger.info('✅ isActive default filter (active only)', { beforeCount, afterCount: filteredCars.length });
     }
 
     // Filter 2: isSold
     if (filters.isSold !== undefined) {
-      const beforeCount = filteredCars.length;
       filteredCars = filteredCars.filter(c => (c.isSold === true) === filters.isSold);
-      serviceLogger.info('✅ isSold filter', { beforeCount, afterCount: filteredCars.length, filterValue: filters.isSold });
     } else {
       // Default: hide sold cars
-      const beforeCount = filteredCars.length;
       filteredCars = filteredCars.filter(c => c.isSold !== true);
-      serviceLogger.info('✅ isSold default filter (hide sold)', { beforeCount, afterCount: filteredCars.length });
     }
 
     // Filter 3: Year range
     if (filters.minYear) {
-      const beforeCount = filteredCars.length;
       filteredCars = filteredCars.filter(c => c.year >= filters.minYear!);
-      serviceLogger.info('✅ minYear filter', { beforeCount, afterCount: filteredCars.length, minYear: filters.minYear });
     }
     if (filters.maxYear) {
-      const beforeCount = filteredCars.length;
       filteredCars = filteredCars.filter(c => c.year <= filters.maxYear!);
-      serviceLogger.info('✅ maxYear filter', { beforeCount, afterCount: filteredCars.length, maxYear: filters.maxYear });
     }
 
     // Filter 4: Price range
     if (filters.minPrice) {
-      const beforeCount = filteredCars.length;
       filteredCars = filteredCars.filter(c => c.price >= filters.minPrice!);
-      serviceLogger.info('✅ minPrice filter', { beforeCount, afterCount: filteredCars.length, minPrice: filters.minPrice });
     }
     if (filters.maxPrice) {
-      const beforeCount = filteredCars.length;
       filteredCars = filteredCars.filter(c => c.price <= filters.maxPrice!);
-      serviceLogger.info('✅ maxPrice filter', { beforeCount, afterCount: filteredCars.length, maxPrice: filters.maxPrice });
     }
 
     // Filter 5: Body type
     if (filters.bodyType) {
-      const beforeCount = filteredCars.length;
       filteredCars = filteredCars.filter(c => {
         const carBodyType = (c as any).bodyType || '';
         return carBodyType.toLowerCase() === filters.bodyType!.toLowerCase();
       });
-      serviceLogger.info('✅ bodyType filter', { beforeCount, afterCount: filteredCars.length, bodyType: filters.bodyType });
     }
-
-    serviceLogger.info('🎯 Filtering complete', {
-      initialCount,
-      finalCount: filteredCars.length,
-      filtersApplied: Object.keys(filters).length
-    });
 
     // Sort and limit
     const sorted = filteredCars.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     const result = sorted.slice(0, limitCount);
-
-    serviceLogger.info('searchCars: final result', { returnedCount: result.length, totalConsidered: sorted.length });
-    if (result.length > 0) {
-      serviceLogger.info('searchCars: first car sample', {
-        make: result[0].make,
-        model: result[0].model,
-        year: result[0].year,
-        price: result[0].price,
-        isActive: result[0].isActive,
-        isSold: result[0].isSold
-      });
-    }
-
-    serviceLogger.info('searchCars: found cars across all collections', {
-      totalCars: sorted.length,
-      returnedCount: result.length,
-      filters,
-      limitCount,
-      perCollection: results.map((cars, i) => ({ collection: VEHICLE_COLLECTIONS[i], count: cars.length }))
-    });
 
     return result;
   } catch (error) {
@@ -403,12 +316,6 @@ export async function getUserCars(userId: string): Promise<UnifiedCar[]> {
     // Sort by date (newest first)
     const sorted = allCars.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
-    serviceLogger.info('getUserCars: found cars across all collections', {
-      userId,
-      totalCars: sorted.length,
-      perCollection: results.map((cars, i) => ({ collection: VEHICLE_COLLECTIONS[i], count: cars.length }))
-    });
-
     return sorted;
   } catch (error) {
     serviceLogger.error('Error getting user cars', error as Error, { userId });
@@ -434,12 +341,10 @@ export async function getCarById(carId: string): Promise<UnifiedCar | null> {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const foundCar = mapDocToCar(docSnap);
-          serviceLogger.info('getCarById: found car', { carId, collection: collectionName });
           return { car: foundCar, collection: collectionName };
         }
         return null;
       } catch (error) {
-        serviceLogger.warn(`Error querying ${collectionName} for getCarById`, { error, carId });
         return null;
       }
     });
@@ -448,14 +353,9 @@ export async function getCarById(carId: string): Promise<UnifiedCar | null> {
     const foundResult = results.find(result => result !== null);
 
     if (foundResult) {
-      serviceLogger.info('getCarById: car found successfully', {
-        carId,
-        collection: foundResult.collection
-      });
       return foundResult.car;
     }
 
-    serviceLogger.warn('getCarById: car not found in any collection', { carId });
     return null;
   } catch (error) {
     serviceLogger.error('Error getting car by ID', error as Error, { carId });

@@ -21,8 +21,8 @@ import { db } from '../../firebase/firebase-config';
 import { logger } from '../logger-service';
 import { DealershipRepository } from '../../repositories/DealershipRepository';
 import { CompanyRepository } from '../../repositories/CompanyRepository';
-import type { 
-  BulgarianUser, 
+import type {
+  BulgarianUser,
   BulgarianUserUpdate,
   ProfileType,
   DealerProfile,
@@ -65,7 +65,11 @@ export class ProfileService {
         }
       }
 
-      return result;
+      return result as {
+        user: BulgarianUser;
+        dealership?: DealershipInfo;
+        company?: CompanyInfo;
+      };
     } catch (error) {
       logger.error('Error fetching complete profile', error as Error, { uid });
       throw new Error(`Failed to fetch profile: ${(error as Error).message}`);
@@ -180,7 +184,7 @@ export class ProfileService {
   static async incrementViews(uid: string): Promise<void> {
     try {
       const userRef = doc(db, 'users', uid);
-      
+
       await updateDoc(userRef, {
         'stats.totalViews': increment(1)
       });
@@ -189,6 +193,95 @@ export class ProfileService {
     } catch (error) {
       logger.error('Error incrementing views', error as Error, { uid });
       // Don't throw - views are not critical
+    }
+  }
+
+  /**
+   * Increment active listings count
+   * Updates both activeListings and totalListings counters
+   * 
+   * @param uid - User ID to update stats for
+   * @throws Error if database update fails
+   */
+  static async incrementActiveListings(uid: string): Promise<void> {
+    try {
+      const userRef = doc(db, 'users', uid);
+
+      await updateDoc(userRef, {
+        'stats.activeListings': increment(1),
+        'stats.totalListings': increment(1),
+        updatedAt: serverTimestamp()
+      });
+
+      logger.info('Profile stats: active listings incremented', { uid });
+    } catch (error) {
+      logger.error('Error incrementing active listings', error as Error, { uid });
+      throw error; // Re-throw to ensure caller knows it failed
+    }
+  }
+
+  /**
+   * Decrement active listings count
+   * Used when a car is deleted, deactivated, or sold
+   * Only decrements activeListings (totalListings remains for historical record)
+   * 
+   * @param uid - User ID to update stats for
+   * @throws Error if database update fails
+   */
+  static async decrementActiveListings(uid: string): Promise<void> {
+    try {
+      const userRef = doc(db, 'users', uid);
+
+      // Get current stats to prevent negative values
+      const userSnap = await getDoc(userRef);
+      if (!userSnap.exists()) {
+        throw new Error('User not found');
+      }
+
+      const userData = userSnap.data();
+      const currentActive = userData?.stats?.activeListings || 0;
+
+      // Only decrement if activeListings > 0
+      if (currentActive > 0) {
+        await updateDoc(userRef, {
+          'stats.activeListings': increment(-1),
+          updatedAt: serverTimestamp()
+        });
+
+        logger.info('Profile stats: active listings decremented', { 
+          uid, 
+          previousCount: currentActive,
+          newCount: currentActive - 1
+        });
+      } else {
+        logger.warn('Attempted to decrement active listings when count is already 0', { uid });
+      }
+    } catch (error) {
+      logger.error('Error decrementing active listings', error as Error, { uid });
+      throw error; // Re-throw to ensure caller knows it failed
+    }
+  }
+
+  /**
+   * Increment total listings count only
+   * Used for historical tracking (when a listing is created but not active)
+   * 
+   * @param uid - User ID to update stats for
+   * @throws Error if database update fails
+   */
+  static async incrementTotalListings(uid: string): Promise<void> {
+    try {
+      const userRef = doc(db, 'users', uid);
+
+      await updateDoc(userRef, {
+        'stats.totalListings': increment(1),
+        updatedAt: serverTimestamp()
+      });
+
+      logger.info('Profile stats: total listings incremented', { uid });
+    } catch (error) {
+      logger.error('Error incrementing total listings', error as Error, { uid });
+      throw error;
     }
   }
 
@@ -242,7 +335,7 @@ export class ProfileService {
   ): Promise<void> {
     try {
       const userRef = doc(db, 'users', uid);
-      
+
       await updateDoc(userRef, {
         [`verification.${field}`]: verified,
         updatedAt: serverTimestamp()
@@ -277,23 +370,20 @@ export class ProfileService {
 
   /**
    * Check if user can add more listings
+   * ✅ UPDATED: Now uses unified listing limits logic
+   * Delegates to listing-limits utility for consistency
+   * 
+   * @param uid - User ID to check
+   * @returns Promise<boolean> - true if user can add listing
    */
   static async canAddListing(uid: string): Promise<boolean> {
     try {
-      const userRef = doc(db, 'users', uid);
-      const userSnap = await getDoc(userRef);
-
-      if (!userSnap.exists()) {
-        return false;
-      }
-
-      const user = userSnap.data() as BulgarianUser;
-      const activeListings = user.stats?.activeListings || 0;
-      const maxListings = user.permissions?.maxListings || 3;
-
-      return maxListings === -1 || activeListings < maxListings;
+      // Use unified listing-limits utility for consistency
+      const { canAddListing: checkCanAddListing } = await import('../../utils/listing-limits');
+      return await checkCanAddListing(uid);
     } catch (error) {
       logger.error('Error checking listing permission', error as Error, { uid });
+      // Fail closed - don't allow if check fails
       return false;
     }
   }
@@ -367,7 +457,7 @@ export class ProfileService {
   static async deactivateProfile(uid: string): Promise<void> {
     try {
       const userRef = doc(db, 'users', uid);
-      
+
       await updateDoc(userRef, {
         isActive: false,
         updatedAt: serverTimestamp()
@@ -386,7 +476,7 @@ export class ProfileService {
   static async reactivateProfile(uid: string): Promise<void> {
     try {
       const userRef = doc(db, 'users', uid);
-      
+
       await updateDoc(userRef, {
         isActive: true,
         updatedAt: serverTimestamp()
@@ -405,7 +495,7 @@ export class ProfileService {
   static async banUser(uid: string, reason?: string): Promise<void> {
     try {
       const userRef = doc(db, 'users', uid);
-      
+
       await updateDoc(userRef, {
         isBanned: true,
         isActive: false,
@@ -427,7 +517,7 @@ export class ProfileService {
   static async unbanUser(uid: string): Promise<void> {
     try {
       const userRef = doc(db, 'users', uid);
-      
+
       await updateDoc(userRef, {
         isBanned: false,
         isActive: true,

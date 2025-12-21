@@ -1,4 +1,7 @@
 import { logger } from './logger-service';
+import { io, Socket } from 'socket.io-client';
+import { serviceLogger } from './logger-service';
+
 /**
  * Bulgarian Socket Service - Singleton Pattern
  * Real-time messaging using Socket.io
@@ -7,19 +10,7 @@ import { logger } from './logger-service';
  * - Auto-reconnection with exponential backoff
  * - Event-based real-time updates
  * - Car, message, and user events
- * 
- * Usage:
- * ```typescript
- * import { socketService } from '../services/socket-service';
- * 
- * socketService.onNewMessage((data) => {
- *   logger.info('New message:', data);
- * });
- * ```
  */
-
-import { io, Socket } from 'socket.io-client';
-import { serviceLogger } from './logger-service';
 
 // Socket.io configuration
 const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || 'http://localhost:3001';
@@ -29,6 +20,9 @@ export class BulgarianSocketService {
   private socket: Socket | null = null;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
+
+  // Generic event emitter for React components
+  private eventListeners: { [key: string]: Function[] } = {};
 
   private constructor() {
     this.initializeSocket();
@@ -59,11 +53,12 @@ export class BulgarianSocketService {
 
     // Connection events
     this.socket.on('connect', () => {
-this.reconnectAttempts = 0;
+      this.reconnectAttempts = 0;
     });
 
     this.socket.on('disconnect', (reason) => {
-});
+      // Handle disconnect
+    });
 
     this.socket.on('connect_error', (error) => {
       serviceLogger.error('Socket connection error', error as Error);
@@ -76,33 +71,33 @@ this.reconnectAttempts = 0;
 
     // Car-related events
     this.socket.on('car:new', (data) => {
-this.emit('car:new', data);
+      this.emit('car:new', data);
     });
 
     this.socket.on('car:updated', (data) => {
-this.emit('car:updated', data);
+      this.emit('car:updated', data);
     });
 
     this.socket.on('car:deleted', (data) => {
-this.emit('car:deleted', data);
+      this.emit('car:deleted', data);
     });
 
     // Message events
     this.socket.on('message:new', (data) => {
-this.emit('message:new', data);
+      this.emit('message:new', data);
     });
 
     this.socket.on('message:read', (data) => {
-this.emit('message:read', data);
+      this.emit('message:read', data);
     });
 
     // User events
     this.socket.on('user:online', (data) => {
-this.emit('user:online', data);
+      this.emit('user:online', data);
     });
 
     this.socket.on('user:offline', (data) => {
-this.emit('user:offline', data);
+      this.emit('user:offline', data);
     });
   }
 
@@ -117,14 +112,14 @@ this.emit('user:offline', data);
   joinCarRoom(carId: string) {
     if (this.socket) {
       this.socket.emit('join:car', { carId });
-}
+    }
   }
 
   // Leave car room
   leaveCarRoom(carId: string) {
     if (this.socket) {
       this.socket.emit('leave:car', { carId });
-}
+    }
   }
 
   // Send message
@@ -173,9 +168,6 @@ this.emit('user:offline', data);
     }
   }
 
-  // Generic event emitter for React components
-  private eventListeners: { [key: string]: Function[] } = {};
-
   on(event: string, callback: Function) {
     if (!this.eventListeners[event]) {
       this.eventListeners[event] = [];
@@ -209,13 +201,6 @@ this.emit('user:offline', data);
   }
 
   // Reconnect
-}
-
-// Export singleton instance for easy access
-export const socketService = BulgarianSocketService.getInstance();
-
-// Also export class for type checking
-export default BulgarianSocketService;
   reconnect() {
     if (!this.socket || !this.socket.connected) {
       this.initializeSocket();
@@ -228,12 +213,11 @@ export default BulgarianSocketService;
   }
 }
 
-// Singleton instance
-export const bulgarianSocketService = new BulgarianSocketService();
+// Export singleton instance for easy access
+export const socketService = BulgarianSocketService.getInstance();
 
-// React hook for using Socket.io
-export const useSocket = () => {
-  return bulgarianSocketService;
-};
+// Also export class for type checking
+export default BulgarianSocketService;
 
-export default bulgarianSocketService;
+// Hook for usage in components
+export const useSocket = () => socketService;

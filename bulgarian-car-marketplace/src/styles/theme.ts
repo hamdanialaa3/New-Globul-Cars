@@ -438,10 +438,17 @@ export const GlobalStyles = createGlobalStyle`
 // Type augmentation for styled-components
 declare module 'styled-components' {
   export interface DefaultTheme {
+    mode?: 'light' | 'dark';
     colors: typeof bulgarianColors;
     typography: typeof bulgarianTypography;
     spacing: typeof bulgarianSpacing;
-    breakpoints: typeof bulgarianBreakpoints;
+    breakpoints: {
+      xs: string;
+      sm: string;
+      md: string;
+      lg: string;
+      xl: string;
+    };
     shadows: typeof bulgarianShadows;
     borderRadius: typeof bulgarianBorderRadius;
     components: {

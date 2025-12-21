@@ -111,6 +111,8 @@ export const MainRoutes: React.FC = () => {
             <Route path="/car/:id" element={<CarDetailsPage />} />
             {/* ✅ NEW: Strict Numeric Car URLs (e.g. /car/18/1) */}
             <Route path="/car/:sellerNumericId/:carNumericId" element={<NumericCarDetailsPage />} />
+            {/* ✅ NEW: Edit route for numeric URLs */}
+            <Route path="/car/:sellerNumericId/:carNumericId/edit" element={<NumericCarDetailsPage />} />
 
             <Route path="/dealer/:slug" element={<DealerPublicPage />} />
             <Route path="/dealer-registration" element={<DealerRegistrationPage />} />

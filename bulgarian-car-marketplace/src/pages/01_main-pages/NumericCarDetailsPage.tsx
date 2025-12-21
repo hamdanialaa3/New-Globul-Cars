@@ -65,7 +65,7 @@ const NumericCarDetailsPage: React.FC = () => {
                     logger.info('Resolved numeric car URL', { sellerNum, carNum, foundCarId });
                     setRealCarId(foundCarId);
                 } else {
-                    // Try other collections if needed (passenger_cars, etc) - existing patterns suggest 'cars' is main or we need to search others
+                    // Try other collections if needed (passenger_cars, etc) - existing patterns suggest 'cars' is main or we search others
                     // For Strict ID system, we should ensure all go to one place or we search all.
                     // Let's safe search strictly in 'cars' first as SellWorkflowService defaults there unless specific type.
                     // The query above is generic.
@@ -102,7 +102,9 @@ const NumericCarDetailsPage: React.FC = () => {
 
     // Render the actual Details Page but KEEP the URL in the browser as /car/1/1
     // We pass the resolved ID to the component
-    return <CarDetailsPage forcedCarId={realCarId} />;
+    // Check if we are in edit mode
+    const isEditMode = window.location.pathname.endsWith('/edit');
+    return <CarDetailsPage forcedCarId={realCarId} initialEditMode={isEditMode} />;
 };
 
 export default NumericCarDetailsPage;

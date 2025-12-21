@@ -7,49 +7,71 @@ import type { PlanTier } from '../features/billing/types';
 import { logger } from '../services/logger-service';
 
 // Plan Limits Configuration
-// Updated December 2025 - Simplified to 3 plans matching BillingService
+// ✅ UPDATED: Unified limits matching PermissionsService and BillingService
+// Updated December 2025 - Simplified to 3 plans
 const PLAN_LIMITS: Record<PlanTier, number> = {
-  free: 5,
-  dealer: 15,
+  free: 3,
+  dealer: 10,
   company: -1  // unlimited
 };
 
 /**
  * Check if user can add another listing
+ * ✅ CRITICAL FIX: Now uses planTier directly (not plan.tier) for consistency
+ * 
  * @param userId - User ID
- * @returns Promise<boolean>
+ * @returns Promise<boolean> - true if user can add listing, false otherwise
+ * @throws Error if database query fails (for critical path)
  */
 export async function canAddListing(userId: string): Promise<boolean> {
   try {
     const userDoc = await getDoc(doc(db, 'users', userId));
     
     if (!userDoc.exists()) {
+      logger.warn('User not found when checking listing limit', { userId });
       return false;
     }
 
     const userData = userDoc.data();
-    const planTier = userData.plan?.tier || 'free';
-    const limit = PLAN_LIMITS[planTier as PlanTier] || 3;
+    
+    // ✅ FIX: Use planTier directly (not plan.tier) - consistent with firestore.rules
+    const planTier = (userData.planTier || userData.plan?.tier || 'free') as PlanTier;
+    const limit = PLAN_LIMITS[planTier] || 3;
 
-    // Unlimited
-    if (limit === -1) return true;
+    // Unlimited plans (company)
+    if (limit === -1) {
+      logger.debug('User has unlimited listings', { userId, planTier });
+      return true;
+    }
 
     // Check current active listings count
     const activeCount = userData.stats?.activeListings || 0;
+    const canAdd = activeCount < limit;
     
-    return activeCount < limit;
-  } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      logger.error('Error checking listing limit', error as Error);
+    if (!canAdd) {
+      logger.warn('Listing limit reached', { 
+        userId, 
+        planTier, 
+        activeCount, 
+        limit,
+        remaining: limit - activeCount
+      });
     }
+    
+    return canAdd;
+  } catch (error) {
+    logger.error('Error checking listing limit', error as Error, { userId });
+    // Fail closed - don't allow listing creation if we can't verify limits
     return false;
   }
 }
 
 /**
  * Get remaining listing slots for user
+ * ✅ UPDATED: Uses planTier directly for consistency
+ * 
  * @param userId - User ID
- * @returns Promise<number> - -1 for unlimited
+ * @returns Promise<number> - -1 for unlimited, 0 or positive for remaining slots
  */
 export async function getRemainingListings(userId: string): Promise<number> {
   try {
@@ -60,19 +82,21 @@ export async function getRemainingListings(userId: string): Promise<number> {
     }
 
     const userData = userDoc.data();
-    const planTier = userData.plan?.tier || 'free';
-    const limit = PLAN_LIMITS[planTier as PlanTier] || 3;
+    // ✅ FIX: Use planTier directly (not plan.tier)
+    const planTier = (userData.planTier || userData.plan?.tier || 'free') as PlanTier;
+    const limit = PLAN_LIMITS[planTier] || 3;
 
-    // Unlimited
+    // Unlimited plans
     if (limit === -1) return -1;
 
     const activeCount = userData.stats?.activeListings || 0;
+    const remaining = Math.max(0, limit - activeCount);
     
-    return Math.max(0, limit - activeCount);
+    logger.debug('Remaining listings calculated', { userId, planTier, activeCount, limit, remaining });
+    
+    return remaining;
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      logger.error('Error getting remaining listings', error as Error);
-    }
+    logger.error('Error getting remaining listings', error as Error, { userId });
     return 0;
   }
 }
