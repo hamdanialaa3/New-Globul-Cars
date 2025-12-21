@@ -1,107 +1,52 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "declaration": true,
-    "declarationMap": true,
-    "outDir": "./dist",
-    "rootDir": "./",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "sourceMap": true,
-    "removeComments": false,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "exactOptionalPropertyTypes": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": false,
-    "noUncheckedIndexedAccess": false,
-    "allowJs": true,
-    "checkJs": false,
-    "maxNodeModuleJsDepth": 1,
-    "types": ["node"],
+    "target": "es2017",
     "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
+      "dom",
+      "dom.iterable",
+      "esnext"
     ],
-    "baseUrl": ".",
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "baseUrl": "src",
     "paths": {
-      "@/*": ["src/*"],
-      "@/services/*": ["./*"],
-      "@/firebase/*": ["./*"],
-      "@/utils/*": ["./utils/*"],
-      "@/types/*": ["./types/*"]
-    },
-    "typeRoots": [
-      "./node_modules/@types",
-      "./types"
-    ]
+      "@/services/*": ["services/*"],
+      "@/components/*": ["components/*"],
+      "@/contexts/*": ["contexts/*"],
+      "@/utils/*": ["utils/*"],
+      "@/types/*": ["types/*"],
+      "@/hooks/*": ["hooks/*"],
+      "@/pages/*": ["pages/*"],
+      "@/firebase/*": ["firebase/*"],
+      "@/data/*": ["data/*"],
+      "@/constants/*": ["constants/*"],
+      "@/features/*": ["features/*"],
+      "@/assets/*": ["assets/*"],
+      "@globul-cars/core": ["../packages/core/src/index"],
+      "@globul-cars/core/*": ["../packages/core/src/*"],
+      "@globul-cars/services": ["../packages/services/src/index"],
+      "@globul-cars/services/*": ["../packages/services/src/*"]
+    }
   },
   "include": [
-    "**/*.ts",
-    "**/*.js",
-    ".env",
-    "firebase.json",
-    "firestore.rules",
-    "storage.rules"
+    "src",
+    "src/types"
   ],
   "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.test.ts",
-    "**/*.spec.ts",
-    "coverage",
-    ".firebase",
-    "functions",
-    "bulgarian-car-marketplace/**",
-    "comprehensive_car_data.ts",
-    "extract-netcarshow-data.js",
-    "DDD/**",
-    "DEPRECATED_FILES_BACKUP/**",
-    "DEPRECATED_DOCS/**",
-    "SESSION_REPORTS/**",
-    "bulgarian-car-marketplace/backups/**"
-  ],
-  "ts-node": {
-    "esm": true,
-    "experimentalSpecifierResolution": "node",
-    "transpileOnly": true
-  },
-  "typedocOptions": {
-    "entryPoints": [
-      "index.ts",
-      "firebase-config.ts",
-      "auth-service.ts",
-      "messaging-service.ts"
-    ],
-    "out": "docs",
-    "name": "Bulgarian Car Marketplace Firebase Services",
-    "includeVersion": true,
-    "excludePrivate": true,
-    "excludeProtected": true,
-    "excludeInternal": true,
-    "hideGenerator": true,
-    "theme": "default",
-    "readme": "README.md",
-    "githubPages": false,
-    "categorizeByGroup": true,
-    "categoryOrder": [
-      "Core Services",
-      "Authentication",
-      "Messaging",
-      "Utilities",
-      "Configuration"
-    ]
-  }
+    "src/locales/translations.ts",
+    "../DDD/**",
+    "../DEPRECATED_FILES_BACKUP/**",
+    "../dist/**"
+  ]
 }

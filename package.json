@@ -1,165 +1,138 @@
 {
-  "name": "globul-cars-monorepo",
-  "version": "1.0.0",
-  "description": "Bulgarian Car Marketplace - Modular Monorepo Architecture",
+  "name": "bulgarian-car-marketplace",
+  "version": "0.1.0",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
-  "scripts": {
-    "dev": "npm run dev --workspace=@globul-cars/app",
-    "build": "npm run build --workspaces --if-present",
-    "build:app": "npm run build --workspace=@globul-cars/app",
-    "build:all": "npm run build --workspaces",
-    "test": "npm run test --workspaces --if-present",
-    "clean": "npm run clean --workspaces --if-present && rm -rf node_modules",
-    "install:all": "npm install",
-    "lint": "npm run lint --workspaces --if-present",
-    "type-check": "npm run type-check --workspaces --if-present",
-    "firebase:dev": "firebase emulators:start",
-    "firebase:deploy": "firebase deploy",
-    "firebase:deploy:hosting": "firebase deploy --only hosting",
-    "firebase:deploy:functions": "firebase deploy --only functions",
-    "docs:analyze": "node auto-update-documentation.js --analyze",
-    "docs:quick": "node auto-update-documentation.js --quick",
-    "docs:watch": "node auto-update-documentation.js --watch"
-  },
-  "keywords": [
-    "firebase",
-    "bulgarian",
-    "car-marketplace",
-    "typescript",
-    "authentication",
-    "messaging",
-    "firestore",
-    "bulgaria",
-    "eur",
-    "european"
-  ],
-  "author": "GitHub Copilot",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/hamdanialaa3/new-globul-cars"
-  },
-  "bugs": {
-    "url": "https://github.com/hamdanialaa3/new-globul-cars/issues"
-  },
-  "homepage": "https://github.com/hamdanialaa3/new-globul-cars#readme",
-  "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=8.0.0"
-  },
+  "homepage": "/",
   "dependencies": {
-    "@craco/craco": "^7.1.0",
-    "@dataconnect/generated": "file:src/dataconnect-generated",
-    "@genkit-ai/firebase": "^1.0.4",
-    "@google-cloud/bigquery": "^8.1.1",
-    "@google-cloud/dialogflow": "^7.2.0",
-    "@google-cloud/kms": "^5.2.0",
-    "@google-cloud/pubsub": "^5.2.0",
-    "@google-cloud/recaptcha-enterprise": "^6.3.0",
-    "@google-cloud/speech": "^7.2.0",
-    "@google-cloud/tasks": "^6.2.0",
-    "@google-cloud/text-to-speech": "^6.3.0",
-    "@google-cloud/translate": "^9.2.0",
-    "@google-cloud/vision": "^5.3.3",
-    "@googlemaps/js-api-loader": "^1.16.10",
-    "@octokit/rest": "^22.0.0",
-    "@types/google.maps": "^3.58.1",
-    "algoliasearch": "^4.24.0",
-    "axios": "^1.12.2",
-    "cheerio": "^1.1.2",
-    "dotenv": "^17.2.2",
+    "@algolia/autocomplete-js": "^1.19.4",
+    "@google/generative-ai": "^0.24.1",
+    "@hcaptcha/react-hcaptcha": "^1.12.1",
+    "@react-google-maps/api": "^2.20.7",
+    "@stripe/react-stripe-js": "^2.9.0",
+    "@stripe/stripe-js": "^3.5.0",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/firebase": "^2.4.32",
+    "@types/jest": "^27.5.2",
+    "@types/leaflet": "^1.9.21",
+    "@types/node": "^16.18.126",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@types/styled-components": "^5.1.34",
+    "algoliasearch": "^4.25.2",
+    "browser-image-compression": "^2.0.2",
+    "date-fns": "^4.1.0",
     "firebase": "^12.3.0",
-    "firebase-admin": "^12.3.0",
-    "googleapis": "^160.0.0",
-    "mysql2": "^3.15.0"
+    "firebase-admin": "^13.6.0",
+    "instantsearch.css": "^8.9.0",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^0.544.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "react-firebase-hooks": "^5.1.1",
+    "react-google-recaptcha-v3": "^1.11.0",
+    "react-helmet-async": "^2.0.5",
+    "react-icons": "^5.5.0",
+    "react-instantsearch-hooks-web": "^6.47.3",
+    "react-is": "^19.1.1",
+    "react-router-dom": "^7.9.1",
+    "react-scripts": "5.0.1",
+    "react-toastify": "^11.0.5",
+    "react-virtuoso": "^4.6.2",
+    "recharts": "^3.2.1",
+    "styled-components": "^6.1.19",
+    "three": "^0.182.0",
+    "translate": "^3.0.1",
+    "typescript": "^5.4.5",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "craco start",
+    "start:dev": "cross-env NODE_OPTIONS=--max_old_space_size=4096 BROWSER=none npm run start",
+    "prebuild": "node scripts/ban-console.js",
+    "build": "craco build",
+    "ci:strict": "npm ci --no-audit --no-fund",
+    "dev:vite": "npx vite",
+    "build:vite": "npx vite build",
+    "build:analyze": "npm run build && npx source-map-explorer 'build/static/js/*.js'",
+    "build:optimized": "npm run build && node scripts/optimize-images.js",
+    "test": "craco test",
+    "test:ci": "craco test --watchAll=false --passWithNoTests --coverage",
+    "test:profile-stats": "node scripts/pretest-profile-stats.js && craco test --testPathPattern=profile-stats.service.adapter.test.js --watchAll=false",
+    "lint": "echo 'Linting disabled - using build for type checking'",
+    "eject": "react-scripts eject",
+    "deploy": "npm run build && firebase deploy --only hosting",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "deploy:functions": "firebase deploy --only functions",
+    "serve": "firebase serve --only hosting",
+    "emulate": "firebase emulators:start",
+    "type-check": "tsc --noEmit"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,md}": [
+      "prettier --write"
+    ]
   },
   "devDependencies": {
-    "@types/axios": "^0.9.36",
-    "@types/node": "^24.5.2",
-    "@typescript-eslint/eslint-plugin": "^8.44.1",
-    "@typescript-eslint/parser": "^8.44.1",
-    "eslint": "^8.0.0",
+    "@babel/preset-env": "^7.28.5",
+    "@babel/preset-react": "^7.28.5",
+    "@babel/preset-typescript": "^7.28.5",
+    "@craco/craco": "^7.1.0",
+    "@types/react-icons": "^2.2.7",
+    "@types/three": "^0.182.0",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "babel-plugin-styled-components": "^2.1.4",
+    "browserify-zlib": "^0.2.0",
+    "buffer": "^6.0.3",
+    "craco-esbuild": "^0.6.1",
+    "cross-env": "^7.0.3",
+    "crypto-browserify": "^3.12.1",
+    "esbuild": "^0.25.11",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-complexity": "^1.0.2",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-webpack-plugin": "^4.2.0",
     "firebase-tools": "^13.0.0",
-    "prettier": "^3.0.0",
-    "ts-node": "^10.9.0",
-    "typedoc": "^0.25.0",
-    "typescript": "^5.4.5"
+    "glob": "^13.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.3",
+    "postcss": "^8.5.6",
+    "process": "^0.11.10",
+    "sharp": "^0.34.5",
+    "stream-browserify": "^3.0.0",
+    "ts-node": "^10.9.2",
+    "url": "^0.11.4",
+    "util": "^0.12.5",
+    "workbox-expiration": "^7.4.0",
+    "workbox-precaching": "^7.4.0",
+    "workbox-routing": "^7.4.0",
+    "workbox-strategies": "^7.4.0",
+    "workbox-webpack-plugin": "^7.4.0"
   },
-  "peerDependencies": {
-    "firebase": "^12.2.1"
-  },
-  "files": [
-    "dist",
-    "firebase-config.ts",
-    "auth-service.ts",
-    "messaging-service.ts",
-    "index.ts",
-    "services-test.ts",
-    "firestore.rules",
-    "storage.rules",
-    "firestore.indexes.json",
-    "firebase.json",
-    "README.md"
-  ],
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    },
-    "./firebase-config": {
-      "types": "./dist/firebase-config.d.ts",
-      "import": "./dist/firebase-config.js"
-    },
-    "./auth-service": {
-      "types": "./dist/auth-service.d.ts",
-      "import": "./dist/auth-service.js"
-    },
-    "./messaging-service": {
-      "types": "./dist/messaging-service.d.ts",
-      "import": "./dist/messaging-service.js"
-    }
-  },
-  "types": "./dist/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "*": [
-        "./dist/index.d.ts"
-      ],
-      "firebase-config": [
-        "./dist/firebase-config.d.ts"
-      ],
-      "auth-service": [
-        "./dist/auth-service.d.ts"
-      ],
-      "messaging-service": [
-        "./dist/messaging-service.d.ts"
-      ]
-    }
-  },
-  "funding": {
-    "type": "github",
-    "url": "https://github.com/sponsors/hamdanialaa3"
-  },
-  "contributors": [
-    {
-      "name": "GitHub Copilot",
-      "email": "copilot@github.com",
-      "url": "https://github.com/features/copilot"
-    },
-    {
-      "name": "Al-Hamdani Alaa",
-      "email": "globul.net.m@gmail.com",
-      "url": "https://github.com/hamdanialaa3"
-    }
-  ],
-  "config": {
-    "firebase": {
-      "project": "globul-cars",
-      "region": "europe-west1"
-    }
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
