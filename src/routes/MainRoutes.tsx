@@ -107,11 +107,9 @@ export const MainRoutes: React.FC = () => {
             <Route path="/" element={<HomePage />} />
             <Route path="/social" element={<SocialFeedPage />} />
             <Route path="/cars" element={<CarsPage />} />
-            <Route path="/cars/:id" element={<CarDetailsPage />} />
-            <Route path="/car/:id" element={<CarDetailsPage />} />
-            {/* ✅ NEW: Strict Numeric Car URLs (e.g. /car/18/1) */}
+
+            {/* 🔢 Strict Numeric Car URLs (Constitution: /car/:sellerNumericId/:carNumericId) */}
             <Route path="/car/:sellerNumericId/:carNumericId" element={<NumericCarDetailsPage />} />
-            {/* ✅ NEW: Edit route for numeric URLs */}
             <Route path="/car/:sellerNumericId/:carNumericId/edit" element={<NumericCarDetailsPage />} />
 
             <Route path="/dealer/:slug" element={<DealerPublicPage />} />
@@ -302,8 +300,6 @@ export const MainRoutes: React.FC = () => {
             <Route path="/search" element={<AuthGuard requireAuth={false}><AlgoliaSearchPage /></AuthGuard>} />
             <Route path="/my-listings" element={<AuthGuard requireAuth={true}><MyListingsPage /></AuthGuard>} />
             <Route path="/my-drafts" element={<AuthGuard requireAuth={true}><MyDraftsPage /></AuthGuard>} />
-            <Route path="/edit-car/:carId" element={<AuthGuard requireAuth={true}><EditCarPage /></AuthGuard>} />
-            <Route path="/car-details/:carId" element={<AuthGuard requireAuth={true}><CarDetailsPage /></AuthGuard>} />
             <Route path="/analytics" element={<AuthGuard requireAuth={true}><B2BAnalyticsPortal /></AuthGuard>} />
             <Route path="/digital-twin" element={<AuthGuard requireAuth={true}><DigitalTwinPage /></AuthGuard>} />
             <Route path="/subscription" element={<AuthGuard requireAuth={true}><SubscriptionPage /></AuthGuard>} />

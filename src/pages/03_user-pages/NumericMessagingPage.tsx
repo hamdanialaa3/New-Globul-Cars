@@ -240,6 +240,13 @@ const NumericMessagingPage: React.FC<NumericMessagingPageProps> = () => {
 
       setMessages(messagesList);
 
+      // 5️⃣ Resolve car context if provided (for system messages or highlights)
+      const carNum = searchParams.get('car');
+      if (carNum) {
+        logger.info('Car context detected in numeric messaging', { carNumericId: carNum });
+        // Optional: Add specialized UI logic here if needed
+      }
+
       logger.info('✅ Conversation loaded', {
         senderNumId,
         recipientNumId,

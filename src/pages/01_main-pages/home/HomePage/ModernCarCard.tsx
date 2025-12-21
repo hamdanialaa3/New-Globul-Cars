@@ -300,12 +300,9 @@ const ModernCarCard: React.FC<ModernCarCardProps> = ({
   const isDark = theme === 'dark';
 
   const handleCardClick = () => {
-    if ((car as any).sellerNumericId && (car as any).carNumericId) {
-      navigate(`/car/${(car as any).sellerNumericId}/${(car as any).carNumericId}`);
-    } else {
-      // Fallback to legacy URL
-      navigate(`/car/${car.id}`);
-    }
+    import('../../../../utils/routing-utils').then(({ getCarUrlFromUnifiedCar }) => {
+      navigate(getCarUrlFromUnifiedCar(car));
+    });
   };
 
   const formatPrice = (price: number): string => {

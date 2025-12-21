@@ -79,10 +79,30 @@ const ThemedApp: React.FC<{ children: React.ReactNode; recaptchaKey: string }> =
     const { theme: themeMode } = useCustomTheme();
     
     // Create dynamic theme object with current mode
-    const currentTheme = useMemo(() => ({
-        ...bulgarianTheme,
-        mode: themeMode
-    }), [themeMode]);
+    // Ensure all required properties are present with fallbacks
+    const currentTheme = useMemo(() => {
+        const theme = {
+            ...bulgarianTheme,
+            mode: themeMode
+        };
+        
+        // Ensure typography exists
+        if (!theme.typography) {
+            theme.typography = bulgarianTheme.typography;
+        }
+        
+        // Ensure spacing exists
+        if (!theme.spacing) {
+            theme.spacing = bulgarianTheme.spacing;
+        }
+        
+        // Ensure colors exists
+        if (!theme.colors) {
+            theme.colors = bulgarianTheme.colors;
+        }
+        
+        return theme;
+    }, [themeMode]);
 
     return (
         <ThemeProvider theme={currentTheme}>

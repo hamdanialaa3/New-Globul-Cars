@@ -130,17 +130,19 @@ const BrandCard = styled.button`
   border: 2px solid rgba(200, 200, 200, 0.4);
   border-top: 2px solid rgba(255, 255, 255, 0.6); /* highlight على الحافة العلوية */
   border-radius: 16px;
-  padding: 1.5rem 1rem;
+  padding: 1.25rem 1rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  justify-content: center;
+  gap: 0.75rem;
   position: relative;
   overflow: hidden;
   opacity: 1;
   color: var(--text-primary);
+  margin: 0;
   box-shadow: 
     0 4px 15px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.5), /* highlight داخلي */
@@ -367,9 +369,9 @@ const PopularBrandsSection: React.FC = () => {
 
         <BrandsContainer>
           <HorizontalScrollContainer
-            gap="2rem"
+            gap="0.75rem"
             padding="0"
-            itemMinWidth="180px"
+            itemMinWidth="140px"
             showArrows={true}
           >
             {POPULAR_BRANDS.map(brand => {

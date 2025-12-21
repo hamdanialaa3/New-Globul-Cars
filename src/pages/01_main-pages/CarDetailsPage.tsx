@@ -160,7 +160,17 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
     switch (method) {
       case 'message':
         if (currentUser) {
-          navigate(`/messages?userId=${car?.sellerId}&carId=${car?.id}&carTitle=${encodeURIComponent(`${car?.make} ${car?.model}`)}`);
+          // Use numeric IDs for messaging if available
+          const senderNum = (currentUser as any).numericId;
+          const recipientNum = car?.sellerNumericId;
+          const carNum = car?.carNumericId || car?.numericId;
+
+          if (senderNum && recipientNum) {
+            navigate(`/messages/${senderNum}/${recipientNum}${carNum ? `?car=${carNum}` : ''}`);
+          } else {
+            // Fallback to legacy if numeric IDs are missing
+            navigate(`/messages?userId=${car?.sellerId}&carId=${car?.id}&carTitle=${encodeURIComponent(`${car?.make} ${car?.model}`)}`);
+          }
         } else {
           alert(language === 'bg' ? 'Моля влезте в профила си, за да изпратите съобщение.' : 'Please log in to send a message.');
         }

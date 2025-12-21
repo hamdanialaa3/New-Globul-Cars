@@ -17,8 +17,8 @@ interface Props {
   onClose?: () => void;
 }
 
-export const AIChatbot: React.FC<Props> = ({ 
-  context = {}, 
+export const AIChatbot: React.FC<Props> = ({
+  context = {},
   position = 'bottom-right',
   hideButton = true,
   isOpen: externalIsOpen,
@@ -76,7 +76,7 @@ export const AIChatbot: React.FC<Props> = ({
     try {
       const functions = getFunctions();
       const geminiChatCallable = httpsCallable(functions, 'geminiChat');
-      
+
       const chatContext: AIChatContext = {
         ...context,
         language: language as any
@@ -102,21 +102,21 @@ export const AIChatbot: React.FC<Props> = ({
       };
 
       setMessages(prev => [...prev, assistantMessage]);
-      
-    } catch (error: unknown) {
+
+    } catch (error: any) {
       logger.error('Chatbot error', error);
-      
+
       const errorMessages = {
         bg: error.message || 'Съжалявам, възникна грешка. Моля, опитайте отново.',
         en: error.message || 'Sorry, I encountered an error. Please try again.'
       };
-      
+
       const errorMessage: AIChatMessage = {
         role: 'assistant',
         content: errorMessages[language as keyof typeof errorMessages] || errorMessages.en,
         timestamp: Date.now()
       };
-      
+
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setLoading(false);
@@ -256,8 +256,8 @@ const MessageBubble = styled.div<{ role: string }>`
   max-width: 75%;
   padding: 12px 16px;
   border-radius: 16px;
-  background: ${p => p.role === 'user' 
-    ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
+  background: ${p => p.role === 'user'
+    ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
     : 'white'};
   color: ${p => p.role === 'user' ? 'white' : '#1a1a1a'};
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
@@ -331,3 +331,5 @@ const SendButton = styled.button`
     cursor: not-allowed;
   }
 `;
+
+export default AIChatbot;

@@ -26,19 +26,21 @@ export const getCarDetailsUrl = (car: {
   sellerId?: string;
   id?: string;
 }): string => {
-  // ✅ Constitution-compliant: /car/{userId}/{carLocalId}
+  // ✅ Constitution-compliant Priority: /car/{sellerNum}/{carNum}
   if (car.sellerNumericId && car.carNumericId) {
     return `/car/${car.sellerNumericId}/${car.carNumericId}`;
   }
 
-  // Fallback for legacy cars without numeric IDs
-  // Use /cars/{id} for backward compatibility
-  if (car.id) {
-    return `/cars/${car.id}`;
+  // Fallback for cases where only numeric car ID is available (should be редко)
+  if (car.carNumericId && !car.sellerNumericId && car.sellerId) {
+    // We can't build the full numeric URL without seller numeric ID
+    // but we should avoid legacy if possible. 
+    // For now, if we have the UUID, we use it as fallback 
+    return `/car-details/${car.id || car.carNumericId}`;
   }
 
-  // Last resort fallback
-  return '/cars';
+  // Final fallback to the basic cars list if we can't even get a UUID
+  return car.id ? `/car-details/${car.id}` : '/cars';
 };
 
 /**

@@ -91,37 +91,38 @@ const MomentTitle = styled.span`
 
 const LifeMomentsBrowse: React.FC = memo(() => {
   const { t } = useLanguage();
+  const navigate = useNavigate(); // ✅ Added missing hook
   const browseSectionRef = useRef<HTMLDivElement>(null);
 
-useEffect(() => {
-  // Fire 'home_lifemoments_view' once visible
-  const observer = new IntersectionObserver(
-    (entries) => {
-      if (entries[0].isIntersecting) {
-        analyticsService.trackEvent('home_lifemoments_view', {
-          momentCount: MOMENTS?.length || 0,
-        });
-        observer.unobserve(entries[0].target);
-      }
-    },
-    { threshold: 0.3 }
-  );
+  useEffect(() => {
+    // Fire 'home_lifemoments_view' once visible
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          analyticsService.trackEvent('home_lifemoments_view', {
+            momentCount: MOMENTS?.length || 0,
+          });
+          observer.unobserve(entries[0].target);
+        }
+      },
+      { threshold: 0.3 }
+    );
 
-  if (browseSectionRef.current) {
-    observer.observe(browseSectionRef.current);
-  }
+    if (browseSectionRef.current) {
+      observer.observe(browseSectionRef.current);
+    }
 
-  return () => observer.disconnect();
-}, []);
+    return () => observer.disconnect();
+  }, []);
 
-// When moment is clicked:
-const handleMomentClick = (momentKey: string) => {
-  // Track 'home_lifemoments_click' with moment key
-  analyticsService.trackEvent('home_lifemoments_click', {
-    momentKey,
-  });
-  navigate(`/browse?moment=${momentKey}`);
-};
+  // When moment is clicked:
+  const handleMomentClick = (momentKey: string) => {
+    // Track 'home_lifemoments_click' with moment key
+    analyticsService.trackEvent('home_lifemoments_click', {
+      momentKey,
+    });
+    navigate(`/browse?moment=${momentKey}`);
+  };
 
   return (
     <Section aria-label={t('home.lifeMomentsBrowse.title')}>

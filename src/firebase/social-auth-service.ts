@@ -5,6 +5,7 @@ import {
   FacebookAuthProvider,
   signInWithPopup,
   signInWithPhoneNumber,
+  signInAnonymously,
   RecaptchaVerifier,
   ConfirmationResult,
   getRedirectResult,
@@ -227,6 +228,25 @@ export class SocialAuthService {
       return result;
     } catch (error: any) {
       logger.error('Phone code verification error', error as Error);
+      throw error;
+    }
+  }
+
+  /**
+   * Sign in anonymously (Guest Mode)
+   */
+  static async signInAnonymously() {
+    try {
+      logger.info('👤 Initiating anonymous sign-in...');
+      const result = await signInAnonymously(auth);
+
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Anonymous sign-in successful', { uid: result.user.uid });
+      }
+
+      return result;
+    } catch (error) {
+      logger.error('❌ Anonymous sign-in error', error as Error);
       throw error;
     }
   }
