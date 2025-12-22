@@ -1,13 +1,15 @@
 // src/pages/08_payment-billing/PaymentFailedPage.tsx
 // Payment Failed Page - When payment fails or is canceled
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { XCircle, RefreshCw, Home, ArrowLeft, AlertTriangle } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { logger } from '../../services/logger-service';
 import { useToast } from '../../components/Toast';
+import { getCarDetailsUrl } from '../../utils/routing-utils';
+import { unifiedCarService } from '../../services/car';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -179,10 +181,30 @@ const PaymentFailedPage: React.FC = () => {
 
   const carId = searchParams.get('carId');
   const errorMessage = searchParams.get('error');
+  const [carUrl, setCarUrl] = useState<string>('/cars');
 
   useEffect(() => {
     // Track failed payment
     logger.warn('Payment failed', new Error(errorMessage || 'Unknown error'), { carId });
+    
+    // ✅ FIXED: Load car data to generate proper numeric URL
+    if (carId) {
+      unifiedCarService.getCarById(carId)
+        .then(car => {
+          if (car) {
+            const url = getCarDetailsUrl(car);
+            setCarUrl(url);
+          } else {
+            // Fallback to legacy URL if car not found
+            setCarUrl(`/car-details/${carId}`);
+          }
+        })
+        .catch(error => {
+          logger.error('Error loading car for URL generation', error as Error, { carId });
+          // Fallback to legacy URL on error
+          setCarUrl(`/car-details/${carId}`);
+        });
+    }
   }, [carId, errorMessage]);
 
   const handleRetry = () => {
@@ -198,14 +220,8 @@ const PaymentFailedPage: React.FC = () => {
   };
 
   const handleGoBack = () => {
-    if (carId) {
-      // Note: We need the full car object to generate proper URL
-      // For now, fallback to car-details until proper data is passed
-      navigate(`/car-details/${carId}`);
-      // TODO: Pass full car object to enable numeric URL generation
-    } else {
-      navigate('/cars');
-    }
+    // ✅ FIXED: Use proper numeric URL if available, otherwise fallback
+    navigate(carUrl);
   };
 
   return (

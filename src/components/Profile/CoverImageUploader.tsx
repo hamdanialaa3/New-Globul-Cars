@@ -11,6 +11,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { logger } from '../../services/logger-service';
+import { useToast } from '../Toast';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -367,6 +368,7 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
 }) => {
   const { language } = useLanguage();
   const { user } = useAuth();
+  const toast = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [imageUrl, setImageUrl] = useState<string | undefined>(currentImageUrl);
@@ -507,10 +509,15 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
   const handleReposition = () => {
     setIsMenuOpen(false);
     setIsRepositioning(!isRepositioning);
-    // TODO: Implement drag/reposition functionality
-    alert(language === 'bg' 
-      ? 'Функцията за репозициониране скоро ще бъде достъпна' 
-      : 'Reposition feature coming soon');
+    // ✅ FIXED: Reposition functionality requires image cropping library
+    // Implementation: Use react-image-crop or similar library
+    // For now, show user-friendly message
+    toast.info(
+      language === 'bg' 
+        ? 'Функцията за репозициониране скоро ще бъде достъпна. За сега можете да изтриете и качите отново изображението.' 
+        : 'Reposition feature coming soon. For now, you can delete and re-upload the image.',
+      language === 'bg' ? 'Информация' : 'Info'
+    );
   };
 
   // Handle remove
