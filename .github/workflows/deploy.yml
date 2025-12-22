@@ -20,16 +20,19 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          cache-dependency-path: bulgarian-car-marketplace/package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            functions/package-lock.json
       
       - name: Install dependencies
         run: |
-          cd bulgarian-car-marketplace
           npm ci
+          cd functions
+          npm ci
+          cd ..
       
       - name: Build
         run: |
-          cd bulgarian-car-marketplace
           npm run build
         env:
           CI: false
@@ -40,5 +43,5 @@ jobs:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
           channelId: live
-          projectId: studio-448742006-a3493
-          entryPoint: bulgarian-car-marketplace
+          projectId: fire-new-globul
+          entryPoint: .
