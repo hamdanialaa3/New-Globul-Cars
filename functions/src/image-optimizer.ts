@@ -47,7 +47,9 @@ const IMAGE_SIZES = [
  */
 export const optimizeImage = functions
   .region('europe-west1')
-  .storage.object()
+  .storage
+  .bucket('fire-new-globul.firebasestorage.app')
+  .object()
   .onFinalize(async (object) => {
     try {
       const filePath = object.name || '';
@@ -153,7 +155,9 @@ export const optimizeImage = functions
  */
 export const cleanupOptimizedImages = functions
   .region('europe-west1')
-  .storage.object()
+  .storage
+  .bucket('fire-new-globul.firebasestorage.app')
+  .object()
   .onDelete(async (object) => {
     try {
       const filePath = object.name || '';
