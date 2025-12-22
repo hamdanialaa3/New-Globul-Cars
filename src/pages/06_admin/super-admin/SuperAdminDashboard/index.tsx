@@ -39,14 +39,14 @@ import UserDetailsModal from '../../../../components/UserDetailsModal';
 import FacebookAdminPanel from '../../../../components/SuperAdmin/FacebookAdminPanel';
 import ArchitecturePanel from '../../../../components/SuperAdmin/ArchitecturePanel';
 
-// Styled Components
+// Styled Components - Professional Minimal Design
 const DashboardContainer = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%);
-  padding: 0 0 100px 0;
+  background: #f5f5f5;
+  padding: 0 0 40px 0;
   margin: 0;
-  color:rgb(46, 20, 176);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #1a1a1a;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
 `;
 
 const TabContent = styled.div`
@@ -61,53 +61,52 @@ const LoadingState = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
-  color: #ffd700;
-  font-size: 24px;
-  font-weight: 600;
-  gap: 20px;
+  color: #333333;
+  font-size: 16px;
+  font-weight: 500;
+  gap: 12px;
+  background: #ffffff;
 `;
 
 const LoadingMessage = styled.div`
-  font-size: 16px;
-  color: #aaa;
+  font-size: 14px;
+  color: #666666;
   max-width: 600px;
   text-align: center;
-  line-height: 1.6;
+  line-height: 1.5;
 `;
 
 const ActionButton = styled.button`
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-  border: none;
-  padding: 12px 32px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
+  background: #1a1a1a;
+  color: #ffffff;
+  border: 1px solid #d0d0d0;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 10px;
+  transition: background-color 0.15s;
+  margin-top: 8px;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    background: #333333;
   }
 `;
 
 const LoginButton = styled.button`
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-  border: none;
-  padding: 12px 32px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
+  background: #1a1a1a;
+  color: #ffffff;
+  border: 1px solid #d0d0d0;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 10px;
+  transition: background-color 0.15s;
+  margin-top: 8px;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    background: #333333;
   }
 `;
 
@@ -405,28 +404,27 @@ const SuperAdminDashboard: React.FC = () => {
         )}
 
         {activeTab === 'users' && (
-          <div style={{ textAlign: 'center', padding: '2rem' }}>
-            <h2 style={{ color: '#ffd700', marginBottom: '1rem' }}>إدارة المستخدمين المتقدمة</h2>
-            <p style={{ color: '#aaa', marginBottom: '2rem' }}>تحكم كامل في جميع المستخدمين والمشتركين والمدراء</p>
+          <div style={{ textAlign: 'center', padding: '2rem', background: '#ffffff', border: '1px solid #e0e0e0', borderRadius: '4px' }}>
+            <h2 style={{ color: '#1a1a1a', marginBottom: '1rem', fontSize: '18px', fontWeight: '600' }}>User Management</h2>
+            <p style={{ color: '#666666', marginBottom: '2rem', fontSize: '14px' }}>Complete control over all users, subscribers, and administrators</p>
             <ActionButton
               onClick={() => navigate('/super-admin/users')}
               style={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                color: 'white',
-                padding: '1rem 2rem',
-                fontSize: '1.1rem',
-                fontWeight: '600',
-                border: 'none',
-                borderRadius: '8px',
+                background: '#1a1a1a',
+                color: '#ffffff',
+                padding: '10px 20px',
+                fontSize: '14px',
+                fontWeight: '500',
+                border: '1px solid #d0d0d0',
+                borderRadius: '4px',
                 cursor: 'pointer',
-                transition: 'all 0.3s ease',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '0.5rem'
+                gap: '8px'
               }}
             >
-              <Users size={20} />
-              فتح صفحة إدارة المستخدمين
+              <Users size={16} />
+              Open User Management
             </ActionButton>
           </div>
         )}
@@ -826,173 +824,169 @@ const SuperAdminDashboard: React.FC = () => {
   );
 };
 
-// Styled footer for Super Admin only
+// Styled footer for Super Admin only - Professional Minimal
 const SuperAdminFooter = styled.footer`
-  background: linear-gradient(90deg, #232526 0%, #414345 100%);
-  color: #ffd700;
-  padding: 32px 0 16px 0;
+  background: #ffffff;
+  color: #1a1a1a;
+  padding: 24px 0 16px 0;
   margin-top: 40px;
-  border-top: 2px solid #ffd700;
+  border-top: 1px solid #e0e0e0;
   text-align: center;
 `;
 
 const FooterStatsGrid = styled.div`
   display: flex;
   justify-content: center;
-  gap: 48px;
+  gap: 32px;
   flex-wrap: wrap;
   margin-bottom: 12px;
 `;
 
 const FooterStat = styled.div`
-  min-width: 120px;
+  min-width: 100px;
 `;
 
 const StatLabel = styled.div`
-  font-size: 15px;
-  color: #aaa;
+  font-size: 12px;
+  color: #666666;
   margin-bottom: 4px;
+  font-weight: 500;
 `;
 
 const StatValue = styled.div`
-  font-size: 22px;
-  font-weight: bold;
-  color: #ffd700;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
 `;
 
 const FooterNote = styled.div`
-  font-size: 13px;
-  color: #888;
+  font-size: 12px;
+  color: #999999;
   margin-top: 8px;
 `;
 
-// Reports Section Styles
+// Reports Section Styles - Professional Minimal
 // Firebase Links Section Styles
 const FirebaseLinksSection = styled.div`
-  padding: 2rem 1rem;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+  padding: 24px 16px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #ffffff;
 `;
 
 const SectionTitle = styled.h3`
-  font-size: 1.5rem;
-  color: #ffd700;
+  font-size: 16px;
+  color: #1a1a1a;
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 16px;
   font-weight: 600;
 `;
 
 const LinksGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
   max-width: 1200px;
   margin: 0 auto;
 `;
 
 const LinkCard = styled.div`
-  background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(247, 147, 30, 0.05) 100%);
-  border: 2px solid rgba(255, 107, 53, 0.3);
-  border-radius: 12px;
-  padding: 1.5rem;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 16px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: border-color 0.15s;
   text-align: center;
   
   &:hover {
-    border-color: rgba(255, 107, 53, 0.8);
-    transform: translateY(-6px);
-    box-shadow: 0 12px 32px rgba(255, 107, 53, 0.3);
-    background: linear-gradient(135deg, rgba(255, 107, 53, 0.2) 0%, rgba(247, 147, 30, 0.1) 100%);
-  }
-  
-  &:active {
-    transform: translateY(-2px);
+    border-color: #999999;
   }
 `;
 
 const LinkIcon = styled.div`
-  font-size: 2.5rem;
-  margin-bottom: 0.75rem;
+  font-size: 24px;
+  margin-bottom: 8px;
 `;
 
 const LinkName = styled.div`
-  font-size: 1.1rem;
-  color: #ffd700;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+  font-size: 13px;
+  color: #1a1a1a;
+  font-weight: 500;
+  margin-bottom: 4px;
 `;
 
 const LinkDesc = styled.div`
-  font-size: 0.9rem;
-  color: #aaa;
+  font-size: 11px;
+  color: #666666;
 `;
 
 const AIManagementSection = styled.div`
-  padding: 2rem 1rem;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+  padding: 24px 16px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #ffffff;
 `;
 
 const IoTManagementSection = styled.div`
-  padding: 2rem 1rem;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid rgba(0, 255, 127, 0.3);
+  padding: 24px 16px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #ffffff;
 `;
 
 const ReportsSection = styled.div`
-  padding: 2rem 1rem;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+  padding: 24px 16px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #ffffff;
 `;
 
 const ReportsTitle = styled.h3`
-  font-size: 1.5rem;
-  color: #ffd700;
+  font-size: 16px;
+  color: #1a1a1a;
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 16px;
   font-weight: 600;
 `;
 
 const ReportsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
   max-width: 1200px;
   margin: 0 auto;
 `;
 
 const ReportCard = styled.div`
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-  border: 1px solid rgba(255, 215, 0, 0.2);
-  border-radius: 12px;
-  padding: 1.25rem;
-  transition: all 0.3s ease;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 16px;
+  transition: border-color 0.15s;
   
   &:hover {
-    border-color: rgba(255, 215, 0, 0.5);
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(255, 215, 0, 0.2);
+    border-color: #999999;
   }
 `;
 
 const ReportIcon = styled.div`
-  font-size: 2rem;
+  font-size: 24px;
   text-align: center;
-  margin-bottom: 0.75rem;
+  margin-bottom: 8px;
 `;
 
 const ReportName = styled.div`
-  font-size: 1rem;
-  color: #fff;
+  font-size: 13px;
+  color: #1a1a1a;
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 12px;
   font-weight: 500;
 `;
 
 const ReportButtons = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 6px;
   justify-content: center;
   flex-wrap: wrap;
 `;
@@ -1000,24 +994,19 @@ const ReportButtons = styled.div`
 const ExportBtn = styled.button`
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  font-weight: 600;
+  gap: 4px;
+  padding: 6px 12px;
+  background: #1a1a1a;
+  color: #ffffff;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.15s;
   
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
-  }
-  
-  &:active {
-    transform: translateY(0);
+    background: #333333;
   }
 `;
 

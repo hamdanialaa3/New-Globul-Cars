@@ -21,6 +21,7 @@ import {
 import { useFavorites } from '../../../../hooks/useFavorites';
 import { useAuth } from '../../../../contexts/AuthProvider';
 import { logger } from '../../../../services/logger-service';
+import { getCarDetailsUrl } from '../../../../utils/routing-utils';
 
 // ============================================================================
 // ANIMATIONS
@@ -751,7 +752,10 @@ const FavoritesPage: React.FC = () => {
 
   const handleViewCar = (carId: string) => {
     logger.info('Navigating to car details', { carId });
-    navigate(`/car/${carId}`);
+    const car = favorites.find(f => f.id === carId);
+    if (car) {
+      navigate(getCarDetailsUrl(car));
+    }
   };
 
   const getPriceDrop = (fav: { originalPrice: number; carData: { price: number } }) => {

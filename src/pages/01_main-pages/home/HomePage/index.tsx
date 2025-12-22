@@ -65,7 +65,7 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      {/* 2. New Cars Section - Latest Added (Last 24 Hours) - CRITICAL */}
+      {/* 2. New Cars Section - Latest Added (Last 24 Hours) */}
       <LazySection rootMargin="100px" minHeight="400px">
         <Suspense fallback={<LoadingFallback>Зареждане на нови обяви...</LoadingFallback>}>
           <NewCarsSection />
@@ -74,43 +74,7 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      {/* 3. Categories Section - Popular Categories */}
-      <LazySection rootMargin="0px" minHeight="600px">
-        <Suspense fallback={<LoadingFallback>Зареждане на категории...</LoadingFallback>}>
-          <CategoriesSection />
-        </Suspense>
-      </LazySection>
-
-      <SectionSpacer />
-
-      {/* 4. Trust Section - Why Choose Us */}
-      <LazySection rootMargin="0px" minHeight="400px">
-        <Suspense fallback={null}>
-          <TrustSection />
-        </Suspense>
-      </LazySection>
-
-      <SectionSpacer />
-
-      {/* 5. Latest Cars - Fresh inventory */}
-      <LazySection rootMargin="100px" minHeight="500px">
-        <Suspense fallback={<LoadingFallback>Зареждане...</LoadingFallback>}>
-          <LatestCarsSection />
-        </Suspense>
-      </LazySection>
-
-      <SectionSpacer />
-
-      {/* 6. Popular Brands Section */}
-      <LazySection rootMargin="0px" minHeight="500px">
-        <Suspense fallback={<LoadingFallback>Зареждане на марки...</LoadingFallback>}>
-          <PopularBrandsSection />
-        </Suspense>
-      </LazySection>
-
-      <SectionSpacer />
-
-      {/* 7. Featured Cars Section */}
+      {/* 3. Featured Cars Section (high-intent inventory) */}
       <LazySection rootMargin="0px" minHeight="600px">
         <Suspense fallback={<LoadingFallback>Зареждане на автомобили...</LoadingFallback>}>
           <FeaturedCarsSection />
@@ -119,7 +83,25 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      {/* 8. Life Moments Browse */}
+      {/* 4. Latest Cars - Fresh inventory */}
+      <LazySection rootMargin="100px" minHeight="500px">
+        <Suspense fallback={<LoadingFallback>Зареждане...</LoadingFallback>}>
+          <LatestCarsSection />
+        </Suspense>
+      </LazySection>
+
+      <SectionSpacer />
+
+      {/* 5. Categories Section - Popular Categories */}
+      <LazySection rootMargin="0px" minHeight="600px">
+        <Suspense fallback={<LoadingFallback>Зареждане на категории...</LoadingFallback>}>
+          <CategoriesSection />
+        </Suspense>
+      </LazySection>
+
+      <SectionSpacer />
+
+      {/* 6. Life Moments Browse */}
       <LazySection rootMargin="0px" minHeight="400px">
         <Suspense fallback={<LoadingFallback>Зареждане...</LoadingFallback>}>
           <LifeMomentsBrowse />
@@ -128,16 +110,25 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      {/* 9. Social Media & Community */}
-      <LazySection rootMargin="0px" minHeight="300px">
-        <Suspense fallback={<LoadingFallback>Зареждане на общност...</LoadingFallback>}>
-          <SocialMediaSection />
+      {/* 7. Popular Brands Section */}
+      <LazySection rootMargin="0px" minHeight="500px">
+        <Suspense fallback={<LoadingFallback>Зареждане на марки...</LoadingFallback>}>
+          <PopularBrandsSection />
         </Suspense>
       </LazySection>
 
       <SectionSpacer />
 
-      {/* 10. Vehicle Classifications (Smart Section) */}
+      {/* 8. Trust Section - Why Choose Us */}
+      <LazySection rootMargin="0px" minHeight="400px">
+        <Suspense fallback={null}>
+          <TrustSection />
+        </Suspense>
+      </LazySection>
+
+      <SectionSpacer />
+
+      {/* 9. Vehicle Classifications (Smart Section) */}
       <LazySection rootMargin="100px" minHeight="300px">
         <Suspense fallback={null}>
           <VehicleClassificationsSection />
@@ -146,7 +137,7 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      {/* 11. Most Demanded Categories (AI Section) */}
+      {/* 10. Most Demanded Categories (AI Section) */}
       <LazySection rootMargin="100px" minHeight="400px">
         <Suspense fallback={null}>
           <MostDemandedCategoriesSection />
@@ -155,25 +146,7 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      {/* 12. AI Analytics Teaser */}
-      <LazySection rootMargin="200px">
-        <Suspense fallback={null}>
-          <AIAnalyticsTeaser />
-        </Suspense>
-      </LazySection>
-
-      <SectionSpacer />
-
-      {/* 13. Smart Sell Strip */}
-      <LazySection rootMargin="100px">
-        <Suspense fallback={null}>
-          <SmartSellStrip />
-        </Suspense>
-      </LazySection>
-
-      <SectionSpacer />
-
-      {/* 14. Dealer Spotlight */}
+      {/* 11. Dealer Spotlight */}
       <LazySection rootMargin="200px">
         <Suspense fallback={null}>
           <DealerSpotlight />
@@ -182,7 +155,25 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      {/* 15. Recent Browsing History (Personalized) */}
+      {/* 12. Smart Sell Strip */}
+      <LazySection rootMargin="100px">
+        <Suspense fallback={null}>
+          <SmartSellStrip />
+        </Suspense>
+      </LazySection>
+
+      <SectionSpacer />
+
+      {/* 13. AI Analytics Teaser */}
+      <LazySection rootMargin="200px">
+        <Suspense fallback={null}>
+          <AIAnalyticsTeaser />
+        </Suspense>
+      </LazySection>
+
+      <SectionSpacer />
+
+      {/* 14. Recent Browsing History (Personalized) */}
       <LazySection rootMargin="100px" minHeight="200px">
         <Suspense fallback={null}>
           <RecentBrowsingSection />
@@ -191,10 +182,19 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      {/* 16. Loyalty Banner */}
+      {/* 15. Loyalty Banner */}
       <LazySection rootMargin="100px">
         <Suspense fallback={null}>
           <LoyaltyBanner />
+        </Suspense>
+      </LazySection>
+
+      <SectionSpacer />
+
+      {/* 16. Social Media & Community */}
+      <LazySection rootMargin="0px" minHeight="300px">
+        <Suspense fallback={<LoadingFallback>Зареждане на общност...</LoadingFallback>}>
+          <SocialMediaSection />
         </Suspense>
       </LazySection>
 

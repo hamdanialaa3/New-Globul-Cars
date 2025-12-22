@@ -8,93 +8,87 @@ import { auth } from '../../../../firebase/firebase-config';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { getAdminEmail, isAdminConfigured } from '../../../../config/env-validation';
 
-// Styled Components
+// Styled Components - Professional Minimal Design
 const LoginContainer = styled.div`
   min-height: 100vh;
-  background: var(--bg-primary);
+  background: #f5f5f5;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  position: relative;
-  overflow: hidden;
 `;
 
 const LoginCard = styled.div`
-  background: var(--bg-card);
-  backdrop-filter: blur(20px);
-  border-radius: 24px;
-  padding: 48px;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 40px;
   width: 100%;
-  max-width: 480px;
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--border);
-  position: relative;
-  z-index: 1;
+  max-width: 420px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 `;
 
 const LoginHeader = styled.div`
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 32px;
 `;
 
 const LoginIcon = styled.div`
-  width: 80px;
-  height: 80px;
-  background: var(--accent-primary);
-  border-radius: 20px;
+  width: 48px;
+  height: 48px;
+  background: #2c2c2c;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 24px;
-  box-shadow: var(--shadow-md);
+  margin: 0 auto 16px;
 `;
 
 const LoginTitle = styled.h1`
-  color: var(--text-primary);
-  font-size: 32px;
-  font-weight: 800;
+  color: #1a1a1a;
+  font-size: 24px;
+  font-weight: 600;
   margin: 0 0 8px 0;
 `;
 
 const LoginSubtitle = styled.p`
-  color: var(--text-secondary);
-  font-size: 16px;
+  color: #666666;
+  font-size: 14px;
   margin: 0;
-  font-weight: 500;
+  font-weight: 400;
 `;
 
 const RepairButton = styled.button`
   background: transparent;
-  border: 1px dashed var(--border);
-  color: var(--text-secondary);
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 13px;
+  border: 1px solid #d0d0d0;
+  color: #666666;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
   cursor: pointer;
-  margin-top: 16px;
-  transition: all 0.2s;
+  margin-top: 12px;
+  transition: all 0.15s;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 
   &:hover {
-    background: var(--bg-secondary);
-    color: var(--accent-primary);
-    border-color: var(--accent-primary);
+    background: #f5f5f5;
+    border-color: #999999;
+    color: #333333;
   }
 `;
 
 const FormGroup = styled.div`
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 `;
 
 const Label = styled.label`
   display: block;
-  color: var(--text-primary);
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 8px;
+  color: #333333;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 6px;
 `;
 
 const InputContainer = styled.div`
@@ -103,92 +97,95 @@ const InputContainer = styled.div`
 
 const Input = styled.input`
   width: 100%;
-  padding: 16px 20px;
-  border: 2px solid #e4e6ea;
-  border-radius: 12px;
-  font-size: 16px;
-  transition: all 0.3s ease;
+  padding: 12px 16px;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.15s;
   box-sizing: border-box;
-  background: rgba(255, 255, 255, 0.8);
+  background: #ffffff;
+  color: #1a1a1a;
 
   &:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-    background: white;
+    border-color: #666666;
+  }
+
+  &:disabled {
+    background: #f5f5f5;
+    cursor: not-allowed;
   }
 `;
 
 const PasswordToggle = styled.button`
   position: absolute;
-  right: 16px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
   cursor: pointer;
-  color: #65676b;
+  color: #666666;
   padding: 4px;
-  border-radius: 4px;
-  transition: color 0.2s;
+  border-radius: 2px;
+  transition: color 0.15s;
 
   &:hover {
-    color: #667eea;
+    color: #333333;
   }
 `;
 
 const LoginButton = styled.button<{ $disabled?: boolean }>`
   width: 100%;
-  padding: 16px;
-  background: ${props => props.$disabled ? '#e4e6ea' : 'linear-gradient(135deg, #667eea, #764ba2)'};
-  color: ${props => props.$disabled ? '#bcc0c4' : 'white'};
+  padding: 12px;
+  background: ${props => props.$disabled ? '#e0e0e0' : '#1a1a1a'};
+  color: ${props => props.$disabled ? '#999999' : '#ffffff'};
   border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
   cursor: ${props => props.$disabled ? 'not-allowed' : 'pointer'};
-  transition: all 0.3s ease;
-  margin-bottom: 24px;
+  transition: background-color 0.15s;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: ${props => props.$disabled ? 'none' : '0 10px 30px rgba(102, 126, 234, 0.3)'};
 
   &:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+    background: #333333;
   }
 `;
 
 const MessageContainer = styled.div<{ $type: 'success' | 'error' }>`
-  padding: 16px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: ${props => props.$type === 'success' ? '#d4edda' : '#f8d7da'};
-  color: ${props => props.$type === 'success' ? '#155724' : '#721c24'};
-  border: 1px solid ${props => props.$type === 'success' ? '#c3e6cb' : '#f5c6cb'};
-`;
-
-const AdminInfo = styled.div`
-  background: var(--bg-secondary);
-  border-radius: 16px;
-  padding: 24px;
-  margin-top: 24px;
-  border: 1px solid var(--border);
-`;
-
-const AdminInfoTitle = styled.h3`
-  color: var(--text-primary);
-  font-size: 18px;
-  font-weight: 700;
-  margin: 0 0 16px 0;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
   gap: 8px;
+  background: ${props => props.$type === 'success' ? '#f0f9f0' : '#fff5f5'};
+  color: ${props => props.$type === 'success' ? '#2d5a2d' : '#8b2d2d'};
+  border: 1px solid ${props => props.$type === 'success' ? '#d0e8d0' : '#f0d0d0'};
+  font-size: 13px;
+`;
+
+const AdminInfo = styled.div`
+  background: #f9f9f9;
+  border-radius: 4px;
+  padding: 16px;
+  margin-top: 20px;
+  border: 1px solid #e0e0e0;
+`;
+
+const AdminInfoTitle = styled.h3`
+  color: #1a1a1a;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 `;
 
 const AdminInfoGrid = styled.div`
@@ -204,30 +201,30 @@ const AdminInfoItem = styled.div`
 `;
 
 const AdminInfoLabel = styled.span`
-  font-size: 12px;
-  color: #65676b;
+  font-size: 11px;
+  color: #666666;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 `;
 
 const AdminInfoValue = styled.span`
-  font-size: 14px;
-  color: var(--text-primary);
-  font-weight: 600;
+  font-size: 13px;
+  color: #1a1a1a;
+  font-weight: 500;
 `;
 
 const SecurityBadge = styled.div`
-  background: var(--success);
-  color: white;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
+  background: #2c2c2c;
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 16px;
+  gap: 4px;
+  margin-top: 12px;
 `;
 
 const SuperAdminLogin: React.FC = () => {
@@ -301,12 +298,12 @@ const SuperAdminLogin: React.FC = () => {
       <LoginCard>
         <LoginHeader>
           <LoginIcon>
-            <Shield size={40} color="white" />
+            <Shield size={24} color="white" />
           </LoginIcon>
-          <LoginTitle>🔐 Super Admin Access</LoginTitle>
-          <LoginSubtitle>Unique Owner Authentication System</LoginSubtitle>
+          <LoginTitle>Super Admin Login</LoginTitle>
+          <LoginSubtitle>Owner Access Only</LoginSubtitle>
           <RepairButton onClick={() => navigate('/admin/data-fix')} type="button">
-            🛠️ Repair / Data Fix
+            Data Fix Tools
           </RepairButton>
         </LoginHeader>
 
@@ -347,13 +344,13 @@ const SuperAdminLogin: React.FC = () => {
           <LoginButton type="submit" $disabled={loading}>
             {loading ? (
               <>
-                <div style={{ width: '20px', height: '20px', border: '2px solid transparent', borderTop: '2px solid currentColor', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                <div style={{ width: '16px', height: '16px', border: '2px solid transparent', borderTop: '2px solid currentColor', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
                 Authenticating...
               </>
             ) : (
               <>
-                <Lock size={20} />
-                Access Super Admin Dashboard
+                <Lock size={16} />
+                Sign In
               </>
             )}
           </LoginButton>
@@ -390,8 +387,8 @@ const SuperAdminLogin: React.FC = () => {
             </AdminInfoItem>
           </AdminInfoGrid>
           <SecurityBadge>
-            <Shield size={14} />
-            Unique Owner - Full System Access
+            <Shield size={12} />
+            Owner Access
           </SecurityBadge>
         </AdminInfo>
       </LoginCard>

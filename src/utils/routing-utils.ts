@@ -11,7 +11,10 @@ import { UnifiedCar } from '../services/car/unified-car-types';
 /**
  * Get car details URL according to project constitution
  * 
- * Constitution Rule: /car/{userId}/{carLocalId}
+ * Constitution Rule: /car/{sellerNumericId}/{carNumericId}
+ * 
+ * ✅ STRICT ENFORCEMENT: This function ensures all car URLs use numeric IDs only
+ * ⚠️ WARNING: Legacy UUID fallbacks are logged and should be migrated
  * 
  * @param car - Car object with seller and car IDs
  * @returns URL string following constitution format
@@ -26,21 +29,24 @@ export const getCarDetailsUrl = (car: {
   sellerId?: string;
   id?: string;
 }): string => {
-  // ✅ Constitution-compliant Priority: /car/{sellerNum}/{carNum}
+  // ✅ PRIORITY #1: Constitution-compliant numeric URL
   if (car.sellerNumericId && car.carNumericId) {
     return `/car/${car.sellerNumericId}/${car.carNumericId}`;
   }
 
-  // Fallback for cases where only numeric car ID is available (should be редко)
-  if (car.carNumericId && !car.sellerNumericId && car.sellerId) {
-    // We can't build the full numeric URL without seller numeric ID
-    // but we should avoid legacy if possible. 
-    // For now, if we have the UUID, we use it as fallback 
-    return `/car-details/${car.id || car.carNumericId}`;
+  // ⚠️ FALLBACK: Legacy UUID support (temporary until migration)
+  // This logs a warning so we can track and fix these cases
+  if (car.id) {
+    console.warn(
+      `[ROUTING VIOLATION] Car ${car.id} is missing numeric IDs.`,
+      'This should be migrated. Run: npm run migrate:legacy-cars'
+    );
+    return `/car-details/${car.id}`;
   }
 
-  // Final fallback to the basic cars list if we can't even get a UUID
-  return car.id ? `/car-details/${car.id}` : '/cars';
+  // ❌ LAST RESORT: No valid ID found
+  console.error('[ROUTING ERROR] Car object has no valid ID', car);
+  return '/cars';
 };
 
 /**

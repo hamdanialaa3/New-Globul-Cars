@@ -1,9 +1,11 @@
 import { logger } from '../services/logger-service';
 // Dynamic Sitemap Generator (FREE SEO)
 // Generates XML sitemap for Google Search Console
+// UPDATED: Now uses numeric URLs for all car listings
 
 import { db } from '../firebase';
 import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
+import { getCarDetailsUrl } from './urlHelpers';
 
 interface SitemapUrl {
   loc: string;
@@ -37,6 +39,7 @@ export const generateSitemapXML = (urls: SitemapUrl[]): string => {
 /**
  * Generate sitemap for all active car listings
  * FREE - Query Firestore directly
+ * UPDATED: Uses numeric URLs instead of UUIDs
  */
 export const generateCarListingsSitemap = async (baseUrl: string = 'https://globulcars.bg'): Promise<SitemapUrl[]> => {
   try {
@@ -50,19 +53,36 @@ export const generateCarListingsSitemap = async (baseUrl: string = 'https://glob
     
     const snapshot = await getDocs(q);
     
-    return snapshot.docs.map(doc => {
-      const data = doc.data();
-      const lastmod = data.updatedAt?.toDate?.()?.toISOString() || 
-                      data.createdAt?.toDate?.()?.toISOString() ||
-                      new Date().toISOString();
-      
-      return {
-        loc: `${baseUrl}/car/${doc.id}`,
-        lastmod: lastmod.split('T')[0], // YYYY-MM-DD format
-        changefreq: 'daily',
-        priority: 0.8
-      };
-    });
+    return snapshot.docs
+      .map(doc => {
+        const data = doc.data();
+        
+        // Skip cars without numeric IDs (legacy data)
+        if (!data.sellerNumericId || !data.carNumericId) {
+          logger.warn(`Car ${doc.id} missing numeric IDs, skipping from sitemap`);
+          return null;
+        }
+        
+        const lastmod = data.updatedAt?.toDate?.()?.toISOString() || 
+                        data.createdAt?.toDate?.()?.toISOString() ||
+                        new Date().toISOString();
+        
+        // Use numeric URL format: /car/{sellerNumericId}/{carNumericId}
+        const carUrl = getCarDetailsUrl(
+          data.sellerNumericId,
+          data.carNumericId,
+          data.make || 'car',
+          data.model || 'listing'
+        );
+        
+        return {
+          loc: `${baseUrl}${carUrl}`,
+          lastmod: lastmod.split('T')[0], // YYYY-MM-DD format
+          changefreq: 'daily' as const,
+          priority: 0.8
+        };
+      })
+      .filter(Boolean) as SitemapUrl[]; // Remove null entries
   } catch (error) {
     logger.error('Error generating car listings sitemap:', error);
     return [];

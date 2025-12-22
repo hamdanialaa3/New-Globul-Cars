@@ -65,9 +65,15 @@ export async function createCar(carData: Partial<UnifiedCar>): Promise<{ id: str
 /**
  * Update car
  * ✅ FIX: Find the correct collection for the car before updating
+ * ✅ SECURITY: Verify ownership before allowing updates
  */
 export async function updateCar(carId: string, updates: Partial<UnifiedCar>): Promise<void> {
   try {
+    const currentUser = auth.currentUser;
+    if (!currentUser?.uid) {
+      throw new Error('AUTHENTICATION_REQUIRED: User must be logged in to update car');
+    }
+
     // ✅ FIX: Find which collection contains this car
     let foundCollection: string | null = null;
     let carData: Record<string, unknown> = {};
@@ -90,6 +96,21 @@ export async function updateCar(carId: string, updates: Partial<UnifiedCar>): Pr
 
     if (!foundCollection) {
       throw new Error(`Car with ID ${carId} not found in any collection`);
+    }
+
+    // ✅ CRITICAL SECURITY CHECK: Verify Ownership
+    const sellerId = carData?.sellerId as string | undefined;
+    const ownerId = carData?.ownerId as string | undefined;
+    const isOwner = sellerId === currentUser.uid || ownerId === currentUser.uid;
+
+    if (!isOwner) {
+      serviceLogger.error('SECURITY VIOLATION: Unauthorized car update attempt', new Error('Unauthorized update'), {
+        carId,
+        attemptedBy: currentUser.uid,
+        actualOwner: sellerId || ownerId,
+        timestamp: new Date().toISOString()
+      });
+      throw new Error('PERMISSION_DENIED: You do not have rights to modify this listing');
     }
 
     const docRef = doc(db, foundCollection, carId);

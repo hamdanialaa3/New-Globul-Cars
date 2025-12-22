@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { Car, ChevronLeft, ChevronRight, Eye, Plus } from 'lucide-react';
+import { getCarDetailsUrl } from '../../utils/routing-utils';
 
 // ==================== TYPES ====================
 
@@ -20,6 +21,9 @@ export interface CarouselCar {
   imageUrl?: string;
   status?: 'active' | 'sold' | 'draft' | 'pending';
   views?: number;
+  sellerNumericId?: number;
+  carNumericId?: number;
+  sellerId?: string;
 }
 
 interface GarageCarouselProps {
@@ -411,8 +415,8 @@ export const GarageCarousel: React.FC<GarageCarouselProps> = ({
     }
   };
 
-  const handleCarClick = (carId: string) => {
-    navigate(`/car/${carId}`);
+  const handleCarClick = (car: CarouselCar) => {
+    navigate(getCarDetailsUrl(car));
   };
 
   const handleViewAll = () => {
@@ -504,7 +508,7 @@ export const GarageCarousel: React.FC<GarageCarouselProps> = ({
             <CircularCarCard 
               key={car.id} 
               $status={car.status}
-              onClick={() => handleCarClick(car.id)}
+              onClick={() => handleCarClick(car)}
             >
               <CarCircle 
                 className="car-circle"

@@ -56,109 +56,111 @@ const Tab = styled.button<{ $active: boolean; $isDark: boolean; $tabType?: 'all'
   padding: 1rem 1.5rem;
   font-weight: 700;
   font-size: 0.95rem;
-  border: ${props => {
-    // Add orange border for inactive "new" tab
-    if (!props.$active && props.$tabType === 'new') {
-      return '1px solid rgba(254, 102, 1, 1)';
-    }
-    return 'none';
-  }};
+  border: none;
   background: ${props => {
     if (props.$active) {
       return props.$isDark
-        ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 165, 0, 0.15) 100%)'
-        : 'linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(250, 252, 255, 1) 100%)';
+        ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, rgba(255, 165, 0, 0.08) 100%)'
+        : 'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.2) 100%)';
     }
-    return 'transparent';
+    return props.$isDark
+      ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%)'
+      : 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)';
   }};
-  background-image: ${props => {
-    // Gradient background-image for inactive "used" tab (for text gradient effect)
-    if (!props.$active && props.$tabType === 'used') {
-      return 'linear-gradient(90deg, rgba(15, 20, 25, 1) 5%, rgba(255, 255, 255, 1) 100%)';
-    }
-    return 'none';
-  }};
-  background-color: ${props => {
-    // Background color for inactive "used" tab
-    if (!props.$active && props.$tabType === 'used') {
-      return 'rgba(255, 118, 5, 1)';
-    }
-    return 'transparent';
-  }};
-  background-clip: ${props => {
-    // Text gradient effect for inactive "used" tab
-    if (!props.$active && props.$tabType === 'used') {
-      return 'text';
-    }
-    return 'border-box';
-  }};
-  -webkit-background-clip: ${props => {
-    // Webkit prefix for text gradient effect
-    if (!props.$active && props.$tabType === 'used') {
-      return 'text';
-    }
-    return 'border-box';
-  }};
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   color: ${props => {
     if (props.$active) {
-      // Active state: bright in dark mode, dark in light mode
       return props.$isDark ? '#FFD700' : '#0F172A';
     }
-    // Transparent color for inactive "used" tab (to show gradient through background-clip: text)
-    if (props.$tabType === 'used') {
-      return 'transparent';
-    }
-    // Inactive state: lighter in dark mode, darker in light mode for better contrast
-    return props.$isDark ? 'rgba(255, 255, 255, 0.7)' : '#475569';
+    return props.$isDark ? 'rgba(255, 255, 255, 0.6)' : '#64748b';
   }};
   text-align: center;
-  border-radius: ${props => props.$active ? '12px' : '8px'};
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   position: relative;
-  box-shadow: ${props => props.$active && props.$isDark
-    ? '0 4px 12px rgba(255, 215, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
-    : props.$active && !props.$isDark
-    ? '0 4px 12px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8)'
-    : 'none'};
+  overflow: hidden;
+  
+  /* Glassmorphism glow effect */
+  box-shadow: ${props => {
+    if (props.$active) {
+      return props.$isDark
+        ? '0 8px 32px rgba(255, 215, 0, 0.25), 0 0 0 0px rgba(255, 215, 0, 0), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+        : '0 8px 32px rgba(255, 143, 16, 0.2), 0 0 0 0px rgba(255, 143, 16, 0), inset 0 1px 0 rgba(255, 255, 255, 0.5)';
+    }
+    return '0 4px 16px rgba(0, 0, 0, 0.1), 0 0 0 0px rgba(255, 255, 255, 0)';
+  }};
 
+  /* Animated glow ring */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 12px;
+    padding: 2px;
+    background: ${props => props.$isDark
+      ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.4), rgba(255, 165, 0, 0.2), transparent)'
+      : 'linear-gradient(135deg, rgba(255, 143, 16, 0.3), rgba(255, 165, 0, 0.15), transparent)'};
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: ${props => props.$active ? 1 : 0};
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Shimmer effect */
   &::after {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: ${props => props.$active ? '60%' : '0%'};
-    height: 3px;
-    background: ${props => props.$isDark 
-      ? 'linear-gradient(90deg, transparent, #FFD700, transparent)' 
-      : 'linear-gradient(90deg, transparent,rgb(255, 89, 0), transparent)'};
-    border-radius: 2px;
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
   }
 
   &:hover {
     background: ${props => {
-      if (props.$active) return props.$isDark
-        ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 165, 0, 0.2) 100%)'
-        : 'linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(250, 252, 255, 1) 100%)';
-      return props.$isDark 
-        ? 'rgba(255, 215, 0, 0.08)' 
-        : 'rgba(0, 102, 255, 0.08)';
+      if (props.$active) {
+        return props.$isDark
+          ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.18) 0%, rgba(255, 165, 0, 0.12) 100%)'
+          : 'linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.3) 100%)';
+      }
+      return props.$isDark
+        ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.08) 0%, rgba(255, 165, 0, 0.04) 100%)'
+        : 'linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%)';
     }};
     color: ${props => {
-      // On hover, make text more prominent
       if (props.$active) {
         return props.$isDark ? '#FFD700' : '#0F172A';
       }
-      // Inactive hover: brighter in dark mode, darker in light mode
-      return props.$isDark ? 'rgba(255, 255, 255, 0.9)' : '#334155';
+      return props.$isDark ? 'rgba(255, 255, 255, 0.85)' : '#475569';
     }};
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: ${props => {
+      if (props.$active) {
+        return props.$isDark
+          ? '0 12px 40px rgba(255, 215, 0, 0.35), 0 0 0 0px rgba(255, 215, 0, 0), inset 0 1px 0 rgba(255, 255, 255, 0.15)'
+          : '0 12px 40px rgba(255, 143, 16, 0.3), 0 0 0 0px rgba(255, 143, 16, 0), inset 0 1px 0 rgba(255, 255, 255, 0.6)';
+      }
+      return props.$isDark
+        ? '0 8px 24px rgba(255, 215, 0, 0.15), 0 0 0 0px rgba(255, 215, 0, 0)'
+        : '0 8px 24px rgba(0, 0, 0, 0.12), 0 0 0 0px rgba(255, 255, 255, 0)';
+    }};
+    
+    &::before {
+      opacity: ${props => props.$active ? 1 : 0.5};
+    }
+    
+    &::after {
+      left: 100%;
+    }
   }
 
   &:active {
@@ -282,31 +284,48 @@ const IconWrapper = styled.div<{ $isDark: boolean }>`
 
 const SearchButton = styled.button<{ $isDark: boolean }>`
   background: ${props => props.$isDark
-    ? 'linear-gradient(135deg, rgba(0, 102, 255, 0.4) 0%, rgba(0, 123, 255, 0.5) 100%)'
-    : 'linear-gradient(135deg, rgba(0, 102, 255, 0.8) 0%, rgba(0, 123, 255, 0.9) 100%)'};
+    ? 'linear-gradient(135deg, rgba(0, 102, 255, 0.25) 0%, rgba(0, 123, 255, 0.2) 100%)'
+    : 'linear-gradient(135deg, rgba(0, 102, 255, 0.4) 0%, rgba(0, 123, 255, 0.35) 100%)'};
   color: ${props => props.$isDark ? '#FFFFFF' : '#FFFFFF'};
-  border: ${props => props.$isDark 
-    ? '1px solid rgba(100, 181, 246, 0.4)' 
-    : '1px solid rgba(59, 130, 246, 0.3)'};
+  border: none;
   border-radius: 14px;
   font-weight: 700;
   font-size: 1rem;
   padding: 0 2.5rem;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
   box-shadow: ${props => props.$isDark
-    ? '0 6px 20px rgba(0, 102, 255, 0.3), 0 0 0 1px rgba(100, 181, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15)'
-    : '0 6px 20px rgba(0, 102, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)'};
+    ? '0 8px 32px rgba(0, 102, 255, 0.3), 0 0 0 0px rgba(100, 181, 246, 0), inset 0 1px 0 rgba(255, 255, 255, 0.15)'
+    : '0 8px 32px rgba(0, 102, 255, 0.25), 0 0 0 0px rgba(59, 130, 246, 0), inset 0 1px 0 rgba(255, 255, 255, 0.4)'};
   min-height: 50px;
   position: relative;
   overflow: hidden;
 
+  /* Animated glow ring */
   &::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 14px;
+    padding: 2px;
+    background: ${props => props.$isDark
+      ? 'linear-gradient(135deg, rgba(0, 102, 255, 0.5), rgba(100, 181, 246, 0.3), transparent)'
+      : 'linear-gradient(135deg, rgba(0, 102, 255, 0.4), rgba(59, 130, 246, 0.25), transparent)'};
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Shimmer effect */
+  &::after {
     content: '';
     position: absolute;
     top: 0;
@@ -324,17 +343,18 @@ const SearchButton = styled.button<{ $isDark: boolean }>`
 
   &:hover {
     background: ${props => props.$isDark
-      ? 'linear-gradient(135deg, rgba(0, 123, 255, 0.5) 8%, rgba(37, 99, 235, 0.6) 100%)'
-      : 'linear-gradient(135deg, rgba(0, 123, 255, 0.9) 0%, rgba(37, 99, 235, 1) 100%)'};
+      ? 'linear-gradient(135deg, rgba(0, 123, 255, 0.35) 0%, rgba(37, 99, 235, 0.3) 100%)'
+      : 'linear-gradient(135deg, rgba(0, 123, 255, 0.5) 0%, rgba(37, 99, 235, 0.45) 100%)'};
     transform: translateY(-3px) scale(1.02);
     box-shadow: ${props => props.$isDark
-      ? '0 10px 30px rgba(0, 102, 255, 0.4), 0 0 0 1px rgba(100, 181, 246, 0.3)'
-      : '0 10px 30px rgba(0, 102, 255, 0.35)'};
-    border-color: ${props => props.$isDark 
-      ? 'rgba(100, 181, 246, 0.6)' 
-      : 'rgba(59, 130, 246, 0.5)'};
+      ? '0 12px 48px rgba(0, 102, 255, 0.45), 0 0 0 0px rgba(100, 181, 246, 0), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+      : '0 12px 48px rgba(0, 102, 255, 0.4), 0 0 0 0px rgba(59, 130, 246, 0), inset 0 1px 0 rgba(255, 255, 255, 0.5)'};
     
     &::before {
+      opacity: 1;
+    }
+    
+    &::after {
       left: 100%;
     }
   }

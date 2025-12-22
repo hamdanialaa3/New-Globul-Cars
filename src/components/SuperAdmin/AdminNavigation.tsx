@@ -21,44 +21,43 @@ interface AdminNavigationProps {
 
 const NavigationTabs = styled.div`
   display: flex;
-  gap: 6px;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  padding: 6px;
-  border-radius: 12px;
-  margin: 0 20px 30px 20px;
-  border: 2px solidrgb(0, 153, 255);
-  box-shadow: 0 5px 20px rgba(0, 255, 204, 0.2);
+  gap: 4px;
+  background: #ffffff;
+  padding: 4px;
+  border-radius: 4px;
+  margin: 0 20px 20px 20px;
+  border: 1px solid #e0e0e0;
   overflow-x: auto;
   scrollbar-width: thin;
-  scrollbar-color:rgb(17, 203, 231) #1a1a1a;
+  scrollbar-color: #d0d0d0 #f5f5f5;
   
   &::-webkit-scrollbar {
-    height: 6px;
+    height: 4px;
   }
   
   &::-webkit-scrollbar-track {
-    background: #1a1a1a;
-    border-radius: 3px;
+    background: #f5f5f5;
+    border-radius: 2px;
   }
   
   &::-webkit-scrollbar-thumb {
-    background:rgb(7, 156, 236);
-    border-radius: 3px;
+    background: #d0d0d0;
+    border-radius: 2px;
   }
   
   &::-webkit-scrollbar-thumb:hover {
-    background:rgb(78, 214, 255);
+    background: #999999;
   }
 `;
 
 const TabButton = styled.button<{ $active: boolean }>`
-  padding: 8px 16px;
-  border: 2px solid transparent;
-  border-radius: 8px;
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-radius: 4px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.15s;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -66,20 +65,16 @@ const TabButton = styled.button<{ $active: boolean }>`
   min-width: fit-content;
   
   ${props => props.$active ? `
-    background: linear-gradient(135deg,rgb(59, 166, 243) 0%,rgb(3, 167, 222) 100%);
-    color: #000000;
-    border-color:rgb(21, 200, 255);
-    box-shadow: 0 3px 10px rgba(0, 157, 255, 0.4);
-    transform: translateY(-1px);
+    background: #1a1a1a;
+    color: #ffffff;
+    border-color: #d0d0d0;
   ` : `
     background: transparent;
-    color:rgb(0, 179, 255);
+    color: #666666;
     border-color: transparent;
     &:hover {
-      background: rgba(255, 215, 0, 0.1);
-      color:rgb(39, 232, 236);
-      border-color:rgb(25, 216, 216);
-      transform: translateY(-1px);
+      background: #f5f5f5;
+      color: #1a1a1a;
     }
   `}
 `;

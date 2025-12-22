@@ -9,6 +9,7 @@ import IndexedDBActivityTracker from './services/indexeddb-activity-tracker';
 import { logger } from './services/logger-service';
 import { InstallPrompt } from './components/PWA/InstallPrompt';
 import GuestExpirationModal from './components/auth/GuestExpirationModal';
+import ConsentBanner from './components/ConsentBanner';
 
 // 🔧 Dev utilities (available in console)
 if (process.env.NODE_ENV === 'development') {
@@ -46,6 +47,7 @@ const App: React.FC = () => {
       <AppRoutes />
       <GuestExpirationModal />
       <InstallPrompt />
+      <ConsentBanner />
     </AppProviders>
   );
 };

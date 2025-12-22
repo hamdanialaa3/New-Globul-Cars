@@ -1,12 +1,15 @@
 import { logger } from '../services/logger-service';
 // Google Analytics 4 Integration (FREE - Unlimited events)
 // Track user behavior, conversions, and business metrics
+// UPDATED: Integrated with Consent Mode v2 for GDPR compliance
 
 import ReactGA from 'react-ga4';
+import { initConsentMode, applySavedConsent } from './consent-mode';
 
 /**
- * Initialize Google Analytics 4
+ * Initialize Google Analytics 4 with Consent Mode v2
  * FREE - Unlimited events and users
+ * GDPR-compliant with consent management
  * 
  * Add to App.tsx:
  * import { initGA } from './utils/google-analytics';
@@ -18,6 +21,10 @@ export const initGA = (measurementId: string = process.env.REACT_APP_FIREBASE_ME
     return;
   }
   
+  // CRITICAL: Initialize Consent Mode BEFORE GA4
+  initConsentMode();
+  applySavedConsent();
+  
   ReactGA.initialize(measurementId, {
     gaOptions: {
       send_page_view: false, // We'll send manually
@@ -25,7 +32,7 @@ export const initGA = (measurementId: string = process.env.REACT_APP_FIREBASE_ME
     }
   });
   
-  logger.info('✅ Google Analytics 4 initialized');
+  logger.info('✅ Google Analytics 4 initialized with Consent Mode v2');
 };
 
 /**
@@ -60,7 +67,18 @@ export const trackEvent = (
 
 // ========== Car Listing Events (FREE) ==========
 
-export const trackCarView = (carId: string, make: string, model: string, price: number) => {
+/**
+ * Track car view event with numeric IDs for Google Ads/Merchant Center
+ * UPDATED: Now includes sellerNumericId and carNumericId
+ */
+export const trackCarView = (
+  carId: string,
+  make: string,
+  model: string,
+  price: number,
+  sellerNumericId?: number,
+  carNumericId?: number
+) => {
   trackEvent('Car Listing', 'View Car', `${make} ${model}`, price);
   
   // Enhanced ecommerce event (FREE - helps with Google Ads)
@@ -71,9 +89,23 @@ export const trackCarView = (carId: string, make: string, model: string, price: 
       item_id: carId,
       item_name: `${make} ${model}`,
       item_category: 'Car',
-      price: price
+      price: price,
+      // CRITICAL: Add numeric IDs for Google Merchant Center tracking
+      ...(sellerNumericId && { seller_numeric_id: sellerNumericId }),
+      ...(carNumericId && { car_numeric_id: carNumericId })
     }]
   });
+  
+  // Additional custom dimensions for better tracking
+  if (sellerNumericId && carNumericId) {
+    (window as any).gtag?.('event', 'car_view_numeric', {
+      seller_numeric_id: sellerNumericId,
+      car_numeric_id: carNumericId,
+      make: make,
+      model: model,
+      price: price
+    });
+  }
 };
 
 export const trackCarSearch = (query: string, filters: any) => {
@@ -85,15 +117,36 @@ export const trackCarSearch = (query: string, filters: any) => {
   });
 };
 
-export const trackCarContact = (carId: string, method: 'phone' | 'whatsapp' | 'message') => {
+/**
+ * Track contact seller event with numeric IDs
+ * UPDATED: Includes numeric IDs for conversion tracking
+ */
+export const trackCarContact = (
+  carId: string,
+  method: 'phone' | 'whatsapp' | 'message',
+  sellerNumericId?: number,
+  carNumericId?: number
+) => {
   trackEvent('Conversion', 'Contact Seller', method);
   
   ReactGA.event('generate_lead', {
     currency: 'EUR',
     value: 1, // Lead value
     method: method,
-    car_id: carId
+    car_id: carId,
+    // Add numeric IDs for better conversion tracking
+    ...(sellerNumericId && { seller_numeric_id: sellerNumericId }),
+    ...(carNumericId && { car_numeric_id: carNumericId })
   });
+  
+  // Additional event for Google Ads conversion tracking
+  if (sellerNumericId && carNumericId) {
+    (window as any).gtag?.('event', 'contact_seller', {
+      event_category: 'engagement',
+      event_label: `${sellerNumericId}/${carNumericId}`,
+      value: 1
+    });
+  }
 };
 
 export const trackCarFavorite = (carId: string, action: 'add' | 'remove') => {

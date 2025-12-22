@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { safeLazy } from '../utils/lazyImport';
-import { AuthGuard } from '../components/guards';
+import { AuthGuard, NumericIdGuard } from '../components/guards';
 import LoadingSpinner from '../components/LoadingSpinner'; // Assuming this is used or generic fallback
 import SellRouteRedirect from '../components/SellWorkflow/SellRouteRedirect';
 import InactivityWarning from '../components/InactivityWarning';
@@ -111,6 +111,16 @@ export const MainRoutes: React.FC = () => {
             {/* 🔢 Strict Numeric Car URLs (Constitution: /car/:sellerNumericId/:carNumericId) */}
             <Route path="/car/:sellerNumericId/:carNumericId" element={<NumericCarDetailsPage />} />
             <Route path="/car/:sellerNumericId/:carNumericId/edit" element={<NumericCarDetailsPage />} />
+
+            {/* Legacy UUID route kept for automatic redirect to numeric URLs */}
+            <Route
+                path="/car-details/:id"
+                element={
+                    <NumericIdGuard>
+                        <CarDetailsPage />
+                    </NumericIdGuard>
+                }
+            />
 
             <Route path="/dealer/:slug" element={<DealerPublicPage />} />
             <Route path="/dealer-registration" element={<DealerRegistrationPage />} />

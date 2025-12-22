@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { doc, collection, query, where, getDocs, limit } from 'firebase/firestore';
+import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { logger } from '../../services/logger-service';
 import CarDetailsPage from './CarDetailsPage';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { VEHICLE_COLLECTIONS } from '../../services/car/unified-car-types';
 
 // Route: /car/:sellerNumericId/:carNumericId
 // Example: /car/1/1
@@ -33,44 +34,21 @@ const NumericCarDetailsPage: React.FC = () => {
                     return;
                 }
 
-                // 1. Find User by numericId
-                const usersRef = collection(db, 'users');
-                const userQuery = query(usersRef, where('numericId', '==', sellerNum), limit(1));
-                const userSnap = await getDocs(userQuery);
-
-                if (userSnap.empty) {
-                    logger.warn('NumericCarDetails: Seller not found', { sellerNum });
-                    setError('Seller not found');
-                    setLoading(false);
-                    return;
-                }
-
-                const sellerId = userSnap.docs[0].id; // Firebase UID
-
-                // 2. Find Car by numericId AND sellerId
-                // We check all car collections or just 'cars' depending on data
-                // For now, assuming most are in 'cars' or we query specifically based on strict system
-                const carsRef = collection(db, 'cars');
-                const carQuery = query(
-                    carsRef,
-                    where('sellerId', '==', sellerId),
-                    where('carNumericId', '==', carNum),
-                    limit(1)
-                );
-
-                const carSnap = await getDocs(carQuery);
-
-                if (!carSnap.empty) {
-                    const foundCarId = carSnap.docs[0].id;
-                    logger.info('Resolved numeric car URL', { sellerNum, carNum, foundCarId });
-                    setRealCarId(foundCarId);
+                // Resolve car directly by numeric fields across all vehicle collections
+                const found = await resolveByNumeric(sellerNum, carNum);
+                if (found) {
+                    logger.info('Resolved numeric car URL', { sellerNum, carNum, foundCarId: found.id, collection: found.collection });
+                    setRealCarId(found.id);
                 } else {
-                    // Try other collections if needed (passenger_cars, etc) - existing patterns suggest 'cars' is main or we search others
-                    // For Strict ID system, we should ensure all go to one place or we search all.
-                    // Let's safe search strictly in 'cars' first as SellWorkflowService defaults there unless specific type.
-                    // The query above is generic.
-                    logger.warn('NumericCarDetails: Car not found', { sellerId, carNum });
-                    setError('Car not found');
+                    // Fallback: support legacy field name `numericId`
+                    const legacyFound = await resolveByNumeric(sellerNum, carNum, true);
+                    if (legacyFound) {
+                        logger.info('Resolved via legacy numericId', { sellerNum, carNum, foundCarId: legacyFound.id, collection: legacyFound.collection });
+                        setRealCarId(legacyFound.id);
+                    } else {
+                        logger.warn('NumericCarDetails: Car not found', { sellerNum, carNum });
+                        setError('Car not found');
+                    }
                 }
             } catch (err) {
                 logger.error('Error resolving numeric car ID', err as Error);
@@ -108,3 +86,43 @@ const NumericCarDetailsPage: React.FC = () => {
 };
 
 export default NumericCarDetailsPage;
+
+/**
+ * Resolve car document by sellerNumericId + carNumericId across all vehicle collections
+ */
+async function resolveByNumeric(sellerNum: number, carNum: number, useLegacyNumericId = false): Promise<{ id: string; collection: string } | null> {
+    for (const col of VEHICLE_COLLECTIONS) {
+        try {
+            const colRef = collection(db, col);
+            const numField = useLegacyNumericId ? 'numericId' : 'carNumericId';
+            // Primary: numbers
+            const q = query(
+                colRef,
+                where('sellerNumericId', '==', sellerNum),
+                where(numField, '==', carNum),
+                limit(1)
+            );
+            const snap = await getDocs(q);
+            if (!snap.empty) {
+                const doc = snap.docs[0];
+                return { id: doc.id, collection: col };
+            }
+            // Fallback: some legacy docs may store numeric IDs as strings
+            const qStr = query(
+                colRef,
+                where('sellerNumericId', '==', String(sellerNum)),
+                where(numField, '==', String(carNum)),
+                limit(1)
+            );
+            const snapStr = await getDocs(qStr);
+            if (!snapStr.empty) {
+                const doc = snapStr.docs[0];
+                return { id: doc.id, collection: col };
+            }
+        } catch (err) {
+            // Continue to next collection
+            continue;
+        }
+    }
+    return null;
+}

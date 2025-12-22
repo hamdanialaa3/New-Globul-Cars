@@ -19,6 +19,7 @@ import {
   Briefcase
 } from 'lucide-react';
 import { getCarLogoUrl } from '../../services/car-logo-service';
+import { getCarDetailsUrl } from '../../utils/routing-utils';
 
 // ==================== TYPES ====================
 
@@ -54,6 +55,9 @@ export interface GarageCar {
     city?: string;
     region?: string;
   };
+  sellerNumericId?: number;
+  carNumericId?: number;
+  sellerId?: string;
 }
 
 interface UserStats {
@@ -721,8 +725,8 @@ export const GarageSectionPro: React.FC<GarageSectionProps> = ({
     return language === 'bg' ? statusMap[status]?.bg : statusMap[status]?.en;
   };
 
-  const handleView = (carId: string) => {
-    navigate(`/car/${carId}`);
+  const handleView = (car: GarageCar) => {
+    navigate(getCarDetailsUrl(car));
   };
 
   const handleEdit = (e: React.MouseEvent, carId: string) => {
@@ -810,7 +814,7 @@ export const GarageSectionPro: React.FC<GarageSectionProps> = ({
             const visual = getCarVisual(car);
             
             return (
-              <CarCard key={car.id} onClick={() => handleView(car.id)}>
+              <CarCard key={car.id} onClick={() => handleView(car)}>
                 {/* Image/Logo */}
                 <ImageContainer>
                   {visual.type === 'image' ? (
@@ -911,7 +915,7 @@ export const GarageSectionPro: React.FC<GarageSectionProps> = ({
                 <ActionsBar>
                   <ActionButton 
                     $variant="view" 
-                    onClick={(e) => { e.stopPropagation(); handleView(car.id); }}
+                    onClick={(e) => { e.stopPropagation(); handleView(car); }}
                     title={language === 'bg' ? 'Преглед' : 'View'}
                   >
                     <Eye size={12} />

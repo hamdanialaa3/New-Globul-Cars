@@ -10,6 +10,7 @@ import { UnifiedCar } from '../../../services/car/unified-car-types';
 import { ChevronRight, Heart } from 'lucide-react';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { serviceLogger } from '../../../services/logger-service';
+import { getCarDetailsUrl } from '../../../utils/routing-utils';
 
 interface CarSuggestionsListProps {
   currentCar: CarListing;
@@ -391,13 +392,8 @@ const CarSuggestionsList: React.FC<CarSuggestionsListProps> = ({
   }, [currentCar, limit]);
 
   const handleCardClick = (car: UnifiedCar) => {
-    // ✅ CRITICAL FIX: Use numeric URL if available, fallback to legacy URL
-    if ((car as any).sellerNumericId && (car as any).carNumericId) {
-      navigate(`/car/${(car as any).sellerNumericId}/${(car as any).carNumericId}`);
-    } else {
-      // Fallback to legacy URL
-      navigate(`/car/${car.id}`);
-    }
+    // ✅ Use centralized routing utility for consistent URL generation
+    navigate(getCarDetailsUrl(car));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

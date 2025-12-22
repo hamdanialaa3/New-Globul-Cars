@@ -13,6 +13,7 @@ import { bulgarianAuthService } from '../../firebase';
 import { useProfileType } from '../../../../contexts/ProfileTypeContext';
 import type { ProfileType } from '../../../../contexts/ProfileTypeContext';
 import { logger } from '../../../../services/logger-service';
+import { getCarDetailsUrl } from '../../../../utils/routing-utils';
 // NEW: Profile Type-Specific Components
 import PrivateProfile from './components/PrivateProfile';
 import DealerProfile from './components/DealerProfile';
@@ -947,7 +948,7 @@ const ProfilePage: React.FC = () => {
                   {userCars.slice(0, 6).map(car => (
                     <div 
                       key={car.id || `car-${Math.random()}`}
-                      onClick={() => navigate(`/car/${car.id}`)}
+                      onClick={() => navigate(getCarDetailsUrl(car))}
                       style={{
                         background: 'var(--bg-card)',
                         borderRadius: '8px',
@@ -1037,7 +1038,10 @@ const ProfilePage: React.FC = () => {
                       createdAt: car.createdAt || new Date(),
                       title: car.title || `${car.make} ${car.model}`
                     }))}
-                    onEdit={(carId) => navigate(`/car/${carId}?edit=true`)}
+                    onEdit={(carId) => {
+                      const car = userCars.find(c => c.id === carId);
+                      if (car) navigate(getCarDetailsUrl(car) + '?edit=true');
+                    }}
                     onDelete={(carId) => {
                       if (window.confirm(language === 'bg' ? 'Сигурни ли сте?' : 'Are you sure?')) {
                         loadUserCars?.();

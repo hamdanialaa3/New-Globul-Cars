@@ -199,7 +199,10 @@ const PaymentFailedPage: React.FC = () => {
 
   const handleGoBack = () => {
     if (carId) {
-      navigate(`/car/${carId}`);
+      // Note: We need the full car object to generate proper URL
+      // For now, fallback to car-details until proper data is passed
+      navigate(`/car-details/${carId}`);
+      // TODO: Pass full car object to enable numeric URL generation
     } else {
       navigate('/cars');
     }

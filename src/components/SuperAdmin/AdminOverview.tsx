@@ -20,118 +20,109 @@ interface AdminOverviewProps {
 }
 
 const OverviewContainer = styled.div`
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  border: 2px solidrgb(0, 170, 255);
-  border-radius: 15px;
-  padding: 30px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 24px;
   margin: 0 20px 20px 20px;
-  box-shadow: 0 20px 40px rgba(255, 215, 0, 0.2);
-  color:rgb(0, 166, 255);
+  color: #1a1a1a;
 `;
 
 const StatsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin-bottom: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
 `;
 
 const StatCard = styled.div`
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  border: 2px solidrgb(0, 106, 255);
-  border-radius: 12px;
-  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 16px;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
-  color:rgb(0, 128, 255);
-  transition: all 0.3s ease;
+  transition: border-color 0.15s;
   
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
+    border-color: #999999;
   }
 `;
 
 const StatIcon = styled.div`
-  background: linear-gradient(135deg,rgb(0, 170, 255) 0%,rgb(78, 196, 255) 100%);
-  color: #000000;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
+  background: #f5f5f5;
+  color: #1a1a1a;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 15px;
-  font-size: 24px;
-  border: 2px solidrgb(0, 157, 255);
-  box-shadow: 0 3px 10px rgba(255, 215, 0, 0.3);
+  margin: 0 auto 12px;
+  font-size: 20px;
+  border: 1px solid #e0e0e0;
 `;
 
 const StatValue = styled.div`
-  font-size: 32px;
-  font-weight: 800;
-  color:rgb(0, 162, 255);
-  margin-bottom: 5px;
-  text-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 4px;
 `;
 
 const StatLabel = styled.div`
-  font-size: 14px;
-  color:rgb(0, 98, 255);
-  font-weight: 600;
-  margin-bottom: 10px;
+  font-size: 12px;
+  color: #666666;
+  font-weight: 500;
+  margin-bottom: 8px;
 `;
 
 const StatChange = styled.div<{ $positive: boolean }>`
-  font-size: 12px;
-  font-weight: 600;
-  color: ${props => props.$positive ? '#ffd700' : '#ff6b6b'};
-  text-shadow: 0 1px 2px rgba(255, 215, 0, 0.3);
+  font-size: 11px;
+  font-weight: 500;
+  color: ${props => props.$positive ? '#2d5a2d' : '#8b2d2d'};
 `;
 
 const SectionTitle = styled.h3`
-  color: #ffd700;
-  font-size: 20px;
-  font-weight: 700;
-  margin: 30px 0 20px 0;
-  text-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+  color: #1a1a1a;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 24px 0 16px 0;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 `;
 
 const UserActivityTable = styled.div`
-  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-  border: 2px solidrgb(0, 191, 255);
-  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
 `;
 
 const TableHeader = styled.div`
-  background: linear-gradient(135deg,rgb(0, 157, 255) 0%, #ffed4e 100%);
-  color: #000000;
-  padding: 15px 20px;
-  font-weight: 700;
+  background: #f5f5f5;
+  color: #1a1a1a;
+  padding: 12px 16px;
+  font-weight: 600;
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-  gap: 15px;
+  gap: 12px;
   align-items: center;
+  font-size: 12px;
 `;
 
 const TableRow = styled.div`
-  padding: 15px 20px;
-  border-bottom: 1px solidrgb(0, 123, 255);
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-  gap: 15px;
+  gap: 12px;
   align-items: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.15s;
   
   &:hover {
-    background: rgba(255, 215, 0, 0.1);
-    transform: translateX(5px);
+    background: #f5f5f5;
   }
   
   &:last-child {
@@ -142,20 +133,21 @@ const TableRow = styled.div`
 const UserInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 `;
 
 const UserAvatar = styled.div`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(135deg,rgb(0, 183, 255) 0%,rgb(78, 146, 255) 100%);
-  color: #000000;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background: #f5f5f5;
+  color: #1a1a1a;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 16px;
+  font-weight: 600;
+  font-size: 12px;
+  border: 1px solid #e0e0e0;
 `;
 
 const UserDetails = styled.div`
@@ -164,24 +156,24 @@ const UserDetails = styled.div`
 `;
 
 const UserName = styled.div`
-  font-weight: 600;
-  color:rgb(0, 195, 255);
-  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a1a;
+  font-size: 13px;
 `;
 
 const UserEmail = styled.div`
-  color:rgb(78, 211, 255);
-  font-size: 12px;
-  opacity: 0.8;
+  color: #666666;
+  font-size: 11px;
 `;
 
 const StatusBadge = styled.div<{ $online: boolean }>`
-  padding: 4px 8px;
+  padding: 3px 8px;
   border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-  background: ${props => props.$online ? '#4ade80' : '#f87171'};
-  color: ${props => props.$online ? '#000000' : '#ffffff'};
+  font-size: 11px;
+  font-weight: 500;
+  background: ${props => props.$online ? '#f0f9f0' : '#fff5f5'};
+  color: ${props => props.$online ? '#2d5a2d' : '#8b2d2d'};
+  border: 1px solid ${props => props.$online ? '#d0e8d0' : '#f0d0d0'};
 `;
 
 const AdminOverview: React.FC<AdminOverviewProps> = ({ 
@@ -192,7 +184,7 @@ const AdminOverview: React.FC<AdminOverviewProps> = ({
   if (!analytics) {
     return (
       <OverviewContainer>
-        <div style={{ textAlign: 'center', color: '#ffd700', fontSize: '18px' }}>
+        <div style={{ textAlign: 'center', color: '#666666', fontSize: '14px' }}>
           Loading analytics data...
         </div>
       </OverviewContainer>

@@ -23,7 +23,9 @@ const TrustContainer = styled.div`
 
 const TrustItem = styled.div<{ $isDark: boolean }>`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 0.75rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: ${props => props.$isDark
@@ -55,7 +57,7 @@ const TrustItem = styled.div<{ $isDark: boolean }>`
   &:hover {
     background: ${props => props.$isDark
       ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 165, 0, 0.2) 100%)'
-      : 'linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(250, 252, 255, 0.25) 100%)'};
+      : 'linear-gradient(135deg, rgba(237, 233, 233, 0.25) 0%, rgba(250, 252, 255, 0.25) 100%)'};
     border-color: ${props => props.$isDark
       ? 'rgba(255, 215, 0, 0.4)'
       : 'rgba(255, 255, 255, 0.4)'};

@@ -1,330 +1,274 @@
-
 import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { Car, Send } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import SearchWidget from './SearchWidget';
-import TrustIndicators from './TrustIndicators';
-import { Car, Send } from 'lucide-react';
 
-const HeroContainer = styled.div<{ $isDark: boolean }>`
+const HeroShell = styled.section<{ $isDark: boolean }>`
   position: relative;
   background: ${props => props.$isDark
-    ? 'linear-gradient(135deg, #020617 0%, #003366 100%)'
-    : 'linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 50%, #F1F5F9 100%)'};
-  min-height: 800px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 100px 20px 60px;
+    ? 'radial-gradient(120% 120% at 20% 20%, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0) 45%), linear-gradient(135deg, #050b18 0%, #0c2740 55%, #06111f 100%)'
+    : 'radial-gradient(120% 120% at 20% 20%, rgba(0,51,102,0.08) 0%, rgba(255,255,255,0) 45%), linear-gradient(135deg, #f7fafc 0%, #e8f0f7 55%, #f6f8fb 100%)'};
+  color: ${props => props.$isDark ? '#e8eef7' : '#0f172a'};
+  padding: 90px 18px 48px;
   overflow: hidden;
-  transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* Grid pattern overlay - مربعات مخططة رفيعة */
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: 
-      /* Vertical lines - خطوط عمودية */
-      linear-gradient(${props => props.$isDark 
-        ? 'rgba(255, 255, 255, 0.03)' 
-        : 'rgba(0, 0, 0, 0.05)'} 1px, transparent 1px),
-      /* Horizontal lines - خطوط أفقية */
-      linear-gradient(90deg, ${props => props.$isDark 
-        ? 'rgba(255, 255, 255, 0.03)' 
-        : 'rgba(0, 0, 0, 0.05)'} 1px, transparent 1px);
-    background-size: 50px 50px;
-    mask-image: linear-gradient(to bottom, black, transparent);
-    pointer-events: none;
-    opacity: ${props => props.$isDark ? 0.8 : 1};
-    z-index: 1;
-  }
-
-  /* Dynamic Glow Effects */
-  &::after {
-    content: '';
-    position: absolute;
-    width: 800px;
-    height: 800px;
-    background: ${props => props.$isDark
-      ? 'radial-gradient(circle, rgba(0, 102, 204, 0.15) 0%, transparent 70%)'
-      : 'radial-gradient(circle, rgba(0, 102, 255, 0.08) 0%, transparent 70%)'};
-    top: -10%;
-    right: -20%;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  @media (max-width: 768px) {
-    min-height: auto;
-    padding: 120px 16px 40px;
-  }
 `;
 
-const ContentWrapper = styled.div`
+const HeroGrid = styled.div`
   position: relative;
-  z-index: 10;
-  width: 100%;
   max-width: 1200px;
-  display: flex;
-  flex-direction: column;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 2.5rem;
   align-items: center;
-  gap: 3rem;
+
+  @media (max-width: 960px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
-const Headlines = styled(motion.div)<{ $isDark: boolean }>`
-  text-align: center;
-  color: ${props => props.$isDark ? 'white' : '#1E293B'};
-  margin-bottom: 0.5rem;
-  transition: color 0.3s ease;
+const Eyebrow = styled.span<{ $isDark: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: ${props => props.$isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,51,102,0.1)'};
+  color: ${props => props.$isDark ? '#bcd4f6' : '#0c2b4a'};
+  border: 1px solid ${props => props.$isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,51,102,0.2)'};
 `;
 
 const Title = styled.h1<{ $isDark: boolean }>`
-  font-size: 4.5rem;
-  font-weight: 900;
-  margin: 0 0 1.5rem 0;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  color: ${props => props.$isDark ? '#FFFFFF' : '#0F172A'};
-  text-shadow: ${props => props.$isDark
-    ? '0 10px 30px rgba(0,0,0,0.5)'
-    : '0 4px 20px rgba(0, 0, 0, 0.1)'};
-  transition: color 0.3s ease, text-shadow 0.3s ease;
+  margin: 1rem 0 0.75rem;
+  font-size: 3.2rem;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: ${props => props.$isDark ? '#f5f8ff' : '#0c1a2a'};
 
   span {
-    color: ${props => props.$isDark ? '#0066FF' : '#0066FF'};
-    position: relative;
-    display: inline-block;
-    background: ${props => props.$isDark
-      ? 'linear-gradient(135deg, #0066FF 0%, #0052CC 100%)'
-      : 'linear-gradient(135deg, #0066FF 0%, #0052CC 100%)'};
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 5px;
-      left: 0;
-      width: 100%;
-      height: 8px;
-      background: ${props => props.$isDark
-        ? 'rgba(0, 102, 255, 0.3)'
-        : 'rgba(0, 102, 255, 0.2)'};
-      border-radius: 4px;
-      z-index: -1;
-    }
+    color: ${props => props.$isDark ? '#5eb6ff' : '#0057b8'};
   }
 
-  @media (max-width: 768px) {
-    font-size: 2.75rem;
+  @media (max-width: 640px) {
+    font-size: 2.4rem;
   }
 `;
 
 const Subtitle = styled.p<{ $isDark: boolean }>`
-  font-size: 1.5rem;
-  color: ${props => props.$isDark ? '#e2e8f0' : '#475569'};
-  margin: 0;
-  max-width: 700px;
-  margin: 0 auto;
-  font-weight: 500;
-  line-height: 1.4;
-  transition: color 0.3s ease;
-
-  @media (max-width: 768px) {
-    font-size: 1.125rem;
-    padding: 0 1rem;
-  }
+  margin: 0 0 1.5rem;
+  max-width: 620px;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: ${props => props.$isDark ? '#c9d6e8' : '#475569'};
 `;
 
-const QuickActions = styled(motion.div)`
+const CTAGroup = styled.div`
   display: flex;
-  gap: 1.5rem;
-  margin-top: 1rem;
-
-  @media (max-width: 640px) {
-    flex-direction: column;
-    width: 100%;
-    gap: 1rem;
-  }
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
 `;
 
-const ActionButton = styled(motion.button) <{ $variant?: 'primary' | 'secondary'; $isDark: boolean }>`
-  padding: 1.125rem 2.75rem;
-  border-radius: 16px;
-  font-size: 1.125rem;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
+const PrimaryButton = styled(motion.button)<{ $isDark: boolean }>`
+  display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
+  padding: 0.95rem 1.6rem;
+  border-radius: 12px;
   border: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-  letter-spacing: 0.02em;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  background: ${props => props.$isDark
+    ? 'linear-gradient(135deg, #0a5ed1 0%, #0c7ce8 100%)'
+    : 'linear-gradient(135deg, #004b8d 0%, #006dcc 100%)'};
+  color: #fff;
+  box-shadow: 0 14px 40px rgba(0, 92, 181, 0.25);
+`;
 
-  ${props => props.$variant === 'primary' ? `
-    background: ${props.$isDark 
-      ? 'linear-gradient(135deg, rgba(0, 102, 255, 0.4) 0%, rgba(0, 123, 255, 0.5) 100%)' 
-      : 'linear-gradient(135deg, rgba(0, 102, 255, 0.8) 0%, rgba(0, 123, 255, 0.9) 100%)'};
-    color: ${props.$isDark ? '#FFFFFF' : '#FFFFFF'};
-    backdrop-filter: blur(20px);
-    box-shadow: ${props.$isDark
-      ? '0 8px 30px rgba(0, 102, 255, 0.3), 0 0 0 1px rgba(100, 181, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15)'
-      : '0 8px 30px rgba(0, 102, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)'};
-    border: ${props.$isDark 
-      ? '1px solid rgba(100, 181, 246, 0.4)' 
-      : '1px solid rgba(59, 130, 246, 0.3)'};
-    
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-      transition: left 0.6s ease;
-    }
-    
-    &:hover {
-      background: ${props.$isDark 
-        ? 'linear-gradient(135deg, rgba(0, 123, 255, 0.5) 0%, rgba(37, 99, 235, 0.6) 100%)' 
-        : 'linear-gradient(135deg, rgba(0, 123, 255, 0.9) 0%, rgba(37, 99, 235, 1) 100%)'};
-      box-shadow: ${props.$isDark
-        ? '0 12px 40px rgba(0, 102, 255, 0.4), 0 0 0 1px rgba(100, 181, 246, 0.3)'
-        : '0 12px 40px rgba(0, 102, 255, 0.35)'};
-      border-color: ${props.$isDark 
-        ? 'rgba(100, 181, 246, 0.6)' 
-        : 'rgba(59, 130, 246, 0.5)'};
-      
-      &::before {
-        left: 100%;
-      }
-    }
-  ` : `
-    background: ${props.$isDark
-      ? 'linear-gradient(135deg, rgba(255, 102, 0, 0.25) 0%, rgba(255, 119, 0, 0.3) 100%)'
-      : 'linear-gradient(135deg, rgba(255, 102, 0, 0.9) 0%, rgba(255, 119, 0, 1) 100%)'};
-    color: ${props.$isDark ? '#FFD700' : '#FFFFFF'};
-    backdrop-filter: blur(20px);
-    border: ${props.$isDark 
-      ? '1px solid rgba(255, 165, 0, 0.4)' 
-      : '1px solid rgba(255, 140, 0, 0.3)'};
-    box-shadow: ${props.$isDark
-      ? '0 8px 30px rgba(255, 102, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)'
-      : '0 8px 30px rgba(255, 102, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3)'};
-    
-    &:hover {
-      background: ${props.$isDark
-        ? 'linear-gradient(135deg, rgba(255, 119, 0, 0.35) 0%, rgba(255, 140, 0, 0.4) 100%)'
-        : 'linear-gradient(135deg, rgba(255, 119, 0, 1) 0%, rgba(255, 140, 0, 1) 100%)'};
-      border-color: ${props.$isDark ? 'rgba(255, 165, 0, 0.6)' : 'rgba(255, 140, 0, 0.5)'};
-      box-shadow: ${props.$isDark
-        ? '0 12px 40px rgba(255, 102, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
-        : '0 12px 40px rgba(255, 102, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4)'};
-    }
-  `}
+const SecondaryButton = styled(motion.button)<{ $isDark: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.95rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid ${props => props.$isDark ? 'rgba(255,255,255,0.3)' : 'rgba(12,26,42,0.2)'};
+  background: transparent;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  color: ${props => props.$isDark ? '#e8eef7' : '#0c1a2a'};
+`;
 
-  &:active {
-    transform: scale(0.98);
-  }
+const StatBar = styled.div<{ $isDark: boolean }>`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 0.5rem;
 
   @media (max-width: 640px) {
-    width: 100%;
-    justify-content: center;
-    padding: 1rem 2rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 `;
 
-const SearchWrapper = styled(motion.div)`
-  width: 100%;
+const StatCard = styled.div<{ $isDark: boolean }>`
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  background: ${props => props.$isDark ? 'rgba(255,255,255,0.04)' : '#ffffff'};
+  border: 1px solid ${props => props.$isDark ? 'rgba(255,255,255,0.08)' : 'rgba(12,26,42,0.08)'};
+  box-shadow: ${props => props.$isDark ? 'none' : '0 14px 32px rgba(15,23,42,0.06)'};
+`;
+
+const StatValue = styled.div<{ $isDark: boolean }>`
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: ${props => props.$isDark ? '#f5f8ff' : '#0c1a2a'};
+`;
+
+const StatLabel = styled.div<{ $isDark: boolean }>`
+  font-size: 0.9rem;
+  color: ${props => props.$isDark ? '#c9d6e8' : '#52627a'};
+`;
+
+const HighlightCard = styled.div<{ $isDark: boolean }>`
+  position: relative;
+  padding: 1.6rem;
+  border-radius: 18px;
+  background: ${props => props.$isDark ? 'linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))' : 'linear-gradient(145deg, #ffffff, #f4f7fb)'};
+  border: 1px solid ${props => props.$isDark ? 'rgba(255,255,255,0.1)' : 'rgba(12,26,42,0.08)'};
+  box-shadow: ${props => props.$isDark ? '0 10px 40px rgba(0,0,0,0.35)' : '0 18px 48px rgba(15,23,42,0.08)'};
+`;
+
+const BadgeRow = styled.div<{ $isDark: boolean }>`
   display: flex;
-  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+
+  span {
+    padding: 0.35rem 0.75rem;
+    border-radius: 10px;
+    background: ${props => props.$isDark ? 'rgba(94,182,255,0.12)' : 'rgba(0,109,204,0.1)'};
+    color: ${props => props.$isDark ? '#d3e7ff' : '#004b8d'};
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+`;
+
+const HighlightList = styled.ul<{ $isDark: boolean }>`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.65rem;
+
+  li {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    color: ${props => props.$isDark ? '#d7e4f5' : '#1f2a3d'};
+  }
+
+  strong {
+    color: ${props => props.$isDark ? '#f5f8ff' : '#0c1a2a'};
+  }
+`;
+
+const SearchDock = styled(motion.div)<{ $isDark: boolean }>`
+  margin-top: 1.5rem;
+  background: ${props => props.$isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.9)'};
+  border-radius: 18px;
+  border: 1px solid ${props => props.$isDark ? 'rgba(255,255,255,0.08)' : 'rgba(12,26,42,0.06)'};
+  box-shadow: ${props => props.$isDark ? '0 16px 50px rgba(0,0,0,0.4)' : '0 18px 60px rgba(12,26,42,0.08)'};
+  padding: 12px;
 `;
 
 const NewHeroSection: React.FC = () => {
   const { language } = useLanguage();
   const { theme } = useTheme();
   const navigate = useNavigate();
-  const isBg = language === 'bg';
   const isDark = theme === 'dark';
+  const isBg = language === 'bg';
+
+  const headline = isBg ? 'Елитната арена за продажба на автомобили' : 'The elite arena for selling cars';
+  const subline = isBg
+    ? 'Без компромиси в скоростта, доверието и дизайна. Намирате или продавате премиум автомобили за секунди.'
+    : 'No compromises on speed, trust, or design. Find or sell premium vehicles in seconds.';
 
   return (
-    <HeroContainer $isDark={isDark}>
-      <ContentWrapper>
-        <Headlines
-          $isDark={isDark}
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-          <Title $isDark={isDark}>
-            {isBg ? (
-              <>Твоят нов <span>автомобил</span></>
-            ) : (
-              <>Your next <span>Journey</span></>
-            )}
-          </Title>
-          <Subtitle $isDark={isDark}>
-            {isBg
-              ? 'Най-престижният пазар в България. Директна връзка с топ дилъри.'
-              : 'The most prestigious marketplace in Bulgaria. Direct access to top dealers.'}
-          </Subtitle>
-        </Headlines>
+    <HeroShell $isDark={isDark}>
+      <HeroGrid>
+        <div>
+          <Eyebrow $isDark={isDark}>{isBg ? 'Най-бързият премиум маркетплейс' : 'Fastest premium marketplace'}</Eyebrow>
+          <Title $isDark={isDark}>{headline} <span>EU Grade</span></Title>
+          <Subtitle $isDark={isDark}>{subline}</Subtitle>
 
-        <SearchWrapper
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
-          <SearchWidget />
-        </SearchWrapper>
+          <CTAGroup>
+            <PrimaryButton
+              $isDark={isDark}
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate('/search')}
+            >
+              <Car size={20} />
+              {isBg ? 'Разгледай 24h нови' : 'Browse fresh arrivals'}
+            </PrimaryButton>
+            <SecondaryButton
+              $isDark={isDark}
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate('/sell/auto')}
+            >
+              <Send size={18} />
+              {isBg ? 'Публикувай обява' : 'List your car'}
+            </SecondaryButton>
+          </CTAGroup>
 
-        <QuickActions
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-        >
-          <ActionButton
-            $variant="primary"
-            $isDark={isDark}
-            whileHover={{ scale: 1.05, translateY: -3 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => navigate('/sell/intro')}
-          >
-            <Send size={20} />
-            {isBg ? 'Продай кола сега' : 'Sell Car Now'}
-          </ActionButton>
+          <StatBar $isDark={isDark}>
+            <StatCard $isDark={isDark}>
+              <StatValue $isDark={isDark}>24h</StatValue>
+              <StatLabel $isDark={isDark}>{isBg ? 'нови обяви всеки ден' : 'new listings daily'}</StatLabel>
+            </StatCard>
+            <StatCard $isDark={isDark}>
+              <StatValue $isDark={isDark}>8.2/10</StatValue>
+              <StatLabel $isDark={isDark}>{isBg ? 'скорост на отговор' : 'response speed score'}</StatLabel>
+            </StatCard>
+            <StatCard $isDark={isDark}>
+              <StatValue $isDark={isDark}>0% spam</StatValue>
+              <StatLabel $isDark={isDark}>{isBg ? 'филтрирани заявки' : 'filtered inquiries'}</StatLabel>
+            </StatCard>
+          </StatBar>
+        </div>
 
-          <ActionButton
-            $variant="secondary"
-            $isDark={isDark}
-            whileHover={{ scale: 1.05, translateY: -3 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => navigate('/cars')}
-          >
-            <Car size={20} />
-            {isBg ? 'Разгледай обяви' : 'Browse Ads'}
-          </ActionButton>
-        </QuickActions>
+        <HighlightCard $isDark={isDark}>
+          <BadgeRow $isDark={isDark}>
+            <span>{isBg ? 'Дилърски контрол' : 'Dealer-grade control'}</span>
+            <span>{isBg ? 'EV готовност' : 'EV ready'}</span>
+          </BadgeRow>
+          <HighlightList $isDark={isDark}>
+            <li><strong>HPK</strong> {isBg ? 'архитектура за мигновен филтър по региони' : 'architecture for instant region filters'}</li>
+            <li><strong>Algolia + Firestore</strong> {isBg ? 'хибридно търсене за милисекунди' : 'hybrid search in milliseconds'}</li>
+            <li><strong>Secure chat</strong> {isBg ? 'всички заявки с цифров следа' : 'every inquiry carries a digital trail'}</li>
+          </HighlightList>
+        </HighlightCard>
+      </HeroGrid>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1 }}
-          style={{ width: '100%' }}
-        >
-          <TrustIndicators />
-        </motion.div>
-      </ContentWrapper>
-    </HeroContainer>
+      <SearchDock
+        $isDark={isDark}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.15 }}
+      >
+        <SearchWidget />
+      </SearchDock>
+    </HeroShell>
   );
 };
 

@@ -12,6 +12,7 @@ import { CarListing } from '../../../../types/CarListing';
 import { Search, Filter, Trash2, Eye, CheckCircle, XCircle } from 'lucide-react';
 import { CarIcon } from '../../../../components/icons/CarIcon';
 import { logger } from '../../../../services/logger-service';
+import { getCarDetailsUrl } from '../../../../utils/routing-utils';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -417,7 +418,7 @@ const AdminCarManagementPage: React.FC = () => {
               <Td>{car.views || 0}</Td>
               <Td>
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <IconButton onClick={() => navigate(`/car/${car.id}`)}>
+                  <IconButton onClick={() => navigate(getCarDetailsUrl(car))}>
                     <Eye size={18} />
                   </IconButton>
                   <IconButton onClick={() => handleToggleStatus(car.id!, car.status!)}>

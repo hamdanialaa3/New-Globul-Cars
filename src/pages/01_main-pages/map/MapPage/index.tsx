@@ -6,6 +6,7 @@ import RegionCarCountService from '../../../../services/regionCarCountService';
 import GlobulCarLogo from '../../../../components/icons/GlobulCarLogo';
 import { fetchCarsByCity, fetchUsersByCity, cityIdToCoordinates, CarEntity, UserEntity } from '../../../../services/map-entities.service';
 import { BULGARIAN_CITIES } from '../../../../constants/bulgarianCities';
+import { getCarDetailsUrl } from '../../../../utils/routing-utils';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -667,7 +668,7 @@ const MapAnalyticsPage: React.FC = () => {
                 {selectedItems.map((item, idx) => {
                   if (item.type === 'car') {
                     return (
-                      <ItemCard key={idx} onClick={() => navigate(`/car/${item.data.id}`)}>
+                      <ItemCard key={idx} onClick={() => navigate(getCarDetailsUrl(item.data))}>
                         <CardHeader>
                           <CardIcon>
                             <GlobulCarLogo size={24} />

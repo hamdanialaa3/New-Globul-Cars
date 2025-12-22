@@ -30,142 +30,101 @@ interface LiveCountersProps {
 }
 
 const CountersContainer = styled.div`
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  border: 2px solid #ffd700;
-  border-radius: 15px;
-  padding: 30px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 24px;
   margin: 0 20px 20px 20px;
-  box-shadow: 0 20px 40px rgba(255, 215, 0, 0.2);
-  color: #ffd700;
+  color: #1a1a1a;
 `;
 
 const SectionTitle = styled.h2`
-  color: #ffd700;
-  font-size: 24px;
-  font-weight: 700;
-  margin: 0 0 30px 0;
-  text-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+  color: #1a1a1a;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 20px 0;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 `;
 
 const CountersGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  margin-bottom: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
 `;
 
 const CounterCard = styled.div`
-  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-  border: 2px solid #ffd700;
-  border-radius: 12px;
-  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 16px;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
-  transition: all 0.3s ease;
+  transition: border-color 0.15s;
   position: relative;
-  overflow: hidden;
   
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
-  }
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #ffd700, #ffed4e, #ffd700);
-    animation: shimmer 2s infinite;
-  }
-  
-  @keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    border-color: #999999;
   }
 `;
 
 const CounterIcon = styled.div`
-  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-  color: #000000;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
+  background: #f5f5f5;
+  color: #1a1a1a;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 15px;
-  font-size: 28px;
-  border: 3px solid #ffd700;
-  box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
-  animation: pulse 2s infinite;
-  
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-  }
+  margin: 0 auto 12px;
+  font-size: 20px;
+  border: 1px solid #e0e0e0;
 `;
 
 const CounterValue = styled.div`
-  font-size: 36px;
-  font-weight: 800;
-  color: #ffd700;
-  margin-bottom: 8px;
-  text-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 6px;
 `;
 
 const CounterLabel = styled.div`
-  font-size: 14px;
-  color: #ffd700;
-  font-weight: 600;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  font-size: 12px;
+  color: #666666;
+  font-weight: 500;
+  margin-bottom: 8px;
 `;
 
 const CounterChange = styled.div<{ $positive: boolean; $neutral?: boolean }>`
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 500;
   color: ${props => {
-    if (props.$neutral) return '#ffd700';
-    return props.$positive ? '#4ade80' : '#f87171';
+    if (props.$neutral) return '#666666';
+    return props.$positive ? '#2d5a2d' : '#8b2d2d';
   }};
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  text-shadow: 0 1px 2px rgba(255, 215, 0, 0.3);
+  gap: 4px;
 `;
 
 const StatusIndicator = styled.div<{ $status: 'online' | 'offline' | 'warning' }>`
   position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 12px;
-  height: 12px;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: ${props => {
     switch (props.$status) {
-      case 'online': return '#4ade80';
-      case 'warning': return '#fbbf24';
-      case 'offline': return '#f87171';
-      default: return '#6b7280';
+      case 'online': return '#2d5a2d';
+      case 'warning': return '#8b5a2d';
+      case 'offline': return '#8b2d2d';
+      default: return '#666666';
     }
   }};
-  box-shadow: 0 0 10px ${props => {
-    switch (props.$status) {
-      case 'online': return 'rgba(74, 222, 128, 0.5)';
-      case 'warning': return 'rgba(251, 191, 36, 0.5)';
-      case 'offline': return 'rgba(248, 113, 113, 0.5)';
-      default: return 'rgba(107, 114, 128, 0.5)';
-    }
-  }};
-  animation: ${props => props.$status === 'online' ? 'pulse 2s infinite' : 'none'};
 `;
 
 const LoadingSpinner = styled.div`
@@ -173,9 +132,9 @@ const LoadingSpinner = styled.div`
   justify-content: center;
   align-items: center;
   height: 200px;
-  color: #ffd700;
-  font-size: 18px;
-  gap: 10px;
+  color: #666666;
+  font-size: 14px;
+  gap: 8px;
 `;
 
 const LiveCounters: React.FC<LiveCountersProps> = ({ stats = { totalCars: 0, totalUsers: 0, totalViews: 0 } }) => {

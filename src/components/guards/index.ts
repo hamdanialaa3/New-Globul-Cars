@@ -10,6 +10,7 @@
  */
 
 export { AuthGuard, type AuthGuardProps } from './AuthGuard';
+export { NumericIdGuard } from './NumericIdGuard';
 
 // Re-export for backward compatibility during migration
 export { AuthGuard as default } from './AuthGuard';

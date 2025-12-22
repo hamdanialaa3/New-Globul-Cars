@@ -93,55 +93,28 @@ const LinksGrid = styled.div<{ $isOpen: boolean }>`
 const LinkButton = styled.button<{ $protected?: boolean; $admin?: boolean }>`
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 15px;
-  background: ${props => 
-    props.$admin ? 'linear-gradient(135deg, #ff0000 0%, #cc0000 100%)' :
-    props.$protected ? 'linear-gradient(135deg, #ffd700 0%, #ffed4e 100%)' :
-    'linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%)'
-  };
-  color: ${props => (props.$protected || props.$admin) ? '#000' : '#fff'};
-  border: none;
-  border-radius: 8px;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #ffffff;
+  color: #1a1a1a;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 13px;
-  font-weight: 600;
+  transition: border-color 0.15s;
+  font-size: 12px;
+  font-weight: 500;
   text-align: left;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  position: relative;
-  overflow: hidden;
 
   svg {
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     flex-shrink: 0;
   }
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(255, 215, 0, 0.4);
-    ${props => !props.$admin && !props.$protected && 'background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); color: #000;'}
+    border-color: #999999;
   }
 
-  &:active {
-    transform: translateY(0);
-  }
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transition: left 0.5s;
-  }
-
-  &:hover::before {
-    left: 100%;
-  }
 `;
 
 const ProtectionBadge = styled.span<{ $type: 'protected' | 'admin' | 'public' }>`
