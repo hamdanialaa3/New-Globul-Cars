@@ -50,7 +50,14 @@ export const optimizeImage = functions
   .storage.object()
   .onFinalize(async (object) => {
     try {
-      const filePath = object.name;
+      const filePath = object.name || '';
+      
+      // Skip if no file path
+      if (!filePath) {
+        console.log('No file path, skipping');
+        return null;
+      }
+      
       const contentType = object.contentType;
 
       // Only process images
@@ -149,7 +156,12 @@ export const cleanupOptimizedImages = functions
   .storage.object()
   .onDelete(async (object) => {
     try {
-      const filePath = object.name;
+      const filePath = object.name || '';
+      
+      // Skip if no file path
+      if (!filePath) {
+        return null;
+      }
 
       // Skip if already an optimized version
       if (/_thumb|_medium|_large|_hd\.webp$/.test(filePath)) {
