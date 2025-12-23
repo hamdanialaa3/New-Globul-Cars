@@ -75,7 +75,11 @@
     "migrate:legacy-cars": "node scripts/run-migration.js",
     "type-check": "tsc --noEmit",
     "train-ai": "node scripts/train-ai-on-project.js",
-    "train-ai:watch": "nodemon --watch src --exec npm run train-ai"
+    "train-ai:watch": "nodemon --watch src --exec npm run train-ai",
+    "clean": "node scripts/clean-all.js",
+    "clean:ports": "node scripts/clean-all.js",
+    "clean:cache": "npm cache clean --force && rm -rf node_modules/.cache .cache build dist",
+    "clean:all": "npm run clean && npm run clean:cache"
   },
   "eslintConfig": {
     "extends": [

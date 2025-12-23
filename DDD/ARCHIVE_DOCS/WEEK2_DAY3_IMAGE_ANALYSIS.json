@@ -1,0 +1,230 @@
+{
+  "summary": {
+    "totalImages": 430,
+    "totalSizeMB": "275.14",
+    "duplicateGroups": 183,
+    "duplicateFiles": 190,
+    "wastedSpaceMB": "128.98",
+    "potentialSavings": "128.98 MB (46.9%)"
+  },
+  "largestImages": [
+    {
+      "name": "pexels-peely-712618.jpg",
+      "path": "public\\assets\\images\\Pic\\pexels-peely-712618.jpg",
+      "size": "6.10 MB"
+    },
+    {
+      "name": "pexels-peely-712618.jpg",
+      "path": "src\\assets\\images\\gallery\\pexels-peely-712618.jpg",
+      "size": "6.10 MB"
+    },
+    {
+      "name": "pexels-james-collington-2147687246-30772805.jpg",
+      "path": "public\\assets\\images\\Pic\\pexels-james-collington-2147687246-30772805.jpg",
+      "size": "6.05 MB"
+    },
+    {
+      "name": "pexels-james-collington-2147687246-30772805.jpg",
+      "path": "src\\assets\\images\\gallery\\pexels-james-collington-2147687246-30772805.jpg",
+      "size": "6.05 MB"
+    },
+    {
+      "name": "pexels-aboodi-18435540.jpg",
+      "path": "public\\assets\\images\\Pic\\pexels-aboodi-18435540.jpg",
+      "size": "5.14 MB"
+    },
+    {
+      "name": "pexels-aboodi-18435540.jpg",
+      "path": "src\\assets\\images\\gallery\\pexels-aboodi-18435540.jpg",
+      "size": "5.14 MB"
+    },
+    {
+      "name": "ID_Back.png",
+      "path": "public\\assets\\ID_Back.png",
+      "size": "4.77 MB"
+    },
+    {
+      "name": "car_inside (11).jpg",
+      "path": "public\\assets\\images\\Pic\\car_inside (11).jpg",
+      "size": "4.19 MB"
+    },
+    {
+      "name": "car_inside (11).jpg",
+      "path": "src\\assets\\images\\gallery\\car_inside (11).jpg",
+      "size": "4.19 MB"
+    },
+    {
+      "name": "pexels-bylukemiller-29566896.jpg",
+      "path": "public\\assets\\images\\Pic\\pexels-bylukemiller-29566896.jpg",
+      "size": "4.05 MB"
+    },
+    {
+      "name": "pexels-bylukemiller-29566896.jpg",
+      "path": "src\\assets\\images\\gallery\\pexels-bylukemiller-29566896.jpg",
+      "size": "4.05 MB"
+    },
+    {
+      "name": "pexels-bylukemiller-29566897.jpg",
+      "path": "public\\assets\\images\\Pic\\pexels-bylukemiller-29566897.jpg",
+      "size": "3.75 MB"
+    },
+    {
+      "name": "pexels-bylukemiller-29566897.jpg",
+      "path": "src\\assets\\images\\gallery\\pexels-bylukemiller-29566897.jpg",
+      "size": "3.75 MB"
+    },
+    {
+      "name": "pexels-bylukemiller-29566898.jpg",
+      "path": "public\\assets\\images\\Pic\\pexels-bylukemiller-29566898.jpg",
+      "size": "3.69 MB"
+    },
+    {
+      "name": "pexels-bylukemiller-29566898.jpg",
+      "path": "src\\assets\\images\\gallery\\pexels-bylukemiller-29566898.jpg",
+      "size": "3.69 MB"
+    },
+    {
+      "name": "pexels-tomfisk-10034071.jpg",
+      "path": "public\\assets\\images\\Pic\\pexels-tomfisk-10034071.jpg",
+      "size": "3.61 MB"
+    },
+    {
+      "name": "pexels-tomfisk-10034071.jpg",
+      "path": "src\\assets\\images\\gallery\\pexels-tomfisk-10034071.jpg",
+      "size": "3.61 MB"
+    },
+    {
+      "name": "pexels-ogproductionz-15825383.jpg",
+      "path": "public\\assets\\images\\Pic\\pexels-ogproductionz-15825383.jpg",
+      "size": "3.49 MB"
+    },
+    {
+      "name": "pexels-ogproductionz-15825383.jpg",
+      "path": "src\\assets\\images\\gallery\\pexels-ogproductionz-15825383.jpg",
+      "size": "3.49 MB"
+    },
+    {
+      "name": "car_inside (12).jpg",
+      "path": "public\\assets\\images\\Pic\\car_inside (12).jpg",
+      "size": "2.94 MB"
+    }
+  ],
+  "duplicates": [
+    {
+      "fileName": "pexels-bylukemiller-29566908 (1).jpg",
+      "copies": 4,
+      "wastedMB": "6.24",
+      "locations": [
+        "public\\assets\\images\\Pic\\pexels-bylukemiller-29566908 (1).jpg",
+        "public\\assets\\images\\Pic\\pexels-bylukemiller-29566908.jpg",
+        "src\\assets\\images\\gallery\\pexels-bylukemiller-29566908 (1).jpg",
+        "src\\assets\\images\\gallery\\pexels-bylukemiller-29566908.jpg"
+      ]
+    },
+    {
+      "fileName": "pexels-peely-712618.jpg",
+      "copies": 2,
+      "wastedMB": "6.10",
+      "locations": [
+        "public\\assets\\images\\Pic\\pexels-peely-712618.jpg",
+        "src\\assets\\images\\gallery\\pexels-peely-712618.jpg"
+      ]
+    },
+    {
+      "fileName": "pexels-james-collington-2147687246-30772805.jpg",
+      "copies": 2,
+      "wastedMB": "6.05",
+      "locations": [
+        "public\\assets\\images\\Pic\\pexels-james-collington-2147687246-30772805.jpg",
+        "src\\assets\\images\\gallery\\pexels-james-collington-2147687246-30772805.jpg"
+      ]
+    },
+    {
+      "fileName": "pexels-aboodi-18435540.jpg",
+      "copies": 2,
+      "wastedMB": "5.14",
+      "locations": [
+        "public\\assets\\images\\Pic\\pexels-aboodi-18435540.jpg",
+        "src\\assets\\images\\gallery\\pexels-aboodi-18435540.jpg"
+      ]
+    },
+    {
+      "fileName": "logo.png",
+      "copies": 3,
+      "wastedMB": "4.34",
+      "locations": [
+        "public\\logo.png",
+        "public\\mobile-eu-logo.png",
+        "public\\official-logo.png"
+      ]
+    },
+    {
+      "fileName": "car_inside (11).jpg",
+      "copies": 2,
+      "wastedMB": "4.19",
+      "locations": [
+        "public\\assets\\images\\Pic\\car_inside (11).jpg",
+        "src\\assets\\images\\gallery\\car_inside (11).jpg"
+      ]
+    },
+    {
+      "fileName": "pexels-bylukemiller-29566896.jpg",
+      "copies": 2,
+      "wastedMB": "4.05",
+      "locations": [
+        "public\\assets\\images\\Pic\\pexels-bylukemiller-29566896.jpg",
+        "src\\assets\\images\\gallery\\pexels-bylukemiller-29566896.jpg"
+      ]
+    },
+    {
+      "fileName": "pexels-bylukemiller-29566897.jpg",
+      "copies": 2,
+      "wastedMB": "3.75",
+      "locations": [
+        "public\\assets\\images\\Pic\\pexels-bylukemiller-29566897.jpg",
+        "src\\assets\\images\\gallery\\pexels-bylukemiller-29566897.jpg"
+      ]
+    },
+    {
+      "fileName": "pexels-bylukemiller-29566898.jpg",
+      "copies": 2,
+      "wastedMB": "3.69",
+      "locations": [
+        "public\\assets\\images\\Pic\\pexels-bylukemiller-29566898.jpg",
+        "src\\assets\\images\\gallery\\pexels-bylukemiller-29566898.jpg"
+      ]
+    },
+    {
+      "fileName": "pexels-tomfisk-10034071.jpg",
+      "copies": 2,
+      "wastedMB": "3.61",
+      "locations": [
+        "public\\assets\\images\\Pic\\pexels-tomfisk-10034071.jpg",
+        "src\\assets\\images\\gallery\\pexels-tomfisk-10034071.jpg"
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "HIGH",
+      "type": "Remove Duplicates",
+      "impact": "128.98 MB",
+      "description": "Found 183 groups of duplicate images. Remove duplicates to save space.",
+      "action": "Keep only one copy of each image (prefer public/ folder)"
+    },
+    {
+      "priority": "HIGH",
+      "type": "Convert to WebP",
+      "impact": "~58.15 MB",
+      "description": "Convert 19 large JPG images to WebP format",
+      "action": "Use sharp/imagemin to convert JPG → WebP with 80-85% quality"
+    },
+    {
+      "priority": "MEDIUM",
+      "type": "Responsive Images",
+      "impact": "Faster loading on mobile",
+      "description": "Generate multiple sizes for 20 large images",
+      "action": "Create small (400w), medium (800w), large (1200w) versions"
+    }
+  ]
+}

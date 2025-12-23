@@ -45,6 +45,7 @@ import {
 } from 'lucide-react';
 import { CarListing } from '../../../types/CarListing';
 import { useTheme } from '../../../contexts/ThemeContext';
+import { DescriptionPreview } from '../../../components/SmartDescriptionGenerator/DescriptionPreview';
 
 interface CarDetailsMobileDEStyleProps {
   car: CarListing;
@@ -1597,12 +1598,63 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
           )}
 
           {/* Description */}
-          {car.description && (
-            <DescriptionSection>
-              <SectionTitle>{t.vehicleDescription}</SectionTitle>
-              <DescriptionText>{car.description}</DescriptionText>
-            </DescriptionSection>
-          )}
+          <DescriptionSection>
+            {car.description ? (
+              <DescriptionPreview description={car.description} />
+            ) : (
+              <div style={{ 
+                textAlign: 'center', 
+                padding: '3rem 2rem', 
+                color: 'var(--text-secondary)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '1rem'
+              }}>
+                <FileText size={48} style={{ opacity: 0.3 }} />
+                <div>
+                  <p style={{ margin: '0 0 0.5rem 0', fontSize: '1rem', fontWeight: 500 }}>
+                    {language === 'bg' ? 'Няма описание' : 'No Description'}
+                  </p>
+                  <p style={{ margin: 0, fontSize: '0.875rem', opacity: 0.7 }}>
+                    {language === 'bg' 
+                      ? isOwner 
+                        ? 'Добавете професионално описание, за да привлечете повече купувачи'
+                        : 'Продавачът не е добавил описание за този автомобил'
+                      : isOwner
+                        ? 'Add a professional description to attract more buyers'
+                        : 'The seller has not added a description for this vehicle'
+                    }
+                  </p>
+                </div>
+                {isOwner && onEdit && (
+                  <button
+                    onClick={onEdit}
+                    style={{
+                      marginTop: '1rem',
+                      padding: '0.75rem 1.5rem',
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      fontSize: '0.9rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      transition: 'transform 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                  >
+                    <Edit size={16} />
+                    {language === 'bg' ? 'Добави описание' : 'Add Description'}
+                  </button>
+                )}
+              </div>
+            )}
+          </DescriptionSection>
         </LeftColumn>
 
         {/* Right Column */}

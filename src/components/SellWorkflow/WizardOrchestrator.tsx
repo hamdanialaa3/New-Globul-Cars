@@ -20,6 +20,7 @@ import SellVehicleStep2 from './steps/SellVehicleStep2';
 import SellVehicleStep3 from './steps/SellVehicleStep3';
 import SellVehicleStep4 from './steps/SellVehicleStep4';
 import SellVehicleStep5 from './steps/SellVehicleStep5';
+import SellVehicleStep6_5 from './steps/SellVehicleStep6_5';
 import SellVehicleStep6 from './steps/SellVehicleStep6';
 
 // Import Styles
@@ -39,7 +40,7 @@ import {
     DraftBadge
 } from './styles';
 
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 7;
 
 interface WizardOrchestratorProps {
     onComplete?: () => void;
@@ -165,7 +166,8 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
             case 3: return <SellVehicleStep3 {...commonProps} />;
             case 4: return <SellVehicleStep4 {...commonProps} />;
             case 5: return <SellVehicleStep5 {...commonProps} />;
-            case 6: return <SellVehicleStep6 {...commonProps} />;
+            case 6: return <SellVehicleStep6_5 {...commonProps} />;
+            case 7: return <SellVehicleStep6 {...commonProps} />;
             default: return <div>Unknown Step</div>;
         }
     };
@@ -177,6 +179,7 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
         { id: 'equipment', labelEn: 'Equipment', labelBg: 'Оборудване', subLabelEn: 'Features', subLabelBg: 'Екстри' },
         { id: 'images', labelEn: 'Images', labelBg: 'Снимки', subLabelEn: 'Gallery', subLabelBg: 'Галерия' },
         { id: 'pricing', labelEn: 'Pricing', labelBg: 'Цена', subLabelEn: 'Cost & Currency', subLabelBg: 'Стойност' },
+        { id: 'description', labelEn: 'Description', labelBg: 'Описание', subLabelEn: 'AI-Powered', subLabelBg: 'AI Помощник' },
         { id: 'contact', labelEn: 'Contact', labelBg: 'Контакт', subLabelEn: 'Review & Publish', subLabelBg: 'Преглед' },
     ];
 

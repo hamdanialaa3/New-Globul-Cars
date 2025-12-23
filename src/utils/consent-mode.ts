@@ -47,6 +47,7 @@ const DEFAULT_CONSENT: ConsentSettings = {
 /**
  * Initialize Google Consent Mode v2
  * MUST be called BEFORE any gtag/GA4 initialization
+ * Safe to call multiple times (idempotent)
  */
 export const initConsentMode = (): void => {
   // Initialize dataLayer if not exists
@@ -55,16 +56,25 @@ export const initConsentMode = (): void => {
     window.dataLayer?.push(arguments);
   };
 
-  // Set default consent state (BEFORE any tags load)
-  window.gtag('consent', 'default', {
-    ...DEFAULT_CONSENT,
-    wait_for_update: 500, // Wait 500ms for user consent before firing tags
-    region: ['BG', 'EU'] // Apply to Bulgaria and EU
-  });
+  // Check if consent mode was already initialized
+  const alreadyInitialized = window.dataLayer.some(
+    (item: any) => item && item[0] === 'consent' && item[1] === 'default'
+  );
 
-  // Log initialization
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[Consent Mode] Initialized with default state:', DEFAULT_CONSENT);
+  // Set default consent state (BEFORE any tags load) - only if not already set
+  if (!alreadyInitialized) {
+    window.gtag('consent', 'default', {
+      ...DEFAULT_CONSENT,
+      wait_for_update: 500, // Wait 500ms for user consent before firing tags
+      region: ['BG', 'EU'] // Apply to Bulgaria and EU
+    });
+
+    // Log initialization
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[Consent Mode] Initialized with default state:', DEFAULT_CONSENT);
+    }
+  } else if (process.env.NODE_ENV === 'development') {
+    console.log('[Consent Mode] Already initialized, skipping');
   }
 };
 
@@ -81,9 +91,22 @@ export const initConsentMode = (): void => {
  * });
  */
 export const updateConsent = (settings: Partial<ConsentSettings>): void => {
+  // Initialize gtag if not already initialized
   if (!window.gtag) {
-    console.error('[Consent Mode] gtag not initialized');
-    return;
+    // Initialize dataLayer and gtag if not exists
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function() {
+      window.dataLayer?.push(arguments);
+    };
+    
+    // Initialize consent mode with default settings if not already done
+    if (!window.dataLayer.some((item: any) => item && item[0] === 'consent' && item[1] === 'default')) {
+      window.gtag('consent', 'default', {
+        ...DEFAULT_CONSENT,
+        wait_for_update: 500,
+        region: ['BG', 'EU']
+      });
+    }
   }
 
   window.gtag('consent', 'update', settings);

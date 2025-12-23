@@ -46,8 +46,16 @@ const NumericCarDetailsPage: React.FC = () => {
                         logger.info('Resolved via legacy numericId', { sellerNum, carNum, foundCarId: legacyFound.id, collection: legacyFound.collection });
                         setRealCarId(legacyFound.id);
                     } else {
-                        logger.warn('NumericCarDetails: Car not found', { sellerNum, carNum });
-                        setError('Car not found');
+                        // ✅ CRITICAL FIX: Attempt to find car by seller numeric ID and repair
+                        logger.warn('NumericCarDetails: Car not found by numeric IDs, attempting repair', { sellerNum, carNum });
+                        const repairResult = await attemptRepair(sellerNum, carNum);
+                        if (repairResult) {
+                            logger.info('Car repaired successfully', { sellerNum, carNum, carId: repairResult });
+                            setRealCarId(repairResult);
+                        } else {
+                            logger.error('NumericCarDetails: Car not found and repair failed', { sellerNum, carNum });
+                            setError('Car not found');
+                        }
                     }
                 }
             } catch (err) {
@@ -86,6 +94,53 @@ const NumericCarDetailsPage: React.FC = () => {
 };
 
 export default NumericCarDetailsPage;
+
+/**
+ * ✅ CRITICAL FIX: Attempt to repair missing numeric IDs
+ * Finds car by seller numeric ID and attempts to assign missing carNumericId
+ */
+async function attemptRepair(sellerNum: number, carNum: number): Promise<string | null> {
+    try {
+        // Find user by numeric ID
+        const { getFirebaseUidByNumericId } = await import('../../services/numeric-id-lookup.service');
+        const userId = await getFirebaseUidByNumericId(sellerNum);
+        
+        if (!userId) {
+            logger.warn('Repair failed: User not found', { sellerNum });
+            return null;
+        }
+
+        // Find all cars for this user and check if any match the expected carNumericId
+        for (const col of VEHICLE_COLLECTIONS) {
+            try {
+                const colRef = collection(db, col);
+                const q = query(
+                    colRef,
+                    where('sellerId', '==', userId),
+                    limit(100) // Reasonable limit
+                );
+                const snap = await getDocs(q);
+                
+                // Check if any car has the expected carNumericId
+                for (const docSnap of snap.docs) {
+                    const data = docSnap.data();
+                    if (data.carNumericId === carNum || data.carNumericId === String(carNum)) {
+                        logger.info('Found car during repair attempt', { carId: docSnap.id, collection: col });
+                        return docSnap.id;
+                    }
+                }
+            } catch (err) {
+                continue;
+            }
+        }
+        
+        logger.warn('Repair failed: Car not found for user', { sellerNum, carNum });
+        return null;
+    } catch (error) {
+        logger.error('Error during repair attempt', error as Error);
+        return null;
+    }
+}
 
 /**
  * Resolve car document by sellerNumericId + carNumericId across all vehicle collections

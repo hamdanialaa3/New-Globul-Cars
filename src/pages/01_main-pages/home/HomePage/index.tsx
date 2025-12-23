@@ -4,6 +4,7 @@
 import React, { Suspense } from 'react';
 import styled from 'styled-components';
 import NewHeroSection from './NewHeroSection';
+import GridSectionWrapper from './GridSectionWrapper';
 
 // Lazy loaded components - Local imports
 const VehicleClassificationsSection = React.lazy(() => import('./VehicleClassificationsSection'));
@@ -60,143 +61,175 @@ const LoadingFallback = styled.div`
 const HomePage: React.FC = () => {
   return (
     <HomeContainer>
-      {/* 1. Hero Section - Critical (No Lazy Load) */}
-      <NewHeroSection />
+      {/* 1. Hero Section - Modern AI-Powered Entry */}
+      <GridSectionWrapper intensity="light" variant="ai">
+        <NewHeroSection />
+      </GridSectionWrapper>
 
       <SectionSpacer />
 
-      {/* 2. New Cars Section - Latest Added (Last 24 Hours) */}
-      <LazySection rootMargin="100px" minHeight="400px">
-        <Suspense fallback={<LoadingFallback>Зареждане на нови обяви...</LoadingFallback>}>
-          <NewCarsSection />
-        </Suspense>
-      </LazySection>
+      {/* 2. New Cars Section - Latest Modern Vehicles */}
+      <GridSectionWrapper intensity="medium" variant="modern">
+        <LazySection rootMargin="100px" minHeight="400px">
+          <Suspense fallback={<LoadingFallback>Зареждане на нови обяви...</LoadingFallback>}>
+            <NewCarsSection />
+          </Suspense>
+        </LazySection>
+      </GridSectionWrapper>
 
       <SectionSpacer />
 
-      {/* 3. Featured Cars Section (high-intent inventory) */}
-      <LazySection rootMargin="0px" minHeight="600px">
-        <Suspense fallback={<LoadingFallback>Зареждане на автомобили...</LoadingFallback>}>
-          <FeaturedCarsSection />
-        </Suspense>
-      </LazySection>
+      {/* 3. Featured Cars Section - Premium Future Selection */}
+      <GridSectionWrapper intensity="strong" variant="future">
+        <LazySection rootMargin="0px" minHeight="600px">
+          <Suspense fallback={<LoadingFallback>Зареждане на автомобили...</LoadingFallback>}>
+            <FeaturedCarsSection />
+          </Suspense>
+        </LazySection>
+      </GridSectionWrapper>
 
       <SectionSpacer />
 
-      {/* 4. Latest Cars - Fresh inventory */}
-      <LazySection rootMargin="100px" minHeight="500px">
-        <Suspense fallback={<LoadingFallback>Зареждане...</LoadingFallback>}>
-          <LatestCarsSection />
-        </Suspense>
-      </LazySection>
+      {/* 4. Latest Cars - Fresh Modern Inventory */}
+      <GridSectionWrapper intensity="medium" variant="modern">
+        <LazySection rootMargin="100px" minHeight="500px">
+          <Suspense fallback={<LoadingFallback>Зареждане...</LoadingFallback>}>
+            <LatestCarsSection />
+          </Suspense>
+        </LazySection>
+      </GridSectionWrapper>
 
       <SectionSpacer />
 
-      {/* 5. Categories Section - Popular Categories */}
-      <LazySection rootMargin="0px" minHeight="600px">
-        <Suspense fallback={<LoadingFallback>Зареждане на категории...</LoadingFallback>}>
-          <CategoriesSection />
-        </Suspense>
-      </LazySection>
+      {/* 5. Categories Section - Classic Car Types */}
+      <GridSectionWrapper intensity="light" variant="vintage">
+        <LazySection rootMargin="0px" minHeight="600px">
+          <Suspense fallback={<LoadingFallback>Зареждане на категории...</LoadingFallback>}>
+            <CategoriesSection />
+          </Suspense>
+        </LazySection>
+      </GridSectionWrapper>
 
       <SectionSpacer />
 
-      {/* 6. Life Moments Browse */}
-      <LazySection rootMargin="0px" minHeight="400px">
-        <Suspense fallback={<LoadingFallback>Зареждане...</LoadingFallback>}>
-          <LifeMomentsBrowse />
-        </Suspense>
-      </LazySection>
+      {/* 6. Life Moments Browse - Modern Lifestyle */}
+      <GridSectionWrapper intensity="medium" variant="modern">
+        <LazySection rootMargin="0px" minHeight="400px">
+          <Suspense fallback={<LoadingFallback>Зареждане...</LoadingFallback>}>
+            <LifeMomentsBrowse />
+          </Suspense>
+        </LazySection>
+      </GridSectionWrapper>
 
       <SectionSpacer />
 
-      {/* 7. Popular Brands Section */}
-      <LazySection rootMargin="0px" minHeight="500px">
-        <Suspense fallback={<LoadingFallback>Зареждане на марки...</LoadingFallback>}>
-          <PopularBrandsSection />
-        </Suspense>
-      </LazySection>
+      {/* 7. Popular Brands Section - Heritage & Future */}
+      <GridSectionWrapper intensity="strong" variant="vintage">
+        <LazySection rootMargin="0px" minHeight="500px">
+          <Suspense fallback={<LoadingFallback>Зареждане на марки...</LoadingFallback>}>
+            <PopularBrandsSection />
+          </Suspense>
+        </LazySection>
+      </GridSectionWrapper>
 
       <SectionSpacer />
 
-      {/* 8. Trust Section - Why Choose Us */}
-      <LazySection rootMargin="0px" minHeight="400px">
-        <Suspense fallback={null}>
-          <TrustSection />
-        </Suspense>
-      </LazySection>
+      {/* 8. Trust Section - Modern Trust Building */}
+      <GridSectionWrapper intensity="light" variant="modern">
+        <LazySection rootMargin="0px" minHeight="400px">
+          <Suspense fallback={null}>
+            <TrustSection />
+          </Suspense>
+        </LazySection>
+      </GridSectionWrapper>
 
       <SectionSpacer />
 
-      {/* 9. Vehicle Classifications (Smart Section) */}
-      <LazySection rootMargin="100px" minHeight="300px">
-        <Suspense fallback={null}>
-          <VehicleClassificationsSection />
-        </Suspense>
-      </LazySection>
+      {/* 9. Vehicle Classifications - Future Tech */}
+      <GridSectionWrapper intensity="medium" variant="future">
+        <LazySection rootMargin="100px" minHeight="300px">
+          <Suspense fallback={null}>
+            <VehicleClassificationsSection />
+          </Suspense>
+        </LazySection>
+      </GridSectionWrapper>
 
       <SectionSpacer />
 
-      {/* 10. Most Demanded Categories (AI Section) */}
-      <LazySection rootMargin="100px" minHeight="400px">
-        <Suspense fallback={null}>
-          <MostDemandedCategoriesSection />
-        </Suspense>
-      </LazySection>
+      {/* 10. Most Demanded Categories - AI Intelligence */}
+      <GridSectionWrapper intensity="strong" variant="ai">
+        <LazySection rootMargin="100px" minHeight="400px">
+          <Suspense fallback={null}>
+            <MostDemandedCategoriesSection />
+          </Suspense>
+        </LazySection>
+      </GridSectionWrapper>
 
       <SectionSpacer />
 
-      {/* 11. Dealer Spotlight */}
-      <LazySection rootMargin="200px">
-        <Suspense fallback={null}>
-          <DealerSpotlight />
-        </Suspense>
-      </LazySection>
+      {/* 11. Dealer Spotlight - Professional Modern */}
+      <GridSectionWrapper intensity="light" variant="modern">
+        <LazySection rootMargin="200px">
+          <Suspense fallback={null}>
+            <DealerSpotlight />
+          </Suspense>
+        </LazySection>
+      </GridSectionWrapper>
 
       <SectionSpacer />
 
-      {/* 12. Smart Sell Strip */}
-      <LazySection rootMargin="100px">
-        <Suspense fallback={null}>
-          <SmartSellStrip />
-        </Suspense>
-      </LazySection>
+      {/* 12. Smart Sell Strip - AI-Powered Selling */}
+      <GridSectionWrapper intensity="medium" variant="ai">
+        <LazySection rootMargin="100px">
+          <Suspense fallback={null}>
+            <SmartSellStrip />
+          </Suspense>
+        </LazySection>
+      </GridSectionWrapper>
 
       <SectionSpacer />
 
-      {/* 13. AI Analytics Teaser */}
-      <LazySection rootMargin="200px">
-        <Suspense fallback={null}>
-          <AIAnalyticsTeaser />
-        </Suspense>
-      </LazySection>
+      {/* 13. AI Analytics Teaser - Future Tech */}
+      <GridSectionWrapper intensity="strong" variant="future">
+        <LazySection rootMargin="200px">
+          <Suspense fallback={null}>
+            <AIAnalyticsTeaser />
+          </Suspense>
+        </LazySection>
+      </GridSectionWrapper>
 
       <SectionSpacer />
 
-      {/* 14. Recent Browsing History (Personalized) */}
-      <LazySection rootMargin="100px" minHeight="200px">
-        <Suspense fallback={null}>
-          <RecentBrowsingSection />
-        </Suspense>
-      </LazySection>
+      {/* 14. Recent Browsing History - Modern Personalized */}
+      <GridSectionWrapper intensity="light" variant="modern">
+        <LazySection rootMargin="100px" minHeight="200px">
+          <Suspense fallback={null}>
+            <RecentBrowsingSection />
+          </Suspense>
+        </LazySection>
+      </GridSectionWrapper>
 
       <SectionSpacer />
 
-      {/* 15. Loyalty Banner */}
-      <LazySection rootMargin="100px">
-        <Suspense fallback={null}>
-          <LoyaltyBanner />
-        </Suspense>
-      </LazySection>
+      {/* 15. Loyalty Banner - Classic Trust */}
+      <GridSectionWrapper intensity="medium" variant="vintage">
+        <LazySection rootMargin="100px">
+          <Suspense fallback={null}>
+            <LoyaltyBanner />
+          </Suspense>
+        </LazySection>
+      </GridSectionWrapper>
 
       <SectionSpacer />
 
-      {/* 16. Social Media & Community */}
-      <LazySection rootMargin="0px" minHeight="300px">
-        <Suspense fallback={<LoadingFallback>Зареждане на общност...</LoadingFallback>}>
-          <SocialMediaSection />
-        </Suspense>
-      </LazySection>
+      {/* 16. Social Media & Community - Future Connected */}
+      <GridSectionWrapper intensity="strong" variant="future">
+        <LazySection rootMargin="0px" minHeight="300px">
+          <Suspense fallback={<LoadingFallback>Зареждане на общност...</LoadingFallback>}>
+            <SocialMediaSection />
+          </Suspense>
+        </LazySection>
+      </GridSectionWrapper>
 
       {/* Floating AI Chatbot */}
       <Suspense fallback={null}>

@@ -467,7 +467,7 @@ html[data-theme="dark"] [class*="Footer"] {
 #main-content,
 main {
   background-color: var(--bg-primary);
-  color: var(--text-primary);
+  color: var(--bg-header);
   transition: background-color 0.3s ease;
 }
 

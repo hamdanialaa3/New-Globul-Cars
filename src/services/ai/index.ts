@@ -15,6 +15,7 @@ export { sentimentAnalysisService } from './sentiment-analysis.service';
 export { computerVisionService } from './vision-advanced.service';
 export { recommendationEngine } from './recommendation-advanced.service';
 export { multiLanguageNLU } from './nlu-multilingual.service';
+export { vehicleDescriptionGenerator } from './vehicle-description-generator.service';
 
 // Type Exports
 export type { 

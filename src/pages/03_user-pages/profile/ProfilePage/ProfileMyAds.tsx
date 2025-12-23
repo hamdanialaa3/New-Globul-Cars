@@ -1,23 +1,179 @@
-import { logger } from '../../../../services/logger-service';
-import React from 'react';
-import styled from 'styled-components';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+// ProfileMyAds.tsx
+// World-Class My Ads Dashboard - Refactored with modular components
+
+import React, { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useProfile } from './hooks/useProfile';
 import { useProfileType } from '../../../../contexts/ProfileTypeContext';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import { toast } from 'react-toastify';
-import ModernCarCard from '../../../01_main-pages/home/HomePage/ModernCarCard';
 import { UnifiedCar } from '../../../../services/car';
-import { Car, Plus, ArrowUpDown, Filter, Eye } from 'lucide-react';
-import * as S from './styles';
 import { unifiedCarService } from '../../../../services/UnifiedCarService';
+import { logger } from '../../../../services/logger-service';
+import { Plus, ArrowUpDown } from 'lucide-react';
 import { MatrixUploader } from '../components/MatrixUploader';
 
-/**
- * My Ads Tab - Full garage with all user's cars
- * Professional Garage/Showroom display
- */
+// Import new modular components
+import { ThemeAwareWrapper } from './components/MyAds/ThemeAwareWrapper';
+import { AdsStatsSummary } from './components/MyAds/AdsStatsSummary';
+import { AdsToolbar, SortOption, FilterOption, ViewMode } from './components/MyAds/AdsToolbar';
+import { AdCardGrid } from './components/MyAds/AdCardGrid';
+import { AdCardList } from './components/MyAds/AdCardList';
+import { EmptyState } from './components/MyAds/EmptyState';
+import styled from 'styled-components';
+
+const PageContainer = styled.div`
+  width: 100%;
+  min-height: 100vh;
+`;
+
+const ContentSection = styled.div`
+  padding: 2rem 1rem;
+  margin-top: 0;
+
+  @media (max-width: 768px) {
+    padding: 1rem 0.75rem;
+  }
+`;
+
+const HeaderSection = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+`;
+
+const Title = styled.h1<{ $isDark?: boolean }>`
+  font-size: 2rem;
+  font-weight: 800;
+  color: ${({ $isDark }) => $isDark ? '#e2e8f0' : '#1e293b'};
+  margin: 0;
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
+`;
+
+const AddButton = styled.button<{ $isDark?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: #ff8f10;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+
+  &:hover {
+    background: #ff7900;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 143, 16, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    justify-content: center;
+  }
+`;
+
+const PowerBar = styled.div<{ $isDark?: boolean }>`
+  margin-bottom: 2rem;
+  background: ${({ $isDark }) => $isDark ? 'rgba(34, 197, 94, 0.1)' : 'rgba(34, 197, 94, 0.05)'};
+  border: 1px solid ${({ $isDark }) => $isDark ? '#22c55e' : '#4ade80'};
+  padding: 1rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+`;
+
+const PowerBarContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+const PowerBarTitle = styled.h3<{ $isDark?: boolean }>`
+  margin: 0;
+  color: ${({ $isDark }) => $isDark ? '#4ade80' : '#15803d'};
+  font-size: 1.125rem;
+  font-weight: 700;
+`;
+
+const PowerBarStats = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.9rem;
+  color: #64748b;
+`;
+
+const ProgressBar = styled.div<{ $percentage: number; $isDark?: boolean }>`
+  width: 100px;
+  height: 6px;
+  background: #334155;
+  border-radius: 3px;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    display: block;
+    width: ${({ $percentage }) => $percentage}%;
+    height: 100%;
+    background: ${({ $percentage, $isDark }) => 
+      $percentage > 80 
+        ? '#ef4444'
+        : ($isDark ? '#22c55e' : '#15803d')};
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+`;
+
+const ViewModeToggle = styled.div<{ $isDark?: boolean }>`
+  display: flex;
+  background: ${({ $isDark }) => $isDark ? '#1e293b' : '#ffffff'};
+  border-radius: 8px;
+  border: 1px solid ${({ $isDark }) => $isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.15)'};
+  overflow: hidden;
+`;
+
+const ViewModeButton = styled.button<{ $active: boolean; $isDark?: boolean }>`
+  padding: 0.5rem 1rem;
+  background: ${({ $active, $isDark }) => 
+    $active 
+      ? ($isDark ? '#475569' : '#ff8f10')
+      : 'transparent'};
+  color: ${({ $active }) => $active ? '#ffffff' : '#64748b'};
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+  font-weight: 600;
+`;
+
 const ProfileMyAds: React.FC = () => {
   const { language } = useLanguage();
   const { theme } = useTheme();
@@ -25,16 +181,16 @@ const ProfileMyAds: React.FC = () => {
   const navigate = useNavigate();
   const params = useParams<{ userId?: string }>();
   const { userCars, isOwnProfile, loadUserCars, user } = useProfile(params.userId);
+  const { profileType, permissions, isDealer, isCompany, getProgressToLimit } = useProfileType();
 
-  // Sort and filter states
-  const [sortBy, setSortBy] = React.useState<string>('newest');
-  const [filterBy, setFilterBy] = React.useState<string>('all');
+  // State management
+  const [sortBy, setSortBy] = useState<SortOption>('newest');
+  const [filterBy, setFilterBy] = useState<FilterOption>('all');
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [showMatrix, setShowMatrix] = useState(false);
 
-  // Get user name for title
-  const userName = user?.displayName || (language === 'bg' ? 'Потребител' : 'User');
-
-  // Convert userCars to UnifiedCar format and apply sorting/filtering
-  const unifiedCars: UnifiedCar[] = React.useMemo(() => {
+  // Convert and process cars
+  const unifiedCars: UnifiedCar[] = useMemo(() => {
     let cars = ((userCars || []) as any[]).map(car => ({
       ...car,
       id: car.id,
@@ -74,13 +230,9 @@ const ProfileMyAds: React.FC = () => {
         case 'oldest':
           return new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
         case 'nameAsc':
-          const nameA = `${a.make || ''} ${a.model || ''}`.trim().toLowerCase();
-          const nameB = `${b.make || ''} ${b.model || ''}`.trim().toLowerCase();
-          return nameA.localeCompare(nameB);
+          return `${a.make || ''} ${a.model || ''}`.trim().toLowerCase().localeCompare(`${b.make || ''} ${b.model || ''}`.trim().toLowerCase());
         case 'nameDesc':
-          const nameA2 = `${a.make || ''} ${a.model || ''}`.trim().toLowerCase();
-          const nameB2 = `${b.make || ''} ${b.model || ''}`.trim().toLowerCase();
-          return nameB2.localeCompare(nameA2);
+          return `${b.make || ''} ${b.model || ''}`.trim().toLowerCase().localeCompare(`${a.make || ''} ${a.model || ''}`.trim().toLowerCase());
         case 'priceLow':
           return (a.price || 0) - (b.price || 0);
         case 'priceHigh':
@@ -90,13 +242,9 @@ const ProfileMyAds: React.FC = () => {
         case 'yearOld':
           return (a.year || 0) - (b.year || 0);
         case 'make':
-          const makeA = (a.make || '').toLowerCase();
-          const makeB = (b.make || '').toLowerCase();
-          return makeA.localeCompare(makeB);
+          return (a.make || '').toLowerCase().localeCompare((b.make || '').toLowerCase());
         case 'model':
-          const modelA = (a.model || '').toLowerCase();
-          const modelB = (b.model || '').toLowerCase();
-          return modelA.localeCompare(modelB);
+          return (a.model || '').toLowerCase().localeCompare((b.model || '').toLowerCase());
         default:
           return 0;
       }
@@ -105,12 +253,20 @@ const ProfileMyAds: React.FC = () => {
     return sorted;
   }, [userCars, sortBy, filterBy]);
 
-  // Power Tools State
-  const { permissions, isDealer, isCompany, getProgressToLimit } = useProfileType(); // Use Context
-  const [showMatrix, setShowMatrix] = React.useState(false);
-  const [viewMode, setViewMode] = React.useState<'grid' | 'compact'>('grid');
+  // Calculate stats
+  const stats = useMemo(() => {
+    const active = unifiedCars.filter(c => c.isActive && !c.isSold).length;
+    const totalViews = unifiedCars.reduce((sum, car) => sum + ((car as any).views || 0), 0);
+    const totalMessages = unifiedCars.reduce((sum, car) => sum + ((car as any).messages || 0), 0);
+    return {
+      active,
+      totalViews,
+      totalMessages,
+      totalListings: unifiedCars.length
+    };
+  }, [unifiedCars]);
 
-  // Clone Handler
+  // Clone handler
   const handleClone = async (carId: string) => {
     if (!permissions.canCloneListing || !user) return;
     try {
@@ -122,547 +278,154 @@ const ProfileMyAds: React.FC = () => {
         isLoading: false,
         autoClose: 2000
       });
-      // reload
       loadUserCars();
     } catch (err) {
       logger.error('Clone failed', err as Error);
+      toast.error(language === 'bg' ? 'Грешка при клониране' : 'Clone failed');
     }
   };
 
-  // Limit Progress
+  // View handler
+  const handleView = (car: UnifiedCar) => {
+    const sellerNumericId = (car as any).sellerNumericId || (car as any).ownerNumericId;
+    const carNumericId = (car as any).carNumericId || (car as any).userCarSequenceId;
+    
+    if (sellerNumericId && carNumericId) {
+      window.open(`/car/${sellerNumericId}/${carNumericId}`, '_blank');
+    } else {
+      navigate(`/car-details/${car.id}`);
+    }
+  };
+
+  // Edit handler
+  const handleEdit = (car: UnifiedCar) => {
+    import('../../../../utils/routing-utils').then(({ getCarUrlFromUnifiedCar }) => {
+      navigate(`${getCarUrlFromUnifiedCar(car)}/edit`);
+    });
+  };
+
+  // Limit progress
   const listingStats = getProgressToLimit ? getProgressToLimit('listings') : { used: 0, total: 3, percentage: 0 };
-  const isApproachingLimit = listingStats.percentage > 80;
 
   return (
-    <Container $isDark={isDark}>
-      <S.ContentSection style={{ padding: '2rem 1rem', marginTop: 0 }}>
-
-        {/* POWER BAR - For Dealers & Companies */}
-        {(isDealer || isCompany) && (
-          <div style={{
-            marginBottom: '2rem',
-            background: isDark ? 'rgba(34, 197, 94, 0.1)' : 'rgba(34, 197, 94, 0.05)',
-            border: `1px solid ${isDark ? '#22c55e' : '#4ade80'}`,
-            padding: '1rem',
-            borderRadius: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}>
-            <div>
-              <h3 style={{ margin: 0, color: isDark ? '#4ade80' : '#15803d' }}>
-                {language === 'bg' ? 'Професионален Панел' : 'Professional Dashboard'}
-              </h3>
-              <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <span style={{ fontSize: '0.9rem' }}>
-                  Monthly Quota: <strong>{listingStats.used} / {listingStats.total === 999 ? '∞' : listingStats.total}</strong>
-                </span>
-                {/* Mini Progress Bar */}
-                <div style={{ width: '100px', height: '6px', background: '#334155', borderRadius: '3px' }}>
-                  <div style={{
-                    width: `${listingStats.percentage}%`,
-                    height: '100%',
-                    background: isApproachingLimit ? '#ef4444' : '#22c55e',
-                    borderRadius: '3px'
-                  }} />
-                </div>
+    <ThemeAwareWrapper profileType={profileType} isDark={isDark}>
+      <PageContainer>
+        <ContentSection>
+          {/* Power Bar for Dealers & Companies */}
+          {(isDealer || isCompany) && (
+            <PowerBar $isDark={isDark}>
+              <PowerBarContent>
+                <PowerBarTitle $isDark={isDark}>
+                  {language === 'bg' ? 'Професионален Панел' : 'Professional Dashboard'}
+                </PowerBarTitle>
+                <PowerBarStats>
+                  <span>
+                    {language === 'bg' ? 'Месечна квота' : 'Monthly Quota'}: <strong>{listingStats.used} / {listingStats.total === 999 ? '∞' : listingStats.total}</strong>
+                  </span>
+                  <ProgressBar $percentage={listingStats.percentage} $isDark={isDark} />
+                </PowerBarStats>
+              </PowerBarContent>
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                {permissions.canBulkUpload && (
+                  <AddButton $isDark={isDark} onClick={() => setShowMatrix(true)} style={{ background: '#2563eb' }}>
+                    <ArrowUpDown size={18} />
+                    {language === 'bg' ? 'Масово Качване' : 'Bulk Upload'}
+                  </AddButton>
+                )}
+                <ViewModeToggle $isDark={isDark}>
+                  <ViewModeButton
+                    $active={viewMode === 'grid'}
+                    $isDark={isDark}
+                    onClick={() => setViewMode('grid')}
+                  >
+                    {language === 'bg' ? 'Мрежа' : 'Grid'}
+                  </ViewModeButton>
+                  <ViewModeButton
+                    $active={viewMode === 'list'}
+                    $isDark={isDark}
+                    onClick={() => setViewMode('list')}
+                  >
+                    {language === 'bg' ? 'Списък' : 'List'}
+                  </ViewModeButton>
+                </ViewModeToggle>
               </div>
-            </div>
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              {permissions.canBulkUpload && (
-                <AddButton $isDark={isDark} onClick={() => setShowMatrix(true)} style={{ background: '#2563eb' }}>
-                  <ArrowUpDown size={18} />
-                  {language === 'bg' ? 'Масово Качване' : 'Bulk Upload'}
-                </AddButton>
-              )}
-              <div style={{ display: 'flex', background: isDark ? '#1e293b' : '#fff', borderRadius: '8px', border: '1px solid #475569' }}>
-                <button
-                  onClick={() => setViewMode('grid')}
-                  style={{ padding: '0.5rem', background: viewMode === 'grid' ? '#475569' : 'transparent', color: viewMode === 'grid' ? 'white' : 'inherit', border: 'none', borderRadius: '6px 0 0 6px', cursor: 'pointer' }}
-                >
-                  Grid
-                </button>
-                <button
-                  onClick={() => setViewMode('compact')}
-                  style={{ padding: '0.5rem', background: viewMode === 'compact' ? '#475569' : 'transparent', color: viewMode === 'compact' ? 'white' : 'inherit', border: 'none', borderRadius: '0 6px 6px 0', cursor: 'pointer' }}
-                >
-                  List
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <SectionHeader>
-          <SectionTitle $isDark={isDark}>
-            {language === 'bg' ? 'Моите обяви' : 'My Ads'}
-          </SectionTitle>
-          {isOwnProfile && (
-            <AddButton onClick={() => navigate('/sell')} $isDark={isDark}>
-              <Plus size={18} />
-              {language === 'bg' ? 'Добави нова' : 'Add New'}
-            </AddButton>
+            </PowerBar>
           )}
-        </SectionHeader>
 
-        {/* Sort and Filter Controls - Always visible if there are cars */}
-        {userCars && userCars.length > 0 && (
-          <FiltersBar>
-            <FilterGroup>
-              <FilterIcon><ArrowUpDown size={16} /></FilterIcon>
-              <FilterLabel>{language === 'bg' ? 'Сортирай по' : 'Sort by'}:</FilterLabel>
-              <FilterSelect value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                <option value="newest">{language === 'bg' ? 'Най-нови първо' : 'Newest first'}</option>
-                <option value="oldest">{language === 'bg' ? 'Най-стари първо' : 'Oldest first'}</option>
-                <option value="nameAsc">{language === 'bg' ? 'Име (А-Я)' : 'Name (A-Z)'}</option>
-                <option value="nameDesc">{language === 'bg' ? 'Име (Я-А)' : 'Name (Z-A)'}</option>
-                <option value="priceLow">{language === 'bg' ? 'Цена: ниска → висока' : 'Price: Low to High'}</option>
-                <option value="priceHigh">{language === 'bg' ? 'Цена: висока → ниска' : 'Price: High to Low'}</option>
-                <option value="yearNew">{language === 'bg' ? 'Година: нова → стара' : 'Year: New to Old'}</option>
-                <option value="yearOld">{language === 'bg' ? 'Година: стара → нова' : 'Year: Old to New'}</option>
-                <option value="make">{language === 'bg' ? 'По марка' : 'By Make'}</option>
-                <option value="model">{language === 'bg' ? 'По модел' : 'By Model'}</option>
-              </FilterSelect>
-            </FilterGroup>
-
-            <FilterGroup>
-              <FilterIcon><Filter size={16} /></FilterIcon>
-              <FilterLabel>{language === 'bg' ? 'Филтрирай по' : 'Filter by'}:</FilterLabel>
-              <FilterSelect value={filterBy} onChange={(e) => setFilterBy(e.target.value)}>
-                <option value="all">{language === 'bg' ? 'Всички' : 'All'}</option>
-                <option value="active">{language === 'bg' ? 'Активни' : 'Active'}</option>
-                <option value="sold">{language === 'bg' ? 'Продадени' : 'Sold'}</option>
-                <option value="pending">{language === 'bg' ? 'В изчакване' : 'Pending'}</option>
-              </FilterSelect>
-            </FilterGroup>
-          </FiltersBar>
-        )}
-
-        {/* Matrix Modal */}
-        {showMatrix && <MatrixUploader onClose={() => setShowMatrix(false)} />}
-
-        {/* Show empty state only if no cars at all, or if filtered results are empty */}
-        {(!userCars || userCars.length === 0) ? (
-          <EmptyState $isDark={isDark}>
-            <Car size={64} style={{ opacity: 0.5, marginBottom: '1rem' }} />
-            <EmptyText $isDark={isDark}>
-              {language === 'bg'
-                ? 'Все още нямате обяви'
-                : 'You don\'t have any listings yet'}
-            </EmptyText>
+          {/* Header */}
+          <HeaderSection>
+            <Title $isDark={isDark}>
+              {language === 'bg' ? 'Моите обяви' : 'My Ads'}
+            </Title>
             {isOwnProfile && (
-              <AddButton onClick={() => navigate('/sell')} $isDark={isDark}>
+              <AddButton $isDark={isDark} onClick={() => navigate('/sell')}>
                 <Plus size={18} />
-                {language === 'bg' ? 'Добави първа обява' : 'Add First Listing'}
+                {language === 'bg' ? 'Добави нова' : 'Add New'}
               </AddButton>
             )}
-          </EmptyState>
-        ) : unifiedCars.length === 0 ? (
-          <EmptyState $isDark={isDark}>
-            <Car size={64} style={{ opacity: 0.5, marginBottom: '1rem' }} />
-            <EmptyText $isDark={isDark}>
-              {language === 'bg'
-                ? 'Няма резултати с избраните филтри'
-                : 'No results match the selected filters'}
-            </EmptyText>
-            <FilterResetButton onClick={() => {
-              setFilterBy('all');
-              setSortBy('newest');
-            }} $isDark={isDark}>
-              {language === 'bg' ? 'Изчисти филтрите' : 'Clear Filters'}
-            </FilterResetButton>
-          </EmptyState>
-        ) : (
-          /* View Mode Logic */
-          viewMode === 'compact' ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              {unifiedCars.map(car => (
-                <div key={car.id} style={{ display: 'grid', gridTemplateColumns: '80px 2fr 1fr 1fr 100px', gap: '1rem', padding: '0.5rem', background: isDark ? '#1e293b' : 'white', borderRadius: '8px', alignItems: 'center' }}>
-                  <img src={car.mainImage?.url || 'placeholder.jpg'} style={{ width: '60px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
-                  <span style={{ fontWeight: 'bold' }}>{car.make} {car.model}</span>
-                  <span>{car.year}</span>
-                  <span>€{car.price}</span>
-                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                    <button
-                      style={{ padding: '4px 8px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px', background: 'transparent', border: `1px solid ${isDark ? '#475569' : '#cbd5e1'}`, borderRadius: '4px', color: isDark ? '#e2e8f0' : '#475569', cursor: 'pointer' }}
-                      onClick={() => {
-                        const sellerNumericId = (car as any).sellerNumericId || (car as any).ownerNumericId;
-                        const carNumericId = (car as any).carNumericId || (car as any).userCarSequenceId || (car as any).numericId;
-                        if (sellerNumericId && carNumericId) {
-                          window.open(`/car/${sellerNumericId}/${carNumericId}`, '_blank');
-                        } else {
-                          import('../../../../utils/routing-utils').then(({ getCarUrlFromUnifiedCar }) => {
-                            window.open(getCarUrlFromUnifiedCar(car), '_blank');
-                          });
-                        }
-                      }}
-                      title={language === 'bg' ? 'Преглед' : 'View'}
-                    >
-                      <Eye size={14} />
-                      {viewMode === 'compact' && (language === 'bg' ? 'Преглед' : 'View')}
-                    </button>
-                    <button style={{ padding: '4px 8px', fontSize: '0.8rem' }} onClick={() => {
-                      import('../../../../utils/routing-utils').then(({ getCarUrlFromUnifiedCar }) => {
-                        navigate(`${getCarUrlFromUnifiedCar(car)}/edit`);
-                      });
-                    }}>Edit</button>
-                    {permissions.canCloneListing && (
-                      <button
-                        style={{ padding: '4px 8px', fontSize: '0.8rem', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '4px' }}
-                        onClick={() => handleClone(car.id!)}
-                      >
-                        Clone
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
+          </HeaderSection>
+
+          {/* Stats Summary */}
+          {unifiedCars.length > 0 && (
+            <AdsStatsSummary
+              activeCount={stats.active}
+              totalViews={stats.totalViews}
+              totalMessages={stats.totalMessages}
+              totalListings={stats.totalListings}
+              isDark={isDark}
+            />
+          )}
+
+          {/* Toolbar */}
+          {unifiedCars.length > 0 && (
+            <AdsToolbar
+              sortBy={sortBy}
+              filterBy={filterBy}
+              viewMode={viewMode}
+              onSortChange={setSortBy}
+              onFilterChange={setFilterBy}
+              onViewModeChange={setViewMode}
+              isDark={isDark}
+            />
+          )}
+
+          {/* Matrix Modal */}
+          {showMatrix && <MatrixUploader onClose={() => setShowMatrix(false)} />}
+
+          {/* Content */}
+          {unifiedCars.length === 0 ? (
+            <EmptyState
+              isOwnProfile={isOwnProfile}
+              onAddNew={() => navigate('/sell')}
+              isDark={isDark}
+              isFiltered={filterBy !== 'all' || sortBy !== 'newest'}
+              onClearFilters={() => {
+                setFilterBy('all');
+                setSortBy('newest');
+              }}
+            />
+          ) : viewMode === 'grid' ? (
+            <AdCardGrid
+              cars={unifiedCars}
+              isOwnProfile={isOwnProfile}
+              onView={handleView}
+              onEdit={handleEdit}
+              onClone={permissions.canCloneListing ? handleClone : undefined}
+            />
           ) : (
-            <CarsGrid>
-              {unifiedCars.map((car) => (
-                <div key={car.id} style={{ position: 'relative' }}>
-                  <ModernCarCard
-                    car={car}
-                    showStatus={true}
-                    onFavorite={(carId) => {
-                      logger.info('Favorite clicked:', carId);
-                    }}
-                  />
-                  {/* Clone Button Overlay */}
-                  {permissions.canCloneListing && isOwnProfile && (
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleClone(car.id!); }}
-                      style={{
-                        position: 'absolute',
-                        top: '10px',
-                        right: '10px',
-                        zIndex: 10,
-                        background: 'rgba(59, 130, 246, 0.9)',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        padding: '4px 8px',
-                        fontSize: '0.75rem',
-                        fontWeight: 'bold',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      CLONE
-                    </button>
-                  )}
-                  {isOwnProfile && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        import('../../../../utils/routing-utils').then(({ getCarUrlFromUnifiedCar }) => {
-                          navigate(`${getCarUrlFromUnifiedCar(car)}/edit`);
-                        });
-                      }}
-                      style={{
-                        position: 'absolute',
-                        top: '10px',
-                        right: permissions.canCloneListing ? '70px' : '10px', // Shift if clone exists
-                        zIndex: 10,
-                        background: 'rgba(255, 255, 255, 0.9)',
-                        color: '#1e293b',
-                        border: '1px solid #cbd5e1',
-                        borderRadius: '4px',
-                        padding: '4px 8px',
-                        fontSize: '0.75rem',
-                        fontWeight: 'bold',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      EDIT
-                    </button>
-                  )}
-                </div>
-              ))}
-            </CarsGrid>
-          )
-        )}
-      </S.ContentSection>
-    </Container>
+            <AdCardList
+              cars={unifiedCars}
+              isOwnProfile={isOwnProfile}
+              onView={handleView}
+              onEdit={handleEdit}
+              onClone={permissions.canCloneListing ? handleClone : undefined}
+              isDark={isDark}
+            />
+          )}
+        </ContentSection>
+      </PageContainer>
+    </ThemeAwareWrapper>
   );
 };
 
-const Container = styled.div<{ $isDark: boolean }>`
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0;
-  box-sizing: border-box;
-  overflow-x: hidden;
-  background: ${({ $isDark }) => $isDark ? '#0f172a' : 'var(--bg-primary)'};
-  min-height: 60vh;
-  
-  @media (max-width: 768px) {
-    max-width: 100%;
-  }
-`;
-
-const SectionHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-`;
-
-const SectionTitle = styled.h2<{ $isDark: boolean }>`
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--text-primary);
-  margin: 0;
-  
-  @media (max-width: 768px) {
-    font-size: 1.5rem;
-  }
-`;
-
-const AddButton = styled.button<{ $isDark: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: var(--btn-primary-bg);
-  color: var(--btn-primary-text);
-  border: none;
-  border-radius: 12px;
-  font-size: 0.9375rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: var(--shadow-button);
-  
-  &:hover {
-    background: var(--btn-primary-hover);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-  }
-  
-  &:active {
-    transform: translateY(0);
-  }
-  
-  svg {
-    width: 18px;
-    height: 18px;
-  }
-  
-  @media (max-width: 768px) {
-    width: 100%;
-    justify-content: center;
-  }
-`;
-
-const CarsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  @media (min-width: 769px) and (max-width: 1024px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  @media (min-width: 1025px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-`;
-
-const EmptyState = styled.div<{ $isDark: boolean }>`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 2rem;
-  text-align: center;
-  background: ${({ $isDark }) => $isDark ? '#0f172a' : 'var(--bg-primary)'};
-  border-radius: 16px;
-  border: 1px solid var(--border-primary);
-  
-  @media (max-width: 768px) {
-    padding: 3rem 1.5rem;
-  }
-`;
-
-const EmptyText = styled.p<{ $isDark: boolean }>`
-  font-size: 1.125rem;
-  color: var(--text-secondary);
-  margin: 0 0 1.5rem 0;
-  
-  @media (max-width: 768px) {
-    font-size: 1rem;
-  }
-`;
-
-const FiltersBar = styled.div`
-  display: flex;
-  gap: 16px;
-  margin-bottom: 24px;
-  padding: 16px;
-  background: var(--bg-secondary);
-  border-radius: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-  
-  /* Dark Mode Support */
-  html[data-theme="dark"] & {
-    background: #1e293b;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  /* Light Mode Support */
-  html[data-theme="light"] & {
-    background: #f8fafc;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
-  
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-`;
-
-const FilterGroup = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-  min-width: 200px;
-  
-  @media (max-width: 768px) {
-    min-width: 100%;
-  }
-`;
-
-const FilterIcon = styled.div`
-  color: var(--accent-primary);
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-`;
-
-const FilterLabel = styled.label`
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
-  white-space: nowrap;
-  flex-shrink: 0;
-  
-  /* Dark Mode Support */
-  html[data-theme="dark"] & {
-    color: #e2e8f0;
-  }
-  
-  /* Light Mode Support */
-  html[data-theme="light"] & {
-    color: #1e293b;
-  }
-`;
-
-const FilterSelect = styled.select`
-  flex: 1;
-  padding: 10px 14px;
-  background: var(--bg-card);
-  border: 2px solid var(--border-primary);
-  border-radius: 8px;
-  color: var(--text-primary);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  min-width: 0;
-  
-  &:focus {
-    outline: none;
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.1);
-  }
-  
-  option {
-    background: var(--bg-card);
-    color: var(--text-primary);
-    padding: 8px;
-  }
-  
-  /* Dark Mode Support */
-  html[data-theme="dark"] & {
-    background: #0f172a;
-    border-color: rgba(255, 255, 255, 0.2);
-    color: #e2e8f0;
-    
-    &:hover {
-      border-color: var(--accent-primary);
-    }
-    
-    option {
-      background: #0f172a;
-      color: #e2e8f0;
-    }
-  }
-  
-  /* Light Mode Support */
-  html[data-theme="light"] & {
-    background: white;
-    border-color: rgba(0, 0, 0, 0.15);
-    color: #1e293b;
-    
-    &:hover {
-      border-color: var(--accent-primary);
-    }
-    
-    option {
-      background: white;
-      color: #1e293b;
-    }
-  }
-`;
-
-const FilterResetButton = styled.button<{ $isDark: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: var(--btn-primary-bg);
-  color: var(--btn-primary-text);
-  border: none;
-  border-radius: 12px;
-  font-size: 0.9375rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: var(--shadow-button);
-  margin-top: 1rem;
-  
-  &:hover {
-    background: var(--btn-primary-hover);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-  }
-  
-  &:active {
-    transform: translateY(0);
-  }
-  
-  @media (max-width: 768px) {
-    width: 100%;
-    justify-content: center;
-  }
-`;
-
 export default ProfileMyAds;
-

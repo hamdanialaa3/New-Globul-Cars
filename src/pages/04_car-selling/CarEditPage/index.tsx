@@ -23,6 +23,7 @@ import { TechnicalSpecsSection } from './components/TechnicalSpecsSection';
 import { EquipmentSection } from './components/EquipmentSection';
 import { LocationPriceSection } from './components/LocationPriceSection';
 import { ContactSection } from './components/ContactSection';
+import { DescriptionSection } from './components/DescriptionSection';
 
 // Constants & Helpers
 import {
@@ -308,6 +309,13 @@ const CarEditPage: React.FC<{ carId?: string }> = ({ carId: propCarId }) => {
               formData={formData}
               handleInputChange={handleInputChange}
               colors={COLORS}
+              t={t}
+              isDark={theme === 'dark'}
+            />
+
+            <DescriptionSection
+              formData={formData}
+              handleInputChange={handleInputChange}
               t={t}
               isDark={theme === 'dark'}
             />

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../../../../hooks/useTranslation';
 import { useAuth } from '../../../../../hooks/useAuth';
 import { SocialAuthService } from '../../../../../firebase/social-auth-service';
+import { bulgarianAuthService } from '../../../../../firebase';
 import { LoginFormData, LoginState, LoginActions, UseLoginReturn } from '../types';
 import { logger } from '../../../../../services/logger-service';
 
@@ -87,7 +88,7 @@ export const useLogin = (): UseLoginReturn => {
     setSuccess(null);
 
     try {
-      const result = await SocialAuthService.signInWithEmailAndPassword(
+      const result = await bulgarianAuthService.signIn(
         formData.email,
         formData.password
       );
@@ -102,7 +103,9 @@ export const useLogin = (): UseLoginReturn => {
       }
     } catch (err) {
       logger.error('Login error:', err instanceof Error ? err : new Error(String(err)));
-      setError(t('auth.unexpectedError', 'An unexpected error occurred. Please try again.'));
+      // Use the error message from handleAuthError (already translated to Bulgarian)
+      const errorMessage = err instanceof Error ? err.message : t('auth.unexpectedError', 'An unexpected error occurred. Please try again.');
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

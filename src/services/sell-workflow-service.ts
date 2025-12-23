@@ -120,6 +120,17 @@ export class SellWorkflowService {
       });
       const carResult = await unifiedCarService.createCar(carData);
 
+      // ✅ CRITICAL FIX: Verify numeric IDs were assigned before proceeding
+      if (!carResult.sellerNumericId || !carResult.carNumericId) {
+        logger.error('Numeric ID assignment failed - car created without numeric IDs', {
+          carId: carResult.id,
+          userId,
+          sellerNumericId: carResult.sellerNumericId,
+          carNumericId: carResult.carNumericId
+        });
+        throw new Error('Failed to assign numeric IDs. Please try again.');
+      }
+
       logger.info('Car listing created successfully via SellWorkflowService', {
         carId: carResult.id,
         userId,

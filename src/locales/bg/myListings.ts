@@ -33,7 +33,11 @@ export const myListings = {
     active: 'Активни',
     sold: 'Продадени',
     views: 'Общо прегледи',
-    inquiries: 'Запитвания'
+    inquiries: 'Запитвания',
+    messages: 'Съобщения',
+    activeAds: 'Активни обяви',
+    totalViews: 'Общо прегледи',
+    totalListings: 'Общо обяви'
   },
   status: {
     active: 'Активна',

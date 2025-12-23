@@ -201,20 +201,58 @@ src/**/*.spec.{ts,tsx}
 5. **Never use console.log** - Use `logger-service` (prebuild script will fail builds with console.log)
 6. **Never create new Context providers** without documenting in `src/contexts/index.ts`
 
-## Project Constitution References
-- [PROJECT_CONSTITUTION.md](../PROJECT_CONSTITUTION.md) - Core principles & development rules
-- [PROJECT_MASTER_REFERENCE_MANUAL.md](../PROJECT_MASTER_REFERENCE_MANUAL.md) - Complete tech stack & architecture
-- [CLEANUP_PLAN.md](../CLEANUP_PLAN.md) - Matryoshka structure cleanup (if working on refactoring)
+## Image & Asset Optimization
+- **WebP Conversion**: Run `node scripts/optimize-images.js` before committing new images
+- **Image Upload**: Use `SellWorkflowImages.uploadMultipleImages()` for multi-file uploads
+- **Client Compression**: `browser-image-compression` library already integrated for client-side optimization
+- **Storage Path**: `workflow-images/{userId}/{filename}` pattern in Firebase Storage
 
-## Key Bulgarian Localization
-- **Currency**: Always EUR (€), never BGN
-- **Language**: `bg` (Cyrillic) primary, `en` secondary
-- **Phone**: Country code always `+359`
-- **Location**: Use `bulgaria-locations.service.ts` for cities/regions
-- **Compliance**: EGN verification for individuals, EIK for companies
+## Debugging & Troubleshooting
+
+### Common Issues
+**Build fails with "console.log found"**: 
+- `scripts/ban-console.js` scans `src/` before production builds
+- Replace all `console.log` with `logger.info()` from `@/services/logger-service`
+
+**Path alias not resolving**:
+- Check all 3 configs are synchronized: `tsconfig.json`, `craco.config.js`, `jest.config.js`
+- Restart dev server after changing path aliases
+
+**Stale assets in browser**:
+- CRACO devServer config sends no-cache headers
+- Run `scripts/clear-dev-caches.ps1` to clear npm/browser caches
+- Hard refresh: Ctrl+Shift+R
+
+**Numeric ID routing broken**:
+- Verify `NumericCarDetailsPage.tsx` and `NumericProfileRouter.tsx` are in route config
+- Check Firestore: users must have `numericId`, cars must have `sellerNumericId` + `carNumericId`
+- Migration script: `npx ts-node scripts/migrate-isActive.ts`
+
+### Firebase Local Development
+```bash
+firebase emulators:start    # Starts Firestore/Auth/Functions emulators
+# Emulator UI: http://localhost:4000
+# Firestore: localhost:8080
+# Auth: localhost:9099
+```
+
+## Bulgarian Market Specifics
+- **Currency**: Always EUR (€), never BGN (to match European standards)
+- **Language**: `bg` (Cyrillic) primary, `en` secondary via `LanguageContext`
+- **Phone**: Country code always `+359` (Bulgaria)
+- **Location**: Use `bulgaria-locations.service.ts` for cities/regions (never hardcode)
+- **Compliance**: 
+  - EGN verification for private users (via `bulgarian-compliance-service.ts`)
+  - EIK verification for companies (via `eik-verification-service.ts`)
+
+## Critical Documentation References
+- [PROJECT_CONSTITUTION.md](../PROJECT_CONSTITUTION.md) - Core principles & development rules (Arabic/English)
+- [PROJECT_MASTER_REFERENCE_MANUAL.md](../PROJECT_MASTER_REFERENCE_MANUAL.md) - Complete tech stack & architecture
+- [docs/STRICT_NUMERIC_ID_SYSTEM.md](../docs/STRICT_NUMERIC_ID_SYSTEM.md) - Detailed numeric ID implementation
+- [CLEANUP_PLAN.md](../CLEANUP_PLAN.md) - Matryoshka structure cleanup (if working on refactoring)
 
 ---
 
-**Version**: 1.0.0  
-**Last Updated**: December 2025  
+**Version**: 1.1.0  
+**Last Updated**: December 23, 2025  
 **Status**: Production

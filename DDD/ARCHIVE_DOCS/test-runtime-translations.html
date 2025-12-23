@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Translation Runtime Test</title>
+    <script>
+        // Simulate the translation loading issue
+        window.addEventListener('load', () => {
+            console.log('Testing translation system...');
+            
+            // Check if translations are available in window
+            setTimeout(() => {
+                const contexts = document.querySelectorAll('[data-translation-key]');
+                console.log('Found translation elements:', contexts.length);
+                
+                contexts.forEach(el => {
+                    const key = el.getAttribute('data-translation-key');
+                    const value = el.textContent;
+                    console.log(`Key: ${key} => Value: ${value}`);
+                    
+                    if (value === key) {
+                        el.style.backgroundColor = 'red';
+                        el.style.color = 'white';
+                        el.style.padding = '2px 5px';
+                    }
+                });
+            }, 2000);
+        });
+    </script>
+</head>
+<body>
+    <h1>Open http://localhost:3000 and check console</h1>
+    <p>This is a diagnostic page. The real test happens in your React app.</p>
+</body>
+</html>

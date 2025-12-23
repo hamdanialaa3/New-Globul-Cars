@@ -67,34 +67,18 @@ class NumericCarSystemService {
 
   /**
    * ✅ Get the next carNumericId for a user
+   * ✅ CRITICAL FIX: Uses atomic transaction-based counter to prevent race conditions
    * Example: If user has cars 1, 2, 3 → returns 4
    */
   async getNextCarNumericId(userId: string): Promise<number> {
     try {
-      const userNumericId = await this.getUserNumericId(userId);
-
-      // Get all cars for this user
-      const q = query(
-        collection(db, 'cars'),
-        where('sellerId', '==', userId)
-      );
-
-      const snapshot = await getDocs(q);
-
-      if (snapshot.empty) {
-        return 1; // First car
-      }
-
-      // Find the highest carNumericId
-      let maxId = 0;
-      snapshot.docs.forEach(doc => {
-        const carNumericId = (doc.data() as any).carNumericId || 0;
-        if (typeof carNumericId === 'number' && carNumericId > maxId) {
-          maxId = carNumericId;
-        }
-      });
-
-      return maxId + 1;
+      // ✅ CRITICAL FIX: Use transaction-based counter service instead of query
+      // This prevents race conditions when multiple cars are created simultaneously
+      const { getNextCarNumericId: getNextCarNumericIdFromCounter } = await import('./numeric-id-counter.service');
+      const nextId = await getNextCarNumericIdFromCounter(userId);
+      
+      serviceLogger.info('✅ Got next car numeric ID (atomic)', { userId, carNumericId: nextId });
+      return nextId;
     } catch (error) {
       serviceLogger.error('Error getting next carNumericId', error as Error);
       throw error;
@@ -272,6 +256,54 @@ class NumericCarSystemService {
     } catch (error) {
       serviceLogger.error('Error updating car by numeric IDs', error as Error);
       throw error;
+    }
+  }
+
+  /**
+   * ✅ Repair missing numeric IDs for a car
+   * Used when a car exists but lacks sellerNumericId or carNumericId
+   */
+  async repairMissingIds(carId: string): Promise<{ sellerNumericId: number; carNumericId: number } | null> {
+    try {
+      const carRef = doc(db, 'cars', carId);
+      const carDoc = await getDoc(carRef);
+
+      if (!carDoc.exists()) {
+        serviceLogger.warn('Car not found for repair', { carId });
+        return null;
+      }
+
+      const carData = carDoc.data();
+      const sellerId = carData.sellerId;
+
+      if (!sellerId) {
+        serviceLogger.error('Car missing sellerId - cannot repair', { carId });
+        return null;
+      }
+
+      // Get user's numeric ID
+      const userNumericId = await this.getUserNumericId(sellerId);
+
+      // Get next car numeric ID (this will use the counter service)
+      const carNumericId = await this.getNextCarNumericId(sellerId);
+
+      // Update the car document
+      await updateDoc(carRef, {
+        sellerNumericId: userNumericId,
+        carNumericId: carNumericId,
+        updatedAt: serverTimestamp()
+      });
+
+      serviceLogger.info('✅ Repaired missing numeric IDs', {
+        carId,
+        sellerNumericId: userNumericId,
+        carNumericId
+      });
+
+      return { sellerNumericId: userNumericId, carNumericId };
+    } catch (error) {
+      serviceLogger.error('Error repairing missing numeric IDs', error as Error, { carId });
+      return null;
     }
   }
 

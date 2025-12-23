@@ -33,7 +33,11 @@ export const myListings = {
     active: 'Active',
     sold: 'Sold',
     views: 'Total views',
-    inquiries: 'Inquiries'
+    inquiries: 'Inquiries',
+    messages: 'Messages',
+    activeAds: 'Active Ads',
+    totalViews: 'Total Views',
+    totalListings: 'Total Listings'
   },
   status: {
     active: 'Active',

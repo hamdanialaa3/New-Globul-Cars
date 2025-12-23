@@ -18,10 +18,13 @@ import {
   hasUserConsented, 
   grantAllConsents, 
   denyAllConsents,
-  updateConsent 
+  updateConsent,
+  initConsentMode
 } from '@/utils/consent-mode';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const ConsentBanner: React.FC = () => {
+  const { language } = useLanguage();
   const [isVisible, setIsVisible] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
@@ -33,9 +36,17 @@ const ConsentBanner: React.FC = () => {
   });
 
   useEffect(() => {
+    // Initialize consent mode if not already initialized
+    initConsentMode();
+    
     // Show banner only if user hasn't consented
-    if (!hasUserConsented()) {
-      setIsVisible(true);
+    const hasConsented = hasUserConsented();
+    if (!hasConsented) {
+      // Small delay to avoid flash on page load
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+      }, 500);
+      return () => clearTimeout(timer);
     }
   }, []);
 
@@ -62,34 +73,79 @@ const ConsentBanner: React.FC = () => {
 
   if (!isVisible) return null;
 
+  // Translations
+  const texts = {
+    bg: {
+      title: '🍪 Използваме бисквитки',
+      description: 'Използваме бисквитки за подобряване на вашето изживяване, анализ на трафика и персонализирана реклама. Повече информация в нашата',
+      privacyLink: 'Политика за поверителност',
+      customize: 'Настройки',
+      reject: 'Откажи',
+      acceptAll: 'Приеми всички',
+      detailTitle: 'Персонализирайте настройките за бисквитки',
+      essential: 'Необходими бисквитки',
+      essentialDesc: 'Задължителни за функционирането на сайта (вход, кошница, безопасност)',
+      analytics: 'Аналитични бисквитки',
+      analyticsDesc: 'Помагат ни да подобрим сайта чрез анализ на посещенията (Google Analytics)',
+      ads: 'Рекламни бисквитки',
+      adsDesc: 'Показват ви релевантни реклами за автомобили (Google Ads, Facebook)',
+      personalization: 'Персонализация',
+      personalizationDesc: 'Запазват вашите предпочитания (език, тема, филтри)',
+      back: 'Назад',
+      rejectAll: 'Откажи всички',
+      saveChoice: 'Запази избора'
+    },
+    en: {
+      title: '🍪 We Use Cookies',
+      description: 'We use cookies to improve your experience, analyze traffic, and deliver personalized ads. More information in our',
+      privacyLink: 'Privacy Policy',
+      customize: 'Settings',
+      reject: 'Reject',
+      acceptAll: 'Accept All',
+      detailTitle: 'Customize Cookie Settings',
+      essential: 'Essential Cookies',
+      essentialDesc: 'Required for site functionality (login, cart, security)',
+      analytics: 'Analytics Cookies',
+      analyticsDesc: 'Help us improve the site through usage analysis (Google Analytics)',
+      ads: 'Advertising Cookies',
+      adsDesc: 'Show you relevant car ads (Google Ads, Facebook)',
+      personalization: 'Personalization',
+      personalizationDesc: 'Save your preferences (language, theme, filters)',
+      back: 'Back',
+      rejectAll: 'Reject All',
+      saveChoice: 'Save Choice'
+    }
+  };
+
+  const t = texts[language];
+
   return (
     <BannerContainer>
       <BannerContent>
         {!showDetails ? (
           <>
             <BannerText>
-              <strong>🍪 Използваме бисквитки</strong>
+              <strong>{t.title}</strong>
               <p>
-                Използваме бисквитки за подобряване на вашето изживяване, анализ на трафика и персонализирана реклама.
-                Повече информация в нашата <a href="/privacy" target="_blank">Политика за поверителност</a>.
+                {t.description} <a href="/privacy" target="_blank">{t.privacyLink}</a>.
               </p>
             </BannerText>
             <BannerActions>
               <CustomizeButton onClick={() => setShowDetails(true)}>
-                Настройки
+                {t.customize}
               </CustomizeButton>
               <RejectButton onClick={handleRejectAll}>
-                Откажи
+                {t.reject}
               </RejectButton>
               <AcceptButton onClick={handleAcceptAll}>
-                Приеми всички
+                {t.acceptAll}
               </AcceptButton>
             </BannerActions>
           </>
         ) : (
           <>
             <DetailedView>
-              <DetailTitle>Персонализирайте настройките за бисквитки</DetailTitle>
+              <DetailTitle>{t.detailTitle}</DetailTitle>
               
               <ConsentOption>
                 <ConsentLabel>
@@ -98,10 +154,10 @@ const ConsentBanner: React.FC = () => {
                     checked={true}
                     disabled
                   />
-                  <strong>Необходими бисквитки</strong>
+                  <strong>{t.essential}</strong>
                 </ConsentLabel>
                 <ConsentDescription>
-                  Задължителни за функционирането на сайта (вход, кошница, безопасност)
+                  {t.essentialDesc}
                 </ConsentDescription>
               </ConsentOption>
 
@@ -112,10 +168,10 @@ const ConsentBanner: React.FC = () => {
                     checked={consents.analytics}
                     onChange={(e) => setConsents({ ...consents, analytics: e.target.checked })}
                   />
-                  <strong>Аналитични бисквитки</strong>
+                  <strong>{t.analytics}</strong>
                 </ConsentLabel>
                 <ConsentDescription>
-                  Помагат ни да подобрим сайта чрез анализ на посещенията (Google Analytics)
+                  {t.analyticsDesc}
                 </ConsentDescription>
               </ConsentOption>
 
@@ -126,10 +182,10 @@ const ConsentBanner: React.FC = () => {
                     checked={consents.ads}
                     onChange={(e) => setConsents({ ...consents, ads: e.target.checked })}
                   />
-                  <strong>Рекламни бисквитки</strong>
+                  <strong>{t.ads}</strong>
                 </ConsentLabel>
                 <ConsentDescription>
-                  Показват ви релевантни реклами за автомобили (Google Ads, Facebook)
+                  {t.adsDesc}
                 </ConsentDescription>
               </ConsentOption>
 
@@ -140,23 +196,23 @@ const ConsentBanner: React.FC = () => {
                     checked={consents.personalization}
                     onChange={(e) => setConsents({ ...consents, personalization: e.target.checked })}
                   />
-                  <strong>Персонализация</strong>
+                  <strong>{t.personalization}</strong>
                 </ConsentLabel>
                 <ConsentDescription>
-                  Запазват вашите предпочитания (език, тема, филтри)
+                  {t.personalizationDesc}
                 </ConsentDescription>
               </ConsentOption>
             </DetailedView>
 
             <BannerActions>
               <BackButton onClick={() => setShowDetails(false)}>
-                Назад
+                {t.back}
               </BackButton>
               <RejectButton onClick={handleRejectAll}>
-                Откажи всички
+                {t.rejectAll}
               </RejectButton>
               <AcceptButton onClick={handleSaveCustom}>
-                Запази избора
+                {t.saveChoice}
               </AcceptButton>
             </BannerActions>
           </>
