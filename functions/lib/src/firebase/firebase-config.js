@@ -17,8 +17,8 @@ const logger_service_1 = require("../services/logger-service");
 // Project ID: fire-new-globul
 // Project Number: 973379297533
 const firebaseConfig = {
-    // ✅ UPDATED: Using 'Gemini Developer API key' which has NO RESTRICTIONS to bypass localhost issues
-    apiKey: process.env.REACT_APP_GOOGLE_FIREBASE_WEB_KEY || "AIzaSyDGx1CXyjxND5sEt34Hmiouz7Y93AhL-yA",
+    // ✅ UPDATED: Using 'Firebase-Web-Unrestricted' key to fix blocked Auth requests
+    apiKey: "AIzaSyAUYM_qygK5pUrlXtdDLmEi-_Kh9SyvRmk",
     authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "fire-new-globul.firebaseapp.com",
     projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "fire-new-globul",
     storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "fire-new-globul.firebasestorage.app",

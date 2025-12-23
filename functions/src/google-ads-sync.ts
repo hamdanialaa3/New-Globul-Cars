@@ -1,17 +1,19 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { GoogleAdsApi, Customer } from 'google-ads-api';
+// import { GoogleAdsApi, Customer } from 'google-ads-api';
 
+/*
 const client = new GoogleAdsApi({
     client_id: process.env.GOOGLE_ADS_CLIENT_ID || '',
     client_secret: process.env.GOOGLE_ADS_CLIENT_SECRET || '',
     developer_token: process.env.GOOGLE_ADS_DEVELOPER_TOKEN || '',
 });
+*/
 
 export const syncCarsToGoogleAds = functions
     .runWith({ memory: '1GB', timeoutSeconds: 540 })
     .pubsub.schedule('every 6 hours')
-    .onRun(async (context) => {
+    .onRun(async () => {
         try {
             if (!process.env.GOOGLE_ADS_CLIENT_ID) {
                 console.warn('Google Ads credentials missing, skipping sync.');
@@ -27,10 +29,12 @@ export const syncCarsToGoogleAds = functions
             const snapshot = await carsRef.get();
             if (snapshot.empty) return;
 
-            const customer: Customer = client.Customer({
+            /*
+            const _customer: Customer = client.Customer({
                 customer_id: process.env.GOOGLE_ADS_CUSTOMER_ID || '',
                 refresh_token: process.env.GOOGLE_ADS_REFRESH_TOKEN || '',
             });
+            */
 
             const ads = snapshot.docs.map(doc => {
                 const car = doc.data();

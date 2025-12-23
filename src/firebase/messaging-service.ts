@@ -71,7 +71,7 @@ export class BulgarianMessagingService {
   private static instance: BulgarianMessagingService;
   private listeners: Map<string, Unsubscribe> = new Map();
 
-  private constructor() {}
+  private constructor() { }
 
   static getInstance(): BulgarianMessagingService {
     if (!BulgarianMessagingService.instance) {
@@ -352,7 +352,7 @@ export class BulgarianMessagingService {
     // ✅ FIX: Guard against null/undefined userId BEFORE constructing query
     if (!userId) {
       logger.warn('listenToNewMessages called with null/undefined userId - returning no-op unsubscribe');
-      return () => {}; // Return no-op unsubscribe function
+      return () => { }; // Return no-op unsubscribe function
     }
 
     const q = query(
@@ -415,7 +415,7 @@ export class BulgarianMessagingService {
         };
         updateData[`unreadCount.${recipientId}`] = (chatRoomDoc.data()?.unreadCount?.[recipientId] || 0) + 1;
 
-        await updateDoc(chatRoomRef, updateData);
+        await updateDoc(chatRoomRef, updateData as any);
       } else {
         // Create new chat room
         const chatRoom: Omit<ChatRoom, 'id'> = {
@@ -454,7 +454,7 @@ export class BulgarianMessagingService {
         };
         updateData[`unreadCount.${recipientId}`] = Math.max(0, currentUnreadCount - 1);
 
-        await updateDoc(chatRoomRef, updateData);
+        await updateDoc(chatRoomRef, updateData as any);
       }
     } catch (error) {
       const { logger } = await import('../services/logger-service');
@@ -470,7 +470,7 @@ export class BulgarianMessagingService {
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Notification sent', { recipientId, senderName: message.senderName });
       }
-    } catch {}
+    } catch { }
   }
 
   private generateChatRoomId(carId: string, userId1: string, userId2: string): string {

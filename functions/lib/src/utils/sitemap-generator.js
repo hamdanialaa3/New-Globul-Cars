@@ -7,7 +7,7 @@ const logger_service_1 = require("../services/logger-service");
 // UPDATED: Now uses numeric URLs for all car listings
 const firebase_1 = require("../firebase");
 const firestore_1 = require("firebase/firestore");
-const urlHelpers_1 = require("./urlHelpers");
+const routing_utils_1 = require("./routing-utils");
 /**
  * Generate sitemap XML from URLs
  * FREE - No external service needed
@@ -35,7 +35,7 @@ exports.generateSitemapXML = generateSitemapXML;
  * FREE - Query Firestore directly
  * UPDATED: Uses numeric URLs instead of UUIDs
  */
-const generateCarListingsSitemap = async (baseUrl = 'https://globulcars.bg') => {
+const generateCarListingsSitemap = async (baseUrl = 'https://mobilebg.eu') => {
     try {
         const carsRef = (0, firestore_1.collection)(firebase_1.db, 'cars');
         const q = (0, firestore_1.query)(carsRef, (0, firestore_1.where)('status', '==', 'active'), (0, firestore_1.orderBy)('createdAt', 'desc'), (0, firestore_1.limit)(50000) // Google sitemap limit
@@ -54,7 +54,11 @@ const generateCarListingsSitemap = async (baseUrl = 'https://globulcars.bg') => 
                 ((_f = (_e = (_d = data.createdAt) === null || _d === void 0 ? void 0 : _d.toDate) === null || _e === void 0 ? void 0 : _e.call(_d)) === null || _f === void 0 ? void 0 : _f.toISOString()) ||
                 new Date().toISOString();
             // Use numeric URL format: /car/{sellerNumericId}/{carNumericId}
-            const carUrl = (0, urlHelpers_1.getCarDetailsUrl)(data.sellerNumericId, data.carNumericId, data.make || 'car', data.model || 'listing');
+            const carUrl = (0, routing_utils_1.getCarDetailsUrl)({
+                sellerNumericId: data.sellerNumericId,
+                carNumericId: data.carNumericId,
+                id: doc.id
+            });
             return {
                 loc: `${baseUrl}${carUrl}`,
                 lastmod: lastmod.split('T')[0],
@@ -74,7 +78,7 @@ exports.generateCarListingsSitemap = generateCarListingsSitemap;
  * Generate static pages sitemap
  * FREE - Hardcoded static routes
  */
-const generateStaticPagesSitemap = (baseUrl = 'https://globulcars.bg') => {
+const generateStaticPagesSitemap = (baseUrl = 'https://mobilebg.eu') => {
     const today = new Date().toISOString().split('T')[0];
     return [
         { loc: `${baseUrl}/`, changefreq: 'daily', priority: 1.0, lastmod: today },
@@ -96,7 +100,7 @@ exports.generateStaticPagesSitemap = generateStaticPagesSitemap;
  * const xml = await generateCompleteSitemap();
  * // Save to public/sitemap.xml or serve dynamically
  */
-const generateCompleteSitemap = async (baseUrl = 'https://globulcars.bg') => {
+const generateCompleteSitemap = async (baseUrl = 'https://mobilebg.eu') => {
     const staticUrls = (0, exports.generateStaticPagesSitemap)(baseUrl);
     const carUrls = await (0, exports.generateCarListingsSitemap)(baseUrl);
     const allUrls = [...staticUrls, ...carUrls];
@@ -107,7 +111,7 @@ exports.generateCompleteSitemap = generateCompleteSitemap;
  * Generate sitemap index (for large sites with multiple sitemaps)
  * FREE - Splits into multiple files if needed
  */
-const generateSitemapIndex = (sitemapUrls, baseUrl = 'https://globulcars.bg') => {
+const generateSitemapIndex = (sitemapUrls, baseUrl = 'https://mobilebg.eu') => {
     const today = new Date().toISOString().split('T')[0];
     const header = '<?xml version="1.0" encoding="UTF-8"?>\n' +
         '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
@@ -131,13 +135,13 @@ import { generateCompleteSitemap } from './sitemap-generator';
 
 export const sitemap = functions.https.onRequest(async (req, res) => {
   try {
-    const xml = await generateCompleteSitemap('https://globulcars.bg');
+    const xml = await generateCompleteSitemap('https://mobilebg.eu');
     
     res.set('Content-Type', 'application/xml');
     res.set('Cache-Control', 'public, max-age=3600'); // Cache 1 hour
     res.status(200).send(xml);
-  } catch (error) {
-    logger.error('Sitemap generation error:', error);
+  } catch (error: any) {
+    console.error('Sitemap generation error:', error);
     res.status(500).send('Error generating sitemap');
   }
 });

@@ -20,13 +20,12 @@ import {
   UserCredential
 } from 'firebase/auth';
 import { logger } from '../services/logger-service';
-import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc, Timestamp } from 'firebase/firestore';
 import { auth, db, BulgarianFirebaseUtils } from './firebase-config';
-import { BULGARIAN_CONFIG } from '../config/bulgarian-config';
 import { TrustLevel, Badge } from '../services/profile/trust-score-service';
-
 // ✅ Import and re-export from canonical source
-export type { BulgarianUser } from '../types/user/bulgarian-user.types';
+import { BulgarianUser } from '../types/user/bulgarian-user.types';
+export type { BulgarianUser };
 
 /**
  * @deprecated Local BulgarianUser definition is deprecated
@@ -43,13 +42,13 @@ export interface BulgarianUserLegacy {
   photoURL?: string;
   bio?: string;
   preferredLanguage: 'bg' | 'en';
-  
+
   // Account Type (Legacy - keep for backward compatibility)
   accountType?: 'individual' | 'business';
-  
+
   // NEW: Profile Type System (replaces accountType)
   profileType?: 'private' | 'dealer' | 'company';  // Default: 'private'
-  
+
   // Personal Information (Individual)
   firstName?: string;
   lastName?: string;
@@ -58,7 +57,7 @@ export interface BulgarianUserLegacy {
   placeOfBirth?: string;
   address?: string;
   postalCode?: string;
-  
+
   // Business Information
   businessName?: string;
   bulstat?: string;
@@ -73,24 +72,24 @@ export interface BulgarianUserLegacy {
   businessEmail?: string;
   workingHours?: string;
   businessDescription?: string;
-  
+
   // Images
-  profileImage?: { 
-    url: string; 
+  profileImage?: {
+    url: string;
     uploadedAt: Date;
     thumbnailUrl?: string;
   };
-  coverImage?: { 
-    url: string; 
+  coverImage?: {
+    url: string;
     uploadedAt: Date;
     thumbnailUrl?: string;
   };
-  gallery?: Array<{ 
-    url: string; 
+  gallery?: Array<{
+    url: string;
     uploadedAt: Date;
     caption?: string;
   }>;
-  
+
   // Verification System (Enhanced for Profile Types)
   verification?: {
     // Verification Level: none → basic → business → company
@@ -100,27 +99,27 @@ export interface BulgarianUserLegacy {
     reviewedAt?: Date;  // NEW
     reviewerId?: string;  // NEW - admin who reviewed
     notes?: string;  // NEW - admin notes
-    
-    email?: { 
-      verified: boolean; 
+
+    email?: {
+      verified: boolean;
       verifiedAt?: Date;
     };
-    phone?: { 
-      verified: boolean; 
+    phone?: {
+      verified: boolean;
       verifiedAt?: Date;
       phoneNumber?: string;
     };
-    identity?: { 
-      verified: boolean; 
+    identity?: {
+      verified: boolean;
       verifiedAt?: Date;
       documentType?: string;
     };
-    business?: { 
-      verified: boolean; 
+    business?: {
+      verified: boolean;
       verifiedAt?: Date;
       documents?: string[];
     };
-    
+
     // Documents (for verification workflow)
     documents?: Array<{  // NEW
       type: string;  // 'eik', 'vat', 'license', 'id'
@@ -129,28 +128,28 @@ export interface BulgarianUserLegacy {
       verifiedAt?: Date;
       status: 'pending' | 'approved' | 'rejected';
     }>;
-    
+
     trustScore?: number;
     level_old?: TrustLevel;  // Renamed to avoid conflict
     badges?: Badge[];
   };
-  
+
   // NEW: Subscription Plan
   plan?: {
-    tier: 'free' | 'premium' | 'dealer_basic' | 'dealer_pro' | 'dealer_enterprise' | 
-          'company_starter' | 'company_pro' | 'company_enterprise' | 'custom';
+    tier: 'free' | 'premium' | 'dealer_basic' | 'dealer_pro' | 'dealer_enterprise' |
+    'company_starter' | 'company_pro' | 'company_enterprise' | 'custom';
     status: 'active' | 'trial' | 'past_due' | 'canceled';
     renewsAt?: Date;
     trialEndsAt?: Date;
   };
-  
+
   // NEW: Trust Score (separate from verification)
   trust?: {
     score: number;  // 0-100
     reviewsCount: number;
     positivePercent: number;  // 0-1
   };
-  
+
   // Statistics
   stats?: {
     carsListed?: number;
@@ -164,19 +163,19 @@ export interface BulgarianUserLegacy {
     followers?: number;
     following?: number;
   };
-  
+
   // Rating (for sellers)
   rating?: {
     average: number;
     total: number;
   };
-  
+
   location?: {
     city: string;
     region: string;
     postalCode: string;
   };
-  
+
   profile: {
     isDealer: boolean;
     companyName?: string;
@@ -185,13 +184,13 @@ export interface BulgarianUserLegacy {
     preferredCurrency: string;
     timezone: string;
   };
-  
+
   preferences: {
     notifications: boolean;
     marketingEmails: boolean;
     language: 'bg' | 'en';
   };
-  
+
   createdAt: Date;
   lastLoginAt: Date;
   isVerified: boolean;
@@ -258,25 +257,49 @@ export class BulgarianAuthService {
         email: userCredential.user.email!,
         displayName: userData.displayName || '',
         phoneNumber: userData.phoneNumber,
-        photoURL: userData.photoURL,
+        phoneCountryCode: '+359',
         preferredLanguage: userData.preferredLanguage || 'bg',
-        location: userData.location,
-        profile: {
-          isDealer: userData.profile?.isDealer || false,
-          companyName: userData.profile?.companyName,
-          taxNumber: userData.profile?.taxNumber,
-          dealerLicense: userData.profile?.dealerLicense,
-          preferredCurrency: BULGARIAN_CONFIG.currency,
-          timezone: BULGARIAN_CONFIG.timezone
+        currency: 'EUR',
+        profileType: 'private', // Default for new signups
+        planTier: 'free',
+        permissions: {
+          canAddListings: true,
+          maxListings: 3,
+          maxMonthlyListings: 3,
+          canEditLockedFields: false,
+          maxFlexEditsPerMonth: 0,
+          canBulkUpload: false,
+          bulkUploadLimit: 0,
+          canCloneListing: false,
+          hasAnalytics: false,
+          hasAdvancedAnalytics: false,
+          hasTeam: false,
+          canExportData: false,
+          hasPrioritySupport: false,
+          canUseQuickReplies: false,
+          canBulkEdit: false,
+          canImportCSV: false,
+          canUseAPI: false,
+          themeMode: 'standard'
         },
-        preferences: {
-          notifications: true,
-          marketingEmails: false,
-          language: userData.preferredLanguage || 'bg'
+        verification: {
+          email: userCredential.user.emailVerified,
+          phone: !!userData.phoneNumber,
+          id: false,
+          business: false
         },
-        createdAt: new Date(),
-        lastLoginAt: new Date(),
-        isVerified: false
+        stats: {
+          totalListings: 0,
+          activeListings: 0,
+          totalViews: 0,
+          totalMessages: 0,
+          trustScore: 10
+        },
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+        lastLoginAt: Timestamp.now(),
+        isActive: true,
+        isBanned: false
       };
 
       // Save user profile to Firestore
@@ -499,10 +522,12 @@ export class BulgarianAuthService {
         throw new Error('Невалиден български телефонен номер');
       }
 
+      /*
       // Validate Bulgarian postal code if provided
       if (updates.location?.postalCode && !BulgarianFirebaseUtils.validateBulgarianPostalCode(updates.location.postalCode)) {
         throw new Error('Невалиден пощенски код');
       }
+      */
 
       // Update Firebase Auth profile
       if (updates.displayName || updates.photoURL) {
@@ -515,7 +540,7 @@ export class BulgarianAuthService {
       // Update Firestore profile
       await updateDoc(doc(db, 'users', user.uid), {
         ...updates,
-        updatedAt: new Date()
+        updatedAt: Timestamp.now()
       });
     } catch (error: unknown) {
       throw this.handleAuthError(error);
@@ -573,19 +598,15 @@ export class BulgarianAuthService {
       if (snapshot.exists()) {
         // Merge only mutable fields; avoid overwriting createdAt or other profile data
         await setDoc(userRef, {
-          lastLoginAt: new Date(),
-          isVerified: currentUser.emailVerified || false
+          lastLoginAt: Timestamp.now(),
+          verification: {
+            ...((snapshot.data() as any).verification || {}),
+            email: currentUser.emailVerified || false
+          }
         }, { merge: true });
       } else {
-        // Create minimal compliant doc (rules require email & displayName on create)
-        await setDoc(userRef, {
-          uid,
-          email: currentUser.email || '',
-          displayName: currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : ''),
-          createdAt: new Date(),
-          lastLoginAt: new Date(),
-          isVerified: currentUser.emailVerified || false
-        });
+        // Create minimal compliant doc
+        await this.createUserFromSocialLogin(currentUser, 'system');
       }
     } catch (error) {
       logger.error('Error updating last login', error as Error, { uid });
@@ -599,21 +620,49 @@ export class BulgarianAuthService {
       email: user.email!,
       displayName: user.displayName || '',
       photoURL: user.photoURL || undefined,
+      phoneCountryCode: '+359',
       preferredLanguage: 'bg',
+      currency: 'EUR',
       profileType: 'private',
       planTier: 'free',
-      profile: {
-        preferredCurrency: BULGARIAN_CONFIG.currency,
-        timezone: BULGARIAN_CONFIG.timezone
+      permissions: {
+        canAddListings: true,
+        maxListings: 3,
+        maxMonthlyListings: 3,
+        canEditLockedFields: false,
+        maxFlexEditsPerMonth: 0,
+        canBulkUpload: false,
+        bulkUploadLimit: 0,
+        canCloneListing: false,
+        hasAnalytics: false,
+        hasAdvancedAnalytics: false,
+        hasTeam: false,
+        canExportData: false,
+        hasPrioritySupport: false,
+        canUseQuickReplies: false,
+        canBulkEdit: false,
+        canImportCSV: false,
+        canUseAPI: false,
+        themeMode: 'standard'
       },
-      preferences: {
-        notifications: true,
-        marketingEmails: false,
-        language: 'bg'
+      verification: {
+        email: user.emailVerified,
+        phone: !!user.phoneNumber,
+        id: false,
+        business: false
       },
-      createdAt: new Date(),
-      lastLoginAt: new Date(),
-      isVerified: true // Social login users are pre-verified
+      stats: {
+        totalListings: 0,
+        activeListings: 0,
+        totalViews: 0,
+        totalMessages: 0,
+        trustScore: 10
+      },
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now(),
+      lastLoginAt: Timestamp.now(),
+      isActive: true,
+      isBanned: false
     };
 
     await this.saveUserProfile(bulgarianUser);

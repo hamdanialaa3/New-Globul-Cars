@@ -53,30 +53,29 @@ export const aiQuotaCheck = functions.https.onCall(async (data, context) => {
         lastBillingDate: new Date().toISOString().split('T')[0]
       };
       await quotaRef.set(newQuota);
-      return { allowed: true, remaining: newQuota[`daily${feature}`] };
+      return { allowed: true, remaining: (newQuota as any)[`daily${feature}`] };
     }
 
-    const quota = quotaSnap.data();
+    const quota = quotaSnap.data() as any;
     const today = new Date().toISOString().split('T')[0];
 
     // Reset if new day
     if (quota.lastResetDate !== today) {
       const featureKey = `daily${feature}`;
       const usedKey = `used${feature}`;
-      
+
       await quotaRef.update({
         [usedKey]: 0,
         lastResetDate: today
       });
-      
-      return { allowed: true, remaining: quota[featureKey] };
+
+      return { allowed: true, remaining: quota[featureKey as keyof typeof quota] };
     }
 
     const usedKey = `used${feature}`;
     const dailyKey = `daily${feature}`;
     const used = quota[usedKey] || 0;
-    const limit = quota[dailyKey] || -1;
-
+    const limit = quota[dailyKey as keyof typeof quota] || -1;
     if (limit === -1) {
       return { allowed: true, remaining: -1 }; // Unlimited
     }
@@ -103,7 +102,7 @@ export const geminiChat = functions.https.onCall(async (data, context) => {
   }
 
   const userId = context.auth.uid;
-  const { message, context: userContext } = data;
+  const { message, context: _userContext } = data;
 
   try {
     // Check quota
@@ -114,7 +113,7 @@ export const geminiChat = functions.https.onCall(async (data, context) => {
 
     const quota = quotaCheck.data();
     const today = new Date().toISOString().split('T')[0];
-    
+
     if (quota?.lastResetDate !== today) {
       await db.collection('ai_quotas').doc(userId).update({
         usedChatMessages: 0,
@@ -169,7 +168,7 @@ export const geminiPriceSuggestion = functions.https.onCall(async (data, context
 
   try {
     const model_obj = genAI.getGenerativeModel({ model: 'gemini-pro' });
-    
+
     const prompt = `
     As a Bulgarian car market expert, suggest a fair price for:
     
@@ -190,7 +189,7 @@ export const geminiPriceSuggestion = functions.https.onCall(async (data, context
 
     const result = await model_obj.generateContent(prompt);
     const text = result.response.text();
-    
+
     // Extract JSON
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
@@ -227,7 +226,7 @@ export const geminiProfileAnalysis = functions.https.onCall(async (data, context
 
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-    
+
     const prompt = `
     Analyze this user profile for a car marketplace:
     ${JSON.stringify(profileData, null, 2)}
@@ -243,7 +242,7 @@ export const geminiProfileAnalysis = functions.https.onCall(async (data, context
 
     const result = await model.generateContent(prompt);
     const text = result.response.text();
-    
+
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       throw new Error('Failed to parse analysis');
@@ -278,7 +277,7 @@ export const sentimentAnalysis = functions.https.onCall(async (data, context) =>
 
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-    
+
     const prompt = `
     Analyze the sentiment of this text (${language}):
     "${text}"
@@ -295,7 +294,7 @@ export const sentimentAnalysis = functions.https.onCall(async (data, context) =>
 
     const result = await model.generateContent(prompt);
     const responseText = result.response.text();
-    
+
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       throw new Error('Failed to parse sentiment');
@@ -333,16 +332,16 @@ export const sentimentAnalysis = functions.https.onCall(async (data, context) =>
 export const whatsappWebhook = functions.https.onRequest(async (req, res) => {
   // Verify webhook
   const verifyToken = process.env.WHATSAPP_VERIFY_TOKEN || 'your-verify-token';
-  
+
   if (req.method === 'GET') {
     const token = req.query['hub.verify_token'];
     const challenge = req.query['hub.challenge'];
-    
+
     if (token === verifyToken) {
       res.send(challenge);
       return;
     }
-    
+
     res.status(403).send('Forbidden');
     return;
   }
@@ -350,15 +349,15 @@ export const whatsappWebhook = functions.https.onRequest(async (req, res) => {
   if (req.method === 'POST') {
     try {
       const body = req.body;
-      
+
       if (body.object === 'whatsapp_business_account') {
         const message = body.entry[0]?.changes[0]?.value?.messages?.[0];
-        
+
         if (message) {
           await processWhatsAppMessage(message);
         }
       }
-      
+
       res.status(200).send('EVENT_RECEIVED');
     } catch (error) {
       console.error('WhatsApp webhook error:', error);
@@ -373,16 +372,16 @@ export const whatsappWebhook = functions.https.onRequest(async (req, res) => {
 async function processWhatsAppMessage(message: any) {
   try {
     const { from, text, type } = message;
-    
+
     if (type === 'text') {
       // Get AI response
       const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
       const result = await model.generateContent(text.body);
       const response = result.response.text();
-      
+
       // Send back via WhatsApp
       await sendWhatsAppMessage(from, response);
-      
+
       // Log conversation
       await db.collection('whatsapp_conversations').add({
         phone: from,
@@ -451,7 +450,7 @@ export const detectLanguageAndTranslate = functions.https.onCall(async (data, co
 
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-    
+
     const prompt = `
     Detect the language and translate to ${targetLanguage}:
     "${text}"
@@ -467,7 +466,7 @@ export const detectLanguageAndTranslate = functions.https.onCall(async (data, co
 
     const result = await model.generateContent(prompt);
     const responseText = result.response.text();
-    
+
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       throw new Error('Failed to parse language detection');
@@ -491,21 +490,11 @@ export const processVoiceMessage = functions.https.onCall(async (data, context) 
   }
 
   const userId = context.auth.uid;
-  const { audioUrl, language = 'en' } = data;
+  const { audioUrl: _audioUrl, language = 'en' } = data;
 
   try {
     // Note: For real implementation, use OpenAI Whisper API
     // This is a placeholder
-    
-    const prompt = `
-    Transcribe this audio message (${language}) and provide:
-    {
-      "transcript": "transcribed text",
-      "confidence": 0-100,
-      "language": "detected language",
-      "duration": "audio duration in seconds"
-    }
-    `;
 
     // Update quota
     await db.collection('ai_quotas').doc(userId).update({
@@ -541,11 +530,11 @@ export const getRecommendations = functions.https.onCall(async (data, context) =
     // Get user behavior
     const viewsRef = db.collection('car_views').where('userId', '==', userId);
     const viewsSnap = await viewsRef.limit(20).get();
-    
+
     const views = viewsSnap.docs.map(doc => doc.data());
-    
+
     // Analyze preferences
-    const likes = {
+    const likes: any = {
       makes: {},
       priceRanges: {},
       years: {},
@@ -566,26 +555,26 @@ export const getRecommendations = functions.https.onCall(async (data, context) =
 
     // Score and sort
     const scored = recommendations.docs.map(doc => {
-      const car = doc.data();
+      const car = doc.data() as any;
       let score = 0;
-      
-      if (likes.makes[car.make]) score += 50;
+
+      if ((likes.makes as any)[car.make]) score += 50;
       if (preferences.maxPrice && car.price <= preferences.maxPrice) score += 30;
       if (preferences.minYear && car.year >= preferences.minYear) score += 20;
-      
+
       return { car, score, docId: doc.id };
     })
-    .sort((a, b) => b.score - a.score)
-    .slice(0, maxResults);
+      .sort((a, b) => b.score - a.score)
+      .slice(0, maxResults);
 
     return {
       recommendations: scored.map(r => r.car),
       scores: scored.map(r => r.score),
       reasoning: 'Based on your viewing history and preferences'
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error('Recommendations error:', error);
-    throw new functions.https.HttpsError('internal', 'Recommendations failed');
+    throw new functions.https.HttpsError('internal', error.message || 'Recommendations failed');
   }
 });
 

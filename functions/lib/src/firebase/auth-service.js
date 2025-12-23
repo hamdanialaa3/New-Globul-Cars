@@ -8,7 +8,6 @@ const auth_1 = require("firebase/auth");
 const logger_service_1 = require("../services/logger-service");
 const firestore_1 = require("firebase/firestore");
 const firebase_config_1 = require("./firebase-config");
-const bulgarian_config_1 = require("../config/bulgarian-config");
 // Bulgarian Authentication Service
 class BulgarianAuthService {
     constructor() {
@@ -39,7 +38,6 @@ class BulgarianAuthService {
     }
     // Sign up with email and password
     async signUp(email, password, userData) {
-        var _a, _b, _c, _d;
         try {
             // Validate Bulgarian email format
             if (!this.validateBulgarianEmail(email)) {
@@ -57,25 +55,49 @@ class BulgarianAuthService {
                 email: userCredential.user.email,
                 displayName: userData.displayName || '',
                 phoneNumber: userData.phoneNumber,
-                photoURL: userData.photoURL,
+                phoneCountryCode: '+359',
                 preferredLanguage: userData.preferredLanguage || 'bg',
-                location: userData.location,
-                profile: {
-                    isDealer: ((_a = userData.profile) === null || _a === void 0 ? void 0 : _a.isDealer) || false,
-                    companyName: (_b = userData.profile) === null || _b === void 0 ? void 0 : _b.companyName,
-                    taxNumber: (_c = userData.profile) === null || _c === void 0 ? void 0 : _c.taxNumber,
-                    dealerLicense: (_d = userData.profile) === null || _d === void 0 ? void 0 : _d.dealerLicense,
-                    preferredCurrency: bulgarian_config_1.BULGARIAN_CONFIG.currency,
-                    timezone: bulgarian_config_1.BULGARIAN_CONFIG.timezone
+                currency: 'EUR',
+                profileType: 'private',
+                planTier: 'free',
+                permissions: {
+                    canAddListings: true,
+                    maxListings: 3,
+                    maxMonthlyListings: 3,
+                    canEditLockedFields: false,
+                    maxFlexEditsPerMonth: 0,
+                    canBulkUpload: false,
+                    bulkUploadLimit: 0,
+                    canCloneListing: false,
+                    hasAnalytics: false,
+                    hasAdvancedAnalytics: false,
+                    hasTeam: false,
+                    canExportData: false,
+                    hasPrioritySupport: false,
+                    canUseQuickReplies: false,
+                    canBulkEdit: false,
+                    canImportCSV: false,
+                    canUseAPI: false,
+                    themeMode: 'standard'
                 },
-                preferences: {
-                    notifications: true,
-                    marketingEmails: false,
-                    language: userData.preferredLanguage || 'bg'
+                verification: {
+                    email: userCredential.user.emailVerified,
+                    phone: !!userData.phoneNumber,
+                    id: false,
+                    business: false
                 },
-                createdAt: new Date(),
-                lastLoginAt: new Date(),
-                isVerified: false
+                stats: {
+                    totalListings: 0,
+                    activeListings: 0,
+                    totalViews: 0,
+                    totalMessages: 0,
+                    trustScore: 10
+                },
+                createdAt: firestore_1.Timestamp.now(),
+                updatedAt: firestore_1.Timestamp.now(),
+                lastLoginAt: firestore_1.Timestamp.now(),
+                isActive: true,
+                isBanned: false
             };
             // Save user profile to Firestore
             await this.saveUserProfile(bulgarianUser);
@@ -272,7 +294,6 @@ class BulgarianAuthService {
     }
     // Update user profile
     async updateUserProfile(updates) {
-        var _a;
         try {
             const user = firebase_config_1.auth.currentUser;
             if (!user)
@@ -281,10 +302,12 @@ class BulgarianAuthService {
             if (updates.phoneNumber && !firebase_config_1.BulgarianFirebaseUtils.validateBulgarianPhone(updates.phoneNumber)) {
                 throw new Error('Невалиден български телефонен номер');
             }
+            /*
             // Validate Bulgarian postal code if provided
-            if (((_a = updates.location) === null || _a === void 0 ? void 0 : _a.postalCode) && !firebase_config_1.BulgarianFirebaseUtils.validateBulgarianPostalCode(updates.location.postalCode)) {
-                throw new Error('Невалиден пощенски код');
+            if (updates.location?.postalCode && !BulgarianFirebaseUtils.validateBulgarianPostalCode(updates.location.postalCode)) {
+              throw new Error('Невалиден пощенски код');
             }
+            */
             // Update Firebase Auth profile
             if (updates.displayName || updates.photoURL) {
                 await (0, auth_1.updateProfile)(user, {
@@ -293,7 +316,7 @@ class BulgarianAuthService {
                 });
             }
             // Update Firestore profile
-            await (0, firestore_1.updateDoc)((0, firestore_1.doc)(firebase_config_1.db, 'users', user.uid), Object.assign(Object.assign({}, updates), { updatedAt: new Date() }));
+            await (0, firestore_1.updateDoc)((0, firestore_1.doc)(firebase_config_1.db, 'users', user.uid), Object.assign(Object.assign({}, updates), { updatedAt: firestore_1.Timestamp.now() }));
         }
         catch (error) {
             throw this.handleAuthError(error);
@@ -346,20 +369,13 @@ class BulgarianAuthService {
             if (snapshot.exists()) {
                 // Merge only mutable fields; avoid overwriting createdAt or other profile data
                 await (0, firestore_1.setDoc)(userRef, {
-                    lastLoginAt: new Date(),
-                    isVerified: currentUser.emailVerified || false
+                    lastLoginAt: firestore_1.Timestamp.now(),
+                    verification: Object.assign(Object.assign({}, (snapshot.data().verification || {})), { email: currentUser.emailVerified || false })
                 }, { merge: true });
             }
             else {
-                // Create minimal compliant doc (rules require email & displayName on create)
-                await (0, firestore_1.setDoc)(userRef, {
-                    uid,
-                    email: currentUser.email || '',
-                    displayName: currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : ''),
-                    createdAt: new Date(),
-                    lastLoginAt: new Date(),
-                    isVerified: currentUser.emailVerified || false
-                });
+                // Create minimal compliant doc
+                await this.createUserFromSocialLogin(currentUser, 'system');
             }
         }
         catch (error) {
@@ -373,21 +389,49 @@ class BulgarianAuthService {
             email: user.email,
             displayName: user.displayName || '',
             photoURL: user.photoURL || undefined,
+            phoneCountryCode: '+359',
             preferredLanguage: 'bg',
+            currency: 'EUR',
             profileType: 'private',
             planTier: 'free',
-            profile: {
-                preferredCurrency: bulgarian_config_1.BULGARIAN_CONFIG.currency,
-                timezone: bulgarian_config_1.BULGARIAN_CONFIG.timezone
+            permissions: {
+                canAddListings: true,
+                maxListings: 3,
+                maxMonthlyListings: 3,
+                canEditLockedFields: false,
+                maxFlexEditsPerMonth: 0,
+                canBulkUpload: false,
+                bulkUploadLimit: 0,
+                canCloneListing: false,
+                hasAnalytics: false,
+                hasAdvancedAnalytics: false,
+                hasTeam: false,
+                canExportData: false,
+                hasPrioritySupport: false,
+                canUseQuickReplies: false,
+                canBulkEdit: false,
+                canImportCSV: false,
+                canUseAPI: false,
+                themeMode: 'standard'
             },
-            preferences: {
-                notifications: true,
-                marketingEmails: false,
-                language: 'bg'
+            verification: {
+                email: user.emailVerified,
+                phone: !!user.phoneNumber,
+                id: false,
+                business: false
             },
-            createdAt: new Date(),
-            lastLoginAt: new Date(),
-            isVerified: true // Social login users are pre-verified
+            stats: {
+                totalListings: 0,
+                activeListings: 0,
+                totalViews: 0,
+                totalMessages: 0,
+                trustScore: 10
+            },
+            createdAt: firestore_1.Timestamp.now(),
+            updatedAt: firestore_1.Timestamp.now(),
+            lastLoginAt: firestore_1.Timestamp.now(),
+            isActive: true,
+            isBanned: false
         };
         await this.saveUserProfile(bulgarianUser);
     }

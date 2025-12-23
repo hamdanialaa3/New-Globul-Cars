@@ -88,7 +88,7 @@ exports.geminiChat = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError('unauthenticated', 'User not authenticated');
     }
     const userId = context.auth.uid;
-    const { message, context: userContext } = data;
+    const { message, context: _userContext } = data;
     try {
         // Check quota
         const quotaCheck = await db.collection('ai_quotas').doc(userId).get();
@@ -415,19 +415,10 @@ exports.processVoiceMessage = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError('unauthenticated', 'User not authenticated');
     }
     const userId = context.auth.uid;
-    const { audioUrl, language = 'en' } = data;
+    const { audioUrl: _audioUrl, language = 'en' } = data;
     try {
         // Note: For real implementation, use OpenAI Whisper API
         // This is a placeholder
-        const prompt = `
-    Transcribe this audio message (${language}) and provide:
-    {
-      "transcript": "transcribed text",
-      "confidence": 0-100,
-      "language": "detected language",
-      "duration": "audio duration in seconds"
-    }
-    `;
         // Update quota
         await db.collection('ai_quotas').doc(userId).update({
             usedVoiceMessages: admin.firestore.FieldValue.increment(1)
@@ -498,7 +489,7 @@ exports.getRecommendations = functions.https.onCall(async (data, context) => {
     }
     catch (error) {
         console.error('Recommendations error:', error);
-        throw new functions.https.HttpsError('internal', 'Recommendations failed');
+        throw new functions.https.HttpsError('internal', error.message || 'Recommendations failed');
     }
 });
 // Export webhook
