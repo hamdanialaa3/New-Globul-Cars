@@ -29,6 +29,8 @@ import { googleProfileSyncService } from '../../../../services/google/google-pro
 import { followService } from '../../../../services/social/follow.service';
 import { logger } from '../../../../services/logger-service';
 import { profileStatsService } from '../../../../services/profile/profile-stats.service';
+import { ThemeProvider } from 'styled-components';
+import { PROFILE_THEMES } from '../../../../config/profile-themes';
 
 /**
  * Profile Page Wrapper
@@ -305,213 +307,215 @@ const ProfilePageWrapper: React.FC = () => {
   };
 
   return (
-    <S.ProfilePageContainer
-      $isBusinessMode={isBusinessMode}
-      $profileType={(activeProfile?.profileType as any) ?? 'private'}
-    >
-      <BusinessBackground isBusinessAccount={isBusinessMode} />
+    <ThemeProvider theme={PROFILE_THEMES[profileType] || PROFILE_THEMES['private']}>
+      <S.ProfilePageContainer
+        $isBusinessMode={isBusinessMode}
+        $profileType={(activeProfile?.profileType as any) ?? 'private'}
+      >
+        <BusinessBackground isBusinessAccount={isBusinessMode} />
 
-      <S.PageContainer>
-        {/* Tab Navigation */}
-        <TabNavigation $themeColor={theme.primary}>
-          <TabNavLink to={basePath} end $themeColor={theme.primary}>
-            <UserCircle size={16} />
-            {language === 'bg' ? 'Профил' : 'Profile'}
-          </TabNavLink>
-          {isOwnProfile && (
-            <>
-              <TabNavLink to={`${basePath}/my-ads`} $themeColor={theme.primary}>
-                <Car size={16} />
-                {language === 'bg' ? 'Моите обяви' : 'My Ads'}
-              </TabNavLink>
-              <TabNavLink to={`${basePath}/campaigns`} $themeColor={theme.primary}>
-                <Megaphone size={16} />
-                {language === 'bg' ? 'Реклами' : 'Campaigns'}
-              </TabNavLink>
-              <TabNavLink to={`${basePath}/analytics`} $themeColor={theme.primary}>
-                <BarChart3 size={16} />
-                {language === 'bg' ? 'Статистика' : 'Analytics'}
-              </TabNavLink>
-              <TabNavLink to={`${basePath}/settings`} $themeColor={theme.primary}>
-                <Shield size={16} />
-                {language === 'bg' ? 'Настройки' : 'Settings'}
-              </TabNavLink>
-              <TabNavLink to={`${basePath}/consultations`} $themeColor={theme.primary}>
-                <MessageCircle size={18} />
-                {language === 'bg' ? 'Консултации' : 'Consultations'}
-              </TabNavLink>
-            </>
-          )}
-        </TabNavigation>
-
-        {/* Cover Image + Profile Picture - Only on main /profile page */}
-        {!location.pathname.includes('/my-ads') && !location.pathname.includes('/campaigns') && !location.pathname.includes('/analytics') && !location.pathname.includes('/settings') && !location.pathname.includes('/consultations') ? (
-          <S.CoverAndProfileWrapper>
-            {/* Cover Image */}
+        <S.PageContainer>
+          {/* Tab Navigation */}
+          <TabNavigation $themeColor={theme.primary}>
+            <TabNavLink to={basePath} end $themeColor={theme.primary}>
+              <UserCircle size={16} />
+              {language === 'bg' ? 'Профил' : 'Profile'}
+            </TabNavLink>
             {isOwnProfile && (
-              <CoverImageUploader
-                currentImageUrl={typeof activeProfile.coverImage === 'string' ? activeProfile.coverImage : activeProfile.coverImage?.url}
-                themeColor={theme.primary}
-                onUploadSuccess={(url) => {
-                  setUser(prev => prev ? {
-                    ...prev,
-                    coverImage: url
-                  } : null);
-                }}
-                onUploadError={(error) => {
-                  logger.error('Cover error', error as Error);
-                }}
-              />
+              <>
+                <TabNavLink to={`${basePath}/my-ads`} $themeColor={theme.primary}>
+                  <Car size={16} />
+                  {language === 'bg' ? 'Моите обяви' : 'My Ads'}
+                </TabNavLink>
+                <TabNavLink to={`${basePath}/campaigns`} $themeColor={theme.primary}>
+                  <Megaphone size={16} />
+                  {language === 'bg' ? 'Реклами' : 'Campaigns'}
+                </TabNavLink>
+                <TabNavLink to={`${basePath}/analytics`} $themeColor={theme.primary}>
+                  <BarChart3 size={16} />
+                  {language === 'bg' ? 'Статистика' : 'Analytics'}
+                </TabNavLink>
+                <TabNavLink to={`${basePath}/settings`} $themeColor={theme.primary}>
+                  <Shield size={16} />
+                  {language === 'bg' ? 'Настройки' : 'Settings'}
+                </TabNavLink>
+                <TabNavLink to={`${basePath}/consultations`} $themeColor={theme.primary}>
+                  <MessageCircle size={18} />
+                  {language === 'bg' ? 'Консултации' : 'Consultations'}
+                </TabNavLink>
+              </>
             )}
+          </TabNavigation>
 
-            <S.CenteredProfileImageWrapper>
-              <ProfileImageUploader
-                currentImageUrl={activeProfile?.photoURL || (activeProfile as any)?.profileImage?.url}
-                onUploadSuccess={(url) => {
-                  // Update local state immediately
-                  setUser(prev => prev ? {
-                    ...prev,
-                    photoURL: url
-                  } : null);
-                  // Refresh profile data
-                  refresh();
-                }}
-                onUploadError={(err) => {
-                  logger.error('Profile image upload error', err as Error);
-                  alert(language === 'bg' ? `Грешка при качване: ${err}` : `Upload error: ${err}`);
-                }}
-              />
-            </S.CenteredProfileImageWrapper>
-          </S.CoverAndProfileWrapper>
-        ) : null}
-
-        {/* ✅ Single Modern Stats Bar with Name + 5 Stats */}
-        {!location.pathname.includes('/my-ads') && !location.pathname.includes('/campaigns') && !location.pathname.includes('/analytics') && !location.pathname.includes('/settings') && !location.pathname.includes('/consultations') ? (
-          <S.SingleStatsBar>
-            {/* Name Section */}
-            <S.StatBarNameSection>
-              <S.UserNameCompact>
-                {activeProfile.displayName || (language === 'bg' ? 'Анонимен' : 'Anonymous')}
-              </S.UserNameCompact>
-              <S.UserEmailCompact>{activeProfile.email}</S.UserEmailCompact>
-            </S.StatBarNameSection>
-
-            {/* Stats Section - Only Views, Listings, Trust */}
-            <S.StatBarStatsSection>
-              <S.StatItem>
-                <S.StatNumber>{activeProfile.stats?.totalViews || 0}</S.StatNumber>
-                <S.StatLabel>{language === 'bg' ? 'Views' : 'Views'}</S.StatLabel>
-              </S.StatItem>
-              <S.StatItem>
-                <S.StatNumber>{activeProfile.stats?.activeListings || 0}</S.StatNumber>
-                <S.StatLabel>{language === 'bg' ? 'Listings' : 'Listings'}</S.StatLabel>
-              </S.StatItem>
-              <S.StatItem>
-                <S.StatNumber>{activeProfile.stats?.trustScore || 0}%</S.StatNumber>
-                <S.StatLabel>{language === 'bg' ? 'Trust' : 'Trust'}</S.StatLabel>
-              </S.StatItem>
-            </S.StatBarStatsSection>
-
-            {/* Actions Section */}
-            <S.StatBarActionsSection>
-              {isOwnProfile ? (
-                <>
-                  <div style={{ position: 'relative', display: 'flex', alignItems: 'center', marginRight: '8px' }}>
-                    <Crown size={16} className="text-amber-500" style={{ position: 'absolute', left: '10px', zIndex: 1, pointerEvents: 'none' }} />
-                    <select
-                      value={activeProfile.profileType || 'private'}
-                      onChange={(e) => handleProfileSwitch(e.target.value as 'private' | 'dealer' | 'company')}
-                      disabled={syncing}
-                      style={{
-                        appearance: 'none',
-                        padding: '8px 12px 8px 32px',
-                        borderRadius: '20px',
-                        // ✅ Theme-aware colors (light/dark)
-                        border: '1px solid var(--border, rgba(0,0,0,0.12))',
-                        background: 'var(--bg-card, rgba(255,255,255,0.9))',
-                        color: 'var(--text-primary, #1a1a1a)',
-                        fontSize: '0.85rem',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        // Keep the premium/glass feel while still working in both themes
-                        backdropFilter: 'blur(8px)',
-                        outline: 'none'
-                      }}
-                    >
-                      <option
-                        value="private"
-                        style={{ backgroundColor: 'var(--bg-card, #ffffff)', color: 'var(--text-primary, #1a1a1a)' }}
-                      >
-                        {t(
-                          'profile.plan.private',
-                          language === 'bg' ? 'Частен (Безплатен, 3 обяви)' : 'Private (Free, 3 cars)'
-                        )}
-                      </option>
-                      <option
-                        value="dealer"
-                        style={{ backgroundColor: 'var(--bg-card, #ffffff)', color: 'var(--text-primary, #1a1a1a)' }}
-                      >
-                        {t(
-                          'profile.plan.dealer',
-                          language === 'bg' ? 'Търговец (€27.78/мес, 25 обяви)' : 'Dealer (€27.78/mo, 25 cars)'
-                        )}
-                      </option>
-                      <option
-                        value="company"
-                        style={{ backgroundColor: 'var(--bg-card, #ffffff)', color: 'var(--text-primary, #1a1a1a)' }}
-                      >
-                        {t(
-                          'profile.plan.company',
-                          language === 'bg' ? 'Компания (€187.88/мес, 200 обяви)' : 'Company (€187.88/mo, 200 cars)'
-                        )}
-                      </option>
-                    </select>
-                  </div>
-
-                  <S.ActionButtonCompact $variant="secondary" onClick={handleGoogleSync}>
-                    <RefreshCw size={16} className={syncing ? 'spinning' : ''} />
-                    {syncing
-                      ? (language === 'bg' ? 'Синхронизиране...' : 'Syncing...')
-                      : (language === 'bg' ? 'Синхронизирай' : 'Sync')}
-                  </S.ActionButtonCompact>
-                </>
-              ) : (
-                <>
-                  <FollowButton
-                    onClick={handleFollow}
-                    disabled={followLoading}
-                    $following={isFollowing}
-                  >
-                    {isFollowing
-                      ? (language === 'bg' ? 'Последван' : 'Following')
-                      : (language === 'bg' ? 'Последвай' : 'Follow')}
-                  </FollowButton>
-                  <S.ActionButtonCompact $variant="primary" onClick={handleMessage}>
-                    <PhoneIcon size={16} />
-                    {language === 'bg' ? 'Съобщение' : 'Message'}
-                  </S.ActionButtonCompact>
-                </>
+          {/* Cover Image + Profile Picture - Only on main /profile page */}
+          {!location.pathname.includes('/my-ads') && !location.pathname.includes('/campaigns') && !location.pathname.includes('/analytics') && !location.pathname.includes('/settings') && !location.pathname.includes('/consultations') ? (
+            <S.CoverAndProfileWrapper>
+              {/* Cover Image */}
+              {isOwnProfile && (
+                <CoverImageUploader
+                  currentImageUrl={typeof activeProfile.coverImage === 'string' ? activeProfile.coverImage : activeProfile.coverImage?.url}
+                  themeColor={theme.primary}
+                  onUploadSuccess={(url) => {
+                    setUser(prev => prev ? {
+                      ...prev,
+                      coverImage: url
+                    } : null);
+                  }}
+                  onUploadError={(error) => {
+                    logger.error('Cover error', error as Error);
+                  }}
+                />
               )}
-            </S.StatBarActionsSection>
-          </S.SingleStatsBar>
-        ) : null}
 
-        {/* Premium Profile Type Switcher - Toggled via Tier button */}
-        {showTypeSwitcher && isOwnProfile && (
-          <div style={{ marginBottom: '24px' }}>
-            <ProfileTypeSwitcher />
-          </div>
-        )}
+              <S.CenteredProfileImageWrapper>
+                <ProfileImageUploader
+                  currentImageUrl={activeProfile?.photoURL || (activeProfile as any)?.profileImage?.url}
+                  onUploadSuccess={(url) => {
+                    // Update local state immediately
+                    setUser(prev => prev ? {
+                      ...prev,
+                      photoURL: url
+                    } : null);
+                    // Refresh profile data
+                    refresh();
+                  }}
+                  onUploadError={(err) => {
+                    logger.error('Profile image upload error', err as Error);
+                    alert(language === 'bg' ? `Грешка при качване: ${err}` : `Upload error: ${err}`);
+                  }}
+                />
+              </S.CenteredProfileImageWrapper>
+            </S.CoverAndProfileWrapper>
+          ) : null}
 
-        {/* ⚡ HIDDEN: Old Profile Header - Will be merged into ProfileDashboard */}
-        {false && window.location.pathname === '/profile' && (
-          <div style={{ display: 'none' }}></div>
-        )}
+          {/* ✅ Single Modern Stats Bar with Name + 5 Stats */}
+          {!location.pathname.includes('/my-ads') && !location.pathname.includes('/campaigns') && !location.pathname.includes('/analytics') && !location.pathname.includes('/settings') && !location.pathname.includes('/consultations') ? (
+            <S.SingleStatsBar>
+              {/* Name Section */}
+              <S.StatBarNameSection>
+                <S.UserNameCompact>
+                  {activeProfile.displayName || (language === 'bg' ? 'Анонимен' : 'Anonymous')}
+                </S.UserNameCompact>
+                <S.UserEmailCompact>{activeProfile.email}</S.UserEmailCompact>
+              </S.StatBarNameSection>
 
-        {/* Content Area - React Router will render child routes here */}
-        <Outlet context={{ user: activeProfile, viewer, isOwnProfile, theme, userCars, refresh, setUser }} />
-      </S.PageContainer>
-    </S.ProfilePageContainer>
+              {/* Stats Section - Only Views, Listings, Trust */}
+              <S.StatBarStatsSection>
+                <S.StatItem>
+                  <S.StatNumber>{activeProfile.stats?.totalViews || 0}</S.StatNumber>
+                  <S.StatLabel>{language === 'bg' ? 'Views' : 'Views'}</S.StatLabel>
+                </S.StatItem>
+                <S.StatItem>
+                  <S.StatNumber>{activeProfile.stats?.activeListings || 0}</S.StatNumber>
+                  <S.StatLabel>{language === 'bg' ? 'Listings' : 'Listings'}</S.StatLabel>
+                </S.StatItem>
+                <S.StatItem>
+                  <S.StatNumber>{activeProfile.stats?.trustScore || 0}%</S.StatNumber>
+                  <S.StatLabel>{language === 'bg' ? 'Trust' : 'Trust'}</S.StatLabel>
+                </S.StatItem>
+              </S.StatBarStatsSection>
+
+              {/* Actions Section */}
+              <S.StatBarActionsSection>
+                {isOwnProfile ? (
+                  <>
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center', marginRight: '8px' }}>
+                      <Crown size={16} className="text-amber-500" style={{ position: 'absolute', left: '10px', zIndex: 1, pointerEvents: 'none' }} />
+                      <select
+                        value={activeProfile.profileType || 'private'}
+                        onChange={(e) => handleProfileSwitch(e.target.value as 'private' | 'dealer' | 'company')}
+                        disabled={syncing}
+                        style={{
+                          appearance: 'none',
+                          padding: '8px 12px 8px 32px',
+                          borderRadius: '20px',
+                          // ✅ Theme-aware colors (light/dark)
+                          border: '1px solid var(--border, rgba(0,0,0,0.12))',
+                          background: 'var(--bg-card, rgba(255,255,255,0.9))',
+                          color: 'var(--text-primary, #1a1a1a)',
+                          fontSize: '0.85rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          // Keep the premium/glass feel while still working in both themes
+                          backdropFilter: 'blur(8px)',
+                          outline: 'none'
+                        }}
+                      >
+                        <option
+                          value="private"
+                          style={{ backgroundColor: 'var(--bg-card, #ffffff)', color: 'var(--text-primary, #1a1a1a)' }}
+                        >
+                          {t(
+                            'profile.plan.private',
+                            language === 'bg' ? 'Частен (Безплатен, 3 обяви)' : 'Private (Free, 3 cars)'
+                          )}
+                        </option>
+                        <option
+                          value="dealer"
+                          style={{ backgroundColor: 'var(--bg-card, #ffffff)', color: 'var(--text-primary, #1a1a1a)' }}
+                        >
+                          {t(
+                            'profile.plan.dealer',
+                            language === 'bg' ? 'Търговец (€27.78/мес, 25 обяви)' : 'Dealer (€27.78/mo, 25 cars)'
+                          )}
+                        </option>
+                        <option
+                          value="company"
+                          style={{ backgroundColor: 'var(--bg-card, #ffffff)', color: 'var(--text-primary, #1a1a1a)' }}
+                        >
+                          {t(
+                            'profile.plan.company',
+                            language === 'bg' ? 'Компания (€187.88/мес, 200 обяви)' : 'Company (€187.88/mo, 200 cars)'
+                          )}
+                        </option>
+                      </select>
+                    </div>
+
+                    <S.ActionButtonCompact $variant="secondary" onClick={handleGoogleSync}>
+                      <RefreshCw size={16} className={syncing ? 'spinning' : ''} />
+                      {syncing
+                        ? (language === 'bg' ? 'Синхронизиране...' : 'Syncing...')
+                        : (language === 'bg' ? 'Синхронизирай' : 'Sync')}
+                    </S.ActionButtonCompact>
+                  </>
+                ) : (
+                  <>
+                    <FollowButton
+                      onClick={handleFollow}
+                      disabled={followLoading}
+                      $following={isFollowing}
+                    >
+                      {isFollowing
+                        ? (language === 'bg' ? 'Последван' : 'Following')
+                        : (language === 'bg' ? 'Последвай' : 'Follow')}
+                    </FollowButton>
+                    <S.ActionButtonCompact $variant="primary" onClick={handleMessage}>
+                      <PhoneIcon size={16} />
+                      {language === 'bg' ? 'Съобщение' : 'Message'}
+                    </S.ActionButtonCompact>
+                  </>
+                )}
+              </S.StatBarActionsSection>
+            </S.SingleStatsBar>
+          ) : null}
+
+          {/* Premium Profile Type Switcher - Toggled via Tier button */}
+          {showTypeSwitcher && isOwnProfile && (
+            <div style={{ marginBottom: '24px' }}>
+              <ProfileTypeSwitcher />
+            </div>
+          )}
+
+          {/* ⚡ HIDDEN: Old Profile Header - Will be merged into ProfileDashboard */}
+          {false && window.location.pathname === '/profile' && (
+            <div style={{ display: 'none' }}></div>
+          )}
+
+          {/* Content Area - React Router will render child routes here */}
+          <Outlet context={{ user: activeProfile, viewer, isOwnProfile, theme, userCars, refresh, setUser }} />
+        </S.PageContainer>
+      </S.ProfilePageContainer>
+    </ThemeProvider>
   );
 };
 

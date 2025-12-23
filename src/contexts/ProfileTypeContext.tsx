@@ -10,8 +10,8 @@ import { logger } from '../services/logger-service';
 import { UserRepository } from '../repositories/UserRepository';
 
 // ✅ NEW: Import from canonical types file
-import type { 
-  ProfileType, 
+import type {
+  ProfileType,
   PlanTier
 } from '../types/user/bulgarian-user.types';
 
@@ -23,20 +23,8 @@ export interface ProfileTheme {
   gradient: string;
 }
 
-// Extended Permissions for Context (includes UI-specific permissions)
-export interface ProfilePermissions {
-  canAddListings: boolean;
-  maxListings: number;  // -1 for unlimited
-  hasAnalytics: boolean;
-  hasAdvancedAnalytics: boolean;
-  hasTeam: boolean;
-  canExportData: boolean;
-  hasPrioritySupport: boolean;
-  canUseQuickReplies: boolean;
-  canBulkEdit: boolean;
-  canImportCSV: boolean;
-  canUseAPI: boolean;
-}
+// Extended Permissions (Now imported from types)
+import type { ProfilePermissions } from '../types/user/bulgarian-user.types';
 
 // Context State
 interface ProfileTypeContextState {
@@ -45,12 +33,18 @@ interface ProfileTypeContextState {
   permissions: ProfilePermissions;
   planTier: PlanTier;
   loading: boolean;
-  
+
   // Helper booleans
   isPrivate: boolean;
   isDealer: boolean;
   isCompany: boolean;
-  
+
+  /**
+   * Helper for "Usage Bars" in UI
+   * Usage: const { used, total, percent } = getProgressToLimit('listings');
+   */
+  getProgressToLimit: (metric: 'listings' | 'flexEdits') => { used: number; total: number; percentage: number };
+
   // Actions
   switchProfileType: (newType: ProfileType) => Promise<void>;
   refreshProfileType: () => Promise<void>;
@@ -81,58 +75,104 @@ const THEMES: Record<ProfileType, ProfileTheme> = {
   }
 };
 
-// Permissions by Plan
+// Permissions by Plan - DIGITAL DOMINATION v3.0 LOGIC
+// Enforces class segregation and commercial limits
 function getPermissions(profileType: ProfileType, planTier: PlanTier): ProfilePermissions {
-  // Updated December 2025 - Simplified to 3 plans matching BillingService
-  const PLAN_LIMITS: Record<PlanTier, number> = {
-    free: 3,
-    dealer: 10,
-    company: -1  // unlimited
-  };
-
-  const maxListings = PLAN_LIMITS[planTier] || 3;
-
-  // Base permissions for all
+  // Base Defaults (Lowest Common Denominator - Private Free)
   const base: ProfilePermissions = {
+    // Limits
     canAddListings: true,
-    maxListings,
+    maxListings: 3,
+    maxMonthlyListings: 3,
+
+    // Anti-Fraud
+    canEditLockedFields: false, // Locked by default
+    maxFlexEditsPerMonth: 0,
+
+    // Power Tools
+    canBulkUpload: false,
+    bulkUploadLimit: 0,
+    canCloneListing: false,
+
+    // Analytics & Team
     hasAnalytics: false,
     hasAdvancedAnalytics: false,
     hasTeam: false,
     canExportData: false,
+
+    // Support & Features
     hasPrioritySupport: false,
     canUseQuickReplies: false,
     canBulkEdit: false,
     canImportCSV: false,
-    canUseAPI: false
+    canUseAPI: false,
+
+    // Visuals
+    themeMode: 'standard'
   };
 
-  // Dealer enhancements
+  // 1. DEALER LOGIC ("The Mechanic")
   if (profileType === 'dealer' || planTier === 'dealer') {
     return {
       ...base,
-      maxListings: 10,
+      // Limits: 30 cars/mo
+      maxListings: 30,
+      maxMonthlyListings: 30,
+
+      // Flex-Edit: 10/mo allowance for mistakes
+      canEditLockedFields: false, // UI checks quota before enabling
+      maxFlexEditsPerMonth: 10,
+
+      // Power Tools: Matrix Grid (5 rows) & Cloning
+      canBulkUpload: true,
+      bulkUploadLimit: 5,
+      canCloneListing: true,
+
+      // Analytics
       hasAnalytics: true,
+
+      // Features
       canUseQuickReplies: true,
       canBulkEdit: true,
-      hasPrioritySupport: true
+      hasPrioritySupport: true,
+
+      // Visual DNA: Neon Green / Dark Mode
+      themeMode: 'dealer-led'
     };
   }
 
-  // Company enhancements
+  // 2. COMPANY LOGIC ("The Enterprise")
   if (profileType === 'company' || planTier === 'company') {
     return {
       ...base,
-      maxListings: -1,
-      hasAnalytics: true,
-      hasAdvancedAnalytics: true,
-      hasTeam: true,
-      canExportData: true,
-      canUseQuickReplies: true,
-      canBulkEdit: true,
+      // Limits: 200 cars/mo (Scale)
+      maxListings: 200,
+      maxMonthlyListings: 200, // Explicit monthly limit even for "unlimited" total
+
+      // Unrestricted Editing (Trust-based)
+      canEditLockedFields: true,
+      maxFlexEditsPerMonth: 999,
+
+      // Power Tools: Matrix Grid (20 rows) & Cloning
+      canBulkUpload: true,
+      bulkUploadLimit: 20,
+      canCloneListing: true,
       canImportCSV: true,
       canUseAPI: true,
-      hasPrioritySupport: true
+
+      // Analytics & Team
+      hasAnalytics: true,
+      hasAdvancedAnalytics: true, // Market Intelligence
+      hasTeam: true,
+      canExportData: true,
+
+      // Features
+      canUseQuickReplies: true,
+      canBulkEdit: true,
+      hasPrioritySupport: true,
+
+      // Visual DNA: Royal Blue / Grid
+      themeMode: 'company-led'
     };
   }
 
@@ -159,7 +199,7 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
       setLoading(false);
       return;
     }
-    
+
     if (!db) {
       logger.error('Firestore is not available for loadProfileType');
       setProfileType('private');
@@ -170,10 +210,10 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
 
     try {
       const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
-      
+
       if (userDoc.exists()) {
         const userData = userDoc.data();
-        
+
         // Get profileType (default to 'private' if not set)
         const type = userData.profileType || 'private';
         setProfileType(type);
@@ -201,7 +241,7 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
     if (!currentUser) {
       throw new Error('User must be logged in to switch profile type');
     }
-    
+
     if (!db) {
       throw new Error('Firestore is not available');
     }
@@ -256,7 +296,7 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
       // 3. Check active listings limit
       const activeListings = userData.stats?.activeListings || 0;
       const newPermissions = getPermissions(newType, planTier);
-      
+
       if (newPermissions.maxListings !== -1 && activeListings > newPermissions.maxListings) {
         throw new Error(
           `Cannot switch to ${newType} profile: You have ${activeListings} active listings, ` +
@@ -287,17 +327,17 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
           planTier: defaultTier,
           updatedAt: new Date()
         });
-        
+
         setProfileType(newType);
         setPlanTier(defaultTier);
-        
+
         logger.info('Profile type switched with tier adjustment', {
           userId: currentUser.uid,
           newType,
           oldTier: currentTier,
           newTier: defaultTier
         });
-        
+
         return;
       }
 
@@ -306,20 +346,20 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
         profileType: newType,
         updatedAt: new Date()
       });
-      
+
       setProfileType(newType);
-      
+
       logger.info('Profile type switched successfully', {
         userId: currentUser.uid,
         oldType: profileType,
         newType
       });
-      
+
     } catch (error) {
-      logger.error('Error switching profile type', error as Error, { 
-        userId: currentUser.uid, 
-        newType, 
-        currentType: profileType 
+      logger.error('Error switching profile type', error as Error, {
+        userId: currentUser.uid,
+        newType,
+        currentType: profileType
       });
       throw error;
     }
@@ -330,8 +370,8 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
     try {
       await loadProfileType();
     } catch (error) {
-      logger.error('Error refreshing profile type', error as Error, { 
-        userId: currentUser?.uid 
+      logger.error('Error refreshing profile type', error as Error, {
+        userId: currentUser?.uid
       });
       // Set defaults on error
       setProfileType('private');
@@ -343,7 +383,7 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
   // Load on mount and when user changes
   useEffect(() => {
     let unsubscribe: (() => void) | null = null;
-    
+
     // ✅ CRITICAL FIX: Guard against null/undefined BEFORE any Firestore operations
     if (!currentUser?.uid) {
       setProfileType('private');
@@ -351,7 +391,7 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
       setLoading(false);
       return;
     }
-    
+
     // ✅ CRITICAL: Check if Firestore is available
     if (!db) {
       logger.error('Firestore is not initialized');
@@ -371,7 +411,7 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
           try {
             if (userDoc.exists()) {
               const userData = userDoc.data();
-              
+
               // Get profileType (default to 'private' if not set)
               const type = userData.profileType || 'private';
               setProfileType(type);
@@ -386,8 +426,8 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
             }
             setLoading(false);
           } catch (docError) {
-            logger.error('Error processing user document', docError as Error, { 
-              userId: currentUser?.uid 
+            logger.error('Error processing user document', docError as Error, {
+              userId: currentUser?.uid
             });
             setProfileType('private');
             setPlanTier('free');
@@ -395,8 +435,8 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
           }
         },
         (error) => {
-          logger.error('Error listening to profile type changes', error as Error, { 
-            userId: currentUser?.uid 
+          logger.error('Error listening to profile type changes', error as Error, {
+            userId: currentUser?.uid
           });
           setProfileType('private');
           setPlanTier('free');
@@ -404,8 +444,8 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
         }
       );
     } catch (setupError) {
-      logger.error('Error setting up profile listener', setupError as Error, { 
-        userId: currentUser?.uid 
+      logger.error('Error setting up profile listener', setupError as Error, {
+        userId: currentUser?.uid
       });
       setProfileType('private');
       setPlanTier('free');
@@ -418,9 +458,9 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
         try {
           unsubscribe();
         } catch (cleanupError) {
-          logger.warn('Error cleaning up profile listener', { 
+          logger.warn('Error cleaning up profile listener', {
             error: (cleanupError as Error).message,
-            userId: currentUser?.uid 
+            userId: currentUser?.uid
           });
         }
       }
@@ -435,6 +475,37 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
   const isDealer = profileType === 'dealer';
   const isCompany = profileType === 'company';
 
+  // New v3.0 Helper: Usage Tracking
+  const getProgressToLimit = (metric: 'listings' | 'flexEdits') => {
+    // Current Usage (Safely handle potentially undefined stats)
+    // Note: Use 'any' cast temporarily as we migrate types, but logic is sound
+    const stats: any = { /* mock current user stats if not in context yet */
+      listingsCreatedThisMonth: 0,
+      flexEditsUsedThisMonth: 0,
+      ...((currentUser as any)?.quotaStats || {})
+    };
+
+    let used = 0;
+    let total = 0;
+
+    if (metric === 'listings') {
+      used = stats.listingsCreatedThisMonth || 0;
+      total = permissions.maxMonthlyListings; // Now using strict monthly limit
+    } else if (metric === 'flexEdits') {
+      used = stats.flexEditsUsedThisMonth || 0;
+      total = permissions.maxFlexEditsPerMonth;
+    }
+
+    // Safety for unlimited logic
+    if (total === -1 || total === 999) {
+      return { used, total: 999, percentage: 0 }; // Show mostly empty bar for unlimited
+    }
+
+    const percentage = Math.min(100, Math.round((used / total) * 100));
+
+    return { used, total, percentage };
+  };
+
   const value: ProfileTypeContextState = {
     profileType,
     theme,
@@ -444,6 +515,7 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
     isPrivate,
     isDealer,
     isCompany,
+    getProgressToLimit,
     switchProfileType,
     refreshProfileType
   };
@@ -458,11 +530,11 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
 // Custom Hook
 export const useProfileType = (): ProfileTypeContextState => {
   const context = useContext(ProfileTypeContext);
-  
+
   if (context === undefined) {
     throw new Error('useProfileType must be used within a ProfileTypeProvider');
   }
-  
+
   return context;
 };
 

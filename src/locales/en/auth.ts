@@ -1,5 +1,7 @@
 // English translations - auth
 export const auth = {
+  "loginSuccess": "Successfully logged in",
+  "loginError": "Error logging in",
   "required": {
     "title": "Login Required",
     "message": "To access this page, you need to log in to your account.",

@@ -8,9 +8,10 @@ import { useCarViewTracking } from '../../hooks/useProfileTracking';
 import { unifiedCarService } from '../../services/car';
 import DistanceIndicator from '../../components/DistanceIndicator';
 import StaticMapEmbed from '../../components/StaticMapEmbed';
-import CarDetailsGermanStyle from './components/CarDetailsGermanStyle';
+import CarDetailsMobileDEStyle from './components/CarDetailsMobileDEStyle';
 import { useCarDetails } from './hooks/useCarDetails';
 import { useCarEdit } from './hooks/useCarEdit';
+import { CarSEO } from '../../components/SEO/CarSEO';
 import { CarImageGallery } from './components/CarImageGallery';
 import { CarHeader } from './components/CarHeader';
 import { CarBasicInfo } from './components/CarBasicInfo';
@@ -351,12 +352,11 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
 
   if (!editHook.isEditMode) {
     return (
-      <CarDetailsGermanStyle
+      <CarDetailsMobileDEStyle
         car={car}
         language={(language as 'bg' | 'en')}
         onBack={() => navigate(-1)}
         onEdit={isOwner ? handleEditClick : undefined}
-        onDelete={isOwner ? handleDeleteClick : undefined}
         isOwner={Boolean(isOwner)}
         onContact={handleContactClick}
       />
@@ -369,6 +369,9 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
         {theme === 'dark' ? '☀️' : '🌙'}
         {theme === 'dark' ? (language === 'bg' ? 'وضع نهاري' : 'Light Mode') : (language === 'bg' ? 'وضع ليلي' : 'Dark Mode')}
       </ThemeToggleButton>
+
+      {/* ✅ SEO Metadata */}
+      <CarSEO car={car} />
 
       <CarHeader
         car={car}

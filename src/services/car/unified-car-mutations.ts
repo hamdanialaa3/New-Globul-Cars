@@ -17,7 +17,7 @@ import { UnifiedCar, VEHICLE_COLLECTIONS } from './unified-car-types';
  * Create new car (with numeric IDs support)
  * ✅ NEW: Uses numeric-car-system-service for strict numeric URL structure
  */
-export async function createCar(carData: Partial<UnifiedCar>): Promise<{ id: string; sellerNumericId: number; carNumericId: number }> {
+export async function createCar(carData: Partial<UnifiedCar>): Promise<{ id: string; sellerNumericId: number; carNumericId: number; ownerNumericId?: number; userCarSequenceId?: number }> {
   const currentUser = auth.currentUser;
   if (!currentUser?.uid) {
     throw new Error('Not authenticated');
@@ -51,10 +51,61 @@ export async function createCar(carData: Partial<UnifiedCar>): Promise<{ id: str
       serviceLogger.error('Failed to award points for listing creation', error as Error);
     }
 
+    // 🔥 AUTO-POST TO FACEBOOK
+    try {
+      const { facebookAutoPostService } = await import('../meta/facebook-auto-post.service');
+      
+      const fbPostResult = await facebookAutoPostService.postCarWithPhoto({
+        carId: numericCarData.id,
+        make: carData.make || '',
+        model: carData.model || '',
+        year: carData.year || new Date().getFullYear(),
+        price: carData.price || 0,
+        images: (carData as any).images || [],
+        city: (carData as any).city || 'София',
+        region: (carData as any).region,
+        mileage: (carData as any).mileage,
+        fuelType: (carData as any).fuelType,
+        sellerNumericId: numericCarData.sellerNumericId,
+        carNumericId: numericCarData.carNumericId
+      });
+
+      if (fbPostResult.success) {
+        serviceLogger.info('🎉 Car auto-posted to Facebook!', {
+          carId: numericCarData.id,
+          facebookPostId: fbPostResult.id
+        });
+
+        // Add engagement comment after 30 seconds (optional)
+        facebookAutoPostService.addEngagementComment(fbPostResult.id, 'bg').catch(err => {
+          serviceLogger.warn('Failed to add engagement comment', err);
+        });
+
+        // TODO: Save Facebook Post ID to Firestore
+        // await updateDoc(doc(db, collectionName, numericCarData.id), {
+        //   'social.facebookPostId': fbPostResult.id,
+        //   'social.facebookPostedAt': serverTimestamp()
+        // });
+      } else {
+        serviceLogger.warn('Facebook auto-post failed (non-critical)', {
+          carId: numericCarData.id,
+          error: fbPostResult.error
+        });
+      }
+    } catch (fbError) {
+      // Don't fail car creation if Facebook post fails
+      serviceLogger.error('Facebook auto-post error (non-critical)', fbError as Error, {
+        carId: numericCarData.id
+      });
+    }
+
     return {
       id: numericCarData.id,
       sellerNumericId: numericCarData.sellerNumericId,
-      carNumericId: numericCarData.carNumericId
+      carNumericId: numericCarData.carNumericId,
+      // Internal Aliases for Consistency
+      ownerNumericId: numericCarData.sellerNumericId,
+      userCarSequenceId: numericCarData.carNumericId
     };
   } catch (error) {
     serviceLogger.error('Error creating car', error as Error);
@@ -156,19 +207,19 @@ export async function updateCar(carId: string, updates: Partial<UnifiedCar>): Pr
           await ProfileService.decrementActiveListings(sellerId);
           serviceLogger.info('User stats: active listings decremented (car sold)', { sellerId, carId });
         }
-        
+
         // Case 2: Car was deactivated (was active, now inactive)
         else if (wasActive && isNowInactive) {
           await ProfileService.decrementActiveListings(sellerId);
           serviceLogger.info('User stats: active listings decremented (car deactivated)', { sellerId, carId });
         }
-        
+
         // Case 3: Car was reactivated (was inactive/sold, now active)
         else if (!wasActive && isNowActive && !isNowSold) {
           await ProfileService.incrementActiveListings(sellerId);
           serviceLogger.info('User stats: active listings incremented (car reactivated)', { sellerId, carId });
         }
-        
+
         // Case 4: Car sale was reversed (was sold, now active again)
         else if (carData?.isSold === true && isNowActive) {
           await ProfileService.incrementActiveListings(sellerId);
@@ -231,14 +282,14 @@ export async function deleteCar(carId: string): Promise<void> {
     // ✅ CRITICAL FIX: Update user stats before deleting (if car was active)
     if (carData?.sellerId) {
       const wasActive = carData.isActive === true && carData.isSold !== true && carData.status !== 'sold';
-      
+
       if (wasActive) {
         try {
           const { ProfileService } = await import('../profile/ProfileService');
           await ProfileService.decrementActiveListings(carData.sellerId as string);
-          serviceLogger.info('User stats: active listings decremented (car deleted)', { 
-            sellerId: carData.sellerId, 
-            carId 
+          serviceLogger.info('User stats: active listings decremented (car deleted)', {
+            sellerId: carData.sellerId,
+            carId
           });
         } catch (statsError) {
           // Log error but continue with deletion

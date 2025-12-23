@@ -5,7 +5,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Upload, X } from 'lucide-react';
 import { useLanguage } from '../../../contexts/LanguageContext';
-import { SellWorkflowData } from '../../../hooks/useSellWorkflow';
+import { UnifiedWorkflowData } from '../../../services/unified-workflow-persistence.service';
 import { ImageStorageService } from '../../../services/ImageStorageService';
 import { useAuth } from '../../../contexts/AuthProvider';
 import { toast } from 'react-toastify';
@@ -13,8 +13,8 @@ import { logger } from '../../../services/logger-service';
 
 
 interface SellVehicleStep4Props {
-  workflowData: SellWorkflowData;
-  onUpdate: (updates: Partial<SellWorkflowData>) => void;
+  workflowData: Partial<UnifiedWorkflowData>;
+  onUpdate: (updates: Partial<UnifiedWorkflowData>) => void;
 }
 
 // Animations
@@ -66,10 +66,10 @@ const InfoText = styled.p`
 `;
 
 const UploadArea = styled.div<{ $isDragOver: boolean; $hasImages: boolean }>`
-  border: 2px dashed ${props => props.$isDragOver 
-    ? 'var(--accent-primary)' 
-    : props.$hasImages 
-      ? 'var(--success)' 
+  border: 2px dashed ${props => props.$isDragOver
+    ? 'var(--accent-primary)'
+    : props.$hasImages
+      ? 'var(--success)'
       : 'var(--border)'};
   border-radius: 12px;
   padding: 3rem 2rem;
@@ -296,7 +296,7 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
 
     const newPreviews = new Map<number, string>();
     const oldPreviews = new Map(imagePreviews);
-    
+
     imageFiles.forEach((file, index) => {
       // Check if we already have a preview for this index
       const existingPreview = imagePreviews.get(index);
@@ -314,7 +314,7 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
         }
       }
     });
-    
+
     setImagePreviews(newPreviews);
 
     // Cleanup old preview URLs that are no longer needed
@@ -337,10 +337,10 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
 
     const filesArray = Array.from(files);
     const remainingSlots = MAX_IMAGES - imageFiles.length;
-    
+
     if (filesArray.length > remainingSlots) {
       toast.warning(
-        language === 'bg' 
+        language === 'bg'
           ? `Можете да добавите само ${remainingSlots} снимки`
           : `You can only add ${remainingSlots} more images`
       );
@@ -351,7 +351,7 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
     const oversizedFiles = filesArray.filter(file => file.size > 10 * 1024 * 1024);
     if (oversizedFiles.length > 0) {
       toast.error(
-        language === 'bg' 
+        language === 'bg'
           ? 'Някои файлове са твърде големи (макс. 10MB)'
           : 'Some files are too large (max 10MB)'
       );
@@ -364,7 +364,7 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
       const newFiles = [...imageFiles, ...filesArray];
       setImageFiles(newFiles);
       logger.info('Images state updated immediately:', newFiles.length);
-      
+
       // Then save to IndexedDB in the background
       try {
         await ImageStorageService.saveImages(newFiles);
@@ -373,21 +373,21 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
         logger.error('Failed to save to IndexedDB (but images are still shown);:', saveError);
         // Don't show error to user since images are already displayed
       }
-      
+
       // Update workflow data with count
       onUpdate({
         imagesCount: newFiles.length,
       });
-      
+
       toast.success(
-        language === 'bg' 
+        language === 'bg'
           ? `${filesArray.length} снимки добавени успешно`
           : `${filesArray.length} images added successfully`
       );
     } catch (error) {
       logger.error('Failed to process images:', error);
       toast.error(
-        language === 'bg' 
+        language === 'bg'
           ? 'Грешка при обработка на снимки'
           : 'Error processing images'
       );
@@ -416,11 +416,11 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
     try {
       // Remove from IndexedDB
       await ImageStorageService.removeImage(index);
-      
+
       // Update local state
       const newFiles = imageFiles.filter((_, i) => i !== index);
       setImageFiles(newFiles);
-      
+
       // Update workflow data
       onUpdate({
         imagesCount: newFiles.length,
@@ -429,7 +429,7 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
     } catch (error) {
       logger.error('Failed to remove image:', error);
       toast.error(
-        language === 'bg' 
+        language === 'bg'
           ? 'Грешка при изтриване на снимка'
           : 'Error removing image'
       );
@@ -439,7 +439,7 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
   return (
     <FormContainer>
       <InfoText>
-        {language === 'bg' 
+        {language === 'bg'
           ? `Можете да качите до ${MAX_IMAGES} снимки. Плъзнете и пуснете или кликнете за избор.`
           : `You can upload up to ${MAX_IMAGES} images. Drag and drop or click to select.`}
       </InfoText>
@@ -456,12 +456,12 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
           <Upload />
         </UploadIcon>
         <UploadText>
-          {language === 'bg' 
+          {language === 'bg'
             ? 'Кликнете или плъзнете снимки тук'
             : 'Click or drag images here'}
         </UploadText>
         <UploadHint>
-          {language === 'bg' 
+          {language === 'bg'
             ? 'PNG, JPG, WEBP до 10MB'
             : 'PNG, JPG, WEBP up to 10MB'}
         </UploadHint>
@@ -487,7 +487,7 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
               const previewUrl = imagePreviews.get(index);
               const fileSize = file.size ? (file.size / 1024 / 1024).toFixed(2) : '0';
               const fileName = file.name || `Image ${index + 1}`;
-              
+
               return (
                 <ImageItem key={`${index}-${file.name || index}`}>
                   <ImageIndex>#{index + 1}</ImageIndex>
@@ -506,11 +506,11 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
                         }
                       }} />
                     ) : (
-                      <div style={{ 
-                        width: '100%', 
-                        height: '100%', 
-                        display: 'flex', 
-                        alignItems: 'center', 
+                      <div style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
                         justifyContent: 'center',
                         color: 'var(--text-secondary)',
                         fontSize: '0.75rem'

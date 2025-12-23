@@ -11,16 +11,16 @@ export type BusinessType = 'dealership' | 'trader' | 'company';
 export interface ProfileFormData {
   // Account Type
   accountType: AccountType;
-  
+
   // Required fields (from ID card) - For Individual
   firstName: string;
   lastName: string;
-  
+
   // Optional personal info (from ID card) - For Individual
   middleName?: string;
   dateOfBirth?: string;
   placeOfBirth?: string;
-  
+
   // Business Information - For Business
   businessName?: string;           // Име на фирмата (Required for business)
   bulstat?: string;                 // БУЛСТАТ/ЕИК (Bulgarian Company Registration)
@@ -35,18 +35,18 @@ export interface ProfileFormData {
   businessEmail?: string;           // Имейл на фирмата
   workingHours?: string;            // Работно време
   businessDescription?: string;     // Описание на бизнеса
-  
+
   // Optional contact & location (from ID card back)
   phoneNumber?: string;
   email?: string;
   address?: string;
   city?: string;
   postalCode?: string;
-  
+
   // Optional other
   bio?: string;
   preferredLanguage: string;
-  
+
   // Legacy (for backwards compatibility)
   displayName?: string;
   region?: string;
@@ -74,6 +74,8 @@ export interface ProfileCar {
   viewCount?: number;
   views?: number;
   inquiries?: number;
+  sellerNumericId?: number;
+  carNumericId?: number;
 }
 
 // Profile State Interface
@@ -117,7 +119,7 @@ export interface UseProfileReturn extends ProfileState, ProfileActions {
    * Force data reload (viewer + target).
    */
   refresh: () => Promise<void>;
-  
+
   // NEW: Profile Type System
   profileType?: 'private' | 'dealer' | 'company';
   theme?: {
@@ -139,6 +141,6 @@ export interface UseProfileReturn extends ProfileState, ProfileActions {
     canImportCSV: boolean;
     canUseAPI: boolean;
   };
-  planTier?: 'free' | 'premium' | 'dealer_basic' | 'dealer_pro' | 'dealer_enterprise' | 
-             'company_starter' | 'company_pro' | 'company_enterprise' | 'custom';
+  planTier?: 'free' | 'premium' | 'dealer_basic' | 'dealer_pro' | 'dealer_enterprise' |
+  'company_starter' | 'company_pro' | 'company_enterprise' | 'custom';
 }

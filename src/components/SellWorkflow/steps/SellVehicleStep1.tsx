@@ -2,12 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { Car, Truck, Bus, Bike, Caravan, Wrench, Construction } from 'lucide-react';
 import { useLanguage } from '../../../contexts/LanguageContext';
-import { SellWorkflowData } from '../../../hooks/useSellWorkflow';
+import { UnifiedWorkflowData } from '../../../services/unified-workflow-persistence.service';
 import { toast } from 'react-toastify';
 
 interface SellVehicleStep1Props {
-  workflowData: SellWorkflowData;
-  onUpdate: (updates: Partial<SellWorkflowData>) => void;
+  workflowData: Partial<UnifiedWorkflowData>;
+  onUpdate: (updates: Partial<UnifiedWorkflowData>) => void;
   onNext?: () => void;
 }
 

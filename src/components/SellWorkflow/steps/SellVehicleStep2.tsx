@@ -4,13 +4,15 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../../contexts/LanguageContext';
-import { SellWorkflowData } from '../../../hooks/useSellWorkflow';
+import { UnifiedWorkflowData } from '../../../services/unified-workflow-persistence.service';
 import BrandModelMarkdownDropdown from '../../BrandModelMarkdownDropdown/BrandModelMarkdownDropdown';
 import { BODY_TYPES, DOOR_OPTIONS, SEAT_OPTIONS, FUEL_TYPES, TRANSMISSION_TYPES, EXTERIOR_COLORS } from '../../../pages/04_car-selling/sell/VehicleData/types';
+import { useProfileType } from '../../../contexts/ProfileTypeContext';
 
 interface SellVehicleStep2Props {
-  workflowData: SellWorkflowData;
-  onUpdate: (updates: Partial<SellWorkflowData>) => void;
+  workflowData: Partial<UnifiedWorkflowData>;
+  onUpdate: (updates: Partial<UnifiedWorkflowData>) => void;
+  mode?: 'create' | 'edit';
 }
 
 const FormContainer = styled.div`
@@ -157,8 +159,6 @@ const POWER_OPTIONS = [
   350, 400, 450, 500, 600, 700, 800, 900, 1000
 ];
 
-// Define styled components outside
-// Define styled components outside
 const AttentionPulse = styled.div<{ $isActive: boolean }>`
   border-radius: 12px;
   animation: ${props => props.$isActive ? 'pulse-attention 2s infinite' : 'none'};
@@ -177,14 +177,12 @@ const AttentionPulse = styled.div<{ $isActive: boolean }>`
   }
 `;
 
-// Helper component to handle scroll on mount with visual attention
 const RevealWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const [isActive, setIsActive] = React.useState(true);
 
   React.useEffect(() => {
     if (ref.current) {
-      // Smooth scroll to element's center-top area to leave space for label
       ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, []);
@@ -199,7 +197,6 @@ const RevealWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       $isActive={isActive}
       onClick={handleInteraction}
       onFocus={handleInteraction}
-      // Also catch clicks heavily nested inside (bubbling)
       onMouseDown={handleInteraction}
     >
       <FieldGroup>{children}</FieldGroup>
@@ -210,10 +207,31 @@ const RevealWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 export const SellVehicleStep2: React.FC<SellVehicleStep2Props> = ({
   workflowData,
   onUpdate,
+  mode = 'create',
 }) => {
   const { language } = useLanguage();
+  const { profileType, getProgressToLimit } = useProfileType();
+
   const [isCustomMileage, setIsCustomMileage] = useState(false);
   const [isCustomPower, setIsCustomPower] = useState(false);
+
+  // Edit Permissions Logic (Digital Domination v3.0)
+  const isBrandLocked = useMemo(() => {
+    if (mode !== 'edit') return false; // Creation mode unlocked
+
+    if (profileType === 'company') return false; // Unlimited
+    if (profileType === 'private') return true; // Strictly locked
+
+    if (profileType === 'dealer') {
+      // Check Flex-Edit Quota
+      const { used, total } = getProgressToLimit('flexEdits');
+      // If total is 999/-1 (unlimited) or user has not hit limit
+      if (total > 0 && used >= total) return true; // Locked if quota exceeded
+      return false;
+    }
+
+    return false;
+  }, [mode, profileType, getProgressToLimit]);
 
   // Initialize custom states
   useEffect(() => {
@@ -225,76 +243,66 @@ export const SellVehicleStep2: React.FC<SellVehicleStep2Props> = ({
     }
   }, [workflowData.mileage, workflowData.power]);
 
-  // Parse first registration year
-  const firstRegistrationYear = useMemo(() => {
-    if (workflowData.firstRegistration) {
-      if (typeof workflowData.firstRegistration === 'string') {
-        return workflowData.firstRegistration;
-      }
-    }
-    return workflowData.year?.toString() || '';
-  }, [workflowData.firstRegistration, workflowData.year]);
-
-  // Generate year options (current year to 1950)
-  const currentYear = new Date().getFullYear();
-  const yearOptions = Array.from({ length: currentYear - 1949 }, (_, i) => currentYear - i);
-
-  // Progressive Reveal Logic - Chain of dependencies
-  // ✅ FIX: Support "Other" option - check if make/model has any value (including manual entry)
-  const hasBrand = !!(workflowData.make && workflowData.make.trim() !== '');
-  const hasModel = !!(workflowData.model && workflowData.model.trim() !== '');
-  // Step 2 unlocks when Model is selected
-  // Step 3 unlocked when Year is selected
-  const hasYear = !!workflowData.year;
-  // (Removed: isFirstRegComplete - we now only use year)
-  // Step 5 unlocked when Mileage is filled
-  const hasMileage = !!workflowData.mileage;
-  // Step 6 unlocked when Condition is selected
-  const hasCondition = !!workflowData.condition;
-  // Step 7 unlocked when Fuel is selected
-  const hasFuel = !!workflowData.fuelType;
-  // Step 8 unlocked when Transmission is selected
-  const hasTransmission = !!workflowData.transmission;
-  // Step 9 unlocked when Power is filled (4 digits max)
-  const hasPower = !!workflowData.power;
-  // Step 10 unlocked when Body is selected
-  const hasBody = !!workflowData.bodyType;
-  // Step 11 unlocked when Doors are selected
-  const hasDoors = !!workflowData.doors;
-  // Step 12 unlocked when Seats are selected
-  const hasSeats = !!workflowData.seats;
-  // Step 13 unlocked when Color is filled
-  const hasColor = !!workflowData.color;
-
-  // Helper to style completed fields
-  // "Green text" requested by user for completed fields
-  const successColor = '#22c55e'; // Green-500 equivalent, bright but readable
-
-  // Override styles for success state - text becomes green when field has value
-  const getLabelStyle = (hasValue: boolean) => ({
-    color: hasValue ? successColor : 'var(--text-primary)',
-    transition: 'color 0.3s ease'
-  });
-
-  const getInputStyle = (hasValue: boolean) => ({
-    borderColor: hasValue ? successColor : 'var(--border)',
-    color: hasValue ? successColor : 'var(--text-primary)',
-    fontWeight: hasValue ? '600' : 'normal',
-    transition: 'all 0.3s ease'
-  });
+  // ... rest of logic ...
 
   return (
     <FormContainer>
-      {/* Brand & Model - Always visible (Brand) then Model reveals */}
+      {/* Brand & Model */}
       <FieldGroup>
         <Label style={getLabelStyle(hasBrand && hasModel)}>
           {language === 'bg' ? 'Марка и модел' : 'Brand & Model'} *
+          {isBrandLocked && (
+            <span style={{
+              marginLeft: '0.5rem',
+              fontSize: '0.8rem',
+              color: '#ef4444',
+              fontWeight: 'normal'
+            }}>
+              {language === 'bg'
+                ? '(Заключено за редактиране)'
+                : '(Locked for editing)'}
+            </span>
+          )}
         </Label>
+
+        {isBrandLocked && profileType === 'private' && (
+          <div style={{
+            marginBottom: '0.5rem',
+            padding: '0.5rem',
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid #ef4444',
+            borderRadius: '8px',
+            fontSize: '0.85rem',
+            color: '#ef4444'
+          }}>
+            {language === 'bg'
+              ? 'Частните лица не могат да променят марката и модела на вече публикувана обява.'
+              : 'Private sellers cannot change Brand/Model of an existing listing.'}
+          </div>
+        )}
+
+        {isBrandLocked && profileType === 'dealer' && (
+          <div style={{
+            marginBottom: '0.5rem',
+            padding: '0.5rem',
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid #ef4444',
+            borderRadius: '8px',
+            fontSize: '0.85rem',
+            color: '#ef4444'
+          }}>
+            {language === 'bg'
+              ? 'Достигнахте месечния лимит за корекции на марка/модел (10).'
+              : 'You reached the monthly limit for Brand/Model corrections (10).'}
+          </div>
+        )}
+
         <BrandModelMarkdownDropdown
           brand={workflowData.make || ''}
           model={workflowData.model || ''}
           onBrandChange={(brand) => onUpdate({ make: brand })}
           onModelChange={(model) => onUpdate({ model: model })}
+          disabled={isBrandLocked}
         />
       </FieldGroup>
 

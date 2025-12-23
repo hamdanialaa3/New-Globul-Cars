@@ -1,6 +1,9 @@
 import * as notifications from './notifications';
 import * as merchantFeed from './merchant-feed';
 import * as imageOptimizer from './image-optimizer';
+import * as sitemapFunc from './sitemap';
+import * as googleAdsSync from './google-ads-sync';
+import * as facebookAdsSync from './facebook-ads-sync';
 
 // Notification triggers
 export const onNewCarPosted = notifications.onNewCarPosted;
@@ -19,3 +22,8 @@ export const updateMerchantFeedCache = merchantFeed.updateMerchantFeedCache;
 // Image Optimization (automatic WebP conversion & responsive sizes)
 export const optimizeUploadedImage = imageOptimizer.optimizeImage;
 export const cleanupDeletedImages = imageOptimizer.cleanupOptimizedImages;
+
+// Marketing / SEO
+export const sitemap = sitemapFunc.sitemap;
+export const syncCarsToGoogleAds = googleAdsSync.syncCarsToGoogleAds;
+export const syncCarsToFacebookAds = facebookAdsSync.syncCarsToFacebookAds;

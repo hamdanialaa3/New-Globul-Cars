@@ -11,8 +11,13 @@ class ImageUploadService {
   /**
    * Upload images for a car listing
    * ✅ FIX: Better error handling and validation
+   * ✅ SEO: Smart Naming for images
    */
-  async uploadImages(carId: string, images: File[]): Promise<string[]> {
+  async uploadImages(
+    carId: string,
+    images: File[],
+    carDetails?: { make: string; model: string; year: number; city?: string }
+  ): Promise<string[]> {
     if (!carId) {
       throw new Error('Car ID is required');
     }
@@ -30,7 +35,7 @@ class ImageUploadService {
         serviceLogger.warn(`Image at index ${i} is null or undefined`, { carId });
         continue;
       }
-      
+
       if (!(image instanceof File)) {
         serviceLogger.warn(`Image at index ${i} is not a File object`, { carId, type: typeof image });
         continue;
@@ -56,38 +61,53 @@ class ImageUploadService {
     }
 
     if (validImages.length < images.length) {
-      serviceLogger.warn('Some images were filtered out', { 
-        carId, 
-        originalCount: images.length, 
-        validCount: validImages.length 
+      serviceLogger.warn('Some images were filtered out', {
+        carId,
+        originalCount: images.length,
+        validCount: validImages.length
       });
     }
 
     try {
-      
+
       // ✅ Use same path structure as SellWorkflowService for consistency
       const uploadPromises = validImages.map(async (image, index) => {
         try {
           const timestamp = Date.now();
-          const fileName = `${timestamp}_${index}_${image.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+
+          // ✅ SEO: Smart Naming
+          let fileName = '';
+          const extension = image.name.split('.').pop() || 'jpg';
+
+          if (carDetails) {
+            const make = carDetails.make.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+            const model = carDetails.model.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+            const city = (carDetails.city || 'bulgaria').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+            // Pattern: make-model-year-city-index.ext
+            fileName = `${make}-${model}-${carDetails.year}-${city}-${String(index + 1).padStart(2, '0')}.${extension}`;
+          } else {
+            // Fallback
+            fileName = `${timestamp}_${index}_${image.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+          }
+
           const imagePath = `cars/${carId}/images/${fileName}`;
           const imageRef = ref(storage, imagePath);
-          
-          serviceLogger.info(`📤 Uploading image ${index + 1}/${validImages.length}`, { 
-            name: image.name, 
-            size: image.size, 
+
+          serviceLogger.info(`📤 Uploading image ${index + 1}/${validImages.length}`, {
+            name: image.name,
+            size: image.size,
             type: image.type,
-            path: imagePath 
+            path: imagePath
           });
-          
+
           const snapshot = await uploadBytes(imageRef, image);
           const downloadUrl = await getDownloadURL(snapshot.ref);
-          
+
           return downloadUrl;
         } catch (uploadError) {
           serviceLogger.error(`❌ Failed to upload image ${index + 1}`, uploadError as Error);
-          serviceLogger.error(`Failed to upload image ${index + 1}`, uploadError as Error, { 
-            carId, 
+          serviceLogger.error(`Failed to upload image ${index + 1}`, uploadError as Error, {
+            carId,
             imageName: image.name,
             imageSize: image.size,
             imageType: image.type

@@ -1,11 +1,17 @@
 export interface CarListing {
   // Basic Information
   id?: string;
+  vin?: string; // Vehicle Identification Number
 
   // ✅ NEW: Numeric ID system for clean URLs
+  // Standard internal names
   numericId?: number;           // Unique numeric ID per seller (e.g., 1, 2, 3...)
   carNumericId?: number;        // Alias for numericId, matches DB field name
   sellerNumericId?: number;     // Seller's numeric ID
+
+  // ✅ Project Constitution Aliases (for explicit compliance)
+  ownerNumericId?: number;      // Alias for sellerNumericId
+  userCarSequenceId?: number;   // Alias for carNumericId
 
   vehicleType: string;
   make: string;
@@ -51,6 +57,12 @@ export interface CarListing {
 
   // Location
   location?: string;
+  locationData?: {
+    cityName?: string;
+    regionName?: string;
+    cityId?: number;
+    regionId?: number;
+  };
   city: string;
   region: string;
   postalCode?: string;

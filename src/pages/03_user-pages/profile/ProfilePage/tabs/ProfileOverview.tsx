@@ -60,14 +60,9 @@ export const ProfileOverview: React.FC<ProfileOverviewProps> = (props) => {
     );
   }
 
-  // If viewing another user's profile, show PublicProfileView
-  if (!isOwnProfile) {
-    return (
-      <OverviewContainer>
-        <PublicProfileView user={user} userCars={userCars} />
-      </OverviewContainer>
-    );
-  }
+  // ✅ REFACTORED: Visitors now see specific Dealer/Company/Private profiles
+  // The Switch statement below handles "View Mode" via the isOwnProfile prop.
+  // PublicProfileView is kept as a fallback or component part if needed.
 
   // Show ProfileDashboard only for own profile
   const showDashboard = isOwnProfile;
@@ -102,6 +97,11 @@ export const ProfileOverview: React.FC<ProfileOverviewProps> = (props) => {
         );
     }
   };
+
+  // ✅ VISITOR VIEW: Use the new "Digital Showroom" PublicProfileView
+  if (!isOwnProfile) {
+    return <PublicProfileView user={user} userCars={userCars} />;
+  }
 
   return (
     <OverviewContainer>

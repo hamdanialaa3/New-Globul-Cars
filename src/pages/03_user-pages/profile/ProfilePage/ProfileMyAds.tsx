@@ -4,11 +4,15 @@ import styled from 'styled-components';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useProfile } from './hooks/useProfile';
+import { useProfileType } from '../../../../contexts/ProfileTypeContext';
 import { useTheme } from '../../../../contexts/ThemeContext';
+import { toast } from 'react-toastify';
 import ModernCarCard from '../../../01_main-pages/home/HomePage/ModernCarCard';
 import { UnifiedCar } from '../../../../services/car';
-import { Car, Plus, ArrowUpDown, Filter } from 'lucide-react';
+import { Car, Plus, ArrowUpDown, Filter, Eye } from 'lucide-react';
 import * as S from './styles';
+import { unifiedCarService } from '../../../../services/UnifiedCarService';
+import { MatrixUploader } from '../components/MatrixUploader';
 
 /**
  * My Ads Tab - Full garage with all user's cars
@@ -101,9 +105,94 @@ const ProfileMyAds: React.FC = () => {
     return sorted;
   }, [userCars, sortBy, filterBy]);
 
+  // Power Tools State
+  const { permissions, isDealer, isCompany, getProgressToLimit } = useProfileType(); // Use Context
+  const [showMatrix, setShowMatrix] = React.useState(false);
+  const [viewMode, setViewMode] = React.useState<'grid' | 'compact'>('grid');
+
+  // Clone Handler
+  const handleClone = async (carId: string) => {
+    if (!permissions.canCloneListing || !user) return;
+    try {
+      const toastId = toast.loading(language === 'bg' ? 'Клониране...' : 'Cloning...');
+      await unifiedCarService.cloneCarListing(carId, user.uid);
+      toast.update(toastId, {
+        render: language === 'bg' ? 'Обявата е клонирана!' : 'Listing Cloned!',
+        type: 'success',
+        isLoading: false,
+        autoClose: 2000
+      });
+      // reload
+      loadUserCars();
+    } catch (err) {
+      logger.error('Clone failed', err as Error);
+    }
+  };
+
+  // Limit Progress
+  const listingStats = getProgressToLimit ? getProgressToLimit('listings') : { used: 0, total: 3, percentage: 0 };
+  const isApproachingLimit = listingStats.percentage > 80;
+
   return (
     <Container $isDark={isDark}>
       <S.ContentSection style={{ padding: '2rem 1rem', marginTop: 0 }}>
+
+        {/* POWER BAR - For Dealers & Companies */}
+        {(isDealer || isCompany) && (
+          <div style={{
+            marginBottom: '2rem',
+            background: isDark ? 'rgba(34, 197, 94, 0.1)' : 'rgba(34, 197, 94, 0.05)',
+            border: `1px solid ${isDark ? '#22c55e' : '#4ade80'}`,
+            padding: '1rem',
+            borderRadius: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
+            <div>
+              <h3 style={{ margin: 0, color: isDark ? '#4ade80' : '#15803d' }}>
+                {language === 'bg' ? 'Професионален Панел' : 'Professional Dashboard'}
+              </h3>
+              <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <span style={{ fontSize: '0.9rem' }}>
+                  Monthly Quota: <strong>{listingStats.used} / {listingStats.total === 999 ? '∞' : listingStats.total}</strong>
+                </span>
+                {/* Mini Progress Bar */}
+                <div style={{ width: '100px', height: '6px', background: '#334155', borderRadius: '3px' }}>
+                  <div style={{
+                    width: `${listingStats.percentage}%`,
+                    height: '100%',
+                    background: isApproachingLimit ? '#ef4444' : '#22c55e',
+                    borderRadius: '3px'
+                  }} />
+                </div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              {permissions.canBulkUpload && (
+                <AddButton $isDark={isDark} onClick={() => setShowMatrix(true)} style={{ background: '#2563eb' }}>
+                  <ArrowUpDown size={18} />
+                  {language === 'bg' ? 'Масово Качване' : 'Bulk Upload'}
+                </AddButton>
+              )}
+              <div style={{ display: 'flex', background: isDark ? '#1e293b' : '#fff', borderRadius: '8px', border: '1px solid #475569' }}>
+                <button
+                  onClick={() => setViewMode('grid')}
+                  style={{ padding: '0.5rem', background: viewMode === 'grid' ? '#475569' : 'transparent', color: viewMode === 'grid' ? 'white' : 'inherit', border: 'none', borderRadius: '6px 0 0 6px', cursor: 'pointer' }}
+                >
+                  Grid
+                </button>
+                <button
+                  onClick={() => setViewMode('compact')}
+                  style={{ padding: '0.5rem', background: viewMode === 'compact' ? '#475569' : 'transparent', color: viewMode === 'compact' ? 'white' : 'inherit', border: 'none', borderRadius: '0 6px 6px 0', cursor: 'pointer' }}
+                >
+                  List
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <SectionHeader>
           <SectionTitle $isDark={isDark}>
             {language === 'bg' ? 'Моите обяви' : 'My Ads'}
@@ -149,6 +238,9 @@ const ProfileMyAds: React.FC = () => {
           </FiltersBar>
         )}
 
+        {/* Matrix Modal */}
+        {showMatrix && <MatrixUploader onClose={() => setShowMatrix(false)} />}
+
         {/* Show empty state only if no cars at all, or if filtered results are empty */}
         {(!userCars || userCars.length === 0) ? (
           <EmptyState $isDark={isDark}>
@@ -181,19 +273,114 @@ const ProfileMyAds: React.FC = () => {
             </FilterResetButton>
           </EmptyState>
         ) : (
-          <CarsGrid>
-            {unifiedCars.map((car) => (
-              <ModernCarCard
-                key={car.id}
-                car={car}
-                showStatus={true}
-                onFavorite={(carId) => {
-                  // Handle favorite logic if needed
-                  logger.info('Favorite clicked:', carId);
-                }}
-              />
-            ))}
-          </CarsGrid>
+          /* View Mode Logic */
+          viewMode === 'compact' ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              {unifiedCars.map(car => (
+                <div key={car.id} style={{ display: 'grid', gridTemplateColumns: '80px 2fr 1fr 1fr 100px', gap: '1rem', padding: '0.5rem', background: isDark ? '#1e293b' : 'white', borderRadius: '8px', alignItems: 'center' }}>
+                  <img src={car.mainImage?.url || 'placeholder.jpg'} style={{ width: '60px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
+                  <span style={{ fontWeight: 'bold' }}>{car.make} {car.model}</span>
+                  <span>{car.year}</span>
+                  <span>€{car.price}</span>
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <button
+                      style={{ padding: '4px 8px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px', background: 'transparent', border: `1px solid ${isDark ? '#475569' : '#cbd5e1'}`, borderRadius: '4px', color: isDark ? '#e2e8f0' : '#475569', cursor: 'pointer' }}
+                      onClick={() => {
+                        const sellerNumericId = (car as any).sellerNumericId || (car as any).ownerNumericId;
+                        const carNumericId = (car as any).carNumericId || (car as any).userCarSequenceId || (car as any).numericId;
+                        if (sellerNumericId && carNumericId) {
+                          window.open(`/car/${sellerNumericId}/${carNumericId}`, '_blank');
+                        } else {
+                          import('../../../../utils/routing-utils').then(({ getCarUrlFromUnifiedCar }) => {
+                            window.open(getCarUrlFromUnifiedCar(car), '_blank');
+                          });
+                        }
+                      }}
+                      title={language === 'bg' ? 'Преглед' : 'View'}
+                    >
+                      <Eye size={14} />
+                      {viewMode === 'compact' && (language === 'bg' ? 'Преглед' : 'View')}
+                    </button>
+                    <button style={{ padding: '4px 8px', fontSize: '0.8rem' }} onClick={() => {
+                      import('../../../../utils/routing-utils').then(({ getCarUrlFromUnifiedCar }) => {
+                        navigate(`${getCarUrlFromUnifiedCar(car)}/edit`);
+                      });
+                    }}>Edit</button>
+                    {permissions.canCloneListing && (
+                      <button
+                        style={{ padding: '4px 8px', fontSize: '0.8rem', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '4px' }}
+                        onClick={() => handleClone(car.id!)}
+                      >
+                        Clone
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <CarsGrid>
+              {unifiedCars.map((car) => (
+                <div key={car.id} style={{ position: 'relative' }}>
+                  <ModernCarCard
+                    car={car}
+                    showStatus={true}
+                    onFavorite={(carId) => {
+                      logger.info('Favorite clicked:', carId);
+                    }}
+                  />
+                  {/* Clone Button Overlay */}
+                  {permissions.canCloneListing && isOwnProfile && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleClone(car.id!); }}
+                      style={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: '10px',
+                        zIndex: 10,
+                        background: 'rgba(59, 130, 246, 0.9)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        padding: '4px 8px',
+                        fontSize: '0.75rem',
+                        fontWeight: 'bold',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      CLONE
+                    </button>
+                  )}
+                  {isOwnProfile && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        import('../../../../utils/routing-utils').then(({ getCarUrlFromUnifiedCar }) => {
+                          navigate(`${getCarUrlFromUnifiedCar(car)}/edit`);
+                        });
+                      }}
+                      style={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: permissions.canCloneListing ? '70px' : '10px', // Shift if clone exists
+                        zIndex: 10,
+                        background: 'rgba(255, 255, 255, 0.9)',
+                        color: '#1e293b',
+                        border: '1px solid #cbd5e1',
+                        borderRadius: '4px',
+                        padding: '4px 8px',
+                        fontSize: '0.75rem',
+                        fontWeight: 'bold',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      EDIT
+                    </button>
+                  )}
+                </div>
+              ))}
+            </CarsGrid>
+          )
         )}
       </S.ContentSection>
     </Container>

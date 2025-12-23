@@ -2,70 +2,71 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { SellVehicleWizard } from '../../components/SellWorkflow/SellVehicleWizard';
+// import { SellVehicleWizard } from '../../components/SellWorkflow/SellVehicleWizard'; // Replaced by CarEditPage
+import CarEditPageInternal from './CarEditPage';
+import SmartLoader from '../../components/SmartLoaderCSS';
 
 const PageContainer = styled.div`
   min-height: 100vh;
   background: var(--bg-primary);
-  padding: 2rem 1rem;
-`;
-
-const ContentWrapper = styled.div`
-  max-width: 1000px;
-  margin: 0 auto;
-  background: var(--bg-card);
-  border-radius: 20px;
-  padding: 2rem;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  border: 1px solid var(--border);
-`;
-
-const Header = styled.div`
-  text-align: center;
-  margin-bottom: 2rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid var(--border);
-`;
-
-const Title = styled.h1`
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0 0 0.5rem 0;
-`;
-
-const Subtitle = styled.p`
-  color: var(--text-secondary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const EditCarPage: React.FC = () => {
-  const { carId } = useParams<{ carId: string }>();
+  const params = useParams<{ carId?: string; sellerNumericId?: string; carNumericId?: string }>();
   const navigate = useNavigate();
-  const { language } = useLanguage();
+  // const { language } = useLanguage(); // Handled in internal component
+  const [resolvedCarId, setResolvedCarId] = React.useState<string | null>(params.carId || null);
+  const [loading, setLoading] = React.useState(false);
 
-  if (!carId) return null;
+  React.useEffect(() => {
+    // If we already have a carId (legacy route), do nothing
+    if (params.carId) return;
 
-  return (
-    <PageContainer>
-      <ContentWrapper>
-        <Header>
-          <Title>
-            {language === 'bg' ? 'Редактиране на обява' : 'Edit Listing'}
-          </Title>
-          <Subtitle>
-            {language === 'bg' ? 'Променете детайлите на вашата кола' : 'Update your car details'}
-          </Subtitle>
-        </Header>
+    // If we have numeric IDs, resolve them
+    const resolveNumericIds = async () => {
+      if (!params.sellerNumericId || !params.carNumericId) return;
 
-        <SellVehicleWizard
-          mode="edit"
-          existingCarId={carId}
-          onComplete={() => navigate(`/car-details/${carId}`)}
-          onCancel={() => navigate(-1)}
-        />
-      </ContentWrapper>
-    </PageContainer>
-  );
+      setLoading(true);
+      try {
+        // Dynamic import to avoid circular dependencies
+        const { getCarByNumericIds } = await import('../../services/numeric-id-lookup.service');
+        const car = await getCarByNumericIds(
+          params.sellerNumericId!,
+          params.carNumericId!
+        );
+
+        if (car && car.id) {
+          setResolvedCarId(car.id);
+        } else {
+          // Handle not found
+          navigate('/404');
+        }
+      } catch (error) {
+        console.error('Failed to resolve car ID:', error);
+        navigate('/404');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    resolveNumericIds();
+  }, [params.carId, params.sellerNumericId, params.carNumericId, navigate]);
+
+  if (loading) {
+    return (
+      <PageContainer>
+        <SmartLoader />
+      </PageContainer>
+    );
+  }
+
+  if (!resolvedCarId) return null;
+
+  // Render the robust Single-Page Edit Form
+  return <CarEditPageInternal carId={resolvedCarId} />;
 };
 
 export default EditCarPage;

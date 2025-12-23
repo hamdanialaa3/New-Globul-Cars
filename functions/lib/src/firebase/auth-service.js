@@ -1,0 +1,427 @@
+"use strict";
+// src/firebase/auth-service.ts
+// Bulgarian Authentication Service for Car Marketplace
+// Phase -1: Updated to use canonical types
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.bulgarianAuthService = exports.BulgarianAuthService = void 0;
+const auth_1 = require("firebase/auth");
+const logger_service_1 = require("../services/logger-service");
+const firestore_1 = require("firebase/firestore");
+const firebase_config_1 = require("./firebase-config");
+const bulgarian_config_1 = require("../config/bulgarian-config");
+// Bulgarian Authentication Service
+class BulgarianAuthService {
+    constructor() {
+        // Initialize auth state listener
+        this.initializeAuthStateListener();
+    }
+    // Helper method to safely extract error code
+    getErrorCode(error) {
+        if (error instanceof Error && 'code' in error) {
+            return error.code;
+        }
+        return 'unknown';
+    }
+    static getInstance() {
+        if (!BulgarianAuthService.instance) {
+            BulgarianAuthService.instance = new BulgarianAuthService();
+        }
+        return BulgarianAuthService.instance;
+    }
+    // Initialize auth state listener
+    initializeAuthStateListener() {
+        (0, auth_1.onAuthStateChanged)(firebase_config_1.auth, async (user) => {
+            if (user) {
+                // Update last login time
+                await this.updateLastLogin(user.uid);
+            }
+        });
+    }
+    // Sign up with email and password
+    async signUp(email, password, userData) {
+        var _a, _b, _c, _d;
+        try {
+            // Validate Bulgarian email format
+            if (!this.validateBulgarianEmail(email)) {
+                throw new Error('Невалиден имейл формат. Моля използвайте валиден български имейл адрес.');
+            }
+            // Validate password strength
+            if (!this.validatePasswordStrength(password)) {
+                throw new Error('Паролата трябва да съдържа поне 8 символа, главна буква, малка буква и цифра.');
+            }
+            // Create user
+            const userCredential = await (0, auth_1.createUserWithEmailAndPassword)(firebase_config_1.auth, email, password);
+            // Create Bulgarian user profile
+            const bulgarianUser = {
+                uid: userCredential.user.uid,
+                email: userCredential.user.email,
+                displayName: userData.displayName || '',
+                phoneNumber: userData.phoneNumber,
+                photoURL: userData.photoURL,
+                preferredLanguage: userData.preferredLanguage || 'bg',
+                location: userData.location,
+                profile: {
+                    isDealer: ((_a = userData.profile) === null || _a === void 0 ? void 0 : _a.isDealer) || false,
+                    companyName: (_b = userData.profile) === null || _b === void 0 ? void 0 : _b.companyName,
+                    taxNumber: (_c = userData.profile) === null || _c === void 0 ? void 0 : _c.taxNumber,
+                    dealerLicense: (_d = userData.profile) === null || _d === void 0 ? void 0 : _d.dealerLicense,
+                    preferredCurrency: bulgarian_config_1.BULGARIAN_CONFIG.currency,
+                    timezone: bulgarian_config_1.BULGARIAN_CONFIG.timezone
+                },
+                preferences: {
+                    notifications: true,
+                    marketingEmails: false,
+                    language: userData.preferredLanguage || 'bg'
+                },
+                createdAt: new Date(),
+                lastLoginAt: new Date(),
+                isVerified: false
+            };
+            // Save user profile to Firestore
+            await this.saveUserProfile(bulgarianUser);
+            // Send email verification
+            await (0, auth_1.sendEmailVerification)(userCredential.user, {
+                url: `${window.location.origin}/verify-email`,
+                handleCodeInApp: true
+            });
+            return userCredential;
+        }
+        catch (error) {
+            throw this.handleAuthError(error);
+        }
+    }
+    // Sign in with email and password
+    async signIn(email, password) {
+        try {
+            const userCredential = await (0, auth_1.signInWithEmailAndPassword)(firebase_config_1.auth, email, password);
+            // Update last login
+            await this.updateLastLogin(userCredential.user.uid);
+            return userCredential;
+        }
+        catch (error) {
+            throw this.handleAuthError(error);
+        }
+    }
+    // Sign in with Google
+    async signInWithGoogle() {
+        try {
+            const provider = new auth_1.GoogleAuthProvider();
+            provider.setCustomParameters({
+                prompt: 'select_account'
+            });
+            const result = await (0, auth_1.signInWithPopup)(firebase_config_1.auth, provider);
+            // Check if user exists, if not create Bulgarian profile
+            const userExists = await this.userExists(result.user.uid);
+            if (!userExists) {
+                await this.createUserFromSocialLogin(result.user, 'google');
+            }
+            else {
+                await this.updateLastLogin(result.user.uid);
+            }
+            return result;
+        }
+        catch (error) {
+            throw this.handleAuthError(error);
+        }
+    }
+    // Sign in with Facebook
+    async signInWithFacebook() {
+        try {
+            const provider = new auth_1.FacebookAuthProvider();
+            provider.setCustomParameters({
+                display: 'popup'
+            });
+            const result = await (0, auth_1.signInWithPopup)(firebase_config_1.auth, provider);
+            // Check if user exists, if not create Bulgarian profile
+            const userExists = await this.userExists(result.user.uid);
+            if (!userExists) {
+                await this.createUserFromSocialLogin(result.user, 'facebook');
+            }
+            else {
+                await this.updateLastLogin(result.user.uid);
+            }
+            return result;
+        }
+        catch (error) {
+            throw this.handleAuthError(error);
+        }
+    }
+    // Sign in with Twitter
+    async signInWithTwitter() {
+        try {
+            const provider = new auth_1.TwitterAuthProvider();
+            const result = await (0, auth_1.signInWithPopup)(firebase_config_1.auth, provider);
+            // Check if user exists, if not create Bulgarian profile
+            const userExists = await this.userExists(result.user.uid);
+            if (!userExists) {
+                await this.createUserFromSocialLogin(result.user, 'twitter');
+            }
+            else {
+                await this.updateLastLogin(result.user.uid);
+            }
+            return result;
+        }
+        catch (error) {
+            throw this.handleAuthError(error);
+        }
+    }
+    // Sign in with Microsoft
+    async signInWithMicrosoft() {
+        try {
+            const provider = new auth_1.OAuthProvider('microsoft.com');
+            provider.addScope('email');
+            provider.addScope('profile');
+            provider.addScope('openid');
+            const result = await (0, auth_1.signInWithPopup)(firebase_config_1.auth, provider);
+            // Check if user exists, if not create Bulgarian profile
+            const userExists = await this.userExists(result.user.uid);
+            if (!userExists) {
+                await this.createUserFromSocialLogin(result.user, 'microsoft');
+            }
+            else {
+                await this.updateLastLogin(result.user.uid);
+            }
+            return result;
+        }
+        catch (error) {
+            throw this.handleAuthError(error);
+        }
+    }
+    // Sign in with Apple
+    async signInWithApple() {
+        try {
+            const provider = new auth_1.OAuthProvider('apple.com');
+            provider.addScope('email');
+            provider.addScope('name');
+            const result = await (0, auth_1.signInWithPopup)(firebase_config_1.auth, provider);
+            // Check if user exists, if not create Bulgarian profile
+            const userExists = await this.userExists(result.user.uid);
+            if (!userExists) {
+                await this.createUserFromSocialLogin(result.user, 'apple');
+            }
+            else {
+                await this.updateLastLogin(result.user.uid);
+            }
+            return result;
+        }
+        catch (error) {
+            throw this.handleAuthError(error);
+        }
+    }
+    // Sign in with iCloud
+    async signInWithICloud() {
+        try {
+            const provider = new auth_1.OAuthProvider('apple.com');
+            provider.addScope('email');
+            provider.addScope('name');
+            const result = await (0, auth_1.signInWithPopup)(firebase_config_1.auth, provider);
+            // Check if user exists, if not create Bulgarian profile
+            const userExists = await this.userExists(result.user.uid);
+            if (!userExists) {
+                await this.createUserFromSocialLogin(result.user, 'icloud');
+            }
+            else {
+                await this.updateLastLogin(result.user.uid);
+            }
+            return result;
+        }
+        catch (error) {
+            throw this.handleAuthError(error);
+        }
+    }
+    // Sign out
+    async signOut() {
+        try {
+            await (0, auth_1.signOut)(firebase_config_1.auth);
+        }
+        catch (error) {
+            throw this.handleAuthError(error);
+        }
+    }
+    // Get current user profile
+    async getCurrentUserProfile() {
+        try {
+            const user = firebase_config_1.auth.currentUser;
+            if (!user)
+                return null;
+            const userDoc = await (0, firestore_1.getDoc)((0, firestore_1.doc)(firebase_config_1.db, 'users', user.uid));
+            if (userDoc.exists()) {
+                return userDoc.data();
+            }
+            return null;
+        }
+        catch (error) {
+            throw this.handleAuthError(error);
+        }
+    }
+    // Get any user profile by ID (for viewing other users' profiles)
+    async getUserProfileById(userId) {
+        try {
+            if (!userId)
+                return null;
+            const userDoc = await (0, firestore_1.getDoc)((0, firestore_1.doc)(firebase_config_1.db, 'users', userId));
+            if (userDoc.exists()) {
+                return userDoc.data();
+            }
+            return null;
+        }
+        catch (error) {
+            logger_service_1.logger.error('Error fetching user profile by ID', error, { userId });
+            throw this.handleAuthError(error);
+        }
+    }
+    // Update user profile
+    async updateUserProfile(updates) {
+        var _a;
+        try {
+            const user = firebase_config_1.auth.currentUser;
+            if (!user)
+                throw new Error('Няма активен потребител');
+            // Validate Bulgarian phone if provided
+            if (updates.phoneNumber && !firebase_config_1.BulgarianFirebaseUtils.validateBulgarianPhone(updates.phoneNumber)) {
+                throw new Error('Невалиден български телефонен номер');
+            }
+            // Validate Bulgarian postal code if provided
+            if (((_a = updates.location) === null || _a === void 0 ? void 0 : _a.postalCode) && !firebase_config_1.BulgarianFirebaseUtils.validateBulgarianPostalCode(updates.location.postalCode)) {
+                throw new Error('Невалиден пощенски код');
+            }
+            // Update Firebase Auth profile
+            if (updates.displayName || updates.photoURL) {
+                await (0, auth_1.updateProfile)(user, {
+                    displayName: updates.displayName,
+                    photoURL: updates.photoURL
+                });
+            }
+            // Update Firestore profile
+            await (0, firestore_1.updateDoc)((0, firestore_1.doc)(firebase_config_1.db, 'users', user.uid), Object.assign(Object.assign({}, updates), { updatedAt: new Date() }));
+        }
+        catch (error) {
+            throw this.handleAuthError(error);
+        }
+    }
+    // Send password reset email
+    async sendPasswordResetEmail(email) {
+        try {
+            await (0, auth_1.sendPasswordResetEmail)(firebase_config_1.auth, email, {
+                url: `${window.location.origin}/reset-password`,
+                handleCodeInApp: true
+            });
+        }
+        catch (error) {
+            throw this.handleAuthError(error);
+        }
+    }
+    // Verify email
+    async verifyEmail(actionCode) {
+        try {
+            await (0, auth_1.applyActionCode)(firebase_config_1.auth, actionCode);
+            // Update user verification status
+            const user = firebase_config_1.auth.currentUser;
+            if (user) {
+                await (0, firestore_1.updateDoc)((0, firestore_1.doc)(firebase_config_1.db, 'users', user.uid), {
+                    isVerified: true,
+                    verifiedAt: new Date()
+                });
+            }
+        }
+        catch (error) {
+            throw this.handleAuthError(error);
+        }
+    }
+    // Private helper methods
+    async saveUserProfile(user) {
+        await (0, firestore_1.setDoc)((0, firestore_1.doc)(firebase_config_1.db, 'users', user.uid), user);
+    }
+    async userExists(uid) {
+        const userDoc = await (0, firestore_1.getDoc)((0, firestore_1.doc)(firebase_config_1.db, 'users', uid));
+        return userDoc.exists();
+    }
+    async updateLastLogin(uid) {
+        try {
+            const currentUser = firebase_config_1.auth.currentUser;
+            if (!currentUser)
+                return; // Nothing to do
+            const userRef = (0, firestore_1.doc)(firebase_config_1.db, 'users', uid);
+            const snapshot = await (0, firestore_1.getDoc)(userRef);
+            if (snapshot.exists()) {
+                // Merge only mutable fields; avoid overwriting createdAt or other profile data
+                await (0, firestore_1.setDoc)(userRef, {
+                    lastLoginAt: new Date(),
+                    isVerified: currentUser.emailVerified || false
+                }, { merge: true });
+            }
+            else {
+                // Create minimal compliant doc (rules require email & displayName on create)
+                await (0, firestore_1.setDoc)(userRef, {
+                    uid,
+                    email: currentUser.email || '',
+                    displayName: currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : ''),
+                    createdAt: new Date(),
+                    lastLoginAt: new Date(),
+                    isVerified: currentUser.emailVerified || false
+                });
+            }
+        }
+        catch (error) {
+            logger_service_1.logger.error('Error updating last login', error, { uid });
+            // Don't throw error to prevent breaking the auth flow
+        }
+    }
+    async createUserFromSocialLogin(user, provider) {
+        const bulgarianUser = {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName || '',
+            photoURL: user.photoURL || undefined,
+            preferredLanguage: 'bg',
+            profileType: 'private',
+            planTier: 'free',
+            profile: {
+                preferredCurrency: bulgarian_config_1.BULGARIAN_CONFIG.currency,
+                timezone: bulgarian_config_1.BULGARIAN_CONFIG.timezone
+            },
+            preferences: {
+                notifications: true,
+                marketingEmails: false,
+                language: 'bg'
+            },
+            createdAt: new Date(),
+            lastLoginAt: new Date(),
+            isVerified: true // Social login users are pre-verified
+        };
+        await this.saveUserProfile(bulgarianUser);
+    }
+    validateBulgarianEmail(email) {
+        // Basic email validation with Bulgarian domain preference
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+    validatePasswordStrength(password) {
+        // At least 8 characters, 1 uppercase, 1 lowercase, 1 number
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/;
+        return passwordRegex.test(password);
+    }
+    handleAuthError(error) {
+        const errorCode = this.getErrorCode(error);
+        const errorMessages = {
+            'auth/email-already-in-use': 'Този имейл вече е регистриран',
+            'auth/weak-password': 'Паролата е твърде слаба',
+            'auth/invalid-email': 'Невалиден имейл адрес',
+            'auth/user-disabled': 'Този потребител е деактивиран',
+            'auth/user-not-found': 'Потребителят не е намерен',
+            'auth/wrong-password': 'Грешна парола',
+            'auth/invalid-verification-code': 'Невалиден код за верификация',
+            'auth/code-expired': 'Кодът за верификация е изтекъл',
+            'auth/too-many-requests': 'Твърде много опити. Моля опитайте по-късно',
+            'auth/network-request-failed': 'Проблем с интернет връзката',
+            'auth/popup-closed-by-user': 'Прозорецът за вход беше затворен',
+            'auth/cancelled-popup-request': 'Заявката беше отменена'
+        };
+        const bulgarianMessage = errorMessages[errorCode] || 'Възникна грешка при вход';
+        return new Error(bulgarianMessage);
+    }
+}
+exports.BulgarianAuthService = BulgarianAuthService;
+// Export singleton instance
+exports.bulgarianAuthService = BulgarianAuthService.getInstance();
+//# sourceMappingURL=auth-service.js.map

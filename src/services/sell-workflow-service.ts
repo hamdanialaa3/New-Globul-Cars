@@ -39,28 +39,28 @@ export class SellWorkflowService {
     payload: any,
     userId: string,
     imageFiles: File[]
-  ): Promise<{ carId: string; redirectUrl?: string }> {
+  ): Promise<{ carId: string; redirectUrl?: string; sellerNumericId?: number; carNumericId?: number }> {
     try {
       // ✅ CRITICAL FIX: Check listing limits BEFORE creating listing
       // This prevents users from exceeding their plan limits
       const { canAddListing, getRemainingListings } = await import('../utils/listing-limits');
-      
+
       const canAdd = await canAddListing(userId);
       if (!canAdd) {
         const remaining = await getRemainingListings(userId);
         const errorMessage = remaining === 0
           ? 'Listing limit reached. Please upgrade your plan or delete existing listings.'
           : `You have ${remaining} listing slot${remaining > 1 ? 's' : ''} remaining. Please delete existing listings or upgrade your plan.`;
-        
-        logger.warn('Listing creation blocked - limit reached', { 
-          userId, 
+
+        logger.warn('Listing creation blocked - limit reached', {
+          userId,
           remaining,
           message: errorMessage
         });
-        
+
         throw new Error(errorMessage);
       }
-      
+
       logger.info('Listing limit check passed', { userId });
 
       // 1. Upload images if any
@@ -139,12 +139,12 @@ export class SellWorkflowService {
         // Log error but don't fail the entire operation
         // The car was created successfully, but stats update failed
         // This should be monitored and fixed, but doesn't block user experience
-        logger.error('Failed to update user stats after listing creation', statsError as Error, { 
-          userId, 
+        logger.error('Failed to update user stats after listing creation', statsError as Error, {
+          userId,
           carId: carResult.id,
           errorMessage: (statsError as Error).message
         });
-        
+
         // TODO: Consider adding a retry mechanism or background job to sync stats
         // For now, we continue execution to not block the user
       }
@@ -152,6 +152,8 @@ export class SellWorkflowService {
       // 4. Return result
       return {
         carId: carResult.id,
+        sellerNumericId: carResult.sellerNumericId,
+        carNumericId: carResult.carNumericId,
         redirectUrl: `/car/${carResult.sellerNumericId}/${carResult.carNumericId}`
       };
 

@@ -118,15 +118,10 @@ class UnifiedCarService {
    * @throws Error if validation fails or database write fails
    * 
    * @example
-   * const car = await unifiedCarService.createCar({
-   *   sellerId: 'user-123',
-   *   make: 'BMW',
-   *   model: 'X5',
-   *   price: 35000,
    *   status: 'active'
    * });
    */
-  async createCar(carData: Partial<UnifiedCar>): Promise<{ id: string; sellerNumericId: number; carNumericId: number }> {
+  async createCar(carData: Partial<UnifiedCar>): Promise<{ id: string; sellerNumericId: number; carNumericId: number; ownerNumericId?: number; userCarSequenceId?: number }> {
     const carResult = await createCar(carData);
     invalidateCarCache();
     return carResult;

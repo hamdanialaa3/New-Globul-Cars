@@ -1,5 +1,7 @@
 // Bulgarian translations - auth
 export const auth = {
+  "loginSuccess": "Успешно влизане в профила",
+  "loginError": "Грешка при влизане",
   "required": {
     "title": "Изисква се вход",
     "message": "За да достъпите тази страница, трябва да влезете в профила си.",

@@ -93,5 +93,12 @@ export const profile = {
       "sold": "Sold",
       "pending": "Pending"
     }
+  },
+  "plan": {
+    "private": "Private Profile",
+    "dealer": "Dealer",
+    "company": "Company",
+    "upgrade": "Upgrade",
+    "current": "Current Plan"
   }
 } as const;

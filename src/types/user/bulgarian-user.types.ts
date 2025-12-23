@@ -69,10 +69,12 @@ export interface BaseProfile {
     trustScore: number;
   };
 
-  // ✅ Quota Tracking (New System)
+  // ✅ Quota Tracking (Digital Domination v3.0)
+  // Essential for enforcing monthly limits and Flex-Edit quotas
   quotaStats?: {
-    listingsCreatedThisMonth: number;
-    lastMonthReset: string; // Format: "YYYY-MM"
+    listingsCreatedThisMonth: number; // Resets monthly
+    flexEditsUsedThisMonth: number;   // Resets monthly
+    lastMonthReset: string;           // Format: "YYYY-MM"
   };
 
   // Social Links
@@ -164,6 +166,14 @@ export interface CompanyProfile extends BaseProfile {
     website?: string;
     vatNumber?: string;
   };
+
+  // ✅ NEW: Team Management Structure (Phase 4)
+  teamMembers?: {
+    uid: string;
+    role: 'admin' | 'agent' | 'viewer';
+    addedAt: Timestamp;
+    status: 'active' | 'invited' | 'disabled';
+  }[];
 }
 
 // ==================== UNION TYPE ====================
@@ -185,15 +195,67 @@ export type PlanTier = 'free' | 'dealer' | 'company';
 
 export type BillingInterval = 'monthly' | 'annual';
 
+/**
+ * Digital Domination v3.0 Permissions Schema
+ * Defines the strict capabilities for each user class.
+ */
 export interface ProfilePermissions {
+  // --- LIMITS (The Commercial Engine) ---
   canAddListings: boolean;
-  maxListings: number;
+  maxListings: number; // -1 for unlimited
+
+  /**
+   * Maximum new listings allowed per calendar month.
+   * Private: 3, Dealer: 30, Company: 200
+   */
+  maxMonthlyListings: number;
+
+  // --- ANTI-FRAUD & INTEGRITY ---
+  /**
+   * If true, user can edit Make/Model/Year AFTER publishing.
+   * Private: FALSE (Anti-Fraud Lock to prevent bait-and-switch)
+   * Dealer: Quota-based (Flex-Edit)
+   * Company: TRUE (Unrestricted)
+   */
+  canEditLockedFields: boolean;
+
+  /**
+   * Number of "Flex-Edits" allowed per month for Dealers.
+   * Allows correcting honest mistakes without unbridled editing.
+   */
+  maxFlexEditsPerMonth: number;
+
+  // --- POWER TOOLS (Productivity) ---
+  /**
+   * Access to "Matrix Grid" uploader for multiple cars.
+   * Private: false, Dealer: true (5 rows), Company: true (20 rows)
+   */
+  canBulkUpload: boolean;
+  bulkUploadLimit: number;
+
+  /**
+   * Clone specs from one listing to new one.
+   * High-value time saver for dealers selling similar fleets.
+   */
+  canCloneListing: boolean;
+
+  // --- ANALYTICS & TEAMS ---
   hasAnalytics: boolean;
+  hasAdvancedAnalytics: boolean; // Market price intelligence
   hasTeam: boolean;
   canExportData: boolean;
-  canUseAPI: boolean;
-  canCreateCampaigns?: boolean;
-  canAccessConsultations?: boolean;
+
+  // --- SUPPORT ---
+  hasPrioritySupport: boolean;
+
+  // --- FEATURES ---
+  canUseQuickReplies: boolean;
+  canBulkEdit: boolean;
+  canImportCSV: boolean;
+  canUseAPI: boolean; // For Companies (ERP integration)
+
+  // --- VISUAL IDENTITY ---
+  themeMode: 'standard' | 'dealer-led' | 'company-led';
 }
 
 // ==================== TYPE GUARDS ====================

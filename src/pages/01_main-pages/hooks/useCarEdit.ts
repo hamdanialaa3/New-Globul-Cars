@@ -141,7 +141,12 @@ export const useCarEdit = (
         }
 
         try {
-          uploadedUrls = await imageUploadService.uploadImages(carId, validPhotos);
+          uploadedUrls = await imageUploadService.uploadImages(carId, validPhotos, {
+            make: editedCar.make || 'unknown',
+            model: editedCar.model || 'unknown',
+            year: Number(editedCar.year) || new Date().getFullYear(),
+            city: editedCar.city || 'bulgaria'
+          });
         } catch (uploadError) {
           logger.error('Failed to upload photos', uploadError as Error);
           const errorMessage = uploadError instanceof Error ? uploadError.message : 'Unknown error';

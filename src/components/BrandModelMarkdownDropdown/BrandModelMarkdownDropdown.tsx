@@ -449,9 +449,10 @@ interface Props {
   model?: string;
   onBrandChange?: (brand: string) => void;
   onModelChange?: (model: string) => void;
+  disabled?: boolean;
 }
 
-export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBrandChange, onModelChange }) => {
+export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBrandChange, onModelChange, disabled }) => {
   const { language, t } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -463,7 +464,7 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
   const [showOtherModel, setShowOtherModel] = useState(false);
   const [otherBrandValue, setOtherBrandValue] = useState('');
   const [otherModelValue, setOtherModelValue] = useState('');
-  
+
   // ✅ FIX: Use refs to track if user is actively typing in "Other" fields
   // This prevents useEffect from resetting state while user is typing
   const isTypingBrandRef = useRef(false);
@@ -529,7 +530,7 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
     if (brand !== undefined && !isTypingBrandRef.current) {
       // Check if brand is from "Other" field (not in brands list)
       const isOtherBrand = brand && !Object.keys(brandModels).includes(brand);
-      
+
       if (brand && brand !== selectedBrand && !isOtherBrand) {
         // Only sync if it's a known brand from the list
         setSelectedBrand(brand);
@@ -557,7 +558,7 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
     if (model !== undefined && !isTypingModelRef.current) {
       // Check if model is from "Other" field (not in models list)
       const isOtherModel = model && selectedBrand && !(brandModels[selectedBrand] || []).includes(model);
-      
+
       if (model && model !== selectedModel && !isOtherModel) {
         // Only sync if it's a known model from the list
         setSelectedModel(model);
@@ -619,7 +620,7 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
                 onModelChange && onModelChange('');
               }
             }}
-            disabled={loading || !!error}
+            disabled={loading || !!error || disabled}
           >
             <option value="">{selectBrandText}</option>
 
@@ -664,15 +665,15 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
                 onChange={(e) => {
                   e.stopPropagation(); // ✅ FIX: Prevent event bubbling
                   const value = e.target.value;
-                  
+
                   // ✅ FIX: Mark that user is actively typing
                   isTypingBrandRef.current = true;
-                  
+
                   setOtherBrandValue(value);
-                  
+
                   // ✅ FIX: Don't call onBrandChange during typing - only on blur
                   // This prevents re-render and state reset while user is typing
-                  
+
                   // ✅ FIX: If user types any character, enable model field by clearing model
                   // This allows model field to be enabled when brand "Other" is being filled
                   if (value && selectedModel && !showOtherModel) {
@@ -691,7 +692,7 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
                   e.stopPropagation(); // ✅ FIX: Prevent event bubbling on focus
                   // ✅ FIX: Mark that user is actively typing
                   isTypingBrandRef.current = true;
-                  
+
                   // ✅ FIX: When user focuses on brand input, ensure it's ready
                   // Clear model selection to allow fresh input
                   if (selectedModel && !showOtherModel) {
@@ -700,12 +701,12 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
                 }}
                 onBlur={(e) => {
                   e.stopPropagation(); // ✅ FIX: Prevent event bubbling on blur
-                  
+
                   // ✅ FIX: Mark that user finished typing
                   setTimeout(() => {
                     isTypingBrandRef.current = false;
                   }, 100);
-                  
+
                   // ✅ FIX: Ensure value is saved when user leaves the field
                   if (otherBrandValue && otherBrandValue.trim().length > 0) {
                     onBrandChange && onBrandChange(otherBrandValue.trim());
@@ -718,7 +719,8 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
                   e.stopPropagation(); // ✅ FIX: Prevent event bubbling on click
                 }}
                 placeholder={enterOtherBrandPlaceholder}
-                autoFocus={showOtherBrand && !otherBrandValue}
+                autoFocus={!!(showOtherBrand && !otherBrandValue)}
+                disabled={disabled}
               />
             </Field>
           )}
@@ -746,7 +748,7 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
                 onModelChange && onModelChange(value);
               }
             }}
-            disabled={loading || !!error || (!selectedBrand && !showOtherBrand && !otherBrandValue)}
+            disabled={loading || !!error || (!selectedBrand && !showOtherBrand && !otherBrandValue) || disabled}
           >
             {!selectedBrand && !showOtherBrand && !otherBrandValue && <option value="">{selectModelText}</option>}
             {selectedBrand && models.length === 0 && <option value="">{language === 'bg' ? 'Няма намерени модели' : 'No models found'}</option>}
@@ -769,12 +771,12 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
                 onChange={(e) => {
                   e.stopPropagation(); // ✅ FIX: Prevent event bubbling
                   const value = e.target.value;
-                  
+
                   // ✅ FIX: Mark that user is actively typing
                   isTypingModelRef.current = true;
-                  
+
                   setOtherModelValue(value);
-                  
+
                   // ✅ FIX: Don't call onModelChange during typing - only on blur
                   // This prevents re-render and state reset while user is typing
                 }}
@@ -786,10 +788,10 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
                 }}
                 onFocus={(e) => {
                   e.stopPropagation(); // ✅ FIX: Prevent event bubbling on focus
-                  
+
                   // ✅ FIX: Mark that user is actively typing
                   isTypingModelRef.current = true;
-                  
+
                   // ✅ FIX: When user focuses on model input, ensure it's ready
                   // This helps with form validation
                   if (!showOtherModel && showOtherBrand) {
@@ -798,12 +800,12 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
                 }}
                 onBlur={(e) => {
                   e.stopPropagation(); // ✅ FIX: Prevent event bubbling on blur
-                  
+
                   // ✅ FIX: Mark that user finished typing
                   setTimeout(() => {
                     isTypingModelRef.current = false;
                   }, 100);
-                  
+
                   // ✅ FIX: Ensure value is saved when user leaves the field
                   if (otherModelValue && otherModelValue.trim().length > 0) {
                     onModelChange && onModelChange(otherModelValue.trim());
@@ -816,7 +818,8 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
                   e.stopPropagation(); // ✅ FIX: Prevent event bubbling on click
                 }}
                 placeholder={enterOtherModelPlaceholder}
-                autoFocus={showOtherModel || (showOtherBrand && otherBrandValue && otherBrandValue.trim().length > 0)}
+                autoFocus={!!(showOtherModel || (showOtherBrand && otherBrandValue && otherBrandValue.trim().length > 0))}
+                disabled={disabled}
               />
             </Field>
           )}

@@ -104,5 +104,12 @@ export const profile = {
       "sold": "Продадени",
       "pending": "В изчакване"
     }
+  },
+  "plan": {
+    "private": "Частен профил",
+    "dealer": "Дилър",
+    "company": "Компания",
+    "upgrade": "Надграждане",
+    "current": "Текущ план"
   }
 } as const;

@@ -578,7 +578,7 @@ export const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' |
   ${baseButtonStyles}
 
   ${({ $variant = 'secondary', theme, $themeColor }) => {
-    const mainColor = $themeColor || theme.colors.primary.main;
+    const mainColor = $themeColor || theme.colors.primary;
     switch ($variant) {
       case 'primary':
         return css`
@@ -609,12 +609,12 @@ export const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' |
         `;
       case 'danger':
         return css`
-          background-color: ${theme.colors.error.main};
+          background-color: ${({ theme }) => theme.colors.warning || '#ef4444'};
           color: #fff;
-          border-color: ${theme.colors.error.main};
+          border-color: ${({ theme }) => theme.colors.warning || '#ef4444'};
 
           &:hover:not(:disabled) {
-            background-color: ${theme.colors.error.dark};
+            background-color: #dc2626;
             filter: brightness(1.1);
           }
           
@@ -635,20 +635,20 @@ export const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' |
       default:
         return css`
           background-color: transparent;
-          color: ${theme.colors.text.primary};
-          border-color: ${theme.colors.grey[300]};
+          color: ${theme.colors.text};
+          border-color: ${theme.colors.border};
 
           &:hover:not(:disabled) {
-            background-color: ${theme.colors.grey[100]};
-            border-color: ${theme.colors.primary.main};
-            color: ${theme.colors.primary.main};
+            background-color: ${theme.colors.surface};
+            border-color: ${theme.colors.primary};
+            color: ${theme.colors.primary};
           }
           
           /* MOBILE - Filled background (easier to tap) */
           @media (max-width: 768px) {
             background-color: var(--bg-secondary);
             border: 1px solid var(--border-primary);
-            color: ${theme.colors.text.primary};
+            color: ${theme.colors.text};
             padding: 10px 16px;
             font-size: 0.875rem;
             font-weight: 600;
@@ -714,10 +714,10 @@ export const SectionTitle = styled.h2`
 `;
 
 export const ProfileSidebar = styled.aside<{ $isBusinessMode: boolean; $themeColor: string }>`
-  background: ${({ theme }) => theme.colors.background.paper};
+  background: ${({ theme }) => theme.colors.surface};
   padding: 1.5rem;
   border-radius: 12px;
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   align-self: start;
   position: sticky;
   ${ledFrame}
@@ -726,7 +726,7 @@ export const ProfileSidebar = styled.aside<{ $isBusinessMode: boolean; $themeCol
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  box-shadow: ${({ theme }) => theme.shadows.md};
+  box-shadow: ${({ theme }) => theme.effects?.glow || 'none'};
   
   /* Dark Mode Support */
   html[data-theme="dark"] & {
@@ -752,12 +752,12 @@ export const ProfileActions = styled.div`
 `;
 
 export const ContentSection = styled.section<{ $themeColor?: string; $isBusinessMode?: boolean }>`
-  background: ${({ theme }) => theme.colors.background.paper};
+  background: ${({ theme }) => theme.colors.surface};
   padding: 2rem;
   border-radius: 12px;
   margin-bottom: 2rem;
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
-  box-shadow: ${({ theme }) => theme.shadows.base};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  box-shadow: ${({ theme }) => theme.effects?.glow || 'none'};
   ${ledFrame}
   
   /* Dark Mode Support */
@@ -1756,12 +1756,12 @@ export const PlanBar = styled.div<{ $themeColor?: string }>`
   
   /* Dark Mode Support */
   html[data-theme="dark"] & {
-    background: ${props => props.$themeColor 
-      ? `linear-gradient(90deg, ${props.$themeColor}20 0%, ${props.$themeColor}10 100%)`
-      : '#1e293b'};
-    border-color: ${props => props.$themeColor 
-      ? `${props.$themeColor}40`
-      : 'rgba(255, 255, 255, 0.1)'};
+    background: ${props => props.$themeColor
+    ? `linear-gradient(90deg, ${props.$themeColor}20 0%, ${props.$themeColor}10 100%)`
+    : '#1e293b'};
+    border-color: ${props => props.$themeColor
+    ? `${props.$themeColor}40`
+    : 'rgba(255, 255, 255, 0.1)'};
     color: #f8fafc;
   }
   

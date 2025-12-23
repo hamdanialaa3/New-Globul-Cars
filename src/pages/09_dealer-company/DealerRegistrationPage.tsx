@@ -12,6 +12,8 @@ import { profileService } from '../../services/profile/UnifiedProfileService';
 import { UserRepository } from '../../repositories/UserRepository';
 import { Check, Upload, Building, FileText, CreditCard, Send, Briefcase } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { subscriptionService } from '../../services/billing/subscription-service';
+import { SUBSCRIPTION_PLANS, SubscriptionPlan } from '../../config/billing-config';
 
 // Type alias for compatibility
 type DealerProfile = DealershipInfo;
@@ -281,37 +283,44 @@ const DealerRegistrationPage: React.FC = () => {
     }
   };
 
+
   const handleSubmit = async () => {
     if (!user) return;
 
     setLoading(true);
     try {
-      // 1. Determine profile type based on user selection
+      // 1. Determine plan based on selection
+      const plan = dealerType === 'company'
+        ? SUBSCRIPTION_PLANS.company
+        : SUBSCRIPTION_PLANS.dealer;
+
+      // 2. Initiate Stripe Checkout
+      // Note: We create the profile first as 'pending' (optional, or rely on webhook)
+      // but strictly speaking for this flow, we want payment first or parallel.
+      // Let's create the profile first so we have accurate data.
+
       if (dealerType === 'company') {
         await profileService.setupCompanyProfile(user.uid, {
-          ...dealerData as any, // Cast to match expected type
+          ...dealerData as any,
           uid: user.uid,
-          status: 'pending'
+          status: 'pending' // Will be activated after payment/verification
         });
       } else {
         await profileService.setupDealerProfile(user.uid, dealerData as DealerProfile);
       }
 
-      // 2. Upload files if present (mock implementation for now as we need real storage paths)
-      if (licenseFile) {
-        // await profileService.uploadDocument(user.uid, licenseFile, 'license');
-        logger.info('Assuming license uploaded');
-      }
+      // 3. Redirect to Stripe
+      toast.info(t('dealer.registration.form.redirectingToPayment') || 'Redirecting to payment...');
+      await subscriptionService.createCheckoutSession(user.uid, plan);
 
-      toast.success(t('dealer.registration.success'));
-      navigate('/dashboard');
+      // The createCheckoutSession call redirects, so code below won't typically run on success
     } catch (error) {
-      logger.error('Error submitting dealer application', error as Error);
-      toast.error(t('dealer.registration.error'));
-    } finally {
+      logger.error('Error initiating subscription', error as Error);
+      toast.error(t('dealer.registration.error') || 'Failed to start payment process.');
       setLoading(false);
     }
   };
+
 
   const renderStep = () => {
     switch (currentStep) {
@@ -445,6 +454,28 @@ const DealerRegistrationPage: React.FC = () => {
               <p>Type: {dealerType === 'company' ? 'Company' : 'Dealer'}</p>
               <p>Files attached: {[licenseFile, vatFile].filter(Boolean).length}</p>
             </div>
+            <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'var(--bg-card)', border: '1px solid var(--border-secondary)', borderRadius: '8px' }}>
+              <h3>{t('dealer.registration.form.paymentRequired') || 'Payment Required'}</h3>
+              <p>
+                {dealerType === 'company'
+                  ? `${SUBSCRIPTION_PLANS.company.name}: €${SUBSCRIPTION_PLANS.company.price}/mo`
+                  : `${SUBSCRIPTION_PLANS.dealer.name}: €${SUBSCRIPTION_PLANS.dealer.price}/mo`}
+              </p>
+              <ul style={{ paddingLeft: '1.5rem', color: 'var(--text-secondary)' }}>
+                {dealerType === 'company' ? (
+                  <>
+                    <li>{SUBSCRIPTION_PLANS.company.limits.listings} Listings / Month</li>
+                    <li>Unlimited Flex Edits</li>
+                  </>
+                ) : (
+                  <>
+                    <li>{SUBSCRIPTION_PLANS.dealer.limits.listings} Listings / Month</li>
+                    <li>{SUBSCRIPTION_PLANS.dealer.limits.flexEdits} Flex Edits / Month</li>
+                  </>
+                )}
+              </ul>
+            </div>
+
             <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(255, 193, 7, 0.1)', borderRadius: '8px' }}>
               <p style={{ margin: 0, color: 'var(--warning-dark)' }}>
                 {t('dealer.registration.form.submitParams')}
@@ -499,8 +530,8 @@ const DealerRegistrationPage: React.FC = () => {
           <Button onClick={handleSubmit} disabled={loading}>
             <Send size={20} />
             {loading
-              ? t('dealer.registration.form.submitting')
-              : t('dealer.registration.form.submit')}
+              ? t('dealer.registration.form.processing') || 'Processing...'
+              : `Pay & Subscribe`}
           </Button>
         )}
       </ButtonGroup>

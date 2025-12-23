@@ -1,9 +1,13 @@
 export const translations = {
   bg: {
     loading: 'Зареждане...',
-    back: 'Назад',
-    save: 'Запази',
-    saving: 'Записване...',
+    buttons: {
+      back: 'Назад',
+      save: 'Запази',
+      saving: 'Записване...',
+      delete: 'Изтрий',
+      cancel: 'Отказ'
+    },
     discardChanges: 'Откажи промените',
     uploadImages: 'Качете снимки',
     confirmDiscard: 'Да се откажат ли промените?',
@@ -15,6 +19,8 @@ export const translations = {
       price: 'Цена',
       contact: 'Контакт',
       location: 'Локация',
+      locationPrice: 'Локация и Цена',
+      technical: 'Технически характеристики',
       status: 'Статус'
     },
     fields: {
@@ -22,6 +28,9 @@ export const translations = {
       year: 'Година',
       mileage: 'Пробег',
       power: 'Мощност',
+      engineSize: 'Обем на двигателя',
+      price: 'Цена',
+      firstRegistration: 'Първа регистрация',
       firstRegistrationYear: 'Първа регистрация (Година)',
       firstRegistrationMonth: 'Първа регистрация (Месец)',
       fuelType: 'Гориво',
@@ -54,7 +63,8 @@ export const translations = {
       otherFuel: 'Друго гориво',
       bodyTypeOther: 'Друго купе',
       colorOther: 'Друг цвят',
-      description: 'Описание на автомобила'
+      description: 'Описание на автомобила',
+      noImages: 'Няма качени снимки'
     },
     hints: {
       makeModel: 'Изберете марка и модел от списъка',
@@ -65,8 +75,14 @@ export const translations = {
       carNotFound: 'Обявата не е намерена',
       noPermission: 'Нямате права за редакция',
       loadError: 'Грешка при зареждане',
+      saveError: 'Грешка при запис',
       saveFailed: 'Грешка при запис',
+      deleteError: 'Грешка при изтриване',
       imageUploadFailed: 'Качването на снимки се провали'
+    },
+    prompts: {
+      deleteConfirm: 'Сигурни ли сте, че искате да изтриете тази обява?',
+      discardChanges: 'Имате незаписани промени. Сигурни ли сте, че искате да напуснете?'
     },
     success: {
       saved: 'Успешно записано'
@@ -100,22 +116,30 @@ export const translations = {
       safety: 'Безопасност',
       comfort: 'Комфорт',
       infotainment: 'Инфоразвлечение',
-      extras: 'Екстри'
-    },
-    equipmentItems: {
+      extras: 'Екстри',
+      extra: 'Екстри',
+      // Items
       abs: 'ABS', esp: 'ESP', airbags: 'Въздушни възглавници', parkingSensors: 'Парктроник', rearviewCamera: 'Камера за задно', blindSpotMonitor: 'Следене на мъртва зона', laneDeparture: 'Асистент лента', collisionWarning: 'Предупр. за удар',
       ac: 'Климатик', climate: 'Климатроник', heatedSeats: 'Отопляеми седалки', ventilatedSeats: 'Вентилирани седалки', sunroof: 'Шибедах', rainSensor: 'Датчик дъжд', cruiseControl: 'Темпомат', parkAssist: 'Паркинг асистент',
       navigation: 'Навигация', bluetooth: 'Bluetooth', usb: 'USB', carPlay: 'Apple CarPlay', androidAuto: 'Android Auto', soundSystem: 'Аудио система', wifi: 'Wi‑Fi', radio: 'Радио',
       ledLights: 'LED фарове', xenon: 'Ксенон', daylight: 'Дневни светлини', alloyWheels: 'Лети джанти', keyless: 'Безключов достъп', startStop: 'Start/Stop', sportPackage: 'Спорт пакет', towHitch: 'Теглич'
     },
     priceTypes: { fixed: 'Фиксирана', negotiable: 'Договаряне', bestOffer: 'Най-добра оферта' },
+    labels: {
+      fixedPrice: 'Фиксирана цена',
+      negotiable: 'Договаряне'
+    },
     hintsInline: {},
   },
   en: {
     loading: 'Loading...',
-    back: 'Back',
-    save: 'Save',
-    saving: 'Saving...',
+    buttons: {
+      back: 'Back',
+      save: 'Save',
+      saving: 'Saving...',
+      delete: 'Delete',
+      cancel: 'Cancel'
+    },
     discardChanges: 'Discard changes',
     uploadImages: 'Upload images',
     confirmDiscard: 'Discard unsaved changes?',
@@ -127,6 +151,8 @@ export const translations = {
       price: 'Price',
       contact: 'Contact',
       location: 'Location',
+      locationPrice: 'Location & Price',
+      technical: 'Technical Specifications',
       status: 'Status'
     },
     fields: {
@@ -134,6 +160,9 @@ export const translations = {
       year: 'Year',
       mileage: 'Mileage',
       power: 'Power (HP)',
+      engineSize: 'Engine Size (cc)',
+      price: 'Price',
+      firstRegistration: 'First Registration',
       firstRegistrationYear: 'First registration year',
       firstRegistrationMonth: 'First registration month',
       fuelType: 'Fuel type',
@@ -166,7 +195,8 @@ export const translations = {
       otherFuel: 'Other fuel',
       bodyTypeOther: 'Other body type',
       colorOther: 'Other color',
-      description: 'Describe the vehicle'
+      description: 'Describe the vehicle',
+      noImages: 'No images uploaded'
     },
     hints: {
       makeModel: 'Pick make and model from the list',
@@ -177,8 +207,14 @@ export const translations = {
       carNotFound: 'Listing not found',
       noPermission: 'You do not have permission',
       loadError: 'Error loading car data',
+      saveError: 'Failed to save changes',
       saveFailed: 'Failed to save changes',
+      deleteError: 'Failed to delete listing',
       imageUploadFailed: 'Image upload failed'
+    },
+    prompts: {
+      deleteConfirm: 'Are you sure you want to delete this listing?',
+      discardChanges: 'You have unsaved changes. Are you sure you want to leave?'
     },
     success: { saved: 'Saved successfully' },
     status: {
@@ -208,15 +244,19 @@ export const translations = {
       safety: 'Safety',
       comfort: 'Comfort',
       infotainment: 'Infotainment',
-      extras: 'Extras'
-    },
-    equipmentItems: {
+      extras: 'Extras',
+      extra: 'Extras',
+      // Items
       abs: 'ABS', esp: 'ESP', airbags: 'Airbags', parkingSensors: 'Parking Sensors', rearviewCamera: 'Rearview Camera', blindSpotMonitor: 'Blind Spot Monitor', laneDeparture: 'Lane Departure', collisionWarning: 'Collision Warning',
       ac: 'Air Conditioning', climate: 'Climate Control', heatedSeats: 'Heated Seats', ventilatedSeats: 'Ventilated Seats', sunroof: 'Sunroof', rainSensor: 'Rain Sensor', cruiseControl: 'Cruise Control', parkAssist: 'Park Assist',
       navigation: 'Navigation', bluetooth: 'Bluetooth', usb: 'USB', carPlay: 'Apple CarPlay', androidAuto: 'Android Auto', soundSystem: 'Sound System', wifi: 'Wi‑Fi Hotspot', radio: 'Radio',
       ledLights: 'LED Lights', xenon: 'Xenon', daylight: 'Daytime Running Lights', alloyWheels: 'Alloy Wheels', keyless: 'Keyless Entry', startStop: 'Start/Stop', sportPackage: 'Sport Package', towHitch: 'Tow Hitch'
     },
     priceTypes: { fixed: 'Fixed', negotiable: 'Negotiable', bestOffer: 'Best offer' },
+    labels: {
+      fixedPrice: 'Fixed Price',
+      negotiable: 'Negotiable'
+    },
     hintsInline: {},
   }
 };

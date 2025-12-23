@@ -26,12 +26,18 @@ import { UnifiedCar } from '../services/car/unified-car-types';
 export const getCarDetailsUrl = (car: {
   sellerNumericId?: number;
   carNumericId?: number;
+  ownerNumericId?: number;       // Alias for sellerNumericId
+  userCarSequenceId?: number;    // Alias for carNumericId
   sellerId?: string;
   id?: string;
 }): string => {
   // ✅ PRIORITY #1: Constitution-compliant numeric URL
-  if (car.sellerNumericId && car.carNumericId) {
-    return `/car/${car.sellerNumericId}/${car.carNumericId}`;
+  // Supports both standard field names and Project Constitution aliases
+  const userId = car.ownerNumericId || car.sellerNumericId;
+  const carId = car.userCarSequenceId || car.carNumericId;
+
+  if (userId && carId) {
+    return `/car/${userId}/${carId}`;
   }
 
   // ⚠️ FALLBACK: Legacy UUID support (temporary until migration)
@@ -124,8 +130,9 @@ export const getMessagesUrl = (
  */
 export const getCarUrlFromUnifiedCar = (car: UnifiedCar): string => {
   // Extract numeric IDs from car object
-  const sellerNumericId = (car as any).sellerNumericId;
-  const carNumericId = (car as any).carNumericId;
+  // Supports both standard fields and aliases if they exist on the object
+  const sellerNumericId = (car as any).sellerNumericId || (car as any).ownerNumericId;
+  const carNumericId = (car as any).carNumericId || (car as any).userCarSequenceId;
 
   return getCarDetailsUrl({
     sellerNumericId,
@@ -134,4 +141,3 @@ export const getCarUrlFromUnifiedCar = (car: UnifiedCar): string => {
     id: car.id
   });
 };
-

@@ -120,7 +120,9 @@ const mapListingsToCars = (listings: unknown[]): ProfileCar[] =>
     status: (car.status as 'active' | 'sold' | 'pending' | 'draft') || 'active',
     viewCount: car.views || 0,
     views: car.views || 0,
-    inquiries: 0
+    inquiries: 0,
+    sellerNumericId: car.sellerNumericId,
+    carNumericId: car.carNumericId
   }));
 
 export const useProfile = (targetUserId?: string): UseProfileReturn => {
@@ -168,13 +170,13 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
       setError(null);
 
       const authUser = auth.currentUser;
-      
+
       // ⚡ FIX: Check if viewing own profile
       // Case 1: No targetUserId = viewing own profile
       // Case 2: targetUserId is the current user's Firebase UID
       // Case 3: targetUserId is the current user's numeric ID
       let viewingOwn = !effectiveTargetId || effectiveTargetId === authUser?.uid;
-      
+
       // If not matching UID, check if it's the user's numeric ID
       if (!viewingOwn && authUser && effectiveTargetId && /^\d+$/.test(effectiveTargetId)) {
         // effectiveTargetId looks like a numeric ID, get current user's numeric ID to compare
@@ -190,7 +192,7 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
           logger.debug('Could not compare numeric IDs', { error: e });
         }
       }
-      
+
       setIsOwnProfile(viewingOwn);
 
       // ⚡ FIX: If accessing own profile without being logged in, don't try to load data
@@ -215,7 +217,7 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
       const viewerPromise = authUser
         ? bulgarianAuthService.getCurrentUserProfile()
         : Promise.resolve(null);
-      
+
       // Handle numeric ID - convert to Firebase UID first
       let targetPromise;
       if (viewingOwn) {

@@ -102,6 +102,20 @@ class NumericCarSystemService {
   }
 
   /**
+   * Alias for getNextCarNumericId (User Preference)
+   */
+  async generateNextCarId(userId: number | string): Promise<number> {
+    // Check if input is numeric ID (number) or UID (string)
+    if (typeof userId === 'number') {
+      const { getFirebaseUidByNumericId } = await import('./numeric-id-lookup.service');
+      const uid = await getFirebaseUidByNumericId(userId);
+      if (!uid) throw new Error(`User not found for numeric ID ${userId}`);
+      return this.getNextCarNumericId(uid);
+    }
+    return this.getNextCarNumericId(userId);
+  }
+
+  /**
    * ✅ Create car with automatic numeric IDs
    * Sets: sellerNumericId, carNumericId
    */

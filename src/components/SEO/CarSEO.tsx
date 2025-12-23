@@ -14,7 +14,7 @@
 
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { getCarDetailsUrl } from '@/utils/urlHelpers';
+import { buildCarUrl } from '@/utils/numeric-url-helpers';
 
 interface CarSEOProps {
   car: {
@@ -34,6 +34,7 @@ interface CarSEOProps {
     description?: string;
     images?: string[];
     location?: string;
+    vin?: string;
     createdAt?: any;
     updatedAt?: any;
   };
@@ -54,20 +55,18 @@ interface CarSEOProps {
  */
 export const CarSEO: React.FC<CarSEOProps> = ({ car, seller }) => {
   const baseUrl = process.env.REACT_APP_BASE_URL || 'https://mobilebg.eu';
-  
+
   // Generate numeric URL (CRITICAL for Google Merchant Center & Ads)
-  const canonicalUrl = `${baseUrl}${getCarDetailsUrl(
+  const canonicalUrl = `${baseUrl}${buildCarUrl(
     car.sellerNumericId,
-    car.carNumericId,
-    car.make,
-    car.model
+    car.carNumericId
   )}`;
 
   // SEO-friendly title with all critical info
   const title = `${car.year} ${car.make} ${car.model} - ${car.price}€${car.location ? ` - ${car.location}` : ''} | Bulgarski Mobili`;
 
   // Meta description with key specs
-  const description = car.description 
+  const description = car.description
     ? car.description.slice(0, 155) + (car.description.length > 155 ? '...' : '')
     : `${car.year} ${car.make} ${car.model} на ${car.price}€. ${car.mileage ? `${car.mileage}км, ` : ''}${car.fuelType || ''} ${car.transmission || ''}. Проверени обяви на Bulgarski Mobili.`;
 
@@ -107,19 +106,24 @@ export const CarSEO: React.FC<CarSEOProps> = ({ car, seller }) => {
     description: description,
     image: car.images || [fullImageUrl],
     url: canonicalUrl,
-    
+
     // Brand
     brand: {
       '@type': 'Brand',
       name: car.make
     },
-    
+
     // Model
     model: car.model,
-    
+
     // Production year
     productionDate: car.year.toString(),
-    
+
+    // VIN (Trust Signal)
+    ...(car.vin && {
+      vehicleIdentificationNumber: car.vin
+    }),
+
     // Mileage (in kilometers)
     ...(car.mileage && {
       mileageFromOdometer: {
@@ -128,7 +132,7 @@ export const CarSEO: React.FC<CarSEOProps> = ({ car, seller }) => {
         unitCode: 'KMT' // kilometers
       }
     }),
-    
+
     // Engine
     ...(car.engineSize && {
       vehicleEngine: {
@@ -150,12 +154,12 @@ export const CarSEO: React.FC<CarSEOProps> = ({ car, seller }) => {
         })
       }
     }),
-    
+
     // Transmission
     ...(car.transmission && {
       vehicleTransmission: car.transmission
     }),
-    
+
     // Offer (Price)
     offers: {
       '@type': 'Offer',

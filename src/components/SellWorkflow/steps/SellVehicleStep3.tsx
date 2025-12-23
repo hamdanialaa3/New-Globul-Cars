@@ -4,7 +4,7 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../../contexts/LanguageContext';
-import { SellWorkflowData } from '../../../hooks/useSellWorkflow';
+import { UnifiedWorkflowData } from '../../../services/unified-workflow-persistence.service';
 import {
   Shield, Zap, AlertTriangle, Eye, Wind, Droplets, Armchair, Sun,
   Fan, Snowflake, Radio, Bluetooth, Smartphone, Music, Wifi, Navigation,
@@ -12,8 +12,8 @@ import {
 } from 'lucide-react';
 
 interface SellVehicleStep3Props {
-  workflowData: SellWorkflowData;
-  onUpdate: (updates: Partial<SellWorkflowData>) => void;
+  workflowData: Partial<UnifiedWorkflowData>;
+  onUpdate: (updates: Partial<UnifiedWorkflowData>) => void;
 }
 
 const FormContainer = styled.div`
@@ -263,7 +263,7 @@ export const SellVehicleStep3: React.FC<SellVehicleStep3Props> = ({
   const { language } = useLanguage();
 
   const toggleEquipment = (category: 'safety' | 'comfort' | 'infotainment' | 'extras', itemId: string) => {
-    const currentArray = workflowData[`${category}Equipment` as keyof SellWorkflowData] as string[] || [];
+    const currentArray = workflowData[`${category}Equipment` as keyof UnifiedWorkflowData] as string[] || [];
     const isSelected = currentArray.includes(itemId);
 
     const newArray = isSelected
@@ -276,7 +276,7 @@ export const SellVehicleStep3: React.FC<SellVehicleStep3Props> = ({
   };
 
   const isEquipmentSelected = (category: 'safety' | 'comfort' | 'infotainment' | 'extras', itemId: string) => {
-    const array = workflowData[`${category}Equipment` as keyof SellWorkflowData] as string[] || [];
+    const array = workflowData[`${category}Equipment` as keyof UnifiedWorkflowData] as string[] || [];
     return array.includes(itemId);
   };
 

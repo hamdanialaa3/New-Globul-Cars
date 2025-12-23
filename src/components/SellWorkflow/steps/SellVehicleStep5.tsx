@@ -4,11 +4,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../../contexts/LanguageContext';
-import { SellWorkflowData } from '../../../hooks/useSellWorkflow';
+import { UnifiedWorkflowData } from '../../../services/unified-workflow-persistence.service';
 
 interface SellVehicleStep5Props {
-  workflowData: SellWorkflowData;
-  onUpdate: (updates: Partial<SellWorkflowData>) => void;
+  workflowData: Partial<UnifiedWorkflowData>;
+  onUpdate: (updates: Partial<UnifiedWorkflowData>) => void;
 }
 
 const FormContainer = styled.div`

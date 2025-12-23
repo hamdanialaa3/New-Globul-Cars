@@ -4,6 +4,7 @@
 import { AIChatContext, PriceSuggestion, ProfileAnalysis } from '../../types/ai.types';
 import { logger } from '../logger-service';
 import { aiQuotaService } from './ai-quota.service';
+import { projectKnowledgeService } from './project-knowledge.service';
 import { functions } from '../../firebase/firebase-config';
 import { httpsCallable } from 'firebase/functions';
 
@@ -13,9 +14,31 @@ class GeminiChatService {
   async chat(message: string, context: AIChatContext = {}, userId?: string): Promise<string> {
     // Server-side quota checks happen in the callable
     try {
-      const systemPrompt = this.buildSystemPrompt(context);
+      // 🎓 إضافة معرفة المشروع للسياق
+      let enhancedContext = { ...context };
+      
+      // إذا كان السؤال عن المشروع، ابحث في قاعدة المعرفة
+      if (this.isProjectRelatedQuery(message)) {
+        await projectKnowledgeService.loadKnowledgeBase();
+        
+        if (projectKnowledgeService.isReady()) {
+          const searchResult = await projectKnowledgeService.intelligentSearch(message);
+          
+          if (searchResult.results.length > 0) {
+            logger.info('Found project knowledge for query', { 
+              query: message, 
+              results: searchResult.results.length 
+            });
+            
+            // إضافة السياق للرسالة
+            enhancedContext.projectContext = searchResult.context;
+          }
+        }
+      }
+      
+      const systemPrompt = this.buildSystemPrompt(enhancedContext);
       const call = httpsCallable<any, { message: string; quotaRemaining: number }>(functions, 'geminiChat');
-      const res = await call({ message, context: { ...(context || {}), systemPrompt } });
+      const res = await call({ message, context: { ...(enhancedContext || {}), systemPrompt } });
       const reply = res.data?.message ?? '';
 
       return reply;
@@ -149,8 +172,8 @@ class GeminiChatService {
     
     const language = languageMap[context.language || 'en'];
     
-    return `
-      You are a helpful AI assistant for a Bulgarian car marketplace.
+    let prompt = `
+      You are an expert AI assistant for the Bulgarian Car Marketplace project.
       
       Context:
       - Page: ${context.page || 'general'}
@@ -162,7 +185,16 @@ class GeminiChatService {
       - Be concise and helpful
       - Focus on car-related topics
       - Provide accurate Bulgarian market information
+      - If asked about code/technical details, use the project knowledge provided
     `;
+    
+    // إضافة سياق المشروع إذا كان متوفراً
+    if ((context as any).projectContext) {
+      prompt += `\n\n--- Project Knowledge Context ---\n${(context as any).projectContext}\n--- End Context ---\n`;
+      prompt += `\nNote: Use the above project information to answer technical questions accurately.`;
+    }
+    
+    return prompt;
   }
 
   private extractJSON(text: string): any {
@@ -183,6 +215,22 @@ class GeminiChatService {
 
   isReady(): boolean {
     return this.isInitialized;
+  }
+
+  /**
+   * التحقق من أن السؤال يتعلق بالمشروع
+   */
+  private isProjectRelatedQuery(message: string): boolean {
+    const messageLower = message.toLowerCase();
+    const projectKeywords = [
+      'code', 'كود', 'file', 'ملف', 'function', 'دالة', 'service', 'خدمة',
+      'component', 'مكون', 'how does', 'كيف', 'where is', 'أين', 'what is',
+      'ما هو', 'explain', 'اشرح', 'show me', 'أرني', 'find', 'ابحث',
+      'carservice', 'authprovider', 'firebase', 'react', 'typescript',
+      'project', 'مشروع', 'system', 'نظام', 'database', 'قاعدة بيانات'
+    ];
+    
+    return projectKeywords.some(keyword => messageLower.includes(keyword));
   }
 }
 

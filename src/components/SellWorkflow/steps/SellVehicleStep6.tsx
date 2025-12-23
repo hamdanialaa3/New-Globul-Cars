@@ -4,15 +4,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useLanguage } from '../../../contexts/LanguageContext';
-import { SellWorkflowData } from '../../../hooks/useSellWorkflow';
+import { UnifiedWorkflowData } from '../../../services/unified-workflow-persistence.service';
 import { BULGARIA_REGIONS, getCitiesByRegion } from '../../../data/bulgaria-locations';
 import { getPostalCodesForCity } from '../../../data/bulgaria-postal-codes';
 import { ALL_COUNTRIES } from '../../../data/country-codes';
 import { Check, AlertCircle } from 'lucide-react';
 
 interface SellVehicleStep6Props {
-  workflowData: SellWorkflowData;
-  onUpdate: (updates: Partial<SellWorkflowData>) => void;
+  workflowData: Partial<UnifiedWorkflowData>;
+  onUpdate: (updates: Partial<UnifiedWorkflowData>) => void;
 }
 
 const FormContainer = styled.div`

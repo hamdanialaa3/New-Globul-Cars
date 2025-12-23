@@ -1,410 +1,253 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { logger } from '../../services/logger-service';
 import styled from 'styled-components';
-import { Network, Zap, Database, Globe } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
+import { logger } from '../../services/logger-service';
+import { VerificationQueue } from './components/VerificationQueue/VerificationQueue';
+import { RevenueMonitor } from './components/RevenueMonitor/RevenueMonitor';
+import { UserManager } from './components/UserManager/UserManager';
+import { adminService } from '../../services/admin/admin-service';
+import { Shield, Users, CreditCard, LayoutDashboard, LogOut, CheckCircle } from 'lucide-react';
+import { toast } from 'react-toastify';
 
-// Styled Components - Compact 60% Size
-const AdminContainer = styled.div`
+// --- STYLES ---
+const Container = styled.div`
   min-height: 100vh;
-  background: #f0f2f5;
-  padding: 12px;
-  max-width: 1400px;
-  margin: 0 auto;
-`;
-
-const AdminHeader = styled.div`
-  background: white;
-  border-radius: 8px;
-  padding: 18px;
-  margin-bottom: 18px;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
-`;
-
-const AdminTitle = styled.h1`
-  color: #1c1e21;
-  font-size: 22px;
-  font-weight: 700;
-  margin: 0 0 4px 0;
-`;
-
-const AdminSubtitle = styled.p`
-  color: #65676b;
-  font-size: 13px;
-  margin: 0;
-`;
-
-const StatsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px;
-  margin-bottom: 18px;
-`;
-
-const StatCard = styled.div`
-  background: white;
-  border-radius: 8px;
-  padding: 14px;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
-  text-align: center;
-`;
-
-const StatValue = styled.div`
-  font-size: 24px;
-  font-weight: 700;
-  color: #4267B2;
-  margin-bottom: 4px;
-`;
-
-const StatLabel = styled.div`
-  color: #65676b;
-  font-size: 12px;
-  font-weight: 500;
-`;
-
-const Section = styled.div`
-  background: white;
-  border-radius: 8px;
-  padding: 18px;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 18px;
-`;
-
-const SectionTitle = styled.h2`
-  color: #1c1e21;
-  font-size: 16px;
-  font-weight: 600;
-  margin: 0 0 12px 0;
+  background: var(--bg-primary);
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
 `;
 
-const AdminUserCard = styled.div`
-  background: #f8f9fa;
-  border-radius: 6px;
-  padding: 12px;
-  margin-bottom: 10px;
-  border-left: 3px solid #4267B2;
-`;
-
-const UserName = styled.div`
-  font-size: 14px;
-  font-weight: 600;
-  color: #1c1e21;
-  margin-bottom: 3px;
-`;
-
-const UserEmail = styled.div`
-  color: #65676b;
-  font-size: 12px;
-  margin-bottom: 4px;
-`;
-
-const UserRole = styled.div`
-  color: #4267B2;
-  font-size: 12px;
-  font-weight: 500;
-`;
-
-const ArchitectureSection = styled.div`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 8px;
-  padding: 18px;
-  box-shadow: 0 2px 12px rgba(102, 126, 234, 0.3);
-  margin-bottom: 18px;
-  color: white;
-`;
-
-const ArchitectureHeader = styled.div`
+const Header = styled.header`
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-primary);
+  padding: 1rem 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-  gap: 10px;
 `;
 
-const ArchitectureTitle = styled.h2`
-  font-size: 18px;
-  font-weight: 700;
-  margin: 0;
+const Logo = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary-main);
+  
+  span {
+    color: var(--text-primary);
+  }
 `;
 
-const ViewDiagramButton = styled.button`
-  background: white;
-  color: #667eea;
+const Nav = styled.nav`
+  display: flex;
+  gap: 1rem;
+`;
+
+const NavItem = styled.button<{ active: boolean }>`
+  background: ${props => props.active ? 'rgba(59, 130, 246, 0.1)' : 'transparent'};
+  color: ${props => props.active ? 'var(--primary-main)' : 'var(--text-secondary)'};
   border: none;
-  padding: 8px 18px;
+  padding: 0.5rem 1rem;
   border-radius: 6px;
-  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.5rem;
+  transition: all 0.2s;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    background: rgba(59, 130, 246, 0.05);
+    color: var(--primary-main);
   }
 `;
 
-const ArchitectureDescription = styled.p`
-  font-size: 13px;
-  line-height: 1.6;
-  margin-bottom: 14px;
-  opacity: 0.95;
+const Main = styled.main`
+  flex: 1;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
 `;
 
-const FeaturesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 10px;
-  margin-top: 12px;
-`;
-
-const FeatureCard = styled.div`
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
-  padding: 12px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.25);
-    transform: translateY(-2px);
-  }
-`;
-
-const FeatureIcon = styled.div`
-  width: 32px;
-  height: 32px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
+const StatsBar = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 8px;
-  
-  svg {
-    width: 18px;
-    height: 18px;
-  }
+  gap: 1rem;
+  margin-bottom: 2rem;
 `;
 
-const FeatureTitle = styled.h4`
-  font-size: 13px;
+const StatBadge = styled.div<{ active?: boolean }>`
+  background: ${props => props.active ? 'var(--error-main)' : 'var(--bg-secondary)'};
+  color: ${props => props.active ? 'white' : 'var(--text-secondary)'};
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
   font-weight: 600;
-  margin: 0 0 4px 0;
-`;
-
-const FeatureDesc = styled.p`
-  font-size: 11px;
-  margin: 0;
-  opacity: 0.9;
-  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
 
 const AccessDeniedContainer = styled.div`
-  min-height: 100vh;
-  background: #f0f2f5;
+  height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-`;
-
-const AccessDeniedCard = styled.div`
-  background: white;
-  border-radius: 12px;
-  padding: 40px;
+  background: #f8fafc;
+  color: #ef4444;
   text-align: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
+  padding: 2rem;
 `;
 
-const AccessDeniedTitle = styled.h1`
-  color: #dc3545;
-  font-size: 24px;
-  font-weight: 700;
-  margin: 0 0 16px 0;
-`;
+// --- SECURITY ---
+// Hardcoded Super Admin Whitelist (MVP)
+// In production, move this to specific detailed claims or Firestore permissions
+const SUPER_ADMINS = [
+  'hamdanialaa3@gmail.com',
+  'admin@globulcars.com',
+  'admin@example.com' // Testing only
+];
 
-const AccessDeniedSubtitle = styled.p`
-  color: #65676b;
-  font-size: 16px;
-  margin: 0 0 24px 0;
-`;
-
-const LoginButton = styled.a`
-  display: inline-block;
-  background: #4267B2;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: background 0.2s;
-
-  &:hover {
-    background: #365899;
-  }
-`;
-
-const AdminPage: React.FC = () => {
+export const AdminPage: React.FC = () => {
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [adminUser, setAdminUser] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<'verifications' | 'revenue' | 'users'>('verifications');
+  const [pendingCount, setPendingCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkAdminStatus = () => {
-      try {
-        const storedAdmin = localStorage.getItem('adminUser');
+    // Init Check
+    if (!user) {
+      // Wait for auth to settle or redirect
+      // Assuming useAuth handles initial load state with a 'loading' flag separate from 'user'
+      // For now, we'll just check if user exists. 
+      // If the strict auth logic is elsewhere, this might flicker.
+    }
 
-        if (storedAdmin) {
-          const adminData = JSON.parse(storedAdmin);
-          setAdminUser(adminData);
-        }
-      } catch (err) {
-        logger.error('Error checking admin status', err as Error);
+    // Load counts
+    const fetchCounts = async () => {
+      try {
+        const pendings = await adminService.getPendingVerifications();
+        setPendingCount(pendings.length);
+      } catch (e) {
+        // ignore
       } finally {
         setLoading(false);
       }
     };
 
-    checkAdminStatus();
-  }, []);
+    if (user) fetchCounts();
+  }, [user]);
 
-  if (loading) {
-    return (
-      <AdminContainer>
-        <AdminHeader>
-          <AdminTitle>Loading...</AdminTitle>
-        </AdminHeader>
-      </AdminContainer>
-    );
-  }
+  // --- SECURITY CHECK ---
+  if (!user || (!SUPER_ADMINS.includes(user.email || ''))) {
+    if (loading) return <div>Auth Checking...</div>;
 
-  if (!adminUser) {
     return (
       <AccessDeniedContainer>
-        <AccessDeniedCard>
-          <AccessDeniedTitle>🔒 Access Denied</AccessDeniedTitle>
-          <AccessDeniedSubtitle>
-            You don't have admin permissions to access this page.
-          </AccessDeniedSubtitle>
-          <LoginButton href="/admin-login">
-            Go to Admin Login
-          </LoginButton>
-        </AccessDeniedCard>
+        <Shield size={64} style={{ marginBottom: '1rem' }} />
+        <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem' }}>403 Access Denied</h1>
+        <p style={{ color: '#64748b', marginBottom: '2rem' }}>
+          Your account ({user?.email || 'Guest'}) does not have permission to access the Command Center.
+        </p>
+        <button
+          onClick={() => navigate('/')}
+          style={{
+            padding: '0.75rem 1.5rem',
+            background: '#ef4444',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            fontWeight: 'bold',
+            cursor: 'pointer'
+          }}
+        >
+          Return to Safety
+        </button>
       </AccessDeniedContainer>
     );
   }
 
   return (
-    <AdminContainer>
-      <AdminHeader>
-        <AdminTitle>🎉 Admin Dashboard</AdminTitle>
-        <AdminSubtitle>
-          Welcome back, {adminUser.name}! You have full admin access.
-        </AdminSubtitle>
-      </AdminHeader>
+    <Container>
+      <Header>
+        <Logo>
+          <Shield size={28} />
+          Globul<span>Command</span>
+        </Logo>
 
-      <StatsGrid>
-        <StatCard>
-          <StatValue>1,247</StatValue>
-          <StatLabel>Total Users</StatLabel>
-        </StatCard>
-        <StatCard>
-          <StatValue>3,891</StatValue>
-          <StatLabel>Total Cars</StatLabel>
-        </StatCard>
-        <StatCard>
-          <StatValue>12,456</StatValue>
-          <StatLabel>Total Messages</StatLabel>
-        </StatCard>
-        <StatCard>
-          <StatValue>1</StatValue>
-          <StatLabel>Admin Users</StatLabel>
-        </StatCard>
-      </StatsGrid>
+        <Nav>
+          <NavItem
+            active={activeTab === 'verifications'}
+            onClick={() => setActiveTab('verifications')}
+          >
+            <CheckCircle size={18} /> Verifications
+            {pendingCount > 0 && (
+              <span style={{
+                background: 'var(--error-main)',
+                color: 'white',
+                fontSize: '0.7rem',
+                padding: '1px 6px',
+                borderRadius: '10px'
+              }}>
+                {pendingCount}
+              </span>
+            )}
+          </NavItem>
+          <NavItem
+            active={activeTab === 'revenue'}
+            onClick={() => setActiveTab('revenue')}
+          >
+            <CreditCard size={18} /> Revenue
+          </NavItem>
+          <NavItem
+            active={activeTab === 'users'}
+            onClick={() => setActiveTab('users')}
+          >
+            <Users size={18} /> Users (God Mode)
+          </NavItem>
+        </Nav>
 
-      <ArchitectureSection>
-        <ArchitectureHeader>
-          <ArchitectureTitle>
-            <Network size={20} />
-            System Architecture Diagram
-          </ArchitectureTitle>
-          <ViewDiagramButton onClick={() => navigate('/diagram')}>
-            <Network size={16} />
-            View Interactive Diagram
-          </ViewDiagramButton>
-        </ArchitectureHeader>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ textAlign: 'right', fontSize: '0.85rem' }}>
+            <div style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>{user.displayName || 'Super Admin'}</div>
+            <div style={{ color: 'var(--text-secondary)' }}>{user.email}</div>
+          </div>
+          <button
+            onClick={logout}
+            style={{
+              background: 'var(--bg-secondary)',
+              border: '1px solid var(--border-secondary)',
+              padding: '0.5rem',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              color: 'var(--text-primary)'
+            }}
+            title="Logout"
+          >
+            <LogOut size={18} />
+          </button>
+        </div>
+      </Header>
 
-        <ArchitectureDescription>
-          Explore the complete technical architecture of the New Globul Cars platform.
-          This interactive diagram visualizes all system components, their connections,
-          and real-time data flow with animated particles showing live communication between modules.
-        </ArchitectureDescription>
+      <Main>
+        <StatsBar>
+          <StatBadge active={pendingCount > 0}>
+            {pendingCount} Pending Tasks
+          </StatBadge>
+          <StatBadge>
+            System Status: Operational
+          </StatBadge>
+        </StatsBar>
 
-        <FeaturesGrid>
-          <FeatureCard>
-            <FeatureIcon>
-              <Network />
-            </FeatureIcon>
-            <FeatureTitle>Interactive Nodes</FeatureTitle>
-            <FeatureDesc>
-              Click any component to see detailed information and navigate to that section
-            </FeatureDesc>
-          </FeatureCard>
-
-          <FeatureCard>
-            <FeatureIcon>
-              <Zap />
-            </FeatureIcon>
-            <FeatureTitle>Live Data Flow</FeatureTitle>
-            <FeatureDesc>
-              Animated particles show real-time data movement between system components
-            </FeatureDesc>
-          </FeatureCard>
-
-          <FeatureCard>
-            <FeatureIcon>
-              <Database />
-            </FeatureIcon>
-            <FeatureTitle>Full System View</FeatureTitle>
-            <FeatureDesc>
-              See all infrastructure, services, UI, features, and external integrations
-            </FeatureDesc>
-          </FeatureCard>
-
-          <FeatureCard>
-            <FeatureIcon>
-              <Globe />
-            </FeatureIcon>
-            <FeatureTitle>External Sources</FeatureTitle>
-            <FeatureDesc>
-              View connections to MobileBG.eu, Firebase, AI Engine, and third-party APIs
-            </FeatureDesc>
-          </FeatureCard>
-        </FeaturesGrid>
-      </ArchitectureSection>
-
-      <Section>
-        <SectionTitle>👥 Admin Users</SectionTitle>
-        <AdminUserCard>
-          <UserName>{adminUser.name}</UserName>
-          <UserEmail>{adminUser.email}</UserEmail>
-          <UserRole>Super Administrator - Full Access</UserRole>
-        </AdminUserCard>
-      </Section>
-    </AdminContainer>
+        {activeTab === 'verifications' && <VerificationQueue />}
+        {activeTab === 'revenue' && <RevenueMonitor />}
+        {activeTab === 'users' && <UserManager />}
+      </Main>
+    </Container>
   );
 };
 

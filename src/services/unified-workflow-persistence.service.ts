@@ -3,8 +3,10 @@
 // يستبدل: WorkflowPersistenceService + StrictWorkflowAutoSaveService
 
 import { serviceLogger } from './logger-service';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase/firebase-config';
 
-// 20 دقيقة (كافية لإكمال كل الخطوات بدون ضغط)
+// 20 minutes (sufficient to complete all steps without pressure)
 const TIMER_DURATION = 20 * 60 * 1000; // 1200000ms = 20 minutes
 
 const STORAGE_KEY = 'unified-workflow-data';
@@ -38,7 +40,7 @@ export interface UnifiedWorkflowData {
   saleType?: string;
   saleTimeline?: string;
   bodyType?: string; // ✅ ADDED: Body type
-  
+
   // "Other" fields for free text entry
   bodyTypeOther?: string;
   makeOther?: string;
@@ -87,6 +89,13 @@ export interface UnifiedWorkflowData {
   description?: string;
   hasVideo?: boolean;
   videoUrl?: string;
+
+  // Location Data (Unified)
+  locationData?: {
+    cityName?: string;
+    cityId?: string;
+    regionName?: string;
+  };
 
   // Metadata
   currentStep: number | string; // 1-5 or step id
@@ -183,7 +192,7 @@ export class UnifiedWorkflowPersistenceService {
         });
         // ✅ CRITICAL: clearData now clears images from IndexedDB automatically
         this.clearData().catch((error: unknown) => {
-          serviceLogger.warn('Error clearing expired data (non-critical)', { 
+          serviceLogger.warn('Error clearing expired data (non-critical)', {
             error: error instanceof Error ? error : new Error(String(error))
           });
         });
@@ -195,7 +204,58 @@ export class UnifiedWorkflowPersistenceService {
 
       return data;
     } catch (error) {
-      serviceLogger.error('Error loading unified workflow data', error as Error);
+      return null;
+    }
+  }
+
+  /**
+   * Save draft to cloud (Firestore) for cross-device recovery
+   */
+  static async saveToCloud(userId: string): Promise<boolean> {
+    try {
+      const data = this.loadData();
+      if (!data) return false;
+
+      // Sanitize data
+      const cloudData = {
+        ...data,
+        updatedAt: new Date().toISOString(),
+        userId
+      };
+
+      await setDoc(doc(db, 'user_drafts', userId), cloudData);
+      serviceLogger.info('Workflow draft saved to cloud', { userId });
+      return true;
+    } catch (error) {
+      serviceLogger.error('Failed to save draft to cloud', error as Error);
+      return false;
+    }
+  }
+
+  /**
+   * Load draft from cloud
+   */
+  static async loadFromCloud(userId: string): Promise<UnifiedWorkflowData | null> {
+    try {
+      const docRef = doc(db, 'user_drafts', userId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const cloudData = docSnap.data() as UnifiedWorkflowData;
+
+        // Check if cloud data is newer than local
+        const localData = this.loadData();
+        if (!localData || (cloudData.lastSavedAt > localData.lastSavedAt)) {
+          // Update local storage
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudData));
+          this.startTimer(); // Ensure timer reflects new data
+          return cloudData;
+        }
+        return localData;
+      }
+      return null;
+    } catch (error) {
+      serviceLogger.error('Failed to load draft from cloud', error as Error);
       return null;
     }
   }
@@ -300,10 +360,10 @@ export class UnifiedWorkflowPersistenceService {
     try {
       // Get draftId BEFORE clearing localStorage
       const draftId = localStorage.getItem('current_draft_id');
-      
+
       // Clear unified workflow data
       await this.clearData();
-      
+
       // Clear WorkflowPersistenceService (legacy)
       try {
         const { WorkflowPersistenceService } = await import('./unified-workflow-persistence.service');
@@ -313,7 +373,7 @@ export class UnifiedWorkflowPersistenceService {
       } catch (error) {
         // Non-critical
       }
-      
+
       // Clear all localStorage items related to workflow
       localStorage.removeItem('current_draft_id');
       localStorage.removeItem('workflow_state');
@@ -321,12 +381,12 @@ export class UnifiedWorkflowPersistenceService {
       localStorage.removeItem('globul_sell_workflow_state');
       localStorage.removeItem('globul_unified_workflow');
       localStorage.removeItem('globul_workflow_timer_paused');
-      
+
       // Clear sessionStorage items
       sessionStorage.removeItem('edit_mode');
       sessionStorage.removeItem('edit_car_id');
       sessionStorage.removeItem('edit_car_data');
-      
+
       // Delete draft from Firestore if exists
       if (draftId) {
         try {
@@ -334,13 +394,13 @@ export class UnifiedWorkflowPersistenceService {
           await DraftsService.deleteDraft(draftId);
           serviceLogger.info('Draft deleted from Firestore during auto-reset', { draftId });
         } catch (error) {
-          serviceLogger.warn('Failed to delete Firestore draft during auto-reset (non-critical)', { 
-            error: error instanceof Error ? error : new Error(String(error)), 
-            draftId 
+          serviceLogger.warn('Failed to delete Firestore draft during auto-reset (non-critical)', {
+            error: error instanceof Error ? error : new Error(String(error)),
+            draftId
           });
         }
       }
-      
+
       serviceLogger.info('Full workflow reset completed (timer expiry)', { draftId: draftId || 'none' });
     } catch (error) {
       serviceLogger.error('Error executing full reset', error as Error);
@@ -460,20 +520,20 @@ export class UnifiedWorkflowPersistenceService {
       if (state.isActive && state.remainingSeconds === 0) {
         const data = this.loadData();
         if (data && !data.isPublished) {
-          serviceLogger.info('Timer reached zero - auto-deleting draft', { 
+          serviceLogger.info('Timer reached zero - auto-deleting draft', {
             startedAt: new Date(data.startedAt).toISOString(),
             lastSavedAt: new Date(data.lastSavedAt).toISOString()
           });
-          
+
           // ✅ CRITICAL: Execute full reset (same as Reset Memory button)
           this.executeFullReset().catch((error: unknown) => {
-            serviceLogger.warn('Error executing full reset on timer expiry (non-critical)', { 
+            serviceLogger.warn('Error executing full reset on timer expiry (non-critical)', {
               error: error instanceof Error ? error : new Error(String(error))
             });
           });
         }
       }
-      
+
       // Also check for expired data (older than 20 minutes)
       if (!state.isActive && state.remainingSeconds === 0) {
         const data = this.loadData();
@@ -485,9 +545,9 @@ export class UnifiedWorkflowPersistenceService {
               const { default: DraftsService } = require('./drafts-service');
               DraftsService.deleteDraft(draftId).catch((error: unknown) => {
                 // Non-critical - continue with local cleanup
-                serviceLogger.warn('Failed to delete Firestore draft on timer expiry (non-critical)', { 
-                  error: error instanceof Error ? error : new Error(String(error)), 
-                  draftId 
+                serviceLogger.warn('Failed to delete Firestore draft on timer expiry (non-critical)', {
+                  error: error instanceof Error ? error : new Error(String(error)),
+                  draftId
                 });
               });
               localStorage.removeItem('current_draft_id');
@@ -496,10 +556,10 @@ export class UnifiedWorkflowPersistenceService {
               serviceLogger.warn('Error importing DraftsService for auto-delete (non-critical)', { error });
             }
           }
-          
+
           // ✅ CRITICAL: clearData now clears images from IndexedDB
           this.clearData().catch((error: unknown) => {
-            serviceLogger.warn('Error clearing data on timer expiry (non-critical)', { 
+            serviceLogger.warn('Error clearing data on timer expiry (non-critical)', {
               error: error instanceof Error ? error : new Error(String(error))
             });
           });
@@ -588,7 +648,7 @@ export const WorkflowPersistenceService = {
       'preview': 7
     };
     const stepNumber = stepMap[currentStep] || 1;
-    
+
     UnifiedWorkflowPersistenceService.saveData(data as Partial<UnifiedWorkflowData>, stepNumber);
   },
 
@@ -659,7 +719,7 @@ export const WorkflowPersistenceService = {
   saveImages: async (files: File[]): Promise<void> => {
     const { ImageStorageService } = await import('./ImageStorageService');
     await ImageStorageService.saveImages(files);
-    
+
     // Update imagesCount in workflow data
     const data = UnifiedWorkflowPersistenceService.loadData();
     if (data) {

@@ -29,6 +29,7 @@ export interface SearchQuery {
   city?: string;
   fuelType?: string;
   transmission?: string;
+  locationData?: { cityName?: string };
 }
 
 export interface SearchResult {
@@ -42,18 +43,18 @@ export interface SearchResult {
 
 export class UnifiedSearchService {
   private static instance: UnifiedSearchService;
-  
+
   private constructor() {
     logger.info('UnifiedSearchService initialized');
   }
-  
+
   static getInstance(): UnifiedSearchService {
     if (!this.instance) {
       this.instance = new UnifiedSearchService();
     }
     return this.instance;
   }
-  
+
   /**
    * Main search method - consolidates all search approaches
    */
@@ -73,29 +74,45 @@ export class UnifiedSearchService {
         searchDescription: query.text
       };
       const res = await runUnifiedQuery(orchestratorFilters, { page: page - 1, hitsPerPage: 40 });
+
+      // ✅ CRITICAL FIX: Ensure numeric IDs are properly mapped from potential aliases
+      const cars = res.cars.map((car: any) => ({
+        ...car,
+        sellerNumericId: car.sellerNumericId || car.ownerNumericId,
+        carNumericId: car.carNumericId || car.userCarSequenceId || car.numericId
+      }));
+
       return {
-        cars: res.cars,
+        cars,
         total: res.total,
         page,
         hasMore: res.total > page * 40,
         source: res.source,
         processingMs: res.processingMs
       };
-      
+
     } catch (error) {
       logger.error('Search error', error as Error, { query });
       throw error;
     }
   }
-  
+
   /**
    * Advanced search with complex filters
    */
   async advancedSearch(filters: any): Promise<SearchResult> {
     logger.debug('Advanced search', { filters });
     const res = await runUnifiedQuery(filters, { page: 0, hitsPerPage: 40 });
+
+    // ✅ CRITICAL FIX: Ensure numeric IDs are properly mapped from potential aliases
+    const cars = res.cars.map((car: any) => ({
+      ...car,
+      sellerNumericId: car.sellerNumericId || car.ownerNumericId,
+      carNumericId: car.carNumericId || car.userCarSequenceId || car.numericId
+    }));
+
     return {
-      cars: res.cars,
+      cars,
       total: res.total,
       page: 1,
       hasMore: res.total > 40,
@@ -103,15 +120,23 @@ export class UnifiedSearchService {
       processingMs: res.processingMs
     };
   }
-  
+
   /**
    * Advanced search with pagination support and configurable page size
    */
   async advancedSearchPaged(filters: any, page: number = 1, hitsPerPage: number = 20): Promise<SearchResult> {
     logger.debug('Advanced search (paged)', { filters, page, hitsPerPage });
     const res = await runUnifiedQuery(filters, { page: Math.max(0, page - 1), hitsPerPage });
+
+    // ✅ CRITICAL FIX: Ensure numeric IDs are properly mapped from potential aliases
+    const cars = res.cars.map((car: any) => ({
+      ...car,
+      sellerNumericId: car.sellerNumericId || car.ownerNumericId,
+      carNumericId: car.carNumericId || car.userCarSequenceId || car.numericId
+    }));
+
     return {
-      cars: res.cars,
+      cars,
       total: res.total,
       page,
       hasMore: res.total > page * hitsPerPage,
@@ -119,7 +144,7 @@ export class UnifiedSearchService {
       processingMs: res.processingMs
     };
   }
-  
+
   /**
    * Save search for user
    */
@@ -127,7 +152,7 @@ export class UnifiedSearchService {
     logger.info('Saving search', { userId, name });
     // Implementation
   }
-  
+
   /**
    * Get search suggestions
    */

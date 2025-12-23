@@ -66,14 +66,14 @@ export const CarImageGallery: React.FC<CarImageGalleryProps> = ({
   useEffect(() => {
     previewUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
     previewUrlsRef.current.clear();
-    
+
     car.images?.forEach((image, index) => {
       if (typeof image !== 'string') {
         const url = URL.createObjectURL(image);
         previewUrlsRef.current.set(index, url);
       }
     });
-    
+
     return () => {
       previewUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
       previewUrlsRef.current.clear();
@@ -88,11 +88,20 @@ export const CarImageGallery: React.FC<CarImageGalleryProps> = ({
     }
   };
 
+  // ✅ SEO: Dynamic Alt Text Generator
+  const getAltText = (index: number) => {
+    const cityName = car.locationData?.cityName || car.city || (language === 'bg' ? 'България' : 'Bulgaria');
+    const colorName = car.color || (language === 'bg' ? 'неизвестен цвят' : 'unknown color');
+    const action = language === 'bg' ? 'за продажба в' : 'for sale in';
+
+    return `${car.make} ${car.model} ${car.year} ${colorName} ${action} ${cityName} - photo ${index + 1}`;
+  };
+
   return (
     <ImageSection>
       {car.make && (
         <LogoContainer>
-          <LogoImage 
+          <LogoImage
             src={`/assets/images/professional_car_logos/${car.make}.png`}
             alt={car.make}
             onError={(e) => {
@@ -109,32 +118,32 @@ export const CarImageGallery: React.FC<CarImageGalleryProps> = ({
           <GalleryTitle>
             {language === 'bg' ? 'Снимки на превозното средство' : 'Vehicle Photos'} ({car.images.length})
           </GalleryTitle>
-          
+
           <MainImageContainer>
-            <MainImage 
+            <MainImage
               src={
-                typeof car.images[selectedImageIndex] === 'string' 
+                typeof car.images[selectedImageIndex] === 'string'
                   ? String(car.images[selectedImageIndex])
                   : previewUrlsRef.current.get(selectedImageIndex) || ''
-              } 
-              alt={`${car.make} ${car.model} - Photo ${selectedImageIndex + 1}`} 
+              }
+              alt={getAltText(selectedImageIndex)}
             />
             <ImageCount>{selectedImageIndex + 1} / {car.images.length}</ImageCount>
           </MainImageContainer>
 
           <ThumbnailGrid>
             {car.images.map((image, index) => (
-              <ThumbnailItem 
-                key={index} 
+              <ThumbnailItem
+                key={index}
                 $isActive={index === selectedImageIndex}
                 onClick={() => setSelectedImageIndex(index)}
               >
-                <ThumbnailImage 
-                  src={typeof image === 'string' ? String(image) : previewUrlsRef.current.get(index) || ''} 
-                  alt={`Thumbnail ${index + 1}`} 
+                <ThumbnailImage
+                  src={typeof image === 'string' ? String(image) : previewUrlsRef.current.get(index) || ''}
+                  alt={getAltText(index)}
                 />
                 {isEditMode && isOwner && (
-                  <PhotoRemoveButton 
+                  <PhotoRemoveButton
                     onClick={(e) => handleDeleteImage(e, typeof image === 'string' ? image : '')}
                     title={language === 'bg' ? 'Изтрий снимка' : 'Delete image'}
                   >
@@ -169,7 +178,7 @@ export const CarImageGallery: React.FC<CarImageGalleryProps> = ({
               {car?.images?.length || 0} + {photos.length} / 20
             </span>
           </div>
-          
+
           <PhotoUploadArea
             $isDragOver={isDragOver}
             onDragOver={onDragOver}
@@ -179,22 +188,22 @@ export const CarImageGallery: React.FC<CarImageGalleryProps> = ({
           >
             <UploadIcon>
               <svg width="40" height="40" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="32" cy="32" r="30" fill="url(#camera-gradient-compact)" opacity="0.2"/>
-                <path d="M23 18L26 14H38L41 18H50C51.1 18 52 18.9 52 20V46C52 47.1 51.1 48 50 48H14C12.9 48 12 47.1 12 46V20C12 18.9 12.9 18 14 18H23Z" fill="url(#camera-body-compact)"/>
-                <circle cx="32" cy="32" r="8" fill="url(#lens-gradient-compact)"/>
-                <circle cx="32" cy="32" r="5" fill="white" opacity="0.3"/>
+                <circle cx="32" cy="32" r="30" fill="url(#camera-gradient-compact)" opacity="0.2" />
+                <path d="M23 18L26 14H38L41 18H50C51.1 18 52 18.9 52 20V46C52 47.1 51.1 48 50 48H14C12.9 48 12 47.1 12 46V20C12 18.9 12.9 18 14 18H23Z" fill="url(#camera-body-compact)" />
+                <circle cx="32" cy="32" r="8" fill="url(#lens-gradient-compact)" />
+                <circle cx="32" cy="32" r="5" fill="white" opacity="0.3" />
                 <defs>
                   <linearGradient id="camera-gradient-compact" x1="2" y1="2" x2="62" y2="62" gradientUnits="userSpaceOnUse">
-                    <stop style={{ stopColor: 'var(--accent-primary)' }}/>
-                    <stop offset="1" style={{ stopColor: 'var(--accent-light)' }}/>
+                    <stop style={{ stopColor: 'var(--accent-primary)' }} />
+                    <stop offset="1" style={{ stopColor: 'var(--accent-light)' }} />
                   </linearGradient>
                   <linearGradient id="camera-body-compact" x1="12" y1="14" x2="52" y2="48" gradientUnits="userSpaceOnUse">
-                    <stop style={{ stopColor: 'var(--accent-primary)' }}/>
-                    <stop offset="1" style={{ stopColor: 'var(--accent-light)' }}/>
+                    <stop style={{ stopColor: 'var(--accent-primary)' }} />
+                    <stop offset="1" style={{ stopColor: 'var(--accent-light)' }} />
                   </linearGradient>
                   <linearGradient id="lens-gradient-compact" x1="24" y1="24" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-                    <stop style={{ stopColor: 'var(--text-primary)' }}/>
-                    <stop offset="1" style={{ stopColor: 'var(--text-secondary)' }}/>
+                    <stop style={{ stopColor: 'var(--text-primary)' }} />
+                    <stop offset="1" style={{ stopColor: 'var(--text-secondary)' }} />
                   </linearGradient>
                 </defs>
               </svg>

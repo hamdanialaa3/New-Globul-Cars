@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { safeLazy } from '../utils/lazyImport';
-import { AuthGuard, NumericIdGuard } from '../components/guards';
+import { AuthGuard, NumericIdGuard, RequireCompanyGuard } from '../components/guards';
 import LoadingSpinner from '../components/LoadingSpinner'; // Assuming this is used or generic fallback
 import SellRouteRedirect from '../components/SellWorkflow/SellRouteRedirect';
 import InactivityWarning from '../components/InactivityWarning';
@@ -9,6 +9,11 @@ import InactivityWarning from '../components/InactivityWarning';
 // Lazy Loaded Components
 const HomePage = safeLazy(() => import('../pages/01_main-pages/home/HomePage'));
 const CarsPage = safeLazy(() => import('../pages/01_main-pages/CarsPage'));
+// ...
+const TeamManagementPage = safeLazy(() => import('../pages/09_dealer-company/TeamManagementPage'));
+const CompanyAnalyticsDashboard = safeLazy(() => import('../pages/09_dealer-company/CompanyAnalyticsDashboard'));
+
+// ... existing imports ...
 const CarDetailsPage = safeLazy(() => import('../pages/01_main-pages/CarDetailsPage'));
 const SocialFeedPage = safeLazy(() => import('../pages/03_user-pages/social/SocialFeedPage'));
 const SellModalPage = safeLazy(() => import('../pages/04_car-selling/sell/SellModalPage'));
@@ -110,7 +115,11 @@ export const MainRoutes: React.FC = () => {
 
             {/* 🔢 Strict Numeric Car URLs (Constitution: /car/:sellerNumericId/:carNumericId) */}
             <Route path="/car/:sellerNumericId/:carNumericId" element={<NumericCarDetailsPage />} />
-            <Route path="/car/:sellerNumericId/:carNumericId/edit" element={<NumericCarDetailsPage />} />
+            <Route path="/car/:sellerNumericId/:carNumericId/edit" element={
+                <AuthGuard requireAuth={true}>
+                    <EditCarPage />
+                </AuthGuard>
+            } />
 
             {/* Legacy UUID route kept for automatic redirect to numeric URLs */}
             <Route
@@ -302,6 +311,11 @@ export const MainRoutes: React.FC = () => {
             <Route path="/admin/auth-users" element={<AuthGuard requireAuth={true} requireAdmin={true}><AuthUsersPage /></AuthGuard>} />
             <Route path="/admin/shared-inbox" element={<AuthGuard requireAuth={true} requireAdmin={true}><SharedInboxPage /></AuthGuard>} />
             <Route path="/dealer/stripe-setup" element={<AuthGuard requireAuth={true}><StripeSetupPage /></AuthGuard>} />
+
+            {/* Company Routes */}
+            <Route path="/company/team" element={<RequireCompanyGuard><TeamManagementPage /></RequireCompanyGuard>} />
+            <Route path="/company/analytics" element={<RequireCompanyGuard><CompanyAnalyticsDashboard /></RequireCompanyGuard>} />
+
             <Route path="/insurance" element={<InsurancePage />} />
 
             <Route path="/n8n-test" element={<N8nTestPage />} />

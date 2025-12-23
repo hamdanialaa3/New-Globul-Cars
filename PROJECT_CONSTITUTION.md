@@ -39,43 +39,34 @@ The work mechanism to prevent the implemented model from getting lost
 @workspace
 
 **System Role:** Senior Software Architect & Routing Specialist.
-**Priority:** Critical Bug Fix & Architecture Enforcement.
+**Status:** Protocol Active & Enforced.
 
-**Situation Report:**
-We have encountered a regression in our routing logic. The system was designed with a strict **Numeric ID Strategy**, but recent changes have broken the consistency.
+**Standard Operating Procedure (SOP): Routing & numeric IDs**
 
-**Mission:**
-You are required to audit, repair, and strictly enforce the following URL structure and logic. No deviations are allowed.
+This document establishes the **Strict Numeric ID Strategy** as the permanent standard for the Bulgarski Mobili platform. Any deviation from this structure will be considered a regression.
 
-**1. The Strict Routing Protocol:**
-You must ensure the `React Router` configuration and all internal links strictly follow these patterns:
+**1. The Strict Routing Protocol (Immutable):**
+The `React Router` configuration and all link generation must strictly adhere to:
 
-* **User Profile:**
-    * **Pattern:** `/profile/:sellerNumericId`
-    * *Example:* `http://localhost:3000/profile/1` (Viewing the profile of User #1).
+*   **User Profile:**
+    *   **Pattern:** `/profile/:sellerNumericId`
+    *   *Usage:* `http://localhost:3000/profile/1`
+    *   *Note:* Legacy Firebase UIDs (`/profile/abc123xyz`) must auto-redirect to this numeric pattern.
 
-* **Car Details (The "Double ID" System):**
-    * **Pattern:** `/car/:sellerNumericId/:carNumericId`
-    * *Logic:* `/car/{User_Sequence_ID}/{User_Car_Sequence_ID}`
-    * *Example:* `http://localhost:3000/car/1/1` (User #1's 1st car).
-    * *Requirement:* Ensure the resolver correctly identifies the document based on these two numeric parameters.
+*   **Car Details (The "Double ID" System):**
+    *   **Pattern:** `/car/:sellerNumericId/:carNumericId`
+    *   *Logic:* `/car/{User_Sequence_ID}/{User_Car_Sequence_ID}`
+    *   *Example:* `http://localhost:3000/car/1/1` (User #1's 1st car).
+    *   *Constraint:* Never use standalone UUIDs for public car URLs.
 
-* **Edit Car Flow:**
-    * **Pattern:** `/car/:sellerNumericId/:carNumericId/edit`
-    * *Example:* `http://localhost:3000/car/1/1/edit`
-    * *Action:* Opens the edit mode for that specific vehicle.
+*   **Edit Car Flow:**
+    *   **Pattern:** `/car/:sellerNumericId/:carNumericId/edit`
 
 **2. Messaging Logic Integration:**
-* **Scenario:** A logged-in user (e.g., User ID `2`) visits a car page (`/car/1/1`).
-* **Action:** When they click the "Message" or "Contact" button:
-    * The system must initiate a chat context between **User 2** (Viewer) and **User 1** (Seller).
-    * The message context must explicitly reference the car ID (`1/1`).
+*   **Context:** Messages must always reference the specific car via its Double ID (`1/1`) and the seller's Numeric ID.
+*   **Direct Linking:** `http://localhost:3000/messages/:senderId/:recipientId`
 
-**Action Plan:**
-1.  **Audit:** Check `App.tsx` or the main Router file to see why the paths are currently broken or inconsistent.
-2.  **Fix:** Rewrite the Route definitions to match the strict patterns above.
-3.  **Link Generation:** Review the components that generate these links (e.g., Car Cards, Edit Buttons) and ensure they are constructing the URLs correctly using the numeric IDs, not UUIDs.
-4.  **Parameter Handling:** Ensure the pages (`CarDetailsPage`, `EditCarPage`) correctly extract `:sellerNumericId` and `:carNumericId` from the URL and use them to fetch the correct data from Firestore.
-
-Please execute this cleanup immediately and confirm when the strict routing logic is restored.
+**Maintenance Protocol:**
+1.  **Regular Audits:** Periodically check `MainRoutes.tsx` to ensure no "lazy" routes (like `/product/:id`) have been added.
+2.  **Code Reviews:** Reject PRs that introduce non-numeric public URLs.
 
