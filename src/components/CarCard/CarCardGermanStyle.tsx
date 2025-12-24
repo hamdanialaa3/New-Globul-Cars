@@ -51,8 +51,9 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
     toggleFavorite(car.id || '');
   };
 
-  const mainImageSrc = car.images?.[0]
-    ? (typeof car.images[0] === 'string' ? car.images[0] : URL.createObjectURL(car.images[0]))
+  // Fixed: Use string images only, never create blob URLs in render
+  const mainImageSrc = car.images?.[0] && typeof car.images[0] === 'string'
+    ? car.images[0]
     : '/images/placeholder-car.jpg';
 
   const locationName = (typeof car.location === 'object' ? (car.location as any)?.city : car.location) ||
