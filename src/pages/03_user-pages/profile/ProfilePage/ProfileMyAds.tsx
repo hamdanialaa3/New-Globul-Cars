@@ -293,7 +293,9 @@ const ProfileMyAds: React.FC = () => {
     if (sellerNumericId && carNumericId) {
       window.open(`/car/${sellerNumericId}/${carNumericId}`, '_blank');
     } else {
-      navigate(`/car-details/${car.id}`);
+      // ⛔ CONSTITUTION VIOLATION: Car missing numeric IDs
+      console.error('Car missing numeric IDs - data integrity issue', { carId: car.id, car });
+      alert('This listing has invalid data. Please contact support.');
     }
   };
 

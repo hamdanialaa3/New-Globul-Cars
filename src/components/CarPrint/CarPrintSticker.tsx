@@ -4,14 +4,49 @@
  * Designed to be printed and placed on car windows
  */
 
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 
 import { Printer, Download, X } from 'lucide-react';
 
 import { CarListing } from '../../types/CarListing';
+import IdentityStamp from '../Profile/IdentityStamp';
+import { userService } from '../../services/user/canonical-user.service';
+import { BulgarianUser } from '../../types/user/bulgarian-user.types';
 
 const PrintGlobalStyle = createGlobalStyle`
+  @media print {
+    /* إخفاء كل شيء ما عدا المحتوى المطبوع */
+    body * {
+      visibility: hidden !important;
+    }
+    
+    [data-print-content],
+    [data-print-content] * {
+      visibility: visible !important;
+    }
+    
+    [data-print-content] {
+      position: absolute !important;
+      left: 0 !important;
+      top: 0 !important;
+      width: 100% !important;
+      background: white !important;
+    }
+    
+    /* إخفاء الأزرار والخلفية */
+    .print-actions,
+    .print-close {
+      display: none !important;
+      visibility: hidden !important;
+    }
+    
+    @page {
+      size: A4;
+      margin: 0;
+    }
+  }
+  
   [data-print-content] {
     * {
       color: #000000 !important;
@@ -44,12 +79,15 @@ const PrintOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.9);
   z-index: 999999;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 1.5rem;
   padding: 2rem;
+  overflow-y: auto;
 
   @media print {
     display: none;
@@ -59,18 +97,18 @@ const PrintOverlay = styled.div`
 const PrintContainer = styled.div`
   background: white !important;
   width: 210mm;
-  height: 297mm;
-  padding: 10mm;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  min-height: 297mm;
+  max-height: 297mm;
+  padding: 15mm;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 0.5rem;
+  justify-content: flex-start;
   color: #000000 !important;
   overflow: hidden;
   box-sizing: border-box;
+  border-radius: 4px;
 
   * {
     color: #000000 !important;
@@ -79,11 +117,12 @@ const PrintContainer = styled.div`
   @media print {
     box-shadow: none !important;
     margin: 0 !important;
-    padding: 10mm !important;
+    padding: 15mm !important;
     width: 210mm !important;
-    height: 297mm !important;
+    min-height: 297mm !important;
     page-break-inside: avoid;
     overflow: visible;
+    border-radius: 0;
   }
 `;
 
@@ -91,14 +130,14 @@ const PrintHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
   border-bottom: 3px solid #000000;
-  gap: 2rem;
+  width: 100%;
 `;
 
 const PrintTitle = styled.h1`
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 900;
   color: #000000;
   margin: 0;
@@ -107,111 +146,115 @@ const PrintTitle = styled.h1`
 `;
 
 const PrintPrice = styled.div`
-  font-size: 32px;
+  font-size: 36px;
   font-weight: 900;
-  color: #000000;
+  color: #FF8F10;
   text-align: right;
 `;
 
 const PrintContent = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
+  gap: 1.5rem;
   flex: 1;
+  width: 100%;
 `;
 
 const PrintImageContainer = styled.div`
   grid-column: 1 / -1;
   display: flex;
   justify-content: center;
-  margin: 0.5rem 0;
+  margin: 1rem 0;
+  max-height: 180px;
 `;
 
 const PrintImage = styled.img`
   width: auto;
   max-width: 100%;
-  max-height: 120px;
+  max-height: 180px;
   object-fit: contain;
-  border: 1px solid #000;
+  border: 2px solid #000;
+  border-radius: 4px;
 `;
 
 const PrintSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.5rem;
 `;
 
 const SectionTitle = styled.h3`
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 900;
-  color: #000000;
+  color: #FF8F10;
   text-transform: uppercase;
   margin: 0;
-  padding-bottom: 0.25rem;
-  border-bottom: 2px solid #000000;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #FF8F10;
 `;
 
 const SectionContent = styled.div`
-  font-size: 13px;
+  font-size: 14px;
   color: #000000 !important;
-  line-height: 1.4;
-  font-weight: 900;
+  line-height: 1.6;
+  font-weight: 600;
   
   * {
     color: #000000 !important;
-    font-weight: 900 !important;
+    font-weight: 600 !important;
   }
   
   span {
     color: #000000 !important;
-    font-weight: 900 !important;
+    font-weight: 600 !important;
   }
 `;
 
 const PrintRow = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 0.15rem 0;
-  border-bottom: 1px dotted #999;
+  padding: 0.25rem 0;
+  border-bottom: 1px dotted #ccc;
 `;
 
 const PrintLabel = styled.span`
-  font-weight: 900;
-  color: #000000;
-  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  font-size: 13px;
 `;
 
 const PrintValue = styled.span`
-  font-weight: 900;
+  font-weight: 700;
   color: #000000;
   text-align: right;
-  font-size: 12px;
+  font-size: 14px;
 `;
 
 const PrintFooter = styled.div`
-  margin-top: auto;
-  padding-top: 0.5rem;
-  border-top: 1px solid #000000;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 2px solid #000000;
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 16px;
-  font-size: 10px;
-  color: #000000 !important;
-  font-weight: 900;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-size: 11px;
+  color: #666 !important;
+  font-weight: 600;
   
   * {
-    color: #000000 !important;
+    color: #666 !important;
   }
 `;
 
 const PrintActions = styled.div`
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
   display: flex;
-  gap: 0.5rem;
+  gap: 1rem;
   z-index: 10001;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
 
   @media print {
     display: none !important;
@@ -219,42 +262,54 @@ const PrintActions = styled.div`
 `;
 
 const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
-  padding: 0.75rem 1.5rem;
+  padding: 1rem 2rem;
   border: none;
   border-radius: 8px;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  transition: all 0.2s;
+  gap: 0.75rem;
+  transition: all 0.3s;
   background: ${props => props.$variant === 'primary' ? '#FF8F10' : '#fff'};
   color: ${props => props.$variant === 'primary' ? '#fff' : '#000'};
-  border: ${props => props.$variant === 'primary' ? 'none' : '2px solid #000'};
+  border: ${props => props.$variant === 'primary' ? 'none' : '2px solid #fff'};
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    background: ${props => props.$variant === 'primary' ? '#FF7900' : '#f0f0f0'};
+  }
+
+  &:active {
+    transform: translateY(-1px);
   }
 `;
 
 const CloseButton = styled.button`
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  width: 40px;
-  height: 40px;
+  top: -50px;
+  right: 0;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  border: 2px solid #000;
-  background: white;
+  border: 2px solid #fff;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 10002;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s;
 
   &:hover {
-    background: #f0f0f0;
+    background: #fff;
+    color: #000;
+    transform: scale(1.1);
   }
 
   @media print {
@@ -344,6 +399,18 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
 }) => {
   const printRef = useRef<HTMLDivElement>(null);
   const t = translations[language];
+  const [sellerInfo, setSellerInfo] = useState<BulgarianUser | null>(null);
+
+  // جلب معلومات البائع (صاحب السيارة)
+  useEffect(() => {
+    if (car.sellerId) {
+      userService.getUserProfile(car.sellerId).then(profile => {
+        if (profile) {
+          setSellerInfo(profile);
+        }
+      }).catch(err => console.error('Failed to load seller info for stamp:', err));
+    }
+  }, [car.sellerId]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('bg-BG', {
@@ -364,67 +431,10 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
       return;
     }
 
-    // Create a print window with proper styling
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) {
-      alert(language === 'bg' 
-        ? 'Моля разрешете popup прозорци за печат' 
-        : 'Please allow popups for printing');
-      return;
-    }
-
-    if (printRef.current) {
-      const printContent = printRef.current.innerHTML;
-      printWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>${car.make} ${car.model} ${car.year} - Print</title>
-          <meta charset="UTF-8">
-          <style>
-            @page {
-              size: A4;
-              margin: 0;
-            }
-            * {
-              margin: 0;
-              padding: 0;
-              box-sizing: border-box;
-            }
-            body {
-              margin: 0;
-              padding: 20mm;
-              background: white !important;
-              color: black !important;
-              font-family: Arial, sans-serif;
-            }
-            .print-actions,
-            .print-close {
-              display: none !important;
-            }
-            img {
-              max-width: 100%;
-              height: auto;
-            }
-          </style>
-        </head>
-        <body>
-          ${printContent}
-          <script>
-            window.onload = function() {
-              setTimeout(function() {
-                window.print();
-                setTimeout(function() {
-                  window.close();
-                }, 500);
-              }, 250);
-            };
-          </script>
-        </body>
-        </html>
-      `);
-      printWindow.document.close();
-    }
+    // طباعة مباشرة للمحتوى المرئي فقط
+    setTimeout(() => {
+      window.print();
+    }, 100);
   };
 
   const handleDownloadPDF = async () => {
@@ -484,19 +494,8 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
       <PrintOverlay onClick={onClose}>
         <PrintContainer ref={printRef} data-print-content onClick={(e) => e.stopPropagation()}>
         <CloseButton className="print-close" onClick={onClose}>
-          <X size={20} />
+          <X size={24} />
         </CloseButton>
-
-        <PrintActions className="print-actions">
-          <ActionButton $variant="primary" onClick={handlePrint}>
-            <Printer size={18} />
-            {t.print}
-          </ActionButton>
-          <ActionButton $variant="secondary" onClick={handleDownloadPDF}>
-            <Download size={18} />
-            {t.downloadPDF}
-          </ActionButton>
-        </PrintActions>
 
         <PrintHeader>
           <div style={{ color: '#000000' }}>
@@ -700,10 +699,53 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
         </PrintContent>
 
         <PrintFooter>
-          <div style={{ color: '#000000', fontWeight: '900' }}>Bulgarski Mobili - {window.location.origin}</div>
-          <div style={{ color: '#000000', fontWeight: '900' }}>{new Date().toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US')}</div>
+          <div style={{ color: '#666', fontWeight: '600' }}>Bulgarski Mobili - {window.location.origin}</div>
+          <div style={{ color: '#666', fontWeight: '600' }}>{new Date().toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US')}</div>
         </PrintFooter>
+
+        {/* الختم الاحترافي لمعلومات البائع */}
+        {sellerInfo && (
+          <div style={{ 
+            position: 'absolute', 
+            top: '-168px',
+            right: '10mm',
+            bottom: '10mm',
+            left: '368px',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(6, 1fr)',
+            gridTemplateRows: 'repeat(5, 1fr)',
+            width: 'fit-content',
+            height: 'fit-content',
+            transform: 'scale(0.7)',
+            transformOrigin: 'right bottom',
+            zIndex: 9999
+          }}>
+            <IdentityStamp
+              firstName={sellerInfo.firstName || car.sellerName?.split(' ')[0] || 'SELLER'}
+              lastName={sellerInfo.lastName || car.sellerName?.split(' ').slice(1).join(' ') || 'NAME'}
+              email={sellerInfo.email || car.sellerEmail || 'EMAIL@EXAMPLE.COM'}
+              phone={sellerInfo.phoneNumber || car.sellerPhone || '+359 00 000 000'}
+              region={sellerInfo.region || car.region || 'REGION'}
+              city={sellerInfo.city || car.city || 'CITY'}
+              address={sellerInfo.address || 'ADDRESS'}
+              numericId={sellerInfo.numericId || 0}
+              isDark={false}
+            />
+          </div>
+        )}
         </PrintContainer>
+
+        {/* أزرار الطباعة أسفل الورقة */}
+        <PrintActions className="print-actions">
+          <ActionButton $variant="primary" onClick={handlePrint}>
+            <Printer size={20} />
+            {t.print}
+          </ActionButton>
+          <ActionButton $variant="secondary" onClick={handleDownloadPDF}>
+            <Download size={20} />
+            {t.downloadPDF}
+          </ActionButton>
+        </PrintActions>
       </PrintOverlay>
     </>
   );

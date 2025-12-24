@@ -18,6 +18,7 @@
 
 import { BulgarianUser } from '../../types/user/bulgarian-user.types';
 import { db } from '../../firebase';
+import { doc, getDoc, updateDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { logger } from '../../services/logger-service';
 
 export class CanonicalUserService {
@@ -67,9 +68,10 @@ export class CanonicalUserService {
     try {
       logger.debug('Fetching user profile from Firestore', { userId });
       
-      const userDoc = await db.collection('users').doc(userId).get();
+      const userDocRef = doc(db, 'users', userId);
+      const userDoc = await getDoc(userDocRef);
       
-      if (!userDoc.exists) {
+      if (!userDoc.exists()) {
         logger.warn('User not found', { userId });
         return null;
       }
@@ -111,13 +113,16 @@ export class CanonicalUserService {
       for (let i = 0; i < uniqueIds.length; i += BATCH_SIZE) {
         const batch = uniqueIds.slice(i, i + BATCH_SIZE);
         const docs = await Promise.all(
-          batch.map(id => db.collection('users').doc(id).get())
+          batch.map(id => {
+            const userDocRef = doc(db, 'users', id);
+            return getDoc(userDocRef);
+          })
         );
         
-        docs.forEach((doc, index) => {
-          if (doc.exists) {
+        docs.forEach((docSnap, index) => {
+          if (docSnap.exists()) {
             const userId = batch[index];
-            const userData = doc.data() as BulgarianUser;
+            const userData = docSnap.data() as BulgarianUser;
             results.set(userId, userData);
             this.setCache(userId, userData);
           }
@@ -156,7 +161,8 @@ export class CanonicalUserService {
         updatedAt: new Date()
       };
       
-      await db.collection('users').doc(userId).update(updateData);
+      const userDocRef = doc(db, 'users', userId);
+      await updateDoc(userDocRef, updateData);
       
       this.clearCache(userId);
       
@@ -185,14 +191,22 @@ export class CanonicalUserService {
     totalMessages: number;
   }> {
     try {
+      const carsRef = collection(db, 'cars');
+      const carsQuery = query(carsRef, where('userId', '==', userId));
+      
+      const analyticsDocRef = doc(db, 'analytics', userId);
+      
+      const conversationsRef = collection(db, 'conversations');
+      const conversationsQuery = query(conversationsRef, where('participants', 'array-contains', userId));
+      
       const [listings, views, messages] = await Promise.all([
-        db.collection('cars').where('userId', '==', userId).get(),
-        db.collection('analytics').doc(userId).get(),
-        db.collection('conversations').where('participants', 'array-contains', userId).get()
+        getDocs(carsQuery),
+        getDoc(analyticsDocRef),
+        getDocs(conversationsQuery)
       ]);
       
-      const activeListings = listings.docs.filter(doc => 
-        doc.data().status === 'active'
+      const activeListings = listings.docs.filter(docSnap => 
+        docSnap.data().status === 'active'
       ).length;
       
       const analyticsData = views.data();
@@ -219,8 +233,9 @@ export class CanonicalUserService {
    */
   async userExists(userId: string): Promise<boolean> {
     try {
-      const doc = await db.collection('users').doc(userId).get();
-      return doc.exists;
+      const userDocRef = doc(db, 'users', userId);
+      const docSnap = await getDoc(userDocRef);
+      return docSnap.exists();
     } catch (error) {
       logger.error('Error checking user existence', error as Error, { userId });
       return false;

@@ -568,7 +568,6 @@ const PriceCard = styled.div`
   box-shadow: 0 2px 8px rgba(255, 215, 0, 0.03);
   position: sticky;
   top: 20px;
-  position: relative;
   overflow: hidden;
 
   /* Subtle accent border glow */
@@ -1255,7 +1254,7 @@ const ShareMenuContainer = styled.div`
 `;
 
 const ShareMenuDropdown = styled.div<{ $isOpen: boolean; $top?: number; $left?: number }>`
-  position: ${props => props.$top !== undefined && props.$left !== undefined ? 'fixed' : 'absolute'};
+  position: fixed;
   ${props => props.$top !== undefined ? `top: ${props.$top}px;` : 'top: calc(100% + 10px);'}
   ${props => props.$left !== undefined ? `left: ${props.$left}px;` : 'right: 0;'}
   background: var(--bg-card);
@@ -1263,7 +1262,8 @@ const ShareMenuDropdown = styled.div<{ $isOpen: boolean; $top?: number; $left?: 
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   min-width: 280px;
-  z-index: 999999 !important;
+  max-width: 600px;
+  z-index: 9999999 !important;
   opacity: ${props => props.$isOpen ? 1 : 0};
   visibility: ${props => props.$isOpen ? 'visible' : 'hidden'};
   transform: ${props => props.$isOpen ? 'translateY(0) scale(1)' : 'translateY(-10px) scale(0.95)'};
@@ -1285,7 +1285,7 @@ const ShareMenuDropdown = styled.div<{ $isOpen: boolean; $top?: number; $left?: 
 `;
 
 const ShareMenuHeader = styled.div`
-  padding: 1rem;
+  padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--border-primary);
   background: linear-gradient(135deg, rgba(255, 143, 16, 0.05) 0%, rgba(255, 107, 53, 0.05) 100%);
 `;
@@ -1301,48 +1301,54 @@ const ShareMenuTitle = styled.h4`
 
 const ShareOptionsList = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   padding: 0.5rem;
-  gap: 0.25rem;
+  gap: 0.5rem;
+  max-width: 600px;
 `;
 
 const ShareOption = styled.button<{ $color?: string }>`
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  gap: 0.5rem;
+  padding: 0.6rem 0.9rem;
   border: none;
   background: transparent;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   color: var(--text-primary);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 500;
-  text-align: left;
-  width: 100%;
+  text-align: center;
+  flex: 0 0 auto;
+  white-space: nowrap;
 
   &:hover {
     background: var(--bg-hover);
-    transform: translateX(4px);
+    transform: translateY(-2px);
   }
 
   svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     color: ${props => props.$color || 'var(--text-primary)'};
     flex-shrink: 0;
   }
 
   span {
-    flex: 1;
+    flex: 0 0 auto;
   }
 `;
 
 const ShareDivider = styled.div`
-  height: 1px;
+  width: 1px;
+  height: 100%;
+  min-height: 24px;
   background: var(--border-primary);
-  margin: 0.5rem 0;
+  margin: 0 0.25rem;
+  align-self: stretch;
 `;
 
 const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
@@ -1427,7 +1433,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
       const rect = shareButtonRef.current.getBoundingClientRect();
       setShareMenuPosition({
         top: rect.bottom + window.scrollY + 10,
-        left: rect.right + window.scrollX - 280, // 280 is min-width
+        left: rect.right + window.scrollX - 300, // Adjusted for horizontal layout
       });
     }
     setShowShareMenu(!showShareMenu);

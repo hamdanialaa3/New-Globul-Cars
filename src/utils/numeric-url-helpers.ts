@@ -25,13 +25,13 @@ export function buildProfileUrl(numericId: number | null | undefined): string {
  * 
  * @param sellerNumericId - Seller's numeric ID
  * @param carNumericId - Car's numeric ID (per seller)
- * @returns Car URL (e.g., "/profile/1/2")
+ * @returns Car URL (e.g., "/car/1/2") - CONSTITUTION COMPLIANT
  * 
  * Examples:
- * - buildCarUrl(1, 1) → "/profile/1/1" (User 1's Car #1)
- * - buildCarUrl(1, 2) → "/profile/1/2" (User 1's Car #2)
- * - buildCarUrl(2, 1) → "/profile/2/1" (User 2's Car #1)
- * - buildCarUrl(100, 5) → "/profile/100/5" (User 100's Car #5)
+ * - buildCarUrl(1, 1) → "/car/1/1" (User 1's Car #1)
+ * - buildCarUrl(1, 2) → "/car/1/2" (User 1's Car #2)
+ * - buildCarUrl(2, 1) → "/car/2/1" (User 2's Car #1)
+ * - buildCarUrl(100, 5) → "/car/100/5" (User 100's Car #5)
  */
 export function buildCarUrl(
   sellerNumericId: number | null | undefined,
@@ -45,7 +45,7 @@ export function buildCarUrl(
     return buildProfileUrl(sellerNumericId);
   }
   
-  return `/profile/${sellerNumericId}/${carNumericId}`;
+  return `/car/${sellerNumericId}/${carNumericId}`;
 }
 
 /**
@@ -53,7 +53,7 @@ export function buildCarUrl(
  * 
  * @param sellerNumericId - Seller's numeric ID
  * @param carNumericId - Car's numeric ID
- * @returns Car edit URL (e.g., "/profile/1/2/edit")
+ * @returns Car edit URL (e.g., "/car/1/2/edit") - CONSTITUTION COMPLIANT
  */
 export function buildCarEditUrl(
   sellerNumericId: number | null | undefined,

@@ -1,8 +1,31 @@
-import { logger } from '../../../../../services/logger-service';
-// ProfilePage/tabs/SettingsTab.tsx
-// ✅ TESTING VERSION - COMPREHENSIVE SETTINGS PAGE
-// Version: 2.0 - November 9, 2025 - 3:00 PM
+// ╔════════════════════════════════════════════════════════════════════════╗
+// ║                    SETTINGS TAB - UNIFIED SETTINGS PAGE                 ║
+// ║                                                                          ║
+// ║  ⚠️  CONSTITUTION EXCEPTION - 3614 LINES                                ║
+// ║  This file is EXEMPT from the 300-line limit.                           ║
+// ║  See: docs/CONSTITUTION_EXCEPTIONS.md for full justification.           ║
+// ║                                                                          ║
+// ║  🚫 DO NOT ATTEMPT TO SPLIT THIS FILE WITHOUT:                          ║
+// ║     1. Comprehensive end-to-end tests for all 8 sections                ║
+// ║     2. Context-based state management refactor                          ║
+// ║     3. Senior Architect approval                                        ║
+// ║                                                                          ║
+// ║  📋 ARCHITECTURE OVERVIEW:                                              ║
+// ║  • 8 Main Sections: Account, Privacy, Notifications, Security,          ║
+// ║    Appearance, Business, Car Preferences, Data Export                   ║
+// ║  • 4 Shared State Objects: userInfo, settings, idCardData, verification ║
+// ║  • 50+ Styled Components (Neumorphism design)                           ║
+// ║  • Tab-based navigation (mobile-responsive sidebar)                     ║
+// ║                                                                          ║
+// ║  🔧 KEY INTEGRATIONS:                                                   ║
+// ║  • Firebase: Firestore (saves), Storage (images), Auth (passwords)      ║
+// ║  • Verification Flows: Email & Phone modals                             ║
+// ║  • Profile Types: Private, Dealer, Company (conditional rendering)      ║
+// ║                                                                          ║
+// ║  Version: 2.1 - December 24, 2025                                       ║
+// ╚════════════════════════════════════════════════════════════════════════╝
 
+import { logger } from '../../../../../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -21,7 +44,7 @@ import {
   Heart, Sun, Moon, Laptop, ShieldCheck, KeyRound, LogOut,
   Camera, X
 } from 'lucide-react';
-import { IDCardOverlay, IDCardData } from '../../../../../components/Profile/IDCardEditor';
+// ID Card feature removed - 2025-12-24
 import ProfileImageUploader from '../../../../../components/Profile/ProfileImageUploader';
 import AccountStatusLED from '../../../../../components/Profile/AccountStatusLED';
 import EmailVerificationFlow from '../../../../../components/Profile/EmailVerificationFlow';
@@ -35,6 +58,8 @@ import { updatePassword, reauthenticateWithCredential, EmailAuthProvider, reload
 import { addDoc, collection, serverTimestamp, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { SocialAuthService } from '../../../../../firebase/social-auth-service';
 import { COUNTRIES, DEFAULT_COUNTRY, getCountryByPhoneCode, type Country } from '../../../../../data/countries-with-flags';
+import { BULGARIA_PROVINCES, MAJOR_CITIES_BG } from '../../../../../services/bulgaria-locations.service';
+import IdentityStamp from '../../../../../components/Profile/IdentityStamp';
 
 const highlightPulse = `
   @keyframes highlight-pulse {
@@ -1310,9 +1335,10 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
 }) => {
   const { currentUser } = useAuth();
   const { t } = useLanguage();
+  const { isDark: isDarkMode } = useTheme();
   const isBg = language === 'bg';
   const [showIDEditor, setShowIDEditor] = useState(false);
-  const [idCardData, setIdCardData] = useState<Partial<IDCardData>>({});
+  // ID Card state removed - 2025-12-24
   const [emailError, setEmailError] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<Country>(() => {
     // Detect country from phone number or default to Bulgaria
@@ -1378,6 +1404,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
   const [userInfo, setUserInfo] = useState({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
+    displayName: user?.displayName || '',
     phoneNumber: settings.phone || user?.phoneNumber || '',
     email: settings.email || user?.email || '',
     city: user?.locationData?.cityName || user?.location?.city || '',
@@ -1386,11 +1413,22 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
     bio: settings.bio || user?.bio || ''
   });
 
+  // ✅ تحديث displayName تلقائياً عند تغيير firstName أو lastName
+  useEffect(() => {
+    if (userInfo.firstName || userInfo.lastName) {
+      const autoDisplayName = `${userInfo.firstName} ${userInfo.lastName}`.trim();
+      if (autoDisplayName && autoDisplayName !== userInfo.displayName) {
+        setUserInfo(prev => ({ ...prev, displayName: autoDisplayName }));
+      }
+    }
+  }, [userInfo.firstName, userInfo.lastName]);
+
   // BUG FIX 4: Fix useEffect dependencies - include all dependencies
   useEffect(() => {
     setUserInfo({
       firstName: user?.firstName || '',
       lastName: user?.lastName || '',
+      displayName: user?.displayName || `${user?.firstName || ''} ${user?.lastName || ''}`.trim(),
       phoneNumber: settings.phone || user?.phoneNumber || '',
       email: settings.email || user?.email || '',
       city: user?.locationData?.cityName || user?.location?.city || '',
@@ -1405,101 +1443,97 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
     logger.debug('UnifiedAccountSection v2.0 - Fix Applied');
   }, []);
 
-  // Load ID card data from user if exists
-  React.useEffect(() => {
-    if (user && (user as any).idCardData) {
-      setIdCardData((user as any).idCardData);
-    }
-  }, [user]);
+  // Load ID card data removed - 2025-12-24
 
-  const handleSaveIDCard = async (data: IDCardData) => {
-    if (!currentUser?.uid) return;
-
-    try {
-      // Save ID card data to user profile
-      await profileService.updateUserProfile(currentUser.uid, {
-        idCardData: data,
-        // Auto-fill user info from ID card if empty
-        firstName: userInfo.firstName || data.firstNameBG || data.firstNameEN,
-        lastName: userInfo.lastName || data.lastNameBG || data.lastNameEN,
-        displayName: userInfo.displayName || `${data.firstNameBG || data.firstNameEN} ${data.lastNameBG || data.lastNameEN}`.trim()
-      } as any);
-
-      setIdCardData(data);
-      setShowIDEditor(false);
-
-      toast.success(
-        isBg
-          ? 'Данните от личната карта са запазени!'
-          : 'ID card data saved successfully!',
-        { autoClose: 3000 }
-      );
-
-      // Refresh user data
-      if (refresh) {
-        await refresh();
-      }
-    } catch (error) {
-      logger.error('Error saving ID card data:', error as Error);
-      toast.error(
-        isBg
-          ? 'Грешка при запазване на данните от личната карта'
-          : 'Error saving ID card data',
-        { autoClose: 3000 }
-      );
-    }
-  };
+  // handleSaveIDCard removed - 2025-12-24
 
   // BUG FIX 7: Add loading and error states
   const [savingUserInfo, setSavingUserInfo] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   const saveUserInfoHandler = async () => {
     if (!currentUser?.uid) {
       setSaveError(isBg ? 'Не сте влезли в системата' : 'You are not logged in');
+      toast.error(isBg ? 'Не сте влезли в системата' : 'You are not logged in');
       return;
     }
 
-    // Validate required fields
+    // ✅ التحقق من الحقول المطلوبة
     if (!userInfo.firstName.trim() || !userInfo.lastName.trim()) {
       setSaveError(isBg ? 'Моля, попълнете първото и последното име' : 'Please fill in first and last name');
       toast.error(isBg ? 'Моля, попълнете първото и последното име' : 'Please fill in first and last name');
       return;
     }
 
+    // ✅ التحقق من صحة رقم الهاتف إذا كان موجود
+    if (userInfo.phoneNumber && userInfo.phoneNumber.trim()) {
+      const phoneRegex = /^(\+359|0)[0-9]{9}$/;
+      if (!phoneRegex.test(userInfo.phoneNumber.replace(/\s/g, ''))) {
+        setSaveError(isBg ? 'Невалиден телефонен номер' : 'Invalid phone number');
+        toast.error(isBg ? 'Невалиден телефонен номер. Формат: +359 XXX XXX XXX' : 'Invalid phone number. Format: +359 XXX XXX XXX');
+        return;
+      }
+    }
+
     setSavingUserInfo(true);
     setSaveError(null);
 
     try {
-      logger.debug('Using new save handler');
+      logger.info('💾 Saving user account information', { userId: currentUser.uid });
       
-      // BUG FIX 5: Use locationData structure properly
-      // Generate displayName from firstName + lastName
+      // ✅ توليد displayName تلقائياً من firstName + lastName
       const displayName = `${userInfo.firstName.trim()} ${userInfo.lastName.trim()}`.trim();
       
-      // Save additional profile data using profileService
-      await profileService.updateUserProfile(currentUser.uid, {
+      // ✅ حفظ جميع البيانات الشخصية بشكل كامل
+      const updateData: any = {
         firstName: userInfo.firstName.trim(),
         lastName: userInfo.lastName.trim(),
         displayName: displayName,
-        bio: userInfo.bio.trim(),
+        phoneNumber: userInfo.phoneNumber.trim() || '',
+        bio: userInfo.bio.trim() || '',
+        // ✅ حفظ الموقع بالهيكل الصحيح
         locationData: {
-          cityName: userInfo.city.trim(),
-          regionName: userInfo.region.trim(),
-          address: userInfo.address.trim(),
-          coordinates: user?.locationData?.coordinates || undefined
-        }
-      });
+          cityName: userInfo.city.trim() || '',
+          regionName: userInfo.region.trim() || '',
+          address: userInfo.address.trim() || '',
+          coordinates: user?.locationData?.coordinates || null
+        },
+        // ✅ حفظ Location بشكل منفصل للتوافق مع الكود القديم
+        location: userInfo.city.trim() || userInfo.region.trim() || '',
+        // ✅ تحديث timestamp
+        updatedAt: new Date().toISOString()
+      };
 
-      // Trigger parent save for settings
-      await handleSave();
+      // ✅ حفظ البيانات في Firestore
+      await profileService.updateUserProfile(currentUser.uid, updateData);
 
+      // ✅ تحديث البيانات المحلية
+      if (setUser) {
+        setUser(prev => prev ? { ...prev, ...updateData } : null);
+      }
+
+      // ✅ تحديث settings إذا كانت موجودة
+      if (settings) {
+        await handleSave();
+      }
+
+      // ✅ إعادة تحميل البيانات
+      if (refresh) {
+        await refresh();
+      }
+
+      logger.info('✅ User account information saved successfully');
       toast.success(
         isBg 
           ? 'Информацията е запазена успешно!' 
           : 'Information saved successfully!',
         { autoClose: 3000 }
       );
+
+      // ✅ إظهار رسالة نجاح
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 5000);
 
     } catch (error) {
       logger.error("Error saving user info:", error as Error);
@@ -1590,44 +1624,23 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
 
 
 
-      {/* ID Card Section */}
-      <IDCardSection>
-        <IDCardHeader>
-          <div>
-            <IDCardTitle>
-              {isBg ? '🆔 Лична карта' : '🆔 ID Card'}
-            </IDCardTitle>
-            <IDCardSubtitle>
-              {isBg
-                ? 'Попълнете данните от личната си карта за автоматично попълване'
-                : 'Fill in your ID card data for automatic form filling'}
-            </IDCardSubtitle>
-          </div>
-          <IDCardButton onClick={() => setShowIDEditor(true)}>
-            <CreditCard size={18} />
-            {isBg ? 'Редактирай лична карта' : 'Edit ID Card'}
-          </IDCardButton>
-        </IDCardHeader>
+      {/* ID Card Section removed - 2025-12-24 */}
 
-        {idCardData.documentNumber && (
-          <IDCardInfo>
-            <InfoItem>
-              <strong>{isBg ? '№ на документа:' : 'Document No.:'}</strong> {idCardData.documentNumber}
-            </InfoItem>
-            <InfoItem>
-              <strong>{isBg ? 'ЕГН:' : 'EGN:'}</strong> {idCardData.personalNumber}
-            </InfoItem>
-            {(idCardData.firstNameBG || idCardData.firstNameEN) && (
-              <InfoItem>
-                <strong>{isBg ? 'Име:' : 'Name:'}</strong> {idCardData.firstNameBG || idCardData.firstNameEN} {idCardData.lastNameBG || idCardData.lastNameEN}
-              </InfoItem>
-            )}
-          </IDCardInfo>
-        )}
-      </IDCardSection>
-
-      {/* Personal Information Form */}
+      {/* Personal Information Form with Floating Identity Stamp */}
       <FormSection>
+        {/* الختم الطافي - لا يأخذ مساحة */}
+        <IdentityStamp
+          firstName={userInfo.firstName || 'FIRST NAME'}
+          lastName={userInfo.lastName || 'LAST NAME'}
+          email={userInfo.email || 'EMAIL@EXAMPLE.COM'}
+          phone={userInfo.phoneNumber || '+359 00 000 000'}
+          region={userInfo.region || 'REGION'}
+          city={userInfo.city || 'CITY'}
+          address={userInfo.address || 'ADDRESS'}
+          numericId={user?.numericId || 0}
+          isDark={isDarkMode}
+        />
+        
         <FormTitle>
           {isBg ? 'Лична информация' : 'Personal Information'}
         </FormTitle>
@@ -1654,10 +1667,10 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
             />
           </SettingGroup>
         </FormRow>
-        <HelpText>
+        <HelpText style={{ marginTop: '-12px', marginBottom: '16px' }}>
           {isBg 
-            ? 'Името за показване ще бъде автоматично генерирано от първото и последното име'
-            : 'Display name will be automatically generated from first and last name'}
+            ? `Името за показване: ${userInfo.displayName || '(автоматично от първото и последното име)'}` 
+            : `Display name: ${userInfo.displayName || '(automatically from first and last name)'}`}
         </HelpText>
 
         <SettingGroup>
@@ -1687,12 +1700,29 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
             <Phone size={16} style={{ marginRight: '8px', display: 'inline-block' }} />
             {isBg ? 'Телефон' : 'Phone Number'}
           </Label>
-          <Input
-            type="tel"
-            value={userInfo.phoneNumber}
-            onChange={(e) => setUserInfo({ ...userInfo, phoneNumber: e.target.value })}
-            placeholder="+359 888 123 456"
-          />
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <Input
+              type="tel"
+              value={userInfo.phoneNumber}
+              onChange={(e) => {
+                let value = e.target.value;
+                // ✅ تلقائي: إضافة +359 إذا كان الرقم يبدأ بـ 0
+                if (value.startsWith('0') && !value.startsWith('+')) {
+                  value = '+359' + value.substring(1);
+                }
+                // ✅ تنظيف الإدخال: إزالة المسافات الزائدة
+                value = value.replace(/\s{2,}/g, ' ');
+                setUserInfo({ ...userInfo, phoneNumber: value });
+              }}
+              placeholder="+359 888 123 456"
+              style={{ flex: 1 }}
+            />
+          </div>
+          <HelpText style={{ fontSize: '0.8rem', marginTop: '4px' }}>
+            {isBg 
+              ? 'الصيغة: +359 XXX XXX XXX (سيتم التحويل تلقائياً من 0XXX إلى +359XXX)' 
+              : 'Format: +359 XXX XXX XXX (auto-converts 0XXX to +359XXX)'}
+          </HelpText>
         </SettingGroup>
 
         <FormTitle style={{ marginTop: '2rem' }}>
@@ -1702,22 +1732,65 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
         <FormRow>
           <SettingGroup style={{ flex: 1 }}>
             <Label>{isBg ? 'Област' : 'Region'}</Label>
-            <Input
-              type="text"
+            <select
               value={userInfo.region}
-              onChange={(e) => setUserInfo({ ...userInfo, region: e.target.value })}
-              placeholder={isBg ? 'Област' : 'Region'}
-            />
+              onChange={(e) => setUserInfo({ ...userInfo, region: e.target.value, city: '' })}
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                fontSize: '0.9375rem',
+                border: '2px solid var(--border-primary)',
+                borderRadius: '12px',
+                background: 'var(--bg-input)',
+                color: 'var(--text-primary)',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              <option value="">{isBg ? 'Изберете област' : 'Select region'}</option>
+              {BULGARIA_PROVINCES.map(province => (
+                <option key={province.bg} value={province.bg}>
+                  {isBg ? province.bg : province.en}
+                </option>
+              ))}
+            </select>
           </SettingGroup>
 
           <SettingGroup style={{ flex: 1 }}>
             <Label>{isBg ? 'Град' : 'City'}</Label>
-            <Input
-              type="text"
+            <select
               value={userInfo.city}
               onChange={(e) => setUserInfo({ ...userInfo, city: e.target.value })}
-              placeholder={isBg ? 'Град' : 'City'}
-            />
+              disabled={!userInfo.region}
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                fontSize: '0.9375rem',
+                border: '2px solid var(--border-primary)',
+                borderRadius: '12px',
+                background: userInfo.region ? 'var(--bg-input)' : 'rgba(0,0,0,0.1)',
+                color: 'var(--text-primary)',
+                cursor: userInfo.region ? 'pointer' : 'not-allowed',
+                transition: 'all 0.2s ease',
+                opacity: userInfo.region ? 1 : 0.5
+              }}
+            >
+              <option value="">
+                {userInfo.region 
+                  ? (isBg ? 'Изберете град' : 'Select city')
+                  : (isBg ? 'Първо изберете област' : 'Select region first')}
+              </option>
+              {userInfo.region && MAJOR_CITIES_BG.map(city => (
+                <option key={city} value={city}>
+                  {city}
+                </option>
+              ))}
+            </select>
+            {!userInfo.region && (
+              <HelpText style={{ color: '#ff6b35', fontSize: '0.8rem', marginTop: '4px' }}>
+                {isBg ? 'Моля, първо изберете област' : 'Please select a region first'}
+              </HelpText>
+            )}
           </SettingGroup>
         </FormRow>
 
@@ -1755,8 +1828,39 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
           </DangerBox>
         )}
 
+        {/* ✅ Success message */}
+        {saveSuccess && (
+          <div style={{
+            marginTop: '1rem',
+            padding: '16px 20px',
+            background: 'linear-gradient(135deg, #10b981, #059669)',
+            border: '2px solid #34d399',
+            borderRadius: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            color: 'white',
+            animation: 'slideIn 0.3s ease'
+          }}>
+            <Save size={20} />
+            <div>
+              <strong>{isBg ? '✓ Успешно запазено' : '✓ Successfully Saved'}</strong>
+              <p style={{ margin: 0, fontSize: '0.875rem', opacity: 0.9 }}>
+                {isBg ? 'Всички промени са запазени.' : 'All changes have been saved.'}
+              </p>
+            </div>
+          </div>
+        )}
+
         <ActionButtonsContainer>
-          <SaveButton onClick={saveUserInfoHandler} disabled={saving || savingUserInfo}>
+          <SaveButton 
+            onClick={saveUserInfoHandler} 
+            disabled={saving || savingUserInfo || !userInfo.firstName.trim() || !userInfo.lastName.trim()}
+            style={{
+              opacity: (!userInfo.firstName.trim() || !userInfo.lastName.trim()) ? 0.5 : 1,
+              cursor: (!userInfo.firstName.trim() || !userInfo.lastName.trim()) ? 'not-allowed' : 'pointer'
+            }}
+          >
             {saving || savingUserInfo ? (
               <>
                 <Spinner />
@@ -1789,83 +1893,14 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
   );
 };
 
-// Styled components for Edit Information Section
-const IDCardSection = styled.div`
-  background: rgba(168, 85, 247, 0.1);
-  border: 2px solid rgba(168, 85, 247, 0.3);
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 32px;
-`;
-
-const IDCardHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 16px;
-`;
-
-const IDCardTitle = styled.h3`
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin: 0 0 8px 0;
-`;
-
-const IDCardSubtitle = styled.p`
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
-  margin: 0;
-`;
-
-const IDCardButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(168, 85, 247, 0.2);
-  border: 1px solid rgba(168, 85, 247, 0.5);
-  border-radius: 8px;
-  padding: 8px 16px;
-  color: #d8b4fe;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: rgba(168, 85, 247, 0.3);
-    transform: translateY(-1px);
-  }
-
-  svg {
-    color: #d8b4fe;
-  }
-`;
-
-const IDCardInfo = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  padding: 16px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-`;
-
-const InfoItem = styled.div`
-  font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.9);
-
-  strong {
-    color: rgba(255, 255, 255, 0.6);
-    margin-right: 4px;
-    font-weight: normal;
-  }
-`;
+// ID Card styled components removed - 2025-12-24
 
 const FormSection = styled.div`
+  position: relative;
   background: rgba(255, 255, 255, 0.03);
   border-radius: 16px;
   padding: 24px;
+  overflow: visible;
 `;
 
 const FormTitle = styled.h4`

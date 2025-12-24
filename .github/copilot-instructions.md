@@ -89,13 +89,15 @@ class MyService {
 
 ### Context Providers
 Centralized state management (no Redux):
-- `AuthProvider` - Firebase auth state
-- `ProfileTypeContext` - User profile type & permissions
+- `AuthProvider` - Firebase auth state, login/logout flows
+- `ProfileTypeContext` - User profile type & permissions (Private/Dealer/Company)
 - `FilterContext` - Search filters (homepage, browse pages)
-- `LanguageContext` - i18n (bg/en)
-- `ThemeContext` - Dark/light mode
+- `LanguageContext` - i18n (bg/en), translation utilities
+- `ThemeContext` - Dark/light mode switching
+- `LoadingContext` - Global loading states with messages (use `showLoading(message)`, `hideLoading()`)
 
-Import from barrel: `import { useAuth, useProfileType } from '@/contexts';`
+Import from barrel: `import { useAuth, useProfileType, useLanguage } from '@/contexts';`
+**Note**: Not all contexts exported from barrel - check `src/contexts/index.ts` for available exports.
 
 ### React Component Structure
 ```
@@ -189,7 +191,9 @@ src/**/*.spec.{ts,tsx}
 ### Performance Optimization
 - **Images**: Always use WebP format (scripts in `scripts/optimize-images.js`)
 - **Lazy Loading**: Use `safeLazy()` from `utils/lazyImport` for route-level code splitting
-- **Loading States**: Use `LightweightLoadingOverlay` (CSS-only, no Three.js)
+  - **Implementation**: `safeLazy()` handles edge cases in dynamic imports with fallback to prevent crashes
+  - Always wrap route imports: `const HomePage = safeLazy(() => import('../pages/HomePage'));`
+- **Loading States**: Use `LightweightLoadingOverlay` (CSS-only, no Three.js) or `LoadingContext` for global states
 - **Bundle Analysis**: `npm run build:analyze` for size inspection
 
 ## Common Pitfalls
@@ -253,6 +257,6 @@ firebase emulators:start    # Starts Firestore/Auth/Functions emulators
 
 ---
 
-**Version**: 1.1.0  
-**Last Updated**: December 23, 2025  
+**Version**: 1.2.0  
+**Last Updated**: December 24, 2025  
 **Status**: Production
