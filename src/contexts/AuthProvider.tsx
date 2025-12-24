@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react';
 import { User, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
 import { auth } from '../firebase/firebase-config';
 import { SocialAuthService } from '../firebase/social-auth-service';
@@ -190,7 +190,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       logger.info('User logged in successfully', { email });
@@ -198,9 +198,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       logger.error('Login failed', error as Error, { email });
       throw error;
     }
-  };
+  }, []);
 
-  const register = async (email: string, password: string, options?: RegisterOptions) => {
+  const register = useCallback(async (email: string, password: string, options?: RegisterOptions) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       
@@ -216,9 +216,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       logger.error('Registration failed', error as Error, { email });
       throw error;
     }
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await signOut(auth);
       logger.info('User logged out successfully');
@@ -226,16 +226,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       logger.error('Logout failed', error as Error);
       throw error;
     }
-  };
+  }, []);
 
-  const value: AuthContextType = {
+  const value: AuthContextType = useMemo(() => ({
     currentUser,
     user: currentUser,
     loading,
     login,
     register,
     logout,
-  };
+  }), [currentUser, loading, login, register, logout]);
 
   return (
     <AuthContext.Provider value={value}>
