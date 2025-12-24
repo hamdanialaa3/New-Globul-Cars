@@ -28,19 +28,21 @@ interface ModernCarCardProps {
 }
 
 export default function ModernCarCard({ car }: ModernCarCardProps) {
+  const [imageError, setImageError] = React.useState(false);
   const { isFavorite, toggleFavorite } = useFavorites();
   const isFav = isFavorite(car.id);
   const detailsUrl = getCarDetailsUrl(car);
+  const mainImageSrc = imageError ? '/images/placeholder-car.jpg' : (car.images?.[0] || '/images/placeholder-car.jpg');
 
   return (
     <div className="group bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 h-full flex flex-col">
       {/* Image Container - Updated Link */}
       <Link to={detailsUrl} className="block relative aspect-[4/3] overflow-hidden flex-shrink-0">
         <img
-          src={car.images?.[0] || '/images/placeholder-car.jpg'}
+          src={mainImageSrc}
           alt={`${car.make} ${car.model}`}
           className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
-          onError={(e) => { (e.target as HTMLImageElement).src = '/images/placeholder-car.jpg'; }}
+          onError={() => { if (!imageError) setImageError(true); }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 

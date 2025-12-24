@@ -50,8 +50,9 @@ const CompactCarCard: React.FC<CompactCarCardProps> = ({
   onView,
   showStatus = false
 }) => {
+  const [imageError, setImageError] = React.useState(false);
   const detailsUrl = getCarDetailsUrl(car);
-  const mainImage = car.images?.[0] || car.mainImage?.url || '/images/placeholder-car.jpg';
+  const mainImage = imageError ? '/images/placeholder-car.jpg' : (car.images?.[0] || car.mainImage?.url || '/images/placeholder-car.jpg');
   
   // Status determination
   const isActive = car.isActive !== false && car.isSold !== true;
@@ -81,7 +82,7 @@ const CompactCarCard: React.FC<CompactCarCardProps> = ({
         <CardImage 
           src={mainImage} 
           alt={`${car.make} ${car.model}`}
-          onError={(e) => { (e.target as HTMLImageElement).src = '/images/placeholder-car.jpg'; }}
+          onError={() => { if (!imageError) setImageError(true); }}
         />
         <ImageOverlay />
         

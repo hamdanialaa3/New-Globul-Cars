@@ -39,6 +39,7 @@ interface CarCardProps {
 
 const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const { isFavorite, toggleFavorite } = useFavorites();
   const { user } = useAuth();
 
@@ -51,10 +52,10 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
     toggleFavorite(car.id || '');
   };
 
-  // Fixed: Use string images only, never create blob URLs in render
-  const mainImageSrc = car.images?.[0] && typeof car.images[0] === 'string'
-    ? car.images[0]
-    : '/images/placeholder-car.jpg';
+  // Fixed: Use string images only, with error state to prevent infinite loops
+  const mainImageSrc = imageError || !car.images?.[0] || typeof car.images[0] !== 'string'
+    ? '/images/placeholder-car.jpg'
+    : car.images[0];
 
   const locationName = (typeof car.location === 'object' ? (car.location as any)?.city : car.location) ||
     (car.locationData?.cityName as any) || 'Location N/A';
@@ -75,7 +76,12 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
           alt={`${car.make} ${car.model}`}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           loading="lazy"
-          onError={(e) => { (e.target as HTMLImageElement).src = '/images/placeholder-car.jpg'; }}
+          onError={(e) => {
+            // Prevent infinite loop by only handling error once
+            if (!imageError) {
+              setImageError(true);
+            }
+          }}
         />
 
         {/* Image Count Badge */}
