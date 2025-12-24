@@ -300,6 +300,22 @@ class NotificationService {
   }
 
   /**
+   * Listen for foreground messages (Stub for production)
+   * This prevents the "onForegroundMessage is not a function" error
+   * Returns an unsubscribe function
+   */
+  onForegroundMessage(callback: (payload: any) => void): () => void {
+    logger.info('📱 Foreground message listener initialized (stub)');
+    // TODO: Implement Firebase Cloud Messaging (FCM) foreground message listener
+    // For now, this is a stub to prevent errors in production
+    
+    // Return a no-op unsubscribe function
+    return () => {
+      logger.info('📱 Foreground message listener unsubscribed (stub)');
+    };
+  }
+
+  /**
    * Get car URL from notification
    * Uses strict numeric ID system
    */
