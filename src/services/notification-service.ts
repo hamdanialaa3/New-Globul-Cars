@@ -286,6 +286,20 @@ class NotificationService {
   }
 
   /**
+   * Request permission and save FCM token (Stub for production)
+   * This prevents the "requestPermissionAndSaveToken is not a function" error
+   */
+  async requestPermissionAndSaveToken(userId: string): Promise<void> {
+    try {
+      logger.info('📱 Notification permission requested (stub)', { userId });
+      // TODO: Implement Firebase Cloud Messaging (FCM) token registration
+      // For now, this is a stub to prevent errors in production
+    } catch (error) {
+      logger.error('Failed to request notification permission', error as Error, { userId });
+    }
+  }
+
+  /**
    * Get car URL from notification
    * Uses strict numeric ID system
    */
