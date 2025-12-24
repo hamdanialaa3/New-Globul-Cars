@@ -13,7 +13,8 @@
  * - EUR currency
  */
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import './CarDetailsTheme.css'; // Import theme CSS
 import {
@@ -41,11 +42,18 @@ import {
   FileText,
   Crown,
   Trash2,
-  AlertTriangle
+  AlertTriangle,
+  Facebook,
+  Instagram,
+  Linkedin,
+  Copy,
+  Check,
+  Printer
 } from 'lucide-react';
 import { CarListing } from '../../../types/CarListing';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { DescriptionPreview } from '../../../components/SmartDescriptionGenerator/DescriptionPreview';
+import { CarPrintSticker } from '../../../components/CarPrint/CarPrintSticker';
 
 interface CarDetailsMobileDEStyleProps {
   car: CarListing;
@@ -1239,6 +1247,104 @@ const DeleteCarButton = styled.button`
   }
 `;
 
+// Share Menu Components
+const ShareMenuContainer = styled.div`
+  position: relative;
+  display: inline-block;
+  z-index: 999999;
+`;
+
+const ShareMenuDropdown = styled.div<{ $isOpen: boolean; $top?: number; $left?: number }>`
+  position: ${props => props.$top !== undefined && props.$left !== undefined ? 'fixed' : 'absolute'};
+  ${props => props.$top !== undefined ? `top: ${props.$top}px;` : 'top: calc(100% + 10px);'}
+  ${props => props.$left !== undefined ? `left: ${props.$left}px;` : 'right: 0;'}
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  min-width: 280px;
+  z-index: 999999 !important;
+  opacity: ${props => props.$isOpen ? 1 : 0};
+  visibility: ${props => props.$isOpen ? 'visible' : 'hidden'};
+  transform: ${props => props.$isOpen ? 'translateY(0) scale(1)' : 'translateY(-10px) scale(0.95)'};
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+  pointer-events: ${props => props.$isOpen ? 'auto' : 'none'};
+
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    right: 20px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid var(--bg-card);
+  }
+`;
+
+const ShareMenuHeader = styled.div`
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-primary);
+  background: linear-gradient(135deg, rgba(255, 143, 16, 0.05) 0%, rgba(255, 107, 53, 0.05) 100%);
+`;
+
+const ShareMenuTitle = styled.h4`
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`;
+
+const ShareOptionsList = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+  gap: 0.25rem;
+`;
+
+const ShareOption = styled.button<{ $color?: string }>`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: left;
+  width: 100%;
+
+  &:hover {
+    background: var(--bg-hover);
+    transform: translateX(4px);
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    color: ${props => props.$color || 'var(--text-primary)'};
+    flex-shrink: 0;
+  }
+
+  span {
+    flex: 1;
+  }
+`;
+
+const ShareDivider = styled.div`
+  height: 1px;
+  background: var(--border-primary);
+  margin: 0.5rem 0;
+`;
+
 const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   car,
   language,
@@ -1251,11 +1357,18 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   monthlyDeletionsUsed = 0,
   activeListingsCount = 0,
 }) => {
+  const navigate = useNavigate();
   const { theme } = useTheme();
   const t = translations[language];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showPhoneNumber, setShowPhoneNumber] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const [isLinkCopied, setIsLinkCopied] = useState(false);
+  const [showPrintDialog, setShowPrintDialog] = useState(false);
+  const [shareMenuPosition, setShareMenuPosition] = useState<{ top: number; left: number } | null>(null);
+  const shareMenuRef = useRef<HTMLDivElement>(null);
+  const shareButtonRef = useRef<HTMLButtonElement>(null);
   const [featuredImageIndex, setFeaturedImageIndex] = useState<number>(
     (car as any).featuredImageIndex ?? 0
   );
@@ -1286,6 +1399,102 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
 
   const handleNextImage = () => {
     setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
+
+  // Share menu handlers
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        shareMenuRef.current &&
+        shareButtonRef.current &&
+        !shareMenuRef.current.contains(event.target as Node) &&
+        !shareButtonRef.current.contains(event.target as Node)
+      ) {
+        setShowShareMenu(false);
+        setShareMenuPosition(null);
+      }
+    };
+
+    if (showShareMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showShareMenu]);
+
+  // Calculate share menu position
+  const handleShareMenuToggle = () => {
+    if (!showShareMenu && shareButtonRef.current) {
+      const rect = shareButtonRef.current.getBoundingClientRect();
+      setShareMenuPosition({
+        top: rect.bottom + window.scrollY + 10,
+        left: rect.right + window.scrollX - 280, // 280 is min-width
+      });
+    }
+    setShowShareMenu(!showShareMenu);
+  };
+
+  // Get car share URL
+  const getCarShareUrl = () => {
+    if (car.sellerNumericId && (car.carNumericId || (car as any).numericId)) {
+      return `${window.location.origin}/car/${car.sellerNumericId}/${car.carNumericId || (car as any).numericId}`;
+    }
+    return `${window.location.origin}/car/${car.id}`;
+  };
+
+  const getCarShareTitle = () => {
+    return `${car.make} ${car.model} ${car.year} - ${car.price}€`;
+  };
+
+  const handleShare = (platform: string) => {
+    const carUrl = getCarShareUrl();
+    const shareTitle = getCarShareTitle();
+    const encodedUrl = encodeURIComponent(carUrl);
+    const encodedTitle = encodeURIComponent(shareTitle);
+
+    switch (platform) {
+      case 'facebook':
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`, '_blank', 'width=600,height=400');
+        break;
+      case 'instagram':
+        // Instagram doesn't support direct sharing, show message
+        alert(language === 'bg' 
+          ? 'Копирайте линка и го споделете в Instagram Stories или публикация' 
+          : 'Copy the link and share it in Instagram Stories or post');
+        navigator.clipboard.writeText(carUrl);
+        setIsLinkCopied(true);
+        setTimeout(() => setIsLinkCopied(false), 2000);
+        break;
+      case 'tiktok':
+        // TikTok doesn't support direct sharing, show message
+        alert(language === 'bg' 
+          ? 'Копирайте линка и го споделете в TikTok' 
+          : 'Copy the link and share it on TikTok');
+        navigator.clipboard.writeText(carUrl);
+        setIsLinkCopied(true);
+        setTimeout(() => setIsLinkCopied(false), 2000);
+        break;
+      case 'twitter':
+        window.open(`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`, '_blank', 'width=600,height=400');
+        break;
+      case 'linkedin':
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`, '_blank', 'width=600,height=400');
+        break;
+      case 'whatsapp':
+        window.open(`https://wa.me/?text=${encodeURIComponent(`${shareTitle} ${carUrl}`)}`, '_blank');
+        break;
+      case 'viber':
+        window.open(`viber://forward?text=${encodeURIComponent(`${shareTitle} ${carUrl}`)}`, '_blank');
+        break;
+      case 'email':
+        window.location.href = `mailto:?subject=${encodedTitle}&body=${encodeURIComponent(`Check out this car: ${carUrl}`)}`;
+        break;
+      case 'copy':
+        navigator.clipboard.writeText(carUrl);
+        setIsLinkCopied(true);
+        setTimeout(() => setIsLinkCopied(false), 2000);
+        break;
+    }
+    setShowShareMenu(false);
   };
 
   const formatPrice = (price: number) => {
@@ -1382,6 +1591,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   };
 
   return (
+    <>
     <Container>
       {/* Header */}
       <Header>
@@ -1392,8 +1602,93 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
           </BackButton>
         </HeaderLeft>
         <HeaderActions>
-          <IconButton onClick={() => onContact('share')}>
-            <Share2 size={20} />
+          <ShareMenuContainer>
+            <IconButton 
+              ref={shareButtonRef}
+              onClick={handleShareMenuToggle}
+            >
+              <Share2 size={20} />
+            </IconButton>
+            {showShareMenu && (
+              <ShareMenuDropdown 
+                ref={shareMenuRef} 
+                $isOpen={showShareMenu}
+                $top={shareMenuPosition?.top}
+                $left={shareMenuPosition?.left}
+              >
+              <ShareMenuHeader>
+                <ShareMenuTitle>
+                  {language === 'bg' ? 'Сподели' : 'Share'}
+                </ShareMenuTitle>
+              </ShareMenuHeader>
+              <ShareOptionsList>
+                <ShareOption onClick={() => handleShare('facebook')} $color="#1877F2">
+                  <Facebook size={20} />
+                  <span>Facebook</span>
+                </ShareOption>
+                <ShareOption onClick={() => handleShare('instagram')} $color="#E4405F">
+                  <Instagram size={20} />
+                  <span>Instagram</span>
+                </ShareOption>
+                <ShareOption onClick={() => handleShare('tiktok')} $color="#000000">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                  </svg>
+                  <span>TikTok</span>
+                </ShareOption>
+                <ShareOption onClick={() => handleShare('twitter')} $color="#1DA1F2">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                  <span>Twitter/X</span>
+                </ShareOption>
+                <ShareOption onClick={() => handleShare('linkedin')} $color="#0077B5">
+                  <Linkedin size={20} />
+                  <span>LinkedIn</span>
+                </ShareOption>
+                <ShareDivider />
+                <ShareOption onClick={() => handleShare('whatsapp')} $color="#25D366">
+                  <MessageCircle size={20} />
+                  <span>WhatsApp</span>
+                </ShareOption>
+                <ShareOption onClick={() => handleShare('viber')} $color="#665CAC">
+                  <MessageCircle size={20} />
+                  <span>Viber</span>
+                </ShareOption>
+                <ShareOption onClick={() => handleShare('email')} $color="#EA4335">
+                  <Mail size={20} />
+                  <span>{language === 'bg' ? 'Имейл' : 'Email'}</span>
+                </ShareOption>
+                <ShareDivider />
+                <ShareOption onClick={() => handleShare('copy')}>
+                  {isLinkCopied ? <Check size={20} color="#22c55e" /> : <Copy size={20} />}
+                  <span>
+                    {isLinkCopied 
+                      ? (language === 'bg' ? 'Копирано!' : 'Copied!')
+                      : (language === 'bg' ? 'Копирай линк' : 'Copy Link')
+                    }
+                  </span>
+                </ShareOption>
+              </ShareOptionsList>
+              </ShareMenuDropdown>
+            )}
+          </ShareMenuContainer>
+          <IconButton 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('Print button clicked, setting showPrintDialog to true');
+              try {
+                setShowPrintDialog(true);
+                console.log('showPrintDialog set to true');
+              } catch (error) {
+                console.error('Error setting showPrintDialog:', error);
+              }
+            }} 
+            title={language === 'bg' ? 'Печат' : 'Print'}
+            type="button"
+          >
+            <Printer size={20} />
           </IconButton>
           <IconButton>
             <Heart size={20} />
@@ -1704,7 +1999,19 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
           <SellerCard>
             <SectionTitle>{t.sellerInformation}</SectionTitle>
             <SellerHeader>
-              <SellerLogo>
+              <SellerLogo 
+                onClick={() => {
+                  // Navigate to seller profile using numeric ID
+                  if (car.sellerNumericId) {
+                    navigate(`/profile/${car.sellerNumericId}`);
+                  } else if (car.sellerId) {
+                    // Fallback to legacy ID if numeric ID not available
+                    navigate(`/profile/${car.sellerId}`);
+                  }
+                }}
+                style={{ cursor: 'pointer' }}
+                title={language === 'bg' ? 'Виж профила на продавача' : 'View seller profile'}
+              >
                 {car.sellerName ? car.sellerName.charAt(0).toUpperCase() : <User />}
               </SellerLogo>
               <SellerInfo>
@@ -1800,7 +2107,63 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
           </ModalContent>
         </ModalOverlay>
       )}
+
     </Container>
+
+    {/* Print Dialog - Outside Container, positioned below Header */}
+    {showPrintDialog && (
+      <CarPrintSticker
+        car={car}
+        language={language}
+        onClose={() => setShowPrintDialog(false)}
+        onPrint={() => {
+          window.print();
+          setShowPrintDialog(false);
+        }}
+        onDownloadPDF={async () => {
+          try {
+            const html2canvas = (await import('html2canvas')).default;
+            const jsPDF = (await import('jspdf')).jsPDF;
+            
+            const printElement = document.querySelector('[data-print-content]');
+            if (printElement) {
+              const canvas = await html2canvas(printElement as HTMLElement, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                useCORS: true,
+              });
+
+              const imgData = canvas.toDataURL('image/png');
+              const pdf = new jsPDF('p', 'mm', 'a4');
+              const imgWidth = 210;
+              const pageHeight = 297;
+              const imgHeight = (canvas.height * imgWidth) / canvas.width;
+              let heightLeft = imgHeight;
+              let position = 0;
+
+              pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+              heightLeft -= pageHeight;
+
+              while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+              }
+
+              pdf.save(`${car.make}-${car.model}-${car.year}.pdf`);
+              setShowPrintDialog(false);
+            }
+          } catch (error) {
+            console.error('PDF generation error:', error);
+            alert(language === 'bg' 
+              ? 'Моля инсталирайте библиотеките: npm install jspdf html2canvas' 
+              : 'Please install libraries: npm install jspdf html2canvas');
+          }
+        }}
+      />
+    )}
+  </>
   );
 };
 

@@ -37,6 +37,12 @@ const HomeContainer = styled.main`
   color: var(--text-primary);
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
+  
+  /* Performance optimizations */
+  will-change: auto;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: layout style paint;
 `;
 
 const SectionSpacer = styled.div`
@@ -58,7 +64,8 @@ const LoadingFallback = styled.div`
   border: 1px solid var(--border-primary);
 `;
 
-const HomePage: React.FC = () => {
+// Memoize HomePage to prevent unnecessary re-renders
+const HomePage: React.FC = React.memo(() => {
   return (
     <HomeContainer>
       {/* 1. Hero Section - Modern AI-Powered Entry */}
@@ -213,7 +220,7 @@ const HomePage: React.FC = () => {
 
       {/* 15. Loyalty Banner - Classic Trust */}
       <GridSectionWrapper intensity="medium" variant="vintage">
-        <LazySection rootMargin="100px">
+        <LazySection rootMargin="200px">
           <Suspense fallback={null}>
             <LoyaltyBanner />
           </Suspense>
@@ -237,6 +244,8 @@ const HomePage: React.FC = () => {
       </Suspense>
     </HomeContainer>
   );
-};
+});
+
+HomePage.displayName = 'HomePage';
 
 export default HomePage;

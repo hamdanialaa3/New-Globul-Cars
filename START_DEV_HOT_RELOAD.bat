@@ -11,6 +11,8 @@ echo.
 cd /d "%~dp0"
 
 REM Set environment variables for development
+set PORT=3000
+set HOST=localhost
 set BROWSER=none
 set FAST_REFRESH=true
 set DISABLE_ESLINT_PLUGIN=true

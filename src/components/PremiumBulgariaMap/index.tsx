@@ -7,7 +7,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 const BULGARIA_REGIONS = [
   {
     id: 'sofia',
-    name: { en: 'Sofia', bg: 'София', ar: 'صوفيا' },
+    name: { en: 'Sofia', bg: 'София' },
     path: 'M 180,220 L 200,210 L 220,215 L 230,230 L 220,245 L 200,250 L 180,240 Z',
     cities: ['Sofia'],
     color: '#3b82f6',
@@ -16,7 +16,7 @@ const BULGARIA_REGIONS = [
   },
   {
     id: 'plovdiv',
-    name: { en: 'Plovdiv', bg: 'Пловдив', ar: 'بلوفديف' },
+    name: { en: 'Plovdiv', bg: 'Пловдив' },
     path: 'M 250,260 L 280,255 L 300,265 L 295,285 L 270,290 L 250,280 Z',
     cities: ['Plovdiv'],
     color: '#8b5cf6',
@@ -25,7 +25,7 @@ const BULGARIA_REGIONS = [
   },
   {
     id: 'varna',
-    name: { en: 'Varna', bg: 'Варна', ar: 'فارنا' },
+    name: { en: 'Varna', bg: 'Варна' },
     path: 'M 420,150 L 445,145 L 460,160 L 455,180 L 435,185 L 420,170 Z',
     cities: ['Varna'],
     color: '#06b6d4',
@@ -34,7 +34,7 @@ const BULGARIA_REGIONS = [
   },
   {
     id: 'burgas',
-    name: { en: 'Burgas', bg: 'Бургас', ar: 'بورغاس' },
+    name: { en: 'Burgas', bg: 'Бургас' },
     path: 'M 400,250 L 430,245 L 450,260 L 445,280 L 420,285 L 400,270 Z',
     cities: ['Burgas'],
     color: '#10b981',
@@ -43,7 +43,7 @@ const BULGARIA_REGIONS = [
   },
   {
     id: 'ruse',
-    name: { en: 'Ruse', bg: 'Русе', ar: 'روسه' },
+    name: { en: 'Ruse', bg: 'Русе' },
     path: 'M 320,100 L 345,95 L 360,110 L 355,130 L 330,135 L 320,120 Z',
     cities: ['Ruse'],
     color: '#f59e0b',
@@ -52,7 +52,7 @@ const BULGARIA_REGIONS = [
   },
   {
     id: 'blagoevgrad',
-    name: { en: 'Blagoevgrad', bg: 'Благоевград', ar: 'بلاغويفغراد' },
+    name: { en: 'Blagoevgrad', bg: 'Благоевград' },
     path: 'M 120,280 L 150,275 L 165,290 L 160,310 L 135,315 L 120,300 Z',
     cities: ['Blagoevgrad'],
     color: '#ec4899',
@@ -61,7 +61,7 @@ const BULGARIA_REGIONS = [
   },
   {
     id: 'pleven',
-    name: { en: 'Pleven', bg: 'Плевен', ar: 'بليفين' },
+    name: { en: 'Pleven', bg: 'Плевен' },
     path: 'M 260,140 L 285,135 L 300,150 L 295,170 L 270,175 L 260,160 Z',
     cities: ['Pleven'],
     color: '#14b8a6',
@@ -70,7 +70,7 @@ const BULGARIA_REGIONS = [
   },
   {
     id: 'stara-zagora',
-    name: { en: 'Stara Zagora', bg: 'Стара Загора', ar: 'ستارا زاغورا' },
+    name: { en: 'Stara Zagora', bg: 'Стара Загора' },
     path: 'M 310,230 L 340,225 L 355,240 L 350,260 L 325,265 L 310,250 Z',
     cities: ['Stara Zagora'],
     color: '#f97316',

@@ -8,7 +8,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { media, spacing, colors, zIndex, shadows, borderRadius } from '../../styles/design-system';
 import LanguageToggle from '../LanguageToggle/LanguageToggle';
 import CyberToggle from '../CyberToggle/CyberToggle';
-import { useFirestoreNotifications } from '../../hooks/useFirestoreNotifications';
+import { NotificationBell } from '../layout/Header/NotificationBell';
 
 const HeaderContainer = styled.header<{ $isDark?: boolean }>`
   position: fixed !important;
@@ -587,7 +587,6 @@ const UnifiedHeader: React.FC = () => {
   const [showDevModal, setShowDevModal] = useState(false);
   const [devCode, setDevCode] = useState('');
   const settingsRef = useRef<HTMLDivElement>(null);
-  const { unreadCount } = useFirestoreNotifications();
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -680,6 +679,9 @@ const UnifiedHeader: React.FC = () => {
           </LeftNav>
 
           <Actions ref={settingsRef}>
+            {/* NEW: Notification Bell Component */}
+            <NotificationBell />
+
             <SettingsButton
               $isDark={isDark}
               onClick={(e) => {
@@ -770,7 +772,7 @@ const UnifiedHeader: React.FC = () => {
                     {language === 'bg' ? 'Прегледайте всички известия' : 'View all notifications'}
                   </RowSubtitle>
                 </RowContent>
-                {unreadCount > 0 && <RowBadge $isDark={isDark}>{unreadCount > 99 ? '99+' : unreadCount}</RowBadge>}
+                {/* Badge removed - NotificationBell handles this */}
               </SettingsRow>
 
               {/* 3. Messages Row */}
@@ -827,6 +829,26 @@ const UnifiedHeader: React.FC = () => {
                   </RowSubtitle>
                 </RowContent>
               </SettingsRow>
+
+              {/* 6. Settings Row */}
+              {user && (
+                <SettingsRow
+                  $isDark={isDark}
+                  onClick={() => handleSettingsItemClick('/profile/settings')}
+                >
+                  <RowIcon $isDark={isDark} className="row-icon">
+                    <Settings size={20} />
+                  </RowIcon>
+                  <RowContent>
+                    <RowTitle $isDark={isDark} className="row-text">
+                      {language === 'bg' ? 'Настройки' : 'Settings'}
+                    </RowTitle>
+                    <RowSubtitle $isDark={isDark}>
+                      {language === 'bg' ? 'Управление на профила' : 'Manage your profile'}
+                    </RowSubtitle>
+                  </RowContent>
+                </SettingsRow>
+              )}
 
               <Divider $isDark={isDark} />
 

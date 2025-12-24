@@ -57,7 +57,11 @@ export const useFavorites = () => {
     // Check if user is logged in
     if (!user?.uid) {
       toast.info('Please login to add favorites');
-      navigate('/login');
+      // Save car data to localStorage for post-login
+      if (carData) {
+        localStorage.setItem('pending_favorite', JSON.stringify({ carId, carData }));
+      }
+      navigate(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
       return false;
     }
 

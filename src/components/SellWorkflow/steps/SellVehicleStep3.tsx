@@ -113,7 +113,7 @@ const SwitchLabel = styled.div`
 
 const SwitchOuter = styled.div<{ $isOn: boolean }>`
   position: relative;
-  width: 200px;
+  width: 100px;
   height: 50px;
   background: ${props => props.$isOn ? 'var(--bg-card)' : 'var(--bg-secondary)'};
   border-radius: 25px;

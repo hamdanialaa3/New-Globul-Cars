@@ -155,7 +155,7 @@ export const SellVehicleStep6_5: React.FC<SellVehicleStep6_5Props> = ({
           initialDescription={workflowData.description}
           onChange={(description) => onUpdate({ description })}
           maxLength={800}
-          minLength={100}
+          minLength={0}
         />
       </DescriptionWrapper>
     </Container>

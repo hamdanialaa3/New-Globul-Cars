@@ -18,7 +18,7 @@ import {
   numericMessagingSystemService,
   type NumericMessage
 } from '../../services/numeric-messaging-system.service';
-import { SocialAuthService } from '../../firebase/social-auth-service';
+import { BulgarianProfileService } from '../../services/bulgarian-profile-service';
 import { db } from '../../firebase/firebase-config';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { serviceLogger } from '../../services/logger-service';
@@ -211,7 +211,7 @@ const NumericMessagingPage: React.FC<NumericMessagingPageProps> = () => {
         throw new Error('❌ Not authenticated');
       }
 
-      const userProfile = await SocialAuthService.getBulgarianUserProfile(currentUser.uid);
+      const userProfile = await BulgarianProfileService.getUserProfile(currentUser.uid);
 
       if (!userProfile?.numericId || userProfile.numericId !== senderNumId) {
         throw new Error(`❌ You do not own numeric ID ${senderNumId}`);

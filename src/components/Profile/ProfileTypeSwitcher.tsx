@@ -206,15 +206,15 @@ export const ProfileTypeSwitcher: React.FC<ProfileTypeSwitcherProps> = ({
       type: 'private' as ProfileType,
       icon: <User size={24} />,
       color: '#FF8F10',
-      nameBG: 'شخصي',
+      nameBG: 'Частен',
       nameEN: 'Private',
-      descriptionBG: 'للأفراد الذين يبيعون سياراتهم الشخصية',
+      descriptionBG: 'За физически лица, продаващи лични автомобили',
       descriptionEN: 'For individuals selling personal cars',
       features: [
-        '3 إعلانات مجانية',
-        'رسائل مباشرة',
-        'تتبع المشاهدات',
-        'مجاني بالكامل'
+        '3 безплатни обяви',
+        'Директни съобщения',
+        'Проследяване на прегледите',
+        'Напълно безплатно'
       ],
       requirements: []
     },
@@ -222,37 +222,37 @@ export const ProfileTypeSwitcher: React.FC<ProfileTypeSwitcherProps> = ({
       type: 'dealer' as ProfileType,
       icon: <Building2 size={24} />,
       color: '#16a34a',
-      nameBG: 'تاجر',
+      nameBG: 'Дилър',
       nameEN: 'Dealer',
-      descriptionBG: 'لمعارض السيارات والتجار المرخصين',
+      descriptionBG: 'За автосалони и лицензирани търговци',
       descriptionEN: 'For car dealerships and licensed traders',
       features: [
-        '50-150 إعلان نشط',
-        'صفحة معرض احترافية',
-        'تحليلات متقدمة',
-        'دعم الفريق',
-        'API access'
+        '50-150 активни обяви',
+        'Професионална страница на салона',
+        'Разширени анализи',
+        'Поддръжка на екипа',
+        'API достъп'
       ],
       requirements: [
-        'رقم ترخيص تجاري صالح',
-        'رقم ضريبة القيمة المضافة',
-        'معلومات كاملة عن المعرض'
+        'Валиден номер на търговски лиценз',
+        'ДДС номер',
+        'Пълна информация за салона'
       ]
     },
     {
       type: 'company' as ProfileType,
       icon: <Briefcase size={24} />,
       color: '#1d4ed8',
-      nameBG: 'شركة',
+      nameBG: 'Компания',
       nameEN: 'Company',
-      descriptionBG: 'للشركات وإدارة الأساطيل الكبيرة',
+      descriptionBG: 'За компании и управление на големи автопаркове',
       descriptionEN: 'For companies and large fleet management',
       features: [
-        '100+ إعلان نشط',
-        'إدارة الفريق (10-50 عضو)',
-        'تحليلات الأساطيل',
-        'API كامل',
-        'مدير حساب مخصص'
+        '100+ активни обяви',
+        'Управление на екипа (10-50 члена)',
+        'Анализи на автопарка',
+        'Пълен API достъп',
+        'Специален мениджър на акаунта'
       ],
       requirements: [
         'رقم BULSTAT صالح',
@@ -265,21 +265,21 @@ export const ProfileTypeSwitcher: React.FC<ProfileTypeSwitcherProps> = ({
 
   const handleSwitch = async () => {
     if (selectedType === currentType) {
-      toast.info('هذا هو نوع الحساب الحالي');
+      toast.info('Това е текущият тип акаунт');
       return;
     }
 
     setLoading(true);
     try {
       await switchProfileType(selectedType);
-      toast.success(`تم التحويل إلى حساب ${typeOptions.find(t => t.type === selectedType)?.nameBG}`);
+      toast.success(`Успешно превключване към ${typeOptions.find(t => t.type === selectedType)?.nameBG}`);
       
       if (onSwitchComplete) {
         onSwitchComplete();
       }
     } catch (error) {
       const errorMessage = (error as Error).message;
-      toast.error(errorMessage || 'فشل تحويل نوع الحساب');
+      toast.error(errorMessage || 'Неуспешно превключване на типа акаунт');
     } finally {
       setLoading(false);
     }

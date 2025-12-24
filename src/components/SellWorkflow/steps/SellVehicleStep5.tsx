@@ -29,10 +29,17 @@ const Label = styled.label`
   color: var(--text-primary);
 `;
 
-const Input = styled.input`
+const PriceInputWrapper = styled.div`
+  position: relative;
   width: 100%;
   max-width: 450px;
-  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 0.75rem 3rem 0.75rem 1rem; /* Right padding for € symbol */
   border: 2px solid var(--border);
   border-radius: 10px;
   background: var(--bg-card);
@@ -45,6 +52,15 @@ const Input = styled.input`
     border-color: var(--accent-primary);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   }
+`;
+
+const EuroSymbol = styled.span`
+  position: absolute;
+  right: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  pointer-events: none;
 `;
 
 const Select = styled.select`
@@ -141,15 +157,18 @@ export const SellVehicleStep5: React.FC<SellVehicleStep5Props> = ({
     <FormContainer>
       <FieldGroup>
         <Label style={getLabelStyle(hasPrice)}>{language === 'bg' ? 'Цена' : 'Price'} *</Label>
-        <Input
-          type="number"
-          value={workflowData.price || ''}
-          onChange={(e) => onUpdate({ price: e.target.value })}
-          placeholder={language === 'bg' ? 'Въведете цена' : 'Enter price'}
-          min="0"
-          required
-          style={getInputStyle(hasPrice)}
-        />
+        <PriceInputWrapper>
+          <Input
+            type="number"
+            value={workflowData.price || ''}
+            onChange={(e) => onUpdate({ price: e.target.value })}
+            placeholder={language === 'bg' ? 'Въведете цена' : 'Enter price'}
+            min="0"
+            required
+            style={getInputStyle(hasPrice)}
+          />
+          <EuroSymbol>€</EuroSymbol>
+        </PriceInputWrapper>
       </FieldGroup>
 
       {hasPrice && (

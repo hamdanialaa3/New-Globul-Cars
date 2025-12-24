@@ -5,6 +5,7 @@
 // ✅ /profile                → Current user's profile (auto-redirect or show own)
 // ✅ /profile/18             → User 18 profile (clean, SEO-friendly)
 // ✅ /profile/18/my-ads      → User 18's ads
+// ✅ /profile/18/favorites   → User 18's favorites (NEW)
 // ✅ /profile/18/car/abc123  → User 18's specific car
 // 
 // Backward Compatibility:
@@ -27,6 +28,7 @@ const SettingsPage = React.lazy(() => import('../pages/03_user-pages/profile/Pro
 
 const EditCarPage = React.lazy(() => import('../pages/04_car-selling/EditCarPage'));
 const CarDetailsPage = React.lazy(() => import('../pages/01_main-pages/CarDetailsPage'));
+const UserFavoritesPage = React.lazy(() => import('../pages/03_user-profile/UserFavoritesPage'));
 
 // Loading fallback component
 const TabLoadingFallback: React.FC = () => (
@@ -49,6 +51,7 @@ const TabLoadingFallback: React.FC = () => (
  * ✅ /profile                             → Auto-redirect to /profile/{currentUser.numericId}
  * ✅ /profile/:userId                     → Profile view (numeric ID or username)
  * ✅ /profile/:userId/my-ads              → My Ads tab
+ * ✅ /profile/:userId/favorites           → User Favorites tab (NEW)
  * ✅ /profile/:userId/campaigns           → Campaigns tab
  * ✅ /profile/:userId/analytics           → Analytics tab
  * ✅ /profile/:userId/settings            → Settings tab
@@ -95,6 +98,13 @@ export const NumericProfileRouter: React.FC = () => {
             <ProfileConsultations />
           </Suspense>
         } />
+        
+        {/* 🔥 NEW: Current user's favorites */}
+        <Route path="favorites" element={
+          <Suspense fallback={<TabLoadingFallback />}>
+            <UserFavoritesPage />
+          </Suspense>
+        } />
 
         {/* Specific user profile routes */}
         <Route path=":userId">
@@ -129,6 +139,13 @@ export const NumericProfileRouter: React.FC = () => {
           <Route path="consultations" element={
             <Suspense fallback={<TabLoadingFallback />}>
               <ProfileConsultations />
+            </Suspense>
+          } />
+          
+          {/* 🔥 NEW: User Favorites */}
+          <Route path="favorites" element={
+            <Suspense fallback={<TabLoadingFallback />}>
+              <UserFavoritesPage />
             </Suspense>
           } />
           

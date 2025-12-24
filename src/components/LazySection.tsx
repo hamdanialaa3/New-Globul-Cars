@@ -14,7 +14,8 @@ interface LazySectionProps {
  * Lazy loading wrapper using IntersectionObserver
  * Only renders children when section becomes visible in viewport
  */
-const LazySection: React.FC<LazySectionProps> = ({
+// Memoize LazySection to prevent unnecessary re-renders
+const LazySection: React.FC<LazySectionProps> = React.memo(({
   children,
   rootMargin = '200px',
   threshold = 0.1,
@@ -22,14 +23,23 @@ const LazySection: React.FC<LazySectionProps> = ({
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    // Cleanup previous observer if exists
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    observerRef.current = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
           // Once visible, disconnect observer to prevent unnecessary checks
-          observer.disconnect();
+          if (observerRef.current) {
+            observerRef.current.disconnect();
+            observerRef.current = null;
+          }
         }
       },
       {
@@ -39,15 +49,18 @@ const LazySection: React.FC<LazySectionProps> = ({
       }
     );
 
+    const currentObserver = observerRef.current;
     if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+      currentObserver.observe(sectionRef.current);
     }
 
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
+      if (sectionRef.current && currentObserver) {
+        currentObserver.unobserve(sectionRef.current);
       }
-      observer.disconnect();
+      if (currentObserver) {
+        currentObserver.disconnect();
+      }
     };
   }, [rootMargin, threshold]);
 
@@ -77,7 +90,9 @@ const LazySection: React.FC<LazySectionProps> = ({
       )}
     </div>
   );
-};
+});
+
+LazySection.displayName = 'LazySection';
 
 export default LazySection;
 

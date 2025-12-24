@@ -1,4 +1,4 @@
-// Architecture Diagram Page - صفحة المخطط المعماري
+// Architecture Diagram Page
 // Displays interactive architecture diagram of the project
 
 import React, { useEffect, useRef, useState } from 'react';

@@ -1,0 +1,1564 @@
+{
+  "generatedAt": "2025-12-24T02:14:37.790Z",
+  "totalServices": 179,
+  "unusedServices": 52,
+  "lowUsageServices": 78,
+  "highUsageServices": 8,
+  "unused": [
+    {
+      "file": "src/services/advanced/car-comparison.service.ts",
+      "name": "car-comparison.service",
+      "lineCount": 437,
+      "functions": [
+        "getInstance",
+        "createComparison",
+        "getComparison",
+        "getUserComparisons",
+        "deleteComparison",
+        "analyzeComparison",
+        "findBestPrice",
+        "findLowestMileage",
+        "findNewest",
+        "findMostEquipped",
+        "findBestCondition",
+        "countEquipment",
+        "generateDifferences",
+        "getCarById",
+        "makePublic"
+      ]
+    },
+    {
+      "file": "src/services/advanced/deal-rating.service.ts",
+      "name": "deal-rating.service",
+      "lineCount": 547,
+      "functions": [
+        "getInstance",
+        "calculateDealRating",
+        "findSimilarCars",
+        "calculateMarketStats",
+        "calculateFactorScores",
+        "calculatePriceScore",
+        "calculateMileageScore",
+        "calculateConditionScore",
+        "calculateAgeScore",
+        "calculateEquipmentScore",
+        "calculateSellerScore",
+        "getRatingCategory",
+        "generateReasons",
+        "generateRecommendations",
+        "createUnknownRating",
+        "getBestDeals"
+      ]
+    },
+    {
+      "file": "src/services/advanced-user-management-service.ts",
+      "name": "advanced-user-management-service",
+      "lineCount": 115,
+      "functions": [
+        "getInstance",
+        "createUser",
+        "getUserById",
+        "getUsers",
+        "updateUser",
+        "deleteUser",
+        "createRole",
+        "getRoles",
+        "getUserPermissions",
+        "hasPermission",
+        "getUserActivityLogs",
+        "changeUserStatus",
+        "getSystemStats"
+      ]
+    },
+    {
+      "file": "src/services/analytics/firebase-analytics-service.ts",
+      "name": "firebase-analytics-service",
+      "lineCount": 557,
+      "functions": [
+        "useAnalytics",
+        "withAnalytics",
+        "AnalyticsWrappedComponent",
+        "getInstance",
+        "join",
+        "substring"
+      ]
+    },
+    {
+      "file": "src/services/bulgarian-compliance-service.ts",
+      "name": "bulgarian-compliance-service",
+      "lineCount": 616,
+      "functions": [
+        "getInstance",
+        "initializeComplianceRequirements",
+        "getComplianceStatus",
+        "updateComplianceRequirement",
+        "getFinancialCompliance",
+        "updateFinancialCompliance",
+        "getDataProtectionCompliance",
+        "updateDataProtectionCompliance",
+        "getBusinessRegistration",
+        "updateBusinessRegistration",
+        "generateComplianceReport",
+        "getComplianceRequirements",
+        "logComplianceAction"
+      ]
+    },
+    {
+      "file": "src/services/calls/call-service.ts",
+      "name": "call-service",
+      "lineCount": 275,
+      "functions": [
+        "getInstance",
+        "initiateCall",
+        "answerCall",
+        "endCall",
+        "declineCall",
+        "getCallHistory",
+        "generateChannelId",
+        "getCall",
+        "formatDuration"
+      ]
+    },
+    {
+      "file": "src/services/dealership/dealership.service.ts",
+      "name": "dealership.service",
+      "lineCount": 476,
+      "functions": [
+        "saveDealershipInfo",
+        "getDealershipInfo",
+        "uploadDocument",
+        "deleteDocument",
+        "uploadMedia",
+        "deleteMedia",
+        "updateWorkingHours",
+        "updateServices",
+        "updateCertifications",
+        "savePrivacySettings",
+        "getPrivacySettings",
+        "updateTotalCars",
+        "verifyDealership",
+        "verifyDocument",
+        "searchDealerships"
+      ]
+    },
+    {
+      "file": "src/services/duplicate-detection-enhanced.service.ts",
+      "name": "duplicate-detection-enhanced.service",
+      "lineCount": 472,
+      "functions": [
+        "checkDuplicate",
+        "checkByVIN",
+        "checkByExactSpecs",
+        "checkBySimilarSpecs",
+        "checkSellerHistory",
+        "checkByImageSimilarity",
+        "isRecent",
+        "normalizeText",
+        "getDetectionStats"
+      ]
+    },
+    {
+      "file": "src/services/dynamic-insurance-service.ts",
+      "name": "dynamic-insurance-service",
+      "lineCount": 403,
+      "functions": [
+        "recordDrivingBehavior",
+        "updateRiskScore",
+        "calculateAverageBehavior",
+        "calculateRiskScore",
+        "adjustInsurancePremium",
+        "getRiskScore",
+        "getActivePolicy",
+        "fileInsuranceClaim",
+        "getUserInsuranceClaims",
+        "notifyInsuranceProvider",
+        "processAccidentClaim"
+      ]
+    },
+    {
+      "file": "src/services/enhanced-duplicate-detection.service.ts",
+      "name": "enhanced-duplicate-detection.service",
+      "lineCount": 407,
+      "functions": [
+        "getInstance",
+        "checkDuplicate",
+        "checkByVIN",
+        "checkByExactMatch",
+        "checkBySimilar",
+        "isValidVIN",
+        "checkSuspiciousPatterns",
+        "getDuplicateCarDetails"
+      ]
+    },
+    {
+      "file": "src/services/error-handling-service.ts",
+      "name": "error-handling-service",
+      "lineCount": 362,
+      "functions": [
+        "getInstance",
+        "logError",
+        "getLocalizedError",
+        "handleAuthError",
+        "handleFirestoreError",
+        "handleStorageError",
+        "handleValidationError",
+        "getErrorLog",
+        "clearErrorLog",
+        "getErrorsBySeverity",
+        "getRecentErrors",
+        "isServiceHealthy",
+        "getLogLevel",
+        "sendToMonitoringService",
+        "parse",
+        "handleError",
+        "getErrorMessage"
+      ]
+    },
+    {
+      "file": "src/services/euro-currency-service.ts",
+      "name": "euro-currency-service",
+      "lineCount": 528,
+      "functions": [
+        "getInstance",
+        "formatPrice",
+        "convertBgnToEur",
+        "convertEurToBgn",
+        "calculateVAT",
+        "calculateCommission",
+        "getCommissionStructures",
+        "createCommissionStructure",
+        "recordTransaction",
+        "getFinancialTransactions",
+        "getFinancialSummary",
+        "initializeDefaultCommissionStructures",
+        "getCurrencyConfig",
+        "updateCurrencyConfig",
+        "validatePrice",
+        "getPriceRange"
+      ]
+    },
+    {
+      "file": "src/services/firebase-cache.service.ts",
+      "name": "firebase-cache.service",
+      "lineCount": 278,
+      "functions": [
+        "to",
+        "getInstance",
+        "invalidate",
+        "invalidatePattern",
+        "clear",
+        "evictOldest",
+        "getHitRate",
+        "has"
+      ]
+    },
+    {
+      "file": "src/services/firebase-debug-service.ts",
+      "name": "firebase-debug-service",
+      "lineCount": 68,
+      "functions": [
+        "getInstance",
+        "debugFirebaseData"
+      ]
+    },
+    {
+      "file": "src/services/geocoding-service.ts",
+      "name": "geocoding-service",
+      "lineCount": 323,
+      "functions": [
+        "geocodeAddress",
+        "reverseGeocode",
+        "calculateDistance",
+        "getCurrentLocation",
+        "isInBulgaria",
+        "getBulgarianCities",
+        "formatDistance",
+        "getAddressComponent",
+        "toRadians"
+      ]
+    },
+    {
+      "file": "src/services/google/google-drive.service.ts",
+      "name": "google-drive.service",
+      "lineCount": 298,
+      "functions": [
+        "getInstance",
+        "initialize",
+        "uploadDocument",
+        "listDocuments",
+        "deleteDocument",
+        "downloadDocument",
+        "getOrCreateFolder",
+        "getFileIcon",
+        "formatFileSize"
+      ]
+    },
+    {
+      "file": "src/services/hcaptcha-service.ts",
+      "name": "hcaptcha-service",
+      "lineCount": 133,
+      "functions": [
+        "verifyToken",
+        "getConfig",
+        "isConfigured",
+        "getSiteKey",
+        "async",
+        "verifyCaptcha",
+        "createCaptchaService"
+      ]
+    },
+    {
+      "file": "src/services/market-value.service.ts",
+      "name": "market-value.service",
+      "lineCount": 83,
+      "functions": [
+        "calculateMarketValue",
+        "getMarketValue"
+      ]
+    },
+    {
+      "file": "src/services/meta/facebook-auto-post.service.ts",
+      "name": "facebook-auto-post.service",
+      "lineCount": 236,
+      "functions": [
+        "postCarWithPhoto",
+        "postCarAsLink",
+        "generateCaption",
+        "addEngagementComment",
+        "delay",
+        "testConnection"
+      ]
+    },
+    {
+      "file": "src/services/notifications/unified-notification.service.ts",
+      "name": "unified-notification.service",
+      "lineCount": 90,
+      "functions": [
+        "getInstance",
+        "sendNotification",
+        "sendFCMNotification",
+        "sendEmailNotification",
+        "sendSMSNotification"
+      ]
+    },
+    {
+      "file": "src/services/numeric-id-counter.service.ts",
+      "name": "numeric-id-counter.service",
+      "lineCount": 112,
+      "functions": [
+        "async",
+        "getNextUserNumericId",
+        "getNextCarNumericId",
+        "getUserCount",
+        "getSellerCarCount",
+        "initializeCounters"
+      ]
+    },
+    {
+      "file": "src/services/numeric-system-validation.service.ts",
+      "name": "numeric-system-validation.service",
+      "lineCount": 379,
+      "functions": [
+        "async",
+        "formatCarUrl",
+        "formatMessageUrl",
+        "formatProfileUrl",
+        "validateNumericCar",
+        "validateNumericMessage",
+        "enforceCarOwnership",
+        "parseCarUrl",
+        "parseMessageUrl",
+        "parseProfileUrl"
+      ]
+    },
+    {
+      "file": "src/services/payment-service.ts",
+      "name": "payment-service",
+      "lineCount": 296,
+      "functions": [
+        "getInstance",
+        "createCarPaymentIntent",
+        "processPayment",
+        "getUserTransactions",
+        "refundPayment",
+        "calculateCommission",
+        "getStripePublicKey",
+        "createPaymentIntent"
+      ]
+    },
+    {
+      "file": "src/services/performance-service.ts",
+      "name": "performance-service",
+      "lineCount": 624,
+      "functions": [
+        "calls",
+        "getInstance",
+        "clearCache",
+        "getCacheStats",
+        "optimizeImage",
+        "setupImageLazyLoading",
+        "parseInt",
+        "prefetchResource",
+        "preloadResource",
+        "optimizeCSS",
+        "compressData",
+        "decompressData",
+        "getPerformanceMetrics",
+        "initializePerformanceMonitoring",
+        "calculatePerformanceMetrics",
+        "setupImageOptimization",
+        "setupLazyLoading",
+        "simpleCompress",
+        "simpleDecompress"
+      ]
+    },
+    {
+      "file": "src/services/proactive-maintenance-service.ts",
+      "name": "proactive-maintenance-service",
+      "lineCount": 366,
+      "functions": [
+        "createMaintenanceAlert",
+        "getUserMaintenanceAlerts",
+        "addServiceCenterOffer",
+        "acceptServiceOffer",
+        "getUserMaintenanceRequests",
+        "updateMaintenanceRequest",
+        "notifyServiceCenters",
+        "getNearbyServiceCenters",
+        "analyzeMaintenanceNeeds"
+      ]
+    },
+    {
+      "file": "src/services/profile/points-automation.service.ts",
+      "name": "points-automation.service",
+      "lineCount": 280,
+      "functions": [
+        "getInstance",
+        "onListingCreated",
+        "onCarSold",
+        "onProfileCompleted",
+        "onVerificationCompleted",
+        "onPositiveReview",
+        "onDailyLogin",
+        "toDate",
+        "onReferral",
+        "onSocialShare",
+        "checkListingMilestones"
+      ]
+    },
+    {
+      "file": "src/services/rate-limiting-service.ts",
+      "name": "rate-limiting-service",
+      "lineCount": 401,
+      "functions": [
+        "getInstance",
+        "checkRateLimit",
+        "getRateLimitInfo",
+        "resetRateLimit",
+        "checkDefaultRateLimit",
+        "checkAuthRateLimit",
+        "checkApiRateLimit",
+        "createIPKey",
+        "createUserKey",
+        "getActiveRateLimits",
+        "getStatistics",
+        "getMaxRequestsForKey",
+        "getLocalizedMessage",
+        "startCleanupTimer",
+        "cleanupExpiredEntries",
+        "destroy",
+        "createIPRateLimit",
+        "createUserRateLimit"
+      ]
+    },
+    {
+      "file": "src/services/search/saved-searches.service.ts",
+      "name": "saved-searches.service",
+      "lineCount": 123,
+      "functions": [
+        "validateCriteria",
+        "getInstance",
+        "list",
+        "create",
+        "delete",
+        "disable",
+        "enable",
+        "touchTriggered",
+        "buildQueryPlan"
+      ]
+    },
+    {
+      "file": "src/services/search/search-personalization.service.ts",
+      "name": "search-personalization.service",
+      "lineCount": 262,
+      "functions": [
+        "calculateRelevanceScore",
+        "getUserPreferences",
+        "trackCarView"
+      ]
+    },
+    {
+      "file": "src/services/security/two-factor-auth.service.ts",
+      "name": "two-factor-auth.service",
+      "lineCount": 280,
+      "functions": [
+        "for",
+        "getInstance",
+        "initializeRecaptcha",
+        "sendOTP",
+        "verifyOTP",
+        "disable2FA",
+        "generateBackupCodes",
+        "saveBackupCodes",
+        "verifyBackupCode",
+        "formatBulgarianPhone",
+        "generateRandomCode",
+        "hashCode",
+        "getErrorMessage",
+        "cleanup"
+      ]
+    },
+    {
+      "file": "src/services/security-service.ts",
+      "name": "security-service",
+      "lineCount": 270,
+      "functions": [
+        "getInstance",
+        "sanitizeHTML",
+        "detectXSS",
+        "detectSQLInjection",
+        "generateCSRFToken",
+        "validateCSRFToken",
+        "logThreat",
+        "blockIP",
+        "isIPBlocked",
+        "validateInput",
+        "getSecurityStats",
+        "initializeSecurityHeaders",
+        "hashData",
+        "generateSecureRandom",
+        "validateSecureInput"
+      ]
+    },
+    {
+      "file": "src/services/social/algorithms/post-scoring.service.ts",
+      "name": "post-scoring.service",
+      "lineCount": 322,
+      "functions": [
+        "calculatePostScore",
+        "calculateEngagementScore",
+        "calculateRecencyScore",
+        "calculateQualityScore",
+        "calculateAuthorScore",
+        "getPost",
+        "getReportsCount",
+        "saveScore",
+        "getCachedScore",
+        "calculateBatchScores",
+        "clearCache",
+        "clearExpiredCache"
+      ]
+    },
+    {
+      "file": "src/services/social/badges.service.ts",
+      "name": "badges.service",
+      "lineCount": 409,
+      "functions": [
+        "checkAndAwardBadges",
+        "getUserBadges",
+        "getUserProgression",
+        "checkBadgeRequirement",
+        "awardBadge",
+        "calculateLevel",
+        "getPointsToNextLevel",
+        "calculateRank"
+      ]
+    },
+    {
+      "file": "src/services/social/cache/feed-cache.service.ts",
+      "name": "feed-cache.service",
+      "lineCount": 197,
+      "functions": [
+        "getCachedFeed",
+        "saveFeedToCache",
+        "saveToAllLayers",
+        "openIDB",
+        "getFromIndexedDB",
+        "saveToIndexedDB",
+        "getFromFirestore",
+        "saveToFirestore",
+        "invalidateUserCache",
+        "clearExpiredEntries"
+      ]
+    },
+    {
+      "file": "src/services/social/expert-badges.service.ts",
+      "name": "expert-badges.service",
+      "lineCount": 155,
+      "functions": [
+        "checkAndAwardBadges",
+        "getBadgeInfo"
+      ]
+    },
+    {
+      "file": "src/services/social/github-auth.service.ts",
+      "name": "github-auth.service",
+      "lineCount": 306,
+      "functions": [
+        "getInstance",
+        "signInWithGitHub",
+        "handleRedirectResult",
+        "syncGitHubProfile",
+        "getGitHubProfileData",
+        "generateAPIKey",
+        "validateAPIKey",
+        "revokeAPIKey",
+        "getUserAPIKeys",
+        "generateRandomString"
+      ]
+    },
+    {
+      "file": "src/services/social/ml/collaborative-filtering.service.ts",
+      "name": "collaborative-filtering.service",
+      "lineCount": 286,
+      "functions": [
+        "findSimilarUsers",
+        "calculateCosineSimilarity",
+        "getUserEngagementVector",
+        "getReactionWeight",
+        "getCommonKeys",
+        "recommendFromSimilarUsers",
+        "getUserEngagedPostIds",
+        "getUserLikedPosts",
+        "deduplicateRecommendations"
+      ]
+    },
+    {
+      "file": "src/services/social/ml/content-filtering.service.ts",
+      "name": "content-filtering.service",
+      "lineCount": 236,
+      "functions": [
+        "extractFeatures",
+        "getPriceRange",
+        "calculateSimilarity",
+        "recommendSimilarContent",
+        "getUserLikedPosts",
+        "getCandidatePosts",
+        "getUserEngagedPostIds",
+        "getCommonKeys"
+      ]
+    },
+    {
+      "file": "src/services/social/ml/hybrid-recommender.service.ts",
+      "name": "hybrid-recommender.service",
+      "lineCount": 195,
+      "functions": [
+        "async",
+        "getHybridRecommendations",
+        "applyWeight",
+        "getTrendingPosts",
+        "getFreshPosts",
+        "rerankByFinalScore",
+        "calculateEngagementRate",
+        "deduplicateRecommendations"
+      ]
+    },
+    {
+      "file": "src/services/social/recommendations.service.ts",
+      "name": "recommendations.service",
+      "lineCount": 345,
+      "functions": [
+        "getUserRecommendations",
+        "getPostRecommendations",
+        "getCarRecommendations",
+        "getFollowingIds",
+        "getMutualFollowersCount",
+        "getTrendingCars"
+      ]
+    },
+    {
+      "file": "src/services/socket-service.ts",
+      "name": "socket-service",
+      "lineCount": 223,
+      "functions": [
+        "getInstance",
+        "isConnected",
+        "getSocket",
+        "useSocket"
+      ]
+    },
+    {
+      "file": "src/services/stripe-service.ts",
+      "name": "stripe-service",
+      "lineCount": 364,
+      "functions": [
+        "to",
+        "getProducts",
+        "getProduct",
+        "createCheckoutSessionMobile",
+        "getActiveSubscriptions",
+        "hasActiveSubscription",
+        "hasSubscriptionRole",
+        "createPortalLink",
+        "redirectToCustomerPortal"
+      ]
+    },
+    {
+      "file": "src/services/super-admin-cars-service.ts",
+      "name": "super-admin-cars-service",
+      "lineCount": 513,
+      "functions": [
+        "getInstance",
+        "getAllCars",
+        "getAllPosts",
+        "getUserStats",
+        "data",
+        "updateCarStatus",
+        "updatePostStatus",
+        "deleteCar",
+        "deletePost",
+        "bulkUpdateCarStatus",
+        "getPlatformStats",
+        "searchContent"
+      ]
+    },
+    {
+      "file": "src/services/translation-service.ts",
+      "name": "translation-service",
+      "lineCount": 221,
+      "functions": [
+        "since",
+        "translate",
+        "translateToBulgarian",
+        "translateFromBulgarian",
+        "translateBatch",
+        "detectLanguage",
+        "getSupportedLanguages",
+        "isLanguageSupported",
+        "getLanguageName",
+        "translateCarField",
+        "translateCarSpecs",
+        "translateMessage",
+        "autoTranslate",
+        "async",
+        "useTranslation",
+        "translateText"
+      ]
+    },
+    {
+      "file": "src/services/user-settings.service.ts",
+      "name": "user-settings.service",
+      "lineCount": 386,
+      "functions": [
+        "getInstance",
+        "getUserSettings",
+        "saveUserSettings",
+        "updateNotifications",
+        "updatePrivacy",
+        "updateAppearance",
+        "updateSecurity",
+        "updateCarPreferences",
+        "exportUserData"
+      ]
+    },
+    {
+      "file": "src/services/users/users-directory.service.ts",
+      "name": "users-directory.service",
+      "lineCount": 140,
+      "functions": [
+        "data",
+        "getUsers",
+        "getOnlineUsers",
+        "sanitizeUserForDisplay"
+      ]
+    },
+    {
+      "file": "src/services/validation/car-validation.service.ts",
+      "name": "car-validation.service",
+      "lineCount": 508,
+      "functions": [
+        "validate",
+        "calculateScore",
+        "getFieldMessage",
+        "validateField"
+      ]
+    },
+    {
+      "file": "src/services/validation/comprehensive-validation.service.ts",
+      "name": "comprehensive-validation.service",
+      "lineCount": 431,
+      "functions": [
+        "validate",
+        "getMarketRange",
+        "validateChecksum",
+        "determineVINType",
+        "validateEngineSize",
+        "validateHorsepower"
+      ]
+    },
+    {
+      "file": "src/services/validation-service.ts",
+      "name": "validation-service",
+      "lineCount": 330,
+      "functions": [
+        "getInstance",
+        "validateField",
+        "validateForm",
+        "isEmpty",
+        "isValidEmail",
+        "isValidBulgarianPhone",
+        "isValidURL",
+        "isValidYear",
+        "isValidMileage",
+        "isValidPrice",
+        "isValidVIN",
+        "getErrorMessage",
+        "validateVehicleData",
+        "validatePricing",
+        "validateContact"
+      ]
+    },
+    {
+      "file": "src/services/vehicle-reminder.service.ts",
+      "name": "vehicle-reminder.service",
+      "lineCount": 256,
+      "functions": [
+        "scheduleInspectionReminder",
+        "scheduleServiceReminder",
+        "scheduleTireChangeReminder",
+        "getUpcomingReminders",
+        "completeReminder",
+        "deleteReminder",
+        "createRemindersForVehicle"
+      ]
+    },
+    {
+      "file": "src/services/whatsapp/whatsapp-business.service.ts",
+      "name": "whatsapp-business.service",
+      "lineCount": 414,
+      "functions": [
+        "sendTextMessage",
+        "sendImageMessage",
+        "sendButtonMessage",
+        "sendTemplateMessage",
+        "sendCarListing",
+        "testConnection",
+        "formatBulgarianPhone"
+      ]
+    },
+    {
+      "file": "src/utils/backup-service.ts",
+      "name": "backup-service",
+      "lineCount": 331,
+      "functions": [
+        "Strategy",
+        "guide"
+      ]
+    }
+  ],
+  "lowUsage": [
+    {
+      "file": "src/firebase/app-check-service.ts",
+      "name": "app-check-service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/firebase/index.ts"
+      ]
+    },
+    {
+      "file": "src/services/advanced/smart-alerts.service.ts",
+      "name": "smart-alerts.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/alerts/SmartAlertCreator.tsx",
+        "src/components/SuperAdmin/RealTimeAlertsPanel.tsx"
+      ]
+    },
+    {
+      "file": "src/services/advanced/voice-search.service.ts",
+      "name": "voice-search.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/components/voice-search/VoiceSearchButton.tsx"
+      ]
+    },
+    {
+      "file": "src/services/advanced-content-management-service.ts",
+      "name": "advanced-content-management-service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/AdvancedContentManagement.tsx",
+        "src/pages/06_admin/regular-admin/AdminDashboard/index.tsx"
+      ]
+    },
+    {
+      "file": "src/services/advanced-real-data-service.ts",
+      "name": "advanced-real-data-service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/pages/06_admin/super-admin/SuperAdminDashboard/index.tsx"
+      ]
+    },
+    {
+      "file": "src/services/ai/firebase-ai-callable.service.ts",
+      "name": "firebase-ai-callable.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/services/ai/index.ts"
+      ]
+    },
+    {
+      "file": "src/services/ai/nlu-multilingual.service.ts",
+      "name": "nlu-multilingual.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/services/ai/index.ts"
+      ]
+    },
+    {
+      "file": "src/services/ai/openai.service.ts",
+      "name": "openai.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/services/ai/index.ts"
+      ]
+    },
+    {
+      "file": "src/services/ai/project-knowledge.service.ts",
+      "name": "project-knowledge.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/Debug/ProjectKnowledgeDebugPanel.tsx",
+        "src/services/ai/index.ts"
+      ]
+    },
+    {
+      "file": "src/services/ai/recommendation-advanced.service.ts",
+      "name": "recommendation-advanced.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/services/ai/index.ts"
+      ]
+    },
+    {
+      "file": "src/services/ai/sentiment-analysis.service.ts",
+      "name": "sentiment-analysis.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/services/ai/index.ts"
+      ]
+    },
+    {
+      "file": "src/services/ai/vehicle-description-generator.service.ts",
+      "name": "vehicle-description-generator.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/SmartDescriptionGenerator/SmartDescriptionGenerator.tsx",
+        "src/services/ai/index.ts"
+      ]
+    },
+    {
+      "file": "src/services/ai/vision-advanced.service.ts",
+      "name": "vision-advanced.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/services/ai/index.ts"
+      ]
+    },
+    {
+      "file": "src/services/ai/whisper.service.ts",
+      "name": "whisper.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/services/ai/index.ts"
+      ]
+    },
+    {
+      "file": "src/services/analytics/car-analytics.service.ts",
+      "name": "car-analytics.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/pages/03_user-pages/profile/ProfilePage/index.tsx"
+      ]
+    },
+    {
+      "file": "src/services/bulgaria-locations.service.ts",
+      "name": "bulgaria-locations.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/BulgariaLocationDropdown/BulgariaLocationDropdown.tsx",
+        "src/pages/04_car-selling/CarEditPage/index.tsx"
+      ]
+    },
+    {
+      "file": "src/services/cache-service.ts",
+      "name": "cache-service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/services/social-token-provider.ts"
+      ]
+    },
+    {
+      "file": "src/services/campaigns/budget.service.ts",
+      "name": "budget.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/services/campaigns/index.ts"
+      ]
+    },
+    {
+      "file": "src/services/campaigns/campaign.service.ts",
+      "name": "campaign.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/services/campaigns/index.ts"
+      ]
+    },
+    {
+      "file": "src/services/campaigns/impression.service.ts",
+      "name": "impression.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/services/campaigns/index.ts"
+      ]
+    },
+    {
+      "file": "src/services/car/image-upload.service.ts",
+      "name": "image-upload.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/pages/01_main-pages/hooks/useCarEdit.ts",
+        "src/pages/04_car-selling/sell/ContactPageUnified.tsx"
+      ]
+    },
+    {
+      "file": "src/services/commission-service.ts",
+      "name": "commission-service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/pages/08_payment-billing/CommissionsPage.tsx"
+      ]
+    },
+    {
+      "file": "src/services/customer-number.service.ts",
+      "name": "customer-number.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/components/Profile/ProfileCards/CustomerNumberBadge.tsx"
+      ]
+    },
+    {
+      "file": "src/services/eik-verification-service.ts",
+      "name": "eik-verification-service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/EIKInput.tsx",
+        "src/components/Verification/EIKVerification.tsx"
+      ]
+    },
+    {
+      "file": "src/services/email-service.ts",
+      "name": "email-service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/utils/uptime-monitoring.ts"
+      ]
+    },
+    {
+      "file": "src/services/favorites.service.ts",
+      "name": "favorites.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/CarCardWithFavorites.tsx",
+        "src/pages/03_user-profile/UserFavoritesPage.tsx"
+      ]
+    },
+    {
+      "file": "src/services/fcm-service.ts",
+      "name": "fcm-service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/hooks/useNotifications.ts"
+      ]
+    },
+    {
+      "file": "src/services/firebase-auth-users-service.ts",
+      "name": "firebase-auth-users-service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/UserDetailsModal.tsx",
+        "src/services/firebase-data-operations.ts"
+      ]
+    },
+    {
+      "file": "src/services/garage/car-delete.service.ts",
+      "name": "car-delete.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/pages/01_main-pages/hooks/useCarEdit.ts",
+        "src/pages/03_user-pages/profile/ProfilePage/index.tsx"
+      ]
+    },
+    {
+      "file": "src/services/gloubul-connect-service.ts",
+      "name": "gloubul-connect-service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/components/DigitalTwinDashboard.tsx"
+      ]
+    },
+    {
+      "file": "src/services/image-upload-service.ts",
+      "name": "image-upload-service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/pages/04_car-selling/sell/ContactPageUnified.tsx"
+      ]
+    },
+    {
+      "file": "src/services/live-firebase-counters-service.ts",
+      "name": "live-firebase-counters-service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/components/SuperAdmin/LiveCounters.tsx"
+      ]
+    },
+    {
+      "file": "src/services/location-helper-service.ts",
+      "name": "location-helper-service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/utils/migrate-locations-browser.ts"
+      ]
+    },
+    {
+      "file": "src/services/map-entities.service.ts",
+      "name": "map-entities.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/pages/01_main-pages/map/MapPage/index.tsx"
+      ]
+    },
+    {
+      "file": "src/services/monitoring-service.ts",
+      "name": "monitoring-service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/pages/06_admin/regular-admin/AdminDashboard/index.tsx",
+        "src/pages/08_payment-billing/PaymentSuccessPage.tsx"
+      ]
+    },
+    {
+      "file": "src/services/notifications/fcm.service.ts",
+      "name": "fcm.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/hooks/useNotifications.ts"
+      ]
+    },
+    {
+      "file": "src/services/notifications/notifications-firebase.service.ts",
+      "name": "notifications-firebase.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/pages/03_user-pages/notifications/NotificationsPage/index.tsx"
+      ]
+    },
+    {
+      "file": "src/services/numeric-car-system.service.ts",
+      "name": "numeric-car-system.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/services/UnifiedCarService.ts"
+      ]
+    },
+    {
+      "file": "src/services/numeric-id-assignment.service.ts",
+      "name": "numeric-id-assignment.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/pages/03_user-pages/profile/ProfilePage/hooks/useProfile.ts"
+      ]
+    },
+    {
+      "file": "src/services/numeric-id-lookup.service.ts",
+      "name": "numeric-id-lookup.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/hooks/useProfilePermissions.ts",
+        "src/pages/03_user-pages/profile/ProfilePage/hooks/useProfile.ts"
+      ]
+    },
+    {
+      "file": "src/services/numeric-messaging-system.service.ts",
+      "name": "numeric-messaging-system.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/pages/03_user-pages/NumericMessagingPage.tsx"
+      ]
+    },
+    {
+      "file": "src/services/permission-management-service.ts",
+      "name": "permission-management-service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/PermissionManagement.tsx",
+        "src/pages/06_admin/regular-admin/AdminDashboard/index.tsx"
+      ]
+    },
+    {
+      "file": "src/services/personal-vehicle.service.ts",
+      "name": "personal-vehicle.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/pages/03_user-pages/profile/ProfilePage/index.tsx"
+      ]
+    },
+    {
+      "file": "src/services/profile/achievements-gallery.service.ts",
+      "name": "achievements-gallery.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/components/Profile/Enhancements/AchievementsGallerySection.tsx"
+      ]
+    },
+    {
+      "file": "src/services/profile/availability-calendar.service.ts",
+      "name": "availability-calendar.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/components/Profile/Enhancements/AvailabilityCalendarSection.tsx"
+      ]
+    },
+    {
+      "file": "src/services/profile/car-story.service.ts",
+      "name": "car-story.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/Profile/Enhancements/CarStorySection.tsx",
+        "src/services/profile/enhancements/index.ts"
+      ]
+    },
+    {
+      "file": "src/services/profile/challenges.service.ts",
+      "name": "challenges.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/components/Profile/Enhancements/ChallengesSection.tsx"
+      ]
+    },
+    {
+      "file": "src/services/profile/groups.service.ts",
+      "name": "groups.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/components/Profile/Enhancements/GroupsSection.tsx"
+      ]
+    },
+    {
+      "file": "src/services/profile/intro-video.service.ts",
+      "name": "intro-video.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/components/Profile/Enhancements/IntroVideoSection.tsx"
+      ]
+    },
+    {
+      "file": "src/services/profile/leaderboard.service.ts",
+      "name": "leaderboard.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/components/Profile/Enhancements/LeaderboardSection.tsx"
+      ]
+    },
+    {
+      "file": "src/services/profile/points-levels.service.ts",
+      "name": "points-levels.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/Profile/Enhancements/PointsLevelsSection.tsx",
+        "src/services/profile/enhancements/index.ts"
+      ]
+    },
+    {
+      "file": "src/services/profile/success-stories.service.ts",
+      "name": "success-stories.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/Profile/Enhancements/SuccessStoriesSection.tsx",
+        "src/services/profile/enhancements/index.ts"
+      ]
+    },
+    {
+      "file": "src/services/profile/transactions.service.ts",
+      "name": "transactions.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/components/Profile/Enhancements/TransactionsSection.tsx"
+      ]
+    },
+    {
+      "file": "src/services/profile/trust-network.service.ts",
+      "name": "trust-network.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/Profile/Enhancements/TrustNetworkSection.tsx",
+        "src/services/profile/enhancements/index.ts"
+      ]
+    },
+    {
+      "file": "src/services/project-analysis-service.ts",
+      "name": "project-analysis-service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/components/SuperAdmin/ProjectInfoPanel.tsx"
+      ]
+    },
+    {
+      "file": "src/services/real-time-notifications-service.ts",
+      "name": "real-time-notifications-service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/components/NotificationsManagement.tsx"
+      ]
+    },
+    {
+      "file": "src/services/reports/cars-report-service.ts",
+      "name": "cars-report-service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/pages/06_admin/regular-admin/ReportsPage/index.tsx",
+        "src/pages/06_admin/super-admin/SuperAdminDashboard/index.tsx"
+      ]
+    },
+    {
+      "file": "src/services/reports/users-report-service.ts",
+      "name": "users-report-service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/pages/06_admin/regular-admin/ReportsPage/index.tsx",
+        "src/pages/06_admin/super-admin/SuperAdminDashboard/index.tsx"
+      ]
+    },
+    {
+      "file": "src/services/search/algolia.service.ts",
+      "name": "algolia.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/services/platform-operations.ts"
+      ]
+    },
+    {
+      "file": "src/services/search/search-history.service.ts",
+      "name": "search-history.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/pages/01_main-pages/CarsPage.tsx"
+      ]
+    },
+    {
+      "file": "src/services/search/smart-search.service.ts",
+      "name": "smart-search.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/pages/01_main-pages/CarsPage.tsx",
+        "src/pages/05_search-browse/advanced-search/AdvancedSearchPage/AdvancedSearchPage.tsx"
+      ]
+    },
+    {
+      "file": "src/services/security/delete-account.service.ts",
+      "name": "delete-account.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/components/Profile/Security/PrivacySettings.tsx"
+      ]
+    },
+    {
+      "file": "src/services/smart-alerts-service.ts",
+      "name": "smart-alerts-service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/components/SuperAdmin/RealTimeAlertsPanel.tsx"
+      ]
+    },
+    {
+      "file": "src/services/social/algorithms/feed-algorithm.service.ts",
+      "name": "feed-algorithm.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/pages/01_main-pages/home/HomePage/SmartFeedSection.tsx"
+      ]
+    },
+    {
+      "file": "src/services/social/algorithms/personalization.service.ts",
+      "name": "personalization.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/pages/01_main-pages/home/HomePage/SmartFeedSection.tsx"
+      ]
+    },
+    {
+      "file": "src/services/social/comments.service.ts",
+      "name": "comments.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/Posts/CommentForm.tsx",
+        "src/components/Posts/PostComments.tsx"
+      ]
+    },
+    {
+      "file": "src/services/social/consultations.service.ts",
+      "name": "consultations.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/Consultations/RequestConsultationModal.tsx",
+        "src/pages/03_user-pages/profile/ProfilePage/ConsultationsTab.tsx"
+      ]
+    },
+    {
+      "file": "src/services/social/events.service.ts",
+      "name": "events.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/Events/EventCard.tsx",
+        "src/pages/07_advanced-features/EventsPage/index.tsx"
+      ]
+    },
+    {
+      "file": "src/services/social/posts-engagement.service.ts",
+      "name": "posts-engagement.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/Posts/PostCard.tsx",
+        "src/hooks/usePostEngagement.ts"
+      ]
+    },
+    {
+      "file": "src/services/social/posts-feed.service.ts",
+      "name": "posts-feed.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/pages/01_main-pages/home/HomePage/CommunityFeedSection.tsx"
+      ]
+    },
+    {
+      "file": "src/services/social/realtime-feed.service.ts",
+      "name": "realtime-feed.service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/Feed/NewPostsBanner.tsx",
+        "src/components/Posts/PostCard.tsx"
+      ]
+    },
+    {
+      "file": "src/services/social/smart-contacts.service.ts",
+      "name": "smart-contacts.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/pages/03_user-pages/social/SocialFeedPage/components/RightSidebar.tsx"
+      ]
+    },
+    {
+      "file": "src/services/strictWorkflowAutoSave.service.ts",
+      "name": "strictWorkflowAutoSave.service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/hooks/useStrictAutoSave.ts"
+      ]
+    },
+    {
+      "file": "src/services/unified-cities-service.ts",
+      "name": "unified-cities-service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/Profile/Modals/LocationEditModal.tsx",
+        "src/pages/04_car-selling/CarEditPage/index.tsx"
+      ]
+    },
+    {
+      "file": "src/services/unique-owner-service.ts",
+      "name": "unique-owner-service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/pages/02_authentication/admin-login/SuperAdminLoginPage/index.tsx",
+        "src/pages/06_admin/super-admin/SuperAdminDashboard/index.tsx"
+      ]
+    },
+    {
+      "file": "src/services/verification/eik-verification-service.ts",
+      "name": "eik-verification-service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/EIKInput.tsx",
+        "src/components/Verification/EIKVerification.tsx"
+      ]
+    },
+    {
+      "file": "src/services/visitor-analytics-service.ts",
+      "name": "visitor-analytics-service",
+      "usageCount": 1,
+      "usedIn": [
+        "src/components/SuperAdmin/VisitorAnalyticsPanel.tsx"
+      ]
+    },
+    {
+      "file": "src/services/workflow-analytics-service.ts",
+      "name": "workflow-analytics-service",
+      "usageCount": 2,
+      "usedIn": [
+        "src/components/ProfileConversionFunnel/ProfileConversionFunnel.tsx",
+        "src/hooks/useWorkflowStep.ts"
+      ]
+    }
+  ],
+  "highUsage": [
+    {
+      "file": "src/services/logger-service.ts",
+      "name": "logger-service",
+      "usageCount": 393,
+      "usedInCount": 391
+    },
+    {
+      "file": "src/services/unified-workflow-persistence.service.ts",
+      "name": "unified-workflow-persistence.service",
+      "usageCount": 25,
+      "usedInCount": 25
+    },
+    {
+      "file": "src/services/brands-models-data.service.ts",
+      "name": "brands-models-data.service",
+      "usageCount": 15,
+      "usedInCount": 14
+    },
+    {
+      "file": "src/firebase/auth-service.ts",
+      "name": "auth-service",
+      "usageCount": 14,
+      "usedInCount": 14
+    },
+    {
+      "file": "src/firebase/social-auth-service.ts",
+      "name": "social-auth-service",
+      "usageCount": 13,
+      "usedInCount": 13
+    },
+    {
+      "file": "src/firebase/messaging-service.ts",
+      "name": "messaging-service",
+      "usageCount": 12,
+      "usedInCount": 10
+    },
+    {
+      "file": "src/services/posts/posts.service.ts",
+      "name": "posts.service",
+      "usageCount": 10,
+      "usedInCount": 10
+    },
+    {
+      "file": "src/services/social/posts.service.ts",
+      "name": "posts.service",
+      "usageCount": 10,
+      "usedInCount": 10
+    }
+  ]
+}

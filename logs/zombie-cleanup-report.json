@@ -1,0 +1,14 @@
+{
+  "unused_services": 52,
+  "timestamp": "2025-12-24 04:15:54",
+  "services_report": "logs\\phase0-preparation\\services-usage-report.json",
+  "deleted_files": [
+    "src\\pages\\LOADING_OVERLAY_IMPLEMENTATION_EXAMPLE.tsx",
+    "src\\pages\\ArchitectureDiagramPage.test.tsx"
+  ],
+  "potential_zombies": [
+    "src\\components\\SellWorkflow\\WorkflowPageLayout.example.tsx",
+    "src\\pages\\DesignSystemShowcase.tsx"
+  ],
+  "low_usage_services": 78
+}

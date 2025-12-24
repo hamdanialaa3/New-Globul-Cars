@@ -1,5 +1,5 @@
 // Test Dropdowns Page - Comprehensive testing of all dropdowns
-// صفحة اختبار القوائم المنسدلة - اختبار شامل لجميع القوائم
+// Test Dropdowns Page - Comprehensive testing for all dropdowns
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
@@ -39,15 +39,15 @@ const TestPage: React.FC = () => {
 
   const testSections = [
     {
-      title: language === 'bg' ? 'بيانات المركبة' : 'Vehicle Data',
+      title: language === 'bg' ? 'Данни за превозното средство' : 'Vehicle Data',
       fields: [
-        { key: 'vehicleType', label: language === 'bg' ? 'نوع المركبة' : 'Vehicle Type', options: VEHICLE_TYPES },
-        { key: 'make', label: language === 'bg' ? 'الماركة' : 'Make', options: CAR_BRANDS },
-        { key: 'year', label: language === 'bg' ? 'السنة' : 'Year', options: CAR_YEARS },
-        { key: 'fuelType', label: language === 'bg' ? 'نوع الوقود' : 'Fuel Type', options: FUEL_TYPES },
-        { key: 'transmission', label: language === 'bg' ? 'ناقل الحركة' : 'Transmission', options: TRANSMISSION_TYPES },
-        { key: 'color', label: language === 'bg' ? 'اللون' : 'Color', options: CAR_COLORS },
-        { key: 'doors', label: language === 'bg' ? 'عدد الأبواب' : 'Doors', options: DOOR_COUNTS },
+        { key: 'vehicleType', label: language === 'bg' ? 'Тип на превозно средство' : 'Vehicle Type', options: VEHICLE_TYPES },
+        { key: 'make', label: language === 'bg' ? 'Марка' : 'Make', options: CAR_BRANDS },
+        { key: 'year', label: language === 'bg' ? 'Година' : 'Year', options: CAR_YEARS },
+        { key: 'fuelType', label: language === 'bg' ? 'Тип гориво' : 'Fuel Type', options: FUEL_TYPES },
+        { key: 'transmission', label: language === 'bg' ? 'Скоростна кутия' : 'Transmission', options: TRANSMISSION_TYPES },
+        { key: 'color', label: language === 'bg' ? 'Цвят' : 'Color', options: CAR_COLORS },
+        { key: 'doors', label: language === 'bg' ? 'Брой врати' : 'Doors', options: DOOR_COUNTS },
         { key: 'seats', label: language === 'bg' ? 'عدد المقاعد' : 'Seats', options: SEAT_COUNTS },
         { key: 'category', label: language === 'bg' ? 'فئة السيارة' : 'Car Category', options: CAR_CATEGORIES },
         { key: 'condition', label: language === 'bg' ? 'حالة المركبة' : 'Vehicle Condition', options: VEHICLE_CONDITIONS }

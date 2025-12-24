@@ -35,7 +35,7 @@ import {
 } from 'firebase/firestore';
 import { db, auth } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-service';
-import { SocialAuthService } from '../firebase/social-auth-service';
+import { BulgarianProfileService } from './bulgarian-profile-service';
 
 export type MessageType = 'inquiry' | 'offer' | 'general';
 
@@ -95,7 +95,7 @@ class NumericMessagingSystemService {
 
     try {
       // 1️⃣ Verify sender owns the numeric ID
-      const senderProfile = await SocialAuthService.getBulgarianUserProfile(currentUser.uid);
+      const senderProfile = await BulgarianProfileService.getUserProfile(currentUser.uid);
 
       if (!senderProfile?.numericId || senderProfile.numericId !== senderNumericId) {
         throw new Error(`❌ You do not own numeric ID ${senderNumericId}`);

@@ -214,13 +214,18 @@ const SectionContainer = styled.div<{
     }};
     pointer-events: none;
     z-index: 2;
-    opacity: ${props => props.$intensity === 'light' ? '0.4' : props.$intensity === 'strong' ? '0.7' : '0.55'};
+    /* Base opacity based on intensity */
+    ${props => {
+      const baseOpacity = props.$intensity === 'light' ? '0.4' : props.$intensity === 'strong' ? '0.7' : '0.55';
+      return `opacity: ${baseOpacity};`;
+    }}
     animation: glowPulse 4s ease-in-out infinite;
   }
 
+  /* Simple pulse animation - opacity varies by 20% */
   @keyframes glowPulse {
-    0%, 100% { opacity: ${props => props.$intensity === 'light' ? '0.3' : props.$intensity === 'strong' ? '0.6' : '0.45'}; }
-    50% { opacity: ${props => props.$intensity === 'light' ? '0.5' : props.$intensity === 'strong' ? '0.8' : '0.65'}; }
+    0%, 100% { opacity: 0.45; }
+    50% { opacity: 0.65; }
   }
 
   /* Floating Particles Effect (AI Theme) */
@@ -267,7 +272,8 @@ const SectionContainer = styled.div<{
   backface-visibility: hidden;
 `;
 
-export const GridSectionWrapper: React.FC<GridSectionWrapperProps> = ({ 
+// Memoize GridSectionWrapper to prevent unnecessary re-renders
+export const GridSectionWrapper: React.FC<GridSectionWrapperProps> = React.memo(({ 
   children, 
   intensity = 'medium',
   variant = 'modern',
@@ -286,6 +292,8 @@ export const GridSectionWrapper: React.FC<GridSectionWrapperProps> = ({
       {children}
     </SectionContainer>
   );
-};
+});
+
+GridSectionWrapper.displayName = 'GridSectionWrapper';
 
 export default GridSectionWrapper;

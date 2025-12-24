@@ -197,12 +197,14 @@ export const SmartDescriptionGenerator: React.FC<SmartDescriptionGeneratorProps>
   }, [initialDescription]);
 
   const validateDescription = (text: string) => {
-    if (!text) {
+    // Description is optional - if empty, it's valid
+    if (!text || text.trim().length === 0) {
       setValidationError('');
-      return false;
+      return true; // Empty description is valid (optional field)
     }
 
-    if (text.length < minLength) {
+    // Only validate length if text is provided and minLength > 0
+    if (minLength > 0 && text.length < minLength) {
       setValidationError(language === 'bg' 
         ? `Описанието е твърде кратко (минимум ${minLength} символа)`
         : `Description too short (minimum ${minLength} characters)`);
@@ -258,7 +260,8 @@ export const SmartDescriptionGenerator: React.FC<SmartDescriptionGeneratorProps>
     setGenerationSource(null); // User is editing, remove generation badge
   };
 
-  const isValid = description.length >= minLength && description.length <= maxLength;
+  // Description is optional - valid if empty or within length limits
+  const isValid = description.length === 0 || (description.length >= (minLength || 0) && description.length <= maxLength);
   const isWarning = description.length > maxLength * 0.8;
 
   return (
@@ -266,7 +269,9 @@ export const SmartDescriptionGenerator: React.FC<SmartDescriptionGeneratorProps>
       <Header>
         <Label>
           {language === 'bg' ? 'Описание' : 'Description'}
-          <span style={{ color: '#ef4444' }}>*</span>
+          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.875rem', marginLeft: '0.25rem' }}>
+            ({language === 'bg' ? 'по избор' : 'optional'})
+          </span>
         </Label>
         <GenerateButton
           type="button"
@@ -293,8 +298,8 @@ export const SmartDescriptionGenerator: React.FC<SmartDescriptionGeneratorProps>
           value={description}
           onChange={handleChange}
           placeholder={language === 'bg'
-            ? 'Опишете автомобила... Или натиснете "AI Генериране" за автоматично описание.'
-            : 'Describe the vehicle... Or click "AI Generate" for automatic description.'}
+            ? 'Опишете автомобила (по избор)... Или натиснете "AI Генериране" за автоматично описание.'
+            : 'Describe the vehicle (optional)... Or click "AI Generate" for automatic description.'}
           disabled={isGenerating}
         />
       </TextareaWrapper>

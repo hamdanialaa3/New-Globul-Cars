@@ -28,7 +28,9 @@
     "firebase": "^12.3.0",
     "firebase-admin": "^13.6.0",
     "framer-motion": "^12.23.26",
+    "html2canvas": "^1.4.1",
     "instantsearch.css": "^8.9.0",
+    "jspdf": "^2.5.2",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.544.0",
     "openai": "^6.15.0",
@@ -53,8 +55,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "craco start",
-    "start:dev": "cross-env NODE_OPTIONS=--max_old_space_size=4096 BROWSER=none npm run start",
+    "start": "cross-env PORT=3000 HOST=localhost craco start",
+    "start:dev": "cross-env NODE_OPTIONS=--max_old_space_size=4096 PORT=3000 HOST=localhost BROWSER=none npm run start",
     "prebuild": "node scripts/ban-console.js",
     "build": "craco build",
     "ci:strict": "npm ci --no-audit --no-fund",
@@ -79,7 +81,8 @@
     "clean": "node scripts/clean-all.js",
     "clean:ports": "node scripts/clean-all.js",
     "clean:cache": "npm cache clean --force && rm -rf node_modules/.cache .cache build dist",
-    "clean:all": "npm run clean && npm run clean:cache"
+    "clean:all": "npm run clean && npm run clean:cache",
+    "clean:3000": "node scripts/clean-port-3000.js"
   },
   "eslintConfig": {
     "extends": [

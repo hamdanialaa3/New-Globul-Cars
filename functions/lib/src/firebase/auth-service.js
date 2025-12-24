@@ -16,8 +16,21 @@ class BulgarianAuthService {
     }
     // Helper method to safely extract error code
     getErrorCode(error) {
-        if (error instanceof Error && 'code' in error) {
-            return error.code;
+        // Firebase Auth errors have a 'code' property
+        if (error && typeof error === 'object') {
+            // Check for FirebaseError code property
+            if ('code' in error && typeof error.code === 'string') {
+                return error.code;
+            }
+            // Check for error.message which might contain the code
+            if ('message' in error && typeof error.message === 'string') {
+                const message = error.message;
+                // Extract auth/xxx pattern from message
+                const codeMatch = message.match(/auth\/[a-z-]+/i);
+                if (codeMatch) {
+                    return codeMatch[0];
+                }
+            }
         }
         return 'unknown';
     }
@@ -116,11 +129,18 @@ class BulgarianAuthService {
     async signIn(email, password) {
         try {
             const userCredential = await (0, auth_1.signInWithEmailAndPassword)(firebase_config_1.auth, email, password);
-            // Update last login
-            await this.updateLastLogin(userCredential.user.uid);
+            // Update last login (non-blocking - don't fail login if this fails)
+            try {
+                await this.updateLastLogin(userCredential.user.uid);
+            }
+            catch (updateError) {
+                // Log but don't throw - login was successful
+                logger_service_1.logger.warn('Failed to update last login timestamp', { error: updateError });
+            }
             return userCredential;
         }
         catch (error) {
+            logger_service_1.logger.error('Sign in error:', error);
             throw this.handleAuthError(error);
         }
     }
@@ -446,23 +466,61 @@ class BulgarianAuthService {
         return passwordRegex.test(password);
     }
     handleAuthError(error) {
-        const errorCode = this.getErrorCode(error);
-        const errorMessages = {
-            'auth/email-already-in-use': 'Този имейл вече е регистриран',
-            'auth/weak-password': 'Паролата е твърде слаба',
-            'auth/invalid-email': 'Невалиден имейл адрес',
-            'auth/user-disabled': 'Този потребител е деактивиран',
-            'auth/user-not-found': 'Потребителят не е намерен',
-            'auth/wrong-password': 'Грешна парола',
-            'auth/invalid-verification-code': 'Невалиден код за верификация',
-            'auth/code-expired': 'Кодът за верификация е изтекъл',
-            'auth/too-many-requests': 'Твърде много опити. Моля опитайте по-късно',
-            'auth/network-request-failed': 'Проблем с интернет връзката',
-            'auth/popup-closed-by-user': 'Прозорецът за вход беше затворен',
-            'auth/cancelled-popup-request': 'Заявката беше отменена'
-        };
-        const bulgarianMessage = errorMessages[errorCode] || 'Възникна грешка при вход';
-        return new Error(bulgarianMessage);
+        try {
+            const errorCode = this.getErrorCode(error);
+            const errorMessages = {
+                'auth/email-already-in-use': 'Този имейл вече е регистриран',
+                'auth/weak-password': 'Паролата е твърде слаба',
+                'auth/invalid-email': 'Невалиден имейл адрес',
+                'auth/user-disabled': 'Този потребител е деактивиран',
+                'auth/user-not-found': 'Потребителят не е намерен',
+                'auth/wrong-password': 'Грешна парола',
+                'auth/invalid-credential': 'Грешен имейл или парола',
+                'auth/invalid-verification-code': 'Невалиден код за верификация',
+                'auth/code-expired': 'Кодът за верификация е изтекъл',
+                'auth/too-many-requests': 'Твърде много опити. Моля опитайте по-късно',
+                'auth/network-request-failed': 'Проблем с интернет връзката',
+                'auth/popup-closed-by-user': 'Прозорецът за вход беше затворен',
+                'auth/cancelled-popup-request': 'Заявката беше отменена',
+                'auth/operation-not-allowed': 'Операцията не е разрешена',
+                'auth/requires-recent-login': 'Изисква се повторен вход за тази операция'
+            };
+            // Log the original error for debugging (safely)
+            try {
+                const errorDetails = new Error(`Auth error: ${errorCode}`);
+                logger_service_1.logger.error('Auth error details:', errorDetails, {
+                    errorCode,
+                    errorType: error instanceof Error ? error.constructor.name : typeof error,
+                    errorMessage: error instanceof Error ? error.message : String(error)
+                });
+            }
+            catch (logError) {
+                // If logging fails, continue anyway
+                console.error('Auth error (logging failed):', errorCode, error);
+            }
+            // Get message or use default
+            let bulgarianMessage = errorMessages[errorCode];
+            // If no specific message, try to extract from original error
+            if (!bulgarianMessage && error instanceof Error) {
+                bulgarianMessage = error.message;
+            }
+            // Final fallback
+            if (!bulgarianMessage) {
+                bulgarianMessage = 'Възникна грешка при вход';
+            }
+            // Create new error with the Bulgarian message
+            const handledError = new Error(bulgarianMessage);
+            // Preserve original error code if available
+            if (errorCode !== 'unknown' && error && typeof error === 'object' && 'code' in error) {
+                handledError.code = errorCode;
+            }
+            return handledError;
+        }
+        catch (handlingError) {
+            // If handleAuthError itself fails, return a safe error
+            logger_service_1.logger.error('Error in handleAuthError:', handlingError);
+            return new Error('Възникна грешка при вход');
+        }
     }
 }
 exports.BulgarianAuthService = BulgarianAuthService;

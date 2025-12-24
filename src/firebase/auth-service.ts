@@ -340,7 +340,7 @@ export class BulgarianAuthService {
         await this.updateLastLogin(userCredential.user.uid);
       } catch (updateError) {
         // Log but don't throw - login was successful
-        logger.warn('Failed to update last login timestamp', updateError as Error);
+        logger.warn('Failed to update last login timestamp', { error: updateError });
       }
 
       return userCredential;
@@ -722,7 +722,8 @@ export class BulgarianAuthService {
 
       // Log the original error for debugging (safely)
       try {
-        logger.error('Auth error details:', {
+        const errorDetails = new Error(`Auth error: ${errorCode}`);
+        logger.error('Auth error details:', errorDetails, {
           errorCode,
           errorType: error instanceof Error ? error.constructor.name : typeof error,
           errorMessage: error instanceof Error ? error.message : String(error)

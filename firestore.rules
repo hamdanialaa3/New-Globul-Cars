@@ -62,6 +62,98 @@ service cloud.firestore {
        allow write: if isAuthenticated();
     }
 
+    // ==================== FOLLOWS COLLECTION ====================
+    // Follow System: User-to-User following relationships
+    // Document ID format: {followerId}_{followingId}
+    // Security:
+    // - Read: If you're the follower or the one being followed
+    // - Create: If authenticated and not following yourself
+    // - Delete: Only if you're the follower (unfollow your own action)
+    match /follows/{followId} {
+      // Allow reading if you're involved in the relationship
+      allow read: if isAuthenticated() && (
+        followId.matches('^' + request.auth.uid + '_.*') ||  // You're the follower
+        followId.matches('.*_' + request.auth.uid + '$')     // You're being followed
+      );
+
+      // Allow creating a follow if:
+      // 1. Authenticated
+      // 2. followerId matches your UID
+      // 3. Not following yourself (followerId != followingId)
+      allow create: if isAuthenticated() 
+        && request.resource.data.followerId == request.auth.uid
+        && request.resource.data.followerId != request.resource.data.followingId
+        && request.resource.data.keys().hasAll(['followerId', 'followingId', 'createdAt']);
+
+      // Allow deleting only if you're the follower (unfollowing)
+      allow delete: if isAuthenticated() 
+        && resource.data.followerId == request.auth.uid;
+
+      // No updates allowed (follow/unfollow only)
+      allow update: if false;
+    }
+
+    // ==================== NOTIFICATIONS COLLECTION ====================
+    // Notification System: Real-time alerts for users
+    // Security:
+    // - Read: Only your own notifications
+    // - Create: Only Cloud Functions (deny client writes)
+    // - Update: Only to mark as read (isRead field)
+    // - Delete: Only your own notifications
+    match /notifications/{notificationId} {
+      // Read: Only if notification belongs to you
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+
+      // Create: Deny (only Cloud Functions can create)
+      allow create: if false;
+
+      // Update: Only mark as read (isRead field)
+      allow update: if isAuthenticated() 
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isRead']);
+
+      // Delete: Only your own notifications
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // PHASE 3: Team Management (Company Infrastructure)
+    // Team Members Sub-collection: users/{companyId}/team_members/{memberId}
+    match /users/{companyId}/team_members/{memberId} {
+      // Helper: Check if user is the company owner
+      function isCompanyOwner() {
+        return isAuthenticated() && request.auth.uid == companyId;
+      }
+
+      // Helper: Check if user is an active team admin
+      function isTeamAdmin() {
+        return exists(/databases/$(database)/documents/users/$(companyId)/team_members/$(memberId))
+          && get(/databases/$(database)/documents/users/$(companyId)/team_members/$(memberId)).data.linkedUserId == request.auth.uid
+          && get(/databases/$(database)/documents/users/$(companyId)/team_members/$(memberId)).data.role == 'admin'
+          && get(/databases/$(database)/documents/users/$(companyId)/team_members/$(memberId)).data.status == 'active';
+      }
+
+      // Read: Company owner or active team members
+      allow read: if isCompanyOwner() || isTeamAdmin();
+
+      // Create/Update/Delete: Only company owner or team admins
+      allow create, update, delete: if isCompanyOwner() || isTeamAdmin();
+    }
+
+    // Team Invitations Collection: team_invitations/{inviteId}
+    match /team_invitations/{inviteId} {
+      // Read: Any authenticated user (to check invite codes)
+      allow read: if isAuthenticated();
+
+      // Create: Only company owners
+      allow create: if isAuthenticated() && request.resource.data.companyId == request.auth.uid;
+
+      // Update: Only invitation owner (to revoke/accept)
+      allow update: if isAuthenticated() && resource.data.companyId == request.auth.uid;
+
+      // Delete: Only invitation owner
+      allow delete: if isAuthenticated() && resource.data.companyId == request.auth.uid;
+    }
+
     // General fallback (deny by default, but opened for dev/debugging if needed - keep strict for now)
     match /{document=**} {
       allow read, write: if isAuthenticated();

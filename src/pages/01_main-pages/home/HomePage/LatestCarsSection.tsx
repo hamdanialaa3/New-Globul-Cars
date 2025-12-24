@@ -5,12 +5,13 @@
 import React, { useState, useEffect, memo } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { MapPin, Calendar, Gauge, TrendingUp, Clock } from 'lucide-react';
+import { MapPin, Calendar, Gauge, TrendingUp, Clock, Heart } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { getFirestore, collection, query, orderBy, limit, getDocs, where } from 'firebase/firestore';
 import { UnifiedCar, mapDocToCar } from '../../../../services/car';
 import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
 import { logger } from '../../../../services/logger-service';
+import { useFavorites } from '../../../../hooks/useFavorites';
 
 // Styled Components
 const SectionContainer = styled.section`
@@ -148,6 +149,51 @@ const TimeStamp = styled.div`
   z-index: 2;
 `;
 
+const FavoriteButton = styled.button<{ $isFavorite: boolean }>`
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(255, 59, 48, 0.3);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    fill: ${props => props.$isFavorite ? '#ff3b30' : 'none'};
+    stroke: ${props => props.$isFavorite ? '#ff3b30' : '#6c757d'};
+    transition: all 0.2s ease;
+  }
+
+  ${props => props.$isFavorite && `
+    animation: heartBeat 0.3s ease;
+    
+    @keyframes heartBeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+  `}
+`;
+
 const CardContent = styled.div`
   padding: 1rem;
   flex: 1;
@@ -235,6 +281,7 @@ const LatestCarsSection: React.FC = () => {
   const { language } = useLanguage();
   const [cars, setCars] = useState<UnifiedCar[]>([]);
   const [loading, setLoading] = useState(true);
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   useEffect(() => {
     const fetchLatestCars = async () => {
@@ -436,6 +483,30 @@ const LatestCarsSection: React.FC = () => {
                       {getTimeAgo(car.createdAt)}
                     </TimeStamp>
                   )}
+                  
+                  {/* ❤️ Favorite Button */}
+                  <FavoriteButton
+                    $isFavorite={isFavorite(car.id)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleFavorite(car.id, {
+                        make: car.make,
+                        model: car.model,
+                        year: car.year,
+                        price: car.price,
+                        currency: car.currency || 'EUR',
+                        mainImage: car.images?.[0] || '',
+                        mileage: car.mileage,
+                        fuelType: car.fuelType,
+                        transmission: car.transmission,
+                        location: getLocation(car)
+                      });
+                    }}
+                    title={isFavorite(car.id) ? 'Remove from favorites' : 'Add to favorites'}
+                  >
+                    <Heart />
+                  </FavoriteButton>
                 </ImageWrapper>
 
                 <CardContent>

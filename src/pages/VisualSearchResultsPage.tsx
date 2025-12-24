@@ -1,4 +1,4 @@
-// Visual Search Results Page - صفحة نتائج البحث المرئي
+// Visual Search Results Page
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';

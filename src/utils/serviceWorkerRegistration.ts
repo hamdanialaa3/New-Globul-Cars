@@ -75,10 +75,18 @@ export function registerServiceWorker(config?: ServiceWorkerConfig): void {
 
 export function unregisterServiceWorker(): void {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.ready
-      .then((registration) => {
-        registration.unregister();
-        logger.info('✅ Service Worker unregistered');
+    // Get all registrations and unregister them
+    navigator.serviceWorker.getRegistrations()
+      .then((registrations) => {
+        return Promise.all(
+          registrations.map((registration) => {
+            logger.debug(`Unregistering service worker: ${registration.scope}`);
+            return registration.unregister();
+          })
+        );
+      })
+      .then(() => {
+        logger.info('✅ All Service Workers unregistered');
       })
       .catch((error) => {
         logger.error('❌ Service Worker unregistration failed:', error);

@@ -9,8 +9,8 @@ import InactivityWarning from '../components/InactivityWarning';
 // Lazy Loaded Components
 const HomePage = safeLazy(() => import('../pages/01_main-pages/home/HomePage'));
 const CarsPage = safeLazy(() => import('../pages/01_main-pages/CarsPage'));
-// ...
-const TeamManagementPage = safeLazy(() => import('../pages/09_dealer-company/TeamManagementPage'));
+// PHASE 3: Team Management System (Updated path)
+const TeamManagementPage = safeLazy(() => import('../pages/06_admin/TeamManagement/TeamManagementPage'));
 const CompanyAnalyticsDashboard = safeLazy(() => import('../pages/09_dealer-company/CompanyAnalyticsDashboard'));
 
 // ... existing imports ...
@@ -48,6 +48,7 @@ const AdvancedSearchPage = safeLazy(() => import('../pages/05_search-browse/adva
 const AlgoliaSearchPage = safeLazy(() => import('../pages/05_search-browse/algolia-search/AlgoliaSearchPage'));
 const MyListingsPage = safeLazy(() => import('../pages/03_user-pages/my-listings/MyListingsPage'));
 const MyDraftsPage = safeLazy(() => import('../pages/03_user-pages/my-drafts/MyDraftsPage'));
+const AcceptInvitePage = safeLazy(() => import('../pages/03_user-pages/AcceptInvitePage'));
 const MigrationPage = safeLazy(() => import('../pages/06_admin/MigrationPage'));
 const DebugCarsPage = safeLazy(() => import('../pages/06_admin/DebugCarsPage'));
 const EditCarPage = safeLazy(() => import('../pages/04_car-selling/EditCarPage'));
@@ -69,6 +70,8 @@ const SitemapPage = safeLazy(() => import('../pages/10_legal/sitemap/SitemapPage
 const NotificationsPage = safeLazy(() => import('../pages/03_user-pages/notifications/NotificationsPage'));
 const SavedSearchesPage = safeLazy(() => import('../pages/03_user-pages/saved-searches/SavedSearchesPage'));
 const FavoritesPage = safeLazy(() => import('../pages/03_user-pages/favorites/FavoritesPage'));
+const UserFavoritesPage = safeLazy(() => import('../pages/03_user-profile/UserFavoritesPage'));
+const FavoritesRedirectPage = safeLazy(() => import('../pages/03_user-profile/FavoritesRedirectPage'));
 const DealerPublicPage = safeLazy(() => import('../pages/09_dealer-company/DealerPublicPage'));
 const InvoicesPage = safeLazy(() => import('../pages/08_payment-billing/InvoicesPage'));
 const CommissionsPage = safeLazy(() => import('../pages/08_payment-billing/CommissionsPage'));
@@ -177,6 +180,13 @@ export const MainRoutes: React.FC = () => {
                 </AuthGuard>
             } />
 
+            {/* 🎟️ PHASE 3: Team Invitation Acceptance (Join Company Team) */}
+            <Route path="/join-team" element={
+                <AuthGuard requireAuth={true}>
+                    <AcceptInvitePage />
+                </AuthGuard>
+            } />
+
             <Route path="/verification" element={<VerificationPage />} />
             <Route path="/billing" element={<BillingPage />} />
             <Route
@@ -271,10 +281,8 @@ export const MainRoutes: React.FC = () => {
                 path="/saved-searches"
                 element={<AuthGuard requireAuth={true}><SavedSearchesPage /></AuthGuard>}
             />
-            <Route
-                path="/favorites"
-                element={<AuthGuard requireAuth={true}><FavoritesPage /></AuthGuard>}
-            />
+            {/* 🔥 NEW: Favorites Redirect - Auto-redirects to /profile/{numericId}/favorites */}
+            <Route path="/favorites" element={<FavoritesRedirectPage />} />
             <Route
                 path="/invoices"
                 element={<AuthGuard requireAuth={true}><InvoicesPage /></AuthGuard>}

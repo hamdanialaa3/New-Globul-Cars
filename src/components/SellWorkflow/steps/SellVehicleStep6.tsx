@@ -4,10 +4,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useLanguage } from '../../../contexts/LanguageContext';
+import { useAuth } from '../../../contexts/AuthProvider';
 import { UnifiedWorkflowData } from '../../../services/unified-workflow-persistence.service';
 import { BULGARIA_REGIONS, getCitiesByRegion } from '../../../data/bulgaria-locations';
 import { getPostalCodesForCity } from '../../../data/bulgaria-postal-codes';
 import { ALL_COUNTRIES } from '../../../data/country-codes';
+import { BulgarianProfileService } from '../../../services/bulgarian-profile-service';
 import { Check, AlertCircle } from 'lucide-react';
 
 interface SellVehicleStep6Props {
@@ -130,7 +132,7 @@ const CountrySelectContainer = styled.div`
 const CountrySelectStyled = styled.select`
   width: 100%;
   height: 100%;
-  padding: 0.75rem 0.5rem 0.75rem 2.8rem; /* Space for flag */
+  padding: 0.75rem 0.5rem 0.75rem 0.75rem; /* Reduced left padding since flag is in option */
   border: 2px solid var(--border);
   border-radius: 10px;
   background: var(--bg-card);
@@ -148,11 +150,14 @@ const CountrySelectStyled = styled.select`
 
 const FlagIcon = styled.span`
   position: absolute;
-  left: 0.75rem;
+  right: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
   font-size: 1.4rem;
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
 
 const PhoneInputStyled = styled(Input)`
@@ -205,21 +210,63 @@ export const SellVehicleStep6: React.FC<SellVehicleStep6Props> = ({
   onUpdate,
 }) => {
   const { language } = useLanguage();
+  const { currentUser } = useAuth();
   const [emailError, setEmailError] = useState('');
   const [phonePrefix, setPhonePrefix] = useState('+359');
+  const [profileLoaded, setProfileLoaded] = useState(false);
 
-  // Initialize phone prefix based on current workflow data if exists
+  // Load profile data and set defaults
   useEffect(() => {
-    if (workflowData.sellerPhone) {
-      // Find matching prefix
-      // Sort by length desc to match longest prefix first (e.g. +1 vs +1-246)
-      const sortedCodes = [...ALL_COUNTRIES].sort((a, b) => b.dial.length - a.dial.length);
-      const match = sortedCodes.find(c => workflowData.sellerPhone?.startsWith(c.dial));
-      if (match) {
-        setPhonePrefix(match.dial);
+    const loadProfileData = async () => {
+      if (!currentUser || profileLoaded) return;
+      
+      try {
+        const profile = await BulgarianProfileService.getUserProfile(currentUser.uid);
+        if (profile) {
+          // Set defaults only if fields are empty
+          const updates: Partial<UnifiedWorkflowData> = {};
+          
+          if (!workflowData.sellerName && (profile.displayName || profile.firstName || profile.lastName)) {
+            updates.sellerName = profile.displayName || `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || '';
+          }
+          
+          if (!workflowData.sellerEmail && profile.email) {
+            updates.sellerEmail = profile.email;
+          }
+          
+          if (!workflowData.sellerPhone && profile.phoneNumber) {
+            updates.sellerPhone = profile.phoneNumber;
+            // Extract prefix from phone number
+            const sortedCodes = [...ALL_COUNTRIES].sort((a, b) => b.dial.length - a.dial.length);
+            const match = sortedCodes.find(c => profile.phoneNumber?.startsWith(c.dial));
+            if (match) {
+              setPhonePrefix(match.dial);
+            }
+          }
+          
+          if (!workflowData.region && profile.location?.region) {
+            updates.region = profile.location.region;
+          }
+          
+          if (!workflowData.city && !workflowData.locationData?.cityName && profile.location?.city) {
+            updates.city = profile.location.city;
+            updates.locationData = { cityName: profile.location.city };
+          }
+          
+          if (Object.keys(updates).length > 0) {
+            onUpdate(updates);
+          }
+          
+          setProfileLoaded(true);
+        }
+      } catch (error) {
+        console.error('Failed to load profile:', error);
+        setProfileLoaded(true); // Mark as loaded even on error to prevent infinite loop
       }
-    }
-  }, []); // Run once on mount
+    };
+    
+    loadProfileData();
+  }, [currentUser, profileLoaded, workflowData, onUpdate]);
 
   // Validation Regex
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -325,7 +372,6 @@ export const SellVehicleStep6: React.FC<SellVehicleStep6Props> = ({
         <Label>{language === 'bg' ? 'Телефон' : 'Phone'} *</Label>
         <PhoneInputGroup>
           <CountrySelectContainer>
-            <FlagIcon>{currentFlag}</FlagIcon>
             <CountrySelectStyled
               value={phonePrefix}
               onChange={(e) => {
@@ -338,10 +384,13 @@ export const SellVehicleStep6: React.FC<SellVehicleStep6Props> = ({
             >
               {ALL_COUNTRIES.map(country => (
                 <option key={country.code} value={country.dial}>
-                  {country.dial} ({country.code})
+                  {country.flag} {country.dial} ({country.code})
                 </option>
               ))}
             </CountrySelectStyled>
+            <FlagIcon>
+              {currentFlag} {phonePrefix}
+            </FlagIcon>
           </CountrySelectContainer>
 
           <PhoneInputStyled

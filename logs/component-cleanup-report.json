@@ -1,0 +1,29 @@
+{
+  "timestamp": "2025-12-24 04:36:50",
+  "imports_fixed": [
+    "src\\components\\WorkflowVisualization\\index.tsx"
+  ],
+  "deleted_components": [
+    {
+      "file": "src\\components\\SellWorkflow\\WorkflowPageLayout.example.tsx",
+      "status": "Deleted",
+      "lines": 232,
+      "reason": "Tutorial/Example code - not imported"
+    },
+    {
+      "file": "src\\components\\WorkflowVisualization\\Circular3DProgressLED.tsx",
+      "status": "Deleted",
+      "lines": 361,
+      "reason": "Base version unused - Enhanced version kept"
+    },
+    {
+      "file": "src\\components\\subscription\\SubscriptionManager_ENHANCED.tsx",
+      "status": "Deleted",
+      "lines": 806,
+      "reason": "Enhanced version not used - Base version kept"
+    }
+  ],
+  "total_lines_removed": 1399,
+  "mode": "Aggressive",
+  "total_space_freed_kb": 50
+}

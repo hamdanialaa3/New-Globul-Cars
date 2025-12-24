@@ -142,14 +142,15 @@ class FavoritesService {
 
   /**
    * Get all favorites for user
+   * Note: Sorting is done client-side to avoid requiring a Firestore index
    */
   async getUserFavorites(userId: string): Promise<FavoriteCar[]> {
     try {
       const favoritesRef = collection(db, this.collectionName);
+      // Only filter by userId - no orderBy to avoid index requirement
       const q = query(
         favoritesRef,
-        where('userId', '==', userId),
-        orderBy('addedAt', 'desc')
+        where('userId', '==', userId)
       );
 
       const querySnapshot = await getDocs(q);
@@ -160,6 +161,13 @@ class FavoritesService {
           id: doc.id,
           ...doc.data()
         } as FavoriteCar);
+      });
+
+      // Sort client-side by addedAt (newest first)
+      favorites.sort((a, b) => {
+        const aTime = a.addedAt?.toMillis?.() || (a.addedAt as any)?.seconds * 1000 || 0;
+        const bTime = b.addedAt?.toMillis?.() || (b.addedAt as any)?.seconds * 1000 || 0;
+        return bTime - aTime; // Descending order (newest first)
       });
 
       serviceLogger.info('Retrieved favorites for user', { userId, count: favorites.length });

@@ -6,9 +6,12 @@ import { useWizardState } from './hooks/useWizardState';
 import { useWizardValidation } from './hooks/useWizardValidation';
 import { useWizardTimer } from './hooks/useWizardTimer';
 import BladeStepper from './BladeStepper';
-import { Check, ArrowLeft, ArrowRight, RotateCcw, AlertTriangle, Clock, Cloud } from 'lucide-react';
+import { Check, ArrowLeft, ArrowRight, RotateCcw, AlertTriangle, Clock, Cloud, Sparkles, Car } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import styled, { keyframes } from 'styled-components';
+import { BulgarianProfileService } from '../../services/bulgarian-profile-service';
 
 // Services
 import SellWorkflowService from '../../services/sell-workflow-service';
@@ -42,6 +45,121 @@ import {
 
 const TOTAL_STEPS = 7;
 
+// Success Animation Styles
+const confettiAnimation = keyframes`
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+`;
+
+const scaleInBounce = keyframes`
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+`;
+
+const pulseGlow = keyframes`
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(34, 197, 94, 0.8), 0 0 80px rgba(34, 197, 94, 0.5);
+  }
+`;
+
+const SuccessOverlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  overflow: hidden;
+`;
+
+const ConfettiPiece = styled.div<{ $delay: number; $left: number; $color: string }>`
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: ${props => props.$color};
+  top: -10px;
+  left: ${props => props.$left}%;
+  animation: ${confettiAnimation} 2s ease-out forwards;
+  animation-delay: ${props => props.$delay}s;
+  border-radius: 2px;
+`;
+
+const SuccessCard = styled(motion.div)`
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 24px;
+  padding: 3rem;
+  text-align: center;
+  color: white;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+  animation: ${pulseGlow} 2s ease-in-out infinite;
+`;
+
+const SuccessIconWrapper = styled(motion.div)`
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 2rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+`;
+
+const SuccessTitle = styled(motion.h2)`
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+`;
+
+const SuccessMessage = styled(motion.p)`
+  font-size: 1.25rem;
+  opacity: 0.95;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+`;
+
+const SuccessBadge = styled(motion.div)`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+`;
+
 interface WizardOrchestratorProps {
     onComplete?: () => void;
     onCancel?: () => void;
@@ -73,6 +191,7 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
     const [showResetConfirm, setShowResetConfirm] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const [isPublishing, setIsPublishing] = useState(false);
+    const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
 
     // Handlers
     const handleNext = () => {
@@ -121,15 +240,35 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
             );
 
             if (result.carId) {
+                // Show success animation
+                setShowSuccessAnimation(true);
+                
+                // Get user's numeric ID for navigation
+                let userNumericId: number | null = null;
+                try {
+                    const profile = await BulgarianProfileService.getUserProfile(currentUser.uid);
+                    userNumericId = profile?.numericId || null;
+                } catch (error) {
+                    console.error('Failed to get user numeric ID:', error);
+                }
+
                 toast.success(language === 'bg' ? 'Обявата е публикувана успешно!' : 'Vehicle published successfully!');
 
                 // 4. Cleanup
                 await resetWizard();
 
                 if (onComplete) onComplete();
-                // Navigate to the new car detail page using numeric ID if available
-                const targetId = result.carNumericId || result.carId;
-                navigate(`/car/${targetId}`);
+                
+                // Wait for animation to play (1.5 seconds)
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Navigate to my-ads page with user's numeric ID
+                if (userNumericId) {
+                    navigate(`/profile/${userNumericId}/my-ads`);
+                } else {
+                    // Fallback to profile page if numeric ID not available
+                    navigate('/profile/my-ads');
+                }
             } else {
                 throw new Error('No carId returned from service');
             }
@@ -189,9 +328,79 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
         </div>
     );
 
+    // Generate confetti pieces
+    const confettiColors = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'];
+    const confettiPieces = Array.from({ length: 50 }, (_, i) => ({
+        id: i,
+        delay: Math.random() * 0.5,
+        left: Math.random() * 100,
+        color: confettiColors[Math.floor(Math.random() * confettiColors.length)]
+    }));
+
     return (
-        <WizardContainer>
-            <StatusWrapper>
+        <>
+            <AnimatePresence>
+                {showSuccessAnimation && (
+                    <SuccessOverlay
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        {confettiPieces.map(piece => (
+                            <ConfettiPiece
+                                key={piece.id}
+                                $delay={piece.delay}
+                                $left={piece.left}
+                                $color={piece.color}
+                            />
+                        ))}
+                        <SuccessCard
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0, opacity: 0 }}
+                            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+                        >
+                            <SuccessIconWrapper
+                                initial={{ scale: 0, rotate: -180 }}
+                                animate={{ scale: 1, rotate: 0 }}
+                                transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+                            >
+                                <Car size={64} strokeWidth={2.5} />
+                            </SuccessIconWrapper>
+                            <SuccessTitle
+                                initial={{ y: 20, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ delay: 0.4 }}
+                            >
+                                {language === 'bg' ? '🎉 Успешно публикувано!' : '🎉 Successfully Published!'}
+                            </SuccessTitle>
+                            <SuccessMessage
+                                initial={{ y: 20, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ delay: 0.6 }}
+                            >
+                                {language === 'bg' 
+                                    ? 'Вашата обява е добавена успешно и вече е видима в профила ви!'
+                                    : 'Your listing has been successfully added and is now visible in your profile!'}
+                            </SuccessMessage>
+                            <SuccessBadge
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ delay: 0.8, type: 'spring', stiffness: 200 }}
+                            >
+                                <Sparkles size={24} />
+                                <span>
+                                    {language === 'bg' ? 'Преминаване към моите обяви...' : 'Redirecting to my ads...'}
+                                </span>
+                            </SuccessBadge>
+                        </SuccessCard>
+                    </SuccessOverlay>
+                )}
+            </AnimatePresence>
+
+            <WizardContainer>
+                <StatusWrapper>
                 {isActive && (
                     <TimerBadge $warning={remainingSeconds < 300}>
                         <Clock />
@@ -314,6 +523,7 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
                     </Button>
                 </div>
             </NavigationButtons>
-        </WizardContainer>
+            </WizardContainer>
+        </>
     );
 };

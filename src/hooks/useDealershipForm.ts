@@ -104,18 +104,18 @@ export const useDealershipForm = (
 
   const handleSubmit = async (): Promise<boolean> => {
     if (!validateForm()) {
-      toast.error('يرجى تصحيح الأخطاء في النموذج');
+      toast.error('Моля поправете грешките в формуляра');
       return false;
     }
 
     setLoading(true);
     try {
       await DealershipRepository.updateWithUserSync(uid, formData as DealershipInfoUpdate);
-      toast.success('تم حفظ معلومات المعرض بنجاح');
+      toast.success('Информацията за салона беше запазена успешно');
       return true;
     } catch (error) {
       logger.error('Error submitting dealership form', error as Error, { uid });
-      toast.error('فشل حفظ المعلومات');
+      toast.error('Неуспешно запазване на информацията');
       return false;
     } finally {
       setLoading(false);

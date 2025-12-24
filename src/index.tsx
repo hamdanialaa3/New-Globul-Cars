@@ -28,6 +28,30 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 
+// Clear browser cache in development mode
+if (process.env.NODE_ENV === 'development') {
+  // Force clear localStorage cache keys that might cause stale data
+  const cacheKeys = ['workflow_draft', 'current_draft_id', 'favorites_cache', 'user_preferences'];
+  cacheKeys.forEach(key => {
+    try {
+      if (localStorage.getItem(key)) {
+        localStorage.removeItem(key);
+        logger.debug(`Cleared localStorage key: ${key}`);
+      }
+    } catch (e) {
+      // Ignore errors
+    }
+  });
+  
+  // Clear sessionStorage
+  try {
+    sessionStorage.clear();
+    logger.debug('Cleared sessionStorage');
+  } catch (e) {
+    // Ignore errors
+  }
+}
+
 // Bulgarian Car Marketplace
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -55,7 +79,42 @@ if (process.env.NODE_ENV === 'production') {
   });
 } else {
   logger.debug('Service Worker disabled in development mode');
+  // Force unregister and clear all caches in development
   unregisterServiceWorker();
+  
+  // Clear all caches in development mode to prevent stale content
+  if ('caches' in window) {
+    caches.keys().then(cacheNames => {
+      if (cacheNames.length > 0) {
+        logger.debug(`Clearing ${cacheNames.length} caches in development mode...`);
+        cacheNames.forEach(cacheName => {
+          caches.delete(cacheName);
+          logger.debug(`Cleared cache: ${cacheName}`);
+        });
+      }
+    }).catch(err => {
+      logger.debug('Cache clearing error (non-critical):', err);
+    });
+  }
+  
+  // Add cache busting query parameter to all script/style tags in development
+  if (typeof window !== 'undefined') {
+    const timestamp = Date.now();
+    const links = document.querySelectorAll('link[rel="stylesheet"]');
+    const scripts = document.querySelectorAll('script[src]');
+    
+    links.forEach((link: any) => {
+      if (link.href && !link.href.includes('?v=')) {
+        link.href += `?v=${timestamp}`;
+      }
+    });
+    
+    scripts.forEach((script: any) => {
+      if (script.src && !script.src.includes('?v=')) {
+        script.src += `?v=${timestamp}`;
+      }
+    });
+  }
 }
 
 // Install prompt

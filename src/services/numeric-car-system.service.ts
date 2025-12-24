@@ -33,7 +33,7 @@ import {
 } from 'firebase/firestore';
 import { db, auth } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-service';
-import { SocialAuthService } from '../firebase/social-auth-service';
+import { BulgarianProfileService } from './bulgarian-profile-service';
 
 export interface NumericCarData {
   id: string;
@@ -56,7 +56,7 @@ class NumericCarSystemService {
    * Throws if profile doesn't exist
    */
   async getUserNumericId(userId: string): Promise<number> {
-    const userProfile = await SocialAuthService.getBulgarianUserProfile(userId);
+    const userProfile = await BulgarianProfileService.getUserProfile(userId);
 
     if (!userProfile || !userProfile.numericId) {
       throw new Error(`❌ User profile not found or numericId not assigned: ${userId}`);

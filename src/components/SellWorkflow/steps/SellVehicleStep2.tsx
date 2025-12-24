@@ -243,7 +243,36 @@ export const SellVehicleStep2: React.FC<SellVehicleStep2Props> = ({
     }
   }, [workflowData.mileage, workflowData.power]);
 
-  // ... rest of logic ...
+  // Helper functions for styling
+  const getLabelStyle = (hasValue: boolean): React.CSSProperties => ({
+    color: hasValue ? '#22c55e' : 'var(--text-primary)',
+    transition: 'color 0.3s ease'
+  });
+
+  const getInputStyle = (hasValue: boolean): React.CSSProperties => ({
+    borderColor: hasValue ? '#22c55e' : 'var(--border)',
+    color: hasValue ? '#22c55e' : 'var(--text-primary)',
+    fontWeight: hasValue ? '600' : 'normal',
+    transition: 'all 0.3s ease'
+  });
+
+  const successColor = '#22c55e';
+
+  // Computed values
+  const hasBrand = !!workflowData.make;
+  const hasModel = !!workflowData.model;
+  const firstRegistrationYear = workflowData.firstRegistration || workflowData.year?.toString() || '';
+  const hasMileage = !!workflowData.mileage;
+  const hasCondition = !!workflowData.condition;
+  const hasFuel = !!workflowData.fuelType;
+  const hasTransmission = !!workflowData.transmission;
+  const hasPower = !!workflowData.power;
+  const hasBody = !!workflowData.bodyType;
+  const hasColor = !!workflowData.color || !!workflowData.exteriorColor;
+
+  // Year options
+  const currentYear = new Date().getFullYear();
+  const yearOptions = Array.from({ length: currentYear - 1949 }, (_, i) => currentYear - i);
 
   return (
     <FormContainer>
@@ -499,42 +528,6 @@ export const SellVehicleStep2: React.FC<SellVehicleStep2Props> = ({
           )}
 
           {hasBody && (
-            <RevealWrapper>
-              <Label style={getLabelStyle(hasDoors)}>{language === 'bg' ? 'Брой врати' : 'Doors'}</Label>
-              <ToggleGroup>
-                {DOOR_OPTIONS.map(option => (
-                  <ToggleButton
-                    key={option}
-                    $active={workflowData.doors === option}
-                    onClick={() => onUpdate({ doors: option })}
-                    style={workflowData.doors === option ? { borderColor: successColor, backgroundColor: successColor } : {}}
-                  >
-                    {option}
-                  </ToggleButton>
-                ))}
-              </ToggleGroup>
-            </RevealWrapper>
-          )}
-
-          {hasDoors && (
-            <RevealWrapper>
-              <Label style={getLabelStyle(hasSeats)}>{language === 'bg' ? 'Брой седалки' : 'Seats'}</Label>
-              <ToggleGroup>
-                {SEAT_OPTIONS.map(option => (
-                  <ToggleButton
-                    key={option}
-                    $active={workflowData.seats === option}
-                    onClick={() => onUpdate({ seats: option })}
-                    style={workflowData.seats === option ? { borderColor: successColor, backgroundColor: successColor } : {}}
-                  >
-                    {option}
-                  </ToggleButton>
-                ))}
-              </ToggleGroup>
-            </RevealWrapper>
-          )}
-
-          {hasSeats && (
             <RevealWrapper>
               <Label style={getLabelStyle(hasColor)}>{language === 'bg' ? 'Външен цвят' : 'Exterior Color'}</Label>
               <Select

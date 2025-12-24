@@ -11,25 +11,58 @@ module.exports = {
   },
   // Ensure dev server sends no-cache headers to avoid stale assets in browsers
   devServer: (devServerConfig) => {
+    // Set port explicitly (default is 3000, but can be overridden by PORT env var)
+    devServerConfig.port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+    devServerConfig.host = process.env.HOST || 'localhost';
+    devServerConfig.allowedHosts = 'all';
+    
     devServerConfig.headers = {
       ...(devServerConfig.headers || {}),
-      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
       Pragma: 'no-cache',
       Expires: '0',
       'Surrogate-Control': 'no-store',
+      'Last-Modified': new Date().toUTCString(),
+      'ETag': `"${Date.now()}"`,
     };
-    // Optional: reduce compression to make rebuilds more predictable in dev
+    // Disable compression to make rebuilds more predictable in dev
     devServerConfig.compress = false;
+    // Hot reload with aggressive cache invalidation
+    devServerConfig.hot = true;
+    devServerConfig.liveReload = true;
     // Ensure file watching remains active and responsive
     devServerConfig.watchFiles = {
       paths: ['src/**/*', 'public/**/*'],
       options: { usePolling: false, interval: 100, ignored: ['**/node_modules/**'] },
     };
+    // Ensure publicPath matches the port
+    devServerConfig.historyApiFallback = true;
     return devServerConfig;
   },
   webpack: {
     configure: (config) => {
       console.log('CRACO: Configuring webpack...');
+
+      // Add cache busting in development
+      if (config.mode === 'development') {
+        // Disable webpack caching completely in development
+        config.cache = false;
+        
+        // Ensure output files have unique names to prevent browser caching
+        if (config.output) {
+          // Use contenthash for cache busting
+          const originalFilename = config.output.filename || 'static/js/[name].js';
+          const originalChunkFilename = config.output.chunkFilename || 'static/js/[name].chunk.js';
+          
+          // Only add hash if not already present
+          if (!originalFilename.includes('[contenthash]') && !originalFilename.includes('[hash]')) {
+            config.output.filename = originalFilename.replace('[name]', '[name].[contenthash:8]');
+          }
+          if (!originalChunkFilename.includes('[contenthash]') && !originalChunkFilename.includes('[hash]')) {
+            config.output.chunkFilename = originalChunkFilename.replace('[name]', '[name].[contenthash:8]');
+          }
+        }
+      }
 
       // Disable minification in production to ease debugging
       if (config.mode === 'production') {

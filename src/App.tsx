@@ -10,6 +10,7 @@ import { logger } from './services/logger-service';
 import { InstallPrompt } from './components/PWA/InstallPrompt';
 import GuestExpirationModal from './components/auth/GuestExpirationModal';
 import ConsentBanner from './components/ConsentBanner';
+import PendingFavoriteHandler from './components/PendingFavoriteHandler';
 
 // 🔧 Dev utilities (available in console)
 if (process.env.NODE_ENV === 'development') {
@@ -44,6 +45,7 @@ const App: React.FC = () => {
 
   return (
     <AppProviders>
+      <PendingFavoriteHandler />
       <AppRoutes />
       <GuestExpirationModal />
       <InstallPrompt />

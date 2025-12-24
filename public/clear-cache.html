@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Cache - Изчистване на кеш</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        h1 { margin-top: 0; }
+        .status { margin: 1rem 0; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 10px; }
+        button {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: all 0.3s;
+        }
+        button:hover { background: #059669; transform: scale(1.05); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Clear Browser Cache</h1>
+        <h2>Изчистване на кеш на браузъра</h2>
+        <div id="status" class="status">Initializing...</div>
+        <button onclick="clearAll()">Clear All Caches</button>
+        <button onclick="location.href='/'">Go to App</button>
+    </div>
+    <script>
+        async function clearAll() {
+            const status = document.getElementById('status');
+            status.innerHTML = '🔄 Clearing caches...';
+            
+            try {
+                // 1. Unregister all service workers
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let registration of registrations) {
+                        await registration.unregister();
+                        status.innerHTML += `<br>✓ Unregistered: ${registration.scope}`;
+                    }
+                }
+                
+                // 2. Clear all caches
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    for (let cacheName of cacheNames) {
+                        await caches.delete(cacheName);
+                        status.innerHTML += `<br>✓ Deleted cache: ${cacheName}`;
+                    }
+                }
+                
+                // 3. Clear localStorage
+                localStorage.clear();
+                status.innerHTML += '<br>✓ Cleared localStorage';
+                
+                // 4. Clear sessionStorage
+                sessionStorage.clear();
+                status.innerHTML += '<br>✓ Cleared sessionStorage';
+                
+                status.innerHTML += '<br><br>✅ All caches cleared! Redirecting...';
+                setTimeout(() => {
+                    window.location.href = '/?nocache=' + Date.now();
+                }, 2000);
+            } catch (error) {
+                status.innerHTML += `<br>❌ Error: ${error.message}`;
+            }
+        }
+        
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            setTimeout(clearAll, 500);
+        });
+    </script>
+</body>
+</html>
+

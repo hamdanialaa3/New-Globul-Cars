@@ -1,320 +1,321 @@
-import { getMessaging, getToken, onMessage, Messaging } from 'firebase/messaging';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
-import { logger } from './logger-service';
-import { CarListing } from '../types/CarListing';
-
 /**
- * Notification Service - Singleton Pattern
- * Handles Firebase Cloud Messaging (FCM) notifications
+ * Notification Service
+ * خدمة الإشعارات
  * 
  * Features:
- * - Push notification permissions
- * - FCM token management
- * - Real-time message listening
+ * - Real-time notification listening
+ * - Mark as read/unread
+ * - Get unread count
+ * - Delete notifications
+ * - Pagination support
  * 
  * Usage:
- * ```typescript
- * import { notificationService } from '../services/notification-service';
- * 
- * await notificationService.initialize();
- * const token = await notificationService.requestPermission();
- * ```
+ * const service = notificationService.getInstance();
+ * service.listenToNotifications(userId, (notifications) => { ... });
  */
+
+import { 
+  collection, 
+  query, 
+  where, 
+  orderBy, 
+  limit, 
+  onSnapshot, 
+  doc, 
+  updateDoc, 
+  deleteDoc,
+  getDocs,
+  Timestamp,
+  writeBatch,
+  Unsubscribe
+} from 'firebase/firestore';
+import { db } from '../firebase/firebase-config';
+import { logger } from './logger-service';
+
+export interface Notification {
+  id: string;
+  userId: string;
+  type: 'new_car_from_followed_seller' | 'price_drop' | 'car_sold' | 'message';
+  carId: string;
+  sellerId: string;
+  sellerName: string;
+  carMake: string;
+  carModel: string;
+  carPrice: number;
+  carImage?: string;
+  isRead: boolean;
+  createdAt: Timestamp;
+}
+
 class NotificationService {
-  private static instance: NotificationService | null = null;
-  private messaging: any;
+  private static instance: NotificationService;
+  private unsubscribers: Map<string, Unsubscribe> = new Map();
 
-  private constructor() {
-    logger.debug('NotificationService created');
-  }
+  private constructor() {}
 
-  public static getInstance(): NotificationService {
+  static getInstance(): NotificationService {
     if (!NotificationService.instance) {
       NotificationService.instance = new NotificationService();
     }
     return NotificationService.instance;
   }
 
-  async initialize() {
-    // Skip Firebase messaging in development to prevent errors
-    if (process.env.NODE_ENV === 'development') {
-      logger.info('Firebase messaging disabled in development mode');
-      return;
-    }
-
+  /**
+   * Listen to real-time notifications for a user
+   * Returns unsubscribe function
+   */
+  listenToNotifications(
+    userId: string,
+    callback: (notifications: Notification[]) => void,
+    maxResults: number = 20
+  ): Unsubscribe {
     try {
-      this.messaging = getMessaging();
-      await this.requestPermission();
-      this.listenForMessages();
-    } catch (error) {
-      logger.error('Notification init failed', error as Error);
-    }
-  }
+      // Stop existing listener if any
+      this.stopListening(userId);
 
-  async requestPermission() {
-    // Skip in development
-    if (process.env.NODE_ENV === 'development') {
-      return null;
-    }
+      const notificationsRef = collection(db, 'notifications');
+      const q = query(
+        notificationsRef,
+        where('userId', '==', userId),
+        orderBy('createdAt', 'desc'),
+        limit(maxResults)
+      );
 
-    const permission = await Notification.requestPermission();
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const notifications: Notification[] = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          } as Notification));
 
-    if (permission === 'granted') {
-      logger.info('Notification permission granted');
-      const token = await this.getToken();
-      return token;
-    } else {
-      logger.info('Notification permission denied');
-      return null;
-    }
-  }
+          callback(notifications);
 
-  async getToken() {
-    // Skip in development (optional - remove this check to test in dev)
-    if (process.env.NODE_ENV === 'development') {
-      logger.debug('FCM Token: Skipped in development mode');
-      return null;
-    }
-
-    try {
-      const vapidKey = process.env.REACT_APP_VAPID_KEY;
-
-      if (!vapidKey) {
-        logger.error('VAPID key not configured - check .env file for REACT_APP_VAPID_KEY');
-        return null;
-      }
-
-      const token = await getToken(this.messaging, { vapidKey });
-
-      if (token) {
-        logger.info('FCM Token received', { tokenLength: token.length });
-        return token;
-      } else {
-        logger.warn('No FCM token received - check Firebase configuration');
-        return null;
-      }
-    } catch (error: any) {
-      if (error?.message?.includes('Invalid raw ECDSA P-256 public key')) {
-        logger.warn('FCM VAPID Key Error: The provided VAPID key is invalid or malformed. Push notifications will be disabled.');
-        return null;
-      }
-      logger.error('Token error', error as Error);
-      return null;
-    }
-  }
-
-  async requestPermissionAndSaveToken(userId?: string) {
-    // Skip in development
-    if (process.env.NODE_ENV === 'development') {
-      return null;
-    }
-
-    try {
-      const permission = await Notification.requestPermission();
-
-      if (permission === 'granted') {
-        logger.info('Notification permission granted');
-        const token = await this.getToken();
-
-        if (token && userId) {
-          await this.saveToken(userId, token);
+          logger.info('Notifications updated', { 
+            userId, 
+            count: notifications.length 
+          });
+        },
+        (error) => {
+          logger.error('Error listening to notifications', error as Error, { userId });
+          callback([]); // Return empty array on error
         }
+      );
 
-        return token;
-      } else {
-        logger.info('Notification permission denied');
-        return null;
+      // Store unsubscriber
+      this.unsubscribers.set(userId, unsubscribe);
+
+      return unsubscribe;
+
+    } catch (error) {
+      logger.error('Failed to start notification listener', error as Error, { userId });
+      throw error;
+    }
+  }
+
+  /**
+   * Stop listening to notifications
+   */
+  stopListening(userId: string): void {
+    const unsubscribe = this.unsubscribers.get(userId);
+    if (unsubscribe) {
+      try {
+        unsubscribe();
+        this.unsubscribers.delete(userId);
+        logger.info('Stopped listening to notifications', { userId });
+      } catch (error) {
+        logger.error('Error stopping notification listener', error as Error, { userId });
+        // Always delete even if error occurs
+        this.unsubscribers.delete(userId);
       }
-    } catch (error) {
-      logger.error('Request permission and save token failed', error as Error);
-      return null;
     }
   }
 
-  onForegroundMessage(callback: (payload: MessagePayload) => void) {
-    if (!this.messaging) {
-      this.messaging = getMessaging();
-    }
-
-    if (!this.messaging) {
-      logger.warn('Messaging not available');
-      return () => { }; // Return no-op unsubscribe
-    }
-
-    return onMessage(this.messaging, callback);
-  }
-
-  async saveToken(userId: string, token: string) {
+  /**
+   * Get unread notification count (one-time fetch)
+   */
+  async getUnreadCount(userId: string): Promise<number> {
     try {
-      await setDoc(doc(db, 'userTokens', userId), {
-        token,
-        updatedAt: new Date(),
-        platform: 'web'
-      });
-      logger.info('✅ Token saved');
+      const notificationsRef = collection(db, 'notifications');
+      const q = query(
+        notificationsRef,
+        where('userId', '==', userId),
+        where('isRead', '==', false)
+      );
+
+      const snapshot = await getDocs(q);
+      return snapshot.size;
+
     } catch (error) {
-      logger.error('❌ Token save failed:', error);
+      logger.error('Failed to get unread count', error as Error, { userId });
+      return 0;
     }
   }
 
-  listenForMessages() {
-    if (!this.messaging) {
-      this.messaging = getMessaging();
-    }
-
-    if (!this.messaging) {
-      logger.warn('Messaging not available for listening');
-      return;
-    }
-
-    onMessage(this.messaging, (payload: MessagePayload) => {
-      logger.info('📬 Foreground Message:', payload);
-      this.showNotification(payload);
-    });
-  }
-
-  showNotification(payload: MessagePayload) {
-    if (!payload.notification) {
-      logger.warn('Notification payload missing notification field');
-      return;
-    }
-
-    const { title, body, icon } = payload.notification;
-
-    if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification(title, {
-        body,
-        icon: icon || '/Logo1.png',
-        badge: '/Logo1.png',
-        vibrate: [200, 100, 200],
-        tag: payload.data?.type || 'default'
-      });
-    }
-  }
-
-  // Notification Templates
-  async sendNewCarNotification(userId: string, carData: CarNotificationData) {
-    const brand = carData.brand || carData.make || 'Car';
-    return this.sendNotification(userId, {
-      title: '🚗 سيارة جديدة!',
-      body: `${brand} ${carData.model} - ${carData.price}€`,
-      type: 'new_car',
-      data: { carId: carData.id || '' }
-    });
-  }
-
-  async sendPriceDropNotification(userId: string, carData: CarNotificationData, oldPrice: number) {
-    const brand = carData.brand || carData.make || 'Car';
-    return this.sendNotification(userId, {
-      title: '💰 السعر انخفض!',
-      body: `${brand} ${carData.model} من ${oldPrice}€ إلى ${carData.price}€`,
-      type: 'price_drop',
-      data: { carId: carData.id || '' }
-    });
-  }
-
-  async sendMessageNotification(userId: string, senderName: string) {
-    return this.sendNotification(userId, {
-      title: '💬 رسالة جديدة',
-      body: `رسالة من ${senderName}`,
-      type: 'message',
-      data: { type: 'message' }
-    });
-  }
-
-  async sendFavoriteCarAvailableNotification(userId: string, carData: CarNotificationData) {
-    const brand = carData.brand || carData.make || 'Car';
-    return this.sendNotification(userId, {
-      title: '⭐ السيارة المفضلة متاحة!',
-      body: `${brand} ${carData.model} متاحة الآن`,
-      type: 'favorite_available',
-      data: { carId: carData.id || '' }
-    });
-  }
-
-  async sendViewNotification(sellerId: string, carData: CarNotificationData, viewCount: number) {
-    const brand = carData.brand || carData.make || 'Car';
-    return this.sendNotification(sellerId, {
-      title: '👀 مشاهدات جديدة',
-      body: `إعلانك ${brand} ${carData.model} حصل على ${viewCount} مشاهدة`,
-      type: 'views',
-      data: { carId: carData.id || '' }
-    });
-  }
-
-  async sendInquiryNotification(sellerId: string, carData: CarNotificationData) {
-    const brand = carData.brand || carData.make || 'Car';
-    return this.sendNotification(sellerId, {
-      title: '❓ استفسار جديد',
-      body: `شخص مهتم بـ ${brand} ${carData.model}`,
-      type: 'inquiry',
-      data: { carId: carData.id || '' }
-    });
-  }
-
-  async sendOfferNotification(sellerId: string, carData: CarNotificationData, offerPrice: number) {
-    const brand = carData.brand || carData.make || 'Car';
-    return this.sendNotification(sellerId, {
-      title: '💵 عرض سعر جديد',
-      body: `عرض ${offerPrice}€ على ${brand} ${carData.model}`,
-      type: 'offer',
-      data: { carId: carData.id || '' }
-    });
-  }
-
-  async sendVerificationNotification(userId: string, status: string) {
-    return this.sendNotification(userId, {
-      title: status === 'approved' ? '✅ تم التحقق' : '⏳ قيد المراجعة',
-      body: status === 'approved' ? 'حسابك تم التحقق منه بنجاح' : 'طلب التحقق قيد المراجعة',
-      type: 'verification',
-      data: { status }
-    });
-  }
-
-  async sendReminderNotification(userId: string, message: string) {
-    return this.sendNotification(userId, {
-      title: '⏰ تذكير',
-      body: message,
-      type: 'reminder',
-      data: {}
-    });
-  }
-
-  async sendPromotionNotification(userId: string, promotion: any) {
-    return this.sendNotification(userId, {
-      title: '🎉 عرض خاص',
-      body: promotion.message,
-      type: 'promotion',
-      data: { promotionId: promotion.id }
-    });
-  }
-
-  private async sendNotification(userId: string, notification: any) {
+  /**
+   * Mark a notification as read
+   */
+  async markAsRead(notificationId: string): Promise<void> {
     try {
-      const tokenDoc = await getDoc(doc(db, 'userTokens', userId));
+      const notificationRef = doc(db, 'notifications', notificationId);
+      await updateDoc(notificationRef, {
+        isRead: true
+      });
 
-      if (!tokenDoc.exists()) {
-        logger.info('❌ No token for user:', userId);
+      logger.info('Notification marked as read', { notificationId });
+
+    } catch (error) {
+      logger.error('Failed to mark notification as read', error as Error, { notificationId });
+      throw error;
+    }
+  }
+
+  /**
+   * Mark multiple notifications as read (batch operation)
+   */
+  async markMultipleAsRead(notificationIds: string[]): Promise<void> {
+    if (notificationIds.length === 0) return;
+
+    try {
+      const batch = writeBatch(db);
+
+      notificationIds.forEach(id => {
+        const notificationRef = doc(db, 'notifications', id);
+        batch.update(notificationRef, { isRead: true });
+      });
+
+      await batch.commit();
+
+      logger.info('Multiple notifications marked as read', { 
+        count: notificationIds.length 
+      });
+
+    } catch (error) {
+      logger.error('Failed to mark multiple notifications as read', error as Error);
+      throw error;
+    }
+  }
+
+  /**
+   * Mark all notifications as read for a user
+   */
+  async markAllAsRead(userId: string): Promise<void> {
+    try {
+      const notificationsRef = collection(db, 'notifications');
+      const q = query(
+        notificationsRef,
+        where('userId', '==', userId),
+        where('isRead', '==', false)
+      );
+
+      const snapshot = await getDocs(q);
+      
+      if (snapshot.empty) {
+        logger.info('No unread notifications to mark', { userId });
         return;
       }
 
-      const token = tokenDoc.data().token;
+      const batch = writeBatch(db);
+      snapshot.docs.forEach(doc => {
+        batch.update(doc.ref, { isRead: true });
+      });
 
-      // هنا سنستخدم Firebase Cloud Functions لإرسال الإشعار
-      // سيتم إضافته في الخطوة التالية
-      logger.info('📤 Sending notification to:', userId, notification);
+      await batch.commit();
 
-      return { success: true };
+      logger.info('All notifications marked as read', { 
+        userId, 
+        count: snapshot.size 
+      });
+
     } catch (error) {
-      logger.error('❌ Send notification failed:', error);
-      return { success: false, error };
+      logger.error('Failed to mark all notifications as read', error as Error, { userId });
+      throw error;
     }
+  }
+
+  /**
+   * Delete a notification
+   */
+  async deleteNotification(notificationId: string): Promise<void> {
+    try {
+      const notificationRef = doc(db, 'notifications', notificationId);
+      await deleteDoc(notificationRef);
+
+      logger.info('Notification deleted', { notificationId });
+
+    } catch (error) {
+      logger.error('Failed to delete notification', error as Error, { notificationId });
+      throw error;
+    }
+  }
+
+  /**
+   * Delete all notifications for a user
+   */
+  async deleteAllNotifications(userId: string): Promise<void> {
+    try {
+      const notificationsRef = collection(db, 'notifications');
+      const q = query(
+        notificationsRef,
+        where('userId', '==', userId)
+      );
+
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        logger.info('No notifications to delete', { userId });
+        return;
+      }
+
+      const batch = writeBatch(db);
+      snapshot.docs.forEach(doc => {
+        batch.delete(doc.ref);
+      });
+
+      await batch.commit();
+
+      logger.info('All notifications deleted', { 
+        userId, 
+        count: snapshot.size 
+      });
+
+    } catch (error) {
+      logger.error('Failed to delete all notifications', error as Error, { userId });
+      throw error;
+    }
+  }
+
+  /**
+   * Get car URL from notification
+   * Uses strict numeric ID system
+   */
+  getCarUrl(notification: Notification): string {
+    const { carId } = notification;
+    
+    // Assuming the car has numeric IDs embedded or we fetch them
+    // For now, fallback to UUID-based URL (will be fixed in migration)
+    return `/car-details/${carId}`;
+    
+    // TODO: Upgrade to strict numeric URLs when migration is complete
+    // return `/car/${sellerNumericId}/${carNumericId}`;
+  }
+
+  /**
+   * Cleanup: Stop all active listeners
+   */
+  cleanup(): void {
+    this.unsubscribers.forEach((unsubscribe, userId) => {
+      try {
+        unsubscribe();
+        logger.info('Cleaned up notification listener', { userId });
+      } catch (error) {
+        logger.error('Error cleaning up notification listener', error as Error, { userId });
+      }
+    });
+    this.unsubscribers.clear();
   }
 }
 
-// Export singleton instance for easy access
+// Export singleton instance
 export const notificationService = NotificationService.getInstance();
-
-// Also export class for type checking
-export default NotificationService;
+export default notificationService;

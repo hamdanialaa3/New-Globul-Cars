@@ -1,4 +1,4 @@
-// Visual Search Page - صفحة البحث المرئي الرئيسية
+// Visual Search Page
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';

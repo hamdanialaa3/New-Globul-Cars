@@ -153,24 +153,48 @@ if (process.platform === 'darwin') {
   execCommand('find . -name ".DS_Store" -type f -delete 2>/dev/null || true', 'حذف ملفات .DS_Store');
 }
 
-// 11. تنظيف المنافذ (Ports)
+// 11. تنظيف المنافذ (Ports) - تحسين للمنفذ 3000
 log('\n📦 الخطوة 11: تنظيف المنافذ', 'blue');
 const ports = [3000, 3001, 5173, 8080, 5000, 5001];
 ports.forEach(port => {
   try {
     if (process.platform === 'win32') {
-      execSync(`netstat -ano | findstr :${port}`, { stdio: 'ignore' });
-      // Note: Killing ports on Windows requires admin rights
-      log(`  ℹ️  المنفذ ${port} - يرجى إغلاقه يدوياً إذا كان مستخدماً`, 'yellow');
+      // Windows: البحث عن العمليات على المنفذ وإغلاقها
+      try {
+        const result = execSync(`netstat -ano | findstr :${port}`, { encoding: 'utf8', stdio: 'pipe' });
+        const lines = result.split('\n').filter(line => line.trim());
+        if (lines.length > 0) {
+          lines.forEach(line => {
+            const parts = line.trim().split(/\s+/);
+            const pid = parts[parts.length - 1];
+            if (pid && !isNaN(pid)) {
+              try {
+                execSync(`taskkill /F /PID ${pid}`, { stdio: 'ignore' });
+                log(`  ✅ إغلاق المنفذ ${port} (PID: ${pid})`, 'green');
+              } catch (killError) {
+                log(`  ⚠️  فشل إغلاق المنفذ ${port} (PID: ${pid}) - قد يتطلب صلاحيات إدارية`, 'yellow');
+              }
+            }
+          });
+        } else {
+          log(`  ℹ️  المنفذ ${port} غير مستخدم`, 'cyan');
+        }
+      } catch (error) {
+        // Port not in use - this is fine
+        log(`  ℹ️  المنفذ ${port} غير مستخدم`, 'cyan');
+      }
     } else {
+      // Linux/Mac
       const pid = execSync(`lsof -ti:${port} 2>/dev/null || true`, { encoding: 'utf8' }).trim();
       if (pid) {
         execSync(`kill -9 ${pid} 2>/dev/null || true`);
-        log(`  ✅ إغلاق المنفذ ${port}`, 'green');
+        log(`  ✅ إغلاق المنفذ ${port} (PID: ${pid})`, 'green');
+      } else {
+        log(`  ℹ️  المنفذ ${port} غير مستخدم`, 'cyan');
       }
     }
   } catch (error) {
-    // Port not in use
+    // Port not in use - this is fine
   }
 });
 

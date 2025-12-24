@@ -1,0 +1,329 @@
+{
+  "count": 3,
+  "groups": [
+    {
+      "similarityKey": "getInstance",
+      "services": [
+        {
+          "file": "src/firebase/analytics-service.ts",
+          "name": "analytics-service",
+          "functions": [
+            "getInstance",
+            "logEvent",
+            "useAnalytics"
+          ],
+          "lineCount": 229,
+          "usageCount": 3,
+          "usedInCount": 3
+        },
+        {
+          "file": "src/services/advanced/visual-search.service.ts",
+          "name": "visual-search.service",
+          "functions": [
+            "getInstance",
+            "analyzeImage",
+            "urlToBase64",
+            "searchByImage",
+            "detectCarFeatures",
+            "findSimilarCars",
+            "calculateSimilarityScore",
+            "extractDominantColors",
+            "rgbToHex",
+            "mapToColorName",
+            "hexToRgb",
+            "fileToBase64",
+            "isAvailable"
+          ],
+          "lineCount": 424,
+          "usageCount": 3,
+          "usedInCount": 3
+        },
+        {
+          "file": "src/services/analytics/firebase-analytics-service.ts",
+          "name": "firebase-analytics-service",
+          "functions": [
+            "useAnalytics",
+            "withAnalytics",
+            "AnalyticsWrappedComponent",
+            "getInstance",
+            "join",
+            "substring"
+          ],
+          "lineCount": 557,
+          "usageCount": 0,
+          "usedInCount": 0
+        },
+        {
+          "file": "src/services/email-service.ts",
+          "name": "email-service",
+          "functions": [
+            "getInstance",
+            "sendWelcomeEmail",
+            "sendCarApprovedEmail",
+            "sendCarRejectedEmail",
+            "sendNewMessageNotification",
+            "sendPasswordResetEmail",
+            "sendCarInquiryNotification",
+            "sendNewsletterEmail",
+            "sendCustomEmail",
+            "sendVerificationEmail",
+            "sendCarSoldNotification",
+            "sendContactFormEmail"
+          ],
+          "lineCount": 402,
+          "usageCount": 1,
+          "usedInCount": 1
+        },
+        {
+          "file": "src/services/firebase-debug-service.ts",
+          "name": "firebase-debug-service",
+          "functions": [
+            "getInstance",
+            "debugFirebaseData"
+          ],
+          "lineCount": 68,
+          "usageCount": 0,
+          "usedInCount": 0
+        },
+        {
+          "file": "src/services/notification-service.ts",
+          "name": "notification-service",
+          "functions": [
+            "getInstance"
+          ],
+          "lineCount": 321,
+          "usageCount": 5,
+          "usedInCount": 3
+        },
+        {
+          "file": "src/services/notifications/unified-notification.service.ts",
+          "name": "unified-notification.service",
+          "functions": [
+            "getInstance",
+            "sendNotification",
+            "sendFCMNotification",
+            "sendEmailNotification",
+            "sendSMSNotification"
+          ],
+          "lineCount": 90,
+          "usageCount": 0,
+          "usedInCount": 0
+        },
+        {
+          "file": "src/services/profile/points-automation.service.ts",
+          "name": "points-automation.service",
+          "functions": [
+            "getInstance",
+            "onListingCreated",
+            "onCarSold",
+            "onProfileCompleted",
+            "onVerificationCompleted",
+            "onPositiveReview",
+            "onDailyLogin",
+            "toDate",
+            "onReferral",
+            "onSocialShare",
+            "checkListingMilestones"
+          ],
+          "lineCount": 280,
+          "usageCount": 0,
+          "usedInCount": 0
+        }
+      ]
+    },
+    {
+      "similarityKey": "other",
+      "services": [
+        {
+          "file": "src/services/ai/firebase-ai-callable.service.ts",
+          "name": "firebase-ai-callable.service",
+          "functions": [
+            "chat",
+            "suggestPrice",
+            "analyzeProfile",
+            "checkQuota",
+            "handleError"
+          ],
+          "lineCount": 125,
+          "usageCount": 1,
+          "usedInCount": 1
+        },
+        {
+          "file": "src/services/ai/gemini-chat.service.ts",
+          "name": "gemini-chat.service",
+          "functions": [
+            "chat",
+            "suggestPrice",
+            "analyzeProfile",
+            "buildSystemPrompt",
+            "extractJSON",
+            "isReady",
+            "isProjectRelatedQuery"
+          ],
+          "lineCount": 239,
+          "usageCount": 3,
+          "usedInCount": 2
+        },
+        {
+          "file": "src/services/ai/gemini-vision.service.ts",
+          "name": "gemini-vision.service",
+          "functions": [
+            "analyzeCarImage",
+            "analyzeImageQuality",
+            "fileToBase64",
+            "extractJSON",
+            "isReady"
+          ],
+          "lineCount": 180,
+          "usageCount": 5,
+          "usedInCount": 4
+        },
+        {
+          "file": "src/services/eik-verification-service.ts",
+          "name": "eik-verification-service",
+          "functions": [
+            "verifyEIK",
+            "formatEIK",
+            "isValidEIK"
+          ],
+          "lineCount": 58,
+          "usageCount": 2,
+          "usedInCount": 2
+        },
+        {
+          "file": "src/services/homepage-cache.service.ts",
+          "name": "homepage-cache.service",
+          "functions": [
+            "invalidate",
+            "invalidateAll"
+          ],
+          "lineCount": 112,
+          "usageCount": 3,
+          "usedInCount": 3
+        },
+        {
+          "file": "src/services/image-upload-service.ts",
+          "name": "image-upload-service",
+          "functions": [
+            "compressImage",
+            "uploadSingleImage",
+            "cancelUpload",
+            "cancelAllUploads",
+            "validateImage",
+            "estimateUploadTime"
+          ],
+          "lineCount": 299,
+          "usageCount": 1,
+          "usedInCount": 1
+        },
+        {
+          "file": "src/services/meta/facebook-auto-post.service.ts",
+          "name": "facebook-auto-post.service",
+          "functions": [
+            "postCarWithPhoto",
+            "postCarAsLink",
+            "generateCaption",
+            "addEngagementComment",
+            "delay",
+            "testConnection"
+          ],
+          "lineCount": 236,
+          "usageCount": 0,
+          "usedInCount": 0
+        },
+        {
+          "file": "src/services/numeric-system-validation.service.ts",
+          "name": "numeric-system-validation.service",
+          "functions": [
+            "async",
+            "formatCarUrl",
+            "formatMessageUrl",
+            "formatProfileUrl",
+            "validateNumericCar",
+            "validateNumericMessage",
+            "enforceCarOwnership",
+            "parseCarUrl",
+            "parseMessageUrl",
+            "parseProfileUrl"
+          ],
+          "lineCount": 379,
+          "usageCount": 0,
+          "usedInCount": 0
+        },
+        {
+          "file": "src/services/whatsapp/whatsapp-business.service.ts",
+          "name": "whatsapp-business.service",
+          "functions": [
+            "sendTextMessage",
+            "sendImageMessage",
+            "sendButtonMessage",
+            "sendTemplateMessage",
+            "sendCarListing",
+            "testConnection",
+            "formatBulgarianPhone"
+          ],
+          "lineCount": 414,
+          "usageCount": 0,
+          "usedInCount": 0
+        },
+        {
+          "file": "src/utils/backup-service.ts",
+          "name": "backup-service",
+          "functions": [
+            "Strategy",
+            "guide"
+          ],
+          "lineCount": 331,
+          "usageCount": 0,
+          "usedInCount": 0
+        }
+      ]
+    },
+    {
+      "similarityKey": "getErrorMessage,getInstance",
+      "services": [
+        {
+          "file": "src/services/validation-service.ts",
+          "name": "validation-service",
+          "functions": [
+            "getInstance",
+            "validateField",
+            "validateForm",
+            "isEmpty",
+            "isValidEmail",
+            "isValidBulgarianPhone",
+            "isValidURL",
+            "isValidYear",
+            "isValidMileage",
+            "isValidPrice",
+            "isValidVIN",
+            "getErrorMessage",
+            "validateVehicleData",
+            "validatePricing",
+            "validateContact"
+          ],
+          "lineCount": 330,
+          "usageCount": 0,
+          "usedInCount": 0
+        },
+        {
+          "file": "src/services/verification/phone-verification-service.ts",
+          "name": "phone-verification-service",
+          "functions": [
+            "getInstance",
+            "initializeRecaptcha",
+            "sendVerificationCode",
+            "verifyCode",
+            "formatBulgarianPhone",
+            "isValidBulgarianPhone",
+            "getErrorMessage",
+            "cleanup"
+          ],
+          "lineCount": 240,
+          "usageCount": 3,
+          "usedInCount": 1
+        }
+      ]
+    }
+  ]
+}

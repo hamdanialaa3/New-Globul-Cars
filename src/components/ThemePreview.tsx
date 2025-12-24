@@ -114,17 +114,17 @@ const Input = styled.input`
 const ThemePreview: React.FC = () => {
   return (
     <ThemePreviewContainer>
-      <Title>🎨 معاينة المظهر الحالي</Title>
-      <Subtitle>شاهد كيف تبدو الألوان والعناصر في مشروعك</Subtitle>
+      <Title>🎨 Преглед на текущата тема</Title>
+      <Subtitle>Вижте как изглеждат цветовете и елементите в проекта</Subtitle>
 
       <Card>
-        <Subtitle>🎯 الألوان الأساسية</Subtitle>
+        <Subtitle>🎯 Основни цветове</Subtitle>
         <ColorGrid>
           <ColorCard
             color="#0059ffff"
             textColor="#000000"
           >
-            الأساسي (Primary)
+            Основен (Primary)
             <br />
             #0022ffff
           </ColorCard>
@@ -132,7 +132,7 @@ const ThemePreview: React.FC = () => {
             color="#0040ffff"
             textColor="#000000"
           >
-            الثانوي (Secondary)
+            Вторичен (Secondary)
             <br />
             #2f00ffff
           </ColorCard>
@@ -140,7 +140,7 @@ const ThemePreview: React.FC = () => {
             color="#35ffc2ff"
             textColor="#FFFFFF"
           >
-            التأكيد (Accent)
+            Акцент (Accent)
             <br />
             #35ff5aff
           </ColorCard>
@@ -148,7 +148,7 @@ const ThemePreview: React.FC = () => {
             color="#FFFFFF"
             textColor="#000000"
           >
-            الخلفية (Background)
+            Фон (Background)
             <br />
             #FFFFFF
           </ColorCard>
@@ -156,23 +156,23 @@ const ThemePreview: React.FC = () => {
       </Card>
 
       <Card>
-        <Subtitle>🔘 أمثلة على الأزرار</Subtitle>
+        <Subtitle>🔘 Примери за бутони</Subtitle>
         <ButtonGrid>
-          <StyledButton variant="primary">زر أساسي</StyledButton>
-          <StyledButton variant="secondary">زر ثانوي</StyledButton>
-          <StyledButton variant="accent">زر تأكيد</StyledButton>
+          <StyledButton variant="primary">Основен бутон</StyledButton>
+          <StyledButton variant="secondary">Вторичен бутон</StyledButton>
+          <StyledButton variant="accent">Акцентен бутон</StyledButton>
         </ButtonGrid>
       </Card>
 
       <Card>
-        <Subtitle>📝 نموذج تجريبي</Subtitle>
-        <Text>هذا النص يستخدم لون النص الأساسي من المظهر</Text>
-        <Input type="text" placeholder="حقل إدخال تجريبي" />
-        <Input type="email" placeholder="البريد الإلكتروني" />
+        <Subtitle>📝 Тестов формуляр</Subtitle>
+        <Text>Този текст използва основния цвят на текста от темата</Text>
+        <Input type="text" placeholder="Тестово поле за въвеждане" />
+        <Input type="email" placeholder="Имейл" />
       </Card>
 
       <Card>
-        <Subtitle>📊 معلومات المظهر</Subtitle>
+        <Subtitle>📊 Информация за темата</Subtitle>
         <Text>
           <strong>الخط:</strong> {typeof window !== 'undefined' ? getComputedStyle(document.body).fontFamily : 'System Font'}
         </Text>

@@ -1786,8 +1786,8 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
     try {
       if (car.sellerNumericId && currentUser?.uid) {
         // Get current user's numeric ID
-        const { SocialAuthService } = await import('../../../firebase/social-auth-service');
-        const currentUserProfile = await SocialAuthService.getBulgarianUserProfile(currentUser.uid);
+        const { BulgarianProfileService } = await import('../../../services/bulgarian-profile-service');
+        const currentUserProfile = await BulgarianProfileService.getUserProfile(currentUser.uid);
 
         if (currentUserProfile?.numericId) {
           navigate(`/messages/${currentUserProfile.numericId}/${car.sellerNumericId}`);

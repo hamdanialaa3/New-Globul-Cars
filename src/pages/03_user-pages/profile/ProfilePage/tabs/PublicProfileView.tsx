@@ -1,18 +1,17 @@
-// PublicProfileView.tsx - Read-only profile view for other users
+// PublicProfileView.tsx - Professional Showroom Profile (Mobile.de Style)
 import React, { useState, useMemo } from 'react';
-import styled, { css } from 'styled-components';
-import { useLanguage } from '../../../../../contexts/LanguageContext';
-import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
-import { GarageCarousel } from '../../../../../components/Profile/GarageCarousel';
-import CarCardGermanStyle from '../../../../../components/CarCard/CarCardGermanStyle';
-import UserPostsFeed from '../../../../../components/Profile/UserPostsFeed';
-import type { ProfileCar } from '../types';
 import {
-  User, Mail, Phone, MapPin, Calendar, Globe,
-  Building2, Briefcase, Car, Shield, CheckCircle, FileText,
-  Clock, Search, Filter
+  MapPin, Phone, Globe, Mail, CheckCircle, 
+  Clock, Search, Car, Award, Shield, TrendingUp
 } from 'lucide-react';
+import styled from 'styled-components';
+
+import { useLanguage } from '../../../../../contexts/LanguageContext';
+import CarCardGermanStyle from '../../../../../components/CarCard/CarCardGermanStyle';
+import { FollowButton } from '../../../../../components/Profile/FollowButton';
 import { CarListing } from '../../../../../types/CarListing';
+import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
+import type { ProfileCar } from '../types';
 
 interface PublicProfileViewProps {
   user: BulgarianUser;
@@ -23,61 +22,135 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ user, user
   const { language } = useLanguage();
   const [inventorySearch, setInventorySearch] = useState('');
 
-  // Explicit type checking
-  const isDealerProfile = user.profileType === 'dealer';
-  const isCompanyProfile = user.profileType === 'company';
-  const isBusinessAccount = isDealerProfile || isCompanyProfile;
+  // Profile type detection
+  const profileType = user.profileType || 'private';
+  const isPrivate = profileType === 'private';
+  const isDealer = profileType === 'dealer';
+  const isCompany = profileType === 'company';
 
-  // Filter cars for Digital Showroom
+  // Business info extraction
+  const businessName = isDealer 
+    ? user.dealerSnapshot?.name 
+    : isCompany 
+      ? user.companySnapshot?.name 
+      : user.displayName;
+  
+  const businessAddress = isDealer 
+    ? user.dealerSnapshot?.address 
+    : isCompany 
+      ? user.companySnapshot?.address 
+      : user.locationData?.cityName;
+  
+  const businessWebsite = isDealer 
+    ? user.dealerSnapshot?.website 
+    : isCompany 
+      ? user.companySnapshot?.website 
+      : null;
+
+  const coverImage = user.coverImage || (
+    isCompany 
+      ? 'https://images.unsplash.com/photo-1542282088-fe8426682b8f?w=1920&h=400&fit=crop' 
+      : isDealer 
+        ? 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=1920&h=400&fit=crop'
+        : 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1920&h=400&fit=crop'
+  );
+
+  // Filter cars
   const filteredCars = useMemo(() => {
     if (!inventorySearch) return userCars;
     const lower = inventorySearch.toLowerCase();
     return userCars.filter(car =>
       (car.make?.toLowerCase().includes(lower)) ||
-      (car.model?.toLowerCase().includes(lower))
+      (car.model?.toLowerCase().includes(lower)) ||
+      (car.year?.toString().includes(lower))
     );
   }, [userCars, inventorySearch]);
 
-  // --- DIGITAL SHOWROOM LAYOUT (Dealers/Companies) ---
-  if (isBusinessAccount) {
-    const businessName = isDealerProfile ? user.dealerSnapshot?.name : user.companySnapshot?.name;
-    const businessAddress = isDealerProfile ? user.dealerSnapshot?.address : user.companySnapshot?.address;
-    const businessWebsite = isDealerProfile ? user.dealerSnapshot?.website : user.companySnapshot?.website;
-    const coverImage = user.coverImage || '/images/default-dealer-cover.jpg'; // Need a placeholder
+  return (
+    <ShowroomContainer>
+      {/* HERO HEADER WITH COVER IMAGE */}
+      <HeroHeader $coverImage={coverImage} $profileType={profileType}>
+        <HeroOverlay $profileType={profileType} />
+        <HeroContent>
+          {/* LEFT SIDE: Logo + Info */}
+          <ProfileSection>
+            <LogoWrapper $profileType={profileType}>
+              <ProfileAvatar 
+                src={user.photoURL || '/default-avatar.png'} 
+                alt={businessName}
+              />
+              {user.verification?.id && (
+                <VerifiedBadge>
+                  <CheckCircle size={20} fill="white" color="#10B981" />
+                </VerifiedBadge>
+              )}
+            </LogoWrapper>
 
-    return (
-      <ShowroomContainer>
-        {/* HERO HEADER */}
-        <ShowroomHeader $coverImage={coverImage}>
-          <OverlayGradient />
-          <HeaderContent>
-            <BusinessLogo src={user.photoURL || '/default-avatar.png'} alt={businessName} />
-            <HeaderText>
-              <BusinessTitle>
-                {businessName || user.displayName}
-                {user.verification?.id && <CheckCircle size={24} color="#10B981" fill="white" />}
-              </BusinessTitle>
-              <BusinessSubtitle>
-                {isCompanyProfile ? (language === 'bg' ? 'Премиум Партньор' : 'Premium Partner') : (language === 'bg' ? 'Оторизиран Дилър' : 'Authorized Dealer')}
-                {' • '}
-                <MapPin size={14} style={{ display: 'inline', marginBottom: -2 }} /> {businessAddress || (user.locationData?.cityName || 'Bulgaria')}
-              </BusinessSubtitle>
-            </HeaderText>
-          </HeaderContent>
-        </ShowroomHeader>
+            <InfoColumn>
+              <BusinessName $profileType={profileType}>
+                {businessName || 'Anonymous Seller'}
+              </BusinessName>
+              
+              <ProfileBadge $profileType={profileType}>
+                {isPrivate && (language === 'bg' ? '🏠 Частен Продавач' : '🏠 Private Garage')}
+                {isDealer && (language === 'bg' ? '🚗 Дилър Автомобили' : '🚗 Car Dealer')}
+                {isCompany && (language === 'bg' ? '🏢 Премиум Дилър' : '🏢 Premium Dealership')}
+              </ProfileBadge>
 
-        {/* INFO BAR */}
-        <InfoBar>
+              <ContactRow>
+                {businessAddress && (
+                  <ContactItem>
+                    <MapPin size={14} />
+                    {businessAddress}
+                  </ContactItem>
+                )}
+                {user.phoneNumber && (
+                  <ContactItem>
+                    <Phone size={14} />
+                    {user.phoneNumber}
+                  </ContactItem>
+                )}
+              </ContactRow>
+            </InfoColumn>
+          </ProfileSection>
+
+          {/* RIGHT SIDE: Stats + Follow Button */}
+          <ActionSection>
+            <StatsGrid>
+              <StatCard $profileType={profileType}>
+                <StatValue>{userCars.length}</StatValue>
+                <StatLabel>{language === 'bg' ? 'Обяви' : 'Listings'}</StatLabel>
+              </StatCard>
+              <StatCard $profileType={profileType}>
+                <StatValue>{user.stats?.totalViews || 0}</StatValue>
+                <StatLabel>{language === 'bg' ? 'Прегледи' : 'Views'}</StatLabel>
+              </StatCard>
+              <StatCard $profileType={profileType}>
+                <StatValue>
+                  {user.createdAt?.toDate?.() ? 
+                    new Date().getFullYear() - user.createdAt.toDate().getFullYear() : 0}+
+                </StatValue>
+                <StatLabel>{language === 'bg' ? 'Години' : 'Years'}</StatLabel>
+              </StatCard>
+            </StatsGrid>
+
+            <FollowButton 
+              targetUserId={user.uid} 
+              showCount={true}
+              variant="outline"
+              size="large"
+            />
+          </ActionSection>
+        </HeroContent>
+      </HeroHeader>
+
+      {/* INFO BAR (Business Hours, Contact) */}
+      <InfoBar $profileType={profileType}>
+        <InfoBarLeft>
           <InfoBarItem>
-            <Clock size={16} color="var(--success-main)" />
+            <Clock size={16} />
             <span>{language === 'bg' ? 'Отворено сега' : 'Open Now'}</span>
           </InfoBarItem>
-          {user.phoneNumber && (
-            <InfoBarItem>
-              <Phone size={16} />
-              <span>{user.phoneNumber}</span>
-            </InfoBarItem>
-          )}
           {businessWebsite && (
             <InfoBarItem>
               <Globe size={16} />
@@ -86,21 +159,40 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ user, user
               </a>
             </InfoBarItem>
           )}
-          <InfoBarItem>
-            <span style={{ fontWeight: 'bold', color: 'var(--primary-main)' }}>
-              {userCars.length} {language === 'bg' ? 'Автомобила' : 'Cars in Stock'}
-            </span>
-          </InfoBarItem>
-        </InfoBar>
+          {user.email && (
+            <InfoBarItem>
+              <Mail size={16} />
+              <span>{user.email}</span>
+            </InfoBarItem>
+          )}
+        </InfoBarLeft>
 
-        {/* INVENTORY SECTION */}
-        <ShowroomContent>
+        <InfoBarRight>
+          {user.verification?.id && (
+            <VerificationBadge>
+              <Shield size={14} />
+              {language === 'bg' ? 'Потвърден' : 'Verified'}
+            </VerificationBadge>
+          )}
+        </InfoBarRight>
+      </InfoBar>
+
+      {/* INVENTORY SECTION */}
+      <InventorySection>
+        <Container>
           <InventoryHeader>
-            <h3>{language === 'bg' ? 'Наличен Автопарк' : 'Current Inventory'}</h3>
+            <InventoryTitle $profileType={profileType}>
+              <Car size={28} />
+              {language === 'bg' ? 'Налични Автомобили' : 'Available Stock'}
+              <InventoryCount>({filteredCars.length})</InventoryCount>
+            </InventoryTitle>
+
             <SearchWrapper>
-              <Search size={18} color="var(--text-secondary)" />
+              <SearchIcon>
+                <Search size={18} />
+              </SearchIcon>
               <SearchInput
-                placeholder={language === 'bg' ? 'Търсене в този магазин...' : 'Search this stock...'}
+                placeholder={language === 'bg' ? 'Търсене в този магазин...' : 'Search in this store...'}
                 value={inventorySearch}
                 onChange={(e) => setInventorySearch(e.target.value)}
               />
@@ -112,382 +204,542 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ user, user
               {filteredCars.map(car => (
                 <CarCardGermanStyle
                   key={car.id}
-                  car={car as unknown as CarListing} // Type casting for compatibility if ProfileCar differs slightly
-                  ownerProfileType={user.profileType}
+                  car={car as unknown as CarListing}
+                  ownerProfileType={profileType}
                   ownerPlanTier={user.planTier}
-                  ownerIsVerified={user.verification?.id}
+                  ownerIsVerified={!!user.verification?.id}
                 />
               ))}
             </CarGrid>
           ) : (
             <EmptyState>
-              {language === 'bg' ? 'Няма намерени автомобили.' : 'No cars found in this showroom.'}
+              <Car size={48} color="#94A3B8" />
+              <EmptyText>
+                {inventorySearch 
+                  ? (language === 'bg' ? 'Няма автомобили, отговарящи на търсенето' : 'No cars match your search')
+                  : (language === 'bg' ? 'Няма налични автомобили в момента' : 'No cars available at the moment')
+                }
+              </EmptyText>
             </EmptyState>
           )}
-        </ShowroomContent>
+        </Container>
+      </InventorySection>
 
-        {/* ABOUT SECTION */}
+      {/* ABOUT SECTION */}
+      {(user.bio || user.dealerSnapshot?.description) && (
         <AboutSection>
-          <h3>{language === 'bg' ? 'За Нас' : 'About Us'}</h3>
-          <p>{(isDealerProfile ? user.dealerSnapshot?.description : '') || user.bio || (language === 'bg' ? 'Няма описание.' : 'No description provided.')}</p>
+          <Container>
+            <AboutTitle>{language === 'bg' ? 'За Нас' : 'About Us'}</AboutTitle>
+            <AboutText>
+              {user.dealerSnapshot?.description || user.companySnapshot?.description || user.bio}
+            </AboutText>
+          </Container>
         </AboutSection>
-      </ShowroomContainer>
-    );
-  }
+      )}
 
-  // --- STANDARD PRIVATE PROFILE (Clean & Simple) ---
-  return (
-    <Container>
-      <Layout>
-        {/* Left Sidebar - Profile Summary */}
-        <Sidebar>
-          <ProfileCard>
-            <Avatar src={user.photoURL || '/default-avatar.png'} alt={user.displayName} />
-            <Name>{user.displayName || (language === 'bg' ? 'Анонимен' : 'Anonymous')}</Name>
-            <ProfileTypeBadge>
-              {language === 'bg' ? 'Частен Потребител' : 'Private Seller'}
-            </ProfileTypeBadge>
-          </ProfileCard>
-          <StatsCard>
-            <StatItem>
-              <StatValue>{user.stats?.activeListings || 0}</StatValue>
-              <StatLabel>{language === 'bg' ? 'Обяви' : 'Listings'}</StatLabel>
-            </StatItem>
-            <StatItem>
-              <StatValue>{user.createdAt?.toDate ? user.createdAt.toDate().getFullYear() : '2025'}</StatValue>
-              <StatLabel>{language === 'bg' ? 'Член от' : 'Member Since'}</StatLabel>
-            </StatItem>
-          </StatsCard>
-        </Sidebar>
-
-        {/* Main Content Area */}
-        <Content>
-          {/* Cars */}
-          {userCars && userCars.length > 0 && (
-            <Section>
-              <SectionHeader>
-                <Car size={24} />
-                <SectionTitle>
-                  {language === 'bg' ? 'Обяви' : 'Active Listings'}
-                </SectionTitle>
-              </SectionHeader>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
-                {userCars.map(car => (
-                  <CarCardGermanStyle
-                    key={car.id}
-                    car={car as unknown as CarListing}
-                    ownerProfileType="private"
-                  />
-                ))}
-              </div>
-            </Section>
-          )}
-
-          {/* Bio/Posts if needed */}
-          {/* Removed for brevity in Private view to keep it clean, can be added back if requested */}
-        </Content>
-      </Layout>
-    </Container>
+      {/* TRUST BADGES (For Business Accounts) */}
+      {!isPrivate && (
+        <TrustSection>
+          <Container>
+            <TrustGrid>
+              <TrustBadge>
+                <Shield size={32} color="#10B981" />
+                <TrustTitle>{language === 'bg' ? 'Надежден Продавач' : 'Trusted Seller'}</TrustTitle>
+                <TrustDesc>{language === 'bg' ? 'Потвърден и Проверен' : 'Verified & Authenticated'}</TrustDesc>
+              </TrustBadge>
+              <TrustBadge>
+                <Award size={32} color="#3B82F6" />
+                <TrustTitle>{language === 'bg' ? 'Гаранция за Качество' : 'Quality Guarantee'}</TrustTitle>
+                <TrustDesc>{language === 'bg' ? 'Висококачествени Превозни Средства' : 'High-Quality Vehicles'}</TrustDesc>
+              </TrustBadge>
+              <TrustBadge>
+                <TrendingUp size={32} color="#F59E0B" />
+                <TrustTitle>{language === 'bg' ? 'Опит' : 'Experience'}</TrustTitle>
+                <TrustDesc>{language === 'bg' ? 'Години Опит' : 'Years of Expertise'}</TrustDesc>
+              </TrustBadge>
+            </TrustGrid>
+          </Container>
+        </TrustSection>
+      )}
+    </ShowroomContainer>
   );
 };
 
-// --- STYLES FOR DIGITAL SHOWROOM ---
+export default PublicProfileView;
+
+// ============================================================================
+// STYLED COMPONENTS (Mobile.de Premium Style)
+// ============================================================================
+
 const ShowroomContainer = styled.div`
   width: 100%;
-  background: var(--bg-primary);
   min-height: 100vh;
+  background: #F8FAFC;
 `;
 
-const ShowroomHeader = styled.div<{ $coverImage: string }>`
-  height: 320px;
-  width: 100%;
-  background-image: url(${props => props.$coverImage});
-  background-size: cover;
-  background-position: center;
+// Theme colors based on profile type
+const getThemeColor = (type: string) => {
+  switch(type) {
+    case 'company': return '#1E3A8A'; // Blue - Modern corporate
+    case 'dealer': return '#059669'; // Green - Car showroom
+    case 'private': return '#EA580C'; // Orange - Personal garage
+    default: return '#64748B';
+  }
+};
+
+const getThemeGradient = (type: string) => {
+  switch(type) {
+    case 'company': return 'linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%)';
+    case 'dealer': return 'linear-gradient(135deg, #059669 0%, #10B981 100%)';
+    case 'private': return 'linear-gradient(135deg, #EA580C 0%, #F97316 100%)';
+    default: return 'linear-gradient(135deg, #64748B 0%, #94A3B8 100%)';
+  }
+};
+
+// ===== HERO HEADER =====
+const HeroHeader = styled.div<{ $coverImage: string; $profileType: string }>`
   position: relative;
+  height: 380px;
+  width: 100%;
+  background: url(${props => props.$coverImage}) center/cover no-repeat;
   display: flex;
   align-items: flex-end;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    height: auto;
+    min-height: 500px;
+  }
 `;
 
-const OverlayGradient = styled.div`
+const HeroOverlay = styled.div<{ $profileType: string }>`
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+  background: ${props => {
+    const color = getThemeColor(props.$profileType);
+    return `linear-gradient(to top, ${color}F0 0%, ${color}CC 50%, transparent 100%)`;
+  }};
 `;
 
-const HeaderContent = styled.div`
+const HeroContent = styled.div`
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 30px;
+  padding: 0 40px 40px;
   display: flex;
+  justify-content: space-between;
   align-items: flex-end;
+  gap: 40px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px;
+    gap: 24px;
+  }
+`;
+
+const ProfileSection = styled.div`
+  display: flex;
+  align-items: center;
   gap: 24px;
 
-  @media(max-width: 768px) {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    text-align: center;
   }
 `;
 
-const BusinessLogo = styled.img`
-  width: 120px;
-  height: 120px;
-  border-radius: 12px;
-  border: 4px solid white;
+const LogoWrapper = styled.div<{ $profileType: string }>`
+  position: relative;
+  width: 140px;
+  height: 140px;
+  flex-shrink: 0;
+  border-radius: 20px;
+  padding: 4px;
+  background: ${props => getThemeGradient(props.$profileType)};
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+
+  @media (max-width: 768px) {
+    width: 120px;
+    height: 120px;
+  }
+`;
+
+const ProfileAvatar = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
   background: white;
-  object-fit: contain;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 `;
 
-const HeaderText = styled.div`
-  color: white;
-  margin-bottom: 10px;
-`;
-
-const BusinessTitle = styled.h1`
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin: 0 0 8px 0;
+const VerifiedBadge = styled.div`
+  position: absolute;
+  bottom: -8px;
+  right: -8px;
+  width: 36px;
+  height: 36px;
+  background: white;
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  gap: 12px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+`;
 
-  @media(max-width: 768px) {
-      justify-content: center;
-      font-size: 1.8rem;
+const InfoColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  @media (max-width: 768px) {
+    align-items: center;
   }
 `;
 
-const BusinessSubtitle = styled.div`
-  font-size: 1.1rem;
-  opacity: 0.9;
-  display: flex;
+const BusinessName = styled.h1<{ $profileType: string }>`
+  font-size: 36px;
+  font-weight: 800;
+  color: white;
+  margin: 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  letter-spacing: -0.5px;
+
+  @media (max-width: 768px) {
+    font-size: 28px;
+  }
+`;
+
+const ProfileBadge = styled.div<{ $profileType: string }>`
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  
-  @media(max-width: 768px) {
-      justify-content: center;
+  padding: 8px 16px;
+  background: ${props => getThemeColor(props.$profileType)}DD;
+  color: white;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+`;
+
+const ContactRow = styled.div`
+  display: flex;
+  gap: 20px;
+  margin-top: 8px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 8px;
   }
 `;
 
-const InfoBar = styled.div`
-  background: var(--bg-card);
-  border-bottom: 1px solid var(--border-primary);
-  padding: 16px 0;
+const ContactItem = styled.div`
   display: flex;
-  justify-content: center;
-  gap: 40px;
-  box-shadow: var(--shadow-sm);
+  align-items: center;
+  gap: 6px;
+  color: white;
+  font-size: 14px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+
+  svg {
+    opacity: 0.9;
+  }
+`;
+
+// ===== ACTION SECTION =====
+const ActionSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-end;
+
+  @media (max-width: 768px) {
+    align-items: stretch;
+  }
+`;
+
+const StatsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+`;
+
+const StatCard = styled.div<{ $profileType: string }>`
+  background: ${props => getThemeColor(props.$profileType)}DD;
+  backdrop-filter: blur(10px);
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+  min-width: 90px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+`;
+
+const StatValue = styled.div`
+  font-size: 24px;
+  font-weight: 800;
+  color: white;
+  line-height: 1;
+`;
+
+const StatLabel = styled.div`
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`;
+
+// ===== INFO BAR =====
+const InfoBar = styled.div<{ $profileType: string }>`
+  background: ${props => getThemeColor(props.$profileType)};
+  color: white;
+  padding: 16px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    padding: 16px 20px;
+    flex-direction: column;
+  }
+`;
+
+const InfoBarLeft = styled.div`
+  display: flex;
+  gap: 32px;
   flex-wrap: wrap;
 
-  @media(max-width: 768px) {
-      gap: 16px;
-      padding: 12px;
+  @media (max-width: 768px) {
+    gap: 16px;
+    justify-content: center;
   }
+`;
+
+const InfoBarRight = styled.div`
+  display: flex;
+  gap: 16px;
 `;
 
 const InfoBarItem = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.95rem;
-  color: var(--text-primary);
-  font-weight: 500;
-  
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.95);
+
+  svg {
+    opacity: 0.9;
+  }
+
   a {
-      color: var(--primary-main);
-      text-decoration: none;
-      &:hover { text-decoration: underline; }
+    color: white;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    transition: border-color 0.2s;
+
+    &:hover {
+      border-color: white;
+    }
   }
 `;
 
-const ShowroomContent = styled.div`
-  max-width: 1200px;
-  margin: 40px auto;
-  padding: 0 20px;
+const VerificationBadge = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+`;
+
+// ===== INVENTORY SECTION =====
+const InventorySection = styled.div`
+  padding: 60px 0;
+  background: white;
+`;
+
+const Container = styled.div`
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+
+  @media (max-width: 768px) {
+    padding: 0 20px;
+  }
 `;
 
 const InventoryHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-  gap: 16px;
+  margin-bottom: 40px;
+  gap: 24px;
 
-  h3 {
-      font-size: 1.5rem;
-      font-weight: 700;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
   }
+`;
+
+const InventoryTitle = styled.h2<{ $profileType: string }>`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 32px;
+  font-weight: 800;
+  color: ${props => getThemeColor(props.$profileType)};
+  margin: 0;
+
+  svg {
+    color: ${props => getThemeColor(props.$profileType)};
+  }
+
+  @media (max-width: 768px) {
+    font-size: 24px;
+  }
+`;
+
+const InventoryCount = styled.span`
+  font-size: 24px;
+  color: #64748B;
+  font-weight: 600;
 `;
 
 const SearchWrapper = styled.div`
   position: relative;
-  width: 300px;
-  
-  svg {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
+  width: 100%;
+  max-width: 400px;
+
+  @media (max-width: 768px) {
+    max-width: none;
   }
+`;
+
+const SearchIcon = styled.div`
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94A3B8;
+  pointer-events: none;
 `;
 
 const SearchInput = styled.input`
   width: 100%;
-  padding: 10px 10px 10px 40px;
-  border-radius: 8px;
-  border: 1px solid var(--border-secondary);
-  background: var(--bg-input);
-  color: var(--text-primary);
-  
+  padding: 14px 16px 14px 48px;
+  border: 2px solid #E2E8F0;
+  border-radius: 12px;
+  font-size: 15px;
+  transition: all 0.2s;
+  background: #F8FAFC;
+
   &:focus {
-      outline: none;
-      border-color: var(--primary-main);
+    outline: none;
+    border-color: #3B82F6;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  &::placeholder {
+    color: #94A3B8;
   }
 `;
 
 const CarGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 24px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 `;
 
 const EmptyState = styled.div`
   text-align: center;
-  padding: 60px;
-  color: var(--text-secondary);
-  background: var(--bg-secondary);
-  border-radius: 12px;
+  padding: 80px 20px;
+  color: #94A3B8;
 `;
 
+const EmptyText = styled.p`
+  margin-top: 16px;
+  font-size: 16px;
+  color: #64748B;
+`;
+
+// ===== ABOUT SECTION =====
 const AboutSection = styled.div`
-  max-width: 1200px;
-  margin: 0 auto 60px auto;
-  padding: 30px;
-  background: var(--bg-card);
-  border-radius: 12px;
-  border: 1px solid var(--border-primary);
-
-  h3 { margin-top: 0; }
-  p { line-height: 1.6; color: var(--text-secondary); }
+  padding: 60px 0;
+  background: #F8FAFC;
 `;
 
-// --- STYLES FOR STANDARD PROFILE (Reused/Simplified) ---
-const Container = styled.div`
-  width: 100%;
-  min-height: 600px;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+const AboutTitle = styled.h3`
+  font-size: 28px;
+  font-weight: 700;
+  color: #1E293B;
+  margin-bottom: 20px;
 `;
 
-const Layout = styled.div`
+const AboutText = styled.p`
+  font-size: 16px;
+  line-height: 1.8;
+  color: #475569;
+  max-width: 900px;
+`;
+
+// ===== TRUST BADGES =====
+const TrustSection = styled.div`
+  padding: 60px 0;
+  background: white;
+`;
+
+const TrustGrid = styled.div`
   display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 30px;
-  
-  @media (max-width: 968px) {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
+    gap: 24px;
   }
 `;
 
-const Sidebar = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-`;
-
-const ProfileCard = styled.div`
-  background: var(--bg-card);
-  border: 1px solid var(--border-primary);
-  border-radius: 12px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  box-shadow: var(--shadow-sm);
-`;
-
-const Avatar = styled.img`
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-`;
-
-const Name = styled.h2`
-  font-size: 1.25rem;
-  font-weight: 700;
+const TrustBadge = styled.div`
   text-align: center;
+  padding: 32px;
+  background: #F8FAFC;
+  border-radius: 16px;
+  border: 2px solid #E2E8F0;
+  transition: all 0.3s;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    border-color: #CBD5E1;
+  }
 `;
 
-const ProfileTypeBadge = styled.div`
-  padding: 4px 12px;
-  background: var(--bg-secondary);
-  color: var(--text-secondary);
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-`;
-
-const StatsCard = styled.div`
-  background: var(--bg-card);
-  border: 1px solid var(--border-primary);
-  border-radius: 12px;
-  padding: 20px;
-  display: flex;
-  justify-content: space-around;
-`;
-
-const StatItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const StatValue = styled.div`
-  font-size: 1.25rem;
+const TrustTitle = styled.h4`
+  font-size: 18px;
   font-weight: 700;
-  color: var(--primary-main);
+  color: #1E293B;
+  margin: 16px 0 8px;
 `;
 
-const StatLabel = styled.div`
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-`;
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-`;
-
-const Section = styled.div`
-  background: var(--bg-card);
-  border: 1px solid var(--border-primary);
-  border-radius: 12px;
-  padding: 24px;
-`;
-
-const SectionHeader = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  color: var(--primary-main);
-`;
-
-const SectionTitle = styled.h3`
+const TrustDesc = styled.p`
+  font-size: 14px;
+  color: #64748B;
   margin: 0;
-  font-size: 1.1rem;
-  color: var(--text-primary);
 `;
-
-export default PublicProfileView;

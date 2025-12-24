@@ -184,12 +184,12 @@ const MessageButtonComponent: React.FC<MessageButtonProps> = ({
       }
 
       // ✅ CRITICAL FIX: Get numeric IDs for strict URL format
-      const { SocialAuthService } = await import('../../firebase/social-auth-service');
+      const { BulgarianProfileService } = await import('../../services/bulgarian-profile-service');
       const { numericMessagingSystemService } = await import('../../services/numeric-messaging-system.service');
       
       // Get numeric IDs for both users
-      const currentUserProfile = await SocialAuthService.getBulgarianUserProfile(user.uid);
-      const sellerProfile = await SocialAuthService.getBulgarianUserProfile(sellerId);
+      const currentUserProfile = await BulgarianProfileService.getUserProfile(user.uid);
+      const sellerProfile = await BulgarianProfileService.getUserProfile(sellerId);
       
       if (!currentUserProfile?.numericId || !sellerProfile?.numericId) {
         throw new Error('Cannot find numeric IDs for users');

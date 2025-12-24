@@ -69,7 +69,7 @@ export const useProfileActions = (
   const handleSaveProfile = useCallback(async () => {
     try {
       if (!user || !auth.currentUser) {
-        toast.error('لم يتم تسجيل الدخول');
+        toast.error('Не сте влезли в системата');
         return;
       }
 
@@ -79,13 +79,13 @@ export const useProfileActions = (
         updatedAt: serverTimestamp()
       });
 
-      toast.success('تم حفظ التغييرات بنجاح');
+      toast.success('Промените бяха запазени успешно');
       setEditing(false);
       await loadUserData();
       
     } catch (error) {
       logger.error('Error saving profile', error as Error);
-      toast.error('فشل حفظ التغييرات');
+      toast.error('Неуспешно запазване на промените');
     }
   }, [user, formData, loadUserData, toast]);
 
@@ -128,10 +128,10 @@ export const useProfileActions = (
     try {
       await bulgarianAuthService.signOut();
       navigate('/');
-      toast.success('تم تسجيل الخروج بنجاح');
+      toast.success('Изходът бе успешен');
     } catch (error) {
       logger.error('Error during logout', error as Error);
-      toast.error('فشل تسجيل الخروج');
+      toast.error('Неуспешен изход');
     }
   }, [navigate, toast]);
 

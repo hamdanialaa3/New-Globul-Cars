@@ -241,6 +241,36 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
         }
         break;
 
+      case 'share':
+        // Share the car link with social media
+        const carUrl = car?.sellerNumericId && (car?.carNumericId || car?.numericId)
+          ? `${window.location.origin}/car/${car.sellerNumericId}/${car.carNumericId || car.numericId}`
+          : `${window.location.origin}/car/${car?.id}`;
+        const shareTitle = `${car?.make} ${car?.model} ${car?.year} - ${car?.price}€`;
+        const shareText = encodeURIComponent(shareTitle);
+        const encodedUrl = encodeURIComponent(carUrl);
+
+        // Use Web Share API if available (mobile)
+        if (navigator.share) {
+          navigator.share({
+            title: shareTitle,
+            text: shareTitle,
+            url: carUrl,
+          }).catch(() => {
+            // Fallback to clipboard if share fails
+            navigator.clipboard.writeText(carUrl);
+            alert(language === 'bg' ? 'Линкът е копиран в клипборда!' : 'Link copied to clipboard!');
+          });
+        } else {
+          // Fallback: Copy to clipboard and show share options
+          navigator.clipboard.writeText(carUrl).then(() => {
+            alert(language === 'bg' 
+              ? `Линкът е копиран! Споделете го: ${carUrl}` 
+              : `Link copied! Share it: ${carUrl}`);
+          });
+        }
+        break;
+
       default:
         break;
     }

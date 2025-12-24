@@ -1,0 +1,46 @@
+/* Print Styles for Car Sticker */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  [data-print-content],
+  [data-print-content] * {
+    visibility: visible;
+  }
+
+  [data-print-content] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 210mm;
+    min-height: 297mm;
+    background: white !important;
+    color: black !important;
+    padding: 20mm;
+    box-shadow: none !important;
+    margin: 0 !important;
+  }
+
+  .print-actions,
+  .print-close {
+    display: none !important;
+  }
+
+  /* Ensure all text is black for printing */
+  [data-print-content] * {
+    color: black !important;
+    background: white !important;
+  }
+
+  /* Hide overlay and buttons */
+  .print-overlay {
+    display: none !important;
+  }
+}
+

@@ -50,7 +50,11 @@ export const useWizardValidation = (currentStep: number, formData: Partial<Unifi
                     error: !formData.price ? 'Please enter a price' : null
                 };
 
-            case 6: // Contact
+            case 6: // Description (Optional)
+                // Description is optional - user can proceed with or without it
+                return { isValid: true, error: null };
+
+            case 7: // Contact
                 const hasContact = !!(
                     formData.sellerName &&
                     formData.sellerEmail &&

@@ -1,0 +1,178 @@
+"use strict";
+/**
+ * Cloud Function: Notify Followers on New Car Post
+ * دالة سحابية: إشعار المتابعين عند نشر سيارة جديدة
+ *
+ * Trigger: Firestore onCreate for cars collection
+ * Logic: Fan-out notifications to all followers of the seller
+ *
+ * Performance: Batched writes (500 notifications per batch)
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.cleanupOldNotifications = exports.notifyFollowersOnNewCar = void 0;
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+// Initialize Firebase Admin if not already initialized
+if (!admin.apps.length) {
+    admin.initializeApp();
+}
+const db = admin.firestore();
+/**
+ * Cloud Function: Trigger when a new car is created
+ * Collection: cars, passenger_cars, suvs, vans, motorcycles, trucks, buses
+ *
+ * NOTE: This function must be deployed for each collection if using multi-collection architecture.
+ * For simplicity, we'll use a wildcard path if all collections follow the same pattern.
+ */
+exports.notifyFollowersOnNewCar = functions.firestore
+    .document('cars/{carId}')
+    .onCreate(async (snap, context) => {
+    var _a;
+    const carData = snap.data();
+    const carId = context.params.carId;
+    // Validation
+    if (!carData) {
+        console.error('No car data found');
+        return null;
+    }
+    const sellerId = carData.sellerId;
+    if (!sellerId) {
+        console.error('Car has no sellerId', { carId });
+        return null;
+    }
+    // Skip notifications for draft cars
+    if (carData.status === 'draft') {
+        console.log('Skipping notification for draft car', { carId });
+        return null;
+    }
+    console.log('New car posted, finding followers...', { carId, sellerId });
+    try {
+        // STEP 1: Get seller information
+        const sellerDoc = await db.collection('users').doc(sellerId).get();
+        if (!sellerDoc.exists) {
+            console.error('Seller not found', { sellerId });
+            return null;
+        }
+        const sellerData = sellerDoc.data();
+        const sellerName = (sellerData === null || sellerData === void 0 ? void 0 : sellerData.displayName) || 'Unknown Seller';
+        // STEP 2: Find all followers of this seller
+        // Query: follows collection where followingId == sellerId
+        const followersSnapshot = await db
+            .collection('follows')
+            .where('followingId', '==', sellerId)
+            .get();
+        if (followersSnapshot.empty) {
+            console.log('No followers found for seller', { sellerId });
+            return null;
+        }
+        const followerIds = followersSnapshot.docs.map(doc => doc.data().followerId);
+        console.log(`Found ${followerIds.length} followers`, { sellerId, followerIds });
+        // STEP 3: Create notification data
+        const notificationBase = {
+            type: 'new_car_from_followed_seller',
+            carId,
+            sellerId,
+            sellerName,
+            carMake: carData.make || 'Unknown',
+            carModel: carData.model || '',
+            carPrice: carData.price || 0,
+            carImage: ((_a = carData.images) === null || _a === void 0 ? void 0 : _a[0]) || '',
+            isRead: false,
+            createdAt: admin.firestore.FieldValue.serverTimestamp()
+        };
+        // STEP 4: Batch write notifications (max 500 per batch)
+        const BATCH_SIZE = 500;
+        let batch = db.batch();
+        let operationCount = 0;
+        let totalNotifications = 0;
+        for (const followerId of followerIds) {
+            // Create notification document
+            const notificationRef = db.collection('notifications').doc();
+            const notification = Object.assign(Object.assign({}, notificationBase), { userId: followerId });
+            batch.set(notificationRef, notification);
+            operationCount++;
+            totalNotifications++;
+            // Commit batch if reaching limit
+            if (operationCount >= BATCH_SIZE) {
+                await batch.commit();
+                console.log(`Committed batch of ${operationCount} notifications`);
+                batch = db.batch(); // Start new batch
+                operationCount = 0;
+            }
+        }
+        // Commit remaining notifications
+        if (operationCount > 0) {
+            await batch.commit();
+            console.log(`Committed final batch of ${operationCount} notifications`);
+        }
+        // STEP 5: Update seller's notification stats
+        await db.collection('users').doc(sellerId).update({
+            'stats.notificationsSent': admin.firestore.FieldValue.increment(totalNotifications)
+        });
+        console.log('✅ Notification fan-out complete', {
+            carId,
+            sellerId,
+            totalNotifications
+        });
+        return { success: true, notificationsSent: totalNotifications };
+    }
+    catch (error) {
+        console.error('Error in notifyFollowersOnNewCar', error);
+        throw error;
+    }
+});
+/**
+ * Alternative: Generic trigger for all vehicle collections
+ * Uncomment if using multi-collection architecture
+ */
+/*
+export const notifyFollowersOnNewCarUnified = functions.firestore
+  .document('{collection}/{carId}')
+  .onCreate(async (snap, context) => {
+    const collection = context.params.collection;
+    
+    // Only trigger for vehicle collections
+    const vehicleCollections = ['cars', 'passenger_cars', 'suvs', 'vans', 'motorcycles', 'trucks', 'buses'];
+    if (!vehicleCollections.includes(collection)) {
+      return null;
+    }
+
+    // Same logic as above...
+    // (Copy the entire function body from above)
+  });
+*/
+/**
+ * Scheduled Function: Clean up old notifications (monthly)
+ * Deletes notifications older than 90 days
+ */
+exports.cleanupOldNotifications = functions.pubsub
+    .schedule('0 2 1 * *') // 2 AM on the 1st of every month
+    .timeZone('Europe/Sofia')
+    .onRun(async (context) => {
+    console.log('Starting cleanup of old notifications...');
+    const ninetyDaysAgo = new Date();
+    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+    try {
+        const oldNotificationsSnapshot = await db
+            .collection('notifications')
+            .where('createdAt', '<', admin.firestore.Timestamp.fromDate(ninetyDaysAgo))
+            .limit(500) // Process in batches
+            .get();
+        if (oldNotificationsSnapshot.empty) {
+            console.log('No old notifications to clean up');
+            return null;
+        }
+        const batch = db.batch();
+        oldNotificationsSnapshot.docs.forEach(doc => {
+            batch.delete(doc.ref);
+        });
+        await batch.commit();
+        console.log(`Deleted ${oldNotificationsSnapshot.size} old notifications`);
+        return { deleted: oldNotificationsSnapshot.size };
+    }
+    catch (error) {
+        console.error('Error cleaning up old notifications', error);
+        throw error;
+    }
+});
+//# sourceMappingURL=onNewCarPost.js.map

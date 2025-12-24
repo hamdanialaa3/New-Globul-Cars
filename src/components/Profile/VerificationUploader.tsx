@@ -195,7 +195,7 @@ export const VerificationUploader: React.FC<VerificationUploaderProps> = ({
     const validFiles = files.filter(file => {
       const isValid = file.type === 'application/pdf' || file.type.startsWith('image/');
       if (!isValid) {
-        toast.error(`${file.name} غير مدعوم. الرجاء رفع PDF أو صورة`);
+        toast.error(`${file.name} не се поддържа. Моля качете PDF или изображение`);
       }
       return isValid;
     });
@@ -214,7 +214,7 @@ export const VerificationUploader: React.FC<VerificationUploaderProps> = ({
 
   const handleSubmit = async () => {
     if (documents.length === 0) {
-      toast.error('الرجاء رفع مستند واحد على الأقل');
+      toast.error('Моля качете поне един документ');
       return;
     }
 
@@ -233,14 +233,14 @@ export const VerificationUploader: React.FC<VerificationUploaderProps> = ({
 
       await VerificationWorkflowService.submitVerification(uid, profileType, uploadedDocs);
 
-      toast.success('تم إرسال طلب التحقق بنجاح');
+      toast.success('Заявката за верификация беше изпратена успешно');
       setDocuments([]);
       
       if (onUploadComplete) {
         onUploadComplete();
       }
     } catch (error) {
-      toast.error('فشل رفع المستندات');
+      toast.error('Неуспешно качване на документите');
     } finally {
       setUploading(false);
     }
