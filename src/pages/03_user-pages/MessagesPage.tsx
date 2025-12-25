@@ -9,9 +9,11 @@ import { userService } from '../../services/user/canonical-user.service';
 import { Avatar } from '../../components/design-system/Avatar';
 import { Badge } from '../../components/design-system/Badge';
 import { Alert } from '../../components/design-system/Alert';
-import { Send, Image as ImageIcon, Search } from 'lucide-react';
+import { Send, Image as ImageIcon, Search, Settings } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { bg, enUS } from 'date-fns/locale';
+import { notificationSoundService } from '../../services/messaging/notification-sound.service';
+import { NotificationSettings } from '../../components/messaging/NotificationSettings';
 
 const MessagesContainer = styled.div`
   min-height: calc(100vh - 64px);
@@ -536,6 +538,8 @@ const MessagesPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [initializing, setInitializing] = useState(false);
   const [profiles, setProfiles] = useState<{ [key: string]: any }>({});
+  const [showSettings, setShowSettings] = useState(false);
+  const [previousMessagesCount, setPreviousMessagesCount] = useState(0);
 
   // Refs for auto-scrolling
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -695,6 +699,21 @@ const MessagesPage: React.FC = () => {
     };
   }, [currentConversation?.id, currentUser?.uid]); // Only depend on IDs, not full objects
 
+  // Play notification sound on new message received
+  useEffect(() => {
+    if (messages.length > previousMessagesCount && previousMessagesCount > 0) {
+      const latestMessage = messages[messages.length - 1];
+      
+      // Only play sound for received messages (not sent by current user)
+      if (latestMessage && latestMessage.receiverId === currentUser?.uid) {
+        notificationSoundService.playNotification();
+      }
+    }
+    
+    // Update previous count
+    setPreviousMessagesCount(messages.length);
+  }, [messages, previousMessagesCount, currentUser?.uid]);
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim() || !currentUser || !currentConversation) return;
@@ -827,7 +846,7 @@ const MessagesPage: React.FC = () => {
                   </button>
                 )}
                 <Avatar name={getUserName(selectedUserId)} src={getUserAvatar(selectedUserId)} size="md" />
-                <div>
+                <div style={{ flex: 1 }}>
                   <UserName>{getUserName(selectedUserId)}</UserName>
                   {currentConversation.carTitle && (
                     <div style={{ fontSize: '0.8rem', color: theme.colors.text.secondary }}>
@@ -835,6 +854,12 @@ const MessagesPage: React.FC = () => {
                     </div>
                   )}
                 </div>
+                <IconButton 
+                  onClick={() => setShowSettings(true)}
+                  title={t('settings.notifications', 'Notification Settings')}
+                >
+                  <Settings size={20} />
+                </IconButton>
               </ChatHeader>
 
               <MessagesList>
@@ -884,6 +909,12 @@ const MessagesPage: React.FC = () => {
           )}
         </ChatArea>
       </PageContainer>
+
+      {/* Notification Settings Modal */}
+      <NotificationSettings 
+        isOpen={showSettings} 
+        onClose={() => setShowSettings(false)} 
+      />
     </MessagesContainer>
   );
 };
