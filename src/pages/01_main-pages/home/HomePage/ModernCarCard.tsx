@@ -49,14 +49,29 @@ export default function ModernCarCard({ car }: ModernCarCardProps) {
         <button
           onClick={(e) => {
             e.preventDefault();
-            toggleFavorite(car.id);
+            toggleFavorite(car.id, {
+              make: car.make,
+              model: car.model,
+              year: car.year,
+              price: car.price,
+              currency: car.currency || 'EUR',
+              sellerNumericId: car.sellerNumericId || 0,
+              carNumericId: car.carNumericId || 0,
+              primaryImage: car.images?.[0]
+            });
           }}
-          className={`absolute top-3 right-3 p-2 rounded-full backdrop-blur-md transition-all duration-300 ${isFav
-              ? 'bg-red-500/10 text-red-500'
-              : 'bg-white/30 text-white hover:bg-white hover:text-red-500'
-            }`}
+          className="absolute top-3 right-3 p-0 bg-transparent border-none transition-all duration-300 hover:scale-110 active:scale-90 z-10"
+          style={{ cursor: 'pointer' }}
         >
-          <Heart size={18} className={isFav ? 'fill-current' : ''} />
+          <Heart 
+            size={28} 
+            className={isFav ? 'fill-red-500 text-red-500' : 'fill-none text-gray-300'}
+            strokeWidth={isFav ? 0 : 2}
+            style={{ 
+              filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))',
+              transition: 'all 0.2s ease'
+            }} 
+          />
         </button>
 
         <div className="absolute bottom-3 left-3 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-2 group-hover:translate-y-0">

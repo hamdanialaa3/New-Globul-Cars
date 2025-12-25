@@ -1249,43 +1249,73 @@ const DeleteCarButton = styled.button`
 // Share Menu Components
 const ShareMenuContainer = styled.div`
   position: relative;
-  display: inline-block;
+  display: block;
   z-index: 999999;
+  width: 100%;
+  margin-top: 1rem;
 `;
 
-const ShareMenuDropdown = styled.div<{ $isOpen: boolean; $top?: number; $left?: number }>`
-  position: fixed;
-  ${props => props.$top !== undefined ? `top: ${props.$top}px;` : 'top: calc(100% + 10px);'}
-  ${props => props.$left !== undefined ? `left: ${props.$left}px;` : 'right: 0;'}
-  background: var(--bg-card);
+const ShareButtonHorizontal = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
   border: 1px solid var(--border-primary);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  min-width: 280px;
-  max-width: 600px;
-  z-index: 9999999 !important;
-  opacity: ${props => props.$isOpen ? 1 : 0};
-  visibility: ${props => props.$isOpen ? 'visible' : 'hidden'};
-  transform: ${props => props.$isOpen ? 'translateY(0) scale(1)' : 'translateY(-10px) scale(0.95)'};
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  overflow: hidden;
-  pointer-events: ${props => props.$isOpen ? 'auto' : 'none'};
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
 
-  &::before {
-    content: '';
-    position: absolute;
-    bottom: 100%;
-    right: 20px;
-    width: 0;
-    height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 8px solid var(--bg-card);
+  &:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
+  }
+
+  span {
+    pointer-events: none;
   }
 `;
 
+const ShareMenuDropdown = styled.div<{ $isOpen: boolean }>`
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  opacity: ${props => props.$isOpen ? 1 : 0};
+  visibility: ${props => props.$isOpen ? 'visible' : 'hidden'};
+  transform: ${props => props.$isOpen ? 'translateY(0)' : 'translateY(-10px)'};
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+  overflow: hidden;
+  pointer-events: ${props => props.$isOpen ? 'auto' : 'none'};
+`;
+
 const ShareMenuHeader = styled.div`
-  padding: 0.75rem 1rem;
+  padding: 1rem;
   border-bottom: 1px solid var(--border-primary);
   background: linear-gradient(135deg, rgba(255, 143, 16, 0.05) 0%, rgba(255, 107, 53, 0.05) 100%);
 `;
@@ -1301,54 +1331,48 @@ const ShareMenuTitle = styled.h4`
 
 const ShareOptionsList = styled.div`
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-direction: column;
   padding: 0.5rem;
-  gap: 0.5rem;
-  max-width: 600px;
+  gap: 0.25rem;
 `;
 
 const ShareOption = styled.button<{ $color?: string }>`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 0.9rem;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
   border: none;
   background: transparent;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   color: var(--text-primary);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 500;
-  text-align: center;
-  flex: 0 0 auto;
-  white-space: nowrap;
+  text-align: left;
+  width: 100%;
 
   &:hover {
     background: var(--bg-hover);
-    transform: translateY(-2px);
+    transform: translateX(4px);
   }
 
   svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     color: ${props => props.$color || 'var(--text-primary)'};
     flex-shrink: 0;
   }
 
   span {
-    flex: 0 0 auto;
+    flex: 1;
   }
 `;
 
 const ShareDivider = styled.div`
-  width: 1px;
-  height: 100%;
-  min-height: 24px;
+  height: 1px;
   background: var(--border-primary);
-  margin: 0 0.25rem;
-  align-self: stretch;
+  margin: 0.5rem 0;
 `;
 
 const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
@@ -1372,7 +1396,6 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [isLinkCopied, setIsLinkCopied] = useState(false);
   const [showPrintDialog, setShowPrintDialog] = useState(false);
-  const [shareMenuPosition, setShareMenuPosition] = useState<{ top: number; left: number } | null>(null);
   const shareMenuRef = useRef<HTMLDivElement>(null);
   const shareButtonRef = useRef<HTMLButtonElement>(null);
   const [featuredImageIndex, setFeaturedImageIndex] = useState<number>(
@@ -1417,7 +1440,6 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
         !shareButtonRef.current.contains(event.target as Node)
       ) {
         setShowShareMenu(false);
-        setShareMenuPosition(null);
       }
     };
 
@@ -1427,15 +1449,8 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
     }
   }, [showShareMenu]);
 
-  // Calculate share menu position
+  // Toggle share menu
   const handleShareMenuToggle = () => {
-    if (!showShareMenu && shareButtonRef.current) {
-      const rect = shareButtonRef.current.getBoundingClientRect();
-      setShareMenuPosition({
-        top: rect.bottom + window.scrollY + 10,
-        left: rect.right + window.scrollX - 300, // Adjusted for horizontal layout
-      });
-    }
     setShowShareMenu(!showShareMenu);
   };
 
@@ -1608,77 +1623,6 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
           </BackButton>
         </HeaderLeft>
         <HeaderActions>
-          <ShareMenuContainer>
-            <IconButton 
-              ref={shareButtonRef}
-              onClick={handleShareMenuToggle}
-            >
-              <Share2 size={20} />
-            </IconButton>
-            {showShareMenu && (
-              <ShareMenuDropdown 
-                ref={shareMenuRef} 
-                $isOpen={showShareMenu}
-                $top={shareMenuPosition?.top}
-                $left={shareMenuPosition?.left}
-              >
-              <ShareMenuHeader>
-                <ShareMenuTitle>
-                  {language === 'bg' ? 'Сподели' : 'Share'}
-                </ShareMenuTitle>
-              </ShareMenuHeader>
-              <ShareOptionsList>
-                <ShareOption onClick={() => handleShare('facebook')} $color="#1877F2">
-                  <Facebook size={20} />
-                  <span>Facebook</span>
-                </ShareOption>
-                <ShareOption onClick={() => handleShare('instagram')} $color="#E4405F">
-                  <Instagram size={20} />
-                  <span>Instagram</span>
-                </ShareOption>
-                <ShareOption onClick={() => handleShare('tiktok')} $color="#000000">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
-                  </svg>
-                  <span>TikTok</span>
-                </ShareOption>
-                <ShareOption onClick={() => handleShare('twitter')} $color="#1DA1F2">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                  </svg>
-                  <span>Twitter/X</span>
-                </ShareOption>
-                <ShareOption onClick={() => handleShare('linkedin')} $color="#0077B5">
-                  <Linkedin size={20} />
-                  <span>LinkedIn</span>
-                </ShareOption>
-                <ShareDivider />
-                <ShareOption onClick={() => handleShare('whatsapp')} $color="#25D366">
-                  <MessageCircle size={20} />
-                  <span>WhatsApp</span>
-                </ShareOption>
-                <ShareOption onClick={() => handleShare('viber')} $color="#665CAC">
-                  <MessageCircle size={20} />
-                  <span>Viber</span>
-                </ShareOption>
-                <ShareOption onClick={() => handleShare('email')} $color="#EA4335">
-                  <Mail size={20} />
-                  <span>{language === 'bg' ? 'Имейл' : 'Email'}</span>
-                </ShareOption>
-                <ShareDivider />
-                <ShareOption onClick={() => handleShare('copy')}>
-                  {isLinkCopied ? <Check size={20} color="#22c55e" /> : <Copy size={20} />}
-                  <span>
-                    {isLinkCopied 
-                      ? (language === 'bg' ? 'Копирано!' : 'Copied!')
-                      : (language === 'bg' ? 'Копирай линк' : 'Copy Link')
-                    }
-                  </span>
-                </ShareOption>
-              </ShareOptionsList>
-              </ShareMenuDropdown>
-            )}
-          </ShareMenuContainer>
           <IconButton 
             onClick={(e) => {
               e.preventDefault();
@@ -2058,6 +2002,84 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
                   : car.city || car.region || t.notSpecified}
               </LocationText>
             </LocationInfo>
+
+            {/* Share Button - Horizontal */}
+            <ShareMenuContainer>
+              <ShareButtonHorizontal 
+                ref={shareButtonRef}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('Share button clicked');
+                  handleShareMenuToggle();
+                }}
+                type="button"
+              >
+                <Share2 size={18} />
+                <span>{language === 'bg' ? 'Сподели' : 'Share'}</span>
+              </ShareButtonHorizontal>
+              {showShareMenu && (
+                <ShareMenuDropdown 
+                  ref={shareMenuRef} 
+                  $isOpen={showShareMenu}
+                >
+                <ShareMenuHeader>
+                  <ShareMenuTitle>
+                    {language === 'bg' ? 'Сподели' : 'Share'}
+                  </ShareMenuTitle>
+                </ShareMenuHeader>
+                <ShareOptionsList>
+                  <ShareOption onClick={() => handleShare('facebook')} $color="#1877F2">
+                    <Facebook size={20} />
+                    <span>Facebook</span>
+                  </ShareOption>
+                  <ShareOption onClick={() => handleShare('instagram')} $color="#E4405F">
+                    <Instagram size={20} />
+                    <span>Instagram</span>
+                  </ShareOption>
+                  <ShareOption onClick={() => handleShare('tiktok')} $color="#000000">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                    </svg>
+                    <span>TikTok</span>
+                  </ShareOption>
+                  <ShareOption onClick={() => handleShare('twitter')} $color="#1DA1F2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                    <span>Twitter/X</span>
+                  </ShareOption>
+                  <ShareOption onClick={() => handleShare('linkedin')} $color="#0077B5">
+                    <Linkedin size={20} />
+                    <span>LinkedIn</span>
+                  </ShareOption>
+                  <ShareDivider />
+                  <ShareOption onClick={() => handleShare('whatsapp')} $color="#25D366">
+                    <MessageCircle size={20} />
+                    <span>WhatsApp</span>
+                  </ShareOption>
+                  <ShareOption onClick={() => handleShare('viber')} $color="#665CAC">
+                    <MessageCircle size={20} />
+                    <span>Viber</span>
+                  </ShareOption>
+                  <ShareOption onClick={() => handleShare('email')} $color="#EA4335">
+                    <Mail size={20} />
+                    <span>{language === 'bg' ? 'Имейл' : 'Email'}</span>
+                  </ShareOption>
+                  <ShareDivider />
+                  <ShareOption onClick={() => handleShare('copy')}>
+                    {isLinkCopied ? <Check size={20} color="#22c55e" /> : <Copy size={20} />}
+                    <span>
+                      {isLinkCopied 
+                        ? (language === 'bg' ? 'Копирано!' : 'Copied!')
+                        : (language === 'bg' ? 'Копирай линк' : 'Copy Link')
+                      }
+                    </span>
+                  </ShareOption>
+                </ShareOptionsList>
+                </ShareMenuDropdown>
+              )}
+            </ShareMenuContainer>
           </SellerCard>
         </RightColumn>
       </MainContent>

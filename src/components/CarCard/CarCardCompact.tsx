@@ -37,33 +37,43 @@ const CarCard = styled(Link)`
   }
 `;
 
-const FavoriteButton = styled.button`
+const FavoriteButton = styled.button<{ $isFavorite: boolean }>`
   position: absolute;
   top: 12px;
   right: 12px;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+  width: auto;
+  height: auto;
   border: none;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
+  background: transparent;
+  padding: 0;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 10;
 
   &:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    transform: scale(1.15);
+  }
+
+  &:active {
+    transform: scale(0.9);
   }
 
   svg {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
+    fill: ${props => props.$isFavorite ? '#ef4444' : 'none'};
+    stroke: ${props => props.$isFavorite ? '#ef4444' : '#d1d5db'};
+    stroke-width: ${props => props.$isFavorite ? '0' : '2'};
     transition: all 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  }
+
+  &:hover svg {
+    stroke: #ef4444;
+    transform: scale(1.05);
   }
 `;
 
@@ -348,15 +358,11 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
   return (
     <CarCard to={getCarUrl()}>
       <FavoriteButton 
+        $isFavorite={isHearted}
         onClick={handleFavoriteClick}
         title={isHearted ? 'Remove from favorites' : 'Add to favorites'}
       >
-        <Heart 
-          size={24} 
-          fill={isHearted ? '#FF0000' : 'none'} 
-          color={isHearted ? '#FF0000' : '#666'}
-          strokeWidth={2}
-        />
+        <Heart />
       </FavoriteButton>
 
       <CarImageWrapper>

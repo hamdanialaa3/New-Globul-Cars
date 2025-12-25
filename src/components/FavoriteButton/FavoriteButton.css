@@ -3,51 +3,55 @@
 .favorite-button {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 8px;
-  background: rgba(255, 255, 255, 0.95);
+  padding: 0;
+  background: transparent;
   border: none;
-  border-radius: 50%;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: visible;
+  width: auto;
+  height: auto;
 }
 
 .favorite-button:hover {
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transform: scale(1.05);
+  transform: scale(1.15);
 }
 
 .favorite-button:active {
-  transform: scale(0.95);
+  transform: scale(0.9);
 }
 
 /* Icon Styles */
 .favorite-icon {
-  color: #6c757d;
+  width: 24px;
+  height: 24px;
+  fill: #ef4444;
+  stroke: #ef4444;
+  stroke-width: 0;
   transition: all 0.3s ease;
-  stroke-width: 2;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .favorite-icon--filled {
-  color: #dc3545;
+  fill: #ef4444;
+  stroke: #ef4444;
   stroke-width: 0;
 }
 
 .favorite-button:hover .favorite-icon {
-  color: #dc3545;
+  fill: #ef4444;
 }
 
-/* Active State */
+/* Active State - No background */
 .favorite-button--active {
-  background: rgba(220, 53, 69, 0.1);
+  background: transparent;
 }
 
 .favorite-button--active:hover {
-  background: rgba(220, 53, 69, 0.15);
+  background: transparent;
 }
 
 /* Animation States */
@@ -93,22 +97,13 @@
   }
 }
 
-/* Ripple Effect */
+/* Remove Ripple Effect - No background needed */
 .favorite-button::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100%;
-  height: 100%;
-  background: rgba(220, 53, 69, 0.3);
-  border-radius: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  opacity: 0;
+  display: none;
 }
 
 .favorite-button--animating::before {
-  animation: ripple 0.6s ease-out;
+  display: none;
 }
 
 @keyframes ripple {
@@ -141,8 +136,8 @@
 
 /* Small Variant (for cards) */
 .favorite-button--small {
-  padding: 6px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  box-shadow: none;
 }
 
 .favorite-button--small .favorite-icon {
@@ -156,22 +151,25 @@
   top: 12px;
   right: 12px;
   z-index: 10;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: none;
+  background: transparent;
 }
 
 .favorite-button--floating:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  box-shadow: none;
+  background: transparent;
 }
 
 /* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
   .favorite-button {
-    background: rgba(33, 37, 41, 0.95);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    background: transparent;
+    box-shadow: none;
   }
 
   .favorite-button:hover {
-    background: rgba(33, 37, 41, 1);
+    background: transparent;
+    box-shadow: none;
   }
 
   .favorite-text {
@@ -182,11 +180,11 @@
 /* Mobile Optimizations */
 @media (max-width: 768px) {
   .favorite-button {
-    padding: 6px;
+    padding: 0;
   }
 
   .favorite-button:has(.favorite-text) {
-    padding: 6px 12px;
+    padding: 8px 16px;
   }
 
   .favorite-text {

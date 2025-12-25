@@ -1,0 +1,426 @@
+/* =================================================================
+   PROFESSIONAL PRINT STYLES - Bulgarian Car Marketplace
+   Purpose: Clean, professional printing for ALL pages
+   ================================================================= */
+
+@media print {
+  /* ============ Page Setup (A4 Portrait) ============ */
+  @page {
+    size: A4 portrait;
+    margin: 15mm;
+  }
+
+  /* ============ Universal Settings ============ */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    box-sizing: border-box !important;
+    color: #000000 !important; /* FORCE BLACK TEXT */
+  }
+
+  html {
+    font-size: 12pt !important;
+  }
+
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    color: #000000 !important;
+    font-family: 'Arial', sans-serif !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Force all common text elements to black */
+  body *,
+  div,
+  span,
+  p,
+  h1, h2, h3, h4, h5, h6,
+  a,
+  li,
+  td,
+  th,
+  label,
+  strong,
+  em,
+  b,
+  i {
+    color: #000000 !important;
+  }
+
+  /* ============ Hide Navigation & UI Elements ============ */
+  header,
+  nav,
+  aside,
+  footer,
+  .header,
+  .navbar,
+  .nav,
+  .sidebar,
+  .footer,
+  .menu,
+  .navigation,
+  .breadcrumb,
+  .toolbar,
+  .app-bar,
+  [role="navigation"],
+  [role="banner"],
+  [role="contentinfo"],
+  [role="complementary"] {
+    display: none !important;
+  }
+
+  /* ============ Hide Interactive Elements ============ */
+  button,
+  .button,
+  .btn,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  .action-button,
+  .fab,
+  .floating-action-button,
+  [role="button"]:not([data-print-keep]) {
+    display: none !important;
+  }
+
+  /* ============ Hide Forms (unless in print content) ============ */
+  form:not([data-print-keep]),
+  input:not([data-print-keep]),
+  textarea:not([data-print-keep]),
+  select:not([data-print-keep]) {
+    display: none !important;
+  }
+
+  /* ============ Hide Modals & Overlays (except print modals) ============ */
+  .modal:not([data-print-root]),
+  .overlay:not([data-print-root]),
+  .popup:not([data-print-root]),
+  .dialog:not([data-print-root]),
+  .toast,
+  .notification,
+  .alert:not([data-print-keep]) {
+    display: none !important;
+  }
+
+  /* ============ Hide Social & Share Buttons ============ */
+  .social-share,
+  .share-buttons,
+  .social-icons,
+  .whatsapp-button,
+  .viber-button,
+  .messenger-button {
+    display: none !important;
+  }
+
+  /* ============ Hide Ads & Tracking ============ */
+  .ad,
+  .advertisement,
+  .banner-ad,
+  iframe:not([data-print-keep]) {
+    display: none !important;
+  }
+
+  /* ============ SPECIAL: Print-Specific Components ============ */
+  /* For components like CarPrintSticker with data-print-root */
+  [data-print-root] {
+    display: block !important;
+    visibility: visible !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    z-index: 999999 !important;
+  }
+
+  [data-print-content] {
+    display: block !important;
+    visibility: visible !important;
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 15mm !important;
+    background: white !important;
+    overflow: hidden !important;
+  }
+
+  /* When data-print-root exists, hide everything else */
+  body:has([data-print-root]) > *:not([data-print-root]) {
+    display: none !important;
+  }
+
+  /* ============ Content Styling ============ */
+  main,
+  article,
+  section,
+  .content,
+  .main-content,
+  [role="main"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* ============ Typography ============ */
+  h1, h2, h3, h4, h5, h6 {
+    color: #000000 !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+    font-weight: bold !important;
+  }
+
+  h1 {
+    font-size: 24pt !important;
+    margin: 0 0 12pt 0 !important;
+    color: #000000 !important;
+  }
+
+  h2 {
+    font-size: 18pt !important;
+    margin: 10pt 0 8pt 0 !important;
+    color: #000000 !important;
+  }
+
+  h3 {
+    font-size: 14pt !important;
+    margin: 8pt 0 6pt 0 !important;
+    color: #000000 !important;
+  }
+
+  p {
+    margin: 0 0 8pt 0 !important;
+    orphans: 3 !important;
+    widows: 3 !important;
+    color: #000000 !important;
+  }
+
+  /* Force ALL text elements to black */
+  span,
+  div,
+  p,
+  a,
+  li,
+  td,
+  th,
+  label,
+  strong,
+  em,
+  b,
+  i,
+  small,
+  code,
+  pre {
+    color: #000000 !important;
+  }
+
+  /* ============ Links ============ */
+  a {
+    color: #000000 !important;
+    text-decoration: underline !important;
+  }
+
+  a[href]:after {
+    content: " (" attr(href) ")" !important;
+    font-size: 9pt !important;
+    color: #666666 !important;
+  }
+
+  /* Don't show URLs for internal links */
+  a[href^="#"]:after,
+  a[href^="/"]:after {
+    content: "" !important;
+  }
+
+  /* ============ Images ============ */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+    page-break-inside: avoid !important;
+    display: block !important;
+  }
+
+  /* ============ Tables ============ */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: avoid !important;
+    margin: 10pt 0 !important;
+  }
+
+  th, td {
+    padding: 4pt 8pt !important;
+    border: 1px solid #cccccc !important;
+    text-align: left !important;
+  }
+
+  th {
+    background: #f0f0f0 !important;
+    font-weight: bold !important;
+  }
+
+  /* ============ Lists ============ */
+  ul, ol {
+    margin: 0 0 10pt 20pt !important;
+    padding: 0 !important;
+  }
+
+  li {
+    margin: 0 0 4pt 0 !important;
+  }
+
+  /* ============ Cards & Containers ============ */
+  .card,
+  .box,
+  .panel {
+    border: 1px solid #cccccc !important;
+    padding: 10pt !important;
+    margin: 0 0 10pt 0 !important;
+    page-break-inside: avoid !important;
+    box-shadow: none !important;
+  }
+
+  /* ============ Remove Animations & Effects ============ */
+  * {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+  }
+
+  /* ============ Page Breaks ============ */
+  .page-break,
+  .pagebreak {
+    page-break-before: always !important;
+  }
+
+  .no-break,
+  .keep-together {
+    page-break-inside: avoid !important;
+  }
+
+  /* ============ Car Listing Specific ============ */
+  .car-card,
+  .car-details,
+  .listing-card {
+    border: 1px solid #cccccc !important;
+    padding: 10pt !important;
+    margin: 0 0 15pt 0 !important;
+    page-break-inside: avoid !important;
+  }
+
+  .car-card *,
+  .car-details *,
+  .listing-card * {
+    color: #000000 !important;
+  }
+
+  .car-price,
+  .price {
+    font-size: 18pt !important;
+    font-weight: bold !important;
+    color: #000000 !important;
+  }
+
+  .car-image,
+  .listing-image {
+    max-width: 100% !important;
+    height: auto !important;
+    margin: 0 0 10pt 0 !important;
+  }
+
+  /* ============ Gallery & Sliders ============ */
+  .gallery,
+  .slider,
+  .carousel {
+    display: block !important;
+  }
+
+  .gallery img,
+  .slider img,
+  .carousel img {
+    display: inline-block !important;
+    width: 48% !important;
+    margin: 1% !important;
+  }
+
+  /* Hide navigation arrows */
+  .gallery-nav,
+  .slider-nav,
+  .carousel-control,
+  .slick-arrow,
+  .swiper-button-next,
+  .swiper-button-prev {
+    display: none !important;
+  }
+
+  /* ============ Utilities ============ */
+  .print-only {
+    display: block !important;
+    color: #000000 !important;
+  }
+
+  .no-print,
+  .screen-only {
+    display: none !important;
+  }
+
+  /* ============ FORCE BLACK TEXT EVERYWHERE ============ */
+  * {
+    color: #000000 !important;
+  }
+
+  /* Except for specific elements that need grey */
+  a[href]:after {
+    color: #666666 !important;
+  }
+
+  /* ============ Background Colors ============ */
+  * {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+
+  /* Except white backgrounds for readability */
+  body,
+  main,
+  article,
+  .content,
+  [data-print-root],
+  [data-print-content] {
+    background: white !important;
+    background-color: white !important;
+  }
+
+  /* Force dark borders for visibility */
+  table,
+  th,
+  td,
+  .card,
+  .box,
+  .panel,
+  .car-card,
+  .car-details,
+  .listing-card {
+    border-color: #333333 !important;
+  }
+
+  /* Make sure colored badges/labels are readable */
+  .badge,
+  .label,
+  .tag,
+  .chip {
+    color: #000000 !important;
+    background: #f0f0f0 !important;
+    border: 1px solid #333333 !important;
+  }
+}

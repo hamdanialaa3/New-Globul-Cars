@@ -45,8 +45,11 @@ module.exports = {
 
       // Add cache busting in development
       if (config.mode === 'development') {
-        // Disable webpack caching completely in development
-        config.cache = false;
+        // Use memory cache only (fastest, no disk I/O)
+        config.cache = {
+          type: 'memory',
+          maxGenerations: 1
+        };
         
         // Ensure output files have unique names to prevent browser caching
         if (config.output) {

@@ -16,51 +16,101 @@ import { BulgarianUser } from '../../types/user/bulgarian-user.types';
 
 const PrintGlobalStyle = createGlobalStyle`
   @media print {
-    /* إخفاء كل شيء ما عدا المحتوى المطبوع */
-    body * {
-      visibility: hidden !important;
+    /* Reset all elements */
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      box-sizing: border-box !important;
     }
     
-    [data-print-content],
-    [data-print-content] * {
-      visibility: visible !important;
-    }
-    
-    [data-print-content] {
-      position: absolute !important;
-      left: 0 !important;
-      top: 0 !important;
-      width: 100% !important;
+    /* Force A4 dimensions */
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 210mm !important;
+      height: 297mm !important;
+      max-width: 210mm !important;
+      max-height: 297mm !important;
+      overflow: hidden !important;
       background: white !important;
     }
     
-    /* إخفاء الأزرار والخلفية */
-    .print-actions,
-    .print-close {
+    /* CRITICAL: Hide everything except print content */
+    body > * {
       display: none !important;
       visibility: hidden !important;
+      position: absolute !important;
+      left: -9999px !important;
     }
     
+    /* Show ONLY the print root */
+    body > [data-print-root] {
+      display: block !important;
+      visibility: visible !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 210mm !important;
+      height: 297mm !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: white !important;
+      overflow: hidden !important;
+      z-index: 999999 !important;
+    }
+    
+    /* Print content */
+    [data-print-content] {
+      display: block !important;
+      visibility: visible !important;
+      position: relative !important;
+      width: 100% !important;
+      height: 100% !important;
+      max-width: 210mm !important;
+      max-height: 297mm !important;
+      margin: 0 !important;
+      padding: 15mm !important;
+      background: white !important;
+      box-sizing: border-box !important;
+      overflow: hidden !important;
+    }
+    
+    /* Force no page breaks */
+    [data-print-root],
+    [data-print-content],
+    [data-print-content] * {
+      page-break-before: avoid !important;
+      page-break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-before: avoid !important;
+      break-after: avoid !important;
+      break-inside: avoid !important;
+    }
+    
+    /* Hide UI elements */
+    .print-actions,
+    .print-close,
+    button {
+      display: none !important;
+    }
+    
+    /* Page settings */
     @page {
-      size: A4;
+      size: A4 portrait;
       margin: 0;
     }
-  }
-  
-  [data-print-content] {
-    * {
+    
+    /* Force black text */
+    [data-print-content],
+    [data-print-content] * {
       color: #000000 !important;
-      font-weight: 900 !important;
     }
     
-    h1, h2, h3, h4, h5, h6 {
-      color: #000000 !important;
-      font-weight: 900 !important;
-    }
-    
-    span, div, p {
-      color: #000000 !important;
-      font-weight: 900 !important;
+    /* Images */
+    img, svg {
+      max-width: 100% !important;
+      height: auto !important;
+      page-break-inside: avoid !important;
     }
   }
 `;
@@ -90,7 +140,18 @@ const PrintOverlay = styled.div`
   overflow-y: auto;
 
   @media print {
-    display: none;
+    /* Transform into the print container */
+    background: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    max-width: 210mm !important;
+    max-height: 297mm !important;
+    overflow: hidden !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
   }
 `;
 
@@ -115,14 +176,21 @@ const PrintContainer = styled.div`
   }
 
   @media print {
+    /* Become the single A4 page */
     box-shadow: none !important;
+    border-radius: 0 !important;
     margin: 0 !important;
     padding: 15mm !important;
     width: 210mm !important;
+    height: 297mm !important;
     min-height: 297mm !important;
-    page-break-inside: avoid;
-    overflow: visible;
-    border-radius: 0;
+    max-height: 297mm !important;
+    position: relative !important;
+    overflow: hidden !important;
+    page-break-before: avoid !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+    box-sizing: border-box !important;
   }
 `;
 
@@ -491,7 +559,7 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
   return (
     <>
       <PrintGlobalStyle />
-      <PrintOverlay onClick={onClose}>
+      <PrintOverlay data-print-root onClick={onClose}>
         <PrintContainer ref={printRef} data-print-content onClick={(e) => e.stopPropagation()}>
         <CloseButton className="print-close" onClick={onClose}>
           <X size={24} />

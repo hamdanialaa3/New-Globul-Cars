@@ -4,17 +4,27 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from './useAuth';
 import { useNavigate } from 'react-router-dom';
-import favoritesService, {
-  FavoriteCar,
-  FavoriteCarData
-} from '../services/favoritesService';
+import { favoritesService, FavoriteItem } from '../services/favorites.service';
 import { toast } from 'react-toastify';
 import { logger } from '../services/logger-service';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase/firebase-config';
+
+interface CarData {
+  make: string;
+  model: string;
+  year: number;
+  price: number;
+  currency: string;
+  sellerNumericId: number;
+  carNumericId: number;
+  primaryImage?: string;
+}
 
 export const useFavorites = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [favorites, setFavorites] = useState<FavoriteCar[]>([]);
+  const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,10 +59,24 @@ export const useFavorites = () => {
     return favorites.some(fav => fav.carId === carId);
   }, [favorites]);
 
+  // Get user numeric ID
+  const getUserNumericId = async (uid: string): Promise<number> => {
+    try {
+      const userDoc = await getDoc(doc(db, 'users', uid));
+      if (userDoc.exists()) {
+        return userDoc.data().numericId || 0;
+      }
+      return 0;
+    } catch (error) {
+      logger.error('[useFavorites] Failed to get user numeric ID', error as Error);
+      return 0;
+    }
+  };
+
   // Toggle favorite
   const toggleFavorite = useCallback(async (
     carId: string,
-    carData?: FavoriteCarData
+    carData?: CarData
   ): Promise<boolean> => {
     // Check if user is logged in
     if (!user?.uid) {
@@ -66,19 +90,43 @@ export const useFavorites = () => {
     }
 
     try {
+      // Get user numeric ID
+      const userNumericId = await getUserNumericId(user.uid);
+
+      // Check if car data is provided
+      if (!carData) {
+        logger.error('[useFavorites] Car data not provided for toggle', new Error('Missing car data'), { carId });
+        toast.error('Failed to update favorites - missing car data');
+        return false;
+      }
+
+      // Call the service with correct parameters
       const isNowFavorite = await favoritesService.toggleFavorite(
         user.uid,
+        userNumericId,
         carId,
-        carData
+        carData.carNumericId,
+        carData.sellerNumericId,
+        {
+          make: carData.make,
+          model: carData.model,
+          year: carData.year,
+          price: carData.price,
+          currency: carData.currency,
+          primaryImage: carData.primaryImage,
+          isActive: true
+        }
       );
 
       if (isNowFavorite) {
         toast.success('❤️ Added to favorites!', {
-          position: 'bottom-right'
+          position: 'bottom-right',
+          autoClose: 2000
         });
       } else {
         toast.info('Removed from favorites', {
-          position: 'bottom-right'
+          position: 'bottom-right',
+          autoClose: 2000
         });
       }
 
@@ -97,7 +145,7 @@ export const useFavorites = () => {
     if (!user?.uid) return false;
 
     try {
-      await favoritesService.removeFavorite(user.uid, carId);
+      await favoritesService.removeFromFavorites(user.uid, carId);
       toast.success('Removed from favorites');
       
       // Update local state
@@ -110,35 +158,6 @@ export const useFavorites = () => {
     }
   }, [user?.uid]);
 
-  // Add note
-  const addNote = useCallback(async (
-    favoriteId: string,
-    note: string
-  ): Promise<boolean> => {
-    try {
-      await favoritesService.addNote(favoriteId, note);
-      toast.success('Note added');
-      await loadFavorites();
-      return true;
-    } catch (err) {
-      logger.error('[useFavorites] Error adding note', err as Error, { favoriteId });
-      toast.error('Failed to add note');
-      return false;
-    }
-  }, [loadFavorites]);
-
-  // Get favorites with price drops
-  const getPriceDrops = useCallback(async (): Promise<FavoriteCar[]> => {
-    if (!user?.uid) return [];
-
-    try {
-      return await favoritesService.getFavoritesWithPriceDrops(user.uid);
-    } catch (err) {
-      logger.error('[useFavorites] Error getting price drops', err as Error, { userId: user?.uid });
-      return [];
-    }
-  }, [user?.uid]);
-
   return {
     favorites,
     loading,
@@ -146,10 +165,8 @@ export const useFavorites = () => {
     isFavorite,
     toggleFavorite,
     removeFavorite,
-    addNote,
-    getPriceDrops,
-    reload: loadFavorites,
-    count: favorites.length
+    count: favorites.length,
+    reload: loadFavorites
   };
 };
 

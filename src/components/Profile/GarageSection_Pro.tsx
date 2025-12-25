@@ -5,6 +5,7 @@ import React, { useState, useMemo } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useFavorites } from '../../hooks/useFavorites';
 import { 
   Car, 
   Edit2, 
@@ -405,6 +406,46 @@ const StatusBadge = styled.div<{ $status: string }>`
   z-index: 2;
 `;
 
+const FavoriteButton = styled.button<{ $isFavorite: boolean }>`
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: auto;
+  height: auto;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 3;
+
+  &:hover {
+    transform: scale(1.15);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  svg {
+    width: 28px;
+    height: 28px;
+    fill: ${props => props.$isFavorite ? '#ef4444' : 'none'};
+    stroke: ${props => props.$isFavorite ? '#ef4444' : '#d1d5db'};
+    stroke-width: ${props => props.$isFavorite ? '0' : '2'};
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  }
+
+  &:hover svg {
+    stroke: #ef4444;
+    transform: scale(1.05);
+  }
+`;
+
 const CardContent = styled.div`
   padding: 1rem 1.25rem;
   background: var(--bg-card);
@@ -660,6 +701,7 @@ export const GarageSectionPro: React.FC<GarageSectionProps> = ({
   onAddNew
 }) => {
   const { language } = useLanguage();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const navigate = useNavigate();
 
   // Calculate stats from cars (always use actual cars data for total count)
@@ -831,6 +873,27 @@ export const GarageSectionPro: React.FC<GarageSectionProps> = ({
                       {getStatusText(car.status)}
                     </StatusBadge>
                   )}
+                  
+                  {/* Favorite Button */}
+                  <FavoriteButton
+                    $isFavorite={isFavorite(car.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(car.id, {
+                        make: car.make,
+                        model: car.model,
+                        year: car.year,
+                        price: car.price,
+                        currency: car.currency || 'EUR',
+                        sellerNumericId: car.sellerNumericId || 0,
+                        carNumericId: car.carNumericId || 0,
+                        primaryImage: car.images?.[0]
+                      });
+                    }}
+                    title={language === 'bg' ? 'Добави в любими' : 'Add to favorites'}
+                  >
+                    <Heart />
+                  </FavoriteButton>
                 </ImageContainer>
 
                 {/* Content */}

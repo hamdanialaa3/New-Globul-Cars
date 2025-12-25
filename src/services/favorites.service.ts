@@ -143,10 +143,12 @@ class FavoritesService {
   ): Promise<FavoriteItem[]> {
     try {
       const favoritesRef = collection(db, 'favorites');
+      // Temporary: Remove orderBy until index is fully built
+      // TODO: Re-enable orderBy('addedAt', 'desc') after index completes
       let q = query(
         favoritesRef,
-        where('userId', '==', userId),
-        orderBy('addedAt', 'desc')
+        where('userId', '==', userId)
+        // orderBy('addedAt', 'desc') // Commented out temporarily
       );
 
       if (limitCount) {
@@ -158,6 +160,13 @@ class FavoritesService {
 
       snapshot.forEach((doc) => {
         favorites.push(doc.data() as FavoriteItem);
+      });
+
+      // Sort on client-side until Firestore index is ready
+      favorites.sort((a, b) => {
+        const dateA = a.addedAt?.toMillis() || 0;
+        const dateB = b.addedAt?.toMillis() || 0;
+        return dateB - dateA; // Descending order
       });
 
       logger.info('[Favorites] Fetched user favorites', {

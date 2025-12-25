@@ -10,7 +10,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Heart, MapPin, Fuel, Gauge, Calendar } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthProvider';
@@ -94,66 +94,52 @@ const FavoriteButton = styled.button<{ $isFavorite: boolean; $isLoading: boolean
   position: absolute;
   top: 12px;
   right: 12px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: auto;
+  height: auto;
   border: none;
-  background: ${props => props.$isFavorite 
-    ? 'rgba(255, 59, 92, 0.95)' 
-    : 'rgba(255, 255, 255, 0.95)'};
-  backdrop-filter: blur(8px);
+  background: transparent;
+  padding: 0;
   cursor: ${props => props.$isLoading ? 'wait' : 'pointer'};
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
   z-index: 10;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   
   &:hover {
-    transform: ${props => props.$isLoading ? 'none' : 'scale(1.1)'};
-    background: ${props => props.$isFavorite 
-      ? 'rgba(255, 59, 92, 1)' 
-      : 'rgba(255, 255, 255, 1)'};
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: ${props => props.$isLoading ? 'none' : 'scale(1.15)'};
   }
 
   &:active {
-    transform: ${props => props.$isLoading ? 'none' : 'scale(0.95)'};
+    transform: ${props => props.$isLoading ? 'none' : 'scale(0.9)'};
   }
 
-  ${props => props.$isFavorite && `
+  ${props => props.$isFavorite && css`
     animation: ${heartBeat} 0.5s ease;
   `}
 
   svg {
-    width: 20px;
-    height: 20px;
-    fill: ${props => props.$isFavorite ? '#fff' : 'none'};
-    stroke: ${props => props.$isFavorite ? '#fff' : '#ff3b5c'};
-    stroke-width: 2;
+    width: 28px;
+    height: 28px;
+    fill: ${props => props.$isFavorite ? '#ef4444' : 'none'};
+    stroke: ${props => props.$isFavorite ? '#ef4444' : '#d1d5db'};
+    stroke-width: ${props => props.$isFavorite ? '0' : '2'};
     transition: all 0.2s ease;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
     
-    ${props => props.$isFavorite && `
+    ${props => props.$isFavorite && css`
       animation: ${heartFill} 0.3s ease;
     `}
   }
 
-  /* Pulse ring effect when favorited */
+  &:hover svg {
+    stroke: #ef4444;
+    transform: scale(1.05);
+  }
+
+  /* Remove pulse ring effect */
   &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 50%;
-    border: 2px solid #ff3b5c;
-    opacity: 0;
-    
-    ${props => props.$isFavorite && `
-      animation: ${pulseRing} 0.6s ease;
-    `}
+    display: none;
   }
 `;
 

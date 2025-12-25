@@ -153,35 +153,39 @@ const FavoriteButton = styled.button<{ $isFavorite: boolean }>`
   position: absolute;
   bottom: 12px;
   right: 12px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
+  width: auto;
+  height: auto;
   border: none;
+  background: transparent;
+  padding: 0;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
   z-index: 3;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 
   &:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(255, 59, 48, 0.3);
+    transform: scale(1.15);
   }
 
   &:active {
-    transform: scale(0.95);
+    transform: scale(0.9);
   }
 
   svg {
-    width: 20px;
-    height: 20px;
-    fill: ${props => props.$isFavorite ? '#ff3b30' : 'none'};
-    stroke: ${props => props.$isFavorite ? '#ff3b30' : '#6c757d'};
+    width: 28px;
+    height: 28px;
+    fill: ${props => props.$isFavorite ? '#ef4444' : 'none'};
+    stroke: ${props => props.$isFavorite ? '#ef4444' : '#d1d5db'};
+    stroke-width: ${props => props.$isFavorite ? '0' : '2'};
     transition: all 0.2s ease;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  }
+
+  &:hover svg {
+    stroke: #ef4444;
+    transform: scale(1.05);
   }
 
   ${props => props.$isFavorite && `

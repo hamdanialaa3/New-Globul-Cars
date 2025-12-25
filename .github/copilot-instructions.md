@@ -1,7 +1,9 @@
 # Copilot Instructions: Bulgarian Car Marketplace (Bulgarski Mobili)
 
 ## Project Overview
-A premium Bulgarian automotive marketplace (rival to mobile.de) built with React 18 + TypeScript + Firebase. Target: Bulgarian market with Cyrillic support, EUR currency, and local cities. Emphasizes **quality over quick fixes** - no spaghetti code allowed.
+A premium Bulgarian automotive marketplace (rival to mobile.de and mobile.bg) built with React 18 + TypeScript + Firebase. Target: Bulgarian market with Cyrillic support, EUR currency, and local cities. Emphasizes **quality over quick fixes** - no spaghetti code allowed.
+
+**Core Philosophy**: "The Project Constitution" (PROJECT_CONSTITUTION.md) defines immutable architectural rules. Any deviation from the Numeric ID System or URL patterns is considered a regression and must be rejected.
 
 ## Critical Architecture Patterns
 
@@ -43,16 +45,29 @@ Hybrid search system combining Firestore + Algolia:
 ## Critical Development Rules
 
 ### TypeScript Path Aliases
-Configured in `tsconfig.json` + `craco.config.js` + `jest.config.js`:
+Configured in `tsconfig.json` + `craco.config.js` + `jest.config.js` (must stay synchronized):
 ```typescript
 import { useAuth } from '@/contexts/AuthProvider';
 import { logger } from '@/services/logger-service';
 import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
 ```
 
+**Available Aliases**:
+- `@/services/*` → `src/services/*`
+- `@/components/*` → `src/components/*`
+- `@/contexts/*` → `src/contexts/*`
+- `@/utils/*` → `src/utils/*`
+- `@/types/*` → `src/types/*`
+- `@/hooks/*` → `src/hooks/*`
+- `@/pages/*` → `src/pages/*`
+- `@/firebase/*` → `src/firebase/*`
+- `@/features/*` → `src/features/*`
+- `@/assets/*` → `src/assets/*`
+
 **DO NOT**:
 - Use relative imports for cross-directory files (e.g., `../../../services/...`)
 - Create new type definitions for existing concepts (check canonical types first)
+- Add new aliases without updating ALL THREE config files
 
 ### Service Layer Pattern
 All business logic in `src/services/`:
@@ -96,8 +111,20 @@ Centralized state management (no Redux):
 - `ThemeContext` - Dark/light mode switching
 - `LoadingContext` - Global loading states with messages (use `showLoading(message)`, `hideLoading()`)
 
-Import from barrel: `import { useAuth, useProfileType, useLanguage } from '@/contexts';`
-**Note**: Not all contexts exported from barrel - check `src/contexts/index.ts` for available exports.
+**Import Pattern**:
+```typescript
+// ✅ Correct - Use barrel exports from src/contexts/index.ts
+import { useAuth, useProfileType, useLanguage } from '@/contexts';
+
+// ❌ Wrong - Direct imports when barrel export exists
+import { useAuth } from '@/contexts/AuthProvider';
+```
+
+**Note**: Not all contexts exported from barrel - check `src/contexts/index.ts` for available exports. Current exports:
+- `AuthContext`, `AuthProvider`, `useAuth`
+- `LanguageProvider`, `useLanguage`
+- `ProfileTypeContext`, `ProfileTypeProvider`, `useProfileType`
+- Types: `ProfileType`, `ProfileTheme`, `ProfilePermissions`, `PlanTier`
 
 ### React Component Structure
 ```
@@ -134,6 +161,8 @@ npm run test:ci     # CI mode with coverage
 - CRACO config disables ModuleScopePlugin for monorepo imports
 - Webpack config provides Node polyfills (buffer, stream, crypto, etc.)
 - Dev server sends no-cache headers to prevent stale assets
+- Development cache completely disabled in webpack (no persistent caching issues)
+- File watching enabled with 100ms interval (excluded node_modules)
 
 ### Quick Scripts
 - `START_DEV_HOT_RELOAD.bat` - Windows dev server launcher
@@ -204,12 +233,15 @@ src/**/*.spec.{ts,tsx}
 4. **Never import from wrong type files** - Use `src/types/user/bulgarian-user.types.ts` as canonical source
 5. **Never use console.log** - Use `logger-service` (prebuild script will fail builds with console.log)
 6. **Never create new Context providers** without documenting in `src/contexts/index.ts`
+7. **Never hardcode collection names** - Use `SellWorkflowCollections.getCollectionNameForVehicleType()`
+8. **Never skip numeric ID assignment** - Car creation MUST go through `UnifiedCarService.createCarListing()` which enforces numeric IDs
 
 ## Image & Asset Optimization
 - **WebP Conversion**: Run `node scripts/optimize-images.js` before committing new images
 - **Image Upload**: Use `SellWorkflowImages.uploadMultipleImages()` for multi-file uploads
 - **Client Compression**: `browser-image-compression` library already integrated for client-side optimization
 - **Storage Path**: `workflow-images/{userId}/{filename}` pattern in Firebase Storage
+- **Bundle Size**: Use `npm run build:analyze` to inspect bundle sizes with source-map-explorer
 
 ## Debugging & Troubleshooting
 
@@ -257,6 +289,13 @@ firebase emulators:start    # Starts Firestore/Auth/Functions emulators
 
 ---
 
-**Version**: 1.2.0  
-**Last Updated**: December 24, 2025  
+**Version**: 1.3.0  
+**Last Updated**: December 25, 2025  
 **Status**: Production
+
+**Key Updates (v1.3.0)**:
+- Added complete path alias reference
+- Documented context barrel export patterns
+- Expanded common pitfalls with hardcoded collection names
+- Added webpack caching clarifications
+- Enhanced bundle analysis guidance

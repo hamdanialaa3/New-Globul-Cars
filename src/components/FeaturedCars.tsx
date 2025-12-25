@@ -1,17 +1,20 @@
-import { logger } from '../services/logger-service';
 // Featured Cars Component - Real Firebase Data
 // عرض السيارات المميزة من البيانات الحقيقية
 
 import React, { useState, useEffect, memo } from 'react';
-import styled from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
+import { default as styledComponents } from 'styled-components';
+import { Link } from 'react-router-dom';
+import { Heart } from 'lucide-react';
+
 import { unifiedCarService, UnifiedCar } from '../services/car';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useAuth } from '../contexts/AuthProvider';
-import { MapPin, Fuel, Gauge, Calendar, MessageCircle, User } from 'lucide-react';
-import { homePageCache, CACHE_KEYS } from '../services/homepage-cache.service';
+import { useFavorites } from '../hooks/useFavorites';
+import { logger } from '../services/logger-service';
+import { getCarUrlFromUnifiedCar } from '../utils/routing-utils';
+
 import HorizontalScrollContainer from './HorizontalScrollContainer/HorizontalScrollContainer';
-import { getCarUrlFromUnifiedCar, getMessagesUrl } from '../utils/routing-utils';
+
+const styled = styledComponents;
 
 interface FeaturedCarsProps {
   limit?: number;
@@ -49,6 +52,46 @@ const CarImageWrapper = styled.div`
   position: relative;
   overflow: hidden;
   background: var(--bg-secondary);
+`;
+
+const FavoriteButton = styled.button<{ $isFavorite: boolean }>`
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: auto;
+  height: auto;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 3;
+
+  &:hover {
+    transform: scale(1.15);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  svg {
+    width: 28px;
+    height: 28px;
+    fill: ${props => props.$isFavorite ? '#ef4444' : 'none'};
+    stroke: ${props => props.$isFavorite ? '#ef4444' : '#d1d5db'};
+    stroke-width: ${props => props.$isFavorite ? '0' : '2'};
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  }
+
+  &:hover svg {
+    stroke: #ef4444;
+    transform: scale(1.05);
+  }
 `;
 
 const CarImage = styled.img`
@@ -185,10 +228,6 @@ const CarLocation = styled.div`
   line-height: 1.3;
 `;
 
-const SellerInfo = styled.div`
-  display: none;
-`;
-
 const EmptyState = styled.div`
   text-align: center;
   padding: 4rem 2rem;
@@ -219,8 +258,7 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
   limit = 4, // ⚡ OPTIMIZED: Changed default from 8 to 4
 }) => {
   const { language } = useLanguage();
-  const { user } = useAuth();
-  const navigate = useNavigate();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [cars, setCars] = useState<UnifiedCar[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -242,34 +280,6 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleMessageClick = async (e: React.MouseEvent, car: UnifiedCar) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    if (!user) {
-      navigate('/login');
-      return;
-    }
-    
-    // Get numeric IDs for both users
-    const sellerNumericId = (car as any).sellerNumericId;
-    const currentUserNumericId = (user as any).numericId;
-    
-    navigate(getMessagesUrl(
-      { numericId: currentUserNumericId, uid: user.uid },
-      { numericId: sellerNumericId, uid: car.sellerId }
-    ));
-  };
-
-  const formatPrice = (price: number): string => {
-    return new Intl.NumberFormat(language === 'bg' ? 'bg-BG' : 'en-US', {
-      style: 'currency',
-      currency: 'EUR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(price);
   };
 
   const calculateMonthlyPayment = (price: number): number => {
@@ -346,6 +356,28 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
                   </svg>
             </CarImage>
               )}
+              
+              {/* Favorite Button */}
+              <FavoriteButton
+                $isFavorite={isFavorite(car.id)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  toggleFavorite(car.id, {
+                    make: car.make,
+                    model: car.model,
+                    year: car.year,
+                    price: car.price,
+                    currency: car.currency || 'EUR',
+                    sellerNumericId: car.sellerNumericId || 0,
+                    carNumericId: car.carNumericId || 0,
+                    primaryImage: car.images?.[0]
+                  });
+                }}
+                title={language === 'bg' ? 'Добави в любими' : 'Add to favorites'}
+              >
+                <Heart />
+              </FavoriteButton>
             </CarImageWrapper>
             
             <PriceTag>

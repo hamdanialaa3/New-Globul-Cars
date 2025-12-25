@@ -16,12 +16,15 @@ import { bg, enUS } from 'date-fns/locale';
 const MessagesContainer = styled.div`
   min-height: calc(100vh - 64px);
   padding: ${({ theme }) => theme.spacing.lg};
-  background: ${({ theme }) => theme.colors.background.default};
+  background: ${({ theme }) => theme.mode === 'dark' 
+    ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' 
+    : 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'};
   color: ${({ theme }) => theme.colors.text.primary};
 
   @media (max-width: 768px) {
     padding: 0;
     height: calc(100vh - 56px);
+    background: ${({ theme }) => theme.mode === 'dark' ? '#0f172a' : '#ffffff'};
   }
 `;
 
@@ -30,32 +33,45 @@ const PageContainer = styled.div`
   margin: 0 auto;
   height: 85vh;
   display: flex;
-  background: ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[900] : theme.colors.background.paper};
+  background: ${({ theme }) => theme.mode === 'dark' 
+    ? 'rgba(30, 41, 59, 0.95)' 
+    : 'rgba(255, 255, 255, 0.95)'};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
-  box-shadow: ${({ theme }) => theme.shadows.lg};
+  box-shadow: ${({ theme }) => theme.mode === 'dark' 
+    ? '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)' 
+    : '0 20px 60px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.05)'};
   overflow: hidden;
-  border: 1px solid ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[200]};
+  backdrop-filter: blur(20px);
+  border: 1px solid ${({ theme }) => theme.mode === 'dark' 
+    ? 'rgba(255, 255, 255, 0.08)' 
+    : 'rgba(0, 0, 0, 0.06)'};
 
   @media (max-width: 768px) {
     height: 100%;
     border-radius: 0;
     border: none;
     flex-direction: column;
+    backdrop-filter: none;
   }
 `;
 
 const Sidebar = styled.div<{ $visible: boolean }>`
-  width: 350px;
-  border-right: 1px solid ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[200]};
+  width: 380px;
+  border-right: 1px solid ${({ theme }) => theme.mode === 'dark' 
+    ? 'rgba(255, 255, 255, 0.08)' 
+    : 'rgba(0, 0, 0, 0.06)'};
   display: flex;
   flex-direction: column;
-  background: ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[900] : theme.colors.background.paper};
+  background: ${({ theme }) => theme.mode === 'dark' 
+    ? 'rgba(15, 23, 42, 0.6)' 
+    : 'rgba(248, 250, 252, 0.8)'};
 
   @media (max-width: 768px) {
     width: 100%;
     display: ${({ $visible }) => $visible ? 'flex' : 'none'};
     height: 100%;
     border-right: none;
+    background: ${({ theme }) => theme.mode === 'dark' ? '#0f172a' : '#ffffff'};
   }
 `;
 
@@ -63,51 +79,144 @@ const ChatArea = styled.div<{ $visible: boolean }>`
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[900] : theme.colors.grey[50]};
+  background: ${({ theme }) => theme.mode === 'dark' 
+    ? 'linear-gradient(180deg, rgba(15, 23, 42, 0.4) 0%, rgba(30, 41, 59, 0.4) 100%)' 
+    : 'linear-gradient(180deg, rgba(248, 250, 252, 0.5) 0%, rgba(241, 245, 249, 0.5) 100%)'};
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: ${({ theme }) => theme.mode === 'dark'
+      ? 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.02"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'
+      : 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%230066cc" fill-opacity="0.02"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'};
+    opacity: 0.3;
+    pointer-events: none;
+  }
 
   @media (max-width: 768px) {
     width: 100%;
     display: ${({ $visible }) => $visible ? 'flex' : 'none'};
     height: 100%;
+    background: ${({ theme }) => theme.mode === 'dark' ? '#0f172a' : '#f8fafc'};
   }
 `;
 
 const SidebarHeader = styled.div`
   padding: ${({ theme }) => theme.spacing.lg};
-  border-bottom: 1px solid ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[200]};
+  border-bottom: 1px solid ${({ theme }) => theme.mode === 'dark' 
+    ? 'rgba(255, 255, 255, 0.08)' 
+    : 'rgba(0, 0, 0, 0.06)'};
+  background: ${({ theme }) => theme.mode === 'dark' 
+    ? 'rgba(30, 41, 59, 0.4)' 
+    : 'rgba(255, 255, 255, 0.6)'};
+  backdrop-filter: blur(10px);
 `;
 
 const SearchInput = styled.input`
   width: 100%;
   padding: ${({ theme }) => theme.spacing.md};
   padding-left: 2.5rem;
-  border: 1px solid ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[700] : theme.colors.grey[300]};
+  border: 1px solid ${({ theme }) => theme.mode === 'dark' 
+    ? 'rgba(255, 255, 255, 0.1)' 
+    : 'rgba(0, 0, 0, 0.08)'};
   border-radius: ${({ theme }) => theme.borderRadius.full};
-  background: ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.background.input};
+  background: ${({ theme }) => theme.mode === 'dark' 
+    ? 'rgba(15, 23, 42, 0.6)' 
+    : 'rgba(255, 255, 255, 0.8)'};
   color: ${({ theme }) => theme.colors.text.primary};
+  font-size: 14px;
+  transition: all 0.2s ease;
+  
+  &::placeholder {
+    color: ${({ theme }) => theme.mode === 'dark' 
+      ? 'rgba(255, 255, 255, 0.4)' 
+      : 'rgba(0, 0, 0, 0.4)'};
+  }
   
   &:focus {
     outline: none;
     border-color: ${({ theme }) => theme.colors.primary.main};
+    background: ${({ theme }) => theme.mode === 'dark' 
+      ? 'rgba(15, 23, 42, 0.8)' 
+      : 'rgba(255, 255, 255, 1)'};
+    box-shadow: 0 0 0 3px ${({ theme }) => theme.mode === 'dark' 
+      ? 'rgba(0, 102, 204, 0.15)' 
+      : 'rgba(0, 102, 204, 0.1)'};
   }
 `;
 
 const ConversationList = styled.div`
   flex: 1;
   overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.mode === 'dark' 
+      ? 'rgba(255, 255, 255, 0.2)' 
+      : 'rgba(0, 0, 0, 0.2)'};
+    border-radius: 3px;
+    
+    &:hover {
+      background: ${({ theme }) => theme.mode === 'dark' 
+        ? 'rgba(255, 255, 255, 0.3)' 
+        : 'rgba(0, 0, 0, 0.3)'};
+    }
+  }
 `;
 
 const ConversationItem = styled.div<{ $active: boolean }>`
   padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-  border-bottom: 1px solid ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[200]};
+  border-bottom: 1px solid ${({ theme }) => theme.mode === 'dark' 
+    ? 'rgba(255, 255, 255, 0.05)' 
+    : 'rgba(0, 0, 0, 0.04)'};
   cursor: pointer;
-  background: ${({ $active, theme }) => $active ? (theme.mode === 'dark' ? theme.colors.primary.dark + '30' : theme.colors.primary.light + '10') : 'transparent'};
-  transition: background 0.2s;
+  background: ${({ $active, theme }) => $active 
+    ? (theme.mode === 'dark' 
+        ? 'linear-gradient(90deg, rgba(0, 102, 204, 0.15) 0%, rgba(0, 102, 204, 0.08) 100%)' 
+        : 'linear-gradient(90deg, rgba(0, 102, 204, 0.08) 0%, rgba(0, 102, 204, 0.04) 100%)')
+    : 'transparent'};
+  transition: all 0.2s ease;
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: ${({ $active, theme }) => $active ? theme.colors.primary.main : 'transparent'};
+    transition: all 0.2s ease;
+  }
 
   &:hover {
-    background: ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[100]};
+    background: ${({ theme }) => theme.mode === 'dark' 
+      ? 'rgba(255, 255, 255, 0.05)' 
+      : 'rgba(0, 0, 0, 0.03)'};
+    
+    &::before {
+      width: ${({ $active }) => $active ? '3px' : '2px'};
+      background: ${({ theme }) => theme.colors.primary.main};
+      opacity: ${({ $active }) => $active ? 1 : 0.5};
+    }
+  }
+
+  &:active {
+    transform: scale(0.995);
   }
 `;
 
@@ -148,11 +257,18 @@ const LastMessage = styled.p`
 
 const ChatHeader = styled.div`
   padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-  background: ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[900] : theme.colors.background.paper};
-  border-bottom: 1px solid ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[200]};
+  background: ${({ theme }) => theme.mode === 'dark' 
+    ? 'linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(30, 41, 59, 0.8) 100%)' 
+    : 'linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.8) 100%)'};
+  border-bottom: 1px solid ${({ theme }) => theme.mode === 'dark' 
+    ? 'rgba(255, 255, 255, 0.08)' 
+    : 'rgba(0, 0, 0, 0.06)'};
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.md};
+  backdrop-filter: blur(10px);
+  z-index: 10;
+  position: relative;
 `;
 
 const MessagesList = styled.div`
@@ -162,23 +278,81 @@ const MessagesList = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.md};
+  z-index: 1;
+  position: relative;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.mode === 'dark' 
+      ? 'rgba(255, 255, 255, 0.15)' 
+      : 'rgba(0, 0, 0, 0.15)'};
+    border-radius: 4px;
+    
+    &:hover {
+      background: ${({ theme }) => theme.mode === 'dark' 
+        ? 'rgba(255, 255, 255, 0.25)' 
+        : 'rgba(0, 0, 0, 0.25)'};
+    }
+  }
 `;
 
 const MessageBubble = styled.div<{ $sent: boolean }>`
   max-width: 70%;
-  padding: ${({ theme }) => theme.spacing.md};
-  border-radius: 12px;
-  background: ${({ $sent, theme }) => $sent ? theme.colors.primary.main : (theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[100])};
-  color: ${({ $sent, theme }) => $sent ? 'white' : theme.colors.text.primary};
+  padding: 12px 16px;
+  border-radius: ${({ $sent }) => $sent ? '18px 18px 4px 18px' : '18px 18px 18px 4px'};
+  background: ${({ $sent, theme }) => $sent 
+    ? 'linear-gradient(135deg, #0066CC 0%, #0052A3 100%)' 
+    : (theme.mode === 'dark' 
+        ? 'linear-gradient(135deg, rgba(51, 65, 85, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%)' 
+        : 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)')};
+  color: ${({ $sent, theme }) => $sent ? '#ffffff' : theme.colors.text.primary};
   align-self: ${({ $sent }) => $sent ? 'flex-end' : 'flex-start'};
-  box-shadow: ${({ theme }) => theme.shadows.sm};
+  box-shadow: ${({ $sent, theme }) => $sent 
+    ? '0 4px 12px rgba(0, 102, 204, 0.25)' 
+    : (theme.mode === 'dark' 
+        ? '0 4px 12px rgba(0, 0, 0, 0.3)' 
+        : '0 4px 12px rgba(0, 0, 0, 0.08)')};
   position: relative;
   word-wrap: break-word;
-  border: 1px solid ${({ $sent, theme }) => $sent ? 'transparent' : (theme.mode === 'dark' ? theme.colors.grey[700] : 'transparent')};
-
-  ${({ $sent }) => !$sent && `
-    border-bottom-left-radius: 4px;
-  `}
+  border: 1px solid ${({ $sent, theme }) => $sent 
+    ? 'rgba(255, 255, 255, 0.1)' 
+    : (theme.mode === 'dark' 
+        ? 'rgba(255, 255, 255, 0.08)' 
+        : 'rgba(0, 0, 0, 0.06)')};
+  backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
+  animation: messageSlideIn 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: ${({ $sent, theme }) => $sent 
+      ? '0 6px 16px rgba(0, 102, 204, 0.3)' 
+      : (theme.mode === 'dark' 
+          ? '0 6px 16px rgba(0, 0, 0, 0.4)' 
+          : '0 6px 16px rgba(0, 0, 0, 0.12)')};
+  }
+  
+  @keyframes messageSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    max-width: 85%;
+  }
   ${({ $sent }) => $sent && `
     border-bottom-right-radius: 4px;
   `}
@@ -186,53 +360,162 @@ const MessageBubble = styled.div<{ $sent: boolean }>`
 
 const InputArea = styled.form`
   padding: ${({ theme }) => theme.spacing.lg};
-  background: ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[900] : theme.colors.background.paper};
-  border-top: 1px solid ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[200]};
+  background: ${({ theme }) => theme.mode === 'dark' 
+    ? 'linear-gradient(180deg, rgba(30, 41, 59, 0.8) 0%, rgba(30, 41, 59, 0.95) 100%)' 
+    : 'linear-gradient(180deg, rgba(248, 250, 252, 0.8) 0%, rgba(255, 255, 255, 0.95) 100%)'};
+  border-top: 1px solid ${({ theme }) => theme.mode === 'dark' 
+    ? 'rgba(255, 255, 255, 0.08)' 
+    : 'rgba(0, 0, 0, 0.06)'};
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
   align-items: center;
+  backdrop-filter: blur(20px);
+  z-index: 10;
+  position: relative;
 `;
 
 const MessageInput = styled.input`
   flex: 1;
-  padding: ${({ theme }) => theme.spacing.md};
-  border: 1px solid ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[700] : theme.colors.grey[300]};
-  border-radius: ${({ theme }) => theme.borderRadius.full};
-  background: ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.background.input};
+  padding: 12px 18px;
+  border: 2px solid ${({ theme }) => theme.mode === 'dark' 
+    ? 'rgba(255, 255, 255, 0.1)' 
+    : 'rgba(0, 0, 0, 0.08)'};
+  border-radius: 24px;
+  background: ${({ theme }) => theme.mode === 'dark' 
+    ? 'rgba(15, 23, 42, 0.6)' 
+    : 'rgba(255, 255, 255, 0.9)'};
   color: ${({ theme }) => theme.colors.text.primary};
+  font-size: 14px;
+  transition: all 0.2s ease;
+  
+  &::placeholder {
+    color: ${({ theme }) => theme.mode === 'dark' 
+      ? 'rgba(255, 255, 255, 0.3)' 
+      : 'rgba(0, 0, 0, 0.3)'};
+  }
   
   &:focus {
     outline: none;
     border-color: ${({ theme }) => theme.colors.primary.main};
+    background: ${({ theme }) => theme.mode === 'dark' 
+      ? 'rgba(15, 23, 42, 0.8)' 
+      : 'rgba(255, 255, 255, 1)'};
+    box-shadow: 0 0 0 4px ${({ theme }) => theme.mode === 'dark' 
+      ? 'rgba(0, 102, 204, 0.2)' 
+      : 'rgba(0, 102, 204, 0.15)'};
   }
 `;
 
 const IconButton = styled.button`
-  background: none;
-  border: none;
-  padding: 8px;
+  background: ${({ theme }) => theme.mode === 'dark' 
+    ? 'rgba(255, 255, 255, 0.08)' 
+    : 'rgba(0, 0, 0, 0.04)'};
+  border: 1px solid ${({ theme }) => theme.mode === 'dark' 
+    ? 'rgba(255, 255, 255, 0.1)' 
+    : 'rgba(0, 0, 0, 0.06)'};
+  padding: 10px;
   cursor: pointer;
   color: ${({ theme }) => theme.colors.text.secondary};
   border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   
-  &:hover {
-    background: ${({ theme }) => theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[100]};
-    color: ${({ theme }) => theme.colors.primary.main};
+  &:hover:not(:disabled) {
+    background: ${({ theme }) => theme.colors.primary.main};
+    color: white;
+    border-color: ${({ theme }) => theme.colors.primary.main};
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+  }
+  
+  &:active:not(:disabled) {
+    transform: scale(0.95);
   }
 
   &:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
+    background: ${({ theme }) => theme.mode === 'dark' 
+      ? 'rgba(255, 255, 255, 0.03)' 
+      : 'rgba(0, 0, 0, 0.02)'};
   }
 `;
 
 const LoadingOverlay = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100%;
-  font-size: 1.2rem;
-  color: ${({ theme }) => theme.colors.text.secondary};
+  gap: 16px;
+  
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid ${({ theme }) => theme.mode === 'dark' 
+      ? 'rgba(255, 255, 255, 0.1)' 
+      : 'rgba(0, 0, 0, 0.1)'};
+    border-top-color: ${({ theme }) => theme.colors.primary.main};
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  p {
+    font-size: 1rem;
+    color: ${({ theme }) => theme.colors.text.secondary};
+    margin: 0;
+  }
+`;
+
+const EmptyState = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 40px;
+  text-align: center;
+  
+  .icon-wrapper {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.mode === 'dark' 
+      ? 'linear-gradient(135deg, rgba(0, 102, 204, 0.15) 0%, rgba(0, 82, 163, 0.1) 100%)' 
+      : 'linear-gradient(135deg, rgba(0, 102, 204, 0.1) 0%, rgba(0, 82, 163, 0.05) 100%)'};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    border: 2px solid ${({ theme }) => theme.mode === 'dark' 
+      ? 'rgba(0, 102, 204, 0.2)' 
+      : 'rgba(0, 102, 204, 0.15)'};
+    
+    svg {
+      color: ${({ theme }) => theme.colors.primary.main};
+      opacity: 0.8;
+    }
+  }
+  
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: ${({ theme }) => theme.colors.text.primary};
+    margin: 0 0 8px 0;
+  }
+  
+  p {
+    font-size: 14px;
+    color: ${({ theme }) => theme.colors.text.secondary};
+    margin: 0;
+    max-width: 400px;
+  }
 `;
 
 const MessagesPage: React.FC = () => {
@@ -269,6 +552,8 @@ const MessagesPage: React.FC = () => {
   useEffect(() => {
     if (!currentUser) return;
 
+    logger.info('Setting up conversations subscription', { userId: currentUser.uid });
+
     const unsubscribe = advancedMessagingService.subscribeToUserConversations(
       currentUser.uid,
       (updatedConversations) => {
@@ -277,8 +562,11 @@ const MessagesPage: React.FC = () => {
       }
     );
 
-    return () => unsubscribe();
-  }, [currentUser]);
+    return () => {
+      logger.info('Cleaning up conversations subscription', { userId: currentUser.uid });
+      unsubscribe();
+    };
+  }, [currentUser?.uid]); // Only depend on user ID
 
   // Fetch profiles for conversations
   useEffect(() => {
@@ -374,26 +662,38 @@ const MessagesPage: React.FC = () => {
     };
 
     initChat();
-  }, [currentUser, targetUserId, targetCarId, conversations, searchParams, initializing]);
+  }, [currentUser?.uid, targetUserId, targetCarId, conversations.length]); // Only depend on primitive values
 
   // Load messages for current conversation
   useEffect(() => {
-    if (!currentConversation || !currentUser) return;
+    if (!currentConversation || !currentUser) {
+      setMessages([]); // Clear messages when no conversation
+      return;
+    }
 
+    logger.info('Setting up message subscription', { conversationId: currentConversation.id });
+
+    let isActive = true; // Prevent state updates after unmount
     const unsubscribe = advancedMessagingService.subscribeToMessages(
       currentConversation.id,
       (newMessages) => {
+        if (!isActive) return; // Ignore updates after cleanup
+        
         setMessages(newMessages);
 
-        // Mark as read
+        // Mark as read only if we have unread messages
         if (newMessages.some(m => m.receiverId === currentUser.uid && m.status !== 'read')) {
           advancedMessagingService.markAsRead(currentConversation.id, currentUser.uid);
         }
       }
     );
 
-    return () => unsubscribe();
-  }, [currentConversation, currentUser]);
+    return () => {
+      isActive = false; // Mark as inactive immediately
+      logger.info('Cleaning up message subscription', { conversationId: currentConversation.id });
+      unsubscribe(); // Then unsubscribe
+    };
+  }, [currentConversation?.id, currentUser?.uid]); // Only depend on IDs, not full objects
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -445,7 +745,8 @@ const MessagesPage: React.FC = () => {
     return (
       <MessagesContainer>
         <LoadingOverlay>
-          {t('common.loading', 'Loading messages...')}
+          <div className="spinner" />
+          <p>{t('common.loading', 'Loading messages...')}</p>
         </LoadingOverlay>
       </MessagesContainer>
     );
@@ -464,9 +765,13 @@ const MessagesPage: React.FC = () => {
 
           <ConversationList>
             {conversations.length === 0 ? (
-              <div style={{ padding: '2rem', textAlign: 'center', color: theme.colors.text.secondary }}>
-                {t('messages.noConversations', 'No conversations yet')}
-              </div>
+              <EmptyState>
+                <div className="icon-wrapper">
+                  <Send size={48} />
+                </div>
+                <h3>{t('messages.noConversations', 'No conversations yet')}</h3>
+                <p>{t('messages.noConversationsDescription', 'Start a conversation by sending a message to a seller')}</p>
+              </EmptyState>
             ) : (
               conversations.map(conv => {
                 const otherPid = conv.participants.find(p => p !== currentUser?.uid);
@@ -537,12 +842,14 @@ const MessagesPage: React.FC = () => {
                   const isMe = msg.senderId === currentUser?.uid;
                   return (
                     <MessageBubble key={msg.id || index} $sent={isMe}>
-                      {msg.text}
+                      <div style={{ marginBottom: '4px', lineHeight: '1.5' }}>
+                        {msg.text}
+                      </div>
                       <div style={{
-                        fontSize: '0.65rem',
-                        marginTop: '4px',
-                        opacity: 0.8,
-                        textAlign: 'right'
+                        fontSize: '0.7rem',
+                        opacity: isMe ? 0.9 : 0.7,
+                        textAlign: 'right',
+                        fontWeight: 500
                       }}>
                         {msg.createdAt && formatDistanceToNow(msg.createdAt, { addSuffix: true, locale: language === 'bg' ? bg : enUS })}
                       </div>
@@ -567,12 +874,13 @@ const MessagesPage: React.FC = () => {
               </InputArea>
             </>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: theme.colors.text.disabled, gap: '1rem' }}>
-              <div style={{ padding: '2rem', background: theme.mode === 'dark' ? theme.colors.grey[800] : theme.colors.grey[200], borderRadius: '50%' }}>
-                <Send size={48} />
+            <EmptyState>
+              <div className="icon-wrapper">
+                <Send size={56} />
               </div>
-              <h3>{t('messages.selectToStart', 'Select a conversation to start messaging')}</h3>
-            </div>
+              <h3>{t('messages.selectToStart', 'Select a conversation')}</h3>
+              <p>{t('messages.selectToStartDescription', 'Choose a conversation from the list to start messaging')}</p>
+            </EmptyState>
           )}
         </ChatArea>
       </PageContainer>
