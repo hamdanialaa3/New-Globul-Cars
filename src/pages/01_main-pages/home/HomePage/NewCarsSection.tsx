@@ -14,6 +14,12 @@ const Section = styled.section`
   padding: 3rem 1rem;
   max-width: 1400px;
   margin: 0 auto;
+  background: rgba(245, 241, 235, 0.4);
+  transition: background-color 0.3s ease;
+  
+  html[data-theme="dark"] & {
+    background: rgba(15, 23, 42, 0.4);
+  }
   
   @media (max-width: 768px) {
     padding: 2rem 0.75rem;
@@ -190,45 +196,9 @@ const NewCarsSection: React.FC = () => {
         setLoading(true);
         setError(null);
         
-        // Get cars from last 24 hours
-        const last24Hours = new Date();
-        last24Hours.setHours(last24Hours.getHours() - 24);
-        
-        // Query all collections for new cars
-        const collections = [
-          'cars',
-          'passenger_cars',
-          'suvs',
-          'vans',
-          'motorcycles',
-          'trucks',
-          'buses'
-        ];
-        
-        const allNewCars: UnifiedCar[] = [];
-        
-        // We'll use the unified service to get featured cars and filter by date client-side
-        // For better performance, we could create a dedicated service method
-        const featuredCars = await unifiedCarService.getFeaturedCars(50);
-        
-        // Filter cars added in last 24 hours
-        const filtered = featuredCars.filter(car => {
-          const carDate = car.createdAt instanceof Date 
-            ? car.createdAt 
-            : new Date(car.createdAt);
-          return carDate >= last24Hours && car.isActive !== false && car.isSold !== true;
-        });
-        
-        // Sort by newest first and limit to 12
-        const sorted = filtered
-          .sort((a, b) => {
-            const dateA = a.createdAt instanceof Date ? a.createdAt : new Date(a.createdAt);
-            const dateB = b.createdAt instanceof Date ? b.createdAt : new Date(b.createdAt);
-            return dateB.getTime() - dateA.getTime();
-          })
-          .slice(0, 12);
-        
-        setNewCars(sorted);
+        // ⚡ PERFORMANCE: Use optimized direct Firestore query instead of fetching 50 cars and filtering client-side
+        const newCars = await unifiedCarService.getNewCarsLast24Hours(12);
+        setNewCars(newCars);
       } catch (err) {
         logger.error('Error loading new cars:', err as Error, {
           context: 'NewCarsSection',

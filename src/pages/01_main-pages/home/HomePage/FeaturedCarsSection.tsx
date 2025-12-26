@@ -9,11 +9,15 @@ import { useLanguage } from '../../../../contexts/LanguageContext';
 import { Search, SlidersHorizontal } from 'lucide-react';
 
 const FeaturedCarsSection = styled.section`
-  background: var(--bg-primary);
+  background: rgba(245, 241, 235, 0.4);
   padding: 1.5rem 0 2rem 0;
   position: relative;
   z-index: 1;
   transition: background-color 0.3s ease;
+  
+  html[data-theme="dark"] & {
+    background: rgba(15, 23, 42, 0.4);
+  }
 `;
 
 const SectionContainer = styled.div`

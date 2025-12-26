@@ -559,23 +559,56 @@ export class SubscriptionOperations {
     conversationId: string,
     callback: MessagesCallback
   ): () => void {
-    const q = query(
-      collection(db, COLLECTION_NAMES.MESSAGES),
-      where('conversationId', '==', conversationId),
-      orderBy('createdAt', 'asc'),
-      limit(QUERY_LIMITS.MESSAGES_PER_CONVERSATION)
-    );
+    // ✅ Guard against invalid conversationId
+    if (!conversationId || typeof conversationId !== 'string' || conversationId.trim() === '') {
+      logger.warn('subscribeToMessages called with invalid conversationId', { conversationId });
+      return () => {}; // Return no-op unsubscribe
+    }
 
-    return onSnapshot(q, (snapshot) => {
-      const messages = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
-        readAt: doc.data().readAt?.toDate()
-      } as Message));
+    let unsubscribe: (() => void) | null = null;
+    
+    try {
+      const q = query(
+        collection(db, COLLECTION_NAMES.MESSAGES),
+        where('conversationId', '==', conversationId),
+        orderBy('createdAt', 'asc'),
+        limit(QUERY_LIMITS.MESSAGES_PER_CONVERSATION)
+      );
 
-      callback(messages);
-    });
+      unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const messages = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt?.toDate() || new Date(),
+            readAt: doc.data().readAt?.toDate()
+          } as Message));
+
+          callback(messages);
+        },
+        (error) => {
+          logger.error('Error in subscribeToMessages', error as Error, { conversationId });
+        }
+      );
+    } catch (error) {
+      logger.error('Error setting up messages subscription', error as Error, { conversationId });
+      return () => {}; // Return no-op if setup fails
+    }
+
+    // Return unsubscribe function with error handling
+    return () => {
+      if (unsubscribe) {
+        try {
+          unsubscribe();
+        } catch (cleanupError) {
+          logger.warn('Error cleaning up messages subscription', {
+            error: (cleanupError as Error).message,
+            conversationId
+          });
+        }
+      }
+    };
   }
 
   /**
@@ -586,26 +619,53 @@ export class SubscriptionOperations {
     userId: string | null | undefined,
     callback: ConversationsCallback
   ): () => void {
-    // Guard against null/undefined userId
-    if (!userId) {
-      logger.warn('subscribeToUserConversations called with null/undefined userId - returning no-op unsubscribe');
+    // ✅ Guard against null/undefined userId
+    if (!userId || typeof userId !== 'string' || userId.trim() === '') {
+      logger.warn('subscribeToUserConversations called with invalid userId - returning no-op unsubscribe');
       return () => {}; // Return no-op unsubscribe function
     }
 
-    const conversationsRef = collection(db, COLLECTION_NAMES.CONVERSATIONS);
-    const q = query(
-      conversationsRef,
-      where('participants', 'array-contains', userId),
-      orderBy('lastMessageAt', 'desc')
-    );
+    let unsubscribe: (() => void) | null = null;
 
-    return onSnapshot(q, (snapshot) => {
-      const conversations = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as Conversation));
-      callback(conversations);
-    });
+    try {
+      const conversationsRef = collection(db, COLLECTION_NAMES.CONVERSATIONS);
+      const q = query(
+        conversationsRef,
+        where('participants', 'array-contains', userId),
+        orderBy('lastMessageAt', 'desc')
+      );
+
+      unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const conversations = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          } as Conversation));
+          callback(conversations);
+        },
+        (error) => {
+          logger.error('Error in subscribeToUserConversations', error as Error, { userId });
+        }
+      );
+    } catch (error) {
+      logger.error('Error setting up conversations subscription', error as Error, { userId });
+      return () => {}; // Return no-op if setup fails
+    }
+
+    // Return unsubscribe function with error handling
+    return () => {
+      if (unsubscribe) {
+        try {
+          unsubscribe();
+        } catch (cleanupError) {
+          logger.warn('Error cleaning up conversations subscription', {
+            error: (cleanupError as Error).message,
+            userId
+          });
+        }
+      }
+    };
   }
 
   /**

@@ -15,6 +15,10 @@ const SectionContainer = styled.section`
   padding: 80px 20px;
   max-width: 1400px;
   margin: 0 auto;
+  background: ${({ theme }) => theme.mode === 'dark' 
+    ? 'rgba(15, 23, 42, 0.4)' 
+    : 'rgba(245, 241, 235, 0.4)'};
+  transition: background-color 0.3s ease;
   
   @media (max-width: 768px) {
     padding: 50px 16px;

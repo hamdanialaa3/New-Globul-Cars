@@ -416,24 +416,26 @@ const AdvancedSearchWidget: React.FC<AdvancedSearchWidgetProps> = ({ onSearchCom
     return filters;
   }, [debouncedMake, debouncedModel, debouncedMaxPrice, debouncedYearFrom]);
 
-  useEffect(() => {
-    const getCarCount = async () => {
-      if (!debouncedMake && !debouncedMaxPrice && !debouncedYearFrom) {
-        setCarCount(null);
-        return;
-      }
-      try {
-        // Get actual count from database - fetch more to get accurate count
-        const cars = await unifiedCarService.searchCars(searchFilters, 1000);
-        setCarCount(cars.length);
-        logger.info('Search preview count', { filters: searchFilters, count: cars.length });
-      } catch (error) {
-        logger.error('Error getting car count', error as Error);
-        setCarCount(0);
-      }
-    };
-    getCarCount();
-  }, [searchFilters]);
+  // ⚡ PERFORMANCE: Removed expensive searchCars(1000) query on every filter change
+  // This was causing significant performance issues on homepage load
+  // Car count can be shown after user initiates search, not during filter typing
+  // useEffect(() => {
+  //   const getCarCount = async () => {
+  //     if (!debouncedMake && !debouncedMaxPrice && !debouncedYearFrom) {
+  //       setCarCount(null);
+  //       return;
+  //     }
+  //     try {
+  //       const cars = await unifiedCarService.searchCars(searchFilters, 1000);
+  //       setCarCount(cars.length);
+  //       logger.info('Search preview count', { filters: searchFilters, count: cars.length });
+  //     } catch (error) {
+  //       logger.error('Error getting car count', error as Error);
+  //       setCarCount(0);
+  //     }
+  //   };
+  //   getCarCount();
+  // }, [searchFilters]);
 
 
   const handleSearch = useCallback((e?: React.FormEvent) => {
@@ -458,7 +460,7 @@ const AdvancedSearchWidget: React.FC<AdvancedSearchWidgetProps> = ({ onSearchCom
     const searchUrl = `/cars?${params.toString()}`;
     logger.info('Navigating to search results', { url: searchUrl });
     navigate(searchUrl);
-  }, [make, model, yearFrom, maxPrice, carCount, navigate]);
+  }, [make, model, yearFrom, maxPrice, navigate]); // ⚡ PERFORMANCE: Removed carCount dependency (no longer used)
 
   const handleTabClick = (tab: 'search' | 'sell' | 'evaluate') => {
     setActiveTab(tab);

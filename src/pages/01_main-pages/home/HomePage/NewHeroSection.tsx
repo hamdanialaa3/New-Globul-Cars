@@ -10,8 +10,8 @@ import SearchWidget from './SearchWidget';
 const HeroShell = styled.section<{ $isDark: boolean }>`
   position: relative;
   background: ${props => props.$isDark
-    ? 'radial-gradient(120% 120% at 20% 20%, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0) 45%), linear-gradient(135deg, #050b18 0%, #0c2740 55%, #06111f 100%)'
-    : 'radial-gradient(120% 120% at 20% 20%, rgba(0,51,102,0.08) 0%, rgba(255,255,255,0) 45%), linear-gradient(135deg, #f7fafc 0%, #e8f0f7 55%, #f6f8fb 100%)'};
+    ? 'radial-gradient(120% 120% at 20% 20%, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0) 45%), linear-gradient(135deg, rgba(5, 11, 24, 0.4) 0%, rgba(12, 39, 64, 0.4) 55%, rgba(6, 17, 31, 0.4) 100%)'
+    : 'radial-gradient(120% 120% at 20% 20%, rgba(0,51,102,0.08) 0%, rgba(255,255,255,0) 45%), linear-gradient(135deg, rgba(247, 250, 252, 0.4) 0%, rgba(232, 240, 247, 0.4) 55%, rgba(246, 248, 251, 0.4) 100%)'};
   color: ${props => props.$isDark ? '#e8eef7' : '#0f172a'};
   padding: 90px 18px 48px;
   overflow: hidden;

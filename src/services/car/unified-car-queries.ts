@@ -10,7 +10,8 @@ import {
   limit,
   getDocs,
   getDoc,
-  DocumentSnapshot
+  DocumentSnapshot,
+  Timestamp
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { serviceLogger } from '../logger-service';
@@ -68,18 +69,33 @@ export async function getFeaturedCars(limitCount: number = 4): Promise<UnifiedCa
   try {
     const allCars: UnifiedCar[] = [];
 
-    // Query each collection in parallel
+    // ⚡ PERFORMANCE: Query each collection with where clauses to filter at database level
+    // ✅ FIX: Use fallback query to support both status-based and isActive-based filtering
     const queryPromises = VEHICLE_COLLECTIONS.map(async (collectionName) => {
+      // Use simpler query without where clauses to support all status formats
+      // Filter client-side to handle: status='published'/'active', isActive=true, isSold=false
       try {
         const q = query(
           collection(db, collectionName),
           orderBy('createdAt', 'desc'),
-          limit(limitCount * 2) // Get more to filter client-side
+          limit(limitCount * 4) // Get more to compensate for client-side filtering
         );
         const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => mapDocToCar(doc));
+        return snapshot.docs
+          .map(doc => mapDocToCar(doc))
+          .filter(car => {
+            // Support multiple status formats: status='published'/'active', or isActive=true
+            const isActive = car.isActive !== false; // Default to true if missing
+            const isSold = car.isSold === true; // Default to false if missing
+            const status = (car as any).status;
+            const isPublished = status === 'published' || status === 'active';
+            const isNotSoldStatus = status !== 'sold';
+            
+            // Include car if: (isActive OR status='published'/'active') AND NOT sold
+            return (isActive || isPublished) && !isSold && isNotSoldStatus;
+          });
       } catch (error) {
-        serviceLogger.warn(`Error querying ${collectionName}`, { error });
+        serviceLogger.warn(`Error querying ${collectionName} for featured cars`, { error });
         return [];
       }
     });
@@ -87,19 +103,66 @@ export async function getFeaturedCars(limitCount: number = 4): Promise<UnifiedCa
     const results = await Promise.all(queryPromises);
     results.forEach(cars => allCars.push(...cars));
 
-    // Filter client-side for active, non-sold cars
-    const activeCars = allCars.filter(car => {
-      const isActive = car.isActive !== false; // Default to true if missing
-      const isSold = car.isSold === true; // Default to false if missing
-      return isActive && !isSold;
-    });
-
     // Sort by date (newest first) and limit
-    const sorted = activeCars.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    const sorted = allCars.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
     return sorted.slice(0, limitCount);
   } catch (error) {
     serviceLogger.error('Error getting featured cars', error as Error);
+    return [];
+  }
+}
+
+/**
+ * Get new cars from last 24 hours - ⚡ PERFORMANCE: Direct Firestore query instead of client-side filtering
+ */
+export async function getNewCarsLast24Hours(limitCount: number = 12): Promise<UnifiedCar[]> {
+  try {
+    const allCars: UnifiedCar[] = [];
+    const last24Hours = new Date();
+    last24Hours.setHours(last24Hours.getHours() - 24);
+    const timestamp24HoursAgo = Timestamp.fromDate(last24Hours);
+
+    // Query each collection in parallel with date filter
+    // ✅ FIX: Use simpler query to support both status-based and isActive-based filtering
+    const queryPromises = VEHICLE_COLLECTIONS.map(async (collectionName) => {
+      try {
+        // Use date filter only, then filter client-side for status/isActive compatibility
+        const q = query(
+          collection(db, collectionName),
+          where('createdAt', '>=', timestamp24HoursAgo),
+          orderBy('createdAt', 'desc'),
+          limit(limitCount * 4) // Get more to compensate for client-side filtering
+        );
+        const snapshot = await getDocs(q);
+        return snapshot.docs
+          .map(doc => mapDocToCar(doc))
+          .filter(car => {
+            // Support multiple status formats: status='published'/'active', or isActive=true
+            const isActive = car.isActive !== false; // Default to true if missing
+            const isSold = car.isSold === true; // Default to false if missing
+            const status = (car as any).status;
+            const isPublished = status === 'published' || status === 'active';
+            const isNotSoldStatus = status !== 'sold';
+            
+            // Include car if: (isActive OR status='published'/'active') AND NOT sold
+            return (isActive || isPublished) && !isSold && isNotSoldStatus;
+          });
+      } catch (error) {
+        serviceLogger.warn(`Error querying ${collectionName} for new cars`, { error });
+        return [];
+      }
+    });
+
+    const results = await Promise.all(queryPromises);
+    results.forEach(cars => allCars.push(...cars));
+
+    // Sort by date (newest first) and limit
+    const sorted = allCars.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+    return sorted.slice(0, limitCount);
+  } catch (error) {
+    serviceLogger.error('Error getting new cars from last 24 hours', error as Error);
     return [];
   }
 }

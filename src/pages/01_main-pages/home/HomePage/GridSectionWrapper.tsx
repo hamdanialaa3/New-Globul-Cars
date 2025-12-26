@@ -144,13 +144,20 @@ const SectionContainer = styled.div<{
     }
   }};
 
-  /* Animated subtle gradient shift */
+  /* Animated subtle gradient shift - ⚡ PERFORMANCE: Respect prefers-reduced-motion */
   background-size: 200% 200%;
   animation: gradientShift 20s ease infinite;
 
   @keyframes gradientShift {
     0%, 100% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
+  }
+
+  /* Disable animations for users who prefer reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    background-size: 100% 100%;
+    background-position: 0% 50%;
   }
 
   /* Ultra-Modern Grid Overlay - Sleek & Professional */
@@ -220,12 +227,26 @@ const SectionContainer = styled.div<{
       return `opacity: ${baseOpacity};`;
     }}
     animation: glowPulse 4s ease-in-out infinite;
+
+    /* ⚡ PERFORMANCE: Disable animation for reduced motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+      opacity: 0.5;
+    }
   }
 
   /* Simple pulse animation - opacity varies by 20% */
   @keyframes glowPulse {
     0%, 100% { opacity: 0.45; }
     50% { opacity: 0.65; }
+  }
+
+  /* ⚡ PERFORMANCE: Disable all animations for reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    &::before,
+    &::after {
+      animation: none !important;
+    }
   }
 
   /* Floating Particles Effect (AI Theme) */

@@ -64,6 +64,8 @@ export const useProfileData = (targetUserId?: string): UseProfileDataReturn => {
   }, [targetUserId]);
 
   // Real-time listener
+  // ⚠️ NOTE: This listener may conflict with useProfile hook if both are used together
+  // Consider consolidating listeners to avoid duplicate Firestore subscriptions
   useEffect(() => {
     const currentUser = auth.currentUser;
     
@@ -81,24 +83,45 @@ export const useProfileData = (targetUserId?: string): UseProfileDataReturn => {
       return;
     }
 
-    const userRef = doc(db, 'users', userId);
-    const unsubscribe = onSnapshot(
-      userRef, 
-      (snapshot) => {
-        if (snapshot.exists()) {
-          const userData = snapshot.data() as BulgarianUser;
-          setUser({ ...userData, uid: snapshot.id });
-        } else {
-          logger.warn('User document not found', { userId });
-          setUser(null);
-        }
-      },
-      (error) => {
-        logger.error('Error loading user data', error as Error, { userId });
-      }
-    );
+    let unsubscribe: (() => void) | null = null;
+    let isActive = true; // Prevent state updates after cleanup
 
-    return () => unsubscribe();
+    try {
+      const userRef = doc(db, 'users', userId);
+      unsubscribe = onSnapshot(
+        userRef, 
+        (snapshot) => {
+          if (!isActive) return; // Ignore updates after cleanup
+          
+          if (snapshot.exists()) {
+            const userData = snapshot.data() as BulgarianUser;
+            setUser({ ...userData, uid: snapshot.id });
+          } else {
+            logger.warn('User document not found', { userId });
+            setUser(null);
+          }
+        },
+        (error) => {
+          logger.error('Error loading user data', error as Error, { userId });
+        }
+      );
+    } catch (error) {
+      logger.error('Error setting up user data listener', error as Error, { userId });
+    }
+
+    return () => {
+      isActive = false; // Flag first
+      if (unsubscribe) {
+        try {
+          unsubscribe(); // Then cleanup
+        } catch (cleanupError) {
+          logger.warn('Error cleaning up user data listener', {
+            error: (cleanupError as Error).message,
+            userId
+          });
+        }
+      }
+    };
   }, [targetUserId]);
 
   useEffect(() => {

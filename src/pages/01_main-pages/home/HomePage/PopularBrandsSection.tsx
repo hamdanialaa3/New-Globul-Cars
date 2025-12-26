@@ -46,13 +46,13 @@ const SectionContainer = styled.section`
     right: 0;
     bottom: 0;
     background: var(--bg-primary);
-    opacity: 0.75;
+    opacity: 0.4;
     z-index: 0;
     transition: background-color 0.3s ease, opacity 0.3s ease;
   }
   
   html[data-theme="dark"] &::before {
-    opacity: 0.85;
+    opacity: 0.4;
   }
   
   @media (max-width: 600px) {

@@ -18,6 +18,12 @@ const SectionContainer = styled.section`
   max-width: 1200px;
   margin: 3rem auto;
   padding: 0 1rem;
+  background: rgba(245, 241, 235, 0.4);
+  transition: background-color 0.3s ease;
+  
+  html[data-theme="dark"] & {
+    background: rgba(15, 23, 42, 0.4);
+  }
 
   @media (max-width: 768px) {
     margin: 2rem auto;
@@ -293,12 +299,12 @@ const LatestCarsSection: React.FC = () => {
         const db = getFirestore();
         const carsRef = collection(db, 'cars');
 
-        // Get latest published cars
+        // ✅ FIX: Query without status filter to support both status='published' and isActive formats
+        // Then filter client-side for compatibility
         const q = query(
           carsRef,
-          where('status', '==', 'published'),
           orderBy('createdAt', 'desc'),
-          limit(8)
+          limit(20) // Get more to compensate for client-side filtering
         );
 
         const querySnapshot = await getDocs(q);
@@ -307,7 +313,14 @@ const LatestCarsSection: React.FC = () => {
         querySnapshot.forEach((doc) => {
           try {
             const car = mapDocToCar(doc);
-            if (car.isActive !== false && car.isSold !== true) {
+            const status = (car as any).status;
+            const isPublished = status === 'published' || status === 'active';
+            const isActive = car.isActive !== false; // Default to true if missing
+            const isSold = car.isSold === true; // Default to false if missing
+            const isNotSoldStatus = status !== 'sold';
+            
+            // Include car if: (isActive OR status='published'/'active') AND NOT sold
+            if ((isActive || isPublished) && !isSold && isNotSoldStatus) {
               latestCars.push(car);
             }
           } catch (e) {

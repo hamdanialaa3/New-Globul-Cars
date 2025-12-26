@@ -311,27 +311,50 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
       return;
     }
 
-    const unsubscribe = onSnapshot(
-      doc(db, 'users', userId),
-      snapshot => {
-        if (!snapshot.exists()) return;
-        const data = snapshot.data();
-        setTarget(prev => {
-          const merged = normalizeUser({
-            ...(prev ?? { uid: userId }),
-            ...data,
-            uid: userId,
-            email: data.email || prev?.email || ''
-          } as BulgarianUser);
-          setFormData(buildFormData(merged));
-          return merged;
-        });
-      },
-      err => logger.error('Real-time listener error', err as Error, { userId })
-    );
+    let unsubscribe: (() => void) | null = null;
+    let isActive = true; // Prevent state updates after cleanup
 
-    return () => unsubscribe();
-  }, [target?.uid]);
+    try {
+      unsubscribe = onSnapshot(
+        doc(db, 'users', userId),
+        snapshot => {
+          if (!isActive) return; // Ignore updates after cleanup
+          
+          if (!snapshot.exists()) return;
+          const data = snapshot.data();
+          setTarget(prev => {
+            const merged = normalizeUser({
+              ...(prev ?? { uid: userId }),
+              ...data,
+              uid: userId,
+              email: data.email || prev?.email || ''
+            } as BulgarianUser);
+            setFormData(buildFormData(merged));
+            return merged;
+          });
+        },
+        err => {
+          logger.error('Real-time listener error', err as Error, { userId });
+        }
+      );
+    } catch (error) {
+      logger.error('Error setting up profile listener', error as Error, { userId });
+    }
+
+    return () => {
+      isActive = false; // Flag first
+      if (unsubscribe) {
+        try {
+          unsubscribe(); // Then cleanup
+        } catch (cleanupError) {
+          logger.warn('Error cleaning up profile listener', {
+            error: (cleanupError as Error).message,
+            userId
+          });
+        }
+      }
+    };
+  }, [target?.uid, isOwnProfile]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

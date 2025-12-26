@@ -12,7 +12,7 @@ import { UnifiedCar } from '../../../../services/car';
 import { unifiedCarService } from '../../../../services/UnifiedCarService';
 import { logger } from '../../../../services/logger-service';
 import { Plus, ArrowUpDown } from 'lucide-react';
-import { MatrixUploader } from '../components/MatrixUploader';
+import BulkUploadWizard from './components/BulkUploadWizard';
 
 // Import new modular components
 import { ThemeAwareWrapper } from './components/MyAds/ThemeAwareWrapper';
@@ -392,7 +392,18 @@ const ProfileMyAds: React.FC = () => {
           )}
 
           {/* Matrix Modal */}
-          {showMatrix && <MatrixUploader onClose={() => setShowMatrix(false)} />}
+          {showMatrix && (
+            <BulkUploadWizard
+              onCancel={() => setShowMatrix(false)}
+              onComplete={(result) => {
+                setShowMatrix(false);
+                // Refresh cars list after successful import
+                if (result.successful > 0) {
+                  window.location.reload();
+                }
+              }}
+            />
+          )}
 
           {/* Content */}
           {unifiedCars.length === 0 ? (

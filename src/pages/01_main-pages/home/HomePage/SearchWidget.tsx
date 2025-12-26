@@ -344,7 +344,7 @@ const SearchButton = styled.button<{ $isDark: boolean }>`
   &:hover {
     background: ${props => props.$isDark
       ? 'linear-gradient(135deg, rgba(0, 123, 255, 0.35) 0%, rgba(37, 99, 235, 0.3) 100%)'
-      : 'linear-gradient(135deg, rgba(0, 123, 255, 0.5) 0%, rgba(37, 99, 235, 0.45) 100%)'};
+      : 'linear-gradient(135deg, rgba(0, 123, 255, 0.5) 23%, rgba(37, 99, 235, 0.45) 100%)'};
     transform: translateY(-3px) scale(1.02);
     box-shadow: ${props => props.$isDark
       ? '0 12px 48px rgba(0, 102, 255, 0.45), 0 0 0 0px rgba(100, 181, 246, 0), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
@@ -424,17 +424,19 @@ const SearchWidget: React.FC = () => {
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: 30 }, (_, i) => currentYear - i); // Last 30 years
 
-    // Load Brands
+    // Load Brands - ⚡ PERFORMANCE: Deferred loading to prevent blocking initial render
     useEffect(() => {
-        const loadBrands = async () => {
+        // Defer loading brands until after initial render to improve page load time
+        const timeoutId = setTimeout(async () => {
             try {
                 const allBrands = await brandsModelsDataService.getAllBrands();
                 setBrands(allBrands);
             } catch (error) {
                 logger.error('Error loading brands', error as Error);
             }
-        };
-        loadBrands();
+        }, 500); // Load after 500ms - allows page to render first
+
+        return () => clearTimeout(timeoutId);
     }, []);
 
     // Load Models

@@ -4,6 +4,7 @@
 import { UnifiedCar, CarFilters } from './unified-car-types';
 import {
   getFeaturedCars,
+  getNewCarsLast24Hours,
   getSimilarCars,
   searchCars,
   getUserCars,
@@ -35,6 +36,15 @@ class UnifiedCarService {
    */
   async getFeaturedCars(limitCount: number = 4): Promise<UnifiedCar[]> {
     return getFeaturedCars(limitCount);
+  }
+
+  /**
+   * Get new cars from last 24 hours - ⚡ PERFORMANCE: Direct Firestore query
+   * @param limitCount - Maximum number of cars to return (default: 12)
+   * @returns Promise resolving to array of new cars from last 24 hours
+   */
+  async getNewCarsLast24Hours(limitCount: number = 12): Promise<UnifiedCar[]> {
+    return getNewCarsLast24Hours(limitCount);
   }
 
   /**

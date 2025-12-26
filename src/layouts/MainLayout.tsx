@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import { safeLazy } from '../utils/lazyImport';
+import PageTransition from '../components/PageTransition/PageTransition';
 
 // Like AppRoutes.tsx, we define styles inline or use classes. 
 // Ideally should use styled-components like the old MainLayout, 
@@ -42,7 +43,8 @@ export const MainLayout: React.FC = () => {
                     paddingTop: '80px',
                     paddingBottom: '80px',
                     backgroundColor: 'transparent',
-                    transition: 'background-color 0.3s ease'
+                    transition: 'background-color 0.3s ease',
+                    position: 'relative'
                 }}
                 tabIndex={-1}
             >
@@ -50,9 +52,11 @@ export const MainLayout: React.FC = () => {
                     backgroundColor: 'transparent',
                     transition: 'background-color 0.3s ease'
                 }}>
-                    <Suspense fallback={null}>
-                        <Outlet />
-                    </Suspense>
+                    <PageTransition>
+                        <Suspense fallback={null}>
+                            <Outlet />
+                        </Suspense>
+                    </PageTransition>
                 </div>
             </main>
 

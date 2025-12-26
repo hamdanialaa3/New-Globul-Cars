@@ -14,8 +14,8 @@ import HorizontalScrollContainer from '../../../../components/HorizontalScrollCo
 const SectionContainer = styled.section<{ $isDark: boolean }>`
   padding: 80px 20px;
   background: ${props => props.$isDark
-    ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)'
-    : '#f5f1eb'};
+    ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.4) 0%, rgba(30, 41, 59, 0.4) 100%)'
+    : 'rgba(245, 241, 235, 0.4)'};
   position: relative;
   overflow: hidden;
   transition: background 0.3s ease;

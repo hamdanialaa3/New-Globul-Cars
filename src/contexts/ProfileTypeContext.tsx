@@ -457,11 +457,13 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
       if (unsubscribe) {
         try {
           unsubscribe();
+          unsubscribe = null; // Clear reference after cleanup
         } catch (cleanupError) {
-          logger.warn('Error cleaning up profile listener', {
+          logger.warn('Error cleaning up profile type listener', {
             error: (cleanupError as Error).message,
             userId: currentUser?.uid
           });
+          unsubscribe = null; // Clear reference even on error
         }
       }
     };
