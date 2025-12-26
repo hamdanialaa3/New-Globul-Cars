@@ -268,10 +268,11 @@ const BackgroundImage = styled.div<{
     animation: ${props.$animation} ${props.$duration}s ease-in-out;
   `}
   
-  will-change: transform, opacity, filter;
+  /* Performance: Only apply will-change and hardware acceleration to active elements */
+  will-change: ${props => props.$isActive ? 'transform, opacity, filter' : 'auto'};
   
-  /* Hardware acceleration */
-  transform: translateZ(0);
+  /* Hardware acceleration only for active layer */
+  transform: ${props => props.$isActive ? 'translateZ(0)' : 'none'};
   backface-visibility: hidden;
   perspective: 1000px;
 `;

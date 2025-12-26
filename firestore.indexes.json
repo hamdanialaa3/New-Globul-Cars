@@ -127,6 +127,146 @@
             ]
         },
         {
+            "collectionGroup": "suvs",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "make",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "suvs",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "price",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "vans",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "make",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "vans",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "price",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "motorcycles",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "make",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "motorcycles",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "price",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "trucks",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "make",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "trucks",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "price",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "buses",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "make",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "buses",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "price",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
             "collectionGroup": "users",
             "queryScope": "COLLECTION",
             "fields": [

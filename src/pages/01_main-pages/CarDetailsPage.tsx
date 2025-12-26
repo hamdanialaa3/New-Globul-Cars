@@ -11,7 +11,7 @@ import StaticMapEmbed from '../../components/StaticMapEmbed';
 import CarDetailsMobileDEStyle from './components/CarDetailsMobileDEStyle';
 import { useCarDetails } from './hooks/useCarDetails';
 import { useCarEdit } from './hooks/useCarEdit';
-import { CarSEO } from '../../components/SEO/CarSEO';
+import { CarSEO } from '../../components/seo/CarSEO';
 import { CarImageGallery } from './components/CarImageGallery';
 import { CarHeader } from './components/CarHeader';
 import { CarBasicInfo } from './components/CarBasicInfo';
@@ -264,8 +264,8 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
         } else {
           // Fallback: Copy to clipboard and show share options
           navigator.clipboard.writeText(carUrl).then(() => {
-            alert(language === 'bg' 
-              ? `Линкът е копиран! Споделете го: ${carUrl}` 
+            alert(language === 'bg'
+              ? `Линкът е копиран! Споделете го: ${carUrl}`
               : `Link copied! Share it: ${carUrl}`);
           });
         }

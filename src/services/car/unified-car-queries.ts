@@ -46,8 +46,8 @@ export function mapDocToCar(doc: DocumentSnapshot): UnifiedCar {
     carNumericId: data.carNumericId ? Number(data.carNumericId) : (data.numericId ? Number(data.numericId) : undefined),
     numericId: data.numericId ? Number(data.numericId) : (data.carNumericId ? Number(data.carNumericId) : undefined),
 
-    createdAt: data?.createdAt?.toDate() || new Date(),
-    updatedAt: data?.updatedAt?.toDate() || new Date()
+    createdAt: data?.createdAt?.toDate ? data.createdAt.toDate() : (data?.createdAt instanceof Date ? data.createdAt : new Date()),
+    updatedAt: data?.updatedAt?.toDate ? data.updatedAt.toDate() : (data?.updatedAt instanceof Date ? data.updatedAt : new Date())
   } as UnifiedCar;
 
   // Ensure isActive and isSold have default values

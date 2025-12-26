@@ -48,8 +48,16 @@ service cloud.firestore {
     // Cars/Listings
     match /cars/{carId} {
       allow read: if true;
-      allow write: if isAuthenticated(); // Refine this later
+      allow write: if isAuthenticated();
     }
+
+    // ✅ NEW: Explicitly allow other vehicle types
+    match /passenger_cars/{carId} { allow read: if true; allow write: if isAuthenticated(); }
+    match /suvs/{carId} { allow read: if true; allow write: if isAuthenticated(); }
+    match /vans/{carId} { allow read: if true; allow write: if isAuthenticated(); }
+    match /motorcycles/{carId} { allow read: if true; allow write: if isAuthenticated(); }
+    match /trucks/{carId} { allow read: if true; allow write: if isAuthenticated(); }
+    match /buses/{carId} { allow read: if true; allow write: if isAuthenticated(); }
     
     // Legacy support for listings collection if used
     match /listings/{listingId} {
