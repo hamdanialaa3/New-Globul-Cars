@@ -256,7 +256,7 @@ function buildPrompt(vehicleData: any, language: string): string {
     
     if (equipment && equipment.length > 0) {
       prompt += `\n🔧 Оборудване:\n`;
-      equipment.forEach(item => prompt += `• ${item}\n`);
+      equipment.forEach((item: string) => prompt += `• ${item}\n`);
     }
     
     prompt += `\nОписанието трябва да:\n`;
@@ -280,7 +280,7 @@ function buildPrompt(vehicleData: any, language: string): string {
     
     if (equipment && equipment.length > 0) {
       prompt += `\n🔧 Equipment:\n`;
-      equipment.forEach(item => prompt += `• ${item}\n`);
+      equipment.forEach((item: string) => prompt += `• ${item}\n`);
     }
     
     prompt += `\nThe description should:\n`;
