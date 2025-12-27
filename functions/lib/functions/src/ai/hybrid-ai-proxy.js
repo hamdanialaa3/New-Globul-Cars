@@ -185,7 +185,7 @@ function buildPrompt(vehicleData, language) {
             prompt += `✨ Състояние: ${condition}\n`;
         if (equipment && equipment.length > 0) {
             prompt += `\n🔧 Оборудване:\n`;
-            equipment.forEach(item => prompt += `• ${item}\n`);
+            equipment.forEach((item) => prompt += `• ${item}\n`);
         }
         prompt += `\nОписанието трябва да:\n`;
         prompt += `- Бъде на български език\n`;
@@ -211,7 +211,7 @@ function buildPrompt(vehicleData, language) {
             prompt += `✨ Condition: ${condition}\n`;
         if (equipment && equipment.length > 0) {
             prompt += `\n🔧 Equipment:\n`;
-            equipment.forEach(item => prompt += `• ${item}\n`);
+            equipment.forEach((item) => prompt += `• ${item}\n`);
         }
         prompt += `\nThe description should:\n`;
         prompt += `- Be in English\n`;
