@@ -33,6 +33,11 @@ export const sitemap = sitemapFunc.sitemap;
 export const syncCarsToGoogleAds = googleAdsSync.syncCarsToGoogleAds;
 export const syncCarsToFacebookAds = facebookAdsSync.syncCarsToFacebookAds;
 
-// AI Services (DeepSeek Integration)
-export const aiGenerateText = (await import('./ai/deepseek-proxy')).aiGenerateText;
-export const aiGenerateCarDescription = (await import('./ai/deepseek-proxy')).aiGenerateCarDescription;
+// AI Services (DeepSeek Integration - Legacy)
+import * as deepSeekProxy from './ai/deepseek-proxy';
+export const aiGenerateText = deepSeekProxy.aiGenerateText;
+export const aiGenerateCarDescription = deepSeekProxy.aiGenerateCarDescription;
+
+// AI Services (Hybrid System - Phase 4.1.2 - NEW) ✅
+import * as hybridAI from './ai/hybrid-ai-proxy';
+export const hybridAIProxy = hybridAI.hybridAIProxy;

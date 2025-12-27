@@ -48,41 +48,43 @@ const fadeIn = keyframes`
 const Overlay = styled.div<{ $isOpen: boolean }>`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4); /* Lighter background to show off blur */
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: transparent; /* No background - modal fills entire screen */
   z-index: 10000;
   display: ${props => props.$isOpen ? 'flex' : 'none'};
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 0;
+  margin: 0;
   animation: ${fadeIn} 0.3s ease-out;
-  overflow-y: auto;
+  overflow: hidden;
 `;
 
 const ModalContainer = styled.div<{ $isClosing: boolean }>`
   position: relative;
   background: ${({ theme }) => theme.mode === 'dark'
-    ? 'rgba(15, 23, 42, 0.9)'
-    : 'rgba(255, 255, 255, 0.9)'};
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid ${({ theme }) => theme.mode === 'dark'
-    ? 'rgba(255, 255, 255, 0.1)'
-    : 'rgba(255, 255, 255, 0.5)'};
-  border-radius: 24px;
-  max-width: 900px;
-  width: 100%;
-  max-height: 90vh;
+    ? '#0f172a'
+    : '#ffffff'};
+  border: none;
+  border-radius: 0;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow-x: hidden;
+  box-shadow: none;
   animation: ${props => props.$isClosing ? modalExit : modalEnter} 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  
-  @media (max-width: 640px) {
-    max-height: 100vh;
-    border-radius: 0;
-    height: 100%;
-  }
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   
   /* Custom scrollbar */
   &::-webkit-scrollbar {
@@ -147,12 +149,21 @@ const CloseButton = styled.button`
 
 const WizardContainer = styled.div`
   padding: 2.5rem 2rem 2rem 2rem;
-  min-height: 500px;
   position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* Allow flex shrinking */
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
 
+  @media (max-width: 768px) {
+    padding: 1.5rem 1rem;
+  }
+  
   @media (max-width: 640px) {
     padding: 1.5rem 1rem;
-    min-height: 100%;
   }
 `;
 
@@ -201,8 +212,8 @@ export const SellVehicleModal: React.FC<SellVehicleModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <Overlay $isOpen={isOpen} onClick={handleClose}>
-      <ModalContainer $isClosing={isClosing} onClick={(e) => e.stopPropagation()}>
+    <Overlay $isOpen={isOpen}>
+      <ModalContainer $isClosing={isClosing}>
         <CloseButton onClick={handleClose} aria-label={language === 'bg' ? 'Затвори' : 'Close'}>
           <X size={20} />
         </CloseButton>

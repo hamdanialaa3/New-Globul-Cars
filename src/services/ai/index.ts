@@ -8,6 +8,11 @@ export { aiQuotaService } from './ai-quota.service';
 export { projectKnowledgeService } from './project-knowledge.service';
 export { firebaseAIService } from './firebase-ai-callable.service';
 
+// Hybrid AI System (Phase 4.1 - NEW)
+export { aiRouterService } from './ai-router.service';
+export { aiCostOptimizerService } from './ai-cost-optimizer.service';
+export { deepSeekEnhancedService } from './deepseek-enhanced.service';
+
 // New Services (AI Completion)
 export { openAIService } from './openai.service';
 export { whisperService } from './whisper.service';

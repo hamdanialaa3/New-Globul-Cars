@@ -184,9 +184,16 @@ export interface CarListing {
     makeModelChangeCount: number;
   };
 
+  // ✅ Stories System (Phase 4.1 - Visual Immersion Protocol)
+  stories?: CarStory[]; // Instagram-style story videos (max 15s each)
+  hasStories?: boolean; // Quick flag for UI rendering (computed field)
+
   // Search in Description
   searchKeywords?: string; // Keywords for text search in description
 }
+
+// ==================== STORY TYPES IMPORT ====================
+import type { CarStory } from './story.types';
 
 export interface CarListingFormData extends Partial<CarListing> {
   // Form specific fields

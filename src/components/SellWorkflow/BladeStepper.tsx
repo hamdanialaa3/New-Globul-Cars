@@ -111,6 +111,8 @@ const StepItem = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
   transition: color 0.3s ease;
   border-radius: 12px;
   user-select: none;
+  min-width: 0;
+  max-width: 100%;
   
   color: ${props => {
     if (props.$isActive || props.$isCompleted) return 'var(--text-active)';
@@ -120,6 +122,7 @@ const StepItem = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
   @media (max-width: 768px) {
     justify-content: center;
     padding: 12px 5px;
+    gap: 8px;
   }
 `;
 
@@ -146,6 +149,9 @@ const StepIcon = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
 const StepInfo = styled.div`
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
 
   @media (max-width: 768px) {
     display: none;
@@ -156,6 +162,12 @@ const StepLabel = styled.span`
   font-size: 0.95rem;
   font-weight: 500;
   letter-spacing: 0.5px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  min-width: 0;
 `;
 
 const StepSubLabel = styled.span`
@@ -164,6 +176,11 @@ const StepSubLabel = styled.span`
   font-weight: 300;
   opacity: 0.6;
   margin-top: 2px;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 `;
 
 const BladeStepper: React.FC<BladeStepperProps> = ({ currentStep, totalSteps, onStepClick, stepsData }) => {

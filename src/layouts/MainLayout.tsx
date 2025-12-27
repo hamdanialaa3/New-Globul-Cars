@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { safeLazy } from '../utils/lazyImport';
 import PageTransition from '../components/PageTransition/PageTransition';
 
@@ -15,42 +15,63 @@ const FloatingAddButton = safeLazy(() => import('../components/FloatingAddButton
 const RobotChatIcon = safeLazy(() => import('../components/AI/RobotChatIcon'));
 
 export const MainLayout: React.FC = () => {
+    const location = useLocation();
+    const isSellPage = location.pathname === '/sell/auto';
+    
     return (
         <div className="main-layout" style={{
             minHeight: '100vh',
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            ...(isSellPage && {
+                overflow: 'hidden',
+                height: '100vh'
+            })
         }}>
-            <header role="banner">
-                <div className="desktop-header-only">
-                    <Suspense fallback={<div style={{ height: '70px' }} />}>
-                        <Header />
-                    </Suspense>
-                </div>
-                <div className="mobile-header-only">
-                    <Suspense fallback={<div style={{ height: '60px' }} />}>
-                        <MobileHeader />
-                    </Suspense>
-                </div>
-            </header>
+            {!isSellPage && (
+                <header role="banner">
+                    <div className="desktop-header-only">
+                        <Suspense fallback={<div style={{ height: '70px' }} />}>
+                            <Header />
+                        </Suspense>
+                    </div>
+                    <div className="mobile-header-only">
+                        <Suspense fallback={<div style={{ height: '60px' }} />}>
+                            <MobileHeader />
+                        </Suspense>
+                    </div>
+                </header>
+            )}
 
             <main
                 id="main-content"
                 role="main"
                 style={{
                     flex: 1,
-                    padding: '0',
-                    paddingTop: '80px',
-                    paddingBottom: '80px',
+                    padding: isSellPage ? '0' : '0',
+                    paddingTop: isSellPage ? '0' : '80px',
+                    paddingBottom: isSellPage ? '0' : '80px',
                     backgroundColor: 'transparent',
                     transition: 'background-color 0.3s ease',
-                    position: 'relative'
+                    position: 'relative',
+                    ...(isSellPage && {
+                        overflow: 'hidden',
+                        height: '100vh',
+                        padding: '0',
+                        margin: '0'
+                    })
                 }}
                 tabIndex={-1}
             >
                 <div className="page-container" style={{
                     backgroundColor: 'transparent',
-                    transition: 'background-color 0.3s ease'
+                    transition: 'background-color 0.3s ease',
+                    ...(isSellPage && {
+                        height: '100%',
+                        width: '100%',
+                        padding: '0',
+                        margin: '0'
+                    })
                 }}>
                     <PageTransition>
                         <Suspense fallback={null}>
@@ -60,22 +81,28 @@ export const MainLayout: React.FC = () => {
                 </div>
             </main>
 
-            <footer role="contentinfo">
-                <Suspense fallback={<div style={{ height: '300px' }} />}>
-                    <Footer />
-                </Suspense>
-            </footer>
+            {!isSellPage && (
+                <footer role="contentinfo">
+                    <Suspense fallback={<div style={{ height: '300px' }} />}>
+                        <Footer />
+                    </Suspense>
+                </footer>
+            )}
 
-            <Suspense fallback={<div style={{ height: '60px' }} />}>
-                <MobileBottomNav />
-            </Suspense>
+            {!isSellPage && (
+                <>
+                    <Suspense fallback={<div style={{ height: '60px' }} />}>
+                        <MobileBottomNav />
+                    </Suspense>
 
-            <Suspense fallback={null}>
-                <FloatingAddButton />
-            </Suspense>
-            <Suspense fallback={null}>
-                <RobotChatIcon />
-            </Suspense>
+                    <Suspense fallback={null}>
+                        <FloatingAddButton />
+                    </Suspense>
+                    <Suspense fallback={null}>
+                        <RobotChatIcon />
+                    </Suspense>
+                </>
+            )}
         </div>
     );
 };

@@ -39,16 +39,18 @@ export const WizardContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  min-height: 500px;
   width: 100%;
+  flex: 1;
+  min-height: 0;
 `;
 
 export const StepContent = styled.div<{ $direction: 'forward' | 'backward' }>`
   animation: ${props => props.$direction === 'forward' ? slideInRight : slideInLeft} 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  min-height: 400px;
   width: 100%;
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-height: 0;
 `;
 
 export const StepTitle = styled.h3`
@@ -68,6 +70,7 @@ export const NavigationButtons = styled.div`
   border-top: 1px solid var(--border);
   position: relative;
   flex-wrap: wrap;
+  z-index: 1;
 
   @media (max-width: 640px) {
     flex-direction: column-reverse;
@@ -85,12 +88,12 @@ export const NavigationButtons = styled.div`
   }
 `;
 
-export const ResetButton = styled.button`
+export const ResetButton = styled.button<{ disabled?: boolean }>`
   padding: 0.75rem 1.25rem;
   border-radius: 10px;
   font-weight: 600;
   font-size: 0.875rem;
-  cursor: pointer;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
@@ -99,6 +102,10 @@ export const ResetButton = styled.button`
   background: var(--bg-card);
   color: var(--text-secondary);
   position: relative;
+  white-space: nowrap;
+  line-height: 1.4;
+  min-height: 44px; /* Touch target size */
+  z-index: 10;
   
   &:hover:not(:disabled) {
     border-color: #ef4444;
@@ -114,6 +121,11 @@ export const ResetButton = styled.button`
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    pointer-events: none;
+  }
+  
+  &:not(:disabled) {
+    pointer-events: auto;
   }
   
   svg {
@@ -165,17 +177,23 @@ export const ResetButton = styled.button`
 
 export const ResetConfirmDialog = styled.div`
   position: absolute;
-  bottom: 100%;
+  bottom: calc(100% + 1rem);
   left: 0;
-  margin-bottom: 1rem;
   padding: 1rem;
   background: var(--bg-card);
   border: 2px solid var(--border);
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  z-index: 100;
+  z-index: 1000;
   min-width: 280px;
   animation: ${fadeIn} 0.2s ease-out;
+  
+  @media (max-width: 640px) {
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 250px;
+    bottom: calc(100% + 0.5rem);
+  }
 `;
 
 export const ResetConfirmTitle = styled.div`
@@ -243,6 +261,9 @@ export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   gap: 0.5rem;
   border: none;
   position: relative;
+  white-space: nowrap;
+  line-height: 1.4;
+  min-height: 44px; /* Touch target size */
   
   ${props => props.$variant === 'primary' ? `
     background: var(--accent-primary);
@@ -327,10 +348,18 @@ export const TimerBadge = styled.div<{ $warning: boolean }>`
   font-weight: 600;
   transition: all 0.3s ease;
   border: 1px solid ${props => props.$warning ? 'rgba(239, 68, 68, 0.2)' : 'var(--border)'};
+  white-space: nowrap;
+  line-height: 1.4;
 
   svg {
     width: 16px;
     height: 16px;
+    flex-shrink: 0;
+  }
+  
+  span {
+    white-space: nowrap;
+    line-height: 1.4;
   }
 `;
 
@@ -341,6 +370,17 @@ export const StatusWrapper = styled.div`
   padding: 0 10px;
   margin-bottom: 1rem;
   flex-wrap: wrap;
+  
+  /* Fix text wrapping and alignment */
+  & > * {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  
+  /* Allow text elements to wrap if needed */
+  & > div:not(:last-child) {
+    white-space: nowrap;
+  }
 `;
 
 export const DraftBadge = styled.div`
@@ -353,6 +393,8 @@ export const DraftBadge = styled.div`
   background: rgba(34, 197, 94, 0.1);
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
+  white-space: nowrap;
+  line-height: 1.4;
   
   &::before {
     content: '';
@@ -361,6 +403,7 @@ export const DraftBadge = styled.div`
     background: var(--success);
     border-radius: 50%;
     animation: pulse 2s infinite;
+    flex-shrink: 0;
   }
 
   @keyframes pulse {

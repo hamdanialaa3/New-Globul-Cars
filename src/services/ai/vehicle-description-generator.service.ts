@@ -7,6 +7,7 @@
 
 import { geminiChatService } from './gemini-chat.service';
 import { deepSeekService } from './DeepSeekService';
+import { aiRouterService } from './ai-router.service';
 import { logger } from '../logger-service';
 
 interface VehicleData {
@@ -27,11 +28,15 @@ interface DescriptionOptions {
   language: 'bg' | 'en';
   tone?: 'professional' | 'casual' | 'luxury';
   maxLength?: number;
+  userType?: 'private' | 'dealer' | 'company';
+  forceProvider?: 'gemini' | 'deepseek';
 }
 
 interface GenerationResult {
   description: string;
   generatedBy: 'ai' | 'template';
+  provider?: 'gemini' | 'deepseek';
+  cost?: number;
   language: string;
   characterCount: number;
 }
@@ -40,7 +45,7 @@ class VehicleDescriptionGeneratorService {
   private static instance: VehicleDescriptionGeneratorService;
 
   private constructor() {
-    // Use exported geminiChatService instance
+    // Use exported aiRouterService instance
   }
 
   static getInstance(): VehicleDescriptionGeneratorService {
@@ -51,33 +56,40 @@ class VehicleDescriptionGeneratorService {
   }
 
   /**
-   * Generate AI-powered vehicle description
+   * Generate AI-powered vehicle description (ENHANCED with AI Router)
    */
   async generateDescription(
     vehicleData: VehicleData,
     options: DescriptionOptions = { language: 'bg' }
   ): Promise<GenerationResult> {
     try {
-      logger.info('Generating vehicle description', {
+      logger.info('Generating vehicle description with AI Router', {
         make: vehicleData.make,
         model: vehicleData.model,
-        language: options.language
+        language: options.language,
+        userType: options.userType
       });
 
-      // Try AI generation first
-      const aiDescription = await this.generateWithAI(vehicleData, options);
+      // Use AI Router for smart provider selection
+      const result = await aiRouterService.generateDescription(vehicleData, {
+        language: options.language,
+        userType: options.userType,
+        forceProvider: options.forceProvider
+      });
 
-      if (aiDescription) {
-        return {
-          description: aiDescription,
-          generatedBy: 'ai',
-          language: options.language,
-          characterCount: aiDescription.length
-        };
-      }
+      return {
+        description: result.description,
+        generatedBy: result.generatedBy,
+        provider: result.provider,
+        cost: result.cost,
+        language: options.language,
+        characterCount: result.description.length
+      };
+
+    } catch (error) {
+      logger.error('AI Router generation failed, using fallback', error as Error, { vehicleData });
 
       // Fallback to template
-      logger.warn('AI generation failed, using template fallback');
       const templateDescription = this.generateWithTemplate(vehicleData, options);
 
       return {
@@ -85,18 +97,6 @@ class VehicleDescriptionGeneratorService {
         generatedBy: 'template',
         language: options.language,
         characterCount: templateDescription.length
-      };
-
-    } catch (error) {
-      logger.error('Description generation failed completely', error as Error, { vehicleData });
-
-      // Last resort: minimal template
-      const minimalDescription = this.getMinimalTemplate(vehicleData, options.language);
-      return {
-        description: minimalDescription,
-        generatedBy: 'template',
-        language: options.language,
-        characterCount: minimalDescription.length
       };
     }
   }

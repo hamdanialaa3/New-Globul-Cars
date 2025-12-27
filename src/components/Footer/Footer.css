@@ -6,6 +6,8 @@
   margin-top: auto;
   border-radius: 8px 8px 0 0;
   transition: background 0.3s ease, color 0.3s ease;
+  position: relative;
+  z-index: 100; /* Lower than modal overlay (10000) */
 }
 
 .footer-container {

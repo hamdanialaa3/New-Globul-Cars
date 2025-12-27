@@ -192,6 +192,22 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
     const [showMenu, setShowMenu] = useState(false);
     const [isPublishing, setIsPublishing] = useState(false);
     const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
+    
+    // Close menu when clicking outside
+    useEffect(() => {
+        if (!showMenu) return;
+        
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as HTMLElement;
+            if (!target.closest('[data-reset-menu]')) {
+                setShowMenu(false);
+                setShowResetConfirm(false);
+            }
+        };
+        
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [showMenu]);
 
     // Handlers
     const handleNext = () => {
@@ -417,54 +433,22 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
                 </DraftBadge>
 
                 {currentUser && (
-                    <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
+                    <div style={{ 
+                        marginLeft: 'auto', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '0.5rem', 
+                        fontSize: '0.75rem', 
+                        color: 'var(--text-tertiary)',
+                        whiteSpace: 'nowrap',
+                        lineHeight: '1.4'
+                    }}>
                         <Cloud size={14} />
                         {language === 'bg' ? 'Облачна чернова' : 'Cloud Sync Active'}
                     </div>
                 )}
             </StatusWrapper>
 
-            {showMenu && (
-                <ResetConfirmDialog>
-                    {showResetConfirm ? (
-                        <>
-                            <ResetConfirmTitle>
-                                <AlertTriangle size={18} />
-                                {language === 'bg' ? 'Сигурни ли сте?' : 'Are you sure?'}
-                            </ResetConfirmTitle>
-                            <ResetConfirmText>
-                                {language === 'bg'
-                                    ? 'Всички въведени данни ще бъдат изтрити.'
-                                    : 'All entered data will be deleted.'}
-                            </ResetConfirmText>
-                            <ResetConfirmButtons>
-                                <ConfirmButton $variant="cancel" onClick={() => setShowResetConfirm(false)}>
-                                    {language === 'bg' ? 'Отказ' : 'Cancel'}
-                                </ConfirmButton>
-                                <ConfirmButton
-                                    $variant="danger"
-                                    onClick={() => {
-                                        resetWizard();
-                                        setShowResetConfirm(false);
-                                        setShowMenu(false);
-                                        if (onCancel) onCancel();
-                                    }}
-                                >
-                                    {language === 'bg' ? 'Изтрий' : 'Delete'}
-                                </ConfirmButton>
-                            </ResetConfirmButtons>
-                        </>
-                    ) : (
-                        <Button
-                            onClick={() => setShowResetConfirm(true)}
-                            style={{ width: '100%', justifyContent: 'flex-start', background: 'transparent', border: 'none', padding: '0.5rem 0', color: '#ef4444' }}
-                        >
-                            <RotateCcw size={16} style={{ marginRight: '8px' }} />
-                            {language === 'bg' ? 'Рестарт на формата' : 'Reset Form'}
-                        </Button>
-                    )}
-                </ResetConfirmDialog>
-            )}
 
             <BladeStepper
                 stepsData={stepperSteps}
@@ -478,14 +462,74 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
             </StepContent>
 
             <NavigationButtons>
-                <ResetButton
-                    onClick={() => setShowMenu(!showMenu)}
-                    disabled={isPublishing}
-                    title={language === 'bg' ? 'Опции' : 'Options'}
-                >
-                    <RotateCcw />
-                    <span>{language === 'bg' ? 'Опции' : 'Options'}</span>
-                </ResetButton>
+                <div style={{ position: 'relative' }} data-reset-menu>
+                    <ResetButton
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (!isPublishing) {
+                                setShowMenu(!showMenu);
+                                setShowResetConfirm(false);
+                            }
+                        }}
+                        disabled={isPublishing}
+                        title={language === 'bg' ? 'Изтрий черновата и започни отново' : 'Delete draft and start over'}
+                        type="button"
+                    >
+                        <RotateCcw />
+                        <span>{language === 'bg' ? 'Изтрий черновата' : 'Reset Form'}</span>
+                    </ResetButton>
+                    
+                    {showMenu && (
+                        <ResetConfirmDialog onClick={(e) => e.stopPropagation()} data-reset-menu>
+                            {showResetConfirm ? (
+                                <>
+                                    <ResetConfirmTitle>
+                                        <AlertTriangle size={18} />
+                                        {language === 'bg' ? 'Сигурни ли сте?' : 'Are you sure?'}
+                                    </ResetConfirmTitle>
+                                    <ResetConfirmText>
+                                        {language === 'bg'
+                                            ? 'Всички въведени данни ще бъдат изтрити.'
+                                            : 'All entered data will be deleted.'}
+                                    </ResetConfirmText>
+                                    <ResetConfirmButtons>
+                                        <ConfirmButton $variant="cancel" onClick={() => {
+                                            setShowResetConfirm(false);
+                                            setShowMenu(false);
+                                        }}>
+                                            {language === 'bg' ? 'Отказ' : 'Cancel'}
+                                        </ConfirmButton>
+                                        <ConfirmButton
+                                            $variant="danger"
+                                            onClick={async () => {
+                                                await resetWizard();
+                                                setShowResetConfirm(false);
+                                                setShowMenu(false);
+                                                goToStep(1);
+                                                if (onCancel) onCancel();
+                                            }}
+                                        >
+                                            {language === 'bg' ? 'Изтрий' : 'Delete'}
+                                        </ConfirmButton>
+                                    </ResetConfirmButtons>
+                                </>
+                            ) : (
+                                <Button
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setShowResetConfirm(true);
+                                    }}
+                                    style={{ width: '100%', justifyContent: 'flex-start', background: 'transparent', border: 'none', padding: '0.5rem 0', color: '#ef4444' }}
+                                >
+                                    <RotateCcw size={16} style={{ marginRight: '8px' }} />
+                                    {language === 'bg' ? 'Рестарт на формата' : 'Reset Form'}
+                                </Button>
+                            )}
+                        </ResetConfirmDialog>
+                    )}
+                </div>
 
                 <div style={{ display: 'flex', gap: '1rem' }}>
                     {currentStep > 1 && (
