@@ -59,6 +59,7 @@
     "start:dev": "cross-env NODE_OPTIONS=--max_old_space_size=4096 PORT=3000 HOST=localhost BROWSER=none npm run start",
     "prebuild": "node scripts/ban-console.js",
     "build": "craco build",
+    "check-security": "node scripts/check-env-files.js",
     "ci:strict": "npm ci --no-audit --no-fund",
     "dev:vite": "npx vite",
     "build:vite": "npx vite build",
