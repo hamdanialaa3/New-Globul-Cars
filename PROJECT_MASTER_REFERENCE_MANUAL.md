@@ -1,9 +1,9 @@
 # Project Master Reference Manual (The Bible)
 ## The Source of Truth for "Bulgarski Mobili" (New Globul Cars)
 
-> **Version**: 3.3.0 (The "Constitution" Update)
+> **Version**: 3.4.0 (Phase 1 Complete + Performance Update)
 > **Last Updated**: December 26, 2025
-> **Status**: Production Core / Beta Advanced Features
+> **Status**: Production Core / Phase 1 B2B Features Complete
 > **Constitution**: Strictly Compliant with `PROJECT_CONSTITUTION.md`
 
 This document is the **absolute reference** for the entire codebase. It describes every folder, feature, service, and data model. If it's in the code, it's described here.
@@ -38,15 +38,20 @@ src/
 ├── assets/                 # Static assets (images, fonts, svg icons)
 ├── components/             # Reusable UI components
 │   ├── admin/              # Components for Admin Dashboard
+│   ├── analytics/          # B2B Analytics Dashboard
 │   ├── common/             # Buttons, Inputs, Modals, Cards
 │   ├── guards/             # Route Guards (AuthGuard, NumericIdGuard)
 │   ├── messaging/          # Chat bubbles, Inboxes
+│   ├── PageTransition/     # Page transition animations
+│   ├── Profile/            # Profile-related components
 │   ├── SellWorkflow/       # The massive Car Selling Wizard components
+│   ├── SmartDescriptionGenerator/ # AI description generator UI
 │   └── shared/             # Shared utilities
 ├── contexts/               # Global State Providers
 │   ├── AuthProvider.tsx    # User session management
 │   ├── ThemeContext.tsx    # Light/Dark mode logic
-│   └── LanguageContext.tsx # BG/EN translation logic
+│   ├── LanguageContext.tsx # BG/EN translation logic
+│   └── ProfileTypeContext.tsx # Profile type (private/dealer/company) + permissions
 ├── features/               # Self-contained business modules
 │   ├── car-listing/        # All logic for creating/editing cars
 │   ├── team/               # Team Management logic (Company Plan)
@@ -60,6 +65,9 @@ src/
 │   ├── MainRoutes.tsx      # The central route registry
 │   └── NumericProfileRouter.tsx # Nested routes for profiles
 ├── services/               # The "Brain" - API calls & Business Logic
+│   ├── ai/                 # AI services (Gemini, description generator)
+│   ├── car/                # Unified Car Service (queries, mutations, types)
+│   ├── company/            # B2B services (CSV import, team management)
 │   ├── numeric-car-system.service.ts # Core ID logic
 │   ├── UnifiedSearchService.ts       # Search engine
 │   └── ... (100+ services)
@@ -122,7 +130,8 @@ The most complex feature in the frontend. Controlled by `WizardOrchestrator.tsx`
     3.  **Equipment**: 100+ checkboxes for features (Safety, Comfort).
     4.  **Images**: Drag & drop uploader with compression (handled by `ImageStorageService`).
     5.  **Pricing**: Price input, currency (EUR default), location.
-    6.  **Description**: AI-Powered text generator.
+    6.  **Description**: AI-Powered text generator (SmartDescriptionGenerator with Gemini AI).
+    6.5. **Smart Description** (Optional): AI-generated professional descriptions.
     7.  **Contact**: Review & Publish.
 *   **Persistence**: Uses `UnifiedWorkflowPersistenceService` to save drafts to `IndexedDB` every 30 seconds.
 *   **Publishing**:
@@ -190,9 +199,17 @@ All routes are defined in `src/routes/MainRoutes.tsx`.
 
 ### B2B Pages (Dealers & Companies)
 *   `/organization/dashboard` - B2B Overview.
-*   `/company/team` - **TeamManagement**: Add/Remove staff (UI Placeholder).
-*   `/company/analytics` - **Analytics**: View/Click graphs (UI Placeholder).
+*   `/company/team` - **TeamManagement**: Full team management with invite system (FULLY IMPLEMENTED).
+*   `/company/analytics` - **CompanyAnalyticsDashboard**: Advanced analytics with real data (FULLY IMPLEMENTED).
+*   `/profile/:userId/my-ads` - Bulk Upload Wizard for CSV import (Dealer/Company only).
 *   `/billing` - Invoices & Subscription plans.
+
+### Profile Pages (Numeric ID Routing)
+*   `/profile/:sellerNumericId` - Main profile page with tabs (Overview, My-Ads, Campaigns, Analytics, Settings, Consultations).
+*   `/profile/:sellerNumericId/my-ads` - User's car listings with bulk upload.
+*   `/profile/:sellerNumericId/campaigns` - Advertising campaigns.
+*   `/profile/:sellerNumericId/analytics` - Profile analytics dashboard.
+*   `/profile/:sellerNumericId/settings` - Profile settings.
 
 ### Admin Pages (`/admin/*`)
 *   `/admin/dashboard` - Global stats.
@@ -205,11 +222,46 @@ All routes are defined in `src/routes/MainRoutes.tsx`.
 
 The logic is decoupled from UI. Key services include:
 
+### Core Services
 *   **`AuthService`**: Wraps Firebase Auth. Handles Login/Register/Logout.
 *   **`ImageUploadService`**: Handles compression, resizing, and uploading to Firebase Storage.
 *   **`FavoritesService`**: Manages the "Heart" button functionality.
 *   **`MessagingService`**: Real-time chat using Firestore listeners (`onSnapshot`).
 *   **`NotificationService`**: Sends push notifications & in-app alerts.
+
+### Car Services (Unified Architecture)
+*   **`UnifiedCarService`**: Main orchestrator for all car operations.
+    *   Location: `src/services/car/unified-car-service.ts`
+    *   Delegates to: `unified-car-queries.ts` (read), `unified-car-mutations.ts` (write)
+*   **`unified-car-queries.ts`**: Optimized Firestore queries.
+    *   `getFeaturedCars(limit)`: Featured cars for homepage.
+    *   `getNewCarsLast24Hours(limit)`: Direct Firestore query for last 24h cars.
+    *   `searchCars(filters, limit)`: Advanced search with filters.
+    *   `getCarById(id)`: Single car fetch.
+*   **`unified-car-mutations.ts`**: Create, update, delete operations.
+*   **`numeric-car-system.service.ts`**: Atomic numeric ID assignment.
+
+### B2B Services (Phase 1 - COMPLETE)
+*   **`csv-import-service.ts`**: CSV parsing and bulk car import.
+    *   Location: `src/services/company/csv-import-service.ts`
+    *   Features: Column mapping, validation, batch creation, error reporting.
+    *   Used by: `BulkUploadWizard` component.
+*   **`team-management-service.ts`**: Team member management for Company accounts.
+    *   Location: `src/services/company/team-management-service.ts`
+    *   Features: Invite system, role-based access (admin/agent/viewer), permissions.
+    *   Collections: `team_invitations`, `users/{companyId}/team_members`.
+
+### AI Services
+*   **`vehicle-description-generator.service.ts`**: AI-powered description generation.
+    *   Location: `src/services/ai/vehicle-description-generator.service.ts`
+    *   Uses: Gemini Pro (via `gemini-chat.service.ts`)
+    *   Features: 3-level fallback (AI → Template → Minimal), Bulgarian/English support.
+    *   Component: `SmartDescriptionGenerator` (UI wrapper).
+
+### Performance Services
+*   **`PageTransition`**: High-performance page transitions (200ms fade/slide).
+    *   Location: `src/components/PageTransition/PageTransition.tsx`
+    *   Features: GPU-accelerated, respects `prefers-reduced-motion`.
 
 ---
 
@@ -235,26 +287,184 @@ The system is **fully integrated** with Google Cloud & Firebase.
 *   **Dynamic**: Users, Listings, Messages, Favorites (Firestore).
 *   **Static**: Car Brands/Models (`car-brands-structured.json`). *Note: This is an intentional architectural choice for performance.*
 
+### 6.5 Firebase Cloud Functions
+*   **Location**: `functions/src/`
+*   **Functions**:
+    *   `ai-functions.ts`: Gemini AI integration (chat, price suggestion, profile analysis).
+    *   `image-optimizer.ts`: Image processing and optimization.
+    *   `notifications/`: Real-time notification triggers.
+    *   `sitemap.ts`: Dynamic sitemap generation.
+    *   `merchant-feed.ts`: Product feed for Google Merchant Center.
+    *   `facebook-ads-sync.ts`: Facebook Ads integration.
+    *   `google-ads-sync.ts`: Google Ads integration.
+*   **Runtime**: Node.js 20
+*   **Deployment**: `npm run deploy:functions`
+
 ---
 
-## 🛑 7. Missing Features (The Status Reality)
+## ✅ 7. Phase 1 Features Status (December 2025)
 
-While the menu items exist, the following features are **NOT yet fully implemented**:
+### ✅ COMPLETED (Phase 1 - December 2025)
 
-1.  **CSV Import**: There is no code to parse CSV files and bulk-create cars.
-2.  **Team Logic**: The `TeamManagement` page is a UI shell. It does not actually create sub-users in Firebase yet.
-3.  **Advanced Analytics**: The `CompanyAnalytics` page is a placeholder. It currently displays dummy data or "Coming Soon".
+1.  **CSV Import Service** (`src/services/company/csv-import-service.ts`)
+    *   ✅ Full CSV parsing and validation.
+    *   ✅ Column mapping system.
+    *   ✅ Batch car creation with error reporting.
+    *   ✅ Integration: `BulkUploadWizard` component in Profile My-Ads tab.
+    *   ✅ Files: `BulkUploadWizard.tsx`, `BulkUploadWizard.styles.ts`, `BulkUploadWizard.steps.tsx`
+
+2.  **Team Management System** (`src/services/company/team-management-service.ts`)
+    *   ✅ Complete invite system with invite codes.
+    *   ✅ Role-based access control (admin/agent/viewer).
+    *   ✅ Firestore collections: `team_invitations`, `users/{companyId}/team_members`.
+    *   ✅ UI: `TeamManagementPage` fully functional.
+    *   ✅ Firestore rules implemented for security.
+
+3.  **Company Analytics Dashboard** (`src/components/analytics/B2BAnalyticsDashboard.tsx`)
+    *   ✅ Real analytics data from Firebase Functions.
+    *   ✅ Integration: `CompanyAnalyticsDashboard` page routes to B2BAnalyticsDashboard.
+    *   ✅ Features: Charts, metrics, export functionality.
+    *   ✅ Cloud Function: `getB2BAnalytics` callable function.
+
+4.  **Page Transitions** (`src/components/PageTransition/PageTransition.tsx`)
+    *   ✅ High-performance fade/slide animations (200ms).
+    *   ✅ GPU-accelerated, respects `prefers-reduced-motion`.
+    *   ✅ Integrated into `MainLayout.tsx`.
+
+5.  **Smart AI Description Generator** (`src/services/ai/vehicle-description-generator.service.ts`)
+    *   ✅ Gemini AI integration for descriptions.
+    *   ✅ 3-level fallback system (AI → Template → Minimal).
+    *   ✅ Bulgarian/English support.
+    *   ✅ Integration: Sell Wizard, Edit Page, Public View.
+
+6.  **Homepage Performance Optimizations**
+    *   ✅ Lazy loading for homepage sections.
+    *   ✅ Deferred brand loading (500ms delay).
+    *   ✅ Optimized Firestore queries (`getNewCarsLast24Hours` with direct where clauses).
+    *   ✅ Background transparency (40% opacity) for all sections.
+    *   ✅ Fixed Firestore listener cleanup (isActive flags, proper error handling).
+
+### 🚧 PENDING / IN PROGRESS
+
+1.  **Pricing Intelligence Service**: Market price analysis (planned in `Deep_copailot_plan_B.md`).
+2.  **SEO Prerendering**: Category pages and dynamic routes (planned).
+3.  **API Access for Dealers**: REST API endpoints (planned).
+4.  **Bulk Edit Operations**: Multi-select car editing (planned).
 
 ---
 
-## 📜 7. Developer Guidelines (Constitution Enforced)
+## 📜 8. Developer Guidelines (Constitution Enforced)
 
 1.  **Max 300 Lines**: Every file MUST be under 300 lines. Split logic if it grows.
+    *   Example: `BulkUploadWizard` split into 3 files (main, styles, steps).
 2.  **No Text Emojis**: Use Lucide-React icons only. No 🚗 or ⭐ in text.
 3.  **Strict Typing**: No `any`. Define interfaces in `src/types/`.
 4.  **No UUID in URL**: usage of `useParams()` must expect `numericId`, not `uid`.
+    *   Correct: `/car/80/1`, `/profile/80`
+    *   Forbidden: `/car/UUID-1234`, `/profile/abc123xyz`
 5.  **Styled Components**: Write CSS inside the component file using `styled.div`.
+6.  **File Deletion Protocol**: Move deleted files to `DDD/` folder, never delete permanently.
+7.  **Performance First**: Use lazy loading, deferred queries, GPU-accelerated animations.
+8.  **Firestore Listeners**: Always implement `isActive` flags and proper cleanup in `useEffect`.
+
+## 🏠 9. Homepage Structure (Optimized)
+
+The homepage (`src/pages/01_main-pages/home/HomePage/`) consists of:
+
+*   **NewHeroSection.tsx**: Main hero with search bar (40% transparency background).
+*   **FeaturedCarsSection.tsx**: Featured cars grid.
+*   **NewCarsSection.tsx**: Last 24 hours cars (optimized query: `getNewCarsLast24Hours`).
+*   **LatestCarsSection.tsx**: Latest listings.
+*   **VehicleClassificationsSection.tsx**: Vehicle type categories.
+*   **CategoriesSection.tsx**: Popular categories.
+*   **PopularBrandsSection.tsx**: Brand logos with opacity effects.
+*   **MostDemandedCategoriesSection.tsx**: Most in-demand categories.
+*   **GridSectionWrapper.tsx**: Wrapper with animated backgrounds (40% transparency).
+
+**Performance Optimizations**:
+*   Lazy loading with `React.lazy` and `Suspense`.
+*   Deferred brand loading (500ms delay in `SearchWidget`).
+*   Direct Firestore queries with `where` clauses (no client-side filtering for new cars).
+*   Background gradients with 40% opacity (`rgba()` values).
+
+## 🎨 10. Profile System Architecture
+
+### Profile Page Structure (`src/pages/03_user-pages/profile/ProfilePage/`)
+
+**Main Component**: `index.tsx` (ProfilePageWrapper orchestrates tabs)
+
+**Tabs** (via `TabNavigation.tsx`):
+1.  **Overview** (`ProfileOverview.tsx`): Profile dashboard, completion ring, stats.
+2.  **My-Ads** (`ProfileMyAds.tsx`): Car listings + Bulk Upload Wizard button.
+3.  **Campaigns** (`ProfileCampaigns.tsx`): Advertising campaigns.
+4.  **Analytics** (`ProfileAnalytics.tsx`): Profile-specific analytics.
+5.  **Settings** (`SettingsTab.tsx`): Privacy, dealership info, profile settings.
+6.  **Consultations** (`ConsultationsTab.tsx`): Expert consultation system.
+
+**Hooks**:
+*   `useProfile.ts`: Main profile hook (data + actions).
+*   `useProfileData.ts`: Data fetching with Firestore listener.
+*   `useProfileActions.ts`: Actions (follow, message, etc.).
+
+**Components**:
+*   `BulkUploadWizard`: CSV import wizard (3 files: main, styles, steps).
+*   `PrivateProfile.tsx`, `DealerProfile.tsx`, `CompanyProfile.tsx`: Type-specific views.
+
+**Context Integration**:
+*   `ProfileTypeContext.tsx`: Provides `profileType`, `planTier`, `permissions`, `theme`.
+*   Permissions calculated via `getPermissions(profileType, planTier)`.
+*   Real-time listener on `users/{uid}` document.
 
 ---
 
-**End of Reference Manual** (Verified Dec 26, 2025)
+## 📦 11. Key Components Reference
+
+### Page Transitions
+*   **Component**: `PageTransition` (`src/components/PageTransition/PageTransition.tsx`)
+*   **Usage**: Wraps `<Outlet />` in `MainLayout.tsx`
+*   **Features**: 200ms fade/slide, GPU-accelerated, respects `prefers-reduced-motion`
+
+### Bulk Upload Wizard
+*   **Component**: `BulkUploadWizard` (`src/pages/03_user-pages/profile/ProfilePage/components/BulkUploadWizard.tsx`)
+*   **Files**: Main component (150 lines), Styles (150 lines), Steps (200 lines)
+*   **Service**: `csv-import-service.ts`
+*   **Access**: Dealer/Company accounts only (via `permissions.canBulkUpload`)
+
+### B2B Analytics Dashboard
+*   **Component**: `B2BAnalyticsDashboard` (`src/components/analytics/B2BAnalyticsDashboard.tsx`)
+*   **Page**: `CompanyAnalyticsDashboard` (`src/pages/09_dealer-company/CompanyAnalyticsDashboard.tsx`)
+*   **Access**: Company accounts only
+*   **Data Source**: Firebase Cloud Function `getB2BAnalytics`
+
+### Smart Description Generator
+*   **Component**: `SmartDescriptionGenerator` (`src/components/SmartDescriptionGenerator/SmartDescriptionGenerator.tsx`)
+*   **Service**: `vehicle-description-generator.service.ts`
+*   **Integration Points**: Sell Wizard (Step 6.5), Edit Page, Public View
+*   **AI**: Gemini Pro via `gemini-chat.service.ts`
+
+### Team Management
+*   **Page**: `TeamManagementPage` (`src/pages/06_admin/TeamManagement/TeamManagementPage.tsx`)
+*   **Service**: `team-management-service.ts`
+*   **Access**: Company accounts only
+*   **Features**: Invite members, role management, permissions matrix
+
+## 🔍 12. Performance Optimizations (December 2025)
+
+### Firestore Query Optimizations
+*   **Direct Queries**: `getNewCarsLast24Hours` uses `where('createdAt', '>=', timestamp24HoursAgo)` at database level.
+*   **Compound Indexes**: Firestore indexes defined in `firestore.indexes.json`.
+*   **Listener Cleanup**: All `onSnapshot` listeners use `isActive` flags to prevent state updates after unmount.
+
+### Homepage Optimizations
+*   **Lazy Loading**: Sections loaded with `React.lazy` and `Suspense`.
+*   **Deferred Loading**: Brand data loaded 500ms after page load.
+*   **Background Opacity**: All sections use 40% transparent backgrounds (`rgba()`).
+
+### Animation Performance
+*   **GPU Acceleration**: `PageTransition` uses `transform: translateZ(0)` and `will-change`.
+*   **Reduced Motion**: All animations respect `prefers-reduced-motion` media query.
+*   **Duration**: Page transitions limited to 200ms (ultra-fast).
+
+---
+
+**End of Reference Manual** (Verified Dec 26, 2025 - Phase 1 Complete)

@@ -25,7 +25,7 @@ const BackgroundImage = styled.div<{ $imageUrl: string }>`
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url(${props => props.$imageUrl});
+  background-image: url("${props => props.$imageUrl}");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -105,11 +105,11 @@ interface BusinessBackgroundProps {
   isBusinessAccount: boolean;
 }
 
-const BusinessBackground: React.FC<BusinessBackgroundProps> = ({ 
-  isBusinessAccount 
+const BusinessBackground: React.FC<BusinessBackgroundProps> = ({
+  isBusinessAccount
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  
+
   // Business background images
   const businessImages = [
     '/assets/images/Pic/pexels-boris-dahm-2150922402-31729752.jpg',
@@ -126,13 +126,13 @@ const BusinessBackground: React.FC<BusinessBackgroundProps> = ({
   // Rotate background images every 10 seconds
   useEffect(() => {
     if (!isBusinessAccount) return;
-    
+
     const interval = setInterval(() => {
-      setCurrentImageIndex(prev => 
+      setCurrentImageIndex(prev =>
         (prev + 1) % businessImages.length
       );
     }, 10000);
-    
+
     return () => clearInterval(interval);
   }, [isBusinessAccount]);
 
@@ -140,21 +140,21 @@ const BusinessBackground: React.FC<BusinessBackgroundProps> = ({
     logger.info('🏢 BusinessBackground not shown - not a business account');
     return null;
   }
-  
+
   logger.info('🏢 BusinessBackground rendering with image:', businessImages[currentImageIndex]);
 
   return (
     <>
       <BackgroundContainer>
-        <BackgroundImage 
+        <BackgroundImage
           $imageUrl={businessImages[currentImageIndex]}
           key={currentImageIndex}
         />
       </BackgroundContainer>
-      
+
       <LEDStrip />
       <LEDStripBottom />
-      
+
       <BusinessBadge>
         <Building2 size={14} />
         BUSINESS ACCOUNT

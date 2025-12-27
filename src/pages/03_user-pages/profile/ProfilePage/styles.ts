@@ -193,7 +193,7 @@ const ledFrame = css`
       box-shadow:
         0 0 10px var(--led-glow),
         0 0 18px var(--led-glow);
-      opacity: calc(0.85 * (var(--led-color, transparent) != transparent));
+      opacity: 0.85; 
     }
     &::after {
       animation: ${ledSweep} 1.9s ease-in-out infinite;
@@ -224,12 +224,16 @@ export const ProfileHeader = styled.header`
     /* Card-based layout (Airbnb pattern) */
     background: var(--bg-card);
     
-    html[data-theme="dark"] & {
-      background: #1e293b;
-    }
     border-radius: 16px;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
+  }
+
+  /* Specific dark mode override for mobile if needed, wrapped correctly */
+  @media (max-width: 768px) {
+    html[data-theme="dark"] & {
+      background: #1e293b;
+    }
   }
   
   @media (max-width: 480px) {
@@ -609,9 +613,9 @@ export const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' |
         `;
       case 'danger':
         return css`
-          background-color: ${({ theme }) => theme.colors.warning || '#ef4444'};
+          background-color: ${theme.colors.warning || '#ef4444'};
           color: #fff;
-          border-color: ${({ theme }) => theme.colors.warning || '#ef4444'};
+          border-color: ${theme.colors.warning || '#ef4444'};
 
           &:hover:not(:disabled) {
             background-color: #dc2626;

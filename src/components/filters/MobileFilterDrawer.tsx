@@ -4,7 +4,7 @@ import { X } from 'lucide-react';
 import { ResponsiveButton } from '../ui/ResponsiveButton';
 
 // Backdrop overlay
-const Backdrop = styled.div<{ isOpen: boolean }>`
+const Backdrop = styled.div<{ $isOpen: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
@@ -12,13 +12,13 @@ const Backdrop = styled.div<{ isOpen: boolean }>`
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
   z-index: 999;
-  opacity: ${props => props.isOpen ? 1 : 0};
-  visibility: ${props => props.isOpen ? 'visible' : 'hidden'};
+  opacity: ${props => props.$isOpen ? 1 : 0};
+  visibility: ${props => props.$isOpen ? 'visible' : 'hidden'};
   transition: opacity 0.3s ease, visibility 0.3s ease;
 `;
 
 // Drawer container
-const DrawerContainer = styled.div<{ isOpen: boolean }>`
+const DrawerContainer = styled.div<{ $isOpen: boolean }>`
   position: fixed;
   bottom: 0;
   left: 0;
@@ -28,7 +28,7 @@ const DrawerContainer = styled.div<{ isOpen: boolean }>`
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   max-height: 90vh;
-  transform: translateY(${props => props.isOpen ? '0' : '100%'});
+  transform: translateY(${props => props.$isOpen ? '0' : '100%'});
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
@@ -246,7 +246,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
     } else {
       document.body.style.overflow = '';
     }
-    
+
     return () => {
       document.body.style.overflow = '';
     };
@@ -298,9 +298,9 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
 
   return (
     <>
-      <Backdrop isOpen={isOpen} onClick={onClose} />
-      
-      <DrawerContainer isOpen={isOpen}>
+      <Backdrop $isOpen={isOpen} onClick={onClose} />
+
+      <DrawerContainer $isOpen={isOpen}>
         {/* Header */}
         <DrawerHeader>
           <h3>

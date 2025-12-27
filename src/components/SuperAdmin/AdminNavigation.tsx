@@ -11,7 +11,8 @@ import {
   Activity,
   Facebook,
   FolderOpen,
-  Network
+  Network,
+  Sparkles
 } from 'lucide-react';
 
 interface AdminNavigationProps {
@@ -93,7 +94,8 @@ const AdminNavigation: React.FC<AdminNavigationProps> = ({ activeTab, onTabChang
     { id: 'permissions', label: 'Permissions', icon: Shield },
     { id: 'audit', label: 'Audit', icon: FileText },
     { id: 'notifications', label: 'Notifications', icon: Bell },
-    { id: 'content', label: 'Content', icon: Settings }
+    { id: 'content', label: 'Content', icon: Settings },
+    { id: 'ai', label: 'DeepSeek AI', icon: Sparkles }
   ];
 
   return (

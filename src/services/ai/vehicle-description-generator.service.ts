@@ -6,6 +6,7 @@
  */
 
 import { geminiChatService } from './gemini-chat.service';
+import { deepSeekService } from './DeepSeekService';
 import { logger } from '../logger-service';
 
 interface VehicleData {
@@ -57,15 +58,15 @@ class VehicleDescriptionGeneratorService {
     options: DescriptionOptions = { language: 'bg' }
   ): Promise<GenerationResult> {
     try {
-      logger.info('Generating vehicle description', { 
-        make: vehicleData.make, 
+      logger.info('Generating vehicle description', {
+        make: vehicleData.make,
         model: vehicleData.model,
-        language: options.language 
+        language: options.language
       });
 
       // Try AI generation first
       const aiDescription = await this.generateWithAI(vehicleData, options);
-      
+
       if (aiDescription) {
         return {
           description: aiDescription,
@@ -78,7 +79,7 @@ class VehicleDescriptionGeneratorService {
       // Fallback to template
       logger.warn('AI generation failed, using template fallback');
       const templateDescription = this.generateWithTemplate(vehicleData, options);
-      
+
       return {
         description: templateDescription,
         generatedBy: 'template',
@@ -88,7 +89,7 @@ class VehicleDescriptionGeneratorService {
 
     } catch (error) {
       logger.error('Description generation failed completely', error as Error, { vehicleData });
-      
+
       // Last resort: minimal template
       const minimalDescription = this.getMinimalTemplate(vehicleData, options.language);
       return {
@@ -101,7 +102,7 @@ class VehicleDescriptionGeneratorService {
   }
 
   /**
-   * Generate description using Gemini AI
+   * Generate description using DeepSeek AI
    */
   private async generateWithAI(
     vehicleData: VehicleData,
@@ -109,22 +110,25 @@ class VehicleDescriptionGeneratorService {
   ): Promise<string | null> {
     try {
       const prompt = this.buildPrompt(vehicleData, options);
-      
-      const response = await geminiChatService.chat(prompt, {
-        projectContext: 'Bulgarian automotive marketplace - professional car listing descriptions',
-        tone: options.tone || 'professional'
+
+      const response = await deepSeekService.generateText({
+        prompt: prompt,
+        model: 'deepseek-chat',
+        temperature: 0.7,
+        systemMessage: options.language === 'bg'
+          ? 'Вие сте експерт в продажбата на автомобили в България.'
+          : 'You are an expert car sales consultant.'
       });
 
-      // Validate response
-      if (response && response.length >= 100 && response.length <= 1000) {
-        return this.cleanAIResponse(response);
+      if (response && response.success && response.content) {
+        return this.cleanAIResponse(response.content);
       }
 
-      logger.warn('AI response invalid length', { length: response?.length });
+      logger.warn('DeepSeek response invalid', { response });
       return null;
 
     } catch (error) {
-      logger.error('Gemini AI call failed', error as Error);
+      logger.error('DeepSeek AI call failed', error as Error);
       return null;
     }
   }

@@ -26,120 +26,120 @@ const SectionContainer = styled.div<{
   min-height: 400px;
   overflow: hidden;
   
-  /* Ultra Professional Gradient Backgrounds - Automotive Evolution Theme */
+  /* Ultra Professional Gradient Backgrounds - Automotive Evolution Theme - 40% Transparency */
   background: ${props => {
     const { $isDark, $variant } = props;
     
-    // Dark Mode Backgrounds
+    // Dark Mode Backgrounds - 40% opacity
     if ($isDark) {
       switch($variant) {
         case 'vintage':
           return `
-            radial-gradient(circle at 20% 80%, rgba(139, 69, 19, 0.15) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(184, 134, 11, 0.12) 0%, transparent 50%),
+            radial-gradient(circle at 20% 80%, rgba(139, 69, 19, 0.06) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(184, 134, 11, 0.048) 0%, transparent 50%),
             linear-gradient(135deg, 
-              #0a0a0a 0%, 
-              #1a1410 20%,
-              #0f0f0f 40%,
-              #1a1a1a 60%,
-              #0a0a0a 100%
+              rgba(10, 10, 10, 0.4) 0%, 
+              rgba(26, 20, 16, 0.4) 20%,
+              rgba(15, 15, 15, 0.4) 40%,
+              rgba(26, 26, 26, 0.4) 60%,
+              rgba(10, 10, 10, 0.4) 100%
             )
           `;
         case 'modern':
           return `
-            radial-gradient(circle at 30% 40%, rgba(102, 126, 234, 0.08) 0%, transparent 50%),
-            radial-gradient(circle at 70% 60%, rgba(118, 75, 162, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 30% 40%, rgba(102, 126, 234, 0.032) 0%, transparent 50%),
+            radial-gradient(circle at 70% 60%, rgba(118, 75, 162, 0.032) 0%, transparent 50%),
             linear-gradient(135deg,
-              #0a0e1a 0%,
-              #0f1419 25%,
-              #1a1f2e 50%,
-              #0f1419 75%,
-              #0a0e1a 100%
+              rgba(10, 14, 26, 0.4) 0%,
+              rgba(15, 20, 25, 0.4) 25%,
+              rgba(26, 31, 46, 0.4) 50%,
+              rgba(15, 20, 25, 0.4) 75%,
+              rgba(10, 14, 26, 0.4) 100%
             )
           `;
         case 'future':
           return `
-            radial-gradient(circle at 50% 0%, rgba(0, 180, 216, 0.15) 0%, transparent 60%),
-            radial-gradient(circle at 100% 100%, rgba(144, 19, 254, 0.12) 0%, transparent 60%),
+            radial-gradient(circle at 50% 0%, rgba(0, 180, 216, 0.06) 0%, transparent 60%),
+            radial-gradient(circle at 100% 100%, rgba(144, 19, 254, 0.048) 0%, transparent 60%),
             linear-gradient(135deg,
-              #0a0a1a 0%,
-              #0f0f2a 20%,
-              #1a1a3a 40%,
-              #0f0f2a 60%,
-              #0a0a1a 100%
+              rgba(10, 10, 26, 0.4) 0%,
+              rgba(15, 15, 42, 0.4) 20%,
+              rgba(26, 26, 58, 0.4) 40%,
+              rgba(15, 15, 42, 0.4) 60%,
+              rgba(10, 10, 26, 0.4) 100%
             )
           `;
         case 'ai':
           return `
-            radial-gradient(ellipse at 20% 30%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
-            radial-gradient(ellipse at 80% 70%, rgba(118, 75, 162, 0.15) 0%, transparent 50%),
-            radial-gradient(circle at 50% 50%, rgba(0, 255, 159, 0.05) 0%, transparent 70%),
+            radial-gradient(ellipse at 20% 30%, rgba(102, 126, 234, 0.06) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 70%, rgba(118, 75, 162, 0.06) 0%, transparent 50%),
+            radial-gradient(circle at 50% 50%, rgba(0, 255, 159, 0.02) 0%, transparent 70%),
             linear-gradient(160deg,
-              #050510 0%,
-              #0a0a1f 25%,
-              #0f0f2e 50%,
-              #0a0a1f 75%,
-              #050510 100%
+              rgba(5, 5, 16, 0.4) 0%,
+              rgba(10, 10, 31, 0.4) 25%,
+              rgba(15, 15, 46, 0.4) 50%,
+              rgba(10, 10, 31, 0.4) 75%,
+              rgba(5, 5, 16, 0.4) 100%
             )
           `;
         default:
-          return `linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)`;
+          return `linear-gradient(135deg, rgba(10, 10, 10, 0.4) 0%, rgba(26, 26, 26, 0.4) 100%)`;
       }
     } 
-    // Light Mode Backgrounds
+    // Light Mode Backgrounds - 40% opacity
     else {
       switch($variant) {
         case 'vintage':
           return `
-            radial-gradient(circle at 20% 80%, rgba(245, 222, 179, 0.3) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(255, 239, 213, 0.25) 0%, transparent 50%),
+            radial-gradient(circle at 20% 80%, rgba(245, 222, 179, 0.12) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(255, 239, 213, 0.1) 0%, transparent 50%),
             linear-gradient(135deg,
-              #fafafa 0%,
-              #f5f0eb 20%,
-              #fafafa 40%,
-              #f0f0f0 60%,
-              #fafafa 100%
+              rgba(250, 250, 250, 0.4) 0%,
+              rgba(245, 240, 235, 0.4) 20%,
+              rgba(250, 250, 250, 0.4) 40%,
+              rgba(240, 240, 240, 0.4) 60%,
+              rgba(250, 250, 250, 0.4) 100%
             )
           `;
         case 'modern':
           return `
-            radial-gradient(circle at 30% 40%, rgba(102, 126, 234, 0.06) 0%, transparent 50%),
-            radial-gradient(circle at 70% 60%, rgba(118, 75, 162, 0.06) 0%, transparent 50%),
+            radial-gradient(circle at 30% 40%, rgba(102, 126, 234, 0.024) 0%, transparent 50%),
+            radial-gradient(circle at 70% 60%, rgba(118, 75, 162, 0.024) 0%, transparent 50%),
             linear-gradient(135deg,
-              #f8f9fa 0%,
-              #f0f2f5 25%,
-              #e8eef5 50%,
-              #f0f2f5 75%,
-              #f8f9fa 100%
+              rgba(248, 249, 250, 0.4) 0%,
+              rgba(240, 242, 245, 0.4) 25%,
+              rgba(232, 238, 245, 0.4) 50%,
+              rgba(240, 242, 245, 0.4) 75%,
+              rgba(248, 249, 250, 0.4) 100%
             )
           `;
         case 'future':
           return `
-            radial-gradient(circle at 50% 0%, rgba(0, 180, 216, 0.08) 0%, transparent 60%),
-            radial-gradient(circle at 100% 100%, rgba(144, 19, 254, 0.06) 0%, transparent 60%),
+            radial-gradient(circle at 50% 0%, rgba(0, 180, 216, 0.032) 0%, transparent 60%),
+            radial-gradient(circle at 100% 100%, rgba(144, 19, 254, 0.024) 0%, transparent 60%),
             linear-gradient(135deg,
-              #f5f7fa 0%,
-              #e8f0f8 20%,
-              #dce8f5 40%,
-              #e8f0f8 60%,
-              #f5f7fa 100%
+              rgba(245, 247, 250, 0.4) 0%,
+              rgba(232, 240, 248, 0.4) 20%,
+              rgba(220, 232, 245, 0.4) 40%,
+              rgba(232, 240, 248, 0.4) 60%,
+              rgba(245, 247, 250, 0.4) 100%
             )
           `;
         case 'ai':
           return `
-            radial-gradient(ellipse at 20% 30%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
-            radial-gradient(ellipse at 80% 70%, rgba(118, 75, 162, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 50% 50%, rgba(0, 255, 159, 0.03) 0%, transparent 70%),
+            radial-gradient(ellipse at 20% 30%, rgba(102, 126, 234, 0.04) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 70%, rgba(118, 75, 162, 0.04) 0%, transparent 50%),
+            radial-gradient(circle at 50% 50%, rgba(0, 255, 159, 0.012) 0%, transparent 70%),
             linear-gradient(160deg,
-              #f8f9fc 0%,
-              #f0f3f9 25%,
-              #e8eef8 50%,
-              #f0f3f9 75%,
-              #f8f9fc 100%
+              rgba(248, 249, 252, 0.4) 0%,
+              rgba(240, 243, 249, 0.4) 25%,
+              rgba(232, 238, 248, 0.4) 50%,
+              rgba(240, 243, 249, 0.4) 75%,
+              rgba(248, 249, 252, 0.4) 100%
             )
           `;
         default:
-          return `linear-gradient(135deg, #fafafa 0%, #f0f0f0 100%)`;
+          return `linear-gradient(135deg, rgba(250, 250, 250, 0.4) 0%, rgba(240, 240, 240, 0.4) 100%)`;
       }
     }
   }};

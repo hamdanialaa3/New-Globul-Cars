@@ -38,6 +38,7 @@ import NotificationsManagement from '../../../../components/NotificationsManagem
 import UserDetailsModal from '../../../../components/UserDetailsModal';
 import FacebookAdminPanel from '../../../../components/SuperAdmin/FacebookAdminPanel';
 import ArchitecturePanel from '../../../../components/SuperAdmin/ArchitecturePanel';
+import { AIDashboard } from '../../../../components/admin/AIDashboard';
 
 // Styled Components - Professional Minimal Design
 const DashboardContainer = styled.div`
@@ -451,6 +452,10 @@ const SuperAdminDashboard: React.FC = () => {
 
         {activeTab === 'facebook' && (
           <FacebookAdminPanel language="bg" />
+        )}
+
+        {activeTab === 'ai' && (
+          <AIDashboard />
         )}
       </TabContent>
 

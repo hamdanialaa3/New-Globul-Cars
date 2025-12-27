@@ -6,6 +6,7 @@ import { logger } from '../../services/logger-service';
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { Send, Paperclip, Image, Smile, X } from 'lucide-react';
+import { SmartReplyAssistant } from './SmartReplyAssistant';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { advancedMessagingService } from '../../services/messaging';
 
@@ -197,8 +198,8 @@ const MessageInput: React.FC<MessageInputProps> = ({
       onSend?.();
 
     } catch (error) {
-      logger.error('Error sending message:', error);
-      alert(language === 'bg' 
+      logger.error('Error sending message:', error as Error);
+      alert(language === 'bg'
         ? 'Грешка при изпращане на съобщение'
         : 'Error sending message');
     } finally {
@@ -247,6 +248,10 @@ const MessageInput: React.FC<MessageInputProps> = ({
         </AttachmentsPreview>
       )}
 
+      <SmartReplyAssistant
+        messageText={text}
+        onReplySelected={setText}
+      />
       <InputContainer>
         <ActionButton onClick={() => fileInputRef.current?.click()}>
           <Paperclip size={20} />
@@ -267,7 +272,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
             onChange={(e) => setText(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder={
-              language === 'bg' 
+              language === 'bg'
                 ? 'Напишете съобщение...'
                 : 'Type a message...'
             }

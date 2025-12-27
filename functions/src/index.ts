@@ -32,3 +32,7 @@ export const cleanupDeletedImages = imageOptimizer.cleanupOptimizedImages;
 export const sitemap = sitemapFunc.sitemap;
 export const syncCarsToGoogleAds = googleAdsSync.syncCarsToGoogleAds;
 export const syncCarsToFacebookAds = facebookAdsSync.syncCarsToFacebookAds;
+
+// AI Services (DeepSeek Integration)
+export const aiGenerateText = (await import('./ai/deepseek-proxy')).aiGenerateText;
+export const aiGenerateCarDescription = (await import('./ai/deepseek-proxy')).aiGenerateCarDescription;

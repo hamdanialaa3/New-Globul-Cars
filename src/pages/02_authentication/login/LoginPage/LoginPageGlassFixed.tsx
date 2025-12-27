@@ -3,15 +3,15 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
-import { 
-  Mail, 
-  Eye, 
-  EyeOff, 
-  Chrome, 
-  Facebook, 
-  Apple, 
-  Phone, 
+import styled from 'styled-components';
+import {
+  Mail,
+  Eye,
+  EyeOff,
+  Chrome,
+  Facebook,
+  Apple,
+  Phone,
   UserCheck,
   ArrowRight,
   Shield,
@@ -23,37 +23,13 @@ import {
 import { useTranslation } from '../../../../hooks/useTranslation';
 import { useLogin } from './hooks/useLogin';
 import PhoneAuthModal from '../../../../components/PhoneAuthModal';
-import BackgroundSlideshow from '../../../../components/BackgroundSlideshow';
+
 
 // Background images
-const backgroundImages = [
-  '/assets/images/Pic/pexels-bylukemiller-29566897.jpg',
-  '/assets/images/Pic/pexels-james-collington-2147687246-30772805.jpg',
-  '/assets/images/Pic/pexels-peely-712618.jpg',
-  '/assets/images/Pic/pexels-aboodi-18435540.jpg',
-  '/assets/images/Pic/pexels-bylukemiller-29566896.jpg',
-  '/assets/images/Pic/car_inside (1).jpg',
-  '/assets/images/Pic/car_inside (5).jpg',
-  '/assets/images/Pic/car_inside (10).jpg',
-  '/assets/images/Pic/pexels-pixabay-248747.jpg',
-  '/assets/images/Pic/pexels-kelly-2402235.jpg',
-];
+// Background images removed for performance
 
 // Animations
-const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-`;
-
-const slideIn = keyframes`
-  from { opacity: 0; transform: translateX(-30px); }
-  to { opacity: 1; transform: translateX(0); }
-`;
-
-const spin = keyframes`
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-`;
+// Animations removed for performance
 
 // Styled Components
 const PageContainer = styled.div`
@@ -64,6 +40,12 @@ const PageContainer = styled.div`
   padding: 20px;
   position: relative;
   overflow: hidden;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  }
 
   @media (max-width: 768px) {
     padding: 10px;
@@ -83,7 +65,7 @@ const GlassWrapper = styled.div`
     0 4px 16px rgba(255, 143, 16, 0.1);
   padding: 40px;
   z-index: 10;
-  animation: ${fadeIn} 0.6s ease;
+  /* animation removed */
 
   /* Dark Mode Support */
   html[data-theme="dark"] & {
@@ -111,35 +93,10 @@ const TitleWrapper = styled.div`
   text-align: center;
   margin-bottom: 12px;
   padding: 20px 0;
-  animation: ${slideIn} 0.6s ease;
+  /* animation removed */
 `;
 
-const LogoBackground = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 250px;
-  height: 250px;
-  opacity: 0.08;
-  background-image: url('/Logo1.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  pointer-events: none;
-  z-index: 0;
-
-  /* Dark Mode Support */
-  html[data-theme="dark"] & {
-    opacity: 0.12;
-    filter: brightness(1.2);
-  }
-
-  @media (max-width: 480px) {
-    width: 180px;
-    height: 180px;
-  }
-`;
+/* LogoBackground removed */
 
 const Title = styled.h1`
   font-size: 42px;
@@ -149,7 +106,7 @@ const Title = styled.h1`
   margin: 0;
   position: relative;
   z-index: 1;
-  animation: ${slideIn} 0.6s ease;
+  /* animation removed */
 
   /* Dark Mode Support */
   html[data-theme="dark"] & {
@@ -174,7 +131,7 @@ const Subtitle = styled.p`
   margin-top: 0;
   position: relative;
   z-index: 1;
-  animation: ${slideIn} 0.6s ease 0.1s backwards;
+  /* animation removed */
 
   /* Dark Mode Support */
   html[data-theme="dark"] & {
@@ -201,7 +158,7 @@ const InputBox = styled.div`
   position: relative;
   width: 100%;
   margin-bottom: 24px;
-  animation: ${slideIn} 0.6s ease 0.2s backwards;
+  /* animation removed */
 
   @media (max-width: 480px) {
     margin-bottom: 20px;
@@ -293,7 +250,7 @@ const RememberForgot = styled.div`
   align-items: center;
   font-size: 14px;
   margin: -10px 0 20px 0;
-  animation: ${slideIn} 0.6s ease 0.3s backwards;
+  /* animation removed */
 
   @media (max-width: 480px) {
     font-size: 13px;
@@ -336,16 +293,16 @@ const CustomCheckbox = styled.div<{ $checked: boolean }>`
   min-height: 22px;
   border-radius: 6px;
   border: 2px solid ${props => props.$checked ? '#22c55e' : 'rgba(0, 0, 0, 0.2)'};
-  background: ${props => props.$checked 
-    ? 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)' 
+  background: ${props => props.$checked
+    ? 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)'
     : 'transparent'};
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: ${props => props.$checked 
-    ? '0 4px 12px rgba(34, 197, 94, 0.3)' 
+  box-shadow: ${props => props.$checked
+    ? '0 4px 12px rgba(34, 197, 94, 0.3)'
     : '0 2px 4px rgba(0, 0, 0, 0.1)'};
 
   /* Check icon */
@@ -361,13 +318,13 @@ const CustomCheckbox = styled.div<{ $checked: boolean }>`
   /* Hover effect */
   &:hover {
     border-color: ${props => props.$checked ? '#16a34a' : '#22c55e'};
-    background: ${props => props.$checked 
-      ? 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)' 
-      : 'rgba(34, 197, 94, 0.1)'};
+    background: ${props => props.$checked
+    ? 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)'
+    : 'rgba(34, 197, 94, 0.1)'};
     transform: scale(1.05);
-    box-shadow: ${props => props.$checked 
-      ? '0 6px 16px rgba(34, 197, 94, 0.4)' 
-      : '0 4px 8px rgba(34, 197, 94, 0.2)'};
+    box-shadow: ${props => props.$checked
+    ? '0 6px 16px rgba(34, 197, 94, 0.4)'
+    : '0 4px 8px rgba(34, 197, 94, 0.2)'};
   }
 
   /* Active/pressed effect */
@@ -381,9 +338,9 @@ const CustomCheckbox = styled.div<{ $checked: boolean }>`
     
     &:hover {
       border-color: ${props => props.$checked ? '#16a34a' : '#22c55e'};
-      background: ${props => props.$checked 
-        ? 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)' 
-        : 'rgba(34, 197, 94, 0.15)'};
+      background: ${props => props.$checked
+    ? 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)'
+    : 'rgba(34, 197, 94, 0.15)'};
     }
   }
 `;
@@ -414,7 +371,7 @@ const SubmitButton = styled.button`
   align-items: center;
   justify-content: center;
   gap: 10px;
-  animation: ${slideIn} 0.6s ease 0.4s backwards;
+  /* animation removed */
   
   /* CRITICAL FIX: Ensure button is clickable (same as MobileHeader fix!) */
   position: relative;
@@ -438,10 +395,8 @@ const SubmitButton = styled.button`
     opacity: 0.7;
     cursor: not-allowed;
   }
-
-  .spin {
-    animation: ${spin} 1s linear infinite;
-  }
+  
+  /* spin animation keyframes removed from usage/styled component as well if it was used inside */
 
   @media (max-width: 480px) {
     height: 48px;
@@ -454,7 +409,7 @@ const Divider = styled.div`
   display: flex;
   align-items: center;
   margin: 25px 0;
-  animation: ${slideIn} 0.6s ease 0.5s backwards;
+  /* animation removed */
 
   &::before,
   &::after {
@@ -498,7 +453,7 @@ const SocialButtons = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
   margin-bottom: 20px;
-  animation: ${slideIn} 0.6s ease 0.6s backwards;
+  /* animation removed */
   
   /* CRITICAL FIX: Ensure all social buttons are interactive */
   position: relative;
@@ -618,7 +573,7 @@ const RegisterLink = styled.div`
   margin-top: 20px;
   color: #495057;
   font-size: 14px;
-  animation: ${slideIn} 0.6s ease 0.7s backwards;
+  /* animation removed */
 
   a {
     color: #FF8F10;
@@ -659,7 +614,7 @@ const Message = styled.div<{ $type: 'error' | 'success' }>`
   border-radius: 12px;
   margin-bottom: 20px;
   font-size: 14px;
-  animation: ${fadeIn} 0.3s ease;
+  /* animation removed */
   
   ${props => props.$type === 'error' ? `
     background: rgba(239, 68, 68, 0.15);
@@ -702,7 +657,7 @@ const SecurityBadge = styled.div`
   border-radius: 12px;
   color: #6c757d;
   font-size: 12px;
-  animation: ${slideIn} 0.6s ease 0.8s backwards;
+  /* animation removed */
 
   /* Dark Mode Support */
   html[data-theme="dark"] & {
@@ -743,24 +698,17 @@ const LoginPageGlassFixed: React.FC = () => {
 
   return (
     <PageContainer>
-      <BackgroundSlideshow 
-        images={backgroundImages} 
-        interval={7000}
-        transitionDuration={7}
-      />
-      
       <GlassWrapper>
         <TitleWrapper>
-          <LogoBackground />
           <Title>
-            {language === 'bg' 
-              ? 'Влезте с Mobili' 
+            {language === 'bg'
+              ? 'Влезте с Mobili'
               : 'Login with Mobili'}
           </Title>
         </TitleWrapper>
         <Subtitle>
-          {language === 'bg' 
-            ? 'Добре дошли обратно в Bulgarian Car Marketplace' 
+          {language === 'bg'
+            ? 'Добре дошли обратно в Bulgarian Car Marketplace'
             : 'Welcome back to Bulgarian Car Marketplace'}
         </Subtitle>
 
@@ -883,8 +831,8 @@ const LoginPageGlassFixed: React.FC = () => {
 
         <SecurityBadge>
           <Shield size={14} />
-          {language === 'bg' 
-            ? 'Защитена връзка с шифроване' 
+          {language === 'bg'
+            ? 'Защитена връзка с шифроване'
             : 'Secure & encrypted connection'}
         </SecurityBadge>
       </GlassWrapper>
