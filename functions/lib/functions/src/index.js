@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.aiGenerateCarDescription = exports.aiGenerateText = exports.syncCarsToFacebookAds = exports.syncCarsToGoogleAds = exports.sitemap = exports.cleanupDeletedImages = exports.optimizeUploadedImage = exports.updateMerchantFeedCache = exports.merchantFeedGenerator = exports.cleanupOldNotifications = exports.notifyFollowersOnNewCar = exports.dailyReminder = exports.onVerificationUpdate = exports.onNewOffer = exports.onNewInquiry = exports.onCarViewed = exports.onNewMessage = exports.onPriceUpdate = exports.onNewCarPosted = void 0;
+exports.hybridAIProxy = exports.aiGenerateCarDescription = exports.aiGenerateText = exports.syncCarsToFacebookAds = exports.syncCarsToGoogleAds = exports.sitemap = exports.cleanupDeletedImages = exports.optimizeUploadedImage = exports.updateMerchantFeedCache = exports.merchantFeedGenerator = exports.cleanupOldNotifications = exports.notifyFollowersOnNewCar = exports.dailyReminder = exports.onVerificationUpdate = exports.onNewOffer = exports.onNewInquiry = exports.onCarViewed = exports.onNewMessage = exports.onPriceUpdate = exports.onNewCarPosted = void 0;
 const notifications = require("./notifications");
 const merchantFeed = require("./merchant-feed");
 const imageOptimizer = require("./image-optimizer");
@@ -30,9 +30,11 @@ exports.cleanupDeletedImages = imageOptimizer.cleanupOptimizedImages;
 exports.sitemap = sitemapFunc.sitemap;
 exports.syncCarsToGoogleAds = googleAdsSync.syncCarsToGoogleAds;
 exports.syncCarsToFacebookAds = facebookAdsSync.syncCarsToFacebookAds;
-// AI Services (DeepSeek Integration)
+// AI Services (DeepSeek Integration - Legacy)
 const deepSeekProxy = require("./ai/deepseek-proxy");
-// AI Services (DeepSeek Integration)
 exports.aiGenerateText = deepSeekProxy.aiGenerateText;
 exports.aiGenerateCarDescription = deepSeekProxy.aiGenerateCarDescription;
+// AI Services (Hybrid System - Phase 4.1.2 - NEW) ✅
+const hybridAI = require("./ai/hybrid-ai-proxy");
+exports.hybridAIProxy = hybridAI.hybridAIProxy;
 //# sourceMappingURL=index.js.map
