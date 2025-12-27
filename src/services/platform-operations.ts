@@ -7,7 +7,7 @@ import { logger } from './logger-service';
 import { geminiVisionService } from './ai/gemini-vision.service';
 import { algoliaSearchService } from './search/algolia.service';
 import { stripeService } from './billing-service';
-import { iotService } from './iotService';
+import { iotService } from './legacy/iot-service.stub';
 import { analyticsService } from './analytics/UnifiedAnalyticsService';
 import {
   AIAnalysisResult,

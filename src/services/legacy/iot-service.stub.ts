@@ -1,7 +1,20 @@
-// IoT Service Stub - AWS SDK removed to reduce bundle size
-// Re-implement with lightweight alternative if needed
+/**
+ * @deprecated IoT Service Stub - AWS SDK removed to reduce bundle size
+ * @file This is a stub implementation kept for backward compatibility
+ * @location Moved to src/services/legacy/ directory
+ * @replacement If IoT features are needed, implement with lightweight alternative
+ * @since Original implementation removed December 2024
+ * @see https://github.com/hamdanialaa3/New-Globul-Cars/issues for feature requests
+ * 
+ * ⚠️ WARNING: This service does not provide any real functionality.
+ * All methods return null or no-op functions.
+ * 
+ * Used by:
+ * - src/services/platform-operations.ts
+ * - src/hooks/useCarIoT.ts
+ */
 
-import { logger } from './logger-service';
+import { logger } from '../logger-service';
 
 export interface CarTelemetryData {
   speed?: number;

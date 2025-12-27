@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { iotService, CarTelemetryData } from '../services/iotService';
+import { iotService, CarTelemetryData } from '../services/legacy/iot-service.stub';
 
 export const useCarIoT = (carId: string) => {
   const [telemetryData, setTelemetryData] = useState<CarTelemetryData | null>(null);
