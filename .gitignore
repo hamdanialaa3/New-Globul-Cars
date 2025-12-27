@@ -13,11 +13,20 @@
 
 # misc
 .DS_Store
+
+# Environment files - NEVER commit these (except templates)
 .env
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*.local
+.env.backup
+.env.facebook
+.env.production
+.env.development
+.env.staging
+
+# Exception: templates are OK
+!.env.example
+!.env.template
 
 npm-debug.log*
 yarn-debug.log*
