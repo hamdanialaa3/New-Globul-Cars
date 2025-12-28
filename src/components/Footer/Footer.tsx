@@ -2,12 +2,19 @@
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { MapPin, Phone, Mail, Globe, Facebook } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import './Footer.css';
 
 const Footer: React.FC = () => {
   const { t, language } = useLanguage();
+  const location = useLocation();
 
   const currentYear = new Date().getFullYear();
+
+  // Hide footer on /cars page
+  if (location.pathname === '/cars') {
+    return null;
+  }
 
   return (
     <footer className="main-footer">
