@@ -6,7 +6,7 @@ export type BadgeSize = 'sm' | 'md' | 'lg';
 export interface BadgeProps {
     variant?: BadgeVariant;
     size?: BadgeSize;
-    rounded?: boolean;
+    $rounded?: boolean;
     children: React.ReactNode;
     className?: string;
     onClick?: () => void;
@@ -71,7 +71,7 @@ const StyledBadge = styled.span<BadgeProps>`
   line-height: 1;
   white-space: nowrap;
   vertical-align: baseline;
-  border-radius: ${props => props.rounded ? '9999px' : '0.25rem'};
+  border-radius: ${props => props.$rounded ? '9999px' : '0.25rem'};
   transition: all 0.2s ease-in-out;
   cursor: ${props => props.onClick ? 'pointer' : 'default'};
 
@@ -88,7 +88,7 @@ export const Badge: React.FC<BadgeProps> = ({
     children,
     variant = 'primary',
     size = 'md',
-    rounded = false,
+    $rounded = false,
     className,
     onClick
 }) => {
@@ -96,7 +96,7 @@ export const Badge: React.FC<BadgeProps> = ({
         <StyledBadge
             variant={variant}
             size={size}
-            rounded={rounded}
+            $rounded={$rounded}
             className={className}
             onClick={onClick}
         >

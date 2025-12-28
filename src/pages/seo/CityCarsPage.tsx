@@ -1,6 +1,6 @@
 // src/pages/seo/CityCarsPage.tsx
 // City Cars Page - صفحة السيارات في المدينة
-// الهدف: صفحات SEO محسّنة لكل مدينة في بلغاريا
+// الهدف: صفحات SEO محسّنة لكل مدينة في بلغاريا مع محتوى بلغاري أصيل
 // الموقع: بلغاريا | اللغات: BG/EN
 
 import React, { useEffect, useState } from 'react';
@@ -13,6 +13,7 @@ import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { VEHICLE_COLLECTIONS } from '../../services/car/unified-car-types';
 import CarCardCompact from '../../components/CarCard/CarCardCompact';
+import { Info, CheckCircle, AlertCircle } from 'lucide-react';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -55,71 +56,85 @@ const StatsGrid = styled.div`
 `;
 
 const StatCard = styled.div`
-  background: ${({ theme }) => theme.mode === 'dark'
-    ? 'rgba(15, 23, 42, 0.8)'
-    : 'rgba(255, 255, 255, 0.8)'};
+  background: ${({ theme }) => theme.mode === 'dark' ? 'rgba(30, 41, 59, 0.8)' : 'white'};
   border-radius: 12px;
   padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
-  border: 1px solid ${({ theme }) => theme.mode === 'dark'
-    ? 'rgba(255, 255, 255, 0.1)'
-    : 'rgba(0, 0, 0, 0.1)'};
 `;
 
 const StatValue = styled.div`
   font-size: 2rem;
   font-weight: 700;
-  color: ${({ theme }) => theme.colors.primary || '#FF8F10'};
+  color: #FF7900;
   margin-bottom: 0.5rem;
 `;
 
 const StatLabel = styled.div`
   font-size: 0.875rem;
   color: ${({ theme }) => theme.text.secondary};
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 `;
 
 const ContentSection = styled.section`
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem 0;
+  margin: 0 auto 3rem;
+  padding: 2rem;
+  background: ${({ theme }) => theme.mode === 'dark' ? 'rgba(30, 41, 59, 0.6)' : 'white'};
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
-const SectionTitle = styled.h2`
+const ContentTitle = styled.h2`
   font-size: 2rem;
   font-weight: 700;
   color: ${({ theme }) => theme.text.primary};
   margin-bottom: 1.5rem;
 `;
 
-const TipsGrid = styled.div`
+const ContentText = styled.p`
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: ${({ theme }) => theme.text.secondary};
+  margin-bottom: 1.5rem;
+`;
+
+const LocalTipsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
-  margin: 2rem 0;
+  margin-top: 2rem;
 `;
 
 const TipCard = styled.div`
-  background: ${({ theme }) => theme.mode === 'dark'
-    ? 'rgba(15, 23, 42, 0.6)'
-    : 'rgba(248, 250, 252, 0.8)'};
-  border-radius: 12px;
+  background: ${({ theme }) => theme.mode === 'dark' ? 'rgba(15, 23, 42, 0.8)' : '#f8f9fa'};
+  border-radius: 10px;
   padding: 1.5rem;
-  border-left: 4px solid ${({ theme }) => theme.colors.primary || '#FF8F10'};
+  border-left: 4px solid #FF7900;
+`;
+
+const TipHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+`;
+
+const TipIcon = styled.div`
+  color: #FF7900;
+  display: flex;
+  align-items: center;
 `;
 
 const TipTitle = styled.h3`
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   font-weight: 600;
   color: ${({ theme }) => theme.text.primary};
-  margin-bottom: 0.5rem;
 `;
 
-const TipContent = styled.p`
-  font-size: 0.9375rem;
-  color: ${({ theme }) => theme.text.secondary};
+const TipText = styled.p`
+  font-size: 1rem;
   line-height: 1.6;
+  color: ${({ theme }) => theme.text.secondary};
 `;
 
 const CarsGrid = styled.div`
@@ -140,6 +155,27 @@ const BULGARIAN_CITIES: Record<string, { bg: string; region: string }> = {
   stara: { bg: 'Стара Загора', region: 'Стара Загора' },
   pleven: { bg: 'Плевен', region: 'Плевен' },
   sliven: { bg: 'Сливен', region: 'Сливен' }
+};
+
+// ==================== LOCAL TIPS DATA ====================
+
+const LOCAL_TIPS: Record<string, { buyer: string; seller: string }> = {
+  sofia: {
+    buyer: 'Автомобилите в София често са по-добре поддържани поради наличието на множество официални сервизи и специализирани работилници. Препоръчваме винаги да проверявате сервизната история внимателно и да правите преглед преди покупка.',
+    seller: 'Цените в София са с 5-10% по-високи от провинцията поради по-голямото търсене и по-високия стандарт на живот. Вземете това предвид при определяне на цената. Също така, платформата ни ви дава възможност да достигнете до по-широк кръг от потенциални купувачи.'
+  },
+  plovdiv: {
+    buyer: 'Пловдив е вторият най-голям град в България и предлага добър избор от автомобили. Автомобилите тук често са на по-добра цена от тези в София, но с почти същото качество. Проверете внимателно състоянието на автомобила, особено ако е от стар модел.',
+    seller: 'Пазарът в Пловдив е активен, но цените са малко по-ниски от столицата. Очаквайте по-бърза продажба за популярни марки като BMW, Audi и Mercedes. Платформата ви помага да достигнете до купувачи от целия регион.'
+  },
+  varna: {
+    buyer: 'Варна е приморски град и автомобилите тук често са подложени на корозия поради морския климат. Препоръчваме внимателна проверка на каросерията и шасито, особено за по-стари модели. В същото време, тук има добър избор от луксозни автомобили.',
+    seller: 'Варна привлича туристи и купувачи от близките градове. Летният сезон е най-добрият период за продажба на автомобили. Популярни са SUV-тата и автомобилите подходящи за извънградско каране.'
+  },
+  burgas: {
+    buyer: 'Бургас предлага разнообразие от автомобили на разумни цени. Поради близостта до морето, проверете внимателно за корозия, особено на по-стари модели. Има добър избор от дизелови автомобили, популярни в региона.',
+    seller: 'Пазарът в Бургас е активен през цялата година. Цените са конкурентни и купувачите са информирани. Дизеловите автомобили се продават по-бързо поради по-ниските разходи за гориво.'
+  }
 };
 
 // ==================== COMPONENT ====================
@@ -240,6 +276,15 @@ const CityCarsPage: React.FC = () => {
     region: cityInfo.region
   });
 
+  const localTips = LOCAL_TIPS[city.toLowerCase()] || {
+    buyer: language === 'bg' 
+      ? 'Препоръчваме винаги да проверявате сервизната история внимателно и да правите преглед преди покупка.'
+      : 'We recommend always checking the service history carefully and having an inspection before purchase.',
+    seller: language === 'bg'
+      ? 'Определете конкурентна цена и подгответе детайлно описание с качествени снимки за по-бърза продажба.'
+      : 'Set a competitive price and prepare a detailed description with quality photos for faster sale.'
+  };
+
   return (
     <>
       <Helmet>
@@ -247,13 +292,6 @@ const CityCarsPage: React.FC = () => {
         <meta name="description" content={seoData.description} />
         <meta name="keywords" content={seoData.keywords.join(', ')} />
         <link rel="canonical" href={seoData.canonicalUrl} />
-        <meta property="og:title" content={seoData.title} />
-        <meta property="og:description" content={seoData.description} />
-        <meta property="og:url" content={seoData.canonicalUrl} />
-        <meta property="og:locale" content="bg_BG" />
-        <script type="application/ld+json">
-          {JSON.stringify(seoData.structuredData)}
-        </script>
       </Helmet>
 
       <PageContainer>
@@ -261,74 +299,90 @@ const CityCarsPage: React.FC = () => {
           <CityTitle>
             {language === 'bg' 
               ? `Продажба на коли в ${cityInfo.bg}`
-              : `Cars for Sale in ${cityInfo.bg}`}
+              : `Car Sales in ${cityInfo.bg}`}
           </CityTitle>
           <CitySubtitle>
             {language === 'bg'
               ? `Намерете идеалния автомобил в ${cityInfo.bg}. Българска платформа за българските автомобилисти.`
-              : `Find the perfect car in ${cityInfo.bg}. Bulgarian platform for Bulgarian car enthusiasts.`}
+              : `Find your ideal car in ${cityInfo.bg}. Bulgarian platform for Bulgarian car enthusiasts.`}
           </CitySubtitle>
 
-          {!loading && (
-            <StatsGrid>
-              <StatCard>
-                <StatValue>{stats.totalCars}</StatValue>
-                <StatLabel>
-                  {language === 'bg' ? 'Обяви' : 'Listings'}
-                </StatLabel>
-              </StatCard>
-              <StatCard>
-                <StatValue>{stats.avgPrice.toLocaleString()} лв.</StatValue>
-                <StatLabel>
-                  {language === 'bg' ? 'Средна Цена' : 'Average Price'}
-                </StatLabel>
-              </StatCard>
-              <StatCard>
-                <StatValue>{stats.popularBrands[0] || 'N/A'}</StatValue>
-                <StatLabel>
-                  {language === 'bg' ? 'Най-Популярна Марка' : 'Top Brand'}
-                </StatLabel>
-              </StatCard>
-            </StatsGrid>
-          )}
+          <StatsGrid>
+            <StatCard>
+              <StatValue>{stats.totalCars}</StatValue>
+              <StatLabel>{language === 'bg' ? 'Обяви' : 'Listings'}</StatLabel>
+            </StatCard>
+            <StatCard>
+              <StatValue>{stats.avgPrice.toLocaleString()} лв.</StatValue>
+              <StatLabel>{language === 'bg' ? 'Средна цена' : 'Average Price'}</StatLabel>
+            </StatCard>
+            <StatCard>
+              <StatValue>{stats.popularBrands.length}</StatValue>
+              <StatLabel>{language === 'bg' ? 'Популярни марки' : 'Popular Brands'}</StatLabel>
+            </StatCard>
+          </StatsGrid>
         </HeroSection>
 
+        {/* Bulgarian Content Section */}
         <ContentSection>
-          <SectionTitle>
-            {language === 'bg' ? 'Съвети за Купувачи' : 'Buyer Tips'}
-          </SectionTitle>
-          <TipsGrid>
+          <ContentTitle>
+            {language === 'bg' 
+              ? `Купувайте и продавайте коли в ${cityInfo.bg} лесно`
+              : `Buy and sell cars in ${cityInfo.bg} easily`}
+          </ContentTitle>
+          <ContentText>
+            {language === 'bg'
+              ? `${cityInfo.bg} е един от най-активните пазари за автомобили в България. Нашата платформа ви дава възможност да намерите или предложите кола в ${cityInfo.bg} с пълна сигурност и прозрачност. Работим с проверени продавачи и предлагаме интуитивен интерфейс за лесно справяне с покупката или продажбата на автомобил.`
+              : `${cityInfo.bg} is one of the most active car markets in Bulgaria. Our platform gives you the opportunity to find or offer a car in ${cityInfo.bg} with full security and transparency. We work with verified sellers and offer an intuitive interface for easy handling of car purchase or sale.`}
+          </ContentText>
+
+          <LocalTipsGrid>
             <TipCard>
-              <TipTitle>
-                {language === 'bg' ? 'Проверете Сервизната История' : 'Check Service History'}
-              </TipTitle>
-              <TipContent>
-                {language === 'bg'
-                  ? `Автомобилите в ${cityInfo.bg} често са по-добре поддържани поради наличието на сервизи. Препоръчваме ви да проверите сервизната история внимателно преди покупка.`
-                  : `Cars in ${cityInfo.bg} are often better maintained due to the availability of service centers. We recommend checking the service history carefully before purchase.`}
-              </TipContent>
+              <TipHeader>
+                <TipIcon>
+                  <CheckCircle size={24} />
+                </TipIcon>
+                <TipTitle>
+                  {language === 'bg' ? 'Съвет за купувачи' : 'Tips for Buyers'}
+                </TipTitle>
+              </TipHeader>
+              <TipText>
+                {language === 'bg' ? localTips.buyer : 'Always check the service history carefully and have an inspection before purchase. Verify the car\'s condition and negotiate with confidence.'}
+              </TipText>
             </TipCard>
 
             <TipCard>
-              <TipTitle>
-                {language === 'bg' ? 'Съвети за Продавачи' : 'Seller Tips'}
-              </TipTitle>
-              <TipContent>
-                {language === 'bg'
-                  ? `Цените в ${cityInfo.bg} са с 5-10% по-високи от провинцията. Вземете това предвид при определяне на цената на вашия автомобил.`
-                  : `Prices in ${cityInfo.bg} are 5-10% higher than in the provinces. Take this into account when pricing your car.`}
-              </TipContent>
+              <TipHeader>
+                <TipIcon>
+                  <Info size={24} />
+                </TipIcon>
+                <TipTitle>
+                  {language === 'bg' ? 'Съвет за продавачи' : 'Tips for Sellers'}
+                </TipTitle>
+              </TipHeader>
+              <TipText>
+                {language === 'bg' ? localTips.seller : 'Set a competitive price and prepare a detailed description with quality photos for faster sale. Respond quickly to inquiries to increase your chances of a successful sale.'}
+              </TipText>
             </TipCard>
-          </TipsGrid>
+          </LocalTipsGrid>
+        </ContentSection>
 
-          <SectionTitle>
-            {language === 'bg' ? 'Налични Коли' : 'Available Cars'}
-          </SectionTitle>
+        {/* Cars Listings */}
+        <ContentSection>
+          <ContentTitle>
+            {language === 'bg' ? 'Налични автомобили' : 'Available Cars'}
+          </ContentTitle>
           {loading ? (
-            <div>{language === 'bg' ? 'Зареждане...' : 'Loading...'}</div>
+            <div style={{ textAlign: 'center', padding: '3rem' }}>
+              {language === 'bg' ? 'Зареждане...' : 'Loading...'}
+            </div>
+          ) : cars.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '3rem', color: '#7f8c8d' }}>
+              {language === 'bg' ? 'Няма налични автомобили в момента.' : 'No cars available at the moment.'}
+            </div>
           ) : (
             <CarsGrid>
-              {cars.map(car => (
+              {cars.map((car) => (
                 <CarCardCompact key={car.id} car={car} />
               ))}
             </CarsGrid>
@@ -340,4 +394,3 @@ const CityCarsPage: React.FC = () => {
 };
 
 export default CityCarsPage;
-

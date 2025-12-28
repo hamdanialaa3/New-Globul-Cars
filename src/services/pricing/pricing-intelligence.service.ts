@@ -241,13 +241,31 @@ export class PricingIntelligenceService {
 
   /**
    * Get regional demand (0-100)
+   * الطلب الإقليمي بناءً على السوق البلغاري
    */
   private getRegionalDemand(location: string): number {
-    const highDemandCities = ['София', 'Sofia', 'Пловдив', 'Plovdiv', 'Варна', 'Varna'];
-    const isHighDemand = highDemandCities.some(city => 
-      location.toLowerCase().includes(city.toLowerCase())
-    );
-    return isHighDemand ? 85 : 60;
+    const locationLower = location.toLowerCase();
+    
+    // Sofia (العاصمة) - أعلى طلب
+    if (locationLower.includes('софия') || locationLower.includes('sofia')) {
+      return 95;
+    }
+    
+    // المدن الكبيرة - طلب عالٍ
+    if (locationLower.includes('пловдив') || locationLower.includes('plovdiv') ||
+        locationLower.includes('варна') || locationLower.includes('varna') ||
+        locationLower.includes('бургас') || locationLower.includes('burgas')) {
+      return 85;
+    }
+    
+    // مدن متوسطة - طلب متوسط
+    if (locationLower.includes('русе') || locationLower.includes('ruse') ||
+        locationLower.includes('стара загора') || locationLower.includes('stara zagora')) {
+      return 70;
+    }
+    
+    // مدن صغيرة وقرى - طلب منخفض
+    return 55;
   }
 
   /**

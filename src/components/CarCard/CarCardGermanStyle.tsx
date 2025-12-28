@@ -1,5 +1,5 @@
 // src/components/CarCardGermanStyle.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Heart,
@@ -17,6 +17,13 @@ import {
 import { CarListing } from '../../types/CarListing';
 import { useFavorites } from '../../hooks/useFavorites';
 import { useAuth } from '../../hooks/useAuth';
+import TrustBadge from '../trust/TrustBadge';
+import StoryRing from '../media/StoryRing';
+import type { TrustSystem } from '../../types/trust.types';
+import type { CarStory } from '../../types/story.types';
+import { trustScoreService } from '../../services/profile/trust-score-service';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../firebase/firebase-config';
 
 // Helper to determine the correct URL
 const getCarDetailsUrl = (car: CarListing) => {
@@ -43,6 +50,12 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
   const { isFavorite, toggleFavorite } = useFavorites();
   const { user } = useAuth();
 
+  // NEW: Trust System Integration
+  const [sellerTrustData, setSellerTrustData] = useState<TrustSystem | null>(null);
+  const [sellerStories, setSellerStories] = useState<CarStory[]>([]);
+  const [sellerPhotoURL, setSellerPhotoURL] = useState<string>('');
+  const [loadingSellerData, setLoadingSellerData] = useState(false);
+
   const isFav = isFavorite(car.id || '');
   const detailsUrl = getCarDetailsUrl(car);
 
@@ -51,6 +64,38 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
     e.stopPropagation();
     toggleFavorite(car.id || '');
   };
+
+  // Load seller trust data and stories
+  useEffect(() => {
+    const loadSellerData = async () => {
+      if (!car.sellerId) return;
+      
+      setLoadingSellerData(true);
+      try {
+        // Load trust score
+        const trustScore = await trustScoreService.getUserTrustScore(car.sellerId);
+        setSellerTrustData(trustScore);
+
+        // Load seller profile for stories and photo
+        const sellerDoc = await getDoc(doc(db, 'users', car.sellerId));
+        if (sellerDoc.exists()) {
+          const sellerData = sellerDoc.data();
+          setSellerPhotoURL(sellerData.photoURL || sellerData.profileImageURL || '');
+          
+          // Load stories from car if available
+          if (car.stories && Array.isArray(car.stories)) {
+            setSellerStories(car.stories as CarStory[]);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load seller data:', error);
+      } finally {
+        setLoadingSellerData(false);
+      }
+    };
+
+    loadSellerData();
+  }, [car.sellerId, car.stories]);
 
   // Fixed: Use string images only, with error state to prevent infinite loops
   const mainImageSrc = imageError || !car.images?.[0] || typeof car.images[0] !== 'string'
@@ -175,6 +220,27 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
         {/* Footer */}
         <div className="flex items-center justify-between pt-3 border-t border-gray-100 mt-auto">
           <div className="flex items-center gap-2">
+            {/* Story Ring + Trust Badge */}
+            {sellerPhotoURL && (
+              <div className="flex items-center gap-2">
+                <StoryRing
+                  hasStories={sellerStories.length > 0}
+                  stories={sellerStories}
+                  imageUrl={sellerPhotoURL}
+                  size="small"
+                  onClick={() => console.log('Story clicked')}
+                />
+                {sellerTrustData && (
+                  <TrustBadge
+                    trustData={sellerTrustData}
+                    variant="compact"
+                    size="small"
+                    showLabel={false}
+                  />
+                )}
+              </div>
+            )}
+            
             {(car as any).sellerType === 'dealer' && (
               <span className="flex items-center gap-1 text-xs font-medium text-blue-700 bg-blue-50 px-2 py-1 rounded">
                 <ShieldCheck size={12} />

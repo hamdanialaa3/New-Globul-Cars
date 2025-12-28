@@ -144,8 +144,8 @@ export class SEOPrerenderService {
    * توليد محتوى SEO لصفحة المدينة
    */
   generateCityPageSEO(cityData: CityPageData): SEOPrerenderData {
-    const title = `Продажба на коли в ${cityData.cityBg} - Globul Cars`;
-    const description = `Намерете идеалния автомобил в ${cityData.cityBg}. Над ${cityData.totalCars} обяви от частни лица, автосалони и компании. Средна цена: ${cityData.avgPrice} лв. Българска платформа за българските автомобилисти.`;
+    const title = `Продажба на коли в ${cityData.cityBg} - Bulgarski Avtomobili`;
+    const description = `Намерете идеалния автомобил в ${cityData.cityBg}. Над ${cityData.totalCars} обяви от частни лица, автосалони и компании. Средна цена: ${cityData.avgPrice} лв. Българска платформа за българските автомобилисти. Проверени продавачи, прозрачни цени, лесно справяне.`;
     
     const keywords = [
       `коли ${cityData.cityBg}`,

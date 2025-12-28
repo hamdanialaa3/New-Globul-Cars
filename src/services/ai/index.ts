@@ -22,6 +22,12 @@ export { recommendationEngine } from './recommendation-advanced.service';
 export { multiLanguageNLU } from './nlu-multilingual.service';
 export { vehicleDescriptionGenerator } from './vehicle-description-generator.service';
 
+// Deep Plan 100% Completion Services (NEW - Dec 28, 2025)
+export { aiLearningSystem } from './learning-system';
+export { aiBillingSystem } from './billing-system';
+export { aiSecurityMonitor } from './security-monitor';
+export { marketDataFetcher } from './market-data-fetcher';
+
 // Type Exports
 export type { 
   GeminiVisionResponse,

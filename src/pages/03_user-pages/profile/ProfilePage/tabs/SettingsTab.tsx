@@ -996,32 +996,32 @@ const ThemeOptions = styled.div`
   }
 `;
 
-const ThemeOption = styled.div<{ active?: boolean }>`
+const ThemeOption = styled.div<{ $active?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 12px;
   padding: 24px;
-  background: ${props => props.active ? 'rgba(255, 143, 16, 0.15)' : 'rgba(255, 255, 255, 0.05)'};
-  border: 2px solid ${props => props.active ? '#FF8F10' : 'rgba(255, 255, 255, 0.1)'};
+  background: ${props => props.$active ? 'rgba(255, 143, 16, 0.15)' : 'rgba(255, 255, 255, 0.05)'};
+  border: 2px solid ${props => props.$active ? '#FF8F10' : 'rgba(255, 255, 255, 0.1)'};
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${props => props.active ? 'rgba(255, 143, 16, 0.2)' : 'rgba(255, 255, 255, 0.08)'};
+    background: ${props => props.$active ? 'rgba(255, 143, 16, 0.2)' : 'rgba(255, 255, 255, 0.08)'};
     transform: translateY(-2px);
   }
 
   svg {
-    color: ${props => props.active ? '#FF8F10' : '#ffffff'};
+    color: ${props => props.$active ? '#FF8F10' : '#ffffff'};
   }
 
   span {
     font-size: 0.95rem;
-    font-weight: ${props => props.active ? 600 : 400};
-    color: ${props => props.active ? '#FF8F10' : '#ffffff'};
+    font-weight: ${props => props.$active ? 600 : 400};
+    color: ${props => props.$active ? '#FF8F10' : '#ffffff'};
   }
 `;
 
@@ -3061,7 +3061,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                   <Label>{t('settings.theme', 'Theme')}</Label>
                   <ThemeOptions>
                     <ThemeOption
-                      active={settings.appearance.theme === 'light'}
+                      $active={settings.appearance.theme === 'light'}
                       onClick={() => setSettings({
                         ...settings,
                         appearance: { ...settings.appearance, theme: 'light' }
@@ -3072,7 +3072,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                     </ThemeOption>
 
                     <ThemeOption
-                      active={settings.appearance.theme === 'dark'}
+                      $active={settings.appearance.theme === 'dark'}
                       onClick={() => setSettings({
                         ...settings,
                         appearance: { ...settings.appearance, theme: 'dark' }
@@ -3083,7 +3083,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                     </ThemeOption>
 
                     <ThemeOption
-                      active={settings.appearance.theme === 'auto'}
+                      $active={settings.appearance.theme === 'auto'}
                       onClick={() => setSettings({
                         ...settings,
                         appearance: { ...settings.appearance, theme: 'auto' }

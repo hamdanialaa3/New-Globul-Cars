@@ -105,12 +105,22 @@ class SearchAnalyticsService {
   /**
    * 🖱️ LOG CLICK EVENT
    */
-  async logClick(clickEvent: Omit<SearchClickEvent, 'timestamp'>): Promise<void> {
+  async logClick(clickEvent: Omit<SearchClickEvent, 'timestamp'> & { userId?: string }): Promise<void> {
     try {
-      await addDoc(collection(db, 'searchClicks'), {
-        ...clickEvent,
+      // ✅ FIX: Only include userId if it's defined
+      const clickData: any = {
+        searchId: clickEvent.searchId,
+        carId: clickEvent.carId,
+        position: clickEvent.position,
         timestamp: serverTimestamp()
-      });
+      };
+      
+      // Only add userId if it's provided and not undefined
+      if (clickEvent.userId && clickEvent.userId !== undefined) {
+        clickData.userId = clickEvent.userId;
+      }
+
+      await addDoc(collection(db, 'searchClicks'), clickData);
 
       // Update click-through rate for this search
       const searchRef = doc(db, 'searchAnalytics', clickEvent.searchId);
@@ -120,7 +130,7 @@ class SearchAnalyticsService {
         clickPosition: clickEvent.position
       });
 
-      logger.debug('Click event logged');
+      logger.debug('Click event logged', { carId: clickEvent.carId });
 
     } catch (error) {
       logger.error('Failed to log click', error as Error);

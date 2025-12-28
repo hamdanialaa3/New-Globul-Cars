@@ -14,6 +14,7 @@ import { useProfileType } from '../../../../contexts/ProfileTypeContext';
 import type { ProfileType } from '../../../../contexts/ProfileTypeContext';
 import { logger } from '../../../../services/logger-service';
 import { getCarDetailsUrl } from '../../../../utils/routing-utils';
+import { TrustScoreWidget } from '../../../../components/trust';
 // NEW: Profile Type-Specific Components
 import PrivateProfile from './components/PrivateProfile';
 import DealerProfile from './components/DealerProfile';
@@ -843,6 +844,13 @@ const ProfilePage: React.FC = () => {
 
             {/* Profile Content */}
             <S.ProfileContent>
+            
+            {/* Trust Score Widget - For all profiles */}
+            {user?.uid && (
+              <div style={{ marginTop: '24px' }}>
+                <TrustScoreWidget userId={user.uid} compact={false} />
+              </div>
+            )}
             
             {/* Community Feed Widget - Latest Posts */}
             {isOwnProfile && (

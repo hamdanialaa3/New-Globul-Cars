@@ -26,14 +26,14 @@ const Footer: React.FC = () => {
             <div className="footer-brand">
               <img
                 src="/Logo1.png"
-                alt="Bulgarski Mobili Logo"
+                alt="Bulgarski Avtomobili Logo"
                 className="footer-logo footer-logo-enhanced"
                 style={{ width: '50px', height: '50px', objectFit: 'contain' }}
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = '/Logo1.png';
                 }}
               />
-              <h3 className="footer-title">Bulgarski Mobili</h3>
+              <h3 className="footer-title">Bulgarski Avtomobili</h3>
             </div>
             <p className="footer-description">
               {t('footer.description')}
@@ -117,7 +117,7 @@ const Footer: React.FC = () => {
         <div className="footer-bottom">
           <div className="footer-bottom-content">
             <p className="copyright">
-              © {currentYear} Bulgarski Mobili. {t('footer.rights')}
+              © {currentYear} Bulgarski Avtomobili. {t('footer.rights')}
             </p>
             <div className="footer-bottom-links">
               <a href="/privacy-policy">{t('footer.privacy')}</a>

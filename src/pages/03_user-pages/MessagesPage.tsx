@@ -821,7 +821,7 @@ const MessagesPage: React.FC = () => {
                         <LastMessage>
                           {conv.lastMessage?.text || t('messages.startedChat', 'Started a chat')}
                         </LastMessage>
-                        {unread > 0 && <Badge variant="primary" size="sm" rounded>{unread}</Badge>}
+                        {unread > 0 && <Badge variant="primary" size="sm" $rounded>{unread}</Badge>}
                       </div>
                       {conv.carTitle && (
                         <Badge variant="light" size="sm" style={{ marginTop: '4px' }}>

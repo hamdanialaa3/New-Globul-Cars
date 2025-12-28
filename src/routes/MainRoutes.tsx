@@ -92,6 +92,9 @@ const QuickSetupPage = safeLazy(() => import('../pages/06_admin/QuickSetupPage')
 const CloudServicesManager = safeLazy(() => import('../pages/06_admin/CloudServicesManager'));
 const DevelopmentToolsPage = safeLazy(() => import('../pages/11_testing-dev/DevelopmentToolsPage'));
 const CityCarsPage = safeLazy(() => import('../pages/seo/CityCarsPage'));
+const BrandCityPage = safeLazy(() => import('../pages/seo/BrandCityPage'));
+const NewCarsPage = safeLazy(() => import('../pages/seo/NewCarsPage'));
+const AccidentCarsPage = safeLazy(() => import('../pages/seo/AccidentCarsPage'));
 const NotFoundPage = safeLazy(() => import('../components/NotFoundPage'));
 
 // Helper for dev tools components
@@ -228,7 +231,10 @@ export const MainRoutes: React.FC = () => {
             <Route path="/all-users" element={<UsersDirectoryPage />} />
             <Route path="/all-posts" element={<AllPostsPage />} />
             <Route path="/all-cars" element={<AllCarsPage />} />
+            <Route path="/koli/novi" element={<NewCarsPage />} />
+            <Route path="/koli/avarijni" element={<AccidentCarsPage />} />
             <Route path="/koli/:city" element={<CityCarsPage />} />
+            <Route path="/koli/:city/:brand" element={<BrandCityPage />} />
             <Route path="/messages" element={<MessagesPage />} />
             <Route
                 path="/events"

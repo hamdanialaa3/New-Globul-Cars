@@ -45,9 +45,11 @@ export const hybridAIProxy = hybridAI.hybridAIProxy;
 // SEO & Analytics Strategy (Phase 1 Fixes)
 import * as indexing from './seo/indexing-service';
 import * as bqAnalytics from './analytics/bigquery-service';
+import * as prerender from './seo/prerender';
 
 export const requestIndexing = indexing.requestIndexing;
 export const logSearchEvent = bqAnalytics.logSearchEvent;
+export const prerenderSEO = prerender.prerender;
 
 // Hybrid AI Engine (Phase 2 - Gemini + DeepSeek) 🧠
 import { onCall, HttpsError } from "firebase-functions/v2/https";

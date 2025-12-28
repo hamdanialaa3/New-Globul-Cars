@@ -45,9 +45,15 @@ class NotificationSoundService {
       this.audio.volume = this.volume;
       this.audio.preload = 'auto';
       
-      // Handle errors
+      // Handle errors - silence 404 errors in console
       this.audio.addEventListener('error', (e) => {
-        logger.error('[NotificationSound] Audio failed to load', e as any);
+        // Suppress 404 errors (file not found) - optional feature
+        if (this.audio && (this.audio as any).error?.code === 4) {
+          logger.warn('[NotificationSound] Audio file not found (optional feature disabled)');
+          this.enabled = false; // Auto-disable if file missing
+        } else {
+          logger.error('[NotificationSound] Audio failed to load', e as any);
+        }
       });
     } catch (error) {
       logger.error('[NotificationSound] Failed to initialize audio', error as Error);

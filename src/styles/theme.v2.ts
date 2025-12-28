@@ -33,6 +33,12 @@ export const colorTokens = {
     tertiary: '#1d4ed8',     // Company Blue - Corporate Fleet (الشركات)
     dark: '#003366',         // Professional Navy - Headers (الهيدر)
     light: '#FFF8F5',        // Soft Cream - Backgrounds (الخلفيات)
+    // Bulgarian National Colors - الألوان الوطنية البلغارية
+    bulgarian: {
+      white: '#FFFFFF',      // Бяло - White
+      green: '#00966E',      // Зелено - Green (Bulgarian flag green)
+      red: '#D62612',        // Червено - Red (Bulgarian flag red)
+    },
   },
 
   // ─────────────────────────────────────────────────────────────────────────

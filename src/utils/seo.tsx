@@ -32,7 +32,7 @@ export interface SEOProps {
  * />
  */
 export const SEO: React.FC<SEOProps> = ({
-  title = 'Bulgarski Mobili - Най-добрата платформа за автомобили в България',
+  title = 'Bulgarski Avtomobili - Най-добрата платформа за автомобили в България',
   description = 'Купувайте и продавайте автомобили в България. Хиляди обяви, проверени продавачи, безплатна регистрация.',
   keywords = 'автомобили България, коли втора ръка, продажба коли, купуване коли, автомобили София',
   image = '/og-image.jpg',
@@ -97,7 +97,7 @@ export const SEO: React.FC<SEOProps> = ({
       <meta property="og:description" content={description} />
       <meta property="og:image" content={fullImage} />
       <meta property="og:locale" content={locale} />
-      <meta property="og:site_name" content="Bulgarski Mobili" />
+      <meta property="og:site_name" content="Bulgarski Avtomobili" />
       {publishedTime && <meta property="article:published_time" content={publishedTime} />}
       {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
 

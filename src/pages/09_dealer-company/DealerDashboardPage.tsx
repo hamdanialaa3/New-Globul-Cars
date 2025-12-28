@@ -1,19 +1,26 @@
-// src/pages/DealerDashboardPage.tsx
-// Complete Dealer Dashboard
+// src/pages/09_dealer-company/DealerDashboardPage.tsx
+// Dealer Dashboard Page - Complete with Widgets
+// لوحة تحكم التاجر الكاملة مع Widgets
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../contexts/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { 
-  BarChart3, Package, MessageSquare, Star, 
-  TrendingUp, DollarSign, Users, Eye 
-} from 'lucide-react';
+import { dealerDashboardService, DealerDashboardData } from '../../services/dealer/dealer-dashboard.service';
+import {
+  PerformanceOverviewWidget,
+  TopListingsWidget,
+  AlertsWidget,
+  TasksWidget
+} from '../../components/dealer';
+import { Package, TrendingUp } from 'lucide-react';
 
 const Container = styled.div`
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 `;
 
 const Header = styled.div`
@@ -21,9 +28,13 @@ const Header = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 2rem;
+  font-size: 2.5rem;
+  font-weight: 700;
   color: #2c3e50;
   margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
 
 const Subtitle = styled.p`
@@ -31,9 +42,9 @@ const Subtitle = styled.p`
   font-size: 1.1rem;
 `;
 
-const StatsGrid = styled.div`
+const StatsOverview = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 `;
@@ -75,115 +86,136 @@ const StatValue = styled.div`
   color: #2c3e50;
 `;
 
-const Card = styled.div`
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+const WidgetsGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+
+  @media (min-width: 1200px) {
+    grid-template-columns: 1fr 1fr;
+  }
+`;
+
+const FullWidthWidget = styled.div`
+  grid-column: 1 / -1;
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 1.25rem;
+  color: #7f8c8d;
+`;
+
+const ErrorContainer = styled.div`
+  background: #fee;
+  border: 1px solid #fcc;
+  border-radius: 8px;
+  padding: 1.5rem;
+  color: #c33;
   margin-bottom: 2rem;
 `;
 
-const CardTitle = styled.h2`
-  font-size: 1.5rem;
-  color: #2c3e50;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-`;
-
-const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-`;
-
-const Th = styled.th`
-  text-align: left;
-  padding: 1rem;
-  border-bottom: 2px solid #e0e0e0;
-  color: #7f8c8d;
-  font-weight: 600;
-`;
-
-const Td = styled.td`
-  padding: 1rem;
-  border-bottom: 1px solid #e0e0e0;
-  color: #2c3e50;
-`;
-
-const StatusBadge = styled.span<{ status: string }>`
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  ${props => {
-    switch (props.status) {
-      case 'active':
-        return 'background: #d4edda; color: #155724;';
-      case 'sold':
-        return 'background: #cce5ff; color: #004085;';
-      case 'draft':
-        return 'background: #fff3cd; color: #856404;';
-      default:
-        return 'background: #e2e3e5; color: #383d41;';
-    }
-  }}
-`;
-
 const DealerDashboardPage: React.FC = () => {
-  const { user } = useAuth();
+  const { currentUser } = useAuth();
   const { language } = useLanguage();
-  const [stats, setStats] = useState({
-    totalProducts: 0,
-    activeProducts: 0,
-    totalViews: 0,
-    totalMessages: 0,
-    totalRevenue: 0,
-    averageRating: 0
-  });
+  const [dashboardData, setDashboardData] = useState<DealerDashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadStats();
-  }, [user]);
+    if (currentUser?.uid) {
+      loadDashboardData();
+    }
+  }, [currentUser]);
 
-  const loadStats = async () => {
-    // In production, load from Firebase
-    // For now, use mock data
-    setStats({
-      totalProducts: 25,
-      activeProducts: 20,
-      totalViews: 1250,
-      totalMessages: 45,
-      totalRevenue: 125000,
-      averageRating: 4.7
-    });
+  const loadDashboardData = async () => {
+    if (!currentUser?.uid) return;
+
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await dealerDashboardService.getDashboardData(currentUser.uid);
+      setDashboardData(data);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMessage);
+      console.error('Error loading dashboard data:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const recentProducts = [
-    { id: 1, title: 'BMW 320d', status: 'active', views: 150, price: 45000 },
-    { id: 2, title: 'Mercedes C200', status: 'active', views: 200, price: 52000 },
-    { id: 3, title: 'Audi A4', status: 'sold', views: 180, price: 38000 }
-  ];
+  const handleDismissAlert = (alertId: string) => {
+    // TODO: Implement alert dismissal logic
+    console.log('Dismiss alert:', alertId);
+  };
+
+  const handleCompleteTask = (taskId: string) => {
+    // TODO: Implement task completion logic
+    console.log('Complete task:', taskId);
+    // Reload dashboard data after completing task
+    if (currentUser?.uid) {
+      loadDashboardData();
+    }
+  };
+
+  if (loading) {
+    return (
+      <Container>
+        <LoadingContainer>
+          {language === 'bg' ? 'Зареждане...' : 'Loading...'}
+        </LoadingContainer>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container>
+        <ErrorContainer>
+          {language === 'bg' 
+            ? `Грешка при зареждане на данните: ${error}`
+            : `Error loading data: ${error}`}
+        </ErrorContainer>
+      </Container>
+    );
+  }
+
+  if (!dashboardData) {
+    return (
+      <Container>
+        <ErrorContainer>
+          {language === 'bg' ? 'Няма данни' : 'No data available'}
+        </ErrorContainer>
+      </Container>
+    );
+  }
 
   return (
     <Container>
       <Header>
-        <Title>{language === 'bg' ? 'Табло за управление' : 'Dealer Dashboard'}</Title>
+        <Title>
+          <Package size={32} />
+          {language === 'bg' ? 'Табло за управление' : 'Dealer Dashboard'}
+        </Title>
         <Subtitle>
-          {language === 'bg' 
+          {language === 'bg'
             ? 'Добре дошли обратно! Ето преглед на вашата дейност.'
             : 'Welcome back! Here\'s an overview of your activity.'}
         </Subtitle>
       </Header>
 
-      <StatsGrid>
+      <StatsOverview>
         <StatCard>
           <StatIcon color="#FF7900">
             <Package size={24} />
           </StatIcon>
           <StatContent>
-            <StatLabel>{language === 'bg' ? 'Общо продукти' : 'Total Products'}</StatLabel>
-            <StatValue>{stats.totalProducts}</StatValue>
+            <StatLabel>{language === 'bg' ? 'Общо обяви' : 'Total Listings'}</StatLabel>
+            <StatValue>{dashboardData.stats.totalListings}</StatValue>
           </StatContent>
         </StatCard>
 
@@ -193,84 +225,44 @@ const DealerDashboardPage: React.FC = () => {
           </StatIcon>
           <StatContent>
             <StatLabel>{language === 'bg' ? 'Активни' : 'Active'}</StatLabel>
-            <StatValue>{stats.activeProducts}</StatValue>
+            <StatValue>{dashboardData.stats.activeListings}</StatValue>
           </StatContent>
         </StatCard>
 
         <StatCard>
           <StatIcon color="#3b82f6">
-            <Eye size={24} />
+            <TrendingUp size={24} />
           </StatIcon>
           <StatContent>
-            <StatLabel>{language === 'bg' ? 'Прегледи' : 'Views'}</StatLabel>
-            <StatValue>{stats.totalViews}</StatValue>
-          </StatContent>
-        </StatCard>
-
-        <StatCard>
-          <StatIcon color="#8b5cf6">
-            <MessageSquare size={24} />
-          </StatIcon>
-          <StatContent>
-            <StatLabel>{language === 'bg' ? 'Съобщения' : 'Messages'}</StatLabel>
-            <StatValue>{stats.totalMessages}</StatValue>
+            <StatLabel>{language === 'bg' ? 'Продадени' : 'Sold'}</StatLabel>
+            <StatValue>{dashboardData.stats.soldListings}</StatValue>
           </StatContent>
         </StatCard>
 
         <StatCard>
           <StatIcon color="#f59e0b">
-            <DollarSign size={24} />
+            <Package size={24} />
           </StatIcon>
           <StatContent>
-            <StatLabel>{language === 'bg' ? 'Приходи' : 'Revenue'}</StatLabel>
-            <StatValue>€{stats.totalRevenue.toLocaleString()}</StatValue>
+            <StatLabel>{language === 'bg' ? 'Чернови' : 'Drafts'}</StatLabel>
+            <StatValue>{dashboardData.stats.draftListings}</StatValue>
           </StatContent>
         </StatCard>
+      </StatsOverview>
 
-        <StatCard>
-          <StatIcon color="#ec4899">
-            <Star size={24} />
-          </StatIcon>
-          <StatContent>
-            <StatLabel>{language === 'bg' ? 'Рейтинг' : 'Rating'}</StatLabel>
-            <StatValue>{stats.averageRating} ⭐</StatValue>
-          </StatContent>
-        </StatCard>
-      </StatsGrid>
+      <WidgetsGrid>
+        <FullWidthWidget>
+          <PerformanceOverviewWidget stats={dashboardData.stats} />
+        </FullWidthWidget>
 
-      <Card>
-        <CardTitle>
-          <BarChart3 size={24} />
-          {language === 'bg' ? 'Последни продукти' : 'Recent Products'}
-        </CardTitle>
+        <FullWidthWidget>
+          <TopListingsWidget listings={dashboardData.topListings} />
+        </FullWidthWidget>
 
-        <Table>
-          <thead>
-            <tr>
-              <Th>{language === 'bg' ? 'Продукт' : 'Product'}</Th>
-              <Th>{language === 'bg' ? 'Статус' : 'Status'}</Th>
-              <Th>{language === 'bg' ? 'Прегледи' : 'Views'}</Th>
-              <Th>{language === 'bg' ? 'Цена' : 'Price'}</Th>
-            </tr>
-          </thead>
-          <tbody>
-            {recentProducts.map((product) => (
-              <tr key={product.id}>
-                <Td>{product.title}</Td>
-                <Td>
-                  <StatusBadge status={product.status}>
-                    {language === 'bg' 
-                      ? (product.status === 'active' ? 'Активен' : 'Продаден')
-                      : (product.status === 'active' ? 'Active' : 'Sold')}
-                  </StatusBadge>
-                </Td>
-                <Td>{product.views}</Td>
-                <Td>€{product.price.toLocaleString()}</Td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </Card>
+        <AlertsWidget alerts={dashboardData.alerts} onDismiss={handleDismissAlert} />
+
+        <TasksWidget tasks={dashboardData.tasks} onComplete={handleCompleteTask} />
+      </WidgetsGrid>
     </Container>
   );
 };
