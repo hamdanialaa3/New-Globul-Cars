@@ -3,7 +3,7 @@
 
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { initializeFirestore, memoryLocalCache } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getFunctions } from 'firebase/functions';
 import { getAnalytics, Analytics } from 'firebase/analytics';
@@ -77,12 +77,14 @@ try {
 }
 export { auth };
 
-// FIX: Use getFirestore to avoid "INTERNAL ASSERTION FAILED" errors
-// Using default Firestore initialization instead of custom cache to prevent state issues
+// FIX: Use memory cache to avoid "INTERNAL ASSERTION FAILED" errors
+// This prevents IndexedDB corruption issues by using in-memory storage only
 let db: any;
 try {
-  db = getFirestore(app);
-  logger.info('Firestore initialized successfully with default cache');
+  db = initializeFirestore(app, {
+    localCache: memoryLocalCache()
+  });
+  logger.info('Firestore initialized with memory cache (no persistence)');
 } catch (error) {
   logger.error('Failed to initialize Firestore', error as Error);
   db = {};
