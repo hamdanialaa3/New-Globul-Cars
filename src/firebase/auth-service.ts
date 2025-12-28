@@ -638,7 +638,7 @@ export class BulgarianAuthService {
       uid: user.uid,
       email: user.email!,
       displayName: user.displayName || '',
-      photoURL: user.photoURL || undefined,
+      photoURL: user.photoURL || null,
       phoneCountryCode: '+359',
       preferredLanguage: 'bg',
       currency: 'EUR',

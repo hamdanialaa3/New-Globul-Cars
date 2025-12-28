@@ -41,3 +41,63 @@ export const aiGenerateCarDescription = deepSeekProxy.aiGenerateCarDescription;
 // AI Services (Hybrid System - Phase 4.1.2 - NEW) ✅
 import * as hybridAI from './ai/hybrid-ai-proxy';
 export const hybridAIProxy = hybridAI.hybridAIProxy;
+
+// SEO & Analytics Strategy (Phase 1 Fixes)
+import * as indexing from './seo/indexing-service';
+import * as bqAnalytics from './analytics/bigquery-service';
+
+export const requestIndexing = indexing.requestIndexing;
+export const logSearchEvent = bqAnalytics.logSearchEvent;
+
+// Hybrid AI Engine (Phase 2 - Gemini + DeepSeek) 🧠
+import { onCall, HttpsError } from "firebase-functions/v2/https";
+import * as logger from "firebase-functions/logger";
+import { AIService } from "./services/ai-service";
+
+const aiService = new AIService();
+
+export const evaluateCar = onCall({ region: "europe-west1", memory: "1GiB" }, async (request) => {
+    // 1. Validate Inputs
+    const { imageBase64, price, marketAvg } = request.data;
+
+    if (!imageBase64) {
+        throw new HttpsError('invalid-argument', 'Image is required for analysis (Base64)');
+    }
+
+    try {
+        logger.info("Starting Hybrid AI Analysis...");
+
+        // 2. Phase 1: Gemini (Vision)
+        const visualData = await aiService.analyzeImage(imageBase64);
+        logger.info("Visual Analysis Complete:", visualData);
+
+        // Merge price with extracted data
+        const carFullData = { ...visualData, price };
+
+        // 3. Phase 2: DeepSeek (Logic)
+        // Usng marketAvg provided by client or fallback
+        const logicVerdict = await aiService.analyzeMarketLogic(carFullData, marketAvg || 50000);
+        logger.info("Logic Analysis Complete:", logicVerdict);
+
+        // 4. Return Full Report
+        return {
+            carDetails: visualData,
+            marketAnalysis: logicVerdict,
+            timestamp: new Date().toISOString()
+        };
+
+    } catch (error) {
+        logger.error("Error in evaluateCar:", error);
+        throw new HttpsError('internal', 'AI Analysis Failed');
+    }
+});
+
+// ✅ NEW: Algolia Real-Time Sync (December 2025)
+import * as algoliaSync from './syncCarsToAlgolia';
+export const syncPassengerCarsToAlgolia = algoliaSync.syncPassengerCarsToAlgolia;
+export const syncSuvsToAlgolia = algoliaSync.syncSuvsToAlgolia;
+export const syncVansToAlgolia = algoliaSync.syncVansToAlgolia;
+export const syncMotorcyclesToAlgolia = algoliaSync.syncMotorcyclesToAlgolia;
+export const syncTrucksToAlgolia = algoliaSync.syncTrucksToAlgolia;
+export const syncBusesToAlgolia = algoliaSync.syncBusesToAlgolia;
+export const batchSyncAllCarsToAlgolia = algoliaSync.batchSyncAllCarsToAlgolia;

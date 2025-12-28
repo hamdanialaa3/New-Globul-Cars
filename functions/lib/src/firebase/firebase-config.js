@@ -71,16 +71,15 @@ catch (error) {
     logger_service_1.logger.error('Failed to initialize Firebase Auth', error);
     throw error;
 }
-// FIX: Explicitly using memory cache to prevent "INTERNAL ASSERTION FAILED"
-// This forces the app to ignore any corrupted IndexedDB data.
+// FIX: Use memory cache to avoid "INTERNAL ASSERTION FAILED" errors
+// This prevents IndexedDB corruption issues by using in-memory storage only
 let db;
 exports.db = db;
 try {
     exports.db = db = (0, firestore_1.initializeFirestore)(app, {
-        localCache: (0, firestore_1.memoryLocalCache)(),
-        ignoreUndefinedProperties: true
+        localCache: (0, firestore_1.memoryLocalCache)()
     });
-    logger_service_1.logger.info('Firestore initialized with MEMORY CACHE (Persistence Disabled)');
+    logger_service_1.logger.info('Firestore initialized with memory cache (no persistence)');
 }
 catch (error) {
     logger_service_1.logger.error('Failed to initialize Firestore', error);

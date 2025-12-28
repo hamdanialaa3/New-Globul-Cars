@@ -11,6 +11,7 @@ import { useAuth } from '../../contexts/AuthProvider';
 import { useFavorites } from '../../hooks/useFavorites';
 import { CarListing } from '../../types/CarListing';
 import { logger } from '../../services/logger-service';
+import PriceBadge from '../car/PriceBadge';
 
 interface CarCardCompactProps {
   car: CarListing | any; // Support both CarListing and BulgarianCar types
@@ -420,6 +421,18 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
             )}
           </>
         )}
+        
+        {/* ✅ NEW: Price Rating Badge */}
+        <PriceBadge
+          price={price}
+          mileage={car.mileage || 0}
+          marketStats={{
+            averagePrice: 15000,
+            avgMileage: 120000,
+            sampleSize: 50
+          }}
+          size="small"
+        />
       </PriceTag>
       
       <CarInfo>

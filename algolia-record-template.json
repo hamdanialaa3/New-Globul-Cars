@@ -1,0 +1,22 @@
+{
+  "objectID": "{{carId}}",
+  "make": "{{make}}",
+  "model": "{{model}}",
+  "year": "{{yearOfManufacture}}",
+  "price": "{{price}}",
+  "fuelType": "{{fuelType}}",
+  "transmission": "{{transmission}}",
+  "mileage": "{{mileage}}",
+  "city": "{{city}}",
+  "region": "{{region}}",
+  "status": "{{status}}",
+  "isActive": "{{isActive}}",
+  "featured": "{{featured}}",
+  "images": "{{images}}",
+  "sellerId": "{{sellerId}}",
+  "sellerNumericId": "{{sellerNumericId}}",
+  "carNumericId": "{{carNumericId}}",
+  "createdAt": "{{_timestamp}}",
+  "searchableText": "{{make}} {{model}} {{yearOfManufacture}} {{fuelType}} {{transmission}} {{city}}",
+  "_tags": ["{{status}}", "{{fuelType}}", "{{transmission}}", "{{city}}"]
+}

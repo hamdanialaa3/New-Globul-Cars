@@ -10,6 +10,8 @@
  * 
  * This becomes the canonical search service for the entire application.
  * 
+ * ✅ ENHANCED: AI-powered natural language search
+ * 
  * @since 2025-11-03 (Phase 2.1)
  */
 
@@ -17,6 +19,7 @@ import { logger } from '../../services/logger-service';
 import { runUnifiedQuery } from './queryOrchestrator';
 import { SearchData } from '../../pages/05_search-browse/advanced-search/AdvancedSearchPage/types';
 import { queryAllCollections } from '../multi-collection-helper';
+import { aiQueryParserService } from './ai-query-parser.service';
 
 export interface SearchQuery {
   text?: string;
@@ -159,6 +162,65 @@ export class UnifiedSearchService {
   async getSearchSuggestions(query: string): Promise<string[]> {
     logger.debug('Getting suggestions', { query });
     return [];
+  }
+
+  /**
+   * AI-Powered Smart Search - Natural Language Understanding
+   * بحث ذكي بالذكاء الاصطناعي - فهم اللغة الطبيعية
+   * 
+   * Examples:
+   * - "سيارة عائلية رخيصة في صوفيا" → Parsed by AI → Structured filters
+   * - "бмв дизел автоматик под 10 хиляди" → AI understands → BMW Diesel Automatic < 10k EUR
+   * - "new electric SUV with leather seats" → AI extracts filters
+   * 
+   * @param naturalQuery - Natural language query (Bulgarian, English, Arabic)
+   * @param page - Page number for pagination
+   * @returns Search results with AI-parsed filters
+   */
+  async aiSmartSearch(naturalQuery: string, page: number = 1): Promise<SearchResult> {
+    logger.info('🤖 AI Smart Search', { naturalQuery, page });
+
+    try {
+      // Check if AI service is available
+      if (!aiQueryParserService.isServiceAvailable()) {
+        logger.warn('AI service not available, falling back to regular search');
+        return this.searchCars({ text: naturalQuery }, page);
+      }
+
+      // Parse natural language with AI
+      const startParse = Date.now();
+      const aiFilters = await aiQueryParserService.parseQuery(naturalQuery);
+      const parseTime = Date.now() - startParse;
+
+      logger.debug('AI parsed filters', { aiFilters, parseTime });
+
+      // Convert AI filters to SearchQuery format
+      const query: SearchQuery = {
+        text: naturalQuery,
+        make: aiFilters.make?.[0],
+        yearFrom: aiFilters.yearMin,
+        yearTo: aiFilters.yearMax,
+        priceFrom: aiFilters.priceMin,
+        priceTo: aiFilters.priceMax,
+        fuelType: aiFilters.fuelType,
+        transmission: aiFilters.transmission,
+        city: aiFilters.city
+      };
+
+      // Execute search with parsed filters
+      const result = await this.searchCars(query, page);
+
+      // Add AI metadata
+      return {
+        ...result,
+        processingMs: (result.processingMs || 0) + parseTime
+      };
+
+    } catch (error) {
+      logger.error('AI Smart Search failed', error as Error);
+      // Fallback to regular search
+      return this.searchCars({ text: naturalQuery }, page);
+    }
   }
 }
 

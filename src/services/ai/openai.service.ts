@@ -36,19 +36,32 @@ interface CarAnalysis {
 
 class OpenAIGPT4Service {
   private static instance: OpenAIGPT4Service;
-  private openai: OpenAI;
+  private openai: OpenAI | null = null;
   private model = 'gpt-4-turbo-preview';
   private costPer1kTokens = {
     input: 0.03,
     output: 0.06
   };
+  private isConfigured: boolean = false;
 
   private constructor() {
     const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
     if (!apiKey) {
-      logger.warn('OpenAI API Key not configured');
+      logger.warn('⚠️ OpenAI API Key not configured - AI features will be disabled');
+      this.isConfigured = false;
+    } else {
+      try {
+        this.openai = new OpenAI({ 
+          apiKey,
+          dangerouslyAllowBrowser: true 
+        });
+        this.isConfigured = true;
+        logger.info('✅ OpenAI service initialized');
+      } catch (error) {
+        logger.error('Failed to initialize OpenAI', error as Error);
+        this.isConfigured = false;
+      }
     }
-    this.openai = new OpenAI({ apiKey });
   }
 
   static getInstance(): OpenAIGPT4Service {
@@ -59,9 +72,20 @@ class OpenAIGPT4Service {
   }
 
   /**
+   * Check if OpenAI is available
+   */
+  isAvailable(): boolean {
+    return this.isConfigured && this.openai !== null;
+  }
+
+  /**
    * Chat with GPT-4
    */
   async chat(message: string, systemPrompt?: string): Promise<GPT4Response> {
+    if (!this.isAvailable()) {
+      throw new Error('OpenAI service not available - API key not configured');
+    }
+
     try {
       logger.info('GPT-4 Chat started', { messageLength: message.length });
 

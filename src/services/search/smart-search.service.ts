@@ -2,6 +2,7 @@ import { logger } from '../logger-service';
 // Smart Search Service - Intelligent Keyword-Based Search
 // خدمة البحث الذكي - بحث ذكي بالكلمات المفتاحية
 // 🎯 100% Real - Connected to Firestore
+// ✅ ENHANCED: Bulgarian language support via synonyms service
 
 import {
   collection,
@@ -21,6 +22,7 @@ import { serviceLogger } from '../logger-service';
 import { homePageCache, CACHE_KEYS } from '../homepage-cache.service';
 import { searchHistoryService } from './search-history.service';
 import { searchPersonalizationService } from './search-personalization.service';
+import { bulgarianSynonymsService } from './bulgarian-synonyms.service';
 
 interface SmartSearchResult {
   cars: (CarListing | UnifiedCar)[];
@@ -238,9 +240,24 @@ class SmartSearchService {
    * Parse keywords intelligently
    * تحليل الكلمات المفتاحية بذكاء
    * 🎯 ENHANCED: Smart model detection (A4 → Audi, C320 → Mercedes)
+   * ✅ NEW: Bulgarian language support (мерцедес → Mercedes, дизел → Diesel)
    */
   private parseKeywords(keywords: string): ParsedKeywords {
-    const lower = keywords.toLowerCase().trim();
+    // ⚡ STEP 0: Bulgarian Support - Translate and expand query
+    const translated = bulgarianSynonymsService.translateToEnglish(keywords);
+    const expanded = bulgarianSynonymsService.expandQuery(keywords);
+    
+    // Combine original + translated + expanded for maximum coverage
+    const combinedQuery = `${keywords} ${translated} ${expanded.join(' ')}`;
+    
+    serviceLogger.debug('Bulgarian query expansion', {
+      original: keywords,
+      translated,
+      expandedCount: expanded.length,
+      isCyrillic: bulgarianSynonymsService.isCyrillic(keywords)
+    });
+    
+    const lower = combinedQuery.toLowerCase().trim();
     const words = lower.split(/\s+/);
     
     const parsed: ParsedKeywords = {
@@ -651,6 +668,64 @@ class SmartSearchService {
   ): Promise<(CarListing | UnifiedCar)[]> {
     const result = await this.search(keywords, undefined, 1, limit);
     return result.cars;
+  }
+
+  /**
+   * Get autocomplete suggestions for search
+   * احصل على اقتراحات الإكمال التلقائي للبحث
+   */
+  async getAutocompleteSuggestions(
+    query: string,
+    maxSuggestions: number = 10
+  ): Promise<string[]> {
+    if (!query || query.trim().length < 2) {
+      return [];
+    }
+
+    try {
+      // Parse the query to detect brands/models
+      const parsed = this.parseKeywords(query);
+      const suggestions: string[] = [];
+
+      // Add detected brand-model combinations
+      if (parsed.brands.length > 0) {
+        parsed.brands.forEach(brand => {
+          if (parsed.models.length > 0) {
+            parsed.models.forEach(model => {
+              suggestions.push(`${brand} ${model}`);
+            });
+          } else {
+            suggestions.push(brand);
+          }
+        });
+      }
+
+      // Add model suggestions if detected
+      if (parsed.models.length > 0 && parsed.brands.length === 0) {
+        parsed.models.forEach(model => {
+          const brands = this.MODEL_TO_BRAND_MAP[model.toLowerCase()];
+          if (brands && brands.length > 0) {
+            suggestions.push(`${brands[0]} ${model}`);
+          }
+        });
+      }
+
+      // Add year suggestions
+      if (parsed.years.length > 0) {
+        parsed.years.forEach(year => {
+          if (parsed.brands.length > 0) {
+            suggestions.push(`${parsed.brands[0]} ${year}`);
+          }
+        });
+      }
+
+      // Remove duplicates and limit
+      const uniqueSuggestions = [...new Set(suggestions)];
+      return uniqueSuggestions.slice(0, maxSuggestions);
+    } catch (error) {
+      logger.error('Failed to get autocomplete suggestions', error as Error);
+      return [];
+    }
   }
 }
 

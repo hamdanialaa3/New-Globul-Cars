@@ -118,10 +118,10 @@ class NumericMessagingSystemService {
 
       // 3️⃣ Get sender profile for display
       const senderName = senderProfile.displayName || 'Anonymous';
-      const senderPhoto = senderProfile.photoURL || undefined;
+      const senderPhoto = senderProfile.photoURL || null;
 
       const recipientName = recipientData.displayName || 'User';
-      const recipientPhoto = recipientData.photoURL || undefined;
+      const recipientPhoto = recipientData.photoURL || null;
 
       // 4️⃣ Validate message content
       if (!messageData.subject || messageData.subject.trim().length === 0) {

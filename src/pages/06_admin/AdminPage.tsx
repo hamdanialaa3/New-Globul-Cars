@@ -6,8 +6,9 @@ import { logger } from '../../services/logger-service';
 import { VerificationQueue } from './components/VerificationQueue/VerificationQueue';
 import { RevenueMonitor } from './components/RevenueMonitor/RevenueMonitor';
 import { UserManager } from './components/UserManager/UserManager';
+import { SearchAnalyticsDashboard } from '../admin/SearchAnalyticsDashboard';
 import { adminService } from '../../services/admin/admin-service';
-import { Shield, Users, CreditCard, LayoutDashboard, LogOut, CheckCircle } from 'lucide-react';
+import { Shield, Users, CreditCard, LayoutDashboard, LogOut, CheckCircle, BarChart3 } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 // --- STYLES ---
@@ -114,7 +115,7 @@ const SUPER_ADMINS = [
 export const AdminPage: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'verifications' | 'revenue' | 'users'>('verifications');
+  const [activeTab, setActiveTab] = useState<'verifications' | 'revenue' | 'users' | 'analytics'>('verifications');
   const [pendingCount, setPendingCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
@@ -209,6 +210,12 @@ export const AdminPage: React.FC = () => {
           >
             <Users size={18} /> Users (God Mode)
           </NavItem>
+          <NavItem
+            active={activeTab === 'analytics'}
+            onClick={() => setActiveTab('analytics')}
+          >
+            <BarChart3 size={18} /> Search Analytics
+          </NavItem>
         </Nav>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -246,6 +253,7 @@ export const AdminPage: React.FC = () => {
         {activeTab === 'verifications' && <VerificationQueue />}
         {activeTab === 'revenue' && <RevenueMonitor />}
         {activeTab === 'users' && <UserManager />}
+        {activeTab === 'analytics' && <SearchAnalyticsDashboard />}
       </Main>
     </Container>
   );

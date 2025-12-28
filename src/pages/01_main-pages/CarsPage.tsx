@@ -28,7 +28,17 @@ import { Virtuoso } from 'react-virtuoso';
 import { useIsMobile } from '../../hooks/useBreakpoint';
 import { smartSearchService } from '../../services/search/smart-search.service';
 import { searchHistoryService } from '../../services/search/search-history.service';
-import { Search, X, Clock, TrendingUp, Sparkles, SlidersHorizontal } from 'lucide-react';
+import { searchAnalyticsService } from '../../services/analytics/search-analytics.service';
+import { SmartAutocomplete } from '../../components/Search/SmartAutocomplete';
+import AISearchButton from '../../components/Search/AISearchButton';
+import SaveSearchButton from '../../components/Search/SaveSearchButton';
+import { SearchCriteria } from '../../services/search/saved-searches-alerts.service';
+import { Search, X, Clock, TrendingUp, Sparkles, SlidersHorizontal, ChevronLeft, ChevronRight } from 'lucide-react';
+
+// ⚡ NEW PERFORMANCE SERVICES - Phase 2 Optimization
+import { queryOptimizationService } from '../../services/search/query-optimization.service';
+import { paginationService, PaginationState } from '../../services/search/pagination.service';
+import { browserCacheStrategy } from '../../services/search/browser-cache-strategy.service';
 
 const PALETTE = {
   primary: '#0B5FFF',
@@ -613,6 +623,85 @@ const SuggestionItem = styled.button`
   }
 `;
 
+// ⚡ NEW: Pagination Controls
+const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 48px;
+  padding: 24px;
+  background: ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.9)'};
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : theme.colors.grey[200]};
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 16px;
+  }
+`;
+
+const PaginationInfo = styled.div`
+  font-size: 0.95rem;
+  color: ${({ theme }) => theme.colors.text.secondary};
+  font-weight: 500;
+  
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+    font-weight: 600;
+  }
+`;
+
+const PaginationButtons = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: center;
+`;
+
+const PageButton = styled.button<{ disabled?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  transition: all 0.2s ease;
+  border: 1px solid ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.15)' : theme.colors.grey[300]};
+  background: ${props => props.disabled 
+    ? 'rgba(100, 100, 100, 0.1)' 
+    : ({ theme }) => theme.mode === 'dark' ? 'rgba(11, 95, 255, 0.15)' : PALETTE.primary};
+  color: ${props => props.disabled 
+    ? 'rgba(150, 150, 150, 0.5)' 
+    : ({ theme }) => theme.mode === 'dark' ? '#fff' : '#fff'};
+  opacity: ${props => props.disabled ? 0.5 : 1};
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    background: ${({ theme }) => theme.mode === 'dark' ? 'rgba(11, 95, 255, 0.25)' : PALETTE.primaryHover};
+    box-shadow: 0 8px 20px rgba(11, 95, 255, 0.25);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+`;
+
+const PageNumber = styled.div`
+  padding: 8px 16px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 1rem;
+`;
+
 // Cars Page Component
 const CarsPage: React.FC = () => {
   const { t, language } = useLanguage();
@@ -630,6 +719,10 @@ const CarsPage: React.FC = () => {
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [isSmartSearchActive, setIsSmartSearchActive] = useState(false);
+  
+  // ⚡ NEW: Pagination State - Phase 2 Optimization
+  const [paginationState, setPaginationState] = useState<PaginationState | null>(null);
+  const [totalCars, setTotalCars] = useState(0);
   
   // Get filters from URL
   const cityId = searchParams.get('city');
@@ -660,7 +753,37 @@ const CarsPage: React.FC = () => {
     return () => clearTimeout(timer);
   }, [searchQuery, user]);
 
-  // ⚡ NEW: Handle smart search
+  // ⚡ NEW: Handle AI search filters
+  const handleAISearch = async (aiFilters: any) => {
+    setIsSearching(true);
+    setLoading(true);
+    setShowSuggestions(false);
+    setIsSmartSearchActive(true);
+
+    try {
+      // Convert AI filters to search query
+      const combinedQuery = [
+        searchQuery,
+        aiFilters.make?.join(' '),
+        aiFilters.model?.join(' '),
+        aiFilters.fuelType,
+        aiFilters.transmission,
+        aiFilters.city
+      ].filter(Boolean).join(' ');
+
+      const result = await smartSearchService.search(combinedQuery, user?.uid, 1, 100);
+      setCars(result.cars as CarListing[]);
+      logger.info('AI search completed', { aiFilters, resultsCount: result.cars.length });
+    } catch (err) {
+      logger.error('AI search failed', err as Error);
+      setError('Search failed. Please try again.');
+    } finally {
+      setIsSearching(false);
+      setLoading(false);
+    }
+  };
+
+  // ⚡ NEW: Handle smart search with analytics
   const handleSmartSearch = async () => {
     if (!searchQuery.trim()) {
       // Reset to normal mode if search is empty
@@ -673,11 +796,27 @@ const CarsPage: React.FC = () => {
     setShowSuggestions(false);
     setIsSmartSearchActive(true); // Mark that we're in smart search mode
     
+    const startTime = Date.now();
+    
     // 🔍 DEBUG: Log search attempt
     console.log('🔍 Starting smart search...', { query: searchQuery });
     
     try {
       const result = await smartSearchService.search(searchQuery, user?.uid, 1, 100);
+      const processingTime = Date.now() - startTime;
+      
+      // 📊 Log search to analytics (only if user is logged in)
+      if (user?.uid) {
+        await searchAnalyticsService.logSearch({
+          query: searchQuery,
+          resultsCount: result.cars.length,
+          processingTime,
+          source: 'direct',
+          filters: {},
+          userId: user.uid,
+          language
+        });
+      }
       
       // 🔍 DEBUG: Log results
       console.log('✅ Smart search completed!', {
@@ -685,6 +824,7 @@ const CarsPage: React.FC = () => {
         resultsCount: result.cars.length,
         totalCount: result.totalCount,
         isPersonalized: result.isPersonalized,
+        processingTime: `${processingTime}ms`,
         firstCar: result.cars[0] ? {
           id: result.cars[0].id,
           make: result.cars[0].make,
@@ -701,6 +841,7 @@ const CarsPage: React.FC = () => {
           carsCount: result.cars.length,
           totalCount: result.totalCount,
           isPersonalized: result.isPersonalized,
+          processingTime,
           firstCar: result.cars[0] ? {
             make: result.cars[0].make,
             model: result.cars[0].model,
@@ -718,19 +859,46 @@ const CarsPage: React.FC = () => {
       logger.info('Smart search completed', { 
         query: searchQuery, 
         results: result.totalCount,
-        personalized: result.isPersonalized 
+        personalized: result.isPersonalized,
+        processingTime
       });
     } catch (err) {
+      const processingTime = Date.now() - startTime;
       console.error('❌ Smart search error:', err);
       logger.error('❌ Smart Search FAILED', err as Error, {
         context: 'CarsPage',
         action: 'smartSearch'
       });
+      
+      // Log failed search
+      await searchAnalyticsService.logSearch({
+        query: searchQuery,
+        resultsCount: 0,
+        processingTime,
+        source: 'direct',
+        filters: {},
+        userId: user?.uid,
+        language
+      });
+      
       setError('Search failed');
       setCars([]); // Clear cars on error
     } finally {
       setIsSearching(false);
       setLoading(false);
+    }
+  };
+
+  // Track car click for analytics
+  const handleCarClick = async (car: CarListing, position: number) => {
+    // Track click-through for search analytics
+    if (isSmartSearchActive && searchQuery) {
+      await searchAnalyticsService.logClick({
+        carId: car.id,
+        position,
+        query: searchQuery,
+        userId: user?.uid
+      });
     }
   };
 
@@ -744,44 +912,37 @@ const CarsPage: React.FC = () => {
     }, 100);
   };
 
-  // Load cars from Firebase with caching ⚡
+  // ⚡ OPTIMIZED: Load cars with Query Optimization + Browser Cache + Pagination
   useEffect(() => {
     // Skip loading if smart search is active
     if (isSmartSearchActive) {
       return;
     }
     
-    const loadCars = async () => {
+    const loadCarsOptimized = async () => {
+      const startTime = performance.now();
+      
       try {
         setLoading(true);
         setError(null);
         
-        // Read filters from URL params INSIDE useEffect
-        const regionParam = searchParams.get('city'); // 'city' param is actually region!
+        // Read filters from URL params
+        const regionParam = searchParams.get('city');
         const makeParam = searchParams.get('make');
+        const pageParam = parseInt(searchParams.get('page') || '1', 10);
         
-        logger.info('🔍 URL params:', { regionParam, makeParam });
-        logger.info('Loading cars with filters', { region: regionParam, make: makeParam });
+        logger.info('🔍 CarsPage - Loading with filters', { regionParam, makeParam, page: pageParam });
 
-        // ✅ FIXED: Build filters object compatible with unifiedCarService.searchCars
+        // Build filters object
         const filters: Record<string, unknown> = {
-          isActive: true,  // Only show active cars
-          isSold: false    // Hide sold cars
+          isActive: true,
+          isSold: false
         };
 
-        // Add region filter if provided (region is the primary location field)
-        if (regionParam) {
-          filters.region = regionParam;
-          logger.info('🎯 Filtering by region', { region: regionParam });
-        }
+        if (regionParam) filters.region = regionParam;
+        if (makeParam) filters.make = makeParam;
 
-        // Add make (brand) filter if provided
-        if (makeParam) {
-          filters.make = makeParam;
-          logger.info('🎯 Filtering by make', { make: makeParam });
-        }
-
-        // ✅ ADDED: Read all filter params from URL and apply them
+        // Add all URL filter params
         const modelParam = searchParams.get('model');
         const fuelTypeParam = searchParams.get('fuelType');
         const transmissionParam = searchParams.get('transmission');
@@ -789,9 +950,6 @@ const CarsPage: React.FC = () => {
         const priceMaxParam = searchParams.get('priceMax');
         const yearMinParam = searchParams.get('yearMin');
         const yearMaxParam = searchParams.get('yearMax');
-        // const mileageMinParam = searchParams.get('mileageMin');
-        // const mileageMaxParam = searchParams.get('mileageMax');
-        // const bodyTypeParam = searchParams.get('bodyType');
 
         if (modelParam) filters.model = modelParam;
         if (fuelTypeParam) filters.fuelType = fuelTypeParam;
@@ -800,41 +958,26 @@ const CarsPage: React.FC = () => {
         if (priceMaxParam) filters.maxPrice = parseFloat(priceMaxParam);
         if (yearMinParam) filters.minYear = parseInt(yearMinParam);
         if (yearMaxParam) filters.maxYear = parseInt(yearMaxParam);
-        // Note: mileage filters would need to be added to CarFilters interface if needed
 
-        if (!regionParam && !makeParam) {
-          logger.info('📋 No filters - loading all active cars');
-        }
-
-        // ⚡ Fetch cars with caching (5 minute cache) using unifiedCarService
-        const cacheKey = makeParam && regionParam 
-          ? `cars-${regionParam}-${makeParam}`
-          : regionParam 
-            ? cacheKeys.carsByCity(regionParam)
-            : makeParam 
-              ? cacheKeys.carsByMake(makeParam)
-              : cacheKeys.activeCars();
-
-        logger.info('🔥 Using cache key', { cacheKey });
+        // ⚡ Generate deterministic cache key
+        const cacheKey = browserCacheStrategy.createCacheKey('cars_search', filters, { page: pageParam });
         
-        const carsList = await firebaseCache.getOrFetch(
+        // ⚡ Use Browser Cache Strategy with 5-minute TTL
+        const result = await browserCacheStrategy.getOrFetch(
           cacheKey,
           async () => {
-            logger.info('📡 Fetching from Firebase using unifiedCarService (cache miss)...');
-            // ✅ FIXED: Use unifiedCarService.searchCars instead of non-existent carListingService
-            return await unifiedCarService.searchCars(filters, 100);
+            logger.info('📡 Cache miss - fetching from queryOptimizationService...');
+            // ⚡ Use Query Optimization Service for parallel multi-collection search
+            return await queryOptimizationService.searchWithClientFilters(
+              filters,
+              { page: pageParam, limit: 20 } // 20 cars per page
+            );
           },
-          { duration: 5 * 60 * 1000 } // 5 minutes
+          5 * 60 * 1000 // 5 minutes TTL
         );
         
-        logger.info('📦 Result:', {
-          total: carsList.length,
-          filters: { region: regionParam, make: makeParam },
-          cacheStats: firebaseCache.getStats()
-        });
-        
-        // Convert UnifiedCar[] to CarListing[] format
-        const carListings: CarListing[] = carsList.map((car: any) => ({
+        // Convert to CarListing format
+        const carListings: CarListing[] = result.cars.map((car: any) => ({
           ...car,
           vehicleType: car.vehicleType || 'car',
           sellerType: car.sellerType || 'private',
@@ -848,30 +991,21 @@ const CarsPage: React.FC = () => {
         } as CarListing));
         
         setCars(carListings);
-        logger.debug('CarsPage: Set cars state', {
-          context: 'CarsPage',
-          action: 'setCars',
-          data: {
-            count: carListings.length,
-            firstCar: carListings[0] ? {
-              id: carListings[0].id,
-              make: carListings[0].make,
-              model: carListings[0].model,
-              isActive: carListings[0].isActive,
-              isSold: carListings[0].isSold
-            } : null
-          }
-        });
-        logger.info('✅ Loaded cars', { 
+        setTotalCars(result.totalCount);
+        setPaginationState(result.pagination);
+        
+        const loadTime = performance.now() - startTime;
+        logger.info(`⚡ Cars loaded in ${loadTime.toFixed(0)}ms`, {
           count: carListings.length,
-          region: regionParam || 'all',
-          make: makeParam || 'all'
+          total: result.totalCount,
+          page: pageParam,
+          cacheStats: browserCacheStrategy.getStats()
         });
       } catch (err) {
         const error = err as Error;
         logger.error('❌ Error loading cars', error, {
           context: 'CarsPage',
-          action: 'loadCars'
+          action: 'loadCarsOptimized'
         });
         setError(error.message || 'Failed to load cars');
       } finally {
@@ -879,8 +1013,25 @@ const CarsPage: React.FC = () => {
       }
     };
 
-    loadCars();
+    loadCarsOptimized();
   }, [searchParams, isSmartSearchActive]);
+  
+  // ⚡ Pagination handlers
+  const handleNextPage = () => {
+    if (!paginationState?.hasNextPage) return;
+    const newPage = paginationState.currentPage + 1;
+    searchParams.set('page', newPage.toString());
+    setSearchParams(searchParams);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  
+  const handlePreviousPage = () => {
+    if (!paginationState?.hasPreviousPage) return;
+    const newPage = paginationState.currentPage - 1;
+    searchParams.set('page', newPage.toString());
+    setSearchParams(searchParams);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Get city display name with useMemo ⚡
   const cityDisplayName = useMemo(() => {
@@ -945,63 +1096,33 @@ const CarsPage: React.FC = () => {
               {language === 'bg' ? 'Разширено търсене' : 'Advanced Search'}
             </ActionButton>
             
-            <ActionButton 
-              variant="ai"
-              onClick={() => {
-                window.location.href = '/advanced-search?mode=smart';
-              }}
-              aria-label={language === 'bg' ? 'Търсене с ИИ' : 'AI Search'}
-            >
-              <Sparkles />
-              {language === 'bg' ? 'Търсене с ИИ' : 'AI Search'}
-            </ActionButton>
+            {/* ✅ NEW: AI Smart Search Button */}
+            <AISearchButton
+              query={searchQuery}
+              onSearch={handleAISearch}
+              disabled={isSearching || !searchQuery.trim()}
+              variant="secondary"
+            />
           </ActionButtonsRow>
 
-          {/* Main Search Bar */}
+          {/* Main Search Bar - NEW: Smart Autocomplete */}
           <SearchBarWrapper>
-            <SearchInputContainer>
-              <SearchIconWrapper>
-                <Search />
-              </SearchIconWrapper>
-              
-              <SearchInput
-                type="text"
-                placeholder={language === 'bg' 
-                  ? 'Търси BMW 2020, Diesel, София...' 
-                  : 'Search BMW 2020, Diesel, Sofia...'}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => setShowSuggestions(true)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleSmartSearch();
-                  }
-                }}
-              />
-              
-              <SearchActionsGroup>
-                {searchQuery && (
-                  <ClearButton 
-                    onClick={() => {
-                      setSearchQuery('');
-                      setSuggestions([]);
-                      setIsSmartSearchActive(false); // Reset to normal mode
-                    }}
-                    aria-label={language === 'bg' ? 'Изчисти' : 'Clear'}
-                  >
-                    <X />
-                  </ClearButton>
-                )}
-                
-                <SearchButton
-                  onClick={handleSmartSearch}
-                  disabled={!searchQuery.trim() || isSearching}
-                >
-                  <Search />
-                  {language === 'bg' ? 'Търси' : 'Search'}
-                </SearchButton>
-              </SearchActionsGroup>
-            </SearchInputContainer>
+            <SmartAutocomplete
+              value={searchQuery}
+              onChange={setSearchQuery}
+              onSearch={handleSmartSearch}
+              onSelect={(value) => {
+                setSearchQuery(value);
+                // Auto-trigger search after selection
+                setTimeout(() => handleSmartSearch(), 100);
+              }}
+              placeholder={
+                language === 'bg' 
+                  ? 'Търси марка, модел, град...' 
+                  : 'Search make, model, city...'
+              }
+            />
+          </SearchBarWrapper>
 
           {/* Suggestions Dropdown */}
           {showSuggestions && (suggestions.length > 0 || recentSearches.length > 0) && (
@@ -1043,7 +1164,6 @@ const CarsPage: React.FC = () => {
               )}
             </SuggestionsDropdown>
           )}
-        </SearchBarWrapper>
         </SearchSection>
 
         {/* Loading State */}
@@ -1089,35 +1209,76 @@ const CarsPage: React.FC = () => {
 
         {/* Cars Grid */}
         {!loading && cars.length > 0 && (
-          <CarsGridWrapper>
-            {cars.length > 50 ? (
-              // Use Virtual Scrolling for large lists (50+ items) for better performance
-              <Virtuoso
-                data={cars}
-                itemContent={(index, car) => (
-                  <CarCardCompact key={car.id} car={car} />
-                )}
-                style={{ height: 'calc(100vh - 300px)', minHeight: '600px' }}
-                overscan={10}
-              />
-            ) : (
-              // Use regular grid for smaller lists
-              <ResponsiveGrid
-                columns={{
-                  xs: 1,    // 1 column on mobile
-                  sm: 2,    // 2 columns on small tablets
-                  md: 2,    // 2 columns on tablets
-                  lg: 3,    // 3 columns on desktop
-                  xl: 4     // 4 columns on large desktop
-                }}
-                gap={20}
-              >
-                {cars.map(car => (
-                  <CarCardCompact key={car.id} car={car} />
-                ))}
-              </ResponsiveGrid>
+          <>
+            <CarsGridWrapper>
+              {cars.length > 50 ? (
+                // Use Virtual Scrolling for large lists (50+ items) for better performance
+                <Virtuoso
+                  data={cars}
+                  itemContent={(index, car) => (
+                    <div onClick={() => handleCarClick(car, index)}>
+                      <CarCardCompact key={car.id} car={car} />
+                    </div>
+                  )}
+                  style={{ height: 'calc(100vh - 300px)', minHeight: '600px' }}
+                  overscan={10}
+                />
+              ) : (
+                // Use regular grid for smaller lists
+                <ResponsiveGrid
+                  columns={{
+                    xs: 1,    // 1 column on mobile
+                    sm: 2,    // 2 columns on small tablets
+                    md: 2,    // 2 columns on tablets
+                    lg: 3,    // 3 columns on desktop
+                    xl: 4     // 4 columns on large desktop
+                  }}
+                  gap={20}
+                >
+                  {cars.map((car, index) => (
+                    <div key={car.id} onClick={() => handleCarClick(car, index)}>
+                      <CarCardCompact car={car} />
+                    </div>
+                  ))}
+                </ResponsiveGrid>
+              )}
+            </CarsGridWrapper>
+
+            {/* ⚡ NEW: Pagination Controls */}
+            {paginationState && (paginationState.totalPages > 1) && (
+              <PaginationContainer>
+                <PaginationInfo>
+                  {language === 'bg' ? 'Показани' : 'Showing'}{' '}
+                  <span>{paginationState.offset + 1}</span>-
+                  <span>{Math.min(paginationState.offset + paginationState.limit, totalCars)}</span>{' '}
+                  {language === 'bg' ? 'от' : 'of'}{' '}
+                  <span>{totalCars}</span> {carsCountText}
+                </PaginationInfo>
+
+                <PaginationButtons>
+                  <PageButton
+                    onClick={handlePreviousPage}
+                    disabled={!paginationState.hasPreviousPage}
+                  >
+                    <ChevronLeft />
+                    {language === 'bg' ? 'Предишна' : 'Previous'}
+                  </PageButton>
+
+                  <PageNumber>
+                    {language === 'bg' ? 'Страница' : 'Page'} {paginationState.currentPage} {language === 'bg' ? 'от' : 'of'} {paginationState.totalPages}
+                  </PageNumber>
+
+                  <PageButton
+                    onClick={handleNextPage}
+                    disabled={!paginationState.hasNextPage}
+                  >
+                    {language === 'bg' ? 'Следваща' : 'Next'}
+                    <ChevronRight />
+                  </PageButton>
+                </PaginationButtons>
+              </PaginationContainer>
             )}
-          </CarsGridWrapper>
+          </>
         )}
 
       </PageContainer>

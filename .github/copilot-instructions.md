@@ -290,23 +290,40 @@ src/**/*.spec.{ts,tsx}
 
 - `scripts/ban-console.js` scans `src/` before production builds
 - Replace all `console.log` with `logger.info()` from `@/services/logger-service`
+- Excluded file: `logger-service.ts` itself (only file allowed to use console)
 
 **Path alias not resolving**:
 
 - Check all 3 configs are synchronized: `tsconfig.json`, `craco.config.js`, `jest.config.js`
 - Restart dev server after changing path aliases
+- Clear module cache: `npm run clean:cache`
 
 **Stale assets in browser**:
 
 - CRACO devServer config sends no-cache headers
 - Run `scripts/clear-dev-caches.ps1` to clear npm/browser caches
 - Hard refresh: Ctrl+Shift+R
+- Check webpack memory cache: `cache: { type: 'memory', maxGenerations: 1 }`
 
 **Numeric ID routing broken**:
 
 - Verify `NumericCarDetailsPage.tsx` and `NumericProfileRouter.tsx` are in route config
 - Check Firestore: users must have `numericId`, cars must have `sellerNumericId` + `carNumericId`
 - Migration script: `npx ts-node scripts/migrate-isActive.ts`
+
+**Firestore INTERNAL ASSERTION FAILED (ID: ca9)**:
+
+- Symptom: Persistent Firestore errors in console with Firebase SDK 12.6.0
+- Cause: Multiple active listeners or improper cleanup on unmount
+- Solution: Use memory cache (`memoryLocalCache()`), ensure cleanup in `useEffect` returns
+- Check: Review `FIRESTORE_LISTENERS_FIX.md` for known listener patterns
+
+**Empty Firestore Database / 0 documents synced**:
+
+- Verify Firebase project selection in Firebase Console
+- Check collections exist: `passenger_cars`, `suvs`, `vans`, `motorcycles`, `trucks`, `buses`
+- Verify `.env.local` has correct Firebase credentials (service account key)
+- Add test data manually or use seed scripts in `scripts/`
 
 ### Firebase Local Development
 
@@ -315,6 +332,22 @@ firebase emulators:start    # Starts Firestore/Auth/Functions emulators
 # Emulator UI: http://localhost:4000
 # Firestore: localhost:8080
 # Auth: localhost:9099
+```
+
+**Emulator Data Persistence**: Not configured by default - data cleared on restart
+
+### Port Cleaning (Windows)
+
+Development server stuck on port 3000:
+
+```powershell
+# Automated cleanup
+.\CLEAN_PORT_3000.bat              # Kills processes on port 3000
+npm run clean:3000                 # Alternative via npm script
+
+# Manual cleanup
+netstat -ano | findstr :3000      # Find PID
+taskkill /PID <pid> /F            # Kill process
 ```
 
 ## Bulgarian Market Specifics
@@ -334,24 +367,59 @@ firebase emulators:start    # Starts Firestore/Auth/Functions emulators
 - [docs/STRICT_NUMERIC_ID_SYSTEM.md](../docs/STRICT_NUMERIC_ID_SYSTEM.md) - Detailed numeric ID implementation
 - [CLEANUP_PLAN.md](../CLEANUP_PLAN.md) - Matryoshka structure cleanup (if working on refactoring)
 
+## Translation & Localization
+
+All user-facing text must support Bulgarian (bg) and English (en) via `LanguageContext`:
+
+- **Translation Files**: Located in `src/locales/{bg,en}/` organized by feature
+- **Critical Namespaces**: `common`, `auth`, `advancedSearch`, `carDetails`, `profile`
+- **Access Pattern**: `const { t } = useLanguage(); <p>{t('common.welcome')}</p>`
+- **Missing Keys**: Always check console warnings - missing keys cause runtime errors
+- **Adding Keys**: Update BOTH `bg` and `en` files simultaneously to prevent gaps
+
+**Recent Fix (Dec 28, 2025)**: 40+ missing keys found in Advanced Search - always verify translation coverage before deploying features.
+
+## Algolia Search Integration
+
+Hybrid search architecture combining Firestore (backend) + Algolia (fast frontend):
+
+- **Sync Script**: `scripts/sync-algolia.js` syncs all car collections to Algolia index
+- **Index Config**: `algolia-index-config.json` defines searchable/filterable attributes
+- **Record Template**: `algolia-record-template.json` shows expected document structure
+- **Common Pitfall**: Pass array values to Algolia config (e.g., `searchableAttributes: ['make', 'model']` not string)
+- **Environment Variables**: `REACT_APP_ALGOLIA_APP_ID`, `REACT_APP_ALGOLIA_API_KEY`, `REACT_APP_ALGOLIA_INDEX_NAME`
+
+**Sync Command**: `npm run sync-algolia` (Windows: `SYNC_ALGOLIA_NOW.bat`)
+
+## Firestore Composite Indexes
+
+Complex queries require composite indexes defined in `firestore.indexes.json`:
+
+- **Deploy**: `firebase deploy --only firestore:indexes`
+- **Common Indexes**:
+  - `notifications` collection: `userId` (ASC) + `createdAt` (DESC)
+  - Multi-collection car queries: `isActive` (ASC) + `createdAt` (DESC)
+- **Error Pattern**: "The query requires an index" → Add to `firestore.indexes.json` + deploy
+- **Index Status**: Check Firebase Console → Firestore → Indexes tab
+
 ---
 
-**Version**: 1.4.0  
-**Last Updated**: December 26, 2025  
+**Version**: 1.5.0  
+**Last Updated**: December 28, 2025  
 **Status**: Production
 
-**Key Updates (v1.4.0)**:
+**Key Updates (v1.5.0)**:
+
+- Added Translation & Localization section with best practices
+- Documented Algolia search integration patterns and sync workflow
+- Added Firestore composite index management guidance
+- Clarified recent bug fixes (translation keys, Algolia config, index requirements)
+- Enhanced troubleshooting with Dec 28 lessons learned
+
+**Previous Updates (v1.4.0)**:
 
 - Added User Favorites route to Numeric ID System
 - Expanded React component structure to include all feature directories
 - Added routing best practices (modular route files vs. monolithic AppRoutes.tsx)
 - Documented safeLazy() import pattern requirement
 - Enhanced common pitfalls with route organization guidance
-
-**Previous Updates (v1.3.0)**:
-
-- Added complete path alias reference
-- Documented context barrel export patterns
-- Expanded common pitfalls with hardcoded collection names
-- Added webpack caching clarifications
-- Enhanced bundle analysis guidance

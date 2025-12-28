@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { VisualSearchUpload } from '../../components/visual-search/VisualSearchUpload';
 import { VisualSearchResult } from '../../services/advanced/visual-search.service';
+import { AIEvaluationWidget } from '../../components/ai/AIEvaluationWidget';
 import * as S from './VisualSearchPage.styles';
 
 export const VisualSearchPage: React.FC = () => {
@@ -24,7 +25,7 @@ export const VisualSearchPage: React.FC = () => {
           <S.Badge>{t('visualSearch.badge')}</S.Badge>
           <S.HeroTitle>{t('visualSearch.title')}</S.HeroTitle>
           <S.HeroSubtitle>{t('visualSearch.subtitle')}</S.HeroSubtitle>
-          
+
           <S.HeroFeatures>
             <S.HeroFeature>
               <S.FeatureIcon>📸</S.FeatureIcon>
@@ -44,7 +45,10 @@ export const VisualSearchPage: React.FC = () => {
 
       {/* Upload Section */}
       <S.UploadSection>
-        <VisualSearchUpload onSearchComplete={handleSearchComplete} variant="full" />
+        {/* NEW FUTURISTIC AI WIDGET */}
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'center', margin: '4rem 0' }}>
+          <AIEvaluationWidget />
+        </div>
       </S.UploadSection>
 
       {/* How It Works */}
