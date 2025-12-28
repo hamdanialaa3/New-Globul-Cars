@@ -64,6 +64,12 @@ export const advancedSearch = {
   // Payment & Price
   paymentType: 'Тип плащане',
   price: 'Цена',
+  enterMonth: 'Въведете месец',
+  yesOption: 'Да',
+  noOption: 'Не',
+  purchaseOption: 'Покупка',
+  leasingOption: 'Лизинг',
+  tryQuickSearch: 'Опитайте бързо търсене',
   
   // Registration & History
   firstRegistration: 'Първа регистрация',

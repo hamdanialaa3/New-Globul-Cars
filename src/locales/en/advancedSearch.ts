@@ -62,6 +62,12 @@ export const advancedSearch = {
   // Payment & Price
   paymentType: 'Payment Type',
   price: 'Price',
+  enterMonth: 'Enter Month',
+  yesOption: 'Yes',
+  noOption: 'No',
+  purchaseOption: 'Purchase',
+  leasingOption: 'Leasing',
+  tryQuickSearch: 'Try Quick Search',
   
   // Registration & History
   firstRegistration: 'First Registration',
