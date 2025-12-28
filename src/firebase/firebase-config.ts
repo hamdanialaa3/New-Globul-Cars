@@ -78,9 +78,7 @@ try {
 export { auth };
 
 // FIX: Use getFirestore to avoid "INTERNAL ASSERTION FAILED" errors
-// The initializeFirestore with custom cache can cause state management issues
-import { getFirestore } from 'firebase/firestore';
-
+// Using default Firestore initialization instead of custom cache to prevent state issues
 let db: any;
 try {
   db = getFirestore(app);
