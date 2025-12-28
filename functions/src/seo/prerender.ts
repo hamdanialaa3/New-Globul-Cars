@@ -201,7 +201,6 @@ async function getCarPageData(sellerNumericId: number, carNumericId: number): Pr
           year: carData.firstRegistration || carData.year,
           price: carData.price || carData.netPrice,
           location: carData.location,
-          description: carData.description,
           sellerName: userData.displayName || userData.name,
           sellerType: userData.profileType || 'private',
         };
@@ -364,7 +363,7 @@ export const prerender = functions
     memory: '512MB',
     timeoutSeconds: 60,
   })
-  .https.onRequest(async (req, res) => {
+  .https.onRequest(async (req, res): Promise<void> => {
     try {
       const url = (req.query.url as string) || req.path;
 
@@ -373,7 +372,8 @@ export const prerender = functions
       if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
         res.set('Content-Type', 'text/html');
         res.set('Cache-Control', 'public, max-age=21600'); // 6 hours
-        return res.send(cached.html);
+        res.send(cached.html);
+        return;
       }
 
       // Check if prerenderable
@@ -392,7 +392,8 @@ export const prerender = functions
 </body>
 </html>`;
         res.set('Content-Type', 'text/html');
-        return res.send(spaTemplate);
+        res.send(spaTemplate);
+        return;
       }
 
       // Fetch page data

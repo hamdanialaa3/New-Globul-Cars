@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.batchSyncAllCarsToAlgolia = exports.syncBusesToAlgolia = exports.syncTrucksToAlgolia = exports.syncMotorcyclesToAlgolia = exports.syncVansToAlgolia = exports.syncSuvsToAlgolia = exports.syncPassengerCarsToAlgolia = exports.evaluateCar = exports.logSearchEvent = exports.requestIndexing = exports.hybridAIProxy = exports.aiGenerateCarDescription = exports.aiGenerateText = exports.syncCarsToFacebookAds = exports.syncCarsToGoogleAds = exports.sitemap = exports.cleanupDeletedImages = exports.optimizeUploadedImage = exports.updateMerchantFeedCache = exports.merchantFeedGenerator = exports.cleanupOldNotifications = exports.notifyFollowersOnNewCar = exports.dailyReminder = exports.onVerificationUpdate = exports.onNewOffer = exports.onNewInquiry = exports.onCarViewed = exports.onNewMessage = exports.onPriceUpdate = exports.onNewCarPosted = void 0;
+exports.batchSyncAllCarsToAlgolia = exports.syncBusesToAlgolia = exports.syncTrucksToAlgolia = exports.syncMotorcyclesToAlgolia = exports.syncVansToAlgolia = exports.syncSuvsToAlgolia = exports.syncPassengerCarsToAlgolia = exports.evaluateCar = exports.prerenderSEO = exports.logSearchEvent = exports.requestIndexing = exports.hybridAIProxy = exports.aiGenerateCarDescription = exports.aiGenerateText = exports.syncCarsToFacebookAds = exports.syncCarsToGoogleAds = exports.sitemap = exports.cleanupDeletedImages = exports.optimizeUploadedImage = exports.updateMerchantFeedCache = exports.merchantFeedGenerator = exports.cleanupOldNotifications = exports.notifyFollowersOnNewCar = exports.dailyReminder = exports.onVerificationUpdate = exports.onNewOffer = exports.onNewInquiry = exports.onCarViewed = exports.onNewMessage = exports.onPriceUpdate = exports.onNewCarPosted = void 0;
 const notifications = require("./notifications");
 const merchantFeed = require("./merchant-feed");
 const imageOptimizer = require("./image-optimizer");
@@ -40,8 +40,10 @@ exports.hybridAIProxy = hybridAI.hybridAIProxy;
 // SEO & Analytics Strategy (Phase 1 Fixes)
 const indexing = require("./seo/indexing-service");
 const bqAnalytics = require("./analytics/bigquery-service");
+const prerender = require("./seo/prerender");
 exports.requestIndexing = indexing.requestIndexing;
 exports.logSearchEvent = bqAnalytics.logSearchEvent;
+exports.prerenderSEO = prerender.prerender;
 // Hybrid AI Engine (Phase 2 - Gemini + DeepSeek) 🧠
 const https_1 = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");

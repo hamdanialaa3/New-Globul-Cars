@@ -408,7 +408,7 @@ class BulgarianAuthService {
             uid: user.uid,
             email: user.email,
             displayName: user.displayName || '',
-            photoURL: user.photoURL || null,
+            photoURL: user.photoURL || undefined,
             phoneCountryCode: '+359',
             preferredLanguage: 'bg',
             currency: 'EUR',
