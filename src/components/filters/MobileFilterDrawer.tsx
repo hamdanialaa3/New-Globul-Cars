@@ -10,11 +10,15 @@ const Backdrop = styled.div<{ $isOpen: boolean }>`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
+  background: ${({ theme }) =>
+    theme.mode === 'dark' 
+      ? 'rgba(0, 0, 0, 0.75)'
+      : 'rgba(0, 0, 0, 0.5)'};
+  z-index: 1000;
   opacity: ${props => props.$isOpen ? 1 : 0};
   visibility: ${props => props.$isOpen ? 'visible' : 'hidden'};
   transition: opacity 0.3s ease, visibility 0.3s ease;
+  backdrop-filter: blur(4px);
 `;
 
 // Drawer container
@@ -23,15 +27,24 @@ const DrawerContainer = styled.div<{ $isOpen: boolean }>`
   bottom: 0;
   left: 0;
   right: 0;
-  background: white;
+  background: ${({ theme }) =>
+    theme.mode === 'dark' 
+      ? 'linear-gradient(160deg, #0c1220 0%, #050914 100%)'
+      : '#ffffff'};
   border-radius: 20px 20px 0 0;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
-  max-height: 90vh;
+  box-shadow: ${({ theme }) =>
+    theme.mode === 'dark'
+      ? '0 -8px 32px rgba(0, 0, 0, 0.6)'
+      : '0 -4px 20px rgba(0, 0, 0, 0.15)'};
+  z-index: 1001;
+  max-height: 80vh;
   transform: translateY(${props => props.$isOpen ? '0' : '100%'});
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
   display: flex;
   flex-direction: column;
+  border: 1px solid ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : '#e5e7eb'};
+  backdrop-filter: blur(20px);
   
   /* iOS safe area */
   padding-bottom: env(safe-area-inset-bottom);
@@ -42,41 +55,52 @@ const DrawerHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 20px 16px;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 16px 20px 14px;
+  border-bottom: 1px solid ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : '#e5e7eb'};
   flex-shrink: 0;
+  background: ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.02)' : 'transparent'};
   
   h3 {
     margin: 0;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 600;
-    color: #1f2937;
+    color: ${({ theme }) => 
+      theme.mode === 'dark' ? '#f8f9fa' : '#1f2937'};
+    letter-spacing: -0.3px;
   }
 `;
 
 // Close button
 const CloseButton = styled.button`
-  background: #f3f4f6;
+  background: ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : '#f3f4f6'};
   border: none;
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
   
   &:hover {
-    background: #e5e7eb;
+    background: ${({ theme }) =>
+      theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.12)' : '#e5e7eb'};
+    transform: rotate(90deg);
   }
   
   &:active {
-    background: #d1d5db;
+    background: ${({ theme }) =>
+      theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.15)' : '#d1d5db'};
+    transform: rotate(90deg) scale(0.95);
   }
   
   svg {
-    color: #6b7280;
+    color: ${({ theme }) =>
+      theme.mode === 'dark' ? '#e5e7eb' : '#6b7280'};
   }
 `;
 
@@ -84,27 +108,36 @@ const CloseButton = styled.button`
 const DrawerContent = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 18px 20px;
   -webkit-overflow-scrolling: touch;
+  background: ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(0, 0, 0, 0.1)' : 'transparent'};
   
   /* Custom scrollbar */
   &::-webkit-scrollbar {
-    width: 6px;
+    width: 5px;
   }
   
   &::-webkit-scrollbar-track {
-    background: #f3f4f6;
+    background: ${({ theme }) =>
+      theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : '#f3f4f6'};
   }
   
   &::-webkit-scrollbar-thumb {
-    background: #d1d5db;
+    background: ${({ theme }) =>
+      theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : '#d1d5db'};
     border-radius: 3px;
+    
+    &:hover {
+      background: ${({ theme }) =>
+        theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.3)' : '#9ca3af'};
+    }
   }
 `;
 
 // Filter section
 const FilterSection = styled.div`
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   
   &:last-child {
     margin-bottom: 0;
@@ -113,53 +146,77 @@ const FilterSection = styled.div`
 
 // Section title
 const SectionTitle = styled.h4`
-  margin: 0 0 12px;
-  font-size: 14px;
+  margin: 0 0 10px;
+  font-size: 13px;
   font-weight: 600;
-  color: #6b7280;
+  color: ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.65)' : '#6b7280'};
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
 `;
 
 // Input field
 const Input = styled.input`
   width: 100%;
-  height: 48px;
-  padding: 0 16px;
-  border: 2px solid #e5e7eb;
-  border-radius: 12px;
-  font-size: 16px;
+  height: 44px;
+  padding: 0 14px;
+  border: 1.5px solid ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.12)' : '#e5e7eb'};
+  border-radius: 10px;
+  font-size: 15px;
   font-family: inherit;
-  color: #1f2937;
-  transition: border-color 0.2s;
+  color: ${({ theme }) => 
+    theme.mode === 'dark' ? '#f1f3f5' : '#1f2937'};
+  background: ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.04)' : 'white'};
+  transition: all 0.2s ease;
   
   &:focus {
     outline: none;
-    border-color: ${props => props.theme.colors.primary?.main || '#FF7900'};
+    border-color: #0B5FFF;
+    background: ${({ theme }) =>
+      theme.mode === 'dark' ? 'rgba(11, 95, 255, 0.08)' : 'rgba(11, 95, 255, 0.02)'};
+    box-shadow: 0 0 0 3px ${({ theme }) =>
+      theme.mode === 'dark' ? 'rgba(11, 95, 255, 0.15)' : 'rgba(11, 95, 255, 0.1)'};
   }
   
   &::placeholder {
-    color: #9ca3af;
+    color: ${({ theme }) =>
+      theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.4)' : '#9ca3af'};
   }
 `;
 
 // Select dropdown
 const Select = styled.select`
   width: 100%;
-  height: 48px;
-  padding: 0 16px;
-  border: 2px solid #e5e7eb;
-  border-radius: 12px;
-  font-size: 16px;
+  height: 44px;
+  padding: 0 14px;
+  border: 1.5px solid ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.12)' : '#e5e7eb'};
+  border-radius: 10px;
+  font-size: 15px;
   font-family: inherit;
-  color: #1f2937;
-  background: white;
-  transition: border-color 0.2s;
+  color: ${({ theme }) => 
+    theme.mode === 'dark' ? '#f1f3f5' : '#1f2937'};
+  background: ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.04)' : 'white'};
+  transition: all 0.2s ease;
   cursor: pointer;
   
   &:focus {
     outline: none;
-    border-color: ${props => props.theme.colors.primary?.main || '#FF7900'};
+    border-color: #0B5FFF;
+    background: ${({ theme }) =>
+      theme.mode === 'dark' ? 'rgba(11, 95, 255, 0.08)' : 'rgba(11, 95, 255, 0.02)'};
+    box-shadow: 0 0 0 3px ${({ theme }) =>
+      theme.mode === 'dark' ? 'rgba(11, 95, 255, 0.15)' : 'rgba(11, 95, 255, 0.1)'};
+  }
+  
+  option {
+    background: ${({ theme }) =>
+      theme.mode === 'dark' ? '#1a1d2e' : 'white'};
+    color: ${({ theme }) => 
+      theme.mode === 'dark' ? '#f1f3f5' : '#1f2937'};
   }
 `;
 
@@ -167,23 +224,30 @@ const Select = styled.select`
 const RangeInputs = styled.div`
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  gap: 8px;
+  gap: 10px;
   align-items: center;
 `;
 
 const RangeSeparator = styled.span`
-  color: #9ca3af;
+  color: ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.5)' : '#9ca3af'};
   font-size: 14px;
+  font-weight: 500;
 `;
 
 // Drawer footer with action buttons
 const DrawerFooter = styled.div`
-  padding: 16px 20px;
-  border-top: 1px solid #e5e7eb;
+  padding: 14px 20px;
+  border-top: 1px solid ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : '#e5e7eb'};
   display: flex;
-  gap: 12px;
+  gap: 10px;
   flex-shrink: 0;
-  background: white;
+  background: ${({ theme }) =>
+    theme.mode === 'dark' 
+      ? 'linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%)'
+      : 'white'};
+  backdrop-filter: blur(10px);
 `;
 
 // Filter count badge
@@ -194,12 +258,13 @@ const FilterBadge = styled.span`
   min-width: 20px;
   height: 20px;
   padding: 0 6px;
-  background: ${props => props.theme.colors.primary?.main || '#FF7900'};
+  background: linear-gradient(135deg, #0B5FFF 0%, #0A4FDB 100%);
   color: white;
   border-radius: 10px;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   margin-left: 8px;
+  box-shadow: 0 2px 8px rgba(11, 95, 255, 0.3);
 `;
 
 export interface FilterValues {
