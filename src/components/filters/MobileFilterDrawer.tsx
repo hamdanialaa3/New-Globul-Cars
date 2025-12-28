@@ -14,7 +14,7 @@ const Backdrop = styled.div<{ $isOpen: boolean }>`
     theme.mode === 'dark' 
       ? 'rgba(0, 0, 0, 0.75)'
       : 'rgba(0, 0, 0, 0.5)'};
-  z-index: 1000;
+  z-index: 9999;
   opacity: ${props => props.$isOpen ? 1 : 0};
   visibility: ${props => props.$isOpen ? 'visible' : 'hidden'};
   transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -36,7 +36,7 @@ const DrawerContainer = styled.div<{ $isOpen: boolean }>`
     theme.mode === 'dark'
       ? '0 -8px 32px rgba(0, 0, 0, 0.6)'
       : '0 -4px 20px rgba(0, 0, 0, 0.15)'};
-  z-index: 1001;
+  z-index: 10000;
   max-height: 80vh;
   transform: translateY(${props => props.$isOpen ? '0' : '100%'});
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;

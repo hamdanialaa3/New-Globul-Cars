@@ -5,9 +5,9 @@
   padding: 3rem 0 1rem;
   margin-top: auto;
   border-radius: 8px 8px 0 0;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
   position: relative;
-  z-index: 100; /* Lower than modal overlay (10000) */
+  z-index: 10; /* Below modals and drawers (1000+) but above content */
 }
 
 .footer-container {
