@@ -1,7 +1,14 @@
 // src/pages/CarsPage.tsx
 // Cars Page for Bulgarian Car Marketplace - Modern & Professional Design
-// صفحة عرض السيارات مع فلترة متقدمة وبحث بالذكاء الاصطناعي
-// ⚡ Performance Optimized with Firebase Caching + AI Search
+// صفحة عرض السيارات مع بحث بالكلمات المفتاحية والذكاء الاصطناعي
+// ⚡ Performance Optimized with Firebase Caching + AI Smart Search
+//
+// 🔍 SEARCH STRATEGY:
+// - /cars → Simple keyword-based search (this page)
+// - /advanced-search → Advanced filters with all vehicle specifications
+// 
+// Note: Mobile filter drawer removed as per project requirement.
+// All advanced filtering is handled via /advanced-search page.
 
 import * as React from 'react';
 import { useState, useEffect, useMemo } from 'react';
@@ -19,7 +26,6 @@ import CarCardCompact from '../../components/CarCard/CarCardCompact';
 import { ResponsiveGrid } from '../../components/layout/ResponsiveGrid';
 import { Virtuoso } from 'react-virtuoso';
 import { useIsMobile } from '../../hooks/useBreakpoint';
-import { MobileFilterDrawer, MobileFilterButton, FilterValues } from '../../components/filters';
 import { smartSearchService } from '../../services/search/smart-search.service';
 import { searchHistoryService } from '../../services/search/search-history.service';
 import { Search, X, Clock, TrendingUp, Sparkles, SlidersHorizontal } from 'lucide-react';
@@ -615,7 +621,6 @@ const CarsPage: React.FC = () => {
   const [cars, setCars] = useState<CarListing[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showFilters, setShowFilters] = useState(false);
   const isMobile = useIsMobile();
   
   // ⚡ NEW: Smart Search State
@@ -866,49 +871,6 @@ const CarsPage: React.FC = () => {
       : count === 1 ? 'car' : 'cars';
   }, [cars.length, language]);
 
-  // Extract current filters from URL
-  const currentFilters = useMemo<FilterValues>(() => {
-    const makeParam = searchParams.get('make');
-    const regionParam = searchParams.get('city'); // Actually region
-    
-    return {
-      make: makeParam || undefined,
-      region: regionParam || undefined,
-      // Add more URL params as needed
-    };
-  }, [searchParams]);
-
-  // Count active filters
-  const activeFiltersCount = useMemo(() => {
-    return Object.values(currentFilters).filter(Boolean).length;
-  }, [currentFilters]);
-
-  // Handle filter apply
-  const handleApplyFilters = (filters: FilterValues) => {
-    // Reset smart search mode when applying filters
-    setIsSmartSearchActive(false);
-    setSearchQuery(''); // Clear search query
-    
-    const newParams = new URLSearchParams();
-    
-    // Add filters to URL params
-    if (filters.make) newParams.set('make', filters.make);
-    if (filters.region) newParams.set('city', filters.region); // Keep 'city' param name for compatibility
-    if (filters.model) newParams.set('model', filters.model);
-    if (filters.priceMin) newParams.set('priceMin', filters.priceMin);
-    if (filters.priceMax) newParams.set('priceMax', filters.priceMax);
-    if (filters.yearMin) newParams.set('yearMin', filters.yearMin);
-    if (filters.yearMax) newParams.set('yearMax', filters.yearMax);
-    if (filters.mileageMin) newParams.set('mileageMin', filters.mileageMin);
-    if (filters.mileageMax) newParams.set('mileageMax', filters.mileageMax);
-    if (filters.fuelType) newParams.set('fuelType', filters.fuelType);
-    if (filters.transmission) newParams.set('transmission', filters.transmission);
-    if (filters.bodyType) newParams.set('bodyType', filters.bodyType);
-
-    setSearchParams(newParams);
-    setShowFilters(false); // Close filter drawer
-  };
-
   return (
     <CarsContainer>
       <PageContainer>
@@ -1132,23 +1094,6 @@ const CarsPage: React.FC = () => {
             )}
           </CarsGridWrapper>
         )}
-
-        {/* Mobile Filter Button */}
-        {isMobile && (
-          <MobileFilterButton
-            onClick={() => setShowFilters(true)}
-            activeFiltersCount={activeFiltersCount}
-          />
-        )}
-
-        {/* Mobile Filter Drawer */}
-        <MobileFilterDrawer
-          isOpen={showFilters}
-          onClose={() => setShowFilters(false)}
-          onApply={handleApplyFilters}
-          initialFilters={currentFilters}
-          language={language}
-        />
 
       </PageContainer>
     </CarsContainer>
