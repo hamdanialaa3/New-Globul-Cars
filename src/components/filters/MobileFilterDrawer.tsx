@@ -317,6 +317,16 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
     };
   }, [isOpen]);
 
+  // Hide footer when drawer is open
+  useEffect(() => {
+    const footer = document.querySelector('.main-footer');
+    if (isOpen && footer) {
+      (footer as HTMLElement).style.display = 'none';
+    } else if (footer) {
+      (footer as HTMLElement).style.display = '';
+    }
+  }, [isOpen]);
+
   const handleChange = (key: keyof FilterValues, value: string) => {
     setFilters(prev => ({ ...prev, [key]: value || undefined }));
   };
