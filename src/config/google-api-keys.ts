@@ -4,16 +4,16 @@ import { logger } from '../services/logger-service';
 
 export const GOOGLE_API_KEYS = {
   // Generative AI (Gemini) - للذكاء الاصطناعي
-  GENERATIVE_AI: process.env.REACT_APP_GOOGLE_GENERATIVE_AI_KEY || 'AIzaSyC1YsQz2rpK8z_6cZev9y99rV1kIUVsrFI',
+  GENERATIVE_AI: process.env.REACT_APP_GOOGLE_GENERATIVE_AI_KEY || '',
   
   // Firebase Web - لخدمات Firebase
-  FIREBASE_WEB: process.env.REACT_APP_GOOGLE_FIREBASE_WEB_KEY || 'AIzaSyAUYM_qygK5pUrlXtdDLmEi-_Kh9SyvRmk',
+  FIREBASE_WEB: process.env.REACT_APP_GOOGLE_FIREBASE_WEB_KEY || '',
   
   // Browser Key - للخدمات العامة
-  BROWSER: process.env.REACT_APP_GOOGLE_BROWSER_KEY || 'AIzaSyAchmKCk8ipzv0dDwbQ2xU1Pa6o4CQsEu8',
+  BROWSER: process.env.REACT_APP_GOOGLE_BROWSER_KEY || '',
   
   // Maps API - للخرائط
-  MAPS: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || process.env.REACT_APP_GOOGLE_BROWSER_KEY || 'AIzaSyAchmKCk8ipzv0dDwbQ2xU1Pa6o4CQsEu8'
+  MAPS: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || process.env.REACT_APP_GOOGLE_BROWSER_KEY || ''
 } as const;
 
 // Validation function

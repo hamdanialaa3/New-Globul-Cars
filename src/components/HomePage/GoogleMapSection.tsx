@@ -120,7 +120,7 @@ const GoogleMapSection: React.FC<GoogleMapSectionProps> = ({
   const [activeMarker, setActiveMarker] = useState<string | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
 
-  const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'AIzaSyAUYM_qygK5pUrlXtdDLmEi-_Kh9SyvRmk';
+  const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || '';
   
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',

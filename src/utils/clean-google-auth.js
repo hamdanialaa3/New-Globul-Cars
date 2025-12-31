@@ -27,15 +27,15 @@ export const cleanGoogleAuth = async () => {
     const { initializeApp } = await import('firebase/app');
     const { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult } = await import('firebase/auth');
     
-    // التكوين الصحيح
+    // Use Firebase config from environment variables
     const firebaseConfig = {
-      apiKey: "AIzaSyCYxOoD-tViZHLh3XhdbwQo8rRA5Q56NVs",
-      authDomain: "studio-448742006-a3493.firebaseapp.com",
-      projectId: "studio-448742006-a3493",
-      storageBucket: "studio-448742006-a3493.firebasestorage.app",
-      messagingSenderId: "687922812237",
-      appId: "1:687922812237:web:e2f36cf22eab4e53ddd304",
-      measurementId: "G-ENC064NX05"
+      apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "",
+      authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "",
+      projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "",
+      storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "",
+      messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "",
+      appId: process.env.REACT_APP_FIREBASE_APP_ID || "",
+      measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID || ""
     };
 
     // إنشاء تطبيق Firebase جديد

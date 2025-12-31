@@ -6,11 +6,12 @@
 /**
  * Google Maps API key from environment
  * مفتاح واجهة برمجة التطبيقات من البيئة
+ * WARNING: Never hardcode API keys in source code
  */
 export const GOOGLE_MAPS_API_KEY = 
   process.env.REACT_APP_GOOGLE_BROWSER_KEY || 
   process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 
-  'AIzaSyAchmKCk8ipzv0dDwbQ2xU1Pa6o4CQsEu8';
+  '';
 
 /**
  * Places service configuration

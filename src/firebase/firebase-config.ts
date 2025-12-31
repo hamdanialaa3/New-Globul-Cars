@@ -23,15 +23,16 @@ declare global {
 // Firebase configuration - NEW PROJECT: Fire New Globul
 // Project ID: fire-new-globul
 // Project Number: 973379297533
+// WARNING: Never commit real API keys - use environment variables
 const firebaseConfig = {
-  // ✅ UPDATED: Using Environment Variables with Fallbacks
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyAUYM_qygK5pUrlXtdDLmEi-_Kh9SyvRmk",
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "fire-new-globul.firebaseapp.com",
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "fire-new-globul",
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "fire-new-globul.firebasestorage.app",
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "973379297533",
-  appId: process.env.REACT_APP_FIREBASE_APP_ID || "1:973379297533:web:59c6534d61a29cae5d9e94",
-  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID || "G-TDRZ4Z3D7Z"
+  // ✅ UPDATED: Using Environment Variables (no fallbacks for security)
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "",
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "",
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "",
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "",
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "",
+  appId: process.env.REACT_APP_FIREBASE_APP_ID || "",
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID || ""
 };
 
 // Initialize Firebase

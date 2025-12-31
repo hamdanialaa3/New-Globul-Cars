@@ -61,6 +61,7 @@
     "prebuild": "node scripts/ban-console.js",
     "build": "craco build",
     "check-security": "node scripts/check-env-files.js",
+    "security-audit": "node scripts/security-audit.js",
     "ci:strict": "npm ci --no-audit --no-fund",
     "dev:vite": "npx vite",
     "build:vite": "npx vite build",
