@@ -1,5 +1,6 @@
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '../../firebase/firebase-config';
+import { logger } from '../logger-service';
 
 export interface AIRequestOptions {
     prompt: string;
@@ -51,7 +52,7 @@ export class DeepSeekService {
             const result = await aiGenerateText(options);
             return result.data as AIResponse;
         } catch (error: any) {
-            console.error('AI Service Error:', error);
+            logger.error('AI Service Error', error as Error);
             throw this.handleError(error);
         }
     }
@@ -66,7 +67,7 @@ export class DeepSeekService {
             });
             return (result.data as any).content;
         } catch (error: any) {
-            console.error('AI Description Error:', error);
+            logger.error('AI Description Error', error as Error);
             throw this.handleError(error);
         }
     }

@@ -23,13 +23,6 @@ jest.mock('../../../firebase/firebase-config', () => ({
   storage: {}
 }));
 
-// Mock Firebase Index
-jest.mock('../../../firebase/index', () => ({
-  bulgarianAuthService: {
-    getCurrentUserProfile: (...args: unknown[]) => mockGetCurrentUserProfile(...args),
-    getUserProfileById: (...args: unknown[]) => mockGetUserProfileById(...args)
-  }
-}));
 
 // Mock Firestore
 jest.mock('firebase/firestore', () => ({

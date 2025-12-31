@@ -23,6 +23,7 @@ import { db } from '../../firebase/firebase-config';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { serviceLogger } from '../../services/logger-service';
 import { logger } from '../../services/logger-service';
+import { ConversationView } from '../../components/messaging';
 
 const PageContainer = styled.div`
   display: flex;

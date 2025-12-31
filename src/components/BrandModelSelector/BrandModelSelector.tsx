@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import GlobulCarLogo from '../../components/icons/GlobulCarLogo';
 
 // Simple, direct data structure - no complex services
-const BRANDS_DATA = {
+const BRANDS_DATA: { [key: string]: string[] } = {
   'Audi': ['A1', 'A1 Sportback', 'A3', 'A3 Sedan', 'A4', 'A5', 'A6', 'A7', 'A8', 'Q2', 'Q3', 'Q5', 'Q7', 'Q8', 'TT', 'R8', 'e-tron GT'],
   'BMW': ['1 Series', '2 Series', '3 Series', '4 Series', '5 Series', '6 Series', '7 Series', '8 Series', 'X1', 'X2', 'X3', 'X4', 'X5', 'X6', 'X7', 'Z4', 'i3', 'i4', 'iX'],
   'Mercedes-Benz': ['A-Class', 'B-Class', 'C-Class', 'E-Class', 'S-Class', 'GLA', 'GLB', 'GLC', 'GLE', 'GLS', 'G-Class', 'CLA', 'CLS', 'SL', 'EQC', 'EQS'],
@@ -137,7 +137,7 @@ export const BrandModelSelector: React.FC<BrandModelSelectorProps> = ({
             $hasValue={!!selectedModel}
           >
             <option value="">{t.selectModel}</option>
-            {models.map(model => (
+            {models.map((model: string) => (
               <option key={model} value={model}>
                 {model}
               </option>
@@ -200,7 +200,7 @@ const Select = styled.select<{ $hasValue?: boolean }>`
   border: 2px solid ${props => 
     props.$hasValue 
       ? props.theme?.colors?.success || '#10b981' 
-      : props.theme?.colors?.border || '#d1d5db'
+      : (props.theme?.colors?.grey?.[300] || '#d1d5db')
   };
   border-radius: 8px;
   background-color: white;
@@ -215,7 +215,7 @@ const Select = styled.select<{ $hasValue?: boolean }>`
 
   &:focus {
     border-color: ${props => props.theme?.colors?.primary || '#3b82f6'};
-    box-shadow: 0 0 0 3px ${props => props.theme?.colors?.primaryLight || 'rgba(59, 130, 246, 0.1)'};
+    box-shadow: 0 0 0 3px ${props => (props.theme?.colors?.primary?.light || 'rgba(59, 130, 246, 0.1)')};
   }
 
   &:disabled {
@@ -239,7 +239,7 @@ const LogoDisplay = styled.div`
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   border-radius: 50%;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-  border: 3px solid ${props => props.theme?.colors?.border || '#e5e7eb'};
+  border: 3px solid ${props => (props.theme?.colors?.grey?.[300] || '#e5e7eb')};
   padding: 1.5rem;
 `;
 

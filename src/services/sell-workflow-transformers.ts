@@ -57,6 +57,19 @@ export class SellWorkflowTransformers {
     // Get image URLs from workflow
     const imageUrls = parseArray(workflowData.images);
 
+    // Boolean string conversions (for test compatibility)
+    const parseBool = (val: any) => {
+      if (typeof val === 'boolean') return val;
+      if (typeof val === 'string') return val.toLowerCase() === 'true';
+      return false;
+    };
+
+    // Parse safetyEquipment from safety string if not present
+    let safetyEquipment = workflowData.safetyEquipment;
+    if (!safetyEquipment && typeof workflowData.safety === 'string') {
+      safetyEquipment = workflowData.safety.split(',').map((s: string) => s.trim()).filter(Boolean);
+    }
+
     // ✅ FIX: Handle "Other" fields - use custom values if "__other__" is selected
     const finalMake = workflowData.make === '__other__'
       ? (workflowData.makeOther || workflowData.make || '')
@@ -75,7 +88,7 @@ export class SellWorkflowTransformers {
       : (workflowData.color || workflowData.exteriorColor || '');
 
     // Return structured car listing
-    return {
+    const result: any = {
       // Basic info
       make: finalMake,
       model: finalModel,
@@ -123,7 +136,7 @@ export class SellWorkflowTransformers {
 
       // Equipment (Legacy + New Array Support)
       safety: workflowData.safety || {},
-      safetyEquipment: workflowData.safetyEquipment || [],
+      safetyEquipment: safetyEquipment || [],
 
       comfort: workflowData.comfort || {},
       comfortEquipment: workflowData.comfortEquipment || [],
@@ -142,8 +155,15 @@ export class SellWorkflowTransformers {
       sellerType: workflowData.sellerType,
       status: 'active',
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
+      // Boolean fields for test compatibility
+      negotiable: parseBool(workflowData.negotiable),
+      hasVideo: parseBool(workflowData.hasVideo),
+      nonSmoker: parseBool(workflowData.nonSmoker),
+      // Add region for test compatibility
+      region: regionName
     };
+    return result;
   }
 
   /**

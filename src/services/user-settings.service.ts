@@ -3,15 +3,20 @@
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import { 
+  collection,
   doc, 
   getDoc, 
+  getDocs,
+  query,
   setDoc, 
   updateDoc, 
   serverTimestamp,
-  Timestamp 
+  Timestamp,
+  where 
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-service';
+import { queryAllCollections } from './search/multi-collection-helper';
 
 // ==================== INTERFACES ====================
 
@@ -363,12 +368,28 @@ class UserSettingsService {
       }
 
       const settings = await this.getUserSettings(userId);
-      
-      // TODO: Collect data from other collections (listings, messages, etc.)
+
+      const [carsSnapshot, favoritesSnapshot, messagesSent, messagesReceived, notificationsSnapshot, reviewsSnapshot] = await Promise.all([
+        queryAllCollections(where('sellerId', '==', userId)).catch(() => ({ docs: [] })),
+        getDocs(query(collection(db, 'favorites'), where('userId', '==', userId))).catch(() => ({ docs: [] })),
+        getDocs(query(collection(db, 'messages'), where('senderId', '==', userId))).catch(() => ({ docs: [] })),
+        getDocs(query(collection(db, 'messages'), where('recipientId', '==', userId))).catch(() => ({ docs: [] })),
+        getDocs(query(collection(db, 'notifications'), where('userId', '==', userId))).catch(() => ({ docs: [] })),
+        getDocs(query(collection(db, 'reviews'), where('authorId', '==', userId))).catch(() => ({ docs: [] }))
+      ]);
+
       const exportData = {
         settings,
+        listings: carsSnapshot.docs?.map(doc => ({ id: doc.id, ...doc.data() })) || [],
+        favorites: favoritesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })),
+        messages: [
+          ...messagesSent.docs.map(doc => ({ id: doc.id, direction: 'sent', ...doc.data() })),
+          ...messagesReceived.docs.map(doc => ({ id: doc.id, direction: 'received', ...doc.data() }))
+        ],
+        notifications: notificationsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })),
+        reviewsAuthored: reviewsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })),
         exportDate: new Date().toISOString(),
-        exportVersion: '1.0',
+        exportVersion: '1.1',
       };
 
       serviceLogger.info('User data exported', { userId });

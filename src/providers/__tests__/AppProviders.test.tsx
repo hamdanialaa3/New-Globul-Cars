@@ -15,9 +15,19 @@ jest.mock('@/firebase/firebase-config', () => ({
   db: {},
 }));
 
-jest.mock('styled-components', () => ({
-    ThemeProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="styled-theme-provider">{children}</div>,
-}));
+jest.mock('styled-components', () => {
+    // Minimal styled-components v6 mock for tests
+    const styled = new Proxy(() => ({}), {
+        get: () => () => (props: any) => (props && props.children) || null,
+        apply: () => () => ({}),
+    });
+    const keyframes = () => 'keyframes';
+    return {
+        ThemeProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="styled-theme-provider">{children}</div>,
+        styled,
+        keyframes,
+    };
+});
 
 jest.mock('../StripeProvider', () => ({
     __esModule: true,
@@ -40,6 +50,11 @@ jest.mock('@/contexts/LanguageContext', () => ({
 
 jest.mock('@/contexts/ThemeContext', () => ({
     ThemeProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="theme-provider">{children}</div>,
+    useTheme: () => ({
+        theme: 'light',
+        toggleTheme: jest.fn(),
+        setTheme: jest.fn(),
+    }),
 }));
 
 jest.mock('@/contexts/AuthProvider', () => ({

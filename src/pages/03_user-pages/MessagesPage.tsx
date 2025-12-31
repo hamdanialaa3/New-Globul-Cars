@@ -1,55 +1,60 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { formatDistanceToNow } from 'date-fns';
+import bg from 'date-fns/locale/bg';
+import enUS from 'date-fns/locale/en-US';
+import { Send } from 'lucide-react';
+
 import { useTranslation } from '../../hooks/useTranslation';
 import { useAuth } from '../../contexts/AuthProvider';
 import { logger } from '../../services/logger-service';
-import { advancedMessagingService, Conversation, Message } from '../../services/messaging/advanced-messaging-service';
+import { advancedMessagingService } from '../../services/messaging/advanced-messaging-service';
+import { Conversation, Message } from '../../services/messaging/advanced-messaging-types';
 import { userService } from '../../services/user/canonical-user.service';
 import { Avatar } from '../../components/design-system/Avatar';
 import { Badge } from '../../components/design-system/Badge';
-import { Alert } from '../../components/design-system/Alert';
-import { Send, Image as ImageIcon, Search, Settings } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
-import { bg, enUS } from 'date-fns/locale';
 import { notificationSoundService } from '../../services/messaging/notification-sound.service';
 import { NotificationSettings } from '../../components/messaging/NotificationSettings';
+import { ConversationView } from '../../components/messaging';
+import { getCarLogoUrl } from '../../services/car-logo-service';
 
 const MessagesContainer = styled.div`
-  min-height: calc(100vh - 64px);
-  padding: ${({ theme }) => theme.spacing.lg};
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  padding: 0;
   background: ${({ theme }) => theme.mode === 'dark' 
     ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' 
     : 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'};
   color: ${({ theme }) => theme.colors.text.primary};
+  overflow: visible;
 
   @media (max-width: 768px) {
     padding: 0;
-    height: calc(100vh - 56px);
     background: ${({ theme }) => theme.mode === 'dark' ? '#0f172a' : '#ffffff'};
   }
 `;
 
 const PageContainer = styled.div`
-  max-width: 1400px;
-  margin: 0 auto;
-  height: 85vh;
+  width: 100%;
+  height: 100vh;
   display: flex;
   background: ${({ theme }) => theme.mode === 'dark' 
     ? 'rgba(30, 41, 59, 0.95)' 
     : 'rgba(255, 255, 255, 0.95)'};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  box-shadow: ${({ theme }) => theme.mode === 'dark' 
-    ? '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)' 
-    : '0 20px 60px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.05)'};
-  overflow: hidden;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
   backdrop-filter: blur(20px);
-  border: 1px solid ${({ theme }) => theme.mode === 'dark' 
-    ? 'rgba(255, 255, 255, 0.08)' 
-    : 'rgba(0, 0, 0, 0.06)'};
+  border: none;
 
   @media (max-width: 768px) {
-    height: 100%;
+    height: 100vh;
+    width: 100vw;
     border-radius: 0;
     border: none;
     flex-direction: column;
@@ -178,6 +183,14 @@ const ConversationList = styled.div`
   }
 `;
 
+const CarLogoImage = styled.img`
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  margin-right: 6px;
+  flex-shrink: 0;
+`;
+
 const ConversationItem = styled.div<{ $active: boolean }>`
   padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
   border-bottom: 1px solid ${({ theme }) => theme.mode === 'dark' 
@@ -244,7 +257,7 @@ const UserName = styled.span`
 
 const Timestamp = styled.span`
   font-size: 0.75rem;
-  color: ${({ theme }) => theme.colors.text.tertiary};
+  color: ${({ theme }) => theme.colors.text.secondary};
   flex-shrink: 0;
 `;
 
@@ -548,6 +561,49 @@ const MessagesPage: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // ✅ إخفاء Header و Footer عند فتح الصفحة
+  useEffect(() => {
+    // البحث عن Header بكل الطرق الممكنة
+    const header = document.querySelector('header');
+    const nav = document.querySelector('nav');
+    const footer = document.querySelector('footer');
+    const mainLayout = document.querySelector('[class*="MainLayout"]');
+    const headerWrapper = document.querySelector('[class*="HeaderWrapper"]');
+    
+    // حفظ الحالات الأصلية
+    const originalStyles = {
+      header: header ? (header as HTMLElement).style.display : '',
+      nav: nav ? (nav as HTMLElement).style.display : '',
+      footer: footer ? (footer as HTMLElement).style.display : '',
+      bodyPaddingTop: document.body.style.paddingTop,
+      bodyPaddingBottom: document.body.style.paddingBottom,
+      bodyOverflow: document.body.style.overflow
+    };
+
+    // إخفاء Header/Footer
+    if (header) (header as HTMLElement).style.display = 'none';
+    if (nav) (nav as HTMLElement).style.display = 'none';
+    if (footer) (footer as HTMLElement).style.display = 'none';
+    if (headerWrapper) (headerWrapper as HTMLElement).style.display = 'none';
+    
+    // إزالة padding من body
+    document.body.style.paddingTop = '0';
+    document.body.style.paddingBottom = '0';
+    document.body.style.overflow = 'hidden';
+
+    // Cleanup: إعادة كل شيء عند المغادرة
+    return () => {
+      if (header) (header as HTMLElement).style.display = originalStyles.header;
+      if (nav) (nav as HTMLElement).style.display = originalStyles.nav;
+      if (footer) (footer as HTMLElement).style.display = originalStyles.footer;
+      if (headerWrapper) (headerWrapper as HTMLElement).style.display = '';
+      
+      document.body.style.paddingTop = originalStyles.bodyPaddingTop;
+      document.body.style.paddingBottom = originalStyles.bodyPaddingBottom;
+      document.body.style.overflow = originalStyles.bodyOverflow;
+    };
+  }, []);
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -730,6 +786,7 @@ const MessagesPage: React.FC = () => {
           receiverId,
           text
         );
+        notificationSoundService.playSent();
       }
     } catch (error) {
       logger.error('Failed to send message', error as Error);
@@ -777,7 +834,6 @@ const MessagesPage: React.FC = () => {
         <Sidebar $visible={showSidebar}>
           <SidebarHeader>
             <div style={{ position: 'relative' }}>
-              <Search style={{ position: 'absolute', left: '10px', top: '10px', color: theme.colors.text.disabled }} size={18} />
               <SearchInput placeholder={t('messages.search', 'Search messages...')} />
             </div>
           </SidebarHeader>
@@ -824,8 +880,29 @@ const MessagesPage: React.FC = () => {
                         {unread > 0 && <Badge variant="primary" size="sm" $rounded>{unread}</Badge>}
                       </div>
                       {conv.carTitle && (
-                        <Badge variant="light" size="sm" style={{ marginTop: '4px' }}>
-                          🚗 {conv.carTitle}
+                        <Badge variant="light" size="sm" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          {conv.carLogoUrl ? (
+                            <CarLogoImage 
+                              src={conv.carLogoUrl} 
+                              alt={conv.carMake || 'Car'} 
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = conv.carMake 
+                                  ? getCarLogoUrl(conv.carMake) 
+                                  : '/assets/images/professional_car_logos/mein_logo_rest.png';
+                              }}
+                            />
+                          ) : conv.carMake ? (
+                            <CarLogoImage 
+                              src={getCarLogoUrl(conv.carMake)} 
+                              alt={conv.carMake}
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = '/assets/images/professional_car_logos/mein_logo_rest.png';
+                              }}
+                            />
+                          ) : null}
+                          {conv.carTitle}
                         </Badge>
                       )}
                     </ConversationInfo>
@@ -838,66 +915,14 @@ const MessagesPage: React.FC = () => {
 
         <ChatArea $visible={showChat}>
           {currentConversation ? (
-            <>
-              <ChatHeader>
-                {isMobile && (
-                  <button onClick={() => setCurrentConversation(null)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>
-                    ←
-                  </button>
-                )}
-                <Avatar name={getUserName(selectedUserId)} src={getUserAvatar(selectedUserId)} size="md" />
-                <div style={{ flex: 1 }}>
-                  <UserName>{getUserName(selectedUserId)}</UserName>
-                  {currentConversation.carTitle && (
-                    <div style={{ fontSize: '0.8rem', color: theme.colors.text.secondary }}>
-                      Ref: {currentConversation.carTitle}
-                    </div>
-                  )}
-                </div>
-                <IconButton 
-                  onClick={() => setShowSettings(true)}
-                  title={t('settings.notifications', 'Notification Settings')}
-                >
-                  <Settings size={20} />
-                </IconButton>
-              </ChatHeader>
-
-              <MessagesList>
-                {messages.map((msg, index) => {
-                  const isMe = msg.senderId === currentUser?.uid;
-                  return (
-                    <MessageBubble key={msg.id || index} $sent={isMe}>
-                      <div style={{ marginBottom: '4px', lineHeight: '1.5' }}>
-                        {msg.text}
-                      </div>
-                      <div style={{
-                        fontSize: '0.7rem',
-                        opacity: isMe ? 0.9 : 0.7,
-                        textAlign: 'right',
-                        fontWeight: 500
-                      }}>
-                        {msg.createdAt && formatDistanceToNow(msg.createdAt, { addSuffix: true, locale: language === 'bg' ? bg : enUS })}
-                      </div>
-                    </MessageBubble>
-                  );
-                })}
-                <div ref={messagesEndRef} />
-              </MessagesList>
-
-              <InputArea onSubmit={handleSendMessage}>
-                <IconButton type="button">
-                  <ImageIcon size={20} />
-                </IconButton>
-                <MessageInput
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  placeholder={t('messages.typeMessage', 'Type a message...')}
-                />
-                <IconButton type="submit" disabled={!newMessage.trim()}>
-                  <Send size={20} />
-                </IconButton>
-              </InputArea>
-            </>
+            /* ✨ المكونات الجديدة - ConversationView مع كامل الميزات */
+            <ConversationView
+              conversation={currentConversation}
+              onBack={() => {
+                setCurrentConversation(null);
+                navigate('/messages');
+              }}
+            />
           ) : (
             <EmptyState>
               <div className="icon-wrapper">

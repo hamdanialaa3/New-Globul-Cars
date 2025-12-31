@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { deepSeekService } from '../../services/ai/DeepSeekService';
-import { Sparkles, Loader2, MessageSquare } from 'lucide-react';
+import {
+  ModernSparkles,
+  ModernLoader,
+  ModernMessageSquare
+} from './icons/ModernIcons';
 
 interface SmartReplyAssistantProps {
     messageText: string;
@@ -110,7 +114,7 @@ export const SmartReplyAssistant: React.FC<SmartReplyAssistantProps> = ({
         <Container>
             {!isOpen ? (
                 <SuggestionButton onClick={generateReplies}>
-                    <Sparkles size={14} color="#8b5cf6" />
+                    <ModernSparkles size={14} color="#8b5cf6" />
                     Smart Replies
                 </SuggestionButton>
             ) : (
@@ -122,7 +126,7 @@ export const SmartReplyAssistant: React.FC<SmartReplyAssistantProps> = ({
 
                     {loading ? (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px', color: '#64748b', fontSize: '14px' }}>
-                            <Loader2 size={16} className="animate-spin" />
+                            <ModernLoader size={16} />
                             Generating replies...
                         </div>
                     ) : (

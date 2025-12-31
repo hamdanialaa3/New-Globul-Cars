@@ -6,6 +6,25 @@ A premium Bulgarian automotive marketplace (rival to mobile.de and mobile.bg) bu
 
 **Core Philosophy**: "The Project Constitution" (PROJECT_CONSTITUTION.md) defines immutable architectural rules. Any deviation from the Numeric ID System or URL patterns is considered a regression and must be rejected.
 
+**Tech Stack Overview**:
+- **Frontend**: React 18.3.1, TypeScript 5.6.3 (strict mode), Styled-Components 6.1.19
+- **Build System**: CRACO 7.x (Create React App Config Override) - NOT Vite for production
+- **Backend**: Firebase 12.3.0 (Auth, Firestore, Functions, Storage, FCM, Hosting)
+- **Search**: Algolia + Firestore hybrid architecture
+- **AI**: Google Gemini API, OpenAI (limited), DeepSeek (cost optimization)
+- **Payment**: Stripe integration for subscriptions/commissions
+- **Maps**: Google Maps API for location services
+- **Messaging**: Firebase Realtime Database for instant messaging
+- **State Management**: React Context API (no Redux) + Custom hooks
+- **Testing**: Jest + React Testing Library
+- **Node Version**: >=18.0.0 (Functions use Node.js 20)
+
+**Environment Setup Requirements**:
+1. Node.js 18+ and npm 8+
+2. Firebase CLI: `npm install -g firebase-tools`
+3. Environment files: `.env.local` (never commit!)
+4. All 3 config files synchronized: `tsconfig.json`, `craco.config.js`, `jest.config.js`
+
 ## Critical Architecture Patterns
 
 ### 1. Numeric ID System (Strict Enforcement)
@@ -171,9 +190,12 @@ src/routes/         → Route definitions (MainRoutes.tsx, NumericProfileRouter.
 ```powershell
 # Start dev server with hot reload
 npm start           # Uses craco, opens on http://localhost:3000
+npm run start:dev   # Extended memory (4096MB) + no browser auto-open
 
 # Production build (console.log banned automatically)
 npm run build       # Runs prebuild ban-console.js check
+npm run build:analyze   # Build + bundle size analysis with source-map-explorer
+npm run build:optimized # Build + image optimization
 
 # Type checking (no emit)
 npm run type-check
@@ -190,13 +212,29 @@ npm run test:ci     # CI mode with coverage
 - Dev server sends no-cache headers to prevent stale assets
 - Development cache completely disabled in webpack (no persistent caching issues)
 - File watching enabled with 100ms interval (excluded node_modules)
+- **Memory cache only** (`cache: { type: 'memory', maxGenerations: 1 }`) for fastest rebuilds
 
 ### Quick Scripts
 
-- `START_DEV_HOT_RELOAD.bat` - Windows dev server launcher
+- `START_DEV_HOT_RELOAD.bat` - Windows dev server launcher (sets PORT=3000, HOST=localhost)
 - `QUICK_REBUILD.bat` - Fast production build
 - `RESTART_SERVER.bat` - Firebase emulator restart
 - `scripts/clear-dev-caches.ps1` - Clear npm/browser caches
+- `CLEAN_PORT_3000.bat` - Kill processes on port 3000 (when server won't start)
+- `SYNC_ALGOLIA_NOW.bat` - Sync all car collections to Algolia index
+
+**Available npm Scripts**:
+
+```bash
+npm run clean:3000        # Kill port 3000 processes
+npm run clean:cache       # Clear npm cache + node_modules/.cache
+npm run clean:all         # Deep clean (cache + ports)
+npm run sync-algolia      # Sync Firestore → Algolia
+npm run train-ai          # Update AI project knowledge
+npm run train-ai:watch    # Auto-update AI knowledge on file changes
+npm run migrate:legacy-cars  # Run car data migration scripts
+npm run check-security    # Verify .env files are not committed
+```
 
 ### Firebase Deployment
 
@@ -209,25 +247,64 @@ firebase emulators:start    # Local testing
 
 **Functions**: Located in `functions/src/`, currently exports notification triggers (see `functions/src/index.ts`)
 
+**Critical Deployment Notes**:
+- Run `npm run check-security` before every commit to prevent credential leaks
+- Use `npm run prebuild` to verify no console.log statements exist
+- Firebase Functions run on Node.js 20 (specified in `functions/package.json`)
+- All functions support CORS and Firebase Authentication
+- Hosting uses CDN caching - may need cache invalidation after deployment
+
 ## Data Patterns & Firestore
+
+### Collection Architecture
+
+**Vehicle Collections** (category-specific for optimized queries):
+- `passenger_cars` - Sedans, Hatchbacks, Coupes, Wagons
+- `suvs` - SUVs, Crossovers, Off-road vehicles  
+- `vans` - Vans, Minivans, Microbuses
+- `motorcycles` - Motorcycles, Scooters, ATVs
+- `trucks` - Pickup trucks, Commercial trucks
+- `buses` - Buses, Coaches
+
+**User & Profile Collections**:
+- `users` - User accounts with `numericId` field (required)
+- `dealerships` - Dealer/company profiles
+- `followers` / `following` - Social follow relationships
+
+**Interaction Collections**:
+- `favorites` - User saved cars
+- `messages` - Direct messages between users
+- `conversations` - Message thread metadata
+- `notifications` - User notifications with read/unread status
+
+**Business Collections**:
+- `campaigns` - Marketing campaigns (dealer/company)
+- `consultations` - Expert consultations
+- `reviews` - User/car reviews
+- `analytics_events` - Custom analytics tracking
+- `searchClicks` - Search behavior analytics
+
+**System Collections**:
+- `counters` - Atomic counters for numeric ID assignment
+- `customers/{uid}/checkout_sessions` - Stripe checkout sessions
 
 ### Security Rules
 
 - All writes require authentication (`isAuthenticated()`)
 - Counters collection (numeric IDs) allows authenticated writes for atomic increments
 - Stripe-specific collections (`customers/{uid}/checkout_sessions`) enforce UID matching
+- Car collections enforce `isActive: true` for public queries
+- Users can only edit their own profile/listings (checked via `sellerId` match)
 
 ### Critical Services
 
 - **Sell Workflow**: `sell-workflow-service.ts` (orchestrates listing creation)
-
   - Always checks listing limits BEFORE creating listings
   - Handles image uploads via `SellWorkflowImages`
   - Validates via `SellWorkflowValidation`
   - Returns numeric URLs: `/car/{sellerNumericId}/{carNumericId}`
 
 - **Numeric ID Assignment**: `numeric-id-assignment.service.ts`
-
   - Atomic counter increments in `counters` collection
   - Validates positive integers only
 
@@ -363,9 +440,12 @@ taskkill /PID <pid> /F            # Kill process
 ## Critical Documentation References
 
 - [PROJECT_CONSTITUTION.md](../PROJECT_CONSTITUTION.md) - Core principles & development rules (Arabic/English)
-- [PROJECT_MASTER_REFERENCE_MANUAL.md](../PROJECT_MASTER_REFERENCE_MANUAL.md) - Complete tech stack & architecture
 - [docs/STRICT_NUMERIC_ID_SYSTEM.md](../docs/STRICT_NUMERIC_ID_SYSTEM.md) - Detailed numeric ID implementation
-- [CLEANUP_PLAN.md](../CLEANUP_PLAN.md) - Matryoshka structure cleanup (if working on refactoring)
+- [FIRESTORE_LISTENERS_FIX.md](../FIRESTORE_LISTENERS_FIX.md) - Known Firestore listener issues & solutions
+- [DEPLOYMENT_SUCCESS_REPORT_DEC28_2025.md](../DEPLOYMENT_SUCCESS_REPORT_DEC28_2025.md) - Latest deployment status
+- [PROJECT_COMPLETE_INVENTORY.md](../PROJECT_COMPLETE_INVENTORY.md) - Full codebase inventory
+- [SEARCH_SYSTEM.md](../SEARCH_SYSTEM.md) - Search architecture details (Firestore + Algolia)
+- [SECURITY.md](../SECURITY.md) - Security policies & incident response
 
 ## Translation & Localization
 
@@ -404,22 +484,61 @@ Complex queries require composite indexes defined in `firestore.indexes.json`:
 
 ---
 
-**Version**: 1.5.0  
-**Last Updated**: December 28, 2025  
+## Recent Features & Systems (December 2025)
+
+### Follow System
+- **Service**: `follow-service.ts` - User follow/unfollow functionality
+- **Components**: `FollowButton.tsx` with follower/following counters
+- **Collections**: `followers`, `following` in Firestore
+- Real-time updates via Firestore listeners
+
+### Advanced Notifications
+- **Component**: `NotificationBell.tsx` in Header with unread count badge
+- **Service**: `real-time-notifications-service.ts` - Push notifications via FCM
+- **Features**: Real-time unread tracking, notification preferences, multi-type notifications
+- Sound integration: `public/sounds/notification.mp3` (with graceful error handling)
+
+### Team Management (Company/Dealer)
+- **Service**: `team-management-service.ts` - Role-based team member management
+- **Page**: `TeamManagementPage.tsx` - Add/remove team members, role assignment
+- **Roles**: Admin, Manager, Editor, Viewer (hierarchical permissions)
+- Company plans only (unlimited teams)
+
+### Admin Tools
+- **AlgoliaSyncManager**: Real-time sync status dashboard (`/admin/algolia-sync`)
+- **BackupManagement**: Database backup/restore utilities
+- **LeadScoringDashboard**: AI-powered lead qualification
+- **SharedInboxPage**: Team inbox for dealer/company accounts
+
+### Development Tools
+- **DevelopmentToolsPage**: `/development-tools` - Comprehensive dev utilities
+- **IconShowcasePage**: Visual preview of all project icons
+- **TestDropdownsPage**: UI component testing sandbox
+
+### AI Integration Enhancements
+- **DeepSeekService**: Alternative AI provider for cost optimization
+- **vehicle-description-generator**: Multi-language description generation (bg/en)
+- **market-value.service**: AI-powered pricing recommendations
+- **smart-alerts-service**: Proactive notifications for price changes, market trends
+
+---
+
+**Version**: 1.7.0  
+**Last Updated**: December 31, 2025  
 **Status**: Production
 
-**Key Updates (v1.5.0)**:
+**Key Updates (v1.7.0)**:
 
-- Added Translation & Localization section with best practices
-- Documented Algolia search integration patterns and sync workflow
-- Added Firestore composite index management guidance
-- Clarified recent bug fixes (translation keys, Algolia config, index requirements)
-- Enhanced troubleshooting with Dec 28 lessons learned
+- Added Recent Features & Systems section documenting December 2025 features
+- Documented Follow System, Team Management, and Advanced Notifications
+- Added Admin Tools and Development Tools sections
+- Updated AI Integration details (DeepSeek, smart alerts)
+- Clarified Social features (posts, follow, notifications)
 
-**Previous Updates (v1.4.0)**:
+**Previous Updates (v1.6.0)**:
 
-- Added User Favorites route to Numeric ID System
-- Expanded React component structure to include all feature directories
-- Added routing best practices (modular route files vs. monolithic AppRoutes.tsx)
-- Documented safeLazy() import pattern requirement
-- Enhanced common pitfalls with route organization guidance
+- Enhanced Quick Scripts section with comprehensive npm command reference
+- Added CLEAN_PORT_3000.bat and SYNC_ALGOLIA_NOW.bat to workflow documentation
+- Updated Critical Documentation References with security, deployment, and search docs
+- Clarified webpack memory cache configuration for development builds
+- Added npm run train-ai for AI project knowledge updates

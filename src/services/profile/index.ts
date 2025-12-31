@@ -30,7 +30,7 @@ import { trustScoreService } from './trust-score-service';
 // ✅ Phase 3.2.2: Unified Stats Service - Use profile-stats.service.ts (more advanced)
 import { profileStatsService } from './profile-stats.service';
 import { UnifiedProfileService } from './UnifiedProfileService';
-import { ProfileService as LegacyProfileService } from './ProfileService';
+import { ProfileService as LegacyProfileService } from '@/services/profile/ProfileService';
 
 // ==================== UNIFIED PROFILE SERVICE (RECOMMENDED) ====================
 

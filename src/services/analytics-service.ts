@@ -10,6 +10,7 @@ import { onSnapshot, doc, collection, setDoc, serverTimestamp } from 'firebase/f
 import { db } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-service';
 import { AnalyticsOperations } from './analytics-operations';
+import { firebaseRealDataService } from './firebase-real-data-service';
 import {
   RealTimeAnalytics,
   UserActivity,
@@ -167,8 +168,14 @@ class RealTimeAnalyticsService {
       return analytics;
     } catch (error) {
       serviceLogger.error('Error getting real-time analytics', error as Error);
-      // Return mock data if Firebase fails
-      return AnalyticsOperations.getMockAnalytics();
+      try {
+        // Fallback to server-side callable/client aggregation to avoid mock data
+        const fallback = await firebaseRealDataService.getRealAnalytics();
+        return fallback;
+      } catch (fallbackError) {
+        serviceLogger.error('Fallback analytics retrieval failed', fallbackError as Error);
+        return AnalyticsOperations.getMockAnalytics();
+      }
     }
   }
 

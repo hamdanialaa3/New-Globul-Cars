@@ -228,7 +228,6 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
                   stories={sellerStories}
                   imageUrl={sellerPhotoURL}
                   size="small"
-                  onClick={() => console.log('Story clicked')}
                 />
                 {sellerTrustData && (
                   <TrustBadge

@@ -549,8 +549,12 @@ export class MonitoringService {
         });
       }
       
-      // Facebook Pixel (if available)
-      if (typeof window !== 'undefined' && (window as any).fbq) {
+      // Facebook Pixel (if available and enabled)
+      const pixelId = process.env.REACT_APP_FACEBOOK_PIXEL_ID;
+      const pixelEnabled = Boolean(
+        pixelId && ((process.env.NODE_ENV === 'production') || process.env.REACT_APP_ENABLE_PIXEL === 'true')
+      );
+      if (pixelEnabled && typeof window !== 'undefined' && (window as any).fbq) {
         (window as any).fbq('trackCustom', event.eventName, event.properties);
       }
       

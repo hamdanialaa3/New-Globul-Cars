@@ -1,6 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
-import { Sun, Moon, Monitor } from 'lucide-react';
+import { styled } from 'styled-components';
+import { Sun, Moon } from 'lucide-react';
+
 import { useTheme } from '../contexts/ThemeContext';
 import { useTranslation } from '../hooks/useTranslation';
 
@@ -262,7 +263,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
       handleThemeChange(true);
     } else {
       // Auto/system theme
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
       handleThemeChange(prefersDark);
     }
   };

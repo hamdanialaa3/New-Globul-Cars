@@ -7,6 +7,9 @@
  * @since December 2025
  */
 
+import { collection, getDocs, limit, query, where } from 'firebase/firestore';
+import { db } from '@/firebase/firebase-config';
+
 export interface MarketStats {
   averagePrice: number;
   avgMileage: number;
@@ -75,25 +78,76 @@ export function calculateDealRating(
 
 /**
  * Get market stats for a specific make/model/year
- * (Placeholder - should query Firestore for actual market data)
+ * Queries all vehicle collections and computes averages.
  */
 export async function getMarketStats(
   make: string,
   model: string,
   year: number
 ): Promise<MarketStats> {
-  // TODO: Implement actual Firestore query
-  // This is a placeholder that returns mock data
-  // In production, this should:
-  // 1. Query Firestore for similar cars (same make/model, year +/- 1)
-  // 2. Calculate average price, mileage, and standard deviation
-  // 3. Return real market statistics
-  
+  const collections = ['passenger_cars', 'suvs', 'vans', 'motorcycles', 'trucks', 'buses'];
+  const yearLower = year - 1;
+  const yearUpper = year + 1;
+
+  const samples: { price: number; mileage: number }[] = [];
+
+  // Query each collection in parallel, limited to avoid heavy reads
+  await Promise.all(
+    collections.map(async (colName) => {
+      try {
+        const ref = collection(db, colName);
+        const q = query(
+          ref,
+          where('make', '==', make),
+          where('model', '==', model),
+          where('year', '>=', yearLower),
+          where('year', '<=', yearUpper),
+          limit(60)
+        );
+
+        const snapshot = await getDocs(q);
+        snapshot.forEach((docSnap) => {
+          const data: any = docSnap.data();
+          const price = Number(data.price) || 0;
+          const mileage = Number(data.mileage || data.kilometers || data.km) || 0;
+          if (price > 0 && mileage > 0) {
+            samples.push({ price, mileage });
+          }
+        });
+      } catch (error) {
+        // Log silently to avoid breaking price rating; other collections will still contribute
+        // logger-service not imported here to keep utility light
+      }
+    })
+  );
+
+  if (samples.length === 0) {
+    // Fallback to conservative defaults if no market data available
+    return {
+      averagePrice: 15000,
+      avgMileage: 120000,
+      sampleSize: 0,
+      stdDeviation: undefined
+    };
+  }
+
+  const sampleSize = samples.length;
+  const sumPrice = samples.reduce((sum, s) => sum + s.price, 0);
+  const sumMileage = samples.reduce((sum, s) => sum + s.mileage, 0);
+  const averagePrice = Math.round(sumPrice / sampleSize);
+  const avgMileage = Math.round(sumMileage / sampleSize);
+
+  // Population standard deviation for price
+  const variance =
+    samples.reduce((sum, s) => sum + Math.pow(s.price - averagePrice, 2), 0) /
+    sampleSize;
+  const stdDeviation = Math.round(Math.sqrt(variance));
+
   return {
-    averagePrice: 15000,
-    avgMileage: 120000,
-    sampleSize: 50,
-    stdDeviation: 3000
+    averagePrice,
+    avgMileage,
+    sampleSize,
+    stdDeviation
   };
 }
 

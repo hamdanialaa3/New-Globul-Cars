@@ -6,48 +6,47 @@
  * Status: ✅ Implementation Complete
  */
 
+
 import { describe, it, expect, beforeEach, jest, afterEach } from '@jest/globals';
 import { renderHook, waitFor } from '@testing-library/react';
 import { useProfile } from '../useProfile';
 import { doc, onSnapshot, getDoc } from 'firebase/firestore';
 
-// Mock dependencies
-jest.mock('../../../../../contexts/ProfileTypeContext', () => ({
-  useProfileType: jest.fn(() => ({
-    profileType: 'private',
-    theme: { primary: '#FF7900' },
-    permissions: { maxListings: 5 },
-    planTier: 'free'
-  }))
-}));
+// Mock dependencies (factories must not reference jest directly)
 
-jest.mock('../../../../../firebase/index', () => ({
-  bulgarianAuthService: {
-    getCurrentUserProfile: jest.fn(),
-    getUserProfileById: jest.fn()
-  }
-}));
+const mockGetCurrentUserProfile = jest.fn();
+const mockGetUserProfileById = jest.fn();
 
+const mockGetUserCars = jest.fn(() => Promise.resolve([]));
 jest.mock('../../../../../services/car', () => ({
   unifiedCarService: {
-    getUserCars: jest.fn(() => Promise.resolve([]))
+    getUserCars: mockGetUserCars
   }
 }));
 
+const mockDoc = jest.fn();
+const mockOnSnapshot = jest.fn();
+const mockGetDoc = jest.fn();
+const mockCollection = jest.fn();
+const mockQuery = jest.fn();
+const mockWhere = jest.fn();
+const mockGetDocs = jest.fn();
 jest.mock('firebase/firestore', () => ({
-  doc: jest.fn(),
-  onSnapshot: jest.fn(),
-  getDoc: jest.fn(),
-  collection: jest.fn(),
-  query: jest.fn(),
-  where: jest.fn(),
-  getDocs: jest.fn()
+  doc: mockDoc,
+  onSnapshot: mockOnSnapshot,
+  getDoc: mockGetDoc,
+  collection: mockCollection,
+  query: mockQuery,
+  where: mockWhere,
+  getDocs: mockGetDocs
 }));
 
+const mockGetFirebaseUidByNumericId = jest.fn();
+const mockEnsureUserNumericId = jest.fn();
 jest.mock('../../../../../services/numeric-car-system.service', () => ({
   numericCarSystemService: {
-    getFirebaseUidByNumericId: jest.fn(),
-    ensureUserNumericId: jest.fn()
+    getFirebaseUidByNumericId: mockGetFirebaseUidByNumericId,
+    ensureUserNumericId: mockEnsureUserNumericId
   }
 }));
 

@@ -1,7 +1,6 @@
 import { unifiedCarService as modularService } from './car/unified-car-service';
 import { db } from '../firebase/firebase-config';
-import { doc, getDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { logger } from './logger-service';
+import { serverTimestamp } from 'firebase/firestore';
 import { numericCarSystemService } from './numeric-car-system.service';
 import { auth } from '../firebase/firebase-config';
 

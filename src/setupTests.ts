@@ -1,47 +1,8 @@
 // Setup file for Jest tests
+
 import '@testing-library/jest-dom';
 
-// Mock Firebase App
-jest.mock('firebase/app', () => ({
-  initializeApp: jest.fn(() => ({ name: '[DEFAULT]', options: {} })),
-  getApps: jest.fn(() => []),
-  getApp: jest.fn(() => ({ name: '[DEFAULT]', options: {} })),
-}));
-
-// Mock Firebase Auth
-jest.mock('firebase/auth', () => ({
-  getAuth: jest.fn(() => ({
-    currentUser: null,
-    onAuthStateChanged: jest.fn((callback) => {
-      callback(null);
-      return jest.fn(); // unsubscribe function
-    }),
-  })),
-  signInWithEmailAndPassword: jest.fn(),
-  signOut: jest.fn(),
-  onAuthStateChanged: jest.fn(),
-  createUserWithEmailAndPassword: jest.fn(),
-  sendPasswordResetEmail: jest.fn(),
-  updateProfile: jest.fn(),
-  signInWithRedirect: jest.fn(),
-  getRedirectResult: jest.fn(),
-  GoogleAuthProvider: jest.fn().mockImplementation(() => ({
-    addScope: jest.fn(),
-    setCustomParameters: jest.fn(),
-  })),
-  signInWithPopup: jest.fn(),
-  FacebookAuthProvider: jest.fn().mockImplementation(() => ({
-    addScope: jest.fn(),
-    setCustomParameters: jest.fn(),
-  })),
-  OAuthProvider: jest.fn().mockImplementation((providerId) => ({
-    providerId,
-    addScope: jest.fn(),
-    setCustomParameters: jest.fn(),
-  })),
-}));
-
-// Mock Firestore
+// Mock functions for Firebase Firestore
 const mockCollection = jest.fn();
 const mockDoc = jest.fn();
 const mockGetDoc = jest.fn(() => Promise.resolve({ exists: jest.fn(() => false), data: jest.fn(() => ({})) }));
@@ -49,13 +10,13 @@ const mockGetDocs = jest.fn(() => Promise.resolve({ docs: [], empty: true, size:
 const mockSetDoc = jest.fn(() => Promise.resolve());
 const mockUpdateDoc = jest.fn(() => Promise.resolve());
 const mockDeleteDoc = jest.fn(() => Promise.resolve());
-const mockQuery = jest.fn((...args) => args);
-const mockWhere = jest.fn((field, op, value) => ({ field, op, value }));
-const mockOrderBy = jest.fn((field, direction) => ({ field, direction }));
-const mockLimit = jest.fn((n) => ({ limit: n }));
+const mockQuery = jest.fn();
+const mockWhere = jest.fn();
+const mockOrderBy = jest.fn();
+const mockLimit = jest.fn();
 
+// Mock Firebase Firestore
 jest.mock('firebase/firestore', () => ({
-  getFirestore: jest.fn(() => ({})),
   initializeFirestore: jest.fn(() => ({})),
   collection: mockCollection,
   doc: mockDoc,
@@ -113,19 +74,18 @@ jest.mock('firebase/database', () => ({
 }));
 
 // Mock window.matchMedia
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: jest.fn().mockImplementation(query => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: jest.fn(),
-    removeListener: jest.fn(),
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
-  })),
-});
+const mockMatchMedia = jest.fn().mockImplementation(query => ({
+  matches: false,
+  media: query,
+  onchange: null,
+  addListener: jest.fn(),
+  removeListener: jest.fn(),
+  addEventListener: jest.fn(),
+  removeEventListener: jest.fn(),
+  dispatchEvent: jest.fn(),
+}));
+
+window.matchMedia = mockMatchMedia;
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {

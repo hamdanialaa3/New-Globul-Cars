@@ -21,7 +21,7 @@
 import { BulgarianUser, BulgarianUserUpdate, DealerProfile, CompanyProfile, isDealerProfile, isCompanyProfile } from '../../types/user/bulgarian-user.types';
 import { DealershipInfo, PrivacySettings } from '../../types/dealership/dealership.types';
 import { CompanyInfo } from '../../types/company/company.types';
-import { db, storage } from '../../firebase/firebase-config';
+import { db, storage } from '@/firebase/firebase-config';
 import { userService } from '../../services/user/canonical-user.service';
 import { logger } from '../../services/logger-service';
 import { doc, setDoc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';

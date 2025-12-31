@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { logger } from './logger-service';
 
 // Note: In a production environment, you should route these requests through a backend proxy
 // (e.g., Firebase Functions) to avoid exposing your API Key in the client-side bundle.
@@ -41,7 +42,7 @@ export const DeepSeekService = {
         model: 'deepseek-chat' | 'deepseek-coder' = 'deepseek-chat'
     ): Promise<string> => {
         if (!DEEPSEEK_API_KEY) {
-            console.error('DeepSeek API Key is missing. Please check .env.local');
+            logger.error('DeepSeek API Key missing', new Error('.env.local'));
             throw new Error('DeepSeek API Key is not configured.');
         }
 
@@ -64,7 +65,7 @@ export const DeepSeekService = {
 
             return response.data.choices[0].message.content;
         } catch (error) {
-            console.error('Error calling DeepSeek API:', error);
+            logger.error('Error calling DeepSeek API', error as Error);
             throw error;
         }
     },

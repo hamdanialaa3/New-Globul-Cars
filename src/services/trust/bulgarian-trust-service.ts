@@ -8,10 +8,7 @@ import {
   getDoc, 
   updateDoc, 
   serverTimestamp, 
-  collection, 
-  query, 
-  where, 
-  getDocs,
+  collection, query, where, orderBy, limit, getDocs,
   Timestamp 
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
@@ -431,12 +428,44 @@ export class BulgarianTrustService {
    */
   private async getReviewsSummary(userId: string): Promise<ReviewSummary> {
     try {
-      // TODO: Implement reviews collection query
-      // For now, return from user stats
+      const reviewsRef = collection(db, 'reviews');
+      const q = query(
+        reviewsRef,
+        where('sellerId', '==', userId),
+        orderBy('createdAt', 'desc'),
+        limit(10)
+      );
+
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        return { count: 0, average: 0, recent: [] };
+      }
+
+      let total = 0;
+      const recent: ReviewSummary['recent'] = [];
+
+      snapshot.docs.forEach(docSnap => {
+        const data = docSnap.data();
+        const rating = Number(data.rating) || 0;
+        total += rating;
+
+        // Keep lightweight recent list (up to 10)
+        recent.push({
+          rating,
+          comment: data.comment || '',
+          createdAt: data.createdAt,
+          reviewerId: data.reviewerId || ''
+        });
+      });
+
+      const count = snapshot.size;
+      const average = Number((total / count).toFixed(2));
+
       return {
-        count: 0,
-        average: 0,
-        recent: []
+        count,
+        average,
+        recent
       };
     } catch (error) {
       serviceLogger.error('Error getting reviews summary', error as Error, { userId });

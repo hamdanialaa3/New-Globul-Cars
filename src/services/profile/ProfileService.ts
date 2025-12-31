@@ -17,7 +17,7 @@ import {
   runTransaction,
   increment
 } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@/firebase/firebase-config';
 import { logger } from '../logger-service';
 import { DealershipRepository } from '../../repositories/DealershipRepository';
 import { CompanyRepository } from '../../repositories/CompanyRepository';

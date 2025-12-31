@@ -12,16 +12,60 @@ import HorizontalScrollContainer from '../../../../components/HorizontalScrollCo
 
 // Styled Components
 const SectionContainer = styled.section<{ $isDark: boolean }>`
-  padding: 80px 20px;
-  background: ${props => props.$isDark
-    ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.4) 0%, rgba(30, 41, 59, 0.4) 50%, rgba(51, 65, 85, 0.4) 100%)'
-    : 'linear-gradient(135deg, rgba(168, 174, 184, 0.4) 0%, rgba(195, 207, 226, 0.4) 100%)'};
+  padding: 100px 20px;
   position: relative;
   overflow: hidden;
-  transition: background 0.3s ease;
+  background: ${props => props.$isDark
+    ? 'linear-gradient(135deg, rgba(5, 15, 35, 0.95) 0%, rgba(10, 25, 50, 0.95) 50%, rgba(15, 35, 65, 0.95) 100%)'
+    : 'linear-gradient(135deg, rgba(240, 248, 255, 0.95) 0%, rgba(230, 240, 255, 0.95) 100%)'};
+
+  /* Futuristic Grid Background with Dotted Lines */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(${props => props.$isDark ? 'rgba(0, 243, 255, 0.08)' : 'rgba(0, 100, 200, 0.05)'} 1px, transparent 1px),
+      linear-gradient(90deg, ${props => props.$isDark ? 'rgba(0, 243, 255, 0.08)' : 'rgba(0, 100, 200, 0.05)'} 1px, transparent 1px);
+    background-size: 60px 60px;
+    background-position: 0 0, 0 0;
+    mask-image: radial-gradient(circle at 1px 1px, black 1px, transparent 0);
+    -webkit-mask-image: radial-gradient(circle at 1px 1px, black 1px, transparent 0);
+    mask-size: 60px 60px;
+    -webkit-mask-size: 60px 60px;
+    opacity: 0.6;
+    animation: gridMove 20s linear infinite;
+  }
+
+  @keyframes gridMove {
+    0% {
+      background-position: 0 0, 0 0;
+    }
+    100% {
+      background-position: 60px 60px, 60px 60px;
+    }
+  }
+
+  /* Glowing Corner Accents */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 0% 0%, ${props => props.$isDark ? 'rgba(0, 243, 255, 0.15)' : 'rgba(100, 200, 255, 0.1)'} 0%, transparent 50%),
+      radial-gradient(circle at 100% 100%, ${props => props.$isDark ? 'rgba(255, 0, 255, 0.15)' : 'rgba(255, 100, 200, 0.1)'} 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
 
   @media (max-width: 768px) {
-    padding: 50px 16px;
+    padding: 60px 16px;
   }
 `;
 
@@ -30,28 +74,98 @@ const SectionHeader = styled.div`
   margin-bottom: 60px;
   position: relative;
   z-index: 2;
+  
+  /* Subtle glow effect */
+  &::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(0, 243, 255, 0.1) 0%, transparent 70%);
+    filter: blur(40px);
+    z-index: -1;
+  }
 `;
 
 const AIBadge = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: white;
-  padding: 8px 20px;
-  border-radius: 30px;
+  gap: 10px;
+  background: rgba(0, 243, 255, 0.12);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 243, 255, 0.3);
+  color: #00f3ff;
+  padding: 10px 24px;
+  border-radius: 50px;
   font-size: 0.875rem;
   font-weight: 700;
-  margin-bottom: 16px;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-  animation: pulse 2s infinite;
+  margin-bottom: 24px;
+  box-shadow: 
+    0 0 20px rgba(0, 243, 255, 0.4),
+    inset 0 0 20px rgba(0, 243, 255, 0.1);
+  animation: aiPulse 3s ease-in-out infinite;
+  text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+  position: relative;
+  overflow: hidden;
 
-  @keyframes pulse {
+  /* Animated gradient shine */
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.2) 50%,
+      transparent 70%
+    );
+    animation: shine 3s infinite;
+    transform: rotate(45deg);
+  }
+
+  @keyframes aiPulse {
     0%, 100% {
-      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+      box-shadow: 
+        0 0 20px rgba(0, 243, 255, 0.4),
+        inset 0 0 20px rgba(0, 243, 255, 0.1);
+      border-color: rgba(0, 243, 255, 0.3);
     }
     50% {
-      box-shadow: 0 4px 25px rgba(16, 185, 129, 0.5);
+      box-shadow: 
+        0 0 30px rgba(0, 243, 255, 0.6),
+        0 0 50px rgba(0, 243, 255, 0.3),
+        inset 0 0 30px rgba(0, 243, 255, 0.15);
+      border-color: rgba(0, 243, 255, 0.5);
+    }
+  }
+
+  @keyframes shine {
+    0% {
+      transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+    100% {
+      transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
+  }
+
+  svg {
+    filter: drop-shadow(0 0 5px rgba(0, 243, 255, 0.8));
+    animation: iconFloat 2s ease-in-out infinite;
+  }
+
+  @keyframes iconFloat {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-3px);
     }
   }
 `;
@@ -59,11 +173,24 @@ const AIBadge = styled.div`
 const SectionTitle = styled.h2`
   font-size: 2.75rem;
   font-weight: 900;
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #00f3ff 0%, #00d4ff 30%, #ff00ff 70%, #ff0066 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 20px;
+  background-clip: text;
+  margin-bottom: 24px;
   letter-spacing: -0.5px;
+  position: relative;
+  filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.3));
+  animation: titleGlow 4s ease-in-out infinite;
+  
+  @keyframes titleGlow {
+    0%, 100% {
+      filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.3));
+    }
+    50% {
+      filter: drop-shadow(0 0 30px rgba(0, 243, 255, 0.5)) drop-shadow(0 0 50px rgba(255, 0, 255, 0.3));
+    }
+  }
   
   @media (max-width: 768px) {
     font-size: 2rem;
@@ -91,57 +218,80 @@ const ViewAllButton = styled.button<{ $isDark: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  margin: 40px auto 0;
-  padding: 0.75rem 2rem;
-  border: none;
-  border-radius: 12px;
+  gap: 0.75rem;
+  margin: 50px auto 0;
+  padding: 14px 32px;
+  border: 1px solid ${props => props.$isDark ? 'rgba(0, 243, 255, 0.4)' : 'rgba(0, 150, 255, 0.3)'};
+  border-radius: 16px;
   font-size: 0.9375rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  letter-spacing: 0.02em;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.5px;
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 
-  /* Light mode: Orange/Yellow gradient */
-  html[data-theme="light"] & {
-    background: linear-gradient(135deg, #FF8F10 0%, #FFA500 50%, #FFD700 100%);
-    color: #000000;
-    box-shadow: 0 4px 20px rgba(255, 143, 16, 0.4);
-  }
+  /* Glassmorphism background */
+  background: ${props => props.$isDark
+    ? 'linear-gradient(135deg, rgba(0, 243, 255, 0.15) 0%, rgba(255, 0, 255, 0.12) 100%)'
+    : 'linear-gradient(135deg, rgba(0, 200, 255, 0.2) 0%, rgba(150, 100, 255, 0.15) 100%)'};
+  color: ${props => props.$isDark ? '#00f3ff' : '#0066ff'};
+  box-shadow: ${props => props.$isDark
+    ? '0 0 25px rgba(0, 243, 255, 0.3), 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0, 243, 255, 0.1)'
+    : '0 0 20px rgba(0, 200, 255, 0.25), 0 8px 20px rgba(0, 0, 0, 0.1), inset 0 0 15px rgba(255, 255, 255, 0.2)'};
+  text-shadow: ${props => props.$isDark ? '0 0 10px rgba(0, 243, 255, 0.5)' : 'none'};
 
-  /* Dark mode: Black with yellow text */
-  html[data-theme="dark"] & {
-    background: #000000;
-    color: #FFD700;
-    border: 2px solid #FFD700;
-    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+  /* Animated shine effect */
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.4) 50%,
+      transparent 70%
+    );
+    transform: rotate(45deg);
+    transition: transform 0.6s;
+    opacity: 0;
   }
   
   &:hover {
-    transform: translateY(-3px) scale(1.02);
-    html[data-theme="light"] & {
-      background: linear-gradient(135deg, #FFA500 0%, #FFD700 50%, #FF8F10 100%);
-      box-shadow: 0 8px 30px rgba(255, 143, 16, 0.5);
-    }
-    html[data-theme="dark"] & {
-      background: #1a1a1a;
-      box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4);
+    transform: translateY(-4px) scale(1.03);
+    border-color: ${props => props.$isDark ? 'rgba(0, 243, 255, 0.7)' : 'rgba(0, 200, 255, 0.5)'};
+    box-shadow: ${props => props.$isDark
+      ? '0 0 40px rgba(0, 243, 255, 0.5), 0 12px 32px rgba(0, 0, 0, 0.4), inset 0 0 25px rgba(0, 243, 255, 0.15)'
+      : '0 0 35px rgba(0, 200, 255, 0.4), 0 12px 28px rgba(0, 0, 0, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.3)'};
+    
+    &::before {
+      transform: translateX(100%) translateY(100%) rotate(45deg);
+      opacity: 1;
     }
   }
   
   &:active {
-    transform: translateY(-1px) scale(1);
+    transform: translateY(-2px) scale(1.01);
   }
   
   svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
+    filter: ${props => props.$isDark ? 'drop-shadow(0 0 5px rgba(0, 243, 255, 0.8))' : 'none'};
+    transition: transform 0.3s ease;
+  }
+
+  &:hover svg {
+    transform: translateX(3px);
   }
   
   @media (max-width: 768px) {
-    padding: 0.625rem 1.5rem;
+    padding: 12px 24px;
     font-size: 0.875rem;
   }
 `;
@@ -150,89 +300,173 @@ const RankBadge = styled.span<{ $rank: number; $active: boolean; $isDark: boolea
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 24px;
-  height: 24px;
-  padding: 0 6px;
-  border-radius: 12px;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 14px;
   font-size: 0.75rem;
   font-weight: 800;
   background: ${props => {
-    if (props.$rank === 1) return 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)';
-    if (props.$rank === 2) return 'linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%)';
-    if (props.$rank === 3) return 'linear-gradient(135deg, #CD7F32 0%, #B87333 100%)';
+    if (props.$rank === 1) return props.$isDark 
+      ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 165, 0, 0.3) 100%)'
+      : 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)';
+    if (props.$rank === 2) return props.$isDark
+      ? 'linear-gradient(135deg, rgba(192, 192, 192, 0.3) 0%, rgba(168, 168, 168, 0.3) 100%)'
+      : 'linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%)';
+    if (props.$rank === 3) return props.$isDark
+      ? 'linear-gradient(135deg, rgba(205, 127, 50, 0.3) 0%, rgba(184, 115, 51, 0.3) 100%)'
+      : 'linear-gradient(135deg, #CD7F32 0%, #B87333 100%)';
     return 'transparent';
   }};
-  color: ${props => props.$rank <= 3 ? '#000000' : 'transparent'};
-  box-shadow: ${props => props.$rank <= 3 ? '0 2px 8px rgba(0, 0, 0, 0.2)' : 'none'};
-  margin-right: 4px;
+  border: ${props => props.$rank <= 3 
+    ? (props.$isDark 
+      ? (props.$rank === 1 ? '1px solid rgba(255, 215, 0, 0.5)' : props.$rank === 2 ? '1px solid rgba(192, 192, 192, 0.5)' : '1px solid rgba(205, 127, 50, 0.5)')
+      : 'none')
+    : 'none'};
+  color: ${props => {
+    if (props.$rank <= 3) {
+      return props.$isDark 
+        ? (props.$rank === 1 ? '#FFD700' : props.$rank === 2 ? '#C0C0C0' : '#CD7F32')
+        : '#000000';
+    }
+    return 'transparent';
+  }};
+  box-shadow: ${props => {
+    if (props.$rank <= 3) {
+      const color = props.$rank === 1 ? '255, 215, 0' : props.$rank === 2 ? '192, 192, 192' : '205, 127, 50';
+      return props.$isDark
+        ? `0 0 15px rgba(${color}, 0.4), inset 0 0 10px rgba(${color}, 0.1)`
+        : `0 2px 8px rgba(0, 0, 0, 0.2)`;
+    }
+    return 'none';
+  }};
+  margin-right: 6px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  text-shadow: ${props => props.$isDark && props.$rank <= 3 ? `0 0 8px currentColor` : 'none'};
+  animation: ${props => props.$active && props.$rank <= 3 ? 'badgePulse 2s ease-in-out infinite' : 'none'};
+
+  @keyframes badgePulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 0.9;
+    }
+  }
 `;
 
 const CategoryTab = styled.button<{ $active: boolean; $rank?: number; $isDark: boolean }>`
-  padding: 12px 24px;
-  border-radius: 30px;
+  padding: 14px 28px;
+  border-radius: 16px;
   border: 1px solid ${props =>
     props.$active
-      ? (props.$isDark ? 'rgba(240, 147, 251, 0.55)' : 'rgba(240, 147, 251, 0.40)')
-      : (props.$isDark ? 'rgba(255, 255, 255, 0.14)' : 'rgba(15, 23, 42, 0.10)')};
+      ? (props.$isDark ? 'rgba(0, 243, 255, 0.5)' : 'rgba(0, 150, 255, 0.4)')
+      : (props.$isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)')};
   background: ${props =>
     props.$active
-      ? `linear-gradient(135deg,
-          rgba(240, 147, 251, ${props.$isDark ? 0.26 : 0.18}) 0%,
-          rgba(245, 87, 108, ${props.$isDark ? 0.22 : 0.14}) 100%
-        )`
-      : (props.$isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.55)')};
-  color: ${props => (props.$active ? '#ffffff' : props.$isDark ? '#e2e8f0' : '#1e293b')};
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+      ? (props.$isDark
+        ? 'linear-gradient(135deg, rgba(0, 243, 255, 0.15) 0%, rgba(255, 0, 255, 0.12) 100%)'
+        : 'linear-gradient(135deg, rgba(0, 200, 255, 0.2) 0%, rgba(150, 100, 255, 0.15) 100%)')
+      : (props.$isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.6)')};
+  color: ${props => (props.$active 
+    ? (props.$isDark ? '#00f3ff' : '#0066ff')
+    : (props.$isDark ? '#e2e8f0' : '#1e293b'))};
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   font-size: 0.9375rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: ${props =>
     props.$active
       ? (props.$isDark
-        ? '0 18px 42px rgba(0, 0, 0, 0.45), 0 8px 18px rgba(240, 147, 251, 0.16)'
-        : '0 14px 34px rgba(15, 23, 42, 0.12), 0 6px 14px rgba(240, 147, 251, 0.14)')
+        ? '0 0 30px rgba(0, 243, 255, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0, 243, 255, 0.1)'
+        : '0 0 25px rgba(0, 200, 255, 0.3), 0 8px 20px rgba(0, 0, 0, 0.1), inset 0 0 15px rgba(255, 255, 255, 0.2)')
       : (props.$isDark
-        ? '0 14px 30px rgba(0, 0, 0, 0.38)'
-        : '0 10px 26px rgba(15, 23, 42, 0.10)')};
+        ? '0 4px 15px rgba(0, 0, 0, 0.2)'
+        : '0 4px 12px rgba(0, 0, 0, 0.08)')};
   position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  overflow: hidden;
 
-  /* subtle glass shine */
+  /* Glass shine effect */
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      135deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 70%
+    );
+    opacity: ${props => props.$active ? 1 : 0};
+    transition: opacity 0.4s ease;
+    transform: rotate(45deg);
+    animation: ${props => props.$active ? 'glassShine 3s infinite' : 'none'};
+  }
+
+  @keyframes glassShine {
+    0% {
+      transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+    100% {
+      transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
+  }
+
+  /* Active glow border */
   &::after {
     content: '';
     position: absolute;
-    inset: 0;
+    inset: -2px;
     border-radius: inherit;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.22) 0%,
-      rgba(255, 255, 255, 0.10) 25%,
-      rgba(255, 255, 255, 0.05) 55%,
-      rgba(255, 255, 255, 0.00) 100%
-    );
-    opacity: ${props => (props.$isDark ? 0.16 : 0.22)};
-    pointer-events: none;
+    padding: 2px;
+    background: ${props => props.$active
+      ? (props.$isDark
+        ? 'linear-gradient(135deg, rgba(0, 243, 255, 0.6), rgba(255, 0, 255, 0.6))'
+        : 'linear-gradient(135deg, rgba(0, 200, 255, 0.5), rgba(150, 100, 255, 0.5))')
+      : 'transparent'};
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: ${props => props.$active ? 1 : 0};
+    transition: opacity 0.4s ease;
+    filter: blur(1px);
   }
 
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px) scale(1.02);
     box-shadow: ${props =>
       props.$active
         ? (props.$isDark
-          ? '0 22px 50px rgba(0, 0, 0, 0.52), 0 10px 24px rgba(240, 147, 251, 0.22)'
-          : '0 18px 44px rgba(15, 23, 42, 0.16), 0 10px 22px rgba(240, 147, 251, 0.18)')
+          ? '0 0 40px rgba(0, 243, 255, 0.6), 0 12px 32px rgba(0, 0, 0, 0.4), inset 0 0 25px rgba(0, 243, 255, 0.15)'
+          : '0 0 35px rgba(0, 200, 255, 0.4), 0 12px 28px rgba(0, 0, 0, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.3)')
         : (props.$isDark
-          ? '0 18px 38px rgba(0, 0, 0, 0.46)'
-          : '0 14px 34px rgba(15, 23, 42, 0.14)')};
-    border-color: ${props => (props.$isDark ? 'rgba(240, 147, 251, 0.65)' : 'rgba(240, 147, 251, 0.55)')};
+          ? '0 8px 24px rgba(0, 0, 0, 0.3), 0 0 15px rgba(0, 243, 255, 0.2)'
+          : '0 8px 20px rgba(0, 0, 0, 0.12), 0 0 12px rgba(0, 200, 255, 0.15)')};
+    border-color: ${props => (props.$isDark ? 'rgba(0, 243, 255, 0.7)' : 'rgba(0, 200, 255, 0.5)')};
+    
+    &::before {
+      opacity: ${props => props.$active ? 1 : 0.5};
+    }
+  }
+
+  &:active {
+    transform: translateY(-1px) scale(1);
   }
 
   @media (max-width: 768px) {
-    padding: 10px 20px;
+    padding: 12px 22px;
     font-size: 0.875rem;
   }
 `;
@@ -242,6 +476,21 @@ const CarsContainer = styled.div`
   margin: 0 auto;
   position: relative;
   z-index: 2;
+  padding: 20px 0;
+  
+  /* Subtle glow around container */
+  &::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: radial-gradient(ellipse at center, rgba(0, 243, 255, 0.05) 0%, transparent 70%);
+    border-radius: 20px;
+    z-index: -1;
+    pointer-events: none;
+  }
 `;
 
 

@@ -1415,7 +1415,6 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
         const { db } = await import('../../../firebase/firebase-config');
         const carRef = doc(db, 'cars', car.id);
         await updateDoc(carRef, { featuredImageIndex: index });
-        console.log('Featured image updated successfully');
       } catch (error) {
         console.error('Error updating featured image:', error);
       }
@@ -1627,10 +1626,8 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              console.log('Print button clicked, setting showPrintDialog to true');
               try {
                 setShowPrintDialog(true);
-                console.log('showPrintDialog set to true');
               } catch (error) {
                 console.error('Error setting showPrintDialog:', error);
               }
@@ -2010,7 +2007,6 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  console.log('Share button clicked');
                   handleShareMenuToggle();
                 }}
                 type="button"

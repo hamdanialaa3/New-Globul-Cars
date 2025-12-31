@@ -798,9 +798,6 @@ const CarsPage: React.FC = () => {
     
     const startTime = Date.now();
     
-    // 🔍 DEBUG: Log search attempt
-    console.log('🔍 Starting smart search...', { query: searchQuery });
-    
     try {
       const result = await smartSearchService.search(searchQuery, user?.uid, 1, 100);
       const processingTime = Date.now() - startTime;
@@ -817,22 +814,6 @@ const CarsPage: React.FC = () => {
           language
         });
       }
-      
-      // 🔍 DEBUG: Log results
-      console.log('✅ Smart search completed!', {
-        query: searchQuery,
-        resultsCount: result.cars.length,
-        totalCount: result.totalCount,
-        isPersonalized: result.isPersonalized,
-        processingTime: `${processingTime}ms`,
-        firstCar: result.cars[0] ? {
-          id: result.cars[0].id,
-          make: result.cars[0].make,
-          model: result.cars[0].model,
-          year: result.cars[0].year,
-          price: result.cars[0].price
-        } : null
-      });
       
       logger.debug('Smart Search Result', {
         context: 'CarsPage',
@@ -852,9 +833,6 @@ const CarsPage: React.FC = () => {
       
       setCars(result.cars as CarListing[]);
       setError(null); // Clear any previous errors
-      
-      // 🔍 DEBUG: Confirm state updated
-      console.log('✅ Cars state updated, count:', result.cars.length);
       
       logger.info('Smart search completed', { 
         query: searchQuery, 

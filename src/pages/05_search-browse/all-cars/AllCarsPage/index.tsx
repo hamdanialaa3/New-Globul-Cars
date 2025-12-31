@@ -5,7 +5,7 @@ import { logger } from '../../../../services/logger-service';
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useTheme } from 'styled-components';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { collection, query, getDocs, orderBy, where } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase-config';
@@ -27,7 +27,7 @@ const VEHICLE_COLLECTIONS = [
 
 const AllCarsPage: React.FC = () => {
   const { language } = useLanguage();
-  const theme = useTheme() as any;
+  const { theme } = useTheme();
   const [cars, setCars] = useState<CarListing[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');

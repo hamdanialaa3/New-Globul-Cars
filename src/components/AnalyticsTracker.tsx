@@ -1,6 +1,8 @@
 import { logger } from '../services/logger-service';
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { db } from '../firebase/firebase-config';
 
 interface AnalyticsEvent {
   action: string;
@@ -75,23 +77,21 @@ class AnalyticsService {
     });
   }
 
-  private sendToAnalytics(event: AnalyticsEvent) {
-    // Skip analytics in development mode
+  private async sendToAnalytics(event: AnalyticsEvent) {
+    // Skip network writes in development; log locally
     if (process.env.NODE_ENV === 'development') {
       logger.info('Analytics event (dev mode):', event);
       return;
     }
 
-    // Mock analytics service - replace with real service
-    fetch('/api/analytics', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(event)
-    }).catch(error => {
-      logger.error('Analytics error:', error);
-    });
+    try {
+      await addDoc(collection(db, 'analytics_events'), {
+        ...event,
+        timestamp: serverTimestamp()
+      });
+    } catch (error) {
+      logger.error('Analytics persistence error:', error);
+    }
   }
 
   getEvents(): (AnalyticsEvent & { timestamp: string })[] {

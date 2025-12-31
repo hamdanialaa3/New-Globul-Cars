@@ -31,6 +31,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { logger } from './logger-service';
+import { fcmService } from './notifications/fcm.service';
 
 export interface Notification {
   id: string;
@@ -291,9 +292,24 @@ class NotificationService {
    */
   async requestPermissionAndSaveToken(userId: string): Promise<void> {
     try {
-      logger.info('📱 Notification permission requested (stub)', { userId });
-      // TODO: Implement Firebase Cloud Messaging (FCM) token registration
-      // For now, this is a stub to prevent errors in production
+      if (!fcmService.isSupported()) {
+        logger.warn('Notifications not supported in this environment', { userId });
+        return;
+      }
+
+      const permissionGranted = await fcmService.requestPermission();
+      if (!permissionGranted) {
+        logger.warn('Notification permission denied by user', { userId });
+        return;
+      }
+
+      const token = await fcmService.getToken(userId);
+      if (!token) {
+        logger.warn('FCM token not obtained', { userId });
+        return;
+      }
+
+      logger.info('📱 Notification permission granted and token saved', { userId, tokenPreview: token.substring(0, 8) });
     } catch (error) {
       logger.error('Failed to request notification permission', error as Error, { userId });
     }
@@ -305,14 +321,16 @@ class NotificationService {
    * Returns an unsubscribe function
    */
   onForegroundMessage(callback: (payload: any) => void): () => void {
-    logger.info('📱 Foreground message listener initialized (stub)');
-    // TODO: Implement Firebase Cloud Messaging (FCM) foreground message listener
-    // For now, this is a stub to prevent errors in production
-    
-    // Return a no-op unsubscribe function
-    return () => {
-      logger.info('📱 Foreground message listener unsubscribed (stub)');
-    };
+    if (!fcmService.isSupported()) {
+      logger.warn('Notifications not supported in this environment');
+      return () => {};
+    }
+
+    logger.info('📱 Foreground message listener initialized');
+    return fcmService.onForegroundMessage(payload => {
+      logger.debug('📱 Foreground FCM payload received', { title: payload?.notification?.title });
+      callback(payload);
+    });
   }
 
   /**

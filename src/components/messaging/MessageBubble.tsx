@@ -4,8 +4,15 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Check, CheckCheck, Download, Image as ImageIcon } from 'lucide-react';
+import {
+  ModernCheck,
+  ModernDoubleCheck,
+  ModernDownload,
+  ModernImage
+} from './icons/ModernIcons';
 import type { Message } from '../../services/realtimeMessaging';
+import { TestDriveBubble, type TestDriveRequest } from './bubbles/TestDrive';
+import { useAuth } from '@/contexts/AuthProvider';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -107,12 +114,15 @@ const MessageMeta = styled.div<{ $isOwn: boolean }>`
 interface MessageBubbleProps {
   message: Message;
   isOwn: boolean;
+  onTestDriveAction?: (action: 'confirm' | 'reject' | 'reschedule', requestId: string, newDate?: number) => Promise<void>;
 }
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({
   message,
-  isOwn
+  isOwn,
+  onTestDriveAction
 }) => {
+  const { user } = useAuth();
   const formatTime = (date: Date): string => {
     return new Intl.DateTimeFormat('bg-BG', {
       hour: '2-digit',
@@ -129,17 +139,46 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   const getStatusIcon = () => {
     switch (message.status) {
       case 'sending':
-        return <Check size={14} />;
+        return <ModernCheck size={14} />;
       case 'sent':
-        return <Check size={14} />;
+        return <ModernCheck size={14} />;
       case 'delivered':
-        return <CheckCheck size={14} />;
+        return <ModernDoubleCheck size={14} />;
       case 'read':
-        return <CheckCheck size={14} color={isOwn ? '#4caf50' : '#999'} />;
+        return <ModernDoubleCheck size={14} color={isOwn ? '#4caf50' : '#999'} />;
       default:
         return null;
     }
   };
+
+  // Render test drive bubble if message type is test-drive
+  if (message.type === 'test-drive' && message.metadata?.testDriveData) {
+    const testDriveData = message.metadata.testDriveData as TestDriveRequest;
+    return (
+      <BubbleContainer $isOwn={isOwn}>
+        <TestDriveBubble
+          request={testDriveData}
+          canRespond={!isOwn}
+          isReceiver={!isOwn}
+          onConfirm={async () => {
+            if (onTestDriveAction) {
+              await onTestDriveAction('confirm', testDriveData.id);
+            }
+          }}
+          onReject={async () => {
+            if (onTestDriveAction) {
+              await onTestDriveAction('reject', testDriveData.id);
+            }
+          }}
+          onReschedule={async (newDate: number) => {
+            if (onTestDriveAction) {
+              await onTestDriveAction('reschedule', testDriveData.id, newDate);
+            }
+          }}
+        />
+      </BubbleContainer>
+    );
+  }
 
   return (
     <BubbleContainer $isOwn={isOwn}>
@@ -173,7 +212,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
                   $isOwn={isOwn}
                   onClick={() => window.open(attachment.url, '_blank')}
                 >
-                  <Download size={20} />
+                  <ModernDownload size={20} />
                   <FileInfo $isOwn={isOwn}>
                     <div className="filename">{attachment.name}</div>
                     <div className="filesize">{formatFileSize(attachment.size)}</div>

@@ -12,7 +12,12 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { X, Volume2, VolumeX, Play } from 'lucide-react';
+import {
+  ModernClose,
+  ModernVolume,
+  ModernVolumeX,
+  ModernPlay
+} from './icons/ModernIcons';
 import { notificationSoundService } from '@/services/messaging/notification-sound.service';
 import { useLanguage } from '@/contexts';
 
@@ -337,13 +342,13 @@ export const NotificationSettings: React.FC<Props> = ({ isOpen, onClose }) => {
         <ModalHeader>
           <h3>{t('settings.notifications', 'Notification Settings')}</h3>
           <CloseButton onClick={onClose}>
-            <X size={20} />
+            <ModernClose size={20} />
           </CloseButton>
         </ModalHeader>
 
         <SettingItem>
           <SettingInfo>
-            {soundEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
+            {soundEnabled ? <ModernVolume size={20} /> : <ModernVolumeX size={20} />}
             <div>
               <h4>{t('settings.soundNotifications', 'Sound Notifications')}</h4>
               <p>{t('settings.soundDescription', 'Play a sound when you receive a new message')}</p>
@@ -357,11 +362,11 @@ export const NotificationSettings: React.FC<Props> = ({ isOpen, onClose }) => {
           {soundEnabled && (
             <VolumeControl>
               <VolumeIcon>
-                <VolumeX size={16} />
+                <ModernVolumeX size={16} />
               </VolumeIcon>
               <VolumeSlider type="range" min="0" max="1" step="0.1" value={volume} onChange={handleVolumeChange} />
               <VolumeIcon>
-                <Volume2 size={16} />
+                <ModernVolume size={16} />
               </VolumeIcon>
               <VolumeLabel>{Math.round(volume * 100)}%</VolumeLabel>
             </VolumeControl>
@@ -370,7 +375,7 @@ export const NotificationSettings: React.FC<Props> = ({ isOpen, onClose }) => {
 
         <SettingItem>
           <TestButton onClick={handleTestSound} disabled={!soundEnabled || testing}>
-            <Play size={16} />
+            <ModernPlay size={16} />
             {testing
               ? t('settings.testing', 'Testing...')
               : t('settings.testSound', 'Test Sound')}

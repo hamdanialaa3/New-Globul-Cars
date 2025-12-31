@@ -149,16 +149,28 @@ const DealerDashboardPage: React.FC = () => {
   };
 
   const handleDismissAlert = (alertId: string) => {
-    // TODO: Implement alert dismissal logic
-    console.log('Dismiss alert:', alertId);
+    // Persist dismissed alerts to localStorage
+    const dismissed = JSON.parse(localStorage.getItem('dismissed-alerts') || '[]');
+    if (!dismissed.includes(alertId)) {
+      dismissed.push(alertId);
+      localStorage.setItem('dismissed-alerts', JSON.stringify(dismissed));
+    }
+    // Update UI immediately
+    setDashboardData(prev => prev ? {
+      ...prev,
+      alerts: prev.alerts.filter(a => a.id !== alertId)
+    } : null);
   };
 
   const handleCompleteTask = (taskId: string) => {
-    // TODO: Implement task completion logic
-    console.log('Complete task:', taskId);
-    // Reload dashboard data after completing task
+    // Remove completed task from UI
+    setDashboardData(prev => prev ? {
+      ...prev,
+      tasks: prev.tasks.filter(t => t.id !== taskId)
+    } : null);
+    // Reload dashboard data to refresh stats
     if (currentUser?.uid) {
-      loadDashboardData();
+      setTimeout(() => loadDashboardData(), 500);
     }
   };
 

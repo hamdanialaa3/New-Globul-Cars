@@ -352,7 +352,7 @@ const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
   
   // 🎨 NEW: Profile Type Context for Dynamic Theming
-  const { profileType, theme, permissions, planTier } = useProfileType();
+  const { profileType, theme, permissions, planTier, loading: profileTypeLoading } = useProfileType();
 
   // ✅ NEW: Read userId from URL route parameter to view another user's profile
   const targetUserId = params.userId;
@@ -621,12 +621,13 @@ const ProfilePage: React.FC = () => {
   };
 
   // Loading state
-  if (loading) {
+  if (loading || profileTypeLoading) {
     return (
       <S.ProfilePageContainer>
         <S.PageContainer>
-          <div style={{ textAlign: 'center', padding: '4rem' }}>
-            {t('common.loading')}
+          <div style={{ textAlign: 'center', padding: '4rem', fontFamily: 'monospace', color: '#00ffe7', background: 'linear-gradient(90deg,#0f2027,#2c5364 80%)', borderRadius: 12, boxShadow: '0 0 24px #00ffe7cc', fontSize: 22, letterSpacing: 1 }}>
+            <span style={{ display: 'block', marginBottom: 16 }}>⏳ Initializing your digital identity...</span>
+            <span style={{ opacity: 0.7 }}>Loading profile systems...</span>
           </div>
         </S.PageContainer>
       </S.ProfilePageContainer>
@@ -646,7 +647,38 @@ const ProfilePage: React.FC = () => {
     );
   }
 
+  // Sci-fi welcome message after login
+  const sciFiWelcome = (
+    <div style={{
+      textAlign: 'center',
+      padding: '2.5rem 1rem',
+      margin: '2rem auto',
+      maxWidth: 520,
+      fontFamily: 'monospace',
+      color: '#00ffe7',
+      background: 'linear-gradient(90deg,#232526,#0f2027 80%)',
+      borderRadius: 16,
+      boxShadow: '0 0 32px #00ffe7cc',
+      fontSize: 24,
+      letterSpacing: 1.2,
+      border: '1.5px solid #00ffe7',
+      position: 'relative',
+      zIndex: 2
+    }}>
+      <span style={{ fontWeight: 700, fontSize: 28, color: '#fff', textShadow: '0 0 8px #00ffe7' }}>
+        Welcome, Commander {user?.firstName || user?.displayName || 'User'} 🚀
+      </span>
+      <br />
+      <span style={{ fontSize: 18, opacity: 0.8, display: 'block', marginTop: 12 }}>
+        Your neural profile is now online.<br />
+        <span style={{ color: '#00ffe7', fontWeight: 500 }}>Access granted to the Bulgarian Mobility Matrix.</span>
+      </span>
+    </div>
+  );
+
   const isBusinessMode = user?.accountType === 'business' || formData.accountType === 'business';
+
+  // Place the welcome message at the top of the main render (after loading and login checks)
 
   return (
     <>

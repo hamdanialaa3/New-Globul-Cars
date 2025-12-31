@@ -15,7 +15,7 @@ import {
   limit,
   serverTimestamp
 } from 'firebase/firestore';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from 'firebase/auth';
 import { db, auth } from '@/firebase/index';
 import { serviceLogger } from '@/services/logger-service';
 
@@ -34,6 +34,28 @@ import {
   ACTIVITY_ACTIONS
 } from './advanced-user-management-data';
 
+// Generate a strong temporary password so the account is secure until the reset email is completed.
+const generateStrongTempPassword = (length: number = 20): string => {
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=';
+  const getRandomValues = (buffer: Uint32Array) => {
+    if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+      crypto.getRandomValues(buffer);
+    } else {
+      // Fallback for non-browser environments (tests)
+      for (let i = 0; i < buffer.length; i += 1) {
+        buffer[i] = Math.floor(Math.random() * alphabet.length);
+      }
+    }
+  };
+
+  const array = new Uint32Array(length);
+  getRandomValues(array);
+
+  return Array.from(array)
+    .map(value => alphabet[value % alphabet.length])
+    .join('');
+};
+
 // User CRUD operations
 export class UserOperations {
   // Create new user
@@ -42,11 +64,12 @@ export class UserOperations {
     createdBy: string
   ): Promise<AdvancedUser> {
     try {
-      // Create Firebase Auth user
+      // Create Firebase Auth user with a strong temporary password (never exposed to the user)
+      const temporaryPassword = generateStrongTempPassword();
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         userData.email,
-        Math.random().toString(36) // Temporary password, should be changed
+        temporaryPassword
       );
 
       const user = userCredential.user;
@@ -75,6 +98,9 @@ export class UserOperations {
       };
 
       await setDoc(userRef, newUser);
+
+      // Force a secure password reset so the end-user chooses their own password
+      await sendPasswordResetEmail(auth, userData.email);
 
       await this.logUserActivity(createdBy, ACTIVITY_ACTIONS.USER_CREATED, 'user', userId,
         `User created: ${userData.displayName}`, true);

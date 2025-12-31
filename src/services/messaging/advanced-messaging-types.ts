@@ -48,6 +48,16 @@ export interface Conversation {
   carTitle?: string;
   carPrice?: number;
   carImageUrl?: string;
+  carLogoUrl?: string; // NEW: شعار السيارة (brand logo)
+  carMake?: string; // NEW: ماركة السيارة
+  sellerNumericId?: number; // NEW: Numeric ID للبائع
+  carNumericId?: number; // NEW: Numeric ID للسيارة
+  otherParticipant?: {
+    id: string;
+    name: string;
+    avatar?: string;
+    numericId?: number;
+  };
 }
 
 /**

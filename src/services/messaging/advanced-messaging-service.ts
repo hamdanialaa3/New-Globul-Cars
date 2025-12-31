@@ -194,6 +194,140 @@ class AdvancedMessagingService {
   ): () => void {
     return SubscriptionOperations.subscribeToConversation(conversationId, userId, otherUserId, callback);
   }
+
+  // ==================== ACTION MESSAGES (NEW) ====================
+  
+  /**
+   * Send offer message (new type)
+   * إرسال رسالة عرض سعر
+   */
+  async sendOfferMessage(
+    conversationId: string,
+    senderId: string,
+    offerData: {
+      carId: string;
+      amount: number;
+      currency?: string;
+      expiresAt?: Date;
+      message?: string;
+      isCounter?: boolean;
+    }
+  ): Promise<string> {
+    const receiverId = ''; // Get from conversation
+    return MessageOperations.sendSystemMessage(
+      conversationId,
+      senderId,
+      receiverId,
+      offerData.message || `عرض سعر: ${offerData.amount} ${offerData.currency || 'EUR'}`,
+      {
+        type: 'offer',
+        offerData,
+        actionRequired: true
+      }
+    );
+  }
+
+  /**
+   * Update offer status (accept/reject/counter)
+   * تحديث حالة العرض
+   */
+  async updateOfferStatus(
+    conversationId: string,
+    messageId: string,
+    status: 'accepted' | 'rejected' | 'countered'
+  ): Promise<void> {
+    // Implementation: Update message metadata
+    const { updateDoc, doc } = await import('firebase/firestore');
+    const { db } = await import('../../firebase/firebase-config');
+    
+    await updateDoc(doc(db, `conversations/${conversationId}/messages`, messageId), {
+      'metadata.offerStatus': status,
+      updatedAt: new Date()
+    });
+  }
+
+  /**
+   * Send appointment message
+   * إرسال رسالة موعد معاينة
+   */
+  async sendAppointmentMessage(
+    conversationId: string,
+    senderId: string,
+    appointmentData: {
+      carId: string;
+      dateTime: Date;
+      location?: string;
+      notes?: string;
+    }
+  ): Promise<string> {
+    const receiverId = '';
+    return MessageOperations.sendSystemMessage(
+      conversationId,
+      senderId,
+      receiverId,
+      `طلب موعد معاينة: ${appointmentData.dateTime.toLocaleString('bg-BG')}`,
+      {
+        type: 'appointment',
+        appointmentData,
+        actionRequired: true
+      }
+    );
+  }
+
+  /**
+   * Send location message
+   * إرسال رسالة موقع
+   */
+  async sendLocationMessage(
+    conversationId: string,
+    senderId: string,
+    location: {
+      latitude: number;
+      longitude: number;
+      address: string;
+    }
+  ): Promise<string> {
+    const receiverId = '';
+    return MessageOperations.sendSystemMessage(
+      conversationId,
+      senderId,
+      receiverId,
+      `مشاركة الموقع: ${location.address}`,
+      {
+        type: 'location',
+        locationData: location,
+        actionRequired: false
+      }
+    );
+  }
+
+  /**
+   * Send inspection request message
+   * إرسال رسالة طلب فحص
+   */
+  async sendInspectionRequest(
+    conversationId: string,
+    senderId: string,
+    inspectionData: {
+      carId: string;
+      inspectorName?: string;
+      preferredDate?: Date;
+      notes?: string;
+    }
+  ): Promise<string> {
+    const receiverId = '';
+    return MessageOperations.sendSystemMessage(
+      conversationId,
+      senderId,
+      receiverId,
+      `طلب فحص فني للسيارة`,
+      {
+        type: 'inspection',
+        inspectionData,
+        actionRequired: true
+      }
+    );
+  }
 }
 
 // Export singleton instance

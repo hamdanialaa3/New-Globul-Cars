@@ -76,7 +76,8 @@ class SubscriptionService {
       });
       return (data as any).url;
     } catch (error) {
-      console.error('Error creating portal link:', error);
+      const { logger } = await import('../logger-service');
+      logger.error('Error creating portal link', error as Error);
       throw error;
     }
   }

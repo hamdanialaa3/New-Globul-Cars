@@ -378,20 +378,9 @@ export class AnalyticsOperations {
    * الحصول على تحليلات وهمية للنسخ الاحتياطي
    */
   static getMockAnalytics(): RealTimeAnalytics {
-    serviceLogger.info('Returning mock analytics data');
+    serviceLogger.info('Returning default analytics fallback (no mock inflation)');
     return {
       ...DEFAULT_ANALYTICS,
-      totalUsers: 1250,
-      activeUsers: 340,
-      newUsersToday: 12,
-      totalCars: 850,
-      activeCars: 720,
-      carsListedToday: 8,
-      totalMessages: 3200,
-      messagesSentToday: 45,
-      totalViews: 15000,
-      viewsToday: 280,
-      revenue: 125000,
       lastUpdated: new Date()
     };
   }

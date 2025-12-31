@@ -26,8 +26,18 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     }
 
     // ثانياً: تحقق من تفضيل النظام
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
+    if (typeof window !== 'undefined' && window.matchMedia && typeof window.matchMedia === 'function') {
+      try {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        if (mediaQuery && typeof mediaQuery.matches === 'boolean') {
+          if (mediaQuery.matches) {
+            return 'dark';
+          }
+        }
+      } catch (error) {
+        // Ignore errors in test environment
+        console.warn('Error accessing window.matchMedia:', error);
+      }
     }
 
     // افتراضي: الوضع النهاري
@@ -93,26 +103,35 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
   // 3️⃣ الاستماع لتغييرات تفضيل النظام
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    // Skip in test environment or when window.matchMedia is not available
+    if (typeof window === 'undefined' || !window.matchMedia) return;
 
-    const handleChange = (e: MediaQueryListEvent) => {
-      // فقط إذا لم يكن هناك تفضيل محفوظ
-      if (!localStorage.getItem('theme')) {
-        setThemeState(e.matches ? 'dark' : 'light');
-      }
-    };
+    try {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      if (!mediaQuery) return;
 
-    // Add event listener with proper typing
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
-    } else {
-      // Fallback for older browsers
-      const mq = mediaQuery as any;
-      if (mq.addListener) {
-        mq.addListener(handleChange);
-        return () => mq.removeListener(handleChange);
+      const handleChange = (e: MediaQueryListEvent) => {
+        // فقط إذا لم يكن هناك تفضيل محفوظ
+        if (!localStorage.getItem('theme')) {
+          setThemeState(e.matches ? 'dark' : 'light');
+        }
+      };
+
+      // Add event listener with proper typing
+      if (mediaQuery.addEventListener) {
+        mediaQuery.addEventListener('change', handleChange);
+        return () => mediaQuery.removeEventListener('change', handleChange);
+      } else {
+        // Fallback for older browsers
+        const mq = mediaQuery as any;
+        if (mq.addListener) {
+          mq.addListener(handleChange);
+          return () => mq.removeListener(handleChange);
+        }
       }
+    } catch (error) {
+      // Handle any errors in media query setup
+      console.warn('Failed to set up media query listener:', error);
     }
   }, []);
 

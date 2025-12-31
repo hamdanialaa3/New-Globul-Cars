@@ -212,19 +212,16 @@ const SelectWrapper = styled.div`
   width: 100%;
 `;
 
-const Select = styled.select<{ $isDark: boolean }>`
+const Select = styled.select`
   width: 100%;
   padding: 0.875rem 1.125rem;
   padding-right: 2.75rem;
   font-size: 0.95rem;
   font-weight: 500;
-  color: ${props => props.$isDark ? '#FFD700' : '#0f172a'};
-  background: ${props => props.$isDark
-    ? 'linear-gradient(135deg, rgba(30, 35, 45, 0.6) 0%, rgba(20, 25, 35, 0.6) 100%)'
-    : 'linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(241, 245, 249, 0.9) 100%)'};
-  border: ${props => props.$isDark
-    ? '1px solid rgba(255, 215, 0, 0.2)'
-    : '1px solid rgba(203, 213, 225, 0.6)'};
+  /* اللون والخلفية والحدود حسب الوضع الداكن يمكن تمريرها عبر className أو context */
+  color: #0f172a;
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(241, 245, 249, 0.9) 100%);
+  border: 1px solid rgba(203, 213, 225, 0.6);
   border-radius: 12px;
   appearance: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

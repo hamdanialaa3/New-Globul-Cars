@@ -80,6 +80,9 @@ const MAX_LIMIT = 100;
 
 class QueryOptimizationService {
   private static instance: QueryOptimizationService;
+  private totalQueries = 0;
+  private totalDurationMs = 0;
+  private cacheHits = 0;
 
   static getInstance(): QueryOptimizationService {
     if (!this.instance) {
@@ -97,6 +100,8 @@ class QueryOptimizationService {
   ): Promise<OptimizedSearchResult> {
     const startTime = Date.now();
     const safeLimit = Math.min(pagination.limit || DEFAULT_LIMIT, MAX_LIMIT);
+    const currentPage = Math.max(1, pagination.page || 1);
+    const offset = (currentPage - 1) * safeLimit;
 
     logger.info('🚀 Starting optimized multi-collection search', {
       filters,
@@ -111,7 +116,14 @@ class QueryOptimizationService {
         pagination.lastDoc
       );
 
+      const pagedResults = results.slice(offset, offset + safeLimit);
+      const hasMore = results.length > offset + safeLimit;
+
       const executionTime = Date.now() - startTime;
+
+      // Track performance counters
+      this.totalQueries += 1;
+      this.totalDurationMs += executionTime;
 
       logger.info('✅ Optimized search completed', {
         totalResults: results.length,
@@ -120,10 +132,10 @@ class QueryOptimizationService {
       });
 
       return {
-        cars: results.slice(0, safeLimit),
+        cars: pagedResults,
         totalResults: results.length,
-        hasMore: results.length > safeLimit,
-        lastDoc: null, // TODO: Implement cross-collection pagination
+        hasMore,
+        lastDoc: null, // Pagination is offset-based across collections
         source: 'firestore',
         executionTime,
         queriesExecuted: COLLECTIONS.length,
@@ -333,11 +345,14 @@ class QueryOptimizationService {
     totalQueries: number;
     cacheHitRate: number;
   }> {
-    // TODO: تنفيذ تتبع الأداء
+    const averageQueryTime = this.totalQueries > 0
+      ? Math.round(this.totalDurationMs / this.totalQueries)
+      : 0;
+
     return {
-      averageQueryTime: 0,
-      totalQueries: 0,
-      cacheHitRate: 0,
+      averageQueryTime,
+      totalQueries: this.totalQueries,
+      cacheHitRate: this.totalQueries > 0 ? this.cacheHits / this.totalQueries : 0,
     };
   }
 }

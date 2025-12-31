@@ -4,16 +4,19 @@
 
 // Mock Algolia client
 jest.mock('algoliasearch', () => {
-  return jest.fn(() => ({
-    initIndex: jest.fn(() => ({
-      search: jest.fn(),
-      saveObject: jest.fn(),
-      saveObjects: jest.fn(),
-      deleteObject: jest.fn(),
-      partialUpdateObject: jest.fn(),
-      setSettings: jest.fn(),
-    })),
-  }));
+  // Always return an object with initIndex as a jest.fn
+  const mockIndex = {
+    search: jest.fn(),
+    saveObject: jest.fn(),
+    saveObjects: jest.fn(),
+    deleteObject: jest.fn(),
+    partialUpdateObject: jest.fn(),
+    setSettings: jest.fn(),
+  };
+  const mockClient = {
+    initIndex: jest.fn(() => mockIndex),
+  };
+  return jest.fn(() => mockClient);
 });
 
 jest.mock('../../logger-service', () => ({

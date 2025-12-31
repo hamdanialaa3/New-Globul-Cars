@@ -12,6 +12,7 @@ import {
   query,
   where,
   getDocs,
+  getDoc,
   updateDoc,
   doc,
   serverTimestamp,
@@ -190,7 +191,11 @@ export class ConversationOperations {
   ): Promise<void> {
     try {
       const convRef = doc(db, COLLECTION_NAMES.CONVERSATIONS, conversationId);
-
+      const convSnap = await getDoc(convRef);
+      if (!convSnap.exists()) {
+        logger.warn('No conversation document to update', { conversationId });
+        return;
+      }
       await updateDoc(convRef, {
         lastMessage: {
           text: lastMessageText.slice(0, 100),
@@ -370,10 +375,21 @@ export class MessageOperations {
 
       await Promise.all(updates);
 
-      // Reset unread count
-      await updateDoc(doc(db, COLLECTION_NAMES.CONVERSATIONS, conversationId), {
-        [`unreadCount.${userId}`]: 0
-      });
+      // Reset unread count - check if conversation exists first
+      try {
+        const convRef = doc(db, COLLECTION_NAMES.CONVERSATIONS, conversationId);
+        const convSnap = await getDoc(convRef);
+        
+        if (convSnap.exists()) {
+          await updateDoc(convRef, {
+            [`unreadCount.${userId}`]: 0
+          });
+        } else {
+          logger.warn('Conversation not found, skipping unread count update', { conversationId });
+        }
+      } catch (convError) {
+        logger.warn('Failed to update conversation unread count', { conversationId, error: convError });
+      }
 
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Messages marked as read', { conversationId, userId });

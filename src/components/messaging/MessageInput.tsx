@@ -5,7 +5,13 @@ import { logger } from '../../services/logger-service';
 
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { Send, Paperclip, Image, Smile, X } from 'lucide-react';
+import {
+  ModernSend,
+  ModernPaperclip,
+  ModernImage,
+  ModernSmile,
+  ModernClose
+} from './icons/ModernIcons';
 import { SmartReplyAssistant } from './SmartReplyAssistant';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { advancedMessagingService } from '../../services/messaging';
@@ -237,11 +243,11 @@ const MessageInput: React.FC<MessageInputProps> = ({
         <AttachmentsPreview>
           {attachments.map((file, index) => (
             <AttachmentChip key={index}>
-              {file.type.startsWith('image/') ? <Image size={16} /> : <Paperclip size={16} />}
+              {file.type.startsWith('image/') ? <ModernImage size={16} /> : <ModernPaperclip size={16} />}
               <span className="filename">{file.name}</span>
               <span className="filesize">({formatFileSize(file.size)})</span>
               <RemoveButton onClick={() => removeAttachment(index)}>
-                <X size={12} />
+                <ModernClose size={12} />
               </RemoveButton>
             </AttachmentChip>
           ))}
@@ -254,7 +260,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
       />
       <InputContainer>
         <ActionButton onClick={() => fileInputRef.current?.click()}>
-          <Paperclip size={20} />
+          <ModernPaperclip size={20} />
         </ActionButton>
 
         <HiddenInput
@@ -286,7 +292,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
           onClick={handleSend}
           disabled={sending || (!text.trim() && attachments.length === 0)}
         >
-          <Send size={20} />
+          <ModernSend size={20} />
         </ActionButton>
       </InputContainer>
     </>
