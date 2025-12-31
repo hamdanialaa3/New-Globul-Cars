@@ -74,12 +74,23 @@ function scanFile(filePath) {
           
           // Check if it's in a comment explaining what should be added
           const line = lines[lineNumber - 1];
+          
+          // Skip obvious placeholders and examples
           if (line.includes('placeholder') || 
               line.includes('your_') || 
               line.includes('example') ||
               line.includes('TODO:') ||
-              line.includes('FIXME:')) {
+              line.includes('FIXME:') ||
+              /QvQvQv|abcdef123456|123456789/.test(match) || // Placeholder patterns
+              match.includes('your-') ||
+              match.includes('YOUR_') ||
+              /test[_-]?key|demo[_-]?key/i.test(line)) { // Test/demo keys
             return; // Skip placeholders
+          }
+          
+          // Skip if it's in a large documentation file (project-knowledge.json)
+          if (filePath.includes('project-knowledge.json')) {
+            return; // Skip documentation files
           }
 
           issuesFound++;

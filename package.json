@@ -58,8 +58,9 @@
   "scripts": {
     "start": "cross-env PORT=3000 HOST=localhost craco start",
     "start:dev": "cross-env NODE_OPTIONS=--max_old_space_size=4096 PORT=3000 HOST=localhost BROWSER=none npm run start",
-    "prebuild": "node scripts/ban-console.js",
+    "prebuild": "node scripts/generate-sw.js && node scripts/ban-console.js",
     "build": "craco build",
+    "generate-sw": "node scripts/generate-sw.js",
     "check-security": "node scripts/check-env-files.js",
     "security-audit": "node scripts/security-audit.js",
     "ci:strict": "npm ci --no-audit --no-fund",

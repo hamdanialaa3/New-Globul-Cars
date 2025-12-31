@@ -1,14 +1,19 @@
 // Firebase Cloud Messaging Service Worker
+// This is a template file - actual config is injected during build
+// Run 'npm run generate-sw' to generate the service worker with Firebase config
+
 importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js');
 
+// Firebase configuration - PLACEHOLDER (will be replaced during build)
+// DO NOT hardcode real API keys here
 firebase.initializeApp({
-  apiKey: "AIzaSyAUYM_qygK5pUrlXtdDLmEi-_Kh9SyvRmk",
-  authDomain: "fire-new-globul.firebaseapp.com",
-  projectId: "fire-new-globul",
-  storageBucket: "fire-new-globul.firebasestorage.app",
-  messagingSenderId: "973379297533",
-  appId: "1:973379297533:web:59c6534d61a29cae5d9e94"
+  apiKey: "YOUR_FIREBASE_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.firebasestorage.app",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 });
 
 const messaging = firebase.messaging();
