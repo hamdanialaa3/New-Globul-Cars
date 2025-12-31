@@ -45,6 +45,12 @@
   ],
   "exclude": [
     "src/locales/translations.ts",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.spec.ts",
+    "src/**/*.spec.tsx",
+    "src/__tests__/**/*",
+    "src/__mocks__/**/*",
     "../DDD/**",
     "../DEPRECATED_FILES_BACKUP/**",
     "../dist/**"
