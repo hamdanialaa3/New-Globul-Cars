@@ -2,7 +2,7 @@
 // Optimized Image Component with Lazy Loading & Progressive Loading
 // مكون صورة محسّن مع تحميل تدريجي
 
-import React, { useState, useEffect, useRef , memo} from 'react';
+import React, { useState, useEffect, useRef, memo } from 'react';
 import styled from 'styled-components';
 
 interface OptimizedImageProps {
@@ -100,6 +100,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   const [error, setError] = useState(false);
   const [currentSrc, setCurrentSrc] = useState<string>(src);
   const imgRef = useRef<HTMLImageElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(loading === 'eager');
 
   // Intersection Observer for lazy loading
@@ -121,8 +122,8 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
       }
     );
 
-    if (imgRef.current) {
-      observer.observe(imgRef.current.parentElement as Element);
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
     }
 
     return () => observer.disconnect();
@@ -134,8 +135,14 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
 
     // Check if browser supports WebP
     const checkWebPSupport = async () => {
+      // Don't try to fetch blob URLs or data URLs
+      if (src.startsWith('blob:') || src.startsWith('data:')) {
+        setCurrentSrc(src);
+        return;
+      }
+
       const webpSrc = src.replace(/\.(jpg|jpeg|png)$/i, '.webp');
-      
+
       try {
         const response = await fetch(webpSrc, { method: 'HEAD' });
         if (response.ok) {
@@ -145,7 +152,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
       } catch (e) {
         // WebP not available, use original
       }
-      
+
       setCurrentSrc(src);
     };
 
@@ -168,8 +175,9 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   };
 
   return (
-    <ImageContainer 
-      loaded={loaded} 
+    <ImageContainer
+      ref={containerRef}
+      loaded={loaded}
       hasError={error}
       className={className}
       style={{ width, height }}
@@ -181,9 +189,8 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
           Image not available
         </ErrorPlaceholder>
       )}
-      {isVisible && (
+      {(isVisible || loading === 'eager') && (
         <img
-          ref={imgRef}
           src={currentSrc}
           alt={alt}
           loading={loading}

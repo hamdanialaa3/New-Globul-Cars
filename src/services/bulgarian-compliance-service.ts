@@ -610,6 +610,227 @@ class BulgarianComplianceService {
       serviceLogger.error('Error logging compliance action', error as Error, { action, resourceId });
     }
   }
+
+  // ✅ CRITICAL GDPR FIX: Delete All User Data (Right to be Forgotten)
+  /**
+   * GDPR Article 17: Right to Erasure ("Right to be Forgotten")
+   * Deletes ALL user data across the entire system
+   */
+  public async deleteAllUserData(userId: string, reason: string = 'User request'): Promise<{
+    success: boolean;
+    deletedCollections: string[];
+    errors: string[];
+  }> {
+    const deletedCollections: string[] = [];
+    const errors: string[] = [];
+    const batch = writeBatch(db);
+
+    try {
+      serviceLogger.info('🗑️ GDPR Data Deletion Request', { userId, reason });
+
+      // 1. Delete user profile
+      try {
+        const userRef = doc(db, 'users', userId);
+        batch.delete(userRef);
+        deletedCollections.push('users');
+      } catch (err) {
+        errors.push(`users: ${(err as Error).message}`);
+      }
+
+      // 2. Delete all car listings (across all vehicle collections)
+      const vehicleCollections = ['passenger_cars', 'suvs', 'vans', 'motorcycles', 'trucks', 'buses'];
+      for (const collectionName of vehicleCollections) {
+        try {
+          const carsQuery = query(collection(db, collectionName), where('sellerId', '==', userId));
+          const carsSnapshot = await getDocs(carsQuery);
+          carsSnapshot.docs.forEach(carDoc => batch.delete(carDoc.ref));
+          if (carsSnapshot.size > 0) {
+            deletedCollections.push(`${collectionName} (${carsSnapshot.size} items)`);
+          }
+        } catch (err) {
+          errors.push(`${collectionName}: ${(err as Error).message}`);
+        }
+      }
+
+      // 3. Delete messages (sent and received)
+      try {
+        const sentMessages = query(collection(db, 'messages'), where('senderId', '==', userId));
+        const receivedMessages = query(collection(db, 'messages'), where('recipientId', '==', userId));
+        const [sentSnapshot, receivedSnapshot] = await Promise.all([
+          getDocs(sentMessages),
+          getDocs(receivedMessages)
+        ]);
+        [...sentSnapshot.docs, ...receivedSnapshot.docs].forEach(msgDoc => batch.delete(msgDoc.ref));
+        deletedCollections.push(`messages (${sentSnapshot.size + receivedSnapshot.size} items)`);
+      } catch (err) {
+        errors.push(`messages: ${(err as Error).message}`);
+      }
+
+      // 4. Delete favorites
+      try {
+        const favoritesQuery = query(collection(db, 'favorites'), where('userId', '==', userId));
+        const favoritesSnapshot = await getDocs(favoritesQuery);
+        favoritesSnapshot.docs.forEach(favDoc => batch.delete(favDoc.ref));
+        if (favoritesSnapshot.size > 0) {
+          deletedCollections.push(`favorites (${favoritesSnapshot.size} items)`);
+        }
+      } catch (err) {
+        errors.push(`favorites: ${(err as Error).message}`);
+      }
+
+      // 5. Delete saved searches
+      try {
+        const searchesQuery = query(collection(db, 'saved_searches'), where('userId', '==', userId));
+        const searchesSnapshot = await getDocs(searchesQuery);
+        searchesSnapshot.docs.forEach(searchDoc => batch.delete(searchDoc.ref));
+        if (searchesSnapshot.size > 0) {
+          deletedCollections.push(`saved_searches (${searchesSnapshot.size} items)`);
+        }
+      } catch (err) {
+        errors.push(`saved_searches: ${(err as Error).message}`);
+      }
+
+      // 6. Delete notifications
+      try {
+        const notificationsQuery = query(collection(db, 'notifications'), where('userId', '==', userId));
+        const notificationsSnapshot = await getDocs(notificationsQuery);
+        notificationsSnapshot.docs.forEach(notifDoc => batch.delete(notifDoc.ref));
+        if (notificationsSnapshot.size > 0) {
+          deletedCollections.push(`notifications (${notificationsSnapshot.size} items)`);
+        }
+      } catch (err) {
+        errors.push(`notifications: ${(err as Error).message}`);
+      }
+
+      // 7. Delete analytics data
+      try {
+        const analyticsQuery = query(collection(db, 'analytics'), where('userId', '==', userId));
+        const analyticsSnapshot = await getDocs(analyticsQuery);
+        analyticsSnapshot.docs.forEach(analyticsDoc => batch.delete(analyticsDoc.ref));
+        if (analyticsSnapshot.size > 0) {
+          deletedCollections.push(`analytics (${analyticsSnapshot.size} items)`);
+        }
+      } catch (err) {
+        errors.push(`analytics: ${(err as Error).message}`);
+      }
+
+      // 8. Commit batch deletion
+      await batch.commit();
+
+      // 9. Log GDPR compliance action
+      await this.logComplianceAction(
+        'GDPR_USER_DATA_DELETED',
+        userId,
+        `All user data deleted. Reason: ${reason}. Collections: ${deletedCollections.join(', ')}`,
+        userId
+      );
+
+      serviceLogger.info('✅ GDPR Data Deletion Completed', {
+        userId,
+        deletedCollections,
+        errors: errors.length > 0 ? errors : 'None'
+      });
+
+      return {
+        success: errors.length === 0,
+        deletedCollections,
+        errors
+      };
+
+    } catch (error) {
+      serviceLogger.error('❌ GDPR Data Deletion Failed', error as Error, { userId });
+      return {
+        success: false,
+        deletedCollections,
+        errors: [...errors, (error as Error).message]
+      };
+    }
+  }
+
+  // ✅ GDPR Enhancement: Export All User Data (Right to Data Portability)
+  /**
+   * GDPR Article 20: Right to Data Portability
+   * Exports all user data in JSON format
+   */
+  public async exportAllUserData(userId: string): Promise<{
+    success: boolean;
+    data: Record<string, any>;
+    exportedAt: Date;
+  }> {
+    try {
+      serviceLogger.info('📦 GDPR Data Export Request', { userId });
+
+      const exportData: Record<string, any> = {
+        userId,
+        exportedAt: new Date().toISOString(),
+        profile: null,
+        cars: [],
+        messages: [],
+        favorites: [],
+        savedSearches: [],
+        notifications: []
+      };
+
+      // 1. Export user profile
+      const userDoc = await getDoc(doc(db, 'users', userId));
+      if (userDoc.exists()) {
+        exportData.profile = userDoc.data();
+      }
+
+      // 2. Export all car listings
+      const vehicleCollections = ['passenger_cars', 'suvs', 'vans', 'motorcycles', 'trucks', 'buses'];
+      for (const collectionName of vehicleCollections) {
+        const carsQuery = query(collection(db, collectionName), where('sellerId', '==', userId));
+        const carsSnapshot = await getDocs(carsQuery);
+        exportData.cars.push(...carsSnapshot.docs.map(d => ({ collection: collectionName, ...d.data() })));
+      }
+
+      // 3. Export messages
+      const sentMessages = query(collection(db, 'messages'), where('senderId', '==', userId));
+      const receivedMessages = query(collection(db, 'messages'), where('recipientId', '==', userId));
+      const [sentSnapshot, receivedSnapshot] = await Promise.all([
+        getDocs(sentMessages),
+        getDocs(receivedMessages)
+      ]);
+      exportData.messages = [
+        ...sentSnapshot.docs.map(d => ({ type: 'sent', ...d.data() })),
+        ...receivedSnapshot.docs.map(d => ({ type: 'received', ...d.data() }))
+      ];
+
+      // 4. Export favorites
+      const favoritesQuery = query(collection(db, 'favorites'), where('userId', '==', userId));
+      const favoritesSnapshot = await getDocs(favoritesQuery);
+      exportData.favorites = favoritesSnapshot.docs.map(d => d.data());
+
+      // 5. Export saved searches
+      const searchesQuery = query(collection(db, 'saved_searches'), where('userId', '==', userId));
+      const searchesSnapshot = await getDocs(searchesQuery);
+      exportData.savedSearches = searchesSnapshot.docs.map(d => d.data());
+
+      // 6. Export notifications
+      const notificationsQuery = query(collection(db, 'notifications'), where('userId', '==', userId));
+      const notificationsSnapshot = await getDocs(notificationsQuery);
+      exportData.notifications = notificationsSnapshot.docs.map(d => d.data());
+
+      serviceLogger.info('✅ GDPR Data Export Completed', {
+        userId,
+        profileFound: !!exportData.profile,
+        cars: exportData.cars.length,
+        messages: exportData.messages.length,
+        favorites: exportData.favorites.length
+      });
+
+      return {
+        success: true,
+        data: exportData,
+        exportedAt: new Date()
+      };
+
+    } catch (error) {
+      serviceLogger.error('❌ GDPR Data Export Failed', error as Error, { userId });
+      throw error;
+    }
+  }
 }
 
 export const bulgarianComplianceService = BulgarianComplianceService.getInstance();

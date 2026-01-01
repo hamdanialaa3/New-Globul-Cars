@@ -255,7 +255,7 @@ export const GlobalStyles = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Martica', 'Arial', sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 
   html {
@@ -264,7 +264,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    font-family: 'Martica', 'Arial', sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     color: var(--text-primary);
     background-color: var(--bg-primary);
     min-height: 100vh;
@@ -274,7 +274,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Martica', 'Arial', sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-weight: ${bulgarianTypography.fontWeight.bold};
     line-height: ${bulgarianTypography.lineHeight.tight};
     margin-bottom: ${bulgarianSpacing.md};
@@ -301,7 +301,7 @@ export const GlobalStyles = createGlobalStyle`
     text-decoration: none;
     transition: color 0.2s ease-in-out;
     font-weight: ${bulgarianTypography.fontWeight.medium};
-    font-family: 'Martica', 'Arial', sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
 
     &:hover {
       color: ${bulgarianColors.secondary.main};
@@ -310,11 +310,11 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   li, ul, ol, label, input, select, textarea, button, small, strong, em, span, div {
-    font-family: 'Martica', 'Arial', sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 
   .leaflet-tooltip {
-    font-family: 'Martica', 'Arial', sans-serif !important;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
   }
 
   /* Separators */

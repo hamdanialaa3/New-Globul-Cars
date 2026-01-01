@@ -1,5 +1,5 @@
 // src/pages/01_main-pages/home/HomePage/ModernCarCard.tsx
-import React from 'react';
+import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, MapPin, Gauge, Calendar, Fuel } from 'lucide-react';
 import { CarListing } from '../../../../types/CarListing';
@@ -27,7 +27,11 @@ interface ModernCarCardProps {
   onFavorite?: (id: string) => void;
 }
 
-export default function ModernCarCard({ car }: ModernCarCardProps) {
+/**
+ * ✅ PERFORMANCE: React.memo applied to prevent unnecessary re-renders
+ * Only re-renders when car data or favorite status changes
+ */
+const ModernCarCard: React.FC<ModernCarCardProps> = ({ car }) => {
   const [imageError, setImageError] = React.useState(false);
   const { isFavorite, toggleFavorite } = useFavorites();
   const isFav = isFavorite(car.id);
@@ -126,4 +130,13 @@ export default function ModernCarCard({ car }: ModernCarCardProps) {
       </div>
     </div>
   );
-}
+};
+
+// ✅ PERFORMANCE: Custom comparison function for React.memo
+// Only re-render if car.id or car.updatedAt changes
+export default memo(ModernCarCard, (prevProps, nextProps) => {
+  return (
+    prevProps.car.id === nextProps.car.id &&
+    prevProps.car.updatedAt === nextProps.car.updatedAt
+  );
+});

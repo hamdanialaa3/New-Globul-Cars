@@ -37,6 +37,7 @@ interface CarSEOProps {
     vin?: string;
     createdAt?: any;
     updatedAt?: any;
+    condition?: 'new' | 'used' | 'parts';
   };
   seller?: {
     name?: string;
@@ -167,6 +168,9 @@ export const CarSEO: React.FC<CarSEOProps> = ({ car, seller }) => {
       priceCurrency: car.currency || 'EUR',
       availability: 'https://schema.org/InStock',
       url: canonicalUrl,
+      itemCondition: car.condition === 'new'
+        ? 'https://schema.org/NewCondition'
+        : 'https://schema.org/UsedCondition',
       ...(seller && {
         seller: {
           '@type': seller.profileType === 'company' ? 'Organization' : 'Person',
@@ -193,7 +197,10 @@ export const CarSEO: React.FC<CarSEOProps> = ({ car, seller }) => {
       price: car.price,
       priceCurrency: car.currency || 'EUR',
       availability: 'https://schema.org/InStock',
-      url: canonicalUrl
+      url: canonicalUrl,
+      itemCondition: car.condition === 'new'
+        ? 'https://schema.org/NewCondition'
+        : 'https://schema.org/UsedCondition'
     }
   };
 

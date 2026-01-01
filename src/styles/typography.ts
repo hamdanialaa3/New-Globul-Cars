@@ -4,8 +4,8 @@
 export const typography = {
   // Font Family
   fontFamily: {
-    primary: "'Martica', 'Arial', sans-serif",
-    secondary: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+    primary: "'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+    secondary: "'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
     mono: "'Courier New', 'Courier', monospace",
   },
 

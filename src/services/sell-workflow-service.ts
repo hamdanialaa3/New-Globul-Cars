@@ -138,6 +138,22 @@ export class SellWorkflowService {
         carNumericId: carResult.carNumericId
       });
 
+      // 3.4 ✅ CRITICAL FIX: Invalidate search cache after listing creation
+      // This ensures that new listings appear immediately in search results
+      try {
+        const { searchService } = await import('./search/UnifiedSearchService');
+        if (searchService && typeof searchService.invalidateCache === 'function') {
+          await searchService.invalidateCache();
+          logger.info('Search cache invalidated after listing creation', { carId: carResult.id });
+        }
+      } catch (cacheError) {
+        // Log error but don't fail the operation
+        logger.warn('Failed to invalidate search cache (non-critical)', {
+          error: (cacheError as Error).message,
+          carId: carResult.id
+        });
+      }
+
       // 3.5 ✅ CRITICAL FIX: Update user stats (Active Listings count)
       // This ensures the user's profile reflects the new listing immediately
       // IMPORTANT: This is now blocking to ensure data consistency

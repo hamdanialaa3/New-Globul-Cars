@@ -146,7 +146,7 @@ const ProjectLogo = styled.img`
 
 // Loading Text with phase animation
 const LoadingText = styled.h2<{ $phase: number }>`
-  font-family: 'Martica', 'Arial', sans-serif;
+  font-family: inherit;
   font-size: 2rem;
   color: white;
   margin-bottom: 1rem;
@@ -183,7 +183,7 @@ const ProgressFill = styled.div<{ $percent: number }>`
 `;
 
 const PercentText = styled.p`
-  font-family: 'Martica', 'Arial', sans-serif;
+  font-family: inherit;
   font-size: 1rem;
   color: rgba(255, 255, 255, 0.7);
   margin-top: 0.5rem;

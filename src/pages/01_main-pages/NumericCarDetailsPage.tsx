@@ -17,10 +17,14 @@ const NumericCarDetailsPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        let isMounted = true;
+
         const resolveCarId = async () => {
             if (!sellerNumericId || !carNumericId) {
-                setError('Invalid URL parameters');
-                setLoading(false);
+                if (isMounted) {
+                    setError('Invalid URL parameters');
+                    setLoading(false);
+                }
                 return;
             }
 
@@ -29,19 +33,27 @@ const NumericCarDetailsPage: React.FC = () => {
                 const carNum = parseInt(carNumericId, 10);
 
                 if (isNaN(sellerNum) || isNaN(carNum)) {
-                    setError('Invalid numeric IDs');
-                    setLoading(false);
+                    if (isMounted) {
+                        setError('Invalid numeric IDs');
+                        setLoading(false);
+                    }
                     return;
                 }
 
                 // Resolve car directly by numeric fields across all vehicle collections
                 const found = await resolveByNumeric(sellerNum, carNum);
+
+                if (!isMounted) return; // Stop if unmounted
+
                 if (found) {
                     logger.info('Resolved numeric car URL', { sellerNum, carNum, foundCarId: found.id, collection: found.collection });
                     setRealCarId(found.id);
                 } else {
                     // Fallback: support legacy field name `numericId`
                     const legacyFound = await resolveByNumeric(sellerNum, carNum, true);
+
+                    if (!isMounted) return;
+
                     if (legacyFound) {
                         logger.info('Resolved via legacy numericId', { sellerNum, carNum, foundCarId: legacyFound.id, collection: legacyFound.collection });
                         setRealCarId(legacyFound.id);
@@ -49,6 +61,9 @@ const NumericCarDetailsPage: React.FC = () => {
                         // ✅ CRITICAL FIX: Attempt to find car by seller numeric ID and repair
                         logger.warn('NumericCarDetails: Car not found by numeric IDs, attempting repair', { sellerNum, carNum });
                         const repairResult = await attemptRepair(sellerNum, carNum);
+
+                        if (!isMounted) return;
+
                         if (repairResult) {
                             logger.info('Car repaired successfully', { sellerNum, carNum, carId: repairResult });
                             setRealCarId(repairResult);
@@ -59,14 +74,22 @@ const NumericCarDetailsPage: React.FC = () => {
                     }
                 }
             } catch (err) {
-                logger.error('Error resolving numeric car ID', err as Error);
-                setError('System error resolving car');
+                if (isMounted) {
+                    logger.error('Error resolving numeric car ID', err as Error);
+                    setError('System error resolving car');
+                }
             } finally {
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         };
 
         resolveCarId();
+
+        return () => {
+            isMounted = false;
+        };
     }, [sellerNumericId, carNumericId]);
 
     if (loading) return <div className="flex justify-center items-center h-screen"><LoadingSpinner /></div>;
@@ -104,7 +127,7 @@ async function attemptRepair(sellerNum: number, carNum: number): Promise<string 
         // Find user by numeric ID
         const { getFirebaseUidByNumericId } = await import('../../services/numeric-id-lookup.service');
         const userId = await getFirebaseUidByNumericId(sellerNum);
-        
+
         if (!userId) {
             logger.warn('Repair failed: User not found', { sellerNum });
             return null;
@@ -120,7 +143,7 @@ async function attemptRepair(sellerNum: number, carNum: number): Promise<string 
                     limit(100) // Reasonable limit
                 );
                 const snap = await getDocs(q);
-                
+
                 // Check if any car has the expected carNumericId
                 for (const docSnap of snap.docs) {
                     const data = docSnap.data();
@@ -133,7 +156,7 @@ async function attemptRepair(sellerNum: number, carNum: number): Promise<string 
                 continue;
             }
         }
-        
+
         logger.warn('Repair failed: Car not found for user', { sellerNum, carNum });
         return null;
     } catch (error) {
