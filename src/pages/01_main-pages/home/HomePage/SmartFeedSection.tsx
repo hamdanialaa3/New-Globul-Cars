@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../../contexts/AuthProvider';
 import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useTheme } from '../../../../contexts/ThemeContext';
 import feedAlgorithmService from '../../../../services/social/algorithms/feed-algorithm.service';
 import personalizationService from '../../../../services/social/algorithms/personalization.service';
 import PostCard from '../../../../components/Posts/PostCard';
@@ -20,6 +21,8 @@ type FeedMode = 'smart' | 'newest' | 'most_liked' | 'most_comments' | 'trending'
 const SmartFeedSection: React.FC = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const navigate = useNavigate();
   
   const [posts, setPosts] = useState<Post[]>([]);
@@ -203,6 +206,7 @@ const SmartFeedSection: React.FC = () => {
       createFirst: 'Създай първата публикация',
       endOfFeed: 'Видяхте всички публикации',
       loginToPost: 'Влезте, за да създадете публикация',
+      loadingMore: 'Зареждане на още...',
       filters: {
         smart: 'Интелигентен',
         newest: 'Най-нови',
@@ -223,6 +227,7 @@ const SmartFeedSection: React.FC = () => {
       createFirst: 'Create First Post',
       endOfFeed: 'You\'ve seen all posts',
       loginToPost: 'Log in to create a post',
+      loadingMore: 'Loading more...',
       filters: {
         smart: 'Smart',
         newest: 'Newest',
@@ -236,16 +241,17 @@ const SmartFeedSection: React.FC = () => {
   const t = text[language];
 
   return (
-    <FeedSection>
+    <FeedSection $isDark={isDark}>
       <FeedContainer>
         <FeedHeader>
-          <FeedTitle>{t.title}</FeedTitle>
-          <FeedSubtitle>{t.subtitle}</FeedSubtitle>
+          <FeedTitle $isDark={isDark}>{t.title}</FeedTitle>
+          <FeedSubtitle $isDark={isDark}>{t.subtitle}</FeedSubtitle>
         </FeedHeader>
 
         <FilterBar>
           <FilterButton 
             $active={feedMode === 'smart'} 
+            $isDark={isDark}
             onClick={() => { setFeedMode('smart'); setPage(1); }}
           >
             <Sparkles size={16} />
@@ -253,6 +259,7 @@ const SmartFeedSection: React.FC = () => {
           </FilterButton>
           <FilterButton 
             $active={feedMode === 'newest'} 
+            $isDark={isDark}
             onClick={() => { setFeedMode('newest'); setPage(1); }}
           >
             <Clock size={16} />
@@ -260,6 +267,7 @@ const SmartFeedSection: React.FC = () => {
           </FilterButton>
           <FilterButton 
             $active={feedMode === 'most_liked'} 
+            $isDark={isDark}
             onClick={() => { setFeedMode('most_liked'); setPage(1); }}
           >
             <Heart size={16} />
@@ -267,6 +275,7 @@ const SmartFeedSection: React.FC = () => {
           </FilterButton>
           <FilterButton 
             $active={feedMode === 'most_comments'} 
+            $isDark={isDark}
             onClick={() => { setFeedMode('most_comments'); setPage(1); }}
           >
             <MessageCircle size={16} />
@@ -274,6 +283,7 @@ const SmartFeedSection: React.FC = () => {
           </FilterButton>
           <FilterButton 
             $active={feedMode === 'trending'} 
+            $isDark={isDark}
             onClick={() => { setFeedMode('trending'); setPage(1); }}
           >
             <TrendingUp size={16} />
@@ -282,23 +292,23 @@ const SmartFeedSection: React.FC = () => {
         </FilterBar>
 
         {user && (
-          <CreatePostTrigger onClick={() => navigate('/create-post')}>
+          <CreatePostTrigger $isDark={isDark} onClick={() => navigate('/create-post')}>
             <UserAvatar $hasImage={!!(user as any).profileImage} $imageUrl={(user as any).profileImage}>
               {!(user as any).profileImage && <UserIcon size={24} />}
             </UserAvatar>
-            <CreatePostPlaceholder>
+            <CreatePostPlaceholder $isDark={isDark}>
               {t.createPlaceholder}, {(user as any).displayName || 'User'}?
             </CreatePostPlaceholder>
             <CreatePostActions>
-              <ActionButton>
+              <ActionButton $isDark={isDark}>
                 <Image size={20} />
                 <span>{t.addPhoto}</span>
               </ActionButton>
-              <ActionButton>
+              <ActionButton $isDark={isDark}>
                 <Video size={20} />
                 <span>{t.addVideo}</span>
               </ActionButton>
-              <ActionButton>
+              <ActionButton $isDark={isDark}>
                 <Car size={20} />
                 <span>{t.addCar}</span>
               </ActionButton>
@@ -307,7 +317,7 @@ const SmartFeedSection: React.FC = () => {
         )}
 
         {!user && (
-          <LoginPrompt onClick={() => navigate('/login')}>
+          <LoginPrompt $isDark={isDark} onClick={() => navigate('/login')}>
             {t.loginToPost}
           </LoginPrompt>
         )}
@@ -326,19 +336,19 @@ const SmartFeedSection: React.FC = () => {
         )}
 
         {loadingMore && (
-          <LoadingMore>Loading more...</LoadingMore>
+          <LoadingMore $isDark={isDark}>{t.loadingMore}</LoadingMore>
         )}
 
         <div ref={sentinelRef} style={{ height: 1 }} />
 
         {!hasMore && posts.length > 0 && (
-          <EndOfFeed>{t.endOfFeed}</EndOfFeed>
+          <EndOfFeed $isDark={isDark}>{t.endOfFeed}</EndOfFeed>
         )}
 
         {!loading && posts.length === 0 && (
           <EmptyState>
-            <EmptyTitle>{t.noPostsTitle}</EmptyTitle>
-            <EmptyDescription>{t.noPostsDesc}</EmptyDescription>
+            <EmptyTitle $isDark={isDark}>{t.noPostsTitle}</EmptyTitle>
+            <EmptyDescription $isDark={isDark}>{t.noPostsDesc}</EmptyDescription>
             {user && (
               <CreateFirstButton onClick={() => navigate('/create-post')}>
                 {t.createFirst}
@@ -359,11 +369,15 @@ const SmartFeedSection: React.FC = () => {
 };
 
 // Styled Components
-const FeedSection = styled.section`
+const FeedSection = styled.section<{ $isDark: boolean }>`
   width: 100%;
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  background: ${p => p.$isDark
+    ? 'linear-gradient(135deg, rgba(8, 12, 20, 0.9), rgba(12, 26, 42, 0.82))'
+    : 'linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)'};
   padding: 60px 0;
   position: relative;
+  border-top: 1px solid ${p => p.$isDark ? 'rgba(255,255,255,0.05)' : 'rgba(12,26,42,0.06)'};
+  border-bottom: 1px solid ${p => p.$isDark ? 'rgba(255,255,255,0.05)' : 'rgba(12,26,42,0.06)'};
 `;
 
 const FeedContainer = styled.div`
@@ -390,15 +404,15 @@ const FilterBar = styled.div`
   flex-wrap: wrap;
 `;
 
-const FilterButton = styled.button<{ $active: boolean }>`
+const FilterButton = styled.button<{ $active: boolean; $isDark: boolean }>`
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 10px 20px;
   border-radius: 24px;
-  border: 2px solid ${p => p.$active ? '#FF7900' : '#e9ecef'};
-  background: ${p => p.$active ? '#FF7900' : 'white'};
-  color: ${p => p.$active ? 'white' : '#666'};
+  border: 2px solid ${p => p.$active ? '#FF7900' : (p.$isDark ? 'rgba(255,255,255,0.1)' : '#e9ecef')};
+  background: ${p => p.$active ? '#FF7900' : (p.$isDark ? 'rgba(255,255,255,0.05)' : 'white')};
+  color: ${p => p.$active ? '#0f172a' : (p.$isDark ? '#e2e8f0' : '#444')};
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
@@ -410,10 +424,10 @@ const FilterButton = styled.button<{ $active: boolean }>`
   }
   
   &:hover {
-    background: ${p => p.$active ? '#E66D00' : 'rgba(255, 121, 0, 0.05)'};
+    background: ${p => p.$active ? '#E66D00' : (p.$isDark ? 'rgba(255, 121, 0, 0.12)' : 'rgba(255, 121, 0, 0.08)')};
     border-color: #FF7900;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.2);
+    box-shadow: 0 4px 12px ${p => p.$isDark ? 'rgba(255, 121, 0, 0.25)' : 'rgba(255, 121, 0, 0.2)'};
   }
   
   &:active {
@@ -430,10 +444,10 @@ const FilterButton = styled.button<{ $active: boolean }>`
   }
 `;
 
-const FeedTitle = styled.h2`
+const FeedTitle = styled.h2<{ $isDark: boolean }>`
   font-size: 2rem;
   font-weight: 700;
-  color: #212529;
+  color: ${p => p.$isDark ? '#f8fbff' : '#212529'};
   margin-bottom: 12px;
   
   @media (max-width: 768px) {
@@ -441,18 +455,18 @@ const FeedTitle = styled.h2`
   }
 `;
 
-const FeedSubtitle = styled.p`
+const FeedSubtitle = styled.p<{ $isDark: boolean }>`
   font-size: 1rem;
-  color: #6c757d;
+  color: ${p => p.$isDark ? '#cbd5e1' : '#6c757d'};
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.6;
 `;
 
-const CreatePostTrigger = styled.button`
+const CreatePostTrigger = styled.button<{ $isDark: boolean }>`
   width: 100%;
-  background: white;
-  border: 1px solid #e9ecef;
+  background: ${p => p.$isDark ? 'rgba(255,255,255,0.04)' : 'white'};
+  border: 1px solid ${p => p.$isDark ? 'rgba(255,255,255,0.08)' : '#e9ecef'};
   border-radius: 16px;
   padding: 16px;
   margin-bottom: 24px;
@@ -464,7 +478,7 @@ const CreatePostTrigger = styled.button`
   
   &:hover {
     border-color: #FF8F10;
-    box-shadow: 0 4px 12px rgba(255, 127, 0, 0.1);
+    box-shadow: 0 4px 12px ${p => p.$isDark ? 'rgba(255, 127, 0, 0.25)' : 'rgba(255, 127, 0, 0.1)'};
   }
 `;
 
@@ -486,10 +500,10 @@ const UserAvatar = styled.div<{ $hasImage: boolean; $imageUrl?: string }>`
   `}
 `;
 
-const CreatePostPlaceholder = styled.span`
+const CreatePostPlaceholder = styled.span<{ $isDark: boolean }>`
   flex: 1;
   text-align: left;
-  color: #6c757d;
+  color: ${p => p.$isDark ? '#cbd5e1' : '#6c757d'};
   font-size: 1rem;
 `;
 
@@ -498,14 +512,14 @@ const CreatePostActions = styled.div`
   gap: 8px;
 `;
 
-const ActionButton = styled.div`
+const ActionButton = styled.div<{ $isDark: boolean }>`
   display: flex;
   align-items: center;
   gap: 4px;
   padding: 6px 12px;
-  background: #f8f9fa;
+  background: ${p => p.$isDark ? 'rgba(255,255,255,0.06)' : '#f8f9fa'};
   border-radius: 8px;
-  color: #495057;
+  color: ${p => p.$isDark ? '#e2e8f0' : '#495057'};
   font-size: 0.875rem;
   
   @media (max-width: 480px) {
@@ -513,7 +527,7 @@ const ActionButton = styled.div`
   }
 `;
 
-const LoginPrompt = styled.button`
+const LoginPrompt = styled.button<{ $isDark: boolean }>`
   width: 100%;
   padding: 16px;
   background: linear-gradient(135deg, #FF7900, #FF8F10);
@@ -557,17 +571,17 @@ const LoadingSpinner = styled.div`
   }
 `;
 
-const LoadingMore = styled.div`
+const LoadingMore = styled.div<{ $isDark: boolean }>`
   text-align: center;
   padding: 20px;
-  color: #6c757d;
+  color: ${p => p.$isDark ? '#cbd5e1' : '#6c757d'};
   font-size: 0.938rem;
 `;
 
-const EndOfFeed = styled.div`
+const EndOfFeed = styled.div<{ $isDark: boolean }>`
   text-align: center;
   padding: 30px;
-  color: #6c757d;
+  color: ${p => p.$isDark ? '#cbd5e1' : '#6c757d'};
   font-size: 0.938rem;
 `;
 
@@ -576,15 +590,15 @@ const EmptyState = styled.div`
   padding: 60px 20px;
 `;
 
-const EmptyTitle = styled.h3`
+const EmptyTitle = styled.h3<{ $isDark: boolean }>`
   font-size: 1.5rem;
-  color: #212529;
+  color: ${p => p.$isDark ? '#f8fbff' : '#212529'};
   margin-bottom: 12px;
 `;
 
-const EmptyDescription = styled.p`
+const EmptyDescription = styled.p<{ $isDark: boolean }>`
   font-size: 1rem;
-  color: #6c757d;
+  color: ${p => p.$isDark ? '#cbd5e1' : '#6c757d'};
   margin-bottom: 24px;
 `;
 

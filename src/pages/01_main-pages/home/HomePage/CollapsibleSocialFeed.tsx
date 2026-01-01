@@ -12,7 +12,7 @@ const SmartFeedSection = React.lazy(() => import('./SmartFeedSection'));
 const CommunityFeedSection = React.lazy(() => import('./CommunityFeedSection'));
 
 const CollapsibleSocialFeed: React.FC = () => {
-  const { language } = useLanguage();
+  const { language, t: translate } = useLanguage();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpand = () => {
@@ -82,13 +82,13 @@ const CollapsibleSocialFeed: React.FC = () => {
       <CollapsibleContent $isExpanded={isExpanded}>
         {isExpanded && (
           <ContentWrapper>
-            <Suspense fallback={<LoadingFallback>Loading feed...</LoadingFallback>}>
+            <Suspense fallback={<LoadingFallback>{translate('common.loading')}</LoadingFallback>}>
               <SmartFeedSection />
             </Suspense>
 
             <SectionSpacer />
 
-            <Suspense fallback={<LoadingFallback>Loading posts...</LoadingFallback>}>
+            <Suspense fallback={<LoadingFallback>{translate('common.loading')}</LoadingFallback>}>
               <CommunityFeedSection />
             </Suspense>
           </ContentWrapper>

@@ -719,6 +719,7 @@ const CarsPage: React.FC = () => {
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [isSmartSearchActive, setIsSmartSearchActive] = useState(false);
+  const [searchSessionId, setSearchSessionId] = useState<string | null>(null); // ✅ NEW: Track current search session for analytics
   
   // ⚡ NEW: Pagination State - Phase 2 Optimization
   const [paginationState, setPaginationState] = useState<PaginationState | null>(null);
@@ -804,7 +805,7 @@ const CarsPage: React.FC = () => {
       
       // 📊 Log search to analytics (only if user is logged in)
       if (user?.uid) {
-        await searchAnalyticsService.logSearch({
+        const searchId = await searchAnalyticsService.logSearch({
           query: searchQuery,
           resultsCount: result.cars.length,
           processingTime,
@@ -813,6 +814,9 @@ const CarsPage: React.FC = () => {
           userId: user.uid,
           language
         });
+        
+        // ✅ FIX: Save searchId for click tracking
+        setSearchSessionId(searchId);
       }
       
       logger.debug('Smart Search Result', {
@@ -869,14 +873,23 @@ const CarsPage: React.FC = () => {
 
   // Track car click for analytics
   const handleCarClick = async (car: CarListing, position: number) => {
+    // ✅ STRICT CHECK: Only track if we have a valid search session
+    if (!isSmartSearchActive || !searchQuery || !searchSessionId) {
+      // Not a search result click - skip analytics
+      return;
+    }
+
     // Track click-through for search analytics
-    if (isSmartSearchActive && searchQuery) {
+    try {
       await searchAnalyticsService.logClick({
+        searchId: searchSessionId, // ✅ Guaranteed to be non-null here
         carId: car.id,
         position,
-        query: searchQuery,
         userId: user?.uid
       });
+    } catch (error) {
+      // Silently fail - don't break user experience
+      logger.error('Failed to log car click', error as Error);
     }
   };
 

@@ -1,5 +1,6 @@
 // Brand Icon Component - Professional SVG Icons for Car Brands
-// مكون أيقونة الماركة - رموز SVG احترافية لعلامات السيارات
+// Компонент за икони на марки - Професионални SVG икони за автомобилни марки
+// BrandIcon - Professional SVG car brand icons
 
 import React from 'react';
 import { Star, Circle, Car, Shield, Zap, Sparkles } from 'lucide-react';

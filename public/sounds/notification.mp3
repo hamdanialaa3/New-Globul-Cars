@@ -1,0 +1,2 @@
+This is a placeholder file. Replace with actual notification sound.
+The notification-sound.service.ts has a built-in fallback beep that will play instead of this file if it's not a valid audio file.

@@ -1,5 +1,6 @@
 // Categories Section - Popular Vehicle Categories with Real Data
-// قسم الفئات - فئات المركبات الشائعة مع بيانات حقيقية
+// Раздел категории - Популярни категории превозни средства с реални данни
+// CategoriesSection - Popular vehicle categories with real Firebase data
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';

@@ -1,6 +1,6 @@
 # 📚 فهرس التوثيق - Documentation Index
 
-**آخر تحديث:** 27 ديسمبر 2025
+**آخر تحديث:** 2 يناير 2026
 
 ---
 
@@ -22,6 +22,11 @@
 - **`PERFORMANCE_OPTIMIZATION.md`** - تقرير تحسينات الأداء
 - **`CRITICAL_FIXES.md`** - تقرير الإصلاحات الحرجة
 
+### 5. تقارير الإصلاحات 🆕
+- **`STRICT_FIXES_REPORT_JAN2_2026.md`** - تقرير الإصلاحات الصارمة (searchId + sound files)
+- **`DEPLOYMENT_SUCCESS_REPORT_DEC28_2025.md`** - تقرير النشر الناجح (ديسمبر 2025)
+- **`IMPROVEMENTS_JAN1_2026.md`** - تقرير التحسينات (يناير 2026)
+
 ---
 
 ## 📖 ملفات مرجعية أخرى
@@ -36,6 +41,7 @@
 - **`FIRESTORE_INDEXES_GUIDE.md`** - دليل فهارس Firestore
 - **`SECURITY.md`** - دليل الأمان
 - **`KEY_ROTATION_GUIDE_AR.md`** - دليل تدوير المفاتيح
+- **`public/sounds/AUDIO_GUIDE.md`** - دليل ملفات الصوت 🆕
 
 ### ملفات مساعدة
 - **`README_START_SERVER.md`** - كيفية تشغيل الخادم

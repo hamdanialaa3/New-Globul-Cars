@@ -5,8 +5,8 @@ import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '../../../../contexts/LanguageContext';
-import { ResponsiveButton } from '../../../../components/ui';
-import { ResponsiveContainer } from '../../../../components/layout';
+import { Button } from '../../../../components/ui';
+import { Container } from '../../../../components/layout';
 
 const HeroWrapper = styled.section`
   background: linear-gradient(135deg, 
@@ -236,7 +236,7 @@ const HeroSectionMobileOptimized: React.FC<HeroSectionProps> = ({ className }) =
   
   return (
     <HeroWrapper className={className}>
-      <ResponsiveContainer>
+      <Container>
         <HeroContent>
           <HeroTitle>
             {t('home.hero.title') || 'Find Your Perfect Car in Bulgaria'}
@@ -254,13 +254,13 @@ const HeroSectionMobileOptimized: React.FC<HeroSectionProps> = ({ className }) =
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleKeyPress}
             />
-            <ResponsiveButton
+            <Button
               size="lg"
               onClick={handleSearch}
               fullWidthOnMobile
             >
               {t('home.hero.searchButton') || 'Search'}
-            </ResponsiveButton>
+            </Button>
           </SearchBar>
           
           <QuickFilters>
@@ -293,7 +293,7 @@ const HeroSectionMobileOptimized: React.FC<HeroSectionProps> = ({ className }) =
             </StatItem>
           </StatsRow>
         </HeroContent>
-      </ResponsiveContainer>
+      </Container>
     </HeroWrapper>
   );
 };

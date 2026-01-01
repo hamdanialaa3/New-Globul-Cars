@@ -101,21 +101,64 @@ class FeedAlgorithmService {
     const posts: Post[] = [];
     for (let i = 0; i < followingIds.length; i += 10) {
       const batch = followingIds.slice(i, i + 10);
-      const postsQuery = query(
-        collection(db, 'posts'),
-        where('authorId', 'in', batch),
-        where('status', '==', 'published'),
-        where('visibility', '==', 'public'),
-        orderBy('createdAt', 'desc'),
-        limit(limitCount)
-      );
       
-      const snapshot = await getDocs(postsQuery);
-      posts.push(...snapshot.docs.map(doc => ({ 
-        id: doc.id, 
-        ...doc.data() 
-      } as Post)));
+      try {
+        // TRY: Complex query with composite index
+        const postsQuery = query(
+          collection(db, 'posts'),
+          where('authorId', 'in', batch),
+          where('status', '==', 'published'),
+          where('visibility', '==', 'public'),
+          orderBy('createdAt', 'desc'),
+          limit(limitCount)
+        );
+        
+        const snapshot = await getDocs(postsQuery);
+        posts.push(...snapshot.docs.map(doc => ({ 
+          id: doc.id, 
+          ...doc.data() 
+        } as Post)));
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        
+        // FALLBACK: If index is building, use simple query
+        if (errorMessage.includes('index') || errorMessage.includes('building')) {
+          logger.warn('Posts index not ready, using fallback query');
+          
+          try {
+            // Simple query without all filters
+            const fallbackQuery = query(
+              collection(db, 'posts'),
+              where('authorId', 'in', batch),
+              limit(limitCount)
+            );
+            
+            const snapshot = await getDocs(fallbackQuery);
+            const batchPosts = snapshot.docs.map(doc => ({ 
+              id: doc.id, 
+              ...doc.data() 
+            } as Post));
+            
+            // Filter manually
+            const filtered = batchPosts.filter(
+              p => p.status === 'published' && p.visibility === 'public'
+            );
+            
+            posts.push(...filtered);
+          } catch (fallbackError) {
+            logger.error('Fallback posts query failed', fallbackError as Error);
+            // Continue to next batch
+          }
+        }
+      }
     }
+
+    // Sort manually by createdAt
+    posts.sort((a, b) => {
+      const dateA = a.createdAt?.seconds || 0;
+      const dateB = b.createdAt?.seconds || 0;
+      return dateB - dateA;
+    });
 
     return posts.slice(0, limitCount);
   }
@@ -124,47 +167,138 @@ class FeedAlgorithmService {
   async getTrendingPosts(limitCount: number): Promise<Post[]> {
     const oneDayAgo = Timestamp.fromMillis(Date.now() - 86400000);
     
-    const postsQuery = query(
-      collection(db, 'posts'),
-      where('status', '==', 'published'),
-      where('visibility', '==', 'public'),
-      where('createdAt', '>', oneDayAgo),
-      orderBy('createdAt', 'desc'),
-      limit(limitCount * 3) // Get more to filter
-    );
+    try {
+      // TRY: Complex query with composite index
+      const postsQuery = query(
+        collection(db, 'posts'),
+        where('status', '==', 'published'),
+        where('visibility', '==', 'public'),
+        where('createdAt', '>', oneDayAgo),
+        orderBy('createdAt', 'desc'),
+        limit(limitCount * 3) // Get more to filter
+      );
 
-    const snapshot = await getDocs(postsQuery);
-    const posts = snapshot.docs.map(doc => ({ 
-      id: doc.id, 
-      ...doc.data() 
-    } as Post));
+      const snapshot = await getDocs(postsQuery);
+      const posts = snapshot.docs.map(doc => ({ 
+        id: doc.id, 
+        ...doc.data() 
+      } as Post));
 
-    // Sort by engagement rate
-    const sorted = posts.sort((a, b) => {
-      const rateA = this.calculateEngagementRate(a);
-      const rateB = this.calculateEngagementRate(b);
-      return rateB - rateA;
-    });
+      // Sort by engagement rate
+      const sorted = posts.sort((a, b) => {
+        const rateA = this.calculateEngagementRate(a);
+        const rateB = this.calculateEngagementRate(b);
+        return rateB - rateA;
+      });
 
-    return sorted.slice(0, limitCount);
+      return sorted.slice(0, limitCount);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      
+      // FALLBACK: Simple query without all filters
+      if (errorMessage.includes('index') || errorMessage.includes('building')) {
+        logger.warn('Trending posts index not ready, using fallback');
+        
+        try {
+          // Simplest possible query
+          const fallbackQuery = query(
+            collection(db, 'posts'),
+            limit(limitCount * 5)
+          );
+          
+          const snapshot = await getDocs(fallbackQuery);
+          const allPosts = snapshot.docs.map(doc => ({ 
+            id: doc.id, 
+            ...doc.data() 
+          } as Post));
+          
+          // Filter manually
+          const filtered = allPosts.filter(p => 
+            p.status === 'published' && 
+            p.visibility === 'public' &&
+            p.createdAt?.seconds > (oneDayAgo.seconds || 0)
+          );
+          
+          // Sort by engagement
+          filtered.sort((a, b) => {
+            const rateA = this.calculateEngagementRate(a);
+            const rateB = this.calculateEngagementRate(b);
+            return rateB - rateA;
+          });
+          
+          return filtered.slice(0, limitCount);
+        } catch (fallbackError) {
+          logger.error('Fallback trending query failed', fallbackError as Error);
+          return [];
+        }
+      }
+      
+      logger.error('Error fetching trending posts', error as Error);
+      return [];
+    }
   }
 
   // Get local posts (same city)
   private async getLocalPosts(city: string, limitCount: number): Promise<Post[]> {
-    const postsQuery = query(
-      collection(db, 'posts'),
-      where('status', '==', 'published'),
-      where('visibility', '==', 'public'),
-      where('locationData.cityId', '==', city),
-      orderBy('createdAt', 'desc'),
-      limit(limitCount)
-    );
+    try {
+      // TRY: Complex query with composite index
+      const postsQuery = query(
+        collection(db, 'posts'),
+        where('status', '==', 'published'),
+        where('visibility', '==', 'public'),
+        where('locationData.cityId', '==', city),
+        orderBy('createdAt', 'desc'),
+        limit(limitCount)
+      );
 
-    const snapshot = await getDocs(postsQuery);
-    return snapshot.docs.map(doc => ({ 
-      id: doc.id, 
-      ...doc.data() 
-    } as Post));
+      const snapshot = await getDocs(postsQuery);
+      return snapshot.docs.map(doc => ({ 
+        id: doc.id, 
+        ...doc.data() 
+      } as Post));
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      
+      // FALLBACK: Simple query without all filters
+      if (errorMessage.includes('index') || errorMessage.includes('building')) {
+        logger.warn('Local posts index not ready, using fallback');
+        
+        try {
+          // Simple query with just location
+          const fallbackQuery = query(
+            collection(db, 'posts'),
+            where('locationData.cityId', '==', city),
+            limit(limitCount * 2)
+          );
+          
+          const snapshot = await getDocs(fallbackQuery);
+          const allPosts = snapshot.docs.map(doc => ({ 
+            id: doc.id, 
+            ...doc.data() 
+          } as Post));
+          
+          // Filter manually
+          const filtered = allPosts.filter(
+            p => p.status === 'published' && p.visibility === 'public'
+          );
+          
+          // Sort by createdAt
+          filtered.sort((a, b) => {
+            const dateA = a.createdAt?.seconds || 0;
+            const dateB = b.createdAt?.seconds || 0;
+            return dateB - dateA;
+          });
+          
+          return filtered.slice(0, limitCount);
+        } catch (fallbackError) {
+          logger.error('Fallback local posts query failed', fallbackError as Error);
+          return [];
+        }
+      }
+      
+      logger.error('Error fetching local posts', error as Error);
+      return [];
+    }
   }
 
   // Score all posts
@@ -301,6 +435,7 @@ class FeedAlgorithmService {
   // Get posts sorted by newest
   async getNewestPosts(page: number = 1, pageSize: number = 10): Promise<Post[]> {
     try {
+      // TRY: Query with composite index
       const postsQuery = query(
         collection(db, 'posts'),
         where('status', '==', 'published'),
@@ -312,7 +447,42 @@ class FeedAlgorithmService {
       const snapshot = await getDocs(postsQuery);
       return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Post));
     } catch (error) {
-      logger.error('Error getting newest posts:', error);
+      const errorMessage = (error as Error).message;
+      
+      // FALLBACK: If index is building
+      if (errorMessage.includes('index') || errorMessage.includes('building')) {
+        logger.warn('Newest posts index not ready, using fallback');
+        
+        try {
+          // Simple query - get more and filter client-side
+          const fallbackQuery = query(
+            collection(db, 'posts'),
+            limit(pageSize * 3)
+          );
+          
+          const snapshot = await getDocs(fallbackQuery);
+          const allPosts = snapshot.docs.map(doc => ({ 
+            id: doc.id, 
+            ...doc.data() 
+          } as Post));
+          
+          // Filter and sort manually
+          const filtered = allPosts
+            .filter(p => p.status === 'published' && p.visibility === 'public')
+            .sort((a, b) => {
+              const dateA = a.createdAt?.seconds || 0;
+              const dateB = b.createdAt?.seconds || 0;
+              return dateB - dateA;
+            });
+          
+          return filtered.slice(0, pageSize);
+        } catch (fallbackError) {
+          logger.error('Fallback newest posts query failed', fallbackError as Error);
+          return [];
+        }
+      }
+      
+      logger.error('Error getting newest posts', error as Error);
       return [];
     }
   }

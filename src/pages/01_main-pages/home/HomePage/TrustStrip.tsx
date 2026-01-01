@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { analyticsService } from '../../../../services/analytics/UnifiedAnalyticsService';
+import { glassPrimaryButton } from '../../../../styles/glassmorphism-buttons';
 
 // Styled components kept minimal (<300 lines total file) as per governance
 const StripContainer = styled.section`
@@ -60,24 +61,15 @@ const Actions = styled.div`
 `;
 
 const ActionButton = styled.button`
-  background: var(--accent-primary);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
+  ${glassPrimaryButton}
   padding: 10px 16px;
   font-size: 0.875rem;
-  cursor: pointer;
   font-family: 'Martica', 'Arial', sans-serif;
-  transition: background 0.15s ease;
   display: flex;
   align-items: center;
   gap: 6px;
 
   &:hover {
-    background: var(--accent-primary-hover);
-  }
-
-  &:active {
     background: var(--accent-primary-active);
   }
 `;

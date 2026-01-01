@@ -7,6 +7,45 @@ import styled from 'styled-components';
 import { Crown, TrendingUp, Building2, ChevronRight, Zap } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useAuth } from '../../../../contexts/AuthProvider';
+import { useTheme } from '../../../../contexts/ThemeContext';
+
+// SVG icon from svgrepo (rocket)
+const RocketIcon: React.FC<{ size?: number }> = ({ size = 28 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M12 2c-2.8 0-5 2.2-5 5v3.4l-1.8 2.4c-.1.2-.2.5-.2.8V17c0 .6.4 1 .9 1l3.1-.8L11 20c.3.3.7.5 1 .5s.7-.2 1-.5l1.1-2.8 3.1.8c.5.1.9-.4.9-1v-3.4c0-.3-.1-.6-.2-.8L17 10.4V7c0-2.8-2.2-5-5-5Z"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M10 13.5c.6-.3 1.3-.5 2-.5s1.4.2 2 .5"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M9.5 17.5c-.8.3-1.5 1-1.8 1.9" 
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+    />
+    <path
+      d="M14.5 17.5c.8.3 1.5 1 1.8 1.9"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+    />
+  </svg>
+);
 
 const Banner = styled.section`
   max-width: 1400px;
@@ -14,13 +53,15 @@ const Banner = styled.section`
   padding: 0 20px;
 `;
 
-const Container = styled.div`
-  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 50%, #FFA500 100%);
+const Container = styled.div<{ $isDark: boolean }>`
+  background: ${p => p.$isDark
+    ? 'linear-gradient(135deg, rgba(15,23,42,0.92) 0%, rgba(30,41,59,0.9) 50%, rgba(15,23,42,0.88) 100%)'
+    : 'linear-gradient(135deg, #FF8F10 0%, #fb923c 50%, #FFA500 100%)'};
   border-radius: 24px;
   padding: 60px 40px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(255, 143, 16, 0.3);
+  box-shadow: ${p => p.$isDark ? '0 20px 60px rgba(0,0,0,0.35)' : '0 20px 60px rgba(255, 143, 16, 0.3)'};
 
   @media (max-width: 768px) {
     padding: 40px 24px;
@@ -57,21 +98,25 @@ const Content = styled.div`
   margin-bottom: 50px;
 `;
 
-const Title = styled.h2`
+const Title = styled.h2<{ $isDark: boolean }>`
   font-size: 3rem;
   font-weight: 800;
-  color: white;
+  color: ${p => p.$isDark ? '#f8fbff' : 'white'};
   margin: 0 0 16px 0;
   line-height: 1.2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
 
   @media (max-width: 768px) {
     font-size: 2rem;
   }
 `;
 
-const Subtitle = styled.p`
+const Subtitle = styled.p<{ $isDark: boolean }>`
   font-size: 1.25rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: ${p => p.$isDark ? 'rgba(229, 236, 246, 0.9)' : 'rgba(255, 255, 255, 0.9)'};
   margin: 0 auto;
   max-width: 700px;
   line-height: 1.6;
@@ -95,27 +140,35 @@ const PlansGrid = styled.div`
   }
 `;
 
-const PlanCard = styled.div<{ $highlight?: boolean }>`
-  background: ${p => p.$highlight 
-    ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%)'
-    : 'rgba(255, 255, 255, 0.92)'
-  };
+const PlanCard = styled.div<{ $highlight?: boolean; $isDark: boolean }>`
+  background: ${p => {
+    if (p.$isDark) {
+      return p.$highlight
+        ? 'linear-gradient(135deg, rgba(30,41,59,0.9) 0%, rgba(15,23,42,0.85) 100%)'
+        : 'rgba(15,23,42,0.82)';
+    }
+    return p.$highlight
+      ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%)'
+      : 'rgba(255, 255, 255, 0.92)';
+  }};
   backdrop-filter: blur(20px);
   border-radius: 20px;
   padding: 40px 32px;
   position: relative;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: ${p => p.$highlight ? '3px solid #FF8F10' : '2px solid rgba(255, 255, 255, 0.3)'};
+  border: ${p => p.$highlight 
+    ? (p.$isDark ? '3px solid #FF8F10' : '3px solid #FF8F10')
+    : (p.$isDark ? '2px solid rgba(255, 255, 255, 0.08)' : '2px solid rgba(255, 255, 255, 0.3)')};
   cursor: pointer;
 
   ${p => p.$highlight && `
     transform: scale(1.05);
-    box-shadow: 0 25px 50px rgba(255, 143, 16, 0.4);
+    box-shadow: ${p.$isDark ? '0 25px 50px rgba(0,0,0,0.45)' : '0 25px 50px rgba(255, 143, 16, 0.4)'};
   `}
 
   &:hover {
     transform: ${p => p.$highlight ? 'scale(1.07)' : 'scale(1.03)'};
-    box-shadow: 0 20px 40px rgba(255, 143, 16, 0.2);
+    box-shadow: ${p => p.$isDark ? '0 20px 40px rgba(0,0,0,0.4)' : '0 20px 40px rgba(255, 143, 16, 0.2)'};
   }
 
   @media (max-width: 768px) {
@@ -169,10 +222,10 @@ const IconWrapper = styled.div<{ $color: string }>`
   }
 `;
 
-const PlanName = styled.h3`
+const PlanName = styled.h3<{ $isDark: boolean }>`
   font-size: 1.75rem;
   font-weight: 700;
-  color: #1e293b;
+  color: ${p => p.$isDark ? '#e2e8f0' : '#1e293b'};
   margin: 0 0 8px 0;
   text-align: center;
 `;
@@ -182,10 +235,10 @@ const PlanPrice = styled.div`
   margin: 16px 0 24px;
 `;
 
-const Price = styled.span`
+const Price = styled.span<{ $isDark: boolean }>`
   font-size: 3rem;
   font-weight: 800;
-  color: #0f172a;
+  color: ${p => p.$isDark ? '#f8fbff' : '#0f172a'};
   line-height: 1;
 
   @media (max-width: 768px) {
@@ -193,15 +246,15 @@ const Price = styled.span`
   }
 `;
 
-const Currency = styled.span`
+const Currency = styled.span<{ $isDark: boolean }>`
   font-size: 1.5rem;
-  color: #64748b;
+  color: ${p => p.$isDark ? '#cbd5e1' : '#64748b'};
   margin-right: 4px;
 `;
 
-const Period = styled.span`
+const Period = styled.span<{ $isDark: boolean }>`
   font-size: 1rem;
-  color: #64748b;
+  color: ${p => p.$isDark ? '#cbd5e1' : '#64748b'};
   margin-left: 8px;
 `;
 
@@ -211,14 +264,14 @@ const FeaturesList = styled.ul`
   margin: 24px 0;
 `;
 
-const FeatureItem = styled.li`
+const FeatureItem = styled.li<{ $isDark: boolean }>`
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 10px 0;
-  color: #475569;
+  color: ${p => p.$isDark ? '#cbd5e1' : '#475569'};
   font-size: 0.95rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  border-bottom: 1px solid ${p => p.$isDark ? 'rgba(255,255,255,0.08)' : 'rgba(148, 163, 184, 0.1)'};
 
   &:last-child {
     border-bottom: none;
@@ -232,7 +285,7 @@ const FeatureItem = styled.li`
   }
 `;
 
-const CTAButton = styled.button<{ $variant: 'primary' | 'secondary' | 'premium' }>`
+const CTAButton = styled.button<{ $variant: 'primary' | 'secondary' | 'premium'; $isDark: boolean }>`
   width: 100%;
   padding: 16px 24px;
   border-radius: 12px;
@@ -273,13 +326,13 @@ const CTAButton = styled.button<{ $variant: 'primary' | 'secondary' | 'premium' 
         `;
       case 'secondary':
         return `
-          background: white;
-          color: #FF8F10;
-          border: 2px solid rgba(255, 143, 16, 0.3);
+          background: ${p.$isDark ? 'rgba(255,255,255,0.06)' : 'white'};
+          color: ${p.$isDark ? '#f8fbff' : '#FF8F10'};
+          border: 2px solid ${p.$isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 143, 16, 0.3)'};
 
           &:hover {
-            background: #f8fafc;
-            border-color: #cbd5e1;
+            background: ${p.$isDark ? 'rgba(255,255,255,0.12)' : '#f8fafc'};
+            border-color: ${p.$isDark ? 'rgba(255,255,255,0.3)' : '#cbd5e1'};
             transform: translateY(-2px);
           }
         `;
@@ -295,6 +348,8 @@ const CTAButton = styled.button<{ $variant: 'primary' | 'secondary' | 'premium' 
 const SubscriptionBanner: React.FC = () => {
   const { language } = useLanguage();
   const { currentUser } = useAuth();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const navigate = useNavigate();
 
   const isBg = language === 'bg';
@@ -364,12 +419,13 @@ const SubscriptionBanner: React.FC = () => {
 
   return (
     <Banner>
-      <Container>
+      <Container $isDark={isDark}>
         <Content>
-          <Title>
-            {isBg ? '🚀 Избери плана, който ти подхожда' : '🚀 Choose Your Perfect Plan'}
+          <Title $isDark={isDark}>
+            <RocketIcon size={28} />
+            {isBg ? 'Избери плана, който ти подхожда' : 'Choose Your Perfect Plan'}
           </Title>
-          <Subtitle>
+          <Subtitle $isDark={isDark}>
             {isBg 
               ? 'Продавай повече автомобили с професионалните ни инструменти и анализи'
               : 'Sell more cars with our professional tools and analytics'
@@ -382,6 +438,7 @@ const SubscriptionBanner: React.FC = () => {
             <PlanCard
               key={plan.id}
               $highlight={plan.popular}
+              $isDark={isDark}
               onClick={() => handlePlanClick(plan.id)}
             >
               {plan.popular && (
@@ -395,24 +452,24 @@ const SubscriptionBanner: React.FC = () => {
                 <plan.icon />
               </IconWrapper>
 
-              <PlanName>{plan.name}</PlanName>
+              <PlanName $isDark={isDark}>{plan.name}</PlanName>
 
               <PlanPrice>
-                {plan.currency && <Currency>{plan.currency}</Currency>}
-                <Price>{plan.price}</Price>
-                {plan.period && <Period>{plan.period}</Period>}
+                {plan.currency && <Currency $isDark={isDark}>{plan.currency}</Currency>}
+                <Price $isDark={isDark}>{plan.price}</Price>
+                {plan.period && <Period $isDark={isDark}>{plan.period}</Period>}
               </PlanPrice>
 
               <FeaturesList>
                 {plan.features.map((feature, idx) => (
-                  <FeatureItem key={idx}>
+                  <FeatureItem key={idx} $isDark={isDark}>
                     <ChevronRight />
                     {feature}
                   </FeatureItem>
                 ))}
               </FeaturesList>
 
-              <CTAButton $variant={plan.variant}>
+              <CTAButton $variant={plan.variant} $isDark={isDark}>
                 {plan.cta}
                 <ChevronRight />
               </CTAButton>

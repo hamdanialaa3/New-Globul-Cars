@@ -7,6 +7,7 @@ import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useAuth } from '../../../../contexts/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import { analyticsService } from '../../../../services/analytics/UnifiedAnalyticsService';
+import { glassPrimaryButton } from '../../../../styles/glassmorphism-buttons';
 
 const Container = styled.section`
   background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-primary-hover) 60%);
@@ -80,16 +81,20 @@ const Actions = styled.div`
 `;
 
 const CTAButton = styled.button`
-  border: none;
+  ${glassPrimaryButton}
   padding: 10px 18px;
   border-radius: 12px;
   font-size: 0.9rem;
   font-weight: 600;
-  cursor: pointer;
   font-family: 'Martica', 'Arial', sans-serif;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
+  
+  /* Orange glass effect for loyalty */
+  background: linear-gradient(135deg, 
+    rgba(255, 143, 16, 0.4) 0%, 
+    rgba(255, 143, 16, 0.2) 100%
+  );
+  color: #fff;
+  border: 1px solid rgba(255, 143, 16, 0.4);
 
   /* Light mode: Orange gradient background, White text */
   html[data-theme="light"] & {

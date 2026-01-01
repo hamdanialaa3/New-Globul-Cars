@@ -179,9 +179,11 @@ export class DealershipRepository {
 
   /**
    * Get all verified dealerships
+   * ✅ WITH GRACEFUL DEGRADATION: Falls back to simple query if composite index is building
    */
   static async getVerified(limitCount: number = 50): Promise<DealershipInfo[]> {
     try {
+      // TRY: Complex query with composite index (verification.status + createdAt)
       const q = query(
         collection(db, this.COLLECTION),
         where('verification.status', '==', 'verified'),
@@ -192,8 +194,40 @@ export class DealershipRepository {
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => this.snapshotToData(doc));
     } catch (error) {
+      const errorMessage = (error as Error).message;
+      
+      // FALLBACK: If index is building or missing, use simple query without orderBy
+      if (errorMessage.includes('index') || errorMessage.includes('building')) {
+        logger.warn('Composite index not ready, using fallback query for dealerships');
+        
+        try {
+          // Simple query - only where clause (no composite index needed)
+          const fallbackQuery = query(
+            collection(db, this.COLLECTION),
+            where('verification.status', '==', 'verified'),
+            limit(limitCount)
+          );
+          
+          const snapshot = await getDocs(fallbackQuery);
+          const results = snapshot.docs.map(doc => this.snapshotToData(doc));
+          
+          // Manual sort by createdAt (client-side)
+          results.sort((a, b) => {
+            const dateA = a.createdAt instanceof Date ? a.createdAt.getTime() : 0;
+            const dateB = b.createdAt instanceof Date ? b.createdAt.getTime() : 0;
+            return dateB - dateA;
+          });
+          
+          return results;
+        } catch (fallbackError) {
+          logger.error('Fallback query also failed', fallbackError as Error);
+          return []; // Return empty array instead of throwing
+        }
+      }
+      
+      // Other errors - log and return empty
       logger.error('Error fetching verified dealerships', error as Error);
-      throw new Error(`Failed to fetch verified dealerships: ${(error as Error).message}`);
+      return [];
     }
   }
 

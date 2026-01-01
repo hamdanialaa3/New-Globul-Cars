@@ -257,14 +257,36 @@ class LoggerService {
      * Get stored logs (for debugging)
      */
     getStoredLogs() {
-        // Return empty array for now - can be implemented with local storage later
-        return [];
+        if (typeof localStorage === 'undefined')
+            return [];
+        try {
+            const raw = localStorage.getItem('bm_logger_buffer');
+            if (!raw)
+                return [];
+            const parsed = JSON.parse(raw);
+            return Array.isArray(parsed) ? parsed : [];
+        }
+        catch (error) {
+            if (this.isDevelopment) {
+                console.warn('Failed to read stored logs', error);
+            }
+            return [];
+        }
     }
     /**
      * Clear stored logs
      */
     clearStoredLogs() {
-        // No-op for now - can be implemented with local storage later
+        if (typeof localStorage === 'undefined')
+            return;
+        try {
+            localStorage.removeItem('bm_logger_buffer');
+        }
+        catch (error) {
+            if (this.isDevelopment) {
+                console.warn('Failed to clear stored logs', error);
+            }
+        }
     }
     /**
      * Generate unique session ID

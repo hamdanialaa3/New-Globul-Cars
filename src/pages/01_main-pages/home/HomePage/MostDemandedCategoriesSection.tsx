@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { unifiedCarService, UnifiedCar } from '../../../../services/car';
-import ModernCarCard from './ModernCarCard';
+import WeatherStyleCarCard from './WeatherStyleCarCard';
 import DemandStats from './DemandStats';
 import { Bot, ArrowRight, TrendingUp } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
@@ -620,10 +620,9 @@ const MostDemandedCategoriesSection: React.FC = () => {
               showArrows={true}
             >
               {cars.slice(0, 12).map(car => (
-                <ModernCarCard
+                <WeatherStyleCarCard
                   key={car.id}
                   car={car}
-                  showStatus={true}
                 />
               ))}
             </HorizontalScrollContainer>

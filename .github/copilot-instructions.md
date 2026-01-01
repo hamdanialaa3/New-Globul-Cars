@@ -7,6 +7,7 @@ A premium Bulgarian automotive marketplace (rival to mobile.de and mobile.bg) bu
 **Core Philosophy**: "The Project Constitution" (PROJECT_CONSTITUTION.md) defines immutable architectural rules. Any deviation from the Numeric ID System or URL patterns is considered a regression and must be rejected.
 
 **Tech Stack Overview**:
+
 - **Frontend**: React 18.3.1, TypeScript 5.6.3 (strict mode), Styled-Components 6.1.19
 - **Build System**: CRACO 7.x (Create React App Config Override) - NOT Vite for production
 - **Backend**: Firebase 12.3.0 (Auth, Firestore, Functions, Storage, FCM, Hosting)
@@ -20,6 +21,7 @@ A premium Bulgarian automotive marketplace (rival to mobile.de and mobile.bg) bu
 - **Node Version**: >=18.0.0 (Functions use Node.js 20)
 
 **Environment Setup Requirements**:
+
 1. Node.js 18+ and npm 8+
 2. Firebase CLI: `npm install -g firebase-tools`
 3. Environment files: `.env.local` (never commit!)
@@ -234,7 +236,38 @@ npm run train-ai          # Update AI project knowledge
 npm run train-ai:watch    # Auto-update AI knowledge on file changes
 npm run migrate:legacy-cars  # Run car data migration scripts
 npm run check-security    # Verify .env files are not committed
+npm run test:profile-stats  # Run profile stats service tests
+npm run build:vite        # Alternative Vite build (dev only)
 ```
+
+### Utility Scripts (scripts/ directory)
+
+**Data Management**:
+
+- `sync-algolia.js` - Sync all car collections to Algolia search index
+- `migrate-isActive.ts` - Migrate legacy car data (add isActive field)
+- `check-firestore-data.js` - Verify Firestore data integrity
+- `backup-manager.js` - Database backup and restore utilities
+
+**Code Quality**:
+
+- `ban-console.js` - Enforce no console.log in production code
+- `scan-console-usage.js` - Find all console usage in codebase
+- `check-translations.ts` - Verify translation key coverage
+- `audit-env.js` - Check environment variable security
+
+**Development**:
+
+- `train-ai-on-project.js` - Generate AI knowledge base from codebase
+- `test-project-knowledge.js` - Validate AI training data
+- `optimize-images.js` - Convert images to WebP format
+- `analyze-bundle-size.js` - Analyze production bundle size
+
+**Debugging**:
+
+- `debug-find-specific-cars.js` - Find specific cars in Firestore
+- `verify-firebase-connection.js` - Test Firebase connectivity
+- `check-provider-order.ts` - Verify React Context provider order
 
 ### Firebase Deployment
 
@@ -248,6 +281,7 @@ firebase emulators:start    # Local testing
 **Functions**: Located in `functions/src/`, currently exports notification triggers (see `functions/src/index.ts`)
 
 **Critical Deployment Notes**:
+
 - Run `npm run check-security` before every commit to prevent credential leaks
 - Use `npm run prebuild` to verify no console.log statements exist
 - Firebase Functions run on Node.js 20 (specified in `functions/package.json`)
@@ -259,25 +293,29 @@ firebase emulators:start    # Local testing
 ### Collection Architecture
 
 **Vehicle Collections** (category-specific for optimized queries):
+
 - `passenger_cars` - Sedans, Hatchbacks, Coupes, Wagons
-- `suvs` - SUVs, Crossovers, Off-road vehicles  
+- `suvs` - SUVs, Crossovers, Off-road vehicles
 - `vans` - Vans, Minivans, Microbuses
 - `motorcycles` - Motorcycles, Scooters, ATVs
 - `trucks` - Pickup trucks, Commercial trucks
 - `buses` - Buses, Coaches
 
 **User & Profile Collections**:
+
 - `users` - User accounts with `numericId` field (required)
 - `dealerships` - Dealer/company profiles
 - `followers` / `following` - Social follow relationships
 
 **Interaction Collections**:
+
 - `favorites` - User saved cars
 - `messages` - Direct messages between users
 - `conversations` - Message thread metadata
 - `notifications` - User notifications with read/unread status
 
 **Business Collections**:
+
 - `campaigns` - Marketing campaigns (dealer/company)
 - `consultations` - Expert consultations
 - `reviews` - User/car reviews
@@ -285,6 +323,7 @@ firebase emulators:start    # Local testing
 - `searchClicks` - Search behavior analytics
 
 **System Collections**:
+
 - `counters` - Atomic counters for numeric ID assignment
 - `customers/{uid}/checkout_sessions` - Stripe checkout sessions
 
@@ -350,6 +389,64 @@ src/**/*.spec.{ts,tsx}
 8. **Never skip numeric ID assignment** - Car creation MUST go through `UnifiedCarService.createCarListing()` which enforces numeric IDs
 9. **Never use direct lazy imports** - Always use `safeLazy()` from `utils/lazyImport` to prevent import crashes
 10. **Never add routes to AppRoutes.tsx** - Use modular route files in `src/routes/` (MainRoutes.tsx, NumericProfileRouter.tsx)
+
+## Code Quality Standards (January 2026)
+
+### Console Logging Ban
+
+**CRITICAL**: Production builds automatically fail if `console.log` or `console.error` detected in `src/`:
+
+- **Enforcement**: `scripts/ban-console.js` runs during `npm run prebuild`
+- **Only Exception**: `logger-service.ts` itself (maintains console for actual logging)
+- **Solution**: Always use `logger` service:
+
+  ```typescript
+  import { logger } from '@/services/logger-service';
+
+  // ✅ Correct
+  logger.info('User logged in', { userId });
+  logger.error('API call failed', error, { context });
+  logger.warn('Deprecated feature used', { feature });
+
+  // ❌ Wrong - Build will fail
+  console.log('Debug message');
+  console.error('Error:', error);
+  ```
+
+### Performance Best Practices
+
+**React Hooks Optimization**:
+
+- Use `useCallback` for event handlers passed to child components
+- Use `useMemo` for expensive computations
+- Example from `ConversationsList.tsx`:
+
+  ```typescript
+  const handleConversationClick = useCallback(
+    (conversationId: string) => {
+      // Handler logic
+    },
+    [dependencies]
+  );
+
+  const sortedConversations = useMemo(() => {
+    return conversations.sort(/* sorting logic */);
+  }, [conversations]);
+  ```
+
+### Security Validation
+
+**Route Protection Pattern**:
+
+- Always validate `numericId` matches authenticated user for protected routes
+- Example from `FavoritesPage.tsx`:
+  ```typescript
+  useEffect(() => {
+    if (user && urlNumericId !== user.numericId) {
+      navigate(`/profile/${user.numericId}/favorites`);
+    }
+  }, [user, urlNumericId, navigate]);
+  ```
 
 ## Image & Asset Optimization
 
@@ -487,35 +584,41 @@ Complex queries require composite indexes defined in `firestore.indexes.json`:
 ## Recent Features & Systems (December 2025)
 
 ### Follow System
+
 - **Service**: `follow-service.ts` - User follow/unfollow functionality
 - **Components**: `FollowButton.tsx` with follower/following counters
 - **Collections**: `followers`, `following` in Firestore
 - Real-time updates via Firestore listeners
 
 ### Advanced Notifications
+
 - **Component**: `NotificationBell.tsx` in Header with unread count badge
 - **Service**: `real-time-notifications-service.ts` - Push notifications via FCM
 - **Features**: Real-time unread tracking, notification preferences, multi-type notifications
 - Sound integration: `public/sounds/notification.mp3` (with graceful error handling)
 
 ### Team Management (Company/Dealer)
+
 - **Service**: `team-management-service.ts` - Role-based team member management
 - **Page**: `TeamManagementPage.tsx` - Add/remove team members, role assignment
 - **Roles**: Admin, Manager, Editor, Viewer (hierarchical permissions)
 - Company plans only (unlimited teams)
 
 ### Admin Tools
+
 - **AlgoliaSyncManager**: Real-time sync status dashboard (`/admin/algolia-sync`)
 - **BackupManagement**: Database backup/restore utilities
 - **LeadScoringDashboard**: AI-powered lead qualification
 - **SharedInboxPage**: Team inbox for dealer/company accounts
 
 ### Development Tools
+
 - **DevelopmentToolsPage**: `/development-tools` - Comprehensive dev utilities
 - **IconShowcasePage**: Visual preview of all project icons
 - **TestDropdownsPage**: UI component testing sandbox
 
 ### AI Integration Enhancements
+
 - **DeepSeekService**: Alternative AI provider for cost optimization
 - **vehicle-description-generator**: Multi-language description generation (bg/en)
 - **market-value.service**: AI-powered pricing recommendations
@@ -523,11 +626,19 @@ Complex queries require composite indexes defined in `firestore.indexes.json`:
 
 ---
 
-**Version**: 1.7.0  
-**Last Updated**: December 31, 2025  
+**Version**: 1.8.0  
+**Last Updated**: January 1, 2026  
 **Status**: Production
 
-**Key Updates (v1.7.0)**:
+**Key Updates (v1.8.0)** - January 1, 2026:
+
+- **Code Quality**: All console.log/console.error removed - 100% compliant with logger-service
+- **Dealer Dashboard**: Fully implemented alert dismissal and task completion handlers
+- **Security Enhancement**: Added numericId validation in Favorites page to prevent unauthorized access
+- **Performance Optimization**: Added useCallback/useMemo to ConversationsList component for reduced re-renders
+- **Build Validation**: prebuild script (ban-console.js) ensures production builds are console-free
+
+**Previous Updates (v1.7.0)** - December 31, 2025:
 
 - Added Recent Features & Systems section documenting December 2025 features
 - Documented Follow System, Team Management, and Advanced Notifications

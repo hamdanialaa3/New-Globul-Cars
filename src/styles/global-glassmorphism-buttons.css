@@ -1,0 +1,255 @@
+/**
+ * Global Glassmorphism Button Styles
+ * الأنماط الزجاجية العالمية لجميع الأزرار - تطبيق تلقائي
+ * 
+ * هذا الملف يطبق تصميم زجاجي عصري على جميع الأزرار في الموقع
+ * Applies sci-fi glass effect to all buttons site-wide
+ */
+
+/* ============================================
+   BASE BUTTON GLASSMORPHISM
+   ============================================ */
+
+button,
+.btn,
+[role="button"] {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative;
+  overflow: hidden;
+  
+  /* Smart color system - نظام ألوان ذكي */
+  color: #1a1a1a !important; /* Dark text for light mode */
+}
+
+/* Glow effect on all buttons */
+button::before,
+.btn::before,
+[role="button"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.5s;
+  z-index: 1;
+}
+
+button:hover::before,
+.btn:hover::before,
+[role="button"]:hover::before {
+  left: 100%;
+}
+
+button:hover,
+.btn:hover,
+[role="button"]:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.45) !important;
+}
+
+button:active,
+.btn:active,
+[role="button"]:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 4px 16px 0 rgba(31, 38, 135, 0.3) !important;
+}
+
+/* ============================================
+   PRIMARY BUTTONS (Orange)
+   ============================================ */
+
+button[type="submit"],
+button.primary,
+button.btn-primary,
+.btn-primary {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 143, 16, 0.3) 0%,
+    rgba(255, 143, 16, 0.15) 100%
+  ) !important;
+  color: #1a1a1a !important; /* Dark text for light mode */
+  border: 1px solid rgba(255, 143, 16, 0.3) !important;
+}
+
+button[type="submit"]:hover,
+button.primary:hover,
+button.btn-primary:hover,
+.btn-primary:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 143, 16, 0.5) 0%,
+    rgba(255, 143, 16, 0.25) 100%
+  ) !important;
+  border-color: rgba(255, 143, 16, 0.5) !important;
+  box-shadow: 
+    0 8px 32px 0 rgba(255, 143, 16, 0.4),
+    0 0 20px rgba(255, 143, 16, 0.3) !important;
+}
+
+/* ============================================
+   SECONDARY BUTTONS (Green)
+   ============================================ */
+
+button.secondary,
+button.btn-secondary,
+.btn-secondary {
+  background: linear-gradient(
+    135deg,
+    rgba(22, 163, 74, 0.3) 0%,
+    rgba(22, 163, 74, 0.15) 100%
+  ) !important;
+  color: #1a1a1a !important; /* Dark text for light mode */
+  border: 1px solid rgba(22, 163, 74, 0.3) !important;
+}
+
+button.secondary:hover,
+button.btn-secondary:hover,
+.btn-secondary:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(22, 163, 74, 0.5) 0%,
+    rgba(22, 163, 74, 0.25) 100%
+  ) !important;
+  border-color: rgba(22, 163, 74, 0.5) !important;
+  box-shadow: 
+    0 8px 32px 0 rgba(22, 163, 74, 0.4),
+    0 0 20px rgba(22, 163, 74, 0.3) !important;
+}
+
+/* ============================================
+   DANGER BUTTONS (Red)
+   ============================================ */
+
+button[type="reset"],
+button.danger,
+button.btn-danger,
+.btn-danger {
+  background: linear-gradient(
+    135deg,
+    rgba(220, 38, 38, 0.3) 0%,
+    rgba(220, 38, 38, 0.15) 100%
+  ) !important;
+  color: #1a1a1a !important; /* Dark text for light mode */
+  border: 1px solid rgba(220, 38, 38, 0.3) !important;
+}
+
+button[type="reset"]:hover,
+button.danger:hover,
+button.btn-danger:hover,
+.btn-danger:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(220, 38, 38, 0.5) 0%,
+    rgba(220, 38, 38, 0.25) 100%
+  ) !important;
+  border-color: rgba(220, 38, 38, 0.5) !important;
+  box-shadow: 
+    0 8px 32px 0 rgba(220, 38, 38, 0.4),
+    0 0 20px rgba(220, 38, 38, 0.3) !important;
+}
+
+/* ============================================
+   LINK BUTTONS
+   ============================================ */
+
+button.link,
+button.btn-link,
+.btn-link,
+a.btn {
+  background: transparent !important;
+  backdrop-filter: blur(5px) !important;
+  border: 1px solid transparent !important;
+}
+
+button.link:hover,
+button.btn-link:hover,
+.btn-link:hover,
+a.btn:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ============================================
+   DISABLED STATE
+   ============================================ */
+
+button:disabled,
+button[disabled],
+.btn:disabled,
+.btn[disabled] {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+button:disabled:hover,
+button[disabled]:hover,
+.btn:disabled:hover,
+.btn[disabled]:hover {
+  transform: none !important;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37) !important;
+}
+
+/* ============================================
+   DARK MODE ADJUSTMENTS
+   ============================================ */
+
+html[data-theme="dark"] button,
+html[data-theme="dark"] .btn,
+html[data-theme="dark"] [role="button"] {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important; /* Light text for dark mode */
+}
+
+html[data-theme="dark"] button:hover,
+html[data-theme="dark"] .btn:hover,
+html[data-theme="dark"] [role="button"]:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important; /* Light text for dark mode */
+}
+
+/* ============================================
+   DARK MODE - PRIMARY BUTTONS
+   ============================================ */
+
+html[data-theme="dark"] button[type="submit"],
+html[data-theme="dark"] button.primary,
+html[data-theme="dark"] button.btn-primary,
+html[data-theme="dark"] .btn-primary {
+  color: #ffffff !important; /* Light text for dark mode */
+}
+
+/* ============================================
+   DARK MODE - SECONDARY BUTTONS
+   ============================================ */
+
+html[data-theme="dark"] button.secondary,
+html[data-theme="dark"] button.btn-secondary,
+html[data-theme="dark"] .btn-secondary {
+  color: #ffffff !important; /* Light text for dark mode */
+}
+
+/* ============================================
+   DARK MODE - DANGER BUTTONS
+   ============================================ */
+
+html[data-theme="dark"] button[type="reset"],
+html[data-theme="dark"] button.danger,
+html[data-theme="dark"] button.btn-danger,
+html[data-theme="dark"] .btn-danger {
+  color: #ffffff !important; /* Light text for dark mode */
+}

@@ -11,7 +11,7 @@ import { ChevronDown, ChevronUp, MessageSquare, Users, TrendingUp } from 'lucide
 const SmartFeedSection = React.lazy(() => import('./SmartFeedSection'));
 
 const SocialMediaSection: React.FC = () => {
-  const { language } = useLanguage();
+  const { language, t: translate } = useLanguage();
   const [isExpanded, setIsExpanded] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
 
@@ -100,7 +100,7 @@ const SocialMediaSection: React.FC = () => {
       <CollapsibleContent $isExpanded={isExpanded}>
         <ContentInner>
           {isExpanded && (
-            <Suspense fallback={<LoadingState>Loading social feed...</LoadingState>}>
+            <Suspense fallback={<LoadingState>{translate('common.loading')}</LoadingState>}>
               {/* Smart Feed Section with create post */}
               <SmartFeedSection />
             </Suspense>

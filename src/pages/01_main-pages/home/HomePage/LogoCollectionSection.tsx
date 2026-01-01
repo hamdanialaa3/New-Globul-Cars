@@ -4,6 +4,7 @@
 import React, { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { useLanguage } from '../../../../contexts/LanguageContext';
 
 const LogoCollectionSection = styled.section`
   background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
@@ -61,6 +62,8 @@ const LoadingFallback = styled.div`
 `;
 
 const LogoCollectionSectionComponent: React.FC = () => {
+  const { t } = useLanguage();
+  
   return (
     <LogoCollectionSection>
       <SectionContainer>
@@ -74,7 +77,7 @@ const LogoCollectionSectionComponent: React.FC = () => {
           </ViewCollectionButton>
         </SectionHeader>
 
-        <Suspense fallback={<LoadingFallback>Loading logo collection...</LoadingFallback>}>
+        <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
           {React.createElement(
             lazy(() => import('../../components/CompleteLogoCollection')),
             {

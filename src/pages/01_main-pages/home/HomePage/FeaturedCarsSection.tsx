@@ -223,7 +223,7 @@ const LoadingFallback = styled.div`
 `;
 
 const FeaturedCarsSectionComponent: React.FC = () => {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   
   return (
     <FeaturedCarsSection>
@@ -254,7 +254,7 @@ const FeaturedCarsSectionComponent: React.FC = () => {
           </ViewAllFeaturedButton>
         </SectionHeader>
 
-        <Suspense fallback={<LoadingFallback>Loading featured cars...</LoadingFallback>}>
+        <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
           {/* ⚡ OPTIMIZED: Reduced from 8 to 4 cars for faster initial load */}
           <FeaturedCars 
             limit={4}

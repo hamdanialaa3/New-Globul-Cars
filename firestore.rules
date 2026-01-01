@@ -218,6 +218,76 @@ service cloud.firestore {
       allow delete: if false; // No review deletion (admin only via backend)
     }
 
+    // ==================== DEALERSHIPS COLLECTION ====================
+    // Verified Dealerships/Companies
+    match /dealerships/{dealershipId} {
+      allow read: if true; // Public read for all verified dealerships
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.uid == request.auth.uid;
+      allow delete: if false; // No deletion (admin only via backend)
+    }
+
+    // ==================== POSTS COLLECTION (Social Feed) ====================
+    // Community Posts
+    match /posts/{postId} {
+      allow read: if true; // Public posts visible to everyone
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+
+      // Comments sub-collection
+      match /comments/{commentId} {
+        allow read: if true; // Public comments
+        allow create: if isAuthenticated();
+        allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
+        allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      }
+
+      // Likes sub-collection
+      match /likes/{likeId} {
+        allow read: if true; // Public likes count
+        allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+        allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+        allow update: if false; // No updates to likes
+      }
+    }
+
+    // ==================== FAVORITES COLLECTION ====================
+    // User Favorites (saved cars)
+    match /favorites/{favoriteId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow update: if false; // No updates to favorites
+    }
+
+    // ==================== MESSAGES & CONVERSATIONS ====================
+    // Direct Messages
+    match /messages/{messageId} {
+      allow read: if isAuthenticated() && (
+        resource.data.senderId == request.auth.uid ||
+        resource.data.recipientId == request.auth.uid
+      );
+      allow create: if isAuthenticated() && request.resource.data.senderId == request.auth.uid;
+      allow update: if isAuthenticated() && (
+        resource.data.senderId == request.auth.uid ||
+        resource.data.recipientId == request.auth.uid
+      );
+      allow delete: if false; // No message deletion
+    }
+
+    // Conversations metadata
+    match /conversations/{conversationId} {
+      allow read: if isAuthenticated() && (
+        conversationId.matches('.*' + request.auth.uid + '.*')
+      );
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && (
+        conversationId.matches('.*' + request.auth.uid + '.*')
+      );
+      allow delete: if false; // No conversation deletion
+    }
+
     // ==================== ANALYTICS EVENTS & METRICS ====================
     // Profile Analytics: Track profile views, car views, inquiries
     match /analytics_events/{eventId} {

@@ -104,9 +104,16 @@ class SearchAnalyticsService {
 
   /**
    * 🖱️ LOG CLICK EVENT
+   * ✅ WITH VALIDATION: Ensures searchId is defined before logging
    */
   async logClick(clickEvent: Omit<SearchClickEvent, 'timestamp'> & { userId?: string }): Promise<void> {
     try {
+      // ✅ VALIDATION: Don't log if searchId is missing
+      if (!clickEvent.searchId || clickEvent.searchId === undefined) {
+        logger.warn('Cannot log click: searchId is undefined', { carId: clickEvent.carId });
+        return; // Skip logging instead of throwing error
+      }
+
       // ✅ FIX: Only include userId if it's defined
       const clickData: any = {
         searchId: clickEvent.searchId,

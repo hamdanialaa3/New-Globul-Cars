@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import styled from 'styled-components';
 import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
+import { glassNeutralButton, glassPrimaryButton } from '../../../../styles/glassmorphism-buttons';
 
 // Popular brands configuration with logos
 const POPULAR_BRANDS = [
@@ -117,15 +118,14 @@ const BrandsContainer = styled.div`
 `;
 
 const BrandCard = styled.button`
-  /* 🌟 Aluminum Metallic Effect - تأثير ألومنيوم براق وواقعي */
+  ${glassNeutralButton}
+  /* 🌟 Glass Metallic Effect - تأثير زجاجي معدني عصري */
   background: linear-gradient(135deg, 
-    #E8E8E8 0%,      /* فضي فاتح */
-    #D0D0D0 25%,    /* فضي */
-    #B8B8B8 50%,    /* رمادي فضي */
-    #D0D0D0 75%,    /* فضي */
-    #E8E8E8 100%    /* فضي فاتح */
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.25) 100%
   );
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(10px);
   border: 2px solid rgba(200, 200, 200, 0.4);
   border-top: 2px solid rgba(255, 255, 255, 0.6); /* highlight على الحافة العلوية */
@@ -150,18 +150,14 @@ const BrandCard = styled.button`
 
   html[data-theme="dark"] & {
     background: linear-gradient(135deg, 
-      #4A4A4A 0%,      /* رمادي داكن فاتح */
-      #3A3A3A 25%,     /* رمادي داكن */
-      #2A2A2A 50%,     /* رمادي داكن جداً */
-      #3A3A3A 75%,     /* رمادي داكن */
-      #4A4A4A 100%     /* رمادي داكن فاتح */
+      rgba(255, 255, 255, 0.12) 0%,
+      rgba(255, 255, 255, 0.06) 50%,
+      rgba(255, 255, 255, 0.12) 100%
     );
-    border-color: rgba(150, 150, 150, 0.3);
-    border-top: 2px solid rgba(200, 200, 200, 0.4);
+    border-color: rgba(255, 255, 255, 0.2);
     box-shadow: 
-      0 4px 15px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+      0 8px 32px 0 rgba(31, 38, 135, 0.37),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
   /* تأثير بريق معدني */

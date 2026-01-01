@@ -1,5 +1,6 @@
 // NewCarsSection Component - Latest Added Cars (Last 24 Hours)
-// قسم السيارات الجديدة - السيارات المضافة حديثاً (آخر 24 ساعة)
+// Раздел нови автомобили - Последно добавени коли (последните 24 часа)
+// NewCarsSection - Cars added in the last 24 hours
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +10,7 @@ import { useLanguage } from '../../../../contexts/LanguageContext';
 import { unifiedCarService, UnifiedCar } from '../../../../services/car';
 import ModernCarCard from './ModernCarCard';
 import { logger } from '../../../../services/logger-service';
+import { glassSecondaryButton } from '../../../../styles/glassmorphism-buttons';
 
 const Section = styled.section`
   padding: 3rem 1rem;
