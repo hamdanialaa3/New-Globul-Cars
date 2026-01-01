@@ -48,6 +48,13 @@ const ModernCarCard: React.FC<ModernCarCardProps> = ({ car }) => {
           className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
           onError={() => { if (!imageError) setImageError(true); }}
         />
+        {(car.isSold || car.status === 'sold') && (
+          <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+            <div className="bg-red-600/90 text-white px-4 py-2 font-black text-lg uppercase tracking-widest border-2 border-white shadow-xl transform -rotate-12 rounded-sm ring-1 ring-red-600 ring-offset-2 ring-offset-white/50">
+              {window.location.pathname.includes('/bg') || document.documentElement.lang === 'bg' ? 'ПРОДАДЕНО' : 'SOLD'}
+            </div>
+          </div>
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
         <button
@@ -67,14 +74,14 @@ const ModernCarCard: React.FC<ModernCarCardProps> = ({ car }) => {
           className="absolute top-3 right-3 p-0 bg-transparent border-none transition-all duration-300 hover:scale-110 active:scale-90 z-10"
           style={{ cursor: 'pointer' }}
         >
-          <Heart 
-            size={28} 
+          <Heart
+            size={28}
             className={isFav ? 'fill-red-500 text-red-500' : 'fill-none text-gray-300'}
             strokeWidth={isFav ? 0 : 2}
-            style={{ 
+            style={{
               filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))',
               transition: 'all 0.2s ease'
-            }} 
+            }}
           />
         </button>
 

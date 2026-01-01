@@ -155,6 +155,36 @@ const TimeStamp = styled.div`
   z-index: 2;
 `;
 
+const SoldOverlay = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-15deg);
+  background: rgba(220, 38, 38, 0.95);
+  color: white;
+  padding: 6px 12px;
+  font-weight: 900;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  border-radius: 2px;
+  z-index: 5;
+  border: 2px solid white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  letter-spacing: 1.5px;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border: 1px dashed rgba(255, 255, 255, 0.5);
+    border-radius: inherit;
+  }
+`;
+
 const FavoriteButton = styled.button<{ $isFavorite: boolean }>`
   position: absolute;
   bottom: 12px;
@@ -317,10 +347,8 @@ const LatestCarsSection: React.FC = () => {
             const isPublished = status === 'published' || status === 'active';
             const isActive = car.isActive !== false; // Default to true if missing
             const isSold = car.isSold === true; // Default to false if missing
-            const isNotSoldStatus = status !== 'sold';
-            
-            // Include car if: (isActive OR status='published'/'active') AND NOT sold
-            if ((isActive || isPublished) && !isSold && isNotSoldStatus) {
+            // Include car if: isActive OR status='published'/'active'
+            if (isActive || isPublished) {
               latestCars.push(car);
             }
           } catch (e) {
@@ -454,6 +482,11 @@ const LatestCarsSection: React.FC = () => {
             return (
               <CarCard key={car.id} to={getCarUrl()}>
                 <ImageWrapper>
+                  {(car as any).isSold && (
+                    <SoldOverlay>
+                      {language === 'bg' ? 'ПРОДАДЕНО' : 'SOLD'}
+                    </SoldOverlay>
+                  )}
                   {car.images && car.images.length > 0 ? (
                     <CarImage
                       src={car.images[0]}
@@ -500,7 +533,7 @@ const LatestCarsSection: React.FC = () => {
                       {getTimeAgo(car.createdAt)}
                     </TimeStamp>
                   )}
-                  
+
                   {/* ❤️ Favorite Button */}
                   <FavoriteButton
                     $isFavorite={isFavorite(car.id)}

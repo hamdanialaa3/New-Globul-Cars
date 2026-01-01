@@ -54,6 +54,36 @@ const CarImageWrapper = styled.div`
   background: var(--bg-secondary);
 `;
 
+const SoldOverlay = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-15deg);
+  background: rgba(220, 38, 38, 0.95);
+  color: white;
+  padding: 6px 12px;
+  font-weight: 900;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  border-radius: 2px;
+  z-index: 5;
+  border: 2px solid white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  letter-spacing: 1.5px;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border: 1px dashed rgba(255, 255, 255, 0.5);
+    border-radius: inherit;
+  }
+`;
+
 const FavoriteButton = styled.button<{ $isFavorite: boolean }>`
   position: absolute;
   top: 12px;
@@ -269,7 +299,7 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
   const loadFeaturedCars = async () => {
     try {
       setLoading(true);
-      
+
       // ⚡ OPTIMIZED: Use cache for 5 minutes
       // Use unified service
       const cars = await unifiedCarService.getFeaturedCars(limit);
@@ -308,8 +338,8 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
       <EmptyState>
         <h3>{language === 'bg' ? 'Няма налични автомобили' : 'No cars available'}</h3>
         <p>
-          {language === 'bg' 
-            ? 'В момента няма публикувани обяви за продажба.' 
+          {language === 'bg'
+            ? 'В момента няма публикувани обяви за продажба.'
             : 'There are currently no published listings.'}
         </p>
       </EmptyState>
@@ -327,126 +357,131 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
         >
           {visibleCars.map((car) => {
             return (
-            <CarCard key={car.id} to={getCarUrlFromUnifiedCar(car)}>
-            <CarImageWrapper>
-              {car.images && car.images.length > 0 ? (
-              <CarImage 
-                src={car.images[0]} 
-                alt={`${car.make} ${car.model}`}
-                loading="lazy"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/placeholder-car.jpg';
-                }}
-              />
-              ) : (
-                <CarImage 
-                  as="div" 
-                  style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center',
-                    fontSize: '3rem',
-                    color: '#ccc'
-                  }}
-                >
-                  <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M5 17h14v2H5v-2zm0-2h14V9H5v6zm7-13l9 5v8H3V7l9-5z"/>
-                    <circle cx="7.5" cy="14.5" r="1.5"/>
-                    <circle cx="16.5" cy="14.5" r="1.5"/>
-                  </svg>
-            </CarImage>
-              )}
-              
-              {/* Favorite Button */}
-              <FavoriteButton
-                $isFavorite={isFavorite(car.id)}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  toggleFavorite(car.id, {
-                    make: car.make,
-                    model: car.model,
-                    year: car.year,
-                    price: car.price,
-                    currency: car.currency || 'EUR',
-                    sellerNumericId: car.sellerNumericId || 0,
-                    carNumericId: car.carNumericId || 0,
-                    primaryImage: car.images?.[0]
-                  });
-                }}
-                title={language === 'bg' ? 'Добави в любими' : 'Add to favorites'}
-              >
-                <Heart />
-              </FavoriteButton>
-            </CarImageWrapper>
-            
-            <PriceTag>
-              {car.price < 20000 ? (
-                <>
-                  <PriceRow>
-                    <PriceAmount>{calculateMonthlyPayment(car.price)}</PriceAmount>
-                    <PriceCurrency>€</PriceCurrency>
-                  </PriceRow>
-                  <MonthlyLabel>{language === 'bg' ? 'мес.' : 'mtl.'}</MonthlyLabel>
-                  <VatLabel>{language === 'bg' ? 'с ДДС' : 'incl. VAT.'}</VatLabel>
-                </>
-              ) : (
-                <>
-                  <PriceRow>
-                    {car.price > 25000 && (
-                      <OldPrice>€{(car.price + 1000).toLocaleString()}</OldPrice>
-                    )}
-                    <PriceAmount>€{car.price.toLocaleString()}</PriceAmount>
-                  </PriceRow>
-                  {isGoodPrice(car.price) && (
-                    <GoodPriceBadge>
-                      {language === 'bg' ? 'Много добра цена' : 'Very good price'}
-                    </GoodPriceBadge>
+              <CarCard key={car.id} to={getCarUrlFromUnifiedCar(car)}>
+                <CarImageWrapper>
+                  {car.isSold && (
+                    <SoldOverlay>
+                      {language === 'bg' ? 'ПРОДАДЕНО' : 'SOLD'}
+                    </SoldOverlay>
                   )}
-                </>
-              )}
-            </PriceTag>
-            
-            <CarInfo>
-              <CarTitle>{car.make} {car.model}</CarTitle>
-              
-              {car.price < 20000 && (
-                <LeasingInfo>
-                  {language === 'bg' ? '24 месеца, 5.000 км годишно' : '24 months, 5.000 km per year'}
-                </LeasingInfo>
-              )}
-              
-              <CarSpecs>
-                {car.year && (
-                  <SpecLine>
-                    {new Date(car.year, 0).toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US', { month: '2-digit', year: 'numeric' })}
-                  </SpecLine>
-                )}
-                
-                <SpecGrid>
-                  <SpecItem>{car.fuelType}</SpecItem>
-                  <SpecItem>{car.horsepower ? `${car.horsepower} hp` : '-'}</SpecItem>
-                  <SpecItem>{car.transmission}</SpecItem>
-                  {car.mileage && <SpecItem>{car.mileage.toLocaleString()} km</SpecItem>}
-                </SpecGrid>
-                
-                {car.fuelConsumption && car.co2Emissions && car.price < 20000 && (
-                  <SpecLine>
-                    {car.fuelConsumption} l/100km (comb.) • {car.co2Emissions} g CO₂/km (comb.)
-                  </SpecLine>
-                )}
-              </CarSpecs>
-              
-              <CarLocation>
-                {car.location?.cityNameEn || 
-                 car.location?.cityNameBg || 
-                 car.location?.city || 
-                 (typeof car.location === 'string' ? car.location : '') ||
-                 (language === 'bg' ? 'България' : 'Bulgaria')}
-              </CarLocation>
-            </CarInfo>
-          </CarCard>
-          );
+                  {car.images && car.images.length > 0 ? (
+                    <CarImage
+                      src={car.images[0]}
+                      alt={`${car.make} ${car.model}`}
+                      loading="lazy"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = '/placeholder-car.jpg';
+                      }}
+                    />
+                  ) : (
+                    <CarImage
+                      as="div"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '3rem',
+                        color: '#ccc'
+                      }}
+                    >
+                      <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path d="M5 17h14v2H5v-2zm0-2h14V9H5v6zm7-13l9 5v8H3V7l9-5z" />
+                        <circle cx="7.5" cy="14.5" r="1.5" />
+                        <circle cx="16.5" cy="14.5" r="1.5" />
+                      </svg>
+                    </CarImage>
+                  )}
+
+                  {/* Favorite Button */}
+                  <FavoriteButton
+                    $isFavorite={isFavorite(car.id)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleFavorite(car.id, {
+                        make: car.make,
+                        model: car.model,
+                        year: car.year,
+                        price: car.price,
+                        currency: car.currency || 'EUR',
+                        sellerNumericId: car.sellerNumericId || 0,
+                        carNumericId: car.carNumericId || 0,
+                        primaryImage: car.images?.[0]
+                      });
+                    }}
+                    title={language === 'bg' ? 'Добави в любими' : 'Add to favorites'}
+                  >
+                    <Heart />
+                  </FavoriteButton>
+                </CarImageWrapper>
+
+                <PriceTag>
+                  {car.price < 20000 ? (
+                    <>
+                      <PriceRow>
+                        <PriceAmount>{calculateMonthlyPayment(car.price)}</PriceAmount>
+                        <PriceCurrency>€</PriceCurrency>
+                      </PriceRow>
+                      <MonthlyLabel>{language === 'bg' ? 'мес.' : 'mtl.'}</MonthlyLabel>
+                      <VatLabel>{language === 'bg' ? 'с ДДС' : 'incl. VAT.'}</VatLabel>
+                    </>
+                  ) : (
+                    <>
+                      <PriceRow>
+                        {car.price > 25000 && (
+                          <OldPrice>€{(car.price + 1000).toLocaleString()}</OldPrice>
+                        )}
+                        <PriceAmount>€{car.price.toLocaleString()}</PriceAmount>
+                      </PriceRow>
+                      {isGoodPrice(car.price) && (
+                        <GoodPriceBadge>
+                          {language === 'bg' ? 'Много добра цена' : 'Very good price'}
+                        </GoodPriceBadge>
+                      )}
+                    </>
+                  )}
+                </PriceTag>
+
+                <CarInfo>
+                  <CarTitle>{car.make} {car.model}</CarTitle>
+
+                  {car.price < 20000 && (
+                    <LeasingInfo>
+                      {language === 'bg' ? '24 месеца, 5.000 км годишно' : '24 months, 5.000 km per year'}
+                    </LeasingInfo>
+                  )}
+
+                  <CarSpecs>
+                    {car.year && (
+                      <SpecLine>
+                        {new Date(car.year, 0).toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US', { month: '2-digit', year: 'numeric' })}
+                      </SpecLine>
+                    )}
+
+                    <SpecGrid>
+                      <SpecItem>{car.fuelType}</SpecItem>
+                      <SpecItem>{car.horsepower ? `${car.horsepower} hp` : '-'}</SpecItem>
+                      <SpecItem>{car.transmission}</SpecItem>
+                      {car.mileage && <SpecItem>{car.mileage.toLocaleString()} km</SpecItem>}
+                    </SpecGrid>
+
+                    {car.fuelConsumption && car.co2Emissions && car.price < 20000 && (
+                      <SpecLine>
+                        {car.fuelConsumption} l/100km (comb.) • {car.co2Emissions} g CO₂/km (comb.)
+                      </SpecLine>
+                    )}
+                  </CarSpecs>
+
+                  <CarLocation>
+                    {car.location?.cityNameEn ||
+                      car.location?.cityNameBg ||
+                      car.location?.city ||
+                      (typeof car.location === 'string' ? car.location : '') ||
+                      (language === 'bg' ? 'България' : 'Bulgaria')}
+                  </CarLocation>
+                </CarInfo>
+              </CarCard>
+            );
           })}
         </HorizontalScrollContainer>
       </FeaturedCarsContainer>

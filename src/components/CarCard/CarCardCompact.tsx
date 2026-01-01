@@ -229,8 +229,33 @@ const CarLocation = styled.div`
   line-height: 1.3;
 `;
 
+const SoldOverlay = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-15deg);
+  background: rgba(220, 38, 38, 0.9);
+  color: white;
+  padding: 8px 16px;
+  font-weight: 800;
+  font-size: 1rem;
+  text-transform: uppercase;
+  border-radius: 4px;
+  z-index: 5;
+  border: 2px solid white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+  pointer-events: none;
+`;
+
 const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
   const { language } = useLanguage();
+  const t = {
+    bg: { sold: 'ПРОДАДЕНО' },
+    en: { sold: 'SOLD' }
+  }[language as 'bg' | 'en'];
+
+  const isSold = car.isSold || car.status === 'sold';
   const { currentUser } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
   const [isHearted, setIsHearted] = useState(false);
@@ -274,7 +299,7 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
     if (car.location && typeof car.location === 'string') {
       return car.location;
     }
-    
+
     // Handle location as object
     if (car.location && typeof car.location === 'object') {
       if (car.location.cityNameEn) return car.location.cityNameEn;
@@ -289,7 +314,7 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
         }
       }
     }
-    
+
     // Handle locationData
     if (car.locationData) {
       if (typeof car.locationData.cityName === 'string') {
@@ -300,12 +325,12 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
       }
       if (car.locationData.city) return car.locationData.city;
     }
-    
+
     // Fallback
     if (car.region && typeof car.region === 'string') {
       return car.region;
     }
-    
+
     return language === 'bg' ? 'България' : 'Bulgaria';
   };
 
@@ -358,7 +383,7 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
 
   return (
     <CarCard to={getCarUrl()}>
-      <FavoriteButton 
+      <FavoriteButton
         $isFavorite={isHearted}
         onClick={handleFavoriteClick}
         title={isHearted ? 'Remove from favorites' : 'Add to favorites'}
@@ -367,9 +392,10 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
       </FavoriteButton>
 
       <CarImageWrapper>
+        {isSold && <SoldOverlay>{t.sold}</SoldOverlay>}
         {getMainImage() ? (
-          <CarImage 
-            src={getMainImage()!} 
+          <CarImage
+            src={getMainImage()!}
             alt={`${car.make || car.makeOther || 'N/A'} ${car.model || car.modelOther || 'N/A'}`}
             loading="lazy"
             onError={(e) => {
@@ -377,25 +403,25 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
             }}
           />
         ) : (
-          <CarImage 
-            as="div" 
-            style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
+          <CarImage
+            as="div"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
               justifyContent: 'center',
               fontSize: '3rem',
               color: '#ccc'
             }}
           >
             <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M5 17h14v2H5v-2zm0-2h14V9H5v6zm7-13l9 5v8H3V7l9-5z"/>
-              <circle cx="7.5" cy="14.5" r="1.5"/>
-              <circle cx="16.5" cy="14.5" r="1.5"/>
+              <path d="M5 17h14v2H5v-2zm0-2h14V9H5v6zm7-13l9 5v8H3V7l9-5z" />
+              <circle cx="7.5" cy="14.5" r="1.5" />
+              <circle cx="16.5" cy="14.5" r="1.5" />
             </svg>
           </CarImage>
         )}
       </CarImageWrapper>
-      
+
       <PriceTag>
         {price < 20000 ? (
           <>
@@ -421,7 +447,7 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
             )}
           </>
         )}
-        
+
         {/* ✅ NEW: Price Rating Badge */}
         <PriceBadge
           price={price}
@@ -434,37 +460,37 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
           size="small"
         />
       </PriceTag>
-      
+
       <CarInfo>
         <CarTitle>{car.make || car.makeOther || 'N/A'} {car.model || car.modelOther || 'N/A'}</CarTitle>
-        
+
         {price < 20000 && (
           <LeasingInfo>
             {language === 'bg' ? '24 месеца, 5.000 км годишно' : '24 months, 5.000 km per year'}
           </LeasingInfo>
         )}
-        
+
         <CarSpecs>
           {car.year && (
             <SpecLine>
               {new Date(car.year, 0).toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US', { month: '2-digit', year: 'numeric' })}
             </SpecLine>
           )}
-          
+
           <SpecGrid>
             <SpecItem>{car.fuelType || '-'}</SpecItem>
             <SpecItem>{car.horsepower ? `${car.horsepower} hp` : (car.enginePower ? `${car.enginePower} hp` : '-')}</SpecItem>
             <SpecItem>{car.transmission || '-'}</SpecItem>
             {car.mileage && <SpecItem>{car.mileage.toLocaleString()} km</SpecItem>}
           </SpecGrid>
-          
+
           {car.fuelConsumption && car.co2Emissions && price < 20000 && (
             <SpecLine>
               {car.fuelConsumption} l/100km (comb.) • {car.co2Emissions} g CO₂/km (comb.)
             </SpecLine>
           )}
         </CarSpecs>
-        
+
         <CarLocation>
           {getLocationName()}
         </CarLocation>

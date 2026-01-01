@@ -129,6 +129,18 @@ export const translations = {
       fixedPrice: 'Фиксирана цена',
       negotiable: 'Договаряне'
     },
+    statusControl: {
+      visibilityTitle: 'Видимост на обявата',
+      visibleDesc: 'Публично видима (Активна)',
+      hiddenDesc: 'Скрита (Само за вас)',
+      soldTitle: 'Маркирай като ПРОДАДЕНА',
+      soldDesc: 'Обявата е маркирана ПРОДАДЕНА',
+      availableDesc: 'Маркирай обявата като продадена',
+    },
+    tooltips: {
+      visibility: 'Превключва видимостта на обявата. Когато е активна, всички я виждат (Зелен LED). Когато е скрита, само вие я виждате (Червен LED).',
+      sold: 'Маркира автомобила като продаден и поставя червен печат "ПРОДАДЕНО" върху обявата.',
+    },
     hintsInline: {},
   },
   en: {
@@ -256,6 +268,18 @@ export const translations = {
     labels: {
       fixedPrice: 'Fixed Price',
       negotiable: 'Negotiable'
+    },
+    statusControl: {
+      visibilityTitle: 'Ad Visibility',
+      visibleDesc: 'Publicly Visible (Active)',
+      hiddenDesc: 'Hidden (Private Only)',
+      soldTitle: 'Mark as SOLD',
+      soldDesc: 'Listing is marked SOLD',
+      availableDesc: 'Mark listing as sold',
+    },
+    tooltips: {
+      visibility: 'Toggles visibility. Green LED = Public. Red LED = Private/Hidden.',
+      sold: 'Marks the car as sold and displays a red "SOLD" stamp on the listing.',
     },
     hintsInline: {},
   }

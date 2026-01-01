@@ -322,7 +322,7 @@ const SearchInput = styled.input`
   
   &::placeholder {
     color: ${({ theme }) =>
-      theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.65)' : theme.colors.text.secondary};
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.65)' : theme.colors.text.secondary};
     font-weight: 400;
   }
   
@@ -353,7 +353,7 @@ const ClearButton = styled.button`
   
   &:hover {
     background: ${({ theme }) =>
-      theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(2, 6, 23, 0.05)'};
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(2, 6, 23, 0.05)'};
     color: ${PALETTE.primary};
   }
   
@@ -615,7 +615,7 @@ const SuggestionItem = styled.button`
   
   &:hover {
     background: ${({ theme }) =>
-      theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.06)' : 'rgba(2, 6, 23, 0.05)'};
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.06)' : 'rgba(2, 6, 23, 0.05)'};
   }
   
   &:active {
@@ -671,11 +671,11 @@ const PageButton = styled.button<{ disabled?: boolean }>`
   transition: all 0.2s ease;
   border: 1px solid ${({ theme }) =>
     theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.15)' : theme.colors.grey[300]};
-  background: ${props => props.disabled 
-    ? 'rgba(100, 100, 100, 0.1)' 
+  background: ${props => props.disabled
+    ? 'rgba(100, 100, 100, 0.1)'
     : ({ theme }) => theme.mode === 'dark' ? 'rgba(11, 95, 255, 0.15)' : PALETTE.primary};
-  color: ${props => props.disabled 
-    ? 'rgba(150, 150, 150, 0.5)' 
+  color: ${props => props.disabled
+    ? 'rgba(150, 150, 150, 0.5)'
     : ({ theme }) => theme.mode === 'dark' ? '#fff' : '#fff'};
   opacity: ${props => props.disabled ? 0.5 : 1};
   
@@ -711,7 +711,7 @@ const CarsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const isMobile = useIsMobile();
-  
+
   // ⚡ NEW: Smart Search State
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -720,11 +720,11 @@ const CarsPage: React.FC = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [isSmartSearchActive, setIsSmartSearchActive] = useState(false);
   const [searchSessionId, setSearchSessionId] = useState<string | null>(null); // ✅ NEW: Track current search session for analytics
-  
+
   // ⚡ NEW: Pagination State - Phase 2 Optimization
   const [paginationState, setPaginationState] = useState<PaginationState | null>(null);
   const [totalCars, setTotalCars] = useState(0);
-  
+
   // Get filters from URL
   const cityId = searchParams.get('city');
   const makeParam = searchParams.get('make');
@@ -791,18 +791,18 @@ const CarsPage: React.FC = () => {
       setIsSmartSearchActive(false);
       return;
     }
-    
+
     setIsSearching(true);
     setLoading(true);
     setShowSuggestions(false);
     setIsSmartSearchActive(true); // Mark that we're in smart search mode
-    
+
     const startTime = Date.now();
-    
+
     try {
       const result = await smartSearchService.search(searchQuery, user?.uid, 1, 100);
       const processingTime = Date.now() - startTime;
-      
+
       // 📊 Log search to analytics (only if user is logged in)
       if (user?.uid) {
         const searchId = await searchAnalyticsService.logSearch({
@@ -814,11 +814,11 @@ const CarsPage: React.FC = () => {
           userId: user.uid,
           language
         });
-        
+
         // ✅ FIX: Save searchId for click tracking
         setSearchSessionId(searchId);
       }
-      
+
       logger.debug('Smart Search Result', {
         context: 'CarsPage',
         action: 'smartSearch',
@@ -834,12 +834,12 @@ const CarsPage: React.FC = () => {
           } : null
         }
       });
-      
+
       setCars(result.cars as CarListing[]);
       setError(null); // Clear any previous errors
-      
-      logger.info('Smart search completed', { 
-        query: searchQuery, 
+
+      logger.info('Smart search completed', {
+        query: searchQuery,
         results: result.totalCount,
         personalized: result.isPersonalized,
         processingTime
@@ -851,7 +851,7 @@ const CarsPage: React.FC = () => {
         context: 'CarsPage',
         action: 'smartSearch'
       });
-      
+
       // Log failed search
       await searchAnalyticsService.logSearch({
         query: searchQuery,
@@ -862,7 +862,7 @@ const CarsPage: React.FC = () => {
         userId: user?.uid,
         language
       });
-      
+
       setError('Search failed');
       setCars([]); // Clear cars on error
     } finally {
@@ -909,25 +909,24 @@ const CarsPage: React.FC = () => {
     if (isSmartSearchActive) {
       return;
     }
-    
+
     const loadCarsOptimized = async () => {
       const startTime = performance.now();
-      
+
       try {
         setLoading(true);
         setError(null);
-        
+
         // Read filters from URL params
         const regionParam = searchParams.get('city');
         const makeParam = searchParams.get('make');
         const pageParam = parseInt(searchParams.get('page') || '1', 10);
-        
+
         logger.info('🔍 CarsPage - Loading with filters', { regionParam, makeParam, page: pageParam });
 
         // Build filters object
         const filters: Record<string, unknown> = {
           isActive: true,
-          isSold: false
         };
 
         if (regionParam) filters.region = regionParam;
@@ -952,7 +951,7 @@ const CarsPage: React.FC = () => {
 
         // ⚡ Generate deterministic cache key
         const cacheKey = browserCacheStrategy.createCacheKey('cars_search', filters, { page: pageParam });
-        
+
         // ⚡ Use Browser Cache Strategy with 5-minute TTL
         const result = await browserCacheStrategy.getOrFetch(
           cacheKey,
@@ -966,7 +965,7 @@ const CarsPage: React.FC = () => {
           },
           5 * 60 * 1000 // 5 minutes TTL
         );
-        
+
         // Convert to CarListing format
         const carListings: CarListing[] = result.cars.map((car: any) => ({
           ...car,
@@ -980,11 +979,11 @@ const CarsPage: React.FC = () => {
           status: car.status || 'active',
           currency: car.currency || 'EUR'
         } as CarListing));
-        
+
         setCars(carListings);
         setTotalCars(result.totalCount);
         setPaginationState(result.pagination);
-        
+
         const loadTime = performance.now() - startTime;
         logger.info(`⚡ Cars loaded in ${loadTime.toFixed(0)}ms`, {
           count: carListings.length,
@@ -1006,7 +1005,7 @@ const CarsPage: React.FC = () => {
 
     loadCarsOptimized();
   }, [searchParams, isSmartSearchActive]);
-  
+
   // ⚡ Pagination handlers
   const handleNextPage = () => {
     if (!paginationState?.hasNextPage) return;
@@ -1015,7 +1014,7 @@ const CarsPage: React.FC = () => {
     setSearchParams(searchParams);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  
+
   const handlePreviousPage = () => {
     if (!paginationState?.hasPreviousPage) return;
     const newPage = paginationState.currentPage - 1;
@@ -1033,7 +1032,7 @@ const CarsPage: React.FC = () => {
   // Memoized count text ⚡
   const carsCountText = useMemo(() => {
     const count = cars.length;
-    return language === 'bg' 
+    return language === 'bg'
       ? count === 1 ? 'автомобил' : 'автомобила'
       : count === 1 ? 'car' : 'cars';
   }, [cars.length, language]);
@@ -1044,28 +1043,28 @@ const CarsPage: React.FC = () => {
         {/* Page Header */}
         <PageHeader>
           <h1>
-            {cityData 
+            {cityData
               ? `${t('cars.title')} - ${cityDisplayName}`
               : makeParam
                 ? `${t('cars.title')} - ${makeParam}`
                 : t('cars.title')}
           </h1>
           <p>{t('cars.subtitle')}</p>
-          
+
           {/* City Badge */}
           {cityData && (
             <CityBadge>
               {language === 'bg' ? 'Локация' : 'Location'}: {cityDisplayName} · {cars.length} {carsCountText}
             </CityBadge>
           )}
-          
+
           {/* Brand/Make Badge */}
           {makeParam && !cityData && (
             <CityBadge>
               {language === 'bg' ? 'Марка' : 'Make'}: {makeParam} · {cars.length} {carsCountText}
             </CityBadge>
           )}
-          
+
           {/* Combined Badge (Region + Brand) */}
           {cityData && makeParam && (
             <CityBadge>
@@ -1078,7 +1077,7 @@ const CarsPage: React.FC = () => {
         <SearchSection>
           {/* Action Buttons - Advanced Search & AI Search */}
           <ActionButtonsRow>
-            <ActionButton 
+            <ActionButton
               variant="primary"
               onClick={() => window.location.href = '/advanced-search'}
               aria-label={language === 'bg' ? 'Разширено търсене' : 'Advanced Search'}
@@ -1086,7 +1085,7 @@ const CarsPage: React.FC = () => {
               <SlidersHorizontal />
               {language === 'bg' ? 'Разширено търсене' : 'Advanced Search'}
             </ActionButton>
-            
+
             {/* ✅ NEW: AI Smart Search Button */}
             <AISearchButton
               query={searchQuery}
@@ -1108,8 +1107,8 @@ const CarsPage: React.FC = () => {
                 setTimeout(() => handleSmartSearch(), 100);
               }}
               placeholder={
-                language === 'bg' 
-                  ? 'Търси марка, модел, град...' 
+                language === 'bg'
+                  ? 'Търси марка, модел, град...'
                   : 'Search make, model, city...'
               }
             />
@@ -1180,20 +1179,20 @@ const CarsPage: React.FC = () => {
             <h3>{language === 'bg' ? 'Няма намерени автомобили' : 'No cars found'}</h3>
             <p>
               {cityData && makeParam
-                ? (language === 'bg' 
-                    ? `В момента няма обяви за ${makeParam} в ${cityDisplayName}.` 
-                    : `Currently no ${makeParam} listings in ${cityDisplayName}.`)
-                : cityData 
-                  ? (language === 'bg' 
-                      ? `В момента няма обяви за автомобили в ${cityDisplayName}.` 
-                      : `Currently no car listings in ${cityDisplayName}.`)
+                ? (language === 'bg'
+                  ? `В момента няма обяви за ${makeParam} в ${cityDisplayName}.`
+                  : `Currently no ${makeParam} listings in ${cityDisplayName}.`)
+                : cityData
+                  ? (language === 'bg'
+                    ? `В момента няма обяви за автомобили в ${cityDisplayName}.`
+                    : `Currently no car listings in ${cityDisplayName}.`)
                   : makeParam
-                    ? (language === 'bg' 
-                        ? `В момента няма обяви за ${makeParam}.` 
-                        : `Currently no ${makeParam} listings available.`)
-                    : (language === 'bg' 
-                        ? 'В момента няма налични обяви за автомобили.' 
-                        : 'Currently no car listings available.')}
+                    ? (language === 'bg'
+                      ? `В момента няма обяви за ${makeParam}.`
+                      : `Currently no ${makeParam} listings available.`)
+                    : (language === 'bg'
+                      ? 'В момента няма налични обяви за автомобили.'
+                      : 'Currently no car listings available.')}
             </p>
           </EmptyState>
         )}

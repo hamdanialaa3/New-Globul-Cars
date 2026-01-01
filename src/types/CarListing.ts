@@ -93,6 +93,10 @@ export interface CarListing {
   topSpeed?: number;
   features?: string[];
 
+  // EV Specific Data
+  batteryRangeWLTP?: number; // Range in km
+  batteryWarranty?: string; // Warranty text
+
   // Emission & Environmental
   emissionSticker?: string; // Emission sticker type
   emissionClass?: string; // Emission class (Euro 4, 5, 6, etc.)

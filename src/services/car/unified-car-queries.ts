@@ -90,9 +90,9 @@ export async function getFeaturedCars(limitCount: number = 4): Promise<UnifiedCa
             const status = (car as any).status;
             const isPublished = status === 'published' || status === 'active';
             const isNotSoldStatus = status !== 'sold';
-            
+
             // Include car if: (isActive OR status='published'/'active') AND NOT sold
-            return (isActive || isPublished) && !isSold && isNotSoldStatus;
+            return (isActive || isPublished);
           });
       } catch (error) {
         serviceLogger.warn(`Error querying ${collectionName} for featured cars`, { error });
@@ -144,9 +144,9 @@ export async function getNewCarsLast24Hours(limitCount: number = 12): Promise<Un
             const status = (car as any).status;
             const isPublished = status === 'published' || status === 'active';
             const isNotSoldStatus = status !== 'sold';
-            
+
             // Include car if: (isActive OR status='published'/'active') AND NOT sold
-            return (isActive || isPublished) && !isSold && isNotSoldStatus;
+            return (isActive || isPublished);
           });
       } catch (error) {
         serviceLogger.warn(`Error querying ${collectionName} for new cars`, { error });
@@ -207,7 +207,7 @@ export async function getSimilarCars(carId: string, limitCount: number = 6): Pro
         if (snapshot && !snapshot.empty) {
           return snapshot.docs
             .map(doc => mapDocToCar(doc))
-            .filter(c => c.id !== carId && c.isActive !== false && c.isSold !== true);
+            .filter(c => c.id !== carId && c.isActive !== false);
         }
         return [];
       } catch (error) {
@@ -304,12 +304,9 @@ export async function searchCars(filters: CarFilters = {}, limitCount: number = 
       filteredCars = filteredCars.filter(c => c.isActive !== false);
     }
 
-    // Filter 2: isSold
+    // Filter 2: isSold (only if explicitly specified)
     if (filters.isSold !== undefined) {
       filteredCars = filteredCars.filter(c => (c.isSold === true) === filters.isSold);
-    } else {
-      // Default: hide sold cars
-      filteredCars = filteredCars.filter(c => c.isSold !== true);
     }
 
     // Filter 3: Year range

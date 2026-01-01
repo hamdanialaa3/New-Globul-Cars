@@ -15,7 +15,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import './CarDetailsTheme.css'; // Import theme CSS
 import { useToast } from '../../../components/Toast';
 import OptimizedImage from '../../../components/OptimizedImage';
@@ -60,6 +60,8 @@ import { CarPrintSticker } from '../../../components/CarPrint/CarPrintSticker';
 import { SimilarCarsWidget } from './SimilarCarsWidget';
 import { FinancingCalculator } from './FinancingCalculator';
 import CarBrandLogo from '../../../components/CarBrandLogo';
+import { ExtendedSellerInfo } from './ExtendedSellerInfo';
+import { Battery, ShieldCheck, Info } from 'lucide-react';
 
 
 
@@ -92,8 +94,14 @@ const translations = {
     transmission: 'Скоростна кутия',
     previousOwners: 'Предишни собственици',
     accidentFree: 'Без аварии',
+    accidentFree: 'Без аварии',
     serviceHistory: 'Сервизна книжка',
+    fullServiceHistory: 'Пълна сервизна история',
     technicalData: 'Технически данни',
+    batteryInfo: 'Информация за батерията',
+    rangeWLTP: 'Пробег (WLTP)',
+    warrantyFromRegistration: 'Гаранция от първа регистрация',
+    batteryNote: 'За повече информация относно състоянието на батерията, моля свържете се с продавача.',
     vehicleData: 'Данни за превозното средство',
     make: 'Марка',
     model: 'Модел',
@@ -147,6 +155,7 @@ const translations = {
     deleteSuccess: 'Обявата е изтрита успешно',
     deleteError: 'Грешка при изтриване',
     quotaExceeded: 'Достигнахте лимита си за този месец',
+    soldMark: 'ПРОДАДЕНО',
   },
   en: {
     back: 'Back',
@@ -163,7 +172,9 @@ const translations = {
     transmission: 'Transmission',
     previousOwners: 'Previous owners',
     accidentFree: 'Accident-free',
+    accidentFree: 'Accident-free',
     serviceHistory: 'Service history',
+    fullServiceHistory: 'Full service history',
     technicalData: 'Technical data',
     vehicleData: 'Vehicle data',
     make: 'Make',
@@ -229,6 +240,11 @@ const translations = {
     featureAccident: 'Accident Free',
     featureMileage: 'Low Mileage',
     featureWarranty: 'Warranty Included',
+    batteryInfo: 'Battery information',
+    rangeWLTP: 'Range (WLTP)',
+    warrantyFromRegistration: 'Warranty from first registration',
+    batteryNote: 'For more information on the battery health, please contact the seller.',
+    soldMark: 'SOLD',
   },
 };
 
@@ -566,6 +582,54 @@ const FeaturedBadge = styled.div`
   svg {
     width: 12px;
     height: 12px;
+  }
+`;
+
+const pulseRed = keyframes`
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+`;
+
+const StatusLED = styled.div`
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+  animation: ${pulseRed} 2s infinite;
+  display: inline-block;
+  margin-left: 10px;
+  flex-shrink: 0;
+`;
+
+const SoldStamp = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-15deg);
+  border: 4px solid #ef4444;
+  color: #ef4444;
+  font-weight: 900;
+  font-size: 3.5rem;
+  padding: 0.75rem 2.5rem;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  z-index: 20;
+  pointer-events: none;
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
+  border-radius: 4px;
+  letter-spacing: 2px;
+  outline: 2px solid #ef4444;
+  outline-offset: 4px;
+  
+  @media (max-width: 768px) {
+    font-size: 2.2rem;
+    padding: 0.5rem 1.5rem;
+    border-width: 3px;
+    outline-width: 1.5px;
+    outline-offset: 3px;
   }
 `;
 
@@ -1037,6 +1101,87 @@ const DataValue = styled.div`
 
   @media (max-width: 768px) {
     text-align: left;
+  }
+`;
+
+// Battery Section (EV Specific)
+const BatterySection = styled.div`
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid var(--border-primary);
+  margin-top: 1.5rem;
+  position: relative;
+  overflow: hidden;
+
+  /* Electric accent */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: #10b981; /* Green/Teal for Electric */
+  }
+`;
+
+const BatteryHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  
+  h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+  }
+`;
+
+const BatteryGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+`;
+
+const BatteryItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+`;
+
+const BatteryLabel = styled.div`
+  font-size: 13px;
+  color: var(--text-secondary);
+`;
+
+const BatteryValue = styled.div`
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+`;
+
+const BatteryNote = styled.div`
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  margin-top: 1rem;
+  font-size: 13px;
+  color: var(--text-secondary);
+  align-items: flex-start;
+  line-height: 1.5;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+    flex-shrink: 0;
+    color: var(--text-tertiary);
   }
 `;
 
@@ -1514,7 +1659,8 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   const navigate = useNavigate();
   const { theme } = useTheme();
   const t = translations[language];
-  const { toast } = useToast();
+  /* Fix Toast Context usage */
+  const toast = useToast();
 
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -1583,6 +1729,8 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
       }
     }
   };
+
+  const isSold = (car as any).isSold || car.status === 'sold';
 
   const handlePrevImage = () => {
     setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -1816,6 +1964,49 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
         <MainContent>
           {/* Left Column */}
           <LeftColumn>
+            {/* Vehicle Title (Moved to top) */}
+            <VehicleTitle style={{ marginBottom: '1.5rem', padding: '1.25rem' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem', width: '100%' }}>
+
+                {/* 1. Logo (Fixed) */}
+                <div style={{ flex: '0 0 auto' }}>
+                  <CarBrandLogo make={car.make} size={50} showName={false} />
+                </div>
+
+                {/* 2. Text Content (Flexible) */}
+                <div style={{ flex: '1 1 300px', minWidth: '0', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', lineHeight: '1.4' }}>
+                    <h1 style={{ margin: 0, fontSize: 'clamp(20px, 4vw, 24px)', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'normal', wordBreak: 'break-word', display: 'flex', alignItems: 'center' }}>
+                      {car.make} {car.model}
+                      {isSold && <StatusLED title={t.soldMark} />}
+                    </h1>
+
+                    <span style={{ color: 'var(--text-tertiary)', display: 'inline-block' }}>•</span>
+
+                    <div style={{ margin: 0, fontSize: 'clamp(14px, 3vw, 15px)', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+                      {car.year} • {car.fuelType} • {car.transmission}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Badges (Auto width, wrap if needed) */}
+                <div style={{ flex: '0 0 auto', display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                  {car.accidentHistory === false && (
+                    <Badge $variant="success" style={{ whiteSpace: 'nowrap' }}>
+                      <CheckCircle size={14} />
+                      {t.accidentFree}
+                    </Badge>
+                  )}
+                  {car.serviceHistory && (
+                    <Badge $variant="success" style={{ whiteSpace: 'nowrap' }}>
+                      <CheckCircle size={14} />
+                      {t.fullServiceHistory}
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            </VehicleTitle>
+
             {/* Image Gallery */}
             <ImageGallery>
               <MainImageContainer>
@@ -1823,6 +2014,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
                   src={typeof images[currentImageIndex] === 'string' ? images[currentImageIndex] : URL.createObjectURL(images[currentImageIndex] as File)}
                   alt={`${car.make} ${car.model}`}
                 />
+                {isSold && <SoldStamp>{t.soldMark}</SoldStamp>}
                 {images.length > 1 && (
                   <>
                     <ImageNavButton $position="left" onClick={handlePrevImage}>
@@ -1899,36 +2091,35 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
               </QuickInfoItem>
             </QuickInfoBar>
 
-            {/* Vehicle Title */}
-            <VehicleTitle>
-              <TitleRow>
-                <CarBrandLogo make={car.make} size={48} showName={false} />
-                <CarName>{car.make} {car.model}</CarName>
-              </TitleRow>
-              <CarSubtitle>
-                {car.year} • {car.fuelType} • {car.transmission}
-              </CarSubtitle>
-              <BadgeRow>
-                {car.accidentHistory === false && (
-                  <Badge $variant="success">
-                    <CheckCircle size={14} />
-                    {t.accidentFree}
-                  </Badge>
-                )}
-                {car.serviceHistory && (
-                  <Badge $variant="success">
-                    <CheckCircle size={14} />
-                    {t.serviceHistory}
-                  </Badge>
-                )}
-                {car.sellerType === 'dealer' && (
-                  <Badge $variant="info">
-                    <Shield size={14} />
-                    {language === 'bg' ? 'Дилър' : 'Dealer'}
-                  </Badge>
-                )}
-              </BadgeRow>
-            </VehicleTitle>
+            {(car.fuelType === 'Electric' || car.fuelType === 'Електрически' || car.fuelType?.toLowerCase().includes('electric')) && (
+              <BatterySection>
+                <BatteryHeader>
+                  <div style={{ padding: '8px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '8px', color: '#10b981' }}>
+                    <Battery size={20} />
+                  </div>
+                  <h3>{t.batteryInfo}</h3>
+                </BatteryHeader>
+
+                <BatteryGrid>
+                  <BatteryItem>
+                    <BatteryLabel>{t.rangeWLTP}</BatteryLabel>
+                    <BatteryValue>{car.batteryRangeWLTP ? `${car.batteryRangeWLTP} km` : t.notSpecified}</BatteryValue>
+                  </BatteryItem>
+
+                  <BatteryItem>
+                    <BatteryLabel>{t.warrantyFromRegistration}</BatteryLabel>
+                    <BatteryValue>{car.batteryWarranty || t.notSpecified}</BatteryValue>
+                  </BatteryItem>
+                </BatteryGrid>
+
+                <BatteryNote>
+                  <Info size={16} />
+                  {t.batteryNote}
+                </BatteryNote>
+              </BatterySection>
+            )}
+
+
 
             {/* Description Section */}
             {car.description && (
@@ -2002,7 +2193,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
 
                 (car.safetyEquipment || car.comfortEquipment || car.infotainmentEquipment) ? (
                   <Section>
-                    <CardSectionTitle>{t.equipment}</CardSectionTitle>
+                    <CardSectionTitle>{t.equipmentFeatures}</CardSectionTitle>
 
                     {car.safetyEquipment && car.safetyEquipment.length > 0 && (
                       <div style={{ marginBottom: '1.5rem' }}>
@@ -2041,7 +2232,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
                 ) : (
                   /* Fallback to unified list if no specific groups */
                   <Section>
-                    <CardSectionTitle>{t.equipment}</CardSectionTitle>
+                    <CardSectionTitle>{t.equipmentFeatures}</CardSectionTitle>
                     <EquipmentGrid>
                       {getEquipmentItems().map((item, index) => (
                         <EquipmentItem key={index}>
@@ -2114,7 +2305,6 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
             </DescriptionSection>
           </LeftColumn>
 
-          {/* Right Column */}
           <RightColumn>
             {/* Price Card */}
             <PriceCard>
@@ -2372,6 +2562,9 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
           </ModalOverlay>
         )}
 
+
+        {/* Extended Seller Info (Map, Imprint, Footer) */}
+        <ExtendedSellerInfo car={car} language={language} />
 
         {/* 🚀 Feature 1: Sticky Mobile Action Bar */}
         <StickyMobileAction>

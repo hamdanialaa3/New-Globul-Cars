@@ -133,7 +133,6 @@ const VehicleClassificationsSection: React.FC = () => {
       try {
         const result = await unifiedCarService.searchCars({
           isActive: true,
-          isSold: false,
           bodyType: selectedCategory // Filter by selected body type
         }, 8);
         setCars(result.slice(0, 8));
@@ -217,7 +216,7 @@ const VehicleClassificationsSection: React.FC = () => {
               ))}
             </HorizontalScrollContainer>
           </CarsContainer>
-          
+
           {cars.length > 0 && (
             <ViewAllButton $isDark={isDark} onClick={handleViewAll}>
               <span>{language === 'bg' ? 'Виж всички' : 'View All'}</span>

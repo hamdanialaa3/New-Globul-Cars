@@ -22,18 +22,18 @@ const SearchDashboard = styled.div`
   backdrop-filter: blur(12px);
   border: 1px solid
     ${({ theme }) =>
-      theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.15)' : theme.colors.grey[200]};
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.15)' : theme.colors.grey[200]};
   border-radius: 20px;
   padding: 30px;
   box-shadow: 
       ${({ theme }) =>
-        theme.mode === 'dark'
-          ? '0 20px 50px -10px rgba(0,0,0,0.5)'
-          : '0 18px 46px -14px rgba(15,23,42,0.16)'},
+    theme.mode === 'dark'
+      ? '0 20px 50px -10px rgba(0,0,0,0.5)'
+      : '0 18px 46px -14px rgba(15,23,42,0.16)'},
       ${({ theme }) =>
-        theme.mode === 'dark'
-          ? 'inset 0 0 0 1px rgba(255,255,255,0.05)'
-          : 'inset 0 0 0 1px rgba(2,6,23,0.04)'};
+    theme.mode === 'dark'
+      ? 'inset 0 0 0 1px rgba(255,255,255,0.05)'
+      : 'inset 0 0 0 1px rgba(2,6,23,0.04)'};
   position: relative;
   overflow: hidden;
 
@@ -46,9 +46,9 @@ const SearchDashboard = styled.div`
       border-radius: 50%;
       background: ${({ theme }) => (theme.mode === 'dark' ? '#333' : theme.colors.grey[300])};
       box-shadow: ${({ theme }) =>
-        theme.mode === 'dark'
-          ? 'inset 1px 1px 2px rgba(0,0,0,0.8), 0 0 5px rgba(0, 204, 255, 0.2)'
-          : 'inset 1px 1px 2px rgba(2,6,23,0.12), 0 0 6px rgba(37, 99, 235, 0.14)'};
+    theme.mode === 'dark'
+      ? 'inset 1px 1px 2px rgba(0,0,0,0.8), 0 0 5px rgba(0, 204, 255, 0.2)'
+      : 'inset 1px 1px 2px rgba(2,6,23,0.12), 0 0 6px rgba(37, 99, 235, 0.14)'};
   }
   &::before { left: 15px; }
   &::after { right: 15px; }
@@ -107,7 +107,7 @@ const TabBtn = styled.button<{ active?: boolean }>`
       height: 2px;
       background: ${({ theme }) => (theme.mode === 'dark' ? '#00ccff' : theme.colors.primary.main)};
       box-shadow: ${({ theme }) =>
-        theme.mode === 'dark' ? '0 0 10px #00ccff' : `0 0 10px ${theme.colors.primary.main}`};
+    theme.mode === 'dark' ? '0 0 10px #00ccff' : `0 0 10px ${theme.colors.primary.main}`};
       opacity: ${props => props.active ? 1 : 0};
       transition: opacity 0.3s;
   }
@@ -256,9 +256,9 @@ const FormSelect = styled.select`
       outline: none;
       border-color: ${({ theme }) => (theme.mode === 'dark' ? '#00ccff' : theme.colors.primary.main)};
       box-shadow: ${({ theme }) =>
-        theme.mode === 'dark'
-          ? '0 0 15px rgba(0, 204, 255, 0.4)'
-          : `0 0 0 4px ${theme.colors.primary.light}33`};
+    theme.mode === 'dark'
+      ? '0 0 15px rgba(0, 204, 255, 0.4)'
+      : `0 0 0 4px ${theme.colors.primary.light}33`};
   }
   &:disabled { opacity: 0.5; cursor: not-allowed; }
 `;
@@ -332,7 +332,7 @@ const CarCountPanel = styled.div`
       : `rgba(37, 99, 235, 0.08)`};
   border: 1px solid
     ${({ theme }) =>
-      theme.mode === 'dark' ? 'rgba(0, 204, 255, 0.3)' : `${theme.colors.primary.light}55`};
+    theme.mode === 'dark' ? 'rgba(0, 204, 255, 0.3)' : `${theme.colors.primary.light}55`};
   border-radius: 12px;
   font-size: 0.95rem;
   color: ${({ theme }) => (theme.mode === 'dark' ? '#00ccff' : theme.colors.primary.main)};
@@ -398,21 +398,21 @@ const AdvancedSearchWidget: React.FC<AdvancedSearchWidgetProps> = ({ onSearchCom
   const debouncedYearFrom = useDebounce(yearFrom, 300);
 
   const searchFilters = useMemo(() => {
-    const filters: any = { isActive: true, isSold: false };
+    const filters: any = { isActive: true };
     // Don't sanitize - keep original case for better matching
     if (debouncedMake) filters.make = debouncedMake;
     if (debouncedModel) filters.model = debouncedModel;
     if (debouncedMaxPrice) filters.maxPrice = parseInt(debouncedMaxPrice);
     if (debouncedYearFrom) filters.minYear = parseInt(debouncedYearFrom);
-    
+
     // Log search filters for debugging
-    logger.info('🔍 Search filters built', { 
-      make: filters.make, 
+    logger.info('🔍 Search filters built', {
+      make: filters.make,
       model: filters.model,
       maxPrice: filters.maxPrice,
       minYear: filters.minYear
     });
-    
+
     return filters;
   }, [debouncedMake, debouncedModel, debouncedMaxPrice, debouncedYearFrom]);
 
@@ -440,7 +440,7 @@ const AdvancedSearchWidget: React.FC<AdvancedSearchWidgetProps> = ({ onSearchCom
 
   const handleSearch = useCallback((e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    
+
     const params = new URLSearchParams();
     if (make) params.set('make', make);
     if (model) params.set('model', model);
@@ -557,21 +557,21 @@ const AdvancedSearchWidget: React.FC<AdvancedSearchWidgetProps> = ({ onSearchCom
       {/* Car count display */}
       {carCount !== null && (
         <CarCountPanel>
-          <svg 
-            width="20" 
-            height="20" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
             strokeLinejoin="round"
             style={{ marginRight: '8px', display: 'inline-block', verticalAlign: 'middle' }}
           >
             <path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path>
             <polygon points="12 15 17 21 7 21 12 15"></polygon>
           </svg>
-          {language === 'bg' 
+          {language === 'bg'
             ? `Намерени ${carCount} ${carCount === 1 ? 'автомобил' : 'автомобила'} по критериите`
             : `Found ${carCount} ${carCount === 1 ? 'car' : 'cars'} matching criteria`
           }

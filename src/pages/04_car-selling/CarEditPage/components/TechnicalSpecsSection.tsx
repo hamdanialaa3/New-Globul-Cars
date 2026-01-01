@@ -33,7 +33,9 @@ export const TechnicalSpecsSection: React.FC<TechnicalSpecsSectionProps> = ({
                     >
                         <option value="">{t.placeholders.select}</option>
                         {colors.map(c => (
-                            <option key={c} value={c}>{c}</option>
+                            <option key={c} value={c}>
+                                {(t.colors && t.colors[c]) ? t.colors[c] : c}
+                            </option>
                         ))}
                     </Select>
                 </FormGroup>

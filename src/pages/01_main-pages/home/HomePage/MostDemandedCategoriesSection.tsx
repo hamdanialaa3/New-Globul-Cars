@@ -266,8 +266,8 @@ const ViewAllButton = styled.button<{ $isDark: boolean }>`
     transform: translateY(-4px) scale(1.03);
     border-color: ${props => props.$isDark ? 'rgba(0, 243, 255, 0.7)' : 'rgba(0, 200, 255, 0.5)'};
     box-shadow: ${props => props.$isDark
-      ? '0 0 40px rgba(0, 243, 255, 0.5), 0 12px 32px rgba(0, 0, 0, 0.4), inset 0 0 25px rgba(0, 243, 255, 0.15)'
-      : '0 0 35px rgba(0, 200, 255, 0.4), 0 12px 28px rgba(0, 0, 0, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.3)'};
+    ? '0 0 40px rgba(0, 243, 255, 0.5), 0 12px 32px rgba(0, 0, 0, 0.4), inset 0 0 25px rgba(0, 243, 255, 0.15)'
+    : '0 0 35px rgba(0, 200, 255, 0.4), 0 12px 28px rgba(0, 0, 0, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.3)'};
     
     &::before {
       transform: translateX(100%) translateY(100%) rotate(45deg);
@@ -307,7 +307,7 @@ const RankBadge = styled.span<{ $rank: number; $active: boolean; $isDark: boolea
   font-size: 0.75rem;
   font-weight: 800;
   background: ${props => {
-    if (props.$rank === 1) return props.$isDark 
+    if (props.$rank === 1) return props.$isDark
       ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 165, 0, 0.3) 100%)'
       : 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)';
     if (props.$rank === 2) return props.$isDark
@@ -318,14 +318,14 @@ const RankBadge = styled.span<{ $rank: number; $active: boolean; $isDark: boolea
       : 'linear-gradient(135deg, #CD7F32 0%, #B87333 100%)';
     return 'transparent';
   }};
-  border: ${props => props.$rank <= 3 
-    ? (props.$isDark 
+  border: ${props => props.$rank <= 3
+    ? (props.$isDark
       ? (props.$rank === 1 ? '1px solid rgba(255, 215, 0, 0.5)' : props.$rank === 2 ? '1px solid rgba(192, 192, 192, 0.5)' : '1px solid rgba(205, 127, 50, 0.5)')
       : 'none')
     : 'none'};
   color: ${props => {
     if (props.$rank <= 3) {
-      return props.$isDark 
+      return props.$isDark
         ? (props.$rank === 1 ? '#FFD700' : props.$rank === 2 ? '#C0C0C0' : '#CD7F32')
         : '#000000';
     }
@@ -371,7 +371,7 @@ const CategoryTab = styled.button<{ $active: boolean; $rank?: number; $isDark: b
         ? 'linear-gradient(135deg, rgba(0, 243, 255, 0.15) 0%, rgba(255, 0, 255, 0.12) 100%)'
         : 'linear-gradient(135deg, rgba(0, 200, 255, 0.2) 0%, rgba(150, 100, 255, 0.15) 100%)')
       : (props.$isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.6)')};
-  color: ${props => (props.$active 
+  color: ${props => (props.$active
     ? (props.$isDark ? '#00f3ff' : '#0066ff')
     : (props.$isDark ? '#e2e8f0' : '#1e293b'))};
   backdrop-filter: blur(20px);
@@ -431,10 +431,10 @@ const CategoryTab = styled.button<{ $active: boolean; $rank?: number; $isDark: b
     border-radius: inherit;
     padding: 2px;
     background: ${props => props.$active
-      ? (props.$isDark
-        ? 'linear-gradient(135deg, rgba(0, 243, 255, 0.6), rgba(255, 0, 255, 0.6))'
-        : 'linear-gradient(135deg, rgba(0, 200, 255, 0.5), rgba(150, 100, 255, 0.5))')
-      : 'transparent'};
+    ? (props.$isDark
+      ? 'linear-gradient(135deg, rgba(0, 243, 255, 0.6), rgba(255, 0, 255, 0.6))'
+      : 'linear-gradient(135deg, rgba(0, 200, 255, 0.5), rgba(150, 100, 255, 0.5))')
+    : 'transparent'};
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
@@ -447,13 +447,13 @@ const CategoryTab = styled.button<{ $active: boolean; $rank?: number; $isDark: b
   &:hover {
     transform: translateY(-3px) scale(1.02);
     box-shadow: ${props =>
-      props.$active
-        ? (props.$isDark
-          ? '0 0 40px rgba(0, 243, 255, 0.6), 0 12px 32px rgba(0, 0, 0, 0.4), inset 0 0 25px rgba(0, 243, 255, 0.15)'
-          : '0 0 35px rgba(0, 200, 255, 0.4), 0 12px 28px rgba(0, 0, 0, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.3)')
-        : (props.$isDark
-          ? '0 8px 24px rgba(0, 0, 0, 0.3), 0 0 15px rgba(0, 243, 255, 0.2)'
-          : '0 8px 20px rgba(0, 0, 0, 0.12), 0 0 12px rgba(0, 200, 255, 0.15)')};
+    props.$active
+      ? (props.$isDark
+        ? '0 0 40px rgba(0, 243, 255, 0.6), 0 12px 32px rgba(0, 0, 0, 0.4), inset 0 0 25px rgba(0, 243, 255, 0.15)'
+        : '0 0 35px rgba(0, 200, 255, 0.4), 0 12px 28px rgba(0, 0, 0, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.3)')
+      : (props.$isDark
+        ? '0 8px 24px rgba(0, 0, 0, 0.3), 0 0 15px rgba(0, 243, 255, 0.2)'
+        : '0 8px 20px rgba(0, 0, 0, 0.12), 0 0 12px rgba(0, 200, 255, 0.15)')};
     border-color: ${props => (props.$isDark ? 'rgba(0, 243, 255, 0.7)' : 'rgba(0, 200, 255, 0.5)')};
     
     &::before {
@@ -522,7 +522,6 @@ const MostDemandedCategoriesSection: React.FC = () => {
       try {
         const result = await unifiedCarService.searchCars({
           isActive: true,
-          isSold: false
         }, 12);
 
         // Filter logic (mock implementation for demo)
@@ -579,8 +578,8 @@ const MostDemandedCategoriesSection: React.FC = () => {
                 onClick={() => setSelectedCategory(category.id)}
               >
                 {category.rank <= 3 && (
-                  <RankBadge 
-                    $rank={category.rank} 
+                  <RankBadge
+                    $rank={category.rank}
                     $active={selectedCategory === category.id}
                     $isDark={isDark}
                   >
@@ -603,10 +602,10 @@ const MostDemandedCategoriesSection: React.FC = () => {
       </SectionHeader>
 
       {loading ? (
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '40px', 
-          color: isDark ? '#cbd5e1' : '#64748b' 
+        <div style={{
+          textAlign: 'center',
+          padding: '40px',
+          color: isDark ? '#cbd5e1' : '#64748b'
         }}>
           {language === 'bg' ? 'Анализиране на данни...' : 'Analyzing data...'}
         </div>
@@ -627,7 +626,7 @@ const MostDemandedCategoriesSection: React.FC = () => {
               ))}
             </HorizontalScrollContainer>
           </CarsContainer>
-          
+
           {cars.length > 0 && (
             <ViewAllButton $isDark={isDark} onClick={() => navigate(`/cars?bodyType=${selectedCategory}`)}>
               <span>{language === 'bg' ? 'Виж всички' : 'View All'}</span>

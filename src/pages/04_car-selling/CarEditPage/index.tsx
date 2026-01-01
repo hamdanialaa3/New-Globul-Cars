@@ -16,7 +16,7 @@ import {
 import { ArrowLeft, Save, Trash2, Check, AlertCircle } from 'lucide-react';
 import { toast } from 'react-toastify';
 
-// Components
+import { StatusManagementSection } from './components/StatusManagementSection';
 import { CarImages } from './components/CarImages';
 import { BasicInfoSection } from './components/BasicInfoSection';
 import { TechnicalSpecsSection } from './components/TechnicalSpecsSection';
@@ -262,78 +262,81 @@ const CarEditPage: React.FC<{ carId?: string }> = ({ carId: propCarId }) => {
       </TopBar>
 
       <Container $isDark={theme === 'dark'}>
+        <StatusManagementSection
+          formData={formData}
+          handleInputChange={handleInputChange}
+          t={t}
+          isDark={theme === 'dark'}
+        />
+
         <MainSection $isDark={theme === 'dark'}>
-          <LeftColumn $isDark={theme === 'dark'}>
-            <CarImages
-              images={images}
-              selectedImageIndex={selectedImageIndex}
-              setSelectedImageIndex={setSelectedImageIndex}
-              uploadingImage={uploadingImage}
-              handleImageUpload={handleImageUpload}
-              handleRemoveImage={handleRemoveImage}
-              previewUrlsRef={previewUrlsRef}
-              t={t}
-              isDark={theme === 'dark'}
-            />
+          <CarImages
+            images={images}
+            selectedImageIndex={selectedImageIndex}
+            setSelectedImageIndex={setSelectedImageIndex}
+            uploadingImage={uploadingImage}
+            handleImageUpload={handleImageUpload}
+            handleRemoveImage={handleRemoveImage}
+            previewUrlsRef={previewUrlsRef}
+            t={t}
+            isDark={theme === 'dark'}
+          />
 
-            <BasicInfoSection
-              formData={formData}
-              handleInputChange={handleInputChange}
-              isBrandLocked={isBrandLocked}
-              language={language}
-              t={t}
-              yearOptions={yearOptions}
-              monthOptions={monthOptions}
-              registrationParts={registrationParts}
-              updateFirstRegistration={updateFirstRegistration}
-              fuelTypes={fuelOptions}
-              transmissions={transmissionOptions}
-              bodyTypes={bodyTypeOptions}
-              conditions={conditionOptions}
-              driveTypes={driveTypeOptions}
-              isDark={theme === 'dark'}
-            />
+          <BasicInfoSection
+            formData={formData}
+            handleInputChange={handleInputChange}
+            isBrandLocked={isBrandLocked}
+            language={language}
+            t={t}
+            yearOptions={yearOptions}
+            monthOptions={monthOptions}
+            registrationParts={registrationParts}
+            updateFirstRegistration={updateFirstRegistration}
+            fuelTypes={fuelOptions}
+            transmissions={transmissionOptions}
+            bodyTypes={bodyTypeOptions}
+            conditions={conditionOptions}
+            driveTypes={driveTypeOptions}
+            isDark={theme === 'dark'}
+          />
 
-            <LocationPriceSection
-              formData={formData}
-              handleInputChange={handleInputChange}
-              provinceOptions={provinceOptions}
-              cityOptions={cityOptions}
-              t={t}
-              isDark={theme === 'dark'}
-            />
-          </LeftColumn>
+          <TechnicalSpecsSection
+            formData={formData}
+            handleInputChange={handleInputChange}
+            colors={COLORS}
+            t={t}
+            isDark={theme === 'dark'}
+          />
 
-          <RightColumn $isDark={theme === 'dark'}>
-            <TechnicalSpecsSection
-              formData={formData}
-              handleInputChange={handleInputChange}
-              colors={COLORS}
-              t={t}
-              isDark={theme === 'dark'}
-            />
+          <EquipmentSection
+            formData={formData}
+            handleEquipmentToggle={handleEquipmentToggle}
+            t={t}
+            isDark={theme === 'dark'}
+          />
 
-            <DescriptionSection
-              formData={formData}
-              handleInputChange={handleInputChange}
-              t={t}
-              isDark={theme === 'dark'}
-            />
+          <DescriptionSection
+            formData={formData}
+            handleInputChange={handleInputChange}
+            t={t}
+            isDark={theme === 'dark'}
+          />
 
-            <EquipmentSection
-              formData={formData}
-              handleEquipmentToggle={handleEquipmentToggle}
-              t={t}
-              isDark={theme === 'dark'}
-            />
+          <LocationPriceSection
+            formData={formData}
+            handleInputChange={handleInputChange}
+            provinceOptions={provinceOptions}
+            cityOptions={cityOptions}
+            t={t}
+            isDark={theme === 'dark'}
+          />
 
-            <ContactSection
-              formData={formData}
-              handleInputChange={handleInputChange}
-              t={t}
-              isDark={theme === 'dark'}
-            />
-          </RightColumn>
+          <ContactSection
+            formData={formData}
+            handleInputChange={handleInputChange}
+            t={t}
+            isDark={theme === 'dark'}
+          />
         </MainSection>
       </Container>
     </PageWrapper>

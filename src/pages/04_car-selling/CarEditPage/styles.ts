@@ -130,13 +130,12 @@ export const Container = styled.div<{ $isDark: boolean }>`
 `;
 
 export const MainSection = styled.div<{ $isDark: boolean }>`
-  display: grid;
-  grid-template-columns: 2fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 2rem;
-
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
-  }
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
 `;
 
 export const LeftColumn = styled.div<{ $isDark: boolean }>`
@@ -228,8 +227,8 @@ export const ImageNavButton = styled.button<{ $position: 'left' | 'right'; $isDa
   transition: all 0.2s;
   z-index: 10;
   backdrop-filter: blur(8px);
-  box-shadow: ${p => p.$isDark 
-    ? '0 4px 12px rgba(255, 215, 0, 0.2)' 
+  box-shadow: ${p => p.$isDark
+    ? '0 4px 12px rgba(255, 215, 0, 0.2)'
     : '0 4px 12px rgba(255, 143, 16, 0.2)'};
 
   svg { 
@@ -243,9 +242,9 @@ export const ImageNavButton = styled.button<{ $position: 'left' | 'right'; $isDa
   &:hover {
     background: ${p => p.$isDark ? 'rgba(255, 215, 0, 0.4)' : 'rgba(255, 143, 16, 0.4)'};
     border-color: ${p => p.$isDark ? '#FFD700' : '#FF8F10'};
-    box-shadow: ${p => p.$isDark 
-      ? '0 6px 16px rgba(255, 215, 0, 0.3)' 
-      : '0 6px 16px rgba(255, 143, 16, 0.3)'};
+    box-shadow: ${p => p.$isDark
+    ? '0 6px 16px rgba(255, 215, 0, 0.3)'
+    : '0 6px 16px rgba(255, 143, 16, 0.3)'};
     svg { color: ${p => p.$isDark ? '#FFD700' : '#FF8F10'}; }
   }
 `;
@@ -440,8 +439,8 @@ export const EquipmentTitle = styled.h4<{ $isDark: boolean }>`
 `;
 
 export const EquipmentGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
 `;
 
@@ -450,14 +449,20 @@ export const EquipmentItem = styled.button<{ $isDark: boolean; $isSelected: bool
   background: ${p => p.$isSelected ? 'rgba(34, 197, 94, 0.12)' : (p.$isDark ? '#0f172a' : '#ffffff')};
   color: ${p => p.$isSelected ? '#166534' : (p.$isDark ? '#e2e8f0' : '#0f172a')};
   border-radius: 10px;
-  padding: 10px 12px;
+  padding: 8px 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
   transition: all 0.2s;
+  font-size: 14px;
+  font-weight: 500;
+  min-width: fit-content;
 
-  &:hover { border-color: #22c55e; }
+  &:hover {
+    border-color: #22c55e;
+    background: ${p => p.$isSelected ? 'rgba(34, 197, 94, 0.2)' : 'rgba(34, 197, 94, 0.05)'};
+  }
 `;
 
 export const ContactSection = styled(Card)``;

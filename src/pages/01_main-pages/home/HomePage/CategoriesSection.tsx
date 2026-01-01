@@ -16,8 +16,8 @@ const SectionContainer = styled.section`
   padding: 80px 20px;
   max-width: 1400px;
   margin: 0 auto;
-  background: ${({ theme }) => theme.mode === 'dark' 
-    ? 'rgba(15, 23, 42, 0.4)' 
+  background: ${({ theme }) => theme.mode === 'dark'
+    ? 'rgba(15, 23, 42, 0.4)'
     : 'rgba(245, 241, 235, 0.4)'};
   transition: background-color 0.3s ease;
   
@@ -138,8 +138,8 @@ const FrameSvg = styled.svg`
 
 const FramePath = styled.path<{ $isDark: boolean }>`
   fill: none;
-  stroke: ${props => props.$isDark 
-    ? 'url(#frameGradientDark)' 
+  stroke: ${props => props.$isDark
+    ? 'url(#frameGradientDark)'
     : 'url(#frameGradientLight)'};
   stroke-width: 2.5;
   stroke-dasharray: 700;
@@ -221,11 +221,10 @@ const CategoriesSection: React.FC = () => {
         for (const category of CATEGORIES) {
           try {
             // Get cars for this category
-            const filters: any = { 
-              isActive: true, 
-              isSold: false 
+            const filters: any = {
+              isActive: true,
             };
-            
+
             // Map category IDs to bodyType
             if (category.id === 'electric') {
               filters.fuelType = 'electric';
@@ -234,14 +233,14 @@ const CategoriesSection: React.FC = () => {
             }
 
             const cars = await unifiedCarService.searchCars(filters, 100);
-            
+
             if (cars.length > 0) {
               const prices = cars
                 .map(c => c.price || 0)
                 .filter(p => p > 0);
-              
-              const minPrice = prices.length > 0 
-                ? Math.min(...prices) 
+
+              const minPrice = prices.length > 0
+                ? Math.min(...prices)
                 : 0;
 
               data.push({
@@ -330,8 +329,8 @@ const CategoriesSection: React.FC = () => {
             {language === 'bg' ? 'Популярни Категории' : 'Popular Categories'}
           </SectionTitle>
           <SectionSubtitle>
-            {language === 'bg' 
-              ? 'Разгледайте пазара по тип купе' 
+            {language === 'bg'
+              ? 'Разгледайте пазара по тип купе'
               : 'Explore the market by body type'}
           </SectionSubtitle>
         </TitleContainer>
@@ -349,7 +348,7 @@ const CategoriesSection: React.FC = () => {
           showArrows={true}
         >
           {categoriesData.map((category) => (
-            <CarCard 
+            <CarCard
               key={category.id}
               onClick={() => handleCardClick(category.id)}
             >
@@ -363,13 +362,13 @@ const CategoriesSection: React.FC = () => {
                   }}
                 />
                 <FrameSvg viewBox="0 0 400 250" preserveAspectRatio="none">
-                  <FramePath 
+                  <FramePath
                     $isDark={isDark}
-                    d="M200,245 L395,245 L395,5 L200,5" 
+                    d="M200,245 L395,245 L395,5 L200,5"
                   />
-                  <FramePath 
+                  <FramePath
                     $isDark={isDark}
-                    d="M200,245 L5,245 L5,5 L200,5" 
+                    d="M200,245 L5,245 L5,5 L200,5"
                   />
                 </FrameSvg>
               </CardImgWrap>

@@ -17,10 +17,10 @@ interface OptimizedImageProps {
   onError?: () => void;
 }
 
-const ImageContainer = styled.div<{ loaded: boolean; hasError: boolean }>`
+const ImageContainer = styled.div<{ $loaded: boolean; $hasError: boolean }>`
   position: relative;
   overflow: hidden;
-  background: ${props => props.hasError ? '#f8d7da' : (props.loaded ? 'transparent' : '#f0f0f0')};
+  background: ${props => props.$hasError ? '#f8d7da' : (props.$loaded ? 'transparent' : '#f0f0f0')};
   border-radius: 4px;
   
   img {
@@ -28,7 +28,7 @@ const ImageContainer = styled.div<{ loaded: boolean; hasError: boolean }>`
     height: 100%;
     object-fit: cover;
     transition: opacity 0.3s ease;
-    opacity: ${props => props.loaded ? 1 : 0};
+    opacity: ${props => props.$loaded ? 1 : 0};
   }
 `;
 
@@ -177,8 +177,8 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   return (
     <ImageContainer
       ref={containerRef}
-      loaded={loaded}
-      hasError={error}
+      $loaded={loaded}
+      $hasError={error}
       className={className}
       style={{ width, height }}
     >
@@ -203,5 +203,3 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
 };
 
 export default memo(OptimizedImage);
-
-
