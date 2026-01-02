@@ -31,7 +31,7 @@
 import React, { memo, useState, Suspense } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, Sparkles, Star, Zap } from 'lucide-react';
+import { Clock, Sparkles, Star, Zap, Car } from 'lucide-react';
 
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useTheme } from '../../../../contexts/ThemeContext';
@@ -120,11 +120,17 @@ const TitleSection = styled.div`
 `;
 
 const Title = styled.h2<{ $isDark: boolean }>`
+  display: flex;
+  align-items: center;
   font-size: 2.2rem;
   font-weight: 900;
   color: ${props => props.$isDark ? '#f5f8ff' : '#0c1a2a'};
   margin: 0 0 0.5rem;
   letter-spacing: -0.02em;
+
+  svg {
+    flex-shrink: 0;
+  }
 
   @media (max-width: 768px) {
     font-size: 1.75rem;
@@ -387,8 +393,8 @@ const UnifiedCarsShowcase: React.FC = memo(() => {
   const tabs: TabConfig[] = [
     {
       id: 'latest',
-      labelBg: 'Най-нови 🕐',
-      labelEn: 'Latest 🕐',
+      labelBg: 'Най-нови',
+      labelEn: 'Latest',
       icon: <Clock size={20} />,
       color: '#FF8F10',
       description: {
@@ -398,8 +404,8 @@ const UnifiedCarsShowcase: React.FC = memo(() => {
     },
     {
       id: 'new',
-      labelBg: 'Нови 24ч ✨',
-      labelEn: 'New 24h ✨',
+      labelBg: 'Нови 24ч',
+      labelEn: 'New 24h',
       icon: <Sparkles size={20} />,
       color: '#0066CC',
       description: {
@@ -409,8 +415,8 @@ const UnifiedCarsShowcase: React.FC = memo(() => {
     },
     {
       id: 'featured',
-      labelBg: 'Избрани ⭐',
-      labelEn: 'Featured ⭐',
+      labelBg: 'Избрани',
+      labelEn: 'Featured',
       icon: <Star size={20} />,
       color: '#FFD700',
       description: {
@@ -483,7 +489,8 @@ const UnifiedCarsShowcase: React.FC = memo(() => {
         <HeaderContent>
           <TitleSection>
             <Title $isDark={isDark}>
-              {isBg ? '🚗 Преглед на автомобили' : '🚗 Cars Overview'}
+              <Car size={28} style={{ marginRight: '0.75rem' }} />
+              <span>{isBg ? 'Преглед на автомобили' : 'Cars Overview'}</span>
             </Title>
             <Description $isDark={isDark}>
               {description || (isBg

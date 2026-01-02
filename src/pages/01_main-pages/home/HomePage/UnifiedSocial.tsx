@@ -373,8 +373,8 @@ const UnifiedSocial: React.FC = memo(() => {
       {/* Header */}
       <Header>
         <Title $isDark={isDark}>
-          <Share2 size={32} />
-          {isBg ? '💬 Социално пространство' : '💬 Social Space'}
+          <MessageSquare size={32} style={{ marginRight: '0.75rem' }} />
+          {isBg ? 'Социално пространство' : 'Social Space'}
         </Title>
         <Subtitle $isDark={isDark}>
           {isBg

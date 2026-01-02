@@ -41,6 +41,7 @@ import {
   glassSecondaryButton,
   glassNeutralButton 
 } from '../../../../styles/glassmorphism-buttons';
+import { Search, Megaphone, Flag } from 'lucide-react';
 
 // Search mode type
 type SearchMode = 'buy' | 'sell' | 'rent';
@@ -102,19 +103,88 @@ const HeroContainer = styled.section<{ $isDark: boolean }>`
   }
 `;
 
+/* Background Image Layer */
+const BackgroundImageLayer = styled.div<{ $isDark: boolean }>`
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url('/Gemini_Generated_Image_y67jfey67jfey67j.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  opacity: ${props => props.$isDark ? 0.55 : 0.4};
+  filter: blur(0.3px) brightness(0.9);
+  transform: scaleX(-1);
+  transition: opacity 0.3s ease, filter 0.3s ease;
+
+  /* Gradient overlay to ensure content visibility */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: ${props => props.$isDark
+      ? `linear-gradient(
+          180deg,
+          rgba(5, 11, 24, 0.35) 0%,
+          rgba(12, 39, 64, 0.3) 30%,
+          rgba(5, 11, 24, 0.35) 70%,
+          rgba(5, 11, 24, 0.45) 100%
+        )`
+      : `linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.6) 0%,
+          rgba(246, 248, 251, 0.55) 30%,
+          rgba(232, 240, 247, 0.6) 70%,
+          rgba(255, 255, 255, 0.65) 100%
+        )`};
+    z-index: 1;
+  }
+
+  /* Additional radial gradient for depth */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: ${props => props.$isDark
+      ? `radial-gradient(
+          ellipse at center,
+          transparent 0%,
+          rgba(5, 11, 24, 0.2) 100%
+        )`
+      : `radial-gradient(
+          ellipse at center,
+          transparent 0%,
+          rgba(255, 255, 255, 0.15) 100%
+        )`};
+    z-index: 2;
+  }
+
+  @media (max-width: 768px) {
+    opacity: ${props => props.$isDark ? 0.5 : 0.35};
+    filter: blur(0.2px) brightness(0.92);
+    background-attachment: scroll;
+  }
+
+  @media (max-width: 640px) {
+    opacity: ${props => props.$isDark ? 0.45 : 0.3};
+    filter: blur(0.1px) brightness(0.95);
+  }
+`;
+
 /* Background layer for parallax effect */
 const BackgroundLayer = styled(motion.div)<{ $isDark: boolean }>`
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: ${props => props.$isDark
     ? `radial-gradient(ellipse at 30% 40%, 
-        rgba(94, 182, 255, 0.1) 0%, 
+        rgba(94, 182, 255, 0.15) 0%, 
         transparent 60%)`
     : `radial-gradient(ellipse at 30% 40%, 
-        rgba(0, 109, 204, 0.08) 0%, 
+        rgba(0, 109, 204, 0.1) 0%, 
         transparent 60%)`};
   pointer-events: none;
-  z-index: 0;
 `;
 
 // ============================================================================
@@ -339,12 +409,19 @@ const CTAGroup = styled(motion.div)`
 
 const CTAButton = styled(motion.button)<{ $isDark: boolean; $primary?: boolean }>`
   ${props => props.$primary ? glassPrimaryButton : glassSecondaryButton}
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 1rem 2rem;
   border-radius: 12px;
   font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
   white-space: nowrap;
+
+  svg {
+    flex-shrink: 0;
+  }
   
   /* Override colors for theme */
   background: ${props => props.$primary
@@ -466,7 +543,7 @@ const UnifiedHeroSection: React.FC = memo(() => {
   const [searchMode, setSearchMode] = useState<SearchMode>('buy');
 
   // Strings
-  const eyebrow = isBg ? '🏁 Търсене на първо място' : '🏁 Search-First';
+  const eyebrow = isBg ? 'Търсене на първо място' : 'Search-First';
   const headline1 = isBg ? 'Открий пътя си' : 'Discover your way';
   const headline2 = isBg ? 'в българския пазар на автомобили' : 'Bulgarian car market';
   const subline = isBg
@@ -503,6 +580,9 @@ const UnifiedHeroSection: React.FC = memo(() => {
 
   return (
     <HeroContainer $isDark={isDark}>
+      {/* Background Image Layer */}
+      <BackgroundImageLayer $isDark={isDark} />
+      
       {/* Background parallax layer */}
       <BackgroundLayer
         $isDark={isDark}
@@ -516,12 +596,14 @@ const UnifiedHeroSection: React.FC = memo(() => {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
+        style={{ position: 'relative', zIndex: 10 }}
       >
         {/* Eyebrow */}
         <Eyebrow
           $isDark={isDark}
           variants={itemVariants}
         >
+          <Flag size={14} style={{ marginRight: '0.5rem' }} />
           {eyebrow}
         </Eyebrow>
 
@@ -582,7 +664,8 @@ const UnifiedHeroSection: React.FC = memo(() => {
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/cars')}
           >
-            {isBg ? '🔍 Разгледай коли' : '🔍 Browse Cars'}
+            <Search size={18} style={{ marginRight: '0.5rem' }} />
+            {isBg ? 'Разгледай коли' : 'Browse Cars'}
           </CTAButton>
           <CTAButton
             $isDark={isDark}
@@ -590,7 +673,8 @@ const UnifiedHeroSection: React.FC = memo(() => {
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/sell/auto')}
           >
-            {isBg ? '📢 Продай колата си' : '📢 Sell Your Car'}
+            <Megaphone size={18} style={{ marginRight: '0.5rem' }} />
+            {isBg ? 'Продай колата си' : 'Sell Your Car'}
           </CTAButton>
         </CTAGroup>
 

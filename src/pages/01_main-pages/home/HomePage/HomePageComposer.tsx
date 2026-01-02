@@ -34,6 +34,7 @@ import LazySection from '../../../../components/LazySection';
 
 // Import section components
 import UnifiedHeroSection from './UnifiedHeroSection';
+import FeaturedShowcase from './FeaturedShowcase';
 import UnifiedCarsShowcase from './UnifiedCarsShowcase';
 import SmartSellStrip from './SmartSellStrip';
 import { GridSectionWrapper } from './GridSectionWrapper';
@@ -105,7 +106,19 @@ const HeroSlot: React.FC = () => (
 );
 
 /**
- * Slot 2: Smart Sell Strip
+ * Slot 2: Featured Showcase
+ * Premium featured cars showcase / Премиум витрина за избрани автомобили
+ */
+const FeaturedShowcaseSlot: React.FC = () => (
+  <LazySection rootMargin="100px">
+    <Suspense fallback={null}>
+      <FeaturedShowcase />
+    </Suspense>
+  </LazySection>
+);
+
+/**
+ * Slot 3: Smart Sell Strip
  * Car sell invitation / Покана за продажба на кола
  */
 const SmartSellSlot: React.FC = () => (
@@ -119,7 +132,7 @@ const SmartSellSlot: React.FC = () => (
 );
 
 /**
- * Slot 3: Cars Showcase (Unified)
+ * Slot 4: Cars Showcase (Unified)
  * Car showcase (Latest/Featured/New) - with tabs
  * Витрина на автомобили - с раздели
  */
@@ -136,7 +149,7 @@ const CarsShowcaseSlot: React.FC = () => {
 };
 
 /**
- * Slot 4: Popular Brands
+ * Slot 5: Popular Brands
  * Популярни марки автомобили
  */
 const PopularBrandsSlot: React.FC = () => {
@@ -152,7 +165,7 @@ const PopularBrandsSlot: React.FC = () => {
 };
 
 /**
- * Slot 5: Vehicle Classifications
+ * Slot 6: Vehicle Classifications
  * Категории автомобили
  */
 const VehicleClassificationsSlot: React.FC = () => {
@@ -168,7 +181,7 @@ const VehicleClassificationsSlot: React.FC = () => {
 };
 
 /**
- * Slot 6: Most Demanded Categories
+ * Slot 7: Most Demanded Categories
  * Най-търсени категории
  */
 const MostDemandedCategoriesSlot: React.FC = () => {
@@ -184,7 +197,7 @@ const MostDemandedCategoriesSlot: React.FC = () => {
 };
 
 /**
- * Slot 7: Quick Brands
+ * Slot 8: Quick Brands
  * Бързи марки
  */
 const QuickBrandsSlot: React.FC = () => {
@@ -198,7 +211,7 @@ const QuickBrandsSlot: React.FC = () => {
 };
 
 /**
- * Slot 8: Categories Section
+ * Slot 9: Categories Section
  * Популярни категории
  */
 const CategoriesSlot: React.FC = () => {
@@ -214,7 +227,7 @@ const CategoriesSlot: React.FC = () => {
 };
 
 /**
- * Slot 9: Life Moments Browse
+ * Slot 10: Life Moments Browse
  * Колата за вашия момент
  */
 const LifeMomentsSlot: React.FC = () => {
@@ -228,7 +241,7 @@ const LifeMomentsSlot: React.FC = () => {
 };
 
 /**
- * Slot 10: Dealer Spotlight (Unified)
+ * Slot 11: Dealer Spotlight (Unified)
  * Featured dealers - Unified / Препоръчани дилъри - Обединени
  */
 const DealersSlot: React.FC = () => {
@@ -244,7 +257,7 @@ const DealersSlot: React.FC = () => {
 };
 
 /**
- * Slot 11: Social Experience (Unified)
+ * Slot 12: Social Experience (Unified)
  * المحتوى الاجتماعي والـ AI - موحد
  */
 const SocialSlot: React.FC = () => {
@@ -260,7 +273,7 @@ const SocialSlot: React.FC = () => {
 };
 
 /**
- * Slot 12: Trust & Stats
+ * Slot 13: Trust & Stats
  * الثقة والإحصائيات
  */
 const TrustSlot: React.FC = () => {
@@ -276,7 +289,7 @@ const TrustSlot: React.FC = () => {
 };
 
 /**
- * Slot 13: Recent Browsing
+ * Slot 14: Recent Browsing
  * السيارات المشاهدة مؤخراً
  */
 const RecentBrowsingSlot: React.FC = () => (
@@ -290,7 +303,7 @@ const RecentBrowsingSlot: React.FC = () => (
 );
 
 /**
- * Slot 14: Loyalty & Signup
+ * Slot 15: Loyalty & Signup
  * البانرات والدعوات
  */
 const LoyaltySlot: React.FC = () => (
@@ -302,7 +315,7 @@ const LoyaltySlot: React.FC = () => (
 );
 
 /**
- * Slot 15: AI Chatbot
+ * Slot 16: AI Chatbot
  * مساعد الذكاء الاصطناعي العائم
  */
 const AIChatbotSlot: React.FC = () => (
@@ -321,11 +334,11 @@ const AIChatbotSlot: React.FC = () => (
  * HomePage Composer - Combines all sections in specific order
  * 
  * Current order (from top to bottom) / Текущ ред (отгоре надолу):
- * 1. Hero → 2. SmartSell → 3. Cars → 4. Popular Brands
- * 5. Vehicle Classifications → 6. Most Demanded Categories
- * 7. Quick Brands → 8. Categories → 9. Life Moments
- * 10. Dealers → 11. Social → 12. Trust → 13. Recent
- * 14. Loyalty → 15. AI Chatbot
+ * 1. Hero → 2. FeaturedShowcase → 3. SmartSell → 4. Cars → 5. Popular Brands
+ * 6. Vehicle Classifications → 7. Most Demanded Categories
+ * 8. Quick Brands → 9. Categories → 10. Life Moments
+ * 11. Dealers → 12. Social → 13. Trust → 14. Recent
+ * 15. Loyalty → 16. AI Chatbot
  * 
  * @clean no business logic, only layout arrangement
  * @flexible easy to reorder sections
@@ -338,58 +351,62 @@ const HomePageComposer: React.FC = React.memo(() => {
       <HeroSlot />
       <SectionSpacer />
 
-      {/* Slot 2: Smart Sell Strip */}
+      {/* Slot 2: Featured Showcase */}
+      <FeaturedShowcaseSlot />
+      <SectionSpacer />
+
+      {/* Slot 3: Smart Sell Strip */}
       <SmartSellSlot />
       <SectionSpacer />
 
-      {/* Slot 3: Cars Showcase */}
+      {/* Slot 4: Cars Showcase */}
       <CarsShowcaseSlot />
       <SectionSpacer />
 
-      {/* Slot 4: Popular Brands */}
+      {/* Slot 5: Popular Brands */}
       <PopularBrandsSlot />
       <SectionSpacer />
 
-      {/* Slot 5: Vehicle Classifications */}
+      {/* Slot 6: Vehicle Classifications */}
       <VehicleClassificationsSlot />
       <SectionSpacer />
 
-      {/* Slot 6: Most Demanded Categories */}
+      {/* Slot 7: Most Demanded Categories */}
       <MostDemandedCategoriesSlot />
       <SectionSpacer />
 
-      {/* Slot 7: Quick Brands */}
+      {/* Slot 8: Quick Brands */}
       <QuickBrandsSlot />
       <SectionSpacer />
 
-      {/* Slot 8: Categories Section */}
+      {/* Slot 9: Categories Section */}
       <CategoriesSlot />
       <SectionSpacer />
 
-      {/* Slot 9: Life Moments Browse */}
+      {/* Slot 10: Life Moments Browse */}
       <LifeMomentsSlot />
       <SectionSpacer />
 
-      {/* Slot 10: Dealer Spotlight */}
+      {/* Slot 11: Dealer Spotlight */}
       <DealersSlot />
       <SectionSpacer />
 
-      {/* Slot 11: Social Experience */}
+      {/* Slot 12: Social Experience */}
       <SocialSlot />
       <SectionSpacer />
 
-      {/* Slot 12: Trust & Stats */}
+      {/* Slot 13: Trust & Stats */}
       <TrustSlot />
       <SectionSpacer />
 
-      {/* Slot 13: Recent Browsing */}
+      {/* Slot 14: Recent Browsing */}
       <RecentBrowsingSlot />
       <SectionSpacer />
 
-      {/* Slot 14: Loyalty & Signup */}
+      {/* Slot 15: Loyalty & Signup */}
       <LoyaltySlot />
 
-      {/* Slot 15: AI Chatbot (Floating) */}
+      {/* Slot 16: AI Chatbot (Floating) */}
       <AIChatbotSlot />
     </ComposerContainer>
   );

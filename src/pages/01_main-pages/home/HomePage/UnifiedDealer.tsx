@@ -25,7 +25,7 @@
 import React, { memo, useState, useEffect, Suspense } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { Star, CheckCircle, TrendingUp, Users } from 'lucide-react';
+import { Star, CheckCircle, TrendingUp, Users, Building2 } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import { useNavigate } from 'react-router-dom';
@@ -357,8 +357,8 @@ const UnifiedDealer: React.FC = memo(() => {
       {/* Header Section */}
       <Header>
         <Title $isDark={isDark}>
-          <TrendingUp size={32} />
-          {isBg ? '✅ Верифицирани дилъри' : '✅ Verified Dealers'}
+          <CheckCircle size={32} style={{ marginRight: '0.75rem' }} />
+          {isBg ? 'Верифицирани дилъри' : 'Verified Dealers'}
         </Title>
         <Subtitle $isDark={isDark}>
           {isBg
@@ -430,7 +430,9 @@ const UnifiedDealer: React.FC = memo(() => {
         viewport={{ once: true }}
       >
         <CTAContent $isDark={isDark}>
-          <div className="cta-icon">🏢</div>
+          <div className="cta-icon">
+            <Building2 size={32} />
+          </div>
           <h3>{isBg ? 'Станете част от нас' : 'Become a Dealer Today'}</h3>
           <p>
             {isBg
