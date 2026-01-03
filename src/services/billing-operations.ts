@@ -66,23 +66,57 @@ const INVOICE_STATUS_TRANSLATIONS = {
 export class StripeClientOperations {
   private static stripe: Stripe | null = null;
   private static stripePromise: Promise<Stripe | null> | null = null;
+  private static loadingFailed = false;
 
   /**
    * Get Stripe instance
    * الحصول على مثيل Stripe
    */
   static async getStripeInstance(): Promise<Stripe | null> {
-    if (!STRIPE_CONFIG.PUBLISHABLE_KEY) {
-      serviceLogger.warn('Stripe publishable key not configured');
+    // If loading failed before, don't retry
+    if (this.loadingFailed) {
       return null;
     }
 
-    if (!this.stripePromise) {
-      this.stripePromise = loadStripe(STRIPE_CONFIG.PUBLISHABLE_KEY);
+    // Check if publishable key is configured
+    if (!STRIPE_CONFIG.PUBLISHABLE_KEY || STRIPE_CONFIG.PUBLISHABLE_KEY === 'undefined') {
+      if (!this.loadingFailed) {
+        serviceLogger.warn('Stripe publishable key not configured - payments disabled');
+        this.loadingFailed = true;
+      }
+      return null;
     }
 
-    if (!this.stripe) {
+    // Return cached instance if available
+    if (this.stripe) {
+      return this.stripe;
+    }
+
+    // Initialize Stripe promise if not already started
+    if (!this.stripePromise) {
+      try {
+        this.stripePromise = loadStripe(STRIPE_CONFIG.PUBLISHABLE_KEY).catch((error) => {
+          serviceLogger.error('Failed to load Stripe.js', error);
+          this.loadingFailed = true;
+          return null;
+        });
+      } catch (error) {
+        serviceLogger.error('Error creating Stripe promise', error);
+        this.loadingFailed = true;
+        return null;
+      }
+    }
+
+    // Await and cache the Stripe instance
+    try {
       this.stripe = await this.stripePromise;
+      if (this.stripe) {
+        serviceLogger.info('Stripe loaded successfully');
+      }
+    } catch (error) {
+      serviceLogger.error('Failed to initialize Stripe', error);
+      this.loadingFailed = true;
+      return null;
     }
 
     return this.stripe;
@@ -93,17 +127,7 @@ export class StripeClientOperations {
    * تهيئة Stripe
    */
   static async initializeStripe(): Promise<Stripe | null> {
-    if (!this.stripe && STRIPE_CONFIG.PUBLISHABLE_KEY) {
-      try {
-        this.stripe = await loadStripe(STRIPE_CONFIG.PUBLISHABLE_KEY);
-        serviceLogger.info('Stripe initialized successfully');
-        return this.stripe;
-      } catch (error) {
-        serviceLogger.error('Failed to initialize Stripe', error);
-        throw error;
-      }
-    }
-    return this.stripe;
+    return this.getStripeInstance();
   }
 
   /**

@@ -1,6 +1,6 @@
 import { logger } from '../../../../../services/logger-service';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from '../../../../../hooks/useTranslation';
 import { useAuth } from '../../../../../hooks/useAuth';
 import { SocialAuthService } from '../../../../../firebase/social-auth-service';
@@ -10,6 +10,8 @@ import { LoginFormData, LoginState, LoginActions, UseLoginReturn } from '../type
 export const useLogin = (): UseLoginReturn => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
 
   const [formData, setFormData] = useState<LoginFormData>({
@@ -24,6 +26,24 @@ export const useLogin = (): UseLoginReturn => {
   const [success, setSuccess] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
+  // Get redirect URL from query params or location state
+  const getRedirectPath = (): string => {
+    // Priority 1: Check URL query parameter
+    const redirectParam = searchParams.get('redirect');
+    if (redirectParam) {
+      return redirectParam;
+    }
+
+    // Priority 2: Check location state (from Navigate component)
+    const locationState = location.state as { from?: { pathname: string } } | null;
+    if (locationState?.from?.pathname) {
+      return locationState.from.pathname;
+    }
+
+    // Default: Home page
+    return '/';
+  };
+
   const state: LoginState = {
     formData,
     showPassword,
@@ -33,10 +53,11 @@ export const useLogin = (): UseLoginReturn => {
     validationErrors
   };
 
-  // (Comment removed - was in Arabic)
+  // Redirect if user is already logged in
   React.useEffect(() => {
     if (user) {
-      navigate('/dashboard');
+      const redirectPath = getRedirectPath();
+      navigate(redirectPath, { replace: true });
     }
   }, [user, navigate]);
 
@@ -96,9 +117,9 @@ export const useLogin = (): UseLoginReturn => {
       if (result && result.user) {
         setSuccess(t('auth.loginSuccess', 'Login successful! Redirecting...'));
 
-        // (Comment removed - was in Arabic)
+        const redirectPath = getRedirectPath();
         setTimeout(() => {
-          navigate('/dashboard');
+          navigate(redirectPath, { replace: true });
         }, 1000);
       } else {
         setError(t('auth.loginFailed', 'Login failed. Please try again.'));
@@ -115,8 +136,9 @@ export const useLogin = (): UseLoginReturn => {
 
   const handleSocialLoginSuccess = () => {
     setSuccess(t('auth.loginSuccess', 'Login successful! Redirecting...'));
+    const redirectPath = getRedirectPath();
     setTimeout(() => {
-      navigate('/dashboard');
+      navigate(redirectPath, { replace: true });
     }, 1000);
   };
 

@@ -20,146 +20,172 @@ const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  max-height: 600px;
-  overflow-y: auto;
-  padding-right: 0.5rem;
-  
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: var(--bg-secondary);
-    border-radius: 4px;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 4px;
-    
-    &:hover {
-      background: var(--text-tertiary);
-    }
-  }
+  padding: 0;
+  background: transparent;
+  border: none;
+`;
+
+const DescriptionText = styled.p`
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.5;
 `;
 
 const SectionTitle = styled.h3`
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin: 0.5rem 0;
+  margin: 0.5rem 0 0.75rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 `;
 
 const EquipmentGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
   gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  grid-auto-rows: 1fr;
+  align-items: stretch;
+  margin-bottom: 1rem;
 `;
 
 const EquipmentButton = styled.button<{ $active: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem;
-  border-radius: 10px;
-  border: 2px solid ${props => props.$active ? 'var(--accent-primary)' : 'var(--border)'};
-  background: ${props => props.$active ? 'rgba(59, 130, 246, 0.1)' : 'var(--bg-card)'};
-  color: ${props => props.$active ? 'var(--accent-primary)' : 'var(--text-primary)'};
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  min-height: 92px;
+  padding: 0.6rem 0.5rem;
+  border-radius: 8px;
+  border: 2px solid ${props => props.$active ? '#10b981' : 'var(--border)'};
+  background: ${props => props.$active 
+    ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.04) 100%)'
+    : 'var(--bg-card)'
+  };
+  color: ${props => props.$active ? '#10b981' : 'var(--text-primary)'};
   font-weight: ${props => props.$active ? '600' : '500'};
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: ${props => props.$active 
+    ? '0 0 0 2px rgba(16, 185, 129, 0.32), 0 0 10px rgba(16, 185, 129, 0.18), inset 0 1px 3px rgba(16, 185, 129, 0.15)'
+    : 'inset 0 1px 2px rgba(0, 0, 0, 0.05)'
+  };
+  position: relative;
+  isolation: isolate;
   
   &:hover {
-    border-color: var(--accent-primary);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #10b981;
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.38), 0 0 12px rgba(16, 185, 129, 0.22), inset 0 1px 3px rgba(16, 185, 129, 0.15);
+  }
+  
+  &:active {
+    transform: translateY(0);
   }
   
   svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
+    transition: all 0.2s ease;
+    color: ${props => props.$active ? '#10b981' : 'inherit'};
+  }
+  
+  span {
+    line-height: 1.2;
+    text-align: center;
+    color: ${props => props.$active ? '#10b981' : 'var(--text-primary)'};
   }
 `;
 
-// Neumorphism Switch Container
+// Neumorphism Switch Container (Smaller Size)
 const SwitchContainer = styled.div<{ $isOn: boolean }>`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.02) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 10px;
   cursor: pointer;
   user-select: none;
+  transition: all 0.3s ease;
+  max-width: 280px;
+  margin-left: auto;
+  margin-right: auto;
+  
+  &:hover {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.03) 100%);
+    border-color: rgba(16, 185, 129, 0.3);
+  }
 `;
 
 const SwitchLabel = styled.div`
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #10b981;
   text-align: center;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  white-space: nowrap;
   
   svg {
-    width: 24px;
-    height: 24px;
-    color: var(--accent-primary);
+    width: 16px;
+    height: 16px;
+    color: #10b981;
   }
 `;
 
 const SwitchOuter = styled.div<{ $isOn: boolean }>`
   position: relative;
-  width: 100px;
-  height: 50px;
-  background: ${props => props.$isOn ? 'var(--bg-card)' : 'var(--bg-secondary)'};
-  border-radius: 25px;
+  width: 60px;
+  height: 30px;
+  background: ${props => props.$isOn 
+    ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+    : 'var(--bg-secondary)'
+  };
+  border-radius: 15px;
   box-shadow: 
-    10px 10px 20px rgba(0, 0, 0, 0.15), 
-    -10px -10px 20px rgba(255, 255, 255, 0.05);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    0 2px 6px rgba(0, 0, 0, 0.1),
+    inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 `;
 
 const SwitchInner = styled.div<{ $isOn: boolean }>`
   position: absolute;
-  top: 5px;
-  left: 5px;
-  width: calc(100% - 10px);
-  height: calc(100% - 10px);
-  background-color: ${props => props.$isOn ? 'var(--bg-hover)' : 'var(--bg-card)'};
-  border-radius: 20px;
-  box-shadow: 
-    inset 5px 5px 10px rgba(0, 0, 0, 0.2), 
-    inset -5px -5px 10px rgba(255, 255, 255, 0.05);
-  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  inset: 3px;
+  background-color: ${props => props.$isOn ? '#d1fae5' : 'var(--bg-card)'};
+  border-radius: 17px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 `;
 
 const SwitchKnobContainer = styled.div<{ $isOn: boolean }>`
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
+  inset: 0;
   overflow: hidden;
-  transform: ${props => props.$isOn ? 'translateX(100%)' : 'translateX(0)'};
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 17px;
 `;
 
 const SwitchKnob = styled.div<{ $isOn: boolean }>`
-  position: relative;
-  width: 40px;
-  height: 40px;
-  top: 5px;
-  left: 5px;
-  background: linear-gradient(145deg, var(--bg-card), var(--bg-secondary));
+  position: absolute;
+  top: 2px;
+  ${props => props.$isOn ? 'right: 2px' : 'left: 2px'};
+  width: 26px;
+  height: 26px;
+  background: linear-gradient(145deg, #ffffff 0%, #f3f4f6 100%);
   border-radius: 50%;
   box-shadow: 
-    5px 5px 10px rgba(0, 0, 0, 0.3), 
-    -5px -5px 10px rgba(255, 255, 255, 0.1);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    0 2px 6px rgba(0, 0, 0, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -167,50 +193,28 @@ const SwitchKnob = styled.div<{ $isOn: boolean }>`
 
 const SwitchKnobNeon = styled.div<{ $isOn: boolean }>`
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 25px;
-  height: 25px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  transform: translate(-50%, -50%);
   background: ${props => props.$isOn
-    ? 'radial-gradient(circle, #10b981 0%, transparent 70%)'
-    : 'radial-gradient(circle, #ff8c00 0%, transparent 70%)'
+    ? 'radial-gradient(circle, #10b981 0%, #059669 100%)'
+    : 'radial-gradient(circle, #d1d5db 0%, #9ca3af 100%)'
   };
   box-shadow: ${props => props.$isOn
-    ? '0 0 10px #10b981, 0 0 20px #10b981, 0 0 30px #10b981'
-    : '0 0 10px #ff8c00, 0 0 20px #ff8c00'
+    ? '0 0 6px #10b981, 0 0 12px rgba(16, 185, 129, 0.3)'
+    : '0 0 4px rgba(0, 0, 0, 0.2)'
   };
-  opacity: ${props => props.$isOn ? 1 : 0.8};
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: ${props => props.$isOn ? 'pulse-neon 2s infinite' : 'pulse-neon-orange 2s infinite'};
-  
-  @keyframes pulse-neon {
-    0%, 100% {
-      box-shadow: 0 0 10px #10b981, 0 0 20px #10b981, 0 0 30px #10b981;
-    }
-    50% {
-      box-shadow: 0 0 15px #10b981, 0 0 30px #10b981, 0 0 45px #10b981;
-    }
-  }
-  
-  @keyframes pulse-neon-orange {
-    0%, 100% {
-      box-shadow: 0 0 10px #ff8c00, 0 0 20px #ff8c00;
-    }
-    50% {
-      box-shadow: 0 0 15px #ff8c00, 0 0 30px #ff8c00;
-    }
-  }
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 `;
 
 const StatusText = styled.div<{ $isOn: boolean }>`
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: ${props => props.$isOn ? 'var(--success)' : 'var(--accent-primary)'};
+  color: ${props => props.$isOn ? '#10b981' : 'var(--text-tertiary)'};
   text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: color 0.4s ease;
+  letter-spacing: 0.5px;
+  transition: color 0.3s ease;
+  white-space: nowrap;
 `;
 
 const EQUIPMENT_CATEGORIES = {
@@ -324,11 +328,11 @@ export const SellVehicleStep3: React.FC<SellVehicleStep3Props> = ({
 
   return (
     <FormContainer>
-      <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1rem' }}>
+      <DescriptionText>
         {language === 'bg'
           ? 'Оборудването е опционално. Можете да го добавите по-късно.'
           : 'Equipment is optional. You can add it later.'}
-      </p>
+      </DescriptionText>
 
       <SwitchContainer $isOn={isAllEquipmentSelected} onClick={toggleAllEquipment}>
         <SwitchLabel>

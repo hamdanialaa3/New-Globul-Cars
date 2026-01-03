@@ -34,15 +34,28 @@ export const usePWA = () => {
   // Register service worker
   useEffect(() => {
     const registerServiceWorker = async () => {
+      // Only register service worker in production or if explicitly enabled
+      const shouldRegisterSW = process.env.NODE_ENV === 'production' || 
+                              process.env.REACT_APP_ENABLE_SW === 'true';
+
+      if (!shouldRegisterSW) {
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Service Worker registration skipped in development');
+        }
+        return;
+      }
+
       if ('serviceWorker' in navigator) {
         try {
           const registration = await navigator.serviceWorker.register('/sw.js', {
             scope: '/',
+            updateViaCache: 'none', // Always check for updates
           });
 
-          if (process.env.NODE_ENV === 'development') {
-            logger.debug('Service Worker registered successfully');
-          }
+          logger.info('Service Worker registered successfully', {
+            scope: registration.scope,
+            active: !!registration.active,
+          });
 
           setPwaState(prev => ({
             ...prev,
@@ -59,18 +72,27 @@ export const usePWA = () => {
 
           const handleWorkerStateChange = () => {
             if (registration.installing?.state === 'installed' && navigator.serviceWorker.controller) {
-              // New content is available, notify user (dev only)
-              if (process.env.NODE_ENV === 'development') {
-                logger.debug('New content is available and will be used when all tabs are closed.');
-              }
+              logger.info('New content is available and will be used when all tabs are closed.');
             }
           };
 
           registration.addEventListener('updatefound', handleUpdateFound);
 
+          // Check for updates periodically (every 5 minutes)
+          setInterval(() => {
+            registration.update().catch((error) => {
+              logger.debug('Service Worker update check failed', error);
+            });
+          }, 5 * 60 * 1000);
+
         } catch (error) {
-          logger.error('Service Worker registration failed', error as Error);
+          // Only log as warning, not error, as PWA is optional functionality
+          logger.warn('Service Worker registration failed - PWA features disabled', {
+            error: error instanceof Error ? error.message : 'Unknown error',
+          });
         }
+      } else {
+        logger.debug('Service Worker not supported in this browser');
       }
     };
 

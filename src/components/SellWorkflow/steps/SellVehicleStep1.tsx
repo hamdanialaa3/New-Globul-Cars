@@ -15,6 +15,9 @@ const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  padding: 0;
+  background: transparent;
+  border: none;
 `;
 
 const VehicleGrid = styled.div`

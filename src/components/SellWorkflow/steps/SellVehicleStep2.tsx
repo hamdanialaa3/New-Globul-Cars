@@ -8,6 +8,7 @@ import { UnifiedWorkflowData } from '../../../services/unified-workflow-persiste
 import BrandModelMarkdownDropdown from '../../BrandModelMarkdownDropdown/BrandModelMarkdownDropdown';
 import { BODY_TYPES, DOOR_OPTIONS, SEAT_OPTIONS, FUEL_TYPES, TRANSMISSION_TYPES, DRIVE_TYPES, EXTERIOR_COLORS } from '../../../pages/04_car-selling/sell/VehicleData/types';
 import { useProfileType } from '../../../contexts/ProfileTypeContext';
+import { classifyVehicle, getCategoryLabel, getCategoryIcon, getClassificationReason } from '../../../utils/vehicle-classification';
 
 interface SellVehicleStep2Props {
   workflowData: Partial<UnifiedWorkflowData>;
@@ -19,27 +20,9 @@ const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  max-height: 600px;
-  overflow-y: auto;
-  padding-right: 0.5rem;
-  
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: var(--bg-secondary);
-    border-radius: 4px;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 4px;
-    
-    &:hover {
-      background: var(--text-tertiary);
-    }
-  }
+  padding: 0;
+  background: transparent;
+  border: none;
 `;
 
 const FieldGroup = styled.div`
@@ -125,6 +108,42 @@ const ToggleButton = styled.button<{ $active: boolean }>`
   &:hover {
     border-color: var(--accent-primary);
     transform: translateY(-1px);
+  }
+`;
+
+const CategoryBadge = styled.div<{ $category: 'family' | 'sport' | 'standard' }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-top: 1rem;
+  animation: fadeIn 0.3s ease;
+  
+  background: ${props => {
+    if (props.$category === 'family') return 'linear-gradient(135deg, #22c55e, #16a34a)';
+    if (props.$category === 'sport') return 'linear-gradient(135deg, #ef4444, #dc2626)';
+    return 'linear-gradient(135deg, #3b82f6, #2563eb)';
+  }};
+  
+  color: white;
+  box-shadow: 0 4px 15px ${props => {
+    if (props.$category === 'family') return 'rgba(34, 197, 94, 0.3)';
+    if (props.$category === 'sport') return 'rgba(239, 68, 68, 0.3)';
+    return 'rgba(59, 130, 246, 0.3)';
+  }};
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 `;
 
@@ -268,7 +287,18 @@ export const SellVehicleStep2: React.FC<SellVehicleStep2Props> = ({
   const hasTransmission = !!workflowData.transmission;
   const hasPower = !!workflowData.power;
   const hasBody = !!workflowData.bodyType;
+  const hasDoors = !!workflowData.doors;
+  const hasSeats = !!workflowData.seats;
   const hasColor = !!workflowData.color || !!workflowData.exteriorColor;
+
+  // Smart Classification - التصنيف الذكي
+  const vehicleCategory = useMemo(() => {
+    return classifyVehicle({
+      doors: workflowData.doors,
+      seats: workflowData.seats,
+      power: workflowData.power
+    });
+  }, [workflowData.doors, workflowData.seats, workflowData.power]);
 
   // Year options
   const currentYear = new Date().getFullYear();
@@ -544,6 +574,54 @@ export const SellVehicleStep2: React.FC<SellVehicleStep2Props> = ({
           )}
 
           {hasBody && (
+            <RevealWrapper>
+              <Label style={getLabelStyle(!!workflowData.doors)}>{language === 'bg' ? 'Брой врати' : 'Number of Doors'}</Label>
+              <Select
+                value={workflowData.doors || ''}
+                onChange={(e) => onUpdate({ doors: e.target.value })}
+                style={getInputStyle(!!workflowData.doors)}
+              >
+                <option value="">{language === 'bg' ? 'Изберете брой врати' : 'Select number of doors'}</option>
+                {DOOR_OPTIONS.map(opt => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </Select>
+            </RevealWrapper>
+          )}
+
+          {workflowData.doors && (
+            <RevealWrapper>
+              <Label style={getLabelStyle(!!workflowData.seats)}>{language === 'bg' ? 'Брой места' : 'Number of Seats'}</Label>
+              <Select
+                value={workflowData.seats || ''}
+                onChange={(e) => onUpdate({ seats: e.target.value })}
+                style={getInputStyle(!!workflowData.seats)}
+              >
+                <option value="">{language === 'bg' ? 'Изберете брой места' : 'Select number of seats'}</option>
+                {SEAT_OPTIONS.map(opt => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </Select>
+
+              {/* Smart Classification Badge - بادج التصنيف الذكي */}
+              {(workflowData.seats || workflowData.doors || (workflowData.power && parseInt(String(workflowData.power), 10) > 270)) && 
+               vehicleCategory !== 'standard' && (
+                <CategoryBadge $category={vehicleCategory}>
+                  <span>{getCategoryIcon(vehicleCategory)}</span>
+                  <span>{getCategoryLabel(vehicleCategory, language as 'bg' | 'en')}</span>
+                  <span style={{ fontSize: '0.85rem', opacity: 0.9 }}>
+                    ({getClassificationReason({
+                      doors: workflowData.doors,
+                      seats: workflowData.seats,
+                      power: workflowData.power
+                    }, language as 'bg' | 'en')})
+                  </span>
+                </CategoryBadge>
+              )}
+            </RevealWrapper>
+          )}
+
+          {workflowData.seats && (
             <RevealWrapper>
               <Label style={getLabelStyle(hasColor)}>{language === 'bg' ? 'Външен цвят' : 'Exterior Color'}</Label>
               <Select

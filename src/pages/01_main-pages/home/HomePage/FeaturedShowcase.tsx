@@ -37,7 +37,7 @@ const CARS_DATA = [
     mileage: "12,000 km",
     fuel: "Petrol",
     category: "vip",
-    image: "https://images.unsplash.com/photo-1556189250-72ba95452242?auto=format&fit=crop&q=80&w=800",
+    image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=800",
     badge: "Verified Dealer"
   },
   {

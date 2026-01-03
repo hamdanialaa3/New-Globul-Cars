@@ -11,6 +11,8 @@ import { getPostalCodesForCity } from '../../../data/bulgaria-postal-codes';
 import { ALL_COUNTRIES } from '../../../data/country-codes';
 import { BulgarianProfileService } from '../../../services/bulgarian-profile-service';
 import { Check, AlertCircle } from 'lucide-react';
+import { EmailAutocomplete } from '../../shared/EmailAutocomplete';
+import { CountryFlagSelector } from '../../shared/CountryFlagSelector';
 
 interface SellVehicleStep6Props {
   workflowData: Partial<UnifiedWorkflowData>;
@@ -21,23 +23,9 @@ const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  max-height: 600px;
-  overflow-y: auto;
-  padding-right: 0.5rem;
-  
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: var(--bg-secondary);
-    border-radius: 3px;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 3px;
-  }
+  padding: 0;
+  background: transparent;
+  border: none;
 `;
 
 const FieldGroup = styled.div`
@@ -123,45 +111,8 @@ const PhoneInputGroup = styled.div`
   gap: 0.5rem;
 `;
 
-const CountrySelectContainer = styled.div`
-  position: relative;
-  min-width: 140px;
-  max-width: 160px;
-`;
-
-const CountrySelectStyled = styled.select`
-  width: 100%;
-  height: 100%;
-  padding: 0.75rem 0.5rem 0.75rem 0.75rem; /* Reduced left padding since flag is in option */
-  border: 2px solid var(--border);
-  border-radius: 10px;
-  background: var(--bg-card);
-  color: var(--text-primary);
-  font-size: 0.95rem;
-  cursor: pointer;
-  appearance: none;
-  text-overflow: ellipsis;
-  
-  &:focus {
-    outline: none;
-    border-color: var(--accent-primary);
-  }
-`;
-
-const FlagIcon = styled.span`
-  position: absolute;
-  right: 0.75rem;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.4rem;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-`;
-
 const PhoneInputStyled = styled(Input)`
-  /* No special styles needed beyond Input */
+  flex: 1;
 `;
 
 // Animation Components
@@ -325,10 +276,6 @@ export const SellVehicleStep6: React.FC<SellVehicleStep6Props> = ({
     return getPostalCodesForCity(city, workflowData.region);
   }, [workflowData.locationData?.cityName, workflowData.city, workflowData.region]);
 
-  const currentFlag = useMemo(() => {
-    return ALL_COUNTRIES.find(c => c.dial === phonePrefix)?.flag || '🌍';
-  }, [phonePrefix]);
-
   return (
     <FormContainer>
       {/* Contact Section */}
@@ -343,6 +290,7 @@ export const SellVehicleStep6: React.FC<SellVehicleStep6Props> = ({
           onChange={(e) => onUpdate({ sellerName: e.target.value })}
           placeholder={language === 'bg' ? 'Иван Петров' : 'John Doe'}
           $valid={!!workflowData.sellerName && workflowData.sellerName.length > 2}
+          autoComplete="name"
         />
       </FieldGroup>
 
@@ -353,13 +301,15 @@ export const SellVehicleStep6: React.FC<SellVehicleStep6Props> = ({
             <Check size={16} color="#22c55e" />
           )}
         </Label>
-        <Input
+        <EmailAutocomplete
           value={workflowData.sellerEmail || ''}
-          onChange={handlEmailChange}
+          onChange={(val) => {
+            onUpdate({ sellerEmail: val });
+            setEmailError(validateEmail(val));
+          }}
           placeholder="name@example.com"
-          type="email"
-          $error={!!emailError}
-          $valid={!emailError && !!workflowData.sellerEmail}
+          error={!!emailError}
+          valid={!emailError && !!workflowData.sellerEmail}
         />
         {emailError && (
           <ErrorText style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -371,27 +321,14 @@ export const SellVehicleStep6: React.FC<SellVehicleStep6Props> = ({
       <FieldGroup>
         <Label>{language === 'bg' ? 'Телефон' : 'Phone'} *</Label>
         <PhoneInputGroup>
-          <CountrySelectContainer>
-            <CountrySelectStyled
-              value={phonePrefix}
-              onChange={(e) => {
-                const newPrefix = e.target.value;
-                setPhonePrefix(newPrefix);
-                // Update existing number with new prefix
-                const currentNum = getDisplayPhone();
-                onUpdate({ sellerPhone: `${newPrefix} ${currentNum}` });
-              }}
-            >
-              {ALL_COUNTRIES.map(country => (
-                <option key={country.code} value={country.dial}>
-                  {country.flag} {country.dial} ({country.code})
-                </option>
-              ))}
-            </CountrySelectStyled>
-            <FlagIcon>
-              {currentFlag} {phonePrefix}
-            </FlagIcon>
-          </CountrySelectContainer>
+          <CountryFlagSelector
+            value={phonePrefix}
+            onChange={(newPrefix) => {
+              setPhonePrefix(newPrefix);
+              const currentNum = getDisplayPhone();
+              onUpdate({ sellerPhone: `${newPrefix} ${currentNum}` });
+            }}
+          />
 
           <PhoneInputStyled
             value={getDisplayPhone()}

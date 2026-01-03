@@ -68,8 +68,9 @@ const Overlay = styled.div<{ $isOpen: boolean }>`
 const ModalContainer = styled.div<{ $isClosing: boolean }>`
   position: relative;
   background: ${({ theme }) => theme.mode === 'dark'
-    ? '#0f172a'
-    : '#ffffff'};
+    ? 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)'
+    : 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)'
+  };
   border: none;
   border-radius: 0;
   width: 100vw;
@@ -79,29 +80,43 @@ const ModalContainer = styled.div<{ $isClosing: boolean }>`
   overflow-y: auto;
   overflow-x: hidden;
   box-shadow: none;
-  animation: ${props => props.$isClosing ? modalExit : modalEnter} 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: ${props => props.$isClosing ? modalExit : modalEnter} 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
   flex: 1;
   
+  /* Decorative gradient overlay */
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 300px;
+    background: radial-gradient(circle at 50% 0%, rgba(255, 107, 53, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  
   /* Custom scrollbar */
   &::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
   }
   
   &::-webkit-scrollbar-track {
-    background: var(--bg-secondary);
-    border-radius: 4px;
+    background: ${({ theme }) => theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)'};
+    border-radius: 10px;
   }
   
   &::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 4px;
+    background: linear-gradient(180deg, #FF6B35 0%, #FF8C61 100%);
+    border-radius: 10px;
+    border: 2px solid ${({ theme }) => theme.mode === 'dark' ? '#0f172a' : '#ffffff'};
     
     &:hover {
-      background: var(--text-tertiary);
+      background: linear-gradient(180deg, #FF8C61 0%, #FFA07A 100%);
     }
   }
 `;
@@ -110,30 +125,36 @@ const CloseButton = styled.button`
   position: absolute;
   top: 1.5rem;
   right: 1.5rem;
-  width: 36px;
-  height: 36px;
-  min-width: 36px;
-  min-height: 36px;
-  max-width: 36px;
-  max-height: 36px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  max-width: 44px;
+  max-height: 44px;
   border-radius: 50%;
-  border: none;
-  background: var(--bg-secondary);
-  color: var(--text-primary);
+  border: 2px solid ${({ theme }) => theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
+  background: ${({ theme }) => theme.mode === 'dark' 
+    ? 'rgba(255, 255, 255, 0.05)' 
+    : 'rgba(255, 255, 255, 0.8)'
+  };
+  backdrop-filter: blur(10px);
+  color: ${({ theme }) => theme.mode === 'dark' ? '#ffffff' : '#1e293b'};
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10001;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   padding: 0;
   margin: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   
   &:hover {
-    background: var(--bg-hover);
-    transform: rotate(90deg) scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+    color: white;
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+    border-color: transparent;
   }
   
   &:active {
@@ -141,9 +162,22 @@ const CloseButton = styled.button`
   }
   
   svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+  
+  @media (max-width: 768px) {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
   }
 `;
 

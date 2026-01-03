@@ -85,78 +85,176 @@ const SuccessOverlay = styled(motion.div)`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(10px);
+  background: ${({ theme }) => theme.mode === 'dark' 
+    ? 'rgba(0, 0, 0, 0.92)' 
+    : 'rgba(0, 0, 0, 0.85)'
+  };
+  backdrop-filter: blur(20px) saturate(180%);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10000;
   overflow: hidden;
+  
+  /* Decorative gradient overlay */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
 `;
 
 const ConfettiPiece = styled.div<{ $delay: number; $left: number; $color: string }>`
   position: absolute;
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   background: ${props => props.$color};
-  top: -10px;
+  top: -20px;
   left: ${props => props.$left}%;
-  animation: ${confettiAnimation} 2s ease-out forwards;
+  animation: ${confettiAnimation} 2.5s ease-out forwards;
   animation-delay: ${props => props.$delay}s;
-  border-radius: 2px;
+  border-radius: 3px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 `;
 
 const SuccessCard = styled(motion.div)`
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  border-radius: 24px;
-  padding: 3rem;
+  background: ${({ theme }) => theme.mode === 'dark'
+    ? 'rgba(16, 185, 129, 0.95)'
+    : 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+  };
+  backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 32px;
+  padding: 4rem 3rem;
   text-align: center;
   color: white;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: 
+    0 20px 60px rgba(16, 185, 129, 0.4),
+    0 10px 30px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
   position: relative;
   overflow: hidden;
-  animation: ${pulseGlow} 2s ease-in-out infinite;
+  animation: ${pulseGlow} 3s ease-in-out infinite;
+  max-width: 600px;
+  width: 90%;
+  
+  /* Decorative elements */
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: ${keyframes`
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    `} 20s linear infinite;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 3rem 2rem;
+    border-radius: 24px;
+  }
 `;
 
 const SuccessIconWrapper = styled(motion.div)`
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
   margin: 0 auto 2rem;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.25);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(10px);
-  border: 3px solid rgba(255, 255, 255, 0.3);
+  border: 4px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.2),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  position: relative;
+  z-index: 1;
+  
+  svg {
+    width: 70px;
+    height: 70px;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+  }
+  
+  @media (max-width: 768px) {
+    width: 120px;
+    height: 120px;
+    
+    svg {
+      width: 60px;
+      height: 60px;
+    }
+  }
 `;
 
 const SuccessTitle = styled(motion.h2)`
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: 800;
   margin-bottom: 1rem;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.02em;
+  position: relative;
+  z-index: 1;
+  
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
 `;
 
 const SuccessMessage = styled(motion.p)`
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   opacity: 0.95;
   margin-bottom: 2rem;
-  line-height: 1.6;
+  line-height: 1.7;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
+  
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+  }
 `;
 
 const SuccessBadge = styled(motion.div)`
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
-  background: rgba(255, 255, 255, 0.2);
-  padding: 1rem 2rem;
-  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.25);
+  padding: 1.25rem 2.5rem;
+  border-radius: 60px;
   backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  font-weight: 600;
-  font-size: 1.1rem;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  font-weight: 700;
+  font-size: 1.2rem;
   margin-top: 1rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
+  
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
 `;
 
 interface WizardOrchestratorProps {
@@ -471,7 +569,6 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
                 )}
             </StatusWrapper>
 
-
             <BladeStepper
                 stepsData={stepperSteps}
                 currentStep={currentStep - 1}
@@ -483,8 +580,8 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
                 {renderStep()}
             </StepContent>
 
-            <NavigationButtons>
-                <div style={{ position: 'relative' }} data-reset-menu>
+                <NavigationButtons>
+                    <div style={{ position: 'relative' }} data-reset-menu>
                     <ResetButton
                         onClick={(e) => {
                             e.preventDefault();
@@ -551,43 +648,43 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
                             )}
                         </ResetConfirmDialog>
                     )}
-                </div>
+                    </div>
 
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    {currentStep > 1 && (
-                        <Button $variant="secondary" onClick={handleBack} disabled={isPublishing}>
-                            <ArrowLeft size={20} />
-                            {language === 'bg' ? 'Назад' : 'Back'}
-                        </Button>
-                    )}
-
-                    <Button
-                        $variant="primary"
-                        onClick={currentStep === TOTAL_STEPS ? handlePublish : handleNext}
-                        disabled={!canProceed || isPublishing}
-                        style={{
-                            opacity: (!canProceed || isPublishing) ? 0.5 : 1,
-                            cursor: (!canProceed || isPublishing) ? 'not-allowed' : 'pointer'
-                        }}
-                    >
-                        {isPublishing ? (
-                            <>
-                                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                                {language === 'bg' ? 'Публикуване...' : 'Publishing...'}
-                            </>
-                        ) : currentStep === TOTAL_STEPS ? (
-                            <>
-                                <Check size={20} />
-                                {language === 'bg' ? 'Публикувай' : 'Publish'}
-                            </>
-                        ) : (
-                            <>
-                                {language === 'bg' ? 'Напред' : 'Next'}
-                                <ArrowRight size={20} />
-                            </>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                        {currentStep > 1 && (
+                            <Button $variant="secondary" onClick={handleBack} disabled={isPublishing}>
+                                <ArrowLeft size={20} />
+                                {language === 'bg' ? 'Назад' : 'Back'}
+                            </Button>
                         )}
-                    </Button>
-                </div>
+
+                        <Button
+                            $variant="primary"
+                            onClick={currentStep === TOTAL_STEPS ? handlePublish : handleNext}
+                            disabled={!canProceed || isPublishing}
+                            style={{
+                                opacity: (!canProceed || isPublishing) ? 0.5 : 1,
+                                cursor: (!canProceed || isPublishing) ? 'not-allowed' : 'pointer'
+                            }}
+                        >
+                            {isPublishing ? (
+                                <>
+                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                                    {language === 'bg' ? 'Публикуване...' : 'Publishing...'}
+                                </>
+                            ) : currentStep === TOTAL_STEPS ? (
+                                <>
+                                    <Check size={20} />
+                                    {language === 'bg' ? 'Публикувай' : 'Publish'}
+                                </>
+                            ) : (
+                                <>
+                                    {language === 'bg' ? 'Напред' : 'Next'}
+                                    <ArrowRight size={20} />
+                                </>
+                            )}
+                        </Button>
+                    </div>
             </NavigationButtons>
             </WizardContainer>
         </>

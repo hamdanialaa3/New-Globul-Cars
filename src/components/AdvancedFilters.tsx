@@ -16,6 +16,7 @@ import {
   PRICE_RANGES,
   MILEAGE_RANGES
 } from '../data/dropdown-options';
+import { DOOR_OPTIONS, SEAT_OPTIONS } from '../pages/04_car-selling/sell/VehicleData/types';
 
 interface FilterOptions {
   city?: string;
@@ -30,6 +31,8 @@ interface FilterOptions {
   fuelType?: string;
   transmission?: string;
   sellerType?: string;
+  doors?: string;
+  seats?: string;
 }
 
 interface AdvancedFiltersProps {
@@ -350,6 +353,34 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
                 min="0"
               />
             </RangeGroup>
+          </FilterGroup>
+
+          {/* Doors */}
+          <FilterGroup>
+            <Label>{language === 'bg' ? 'Брой врати' : 'Number of Doors'}</Label>
+            <Select
+              value={filters.doors || ''}
+              onChange={(e) => handleFilterChange('doors', e.target.value)}
+            >
+              <option value="">{language === 'bg' ? 'Всички' : 'All'}</option>
+              {DOOR_OPTIONS.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </Select>
+          </FilterGroup>
+
+          {/* Seats */}
+          <FilterGroup>
+            <Label>{language === 'bg' ? 'Брой места' : 'Number of Seats'}</Label>
+            <Select
+              value={filters.seats || ''}
+              onChange={(e) => handleFilterChange('seats', e.target.value)}
+            >
+              <option value="">{language === 'bg' ? 'Всички' : 'All'}</option>
+              {SEAT_OPTIONS.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </Select>
           </FilterGroup>
 
           {/* Seller Type */}

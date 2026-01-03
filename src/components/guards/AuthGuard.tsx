@@ -37,43 +37,99 @@ import styled from 'styled-components';
 import { Lock, LogIn, Home, Shield, Mail } from 'lucide-react';
 
 // ==========================================
-// Styled Components
+// Styled Components - Modern Design
 // ==========================================
 
 const GuardContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 70vh;
-  background: linear-gradient(135deg, var(--accent-primary, #FF6B35) 0%, var(--accent-secondary, #FF8C61) 100%);
+  background: ${({ theme }) => theme.mode === 'dark'
+    ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%)'
+    : 'linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(255, 140, 97, 0.08) 100%)'
+  };
+  backdrop-filter: blur(10px);
   padding: 2rem;
   text-align: center;
+  z-index: 9999;
+  overflow: auto;
   
-  /* Dark mode support */
-  [data-theme="dark"] &, .dark-theme & {
-    background: linear-gradient(135deg, rgba(26, 29, 46, 0.95) 0%, rgba(45, 49, 66, 0.98) 100%);
+  /* Decorative gradient overlay */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 400px;
+    background: radial-gradient(circle at 50% 0%, rgba(255, 107, 53, 0.15) 0%, transparent 70%);
+    pointer-events: none;
   }
 `;
 
 const MessageCard = styled.div`
-  background: var(--bg-card, #FFFFFF);
-  padding: 3rem;
-  border-radius: 20px;
-  box-shadow: var(--shadow-xl, 0 20px 50px rgba(0, 0, 0, 0.15));
-  max-width: 500px;
+  position: relative;
+  background: ${({ theme }) => theme.mode === 'dark'
+    ? 'rgba(30, 41, 59, 0.6)'
+    : 'rgba(255, 255, 255, 0.7)'
+  };
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid ${({ theme }) => theme.mode === 'dark'
+    ? 'rgba(148, 163, 184, 0.1)'
+    : 'rgba(255, 255, 255, 0.3)'
+  };
+  padding: 4rem 3rem;
+  border-radius: 32px;
+  max-width: 600px;
   width: 100%;
-  border: 1px solid var(--border-primary, #E2E8F0);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 4px 16px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  animation: scaleInBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 1;
   
-  /* Dark mode support */
-  [data-theme="dark"] &, .dark-theme & {
-    background: var(--bg-card, rgba(26, 29, 46, 0.95));
-    border-color: var(--border-primary, rgba(255, 255, 255, 0.1));
-    box-shadow: var(--shadow-xl, 0 20px 50px rgba(0, 0, 0, 0.4));
+  /* Decorative glow effect on hover */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.3), rgba(255, 140, 97, 0.3));
+    border-radius: 32px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+    filter: blur(20px);
+  }
+  
+  &:hover::after {
+    opacity: 0.5;
+  }
+  
+  @keyframes scaleInBounce {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
   
   @media (max-width: 768px) {
-    padding: 2rem;
+    padding: 3rem 2rem;
+    border-radius: 24px;
     margin: 1rem;
   }
 `;
@@ -90,46 +146,61 @@ const IconWrapper = styled.div<{ $variant?: 'error' | 'warning' | 'info' }>`
   }};
   display: flex;
   justify-content: center;
+  animation: float 3s ease-in-out infinite;
+  filter: drop-shadow(0 4px 12px rgba(255, 107, 53, 0.3));
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
 `;
 
 const Title = styled.h2`
-  color: var(--text-primary, #1A1D2E);
+  background: linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin-bottom: 1rem;
-  font-size: 1.8rem;
-  font-weight: 600;
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   
-  /* Dark mode support */
   [data-theme="dark"] &, .dark-theme & {
-    color: var(--text-primary, #FFFFFF);
+    background: linear-gradient(135deg, #FF8C61 0%, #FFA07A 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   
   @media (max-width: 768px) {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
   }
 `;
 
 const Message = styled.p`
-  color: var(--text-secondary, #4A5568);
+  color: ${({ theme }) => theme.mode === 'dark' 
+    ? 'rgba(255, 255, 255, 0.85)' 
+    : 'var(--text-secondary, #4A5568)'
+  };
   margin-bottom: 2rem;
-  font-size: 1.1rem;
-  line-height: 1.6;
-  
-  /* Dark mode support */
-  [data-theme="dark"] &, .dark-theme & {
-    color: var(--text-secondary, rgba(255, 255, 255, 0.8));
-  }
+  font-size: 1.125rem;
+  line-height: 1.8;
   
   strong {
-    color: var(--accent-primary, #FF6B35);
-    font-weight: 600;
-    
-    [data-theme="dark"] &, .dark-theme & {
-      color: var(--accent-primary, #FF6B35);
-    }
+    background: linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
   }
   
   @media (max-width: 768px) {
     font-size: 1rem;
+    line-height: 1.7;
   }
 `;
 
@@ -141,61 +212,92 @@ const ButtonGroup = styled.div`
 `;
 
 const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   background: ${({ $variant }) =>
     $variant === 'secondary'
-      ? 'var(--btn-secondary-bg, #FFFFFF)'
-      : 'var(--btn-primary-bg, #FF6B35)'
+      ? 'rgba(255, 255, 255, 0.1)'
+      : 'linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%)'
   };
   color: ${({ $variant }) =>
     $variant === 'secondary'
-      ? 'var(--btn-secondary-text, #1A1D2E)'
-      : 'var(--btn-primary-text, #FFFFFF)'
+      ? 'var(--text-primary, #1A1D2E)'
+      : '#FFFFFF'
   };
   border: ${({ $variant }) =>
     $variant === 'secondary'
-      ? '2px solid var(--btn-secondary-border, #E2E8F0)'
+      ? '2px solid rgba(255, 107, 53, 0.2)'
       : 'none'
   };
   padding: 1rem 2rem;
-  border-radius: 12px;
-  font-size: 1.1rem;
+  border-radius: 14px;
+  font-size: 1.125rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: ${({ $variant }) =>
     $variant === 'primary'
-      ? 'var(--shadow-button, 0 2px 6px rgba(255, 107, 53, 0.25))'
-      : 'var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.08))'
+      ? '0 4px 12px rgba(255, 107, 53, 0.25), 0 2px 6px rgba(255, 107, 53, 0.15)'
+      : '0 2px 6px rgba(0, 0, 0, 0.08)'
   };
+  overflow: hidden;
+  
+  /* Ripple effect */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    transform: scale(0);
+    transition: transform 0.5s ease;
+    opacity: 0;
+  }
+  
+  &:active::before {
+    transform: scale(2.5);
+    opacity: 1;
+    transition: transform 0s;
+  }
   
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px) scale(1.02);
     box-shadow: ${({ $variant }) =>
     $variant === 'primary'
-      ? 'var(--shadow-hover, 0 4px 16px rgba(0, 0, 0, 0.12))'
-      : 'var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.1))'
+      ? '0 8px 24px rgba(255, 107, 53, 0.35), 0 4px 12px rgba(255, 107, 53, 0.2)'
+      : '0 4px 12px rgba(0, 0, 0, 0.12)'
   };
     background: ${({ $variant }) =>
     $variant === 'secondary'
-      ? 'var(--btn-secondary-hover, #F8F9FA)'
-      : 'var(--btn-primary-hover, #FF8C61)'
+      ? 'rgba(255, 107, 53, 0.1)'
+      : 'linear-gradient(135deg, #FF8C61 0%, #FFA07A 100%)'
   };
   }
   
+  &:hover svg {
+    transform: scale(1.1);
+  }
+  
   &:active {
-    transform: translateY(0);
+    transform: translateY(-1px) scale(0.98);
+  }
+  
+  svg {
+    transition: transform 0.3s ease;
   }
   
   /* Dark mode support */
   [data-theme="dark"] &, .dark-theme & {
     ${({ $variant }) =>
     $variant === 'secondary' && `
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--text-primary, #FFFFFF);
-      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+      color: #FFFFFF;
+      border-color: rgba(255, 255, 255, 0.15);
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.12);
+      }
     `}
   }
   

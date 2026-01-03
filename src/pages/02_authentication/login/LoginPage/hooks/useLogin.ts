@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from '../../../../../hooks/useTranslation';
 import { useAuth } from '../../../../../hooks/useAuth';
 import { SocialAuthService } from '../../../../../firebase/social-auth-service';
@@ -10,6 +10,8 @@ import { logger } from '../../../../../services/logger-service';
 export const useLogin = (): UseLoginReturn => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
 
   const [formData, setFormData] = useState<LoginFormData>({
@@ -24,6 +26,24 @@ export const useLogin = (): UseLoginReturn => {
   const [success, setSuccess] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
+  // Get redirect URL from query params or location state
+  const getRedirectPath = (): string => {
+    // Priority 1: Check URL query parameter
+    const redirectParam = searchParams.get('redirect');
+    if (redirectParam) {
+      return redirectParam;
+    }
+
+    // Priority 2: Check location state (from Navigate component)
+    const locationState = location.state as { from?: { pathname: string } } | null;
+    if (locationState?.from?.pathname) {
+      return locationState.from.pathname;
+    }
+
+    // Default: Home page
+    return '/';
+  };
+
   const state: LoginState = {
     formData,
     showPassword,
@@ -36,7 +56,8 @@ export const useLogin = (): UseLoginReturn => {
   // Redirect if user is already logged in
   useEffect(() => {
     if (user) {
-      navigate('/profile');  // Changed from /dashboard to /profile
+      const redirectPath = getRedirectPath();
+      navigate(redirectPath, { replace: true });
     }
   }, [user, navigate]);
 
@@ -95,8 +116,9 @@ export const useLogin = (): UseLoginReturn => {
 
       if (result && result.user) {
         setSuccess(t('auth.loginSuccess', 'Login successful! Redirecting...'));
+        const redirectPath = getRedirectPath();
         setTimeout(() => {
-          navigate('/profile');  // Changed from /dashboard to /profile
+          navigate(redirectPath, { replace: true });
         }, 1000);
       } else {
         setError(t('auth.loginFailed', 'Login failed. Please try again.'));
@@ -126,8 +148,9 @@ export const useLogin = (): UseLoginReturn => {
         logger.debug('Google login successful', { userId: result.user.uid });
       }
       setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح! جاري التوجيه...'));
+      const redirectPath = getRedirectPath();
       setTimeout(() => {
-        navigate('/profile');  // Changed from /dashboard to /profile
+        navigate(redirectPath, { replace: true });
       }, 1000);
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
@@ -174,8 +197,9 @@ export const useLogin = (): UseLoginReturn => {
         logger.debug('Facebook login successful', { userId: result.user.uid });
       }
       setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح! جاري التوجيه...'));
+      const redirectPath = getRedirectPath();
       setTimeout(() => {
-        navigate('/profile');  // Changed from /dashboard to /profile
+        navigate(redirectPath, { replace: true });
       }, 1000);
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
@@ -202,8 +226,9 @@ export const useLogin = (): UseLoginReturn => {
         logger.debug('Apple login successful', { userId: result.user.uid });
       }
       setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح! جاري التوجيه...'));
+      const redirectPath = getRedirectPath();
       setTimeout(() => {
-        navigate('/profile');  // Changed from /dashboard to /profile
+        navigate(redirectPath, { replace: true });
       }, 1000);
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
@@ -232,8 +257,9 @@ export const useLogin = (): UseLoginReturn => {
       const result = await SocialAuthService.signInAnonymously();
       logger.info('✅ Anonymous login successful:', result.user);
       setSuccess(t('auth.loginSuccess', 'تم الدخول كضيف بنجاح! جاري التوجيه...'));
+      const redirectPath = getRedirectPath();
       setTimeout(() => {
-        navigate('/profile');  // Changed from /dashboard to /profile
+        navigate(redirectPath, { replace: true });
       }, 1000);
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));

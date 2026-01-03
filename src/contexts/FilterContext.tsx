@@ -23,6 +23,8 @@ export interface FilterState {
   fuelType?: string;
   transmission?: string;
   text?: string; // free text / description search
+  doors?: string; // number of doors (2/3, 4/5, 6+)
+  seats?: string; // number of seats (1-9+)
 }
 
 export interface FilterContextValue {
@@ -53,7 +55,9 @@ const URL_KEY_MAP: Record<string, string> = {
   city: 'city',
   fuelType: 'fuel',
   transmission: 'tr',
-  text: 'q'
+  text: 'q',
+  doors: 'dr',
+  seats: 'st'
 };
 
 // Reverse map for parsing

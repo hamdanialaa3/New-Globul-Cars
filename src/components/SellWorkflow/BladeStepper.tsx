@@ -1,60 +1,158 @@
 import React, { useEffect, useRef, useState } from 'react';
-import styled, { css } from 'styled-components';
-import { Car, Info, Layers, Camera, Tag, ShieldCheck, Check } from 'lucide-react';
+import styled, { css, keyframes } from 'styled-components';
+import { Car, Info, Layers, Camera, Tag, ShieldCheck, Check, Sparkles } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 interface BladeStepperProps {
-  currentStep: number; // 0-based index
+  currentStep: number;
   totalSteps: number;
   onStepClick: (stepIndex: number) => void;
   stepsData: Array<{ id: string; labelEn: string; labelBg: string; subLabelEn: string; subLabelBg: string }>;
 }
 
+// ============================================================================
+// 🎨 MODERN ANIMATIONS
+// ============================================================================
+
+const pulse = keyframes`
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 8px rgba(255, 107, 53, 0);
+  }
+`;
+
+const shimmer = keyframes`
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+`;
+
+const scaleIn = keyframes`
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+`;
+
+const float = keyframes`
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+`;
+
+// ============================================================================
+// 💎 STYLED COMPONENTS - Modern Glassmorphism Design
+// ============================================================================
+
 const BladeWrapper = styled.div`
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 10px;
-  font-family: 'Inter', sans-serif;
+  margin: 0 auto 2rem auto;
+  padding: 0 1rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   
-  /* Theme Variables Mapping */
-  --blade-bg: var(--bg-card);
-  --blade-border: var(--border-primary);
-  --accent-color: var(--accent-primary);
-  --accent-glow: rgba(255, 107, 53, 0.4); /* Based on accent-primary */
-  --text-active: var(--text-primary);
-  --text-inactive: var(--text-tertiary);
-  --success: var(--success);
+  @media (max-width: 768px) {
+    margin-bottom: 1.5rem;
+    padding: 0 0.75rem;
+  }
 `;
 
 const MetaBar = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 15px;
-  padding: 0 10px;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 1.25rem;
+  background: ${({ theme }) =>
+    theme.mode === 'dark' 
+      ? 'rgba(255, 255, 255, 0.03)' 
+      : 'rgba(255, 255, 255, 0.6)'
+  };
+  backdrop-filter: blur(10px);
+  border-radius: 14px;
+  border: 1px solid ${({ theme }) =>
+    theme.mode === 'dark'
+      ? 'rgba(255, 255, 255, 0.08)'
+      : 'rgba(0, 0, 0, 0.05)'
+  };
+  
+  @media (max-width: 768px) {
+    padding: 0.625rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+  }
 `;
 
 const StepIndicatorText = styled.div`
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.85rem;
-  color: var(--text-inactive);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: ${({ theme }) => theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.6)' : '#6B7280'};
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 
   span {
-    color: var(--accent-color);
-    font-weight: 700;
+    background: linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+    font-size: 1rem;
+  }
+  
+  @media (max-width: 768px) {
+    font-size: 0.75rem;
+    
+    span {
+      font-size: 0.875rem;
+    }
   }
 `;
 
 const ProgressPercent = styled.div`
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  /* ✅ FIX: Move percentage to the left by 4 characters */
-  margin-right: calc(1ch * 4);
+  font-family: 'Inter', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #FF6B35 0%, #004E89 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  
+  svg {
+    width: 20px;
+    height: 20px;
+    color: #FF6B35;
+    animation: ${float} 3s ease-in-out infinite;
+  }
+  
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
 `;
 
 const StepperBlade = styled.div`
@@ -62,40 +160,87 @@ const StepperBlade = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--blade-bg);
-  border: 1px solid var(--blade-border);
-  border-radius: 16px;
-  padding: 8px;
-  box-shadow: var(--shadow-xl);
+  background: ${({ theme }) =>
+    theme.mode === 'dark' 
+      ? 'rgba(255, 255, 255, 0.05)' 
+      : 'rgba(255, 255, 255, 0.8)'
+  };
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1.5px solid ${({ theme }) =>
+    theme.mode === 'dark'
+      ? 'rgba(255, 255, 255, 0.1)'
+      : 'rgba(0, 0, 0, 0.06)'
+  };
+  border-radius: 18px;
+  padding: 1rem;
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
   overflow: hidden;
+  
+  @media (max-width: 768px) {
+    padding: 0.75rem;
+    border-radius: 14px;
+  }
 `;
 
 const Glider = styled.div<{ $width: number; $left: number }>`
   position: absolute;
-  top: 8px;
-  height: calc(100% - 16px);
-  background: var(--bg-hover); /* Dynamic hover/active background */
-  border-radius: 12px;
-  border: 1px solid var(--border-secondary);
-  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-  z-index: 0;
-  box-shadow: var(--shadow-sm);
-  
-  /* Dynamic props */
-  left: ${props => props.$left}px;
+  top: 1rem;
+  height: calc(100% - 2rem);
   width: ${props => props.$width}px;
+  left: ${props => props.$left}px;
+  background: linear-gradient(135deg, 
+    rgba(255, 107, 53, 0.15) 0%,
+    rgba(255, 140, 97, 0.15) 100%
+  );
+  backdrop-filter: blur(10px);
+  border-radius: 14px;
+  border: 1.5px solid rgba(255, 107, 53, 0.3);
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 
+    0 4px 16px rgba(255, 107, 53, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  
+  @media (max-width: 768px) {
+    top: 0.75rem;
+    height: calc(100% - 1.5rem);
+    border-radius: 12px;
+  }
 `;
 
 const ProgressLine = styled.div<{ $width: number }>`
   position: absolute;
   bottom: 0;
   left: 0;
-  height: 3px;
-  background: var(--accent-color);
+  height: 4px;
+  background: linear-gradient(90deg, #FF6B35 0%, #FF8C61 100%);
   width: ${props => props.$width}%;
-  transition: width 0.5s ease;
-  box-shadow: 0 -2px 10px var(--accent-glow);
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 12px rgba(255, 107, 53, 0.6);
   z-index: 10;
+  border-radius: 0 0 16px 16px;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent
+    );
+    animation: ${shimmer} 2s infinite;
+  }
+  
+  @media (max-width: 768px) {
+    height: 3px;
+  }
 `;
 
 const StepItem = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
@@ -105,44 +250,101 @@ const StepItem = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 16px 10px;
+  gap: 0.75rem;
+  padding: 1rem 0.75rem;
   cursor: pointer;
-  transition: color 0.3s ease;
-  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 14px;
   user-select: none;
   min-width: 0;
   max-width: 100%;
   
+  /* Hover effect */
+  &:hover {
+    transform: translateY(-2px);
+    background: ${({ theme }) =>
+      theme.mode === 'dark' 
+        ? 'rgba(255, 255, 255, 0.05)' 
+        : 'rgba(255, 107, 53, 0.05)'
+    };
+  }
+  
+  /* Active/Completed Animation */
+  ${props => (props.$isActive || props.$isCompleted) && css`
+    animation: ${scaleIn} 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  `}
+  
   color: ${props => {
-    if (props.$isActive || props.$isCompleted) return 'var(--text-active)';
-    return 'var(--text-inactive)';
+    if (props.$isActive) return '#FF6B35';
+    if (props.$isCompleted) return '#10B981';
+    return ({ theme }) => theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.4)' : '#9CA3AF';
   }};
-
+  
   @media (max-width: 768px) {
-    justify-content: center;
-    padding: 12px 5px;
-    gap: 8px;
+    padding: 0.75rem 0.5rem;
+    gap: 0.5rem;
   }
 `;
 
 const StepIcon = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
-  font-size: 1.2rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.3s ease, color 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  flex-shrink: 0;
+  position: relative;
   
-  color: ${props => {
-    if (props.$isCompleted) return 'var(--success)';
-    if (props.$isActive) return 'var(--accent-color)';
-    return 'inherit';
-  }};
+  /* Completed State - Green */
+  ${props => props.$isCompleted && css`
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    
+    svg {
+      transform: scale(1.1);
+    }
+  `}
   
-  transform: ${props => props.$isActive ? 'scale(1.1)' : 'scale(1)'};
+  /* Active State - Orange */
+  ${props => props.$isActive && !props.$isCompleted && css`
+    background: linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.5);
+    animation: ${pulse} 2s ease-in-out infinite;
+    
+    svg {
+      transform: scale(1.15);
+    }
+  `}
+  
+  /* Inactive State - Gray */
+  ${props => !props.$isActive && !props.$isCompleted && css`
+    background: ${({ theme }) =>
+      theme.mode === 'dark' 
+        ? 'rgba(255, 255, 255, 0.08)' 
+        : 'rgba(0, 0, 0, 0.05)'
+    };
+    color: ${({ theme }) => theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.3)' : '#9CA3AF'};
+  `}
+  
+  svg {
+    width: 22px;
+    height: 22px;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
 
   @media (max-width: 768px) {
-    font-size: 1.4rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    
+    svg {
+      width: 20px;
+      height: 20px;
+    }
   }
 `;
 
@@ -151,36 +353,56 @@ const StepInfo = styled.div`
   flex-direction: column;
   min-width: 0;
   flex: 1;
+  gap: 0.25rem;
+  
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const StepLabel = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
+  font-weight: ${props => (props.$isActive || props.$isCompleted) ? 700 : 500};
+  font-size: 1rem;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  
+  /* Gradient text for active state */
+  ${props => props.$isActive && css`
+    background: linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+  `}
+  
+  /* Success color for completed */
+  ${props => props.$isCompleted && css`
+    color: #10B981;
+  `}
 
   @media (max-width: 768px) {
     display: none;
   }
 `;
 
-const StepLabel = styled.span`
-  font-size: 0.95rem;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  line-height: 1.4;
+const StepSubLabel = styled.div`
+  font-size: 0.8rem;
+  opacity: 0.65;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: block;
-  min-width: 0;
-`;
+  transition: opacity 0.3s ease;
+  line-height: 1.2;
+  color: ${({ theme }) => theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.5)' : '#6B7280'};
+  font-weight: 400;
 
-const StepSubLabel = styled.span`
-  display: block;
-  font-size: 0.7rem;
-  font-weight: 300;
-  opacity: 0.6;
-  margin-top: 2px;
-  line-height: 1.3;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const BladeStepper: React.FC<BladeStepperProps> = ({ currentStep, totalSteps, onStepClick, stepsData }) => {

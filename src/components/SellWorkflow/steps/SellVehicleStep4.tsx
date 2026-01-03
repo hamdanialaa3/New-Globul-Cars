@@ -29,31 +29,33 @@ const fadeIn = keyframes`
   }
 `;
 
+const slideInLeft = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`;
+
+const progressFill = keyframes`
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+`;
+
 const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  max-height: 600px;
-  overflow-y: auto;
-  padding-right: 0.5rem;
-  
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: var(--bg-secondary);
-    border-radius: 4px;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 4px;
-    
-    &:hover {
-      background: var(--text-tertiary);
-    }
-  }
+  padding: 0;
+  background: transparent;
+  border: none;
 `;
 
 const InfoText = styled.p`
@@ -150,13 +152,60 @@ const ImageItem = styled.div`
   border: 1px solid var(--border);
   border-radius: 10px;
   transition: all 0.2s ease;
-  animation: ${fadeIn} 0.3s ease-out;
+  animation: ${slideInLeft} 0.4s ease-out;
   position: relative;
   
   &:hover {
     background: var(--bg-hover);
     border-color: var(--accent-primary);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+`;
+
+const ProgressContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.02) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 12px;
+  animation: ${slideInLeft} 0.3s ease-out;
+`;
+
+const ProgressBar = styled.div<{ $progress: number }>`
+  width: 100%;
+  height: 8px;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: ${props => props.$progress}%;
+    background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+  }
+`;
+
+const ProgressText = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  
+  .percentage {
+    color: #10b981;
+    font-weight: 700;
+    font-size: 0.9rem;
   }
 `;
 
@@ -268,6 +317,7 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
   const [uploading, setUploading] = useState(false);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<Map<number, string>>(new Map());
+  const [imageProgress, setImageProgress] = useState<Map<number, number>>(new Map()); // Track progress per image
 
   // Load images from IndexedDB on mount
   useEffect(() => {
@@ -291,13 +341,22 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
   useEffect(() => {
     if (imageFiles.length === 0) {
       setImagePreviews(new Map());
+      setImageProgress(new Map());
       return;
     }
 
     const newPreviews = new Map<number, string>();
+    const newProgress = new Map<number, number>();
     const oldPreviews = new Map(imagePreviews);
 
     imageFiles.forEach((file, index) => {
+      // Initialize progress to 0 if not already set
+      if (!imageProgress.has(index)) {
+        newProgress.set(index, 0);
+      } else {
+        newProgress.set(index, imageProgress.get(index) || 0);
+      }
+
       // Check if we already have a preview for this index
       const existingPreview = imagePreviews.get(index);
       if (existingPreview) {
@@ -309,6 +368,9 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
           const previewUrl = URL.createObjectURL(file);
           newPreviews.set(index, previewUrl);
           logger.info(`Created preview URL for image ${index + 1}:`, file.name);
+          
+          // Animate progress from 0 to 100 with easing
+          animateProgress(index);
         } catch (error) {
           logger.error(`Failed to create preview for image ${index + 1}:`, error);
         }
@@ -316,6 +378,7 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
     });
 
     setImagePreviews(newPreviews);
+    setImageProgress(newProgress);
 
     // Cleanup old preview URLs that are no longer needed
     return () => {
@@ -327,6 +390,29 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
       });
     };
   }, [imageFiles]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Animate progress smoothly
+  const animateProgress = useCallback((index: number) => {
+    const duration = 800; // milliseconds
+    const startTime = Date.now();
+    
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min((elapsed / duration) * 100, 100);
+      
+      setImageProgress(prev => {
+        const updated = new Map(prev);
+        updated.set(index, progress);
+        return updated;
+      });
+      
+      if (progress < 100) {
+        requestAnimationFrame(animate);
+      }
+    };
+    
+    requestAnimationFrame(animate);
+  }, []);
 
   const handleFileSelect = useCallback(async (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -485,54 +571,66 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
           <ImagesList>
             {imageFiles.map((file, index) => {
               const previewUrl = imagePreviews.get(index);
+              const progress = imageProgress.get(index) || 0;
               const fileSize = file.size ? (file.size / 1024 / 1024).toFixed(2) : '0';
               const fileName = file.name || `Image ${index + 1}`;
 
               return (
-                <ImageItem key={`${index}-${file.name || index}`}>
-                  <ImageIndex>#{index + 1}</ImageIndex>
-                  <ImageThumbnail>
-                    {previewUrl ? (
-                      <ImagePreview src={previewUrl} alt={fileName} onError={(e) => {
-                        logger.error('Failed to load preview for image:', index, file.name);
-                        // Try to create a new preview URL if the old one is invalid
-                        if (file instanceof File) {
-                          const newUrl = URL.createObjectURL(file);
-                          setImagePreviews(prev => {
-                            const updated = new Map(prev);
-                            updated.set(index, newUrl);
-                            return updated;
-                          });
-                        }
-                      }} />
-                    ) : (
-                      <div style={{
-                        width: '100%',
-                        height: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'var(--text-secondary)',
-                        fontSize: '0.75rem'
-                      }}>
-                        {language === 'bg' ? 'Зареждане...' : 'Loading...'}
-                      </div>
-                    )}
-                  </ImageThumbnail>
-                  <ImageInfo>
-                    <ImageName title={fileName}>{fileName}</ImageName>
-                    <ImageSize>{fileSize} MB</ImageSize>
-                  </ImageInfo>
-                  <RemoveButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleRemoveImage(index);
-                    }}
-                    title={language === 'bg' ? 'Изтрий' : 'Remove'}
-                  >
-                    <X />
-                  </RemoveButton>
-                </ImageItem>
+                <div key={`${index}-${file.name || index}`}>
+                  <ImageItem>
+                    <ImageIndex>#{index + 1}</ImageIndex>
+                    <ImageThumbnail>
+                      {previewUrl ? (
+                        <ImagePreview src={previewUrl} alt={fileName} onError={(e) => {
+                          logger.error('Failed to load preview for image:', index, file.name);
+                          // Try to create a new preview URL if the old one is invalid
+                          if (file instanceof File) {
+                            const newUrl = URL.createObjectURL(file);
+                            setImagePreviews(prev => {
+                              const updated = new Map(prev);
+                              updated.set(index, newUrl);
+                              return updated;
+                            });
+                          }
+                        }} />
+                      ) : (
+                        <div style={{
+                          width: '100%',
+                          height: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'var(--text-secondary)',
+                          fontSize: '0.75rem'
+                        }}>
+                          {language === 'bg' ? 'Зареждане...' : 'Loading...'}
+                        </div>
+                      )}
+                    </ImageThumbnail>
+                    <ImageInfo>
+                      <ImageName title={fileName}>{fileName}</ImageName>
+                      <ImageSize>{fileSize} MB</ImageSize>
+                    </ImageInfo>
+                    <RemoveButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveImage(index);
+                      }}
+                      title={language === 'bg' ? 'Изтрий' : 'Remove'}
+                    >
+                      <X />
+                    </RemoveButton>
+                  </ImageItem>
+                  {progress < 100 && (
+                    <ProgressContainer>
+                      <ProgressBar $progress={progress} />
+                      <ProgressText>
+                        <span>{language === 'bg' ? 'Обработка...' : 'Processing...'}</span>
+                        <span className="percentage">{Math.round(progress)}%</span>
+                      </ProgressText>
+                    </ProgressContainer>
+                  )}
+                </div>
               );
             })}
           </ImagesList>

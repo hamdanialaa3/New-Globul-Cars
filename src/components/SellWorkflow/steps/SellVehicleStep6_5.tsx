@@ -20,9 +20,12 @@ interface SellVehicleStep6_5Props {
 }
 
 const Container = styled.div`
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0;
+  background: transparent;
+  border: none;
 `;
 
 const Header = styled.div`
