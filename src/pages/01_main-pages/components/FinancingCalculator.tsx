@@ -21,6 +21,11 @@ const Header = styled.div`
   align-items: center;
   gap: 10px;
   margin-bottom: 1rem;
+
+  svg {
+    background-clip: unset;
+    -webkit-background-clip: unset;
+  }
 `;
 
 const Title = styled.h3`
@@ -42,7 +47,7 @@ const MainResult = styled.div`
 const MonthlyRate = styled.div`
   font-size: 28px;
   font-weight: 800;
-  color: var(--accent-primary);
+  color: rgba(252, 255, 51, 1);
 `;
 
 const Label = styled.div`
@@ -86,6 +91,10 @@ const ValueDisplay = styled.div`
   color: var(--text-primary);
   display: flex;
   justify-content: space-between;
+
+  span:last-child {
+    color: rgba(7, 43, 242, 1);
+  }
 `;
 
 const Disclaimer = styled.div`
@@ -135,7 +144,7 @@ export const FinancingCalculator: React.FC<FinancingCalculatorProps> = ({ price,
   return (
     <Container>
       <Header>
-        <Calculator size={24} color="var(--accent-primary)" />
+        <Calculator size={24} color="rgba(252, 255, 51, 1)" />
         <Title>{language === 'bg' ? 'Финансиране' : 'Financing'}</Title>
       </Header>
 

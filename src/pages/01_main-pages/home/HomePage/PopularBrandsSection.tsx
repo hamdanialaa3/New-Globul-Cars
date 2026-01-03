@@ -337,8 +337,8 @@ const PopularBrandsSection: React.FC = () => {
   // ✅ Removed brandCounts state - no longer needed since we don't display counts
 
   const handleBrandClick = (brandId: string) => {
-    // ✅ Always navigate, even if count is 0
-    navigate(`/cars?make=${encodeURIComponent(brandId)}`);
+    // ✅ Navigate to brand-specific container page
+    navigate(`/cars/brand/${encodeURIComponent(brandId)}`);
   };
 
   const getBrandName = (brand: typeof POPULAR_BRANDS[0]) => {

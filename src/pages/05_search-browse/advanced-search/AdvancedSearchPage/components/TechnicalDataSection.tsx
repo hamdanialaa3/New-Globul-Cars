@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from '../../../../../hooks/useTranslation';
+import { DRIVE_TYPES } from '../../../../../pages/04_car-selling/sell/VehicleData/types';
 import {
   SectionCard,
   SectionHeader,
@@ -160,9 +161,9 @@ export const TechnicalDataSection: React.FC<TechnicalDataSectionProps> = ({
               <label>{t('advancedSearch.driveType')}</label>
               <SearchSelect name="driveType" value={searchData.driveType || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
-                <option value="front">{t('advancedSearch.frontWheelDrive')}</option>
-                <option value="rear">{t('advancedSearch.rearWheelDrive')}</option>
-                <option value="all">{t('advancedSearch.allWheelDrive')}</option>
+                {DRIVE_TYPES.map(type => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
               </SearchSelect>
             </FormGroup>
 

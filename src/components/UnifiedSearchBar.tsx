@@ -165,6 +165,9 @@ const FormGrid = styled.div<{ $isDark: boolean }>`
   gap: 1rem;
   padding: 1.5rem;
   align-items: end;
+  background: ${props => props.$isDark 
+    ? 'transparent' 
+    : 'rgba(235, 230, 230, 0.9)'};
 
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);
@@ -285,6 +288,7 @@ const AdvancedLink = styled.button<{ $isDark: boolean }>`
   cursor: pointer;
   text-align: center;
   padding: 0.5rem;
+  border-radius: 16px;
   transition: all 0.2s ease;
 
   &:hover {

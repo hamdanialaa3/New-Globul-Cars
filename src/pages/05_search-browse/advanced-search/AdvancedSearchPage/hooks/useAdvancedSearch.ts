@@ -3,7 +3,7 @@ import { logger } from '../../../../../services/logger-service';
 // Custom hook for Advanced Search Page state management
 
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from '../../../../../hooks/useTranslation';
 import { SearchData, SectionState, SectionName, SortOption, ViewMode, SearchResultsMeta } from '../types';
 import { CarListing } from '../../../../../types/CarListing';
@@ -105,11 +105,32 @@ const createInitialSectionState = (): SectionState => ({
 export const useAdvancedSearch = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const { filters, updateFilter } = useFilters();
 
   // Search Form State (local UI state; core subset synced with FilterContext)
   const [searchData, setSearchData] = useState<SearchData>(createInitialSearchData());
+  
+  // ✅ Read URL parameters and initialize searchData
+  useEffect(() => {
+    const make = searchParams.get('make');
+    const model = searchParams.get('model');
+    const firstRegistrationFrom = searchParams.get('firstRegistrationFrom');
+    const priceTo = searchParams.get('priceTo');
+    const condition = searchParams.get('condition');
+
+    if (make || model || firstRegistrationFrom || priceTo || condition) {
+      setSearchData(prev => ({
+        ...prev,
+        ...(make && { make }),
+        ...(model && { model }),
+        ...(firstRegistrationFrom && { firstRegistrationFrom }),
+        ...(priceTo && { priceTo }),
+        ...(condition && { condition })
+      }));
+    }
+  }, [searchParams]);
   const [isSearching, setIsSearching] = useState(false);
   
   // ✅ NEW: Load brands dynamically from centralized service

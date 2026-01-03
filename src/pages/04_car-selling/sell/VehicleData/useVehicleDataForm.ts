@@ -90,7 +90,8 @@ const initialValues = useMemo<VehicleFormData>(() => {
       year: searchParams.get('fy') || undefined,
       fuelType: searchParams.get('fm') || undefined,
       mileage: searchParams.get('mi') || undefined,
-      transmission: searchParams.get('tr') || undefined
+      transmission: searchParams.get('tr') || undefined,
+      condition: searchParams.get('condition') || undefined // ✅ ADDED: Read condition from URL
     };
 
     // ✅ UNIFIED WORKFLOW: Prioritize unified workflow data over legacy workflow
@@ -113,7 +114,8 @@ const [formData, setFormData] = useState<VehicleFormData>(initialValues);
       year: searchParams.get('fy') || undefined,
       fuelType: searchParams.get('fm') || undefined,
       mileage: searchParams.get('mi') || undefined,
-      transmission: searchParams.get('tr') || undefined
+      transmission: searchParams.get('tr') || undefined,
+      condition: searchParams.get('condition') || undefined // ✅ ADDED: Read condition from URL
     };
 
     // Update formData with URL params if they exist
@@ -416,6 +418,7 @@ const formEquals = useCallback(
     if (formData.fuelType) params.set('fm', formData.fuelType === '__other__' ? (formData.fuelTypeOther || '') : formData.fuelType);
     if (formData.mileage) params.set('mi', formData.mileage);
     if (formData.transmission) params.set('tr', formData.transmission);
+    if (formData.condition) params.set('condition', formData.condition); // ✅ ADDED: Include condition in URL
     // Map typed 'Other' year/month to secure value
     // Prefer `year` if present (mobile/legacy), otherwise extract from `firstRegistration`.
     const fy = getRegistrationYear(formData);

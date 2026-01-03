@@ -106,7 +106,73 @@ const ViewAllButton = styled.button<{ $isDark: boolean }>`
   }
 `;
 
-// Categories Data (Bulgarian)
+// 🆕 Smart Classifications Styled Components
+const SmartClassificationsContainer = styled.div`
+  margin-bottom: 60px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+const SmartTitle = styled.h3<{ $isDark: boolean }>`
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: ${props => props.$isDark ? '#f1f5f9' : '#1e293b'};
+  margin-bottom: 24px;
+  text-align: center;
+`;
+
+const SmartGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+`;
+
+const SmartCard = styled.div<{ $isDark: boolean }>`
+  background: ${props => props.$isDark
+    ? 'rgba(30, 41, 59, 0.6)'
+    : 'rgba(255, 255, 255, 0.9)'};
+  backdrop-filter: blur(10px);
+  border: 1px solid ${props => props.$isDark ? '#334155' : '#e2e8f0'};
+  border-radius: 16px;
+  padding: 24px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: ${props => props.$isDark
+    ? '0 2px 8px rgba(0,0,0,0.3)'
+    : '0 2px 8px rgba(0,0,0,0.05)'};
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: ${props => props.$isDark
+      ? '0 8px 24px rgba(102, 126, 234, 0.4)'
+      : '0 8px 24px rgba(102, 126, 234, 0.2)'};
+    border-color: #667eea;
+  }
+`;
+
+const SmartLabel = styled.div`
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+`;
+
+const SmartDescription = styled.div<{ $isDark: boolean }>`
+  font-size: 0.875rem;
+  color: ${props => props.$isDark ? '#94a3b8' : '#64748b'};
+`;
+
+// Categories Data (Bulgarian + New Smart Classifications)
 const CATEGORIES: VehicleCategory[] = [
   { id: 'sedan', labelBg: 'Седан', labelEn: 'Sedan', iconName: 'sedan', count: 1240 },
   { id: 'suv', labelBg: 'Джип / SUV', labelEn: 'SUV', iconName: 'suv', count: 980 },
@@ -116,6 +182,16 @@ const CATEGORIES: VehicleCategory[] = [
   { id: 'convertible', labelBg: 'Кабрио', labelEn: 'Convertible', iconName: 'convertible', count: 180 },
   { id: 'pickup', labelBg: 'Пикап', labelEn: 'Pickup', iconName: 'pickup', count: 150 },
   { id: 'minivan', labelBg: 'Миниван', labelEn: 'Minivan', iconName: 'minivan', count: 210 }
+];
+
+// 🆕 Smart Classifications (New Container Pages)
+const SMART_CLASSIFICATIONS = [
+  { id: 'family', labelBg: 'Семейни', labelEn: 'Family Cars', link: '/cars/family', descriptionBg: '7+ места', descriptionEn: '7+ seats' },
+  { id: 'sport', labelBg: 'Спортни', labelEn: 'Sport Cars', link: '/cars/sport', descriptionBg: '270+ к.с.', descriptionEn: '270+ HP' },
+  { id: 'vip', labelBg: 'VIP луксозни', labelEn: 'VIP Luxury', link: '/cars/vip', descriptionBg: '35k+ евро', descriptionEn: '35k+ EUR' },
+  { id: 'classic', labelBg: 'Класически', labelEn: 'Classic Cars', link: '/cars/classic', descriptionBg: 'Преди 1995', descriptionEn: 'Before 1995' },
+  { id: 'new', labelBg: 'Нови', labelEn: 'New Cars', link: '/cars/new', descriptionBg: '2023+', descriptionEn: '2023+' },
+  { id: 'economy', labelBg: 'Икономични', labelEn: 'Economy', link: '/cars/economy', descriptionBg: 'Нисък разход', descriptionEn: 'Low consumption' }
 ];
 
 const VehicleClassificationsSection: React.FC = () => {
@@ -150,6 +226,10 @@ const VehicleClassificationsSection: React.FC = () => {
     navigate(`/cars?bodyType=${selectedCategory}`);
   };
 
+  const handleSmartClassificationClick = (link: string) => {
+    navigate(link);
+  };
+
   const selectedCategoryLabel = CATEGORIES.find(c => c.id === selectedCategory);
   const categoryLabel = language === 'bg'
     ? selectedCategoryLabel?.labelBg
@@ -171,6 +251,27 @@ const VehicleClassificationsSection: React.FC = () => {
             : 'Explore our wide range of cars, classified by body type for your convenience.')}
         </Subtitle>
       </HeaderContainer>
+
+      {/* 🆕 Smart Classifications Section */}
+      <SmartClassificationsContainer>
+        <SmartTitle $isDark={isDark}>
+          {language === 'bg' ? 'Интелигентни категории' : 'Smart Classifications'}
+        </SmartTitle>
+        <SmartGrid>
+          {SMART_CLASSIFICATIONS.map(classification => (
+            <SmartCard
+              key={classification.id}
+              $isDark={isDark}
+              onClick={() => handleSmartClassificationClick(classification.link)}
+            >
+              <SmartLabel>{language === 'bg' ? classification.labelBg : classification.labelEn}</SmartLabel>
+              <SmartDescription $isDark={isDark}>
+                {language === 'bg' ? classification.descriptionBg : classification.descriptionEn}
+              </SmartDescription>
+            </SmartCard>
+          ))}
+        </SmartGrid>
+      </SmartClassificationsContainer>
 
       <CategoriesContainer>
         <HorizontalScrollContainer

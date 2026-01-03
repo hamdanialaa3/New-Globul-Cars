@@ -12,6 +12,7 @@ export interface UnifiedCar {
   mileage?: number;
   fuelType?: string;
   transmission?: string;
+  driveType?: string; // Drive type (FWD/RWD/AWD/4WD)
   power?: number;
   images?: string[];
   mainImage?: string;

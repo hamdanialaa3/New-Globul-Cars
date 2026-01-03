@@ -198,6 +198,21 @@ export class GDPRService {
       // Commit batch deletion
       await batch.commit();
 
+      // ✅ NEW: Request Google Analytics data deletion
+      try {
+        const gaDataDeletionService = (await import('../analytics/google-analytics-data-deletion.service')).default;
+        const userDoc = await getDoc(doc(db, 'users', userId));
+        const userEmail = userDoc.data()?.email;
+        
+        await gaDataDeletionService.requestDataDeletion(userId, userEmail, reason);
+        deletedCollections.push('google_analytics (requested)');
+        
+        // Clear user tracking immediately
+        gaDataDeletionService.clearUserTracking();
+      } catch (err) {
+        errors.push(`google_analytics: ${(err as Error).message}`);
+      }
+
       await this.logComplianceAction(
         'GDPR_USER_DATA_DELETED',
         userId,

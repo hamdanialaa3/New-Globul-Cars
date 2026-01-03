@@ -97,6 +97,9 @@ const NewCarsPage = safeLazy(() => import('../pages/seo/NewCarsPage'));
 const AccidentCarsPage = safeLazy(() => import('../pages/seo/AccidentCarsPage'));
 const NotFoundPage = safeLazy(() => import('../components/NotFoundPage'));
 
+// 🆕 Dynamic Car Showcase Pages (Container Pages)
+const DynamicCarShowcase = safeLazy(() => import('../pages/05_search-browse/DynamicCarShowcase'));
+
 // Helper for dev tools components
 const BackupManagement = safeLazy(() => import('../components/admin/BackupManagement'));
 const LeadScoringDashboard = safeLazy(() => import('../components/messaging/LeadScoringDashboard'));
@@ -106,6 +109,8 @@ const AuthUsersPage = safeLazy(() => import('../pages/06_admin/AuthUsersPage'));
 const SharedInboxPage = safeLazy(() => import('../pages/06_admin/SharedInboxPage'));
 const StripeSetupPage = safeLazy(() => import('../pages/09_dealer-company/StripeSetupPage'));
 const InsurancePage = safeLazy(() => import('../pages/11_testing-dev/InsurancePage'));
+
+
 
 
 
@@ -119,6 +124,18 @@ export const MainRoutes: React.FC = () => {
             <Route path="/" element={<HomePage />} />
             <Route path="/social" element={<SocialFeedPage />} />
             <Route path="/cars" element={<CarsPage />} />
+
+            {/* 🆕 Dynamic Car Showcase Pages (Container Pages) */}
+            <Route path="/cars/all" element={<DynamicCarShowcase pageType="all" />} />
+            <Route path="/cars/family" element={<DynamicCarShowcase pageType="family" />} />
+            <Route path="/cars/sport" element={<DynamicCarShowcase pageType="sport" />} />
+            <Route path="/cars/vip" element={<DynamicCarShowcase pageType="vip" />} />
+            <Route path="/cars/classic" element={<DynamicCarShowcase pageType="classic" />} />
+            <Route path="/cars/new" element={<DynamicCarShowcase pageType="new" />} />
+            <Route path="/cars/used" element={<DynamicCarShowcase pageType="used" />} />
+            <Route path="/cars/economy" element={<DynamicCarShowcase pageType="economy" />} />
+            <Route path="/cars/city/:cityName" element={<DynamicCarShowcase pageType="city" />} />
+            <Route path="/cars/brand/:brandName" element={<DynamicCarShowcase pageType="brand" />} />
 
             {/* 🔢 Strict Numeric Car URLs (Constitution: /car/:sellerNumericId/:carNumericId) */}
             <Route path="/car/:sellerNumericId/:carNumericId" element={<NumericCarDetailsPage />} />

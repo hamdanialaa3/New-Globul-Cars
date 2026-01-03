@@ -195,10 +195,12 @@ const ContentWrapper = styled(motion.div)`
   position: relative;
   z-index: 10;
   width: 100%;
+  height: 100%;
   max-width: 1200px;
-  padding: 40px 24px;
+  padding: 1px 24px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
   text-align: center;
   
@@ -293,18 +295,18 @@ const SearchCapsuleContainer = styled(motion.div)<{ $isDark: boolean }>`
   
   background: ${props => props.$isDark
     ? 'rgba(15, 23, 42, 0.9)'
-    : 'rgba(255, 255, 255, 0.95)'};
+    : 'linear-gradient(20deg, rgba(235, 230, 230, 0.01) 0%, rgba(157, 144, 144, 0.01) 100%)'};
   
   border: 1px solid ${props => props.$isDark
     ? 'rgba(255, 255, 255, 0.15)'
-    : 'rgba(12, 26, 42, 0.1)'};
+    : 'rgba(12, 26, 42, 0.01)'};
   
   border-radius: 20px;
   padding: 24px;
-  backdrop-filter: blur(20px);
+  backdrop-filter: none;
   box-shadow: ${props => props.$isDark
     ? '0 24px 70px rgba(0, 0, 0, 0.5)'
-    : '0 24px 70px rgba(12, 26, 42, 0.12)'};
+    : 'none'};
 
   @media (max-width: 768px) {
     max-width: 95%;
@@ -418,6 +420,7 @@ const CTAButton = styled(motion.button)<{ $isDark: boolean; $primary?: boolean }
   font-size: 1rem;
   cursor: pointer;
   white-space: nowrap;
+  text-align: left;
 
   svg {
     flex-shrink: 0;
@@ -638,7 +641,18 @@ const UnifiedHeroSection: React.FC = memo(() => {
                 key={mode}
                 $isDark={isDark}
                 $active={searchMode === mode}
-                onClick={() => setSearchMode(mode)}
+                onClick={() => {
+                  setSearchMode(mode);
+                  // Navigate based on mode
+                  if (mode === 'buy') {
+                    navigate('/cars');
+                  } else if (mode === 'sell') {
+                    navigate('/sell/auto');
+                  } else if (mode === 'rent') {
+                    // Coming soon
+                    alert(isBg ? 'Скоро ще бъде налично!' : 'Coming soon!');
+                  }
+                }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >

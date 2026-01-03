@@ -12,6 +12,7 @@ import { UnifiedCar, mapDocToCar } from '../../../../services/car';
 import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
 import { logger } from '../../../../services/logger-service';
 import { useFavorites } from '../../../../hooks/useFavorites';
+import RealisticPaperclipBadge from '../../../../components/SoldBadge/RealisticPaperclipBadge';
 
 // Styled Components
 const SectionContainer = styled.section`
@@ -155,35 +156,6 @@ const TimeStamp = styled.div`
   z-index: 2;
 `;
 
-const SoldOverlay = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-15deg);
-  background: rgba(220, 38, 38, 0.95);
-  color: white;
-  padding: 6px 12px;
-  font-weight: 900;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  border-radius: 2px;
-  z-index: 5;
-  border: 2px solid white;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-  letter-spacing: 1.5px;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 2px;
-    border: 1px dashed rgba(255, 255, 255, 0.5);
-    border-radius: inherit;
-  }
-`;
 
 const FavoriteButton = styled.button<{ $isFavorite: boolean }>`
   position: absolute;
@@ -483,9 +455,10 @@ const LatestCarsSection: React.FC = () => {
               <CarCard key={car.id} to={getCarUrl()}>
                 <ImageWrapper>
                   {(car as any).isSold && (
-                    <SoldOverlay>
-                      {language === 'bg' ? 'ПРОДАДЕНО' : 'SOLD'}
-                    </SoldOverlay>
+                    <RealisticPaperclipBadge 
+                      text={language === 'bg' ? 'ПРОДАДЕНО' : 'SOLD'} 
+                      language={language as 'bg' | 'en'} 
+                    />
                   )}
                   {car.images && car.images.length > 0 ? (
                     <CarImage

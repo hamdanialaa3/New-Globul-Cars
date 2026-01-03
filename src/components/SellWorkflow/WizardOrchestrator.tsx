@@ -6,7 +6,7 @@ import { useWizardState } from './hooks/useWizardState';
 import { useWizardValidation } from './hooks/useWizardValidation';
 import { useWizardTimer } from './hooks/useWizardTimer';
 import BladeStepper from './BladeStepper';
-import { Check, ArrowLeft, ArrowRight, RotateCcw, AlertTriangle, Clock, Cloud, Sparkles, Car } from 'lucide-react';
+import { Check, ArrowLeft, ArrowRight, RotateCcw, AlertTriangle, Cloud, Sparkles, Car } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -38,7 +38,6 @@ import {
     ResetConfirmText,
     ResetConfirmButtons,
     ConfirmButton,
-    TimerBadge,
     StatusWrapper,
     DraftBadge
 } from './styles';
@@ -241,11 +240,18 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
         try {
             // 1. Get images from IndexedDB
             const images = await ImageStorageService.getImages();
+            
+            console.log('📤 Publishing started', {
+                userId: currentUser.uid,
+                imagesCount: images.length,
+                formDataKeys: Object.keys(formData),
+                vehicleType: formData.vehicleType
+            });
 
-            // 2. Prepare payload (ensure it matches what SellWorkflowService expects)
+            // 2. Prepare payload (service handles image upload separately)
             const payload = {
-                ...formData,
-                images: images.length // Service handles actual upload
+                ...formData
+                // ✅ FIXED: Don't send images in payload - service handles them separately
             };
 
             // 3. Call the service
@@ -290,8 +296,31 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
             }
 
         } catch (error: any) {
-            console.error('Publishing failed', error);
-            const errorMsg = error.message || (language === 'bg' ? 'Възникна грешка при публикуването' : 'Failed to publish listing');
+            console.error('❌ Publishing failed', error);
+            
+            // Detailed error messages based on error type
+            let errorMsg = '';
+            
+            if (error.message?.includes('Image upload')) {
+                errorMsg = language === 'bg'
+                    ? 'Грешка при качване на снимките. Моля проверете интернет връзката и опитайте отново.'
+                    : 'Image upload failed. Please check your internet connection and try again.';
+            } else if (error.message?.includes('numeric IDs') || error.message?.includes('numeric ID')) {
+                errorMsg = language === 'bg'
+                    ? 'Системна грешка при присвояване на ID. Моля опитайте отново.'
+                    : 'System error assigning IDs. Please try again.';
+            } else if (error.message?.includes('Listing limit')) {
+                errorMsg = error.message; // Already translated
+            } else if (error.message?.includes('Authentication') || error.message?.includes('authenticated')) {
+                errorMsg = language === 'bg'
+                    ? 'Моля влезте в профила си, за да публикувате обява.'
+                    : 'Please log in to publish your listing.';
+            } else {
+                errorMsg = error.message || (language === 'bg' 
+                    ? 'Възникна грешка при публикуването. Моля опитайте отново.'
+                    : 'Failed to publish listing. Please try again.');
+            }
+            
             toast.error(errorMsg);
         } finally {
             setIsPublishing(false);
@@ -389,7 +418,7 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ delay: 0.4 }}
                             >
-                                {language === 'bg' ? '🎉 Успешно публикувано!' : '🎉 Successfully Published!'}
+                                {language === 'bg' ? 'Успешно публикувано!' : 'Successfully Published!'}
                             </SuccessTitle>
                             <SuccessMessage
                                 initial={{ y: 20, opacity: 0 }}
@@ -417,20 +446,13 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
 
             <WizardContainer>
                 <StatusWrapper>
-                {isActive && (
-                    <TimerBadge $warning={remainingSeconds < 300}>
-                        <Clock />
-                        <span>{formattedTime}</span>
-                    </TimerBadge>
-                )}
+                {/* Timer removed - already shown in ModalWorkflowTimer at top */}
 
-                <DraftBadge>
-                    {isSaving ? (
-                        language === 'bg' ? 'Запазване...' : 'Saving...'
-                    ) : (
-                        language === 'bg' ? 'Черновата е запазена' : 'Draft Saved'
-                    )}
-                </DraftBadge>
+                {isSaving && (
+                    <DraftBadge>
+                        {language === 'bg' ? 'Запазване...' : 'Saving...'}
+                    </DraftBadge>
+                )}
 
                 {currentUser && (
                     <div style={{ 

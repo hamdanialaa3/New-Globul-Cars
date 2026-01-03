@@ -28,6 +28,7 @@ const FIELD_MAP: Record<string, string> = {
   vehicleType: 'vehicleType',
   fuelType: 'fuelType',
   transmission: 'transmission',
+  driveType: 'driveType', // نوع الدفع
   condition: 'condition',
   seller: 'sellerType',
   city: 'city',
@@ -119,7 +120,7 @@ export function buildMultiCollectionQueries(filters: InputFilters, options: Quer
  */
 export function extractCoreFilterSignature(filters: InputFilters): Record<string, string> {
   const signature: Record<string, string> = {};
-  ['make','model','vehicleType','fuelType','transmission','city','country'].forEach(key => {
+  ['make','model','vehicleType','fuelType','transmission','driveType','city','country'].forEach(key => {
     const val = (filters as any)[key];
     if (val) signature[key] = String(val);
   });

@@ -62,6 +62,7 @@ import { FinancingCalculator } from './FinancingCalculator';
 import CarBrandLogo from '../../../components/CarBrandLogo';
 import { ExtendedSellerInfo } from './ExtendedSellerInfo';
 import { Battery, ShieldCheck, Info } from 'lucide-react';
+import RealisticPaperclipBadge from '../../../components/SoldBadge/RealisticPaperclipBadge';
 
 
 
@@ -603,35 +604,6 @@ const StatusLED = styled.div`
   flex-shrink: 0;
 `;
 
-const SoldStamp = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-15deg);
-  border: 4px solid #ef4444;
-  color: #ef4444;
-  font-weight: 900;
-  font-size: 3.5rem;
-  padding: 0.75rem 2.5rem;
-  text-transform: uppercase;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(8px);
-  z-index: 20;
-  pointer-events: none;
-  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
-  border-radius: 4px;
-  letter-spacing: 2px;
-  outline: 2px solid #ef4444;
-  outline-offset: 4px;
-  
-  @media (max-width: 768px) {
-    font-size: 2.2rem;
-    padding: 0.5rem 1.5rem;
-    border-width: 3px;
-    outline-width: 1.5px;
-    outline-offset: 3px;
-  }
-`;
 
 // Price Card (Right Column - Top)
 const PriceCard = styled.div`
@@ -2014,7 +1986,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
                   src={typeof images[currentImageIndex] === 'string' ? images[currentImageIndex] : URL.createObjectURL(images[currentImageIndex] as File)}
                   alt={`${car.make} ${car.model}`}
                 />
-                {isSold && <SoldStamp>{t.soldMark}</SoldStamp>}
+                {isSold && <RealisticPaperclipBadge text={t.soldMark} language={language} />}
                 {images.length > 1 && (
                   <>
                     <ImageNavButton $position="left" onClick={handlePrevImage}>
@@ -2497,11 +2469,6 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
                 )}
               </ShareMenuContainer>
             </SellerCard>
-            <FinancingCalculator
-              price={car.price}
-              currency={car.currency || 'EUR'}
-              language={language}
-            />
           </RightColumn>
         </MainContent>
 

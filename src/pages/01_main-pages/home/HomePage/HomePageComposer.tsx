@@ -43,10 +43,12 @@ import RecentBrowsingSection from './RecentBrowsingSection';
 import UnifiedSocial from './UnifiedSocial';
 import HomeTrustAndStats from './HomeTrustAndStats';
 import HomeLoyaltyAndSignup from './HomeLoyaltyAndSignup';
+import LinkableSection from './LinkableSection';
 
 // Import individual shortcut sections (previously unified)
 import PopularBrandsSection from './PopularBrandsSection';
 import VehicleClassificationsSection from './VehicleClassificationsSection';
+import DriveTypeShowcaseSection from './DriveTypeShowcaseSection';
 import MostDemandedCategoriesSection from './MostDemandedCategoriesSection';
 import CategoriesSection from './CategoriesSection';
 import QuickBrandsSection from './QuickBrandsSection';
@@ -140,11 +142,19 @@ const CarsShowcaseSlot: React.FC = () => {
   const { t } = useLanguage();
   
   return (
-    <LazySection rootMargin="100px">
-      <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
-        <UnifiedCarsShowcase />
-      </Suspense>
-    </LazySection>
+    <LinkableSection
+      title="Latest Cars"
+      titleAr="أحدث السيارات"
+      viewAllLink="/view-all-new-cars"
+      viewAllText="View All"
+      viewAllTextAr="عرض الكل"
+    >
+      <LazySection rootMargin="100px">
+        <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
+          <UnifiedCarsShowcase />
+        </Suspense>
+      </LazySection>
+    </LinkableSection>
   );
 };
 
@@ -175,6 +185,22 @@ const VehicleClassificationsSlot: React.FC = () => {
     <LazySection rootMargin="100px">
       <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
         <VehicleClassificationsSection />
+      </Suspense>
+    </LazySection>
+  );
+};
+
+/**
+ * Slot 6.5: Drive Type Showcase
+ * عرض السيارات حسب نوع الدفع
+ */
+const DriveTypeShowcaseSlot: React.FC = () => {
+  const { t } = useLanguage();
+  
+  return (
+    <LazySection rootMargin="100px">
+      <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
+        <DriveTypeShowcaseSection />
       </Suspense>
     </LazySection>
   );
@@ -245,6 +271,29 @@ const LifeMomentsSlot: React.FC = () => {
  * Featured dealers - Unified / Препоръчани дилъри - Обединени
  */
 const DealersSlot: React.FC = () => {
+  const { t } = useLanguage();
+  
+  return (
+    <LinkableSection
+      title="Featured Dealers"
+      titleAr="الوكلاء المميزون"
+      viewAllLink="/view-all-dealers"
+      viewAllText="View All Dealers"
+      viewAllTextAr="عرض جميع الوكلاء"
+    >
+      <LazySection rootMargin="100px">
+        <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
+          <UnifiedDealer />
+        </Suspense>
+      </LazySection>
+    </LinkableSection>
+  );
+};
+
+/**
+ * Slot 11 (original - keep for reference)
+ */
+const DealersSlotOriginal: React.FC = () => {
   const { t } = useLanguage();
   
   return (
@@ -369,6 +418,10 @@ const HomePageComposer: React.FC = React.memo(() => {
 
       {/* Slot 6: Vehicle Classifications */}
       <VehicleClassificationsSlot />
+      <SectionSpacer />
+
+      {/* Slot 6.5: Drive Type Showcase */}
+      <DriveTypeShowcaseSlot />
       <SectionSpacer />
 
       {/* Slot 7: Most Demanded Categories */}

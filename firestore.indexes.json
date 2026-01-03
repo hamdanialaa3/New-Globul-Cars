@@ -1067,6 +1067,218 @@
                     "order": "ASCENDING"
                 }
             ]
+        },
+        {
+            "collectionGroup": "passenger_cars",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "numberOfSeats",
+                    "order": "DESCENDING"
+                },
+                {
+                    "fieldPath": "price",
+                    "order": "ASCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "passenger_cars",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "power",
+                    "order": "DESCENDING"
+                },
+                {
+                    "fieldPath": "year",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "passenger_cars",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "price",
+                    "order": "DESCENDING"
+                },
+                {
+                    "fieldPath": "year",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "passenger_cars",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "year",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "make",
+                    "order": "ASCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "passenger_cars",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "city",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "price",
+                    "order": "ASCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "passenger_cars",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "make",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "year",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "passenger_cars",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "fuelConsumption",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "price",
+                    "order": "ASCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "suvs",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "numberOfSeats",
+                    "order": "DESCENDING"
+                },
+                {
+                    "fieldPath": "price",
+                    "order": "ASCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "suvs",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "power",
+                    "order": "DESCENDING"
+                },
+                {
+                    "fieldPath": "year",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "vans",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "numberOfSeats",
+                    "order": "DESCENDING"
+                },
+                {
+                    "fieldPath": "price",
+                    "order": "ASCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "passenger_cars",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "isActive",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "driveType",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "suvs",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "isActive",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "driveType",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "vans",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "isActive",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "driveType",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "trucks",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "isActive",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "driveType",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
         }
     ],
     "fieldOverrides": []

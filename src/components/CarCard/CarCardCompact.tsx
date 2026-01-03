@@ -12,6 +12,7 @@ import { useFavorites } from '../../hooks/useFavorites';
 import { CarListing } from '../../types/CarListing';
 import { logger } from '../../services/logger-service';
 import PriceBadge from '../car/PriceBadge';
+import RealisticPaperclipBadge from '../SoldBadge/RealisticPaperclipBadge';
 
 interface CarCardCompactProps {
   car: CarListing | any; // Support both CarListing and BulgarianCar types
@@ -229,24 +230,6 @@ const CarLocation = styled.div`
   line-height: 1.3;
 `;
 
-const SoldOverlay = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-15deg);
-  background: rgba(220, 38, 38, 0.9);
-  color: white;
-  padding: 8px 16px;
-  font-weight: 800;
-  font-size: 1rem;
-  text-transform: uppercase;
-  border-radius: 4px;
-  z-index: 5;
-  border: 2px solid white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  letter-spacing: 1px;
-  pointer-events: none;
-`;
 
 const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
   const { language } = useLanguage();
@@ -392,7 +375,7 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
       </FavoriteButton>
 
       <CarImageWrapper>
-        {isSold && <SoldOverlay>{t.sold}</SoldOverlay>}
+        {isSold && <RealisticPaperclipBadge text={t.sold} language={language as 'bg' | 'en'} />}
         {getMainImage() ? (
           <CarImage
             src={getMainImage()!}

@@ -15,8 +15,8 @@ const googleConfigSchema = z.object({
     bigQueryDataset: z.string().default('car_market_analytics'),
   },
   marketing: {
-    gtmId: z.string().optional(),
-    ga4Id: z.string().optional(),
+    gtmId: z.string().default('GTM-MKZSPCNC'),
+    ga4Id: z.string().default('G-R8JY5KM421'),
   }
 });
 
@@ -34,8 +34,8 @@ const processEnv = {
     bigQueryDataset: process.env.BIGQUERY_DATASET,
   },
   marketing: {
-    gtmId: process.env.REACT_APP_GTM_ID,
-    ga4Id: process.env.REACT_APP_GA4_ID,
+    gtmId: process.env.REACT_APP_GTM_ID || 'GTM-MKZSPCNC',
+    ga4Id: process.env.REACT_APP_GA4_ID || 'G-R8JY5KM421',
   }
 };
 

@@ -42,7 +42,7 @@ import {
   Building2, Globe, Car, Trash2, AlertCircle, FileText,
   Eye, MessageSquare, TrendingUp, Smartphone, DollarSign,
   Heart, Sun, Moon, Laptop, ShieldCheck, KeyRound, LogOut,
-  Camera, X
+  Camera, X, ExternalLink
 } from 'lucide-react';
 // ID Card feature removed - 2025-12-24
 import ProfileImageUploader from '../../../../../components/Profile/ProfileImageUploader';
@@ -2556,9 +2556,35 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
         { autoClose: 2000 }
       );
 
-      // Delete user profile and all associated data from Firestore needs separate service or method
-      // For now using profile service delete if available or mocking it
-      // await BulgarianProfileService.deleteUserProfile(currentUser.uid);
+      // ✅ NEW: Request Google Analytics data deletion
+      try {
+        const gaDataDeletionService = (await import('../../../../../services/analytics/google-analytics-data-deletion.service')).default;
+        const deletionResult = await gaDataDeletionService.requestDataDeletion(
+          currentUser.uid,
+          currentUser.email || undefined,
+          'User account deletion request'
+        );
+        
+        if (deletionResult.success) {
+          logger.info('Google Analytics deletion request submitted', {
+            requestId: deletionResult.requestId,
+            userId: currentUser.uid
+          });
+        }
+      } catch (error) {
+        logger.error('Failed to request Google Analytics data deletion', error as Error);
+        // Don't block account deletion if GA deletion fails
+      }
+
+      // Delete user profile and all associated data from Firestore
+      try {
+        const { GDPRService } = await import('../../../../../services/compliance/gdpr.service');
+        const gdprService = GDPRService.getInstance();
+        await gdprService.deleteAllUserData(currentUser.uid, 'User account deletion');
+      } catch (error) {
+        logger.error('Failed to delete user data from Firestore', error as Error);
+        // Continue with auth deletion even if Firestore deletion fails
+      }
 
       // Delete Firebase Auth user
       try {
@@ -3455,6 +3481,54 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                   <SecondaryButton onClick={handleExportData}>
                     <Download size={18} />
                     {t('settings.exportData', 'Request Data Export')}
+                  </SecondaryButton>
+                </SettingGroup>
+
+                <Divider />
+
+                <SettingGroup>
+                  <InfoBox>
+                    <FileText size={20} />
+                    <div>
+                      <strong>{t('settings.googleAnalytics', 'Google Analytics Data')}</strong>
+                      <HelpText>
+                        {t('settings.googleAnalyticsHelp', 'Your data in Google Analytics will be automatically deleted when you delete your account. You can also request manual deletion.')}
+                      </HelpText>
+                    </div>
+                  </InfoBox>
+                  <SecondaryButton 
+                    onClick={() => {
+                      const gaService = require('../../../../../services/analytics/google-analytics-data-deletion.service').default;
+                      const info = gaService.getPropertyInfo();
+                      window.open(info.deletionUrl, '_blank');
+                    }}
+                  >
+                    <ExternalLink size={18} />
+                    {t('settings.viewGADeletion', 'View GA Data Deletion')}
+                  </SecondaryButton>
+                </SettingGroup>
+
+                <Divider />
+
+                <SettingGroup>
+                  <InfoBox>
+                    <TrendingUp size={20} />
+                    <div>
+                      <strong>{t('settings.bigQueryExport', 'BigQuery Data Export')}</strong>
+                      <HelpText>
+                        {t('settings.bigQueryExportHelp', 'Export Google Analytics data to BigQuery for advanced analytics and data warehousing. Requires admin access.')}
+                      </HelpText>
+                    </div>
+                  </InfoBox>
+                  <SecondaryButton 
+                    onClick={() => {
+                      const gaService = require('../../../../../services/analytics/google-analytics-data-deletion.service').default;
+                      const info = gaService.getPropertyInfo();
+                      window.open(info.bigQueryExportUrl, '_blank');
+                    }}
+                  >
+                    <ExternalLink size={18} />
+                    {t('settings.setupBigQuery', 'Setup BigQuery Export')}
                   </SecondaryButton>
                 </SettingGroup>
 

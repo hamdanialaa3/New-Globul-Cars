@@ -175,7 +175,12 @@ const FormGrid = styled.div<{ $isDark: boolean }>`
   padding: 2rem 1.5rem;
   background: ${props => props.$isDark 
     ? 'transparent' 
-    : 'transparent'};
+    : 'unset'};
+  background-color: unset;
+  color: ${props => props.$isDark 
+    ? 'inherit' 
+    : 'rgba(26, 29, 46, 0.01)'};
+  text-align: left;
 
   @media (max-width: 1024px) {
     grid-template-columns: 1fr 1fr;
@@ -371,6 +376,7 @@ const AdvancedLink = styled.button<{ $isDark: boolean }>`
   cursor: pointer;
   text-align: right;
   padding: 0.75rem 0 0 0;
+  border-radius: 16px;
   transition: all 0.3s ease;
   position: relative;
   
@@ -457,10 +463,11 @@ const SearchWidget: React.FC = () => {
 
     // Handlers
     const handleSearch = () => {
+        // Navigate to advanced-search with all filters
         const params = new URLSearchParams();
         if (make) params.set('make', make);
         if (model) params.set('model', model);
-        if (year) params.set('firstRegistrationFrom', year); // Correct mapping
+        if (year) params.set('firstRegistrationFrom', year);
         if (priceMax) params.set('priceTo', priceMax);
 
         // Condition mapping based on tab
@@ -470,7 +477,8 @@ const SearchWidget: React.FC = () => {
             params.set('condition', 'used');
         }
 
-        navigate(`/cars?${params.toString()}`);
+        // Navigate to advanced-search page with filters
+        navigate(`/advanced-search?${params.toString()}`);
     };
 
     const t = (en: string, bg: string) => language === 'bg' ? bg : en;
@@ -491,7 +499,11 @@ const SearchWidget: React.FC = () => {
                     $active={activeTab === 'used'}
                     $isDark={isDark}
                     $tabType="used"
-                    onClick={() => setActiveTab('used')}
+                    onClick={() => {
+                        setActiveTab('used');
+                        // Navigate to sell page with condition=used
+                        navigate('/sell/auto?condition=used');
+                    }}
                 >
                     <CheckCircle size={18} />
                     {t('Used', 'Употребявани')}
@@ -500,7 +512,11 @@ const SearchWidget: React.FC = () => {
                     $active={activeTab === 'new'}
                     $isDark={isDark}
                     $tabType="new"
-                    onClick={() => setActiveTab('new')}
+                    onClick={() => {
+                        setActiveTab('new');
+                        // Navigate to sell page with condition=new
+                        navigate('/sell/auto?condition=new');
+                    }}
                 >
                     {t('New', 'Нови')}
                 </Tab>

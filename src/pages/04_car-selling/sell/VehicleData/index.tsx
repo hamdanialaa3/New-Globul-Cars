@@ -578,6 +578,21 @@ const VehicleDataPageNew: React.FC = () => {
           </S.FormGroup>
 
           <S.FormGroup>
+            <S.Label htmlFor="condition">{language === 'bg' ? 'Състояние' : 'Condition'}</S.Label>
+            <S.Select
+              id="condition"
+              aria-label={language === 'bg' ? 'Състояние' : 'Condition'}
+              title={language === 'bg' ? 'Състояние' : 'Condition'}
+              value={formData.condition || ''}
+              onChange={(e) => handleInputChange('condition', e.target.value)}
+            >
+              <option value="">{language === 'bg' ? 'Изберете' : 'Select'}</option>
+              <option value="new">{language === 'bg' ? 'Нов' : 'New'}</option>
+              <option value="used">{language === 'bg' ? 'Употребяван' : 'Used'}</option>
+            </S.Select>
+          </S.FormGroup>
+
+          <S.FormGroup>
             <S.Label htmlFor="power">{language === 'bg' ? 'Мощност (к.с.)' : 'Power (HP)'}</S.Label>
             <S.Input
               id="power"

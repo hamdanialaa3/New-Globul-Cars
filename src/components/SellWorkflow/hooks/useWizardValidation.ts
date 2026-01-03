@@ -2,69 +2,85 @@
 import { useMemo } from 'react';
 import { UnifiedWorkflowData } from '../../../services/unified-workflow-persistence.service';
 
+// Utility function to detect language from browser or context
+const getLanguage = (): 'bg' | 'en' => {
+  // Try to get from localStorage first (set by LanguageContext)
+  const saved = localStorage.getItem('language');
+  if (saved === 'bg' || saved === 'en') return saved;
+  
+  // Default to Bulgarian
+  return 'bg';
+};
+
 /**
  * Validation hook for the Sell Vehicle Wizard.
  * Centralizes all validation logic per step.
  */
 export const useWizardValidation = (currentStep: number, formData: Partial<UnifiedWorkflowData>) => {
+    const lang = getLanguage();
 
     const validationResult = useMemo(() => {
         switch (currentStep) {
-            case 1: // Vehicle Selection (Assuming 1-based index to match UI usage, or we align with data 1-5??)
-                // Wait, previous file used 0-based index for switch cases (0..5).
-                // useWizardState uses 1-based default (useState(1)).
-                // UnifiedWorkflowData interface comments say "Step 1: Vehicle Type".
-                // Let's standardise on 1-BASED index for the hook to match useWizardState.
-
-                // Step 1: Vehicle Type
+            case 1: // Vehicle Selection
                 return {
                     isValid: !!formData.vehicleType,
-                    error: !formData.vehicleType ? 'Please select a vehicle type' : null
+                    error: !formData.vehicleType 
+                        ? (lang === 'bg' ? 'Моля изберете тип на превозното средство' : 'Please select a vehicle type to continue')
+                        : null
                 };
 
             case 2: // Vehicle Data
-                // Needs make, model, year at minimum
                 const hasBasicData = !!(formData.make && formData.model && formData.year);
-                // Maybe check generation/variant if strictly required? For now match existing logic.
+                let error2 = null;
+                if (!hasBasicData) {
+                    const missing = [];
+                    if (!formData.make) missing.push(lang === 'bg' ? 'Марка' : 'Make');
+                    if (!formData.model) missing.push(lang === 'bg' ? 'Модел' : 'Model');
+                    if (!formData.year) missing.push(lang === 'bg' ? 'Година' : 'Year');
+                    error2 = lang === 'bg' 
+                        ? `Моля попълнете: ${missing.join(', ')}` 
+                        : `Please fill in: ${missing.join(', ')}`;
+                }
                 return {
                     isValid: hasBasicData,
-                    error: !hasBasicData ? 'Please fill in Make, Model and Year' : null
+                    error: error2
                 };
 
             case 3: // Equipment / Extras
-                // Usually optional, but maybe require at least one safety feature?
-                // Existing code says "return true; // Optional"
                 return { isValid: true, error: null };
 
             case 4: // Images
-                // Existing code says "return true // Optional - images are saved in IndexedDB"
-                // But usually we want at least 1 image for a valid listing?
-                // Let's enforce 1 image if we can detect it, otherwise optional for draft.
-                // For navigation 'Next', usually we allow proceeding without images, but preventing 'Publish'.
-                // Let's keep it lenient for navigation.
                 return { isValid: true, error: null };
 
             case 5: // Pricing
                 return {
-                    isValid: !!formData.price,
-                    error: !formData.price ? 'Please enter a price' : null
+                    isValid: !!formData.price && formData.price > 0,
+                    error: !formData.price 
+                        ? (lang === 'bg' ? 'Моля въведете цена' : 'Please enter a price')
+                        : formData.price <= 0 
+                            ? (lang === 'bg' ? 'Цената трябва да бъде по-голяма от 0' : 'Price must be greater than 0')
+                            : null
                 };
 
             case 6: // Description (Optional)
-                // Description is optional - user can proceed with or without it
                 return { isValid: true, error: null };
 
             case 7: // Contact
-                const hasContact = !!(
-                    formData.sellerName &&
-                    formData.sellerEmail &&
-                    formData.sellerPhone &&
-                    formData.region && // Location data
-                    formData.city
-                );
+                const missing7 = [];
+                if (!formData.sellerName) missing7.push(lang === 'bg' ? 'Име' : 'Name');
+                if (!formData.sellerEmail) missing7.push(lang === 'bg' ? 'Имейл' : 'Email');
+                if (!formData.sellerPhone) missing7.push(lang === 'bg' ? 'Телефон' : 'Phone');
+                if (!formData.region) missing7.push(lang === 'bg' ? 'Регион' : 'Region');
+                if (!formData.city) missing7.push(lang === 'bg' ? 'Град' : 'City');
+                
+                const hasContact = missing7.length === 0;
                 return {
                     isValid: hasContact,
-                    error: !hasContact ? 'Please complete all contact and location fields' : null
+                    error: !hasContact 
+                        ? (lang === 'bg' 
+                            ? `Моля попълнете: ${missing7.join(', ')}` 
+                            : `Please fill in: ${missing7.join(', ')}`)
+                        : null
                 };
 
             default:
@@ -78,17 +94,54 @@ export const useWizardValidation = (currentStep: number, formData: Partial<Unifi
      */
     const validateForPublish = (): { valid: boolean; errors: string[] } => {
         const errors: string[] = [];
+        const lang = getLanguage();
 
-        if (!formData.vehicleType) errors.push('Vehicle type is missing');
-        if (!formData.make) errors.push('Make is missing');
-        if (!formData.model) errors.push('Model is missing');
-        if (!formData.year) errors.push('Year is missing');
-        if (!formData.price) errors.push('Price is missing');
-        if (!formData.sellerPhone) errors.push('Phone number is missing');
-        if (!formData.city) errors.push('City is missing');
+        // Step 1: Vehicle Type
+        if (!formData.vehicleType) errors.push(
+            lang === 'bg' ? 'Стъпка 1: Типът превозно средство е задължителен' : 'Step 1: Vehicle type is required'
+        );
+        
+        // Step 2: Vehicle Data
+        if (!formData.make) errors.push(
+            lang === 'bg' ? 'Стъпка 2: Марката е задължителна' : 'Step 2: Make is required'
+        );
+        if (!formData.model) errors.push(
+            lang === 'bg' ? 'Стъпка 2: Моделът е задължителен' : 'Step 2: Model is required'
+        );
+        if (!formData.year) errors.push(
+            lang === 'bg' ? 'Стъпка 2: Годината е задължителна' : 'Step 2: Year is required'
+        );
+        
+        // Step 5: Pricing
+        if (!formData.price) errors.push(
+            lang === 'bg' ? 'Стъпка 5: Цената е задължителна' : 'Step 5: Price is required'
+        );
+        
+        // Step 7: Contact & Location
+        if (!formData.sellerPhone) errors.push(
+            lang === 'bg' ? 'Стъпка 7: Телефонът е задължителен' : 'Step 7: Phone number is required'
+        );
+        if (!formData.city) errors.push(
+            lang === 'bg' ? 'Стъпка 7: Градът е задължителен' : 'Step 7: City is required'
+        );
+        if (!formData.region) errors.push(
+            lang === 'bg' ? 'Стъпка 7: Регионът е задължителен' : 'Step 7: Region is required'
+        );
+        if (!formData.sellerName) errors.push(
+            lang === 'bg' ? 'Стъпка 7: Името е задължително' : 'Step 7: Seller name is required'
+        );
+        if (!formData.sellerEmail) errors.push(
+            lang === 'bg' ? 'Стъпка 7: Имейлът е задължителен' : 'Step 7: Email is required'
+        );
 
-        // TODO: Add image check if we can access image count
-        // if ((formData.imagesCount || 0) < 3) errors.push('At least 3 images are recommended');
+        // Log validation errors for debugging
+        if (errors.length > 0) {
+            console.warn('⚠️ Validation failed before publish:', {
+                errorCount: errors.length,
+                errors,
+                formDataKeys: Object.keys(formData)
+            });
+        }
 
         return {
             valid: errors.length === 0,

@@ -62,11 +62,12 @@ export const initConsentMode = (): void => {
   );
 
   // Set default consent state (BEFORE any tags load) - only if not already set
+  // Note: Consent mode is now initialized in public/index.html before any tags
+  // This function is kept for backward compatibility and React-based consent updates
   if (!alreadyInitialized) {
     window.gtag('consent', 'default', {
       ...DEFAULT_CONSENT,
-      wait_for_update: 500, // Wait 500ms for user consent before firing tags
-      region: ['BG', 'EU'] // Apply to Bulgaria and EU
+      wait_for_update: 500 // Wait 500ms for user consent before firing tags
     });
 
     // Log initialization
@@ -74,7 +75,7 @@ export const initConsentMode = (): void => {
       console.log('[Consent Mode] Initialized with default state:', DEFAULT_CONSENT);
     }
   } else if (process.env.NODE_ENV === 'development') {
-    console.log('[Consent Mode] Already initialized, skipping');
+    console.log('[Consent Mode] Already initialized in HTML, skipping');
   }
 };
 

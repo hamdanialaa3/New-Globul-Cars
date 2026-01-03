@@ -335,33 +335,7 @@ export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   }
 `;
 
-export const TimerBadge = styled.div<{ $warning: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  background: ${props => props.$warning ? 'rgba(239, 68, 68, 0.1)' : 'var(--bg-secondary)'};
-  color: ${props => props.$warning ? '#ef4444' : 'var(--text-secondary)'};
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.875rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  border: 1px solid ${props => props.$warning ? 'rgba(239, 68, 68, 0.2)' : 'var(--border)'};
-  white-space: nowrap;
-  line-height: 1.4;
-
-  svg {
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-  }
-  
-  span {
-    white-space: nowrap;
-    line-height: 1.4;
-  }
-`;
+// TimerBadge removed - Timer now shown in ModalWorkflowTimer only
 
 export const StatusWrapper = styled.div`
   display: flex;

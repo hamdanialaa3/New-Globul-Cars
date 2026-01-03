@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Heart, MapPin, Gauge, Calendar, Fuel } from 'lucide-react';
 import { CarListing } from '../../../../types/CarListing';
 import { useFavorites } from '../../../../hooks/useFavorites';
+import RealisticPaperclipBadge from '../../../../components/SoldBadge/RealisticPaperclipBadge';
 
 // Helper to determine the correct URL
 const getCarDetailsUrl = (car: any) => {
@@ -49,11 +50,10 @@ const ModernCarCard: React.FC<ModernCarCardProps> = ({ car }) => {
           onError={() => { if (!imageError) setImageError(true); }}
         />
         {(car.isSold || car.status === 'sold') && (
-          <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-            <div className="bg-red-600/90 text-white px-4 py-2 font-black text-lg uppercase tracking-widest border-2 border-white shadow-xl transform -rotate-12 rounded-sm ring-1 ring-red-600 ring-offset-2 ring-offset-white/50">
-              {window.location.pathname.includes('/bg') || document.documentElement.lang === 'bg' ? 'ПРОДАДЕНО' : 'SOLD'}
-            </div>
-          </div>
+          <RealisticPaperclipBadge 
+            text={window.location.pathname.includes('/bg') || document.documentElement.lang === 'bg' ? 'ПРОДАДЕНО' : 'SOLD'}
+            language={(window.location.pathname.includes('/bg') || document.documentElement.lang === 'bg') ? 'bg' : 'en'}
+          />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 

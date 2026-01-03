@@ -2,6 +2,12 @@ import { logger } from '../services/logger-service';
 // Google Analytics 4 Integration (FREE - Unlimited events)
 // Track user behavior, conversions, and business metrics
 // UPDATED: Integrated with Consent Mode v2 for GDPR compliance
+// 
+// Property Information:
+// Account ID: 368904922
+// Property ID: 507597643
+// Measurement ID: G-R8JY5KM421
+// Data Deletion: https://analytics.google.com/analytics/web/?authuser=1#/a368904922p507597643/admin/piidatadeletion/table
 
 import ReactGA from 'react-ga4';
 import { initConsentMode, applySavedConsent } from './consent-mode';
@@ -15,7 +21,7 @@ import { initConsentMode, applySavedConsent } from './consent-mode';
  * import { initGA } from './utils/google-analytics';
  * useEffect(() => { initGA(); }, []);
  */
-export const initGA = (measurementId: string = process.env.REACT_APP_FIREBASE_MEASUREMENT_ID || process.env.REACT_APP_GA4_MEASUREMENT_ID) => {
+export const initGA = (measurementId: string = process.env.REACT_APP_FIREBASE_MEASUREMENT_ID || process.env.REACT_APP_GA4_MEASUREMENT_ID || 'G-R8JY5KM421') => {
   if (!measurementId) {
     logger.warn('GA4 Measurement ID not configured - add REACT_APP_FIREBASE_MEASUREMENT_ID to .env');
     return;
@@ -145,6 +151,13 @@ export const trackCarContact = (
       event_category: 'engagement',
       event_label: `${sellerNumericId}/${carNumericId}`,
       value: 1
+    });
+    
+    // Track as Google Ads lead (async import)
+    import('../services/analytics/google-ads-integration.service').then(({ default: googleAdsService }) => {
+      googleAdsService.trackLead(carId, method, 10); // Default value: 10 EUR per lead
+    }).catch(() => {
+      // Silent fail if service not available
     });
   }
 };

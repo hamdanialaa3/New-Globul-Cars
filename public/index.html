@@ -2,6 +2,58 @@
 <html lang="en">
 
 <head>
+    <!-- Google Consent Mode v2 - MUST BE FIRST -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      
+      // Consent mode default (GDPR-compliant - all denied until user consent)
+      gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied',
+        'analytics_storage': 'denied',
+        'functionality_storage': 'granted',
+        'personalization_storage': 'denied',
+        'security_storage': 'granted',
+        'wait_for_update': 500
+      });
+      
+      // Apply saved consent preferences if available
+      (function() {
+        try {
+          const saved = localStorage.getItem('consent_preferences');
+          if (saved) {
+            const preferences = JSON.parse(saved);
+            const { timestamp, ...settings } = preferences;
+            
+            // Check if preferences are still valid (7 days)
+            const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+            if (timestamp && Date.now() - timestamp <= sevenDaysMs) {
+              gtag('consent', 'update', settings);
+            }
+          }
+        } catch (e) {
+          // Silent fail - will use default consent
+        }
+      })();
+    </script>
+    
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-MKZSPCNC');</script>
+    <!-- End Google Tag Manager -->
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R8JY5KM421"></script>
+    <script>
+      gtag('js', new Date());
+      gtag('config', 'G-R8JY5KM421');
+    </script>
+    
     <meta charset="utf-8" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, private" />
     <meta http-equiv="Pragma" content="no-cache" />
@@ -48,6 +100,9 @@
     <title>Bulgarski Avtomobili - Български автомобили</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;800&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Caveat:wght@400;700&family=Dancing+Script:wght@700&display=swap"
         rel="stylesheet">
     <style>
         /* --- ULTIMATE GEAR LOGO LOADER --- */
@@ -124,6 +179,11 @@
 </head>
 
 <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MKZSPCNC"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    
     <noscript>You need to enable JavaScript to run this app.</noscript>
 
     <!-- ULTIMATE GEAR LOGO LOADER -->

@@ -19,6 +19,7 @@ export interface UnifiedWorkflowData {
   mileage?: string;
   fuelType?: string;
   transmission?: string;
+  driveType?: string; // ✅ ADDED: Drive type (FWD/RWD/AWD/4WD)
   power?: string;
   powerKW?: string;
   engineSize?: string;

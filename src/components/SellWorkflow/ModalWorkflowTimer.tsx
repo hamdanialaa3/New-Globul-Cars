@@ -2,9 +2,10 @@
 // عداد المسودة داخل الـ Modal - يظهر في أعلى اليمين
 // Timer component for the sell vehicle modal
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { Clock, Pause, Play } from 'lucide-react';
+import { toast } from 'react-toastify';
 import UnifiedWorkflowPersistenceService, {
   TimerState
 } from '../../services/unified-workflow-persistence.service';
@@ -135,6 +136,10 @@ export const ModalWorkflowTimer: React.FC = () => {
     remainingSeconds: 0,
     totalSeconds: 1200
   });
+  
+  // Track warnings to prevent duplicates
+  const hasShown5MinWarning = useRef(false);
+  const hasShown1MinWarning = useRef(false);
 
   useEffect(() => {
     // Load paused state from localStorage
@@ -147,11 +152,51 @@ export const ModalWorkflowTimer: React.FC = () => {
     const unsubscribe = UnifiedWorkflowPersistenceService.subscribeToTimer(
       (state) => {
         setTimerState(state);
+        
+        // Show warnings at specific thresholds
+        if (state.isActive && !isPaused) {
+          // 5 minutes warning (300 seconds)
+          if (state.remainingSeconds === 300 && !hasShown5MinWarning.current) {
+            hasShown5MinWarning.current = true;
+            toast.warning(
+              language === 'bg' 
+                ? '⏰ Остават 5 минути! Моля завършете формата или ще загубите прогреса.' 
+                : '⏰ 5 minutes remaining! Please complete the form or you will lose progress.',
+              { autoClose: 10000, position: 'top-center' }
+            );
+          }
+          
+          // 1 minute warning (60 seconds)
+          if (state.remainingSeconds === 60 && !hasShown1MinWarning.current) {
+            hasShown1MinWarning.current = true;
+            toast.error(
+              language === 'bg'
+                ? '🚨 СПЕШНО: Остава 1 минута! Прогресът ще бъде изтрит!'
+                : '🚨 URGENT: 1 minute left! Progress will be deleted!',
+              { autoClose: false, position: 'top-center' }
+            );
+          }
+          
+          // Time expired
+          if (state.remainingSeconds === 0) {
+            toast.error(
+              language === 'bg'
+                ? '❌ Времето изтече! Прогресът беше изтрит.'
+                : '❌ Time expired! Progress has been deleted.',
+              { autoClose: 5000, position: 'top-center' }
+            );
+          }
+        }
       }
     );
 
-    return unsubscribe;
-  }, []);
+    return () => {
+      unsubscribe();
+      // Reset warning flags on unmount
+      hasShown5MinWarning.current = false;
+      hasShown1MinWarning.current = false;
+    };
+  }, [language, isPaused]);
 
   // Don't show if timer is not active
   if (!timerState.isActive) {

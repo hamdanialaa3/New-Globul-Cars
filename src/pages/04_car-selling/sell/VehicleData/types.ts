@@ -19,6 +19,7 @@ export interface VehicleFormData {
   firstRegistration: string; // أول تسجيل
   power: string;       // القوة
   transmission: string; // ناقل الحركة
+  driveType: string;   // نوع الدفع (FWD/RWD/AWD/4WD)
   doors: string;       // عدد الأبواب
   seats: string;       // عدد المقاعد
   color: string;       // اللون
@@ -73,6 +74,14 @@ export const FUEL_TYPES = [
 
 export const TRANSMISSION_TYPES = [
   'Ръчна (Manual)', 'Автоматична (Automatic)', 'Полуавтоматична (Semi-auto)'
+];
+
+export const DRIVE_TYPES = [
+  'Преден (FWD)',      // Front-Wheel Drive - دفع أمامي
+  'Заден (RWD)',       // Rear-Wheel Drive - دفع خلفي  
+  'Четириколесен (AWD)', // All-Wheel Drive - دفع رباعي دائم
+  '4x4 (4WD)',         // Four-Wheel Drive - دفع رباعي قابل للتبديل
+  'Друг (Other)'       // Other - آخر
 ];
 
 export const COLORS = [

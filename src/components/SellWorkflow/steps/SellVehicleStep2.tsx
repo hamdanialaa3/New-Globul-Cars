@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { UnifiedWorkflowData } from '../../../services/unified-workflow-persistence.service';
 import BrandModelMarkdownDropdown from '../../BrandModelMarkdownDropdown/BrandModelMarkdownDropdown';
-import { BODY_TYPES, DOOR_OPTIONS, SEAT_OPTIONS, FUEL_TYPES, TRANSMISSION_TYPES, EXTERIOR_COLORS } from '../../../pages/04_car-selling/sell/VehicleData/types';
+import { BODY_TYPES, DOOR_OPTIONS, SEAT_OPTIONS, FUEL_TYPES, TRANSMISSION_TYPES, DRIVE_TYPES, EXTERIOR_COLORS } from '../../../pages/04_car-selling/sell/VehicleData/types';
 import { useProfileType } from '../../../contexts/ProfileTypeContext';
 
 interface SellVehicleStep2Props {
@@ -454,6 +454,22 @@ export const SellVehicleStep2: React.FC<SellVehicleStep2Props> = ({
               >
                 <option value="">{language === 'bg' ? 'Изберете скоростна кутия' : 'Select transmission'}</option>
                 {TRANSMISSION_TYPES.map(type => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </Select>
+            </RevealWrapper>
+          )}
+
+          {hasTransmission && (
+            <RevealWrapper>
+              <Label style={getLabelStyle(!!workflowData.driveType)}>{language === 'bg' ? 'Нов на двигател' : 'Drive Type'}</Label>
+              <Select
+                value={workflowData.driveType || ''}
+                onChange={(e) => onUpdate({ driveType: e.target.value })}
+                style={getInputStyle(!!workflowData.driveType)}
+              >
+                <option value="">{language === 'bg' ? 'Изберете нов на двигател' : 'Select drive type'}</option>
+                {DRIVE_TYPES.map(type => (
                   <option key={type} value={type}>{type}</option>
                 ))}
               </Select>
