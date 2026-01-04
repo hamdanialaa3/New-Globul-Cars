@@ -18,14 +18,15 @@ import { notificationSoundService } from '../../services/messaging/notification-
 import { NotificationSettings } from '../../components/messaging/NotificationSettings';
 import { ConversationView } from '../../components/messaging';
 import { getCarLogoUrl } from '../../services/car-logo-service';
+import Header from '../../components/Header/UnifiedHeader';
 
 const MessagesContainer = styled.div`
   position: fixed;
-  top: 0;
+  top: 64px; /* Add space for header */
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 9999;
+  z-index: 900; /* Below header (sticky: 1020) */
   padding: 0;
   background: ${({ theme }) => theme.mode === 'dark' 
     ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' 
@@ -34,6 +35,7 @@ const MessagesContainer = styled.div`
   overflow: visible;
 
   @media (max-width: 768px) {
+    top: 60px; /* Adjust for mobile header */
     padding: 0;
     background: ${({ theme }) => theme.mode === 'dark' ? '#0f172a' : '#ffffff'};
   }
@@ -41,7 +43,7 @@ const MessagesContainer = styled.div`
 
 const PageContainer = styled.div`
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 64px); /* Subtract header height */
   display: flex;
   background: ${({ theme }) => theme.mode === 'dark' 
     ? 'rgba(30, 41, 59, 0.95)' 
@@ -53,7 +55,7 @@ const PageContainer = styled.div`
   border: none;
 
   @media (max-width: 768px) {
-    height: 100vh;
+    height: calc(100vh - 60px); /* Subtract mobile header height */
     width: 100vw;
     border-radius: 0;
     border: none;
@@ -829,12 +831,14 @@ const MessagesPage: React.FC = () => {
   }
 
   return (
-    <MessagesContainer>
-      <PageContainer>
-        <Sidebar $visible={showSidebar}>
-          <SidebarHeader>
-            <div style={{ position: 'relative' }}>
-              <SearchInput placeholder={t('messages.search', 'Search messages...')} />
+    <>
+      <Header />
+      <MessagesContainer>
+        <PageContainer>
+          <Sidebar $visible={showSidebar}>
+            <SidebarHeader>
+              <div style={{ position: 'relative' }}>
+                <SearchInput placeholder={t('messages.search', 'Search messages...')} />
             </div>
           </SidebarHeader>
 
@@ -941,6 +945,7 @@ const MessagesPage: React.FC = () => {
         onClose={() => setShowSettings(false)} 
       />
     </MessagesContainer>
+    </>
   );
 };
 
