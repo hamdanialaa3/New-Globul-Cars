@@ -40,7 +40,7 @@ const PriceInputWrapper = styled.div`
 const Input = styled.input`
   width: 100%;
   padding: 0.75rem 3rem 0.75rem 1rem; /* Right padding for € symbol */
-  border: 2px solid var(--border);
+  border: 2px solid #9CA3AF;
   border-radius: 10px;
   background: var(--bg-card);
   color: var(--text-primary);
@@ -67,7 +67,7 @@ const Select = styled.select`
   width: 100%;
   max-width: 450px;
   padding: 0.75rem 1rem;
-  border: 2px solid var(--border);
+  border: 2px solid #9CA3AF;
   border-radius: 10px;
   background: var(--bg-card);
   color: var(--text-primary);

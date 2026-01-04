@@ -206,13 +206,15 @@ export class PointsLevelsService {
       const leveledUp = oldLevel !== newLevel;
 
       // Create activity record
+      // ✅ FIX: Use new Date() instead of serverTimestamp() with arrayUnion
+      // serverTimestamp() can only be used with update() and set() at the top level
       const activity: PointsActivity = {
         id: `${Date.now()}-${Math.random()}`,
         userId,
         activityType,
         points,
         description: description || this.getActivityDescription(activityType),
-        createdAt: serverTimestamp() as any
+        createdAt: new Date() // Changed from serverTimestamp()
       };
 
       // Update points

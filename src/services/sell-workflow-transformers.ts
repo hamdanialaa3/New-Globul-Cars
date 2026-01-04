@@ -163,7 +163,40 @@ export class SellWorkflowTransformers {
       // Add region for test compatibility
       region: regionName
     };
-    return result;
+    
+    // ✅ CRITICAL FIX: Remove undefined fields to prevent Firestore errors
+    // Firestore does not accept undefined values - they must be removed or set to null
+    return this.removeUndefinedFields(result);
+  }
+
+  /**
+   * Remove undefined fields from object (recursive for nested objects)
+   * Firestore throws errors when trying to save undefined values
+   */
+  private static removeUndefinedFields(obj: any): any {
+    if (obj === null || obj === undefined) {
+      return null;
+    }
+
+    if (Array.isArray(obj)) {
+      return obj.map(item => this.removeUndefinedFields(item));
+    }
+
+    if (typeof obj === 'object' && !(obj instanceof Date)) {
+      const cleaned: any = {};
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          const value = obj[key];
+          // Skip undefined values completely
+          if (value !== undefined) {
+            cleaned[key] = this.removeUndefinedFields(value);
+          }
+        }
+      }
+      return cleaned;
+    }
+
+    return obj;
   }
 
   /**

@@ -53,6 +53,21 @@ export class DeepSeekService {
             return result.data as AIResponse;
         } catch (error: any) {
             logger.error('AI Service Error', error as Error);
+            
+            // ✅ If function not found (404), return a graceful fallback
+            if (error.code === 'not-found' || error.message?.includes('404')) {
+                logger.warn('AI function not deployed - returning empty response');
+                return {
+                    success: false,
+                    content: '',
+                    usage: {
+                        prompt_tokens: 0,
+                        completion_tokens: 0,
+                        total_tokens: 0
+                    }
+                };
+            }
+            
             throw this.handleError(error);
         }
     }
@@ -68,6 +83,13 @@ export class DeepSeekService {
             return (result.data as any).content;
         } catch (error: any) {
             logger.error('AI Description Error', error as Error);
+            
+            // ✅ If function not found (404), return empty string instead of throwing
+            if (error.code === 'not-found' || error.message?.includes('404')) {
+                logger.warn('AI description function not deployed - returning empty description');
+                return '';
+            }
+            
             throw this.handleError(error);
         }
     }

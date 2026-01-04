@@ -53,8 +53,8 @@ const VehicleOption = styled.div<{ $selected: boolean; $disabled: boolean }>`
     return props.$selected ? 'var(--accent-primary)' : 'var(--bg-card)';
   }};
   border: 2px solid ${props => {
-    if (props.$disabled) return 'var(--border-secondary)';
-    return props.$selected ? 'var(--accent-primary)' : 'var(--border-primary)';
+    if (props.$disabled) return '#9CA3AF';
+    return props.$selected ? 'var(--accent-primary)' : '#9CA3AF';
   }};
   border-radius: 12px;
   padding: 1.5rem;
@@ -82,25 +82,29 @@ const VehicleOption = styled.div<{ $selected: boolean; $disabled: boolean }>`
     `}
   }
   
-  /* ✅ FIX: Adjust padding when text is hidden in portrait mobile */
+  /* Responsive padding - تدرج تلقائي حسب حجم الشاشة */
+  @media (max-width: 1024px) {
+    padding: 1.25rem 1rem;
+  }
+  
+  @media (max-width: 896px) and (orientation: landscape) {
+    padding: 1rem 0.75rem;
+  }
+  
   @media (max-width: 640px) and (orientation: portrait) {
-    padding: 1rem;
-    min-height: 100px;
+    padding: 1rem 0.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
   }
   
-  /* ✅ FIX: Smaller padding in landscape mobile */
-  @media (max-width: 896px) and (orientation: landscape) {
-    padding: 1rem 0.75rem;
+  @media (max-width: 480px) {
+    padding: 0.875rem 0.5rem;
   }
   
-  /* ✅ FIX: Very small screens */
-  @media (max-width: 480px) {
-    padding: 0.875rem;
-    min-height: 90px;
+  @media (max-width: 360px) {
+    padding: 0.75rem 0.4rem;
   }
 `;
 
@@ -113,24 +117,35 @@ const VehicleIcon = styled.div<{ $selected: boolean; $disabled: boolean }>`
     return props.$selected ? 'white' : 'var(--accent-primary)';
   }};
   opacity: ${props => props.$disabled ? 0.5 : 1};
+  transition: all 0.3s ease;
   
   svg {
     width: 32px;
     height: 32px;
   }
   
-  /* ✅ FIX: Larger icons when text is hidden in portrait mobile */
-  @media (max-width: 640px) and (orientation: portrait) {
-    margin-bottom: 0;
+  /* Tablet - حجم متوسط */
+  @media (max-width: 1024px) {
+    margin-bottom: 0.6rem;
     
     svg {
-      width: 40px;
-      height: 40px;
+      width: 28px;
+      height: 28px;
     }
   }
   
-  /* ✅ FIX: Medium icons in landscape mobile */
+  /* Landscape mobile - حجم أصغر قليلاً */
   @media (max-width: 896px) and (orientation: landscape) {
+    margin-bottom: 0.5rem;
+    
+    svg {
+      width: 26px;
+      height: 26px;
+    }
+  }
+  
+  /* Portrait mobile - حجم مناسب للموبايل */
+  @media (max-width: 640px) and (orientation: portrait) {
     margin-bottom: 0.5rem;
     
     svg {
@@ -139,13 +154,13 @@ const VehicleIcon = styled.div<{ $selected: boolean; $disabled: boolean }>`
     }
   }
   
-  /* ✅ FIX: Larger icons in very small screens */
+  /* Very small screens - أصغر حجم */
   @media (max-width: 480px) {
-    margin-bottom: 0;
+    margin-bottom: 0.4rem;
     
     svg {
-      width: 36px;
-      height: 36px;
+      width: 24px;
+      height: 24px;
     }
   }
 `;
@@ -155,20 +170,35 @@ const VehicleLabel = styled.div<{ $disabled: boolean }>`
   font-size: 0.95rem;
   opacity: ${props => props.$disabled ? 0.6 : 1};
   color: ${props => props.$disabled ? 'var(--text-disabled)' : 'inherit'};
+  transition: font-size 0.3s ease;
+  text-align: center;
+  line-height: 1.3;
   
-  /* ✅ FIX: Hide text in portrait mobile, show only icons */
-  @media (max-width: 640px) and (orientation: portrait) {
-    display: none;
+  /* Tablet size - تصغير طفيف */
+  @media (max-width: 1024px) {
+    font-size: 0.88rem;
   }
   
-  /* ✅ FIX: Smaller text in landscape mobile */
+  /* Landscape mobile - تصغير أكثر */
   @media (max-width: 896px) and (orientation: landscape) {
-    font-size: 0.75rem;
+    font-size: 0.78rem;
   }
   
-  /* ✅ FIX: Very small screens - hide text */
+  /* Portrait mobile - تصغير ملحوظ لكن مقروء */
+  @media (max-width: 640px) and (orientation: portrait) {
+    font-size: 0.7rem;
+    font-weight: 500;
+  }
+  
+  /* Very small screens - أصغر حجم لكن لا يختفي */
   @media (max-width: 480px) {
-    display: none;
+    font-size: 0.65rem;
+    line-height: 1.2;
+  }
+  
+  /* Extra tiny screens - أصغر حجم ممكن */
+  @media (max-width: 360px) {
+    font-size: 0.6rem;
   }
 `;
 

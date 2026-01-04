@@ -47,7 +47,7 @@ const Label = styled.label`
 const Input = styled.input<{ $valid?: boolean; $error?: boolean }>`
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 2px solid ${props => props.$error ? '#ef4444' : props.$valid ? '#22c55e' : 'var(--border)'};
+  border: 2px solid ${props => props.$error ? '#ef4444' : props.$valid ? '#22c55e' : '#9CA3AF'};
   border-radius: 10px;
   background: var(--bg-card);
   color: var(--text-primary);
@@ -69,7 +69,7 @@ const Input = styled.input<{ $valid?: boolean; $error?: boolean }>`
 const Select = styled.select`
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 2px solid var(--border);
+  border: 2px solid #9CA3AF;
   border-radius: 10px;
   background: var(--bg-card);
   color: var(--text-primary);
@@ -177,8 +177,10 @@ export const SellVehicleStep6: React.FC<SellVehicleStep6Props> = ({
           // Set defaults only if fields are empty
           const updates: Partial<UnifiedWorkflowData> = {};
           
-          if (!workflowData.sellerName && (profile.displayName || profile.firstName || profile.lastName)) {
-            updates.sellerName = profile.displayName || `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || '';
+          // Priority: currentUser.displayName > profile.displayName > firstName+lastName > currentUser.email username
+          if (!workflowData.sellerName) {
+            const defaultName = currentUser.displayName || profile.displayName || `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || currentUser.email?.split('@')[0] || '';
+            updates.sellerName = defaultName;
           }
           
           if (!workflowData.sellerEmail && profile.email) {

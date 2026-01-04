@@ -81,15 +81,26 @@ class FacebookAutoPostService {
 
     } catch (error: unknown) {
       const err = error as { response?: { data?: { error?: { message?: string } } }; message?: string };
-      logger.error('❌ Failed to post car to Facebook', error as Error, {
-        carId: car.carId,
-        errorMessage: err.response?.data?.error?.message || err.message || 'Unknown error'
-      });
+      
+      // ✅ FIX: Detect CORS/Network errors and return gracefully without logging as critical error
+      const errorMessage = err.response?.data?.error?.message || err.message || 'Unknown error';
+      const isCorsError = errorMessage.includes('Network Error') || errorMessage.includes('CORS');
+      
+      if (isCorsError) {
+        logger.warn('⚠️ Facebook auto-post skipped (CORS - should be called from Cloud Functions)', {
+          carId: car.carId
+        });
+      } else {
+        logger.error('❌ Failed to post car to Facebook', error as Error, {
+          carId: car.carId,
+          errorMessage
+        });
+      }
 
       return {
         id: '',
         success: false,
-        error: err.response?.data?.error?.message || err.message || 'Unknown error'
+        error: errorMessage
       };
     }
   }

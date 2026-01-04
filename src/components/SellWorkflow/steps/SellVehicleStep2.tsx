@@ -41,7 +41,7 @@ const Input = styled.input`
   width: 100%;
   max-width: 450px;
   padding: 0.75rem 1rem;
-  border: 2px solid var(--border);
+  border: 2px solid #9CA3AF;
   border-radius: 10px;
   background: var(--bg-card);
   color: var(--text-primary);
@@ -59,7 +59,7 @@ const Select = styled.select`
   width: 100%;
   max-width: 450px;
   padding: 0.75rem 1rem;
-  border: 2px solid var(--border);
+  border: 2px solid #9CA3AF;
   border-radius: 10px;
   background: var(--bg-card);
   color: var(--text-primary);
@@ -98,7 +98,7 @@ const ToggleGroup = styled.div`
 const ToggleButton = styled.button<{ $active: boolean }>`
   padding: 0.6rem 1.2rem;
   border-radius: 999px;
-  border: 2px solid ${props => props.$active ? 'var(--accent-primary)' : 'var(--border)'};
+  border: 2px solid ${props => props.$active ? 'var(--accent-primary)' : '#9CA3AF'};
   background: ${props => props.$active ? 'var(--accent-primary)' : 'var(--bg-card)'};
   color: ${props => props.$active ? 'white' : 'var(--text-primary)'};
   font-weight: ${props => props.$active ? '700' : '600'};

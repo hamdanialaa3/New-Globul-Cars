@@ -60,7 +60,7 @@ const EquipmentButton = styled.button<{ $active: boolean }>`
   min-height: 92px;
   padding: 0.6rem 0.5rem;
   border-radius: 8px;
-  border: 2px solid ${props => props.$active ? '#10b981' : 'var(--border)'};
+  border: 2px solid ${props => props.$active ? '#10b981' : '#9CA3AF'};
   background: ${props => props.$active 
     ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.04) 100%)'
     : 'var(--bg-card)'
