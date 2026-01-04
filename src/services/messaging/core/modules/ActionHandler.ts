@@ -1,5 +1,6 @@
 import { logger } from '@/services/logger-service';
 import { MessageSender } from './MessageSender';
+import { offerWorkflowService } from '@/services/messaging/actions/offer-workflow.service';
 
 /**
  * Action Handler Module
@@ -36,30 +37,28 @@ export class ActionHandler {
         currency
       });
 
-      // 1. Create offer in database
-      // TODO: Integrate with offer-workflow.service.ts
-      // const offer = await offerWorkflowService.createOffer({
-      //   conversationId,
-      //   senderId,
-      //   carId,
-      //   offerAmount,
-      //   currency,
-      //   status: 'pending',
-      //   createdAt: new Date()
-      // });
-
-      const offerId = `offer_${Date.now()}`;
+      // ✅ Phase 2 Fix: Integrated with offer-workflow.service.ts
+      const offer = await offerWorkflowService.createOffer({
+        conversationId,
+        senderId,
+        receiverId,
+        carId,
+        offerAmount,
+        currency,
+        message: offerMessage,
+        expiryDays: 7
+      });
 
       // 2. Send as interactive message
       const messageId = await this.messageSender.sendMessage({
         conversationId,
         senderId,
         receiverId,
-        content: offerMessage || `Offer: ${currency}${offerAmount.toLocaleString()}`,
+        content: offerMessage || `Offer: ${currency} ${offerAmount.toLocaleString()}`,
         type: 'offer',
         carId,
         metadata: {
-          offerId,
+          offerId: offer.id,
           amount: offerAmount,
           currency,
           status: 'pending'
@@ -67,11 +66,11 @@ export class ActionHandler {
       });
 
       logger.info('[ActionHandler] Offer sent successfully', {
-        offerId,
+        offerId: offer.id,
         messageId
       });
 
-      return offerId;
+      return offer.id;
     } catch (error) {
       logger.error('[ActionHandler] Failed to send offer', error as Error);
       throw error;
