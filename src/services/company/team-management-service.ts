@@ -266,7 +266,7 @@ class TeamManagementService {
   async getTeamMembers(companyId: string): Promise<TeamMember[]> {
     try {
       const snapshot = await getDocs(collection(db, `users/${companyId}/team_members`));
-      
+
       return snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
@@ -318,7 +318,7 @@ class TeamManagementService {
       );
 
       const snapshot = await getDocs(q);
-      
+
       return snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
@@ -354,7 +354,7 @@ class TeamManagementService {
       const invite = inviteDoc.data() as TeamInvitation;
 
       // Check expiration
-      if (invite.expiresAt.toDate() < new Date()) {
+      if ((invite.expiresAt as any).toDate() < new Date()) {
         await updateDoc(doc(db, 'team_invitations', inviteDoc.id), {
           status: 'expired'
         });
@@ -376,7 +376,7 @@ class TeamManagementService {
         where('email', '==', invite.email.toLowerCase())
       );
       const memberSnapshot = await getDocs(memberQuery);
-      
+
       if (!memberSnapshot.empty) {
         const memberRef = memberSnapshot.docs[0].ref;
         batch.update(memberRef, {
@@ -550,7 +550,7 @@ class TeamManagementService {
   }> {
     try {
       const members = await this.getTeamMembers(companyId);
-      const invitations = await getPendingInvitations(companyId);
+      const invitations = await this.getPendingInvitations(companyId);
 
       return {
         totalMembers: members.length,

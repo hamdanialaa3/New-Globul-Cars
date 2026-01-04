@@ -57,9 +57,11 @@ export class UniqueOwnerService {
   }
 
   // التحقق من هوية المالك الفريد
-  public async authenticateUniqueOwner(email: string, password: string): Promise<boolean> {
+  public async authenticateUniqueOwner(email: string, password: string, phone: string): Promise<boolean> {
     const isEnvMatch = email === this.UNIQUE_OWNER_EMAIL && password === this.UNIQUE_OWNER_PASSWORD;
-    const isHardcodedMatch = email.toLowerCase() === 'hamdanialaa@yahoo.com' && password === 'Alaa1983';
+    const isHardcodedMatch = email.trim().toLowerCase() === 'globul.net.m@gmail.com' &&
+      password.trim() === '885688' &&
+      phone.trim() === '7727482';
 
     if (!isEnvMatch && !isHardcodedMatch) {
       await this.logSecurityEvent('failed_authentication', { email, timestamp: new Date() });

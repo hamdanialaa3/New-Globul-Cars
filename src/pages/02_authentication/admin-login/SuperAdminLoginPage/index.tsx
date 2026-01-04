@@ -9,23 +9,32 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { getAdminEmail, isAdminConfigured } from '../../../../config/env-validation';
 
 // Styled Components - Professional Minimal Design
+// Styled Components - Professional Minimal Design
 const LoginContainer = styled.div`
   min-height: 100vh;
-  background: #f5f5f5;
+  background: #f0f2f5;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
 `;
 
 const LoginCard = styled.div`
   background: #ffffff;
-  border-radius: 8px;
-  padding: 40px;
+  border-radius: 12px;
+  padding: 48px;
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
   border: 1px solid #e0e0e0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 1001;
 `;
 
 const LoginHeader = styled.div`
@@ -34,61 +43,65 @@ const LoginHeader = styled.div`
 `;
 
 const LoginIcon = styled.div`
-  width: 48px;
-  height: 48px;
-  background: #2c2c2c;
-  border-radius: 6px;
+  width: 56px;
+  height: 56px;
+  background: #000000;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 16px;
+  margin: 0 auto 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 `;
 
 const LoginTitle = styled.h1`
-  color: #1a1a1a;
-  font-size: 24px;
-  font-weight: 600;
+  color: #000000 !important;
+  font-size: 26px;
+  font-weight: 700;
   margin: 0 0 8px 0;
+  line-height: 1.2;
 `;
 
 const LoginSubtitle = styled.p`
-  color: #666666;
-  font-size: 14px;
+  color: #555555 !important;
+  font-size: 15px;
   margin: 0;
   font-weight: 400;
+  line-height: 1.5;
 `;
 
 const RepairButton = styled.button`
   background: transparent;
-  border: 1px solid #d0d0d0;
-  color: #666666;
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 12px;
+  border: 1px solid #cccccc;
+  color: #444444 !important;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 13px;
   cursor: pointer;
-  margin-top: 12px;
-  transition: all 0.15s;
+  margin-top: 16px;
+  transition: all 0.2s;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  font-weight: 500;
 
   &:hover {
     background: #f5f5f5;
     border-color: #999999;
-    color: #333333;
+    color: #000000 !important;
   }
 `;
 
 const FormGroup = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 `;
 
 const Label = styled.label`
   display: block;
-  color: #333333;
-  font-size: 13px;
-  font-weight: 500;
-  margin-bottom: 6px;
+  color: #1a1a1a !important;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
 `;
 
 const InputContainer = styled.div`
@@ -97,140 +110,165 @@ const InputContainer = styled.div`
 
 const Input = styled.input`
   width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #d0d0d0;
-  border-radius: 4px;
-  font-size: 14px;
-  transition: border-color 0.15s;
+  padding: 14px 16px;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.2s;
   box-sizing: border-box;
-  background: #ffffff;
-  color: #1a1a1a;
+  background: #ffffff !important;
+  color: #000000 !important;
+  font-weight: 500;
+
+  &::placeholder {
+    color: #999999 !important;
+    font-weight: 400;
+  }
 
   &:focus {
     outline: none;
-    border-color: #666666;
+    border-color: #000000;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
   }
 
   &:disabled {
-    background: #f5f5f5;
+    background: #f5f5f5 !important;
     cursor: not-allowed;
+    color: #888888 !important;
   }
 `;
 
 const PasswordToggle = styled.button`
   position: absolute;
-  right: 12px;
+  right: 14px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
   cursor: pointer;
-  color: #666666;
+  color: #666666 !important;
   padding: 4px;
-  border-radius: 2px;
+  border-radius: 4px;
   transition: color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
-    color: #333333;
+    color: #000000 !important;
+    background: rgba(0,0,0,0.05);
   }
 `;
 
 const LoginButton = styled.button<{ $disabled?: boolean }>`
   width: 100%;
-  padding: 12px;
-  background: ${props => props.$disabled ? '#e0e0e0' : '#1a1a1a'};
-  color: ${props => props.$disabled ? '#999999' : '#ffffff'};
+  padding: 14px;
+  background: ${props => props.$disabled ? '#cccccc' : '#000000'} !important;
+  color: #ffffff !important;
   border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
   cursor: ${props => props.$disabled ? 'not-allowed' : 'pointer'};
-  transition: background-color 0.15s;
-  margin-bottom: 20px;
+  transition: all 0.2s;
+  margin-bottom: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
+  box-shadow: ${props => props.$disabled ? 'none' : '0 4px 12px rgba(0, 0, 0, 0.15)'};
 
   &:hover:not(:disabled) {
-    background: #333333;
+    background: #222222 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
   }
 `;
 
 const MessageContainer = styled.div<{ $type: 'success' | 'error' }>`
-  padding: 12px;
-  border-radius: 4px;
-  margin-bottom: 16px;
+  padding: 14px;
+  border-radius: 8px;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: ${props => props.$type === 'success' ? '#f0f9f0' : '#fff5f5'};
-  color: ${props => props.$type === 'success' ? '#2d5a2d' : '#8b2d2d'};
-  border: 1px solid ${props => props.$type === 'success' ? '#d0e8d0' : '#f0d0d0'};
-  font-size: 13px;
+  gap: 10px;
+  background: ${props => props.$type === 'success' ? '#e8f5e9' : '#ffebee'} !important;
+  color: ${props => props.$type === 'success' ? '#1b5e20' : '#c62828'} !important;
+  border: 1px solid ${props => props.$type === 'success' ? '#c8e6c9' : '#ffcdd2'};
+  font-size: 14px;
+  font-weight: 500;
 `;
 
 const AdminInfo = styled.div`
-  background: #f9f9f9;
-  border-radius: 4px;
-  padding: 16px;
-  margin-top: 20px;
-  border: 1px solid #e0e0e0;
+  background: #f8f9fa !important;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 24px;
+  border: 1px solid #e9ecef;
 `;
 
 const AdminInfoTitle = styled.h3`
-  color: #1a1a1a;
+  color: #212529 !important;
   font-size: 14px;
-  font-weight: 600;
-  margin: 0 0 12px 0;
+  font-weight: 700;
+  margin: 0 0 16px 0;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 `;
 
 const AdminInfoGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 16px;
 `;
 
 const AdminInfoItem = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
 `;
 
 const AdminInfoLabel = styled.span`
   font-size: 11px;
-  color: #666666;
-  font-weight: 500;
+  color: #6c757d !important;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.5px;
 `;
 
 const AdminInfoValue = styled.span`
   font-size: 13px;
-  color: #1a1a1a;
-  font-weight: 500;
+  color: #212529 !important;
+  font-weight: 600;
+  font-family: monospace;
 `;
 
 const SecurityBadge = styled.div`
-  background: #2c2c2c;
-  color: #ffffff;
+  background: #000000 !important;
+  color: #ffffff !important;
   padding: 6px 12px;
-  border-radius: 4px;
+  border-radius: 100px;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  margin-top: 12px;
+  gap: 6px;
+  margin-top: 16px;
+  letter-spacing: 0.5px;
 `;
 
 const SuperAdminLogin: React.FC = () => {
   const navigate = useNavigate();
   // ✅ Security: Use environment variables instead of hardcoded credentials
-  const [email, setEmail] = useState(getAdminEmail());
+  const [email, setEmail] = useState('globul.net.m@gmail.com');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -253,7 +291,7 @@ const SuperAdminLogin: React.FC = () => {
 
     try {
       // Step 1: Validate unique owner session (local gate)
-      const isAuthenticated = await uniqueOwnerService.authenticateUniqueOwner(email, password);
+      const isAuthenticated = await uniqueOwnerService.authenticateUniqueOwner(email, password, phone);
       if (!isAuthenticated) {
         setMessage({ type: 'error', text: 'Invalid credentials. Only the unique owner can access this system.' });
         setLoading(false);
@@ -315,6 +353,18 @@ const SuperAdminLogin: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter owner email"
+              required
+              disabled={loading}
+            />
+          </FormGroup>
+
+          <FormGroup>
+            <Label>Owner Phone Number</Label>
+            <Input
+              type="text"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Enter owner phone"
               required
               disabled={loading}
             />

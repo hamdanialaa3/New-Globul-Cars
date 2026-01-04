@@ -12,7 +12,7 @@ import { db } from '../../../../firebase/firebase-config';
 import { getAuth } from 'firebase/auth';
 import { usersReportService } from '../../../../services/reports/users-report-service';
 import { carsReportService } from '../../../../services/reports/cars-report-service';
-import { Download, FileSpreadsheet, FileJson, Users } from 'lucide-react';
+import { Download, FileSpreadsheet, FileJson, Users, Flame, Database, Image, Zap, Globe, BarChart2, Cpu, Settings, DollarSign, FileText, Key, Activity, Layers, Server } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import GlobulCarLogo from '../../../../components/icons/GlobulCarLogo';
 
@@ -39,6 +39,8 @@ import UserDetailsModal from '../../../../components/UserDetailsModal';
 import FacebookAdminPanel from '../../../../components/SuperAdmin/FacebookAdminPanel';
 import ArchitecturePanel from '../../../../components/SuperAdmin/ArchitecturePanel';
 import { AIDashboard } from '../../../../components/admin/AIDashboard';
+import { GodModeUserGrid } from '../../../../components/SuperAdmin/GodMode/GodModeUserGrid';
+import { GodModeCarGrid } from '../../../../components/SuperAdmin/GodMode/GodModeCarGrid';
 
 // Styled Components - Professional Minimal Design
 const DashboardContainer = styled.div`
@@ -126,6 +128,28 @@ const SuperAdminDashboard: React.FC = () => {
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [isOwnerAuthed, setIsOwnerAuthed] = useState(false);
 
+  const [godMode, setGodMode] = useState<{ active: boolean; type: 'users' | 'cars' | null }>({ active: false, type: null });
+
+  const handleGodModeAction = (action: string) => {
+    switch (action) {
+      case 'users':
+        setGodMode({ active: true, type: 'users' });
+        break;
+      case 'cars':
+        setGodMode({ active: true, type: 'cars' });
+        break;
+      case 'messages':
+        navigate('/admin/messages');
+        break;
+      case 'revenue':
+        navigate('/admin/subscription-management'); // Or analytics
+        break;
+      case 'views':
+        setActiveTab('analytics');
+        break;
+    }
+  };
+
   useEffect(() => {
     let cancelled = false;
     let hasNavigated = false;
@@ -155,7 +179,11 @@ const SuperAdminDashboard: React.FC = () => {
           const auth = getAuth();
           const currentUser = auth.currentUser;
 
-          if (!currentUser || (currentUser.email !== 'alaa.hamdani@yahoo.com' && currentUser.email !== 'hamdanialaa@yahoo.com')) {
+          if (!currentUser || (
+            currentUser.email !== 'alaa.hamdani@yahoo.com' &&
+            currentUser.email !== 'hamdanialaa@yahoo.com' &&
+            currentUser.email !== 'globul.net.m@gmail.com'
+          )) {
             if (!hasWarned) {
               // Valid local session exists, so we don't kick them out, just warn about real data
               logger.warn('⚠️ Firebase session inactive. Some real-time features may be limited.');
@@ -373,12 +401,20 @@ const SuperAdminDashboard: React.FC = () => {
             />
             {isOwnerAuthed && (
               <>
-                <LiveCounters stats={marketStats} />
+                <LiveCounters stats={marketStats} onAction={handleGodModeAction} />
                 <RealTimeAlertsPanel />
                 <FirebaseConnectionTest />
               </>
             )}
           </>
+        )}
+
+        {/* GOD MODE OVERLAYS */}
+        {godMode.active && godMode.type === 'users' && (
+          <GodModeUserGrid onClose={() => setGodMode({ active: false, type: null })} />
+        )}
+        {godMode.active && godMode.type === 'cars' && (
+          <GodModeCarGrid onClose={() => setGodMode({ active: false, type: null })} />
         )}
 
         {activeTab === 'realdata' && (
@@ -471,40 +507,40 @@ const SuperAdminDashboard: React.FC = () => {
       <SuperAdminFooter>
         {/* Firebase Quick Links Section */}
         <FirebaseLinksSection>
-          <SectionTitle>🔥 روابط Firebase السريعة</SectionTitle>
+          <SectionTitle><Flame size={18} /> روابط Firebase السريعة</SectionTitle>
           <LinksGrid>
             <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data', '_blank')}>
-              <LinkIcon>📊</LinkIcon>
+              <LinkIcon><Database size={20} /></LinkIcon>
               <LinkName>Firestore Database</LinkName>
               <LinkDesc>عرض وإدارة البيانات</LinkDesc>
             </LinkCard>
 
             <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/storage', '_blank')}>
-              <LinkIcon>🖼️</LinkIcon>
+              <LinkIcon><Image size={20} /></LinkIcon>
               <LinkName>Storage</LinkName>
               <LinkDesc>الصور والملفات</LinkDesc>
             </LinkCard>
 
             <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/authentication/users', '_blank')}>
-              <LinkIcon>👥</LinkIcon>
+              <LinkIcon><Users size={20} /></LinkIcon>
               <LinkName>Authentication</LinkName>
               <LinkDesc>المستخدمين المسجلين</LinkDesc>
             </LinkCard>
 
             <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/functions', '_blank')}>
-              <LinkIcon>⚡</LinkIcon>
+              <LinkIcon><Zap size={20} /></LinkIcon>
               <LinkName>Cloud Functions</LinkName>
               <LinkDesc>الوظائف السحابية</LinkDesc>
             </LinkCard>
 
             <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/hosting', '_blank')}>
-              <LinkIcon>🌐</LinkIcon>
+              <LinkIcon><Globe size={20} /></LinkIcon>
               <LinkName>Hosting</LinkName>
               <LinkDesc>استضافة الموقع</LinkDesc>
             </LinkCard>
 
             <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/analytics', '_blank')}>
-              <LinkIcon>📈</LinkIcon>
+              <LinkIcon><BarChart2 size={20} /></LinkIcon>
               <LinkName>Analytics</LinkName>
               <LinkDesc>إحصائيات الاستخدام</LinkDesc>
             </LinkCard>
@@ -513,46 +549,46 @@ const SuperAdminDashboard: React.FC = () => {
 
         {/* AI Management Section */}
         <AIManagementSection>
-          <SectionTitle>🤖 إدارة الذكاء الاصطناعي</SectionTitle>
+          <SectionTitle><Cpu size={18} /> إدارة الذكاء الاصطناعي</SectionTitle>
           <LinksGrid>
             <LinkCard onClick={() => navigate('/ai-dashboard')}>
-              <LinkIcon>📊</LinkIcon>
+              <LinkIcon><BarChart2 size={20} /></LinkIcon>
               <LinkName>AI Dashboard</LinkName>
               <LinkDesc>لوحة تحكم الذكاء الاصطناعي</LinkDesc>
             </LinkCard>
 
             <LinkCard onClick={() => navigate('/admin/ai-quotas')}>
-              <LinkIcon>⚙️</LinkIcon>
+              <LinkIcon><Settings size={20} /></LinkIcon>
               <LinkName>AI Quotas Manager</LinkName>
               <LinkDesc>إدارة حصص المستخدمين</LinkDesc>
             </LinkCard>
 
             <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_quotas', '_blank')}>
-              <LinkIcon>💳</LinkIcon>
+              <LinkIcon><DollarSign size={20} /></LinkIcon>
               <LinkName>AI Quotas</LinkName>
               <LinkDesc>حصص المستخدمين</LinkDesc>
             </LinkCard>
 
             <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_usage_logs', '_blank')}>
-              <LinkIcon>📝</LinkIcon>
+              <LinkIcon><FileText size={20} /></LinkIcon>
               <LinkName>Usage Logs</LinkName>
               <LinkDesc>سجل الاستخدام</LinkDesc>
             </LinkCard>
 
             <LinkCard onClick={() => window.open('https://makersuite.google.com/app/apikey', '_blank')}>
-              <LinkIcon>🔑</LinkIcon>
+              <LinkIcon><Key size={20} /></LinkIcon>
               <LinkName>Gemini API Keys</LinkName>
               <LinkDesc>مفاتيح API</LinkDesc>
             </LinkCard>
 
             <LinkCard onClick={() => window.open('https://console.cloud.google.com/apis/api/generativelanguage.googleapis.com', '_blank')}>
-              <LinkIcon>⚙️</LinkIcon>
+              <LinkIcon><Settings size={20} /></LinkIcon>
               <LinkName>API Settings</LinkName>
               <LinkDesc>إعدادات API</LinkDesc>
             </LinkCard>
 
             <LinkCard onClick={() => window.open('https://console.cloud.google.com/billing', '_blank')}>
-              <LinkIcon>💰</LinkIcon>
+              <LinkIcon><DollarSign size={20} /></LinkIcon>
               <LinkName>Billing</LinkName>
               <LinkDesc>الفوترة والتكاليف</LinkDesc>
             </LinkCard>
@@ -561,52 +597,52 @@ const SuperAdminDashboard: React.FC = () => {
 
         {/* IoT Management Section */}
         <IoTManagementSection>
-          <SectionTitle>🌐 إدارة إنترنت الأشياء (IoT)</SectionTitle>
+          <SectionTitle><Globe size={18} /> إدارة إنترنت الأشياء (IoT)</SectionTitle>
           <LinksGrid>
             <LinkCard onClick={() => navigate('/iot-dashboard')}>
-              <LinkIcon>📊</LinkIcon>
+              <LinkIcon><Activity size={20} /></LinkIcon>
               <LinkName>IoT Dashboard</LinkName>
               <LinkDesc>لوحة تحكم أجهزة IoT</LinkDesc>
             </LinkCard>
 
             <LinkCard onClick={() => navigate('/car-tracking')}>
-              <LinkIcon>🗺️</LinkIcon>
+              <LinkIcon><Globe size={20} /></LinkIcon>
               <LinkName>Car Tracking</LinkName>
               <LinkDesc>تتبع السيارات المباشر</LinkDesc>
             </LinkCard>
 
             <LinkCard onClick={() => navigate('/iot-analytics')}>
-              <LinkIcon>📈</LinkIcon>
+              <LinkIcon><BarChart2 size={20} /></LinkIcon>
               <LinkName>IoT Analytics</LinkName>
               <LinkDesc>تحليلات بيانات IoT</LinkDesc>
             </LinkCard>
 
             <LinkCard onClick={() => window.open('https://700633997329-ggu6enoq.us-east-1.console.aws.amazon.com/iot/home?region=us-east-1#/connectdevice', '_blank')}>
-              <LinkIcon>🔗</LinkIcon>
+              <LinkIcon><Zap size={20} /></LinkIcon>
               <LinkName>AWS IoT Console</LinkName>
               <LinkDesc>وحدة تحكم AWS IoT</LinkDesc>
             </LinkCard>
 
             <LinkCard onClick={() => window.open('https://700633997329-ggu6enoq.us-east-1.console.aws.amazon.com/dynamodb/home?region=us-east-1#tables:', '_blank')}>
-              <LinkIcon>🗄️</LinkIcon>
+              <LinkIcon><Database size={20} /></LinkIcon>
               <LinkName>DynamoDB Tables</LinkName>
               <LinkDesc>جداول بيانات IoT</LinkDesc>
             </LinkCard>
 
             <LinkCard onClick={() => window.open('https://700633997329-ggu6enoq.us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1', '_blank')}>
-              <LinkIcon>📊</LinkIcon>
+              <LinkIcon><Activity size={20} /></LinkIcon>
               <LinkName>CloudWatch</LinkName>
               <LinkDesc>مراقبة الأداء</LinkDesc>
             </LinkCard>
 
             <LinkCard onClick={() => navigate('/admin/integration-status')}>
-              <LinkIcon>🔗</LinkIcon>
+              <LinkIcon><Layers size={20} /></LinkIcon>
               <LinkName>Integration Status</LinkName>
               <LinkDesc>حالة تكامل الخدمات السحابية</LinkDesc>
             </LinkCard>
 
             <LinkCard onClick={() => navigate('/admin/setup')}>
-              <LinkIcon>⚙️</LinkIcon>
+              <LinkIcon><Settings size={20} /></LinkIcon>
               <LinkName>Quick Setup</LinkName>
               <LinkDesc>إعداد سريع للخدمات</LinkDesc>
             </LinkCard>
@@ -825,7 +861,7 @@ const SuperAdminDashboard: React.FC = () => {
         </FooterStatsGrid>
         <FooterNote>هذه المعلومات خاصة بالمالك (Super Admin) ولا تظهر للمستخدمين العاديين.</FooterNote>
       </SuperAdminFooter>
-    </DashboardContainer>
+    </DashboardContainer >
   );
 };
 

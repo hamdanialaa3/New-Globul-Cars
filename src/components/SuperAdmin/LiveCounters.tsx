@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { 
-  Users, 
-  Car, 
-  MessageSquare, 
-  Eye, 
-  DollarSign, 
+import {
+  Users,
+  Car,
+  MessageSquare,
+  Eye,
+  DollarSign,
   Database,
   HardDrive,
   Download,
@@ -55,17 +55,51 @@ const CountersGrid = styled.div`
   margin-bottom: 24px;
 `;
 
-const CounterCard = styled.div`
+const CounterCard = styled.div<{ $interactive?: boolean }>`
   background: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   padding: 16px;
   text-align: center;
-  transition: border-color 0.15s;
+  transition: all 0.2s ease;
   position: relative;
+  cursor: ${props => props.$interactive ? 'pointer' : 'default'};
   
   &:hover {
-    border-color: #999999;
+    border-color: ${props => props.$interactive ? '#1a1a1a' : '#999999'};
+    transform: ${props => props.$interactive ? 'translateY(-2px)' : 'none'};
+    box-shadow: ${props => props.$interactive ? '0 4px 12px rgba(0,0,0,0.1)' : 'none'};
+  }
+`;
+
+const ActionButton = styled.button`
+  width: 100%;
+  margin-top: 12px;
+  padding: 6px;
+  background: #1a1a1a;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  ${CounterCard}:hover & {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  &:hover {
+    background: #000;
   }
 `;
 
@@ -137,7 +171,16 @@ const LoadingSpinner = styled.div`
   gap: 8px;
 `;
 
-const LiveCounters: React.FC<LiveCountersProps> = ({ stats = { totalCars: 0, totalUsers: 0, totalViews: 0 } }) => {
+interface LiveCountersProps {
+  stats: {
+    totalCars: number;
+    totalUsers: number;
+    totalViews: number;
+  };
+  onAction?: (action: string) => void;
+}
+
+const LiveCounters: React.FC<LiveCountersProps> = ({ stats = { totalCars: 0, totalUsers: 0, totalViews: 0 }, onAction }) => {
   const [counters, setCounters] = useState({
     totalUsers: 0,
     totalCars: 0,
@@ -177,31 +220,41 @@ const LiveCounters: React.FC<LiveCountersProps> = ({ stats = { totalCars: 0, tot
         Live Platform Statistics
       </SectionTitle>
       <CountersGrid>
-        <CounterCard>
+        <CounterCard $interactive onClick={() => onAction?.('users')}>
           <CounterIcon><Users /></CounterIcon>
           <CounterValue>{(stats?.totalUsers || 0).toLocaleString()}</CounterValue>
           <CounterLabel>Total Users</CounterLabel>
+          <ActionButton>Manage Users</ActionButton>
         </CounterCard>
-        <CounterCard>
+
+        <CounterCard $interactive onClick={() => onAction?.('cars')}>
           <CounterIcon><Car /></CounterIcon>
           <CounterValue>{(stats?.totalCars || 0).toLocaleString()}</CounterValue>
           <CounterLabel>Total Cars</CounterLabel>
+          <ActionButton>Manage Fleet</ActionButton>
         </CounterCard>
-        <CounterCard>
+
+        <CounterCard $interactive onClick={() => onAction?.('views')}>
           <CounterIcon><Eye /></CounterIcon>
           <CounterValue>{(stats?.totalViews || 0).toLocaleString()}</CounterValue>
           <CounterLabel>Total Views</CounterLabel>
+          <ActionButton>View Analytics</ActionButton>
         </CounterCard>
-        <CounterCard>
+
+        <CounterCard $interactive onClick={() => onAction?.('messages')}>
           <CounterIcon><MessageSquare /></CounterIcon>
           <CounterValue>{(counters?.totalMessages || 0).toLocaleString()}</CounterValue>
           <CounterLabel>Total Messages</CounterLabel>
+          <ActionButton>Open Inbox</ActionButton>
         </CounterCard>
-        <CounterCard>
+
+        <CounterCard $interactive onClick={() => onAction?.('revenue')}>
           <CounterIcon><DollarSign /></CounterIcon>
           <CounterValue>€{(counters?.totalRevenue || 0).toLocaleString()}</CounterValue>
           <CounterLabel>Total Revenue</CounterLabel>
+          <ActionButton>Details</ActionButton>
         </CounterCard>
+
         <CounterCard>
           <CounterIcon><HardDrive /></CounterIcon>
           <CounterValue>{(counters?.storageUsage || 0).toLocaleString()} MB</CounterValue>
