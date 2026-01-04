@@ -51,13 +51,31 @@ service cloud.firestore {
       allow write: if isAuthenticated();
     }
 
-    // ✅ NEW: Explicitly allow other vehicle types
-    match /passenger_cars/{carId} { allow read: if true; allow write: if isAuthenticated(); }
-    match /suvs/{carId} { allow read: if true; allow write: if isAuthenticated(); }
-    match /vans/{carId} { allow read: if true; allow write: if isAuthenticated(); }
-    match /motorcycles/{carId} { allow read: if true; allow write: if isAuthenticated(); }
-    match /trucks/{carId} { allow read: if true; allow write: if isAuthenticated(); }
-    match /buses/{carId} { allow read: if true; allow write: if isAuthenticated(); }
+    // ✅ NEW: Explicitly allow other vehicle types (Restricted to Owner)
+    match /passenger_cars/{carId} { 
+      allow read: if true; 
+      allow write: if isOwner(resource.data.userId) || (request.resource.data.userId == request.auth.uid); 
+    }
+    match /suvs/{carId} { 
+      allow read: if true; 
+      allow write: if isOwner(resource.data.userId) || (request.resource.data.userId == request.auth.uid); 
+    }
+    match /vans/{carId} { 
+      allow read: if true; 
+      allow write: if isOwner(resource.data.userId) || (request.resource.data.userId == request.auth.uid); 
+    }
+    match /motorcycles/{carId} { 
+      allow read: if true; 
+      allow write: if isOwner(resource.data.userId) || (request.resource.data.userId == request.auth.uid); 
+    }
+    match /trucks/{carId} { 
+      allow read: if true; 
+      allow write: if isOwner(resource.data.userId) || (request.resource.data.userId == request.auth.uid); 
+    }
+    match /buses/{carId} { 
+      allow read: if true; 
+      allow write: if isOwner(resource.data.userId) || (request.resource.data.userId == request.auth.uid); 
+    }
     
     // Legacy support for listings collection if used
     match /listings/{listingId} {
@@ -312,8 +330,9 @@ service cloud.firestore {
     }
 
     // General fallback (deny by default, but opened for dev/debugging if needed - keep strict for now)
+    // Default: Deny all other access
     match /{document=**} {
-      allow read, write: if isAuthenticated();
+      allow read, write: if false;
     }
   }
 }
