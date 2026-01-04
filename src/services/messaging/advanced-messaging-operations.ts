@@ -155,6 +155,59 @@ export class ConversationOperations {
       return null;
     }
   }
+  
+  /**
+   * Find conversation by participants (returns full Conversation object)
+   * البحث عن محادثة بواسطة المشاركين
+   */
+  static async findConversationByParticipants(participantIds: string[]): Promise<Conversation | null> {
+    try {
+      if (participantIds.length !== 2) {
+        logger.warn('findConversationByParticipants requires exactly 2 participants', { 
+          provided: participantIds.length 
+        });
+        return null;
+      }
+
+      const conversationsRef = collection(db, COLLECTION_NAMES.CONVERSATIONS);
+      
+      // Query for conversations containing first participant
+      const q = query(
+        conversationsRef,
+        where('participants', 'array-contains', participantIds[0])
+      );
+
+      const snapshot = await getDocs(q);
+
+      // Find conversation that includes both participants
+      const found = snapshot.docs.find(doc => {
+        const data = doc.data();
+        const participants = data.participants as string[];
+        
+        // Check if all participant IDs are in the conversation
+        return participantIds.every(pid => participants.includes(pid));
+      });
+
+      if (!found) {
+        logger.info('No existing conversation found between participants', { participantIds });
+        return null;
+      }
+
+      logger.info('Found existing conversation', { 
+        conversationId: found.id, 
+        participantIds 
+      });
+
+      return {
+        id: found.id,
+        ...found.data()
+      } as Conversation;
+
+    } catch (error) {
+      logger.error('findConversationByParticipants failed', error as Error, { participantIds });
+      return null;
+    }
+  }
 
   /**
    * Get user conversations

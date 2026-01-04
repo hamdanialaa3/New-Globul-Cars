@@ -183,16 +183,19 @@ const MessageButtonComponent: React.FC<MessageButtonProps> = ({
         );
       }
 
-      // ✅ CRITICAL FIX: Get numeric IDs for strict URL format
+      // ✅ Phase 1 Fix: Get numeric IDs for unified messaging URL format
       const { BulgarianProfileService } = await import('../../services/bulgarian-profile-service');
-      const { numericMessagingSystemService } = await import('../../services/numeric-messaging-system.service');
       
-      // Get numeric IDs for both users
+      // Get numeric IDs for both users from profiles
       const currentUserProfile = await BulgarianProfileService.getUserProfile(user.uid);
       const sellerProfile = await BulgarianProfileService.getUserProfile(sellerId);
       
       if (!currentUserProfile?.numericId || !sellerProfile?.numericId) {
-        throw new Error('Cannot find numeric IDs for users');
+        logger.error('Missing numeric IDs for messaging navigation', {
+          currentUserHasId: !!currentUserProfile?.numericId,
+          sellerHasId: !!sellerProfile?.numericId
+        });
+        throw new Error('Cannot resolve numeric IDs for users');
       }
 
       // 2. If new or forced, send the car link as context

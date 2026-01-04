@@ -57,6 +57,14 @@ class AdvancedMessagingService {
   async findConversation(userId: string, otherUserId: string, carId?: string): Promise<string | null> {
     return ConversationOperations.findConversation(userId, otherUserId, carId);
   }
+  
+  /**
+   * Find conversation by participants (array of UIDs)
+   * البحث عن محادثة بواسطة المشاركين
+   */
+  async findConversationByParticipants(participantIds: string[]): Promise<Conversation | null> {
+    return ConversationOperations.findConversationByParticipants(participantIds);
+  }
 
   /**
    * Get user conversations
