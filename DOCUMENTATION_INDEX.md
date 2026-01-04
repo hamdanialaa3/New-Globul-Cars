@@ -87,8 +87,8 @@
 - حذف 9 ملفات قديمة
 - تخفيض 89% في التوثيق
 
-#### [SEARCH_SYSTEM.md](SEARCH_SYSTEM.md)
-**الغرض:** توثيق نظام البحث الشامل  
+#### [SEARCH_SYSTEM.md](DDD/archived-docs-jan4-2026/SEARCH_SYSTEM.md) 📦
+**الغرض:** توثيق نظام البحث الشامل (مؤرشف)  
 **المحتوى:**
 - Firestore + Algolia hybrid
 - UnifiedSearchService
@@ -110,14 +110,6 @@
 - قائمة المفضلة
 - Real-time sync
 - Heart button في جميع البطاقات
-
-#### [PERFORMANCE_OPTIMIZATION.md](PERFORMANCE_OPTIMIZATION.md)
-**الغرض:** تحسينات الأداء  
-**المحتوى:**
-- Bundle size optimization
-- Lazy loading strategies
-- Image optimization (WebP)
-- Code splitting
 
 #### [QUICK_TESTING_GUIDE.md](QUICK_TESTING_GUIDE.md) 🆕
 **الغرض:** دليل اختبار سريع  
@@ -179,6 +171,18 @@
 
 ## 📖 الأدلة والبدء السريع - Guides
 
+#### [DEVELOPER_QUICK_GUIDES.md](DEVELOPER_QUICK_GUIDES.md) 🆕 ⭐
+**الغرض:** دليل موحد للمطورين - دمج 3 أدلة في ملف واحد  
+**الأقسام:**
+1. Clear Cache Commands (Browser + npm)
+2. Cursor IDE Reset Guide
+3. Favorites System Quick Start
+
+**الملفات المدموجة:**
+- ~~CLEAR_CACHE_COMMANDS.md~~ (مدمج)
+- ~~CURSOR_RESET_GUIDE.md~~ (مدمج)
+- ~~QUICK_START_FAVORITES.md~~ (مدمج)
+
 #### [README_START_SERVER.md](README_START_SERVER.md)
 **الغرض:** كيفية تشغيل الخادم  
 **الأوامر:**
@@ -186,28 +190,33 @@
 - `npm run build` - Production build
 - `npm run deploy` - Deploy to Firebase
 
-#### [CLEAR_CACHE_COMMANDS.md](CLEAR_CACHE_COMMANDS.md)
-**الغرض:** أوامر مسح الكاش  
-**الأوامر:**
-- `npm run clean:3000` - Clear port 3000
-- `npm run clean:cache` - Clear webpack cache
-- `npm run clean:all` - Clean everything
-
-#### [QUICK_START_FAVORITES.md](QUICK_START_FAVORITES.md)
-**الغرض:** دليل سريع لنظام المفضلة
-
 #### [KEY_ROTATION_GUIDE_AR.md](KEY_ROTATION_GUIDE_AR.md)
 **الغرض:** دليل تدوير المفاتيح (عربي)
+
+#### [FIRESTORE_INDEXES_GUIDE.md](FIRESTORE_INDEXES_GUIDE.md)
+**الغرض:** دليل إنشاء Firestore Indexes
 
 ---
 
 ## 🎨 التصميم - Design System
 
-- SMART_TEXT_COLOR_SYSTEM.md
-- DESIGN_SYSTEM_QUICK_REFERENCE.md
-- docs/DESIGN_SYSTEM_UPDATE.md
-- docs/PUBLIC_PROFILE_REDESIGN.md
-- docs/PROFESSIONAL_GRID_BACKGROUNDS.md
+- [DESIGN_SYSTEM_QUICK_REFERENCE.md](DESIGN_SYSTEM_QUICK_REFERENCE.md)
+- [docs/DESIGN_SYSTEM_UPDATE.md](docs/DESIGN_SYSTEM_UPDATE.md)
+- [docs/PUBLIC_PROFILE_REDESIGN.md](docs/PUBLIC_PROFILE_REDESIGN.md)
+- [docs/PROFESSIONAL_GRID_BACKGROUNDS.md](docs/PROFESSIONAL_GRID_BACKGROUNDS.md)
+
+### 📦 المؤرشف - Archived (Jan 4, 2026)
+
+**الموقع:** [DDD/archived-docs-jan4-2026/](DDD/archived-docs-jan4-2026/)
+
+ملفات تم إكمالها أو أصبحت غير نشطة:
+- SMART_TEXT_COLOR_SYSTEM.md (مشكلة محلولة)
+- PROJECT_STATUS_JAN2_2026.md (قديم، تم استبداله)
+- PERFORMANCE_OPTIMIZATION.md (شبه فارغ، 27 سطر)
+- SEARCH_SYSTEM.md (شبه فارغ، 27 سطر)
+- MISSING_INDEXES_LINKS.md (إعداد مكتمل)
+
+**النصوص البرمجية المنقولة:** `scripts/maintenance/CLEAN_CURSOR_CACHE.ps1`
 
 ---
 

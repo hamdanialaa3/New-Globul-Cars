@@ -313,7 +313,7 @@ const SuperAdminLogin: React.FC = () => {
         navigate('/super-admin');
       }, 1000);
     } catch (error) {
-      logger.error('Authentication error:', error);
+      logger.error('Authentication error:', error as Error);
       setMessage({ type: 'error', text: 'Authentication failed. Please try again.' });
       setLoading(false);
     }

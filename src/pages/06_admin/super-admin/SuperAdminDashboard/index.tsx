@@ -41,6 +41,8 @@ import ArchitecturePanel from '../../../../components/SuperAdmin/ArchitecturePan
 import { AIDashboard } from '../../../../components/admin/AIDashboard';
 import { GodModeUserGrid } from '../../../../components/SuperAdmin/GodMode/GodModeUserGrid';
 import { GodModeCarGrid } from '../../../../components/SuperAdmin/GodMode/GodModeCarGrid';
+import { GodModeMessagesGrid } from '../../../../components/SuperAdmin/GodMode/GodModeMessagesGrid';
+import { GodModeRevenueGrid } from '../../../../components/SuperAdmin/GodMode/GodModeRevenueGrid';
 
 // Styled Components - Professional Minimal Design
 const DashboardContainer = styled.div`
@@ -113,6 +115,8 @@ const LoginButton = styled.button`
   }
 `;
 
+
+
 const SuperAdminDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
@@ -128,7 +132,7 @@ const SuperAdminDashboard: React.FC = () => {
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [isOwnerAuthed, setIsOwnerAuthed] = useState(false);
 
-  const [godMode, setGodMode] = useState<{ active: boolean; type: 'users' | 'cars' | null }>({ active: false, type: null });
+  const [godMode, setGodMode] = useState<{ active: boolean; type: 'users' | 'cars' | 'messages' | 'revenue' | null }>({ active: false, type: null });
 
   const handleGodModeAction = (action: string) => {
     switch (action) {
@@ -139,10 +143,10 @@ const SuperAdminDashboard: React.FC = () => {
         setGodMode({ active: true, type: 'cars' });
         break;
       case 'messages':
-        navigate('/admin/messages');
+        setGodMode({ active: true, type: 'messages' });
         break;
       case 'revenue':
-        navigate('/admin/subscription-management'); // Or analytics
+        setGodMode({ active: true, type: 'revenue' });
         break;
       case 'views':
         setActiveTab('analytics');
@@ -415,6 +419,12 @@ const SuperAdminDashboard: React.FC = () => {
         )}
         {godMode.active && godMode.type === 'cars' && (
           <GodModeCarGrid onClose={() => setGodMode({ active: false, type: null })} />
+        )}
+        {godMode.active && godMode.type === 'messages' && (
+          <GodModeMessagesGrid onClose={() => setGodMode({ active: false, type: null })} />
+        )}
+        {godMode.active && godMode.type === 'revenue' && (
+          <GodModeRevenueGrid onClose={() => setGodMode({ active: false, type: null })} />
         )}
 
         {activeTab === 'realdata' && (
@@ -870,185 +880,185 @@ const SuperAdminFooter = styled.footer`
   background: #ffffff;
   color: #1a1a1a;
   padding: 24px 0 16px 0;
-  margin-top: 40px;
-  border-top: 1px solid #e0e0e0;
-  text-align: center;
-`;
+  margin - top: 40px;
+  border - top: 1px solid #e0e0e0;
+  text - align: center;
+  `;
 
 const FooterStatsGrid = styled.div`
   display: flex;
-  justify-content: center;
+  justify - content: center;
   gap: 32px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
-`;
+  flex - wrap: wrap;
+  margin - bottom: 12px;
+  `;
 
 const FooterStat = styled.div`
-  min-width: 100px;
-`;
+  min - width: 100px;
+  `;
 
 const StatLabel = styled.div`
-  font-size: 12px;
+  font - size: 12px;
   color: #666666;
-  margin-bottom: 4px;
-  font-weight: 500;
-`;
+  margin - bottom: 4px;
+  font - weight: 500;
+  `;
 
 const StatValue = styled.div`
-  font-size: 18px;
-  font-weight: 600;
+  font - size: 18px;
+  font - weight: 600;
   color: #1a1a1a;
-`;
+  `;
 
 const FooterNote = styled.div`
-  font-size: 12px;
+  font - size: 12px;
   color: #999999;
-  margin-top: 8px;
-`;
+  margin - top: 8px;
+  `;
 
 // Reports Section Styles - Professional Minimal
 // Firebase Links Section Styles
 const FirebaseLinksSection = styled.div`
   padding: 24px 16px;
-  margin-bottom: 24px;
-  border-bottom: 1px solid #e0e0e0;
+  margin - bottom: 24px;
+  border - bottom: 1px solid #e0e0e0;
   background: #ffffff;
-`;
+  `;
 
 const SectionTitle = styled.h3`
-  font-size: 16px;
+  font - size: 16px;
   color: #1a1a1a;
-  text-align: center;
-  margin-bottom: 16px;
-  font-weight: 600;
-`;
+  text - align: center;
+  margin - bottom: 16px;
+  font - weight: 600;
+  `;
 
 const LinksGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid - template - columns: repeat(auto - fit, minmax(180px, 1fr));
   gap: 12px;
-  max-width: 1200px;
+  max - width: 1200px;
   margin: 0 auto;
-`;
+  `;
 
 const LinkCard = styled.div`
   background: #ffffff;
   border: 1px solid #e0e0e0;
-  border-radius: 4px;
+  border - radius: 4px;
   padding: 16px;
   cursor: pointer;
-  transition: border-color 0.15s;
-  text-align: center;
+  transition: border - color 0.15s;
+  text - align: center;
   
   &:hover {
-    border-color: #999999;
+    border - color: #999999;
   }
-`;
+  `;
 
 const LinkIcon = styled.div`
-  font-size: 24px;
-  margin-bottom: 8px;
-`;
+  font - size: 24px;
+  margin - bottom: 8px;
+  `;
 
 const LinkName = styled.div`
-  font-size: 13px;
+  font - size: 13px;
   color: #1a1a1a;
-  font-weight: 500;
-  margin-bottom: 4px;
-`;
+  font - weight: 500;
+  margin - bottom: 4px;
+  `;
 
 const LinkDesc = styled.div`
-  font-size: 11px;
+  font - size: 11px;
   color: #666666;
-`;
+  `;
 
 const AIManagementSection = styled.div`
   padding: 24px 16px;
-  margin-bottom: 24px;
-  border-bottom: 1px solid #e0e0e0;
+  margin - bottom: 24px;
+  border - bottom: 1px solid #e0e0e0;
   background: #ffffff;
-`;
+  `;
 
 const IoTManagementSection = styled.div`
   padding: 24px 16px;
-  margin-bottom: 24px;
-  border-bottom: 1px solid #e0e0e0;
+  margin - bottom: 24px;
+  border - bottom: 1px solid #e0e0e0;
   background: #ffffff;
-`;
+  `;
 
 const ReportsSection = styled.div`
   padding: 24px 16px;
-  margin-bottom: 24px;
-  border-bottom: 1px solid #e0e0e0;
+  margin - bottom: 24px;
+  border - bottom: 1px solid #e0e0e0;
   background: #ffffff;
-`;
+  `;
 
 const ReportsTitle = styled.h3`
-  font-size: 16px;
+  font - size: 16px;
   color: #1a1a1a;
-  text-align: center;
-  margin-bottom: 16px;
-  font-weight: 600;
-`;
+  text - align: center;
+  margin - bottom: 16px;
+  font - weight: 600;
+  `;
 
 const ReportsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid - template - columns: repeat(auto - fit, minmax(260px, 1fr));
   gap: 12px;
-  max-width: 1200px;
+  max - width: 1200px;
   margin: 0 auto;
-`;
+  `;
 
 const ReportCard = styled.div`
   background: #ffffff;
   border: 1px solid #e0e0e0;
-  border-radius: 4px;
+  border - radius: 4px;
   padding: 16px;
-  transition: border-color 0.15s;
+  transition: border - color 0.15s;
   
   &:hover {
-    border-color: #999999;
+    border - color: #999999;
   }
-`;
+  `;
 
 const ReportIcon = styled.div`
-  font-size: 24px;
-  text-align: center;
-  margin-bottom: 8px;
-`;
+  font - size: 24px;
+  text - align: center;
+  margin - bottom: 8px;
+  `;
 
 const ReportName = styled.div`
-  font-size: 13px;
+  font - size: 13px;
   color: #1a1a1a;
-  text-align: center;
-  margin-bottom: 12px;
-  font-weight: 500;
-`;
+  text - align: center;
+  margin - bottom: 12px;
+  font - weight: 500;
+  `;
 
 const ReportButtons = styled.div`
   display: flex;
   gap: 6px;
-  justify-content: center;
-  flex-wrap: wrap;
-`;
+  justify - content: center;
+  flex - wrap: wrap;
+  `;
 
 const ExportBtn = styled.button`
   display: flex;
-  align-items: center;
+  align - items: center;
   gap: 4px;
   padding: 6px 12px;
   background: #1a1a1a;
   color: #ffffff;
   border: 1px solid #d0d0d0;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
+  border - radius: 4px;
+  font - size: 12px;
+  font - weight: 500;
   cursor: pointer;
-  transition: background-color 0.15s;
+  transition: background - color 0.15s;
   
   &:hover {
     background: #333333;
   }
-`;
+  `;
 
 export default SuperAdminDashboard;
