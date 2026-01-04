@@ -12,6 +12,8 @@ const CarsPage = safeLazy(() => import('../pages/01_main-pages/CarsPage'));
 // PHASE 3: Team Management System (Updated path)
 const TeamManagementPage = safeLazy(() => import('../pages/06_admin/TeamManagement/TeamManagementPage'));
 const CompanyAnalyticsDashboard = safeLazy(() => import('../pages/09_dealer-company/CompanyAnalyticsDashboard'));
+const SuperAdminLoginPage = safeLazy(() => import('../pages/02_authentication/admin-login/SuperAdminLoginPage'));
+const SuperAdminDashboard = safeLazy(() => import('../pages/06_admin/super-admin/SuperAdminDashboard'));
 
 // ... existing imports ...
 const CarDetailsPage = safeLazy(() => import('../pages/01_main-pages/CarDetailsPage'));
@@ -136,6 +138,14 @@ export const MainRoutes: React.FC = () => {
             <Route path="/cars/economy" element={<DynamicCarShowcase pageType="economy" />} />
             <Route path="/cars/city/:cityName" element={<DynamicCarShowcase pageType="city" />} />
             <Route path="/cars/brand/:brandName" element={<DynamicCarShowcase pageType="brand" />} />
+
+            {/* 👑 SUPER ADMIN ROUTES - THE GOD MODE (Restored Phase 1) */}
+            <Route path="/super-admin-login" element={<SuperAdminLoginPage />} />
+            <Route path="/super-admin/*" element={
+                <AuthGuard requireAuth={true}>
+                    <SuperAdminDashboard />
+                </AuthGuard>
+            } />
 
             {/* 🔢 Strict Numeric Car URLs (Constitution: /car/:sellerNumericId/:carNumericId) */}
             <Route path="/car/:sellerNumericId/:carNumericId" element={<NumericCarDetailsPage />} />
