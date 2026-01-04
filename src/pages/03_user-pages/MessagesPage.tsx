@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, useParams } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import bg from 'date-fns/locale/bg';
 import enUS from 'date-fns/locale/en-US';
 import { Send } from 'lucide-react';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 import { useTranslation } from '../../hooks/useTranslation';
 import { useAuth } from '../../contexts/AuthProvider';
@@ -19,6 +20,8 @@ import { NotificationSettings } from '../../components/messaging/NotificationSet
 import { ConversationView } from '../../components/messaging';
 import { getCarLogoUrl } from '../../services/car-logo-service';
 import Header from '../../components/Header/UnifiedHeader';
+import { db } from '../../firebase/firebase-config';
+import { toast } from 'react-toastify';
 
 const MessagesContainer = styled.div`
   position: fixed;
@@ -541,6 +544,9 @@ const MessagesPage: React.FC = () => {
   const { currentUser } = useAuth();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  
+  // ✅ NEW: Support numeric ID routing - /messages/:id1/:id2
+  const { id1, id2 } = useParams<{ id1?: string; id2?: string }>();
 
   const targetUserId = searchParams.get('userId');
   const targetCarId = searchParams.get('carId');
@@ -555,6 +561,11 @@ const MessagesPage: React.FC = () => {
   const [profiles, setProfiles] = useState<{ [key: string]: any }>({});
   const [showSettings, setShowSettings] = useState(false);
   const [previousMessagesCount, setPreviousMessagesCount] = useState(0);
+  
+  // ✅ NEW: State for numeric ID resolution
+  const [resolvedConversationId, setResolvedConversationId] = useState<string | null>(null);
+  const [resolutionError, setResolutionError] = useState<string | null>(null);
+  const [isResolvingNumericIds, setIsResolvingNumericIds] = useState(false);
 
   // Refs for auto-scrolling
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -605,6 +616,114 @@ const MessagesPage: React.FC = () => {
       document.body.style.overflow = originalStyles.bodyOverflow;
     };
   }, []);
+
+  // ✅ NEW: Resolve numeric IDs to conversation
+  useEffect(() => {
+    const resolveNumericIdsToConversation = async () => {
+      if (!currentUser) return;
+      
+      // Path 1: Numeric ID route - /messages/:id1/:id2
+      if (id1 && id2) {
+        setIsResolvingNumericIds(true);
+        logger.info('🔍 Resolving numeric ID path to conversation', { 
+          id1, 
+          id2, 
+          currentUserUid: currentUser.uid 
+        });
+
+        try {
+          // Convert numeric IDs to Firebase UIDs
+          const usersRef = collection(db, 'users');
+          
+          // Find user 1
+          const q1 = query(usersRef, where('numericId', '==', parseInt(id1)));
+          const snapshot1 = await getDocs(q1);
+          
+          if (snapshot1.empty) {
+            throw new Error(`User with numericId ${id1} not found`);
+          }
+          const user1Uid = snapshot1.docs[0].id;
+          
+          // Find user 2
+          const q2 = query(usersRef, where('numericId', '==', parseInt(id2)));
+          const snapshot2 = await getDocs(q2);
+          
+          if (snapshot2.empty) {
+            throw new Error(`User with numericId ${id2} not found`);
+          }
+          const user2Uid = snapshot2.docs[0].id;
+          
+          logger.info('✅ Resolved numeric IDs to UIDs', { 
+            id1, 
+            id2, 
+            user1Uid, 
+            user2Uid 
+          });
+          
+          // Find or create conversation between these users
+          let conversation = await advancedMessagingService.findConversationByParticipants(
+            [user1Uid, user2Uid]
+          );
+          
+          if (!conversation) {
+            logger.info('📝 Creating new conversation between users', { 
+              user1Uid, 
+              user2Uid 
+            });
+            
+            // Create new conversation
+            const carId = searchParams.get('car');
+            conversation = await advancedMessagingService.createConversation({
+              participantIds: [user1Uid, user2Uid],
+              carId: carId || undefined,
+              metadata: {
+                initiatedFrom: 'numeric_url',
+                numericIds: { id1, id2 }
+              }
+            });
+          }
+          
+          setResolvedConversationId(conversation.id);
+          setResolutionError(null);
+          
+          logger.info('✅ Successfully resolved to conversation', { 
+            conversationId: conversation.id 
+          });
+          
+        } catch (error: any) {
+          logger.error('❌ Failed to resolve numeric IDs', error, { id1, id2 });
+          setResolutionError(
+            language === 'bg' 
+              ? 'فشل في فتح المحادثة. يرجى المحاولة لاحقاً.'
+              : 'Failed to open conversation. Please try again later.'
+          );
+          
+          toast.error(
+            language === 'bg'
+              ? 'خطأ في فتح المحادثة'
+              : 'Error opening conversation'
+          );
+        } finally {
+          setIsResolvingNumericIds(false);
+        }
+      }
+      // Path 2: Direct conversation ID (existing flow)
+      else if (searchParams.get('conversationId')) {
+        const convId = searchParams.get('conversationId')!;
+        setResolvedConversationId(convId);
+        logger.info('📨 Using direct conversation ID', { convId });
+      }
+      // Path 3: Legacy userId param (create conversation)
+      else if (targetUserId) {
+        logger.info('🔄 Legacy userId param detected - will create conversation', { 
+          targetUserId 
+        });
+        // Handled by existing initializeConversation logic below
+      }
+    };
+
+    resolveNumericIdsToConversation();
+  }, [id1, id2, searchParams, currentUser, language]);
 
   useEffect(() => {
     scrollToBottom();
@@ -825,6 +944,45 @@ const MessagesPage: React.FC = () => {
         <LoadingOverlay>
           <div className="spinner" />
           <p>{t('common.loading', 'Loading messages...')}</p>
+        </LoadingOverlay>
+      </MessagesContainer>
+    );
+  }
+  
+  // ✅ NEW: Show loading while resolving numeric IDs
+  if (isResolvingNumericIds) {
+    return (
+      <MessagesContainer>
+        <LoadingOverlay>
+          <div className="spinner" />
+          <p>{language === 'bg' ? 'جاري فتح المحادثة...' : 'Opening conversation...'}</p>
+        </LoadingOverlay>
+      </MessagesContainer>
+    );
+  }
+  
+  // ✅ NEW: Show error if numeric ID resolution failed
+  if (resolutionError) {
+    return (
+      <MessagesContainer>
+        <LoadingOverlay>
+          <div style={{ color: '#ef4444', textAlign: 'center' }}>
+            <h3>❌ {resolutionError}</h3>
+            <button 
+              onClick={() => navigate('/messages')}
+              style={{
+                marginTop: '20px',
+                padding: '10px 20px',
+                background: '#ff8f10',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer'
+              }}
+            >
+              {language === 'bg' ? 'العودة للصندوق' : 'Back to Inbox'}
+            </button>
+          </div>
         </LoadingOverlay>
       </MessagesContainer>
     );

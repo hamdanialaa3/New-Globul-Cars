@@ -22,7 +22,7 @@ const AdminPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminPa
 const AdminLoginPage = safeLazy(() => import('../pages/02_authentication/admin-login/AdminLoginPage'));
 const AdminDataFix = safeLazy(() => import('../pages/06_admin/regular-admin/AdminDataFix'));
 const NumericCarDetailsPage = safeLazy(() => import('../pages/01_main-pages/NumericCarDetailsPage'));
-const NumericMessagingPage = safeLazy(() => import('../pages/03_user-pages/NumericMessagingPage'));
+// ❌ REMOVED: const NumericMessagingPage - Legacy system archived (Phase 1 Remediation)
 const NumericProfileRouter = safeLazy(() => import('./NumericProfileRouter'));
 const VerificationPage = safeLazy(() => import('../features/verification/VerificationPage'));
 const BillingPage = safeLazy(() => import('../features/billing/BillingPage'));
@@ -193,11 +193,14 @@ export const MainRoutes: React.FC = () => {
             {/* Strict Numeric URLs: /car/{userNumericId}/{carNumericId} */}
             {/* Route already defined above at line 102 */}
 
-            {/* 🔢 Numeric Messaging Pages */}
-            {/* URL: /messages/{senderNumericId}/{recipientNumericId} */}
-            <Route path="/messages/:senderNumericId/:recipientNumericId" element={
+            {/* 🔢 UNIFIED Messaging System (Phase 1 Remediation - Jan 4, 2026) */}
+            {/* ✅ NEW: Supports both numeric IDs and query params */}
+            {/* Pattern 1: /messages/:id1/:id2 (e.g., /messages/1/5) - Numeric IDs */}
+            {/* Pattern 2: /messages?conversationId=abc123 - Direct conversation */}
+            {/* Pattern 3: /messages - Inbox list */}
+            <Route path="/messages/:id1?/:id2?" element={
                 <AuthGuard requireAuth={true}>
-                    <NumericMessagingPage />
+                    <MessagesPage />
                 </AuthGuard>
             } />
 
@@ -252,7 +255,7 @@ export const MainRoutes: React.FC = () => {
             <Route path="/koli/avarijni" element={<AccidentCarsPage />} />
             <Route path="/koli/:city" element={<CityCarsPage />} />
             <Route path="/koli/:city/:brand" element={<BrandCityPage />} />
-            <Route path="/messages" element={<MessagesPage />} />
+            {/* ❌ REMOVED: Duplicate /messages route - Now handled by unified route above */}
             <Route
                 path="/events"
                 element={

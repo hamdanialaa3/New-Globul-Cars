@@ -155,6 +155,59 @@ export class ConversationOperations {
       return null;
     }
   }
+  
+  /**
+   * Find conversation by participants (returns full Conversation object)
+   * البحث عن محادثة بواسطة المشاركين
+   */
+  static async findConversationByParticipants(participantIds: string[]): Promise<Conversation | null> {
+    try {
+      if (participantIds.length !== 2) {
+        logger.warn('findConversationByParticipants requires exactly 2 participants', { 
+          provided: participantIds.length 
+        });
+        return null;
+      }
+
+      const conversationsRef = collection(db, COLLECTION_NAMES.CONVERSATIONS);
+      
+      // Query for conversations containing first participant
+      const q = query(
+        conversationsRef,
+        where('participants', 'array-contains', participantIds[0])
+      );
+
+      const snapshot = await getDocs(q);
+
+      // Find conversation that includes both participants
+      const found = snapshot.docs.find(doc => {
+        const data = doc.data();
+        const participants = data.participants as string[];
+        
+        // Check if all participant IDs are in the conversation
+        return participantIds.every(pid => participants.includes(pid));
+      });
+
+      if (!found) {
+        logger.info('No existing conversation found between participants', { participantIds });
+        return null;
+      }
+
+      logger.info('Found existing conversation', { 
+        conversationId: found.id, 
+        participantIds 
+      });
+
+      return {
+        id: found.id,
+        ...found.data()
+      } as Conversation;
+
+    } catch (error) {
+      logger.error('findConversationByParticipants failed', error as Error, { participantIds });
+      return null;
+    }
+  }
 
   /**
    * Get user conversations
@@ -439,9 +492,43 @@ export class MessageOperations {
     files: File[]
   ): Promise<MessageAttachment[]> {
     const uploads = files.map(async (file, index) => {
-      // Validate size
+      // ✅ Phase 2 Fix: Enhanced file validation
+      
+      // 1. Validate size
       if (file.size > FILE_SIZE_LIMITS.MAX_FILE_SIZE) {
         throw new Error(`File ${file.name} exceeds 10MB limit`);
+      }
+
+      // 2. Validate file type (whitelist approach)
+      const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+      const allowedDocTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      const allowedTypes = [...allowedImageTypes, ...allowedDocTypes];
+      
+      if (!allowedTypes.includes(file.type)) {
+        throw new Error(`File type ${file.type} is not allowed. Allowed: images (jpg, png, gif, webp) and documents (pdf, doc, docx)`);
+      }
+
+      // 3. Validate file extension matches MIME type
+      const extension = file.name.split('.').pop()?.toLowerCase();
+      const validExtensions: Record<string, string[]> = {
+        'image/jpeg': ['jpg', 'jpeg'],
+        'image/png': ['png'],
+        'image/gif': ['gif'],
+        'image/webp': ['webp'],
+        'application/pdf': ['pdf'],
+        'application/msword': ['doc'],
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['docx']
+      };
+      
+      const expectedExtensions = validExtensions[file.type];
+      if (!expectedExtensions || !extension || !expectedExtensions.includes(extension)) {
+        throw new Error(`File extension .${extension} does not match MIME type ${file.type}`);
+      }
+
+      // 4. Check for suspicious filenames
+      const suspiciousPatterns = ['.exe', '.bat', '.cmd', '.sh', '.js', '.html', '.php'];
+      if (suspiciousPatterns.some(pattern => file.name.toLowerCase().includes(pattern))) {
+        throw new Error(`File name contains suspicious pattern: ${file.name}`);
       }
 
       // Upload to storage
@@ -451,6 +538,13 @@ export class MessageOperations {
 
       await uploadBytes(storageRef, file);
       const url = await getDownloadURL(storageRef);
+
+      logger.info('[MessageOperations] File uploaded successfully', {
+        conversationId,
+        filename: file.name,
+        size: file.size,
+        type: file.type
+      });
 
       return {
         id: `${timestamp}_${index}`,

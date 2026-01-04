@@ -110,8 +110,8 @@ export const getMessagesUrl = (
     return `/messages/${sender.numericId}/${recipient.numericId}`;
   }
 
-  // Fallback for legacy messaging (query params)
-  // NumericMessagingPage should handle this gracefully
+  // Fallback for legacy messaging (query params) - Phase 1: Now handled by unified MessagesPage
+  // MessagesPage will handle this gracefully with conversation resolution
   if (recipient.uid) {
     return `/messages?userId=${recipient.uid}`;
   }

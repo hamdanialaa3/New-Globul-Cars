@@ -1,9 +1,10 @@
 import { logger } from '@/services/logger-service';
-import type { Message } from '../advanced-messaging-types';
+import type { Message, Conversation } from '../advanced-messaging-types';
 import { MessageSender } from './modules/MessageSender';
 import { ConversationLoader } from './modules/ConversationLoader';
 import { ActionHandler } from './modules/ActionHandler';
 import { StatusManager } from './modules/StatusManager';
+import { SearchManager } from './modules/SearchManager';
 
 /**
  * MESSAGING ORCHESTRATOR (FACADE)
@@ -22,12 +23,14 @@ class MessagingOrchestrator {
   private conversationLoader: ConversationLoader;
   private actionHandler: ActionHandler;
   private statusManager: StatusManager;
+  private searchManager: SearchManager;
 
   private constructor() {
     this.messageSender = new MessageSender();
     this.conversationLoader = new ConversationLoader();
     this.actionHandler = new ActionHandler(this.messageSender);
     this.statusManager = new StatusManager();
+    this.searchManager = new SearchManager();
     logger.info('[MessagingOrchestrator] Initialized');
   }
 
@@ -107,6 +110,41 @@ class MessagingOrchestrator {
 
   async archiveConversation(conversationId: string, userId: string): Promise<void> {
     return this.statusManager.archiveConversation(conversationId, userId);
+  }
+
+  // ==================== SEARCH & FILTER OPERATIONS ====================
+  // ✅ Phase 2: Added search and filter capabilities
+
+  async searchMessages(params: {
+    conversationId?: string;
+    userId: string;
+    searchTerm: string;
+    limit?: number;
+  }): Promise<Message[]> {
+    return this.searchManager.searchMessages(params);
+  }
+
+  async filterConversations(params: {
+    userId: string;
+    filters: {
+      unreadOnly?: boolean;
+      hasOffers?: boolean;
+      archivedOnly?: boolean;
+      carId?: string;
+      startDate?: Date;
+      endDate?: Date;
+    };
+    limit?: number;
+  }): Promise<Conversation[]> {
+    return this.searchManager.filterConversations(params);
+  }
+
+  async searchConversationsByParticipant(params: {
+    userId: string;
+    participantName: string;
+    limit?: number;
+  }): Promise<Conversation[]> {
+    return this.searchManager.searchConversationsByParticipant(params);
   }
 }
 

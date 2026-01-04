@@ -1,4 +1,7 @@
 import { logger } from '@/services/logger-service';
+import { MessageOperations } from '../../advanced-messaging-operations';
+import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/firebase/firebase-config';
 
 /**
  * Status Manager Module
@@ -18,22 +21,18 @@ export class StatusManager {
         userId
       });
 
-      // Execute in parallel for performance
-      await Promise.all([
-        // TODO: Integrate with realtime-messaging-operations.ts
-        // realtimeMessagingOperations.markAsRead(conversationId, userId),
-        
-        // TODO: Integrate with advanced-messaging-service.ts
-        // advancedMessagingService.markAsRead(conversationId)
-      ]);
+      // ✅ Phase 2 Fix: Integrated with MessageOperations
+      await MessageOperations.markMessagesAsRead(conversationId, userId);
 
-      // Track analytics
-      // TODO: Integrate with messaging-analytics.ts
-      // messagingAnalytics.trackMessagesRead(conversationId);
-
-      logger.info('[StatusManager] Marked as read successfully');
+      logger.info('[StatusManager] Marked as read successfully', {
+        conversationId,
+        userId
+      });
     } catch (error) {
-      logger.error('[StatusManager] Failed to mark as read', error as Error);
+      logger.error('[StatusManager] Failed to mark as read', error as Error, {
+        conversationId,
+        userId
+      });
       // Don't throw - marking as read is not critical
     }
   }
@@ -44,17 +43,28 @@ export class StatusManager {
    */
   async deleteMessage(messageId: string, userId: string): Promise<void> {
     try {
-      logger.info('[StatusManager] Deleting message', {
+      logger.info('[StatusManager] Deleting message (soft delete)', {
         messageId,
         userId
       });
 
-      // TODO: Implement soft delete
-      // Mark as deleted instead of actually removing
+      // ✅ Phase 2 Fix: Implement soft delete
+      const messageRef = doc(db, 'messages', messageId);
+      await updateDoc(messageRef, {
+        deletedAt: serverTimestamp(),
+        deletedBy: userId,
+        isDeleted: true
+      });
       
-      logger.info('[StatusManager] Message deleted successfully');
+      logger.info('[StatusManager] Message deleted successfully', {
+        messageId,
+        userId
+      });
     } catch (error) {
-      logger.error('[StatusManager] Failed to delete message', error as Error);
+      logger.error('[StatusManager] Failed to delete message', error as Error, {
+        messageId,
+        userId
+      });
       throw error;
     }
   }
@@ -70,12 +80,22 @@ export class StatusManager {
         userId
       });
 
-      // TODO: Implement archiving
-      // Move to archived collection or mark as archived
+      // ✅ Phase 2 Fix: Implement archiving
+      const conversationRef = doc(db, 'conversations', conversationId);
+      await updateDoc(conversationRef, {
+        [`archivedBy.${userId}`]: serverTimestamp(),
+        [`isArchivedFor.${userId}`]: true
+      });
       
-      logger.info('[StatusManager] Conversation archived successfully');
+      logger.info('[StatusManager] Conversation archived successfully', {
+        conversationId,
+        userId
+      });
     } catch (error) {
-      logger.error('[StatusManager] Failed to archive conversation', error as Error);
+      logger.error('[StatusManager] Failed to archive conversation', error as Error, {
+        conversationId,
+        userId
+      });
       throw error;
     }
   }
