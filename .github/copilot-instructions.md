@@ -66,7 +66,9 @@
 
 - **Use path aliases**: `@/services/...`, `@/pages/...`, `@/components/...`, etc. (configured in `tsconfig.json`, `craco.config.js`, `jest.config.js`).
 - **Keep in sync**: When adding new aliases, update all three config files.
+- **Monorepo hints**: `@globul-cars/core`, `@globul-cars/services` aliases exist in configs (future monorepo structure).
 - **Import order**: Relative imports last; third-party + aliases first for clarity.
+- **Module resolution**: CRACO removes CRA's `ModuleScopePlugin` to allow imports outside `src/` when needed.
 
 ## Search & Algolia Integration
 
@@ -131,17 +133,24 @@
 
 - **Dev server**: `npm start` (CRACO on port 3000, auto-open).
   - Alternative: `npm run start:dev` (4GB memory, no auto-open).
+  - **CRACO config**: Custom webpack setup in [craco.config.js](craco.config.js) — handles path aliases, cache busting, ModuleScopePlugin removal for monorepo support.
 - **Type checking**: `npm run type-check` (before committing).
 - **Production build**: `npm run build` (runs `prebuild` ban-console check first).
   - `npm run build:analyze` — shows bundle size breakdown.
   - `npm run build:optimized` — builds + optimizes images with `node scripts/optimize-images.js`.
+- **Algolia sync**: `npm run sync-algolia` or `SYNC_ALGOLIA_NOW.bat` — updates index config and record templates.
+- **Local Firebase**: `npm run emulate` — starts Firebase emulators for local testing.
 - **Cache issues**: `npm run clean:3000` (port) | `npm run clean:cache` | `npm run clean:all`.
-  - Helper script: `scripts/clear-dev-caches.ps1` (PowerShell).
+  - Helper scripts: `scripts/clear-dev-caches.ps1` (PowerShell), batch files in root.
 
 ## Deployment
 
 - **Hosting**: `npm run deploy` (both) | `npm run deploy:hosting` (frontend only).
-- **Functions**: `npm run deploy:functions` (backend only); code in [functions/src](functions/src).
+- **Functions**: `npm run deploy:functions` (backend only) or `DEPLOY_FUNCTIONS.bat`; code in [functions/src](functions/src).
+- **Windows helpers**: Root directory contains `.bat` (batch) and `.ps1` (PowerShell) scripts for common tasks.
+  - `START_SERVER_CLEAN.ps1` — cleans cache and starts dev server.
+  - `SYNC_ALGOLIA_NOW.bat` — quick Algolia sync.
+  - `CLEAN_PORT_3000.bat` — kills process on port 3000.
 - **Pre-deploy checklist**:
   1. Run `npm run type-check` (no TS errors).
   2. Run `npm run check-security` (verify env vars are not exposed).
@@ -180,17 +189,22 @@
 
 ## Critical Docs to Reference
 
-- [PROJECT_CONSTITUTION.md](PROJECT_CONSTITUTION.md) — immutable architectural rules.
+- [PROJECT_CONSTITUTION.md](PROJECT_CONSTITUTION.md) — immutable architectural rules (Arabic + English).
 - [docs/STRICT_NUMERIC_ID_SYSTEM.md](docs/STRICT_NUMERIC_ID_SYSTEM.md) — numeric ID strategy detail.
 - [MESSAGING_SYSTEM_FINAL.md](MESSAGING_SYSTEM_FINAL.md) — messaging architecture, offers, file uploads, search.
-- [SECURITY.md](SECURITY.md) — Firestore Rules, Cloud Functions auth, API security.
+- [SECURITY.md](SECURITY.md) — Firestore Rules, Cloud Functions auth, API security, key rotation.
 - [PROJECT_COMPLETE_INVENTORY.md](PROJECT_COMPLETE_INVENTORY.md) — full file/service inventory.
+- [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) — navigation hub for all docs.
+- [data/project-knowledge.json](data/project-knowledge.json) — AI training data (regenerate with `npm run train-ai`).
 
 ## Quick Debugging
 
-- **Port 3000 stuck**: `npm run clean:3000`.
+- **Port 3000 stuck**: `npm run clean:3000` or `CLEAN_PORT_3000.bat`.
+- **Webpack/CRACO cache**: Delete `node_modules/.cache`, `.cache`, and restart dev server.
 - **Firestore listener errors**: Missing `isActive` flag in cleanup — causes "setState on unmounted component". Check patterns in Firestore Patterns section above.
 - **Numeric ID not assigned**: Verify `UnifiedCarService.createCarListing()` called + `counters/{uid}/cars` document exists.
-- **Algolia not syncing**: Run `npm run sync-algolia` manually; check `algolia-index-config.json` format.
+- **Algolia not syncing**: Run `npm run sync-algolia` manually; check `algolia-index-config.json` format (use arrays, not comma-separated strings).
 - **Console errors during build**: Check `scripts/ban-console.js` — may have caught illegal `console.log` usage.
+- **Type errors from path aliases**: Ensure aliases match across `tsconfig.json`, `craco.config.js`, and `jest.config.js`.
 - **env vars missing**: See `functions/.env` template (not committed); ask team lead for production keys.
+- **Test failures**: Check `src/__mocks__/firebase/firebase-config.ts` — Firebase must be mocked for Jest.

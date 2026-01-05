@@ -1,37 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getCarById, Car } from '../../services/carsService';
-import CarImage from '../../components/CarImage';
+import { unifiedCarService, UnifiedCar } from '@/services/car';
 import { Heart, Share2, MapPin, Gauge, Fuel, Settings } from 'lucide-react';
-import { useLanguage } from '../../contexts/LanguageContext';
-import { useFavorites } from '../../contexts/FavoritesContext';
-import { useWishlist } from '../../contexts/WishlistContext';
-import { shareContent } from '../../utils/shareUtils';
-import SimilarCars from '../../components/SimilarCars';
-import ImageModal from '../../components/ImageModal';
-import CarHistory from '../../components/CarHistory';
-import { CarSEO } from '../../components/SEO/CarSEO';
+import { useLanguage } from '@/contexts';
+import { CarSEO } from '@/components/seo/CarSEO';
+import { logger } from '@/services/logger-service';
 
 const CarDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [car, setCar] = useState<Car | null>(null);
+  const [car, setCar] = useState<UnifiedCar | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const { t } = useLanguage();
-  const { isFavorite, addFavorite, removeFavorite } = useFavorites();
-  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
 
   useEffect(() => {
     const fetchCar = async () => {
       if (!id) return;
       
       try {
-        const carData = await getCarById(parseInt(id));
+        const carData = await unifiedCarService.getCarById(id);
         setCar(carData);
       } catch (error) {
-        console.error('Error fetching car:', error);
+        logger.error('Error fetching car', error as Error, { carId: id });
       } finally {
         setLoading(false);
       }
@@ -40,33 +32,19 @@ const CarDetailsPage: React.FC = () => {
     fetchCar();
   }, [id]);
 
-  const handleFavoriteClick = () => {
-    if (!car) return;
-    
-    if (isFavorite(car.id)) {
-      removeFavorite(car.id);
-    } else {
-      addFavorite(car);
-    }
-  };
-
-  const handleWishlistClick = () => {
-    if (!car) return;
-    
-    if (isInWishlist(car.id)) {
-      removeFromWishlist(car.id);
-    } else {
-      addToWishlist(car);
-    }
-  };
-
   const handleShare = async () => {
     if (!car) return;
-    await shareContent({
-      title: car.name,
-      text: `${car.name} - ${car.price}`,
-      url: window.location.href
-    });
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: `${car.make} ${car.model}`,
+          text: `${car.make} ${car.model} - ${car.year}`,
+          url: window.location.href
+        });
+      }
+    } catch (error) {
+      logger.warn('Share failed', { error });
+    }
   };
 
   if (loading) {
@@ -105,9 +83,9 @@ const CarDetailsPage: React.FC = () => {
               className="relative aspect-[4/3] rounded-lg overflow-hidden bg-gray-100 cursor-pointer"
               onClick={() => setIsImageModalOpen(true)}
             >
-              <CarImage
+              <img
                 src={images[selectedImageIndex]}
-                alt={car.name}
+                alt={`${car.make} ${car.model}`}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -124,9 +102,9 @@ const CarDetailsPage: React.FC = () => {
                         : 'opacity-60 hover:opacity-100'
                     }`}
                   >
-                    <CarImage
+                    <img
                       src={image}
-                      alt={`${car.name} ${index + 1}`}
+                      alt={`${car.make} ${car.model} ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
                   </button>
@@ -138,28 +116,17 @@ const CarDetailsPage: React.FC = () => {
           {/* Details Section */}
           <div className="space-y-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">{car.name}</h1>
-              <p className="text-2xl font-semibold text-blue-600">{car.price}</p>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">{car.make} {car.model}</h1>
+              <p className="text-2xl font-semibold text-blue-600">{car.price} {car.currency || 'EUR'}</p>
             </div>
 
             <div className="flex gap-3">
               <button
-                onClick={handleFavoriteClick}
-                className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg border-2 transition-colors ${
-                  isFavorite(car.id)
-                    ? 'border-red-500 bg-red-50 text-red-600'
-                    : 'border-gray-300 hover:border-red-500 hover:bg-red-50 hover:text-red-600'
-                }`}
-              >
-                <Heart className={`w-5 h-5 ${isFavorite(car.id) ? 'fill-current' : ''}`} />
-                {isFavorite(car.id) ? t('removeFromFavorites') : t('addToFavorites')}
-              </button>
-              
-              <button
                 onClick={handleShare}
-                className="px-6 py-3 rounded-lg border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition-colors"
+                className="px-6 py-3 rounded-lg border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition-colors flex items-center gap-2"
               >
                 <Share2 className="w-5 h-5" />
+                {t('share')}
               </button>
             </div>
 
@@ -219,35 +186,8 @@ const CarDetailsPage: React.FC = () => {
                 </ul>
               </div>
             )}
-
-            <button
-              onClick={handleWishlistClick}
-              className={`w-full py-3 px-6 rounded-lg font-medium transition-colors ${
-                isInWishlist(car.id)
-                  ? 'bg-green-600 text-white hover:bg-green-700'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}
-            >
-              {isInWishlist(car.id) ? t('removeFromWishlist') : t('addToWishlist')}
-            </button>
           </div>
         </div>
-
-        {/* Car History Section */}
-        <CarHistory car={car} />
-
-        {/* Similar Cars Section */}
-        <SimilarCars currentCarId={car.id} />
-
-        {/* Image Modal */}
-        <ImageModal
-          isOpen={isImageModalOpen}
-          images={images}
-          currentIndex={selectedImageIndex}
-          onClose={() => setIsImageModalOpen(false)}
-          onNavigate={setSelectedImageIndex}
-          carName={car.name}
-        />
       </div>
     </>
   );
