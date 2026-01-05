@@ -95,6 +95,16 @@
 - Multi-collection queries
 - Performance optimization
 
+#### [docs/CARS_SERVICE_API.md](docs/CARS_SERVICE_API.md) 🆕
+**التاريخ:** 5 يناير 2026  
+**الغرض:** Cars Service API Documentation  
+**المحتوى:**
+- Complete API reference for carsService.ts
+- All 8 functions documented
+- Type definitions (Car, SearchFilters)
+- Usage examples and error handling
+- Migration guide from UnifiedCarService
+
 #### [AI_SYSTEMS.md](AI_SYSTEMS.md)
 **الغرض:** توثيق أنظمة الذكاء الاصطناعي  
 **الأنظمة:**
