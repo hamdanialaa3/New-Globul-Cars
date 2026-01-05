@@ -4,13 +4,13 @@ import { getCarById, Car } from '../../services/carsService';
 import CarImage from '../../components/CarImage';
 import { Heart, Share2, MapPin, Gauge, Fuel, Settings } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { useFavorites } from '../../contexts/FavoritesContext';
-import { useWishlist } from '../../contexts/WishlistContext';
+import { useFavorites } from '../../hooks/useFavorites';
 import { shareContent } from '../../utils/shareUtils';
 import SimilarCars from '../../components/SimilarCars';
 import ImageModal from '../../components/ImageModal';
 import CarHistory from '../../components/CarHistory';
 import { CarSEO } from '../../components/SEO/CarSEO';
+import { logger } from '../../services/logger-service';
 
 const CarDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,8 +20,7 @@ const CarDetailsPage: React.FC = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const { t } = useLanguage();
-  const { isFavorite, addFavorite, removeFavorite } = useFavorites();
-  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  const { isFavorite, toggleFavorite, removeFavorite } = useFavorites();
 
   useEffect(() => {
     const fetchCar = async () => {
@@ -31,7 +30,7 @@ const CarDetailsPage: React.FC = () => {
         const carData = await getCarById(parseInt(id));
         setCar(carData);
       } catch (error) {
-        console.error('Error fetching car:', error);
+        logger.error('Error fetching car', error as Error, { carId: id });
       } finally {
         setLoading(false);
       }
@@ -40,24 +39,22 @@ const CarDetailsPage: React.FC = () => {
     fetchCar();
   }, [id]);
 
-  const handleFavoriteClick = () => {
+  const handleFavoriteClick = async () => {
     if (!car) return;
     
-    if (isFavorite(car.id)) {
-      removeFavorite(car.id);
-    } else {
-      addFavorite(car);
-    }
-  };
-
-  const handleWishlistClick = () => {
-    if (!car) return;
+    // Prepare car data for toggleFavorite
+    const carData = {
+      make: car.make || '',
+      model: car.model || '',
+      year: car.year || new Date().getFullYear(),
+      price: car.price || 0,
+      currency: 'EUR',
+      sellerNumericId: car.sellerNumericId || 0,
+      carNumericId: car.carNumericId || 0,
+      primaryImage: car.images?.[0] || car.primaryImage
+    };
     
-    if (isInWishlist(car.id)) {
-      removeFromWishlist(car.id);
-    } else {
-      addToWishlist(car);
-    }
+    await toggleFavorite(car.id, carData);
   };
 
   const handleShare = async () => {
@@ -221,14 +218,10 @@ const CarDetailsPage: React.FC = () => {
             )}
 
             <button
-              onClick={handleWishlistClick}
-              className={`w-full py-3 px-6 rounded-lg font-medium transition-colors ${
-                isInWishlist(car.id)
-                  ? 'bg-green-600 text-white hover:bg-green-700'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}
+              onClick={() => navigate(`/messages/${car.sellerNumericId}`)}
+              className="w-full py-3 px-6 rounded-lg font-medium transition-colors bg-blue-600 text-white hover:bg-blue-700"
             >
-              {isInWishlist(car.id) ? t('removeFromWishlist') : t('addToWishlist')}
+              {t('contactSeller') || 'Contact Seller'}
             </button>
           </div>
         </div>
