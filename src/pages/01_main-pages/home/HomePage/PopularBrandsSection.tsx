@@ -337,8 +337,9 @@ const PopularBrandsSection: React.FC = () => {
   // ✅ Removed brandCounts state - no longer needed since we don't display counts
 
   const handleBrandClick = (brandId: string) => {
-    // ✅ Navigate to brand-specific container page
-    navigate(`/cars/brand/${encodeURIComponent(brandId)}`);
+    // Navigate to cars listing with the brand filter actively applied
+    // This allows the search widget to pick up the 'make' parameter and display results instantly
+    navigate(`/cars?make=${encodeURIComponent(brandId)}`);
   };
 
   const getBrandName = (brand: typeof POPULAR_BRANDS[0]) => {
@@ -353,12 +354,12 @@ const PopularBrandsSection: React.FC = () => {
             {language === 'bg' ? 'Популярни Марки Автомобили' : 'Popular Car Brands'}
           </SectionTitle>
           <SectionSubtitle>
-            {language === 'bg' 
-              ? 'Разгледайте най-търсените марки автомобили в България' 
+            {language === 'bg'
+              ? 'Разгледайте най-търсените марки автомобили в България'
               : 'Explore the most popular car brands in Bulgaria'}
           </SectionSubtitle>
         </SectionHeader>
-        
+
         <ViewAllBrandsButton onClick={() => navigate('/cars')}>
           {language === 'bg' ? 'Виж всички марки →' : 'View All Brands →'}
         </ViewAllBrandsButton>

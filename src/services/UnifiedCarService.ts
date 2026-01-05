@@ -60,14 +60,7 @@ export const UnifiedCarService = {
             model: data.model || '',
         };
 
-        // 4. Save to Firestore (delegating to our robust mutation handler)
-        // We use the direct addDoc here to match the user's "createCarListing" expectation strictly,
-        // or we can call the modular service. calling modular is safer for hooks.
-        // However, to strictly follow the "I will modify UnifiedCarService.ts" instruction:
-
-        // We will use the modular mutation but ensure it uses the IDs we just generated OR let it generate them.
-        // Since modular createCar generates IDs internally, we can just call it!
-
+        // 4. Save to Firestore
         const result = await modularService.createCar(newCarData);
 
         console.log(`✅ Car Created: /car/${result.sellerNumericId}/${result.carNumericId}`);
@@ -77,6 +70,22 @@ export const UnifiedCarService = {
             sellerNumericId: result.sellerNumericId,
             carNumericId: result.carNumericId
         };
+    },
+
+    async updateCarVideoStatus(
+        carId: string,
+        status: { hasVideo: boolean, videoUrl?: string }
+    ): Promise<void> {
+        if (!carId) throw new Error('Car ID is required');
+
+        // Use modular updateCar to ensure consistency and cache invalidation
+        await modularService.updateCar(carId, {
+            hasVideo: status.hasVideo,
+            videoUrl: status.videoUrl,
+            updatedAt: serverTimestamp() as any
+        });
+
+        console.log(`✅ Car Video Status Updated: ${carId}`);
     }
 };
 

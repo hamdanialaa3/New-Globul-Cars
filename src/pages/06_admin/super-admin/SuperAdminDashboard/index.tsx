@@ -43,6 +43,9 @@ import { GodModeUserGrid } from '../../../../components/SuperAdmin/GodMode/GodMo
 import { GodModeCarGrid } from '../../../../components/SuperAdmin/GodMode/GodModeCarGrid';
 import { GodModeMessagesGrid } from '../../../../components/SuperAdmin/GodMode/GodModeMessagesGrid';
 import { GodModeRevenueGrid } from '../../../../components/SuperAdmin/GodMode/GodModeRevenueGrid';
+import { GodModeViewsGrid } from '../../../../components/SuperAdmin/GodMode/GodModeViewsGrid';
+
+// ... (existing code)
 
 // Styled Components - Professional Minimal Design
 const DashboardContainer = styled.div`
@@ -115,8 +118,6 @@ const LoginButton = styled.button`
   }
 `;
 
-
-
 const SuperAdminDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
@@ -132,7 +133,8 @@ const SuperAdminDashboard: React.FC = () => {
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [isOwnerAuthed, setIsOwnerAuthed] = useState(false);
 
-  const [godMode, setGodMode] = useState<{ active: boolean; type: 'users' | 'cars' | 'messages' | 'revenue' | null }>({ active: false, type: null });
+  // God Mode State
+  const [godMode, setGodMode] = useState<{ active: boolean; type: 'users' | 'cars' | 'messages' | 'revenue' | 'views' | null }>({ active: false, type: null });
 
   const handleGodModeAction = (action: string) => {
     switch (action) {
@@ -149,7 +151,7 @@ const SuperAdminDashboard: React.FC = () => {
         setGodMode({ active: true, type: 'revenue' });
         break;
       case 'views':
-        setActiveTab('analytics');
+        setGodMode({ active: true, type: 'views' });
         break;
     }
   };
@@ -425,6 +427,9 @@ const SuperAdminDashboard: React.FC = () => {
         )}
         {godMode.active && godMode.type === 'revenue' && (
           <GodModeRevenueGrid onClose={() => setGodMode({ active: false, type: null })} />
+        )}
+        {godMode.active && godMode.type === 'views' && (
+          <GodModeViewsGrid onClose={() => setGodMode({ active: false, type: null })} />
         )}
 
         {activeTab === 'realdata' && (

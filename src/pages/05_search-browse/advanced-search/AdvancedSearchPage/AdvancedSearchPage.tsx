@@ -180,12 +180,12 @@ const AdvancedSearchPage: React.FC = () => {
   const { saveSearch, getSearchSummary } = useSavedSearches();
   const [searchParams] = useSearchParams();
   const mode = searchParams.get('mode'); // 'smart' للبحث الذكي
-  
+
   // ⚡ Quick/Smart Search State
   const [quickSearchQuery, setQuickSearchQuery] = useState('');
   const [isQuickSearching, setIsQuickSearching] = useState(false);
   const [showQuickSearch, setShowQuickSearch] = useState(mode === 'smart');
-  
+
   // ⚡ NEW: Search results state
   const [searchResults, setSearchResults] = useState<CarListing[]>([]);
   const [totalResults, setTotalResults] = useState(0);
@@ -196,7 +196,7 @@ const AdvancedSearchPage: React.FC = () => {
   const [lastMs, setLastMs] = useState<number | undefined>(undefined);
   const showSearchDebug = process.env.REACT_APP_SHOW_SEARCH_DEBUG === 'true';
 
-  const convertToSavedSearchFilters = (data: SearchData): Record<string, unknown> => {
+  const convertToSavedSearchFilters = (data: SearchData): any => {
     return {
       make: data.make || undefined,
       model: data.model || undefined,
@@ -211,7 +211,7 @@ const AdvancedSearchPage: React.FC = () => {
       engineMax: data.cubicCapacityTo ? parseInt(data.cubicCapacityTo) : undefined,
       powerMin: data.powerFrom ? parseInt(data.powerFrom) : undefined,
       powerMax: data.powerTo ? parseInt(data.powerTo) : undefined,
-      location: data.locationData?.cityName || undefined,
+      location: data.city || undefined,
       radius: data.radius ? parseInt(data.radius) : undefined,
       condition: data.condition || undefined,
       vehicleType: data.vehicleType || undefined,
@@ -223,10 +223,10 @@ const AdvancedSearchPage: React.FC = () => {
   // ⚡ NEW: Enhanced search handler with caching + AI Performance Trace
   const handleSearch = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    
+
     setSearching(true);
     setCurrentPage(1);
-    
+
     try {
       const result = await withAiTrace(
         'ai_search_advanced',
@@ -239,7 +239,7 @@ const AdvancedSearchPage: React.FC = () => {
       setLastSource(result.source || '');
       setLastMs(result.processingMs);
       logger.info(`✅ Advanced search: ${result.total} results via ${result.source}`);
-      
+
     } catch (error) {
       logger.error('Advanced search failed:', error);
       setSearchResults([]);
@@ -253,14 +253,14 @@ const AdvancedSearchPage: React.FC = () => {
   const handlePageChange = async (page: number) => {
     setCurrentPage(page);
     setSearching(true);
-    
+
     try {
       const result = await searchService.advancedSearchPaged(searchData, page, 20);
       setSearchResults(result.cars as CarListing[]);
       setLastSource(result.source || '');
       setLastMs(result.processingMs);
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      
+
     } catch (error) {
       logger.error('Pagination failed:', error);
     } finally {
@@ -295,19 +295,25 @@ const AdvancedSearchPage: React.FC = () => {
   // ⚡ Quick Search Handler
   const handleQuickSearch = async () => {
     if (!quickSearchQuery.trim()) return;
-    
+
     setIsQuickSearching(true);
     setSearching(true);
-    
+
     try {
+      // ⚡ Smart Search now searches across ALL vehicle collections (cars, suvs, trucks, etc.)
       const result = await smartSearchService.search(quickSearchQuery, user?.uid, 1, 20);
+
+      if (result.cars.length === 0) {
+        logger.warn('Smart search returned 0 results for query:', quickSearchQuery);
+      }
+
       setSearchResults(result.cars as CarListing[]);
       setTotalResults(result.totalCount);
       setTotalPages(Math.max(1, Math.ceil(result.totalCount / 20)));
       setLastSource('smart-search');
       setLastMs(result.processingTime);
       logger.info(`✨ Smart search: ${result.totalCount} results`);
-      
+
     } catch (error) {
       logger.error('Smart search failed:', error);
       setSearchResults([]);
@@ -346,7 +352,7 @@ const AdvancedSearchPage: React.FC = () => {
                 <p>{t('advancedSearch.quickSearchDesc', 'Search using natural language - try "BMW 2020 diesel Sofia" or "Mercedes under 15000"')}</p>
               </div>
             </QuickSearchHeader>
-            
+
             <QuickSearchInputWrapper>
               <QuickSearchInput
                 type="text"
@@ -377,13 +383,13 @@ const AdvancedSearchPage: React.FC = () => {
                 {isQuickSearching ? t('common.searching', 'Searching...') : t('common.search', 'Search')}
               </QuickSearchButton>
             </QuickSearchInputWrapper>
-            
+
             <ToggleAdvancedButton onClick={() => setShowQuickSearch(false)}>
               {t('advancedSearch.useAdvancedFilters', '↓ Use Advanced Filters Instead')}
             </ToggleAdvancedButton>
           </QuickSearchCard>
         )}
-        
+
         {/* Button to show Quick Search if hidden */}
         {!showQuickSearch && (
           <QuickSearchCard style={{ padding: '1rem', cursor: 'pointer' }} onClick={() => setShowQuickSearch(true)}>
@@ -509,9 +515,9 @@ const AdvancedSearchPage: React.FC = () => {
 
         {/* Results Grid */}
         {searchResults.length > 0 && (
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(4, 1fr)', 
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
             gap: '1.5rem',
             marginTop: '2rem'
           }}>
@@ -523,11 +529,11 @@ const AdvancedSearchPage: React.FC = () => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            gap: '0.5rem', 
-            marginTop: '2rem' 
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '0.5rem',
+            marginTop: '2rem'
           }}>
             {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map(page => (
               <button

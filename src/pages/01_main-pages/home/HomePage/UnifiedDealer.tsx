@@ -93,7 +93,7 @@ const Subtitle = styled.p<{ $isDark: boolean }>`
   font-weight: 500;
 `;
 
-const StatsBar = styled(motion.div)<{ $isDark: boolean }>`
+const StatsBar = styled(motion.div) <{ $isDark: boolean }>`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1.5rem;
@@ -103,8 +103,8 @@ const StatsBar = styled(motion.div)<{ $isDark: boolean }>`
   background: ${props => props.$isDark
     ? 'rgba(30, 41, 59, 0.6)'
     : 'rgba(255, 255, 255, 0.8)'};
-  border: 1px solid ${props => props.$isDark 
-    ? 'rgba(94, 179, 255, 0.15)' 
+  border: 1px solid ${props => props.$isDark
+    ? 'rgba(94, 179, 255, 0.15)'
     : 'rgba(12, 26, 42, 0.1)'};
   border-radius: 16px;
   backdrop-filter: blur(10px);
@@ -122,7 +122,7 @@ const StatsBar = styled(motion.div)<{ $isDark: boolean }>`
   }
 `;
 
-const StatItem = styled(motion.div)<{ $isDark: boolean }>`
+const StatItem = styled(motion.div) <{ $isDark: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -141,8 +141,8 @@ const StatItem = styled(motion.div)<{ $isDark: boolean }>`
     align-items: center;
     justify-content: center;
     background: ${props => props.$isDark
-      ? 'rgba(94, 179, 255, 0.2)'
-      : 'rgba(12, 26, 42, 0.08)'};
+    ? 'rgba(94, 179, 255, 0.2)'
+    : 'rgba(12, 26, 42, 0.08)'};
     border-radius: 10px;
     color: #ff6b35;
     flex-shrink: 0;
@@ -180,7 +180,7 @@ const ContentArea = styled.div`
   }
 `;
 
-const CTASection = styled(motion.div)<{ $isDark: boolean }>`
+const CTASection = styled(motion.div) <{ $isDark: boolean }>`
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 2rem;
@@ -195,8 +195,8 @@ const CTASection = styled(motion.div)<{ $isDark: boolean }>`
 
   &:hover {
     border-color: ${props => props.$isDark
-      ? 'rgba(255, 107, 53, 0.4)'
-      : 'rgba(255, 107, 53, 0.25)'};
+    ? 'rgba(255, 107, 53, 0.4)'
+    : 'rgba(255, 107, 53, 0.25)'};
     background: linear-gradient(135deg, rgba(255, 107, 53, 0.18), rgba(255, 143, 16, 0.12));
   }
 
@@ -248,7 +248,7 @@ const CTAContent = styled.div`
   }
 `;
 
-const CTAButton = styled(motion.button)<{ $isDark: boolean }>`
+const CTAButton = styled(motion.button) <{ $isDark: boolean }>`
   padding: 1rem 2rem;
   border: none;
   border-radius: 12px;
@@ -290,12 +290,12 @@ const LoadingFallback = styled.div<{ $isDark: boolean }>`
   .spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid ${props => props.$isDark 
-      ? 'rgba(255,255,255,0.1)' 
-      : 'rgba(12,26,42,0.1)'};
-    border-top-color: ${props => props.$isDark 
-      ? '#5eb3ff' 
-      : '#0c5bad'};
+    border: 3px solid ${props => props.$isDark
+    ? 'rgba(255,255,255,0.1)'
+    : 'rgba(12,26,42,0.1)'};
+    border-top-color: ${props => props.$isDark
+    ? '#5eb3ff'
+    : '#0c5bad'};
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -442,7 +442,7 @@ const UnifiedDealer: React.FC = memo(() => {
         </CTAContent>
         <CTAButton
           $isDark={isDark}
-          onClick={() => navigate('/dealer/registration')}
+          onClick={() => navigate('/dealer-registration')}
           whileHover={{ scale: 1.05, translateY: -2 }}
           whileTap={{ scale: 0.95 }}
         >

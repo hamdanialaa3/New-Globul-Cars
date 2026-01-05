@@ -62,24 +62,28 @@ const AIChatbot = React.lazy(() => import('../../../../components/AI/AIChatbot')
 // ============================================================================
 
 const ComposerContainer = styled.main`
-  width: 100%;
+  width: 111.111%; /* 100% / 0.9 = 111.111% to compensate for 0.9 scale */
+  margin-left: -5.5555%; /* Center the 111.111% width container */
   min-height: 100vh;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
   
+  /* Zoom effect: 90% size globally */
+  transform: scale(0.9);
+  transform-origin: top center;
+
   /* Performance optimizations */
   will-change: auto;
-  transform: translateZ(0);
   backface-visibility: hidden;
   contain: layout style paint;
 `;
 
 const SectionSpacer = styled.div`
-  height: 40px;
+  height: 40px; /* Significantly reduced from 100px */
   @media (max-width: 768px) {
-    height: 24px;
+    height: 30px;
   }
 `;
 
@@ -140,7 +144,7 @@ const SmartSellSlot: React.FC = () => (
  */
 const CarsShowcaseSlot: React.FC = () => {
   const { t } = useLanguage();
-  
+
   return (
     <LinkableSection
       title="Latest Cars"
@@ -164,7 +168,7 @@ const CarsShowcaseSlot: React.FC = () => {
  */
 const PopularBrandsSlot: React.FC = () => {
   const { t } = useLanguage();
-  
+
   return (
     <LazySection rootMargin="100px">
       <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
@@ -180,7 +184,7 @@ const PopularBrandsSlot: React.FC = () => {
  */
 const VehicleClassificationsSlot: React.FC = () => {
   const { t } = useLanguage();
-  
+
   return (
     <LazySection rootMargin="100px">
       <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
@@ -196,7 +200,7 @@ const VehicleClassificationsSlot: React.FC = () => {
  */
 const DriveTypeShowcaseSlot: React.FC = () => {
   const { t } = useLanguage();
-  
+
   return (
     <LazySection rootMargin="100px">
       <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
@@ -212,7 +216,7 @@ const DriveTypeShowcaseSlot: React.FC = () => {
  */
 const MostDemandedCategoriesSlot: React.FC = () => {
   const { t } = useLanguage();
-  
+
   return (
     <LazySection rootMargin="100px">
       <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
@@ -242,7 +246,7 @@ const QuickBrandsSlot: React.FC = () => {
  */
 const CategoriesSlot: React.FC = () => {
   const { t } = useLanguage();
-  
+
   return (
     <LazySection rootMargin="100px">
       <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
@@ -272,7 +276,7 @@ const LifeMomentsSlot: React.FC = () => {
  */
 const DealersSlot: React.FC = () => {
   const { t } = useLanguage();
-  
+
   return (
     <LinkableSection
       title="Featured Dealers"
@@ -295,7 +299,7 @@ const DealersSlot: React.FC = () => {
  */
 const DealersSlotOriginal: React.FC = () => {
   const { t } = useLanguage();
-  
+
   return (
     <LazySection rootMargin="200px">
       <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
@@ -311,7 +315,7 @@ const DealersSlotOriginal: React.FC = () => {
  */
 const SocialSlot: React.FC = () => {
   const { t } = useLanguage();
-  
+
   return (
     <LazySection rootMargin="100px">
       <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
@@ -327,7 +331,7 @@ const SocialSlot: React.FC = () => {
  */
 const TrustSlot: React.FC = () => {
   const { t } = useLanguage();
-  
+
   return (
     <LazySection rootMargin="100px">
       <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>

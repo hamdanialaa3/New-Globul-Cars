@@ -33,7 +33,7 @@ const RocketIcon: React.FC<{ size?: number }> = ({ size = 28 }) => (
       strokeLinejoin="round"
     />
     <path
-      d="M9.5 17.5c-.8.3-1.5 1-1.8 1.9" 
+      d="M9.5 17.5c-.8.3-1.5 1-1.8 1.9"
       stroke="currentColor"
       strokeWidth="1.6"
       strokeLinecap="round"
@@ -156,7 +156,7 @@ const PlanCard = styled.div<{ $highlight?: boolean; $isDark: boolean }>`
   padding: 40px 32px;
   position: relative;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: ${p => p.$highlight 
+  border: ${p => p.$highlight
     ? (p.$isDark ? '3px solid #FF8F10' : '3px solid #FF8F10')
     : (p.$isDark ? '2px solid rgba(255, 255, 255, 0.08)' : '2px solid rgba(255, 255, 255, 0.3)')};
   cursor: pointer;
@@ -413,8 +413,8 @@ const SubscriptionBanner: React.FC = () => {
       return;
     }
 
-    // Always navigate to subscription page for all plans
-    navigate('/subscription');
+    // Always navigate to subscription page for all plans with plan ID
+    navigate(`/subscription?plan=${planId}`);
   };
 
   return (
@@ -426,7 +426,7 @@ const SubscriptionBanner: React.FC = () => {
             {isBg ? 'Избери плана, който ти подхожда' : 'Choose Your Perfect Plan'}
           </Title>
           <Subtitle $isDark={isDark}>
-            {isBg 
+            {isBg
               ? 'Продавай повече автомобили с професионалните ни инструменти и анализи'
               : 'Sell more cars with our professional tools and analytics'
             }

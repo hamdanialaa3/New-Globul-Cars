@@ -11,7 +11,10 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '../../../../contexts/LanguageContext';
-import { Gauge, Compass, Mountain, Truck } from 'lucide-react';
+// ... existing imports
+import { Gauge, Compass, Mountain, Truck, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useRef } from 'react';
+import { glassNeutralButton } from '../../../../styles/glassmorphism-buttons';
 
 // ============================================================================
 // STYLED COMPONENTS
@@ -48,56 +51,6 @@ const SectionSubtitle = styled.p`
   color: var(--text-secondary);
   max-width: 600px;
   margin: 0 auto;
-`;
-
-const DriveTypesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-`;
-
-const DriveTypeCard = styled.div`
-  background: var(--bg-secondary);
-  border-radius: 16px;
-  padding: 2rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
-  position: relative;
-  overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 0;
-  }
-  
-  &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-    border-color: var(--primary-color);
-    
-    &::before {
-      opacity: 0.05;
-    }
-  }
-  
-  > * {
-    position: relative;
-    z-index: 1;
-  }
 `;
 
 const IconWrapper = styled.div`
@@ -188,7 +141,7 @@ interface DriveTypeConfig {
   descriptionEn: string;
   featuresBg: string[];
   featuresEn: string[];
-  searchValue: string; // القيمة المستخدمة في البحث
+  searchValue: string;
 }
 
 const DRIVE_TYPES: DriveTypeConfig[] = [
@@ -270,17 +223,125 @@ const DRIVE_TYPES: DriveTypeConfig[] = [
   }
 ];
 
-// ============================================================================
-// COMPONENT
-// ============================================================================
+const CarouselContainer = styled.div`
+  position: relative;
+  width: 100%;
+  padding: 0 1rem;
+`;
+
+const DriveTypesScroll = styled.div`
+  display: flex;
+  gap: 2rem;
+  overflow-x: auto;
+  padding: 1rem 0.5rem 2rem 0.5rem; /* Bottom padding for shadow/hover effects */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  
+  /* Hide scrollbar for clean look */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+`;
+
+const ScrollButton = styled.button<{ $direction: 'left' | 'right' }>`
+  ${glassNeutralButton}
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  ${props => props.$direction === 'left' ? 'left: -1rem;' : 'right: -1rem;'}
+  z-index: 10;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Ensure default background is not transparent for visibility */
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  
+  @media (max-width: 768px) {
+    display: none; /* Hide on mobile, use touch scroll */
+  }
+
+  &:hover {
+    background: var(--bg-primary);
+    transform: translateY(-50%) scale(1.1);
+  }
+`;
+
+// Updated Card Style for Horizontal Layout
+const DriveTypeCard = styled.div`
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  padding: 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+  
+  /* Fixed width for carousel items */
+  min-width: 320px;
+  max-width: 320px;
+  flex-shrink: 0;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+  }
+  
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    border-color: var(--primary-color);
+    
+    &::before {
+      opacity: 0.05;
+    }
+  }
+  
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 480px) {
+    min-width: 280px;
+    max-width: 280px;
+  }
+`;
+
+// ... other existing component definitions ...
 
 const DriveTypeShowcaseSection: React.FC = () => {
   const { language } = useLanguage();
   const navigate = useNavigate();
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const handleDriveTypeClick = (driveType: DriveTypeConfig) => {
-    // Navigate to advanced search with driveType filter
     navigate(`/advanced-search?driveType=${encodeURIComponent(driveType.searchValue)}`);
+  };
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const scrollAmount = 350; // Card width + gap
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
   };
 
   return (
@@ -290,43 +351,53 @@ const DriveTypeShowcaseSection: React.FC = () => {
           {language === 'bg' ? 'Намерете автомобил по тип задвижване' : 'Find Cars by Drive Type'}
         </SectionTitle>
         <SectionSubtitle>
-          {language === 'bg' 
-            ? 'Изберете задвижването, което отговаря на вашия стил на шофиране' 
+          {language === 'bg'
+            ? 'Изберете задвижването, което отговаря на вашия стил на шофиране'
             : 'Choose the drive type that matches your driving style'}
         </SectionSubtitle>
       </SectionHeader>
 
-      <DriveTypesGrid>
-        {DRIVE_TYPES.map((driveType) => (
-          <DriveTypeCard
-            key={driveType.id}
-            onClick={() => handleDriveTypeClick(driveType)}
-            role="button"
-            tabIndex={0}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                handleDriveTypeClick(driveType);
-              }
-            }}
-          >
-            <IconWrapper>{driveType.icon}</IconWrapper>
-            <DriveTypeName>
-              {language === 'bg' ? driveType.nameBg : driveType.nameEn}
-            </DriveTypeName>
-            <DriveTypeDescription>
-              {language === 'bg' ? driveType.descriptionBg : driveType.descriptionEn}
-            </DriveTypeDescription>
-            <DriveTypeFeatures>
-              {(language === 'bg' ? driveType.featuresBg : driveType.featuresEn).map((feature, index) => (
-                <li key={index}>{feature}</li>
-              ))}
-            </DriveTypeFeatures>
-            <ViewCarsButton>
-              {language === 'bg' ? 'Преглед на автомобили' : 'View Cars'}
-            </ViewCarsButton>
-          </DriveTypeCard>
-        ))}
-      </DriveTypesGrid>
+      <CarouselContainer>
+        <ScrollButton $direction="left" onClick={() => scroll('left')} aria-label="Scroll left">
+          <ChevronLeft size={24} />
+        </ScrollButton>
+
+        <DriveTypesScroll ref={scrollRef}>
+          {DRIVE_TYPES.map((driveType) => (
+            <DriveTypeCard
+              key={driveType.id}
+              onClick={() => handleDriveTypeClick(driveType)}
+              role="button"
+              tabIndex={0}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  handleDriveTypeClick(driveType);
+                }
+              }}
+            >
+              <IconWrapper>{driveType.icon}</IconWrapper>
+              <DriveTypeName>
+                {language === 'bg' ? driveType.nameBg : driveType.nameEn}
+              </DriveTypeName>
+              <DriveTypeDescription>
+                {language === 'bg' ? driveType.descriptionBg : driveType.descriptionEn}
+              </DriveTypeDescription>
+              <DriveTypeFeatures>
+                {(language === 'bg' ? driveType.featuresBg : driveType.featuresEn).map((feature, index) => (
+                  <li key={index}>{feature}</li>
+                ))}
+              </DriveTypeFeatures>
+              <ViewCarsButton>
+                {language === 'bg' ? 'Преглед на автомобили' : 'View Cars'}
+              </ViewCarsButton>
+            </DriveTypeCard>
+          ))}
+        </DriveTypesScroll>
+
+        <ScrollButton $direction="right" onClick={() => scroll('right')} aria-label="Scroll right">
+          <ChevronRight size={24} />
+        </ScrollButton>
+      </CarouselContainer>
     </SectionContainer>
   );
 };

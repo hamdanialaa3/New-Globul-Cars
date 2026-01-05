@@ -739,6 +739,17 @@ const CarsPage: React.FC = () => {
     }
   }, [user]);
 
+  // ⚡ NEW: Auto-trigger search if make parameter exists (Deep Linking)
+  useEffect(() => {
+    if (makeParam) {
+      // Small timeout to ensure services are ready
+      const timer = setTimeout(() => {
+        handleSmartSearch(makeParam);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [makeParam]);
+
   // ⚡ NEW: Get suggestions with debouncing
   useEffect(() => {
     if (searchQuery.length < 2) {
@@ -785,10 +796,13 @@ const CarsPage: React.FC = () => {
   };
 
   // ⚡ NEW: Handle smart search with analytics
-  const handleSmartSearch = async () => {
-    if (!searchQuery.trim()) {
+  const handleSmartSearch = async (queryOverride?: string) => {
+    const queryToUse = queryOverride || searchQuery;
+
+    if (!queryToUse.trim()) {
       // Reset to normal mode if search is empty
       setIsSmartSearchActive(false);
+      // Optional: Load default latest cars here if needed
       return;
     }
 
@@ -797,10 +811,15 @@ const CarsPage: React.FC = () => {
     setShowSuggestions(false);
     setIsSmartSearchActive(true); // Mark that we're in smart search mode
 
+    // Update state if using override (e.g. from URL)
+    if (queryOverride) {
+      setSearchQuery(queryOverride);
+    }
+
     const startTime = Date.now();
 
     try {
-      const result = await smartSearchService.search(searchQuery, user?.uid, 1, 100);
+      const result = await smartSearchService.search(queryToUse, user?.uid, 1, 100);
       const processingTime = Date.now() - startTime;
 
       // 📊 Log search to analytics (only if user is logged in)
@@ -981,13 +1000,22 @@ const CarsPage: React.FC = () => {
         } as CarListing));
 
         setCars(carListings);
-        setTotalCars(result.totalCount);
-        setPaginationState(result.pagination);
+        setTotalCars(result.totalResults);
+        setPaginationState({
+          currentPage: pageParam,
+          pageSize: 20,
+          totalResults: result.totalResults,
+          totalPages: Math.ceil(result.totalResults / 20),
+          hasNextPage: result.hasMore,
+          hasPreviousPage: pageParam > 1,
+          lastDoc: null,
+          firstDoc: null
+        });
 
         const loadTime = performance.now() - startTime;
         logger.info(`⚡ Cars loaded in ${loadTime.toFixed(0)}ms`, {
           count: carListings.length,
-          total: result.totalCount,
+          total: result.totalResults,
           page: pageParam,
           cacheStats: browserCacheStrategy.getStats()
         });
@@ -1100,12 +1128,7 @@ const CarsPage: React.FC = () => {
             <SmartAutocomplete
               value={searchQuery}
               onChange={setSearchQuery}
-              onSearch={handleSmartSearch}
-              onSelect={(value) => {
-                setSearchQuery(value);
-                // Auto-trigger search after selection
-                setTimeout(() => handleSmartSearch(), 100);
-              }}
+              onSearch={() => handleSmartSearch()}
               placeholder={
                 language === 'bg'
                   ? 'Търси марка, модел, град...'
@@ -1239,8 +1262,8 @@ const CarsPage: React.FC = () => {
               <PaginationContainer>
                 <PaginationInfo>
                   {language === 'bg' ? 'Показани' : 'Showing'}{' '}
-                  <span>{paginationState.offset + 1}</span>-
-                  <span>{Math.min(paginationState.offset + paginationState.limit, totalCars)}</span>{' '}
+                  <span>{((paginationState.currentPage - 1) * paginationState.pageSize) + 1}</span>-
+                  <span>{Math.min(paginationState.currentPage * paginationState.pageSize, totalCars)}</span>{' '}
                   {language === 'bg' ? 'от' : 'of'}{' '}
                   <span>{totalCars}</span> {carsCountText}
                 </PaginationInfo>

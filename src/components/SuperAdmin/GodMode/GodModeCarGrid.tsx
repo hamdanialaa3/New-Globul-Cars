@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { X, Edit, Car, Shield, Trash2, Search, RefreshCw, Eye } from 'lucide-react';
+import { X, Edit, Car, Shield, Trash2, Search, RefreshCw, Eye, DollarSign, TrendingUp } from 'lucide-react';
 import { carsReportService } from '../../../services/reports/cars-report-service';
 import { doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebase-config';
@@ -233,114 +233,141 @@ const ActionButton = styled.button<{ danger?: boolean }>`
 `;
 
 interface GodModeCarGridProps {
-    onClose: () => void;
+  onClose: () => void;
 }
 
 export const GodModeCarGrid: React.FC<GodModeCarGridProps> = ({ onClose }) => {
-    const [cars, setCars] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
+  const [cars, setCars] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
 
-    const fetchCars = async () => {
-        setLoading(true);
-        try {
-            const data = await carsReportService.getAllCars();
-            setCars(data);
-        } catch (error) {
-            logger.error('GodMode: Failed to fetch cars', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+  const fetchCars = async () => {
+    setLoading(true);
+    try {
+      const data = await carsReportService.getAllCars();
+      setCars(data);
+    } catch (error) {
+      logger.error('GodMode: Failed to fetch cars', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    useEffect(() => {
-        fetchCars();
-    }, []);
+  useEffect(() => {
+    fetchCars();
+  }, []);
 
-    const handleDelete = async (carId: string, title: string) => {
-        if (window.confirm(`⚠️ GOD MODE WARNING ⚠️\n\nAre you sure you want to PERMANENTLY DELETE listing: ${title}?\n\nThis will remove it from search, profiles, and database. This cannot be undone.`)) {
-            try {
-                await deleteDoc(doc(db, 'cars', carId)); // Note: Should handle collection detection if using multi-collection
-                setCars(prev => prev.filter(c => c.id !== carId));
-                alert('Listing terminated.');
-            } catch (error) {
-                alert('Failed to delete listing: ' + error);
-            }
-        }
-    };
+  const handleDelete = async (carId: string, title: string) => {
+    if (window.confirm(`⚠️ GOD MODE WARNING ⚠️\n\nAre you sure you want to PERMANENTLY DELETE listing: ${title}?\n\nThis will remove it from search, profiles, and database. This cannot be undone.`)) {
+      try {
+        await deleteDoc(doc(db, 'cars', carId)); // Note: Should handle collection detection if using multi-collection
+        setCars(prev => prev.filter(c => c.id !== carId));
+        alert('Listing terminated.');
+      } catch (error) {
+        alert('Failed to delete listing: ' + error);
+      }
+    }
+  };
 
-    const handleToggleActive = async (carId: string, currentStatus: boolean) => {
-        try {
-            await updateDoc(doc(db, 'cars', carId), { isActive: !currentStatus });
-            setCars(prev => prev.map(c => c.id === carId ? { ...c, isActive: !currentStatus } : c));
-        } catch (error) {
-            console.error('Failed to toggle status', error);
-        }
-    };
+  const handleToggleActive = async (carId: string, currentStatus: boolean) => {
+    try {
+      await updateDoc(doc(db, 'cars', carId), { isActive: !currentStatus });
+      setCars(prev => prev.map(c => c.id === carId ? { ...c, isActive: !currentStatus } : c));
+    } catch (error) {
+      console.error('Failed to toggle status', error);
+    }
+  };
 
-    const filteredCars = cars.filter(car =>
-        car.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        car.model?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        car.year?.toString().includes(searchTerm)
-    );
+  const handleMarkSold = async (carId: string, currentStatus: string) => {
+    try {
+      const newStatus = currentStatus === 'sold' ? 'active' : 'sold';
+      await updateDoc(doc(db, 'cars', carId), { status: newStatus });
+      setCars(prev => prev.map(c => c.id === carId ? { ...c, status: newStatus } : c));
+    } catch (error) {
+      console.error('Failed to update sold status', error);
+    }
+  };
 
-    return (
-        <Overlay>
-            <Container>
-                <Header>
-                    <Title>
-                        <Shield size={28} />
-                        GOD MODE: FLEET CONTROL
-                        <Badge>{cars.length} VEHICLES</Badge>
-                    </Title>
-                    <Controls>
-                        <SearchInput
-                            placeholder="Search by brand, model, year..."
-                            value={searchTerm}
-                            onChange={e => setSearchTerm(e.target.value)}
-                            autoFocus
-                        />
-                        <CloseButton onClick={fetchCars} title="Refresh Data">
-                            <RefreshCw size={20} />
-                        </CloseButton>
-                        <CloseButton onClick={onClose} title="Close God Mode">
-                            <X size={24} />
-                        </CloseButton>
-                    </Controls>
-                </Header>
+  const handleBoost = async (carId: string, currentViews: number) => {
+    try {
+      const newViews = (currentViews || 0) + 1000;
+      await updateDoc(doc(db, 'cars', carId), { views: newViews });
+      setCars(prev => prev.map(c => c.id === carId ? { ...c, views: newViews } : c));
+      alert('Boosted +1000 views!');
+    } catch (error) {
+      console.error('Failed to boost', error);
+    }
+  };
 
-                <Grid>
-                    {loading ? (
-                        <div style={{ color: '#fff', gridColumn: '1/-1', textAlign: 'center', padding: '100px' }}>
-                            ACCESSING SATELLITE FEED...
-                        </div>
-                    ) : filteredCars.map(car => (
-                        <Card key={car.id}>
-                            <CarImage bg={car.images?.[0]}>
-                                <PriceTag>€{car.price?.toLocaleString()}</PriceTag>
-                                <StatusBadge active={car.isActive}>{car.isActive ? 'ACTIVE' : 'INACTIVE'}</StatusBadge>
-                            </CarImage>
+  const filteredCars = cars.filter(car =>
+    car.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    car.model?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    car.year?.toString().includes(searchTerm)
+  );
 
-                            <CardContent>
-                                <CarTitle>{car.brand} {car.model}</CarTitle>
-                                <CarSubtitle>{car.year} • {car.engine} • {car.gearbox}</CarSubtitle>
+  return (
+    <Overlay>
+      <Container>
+        <Header>
+          <Title>
+            <Shield size={28} />
+            GOD MODE: FLEET CONTROL
+            <Badge>{cars.length} VEHICLES</Badge>
+          </Title>
+          <Controls>
+            <SearchInput
+              placeholder="Search by brand, model, year..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              autoFocus
+            />
+            <CloseButton onClick={fetchCars} title="Refresh Data">
+              <RefreshCw size={20} />
+            </CloseButton>
+            <CloseButton onClick={onClose} title="Close God Mode">
+              <X size={24} />
+            </CloseButton>
+          </Controls>
+        </Header>
 
-                                <Actions>
-                                    <ActionButton onClick={() => window.open(`/car/${car.id}`, '_blank')}>
-                                        <Eye size={14} /> VIEW
-                                    </ActionButton>
-                                    <ActionButton onClick={() => handleToggleActive(car.id, car.isActive)}>
-                                        {car.isActive ? 'DISABLE' : 'ENABLE'}
-                                    </ActionButton>
-                                    <ActionButton danger onClick={() => handleDelete(car.id, `${car.brand} ${car.model}`)}>
-                                        <Trash2 size={14} /> DELETE
-                                    </ActionButton>
-                                </Actions>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </Grid>
-            </Container>
-        </Overlay>
-    );
+        <Grid>
+          {loading ? (
+            <div style={{ color: '#fff', gridColumn: '1/-1', textAlign: 'center', padding: '100px' }}>
+              ACCESSING SATELLITE FEED...
+            </div>
+          ) : filteredCars.map(car => (
+            <Card key={car.id}>
+              <CarImage bg={car.images?.[0]}>
+                <PriceTag>€{car.price?.toLocaleString()}</PriceTag>
+                <StatusBadge active={car.isActive}>{car.isActive ? 'ACTIVE' : 'INACTIVE'}</StatusBadge>
+              </CarImage>
+
+              <CardContent>
+                <CarTitle>{car.brand} {car.model}</CarTitle>
+                <CarSubtitle>{car.year} • {car.engine} • {car.gearbox}</CarSubtitle>
+
+                <Actions>
+                  <ActionButton onClick={() => window.open(`/car/${car.id}`, '_blank')}>
+                    <Eye size={14} /> VIEW
+                  </ActionButton>
+                  <ActionButton onClick={() => handleToggleActive(car.id, car.isActive)}>
+                    {car.isActive ? 'DISABLE' : 'ENABLE'}
+                  </ActionButton>
+                  <ActionButton onClick={() => handleMarkSold(car.id, car.status)}>
+                    <DollarSign size={14} /> {car.status === 'sold' ? 'UNSELL' : 'SOLD'}
+                  </ActionButton>
+                  <ActionButton onClick={() => handleBoost(car.id, car.views)}>
+                    <TrendingUp size={14} /> BOOST
+                  </ActionButton>
+                  <ActionButton danger onClick={() => handleDelete(car.id, `${car.brand} ${car.model}`)}>
+                    <Trash2 size={14} /> DEL
+                  </ActionButton>
+                </Actions>
+              </CardContent>
+            </Card>
+          ))}
+        </Grid>
+      </Container>
+    </Overlay>
+  );
 };

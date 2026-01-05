@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { X, Edit, User, Shield, Trash2, Search, RefreshCw } from 'lucide-react';
+import { X, Edit, User, Shield, Trash2, Search, RefreshCw, CheckCircle, AlertCircle } from 'lucide-react';
 import { usersReportService } from '../../../services/reports/users-report-service';
-import { doc, deleteDoc } from 'firebase/firestore';
+import { doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebase-config';
 import { logger } from '../../../services/logger-service';
 
@@ -171,13 +171,13 @@ const RoleTag = styled.span<{ type: string }>`
   text-transform: uppercase;
   font-weight: 700;
   background: ${props => {
-        switch (props.type) {
-            case 'admin': return '#c0392b';
-            case 'dealer': return '#2980b9';
-            case 'company': return '#8e44ad';
-            default: return '#27ae60';
-        }
-    }};
+    switch (props.type) {
+      case 'admin': return '#c0392b';
+      case 'dealer': return '#2980b9';
+      case 'company': return '#8e44ad';
+      default: return '#27ae60';
+    }
+  }};
   color: #fff;
 `;
 
@@ -249,114 +249,127 @@ const StatItem = styled.div`
 `;
 
 interface GodModeUserGridProps {
-    onClose: () => void;
+  onClose: () => void;
 }
 
 export const GodModeUserGrid: React.FC<GodModeUserGridProps> = ({ onClose }) => {
-    const [users, setUsers] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
 
-    const fetchUsers = async () => {
-        setLoading(true);
-        try {
-            const data = await usersReportService.getAllUsers();
-            setUsers(data);
-        } catch (error) {
-            logger.error('GodMode: Failed to fetch users', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const data = await usersReportService.getAllUsers();
+      setUsers(data);
+    } catch (error) {
+      logger.error('GodMode: Failed to fetch users', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    useEffect(() => {
-        fetchUsers();
-    }, []);
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
-    const handleDelete = async (userId: string, email: string) => {
-        if (window.confirm(`⚠️ GOD MODE WARNING ⚠️\n\nAre you sure you want to PERMANENTLY DELETE user: ${email}?\n\nThis will remove their profile, listings, and data forever. This cannot be undone.`)) {
-            try {
-                await deleteDoc(doc(db, 'users', userId));
-                setUsers(prev => prev.filter(u => u.uid !== userId));
-                alert('User terminated.');
-            } catch (error) {
-                alert('Failed to delete user: ' + error);
-            }
-        }
-    };
+  const handleVerify = async (userId: string, currentStatus: boolean, userName: string) => {
+    try {
+      await updateDoc(doc(db, 'users', userId), { isVerified: !currentStatus });
+      setUsers(prev => prev.map(u => u.uid === userId ? { ...u, isVerified: !currentStatus } : u));
+    } catch (error) {
+      alert('Failed to verify user: ' + error);
+    }
+  };
 
-    const filteredUsers = users.filter(user =>
-        user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.displayName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.phone?.includes(searchTerm)
-    );
+  const handleDelete = async (userId: string, email: string) => {
+    if (window.confirm(`⚠️ GOD MODE WARNING ⚠️\n\nAre you sure you want to PERMANENTLY DELETE user: ${email}?\n\nThis will remove their profile, listings, and data forever. This cannot be undone.`)) {
+      try {
+        await deleteDoc(doc(db, 'users', userId));
+        setUsers(prev => prev.filter(u => u.uid !== userId));
+        alert('User terminated.');
+      } catch (error) {
+        alert('Failed to delete user: ' + error);
+      }
+    }
+  };
 
-    return (
-        <Overlay>
-            <Container>
-                <Header>
-                    <Title>
-                        <Shield size={28} />
-                        GOD MODE: USER CONTROL
-                        <Badge>{users.length} TOTAL</Badge>
-                    </Title>
-                    <Controls>
-                        <SearchInput
-                            placeholder="Search by name, email, phone..."
-                            value={searchTerm}
-                            onChange={e => setSearchTerm(e.target.value)}
-                            autoFocus
-                        />
-                        <CloseButton onClick={fetchUsers} title="Refresh Data">
-                            <RefreshCw size={20} />
-                        </CloseButton>
-                        <CloseButton onClick={onClose} title="Close God Mode">
-                            <X size={24} />
-                        </CloseButton>
-                    </Controls>
-                </Header>
+  const filteredUsers = users.filter(user =>
+    user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.displayName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.phone?.includes(searchTerm)
+  );
 
-                <Grid>
-                    {loading ? (
-                        <div style={{ color: '#fff', gridColumn: '1/-1', textAlign: 'center', padding: '100px' }}>
-                            ACCESSING MAINFRAME DATA...
-                        </div>
-                    ) : filteredUsers.map(user => (
-                        <Card key={user.uid}>
-                            <CardHeader>
-                                <UserAvatar>
-                                    {user.photoURL ? (
-                                        <img src={user.photoURL} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
-                                    ) : (
-                                        <User size={24} />
-                                    )}
-                                </UserAvatar>
-                                <RoleTag type={user.profileType || 'private'}>
-                                    {user.profileType || 'PRIVATE'}
-                                </RoleTag>
-                            </CardHeader>
+  return (
+    <Overlay>
+      <Container>
+        <Header>
+          <Title>
+            <Shield size={28} />
+            GOD MODE: USER CONTROL
+            <Badge>{users.length} TOTAL</Badge>
+          </Title>
+          <Controls>
+            <SearchInput
+              placeholder="Search by name, email, phone..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              autoFocus
+            />
+            <CloseButton onClick={fetchUsers} title="Refresh Data">
+              <RefreshCw size={20} />
+            </CloseButton>
+            <CloseButton onClick={onClose} title="Close God Mode">
+              <X size={24} />
+            </CloseButton>
+          </Controls>
+        </Header>
 
-                            <UserInfo>
-                                <UserName>{user.displayName || 'Anonymous User'}</UserName>
-                                <UserEmail>{user.email}</UserEmail>
-                                <Stats>
-                                    <StatItem>Last Login: <strong>{user.lastLogin ? new Date(user.lastLogin.seconds * 1000).toLocaleDateString() : 'N/A'}</strong></StatItem>
-                                    <StatItem>City: <strong>{user.city || 'N/A'}</strong></StatItem>
-                                </Stats>
-                            </UserInfo>
+        <Grid>
+          {loading ? (
+            <div style={{ color: '#fff', gridColumn: '1/-1', textAlign: 'center', padding: '100px' }}>
+              ACCESSING MAINFRAME DATA...
+            </div>
+          ) : filteredUsers.map(user => (
+            <Card key={user.uid}>
+              <CardHeader>
+                <UserAvatar>
+                  {user.photoURL ? (
+                    <img src={user.photoURL} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
+                  ) : (
+                    <User size={24} />
+                  )}
+                </UserAvatar>
+                <RoleTag type={user.profileType || 'private'}>
+                  {user.profileType || 'PRIVATE'}
+                </RoleTag>
+              </CardHeader>
 
-                            <Actions>
-                                <ActionButton onClick={() => window.open(`/profile/${user.uid}`, '_blank')}>
-                                    <Edit size={14} /> EDIT
-                                </ActionButton>
-                                <ActionButton danger onClick={() => handleDelete(user.uid, user.email)}>
-                                    <Trash2 size={14} /> DELETE
-                                </ActionButton>
-                            </Actions>
-                        </Card>
-                    ))}
-                </Grid>
-            </Container>
-        </Overlay>
-    );
+              <UserInfo>
+                <UserName>{user.displayName || 'Anonymous User'}</UserName>
+                <UserEmail>{user.email}</UserEmail>
+                <Stats>
+                  <StatItem>Last Login: <strong>{user.lastLogin ? new Date(user.lastLogin.seconds * 1000).toLocaleDateString() : 'N/A'}</strong></StatItem>
+                  <StatItem>City: <strong>{user.city || 'N/A'}</strong></StatItem>
+                </Stats>
+              </UserInfo>
+
+              <Actions>
+                <ActionButton onClick={() => window.open(`/profile/${user.uid}`, '_blank')}>
+                  <Edit size={14} /> EDIT
+                </ActionButton>
+                <ActionButton onClick={() => handleVerify(user.uid, user.isVerified, user.displayName)}>
+                  {user.isVerified ? <AlertCircle size={14} /> : <CheckCircle size={14} />}
+                  {user.isVerified ? ' UNVERIFY' : ' VERIFY'}
+                </ActionButton>
+                <ActionButton danger onClick={() => handleDelete(user.uid, user.email)}>
+                  <Trash2 size={14} /> DELETE
+                </ActionButton>
+              </Actions>
+            </Card>
+          ))}
+        </Grid>
+      </Container>
+    </Overlay>
+  );
 };

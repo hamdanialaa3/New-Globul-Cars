@@ -1,5 +1,7 @@
 ﻿# Copilot Instructions: Bulgarian Car Marketplace (Bulgarski Mobili)
 
+**Updated:** January 5, 2026 | **Project Size:** 772 React components, 161 services, 6 Firestore collections, 180K+ LOC
+
 ## Stack & Runtime
 
 - **Frontend**: React 18 + TypeScript (strict) + Styled-Components; **Build**: CRACO (Webpack with custom config).
@@ -34,6 +36,7 @@
 - **Listings**: `sell-workflow-service.ts` manages sell flow state and returns numeric URLs.
 - **Profiles**: `bulgarian-profile-service.ts` resolves user data + enforces plan tier limits.
 - **Numeric IDs**: `numeric-car-system.service.ts` + `numeric-id-assignment.service.ts` handle counter increments.
+- **Messaging**: `AdvancedMessagingService` orchestrates conversations, offers, and file uploads; see [MESSAGING_SYSTEM_FINAL.md](MESSAGING_SYSTEM_FINAL.md).
 - **Logging**: `logger-service.ts` (replaces console; enforced by `scripts/ban-console.js`).
 - **Errors**: `error-handling-service.ts` captures and logs exceptions.
 
@@ -74,6 +77,19 @@
 - **Array fields**: Pass arrays (not comma-separated strings) for `searchableAttributes`, `attributesToSnippet`, etc.
 - **Firestore-Algolia hybrid**: Use `UnifiedSearchService` to query both; falls back gracefully if Algolia unavailable.
 
+## Real-time Messaging & Offers
+
+- **Entry point**: `/messages/:numericId1/:numericId2` (numeric ID resolution for user privacy).
+- **Service**: `AdvancedMessagingService` handles sends, reads, offers, file uploads, and soft deletes.
+- **Orchestrator**: `MessagingOrchestrator` (facade) coordinates `MessageSender`, `ConversationLoader`, `ActionHandler`, `StatusManager`, `SearchManager`.
+- **Features**: Inbox view, offer workflow, file validation, message search, archive per-user, mark as read.
+- **Firestore collections**: `conversations` (single doc per pair) + `messages` (all exchanges); offers stored in `messages.offers[]`.
+- **Key methods**:
+  - `sendMessage(conversationId, text, senderId, attachments)` — validates files, uploads to Storage, appends to messages.
+  - `sendOfferMessage(conversationId, carId, price)` — integrates with `OfferWorkflowService`.
+  - `markMessagesAsRead(conversationId, userId)` — sets read status and notification state.
+- **Real-time**: Uses Firestore `onSnapshot()` listeners with `isActive` flag cleanup (see Firestore Patterns below).
+
 ## Logging (Critical Rule)
 
 - **Ban**: `console.log()`, `console.error()`, `console.warn()` in `src/` (enforced by `scripts/ban-console.js` during prebuild).
@@ -83,12 +99,12 @@
 
 ## Firestore Patterns (Critical)
 
-- **Listeners cleanup**: Always use the `isActive` flag pattern — see [FIRESTORE_LISTENERS_FIX.md](FIRESTORE_LISTENERS_FIX.md).
+- **Listeners cleanup**: Always use the `isActive` flag pattern to prevent memory leaks and race conditions:
   ```typescript
   let isActive = true;
   const unsubscribe = onSnapshot(ref, snap => {
     if (!isActive) return; // Prevent state updates after unmount
-    // ...
+    // ... process snapshot
   });
   return () => {
     isActive = false;
@@ -99,8 +115,9 @@
     }
   };
   ```
+  **Why**: Components unmount but async updates continue → `setState on unmounted component` error. The `isActive` flag gates all state updates.
 - **Avoid duplicate listeners** on same document; consolidate subscriptions.
-- **Collection references**: Use `getCollectionNameForVehicleType()` to resolve car collection names dynamically.
+- **Collection references**: Use `SellWorkflowCollections.getCollectionNameForVehicleType(vehicleType)` to resolve car collection names dynamically — never hardcode.
 
 ## Testing
 
@@ -165,15 +182,14 @@
 
 - [PROJECT_CONSTITUTION.md](PROJECT_CONSTITUTION.md) — immutable architectural rules.
 - [docs/STRICT_NUMERIC_ID_SYSTEM.md](docs/STRICT_NUMERIC_ID_SYSTEM.md) — numeric ID strategy detail.
-- [FIRESTORE_LISTENERS_FIX.md](FIRESTORE_LISTENERS_FIX.md) — Firestore listener cleanup patterns (critical for stability).
-- [SEARCH_SYSTEM.md](SEARCH_SYSTEM.md) — search architecture + Algolia hybrid logic.
+- [MESSAGING_SYSTEM_FINAL.md](MESSAGING_SYSTEM_FINAL.md) — messaging architecture, offers, file uploads, search.
 - [SECURITY.md](SECURITY.md) — Firestore Rules, Cloud Functions auth, API security.
 - [PROJECT_COMPLETE_INVENTORY.md](PROJECT_COMPLETE_INVENTORY.md) — full file/service inventory.
 
 ## Quick Debugging
 
 - **Port 3000 stuck**: `npm run clean:3000`.
-- **Firestore listener errors**: Check [FIRESTORE_LISTENERS_FIX.md](FIRESTORE_LISTENERS_FIX.md) — likely missing `isActive` flag.
+- **Firestore listener errors**: Missing `isActive` flag in cleanup — causes "setState on unmounted component". Check patterns in Firestore Patterns section above.
 - **Numeric ID not assigned**: Verify `UnifiedCarService.createCarListing()` called + `counters/{uid}/cars` document exists.
 - **Algolia not syncing**: Run `npm run sync-algolia` manually; check `algolia-index-config.json` format.
 - **Console errors during build**: Check `scripts/ban-console.js` — may have caught illegal `console.log` usage.

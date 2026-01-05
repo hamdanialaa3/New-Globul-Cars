@@ -146,40 +146,40 @@ const LoyaltyBanner: React.FC = memo(() => {
 
   const bannerRef = useRef<HTMLDivElement>(null);
 
-useEffect(() => {
-  // Fire 'home_loyaltybanner_view' when visible & unauthenticated
-  if (currentUser) return; // Only track for unauth users
+  useEffect(() => {
+    // Fire 'home_loyaltybanner_view' when visible & unauthenticated
+    if (currentUser) return; // Only track for unauth users
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      if (entries[0].isIntersecting) {
-        analyticsService.trackEvent('home_loyaltybanner_view', {});
-        observer.unobserve(entries[0].target);
-      }
-    },
-    { threshold: 0.3 }
-  );
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          analyticsService.trackEvent('home_loyaltybanner_view', {});
+          observer.unobserve(entries[0].target);
+        }
+      },
+      { threshold: 0.3 }
+    );
 
-  if (bannerRef.current) {
-    observer.observe(bannerRef.current);
-  }
+    if (bannerRef.current) {
+      observer.observe(bannerRef.current);
+    }
 
-  return () => observer.disconnect();
-}, [currentUser]);
+    return () => observer.disconnect();
+  }, [currentUser]);
 
-// When signup is clicked:
-const handleSignupClick = () => {
-  // Track 'home_loyaltybanner_signup_click'
-  analyticsService.trackEvent('home_loyaltybanner_signup_click', {});
-  navigate('/auth/register');
-};
+  // When signup is clicked:
+  const handleSignupClick = () => {
+    // Track 'home_loyaltybanner_signup_click'
+    analyticsService.trackEvent('home_loyaltybanner_signup_click', {});
+    navigate('/register');
+  };
 
-// When signin is clicked:
-const handleSigninClick = () => {
-  // Track 'home_loyaltybanner_signin_click'
-  analyticsService.trackEvent('home_loyaltybanner_signin_click', {});
-  navigate('/auth/login');
-};
+  // When signin is clicked:
+  const handleSigninClick = () => {
+    // Track 'home_loyaltybanner_signin_click'
+    analyticsService.trackEvent('home_loyaltybanner_signin_click', {});
+    navigate('/login');
+  };
 
   return (
     <Container aria-label={t('home.loyaltyBanner.title')}>
@@ -191,7 +191,7 @@ const handleSigninClick = () => {
         <BenefitItem>{t('home.loyaltyBanner.benefit3')}</BenefitItem>
       </BenefitsList>
       <Actions>
-        <CTAButton data-action="signup" onClick={() => navigate('/auth/register')}>{t('home.loyaltyBanner.cta')}</CTAButton>
+        <CTAButton data-action="signup" onClick={() => navigate('/register')}>{t('home.loyaltyBanner.cta')}</CTAButton>
         <CTAButton data-action="signin" onClick={handleSigninClick}>{t('home.loyaltyBanner.altCta')}</CTAButton>
       </Actions>
     </Container>

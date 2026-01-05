@@ -65,10 +65,16 @@ const Logo = styled.div<{ $isDark?: boolean }>`
   }
 
   ${media.maxMobile} {
-    font-size: 18px; // Fallback or specific mobile adjustment if needed
+    font-size: 18px; 
+    
+    /* Mobile: Hide text, make logo prominent */
+    span {
+      display: none;
+    }
+    
     img {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
     }
   }
 `;
@@ -161,8 +167,9 @@ const IconButton = styled.button<{ $isDark?: boolean }>`
   }
 
   ${media.maxMobile} {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
+    background: ${({ $isDark }) => $isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(255, 255, 255, 0.5)'};
   }
 `;
 
@@ -211,9 +218,25 @@ const SettingsButton = styled.button<{ $isDark?: boolean }>`
     height: 18px;
   }
 
+  /* Mobile Optimization: Icon-only, square, unified look */
   ${media.maxMobile} {
-    padding: ${spacing.xs} ${spacing.sm};
-    font-size: 14px;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    border-radius: ${borderRadius.md};
+    
+    /* Hide text (span) and chevron (last svg) */
+    span, svg:last-child {
+      display: none;
+    }
+    
+    /* Center the settings icon */
+    svg:first-child {
+      width: 22px;
+      height: 22px;
+      margin: 0;
+    }
   }
 `;
 

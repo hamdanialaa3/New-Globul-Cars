@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Zap, ArrowRight, CheckCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { glassPrimaryButton } from '../../../../styles/glassmorphism-buttons';
 
@@ -85,25 +86,26 @@ const Button = styled.button`
 `;
 
 const SmartSellStrip: React.FC = () => {
-    const { t } = useLanguage();
-    
-    return (
-        <Container>
-            <Content>
-                <Title>
-                    <Zap size={28} fill="white" />
-                    {t('home.smartSell.title')}
-                </Title>
-                <Description>
-                    {t('home.smartSell.description')}
-                </Description>
-            </Content>
-            <Button>
-                {t('home.smartSell.startSelling')}
-                <ArrowRight size={20} />
-            </Button>
-        </Container>
-    );
+  const { t } = useLanguage();
+  const navigate = useNavigate();
+
+  return (
+    <Container>
+      <Content>
+        <Title>
+          <Zap size={28} fill="white" />
+          {t('home.smartSell.title')}
+        </Title>
+        <Description>
+          {t('home.smartSell.description')}
+        </Description>
+      </Content>
+      <Button onClick={() => navigate('/sell/auto')}>
+        {t('home.smartSell.startSelling')}
+        <ArrowRight size={20} />
+      </Button>
+    </Container>
+  );
 };
 
 export default SmartSellStrip;

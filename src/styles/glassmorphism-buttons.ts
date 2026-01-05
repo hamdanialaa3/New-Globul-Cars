@@ -19,6 +19,12 @@ export const glassmorphismBase = css`
   border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+
+  @media (max-width: 640px) {
+    font-size: 13px;
+    padding: 8px 16px;
+  }
 `;
 
 /**

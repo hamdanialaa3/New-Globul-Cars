@@ -2,12 +2,13 @@
 // مساعد الذكاء الاصطناعي للمحادثة
 
 import React, { useState, useRef, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { AIChatMessage, AIChatContext } from '../../types/ai.types';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { logger } from '../../services/logger-service';
+import { X, MessageSquare } from 'lucide-react';
 
 interface Props {
   context?: AIChatContext;
@@ -17,15 +18,21 @@ interface Props {
   onClose?: () => void;
 }
 
+const pulse = keyframes`
+  0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+`;
+
 export const AIChatbot: React.FC<Props> = ({
   context = {},
   position = 'bottom-right',
-  hideButton = true,
+  hideButton = false,
   isOpen: externalIsOpen,
   onClose
 }) => {
   const { user } = useAuth();
-  const { language, t } = useLanguage();
+  const { language } = useLanguage();
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
   const [messages, setMessages] = useState<AIChatMessage[]>([]);
@@ -130,6 +137,14 @@ export const AIChatbot: React.FC<Props> = ({
     }
   };
 
+  const toggleChat = () => {
+    if (onClose && isOpen) {
+      onClose();
+    } else {
+      setInternalIsOpen(!internalIsOpen);
+    }
+  };
+
   return (
     <>
       {isOpen && (
@@ -139,10 +154,7 @@ export const AIChatbot: React.FC<Props> = ({
               <BotIcon>🤖</BotIcon>
               <span>{language === 'bg' ? 'AI Асистент' : 'AI Assistant'}</span>
             </HeaderTitle>
-            <CloseButton onClick={() => {
-              if (onClose) onClose();
-              else setInternalIsOpen(false);
-            }}>✕</CloseButton>
+            <CloseButton onClick={toggleChat}>✕</CloseButton>
           </ChatHeader>
 
           <MessagesContainer>
@@ -181,14 +193,70 @@ export const AIChatbot: React.FC<Props> = ({
           </InputContainer>
         </ChatWindow>
       )}
+
+      {!hideButton && (
+        <ChatButton
+          onClick={toggleChat}
+          $isOpen={isOpen}
+          $position={position}
+          aria-label="AI Chatbot"
+        >
+          {isOpen ? <X size={24} /> : <MessageSquare size={24} />}
+        </ChatButton>
+      )}
     </>
   );
 };
 
+// Styled Components
+
+const ChatButton = styled.button<{ $isOpen: boolean; $position: string }>`
+  position: fixed;
+  bottom: 92px; /* Centered between 160px and ~24px */
+  ${p => p.$position === 'bottom-right' ? 'right: 32px;' : 'left: 32px;'}
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: none;
+  
+  /* Glassmorphism Gradient matching FloatingAddButton style but Indigo */
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: white;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Matches FloatingAddButton shadow intensity */
+  box-shadow: 
+    0 8px 32px rgba(99, 102, 241, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    
+  cursor: pointer;
+  z-index: 9999;
+  
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: ${p => p.$isOpen ? 'none' : css`${pulse} 2s infinite`};
+  
+  &:hover {
+    transform: translateY(-4px) scale(1.1);
+    box-shadow: 
+      0 12px 48px rgba(99, 102, 241, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+  
+  @media (max-width: 768px) {
+    ${p => p.$position === 'bottom-right' ? 'right: 24px;' : 'left: 24px;'}
+    bottom: 82px;
+    width: 56px;
+    height: 56px;
+  }
+`;
+
 const ChatWindow = styled.div<{ $position: string }>`
   position: fixed;
   ${p => p.$position === 'bottom-right' ? 'right: 24px;' : 'left: 24px;'}
-  bottom: 100px;
+  bottom: 150px; /* Above the button */
   width: 380px;
   height: 550px;
   background: white;
@@ -199,14 +267,23 @@ const ChatWindow = styled.div<{ $position: string }>`
   z-index: 9998;
   overflow: hidden;
 
+  transform-origin: bottom right;
+  animation: openWindow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  @keyframes openWindow {
+    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
   @media (max-width: 768px) {
     width: calc(100vw - 48px);
-    height: calc(100vh - 150px);
+    height: 500px;
+    bottom: 140px;
   }
 `;
 
 const ChatHeader = styled.div`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
   color: white;
   padding: 16px 20px;
   display: flex;
@@ -257,7 +334,7 @@ const MessageBubble = styled.div<{ role: string }>`
   padding: 12px 16px;
   border-radius: 16px;
   background: ${p => p.role === 'user'
-    ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+    ? 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)'
     : 'white'};
   color: ${p => p.role === 'user' ? 'white' : '#1a1a1a'};
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
@@ -276,7 +353,7 @@ const Dot = styled.div<{ $delay: number }>`
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #667eea;
+  background: #6366f1;
   animation: bounce 1.4s infinite ease-in-out;
   animation-delay: ${p => p.$delay}s;
 
@@ -303,7 +380,7 @@ const Input = styled.input`
   outline: none;
 
   &:focus {
-    border-color: #667eea;
+    border-color: #6366f1;
   }
 
   &:disabled {
@@ -316,7 +393,7 @@ const SendButton = styled.button`
   height: 44px;
   border-radius: 50%;
   border: none;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
   color: white;
   font-size: 18px;
   cursor: pointer;

@@ -1,9 +1,9 @@
 # 🏛️ دستور المشروع - PROJECT CONSTITUTION
 ## Bulgarian Car Marketplace (Bulgarski Avtomobili) - معايير التطوير الثابتة
 
-**📅 آخر تحديث:** 4 يناير 2026  
+**📅 آخر تحديث:** 5 يناير 2026  
 **🚀 الحالة:** Production Active (mobilebg.eu)  
-**📦 النسخة:** 0.1.0  
+**📦 النسخة:** 0.3.0  
 **🔥 Firebase:** fire-new-globul  
 **⚙️ GitHub:** hamdanialaa3/New-Globul-Cars
 
@@ -12,10 +12,11 @@
 ## 📊 ملخص المشروع (Project Overview)
 
 ### الإحصائيات الحالية:
-- **772 مكون React (TSX)**
-- **161 خدمة TypeScript**
-- **180,000+ سطر برمجي**
-- **50+ صفحة**
+- **776 مكون React (TSX)**
+- **727 ملف TypeScript**
+- **404 خدمة TypeScript**
+- **185,000+ سطر برمجي**
+- **286 صفحة**
 - **80+ route**
 - **8 Context Providers**
 - **25+ Custom Hooks**
@@ -29,7 +30,7 @@
 ✅ Drive Type System (FWD/RWD/AWD/4WD)  
 ✅ Smart Classification System  
 ✅ Glassmorphism UI Design  
-✅ Real-time Messaging  
+✅ **Real-time Messaging (Unified System - Phase 1 & 2)** ⭐ جديد!  
 ✅ AI-powered descriptions (Gemini)  
 ✅ Multi-language (BG/EN)  
 ✅ Google Analytics 4 + BigQuery  
@@ -64,10 +65,10 @@
 ### 2.1 هيكلية المجلدات (Folder Structure)
 ```
 src/
-├── components/       # 772 مكون (قابلة لإعادة الاستخدام)
-├── pages/            # 50+ صفحة كاملة
+├── components/       # 441 مكون (قابلة لإعادة الاستخدام)
+├── pages/            # 286 صفحة كاملة
 ├── features/         # ميزات معقدة (car-listing, messaging, search)
-├── services/         # 161 خدمة (Firebase, API, utilities)
+├── services/         # 404 خدمة (Firebase, API, utilities)
 ├── contexts/         # 8 Context Providers
 ├── hooks/            # 25+ Custom Hooks
 ├── routes/           # 80+ route definitions
@@ -419,6 +420,11 @@ npm run clean:all       # Full cleanup
 ## 1️⃣1️⃣ الميزات الحديثة (Recent Features)
 
 ### ✨ يناير 2026:
+- ✅ **Unified Messaging System** (Phase 1 & 2) - 4-5 يناير
+  - توحيد نظامين منفصلين في نظام واحد
+  - حذف 829 سطر كود مكرر
+  - MessagingOrchestrator (Facade Pattern)
+  - Mark as Read, Offer System, Archive, File Upload
 - ✅ **Drive Type System** (FWD/RWD/AWD/4WD) - 3 يناير
 - ✅ **Smart Classification** - AI-powered vehicle categorization - 3 يناير
 - ✅ **UI Redesign** - Mobile.de-inspired modern design - 3 يناير
