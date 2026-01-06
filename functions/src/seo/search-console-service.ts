@@ -40,12 +40,7 @@ const SERVICE_ACCOUNT = {
 // TYPES
 // ============================================================================
 
-interface IndexingStatus {
-    url: string;
-    indexed: boolean;
-    lastCrawled?: string;
-    verdict?: string;
-}
+// interface _IndexingStatus - not currently used
 
 interface SearchPerformanceData {
     date: string;

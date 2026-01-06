@@ -3,14 +3,13 @@ import { VertexAI, GenerativeModel } from '@google-cloud/vertexai';
 import axios from 'axios';
 import * as functions from 'firebase-functions';
 
-const logger = functions.logger;
-
 export class AIService {
     private vertexAI: VertexAI;
     private geminiModel: GenerativeModel;
     private deepSeekApiKey: string;
 
     constructor() {
+        functions.logger.info('AIService initializing');
         // 1. Setup Gemini: Uses ADC (Application Default Credentials)
         // Ensure the region supports Generative AI (e.g., us-central1)
         this.vertexAI = new VertexAI({

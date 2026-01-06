@@ -5,7 +5,7 @@ import * as logger from "firebase-functions/logger";
 
 const db = admin.firestore();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-    apiVersion: "2023-10-16", // Latest active version
+    apiVersion: "2025-12-15.clover", // Updated to latest
 });
 
 /**
@@ -147,8 +147,8 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
         planTier: newTier,
         subscriptionId: subscription.id,
         subscriptionStatus: subscription.status,
-        subscriptionStart: admin.firestore.Timestamp.fromMillis(subscription.start_date * 1000),
-        subscriptionCurrentPeriodEnd: admin.firestore.Timestamp.fromMillis(subscription.current_period_end * 1000),
+        subscriptionStart: admin.firestore.Timestamp.fromMillis((subscription as any).start_date * 1000),
+        subscriptionCurrentPeriodEnd: admin.firestore.Timestamp.fromMillis((subscription as any).currentPeriodEnd * 1000),
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
     
@@ -211,7 +211,7 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
         await userDoc.ref.update({
             planTier: newTier,
             subscriptionStatus: status,
-            subscriptionCurrentPeriodEnd: admin.firestore.Timestamp.fromMillis(subscription.current_period_end * 1000),
+            subscriptionCurrentPeriodEnd: admin.firestore.Timestamp.fromMillis((subscription as any).currentPeriodEnd * 1000),
             updatedAt: admin.firestore.FieldValue.serverTimestamp()
         });
         

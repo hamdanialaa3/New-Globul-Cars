@@ -10,7 +10,7 @@
 
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import sharp from 'sharp';
+import * as sharp from 'sharp';
 
 // Initialize Firebase Admin if not already initialized
 if (!admin.apps.length) {

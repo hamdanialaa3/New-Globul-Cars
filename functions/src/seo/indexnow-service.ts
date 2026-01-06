@@ -15,7 +15,7 @@
 
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import fetch from 'node-fetch';
+// Note: Using native fetch (Node 18+) instead of node-fetch
 
 // Initialize if needed
 if (!admin.apps.length) {

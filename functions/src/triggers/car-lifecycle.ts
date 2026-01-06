@@ -8,14 +8,6 @@ if (!admin.apps.length) {
 
 const logger = functions.logger;
 const db = admin.firestore();
-const VEHICLE_COLLECTIONS = [
-  'passenger_cars',
-  'suvs',
-  'vans',
-  'motorcycles',
-  'trucks',
-  'buses'
-];
 
 async function purgeStoriesForCar(carId: string): Promise<number> {
   const storiesSnap = await db
