@@ -76,10 +76,28 @@ const ComposerContainer = styled.main`
   contain: layout style paint;
 `;
 
-const SectionSpacer = styled.div`
-  height: 40px; /* Significantly reduced from 100px */
+const ContentContainer = styled.div`
+  width: 100%;
+  max-width: 1400px; /* mobile.de standard: 1400px max-width */
+  margin: 0 auto; /* Center the container */
+  padding: 0 24px; /* mobile.de standard: 24px horizontal padding */
+
+  @media (max-width: 1024px) {
+    padding: 0 20px;
+  }
+
   @media (max-width: 768px) {
-    height: 30px;
+    padding: 0 16px; /* mobile.de mobile: 16px padding */
+  }
+`;
+
+const SectionSpacer = styled.div`
+  height: 64px; /* mobile.de standard: 64px spacing between sections (increased from 40px) */
+  @media (max-width: 1024px) {
+    height: 48px; /* Reduced on tablet */
+  }
+  @media (max-width: 768px) {
+    height: 48px; /* mobile.de mobile: 48px spacing */
   }
 `;
 
@@ -407,13 +425,14 @@ const DraftRecoverySlot: React.FC = () => (
 const HomePageComposer: React.FC = React.memo(() => {
   return (
     <ComposerContainer>
-      {/* Slot 1: Hero Section - CRITICAL */}
-      <HeroSlot />
-      <SectionSpacer />
-
-      {/* Slot 2: Featured Showcase - CRITICAL */}
-      <FeaturedShowcaseSlot />
-      <SectionSpacer />
+      {/* Content Container (Max Width 1400px) - Includes Hero */}
+      <ContentContainer>
+        {/* Slot 1: Hero Section - CRITICAL (Same width as other sections) */}
+        <HeroSlot />
+        <SectionSpacer />
+        {/* Slot 2: Featured Showcase - CRITICAL */}
+        <FeaturedShowcaseSlot />
+        <SectionSpacer />
 
       {/* Slot 3: Smart Sell Strip */}
       <SmartSellSlot />
@@ -443,8 +462,9 @@ const HomePageComposer: React.FC = React.memo(() => {
       <TrustSlot />
       <SectionSpacer />
 
-      {/* Slot 10: Loyalty & Signup */}
-      <LoyaltySlot />
+        {/* Slot 10: Loyalty & Signup */}
+        <LoyaltySlot />
+      </ContentContainer>
 
       {/* AI Chatbot (Floating) */}
       <AIChatbotSlot />

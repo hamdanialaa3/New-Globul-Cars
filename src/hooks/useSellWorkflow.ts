@@ -141,8 +141,28 @@ export const useSellWorkflow = () => {
         WorkflowPersistenceService.saveState(merged, currentStep);
         return merged;
       });
+
+      const criticalFields = ['price', 'make', 'model', 'year', 'mileage', 'mainImage'];
+      const needsImmediateSave = Object.keys(updates).some(key => criticalFields.includes(key));
+
+      if (needsImmediateSave && currentUser && remoteSyncAllowed) {
+        void DraftsService.autoSaveDraft(
+          currentUser.uid,
+          remoteDraftId,
+          { ...workflowData, ...updates },
+          resolveStepIndex(currentStep)
+        )
+          .then(savedId => {
+            if (savedId && savedId !== remoteDraftId) {
+              setRemoteDraftId(savedId);
+            }
+          })
+          .catch(error => {
+            logger.warn('Immediate draft save failed', error as Error, { currentStep });
+          });
+      }
     },
-    []
+    [currentUser, remoteDraftId, remoteSyncAllowed, resolveStepIndex, workflowData]
   );
 
   const clearWorkflowData = useCallback(() => {
@@ -278,6 +298,24 @@ export const useSellWorkflow = () => {
 
     return () => clearTimeout(timeout);
   }, [workflowData, currentUser, remoteDraftId, resolveStepIndex, remoteSyncAllowed]);
+
+  // Force-save on tab close to prevent data loss
+  useEffect(() => {
+    if (!currentUser || !remoteSyncAllowed) return;
+
+    const handleBeforeUnload = () => {
+      if (Object.keys(workflowData).length === 0) return;
+      void DraftsService.autoSaveDraft(
+        currentUser.uid,
+        remoteDraftId,
+        workflowData,
+        resolveStepIndex('publish')
+      ).catch(error => logger.warn('beforeunload draft save failed', error as Error));
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [currentUser, remoteDraftId, remoteSyncAllowed, resolveStepIndex, workflowData]);
 
   return {
     workflowData,

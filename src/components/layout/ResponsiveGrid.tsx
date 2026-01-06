@@ -75,10 +75,18 @@ const StyledGrid = styled.div<{
   }
 `;
 
+/**
+ * ResponsiveGrid - mobile.de Standard Grid System
+ * Grid system matching mobile.de specifications:
+ * - Desktop (≥1280px): 4 columns, 24px gap
+ * - Tablet (1024px-1279px): 3 columns, 16px gap
+ * - Tablet Small (768px-1023px): 2 columns, 16px gap
+ * - Mobile (<768px): 1 column, 16px gap
+ */
 export const ResponsiveGrid: React.FC<GridProps> = ({
   children,
-  columns = { xs: 1, sm: 2, md: 2, lg: 3, xl: 4 },
-  gap = 16,
+  columns = { xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }, // mobile.de standard: 4 cols desktop
+  gap = { xs: 16, sm: 16, md: 16, lg: 24 }, // mobile.de standard: 24px desktop, 16px mobile/tablet
   className
 }) => {
   return (

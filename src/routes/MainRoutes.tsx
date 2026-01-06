@@ -99,6 +99,7 @@ const NewCarsPage = safeLazy(() => import('../pages/seo/NewCarsPage'));
 const AccidentCarsPage = safeLazy(() => import('../pages/seo/AccidentCarsPage'));
 // 🗺️ Programmatic SEO: Location Landing Pages
 const LocationLandingPage = safeLazy(() => import('../pages/05_search-browse/location/LocationLandingPage'));
+const CarNotFoundPage = safeLazy(() => import('../pages/02_error-pages/CarNotFoundPage'));
 const NotFoundPage = safeLazy(() => import('../components/NotFoundPage'));
 
 // 🆕 Dynamic Car Showcase Pages (Container Pages)
@@ -161,6 +162,8 @@ export const MainRoutes: React.FC = () => {
                     <EditCarPage />
                 </AuthGuard>
             } />
+            <Route path="/car/:sellerNumericId/:carNumericId/not-found" element={<CarNotFoundPage />} />
+            <Route path="/car/:sellerNumericId/:carNumericId/*" element={<CarNotFoundPage />} />
 
             {/* Legacy UUID route kept for automatic redirect to numeric URLs */}
             <Route

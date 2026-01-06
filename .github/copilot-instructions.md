@@ -1,4 +1,61 @@
-﻿# Copilot Instructions: Bulgarian Car Marketplace (Bulgarski Mobili)
+﻿# Copilot Instructions: Bulgarian Car Marketplace — Concise Agent Guide
+
+Updated: Jan 6, 2026
+
+## Stack & Entry Points
+- Frontend: React 18 + TypeScript (strict) + Styled-Components. Build via CRACO (Webpack). Backend: Firebase (Auth/Firestore/Functions/Storage/FCM/Hosting), Node 20 for Functions.
+- Use path aliases (e.g., @/services, @/components). Keep tsconfig, craco.config.js, jest.config.js in sync when adding aliases.
+
+## Architecture & Data Flows (What matters most)
+- Multi-collection cars by type. Never hardcode collection names; use `SellWorkflowCollections.getCollectionNameForVehicleType(vehicleType)`.
+- Strict Numeric ID System (critical): public URLs use numeric IDs only. Car IDs are `sellerNumericId` + `carNumericId`. Profiles use `numericId`.
+  - URL patterns: `/profile/:numericId`, `/car/:sellerNumericId/:carNumericId`, `/car/:sellerNumericId/:carNumericId/edit`, `/messages/:senderId/:recipientId`.
+  - ID generation enforced by `UnifiedCarService.createCarListing()`; counters in `numeric-car-system.service.ts` + `numeric-id-assignment.service.ts`.
+- Cross-collection search orchestration: `UnifiedSearchService` + `firestoreQueryBuilder` + `queryOrchestrator` (hybrid Firestore + Algolia).
+- Messaging: `AdvancedMessagingService` + `MessagingOrchestrator` handle conversations, offers, uploads, and real-time listeners.
+
+## Conventions & Patterns (Follow these)
+- Logging: console calls are banned in src (prebuild check). Use `logger-service.ts` (`logger.debug/info/warn/error`).
+- Firestore listeners: always gate updates with `isActive` flag and unsubscribe in cleanup to prevent setState-after-unmount.
+- Context-first state management; no Redux. Import contexts from `src/contexts/index.ts` barrel.
+- Routes live in `src/routes/` (modularized). Use `safeLazy()` from `src/utils/lazyImport.ts` for all page-level dynamic imports.
+- Import order: third-party + aliases first, relative imports last.
+
+## AI & Integrations
+- AI services are routed via `aiRouterService` (providers: Gemini, DeepSeek, OpenAI). Use implemented services: `vehicleDescriptionGenerator`, `geminiVisionService`, `aiQuotaService` via `src/services/ai/index.ts` barrel.
+- Search: keep Algolia config in `algolia-index-config.json` and records in `algolia-record-template.json`. Arrays required for fields like `searchableAttributes`.
+
+## Critical Commands (Dev, Tests, Build, DX)
+- Start dev: `npm start` (CRACO, port 3000) or `npm run start:dev` (4GB, no auto-open).
+- Tests: `npm test` (watch) | `npm run test:ci` (CI + coverage). Run specific: `npm test -- --testPathPattern=filename --watchAll=false`.
+- Type check: `npm run type-check`. Emulators: `npm run emulate`.
+- Build: `npm run build` (prebuild bans console). Analyze bundle: `npm run build:analyze`. Optimized: `npm run build:optimized`.
+- Algolia sync: `npm run sync-algolia` or `SYNC_ALGOLIA_NOW.bat`.
+- Deploy: `npm run deploy` | hosting-only: `npm run deploy:hosting` | functions: `npm run deploy:functions`.
+
+## Examples You’ll Reuse
+- Get car collection: `SellWorkflowCollections.getCollectionNameForVehicleType(vehicleType)`.
+- Create listing with numeric IDs: `UnifiedCarService.createCarListing()` (enforces plan + ID assignment).
+- Check plan limits before creation: `canAddListing(userId)` from `src/utils/listing-limits.ts`.
+- Messaging send/offer/read: `AdvancedMessagingService.sendMessage(...)`, `.sendOfferMessage(...)`, `.markMessagesAsRead(...)` (offers in `messages.offers[]`).
+
+## Gotchas & Local Rules
+- Never expose Firebase UIDs/UUIDs in URLs; only numeric IDs.
+- Do not add routes directly to `AppRoutes.tsx`; create files in `src/routes/` and use lazy loading via `safeLazy`.
+- If path aliases break, keep tsconfig/craco/jest aliases aligned.
+- If listeners misbehave, confirm the `isActive` pattern and single subscription per doc.
+- For Bulgarian market defaults: currency EUR, phone `+359`, locations via `src/services/bulgaria-locations.service.ts`. i18n via `useLanguage()` and `src/locales/{bg,en}`; never hardcode text.
+
+## Pointers
+- Numeric IDs: docs/STRICT_NUMERIC_ID_SYSTEM.md, `src/services/numeric-car-system.service.ts`, `src/services/numeric-id-assignment.service.ts`.
+- Cars/Search: `src/services/UnifiedCarService.ts`, `src/services/UnifiedSearchService.ts`.
+- Messaging: MESSAGING_SYSTEM_FINAL.md, `src/services/AdvancedMessagingService/*`.
+- Routing: `src/routes/`, `src/utils/lazyImport.ts`, `src/routes/README.md`.
+- Logging & Errors: `src/services/logger-service.ts`, `src/services/error-handling-service.ts`.
+- Security/Deploy: SECURITY.md, firebase.json, firestore.rules, storage.rules.
+
+If anything above is unclear or missing (especially around route extraction status, AI provider fallbacks, or collection naming), tell me which area you’re touching and I’ll expand this guide with concrete snippets and file links.
+# Copilot Instructions: Bulgarian Car Marketplace (Bulgarski Mobili)
 
 **Updated:** January 6, 2026 | **Project Size:** 772 React components, 161 services, 6 Firestore collections, 180K+ LOC
 

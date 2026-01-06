@@ -12,7 +12,8 @@ const MobileHeader = safeLazy(() => import('../components/Header/MobileHeader'))
 const MobileBottomNav = safeLazy(() => import('../components/layout/MobileBottomNav'));
 const Footer = safeLazy(() => import('../components/Footer/Footer'));
 const FloatingAddButton = safeLazy(() => import('../components/FloatingAddButton'));
-const RobotChatIcon = safeLazy(() => import('../components/AI/RobotChatIcon'));
+// ✅ MERGED: RobotChatIcon and AIChatbotWidget merged into UnifiedAIChat
+const UnifiedAIChat = safeLazy(() => import('../components/AI/UnifiedAIChat'));
 
 export const MainLayout: React.FC = () => {
     const location = useLocation();
@@ -99,7 +100,12 @@ export const MainLayout: React.FC = () => {
                         <FloatingAddButton />
                     </Suspense>
                     <Suspense fallback={null}>
-                        <RobotChatIcon />
+                        <UnifiedAIChat 
+                            position="bottom-right"
+                            bottom={304}
+                            offset={32}
+                            showBadge={false}
+                        />
                     </Suspense>
                 </>
             )}

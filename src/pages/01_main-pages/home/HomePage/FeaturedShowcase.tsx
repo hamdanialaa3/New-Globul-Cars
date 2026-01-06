@@ -123,12 +123,16 @@ const BackgroundLayer = styled.div<{ $isDark: boolean }>`
 const Container = styled.div`
   position: relative;
   z-index: 10;
-  max-width: 1280px;
+  max-width: 1400px; /* mobile.de standard: 1400px max-width */
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 24px; /* mobile.de standard: 24px horizontal padding */
+
+  @media (max-width: 1024px) {
+    padding: 0 20px;
+  }
 
   @media (max-width: 768px) {
-    padding: 0 0.75rem;
+    padding: 0 16px; /* mobile.de standard: 16px horizontal padding mobile */
   }
 `;
 
@@ -142,8 +146,9 @@ const Header = styled.div`
 `;
 
 const Title = styled(motion.h2) <{ $isDark: boolean }>`
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 900;
+  font-size: 24px; /* mobile.de standard: 24px / 1.5rem for H2 */
+  font-weight: 600; /* mobile.de standard: semi-bold */
+  line-height: 1.3; /* mobile.de standard */
   margin: 0 0 1rem;
   background: ${props => props.$isDark
     ? 'linear-gradient(135deg, #60a5fa 0%, #ffffff 50%, #60a5fa 100%)'
@@ -152,17 +157,22 @@ const Title = styled(motion.h2) <{ $isDark: boolean }>`
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-align: center;
+
+  @media (max-width: 768px) {
+    font-size: 22px; /* mobile.de mobile: 22px */
+  }
 `;
 
 const Description = styled.p<{ $isDark: boolean }>`
-  font-size: 1.125rem;
+  font-size: 16px; /* mobile.de standard: 16px / 1rem */
+  font-weight: 400; /* mobile.de standard: regular */
   color: ${props => props.$isDark ? '#cbd5e1' : '#64748b'};
   max-width: 42rem;
   margin: 0 auto;
-  line-height: 1.6;
+  line-height: 1.6; /* mobile.de standard */
 
   @media (max-width: 768px) {
-    font-size: 1rem;
+    font-size: 16px; /* mobile.de mobile: minimum 16px to prevent iOS zoom */
   }
 `;
 

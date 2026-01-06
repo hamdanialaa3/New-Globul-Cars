@@ -16,9 +16,9 @@ import RealisticPaperclipBadge from '../../../../components/SoldBadge/RealisticP
 
 // Styled Components
 const SectionContainer = styled.section`
-  max-width: 1200px;
-  margin: 3rem auto;
-  padding: 0 1rem;
+  max-width: 1400px; /* mobile.de standard: 1400px max-width */
+  margin: 3rem auto; /* mobile.de standard: 48px top margin */
+  padding: 0 24px; /* mobile.de standard: 24px horizontal padding */
   background: rgba(245, 241, 235, 0.4);
   transition: background-color 0.3s ease;
   
@@ -26,8 +26,13 @@ const SectionContainer = styled.section`
     background: rgba(15, 23, 42, 0.4);
   }
 
+  @media (max-width: 1024px) {
+    padding: 0 20px;
+  }
+
   @media (max-width: 768px) {
-    margin: 2rem auto;
+    margin: 2rem auto; /* mobile.de standard: 32px top margin mobile */
+    padding: 0 16px; /* mobile.de standard: 16px horizontal padding mobile */
   }
 `;
 
@@ -45,8 +50,9 @@ const SectionHeader = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 1.75rem;
-  font-weight: 800;
+  font-size: 24px; /* mobile.de standard: 24px / 1.5rem for H2 */
+  font-weight: 600; /* mobile.de standard: semi-bold */
+  line-height: 1.3; /* mobile.de standard */
   color: var(--text-primary);
   display: flex;
   align-items: center;
@@ -57,7 +63,7 @@ const SectionTitle = styled.h2`
   }
 
   @media (max-width: 768px) {
-    font-size: 1.5rem;
+    font-size: 22px; /* mobile.de mobile: 22px */
   }
 `;
 
@@ -85,26 +91,29 @@ const CarsContainer = styled.div`
 
 const CarCard = styled(Link)`
   background: var(--bg-card);
-  border-radius: 12px;
+  border-radius: 12px; /* mobile.de standard: 12px border radius */
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08); /* mobile.de standard: shadow-md */
   border: 1px solid var(--border-primary);
   transition: all 0.3s ease;
   text-decoration: none;
   color: inherit;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 320px; /* mobile.de standard: 320px max-width */
+  min-height: 400px; /* mobile.de standard: 400px min-height */
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* mobile.de standard: shadow-lg on hover */
   }
 `;
 
 const ImageWrapper = styled.div`
   position: relative;
   width: 100%;
-  padding-top: 66.67%; // 3:2 aspect ratio
+  height: 200px; /* mobile.de standard: 200px fixed image height */
   background: var(--bg-secondary);
   overflow: hidden;
 `;
@@ -207,7 +216,7 @@ const FavoriteButton = styled.button<{ $isFavorite: boolean }>`
 `;
 
 const CardContent = styled.div`
-  padding: 1rem;
+  padding: 16px; /* mobile.de standard: 16px padding */
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -215,11 +224,11 @@ const CardContent = styled.div`
 `;
 
 const CarTitle = styled.h3`
-  font-size: 1.125rem;
-  font-weight: 700;
+  font-size: 18px; /* mobile.de standard: 18px / 1.125rem */
+  font-weight: 600; /* mobile.de standard: semi-bold */
   color: var(--text-primary);
-  margin: 0;
-  line-height: 1.3;
+  margin: 0 0 8px 0; /* mobile.de standard: 8px bottom margin */
+  line-height: 1.4; /* mobile.de standard */
 `;
 
 const CarSpecs = styled.div`
@@ -251,8 +260,8 @@ const PriceLocation = styled.div`
 `;
 
 const Price = styled.div`
-  font-size: 1.25rem;
-  font-weight: 800;
+  font-size: 24px; /* mobile.de standard: 24px / 1.5rem */
+  font-weight: 700; /* mobile.de standard: bold */
   color: var(--accent-primary);
 `;
 

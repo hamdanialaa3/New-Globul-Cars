@@ -3,10 +3,10 @@ import styled, { css } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Wand2 } from 'lucide-react';
 
-import { geminiChatService } from '@/services/ai/gemini-chat.service';
 import { logger } from '@/services/logger-service';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useLanguage } from '@/contexts';
+import { getAIReplyWithFailover } from '@/services/messaging/ai-failover.service';
 
 interface ChatMessage {
   id: string;
@@ -17,8 +17,8 @@ interface ChatMessage {
 
 const FloatingButton = styled.button<{ $open: boolean }>`
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 232px; /* Positioned between Plus button (160px) and Message-circle button (304px) with 72px spacing */
+  right: 32px; /* Aligned with other floating buttons */
   z-index: 9999;
   width: 56px;
   height: 56px;
@@ -44,15 +44,15 @@ const FloatingButton = styled.button<{ $open: boolean }>`
   }
 
   @media (max-width: 768px) {
-    bottom: 16px;
-    right: 16px;
+    bottom: 200px; /* Positioned between Plus button (136px) and Message-circle button (264px) with 64px spacing */
+    right: 24px; /* Aligned with other floating buttons on mobile */
   }
 `;
 
 const ChatPanel = styled(motion.div)`
   position: fixed;
-  bottom: 90px;
-  right: 20px;
+  bottom: 302px; /* Positioned above the button (232px + 56px button height + 14px gap) */
+  right: 32px; /* Aligned with the button */
   width: 360px;
   max-height: 70vh;
   background: ${({ theme }) =>
@@ -70,8 +70,8 @@ const ChatPanel = styled(motion.div)`
 
   @media (max-width: 768px) {
     width: calc(100vw - 32px);
-    right: 16px;
-    bottom: 80px;
+    right: 24px; /* Aligned with the button on mobile */
+    bottom: 270px; /* Positioned above the button (200px + 56px button height + 14px gap) */
     max-height: 75vh;
   }
 `;
@@ -325,16 +325,19 @@ export const AIChatbotWidget: React.FC = () => {
       setLoading(true);
 
       try {
-        const reply = await geminiChatService.chat(content, {
-          page: 'messages',
-          language,
-          userType: user?.profileType || 'visitor'
-        }, user?.uid);
+        const response = await getAIReplyWithFailover(
+          content,
+          { page: 'messages', language, userType: user?.profileType || 'visitor' },
+          user?.uid,
+          undefined
+        );
 
         const assistantMessage: ChatMessage = {
           id: `assistant-${Date.now()}`,
           role: 'assistant',
-          text: reply || (t('messaging.ai.emptyResponse') ?? 'I could not generate a reply right now.'),
+          text:
+            response.text ||
+            (t('messaging.ai.emptyResponse') ?? 'I could not generate a reply right now.'),
           createdAt: Date.now()
         };
 

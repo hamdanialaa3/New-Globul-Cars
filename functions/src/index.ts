@@ -5,6 +5,7 @@ import * as sitemapFunc from './sitemap';
 import * as googleAdsSync from './google-ads-sync';
 import * as facebookAdsSync from './facebook-ads-sync';
 import * as newCarNotifications from './notifications/onNewCarPost';
+import * as carLifecycle from './triggers/car-lifecycle';
 
 // Notification triggers (legacy)
 export const onNewCarPosted = notifications.onNewCarPosted;
@@ -121,3 +122,17 @@ import * as b2bExports from './analytics/b2b-exports';
 export const exportB2BLeads = b2bExports.exportB2BLeads;
 export const getB2BAnalytics = b2bExports.getB2BAnalytics;
 export const exportB2BAnalytics = b2bExports.exportB2BAnalytics;
+
+// ✅ NEW: Car lifecycle hygiene (stories cascade + sold marker)
+export const onPassengerCarDeleted = carLifecycle.onPassengerCarDeleted;
+export const onSuvDeleted = carLifecycle.onSuvDeleted;
+export const onVanDeleted = carLifecycle.onVanDeleted;
+export const onMotorcycleDeleted = carLifecycle.onMotorcycleDeleted;
+export const onTruckDeleted = carLifecycle.onTruckDeleted;
+export const onBusDeleted = carLifecycle.onBusDeleted;
+export const onPassengerCarSold = carLifecycle.onPassengerCarSold;
+export const onSuvSold = carLifecycle.onSuvSold;
+export const onVanSold = carLifecycle.onVanSold;
+export const onMotorcycleSold = carLifecycle.onMotorcycleSold;
+export const onTruckSold = carLifecycle.onTruckSold;
+export const onBusSold = carLifecycle.onBusSold;

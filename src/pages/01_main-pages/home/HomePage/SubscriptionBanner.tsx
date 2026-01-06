@@ -49,8 +49,12 @@ const RocketIcon: React.FC<{ size?: number }> = ({ size = 28 }) => (
 
 const Banner = styled.section`
   max-width: 1400px;
-  margin: 60px auto;
+  margin: 30px auto;
   padding: 0 20px;
+  
+  @media (max-width: 768px) {
+    margin: 20px auto;
+  }
 `;
 
 const Container = styled.div<{ $isDark: boolean }>`
@@ -58,13 +62,13 @@ const Container = styled.div<{ $isDark: boolean }>`
     ? 'linear-gradient(135deg, rgba(15,23,42,0.92) 0%, rgba(30,41,59,0.9) 50%, rgba(15,23,42,0.88) 100%)'
     : 'linear-gradient(135deg, #FF8F10 0%, #fb923c 50%, #FFA500 100%)'};
   border-radius: 24px;
-  padding: 60px 40px;
+  padding: 30px 40px;
   position: relative;
   overflow: hidden;
   box-shadow: ${p => p.$isDark ? '0 20px 60px rgba(0,0,0,0.35)' : '0 20px 60px rgba(255, 143, 16, 0.3)'};
 
   @media (max-width: 768px) {
-    padding: 40px 24px;
+    padding: 24px 20px;
     border-radius: 16px;
   }
 
@@ -95,7 +99,11 @@ const Content = styled.div`
   position: relative;
   z-index: 1;
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
+  
+  @media (max-width: 768px) {
+    margin-bottom: 20px;
+  }
 `;
 
 const Title = styled.h2<{ $isDark: boolean }>`
