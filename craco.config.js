@@ -70,6 +70,13 @@ module.exports = {
       // Disable minification in production to ease debugging
       if (config.mode === 'production') {
         config.optimization.minimize = false;
+        
+        // Force new chunk filenames to bypass Firebase CDN cache
+        if (config.output) {
+          const timestamp = Date.now().toString(36);
+          config.output.filename = `static/js/[name].[contenthash:8].${timestamp}.js`;
+          config.output.chunkFilename = `static/js/[name].[contenthash:8].${timestamp}.chunk.js`;
+        }
       }
 
       // CRITICAL: Remove CRA's ModuleScopePlugin to allow monorepo imports
