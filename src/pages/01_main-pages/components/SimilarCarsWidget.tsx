@@ -230,11 +230,16 @@ export const SimilarCarsWidget: React.FC<SimilarCarsWidgetProps> = ({ currentCar
   if (loading || similarCars.length === 0) return null;
 
   const handleCarClick = (car: CarListing) => {
-    if (car.sellerNumericId && (car.carNumericId || car.numericId)) {
-      navigate(`/car/${car.sellerNumericId}/${car.carNumericId || car.numericId}`);
+    // ✅ CONSTITUTION: Use numeric URL pattern
+    const sellerNumericId = (car as any).sellerNumericId || (car as any).ownerNumericId;
+    const carNumericId = (car as any).carNumericId || (car as any).userCarSequenceId || (car as any).numericId;
+    
+    if (sellerNumericId && carNumericId) {
+      navigate(`/car/${sellerNumericId}/${carNumericId}`);
       window.scrollTo(0, 0);
     } else {
-      navigate(`/car/${car.id}`);
+      // Car missing numeric IDs - redirect to search
+      navigate('/cars');
       window.scrollTo(0, 0);
     }
   };

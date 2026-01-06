@@ -1,0 +1,45 @@
+# Robots.txt for Bulgarski Avtomobili
+# SEO Optimized for Google Domination
+# https://mobilebg.eu
+
+User-agent: *
+Allow: /
+
+# Sitemap Locations
+Sitemap: https://mobilebg.eu/sitemap.xml
+Sitemap: https://mobilebg.eu/sitemap-cars.xml
+Sitemap: https://mobilebg.eu/sitemap-locations.xml
+Sitemap: https://mobilebg.eu/sitemap-dealers.xml
+
+# Block Development Pages
+Disallow: /development-tools
+Disallow: /super-admin
+Disallow: /background-test
+Disallow: /effects-test
+Disallow: /theme-test
+Disallow: /n8n-test
+Disallow: /test-dropdowns
+
+# Block API endpoints
+Disallow: /api/
+Disallow: /__/*
+
+# Allow all crawlers to access static assets
+Allow: /static/
+Allow: /assets/
+Allow: /images/
+Allow: /car-logos/
+
+# Crawl-delay for bots (optional, Google ignores this)
+Crawl-delay: 1
+
+# Specific rules for GoogleBot (fast crawling)
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Specific rules for Googlebot-Image
+User-agent: Googlebot-Image
+Allow: /images/
+Allow: /assets/
+Allow: /car-logos/

@@ -8,6 +8,8 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import axios from 'axios';
 
+const logger = functions.logger;
+
 // Initialize Firestore
 const db = admin.firestore();
 
@@ -317,7 +319,7 @@ export const hybridAIProxy = functions
         ? { provider: forceProvider, reason: 'Manually forced', estimatedCost: COSTS[forceProvider] }
         : selectProvider(operationType, userType, budgetStatus);
 
-      console.log('Hybrid AI Routing Decision:', decision);
+      logger.info('Hybrid AI Routing Decision:', decision);
 
       // Build prompt
       const prompt = buildPrompt(vehicleData, language);
@@ -331,11 +333,11 @@ export const hybridAIProxy = functions
           description = await callDeepSeek(prompt, language);
         }
       } catch (error: any) {
-        console.error(`${decision.provider} API failed:`, error.message);
+        logger.error(`${decision.provider} API failed:`, error.message);
         
         // Fallback to other provider
         const fallbackProvider = decision.provider === 'gemini' ? 'deepseek' : 'gemini';
-        console.log(`Falling back to ${fallbackProvider}`);
+        logger.info(`Falling back to ${fallbackProvider}`);
         
         if (fallbackProvider === 'gemini') {
           description = await callGemini(prompt, language);
@@ -362,7 +364,7 @@ export const hybridAIProxy = functions
       };
 
     } catch (error: any) {
-      console.error('Hybrid AI Proxy Error:', error);
+      logger.error('Hybrid AI Proxy Error:', error);
       throw new functions.https.HttpsError('internal', error.message);
     }
   });

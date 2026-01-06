@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <!-- Homepage -->
+  <url>
+    <loc>https://mobilebg.eu/</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="bg" href="https://mobilebg.eu/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mobilebg.eu/en/" />
+  </url>
+  
+  <!-- Car Listings -->
+  <url>
+    <loc>https://mobilebg.eu/cars</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Advanced Search -->
+  <url>
+    <loc>https://mobilebg.eu/advanced-search</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Sell Car -->
+  <url>
+    <loc>https://mobilebg.eu/sell/auto</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Dealers Page -->
+  <url>
+    <loc>https://mobilebg.eu/dealers</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- About -->
+  <url>
+    <loc>https://mobilebg.eu/about</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <!-- Contact -->
+  <url>
+    <loc>https://mobilebg.eu/contact</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <!-- Privacy Policy -->
+  <url>
+    <loc>https://mobilebg.eu/privacy</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+  <!-- Terms of Service -->
+  <url>
+    <loc>https://mobilebg.eu/terms</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+  <!-- Login -->
+  <url>
+    <loc>https://mobilebg.eu/login</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  
+  <!-- Register -->
+  <url>
+    <loc>https://mobilebg.eu/register</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+</urlset>

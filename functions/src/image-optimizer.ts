@@ -14,6 +14,7 @@
  */
 
 import * as functions from 'firebase-functions';
+import * as logger from 'firebase-functions/logger';
 import * as admin from 'firebase-admin';
 import * as sharp from 'sharp';
 import * as path from 'path';
@@ -56,7 +57,7 @@ export const optimizeImage = functions
       
       // Skip if no file path
       if (!filePath) {
-        console.log('No file path, skipping');
+        logger.debug('No file path, skipping');
         return null;
       }
       
@@ -64,23 +65,23 @@ export const optimizeImage = functions
 
       // Only process images
       if (!contentType || !contentType.startsWith('image/')) {
-        console.log('Not an image, skipping:', filePath);
+        logger.debug('Not an image, skipping', { filePath });
         return null;
       }
 
       // Skip if already optimized (has size suffix)
       if (/_thumb|_medium|_large|_hd\.webp$/.test(filePath)) {
-        console.log('Already optimized, skipping:', filePath);
+        logger.debug('Already optimized, skipping', { filePath });
         return null;
       }
 
       // Skip non-car images (e.g., logos, profile pictures)
       if (!filePath.includes('workflow-images') && !filePath.includes('car-images')) {
-        console.log('Not a car image, skipping:', filePath);
+        logger.debug('Not a car image, skipping', { filePath });
         return null;
       }
 
-      console.log('Optimizing image:', filePath);
+      logger.info('Optimizing image', { filePath });
 
       const bucket = storage.bucket(object.bucket);
       const fileName = path.basename(filePath);
@@ -92,7 +93,11 @@ export const optimizeImage = functions
 
       // Get image metadata
       const metadata = await sharp(tempFilePath).metadata();
-      console.log(`Original image: ${metadata.width}x${metadata.height}, ${metadata.format}`);
+      logger.info('Original image dimensions', {
+        width: metadata.width,
+        height: metadata.height,
+        format: metadata.format
+      });
 
       // Generate optimized versions
       const uploadPromises: Promise<any>[] = [];
@@ -140,10 +145,13 @@ export const optimizeImage = functions
       // Clean up original temp file
       fs.unlinkSync(tempFilePath);
 
-      console.log(`✅ Generated ${IMAGE_SIZES.length} optimized versions for ${fileName}`);
+      logger.info('Generated optimized versions', {
+        fileName,
+        versions: IMAGE_SIZES.length
+      });
       return null;
     } catch (error) {
-      console.error('Error optimizing image:', error);
+      logger.error('Error optimizing image', { error });
       return null;
     }
   });
@@ -186,17 +194,17 @@ export const cleanupOptimizedImages = functions
         deletePromises.push(
           bucket.file(optimizedFilePath).delete().catch(() => {
             // Ignore errors if file doesn't exist
-            console.log('Optimized file not found:', optimizedFilePath);
+            logger.debug('Optimized file not found', { optimizedFilePath });
           })
         );
       }
 
       await Promise.all(deletePromises);
 
-      console.log(`🗑️ Cleaned up optimized versions for ${fileName}`);
+      logger.info('Cleaned up optimized versions', { fileName });
       return null;
     } catch (error) {
-      console.error('Error cleaning up optimized images:', error);
+      logger.error('Error cleaning up optimized images', { error });
       return null;
     }
   });

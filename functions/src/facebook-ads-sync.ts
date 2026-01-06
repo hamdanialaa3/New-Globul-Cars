@@ -11,7 +11,7 @@ export const syncCarsToFacebookAds = functions
     .onRun(async () => {
         try {
             if (!FACEBOOK_ACCESS_TOKEN) {
-                console.warn('Facebook Access Token missing, skipping sync.');
+                functions.logger.warn('Facebook Access Token missing, skipping sync.');
                 return;
             }
 
@@ -39,8 +39,8 @@ export const syncCarsToFacebookAds = functions
                 */
             }
 
-            console.log(`✅ Synced ${snapshot.docs.length} cars to Facebook Catalog`);
+            functions.logger.info(`✅ Synced ${snapshot.docs.length} cars to Facebook Catalog`);
         } catch (error) {
-            console.error('Facebook Ads sync error:', error);
+            functions.logger.error('Facebook Ads sync error:', error);
         }
     });

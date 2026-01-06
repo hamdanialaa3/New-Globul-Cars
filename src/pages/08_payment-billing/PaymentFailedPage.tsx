@@ -195,14 +195,14 @@ const PaymentFailedPage: React.FC = () => {
             const url = getCarDetailsUrl(car);
             setCarUrl(url);
           } else {
-            // Fallback to legacy URL if car not found
-            setCarUrl(`/car-details/${carId}`);
+            // ✅ CONSTITUTION: No /car-details/ fallback - go to search
+            setCarUrl('/cars');
           }
         })
         .catch(error => {
           logger.error('Error loading car for URL generation', error as Error, { carId });
-          // Fallback to legacy URL on error
-          setCarUrl(`/car-details/${carId}`);
+          // ✅ CONSTITUTION: No /car-details/ fallback - go to search
+          setCarUrl('/cars');
         });
     }
   }, [carId, errorMessage]);

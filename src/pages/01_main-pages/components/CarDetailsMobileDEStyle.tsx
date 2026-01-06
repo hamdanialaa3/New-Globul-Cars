@@ -1737,11 +1737,16 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   };
 
   // Get car share URL
+  // ✅ CONSTITUTION: Use numeric URL pattern
   const getCarShareUrl = () => {
-    if (car.sellerNumericId && (car.carNumericId || (car as any).numericId)) {
-      return `${window.location.origin}/car/${car.sellerNumericId}/${car.carNumericId || (car as any).numericId}`;
+    const sellerNumericId = car.sellerNumericId || (car as any).ownerNumericId;
+    const carNumericId = car.carNumericId || (car as any).userCarSequenceId || (car as any).numericId;
+    
+    if (sellerNumericId && carNumericId) {
+      return `${window.location.origin}/car/${sellerNumericId}/${carNumericId}`;
     }
-    return `${window.location.origin}/car/${car.id}`;
+    // Fallback to current URL
+    return window.location.href;
   };
 
   const getCarShareTitle = () => {

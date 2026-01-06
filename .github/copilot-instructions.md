@@ -1,6 +1,6 @@
 ﻿# Copilot Instructions: Bulgarian Car Marketplace (Bulgarski Mobili)
 
-**Updated:** January 5, 2026 | **Project Size:** 772 React components, 161 services, 6 Firestore collections, 180K+ LOC
+**Updated:** January 6, 2026 | **Project Size:** 772 React components, 161 services, 6 Firestore collections, 180K+ LOC
 
 ## Stack & Runtime
 
@@ -37,6 +37,11 @@
 - **Profiles**: `bulgarian-profile-service.ts` resolves user data + enforces plan tier limits.
 - **Numeric IDs**: `numeric-car-system.service.ts` + `numeric-id-assignment.service.ts` handle counter increments.
 - **Messaging**: `AdvancedMessagingService` orchestrates conversations, offers, and file uploads; see [MESSAGING_SYSTEM_FINAL.md](MESSAGING_SYSTEM_FINAL.md).
+- **AI Services**: Coordinated via `aiRouterService` (smart provider selection between Gemini, DeepSeek, OpenAI):
+  - `vehicleDescriptionGenerator` — AI-powered car descriptions with template fallback.
+  - `geminiVisionService` — image analysis and quality scoring.
+  - `aiQuotaService` — quota management and cost tracking.
+  - Import from [src/services/ai/index.ts](src/services/ai/index.ts) barrel; never duplicate AI logic.
 - **Logging**: `logger-service.ts` (replaces console; enforced by `scripts/ban-console.js`).
 - **Errors**: `error-handling-service.ts` captures and logs exceptions.
 
@@ -57,7 +62,10 @@
 ## Routing & Code Splitting
 
 - **Route files**: All route definitions in `src/routes/` (extracted from `App.tsx` for clarity).
+  - ✅ Completed: `auth.routes.tsx` (4 routes), `admin.routes.tsx` (5 routes).
+  - ⏳ Pending: `sell.routes.tsx`, `dealer.routes.tsx`, `main.routes.tsx` — ongoing extraction.
   - Don't add routes to `AppRoutes.tsx` directly; create modular route files in `src/routes/`.
+  - See [src/routes/README.md](src/routes/README.md) for structure and extraction status.
 - **Lazy loading**: Use `safeLazy()` from [src/utils/lazyImport.ts](src/utils/lazyImport.ts) to wrap page imports.
   - Prevents "Unexpected token <" runtime errors from webpack code-splitting.
 - **Dynamic imports**: Follow `safeLazy` pattern for all page-level components.
@@ -140,6 +148,7 @@
   - `npm run build:optimized` — builds + optimizes images with `node scripts/optimize-images.js`.
 - **Algolia sync**: `npm run sync-algolia` or `SYNC_ALGOLIA_NOW.bat` — updates index config and record templates.
 - **Local Firebase**: `npm run emulate` — starts Firebase emulators for local testing.
+- **AI knowledge base**: `npm run train-ai` — regenerates [data/project-knowledge.json](data/project-knowledge.json) from codebase.
 - **Cache issues**: `npm run clean:3000` (port) | `npm run clean:cache` | `npm run clean:all`.
   - Helper scripts: `scripts/clear-dev-caches.ps1` (PowerShell), batch files in root.
 

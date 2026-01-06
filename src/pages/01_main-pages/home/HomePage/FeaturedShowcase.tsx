@@ -104,30 +104,19 @@ const BackgroundLayer = styled.div<{ $isDark: boolean }>`
   position: absolute;
   inset: 0;
   z-index: 0;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.3;
-  }
+  
+  /* Pure CSS gradient instead of external image for instant render */
+  background: ${props => props.$isDark
+    ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)'
+    : 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f8fafc 100%)'};
 
   &::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: ${props => props.$isDark 
-      ? 'linear-gradient(to top, rgba(15, 23, 42, 1) 0%, rgba(15, 23, 42, 0.8) 50%, transparent 100%)'
-      : 'linear-gradient(to top, rgba(248, 250, 252, 1) 0%, rgba(248, 250, 252, 0.8) 50%, transparent 100%)'};
-  }
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
     background: ${props => props.$isDark
-      ? 'linear-gradient(to right, rgba(15, 23, 42, 1) 0%, transparent 50%, rgba(15, 23, 42, 1) 100%)'
-      : 'linear-gradient(to right, rgba(248, 250, 252, 1) 0%, transparent 50%, rgba(248, 250, 252, 1) 100%)'};
+    ? 'radial-gradient(ellipse 60% 40% at 50% 30%, rgba(37, 99, 235, 0.1), transparent 60%)'
+    : 'radial-gradient(ellipse 60% 40% at 50% 30%, rgba(37, 99, 235, 0.05), transparent 60%)'};
   }
 `;
 
@@ -152,7 +141,7 @@ const Header = styled.div`
   }
 `;
 
-const Title = styled(motion.h2)<{ $isDark: boolean }>`
+const Title = styled(motion.h2) <{ $isDark: boolean }>`
   font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 900;
   margin: 0 0 1rem;
@@ -190,7 +179,7 @@ const FiltersContainer = styled.div`
   }
 `;
 
-const FilterButton = styled(motion.button)<{ $isDark: boolean; $active: boolean }>`
+const FilterButton = styled(motion.button) <{ $isDark: boolean; $active: boolean }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -203,11 +192,11 @@ const FilterButton = styled(motion.button)<{ $isDark: boolean; $active: boolean 
     ? (props.$isDark ? 'rgba(37, 99, 235, 0.5)' : 'rgba(37, 99, 235, 0.3)')
     : (props.$isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)')};
   background: ${props => props.$active
-    ? (props.$isDark 
-      ? 'rgba(37, 99, 235, 0.6)' 
+    ? (props.$isDark
+      ? 'rgba(37, 99, 235, 0.6)'
       : 'rgba(37, 99, 235, 0.1)')
-    : (props.$isDark 
-      ? 'rgba(255, 255, 255, 0.05)' 
+    : (props.$isDark
+      ? 'rgba(255, 255, 255, 0.05)'
       : 'rgba(255, 255, 255, 0.8)')};
   color: ${props => props.$active
     ? '#ffffff'
@@ -229,11 +218,11 @@ const FilterButton = styled(motion.button)<{ $isDark: boolean; $active: boolean 
   &:hover {
     transform: scale(1.05);
     background: ${props => props.$isDark
-      ? 'rgba(255, 255, 255, 0.1)'
-      : 'rgba(37, 99, 235, 0.15)'};
+    ? 'rgba(255, 255, 255, 0.1)'
+    : 'rgba(37, 99, 235, 0.15)'};
     border-color: ${props => props.$isDark
-      ? 'rgba(255, 255, 255, 0.3)'
-      : 'rgba(37, 99, 235, 0.3)'};
+    ? 'rgba(255, 255, 255, 0.3)'
+    : 'rgba(37, 99, 235, 0.3)'};
   }
 
   @media (max-width: 640px) {
@@ -253,7 +242,7 @@ const CardsContainer = styled.div`
   }
 `;
 
-const Card = styled(motion.div)<{ $isDark: boolean }>`
+const Card = styled(motion.div) <{ $isDark: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -278,8 +267,8 @@ const Card = styled(motion.div)<{ $isDark: boolean }>`
   &:hover {
     transform: translateY(-0.5rem);
     border-color: ${props => props.$isDark
-      ? 'rgba(37, 99, 235, 0.5)'
-      : 'rgba(37, 99, 235, 0.3)'};
+    ? 'rgba(37, 99, 235, 0.5)'
+    : 'rgba(37, 99, 235, 0.3)'};
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
   }
 
@@ -460,19 +449,19 @@ const ViewButton = styled.button<{ $isDark: boolean }>`
   &:hover {
     background: ${props => props.$isDark ? '#1d4ed8' : '#1d4ed8'};
     box-shadow: ${props => props.$isDark
-      ? '0 6px 30px rgba(37, 99, 235, 0.4)'
-      : '0 6px 30px rgba(37, 99, 235, 0.5)'};
+    ? '0 6px 30px rgba(37, 99, 235, 0.4)'
+    : '0 6px 30px rgba(37, 99, 235, 0.5)'};
     transform: translateY(-2px);
   }
 
   ${Card}:hover & {
     box-shadow: ${props => props.$isDark
-      ? '0 8px 40px rgba(37, 99, 235, 0.4)'
-      : '0 8px 40px rgba(37, 99, 235, 0.5)'};
+    ? '0 8px 40px rgba(37, 99, 235, 0.4)'
+    : '0 8px 40px rgba(37, 99, 235, 0.5)'};
   }
 `;
 
-const ViewAllButton = styled(motion.button)<{ $isDark: boolean }>`
+const ViewAllButton = styled(motion.button) <{ $isDark: boolean }>`
   display: block;
   margin: 4rem auto 0;
   padding: 1rem 2.5rem;
@@ -515,7 +504,7 @@ const SearchButtonsContainer = styled.div`
   }
 `;
 
-const SearchButton = styled(Link)<{ $variant?: 'primary' | 'secondary' }>`
+const SearchButton = styled(Link) <{ $variant?: 'primary' | 'secondary' }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -615,13 +604,8 @@ const FeaturedShowcase: React.FC = memo(() => {
 
   return (
     <Section $isDark={isDark}>
-      {/* Background Layer */}
-      <BackgroundLayer $isDark={isDark}>
-        <img
-          src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=2000&auto=format&fit=crop"
-          alt="Bulgarian Roads"
-        />
-      </BackgroundLayer>
+      {/* Background Layer - Pure CSS, no external images */}
+      <BackgroundLayer $isDark={isDark} />
 
       <Container>
         {/* Header */}
@@ -684,61 +668,61 @@ const FeaturedShowcase: React.FC = memo(() => {
                 animate={{ opacity: 1, scale: 1 }}
                 whileHover={{ y: -10 }}
               >
-                  {/* Image Area */}
-                  <CardImageContainer>
-                    <CardImage src={car.image} alt={`${car.make} ${car.model}`} />
-                    <CardImageOverlay $isDark={isDark} />
-                    <Badge $isDark={isDark}>
-                      <ShieldCheck size={12} />
-                      {car.badge}
-                    </Badge>
-                    <FavoriteButton $isDark={isDark}>
-                      <Heart size={16} />
-                    </FavoriteButton>
-                  </CardImageContainer>
+                {/* Image Area */}
+                <CardImageContainer>
+                  <CardImage src={car.image} alt={`${car.make} ${car.model}`} />
+                  <CardImageOverlay $isDark={isDark} />
+                  <Badge $isDark={isDark}>
+                    <ShieldCheck size={12} />
+                    {car.badge}
+                  </Badge>
+                  <FavoriteButton $isDark={isDark}>
+                    <Heart size={16} />
+                  </FavoriteButton>
+                </CardImageContainer>
 
-                  {/* Content Area */}
-                  <CardContent>
-                    <CardTitle $isDark={isDark}>
-                      {car.make} {car.model}
-                    </CardTitle>
-                    <CardLocation $isDark={isDark}>
-                      <MapPin size={14} />
-                      {car.location}
-                    </CardLocation>
+                {/* Content Area */}
+                <CardContent>
+                  <CardTitle $isDark={isDark}>
+                    {car.make} {car.model}
+                  </CardTitle>
+                  <CardLocation $isDark={isDark}>
+                    <MapPin size={14} />
+                    {car.location}
+                  </CardLocation>
 
-                    {/* Specs Grid */}
-                    <SpecsGrid $isDark={isDark}>
-                      <SpecItem $isDark={isDark}>
-                        <Calendar size={12} />
-                        {car.year}
-                      </SpecItem>
-                      <SpecItem $isDark={isDark}>
-                        <Gauge size={12} />
-                        {car.mileage}
-                      </SpecItem>
-                      <SpecItem $isDark={isDark}>
-                        <Fuel size={12} />
-                        {car.fuel}
-                      </SpecItem>
-                    </SpecsGrid>
+                  {/* Specs Grid */}
+                  <SpecsGrid $isDark={isDark}>
+                    <SpecItem $isDark={isDark}>
+                      <Calendar size={12} />
+                      {car.year}
+                    </SpecItem>
+                    <SpecItem $isDark={isDark}>
+                      <Gauge size={12} />
+                      {car.mileage}
+                    </SpecItem>
+                    <SpecItem $isDark={isDark}>
+                      <Fuel size={12} />
+                      {car.fuel}
+                    </SpecItem>
+                  </SpecsGrid>
 
-                    {/* Price & Action */}
-                    <CardFooter $isDark={isDark}>
-                      <PriceContainer>
-                        <PriceLabel $isDark={isDark}>{priceLabel}</PriceLabel>
-                        <Price $isDark={isDark}>
-                          {car.price.toLocaleString()}{' '}
-                          <span>{car.currency}</span>
-                        </Price>
-                      </PriceContainer>
-                      <ViewButton $isDark={isDark}>
-                        <ArrowRight size={20} />
-                      </ViewButton>
-                    </CardFooter>
-                  </CardContent>
-                </Card>
-              ))}
+                  {/* Price & Action */}
+                  <CardFooter $isDark={isDark}>
+                    <PriceContainer>
+                      <PriceLabel $isDark={isDark}>{priceLabel}</PriceLabel>
+                      <Price $isDark={isDark}>
+                        {car.price.toLocaleString()}{' '}
+                        <span>{car.currency}</span>
+                      </Price>
+                    </PriceContainer>
+                    <ViewButton $isDark={isDark}>
+                      <ArrowRight size={20} />
+                    </ViewButton>
+                  </CardFooter>
+                </CardContent>
+              </Card>
+            ))}
           </HorizontalScrollContainer>
         </CardsContainer>
 

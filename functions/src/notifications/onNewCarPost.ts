@@ -11,6 +11,8 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
+const logger = functions.logger;
+
 // Initialize Firebase Admin if not already initialized
 if (!admin.apps.length) {
   admin.initializeApp();
@@ -47,29 +49,29 @@ export const notifyFollowersOnNewCar = functions.firestore
 
     // Validation
     if (!carData) {
-      console.error('No car data found');
+      logger.error('No car data found');
       return null;
     }
 
     const sellerId = carData.sellerId;
     if (!sellerId) {
-      console.error('Car has no sellerId', { carId });
+      logger.error('Car has no sellerId', { carId });
       return null;
     }
 
     // Skip notifications for draft cars
     if (carData.status === 'draft') {
-      console.log('Skipping notification for draft car', { carId });
+      logger.info('Skipping notification for draft car', { carId });
       return null;
     }
 
-    console.log('New car posted, finding followers...', { carId, sellerId });
+    logger.info('New car posted, finding followers...', { carId, sellerId });
 
     try {
       // STEP 1: Get seller information
       const sellerDoc = await db.collection('users').doc(sellerId).get();
       if (!sellerDoc.exists) {
-        console.error('Seller not found', { sellerId });
+        logger.error('Seller not found', { sellerId });
         return null;
       }
 
@@ -84,12 +86,12 @@ export const notifyFollowersOnNewCar = functions.firestore
         .get();
 
       if (followersSnapshot.empty) {
-        console.log('No followers found for seller', { sellerId });
+        logger.info('No followers found for seller', { sellerId });
         return null;
       }
 
       const followerIds = followersSnapshot.docs.map(doc => doc.data().followerId);
-      console.log(`Found ${followerIds.length} followers`, { sellerId, followerIds });
+      logger.info(`Found ${followerIds.length} followers`, { sellerId, followerIds });
 
       // STEP 3: Create notification data
       const notificationBase: Omit<NotificationData, 'userId'> = {
@@ -126,7 +128,7 @@ export const notifyFollowersOnNewCar = functions.firestore
         // Commit batch if reaching limit
         if (operationCount >= BATCH_SIZE) {
           await batch.commit();
-          console.log(`Committed batch of ${operationCount} notifications`);
+          logger.info(`Committed batch of ${operationCount} notifications`);
           batch = db.batch(); // Start new batch
           operationCount = 0;
         }
@@ -135,7 +137,7 @@ export const notifyFollowersOnNewCar = functions.firestore
       // Commit remaining notifications
       if (operationCount > 0) {
         await batch.commit();
-        console.log(`Committed final batch of ${operationCount} notifications`);
+        logger.info(`Committed final batch of ${operationCount} notifications`);
       }
 
       // STEP 5: Update seller's notification stats
@@ -143,7 +145,7 @@ export const notifyFollowersOnNewCar = functions.firestore
         'stats.notificationsSent': admin.firestore.FieldValue.increment(totalNotifications)
       });
 
-      console.log('✅ Notification fan-out complete', {
+      logger.info('✅ Notification fan-out complete', {
         carId,
         sellerId,
         totalNotifications
@@ -152,7 +154,7 @@ export const notifyFollowersOnNewCar = functions.firestore
       return { success: true, notificationsSent: totalNotifications };
 
     } catch (error) {
-      console.error('Error in notifyFollowersOnNewCar', error);
+      logger.error('Error in notifyFollowersOnNewCar', error);
       throw error;
     }
   });
@@ -186,7 +188,7 @@ export const cleanupOldNotifications = functions.pubsub
   .schedule('0 2 1 * *') // 2 AM on the 1st of every month
   .timeZone('Europe/Sofia')
   .onRun(async (context) => {
-    console.log('Starting cleanup of old notifications...');
+    logger.info('Starting cleanup of old notifications...');
 
     const ninetyDaysAgo = new Date();
     ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
@@ -199,7 +201,7 @@ export const cleanupOldNotifications = functions.pubsub
         .get();
 
       if (oldNotificationsSnapshot.empty) {
-        console.log('No old notifications to clean up');
+        logger.info('No old notifications to clean up');
         return null;
       }
 
@@ -209,12 +211,12 @@ export const cleanupOldNotifications = functions.pubsub
       });
 
       await batch.commit();
-      console.log(`Deleted ${oldNotificationsSnapshot.size} old notifications`);
+      logger.info(`Deleted ${oldNotificationsSnapshot.size} old notifications`);
 
       return { deleted: oldNotificationsSnapshot.size };
 
     } catch (error) {
-      console.error('Error cleaning up old notifications', error);
+      logger.error('Error cleaning up old notifications', error);
       throw error;
     }
   });

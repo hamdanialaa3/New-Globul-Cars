@@ -151,8 +151,14 @@ const CompanyProfile: React.FC<CompanyProfileProps> = ({ user, userCars, isOwner
         <Section>
           <SectionTitle>{language === 'bg' ? 'Автомобилен парк' : 'Car Fleet'} ({userCars.length})</SectionTitle>
           <CarsGrid>
-            {userCars.map(car => (
-              <CarCard key={car.id} onClick={() => window.location.href = `/car/${car.id}`}>
+            {userCars.map(car => {
+              // ✅ CONSTITUTION: Use numeric URL pattern
+              const sellerNumericId = (car as any).sellerNumericId || (car as any).ownerNumericId;
+              const carNumericId = (car as any).carNumericId || (car as any).userCarSequenceId || (car as any).numericId;
+              const carUrl = sellerNumericId && carNumericId ? `/car/${sellerNumericId}/${carNumericId}` : '/cars';
+              
+              return (
+              <CarCard key={car.id} onClick={() => window.location.href = carUrl}>
                 <CarImage src={car.imageUrl || car.mainImage || '/placeholder-car.jpg'} alt={car.title} />
                 <CarInfo>
                   <CarTitle>{car.make} {car.model}</CarTitle>

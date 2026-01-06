@@ -43,11 +43,17 @@ export const getCarDetailsUrl = (car: {
   // ⚠️ FALLBACK: Legacy UUID support (temporary until migration)
   // This logs a warning so we can track and fix these cases
   if (car.id) {
-    console.warn(
-      `[ROUTING VIOLATION] Car ${car.id} is missing numeric IDs.`,
-      'This should be migrated. Run: npm run migrate:legacy-cars'
-    );
-    return `/car-details/${car.id}`;
+    // ✅ CONSTITUTION FIX: Still use numeric URL pattern, not /car-details/
+    // The NumericCarDetailsPage will handle resolution
+    // Log warning for migration tracking
+    if (typeof window !== 'undefined') {
+      console.warn(
+        `[ROUTING VIOLATION] Car ${car.id} is missing numeric IDs.`,
+        'This should be migrated. Run: npm run migrate:legacy-cars'
+      );
+    }
+    // Return to cars list instead of broken legacy URL
+    return '/cars';
   }
 
   // ❌ LAST RESORT: No valid ID found

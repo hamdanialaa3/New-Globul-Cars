@@ -30,6 +30,8 @@ export const cleanupDeletedImages = imageOptimizer.cleanupOptimizedImages;
 
 // Marketing / SEO
 export const sitemap = sitemapFunc.sitemap;
+export const scheduledSitemapRegeneration = sitemapFunc.scheduledSitemapRegeneration;
+export const manualSitemapRegeneration = sitemapFunc.manualSitemapRegeneration;
 export const syncCarsToGoogleAds = googleAdsSync.syncCarsToGoogleAds;
 export const syncCarsToFacebookAds = facebookAdsSync.syncCarsToFacebookAds;
 
@@ -103,3 +105,19 @@ export const syncMotorcyclesToAlgolia = algoliaSync.syncMotorcyclesToAlgolia;
 export const syncTrucksToAlgolia = algoliaSync.syncTrucksToAlgolia;
 export const syncBusesToAlgolia = algoliaSync.syncBusesToAlgolia;
 export const batchSyncAllCarsToAlgolia = algoliaSync.batchSyncAllCarsToAlgolia;
+
+// ✅ NEW: Stripe Payment Webhooks (January 2026)
+import { stripeWebhooks as stripeWebhooksHandler } from './stripe-webhooks';
+export const stripeWebhooks = stripeWebhooksHandler;
+
+// ✅ NEW: Scheduled Cleanup Jobs (January 6, 2026)
+import * as archiveJobs from './scheduled/archive-sold-cars';
+export const archiveSoldCars = archiveJobs.archiveSoldCars;
+export const manualArchiveSoldCars = archiveJobs.manualArchiveSoldCars;
+export const cleanupExpiredDrafts = archiveJobs.cleanupExpiredDrafts;
+
+// ✅ NEW: B2B Analytics & Lead Export (January 6, 2026) - Revenue Fix
+import * as b2bExports from './analytics/b2b-exports';
+export const exportB2BLeads = b2bExports.exportB2BLeads;
+export const getB2BAnalytics = b2bExports.getB2BAnalytics;
+export const exportB2BAnalytics = b2bExports.exportB2BAnalytics;

@@ -84,7 +84,8 @@
     "clean:ports": "node scripts/clean-all.js",
     "clean:cache": "npm cache clean --force && rm -rf node_modules/.cache .cache build dist",
     "clean:all": "npm run clean && npm run clean:cache",
-    "clean:3000": "node scripts/clean-port-3000.js"
+    "clean:3000": "node scripts/clean-port-3000.js",
+    "scrape": "ts-node scripts/scrapers/run-scraper.ts"
   },
   "eslintConfig": {
     "extends": [
@@ -112,6 +113,8 @@
     "babel-plugin-styled-components": "^2.1.4",
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
+    "chalk": "^5.6.2",
+    "cheerio": "^1.1.2",
     "craco-esbuild": "^0.6.1",
     "cross-env": "^7.0.3",
     "crypto-browserify": "^3.12.1",
@@ -123,15 +126,19 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-webpack-plugin": "^4.2.0",
     "firebase-tools": "^13.0.0",
+    "fs-extra": "^11.3.3",
     "glob": "^13.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.3",
+    "ora": "^9.0.0",
     "postcss": "^8.5.6",
     "process": "^0.11.10",
+    "puppeteer": "^24.34.0",
     "sharp": "^0.34.5",
     "stream-browserify": "^3.0.0",
     "ts-node": "^10.9.2",
     "url": "^0.11.4",
+    "user-agents": "^1.1.669",
     "util": "^0.12.5",
     "workbox-expiration": "^7.4.0",
     "workbox-precaching": "^7.4.0",

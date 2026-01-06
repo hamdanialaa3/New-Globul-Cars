@@ -347,7 +347,13 @@ export const GodModeCarGrid: React.FC<GodModeCarGridProps> = ({ onClose }) => {
                 <CarSubtitle>{car.year} • {car.engine} • {car.gearbox}</CarSubtitle>
 
                 <Actions>
-                  <ActionButton onClick={() => window.open(`/car/${car.id}`, '_blank')}>
+                  <ActionButton onClick={() => {
+                    // ✅ CONSTITUTION: Use numeric URL pattern
+                    const sellerNumericId = (car as any).sellerNumericId || (car as any).ownerNumericId;
+                    const carNumericId = (car as any).carNumericId || (car as any).userCarSequenceId || (car as any).numericId;
+                    const url = sellerNumericId && carNumericId ? `/car/${sellerNumericId}/${carNumericId}` : `/cars`;
+                    window.open(url, '_blank');
+                  }}>
                     <Eye size={14} /> VIEW
                   </ActionButton>
                   <ActionButton onClick={() => handleToggleActive(car.id, car.isActive)}>

@@ -482,7 +482,16 @@ const Hit: React.FC<HitProps> = ({ hit }) => {
   const isBg = language === 'bg';
 
   const handleClick = () => {
-    navigate(`/car-details/${hit.objectID}`);
+    // ✅ CONSTITUTION: Use numeric URL pattern
+    const sellerNumericId = hit.sellerNumericId || hit.ownerNumericId;
+    const carNumericId = hit.carNumericId || hit.userCarSequenceId || hit.numericId;
+    
+    if (sellerNumericId && carNumericId) {
+      navigate(`/car/${sellerNumericId}/${carNumericId}`);
+    } else {
+      // Fallback to search if no numeric IDs
+      navigate('/cars');
+    }
   };
 
   return (

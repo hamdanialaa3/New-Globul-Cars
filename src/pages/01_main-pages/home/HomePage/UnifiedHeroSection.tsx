@@ -77,35 +77,26 @@ const HeroContainer = styled.section<{ $isDark: boolean }>`
 
 /* 
  * Aurora Background System 
- * Performance Optimized: Uses compositor-only properties (transform, opacity)
+ * Performance Optimized: STATIC gradient (no animation, no blur)
+ * Original was causing severe lag on desktop due to 200% size + blur(80px) + infinite animation
  */
 const AuroraBackground = styled.div<{ $isDark: boolean }>`
   position: absolute;
-  inset: -50%;
-  width: 200%;
-  height: 200%;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
   
-  --aurora-1: ${props => props.$isDark ? '#1a365d' : '#e0f2fe'};
-  --aurora-2: ${props => props.$isDark ? '#2d3748' : '#e0e7ff'};
-  --aurora-3: ${props => props.$isDark ? '#0f172a' : '#f0f9ff'};
-  --aurora-accent: ${props => props.$isDark ? 'rgba(56, 189, 248, 0.2)' : 'rgba(14, 165, 233, 0.15)'};
-
-  background-image: 
-    radial-gradient(circle at 50% 50%, var(--aurora-accent), transparent 60%),
-    conic-gradient(from 0deg at 50% 50%, var(--aurora-1), var(--aurora-2), var(--aurora-3), var(--aurora-1));
+  /* Static gradient - no animation, no blur = instant render */
+  background: ${props => props.$isDark
+    ? 'radial-gradient(ellipse 80% 60% at 50% 40%, rgba(56, 189, 248, 0.15), transparent 60%), linear-gradient(135deg, #0f172a 0%, #1a365d 50%, #0f172a 100%)'
+    : 'radial-gradient(ellipse 80% 60% at 50% 40%, rgba(14, 165, 233, 0.1), transparent 60%), linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%)'};
   
-  filter: blur(80px);
-  animation: auroraRotate 60s linear infinite;
-  opacity: 0.6;
-
-  @keyframes auroraRotate {
-    0% { transform: rotate(0deg) scale(1); }
-    50% { transform: rotate(180deg) scale(1.1); }
-    100% { transform: rotate(360deg) scale(1); }
-  }
+  /* GPU optimization */
+  will-change: auto;
+  contain: strict;
 `;
 
 const NoiseLayer = styled.div`

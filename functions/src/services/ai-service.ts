@@ -1,6 +1,9 @@
 // functions/src/services/ai-service.ts
 import { VertexAI, GenerativeModel } from '@google-cloud/vertexai';
 import axios from 'axios';
+import * as functions from 'firebase-functions';
+
+const logger = functions.logger;
 
 export class AIService {
     private vertexAI: VertexAI;
@@ -56,7 +59,7 @@ export class AIService {
             return JSON.parse(jsonStr || '{}');
 
         } catch (error) {
-            console.error('Error in Gemini Analysis:', error);
+            functions.logger.error('Error in Gemini Analysis:', error);
             // Non-blocking error: return partial info or simplified error
             return { error: 'Gemini analysis failed', raw_error: (error as Error).message };
         }
@@ -67,7 +70,7 @@ export class AIService {
      */
     async analyzeMarketLogic(carData: any, marketAvgPrice: number): Promise<any> {
         if (!this.deepSeekApiKey) {
-            console.warn('DeepSeek API Key missing, skipping logic analysis.');
+            functions.logger.warn('DeepSeek API Key missing, skipping logic analysis.');
             return { error: 'DeepSeek key missing' };
         }
 
@@ -105,7 +108,7 @@ export class AIService {
             return JSON.parse(jsonStr);
 
         } catch (error) {
-            console.error('Error in DeepSeek Analysis:', error);
+            functions.logger.error('Error in DeepSeek Analysis:', error);
             return { error: 'DeepSeek analysis unavailable' };
         }
     }

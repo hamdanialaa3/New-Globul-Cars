@@ -57,26 +57,22 @@ import LifeMomentsBrowse from './LifeMomentsBrowse';
 // Global components (lazy loaded)
 const AIChatbot = React.lazy(() => import('../../../../components/AI/AIChatbot'));
 
+// ✅ REVENUE FIX: Draft Recovery Prompt (January 6, 2026)
+const DraftRecoveryPrompt = React.lazy(() => import('./DraftRecoveryPrompt'));
+
 // ============================================================================
 // STYLED COMPONENTS
 // ============================================================================
 
 const ComposerContainer = styled.main`
-  width: 111.111%; /* 100% / 0.9 = 111.111% to compensate for 0.9 scale */
-  margin-left: -5.5555%; /* Center the 111.111% width container */
+  width: 100%;
   min-height: 100vh;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
   
-  /* Zoom effect: 90% size globally */
-  transform: scale(0.9);
-  transform-origin: top center;
-
   /* Performance optimizations */
-  will-change: auto;
-  backface-visibility: hidden;
   contain: layout style paint;
 `;
 
@@ -377,6 +373,17 @@ const AIChatbotSlot: React.FC = () => (
   </Suspense>
 );
 
+/**
+ * Slot 17: Draft Recovery Prompt
+ * ✅ REVENUE FIX: Recover abandoned sell workflow drafts
+ * استرداد مسودات إعلانات البيع غير المكتملة
+ */
+const DraftRecoverySlot: React.FC = () => (
+  <Suspense fallback={null}>
+    <DraftRecoveryPrompt delay={3000} />
+  </Suspense>
+);
+
 // ============================================================================
 // MAIN COMPOSER
 // ============================================================================
@@ -400,11 +407,11 @@ const AIChatbotSlot: React.FC = () => (
 const HomePageComposer: React.FC = React.memo(() => {
   return (
     <ComposerContainer>
-      {/* Slot 1: Hero Section */}
+      {/* Slot 1: Hero Section - CRITICAL */}
       <HeroSlot />
       <SectionSpacer />
 
-      {/* Slot 2: Featured Showcase */}
+      {/* Slot 2: Featured Showcase - CRITICAL */}
       <FeaturedShowcaseSlot />
       <SectionSpacer />
 
@@ -412,59 +419,38 @@ const HomePageComposer: React.FC = React.memo(() => {
       <SmartSellSlot />
       <SectionSpacer />
 
-      {/* Slot 4: Cars Showcase */}
+      {/* Slot 4: Cars Showcase - CRITICAL */}
       <CarsShowcaseSlot />
       <SectionSpacer />
 
-      {/* Slot 5: Popular Brands */}
+      {/* Slot 5: Popular Brands - CRITICAL */}
       <PopularBrandsSlot />
       <SectionSpacer />
 
-      {/* Slot 6: Vehicle Classifications */}
-      <VehicleClassificationsSlot />
-      <SectionSpacer />
-
-      {/* Slot 6.5: Drive Type Showcase */}
-      <DriveTypeShowcaseSlot />
-      <SectionSpacer />
-
-      {/* Slot 7: Most Demanded Categories */}
+      {/* Slot 6: Most Demanded Categories (combines Vehicle Classifications + Categories) */}
       <MostDemandedCategoriesSlot />
       <SectionSpacer />
 
-      {/* Slot 8: Quick Brands */}
-      <QuickBrandsSlot />
-      <SectionSpacer />
-
-      {/* Slot 9: Categories Section */}
-      <CategoriesSlot />
-      <SectionSpacer />
-
-      {/* Slot 10: Life Moments Browse */}
-      <LifeMomentsSlot />
-      <SectionSpacer />
-
-      {/* Slot 11: Dealer Spotlight */}
+      {/* Slot 7: Dealer Spotlight */}
       <DealersSlot />
       <SectionSpacer />
 
-      {/* Slot 12: Social Experience */}
+      {/* Slot 8: Social Experience */}
       <SocialSlot />
       <SectionSpacer />
 
-      {/* Slot 13: Trust & Stats */}
+      {/* Slot 9: Trust & Stats */}
       <TrustSlot />
       <SectionSpacer />
 
-      {/* Slot 14: Recent Browsing */}
-      <RecentBrowsingSlot />
-      <SectionSpacer />
-
-      {/* Slot 15: Loyalty & Signup */}
+      {/* Slot 10: Loyalty & Signup */}
       <LoyaltySlot />
 
-      {/* Slot 16: AI Chatbot (Floating) */}
+      {/* AI Chatbot (Floating) */}
       <AIChatbotSlot />
+      
+      {/* ✅ REVENUE FIX: Draft Recovery Prompt (Floating Toast) */}
+      <DraftRecoverySlot />
     </ComposerContainer>
   );
 });

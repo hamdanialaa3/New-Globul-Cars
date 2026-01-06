@@ -97,6 +97,8 @@ const CityCarsPage = safeLazy(() => import('../pages/seo/CityCarsPage'));
 const BrandCityPage = safeLazy(() => import('../pages/seo/BrandCityPage'));
 const NewCarsPage = safeLazy(() => import('../pages/seo/NewCarsPage'));
 const AccidentCarsPage = safeLazy(() => import('../pages/seo/AccidentCarsPage'));
+// 🗺️ Programmatic SEO: Location Landing Pages
+const LocationLandingPage = safeLazy(() => import('../pages/05_search-browse/location/LocationLandingPage'));
 const NotFoundPage = safeLazy(() => import('../components/NotFoundPage'));
 
 // 🆕 Dynamic Car Showcase Pages (Container Pages)
@@ -139,7 +141,12 @@ export const MainRoutes: React.FC = () => {
             <Route path="/cars/city/:cityName" element={<DynamicCarShowcase pageType="city" />} />
             <Route path="/cars/brand/:brandName" element={<DynamicCarShowcase pageType="brand" />} />
 
-            {/* 👑 SUPER ADMIN ROUTES - THE GOD MODE (Restored Phase 1) */}
+            {/* �️ PROGRAMMATIC SEO: Location Landing Pages (Long-Tail Trap) */}
+            <Route path="/cars/:city" element={<LocationLandingPage />} />
+            <Route path="/cars/:city/:brand" element={<LocationLandingPage />} />
+            <Route path="/cars/:city/:fuelType/:priceRange" element={<LocationLandingPage />} />
+
+            {/* �👑 SUPER ADMIN ROUTES - THE GOD MODE (Restored Phase 1) */}
             <Route path="/super-admin-login" element={<SuperAdminLoginPage />} />
             <Route path="/super-admin/*" element={
                 <AuthGuard requireAuth={true}>
