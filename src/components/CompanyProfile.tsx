@@ -158,17 +158,18 @@ const CompanyProfile: React.FC<CompanyProfileProps> = ({ user, userCars, isOwner
               const carUrl = sellerNumericId && carNumericId ? `/car/${sellerNumericId}/${carNumericId}` : '/cars';
               
               return (
-              <CarCard key={car.id} onClick={() => window.location.href = carUrl}>
-                <CarImage src={car.imageUrl || car.mainImage || '/placeholder-car.jpg'} alt={car.title} />
-                <CarInfo>
-                  <CarTitle>{car.make} {car.model}</CarTitle>
-                  <div style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.5rem' }}>
-                    {car.year} • {car.mileage?.toLocaleString()} km
-                  </div>
-                  <CarPrice>{car.price?.toLocaleString()} €</CarPrice>
-                </CarInfo>
-              </CarCard>
-            ))}
+                <CarCard key={car.id} onClick={() => window.location.href = carUrl}>
+                  <CarImage src={car.imageUrl || car.mainImage || '/placeholder-car.jpg'} alt={car.title} />
+                  <CarInfo>
+                    <CarTitle>{car.make} {car.model}</CarTitle>
+                    <div style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.5rem' }}>
+                      {car.year} • {car.mileage?.toLocaleString()} km
+                    </div>
+                    <CarPrice>{car.price?.toLocaleString()} €</CarPrice>
+                  </CarInfo>
+                </CarCard>
+              );
+            })}
           </CarsGrid>
         </Section>
       )}
