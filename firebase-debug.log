@@ -1,0 +1,29 @@
+[debug] [2026-01-06T21:19:15.789Z] ----------------------------------------------------------------------
+[debug] [2026-01-06T21:19:15.791Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\hamda\Desktop\New Globul Cars\node_modules\firebase-tools\lib\bin\firebase.js deploy --only functions --project fire-new-globul
+[debug] [2026-01-06T21:19:15.791Z] CLI Version:   13.35.1
+[debug] [2026-01-06T21:19:15.791Z] Platform:      win32
+[debug] [2026-01-06T21:19:15.792Z] Node Version:  v24.12.0
+[debug] [2026-01-06T21:19:15.792Z] Time:          Tue Jan 06 2026 23:19:15 GMT+0200 (توقيت شرق أوروبا الرسمي)
+[debug] [2026-01-06T21:19:15.792Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-01-06T21:19:15.951Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-01-06T21:19:15.951Z] > authorizing via signed-in user (globulinternet@gmail.com)
+[debug] [2026-01-06T21:19:15.951Z] [iam] checking project fire-new-globul for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2026-01-06T21:19:15.952Z] Checked if tokens are valid: true, expires at: 1767736965295
+[debug] [2026-01-06T21:19:15.952Z] Checked if tokens are valid: true, expires at: 1767736965295
+[debug] [2026-01-06T21:19:15.953Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/fire-new-globul:testIamPermissions [none]
+[debug] [2026-01-06T21:19:15.953Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/fire-new-globul:testIamPermissions x-goog-quota-user=projects/fire-new-globul
+[debug] [2026-01-06T21:19:15.953Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/fire-new-globul:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2026-01-06T21:19:16.971Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/fire-new-globul:testIamPermissions 200
+[debug] [2026-01-06T21:19:16.972Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/fire-new-globul:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2026-01-06T21:19:16.972Z] Checked if tokens are valid: true, expires at: 1767736965295
+[debug] [2026-01-06T21:19:16.972Z] Checked if tokens are valid: true, expires at: 1767736965295
+[debug] [2026-01-06T21:19:16.972Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/fire-new-globul/serviceAccounts/fire-new-globul@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2026-01-06T21:19:16.972Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/fire-new-globul/serviceAccounts/fire-new-globul@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2026-01-06T21:19:17.943Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/fire-new-globul/serviceAccounts/fire-new-globul@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2026-01-06T21:19:17.944Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/fire-new-globul/serviceAccounts/fire-new-globul@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[info] 
+[info] === Deploying to 'fire-new-globul'...
+[info] 
+[info] i  deploying functions 
+[info] Running command: npm --prefix "$RESOURCE_DIR" run build
