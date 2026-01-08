@@ -41,6 +41,7 @@ interface RealtimeMessage {
     offerAmount?: number;
     offerCurrency?: string;
     offerStatus?: string;
+    offerExpiresAt?: number;
     carTitle?: string;
     carImage?: string;
   };
@@ -314,7 +315,6 @@ export const onOfferStatusChange = functions
       
       let title: string;
       let body: string;
-      let icon: string;
       
       switch (afterStatus) {
         case 'accepted':
