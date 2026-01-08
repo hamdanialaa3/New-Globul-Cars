@@ -1,41 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, Share2, Calendar, Gauge, Fuel, Users, MapPin, Phone, Mail } from 'lucide-react';
+import { Container, Row, Col, Button, Badge } from 'react-bootstrap';
+import { FaArrowLeft, FaHeart, FaRegHeart, FaPhone, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
+import { useFavorites } from '../../context/FavoritesContext';
 import { Car } from '../../types/car';
-import { getCarById } from '../../services/carService';
-import { ImageGallery } from '../../components/ImageGallery';
-import { LoadingSpinner } from '../../components/LoadingSpinner';
-import { formatPrice } from '../../utils/formatPrice';
-import { PageTransition } from '../../components/PageTransition';
-import { ShareModal } from '../../components/ShareModal';
-import { useFavorites } from '../../contexts/FavoritesContext';
-import { ContactSection } from '../../components/ContactSection';
-import { SimilarCars } from '../../components/SimilarCars';
-import { CarSEO } from '../../components/SEO/CarSEO';
+import { getCars } from '../../services/api';
+import { formatPrice } from '../../utils/price-rating';
+import './CarDetailsPage.css';
 
-export function CarDetailsPage() {
+const CarDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { favorites, addFavorite, removeFavorite } = useFavorites();
   const [car, setCar] = useState<Car | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [showShareModal, setShowShareModal] = useState(false);
-  const { isFavorite, addFavorite, removeFavorite } = useFavorites();
+  const [selectedImage, setSelectedImage] = useState(0);
 
   useEffect(() => {
     const fetchCar = async () => {
-      if (!id) {
-        setError('Car ID is missing');
-        setLoading(false);
-        return;
-      }
-
       try {
-        setLoading(true);
-        const carData = await getCarById(id);
-        setCar(carData);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load car details');
+        const cars = await getCars();
+        const foundCar = cars.find(c => c.id === Number(id));
+        if (foundCar) {
+          setCar(foundCar);
+        }
+      } catch (error) {
+        console.error('Error fetching car:', error);
       } finally {
         setLoading(false);
       }
@@ -44,217 +34,158 @@ export function CarDetailsPage() {
     fetchCar();
   }, [id]);
 
-  const handleToggleFavorite = () => {
-    if (!car) return;
-    
-    if (isFavorite(car.id)) {
+  if (loading) {
+    return (
+      <Container className="my-5 text-center">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </Container>
+    );
+  }
+
+  if (!car) {
+    return (
+      <Container className="my-5 text-center">
+        <h2>Car not found</h2>
+        <Button onClick={() => navigate('/')} className="mt-3">
+          <FaArrowLeft className="me-2" />
+          Back to Home
+        </Button>
+      </Container>
+    );
+  }
+
+  const isFavorite = favorites.some(fav => fav.id === car.id);
+
+  const handleFavoriteToggle = () => {
+    if (isFavorite) {
       removeFavorite(car.id);
     } else {
       addFavorite(car);
     }
   };
 
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
-  if (error || !car) {
-    return (
-      <PageTransition>
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              {error || 'Car not found'}
-            </h2>
-            <button
-              onClick={() => navigate('/inventory')}
-              className="text-blue-600 hover:text-blue-700 font-medium"
-            >
-              Return to Inventory
-            </button>
-          </div>
-        </div>
-      </PageTransition>
-    );
-  }
-
   return (
-    <>
-      <CarSEO car={car} />
-      <PageTransition>
-        <div className="min-h-screen bg-gray-50">
-          {/* Header */}
-          <div className="bg-white border-b sticky top-0 z-10">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-              <div className="flex items-center justify-between">
-                <button
-                  onClick={() => navigate(-1)}
-                  className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  <ArrowLeft className="h-5 w-5" />
-                  <span className="font-medium">Back</span>
-                </button>
-                <div className="flex gap-2">
-                  <button
-                    onClick={handleToggleFavorite}
-                    className={`p-2 rounded-full transition-colors ${
-                      isFavorite(car.id)
-                        ? 'bg-red-50 text-red-600'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
-                    aria-label={isFavorite(car.id) ? 'Remove from favorites' : 'Add to favorites'}
-                  >
-                    <Heart className={`h-5 w-5 ${isFavorite(car.id) ? 'fill-current' : ''}`} />
-                  </button>
-                  <button
-                    onClick={() => setShowShareModal(true)}
-                    className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
-                    aria-label="Share car"
-                  >
-                    <Share2 className="h-5 w-5" />
-                  </button>
-                </div>
-              </div>
-            </div>
+    <Container className="car-details-page my-5">
+      <Button 
+        variant="outline-secondary" 
+        onClick={() => navigate(-1)}
+        className="mb-4"
+      >
+        <FaArrowLeft className="me-2" />
+        Back
+      </Button>
+
+      <Row>
+        <Col lg={8}>
+          <div className="main-image-container mb-3">
+            <img
+              src={car.images[selectedImage]}
+              alt={`${car.make} ${car.model}`}
+              className="img-fluid rounded"
+            />
+            <Button
+              variant="light"
+              className="favorite-btn"
+              onClick={handleFavoriteToggle}
+            >
+              {isFavorite ? <FaHeart color="red" /> : <FaRegHeart />}
+            </Button>
           </div>
 
-          {/* Content */}
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Left Column - Images and Details */}
-              <div className="lg:col-span-2 space-y-6">
-                {/* Image Gallery */}
-                <ImageGallery images={car.images} alt={`${car.make} ${car.model}`} />
-
-                {/* Car Title and Price */}
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-                    <div>
-                      <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                        {car.year} {car.make} {car.model}
-                      </h1>
-                      <div className="flex items-center gap-2 text-gray-600">
-                        <MapPin className="h-4 w-4" />
-                        <span>{car.location}</span>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-3xl font-bold text-blue-600">
-                        {formatPrice(car.price)}
-                      </div>
-                      {car.monthlyPayment && (
-                        <div className="text-sm text-gray-600 mt-1">
-                          or {formatPrice(car.monthlyPayment)}/mo
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Key Specs */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-5 w-5 text-gray-400" />
-                      <div>
-                        <div className="text-xs text-gray-500">Year</div>
-                        <div className="font-semibold">{car.year}</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Gauge className="h-5 w-5 text-gray-400" />
-                      <div>
-                        <div className="text-xs text-gray-500">Mileage</div>
-                        <div className="font-semibold">{car.mileage.toLocaleString()} km</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Fuel className="h-5 w-5 text-gray-400" />
-                      <div>
-                        <div className="text-xs text-gray-500">Fuel</div>
-                        <div className="font-semibold capitalize">{car.fuelType}</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Users className="h-5 w-5 text-gray-400" />
-                      <div>
-                        <div className="text-xs text-gray-500">Seats</div>
-                        <div className="font-semibold">{car.seats}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Description */}
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h2 className="text-xl font-bold text-gray-900 mb-4">Description</h2>
-                  <p className="text-gray-600 leading-relaxed">{car.description}</p>
-                </div>
-
-                {/* Features */}
-                {car.features && car.features.length > 0 && (
-                  <div className="bg-white rounded-lg shadow-sm p-6">
-                    <h2 className="text-xl font-bold text-gray-900 mb-4">Features</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {car.features.map((feature, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center gap-2 text-gray-700"
-                        >
-                          <div className="w-2 h-2 bg-blue-600 rounded-full" />
-                          <span>{feature}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Specifications */}
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h2 className="text-xl font-bold text-gray-900 mb-4">Specifications</h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="flex justify-between py-2 border-b">
-                      <span className="text-gray-600">Transmission</span>
-                      <span className="font-semibold capitalize">{car.transmission}</span>
-                    </div>
-                    <div className="flex justify-between py-2 border-b">
-                      <span className="text-gray-600">Body Type</span>
-                      <span className="font-semibold capitalize">{car.bodyType}</span>
-                    </div>
-                    <div className="flex justify-between py-2 border-b">
-                      <span className="text-gray-600">Color</span>
-                      <span className="font-semibold capitalize">{car.color}</span>
-                    </div>
-                    <div className="flex justify-between py-2 border-b">
-                      <span className="text-gray-600">Condition</span>
-                      <span className="font-semibold capitalize">{car.condition}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Column - Contact */}
-              <div className="lg:col-span-1">
-                <div className="sticky top-24">
-                  <ContactSection car={car} />
-                </div>
-              </div>
-            </div>
-
-            {/* Similar Cars */}
-            <div className="mt-12">
-              <SimilarCars currentCar={car} />
-            </div>
+          <div className="image-thumbnails d-flex gap-2 mb-4">
+            {car.images.map((image, index) => (
+              <img
+                key={index}
+                src={image}
+                alt={`Thumbnail ${index + 1}`}
+                className={`thumbnail ${selectedImage === index ? 'active' : ''}`}
+                onClick={() => setSelectedImage(index)}
+              />
+            ))}
           </div>
-        </div>
 
-        {/* Share Modal */}
-        {showShareModal && (
-          <ShareModal
-            url={window.location.href}
-            title={`${car.year} ${car.make} ${car.model}`}
-            onClose={() => setShowShareModal(false)}
-          />
-        )}
-      </PageTransition>
-    </>
+          <div className="car-description mb-4">
+            <h3>Description</h3>
+            <p>{car.description}</p>
+          </div>
+
+          <div className="car-features mb-4">
+            <h3>Features</h3>
+            <Row>
+              {car.features.map((feature, index) => (
+                <Col md={6} key={index} className="mb-2">
+                  <Badge bg="secondary" className="w-100 text-start p-2">
+                    {feature}
+                  </Badge>
+                </Col>
+              ))}
+            </Row>
+          </div>
+        </Col>
+
+        <Col lg={4}>
+          <div className="car-info-card p-4 rounded shadow-sm">
+            <h2 className="mb-3">{car.make} {car.model}</h2>
+            <h3 className="text-primary mb-4">{formatPrice(car.price)}</h3>
+
+            <div className="specs mb-4">
+              <div className="spec-item d-flex justify-content-between mb-2">
+                <span className="text-muted">Year:</span>
+                <strong>{car.year}</strong>
+              </div>
+              <div className="spec-item d-flex justify-content-between mb-2">
+                <span className="text-muted">Mileage:</span>
+                <strong>{car.mileage.toLocaleString()} km</strong>
+              </div>
+              <div className="spec-item d-flex justify-content-between mb-2">
+                <span className="text-muted">Transmission:</span>
+                <strong>{car.transmission}</strong>
+              </div>
+              <div className="spec-item d-flex justify-content-between mb-2">
+                <span className="text-muted">Fuel Type:</span>
+                <strong>{car.fuelType}</strong>
+              </div>
+              <div className="spec-item d-flex justify-content-between mb-2">
+                <span className="text-muted">Color:</span>
+                <strong>{car.color}</strong>
+              </div>
+              <div className="spec-item d-flex justify-content-between mb-2">
+                <span className="text-muted">Body Type:</span>
+                <strong>{car.bodyType}</strong>
+              </div>
+            </div>
+
+            <div className="seller-info mb-4">
+              <h5 className="mb-3">Seller Information</h5>
+              <div className="d-flex align-items-center mb-2">
+                <FaMapMarkerAlt className="me-2 text-muted" />
+                <span>{car.location}</span>
+              </div>
+              <div className="d-flex align-items-center mb-2">
+                <FaPhone className="me-2 text-muted" />
+                <span>+1 (555) 123-4567</span>
+              </div>
+              <div className="d-flex align-items-center mb-2">
+                <FaEnvelope className="me-2 text-muted" />
+                <span>contact@globalcars.com</span>
+              </div>
+            </div>
+
+            <Button variant="primary" size="lg" className="w-100 mb-2">
+              <FaPhone className="me-2" />
+              Contact Seller
+            </Button>
+            <Button variant="outline-primary" size="lg" className="w-100">
+              <FaEnvelope className="me-2" />
+              Send Message
+            </Button>
+          </div>
+        </Col>
+      </Row>
+    </Container>
   );
-}
+};
+
+export default CarDetailsPage;
