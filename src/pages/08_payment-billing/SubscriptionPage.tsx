@@ -695,16 +695,16 @@ const SubscriptionPage: React.FC = () => {
 
       const result = await subscriptionService.createCheckoutSession({
         userId: currentUser.uid,
-        planId: planId,
-        interval: interval,
+        planId,
+        interval,
         successUrl: window.location.origin + '/billing/success',
         cancelUrl: window.location.origin + '/subscription'
       });
 
       toast.dismiss(toastId);
 
-      if (result.checkoutUrl) {
-        window.location.assign(result.checkoutUrl);
+      if (result.url) {
+        window.location.assign(result.url);
       } else {
         throw new Error('No checkout URL');
       }
@@ -800,33 +800,33 @@ const SubscriptionPage: React.FC = () => {
   const comparisonFeatures = [
     {
       feature: isBg ? 'Брой обяви месечно' : 'Monthly listings',
-      free: '5',
-      dealer: '15',
+      free: '3',
+      dealer: '30',
       company: isBg ? 'Неограничено' : 'Unlimited'
     },
     {
-      feature: isBg ? 'AI оценка на цени' : 'AI price valuation',
+      feature: isBg ? 'Анализи' : 'Analytics',
       free: '—',
-      dealer: '30/месец',
-      company: isBg ? 'Неограничено' : 'Unlimited'
+      dealer: isBg ? 'Основни' : 'Basic',
+      company: isBg ? 'Разширени' : 'Advanced'
     },
     {
-      feature: isBg ? 'Снимки на кола' : 'Photos per car',
-      free: '10',
-      dealer: isBg ? 'Неограничено' : 'Unlimited',
-      company: isBg ? 'Неограничено' : 'Unlimited'
+      feature: isBg ? 'Групово качване' : 'Bulk upload',
+      free: '—',
+      dealer: '✓',
+      company: '✓'
     },
     {
-      feature: isBg ? 'Анализ на пазара' : 'Market analysis',
+      feature: isBg ? 'Отличаване/Badge' : 'Featured badge',
       free: '—',
       dealer: '✓',
       company: '✓'
     },
     {
       feature: isBg ? 'Управление на екип' : 'Team management',
-      free: '—',
-      dealer: '—',
-      company: '✓'
+      free: '0',
+      dealer: '3',
+      company: '10'
     },
     {
       feature: isBg ? 'API достъп' : 'API access',
@@ -838,7 +838,13 @@ const SubscriptionPage: React.FC = () => {
       feature: isBg ? 'Приоритетна поддръжка' : 'Priority support',
       free: '—',
       dealer: '✓',
-      company: '24/7'
+      company: '✓'
+    },
+    {
+      feature: isBg ? 'Маркетинг кампании' : 'Marketing campaigns',
+      free: '—',
+      dealer: '5',
+      company: isBg ? 'Неограничено' : 'Unlimited'
     }
   ];
 

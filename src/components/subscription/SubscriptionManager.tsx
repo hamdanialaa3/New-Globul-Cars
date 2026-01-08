@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { Crown, TrendingUp, Building2, CheckCircle, Zap, Shield, Sparkles, Star, Car, Bot, TrendingUp as ChartUp, Target, Lightbulb, Users, MapPin, Plug, Palette, UserCog, Link2, FileText, Phone, CheckSquare, Camera, MessageSquare, Search, Image, Battery, BadgeCheck, BarChart3, Edit3, Headphones, Calendar, CalendarCheck, Eye, ArrowRight, ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { Crown, TrendingUp, Building2, CheckCircle, Zap, Shield, Sparkles, Star, Car, Bot, TrendingUp as ChartUp, Target, Lightbulb, Users, MapPin, Plug, Palette, UserCog, Link2, FileText, Phone, CheckSquare, Camera, MessageSquare, Search, Image, Battery, BadgeCheck, BarChart3, Edit3, Headphones, Calendar, CalendarCheck, Eye, ArrowRight, ChevronLeft, ChevronRight, Check, Upload } from 'lucide-react';
 import billingService from '../../features/billing/BillingService';
 import type { BillingInterval, Plan } from '../../features/billing/types';
 import { useAuth } from '../../contexts/AuthProvider';
@@ -388,6 +388,10 @@ const Card = styled.div<{ $highlight?: boolean; $free?: boolean }>`
   background: var(--bg-card);
   border-radius: 16px;
   padding: 1.75rem;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   box-shadow: ${p => p.$highlight
     ? `0 20px 60px ${() => subscriptionTheme.shadows.small}`
     : 'var(--shadow-lg)'
@@ -524,6 +528,8 @@ const Price = styled.div<{ $free?: boolean }>`
   .amount {
     font-size: ${p => p.$free ? '2rem' : '2.75rem'};
     font-weight: 700;
+    width: 100%;
+    height: 100%;
     background: ${p => p.$free
     ? 'linear-gradient(135deg, #6b7280 0%, #9ca3af 100%)'
     : `linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)`
@@ -531,10 +537,15 @@ const Price = styled.div<{ $free?: boolean }>`
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    background-color: transparent;
+    border: none;
+    border-image: none;
+    border-color: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.25rem;
+    color: transparent;
   }
   
   .currency {
@@ -805,34 +816,42 @@ const SubscriptionManagerEnhanced: React.FC = () => {
   }, []);
 
   const closeExpanded = useCallback(() => setExpandedPlanId(null), []);
-  const getFeaturesList = (planId: string) => {
-    switch (planId) {
-      case 'private':
-        return [
-          { icon: <Car size={18} />, text: isBg ? 'До 3 безплатни обяви/месец' : 'Up to 3 listings/month' },
-          { icon: <Edit3 size={18} />, text: isBg ? 'Без редакция на Марка/Модел' : 'No Make/Model editing' },
-          { icon: <Check size={18} />, text: isBg ? 'Стандартна видимост' : 'Standard visibility' },
-          { icon: <Check size={18} />, text: isBg ? 'Чат с купувачи' : 'Chat with buyers' },
-        ];
-      case 'dealer':
-        return [
-          { icon: <Car size={18} />, text: isBg ? 'До 25 обяви/месец' : 'Up to 25 listings/month' },
-          { icon: <Edit3 size={18} />, text: isBg ? 'Редакция на 10 обяви (Марка/Модел)' : 'Edit Make/Model (10 listings)' },
-          { icon: <Check size={18} />, text: isBg ? 'Значка "Проверен търговец"' : 'Verified Dealer Badge' },
-          { icon: <Check size={18} />, text: isBg ? 'Приоритетна поддръжка' : 'Priority Support' },
-          { icon: <Check size={18} />, text: isBg ? 'Разширени статистики' : 'Advanced Analytics' },
-        ];
-      case 'company':
-        return [
-          { icon: <Car size={18} />, text: isBg ? 'До 200 обяви/месец' : 'Up to 200 listings/month' },
-          { icon: <Edit3 size={18} />, text: isBg ? 'Неограничена редакция (Марка/Модел)' : 'Unlimited Make/Model editing' },
-          { icon: <Check size={18} />, text: isBg ? 'Всички екстри на Търговец' : 'All Dealer features' },
-          { icon: <Check size={18} />, text: isBg ? 'Премиум видимост' : 'Premium Visibility' },
-          { icon: <Check size={18} />, text: isBg ? 'API достъп (по заявка)' : 'API Access (on request)' },
-        ];
-      default:
-        return [];
-    }
+  const featureLabels: Record<string, { bg: string; en: string; icon: React.ReactNode }> = {
+    bulk_upload: { bg: 'Групово качване', en: 'Bulk upload', icon: <Upload size={18} /> },
+    featured_badge: { bg: 'Отличена обява', en: 'Featured badge', icon: <Star size={18} /> },
+    basic_analytics: { bg: 'Основни анализи', en: 'Basic analytics', icon: <BarChart3 size={18} /> },
+    advanced_analytics: { bg: 'Разширени анализи', en: 'Advanced analytics', icon: <ChartUp size={18} /> },
+    api_access: { bg: 'API достъп', en: 'API access', icon: <Plug size={18} /> },
+    webhooks: { bg: 'Webhooks', en: 'Webhooks', icon: <Link2 size={18} /> },
+    campaigns: { bg: 'Кампании и имейл', en: 'Campaigns & email', icon: <Target size={18} /> },
+    priority_support: { bg: 'Приоритетна поддръжка', en: 'Priority support', icon: <Headphones size={18} /> },
+    account_manager: { bg: 'Личен мениджър', en: 'Account manager', icon: <UserCog size={18} /> },
+    consultations: { bg: 'Консултации', en: 'Consultations', icon: <MessageSquare size={18} /> },
+    custom_branding: { bg: 'Персонален брандинг', en: 'Custom branding', icon: <Palette size={18} /> },
+    featured_listing: { bg: 'Премиум видимост', en: 'Premium visibility', icon: <Sparkles size={18} /> },
+  };
+
+  const getFeaturesList = (plan: Plan) => {
+    const items: { icon: React.ReactNode; text: string }[] = [];
+
+    // Listing cap
+    const cap = plan.listingCap === -1
+      ? (isBg ? 'Неограничени обяви' : 'Unlimited listings')
+      : `${plan.listingCap} ${isBg ? 'обяви/месец' : 'listings/mo'}`;
+    items.push({ icon: <Car size={18} />, text: cap });
+
+    // Feature flags
+    plan.features.forEach((key) => {
+      const label = featureLabels[key];
+      if (label) {
+        items.push({ icon: label.icon, text: isBg ? label.bg : label.en });
+      }
+    });
+
+    // Always include chat/contact
+    items.push({ icon: <MessageSquare size={18} />, text: isBg ? 'Чат с купувачи' : 'Chat with buyers' });
+
+    return items;
   };
 
   const onOverlayTouchStart = useCallback((e: React.TouchEvent) => {
@@ -1008,7 +1027,7 @@ const SubscriptionManagerEnhanced: React.FC = () => {
                 if (!plan) return null;
                 const isCurrent = currentPlan === plan.id;
                 const price = interval === 'monthly' ? plan.pricing.monthly : plan.pricing.annual;
-                const features = getFeaturesList(plan.id);
+                const features = getFeaturesList(plan);
                 const Icon = getPlanIcon(plan.id);
                 const originalPrice = getOriginalPrice(plan.id, interval);
 

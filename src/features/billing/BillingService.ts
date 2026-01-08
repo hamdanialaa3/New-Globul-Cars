@@ -7,7 +7,7 @@ import { getFunctions, httpsCallable } from 'firebase/functions';
 import { doc, getDoc, updateDoc, collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { Plan, Subscription, Invoice, PlanTier, BillingInterval } from './types';
-import { getStripePriceId, STRIPE_FUNCTIONS } from '../../config/stripe-extension.config';
+import { SUBSCRIPTION_PLANS } from '../../config/subscription-plans';
 
 const functions = getFunctions();
 
@@ -22,67 +22,37 @@ class BillingService {
    * 3. Company - €199/month or €1600/year, unlimited cars, unlimited AI
    */
   getAvailablePlans(): Plan[] {
-    return [
-      // FREE PLAN - Private Seller
-      {
-        id: 'free',
-        name: { bg: 'Частен', en: 'Private' },
-        description: { bg: 'За частни лица - 3 автомобила на месец', en: 'For private sellers - 3 cars per month' },
-        profileType: 'private',
-        pricing: { monthly: 0, annual: 0 },
-        listingCap: 3,  // 3 cars per month
-        features: [
-          'limit_3_cars',
-          'no_brand_edit',
-          'basic_support',
-          'search_visibility',
-          'standard_photos'
-        ],
-        popular: false
-      },
+    const featureKeys = (planFeatures: typeof SUBSCRIPTION_PLANS[keyof typeof SUBSCRIPTION_PLANS]['features']): string[] => {
+      const keys: string[] = [];
+      if (planFeatures.canBulkUpload) keys.push('bulk_upload');
+      if (planFeatures.canFeatureListings) keys.push('featured_badge');
+      if (planFeatures.hasBasicAnalytics) keys.push('basic_analytics');
+      if (planFeatures.hasAdvancedAnalytics) keys.push('advanced_analytics');
+      if (planFeatures.canUseAPI) keys.push('api_access');
+      if (planFeatures.hasWebhooks) keys.push('webhooks');
+      if (planFeatures.canCreateCampaigns) keys.push('campaigns');
+      if (planFeatures.hasPrioritySupport) keys.push('priority_support');
+      if (planFeatures.hasAccountManager) keys.push('account_manager');
+      if (planFeatures.canRequestConsultations) keys.push('consultations');
+      if (planFeatures.canCustomizeBranding) keys.push('custom_branding');
+      if (planFeatures.hasFeaturedBadge) keys.push('featured_listing');
+      return keys;
+    };
 
-      // DEALER PLAN - €27.78/month or €278/year
-      {
-        id: 'dealer',
-        name: { bg: 'Търговец', en: 'Dealer' },
-        description: { bg: '€27.78/месец - 25 автомобила месечно', en: '€27.78/month - 25 cars monthly' },
-        profileType: 'dealer',
-        pricing: { monthly: 27.78, annual: 278 },
-        listingCap: 25,  // 25 cars per month
-        features: [
-          'limit_25_cars',
-          'limit_10_brand_edits',
-          'ai_valuation_30',
-          'priority_support',
-          'analytics_dashboard',
-          'featured_badge'
-        ],
-        popular: true,
-        recommended: false
-      },
-
-      // COMPANY PLAN - €187.88/month or €1288/year
-      {
-        id: 'company',
-        name: { bg: 'Компания', en: 'Company' },
-        description: { bg: '€187.88/месец - 100 автомобила месечно', en: '€187.88/month - 100 cars monthly' },
-        profileType: 'company',
-        pricing: { monthly: 187.88, annual: 1288 },
-        listingCap: 100,  // 100 cars per month
-        features: [
-          'limit_100_cars',
-          'unlimited_brand_edits',
-          'ai_unlimited',
-          'car_valuation',
-          'dedicated_manager',
-          'api_access',
-          'team_management',
-          'custom_branding'
-        ],
-        popular: false,
-        recommended: true
-      }
-    ];
+    return Object.values(SUBSCRIPTION_PLANS)
+      .filter(plan => plan.isActive)
+      .sort((a, b) => a.displayOrder - b.displayOrder)
+      .map<Plan>((plan) => ({
+        id: plan.tier,
+        name: plan.name,
+        description: plan.description,
+        profileType: plan.tier === 'free' ? 'private' : plan.tier,
+        pricing: { monthly: plan.price.monthly, annual: plan.price.annual },
+        listingCap: plan.features.maxListings,
+        features: featureKeys(plan.features),
+        popular: plan.tier === 'dealer',
+        recommended: plan.tier === 'company',
+      }));
   }
 
   /**
@@ -134,16 +104,14 @@ class BillingService {
     try {
       const result = await subscriptionService.createCheckoutSession({
         userId,
-        planId: planId as 'dealer' | 'company',
+        planId,
         interval,
         successUrl: `${window.location.origin}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
         cancelUrl: `${window.location.origin}/billing/canceled`
       });
 
-      if (!result.checkoutUrl) throw new Error('No checkout URL returned');
-
       return {
-        url: result.checkoutUrl,
+        url: result.url,
         sessionId: result.sessionId || '',
       };
     } catch (error: unknown) {

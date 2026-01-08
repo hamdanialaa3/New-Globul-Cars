@@ -138,13 +138,13 @@ export const SUBSCRIPTION_PLANS: Record<PlanTier, SubscriptionPlan> = {
       en: 'Ideal for car dealerships'
     },
     price: {
-      monthly: 20,
-      annual: 192, // 20% discount: 20 * 12 * 0.8
+      monthly: 27.78,
+      annual: 278,
       currency: 'EUR'
     },
     stripePriceIds: {
-      monthly: 'price_dealer_monthly',
-      annual: 'price_dealer_annual'
+      monthly: 'price_1Sf7iU3EuPQhDyrBtP0bEc4B',
+      annual: 'price_1Sf7l83EuPQhDyrB3Z3zIpZv'
     },
     features: {
       maxListings: 30, // ✅ FIXED: Was 10, now correctly 30
@@ -185,13 +185,13 @@ export const SUBSCRIPTION_PLANS: Record<PlanTier, SubscriptionPlan> = {
       en: 'For large automotive companies'
     },
     price: {
-      monthly: 100,
-      annual: 960, // 20% discount: 100 * 12 * 0.8
+      monthly: 137.88,
+      annual: 1288,
       currency: 'EUR'
     },
     stripePriceIds: {
-      monthly: 'price_company_monthly',
-      annual: 'price_company_annual'
+      monthly: 'price_1Sf7oK3EuPQhDyrBQ6duG8aV',
+      annual: 'price_1Sf7pE3EuPQhDyrBfAdjEDFi'
     },
     features: {
       maxListings: -1, // Unlimited

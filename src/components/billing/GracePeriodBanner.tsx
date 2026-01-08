@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { getGracePeriodStatus, getRetentionOffers } from '@/services/billing/churn-prevention.service';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/AuthProvider';
 import { logger } from '@/services/logger-service';
 
 interface GracePeriodStatus {

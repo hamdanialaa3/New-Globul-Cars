@@ -10,7 +10,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { purchasePromotion } from '@/services/billing/micro-transactions.service';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '@/firebase/firebase-config';
 import { logger } from '@/services/logger-service';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -98,6 +100,7 @@ const PaymentForm: React.FC<{
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const functions = getFunctions();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,18 +114,21 @@ const PaymentForm: React.FC<{
 
     try {
       // Create payment intent on backend
-      const response = await fetch('/api/create-promotion-payment-intent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId,
-          listingId,
-          promotionType: selectedPromotion.type,
-          amount: selectedPromotion.price * 100, // Convert to cents
-        }),
+      const createIntent = httpsCallable(functions, 'createPromotionPaymentIntent');
+      const intentResult = await createIntent({
+        listingId,
+        promotionType: selectedPromotion.type,
       });
 
-      const { clientSecret } = await response.json();
+      const { clientSecret, paymentIntentId, intentDocId } = intentResult.data as {
+        clientSecret: string;
+        paymentIntentId: string;
+        intentDocId: string;
+      };
+
+      if (!clientSecret || !intentDocId) {
+        throw new Error('Failed to initialize payment');
+      }
 
       // Confirm payment
       const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(
@@ -144,13 +150,17 @@ const PaymentForm: React.FC<{
       }
 
       if (paymentIntent?.status === 'succeeded') {
-        // Apply promotion via our service
-        await purchasePromotion(
-          userId,
-          listingId,
-          selectedPromotion.type,
-          paymentIntent.id
-        );
+        try {
+          // Mark intent as succeeded so backend trigger applies promotion
+          const intentRef = doc(db, `users/${userId}/promotion_intents/${intentDocId}`);
+          await updateDoc(intentRef, {
+            status: 'succeeded',
+            paymentIntentId: paymentIntent.id || paymentIntentId,
+            updatedAt: new Date(),
+          });
+        } catch (updateErr) {
+          logger.error('Failed to update promotion intent status', { updateErr });
+        }
 
         logger.info('Promotion purchased successfully', {
           userId,

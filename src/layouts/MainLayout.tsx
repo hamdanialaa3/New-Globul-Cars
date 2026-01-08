@@ -14,10 +14,13 @@ const Footer = safeLazy(() => import('../components/Footer/Footer'));
 const FloatingAddButton = safeLazy(() => import('../components/FloatingAddButton'));
 // ✅ MERGED: RobotChatIcon and AIChatbotWidget merged into UnifiedAIChat
 const UnifiedAIChat = safeLazy(() => import('../components/AI/UnifiedAIChat'));
+const GracePeriodBanner = safeLazy(() => import('../components/billing/GracePeriodBanner'));
 
 export const MainLayout: React.FC = () => {
     const location = useLocation();
     const isSellPage = location.pathname === '/sell/auto';
+    const isDeleteMockCarsPage = location.pathname === '/admin/delete-mock-cars';
+    const hideFooter = isSellPage || isDeleteMockCarsPage;
     
     return (
         <div className="main-layout" style={{
@@ -64,6 +67,12 @@ export const MainLayout: React.FC = () => {
                 }}
                 tabIndex={-1}
             >
+                <div className="grace-period-banner" aria-live="polite">
+                    <Suspense fallback={null}>
+                        <GracePeriodBanner />
+                    </Suspense>
+                </div>
+
                 <div className="page-container" style={{
                     backgroundColor: 'transparent',
                     transition: 'background-color 0.3s ease',
@@ -82,7 +91,7 @@ export const MainLayout: React.FC = () => {
                 </div>
             </main>
 
-            {!isSellPage && (
+            {!hideFooter && (
                 <footer role="contentinfo">
                     <Suspense fallback={<div style={{ height: '300px' }} />}>
                         <Footer />
@@ -90,7 +99,7 @@ export const MainLayout: React.FC = () => {
                 </footer>
             )}
 
-            {!isSellPage && (
+            {!hideFooter && (
                 <>
                     <Suspense fallback={<div style={{ height: '60px' }} />}>
                         <MobileBottomNav />

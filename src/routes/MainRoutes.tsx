@@ -84,6 +84,7 @@ const DealerRegistrationPage = safeLazy(() => import('../pages/09_dealer-company
 const DealerDashboardPage = safeLazy(() => import('../pages/09_dealer-company/DealerDashboardPage'));
 const AlgoliaSyncManager = safeLazy(() => import('../pages/06_admin/AlgoliaSyncManager'));
 const AdminCarManagementPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminCarManagementPage'));
+const DeleteMockCarsPage = safeLazy(() => import('../pages/06_admin/DeleteMockCarsPage'));
 const IconShowcasePage = safeLazy(() => import('../pages/11_testing-dev/IconShowcasePage'));
 const IoTDashboardPage = safeLazy(() => import('../pages/03_user-pages/IoTDashboardPage'));
 const CarTrackingPage = safeLazy(() => import('../pages/03_user-pages/CarTrackingPage'));
@@ -308,6 +309,14 @@ export const MainRoutes: React.FC = () => {
                 element={
                     <AuthGuard requireAuth={true} requireAdmin={true}>
                         <AdminDataFix />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/admin/delete-mock-cars"
+                element={
+                    <AuthGuard requireAuth={true} requireAdmin={true}>
+                        <DeleteMockCarsPage />
                     </AuthGuard>
                 }
             />

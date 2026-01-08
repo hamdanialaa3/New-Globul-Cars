@@ -260,24 +260,20 @@ exports.onOfferStatusChange = functions
             case 'accepted':
                 title = '✅ Предложението е прието!';
                 body = `${responderName} прие вашето предложение`;
-                icon = '✅';
                 break;
             case 'rejected':
                 title = '❌ Предложението е отхвърлено';
                 body = `${responderName} отхвърли вашето предложение`;
-                icon = '❌';
                 break;
             case 'countered':
                 const newAmount = ((_b = (_a = message.metadata) === null || _a === void 0 ? void 0 : _a.offerAmount) === null || _b === void 0 ? void 0 : _b.toLocaleString('de-DE')) || '0';
                 const currency = ((_c = message.metadata) === null || _c === void 0 ? void 0 : _c.offerCurrency) || 'EUR';
                 title = '💱 Контра предложение';
                 body = `${responderName} предложи ${newAmount} ${currency}`;
-                icon = '💱';
                 break;
             case 'expired':
                 title = '⏰ Предложението изтече';
                 body = 'Вашето ценово предложение изтече';
-                icon = '⏰';
                 break;
             default:
                 return null;

@@ -303,6 +303,10 @@ const PricingCard = styled.div<{ $featured?: boolean; $delay?: number }>`
   border-radius: 24px;
   padding: 2rem;
   position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   animation: ${fadeInUp} 0.8s ease-out ${p => (p.$delay || 0) * 0.1}s both;
   
@@ -310,7 +314,7 @@ const PricingCard = styled.div<{ $featured?: boolean; $delay?: number }>`
     border: 3px solid var(--accent-primary);
     transform: scale(1.05);
     box-shadow: 0 25px 80px rgba(102, 126, 234, 0.25);
-    animation: ${glow} 3s ease-in-out infinite;
+    animation: ${glow} 3s ease-in-out infinite, ${fadeInUp} 0.8s ease-out ${(p.$delay || 0) * 0.1}s both;
     
     &::before {
       content: '';
@@ -374,6 +378,13 @@ const PlanName = styled.h3`
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 0.5rem;
+  background: none;
+  background-image: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: var(--text-primary);
+  background-clip: unset;
+  border: none;
+  border-image: none;
 `;
 
 const PlanDescription = styled.p`
@@ -407,6 +418,14 @@ const Amount = styled.span`
   -webkit-text-fill-color: transparent;
   background-clip: text;
   line-height: 1;
+  background-color: transparent;
+  border: none;
+  border-image: none;
+  
+  &::before,
+  &::after {
+    display: none;
+  }
 `;
 
 const Period = styled.span`

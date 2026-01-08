@@ -13,7 +13,7 @@ import StaticMapEmbed from '../../components/StaticMapEmbed';
 import CarDetailsMobileDEStyle from './components/CarDetailsMobileDEStyle';
 import { useCarDetails } from './hooks/useCarDetails';
 import { useCarEdit } from './hooks/useCarEdit';
-import { CarSEO } from '../../components/SEO/CarSEO';
+import { CarSEO } from '../../components/seo/CarSEO';
 import { CarImageGallery } from './components/CarImageGallery';
 import { CarHeader } from './components/CarHeader';
 import { CarBasicInfo } from './components/CarBasicInfo';
@@ -30,6 +30,7 @@ import {
 } from './CarDetailsPage.styles';
 import { CarListing } from '../../types/CarListing';
 import { UnifiedCar } from '../../services/car/unified-car-types';
+import { PromotionPurchaseModal } from '../../components/billing/PromotionPurchaseModal';
 
 interface CarDetailsPageProps {
   forcedCarId?: string;
@@ -47,6 +48,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
 
   // Delete dialog state
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showPromoModal, setShowPromoModal] = useState(false);
 
   // Use custom hooks
   const { car, loading, setCar } = useCarDetails(carId);
@@ -462,6 +464,37 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
         onCancel={handleCancelClick}
       />
 
+      {/* Promote listing CTA for owners */}
+      {!editHook.isEditMode && isOwner && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '1rem 0' }}>
+          <button
+            onClick={() => setShowPromoModal(true)}
+            style={{
+              background: 'linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%)',
+              color: '#fff',
+              padding: '12px 18px',
+              border: 'none',
+              borderRadius: '10px',
+              cursor: 'pointer',
+              fontWeight: 700,
+              letterSpacing: '0.3px',
+              boxShadow: '0 8px 20px rgba(0,0,0,0.08)',
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-1px)';
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 10px 24px rgba(0,0,0,0.12)';
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)';
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 8px 20px rgba(0,0,0,0.08)';
+            }}
+          >
+            🚀 {language === 'bg' ? 'Популяризирай обявата' : 'Boost this listing'}
+          </button>
+        </div>
+      )}
+
       <MainContent>
         <CarImageGallery
           car={car}
@@ -549,6 +582,19 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
         onConfirm={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
       />
+
+      {isOwner && (
+        <PromotionPurchaseModal
+          isOpen={showPromoModal}
+          onClose={() => setShowPromoModal(false)}
+          listingId={carId || ''}
+          userId={currentUser?.uid || ''}
+          onSuccess={() => {
+            setShowPromoModal(false);
+            window.location.reload();
+          }}
+        />
+      )}
     </Container>
   );
 };

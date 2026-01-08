@@ -4,7 +4,7 @@
 
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
-import type { PlanTier } from '../features/billing/types';
+import type { PlanTier } from '../config/subscription-plans';
 import { logger } from '../services/logger-service';
 import { getMaxListings, hasUnlimitedListings } from '../config/subscription-plans';
 
