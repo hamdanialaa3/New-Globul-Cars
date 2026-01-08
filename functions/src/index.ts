@@ -136,3 +136,9 @@ export const onVanSold = carLifecycle.onVanSold;
 export const onMotorcycleSold = carLifecycle.onMotorcycleSold;
 export const onTruckSold = carLifecycle.onTruckSold;
 export const onBusSold = carLifecycle.onBusSold;
+
+// ✅ NEW: Realtime Messaging Push Notifications (January 8, 2026)
+import * as realtimeMessagingNotifications from './notifications/realtime-messaging-notifications';
+export const onNewRealtimeMessage = realtimeMessagingNotifications.onNewRealtimeMessage;
+export const onOfferStatusChange = realtimeMessagingNotifications.onOfferStatusChange;
+export const cleanupExpiredOffers = realtimeMessagingNotifications.cleanupExpiredOffers;

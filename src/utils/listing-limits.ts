@@ -1,19 +1,15 @@
 // src/utils/listing-limits.ts
 // Listing Limits - Enforce plan caps
+// ✅ FIXED January 7, 2026: Now imports from single source of truth
 
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import type { PlanTier } from '../features/billing/types';
 import { logger } from '../services/logger-service';
+import { getMaxListings, hasUnlimitedListings } from '../config/subscription-plans';
 
-// Plan Limits Configuration
-// ✅ UPDATED: Unified limits matching PermissionsService and BillingService
-// Updated December 2025 - Simplified to 3 plans
-const PLAN_LIMITS: Record<PlanTier, number> = {
-  free: 3,
-  dealer: 10,
-  company: -1  // unlimited
-};
+// ⚠️ DEPRECATED: Plan limits now defined in subscription-plans.ts
+// This ensures consistency across the entire application
 
 /**
  * Check if user can add another listing
@@ -36,10 +32,10 @@ export async function canAddListing(userId: string): Promise<boolean> {
     
     // ✅ FIX: Use planTier directly (not plan.tier) - consistent with firestore.rules
     const planTier = (userData.planTier || userData.plan?.tier || 'free') as PlanTier;
-    const limit = PLAN_LIMITS[planTier] || 3;
+    const limit = getMaxListings(planTier);
 
     // Unlimited plans (company)
-    if (limit === -1) {
+    if (hasUnlimitedListings(planTier)) {
       logger.debug('User has unlimited listings', { userId, planTier });
       return true;
     }
@@ -84,10 +80,10 @@ export async function getRemainingListings(userId: string): Promise<number> {
     const userData = userDoc.data();
     // ✅ FIX: Use planTier directly (not plan.tier)
     const planTier = (userData.planTier || userData.plan?.tier || 'free') as PlanTier;
-    const limit = PLAN_LIMITS[planTier] || 3;
+    const limit = getMaxListings(planTier);
 
     // Unlimited plans
-    if (limit === -1) return -1;
+    if (hasUnlimitedListings(planTier)) return -1;
 
     const activeCount = userData.stats?.activeListings || 0;
     const remaining = Math.max(0, limit - activeCount);

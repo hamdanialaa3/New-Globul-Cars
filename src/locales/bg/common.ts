@@ -2,6 +2,7 @@
 export const common = {
   "back": "Назад",
   "loading": "Зареждане...",
+  "user": "Потребител",
   "save": "Запази",
   "cancel": "Отказ",
   "confirm": "Потвърди",

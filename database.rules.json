@@ -1,13 +1,52 @@
 {
-    "rules": {
-        "presence": {
-            "$userId": {
-                ".read": "auth != null",
-                ".write": "auth != null && auth.uid === $userId",
-                ".validate": "newData.hasChildren(['status', 'lastSeen'])"
-            }
-        },
-        ".read": false,
-        ".write": false
-    }
+  "rules": {
+    "presence": {
+      "$userId": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid != null",
+        ".validate": "newData.hasChildren(['status', 'lastSeen'])"
+      }
+    },
+
+    "channels": {
+      "$channelId": {
+        ".read": "auth != null && (!data.exists() || data.child('buyerFirebaseId').val() === auth.uid || data.child('sellerFirebaseId').val() === auth.uid)",
+        ".write": "auth != null && (!data.exists() || data.child('buyerFirebaseId').val() === auth.uid || data.child('sellerFirebaseId').val() === auth.uid)",
+        ".validate": "newData.hasChildren(['buyerNumericId', 'sellerNumericId', 'carNumericId', 'buyerFirebaseId', 'sellerFirebaseId'])"
+      }
+    },
+
+    "user_channels": {
+      "$userNumericId": {
+        ".read": "auth != null",
+        "$channelId": {
+          ".write": "auth != null && (root.child('channels').child($channelId).child('buyerFirebaseId').val() === auth.uid || root.child('channels').child($channelId).child('sellerFirebaseId').val() === auth.uid || !root.child('channels').child($channelId).exists())",
+          ".validate": "newData.exists() || root.child('channels').child($channelId).child('buyerFirebaseId').val() === auth.uid || root.child('channels').child($channelId).child('sellerFirebaseId').val() === auth.uid"
+        }
+      }
+    },
+
+    "messages": {
+      "$channelId": {
+        ".read": "auth != null && (root.child('channels').child($channelId).child('buyerFirebaseId').val() === auth.uid || root.child('channels').child($channelId).child('sellerFirebaseId').val() === auth.uid)",
+        "$messageId": {
+          ".write": "auth != null && (root.child('channels').child($channelId).child('buyerFirebaseId').val() === auth.uid || root.child('channels').child($channelId).child('sellerFirebaseId').val() === auth.uid)",
+          ".validate": "newData.hasChildren(['senderId', 'recipientId', 'content', 'type', 'timestamp'])"
+        }
+      }
+    },
+
+    "typing": {
+      "$channelId": {
+        ".read": "auth != null",
+        "$userId": {
+          ".write": "auth != null",
+          ".validate": "newData.hasChildren(['isTyping', 'timestamp'])"
+        }
+      }
+    },
+
+    ".read": false,
+    ".write": false
+  }
 }

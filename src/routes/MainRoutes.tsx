@@ -20,6 +20,7 @@ const CarDetailsPage = safeLazy(() => import('../pages/01_main-pages/CarDetailsP
 const SocialFeedPage = safeLazy(() => import('../pages/03_user-pages/social/SocialFeedPage'));
 const SellModalPage = safeLazy(() => import('../pages/04_car-selling/sell/SellModalPage'));
 const MessagesPage = safeLazy(() => import('../pages/03_user-pages/MessagesPage'));
+const RealtimeMessagesPage = safeLazy(() => import('../pages/03_user-pages/RealtimeMessagesPage'));
 const AdminPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminPage'));
 const AdminLoginPage = safeLazy(() => import('../pages/02_authentication/admin-login/AdminLoginPage'));
 const AdminDataFix = safeLazy(() => import('../pages/06_admin/regular-admin/AdminDataFix'));
@@ -213,16 +214,9 @@ export const MainRoutes: React.FC = () => {
             {/* Strict Numeric URLs: /car/{userNumericId}/{carNumericId} */}
             {/* Route already defined above at line 102 */}
 
-            {/* 🔢 UNIFIED Messaging System (Phase 1 Remediation - Jan 4, 2026) */}
-            {/* ✅ NEW: Supports both numeric IDs and query params */}
-            {/* Pattern 1: /messages/:id1/:id2 (e.g., /messages/1/5) - Numeric IDs */}
-            {/* Pattern 2: /messages?conversationId=abc123 - Direct conversation */}
-            {/* Pattern 3: /messages - Inbox list */}
-            <Route path="/messages/:id1?/:id2?" element={
-                <AuthGuard requireAuth={true}>
-                    <MessagesPage />
-                </AuthGuard>
-            } />
+            {/* 💬 Realtime Messaging System */}
+            <Route path="/messages" element={<AuthGuard requireAuth={true}><RealtimeMessagesPage /></AuthGuard>} />
+            <Route path="/messages-v2" element={<AuthGuard requireAuth={true}><RealtimeMessagesPage /></AuthGuard>} />
 
             {/* 🎟️ PHASE 3: Team Invitation Acceptance (Join Company Team) */}
             <Route path="/join-team" element={

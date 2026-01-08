@@ -191,12 +191,27 @@ const MessageButtonComponent: React.FC<MessageButtonProps> = ({
       const sellerProfile = await BulgarianProfileService.getUserProfile(sellerId);
       
       if (!currentUserProfile?.numericId || !sellerProfile?.numericId) {
-        logger.error('Missing numeric IDs for messaging navigation', {
+        const errorMsg = `Missing numeric IDs - Current: ${!!currentUserProfile?.numericId}, Seller: ${!!sellerProfile?.numericId}`;
+        logger.error('Missing numeric IDs for messaging navigation', new Error(errorMsg), {
           currentUserHasId: !!currentUserProfile?.numericId,
-          sellerHasId: !!sellerProfile?.numericId
+          sellerHasId: !!sellerProfile?.numericId,
+          currentUserId: user.uid,
+          sellerId
         });
-        throw new Error('Cannot resolve numeric IDs for users');
+        
+        // Show user-friendly error
+        setError(
+          language === 'bg' 
+            ? 'Грешка при зареждане на профилите. Моля презаредете страницата.'
+            : 'Error loading profiles. Please refresh the page.'
+        );
+        return;
       }
+
+      logger.info('✅ Numeric IDs resolved for messaging', {
+        currentNumericId: currentUserProfile.numericId,
+        sellerNumericId: sellerProfile.numericId
+      });
 
       // 2. If new or forced, send the car link as context
       // We check if we should send the initial car link

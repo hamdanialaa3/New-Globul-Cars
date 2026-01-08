@@ -1795,13 +1795,13 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
         }
       }
 
-      // Fallback to legacy URL
-      if (sellerId) {
-        navigate(`/messages?userId=${sellerId}`);
-      } else {
-        logger.error('No sellerId available');
-        onContact('phone');
-      }
+      // 🚨 CONSTITUTION: Do NOT fallback to UID-based URLs
+      // Show error instead of using legacy URL
+      logger.error('Missing numeric IDs for messaging', {
+        sellerNumericId: car.sellerNumericId,
+        sellerId: sellerId
+      });
+      onContact('phone');
     } catch (error) {
       logger.error('Error navigating to messages', error as Error);
       // Fallback to phone contact

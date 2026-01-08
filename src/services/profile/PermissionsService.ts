@@ -1,6 +1,7 @@
 /**
  * Permissions Service - Calculate and manage user permissions
  * Phase 2A: Core Service Layer
+ * ✅ FIXED January 7, 2026: Now uses subscription-plans.ts as single source of truth
  * 
  * This service calculates permissions based on profile type and plan tier.
  * All permission checks should go through this service.
@@ -13,6 +14,7 @@ import type {
   PlanTier,
   ProfilePermissions as BaseProfilePermissions
 } from '../../types/user/bulgarian-user.types';
+import { SUBSCRIPTION_PLANS } from '../../config/subscription-plans';
 
 // Extended permissions for business accounts
 export interface ProfilePermissions extends BaseProfilePermissions {
@@ -78,71 +80,99 @@ export class PermissionsService {
 
   /**
    * Get permissions based on plan tier
+   * ✅ FIXED: Now uses subscription-plans.ts for limits
    */
   private static getTierPermissions(planTier: PlanTier): ProfilePermissions {
+    const plan = SUBSCRIPTION_PLANS[planTier];
+    const features = plan.features;
+    
     switch (planTier) {
       case 'free':
         return {
           canAddListings: true,
-          maxListings: 3,
-          canFeatureListings: false,
-          canBulkUpload: false,
-          hasAnalytics: false,
-          hasAdvancedAnalytics: false,
-          hasExportAnalytics: false,
+          maxListings: features.maxListings, // 3
+          canFeatureListings: features.canFeatureListings,
+          canBulkUpload: features.canBulkUpload,
+          hasAnalytics: features.hasBasicAnalytics,
+          hasAdvancedAnalytics: features.hasAdvancedAnalytics,
+          hasExportAnalytics: features.canExportAnalytics,
           hasTeam: false,
-          maxTeamMembers: 0,
+          maxTeamMembers: features.maxTeamMembers,
           canAssignRoles: false,
-          canExportData: false,
-          canImportData: false,
-          canBulkEdit: false,
-          canUseAPI: false,
-          hasWebhooks: false,
-          apiRateLimitPerHour: 0,
-          canCreateCampaigns: false,
-          maxCampaigns: 0,
-          canUseEmailMarketing: false,
-          hasPrioritySupport: false,
-          hasAccountManager: false,
-          canRequestConsultations: false,
-          canCustomizeBranding: false,
+          canExportData: features.canExportData,
+          canImportData: features.canImportData,
+          canBulkEdit: features.canBulkEdit,
+          canUseAPI: features.canUseAPI,
+          hasWebhooks: features.hasWebhooks,
+          apiRateLimitPerHour: features.apiRateLimitPerHour,
+          canCreateCampaigns: features.canCreateCampaigns,
+          maxCampaigns: features.maxCampaigns,
+          canUseEmailMarketing: features.canUseEmailMarketing,
+          hasPrioritySupport: features.hasPrioritySupport,
+          hasAccountManager: features.hasAccountManager,
+          canRequestConsultations: features.canRequestConsultations,
+          canCustomizeBranding: features.canCustomizeBranding,
           canHideCompetitors: false,
-          hasFeaturedBadge: false
+          hasFeaturedBadge: features.hasFeaturedBadge
         };
 
       case 'dealer':
         return {
           canAddListings: true,
-          maxListings: 10,
-          canFeatureListings: true,
-          canBulkUpload: true,
-          hasAnalytics: true,
-          hasAdvancedAnalytics: false,
-          hasExportAnalytics: true,
-          hasTeam: true,
-          maxTeamMembers: 2,
+          maxListings: features.maxListings, // ✅ Now correctly 30 (was 10)
+          canFeatureListings: features.canFeatureListings,
+          canBulkUpload: features.canBulkUpload,
+          hasAnalytics: features.hasBasicAnalytics,
+          hasAdvancedAnalytics: features.hasAdvancedAnalytics,
+          hasExportAnalytics: features.canExportAnalytics,
+          hasTeam: features.maxTeamMembers > 0,
+          maxTeamMembers: features.maxTeamMembers, // 3
           canAssignRoles: false,
-          canExportData: true,
-          canImportData: true,
-          canBulkEdit: true,
-          canUseAPI: false,
-          hasWebhooks: false,
-          apiRateLimitPerHour: 0,
-          canCreateCampaigns: true,
-          maxCampaigns: 2,
-          canUseEmailMarketing: false,
-          hasPrioritySupport: true,
-          hasAccountManager: false,
-          canRequestConsultations: true,
-          canCustomizeBranding: false,
+          canExportData: features.canExportData,
+          canImportData: features.canImportData,
+          canBulkEdit: features.canBulkEdit,
+          canUseAPI: features.canUseAPI,
+          hasWebhooks: features.hasWebhooks,
+          apiRateLimitPerHour: features.apiRateLimitPerHour,
+          canCreateCampaigns: features.canCreateCampaigns,
+          maxCampaigns: features.maxCampaigns,
+          canUseEmailMarketing: features.canUseEmailMarketing,
+          hasPrioritySupport: features.hasPrioritySupport,
+          hasAccountManager: features.hasAccountManager,
+          canRequestConsultations: features.canRequestConsultations,
+          canCustomizeBranding: features.canCustomizeBranding,
           canHideCompetitors: false,
-          hasFeaturedBadge: true
+          hasFeaturedBadge: features.hasFeaturedBadge
         };
 
       case 'company':
         return {
           canAddListings: true,
-          maxListings: -1, // Unlimited
+          maxListings: features.maxListings, // -1 (Unlimited)
+          canFeatureListings: features.canFeatureListings,
+          canBulkUpload: features.canBulkUpload,
+          hasAnalytics: features.hasBasicAnalytics,
+          hasAdvancedAnalytics: features.hasAdvancedAnalytics,
+          hasExportAnalytics: features.canExportAnalytics,
+          hasTeam: features.maxTeamMembers > 0,
+          maxTeamMembers: features.maxTeamMembers, // 10
+          canAssignRoles: true,
+          canExportData: features.canExportData,
+          canImportData: features.canImportData,
+          canBulkEdit: features.canBulkEdit,
+          canUseAPI: features.canUseAPI,
+          hasWebhooks: features.hasWebhooks,
+          apiRateLimitPerHour: features.apiRateLimitPerHour,
+          canCreateCampaigns: features.canCreateCampaigns,
+          maxCampaigns: features.maxCampaigns,
+          canUseEmailMarketing: features.canUseEmailMarketing,
+          hasPrioritySupport: features.hasPrioritySupport,
+          hasAccountManager: features.hasAccountManager,
+          canRequestConsultations: features.canRequestConsultations,
+          canCustomizeBranding: features.canCustomizeBranding,
+          canHideCompetitors: true,
+          hasFeaturedBadge: features.hasFeaturedBadge
+        };
           canFeatureListings: true,
           canBulkUpload: true,
           hasAnalytics: true,

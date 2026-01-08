@@ -14,6 +14,7 @@ import {
   getDocs,
   getDoc,
   updateDoc,
+  deleteDoc,
   doc,
   serverTimestamp,
   onSnapshot,
@@ -210,6 +211,30 @@ export class ConversationOperations {
   }
 
   /**
+   * Get conversation by ID
+   * الحصول على محادثة بواسطة المعرف
+   */
+  static async getConversationById(conversationId: string): Promise<Conversation | null> {
+    try {
+      const docRef = doc(db, COLLECTION_NAMES.CONVERSATIONS, conversationId);
+      const docSnap = await getDoc(docRef);
+      
+      if (!docSnap.exists()) {
+        logger.warn('Conversation not found', { conversationId });
+        return null;
+      }
+      
+      return {
+        id: docSnap.id,
+        ...docSnap.data()
+      } as Conversation;
+    } catch (error) {
+      logger.error('getConversationById failed', error as Error, { conversationId });
+      return null;
+    }
+  }
+
+  /**
    * Get user conversations
    * الحصول على محادثات المستخدم
    */
@@ -279,6 +304,17 @@ export class MessageOperations {
     text: string
   ): Promise<string> {
     try {
+      // ⚠️ CRITICAL: Validate conversationId format BEFORE sending
+      if (!conversationId || conversationId.length !== 20) {
+        logger.error('❌ CRITICAL: Invalid conversationId in sendMessage!', new Error('Invalid conversation ID format'), {
+          conversationId,
+          idLength: conversationId?.length,
+          senderId,
+          receiverId
+        });
+        throw new Error(`Invalid conversation ID format: ${conversationId} (length: ${conversationId?.length}, expected: 20)`);
+      }
+
       // Rate limiting check
       const rateLimit = rateLimiter.checkRateLimit(
         senderId,
@@ -748,11 +784,43 @@ export class SubscriptionOperations {
       unsubscribe = onSnapshot(
         q,
         (snapshot) => {
-          const conversations = snapshot.docs.map(doc => ({
+          const allConversations = snapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data()
           } as Conversation));
-          callback(conversations);
+          
+          // ⚠️ CRITICAL: Filter out invalid conversations (UID as ID)
+          const validConversations = allConversations.filter(c => {
+            if (!c.id || c.id.length !== 20) {
+              logger.error('🚨 INVALID CONVERSATION DETECTED - FILTERING OUT', new Error('Invalid conversation ID'), {
+                conversationId: c.id,
+                idLength: c.id?.length,
+                participants: c.participants
+              });
+              
+              // 🗑️ Auto-delete invalid conversation from Firestore
+              const invalidDocRef = doc(db, COLLECTION_NAMES.CONVERSATIONS, c.id);
+              deleteDoc(invalidDocRef)
+                .then(() => {
+                  logger.info('✅ Auto-deleted invalid conversation', { conversationId: c.id });
+                })
+                .catch(err => {
+                  logger.error('Failed to auto-delete invalid conversation', err as Error, { conversationId: c.id });
+                });
+              
+              return false;
+            }
+            return true;
+          });
+          
+          logger.info('📬 Conversations loaded', { 
+            totalCount: allConversations.length,
+            validCount: validConversations.length,
+            invalidCount: allConversations.length - validConversations.length,
+            ids: validConversations.map(c => c.id)
+          });
+          
+          callback(validConversations);
         },
         (error) => {
           logger.error('Error in subscribeToUserConversations', error as Error, { userId });

@@ -300,10 +300,17 @@ const ProfilePageWrapper: React.FC = () => {
     }
   };
 
-  // Handle message
+  // Handle message - uses numeric IDs per constitution
   const handleMessage = () => {
-    if (!activeProfile?.uid) return;
-    navigate(`/messages?userId=${activeProfile.uid}`);
+    if (!activeProfile?.numericId || !viewer?.numericId) {
+      logger.warn('Missing numeric IDs for messaging', {
+        activeProfileNumericId: activeProfile?.numericId,
+        viewerNumericId: viewer?.numericId
+      });
+      return;
+    }
+    // Constitution: /messages/:senderId/:recipientId with numeric IDs
+    navigate(`/messages/${viewer.numericId}/${activeProfile.numericId}`);
   };
 
   return (

@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useTheme } from '../../contexts/ThemeContext';
 import { logger } from '../../services/logger-service';
+import { userService } from '../../services/user/canonical-user.service';
+import { realtimeMessagingService } from '../../services/messaging/realtime';
 import { useCarViewTracking } from '../../hooks/useProfileTracking';
 import { unifiedCarService } from '../../services/car';
 import DistanceIndicator from '../../components/DistanceIndicator';
@@ -11,7 +13,7 @@ import StaticMapEmbed from '../../components/StaticMapEmbed';
 import CarDetailsMobileDEStyle from './components/CarDetailsMobileDEStyle';
 import { useCarDetails } from './hooks/useCarDetails';
 import { useCarEdit } from './hooks/useCarEdit';
-import { CarSEO } from '../../components/seo/CarSEO';
+import { CarSEO } from '../../components/SEO/CarSEO';
 import { CarImageGallery } from './components/CarImageGallery';
 import { CarHeader } from './components/CarHeader';
 import { CarBasicInfo } from './components/CarBasicInfo';
@@ -151,7 +153,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
   };
 
   // Contact Method Handlers
-  const handleContactClick = (method: string) => {
+  const handleContactClick = useCallback(async (method: string) => {
     if (editHook.isEditMode) return;
 
     const phone = car?.sellerPhone || '';
@@ -161,16 +163,61 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
     switch (method) {
       case 'message':
         if (currentUser) {
-          // Use numeric IDs for messaging if available
-          const senderNum = (currentUser as any).numericId;
-          const recipientNum = car?.sellerNumericId;
-          const carNum = car?.carNumericId || car?.numericId;
+          try {
+            // Get buyer profile to get numericId
+            const buyerProfile = await userService.getUserProfile(currentUser.uid);
+            if (!buyerProfile?.numericId) {
+              logger.error('[CarDetailsPage] Buyer has no numericId');
+              alert(language === 'bg' ? 'Грешка при зареждане на профила.' : 'Error loading user profile.');
+              return;
+            }
 
-          if (senderNum && recipientNum) {
-            navigate(`/messages/${senderNum}/${recipientNum}${carNum ? `?car=${carNum}` : ''}`);
-          } else {
-            // Fallback to legacy if numeric IDs are missing
-            navigate(`/messages?userId=${car?.sellerId}&carId=${car?.id}&carTitle=${encodeURIComponent(`${car?.make} ${car?.model}`)}`);
+            const sellerNumericId = car?.sellerNumericId;
+            const carNumericId = car?.carNumericId || car?.numericId;
+            const sellerFirebaseId = car?.sellerId;
+
+            if (!sellerNumericId || !carNumericId || !sellerFirebaseId) {
+              logger.error('[CarDetailsPage] Missing seller, car numericId, or sellerId');
+              alert(language === 'bg' ? 'Грешка при зареждане на данните.' : 'Error loading data.');
+              return;
+            }
+
+            // 🚀 CREATE the channel in database (not just generate ID)
+            const channel = await realtimeMessagingService.getOrCreateChannel({
+              buyer: {
+                numericId: buyerProfile.numericId,
+                firebaseId: currentUser.uid,
+                displayName: buyerProfile.displayName || 'User',
+                avatarUrl: buyerProfile.photoURL,
+              },
+              seller: {
+                numericId: sellerNumericId,
+                firebaseId: sellerFirebaseId,
+                displayName: car?.sellerName || 'Seller',
+                avatarUrl: null, // Seller photo not available in CarListing
+              },
+              car: {
+                numericId: carNumericId,
+                firebaseId: car?.id || '',
+                title: `${car?.make || ''} ${car?.model || ''} ${car?.year || ''}`.trim(),
+                price: car?.price || 0,
+                // images in Firestore is string[] (URLs), but TypeScript expects File[] from CarListing interface
+                image: typeof car?.images?.[0] === 'string' 
+                  ? car.images[0] 
+                  : '',
+                make: car?.make,
+                model: car?.model,
+              },
+            });
+
+            logger.info('[CarDetailsPage] Channel created/found', { channelId: channel.id });
+
+            // Navigate to the realtime messaging page with channel
+            navigate(`/messages?channel=${channel.id}`);
+
+          } catch (err) {
+            logger.error('[CarDetailsPage] Error starting chat', err instanceof Error ? err : undefined);
+            alert(language === 'bg' ? 'Грешка при свързване.' : 'Connection error.');
           }
         } else {
           alert(language === 'bg' ? 'Моля влезте в профила си, за да изпратите съобщение.' : 'Please log in to send a message.');
@@ -274,7 +321,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
       default:
         break;
     }
-  };
+  }, [car, currentUser, editHook.isEditMode, language, navigate]);
 
   const handleToggleContact = (fieldKey: keyof CarListing) => {
     editHook.handleInputChange(fieldKey, !editHook.editedCar[fieldKey]);

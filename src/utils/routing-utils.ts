@@ -136,14 +136,16 @@ export const getMessagesUrl = (
     return `/messages/${sender.numericId}/${recipient.numericId}`;
   }
 
-  // ⚠️ Fallback for legacy messaging (query params) - MessagesPage will handle gracefully
-  if (recipient.uid) {
-    logger.warn('Messaging URL using Firebase UID (should use numericId)', { recipientUid: recipient.uid });
-    return `/messages?userId=${recipient.uid}`;
-  }
+  // 🚨 CONSTITUTION: Do NOT fallback to UID-based URLs - causes messaging to break
+  // Return null or messages list and let caller handle the error
+  logger.error('CONSTITUTION VIOLATION: Cannot generate messaging URL without numeric IDs', { 
+    senderNumericId: sender.numericId,
+    recipientNumericId: recipient.numericId,
+    senderUid: sender.uid,
+    recipientUid: recipient.uid
+  });
 
-  // Default to messages list
-  logger.warn('Messaging URL called without valid IDs, defaulting to /messages');
+  // Default to messages list - caller should check numeric IDs before calling
   return '/messages';
 };
 

@@ -85,7 +85,10 @@
     "clean:cache": "npm cache clean --force && rm -rf node_modules/.cache .cache build dist",
     "clean:all": "npm run clean && npm run clean:cache",
     "clean:3000": "node scripts/clean-port-3000.js",
-    "scrape": "ts-node scripts/scrapers/run-scraper.ts"
+    "scrape": "ts-node scripts/scrapers/run-scraper.ts",
+    "migrate:dealer-limits": "ts-node scripts/migrate-dealer-limits.ts",
+    "deploy:subscription-system": "bash scripts/deploy-subscription-system.sh",
+    "deploy:subscription-system:skip-tests": "bash scripts/deploy-subscription-system.sh --skip-tests"
   },
   "eslintConfig": {
     "extends": [
