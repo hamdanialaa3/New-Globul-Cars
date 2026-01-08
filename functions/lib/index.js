@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.onMotorcycleSold = exports.onVanSold = exports.onSuvSold = exports.onPassengerCarSold = exports.onBusDeleted = exports.onTruckDeleted = exports.onMotorcycleDeleted = exports.onVanDeleted = exports.onSuvDeleted = exports.onPassengerCarDeleted = exports.exportB2BAnalytics = exports.getB2BAnalytics = exports.exportB2BLeads = exports.cleanupExpiredDrafts = exports.manualArchiveSoldCars = exports.archiveSoldCars = exports.stripeWebhooks = exports.batchSyncAllCarsToAlgolia = exports.syncBusesToAlgolia = exports.syncTrucksToAlgolia = exports.syncMotorcyclesToAlgolia = exports.syncVansToAlgolia = exports.syncSuvsToAlgolia = exports.syncPassengerCarsToAlgolia = exports.evaluateCar = exports.prerenderSEO = exports.logSearchEvent = exports.requestIndexing = exports.hybridAIProxy = exports.aiGenerateCarDescription = exports.aiGenerateText = exports.syncCarsToFacebookAds = exports.syncCarsToGoogleAds = exports.manualSitemapRegeneration = exports.scheduledSitemapRegeneration = exports.sitemap = exports.cleanupDeletedImages = exports.optimizeUploadedImage = exports.updateMerchantFeedCache = exports.merchantFeedGenerator = exports.cleanupOldNotifications = exports.notifyFollowersOnNewCar = exports.dailyReminder = exports.onVerificationUpdate = exports.onNewOffer = exports.onNewInquiry = exports.onCarViewed = exports.onNewMessage = exports.onPriceUpdate = exports.onNewCarPosted = void 0;
-exports.onBusSold = exports.onTruckSold = void 0;
+exports.cleanupExpiredOffers = exports.onOfferStatusChange = exports.onNewRealtimeMessage = exports.onBusSold = exports.onTruckSold = void 0;
 const notifications = require("./notifications");
 const merchantFeed = require("./merchant-feed");
 const imageOptimizer = require("./image-optimizer");
@@ -117,4 +117,9 @@ exports.onVanSold = carLifecycle.onVanSold;
 exports.onMotorcycleSold = carLifecycle.onMotorcycleSold;
 exports.onTruckSold = carLifecycle.onTruckSold;
 exports.onBusSold = carLifecycle.onBusSold;
+// ✅ NEW: Realtime Messaging Push Notifications (January 8, 2026)
+const realtimeMessagingNotifications = require("./notifications/realtime-messaging-notifications");
+exports.onNewRealtimeMessage = realtimeMessagingNotifications.onNewRealtimeMessage;
+exports.onOfferStatusChange = realtimeMessagingNotifications.onOfferStatusChange;
+exports.cleanupExpiredOffers = realtimeMessagingNotifications.cleanupExpiredOffers;
 //# sourceMappingURL=index.js.map
