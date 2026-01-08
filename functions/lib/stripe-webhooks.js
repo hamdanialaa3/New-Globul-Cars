@@ -6,7 +6,9 @@ const admin = require("firebase-admin");
 const stripe_1 = require("stripe");
 const logger = require("firebase-functions/logger");
 const db = admin.firestore();
-const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY || "", {
+// Initialize Stripe - use TEST key if no real key provided
+const stripeKey = process.env.STRIPE_SECRET_KEY || "sk_test_nonprod";
+const stripe = new stripe_1.default(stripeKey, {
     apiVersion: "2025-12-15.clover", // Updated to latest
 });
 /**

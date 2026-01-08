@@ -122,7 +122,7 @@ export const createPromotionPaymentIntent = functions
       const userRef = db.collection('users').doc(userId);
       const userDoc = await userRef.get();
 
-      if (!userDoc.exists()) {
+      if (!userDoc.exists) {
         logger.warn('User document not found', { userId });
         throw new functions.https.HttpsError(
           'not-found',
@@ -281,7 +281,7 @@ export const onPromotionPaymentSucceeded = functions
       const listingRef = db.collection(collectionName).doc(listingId);
       const listingDoc = await listingRef.get();
 
-      if (!listingDoc.exists()) {
+      if (!listingDoc.exists) {
         logger.warn('Listing not found for promotion update', { listingId });
         return;
       }

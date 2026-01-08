@@ -4,7 +4,10 @@ import Stripe from "stripe";
 import * as logger from "firebase-functions/logger";
 
 const db = admin.firestore();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
+
+// Initialize Stripe - use TEST key if no real key provided
+const stripeKey = process.env.STRIPE_SECRET_KEY || "sk_test_nonprod";
+const stripe = new Stripe(stripeKey, {
     apiVersion: "2025-12-15.clover", // Updated to latest
 });
 
