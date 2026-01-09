@@ -37,8 +37,6 @@ function run() {
   const offenders = [];
   for (const f of files) {
     const content = fs.readFileSync(f, 'utf8');
-    // ✅ FIX: Only match console.* that are NOT in comments or strings
-    // Match console.* that are actual code (not in // comments, /* */ comments, or strings)
     const lines = content.split('\n');
     const codeMatches = [];
     let inMultiLineComment = false;
@@ -47,30 +45,57 @@ function run() {
     
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      let inLineString = false;
-      let inLineStringChar = null;
+      const trimmed = line.trim();
       
-      // Simple check: if line contains console.* and it's not clearly in a comment
-      // This is a simplified check - for production, consider using a proper parser
-      if (line.match(/\bconsole\.(log|error|warn|debug|info)\b/)) {
-        // Check if it's in a comment (// or /* */)
-        const commentIndex = line.indexOf('//');
-        const multiLineStart = line.indexOf('/*');
-        const multiLineEnd = line.indexOf('*/');
+      // Skip empty lines
+      if (!trimmed) continue;
+      
+      // Track multi-line comments
+      if (trimmed.includes('/*')) {
+        inMultiLineComment = true;
+      }
+      if (trimmed.includes('*/')) {
+        inMultiLineComment = false;
+        continue; // Skip the closing line itself
+      }
+      
+      // Skip if we're inside a multi-line comment
+      if (inMultiLineComment) continue;
+      
+      // Skip JSDoc comments (lines starting with /** or *)
+      if (trimmed.startsWith('/**') || trimmed.startsWith('*')) continue;
+      
+      // Skip single-line comments
+      if (trimmed.startsWith('//')) continue;
+      
+      // Skip markdown code blocks
+      if (trimmed.includes('```')) continue;
+      
+      // Check for console.* in actual code
+      const consoleMatch = line.match(/\bconsole\.(log|error|warn|debug|info)\b/);
+      if (consoleMatch) {
+        const consoleIndex = consoleMatch.index;
         
-        // Check if console.* appears before any // comment
-        const consoleMatch = line.match(/\bconsole\.(log|error|warn|debug|info)\b/);
-        if (consoleMatch) {
-          const consoleIndex = consoleMatch.index;
-          const hasCommentBefore = commentIndex !== -1 && commentIndex < consoleIndex;
-          const hasMultiLineComment = multiLineStart !== -1 && multiLineStart < consoleIndex;
-          
-          // Skip if it's clearly in a comment or in a markdown code block
-          if (!hasCommentBefore && !hasMultiLineComment && !line.trim().startsWith('*') && !line.includes('```')) {
-            const match = line.match(/\bconsole\.(log|error|warn|debug|info)\b/g);
-            if (match) codeMatches.push(...match);
-          }
+        // Check if console.* is after a // comment on the same line
+        const commentIndex = line.indexOf('//');
+        if (commentIndex !== -1 && commentIndex < consoleIndex) {
+          continue; // It's in a comment
         }
+        
+        // Check if console.* is in a string (simple check)
+        const beforeConsole = line.substring(0, consoleIndex);
+        const singleQuotes = (beforeConsole.match(/'/g) || []).length;
+        const doubleQuotes = (beforeConsole.match(/"/g) || []).length;
+        const backticks = (beforeConsole.match(/`/g) || []).length;
+        
+        // If odd number of quotes before console, we're likely in a string
+        if (singleQuotes % 2 !== 0 || doubleQuotes % 2 !== 0 || backticks % 2 !== 0) {
+          continue; // Likely in a string
+        }
+        
+        // This is actual code - flag it
+        const match = line.match(/\bconsole\.(log|error|warn|debug|info)\b/g);
+        if (match) codeMatches.push(...match);
       }
     }
     

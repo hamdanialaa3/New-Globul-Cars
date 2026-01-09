@@ -15,7 +15,7 @@
  * @date January 2026
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { Ban, Check, Loader2, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthProvider';
@@ -24,6 +24,7 @@ import { blockUserService, BlockRelationship } from '@/services/messaging/block-
 import { logger } from '@/services/logger-service';
 import { getNumericIdByFirebaseUid } from '@/services/numeric-id-lookup.service';
 import { useToast } from '@/components/Toast';
+import { monitoring } from '@/services/monitoring-service';
 
 // ==================== INTERFACES ====================
 
@@ -226,6 +227,12 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
         // Check if blocked
         const blocked = await blockUserService.isBlocked(currentNumericId, targetNumericId);
         setIsBlocked(blocked);
+        
+        // Track analytics
+        monitoring.trackEvent('block_status_checked', {
+          targetUserId: targetUserFirebaseId,
+          isBlocked: blocked,
+        }, currentUser.uid);
       } catch (error) {
         logger.error('Failed to check block status', error as Error, {
           currentUserUid: currentUser.uid,
@@ -240,11 +247,13 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
     checkBlockStatus();
   }, [currentUser?.uid, targetUserFirebaseId, targetUserNumericId]);
 
-  // Handle block/unblock
-  const handleToggleBlock = async () => {
+  // Handle block/unblock - memoized for performance
+  const handleToggleBlock = useCallback(async () => {
     if (!currentUser?.uid || isProcessing) {
       return;
     }
+
+    const startTime = Date.now();
 
     try {
       setIsProcessing(true);
@@ -258,6 +267,14 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
 
         if (result.success) {
           setIsBlocked(false);
+          
+          // Track analytics
+          monitoring.trackEvent('user_unblocked', {
+            targetUserId: targetUserFirebaseId,
+            targetUserNumericId,
+            duration: Date.now() - startTime,
+          }, currentUser.uid);
+          
           toast.success(
             isBg
               ? `✅ ${targetUserName} е разблокиран`
@@ -266,6 +283,12 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
           );
           onBlockChanged?.(false);
         } else if (!result.notBlocked) {
+          // Track failed unblock
+          monitoring.trackEvent('user_unblock_failed', {
+            targetUserId: targetUserFirebaseId,
+            error: result.error || 'Unknown error',
+          }, currentUser.uid);
+          
           toast.error(
             isBg
               ? `❌ Грешка при разблокирането: ${result.error || 'Unknown error'}`
@@ -283,6 +306,10 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
 
         if (!confirmed) {
           setIsProcessing(false);
+          // Track cancellation
+          monitoring.trackEvent('user_block_cancelled', {
+            targetUserId: targetUserFirebaseId,
+          }, currentUser.uid);
           return;
         }
 
@@ -294,6 +321,15 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
 
         if (result.success) {
           setIsBlocked(true);
+          
+          // Track analytics
+          monitoring.trackEvent('user_blocked', {
+            targetUserId: targetUserFirebaseId,
+            targetUserNumericId,
+            targetUserName,
+            duration: Date.now() - startTime,
+          }, currentUser.uid);
+          
           toast.success(
             isBg
               ? `✅ ${targetUserName} е блокиран`
@@ -302,6 +338,12 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
           );
           onBlockChanged?.(true);
         } else if (!result.alreadyBlocked) {
+          // Track failed block
+          monitoring.trackEvent('user_block_failed', {
+            targetUserId: targetUserFirebaseId,
+            error: result.error || 'Unknown error',
+          }, currentUser.uid);
+          
           toast.error(
             isBg
               ? `❌ Грешка при блокирането: ${result.error || 'Unknown error'}`
@@ -316,6 +358,14 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
         targetUserFirebaseId,
         isBlocked,
       });
+      
+      // Track error
+      monitoring.trackEvent('user_block_error', {
+        targetUserId: targetUserFirebaseId,
+        action: isBlocked ? 'unblock' : 'block',
+        error: (error as Error).message,
+      }, currentUser.uid);
+      
       toast.error(
         isBg
           ? '❌ Грешка при обработката'
@@ -325,7 +375,7 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
     } finally {
       setIsProcessing(false);
     }
-  };
+  }, [currentUser?.uid, targetUserFirebaseId, targetUserNumericId, targetUserName, isBlocked, isProcessing, isBg, onBlockChanged, toast]);
 
   // Don't show button if checking status or no current user
   if (isLoading || !currentUser?.uid) {
@@ -337,14 +387,16 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
     return null;
   }
 
-  // Button text based on language and state
-  const buttonText = isBlocked
-    ? isBg
-      ? 'Разблокирай'
-      : 'Unblock'
-    : isBg
-      ? 'Блокирай'
-      : 'Block';
+  // Button text based on language and state - memoized for performance
+  const buttonText = useMemo(() => {
+    return isBlocked
+      ? isBg
+        ? 'Разблокирай'
+        : 'Unblock'
+      : isBg
+        ? 'Блокирай'
+        : 'Block';
+  }, [isBlocked, isBg]);
 
   return (
     <Button

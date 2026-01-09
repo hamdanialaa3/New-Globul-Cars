@@ -57,6 +57,16 @@ jobs:
               run: |
                   echo "${FIREBASE_SERVICE_ACCOUNT}" > "${HOME}/gcloud.json"
                   echo "GOOGLE_APPLICATION_CREDENTIALS=${HOME}/gcloud.json" >> $GITHUB_ENV
+                  # Verify service account is configured
+                  if [ -f "${HOME}/gcloud.json" ]; then
+                    echo "✅ Service account configured successfully"
+                    # Extract and display service account email (for debugging)
+                    SERVICE_EMAIL=$(grep -o '"client_email": "[^"]*"' "${HOME}/gcloud.json" | cut -d'"' -f4 || echo "unknown")
+                    echo "Service account: ${SERVICE_EMAIL}"
+                  else
+                    echo "❌ Failed to configure service account"
+                    exit 1
+                  fi
 
             - name: Set Stripe runtime config (functions)
               env:
@@ -79,5 +89,8 @@ jobs:
             - name: Deploy Functions
               env:
                   PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+                  GOOGLE_APPLICATION_CREDENTIALS: ${HOME}/gcloud.json
               run: |
+                  # Activate service account before deploying
+                  gcloud auth activate-service-account --key-file="${GOOGLE_APPLICATION_CREDENTIALS}" --quiet || true
                   firebase deploy --only functions --project "$PROJECT_ID" --non-interactive
