@@ -16,10 +16,12 @@ Actions:
 1. Find: firebase-adminsdk-fbsvc@fire-new-globul.iam.gserviceaccount.com
 2. Click: Edit (pencil icon)
 3. Button: + ADD ANOTHER ROLE
-4. Search: "Service Account User"
-5. Click: Save
+4. Search: "Service Account User" (roles/iam.serviceAccountUser)
+5. Service Account field: fire-new-globul@appspot.gserviceaccount.com
+6. Click: Save
 
-✅ This enables Cloud Functions deployment
+✅ This grants ActAs permission needed for Cloud Functions deployment
+✅ Fixes error: "Permission 'iam.serviceAccounts.ActAs' denied"
 ```
 
 ### Step 2: Trigger Deployment (1 minute)
@@ -47,9 +49,16 @@ Firebase: https://console.firebase.google.com/project/fire-new-globul/hosting
 
 ### Step 4: Verify Live App (1 minute)
 ```
-https://mobilebg.eu
-OR
-https://fire-new-globul.web.app
+Primary URL: https://mobilebg.eu
+Backup URL:  https://fire-new-globul.web.app
+
+Verification checklist:
+✅ Homepage loads with car listings
+✅ Search bar accepts input
+✅ Login/Register buttons functional
+✅ No console errors (F12 → Console)
+✅ Images loading correctly
+✅ Mobile responsive (test on phone)
 ```
 
 ---

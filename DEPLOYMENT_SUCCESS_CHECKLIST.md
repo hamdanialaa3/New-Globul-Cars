@@ -40,7 +40,8 @@
 ### ⚠️ CRITICAL: IAM Permissions (MUST DO BEFORE DEPLOYMENT)
 
 **Status:** ⏳ PENDING - Manual setup required  
-**Time Required:** 5 minutes
+**Time Required:** 5 minutes  
+**Live Domain:** https://mobilebg.eu/
 
 #### Step 1: Open Google Cloud IAM Console
 ```
@@ -54,9 +55,10 @@ Look for: `firebase-adminsdk-fbsvc@fire-new-globul.iam.gserviceaccount.com`
 1. Click **Edit** (pencil icon) next to the service account
 2. Click **+ ADD ANOTHER ROLE**
 3. Search for and select: **Service Account User** (`roles/iam.serviceAccountUser`)
-4. Click **Save**
+4. In the "Service Account" field, enter: `fire-new-globul@appspot.gserviceaccount.com`
+5. Click **Save**
 
-**Why this is needed:** Firebase Cloud Functions deployment requires `iam.serviceAccounts.ActAs` permission on the App Engine default service account.
+**Why this is needed:** Firebase Cloud Functions deployment requires `iam.serviceAccounts.ActAs` permission on the App Engine default service account (`fire-new-globul@appspot.gserviceaccount.com`).
 
 ---
 
@@ -133,10 +135,16 @@ Expected: All functions showing "OK" status
 
 ### 3. Test Live App
 ```
-https://mobilebg.eu (custom domain)
+https://mobilebg.eu (Primary custom domain)
 OR
-https://fire-new-globul.web.app (Firebase default domain)
+https://fire-new-globul.web.app (Firebase fallback URL)
 ```
+
+**Expected Result:**
+- ✅ Bulgarian Car Marketplace homepage loads
+- ✅ Search bar functional
+- ✅ Login/Signup buttons work
+- ✅ Car listings display
 
 ### 4. Monitor Logs
 ```

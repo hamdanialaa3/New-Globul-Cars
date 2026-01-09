@@ -160,11 +160,20 @@ Build folder size: ~4.5 MB (production optimized)
 
 **Critical:** Google Cloud IAM Role Assignment
 
-The GitHub Actions workflow will fail deployment until you grant the service account the "Service Account User" role:
+The GitHub Actions workflow will fail deployment with error:
+```
+Permission 'iam.serviceAccounts.ActAs' denied on resource
+fire-new-globul@appspot.gserviceaccount.com
+```
 
+To fix:
 1. Go to: https://console.cloud.google.com/iam-admin/iam?project=fire-new-globul
 2. Find: `firebase-adminsdk-fbsvc@fire-new-globul.iam.gserviceaccount.com`
-3. Click Edit → Add Role → Search "Service Account User" → Save
+3. Click Edit → Add Role → Search "Service Account User"
+4. Specify target: `fire-new-globul@appspot.gserviceaccount.com`
+5. Save
+
+**Why:** Firebase Functions need to run as App Engine service account, requiring ActAs permission.
 
 **See:** [DEPLOYMENT_SUCCESS_CHECKLIST.md](./DEPLOYMENT_SUCCESS_CHECKLIST.md) for detailed steps.
 

@@ -24,11 +24,14 @@ firebase-adminsdk-fbsvc@fire-new-globul.iam.gserviceaccount.com
 Click "Edit" (pencil icon) next to the service account and:
 1. Click "+ ADD ANOTHER ROLE"
 2. Search for and select: **Service Account User** (`roles/iam.serviceAccountUser`)
-3. Set the scope to the default App Engine service account:
+3. In the "Service Account" field, specify the target:
    ```
    fire-new-globul@appspot.gserviceaccount.com
    ```
+   This is the App Engine default service account that needs ActAs permission.
 4. Save changes
+
+**Important:** This grants your workflow's service account (`firebase-adminsdk-fbsvc@...`) permission to act as the App Engine service account during Functions deployment.
 
 ### 2. GitHub Secrets Configuration
 
@@ -105,12 +108,21 @@ Monitor deployment progress:
 
 ## Custom Domain Deployment
 
-Once Hosting is set up:
+**Status:** ✅ Already configured for `mobilebg.eu`
 
+The custom domain is already set up and verified:
+- **Primary domain:** https://mobilebg.eu
+- **DNS:** Configured and verified
+- **SSL Certificate:** Auto-managed by Firebase (Let's Encrypt)
+- **Redirect:** HTTP → HTTPS (automatic)
+
+If you need to add additional domains:
 1. Go to Firebase Console → Hosting
 2. Click "Add custom domain"
-3. Enter domain: `mobilebg.eu`
-4. Follow DNS verification steps
+3. Enter new domain name
+4. Follow DNS verification steps (add TXT record)
+5. Add A/AAAA records provided by Firebase
+6. Wait up to 24 hours for propagation
 
 ## Environment Variables
 
