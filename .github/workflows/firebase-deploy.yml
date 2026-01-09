@@ -89,7 +89,6 @@ jobs:
             - name: Deploy Functions
               env:
                   PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-                  GOOGLE_APPLICATION_CREDENTIALS: ${HOME}/gcloud.json
               run: |
                   # Activate service account before deploying
                   gcloud auth activate-service-account --key-file="${GOOGLE_APPLICATION_CREDENTIALS}" --quiet || true
