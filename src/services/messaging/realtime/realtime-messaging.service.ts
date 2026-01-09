@@ -389,11 +389,56 @@ class RealtimeMessagingService {
   /**
    * Send a message
    * إرسال رسالة
+   * 
+   * @description Checks if user is blocked before sending message
+   * يتحقق من حظر المستخدم قبل إرسال الرسالة
    */
   async sendMessage(
     channelId: string,
     message: Omit<RealtimeMessage, 'id' | 'timestamp' | 'serverTimestamp' | 'read' | 'channelId'>
   ): Promise<string> {
+    // 🔴 CRITICAL: Check if user is blocked before sending
+    try {
+      const { blockUserService } = await import('@/services/messaging/block-user.service');
+      
+      // Check if recipient blocked sender
+      const hasBlockedMe = await blockUserService.hasBlockedMe(
+        message.senderId,
+        message.recipientId
+      );
+      
+      if (hasBlockedMe) {
+        throw new Error('MESSAGE_BLOCKED: Recipient has blocked you');
+      }
+      
+      // Check if sender blocked recipient
+      const isBlocked = await blockUserService.isBlocked(
+        message.senderId,
+        message.recipientId
+      );
+      
+      if (isBlocked) {
+        throw new Error('MESSAGE_BLOCKED: You have blocked this user');
+      }
+    } catch (error) {
+      // Re-throw block errors, log others but continue (fail open for now)
+      if (error instanceof Error && error.message.includes('MESSAGE_BLOCKED')) {
+        logger.warn('Message blocked by block system', {
+          channelId,
+          senderId: message.senderId,
+          recipientId: message.recipientId,
+          error: error.message,
+        });
+        throw error;
+      }
+      // If block check fails, log but continue (fail open)
+      logger.warn('Failed to check block status before sending message', error as Error, {
+        channelId,
+        senderId: message.senderId,
+        recipientId: message.recipientId,
+      });
+    }
+    
     const messagesRef = ref(this.db, `messages/${channelId}`);
     const newMessageRef = push(messagesRef);
     const messageId = newMessageRef.key!;

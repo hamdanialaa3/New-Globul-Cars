@@ -80,6 +80,8 @@ const InvoicesPage = safeLazy(() => import('../pages/08_payment-billing/Invoices
 const CommissionsPage = safeLazy(() => import('../pages/08_payment-billing/CommissionsPage'));
 const CheckoutPage = safeLazy(() => import('../pages/08_payment-billing/CheckoutPage'));
 const PaymentSuccessPage = safeLazy(() => import('../pages/08_payment-billing/PaymentSuccessPage'));
+const PaymentFailedPage = safeLazy(() => import('../pages/08_payment-billing/PaymentFailedPage'));
+const UpdatePaymentMethodPage = safeLazy(() => import('../pages/08_payment-billing/UpdatePaymentMethodPage'));
 const DealerRegistrationPage = safeLazy(() => import('../pages/09_dealer-company/DealerRegistrationPage'));
 const DealerDashboardPage = safeLazy(() => import('../pages/09_dealer-company/DealerDashboardPage'));
 const AlgoliaSyncManager = safeLazy(() => import('../pages/06_admin/AlgoliaSyncManager'));
@@ -257,6 +259,22 @@ export const MainRoutes: React.FC = () => {
                 element={
                     <AuthGuard requireAuth={true}>
                         <PaymentSuccessPage />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/payment-failed"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <PaymentFailedPage />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/billing/update-payment-method"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <UpdatePaymentMethodPage />
                     </AuthGuard>
                 }
             />

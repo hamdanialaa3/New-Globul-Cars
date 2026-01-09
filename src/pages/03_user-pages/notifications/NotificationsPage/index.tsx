@@ -21,6 +21,8 @@ import {
   Trash2,
   Settings
 } from 'lucide-react';
+// 🔴 CRITICAL: Use reusable EmptyState component
+import { NoNotifications } from '@/components/EmptyStates';
 import './NotificationsPage.css';
 
 interface Notification {
@@ -294,11 +296,8 @@ const NotificationsPage: React.FC = () => {
               <p>{t('common.notifications.loading')}</p>
             </div>
           ) : filteredNotifications.length === 0 ? (
-            <div className="empty-state">
-              <Bell size={64} />
-              <h3>{t('common.notifications.noNotifications')}</h3>
-              <p>{t('common.notifications.noNotificationsDesc')}</p>
-            </div>
+            // 🔴 CRITICAL: Use reusable EmptyState component
+            <NoNotifications variant={filter === 'unread' ? 'unread' : 'all'} />
           ) : (
             filteredNotifications.map(notification => (
               <div

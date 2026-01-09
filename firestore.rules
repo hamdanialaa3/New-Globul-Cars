@@ -279,6 +279,49 @@ service cloud.firestore {
       allow update: if false; // No updates to favorites
     }
 
+    // 🔴 CRITICAL: Blocked Users Collection (January 2026 - User Safety)
+    // Block relationships between users
+    match /blocked_users/{blockId} {
+      // Read: Only if you're involved in the block relationship
+      allow read: if isAuthenticated() && (
+        resource.data.blockerFirebaseId == request.auth.uid ||
+        resource.data.blockedFirebaseId == request.auth.uid
+      );
+
+      // Create: Only if you're the blocker (can't block on behalf of others)
+      allow create: if isAuthenticated() 
+        && request.resource.data.blockerFirebaseId == request.auth.uid
+        && request.resource.data.blockerFirebaseId != request.resource.data.blockedFirebaseId // Can't block yourself
+        && request.resource.data.keys().hasAll(['blockerNumericId', 'blockerFirebaseId', 'blockedNumericId', 'blockedFirebaseId', 'createdAt', 'updatedAt']);
+
+      // Update: Only if you're the blocker (can update reason)
+      allow update: if isAuthenticated() 
+        && resource.data.blockerFirebaseId == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reason', 'updatedAt']);
+
+      // Delete: Only if you're the blocker (can unblock)
+      allow delete: if isAuthenticated() && resource.data.blockerFirebaseId == request.auth.uid;
+    }
+
+    // 🔴 CRITICAL: Reports Collection (January 2026 - Content Moderation)
+    // User reports for spam, abuse, fake content
+    match /reports/{reportId} {
+      // Read: Only if you're the reporter (users can see their own reports)
+      allow read: if isAuthenticated() && resource.data.reporterFirebaseId == request.auth.uid;
+
+      // Create: Only authenticated users can create reports
+      allow create: if isAuthenticated()
+        && request.resource.data.reporterFirebaseId == request.auth.uid
+        && request.resource.data.reporterFirebaseId != request.resource.data.reportedUserFirebaseId // Can't report yourself
+        && request.resource.data.keys().hasAll(['reporterFirebaseId', 'reporterNumericId', 'reportedUserFirebaseId', 'reportedUserNumericId', 'reportType', 'contentType', 'reason', 'description', 'status', 'createdAt', 'updatedAt']);
+
+      // Update: Only admins can update reports (via Cloud Functions)
+      allow update: if false; // Only Cloud Functions can update
+
+      // Delete: No deletes (archival only)
+      allow delete: if false;
+    }
+
     // ==================== MESSAGES & CONVERSATIONS ====================
     // Direct Messages
     match /messages/{messageId} {

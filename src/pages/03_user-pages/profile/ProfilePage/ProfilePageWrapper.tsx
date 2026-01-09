@@ -31,6 +31,8 @@ import { logger } from '../../../../services/logger-service';
 import { profileStatsService } from '../../../../services/profile/profile-stats.service';
 import { ThemeProvider } from 'styled-components';
 import { PROFILE_THEMES } from '../../../../config/profile-themes';
+// 🔴 CRITICAL: Block User Button integration
+import BlockUserButton from '../../../../components/messaging/BlockUserButton';
 
 /**
  * Profile Page Wrapper
@@ -500,6 +502,24 @@ const ProfilePageWrapper: React.FC = () => {
                       <PhoneIcon size={16} />
                       {language === 'bg' ? 'Съобщение' : 'Message'}
                     </S.ActionButtonCompact>
+                    {/* 🔴 CRITICAL: Block User Button - Only show if viewer and target user exist */}
+                    {viewer?.uid && activeProfile?.uid && viewer.uid !== activeProfile.uid && (
+                      <BlockUserButton
+                        targetUserFirebaseId={activeProfile.uid}
+                        targetUserNumericId={activeProfile.numericId}
+                        targetUserName={activeProfile.displayName || activeProfile.email}
+                        size="medium"
+                        variant="secondary"
+                        onBlockChanged={(isBlocked) => {
+                          logger.info('Block status changed', {
+                            targetUserId: activeProfile.uid,
+                            isBlocked,
+                            viewerId: viewer.uid
+                          });
+                          // Optionally refresh UI or disable message button if blocked
+                        }}
+                      />
+                    )}
                   </>
                 )}
               </S.StatBarActionsSection>

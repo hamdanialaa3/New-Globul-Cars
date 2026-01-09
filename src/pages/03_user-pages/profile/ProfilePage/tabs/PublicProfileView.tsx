@@ -7,11 +7,15 @@ import {
 import styled from 'styled-components';
 
 import { useLanguage } from '../../../../../contexts/LanguageContext';
+import { useAuth } from '../../../../../contexts/AuthProvider';
 import CarCardGermanStyle from '../../../../../components/CarCard/CarCardGermanStyle';
 import { FollowButton } from '../../../../../components/Profile/FollowButton';
 import { CarListing } from '../../../../../types/CarListing';
 import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
 import type { ProfileCar } from '../types';
+// 🔴 CRITICAL: Block User Button integration
+import BlockUserButton from '../../../../../components/messaging/BlockUserButton';
+import { logger } from '../../../../../services/logger-service';
 
 interface PublicProfileViewProps {
   user: BulgarianUser;
@@ -20,6 +24,7 @@ interface PublicProfileViewProps {
 
 export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ user, userCars = [] }) => {
   const { language } = useLanguage();
+  const { currentUser } = useAuth();
   const [inventorySearch, setInventorySearch] = useState('');
 
   // Profile type detection
@@ -140,6 +145,24 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ user, user
               variant="outline"
               size="large"
             />
+            {/* 🔴 CRITICAL: Block User Button - Only show if current user exists and is not viewing own profile */}
+            {currentUser?.uid && user?.uid && currentUser.uid !== user.uid && (
+              <BlockUserButton
+                targetUserFirebaseId={user.uid}
+                targetUserNumericId={user.numericId}
+                targetUserName={user.displayName || user.email}
+                size="medium"
+                variant="secondary"
+                onBlockChanged={(isBlocked) => {
+                  logger.info('Block status changed in PublicProfileView', {
+                    targetUserId: user.uid,
+                    isBlocked,
+                    viewerId: currentUser.uid
+                  });
+                  // Optionally refresh UI or disable message/follow buttons if blocked
+                }}
+              />
+            )}
           </ActionSection>
         </HeroContent>
       </HeroHeader>
