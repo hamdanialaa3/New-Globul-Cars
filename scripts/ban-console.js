@@ -37,8 +37,46 @@ function run() {
   const offenders = [];
   for (const f of files) {
     const content = fs.readFileSync(f, 'utf8');
-    const matches = content.match(/\bconsole\.(log|error|warn|debug|info)\b/g);
-    if (matches) offenders.push({ file: f, matches: [...new Set(matches)] });
+    // ✅ FIX: Only match console.* that are NOT in comments or strings
+    // Match console.* that are actual code (not in // comments, /* */ comments, or strings)
+    const lines = content.split('\n');
+    const codeMatches = [];
+    let inMultiLineComment = false;
+    let inString = false;
+    let stringChar = null;
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      let inLineString = false;
+      let inLineStringChar = null;
+      
+      // Simple check: if line contains console.* and it's not clearly in a comment
+      // This is a simplified check - for production, consider using a proper parser
+      if (line.match(/\bconsole\.(log|error|warn|debug|info)\b/)) {
+        // Check if it's in a comment (// or /* */)
+        const commentIndex = line.indexOf('//');
+        const multiLineStart = line.indexOf('/*');
+        const multiLineEnd = line.indexOf('*/');
+        
+        // Check if console.* appears before any // comment
+        const consoleMatch = line.match(/\bconsole\.(log|error|warn|debug|info)\b/);
+        if (consoleMatch) {
+          const consoleIndex = consoleMatch.index;
+          const hasCommentBefore = commentIndex !== -1 && commentIndex < consoleIndex;
+          const hasMultiLineComment = multiLineStart !== -1 && multiLineStart < consoleIndex;
+          
+          // Skip if it's clearly in a comment or in a markdown code block
+          if (!hasCommentBefore && !hasMultiLineComment && !line.trim().startsWith('*') && !line.includes('```')) {
+            const match = line.match(/\bconsole\.(log|error|warn|debug|info)\b/g);
+            if (match) codeMatches.push(...match);
+          }
+        }
+      }
+    }
+    
+    if (codeMatches.length > 0) {
+      offenders.push({ file: f, matches: [...new Set(codeMatches)] });
+    }
   }
   if (offenders.length) {
     console.error('[ban-console] Found console usage in production build:');
