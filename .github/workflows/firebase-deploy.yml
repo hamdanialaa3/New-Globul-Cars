@@ -106,6 +106,24 @@ jobs:
           project_id: ${{ secrets.FIREBASE_PROJECT_ID }}
           export_default_credentials: true
 
+      - name: Validate Firebase project id
+        env:
+          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+        run: |
+          if [ -z "$PROJECT_ID" ]; then
+            echo "❌ FIREBASE_PROJECT_ID secret is not set or is empty"
+            echo "Go to: https://github.com/${{ github.repository }}/settings/secrets/actions"
+            exit 1
+          fi
+          echo "✅ Firebase project id set: $PROJECT_ID"
+
+      - name: Auth sanity check
+        run: |
+          gcloud auth list --filter=status:ACTIVE || true
+          gcloud config list project || true
+          firebase --version
+          firebase projects:list --non-interactive || true
+
       - name: Set Stripe runtime config (functions)
         env:
           PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
