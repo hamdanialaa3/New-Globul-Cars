@@ -142,3 +142,7 @@ import * as realtimeMessagingNotifications from './notifications/realtime-messag
 export const onNewRealtimeMessage = realtimeMessagingNotifications.onNewRealtimeMessage;
 export const onOfferStatusChange = realtimeMessagingNotifications.onOfferStatusChange;
 export const cleanupExpiredOffers = realtimeMessagingNotifications.cleanupExpiredOffers;
+
+// 🔴 CRITICAL: Firebase Auth User Deletion Trigger (January 2026 - GDPR Compliance)
+import { onUserDelete } from './triggers/on-user-delete';
+export { onUserDelete };

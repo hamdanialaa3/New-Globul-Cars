@@ -1,3 +1,6 @@
+قبل اليدأ بكل شيء يجب مراعات الدستور ما عدى ال300 سطر فانه غير ملزم جدا :
+C:\Users\hamda\Desktop\New Globul Cars\PROJECT_CONSTITUTION.md
+#
 # 🕵️ ZERO-GAP PROJECT COMPLETION AUDIT
 ## Bulgarian Car Marketplace - Production Excellence Review
 

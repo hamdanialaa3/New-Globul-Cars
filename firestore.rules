@@ -11,13 +11,13 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
-    // Allow reading counters (for numeric IDs)
+    // 🔴 CRITICAL FIX: Counters collection - Only Cloud Functions can write
+    // Numeric ID counters must be protected to prevent corruption
     match /counters/{counterId} {
-      allow read: if true; 
-      // Only allow updates via cloud functions or admin SDK ideally, 
-      // but for atomic increments from client, we need write if logic is client-side.
-      // Assuming the numeric-id-service does the increment:
-      allow write: if isAuthenticated(); 
+      allow read: if true; // Public read OK (for numeric ID lookups)
+      // ✅ FIXED: Only Cloud Functions or Admin SDK can write
+      // Clients can read but NOT write - prevents numeric ID system corruption
+      allow write: if false; // ❌ CRITICAL: Disabled client writes - use Cloud Functions only
     }
 
     // Profiles
