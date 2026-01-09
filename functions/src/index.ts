@@ -146,3 +146,10 @@ export const cleanupExpiredOffers = realtimeMessagingNotifications.cleanupExpire
 // 🔴 CRITICAL: Firebase Auth User Deletion Trigger (January 2026 - GDPR Compliance)
 import { onUserDelete } from './triggers/on-user-delete';
 export { onUserDelete };
+
+// ✅ NEW: Manual Payment System (January 9, 2026)
+const manualPayments = require('../lib/manual-payment-expiration');
+export const checkExpiredManualPayments = manualPayments.checkExpiredManualPayments;
+export const sendDailyPaymentSummary = manualPayments.sendDailyPaymentSummary;
+export const onPaymentVerified = manualPayments.onPaymentVerified;
+export const manualExpirePayments = manualPayments.manualExpirePayments;

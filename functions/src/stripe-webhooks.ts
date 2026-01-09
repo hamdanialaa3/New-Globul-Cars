@@ -258,7 +258,7 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
         if (isDowngrade) {
             logger.info("Plan tier downgrade detected", { userId: userDoc.id, from: currentTier, to: newTier });
             // ✅ Use correct tier (newTier can be 'free', 'dealer', or 'company')
-            const targetTier = newTier === 'private' ? 'free' : newTier;
+            const targetTier = newTier === 'free' ? 'free' : newTier;
             await deactivateExcessListings(userDoc.id, targetTier);
         }
     }

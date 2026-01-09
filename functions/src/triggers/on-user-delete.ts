@@ -26,8 +26,9 @@
  * @date January 2026
  */
 
-import * as functions from 'firebase-functions/v2';
+import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import { UserRecord } from 'firebase-functions/v1/auth';
 
 // Firebase Admin initialization
 if (!admin.apps.length) {
@@ -55,7 +56,7 @@ const VEHICLE_COLLECTIONS = [
  * Main trigger function: onUserDelete
  * Triggered automatically when Firebase Auth user is deleted
  */
-export const onUserDelete = functions.auth.user().onDelete(async (user) => {
+export const onUserDelete = functions.auth.user().onDelete(async (user: UserRecord) => {
   const userId = user.uid;
   const userEmail = user.email || 'unknown';
   
