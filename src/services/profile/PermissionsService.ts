@@ -173,30 +173,6 @@ export class PermissionsService {
           canHideCompetitors: true,
           hasFeaturedBadge: features.hasFeaturedBadge
         };
-          canFeatureListings: true,
-          canBulkUpload: true,
-          hasAnalytics: true,
-          hasAdvancedAnalytics: true,
-          hasExportAnalytics: true,
-          hasTeam: true,
-          maxTeamMembers: -1, // Unlimited
-          canAssignRoles: true,
-          canExportData: true,
-          canImportData: true,
-          canBulkEdit: true,
-          canUseAPI: true,
-          hasWebhooks: true,
-          apiRateLimitPerHour: 10000,
-          canCreateCampaigns: true,
-          maxCampaigns: -1, // Unlimited
-          canUseEmailMarketing: true,
-          hasPrioritySupport: true,
-          hasAccountManager: true,
-          canRequestConsultations: true,
-          canCustomizeBranding: true,
-          canHideCompetitors: true,
-          hasFeaturedBadge: true
-        };
 
       default:
         // Default to free tier permissions
