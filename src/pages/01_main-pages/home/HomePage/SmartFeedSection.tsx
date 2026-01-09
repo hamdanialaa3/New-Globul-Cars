@@ -38,29 +38,6 @@ const SmartFeedSection: React.FC = () => {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  // Pull-to-Refresh: Container ref
-  const feedContainerRef = useRef<HTMLDivElement>(null);
-
-  // Pull-to-Refresh: Refresh handler
-  const handleRefreshFeed = useCallback(async () => {
-    try {
-      logger.info('🔄 Pull-to-refresh: Refreshing feed');
-      
-      // Reset and reload feed
-      setPosts([]);
-      setPage(1);
-      setHasMore(true);
-      await loadFeed(1);
-      
-      toast.success(language === 'bg' ? 'Емисията е актуализирана' : 'Feed refreshed');
-    } catch (error) {
-      logger.error('❌ Pull-to-refresh: Failed to refresh feed', error as Error);
-      toast.error(language === 'bg' ? 'Грешка при актуализиране' : 'Failed to refresh');
-    }
-  }, [language, loadFeed]);
-
-  // Pull-to-Refresh: Hook
-  const { pulling, refreshing } = usePullToRefresh(feedContainerRef, handleRefreshFeed);
 
   // Load initial feed
   const loadFeed = useCallback(async (pageNum: number) => {
@@ -130,6 +107,30 @@ const SmartFeedSection: React.FC = () => {
   useEffect(() => {
     loadFeed(1);
   }, [loadFeed]);
+
+  // Pull-to-Refresh: Container ref (placed after loadFeed to avoid TDZ)
+  const feedContainerRef = useRef<HTMLDivElement>(null);
+
+  // Pull-to-Refresh: Refresh handler
+  const handleRefreshFeed = useCallback(async () => {
+    try {
+      logger.info('🔄 Pull-to-refresh: Refreshing feed');
+
+      // Reset and reload feed
+      setPosts([]);
+      setPage(1);
+      setHasMore(true);
+      await loadFeed(1);
+
+      toast.success(language === 'bg' ? 'Емисията е актуализирана' : 'Feed refreshed');
+    } catch (error) {
+      logger.error('❌ Pull-to-refresh: Failed to refresh feed', error as Error);
+      toast.error(language === 'bg' ? 'Грешка при актуализиране' : 'Failed to refresh');
+    }
+  }, [language, loadFeed]);
+
+  // Pull-to-Refresh: Hook
+  const { pulling, refreshing } = usePullToRefresh(feedContainerRef, handleRefreshFeed);
 
   // ⚡ OPTIMIZED: Infinite scroll observer with debouncing
   useEffect(() => {

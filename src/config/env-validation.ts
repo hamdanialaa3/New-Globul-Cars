@@ -61,12 +61,19 @@ export function validateEnvironmentVariables(): void {
     logger.warn('⚠️ Environment Variable Warnings:', warnings);
   }
 
-  // Throw error if critical variables are missing
+  // Handle missing critical variables
   if (errors.length > 0) {
-    throw new EnvValidationError(
-      `Missing required environment variables:\n${errors.join('\n')}\n\n` +
-      'Please check your .env file and ensure all required variables are set.'
-    );
+    const message = `Missing required environment variables:\n${errors.join('\n')}\n\n` +
+      'Please check your .env file and ensure all required variables are set.';
+
+    // In production, log and continue (Firebase config has safe fallbacks in firebase-config.ts)
+    if (process.env.NODE_ENV === 'production') {
+      logger.error(message);
+      return; // Do not crash the app in production
+    }
+
+    // In non-production, throw to catch misconfiguration early
+    throw new EnvValidationError(message);
   }
 }
 
