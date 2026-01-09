@@ -25,6 +25,12 @@ const POPULAR_BRANDS = [
   { id: 'Toyota', nameEn: 'Toyota', nameBg: 'Тойота', logo: 'Toyota.png' },
   { id: 'Volvo', nameEn: 'Volvo', nameBg: 'Волво', logo: 'Volvo.png' },
   { id: 'Volkswagen', nameEn: 'Volkswagen', nameBg: 'Фолксваген', logo: 'Volkswagen.png' },
+  { id: 'Peugeot', nameEn: 'Peugeot', nameBg: 'Пежо', logo: 'Peugeot.png' },
+  { id: 'Nissan', nameEn: 'Nissan', nameBg: 'Нисан', logo: 'Nissan.png' },
+  { id: 'Mazda', nameEn: 'Mazda', nameBg: 'Мазда', logo: 'Mazda.png' },
+  { id: 'Honda', nameEn: 'Honda', nameBg: 'Хонда', logo: 'Honda.png' },
+  { id: 'Fiat', nameEn: 'Fiat', nameBg: 'Фиат', logo: 'Fiat.png' },
+  { id: 'SEAT', nameEn: 'SEAT', nameBg: 'Сеат', logo: 'SEAT.png' },
 ];
 
 // Styled Components
@@ -83,8 +89,11 @@ const SectionTitle = styled.h2`
   font-size: 24px; /* mobile.de standard: 24px / 1.5rem for H2 */
   font-weight: 600; /* mobile.de standard: semi-bold */
   color: var(--text-primary);
-  margin-bottom: 0.75rem;
+  margin-top: 29px;
+  margin-bottom: 47px;
   line-height: 1.3; /* mobile.de standard */
+  box-shadow: 0px 4px 12px 0px rgba(218, 11, 11, 0.15), inset 0px 4px 12px 0px rgba(240, 15, 15, 0.15), 0px 4px 12px 0px rgba(237, 29, 29, 0.15);
+  filter: blur(0px);
   
   @media (max-width: 768px) {
     font-size: 22px; /* mobile.de tablet: 22px */
@@ -327,16 +336,18 @@ const BrandName = styled.div`
 const ViewAllBrandsButton = styled.button`
   border: none;
   border-radius: 12px;
-  padding: 0.75rem 2rem;
+  width: 261px;
+  padding: 6px 0px;
   font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  margin: 2rem auto 0;
+  margin: 29px auto 10px;
   display: block;
   position: relative;
   overflow: hidden;
   letter-spacing: 0.02em;
+  background-color: rgba(205, 24, 24, 0.08);
 
   /* Light mode: Orange/Yellow gradient */
   html[data-theme="light"] & {

@@ -39,6 +39,44 @@ const fadeIn = keyframes`
   to { opacity: 1; }
 `;
 
+const foggyBlur = keyframes`
+  0%, 100% { 
+    filter: blur(8px) brightness(0.9);
+    opacity: 0.4;
+  }
+  50% { 
+    filter: blur(12px) brightness(1.1);
+    opacity: 0.6;
+  }
+`;
+
+const smokeFloat = keyframes`
+  0% { 
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0.3;
+  }
+  33% { 
+    transform: translateY(-20px) translateX(10px) scale(1.1);
+    opacity: 0.5;
+  }
+  66% { 
+    transform: translateY(-10px) translateX(-10px) scale(0.9);
+    opacity: 0.4;
+  }
+  100% { 
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0.3;
+  }
+`;
+
+const imageTransition = keyframes`
+  0% { opacity: 0; transform: scale(1.1); filter: blur(15px); }
+  10% { opacity: 1; transform: scale(1); filter: blur(8px); }
+  30% { opacity: 1; transform: scale(1); filter: blur(8px); }
+  40% { opacity: 0; transform: scale(1.1); filter: blur(15px); }
+  100% { opacity: 0; transform: scale(1.1); filter: blur(15px); }
+`;
+
 const float = keyframes`
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-20px); }
@@ -98,7 +136,7 @@ const PageContainer = styled.div`
   overflow-x: hidden;
 `;
 
-// Hero Header with Premium Design
+// Hero Header with Premium Design - صور متغيرة بايومشن ضبابي ودخاني
 const HeroHeader = styled.header`
   background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 50%, var(--accent-primary) 100%);
   background-size: 200% 200%;
@@ -107,29 +145,58 @@ const HeroHeader = styled.header`
   position: relative;
   overflow: hidden;
 
-  // Animated Background Orbs
+  /* Smoke effect overlay */
+  & > * {
+    position: relative;
+    z-index: 2;
+  }
+`;
+
+const HeroBackgroundImages = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  overflow: hidden;
+`;
+
+const BackgroundImage = styled.div<{ $image: string; $delay: number }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url(${p => p.$image});
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  animation: ${imageTransition} 15s infinite ${p => p.$delay}s, ${smokeFloat} 12s ease-in-out infinite ${p => p.$delay}s;
+  filter: blur(18px) brightness(0.5) contrast(1.2);
+  transform: scale(1.15);
+  
   &::before {
     content: '';
     position: absolute;
-    top: -50px;
-    right: -50px;
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-    border-radius: 50%;
-    animation: ${float} 6s ease-in-out infinite;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    animation: ${smokeFloat} 8s ease-in-out infinite ${p => p.$delay + 2}s;
   }
-
+  
   &::after {
     content: '';
     position: absolute;
-    bottom: -50px;
-    left: -50px;
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
-    border-radius: 50%;
-    animation: ${float} 8s ease-in-out infinite reverse;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 70% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+    animation: ${smokeFloat} 10s ease-in-out infinite reverse ${p => p.$delay + 4}s;
   }
 `;
 
@@ -180,19 +247,23 @@ const HeroIconBadge = styled.div`
   justify-content: center;
   width: 50px;
   height: 50px;
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(15px);
-  border: 2px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 14px;
   margin: 0 auto 1rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  animation: ${float} 3s ease-in-out infinite;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  animation: ${float} 3s ease-in-out infinite, ${foggyBlur} 6s ease-in-out infinite;
 
   svg {
     width: 26px;
     height: 26px;
     color: white;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    filter: drop-shadow(0 2px 8px rgba(255, 143, 16, 0.5)) blur(0.5px);
+    opacity: 0.9;
   }
 `;
 
@@ -277,19 +348,35 @@ const TrustBadge = styled.div`
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background: rgba(22, 163, 74, 0.05);
+  background: rgba(255, 143, 16, 0.08);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 50px;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
   &:hover {
-    background: ${() => subscriptionTheme.backgrounds.overlay};
+    background: rgba(255, 143, 16, 0.12);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 143, 16, 0.2);
   }
 
   svg {
     width: 18px;
     height: 18px;
     color: var(--accent-primary);
+    filter: drop-shadow(0 0 6px rgba(255, 143, 16, 0.4)) blur(0.5px);
+    opacity: 0.9;
+    transition: all 0.3s ease;
+  }
+
+  &:hover svg {
+    filter: drop-shadow(0 0 10px rgba(255, 143, 16, 0.6)) blur(0.3px);
+    opacity: 1;
+    transform: scale(1.1);
   }
 
   span {
@@ -322,6 +409,15 @@ const SectionTitle = styled.h2`
     width: 2.5rem;
     height: 2.5rem;
     color: var(--accent-primary);
+    filter: drop-shadow(0 0 12px rgba(255, 143, 16, 0.4)) blur(0.5px);
+    opacity: 0.9;
+    transition: all 0.3s ease;
+  }
+
+  &:hover svg {
+    filter: drop-shadow(0 0 16px rgba(255, 143, 16, 0.6)) blur(0.3px);
+    opacity: 1;
+    transform: scale(1.05);
   }
 `;
 
@@ -339,18 +435,33 @@ const SectionSubtitle = styled.p`
 const ComparisonSection = styled.section`
   margin: 5rem 0;
   padding: 4rem 0;
-  background: ${() => `linear-gradient(135deg, ${subscriptionTheme.backgrounds.active} 0%, transparent 100%)`};
+  background: linear-gradient(135deg, 
+    rgba(255, 143, 16, 0.08) 0%, 
+    rgba(255, 215, 0, 0.05) 50%,
+    transparent 100%
+  );
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 30px;
   animation: ${fadeIn} 1s ease;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 `;
 
 const ComparisonTable = styled.div`
   max-width: 1000px;
   margin: 0 auto;
-  background: var(--bg-card);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: var(--shadow-lg);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 `;
 
 const TableHeader = styled.div`
@@ -358,10 +469,20 @@ const TableHeader = styled.div`
   grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 1rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  background: linear-gradient(135deg, 
+    rgba(255, 143, 16, 0.15) 0%, 
+    rgba(255, 215, 0, 0.12) 50%, 
+    rgba(255, 143, 16, 0.15) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   font-weight: 700;
-  color: white;
+  color: var(--text-primary);
   font-size: 1.1rem;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -374,17 +495,30 @@ const TableRow = styled.div<{ $highlight?: boolean }>`
   grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 1rem;
   padding: 1.5rem;
-  border-bottom: 1px solid var(--border-primary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   transition: all 0.3s ease;
   align-items: center;
-  background: var(--bg-card);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 
   ${p => p.$highlight && `
-    background: rgba(22, 163, 74, 0.05);
+    background: linear-gradient(135deg, 
+      rgba(255, 143, 16, 0.08) 0%, 
+      rgba(255, 215, 0, 0.05) 100%
+    );
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
   `}
 
   &:hover {
-    background: var(--bg-hover);
+    background: linear-gradient(135deg, 
+      rgba(255, 143, 16, 0.12) 0%, 
+      rgba(255, 215, 0, 0.08) 100%
+    );
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transform: translateX(4px);
   }
 
   @media (max-width: 768px) {
@@ -404,6 +538,15 @@ const FeatureCell = styled.div`
     width: 20px;
     height: 20px;
     color: var(--accent-primary);
+    filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.4));
+    opacity: 0.85;
+    transition: all 0.3s ease;
+  }
+
+  &:hover svg {
+    filter: drop-shadow(0 0 12px rgba(255, 143, 16, 0.6));
+    opacity: 1;
+    transform: scale(1.1);
   }
 
   @media (max-width: 768px) {
@@ -421,6 +564,15 @@ const ValueCell = styled.div`
     height: 20px;
     color: var(--accent-primary);
     margin: 0 auto;
+    filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.4)) blur(0.5px);
+    opacity: 0.85;
+    transition: all 0.3s ease;
+  }
+
+  &:hover svg {
+    filter: drop-shadow(0 0 12px rgba(255, 143, 16, 0.6)) blur(0.3px);
+    opacity: 1;
+    transform: scale(1.15);
   }
 `;
 
@@ -445,10 +597,15 @@ const TestimonialsGrid = styled.div`
 `;
 
 const TestimonialCard = styled.div`
-  background: var(--bg-card);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 2rem;
   border-radius: 20px;
-  box-shadow: var(--shadow-md);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
   position: relative;
   transition: all 0.3s ease;
   animation: ${scaleIn} 0.6s ease backwards;
@@ -456,24 +613,43 @@ const TestimonialCard = styled.div`
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: var(--shadow-hover);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    box-shadow: 
+      0 12px 40px rgba(0, 0, 0, 0.15),
+      0 0 30px rgba(255, 143, 16, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
   }
 `;
 
 const QuoteIcon = styled.div`
   width: 50px;
   height: 50px;
-  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  background: linear-gradient(135deg, 
+    rgba(255, 143, 16, 0.3) 0%, 
+    rgba(255, 215, 0, 0.25) 100%
+  );
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
+  box-shadow: 
+    0 4px 15px rgba(255, 143, 16, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  animation: ${foggyBlur} 5s ease-in-out infinite;
 
   svg {
     width: 24px;
     height: 24px;
-    color: white;
+    color: var(--accent-primary);
+    filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.5)) blur(0.5px);
+    opacity: 0.9;
   }
 `;
 
@@ -527,6 +703,15 @@ const Stars = styled.div`
     height: 16px;
     fill: #fbbf24;
     color: #fbbf24;
+    filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.5)) blur(0.3px);
+    opacity: 0.9;
+    transition: all 0.3s ease;
+  }
+
+  &:hover svg {
+    filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.7)) blur(0.2px);
+    opacity: 1;
+    transform: scale(1.1);
   }
 `;
 
@@ -542,15 +727,24 @@ const FAQList = styled.div`
 `;
 
 const FAQItem = styled.div<{ $isOpen: boolean }>`
-  background: var(--bg-card);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 15px;
   margin-bottom: 1rem;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
 
   ${p => p.$isOpen && `
-    box-shadow: 0 4px 20px ${() => subscriptionTheme.shadows.small};
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 
+      0 4px 20px ${() => subscriptionTheme.shadows.small},
+      0 0 25px rgba(255, 143, 16, 0.15);
+    border-color: rgba(255, 255, 255, 0.15);
   `}
 `;
 
@@ -578,6 +772,13 @@ const FAQQuestion = styled.button`
     height: 24px;
     transition: transform 0.3s ease;
     color: var(--accent-primary);
+    filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.4)) blur(0.5px);
+    opacity: 0.85;
+  }
+
+  &:hover svg {
+    filter: drop-shadow(0 0 12px rgba(255, 143, 16, 0.6)) blur(0.3px);
+    opacity: 1;
   }
 `;
 
@@ -650,19 +851,28 @@ const CTAText = styled.p`
 
 const CTAButton = styled.button`
   padding: 1.25rem 3rem;
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   color: var(--accent-primary);
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 50px;
   font-size: 1.1rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.2),
+    0 0 30px rgba(255, 143, 16, 0.3);
+  filter: drop-shadow(0 0 10px rgba(255, 143, 16, 0.2));
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 
+      0 6px 30px rgba(0, 0, 0, 0.3),
+      0 0 40px rgba(255, 143, 16, 0.4);
+    background: rgba(255, 255, 255, 1);
+    filter: drop-shadow(0 0 15px rgba(255, 143, 16, 0.4));
   }
 
   &:active {
@@ -690,27 +900,19 @@ const SubscriptionPage: React.FC = () => {
 
     try {
       setLoadingPlan(planId);
-      // Show toast
-      const toastId = toast.loading(isBg ? 'Подготовка на плащане...' : 'Preparing checkout...');
+      
+      // ✅ UPDATED: Redirect to manual bank transfer checkout
+      toast.info(isBg 
+        ? 'Преминаваме към страница за банков превод...' 
+        : 'Redirecting to bank transfer page...'
+      );
 
-      const result = await subscriptionService.createCheckoutSession({
-        userId: currentUser.uid,
-        planId,
-        interval,
-        successUrl: window.location.origin + '/billing/success',
-        cancelUrl: window.location.origin + '/subscription'
-      });
-
-      toast.dismiss(toastId);
-
-      if (result.url) {
-        window.location.assign(result.url);
-      } else {
-        throw new Error('No checkout URL');
-      }
+      // Navigate to manual checkout page with plan details
+      navigate(`/billing/manual-checkout?plan=${planId}&interval=${interval}&type=subscription`);
+      
     } catch (error) {
-      logger.error('Failed to start checkout', error as Error);
-      toast.error(isBg ? 'Грешка при стартиране на плащане' : 'Failed to start checkout');
+      logger.error('Failed to navigate to checkout', error as Error);
+      toast.error(isBg ? 'Грешка при преминаване към плащане' : 'Failed to navigate to payment');
     } finally {
       setLoadingPlan(null);
     }
@@ -852,6 +1054,11 @@ const SubscriptionPage: React.FC = () => {
     <PageContainer>
       {/* Hero Header */}
       <HeroHeader>
+        <HeroBackgroundImages>
+          <BackgroundImage $image="/assets/images/seller-cards/private.png" $delay={0} />
+          <BackgroundImage $image="/assets/images/seller-cards/dealer.png" $delay={5} />
+          <BackgroundImage $image="/assets/images/seller-cards/company.png" $delay={10} />
+        </HeroBackgroundImages>
         <HeroContent>
           <BackButton onClick={() => navigate(-1)}>
             <ArrowLeft />

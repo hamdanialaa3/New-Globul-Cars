@@ -1,0 +1,14 @@
+
+> bulgarian-car-marketplace@0.1.0 prebuild
+> node scripts/ban-console.js
+
+[ban-console] Skipping (NODE_ENV != production)
+
+> bulgarian-car-marketplace@0.1.0 build
+> craco build
+
+CRACO: Configuring webpack...
+CRACO: Removed ModuleScopePlugin
+CRACO: Webpack configuration complete
+(node:28460) [DEP0176] DeprecationWarning: fs.F_OK is deprecated, use fs.constants.F_OK instead
+(Use `node --trace-deprecation ...` to show where the warning was created)

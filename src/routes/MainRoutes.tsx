@@ -82,6 +82,9 @@ const CheckoutPage = safeLazy(() => import('../pages/08_payment-billing/Checkout
 const PaymentSuccessPage = safeLazy(() => import('../pages/08_payment-billing/PaymentSuccessPage'));
 const PaymentFailedPage = safeLazy(() => import('../pages/08_payment-billing/PaymentFailedPage'));
 const UpdatePaymentMethodPage = safeLazy(() => import('../pages/08_payment-billing/UpdatePaymentMethodPage'));
+// ✅ NEW: Manual Bank Transfer Payment Pages
+const ManualCheckoutPage = safeLazy(() => import('../pages/08_payment-billing/ManualCheckoutPage'));
+const ManualPaymentSuccessPage = safeLazy(() => import('../pages/08_payment-billing/ManualPaymentSuccessPage'));
 const DealerRegistrationPage = safeLazy(() => import('../pages/09_dealer-company/DealerRegistrationPage'));
 const DealerDashboardPage = safeLazy(() => import('../pages/09_dealer-company/DealerDashboardPage'));
 const AlgoliaSyncManager = safeLazy(() => import('../pages/06_admin/AlgoliaSyncManager'));
@@ -243,6 +246,23 @@ export const MainRoutes: React.FC = () => {
                 element={
                     <AuthGuard requireAuth={true}>
                         <BillingCanceledPage />
+                    </AuthGuard>
+                }
+            />
+            {/* ✅ NEW: Manual Bank Transfer Payment Routes */}
+            <Route
+                path="/billing/manual-checkout"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <ManualCheckoutPage />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/billing/manual-success"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <ManualPaymentSuccessPage />
                     </AuthGuard>
                 }
             />

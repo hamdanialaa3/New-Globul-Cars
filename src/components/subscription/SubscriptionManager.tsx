@@ -385,7 +385,7 @@ const CarouselArrow = styled.button<{ $side: 'left' | 'right' }>`
   }
 `;
 
-const Card = styled.div<{ $highlight?: boolean; $free?: boolean }>`
+const Card = styled.div<{ $highlight?: boolean; $free?: boolean; $planId?: string }>`
   position: relative;
   background: var(--bg-card);
   border-radius: 16px;
@@ -394,16 +394,78 @@ const Card = styled.div<{ $highlight?: boolean; $free?: boolean }>`
   height: 100%;
   display: flex;
   flex-direction: column;
-  box-shadow: ${p => p.$highlight
-    ? `0 20px 60px ${() => subscriptionTheme.shadows.small}`
-    : 'var(--shadow-lg)'
-  };
   border: ${p => p.$highlight ? '3px solid var(--accent-primary)' : '2px solid var(--border-primary)'};
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   animation: ${fadeInUp} 0.8s ease-out;
   transform-origin: center;
   overflow: hidden;
   color: var(--text-primary);
+
+  /* Light border outline effect - خيط ضوئي رفيع using box-shadow */
+  box-shadow: ${p => {
+    const baseShadow = p.$highlight
+      ? `0 20px 60px ${() => subscriptionTheme.shadows.small}`
+      : 'var(--shadow-lg)';
+    const lightBorder = p.$highlight
+      ? 'inset 0 0 0 1px rgba(255, 143, 16, 0.6), 0 0 0 1px rgba(255, 215, 0, 0.4)'
+      : 'inset 0 0 0 1px rgba(255, 255, 255, 0.1)';
+    return `${baseShadow}, ${lightBorder}`;
+  }};
+
+  /* Background images based on plan type */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: ${p => {
+      if (p.$planId === 'free' || p.$planId === 'private') {
+        return 'url(/assets/images/seller-cards/private.png)';
+      } else if (p.$planId === 'dealer') {
+        return 'url(/assets/images/seller-cards/dealer.png)';
+      } else if (p.$planId === 'company') {
+        return 'url(/assets/images/seller-cards/company.png)';
+      }
+      return 'none';
+    }};
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.15;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: 16px;
+  }
+
+  /* Shimmer effect for popular plan - using ::before for shimmer */
+  ${p => p.$highlight && css`
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.15),
+        transparent
+      );
+      animation: ${shimmer} 3s infinite;
+      z-index: 2;
+      pointer-events: none;
+      border-radius: 16px;
+    }
+  `}
+
+  /* Content should be above background */
+  > * {
+    position: relative;
+    z-index: 1;
+  }
 
   ${p => p.$highlight && `
     transform: scale(1.05);
@@ -422,10 +484,15 @@ const Card = styled.div<{ $highlight?: boolean; $free?: boolean }>`
     transform: none !important;
     &:hover {
       transform: none !important;
-      box-shadow: ${p => p.$highlight
-    ? `0 20px 60px ${() => subscriptionTheme.shadows.small}`
-    : 'var(--shadow-lg)'
-  };
+      box-shadow: ${p => {
+        const baseShadow = p.$highlight
+          ? `0 20px 60px ${() => subscriptionTheme.shadows.small}`
+          : 'var(--shadow-lg)';
+        const lightBorder = p.$highlight
+          ? 'inset 0 0 0 1px rgba(255, 143, 16, 0.6), 0 0 0 1px rgba(255, 215, 0, 0.4)'
+          : 'inset 0 0 0 1px rgba(255, 255, 255, 0.1)';
+        return `${baseShadow}, ${lightBorder}`;
+      }};
     }
   }
 
@@ -433,31 +500,17 @@ const Card = styled.div<{ $highlight?: boolean; $free?: boolean }>`
   @media (hover: hover) and (pointer: fine) {
     &:hover {
       transform: ${p => p.$highlight ? 'scale(1.08)' : 'scale(1.03)'};
-      box-shadow: ${p => p.$highlight
-    ? `0 25px 70px ${() => subscriptionTheme.shadows.small}`
-    : 'var(--shadow-xl)'
-  };
+      box-shadow: ${p => {
+        const baseShadow = p.$highlight
+          ? `0 25px 70px ${() => subscriptionTheme.shadows.small}`
+          : 'var(--shadow-xl)';
+        const lightBorder = p.$highlight
+          ? 'inset 0 0 0 1px rgba(255, 143, 16, 0.6), 0 0 0 1px rgba(255, 215, 0, 0.4)'
+          : 'inset 0 0 0 1px rgba(255, 255, 255, 0.1)';
+        return `${baseShadow}, ${lightBorder}`;
+      }};
     }
   }
-
-  /* Shimmer effect for popular plan */
-  ${p => p.$highlight && css`
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.15),
-        transparent
-      );
-      animation: ${shimmer} 3s infinite;
-    }
-  `}
 `;
 
 const Badge = styled.div`
@@ -492,17 +545,33 @@ const IconWrapper = styled.div<{ $color: string }>`
   align-items: center;
   justify-content: center;
   margin: 0 auto 1.5rem;
-  box-shadow: 0 8px 25px ${() => subscriptionTheme.shadows.small};
+  box-shadow: 
+    0 8px 25px ${() => subscriptionTheme.shadows.small},
+    0 0 20px rgba(255, 143, 16, 0.3);
   animation: ${rotateIn} 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   
   svg {
     width: 28px;
     height: 28px;
     color: white;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5)) blur(0.5px);
+    opacity: 0.95;
   }
 
   &:hover {
     animation: ${float} 2s ease-in-out infinite;
+    box-shadow: 
+      0 12px 35px ${() => subscriptionTheme.shadows.medium},
+      0 0 30px rgba(255, 143, 16, 0.5);
+    transform: scale(1.05);
+    
+    svg {
+      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.7)) blur(0.3px);
+      opacity: 1;
+    }
   }
 `;
 
@@ -544,15 +613,46 @@ const Price = styled.div<{ $free?: boolean }>`
     border-image: none;
     border-color: transparent;
     display: flex;
-    align-items: center;
+    align-items: baseline;
     justify-content: center;
-    gap: 0.25rem;
+    gap: 0.15rem;
     color: transparent;
+    line-height: 1;
   }
   
   .currency {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    font-weight: 600;
+    align-self: flex-start;
+    margin-top: 0.3rem;
+  }
+
+  .euro-amount {
     font-size: 1.5rem;
-    opacity: 0.8;
+    font-weight: 600;
+    background: ${p => p.$free
+    ? 'linear-gradient(135deg, #6b7280 0%, #9ca3af 100%)'
+    : `linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)`
+  };
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .cents-amount {
+    font-size: 3.8rem;
+    font-weight: 900;
+    background: ${p => p.$free
+    ? 'linear-gradient(135deg, #6b7280 0%, #9ca3af 100%)'
+    : `linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffd700 100%)`
+  };
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 20px rgba(255, 143, 16, 0.3);
+    animation: ${pulse} 3s ease-in-out infinite;
+    letter-spacing: -2px;
   }
   
   .period {
@@ -571,14 +671,32 @@ const Price = styled.div<{ $free?: boolean }>`
   }
 `;
 
-const FeatureList = styled.ul`
+const LastDigitSpan = styled.span`
+  font-size: 4.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffd700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 20px rgba(255, 143, 16, 0.4);
+  animation: ${pulse} 2s ease-in-out infinite;
+`;
+
+const FeatureList = styled.ul<{ $free?: boolean }>`
   list-style: none;
   padding: 0;
   margin: 1.5rem 0;
   min-height: 280px;
+  ${p => p.$free && `
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  `}
 `;
 
-const FeatureItem = styled.li<{ $highlight?: boolean }>`
+const FeatureItem = styled.li<{ $highlight?: boolean; $free?: boolean }>`
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
@@ -587,6 +705,12 @@ const FeatureItem = styled.li<{ $highlight?: boolean }>`
   font-size: 0.9rem;
   line-height: 1.4;
   transition: all 0.3s ease;
+  
+  ${p => p.$free && `
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  `}
   
   svg {
     width: 18px;
@@ -903,6 +1027,25 @@ const SubscriptionManagerEnhanced: React.FC = () => {
     };
   }, [updateScrollState, interval]);
 
+  // Auto-scroll to cards on mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const el = viewportRef.current;
+      if (el) {
+        // Scroll to center of first card
+        const firstCard = el.querySelector('[data-plan-card]') as HTMLElement;
+        if (firstCard) {
+          firstCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        } else {
+          // Fallback: scroll to start
+          el.scrollTo({ left: 0, behavior: 'smooth' });
+        }
+      }
+    }, 500); // Delay to ensure cards are rendered
+
+    return () => clearTimeout(timer);
+  }, []);
+
   // Close expanded on Escape (desktop/dev convenience)
   useEffect(() => {
     if (!expandedPlanId) return;
@@ -1041,7 +1184,7 @@ const SubscriptionManagerEnhanced: React.FC = () => {
                 const originalPrice = getOriginalPrice(plan.id, interval);
 
                 return (
-                  <Card $highlight={plan.popular} $free={plan.id === 'free'} style={{ animationDelay: '0s' }}>
+                  <Card $highlight={plan.popular} $free={plan.id === 'free'} $planId={plan.id} data-plan-card style={{ animationDelay: '0s' }}>
                     {plan.popular && (
                       <>
                         <Badge>
@@ -1078,8 +1221,25 @@ const SubscriptionManagerEnhanced: React.FC = () => {
                       ) : (
                         <>
                           <div className="amount">
-                            <span className="currency">€</span>
-                            {price}
+                            {(() => {
+                              const priceNum = typeof price === 'number' ? price : parseFloat(price);
+                              const priceStr = priceNum.toFixed(2);
+                              const parts = priceStr.split('.');
+                              const euroPart = parts[0];
+                              const centsPart = parts[1] || '00';
+                              const lastDigit = centsPart[centsPart.length - 1];
+                              const restCents = centsPart.slice(0, -1);
+                              return (
+                                <>
+                                  <span className="currency">€</span>
+                                  <span className="euro-amount">{euroPart}</span>
+                                  <span className="cents-amount">
+                                    .{restCents}
+                                    <LastDigitSpan>{lastDigit}</LastDigitSpan>
+                                  </span>
+                                </>
+                              );
+                            })()}
                           </div>
                           <div className="period">
                             {isBg
@@ -1096,9 +1256,9 @@ const SubscriptionManagerEnhanced: React.FC = () => {
                       )}
                     </Price>
 
-                    <FeatureList>
+                    <FeatureList $free={plan.id === 'free'}>
                       {features.map((feature, idx) => (
-                        <FeatureItem key={idx}>
+                        <FeatureItem key={idx} $free={plan.id === 'free'}>
                           {feature.icon}
                           <span>{feature.text}</span>
                         </FeatureItem>
@@ -1186,6 +1346,8 @@ const SubscriptionManagerEnhanced: React.FC = () => {
                 <Card
                   $highlight={plan.popular}
                   $free={plan.id === 'free'}
+                  $planId={plan.id}
+                  data-plan-card
                   style={{ animationDelay: `${index * 0.15}s` }}
                   onClick={() => {
                     if (isCoarsePointer) setExpandedPlanId(plan.id);
@@ -1228,7 +1390,25 @@ const SubscriptionManagerEnhanced: React.FC = () => {
                       <>
                         <div className="amount">
                           <span className="currency">€</span>
-                          {price}
+                          {(() => {
+                            const priceNum = typeof price === 'number' ? price : parseFloat(price);
+                            const priceStr = priceNum.toFixed(2);
+                            const parts = priceStr.split('.');
+                            const euroPart = parts[0];
+                            const centsPart = parts[1] || '00';
+                            const lastDigit = centsPart[centsPart.length - 1];
+                            const restCents = centsPart.slice(0, -1);
+                            return (
+                              <>
+                                <span className="currency">€</span>
+                                <span className="euro-amount">{euroPart}</span>
+                                <span className="cents-amount">
+                                  .{restCents}
+                                  <LastDigitSpan>{lastDigit}</LastDigitSpan>
+                                </span>
+                              </>
+                            );
+                          })()}
                         </div>
                         <div className="period">
                           {isBg
@@ -1245,9 +1425,9 @@ const SubscriptionManagerEnhanced: React.FC = () => {
                     )}
                   </Price>
 
-                  <FeatureList>
+                  <FeatureList $free={plan.id === 'free'}>
                     {features.map((feature, idx) => (
-                      <FeatureItem key={idx} $highlight={feature.highlight}>
+                      <FeatureItem key={idx} $highlight={feature.highlight} $free={plan.id === 'free'}>
                         {feature.highlight ? <Sparkles /> : <CheckCircle />}
                         <span>{feature.text}</span>
                       </FeatureItem>
