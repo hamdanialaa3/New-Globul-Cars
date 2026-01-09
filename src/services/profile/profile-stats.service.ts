@@ -257,9 +257,8 @@ class ProfileStatsService {
       // ✅ CRITICAL FIX: Include userId field to satisfy Firestore Security Rules
       // Security Rules require: isOwner(resource.data.userId) || (request.resource.data.userId == request.auth.uid)
       // When using merge: true, we must ensure userId field exists in the update
-      const { getAuth } = await import('firebase/auth');
       const { auth } = await import('../../firebase/firebase-config');
-      const currentUser = getAuth(auth).currentUser;
+      const currentUser = auth?.currentUser;
       
       // ✅ FIX: Always include userId field for Security Rules
       // This ensures the rule: request.resource.data.userId == request.auth.uid passes
