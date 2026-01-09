@@ -1,7 +1,7 @@
 // My Listings Page - User's Car Listings
 // صفحة إعلانات المستخدم
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../../contexts/AuthProvider';
@@ -12,6 +12,9 @@ import { CarIcon } from '../../components/icons/CarIcon';
 import CarCardGermanStyle from '../../components/CarCard/CarCardGermanStyle';
 import { logger } from '../../services/logger-service';
 import { getCarDetailsUrl } from '../../utils/routing-utils';
+import { usePullToRefresh } from '../../hooks/useMobileInteractions';
+import { PullToRefreshIndicator } from '../../components/mobile/PullToRefreshIndicator';
+import { toast } from 'react-toastify';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -237,6 +240,9 @@ const MyListingsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Pull-to-Refresh: Container ref
+  const pageContainerRef = useRef<HTMLDivElement>(null);
+
   // Load user's listings function (extracted to be reusable)
   const loadListings = async () => {
     if (!user) {
@@ -280,6 +286,32 @@ const MyListingsPage: React.FC = () => {
     loadListings();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, navigate]);
+
+  // Pull-to-Refresh: Refresh handler
+  const handleRefresh = async () => {
+    try {
+      logger.info('🔄 Pull-to-refresh: Refreshing listings');
+      await loadListings();
+      toast.success(
+        language === 'bg'
+          ? 'Обявите са актуализирани'
+          : 'Listings refreshed'
+      );
+    } catch (error) {
+      logger.error('❌ Pull-to-refresh: Failed to refresh', error as Error);
+      toast.error(
+        language === 'bg'
+          ? 'Грешка при актуализиране'
+          : 'Failed to refresh'
+      );
+    }
+  };
+
+  // Pull-to-Refresh: Hook
+  const { pulling, refreshing } = usePullToRefresh(
+    pageContainerRef,
+    handleRefresh
+  );
 
   // Calculate statistics
   const activeListings = listings.filter(l => l.status === 'active').length;
@@ -340,7 +372,16 @@ const MyListingsPage: React.FC = () => {
   }
 
   return (
-    <PageContainer>
+    <PageContainer ref={pageContainerRef}>
+      {/* Pull-to-Refresh Indicator */}
+      <PullToRefreshIndicator 
+        pulling={pulling}
+        refreshing={refreshing}
+        pullingText={language === 'bg' ? 'Издърпайте за опресняване' : 'Pull to refresh'}
+        refreshingText={language === 'bg' ? 'Опресняване...' : 'Refreshing...'}
+        position="top"
+      />
+      
       <ContentWrapper>
         {/* Header */}
         <Header>

@@ -1,5 +1,5 @@
 // Professional Notifications Page for Bulgarian Car Marketplace
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../../../hooks/useAuth';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { logger } from '../../../../services/logger-service';
@@ -23,6 +23,9 @@ import {
 } from 'lucide-react';
 // 🔴 CRITICAL: Use reusable EmptyState component
 import { NoNotifications } from '@/components/EmptyStates';
+import { usePullToRefresh } from '../../../../hooks/useMobileInteractions';
+import { PullToRefreshIndicator } from '../../../../components/mobile/PullToRefreshIndicator';
+import { toast } from 'react-toastify';
 import './NotificationsPage.css';
 
 interface Notification {
@@ -42,6 +45,38 @@ const NotificationsPage: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'unread' | 'messages' | 'system'>('all');
+
+  // Pull-to-Refresh: Container ref
+  const pageContainerRef = useRef<HTMLDivElement>(null);
+
+  // Pull-to-Refresh: Refresh handler
+  const handleRefresh = async () => {
+    if (!user?.uid) return;
+    
+    try {
+      logger.info('🔄 Pull-to-refresh: Refreshing notifications');
+      // Subscription will auto-update, just show user feedback
+      await new Promise(resolve => setTimeout(resolve, 800));
+      toast.success(
+        language === 'bg'
+          ? 'Известията са актуализирани'
+          : 'Notifications refreshed'
+      );
+    } catch (error) {
+      logger.error('❌ Pull-to-refresh: Failed to refresh', error as Error);
+      toast.error(
+        language === 'bg'
+          ? 'Грешка при актуализиране'
+          : 'Failed to refresh'
+      );
+    }
+  };
+
+  // Pull-to-Refresh: Hook
+  const { pulling, refreshing } = usePullToRefresh(
+    pageContainerRef,
+    handleRefresh
+  );
 
   // ✅ Real-time Firebase subscription
   useEffect(() => {
@@ -240,7 +275,14 @@ const NotificationsPage: React.FC = () => {
 
   return (
     <div className="notifications-page">
-      <div className="notifications-container">
+      <div className="notifications-container" ref={pageContainerRef}>
+        <PullToRefreshIndicator 
+          pulling={pulling}
+          refreshing={refreshing}
+          pullingText={language === 'bg' ? 'Издърпайте за опресняване' : 'Pull to refresh'}
+          refreshingText={language === 'bg' ? 'Опресняване...' : 'Refreshing...'}
+          position="top"
+        />
         <div className="notifications-header">
           <div className="header-left">
             <Bell size={32} />
