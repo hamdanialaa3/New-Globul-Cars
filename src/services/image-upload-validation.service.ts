@@ -414,7 +414,7 @@ export const imageUploadValidation = new ImageUploadValidationService();
  * 1. SIMPLE VALIDATION:
  *    const result = await imageUploadValidation.validateFile(file);
  *    if (!result.isValid) {
- *      console.error(result.errors);
+ *      logger.error('Image validation failed', new Error('Invalid image'), { errors: result.errors });
  *    }
  * 
  * 2. WITH CUSTOM OPTIONS:
@@ -434,6 +434,6 @@ export const imageUploadValidation = new ImageUploadValidationService();
  *      { maxSizeMB: 5 }
  *    );
  *    results.forEach((result, filename) => {
- *      console.log(`${filename}: ${result.isValid}`);
+ *      logger.info(`Image validation result: ${filename}`, { isValid: result.isValid });
  *    });
  */

@@ -8,6 +8,8 @@ import { Crown, TrendingUp, Building2, ChevronRight, Zap } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useAuth } from '../../../../contexts/AuthProvider';
 import { useTheme } from '../../../../contexts/ThemeContext';
+// ✅ CRITICAL: Import subscription plans for accurate pricing
+import { SUBSCRIPTION_PLANS } from '../../../../config/subscription-plans';
 
 // SVG icon from svgrepo (rocket)
 const RocketIcon: React.FC<{ size?: number }> = ({ size = 28 }) => (
@@ -383,12 +385,12 @@ const SubscriptionBanner: React.FC = () => {
       icon: TrendingUp,
       iconColor: 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)',
       name: isBg ? 'Търговец' : 'Dealer',
-      price: '49',
+      price: SUBSCRIPTION_PLANS.dealer.price.monthly.toString(), // ✅ 27.78
       currency: '€',
       period: isBg ? '/месец' : '/month',
       popular: true,
       features: [
-        isBg ? '✓ 50 обяви' : '✓ 50 listings',
+        isBg ? `✓ ${SUBSCRIPTION_PLANS.dealer.features.maxListings} обяви` : `✓ ${SUBSCRIPTION_PLANS.dealer.features.maxListings} listings`,
         isBg ? '✓ Анализи' : '✓ Analytics',
         isBg ? '✓ Екип' : '✓ Team management',
         isBg ? '✓ Приоритет' : '✓ Priority support',
@@ -401,11 +403,11 @@ const SubscriptionBanner: React.FC = () => {
       icon: Building2,
       iconColor: 'linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%)',
       name: isBg ? 'Компания' : 'Company',
-      price: '299',
+      price: SUBSCRIPTION_PLANS.company.price.monthly.toString(), // ✅ 137.88
       currency: '€',
       period: isBg ? '/месец' : '/month',
       features: [
-        isBg ? '✓ 100 обяви' : '✓ 100 listings',
+        isBg ? `✓ ${SUBSCRIPTION_PLANS.company.features.maxListings === -1 ? 'Неограничени' : SUBSCRIPTION_PLANS.company.features.maxListings} обяви` : `✓ ${SUBSCRIPTION_PLANS.company.features.maxListings === -1 ? 'Unlimited' : SUBSCRIPTION_PLANS.company.features.maxListings} listings`,
         isBg ? '✓ Множество локации' : '✓ Multi-location',
         isBg ? '✓ API достъп' : '✓ API access',
         isBg ? '✓ Enterprise поддръжка' : '✓ Enterprise support',

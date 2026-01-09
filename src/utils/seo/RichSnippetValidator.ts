@@ -33,6 +33,8 @@ export interface ValidationWarning {
     recommendation: string;
 }
 
+import { logger } from '../../services/logger-service';
+
 // ============================================================================
 // SCHEMA VALIDATORS
 // ============================================================================
@@ -351,22 +353,20 @@ export class RichSnippetValidator {
      * Format validation result as console log
      */
     static logResult(result: ValidationResult): void {
-        console.group('🔍 Schema Validation Result');
-        console.log(`Status: ${result.isValid ? '✅ Valid' : '❌ Invalid'}`);
+        // ✅ FIX: Removed console.* - using logger instead
+        if (result.isValid) {
+            logger.info('Schema validation result: Valid');
+        } else {
+            logger.warn('Schema validation result: Invalid', { errors: result.errors.length, warnings: result.warnings.length });
+        }
 
         if (result.errors.length > 0) {
-            console.group('❌ Errors');
-            result.errors.forEach(e => console.error(`[${e.severity}] ${e.field}: ${e.message}`));
-            console.groupEnd();
+            result.errors.forEach(e => logger.error(`Schema validation error: ${e.field}`, new Error(e.message), { severity: e.severity }));
         }
 
         if (result.warnings.length > 0) {
-            console.group('⚠️ Warnings');
-            result.warnings.forEach(w => console.warn(`${w.field}: ${w.message}\n   → ${w.recommendation}`));
-            console.groupEnd();
+            result.warnings.forEach(w => logger.warn(`Schema validation warning: ${w.field}`, { message: w.message, recommendation: w.recommendation }));
         }
-
-        console.groupEnd();
     }
 }
 

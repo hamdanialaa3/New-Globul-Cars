@@ -23,7 +23,15 @@ service cloud.firestore {
     // Profiles
     match /profiles/{profileId} {
       allow read: if true;
-      allow write: if isOwner(resource.data.userId) || (request.resource.data.userId == request.auth.uid);
+      // ✅ CRITICAL FIX: Allow write if:
+      // 1. User owns the profile (userId matches), OR
+      // 2. Creating/updating with userId matching auth.uid, OR
+      // 3. Updating own profile (profileId == auth.uid) with userId field included
+      allow write: if isOwner(resource.data.userId) 
+        || (request.resource.data.userId == request.auth.uid)
+        || (isAuthenticated() 
+            && request.auth.uid == profileId 
+            && request.resource.data.userId == request.auth.uid);
     }
     
     // Users collection

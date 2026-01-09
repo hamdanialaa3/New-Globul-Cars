@@ -26,6 +26,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 // ✅ SEO: AspectRatioBox for CLS = 0.00
 import { AspectRatioBox } from '../../utils/seo/AspectRatioBox';
+import { logger } from '@/services/logger-service';
 
 // Helper to determine the correct URL
 // ✅ CONSTITUTION: /car/{userId}/{carLocalId}
@@ -95,7 +96,7 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
           }
         }
       } catch (error) {
-        console.error('Failed to load seller data:', error);
+        logger.error('Failed to load seller data', error as Error, { sellerId: car.sellerId });
       } finally {
         setLoadingSellerData(false);
       }

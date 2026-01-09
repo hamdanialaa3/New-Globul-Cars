@@ -14,12 +14,14 @@ const functions = getFunctions();
 class BillingService {
   /**
    * Get all available plans
-   * Updated: Dec 2025 - New simplified pricing structure
+   * Updated: January 2026 - Accurate pricing from SUBSCRIPTION_PLANS
    * 
    * 3 Plans:
-   * 1. Free (Private Seller) - 5 cars/month, basic features
-   * 2. Dealer - €29/month or €300/year, 15 cars/month, 30 AI uses/month
-   * 3. Company - €199/month or €1600/year, unlimited cars, unlimited AI
+   * 1. Free (Private Seller) - 3 cars/month, basic features
+   * 2. Dealer - €27.78/month or €278/year, 30 cars/month
+   * 3. Company - €137.88/month or €1288/year, unlimited cars
+   * 
+   * ✅ CRITICAL: Prices are imported from subscription-plans.ts (single source of truth)
    */
   getAvailablePlans(): Plan[] {
     const featureKeys = (planFeatures: typeof SUBSCRIPTION_PLANS[keyof typeof SUBSCRIPTION_PLANS]['features']): string[] => {

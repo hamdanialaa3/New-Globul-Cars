@@ -615,7 +615,7 @@ const MessagesPage: React.FC = () => {
   // 🚨 CRITICAL: Validate currentConversation whenever it changes
   useEffect(() => {
     if (currentConversation && (!currentConversation.id || currentConversation.id.length !== 20)) {
-      console.log('🚨 INVALID CONVERSATION DETECTED IN STATE - CLEARING!', {
+      logger.warn('🚨 INVALID CONVERSATION DETECTED IN STATE - CLEARING!', {
         conversationId: currentConversation.id,
         idLength: currentConversation.id?.length
       });
@@ -914,13 +914,16 @@ const MessagesPage: React.FC = () => {
     const unsubscribe = advancedMessagingService.subscribeToUserConversations(
       currentUser.uid,
       (updatedConversations) => {
-        // 🚨 EMERGENCY DEBUG: Check incoming conversations
-        console.log('🚨 CONVERSATIONS RECEIVED:', updatedConversations.map(c => ({
-          id: c.id,
-          idLength: c.id?.length,
-          participants: c.participants,
-          isUIDasID: c.participants?.includes(c.id)
-        })));
+        // ✅ FIX: Removed console.log - using logger.debug instead
+        logger.debug('Conversations received', {
+          count: updatedConversations.length,
+          conversations: updatedConversations.map(c => ({
+            id: c.id,
+            idLength: c.id?.length,
+            participants: c.participants,
+            isUIDasID: c.participants?.includes(c.id)
+          }))
+        });
 
         // DEBUG: Log loaded conversations WITH VALIDATION
         logger.info('📬 Conversations received in MessagesPage', {
@@ -1113,8 +1116,8 @@ const MessagesPage: React.FC = () => {
     e.preventDefault();
     if (!newMessage.trim() || !currentUser || !currentConversation) return;
 
-    // 🚨 EMERGENCY DEBUG: Use console.log directly to bypass logger issues
-    console.log('🚨 SEND MESSAGE DEBUG:', {
+    // 🚨 EMERGENCY DEBUG: replaced with logger.debug to satisfy console ban
+    logger.debug('🚨 SEND MESSAGE DEBUG:', {
       conversationId: currentConversation.id,
       idLength: currentConversation.id?.length,
       participants: currentConversation.participants,

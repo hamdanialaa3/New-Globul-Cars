@@ -7,6 +7,8 @@ const path = require('path');
 const SRC_DIR = path.resolve(__dirname, '../src');
 const EXCLUDE_FILES = new Set([
   path.join(SRC_DIR, 'services', 'logger-service.ts'),
+  path.join(SRC_DIR, 'scripts', 'migrate-legacy-cars.ts'), // CLI script - console output acceptable
+  path.join(SRC_DIR, 'services', 'stories', 'test-story-flow.ts'), // Test script - console output acceptable
 ]);
 
 function walk(dir) {
@@ -18,7 +20,11 @@ function walk(dir) {
 }
 
 function isSourceFile(file) {
-  return /\.(ts|tsx|js|jsx)$/.test(file) && !file.includes('__mocks__') && !file.includes('__tests__');
+  return /\.(ts|tsx|js|jsx)$/.test(file) 
+    && !file.includes('__mocks__') 
+    && !file.includes('__tests__')
+    && !file.endsWith('.md') // Exclude markdown files
+    && !file.endsWith('.mdx'); // Exclude mdx files
 }
 
 function run() {

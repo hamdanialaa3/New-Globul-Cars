@@ -16,6 +16,7 @@ import { BulgarianProfileService } from '../../services/bulgarian-profile-servic
 // Services
 import SellWorkflowService from '../../services/sell-workflow-service';
 import { ImageStorageService } from '../../services/ImageStorageService';
+import { logger } from '@/services/logger-service';
 
 // Import Steps
 import SellVehicleStep1 from './steps/SellVehicleStep1';
@@ -339,7 +340,7 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
             // 1. Get images from IndexedDB
             const images = await ImageStorageService.getImages();
             
-            console.log('📤 Publishing started', {
+            logger.info('Publishing started', {
                 userId: currentUser.uid,
                 imagesCount: images.length,
                 formDataKeys: Object.keys(formData),
@@ -369,7 +370,7 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
                     const profile = await BulgarianProfileService.getUserProfile(currentUser.uid);
                     userNumericId = profile?.numericId || null;
                 } catch (error) {
-                    console.error('Failed to get user numeric ID:', error);
+                    logger.error('Failed to get user numeric ID', error as Error);
                 }
 
                 toast.success(language === 'bg' ? 'Обявата е публикувана успешно!' : 'Vehicle published successfully!');
@@ -394,7 +395,7 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
             }
 
         } catch (error: any) {
-            console.error('❌ Publishing failed', error);
+            logger.error('Publishing failed', error as Error);
             
             // Detailed error messages based on error type
             let errorMsg = '';

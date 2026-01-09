@@ -11,6 +11,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import styledBase, { keyframes } from 'styled-components';
+import { logger } from '@/services/logger-service';
 import { 
   Send, 
   Image as ImageIcon, 
@@ -433,7 +434,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
         fileInputRef.current.value = '';
       }
     } catch (error) {
-      console.error('Failed to send image:', error);
+      logger.error('Failed to send image', error as Error);
       alert(locale === 'bg' ? 'Грешка при изпращане на снимката' : 'Failed to send image');
     } finally {
       setIsSending(false);

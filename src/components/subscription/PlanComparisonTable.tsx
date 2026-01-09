@@ -14,6 +14,8 @@ import {
   ChevronDown, ChevronUp, Sparkles, Rocket, Building2
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+// ✅ CRITICAL: Import subscription plans for accurate pricing
+import { SUBSCRIPTION_PLANS } from '@/config/subscription-plans';
 
 // ==================== ANIMATIONS ====================
 
@@ -624,7 +626,7 @@ export const PlanComparisonTable: React.FC = () => {
                     <Crown />
                   </PlanIcon>
                   <PlanName>{text.dealer}</PlanName>
-                  <PlanPrice $featured>29€<PlanPriceUnit>{text.month}</PlanPriceUnit></PlanPrice>
+                  <PlanPrice $featured>{SUBSCRIPTION_PLANS.dealer.price.monthly}€<PlanPriceUnit>{text.month}</PlanPriceUnit></PlanPrice>
                   <PopularBadge>
                     <Sparkles />
                     {text.popular}
@@ -639,7 +641,7 @@ export const PlanComparisonTable: React.FC = () => {
                     <Building2 />
                   </PlanIcon>
                   <PlanName>{text.company}</PlanName>
-                  <PlanPrice>99€<PlanPriceUnit>{text.month}</PlanPriceUnit></PlanPrice>
+                  <PlanPrice>{SUBSCRIPTION_PLANS.company.price.monthly}€<PlanPriceUnit>{text.month}</PlanPriceUnit></PlanPrice>
                 </PlanHeader>
               </TableHeadCell>
             </TableRow>

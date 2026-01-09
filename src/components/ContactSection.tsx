@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Phone, Mail, MapPin, MessageSquare } from 'lucide-react';
 
 import { CarListing } from '../types/CarListing';
+import { logger } from '@/services/logger-service';
 
 interface ContactSectionProps {
   car: CarListing;
@@ -17,11 +18,11 @@ export function ContactSection({ car }: ContactSectionProps) {
     setIsSending(true);
     try {
       // TODO: Implement messaging logic
-      console.log('Sending message:', message, 'for car:', car.id);
+      logger.info('send_message', { carId: car.id, message });
       alert('Message sent successfully!');
       setMessage('');
     } catch (error) {
-      console.error('Error sending message:', error);
+      logger.error('send_message_failed', error as Error, { carId: car.id });
       alert('Failed to send message');
     } finally {
       setIsSending(false);

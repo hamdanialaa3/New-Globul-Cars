@@ -8,6 +8,8 @@ import { useLanguage } from '../../contexts/LanguageContext';
 // ✅ استيراد ملف الإعدادات المركزي
 import subscriptionTheme, { getPrimaryGradient, getPrimaryGradientWithMiddle, getShadowColor, getBorderColor } from './subscription-theme';
 import { logger } from '../../services/logger-service';
+// ✅ CRITICAL: Import subscription plans for accurate pricing
+import { SUBSCRIPTION_PLANS } from '../../config/subscription-plans';
 
 
 // ==================== ANIMATIONS ====================
@@ -962,11 +964,18 @@ const SubscriptionManagerEnhanced: React.FC = () => {
     if (planId === 'free') return null;
     if (interval === 'monthly') return null;
 
+    // ✅ CRITICAL: Use SUBSCRIPTION_PLANS as single source of truth
     if (planId === 'dealer') {
-      return '€348'; // 29 * 12 = 348, now 300 (save 48)
+      const monthlyPrice = SUBSCRIPTION_PLANS.dealer.price.monthly; // 27.78
+      const annualEquivalent = monthlyPrice * 12; // 333.36
+      const actualAnnual = SUBSCRIPTION_PLANS.dealer.price.annual; // 278
+      return `€${annualEquivalent.toFixed(2)}`; // Show what they would pay monthly * 12
     }
     if (planId === 'company') {
-      return '€2,388'; // 199 * 12 = 2388, now 1600 (save 788)
+      const monthlyPrice = SUBSCRIPTION_PLANS.company.price.monthly; // 137.88
+      const annualEquivalent = monthlyPrice * 12; // 1654.56
+      const actualAnnual = SUBSCRIPTION_PLANS.company.price.annual; // 1288
+      return `€${annualEquivalent.toFixed(2)}`; // Show what they would pay monthly * 12
     }
     return null;
   };

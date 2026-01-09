@@ -19,6 +19,8 @@ declare global {
   }
 }
 
+import { logger } from '@/services/logger-service';
+
 export type ConsentStatus = 'granted' | 'denied';
 
 export interface ConsentSettings {
@@ -72,10 +74,10 @@ export const initConsentMode = (): void => {
 
     // Log initialization
     if (process.env.NODE_ENV === 'development') {
-      console.log('[Consent Mode] Initialized with default state:', DEFAULT_CONSENT);
+      logger.debug('[Consent Mode] Initialized with default state', { DEFAULT_CONSENT });
     }
   } else if (process.env.NODE_ENV === 'development') {
-    console.log('[Consent Mode] Already initialized in HTML, skipping');
+    logger.debug('[Consent Mode] Already initialized in HTML, skipping');
   }
 };
 
@@ -117,7 +119,7 @@ export const updateConsent = (settings: Partial<ConsentSettings>): void => {
 
   // Log update
   if (process.env.NODE_ENV === 'development') {
-    console.log('[Consent Mode] Updated consent:', settings);
+    logger.debug('[Consent Mode] Updated consent', { settings });
   }
 };
 
@@ -156,7 +158,7 @@ const saveConsentPreferences = (settings: Partial<ConsentSettings>): void => {
     const updated = { ...existing, ...settings, timestamp: Date.now() };
     localStorage.setItem('consent_preferences', JSON.stringify(updated));
   } catch (error) {
-    console.error('[Consent Mode] Failed to save preferences:', error);
+    logger.error('[Consent Mode] Failed to save preferences', error as Error);
   }
 };
 
@@ -180,7 +182,7 @@ export const getConsentPreferences = (): (ConsentSettings & { timestamp?: number
     
     return preferences;
   } catch (error) {
-    console.error('[Consent Mode] Failed to load preferences:', error);
+    logger.error('[Consent Mode] Failed to load preferences', error as Error);
     return null;
   }
 };
@@ -212,10 +214,10 @@ export const clearConsentPreferences = (): void => {
   try {
     localStorage.removeItem('consent_preferences');
     if (process.env.NODE_ENV === 'development') {
-      console.log('[Consent Mode] Cleared all preferences');
+      logger.debug('[Consent Mode] Cleared all preferences');
     }
   } catch (error) {
-    console.error('[Consent Mode] Failed to clear preferences:', error);
+    logger.error('[Consent Mode] Failed to clear preferences', error as Error);
   }
 };
 

@@ -17,6 +17,8 @@ import {
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthProvider';
 import { logger } from '@/services/logger-service';
+// ✅ CRITICAL: Import subscription plans for accurate pricing
+import { SUBSCRIPTION_PLANS } from '@/config/subscription-plans';
 
 // ==================== ANIMATIONS ====================
 
@@ -990,6 +992,7 @@ export const PricingPageEnhanced: React.FC<PricingPageEnhancedProps> = ({
   
   const text = t[language] || t.en;
   
+  // ✅ CRITICAL: Use SUBSCRIPTION_PLANS as single source of truth
   const plans = [
     {
       id: 'free',
@@ -997,11 +1000,11 @@ export const PricingPageEnhanced: React.FC<PricingPageEnhancedProps> = ({
       description: text.freeDesc,
       icon: <Zap />,
       iconColor: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
-      price: { monthly: 0, annual: 0 },
-      listings: 3,
+      price: SUBSCRIPTION_PLANS.free.price, // ✅ { monthly: 0, annual: 0 }
+      listings: SUBSCRIPTION_PLANS.free.features.maxListings, // ✅ 3
       featured: false,
       features: [
-        { text: `3 ${text.listings}`, highlighted: true },
+        { text: `${SUBSCRIPTION_PLANS.free.features.maxListings} ${text.listings}`, highlighted: true },
         { text: language === 'bg' ? 'Основни функции' : 'Basic features' },
         { text: language === 'bg' ? 'Стандартна поддръжка' : 'Standard support' }
       ]
@@ -1012,16 +1015,16 @@ export const PricingPageEnhanced: React.FC<PricingPageEnhancedProps> = ({
       description: text.dealerDesc,
       icon: <Crown />,
       iconColor: 'linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)',
-      price: { monthly: 20, annual: 192 },
-      listings: 30,
+      price: SUBSCRIPTION_PLANS.dealer.price, // ✅ { monthly: 27.78, annual: 278 }
+      listings: SUBSCRIPTION_PLANS.dealer.features.maxListings, // ✅ 30
       featured: true,
       features: [
-        { text: `30 ${text.listings}`, highlighted: true },
+        { text: `${SUBSCRIPTION_PLANS.dealer.features.maxListings} ${text.listings}`, highlighted: true },
         { text: language === 'bg' ? 'VIP значка' : 'VIP badge', highlighted: true },
         { text: language === 'bg' ? 'Приоритетна поддръжка' : 'Priority support' },
         { text: language === 'bg' ? 'Разширена аналитика' : 'Advanced analytics' },
         { text: language === 'bg' ? 'Bulk качване' : 'Bulk upload' },
-        { text: language === 'bg' ? '5 членове на екип' : '5 team members' }
+        { text: `${SUBSCRIPTION_PLANS.dealer.features.maxTeamMembers} ${language === 'bg' ? 'членове на екип' : 'team members'}` }
       ]
     },
     {
@@ -1030,15 +1033,15 @@ export const PricingPageEnhanced: React.FC<PricingPageEnhancedProps> = ({
       description: text.companyDesc,
       icon: <Building2 />,
       iconColor: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
-      price: { monthly: 50, annual: 480 },
-      listings: -1, // unlimited
+      price: SUBSCRIPTION_PLANS.company.price, // ✅ { monthly: 137.88, annual: 1288 }
+      listings: SUBSCRIPTION_PLANS.company.features.maxListings, // ✅ -1 (unlimited)
       featured: false,
       features: [
         { text: text.unlimited + ' ' + text.listings, highlighted: true },
         { text: language === 'bg' ? 'Всичко от Dealer' : 'Everything from Dealer' },
         { text: language === 'bg' ? 'API достъп' : 'API access' },
         { text: language === 'bg' ? 'Персонален мениджър' : 'Dedicated manager' },
-        { text: language === 'bg' ? 'Неограничен екип' : 'Unlimited team' },
+        { text: `${SUBSCRIPTION_PLANS.company.features.maxTeamMembers} ${language === 'bg' ? 'членове на екип' : 'team members'}` },
         { text: language === 'bg' ? 'Персонализиран брандинг' : 'Custom branding' }
       ]
     }

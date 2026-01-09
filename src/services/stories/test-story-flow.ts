@@ -6,13 +6,15 @@
 // Mock dependencies
 import { storyService } from './story.service';
 import { unifiedCarService } from '../UnifiedCarService';
+import { logger } from '../logger-service';
 
 // We need to bypass the actual Firestore calls for this test to run in node environment easily, 
 // OR we can rely on the fact that if we run it via ts-node in the project, it might try to connect to real Firestore.
 // Since we want to check the LOGIC of "Calling Update Car", we will spy on unifiedCarService.
 
 const runTest = async () => {
-    console.log('🚀 Starting Story Service Verification...');
+    // ✅ FIX: Removed console.log - using logger.info instead
+    logger.info('Starting Story Service Verification');
 
     // Mock Payload
     const mockStoryData = {
@@ -33,15 +35,14 @@ const runTest = async () => {
         // Mock method to intercept call
         let updateCalled = false;
         unifiedCarService.updateCarVideoStatus = async (carId, status) => {
-            console.log('🕵️ INTERCEPTED: updateCarVideoStatus called!');
-            console.log(`   Car ID: ${carId}`);
-            console.log(`   Status:JSON.stringify(status)`);
+            // ✅ FIX: Removed console.log - using logger.debug instead
+            logger.debug('INTERCEPTED: updateCarVideoStatus called', { carId, status });
 
             if (carId === mockStoryData.carId && status.hasVideo === true && status.videoUrl === mockStoryData.mediaUrl) {
                 updateCalled = true;
-                console.log('✅ VERIFIED: Parameters match expectation.');
+                logger.info('VERIFIED: Parameters match expectation');
             } else {
-                console.error('❌ FAILED: Parameters do not match.');
+                logger.error('FAILED: Parameters do not match', new Error('Parameter mismatch'), { carId, status, expected: mockStoryData });
             }
             return Promise.resolve();
         };
@@ -54,7 +55,7 @@ const runTest = async () => {
         // So for this "Dry Run", we primarily want to see if our service CODE compiles and logic flow is correct.
         // To truly test this without a live DB connection, we'd need comprehensive mocking of `firebase/firestore`.
 
-        console.log('⚠️ Note: This test expects to run within an environment where Firestore imports work, or relies on compilation check.');
+        logger.debug('Note: This test expects to run within an environment where Firestore imports work, or relies on compilation check.');
 
         // Create Story (This effectively tests the integration)
         // If we can't fully run it, we assume success if compilation passes and we reviewed the code.
@@ -63,10 +64,10 @@ const runTest = async () => {
         // await storyService.createStory(mockStoryData); 
         // ^ This will likely crash due to Firebase initialization in a standalone script without proper setup.
 
-        console.log('✅ Code structure verified. Service exports are valid.');
+        logger.info('Code structure verified. Service exports are valid.');
 
     } catch (error) {
-        console.error('❌ Test execution failed:', error);
+        logger.error('Test execution failed', error as Error);
     }
 };
 

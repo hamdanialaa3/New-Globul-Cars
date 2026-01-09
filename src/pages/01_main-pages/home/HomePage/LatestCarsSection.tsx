@@ -333,7 +333,7 @@ const LatestCarsSection: React.FC = () => {
               latestCars.push(car);
             }
           } catch (e) {
-            console.error('Error mapping car in LatestCarsSection', e);
+            logger.error('Error mapping car in LatestCarsSection', e as Error);
           }
         });
 

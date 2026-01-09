@@ -2116,7 +2116,7 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
                             try { require('react-toastify').toast.success(msg); } catch (e) { alert(msg); }
 
                           } catch (error) {
-                            console.error('Failed to update main photo', error);
+                            logger.error('Failed to update main photo', error as Error);
                             // Revert on error would go here ideally
                             const msg = language === 'bg' ? 'Грешка при обновяване' : 'Update failed';
                             try { require('react-toastify').toast.error(msg); } catch (e) { alert(msg); }

@@ -261,7 +261,7 @@ const BillingPage: React.FC = () => {
           <Row>
             <Card>
               <Title>{t('billing.dealer') || 'Dealer'}</Title>
-              <Price>{interval === 'monthly' ? '€29/mo' : '€300/yr'}</Price>
+              <Price>{interval === 'monthly' ? '€27.78/mo' : '€278/yr'}</Price>
               <Button 
                 onClick={() => startCheckout('dealer')} 
                 disabled={!!loading.dealer}
@@ -271,7 +271,7 @@ const BillingPage: React.FC = () => {
             </Card>
             <Card>
               <Title>{t('billing.company') || 'Company'}</Title>
-              <Price>{interval === 'monthly' ? '€199/mo' : '€1589/yr'}</Price>
+              <Price>{interval === 'monthly' ? '€137.88/mo' : '€1288/yr'}</Price>
               <Button 
                 onClick={() => startCheckout('company')} 
                 disabled={!!loading.company}

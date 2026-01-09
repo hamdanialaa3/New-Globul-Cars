@@ -21,10 +21,12 @@ const NotificationHandler: React.FC = () => {
 
     // Only initialize notifications if a user is logged in
     if (user) {
-      // 1. Request permission and save the token
-      notificationService.requestPermissionAndSaveToken(user.uid);
-
-      // 2. Listen for foreground messages
+      // ✅ CRITICAL FIX: Don't request permission automatically in useEffect
+      // Notification.requestPermission() can only be called from a user event handler
+      // Instead, only listen for foreground messages (permission will be requested on user interaction)
+      
+      // 1. Listen for foreground messages only (don't request permission here)
+      // Permission will be requested when user clicks a button (e.g., NotificationBanner)
       const unsubscribe = notificationService.onForegroundMessage((payload) => {
         const { notification } = payload;
         if (notification) {
@@ -33,7 +35,7 @@ const NotificationHandler: React.FC = () => {
         }
       });
 
-      // 3. Cleanup listener on component unmount
+      // 2. Cleanup listener on component unmount
       return () => {
         unsubscribe();
       };
