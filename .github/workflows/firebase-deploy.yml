@@ -1,95 +1,112 @@
 name: Deploy to Firebase (Hosting + Functions)
 
 on:
-    push:
-        branches:
-            - main
-    workflow_dispatch:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 concurrency:
-    group: firebase-deploy
-    cancel-in-progress: true
+  group: firebase-deploy
+  cancel-in-progress: true
 
 jobs:
-    deploy:
-        runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            id-token: write
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
 
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-            - name: Setup Node.js
-              uses: actions/setup-node@v4
-              with:
-                  node-version: "20"
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
-            - name: Cache root node_modules
-              uses: actions/cache@v4
-              with:
-                  path: |
-                      ~/.npm
-                  key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-                  restore-keys: |
-                      ${{ runner.os }}-npm-
+      - name: Cache root node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
 
-            - name: Install app dependencies
-              run: npm ci
+      - name: Install app dependencies
+        run: npm ci
 
-            - name: Build app (CRA)
-              env:
-                  NODE_ENV: production
-                  CI: false
-              run: npm run build
+      - name: Build app (CRA)
+        env:
+          NODE_ENV: production
+          CI: false
+        run: npm run build
 
-            - name: Install Firebase CLI
-              run: npm i -g firebase-tools
+      - name: Install Firebase CLI
+        run: npm i -g firebase-tools
 
-            - name: Install Cloud Functions dependencies
-              working-directory: functions
-              run: npm ci
+      - name: Install Cloud Functions dependencies
+        working-directory: functions
+        run: npm ci
 
-            - name: Configure Service Account
-              env:
-                  FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-              run: |
-                  echo "${FIREBASE_SERVICE_ACCOUNT}" > "${HOME}/gcloud.json"
-                  echo "GOOGLE_APPLICATION_CREDENTIALS=${HOME}/gcloud.json" >> $GITHUB_ENV
-                  # Verify service account is configured
-                  if [ -f "${HOME}/gcloud.json" ]; then
-                    echo "✅ Service account configured successfully"
-                    # Extract and display service account email (for debugging)
-                    SERVICE_EMAIL=$(grep -o '"client_email": "[^"]*"' "${HOME}/gcloud.json" | cut -d'"' -f4 || echo "unknown")
-                    echo "Service account: ${SERVICE_EMAIL}"
-                  else
-                    echo "❌ Failed to configure service account"
-                    exit 1
-                  fi
+      - name: Configure Service Account
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          # Write service account JSON to file
+          echo "${FIREBASE_SERVICE_ACCOUNT}" > "${HOME}/gcloud.json"
 
-            - name: Set Stripe runtime config (functions)
-              env:
-                  PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-                  STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-                  STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
-              run: |
-                  if [ -n "$STRIPE_SECRET_KEY" ] && [ -n "$STRIPE_WEBHOOK_SECRET" ]; then
-                    firebase functions:config:set stripe.secret="$STRIPE_SECRET_KEY" stripe.webhook="$STRIPE_WEBHOOK_SECRET" --project "$PROJECT_ID"
-                  else
-                    echo "Stripe secrets not provided; skipping functions:config:set"
-                  fi
+          # Verify the file was created and contains valid JSON
+          if [ ! -f "${HOME}/gcloud.json" ] || [ ! -s "${HOME}/gcloud.json" ]; then
+            echo "❌ Failed to create service account file"
+            exit 1
+          fi
 
-            - name: Deploy Hosting
-              env:
-                  PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-              run: |
-                  firebase deploy --only hosting --project "$PROJECT_ID" --non-interactive
+          # Check for client_email in the JSON
+          if ! grep -q '"client_email"' "${HOME}/gcloud.json"; then
+            echo "❌ Service account JSON is missing client_email field"
+            echo "File contents (first 100 chars):"
+            head -c 100 "${HOME}/gcloud.json"
+            exit 1
+          fi
 
-            - name: Deploy Functions
-              env:
-                  PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-              run: |
-                  # Activate service account before deploying
-                  gcloud auth activate-service-account --key-file="${GOOGLE_APPLICATION_CREDENTIALS}" --quiet || true
-                  firebase deploy --only functions --project "$PROJECT_ID" --non-interactive
+          # Set environment variable for Firebase CLI
+          echo "GOOGLE_APPLICATION_CREDENTIALS=${HOME}/gcloud.json" >> $GITHUB_ENV
+
+          # Extract and display service account email
+          SERVICE_EMAIL=$(jq -r '.client_email // "unknown"' "${HOME}/gcloud.json")
+          echo "✅ Service account configured: ${SERVICE_EMAIL}"
+
+          # Verify it's not "unknown"
+          if [ "${SERVICE_EMAIL}" = "unknown" ]; then
+            echo "❌ Failed to extract client_email from service account"
+            exit 1
+          fi
+
+      - name: Set Stripe runtime config (functions)
+        env:
+          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+        run: |
+          if [ -n "$STRIPE_SECRET_KEY" ] && [ -n "$STRIPE_WEBHOOK_SECRET" ]; then
+            firebase functions:config:set stripe.secret="$STRIPE_SECRET_KEY" stripe.webhook="$STRIPE_WEBHOOK_SECRET" --project "$PROJECT_ID"
+          else
+            echo "Stripe secrets not provided; skipping functions:config:set"
+          fi
+
+      - name: Deploy Hosting
+        env:
+          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+        run: |
+          firebase deploy --only hosting --project "$PROJECT_ID" --non-interactive
+
+      - name: Deploy Functions
+        env:
+          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+        run: |
+          # Activate service account before deploying
+          gcloud auth activate-service-account --key-file="${GOOGLE_APPLICATION_CREDENTIALS}" --quiet || true
+          firebase deploy --only functions --project "$PROJECT_ID" --non-interactive
