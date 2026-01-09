@@ -64,31 +64,33 @@ const NoNotifications: React.FC<NoNotificationsProps> = ({ variant = 'all' }) =>
   const { language } = useLanguage();
   const isBg = language === 'bg';
 
+  // Title text based on language and variant
+  const titleText = isBg
+    ? variant === 'unread'
+      ? 'Няма непрочетени известия'
+      : 'Няма известия'
+    : variant === 'unread'
+      ? 'No Unread Notifications'
+      : 'No Notifications';
+
+  // Description text based on language and variant
+  const descriptionText = isBg
+    ? variant === 'unread'
+      ? 'Всички ваши известия са прочетени. Ще получите известие, когато има нови събития.'
+      : 'Все още нямате известия. Ще получите известия за нови съобщения, отговори и важни събития.'
+    : variant === 'unread'
+      ? "All your notifications have been read. You'll receive notifications when there are new events."
+      : "You don't have any notifications yet. You'll receive notifications for new messages, replies, and important events.";
+
   return (
     <Container>
       <IconWrapper>
         {variant === 'unread' ? <CheckCircle size={48} /> : <Bell size={48} />}
       </IconWrapper>
       
-      <Title>
-        {isBg
-          ? variant === 'unread'
-            ? 'Няма непрочетени известия'
-            : 'Няма известия'
-          : variant === 'unread'
-            ? 'No Unread Notifications'
-            : 'No Notifications'}
-      </Title>
+      <Title>{titleText}</Title>
       
-      <Description>
-        {isBg
-          ? variant === 'unread'
-            ? 'Всички ваши известия са прочетени. Ще получите известие, когато има нови събития.'
-            : 'Все още нямате известия. Ще получите известия за нови съобщения, отговори и важни събития.'
-          : variant === 'unread'
-            ? 'All your notifications have been read. You'll receive notifications when there are new events.'
-            : "You don't have any notifications yet. You'll receive notifications for new messages, replies, and important events."}
-      </Description>
+      <Description>{descriptionText}</Description>
     </Container>
   );
 };
