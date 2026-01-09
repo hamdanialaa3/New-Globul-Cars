@@ -21,6 +21,68 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: ✅ Pre-flight check - Validate all required secrets
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+        run: |
+          echo "======================================"
+          echo "🔍 Validating GitHub Secrets..."
+          echo "======================================"
+          
+          MISSING_SECRETS=""
+          
+          # Check FIREBASE_SERVICE_ACCOUNT
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            echo "❌ FIREBASE_SERVICE_ACCOUNT is NOT SET"
+            MISSING_SECRETS="$MISSING_SECRETS FIREBASE_SERVICE_ACCOUNT"
+          else
+            echo "✅ FIREBASE_SERVICE_ACCOUNT is set (${#FIREBASE_SERVICE_ACCOUNT} characters)"
+          fi
+          
+          # Check FIREBASE_PROJECT_ID
+          if [ -z "$FIREBASE_PROJECT_ID" ]; then
+            echo "❌ FIREBASE_PROJECT_ID is NOT SET"
+            MISSING_SECRETS="$MISSING_SECRETS FIREBASE_PROJECT_ID"
+          else
+            echo "✅ FIREBASE_PROJECT_ID is set: $FIREBASE_PROJECT_ID"
+          fi
+          
+          # Fail with clear instructions if any secret is missing
+          if [ -n "$MISSING_SECRETS" ]; then
+            echo ""
+            echo "======================================"
+            echo "❌ DEPLOYMENT BLOCKED"
+            echo "======================================"
+            echo "Missing required secrets:$MISSING_SECRETS"
+            echo ""
+            echo "📋 TO FIX THIS:"
+            echo "1. Go to: https://github.com/${{ github.repository }}/settings/secrets/actions"
+            echo "2. Click 'New repository secret'"
+            echo "3. Add missing secrets:"
+            echo ""
+            if echo "$MISSING_SECRETS" | grep -q "FIREBASE_SERVICE_ACCOUNT"; then
+              echo "   🔑 FIREBASE_SERVICE_ACCOUNT"
+              echo "      - Get from: Google Cloud Console > IAM & Admin > Service Accounts"
+              echo "      - Download JSON key for: firebase-adminsdk-fbsvc@fire-new-globul.iam.gserviceaccount.com"
+              echo "      - Paste FULL JSON contents as secret value"
+              echo ""
+            fi
+            if echo "$MISSING_SECRETS" | grep -q "FIREBASE_PROJECT_ID"; then
+              echo "   🎯 FIREBASE_PROJECT_ID"
+              echo "      - Value: fire-new-globul"
+              echo "      - This is your Firebase project ID"
+              echo ""
+            fi
+            echo "4. Save secrets and re-run this workflow"
+            echo "======================================"
+            exit 1
+          fi
+          
+          echo ""
+          echo "✅ All required secrets are configured!"
+          echo "======================================"
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
