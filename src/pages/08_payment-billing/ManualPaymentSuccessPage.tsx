@@ -15,6 +15,7 @@ import { useAuth } from '../../contexts/AuthProvider';
 import { manualPaymentService } from '../../services/payment/manual-payment-service';
 import { BANK_DETAILS } from '../../config/bank-details';
 import type { ManualPaymentTransaction } from '../../types/payment.types';
+import { logger } from '../../services/logger-service';
 
 const ManualPaymentSuccessPage: React.FC = () => {
   const navigate = useNavigate();
@@ -44,7 +45,8 @@ const ManualPaymentSuccessPage: React.FC = () => {
       const data = await manualPaymentService.getTransaction(transactionId);
       setTransaction(data);
     } catch (error) {
-      console.error('Failed to load transaction', error);
+      logger.error('Failed to load transaction', error, { transactionId, userId: user?.uid });
+      toast.error(language === 'bg' ? 'Грешка при зареждане на плащането' : 'Failed to load transaction');
     } finally {
       setLoading(false);
     }
