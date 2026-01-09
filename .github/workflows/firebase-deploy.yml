@@ -52,38 +52,53 @@ jobs:
         run: npm ci
 
       - name: Configure Service Account
-        env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
-          # Write service account JSON to file
-          echo "${FIREBASE_SERVICE_ACCOUNT}" > "${HOME}/gcloud.json"
+          # Check if secret is set
+          if [ -z "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" ]; then
+            echo "❌ FIREBASE_SERVICE_ACCOUNT secret is not set or is empty"
+            echo "Please add it in: Settings → Secrets and variables → Actions"
+            exit 1
+          fi
+          
+          # Write service account JSON to file (use printf to avoid newline issues)
+          printf '%s' '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > "${HOME}/gcloud.json"
 
-          # Verify the file was created and contains valid JSON
-          if [ ! -f "${HOME}/gcloud.json" ] || [ ! -s "${HOME}/gcloud.json" ]; then
+          # Verify the file was created and contains data
+          if [ ! -f "${HOME}/gcloud.json" ]; then
             echo "❌ Failed to create service account file"
             exit 1
           fi
+          
+          FILE_SIZE=$(wc -c < "${HOME}/gcloud.json")
+          if [ "$FILE_SIZE" -lt 100 ]; then
+            echo "❌ Service account file is too small ($FILE_SIZE bytes)"
+            echo "File contents:"
+            cat "${HOME}/gcloud.json"
+            exit 1
+          fi
 
-          # Check for client_email in the JSON
-          if ! grep -q '"client_email"' "${HOME}/gcloud.json"; then
-            echo "❌ Service account JSON is missing client_email field"
-            echo "File contents (first 100 chars):"
-            head -c 100 "${HOME}/gcloud.json"
+          # Validate JSON format
+          if ! jq empty "${HOME}/gcloud.json" 2>/dev/null; then
+            echo "❌ Service account file is not valid JSON"
+            echo "First 200 characters:"
+            head -c 200 "${HOME}/gcloud.json"
+            exit 1
+          fi
+
+          # Extract client_email
+          SERVICE_EMAIL=$(jq -r '.client_email // empty' "${HOME}/gcloud.json")
+          
+          if [ -z "$SERVICE_EMAIL" ]; then
+            echo "❌ Service account JSON is missing 'client_email' field"
+            echo "JSON keys found:"
+            jq -r 'keys | join(", ")' "${HOME}/gcloud.json"
             exit 1
           fi
 
           # Set environment variable for Firebase CLI
           echo "GOOGLE_APPLICATION_CREDENTIALS=${HOME}/gcloud.json" >> $GITHUB_ENV
-
-          # Extract and display service account email
-          SERVICE_EMAIL=$(jq -r '.client_email // "unknown"' "${HOME}/gcloud.json")
+          
           echo "✅ Service account configured: ${SERVICE_EMAIL}"
-
-          # Verify it's not "unknown"
-          if [ "${SERVICE_EMAIL}" = "unknown" ]; then
-            echo "❌ Failed to extract client_email from service account"
-            exit 1
-          fi
 
       - name: Set Stripe runtime config (functions)
         env:
