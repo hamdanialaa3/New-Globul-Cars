@@ -236,3 +236,5 @@ This project is proprietary software. Unauthorized copying or distribution is pr
 **Framework:** React 18 + TypeScript  
 **Backend:** Firebase (Firestore, Auth, Functions, Hosting)  
 **Last Updated:** January 9, 2026
+
+<!-- CI/CD Test: 2026-01-10 01:02 -->
