@@ -49,10 +49,15 @@
     
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-R8JY5KM421"></script>
-    <script>
-      gtag('js', new Date());
-      gtag('config', 'G-R8JY5KM421');
-    </script>
+        <script>
+            const analyticsCookieDomain = window.location.hostname || 'mobilebg.eu';
+            gtag('js', new Date());
+            gtag('config', 'G-R8JY5KM421', {
+                cookie_domain: analyticsCookieDomain,
+                cookie_flags: 'SameSite=None;Secure',
+                send_page_view: true
+            });
+        </script>
     
     <meta charset="utf-8" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, private" />

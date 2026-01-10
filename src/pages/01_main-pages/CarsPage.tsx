@@ -865,7 +865,7 @@ const CarsPage: React.FC = () => {
       });
     } catch (err) {
       const processingTime = Date.now() - startTime;
-      console.error('❌ Smart search error:', err);
+      // ✅ FIX: Removed console.error - using logger instead
       logger.error('❌ Smart Search FAILED', err as Error, {
         context: 'CarsPage',
         action: 'smartSearch'

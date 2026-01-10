@@ -168,12 +168,12 @@ class SmartSearchService {
     const startTime = Date.now();
     
     try {
-      // 🔍 DEBUG LOG
-      console.log('🔍 SmartSearch.search() called', { keywords, userId, page, pageSize });
+      // ✅ FIX: Removed console.log - using logger.debug instead
+      logger.debug('SmartSearch.search() called', { keywords, userId, page, pageSize });
       
       // 1. Parse keywords intelligently
       const parsed = this.parseKeywords(keywords);
-      console.log('🎯 Keywords parsed:', parsed);
+      logger.debug('Keywords parsed', { parsed });
       
       // 2. Check cache first
       const cacheKey = `smart_search_${keywords}_${userId || 'guest'}_${page}`;
@@ -181,15 +181,15 @@ class SmartSearchService {
         cacheKey,
         async () => {
           // 3. Execute Firestore query
-          console.log('📡 Executing Firestore query...');
+          logger.debug('Executing Firestore query');
           const results = await this.executeSearch(parsed, pageSize * page);
-          console.log('📊 Firestore returned:', results.length, 'cars');
+          logger.debug('Firestore returned', { count: results.length });
           return results;
         },
         3 * 60 * 1000 // 3 minutes cache
       );
       
-      console.log('📦 After cache/fetch:', cached.length, 'cars');
+      logger.debug('After cache/fetch', { count: cached.length });
       
       // 4. Apply personalization if user logged in
       let rankedCars = cached;

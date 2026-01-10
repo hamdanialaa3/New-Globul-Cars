@@ -57,44 +57,61 @@ const GuardContainer = styled.div`
   backdrop-filter: blur(10px);
   padding: 2rem;
   text-align: center;
-  z-index: 9999;
-  overflow: auto;
+  z-index: 10000;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  
+  /* Ensure content is visible */
+  & > * {
+    position: relative;
+    z-index: 1;
+  }
   
   /* Decorative gradient overlay */
   &::before {
     content: '';
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
     height: 400px;
     background: radial-gradient(circle at 50% 0%, rgba(255, 107, 53, 0.15) 0%, transparent 70%);
     pointer-events: none;
+    z-index: 0;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 1rem;
   }
 `;
 
 const MessageCard = styled.div`
   position: relative;
   background: ${({ theme }) => theme.mode === 'dark'
-    ? 'rgba(30, 41, 59, 0.6)'
-    : 'rgba(255, 255, 255, 0.7)'
+    ? 'rgba(30, 41, 59, 0.95)'
+    : 'rgba(255, 255, 255, 0.95)'
   };
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid ${({ theme }) => theme.mode === 'dark'
-    ? 'rgba(148, 163, 184, 0.1)'
-    : 'rgba(255, 255, 255, 0.3)'
+    ? 'rgba(148, 163, 184, 0.2)'
+    : 'rgba(255, 255, 255, 0.5)'
   };
-  padding: 4rem 3rem;
-  border-radius: 32px;
+  padding: 3rem 2rem;
+  border-radius: 24px;
   max-width: 600px;
   width: 100%;
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.08),
-    0 4px 16px rgba(0, 0, 0, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    0 8px 32px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
   animation: scaleInBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 1;
+  margin: 2rem;
+  overflow: visible;
   
   /* Decorative glow effect on hover */
   &::after {
@@ -113,6 +130,21 @@ const MessageCard = styled.div`
     opacity: 0.5;
   }
   
+  @media (max-width: 768px) {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+    max-width: calc(100% - 2rem);
+    border-radius: 20px;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 1.5rem 1rem;
+    margin: 0.5rem;
+    max-width: calc(100% - 1rem);
+  }
+
   @keyframes scaleInBounce {
     0% {
       transform: scale(0.8);

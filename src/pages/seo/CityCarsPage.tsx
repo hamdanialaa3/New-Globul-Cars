@@ -14,6 +14,7 @@ import { db } from '../../firebase/firebase-config';
 import { VEHICLE_COLLECTIONS } from '../../services/car/unified-car-types';
 import CarCardCompact from '../../components/CarCard/CarCardCompact';
 import { Info, CheckCircle, AlertCircle } from 'lucide-react';
+import { logger } from '../../services/logger-service';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -228,7 +229,7 @@ const CityCarsPage: React.FC = () => {
             allCars.push({ id: doc.id, ...doc.data() });
           });
         } catch (error) {
-          console.warn(`Error loading from ${collectionName}:`, error);
+          logger.warn(`Error loading from ${collectionName}`, { error });
         }
       }
 
@@ -258,7 +259,7 @@ const CityCarsPage: React.FC = () => {
 
       setCars(allCars.slice(0, 12));
     } catch (error) {
-      console.error('Error loading city data:', error);
+      logger.error('Error loading city data', error as Error);
     } finally {
       setLoading(false);
     }

@@ -4,11 +4,12 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { Search, ChevronDown, CheckCircle, Car } from 'lucide-react';
 
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
-import { brandsModelsDataService } from '../../../../services/brands-models-data.service';
-import { logger } from '../../../../services/logger-service';
-import { sanitizeCarMakeModel } from '../../../../utils/inputSanitizer';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import { brandsModelsDataService } from '@/services/brands-models-data.service';
+import { logger } from '@/services/logger-service';
+import { carCountService } from '@/services/car-count.service';
+import { sanitizeCarMakeModel } from '@/utils/inputSanitizer';
 
 // --- Styled Components ---
 
@@ -211,6 +212,18 @@ const SearchButton = styled.button<{ $isDark: boolean }>`
     transform: translateY(0);
   }
 
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 2px 8px rgba(255, 121, 0, 0.15);
+  }
+
+  &:hover:disabled {
+    transform: none;
+    box-shadow: 0 2px 8px rgba(255, 121, 0, 0.15);
+  }
+
   /* Mobile Optimization */
   @media (max-width: 768px) {
     width: 100%;
@@ -265,6 +278,8 @@ const SearchWidget: React.FC = () => {
   // Data
   const [brands, setBrands] = useState<string[]>([]);
   const [models, setModels] = useState<string[]>([]);
+  const [totalCars, setTotalCars] = useState<number>(0);
+  const [isLoadingCount, setIsLoadingCount] = useState<boolean>(true);
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 30 }, (_, i) => currentYear - i); // Last 30 years
 
@@ -301,6 +316,40 @@ const SearchWidget: React.FC = () => {
     loadModels();
   }, [make]);
 
+  // ✅ Load total car count (CONSTITUTION: Firestore Listeners pattern with isActive flag)
+  useEffect(() => {
+    let isActive = true; // ✅ Prevent updates after unmount (PROJECT_CONSTITUTION.md Section 4.3)
+
+    const loadCarCount = async () => {
+      try {
+        setIsLoadingCount(true);
+        const count = await carCountService.getTotalCount();
+        if (isActive) {
+          setTotalCars(count);
+          logger.debug('Car count loaded in SearchWidget', { total: count });
+        }
+      } catch (error) {
+        logger.error('Error loading car count in SearchWidget', error as Error, {
+          context: 'SearchWidget',
+          action: 'loadCarCount'
+        });
+        if (isActive) {
+          setTotalCars(0); // Fallback to 0
+        }
+      } finally {
+        if (isActive) {
+          setIsLoadingCount(false);
+        }
+      }
+    };
+
+    loadCarCount();
+
+    return () => {
+      isActive = false; // ✅ Critical: Prevent updates after unmount
+    };
+  }, []);
+
   // Handlers
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -319,6 +368,23 @@ const SearchWidget: React.FC = () => {
   };
 
   const t = (en: string, bg: string) => language === 'bg' ? bg : en;
+
+  // ✅ Get search button text with real car count
+  const getSearchButtonText = (): string => {
+    if (isLoadingCount) {
+      return language === 'bg' ? 'Търси' : 'Search';
+    }
+    
+    if (totalCars === 0) {
+      return language === 'bg' ? 'Търси' : 'Search';
+    }
+    
+    const formattedCount = totalCars.toLocaleString(language === 'bg' ? 'bg' : 'en');
+    
+    return language === 'bg' 
+      ? `Покажи ${formattedCount} обяви`
+      : `Show ${formattedCount} cars`;
+  };
 
   return (
     <WidgetContainer $isDark={isDark}>
@@ -438,9 +504,9 @@ const SearchWidget: React.FC = () => {
 
         {/* Search Button */}
         <FieldGroup style={{ justifyContent: 'flex-end', marginTop: 'auto' }}>
-          <SearchButton $isDark={isDark} onClick={handleSearch}>
+          <SearchButton $isDark={isDark} onClick={handleSearch} disabled={isLoadingCount}>
             <Search size={20} />
-            {language === 'bg' ? `Покажи ${Math.floor(Math.random() * 5000) + 1000} обяви` : `Show ${Math.floor(Math.random() * 5000) + 1000} offers`}
+            {getSearchButtonText()}
           </SearchButton>
         </FieldGroup>
 

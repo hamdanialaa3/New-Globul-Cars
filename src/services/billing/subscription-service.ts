@@ -1,22 +1,20 @@
 import { db, functions } from '../../firebase/firebase-config';
-import {
-  collection,
-  addDoc,
-  onSnapshot,
-  doc,
-  collectionGroup,
-  query,
-  where
-} from 'firebase/firestore';
+import { collection, addDoc, onSnapshot } from 'firebase/firestore';
 import { httpsCallable } from 'firebase/functions';
-import { SUBSCRIPTION_PLANS, SubscriptionPlan } from '../../config/billing-config';
+import { SUBSCRIPTION_PLANS, PlanTier } from '../../config/subscription-plans';
+import type { BillingInterval } from '../../features/billing/types';
 
 export interface CheckoutSession {
   sessionId: string;
   url: string;
-  error?: {
-    message: string;
-  };
+}
+
+interface CreateCheckoutSessionInput {
+  userId: string;
+  planId: PlanTier;
+  interval: BillingInterval;
+  successUrl: string;
+  cancelUrl: string;
 }
 
 class SubscriptionService {
@@ -25,39 +23,52 @@ class SubscriptionService {
    * Writes to `customers/{uid}/checkout_sessions`
    * Triggers the Firebase Extension to create a Stripe Checkout Session
    */
-  async createCheckoutSession(uid: string, plan: SubscriptionPlan): Promise<void> {
-    if (!uid) throw new Error('User ID is required');
-    if (!plan.id) throw new Error('Invalid plan ID');
+  async createCheckoutSession(params: CreateCheckoutSessionInput): Promise<CheckoutSession> {
+    const { userId, planId, interval, successUrl, cancelUrl } = params;
 
-    const sessionsRef = collection(db, 'customers', uid, 'checkout_sessions');
+    if (!userId) throw new Error('User ID is required');
 
-    // Create the checkout session doc
-    // The extension listens to this and updates the doc with 'url' or 'error'
+    const plan = SUBSCRIPTION_PLANS[planId];
+    if (!plan || !plan.isActive) {
+      throw new Error('Invalid or inactive plan');
+    }
+
+    const priceId = plan.stripePriceIds[interval];
+    if (!priceId) {
+      throw new Error('Missing Stripe price id for selected interval');
+    }
+
+    const sessionsRef = collection(db, 'customers', userId, 'checkout_sessions');
+
+    // Create the checkout session doc (Stripe Extension listens and injects url/sessionId)
     const docRef = await addDoc(sessionsRef, {
-      price: plan.id,
-      success_url: window.location.origin + '/payment-success',
-      cancel_url: window.location.origin + '/payment-cancel',
+      price: priceId,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
       metadata: {
-        firebase_uid: uid,
-        plan_name: plan.name,
+        firebase_uid: userId,
+        plan_tier: plan.tier,
+        plan_name: plan.name.en,
+        interval,
       },
       mode: 'subscription',
-      // e.g. "subscription" or "payment" (one-time)
     });
 
-    // Listen for the Checkout Session URL to be written by the extension
-    return new Promise((resolve, reject) => {
+    return await new Promise<CheckoutSession>((resolve, reject) => {
       const unsubscribe = onSnapshot(docRef, (snap) => {
         const data = snap.data();
         if (data?.error) {
           unsubscribe();
           reject(new Error(data.error.message));
+          return;
         }
+
         if (data?.url) {
           unsubscribe();
-          // Redirect the user to Stripe Checkout
-          window.location.assign(data.url);
-          resolve();
+          resolve({
+            url: data.url,
+            sessionId: data.sessionId || '',
+          });
         }
       });
     });

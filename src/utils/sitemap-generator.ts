@@ -162,7 +162,8 @@ export const sitemap = functions.https.onRequest(async (req, res) => {
     res.set('Cache-Control', 'public, max-age=3600'); // Cache 1 hour
     res.status(200).send(xml);
   } catch (error: any) {
-    console.error('Sitemap generation error:', error);
+    // Use your app logger here in real deployment
+    // logger.error('Sitemap generation error', error);
     res.status(500).send('Error generating sitemap');
   }
 });

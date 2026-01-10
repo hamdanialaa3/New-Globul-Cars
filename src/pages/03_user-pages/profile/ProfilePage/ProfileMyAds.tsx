@@ -294,7 +294,7 @@ const ProfileMyAds: React.FC = () => {
       window.open(`/car/${sellerNumericId}/${carNumericId}`, '_blank');
     } else {
       // ⛔ CONSTITUTION VIOLATION: Car missing numeric IDs
-      console.error('Car missing numeric IDs - data integrity issue', { carId: car.id, car });
+      logger.error('Car missing numeric IDs - data integrity issue', new Error('Invalid car data'), { carId: car.id, car });
       alert('This listing has invalid data. Please contact support.');
     }
   };

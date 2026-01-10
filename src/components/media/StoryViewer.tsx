@@ -7,6 +7,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { X, Volume2, VolumeX, ChevronLeft, ChevronRight } from 'lucide-react';
 import { StoryViewerProps, CarStory } from '../../types/story.types';
+import { logger } from '@/services/logger-service';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -214,7 +215,7 @@ const StoryViewer: React.FC<StoryViewerProps> = ({
         setProgress(0);
         setIsPlaying(false);
       } catch (error) {
-        console.error('Error loading video:', error);
+        logger.error('Error loading video', error as Error, { storyId: currentStory?.id });
       }
     };
 
@@ -273,7 +274,7 @@ const StoryViewer: React.FC<StoryViewerProps> = ({
     if (isPlaying) {
       videoRef.current.pause();
     } else {
-      videoRef.current.play().catch(console.error);
+      videoRef.current.play().catch((err) => logger.error('Video play failed', err as Error, { storyId: currentStory?.id }));
     }
   };
 

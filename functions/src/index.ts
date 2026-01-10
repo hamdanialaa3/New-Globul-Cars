@@ -136,3 +136,20 @@ export const onVanSold = carLifecycle.onVanSold;
 export const onMotorcycleSold = carLifecycle.onMotorcycleSold;
 export const onTruckSold = carLifecycle.onTruckSold;
 export const onBusSold = carLifecycle.onBusSold;
+
+// ✅ NEW: Realtime Messaging Push Notifications (January 8, 2026)
+import * as realtimeMessagingNotifications from './notifications/realtime-messaging-notifications';
+export const onNewRealtimeMessage = realtimeMessagingNotifications.onNewRealtimeMessage;
+export const onOfferStatusChange = realtimeMessagingNotifications.onOfferStatusChange;
+export const cleanupExpiredOffers = realtimeMessagingNotifications.cleanupExpiredOffers;
+
+// 🔴 CRITICAL: Firebase Auth User Deletion Trigger (January 2026 - GDPR Compliance)
+import { onUserDelete } from './triggers/on-user-delete';
+export { onUserDelete };
+
+// ✅ NEW: Manual Payment System (January 9, 2026)
+const manualPayments = require('../lib/manual-payment-expiration');
+export const checkExpiredManualPayments = manualPayments.checkExpiredManualPayments;
+export const sendDailyPaymentSummary = manualPayments.sendDailyPaymentSummary;
+export const onPaymentVerified = manualPayments.onPaymentVerified;
+export const manualExpirePayments = manualPayments.manualExpirePayments;

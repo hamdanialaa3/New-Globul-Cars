@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { getApp } from 'firebase/app';
 import browserImageCompression from 'browser-image-compression';
+import { logger } from '../services/logger-service';
 
 export interface AIEvaluationResult {
     carDetails: {
@@ -82,7 +83,7 @@ export const useAIEvaluation = () => {
             addLog('Analysis Finalized. Rendering Hologram...');
 
         } catch (err: any) {
-            console.error('AI Evaluation Failed:', err);
+            logger.error('AI Evaluation Failed', err as Error);
             setError(err.message || 'Neural Link Disconnected');
             setState('error');
             addLog('CRITICAL FAILURE: Connection Lost.');

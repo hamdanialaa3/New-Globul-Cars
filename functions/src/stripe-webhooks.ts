@@ -3,10 +3,23 @@ import * as admin from "firebase-admin";
 import Stripe from "stripe";
 import * as logger from "firebase-functions/logger";
 
+// Initialize Admin SDK once per instance
+if (!admin.apps.length) {
+    admin.initializeApp();
+}
 const db = admin.firestore();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-    apiVersion: "2025-12-15.clover", // Updated to latest
-});
+
+// Initialize Stripe - prefer env/secrets; fallback to safe test key
+const stripeKey =
+    process.env.STRIPE_SECRET_KEY ||
+    process.env.STRIPE_SECRET ||
+    process.env.STRIPE_API_KEY ||
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ((functions as any).config?.()?.stripe?.secret) ||
+    "sk_test_nonprod";
+
+// Use package default apiVersion to avoid invalid override issues
+const stripe = new Stripe(stripeKey);
 
 /**
  * Stripe Webhook Handler - Complete Payment Lifecycle Management
@@ -18,8 +31,13 @@ export const stripeWebhooks = functions
     .region("europe-west1")
     .https.onRequest(async (req, res) => {
     const sig = req.headers["stripe-signature"];
+    const webhookSecret =
+      process.env.STRIPE_WEBHOOK_SECRET ||
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((functions as any).config?.()?.stripe?.webhook) ||
+      "";
 
-    if (!sig || !process.env.STRIPE_WEBHOOK_SECRET) {
+    if (!sig || !webhookSecret) {
         logger.error("Missing Stripe signature or webhook secret");
         res.status(400).send("Missing signature or secret");
         return;
@@ -31,7 +49,7 @@ export const stripeWebhooks = functions
         event = stripe.webhooks.constructEvent(
             req.rawBody,
             sig,
-            process.env.STRIPE_WEBHOOK_SECRET
+            webhookSecret
         );
     } catch (err: any) {
         logger.error("Webhook signature verification failed", { error: err.message });
@@ -114,17 +132,25 @@ async function findUserByStripeId(customerId: string): Promise<FirebaseFirestore
 }
 
 // ===== HELPER: Map Stripe Product to Plan Tier =====
-function mapProductToPlanTier(productId: string | null): 'private' | 'dealer' | 'company' {
-    // These should match your Stripe Product IDs
+function mapProductToPlanTier(productId: string | null): 'free' | 'dealer' | 'company' {
+    // ✅ CRITICAL: Use actual Stripe Product IDs from stripe-extension.config.ts
+    // These Product IDs are from your Stripe Dashboard
     const productMapping: Record<string, 'dealer' | 'company'> = {
+        // Dealer Product IDs (from stripe-extension.config.ts)
+        'prod_TcMRPH1acbKwsJ': 'dealer', // Mobilebg Cars - Dealer
+        
+        // Company Product IDs (from stripe-extension.config.ts)
+        'prod_TcMX8XZcmlddRd': 'company', // MobileBG Cars - Company
+        
+        // Legacy/fallback IDs (if different format)
         'prod_dealer_monthly': 'dealer',
         'prod_dealer_yearly': 'dealer',
         'prod_company_monthly': 'company',
         'prod_company_yearly': 'company',
-        // Add your actual Stripe product IDs here
     };
     
-    return productId ? (productMapping[productId] || 'private') : 'private';
+    // ✅ Return 'free' instead of 'private' for consistency with planTier
+    return productId ? (productMapping[productId] || 'free') : 'free';
 }
 
 // ===== SUBSCRIPTION HANDLERS =====
@@ -143,12 +169,17 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
         subscriptionId: subscription.id 
     });
     
+    // ✅ CRITICAL: Sync profileType with planTier
+    const newProfileType = newTier === 'free' ? 'private' : newTier;
+    
     await userDoc.ref.update({
         planTier: newTier,
+        profileType: newProfileType, // ✅ Sync profileType
         subscriptionId: subscription.id,
         subscriptionStatus: subscription.status,
         subscriptionStart: admin.firestore.Timestamp.fromMillis((subscription as any).start_date * 1000),
-        subscriptionCurrentPeriodEnd: admin.firestore.Timestamp.fromMillis((subscription as any).currentPeriodEnd * 1000),
+        // Use correct Stripe field: current_period_end
+        subscriptionCurrentPeriodEnd: admin.firestore.Timestamp.fromMillis((subscription as any).current_period_end * 1000),
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
     
@@ -182,14 +213,16 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
                 reason: status 
             });
             
+            // ✅ CRITICAL: Sync profileType with planTier
             await userDoc.ref.update({
-                planTier: 'private',
+                planTier: 'free', // ✅ Use 'free' instead of 'private' for consistency
+                profileType: 'private', // ✅ Sync profileType
                 subscriptionStatus: status,
                 updatedAt: admin.firestore.FieldValue.serverTimestamp()
             });
             
             // 🔴 CRITICAL: Deactivate excess listings on downgrade
-            await deactivateExcessListings(userDoc.id, 'private');
+            await deactivateExcessListings(userDoc.id, 'free'); // ✅ Use 'free' for consistency
             
             await createNotification(userDoc.id, {
                 type: 'subscription_downgraded',
@@ -205,20 +238,28 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
         const newTier = mapProductToPlanTier(productId);
         
         // Check if this is a downgrade (e.g., company -> dealer)
-        const tierPriority: Record<string, number> = { 'private': 0, 'dealer': 1, 'company': 2 };
-        const isDowngrade = tierPriority[newTier] < tierPriority[currentTier];
+        const tierPriority: Record<string, number> = { 'free': 0, 'private': 0, 'dealer': 1, 'company': 2 };
+        const normalize = (t: string) => (t === 'private' ? 'free' : t);
+        const isDowngrade = tierPriority[normalize(newTier)] < tierPriority[normalize(currentTier)];
+        
+        // ✅ CRITICAL: Sync profileType with planTier
+        const newProfileType = newTier === 'free' ? 'private' : newTier;
         
         await userDoc.ref.update({
             planTier: newTier,
+            profileType: newProfileType, // ✅ Sync profileType
             subscriptionStatus: status,
-            subscriptionCurrentPeriodEnd: admin.firestore.Timestamp.fromMillis((subscription as any).currentPeriodEnd * 1000),
+            // Use correct Stripe field: current_period_end
+            subscriptionCurrentPeriodEnd: admin.firestore.Timestamp.fromMillis((subscription as any).current_period_end * 1000),
             updatedAt: admin.firestore.FieldValue.serverTimestamp()
         });
         
         // 🔴 CRITICAL: Handle tier downgrade (e.g., company -> dealer)
         if (isDowngrade) {
             logger.info("Plan tier downgrade detected", { userId: userDoc.id, from: currentTier, to: newTier });
-            await deactivateExcessListings(userDoc.id, newTier);
+            // ✅ Use correct tier (newTier can be 'free', 'dealer', or 'company')
+            const targetTier = newTier === 'free' ? 'free' : newTier;
+            await deactivateExcessListings(userDoc.id, targetTier);
         }
     }
 }
@@ -234,16 +275,18 @@ async function handleSubscriptionCancelled(subscription: Stripe.Subscription) {
     
     logger.info("Subscription cancelled", { userId, subscriptionId: subscription.id, previousTier });
     
+    // ✅ CRITICAL: Sync profileType with planTier
     await userDoc.ref.update({
-        planTier: 'private',
+        planTier: 'free', // ✅ Use 'free' instead of 'private' for consistency
+        profileType: 'private', // ✅ Sync profileType
         subscriptionStatus: 'cancelled',
         subscriptionEndedAt: admin.firestore.FieldValue.serverTimestamp(),
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
     
     // 🔴 CRITICAL: Deactivate excess listings on downgrade
-    if (previousTier !== 'private') {
-        await deactivateExcessListings(userId, 'private');
+    if (previousTier !== 'free' && previousTier !== 'private') {
+        await deactivateExcessListings(userId, 'free'); // ✅ Use 'free' for consistency
     }
     
     await createNotification(userId, {
@@ -366,8 +409,10 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
         if (currentTier !== 'private') {
             logger.warn("Auto-downgrading due to multiple payment failures", { userId: userDoc.id });
             
+            // ✅ CRITICAL: Sync profileType with planTier
             await userDoc.ref.update({
-                planTier: 'private',
+                planTier: 'free', // ✅ Use 'free' instead of 'private' for consistency
+                profileType: 'private', // ✅ Sync profileType
                 subscriptionStatus: 'past_due',
                 autoDowngradedAt: admin.firestore.FieldValue.serverTimestamp()
             });
@@ -481,10 +526,16 @@ async function createNotification(userId: string, data: NotificationData): Promi
  * When downgrading, excess listings are deactivated (not deleted)
  * to allow user to choose which ones to keep.
  */
-async function deactivateExcessListings(userId: string, newPlanTier: 'private' | 'dealer' | 'company'): Promise<void> {
+async function deactivateExcessListings(userId: string, newPlanTier: 'free' | 'private' | 'dealer' | 'company'): Promise<void> {
+    // ✅ CRITICAL: Use correct limits matching SUBSCRIPTION_PLANS
+    // Limits from subscription-plans.ts:
+    // - free/private: 3 listings
+    // - dealer: 30 listings (✅ FIXED: Was 10, now correctly 30)
+    // - company: -1 (unlimited)
     const planLimits: Record<string, number> = {
         'private': 3,
-        'dealer': 10,
+        'free': 3, // ✅ Alias for consistency
+        'dealer': 30, // ✅ FIXED: Was 10, now correctly 30 (matches subscription-plans.ts)
         'company': Infinity
     };
     

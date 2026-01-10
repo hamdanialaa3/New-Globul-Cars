@@ -12,6 +12,7 @@ import { db } from '../../firebase/firebase-config';
 import { VEHICLE_COLLECTIONS } from '../../services/car/unified-car-types';
 import CarCardCompact from '../../components/CarCard/CarCardCompact';
 import { AlertTriangle } from 'lucide-react';
+import { logger } from '../../services/logger-service';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -188,7 +189,7 @@ const AccidentCarsPage: React.FC = () => {
             }
           });
         } catch (error) {
-          console.warn(`Error loading from ${collectionName}:`, error);
+          logger.warn(`Error loading from ${collectionName}`, { error });
         }
       }
 
@@ -204,7 +205,7 @@ const AccidentCarsPage: React.FC = () => {
 
       setCars(allCars.slice(0, 24));
     } catch (error) {
-      console.error('Error loading accident cars:', error);
+      logger.error('Error loading accident cars', error as Error);
     } finally {
       setLoading(false);
     }

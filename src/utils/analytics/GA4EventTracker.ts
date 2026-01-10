@@ -44,6 +44,8 @@ declare global {
     }
 }
 
+import { logger } from '../../services/logger-service';
+
 // ============================================================================
 // GA4 EVENT TRACKER
 // ============================================================================
@@ -63,7 +65,7 @@ export class GA4EventTracker {
      */
     private static sendEvent(eventName: string, params: GA4EventParams): void {
         if (!this.isAvailable()) {
-            console.warn('GA4 not available');
+            logger.warn('GA4 not available');
             return;
         }
 

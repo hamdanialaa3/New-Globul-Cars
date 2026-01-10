@@ -1,13 +1,18 @@
 // src/pages/home/HomePage/SubscriptionBanner.tsx
 // Subscription Banner for HomePage - Promote Plans
+// ✅ نسخ تصميم البطاقات من صفحة /subscription
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { Crown, TrendingUp, Building2, ChevronRight, Zap } from 'lucide-react';
+import styled, { keyframes, css } from 'styled-components';
+import { Crown, TrendingUp, Building2, ChevronRight, Zap, Star, CheckCircle, Sparkles, Car, MessageSquare, Upload, BarChart3, Plug, Link2, Target, Headphones, UserCog, Palette } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useAuth } from '../../../../contexts/AuthProvider';
 import { useTheme } from '../../../../contexts/ThemeContext';
+// ✅ CRITICAL: Import subscription plans for accurate pricing
+import { SUBSCRIPTION_PLANS } from '../../../../config/subscription-plans';
+// ✅ استيراد ملف الإعدادات المركزي
+import subscriptionTheme from '../../../../components/subscription/subscription-theme';
 
 // SVG icon from svgrepo (rocket)
 const RocketIcon: React.FC<{ size?: number }> = ({ size = 28 }) => (
@@ -46,6 +51,44 @@ const RocketIcon: React.FC<{ size?: number }> = ({ size = 28 }) => (
     />
   </svg>
 );
+
+// ==================== ANIMATIONS ====================
+const fadeInUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const float = keyframes`
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+`;
+
+const pulse = keyframes`
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+`;
+
+const shimmer = keyframes`
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+`;
+
+const rotateIn = keyframes`
+  from {
+    opacity: 0;
+    transform: rotate(-180deg) scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+`;
 
 const Banner = styled.section`
   max-width: 1400px;
@@ -148,39 +191,111 @@ const PlansGrid = styled.div`
   }
 `;
 
-const PlanCard = styled.div<{ $highlight?: boolean; $isDark: boolean }>`
-  background: ${p => {
-    if (p.$isDark) {
-      return p.$highlight
-        ? 'linear-gradient(135deg, rgba(30,41,59,0.9) 0%, rgba(15,23,42,0.85) 100%)'
-        : 'rgba(15,23,42,0.82)';
-    }
-    return p.$highlight
-      ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%)'
-      : 'rgba(255, 255, 255, 0.92)';
-  }};
-  backdrop-filter: blur(20px);
-  border-radius: 20px;
-  padding: 40px 32px;
+const PlanCard = styled.div<{ $highlight?: boolean; $isDark: boolean; $free?: boolean; $planId?: string }>`
   position: relative;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: ${p => p.$highlight
-    ? (p.$isDark ? '3px solid #FF8F10' : '3px solid #FF8F10')
-    : (p.$isDark ? '2px solid rgba(255, 255, 255, 0.08)' : '2px solid rgba(255, 255, 255, 0.3)')};
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 1.75rem;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: ${p => p.$highlight ? '3px solid var(--accent-primary)' : '2px solid var(--border-primary)'};
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: ${fadeInUp} 0.8s ease-out;
+  transform-origin: center;
+  overflow: hidden;
+  color: var(--text-primary);
   cursor: pointer;
+
+  /* Light border outline effect - خيط ضوئي رفيع using box-shadow */
+  box-shadow: ${p => {
+    const baseShadow = p.$highlight
+      ? `0 20px 60px ${() => subscriptionTheme.shadows.small}`
+      : 'var(--shadow-lg)';
+    const lightBorder = p.$highlight
+      ? 'inset 0 0 0 1px rgba(255, 143, 16, 0.6), 0 0 0 1px rgba(255, 215, 0, 0.4)'
+      : 'inset 0 0 0 1px rgba(255, 255, 255, 0.1)';
+    return `${baseShadow}, ${lightBorder}`;
+  }};
+
+  /* Background images based on plan type */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: ${p => {
+      if (p.$planId === 'free' || p.$planId === 'private') {
+        return 'url(/assets/images/seller-cards/private.png)';
+      } else if (p.$planId === 'dealer') {
+        return 'url(/assets/images/seller-cards/dealer.png)';
+      } else if (p.$planId === 'company') {
+        return 'url(/assets/images/seller-cards/company.png)';
+      }
+      return 'none';
+    }};
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.15;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: 16px;
+  }
+
+  /* Shimmer effect for popular plan */
+  ${p => p.$highlight && css`
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.15),
+        transparent
+      );
+      animation: ${shimmer} 3s infinite;
+      z-index: 2;
+      pointer-events: none;
+      border-radius: 16px;
+    }
+  `}
+
+  /* Content should be above background */
+  > * {
+    position: relative;
+    z-index: 1;
+  }
 
   ${p => p.$highlight && `
     transform: scale(1.05);
-    box-shadow: ${p.$isDark ? '0 25px 50px rgba(0,0,0,0.45)' : '0 25px 50px rgba(255, 143, 16, 0.4)'};
+    z-index: 10;
   `}
 
-  &:hover {
-    transform: ${p => p.$highlight ? 'scale(1.07)' : 'scale(1.03)'};
-    box-shadow: ${p => p.$isDark ? '0 20px 40px rgba(0,0,0,0.4)' : '0 20px 40px rgba(255, 143, 16, 0.2)'};
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: ${p => p.$highlight ? 'scale(1.08)' : 'scale(1.03)'};
+      box-shadow: ${p => {
+        const baseShadow = p.$highlight
+          ? `0 25px 70px ${() => subscriptionTheme.shadows.small}`
+          : 'var(--shadow-xl)';
+        const lightBorder = p.$highlight
+          ? 'inset 0 0 0 1px rgba(255, 143, 16, 0.6), 0 0 0 1px rgba(255, 215, 0, 0.4)'
+          : 'inset 0 0 0 1px rgba(255, 255, 255, 0.1)';
+        return `${baseShadow}, ${lightBorder}`;
+      }};
+    }
   }
 
   @media (max-width: 768px) {
-    padding: 32px 24px;
+    padding: 1.5rem;
     transform: none !important;
 
     &:hover {
@@ -191,105 +306,223 @@ const PlanCard = styled.div<{ $highlight?: boolean; $isDark: boolean }>`
 
 const PopularBadge = styled.div`
   position: absolute;
-  top: -12px;
-  right: 24px;
-  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+  top: 20px;
+  right: -35px;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
   color: white;
-  padding: 6px 20px;
-  border-radius: 20px;
-  font-size: 0.75rem;
+  padding: 0.5rem 3rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.4);
+  font-size: 0.85rem;
+  transform: rotate(45deg);
+  box-shadow: 0 4px 15px ${() => subscriptionTheme.shadows.medium};
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.5rem;
+  z-index: 1;
 
   svg {
     width: 14px;
     height: 14px;
+    animation: ${pulse} 2s ease-in-out infinite;
+  }
+`;
+
+const PopularityIndicator = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+  
+  svg {
+    width: 16px;
+    height: 16px;
+    color: #fbbf24;
+    animation: ${fadeInUp} 0.3s ease-out;
+    
+    &:nth-child(1) { animation-delay: 0s; }
+    &:nth-child(2) { animation-delay: 0.1s; }
+    &:nth-child(3) { animation-delay: 0.2s; }
+    &:nth-child(4) { animation-delay: 0.3s; }
+    &:nth-child(5) { animation-delay: 0.4s; }
   }
 `;
 
 const IconWrapper = styled.div<{ $color: string }>`
-  width: 64px;
-  height: 64px;
-  border-radius: 16px;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
   background: ${p => p.$color};
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 24px;
-  box-shadow: 0 8px 20px ${p => p.$color}40;
-
+  margin: 0 auto 1.5rem;
+  box-shadow: 
+    0 8px 25px ${() => subscriptionTheme.shadows.small},
+    0 0 20px rgba(255, 143, 16, 0.3);
+  animation: ${rotateIn} 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
   svg {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     color: white;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5)) blur(0.5px);
+    opacity: 0.95;
+  }
+
+  &:hover {
+    animation: ${float} 2s ease-in-out infinite;
+    box-shadow: 
+      0 12px 35px ${() => subscriptionTheme.shadows.medium},
+      0 0 30px rgba(255, 143, 16, 0.5);
+    transform: scale(1.05);
+    
+    svg {
+      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.7)) blur(0.3px);
+      opacity: 1;
+    }
   }
 `;
 
-const PlanName = styled.h3<{ $isDark: boolean }>`
-  font-size: 1.75rem;
+const PlanName = styled.h3`
+  font-size: 1.35rem;
   font-weight: 700;
-  color: ${p => p.$isDark ? '#e2e8f0' : '#1e293b'};
-  margin: 0 0 8px 0;
+  color: var(--text-primary);
   text-align: center;
+  margin-bottom: 0.5rem;
 `;
 
-const PlanPrice = styled.div`
+const Price = styled.div<{ $free?: boolean }>`
   text-align: center;
-  margin: 16px 0 24px;
-`;
+  margin: 1.5rem 0;
+  
+  .amount {
+    font-size: ${p => p.$free ? '2rem' : '2.75rem'};
+    font-weight: 700;
+    width: 100%;
+    height: 100%;
+    background: ${p => p.$free
+    ? 'linear-gradient(135deg, #6b7280 0%, #9ca3af 100%)'
+    : `linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)`
+  };
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-color: transparent;
+    border: none;
+    border-image: none;
+    border-color: transparent;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.15rem;
+    color: transparent;
+    line-height: 1;
+  }
+  
+  .currency {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    font-weight: 600;
+    align-self: flex-start;
+    margin-top: 0.3rem;
+  }
 
-const Price = styled.span<{ $isDark: boolean }>`
-  font-size: 3rem;
-  font-weight: 800;
-  color: ${p => p.$isDark ? '#f8fbff' : '#0f172a'};
-  line-height: 1;
+  .euro-amount {
+    font-size: 1.5rem;
+    font-weight: 600;
+    background: ${p => p.$free
+    ? 'linear-gradient(135deg, #6b7280 0%, #9ca3af 100%)'
+    : `linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)`
+  };
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 
-  @media (max-width: 768px) {
-    font-size: 2.5rem;
+  .cents-amount {
+    font-size: 3.8rem;
+    font-weight: 900;
+    background: ${p => p.$free
+    ? 'linear-gradient(135deg, #6b7280 0%, #9ca3af 100%)'
+    : `linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffd700 100%)`
+  };
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 20px rgba(255, 143, 16, 0.3);
+    animation: ${pulse} 3s ease-in-out infinite;
+    letter-spacing: -2px;
+  }
+  
+  .period {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    display: block;
+    margin-top: 0.5rem;
   }
 `;
 
-const Currency = styled.span<{ $isDark: boolean }>`
-  font-size: 1.5rem;
-  color: ${p => p.$isDark ? '#cbd5e1' : '#64748b'};
-  margin-right: 4px;
-`;
-
-const Period = styled.span<{ $isDark: boolean }>`
-  font-size: 1rem;
-  color: ${p => p.$isDark ? '#cbd5e1' : '#64748b'};
-  margin-left: 8px;
-`;
-
-const FeaturesList = styled.ul`
+const FeaturesList = styled.ul<{ $free?: boolean }>`
   list-style: none;
   padding: 0;
-  margin: 24px 0;
+  margin: 1.5rem 0;
+  min-height: 200px;
+  ${p => p.$free && `
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  `}
 `;
 
-const FeatureItem = styled.li<{ $isDark: boolean }>`
+const LastDigitSpan = styled.span`
+  font-size: 4.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffd700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 20px rgba(255, 143, 16, 0.4);
+  animation: ${pulse} 2s ease-in-out infinite;
+`;
+
+const FeatureItem = styled.li<{ $highlight?: boolean; $free?: boolean }>`
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-  color: ${p => p.$isDark ? '#cbd5e1' : '#475569'};
-  font-size: 0.95rem;
-  border-bottom: 1px solid ${p => p.$isDark ? 'rgba(255,255,255,0.08)' : 'rgba(148, 163, 184, 0.1)'};
-
-  &:last-child {
-    border-bottom: none;
-  }
-
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  transition: all 0.3s ease;
+  
+  ${p => p.$free && `
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  `}
+  
   svg {
     width: 18px;
     height: 18px;
-    color: #22c55e;
+    color: ${p => p.$highlight ? 'var(--accent-primary)' : 'var(--accent-secondary)'};
     flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 0 6px rgba(255, 143, 16, 0.4)) blur(0.5px);
+    opacity: 0.85;
+  }
+
+  &:hover svg {
+    filter: drop-shadow(0 0 10px rgba(255, 143, 16, 0.6)) blur(0.3px);
+    opacity: 1;
+    transform: scale(1.1);
   }
 `;
 
@@ -383,12 +616,12 @@ const SubscriptionBanner: React.FC = () => {
       icon: TrendingUp,
       iconColor: 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)',
       name: isBg ? 'Търговец' : 'Dealer',
-      price: '49',
+      price: SUBSCRIPTION_PLANS.dealer.price.monthly.toString(), // ✅ 27.78
       currency: '€',
       period: isBg ? '/месец' : '/month',
       popular: true,
       features: [
-        isBg ? '✓ 50 обяви' : '✓ 50 listings',
+        isBg ? `✓ ${SUBSCRIPTION_PLANS.dealer.features.maxListings} обяви` : `✓ ${SUBSCRIPTION_PLANS.dealer.features.maxListings} listings`,
         isBg ? '✓ Анализи' : '✓ Analytics',
         isBg ? '✓ Екип' : '✓ Team management',
         isBg ? '✓ Приоритет' : '✓ Priority support',
@@ -401,11 +634,11 @@ const SubscriptionBanner: React.FC = () => {
       icon: Building2,
       iconColor: 'linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%)',
       name: isBg ? 'Компания' : 'Company',
-      price: '299',
+      price: SUBSCRIPTION_PLANS.company.price.monthly.toString(), // ✅ 137.88
       currency: '€',
       period: isBg ? '/месец' : '/month',
       features: [
-        isBg ? '✓ 100 обяви' : '✓ 100 listings',
+        isBg ? `✓ ${SUBSCRIPTION_PLANS.company.features.maxListings === -1 ? 'Неограничени' : SUBSCRIPTION_PLANS.company.features.maxListings} обяви` : `✓ ${SUBSCRIPTION_PLANS.company.features.maxListings === -1 ? 'Unlimited' : SUBSCRIPTION_PLANS.company.features.maxListings} listings`,
         isBg ? '✓ Множество локации' : '✓ Multi-location',
         isBg ? '✓ API достъп' : '✓ API access',
         isBg ? '✓ Enterprise поддръжка' : '✓ Enterprise support',
@@ -442,47 +675,87 @@ const SubscriptionBanner: React.FC = () => {
         </Content>
 
         <PlansGrid>
-          {plans.map((plan) => (
-            <PlanCard
-              key={plan.id}
-              $highlight={plan.popular}
-              $isDark={isDark}
-              onClick={() => handlePlanClick(plan.id)}
-            >
-              {plan.popular && (
-                <PopularBadge>
-                  <Zap />
-                  {isBg ? 'Популярен' : 'Popular'}
-                </PopularBadge>
-              )}
+          {plans.map((plan) => {
+            const isFree = plan.id === 'private';
+            const priceNum = isFree ? 0 : parseFloat(plan.price);
+            
+            return (
+              <PlanCard
+                key={plan.id}
+                $highlight={plan.popular}
+                $isDark={isDark}
+                $free={isFree}
+                $planId={plan.id}
+                onClick={() => handlePlanClick(plan.id)}
+              >
+                {plan.popular && (
+                  <>
+                    <PopularBadge>
+                      <Zap fill="white" />
+                      {isBg ? 'ПОПУЛЯРЕН' : 'POPULAR'}
+                    </PopularBadge>
+                    <PopularityIndicator>
+                      <Star fill="#fbbf24" />
+                      <Star fill="#fbbf24" />
+                      <Star fill="#fbbf24" />
+                      <Star fill="#fbbf24" />
+                      <Star fill="#fbbf24" />
+                    </PopularityIndicator>
+                  </>
+                )}
 
-              <IconWrapper $color={plan.iconColor}>
-                <plan.icon />
-              </IconWrapper>
+                <IconWrapper $color={plan.iconColor}>
+                  <plan.icon />
+                </IconWrapper>
 
-              <PlanName $isDark={isDark}>{plan.name}</PlanName>
+                <PlanName>{plan.name}</PlanName>
 
-              <PlanPrice>
-                {plan.currency && <Currency $isDark={isDark}>{plan.currency}</Currency>}
-                <Price $isDark={isDark}>{plan.price}</Price>
-                {plan.period && <Period $isDark={isDark}>{plan.period}</Period>}
-              </PlanPrice>
+                <Price $free={isFree}>
+                  {isFree ? (
+                    <div className="amount">{plan.price}</div>
+                  ) : (
+                    <>
+                      <div className="amount">
+                        {(() => {
+                          const priceStr = priceNum.toFixed(2);
+                          const parts = priceStr.split('.');
+                          const euroPart = parts[0];
+                          const centsPart = parts[1] || '00';
+                          const lastDigit = centsPart[centsPart.length - 1];
+                          const restCents = centsPart.slice(0, -1);
+                          return (
+                            <>
+                              <span className="currency">€</span>
+                              <span className="euro-amount">{euroPart}</span>
+                              <span className="cents-amount">
+                                .{restCents}
+                                <LastDigitSpan>{lastDigit}</LastDigitSpan>
+                              </span>
+                            </>
+                          );
+                        })()}
+                      </div>
+                      {plan.period && <div className="period">{plan.period}</div>}
+                    </>
+                  )}
+                </Price>
 
-              <FeaturesList>
-                {plan.features.map((feature, idx) => (
-                  <FeatureItem key={idx} $isDark={isDark}>
-                    <ChevronRight />
-                    {feature}
-                  </FeatureItem>
-                ))}
-              </FeaturesList>
+                <FeaturesList $free={isFree}>
+                  {plan.features.map((feature, idx) => (
+                    <FeatureItem key={idx} $free={isFree} $highlight={plan.popular}>
+                      <CheckCircle size={18} />
+                      <span>{feature.replace('✓ ', '')}</span>
+                    </FeatureItem>
+                  ))}
+                </FeaturesList>
 
-              <CTAButton $variant={plan.variant} $isDark={isDark}>
-                {plan.cta}
-                <ChevronRight />
-              </CTAButton>
-            </PlanCard>
-          ))}
+                <CTAButton $variant={plan.variant} $isDark={isDark}>
+                  {plan.cta}
+                  <ChevronRight />
+                </CTAButton>
+              </PlanCard>
+            );
+          })}
         </PlansGrid>
       </Container>
     </Banner>

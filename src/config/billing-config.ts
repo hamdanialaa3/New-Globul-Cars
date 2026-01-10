@@ -1,3 +1,16 @@
+/**
+ * Billing Configuration
+ * ⚠️ DEPRECATED: Please use subscription-plans.ts instead
+ * This file is kept for backward compatibility only
+ * 
+ * ✅ FIXED January 7, 2026: Now imports from single source of truth
+ */
+
+import { SUBSCRIPTION_PLANS, type SubscriptionPlan as NewSubscriptionPlan } from './subscription-plans';
+
+// Re-export for backward compatibility
+export { SUBSCRIPTION_PLANS } from './subscription-plans';
+
 export interface SubscriptionPlan {
     id: string;
     name: string;
@@ -8,17 +21,24 @@ export interface SubscriptionPlan {
     };
 }
 
-export const SUBSCRIPTION_PLANS: Record<'dealer' | 'company', SubscriptionPlan> = {
+// ✅ FIXED: Dealer now correctly has 30 listings (was 10)
+export const SUBSCRIPTION_PLANS_LEGACY: Record<'dealer' | 'company', SubscriptionPlan> = {
     dealer: {
-        id: 'price_dealer_monthly',
+        id: SUBSCRIPTION_PLANS.dealer.stripePriceIds.monthly,
         name: 'Professional Dealer',
-        price: 20, // EUR
-        limits: { listings: 30, flexEdits: 10 }
+        price: SUBSCRIPTION_PLANS.dealer.price.monthly,
+        limits: { 
+            listings: SUBSCRIPTION_PLANS.dealer.features.maxListings, // ✅ Now 30
+            flexEdits: 10 
+        }
     },
     company: {
-        id: 'price_company_monthly',
+        id: SUBSCRIPTION_PLANS.company.stripePriceIds.monthly,
         name: 'Enterprise',
-        price: 100, // EUR
-        limits: { listings: 200, flexEdits: 9999 }
+        price: SUBSCRIPTION_PLANS.company.price.monthly,
+        limits: { 
+            listings: 200, // Company has unlimited, but set reasonable limit for UI
+            flexEdits: 9999 
+        }
     }
 };

@@ -13,6 +13,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { FiMapPin, FiPhone, FiMail, FiStar } from 'react-icons/fi';
+import { logger } from '../../../services/logger-service';
 
 // ============================================================================
 // TYPES
@@ -287,7 +288,7 @@ const ViewAllDealersPage: React.FC = () => {
       
       setDealers(mockDealers);
     } catch (error) {
-      console.error('Error loading dealers:', error);
+      logger.error('Error loading dealers', error as Error);
     } finally {
       setLoading(false);
     }

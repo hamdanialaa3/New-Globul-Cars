@@ -30,6 +30,12 @@ export const STRIPE_CONFIG = {
 /**
  * Billing tiers configuration
  * إعدادات مستويات الفوترة
+ * 
+ * ⚠️ LEGACY: This is an OLD billing system with different tiers (basic, premium, enterprise, etc.)
+ * ✅ CURRENT SYSTEM: Use SUBSCRIPTION_PLANS from subscription-plans.ts instead
+ * 
+ * This file is kept for backward compatibility only.
+ * For new code, always use SUBSCRIPTION_PLANS (free, dealer, company).
  */
 export const BILLING_TIERS: BillingTier[] = [
   {

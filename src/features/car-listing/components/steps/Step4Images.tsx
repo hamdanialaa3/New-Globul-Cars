@@ -2,6 +2,7 @@
 // الخطوة 4: رفع الصور مع الضغط
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import styled from 'styled-components';
+import { logger } from '@/services/logger-service';
 import { Upload, X, Star } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useCarListingStore } from '../../stores/car-listing-store';
@@ -262,7 +263,7 @@ export const Step4Images: React.FC = () => {
         ? `${compressedFiles.length} снимки добавени` 
         : `${compressedFiles.length} images added`);
     } catch (error) {
-      console.error('Error processing images:', error);
+      logger.error('Error processing images', error as Error);
       toast.error(language === 'bg' 
         ? 'Грешка при обработка на снимките' 
         : 'Error processing images');

@@ -22,6 +22,8 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { Car, MapPin, Fuel, Settings, Calendar, Euro, Gauge } from 'lucide-react';
 import 'instantsearch.css/themes/satellite.css';
 import '../../styles/algolia-custom.css';
+import AISearchButton from './AISearchButton';
+import { useSearchParams } from 'react-router-dom';
 
 // ============================================================================
 // STYLED COMPONENTS
@@ -485,7 +487,7 @@ const Hit: React.FC<HitProps> = ({ hit }) => {
     // ✅ CONSTITUTION: Use numeric URL pattern
     const sellerNumericId = hit.sellerNumericId || hit.ownerNumericId;
     const carNumericId = hit.carNumericId || hit.userCarSequenceId || hit.numericId;
-    
+
     if (sellerNumericId && carNumericId) {
       navigate(`/car/${sellerNumericId}/${carNumericId}`);
     } else {
@@ -497,8 +499,8 @@ const Hit: React.FC<HitProps> = ({ hit }) => {
   return (
     <HitCard onClick={handleClick}>
       <HitImage>
-        <img 
-          src={hit.images?.[0] || '/assets/images/placeholder-car.jpg'} 
+        <img
+          src={hit.images?.[0] || '/assets/images/placeholder-car.jpg'}
           alt={`${hit.make} ${hit.model}`}
           loading="lazy"
         />
@@ -506,14 +508,14 @@ const Hit: React.FC<HitProps> = ({ hit }) => {
           <HitBadge>{isBg ? 'Ново' : 'New'}</HitBadge>
         )}
       </HitImage>
-      
+
       <HitContent>
-        <HitTitle dangerouslySetInnerHTML={{ 
+        <HitTitle dangerouslySetInnerHTML={{
           __html: `${hit._highlightResult?.make?.value || hit.make} ${hit._highlightResult?.model?.value || hit.model}`
         }} />
-        
+
         <HitPrice>€{hit.price?.toLocaleString()}</HitPrice>
-        
+
         <HitSpecs>
           <SpecBadge>
             <Calendar />
@@ -563,12 +565,13 @@ const AlgoliaInstantSearch: React.FC = () => {
     <InstantSearch
       searchClient={algoliaClient}
       indexName={INDICES.CARS}
+      routing={true}
     >
       <SearchContainer>
         <SearchHeader>
           <h1>{isBg ? '🔍 Търсене на автомобили' : '🔍 Search Cars'}</h1>
           <p>
-            {isBg 
+            {isBg
               ? 'Намерете перфектния автомобил с нашия интелигентен търсач'
               : 'Find your perfect car with our intelligent search'}
           </p>
@@ -579,6 +582,51 @@ const AlgoliaInstantSearch: React.FC = () => {
             placeholder={isBg ? 'Търсете марка, модел, година...' : 'Search make, model, year...'}
             autoFocus
           />
+          <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
+            {/* Integrated Gemini NLQ Button */}
+            <AISearchButton
+              query={document.querySelector<HTMLInputElement>('.ais-SearchBox-input')?.value || ''}
+              onSearch={(filters) => {
+                // Construct Algolia-compatible URL params
+                const params = new URLSearchParams(window.location.search);
+
+                // Clear existing refinements to avoid conflicts
+                // params = new URLSearchParams(); // Uncomment to reset completely
+
+                if (filters.make) {
+                  params.set('refinementList[make][0]', filters.make);
+                }
+                if (filters.model) {
+                  params.set('refinementList[model][0]', filters.model);
+                }
+                if (filters.minPrice || filters.maxPrice) {
+                  const min = filters.minPrice || '';
+                  const max = filters.maxPrice || '';
+                  if (min || max) params.set('range[price]', `${min}:${max}`);
+                }
+                if (filters.minYear || filters.maxYear) {
+                  const min = filters.minYear || '';
+                  const max = filters.maxYear || '';
+                  if (min || max) params.set('range[year]', `${min}:${max}`);
+                }
+                if (filters.fuelType) {
+                  params.set('refinementList[fuel][0]', filters.fuelType);
+                }
+                if (filters.transmission) {
+                  params.set('refinementList[transmission][0]', filters.transmission);
+                }
+                if (filters.location) {
+                  params.set('refinementList[location.city][0]', filters.location);
+                }
+
+                // Force navigation to apply filters
+                const newUrl = `${window.location.pathname}?${params.toString()}`;
+                console.log('🤖 AI Navigating to:', newUrl);
+                window.location.href = newUrl; // Force reload to trigger InstantSearch internal routing state
+              }}
+              variant="secondary"
+            />
+          </div>
         </SearchBoxWrapper>
 
         <StatsWrapper>
@@ -599,8 +647,8 @@ const AlgoliaInstantSearch: React.FC = () => {
                 <Car />
                 {isBg ? 'Марка' : 'Make'}
               </h4>
-              <RefinementList 
-                attribute="make" 
+              <RefinementList
+                attribute="make"
                 limit={10}
                 searchable
                 searchablePlaceholder={isBg ? 'Търси марка...' : 'Search make...'}
@@ -614,8 +662,8 @@ const AlgoliaInstantSearch: React.FC = () => {
                 <Car />
                 {isBg ? 'Модел' : 'Model'}
               </h4>
-              <RefinementList 
-                attribute="model" 
+              <RefinementList
+                attribute="model"
                 limit={10}
                 searchable
                 searchablePlaceholder={isBg ? 'Търси модел...' : 'Search model...'}
@@ -677,8 +725,8 @@ const AlgoliaInstantSearch: React.FC = () => {
                 <MapPin />
                 {isBg ? 'Град' : 'City'}
               </h4>
-              <RefinementList 
-                attribute="location.city" 
+              <RefinementList
+                attribute="location.city"
                 limit={10}
                 searchable
                 searchablePlaceholder={isBg ? 'Търси град...' : 'Search city...'}
@@ -702,7 +750,9 @@ const AlgoliaInstantSearch: React.FC = () => {
               />
             </SortByWrapper>
 
+
             <Configure
+              // @ts-ignore - Configure accepts valid Algolia parameters despite strict typing
               hitsPerPage={20}
               attributesToSnippet={['make:10', 'model:10']}
               snippetEllipsisText="..."

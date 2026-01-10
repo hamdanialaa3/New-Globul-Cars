@@ -214,10 +214,26 @@
 
 .footer-bottom-content {
   display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.footer-bottom-main {
+  display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: 1rem;
+  width: 100%;
+}
+
+.footer-bottom-language {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-secondary);
 }
 
 .copyright {
@@ -249,9 +265,10 @@
 .language-info {
   display: flex;
   align-items: center;
+  position: relative;
 }
 
-.current-language {
+.language-dropdown-button {
   color: var(--accent-primary) !important;
   font-weight: 600;
   font-size: 0.813rem;
@@ -259,16 +276,111 @@
   padding: 0.3rem 0.8rem;
   display: flex;
   align-items: center;
+  gap: 0.5rem;
   background: var(--bg-accent);
   border-radius: 15px;
   border: 1px solid var(--border-accent);
   transition: all 0.3s ease;
+  cursor: pointer;
+  font-family: inherit;
 }
 
-/* Make Globe icon use theme-aware color */
-.current-language svg {
-  stroke: var(--accent-primary);
-  transition: stroke 0.3s ease;
+.language-dropdown-button:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.language-dropdown-button:active {
+  transform: translateY(0);
+}
+
+.language-dropdown-button .flag-icon {
+  width: 20px;
+  height: 15px;
+  object-fit: cover;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.language-dropdown-menu {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  margin-bottom: 0.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-secondary);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  min-width: 180px;
+  z-index: 1000;
+  overflow: hidden;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.language-option {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.813rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.language-option:hover {
+  background: var(--bg-hover);
+}
+
+.language-option.active {
+  background: var(--bg-accent);
+  color: var(--accent-primary);
+}
+
+.language-option .flag-icon {
+  width: 24px;
+  height: 18px;
+  object-fit: cover;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+.language-option span:not(.check-mark) {
+  flex: 1;
+}
+
+.check-mark {
+  color: var(--accent-primary);
+  font-weight: 700;
+  font-size: 1rem;
+  margin-left: auto;
+}
+
+@media (max-width: 480px) {
+  .language-dropdown-menu {
+    right: auto;
+    left: 0;
+  }
 }
 
 /* Mobile Responsive */
@@ -290,7 +402,7 @@
     justify-content: center;
   }
 
-  .footer-bottom-content {
+  .footer-bottom-main {
     flex-direction: column;
     text-align: center;
     gap: 1rem;
@@ -299,6 +411,11 @@
   .footer-bottom-links {
     justify-content: center;
     gap: 1rem;
+  }
+
+  .footer-bottom-language {
+    justify-content: center;
+    padding-top: 1rem;
   }
 
   .contact-info {

@@ -8,7 +8,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { aiQueryParserService } from '../../services/search/ai-query-parser.service';
+import { geminiSearchService } from '../../services/ai/gemini-search.service';
 import { logger } from '../../services/logger-service';
 
 interface AISearchButtonProps {
@@ -18,8 +18,8 @@ interface AISearchButtonProps {
   variant?: 'primary' | 'secondary' | 'icon';
 }
 
-const AISearchButton: React.FC<AISearchButtonProps> = ({ 
-  query, 
+const AISearchButton: React.FC<AISearchButtonProps> = ({
+  query,
   onSearch,
   disabled = false,
   variant = 'primary'
@@ -40,8 +40,8 @@ const AISearchButton: React.FC<AISearchButtonProps> = ({
       logger.info('🤖 AI Search initiated', { query });
 
       // Parse query with AI
-      const aiFilters = await aiQueryParserService.parseQuery(query);
-      
+      const aiFilters = await geminiSearchService.parseQuery(query);
+
       logger.debug('AI parsed filters', { aiFilters });
 
       // Trigger search with parsed filters
@@ -50,20 +50,20 @@ const AISearchButton: React.FC<AISearchButtonProps> = ({
     } catch (err) {
       logger.error('AI Search failed', err as Error);
       setError('AI search failed. Using regular search...');
-      
+
       // Fallback to regular search
       setTimeout(() => {
         onSearch({ text: query });
         setError(null);
       }, 1500);
-      
+
     } finally {
       setIsLoading(false);
     }
   };
 
   // Check if AI is available
-  const isAIAvailable = aiQueryParserService.isServiceAvailable();
+  const isAIAvailable = true; // Always available as we proxy via firebase calling functions
 
   if (!isAIAvailable && variant !== 'icon') {
     return null; // Hide button if AI not configured
@@ -71,7 +71,7 @@ const AISearchButton: React.FC<AISearchButtonProps> = ({
 
   if (variant === 'icon') {
     return (
-      <IconButton 
+      <IconButton
         onClick={handleAISearch}
         disabled={disabled || isLoading}
         title="AI Smart Search"
@@ -100,7 +100,7 @@ const AISearchButton: React.FC<AISearchButtonProps> = ({
           </>
         )}
       </Button>
-      
+
       {error && <ErrorMessage>{error}</ErrorMessage>}
     </Container>
   );
@@ -125,8 +125,8 @@ const Button = styled.button<{ variant: string }>`
   cursor: pointer;
   transition: all 0.2s ease;
   
-  background: ${props => props.variant === 'secondary' 
-    ? 'transparent' 
+  background: ${props => props.variant === 'secondary'
+    ? 'transparent'
     : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
   };
   

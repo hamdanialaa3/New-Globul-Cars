@@ -1,276 +1,462 @@
-﻿# Copilot Instructions: Bulgarian Car Marketplace — Concise Agent Guide
+﻿# Copilot Instructions: Bulgarian Car Marketplace
 
-Updated: Jan 6, 2026
+**Updated:** January 10, 2026 | **Stack:** React 18 + TS (strict) + Styled-Components | Firebase 12 | Algolia | Stripe  
+**Project Size:** 795 React components | 780+ TS files | 410+ services | 290 pages | 85+ routes | 195,000+ LOC
 
-## Stack & Entry Points
-- Frontend: React 18 + TypeScript (strict) + Styled-Components. Build via CRACO (Webpack). Backend: Firebase (Auth/Firestore/Functions/Storage/FCM/Hosting), Node 20 for Functions.
-- Use path aliases (e.g., @/services, @/components). Keep tsconfig, craco.config.js, jest.config.js in sync when adding aliases.
+## 🚀 Quick Start
 
-## Architecture & Data Flows (What matters most)
-- Multi-collection cars by type. Never hardcode collection names; use `SellWorkflowCollections.getCollectionNameForVehicleType(vehicleType)`.
-- Strict Numeric ID System (critical): public URLs use numeric IDs only. Car IDs are `sellerNumericId` + `carNumericId`. Profiles use `numericId`.
-  - URL patterns: `/profile/:numericId`, `/car/:sellerNumericId/:carNumericId`, `/car/:sellerNumericId/:carNumericId/edit`, `/messages/:senderId/:recipientId`.
-  - ID generation enforced by `UnifiedCarService.createCarListing()`; counters in `numeric-car-system.service.ts` + `numeric-id-assignment.service.ts`.
-- Cross-collection search orchestration: `UnifiedSearchService` + `firestoreQueryBuilder` + `queryOrchestrator` (hybrid Firestore + Algolia).
-- Messaging: `AdvancedMessagingService` + `MessagingOrchestrator` handle conversations, offers, uploads, and real-time listeners.
+```bash
+npm start           # Dev server (port 3000)
+npm run type-check  # REQUIRED before commits (catches TS errors early)
+npm run build       # Runs prebuild console ban + TypeScript checks
+npm run deploy      # Hosting + Cloud Functions
+npm run emulate     # Local Firebase testing
+npm run clean:3000  # Kill stuck port 3000
+npm run clean:all   # Full cache + node_modules clean
+```
 
-## Conventions & Patterns (Follow these)
-- Logging: console calls are banned in src (prebuild check). Use `logger-service.ts` (`logger.debug/info/warn/error`).
-- Firestore listeners: always gate updates with `isActive` flag and unsubscribe in cleanup to prevent setState-after-unmount.
-- Context-first state management; no Redux. Import contexts from `src/contexts/index.ts` barrel.
-- Routes live in `src/routes/` (modularized). Use `safeLazy()` from `src/utils/lazyImport.ts` for all page-level dynamic imports.
-- Import order: third-party + aliases first, relative imports last.
+### Other Useful Commands
+```bash
+npm run test             # Run Jest tests
+npm run test:ci          # CI test mode (no watch)
+npm run build:analyze    # Analyze bundle size
+npm run scrape           # Run car data scrapers
+npm run migrate:dealer-limits  # Run dealer migration
+```
 
-## AI & Integrations
-- AI services are routed via `aiRouterService` (providers: Gemini, DeepSeek, OpenAI). Use implemented services: `vehicleDescriptionGenerator`, `geminiVisionService`, `aiQuotaService` via `src/services/ai/index.ts` barrel.
-- Search: keep Algolia config in `algolia-index-config.json` and records in `algolia-record-template.json`. Arrays required for fields like `searchableAttributes`.
+## 🏗️ Critical Architecture (Must Know)
 
-## Critical Commands (Dev, Tests, Build, DX)
-- Start dev: `npm start` (CRACO, port 3000) or `npm run start:dev` (4GB, no auto-open).
-- Tests: `npm test` (watch) | `npm run test:ci` (CI + coverage). Run specific: `npm test -- --testPathPattern=filename --watchAll=false`.
-- Type check: `npm run type-check`. Emulators: `npm run emulate`.
-- Build: `npm run build` (prebuild bans console). Analyze bundle: `npm run build:analyze`. Optimized: `npm run build:optimized`.
-- Algolia sync: `npm run sync-algolia` or `SYNC_ALGOLIA_NOW.bat`.
-- Deploy: `npm run deploy` | hosting-only: `npm run deploy:hosting` | functions: `npm run deploy:functions`.
+### 1. Numeric ID System — URLs Never Expose Firebase UIDs
 
-## Examples You’ll Reuse
-- Get car collection: `SellWorkflowCollections.getCollectionNameForVehicleType(vehicleType)`.
-- Create listing with numeric IDs: `UnifiedCarService.createCarListing()` (enforces plan + ID assignment).
-- Check plan limits before creation: `canAddListing(userId)` from `src/utils/listing-limits.ts`.
-- Messaging send/offer/read: `AdvancedMessagingService.sendMessage(...)`, `.sendOfferMessage(...)`, `.markMessagesAsRead(...)` (offers in `messages.offers[]`).
+```typescript
+// URL patterns (STRICT)
+/profile/:numericId          // e.g., /profile/18
+/car/:sellerNumericId/:carNumericId  // e.g., /car/1/5
+/messages/:senderId/:recipientId     // e.g., /messages/18/42
 
-## Gotchas & Local Rules
-- Never expose Firebase UIDs/UUIDs in URLs; only numeric IDs.
-- Do not add routes directly to `AppRoutes.tsx`; create files in `src/routes/` and use lazy loading via `safeLazy`.
-- If path aliases break, keep tsconfig/craco/jest aliases aligned.
-- If listeners misbehave, confirm the `isActive` pattern and single subscription per doc.
-- For Bulgarian market defaults: currency EUR, phone `+359`, locations via `src/services/bulgaria-locations.service.ts`. i18n via `useLanguage()` and `src/locales/{bg,en}`; never hardcode text.
+// Implementation: Always use UnifiedCarService.createCarListing()
+// Counter: counters/{uid}/cars in Firestore
+```
 
-## Pointers
-- Numeric IDs: docs/STRICT_NUMERIC_ID_SYSTEM.md, `src/services/numeric-car-system.service.ts`, `src/services/numeric-id-assignment.service.ts`.
-- Cars/Search: `src/services/UnifiedCarService.ts`, `src/services/UnifiedSearchService.ts`.
-- Messaging: MESSAGING_SYSTEM_FINAL.md, `src/services/AdvancedMessagingService/*`.
-- Routing: `src/routes/`, `src/utils/lazyImport.ts`, `src/routes/README.md`.
-- Logging & Errors: `src/services/logger-service.ts`, `src/services/error-handling-service.ts`.
-- Security/Deploy: SECURITY.md, firebase.json, firestore.rules, storage.rules.
+### 2. Multi-Collection Cars — Never Hardcode Collection Names
 
-If anything above is unclear or missing (especially around route extraction status, AI provider fallbacks, or collection naming), tell me which area you’re touching and I’ll expand this guide with concrete snippets and file links.
-# Copilot Instructions: Bulgarian Car Marketplace (Bulgarski Mobili)
+```typescript
+// 6 collections: passenger_cars, suvs, vans, motorcycles, trucks, buses
+import { SellWorkflowCollections } from '@/services/sell-workflow-collections';
+const collection =
+  SellWorkflowCollections.getCollectionNameForVehicleType(vehicleType);
+// ❌ NEVER: db.collection('passenger_cars')
+```
 
-**Updated:** January 6, 2026 | **Project Size:** 772 React components, 161 services, 6 Firestore collections, 180K+ LOC
+### 3. Firestore Listeners — ALWAYS Use `isActive` Flag
 
-## Stack & Runtime
-
-- **Frontend**: React 18 + TypeScript (strict) + Styled-Components; **Build**: CRACO (Webpack with custom config).
-- **Backend**: Firebase (Auth/Firestore/Functions/Storage/FCM/Hosting); Node >=18 (Functions use Node 20).
-- **Search**: Algolia (hybrid with Firestore); **Payments**: Stripe; **Maps**: Google Maps; **Verification**: hCaptcha.
-
-## Architecture Overview
-
-### Data Distribution
-
-- **Multi-collection pattern**: Cars stored across separate Firestore collections by type (`passenger_cars`, `suvs`, `vans`, `motorcycles`, `trucks`, `buses`).
-  - Always resolve collection name via `SellWorkflowCollections.getCollectionNameForVehicleType(vehicleType)` — never hardcode collection names.
-  - Unified query orchestration in `UnifiedSearchService` + `firestoreQueryBuilder` + `queryOrchestrator`.
-
-### Numeric ID System (Critical Contract)
-
-- **All public URLs must use numeric IDs only** — never expose UUIDs or Firebase UIDs.
-- **User IDs**: `numericId` field on `users` collection, managed by `numeric-id-counter` in `counters` collection.
-- **Car IDs**: Double key system (`sellerNumericId`, `carNumericId`) — generated during creation, stored on car documents.
-- **URL patterns**:
-  - Profile: `/profile/:numericId` (e.g., `/profile/18`)
-  - Car details: `/car/:sellerNumericId/:carNumericId` (e.g., `/car/1/5`)
-  - Edit car: `/car/:sellerNumericId/:carNumericId/edit`
-  - Messaging: `/messages/:senderId/:recipientId`
-- **Implementation**: [UnifiedCarService.createCarListing()](src/services/UnifiedCarService.ts) handles ID assignment and plan enforcement; [numeric-car-system.service.ts](src/services/numeric-car-system.service.ts) + [numeric-id-assignment.service.ts](src/services/numeric-id-assignment.service.ts) manage counters.
-- **Reference**: [docs/STRICT_NUMERIC_ID_SYSTEM.md](docs/STRICT_NUMERIC_ID_SYSTEM.md), [PROJECT_CONSTITUTION.md](PROJECT_CONSTITUTION.md)
-
-## Core Services (Use, Don't Duplicate)
-
-- **Car operations**: `UnifiedCarService` for create/update/delete (enforces numeric IDs + plan limits).
-- **Search**: `UnifiedSearchService` orchestrates Firestore + Algolia queries across collections.
-- **Listings**: `sell-workflow-service.ts` manages sell flow state and returns numeric URLs.
-- **Profiles**: `bulgarian-profile-service.ts` resolves user data + enforces plan tier limits.
-- **Numeric IDs**: `numeric-car-system.service.ts` + `numeric-id-assignment.service.ts` handle counter increments.
-- **Messaging**: `AdvancedMessagingService` orchestrates conversations, offers, and file uploads; see [MESSAGING_SYSTEM_FINAL.md](MESSAGING_SYSTEM_FINAL.md).
-- **AI Services**: Coordinated via `aiRouterService` (smart provider selection between Gemini, DeepSeek, OpenAI):
-  - `vehicleDescriptionGenerator` — AI-powered car descriptions with template fallback.
-  - `geminiVisionService` — image analysis and quality scoring.
-  - `aiQuotaService` — quota management and cost tracking.
-  - Import from [src/services/ai/index.ts](src/services/ai/index.ts) barrel; never duplicate AI logic.
-- **Logging**: `logger-service.ts` (replaces console; enforced by `scripts/ban-console.js`).
-- **Errors**: `error-handling-service.ts` captures and logs exceptions.
-
-## User Profiles & Plan System
-
-- **Types**: [src/types/user/bulgarian-user.types.ts](src/types/user/bulgarian-user.types.ts) — canonical source (don't create alternatives).
-- **Plans**: `free` (3 listings) | `dealer` (10) | `company` (unlimited); stored as `planTier` field on `users`.
-- **Limits enforcement**: [src/utils/listing-limits.ts](src/utils/listing-limits.ts) — use `canAddListing(userId)` before car creation.
-- **Context**: `ProfileTypeContext` manages profile type (`private` | `dealer` | `company`) + permissions.
-
-## State Management & Contexts
-
-- **Context barrel**: [src/contexts/index.ts](src/contexts/index.ts) — import from barrel, not individual files.
-  - Available: `AuthContext`, `ProfileTypeContext`, `LanguageContext`, `ThemeContext`, `LoadingContext`, `FilterContext`.
-- **No Redux** — use React Context + hooks exclusively.
-- **Loading states**: Use `LoadingContext` or `LightweightLoadingOverlay` component for consistency.
-
-## Routing & Code Splitting
-
-- **Route files**: All route definitions in `src/routes/` (extracted from `App.tsx` for clarity).
-  - ✅ Completed: `auth.routes.tsx` (4 routes), `admin.routes.tsx` (5 routes).
-  - ⏳ Pending: `sell.routes.tsx`, `dealer.routes.tsx`, `main.routes.tsx` — ongoing extraction.
-  - Don't add routes to `AppRoutes.tsx` directly; create modular route files in `src/routes/`.
-  - See [src/routes/README.md](src/routes/README.md) for structure and extraction status.
-- **Lazy loading**: Use `safeLazy()` from [src/utils/lazyImport.ts](src/utils/lazyImport.ts) to wrap page imports.
-  - Prevents "Unexpected token <" runtime errors from webpack code-splitting.
-- **Dynamic imports**: Follow `safeLazy` pattern for all page-level components.
-
-## Imports & Path Aliases
-
-- **Use path aliases**: `@/services/...`, `@/pages/...`, `@/components/...`, etc. (configured in `tsconfig.json`, `craco.config.js`, `jest.config.js`).
-- **Keep in sync**: When adding new aliases, update all three config files.
-- **Monorepo hints**: `@globul-cars/core`, `@globul-cars/services` aliases exist in configs (future monorepo structure).
-- **Import order**: Relative imports last; third-party + aliases first for clarity.
-- **Module resolution**: CRACO removes CRA's `ModuleScopePlugin` to allow imports outside `src/` when needed.
-
-## Search & Algolia Integration
-
-- **Config files**:
-  - [algolia-index-config.json](algolia-index-config.json) — index settings + searchable attributes.
-  - [algolia-record-template.json](algolia-record-template.json) — record structure template.
-- **Sync command**: `npm run sync-algolia` or `SYNC_ALGOLIA_NOW.bat` when config changes.
-- **Array fields**: Pass arrays (not comma-separated strings) for `searchableAttributes`, `attributesToSnippet`, etc.
-- **Firestore-Algolia hybrid**: Use `UnifiedSearchService` to query both; falls back gracefully if Algolia unavailable.
-
-## Real-time Messaging & Offers
-
-- **Entry point**: `/messages/:numericId1/:numericId2` (numeric ID resolution for user privacy).
-- **Service**: `AdvancedMessagingService` handles sends, reads, offers, file uploads, and soft deletes.
-- **Orchestrator**: `MessagingOrchestrator` (facade) coordinates `MessageSender`, `ConversationLoader`, `ActionHandler`, `StatusManager`, `SearchManager`.
-- **Features**: Inbox view, offer workflow, file validation, message search, archive per-user, mark as read.
-- **Firestore collections**: `conversations` (single doc per pair) + `messages` (all exchanges); offers stored in `messages.offers[]`.
-- **Key methods**:
-  - `sendMessage(conversationId, text, senderId, attachments)` — validates files, uploads to Storage, appends to messages.
-  - `sendOfferMessage(conversationId, carId, price)` — integrates with `OfferWorkflowService`.
-  - `markMessagesAsRead(conversationId, userId)` — sets read status and notification state.
-- **Real-time**: Uses Firestore `onSnapshot()` listeners with `isActive` flag cleanup (see Firestore Patterns below).
-
-## Logging (Critical Rule)
-
-- **Ban**: `console.log()`, `console.error()`, `console.warn()` in `src/` (enforced by `scripts/ban-console.js` during prebuild).
-- **Use**: Import `logger` from [src/services/logger-service.ts](src/services/logger-service.ts).
-  - `logger.debug(msg, context)`, `logger.info(msg, context)`, `logger.warn(msg, context)`, `logger.error(msg, error, context)`.
-- **Only exception**: `logger-service.ts` itself may touch `console`.
-
-## Firestore Patterns (Critical)
-
-- **Listeners cleanup**: Always use the `isActive` flag pattern to prevent memory leaks and race conditions:
-  ```typescript
+```typescript
+// Prevents "setState on unmounted component" errors
+useEffect(() => {
   let isActive = true;
   const unsubscribe = onSnapshot(ref, snap => {
-    if (!isActive) return; // Prevent state updates after unmount
-    // ... process snapshot
+    if (!isActive) return; // CRITICAL
+    setState(snap.data());
   });
   return () => {
     isActive = false;
-    try {
-      unsubscribe();
-    } catch (e) {
-      logger.warn('cleanup error', e);
-    }
+    unsubscribe();
   };
-  ```
-  **Why**: Components unmount but async updates continue → `setState on unmounted component` error. The `isActive` flag gates all state updates.
-- **Avoid duplicate listeners** on same document; consolidate subscriptions.
-- **Collection references**: Use `SellWorkflowCollections.getCollectionNameForVehicleType(vehicleType)` to resolve car collection names dynamically — never hardcode.
+}, []);
+```
 
-## Testing
+### 4. Logging — console.\* is BANNED in src/
 
-- **Framework**: Jest + React Testing Library (RTL).
-- **Commands**: `npm test` (watch) | `npm run test:ci` (CI mode with coverage).
-- **File patterns**: `src/**/__tests__/**/*.test.{ts,tsx}`, `src/**/*.test.{ts,tsx}`, `src/**/*.spec.{ts,tsx}`.
-- **Mocks**: [src/**mocks**/firebase/firebase-config.ts](src/__mocks__/firebase/firebase-config.ts) — d3 also mocked globally.
-- **Run specific test**: `npm test -- --testPathPattern=filename --watchAll=false`.
+```typescript
+// ✅ Use logger service (console fails prebuild)
+import { logger } from '@/services/logger-service';
+logger.info('action', { userId, context });
+logger.error('failed', error, { metadata });
+// ❌ console.log() → scripts/ban-console.js blocks build
+```
 
-## Build & Development
+## 🔑 Core Services (Use These, Don't Duplicate)
 
-- **Dev server**: `npm start` (CRACO on port 3000, auto-open).
-  - Alternative: `npm run start:dev` (4GB memory, no auto-open).
-  - **CRACO config**: Custom webpack setup in [craco.config.js](craco.config.js) — handles path aliases, cache busting, ModuleScopePlugin removal for monorepo support.
-- **Type checking**: `npm run type-check` (before committing).
-- **Production build**: `npm run build` (runs `prebuild` ban-console check first).
-  - `npm run build:analyze` — shows bundle size breakdown.
-  - `npm run build:optimized` — builds + optimizes images with `node scripts/optimize-images.js`.
-- **Algolia sync**: `npm run sync-algolia` or `SYNC_ALGOLIA_NOW.bat` — updates index config and record templates.
-- **Local Firebase**: `npm run emulate` — starts Firebase emulators for local testing.
-- **AI knowledge base**: `npm run train-ai` — regenerates [data/project-knowledge.json](data/project-knowledge.json) from codebase.
-- **Cache issues**: `npm run clean:3000` (port) | `npm run clean:cache` | `npm run clean:all`.
-  - Helper scripts: `scripts/clear-dev-caches.ps1` (PowerShell), batch files in root.
+| Service                        | Purpose                        | Usage                                          |
+| ------------------------------ | ------------------------------ | ---------------------------------------------- |
+| `UnifiedCarService`            | Car CRUD + numeric IDs         | `createCarListing(data, userProfile)`          |
 
-## Deployment
+### Service Architecture Patterns
 
-- **Hosting**: `npm run deploy` (both) | `npm run deploy:hosting` (frontend only).
-- **Functions**: `npm run deploy:functions` (backend only) or `DEPLOY_FUNCTIONS.bat`; code in [functions/src](functions/src).
-- **Windows helpers**: Root directory contains `.bat` (batch) and `.ps1` (PowerShell) scripts for common tasks.
-  - `START_SERVER_CLEAN.ps1` — cleans cache and starts dev server.
-  - `SYNC_ALGOLIA_NOW.bat` — quick Algolia sync.
-  - `CLEAN_PORT_3000.bat` — kills process on port 3000.
-- **Pre-deploy checklist**:
-  1. Run `npm run type-check` (no TS errors).
-  2. Run `npm run check-security` (verify env vars are not exposed).
-  3. Ensure `.env.local` is in `.gitignore` (never committed).
-  4. Test locally: `firebase emulators:start`.
-- **Node version**: Functions require Node 20 (enforce via `firebase.json`).
-- **CORS & Auth**: Firestore Rules + Functions enforce request origin + UID checks.
+**410+ Services organized by domain**:
+- **User Management**: `advanced-user-management-*.ts` (data, operations, types)
+- **Analytics**: `analytics-*.ts` (data, operations, service, types)
+- **Autonomous Systems**: `autonomous-resale-*.ts` (analysis, data, engine, recommendations, strategy)
+- **Admin**: `admin-service.ts`, `audit-logging-service.ts`
+- **Search**: `algoliaSearchService.ts` + Algolia Instantsearch
+- **Content**: `advanced-content-management-service.ts`
 
-## Performance Optimization
+**Service Naming Pattern**: `[domain]-[category].ts` or `[domain].service.ts`  
+**Complex Features**: Split into separate files (data, operations, types)
+| `numeric-id-system.service`    | Numeric ID resolution for URLs | `getUserNumericId()`, `getCarNumericId()`      |
+| `SellWorkflowCollections`      | Multi-collection management    | `getCollectionNameForVehicleType(type)`        |
+| `AdvancedMessagingService`     | Real-time messaging (Phase 2)  | `sendMessage()`, `sendOfferMessage()`          |
+| `OfferWorkflowService`         | Car offer workflow             | `createOffer()`, `acceptOffer()`               |
+| `logger`                       | Structured logging             | Replace all `console.*` (auto-banned in build) |
+| `bulgaria-locations.service`   | Location/city data             | `getCities()` - never hardcode locations       |
+| `bulgarian-compliance-service` | EGN/EIK validation             | `validateEGN()`, `validateEIK()`               |
+| `firebase-cache.service`       | Firestore query optimization   | Reduces cross-partition queries                |
+| `numeric-id-counter.service`   | Counter management             | `counters/{uid}/cars` in Firestore             |
 
-- **Images**: Convert to WebP format; use `browser-image-compression` for client uploads.
-- **Heavy lists**: Apply `useCallback` + `useMemo` to list item components (e.g., `ConversationsList`).
-- **Loading states**: Always use `LoadingContext` or `LightweightLoadingOverlay` — never block UI with synchronous ops.
-- **Bundle analysis**: Run `npm run build:analyze` after major changes to catch regressions.
+## 📋 Essential Patterns (Copy-Paste Ready)
 
-## Localization (i18n)
+### Pattern 1: Firebase Listeners (CRITICAL - Prevents Memory Leaks)
 
-- **Languages**: Bulgarian (`bg`) and English (`en`).
-- **Hook**: `useLanguage()` from context — all UI text must be dynamically resolved.
-- **Files**: [src/locales/bg](src/locales/bg) and [src/locales/en](src/locales/en) — must be updated in sync.
-- **Key namespaces**: `common`, `auth`, `advancedSearch`, `carDetails`, `profile`, etc.
-- **Never hardcode strings** — always use namespace keys.
+```typescript
+useEffect(() => {
+  let isActive = true;
+  const unsubscribe = onSnapshot(query, snap => {
+    if (!isActive) return; // ✅ REQUIRED
+    setState(snap.data());
+  });
+  return () => {
+    isActive = false;
+    unsubscribe();
+  };
+}, []);
+```
 
-## Bulgarian Market Defaults
+### Pattern 2: Numeric URL Resolution
 
-- **Currency**: EUR (enforced in profile types).
-- **Phone prefix**: `+359` (Bulgaria country code).
-- **Cities**: Load from [src/services/bulgaria-locations.service.ts](src/services/bulgaria-locations.service.ts).
-- **Validation**: Comply with EGN (Личен номер) + EIK (ЕИК/ПИК) validation services.
+```typescript
+// URLs: /profile/18, /car/1/5, /messages/18/42
+import {
+  getUserNumericId,
+  getCarNumericId,
+} from '@/services/numeric-id-system.service';
 
-## Payments (Stripe Integration)
+const userNumericId = params.numericId;
+const userId = await getUserNumericId(userNumericId);
+```
 
-- **Checkout sessions**: Live under `customers/{uid}/checkout_sessions` collection.
-- **Security**: Firestore Rules enforce that only the authenticated user can read/write their own checkout sessions.
-- **Webhook handling**: `functions/src/notifications/` listens for Stripe events.
+### Pattern 3: Multi-Collection Car Queries
 
-## Critical Docs to Reference
+```typescript
+import { SellWorkflowCollections } from '@/services/sell-workflow-collections';
 
-- [PROJECT_CONSTITUTION.md](PROJECT_CONSTITUTION.md) — immutable architectural rules (Arabic + English).
-- [docs/STRICT_NUMERIC_ID_SYSTEM.md](docs/STRICT_NUMERIC_ID_SYSTEM.md) — numeric ID strategy detail.
-- [MESSAGING_SYSTEM_FINAL.md](MESSAGING_SYSTEM_FINAL.md) — messaging architecture, offers, file uploads, search.
-- [SECURITY.md](SECURITY.md) — Firestore Rules, Cloud Functions auth, API security, key rotation.
-- [PROJECT_COMPLETE_INVENTORY.md](PROJECT_COMPLETE_INVENTORY.md) — full file/service inventory.
-- [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) — navigation hub for all docs.
-- [data/project-knowledge.json](data/project-knowledge.json) — AI training data (regenerate with `npm run train-ai`).
+const collectionName =
+  SellWorkflowCollections.getCollectionNameForVehicleType('passenger_cars');
+// ❌ NEVER: db.collection('passenger_cars')
+```
 
-## Quick Debugging
+### Pattern 4: Plan Limit Enforcement
 
-- **Port 3000 stuck**: `npm run clean:3000` or `CLEAN_PORT_3000.bat`.
-- **Webpack/CRACO cache**: Delete `node_modules/.cache`, `.cache`, and restart dev server.
-- **Firestore listener errors**: Missing `isActive` flag in cleanup — causes "setState on unmounted component". Check patterns in Firestore Patterns section above.
-- **Numeric ID not assigned**: Verify `UnifiedCarService.createCarListing()` called + `counters/{uid}/cars` document exists.
-- **Algolia not syncing**: Run `npm run sync-algolia` manually; check `algolia-index-config.json` format (use arrays, not comma-separated strings).
-- **Console errors during build**: Check `scripts/ban-console.js` — may have caught illegal `console.log` usage.
-- **Type errors from path aliases**: Ensure aliases match across `tsconfig.json`, `craco.config.js`, and `jest.config.js`.
-- **env vars missing**: See `functions/.env` template (not committed); ask team lead for production keys.
-- **Test failures**: Check `src/__mocks__/firebase/firebase-config.ts` — Firebase must be mocked for Jest.
+```typescript
+import { canAddListing } from '@/utils/listing-limits';
+
+if (!(await canAddListing(userId))) {
+  throw new Error('Plan limit reached'); // free: 3, dealer: 10, company: ∞
+}
+```
+
+### Pattern 5: Context-First State (No Redux)
+
+```typescript
+import { useAuth, useLanguage, useProfileType, useTheme } from '@/contexts';
+
+// Available contexts: AuthContext, LanguageContext, ProfileTypeContext,
+// ThemeContext, FilterContext, LoadingContext
+const { user } = useAuth();
+```
+
+## 📬 Real-Time Messaging Architecture (Phase 2 Complete)
+
+### Entry Points
+
+- **Page**: `src/pages/03_user-messages/MessagesPage.tsx` (1,071 lines)
+- **Service**: `src/services/advanced-messaging.service.ts` (350 lines)
+- **Routes**: `/messages/:senderId/:recipientId` or `/messages?conversationId=abc`
+
+### Key Features
+
+- ✅ Unified Messaging System (solved 2-system duplication in Phase 1)
+- ✅ Real-time listeners with `isActive` flag (prevents memory leaks)
+- ✅ Offer workflow integration (`sendOfferMessage()`)
+- ✅ Mark as read + conversation archiving per-user
+- ✅ File upload validation (size, type, security checks)
+- ✅ Search & filtering with SearchManager
+
+### When Working on Messaging
+
+1. **Always use `AdvancedMessagingService`** for all message operations
+2. **Numeric ID resolution** happens in `MessagesPage` entry point
+3. **Status updates** go through `MessageOperations` (read/delete/archive)
+4. **Offers** integrated with `OfferWorkflowService`
+5. **File uploads** validated before storage (no direct Firebase calls)
+
+## 🚗 Car Listing & Multi-Collection System
+
+### 6 Collections (Fixed - Never Add More)
+
+```
+passenger_cars   → Regular cars
+suvs             → SUVs/Crossovers
+vans             → Commercial vans
+motorcycles      → Bikes/scooters
+trucks           → Heavy vehicles
+buses            → Transport vehicles
+```
+
+### Numeric ID System (Critical Data Model)
+
+```typescript
+// Instead of exposing Firebase UIDs in URLs:
+// ❌ /car/abc123def456ghi789jkl
+// ✅ /car/1/5  → user 1's 5th car
+
+// Implementation:
+counters/{userId}/cars → Counter document per user
+numeric_ids collection → Maps numeric → Firebase UID
+```
+
+### Sell Workflow Route Structure
+
+- `/sell/vehicle-type` → Vehicle type selection
+- `/sell/basic` → Title, year, mileage
+- `/sell/features` → Condition, equipment
+- `/sell/description` → AI-assisted description editor
+- `/sell/pricing` → Market value + manual price
+- `/sell/images` → Multi-image upload (WebP only)
+- `/sell/review` → Final re (target: es2017, strict mode)
+   - CRACO Webpack bundling (cache: memory in dev)
+3. Deploy only after ALL tests pass
+
+### CRACO Configuration (Custom Webpack)
+- **Dev Cache**: Memory-based (fastest, no disk I/O)
+- **Production**: Minificati
+
+**Available Path Aliases**:
+```typescript
+@/components/*  → src/components/*
+@/services/*    → src/services/*
+@/pages/*       → src/pages/*
+@/hooks/*       → src/hooks/*
+@/types/*       → src/types/*
+@/contexts/*    → src/contexts/*
+@/utils/*       → src/utils/*
+@/features/*    → src/features/*
+@/assets/*      → src/assets/*
+@/firebase/*    → src/firebase/*
+@/config/*      → src/config/*
+@/constants/*   → src/constants/*
+@/data/*        → src/data/*
+
+// Monorepo packages (if present)
+@globul-cars/core/*      → packages/core/src/*
+@globul-cars/services/*  → packages/services/src/*
+```
+
+**ModuleScopePlugin**: Removed in CRACO to allow monorepo importson disabled for debugging
+- **ModuleScopePlugin**: Removed to allow monorepo imports
+- **Path Aliases**: Configured in `tsconfig.json`, `craco.config.js`, `jest.config.js`
+- **Dev Server**: Port 3000 (localhost), hot reload enabled, aggressive cache invalidation
+
+### Path Aliases — Sync 3 Files When Adding New Aliases
+
+When adding `@/newAlias/*`, update:
+
+- `tsconfig.json` (TypeScript)
+- `craco.config.js` (Webpack)
+- `jest.config.js` (Testing)
+
+### Firestore Query Optimization (Required)
+
+- Use `firebase-cache.service` to reduce cross-partition queries
+- Add composite indexes for multi-field filters
+- Reference [FIRESTORE_INDEXES_GUIDE.md](FIRESTORE_INDEXES_GUIDE.md)
+
+### Routing — Use safeLazy() for Code Splitting
+
+```typescript
+import { safeLazy } from '@/utils/lazyImport';
+const MyPage = safeLazy(() => import('@/pages/MyPage'));
+// Routes in: src/routes/*.routes.tsx (MainRoutes.tsx,
+
+### Naming Conventions (STRICT)
+
+**Components**: PascalCase (e.g., `CarCard.tsx`, `SearchWidget.tsx`)  
+**Functions/Variables**: camelCase (e.g., `handleSearch`, `userData`)  
+**Constants**: UPPER_SNAKE_CASE (e.g., `MAX_UPLOAD_SIZE`, `API
+  - EGN: Bulgarian national ID validation
+  - EIK: Bulgarian company ID validation
+
+### Testing & Validation
+
+**Test Structure**:
+- **Unit Tests**: Jest + Testing Library
+- **Mock Files**: `src/__mocks__/firebase/firebase-config.ts`
+- **Test Commands**: 
+  - `npm test` → Watch mode
+  - `npm run test:ci` → CI mode (no watch, coverage)
+  - `npm run test:profile-stats` → Profile system tests
+
+**TypeScript Strict Mode**:
+- Always run `npm run type-check` before commits
+- `strict: true` in `tsconfig.json`
+- Target: ES2017 for broad compatibility_ENDPOINT`)  
+**Types/Interfaces**: PascalCase (e.g., `UserProfile`, `CarData`)  
+**Contexts**: PascalCase + Context (e.g., `AuthContext`, `ThemeContext`)  
+**Services**: kebab-case.service.ts (e.g., `car.service.ts`, `numeric-id-system.service.ts`) NumericCarRedirect
+- Add composite indexes for multi-field filters
+- Reference [FIRESTORE_INDEXES_GUIDE.md](FIRESTORE_INDEXES_GUIDE.md)
+
+### Routing — Use safeLazy() for Code Splitting
+
+```typescript
+import { safeLazy } from '@/utils/lazyImport';
+const MyPage = safeLazy(() => import('@/pages/MyPage'));
+// Routes in: src/routes/*.routes.tsx (auth.routes.tsx, admin.routes.tsx, etc.)
+```
+
+### Component Organization
+
+- **Reusable**: `src/components/` (441 components)
+- **Page-specific**: `src/pages/*/components/`
+- **Always use**: `React.memo()` for expensive renders
+
+### Contexts (6 Total - No Redux)or `scripts/clean-ports.ps1` (Windows)                        |
+| Cache issues            | `npm run clean:all` then restart                                                    |
+| Firestore limits        | Check composite indexes in [FIRESTORE_INDEXES_GUIDE.md](FIRESTORE_INDEXES_GUIDE.md) |
+| Hot reload not working  | Clear dev cache with `scripts/clear-dev-caches.ps1`                                 |
+| Build failing           | Run `npm run type-check` first, then check `scripts/ban-console.js` output          |
+| Firebase 401 errors     | Run `scripts/verify-firebase-connection.js`                                         |
+
+### Windows-Specific Issues
+
+**Port Cleanup (Windows)**:
+```powershell
+# PowerShell scripts available
+.\scripts\clean-ports.ps1        # Clean all dev ports
+.\scripts\clear-dev-caches.ps1   # Clear development caches
+.\scripts\deploy-phase2.ps1      # Deployment helper
+```
+
+**Quick Restart (Windows)**:
+```bash
+# Batch files for quick actions
+.\scripts\START_SERVER.bat       # Start dev server
+.\scripts\RESTART_SERVER.bat     # Restart with cache clear
+.\scripts\QUICK_REBUILD.bat      # Clean rebuild
+```
+AuthContext; // User auth state
+LanguageContext; // i18n (bg/en)
+ProfileTypeContext; // free/dealer/company
+ThemeContext; // Dark/light mode
+FilterContext; // Search filters
+LoadingContext; // Global loading state
+```
+
+### Bulgarian Market Constraints (Hardcoded Checks)
+
+- **Currency**: EUR only (validation in `bulgarian-config`)
+- **Phone**: +359 prefix required (validation in forms)
+- **Cities**: Use `bulgaria-locations.service.ts` (never hardcode)
+- **i18n**: `useLanguage()` hook + `src/locales/{bg,en}` JSON files
+- **EGN/EIK**: Validate with `bulgarian-compliance-service.ts`
+DeepSeek**: Alternative AI provider (via `ai-router.service.ts`)
+- **AI Router**: Multi-provider fallback system for resilience
+- **WhatsApp Business**: Message routing + notifications
+- **Facebook/Instagram**: Auto-posting from car listings
+
+### Key AI Services
+```typescript
+// AI router with multi-provider support
+import { aiRouter } from '@/services/ai-router.service';
+
+// Autonomous resale analysis system
+import { AutonomousResaleEngine } from '@/services/autonomous-resale-engine';
+
+// AI-assisted content management
+import { AdvancedContentManagementService } from '@/services/advanced-content-management-service';
+```
+
+```typescript
+// ✅ CORRECT (logger-service exception)
+import { logger } from '@/services/logger-service';
+logger.info('action', { userId, context });
+logger.error('failed', error, { metadata });
+
+// ❌ WRONG (fails prebuild → scripts/ban-console.js blocks it)
+console.log('something');
+```
+
+## 📊 Data Flow & External Integrations
+
+### Search Architecture (Hybrid)
+  - **6 Fixed Collections**: `passenger_cars`, `suvs`, `vans`, `motorcycles`, `trucks`, `buses`
+  - **Counter System**: `counters/{uid}/cars` for numeric IDs
+  - **Numeric Mapping**: `numeric_ids` collection for URL resolution
+- **Cloud Storage**: Car images, documents (WebP-only)
+- **Cloud Functions**: Background jobs (Node.js 20)
+  - **24 Functions**: Sitemap, merchant feed, notifications, etc.
+  - **Deploy**: `npm run deploy:functions`
+- **Authentication**: Email + OAuth (Google, Facebook)
+- **Hosting**: SPA with rewrites for sitemap & merchant feed
+
+### Emulator Setup
+```bash
+npm run emulate  # Start Firebase emulators
+# Auth: localhost:9099
+# Functions: localhost:5001
+# Firestore: localhost:8080
+# Hosting: localhost:5002
+```
+
+### Scripts Directory (100+ Automation Scripts)
+
+**Key Scripts**:
+- `ban-console.js` → Enforces logger-service usage (prebuild)
+- `clean-all.js` / `clean-port-3000.js` → Port & cache cleanup
+- `train-ai-on-project.js` → AI training on codebase
+- `migrate-dealer-limits.ts` → Database migrations
+- `sync-algolia.js` → Sync Firestore → Algolia
+- `analyze-bundle-size.js` → Bundle analysis
+- `verify-firebase-connection.js` → Connection diagnostics
+
+**Script Categories**:
+- **Migrations**: `migrate-*.js/ts` (dealer limits, legacy cars)
+- **Diagnostics**: `diagnose-*.js/ts`, `check-*.js/ts`
+- **Fixing**: `fix-*.js` (imports, styles, components)
+- **Analysis**: `analyze-*.js`, `scan-*.js`
+- **Deployment**: `deploy-*.sh/ps1`tantsearch)
+- **Frontend**: React Instantsearch + custom FilterContext
+
+### AI Integration Points
+
+- **Gemini API**: Auto-generate descriptions (`@google/generative-ai`)
+- **OpenAI**: Future enhancement for chat/support
+- **WhatsApp Business**: Message routing + notifications
+- **Facebook/Instagram**: Auto-posting from car listings
+
+### Firebase Backend Structure
+
+- **Realtime DB** (europe-west1): Message delivery notifications
+- **Firestore**: Main data (users, cars, messages, offers)
+- **Cloud Storage**: Car images, documents (WebP-only)
+- **Cloud Functions**: Background jobs (Node.js 20)
+- **Authentication**: Email + OAuth (Google, Facebook)
+
+## 🐛 Debugging Quick Fixes
+
+| Issue                   | Fix                                                                                 |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| "setState on unmounted" | Add `isActive` flag to listener                                                     |
+| Console errors in build | Remove console.\* or use logger                                                     |
+| Jest tests failing      | Check `src/__mocks__/firebase/firebase-config.ts`                                   |
+| Path aliases broken     | Sync tsconfig + craco + jest configs                                                |
+| Port 3000 stuck         | `npm run clean:3000`                                                                |
+| Cache issues            | `npm run clean:all` then restart                                                    |
+| Firestore limits        | Check composite indexes in [FIRESTORE_INDEXES_GUIDE.md](FIRESTORE_INDEXES_GUIDE.md) |
+
+## 📚 Key Documentation
+
+- [PROJECT_CONSTITUTION.md](PROJECT_CONSTITUTION.md) — Architectural rules & project stats
+- [MESSAGING_SYSTEM_FINAL.md](MESSAGING_SYSTEM_FINAL.md) — Unified messaging (Phase 1 & 2)
+- [src/routes/README.md](src/routes/README.md) — Route definitions by feature
+- [FIRESTORE_INDEXES_GUIDE.md](FIRESTORE_INDEXES_GUIDE.md) — Required composite indexes
+- [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) — Complete docs index

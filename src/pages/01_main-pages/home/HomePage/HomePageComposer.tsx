@@ -34,6 +34,7 @@ import LazySection from '../../../../components/LazySection';
 
 // Import section components
 import UnifiedHeroSection from './UnifiedHeroSection';
+// import { HeroSection2 } from './HeroSection2';
 import FeaturedShowcase from './FeaturedShowcase';
 import UnifiedCarsShowcase from './UnifiedCarsShowcase';
 import SmartSellStrip from './SmartSellStrip';
@@ -434,33 +435,33 @@ const HomePageComposer: React.FC = React.memo(() => {
         <FeaturedShowcaseSlot />
         <SectionSpacer />
 
-      {/* Slot 3: Smart Sell Strip */}
-      <SmartSellSlot />
-      <SectionSpacer />
+        {/* Slot 3: Smart Sell Strip */}
+        <SmartSellSlot />
+        <SectionSpacer />
 
-      {/* Slot 4: Cars Showcase - CRITICAL */}
-      <CarsShowcaseSlot />
-      <SectionSpacer />
+        {/* Slot 4: Cars Showcase - CRITICAL */}
+        <CarsShowcaseSlot />
+        <SectionSpacer />
 
-      {/* Slot 5: Popular Brands - CRITICAL */}
-      <PopularBrandsSlot />
-      <SectionSpacer />
+        {/* Slot 5: Popular Brands - CRITICAL */}
+        <PopularBrandsSlot />
+        <SectionSpacer />
 
-      {/* Slot 6: Most Demanded Categories (combines Vehicle Classifications + Categories) */}
-      <MostDemandedCategoriesSlot />
-      <SectionSpacer />
+        {/* Slot 6: Most Demanded Categories (combines Vehicle Classifications + Categories) */}
+        <MostDemandedCategoriesSlot />
+        <SectionSpacer />
 
-      {/* Slot 7: Dealer Spotlight */}
-      <DealersSlot />
-      <SectionSpacer />
+        {/* Slot 7: Dealer Spotlight */}
+        <DealersSlot />
+        <SectionSpacer />
 
-      {/* Slot 8: Social Experience */}
-      <SocialSlot />
-      <SectionSpacer />
+        {/* Slot 8: Social Experience */}
+        <SocialSlot />
+        <SectionSpacer />
 
-      {/* Slot 9: Trust & Stats */}
-      <TrustSlot />
-      <SectionSpacer />
+        {/* Slot 9: Trust & Stats */}
+        <TrustSlot />
+        <SectionSpacer />
 
         {/* Slot 10: Loyalty & Signup */}
         <LoyaltySlot />
@@ -468,7 +469,7 @@ const HomePageComposer: React.FC = React.memo(() => {
 
       {/* AI Chatbot (Floating) */}
       <AIChatbotSlot />
-      
+
       {/* ✅ REVENUE FIX: Draft Recovery Prompt (Floating Toast) */}
       <DraftRecoverySlot />
     </ComposerContainer>

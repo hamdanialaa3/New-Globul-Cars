@@ -145,9 +145,9 @@ function getPermissions(profileType: ProfileType, planTier: PlanTier): ProfilePe
   if (profileType === 'company' || planTier === 'company') {
     return {
       ...base,
-      // Limits: 200 cars/mo (Scale)
-      maxListings: 200,
-      maxMonthlyListings: 200, // Explicit monthly limit even for "unlimited" total
+      // Limits: UNLIMITED cars (no per-month limit)
+      maxListings: -1, // -1 = unlimited
+      maxMonthlyListings: -1, // Unlimited monthly as well
 
       // Unrestricted Editing (Trust-based)
       canEditLockedFields: true,
@@ -155,7 +155,7 @@ function getPermissions(profileType: ProfileType, planTier: PlanTier): ProfilePe
 
       // Power Tools: Matrix Grid (20 rows) & Cloning
       canBulkUpload: true,
-      bulkUploadLimit: 20,
+      bulkUploadLimit: 999, // No limit
       canCloneListing: true,
       canImportCSV: true,
       canUseAPI: true,

@@ -1,5 +1,6 @@
 
 import { useMemo } from 'react';
+import { logger } from '@/services/logger-service';
 import { UnifiedWorkflowData } from '../../../services/unified-workflow-persistence.service';
 
 // Utility function to detect language from browser or context
@@ -136,7 +137,7 @@ export const useWizardValidation = (currentStep: number, formData: Partial<Unifi
 
         // Log validation errors for debugging
         if (errors.length > 0) {
-            console.warn('⚠️ Validation failed before publish:', {
+            logger.warn('Validation failed before publish', {
                 errorCount: errors.length,
                 errors,
                 formDataKeys: Object.keys(formData)

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { X, Edit, Car, Shield, Trash2, Search, RefreshCw, Eye, DollarSign, TrendingUp } from 'lucide-react';
 import { carsReportService } from '../../../services/reports/cars-report-service';
+import { logger } from '@/services/logger-service';
 import { doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebase-config';
-import { logger } from '../../../services/logger-service';
 
 // Professional God Mode UI (Reused styles for consistency)
 const Overlay = styled.div`
@@ -274,7 +274,7 @@ export const GodModeCarGrid: React.FC<GodModeCarGridProps> = ({ onClose }) => {
       await updateDoc(doc(db, 'cars', carId), { isActive: !currentStatus });
       setCars(prev => prev.map(c => c.id === carId ? { ...c, isActive: !currentStatus } : c));
     } catch (error) {
-      console.error('Failed to toggle status', error);
+      logger.error('Failed to toggle status', error as Error, { carId });
     }
   };
 
@@ -284,7 +284,7 @@ export const GodModeCarGrid: React.FC<GodModeCarGridProps> = ({ onClose }) => {
       await updateDoc(doc(db, 'cars', carId), { status: newStatus });
       setCars(prev => prev.map(c => c.id === carId ? { ...c, status: newStatus } : c));
     } catch (error) {
-      console.error('Failed to update sold status', error);
+      logger.error('Failed to update sold status', error as Error, { carId });
     }
   };
 
@@ -295,7 +295,7 @@ export const GodModeCarGrid: React.FC<GodModeCarGridProps> = ({ onClose }) => {
       setCars(prev => prev.map(c => c.id === carId ? { ...c, views: newViews } : c));
       alert('Boosted +1000 views!');
     } catch (error) {
-      console.error('Failed to boost', error);
+      logger.error('Failed to boost', error as Error, { carId });
     }
   };
 

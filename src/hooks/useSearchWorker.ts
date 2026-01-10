@@ -12,6 +12,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { CarListing } from '@/types/CarListing';
+import { logger } from '@/services/logger-service';
 
 interface SearchParams {
   query?: string;
@@ -86,7 +87,7 @@ export function useSearchWorker(): UseSearchWorkerReturn {
             break;
 
           default:
-            console.warn('Unknown message type from worker:', type);
+            logger.warn('Unknown message type from worker', { type });
         }
       };
 
@@ -95,7 +96,7 @@ export function useSearchWorker(): UseSearchWorkerReturn {
         setLoading(false);
       };
     } catch (err) {
-      console.error('Failed to initialize search worker:', err);
+      logger.error('Failed to initialize search worker', err as Error);
       setError('Failed to initialize search worker');
     }
 

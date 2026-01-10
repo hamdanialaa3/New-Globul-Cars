@@ -2,11 +2,13 @@
 // Deep architectural thinking: caching, error resilience, type safety, extensibility
 // English/Bulgarian agnostic. No emojis. <300 lines enforced.
 
-import { collection, doc, getDocs, query, where, Timestamp, onSnapshot, Unsubscribe } from 'firebase/firestore';
+import { collection, doc, getDocs, getDoc, query, where, Timestamp, onSnapshot, Unsubscribe } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { logger } from '../../services/logger-service';
 import { savedSearchesService } from '../../services/search/saved-searches.service';
 import WorkflowAnalyticsService from '../../services/workflow-analytics-service';
+// ✅ CRITICAL: Import vehicle collections for multi-collection support
+import { VEHICLE_COLLECTIONS } from '../car/unified-car-types';
 
 // Core profile stats interface with strict typing
 export interface ProfileStats {
@@ -74,15 +76,108 @@ export interface ProfileStatsDataSource {
   fetchSavedSearches(profileId: string): Promise<any[]>;
 }
 
+// ✅ CRITICAL FIX: Use correct Firestore structure and field names
 const defaultDataSource: ProfileStatsDataSource = {
+  // ✅ FIX: profiles collection uses document ID = userId (Firebase UID)
+  // Use direct document access instead of query
   fetchProfile: async (profileId: string) => {
-    const snap = await getDocs(query(collection(db, 'profiles'), where('userId', '==', profileId)));
-    return snap.docs[0] || null;
+    try {
+      const profileDoc = await getDoc(doc(db, 'profiles', profileId));
+      if (profileDoc.exists()) {
+        return profileDoc;
+      }
+      // Fallback: Try users collection if profiles doesn't exist
+      const userDoc = await getDoc(doc(db, 'users', profileId));
+      return userDoc.exists() ? userDoc : null;
+    } catch (error) {
+      logger.warn('Failed to fetch profile', { profileId, error: (error as Error).message });
+      return null;
+    }
   },
-  fetchListings: async (profileId: string) => getDocs(query(collection(db, 'listings'), where('ownerProfileId', '==', profileId))),
-  fetchListingMetrics: async (profileId: string) => getDocs(query(collection(db, 'listingMetrics'), where('ownerProfileId', '==', profileId))),
-  fetchReviews: async (profileId: string) => getDocs(query(collection(db, 'reviews'), where('profileId', '==', profileId))),
-  fetchSavedSearches: async (profileId: string) => savedSearchesService.list(profileId)
+  
+  // ✅ FIX: Query ALL vehicle collections (passenger_cars, suvs, vans, etc.)
+  // Use sellerId field (not ownerProfileId)
+  fetchListings: async (profileId: string) => {
+    try {
+      const allListings: any[] = [];
+      // Query all vehicle collections in parallel
+      const queryPromises = VEHICLE_COLLECTIONS.map(async (collectionName) => {
+        try {
+          const q = query(
+            collection(db, collectionName),
+            where('sellerId', '==', profileId)
+          );
+          const snapshot = await getDocs(q);
+          return snapshot.docs;
+        } catch (error) {
+          logger.warn(`Failed to query ${collectionName}`, { profileId, error: (error as Error).message });
+          return [];
+        }
+      });
+      const results = await Promise.all(queryPromises);
+      results.forEach(docs => allListings.push(...docs));
+      
+      // Return as QuerySnapshot-like object
+      return {
+        forEach: (callback: (doc: any) => void) => {
+          allListings.forEach(callback);
+        },
+        size: allListings.length,
+        docs: allListings
+      } as any;
+    } catch (error) {
+      logger.warn('Failed to fetch listings', { profileId, error: (error as Error).message });
+      return { forEach: () => {}, size: 0, docs: [] } as any;
+    }
+  },
+  
+  // ✅ FIX: listingMetrics collection - handle gracefully if doesn't exist
+  fetchListingMetrics: async (profileId: string) => {
+    try {
+      const q = query(
+        collection(db, 'listingMetrics'),
+        where('ownerProfileId', '==', profileId)
+      );
+      return await getDocs(q);
+    } catch (error) {
+      // ✅ GRACEFUL: Return empty if collection doesn't exist or permission denied
+      logger.debug('listingMetrics not available', { profileId, error: (error as Error).message });
+      return { forEach: () => {}, size: 0, docs: [] } as any;
+    }
+  },
+  
+  // ✅ FIX: Use listing_reviews collection (not reviews)
+  fetchReviews: async (profileId: string) => {
+    try {
+      // Try listing_reviews first (correct collection name)
+      const q = query(
+        collection(db, 'listing_reviews'),
+        where('profileId', '==', profileId)
+      );
+      return await getDocs(q);
+    } catch (error) {
+      // Fallback: Try reviews collection (legacy)
+      try {
+        const q = query(
+          collection(db, 'reviews'),
+          where('profileId', '==', profileId)
+        );
+        return await getDocs(q);
+      } catch (fallbackError) {
+        logger.debug('Reviews not available', { profileId, error: (error as Error).message });
+        return { forEach: () => {}, size: 0, docs: [] } as any;
+      }
+    }
+  },
+  
+  fetchSavedSearches: async (profileId: string) => {
+    try {
+      return await savedSearchesService.list(profileId);
+    } catch (error) {
+      logger.warn('Failed to fetch saved searches', { profileId, error: (error as Error).message });
+      return [];
+    }
+  }
 };
 
 class ProfileStatsService {
@@ -153,24 +248,56 @@ class ProfileStatsService {
 
   /**
    * Calculate and persist stats to the user profile
+   * ✅ CRITICAL FIX: Include userId field for Firestore Security Rules
    */
   async updateUserStats(profileId: string): Promise<void> {
     try {
       const stats = await this.getStats(profileId, true);
 
+      // ✅ CRITICAL FIX: Include userId field to satisfy Firestore Security Rules
+      // Security Rules require: isOwner(resource.data.userId) || (request.resource.data.userId == request.auth.uid)
+      // When using merge: true, we must ensure userId field exists in the update
+      const { auth } = await import('../../firebase/firebase-config');
+      const currentUser = auth?.currentUser;
+      
+      // ✅ FIX: Always include userId field for Security Rules
+      // This ensures the rule: request.resource.data.userId == request.auth.uid passes
+      const updateData: any = {
+        userId: profileId, // ✅ CRITICAL: Always include userId for Security Rules
+        stats: stats,
+        lastStatsUpdate: Timestamp.fromDate(new Date())
+      };
+      
+      // ✅ VALIDATION: Only allow update if current user matches profileId
+      // This prevents permission errors when viewing other users' profiles
+      if (!currentUser) {
+        logger.debug('No authenticated user, skipping stats update', { profileId });
+        return; // Don't throw, just return silently
+      }
+      
+      if (currentUser.uid !== profileId) {
+        logger.debug('Cannot update stats for other user (expected)', { 
+          currentUserId: currentUser.uid, 
+          profileId 
+        });
+        return; // Don't throw, just return silently - this is expected behavior
+      }
+
       // Persist to profile document for simple frontend consumption
       // Using setDoc with merge: true to ensure document exists
-      await import('firebase/firestore').then(({ setDoc, doc }) => {
-        setDoc(doc(db, 'profiles', profileId), {
-          stats: stats,
-          lastStatsUpdate: new Date()
-        }, { merge: true });
-      });
+      const { setDoc, doc } = await import('firebase/firestore');
+      await setDoc(doc(db, 'profiles', profileId), updateData, { merge: true });
 
       logger.info('Profile stats persisted to DB', { profileId });
     } catch (error) {
-      logger.error('Failed to update user stats in DB', error as Error, { profileId });
-      // Don't throw, just log. This is a background optimization.
+      // ✅ GRACEFUL: Don't throw - this is a background optimization
+      // Log error but don't break the UI
+      const errorMessage = (error as Error).message;
+      if (errorMessage.includes('permission') || errorMessage.includes('Permission')) {
+        logger.warn('Profile stats update permission denied (expected for other users)', { profileId });
+      } else {
+        logger.error('Failed to update user stats in DB', error as Error, { profileId });
+      }
     }
   }
 
@@ -182,6 +309,7 @@ class ProfileStatsService {
     // Cleanup existing listener if any
     this.cleanupListener(profileId);
 
+    // ✅ FIX: Use profiles collection with profileId as document ID
     const unsubscribe = onSnapshot(
       doc(db, 'profiles', profileId),
       async (snapshot) => {
@@ -261,40 +389,76 @@ class ProfileStatsService {
     const trustScore = profile.trustScore || 0;
     const badges = profile.badges || [];
     const verification = profile.verification || { phoneVerified: false, idVerified: false, businessVerified: false };
-    const profileType = profile.type || 'private';
+    // ✅ FIX: Support both profileType and type fields (profileType is canonical)
+    const profileType = (profile.profileType || profile.type || 'private') as 'private' | 'dealer' | 'company';
     const createdAt = profile.createdAt?.toDate() || new Date();
     const accountAge = Math.floor((Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24));
 
-    // Listings aggregation
+    // ✅ FIX: Listings aggregation - handle both QuerySnapshot and custom object
     let activeListings = 0;
     let soldListings = 0;
-    listingsSnap.forEach((d: any) => {
-      const status = d.data().status;
-      if (status === 'published') activeListings++;
-      if (status === 'sold') soldListings++;
-    });
-    const totalListings = listingsSnap.size;
+    const listingsDocs = listingsSnap.docs || (listingsSnap.forEach ? [] : []);
+    
+    if (listingsSnap.forEach) {
+      // QuerySnapshot-like object
+      listingsSnap.forEach((d: any) => {
+        const data = d.data ? d.data() : d;
+        const status = data.status;
+        const isActive = data.isActive !== false; // Default to true
+        const isSold = data.isSold === true;
+        
+        if (status === 'published' || status === 'active' || isActive) {
+          activeListings++;
+        }
+        if (status === 'sold' || isSold) {
+          soldListings++;
+        }
+      });
+    } else {
+      // Array of docs
+      listingsDocs.forEach((d: any) => {
+        const data = d.data ? d.data() : d;
+        const status = data.status;
+        const isActive = data.isActive !== false;
+        const isSold = data.isSold === true;
+        
+        if (status === 'published' || status === 'active' || isActive) {
+          activeListings++;
+        }
+        if (status === 'sold' || isSold) {
+          soldListings++;
+        }
+      });
+    }
+    const totalListings = listingsSnap.size || listingsDocs.length;
 
-    // Metrics aggregation
+    // ✅ FIX: Metrics aggregation - handle gracefully if collection doesn't exist
     let views30d = 0, messages30d = 0, favorites30d = 0;
-    metricsSnap.forEach((d: any) => {
-      const m = d.data();
-      views30d += m.views30d || 0;
-      messages30d += m.messages30d || 0;
-      favorites30d += m.favorites30d || 0;
-    });
+    if (metricsSnap && metricsSnap.forEach) {
+      metricsSnap.forEach((d: any) => {
+        const m = d.data ? d.data() : d;
+        views30d += m.views30d || 0;
+        messages30d += m.messages30d || 0;
+        favorites30d += m.favorites30d || 0;
+      });
+    }
 
     // Response metrics (from profile.stats if available)
     const stats = profile.stats || {};
     const avgResponseMinutes = stats.avgResponseMinutes || 0;
     const responseRate = stats.responseRate || 0;
 
-    // Reviews aggregation
+    // ✅ FIX: Reviews aggregation - handle gracefully if collection doesn't exist
     let totalRating = 0;
-    reviewsSnap.forEach((d: any) => {
-      totalRating += d.data().rating || 0;
-    });
-    const reviewCount = reviewsSnap.size;
+    let reviewCount = 0;
+    if (reviewsSnap && reviewsSnap.forEach) {
+      reviewsSnap.forEach((d: any) => {
+        const data = d.data ? d.data() : d;
+        totalRating += data.rating || 0;
+        reviewCount++;
+      });
+    }
+    reviewCount = reviewsSnap?.size || reviewCount;
     const avgRating = reviewCount > 0 ? totalRating / reviewCount : 0;
 
     // Conversion rate

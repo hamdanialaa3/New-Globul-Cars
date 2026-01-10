@@ -1,0 +1,509 @@
+# 🏛️ Bulgarian Car Marketplace - Cursor Rules
+## Context & Architecture Guide for AI Assistant
+
+> **Project:** Bulgarian Car Marketplace (Bulgarski Avtomobili)  
+> **Version:** 0.4.0  
+> **Status:** Production Active (mobilebg.eu)  
+> **Last Updated:** January 2026
+
+---
+
+## 📊 Project Overview
+
+### Tech Stack
+- **Frontend:** React 18.3.1, TypeScript 5.6.3, Styled-Components 6.1.19
+- **Backend:** Firebase 12.3.0 (Firestore, Cloud Functions Node.js 20, Auth, Storage, Hosting)
+- **Routing:** React Router DOM 7.9.1
+- **State Management:** Context API + Zustand (NO Redux)
+- **Animations:** Framer Motion 12.23.26
+- **Icons:** Lucide React 0.544.0
+- **Forms:** React Hook Form 7.44.3, Zod 4.2.1
+- **Search:** Algolia (Hybrid: Firestore + Algolia)
+- **AI:** Google Gemini, OpenAI, DeepSeek (via ai-router.service.ts)
+- **Payments:** Stripe
+- **Build:** CRACO 7.x (Webpack customization)
+
+### Project Statistics
+- **795 React Components (.tsx)**
+- **780+ TypeScript Services (.ts)**
+- **410+ Services**
+- **290 Pages**
+- **85+ Routes**
+- **195,000+ Lines of Code**
+- **6 Firestore Collections** (passenger_cars, suvs, vans, motorcycles, trucks, buses)
+- **24 Cloud Functions** (Node.js 20)
+
+---
+
+## 🎯 Core Architectural Rules (CRITICAL - DO NOT VIOLATE)
+
+### 1. Numeric ID System (MANDATORY)
+**❌ NEVER use Firebase UIDs in public URLs**
+
+**Correct URL Patterns:**
+- User Profile: `/profile/:numericId` (e.g., `/profile/18`)
+- Car Details: `/car/:sellerNumericId/:carNumericId` (e.g., `/car/1/5`)
+- Edit Car: `/car/:sellerNumericId/:carNumericId/edit`
+- Messages: `/messages/:senderId/:recipientId`
+
+**Services to Use:**
+- `numeric-car-system.service.ts` (300+ lines)
+- `numeric-id-assignment.service.ts`
+- `numeric-id-lookup.service.ts`
+
+**Protection:**
+- `NumericIdGuard.tsx` - redirects invalid URLs
+- Always validate numeric IDs before database queries
+
+### 2. Multi-Collection Pattern (MANDATORY)
+**❌ NEVER hardcode collection names**
+
+**The 6 Collections:**
+```typescript
+passenger_cars  // Sedans, Hatchbacks, Coupes
+suvs            // SUVs, Crossovers
+vans            // Vans, Minivans
+motorcycles     // Motorcycles
+trucks          // Trucks
+buses           // Buses
+```
+
+**Correct Usage:**
+```typescript
+import { SellWorkflowCollections } from '@/services/sell-workflow-collections.service';
+
+const collectionName = SellWorkflowCollections
+  .getCollectionNameForVehicleType(vehicleType);
+
+// ✅ Dynamic collection resolution
+// ❌ NEVER: db.collection('passenger_cars')
+```
+
+### 3. Firestore Listeners (CRITICAL - Memory Leaks Prevention)
+**⚠️ ALWAYS use `isActive` flag pattern**
+
+```typescript
+// ✅ CORRECT Pattern
+useEffect(() => {
+  let isActive = true; // Prevent updates after unmount
+  
+  const unsubscribe = onSnapshot(docRef, (snapshot) => {
+    if (!isActive) return; // Critical check
+    // Update state...
+  });
+  
+  return () => {
+    isActive = false;
+    try {
+      unsubscribe();
+    } catch (error) {
+      logger.warn('Cleanup error', error);
+    }
+  };
+}, [dependencies]);
+
+// ❌ WRONG - Causes memory leaks
+useEffect(() => {
+  const unsubscribe = onSnapshot(docRef, (snapshot) => {
+    setState(snapshot.data()); // Can run after unmount!
+  });
+  return unsubscribe;
+}, []);
+```
+
+### 4. Logging (BANNED - console.log)
+**❌ console.log/error/warn are BANNED in src/**
+
+```typescript
+// ✅ CORRECT
+import { logger } from '@/services/logger-service';
+
+logger.debug('User clicked', { userId, action });
+logger.info('Car created', { carId });
+logger.warn('API slow', { latency });
+logger.error('Failed to save', error, { context });
+
+// ❌ WRONG - Build will fail (blocked by scripts/ban-console.js)
+console.log('test');
+```
+
+---
+
+## 📁 Folder Structure & Path Aliases
+
+### Project Structure
+```
+src/
+├── components/       # 454 reusable components
+├── pages/            # 290 pages
+├── features/         # Complex features (car-listing, messaging, search)
+├── services/         # 410 services (Firebase, API, utilities)
+├── contexts/         # 8 Context Providers
+├── hooks/            # 35+ Custom Hooks
+├── routes/           # 85+ route definitions
+├── types/            # TypeScript definitions
+├── styles/           # Styled-components + CSS
+├── utils/            # Helper functions
+├── locales/          # i18n (bg/en)
+└── config/           # Configuration files
+```
+
+### Path Aliases (tsconfig.json)
+```typescript
+"@/components/*" → "src/components/*"
+"@/services/*"   → "src/services/*"
+"@/pages/*"      → "src/pages/*"
+"@/hooks/*"      → "src/hooks/*"
+"@/types/*"      → "src/types/*"
+"@/contexts/*"   → "src/contexts/*"
+"@/utils/*"      → "src/utils/*"
+"@/features/*"   → "src/features/*"
+"@/assets/*"     → "src/assets/*"
+"@/firebase/*"   → "src/firebase/*"
+"@/config/*"     → "src/config/*"
+```
+
+**Always use path aliases instead of relative paths:**
+```typescript
+// ✅ CORRECT
+import { CarService } from '@/services/car/car.service';
+import { useAuth } from '@/hooks/useAuth';
+import { CarCard } from '@/components/car/CarCard';
+
+// ❌ WRONG
+import { CarService } from '../../../services/car/car.service';
+```
+
+---
+
+## 📝 Naming Conventions (STRICT)
+
+### Components
+- **Pattern:** `PascalCase.tsx`
+- **Examples:** `CarCard.tsx`, `SearchWidget.tsx`, `ProfilePage.tsx`
+
+### Functions/Variables
+- **Pattern:** `camelCase`
+- **Examples:** `handleSearch`, `userData`, `fetchCarDetails`
+
+### Constants
+- **Pattern:** `UPPER_SNAKE_CASE`
+- **Examples:** `MAX_UPLOAD_SIZE`, `API_ENDPOINT`, `FIREBASE_CONFIG`
+
+### Types/Interfaces
+- **Pattern:** `PascalCase`
+- **Examples:** `UserProfile`, `CarData`, `MessageType`
+
+### Contexts
+- **Pattern:** `PascalCase + Context`
+- **Examples:** `AuthContext`, `ThemeContext`, `LanguageContext`
+
+### Hooks
+- **Pattern:** `use + PascalCase`
+- **Examples:** `useAuth`, `useCars`, `useRealtimeMessaging`
+
+### Services
+- **Pattern:** `kebab-case + .service.ts`
+- **Examples:** `numeric-car-system.service.ts`, `logger-service.ts`
+
+---
+
+## 🔥 Firebase Architecture
+
+### Collections (6 Vehicle Collections)
+1. `passenger_cars` - Sedans, Hatchbacks, Coupes
+2. `suvs` - SUVs, Crossovers
+3. `vans` - Vans, Minivans
+4. `motorcycles` - Motorcycles
+5. `trucks` - Trucks
+6. `buses` - Buses
+
+### Other Key Collections
+- `users` - User profiles with numeric IDs
+- `messages` - Legacy Firestore messages (deprecated)
+- `conversations` - Legacy conversations (deprecated)
+- `favorites` - User favorites
+- `reviews` - Post-sale reviews
+- `notifications` - Push notifications
+- `counters` - Numeric ID counters: `counters/{uid}/cars`
+
+### Realtime Database (New Messaging System)
+**Structure:**
+```
+/channels/{channelId}/
+  ├── buyerNumericId: 5
+  ├── sellerNumericId: 18
+  ├── carNumericId: 42
+  ├── messages/{messageId}/...
+  └── metadata/...
+
+/presence/{numericId}/
+  ├── online: true
+  ├── lastSeen: timestamp
+  └── currentPage: string
+
+/typing/{channelId}/{numericId}/
+  └── isTyping: boolean
+```
+
+**Channel ID Pattern (Deterministic):**
+```
+msg_{min(user1,user2)}_{max(user1,user2)}_car_{carId}
+
+Example: msg_5_18_car_42
+```
+
+### Cloud Functions (24 functions)
+- Location: `functions/src/`
+- Runtime: Node.js 20
+- Key Functions:
+  - `ai/` - AI services (Gemini, DeepSeek, OpenAI)
+  - `seo/` - SEO optimization
+  - `notifications/` - Push notifications
+  - `triggers/car-lifecycle.ts` - Car lifecycle events
+  - `syncCarsToAlgolia.ts` - Algolia sync
+
+---
+
+## 🎨 Design & UI Standards
+
+### Design System
+- **Theme:** Glassmorphism effects (see `global-glassmorphism-buttons.css`)
+- **Colors:** Smart text color (WCAG AAA) from `SMART_TEXT_COLOR_SYSTEM.md`
+- **Typography:** Responsive (0.95rem desktop → 0.6rem mobile)
+- **Animations:** Framer Motion (subtle, performant)
+
+### Responsive Breakpoints
+```typescript
+const breakpoints = {
+  mobile: '480px',
+  tablet: '768px',
+  laptop: '1024px',
+  desktop: '1440px'
+};
+```
+
+### Images
+- **Format:** WebP only (use `browser-image-compression`)
+- **Optimization:** Cloud Function `image-optimizer.ts`
+- **Lazy Loading:** Native `loading="lazy"` + React lazy
+- **Max Images:** 20 per car listing
+
+### Icons
+- **Primary Library:** Lucide React
+- **Custom SVGs:** `assets/images/professional_car_logos/`
+
+---
+
+## 🌐 Localization (i18n)
+
+### Languages
+- **Primary:** Bulgarian (bg)
+- **Secondary:** English (en)
+- **RTL Support:** Ready but not active
+
+### Usage
+```typescript
+import { useLanguage } from '@/hooks/useLanguage';
+
+const { t, language, setLanguage } = useLanguage();
+const text = t('common.save');
+```
+
+### Location Data
+- **Cities:** Bulgarian cities from `bulgaria-locations.service.ts`
+- **Phone:** +359 (Bulgaria prefix)
+- **Currency:** EUR only
+
+---
+
+## 🚀 Key Features & Systems
+
+### 1. Messaging System (Hybrid Firebase - Phase 3)
+**Route:** `/messages-v2?channel=channelId`
+
+**Components:**
+- `messaging/realtime/ChatWindow.tsx` - Main chat window
+- `messaging/realtime/ChannelList.tsx` - Channel list sidebar
+- `messaging/realtime/MessageBubble.tsx` - Message display
+- `messaging/realtime/MessageInput.tsx` - Message input
+
+**Hook:**
+```typescript
+import { useRealtimeMessaging } from '@/hooks/messaging/useRealtimeMessaging';
+
+const {
+  channels, currentChannel, messages, isLoading,
+  sendMessage, sendOffer, selectChannel, markAsRead
+} = useRealtimeMessaging(numericId, firebaseId, { autoMarkAsRead: true });
+```
+
+**Services:**
+- `messaging/realtime/realtime-messaging.service.ts` - Main service
+- `messaging/realtime/presence.service.ts` - Online/Offline tracking
+- `messaging/realtime/typing-indicator.service.ts` - Typing indicators
+- `messaging/realtime/push-notification.service.ts` - FCM notifications
+
+### 2. Subscription System (Phase 2 Complete)
+**Config:** `src/config/subscription-plans.ts` (Single Source of Truth)
+
+**Plans:**
+| Plan | Ads | Team Members | Price |
+|------|-----|--------------|-------|
+| Free | 3 | 0 | 0 EUR |
+| Dealer | 30 | 3 | 20 EUR/month |
+| Company | ∞ | 10 | 100 EUR/month |
+
+**Components:**
+- `components/subscription/SubscriptionManager.tsx`
+- `components/billing/GracePeriodBanner.tsx`
+- `components/billing/PromotionPurchaseModal.tsx`
+
+**Services:**
+- `services/subscription/UsageTrackingService.ts`
+- `services/billing/churn-prevention.service.ts`
+- `services/billing/micro-transactions.service.ts`
+
+### 3. Search System (Hybrid: Firestore + Algolia)
+**Services:**
+- `services/search/smart-search.service.ts` - Main search
+- `services/search/UnifiedSearchService.ts` - Unified interface
+- `services/search/algoliaSearchService.ts` - Algolia integration
+- `services/search/bulgarian-synonyms.service.ts` - Bulgarian synonyms
+- `services/search/ai-query-parser.service.ts` - AI query parsing
+
+**Components:**
+- `components/Search/SmartAutocomplete.tsx` - Smart autocomplete
+- `components/Search/SearchFilters.tsx` - Advanced filters
+- `components/visual-search/VisualSearchUpload.tsx` - Visual search
+- `components/voice-search/VoiceSearchButton.tsx` - Voice search
+
+### 4. AI System
+**Services:**
+- `services/ai/ai-router.service.ts` - Smart AI router (Gemini/DeepSeek/OpenAI)
+- `services/ai/ai-cost-optimizer.service.ts` - Cost optimization
+- `services/ai/gemini-vision.service.ts` - Image analysis
+- `services/ai/vehicle-description-generator.service.ts` - Description generation
+- `services/ai/whisper.service.ts` - Voice recognition
+- `services/ai/nlu-multilingual.service.ts` - Natural language understanding
+
+**Usage:**
+```typescript
+import { AIRouter } from '@/services/ai/ai-router.service';
+
+const response = await AIRouter.generate({
+  task: 'description',
+  input: carData,
+  options: { language: 'bg' }
+});
+```
+
+---
+
+## ⚠️ Common Mistakes (DON'T DO THESE)
+
+1. ❌ **Use Firebase UIDs in URLs** → Use numeric IDs
+2. ❌ **Hardcode collection names** → Use `SellWorkflowCollections`
+3. ❌ **Forget `isActive` flag in Firestore listeners** → Memory leaks
+4. ❌ **Use console.log** → Use `logger` service
+5. ❌ **Skip type-check before commit** → Run `npm run type-check`
+6. ❌ **Deploy without testing** → Test locally first
+7. ❌ **Expose API keys in frontend** → Use environment variables
+8. ❌ **Create new services without checking** → Search existing code first
+9. ❌ **Ignore ESLint warnings** → Fix all warnings
+10. ❌ **Use relative paths** → Use path aliases (@/)
+
+---
+
+## ✅ Best Practices (DO THESE)
+
+1. ✅ **Read PROJECT_CONSTITUTION.md** before starting any work
+2. ✅ **Use semantic_search** to find existing code/services
+3. ✅ **Follow naming conventions** strictly
+4. ✅ **Write TypeScript** with strict mode (no `any` unless necessary)
+5. ✅ **Use path aliases** (@/) instead of relative paths
+6. ✅ **Test locally** before committing
+7. ✅ **Update documentation** when adding new features
+8. ✅ **Review Firestore Rules** before deploying
+9. ✅ **Check bundle size** with `npm run build:analyze`
+10. ✅ **Keep it simple** (YAGNI principle)
+
+---
+
+## 🔧 Development Workflow
+
+### Before Starting
+1. Understand the task 100%
+2. Search existing code/services (`semantic_search`)
+3. Plan before coding
+4. Check documentation in `docs/`
+
+### During Development
+- **DRY Principle:** Don't Repeat Yourself
+- **Single Responsibility:** Each function/component has one job
+- **TypeScript Strict:** Avoid `any` unless absolutely necessary
+- **Error Handling:** Use try-catch + `error-handling-service.ts`
+- **Accessibility:** ARIA labels, semantic HTML
+
+### Before Committing
+```bash
+npm run type-check      # No TypeScript errors
+npm run build           # Build succeeds
+npm run check-security  # No exposed secrets
+```
+
+### Before Deploying
+1. Test locally: `firebase emulators:start`
+2. Review Firestore Rules: `firestore.rules`
+3. Check Indexes: `firestore.indexes.json`
+4. Verify Functions: `functions/src/`
+5. Test on staging first
+
+---
+
+## 📚 Key Documentation Files
+
+- `PROJECT_CONSTITUTION.md` - Architectural rules and standards
+- `PROJECT_COMPLETE_INVENTORY.md` - Complete project inventory
+- `DOCUMENTATION_INDEX.md` - Documentation master index
+- `.github/copilot-instructions.md` - AI assistant instructions
+- `docs/` - Detailed feature documentation
+
+---
+
+## 🎯 Project Context
+
+### Domain
+**Bulgarian Car Marketplace** - Used car sales platform in Bulgaria
+
+### Business Rules
+- **Currency:** EUR only
+- **Phone:** +359 (Bulgaria) prefix
+- **Languages:** Bulgarian (primary), English (secondary)
+- **Trust System:** Bulgarian Trust Matrix (3 verification levels)
+- **Subscription Plans:** Free/Dealer/Company (limits on ads/team members)
+
+### Performance Targets
+- **Page Load:** <2s
+- **Mobile Score:** 95/100 (Lighthouse)
+- **SEO Score:** 90/100
+- **Accessibility:** WCAG 2.1 AA
+
+---
+
+## 🚨 Critical Reminders
+
+1. **Numeric IDs are MANDATORY** for all public URLs
+2. **Multi-collection pattern** must be used (never hardcode collection names)
+3. **Firestore listeners** must use `isActive` flag pattern
+4. **Logging** must use `logger` service (no console.log)
+5. **Path aliases** must be used (no relative paths beyond one level)
+6. **TypeScript strict mode** is enabled (minimize `any` usage)
+7. **Bulgarian market focus** (cities, currency, language)
+8. **Mobile-first design** is required
+
+---
+
+**Remember:** This file is automatically read by Cursor AI at the start of every conversation. It provides context to avoid needing to read the entire project structure each time, saving tokens and improving response quality.
+
+**Last Updated:** January 2026

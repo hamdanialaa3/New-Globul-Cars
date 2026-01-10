@@ -272,6 +272,11 @@ const PaymentFailedPage: React.FC = () => {
             <Home size={18} />
             {isBg ? 'Начална страница' : 'Home'}
           </Button>
+          {/* 🔴 CRITICAL: Update Payment Method button */}
+          <Button $secondary onClick={() => navigate('/billing/update-payment-method')}>
+            <RefreshCw size={18} />
+            {isBg ? 'Обнови метод на плащане' : 'Update Payment Method'}
+          </Button>
           <Button $primary onClick={handleRetry}>
             <RefreshCw size={18} />
             {isBg ? 'Опитай отново' : 'Try Again'}

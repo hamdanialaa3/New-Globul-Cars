@@ -13,6 +13,7 @@ import { CarListing } from '../../types/CarListing';
 import IdentityStamp from '../Profile/IdentityStamp';
 import { userService } from '../../services/user/canonical-user.service';
 import { BulgarianUser } from '../../types/user/bulgarian-user.types';
+import { logger } from '@/services/logger-service';
 
 const PrintGlobalStyle = createGlobalStyle`
   @media print {
@@ -476,7 +477,7 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
         if (profile) {
           setSellerInfo(profile);
         }
-      }).catch(err => console.error('Failed to load seller info for stamp:', err));
+      }).catch(err => logger.error('Failed to load seller info for stamp', err as Error, { sellerId: car.sellerId }));
     }
   }, [car.sellerId]);
 
@@ -545,7 +546,7 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
         pdf.save(`${car.make}-${car.model}-${car.year}.pdf`);
       }
     } catch (error) {
-      console.error('PDF generation error:', error);
+      logger.error('PDF generation error', error as Error, { carId: car.id });
       alert(language === 'bg' 
         ? 'Моля инсталирайте библиотеките: npm install jspdf html2canvas' 
         : 'Please install libraries: npm install jspdf html2canvas');

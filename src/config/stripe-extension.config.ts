@@ -10,12 +10,14 @@
  */
 export const STRIPE_PRICE_IDS = {
   // DEALER PLAN (€27.78/month or €278/year - Live)
+  // ✅ Prices match SUBSCRIPTION_PLANS.dealer.price
   dealer: {
     monthly: 'price_1Sf7iU3EuPQhDyrBtP0bEc4B',
     annual: 'price_1Sf7l83EuPQhDyrB3Z3zIpZv',
   },
 
-  // COMPANY PLAN (€187.88/month or €1288/year - Live)
+  // COMPANY PLAN (€137.88/month or €1288/year - Live)
+  // ✅ Prices match SUBSCRIPTION_PLANS.company.price
   company: {
     monthly: 'price_1Sf7oK3EuPQhDyrBQ6duG8a',
     annual: 'price_1Sf7pE3EuPQhDyrBfAdjEDFi',

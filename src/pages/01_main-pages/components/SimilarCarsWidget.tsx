@@ -8,6 +8,7 @@ import { VEHICLE_COLLECTIONS } from '../../../services/car/unified-car-types';
 import OptimizedImage from '../../../components/OptimizedImage';
 import { MapPin, Gauge, Fuel, Calendar, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRef } from 'react';
+import { logger } from '../../../services/logger-service';
 
 interface SimilarCarsWidgetProps {
   currentCar: CarListing;
@@ -216,7 +217,7 @@ export const SimilarCarsWidget: React.FC<SimilarCarsWidgetProps> = ({ currentCar
 
         setSimilarCars(results);
       } catch (err) {
-        console.error('Error fetching similar cars', err);
+        logger.error('Error fetching similar cars', err as Error);
       } finally {
         setLoading(false);
       }

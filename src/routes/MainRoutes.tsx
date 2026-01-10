@@ -20,6 +20,7 @@ const CarDetailsPage = safeLazy(() => import('../pages/01_main-pages/CarDetailsP
 const SocialFeedPage = safeLazy(() => import('../pages/03_user-pages/social/SocialFeedPage'));
 const SellModalPage = safeLazy(() => import('../pages/04_car-selling/sell/SellModalPage'));
 const MessagesPage = safeLazy(() => import('../pages/03_user-pages/MessagesPage'));
+const RealtimeMessagesPage = safeLazy(() => import('../pages/03_user-pages/RealtimeMessagesPage'));
 const AdminPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminPage'));
 const AdminLoginPage = safeLazy(() => import('../pages/02_authentication/admin-login/AdminLoginPage'));
 const AdminDataFix = safeLazy(() => import('../pages/06_admin/regular-admin/AdminDataFix'));
@@ -79,10 +80,16 @@ const InvoicesPage = safeLazy(() => import('../pages/08_payment-billing/Invoices
 const CommissionsPage = safeLazy(() => import('../pages/08_payment-billing/CommissionsPage'));
 const CheckoutPage = safeLazy(() => import('../pages/08_payment-billing/CheckoutPage'));
 const PaymentSuccessPage = safeLazy(() => import('../pages/08_payment-billing/PaymentSuccessPage'));
+const PaymentFailedPage = safeLazy(() => import('../pages/08_payment-billing/PaymentFailedPage'));
+const UpdatePaymentMethodPage = safeLazy(() => import('../pages/08_payment-billing/UpdatePaymentMethodPage'));
+// ✅ NEW: Manual Bank Transfer Payment Pages
+const ManualCheckoutPage = safeLazy(() => import('../pages/08_payment-billing/ManualCheckoutPage'));
+const ManualPaymentSuccessPage = safeLazy(() => import('../pages/08_payment-billing/ManualPaymentSuccessPage'));
 const DealerRegistrationPage = safeLazy(() => import('../pages/09_dealer-company/DealerRegistrationPage'));
 const DealerDashboardPage = safeLazy(() => import('../pages/09_dealer-company/DealerDashboardPage'));
 const AlgoliaSyncManager = safeLazy(() => import('../pages/06_admin/AlgoliaSyncManager'));
 const AdminCarManagementPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminCarManagementPage'));
+const DeleteMockCarsPage = safeLazy(() => import('../pages/06_admin/DeleteMockCarsPage'));
 const IconShowcasePage = safeLazy(() => import('../pages/11_testing-dev/IconShowcasePage'));
 const IoTDashboardPage = safeLazy(() => import('../pages/03_user-pages/IoTDashboardPage'));
 const CarTrackingPage = safeLazy(() => import('../pages/03_user-pages/CarTrackingPage'));
@@ -213,16 +220,9 @@ export const MainRoutes: React.FC = () => {
             {/* Strict Numeric URLs: /car/{userNumericId}/{carNumericId} */}
             {/* Route already defined above at line 102 */}
 
-            {/* 🔢 UNIFIED Messaging System (Phase 1 Remediation - Jan 4, 2026) */}
-            {/* ✅ NEW: Supports both numeric IDs and query params */}
-            {/* Pattern 1: /messages/:id1/:id2 (e.g., /messages/1/5) - Numeric IDs */}
-            {/* Pattern 2: /messages?conversationId=abc123 - Direct conversation */}
-            {/* Pattern 3: /messages - Inbox list */}
-            <Route path="/messages/:id1?/:id2?" element={
-                <AuthGuard requireAuth={true}>
-                    <MessagesPage />
-                </AuthGuard>
-            } />
+            {/* 💬 Realtime Messaging System */}
+            <Route path="/messages" element={<AuthGuard requireAuth={true}><RealtimeMessagesPage /></AuthGuard>} />
+            <Route path="/messages-v2" element={<AuthGuard requireAuth={true}><RealtimeMessagesPage /></AuthGuard>} />
 
             {/* 🎟️ PHASE 3: Team Invitation Acceptance (Join Company Team) */}
             <Route path="/join-team" element={
@@ -249,6 +249,23 @@ export const MainRoutes: React.FC = () => {
                     </AuthGuard>
                 }
             />
+            {/* ✅ NEW: Manual Bank Transfer Payment Routes */}
+            <Route
+                path="/billing/manual-checkout"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <ManualCheckoutPage />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/billing/manual-success"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <ManualPaymentSuccessPage />
+                    </AuthGuard>
+                }
+            />
             <Route
                 path="/checkout/:carId"
                 element={
@@ -262,6 +279,22 @@ export const MainRoutes: React.FC = () => {
                 element={
                     <AuthGuard requireAuth={true}>
                         <PaymentSuccessPage />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/payment-failed"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <PaymentFailedPage />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/billing/update-payment-method"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <UpdatePaymentMethodPage />
                     </AuthGuard>
                 }
             />
@@ -314,6 +347,14 @@ export const MainRoutes: React.FC = () => {
                 element={
                     <AuthGuard requireAuth={true} requireAdmin={true}>
                         <AdminDataFix />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/admin/delete-mock-cars"
+                element={
+                    <AuthGuard requireAuth={true} requireAdmin={true}>
+                        <DeleteMockCarsPage />
                     </AuthGuard>
                 }
             />

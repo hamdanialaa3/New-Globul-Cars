@@ -23,6 +23,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { SchemaGenerator } from '@/utils/seo/SchemaGenerator';
 import CarCardGermanStyle from '@/components/CarCard/CarCardGermanStyle';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import { logger } from '@/services/logger-service';
 
 // ============================================================================
 // TYPES
@@ -180,7 +181,7 @@ const LocationLandingPage: React.FC = () => {
                 setCars(filteredCars);
                 setTotalCount(filteredCars.length);
             } catch (error) {
-                console.error('Error fetching location cars:', error);
+                logger.error('Error fetching location cars', error as Error);
             } finally {
                 setLoading(false);
             }

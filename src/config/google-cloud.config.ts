@@ -1,5 +1,6 @@
 // src/config/google-cloud.config.ts
 import { z } from 'zod';
+import { logger } from '@/services/logger-service';
 
 const googleConfigSchema = z.object({
   firebase: {
@@ -43,7 +44,7 @@ const processEnv = {
 const parsed = googleConfigSchema.safeParse(processEnv);
 
 if (!parsed.success) {
-  console.warn("⚠️ Google Cloud Configuration Invalid:", parsed.error.format());
+  logger.warn('Google Cloud Configuration Invalid', { errors: parsed.error.format() });
 }
 
 export const googleConfig = parsed.success ? parsed.data : processEnv as z.infer<typeof googleConfigSchema>;

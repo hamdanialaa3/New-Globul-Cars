@@ -9,6 +9,8 @@
  * - API Call Times
  */
 
+import { logger } from '../services/logger-service';
+
 interface PerformanceMetric {
   name: string;
   value: number;
@@ -63,7 +65,7 @@ class PerformanceMonitor {
         });
       }
     } catch (error) {
-      console.warn('Failed to measure bundle size', error);
+      logger.warn('Failed to measure bundle size', { error: error as Error });
     }
   }
 

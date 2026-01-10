@@ -11,19 +11,27 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
-    // Allow reading counters (for numeric IDs)
+    // 🔴 CRITICAL FIX: Counters collection - Only Cloud Functions can write
+    // Numeric ID counters must be protected to prevent corruption
     match /counters/{counterId} {
-      allow read: if true; 
-      // Only allow updates via cloud functions or admin SDK ideally, 
-      // but for atomic increments from client, we need write if logic is client-side.
-      // Assuming the numeric-id-service does the increment:
-      allow write: if isAuthenticated(); 
+      allow read: if true; // Public read OK (for numeric ID lookups)
+      // ✅ FIXED: Only Cloud Functions or Admin SDK can write
+      // Clients can read but NOT write - prevents numeric ID system corruption
+      allow write: if false; // ❌ CRITICAL: Disabled client writes - use Cloud Functions only
     }
 
     // Profiles
     match /profiles/{profileId} {
       allow read: if true;
-      allow write: if isOwner(resource.data.userId) || (request.resource.data.userId == request.auth.uid);
+      // ✅ CRITICAL FIX: Allow write if:
+      // 1. User owns the profile (userId matches), OR
+      // 2. Creating/updating with userId matching auth.uid, OR
+      // 3. Updating own profile (profileId == auth.uid) with userId field included
+      allow write: if isOwner(resource.data.userId) 
+        || (request.resource.data.userId == request.auth.uid)
+        || (isAuthenticated() 
+            && request.auth.uid == profileId 
+            && request.resource.data.userId == request.auth.uid);
     }
     
     // Users collection
@@ -279,6 +287,49 @@ service cloud.firestore {
       allow update: if false; // No updates to favorites
     }
 
+    // 🔴 CRITICAL: Blocked Users Collection (January 2026 - User Safety)
+    // Block relationships between users
+    match /blocked_users/{blockId} {
+      // Read: Only if you're involved in the block relationship
+      allow read: if isAuthenticated() && (
+        resource.data.blockerFirebaseId == request.auth.uid ||
+        resource.data.blockedFirebaseId == request.auth.uid
+      );
+
+      // Create: Only if you're the blocker (can't block on behalf of others)
+      allow create: if isAuthenticated() 
+        && request.resource.data.blockerFirebaseId == request.auth.uid
+        && request.resource.data.blockerFirebaseId != request.resource.data.blockedFirebaseId // Can't block yourself
+        && request.resource.data.keys().hasAll(['blockerNumericId', 'blockerFirebaseId', 'blockedNumericId', 'blockedFirebaseId', 'createdAt', 'updatedAt']);
+
+      // Update: Only if you're the blocker (can update reason)
+      allow update: if isAuthenticated() 
+        && resource.data.blockerFirebaseId == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reason', 'updatedAt']);
+
+      // Delete: Only if you're the blocker (can unblock)
+      allow delete: if isAuthenticated() && resource.data.blockerFirebaseId == request.auth.uid;
+    }
+
+    // 🔴 CRITICAL: Reports Collection (January 2026 - Content Moderation)
+    // User reports for spam, abuse, fake content
+    match /reports/{reportId} {
+      // Read: Only if you're the reporter (users can see their own reports)
+      allow read: if isAuthenticated() && resource.data.reporterFirebaseId == request.auth.uid;
+
+      // Create: Only authenticated users can create reports
+      allow create: if isAuthenticated()
+        && request.resource.data.reporterFirebaseId == request.auth.uid
+        && request.resource.data.reporterFirebaseId != request.resource.data.reportedUserFirebaseId // Can't report yourself
+        && request.resource.data.keys().hasAll(['reporterFirebaseId', 'reporterNumericId', 'reportedUserFirebaseId', 'reportedUserNumericId', 'reportType', 'contentType', 'reason', 'description', 'status', 'createdAt', 'updatedAt']);
+
+      // Update: Only admins can update reports (via Cloud Functions)
+      allow update: if false; // Only Cloud Functions can update
+
+      // Delete: No deletes (archival only)
+      allow delete: if false;
+    }
+
     // ==================== MESSAGES & CONVERSATIONS ====================
     // Direct Messages
     match /messages/{messageId} {
@@ -327,6 +378,127 @@ service cloud.firestore {
       allow create: if true; // System creates
       allow update: if true; // System updates metrics
       allow delete: if false;
+    }
+
+    // ==================== USER POINTS & LEVELS ====================
+    match /userPoints/{userId} {
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+      allow create: if true; // System creates
+      allow update: if true; // System updates points
+      allow delete: if false;
+    }
+
+    // ==================== PROFILE STATS ====================
+    match /profile_stats/{statsId} {
+      allow read: if isAuthenticated();
+      allow create: if true; // System creates
+      allow update: if true; // System updates
+      allow delete: if false;
+    }
+
+    match /profiles/{profileId} {
+      allow read: if true;
+      allow write: if isOwner(resource.data.userId) || (request.resource.data.userId == request.auth.uid);
+    }
+
+    // ==================== SAVED SEARCHES ====================
+    match /saved_searches/{searchId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // ==================== LISTING REVIEWS ====================
+    match /listing_reviews/{reviewId} {
+      allow read: if true; // Public reviews
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.authorId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.authorId == request.auth.uid;
+    }
+
+    // ==================== SEARCH ANALYTICS ====================
+    match /searchAnalytics/{analyticsId} {
+      allow read: if isAuthenticated();
+      allow create: if true; // Allow anonymous
+      allow update: if isAuthenticated();
+      allow delete: if false;
+    }
+
+    match /searchClicks/{clickId} {
+      allow read: if isAuthenticated();
+      allow create: if true; // Allow anonymous
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // ==================== LEADERBOARD ====================
+    match /leaderboard/{entryId} {
+      allow read: if true; // Public leaderboard
+      allow create: if true; // System creates
+      allow update: if true; // System updates
+      allow delete: if false;
+    }
+
+    // ==================== CHALLENGES ====================
+    match /challenges/{challengeId} {
+      allow read: if true; // Public challenges
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.createdBy == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.createdBy == request.auth.uid;
+    }
+
+    match /user_challenges/{entryId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // ==================== STORIES ====================
+    match /stories/{storyId} {
+      allow read: if true; // Public stories
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // ==================== ACHIEVEMENTS ====================
+    match /achievements/{achievementId} {
+      allow read: if true; // Public achievements
+      allow create: if true; // System creates
+      allow update: if true; // System updates
+      allow delete: if false;
+    }
+
+    match /user_achievements/{entryId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if true; // System creates
+      allow update: if true; // System updates
+      allow delete: if false;
+    }
+
+    // ==================== BADGES ====================
+    match /badges/{badgeId} {
+      allow read: if true; // Public badges
+      allow create: if true; // System creates
+      allow update: if true; // System updates
+      allow delete: if false;
+    }
+
+    match /user_badges/{entryId} {
+      allow read: if true; // Public user badges
+      allow create: if true; // System creates
+      allow update: if true; // System updates
+      allow delete: if false;
+    }
+
+    // ==================== SEARCH HISTORY ====================
+    match /searchHistory/{historyId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
     }
 
     // General fallback (deny by default, but opened for dev/debugging if needed - keep strict for now)

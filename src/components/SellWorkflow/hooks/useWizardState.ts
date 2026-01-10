@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { UnifiedWorkflowPersistenceService, UnifiedWorkflowData } from '../../../services/unified-workflow-persistence.service';
 import { useAuth } from '../../../contexts/AuthProvider';
+import { logger } from '@/services/logger-service';
 
 export interface WizardStateReturn {
     currentStep: number;
@@ -54,7 +55,7 @@ export const useWizardState = (workflowId: string = 'default'): WizardStateRetur
                     }
                 }
             } catch (err) {
-                console.error("Error loading workflow draft:", err);
+                logger.error("Error loading workflow draft", err as Error);
                 setError("Failed to restore previous session.");
             } finally {
                 setLoading(false);
@@ -80,7 +81,7 @@ export const useWizardState = (workflowId: string = 'default'): WizardStateRetur
                     await UnifiedWorkflowPersistenceService.saveToCloud(currentUser.uid);
                 }
             } catch (err) {
-                console.error("Auto-save failed:", err);
+                logger.error("Auto-save failed", err as Error);
             } finally {
                 setIsSaving(false);
             }

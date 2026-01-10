@@ -6,6 +6,7 @@ import { Conversation } from '../../services/messaging/advanced-messaging-types'
 import { useAuth } from '../../contexts/AuthContext';
 import { Loader, MessageSquare, Clock, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { logger } from '../../services/logger-service';
 
 const Container = styled.div`
   padding: 40px;
@@ -130,7 +131,7 @@ const SharedInboxPage: React.FC = () => {
           (b.lastMessageAt?.seconds || 0) - (a.lastMessageAt?.seconds || 0)
         ));
       } catch (error) {
-        console.error('Failed to fetch conversations', error);
+        logger.error('Failed to fetch conversations', error as Error);
       } finally {
         setLoading(false);
       }
