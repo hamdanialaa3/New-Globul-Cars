@@ -21,7 +21,8 @@ This directory contains automated workflows for CI/CD.
 
 **Required Secrets:**
 - `FIREBASE_SERVICE_ACCOUNT` - Service account JSON from Google Cloud
-- `FIREBASE_PROJECT_ID` - Firebase project ID (`fire-new-globul`)
+
+**Note:** `FIREBASE_PROJECT_ID` is automatically extracted from `.firebaserc` - no secret needed!
 
 **Features:**
 - Pre-flight secret validation with helpful error messages
@@ -65,8 +66,9 @@ This builds and pushes to Docker Hub. It's separate from Firebase deployment and
 **Quick steps:**
 1. Go to [Repository Secrets](https://github.com/hamdanialaa3/New-Globul-Cars/settings/secrets/actions)
 2. Add `FIREBASE_SERVICE_ACCOUNT` (full JSON from Google Cloud)
-3. Add `FIREBASE_PROJECT_ID` (value: `fire-new-globul`)
-4. Re-run the workflow
+3. Re-run the workflow
+
+**Note:** `FIREBASE_PROJECT_ID` is no longer needed - it's extracted from `.firebaserc` automatically!
 
 ---
 

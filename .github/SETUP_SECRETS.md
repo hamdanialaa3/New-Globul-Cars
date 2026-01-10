@@ -6,6 +6,10 @@
 
 ## ✅ الحل: إضافة الـ Secrets المطلوبة
 
+**ملاحظة هامة:** اعتباراً من يناير 2026، يتم استخراج `FIREBASE_PROJECT_ID` تلقائياً من ملف `.firebaserc`، لذلك **لا حاجة لإضافته كـ Secret**!
+
+**الـ Secret الوحيد المطلوب هو:** `FIREBASE_SERVICE_ACCOUNT`
+
 ### 1️⃣ اذهب إلى إعدادات الـ Secrets
 
 **الرابط المباشر:**
@@ -57,14 +61,16 @@ https://github.com/hamdanialaa3/New-Globul-Cars/settings/secrets/actions
 
 ---
 
-### 3️⃣ إضافة Secret #2: FIREBASE_PROJECT_ID
+### ~~3️⃣ إضافة Secret #2: FIREBASE_PROJECT_ID~~ ❌ لم يعد مطلوباً
 
-**الخطوات:**
+**تحديث:** اعتباراً من يناير 2026، لم يعد `FIREBASE_PROJECT_ID` مطلوباً كـ Secret!
 
-1. اضغط **New repository secret**
-2. **Name**: `FIREBASE_PROJECT_ID`
-3. **Value**: `fire-new-globul`
-4. اضغط **Add secret**
+**السبب:** يتم استخراج Project ID تلقائياً من ملف `.firebaserc` في الـ workflow.
+
+**الفائدة:**
+- ✅ سر واحد أقل لإدارته
+- ✅ إذا تغير اسم المشروع في `.firebaserc`، سيتم تحديثه تلقائياً
+- ✅ لا داعي للإعداد اليدوي
 
 ---
 
@@ -98,7 +104,7 @@ https://github.com/hamdanialaa3/New-Globul-Cars/settings/secrets/actions
 ## 📋 قائمة المراجعة
 
 - [ ] تم إضافة `FIREBASE_SERVICE_ACCOUNT` (JSON كامل)
-- [ ] تم إضافة `FIREBASE_PROJECT_ID` (`fire-new-globul`)
+- [ ] ~~تم إضافة `FIREBASE_PROJECT_ID`~~ (لم يعد مطلوباً - يُستخرج تلقائياً)
 - [ ] (اختياري) تم إضافة `STRIPE_SECRET_KEY`
 - [ ] (اختياري) تم إضافة `STRIPE_WEBHOOK_SECRET`
 - [ ] تم إعادة تشغيل الـ workflow
@@ -123,6 +129,10 @@ https://github.com/hamdanialaa3/New-Globul-Cars/settings/secrets/actions
    - لا يمكن قراءتها بعد الإضافة
    - تظهر كـ `***` في الـ logs
    - آمنة للاستخدام في workflows
+
+4. **`FIREBASE_PROJECT_ID` لم يعد مطلوباً:**
+   - يتم استخراجه تلقائياً من `.firebaserc`
+   - لا حاجة لإضافته كـ Secret
 
 ---
 
