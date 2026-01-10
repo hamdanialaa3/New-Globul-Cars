@@ -1,6 +1,43 @@
 # Scripts Guide
 
-## 🚀 Development Scripts
+## � GitHub Secrets Setup (NEW!)
+
+### **setup-github-secrets.ps1** ⭐
+Automated wizard to add Firebase secrets to GitHub.
+
+```powershell
+pwsh scripts/setup-github-secrets.ps1
+```
+
+**Features:**
+- ✅ Auto-reads project ID from `.firebaserc`
+- ✅ Validates Firebase service account key
+- ✅ Adds secrets via GitHub CLI (or shows manual steps)
+- ✅ Opens relevant pages in browser
+- ✅ Interactive and user-friendly
+
+**Prerequisites:**
+```powershell
+# Option 1: Full automation (recommended)
+winget install GitHub.cli
+gh auth login
+
+# Option 2: Manual mode
+# Just run the script - it guides you through
+```
+
+**Required File:**
+- `firebase-service-account.json` (download from Firebase Console)
+- Get it from: https://console.firebase.google.com/project/fire-new-globul/settings/serviceaccounts/adminsdk
+
+**Troubleshooting:**
+- "Service account not found" → Download from Firebase Console
+- "GitHub CLI not found" → Script will show manual instructions
+- "Not authenticated" → Run `gh auth login`
+
+---
+
+## �🚀 Development Scripts
 
 ### **START_DEV_HOT_RELOAD.bat**
 Start development server with hot module reloading.

@@ -66,6 +66,10 @@ jobs:
             echo "❌ FIREBASE_SERVICE_ACCOUNT is missing!"
             echo "   → Add at: https://github.com/${{ github.repository }}/settings/secrets/actions"
             echo "   → Get from: Firebase Console → Project Settings → Service Accounts"
+            echo ""
+            echo "   🚀 QUICK FIX (Windows):"
+            echo "      pwsh scripts/setup-github-secrets.ps1"
+            echo ""
             MISSING_SECRETS=1
           else
             echo "✅ FIREBASE_SERVICE_ACCOUNT present"
@@ -75,7 +79,10 @@ jobs:
             echo "❌ FIREBASE_PROJECT_ID is missing!"
             echo "   → Add at: https://github.com/${{ github.repository }}/settings/secrets/actions"
             echo "   → Value: fire-new-globul"
-            echo "   → See: .github/GITHUB_SECRETS_SETUP.md"
+            echo ""
+            echo "   🚀 QUICK FIX (Windows):"
+            echo "      pwsh scripts/setup-github-secrets.ps1"
+            echo ""
             MISSING_SECRETS=1
           else
             echo "✅ FIREBASE_PROJECT_ID present (value: $FIREBASE_PROJECT_ID)"
@@ -87,13 +94,18 @@ jobs:
             echo ""
             echo "🚨 DEPLOYMENT BLOCKED: Missing required secrets!"
             echo ""
-            echo "📚 Quick Fix Guide:"
+            echo "🔧 AUTOMATED FIX (Windows):"
+            echo "   1. Open PowerShell in your project directory"
+            echo "   2. Run: pwsh scripts/setup-github-secrets.ps1"
+            echo "   3. Follow the interactive wizard"
+            echo ""
+            echo "📋 MANUAL FIX:"
             echo "   1. Go to: https://github.com/${{ github.repository }}/settings/secrets/actions"
             echo "   2. Click 'New repository secret'"
             echo "   3. Add missing secret(s) from list above"
             echo "   4. Re-run this workflow"
             echo ""
-            echo "📖 Full documentation: .github/GITHUB_SECRETS_SETUP.md"
+            echo "📖 Documentation: .github/GITHUB_SECRETS_SETUP.md"
             echo ""
             exit 1
           fi
