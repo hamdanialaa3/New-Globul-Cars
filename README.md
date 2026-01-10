@@ -63,6 +63,26 @@ npm run emulate
 
 ---
 
+## 🔐 CI/CD Setup (GitHub Actions)
+
+**First time setup:**
+
+Our GitHub Actions workflow requires secrets to be configured. Follow these steps:
+
+1. **Read the setup guide:** [.github/SETUP_SECRETS.md](.github/SETUP_SECRETS.md)
+2. **Add required secrets:**
+   - `FIREBASE_SERVICE_ACCOUNT` (JSON from Google Cloud)
+   - `FIREBASE_PROJECT_ID` (`fire-new-globul`)
+3. **Optional:** Add Stripe secrets for payment features
+4. **Verify:** Re-run the workflow to confirm deployment
+
+**Quick link:** [Configure Secrets](https://github.com/hamdanialaa3/New-Globul-Cars/settings/secrets/actions)
+
+**Deployment Status:**
+[![Firebase Deploy](https://github.com/hamdanialaa3/New-Globul-Cars/actions/workflows/firebase-deploy.yml/badge.svg)](https://github.com/hamdanialaa3/New-Globul-Cars/actions/workflows/firebase-deploy.yml)
+
+---
+
 ## 🏗️ Project Architecture
 
 ### Features
