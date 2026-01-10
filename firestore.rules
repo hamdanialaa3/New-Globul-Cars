@@ -576,6 +576,7 @@ service cloud.firestore {
     }
 
     // ==================== CHALLENGES ====================
+    // Monthly Challenges System
     match /challenges/{challengeId} {
       allow read: if true; // Public challenges
       allow create: if isAuthenticated();
@@ -583,7 +584,24 @@ service cloud.firestore {
       allow delete: if isAuthenticated() && resource.data.createdBy == request.auth.uid;
     }
 
+    // Monthly Challenges (New Collection Name)
+    match /monthlyChallenges/{challengeId} {
+      allow read: if true; // Public challenges
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.createdBy == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.createdBy == request.auth.uid;
+    }
+
+    // User Challenge Progress (Old Collection Name)
     match /user_challenges/{entryId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // User Challenge Progress (New Collection Name)
+    match /userChallengeProgress/{entryId} {
       allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
       allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
       allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
