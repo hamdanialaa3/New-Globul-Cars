@@ -1,8 +1,25 @@
 # 📚 Documentation Index
 ## Bulgarian Car Marketplace
 
-**Last Updated:** January 2026  
+**Last Updated:** January 7, 2026  
 **Purpose:** Quick reference guide to all project documentation
+
+---
+
+## 🎯 **الملف الموحد الرئيسي (المصدر الوحيد الموثوق)**
+
+### **PROJECT_DOCUMENTATION_UNIFIED.md** ⭐
+**الغرض:** التوثيق الموحد الشامل - يجمع جميع التوثيق المهم في مكان واحد  
+**الحالة:** ✅ **المصدر الرئيسي - استخدم هذا للحالة الحالية**  
+**المحتوى:** 
+- الحالة الحالية للمشروع
+- الميزات المكتملة 100%
+- المشاكل التي تم حلها (Archived)
+- حالة النشر
+- المعمارية والهيكل
+- Next Steps
+
+**👉 ابدأ من هنا: `PROJECT_DOCUMENTATION_UNIFIED.md`**
 
 ---
 
@@ -12,6 +29,8 @@
 **File:** `PROJECT_STATUS_AND_NEXT_STEPS.md`  
 **Purpose:** Current project status, completed items, deployment steps, testing checklist  
 **Status:** ✅ **Primary reference document - Use this for current project status**
+
+**ملاحظة:** تم دمج المحتوى في `PROJECT_DOCUMENTATION_UNIFIED.md`
 
 ---
 
@@ -122,19 +141,31 @@ Root Directory/
 
 ## 🗑️ Archived Documentation
 
+### Archive Directory
+**Location:** `ARCHIVE/`  
+**Purpose:** جميع ملفات التوثيق المكتملة والمنتهية  
+**Status:** 📚 **Archive only - محفوظ للرجوع فقط**
+
+**الهيكل:**
+- `ARCHIVE/FIXES_COMPLETED/` - الإصلاحات المكتملة
+- `ARCHIVE/DEPLOYMENT_REPORTS/` - تقارير النشر القديمة
+- `ARCHIVE/SESSION_SUMMARIES/` - ملخصات الجلسات السابقة
+
+**ملاحظة:** جميع محتويات الأرشيف تم دمجها في `PROJECT_DOCUMENTATION_UNIFIED.md`
+
 ### Historical Reports
 **File:** `ARCHIVE_HISTORICAL_REPORTS.md`  
 **Purpose:** Reference to historical implementation reports  
 **Status:** 📚 **Archive only - Not current**
 
-**Note:** Historical reports are preserved for reference but should not be used as the source of truth. Always refer to `PROJECT_STATUS_AND_NEXT_STEPS.md` for current project status.
+**Note:** Historical reports are preserved for reference but should not be used as the source of truth. Always refer to `PROJECT_DOCUMENTATION_UNIFIED.md` for current project status.
 
 ---
 
 ## 🎯 Quick Reference
 
-### For Current Project Status
-→ **Read:** `PROJECT_STATUS_AND_NEXT_STEPS.md`
+### ⭐ For Current Project Status (المصدر الرئيسي)
+→ **Read:** `PROJECT_DOCUMENTATION_UNIFIED.md` ← **ابدأ من هنا!**
 
 ### For Development Rules
 → **Read:** `PROJECT_CONSTITUTION.md`
@@ -142,8 +173,12 @@ Root Directory/
 ### For Project Inventory
 → **Read:** `PROJECT_COMPLETE_INVENTORY.md`
 
+### For Subscription Page Details
+→ **Read:** `SUBSCRIPTION_PAGE_DOCUMENTATION.md`
+
 ### For Specific Features
 → **Check Integration Guides** (Messaging, Pull-to-Refresh, etc.)
+→ **Or check:** `PROJECT_DOCUMENTATION_UNIFIED.md` (Section: الميزات المكتملة)
 
 ---
 

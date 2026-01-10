@@ -443,3 +443,32 @@ For more troubleshooting guidance, see https://cloud.google.com/run/docs/trouble
     at async handle (C:\Users\hamda\AppData\Roaming\npm\node_modules\firebase-tools\lib\deploy\functions\release\fabricator.js:90:17)
 [error] 
 [error] Error: There was an error deploying functions
+[debug] [2026-01-10T17:25:46.021Z] ----------------------------------------------------------------------
+[debug] [2026-01-10T17:25:46.024Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\hamda\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only functions --force --project fire-new-globul
+[debug] [2026-01-10T17:25:46.024Z] CLI Version:   15.2.1
+[debug] [2026-01-10T17:25:46.024Z] Platform:      win32
+[debug] [2026-01-10T17:25:46.024Z] Node Version:  v24.12.0
+[debug] [2026-01-10T17:25:46.025Z] Time:          Sat Jan 10 2026 19:25:46 GMT+0200 (توقيت شرق أوروبا الرسمي)
+[debug] [2026-01-10T17:25:46.025Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-01-10T17:25:48.612Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-01-10T17:25:48.613Z] > authorizing via signed-in user (globulinternet@gmail.com)
+[debug] [2026-01-10T17:25:48.613Z] [iam] checking project fire-new-globul for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2026-01-10T17:25:48.616Z] Checked if tokens are valid: true, expires at: 1768067785721
+[debug] [2026-01-10T17:25:48.617Z] Checked if tokens are valid: true, expires at: 1768067785721
+[debug] [2026-01-10T17:25:48.618Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/fire-new-globul:testIamPermissions [none]
+[debug] [2026-01-10T17:25:48.618Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/fire-new-globul:testIamPermissions x-goog-quota-user=projects/fire-new-globul
+[debug] [2026-01-10T17:25:48.618Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/fire-new-globul:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2026-01-10T17:25:49.774Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/fire-new-globul:testIamPermissions 200
+[debug] [2026-01-10T17:25:49.774Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/fire-new-globul:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2026-01-10T17:25:49.775Z] Checked if tokens are valid: true, expires at: 1768067785721
+[debug] [2026-01-10T17:25:49.775Z] Checked if tokens are valid: true, expires at: 1768067785721
+[debug] [2026-01-10T17:25:49.775Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/fire-new-globul/serviceAccounts/fire-new-globul@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2026-01-10T17:25:49.775Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/fire-new-globul/serviceAccounts/fire-new-globul@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2026-01-10T17:25:50.857Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/fire-new-globul/serviceAccounts/fire-new-globul@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2026-01-10T17:25:50.857Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/fire-new-globul/serviceAccounts/fire-new-globul@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[info] 
+[info] === Deploying to 'fire-new-globul'...
+[info] 
+[info] i  deploying functions 
+[info] Running command: npm --prefix "$RESOURCE_DIR" run build
