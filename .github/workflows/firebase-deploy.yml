@@ -20,43 +20,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch full history for proper diff
-
-      - name: Check if scan needed
-        id: check_commits
-        run: |
-          # For push events, check if there are commits to scan
-          if [ "${{ github.event_name }}" = "push" ]; then
-            # Get the previous commit
-            PREV_COMMIT=$(git rev-parse HEAD^)
-            CURRENT_COMMIT=$(git rev-parse HEAD)
-            
-            if [ "$PREV_COMMIT" = "$CURRENT_COMMIT" ]; then
-              echo "skip=true" >> $GITHUB_OUTPUT
-              echo "⚠️ No new commits to scan, will skip TruffleHog"
-            else
-              echo "skip=false" >> $GITHUB_OUTPUT
-              echo "✅ Found commits to scan"
-            fi
-          else
-            echo "skip=false" >> $GITHUB_OUTPUT
-          fi
-
+          fetch-depth: 0
+      
       - name: Run Secret Detection
-        if: steps.check_commits.outputs.skip != 'true'
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          base: ${{ github.event.repository.default_branch }}
-          head: HEAD
-          extra_args: --only-verified
-        continue-on-error: true  # Don't fail the entire workflow if TruffleHog has issues
-
-      - name: Skip TruffleHog Notice
-        if: steps.check_commits.outputs.skip == 'true'
-        run: |
-          echo "ℹ️ TruffleHog scan skipped - no new commits to analyze"
-          echo "This is normal for force-pushes or when HEAD equals base"
+          extra_args: --only-verified --no-update --fail
+        continue-on-error: true
 
       - name: Dependency Audit
         run: |

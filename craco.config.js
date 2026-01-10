@@ -15,7 +15,7 @@ module.exports = {
     devServerConfig.port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
     devServerConfig.host = process.env.HOST || 'localhost';
     devServerConfig.allowedHosts = 'all';
-    
+
     devServerConfig.headers = {
       ...(devServerConfig.headers || {}),
       'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
@@ -50,13 +50,13 @@ module.exports = {
           type: 'memory',
           maxGenerations: 1
         };
-        
+
         // Ensure output files have unique names to prevent browser caching
         if (config.output) {
           // Use contenthash for cache busting
           const originalFilename = config.output.filename || 'static/js/[name].js';
           const originalChunkFilename = config.output.chunkFilename || 'static/js/[name].chunk.js';
-          
+
           // Only add hash if not already present
           if (!originalFilename.includes('[contenthash]') && !originalFilename.includes('[hash]')) {
             config.output.filename = originalFilename.replace('[name]', '[name].[contenthash:8]');
@@ -67,10 +67,46 @@ module.exports = {
         }
       }
 
+      // PRODUCTION OPTIMIZATION: Smart SplitChunks
+      if (config.mode === 'production') {
+        config.optimization.splitChunks = {
+          chunks: 'all',
+          maxInitialRequests: 20,
+          maxAsyncRequests: 20,
+          minSize: 20000,
+          maxSize: 244000, // Try to keep chunks under 244kb for faster loading
+          cacheGroups: {
+            defaultVendors: {
+              test: /[\\/]node_modules[\\/]/,
+              priority: -10,
+              reuseExistingChunk: true,
+            },
+            react: {
+              test: /[\\/]node_modules[\\/](react|react-dom|react-router-dom)[\\/]/,
+              name: 'vendor-react',
+              chunks: 'all',
+              priority: 20,
+            },
+            firebase: {
+              test: /[\\/]node_modules[\\/](@firebase|firebase)[\\/]/,
+              name: 'vendor-firebase',
+              chunks: 'all',
+              priority: 15,
+            },
+            ui: {
+              test: /[\\/]node_modules[\\/](@mui|styled-components|framer-motion|lucide-react)[\\/]/,
+              name: 'vendor-ui',
+              chunks: 'all',
+              priority: 10,
+            }
+          },
+        };
+      }
+
       // Disable minification in production to ease debugging
       if (config.mode === 'production') {
         config.optimization.minimize = false;
-        
+
         // Force new chunk filenames to bypass Firebase CDN cache
         if (config.output) {
           const timestamp = Date.now().toString(36);

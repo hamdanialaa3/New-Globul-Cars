@@ -43,7 +43,7 @@ if (process.env.NODE_ENV === 'development') {
       // Ignore errors
     }
   });
-  
+
   // Clear sessionStorage
   try {
     sessionStorage.clear();
@@ -82,7 +82,7 @@ if (process.env.NODE_ENV === 'production') {
   logger.debug('Service Worker disabled in development mode');
   // Force unregister and clear all caches in development
   unregisterServiceWorker();
-  
+
   // Clear all caches in development mode to prevent stale content
   if ('caches' in window) {
     caches.keys().then(cacheNames => {
@@ -97,19 +97,19 @@ if (process.env.NODE_ENV === 'production') {
       logger.debug('Cache clearing error (non-critical):', err);
     });
   }
-  
+
   // Add cache busting query parameter to all script/style tags in development
   if (typeof window !== 'undefined') {
     const timestamp = Date.now();
     const links = document.querySelectorAll('link[rel="stylesheet"]');
     const scripts = document.querySelectorAll('script[src]');
-    
+
     links.forEach((link: any) => {
       if (link.href && !link.href.includes('?v=')) {
         link.href += `?v=${timestamp}`;
       }
     });
-    
+
     scripts.forEach((script: any) => {
       if (script.src && !script.src.includes('?v=')) {
         script.src += `?v=${timestamp}`;
@@ -118,12 +118,7 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 
-// Install prompt
-let deferredPrompt: any;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  logger.info('💡 PWA: Install prompt ready');
-});
+// Install prompt handled by usePWA hook and InstallPrompt component
+// window.addEventListener('beforeinstallprompt', (e) => { ... });
 
 reportWebVitals();
