@@ -1,13 +1,18 @@
-# Firebase Hosting Deployment - CI/CD
-# الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
+# ⚠️ DEPRECATED - This workflow is replaced by firebase-deploy.yml
+# This workflow uses the older FirebaseExtended action which had authentication issues
+# The new firebase-deploy.yml uses Firebase CLI directly with better error handling
+# 
+# To re-enable this workflow, rename the file or update the triggers
+# For now, this workflow is disabled by removing the 'on' triggers
 
-name: Deploy to Firebase Hosting
+name: Deploy to Firebase Hosting (DEPRECATED)
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
+# Workflow disabled - using firebase-deploy.yml instead
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
 
 jobs:
   build_and_deploy:

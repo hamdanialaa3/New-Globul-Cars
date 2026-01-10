@@ -1,211 +1,124 @@
-name: Deploy to Firebase (Hosting + Functions)
+name: 🚀 Production Deploy (Secure)
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
+    branches: [main]
+  workflow_dispatch: 
 
 concurrency:
   group: firebase-deploy
   cancel-in-progress: true
 
+env:
+  NODE_VERSION: '20'
+  DEPLOY_REGION: 'europe-west1'
+
 jobs:
-  deploy:
+  security-scan:
+    name: 🔐 Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run Secret Detection
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --only-verified
+
+      - name: Dependency Audit
+        run: |
+          npm audit --audit-level=moderate
+          npm audit fix --dry-run
+
+  build-deploy:
+    name: 🏗️ Build & Deploy
+    needs: security-scan
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
-
+    
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: ✅ Pre-flight check - Validate all required secrets
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Pre-flight Secrets Check
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
         run: |
-          echo "======================================"
-          echo "🔍 Validating GitHub Secrets..."
-          echo "======================================"
-
-          MISSING_SECRETS=""
-
-          # Check FIREBASE_SERVICE_ACCOUNT
           if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
-            echo "❌ FIREBASE_SERVICE_ACCOUNT is NOT SET"
-            MISSING_SECRETS="$MISSING_SECRETS FIREBASE_SERVICE_ACCOUNT"
-          else
-            echo "✅ FIREBASE_SERVICE_ACCOUNT is set (${#FIREBASE_SERVICE_ACCOUNT} characters)"
+            echo "❌ FIREBASE_SERVICE_ACCOUNT is missing!"
+            exit 1
           fi
-
-          # Check FIREBASE_PROJECT_ID
           if [ -z "$FIREBASE_PROJECT_ID" ]; then
-            echo "❌ FIREBASE_PROJECT_ID is NOT SET"
-            MISSING_SECRETS="$MISSING_SECRETS FIREBASE_PROJECT_ID"
-          else
-            echo "✅ FIREBASE_PROJECT_ID is set: $FIREBASE_PROJECT_ID"
-          fi
-
-          # Fail with clear instructions if any secret is missing
-          if [ -n "$MISSING_SECRETS" ]; then
-            echo ""
-            echo "======================================"
-            echo "❌ DEPLOYMENT BLOCKED"
-            echo "======================================"
-            echo "Missing required secrets:$MISSING_SECRETS"
-            echo ""
-            echo "📋 TO FIX THIS:"
-            echo "1. Go to: https://github.com/${{ github.repository }}/settings/secrets/actions"
-            echo "2. Click 'New repository secret'"
-            echo "3. Add missing secrets:"
-            echo ""
-            if echo "$MISSING_SECRETS" | grep -q "FIREBASE_SERVICE_ACCOUNT"; then
-              echo "   🔑 FIREBASE_SERVICE_ACCOUNT"
-              echo "      - Get from: Google Cloud Console > IAM & Admin > Service Accounts"
-              echo "      - Download JSON key for: firebase-adminsdk-fbsvc@fire-new-globul.iam.gserviceaccount.com"
-              echo "      - Paste FULL JSON contents as secret value"
-              echo ""
-            fi
-            if echo "$MISSING_SECRETS" | grep -q "FIREBASE_PROJECT_ID"; then
-              echo "   🎯 FIREBASE_PROJECT_ID"
-              echo "      - Value: fire-new-globul"
-              echo "      - This is your Firebase project ID"
-              echo ""
-            fi
-            echo "4. Save secrets and re-run this workflow"
-            echo "======================================"
+            echo "❌ FIREBASE_PROJECT_ID is missing!"
             exit 1
           fi
+          echo "✅ Critical secrets present."
 
-          echo ""
-          echo "✅ All required secrets are configured!"
-          echo "======================================"
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Cache root node_modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.npm
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
-
-      - name: Install app dependencies
-        run: npm ci
-
-      - name: Build app (CRA)
-        env:
-          NODE_ENV: production
-          CI: false
-        run: npm run build
-
-      - name: Install Firebase CLI
-        run: npm i -g firebase-tools
-
-      - name: Install Cloud Functions dependencies
-        working-directory: functions
-        run: npm ci
-
-      - name: Configure Service Account
-        env:
-          SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      - name: Install Dependencies
         run: |
-          # Write service account JSON to file
-          if [ -z "$SERVICE_ACCOUNT_JSON" ]; then
-            echo "❌ FIREBASE_SERVICE_ACCOUNT secret is not set or is empty"
-            echo "Go to: https://github.com/${{ github.repository }}/settings/secrets/actions"
-            exit 1
-          fi
-
-          echo "$SERVICE_ACCOUNT_JSON" > "${HOME}/gcloud.json"
-
-          # Verify the file was created
-          if [ ! -f "${HOME}/gcloud.json" ]; then
-            echo "❌ Failed to create service account file"
-            exit 1
-          fi
-
-          # Check file size
-          FILE_SIZE=$(stat -f%z "${HOME}/gcloud.json" 2>/dev/null || stat -c%s "${HOME}/gcloud.json" 2>/dev/null)
-          echo "📄 Service account file size: ${FILE_SIZE} bytes"
-
-          if [ "$FILE_SIZE" -lt 100 ]; then
-            echo "❌ Service account file is too small"
-            exit 1
-          fi
-
-          # Validate JSON and extract email
-          if command -v jq >/dev/null 2>&1; then
-            if ! jq empty "${HOME}/gcloud.json" 2>/dev/null; then
-              echo "❌ Invalid JSON format"
-              exit 1
-            fi
-            SERVICE_EMAIL=$(jq -r '.client_email // empty' "${HOME}/gcloud.json")
-          else
-            SERVICE_EMAIL=$(grep -o '"client_email"[[:space:]]*:[[:space:]]*"[^"]*"' "${HOME}/gcloud.json" | sed 's/.*"\([^"]*\)".*/\1/')
-          fi
-
-          if [ -z "$SERVICE_EMAIL" ]; then
-            echo "❌ Missing 'client_email' in service account JSON"
-            exit 1
-          fi
-
-          # Set environment variable for subsequent steps
-          echo "GOOGLE_APPLICATION_CREDENTIALS=${HOME}/gcloud.json" >> $GITHUB_ENV
-          echo "✅ Service account: ${SERVICE_EMAIL}"
-
+          npm ci --legacy-peer-deps
+          cd functions && npm ci && cd ..
+      
+      - name: Type Check & Lint
+        run: |
+          npm run type-check
+          npm run lint || echo "Lint warnings found (non-fatal for now)"
+      
+      - name: Build
+        run: npm run build
+        env:
+          CI: false
+          NODE_OPTIONS: --max_old_space_size=4096
+      
+      - name: Authenticate Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v2
         with:
-          service_account_key: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           project_id: ${{ secrets.FIREBASE_PROJECT_ID }}
-          export_default_credentials: true
 
-      - name: Validate Firebase project id
-        env:
-          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      - name: Deploy to Firebase
         run: |
-          if [ -z "$PROJECT_ID" ]; then
-            echo "❌ FIREBASE_PROJECT_ID secret is not set or is empty"
-            echo "Go to: https://github.com/${{ github.repository }}/settings/secrets/actions"
-            exit 1
-          fi
-          echo "✅ Firebase project id set: $PROJECT_ID"
-
-      - name: Auth sanity check
-        run: |
-          gcloud auth list --filter=status:ACTIVE || true
-          gcloud config list project || true
-          firebase --version
-          firebase projects:list --non-interactive || true
-
-      - name: Set Stripe runtime config (functions)
-        env:
-          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
-        run: |
-          if [ -n "$STRIPE_SECRET_KEY" ] && [ -n "$STRIPE_WEBHOOK_SECRET" ]; then
-            firebase functions:config:set stripe.secret="$STRIPE_SECRET_KEY" stripe.webhook="$STRIPE_WEBHOOK_SECRET" --project "$PROJECT_ID"
-          else
-            echo "Stripe secrets not provided; skipping functions:config:set"
-          fi
-
-      - name: Deploy Hosting
-        env:
-          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-        run: |
-          firebase deploy --only hosting --project "$PROJECT_ID" --non-interactive
-
-      - name: Deploy Functions
-        env:
-          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-        run: |
-          firebase deploy --only functions --project "$PROJECT_ID" --non-interactive
+          npm i -g firebase-tools
+          echo "🚀 Starting Firebase deployment..."
+          echo "📦 Project: ${{ secrets.FIREBASE_PROJECT_ID }}"
+          echo "🌍 Region: europe-west1"
+          
+          # Deploy with detailed output
+          firebase deploy \
+            --project ${{ secrets.FIREBASE_PROJECT_ID }} \
+            --non-interactive \
+            --debug || {
+              echo "❌ Deployment failed!"
+              echo "Common causes:"
+              echo "  1. Missing FIREBASE_SERVICE_ACCOUNT secret"
+              echo "  2. Invalid service account permissions"
+              echo "  3. Project ID mismatch"
+              echo ""
+              echo "📚 See: .github/SETUP_SECRETS.md"
+              exit 1
+            }
+          
+          echo ""
+          echo "════════════════════════════════════════════════════════════════"
+          echo "✅ Deployment Successful!"
+          echo "════════════════════════════════════════════════════════════════"
+          echo "🌐 Hosting: https://fire-new-globul.web.app"
+          echo "🌐 Custom Domain: https://mobilebg.eu"
+          echo "⚡ Functions: https://console.firebase.google.com/project/fire-new-globul/functions"
+          echo "📊 Console: https://console.firebase.google.com/project/fire-new-globul"
+          echo "════════════════════════════════════════════════════════════════"
