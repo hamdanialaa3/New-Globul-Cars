@@ -654,6 +654,38 @@ service cloud.firestore {
       allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
     }
 
+    // ==================== USER GROUPS & MEMBERSHIPS ====================
+    // User Groups (Community Feature)
+    match /userGroups/{groupId} {
+      // Allow reading groups (public groups or browsing)
+      allow read: if true;
+      // Allow creating groups if authenticated
+      allow create: if isAuthenticated();
+      // Allow updates if authenticated (ideally restricted to group admins)
+      allow update: if isAuthenticated();
+      // Delete not allowed (archive instead)
+      allow delete: if false;
+    }
+
+    // Group Memberships
+    match /groupMemberships/{membershipId} {
+      // Allow reading memberships to check status (Public for profile views)
+      // Required for getUserMemberships query on public profiles
+      allow read: if true;
+      
+      // Allow joining (creating membership) for yourself
+      allow create: if isAuthenticated() 
+        && request.resource.data.userId == request.auth.uid;
+        
+      // Allow updating own membership (e.g., settings)
+      allow update: if isAuthenticated() 
+        && resource.data.userId == request.auth.uid;
+        
+      // Allow leaving (deleting membership)
+      allow delete: if isAuthenticated() 
+        && resource.data.userId == request.auth.uid;
+    }
+
     // General fallback (deny by default, but opened for dev/debugging if needed - keep strict for now)
     // Default: Deny all other access
     match /{document=**} {
