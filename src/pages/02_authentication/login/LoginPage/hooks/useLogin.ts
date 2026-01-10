@@ -142,7 +142,11 @@ export const useLogin = (): UseLoginReturn => {
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Initiating Google login');
       }
-      
+
+      // PERSIST REDIRECT URL
+      const redirectPath = getRedirectPath();
+      sessionStorage.setItem('auth_redirect_url', redirectPath);
+
       const result = await SocialAuthService.signInWithGoogle();
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Google login successful', { userId: result.user.uid });
@@ -155,7 +159,7 @@ export const useLogin = (): UseLoginReturn => {
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
       const errorWithCode = error as Error & { code?: string; message?: string };
-      
+
       // Handle redirect case (especially for Cursor browser)
       if (error.message === 'REDIRECT_INITIATED' || error.message.includes('REDIRECT')) {
         if (process.env.NODE_ENV === 'development') {
@@ -166,7 +170,7 @@ export const useLogin = (): UseLoginReturn => {
         // Don't set error - redirect is expected behavior
         return; // Exit early, redirect will be handled by AuthProvider
       }
-      
+
       logger.error('Google login error', error, {
         errorCode: errorWithCode?.code,
         currentURL: window.location.href,
@@ -192,6 +196,11 @@ export const useLogin = (): UseLoginReturn => {
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Initiating Facebook login');
       }
+
+      // PERSIST REDIRECT URL
+      const redirectPath = getRedirectPath();
+      sessionStorage.setItem('auth_redirect_url', redirectPath);
+
       const result = await SocialAuthService.signInWithFacebook();
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Facebook login successful', { userId: result.user.uid });
@@ -221,6 +230,11 @@ export const useLogin = (): UseLoginReturn => {
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Initiating Apple login');
       }
+
+      // PERSIST REDIRECT URL
+      const redirectPath = getRedirectPath();
+      sessionStorage.setItem('auth_redirect_url', redirectPath);
+
       const result = await SocialAuthService.signInWithApple();
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Apple login successful', { userId: result.user.uid });

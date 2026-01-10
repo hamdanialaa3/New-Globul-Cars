@@ -41,7 +41,7 @@ exports.GoogleIndexingService = GoogleIndexingService;
 exports.indexingService = new GoogleIndexingService();
 // Callable Function to be triggered from Client
 exports.requestIndexing = functions
-    .runWith({ secrets: ['GOOGLE_INDEXING_SERVICE_ACCOUNT'] }) // Optional if using specific secrets
+    // .runWith({ secrets: ['GOOGLE_INDEXING_SERVICE_ACCOUNT'] }) // ⚠️ DISABLED: Secret not configured yet
     .https.onCall(async (data, context) => {
     // Security: Only allow admins or internal services
     // For now, allowing authenticated users (e.g., sellers posting cars)

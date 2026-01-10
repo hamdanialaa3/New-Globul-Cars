@@ -28,7 +28,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  
+
   // ✅ CRITICAL: Check if Firebase is properly initialized
   if (!auth) {
     logger.error('Firebase auth is not initialized');
@@ -50,11 +50,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Run Firebase health check on mount
     FirebaseHealthCheck.logEnvironmentInfo();
     FirebaseHealthCheck.runFullCheck();
-    
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       try {
         setCurrentUser(user);
-        
+
         // AUTO-SYNC: Save/Update user in Firestore whenever auth state changes
         if (user) {
           try {
@@ -70,7 +70,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             // Don't block login if Firestore sync fails
           }
         }
-        
+
         setLoading(false);
       } catch (authError) {
         logger.error('Error in auth state change handler', authError as Error);
@@ -85,22 +85,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (process.env.NODE_ENV === 'development') {
           logger.debug('Checking for OAuth redirect result');
         }
-        
+
         // Check for pending redirect intent (especially useful for Cursor)
         const redirectIntent = sessionStorage.getItem('oauth-redirect-intent');
         if (redirectIntent && process.env.NODE_ENV === 'development') {
           logger.debug('Pending OAuth redirect detected', { provider: redirectIntent });
         }
-        
+
         const result = await SocialAuthService.handleRedirectResult();
         if (result && result.user) {
           if (process.env.NODE_ENV === 'development') {
-            logger.debug('Redirect sign-in successful', { 
+            logger.debug('Redirect sign-in successful', {
               email: result.user.email,
-              provider: result.providerId 
+              provider: result.providerId
             });
           }
-          
+
           // AUTO-SYNC: Save user to Firestore after redirect
           try {
             await SocialAuthService.createOrUpdateBulgarianProfile(result.user);
@@ -110,7 +110,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           } catch (error) {
             logger.warn('Could not sync redirect user to Firestore', { error: (error as Error).message });
           }
-          
+
           // User will be set by onAuthStateChanged above
           // Show success message and navigate
           if (typeof window !== 'undefined') {
@@ -118,7 +118,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             if (process.env.NODE_ENV === 'development') {
               logger.info('OAuth login success', { message: successMessage });
             }
-            
+
             // CRITICAL FIX: Navigate after successful OAuth redirect
             // Enhanced for Cursor browser - use longer delay if needed
             const delay = redirectIntent ? 1200 : 800; // Longer delay for Cursor
@@ -127,14 +127,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               if (process.env.NODE_ENV === 'development') {
                 logger.debug('Current path after OAuth', { currentPath, delay });
               }
-              
-              // If still on login/register page, redirect to profile
-              if (currentPath === '/login' || currentPath === '/register' || currentPath === '/') {
+
+              // SMART REDIRECT IMPL
+              const savedRedirect = sessionStorage.getItem('auth_redirect_url');
+              const targetPath = savedRedirect || '/profile';
+
+              // If still on login/register page (or if we have a specific target), redirect
+              if (savedRedirect || currentPath === '/login' || currentPath === '/register' || currentPath === '/') {
                 if (process.env.NODE_ENV === 'development') {
-                  logger.debug('Navigating to /profile after OAuth redirect');
+                  logger.debug('Navigating after OAuth redirect', { targetPath });
                 }
+
+                // Clear the saved redirect
+                if (savedRedirect) sessionStorage.removeItem('auth_redirect_url');
+
                 // Use window.location.href for more reliable redirect in Cursor
-                window.location.href = '/profile';
+                window.location.href = targetPath;
               }
             }, delay);
           }
@@ -142,7 +150,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           if (process.env.NODE_ENV === 'development') {
             logger.debug('No redirect result found (normal on direct page loads)');
           }
-          
+
           // Clear any stale redirect intents if no result
           const redirectIntent = sessionStorage.getItem('oauth-redirect-intent');
           if (redirectIntent) {
@@ -169,7 +177,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             message: error.message
           });
         }
-        
+
         // Clear redirect intent on error
         sessionStorage.removeItem('oauth-redirect-intent');
         sessionStorage.removeItem('oauth-redirect-timestamp');
@@ -203,14 +211,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const register = useCallback(async (email: string, password: string, options?: RegisterOptions) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      
+
       // Update user profile if displayName is provided
       if (options?.displayName && userCredential.user) {
         await updateProfile(userCredential.user, {
           displayName: options.displayName
         });
       }
-      
+
       logger.info('User registered successfully', { email, hasDisplayName: !!options?.displayName });
     } catch (error) {
       logger.error('Registration failed', error as Error, { email });

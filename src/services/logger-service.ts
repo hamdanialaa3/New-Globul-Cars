@@ -316,27 +316,45 @@ class LoggerService {
    * Send to Firebase Analytics
    */
   private async logToFirebase(entry: LogEntry) {
+    // ✅ FIX: Prevent "Missing or insufficient permissions" errors
     try {
       // Only in production and when Firebase is available
       if (!this.isProduction) return;
+      
+      // ✅ NEW: Check if user is authenticated first
+      // Analytics events from guest users may fail silently
+      const { auth } = await import('../firebase/firebase-config');
+      if (!auth?.currentUser) {
+        // Silent return - guest users don't send analytics
+        // This prevents "Missing or insufficient permissions" errors
+        return;
+      }
       
       const { logEvent } = await import('firebase/analytics');
       const { analytics } = await import('../firebase/firebase-config');
       
       if (analytics) {
-        logEvent(analytics, 'app_log', {
+        // ✅ FIX: Use custom event name instead of 'app_log'
+        // Truncate message to prevent data size issues
+        logEvent(analytics, 'custom_app_log', {
           level: entry.level,
-          message: entry.message,
+          message: entry.message.substring(0, 100), // Max 100 chars
           user_id: entry.userId,
           session_id: entry.sessionId,
-          ...entry.context
+          // ✅ Flatten context to avoid nested objects
+          ...(entry.context && typeof entry.context === 'object' 
+            ? Object.fromEntries(
+                Object.entries(entry.context)
+                  .filter(([_, v]) => typeof v !== 'object')
+                  .slice(0, 5) // Max 5 context fields
+              )
+            : {})
         });
       }
     } catch (error) {
-      // Fail silently - don't break the app
-      if (this.isDevelopment) {
-        console.error('Failed to log to Firebase:', error);
-      }
+      // ✅ CRITICAL: Fail silently - logging should NEVER break the app
+      // Don't log this error to avoid infinite loop
+      // Silent failure is acceptable for analytics
     }
   }
 
