@@ -51,20 +51,24 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
 
+      # ✅ FIREBASE_PROJECT_ID is extracted automatically from .firebaserc
+      # No need to add it as a Secret in GitHub
       - name: Pre-flight Secrets Check
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
         run: |
           if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
             echo "❌ FIREBASE_SERVICE_ACCOUNT is missing!"
             exit 1
           fi
-          if [ -z "$FIREBASE_PROJECT_ID" ]; then
-            echo "❌ FIREBASE_PROJECT_ID is missing!"
-            exit 1
-          fi
           echo "✅ Critical secrets present."
+
+      - name: Extract Firebase Project ID
+        id: firebase-project
+        run: |
+          PROJECT_ID=$(cat .firebaserc | grep -o '"default": "[^"]*' | grep -o '[^"]*$')
+          echo "project_id=$PROJECT_ID" >> $GITHUB_OUTPUT
+          echo "✅ Using Firebase Project: $PROJECT_ID"
 
       - name: Install Dependencies
         run: |
@@ -91,18 +95,18 @@ jobs:
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ secrets.FIREBASE_PROJECT_ID }}
+          project_id: ${{ steps.firebase-project.outputs.project_id }}
 
       - name: Deploy to Firebase
         run: |
           npm i -g firebase-tools
           echo "🚀 Starting Firebase deployment..."
-          echo "📦 Project: ${{ secrets.FIREBASE_PROJECT_ID }}"
+          echo "📦 Project: ${{ steps.firebase-project.outputs.project_id }}"
           echo "🌍 Region: europe-west1"
 
           # Deploy with detailed output
           firebase deploy \
-            --project ${{ secrets.FIREBASE_PROJECT_ID }} \
+            --project ${{ steps.firebase-project.outputs.project_id }} \
             --non-interactive \
             --debug || {
               echo "❌ Deployment failed!"
