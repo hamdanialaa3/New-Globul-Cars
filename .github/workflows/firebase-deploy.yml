@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Run Secret Detection
         uses: trufflesecurity/trufflehog@main
         with:
@@ -56,15 +56,49 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
         run: |
+          echo "════════════════════════════════════════════════════════════════"
+          echo "🔐 Checking Required Secrets"
+          echo "════════════════════════════════════════════════════════════════"
+
+          MISSING_SECRETS=0
+
           if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
             echo "❌ FIREBASE_SERVICE_ACCOUNT is missing!"
-            exit 1
+            echo "   → Add at: https://github.com/${{ github.repository }}/settings/secrets/actions"
+            echo "   → Get from: Firebase Console → Project Settings → Service Accounts"
+            MISSING_SECRETS=1
+          else
+            echo "✅ FIREBASE_SERVICE_ACCOUNT present"
           fi
+
           if [ -z "$FIREBASE_PROJECT_ID" ]; then
             echo "❌ FIREBASE_PROJECT_ID is missing!"
+            echo "   → Add at: https://github.com/${{ github.repository }}/settings/secrets/actions"
+            echo "   → Value: fire-new-globul"
+            echo "   → See: .github/GITHUB_SECRETS_SETUP.md"
+            MISSING_SECRETS=1
+          else
+            echo "✅ FIREBASE_PROJECT_ID present (value: $FIREBASE_PROJECT_ID)"
+          fi
+
+          echo "════════════════════════════════════════════════════════════════"
+
+          if [ $MISSING_SECRETS -eq 1 ]; then
+            echo ""
+            echo "🚨 DEPLOYMENT BLOCKED: Missing required secrets!"
+            echo ""
+            echo "📚 Quick Fix Guide:"
+            echo "   1. Go to: https://github.com/${{ github.repository }}/settings/secrets/actions"
+            echo "   2. Click 'New repository secret'"
+            echo "   3. Add missing secret(s) from list above"
+            echo "   4. Re-run this workflow"
+            echo ""
+            echo "📖 Full documentation: .github/GITHUB_SECRETS_SETUP.md"
+            echo ""
             exit 1
           fi
-          echo "✅ Critical secrets present."
+
+          echo "✅ All critical secrets present - proceeding with deployment"
 
       - name: Install Dependencies
         run: |
