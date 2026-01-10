@@ -4,38 +4,46 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { Search, ChevronDown, CheckCircle, Car } from 'lucide-react';
 
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
-import { brandsModelsDataService } from '../../../../services/brands-models-data.service';
-import { logger } from '../../../../services/logger-service';
-import { sanitizeCarMakeModel } from '../../../../utils/inputSanitizer';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import { brandsModelsDataService } from '@/services/brands-models-data.service';
+import { logger } from '@/services/logger-service';
+import { carCountService } from '@/services/car-count.service';
+import { sanitizeCarMakeModel } from '@/utils/inputSanitizer';
 
 // --- Styled Components ---
 
 const WidgetContainer = styled.div<{ $isDark: boolean }>`
   background: ${props => props.$isDark
-    ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%)'
-    : 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%)'};
-  border-radius: 12px; /* Mobile.de uses softer, smaller radii on mobile cards */
+    ? 'rgba(33, 6, 3, 0.3)'
+    : '#ffffff'}; /* mobile.de standard: solid white background */
+  border-radius: 12px; /* mobile.de standard */
   box-shadow: ${props => props.$isDark
-    ? '0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(56, 189, 248, 0.1)'
-    : '0 4px 20px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.05)'}; /* Subtler, professional shadow */
-  padding: 0;
+    ? '0px 20px 60px 0px rgba(0, 0, 0, 0.6), 0px 0px 0px 1px rgba(56, 189, 248, 0.1), 0px 4px 20px 0px rgba(0, 0, 0, 0.15)'
+    : '0 4px 20px rgba(0, 0, 0, 0.08)'}; /* mobile.de standard shadow */
+  padding: 24px; /* mobile.de standard: 24px padding */
   overflow: hidden;
-  max-width: 1100px;
+  max-width: 900px; /* mobile.de standard: 900px max-width (reduced from 1100px) */
   width: 100%;
   position: relative;
   z-index: 10;
-  font-family: 'Inter', sans-serif;
-  backdrop-filter: blur(20px);
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Oil-like fluid transition */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; /* mobile.de font stack */
+  backdrop-filter: none;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
   @media (max-width: 768px) {
-    border-radius: 0; /* Full bleed on very small screens or slight radius */
-    margin: 0 -20px; /* Negative margin to span full width if container has padding */
-    width: calc(100% + 40px);
-    box-shadow: none; /* Flat on mobile for app-like feel */
+    border-radius: 12px; /* Keep consistent radius */
+    margin: 0; /* Remove negative margin */
+    width: 100%;
+    max-width: 95%; /* mobile.de tablet: 95% width */
+    padding: 20px; /* Slightly reduced padding */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Consistent shadow */
     background: ${props => props.$isDark ? '#0f172a' : '#ffffff'};
+  }
+
+  @media (max-width: 640px) {
+    max-width: 100%; /* mobile.de mobile: 100% width */
+    padding: 16px; /* mobile.de mobile: 16px padding */
   }
 `;
 
@@ -204,6 +212,18 @@ const SearchButton = styled.button<{ $isDark: boolean }>`
     transform: translateY(0);
   }
 
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 2px 8px rgba(255, 121, 0, 0.15);
+  }
+
+  &:hover:disabled {
+    transform: none;
+    box-shadow: 0 2px 8px rgba(255, 121, 0, 0.15);
+  }
+
   /* Mobile Optimization */
   @media (max-width: 768px) {
     width: 100%;
@@ -258,6 +278,8 @@ const SearchWidget: React.FC = () => {
   // Data
   const [brands, setBrands] = useState<string[]>([]);
   const [models, setModels] = useState<string[]>([]);
+  const [totalCars, setTotalCars] = useState<number>(0);
+  const [isLoadingCount, setIsLoadingCount] = useState<boolean>(true);
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 30 }, (_, i) => currentYear - i); // Last 30 years
 
@@ -294,6 +316,40 @@ const SearchWidget: React.FC = () => {
     loadModels();
   }, [make]);
 
+  // ✅ Load total car count (CONSTITUTION: Firestore Listeners pattern with isActive flag)
+  useEffect(() => {
+    let isActive = true; // ✅ Prevent updates after unmount (PROJECT_CONSTITUTION.md Section 4.3)
+
+    const loadCarCount = async () => {
+      try {
+        setIsLoadingCount(true);
+        const count = await carCountService.getTotalCount();
+        if (isActive) {
+          setTotalCars(count);
+          logger.debug('Car count loaded in SearchWidget', { total: count });
+        }
+      } catch (error) {
+        logger.error('Error loading car count in SearchWidget', error as Error, {
+          context: 'SearchWidget',
+          action: 'loadCarCount'
+        });
+        if (isActive) {
+          setTotalCars(0); // Fallback to 0
+        }
+      } finally {
+        if (isActive) {
+          setIsLoadingCount(false);
+        }
+      }
+    };
+
+    loadCarCount();
+
+    return () => {
+      isActive = false; // ✅ Critical: Prevent updates after unmount
+    };
+  }, []);
+
   // Handlers
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -312,6 +368,23 @@ const SearchWidget: React.FC = () => {
   };
 
   const t = (en: string, bg: string) => language === 'bg' ? bg : en;
+
+  // ✅ Get search button text with real car count
+  const getSearchButtonText = (): string => {
+    if (isLoadingCount) {
+      return language === 'bg' ? 'Търси' : 'Search';
+    }
+    
+    if (totalCars === 0) {
+      return language === 'bg' ? 'Търси' : 'Search';
+    }
+    
+    const formattedCount = totalCars.toLocaleString(language === 'bg' ? 'bg' : 'en');
+    
+    return language === 'bg' 
+      ? `Покажи ${formattedCount} обяви`
+      : `Show ${formattedCount} cars`;
+  };
 
   return (
     <WidgetContainer $isDark={isDark}>
@@ -431,9 +504,9 @@ const SearchWidget: React.FC = () => {
 
         {/* Search Button */}
         <FieldGroup style={{ justifyContent: 'flex-end', marginTop: 'auto' }}>
-          <SearchButton $isDark={isDark} onClick={handleSearch}>
+          <SearchButton $isDark={isDark} onClick={handleSearch} disabled={isLoadingCount}>
             <Search size={20} />
-            {language === 'bg' ? `Покажи ${Math.floor(Math.random() * 5000) + 1000} обяви` : `Show ${Math.floor(Math.random() * 5000) + 1000} offers`}
+            {getSearchButtonText()}
           </SearchButton>
         </FieldGroup>
 

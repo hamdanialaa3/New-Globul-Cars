@@ -11,7 +11,10 @@ import { InstallPrompt } from './components/PWA/InstallPrompt';
 import GuestExpirationModal from './components/auth/GuestExpirationModal';
 import ConsentBanner from './components/ConsentBanner';
 import PendingFavoriteHandler from './components/PendingFavoriteHandler';
-import AIChatbotWidget from './components/messaging/AIChatbotWidget';
+// 🔴 CRITICAL: Global ErrorBoundary to prevent white screen of death
+import { ErrorBoundary } from './components/ErrorBoundary';
+// ✅ MERGED: AIChatbotWidget merged into UnifiedAIChat in MainLayout
+// import AIChatbotWidget from './components/messaging/AIChatbotWidget';
 
 // 🔧 Dev utilities (available in console)
 if (process.env.NODE_ENV === 'development') {
@@ -45,14 +48,24 @@ const App: React.FC = () => {
 
 
   return (
-    <AppProviders>
-      <PendingFavoriteHandler />
-      <AppRoutes />
-      <GuestExpirationModal />
-      <InstallPrompt />
-      <ConsentBanner />
-      <AIChatbotWidget />
-    </AppProviders>
+    <ErrorBoundary
+      onError={(error, errorInfo) => {
+        // Log error to monitoring service (e.g., Sentry, LogRocket)
+        logger.error('Global ErrorBoundary caught error', error, {
+          componentStack: errorInfo.componentStack,
+          errorBoundary: 'AppRoot'
+        });
+      }}
+    >
+      <AppProviders>
+        {/* ✅ MERGED: AIChatbotWidget moved to UnifiedAIChat in MainLayout */}
+        <PendingFavoriteHandler />
+        <AppRoutes />
+        <GuestExpirationModal />
+        <InstallPrompt />
+        <ConsentBanner />
+      </AppProviders>
+    </ErrorBoundary>
   );
 };
 

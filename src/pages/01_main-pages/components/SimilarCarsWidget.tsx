@@ -8,6 +8,7 @@ import { VEHICLE_COLLECTIONS } from '../../../services/car/unified-car-types';
 import OptimizedImage from '../../../components/OptimizedImage';
 import { MapPin, Gauge, Fuel, Calendar, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRef } from 'react';
+import { logger } from '../../../services/logger-service';
 
 interface SimilarCarsWidgetProps {
   currentCar: CarListing;
@@ -216,7 +217,7 @@ export const SimilarCarsWidget: React.FC<SimilarCarsWidgetProps> = ({ currentCar
 
         setSimilarCars(results);
       } catch (err) {
-        console.error('Error fetching similar cars', err);
+        logger.error('Error fetching similar cars', err as Error);
       } finally {
         setLoading(false);
       }
@@ -230,11 +231,16 @@ export const SimilarCarsWidget: React.FC<SimilarCarsWidgetProps> = ({ currentCar
   if (loading || similarCars.length === 0) return null;
 
   const handleCarClick = (car: CarListing) => {
-    if (car.sellerNumericId && (car.carNumericId || car.numericId)) {
-      navigate(`/car/${car.sellerNumericId}/${car.carNumericId || car.numericId}`);
+    // ✅ CONSTITUTION: Use numeric URL pattern
+    const sellerNumericId = (car as any).sellerNumericId || (car as any).ownerNumericId;
+    const carNumericId = (car as any).carNumericId || (car as any).userCarSequenceId || (car as any).numericId;
+    
+    if (sellerNumericId && carNumericId) {
+      navigate(`/car/${sellerNumericId}/${carNumericId}`);
       window.scrollTo(0, 0);
     } else {
-      navigate(`/car/${car.id}`);
+      // Car missing numeric IDs - redirect to search
+      navigate('/cars');
       window.scrollTo(0, 0);
     }
   };

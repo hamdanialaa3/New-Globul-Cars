@@ -3,6 +3,7 @@ import { db } from '../firebase/firebase-config';
 import { serverTimestamp } from 'firebase/firestore';
 import { numericCarSystemService } from './numeric-car-system.service';
 import { auth } from '../firebase/firebase-config';
+import { logger } from './logger-service';
 
 export const UnifiedCarService = {
     ...modularService,
@@ -63,7 +64,7 @@ export const UnifiedCarService = {
         // 4. Save to Firestore
         const result = await modularService.createCar(newCarData);
 
-        console.log(`✅ Car Created: /car/${result.sellerNumericId}/${result.carNumericId}`);
+        logger.info('Car created', { sellerNumericId: result.sellerNumericId, carNumericId: result.carNumericId });
 
         return {
             id: result.id,
@@ -85,7 +86,7 @@ export const UnifiedCarService = {
             updatedAt: serverTimestamp() as any
         });
 
-        console.log(`✅ Car Video Status Updated: ${carId}`);
+        logger.info('Car video status updated', { carId });
     }
 };
 

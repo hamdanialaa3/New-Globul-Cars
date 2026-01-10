@@ -14,6 +14,7 @@ import {
   TasksWidget
 } from '../../components/dealer';
 import { Package, TrendingUp } from 'lucide-react';
+import { logger } from '../../services/logger-service';
 
 const Container = styled.div`
   max-width: 1400px;
@@ -142,7 +143,7 @@ const DealerDashboardPage: React.FC = () => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError(errorMessage);
-      console.error('Error loading dashboard data:', err);
+      logger.error('Error loading dashboard data', err as Error);
     } finally {
       setLoading(false);
     }

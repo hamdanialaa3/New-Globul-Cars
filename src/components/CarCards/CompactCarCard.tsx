@@ -24,6 +24,7 @@ interface CompactCarCardProps {
   showStatus?: boolean;
 }
 
+// ✅ CONSTITUTION: /car/{userId}/{carLocalId}
 const getCarDetailsUrl = (car: any) => {
   const sellerNumericId = car.sellerNumericId || car.ownerNumericId;
   const carNumericId = car.carNumericId || car.userCarSequenceId || car.numericId;
@@ -31,7 +32,8 @@ const getCarDetailsUrl = (car: any) => {
   if (sellerNumericId && carNumericId) {
     return `/car/${sellerNumericId}/${carNumericId}`;
   }
-  return `/car-details/${car.id}`;
+  // Car missing numeric IDs - return to search
+  return '/cars';
 };
 
 const formatCurrency = (price: number) => {

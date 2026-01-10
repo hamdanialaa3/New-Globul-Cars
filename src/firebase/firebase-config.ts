@@ -31,7 +31,9 @@ const firebaseConfig = {
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "fire-new-globul.firebasestorage.app",
   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "973379297533",
   appId: process.env.REACT_APP_FIREBASE_APP_ID || "1:973379297533:web:59c6534d61a29cae5d9e94",
-  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID || "G-R8JY5KM421"
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID || "G-R8JY5KM421",
+  // 🔥 CRITICAL: Realtime Database URL (europe-west1 region)
+  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL || "https://fire-new-globul-default-rtdb.europe-west1.firebasedatabase.app"
 };
 
 // Initialize Firebase

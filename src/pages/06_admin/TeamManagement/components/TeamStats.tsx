@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { teamManagementService } from '@/services/company/team-management-service';
 import { FaUsers, FaUserCheck, FaClock, FaShieldAlt, FaUserTie, FaEye } from 'react-icons/fa';
+import { logger } from '@/services/logger-service';
 
 interface Props {
   companyId: string;
@@ -39,7 +40,7 @@ export const TeamStats: React.FC<Props> = ({ companyId }) => {
         const data = await teamManagementService.getTeamStats(companyId);
         setStats(data);
       } catch (error) {
-        console.error('Failed to fetch team stats', error);
+        logger.error('Failed to fetch team stats', error as Error);
       } finally {
         setLoading(false);
       }

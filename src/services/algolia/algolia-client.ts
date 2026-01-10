@@ -5,8 +5,9 @@ import algoliasearch from 'algoliasearch/lite';
 import { SearchClient } from 'algoliasearch/lite';
 
 // Use default values if env variables are not set
-const APP_ID = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_ALGOLIA_APP_ID) || 'RTGDK12KTJ';
-const SEARCH_KEY = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_ALGOLIA_SEARCH_KEY) || '01d60b828b7263114c11762ff5b7df9b';
+// CRA uses process.env.REACT_APP_*, not import.meta.env
+const APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID || 'RTGDK12KTJ';
+const SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY || '01d60b828b7263114c11762ff5b7df9b';
 
 // Initialize Algolia client
 export const algoliaClient: SearchClient = algoliasearch(APP_ID, SEARCH_KEY);

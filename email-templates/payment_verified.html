@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="{{language}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{#if (eq language 'bg')}}Плащането е потвърдено{{else}}Payment Verified{{/if}}</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .header {
+            background: linear-gradient(135deg, #00A651, #00B65E);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            animation: bounce 1s ease infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .message {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .success-card {
+            background: linear-gradient(135deg, #00A651, #00B65E);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            color: white;
+            margin: 30px 0;
+        }
+        .success-message {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .success-details {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #00A651;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #666;
+            font-size: 14px;
+        }
+        .info-value {
+            font-weight: 700;
+            color: #333;
+            font-size: 14px;
+        }
+        .benefits {
+            margin: 30px 0;
+        }
+        .benefit {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+        .benefit-icon {
+            font-size: 24px;
+        }
+        .benefit-text {
+            flex: 1;
+            color: #666;
+            line-height: 1.5;
+        }
+        .button {
+            display: inline-block;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #0075EB, #00A651);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+        }
+        .footer-text {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+        .contact-item {
+            color: #0075EB;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="success-icon">🎉</div>
+            <h1>
+                {{#if (eq language 'bg')}}
+                    Поздравления!
+                {{else}}
+                    Congratulations!
+                {{/if}}
+            </h1>
+            <p>
+                {{#if (eq language 'bg')}}
+                    Вашето плащане е потвърдено и абонаментът е активиран
+                {{else}}
+                    Your payment has been verified and subscription is now active
+                {{/if}}
+            </p>
+        </div>
+
+        <div class="content">
+            <div class="greeting">
+                {{#if (eq language 'bg')}}
+                    Здравейте, {{userName}}!
+                {{else}}
+                    Hello, {{userName}}!
+                {{/if}}
+            </div>
+
+            <div class="message">
+                {{#if (eq language 'bg')}}
+                    Чудесни новини! Вашият банков превод е успешно потвърден от нашия екип. Абонаментът ви е активен и можете да започнете да използвате всички премиум функции веднага!
+                {{else}}
+                    Great news! Your bank transfer has been successfully verified by our team. Your subscription is now active and you can start using all premium features immediately!
+                {{/if}}
+            </div>
+
+            <div class="success-card">
+                <div class="success-message">
+                    {{#if (eq language 'bg')}}
+                        ✅ Абонаментът е активен!
+                    {{else}}
+                        ✅ Subscription Active!
+                    {{/if}}
+                </div>
+                <div class="success-details">
+                    {{#if (eq language 'bg')}}
+                        Важи до: {{expiresAt}}
+                    {{else}}
+                        Valid until: {{expiresAt}}
+                    {{/if}}
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-row">
+                    <span class="info-label">
+                        {{#if (eq language 'bg')}}Платена сума:{{else}}Amount Paid:{{/if}}
+                    </span>
+                    <span class="info-value">{{amount}} {{currency}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">
+                        {{#if (eq language 'bg')}}Абонамент:{{else}}Plan:{{/if}}
+                    </span>
+                    <span class="info-value">{{itemDescription}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">
+                        {{#if (eq language 'bg')}}Референция:{{else}}Reference:{{/if}}
+                    </span>
+                    <span class="info-value">{{referenceNumber}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">
+                        {{#if (eq language 'bg')}}Активиран на:{{else}}Activated On:{{/if}}
+                    </span>
+                    <span class="info-value">{{verifiedAt}}</span>
+                </div>
+            </div>
+
+            <div class="benefits">
+                <h3 style="margin-bottom: 20px; color: #333;">
+                    {{#if (eq language 'bg')}}
+                        🚀 Вашите премиум предимства:
+                    {{else}}
+                        🚀 Your Premium Benefits:
+                    {{/if}}
+                </h3>
+                
+                <div class="benefit">
+                    <div class="benefit-icon">✨</div>
+                    <div class="benefit-text">
+                        {{#if (eq language 'bg')}}
+                            <strong>Повече обяви:</strong> Публикувайте до {{maxListings}} активни обяви едновременно
+                        {{else}}
+                            <strong>More Listings:</strong> Publish up to {{maxListings}} active listings simultaneously
+                        {{/if}}
+                    </div>
+                </div>
+
+                <div class="benefit">
+                    <div class="benefit-icon">📊</div>
+                    <div class="benefit-text">
+                        {{#if (eq language 'bg')}}
+                            <strong>Разширена аналитика:</strong> Проследявайте посещенията и интереса към вашите обяви
+                        {{else}}
+                            <strong>Advanced Analytics:</strong> Track views and interest in your listings
+                        {{/if}}
+                    </div>
+                </div>
+
+                <div class="benefit">
+                    <div class="benefit-icon">⭐</div>
+                    <div class="benefit-text">
+                        {{#if (eq language 'bg')}}
+                            <strong>Промоция:</strong> Вашите обяви се показват на първо място в търсенията
+                        {{else}}
+                            <strong>Promotion:</strong> Your listings appear first in search results
+                        {{/if}}
+                    </div>
+                </div>
+
+                <div class="benefit">
+                    <div class="benefit-icon">🎯</div>
+                    <div class="benefit-text">
+                        {{#if (eq language 'bg')}}
+                            <strong>Приоритетна поддръжка:</strong> Бърз отговор от нашия екип
+                        {{else}}
+                            <strong>Priority Support:</strong> Fast response from our team
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{dashboardUrl}}" class="button">
+                    🏠 {{#if (eq language 'bg')}}Към профила{{else}}Go to Dashboard{{/if}}
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-text">
+                {{#if (eq language 'bg')}}
+                    Благодарим ви, че избрахте Globul Cars! 🚗
+                {{else}}
+                    Thank you for choosing Globul Cars! 🚗
+                {{/if}}
+            </div>
+            <div class="contact-info">
+                <a href="tel:{{supportPhone}}" class="contact-item">📞 {{supportPhone}}</a>
+                <a href="mailto:{{supportEmail}}" class="contact-item">📧 {{supportEmail}}</a>
+            </div>
+            <div style="margin-top: 24px; font-size: 12px; color: #999;">
+                © 2026 Globul Cars | mobilebg.eu
+            </div>
+        </div>
+    </div>
+</body>
+</html>

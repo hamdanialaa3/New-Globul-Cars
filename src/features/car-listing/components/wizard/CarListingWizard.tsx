@@ -10,6 +10,7 @@ import { WizardNavigation } from './WizardNavigation';
 import { StepTransition } from './StepTransition';
 import { WizardLoadingFallback } from './WizardLoadingFallback';
 import { toast } from 'react-toastify';
+import { logger } from '@/services/logger-service';
 
 // Lazy load step components for code splitting
 const Step1VehicleType = lazy(() => import('../steps/Step1VehicleType').then(m => ({ default: m.Step1VehicleType })));
@@ -157,7 +158,7 @@ export const CarListingWizard: React.FC<CarListingWizardProps> = ({
         onComplete();
       }
     } catch (error) {
-      console.error('Failed to submit listing:', error);
+      logger.error('Failed to submit listing', error as Error);
       const errorMessage = language === 'bg'
         ? 'Грешка при публикуване на обявата'
         : 'Error publishing listing';

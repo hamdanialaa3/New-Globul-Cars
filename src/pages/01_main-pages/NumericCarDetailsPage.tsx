@@ -95,18 +95,9 @@ const NumericCarDetailsPage: React.FC = () => {
     if (loading) return <div className="flex justify-center items-center h-screen"><LoadingSpinner /></div>;
 
     if (error || !realCarId) {
-        return (
-            <div className="flex flex-col items-center justify-center h-[50vh] space-y-4">
-                <h2 className="text-2xl font-bold text-gray-800">Car Not Found</h2>
-                <p className="text-gray-600">{error || 'The requested car could not be located.'}</p>
-                <button
-                    onClick={() => navigate('/cars')}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                >
-                    Browse Cars
-                </button>
-            </div>
-        );
+        // ✅ CONSTITUTION: Redirect to dedicated CarNotFoundPage with numeric context
+        navigate(`/car/${sellerNumericId}/${carNumericId}/not-found`, { replace: true });
+        return null;
     }
 
     // Render the actual Details Page but KEEP the URL in the browser as /car/1/1

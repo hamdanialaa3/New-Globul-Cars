@@ -43,29 +43,29 @@ const Container = styled.section<{ $isDark: boolean }>`
   background: ${props => props.$isDark
     ? 'linear-gradient(135deg, rgba(5, 11, 24, 0.5), rgba(15, 23, 42, 0.3))'
     : 'linear-gradient(135deg, rgba(240, 245, 255, 0.8), rgba(248, 247, 246, 0.5))'};
-  padding: 4rem 1rem;
-  margin: 2rem 0;
+  padding: 2rem 1rem;
+  margin: 1rem 0;
   border-radius: 24px;
   overflow: hidden;
 
   @media (max-width: 768px) {
-    padding: 2.5rem 1rem;
-    margin: 1.5rem 0;
+    padding: 1.5rem 1rem;
+    margin: 0.75rem 0;
   }
 
   @media (max-width: 640px) {
-    padding: 1.5rem 1rem;
-    margin: 1rem 0;
+    padding: 1rem 0.75rem;
+    margin: 0.5rem 0;
   }
 `;
 
 const Header = styled.div<{ $isDark: boolean }>`
   max-width: 1200px;
-  margin: 0 auto 3rem;
+  margin: 0 auto 1.5rem;
   text-align: center;
 
   @media (max-width: 768px) {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
   }
 `;
 

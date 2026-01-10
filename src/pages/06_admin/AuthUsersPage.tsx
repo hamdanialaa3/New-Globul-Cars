@@ -5,6 +5,7 @@ import { adminService } from '../../services/admin/admin-service';
 import { BulgarianUser } from '../../types/user/bulgarian-user.types'; // Fixed import
 import { Loader, Search, Shield, User as UserIcon, Briefcase, Mail } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { logger } from '../../services/logger-service';
 
 const Container = styled.div`
   padding: 40px;
@@ -164,7 +165,7 @@ const AuthUsersPage: React.FC = () => {
       const results = await adminService.searchUsers(query);
       setUsers(results);
     } catch (error) {
-      console.error('Failed to fetch users', error);
+      logger.error('Failed to fetch users', error as Error);
       toast.error(isBg ? 'Грешка при зареждане на потребители' : 'Failed to fetch users');
     } finally {
       setLoading(false);

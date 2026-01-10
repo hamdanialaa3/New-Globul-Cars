@@ -5,6 +5,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 // import { SellVehicleWizard } from '../../components/SellWorkflow/SellVehicleWizard'; // Replaced by CarEditPage
 import CarEditPageInternal from './CarEditPage';
 import SmartLoader from '../../components/SmartLoaderCSS';
+import { logger } from '../../services/logger-service';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -45,7 +46,7 @@ const EditCarPage: React.FC = () => {
           navigate('/404');
         }
       } catch (error) {
-        console.error('Failed to resolve car ID:', error);
+        logger.error('Failed to resolve car ID', error as Error);
         navigate('/404');
       } finally {
         setLoading(false);

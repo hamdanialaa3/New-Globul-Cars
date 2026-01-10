@@ -121,21 +121,28 @@ const ViewAllButton = styled.button`
 
 const CarsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+  /* mobile.de standard: 4 columns desktop, max-width 320px per card */
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px; /* mobile.de standard: 24px gap desktop */
+  max-width: 1400px; /* mobile.de standard: 1400px max container */
+  margin: 0 auto;
+  padding: 0 24px;
+  
+  @media (max-width: 1280px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
   
   @media (max-width: 1024px) {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.25rem;
+    grid-template-columns: repeat(2, 1fr); /* mobile.de standard: 2 columns tablet */
+    gap: 16px; /* mobile.de standard: 16px gap tablet */
+    padding: 0 20px;
   }
   
   @media (max-width: 768px) {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-  }
-  
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* mobile.de standard: 1 column mobile */
+    gap: 16px; /* mobile.de standard: 16px gap mobile */
+    padding: 0 16px;
   }
 `;
 

@@ -319,9 +319,10 @@ export const CarCardWithFavorites: React.FC<CarCardWithFavoritesProps> = ({
     }
   };
 
+  // ✅ CONSTITUTION: Use numeric URL pattern only
   const carUrl = car.carNumericId && car.sellerNumericId 
     ? `/car/${car.sellerNumericId}/${car.carNumericId}`
-    : `/car-details/${car.id}`;
+    : '#'; // Car missing numeric IDs - should not be clickable
 
   return (
     <CardContainer to={carUrl}>

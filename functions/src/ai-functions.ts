@@ -7,6 +7,8 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+const logger = functions.logger;
+
 // Initialize Firebase Admin
 admin.initializeApp();
 const db = admin.firestore();
@@ -86,7 +88,7 @@ export const aiQuotaCheck = functions.https.onCall(async (data, context) => {
 
     return { allowed: true, remaining: limit - used };
   } catch (error) {
-    console.error('Quota check error:', error);
+    logger.error('Quota check error:', error);
     throw new functions.https.HttpsError('internal', 'Error checking quota');
   }
 });
@@ -148,7 +150,7 @@ export const geminiChat = functions.https.onCall(async (data, context) => {
 
     return { message: response, quotaRemaining: (quota?.dailyChatMessages || 10) - (quota?.usedChatMessages || 0) - 1 };
   } catch (error) {
-    console.error('Gemini chat error:', error);
+    logger.error('Gemini chat error:', error);
     throw new functions.https.HttpsError('internal', 'Chat failed');
   }
 });
@@ -206,7 +208,7 @@ export const geminiPriceSuggestion = functions.https.onCall(async (data, context
 
     return suggestion;
   } catch (error) {
-    console.error('Price suggestion error:', error);
+    logger.error('Price suggestion error:', error);
     throw new functions.https.HttpsError('internal', 'Price suggestion failed');
   }
 });
@@ -257,7 +259,7 @@ export const geminiProfileAnalysis = functions.https.onCall(async (data, context
 
     return analysis;
   } catch (error) {
-    console.error('Profile analysis error:', error);
+    logger.error('Profile analysis error:', error);
     throw new functions.https.HttpsError('internal', 'Profile analysis failed');
   }
 });
@@ -319,7 +321,7 @@ export const sentimentAnalysis = functions.https.onCall(async (data, context) =>
 
     return sentiment;
   } catch (error) {
-    console.error('Sentiment analysis error:', error);
+    logger.error('Sentiment analysis error:', error);
     throw new functions.https.HttpsError('internal', 'Sentiment analysis failed');
   }
 });
@@ -360,7 +362,7 @@ export const whatsappWebhook = functions.https.onRequest(async (req, res) => {
 
       res.status(200).send('EVENT_RECEIVED');
     } catch (error) {
-      console.error('WhatsApp webhook error:', error);
+      logger.error('WhatsApp webhook error:', error);
       res.status(500).send('Error');
     }
   }
@@ -392,7 +394,7 @@ async function processWhatsAppMessage(message: any) {
       });
     }
   } catch (error) {
-    console.error('Error processing WhatsApp message:', error);
+    logger.error('Error processing WhatsApp message:', error);
   }
 }
 
@@ -431,7 +433,7 @@ async function sendWhatsAppMessage(phone: string, message: string) {
 
     return await response.json();
   } catch (error) {
-    console.error('Error sending WhatsApp message:', error);
+    logger.error('Error sending WhatsApp message:', error);
     throw error;
   }
 }
@@ -474,7 +476,7 @@ export const detectLanguageAndTranslate = functions.https.onCall(async (data, co
 
     return JSON.parse(jsonMatch[0]);
   } catch (error) {
-    console.error('Language detection error:', error);
+    logger.error('Language detection error:', error);
     throw new functions.https.HttpsError('internal', 'Language detection failed');
   }
 });
@@ -508,7 +510,7 @@ export const processVoiceMessage = functions.https.onCall(async (data, context) 
       duration: 0
     };
   } catch (error) {
-    console.error('Voice processing error:', error);
+    logger.error('Voice processing error:', error);
     throw new functions.https.HttpsError('internal', 'Voice processing failed');
   }
 });
@@ -573,7 +575,7 @@ export const getRecommendations = functions.https.onCall(async (data, context) =
       reasoning: 'Based on your viewing history and preferences'
     };
   } catch (error: any) {
-    console.error('Recommendations error:', error);
+    logger.error('Recommendations error:', error);
     throw new functions.https.HttpsError('internal', error.message || 'Recommendations failed');
   }
 });

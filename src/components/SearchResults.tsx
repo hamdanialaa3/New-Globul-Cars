@@ -10,6 +10,8 @@ import {
   Calendar
 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+// 🔴 CRITICAL: Use reusable EmptyState component
+import { NoSearchResults } from './EmptyStates';
 import LazyImage from './LazyImage';
 
 interface SearchResult {
@@ -436,9 +438,8 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   if (results.length === 0) {
     return (
       <SearchResultsContainer className={className} style={style}>
-        <SearchResultsEmpty>
-          {t('searchResults.empty')}
-        </SearchResultsEmpty>
+        {/* 🔴 CRITICAL: Use reusable EmptyState component */}
+        <NoSearchResults />
       </SearchResultsContainer>
     );
   }

@@ -36,7 +36,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         }
       } catch (error) {
         // Ignore errors in test environment
-        console.warn('Error accessing window.matchMedia:', error);
+        logger.warn('Error accessing window.matchMedia', { error: error as unknown });
       }
     }
 
@@ -131,7 +131,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       }
     } catch (error) {
       // Handle any errors in media query setup
-      console.warn('Failed to set up media query listener:', error);
+      logger.warn('Failed to set up media query listener', { error: error as unknown });
     }
   }, []);
 

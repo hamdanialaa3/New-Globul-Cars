@@ -5,6 +5,7 @@ import * as sitemapFunc from './sitemap';
 import * as googleAdsSync from './google-ads-sync';
 import * as facebookAdsSync from './facebook-ads-sync';
 import * as newCarNotifications from './notifications/onNewCarPost';
+import * as carLifecycle from './triggers/car-lifecycle';
 
 // Notification triggers (legacy)
 export const onNewCarPosted = notifications.onNewCarPosted;
@@ -30,6 +31,8 @@ export const cleanupDeletedImages = imageOptimizer.cleanupOptimizedImages;
 
 // Marketing / SEO
 export const sitemap = sitemapFunc.sitemap;
+export const scheduledSitemapRegeneration = sitemapFunc.scheduledSitemapRegeneration;
+export const manualSitemapRegeneration = sitemapFunc.manualSitemapRegeneration;
 export const syncCarsToGoogleAds = googleAdsSync.syncCarsToGoogleAds;
 export const syncCarsToFacebookAds = facebookAdsSync.syncCarsToFacebookAds;
 
@@ -103,3 +106,50 @@ export const syncMotorcyclesToAlgolia = algoliaSync.syncMotorcyclesToAlgolia;
 export const syncTrucksToAlgolia = algoliaSync.syncTrucksToAlgolia;
 export const syncBusesToAlgolia = algoliaSync.syncBusesToAlgolia;
 export const batchSyncAllCarsToAlgolia = algoliaSync.batchSyncAllCarsToAlgolia;
+
+// ✅ NEW: Stripe Payment Webhooks (January 2026)
+import { stripeWebhooks as stripeWebhooksHandler } from './stripe-webhooks';
+export const stripeWebhooks = stripeWebhooksHandler;
+
+// ✅ NEW: Scheduled Cleanup Jobs (January 6, 2026)
+import * as archiveJobs from './scheduled/archive-sold-cars';
+export const archiveSoldCars = archiveJobs.archiveSoldCars;
+export const manualArchiveSoldCars = archiveJobs.manualArchiveSoldCars;
+export const cleanupExpiredDrafts = archiveJobs.cleanupExpiredDrafts;
+
+// ✅ NEW: B2B Analytics & Lead Export (January 6, 2026) - Revenue Fix
+import * as b2bExports from './analytics/b2b-exports';
+export const exportB2BLeads = b2bExports.exportB2BLeads;
+export const getB2BAnalytics = b2bExports.getB2BAnalytics;
+export const exportB2BAnalytics = b2bExports.exportB2BAnalytics;
+
+// ✅ NEW: Car lifecycle hygiene (stories cascade + sold marker)
+export const onPassengerCarDeleted = carLifecycle.onPassengerCarDeleted;
+export const onSuvDeleted = carLifecycle.onSuvDeleted;
+export const onVanDeleted = carLifecycle.onVanDeleted;
+export const onMotorcycleDeleted = carLifecycle.onMotorcycleDeleted;
+export const onTruckDeleted = carLifecycle.onTruckDeleted;
+export const onBusDeleted = carLifecycle.onBusDeleted;
+export const onPassengerCarSold = carLifecycle.onPassengerCarSold;
+export const onSuvSold = carLifecycle.onSuvSold;
+export const onVanSold = carLifecycle.onVanSold;
+export const onMotorcycleSold = carLifecycle.onMotorcycleSold;
+export const onTruckSold = carLifecycle.onTruckSold;
+export const onBusSold = carLifecycle.onBusSold;
+
+// ✅ NEW: Realtime Messaging Push Notifications (January 8, 2026)
+import * as realtimeMessagingNotifications from './notifications/realtime-messaging-notifications';
+export const onNewRealtimeMessage = realtimeMessagingNotifications.onNewRealtimeMessage;
+export const onOfferStatusChange = realtimeMessagingNotifications.onOfferStatusChange;
+export const cleanupExpiredOffers = realtimeMessagingNotifications.cleanupExpiredOffers;
+
+// 🔴 CRITICAL: Firebase Auth User Deletion Trigger (January 2026 - GDPR Compliance)
+import { onUserDelete } from './triggers/on-user-delete';
+export { onUserDelete };
+
+// ✅ NEW: Manual Payment System (January 9, 2026)
+const manualPayments = require('../lib/manual-payment-expiration');
+export const checkExpiredManualPayments = manualPayments.checkExpiredManualPayments;
+export const sendDailyPaymentSummary = manualPayments.sendDailyPaymentSummary;
+export const onPaymentVerified = manualPayments.onPaymentVerified;
+export const manualExpirePayments = manualPayments.manualExpirePayments;

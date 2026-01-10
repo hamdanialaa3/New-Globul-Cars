@@ -225,9 +225,10 @@ class DealerDashboardService {
           leads: (car as any).messageCount || 0,
           status: car.isActive ? 'active' : 'draft',
           createdAt: car.createdAt as Timestamp,
+          // ✅ CONSTITUTION: Use numeric URL pattern
           url: car.sellerNumericId && car.carNumericId
             ? `/car/${car.sellerNumericId}/${car.carNumericId}`
-            : `/car/${car.id}`
+            : '/cars' // Fallback to cars list
         }))
         .sort((a, b) => {
           // Sort by combined score: views * 0.6 + messages * 0.4
@@ -262,9 +263,10 @@ class DealerDashboardService {
       for (const car of activeCars) {
         const carId = car.id || '';
         const carTitle = `${car.make || ''} ${car.model || ''} ${car.firstRegistration || car.year || ''}`.trim();
+        // ✅ CONSTITUTION: Use numeric URL pattern
         const carUrl = car.sellerNumericId && car.carNumericId
           ? `/car/${car.sellerNumericId}/${car.carNumericId}`
-          : `/car/${car.id}`;
+          : '/cars'; // Fallback to cars list
 
         // Check for missing images
         const images = car.images || [];
@@ -403,9 +405,10 @@ class DealerDashboardService {
 
           if (daysSinceCreation > 90) {
             const carTitle = `${car.make || ''} ${car.model || ''} ${car.firstRegistration || car.year || ''}`.trim();
+            // ✅ CONSTITUTION: Use numeric URL pattern
             const carUrl = car.sellerNumericId && car.carNumericId
               ? `/car/${car.sellerNumericId}/${car.carNumericId}`
-              : `/car/${car.id}`;
+              : '/cars'; // Fallback to cars list
 
             tasks.push({
               id: `task-${car.id}-update`,

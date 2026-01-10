@@ -16,6 +16,7 @@ import { useLanguage } from '../../../contexts/LanguageContext';
 import { searchCars } from '../../../services/car/unified-car-queries';
 import { UnifiedCar } from '../../../services/car/unified-car-types';
 import { FiGrid, FiList } from 'react-icons/fi';
+import { logger } from '../../../services/logger-service';
 
 // ============================================================================
 // TYPES
@@ -306,7 +307,7 @@ const ViewAllNewCarsPage: React.FC = () => {
       
       setCars(sortedCars.slice(0, 50));
     } catch (error) {
-      console.error('Error loading cars:', error);
+      logger.error('Error loading cars', error as Error);
     } finally {
       setLoading(false);
     }
@@ -317,11 +318,11 @@ const ViewAllNewCarsPage: React.FC = () => {
       <ContentWrapper>
         <PageHeader>
           <PageTitle>
-            {isRTL ? 'جميع السيارات الجديدة' : 'All New Cars'}
+            {isRTL ? '???? ???????? ???????' : 'All New Cars'}
           </PageTitle>
           <PageDescription>
             {isRTL 
-              ? 'تصفح أحدث السيارات المعروضة على منصتنا'
+              ? '???? ???? ???????? ???????? ??? ??????'
               : 'Browse the latest cars available on our platform'
             }
           </PageDescription>
@@ -349,21 +350,21 @@ const ViewAllNewCarsPage: React.FC = () => {
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value as SortOption)}
           >
-            <option value="newest">{isRTL ? 'الأحدث' : 'Newest'}</option>
-            <option value="price-asc">{isRTL ? 'السعر: من الأقل للأعلى' : 'Price: Low to High'}</option>
-            <option value="price-desc">{isRTL ? 'السعر: من الأعلى للأقل' : 'Price: High to Low'}</option>
-            <option value="year-desc">{isRTL ? 'السنة: الأحدث أولاً' : 'Year: Newest First'}</option>
+            <option value="newest">{isRTL ? '??????' : 'Newest'}</option>
+            <option value="price-asc">{isRTL ? '?????: ?? ????? ??????' : 'Price: Low to High'}</option>
+            <option value="price-desc">{isRTL ? '?????: ?? ?????? ?????' : 'Price: High to Low'}</option>
+            <option value="year-desc">{isRTL ? '?????: ?????? ?????' : 'Year: Newest First'}</option>
           </SortSelect>
         </ControlsBar>
         
         {loading ? (
           <LoadingContainer>
-            {isRTL ? 'جارٍ التحميل...' : 'Loading...'}
+            {isRTL ? '???? ???????...' : 'Loading...'}
           </LoadingContainer>
         ) : cars.length === 0 ? (
           <EmptyState>
-            <h3>{isRTL ? 'لا توجد سيارات' : 'No Cars Found'}</h3>
-            <p>{isRTL ? 'لم نتمكن من العثور على أي سيارات في الوقت الحالي' : 'We couldn\'t find any cars at the moment'}</p>
+            <h3>{isRTL ? '?? ???? ??????' : 'No Cars Found'}</h3>
+            <p>{isRTL ? '?? ????? ?? ?????? ??? ?? ?????? ?? ????? ??????' : 'We couldn\'t find any cars at the moment'}</p>
           </EmptyState>
         ) : (
           <CarsGrid $viewMode={viewMode}>
@@ -387,7 +388,7 @@ const ViewAllNewCarsPage: React.FC = () => {
                     <CarDetail>{car.fuelType}</CarDetail>
                   </CarDetails>
                   <CarPrice>
-                    €{car.price?.toLocaleString()}
+                    �{car.price?.toLocaleString()}
                   </CarPrice>
                 </CarInfo>
               </CarCard>

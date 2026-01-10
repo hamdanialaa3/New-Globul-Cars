@@ -21,8 +21,8 @@ interface CarCardCompactProps {
 // Styled Components (Same as FeaturedCars)
 const CarCard = styled(Link)`
   background: var(--bg-card);
-  border-radius: 12px;
-  box-shadow: var(--shadow-sm);
+  border-radius: 12px; /* mobile.de standard: 12px border radius */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08); /* mobile.de standard: shadow-md */
   overflow: hidden;
   transition: all 0.3s ease;
   text-decoration: none;
@@ -31,10 +31,14 @@ const CarCard = styled(Link)`
   display: flex;
   flex-direction: column;
   position: relative;
+  width: 100%;
+  max-width: 320px; /* mobile.de standard: 320px max-width per card */
+  min-height: 400px; /* mobile.de standard: 400px min-height */
+  margin: 0 auto; /* Center card in grid cell */
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* mobile.de standard: shadow-lg on hover */
     border-color: var(--accent-primary);
   }
 `;
@@ -84,7 +88,7 @@ const CarCardContent = styled.div`
 `;
 
 const CarImageWrapper = styled.div`
-  height: 140px;
+  height: 200px; /* mobile.de standard: 200px image height */
   position: relative;
   overflow: hidden;
   background: var(--bg-secondary);
@@ -114,14 +118,14 @@ const PriceRow = styled.div`
 `;
 
 const PriceAmount = styled.div`
-  font-size: 1.5rem;
-  font-weight: 800;
+  font-size: 24px; /* mobile.de standard: 24px / 1.5rem */
+  font-weight: 700; /* mobile.de standard: bold */
   color: var(--text-primary);
 `;
 
 const PriceCurrency = styled.span`
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 16px; /* mobile.de standard: 16px / 1rem */
+  font-weight: 600; /* mobile.de standard: semi-bold */
   color: var(--text-primary);
 `;
 
@@ -159,15 +163,15 @@ const GoodPriceBadge = styled.div`
 `;
 
 const CarInfo = styled.div`
-  padding: 8px 10px;
+  padding: 16px; /* mobile.de standard: 16px padding */
 `;
 
 const CarTitle = styled.h3`
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 18px; /* mobile.de standard: 18px / 1.125rem */
+  font-weight: 600; /* mobile.de standard: semi-bold */
   color: var(--text-primary);
-  margin: 0 0 8px 0;
-  line-height: 1.2;
+  margin: 0 0 8px 0; /* mobile.de standard: 8px bottom margin */
+  line-height: 1.4; /* mobile.de standard */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -186,12 +190,13 @@ const CarSpecs = styled.div`
 
 const SpecLine = styled.div`
   color: var(--text-primary);
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-size: 14px; /* mobile.de standard: 14px / 0.875rem */
+  font-weight: 400; /* mobile.de standard: regular */
+  line-height: 1.6; /* mobile.de standard */
   
   &:first-child {
     color: var(--text-primary);
-    font-weight: 700;
+    font-weight: 500; /* mobile.de standard: medium */
   }
 `;
 

@@ -1,0 +1,203 @@
+/**
+ * 🔒 FIRESTORE SECURITY RULES - MANUAL PAYMENT SYSTEM
+ * 
+ * ⚠️ IMPORTANT: Deploy these rules to Firebase Console
+ * 
+ * Path: Firebase Console → Firestore Database → Rules → Edit → Publish
+ * 
+ * @since January 9, 2026
+ * @updated January 9, 2026 - Added receipt upload validation
+ */
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ========================================================================
+    // HELPER FUNCTIONS
+    // ========================================================================
+    
+    // Check if user is admin
+    function isAdmin() {
+      return request.auth != null && 
+             (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'super_admin');
+    }
+    
+    // Validate Firebase Storage URL
+    function isValidStorageUrl(url) {
+      return url == null || url.matches('https://firebasestorage.googleapis.com/.*');
+    }
+    
+    // ========================================================================
+    // MANUAL_TRANSACTIONS COLLECTION
+    // ========================================================================
+    
+    match /manual_transactions/{transactionId} {
+      
+      // READ: Users can read their own transactions, admins can read all
+      allow read: if request.auth != null && 
+                     (resource.data.userId == request.auth.uid || isAdmin());
+      
+      // CREATE: Authenticated users can create transactions with validation
+      allow create: if request.auth != null && 
+                       request.resource.data.userId == request.auth.uid &&
+                       request.resource.data.status == 'pending_manual_verification' &&
+                       request.resource.data.userEmail == request.auth.token.email &&
+                       // Required fields validation
+                       request.resource.data.keys().hasAll([
+                         'userId', 'userEmail', 'userName', 'amount', 'currency',
+                         'paymentType', 'itemId', 'referenceNumber', 
+                         'selectedBankAccount', 'status', 'createdAt', 'expiresAt'
+                       ]) &&
+                       // Amount must be positive
+                       request.resource.data.amount > 0 &&
+                       // Currency validation
+                       request.resource.data.currency in ['EUR', 'BGN'] &&
+                       // Bank validation
+                       request.resource.data.selectedBankAccount in ['revolut', 'icard'] &&
+                       // Payment type validation
+                       request.resource.data.paymentType in ['subscription', 'promotion', 'listing', 'upgrade'] &&
+                       // Receipt URL validation (if provided)
+                       isValidStorageUrl(request.resource.data.get('receiptUrl', null));
+      
+      // UPDATE: Only admins can update (for verification/rejection)
+      allow update: if isAdmin() &&
+                       // Cannot change core transaction fields
+                       (!request.resource.data.diff(resource.data).affectedKeys()
+                         .hasAny(['userId', 'userEmail', 'amount', 'currency', 
+                                  'referenceNumber', 'selectedBankAccount', 'createdAt'])) &&
+                       // Status must be valid
+                       (request.resource.data.status in ['verified', 'rejected', 'expired', 'completed', 'refunded']) &&
+                       // Must provide admin info
+                       (request.resource.data.verifiedBy == request.auth.uid) &&
+                       (request.resource.data.verifiedAt != null || request.resource.data.expiredAt != null);
+      
+      // DELETE: No one can delete (audit trail requirement)
+      allow delete: if false;
+    }
+    
+    // ========================================================================
+    // NOTIFICATIONS COLLECTION
+    // ========================================================================
+    
+    match /notifications/{notificationId} {
+      // Users can read their own notifications
+      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
+      
+      // System/Admins can create notifications
+      allow create: if request.auth != null && 
+                       (isAdmin() || request.resource.data.type in [
+                         'payment_submitted', 'payment_verified', 
+                         'payment_rejected', 'payment_expired'
+                       ]);
+      
+      // Users can update (mark as read)
+      allow update: if request.auth != null && 
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']);
+      
+      allow delete: if false;
+    }
+    
+    // ========================================================================
+    // USERS COLLECTION (Subscription Updates)
+    // ========================================================================
+    
+    match /users/{userId} {
+      // Users can read their own data
+      allow read: if request.auth != null && request.auth.uid == userId;
+      
+      // Admins can update subscription after payment verification
+      allow update: if isAdmin() &&
+                       request.resource.data.diff(resource.data).affectedKeys()
+                         .hasOnly(['subscription', 'updatedAt']);
+    }
+  }
+}
+
+/**
+ * ========================================================================
+ * REQUIRED COMPOSITE INDEXES
+ * ========================================================================
+ * 
+ * Create these in: Firebase Console → Firestore → Indexes → Composite
+ * 
+ * Collection: manual_transactions
+ * 
+ * Index 1: Status + Created Date
+ *   - status: Ascending
+ *   - createdAt: Descending
+ *   Purpose: Filter by status and sort
+ * 
+ * Index 2: User + Status + Created
+ *   - userId: Ascending
+ *   - status: Ascending  
+ *   - createdAt: Descending
+ *   Purpose: User's transaction history
+ * 
+ * Index 3: Status + Expires
+ *   - status: Ascending
+ *   - expiresAt: Ascending
+ *   Purpose: Cloud Function expired check
+ * 
+ * Index 4: Bank + Status + Created
+ *   - selectedBankAccount: Ascending
+ *   - status: Ascending
+ *   - createdAt: Descending
+ *   Purpose: Bank-specific reports
+ * 
+ * Index 5: Created + Status
+ *   - createdAt: Ascending
+ *   - status: Ascending
+ *   Purpose: Daily summaries
+ */
+
+/**
+ * ========================================================================
+ * STORAGE RULES FOR RECEIPT UPLOADS
+ * ========================================================================
+ * 
+ * Add to storage.rules file:
+ * 
+ * rules_version = '2';
+ * service firebase.storage {
+ *   match /b/{bucket}/o {
+ *     match /payment_receipts/{userId}/{filename} {
+ *       // Allow users to upload their own receipts
+ *       allow create: if request.auth != null && 
+ *                        request.auth.uid == userId &&
+ *                        request.resource.size < 5 * 1024 * 1024 &&
+ *                        request.resource.contentType.matches('image/.*');
+ *       
+ *       // Allow users and admins to read
+ *       allow read: if request.auth != null;
+ *       
+ *       // No updates or deletes (audit trail)
+ *       allow update, delete: if false;
+ *     }
+ *   }
+ * }
+ */
+
+/**
+ * ========================================================================
+ * DEPLOYMENT CHECKLIST
+ * ========================================================================
+ * 
+ * ✅ Step 1: Copy rules above (rules_version to closing brace)
+ * ✅ Step 2: Open Firebase Console → Firestore → Rules
+ * ✅ Step 3: Paste rules → Click "Publish"
+ * ✅ Step 4: Create all 5 composite indexes
+ * ✅ Step 5: Deploy storage rules for receipt uploads
+ * ✅ Step 6: Test rules in Rules Playground
+ * 
+ * Test Cases:
+ * - User can create transaction ✅
+ * - User can read own transaction ✅
+ * - User CANNOT read others' transactions ❌
+ * - User CANNOT update transaction ❌
+ * - Admin can read all transactions ✅
+ * - Admin can verify transaction ✅
+ * - No one can delete transactions ❌
+ */

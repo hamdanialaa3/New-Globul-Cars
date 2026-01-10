@@ -366,10 +366,16 @@ const ProfileSettingsMobileDe: React.FC = () => {
         ) : sortedAndFilteredCars.length > 0 ? (
           <>
             <S.VehiclesList>
-              {sortedAndFilteredCars.slice(0, 3).map((car) => (
+              {sortedAndFilteredCars.slice(0, 3).map((car) => {
+                // ✅ CONSTITUTION: Use numeric URL pattern
+                const sellerNumericId = (car as any).sellerNumericId || (car as any).ownerNumericId;
+                const carNumericId = (car as any).carNumericId || (car as any).userCarSequenceId || (car as any).numericId;
+                const carUrl = sellerNumericId && carNumericId ? `/car/${sellerNumericId}/${carNumericId}` : '/cars';
+                
+                return (
                 <S.VehicleCard 
                   key={car.id} 
-                  onClick={() => navigate(`/car-details/${car.id}`)}
+                  onClick={() => navigate(carUrl)}
                 >
                   <S.VehicleImage 
                     src={car.images?.[0] || car.mainImage || car.photoURL || '/placeholder-car.jpg'} 
@@ -388,7 +394,8 @@ const ProfileSettingsMobileDe: React.FC = () => {
                     )}
                   </S.VehicleInfo>
                 </S.VehicleCard>
-              ))}
+                );
+              })}
             </S.VehiclesList>
             <S.AddVehicleButton onClick={() => navigate('/sell')}>
               <Plus size={20} />

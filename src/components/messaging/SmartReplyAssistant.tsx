@@ -6,6 +6,7 @@ import {
   ModernLoader,
   ModernMessageSquare
 } from './icons/ModernIcons';
+import { logger } from '@/services/logger-service';
 
 interface SmartReplyAssistantProps {
     messageText: string;
@@ -102,7 +103,7 @@ export const SmartReplyAssistant: React.FC<SmartReplyAssistantProps> = ({
                 setReplies(generated);
             }
         } catch (error) {
-            console.error('Smart reply error', error);
+            logger.error('Smart reply error', error as Error, { messageText, carContext });
         } finally {
             setLoading(false);
         }

@@ -1,7 +1,7 @@
-import { 
-  collection, 
-  doc, 
-  setDoc, 
+import {
+  collection,
+  doc,
+  setDoc,
   addDoc,
   serverTimestamp,
   writeBatch
@@ -13,7 +13,7 @@ import { serviceLogger } from './logger-service';
 class RealDataInitializer {
   private static instance: RealDataInitializer;
 
-  private constructor() {}
+  private constructor() { }
 
   public static getInstance(): RealDataInitializer {
     if (!RealDataInitializer.instance) {
@@ -26,7 +26,7 @@ class RealDataInitializer {
   public async initializeRealUsers(): Promise<void> {
     try {
       const batch = writeBatch(db);
-      
+
       const realUsers = [
         {
           uid: 'user_real_001',
@@ -123,7 +123,7 @@ class RealDataInitializer {
   public async initializeRealCars(): Promise<void> {
     try {
       const batch = writeBatch(db);
-      
+
       const realCars = [
         {
           id: 'car_real_001',
@@ -145,8 +145,8 @@ class RealDataInitializer {
           views: 156,
           createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
           images: [
-            'https://example.com/bmw-x5-1.jpg',
-            'https://example.com/bmw-x5-2.jpg'
+            'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1617531653520-2e9e5b62e7e9?w=800&auto=format&fit=crop'
           ],
           features: ['Leather Seats', 'Navigation', 'Bluetooth', 'Air Conditioning'],
           description: 'Отлично състояние, пълен сервиз, без катастрофи'
@@ -171,8 +171,8 @@ class RealDataInitializer {
           views: 89,
           createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
           images: [
-            'https://example.com/audi-a4-1.jpg',
-            'https://example.com/audi-a4-2.jpg'
+            'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=800&auto=format&fit=crop'
           ],
           features: ['Sunroof', 'Premium Sound', 'Heated Seats'],
           description: 'Прекрасен автомобил за ежедневна употреба'
@@ -197,8 +197,8 @@ class RealDataInitializer {
           views: 234,
           createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
           images: [
-            'https://example.com/mercedes-c-1.jpg',
-            'https://example.com/mercedes-c-2.jpg'
+            'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1617531652520-2e9e5b62e7e9?w=800&auto=format&fit=crop'
           ],
           features: ['Hybrid Engine', 'Premium Package', 'LED Lights'],
           description: 'Съвременен хибриден двигател, ниска консумация'
@@ -224,7 +224,7 @@ class RealDataInitializer {
   public async initializeRealMessages(): Promise<void> {
     try {
       const batch = writeBatch(db);
-      
+
       const realMessages = [
         {
           id: 'msg_real_001',
@@ -277,7 +277,7 @@ class RealDataInitializer {
   public async initializeRealViews(): Promise<void> {
     try {
       const batch = writeBatch(db);
-      
+
       const realViews = [
         {
           id: 'view_real_001',
@@ -327,7 +327,7 @@ class RealDataInitializer {
   public async initializeRealUserActivity(): Promise<void> {
     try {
       const batch = writeBatch(db);
-      
+
       const realActivity = [
         {
           id: 'activity_real_001',
@@ -386,7 +386,7 @@ class RealDataInitializer {
   public async initializeAllRealData(): Promise<void> {
     try {
       serviceLogger.info('Initializing real data');
-      
+
       await Promise.all([
         this.initializeRealUsers(),
         this.initializeRealCars(),
@@ -394,7 +394,7 @@ class RealDataInitializer {
         this.initializeRealViews(),
         this.initializeRealUserActivity()
       ]);
-      
+
       serviceLogger.info('All real data initialized successfully');
     } catch (error) {
       serviceLogger.error('Error initializing all real data', error as Error);

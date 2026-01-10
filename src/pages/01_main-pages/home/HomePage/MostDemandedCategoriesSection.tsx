@@ -12,7 +12,7 @@ import HorizontalScrollContainer from '../../../../components/HorizontalScrollCo
 
 // Styled Components
 const SectionContainer = styled.section<{ $isDark: boolean }>`
-  padding: 100px 20px;
+  padding: 40px 20px;
   position: relative;
   overflow: hidden;
   background: ${props => props.$isDark
@@ -36,18 +36,20 @@ const SectionContainer = styled.section<{ $isDark: boolean }>`
     -webkit-mask-image: radial-gradient(circle at 1px 1px, black 1px, transparent 0);
     mask-size: 60px 60px;
     -webkit-mask-size: 60px 60px;
-    opacity: 0.6;
-    animation: gridMove 20s linear infinite;
+    opacity: 0.3;
+    /* ✅ Performance: Disabled heavy animation */
+    /* animation: gridMove 20s linear infinite; */
   }
 
-  @keyframes gridMove {
+  /* ✅ Performance: Removed heavy animation keyframes */
+  /* @keyframes gridMove {
     0% {
       background-position: 0 0, 0 0;
     }
     100% {
       background-position: 60px 60px, 60px 60px;
     }
-  }
+  } */
 
   /* Glowing Corner Accents */
   &::after {
@@ -65,13 +67,13 @@ const SectionContainer = styled.section<{ $isDark: boolean }>`
   }
 
   @media (max-width: 768px) {
-    padding: 60px 16px;
+    padding: 30px 16px;
   }
 `;
 
 const SectionHeader = styled.div`
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 30px;
   position: relative;
   z-index: 2;
   
@@ -476,7 +478,7 @@ const CarsContainer = styled.div`
   margin: 0 auto;
   position: relative;
   z-index: 2;
-  padding: 20px 0;
+  padding: 10px 0;
   
   /* Subtle glow around container */
   &::before {

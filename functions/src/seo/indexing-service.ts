@@ -1,6 +1,9 @@
 // functions/src/seo/indexing-service.ts
 import * as functions from 'firebase-functions';
 import { google } from 'googleapis';
+
+const logger = functions.logger;
+
 // Ensure you have this file deployed or use environment variables for credentials
 // Using ADC (Application Default Credentials) is best for Cloud Functions
 const SCOPES = ['https://www.googleapis.com/auth/indexing'];
@@ -30,10 +33,10 @@ export class GoogleIndexingService {
                 },
             });
 
-            console.log(`🚀 SEO Rocket: Google notified about ${url} [${type}]`, result.status);
+            logger.info(`🚀 SEO Rocket: Google notified about ${url} [${type}]`, result.status);
             return { success: true, status: result.status };
         } catch (error) {
-            console.error('❌ SEO Error:', error);
+            logger.error('❌ SEO Error:', error);
             throw error;
         }
     }
@@ -43,7 +46,7 @@ export const indexingService = new GoogleIndexingService();
 
 // Callable Function to be triggered from Client
 export const requestIndexing = functions
-    .runWith({ secrets: ['GOOGLE_INDEXING_SERVICE_ACCOUNT'] }) // Optional if using specific secrets
+    // .runWith({ secrets: ['GOOGLE_INDEXING_SERVICE_ACCOUNT'] }) // ⚠️ DISABLED: Secret not configured yet
     .https.onCall(async (data, context) => {
         // Security: Only allow admins or internal services
         // For now, allowing authenticated users (e.g., sellers posting cars)

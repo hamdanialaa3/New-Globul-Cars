@@ -1,4 +1,23 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
 
-npx lint-staged
+# Pre-commit Security & Quality Gate
+
+echo "🔒 Running Pre-commit Security Checks..."
+npm run security-audit
+if [ $? -ne 0 ]; then
+    echo "❌ Security Check Failed! You might have sensitive files staged."
+    exit 1
+fi
+
+echo "🔍 Running Type Check..."
+npm run type-check
+if [ $? -ne 0 ]; then
+    echo "❌ TypeScript Errors Detected! Fix them before committing."
+    exit 1
+fi
+
+# Optional: Run smoke tests if present
+# npm run test:smoke
+
+echo "✅ All checks passed. Committing..."

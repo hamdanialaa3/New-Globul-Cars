@@ -8,6 +8,13 @@ export const generateCarMetaTags = (car: UnifiedCar) => {
   const title = `${car.make} ${car.model} ${car.year} - ${car.price}€ | MOBILE-EU`;
   const description = `${car.make} ${car.model} ${car.year} година, ${car.mileage.toLocaleString('bg-BG')} км, ${car.fuelType}, ${car.transmission}. Цена: ${car.price}€. ${car.locationData?.cityName}, ${car.location.region}, България.`;
 
+  // ✅ CONSTITUTION: Use numeric URL pattern for SEO
+  const sellerNumericId = (car as any).sellerNumericId || (car as any).ownerNumericId;
+  const carNumericId = (car as any).carNumericId || (car as any).userCarSequenceId || (car as any).numericId;
+  const carUrl = sellerNumericId && carNumericId
+    ? `${window.location.origin}/car/${sellerNumericId}/${carNumericId}`
+    : `${window.location.origin}/cars`;
+
   return {
     title,
     description,
@@ -16,7 +23,7 @@ export const generateCarMetaTags = (car: UnifiedCar) => {
       title,
       description,
       image: car.mainImage,
-      url: `${window.location.origin}/cars/${car.id}`,
+      url: carUrl,
       type: 'product'
     },
     twitter: {
@@ -235,13 +242,19 @@ export const generateSitemapUrls = (cars: UnifiedCar[]) => {
   ];
 
   // Add car URLs
+  // ✅ CONSTITUTION: Use numeric URL pattern for sitemap
   cars.forEach(car => {
-    urls.push({
-      url: `/cars/${car.id}`,
-      priority: 0.7,
-      changefreq: 'monthly',
-      lastmod: car.updatedAt.toISOString()
-    });
+    const sellerNumericId = (car as any).sellerNumericId || (car as any).ownerNumericId;
+    const carNumericId = (car as any).carNumericId || (car as any).userCarSequenceId || (car as any).numericId;
+    
+    if (sellerNumericId && carNumericId) {
+      urls.push({
+        url: `/car/${sellerNumericId}/${carNumericId}`,
+        priority: 0.7,
+        changefreq: 'monthly',
+        lastmod: car.updatedAt.toISOString()
+      });
+    }
   });
 
   return urls.map(({ url, ...rest }) => ({

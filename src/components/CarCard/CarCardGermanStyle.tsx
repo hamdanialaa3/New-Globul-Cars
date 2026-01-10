@@ -24,13 +24,21 @@ import type { CarStory } from '../../types/story.types';
 import { trustScoreService } from '../../services/profile/trust-score-service';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+// ✅ SEO: AspectRatioBox for CLS = 0.00
+import { AspectRatioBox } from '../../utils/seo/AspectRatioBox';
+import { logger } from '@/services/logger-service';
 
 // Helper to determine the correct URL
+// ✅ CONSTITUTION: /car/{userId}/{carLocalId}
 const getCarDetailsUrl = (car: CarListing) => {
-  if (car.sellerNumericId && car.carNumericId) {
-    return `/car/${car.sellerNumericId}/${car.carNumericId}`;
+  const sellerNumericId = (car as any).sellerNumericId || (car as any).ownerNumericId;
+  const carNumericId = (car as any).carNumericId || (car as any).userCarSequenceId || (car as any).numericId;
+  
+  if (sellerNumericId && carNumericId) {
+    return `/car/${sellerNumericId}/${carNumericId}`;
   }
-  return `/car-details/${car.id}`;
+  // Car missing numeric IDs - return to search
+  return '/cars';
 };
 
 const formatCurrency = (price: number) => {
@@ -69,7 +77,7 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
   useEffect(() => {
     const loadSellerData = async () => {
       if (!car.sellerId) return;
-      
+
       setLoadingSellerData(true);
       try {
         // Load trust score
@@ -81,14 +89,14 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
         if (sellerDoc.exists()) {
           const sellerData = sellerDoc.data();
           setSellerPhotoURL(sellerData.photoURL || sellerData.profileImageURL || '');
-          
+
           // Load stories from car if available
           if (car.stories && Array.isArray(car.stories)) {
             setSellerStories(car.stories as CarStory[]);
           }
         }
       } catch (error) {
-        console.error('Failed to load seller data:', error);
+        logger.error('Failed to load seller data', error as Error, { sellerId: car.sellerId });
       } finally {
         setLoadingSellerData(false);
       }
@@ -114,20 +122,22 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
       onMouseLeave={() => setIsHovered(false)}
       style={{ minHeight: '220px' }}
     >
-      {/* Image Section - Updated Link */}
-      <Link to={detailsUrl} className="relative w-full sm:w-48 md:w-56 lg:w-64 flex-shrink-0 aspect-[4/3] sm:aspect-auto group block">
-        <img
-          src={mainImageSrc}
-          alt={`${car.make} ${car.model}`}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          loading="lazy"
-          onError={(e) => {
-            // Prevent infinite loop by only handling error once
-            if (!imageError) {
-              setImageError(true);
-            }
-          }}
-        />
+      {/* Image Section - Updated Link with AspectRatioBox for CLS prevention */}
+      <Link to={detailsUrl} className="relative w-full sm:w-48 md:w-56 lg:w-64 flex-shrink-0 group block">
+        <AspectRatioBox ratio="4:3" borderRadius="0">
+          <img
+            src={mainImageSrc}
+            alt={`${car.make} ${car.model}`}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+            onError={(e) => {
+              // Prevent infinite loop by only handling error once
+              if (!imageError) {
+                setImageError(true);
+              }
+            }}
+          />
+        </AspectRatioBox>
 
         {/* Image Count Badge */}
         <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded flex items-center gap-1 backdrop-blur-sm">
@@ -154,8 +164,8 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
         <button
           onClick={handleFavoriteClick}
           className={`absolute top-2 right-2 p-2 rounded-full transition-all duration-200 ${isFav
-              ? 'bg-red-50 text-red-500'
-              : 'bg-white/80 text-gray-600 hover:bg-white hover:text-red-500'
+            ? 'bg-red-50 text-red-500'
+            : 'bg-white/80 text-gray-600 hover:bg-white hover:text-red-500'
             }`}
         >
           <Heart size={18} className={isFav ? 'fill-current' : ''} />
@@ -239,7 +249,7 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
                 )}
               </div>
             )}
-            
+
             {(car as any).sellerType === 'dealer' && (
               <span className="flex items-center gap-1 text-xs font-medium text-blue-700 bg-blue-50 px-2 py-1 rounded">
                 <ShieldCheck size={12} />

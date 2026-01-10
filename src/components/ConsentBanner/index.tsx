@@ -22,9 +22,12 @@ import {
   initConsentMode
 } from '@/utils/consent-mode';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const ConsentBanner: React.FC = () => {
   const { language } = useLanguage();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [isVisible, setIsVisible] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
@@ -120,35 +123,35 @@ const ConsentBanner: React.FC = () => {
   const t = texts[language];
 
   return (
-    <BannerContainer>
+    <BannerContainer $isDark={isDark}>
       <BannerContent>
         {!showDetails ? (
           <>
-            <BannerText>
+            <BannerText $isDark={isDark}>
               <strong>{t.title}</strong>
               <p>
-                {t.description} <a href="/privacy" target="_blank">{t.privacyLink}</a>.
+                {t.description} <a href="/privacy" target="_blank" rel="noopener noreferrer">{t.privacyLink}</a>.
               </p>
             </BannerText>
             <BannerActions>
-              <CustomizeButton onClick={() => setShowDetails(true)}>
+              <CustomizeButton onClick={() => setShowDetails(true)} $isDark={isDark}>
                 {t.customize}
               </CustomizeButton>
-              <RejectButton onClick={handleRejectAll}>
+              <RejectButton onClick={handleRejectAll} $isDark={isDark}>
                 {t.reject}
               </RejectButton>
-              <AcceptButton onClick={handleAcceptAll}>
+              <AcceptButton onClick={handleAcceptAll} $isDark={isDark}>
                 {t.acceptAll}
               </AcceptButton>
             </BannerActions>
           </>
         ) : (
           <>
-            <DetailedView>
-              <DetailTitle>{t.detailTitle}</DetailTitle>
+            <DetailedView $isDark={isDark}>
+              <DetailTitle $isDark={isDark}>{t.detailTitle}</DetailTitle>
               
-              <ConsentOption>
-                <ConsentLabel>
+              <ConsentOption $isDark={isDark}>
+                <ConsentLabel $isDark={isDark}>
                   <input
                     type="checkbox"
                     checked={true}
@@ -156,13 +159,13 @@ const ConsentBanner: React.FC = () => {
                   />
                   <strong>{t.essential}</strong>
                 </ConsentLabel>
-                <ConsentDescription>
+                <ConsentDescription $isDark={isDark}>
                   {t.essentialDesc}
                 </ConsentDescription>
               </ConsentOption>
 
-              <ConsentOption>
-                <ConsentLabel>
+              <ConsentOption $isDark={isDark}>
+                <ConsentLabel $isDark={isDark}>
                   <input
                     type="checkbox"
                     checked={consents.analytics}
@@ -170,13 +173,13 @@ const ConsentBanner: React.FC = () => {
                   />
                   <strong>{t.analytics}</strong>
                 </ConsentLabel>
-                <ConsentDescription>
+                <ConsentDescription $isDark={isDark}>
                   {t.analyticsDesc}
                 </ConsentDescription>
               </ConsentOption>
 
-              <ConsentOption>
-                <ConsentLabel>
+              <ConsentOption $isDark={isDark}>
+                <ConsentLabel $isDark={isDark}>
                   <input
                     type="checkbox"
                     checked={consents.ads}
@@ -184,13 +187,13 @@ const ConsentBanner: React.FC = () => {
                   />
                   <strong>{t.ads}</strong>
                 </ConsentLabel>
-                <ConsentDescription>
+                <ConsentDescription $isDark={isDark}>
                   {t.adsDesc}
                 </ConsentDescription>
               </ConsentOption>
 
-              <ConsentOption>
-                <ConsentLabel>
+              <ConsentOption $isDark={isDark}>
+                <ConsentLabel $isDark={isDark}>
                   <input
                     type="checkbox"
                     checked={consents.personalization}
@@ -198,20 +201,20 @@ const ConsentBanner: React.FC = () => {
                   />
                   <strong>{t.personalization}</strong>
                 </ConsentLabel>
-                <ConsentDescription>
+                <ConsentDescription $isDark={isDark}>
                   {t.personalizationDesc}
                 </ConsentDescription>
               </ConsentOption>
             </DetailedView>
 
             <BannerActions>
-              <BackButton onClick={() => setShowDetails(false)}>
+              <BackButton onClick={() => setShowDetails(false)} $isDark={isDark}>
                 {t.back}
               </BackButton>
-              <RejectButton onClick={handleRejectAll}>
+              <RejectButton onClick={handleRejectAll} $isDark={isDark}>
                 {t.rejectAll}
               </RejectButton>
-              <AcceptButton onClick={handleSaveCustom}>
+              <AcceptButton onClick={handleSaveCustom} $isDark={isDark}>
                 {t.saveChoice}
               </AcceptButton>
             </BannerActions>
@@ -223,16 +226,27 @@ const ConsentBanner: React.FC = () => {
 };
 
 // Styled Components
-const BannerContainer = styled.div`
+const BannerContainer = styled.div<{ $isDark: boolean }>`
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.95);
+  background: ${({ $isDark }) => 
+    $isDark 
+      ? 'rgba(15, 23, 42, 0.98)' 
+      : 'rgba(255, 255, 255, 0.98)'};
   backdrop-filter: blur(10px);
-  color: white;
+  -webkit-backdrop-filter: blur(10px);
+  color: ${({ $isDark }) => $isDark ? '#f1f5f9' : '#1e293b'};
   z-index: 99999;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: ${({ $isDark }) => 
+    $isDark 
+      ? '0 -4px 20px rgba(0, 0, 0, 0.5)' 
+      : '0 -4px 20px rgba(0, 0, 0, 0.1)'};
+  border-top: 1px solid ${({ $isDark }) => 
+    $isDark 
+      ? 'rgba(255, 255, 255, 0.1)' 
+      : 'rgba(0, 0, 0, 0.1)'};
   animation: slideUp 0.3s ease-out;
 
   @keyframes slideUp {
@@ -255,27 +269,28 @@ const BannerContent = styled.div`
   }
 `;
 
-const BannerText = styled.div`
+const BannerText = styled.div<{ $isDark: boolean }>`
   margin-bottom: 20px;
 
   strong {
     font-size: 18px;
     display: block;
     margin-bottom: 8px;
+    color: ${({ $isDark }) => $isDark ? '#f1f5f9' : '#1e293b'};
   }
 
   p {
     font-size: 14px;
     line-height: 1.6;
-    opacity: 0.9;
+    color: ${({ $isDark }) => $isDark ? 'rgba(241, 245, 249, 0.9)' : 'rgba(30, 41, 59, 0.9)'};
   }
 
   a {
-    color: #4A90E2;
+    color: ${({ $isDark }) => $isDark ? '#60a5fa' : '#3b82f6'};
     text-decoration: underline;
     
     &:hover {
-      color: #66A6FF;
+      color: ${({ $isDark }) => $isDark ? '#93c5fd' : '#2563eb'};
     }
   }
 `;
@@ -290,7 +305,7 @@ const BannerActions = styled.div`
   }
 `;
 
-const Button = styled.button`
+const Button = styled.button<{ $isDark: boolean }>`
   padding: 10px 20px;
   border: none;
   border-radius: 6px;
@@ -301,7 +316,10 @@ const Button = styled.button`
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: ${({ $isDark }) => 
+      $isDark 
+        ? '0 4px 8px rgba(0, 0, 0, 0.3)' 
+        : '0 4px 8px rgba(0, 0, 0, 0.15)'};
   }
 
   @media (max-width: 480px) {
@@ -309,71 +327,128 @@ const Button = styled.button`
   }
 `;
 
-const AcceptButton = styled(Button)`
-  background: #28A745;
+const AcceptButton = styled(Button)<{ $isDark: boolean }>`
+  background: ${({ $isDark }) => $isDark ? '#22c55e' : '#28a745'};
   color: white;
 
   &:hover {
-    background: #218838;
+    background: ${({ $isDark }) => $isDark ? '#16a34a' : '#218838'};
+  }
+
+  &:active {
+    background: ${({ $isDark }) => $isDark ? '#15803d' : '#1e7e34'};
   }
 `;
 
-const RejectButton = styled(Button)`
-  background: #6C757D;
+const RejectButton = styled(Button)<{ $isDark: boolean }>`
+  background: ${({ $isDark }) => $isDark ? '#64748b' : '#6c757d'};
   color: white;
 
   &:hover {
-    background: #5A6268;
+    background: ${({ $isDark }) => $isDark ? '#475569' : '#5a6268'};
+  }
+
+  &:active {
+    background: ${({ $isDark }) => $isDark ? '#334155' : '#545b62'};
   }
 `;
 
-const CustomizeButton = styled(Button)`
+const CustomizeButton = styled(Button)<{ $isDark: boolean }>`
   background: transparent;
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: ${({ $isDark }) => $isDark ? '#f1f5f9' : '#1e293b'};
+  border: 1px solid ${({ $isDark }) => 
+    $isDark 
+      ? 'rgba(255, 255, 255, 0.3)' 
+      : 'rgba(0, 0, 0, 0.2)'};
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: ${({ $isDark }) => 
+      $isDark 
+        ? 'rgba(255, 255, 255, 0.1)' 
+        : 'rgba(0, 0, 0, 0.05)'};
+  }
+
+  &:active {
+    background: ${({ $isDark }) => 
+      $isDark 
+        ? 'rgba(255, 255, 255, 0.15)' 
+        : 'rgba(0, 0, 0, 0.1)'};
   }
 `;
 
-const BackButton = styled(Button)`
+const BackButton = styled(Button)<{ $isDark: boolean }>`
   background: transparent;
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: ${({ $isDark }) => $isDark ? '#f1f5f9' : '#1e293b'};
+  border: 1px solid ${({ $isDark }) => 
+    $isDark 
+      ? 'rgba(255, 255, 255, 0.3)' 
+      : 'rgba(0, 0, 0, 0.2)'};
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: ${({ $isDark }) => 
+      $isDark 
+        ? 'rgba(255, 255, 255, 0.1)' 
+        : 'rgba(0, 0, 0, 0.05)'};
+  }
+
+  &:active {
+    background: ${({ $isDark }) => 
+      $isDark 
+        ? 'rgba(255, 255, 255, 0.15)' 
+        : 'rgba(0, 0, 0, 0.1)'};
   }
 `;
 
-const DetailedView = styled.div`
+const DetailedView = styled.div<{ $isDark: boolean }>`
   margin-bottom: 20px;
 `;
 
-const DetailTitle = styled.h3`
+const DetailTitle = styled.h3<{ $isDark: boolean }>`
   font-size: 18px;
   margin-bottom: 15px;
+  color: ${({ $isDark }) => $isDark ? '#f1f5f9' : '#1e293b'};
+  font-weight: 600;
 `;
 
-const ConsentOption = styled.div`
+const ConsentOption = styled.div<{ $isDark: boolean }>`
   margin-bottom: 15px;
   padding: 12px;
-  background: rgba(255, 255, 255, 0.05);
+  background: ${({ $isDark }) => 
+    $isDark 
+      ? 'rgba(255, 255, 255, 0.05)' 
+      : 'rgba(0, 0, 0, 0.03)'};
   border-radius: 6px;
+  border: 1px solid ${({ $isDark }) => 
+    $isDark 
+      ? 'rgba(255, 255, 255, 0.1)' 
+      : 'rgba(0, 0, 0, 0.1)'};
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${({ $isDark }) => 
+      $isDark 
+        ? 'rgba(255, 255, 255, 0.08)' 
+        : 'rgba(0, 0, 0, 0.05)'};
+  }
 `;
 
-const ConsentLabel = styled.label`
+const ConsentLabel = styled.label<{ $isDark: boolean }>`
   display: flex;
   align-items: center;
   gap: 10px;
   cursor: pointer;
   font-size: 15px;
+  color: ${({ $isDark }) => $isDark ? '#f1f5f9' : '#1e293b'};
+
+  strong {
+    color: ${({ $isDark }) => $isDark ? '#f1f5f9' : '#1e293b'};
+  }
 
   input[type="checkbox"] {
     width: 18px;
     height: 18px;
     cursor: pointer;
+    accent-color: ${({ $isDark }) => $isDark ? '#60a5fa' : '#3b82f6'};
 
     &:disabled {
       cursor: not-allowed;
@@ -382,9 +457,12 @@ const ConsentLabel = styled.label`
   }
 `;
 
-const ConsentDescription = styled.p`
+const ConsentDescription = styled.p<{ $isDark: boolean }>`
   font-size: 13px;
-  opacity: 0.7;
+  color: ${({ $isDark }) => 
+    $isDark 
+      ? 'rgba(241, 245, 249, 0.7)' 
+      : 'rgba(30, 41, 59, 0.7)'};
   margin: 5px 0 0 28px;
   line-height: 1.5;
 `;

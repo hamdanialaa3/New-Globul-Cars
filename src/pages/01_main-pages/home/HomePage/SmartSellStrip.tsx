@@ -7,7 +7,7 @@ import { glassPrimaryButton } from '../../../../styles/glassmorphism-buttons';
 
 const Container = styled.div`
   padding: 40px 20px;
-  background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+  background: linear-gradient(90deg, rgba(79, 70, 229, 0.11) 37%, rgba(124, 58, 237, 0.66) 100%);
   color: white;
   display: flex;
   align-items: center;

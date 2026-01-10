@@ -34,6 +34,7 @@ import LazySection from '../../../../components/LazySection';
 
 // Import section components
 import UnifiedHeroSection from './UnifiedHeroSection';
+// import { HeroSection2 } from './HeroSection2';
 import FeaturedShowcase from './FeaturedShowcase';
 import UnifiedCarsShowcase from './UnifiedCarsShowcase';
 import SmartSellStrip from './SmartSellStrip';
@@ -57,33 +58,47 @@ import LifeMomentsBrowse from './LifeMomentsBrowse';
 // Global components (lazy loaded)
 const AIChatbot = React.lazy(() => import('../../../../components/AI/AIChatbot'));
 
+// ✅ REVENUE FIX: Draft Recovery Prompt (January 6, 2026)
+const DraftRecoveryPrompt = React.lazy(() => import('./DraftRecoveryPrompt'));
+
 // ============================================================================
 // STYLED COMPONENTS
 // ============================================================================
 
 const ComposerContainer = styled.main`
-  width: 111.111%; /* 100% / 0.9 = 111.111% to compensate for 0.9 scale */
-  margin-left: -5.5555%; /* Center the 111.111% width container */
+  width: 100%;
   min-height: 100vh;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
   
-  /* Zoom effect: 90% size globally */
-  transform: scale(0.9);
-  transform-origin: top center;
-
   /* Performance optimizations */
-  will-change: auto;
-  backface-visibility: hidden;
   contain: layout style paint;
 `;
 
-const SectionSpacer = styled.div`
-  height: 40px; /* Significantly reduced from 100px */
+const ContentContainer = styled.div`
+  width: 100%;
+  max-width: 1400px; /* mobile.de standard: 1400px max-width */
+  margin: 0 auto; /* Center the container */
+  padding: 0 24px; /* mobile.de standard: 24px horizontal padding */
+
+  @media (max-width: 1024px) {
+    padding: 0 20px;
+  }
+
   @media (max-width: 768px) {
-    height: 30px;
+    padding: 0 16px; /* mobile.de mobile: 16px padding */
+  }
+`;
+
+const SectionSpacer = styled.div`
+  height: 64px; /* mobile.de standard: 64px spacing between sections (increased from 40px) */
+  @media (max-width: 1024px) {
+    height: 48px; /* Reduced on tablet */
+  }
+  @media (max-width: 768px) {
+    height: 48px; /* mobile.de mobile: 48px spacing */
   }
 `;
 
@@ -377,6 +392,17 @@ const AIChatbotSlot: React.FC = () => (
   </Suspense>
 );
 
+/**
+ * Slot 17: Draft Recovery Prompt
+ * ✅ REVENUE FIX: Recover abandoned sell workflow drafts
+ * استرداد مسودات إعلانات البيع غير المكتملة
+ */
+const DraftRecoverySlot: React.FC = () => (
+  <Suspense fallback={null}>
+    <DraftRecoveryPrompt delay={3000} />
+  </Suspense>
+);
+
 // ============================================================================
 // MAIN COMPOSER
 // ============================================================================
@@ -400,71 +426,52 @@ const AIChatbotSlot: React.FC = () => (
 const HomePageComposer: React.FC = React.memo(() => {
   return (
     <ComposerContainer>
-      {/* Slot 1: Hero Section */}
-      <HeroSlot />
-      <SectionSpacer />
+      {/* Content Container (Max Width 1400px) - Includes Hero */}
+      <ContentContainer>
+        {/* Slot 1: Hero Section - CRITICAL (Same width as other sections) */}
+        <HeroSlot />
+        <SectionSpacer />
+        {/* Slot 2: Featured Showcase - CRITICAL */}
+        <FeaturedShowcaseSlot />
+        <SectionSpacer />
 
-      {/* Slot 2: Featured Showcase */}
-      <FeaturedShowcaseSlot />
-      <SectionSpacer />
+        {/* Slot 3: Smart Sell Strip */}
+        <SmartSellSlot />
+        <SectionSpacer />
 
-      {/* Slot 3: Smart Sell Strip */}
-      <SmartSellSlot />
-      <SectionSpacer />
+        {/* Slot 4: Cars Showcase - CRITICAL */}
+        <CarsShowcaseSlot />
+        <SectionSpacer />
 
-      {/* Slot 4: Cars Showcase */}
-      <CarsShowcaseSlot />
-      <SectionSpacer />
+        {/* Slot 5: Popular Brands - CRITICAL */}
+        <PopularBrandsSlot />
+        <SectionSpacer />
 
-      {/* Slot 5: Popular Brands */}
-      <PopularBrandsSlot />
-      <SectionSpacer />
+        {/* Slot 6: Most Demanded Categories (combines Vehicle Classifications + Categories) */}
+        <MostDemandedCategoriesSlot />
+        <SectionSpacer />
 
-      {/* Slot 6: Vehicle Classifications */}
-      <VehicleClassificationsSlot />
-      <SectionSpacer />
+        {/* Slot 7: Dealer Spotlight */}
+        <DealersSlot />
+        <SectionSpacer />
 
-      {/* Slot 6.5: Drive Type Showcase */}
-      <DriveTypeShowcaseSlot />
-      <SectionSpacer />
+        {/* Slot 8: Social Experience */}
+        <SocialSlot />
+        <SectionSpacer />
 
-      {/* Slot 7: Most Demanded Categories */}
-      <MostDemandedCategoriesSlot />
-      <SectionSpacer />
+        {/* Slot 9: Trust & Stats */}
+        <TrustSlot />
+        <SectionSpacer />
 
-      {/* Slot 8: Quick Brands */}
-      <QuickBrandsSlot />
-      <SectionSpacer />
+        {/* Slot 10: Loyalty & Signup */}
+        <LoyaltySlot />
+      </ContentContainer>
 
-      {/* Slot 9: Categories Section */}
-      <CategoriesSlot />
-      <SectionSpacer />
-
-      {/* Slot 10: Life Moments Browse */}
-      <LifeMomentsSlot />
-      <SectionSpacer />
-
-      {/* Slot 11: Dealer Spotlight */}
-      <DealersSlot />
-      <SectionSpacer />
-
-      {/* Slot 12: Social Experience */}
-      <SocialSlot />
-      <SectionSpacer />
-
-      {/* Slot 13: Trust & Stats */}
-      <TrustSlot />
-      <SectionSpacer />
-
-      {/* Slot 14: Recent Browsing */}
-      <RecentBrowsingSlot />
-      <SectionSpacer />
-
-      {/* Slot 15: Loyalty & Signup */}
-      <LoyaltySlot />
-
-      {/* Slot 16: AI Chatbot (Floating) */}
+      {/* AI Chatbot (Floating) */}
       <AIChatbotSlot />
+
+      {/* ✅ REVENUE FIX: Draft Recovery Prompt (Floating Toast) */}
+      <DraftRecoverySlot />
     </ComposerContainer>
   );
 });

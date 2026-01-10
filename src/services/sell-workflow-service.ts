@@ -61,17 +61,12 @@ export class SellWorkflowService {
         throw new Error(errorMessage);
       }
 
-      logger.info('✅ Listing limit check passed', { userId });
+      logger.info('Listing limit check passed', { userId });
 
       // 1. Upload images if any
       let imageUrls: string[] = [];
       if (imageFiles && imageFiles.length > 0) {
-        logger.info('📤 Starting image upload', { 
-          count: imageFiles.length, 
-          userId,
-          totalSize: imageFiles.reduce((sum, f) => sum + f.size, 0)
-        });
-        
+        logger.info('Starting image upload in createCarListing', { count: imageFiles.length, userId });
         const workflowId = this.generateWorkflowId(userId);
         const uploadResults = await SellWorkflowImages.uploadMultipleImages(imageFiles, userId, workflowId);
 
@@ -80,25 +75,14 @@ export class SellWorkflowService {
           .filter(r => r.uploaded && r.url)
           .map(r => r.url as string);
 
-        logger.info('📸 Image upload results', {
-          attempted: imageFiles.length,
-          successful: imageUrls.length,
-          failed: imageFiles.length - imageUrls.length
-        });
-
         if (imageUrls.length !== imageFiles.length) {
           const failedCount = imageFiles.length - imageUrls.length;
-          logger.error('❌ Image upload incomplete - aborting listing creation', new Error(`${failedCount} images failed to upload`), {
+          logger.error('Image upload incomplete - aborting listing creation', new Error(`${failedCount} images failed to upload`), {
             attempted: imageFiles.length,
-            successful: imageUrls.length,
-            userId
+            successful: imageUrls.length
           });
           throw new Error(`Image upload failed: ${failedCount} images could not be uploaded. Please check your connection and try again.`);
         }
-        
-        logger.info('✅ All images uploaded successfully', { count: imageUrls.length });
-      } else {
-        logger.info('ℹ️ No images to upload', { userId });
       }
 
       // 2. Prepare car data
@@ -130,20 +114,15 @@ export class SellWorkflowService {
 
       // 3. Create car document via UnifiedCarService
       // This service handles the database write and cache invalidation
-      logger.info('🚗 Creating car listing in database', {
-        userId,
+      logger.info('Calling unifyCarService.createCar', {
         imagesCount: imageUrls.length,
-        carDataImagesCount: carData.images.length,
-        vehicleType: carData.vehicleType,
-        make: carData.make,
-        model: carData.model
+        carDataImagesCount: carData.images.length
       });
-      
       const carResult = await unifiedCarService.createCar(carData);
 
       // ✅ CRITICAL FIX: Verify numeric IDs were assigned before proceeding
       if (!carResult.sellerNumericId || !carResult.carNumericId) {
-        logger.error('❌ Numeric ID assignment failed', {
+        logger.error('Numeric ID assignment failed - car created without numeric IDs', {
           carId: carResult.id,
           userId,
           sellerNumericId: carResult.sellerNumericId,
@@ -152,29 +131,12 @@ export class SellWorkflowService {
         throw new Error('Failed to assign numeric IDs. Please try again.');
       }
 
-      logger.info('✅ Car listing created successfully', {
+      logger.info('Car listing created successfully via SellWorkflowService', {
         carId: carResult.id,
         userId,
         sellerNumericId: carResult.sellerNumericId,
-        carNumericId: carResult.carNumericId,
-        url: `/car/${carResult.sellerNumericId}/${carResult.carNumericId}`
+        carNumericId: carResult.carNumericId
       });
-
-      // 3.4 ✅ CRITICAL FIX: Invalidate search cache after listing creation
-      // This ensures that new listings appear immediately in search results
-      try {
-        const { searchService } = await import('./search/UnifiedSearchService');
-        if (searchService && typeof searchService.invalidateCache === 'function') {
-          await searchService.invalidateCache();
-          logger.info('Search cache invalidated after listing creation', { carId: carResult.id });
-        }
-      } catch (cacheError) {
-        // Log error but don't fail the operation
-        logger.warn('Failed to invalidate search cache (non-critical)', {
-          error: (cacheError as Error).message,
-          carId: carResult.id
-        });
-      }
 
       // 3.5 ✅ CRITICAL FIX: Update user stats (Active Listings count)
       // This ensures the user's profile reflects the new listing immediately
