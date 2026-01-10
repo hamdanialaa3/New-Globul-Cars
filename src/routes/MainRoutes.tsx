@@ -64,6 +64,8 @@ const AboutPage = safeLazy(() => import('../pages/01_main-pages/about/AboutPage'
 const BrandGalleryPage = safeLazy(() => import('../pages/05_search-browse/brand-gallery/BrandGalleryPage'));
 const TopBrandsPage = safeLazy(() => import('../pages/05_search-browse/top-brands/TopBrandsPage'));
 const DealersPage = safeLazy(() => import('../pages/05_search-browse/dealers/DealersPage'));
+const ViewAllNewCarsPage = safeLazy(() => import('../pages/05_search-browse/view-all-new-cars/ViewAllNewCarsPage'));
+const ViewAllDealersPage = safeLazy(() => import('../pages/05_search-browse/view-all-dealers/ViewAllDealersPage'));
 const MapAnalyticsPage = safeLazy(() => import('../pages/01_main-pages/map/MapPage'));
 const FinancePage = safeLazy(() => import('../pages/05_search-browse/finance/FinancePage'));
 const ContactPage = safeLazy(() => import('../pages/01_main-pages/contact/ContactPage'));
@@ -435,6 +437,8 @@ export const MainRoutes: React.FC = () => {
             <Route path="/top-brands" element={<TopBrandsPage />} />
             <Route path="/brand-gallery" element={<AuthGuard requireAuth={true}><BrandGalleryPage /></AuthGuard>} />
             <Route path="/dealers" element={<AuthGuard requireAuth={true}><DealersPage /></AuthGuard>} />
+            <Route path="/view-all-new-cars" element={<ViewAllNewCarsPage />} />
+            <Route path="/view-all-dealers" element={<ViewAllDealersPage />} />
             <Route path="/finance" element={<AuthGuard requireAuth={true}><FinancePage /></AuthGuard>} />
 
             <Route path="/contact" element={<ContactPage />} />

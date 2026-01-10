@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { MobileBGTheme } from '@/design-system/theme';
 import { FaSearch, FaBolt, FaCar, FaBuilding, FaLeaf } from 'react-icons/fa';
 
@@ -25,13 +26,45 @@ const VideoBackground = styled.div`
   height: 100%;
   z-index: 0;
   
-  video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.6;
+  /* Animated gradient background - replaces video for better performance */
+  background: linear-gradient(
+    135deg,
+    ${MobileBGTheme.brand.dark} 0%,
+    ${MobileBGTheme.brand.primary} 25%,
+    ${MobileBGTheme.brand.secondary} 50%,
+    ${MobileBGTheme.brand.primary} 75%,
+    ${MobileBGTheme.brand.dark} 100%
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 20s ease infinite;
+  
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
   
+  /* Subtle pattern overlay */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      radial-gradient(circle at 20% 80%, rgba(255,255,255,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(255,255,255,0.05) 0%, transparent 50%);
+    animation: patternMove 30s ease infinite;
+  }
+  
+  @keyframes patternMove {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(20px, 20px); }
+  }
+  
+  /* Dark overlay for text readability */
   &::after {
     content: '';
     position: absolute;
@@ -39,7 +72,11 @@ const VideoBackground = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.3), ${MobileBGTheme.brand.dark});
+    background: linear-gradient(
+      to bottom, 
+      rgba(0,0,0,0.4), 
+      ${MobileBGTheme.brand.dark}
+    );
   }
 `;
 
@@ -177,14 +214,38 @@ const StatLabel = styled.div`
 
 export const HeroSection2: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
+    const navigate = useNavigate();
+
+    // Quick filter handlers - Navigate to filtered search results
+    const handleQuickFilter = (filterType: 'latest' | 'topOffers' | 'electric' | 'dealers') => {
+        const filters: Record<string, string> = {
+            latest: '/cars?sort=newest&days=1',
+            topOffers: '/cars?sort=bestPrice&verified=true',
+            electric: '/cars?fuelType=electric',
+            dealers: '/cars?sellerType=dealer'
+        };
+        navigate(filters[filterType] || '/cars');
+    };
+
+    // Search handler
+    const handleSearch = () => {
+        if (searchTerm.trim()) {
+            navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
+        }
+    };
+
+    // Handle Enter key in search input
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            handleSearch();
+        }
+    };
 
     return (
         <HeroContainer>
             <VideoBackground>
-                <video autoPlay loop muted playsInline poster="/assets/hero-poster.jpg">
-                    {/* Placeholder video - needs real asset */}
-                    <source src="/videos/hero-bulgaria-roads.mp4" type="video/mp4" />
-                </video>
+                {/* Animated gradient background - optimized for performance */}
+                {/* Replaces video for instant load and smooth animation */}
             </VideoBackground>
 
             <HeroContent>
@@ -203,25 +264,42 @@ export const HeroSection2: React.FC = () => {
                     transition={{ delay: 0.3, duration: 0.5 }}
                 >
                     <SearchInputWrapper>
-                        <FaSearch />
+                        <FaSearch onClick={handleSearch} style={{ cursor: 'pointer' }} />
                         <SearchInput
                             placeholder="🤖 Търси с AI: 'BMW X5 2020 София до 30000'"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
+                            onKeyPress={handleKeyPress}
                         />
                     </SearchInputWrapper>
 
                     <QuickFilters>
-                        <FilterChip whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <FilterChip 
+                            whileHover={{ scale: 1.05 }} 
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => handleQuickFilter('latest')}
+                        >
                             <FaBolt /> Нови 24ч
                         </FilterChip>
-                        <FilterChip whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <FilterChip 
+                            whileHover={{ scale: 1.05 }} 
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => handleQuickFilter('topOffers')}
+                        >
                             <FaCar /> Топ Оферти
                         </FilterChip>
-                        <FilterChip whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <FilterChip 
+                            whileHover={{ scale: 1.05 }} 
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => handleQuickFilter('electric')}
+                        >
                             <FaLeaf /> Електрически
                         </FilterChip>
-                        <FilterChip whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <FilterChip 
+                            whileHover={{ scale: 1.05 }} 
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => handleQuickFilter('dealers')}
+                        >
                             <FaBuilding /> От Дилъри
                         </FilterChip>
                     </QuickFilters>
