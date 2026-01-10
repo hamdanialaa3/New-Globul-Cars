@@ -436,7 +436,7 @@ const PopularBrandsSection: React.FC = () => {
                     alt={brand.nameEn}
                     loading="lazy"
                     onError={(e) => {
-                      e.currentTarget.src = 'https://via.placeholder.com/150?text=Car';
+                      e.currentTarget.src = '/assets/images/logos/default-car.png';
                     }}
                   />
                 </LogoContainer>
