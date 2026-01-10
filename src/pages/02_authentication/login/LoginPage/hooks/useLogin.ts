@@ -144,14 +144,14 @@ export const useLogin = (): UseLoginReturn => {
       }
 
       // PERSIST REDIRECT URL
-      const redirectPath = getRedirectPath();
-      sessionStorage.setItem('auth_redirect_url', redirectPath);
+      const intentRedirectPath = getRedirectPath();
+      sessionStorage.setItem('auth_redirect_url', intentRedirectPath);
 
       const result = await SocialAuthService.signInWithGoogle();
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Google login successful', { userId: result.user.uid });
       }
-      setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح! جاري التوجيه...'));
+      setSuccess(t('auth.loginSuccess', 'Login successful! Redirecting...'));
       const redirectPath = getRedirectPath();
       setTimeout(() => {
         navigate(redirectPath, { replace: true });
@@ -165,7 +165,7 @@ export const useLogin = (): UseLoginReturn => {
         if (process.env.NODE_ENV === 'development') {
           logger.debug('OAuth redirect initiated - waiting for redirect result');
         }
-        setSuccess(t('auth.redirecting', 'جاري التحويل لتسجيل الدخول...'));
+        setSuccess(t('auth.redirecting', 'Redirecting to login...'));
         setLoading(true); // Keep loading state during redirect
         // Don't set error - redirect is expected behavior
         return; // Exit early, redirect will be handled by AuthProvider
@@ -181,7 +181,7 @@ export const useLogin = (): UseLoginReturn => {
       });
 
       // User-friendly error message
-      const userMessage = errorWithCode?.message || 'حدث خطأ أثناء تسجيل الدخول مع Google. يرجى المحاولة مرة أخرى.';
+      const userMessage = errorWithCode?.message || t('auth.googleLoginError', 'An error occurred during Google login. Please try again.');
       setError(userMessage);
       setLoading(false);
     }
@@ -198,14 +198,14 @@ export const useLogin = (): UseLoginReturn => {
       }
 
       // PERSIST REDIRECT URL
-      const redirectPath = getRedirectPath();
-      sessionStorage.setItem('auth_redirect_url', redirectPath);
+      const intentRedirectPath = getRedirectPath();
+      sessionStorage.setItem('auth_redirect_url', intentRedirectPath);
 
       const result = await SocialAuthService.signInWithFacebook();
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Facebook login successful', { userId: result.user.uid });
       }
-      setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح! جاري التوجيه...'));
+      setSuccess(t('auth.loginSuccess', 'Login successful! Redirecting...'));
       const redirectPath = getRedirectPath();
       setTimeout(() => {
         navigate(redirectPath, { replace: true });
@@ -214,7 +214,7 @@ export const useLogin = (): UseLoginReturn => {
       const error = err instanceof Error ? err : new Error(String(err));
       const errorWithCode = error as Error & { code?: string; message?: string };
       logger.error('Facebook login error', error, { errorCode: errorWithCode?.code });
-      const userMessage = errorWithCode?.message || 'حدث خطأ أثناء تسجيل الدخول مع Facebook. يرجى المحاولة مرة أخرى.';
+      const userMessage = errorWithCode?.message || t('auth.facebookLoginError', 'An error occurred during Facebook login. Please try again.');
       setError(userMessage);
     } finally {
       setLoading(false);
@@ -232,14 +232,14 @@ export const useLogin = (): UseLoginReturn => {
       }
 
       // PERSIST REDIRECT URL
-      const redirectPath = getRedirectPath();
-      sessionStorage.setItem('auth_redirect_url', redirectPath);
+      const intentRedirectPath = getRedirectPath();
+      sessionStorage.setItem('auth_redirect_url', intentRedirectPath);
 
       const result = await SocialAuthService.signInWithApple();
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Apple login successful', { userId: result.user.uid });
       }
-      setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح! جاري التوجيه...'));
+      setSuccess(t('auth.loginSuccess', 'Login successful! Redirecting...'));
       const redirectPath = getRedirectPath();
       setTimeout(() => {
         navigate(redirectPath, { replace: true });
@@ -248,7 +248,7 @@ export const useLogin = (): UseLoginReturn => {
       const error = err instanceof Error ? err : new Error(String(err));
       const errorWithCode = error as Error & { message?: string };
       logger.error('❌ Apple login error:', error);
-      const userMessage = errorWithCode?.message || 'حدث خطأ أثناء تسجيل الدخول مع Apple. يرجى المحاولة مرة أخرى.';
+      const userMessage = errorWithCode?.message || t('auth.appleLoginError', 'An error occurred during Apple login. Please try again.');
       setError(userMessage);
     } finally {
       setLoading(false);
@@ -270,7 +270,7 @@ export const useLogin = (): UseLoginReturn => {
       logger.info('👤 Initiating anonymous login...');
       const result = await SocialAuthService.signInAnonymously();
       logger.info('✅ Anonymous login successful:', result.user);
-      setSuccess(t('auth.loginSuccess', 'تم الدخول كضيف بنجاح! جاري التوجيه...'));
+      setSuccess(t('auth.loginSuccess', 'Guest login successful! Redirecting...'));
       const redirectPath = getRedirectPath();
       setTimeout(() => {
         navigate(redirectPath, { replace: true });
@@ -279,7 +279,7 @@ export const useLogin = (): UseLoginReturn => {
       const error = err instanceof Error ? err : new Error(String(err));
       const errorWithCode = error as Error & { message?: string };
       logger.error('❌ Anonymous login error:', error);
-      const userMessage = errorWithCode?.message || 'حدث خطأ أثناء الدخول كضيف. يرجى المحاولة مرة أخرى.';
+      const userMessage = errorWithCode?.message || t('auth.anonymousLoginError', 'An error occurred during guest login. Please try again.');
       setError(userMessage);
     } finally {
       setLoading(false);
