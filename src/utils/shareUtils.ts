@@ -29,11 +29,7 @@ export const shareContent = async (data: ShareData): Promise<void> => {
       // Fallback: Copy to clipboard
       await navigator.clipboard.writeText(data.url);
       logger.info('Link copied to clipboard', { url: data.url });
-      
-      // Show a notification (you can integrate with toast here)
-      if (typeof window !== 'undefined') {
-        alert('Link copied to clipboard!');
-      }
+      // UI-level notifications (e.g., toasts) should be handled by the caller.
     }
   } catch (error) {
     if ((error as Error).name !== 'AbortError') {

@@ -54,7 +54,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const { t } = useLanguage();
-  const { isFavorite, toggleFavorite, removeFavorite } = useFavorites();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [searchParams] = useSearchParams();
   const { language } = useLanguage();
   const { currentUser } = useAuth();
@@ -76,7 +76,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
       if (!id) return;
       
       try {
-        const carData = await getCarById(parseInt(id));
+        const carData = await getCarById(id);
         setCar(carData);
       } catch (error) {
         logger.error('Error fetching car', error as Error, { carId: id });
@@ -622,7 +622,15 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
             )}
 
             <button
-              onClick={() => navigate(`/messages/${car.sellerNumericId}`)}
+              onClick={() => {
+                if (!car.sellerNumericId) {
+                  logger.error('Missing sellerNumericId when attempting to contact seller', null, {
+                    carId: car.id,
+                  });
+                  return;
+                }
+                navigate(`/messages/${car.sellerNumericId}`);
+              }}
               className="w-full py-3 px-6 rounded-lg font-medium transition-colors bg-blue-600 text-white hover:bg-blue-700"
             >
               {t('contactSeller') || 'Contact Seller'}

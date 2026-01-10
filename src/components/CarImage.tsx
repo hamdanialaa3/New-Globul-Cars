@@ -40,9 +40,9 @@ const CarImage: React.FC<CarImageProps> = ({
   onLoad,
   onError,
 }) => {
-  // Default fallback image for cars
-  const defaultFallback = '/assets/images/car-placeholder.jpg';
-
+  // Default fallback image for cars (inline SVG data URL to avoid missing-file issues)
+  const defaultFallback =
+    'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400"><rect width="600" height="400" fill="%23f3f4f6"/><rect x="80" y="180" width="440" height="120" rx="24" ry="24" fill="%23d1d5db"/><circle cx="170" cy="320" r="40" fill="%239ca3af"/><circle cx="430" cy="320" r="40" fill="%239ca3af"/><rect x="160" y="170" width="280" height="70" rx="16" ry="16" fill="%23e5e7eb"/><path d="M140 210h320" stroke="%239ca3af" stroke-width="4" stroke-linecap="round"/></svg>';
   return (
     <OptimizedImage
       src={src}
