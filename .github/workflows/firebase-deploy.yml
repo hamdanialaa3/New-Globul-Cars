@@ -29,9 +29,9 @@ jobs:
           echo "======================================"
           echo "🔍 Validating GitHub Secrets..."
           echo "======================================"
-          
+
           MISSING_SECRETS=""
-          
+
           # Check FIREBASE_SERVICE_ACCOUNT
           if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
             echo "❌ FIREBASE_SERVICE_ACCOUNT is NOT SET"
@@ -39,7 +39,7 @@ jobs:
           else
             echo "✅ FIREBASE_SERVICE_ACCOUNT is set (${#FIREBASE_SERVICE_ACCOUNT} characters)"
           fi
-          
+
           # Check FIREBASE_PROJECT_ID
           if [ -z "$FIREBASE_PROJECT_ID" ]; then
             echo "❌ FIREBASE_PROJECT_ID is NOT SET"
@@ -47,7 +47,7 @@ jobs:
           else
             echo "✅ FIREBASE_PROJECT_ID is set: $FIREBASE_PROJECT_ID"
           fi
-          
+
           # Fail with clear instructions if any secret is missing
           if [ -n "$MISSING_SECRETS" ]; then
             echo ""
@@ -78,7 +78,7 @@ jobs:
             echo "======================================"
             exit 1
           fi
-          
+
           echo ""
           echo "✅ All required secrets are configured!"
           echo "======================================"
