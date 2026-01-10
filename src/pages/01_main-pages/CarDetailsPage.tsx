@@ -13,7 +13,6 @@ import StaticMapEmbed from '../../components/StaticMapEmbed';
 import CarDetailsMobileDEStyle from './components/CarDetailsMobileDEStyle';
 import { useCarDetails } from './hooks/useCarDetails';
 import { useCarEdit } from './hooks/useCarEdit';
-import { CarSEO } from '../../components/SEO/CarSEO';
 import CarSEO from '../../components/seo/CarSEO';
 import { CarImageGallery } from './components/CarImageGallery';
 import { CarHeader } from './components/CarHeader';
@@ -205,8 +204,8 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
                 title: `${car?.make || ''} ${car?.model || ''} ${car?.year || ''}`.trim(),
                 price: car?.price || 0,
                 // images in Firestore is string[] (URLs), but TypeScript expects File[] from CarListing interface
-                image: typeof car?.images?.[0] === 'string' 
-                  ? car.images[0] 
+                image: typeof car?.images?.[0] === 'string'
+                  ? car.images[0]
                   : '',
                 make: car?.make,
                 model: car?.model,
