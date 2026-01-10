@@ -12,8 +12,19 @@ export class AIService {
         functions.logger.info('AIService initializing');
         // 1. Setup Gemini: Uses ADC (Application Default Credentials)
         // Ensure the region supports Generative AI (e.g., us-central1)
+
+        let projectId = process.env.GCLOUD_PROJECT;
+        if (!projectId && process.env.FIREBASE_CONFIG) {
+            try {
+                const config = JSON.parse(process.env.FIREBASE_CONFIG);
+                projectId = config.projectId;
+            } catch (e) {
+                functions.logger.warn('Failed to parse FIREBASE_CONFIG', e);
+            }
+        }
+
         this.vertexAI = new VertexAI({
-            project: process.env.GCLOUD_PROJECT || process.env.FIREBASE_CONFIG ? JSON.parse(process.env.FIREBASE_CONFIG as string).projectId : undefined,
+            project: projectId,
             location: 'us-central1'
         });
 

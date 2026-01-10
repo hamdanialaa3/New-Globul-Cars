@@ -59,7 +59,12 @@ import { onCall, HttpsError } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import { AIService } from "./services/ai-service";
 
-const aiService = new AIService();
+const getAiService = () => {
+    const { AIService } = require("./services/ai-service");
+    // Simple singleton pattern could be implemented here if needed, 
+    // but safe dynamic import is key for preventing cold-start crashes.
+    return new AIService();
+};
 
 export const evaluateCar = onCall({ region: "europe-west1", memory: "1GiB" }, async (request) => {
     // 1. Validate Inputs
@@ -70,6 +75,7 @@ export const evaluateCar = onCall({ region: "europe-west1", memory: "1GiB" }, as
     }
 
     try {
+        const aiService = getAiService();
         logger.info("Starting Hybrid AI Analysis...");
 
         // 2. Phase 1: Gemini (Vision)
