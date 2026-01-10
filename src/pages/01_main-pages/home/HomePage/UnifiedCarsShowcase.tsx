@@ -301,12 +301,16 @@ const Tab = styled(motion.button)<{
 `;
 
 const TabsContainer = styled.div`
-  max-width: 1200px;
+  max-width: 1400px; /* mobile.de standard: 1400px max-width */
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 24px; /* mobile.de standard: 24px horizontal padding */
+
+  @media (max-width: 1024px) {
+    padding: 0 20px;
+  }
 
   @media (max-width: 640px) {
-    padding: 0 1rem;
+    padding: 0 16px; /* mobile.de standard: 16px horizontal padding mobile */
   }
 `;
 
@@ -315,19 +319,23 @@ const TabsContainer = styled.div`
 // ============================================================================
 
 const ContentArea = styled.div`
-  max-width: 1200px;
-  margin: 2.5rem auto 0;
-  padding: 0 1.5rem;
+  max-width: 1400px; /* mobile.de standard: 1400px max-width */
+  margin: 2.5rem auto 0; /* mobile.de standard: 40px top margin */
+  padding: 0 24px; /* mobile.de standard: 24px horizontal padding */
   min-height: 500px;
 
+  @media (max-width: 1024px) {
+    padding: 0 20px;
+  }
+
   @media (max-width: 768px) {
-    margin-top: 2rem;
-    padding: 0 1.5rem;
+    margin-top: 2rem; /* mobile.de standard: 32px top margin */
+    padding: 0 20px;
   }
 
   @media (max-width: 640px) {
     min-height: 400px;
-    padding: 0 1rem;
+    padding: 0 16px; /* mobile.de standard: 16px horizontal padding mobile */
   }
 `;
 

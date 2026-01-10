@@ -1,15 +1,39 @@
 // Smart Footer Component with Global Translation Support
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { MapPin, Phone, Mail, Globe, Facebook } from 'lucide-react';
+import { MapPin, Phone, Mail, Globe, Facebook, ChevronDown } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import './Footer.css';
 
 const Footer: React.FC = () => {
-  const { t, language } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const location = useLocation();
+  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
+  const languageDropdownRef = useRef<HTMLDivElement>(null);
 
   const currentYear = new Date().getFullYear();
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (languageDropdownRef.current && !languageDropdownRef.current.contains(event.target as Node)) {
+        setIsLanguageDropdownOpen(false);
+      }
+    };
+
+    if (isLanguageDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isLanguageDropdownOpen]);
+
+  const handleLanguageChange = (lang: 'bg' | 'en') => {
+    setLanguage(lang);
+    setIsLanguageDropdownOpen(false);
+  };
 
   // Hide footer on /cars page
   if (location.pathname === '/cars') {
@@ -116,20 +140,69 @@ const Footer: React.FC = () => {
         {/* Footer Bottom */}
         <div className="footer-bottom">
           <div className="footer-bottom-content">
-            <p className="copyright">
-              © {currentYear} Bulgarski Avtomobili. {t('footer.rights')}
-            </p>
-            <div className="footer-bottom-links">
-              <a href="/privacy-policy">{t('footer.privacy')}</a>
-              <a href="/terms-of-service">{t('footer.terms')}</a>
-              <a href="/cookie-policy">{t('footer.cookies')}</a>
-              <a href="/data-deletion">{t('footer.dataDeletion')}</a>
+            <div className="footer-bottom-main">
+              <p className="copyright">
+                © {currentYear} Bulgarski Avtomobili. {t('footer.rights')}
+              </p>
+              <div className="footer-bottom-links">
+                <a href="/privacy-policy">{t('footer.privacy')}</a>
+                <a href="/terms-of-service">{t('footer.terms')}</a>
+                <a href="/cookie-policy">{t('footer.cookies')}</a>
+                <a href="/data-deletion">{t('footer.dataDeletion')}</a>
+              </div>
             </div>
-            <div className="language-info">
-              <span className="current-language">
-                <Globe size={16} style={{ marginRight: '6px' }} />
-                {language === 'bg' ? 'Български' : 'English'}
-              </span>
+            <div className="footer-bottom-language">
+              <div className="language-info" ref={languageDropdownRef}>
+              <button
+                className="language-dropdown-button"
+                onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
+                aria-label={language === 'bg' ? 'Избери език' : 'Select language'}
+                aria-expanded={isLanguageDropdownOpen}
+              >
+                <img
+                  src={language === 'bg' ? 'https://flagcdn.com/w20/bg.png' : 'https://flagcdn.com/w20/gb.png'}
+                  alt={language === 'bg' ? 'Български' : 'English'}
+                  className="flag-icon"
+                />
+                <span>{language === 'bg' ? 'Български' : 'English'}</span>
+                <ChevronDown 
+                  size={14} 
+                  style={{ 
+                    marginLeft: '6px',
+                    transform: isLanguageDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                    transition: 'transform 0.3s ease'
+                  }} 
+                />
+              </button>
+              {isLanguageDropdownOpen && (
+                <div className="language-dropdown-menu">
+                  <button
+                    className={`language-option ${language === 'bg' ? 'active' : ''}`}
+                    onClick={() => handleLanguageChange('bg')}
+                  >
+                    <img
+                      src="https://flagcdn.com/w20/bg.png"
+                      alt="Български"
+                      className="flag-icon"
+                    />
+                    <span>Български</span>
+                    {language === 'bg' && <span className="check-mark">✓</span>}
+                  </button>
+                  <button
+                    className={`language-option ${language === 'en' ? 'active' : ''}`}
+                    onClick={() => handleLanguageChange('en')}
+                  >
+                    <img
+                      src="https://flagcdn.com/w20/gb.png"
+                      alt="English"
+                      className="flag-icon"
+                    />
+                    <span>English</span>
+                    {language === 'en' && <span className="check-mark">✓</span>}
+                  </button>
+                </div>
+              )}
+              </div>
             </div>
           </div>
         </div>

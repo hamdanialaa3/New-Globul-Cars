@@ -15,6 +15,9 @@ interface CarData {
   condition: string;
   description: string;
   images: string[];
+  // ✅ CONSTITUTION: Numeric IDs for strict URL generation
+  sellerNumericId?: number;
+  carNumericId?: number;
   locationData?: {
     cityName: { bg: string; en: string };
     region?: string;
@@ -40,10 +43,15 @@ interface OrganizationData {
  * https://schema.org/Car
  */
 export const generateCarSchema = (car: CarData, language: 'bg' | 'en' = 'bg') => {
+  // ✅ CONSTITUTION: Use numeric URL pattern for SEO
+  const carUrl = car.sellerNumericId && car.carNumericId
+    ? `https://globulcars.bg/car/${car.sellerNumericId}/${car.carNumericId}`
+    : `https://globulcars.bg/cars`; // Fallback to cars list
+  
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Car',
-    '@id': `https://globulcars.bg/car/${car.id}`,
+    '@id': carUrl,
     name: `${car.make} ${car.model} (${car.year})`,
     description: car.description,
     brand: {
@@ -64,7 +72,7 @@ export const generateCarSchema = (car: CarData, language: 'bg' | 'en' = 'bg') =>
       : 'https://schema.org/UsedCondition',
     offers: {
       '@type': 'Offer',
-      url: `https://globulcars.bg/car/${car.id}`,
+      url: carUrl,
       priceCurrency: 'EUR',
       price: car.price,
       availability: 'https://schema.org/InStock',

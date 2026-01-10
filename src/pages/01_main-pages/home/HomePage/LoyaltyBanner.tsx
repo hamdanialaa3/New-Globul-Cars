@@ -140,6 +140,7 @@ const CTAButton = styled.button`
 const LoyaltyBanner: React.FC = memo(() => {
   const { t } = useLanguage();
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
 
   // Only render if unauthenticated (guard against flicker with currentUser check)
   if (currentUser) return null;

@@ -1,6 +1,7 @@
 // Image Compression Utility
 // أداة ضغط الصور
 import imageCompression from 'browser-image-compression';
+import { logger } from '@/services/logger-service';
 
 export interface CompressionOptions {
   maxSizeMB?: number;
@@ -31,7 +32,7 @@ export const compressImage = async (
     const compressedFile = await imageCompression(file, compressionOptions);
     return compressedFile;
   } catch (error) {
-    console.error('Image compression failed:', error);
+    logger.error('Image compression failed', error as Error);
     // Return original file if compression fails
     return file;
   }
@@ -50,7 +51,7 @@ export const compressImages = async (
     );
     return compressedFiles;
   } catch (error) {
-    console.error('Batch image compression failed:', error);
+    logger.error('Batch image compression failed', error as Error);
     // Return original files if compression fails
     return files;
   }

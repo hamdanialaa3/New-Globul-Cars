@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { Shield, Briefcase, Building, Check, X, Crown, Info } from 'lucide-react';
 import { useAuth } from '../../../../hooks/useAuth';
+import { useLanguage } from '../../../../contexts/LanguageContext';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase-config';
 import { logger } from '../../../../services/logger-service';
@@ -209,6 +210,7 @@ const AlertBox = styled.div<{ $type: 'info' | 'warning' }>`
 
 export const ProfileTypeSwitcher = () => {
     const { user } = useAuth();
+    const { language } = useLanguage();
     const [isLoading, setIsLoading] = useState(false);
 
     // In a real app, this would come from a theme context
@@ -220,26 +222,79 @@ export const ProfileTypeSwitcher = () => {
     const handleTypeChange = async (newType: 'private' | 'dealer' | 'company') => {
         if (!user || isLoading || newType === currentType) return;
 
+        // ✅ CRITICAL: For Dealer/Company, require Stripe Checkout (payment)
+        if (newType === 'dealer' || newType === 'company') {
+            try {
+                setIsLoading(true);
+                
+                // ✅ Import subscription service and plans
+                const { subscriptionService } = await import('@/services/billing/subscription-service');
+                const { SUBSCRIPTION_PLANS } = await import('@/config/subscription-plans');
+                
+                const plan = SUBSCRIPTION_PLANS[newType];
+                const price = plan.price.monthly;
+                const planName = language === 'bg' ? plan.name.bg : plan.name.en;
+                
+                // Confirm payment
+                const confirmed = window.confirm(
+                    language === 'bg'
+                        ? `Активиране на план ${planName}?\nЦена: €${price}/месец.\nЩе бъдете пренасочени към плащане.`
+                        : `Activate ${planName} Plan?\nCost: €${price}/month.\nYou will be redirected to payment.`
+                );
+                
+                if (!confirmed) {
+                    setIsLoading(false);
+                    return;
+                }
+                
+                // Create Stripe Checkout Session
+                const result = await subscriptionService.createCheckoutSession({
+                    userId: user.uid,
+                    planId: newType,
+                    interval: 'monthly',
+                    successUrl: `${window.location.origin}/profile?subscription=success&plan=${newType}`,
+                    cancelUrl: `${window.location.origin}/profile?subscription=cancelled`
+                });
+                
+                // Redirect to Stripe Checkout
+                window.location.href = result.url;
+                return;
+                
+            } catch (error) {
+                logger.error('Failed to create checkout session', error as Error);
+                toast.error(
+                    language === 'bg'
+                        ? 'Грешка при създаване на сесия за плащане'
+                        : 'Error creating checkout session'
+                );
+                setIsLoading(false);
+                return;
+            }
+        }
+        
+        // ✅ For Private: Direct update (no payment required)
         try {
             setIsLoading(true);
             const userRef = doc(db, 'users', user.uid);
 
-            // Set planTier based on type
-            let planTier = 'free';
-            if (newType === 'dealer') planTier = 'dealer';
-            if (newType === 'company') planTier = 'company';
-
             await updateDoc(userRef, {
-                profileType: newType,
-                planTier: planTier,
+                profileType: 'private',
+                planTier: 'free',
                 updatedAt: serverTimestamp()
             });
 
-            toast.success(`Profile updated to ${newType.toUpperCase()}`);
-            // Optimistic update handled by Firestore listener in AuthProvider usually
+            toast.success(
+                language === 'bg'
+                    ? 'Профилът е актуализиран към PRIVATE'
+                    : 'Profile updated to PRIVATE'
+            );
         } catch (error) {
             logger.error('Failed to update profile type', error as Error);
-            toast.error('Failed to update profile type');
+            toast.error(
+                language === 'bg'
+                    ? 'Грешка при актуализиране на профила'
+                    : 'Failed to update profile type'
+            );
         } finally {
             setIsLoading(false);
         }

@@ -198,7 +198,15 @@ const AlgoliaAutocomplete: React.FC<AlgoliaAutocompleteProps> = ({
             if (onSelect) {
               onSelect(item.objectID);
             } else {
-              navigate(`/car-details/${item.objectID}`);
+              // ✅ CONSTITUTION: Use numeric URL pattern
+              const sellerNumericId = item.sellerNumericId || item.ownerNumericId;
+              const carNumericId = item.carNumericId || item.userCarSequenceId || item.numericId;
+              
+              if (sellerNumericId && carNumericId) {
+                navigate(`/car/${sellerNumericId}/${carNumericId}`);
+              } else {
+                navigate('/cars');
+              }
             }
           }
         }

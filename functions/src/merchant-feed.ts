@@ -14,6 +14,8 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
+const logger = functions.logger;
+
 // Initialize Firebase Admin if not already initialized
 if (!admin.apps.length) {
   admin.initializeApp();
@@ -99,14 +101,14 @@ export const merchantFeed = functions
         car.model
       );
 
-      console.log(`Generating feed for ${validCars.length} cars`);
+      logger.info(`Generating feed for ${validCars.length} cars`);
 
       // Generate XML feed
       const xml = generateMerchantFeedXML(validCars, baseUrl);
 
       res.status(200).send(xml);
     } catch (error) {
-      console.error('Error generating merchant feed:', error);
+      logger.error('Error generating merchant feed:', error);
       res.status(500).send('<?xml version="1.0"?><error>Internal server error</error>');
     }
   });
@@ -212,15 +214,15 @@ export const updateMerchantFeedCache = functions
   .timeZone('Europe/Sofia')
   .onRun(async (context) => {
     try {
-      console.log('Updating merchant feed cache...');
+      logger.info('Updating merchant feed cache...');
       
       // Store cached feed in Firestore (optional optimization)
       // You can implement caching logic here if needed
       
-      console.log('Merchant feed cache updated successfully');
+      logger.info('Merchant feed cache updated successfully');
       return null;
     } catch (error) {
-      console.error('Error updating merchant feed cache:', error);
+      logger.error('Error updating merchant feed cache:', error);
       return null;
     }
   });

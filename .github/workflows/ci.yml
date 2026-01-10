@@ -1,9 +1,15 @@
-name: ci
+# ⚠️ Docker CI workflow - Optional
+# This workflow builds and pushes to Docker Hub
+# It's separate from Firebase deployment
+# Disabled for now to avoid confusion with main deployment workflow
 
-on:
-  push:
-    branches:
-      - "main"
+name: ci (Docker - Optional)
+
+# Workflow disabled - enable if you need Docker builds
+# on:
+#   push:
+#     branches:
+#       - "main"
 
 jobs:
   docker:

@@ -25,9 +25,11 @@
     "year",
     "mileage",
     "power",
-    "engineSize"
+    "engineSize",
+    "sellerTrustScore"
   ],
   "customRanking": [
+    "desc(sellerTrustScore)",
     "desc(createdAt)",
     "desc(year)",
     "asc(price)",
@@ -67,7 +69,8 @@
     "ownerName",
     "ownerType",
     "createdAt",
-    "status"
+    "status",
+    "sellerTrustScore"
   ],
   "attributesToHighlight": [
     "make",

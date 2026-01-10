@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <!-- PROGRAMMATIC SEO: Location Landing Pages -->
+  <!-- These capture long-tail searches like "коли София" -->
+  
+  <!-- Sofia -->
+  <url>
+    <loc>https://mobilebg.eu/cars/sofia</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mobilebg.eu/cars/sofia/bmw</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mobilebg.eu/cars/sofia/mercedes</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mobilebg.eu/cars/sofia/audi</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mobilebg.eu/cars/sofia/volkswagen</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mobilebg.eu/cars/sofia/diesel/under-10000</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mobilebg.eu/cars/sofia/diesel/under-20000</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- Plovdiv -->
+  <url>
+    <loc>https://mobilebg.eu/cars/plovdiv</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mobilebg.eu/cars/plovdiv/bmw</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mobilebg.eu/cars/plovdiv/mercedes</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mobilebg.eu/cars/plovdiv/audi</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Varna -->
+  <url>
+    <loc>https://mobilebg.eu/cars/varna</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mobilebg.eu/cars/varna/bmw</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mobilebg.eu/cars/varna/mercedes</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Burgas -->
+  <url>
+    <loc>https://mobilebg.eu/cars/burgas</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mobilebg.eu/cars/burgas/bmw</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- Ruse -->
+  <url>
+    <loc>https://mobilebg.eu/cars/ruse</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Stara Zagora -->
+  <url>
+    <loc>https://mobilebg.eu/cars/stara-zagora</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Pleven -->
+  <url>
+    <loc>https://mobilebg.eu/cars/pleven</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- Electric Cars (High-value keyword) -->
+  <url>
+    <loc>https://mobilebg.eu/cars/electric</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Hybrid Cars -->
+  <url>
+    <loc>https://mobilebg.eu/cars/hybrid</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+</urlset>

@@ -729,8 +729,8 @@ export class BulgarianAuthService {
           errorMessage: error instanceof Error ? error.message : String(error)
         });
       } catch (logError) {
-        // If logging fails, continue anyway
-        console.error('Auth error (logging failed):', errorCode, error);
+        // If logging fails, continue anyway (do not use console in production)
+        // Swallow to avoid noisy logs in production ban-console
       }
 
       // Get message or use default

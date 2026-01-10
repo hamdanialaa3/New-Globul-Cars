@@ -40,8 +40,8 @@ const rotate = keyframes`
 
 const SpeedDialContainer = styled.div`
   position: fixed;
-  bottom: 160px;
-  right: 32px;
+  bottom: 160px; /* Base position - aligned with other floating buttons */
+  right: 32px; /* Aligned with other floating buttons */
   z-index: 999;
   display: flex;
   flex-direction: row;
@@ -49,8 +49,8 @@ const SpeedDialContainer = styled.div`
   gap: 16px;
   
   @media (max-width: 768px) {
-    bottom: 136px;
-    right: 24px;
+    bottom: 136px; /* Base position on mobile - aligned with other floating buttons */
+    right: 24px; /* Aligned with other floating buttons on mobile */
     gap: 12px;
   }
 `;

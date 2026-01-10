@@ -20,6 +20,7 @@ import {
 } from './icons/ModernIcons';
 import { notificationSoundService } from '@/services/messaging/notification-sound.service';
 import { useLanguage } from '@/contexts';
+import { logger } from '@/services/logger-service';
 
 interface Props {
   isOpen: boolean;
@@ -322,7 +323,7 @@ export const NotificationSettings: React.FC<Props> = ({ isOpen, onClose }) => {
     try {
       await notificationSoundService.testSound();
     } catch (error) {
-      console.error('Failed to test sound:', error);
+      logger.error('Failed to test notification sound', error as Error);
     } finally {
       setTimeout(() => setTesting(false), 500);
     }

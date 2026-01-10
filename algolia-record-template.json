@@ -16,6 +16,7 @@
   "sellerId": "{{sellerId}}",
   "sellerNumericId": "{{sellerNumericId}}",
   "carNumericId": "{{carNumericId}}",
+  "sellerTrustScore": "{{sellerTrustScore}}",
   "createdAt": "{{_timestamp}}",
   "searchableText": "{{make}} {{model}} {{yearOfManufacture}} {{fuelType}} {{transmission}} {{city}}",
   "_tags": ["{{status}}", "{{fuelType}}", "{{transmission}}", "{{city}}"]

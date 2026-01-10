@@ -195,14 +195,14 @@ const PaymentFailedPage: React.FC = () => {
             const url = getCarDetailsUrl(car);
             setCarUrl(url);
           } else {
-            // Fallback to legacy URL if car not found
-            setCarUrl(`/car-details/${carId}`);
+            // ✅ CONSTITUTION: No /car-details/ fallback - go to search
+            setCarUrl('/cars');
           }
         })
         .catch(error => {
           logger.error('Error loading car for URL generation', error as Error, { carId });
-          // Fallback to legacy URL on error
-          setCarUrl(`/car-details/${carId}`);
+          // ✅ CONSTITUTION: No /car-details/ fallback - go to search
+          setCarUrl('/cars');
         });
     }
   }, [carId, errorMessage]);
@@ -271,6 +271,11 @@ const PaymentFailedPage: React.FC = () => {
           <Button $secondary onClick={handleGoHome}>
             <Home size={18} />
             {isBg ? 'Начална страница' : 'Home'}
+          </Button>
+          {/* 🔴 CRITICAL: Update Payment Method button */}
+          <Button $secondary onClick={() => navigate('/billing/update-payment-method')}>
+            <RefreshCw size={18} />
+            {isBg ? 'Обнови метод на плащане' : 'Update Payment Method'}
           </Button>
           <Button $primary onClick={handleRetry}>
             <RefreshCw size={18} />

@@ -31,6 +31,8 @@ import { logger } from '../../../../services/logger-service';
 import { profileStatsService } from '../../../../services/profile/profile-stats.service';
 import { ThemeProvider } from 'styled-components';
 import { PROFILE_THEMES } from '../../../../config/profile-themes';
+// 🔴 CRITICAL: Block User Button integration
+import BlockUserButton from '../../../../components/messaging/BlockUserButton';
 
 /**
  * Profile Page Wrapper
@@ -106,8 +108,20 @@ const ProfilePageWrapper: React.FC = () => {
   const [showTypeSwitcher, setShowTypeSwitcher] = React.useState(false); // Added State
 
   // ⚡ AUTO-UPDATE PROFILE STATS: Update stats when profile loads
+  // ✅ CRITICAL FIX: Only update stats for own profile (to avoid permission errors)
   React.useEffect(() => {
-    if (!activeProfile?.uid) return;
+    if (!activeProfile?.uid || !viewer?.uid) return;
+    
+    // ✅ FIX: Only update stats if viewing own profile
+    // Other users' profiles will have permission denied errors
+    const isOwnProfile = viewer.uid === activeProfile.uid;
+    if (!isOwnProfile) {
+      logger.debug('Skipping stats update for other user profile', { 
+        viewerId: viewer.uid, 
+        profileId: activeProfile.uid 
+      });
+      return;
+    }
 
     let cancelled = false;
 
@@ -122,12 +136,20 @@ const ProfilePageWrapper: React.FC = () => {
       })
       .catch(error => {
         if (!cancelled) {
-          logger.error('Error updating profile stats', error as Error, { userId: activeProfile.uid });
+          // ✅ GRACEFUL: Don't log permission errors as errors (expected for other users)
+          const errorMessage = (error as Error).message;
+          if (errorMessage.includes('permission') || errorMessage.includes('Permission')) {
+            logger.debug('Profile stats update permission denied (expected)', { 
+              userId: activeProfile.uid 
+            });
+          } else {
+            logger.error('Error updating profile stats', error as Error, { userId: activeProfile.uid });
+          }
         }
       });
 
     return () => { cancelled = true; };
-  }, [activeProfile?.uid, refresh]);
+  }, [activeProfile?.uid, viewer?.uid, refresh]);
 
   // ⚡ FIX: Follow state MUST be before early return!
   const [isFollowing, setIsFollowing] = React.useState(false);
@@ -181,8 +203,12 @@ const ProfilePageWrapper: React.FC = () => {
     if (newType === currentType) return;
 
     // Payment Logic for Dealer/Company
+    // ✅ CRITICAL: Use SUBSCRIPTION_PLANS as single source of truth
     if (newType === 'dealer' || newType === 'company') {
-      const cost = newType === 'dealer' ? '€29' : '€199';
+      const { SUBSCRIPTION_PLANS } = await import('@/config/subscription-plans');
+      const cost = newType === 'dealer' 
+        ? `€${SUBSCRIPTION_PLANS.dealer.price.monthly}` // ✅ €27.78
+        : `€${SUBSCRIPTION_PLANS.company.price.monthly}`; // ✅ €137.88
       const confirmed = window.confirm(
         language === 'bg'
           ? `Активиране на план ${newType.toUpperCase()}?\nЦена: ${cost}/месец.\nЩе бъдете пренасочени към плащане.`
@@ -300,10 +326,17 @@ const ProfilePageWrapper: React.FC = () => {
     }
   };
 
-  // Handle message
+  // Handle message - uses numeric IDs per constitution
   const handleMessage = () => {
-    if (!activeProfile?.uid) return;
-    navigate(`/messages?userId=${activeProfile.uid}`);
+    if (!activeProfile?.numericId || !viewer?.numericId) {
+      logger.warn('Missing numeric IDs for messaging', {
+        activeProfileNumericId: activeProfile?.numericId,
+        viewerNumericId: viewer?.numericId
+      });
+      return;
+    }
+    // Constitution: /messages/:senderId/:recipientId with numeric IDs
+    navigate(`/messages/${viewer.numericId}/${activeProfile.numericId}`);
   };
 
   return (
@@ -456,7 +489,7 @@ const ProfilePageWrapper: React.FC = () => {
                         >
                           {t(
                             'profile.plan.dealer',
-                            language === 'bg' ? 'Търговец (€27.78/мес, 25 обяви)' : 'Dealer (€27.78/mo, 25 cars)'
+                            language === 'bg' ? 'Търговец (€27.78/мес, 30 обяви)' : 'Dealer (€27.78/mo, 30 cars)'
                           )}
                         </option>
                         <option
@@ -493,6 +526,24 @@ const ProfilePageWrapper: React.FC = () => {
                       <PhoneIcon size={16} />
                       {language === 'bg' ? 'Съобщение' : 'Message'}
                     </S.ActionButtonCompact>
+                    {/* 🔴 CRITICAL: Block User Button - Only show if viewer and target user exist */}
+                    {viewer?.uid && activeProfile?.uid && viewer.uid !== activeProfile.uid && (
+                      <BlockUserButton
+                        targetUserFirebaseId={activeProfile.uid}
+                        targetUserNumericId={activeProfile.numericId}
+                        targetUserName={activeProfile.displayName || activeProfile.email}
+                        size="medium"
+                        variant="secondary"
+                        onBlockChanged={(isBlocked) => {
+                          logger.info('Block status changed', {
+                            targetUserId: activeProfile.uid,
+                            isBlocked,
+                            viewerId: viewer.uid
+                          });
+                          // Optionally refresh UI or disable message button if blocked
+                        }}
+                      />
+                    )}
                   </>
                 )}
               </S.StatBarActionsSection>

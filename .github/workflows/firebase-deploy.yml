@@ -1,0 +1,125 @@
+name: 🚀 Production Deploy (Secure)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: firebase-deploy
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "20"
+  DEPLOY_REGION: "europe-west1"
+
+jobs:
+  security-scan:
+    name: 🔐 Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Run Secret Detection
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          extra_args: --only-verified --no-update --fail
+        continue-on-error: true
+
+      - name: Dependency Audit
+        run: |
+          npm audit --audit-level=moderate || echo "⚠️ Audit found issues (non-blocking)"
+          npm audit fix --dry-run || echo "⚠️ Some vulnerabilities need manual review"
+
+  build-deploy:
+    name: 🏗️ Build & Deploy
+    needs: security-scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Pre-flight Secrets Check
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+        run: |
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            echo "❌ FIREBASE_SERVICE_ACCOUNT is missing!"
+            exit 1
+          fi
+          if [ -z "$FIREBASE_PROJECT_ID" ]; then
+            echo "❌ FIREBASE_PROJECT_ID is missing!"
+            exit 1
+          fi
+          echo "✅ Critical secrets present."
+
+      - name: Install Dependencies
+        run: |
+          npm ci --legacy-peer-deps
+          cd functions && npm ci && cd ..
+
+      - name: Type Check & Lint
+        run: |
+          npm run type-check
+          npm run lint || echo "Lint warnings found (non-fatal for now)"
+
+      - name: Build
+        run: npm run build
+        env:
+          CI: false
+          NODE_OPTIONS: --max_old_space_size=4096
+
+      - name: Authenticate Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.FIREBASE_PROJECT_ID }}
+
+      - name: Deploy to Firebase
+        run: |
+          npm i -g firebase-tools
+          echo "🚀 Starting Firebase deployment..."
+          echo "📦 Project: ${{ secrets.FIREBASE_PROJECT_ID }}"
+          echo "🌍 Region: europe-west1"
+
+          # Deploy with detailed output
+          firebase deploy \
+            --project ${{ secrets.FIREBASE_PROJECT_ID }} \
+            --non-interactive \
+            --debug || {
+              echo "❌ Deployment failed!"
+              echo "Common causes:"
+              echo "  1. Missing FIREBASE_SERVICE_ACCOUNT secret"
+              echo "  2. Invalid service account permissions"
+              echo "  3. Project ID mismatch"
+              echo ""
+              echo "📚 See: .github/SETUP_SECRETS.md"
+              exit 1
+            }
+
+          echo ""
+          echo "════════════════════════════════════════════════════════════════"
+          echo "✅ Deployment Successful!"
+          echo "════════════════════════════════════════════════════════════════"
+          echo "🌐 Hosting: https://fire-new-globul.web.app"
+          echo "🌐 Custom Domain: https://mobilebg.eu"
+          echo "⚡ Functions: https://console.firebase.google.com/project/fire-new-globul/functions"
+          echo "📊 Console: https://console.firebase.google.com/project/fire-new-globul"
+          echo "════════════════════════════════════════════════════════════════"

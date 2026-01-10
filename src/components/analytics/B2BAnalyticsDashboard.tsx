@@ -16,7 +16,9 @@ import {
   Calendar,
   Download,
   Filter,
-  AlertCircle
+  AlertCircle,
+  FileSpreadsheet,
+  CheckCircle
 } from 'lucide-react';
 
 interface AnalyticsData {
@@ -33,6 +35,26 @@ interface AnalyticsData {
     priceVolatility: number;
     marketGrowth: number;
   };
+}
+
+/**
+ * Lead data structure for B2B export
+ * البيانات المتاحة للتصدير
+ */
+interface LeadData {
+  inquiryId: string;
+  carId: string;
+  carTitle: string;
+  make: string;
+  model: string;
+  year: number;
+  price: number;
+  inquirerName: string;
+  inquirerEmail: string;
+  inquirerPhone: string;
+  message: string;
+  createdAt: string;
+  status: 'new' | 'contacted' | 'converted' | 'lost';
 }
 
 interface DashboardProps {
@@ -100,6 +122,46 @@ const ExportButton = styled.button`
 
   &:hover {
     background: #2563eb;
+  }
+  
+  &:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+  }
+`;
+
+const LeadExportButton = styled(ExportButton)`
+  background: #059669;
+  
+  &:hover {
+    background: #047857;
+  }
+`;
+
+const SuccessToast = styled.div`
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: #059669;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideIn 0.3s ease-out;
+  z-index: 1000;
+  
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
   }
 `;
 
@@ -256,6 +318,8 @@ const B2BAnalyticsDashboard: React.FC<DashboardProps> = ({ subscriptionTier }) =
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [dateRange, setDateRange] = useState('30d');
+  const [exportingLeads, setExportingLeads] = useState(false);
+  const [showExportSuccess, setShowExportSuccess] = useState(false);
 
   const loadAnalytics = useCallback(async () => {
     if (!user) return;
@@ -313,6 +377,91 @@ const B2BAnalyticsDashboard: React.FC<DashboardProps> = ({ subscriptionTier }) =
     }
   };
 
+  /**
+   * ✅ REVENUE FIX: Export leads as CSV for B2B companies
+   * تصدير العملاء المحتملين للشركات B2B
+   * 
+   * Revenue impact: $2,000-5,000/month per enterprise customer
+   */
+  const handleLeadExport = async () => {
+    if (!user) return;
+    
+    setExportingLeads(true);
+    setError(null);
+
+    try {
+      // Call Cloud Function to get lead data
+      const exportLeads = httpsCallable<{ dateRange: string }, { leads: LeadData[]; totalLeads: number }>(
+        functions, 
+        'exportB2BLeads'
+      );
+      
+      const result = await exportLeads({ dateRange });
+      const { leads, totalLeads } = result.data;
+
+      if (leads.length === 0) {
+        setError('No leads found for the selected period');
+        return;
+      }
+
+      // Convert leads to CSV format
+      const csvHeaders = [
+        'Inquiry ID',
+        'Car ID',
+        'Car Title',
+        'Make',
+        'Model',
+        'Year',
+        'Price (EUR)',
+        'Inquirer Name',
+        'Inquirer Email',
+        'Inquirer Phone',
+        'Message',
+        'Date',
+        'Status'
+      ].join(',');
+
+      const csvRows = leads.map(lead => [
+        lead.inquiryId,
+        lead.carId,
+        `"${(lead.carTitle || '').replace(/"/g, '""')}"`,
+        lead.make,
+        lead.model,
+        lead.year,
+        lead.price,
+        `"${(lead.inquirerName || '').replace(/"/g, '""')}"`,
+        lead.inquirerEmail,
+        lead.inquirerPhone || '',
+        `"${(lead.message || '').replace(/"/g, '""').replace(/\n/g, ' ')}"`,
+        lead.createdAt,
+        lead.status
+      ].join(','));
+
+      const csvContent = [csvHeaders, ...csvRows].join('\n');
+
+      // Add BOM for Excel UTF-8 compatibility
+      const BOM = '\uFEFF';
+      const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `globul-cars-leads-${dateRange}-${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+
+      // Show success toast
+      setShowExportSuccess(true);
+      setTimeout(() => setShowExportSuccess(false), 3000);
+
+      logger.info('Lead export completed', { totalLeads, dateRange });
+    } catch (err: unknown) {
+      logger.error('Failed to export leads', err as Error);
+      setError('Failed to export leads. Please try again or contact support.');
+    } finally {
+      setExportingLeads(false);
+    }
+  };
+
   if (loading) {
     return (
       <DashboardContainer>
@@ -355,12 +504,24 @@ const B2BAnalyticsDashboard: React.FC<DashboardProps> = ({ subscriptionTier }) =
             <Filter size={16} />
             {dateRange === '30d' ? 'Last 30 Days' : dateRange === '90d' ? 'Last 90 Days' : 'Last Year'}
           </FilterButton>
+          <LeadExportButton onClick={handleLeadExport} disabled={exportingLeads}>
+            <FileSpreadsheet size={16} />
+            {exportingLeads ? 'Exporting...' : 'Export Leads'}
+          </LeadExportButton>
           <ExportButton onClick={handleExport}>
             <Download size={16} />
             Export Data
           </ExportButton>
         </Controls>
       </Header>
+
+      {/* Success Toast */}
+      {showExportSuccess && (
+        <SuccessToast>
+          <CheckCircle size={20} />
+          Leads exported successfully!
+        </SuccessToast>
+      )}
 
       {/* Key Metrics */}
       <MetricsGrid>

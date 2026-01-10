@@ -4,7 +4,8 @@ import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import styled from 'styled-components';
-import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
+// ✅ Removed HorizontalScrollContainer - using grid layout instead
+// import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
 import { glassNeutralButton, glassPrimaryButton } from '../../../../styles/glassmorphism-buttons';
 
 // Popular brands configuration with logos
@@ -24,79 +25,82 @@ const POPULAR_BRANDS = [
   { id: 'Toyota', nameEn: 'Toyota', nameBg: 'Тойота', logo: 'Toyota.png' },
   { id: 'Volvo', nameEn: 'Volvo', nameBg: 'Волво', logo: 'Volvo.png' },
   { id: 'Volkswagen', nameEn: 'Volkswagen', nameBg: 'Фолксваген', logo: 'Volkswagen.png' },
+  { id: 'Peugeot', nameEn: 'Peugeot', nameBg: 'Пежо', logo: 'Peugeot.png' },
+  { id: 'Nissan', nameEn: 'Nissan', nameBg: 'Нисан', logo: 'Nissan.png' },
+  { id: 'Mazda', nameEn: 'Mazda', nameBg: 'Мазда', logo: 'Mazda.png' },
+  { id: 'Honda', nameEn: 'Honda', nameBg: 'Хонда', logo: 'Honda.png' },
+  { id: 'Fiat', nameEn: 'Fiat', nameBg: 'Фиат', logo: 'Fiat.png' },
+  { id: 'SEAT', nameEn: 'SEAT', nameBg: 'Сеат', logo: 'SEAT.png' },
 ];
 
 // Styled Components
 const SectionContainer = styled.section`
-  padding: 3rem 0;
-  background-image: url('/assets/backgrounds/metal-bg-1.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  padding-top: 0px;
+  padding-bottom: 0px;
   width: 100%;
+  height: 100%;
+  margin-top: 9px;
+  margin-bottom: 9px;
+  font-size: 0px;
   position: relative;
   transform: translateZ(0);
   will-change: transform;
   transition: background-color 0.3s ease;
+  background: transparent;
   
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: var(--bg-primary);
-    opacity: 0.4;
-    z-index: 0;
-    transition: background-color 0.3s ease, opacity 0.3s ease;
-  }
-  
-  html[data-theme="dark"] &::before {
-    opacity: 0.4;
-  }
+  /* ✅ Removed background image and overlay */
   
   @media (max-width: 600px) {
-    padding: 2rem 0;
+    margin-top: 6px;
+    margin-bottom: 6px;
   }
 `;
 
 const ContentContainer = styled.div`
-  max-width: 1200px;
+  max-width: 1400px; /* mobile.de standard: 1400px max-width */
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 24px; /* mobile.de standard: 24px horizontal padding */
   position: relative;
   z-index: 1;
   
+  @media (max-width: 1024px) {
+    padding: 0 20px;
+  }
+  
   @media (max-width: 600px) {
-    padding: 0 1rem;
+    padding: 0 16px; /* mobile.de standard: 16px horizontal padding mobile */
   }
 `;
 
 const SectionHeader = styled.div`
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
+  margin-top: -20px; /* ✅ Raised slightly towards top */
   position: relative;
   z-index: 1;
   
   @media (max-width: 600px) {
-    margin-bottom: 2rem;
+    margin-bottom: 1.25rem;
+    margin-top: -15px;
   }
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 1.75rem;
-  font-weight: 700;
+  font-size: 24px; /* mobile.de standard: 24px / 1.5rem for H2 */
+  font-weight: 600; /* mobile.de standard: semi-bold */
   color: var(--text-primary);
-  margin-bottom: 0.75rem;
-  line-height: 1.3;
+  margin-top: 29px;
+  margin-bottom: 47px;
+  line-height: 1.3; /* mobile.de standard */
+  box-shadow: 0px 4px 12px 0px rgba(218, 11, 11, 0.15), inset 0px 4px 12px 0px rgba(240, 15, 15, 0.15), 0px 4px 12px 0px rgba(237, 29, 29, 0.15);
+  filter: blur(0px);
   
   @media (max-width: 768px) {
-    font-size: 1.5rem;
+    font-size: 22px; /* mobile.de tablet: 22px */
   }
   
   @media (max-width: 600px) {
-    font-size: 1.375rem;
+    font-size: 22px; /* mobile.de mobile: 22px */
   }
 `;
 
@@ -112,13 +116,42 @@ const SectionSubtitle = styled.p`
   }
 `;
 
-// Horizontal scroll container - no grid, always horizontal
+// ✅ Grid layout for uniform distribution
 const BrandsContainer = styled.div`
   margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(142px, 1fr));
+  gap: 12px;
+  justify-items: center;
+  align-items: start;
+  padding: 0;
+  
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(auto-fill, minmax(142px, 1fr));
+    gap: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+  }
+  
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 6px;
+  }
 `;
 
 const BrandCard = styled.button`
   ${glassNeutralButton}
+  /* ✅ Fixed size: 142px × 153px (same as Mercedes-Benz) */
+  width: 142px;
+  height: 153px;
+  min-width: 142px;
+  min-height: 153px;
+  max-width: 142px;
+  max-height: 153px;
+  
   /* 🌟 Glass Metallic Effect - تأثير زجاجي معدني عصري */
   background: linear-gradient(135deg, 
     rgba(255, 255, 255, 0.25) 0%,
@@ -130,14 +163,14 @@ const BrandCard = styled.button`
   border: 2px solid rgba(200, 200, 200, 0.4);
   border-top: 2px solid rgba(255, 255, 255, 0.6); /* highlight على الحافة العلوية */
   border-radius: 16px;
-  padding: 1.25rem 1rem;
+  padding: 1rem 0.75rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
+  gap: 12px;
   position: relative;
   overflow: hidden;
   opacity: 1;
@@ -147,6 +180,28 @@ const BrandCard = styled.button`
     0 4px 15px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.5), /* highlight داخلي */
     inset 0 -1px 0 rgba(0, 0, 0, 0.1); /* shadow داخلي */
+  
+  @media (max-width: 768px) {
+    width: 120px;
+    height: 130px;
+    min-width: 120px;
+    min-height: 130px;
+    max-width: 120px;
+    max-height: 130px;
+    padding: 0.875rem 0.625rem;
+    gap: 10px;
+  }
+  
+  @media (max-width: 600px) {
+    width: 100px;
+    height: 110px;
+    min-width: 100px;
+    min-height: 110px;
+    max-width: 100px;
+    max-height: 110px;
+    padding: 0.75rem 0.5rem;
+    gap: 8px;
+  }
 
   html[data-theme="dark"] & {
     background: linear-gradient(135deg, 
@@ -281,16 +336,18 @@ const BrandName = styled.div`
 const ViewAllBrandsButton = styled.button`
   border: none;
   border-radius: 12px;
-  padding: 0.75rem 2rem;
+  width: 261px;
+  padding: 6px 0px;
   font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  margin: 2rem auto 0;
+  margin: 29px auto 10px;
   display: block;
   position: relative;
   overflow: hidden;
   letter-spacing: 0.02em;
+  background-color: rgba(205, 24, 24, 0.08);
 
   /* Light mode: Orange/Yellow gradient */
   html[data-theme="light"] & {
@@ -365,34 +422,28 @@ const PopularBrandsSection: React.FC = () => {
         </ViewAllBrandsButton>
 
         <BrandsContainer>
-          <HorizontalScrollContainer
-            gap="0.75rem"
-            padding="0"
-            itemMinWidth="140px"
-            showArrows={true}
-          >
-            {POPULAR_BRANDS.map(brand => {
-              return (
-                <BrandCard
-                  key={brand.id}
-                  onClick={() => handleBrandClick(brand.id)}
-                  title={`${language === 'bg' ? 'Преглед' : 'View'} ${getBrandName(brand)} ${language === 'bg' ? 'автомобили' : 'cars'}`}
-                >
-                  <LogoContainer>
-                    <img
-                      src={`/assets/images/professional_car_logos/${brand.logo}`}
-                      alt={brand.nameEn}
-                      loading="lazy"
-                      onError={(e) => {
-                        e.currentTarget.src = '/assets/images/logos/default-car.png';
-                      }}
-                    />
-                  </LogoContainer>
-                  <BrandName>{getBrandName(brand)}</BrandName>
-                </BrandCard>
-              );
-            })}
-          </HorizontalScrollContainer>
+          {/* ✅ Grid layout instead of horizontal scroll */}
+          {POPULAR_BRANDS.map(brand => {
+            return (
+              <BrandCard
+                key={brand.id}
+                onClick={() => handleBrandClick(brand.id)}
+                title={`${language === 'bg' ? 'Преглед' : 'View'} ${getBrandName(brand)} ${language === 'bg' ? 'автомобили' : 'cars'}`}
+              >
+                <LogoContainer>
+                  <img
+                    src={`/assets/images/professional_car_logos/${brand.logo}`}
+                    alt={brand.nameEn}
+                    loading="lazy"
+                    onError={(e) => {
+                      e.currentTarget.src = '/assets/images/logos/default-car.png';
+                    }}
+                  />
+                </LogoContainer>
+                <BrandName>{getBrandName(brand)}</BrandName>
+              </BrandCard>
+            );
+          })}
         </BrandsContainer>
       </ContentContainer>
     </SectionContainer>

@@ -111,7 +111,7 @@ export class UnifiedProfileService {
    * @example
    * const dealer = await profileService.getDealershipInfo('user-123');
    * if (dealer) {
-   *   console.log(`Dealership: ${dealer.dealershipNameBG}`);
+   *   logger.info(`Dealership: ${dealer.dealershipNameBG}`);
    * }
    */
   async getDealershipInfo(dealershipId: string): Promise<DealershipInfo | null> {
@@ -194,7 +194,7 @@ export class UnifiedProfileService {
    * 
    * @example
    * const url = await profileService.uploadProfilePicture('user-123', imageFile);
-   * console.log(`Profile picture URL: ${url}`);
+   * logger.info(`Profile picture URL: ${url}`);
    */
   async uploadProfilePicture(userId: string, file: File): Promise<string> {
     try {

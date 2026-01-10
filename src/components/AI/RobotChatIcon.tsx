@@ -18,13 +18,13 @@ const float = keyframes`
 
 const FloatingContainer = styled.div`
   position: fixed;
-  right: 32px;
-  bottom: 408px; /* GlobalWorkflowTimer at 328px + 64px + 16px gap */
+  right: 32px; /* Aligned with other floating buttons */
+  bottom: 304px; /* Positioned above AI Assistant button (232px) with 72px spacing */
   z-index: 1000;
   
   @media (max-width: 768px) {
-    right: 24px;
-    bottom: 352px; /* Mobile: 280px + 56px + 16px */
+    right: 24px; /* Aligned with other floating buttons on mobile */
+    bottom: 264px; /* Positioned above AI Assistant button (200px) with 64px spacing */
   }
 `;
 

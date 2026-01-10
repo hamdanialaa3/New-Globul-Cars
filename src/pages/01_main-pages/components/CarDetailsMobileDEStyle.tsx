@@ -63,6 +63,7 @@ import CarBrandLogo from '../../../components/CarBrandLogo';
 import { ExtendedSellerInfo } from './ExtendedSellerInfo';
 import { Battery, ShieldCheck, Info } from 'lucide-react';
 import RealisticPaperclipBadge from '../../../components/SoldBadge/RealisticPaperclipBadge';
+import { logger } from '../../../services/logger-service';
 
 
 
@@ -1697,7 +1698,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
         const carRef = doc(db, 'cars', car.id);
         await updateDoc(carRef, { featuredImageIndex: index });
       } catch (error) {
-        console.error('Error updating featured image:', error);
+        logger.error('Error updating featured image', error as Error);
       }
     }
   };
@@ -1737,11 +1738,16 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   };
 
   // Get car share URL
+  // ✅ CONSTITUTION: Use numeric URL pattern
   const getCarShareUrl = () => {
-    if (car.sellerNumericId && (car.carNumericId || (car as any).numericId)) {
-      return `${window.location.origin}/car/${car.sellerNumericId}/${car.carNumericId || (car as any).numericId}`;
+    const sellerNumericId = car.sellerNumericId || (car as any).ownerNumericId;
+    const carNumericId = car.carNumericId || (car as any).userCarSequenceId || (car as any).numericId;
+    
+    if (sellerNumericId && carNumericId) {
+      return `${window.location.origin}/car/${sellerNumericId}/${carNumericId}`;
     }
-    return `${window.location.origin}/car/${car.id}`;
+    // Fallback to current URL
+    return window.location.href;
   };
 
   const getCarShareTitle = () => {
@@ -1912,7 +1918,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
                 try {
                   setShowPrintDialog(true);
                 } catch (error) {
-                  console.error('Error setting showPrintDialog:', error);
+                  logger.error('Error setting showPrintDialog', error as Error);
                 }
               }}
               title={language === 'bg' ? 'Печат' : 'Print'}
@@ -2597,7 +2603,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
                 setShowPrintDialog(false);
               }
             } catch (error) {
-              console.error('PDF generation error:', error);
+              logger.error('PDF generation error', error as Error);
               alert(language === 'bg'
                 ? 'Моля инсталирайте библиотеките: npm install jspdf html2canvas'
                 : 'Please install libraries: npm install jspdf html2canvas');

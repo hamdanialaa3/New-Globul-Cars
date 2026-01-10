@@ -5,6 +5,9 @@ import { logger } from '../../../../services/logger-service';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { usePullToRefresh } from '../../../../hooks/useMobileInteractions';
+import { PullToRefreshIndicator } from '../../../../components/mobile/PullToRefreshIndicator';
+import { toast } from 'react-toastify';
 import { useAuth } from '../../../../contexts/AuthProvider';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useTheme } from '../../../../contexts/ThemeContext';
@@ -34,6 +37,7 @@ const SmartFeedSection: React.FC = () => {
   
   const sentinelRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
+
 
   // Load initial feed
   const loadFeed = useCallback(async (pageNum: number) => {
@@ -103,6 +107,30 @@ const SmartFeedSection: React.FC = () => {
   useEffect(() => {
     loadFeed(1);
   }, [loadFeed]);
+
+  // Pull-to-Refresh: Container ref (placed after loadFeed to avoid TDZ)
+  const feedContainerRef = useRef<HTMLDivElement>(null);
+
+  // Pull-to-Refresh: Refresh handler
+  const handleRefreshFeed = useCallback(async () => {
+    try {
+      logger.info('🔄 Pull-to-refresh: Refreshing feed');
+
+      // Reset and reload feed
+      setPosts([]);
+      setPage(1);
+      setHasMore(true);
+      await loadFeed(1);
+
+      toast.success(language === 'bg' ? 'Емисията е актуализирана' : 'Feed refreshed');
+    } catch (error) {
+      logger.error('❌ Pull-to-refresh: Failed to refresh feed', error as Error);
+      toast.error(language === 'bg' ? 'Грешка при актуализиране' : 'Failed to refresh');
+    }
+  }, [language, loadFeed]);
+
+  // Pull-to-Refresh: Hook
+  const { pulling, refreshing } = usePullToRefresh(feedContainerRef, handleRefreshFeed);
 
   // ⚡ OPTIMIZED: Infinite scroll observer with debouncing
   useEffect(() => {
@@ -242,7 +270,14 @@ const SmartFeedSection: React.FC = () => {
 
   return (
     <FeedSection $isDark={isDark}>
-      <FeedContainer>
+      <FeedContainer ref={feedContainerRef}>
+        <PullToRefreshIndicator 
+          pulling={pulling}
+          refreshing={refreshing}
+          pullingText={language === 'bg' ? 'Издърпайте за опресняване' : 'Pull to refresh'}
+          refreshingText={language === 'bg' ? 'Опресняване...' : 'Refreshing...'}
+          position="top"
+        />
         <FeedHeader>
           <FeedTitle $isDark={isDark}>{t.title}</FeedTitle>
           <FeedSubtitle $isDark={isDark}>{t.subtitle}</FeedSubtitle>

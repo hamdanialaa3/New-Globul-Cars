@@ -32,7 +32,7 @@ class UnifiedCarService {
    * 
    * @example
    * const featured = await unifiedCarService.getFeaturedCars(6);
-   * console.log(`Found ${featured.length} featured cars`);
+   * logger.info(`Found ${featured.length} featured cars`);
    */
   async getFeaturedCars(limitCount: number = 4): Promise<UnifiedCar[]> {
     return getFeaturedCars(limitCount);
@@ -109,7 +109,7 @@ class UnifiedCarService {
    * @example
    * const car = await unifiedCarService.getCarById('car-123');
    * if (car) {
-   *   console.log(`Found: ${car.make} ${car.model}`);
+   *   logger.info(`Found: ${car.make} ${car.model}`);
    * }
    */
   async getCarById(carId: string): Promise<UnifiedCar | null> {

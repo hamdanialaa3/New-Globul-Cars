@@ -2,6 +2,7 @@
 import * as functions from 'firebase-functions';
 import { BigQuery } from '@google-cloud/bigquery';
 
+const logger = functions.logger;
 const bigquery = new BigQuery(); // Uses ADC automatically
 
 export const streamSearchEventToBigQuery = async (searchParams: any, userId?: string) => {
@@ -26,9 +27,9 @@ export const streamSearchEventToBigQuery = async (searchParams: any, userId?: st
             .dataset(datasetId)
             .table(tableId)
             .insert(rows);
-        console.log(`📊 Data streamed to BigQuery: ${rows.length} rows`);
+        logger.info(`📊 Data streamed to BigQuery: ${rows.length} rows`);
     } catch (error) {
-        console.error('❌ BigQuery Error:', error);
+        logger.error('❌ BigQuery Error:', error);
         // Silent fail to not disrupt user experience
     }
 };

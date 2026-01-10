@@ -383,10 +383,15 @@ const WeatherStyleCarCard: React.FC<WeatherStyleCarCardProps> = ({ car }) => {
   }, [car.images, car.mainImage, imageError]);
 
   const handleViewDetails = () => {
-    if (car.sellerNumericId && car.carNumericId) {
-      navigate(`/car/${car.sellerNumericId}/${car.carNumericId}`);
+    // ✅ CONSTITUTION: Use numeric URL pattern
+    const sellerNumericId = car.sellerNumericId || (car as any).ownerNumericId;
+    const carNumericId = car.carNumericId || (car as any).userCarSequenceId || (car as any).numericId;
+    
+    if (sellerNumericId && carNumericId) {
+      navigate(`/car/${sellerNumericId}/${carNumericId}`);
     } else {
-      navigate(`/car/${car.id}`);
+      // Car missing numeric IDs - show in list view
+      navigate('/cars');
     }
   };
 

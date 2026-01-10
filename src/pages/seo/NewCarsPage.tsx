@@ -11,6 +11,7 @@ import { collection, query, where, getDocs, orderBy, limit, Timestamp } from 'fi
 import { db } from '../../firebase/firebase-config';
 import { VEHICLE_COLLECTIONS } from '../../services/car/unified-car-types';
 import CarCardCompact from '../../components/CarCard/CarCardCompact';
+import { logger } from '../../services/logger-service';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -148,7 +149,7 @@ const NewCarsPage: React.FC = () => {
             if (createdAt >= last7Days) count7d++;
           });
         } catch (error) {
-          console.warn(`Error loading from ${collectionName}:`, error);
+          logger.warn(`Error loading from ${collectionName}`, { error });
         }
       }
 
@@ -167,7 +168,7 @@ const NewCarsPage: React.FC = () => {
 
       setCars(allCars.slice(0, 24));
     } catch (error) {
-      console.error('Error loading new cars:', error);
+      logger.error('Error loading new cars', error as Error);
     } finally {
       setLoading(false);
     }

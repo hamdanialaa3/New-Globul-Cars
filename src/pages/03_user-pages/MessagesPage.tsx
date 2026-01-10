@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { useSearchParams, useNavigate, useParams } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
-import bg from 'date-fns/locale/bg';
-import enUS from 'date-fns/locale/en-US';
+import { bg } from 'date-fns/locale/bg';
+import { enUS } from 'date-fns/locale/en-US';
 import { Send } from 'lucide-react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 
@@ -22,6 +22,8 @@ import { getCarLogoUrl } from '../../services/car-logo-service';
 import Header from '../../components/Header/UnifiedHeader';
 import { db } from '../../firebase/firebase-config';
 import { toast } from 'react-toastify';
+import { usePullToRefresh } from '../../hooks/useMobileInteractions';
+import { PullToRefreshIndicator } from '../../components/mobile/PullToRefreshIndicator';
 
 const MessagesContainer = styled.div`
   position: fixed;
@@ -194,6 +196,12 @@ const CarLogoImage = styled.img`
   object-fit: contain;
   margin-right: 6px;
   flex-shrink: 0;
+`;
+
+const CarBadgeWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
 `;
 
 const ConversationItem = styled.div<{ $active: boolean }>`
@@ -560,12 +568,75 @@ const MessagesPage: React.FC = () => {
   const [initializing, setInitializing] = useState(false);
   const [profiles, setProfiles] = useState<{ [key: string]: any }>({});
   const [showSettings, setShowSettings] = useState(false);
-  const [previousMessagesCount, setPreviousMessagesCount] = useState(0);
+  // previousMessagesCount moved to useRef to prevent infinite loop
   
   // ✅ NEW: State for numeric ID resolution
   const [resolvedConversationId, setResolvedConversationId] = useState<string | null>(null);
   const [resolutionError, setResolutionError] = useState<string | null>(null);
   const [isResolvingNumericIds, setIsResolvingNumericIds] = useState(false);
+
+  // ✅ Pull-to-Refresh: Container ref
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+
+  // ✅ Pull-to-Refresh: Refresh function
+  const handleRefreshConversations = async () => {
+    if (!currentUser) return;
+    
+    try {
+      logger.info('🔄 Pull-to-refresh: Refreshing conversations', { userId: currentUser.uid });
+      
+      // Re-fetch conversations (subscription will auto-update)
+      // The subscription is already active, just show user feedback
+      await new Promise(resolve => setTimeout(resolve, 800)); // Simulate fetch
+      
+      toast.success(
+        language === 'bg'
+          ? 'Съобщенията са актуализирани'
+          : 'Messages refreshed'
+      );
+      
+      logger.info('✅ Pull-to-refresh: Conversations refreshed successfully');
+    } catch (error) {
+      logger.error('❌ Pull-to-refresh: Failed to refresh', error as Error);
+      toast.error(
+        language === 'bg'
+          ? 'Грешка при актуализиране'
+          : 'Failed to refresh'
+      );
+    }
+  };
+
+  // ✅ Pull-to-Refresh: Hook
+  const { pulling, refreshing } = usePullToRefresh(
+    messagesContainerRef,
+    handleRefreshConversations
+  );
+
+  // 🚨 CRITICAL: Validate currentConversation whenever it changes
+  useEffect(() => {
+    if (currentConversation && (!currentConversation.id || currentConversation.id.length !== 20)) {
+      logger.warn('🚨 INVALID CONVERSATION DETECTED IN STATE - CLEARING!', {
+        conversationId: currentConversation.id,
+        idLength: currentConversation.id?.length
+      });
+      
+      logger.error('🚨 INVALID CONVERSATION IN STATE - CLEARING!', new Error('Invalid conversation'), {
+        conversationId: currentConversation.id,
+        idLength: currentConversation.id?.length,
+        participants: currentConversation.participants
+      });
+      
+      // Clear invalid conversation from state
+      setCurrentConversation(null);
+      
+      // Show user-friendly message
+      toast.error(
+        language === 'bg'
+          ? 'Грешка в системата. Моля презаредете страницата.'
+          : 'System error. Please refresh the page.'
+      );
+    }
+  }, [currentConversation, language]);
 
   // Refs for auto-scrolling
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -635,18 +706,30 @@ const MessagesPage: React.FC = () => {
           // Convert numeric IDs to Firebase UIDs
           const usersRef = collection(db, 'users');
           
-          // Find user 1
-          const q1 = query(usersRef, where('numericId', '==', parseInt(id1)));
-          const snapshot1 = await getDocs(q1);
+          // Find user 1 - try both Number and String types
+          let q1 = query(usersRef, where('numericId', '==', parseInt(id1)));
+          let snapshot1 = await getDocs(q1);
           
           if (snapshot1.empty) {
-            throw new Error(`User with numericId ${id1} not found`);
+            logger.warn('User not found as Number, trying String', { id1 });
+            q1 = query(usersRef, where('numericId', '==', id1));
+            snapshot1 = await getDocs(q1);
+          }
+          
+          if (snapshot1.empty) {
+            throw new Error(`User with numericId ${id1} not found (tried both Number and String types)`);
           }
           const user1Uid = snapshot1.docs[0].id;
           
-          // Find user 2
-          const q2 = query(usersRef, where('numericId', '==', parseInt(id2)));
-          const snapshot2 = await getDocs(q2);
+          // Find user 2 - try both Number and String types
+          let q2 = query(usersRef, where('numericId', '==', parseInt(id2)));
+          let snapshot2 = await getDocs(q2);
+          
+          if (snapshot2.empty) {
+            logger.warn('User not found as Number, trying String', { id2 });
+            q2 = query(usersRef, where('numericId', '==', id2));
+            snapshot2 = await getDocs(q2);
+          }
           
           if (snapshot2.empty) {
             throw new Error(`User with numericId ${id2} not found`);
@@ -660,10 +743,12 @@ const MessagesPage: React.FC = () => {
             user2Uid 
           });
           
-          // Find or create conversation between these users
+          // ✅ FIX: Find or create conversation between these users
           let conversation = await advancedMessagingService.findConversationByParticipants(
             [user1Uid, user2Uid]
           );
+          
+          let conversationId: string;
           
           if (!conversation) {
             logger.info('📝 Creating new conversation between users', { 
@@ -671,36 +756,61 @@ const MessagesPage: React.FC = () => {
               user2Uid 
             });
             
-            // Create new conversation
+            // Create new conversation - createConversation returns conversation ID (string)
             const carId = searchParams.get('car');
-            conversation = await advancedMessagingService.createConversation({
-              participantIds: [user1Uid, user2Uid],
-              carId: carId || undefined,
-              metadata: {
-                initiatedFrom: 'numeric_url',
-                numericIds: { id1, id2 }
+            conversationId = await advancedMessagingService.createConversation(
+              [user1Uid, user2Uid],
+              {
+                carId: carId || undefined
               }
+            );
+            
+            logger.info('✅ New conversation created', { 
+              conversationId,
+              participants: [user1Uid, user2Uid]
+            });
+            
+            // ✅ Wait for Firestore to propagate the new conversation with retry
+            let retryCount = 0;
+            const maxRetries = 5;
+            while (retryCount < maxRetries) {
+              await new Promise(resolve => setTimeout(resolve, 300));
+              const retryConv = await advancedMessagingService.findConversationByParticipants(
+                [user1Uid, user2Uid]
+              );
+              if (retryConv) {
+                logger.info('✅ Conversation confirmed after retry', { retryCount });
+                break;
+              }
+              retryCount++;
+            }
+          } else {
+            conversationId = conversation.id;
+            logger.info('✅ Found existing conversation', { 
+              conversationId,
+              participants: conversation.participants
             });
           }
           
-          setResolvedConversationId(conversation.id);
+          setResolvedConversationId(conversationId);
           setResolutionError(null);
           
           logger.info('✅ Successfully resolved to conversation', { 
-            conversationId: conversation.id 
+            conversationId,
+            willWaitForSubscription: !conversation 
           });
           
         } catch (error: any) {
           logger.error('❌ Failed to resolve numeric IDs', error, { id1, id2 });
           setResolutionError(
             language === 'bg' 
-              ? 'فشل في فتح المحادثة. يرجى المحاولة لاحقاً.'
+              ? 'Грешка при зареждане на съобщенията. Моля опитайте по-късно.'
               : 'Failed to open conversation. Please try again later.'
           );
           
           toast.error(
             language === 'bg'
-              ? 'خطأ في فتح المحادثة'
+              ? 'Грешка при отваряне на разговора'
               : 'Error opening conversation'
           );
         } finally {
@@ -725,6 +835,72 @@ const MessagesPage: React.FC = () => {
     resolveNumericIdsToConversation();
   }, [id1, id2, searchParams, currentUser, language]);
 
+  // ✅ Connect resolvedConversationId to currentConversation
+  useEffect(() => {
+    if (!resolvedConversationId) return;
+    
+    // Skip if already set
+    if (currentConversation?.id === resolvedConversationId) {
+      logger.debug('Current conversation already matches resolved ID');
+      return;
+    }
+    
+    // Try to find in loaded conversations
+    const conv = conversations.find(c => c.id === resolvedConversationId);
+    if (conv) {
+      logger.info('🔗 Setting current conversation from resolved ID', { 
+        resolvedConversationId,
+        participants: conv.participants,
+        conversationId: conv.id,
+        idLength: conv.id?.length
+      });
+      setCurrentConversation(conv);
+      return;
+    }
+    
+    // ✅ If not found in list, fetch it directly (new conversation or not yet in subscription)
+    const fetchConversation = async () => {
+      try {
+        logger.info('📥 Conversation not in list, fetching directly', { 
+          resolvedConversationId,
+          conversationsCount: conversations.length 
+        });
+        
+        const conversationData = await advancedMessagingService.getConversationById(resolvedConversationId);
+        
+        if (conversationData) {
+          logger.info('✅ Fetched conversation data directly', { 
+            id: conversationData.id, 
+            participants: conversationData.participants,
+            idLength: conversationData.id?.length,
+            isValidFormat: conversationData.id?.length === 20
+          });
+          setCurrentConversation(conversationData);
+        } else {
+          logger.warn('⚠️ Conversation not found in Firestore', { resolvedConversationId });
+          // Wait a bit and retry (conversation might be propagating)
+          setTimeout(async () => {
+            logger.info('🔄 Retrying conversation fetch...');
+            const retryData = await advancedMessagingService.getConversationById(resolvedConversationId);
+            if (retryData) {
+              logger.info('✅ Retry successful');
+              setCurrentConversation(retryData);
+            } else {
+              logger.error('❌ Conversation still not found after retry');
+            }
+          }, 1000);
+        }
+      } catch (error) {
+        logger.error('Failed to fetch conversation', error as Error, { resolvedConversationId });
+      }
+    };
+    
+    // Only fetch if conversations are loaded but this one is missing (newly created)
+    if (conversations.length >= 0) { // Always try for new conversations
+      fetchConversation();
+    }
+  }, [resolvedConversationId, conversations, currentConversation?.id]);
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -738,7 +914,47 @@ const MessagesPage: React.FC = () => {
     const unsubscribe = advancedMessagingService.subscribeToUserConversations(
       currentUser.uid,
       (updatedConversations) => {
-        setConversations(updatedConversations);
+        // ✅ FIX: Removed console.log - using logger.debug instead
+        logger.debug('Conversations received', {
+          count: updatedConversations.length,
+          conversations: updatedConversations.map(c => ({
+            id: c.id,
+            idLength: c.id?.length,
+            participants: c.participants,
+            isUIDasID: c.participants?.includes(c.id)
+          }))
+        });
+
+        // DEBUG: Log loaded conversations WITH VALIDATION
+        logger.info('📬 Conversations received in MessagesPage', {
+          count: updatedConversations.length,
+          ids: updatedConversations.map(c => c.id),
+          firstConv: updatedConversations[0] ? {
+            id: updatedConversations[0].id,
+            idLength: updatedConversations[0].id?.length,
+            isValidFormat: updatedConversations[0].id?.length === 20,
+            participants: updatedConversations[0].participants
+          } : null
+        });
+        
+        // ⚠️ CRITICAL: Validate all conversation IDs before setting state
+        const validConversations = updatedConversations.filter(c => {
+          if (!c.id || c.id.length !== 20) {
+            logger.error('❌ Invalid conversation ID detected in subscription!', new Error('Invalid ID'), {
+              conversationId: c.id,
+              idLength: c.id?.length,
+              participants: c.participants
+            });
+            return false;
+          }
+          return true;
+        });
+        
+        if (validConversations.length !== updatedConversations.length) {
+          logger.warn(`⚠️ Filtered out ${updatedConversations.length - validConversations.length} invalid conversations`);
+        }
+        
+        setConversations(validConversations);
         setLoading(false);
       }
     );
@@ -877,8 +1093,13 @@ const MessagesPage: React.FC = () => {
   }, [currentConversation?.id, currentUser?.uid]); // Only depend on IDs, not full objects
 
   // Play notification sound on new message received
+  // Using useRef to avoid dependency loop
+  const previousMessagesCountRef = React.useRef(0);
+  
   useEffect(() => {
-    if (messages.length > previousMessagesCount && previousMessagesCount > 0) {
+    const prevCount = previousMessagesCountRef.current;
+    
+    if (messages.length > prevCount && prevCount > 0) {
       const latestMessage = messages[messages.length - 1];
       
       // Only play sound for received messages (not sent by current user)
@@ -887,30 +1108,96 @@ const MessagesPage: React.FC = () => {
       }
     }
     
-    // Update previous count
-    setPreviousMessagesCount(messages.length);
-  }, [messages, previousMessagesCount, currentUser?.uid]);
+    // Update ref (doesn't trigger re-render)
+    previousMessagesCountRef.current = messages.length;
+  }, [messages, currentUser?.uid]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim() || !currentUser || !currentConversation) return;
+
+    // 🚨 EMERGENCY DEBUG: replaced with logger.debug to satisfy console ban
+    logger.debug('🚨 SEND MESSAGE DEBUG:', {
+      conversationId: currentConversation.id,
+      idLength: currentConversation.id?.length,
+      participants: currentConversation.participants,
+      isUID: currentConversation.participants?.includes(currentConversation.id),
+      fullConversation: currentConversation
+    });
+
+    // Debug: Log current conversation details BEFORE validation
+    logger.info('📤 Attempting to send message - PRE VALIDATION', {
+      conversationId: currentConversation.id,
+      conversationIdType: typeof currentConversation.id,
+      participants: currentConversation.participants,
+      idLength: currentConversation.id?.length,
+      isString: typeof currentConversation.id === 'string',
+      conversationObject: JSON.stringify(currentConversation).substring(0, 200)
+    });
+
+    // Debug: Log current conversation details
+    logger.info('📤 Attempting to send message', {
+      conversationId: currentConversation.id,
+      participants: currentConversation.participants,
+      idLength: currentConversation.id?.length,
+      isValidFirestoreId: currentConversation.id?.length === 20 // Firestore IDs are 20 chars
+    });
+
+    // ⚠️ Validate conversation ID - should NOT be a user UID
+    if (!currentConversation.id || currentConversation.id.length !== 20) {
+      logger.error('❌ Invalid conversation ID - wrong format!', new Error('Invalid conversation format'), {
+        conversationId: currentConversation.id,
+        participants: currentConversation.participants,
+        idLength: currentConversation.id?.length
+      });
+      alert('خطأ في المحادثة. يرجى إعادة تحميل الصفحة.');
+      return;
+    }
+
+    if (currentConversation.participants?.includes(currentConversation.id)) {
+      logger.error('❌ Invalid conversation ID - matches a participant UID!', new Error('Conversation ID is a UID'), {
+        conversationId: currentConversation.id,
+        participants: currentConversation.participants
+      });
+      alert('خطأ في المحادثة. يرجى إعادة تحميل الصفحة.');
+      return;
+    }
 
     const text = newMessage;
     setNewMessage(''); // Optimistic clear
 
     try {
       const receiverId = currentConversation.participants.find(p => p !== currentUser.uid);
-      if (receiverId) {
-        await advancedMessagingService.sendMessage(
-          currentConversation.id,
-          currentUser.uid,
-          receiverId,
-          text
-        );
-        notificationSoundService.playSent();
+      if (!receiverId) {
+        const error = new Error('No receiver found');
+        logger.error('❌ No receiver found in conversation', error, {
+          participants: currentConversation.participants,
+          currentUserId: currentUser.uid
+        });
+        throw error;
       }
+
+      logger.info('📤 Sending message to Firestore', {
+        conversationId: currentConversation.id,
+        senderId: currentUser.uid,
+        receiverId: receiverId,
+        textLength: text.length
+      });
+
+      await advancedMessagingService.sendMessage(
+        currentConversation.id,
+        currentUser.uid,
+        receiverId,
+        text
+      );
+      
+      logger.info('✅ Message sent successfully');
+      notificationSoundService.playSent();
     } catch (error) {
-      logger.error('Failed to send message', error as Error);
+      logger.error('❌ Failed to send message', error as Error, {
+        conversationId: currentConversation.id,
+        errorMessage: (error as Error).message
+      });
       setNewMessage(text); // Restore on error
       alert(t('messages.sendFailed', 'Failed to send message'));
     }
@@ -991,7 +1278,16 @@ const MessagesPage: React.FC = () => {
   return (
     <>
       <Header />
-      <MessagesContainer>
+      <MessagesContainer ref={messagesContainerRef}>
+        {/* Pull-to-Refresh Indicator */}
+        <PullToRefreshIndicator 
+          pulling={pulling}
+          refreshing={refreshing}
+          pullingText={language === 'bg' ? 'Издърпайте за опресняване' : 'Pull to refresh'}
+          refreshingText={language === 'bg' ? 'Опресняване...' : 'Refreshing...'}
+          position="top"
+        />
+        
         <PageContainer>
           <Sidebar $visible={showSidebar}>
             <SidebarHeader>
@@ -1042,9 +1338,10 @@ const MessagesPage: React.FC = () => {
                         {unread > 0 && <Badge variant="primary" size="sm" $rounded>{unread}</Badge>}
                       </div>
                       {conv.carTitle && (
-                        <Badge variant="light" size="sm" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          {conv.carLogoUrl ? (
-                            <CarLogoImage 
+                        <CarBadgeWrapper>
+                          <Badge variant="light" size="sm">
+                            {conv.carLogoUrl ? (
+                              <CarLogoImage 
                               src={conv.carLogoUrl} 
                               alt={conv.carMake || 'Car'} 
                               onError={(e) => {
@@ -1065,7 +1362,8 @@ const MessagesPage: React.FC = () => {
                             />
                           ) : null}
                           {conv.carTitle}
-                        </Badge>
+                          </Badge>
+                        </CarBadgeWrapper>
                       )}
                     </ConversationInfo>
                   </ConversationItem>

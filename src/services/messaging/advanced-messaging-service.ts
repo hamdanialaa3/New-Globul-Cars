@@ -67,6 +67,14 @@ class AdvancedMessagingService {
   }
 
   /**
+   * Get conversation by ID
+   * الحصول على محادثة بواسطة المعرف
+   */
+  async getConversationById(conversationId: string): Promise<Conversation | null> {
+    return ConversationOperations.getConversationById(conversationId);
+  }
+
+  /**
    * Get user conversations
    * الحصول على محادثات المستخدم
    */

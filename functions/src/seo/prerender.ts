@@ -5,6 +5,8 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
+const logger = functions.logger;
+
 // Initialize Firebase Admin if not already initialized
 if (!admin.apps.length) {
   admin.initializeApp();
@@ -21,7 +23,7 @@ const CACHE_DURATION = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
  */
 function isPrerenderable(url: string): boolean {
   if (!url) return false;
-  
+
   // URLs that should be prerendered
   const prerenderablePatterns = [
     /^\/$/,
@@ -95,7 +97,7 @@ async function fetchPageData(url: string): Promise<any> {
 
     return null;
   } catch (error) {
-    console.error('Error fetching page data:', error);
+    logger.error('Error fetching page data:', error);
     return null;
   }
 }
@@ -183,7 +185,7 @@ async function getCarPageData(sellerNumericId: number, carNumericId: number): Pr
 
     // Find car by numeric ID
     const collections = ['cars', 'passenger_cars', 'suvs', 'vans', 'motorcycles', 'trucks', 'buses'];
-    
+
     for (const collectionName of collections) {
       const carsSnapshot = await db.collection(collectionName)
         .where('sellerId', '==', userId)
@@ -209,7 +211,7 @@ async function getCarPageData(sellerNumericId: number, carNumericId: number): Pr
 
     return null;
   } catch (error) {
-    console.error('Error getting car data:', error);
+    logger.error('Error getting car data:', error);
     return null;
   }
 }
@@ -237,13 +239,14 @@ async function getProfilePageData(numericId: number): Promise<any> {
       profileType: userData.profileType || 'private',
     };
   } catch (error) {
-    console.error('Error getting profile data:', error);
+    logger.error('Error getting profile data:', error);
     return null;
   }
 }
 
 /**
- * Generate prerendered HTML
+ * Generate prerendered HTML with full SEO tags
+ * Includes: hreflang, OpenGraph, Twitter Cards, JSON-LD
  */
 function generatePrerenderedHTML(data: any): string {
   if (!data) {
@@ -251,6 +254,10 @@ function generatePrerenderedHTML(data: any): string {
   }
 
   const structuredData = generateBulgarianStructuredData(data);
+  const baseUrl = 'https://mobilebg.eu';
+  const canonicalUrl = `${baseUrl}${data.url || ''}`;
+  const enUrl = `${baseUrl}/en${data.url || ''}`;
+  const ogImage = data.image || `${baseUrl}/og-image.jpg`;
 
   return `<!DOCTYPE html>
 <html lang="bg">
@@ -259,8 +266,37 @@ function generatePrerenderedHTML(data: any): string {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${data.title || 'Bulgarski Avtomobili'}</title>
   <meta name="description" content="${data.description || ''}">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://globulcars.bg${data.url || ''}">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  
+  <!-- Canonical & hreflang -->
+  <link rel="canonical" href="${canonicalUrl}">
+  <link rel="alternate" hreflang="bg" href="${canonicalUrl}">
+  <link rel="alternate" hreflang="en" href="${enUrl}">
+  <link rel="alternate" hreflang="x-default" href="${canonicalUrl}">
+  
+  <!-- OpenGraph -->
+  <meta property="og:type" content="${data.type === 'car' ? 'product' : 'website'}">
+  <meta property="og:url" content="${canonicalUrl}">
+  <meta property="og:title" content="${data.title || 'Bulgarski Avtomobili'}">
+  <meta property="og:description" content="${data.description || ''}">
+  <meta property="og:image" content="${ogImage}">
+  <meta property="og:site_name" content="Bulgarski Avtomobili">
+  <meta property="og:locale" content="bg_BG">
+  <meta property="og:locale:alternate" content="en_US">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${data.title || 'Bulgarski Avtomobili'}">
+  <meta name="twitter:description" content="${data.description || ''}">
+  <meta name="twitter:image" content="${ogImage}">
+  
+  <!-- Price for products -->
+  ${data.price ? `
+  <meta property="product:price:amount" content="${data.price}">
+  <meta property="product:price:currency" content="BGN">
+  ` : ''}
+  
+  <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
     ${JSON.stringify(structuredData, null, 2)}
   </script>
@@ -275,6 +311,7 @@ function generatePrerenderedHTML(data: any): string {
 </body>
 </html>`;
 }
+
 
 /**
  * Generate Bulgarian Structured Data
@@ -426,7 +463,7 @@ export const prerender = functions
       res.set('Cache-Control', 'public, max-age=21600'); // 6 hours
       res.send(html);
     } catch (error) {
-      console.error('Prerender error:', error);
+      logger.error('Prerender error:', error);
       res.status(500).send('Error generating prerendered HTML');
     }
   });

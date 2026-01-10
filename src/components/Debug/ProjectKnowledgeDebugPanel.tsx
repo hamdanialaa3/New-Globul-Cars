@@ -8,6 +8,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { projectKnowledgeService } from '../../services/ai/project-knowledge.service';
+import { logger } from '@/services/logger-service';
 
 export const ProjectKnowledgeDebugPanel: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -39,7 +40,7 @@ export const ProjectKnowledgeDebugPanel: React.FC = () => {
       const searchResults = await projectKnowledgeService.search(query, 10);
       setResults(searchResults);
     } catch (error) {
-      console.error('Search error:', error);
+      logger.error('ProjectKnowledgeDebugPanel search error', error as Error, { query });
     } finally {
       setLoading(false);
     }
@@ -51,10 +52,10 @@ export const ProjectKnowledgeDebugPanel: React.FC = () => {
     setLoading(true);
     try {
       const searchResults = await projectKnowledgeService.intelligentSearch(query);
-      console.log('🔍 Intelligent Search Results:', searchResults);
+      logger.debug('Intelligent Search Results', { query, resultsCount: searchResults?.results?.length });
       setResults(searchResults.results);
     } catch (error) {
-      console.error('Intelligent search error:', error);
+      logger.error('ProjectKnowledgeDebugPanel intelligent search error', error as Error, { query });
     } finally {
       setLoading(false);
     }

@@ -16,7 +16,7 @@ export const syncCarsToGoogleAds = functions
     .onRun(async () => {
         try {
             if (!process.env.GOOGLE_ADS_CLIENT_ID) {
-                console.warn('Google Ads credentials missing, skipping sync.');
+                functions.logger.warn('Google Ads credentials missing, skipping sync.');
                 return;
             }
 
@@ -55,10 +55,10 @@ export const syncCarsToGoogleAds = functions
                 // This is a simplified example. In reality, you'd batch these to specific ad groups.
                 // API placeholder
                 // await customer.adGroups.adGroupAds.create(ads);
-                console.log(`✅ Would sync ${ads.length} cars to Google Ads`);
+                functions.logger.info(`✅ Would sync ${ads.length} cars to Google Ads`);
             }
 
         } catch (error) {
-            console.error('Google Ads sync error:', error);
+            functions.logger.error('Google Ads sync error:', error);
         }
     });

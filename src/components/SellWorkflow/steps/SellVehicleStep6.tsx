@@ -13,6 +13,7 @@ import { BulgarianProfileService } from '../../../services/bulgarian-profile-ser
 import { Check, AlertCircle } from 'lucide-react';
 import { EmailAutocomplete } from '../../shared/EmailAutocomplete';
 import { CountryFlagSelector } from '../../shared/CountryFlagSelector';
+import { logger } from '@/services/logger-service';
 
 interface SellVehicleStep6Props {
   workflowData: Partial<UnifiedWorkflowData>;
@@ -213,7 +214,7 @@ export const SellVehicleStep6: React.FC<SellVehicleStep6Props> = ({
           setProfileLoaded(true);
         }
       } catch (error) {
-        console.error('Failed to load profile:', error);
+        logger.error('Failed to load profile', error as Error);
         setProfileLoaded(true); // Mark as loaded even on error to prevent infinite loop
       }
     };

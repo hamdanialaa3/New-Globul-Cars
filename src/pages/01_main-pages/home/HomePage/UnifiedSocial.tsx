@@ -64,27 +64,27 @@ const Container = styled.section<{ $isDark: boolean }>`
     : 'linear-gradient(135deg, rgba(245, 250, 255, 0.92), rgba(248, 247, 246, 0.82))'};
   border: 1px solid ${props => props.$isDark ? 'rgba(255,255,255,0.08)' : 'rgba(12,26,42,0.06)'};
   box-shadow: 0 24px 60px ${props => props.$isDark ? 'rgba(0,0,0,0.28)' : 'rgba(12,26,42,0.12)'};
-  padding: 4rem 1rem;
-  margin: 2rem 0;
+  padding: 2rem 1rem;
+  margin: 1rem 0;
 
   @media (max-width: 768px) {
-    padding: 2.5rem 1rem;
-    margin: 1.5rem 0;
+    padding: 1.5rem 1rem;
+    margin: 0.75rem 0;
   }
 
   @media (max-width: 640px) {
-    padding: 1.5rem 1rem;
-    margin: 1rem 0;
+    padding: 1rem 0.75rem;
+    margin: 0.5rem 0;
   }
 `;
 
 const Header = styled.div<{ $isDark: boolean }>`
   max-width: 1200px;
-  margin: 0 auto 3rem;
+  margin: 0 auto 1.5rem;
   text-align: center;
 
   @media (max-width: 768px) {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
   }
 `;
 

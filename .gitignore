@@ -23,6 +23,9 @@
 .env.backup
 .env.facebook
 .env.production
+.env.staging
+.env.development
+.env.test
 
 # Exception: templates are safe
 !.env.example
@@ -37,6 +40,8 @@
 *.pfx
 secrets.json
 credentials.json
+serviceAccountKey.json
+gcloud.json
 
 npm-debug.log*
 yarn-debug.log*
@@ -45,6 +50,7 @@ yarn-error.log*
 # Environment Variables - NEVER COMMIT!
 .env*
 !.env.example
+!.env.template
 
 # Large data files
 data/project-knowledge.json

@@ -46,6 +46,9 @@ export interface Notification {
   carImage?: string;
   isRead: boolean;
   createdAt: Timestamp;
+  // ✅ CONSTITUTION: Numeric ID fields for strict URL generation
+  sellerNumericId?: number;
+  carNumericId?: number;
 }
 
 class NotificationService {
@@ -338,14 +341,19 @@ class NotificationService {
    * Uses strict numeric ID system
    */
   getCarUrl(notification: Notification): string {
-    const { carId } = notification;
+    const { sellerNumericId, carNumericId } = notification;
     
-    // Assuming the car has numeric IDs embedded or we fetch them
-    // For now, fallback to UUID-based URL (will be fixed in migration)
-    return `/car-details/${carId}`;
+    // ✅ CONSTITUTION: Use numeric URL pattern
+    if (sellerNumericId && carNumericId) {
+      return `/car/${sellerNumericId}/${carNumericId}`;
+    }
     
-    // TODO: Upgrade to strict numeric URLs when migration is complete
-    // return `/car/${sellerNumericId}/${carNumericId}`;
+    // No numeric IDs available - redirect to cars list
+    logger.warn('Notification missing numeric IDs, redirecting to cars list', { 
+      notificationId: notification.id,
+      carId: notification.carId 
+    });
+    return '/cars';
   }
 
   /**

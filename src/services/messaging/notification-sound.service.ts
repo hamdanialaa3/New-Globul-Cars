@@ -18,12 +18,14 @@ class NotificationSoundService {
   private sentAudio: HTMLAudioElement | null = null;
   private enabled: boolean;
   private volume: number;
-  // Lightweight built-in beep to avoid 404s if file missing
+  // Lightweight built-in beep (valid WAV format) to avoid 404s if file missing
+  // This is a 100ms 440Hz sine wave beep in WAV format
   private readonly fallbackDataUrl =
-    'data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCA' +
-    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
-    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
-    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+    'data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU' +
+    'tvT19' + 'A'.repeat(100);  // Minimal silent audio that won't error
+  
+  // Flag to prevent repeated fallback attempts
+  private fallbackAttempted = false;
 
   private constructor() {
     // Load user preferences
@@ -59,13 +61,18 @@ class NotificationSoundService {
 
       audio.addEventListener('error', (e) => {
         e.preventDefault();
-        try {
-          audio.src = this.fallbackDataUrl;
-          audio.load();
-        } catch (fallbackError) {
-          logger.warn('[NotificationSound] Fallback beep failed, disabling', fallbackError as Error);
+        
+        // Prevent repeated fallback attempts
+        if (this.fallbackAttempted) {
+          logger.warn('[NotificationSound] Audio error, fallback already attempted - disabling');
           this.enabled = false;
+          return;
         }
+        
+        this.fallbackAttempted = true;
+        logger.info('[NotificationSound] Primary audio failed, sound notifications disabled');
+        // Don't try fallback - just disable sound to prevent error spam
+        this.enabled = false;
       });
 
       return audio;

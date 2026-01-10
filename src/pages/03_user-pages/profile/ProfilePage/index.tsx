@@ -359,6 +359,8 @@ const ProfilePage: React.FC = () => {
 
   const {
     user,
+    target, // ⚡ NEW: Target user for messaging
+    viewer, // ⚡ NEW: Current logged-in user for messaging
     userCars,
     loading,
     editing,
@@ -821,16 +823,18 @@ const ProfilePage: React.FC = () => {
                       : (language === 'bg' ? 'Последвай' : 'Follow')
                     }
                   </FollowButton>
-                  <S.ActionButton $variant="primary" onClick={async () => {
-                    if (!user?.uid || !targetUserId) return;
-                    try {
-                      const { default: messagingService } = await import('../../services/messaging/messaging.service');
-                      const conversationId = await messagingService.getOrCreateConversation(user.uid, targetUserId);
-                      navigate(`/messages?conversation=${conversationId}`);
-                    } catch (error) {
-                      logger.error('Error creating conversation', error as Error);
+                  <S.ActionButton $variant="primary" onClick={() => {
+                    // ✅ CONSTITUTION FIX: Use numeric IDs for messaging URL
+                    if (!viewer?.numericId || !target?.numericId) {
+                      logger.warn('Missing numeric IDs for messaging', {
+                        viewerNumericId: viewer?.numericId,
+                        targetNumericId: target?.numericId
+                      });
                       toast.error(language === 'bg' ? 'Грешка' : 'Error');
+                      return;
                     }
+                    // Navigate using numeric IDs per constitution: /messages/:senderId/:recipientId
+                    navigate(`/messages/${viewer.numericId}/${target.numericId}`);
                   }}>
                     <Phone size={18} />
                     {language === 'bg' ? 'Съобщение' : 'Message'}

@@ -181,30 +181,30 @@ async function migrateBatch(
  * طباعة تقرير الترحيل
  */
 function printMigrationReport(stats: MigrationStats): void {
-  console.log('\n');
-  console.log('═══════════════════════════════════════════════════');
-  console.log('📊 MIGRATION REPORT / تقرير الترحيل');
-  console.log('═══════════════════════════════════════════════════');
-  console.log(`Total cars scanned:        ${stats.totalScanned}`);
-  console.log(`Cars needing migration:    ${stats.carsNeedingMigration}`);
-  console.log(`Successfully migrated:     ${stats.carsSuccessfullyMigrated} ✅`);
-  console.log(`Failed:                    ${stats.carsFailed} ❌`);
-  console.log('═══════════════════════════════════════════════════');
+  // ✅ FIX: Removed console.log - using serviceLogger instead
+  // Note: This is a CLI script, so console output is acceptable for migration reports
+  // However, we'll use serviceLogger for consistency
+  serviceLogger.info('═══════════════════════════════════════════════════');
+  serviceLogger.info('📊 MIGRATION REPORT / تقرير الترحيل');
+  serviceLogger.info('═══════════════════════════════════════════════════');
+  serviceLogger.info(`Total cars scanned:        ${stats.totalScanned}`);
+  serviceLogger.info(`Cars needing migration:    ${stats.carsNeedingMigration}`);
+  serviceLogger.info(`Successfully migrated:     ${stats.carsSuccessfullyMigrated} ✅`);
+  serviceLogger.info(`Failed:                    ${stats.carsFailed} ❌`);
+  serviceLogger.info('═══════════════════════════════════════════════════');
   
   if (stats.errors.length > 0) {
-    console.log('\n⚠️ ERRORS:');
+    serviceLogger.warn('⚠️ ERRORS:', { errors: stats.errors });
     stats.errors.forEach(err => {
-      console.log(`  - Car ${err.carId}: ${err.error}`);
+      serviceLogger.error(`Car ${err.carId} migration failed`, new Error(err.error));
     });
   }
   
   if (stats.carsSuccessfullyMigrated === stats.carsNeedingMigration) {
-    console.log('\n🎉 Migration completed successfully!');
+    serviceLogger.info('🎉 Migration completed successfully!');
   } else {
-    console.log('\n⚠️ Migration completed with errors. Please review.');
+    serviceLogger.warn('⚠️ Migration completed with errors. Please review.');
   }
-  
-  console.log('\n');
 }
 
 /**

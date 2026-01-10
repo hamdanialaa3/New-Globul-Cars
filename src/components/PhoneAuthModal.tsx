@@ -315,7 +315,7 @@ const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({ isOpen, onClose, onSucc
       try {
         recaptchaVerifier.clear();
       } catch (e) {
-        console.warn('Error clearing recaptcha', e);
+        logger.warn('Error clearing recaptcha', { error: e as unknown });
       }
     }
 

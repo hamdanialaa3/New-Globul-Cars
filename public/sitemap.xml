@@ -1,21 +1,34 @@
-    <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://mobilebg.eu/seller/cu5mQFj3gAUgxIn01piD3lWfkgs1" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://mobilebg.eu/en/seller/cu5mQFj3gAUgxIn01piD3lWfkgs1" />
-  </url>
-  <url>
-    <loc>https://mobilebg.eu/seller/hWgL3uXk0lNbSL0NzJ5aZ1qGVXT2</loc>
-    <lastmod>2025-10-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://mobilebg.eu/seller/hWgL3uXk0lNbSL0NzJ5aZ1qGVXT2" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://mobilebg.eu/en/seller/hWgL3uXk0lNbSL0NzJ5aZ1qGVXT2" />
-  </url>
-  <url>
-    <loc>https://mobilebg.eu/seller/ivan_dealer_sofia</loc>
-    <lastmod>2025-10-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://mobilebg.eu/seller/ivan_dealer_sofia" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://mobilebg.eu/en/seller/ivan_dealer_sofia" />
-  </url>
-</urlset>
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Main Sitemap Index for Bulgarski Avtomobili -->
+  
+  <!-- Static Pages -->
+  <sitemap>
+    <loc>https://mobilebg.eu/sitemap-static.xml</loc>
+    <lastmod>2026-01-06</lastmod>
+  </sitemap>
+  
+  <!-- Car Listings (Dynamic) -->
+  <sitemap>
+    <loc>https://mobilebg.eu/sitemap-cars.xml</loc>
+    <lastmod>2026-01-06</lastmod>
+  </sitemap>
+  
+  <!-- Location Landing Pages (Programmatic SEO) -->
+  <sitemap>
+    <loc>https://mobilebg.eu/sitemap-locations.xml</loc>
+    <lastmod>2026-01-06</lastmod>
+  </sitemap>
+  
+  <!-- Dealer Profiles -->
+  <sitemap>
+    <loc>https://mobilebg.eu/sitemap-dealers.xml</loc>
+    <lastmod>2026-01-06</lastmod>
+  </sitemap>
+  
+  <!-- Brand Pages -->
+  <sitemap>
+    <loc>https://mobilebg.eu/sitemap-brands.xml</loc>
+    <lastmod>2026-01-06</lastmod>
+  </sitemap>
+</sitemapindex>

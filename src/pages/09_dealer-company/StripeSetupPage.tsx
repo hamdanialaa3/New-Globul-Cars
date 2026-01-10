@@ -6,6 +6,8 @@ import { CreditCard, Check, Shield, Star, Crown, Zap, AlertCircle, Loader } from
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { logger } from '../../services/logger-service';
+// ✅ CRITICAL: Import subscription plans for accurate pricing
+import { SUBSCRIPTION_PLANS } from '../../config/subscription-plans';
 
 // --- Styled Components (Premium Professional) ---
 
@@ -311,7 +313,7 @@ const StripeSetupPage: React.FC = () => {
               <Zap size={28} />
             </PlanIcon>
             <PlanName>Dealer Pro</PlanName>
-            <PlanPrice>29€ <span>/mo</span></PlanPrice>
+            <PlanPrice>{SUBSCRIPTION_PLANS.dealer.price.monthly}€ <span>/mo</span></PlanPrice>
             <FeaturesList>
               <FeatureItem><Check size={18} /> Up to 50 car listings</FeatureItem>
               <FeatureItem><Check size={18} /> <strong>Priority</strong> placement in search</FeatureItem>
@@ -336,7 +338,7 @@ const StripeSetupPage: React.FC = () => {
               <Crown size={28} />
             </PlanIcon>
             <PlanName>Enterprise</PlanName>
-            <PlanPrice>99€ <span>/mo</span></PlanPrice>
+            <PlanPrice>{SUBSCRIPTION_PLANS.company.price.monthly}€ <span>/mo</span></PlanPrice>
             <FeaturesList>
               <FeatureItem><Check size={18} /> <strong>Unlimited</strong> car listings</FeatureItem>
               <FeatureItem><Check size={18} /> Top of search results</FeatureItem>
