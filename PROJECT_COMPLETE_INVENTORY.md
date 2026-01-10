@@ -6,13 +6,27 @@
 > **الحالة:** ✅ Production-Ready  
 > **النسخة:** 0.4.0  
 > **المحلل:** Senior System Architect & Lead Developer  
-> **آخر تحديث:** نظام المراسلة Hybrid Firebase (Phase 3) + مكونات Realtime جديدة 🚀
+> **آخر تحديث:** 7 يناير 2026 - Manual Payment System + Subscription Updates + UI Enhancements 🚀
 
 ---
 
 ## 📊 الملخص التنفيذي - Executive Summary
 
 هذا التقرير هو **جرد شامل ومفصل** لكل شيء موجود في المشروع، كأننا نفتح خزانة ونحصي كل قطعة فيها واحدة تلو الأخرى بالتفصيل الممل. كل ملف، كل مجلد، كل ميزة، كل خدمة، كل مكون، كل صفحة، كل route، كل type، كل context، كل hook - **كل شيء بدون استثناء**.
+
+### 🎯 **الهدف من هذا الملف**
+
+هذا الملف مخصص ليكون **الوصف الكامل والدقيق** للمشروع. عندما يقرأه أي نموذج ذكي (AI) أو مطور جديد، يجب أن يفهم المشروع بشكل متناهي الدقة والاحترافية. يحتوي على:
+
+- ✅ **كل** المكونات والخدمات والصفحات
+- ✅ **كل** القرارات المعمارية والتصميمية
+- ✅ **كل** الأنظمة والميزات
+- ✅ **كل** التكاملات والتبعيات
+- ✅ **كل** التفاصيل التقنية
+- ✅ **كل** الأسعار والخطط (محدثة)
+- ✅ **كل** سير العمل والتدفقات
+
+**⚠️ CRITICAL:** هذا الملف يجب أن يكون **مصدر الحقيقة الوحيد** (Single Source of Truth) لوصف المشروع الكامل.
 
 ---
 
@@ -483,18 +497,48 @@ assets/
 
 ---
 
-#### 4.8 صفحات الدفع (08_payment-billing/)
+#### 4.8 صفحات الدفع (08_payment-billing/) ✅ مُحدَّث 9 يناير 2026
 
+**صفحات الاشتراكات:**
+- **`SubscriptionPage.tsx`** - صفحة الاشتراك الرئيسية (محسّنة)
+  - Hero Header مع صور متغيرة (foggy/smoky animations)
+  - Auto-scroll للبطاقات عند فتح الصفحة
+  - أسعار بتأثير تسويقي (الرقم الأخير كبير)
+  - شريط مقارنة بألوان شفافة احترافية
+  - أيقونات وألوان دخانية/ضبابية
+- **`SubscriptionPage_ENHANCED.tsx`** - صفحة محسّنة (legacy)
+
+**صفحات الدفع (Manual Payment System) ✅ جديد! (9 يناير 2026):**
+- **`ManualCheckoutPage.tsx`** (600+ سطر) - صفحة الدفع اليدوي الرئيسية
+  - ملخص الطلب (plan details, amount, interval)
+  - عرض تفاصيل البنك (Revolut + iCard)
+  - توليد رقم مرجعي فريد
+  - نموذج تأكيد التحويل (user confirmation)
+  - رفع إيصال التحويل (Receipt Upload)
+  - رابط مباشر لتطبيق Revolut
+  - دعم BLINK لـ iCard (instant transfers)
+- **`ManualPaymentSuccessPage.tsx`** (300+ سطر) - صفحة النجاح
+  - عرض رقم المرجع
+  - حالة المعاملة
+  - رابط التتبع
+  - تعليمات الخطوات التالية
+- **`PaymentSuccessPage.tsx`** - نجاح الدفع (Stripe - legacy)
+- **`PaymentFailedPage.tsx`** - فشل الدفع (Stripe - legacy)
+
+**صفحات الفوترة:**
 - **`BillingPage.tsx`** - صفحة الفواتير
-- **`SubscriptionPage.tsx`** - صفحة الاشتراك
-- **`SubscriptionPage_ENHANCED.tsx`** - صفحة محسّنة
-- **`CheckoutPage.tsx`** - صفحة الدفع
-- **`PaymentSuccessPage.tsx`** - نجاح الدفع
-- **`PaymentFailedPage.tsx`** - فشل الدفع
 - **`BillingSuccessPage.tsx`** - نجاح الفوترة
 - **`BillingCanceledPage.tsx`** - إلغاء الفوترة
 - **`InvoicesPage.tsx`** - الفواتير
 - **`CommissionsPage.tsx`** - العمولات
+
+**صفحات Admin (Manual Payments):**
+- **`AdminManualPaymentsDashboard.tsx`** (500+ سطر) - لوحة تحكم أدمن للتحقق من المدفوعات اليدوية
+  - قائمة جميع المعاملات مع فلاتر
+  - التحقق من الدفع (verify/reject)
+  - عرض إيصالات التحويل
+  - تحديث حالة الاشتراكات
+  - إشعارات المستخدمين
 
 ---
 
@@ -621,8 +665,8 @@ assets/
 
 ---
 
-#### 5.6 خدمات الاشتراكات والفوترة (subscription/, billing/) ✅ جديد!
-**آخر تحديث:** 8 يناير 2026 (Phase 2 Complete)
+#### 5.6 خدمات الاشتراكات والفوترة (subscription/, billing/) ✅ مُحدَّث 7 يناير 2026
+**آخر تحديث:** 9 يناير 2026 (Manual Payment System Complete)
 
 **مصدر الحقيقة الوحيد:**
 - **`src/config/subscription-plans.ts`** (277 سطر) - تعريف الخطط الثلاث
@@ -635,12 +679,24 @@ assets/
 - **`micro-transactions.service.ts`** (280 سطر) - المعاملات الصغيرة ✅ Phase 1
 - **`churn-prevention.service.ts`** (350 سطر) - منع إلغاء الاشتراك ✅ Phase 1
 
-**حدود الخطط (Single Source of Truth):**
-| الخطة | الإعلانات | أعضاء الفريق | السعر |
-|-------|----------|--------------|-------|
-| **Free** | 3 | 0 | 0 EUR |
-| **Dealer** | 30 | 3 | 20 EUR/شهر |
-| **Company** | ∞ | 10 | 100 EUR/شهر |
+**خدمات payment/ (Manual Payment System) ✅ جديد! (9 يناير 2026):**
+- **`manual-payment-service.ts`** (450+ سطر) - خدمة الدفع اليدوي الرئيسية
+  - `createTransaction()` - إنشاء معاملة جديدة
+  - `getTransaction()` - الحصول على معاملة
+  - `verifyPayment()` - التحقق من الدفع (Admin)
+  - `rejectPayment()` - رفض الدفع
+  - `expireTransaction()` - انتهاء المعاملة تلقائياً
+  - `uploadReceipt()` - رفع إيصال التحويل
+  - `generateReferenceNumber()` - توليد رقم مرجعي فريد
+
+**حدود الخطط (Single Source of Truth - مُحدَّث 7 يناير 2026):**
+| الخطة | الإعلانات | أعضاء الفريق | السعر الشهري | السعر السنوي | Profile Type |
+|-------|----------|--------------|-------------|-------------|--------------|
+| **Free (Безплатен)** | 3 | 0 | €0 | €0 | `private` |
+| **Dealer (Професионален Търговец)** | 30 | 3 | **€27.78** | **€278** (توفير 20%) | `dealer` |
+| **Company (Корпоративен)** | ∞ (Unlimited) | 10 | **€137.88** | **€1,288** (توفير 33%) | `company` |
+
+**⚠️ CRITICAL:** جميع الأسعار موحدة من `src/config/subscription-plans.ts` - هذا هو المصدر الوحيد للأسعار.
 
 **التوثيق:** [SUBSCRIPTION_SYSTEM_PHASE2_REPORT_JAN8_2026.md](SUBSCRIPTION_SYSTEM_PHASE2_REPORT_JAN8_2026.md)
 
@@ -1042,7 +1098,10 @@ const {
 
 ---
 
-### Firebase Cloud Functions (24 functions) ✅ مُحدَّث
+### Firebase Cloud Functions (24+ functions) ✅ مُحدَّث 7 يناير 2026
+
+**Node.js Version:** 20 LTS  
+**Region:** europe-west1 (أوروبا الغربية)
 
 **مجلد functions/src/:**
 
@@ -1068,26 +1127,281 @@ const {
 11. **`notifications.ts`** - الإشعارات العامة
 12. **`notifications/onNewCarPost.ts`** - إشعار سيارة جديدة
 
-**وظائف Stripe:**
-13. **`stripe-webhooks.ts`** - Webhooks للدفع
+**وظائف Stripe (Legacy - Manual Payment هو الأساسي الآن):**
+13. **`stripe-webhooks.ts`** - Webhooks للدفع (Stripe)
+    - `handleSubscriptionCreated` - تحديث profileType عند إنشاء اشتراك
+    - `handleSubscriptionChange` - تحديث profileType عند تغيير الاشتراك
+    - `handleSubscriptionCancelled` - تحديث profileType إلى 'private' عند الإلغاء
+    - `handlePaymentFailed` - تحديث profileType عند فشل الدفع
+    - `deactivateExcessListings` - إلغاء تنشيط الإعلانات الزائدة (dealer limit: 30)
+    - `mapProductToPlanTier` - ربط Stripe Product IDs بالخطط
+
+**وظائف Manual Payment ✅ جديد! (9 يناير 2026):**
+14. **`manual-payment-expiration.ts`** (scheduled) - انتهاء المعاملات تلقائياً
+    - يعمل كل ساعة
+    - يفحص المعاملات `pending_manual_verification` المنتهية (7 أيام)
+    - يحدث الحالة إلى `expired`
+    - يرسل إشعار للمستخدم
 
 **وظائف مجدولة (Scheduled):**
 14. **`scheduled/archive-sold-cars.ts`** - أرشفة السيارات المباعة
 
 **وظائف Triggers:**
-15. **`triggers/car-lifecycle.ts`** - دورة حياة السيارة
+15. **`triggers/on-user-delete.ts`** ✅ CRITICAL - حذف المستخدم (GDPR Compliance)
+    - يتم تشغيله تلقائياً عند حذف Firebase Auth account
+    - يحذف جميع البيانات:
+      - 6 مجموعات سيارات (passenger_cars, suvs, vans, motorcycles, trucks, buses)
+      - Realtime DB messages
+      - favorites, notifications, reviews, posts
+      - analytics, team memberships
+      - profile pictures من Storage
+    - GDPR compliant (Article 17: Right to Erasure)
+    - يستخدم Firestore batch operations للعمليات الذرية
+    - يسجل جميع عمليات الحذف للتدقيق
 
-**وظائف المراسلة الفورية (جديد!):** 🚀
-16. **`notifications/realtime-messaging-notifications.ts`** (456 سطر) - إشعارات المراسلة
-    - `onNewRealtimeMessage` - إشعار عند رسالة جديدة
+16. **`triggers/car-lifecycle.ts`** - دورة حياة السيارة
+
+**وظائف المراسلة الفورية:** 🚀
+17. **`notifications/realtime-messaging-notifications.ts`** (456 سطر) - إشعارات المراسلة
+    - `onNewRealtimeMessage` - إشعار FCM عند رسالة جديدة
     - `onOfferStatusChange` - إشعار عند تغيير حالة العرض
-    - `cleanupExpiredOffers` - تنظيف العروض المنتهية (كل ساعة)
-    - `cleanupOldMessages` - أرشفة الرسائل القديمة (يومياً 3 AM)
+    - `cleanupExpiredOffers` - تنظيف العروض المنتهية (scheduled - كل ساعة)
+    - `cleanupOldMessages` - أرشفة الرسائل القديمة (scheduled - يومياً 3 AM)
+
+**وظائف التحليلات:**
+18. **`analytics/b2b-exports.ts`** - تصدير تحليلات B2B إلى BigQuery
+
+**وظائف SEO:**
+19. **`seo/indexnow-service.ts`** - IndexNow API (Bing, Yandex)
+20. **`seo/prerender.ts`** - Prerender للـ SEO
 
 **خدمات Functions:**
-17. **`services/ai-service.ts`** - خدمة AI
+21. **`services/ai-service.ts`** - خدمة AI الرئيسية
 
-**والمزيد...** (28 function إجمالاً)
+**إجمالي Functions:** 24+ function (Node.js 20, europe-west1)
+
+---
+
+## 🏗️ المعمارية والقرارات التصميمية - Architecture & Design Decisions
+
+### 1. **معمارية المشروع (Project Architecture)**
+
+#### **1.1 Frontend Architecture:**
+- **Pattern:** Component-Based Architecture (React)
+- **State Management:** Context API (Global) + Zustand (Feature-specific)
+- **Styling:** CSS-in-JS (Styled-Components) - **NO** separate CSS files except Footer
+- **Routing:** Declarative Routing (React Router DOM)
+- **Code Splitting:** Lazy Loading + React.memo() for optimization
+- **Type Safety:** TypeScript Strict Mode - **NO** `any` except necessity
+
+#### **1.2 Backend Architecture:**
+- **Pattern:** Serverless Architecture (Firebase Cloud Functions)
+- **Database:** Firestore (NoSQL) + Realtime Database (Messaging)
+- **Storage:** Firebase Cloud Storage (Images only - WebP format)
+- **Authentication:** Multi-provider (Google, Facebook, Apple, Email, Phone)
+- **Hosting:** Firebase Hosting (CDN + SPA routing)
+
+#### **1.3 Design Patterns المستخدمة:**
+- **Singleton Pattern:** Services (car-count.service.ts, logger-service.ts)
+- **Factory Pattern:** Numeric ID generation
+- **Facade Pattern:** messaging-orchestrator.ts
+- **Observer Pattern:** React Context API + Firebase listeners
+- **Strategy Pattern:** AI Router (Gemini/DeepSeek/OpenAI selection)
+- **Repository Pattern:** Car repositories (SellWorkflowCollections)
+
+---
+
+### 2. **القرارات التصميمية الرئيسية (Key Design Decisions)**
+
+#### **2.1 Numeric ID System (بدلاً من Firebase UIDs):**
+**القرار:** استخدام Numeric IDs في URLs بدلاً من Firebase UIDs  
+**السبب:**
+- URLs نظيفة وSEO-friendly: `/car/80/5` بدلاً من `/car/FxYz123abc456...`
+- سهولة التذكر والمشاركة
+- أفضل للتحليلات والتتبع
+- متوافق مع السوق البلغاري
+
+**التنفيذ:**
+- Service: `numeric-car-system.service.ts` (300+ سطر)
+- Guard: `NumericIdGuard.tsx` - يحمي Routes من IDs غير صحيحة
+- Auto-repair: `repairMissingIds()` - إصلاح تلقائي للبيانات القديمة
+
+#### **2.2 Multi-Collection Pattern (6 مجموعات منفصلة):**
+**القرار:** تقسيم السيارات إلى 6 مجموعات منفصلة حسب النوع  
+**السبب:**
+- استعلامات أسرع (queried collection أصغر)
+- Indexes محسّنة (لا حاجة لـ composite indexes معقدة)
+- Scalability أفضل (كل collection ينمو بشكل منفصل)
+- منطقي للأعمال (SUV مختلف عن Motorcycle)
+
+**التنفيذ:**
+- Collections: `passenger_cars`, `suvs`, `vans`, `motorcycles`, `trucks`, `buses`
+- Service: `unified-car-types.ts` - تعريف موحد
+- Helper: `SellWorkflowCollections` - اختيار Collection تلقائياً
+
+#### **2.3 Hybrid Search (Firestore + Algolia):**
+**القرار:** استخدام Firestore للفلترة + Algolia للبحث النصي  
+**السبب:**
+- Firestore: ممتاز للفلترة المعقدة (Price, Year, Location, إلخ)
+- Algolia: ممتاز للبحث النصي السريع (Full-text search)
+- أفضل من كلا العالمين
+
+**التنفيذ:**
+- Service: `smart-search.service.ts` - يوحد كلا النظامين
+- Algolia: Indexed cars مع faceted search
+- Firestore: Real-time updates + complex filters
+
+#### **2.4 Hybrid Messaging (Realtime Database + Firestore):**
+**القرار:** استخدام Realtime Database للسرعة + Firestore للأرشفة  
+**السبب:**
+- Realtime Database: <100ms latency للرسائل (مثالي للـ Chat)
+- Firestore: أفضل للأرشفة والتحليلات والبحث
+- Hybrid: سرعة Realtime + قدرات Firestore
+
+**التنفيذ:**
+- Service: `realtime-messaging.service.ts` (Realtime Database)
+- Archive: Firestore collection للرسائل القديمة (auto-archive بعد 90 يوم)
+- Channel IDs: Deterministic pattern `msg_{user1}_{user2}_car_{carId}`
+
+#### **2.5 Manual Payment System (بدلاً من Stripe فقط):**
+**القرار:** استخدام Manual Bank Transfer كطريقة دفع رئيسية  
+**السبب:**
+- السوق البلغاري يفضل التحويلات البنكية
+- تقليل الرسوم (0% payment gateway fees)
+- زيادة الثقة (طريقة مألوفة)
+- مرونة أكبر للمستخدمين
+
+**التنفيذ:**
+- حسابين: Revolut (International) + iCard (Local Bulgarian)
+- Receipt Upload: دليل مرئي للأدمن
+- BLINK Support: مستحقات فورية لـ iCard
+- Admin Dashboard: للتحقق اليدوي
+
+---
+
+### 3. **نظام إدارة الحالة (State Management Architecture)**
+
+#### **3.1 Context API (Global State):**
+**8 Contexts رئيسية:**
+1. **`AuthContext`** - حالة المصادقة (currentUser, login, logout)
+2. **`ThemeContext`** - الثيم (Dark/Light mode)
+3. **`LanguageContext`** - اللغة (BG/EN + i18n)
+4. **`ProfileTypeContext`** - نوع الملف (Private/Dealer/Company + permissions)
+5. **`FilterContext`** - فلاتر البحث (active filters)
+6. **`LoadingContext`** - حالة التحميل العامة
+7. **`NotificationContext`** - Toast notifications
+8. **`CartContext`** - المقارنة (Car comparison)
+
+#### **3.2 Zustand (Feature-Specific State):**
+**استخدام Zustand:**
+- `carListingStore` - حالة Sell Wizard (6 خطوات)
+- Local component state - للمكونات الصغيرة
+
+#### **3.3 Firebase Real-time Listeners:**
+**استخدام Firebase Listeners:**
+- Car listings - Real-time updates
+- Messages - Real-time chat
+- Favorites - Real-time sync
+- Notifications - Real-time push
+
+**⚠️ CRITICAL:** دائماً استخدام `onSnapshot` مع cleanup في `useEffect`:
+```typescript
+useEffect(() => {
+  const unsubscribe = onSnapshot(query, (snapshot) => {
+    // Handle updates
+  });
+  return () => unsubscribe(); // Cleanup
+}, [dependencies]);
+```
+
+---
+
+### 4. **نظام الأمان والصلاحيات (Security & Permissions)**
+
+#### **4.1 Authentication Levels:**
+1. **Guest** - لا يحتاج تسجيل دخول (viewing only)
+2. **Authenticated** - مستخدم مسجل (can list, message, favorite)
+3. **Verified** - مستخدم موثق (phone + email verified)
+4. **Premium** - مستخدم مدفوع (Dealer/Company plan)
+
+#### **4.2 Authorization (Permissions):**
+**نظام الصلاحيات:**
+- `ProfilePermissions` - صلاحيات حسب Profile Type
+- `CarPermissions` - صلاحيات حسب Car ownership
+- `ListingLimits` - حدود الإعلانات حسب Plan
+
+**الملفات:**
+- `src/services/profile/PermissionsService.ts` - خدمة الصلاحيات
+- `src/utils/listing-limits.ts` - حدود الإعلانات
+- `src/types/user/bulgarian-user.types.ts` - أنواع الصلاحيات
+
+#### **4.3 Route Protection:**
+**Guards:**
+- `AuthGuard` - حماية Routes التي تحتاج تسجيل دخول
+- `NumericIdGuard` - حماية Routes من IDs غير صحيحة
+- `RequireDealerGuard` - حماية Routes للتجار فقط
+- `RequireCompanyGuard` - حماية Routes للشركات فقط
+
+**الاستخدام:**
+```typescript
+<Route path="/admin" element={
+  <AuthGuard requireAuth={true} requireAdmin={true}>
+    <AdminPage />
+  </AuthGuard>
+} />
+```
+
+---
+
+### 5. **نظام الأداء والتحسينات (Performance & Optimization)**
+
+#### **5.1 Code Splitting:**
+- **Lazy Loading:** جميع الصفحات (safeLazy helper)
+- **React.memo():** للمكونات الكبيرة (prevents unnecessary re-renders)
+- **Dynamic Imports:** للمكتبات الكبيرة (Algolia, Framer Motion)
+
+#### **5.2 Image Optimization:**
+- **Format:** WebP فقط (auto-conversion via Cloud Function)
+- **Sizes:** Responsive sizes (thumbnails, medium, large)
+- **Lazy Loading:** `loading="lazy"` attribute
+- **Placeholders:** Skeleton screens أثناء التحميل
+
+#### **5.3 Firestore Optimization:**
+- **Indexes:** Composite indexes لجميع الاستعلامات المعقدة
+- **Pagination:** Limit queries (50 items per page)
+- **Caching:** React Query + Firestore cache
+- **Queries:** استخدام `whereIn` بدلاً من multiple queries
+
+#### **5.4 Bundle Optimization:**
+- **Tree Shaking:** إزالة الكود غير المستخدم
+- **Minification:** UglifyJS للـ production build
+- **Gzip:** Compression على Firebase Hosting
+- **CDN:** Firebase CDN للتوزيع الجغرافي
+
+---
+
+### 6. **نظام الأخطاء والمراقبة (Error Handling & Monitoring)**
+
+#### **6.1 Error Boundaries:**
+- **Global ErrorBoundary:** حول App.tsx (prevents White Screen of Death)
+- **Component ErrorBoundary:** للمكونات الكبيرة
+- **Error UI:** واجهة احترافية مع "Retry" و "Go Home"
+
+#### **6.2 Logging System:**
+- **Service:** `logger-service.ts` - Logger موحد
+- **Levels:** info, warn, error, debug
+- **Features:** 
+  - Console في development
+  - Monitoring service في production
+  - Error tracking مع context
+
+**⚠️ CRITICAL:** **NO** `console.log` في production - يستخدم `logger` فقط
+
+#### **6.3 Monitoring:**
+- **Firebase Analytics:** تتبع الأحداث
+- **Google Analytics 4:** تحليلات تفصيلية
+- **Error Tracking:** Firebase Crashlytics (future)
+- **Performance Monitoring:** Firebase Performance (future)
 
 ---
 
@@ -1133,15 +1447,29 @@ const {
 - **Image Upload:** رفع 20 صورة
 - **Location Selection:** اختيار الموقع
 
-### 6. نظام الاشتراكات ✅ (100%) - جديد! (Phase 2 Complete)
+### 6. نظام الاشتراكات والدفع ✅ (100%) - مُحدَّث 7 يناير 2026
 - **3 خطط:** Free / Dealer / Company
+- **الأسعار الموحدة:**
+  - Free: €0/€0
+  - Dealer: **€27.78/€278** (monthly/annual)
+  - Company: **€137.88/€1,288** (monthly/annual)
 - **حدود الإعلانات:** 3 / 30 / ∞
-- **Stripe Integration:** دفع آمن
+- **نظام الدفع:**
+  - **Manual Bank Transfer** ✅ (Primary) - Revolut + iCard
+  - Stripe Checkout (Optional - legacy)
+- **Manual Payment Features:**
+  - حسابين بنكيين (Revolut International + iCard Local)
+  - نظام أرقام مرجعية فريدة
+  - رفع إيصال التحويل (Receipt Upload)
+  - دعم BLINK لـ iCard (مستحقات فورية)
+  - 6 حالات للمعاملات (pending, verified, rejected, expired, completed, refunded)
+  - انتهاء تلقائي بعد 7 أيام
+  - لوحة تحكم أدمن للتحقق
 - **Grace Period:** فترة سماح 7 أيام
 - **Churn Prevention:** منع إلغاء الاشتراك
 - **Micro-transactions:** VIP Badge, Top of Page, Instant Refresh
 - **Single Source of Truth:** `src/config/subscription-plans.ts`
-- **التوثيق:** [SUBSCRIPTION_SYSTEM_PHASE2_REPORT_JAN8_2026.md](SUBSCRIPTION_SYSTEM_PHASE2_REPORT_JAN8_2026.md)
+- **التوثيق:** [docs/MANUAL_PAYMENT_SYSTEM.md](docs/MANUAL_PAYMENT_SYSTEM.md)
 
 ### 7. نظام الملف الشخصي ✅ (100%)
 - **3 أنواع:** Private, Dealer, Company
@@ -1239,12 +1567,20 @@ const {
 - Translation System (كامل)
 - RTL Support (جاهز)
 
-### 💳 الدفع (Payment)
-- Stripe Integration
-- Subscription Plans (9 tiers)
-- Invoice System
-- Commission System
-- Billing Dashboard
+### 💳 الدفع (Payment) ✅ مُحدَّث 9 يناير 2026
+- **Manual Bank Transfer** ✅ (Primary - Revolut + iCard)
+  - حسابين بنكيين معروفين
+  - نظام أرقام مرجعية فريدة
+  - رفع إيصال التحويل
+  - دعم BLINK لـ iCard (instant transfers)
+  - 6 حالات للمعاملات (pending, verified, rejected, expired, completed, refunded)
+  - لوحة تحكم أدمن للتحقق
+  - انتهاء تلقائي بعد 7 أيام
+- **Stripe Integration** (Optional - legacy)
+- **Subscription Plans** (3 tiers: Free, Dealer €27.78/€278, Company €137.88/€1,288)
+- **Invoice System** - نظام الفواتير
+- **Commission System** - نظام العمولات
+- **Billing Dashboard** - لوحة تحكم الفوترة
 
 ### 📊 التحليلات (Analytics)
 - Firebase Analytics
@@ -1499,24 +1835,35 @@ const {
 
 ## 📝 الملاحظات الختامية - Final Notes
 
-### ✅ ما تم إنجازه (8 يناير 2026):
-- **100%** من الميزات الأساسية
-- **98%** من الميزات المتقدمة
-- **95%** من الميزات الاختيارية
-- **نظام الاشتراكات Phase 2** ✅
-- **نظام المراسلة Hybrid Phase 3** ✅ 🚀 جديد!
-- **مكونات UI للفوترة** ✅
-- **خدمات AI متقدمة** ✅
+### ✅ ما تم إنجازه (7-9 يناير 2026):
 
-### 📊 إحصائيات التحديث الأخير (8 يناير 2026):
-| الملفات المنشأة | الأسطر | النوع |
-|----------------|--------|-------|
-| Services (4) | ~1,130 | TypeScript |
-| Hooks (4) | ~810 | TypeScript |
-| Components (5) | ~1,790 | React TSX |
-| Page (1) | ~330 | React TSX |
-| Cloud Functions (1) | ~456 | TypeScript |
-| **الإجمالي** | **~4,516** | - |
+#### **الجلسة الحالية (7 يناير 2026):**
+- ✅ **صفحة `/subscription`** - تحسينات شاملة:
+  - Hero Header مع صور متغيرة (foggy/smoky animations)
+  - Auto-scroll للبطاقات عند فتح الصفحة
+  - أسعار بتأثير تسويقي (الرقم الأخير كبير - 4.5rem)
+  - شريط مقارنة بألوان شفافة احترافية
+  - أيقونات وألوان دخانية/ضبابية
+  - البطاقة المجانية - النص في الوسط
+- ✅ **Hero Section** - نسخ تصميم البطاقات من `/subscription`
+- ✅ **Footer** - Language Dropdown مع أعلام + الزر في سطر مستقل
+
+#### **التحديثات السابقة:**
+- ✅ **100%** من الميزات الأساسية
+- ✅ **100%** من الميزات المتقدمة
+- ✅ **نظام الاشتراكات** ✅ (Phase 2 Complete - 8 يناير)
+- ✅ **نظام المراسلة Hybrid** ✅ (Phase 3 Complete - 8 يناير) 🚀
+- ✅ **Manual Payment System** ✅ (9 يناير 2026) - نظام دفع يدوي كامل
+- ✅ **مكونات UI للفوترة** ✅
+- ✅ **خدمات AI متقدمة** ✅
+
+### 📊 إحصائيات التحديثات:
+| الجلسة | التاريخ | الملفات | الأسطر | النوع |
+|--------|---------|---------|--------|-------|
+| Session 6 | 8 يناير 2026 | Services (4) + Hooks (4) + Components (5) + Page (1) + Functions (1) | ~4,516 | TypeScript/TSX |
+| Manual Payment | 9 يناير 2026 | Services (1) + Components (2) + Pages (3) + Config (2) | ~2,200 | TypeScript/TSX |
+| Subscription UI | 7 يناير 2026 | Components (2) + Pages (1) | ~800 | TypeScript/TSX |
+| **الإجمالي** | **7-9 يناير** | **23 ملف** | **~7,516** | - |
 
 ### ⚠️ ما يحتاج تحسين:
 - Logo redesign (يحتاج تصميم)

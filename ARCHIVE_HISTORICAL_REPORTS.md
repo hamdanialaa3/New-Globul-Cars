@@ -2,7 +2,10 @@
 ## Bulgarian Car Marketplace
 
 **Purpose:** This file archives historical implementation reports and summaries for reference.  
-**Current Status:** See `PROJECT_STATUS_AND_NEXT_STEPS.md` for the latest project status.
+**Current Status:** See `PROJECT_DOCUMENTATION_UNIFIED.md` for the latest unified documentation.
+
+**⚠️ Note:** This file is deprecated. All archived files are now organized in `ARCHIVE/` directory.  
+**👉 For current status:** Read `PROJECT_DOCUMENTATION_UNIFIED.md`
 
 ---
 
