@@ -52,6 +52,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     FirebaseHealthCheck.runFullCheck();
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+
       try {
         setCurrentUser(user);
 
