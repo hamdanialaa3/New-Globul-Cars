@@ -41,7 +41,8 @@ $ghInstalled = Get-Command gh -ErrorAction SilentlyContinue
 if ($ghInstalled) {
     Write-Host "✅ GitHub CLI found - Can add secrets automatically" -ForegroundColor Green
     $useGhCli = $true
-} else {
+}
+else {
     Write-Host "⚠️  GitHub CLI not found - Will show manual instructions" -ForegroundColor Yellow
     Write-Host "   Install: winget install GitHub.cli" -ForegroundColor Yellow
     $useGhCli = $false
@@ -64,7 +65,8 @@ $serviceAccountExists = Test-Path $serviceAccountPath
 if ($serviceAccountExists) {
     Write-Host "✅ Found: $serviceAccountPath" -ForegroundColor Green
     $serviceAccount = Get-Content $serviceAccountPath -Raw
-} else {
+}
+else {
     Write-Host "❌ Service account key not found at: $serviceAccountPath" -ForegroundColor Red
     Write-Host ""
     Write-Host "📚 How to get it:" -ForegroundColor Yellow
@@ -103,7 +105,8 @@ if ($useGhCli) {
     echo $projectId | gh secret set FIREBASE_PROJECT_ID -R hamdanialaa3/New-Globul-Cars
     if ($LASTEXITCODE -eq 0) {
         Write-Host "✅ FIREBASE_PROJECT_ID added successfully" -ForegroundColor Green
-    } else {
+    }
+    else {
         Write-Host "❌ Failed to add FIREBASE_PROJECT_ID" -ForegroundColor Red
     }
     
@@ -112,7 +115,8 @@ if ($useGhCli) {
     echo $serviceAccount | gh secret set FIREBASE_SERVICE_ACCOUNT -R hamdanialaa3/New-Globul-Cars
     if ($LASTEXITCODE -eq 0) {
         Write-Host "✅ FIREBASE_SERVICE_ACCOUNT added successfully" -ForegroundColor Green
-    } else {
+    }
+    else {
         Write-Host "❌ Failed to add FIREBASE_SERVICE_ACCOUNT" -ForegroundColor Red
     }
     
@@ -126,7 +130,8 @@ if ($useGhCli) {
     Write-Host "   2. Re-run the failed workflow" -ForegroundColor White
     Write-Host "   3. Or push a commit to trigger deployment" -ForegroundColor White
     
-} else {
+}
+else {
     # Manual instructions
     Write-Host "📋 Manual Setup Instructions:" -ForegroundColor Cyan
     Write-Host ""
