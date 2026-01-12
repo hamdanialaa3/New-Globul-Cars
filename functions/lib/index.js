@@ -51,8 +51,13 @@ exports.prerenderSEO = prerender.prerender;
 // Hybrid AI Engine (Phase 2 - Gemini + DeepSeek) 🧠
 const https_1 = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
-const ai_service_1 = require("./services/ai-service");
-const aiService = new ai_service_1.AIService();
+// import { AIService } from "./services/ai-service";
+const getAiService = () => {
+    const { AIService } = require("./services/ai-service");
+    // Simple singleton pattern could be implemented here if needed, 
+    // but safe dynamic import is key for preventing cold-start crashes.
+    return new AIService();
+};
 exports.evaluateCar = (0, https_1.onCall)({ region: "europe-west1", memory: "1GiB" }, async (request) => {
     // 1. Validate Inputs
     const { imageBase64, price, marketAvg } = request.data;
@@ -60,6 +65,7 @@ exports.evaluateCar = (0, https_1.onCall)({ region: "europe-west1", memory: "1Gi
         throw new https_1.HttpsError('invalid-argument', 'Image is required for analysis (Base64)');
     }
     try {
+        const aiService = getAiService();
         logger.info("Starting Hybrid AI Analysis...");
         // 2. Phase 1: Gemini (Vision)
         const visualData = await aiService.analyzeImage(imageBase64);

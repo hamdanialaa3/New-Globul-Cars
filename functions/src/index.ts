@@ -57,7 +57,7 @@ export const prerenderSEO = prerender.prerender;
 // Hybrid AI Engine (Phase 2 - Gemini + DeepSeek) 🧠
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
-import { AIService } from "./services/ai-service";
+// import { AIService } from "./services/ai-service";
 
 const getAiService = () => {
     const { AIService } = require("./services/ai-service");
