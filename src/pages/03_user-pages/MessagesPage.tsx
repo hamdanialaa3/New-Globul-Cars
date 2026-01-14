@@ -10,14 +10,18 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useAuth } from '../../contexts/AuthProvider';
 import { logger } from '../../services/logger-service';
-import { advancedMessagingService } from '../../services/messaging/advanced-messaging-service';
+// ❌ DEPRECATED: advanced-messaging-service moved to DDD/deprecated-services/
+// Use useRealtimeMessaging hook instead
+// import { advancedMessagingService } from '../../services/messaging/advanced-messaging-service';
 import { Conversation, Message } from '../../services/messaging/advanced-messaging-types';
 import { userService } from '../../services/user/canonical-user.service';
 import { Avatar } from '../../components/design-system/Avatar';
 import { Badge } from '../../components/design-system/Badge';
 import { notificationSoundService } from '../../services/messaging/notification-sound.service';
 import { NotificationSettings } from '../../components/messaging/NotificationSettings';
-import { ConversationView } from '../../components/messaging';
+// ❌ DEPRECATED: ConversationView moved to DDD/deprecated-messaging/
+// TODO: Replace with new useRealtimeMessaging hook + custom UI
+// import { ConversationView } from '../../components/messaging';
 import { getCarLogoUrl } from '../../services/car-logo-service';
 import Header from '../../components/Header/UnifiedHeader';
 import { db } from '../../firebase/firebase-config';
@@ -1375,14 +1379,17 @@ const MessagesPage: React.FC = () => {
 
         <ChatArea $visible={showChat}>
           {currentConversation ? (
-            /* ✨ المكونات الجديدة - ConversationView مع كامل الميزات */
-            <ConversationView
-              conversation={currentConversation}
-              onBack={() => {
-                setCurrentConversation(null);
-                navigate('/messages');
-              }}
-            />
+            /* ❌ DEPRECATED: ConversationView moved to DDD/deprecated-messaging/
+             * TODO: Replace with new RTDB-based messaging UI
+             * For now, show placeholder
+             */
+            <EmptyState>
+              <div className="icon-wrapper">
+                <Send size={56} />
+              </div>
+              <h3>Messaging System Upgrade</h3>
+              <p>New RTDB-based messaging UI coming soon. Use /messages-v2 for now.</p>
+            </EmptyState>
           ) : (
             <EmptyState>
               <div className="icon-wrapper">

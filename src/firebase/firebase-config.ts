@@ -3,11 +3,11 @@
 
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { initializeFirestore, memoryLocalCache } from 'firebase/firestore';
+import { initializeFirestore, memoryLocalCache, enableIndexedDbPersistence } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getFunctions } from 'firebase/functions';
 import { getAnalytics, Analytics } from 'firebase/analytics';
-import { getDatabase } from 'firebase/database'; // Real-time Database
+import { getDatabase, ref as rtdbRef, onValue, goOnline, goOffline } from 'firebase/database';
 // import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'; // Disabled to prevent auth errors
 import { BULGARIAN_CONFIG } from '../config/bulgarian-config';
 import { logger } from '../services/logger-service';
@@ -79,25 +79,69 @@ try {
 }
 export { auth };
 
-// FIX: Use memory cache to avoid "INTERNAL ASSERTION FAILED" errors
-// This prevents IndexedDB corruption issues by using in-memory storage only
+// ✅ Initialize Firestore with memory cache (in-memory only, no disk persistence)
+// NOTE: Cannot use enableIndexedDbPersistence with localCache - they conflict!
+// Choose ONE: either memoryLocalCache() OR enableIndexedDbPersistence()
 let db: any;
 try {
   db = initializeFirestore(app, {
-    localCache: memoryLocalCache()
+    localCache: memoryLocalCache() // In-memory cache only (no persistence)
   });
-  logger.info('Firestore initialized with memory cache (no persistence)');
+  
+  logger.info('Firestore initialized with memory cache');
 } catch (error) {
   logger.error('Failed to initialize Firestore', error as Error);
-  db = {};
+  throw error;
 }
 export { db };
 
 export const storage = getStorage(app);
 // Use same region as deployed Cloud Functions to avoid us-central1 mismatches
 export const functions = getFunctions(app, 'europe-west1');
+
 // Initialize Firebase Realtime Database for live updates
 export const realtimeDb = getDatabase(app);
+
+// Keep user channels synced (requires numericId to be set dynamically)
+/**
+ * Enable Realtime Database offline persistence
+ * 
+ * ⚠️ NOTE: keepSynced() is NOT available in Firebase JavaScript SDK
+ * It only exists in Android/iOS SDKs
+ * 
+ * For Web: RTDB automatically caches data when listeners are active
+ * Just keep onValue listeners alive and data will be cached
+ * 
+ * @param userNumericId - User's numeric ID
+ */
+export function enableRealtimeMessagingPersistence(userNumericId: number): void {
+  if (!userNumericId) {
+    logger.warn('Cannot enable RTDB persistence: Missing numericId');
+    return;
+  }
+  
+  // ✅ RTDB automatically caches data when listeners are active
+  // Just ensure goOnline() is called (it's on by default)
+  try {
+    goOnline(realtimeDb);
+    
+    logger.info('RTDB online mode enabled (auto-caching active)', { userNumericId });
+  } catch (error) {
+    logger.error('Failed to enable RTDB online mode', error as Error, { userNumericId });
+  }
+}
+
+// Network status helpers
+export function setRealtimeDatabaseOnline(): void {
+  goOnline(realtimeDb);
+  logger.info('RTDB set to online mode');
+}
+
+export function setRealtimeDatabaseOffline(): void {
+  goOffline(realtimeDb);
+  logger.info('RTDB set to offline mode');
+}
+
 export { appCheck };
 
 // Initialize Analytics (only in production and if measurement ID is provided)

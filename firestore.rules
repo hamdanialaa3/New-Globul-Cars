@@ -15,9 +15,14 @@ service cloud.firestore {
     // Numeric ID counters must be protected to prevent corruption
     match /counters/{counterId} {
       allow read: if true; // Public read OK (for numeric ID lookups)
-      // ✅ FIXED: Only Cloud Functions or Admin SDK can write
-      // Clients can read but NOT write - prevents numeric ID system corruption
-      allow write: if false; // ❌ CRITICAL: Disabled client writes - use Cloud Functions only
+      // ✅ EXCEPTION: Allow authenticated users to increment 'users' counter ONLY
+      // This is needed for numeric ID assignment
+      allow update: if isAuthenticated() 
+        && counterId == 'users' 
+        && request.resource.data.count == resource.data.count + 1
+        && request.resource.data.keys().hasOnly(['count', 'updatedAt']);
+      // ❌ All other writes disabled - use Cloud Functions only
+      allow create, delete: if false;
     }
 
     // Profiles
@@ -37,7 +42,12 @@ service cloud.firestore {
     // Users collection
     match /users/{userId} {
       allow read: if isAuthenticated();
+      // ✅ Allow users to update their own data including numericId assignment
       allow write: if isOwner(userId);
+      // ✅ Allow updating numericId and related fields
+      allow update: if isOwner(userId) && (
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['numericId', 'numericIdAssignedAt', 'updatedAt'])
+      );
     }
     
     // Stripe Customers & Checkout Sessions (Explicit Rule)

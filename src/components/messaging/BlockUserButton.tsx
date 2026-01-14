@@ -377,16 +377,6 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
     }
   }, [currentUser?.uid, targetUserFirebaseId, targetUserNumericId, targetUserName, isBlocked, isProcessing, isBg, onBlockChanged, toast]);
 
-  // Don't show button if checking status or no current user
-  if (isLoading || !currentUser?.uid) {
-    return null;
-  }
-
-  // Don't show button if trying to block yourself
-  if (currentUser.uid === targetUserFirebaseId) {
-    return null;
-  }
-
   // Button text based on language and state - memoized for performance
   const buttonText = useMemo(() => {
     return isBlocked
@@ -397,6 +387,16 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
         ? 'Блокирай'
         : 'Block';
   }, [isBlocked, isBg]);
+
+  // Don't show button if checking status or no current user
+  if (isLoading || !currentUser?.uid) {
+    return null;
+  }
+
+  // Don't show button if trying to block yourself
+  if (currentUser.uid === targetUserFirebaseId) {
+    return null;
+  }
 
   return (
     <Button

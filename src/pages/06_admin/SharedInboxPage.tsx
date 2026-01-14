@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { messagingService } from '../../services/messaging/advanced-messaging-service';
+// ❌ DEPRECATED: advanced-messaging-service moved to DDD/deprecated-services/
+// Use useRealtimeMessaging hook instead
+// import { messagingService } from '../../services/messaging/advanced-messaging-service';
 import { Conversation } from '../../services/messaging/advanced-messaging-types';
 import { useAuth } from '../../contexts/AuthContext';
 import { Loader, MessageSquare, Clock, ArrowRight } from 'lucide-react';

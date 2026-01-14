@@ -1,5 +1,6 @@
 import { logger } from '@/services/logger-service';
-import { MessageOperations } from '../../advanced-messaging-operations';
+// ✅ FIXED: Import from deprecated location (kept for StatusManager compatibility)
+import { MessageOperations } from '../../../../../DDD/deprecated-messaging/advanced-messaging-operations';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-config';
 

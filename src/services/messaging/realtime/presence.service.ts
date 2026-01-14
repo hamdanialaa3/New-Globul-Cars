@@ -93,6 +93,12 @@ class PresenceService {
    * @description Call this after user logs in
    */
   async initialize(numericUserId: number, device?: 'mobile' | 'desktop' | 'tablet'): Promise<void> {
+    // ✅ Guard: Don't initialize if no numeric ID
+    if (!numericUserId || numericUserId <= 0) {
+      logger.warn('Cannot initialize presence without valid numericUserId', { numericUserId });
+      return;
+    }
+    
     this.currentUserNumericId = numericUserId;
     
     const presenceRef = ref(this.db, `presence/${numericUserId}`);

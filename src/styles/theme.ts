@@ -78,6 +78,13 @@ export const bulgarianColors = {
     onLight: '#333333',     // Dark Grey
     disabled: '#999999',
     hint: '#CCCCCC'
+  },
+
+  border: {
+    default: '#E2E8F0',     // Light grey border
+    muted: '#CBD5E1',       // Softer border
+    strong: '#94A3B8',      // Stronger border
+    focus: '#0066CC',       // Focus state
   }
 };
 

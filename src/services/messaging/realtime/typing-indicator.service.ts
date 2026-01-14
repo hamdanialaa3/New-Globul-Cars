@@ -118,6 +118,15 @@ class TypingIndicatorService {
     isTyping: boolean,
     userName?: string
   ): Promise<void> {
+    // Validate inputs before attempting database write
+    if (!channelId || !userNumericId || userNumericId <= 0) {
+      logger.warn('[TypingIndicator] Invalid parameters for typing status update', {
+        channelId,
+        userNumericId
+      });
+      return;
+    }
+    
     const typingRef = ref(this.db, `typing/${channelId}/${userNumericId}`);
     
     if (isTyping) {

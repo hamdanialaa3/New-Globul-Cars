@@ -60,6 +60,11 @@ class PresenceMonitor {
    * تعيين المستخدم كمتصل
    */
   async setOnline(userId: string): Promise<void> {
+    if (!userId) {
+      logger.warn('[PresenceMonitor] Cannot set online without userId');
+      return;
+    }
+    
     try {
       const presenceRef = ref(database, `presence/${userId}`);
 
@@ -87,6 +92,11 @@ class PresenceMonitor {
    * تعيين المستخدم كغير متصل
    */
   async setOffline(userId: string): Promise<void> {
+    if (!userId) {
+      logger.warn('[PresenceMonitor] Cannot set offline without userId');
+      return;
+    }
+    
     try {
       const presenceRef = ref(database, `presence/${userId}`);
 

@@ -219,7 +219,17 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
 
           } catch (err) {
             logger.error('[CarDetailsPage] Error starting chat', err instanceof Error ? err : undefined);
-            alert(language === 'bg' ? 'Грешка при свързване.' : 'Connection error.');
+            
+            // Check if error is due to being blocked by the other user
+            if (err instanceof Error && err.message.includes('This user has blocked you')) {
+              alert(
+                language === 'bg'
+                  ? '❌ Този потребител ви е блокирал и не може да получава съобщения от вас.'
+                  : '❌ This user has blocked you and cannot receive messages from you.'
+              );
+            } else {
+              alert(language === 'bg' ? 'Грешка при свързване.' : 'Connection error.');
+            }
           }
         } else {
           alert(language === 'bg' ? 'Моля влезте в профила си, за да изпратите съобщение.' : 'Please log in to send a message.');

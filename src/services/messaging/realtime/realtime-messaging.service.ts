@@ -235,6 +235,62 @@ class RealtimeMessagingService {
    */
   async getOrCreateChannel(params: CreateChannelParams): Promise<RealtimeChannel> {
     const { buyer, seller, car } = params;
+    
+    // ✅ FIX Phase 4.3: Check block status BEFORE creating channel
+    // Check and auto-unblock if initiator tries to message someone they blocked
+    try {
+      const { blockUserService } = await import('@/services/messaging/block-user.service');
+      
+      // Check if buyer blocked seller
+      const buyerBlockedSeller = await blockUserService.isBlocked(
+        buyer.numericId,
+        seller.numericId
+      );
+      
+      if (buyerBlockedSeller) {
+        // Auto-unblock: if buyer initiates contact, they want to communicate
+        logger.info('[RealtimeMessaging] Auto-unblocking seller for channel creation', {
+          buyer: buyer.numericId,
+          seller: seller.numericId
+        });
+        
+        await blockUserService.unblockUser(buyer.firebaseId, seller.firebaseId);
+      }
+      
+      // Check if seller blocked buyer
+      const sellerBlockedBuyer = await blockUserService.isBlocked(
+        seller.numericId,
+        buyer.numericId
+      );
+      
+      if (sellerBlockedBuyer) {
+        // This is legitimate - seller doesn't want contact
+        throw new Error('CHANNEL_BLOCKED: This user has blocked you');
+      }
+      
+      logger.info('[RealtimeMessaging] Block check passed for channel creation', {
+        buyer: buyer.numericId,
+        seller: seller.numericId
+      });
+      
+    } catch (error) {
+      // Re-throw block errors (only when seller blocked buyer)
+      if (error instanceof Error && error.message.includes('CHANNEL_BLOCKED')) {
+        logger.warn('Channel creation blocked due to user block', {
+          buyer: buyer.numericId,
+          seller: seller.numericId,
+          error: error.message
+        });
+        throw error;
+      }
+      
+      // Log but allow creation if block check fails (fail open)
+      logger.warn('Failed to check block status before channel creation', error as Error, {
+        buyer: buyer.numericId,
+        seller: seller.numericId
+      });
+    }
+    
     const channelId = this.generateChannelId(buyer.numericId, seller.numericId, car.numericId);
     
     const channelRef = ref(this.db, `channels/${channelId}`);

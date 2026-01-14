@@ -684,7 +684,27 @@ export class BulgarianAuthService {
       isBanned: false
     };
 
+    // Save user profile first
     await this.saveUserProfile(bulgarianUser);
+    
+    // ✅ FIX: Assign numeric ID for social auth users
+    // This fixes the missing numericId bug from all 4 audit reports
+    const { ensureUserNumericId } = await import('../services/numeric-id-assignment.service');
+    const numericId = await ensureUserNumericId(user.uid);
+    
+    if (!numericId) {
+      logger.error('Failed to assign numeric ID to social auth user', new Error('numericId assignment failed'), {
+        uid: user.uid,
+        provider,
+        email: user.email
+      });
+    } else {
+      logger.info('Numeric ID assigned to social auth user', {
+        uid: user.uid,
+        numericId,
+        provider
+      });
+    }
   }
 
   private validateBulgarianEmail(email: string): boolean {

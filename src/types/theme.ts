@@ -53,6 +53,12 @@ export interface BulgarianTheme {
       disabled: string;
       hint: string;
     };
+    border: {
+      default: string;
+      muted: string;
+      strong: string;
+      focus: string;
+    };
     grey: {
       50: string;
       100: string;
