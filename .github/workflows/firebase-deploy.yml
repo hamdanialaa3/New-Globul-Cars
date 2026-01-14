@@ -129,28 +129,22 @@ jobs:
           CI: false
           NODE_OPTIONS: --max_old_space_size=4096
 
-      - name: Authenticate Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-
-      - name: Setup gcloud
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ secrets.FIREBASE_PROJECT_ID }}
-
       - name: Deploy to Firebase
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
           npm i -g firebase-tools
           echo "🚀 Starting Firebase deployment..."
           echo "📦 Project: ${{ secrets.FIREBASE_PROJECT_ID }}"
           echo "🌍 Region: europe-west1"
 
-          # Deploy with detailed output
+          # Write service account to temporary file
+          echo "$FIREBASE_SERVICE_ACCOUNT" > $HOME/gcloud-key.json
+          export GOOGLE_APPLICATION_CREDENTIALS="$HOME/gcloud-key.json"
+          
           firebase deploy \
             --project ${{ secrets.FIREBASE_PROJECT_ID }} \
-            --non-interactive \
-            --debug || {
+            --non-interactive || {
               echo "❌ Deployment failed!"
               echo "Common causes:"
               echo "  1. Missing FIREBASE_SERVICE_ACCOUNT secret"
@@ -160,6 +154,9 @@ jobs:
               echo "📚 See: .github/SETUP_SECRETS.md"
               exit 1
             }
+
+          # Clean up credentials file
+          rm -f $HOME/gcloud-key.json
 
           echo ""
           echo "════════════════════════════════════════════════════════════════"
