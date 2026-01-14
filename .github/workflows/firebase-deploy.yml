@@ -135,15 +135,18 @@ jobs:
         run: |
           npm i -g firebase-tools
           echo "🚀 Starting Firebase deployment..."
-          echo "📦 Project: ${{ secrets.FIREBASE_PROJECT_ID }}"
-          echo "🌍 Region: europe-west1"
-
+          
           # Write service account to temporary file
           echo "$FIREBASE_SERVICE_ACCOUNT" > $HOME/gcloud-key.json
           export GOOGLE_APPLICATION_CREDENTIALS="$HOME/gcloud-key.json"
           
+          # Extract project ID from service account JSON
+          PROJECT_ID=$(cat $HOME/gcloud-key.json | grep -o '"project_id": *"[^"]*"' | sed 's/"project_id": *"\([^"]*\)"/\1/')
+          echo "📦 Project: $PROJECT_ID"
+          echo "🌍 Region: europe-west1"
+          
           firebase deploy \
-            --project ${{ secrets.FIREBASE_PROJECT_ID }} \
+            --project "$PROJECT_ID" \
             --non-interactive || {
               echo "❌ Deployment failed!"
               echo "Common causes:"
@@ -151,7 +154,6 @@ jobs:
               echo "  2. Invalid service account permissions"
               echo "  3. Project ID mismatch"
               echo ""
-              echo "📚 See: .github/SETUP_SECRETS.md"
               exit 1
             }
 
