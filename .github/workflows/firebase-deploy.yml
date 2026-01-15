@@ -149,7 +149,6 @@ jobs:
           
           firebase deploy \
             --project "$PROJECT_ID" \
-            --token "$(cat $HOME/gcloud-key.json)" \
             --non-interactive || {
               echo "❌ Deployment failed!"
               exit 1
