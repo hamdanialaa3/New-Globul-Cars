@@ -1,6 +1,7 @@
 /**
  * Business Green Header Component
- * هيدر أخضر احترافي في الأسفل يحتوي على معلومات المستخدم والإحصائيات والأزرار
+ * شريط أخضر احترافي تحت الصورة الشخصية
+ * يحتوي على معلومات المستخدم والإحصائيات والأزرار
  * يدعم الوضع الفاتح والغامق واللغات (BG/EN) والاستجابة الكاملة
  */
 
@@ -11,90 +12,83 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { MessageCircle, UserPlus, UserCheck, Shield, Phone as PhoneIcon, RefreshCw, Crown } from 'lucide-react';
 import BlockUserButton from '../messaging/BlockUserButton';
 import { FollowButton } from '../../pages/03_user-pages/profile/ProfilePage/TabNavigation.styles';
-import * as S from '../../pages/03_user-pages/profile/ProfilePage/styles';
 import type { BulgarianUser } from '../../types/user/bulgarian-user.types';
 
 // ==================== STYLED COMPONENTS ====================
 
 const GreenHeaderContainer = styled.div<{ $isDark: boolean }>`
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position: relative;
   width: 100%;
-  min-height: 140px;
   background: ${props => props.$isDark
-    ? 'linear-gradient(135deg, rgba(5, 46, 22, 0.98) 0%, rgba(16, 163, 74, 0.95) 50%, rgba(22, 163, 74, 0.98) 100%)'
+    ? 'radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 0%, rgba(21, 177, 188, 1) 28%)'
     : 'linear-gradient(135deg, rgba(16, 163, 74, 0.98) 0%, rgba(34, 197, 94, 0.95) 50%, rgba(22, 163, 74, 0.98) 100%)'};
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-top: 3px solid ${props => props.$isDark ? 'rgba(34, 197, 94, 0.6)' : 'rgba(16, 163, 74, 0.8)'};
+  border-image: ${props => props.$isDark 
+    ? 'linear-gradient(90deg, rgba(218, 16, 174, 0.6) 0%, rgba(255, 255, 255, 1) 100%) 1'
+    : 'none'};
+  border-top: 3px solid ${props => props.$isDark ? 'rgba(34, 197, 94, 0.6)' : 'rgba(16, 153, 162, 0.8)'};
   box-shadow: 
-    0 -8px 32px rgba(16, 163, 74, 0.3),
-    0 -4px 16px rgba(16, 163, 74, 0.2),
+    0 4px 16px rgba(16, 163, 74, 0.2),
+    0 2px 8px rgba(16, 163, 74, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  z-index: 9997;
-  padding: 24px 36px;
+  padding: 20px 36px;
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-  pointer-events: auto;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 20px;
+  border-radius: 16px 16px 0 0;
   
   /* Desktop Layout */
   @media (min-width: 1025px) {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    padding: 32px 48px;
-    min-height: 120px;
+    padding: 20px 48px;
+    gap: 32px;
   }
   
   /* Tablet Layout */
   @media (min-width: 769px) and (max-width: 1024px) {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    padding: 28px 36px;
-    min-height: 140px;
+    padding: 18px 36px;
+    gap: 24px;
   }
   
   /* Mobile Layout */
   @media (max-width: 768px) {
     flex-direction: column;
-    padding: 20px 16px;
-    min-height: auto;
+    padding: 16px 20px;
     gap: 16px;
+    align-items: stretch;
   }
   
   /* Small Mobile */
   @media (max-width: 480px) {
-    padding: 16px 12px;
+    padding: 14px 16px;
     gap: 12px;
   }
 `;
 
 const HeaderContent = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  flex-direction: row;
+  align-items: center;
+  gap: 32px;
   flex: 1;
-  
-  @media (min-width: 769px) {
-    flex-direction: row;
-    align-items: center;
-    gap: 32px;
-  }
+  min-width: 0;
   
   @media (max-width: 768px) {
-    gap: 12px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
   }
 `;
 
 const UserInfoSection = styled.div<{ $isDark: boolean }>`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   min-width: 200px;
+  flex-shrink: 0;
   
   @media (max-width: 768px) {
     min-width: auto;
@@ -103,33 +97,39 @@ const UserInfoSection = styled.div<{ $isDark: boolean }>`
 `;
 
 const UserName = styled.h2<{ $isDark: boolean }>`
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   margin: 0;
   color: ${props => props.$isDark ? '#f0fdf4' : '#ffffff'};
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   
   @media (max-width: 768px) {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
   }
   
   @media (max-width: 480px) {
-    font-size: 1.125rem;
+    font-size: 1rem;
   }
 `;
 
 const UserEmail = styled.div<{ $isDark: boolean }>`
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   color: ${props => props.$isDark ? 'rgba(240, 253, 244, 0.85)' : 'rgba(255, 255, 255, 0.9)'};
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   
   @media (max-width: 768px) {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
   }
   
   @media (max-width: 480px) {
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
   }
 `;
 
@@ -137,42 +137,45 @@ const AccountTypeBadge = styled.div<{ $isDark: boolean }>`
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 4px 10px;
   background: ${props => props.$isDark 
     ? 'rgba(34, 197, 94, 0.25)' 
     : 'rgba(255, 255, 255, 0.2)'};
   border: 1px solid ${props => props.$isDark 
     ? 'rgba(34, 197, 94, 0.4)' 
     : 'rgba(255, 255, 255, 0.3)'};
-  border-radius: 12px;
-  font-size: 0.75rem;
+  border-radius: 8px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: ${props => props.$isDark ? '#dcfce7' : '#ffffff'};
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-top: 4px;
+  margin-top: 2px;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  width: fit-content;
   
   @media (max-width: 768px) {
-    font-size: 0.6875rem;
-    padding: 4px 10px;
+    font-size: 0.625rem;
+    padding: 3px 8px;
   }
 `;
 
 const StatsSection = styled.div`
   display: flex;
-  gap: 16px;
+  gap: 12px;
   align-items: center;
+  flex: 1;
+  justify-content: center;
   
   @media (max-width: 768px) {
-    gap: 12px;
+    gap: 8px;
     width: 100%;
     justify-content: space-between;
   }
   
   @media (max-width: 480px) {
-    gap: 8px;
+    gap: 6px;
   }
 `;
 
@@ -180,68 +183,69 @@ const StatItem = styled.div<{ $isDark: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  min-width: 120px;
-  padding: 12px 16px;
+  gap: 2px;
+  min-width: 100px;
+  padding: 10px 14px;
   background: ${props => props.$isDark 
     ? 'rgba(34, 197, 94, 0.15)' 
     : 'rgba(255, 255, 255, 0.15)'};
   border: 1px solid ${props => props.$isDark 
     ? 'rgba(34, 197, 94, 0.3)' 
     : 'rgba(255, 255, 255, 0.25)'};
-  border-radius: 12px;
+  border-radius: 10px;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   
   @media (max-width: 768px) {
     min-width: auto;
     flex: 1;
-    padding: 10px 12px;
+    padding: 8px 10px;
   }
   
   @media (max-width: 480px) {
-    padding: 8px 10px;
+    padding: 6px 8px;
     min-width: 0;
   }
 `;
 
 const StatValue = styled.div<{ $isDark: boolean }>`
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 800;
   color: ${props => props.$isDark ? '#dcfce7' : '#ffffff'};
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   line-height: 1;
   
   @media (max-width: 768px) {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
   }
   
   @media (max-width: 480px) {
-    font-size: 1.125rem;
+    font-size: 1rem;
   }
 `;
 
 const StatLabel = styled.div<{ $isDark: boolean }>`
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: ${props => props.$isDark ? 'rgba(220, 252, 231, 0.8)' : 'rgba(255, 255, 255, 0.85)'};
   text-transform: uppercase;
   letter-spacing: 0.5px;
   
   @media (max-width: 768px) {
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
   }
   
   @media (max-width: 480px) {
-    font-size: 0.625rem;
+    font-size: 0.5625rem;
   }
 `;
 
 const ActionsSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
+  flex-shrink: 0;
   
   @media (max-width: 768px) {
     width: 100%;
@@ -264,16 +268,16 @@ const ActionButton = styled.button<{ $variant: 'primary' | 'secondary' | 'danger
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-size: 0.9375rem;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: none;
   white-space: nowrap;
-  min-width: 120px;
+  min-width: 110px;
   
   ${props => {
     if (props.$variant === 'primary') {
@@ -338,20 +342,20 @@ const ActionButton = styled.button<{ $variant: 'primary' | 'secondary' | 'danger
   }
   
   svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     flex-shrink: 0;
   }
   
   @media (max-width: 768px) {
-    padding: 10px 20px;
-    font-size: 0.875rem;
+    padding: 8px 16px;
+    font-size: 0.8125rem;
     min-width: 100px;
   }
   
   @media (max-width: 480px) {
-    padding: 12px 16px;
-    font-size: 0.8125rem;
+    padding: 10px 16px;
+    font-size: 0.75rem;
     min-width: auto;
     width: 100%;
   }
@@ -422,7 +426,7 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
           <UserName $isDark={isDark}>{displayName}</UserName>
           <UserEmail $isDark={isDark}>{email}</UserEmail>
           <AccountTypeBadge $isDark={isDark}>
-            <Shield size={12} />
+            <Shield size={10} />
             {accountType}
           </AccountTypeBadge>
         </UserInfoSection>
@@ -455,19 +459,19 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
         {isOwnProfile ? (
           <>
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center', marginRight: '8px' }}>
-              <Crown size={16} style={{ position: 'absolute', left: '10px', zIndex: 1, pointerEvents: 'none', color: '#fbbf24' }} />
+              <Crown size={14} style={{ position: 'absolute', left: '10px', zIndex: 1, pointerEvents: 'none', color: '#fbbf24' }} />
               <select
                 value={user.profileType || 'private'}
                 onChange={(e) => onProfileSwitch?.(e.target.value as 'private' | 'dealer' | 'company')}
                 disabled={syncing}
                 style={{
                   appearance: 'none',
-                  padding: '8px 12px 8px 32px',
-                  borderRadius: '20px',
+                  padding: '6px 12px 6px 28px',
+                  borderRadius: '8px',
                   border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.4)'}`,
                   background: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.2)',
                   color: isDark ? '#f0fdf4' : '#ffffff',
-                  fontSize: '0.85rem',
+                  fontSize: '0.8125rem',
                   fontWeight: 600,
                   cursor: 'pointer',
                   backdropFilter: 'blur(8px)',
@@ -491,7 +495,7 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
               $isDark={isDark}
               onClick={onGoogleSync}
             >
-              <RefreshCw size={16} className={syncing ? 'spinning' : ''} />
+              <RefreshCw size={14} className={syncing ? 'spinning' : ''} />
               {syncing
                 ? (language === 'bg' ? 'Синхронизиране...' : 'Syncing...')
                 : (language === 'bg' ? 'Синхронизирай' : 'Sync')}
@@ -505,7 +509,7 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
                 disabled={followLoading}
                 $following={isFollowing}
               >
-                {isFollowing ? <UserCheck size={16} /> : <UserPlus size={16} />}
+                {isFollowing ? <UserCheck size={14} /> : <UserPlus size={14} />}
                 {isFollowing
                   ? (language === 'bg' ? 'Последван' : 'Following')
                   : (language === 'bg' ? 'Последвай' : 'Follow')}
@@ -517,7 +521,7 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
               $isDark={isDark}
               onClick={onMessage}
             >
-              <PhoneIcon size={18} />
+              <PhoneIcon size={16} />
               {language === 'bg' ? 'Съобщение' : 'Message'}
             </ActionButton>
             

@@ -395,10 +395,7 @@ const ProfilePageWrapper: React.FC = () => {
       >
         <BusinessBackground isBusinessAccount={isBusinessMode} />
 
-        <S.PageContainer style={{ 
-          paddingBottom: '200px',
-          minHeight: 'calc(100vh - 200px)'
-        }}>
+        <S.PageContainer>
           {/* Tab Navigation */}
           <TabNavigation $themeColor={theme.primary}>
             <TabNavLink to={basePath} end $themeColor={theme.primary}>
@@ -483,7 +480,29 @@ const ProfilePageWrapper: React.FC = () => {
             </S.CoverAndProfileWrapper>
           ) : null}
 
-          {/* ✅ Single Stats Bar removed - Content moved to Green Header at bottom */}
+          {/* ✅ Green Header Bar - Under Profile Image - Only for own profile */}
+          {/* For other users' profiles, PublicProfileView handles the green header */}
+          {isOwnProfile && !location.pathname.includes('/my-ads') && !location.pathname.includes('/campaigns') && !location.pathname.includes('/analytics') && !location.pathname.includes('/settings') && !location.pathname.includes('/consultations') && (
+            <BusinessGreenHeader
+              user={activeProfile}
+              viewer={viewer}
+              isOwnProfile={isOwnProfile}
+              isFollowing={isFollowing}
+              followLoading={followLoading}
+              syncing={syncing}
+              onFollow={handleFollow}
+              onMessage={handleMessage}
+              onProfileSwitch={handleProfileSwitch}
+              onGoogleSync={handleGoogleSync}
+              onBlockChanged={(isBlocked) => {
+                logger.info('Block status changed in green header', {
+                  targetUserId: activeProfile?.uid,
+                  isBlocked,
+                  viewerId: viewer?.uid
+                });
+              }}
+            />
+          )}
 
           {/* Premium Profile Type Switcher - Toggled via Tier button */}
           {showTypeSwitcher && isOwnProfile && (
@@ -498,31 +517,23 @@ const ProfilePageWrapper: React.FC = () => {
           )}
 
           {/* Content Area - React Router will render child routes here */}
-          <Outlet context={{ user: activeProfile, viewer, isOwnProfile, theme, userCars, refresh, setUser }} />
+          <Outlet context={{ 
+            user: activeProfile, 
+            viewer, 
+            isOwnProfile, 
+            theme, 
+            userCars, 
+            refresh, 
+            setUser,
+            isFollowing,
+            followLoading,
+            handleFollow,
+            handleMessage,
+            syncing,
+            handleProfileSwitch,
+            handleGoogleSync
+          }} />
         </S.PageContainer>
-
-        {/* ✅ Green Header - Fixed at bottom - Contains all profile info, stats, and actions */}
-        {!location.pathname.includes('/my-ads') && !location.pathname.includes('/campaigns') && !location.pathname.includes('/analytics') && !location.pathname.includes('/settings') && !location.pathname.includes('/consultations') && (
-          <BusinessGreenHeader
-            user={activeProfile}
-            viewer={viewer}
-            isOwnProfile={isOwnProfile}
-            isFollowing={isFollowing}
-            followLoading={followLoading}
-            syncing={syncing}
-            onFollow={handleFollow}
-            onMessage={handleMessage}
-            onProfileSwitch={handleProfileSwitch}
-            onGoogleSync={handleGoogleSync}
-            onBlockChanged={(isBlocked) => {
-              logger.info('Block status changed in green header', {
-                targetUserId: activeProfile?.uid,
-                isBlocked,
-                viewerId: viewer?.uid
-              });
-            }}
-          />
-        )}
       </S.ProfilePageContainer>
     </ThemeProvider>
   );

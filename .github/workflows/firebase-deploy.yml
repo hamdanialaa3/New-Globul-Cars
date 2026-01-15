@@ -112,6 +112,12 @@ jobs:
 
           echo "✅ All critical secrets present - proceeding with deployment"
 
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
       - name: Install Dependencies
         run: |
           npm ci --legacy-peer-deps
@@ -131,31 +137,20 @@ jobs:
 
       - name: Deploy to Firebase
         env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
         run: |
           npm i -g firebase-tools
           echo "🚀 Starting Firebase deployment..."
-          
-          # Write service account to temporary file
-          echo "$FIREBASE_SERVICE_ACCOUNT" > $HOME/gcloud-key.json
-          
-          # Extract project ID from service account JSON
-          PROJECT_ID=$(cat $HOME/gcloud-key.json | grep -o '"project_id": *"[^"]*"' | sed 's/"project_id": *"\([^"]*\)"/\1/')
-          echo "📦 Project: $PROJECT_ID"
+          echo "📦 Project: $FIREBASE_PROJECT_ID"
           echo "🌍 Region: europe-west1"
           
-          # Set credentials and deploy
-          export GOOGLE_APPLICATION_CREDENTIALS="$HOME/gcloud-key.json"
-          
           firebase deploy \
-            --project "$PROJECT_ID" \
+            --project "$FIREBASE_PROJECT_ID" \
             --non-interactive || {
               echo "❌ Deployment failed!"
               exit 1
             }
-
-          # Clean up credentials file
-          rm -f $HOME/gcloud-key.json
 
           echo ""
           echo "════════════════════════════════════════════════════════════════"
