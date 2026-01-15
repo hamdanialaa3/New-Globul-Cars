@@ -66,16 +66,19 @@ https://console.cloud.google.com/iam-admin/iam?project=fire-new-globul
 
 ### في `.github/workflows/firebase-deploy.yml`:
 
+**الطريقة الجديدة (OIDC - موصى بها):**
+
 ```yaml
-- name: Configure Service Account
-  env:
-    FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-  run: |
-    echo "${FIREBASE_SERVICE_ACCOUNT}" > "${HOME}/gcloud.json"
-    echo "GOOGLE_APPLICATION_CREDENTIALS=${HOME}/gcloud.json" >> $GITHUB_ENV
+- name: Authenticate to Google Cloud
+  id: auth
+  uses: google-github-actions/auth@v2
+  with:
+    credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 ```
 
 **الحساب المستخدم:** موجود في `secrets.FIREBASE_SERVICE_ACCOUNT` (JSON key file)
+
+**ملاحظة:** تم تحديث Workflow لاستخدام `google-github-actions/auth@v2` بدلاً من الطريقة القديمة. هذا يحل مشكلة "Failed to authenticate" ويتبع أفضل الممارسات الحديثة.
 
 ### كيفية معرفة الحساب:
 
@@ -118,18 +121,26 @@ https://console.cloud.google.com/iam-admin/iam?project=fire-new-globul
 
 ---
 
-## 🛠️ تحديث Workflow (اختياري - للتحسين)
+## 🛠️ تحديث Workflow (تم التحديث - يناير 2026)
 
-### إضافة خطوة للتحقق من الصلاحيات:
+### ✅ التحديثات المطبقة:
+
+1. **استخدام `google-github-actions/auth@v2`** - طريقة المصادقة الحديثة (OIDC)
+2. **إزالة الطرق القديمة** - لا مزيد من `--token` أو إدارة يدوية للملفات
+3. **إدارة تلقائية للاعتمادات** - Action يدير الملفات تلقائياً
+
+### التحقق من الصلاحيات (اختياري):
 
 ```yaml
 - name: Verify Service Account Permissions
   env:
-    GOOGLE_APPLICATION_CREDENTIALS: ${HOME}/gcloud.json
+    GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
   run: |
     echo "Verifying service account permissions..."
-    gcloud auth activate-service-account --key-file="${GOOGLE_APPLICATION_CREDENTIALS}"
-    gcloud projects get-iam-policy fire-new-globul --flatten="bindings[].members" --format="table(bindings.role)" --filter="bindings.members:$(gcloud auth list --filter=status:ACTIVE --format="value(account)")"
+    gcloud projects get-iam-policy fire-new-globul \
+      --flatten="bindings[].members" \
+      --format="table(bindings.role)" \
+      --filter="bindings.members:$(gcloud auth list --filter=status:ACTIVE --format='value(account)')"
 ```
 
 ---

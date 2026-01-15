@@ -1,7 +1,28 @@
 # GitHub Actions Deployment Fix Guide
 
-## Problem
-GitHub Actions deployment is failing with error:
+## ✅ FIXED: Deprecated Token Authentication (January 2026)
+
+**Status:** ✅ **RESOLVED** - Updated to use `google-github-actions/auth@v2`
+
+The workflow has been updated to use modern OIDC authentication instead of deprecated token methods. This fixes the "Failed to authenticate" error.
+
+---
+
+## Previous Problem
+GitHub Actions deployment was failing with error:
+```
+Error: Failed to authenticate, have you run firebase login?
+❌ Deployment failed!
+```
+
+**Root Cause:** Using deprecated authentication method with manual credential file management.
+
+**Solution Applied:** Updated workflow to use `google-github-actions/auth@v2` for secure, modern authentication.
+
+---
+
+## Old Problem (Historical Reference)
+Previously, deployment was failing with error:
 ```
 ERROR: (gcloud.config.set) There was a problem refreshing auth tokens for account 
 firebase-adminsdk-fbsvc@fire-new-globul.iam.gserviceaccount.com: 
@@ -73,15 +94,30 @@ Since Firebase MCP Server is now connected, I can help you:
 2. Check its permissions
 3. Guide you through creating a new key
 
-## Alternative: Disable GCloud Setup
+## ✅ Current Authentication Method (Updated January 2026)
 
-If you don't need GCloud features, you can simplify the workflow:
+The workflow now uses `google-github-actions/auth@v2`:
 
-**Edit `.github/workflows/firebase-deploy.yml`**:
-- Remove lines 132-140 (Authenticate Google Cloud + Setup gcloud)
-- Keep only Firebase deployment (lines 142-173)
+```yaml
+- name: Authenticate to Google Cloud
+  id: auth
+  uses: google-github-actions/auth@v2
+  with:
+    credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
-This will use Firebase CLI authentication only.
+- name: Deploy to Firebase
+  env:
+    FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+    GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
+  run: |
+    firebase deploy --project "$FIREBASE_PROJECT_ID" --non-interactive
+```
+
+**Benefits:**
+- ✅ No deprecated token methods
+- ✅ Automatic credential management
+- ✅ Follows Google's best practices
+- ✅ More secure and reliable
 
 ## Security Note
 

@@ -14,17 +14,24 @@ This directory contains automated workflows for CI/CD.
 
 **What it does:**
 1. ✅ Validates required secrets
-2. 🔨 Builds React app (`npm run build`)
-3. 📦 Installs Cloud Functions dependencies
-4. 🚀 Deploys to Firebase Hosting
-5. ⚡ Deploys Firebase Cloud Functions
+2. 🔐 Authenticates to Google Cloud using `google-github-actions/auth@v2` (modern OIDC method)
+3. 🔨 Builds React app (`npm run build`)
+4. 📦 Installs Cloud Functions dependencies
+5. 🚀 Deploys to Firebase Hosting
+6. ⚡ Deploys Firebase Cloud Functions
 
 **Required Secrets:**
 - `FIREBASE_SERVICE_ACCOUNT` - Service account JSON from Google Cloud
 - `FIREBASE_PROJECT_ID` - Firebase project ID (`fire-new-globul`)
 
+**Authentication:**
+- Uses `google-github-actions/auth@v2` for secure authentication
+- No deprecated token methods - follows Google's best practices
+- Automatic credential management
+
 **Features:**
 - Pre-flight secret validation with helpful error messages
+- Modern OIDC-based authentication (no deprecated tokens)
 - Detailed deployment logs with debug mode
 - Success summary with deployment URLs
 - Error handling with troubleshooting tips
