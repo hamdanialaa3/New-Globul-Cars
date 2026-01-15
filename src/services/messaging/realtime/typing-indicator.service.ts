@@ -172,9 +172,6 @@ class TypingIndicatorService {
       });
     }
   }
-      logger.debug('[TypingIndicator] User stopped typing', { channelId, userNumericId });
-    }
-  }
 
   /**
    * Reset typing timeout (auto-stop after 3 seconds)
