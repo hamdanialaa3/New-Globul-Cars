@@ -66,16 +66,16 @@ export interface RealtimeMessageMetadata {
   offerCurrency?: string;
   offerStatus?: 'pending' | 'accepted' | 'rejected' | 'countered' | 'expired';
   offerExpiresAt?: number;
-  
+
   // For image messages
   imageUrl?: string;
   imageThumbnail?: string;
-  
+
   // For location messages
   latitude?: number;
   longitude?: number;
   locationName?: string;
-  
+
   // For car context
   carId?: number;
   carFirebaseId?: string;
@@ -210,14 +210,14 @@ class RealtimeMessagingService {
     // Sort IDs to ensure consistency regardless of who initiates
     const sortedUserIds = [buyerNumericId, sellerNumericId].sort((a, b) => a - b);
     const channelId = `msg_${sortedUserIds[0]}_${sortedUserIds[1]}_car_${carNumericId}`;
-    
+
     logger.debug('[RealtimeMessaging] Generated channel ID', {
       buyerNumericId,
       sellerNumericId,
       carNumericId,
       channelId,
     });
-    
+
     return channelId;
   }
 
@@ -249,46 +249,46 @@ class RealtimeMessagingService {
   async getOrCreateChannel(params: CreateChannelParams): Promise<RealtimeChannel> {
     // ✅ Check authentication first
     this.ensureAuthenticated();
-    
+
     const { buyer, seller, car } = params;
-    
+
     // ✅ FIX Phase 4.3: Check block status BEFORE creating channel
     // Check and auto-unblock if initiator tries to message someone they blocked
     try {
       const { blockUserService } = await import('@/services/messaging/block-user.service');
-      
+
       // Check if buyer blocked seller
       const buyerBlockedSeller = await blockUserService.isBlocked(
         buyer.numericId,
         seller.numericId
       );
-      
+
       if (buyerBlockedSeller) {
         // Auto-unblock: if buyer initiates contact, they want to communicate
         logger.info('[RealtimeMessaging] Auto-unblocking seller for channel creation', {
           buyer: buyer.numericId,
           seller: seller.numericId
         });
-        
+
         await blockUserService.unblockUser(buyer.firebaseId, seller.firebaseId);
       }
-      
+
       // Check if seller blocked buyer
       const sellerBlockedBuyer = await blockUserService.isBlocked(
         seller.numericId,
         buyer.numericId
       );
-      
+
       if (sellerBlockedBuyer) {
         // This is legitimate - seller doesn't want contact
         throw new Error('CHANNEL_BLOCKED: This user has blocked you');
       }
-      
+
       logger.info('[RealtimeMessaging] Block check passed for channel creation', {
         buyer: buyer.numericId,
         seller: seller.numericId
       });
-      
+
     } catch (error) {
       // Re-throw block errors (only when seller blocked buyer)
       if (error instanceof Error && error.message.includes('CHANNEL_BLOCKED')) {
@@ -299,24 +299,69 @@ class RealtimeMessagingService {
         });
         throw error;
       }
-      
+
       // Log but allow creation if block check fails (fail open)
       logger.warn('Failed to check block status before channel creation', error as Error, {
         buyer: buyer.numericId,
         seller: seller.numericId
       });
     }
-    
+
+    // ✅ CRITICAL FIX: Validate and ensure numeric IDs exist
+    // This prevents channel creation failures for new users
+    if (!buyer.numericId || !seller.numericId) {
+      logger.warn('[RealtimeMessaging] Missing numeric IDs, attempting auto-assignment', {
+        buyerNumericId: buyer.numericId,
+        sellerNumericId: seller.numericId
+      });
+
+      try {
+        const { ensureUserNumericId } = await import('@/services/numeric-id-assignment.service');
+
+        // Ensure buyer has numeric ID
+        if (!buyer.numericId) {
+          const assignedId = await ensureUserNumericId(buyer.firebaseId);
+          if (!assignedId) {
+            throw new Error('NUMERIC_ID_ASSIGNMENT_FAILED: Could not assign numeric ID to buyer');
+          }
+          buyer.numericId = assignedId;
+          logger.info('[RealtimeMessaging] Assigned numeric ID to buyer', {
+            firebaseId: buyer.firebaseId,
+            numericId: assignedId
+          });
+        }
+
+        // Ensure seller has numeric ID
+        if (!seller.numericId) {
+          const assignedId = await ensureUserNumericId(seller.firebaseId);
+          if (!assignedId) {
+            throw new Error('NUMERIC_ID_ASSIGNMENT_FAILED: Could not assign numeric ID to seller');
+          }
+          seller.numericId = assignedId;
+          logger.info('[RealtimeMessaging] Assigned numeric ID to seller', {
+            firebaseId: seller.firebaseId,
+            numericId: assignedId
+          });
+        }
+      } catch (error) {
+        logger.error('[RealtimeMessaging] Failed to ensure numeric IDs', error as Error, {
+          buyerFirebaseId: buyer.firebaseId,
+          sellerFirebaseId: seller.firebaseId
+        });
+        throw new Error('NUMERIC_ID_REQUIRED: Both participants must have numeric IDs to create a channel');
+      }
+    }
+
     const channelId = this.generateChannelId(buyer.numericId, seller.numericId, car.numericId);
-    
+
     const channelRef = ref(this.db, `channels/${channelId}`);
     const snapshot = await get(channelRef);
-    
+
     if (snapshot.exists()) {
       logger.info('[RealtimeMessaging] Found existing channel', { channelId });
       return { id: channelId, ...snapshot.val() } as RealtimeChannel;
     }
-    
+
     // Create new channel
     const now = Date.now();
     // Firebase RTDB doesn't accept undefined values, use null or empty string
@@ -344,15 +389,15 @@ class RealtimeMessagingService {
       },
       status: 'active',
     };
-    
+
     await set(channelRef, newChannel);
-    
+
     // Also index in user's channel list for fast lookup
     await this.indexChannelForUser(channelId, buyer.numericId, seller.numericId, car.numericId);
     await this.indexChannelForUser(channelId, seller.numericId, buyer.numericId, car.numericId);
-    
+
     logger.info('[RealtimeMessaging] Created new channel', { channelId, buyer: buyer.numericId, seller: seller.numericId });
-    
+
     return { id: channelId, ...newChannel };
   }
 
@@ -382,14 +427,14 @@ class RealtimeMessagingService {
   async getUserChannels(userNumericId: number): Promise<RealtimeChannel[]> {
     const userChannelsRef = ref(this.db, `user_channels/${userNumericId}`);
     const indexSnapshot = await get(userChannelsRef);
-    
+
     if (!indexSnapshot.exists()) {
       return [];
     }
-    
+
     const channelIds = Object.keys(indexSnapshot.val());
     const channels: RealtimeChannel[] = [];
-    
+
     // Fetch all channels in parallel
     const promises = channelIds.map(async (channelId) => {
       const channelRef = ref(this.db, `channels/${channelId}`);
@@ -398,17 +443,17 @@ class RealtimeMessagingService {
         channels.push({ id: channelId, ...channelSnapshot.val() });
       }
     });
-    
+
     await Promise.all(promises);
-    
+
     // Sort by updatedAt descending
     channels.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-    
+
     logger.debug('[RealtimeMessaging] Fetched user channels', {
       userNumericId,
       count: channels.length,
     });
-    
+
     return channels;
   }
 
@@ -422,19 +467,19 @@ class RealtimeMessagingService {
   ): () => void {
     const userChannelsRef = ref(this.db, `user_channels/${userNumericId}`);
     const listenerKey = `user_channels_${userNumericId}`;
-    
+
     // Store reference for cleanup
     this.activeListeners.set(listenerKey, userChannelsRef);
-    
+
     const unsubscribe = onValue(userChannelsRef, async (snapshot) => {
       if (!snapshot.exists()) {
         callback([]);
         return;
       }
-      
+
       const channelIds = Object.keys(snapshot.val());
       const channels: RealtimeChannel[] = [];
-      
+
       // Fetch all channels
       for (const channelId of channelIds) {
         const channelRef = ref(this.db, `channels/${channelId}`);
@@ -443,12 +488,12 @@ class RealtimeMessagingService {
           channels.push({ id: channelId, ...channelSnapshot.val() });
         }
       }
-      
+
       // Sort by last activity
       channels.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
       callback(channels);
     });
-    
+
     return () => {
       off(userChannelsRef);
       this.activeListeners.delete(listenerKey);
@@ -471,27 +516,27 @@ class RealtimeMessagingService {
   ): Promise<string> {
     // ✅ Check authentication first
     this.ensureAuthenticated();
-    
+
     // 🔴 CRITICAL: Check if user is blocked before sending
     try {
       const { blockUserService } = await import('@/services/messaging/block-user.service');
-      
+
       // Check if recipient blocked sender
       const hasBlockedMe = await blockUserService.hasBlockedMe(
         message.senderId,
         message.recipientId
       );
-      
+
       if (hasBlockedMe) {
         throw new Error('MESSAGE_BLOCKED: Recipient has blocked you');
       }
-      
+
       // Check if sender blocked recipient
       const isBlocked = await blockUserService.isBlocked(
         message.senderId,
         message.recipientId
       );
-      
+
       if (isBlocked) {
         throw new Error('MESSAGE_BLOCKED: You have blocked this user');
       }
@@ -506,12 +551,12 @@ class RealtimeMessagingService {
         });
         throw error;
       }
-      
+
       // Re-throw authentication errors
       if (error instanceof Error && error.message.includes('PERMISSION_DENIED')) {
         throw error;
       }
-      
+
       // If block check fails, log but continue (fail open)
       logger.warn('Failed to check block status before sending message', error as Error, {
         channelId,
@@ -519,46 +564,46 @@ class RealtimeMessagingService {
         recipientId: message.recipientId,
       });
     }
-    
+
     try {
       const messagesRef = ref(this.db, `messages/${channelId}`);
       const newMessageRef = push(messagesRef);
       const messageId = newMessageRef.key!;
-      
+
       const now = Date.now();
       const fullMessage: RealtimeMessage = {
         ...message,
         id: messageId,
         channelId,
         timestamp: now,
-      serverTimestamp: serverTimestamp(),
-      read: false,
-    };
-    
-    await set(newMessageRef, fullMessage);
-    
-    // Update channel's last message and updatedAt
-    const channelRef = ref(this.db, `channels/${channelId}`);
-    await update(channelRef, {
-      updatedAt: now,
-      lastMessage: {
-        content: message.content,
+        serverTimestamp: serverTimestamp(),
+        read: false,
+      };
+
+      await set(newMessageRef, fullMessage);
+
+      // Update channel's last message and updatedAt
+      const channelRef = ref(this.db, `channels/${channelId}`);
+      await update(channelRef, {
+        updatedAt: now,
+        lastMessage: {
+          content: message.content,
+          senderId: message.senderId,
+          timestamp: now,
+          type: message.type,
+        },
+        [`unreadCount/${message.recipientId}`]: (await this.getUnreadCount(channelId, message.recipientId)) + 1,
+      });
+
+      logger.info('[RealtimeMessaging] Message sent', {
+        channelId,
+        messageId,
         senderId: message.senderId,
-        timestamp: now,
         type: message.type,
-      },
-      [`unreadCount/${message.recipientId}`]: (await this.getUnreadCount(channelId, message.recipientId)) + 1,
-    });
-    
-    logger.info('[RealtimeMessaging] Message sent', {
-      channelId,
-      messageId,
-      senderId: message.senderId,
-      type: message.type,
-    });
-    
-    return messageId;
-    
+      });
+
+      return messageId;
+
     } catch (error) {
       logger.error('[RealtimeMessaging] Failed to send message', error as Error, {
         channelId,
@@ -608,7 +653,7 @@ class RealtimeMessagingService {
     carMetadata?: RealtimeMessageMetadata
   ): Promise<string> {
     const expiresAt = Date.now() + (24 * 60 * 60 * 1000); // 24 hours from now
-    
+
     return this.sendMessage(channelId, {
       senderId,
       senderNumericId: senderId,
@@ -673,15 +718,15 @@ class RealtimeMessagingService {
     // Reset unread count
     const channelRef = ref(this.db, `channels/${channelId}/unreadCount/${readerNumericId}`);
     await set(channelRef, 0);
-    
+
     // Mark individual messages as read (optional optimization)
     const messagesRef = ref(this.db, `messages/${channelId}`);
     const snapshot = await get(messagesRef);
-    
+
     if (snapshot.exists()) {
       const updates: { [key: string]: any } = {};
       const now = Date.now();
-      
+
       snapshot.forEach((childSnapshot) => {
         const message = childSnapshot.val();
         if (message.recipientId === readerNumericId && !message.read) {
@@ -689,12 +734,12 @@ class RealtimeMessagingService {
           updates[`${childSnapshot.key}/readAt`] = now;
         }
       });
-      
+
       if (Object.keys(updates).length > 0) {
         await update(messagesRef, updates);
       }
     }
-    
+
     logger.debug('[RealtimeMessaging] Marked messages as read', {
       channelId,
       readerNumericId,
@@ -711,18 +756,18 @@ class RealtimeMessagingService {
       orderByChild('timestamp'),
       limitToLast(limit)
     );
-    
+
     const snapshot = await get(messagesRef);
-    
+
     if (!snapshot.exists()) {
       return [];
     }
-    
+
     const messages: RealtimeMessage[] = [];
     snapshot.forEach((childSnapshot) => {
       messages.push({ id: childSnapshot.key!, ...childSnapshot.val() });
     });
-    
+
     return messages.sort((a, b) => a.timestamp - b.timestamp);
   }
 
@@ -739,22 +784,22 @@ class RealtimeMessagingService {
       orderByChild('timestamp'),
       limitToLast(100)
     );
-    
+
     const listenerKey = `messages_${channelId}`;
     this.activeListeners.set(listenerKey, ref(this.db, `messages/${channelId}`));
-    
+
     const unsubscribe = onValue(messagesRef, (snapshot) => {
       const messages: RealtimeMessage[] = [];
-      
+
       if (snapshot.exists()) {
         snapshot.forEach((childSnapshot) => {
           messages.push({ id: childSnapshot.key!, ...childSnapshot.val() });
         });
       }
-      
+
       callback(messages.sort((a, b) => a.timestamp - b.timestamp));
     });
-    
+
     return () => {
       off(ref(this.db, `messages/${channelId}`));
       this.activeListeners.delete(listenerKey);
@@ -775,17 +820,17 @@ class RealtimeMessagingService {
     counterAmount?: number
   ): Promise<void> {
     const messageRef = ref(this.db, `messages/${channelId}/${messageId}/metadata`);
-    
+
     const updates: Partial<RealtimeMessageMetadata> = {
       offerStatus: newStatus,
     };
-    
+
     if (newStatus === 'countered' && counterAmount) {
       updates.offerAmount = counterAmount;
     }
-    
+
     await update(messageRef, updates);
-    
+
     logger.info('[RealtimeMessaging] Offer status updated', {
       channelId,
       messageId,

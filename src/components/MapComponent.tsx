@@ -48,6 +48,7 @@ interface MapComponentProps {
   zoom?: number;
   height?: string;
   showInfo?: boolean;
+  showMarker?: boolean; // New prop to control marker visibility
 }
 
 const MapComponent: React.FC<MapComponentProps> = ({
@@ -58,7 +59,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
   carLocation,
   zoom = 14,
   height = '400px',
-  showInfo = true
+  showInfo = true,
+  showMarker = true
 }) => {
   const [showInfoWindow, setShowInfoWindow] = React.useState(false);
 
@@ -133,17 +135,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
 };
 
 export default MapComponent;
-
-
-
-
-
-
-
-
-
-
-
 
 
 
