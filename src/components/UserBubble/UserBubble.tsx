@@ -393,7 +393,13 @@ export const UserBubble: React.FC<UserBubbleProps> = ({
     if (onClick) {
       onClick();
     } else {
-      navigate(`/profile/${user.uid}`);
+      // 🔒 STRICT: Use /profile/view/{numericId} for other users' profiles
+      // UserBubble is always for other users, so use view path
+      if (user.numericId) {
+        navigate(`/profile/view/${user.numericId}`);
+      } else if (user.uid) {
+        navigate(`/profile/view/${user.uid}`);
+      }
     }
   };
   

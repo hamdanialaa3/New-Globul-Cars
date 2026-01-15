@@ -421,9 +421,11 @@ export const GarageCarousel: React.FC<GarageCarouselProps> = ({
 
   const handleViewAll = () => {
     if (isOwnProfile) {
+      // 🔒 OWN PROFILE: /profile/{numericId}/my-ads
       navigate('/profile/my-ads');
     } else if (userId) {
-      navigate(`/profile/${userId}/my-ads`);
+      // 🔒 OTHER USER'S PROFILE: /profile/view/{numericId}/my-ads
+      navigate(`/profile/view/${userId}/my-ads`);
     }
   };
 

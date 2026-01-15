@@ -697,7 +697,12 @@ const MapAnalyticsPage: React.FC = () => {
 
                   if (item.type === 'user') {
                     return (
-                      <ItemCard key={idx} onClick={() => navigate(`/profile/${item.data.id}`)}>
+                      <ItemCard key={idx} onClick={() => {
+                        // 🔒 STRICT: Use /profile/view/{numericId} for other users' profiles
+                        // MapPage items are always from other users
+                        const numericId = item.data.numericId || item.data.id;
+                        navigate(`/profile/view/${numericId}`);
+                      }}>
                         <CardHeader>
                           <CardIcon>👤</CardIcon>
                           <CardTitle>{t('mapPage.userItem')}</CardTitle>

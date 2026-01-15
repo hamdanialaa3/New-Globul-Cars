@@ -386,7 +386,13 @@ export const PostCard: React.FC<PostCardProps> = ({
   };
   
   const handleAuthorClick = () => {
-    navigate(`/profile/${post.authorId}`);
+    // 🔒 STRICT: Use /profile/view/{numericId} for other users' profiles
+    // PostCard author is always another user, so use view path
+    if (post.authorNumericId) {
+      navigate(`/profile/view/${post.authorNumericId}`);
+    } else if (post.authorId) {
+      navigate(`/profile/view/${post.authorId}`);
+    }
   };
   
   const initial = post.authorInfo.displayName?.[0]?.toUpperCase() || '?';

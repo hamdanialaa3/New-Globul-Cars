@@ -34,6 +34,7 @@ export { default as IDReferenceHelper } from './IDReferenceHelper';
 export { default as BusinessUpgradeCard } from './BusinessUpgradeCard';
 export { default as ProfileTypeConfirmModal } from './ProfileTypeConfirmModal';  // ⚡ NEW
 export { default as BusinessBackground } from './BusinessBackground';
+export { BusinessGreenHeader } from './BusinessGreenHeader';
 export { GarageSectionPro as GarageSection } from './GarageSection_Pro';
 export { GarageCarousel } from './GarageCarousel';  // ⚡ NEW: Circular Garage Carousel
 export { FollowButton } from './FollowButton';

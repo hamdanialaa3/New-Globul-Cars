@@ -1,0 +1,541 @@
+/**
+ * Business Green Header Component
+ * هيدر أخضر احترافي في الأسفل يحتوي على معلومات المستخدم والإحصائيات والأزرار
+ * يدعم الوضع الفاتح والغامق واللغات (BG/EN) والاستجابة الكاملة
+ */
+
+import React from 'react';
+import styled, { css } from 'styled-components';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useTheme } from '../../contexts/ThemeContext';
+import { MessageCircle, UserPlus, UserCheck, Shield, Phone as PhoneIcon, RefreshCw, Crown } from 'lucide-react';
+import BlockUserButton from '../messaging/BlockUserButton';
+import { FollowButton } from '../../pages/03_user-pages/profile/ProfilePage/TabNavigation.styles';
+import * as S from '../../pages/03_user-pages/profile/ProfilePage/styles';
+import type { BulgarianUser } from '../../types/user/bulgarian-user.types';
+
+// ==================== STYLED COMPONENTS ====================
+
+const GreenHeaderContainer = styled.div<{ $isDark: boolean }>`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  min-height: 140px;
+  background: ${props => props.$isDark
+    ? 'linear-gradient(135deg, rgba(5, 46, 22, 0.98) 0%, rgba(16, 163, 74, 0.95) 50%, rgba(22, 163, 74, 0.98) 100%)'
+    : 'linear-gradient(135deg, rgba(16, 163, 74, 0.98) 0%, rgba(34, 197, 94, 0.95) 50%, rgba(22, 163, 74, 0.98) 100%)'};
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 3px solid ${props => props.$isDark ? 'rgba(34, 197, 94, 0.6)' : 'rgba(16, 163, 74, 0.8)'};
+  box-shadow: 
+    0 -8px 32px rgba(16, 163, 74, 0.3),
+    0 -4px 16px rgba(16, 163, 74, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  z-index: 9997;
+  padding: 24px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  pointer-events: auto;
+  
+  /* Desktop Layout */
+  @media (min-width: 1025px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32px 48px;
+    min-height: 120px;
+  }
+  
+  /* Tablet Layout */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 36px;
+    min-height: 140px;
+  }
+  
+  /* Mobile Layout */
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 20px 16px;
+    min-height: auto;
+    gap: 16px;
+  }
+  
+  /* Small Mobile */
+  @media (max-width: 480px) {
+    padding: 16px 12px;
+    gap: 12px;
+  }
+`;
+
+const HeaderContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  
+  @media (min-width: 769px) {
+    flex-direction: row;
+    align-items: center;
+    gap: 32px;
+  }
+  
+  @media (max-width: 768px) {
+    gap: 12px;
+  }
+`;
+
+const UserInfoSection = styled.div<{ $isDark: boolean }>`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 200px;
+  
+  @media (max-width: 768px) {
+    min-width: auto;
+    width: 100%;
+  }
+`;
+
+const UserName = styled.h2<{ $isDark: boolean }>`
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: ${props => props.$isDark ? '#f0fdf4' : '#ffffff'};
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  line-height: 1.2;
+  
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1.125rem;
+  }
+`;
+
+const UserEmail = styled.div<{ $isDark: boolean }>`
+  font-size: 0.9375rem;
+  color: ${props => props.$isDark ? 'rgba(240, 253, 244, 0.85)' : 'rgba(255, 255, 255, 0.9)'};
+  font-weight: 500;
+  
+  @media (max-width: 768px) {
+    font-size: 0.875rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 0.8125rem;
+  }
+`;
+
+const AccountTypeBadge = styled.div<{ $isDark: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: ${props => props.$isDark 
+    ? 'rgba(34, 197, 94, 0.25)' 
+    : 'rgba(255, 255, 255, 0.2)'};
+  border: 1px solid ${props => props.$isDark 
+    ? 'rgba(34, 197, 94, 0.4)' 
+    : 'rgba(255, 255, 255, 0.3)'};
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: ${props => props.$isDark ? '#dcfce7' : '#ffffff'};
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  
+  @media (max-width: 768px) {
+    font-size: 0.6875rem;
+    padding: 4px 10px;
+  }
+`;
+
+const StatsSection = styled.div`
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  
+  @media (max-width: 768px) {
+    gap: 12px;
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 8px;
+  }
+`;
+
+const StatItem = styled.div<{ $isDark: boolean }>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 120px;
+  padding: 12px 16px;
+  background: ${props => props.$isDark 
+    ? 'rgba(34, 197, 94, 0.15)' 
+    : 'rgba(255, 255, 255, 0.15)'};
+  border: 1px solid ${props => props.$isDark 
+    ? 'rgba(34, 197, 94, 0.3)' 
+    : 'rgba(255, 255, 255, 0.25)'};
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  
+  @media (max-width: 768px) {
+    min-width: auto;
+    flex: 1;
+    padding: 10px 12px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 8px 10px;
+    min-width: 0;
+  }
+`;
+
+const StatValue = styled.div<{ $isDark: boolean }>`
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: ${props => props.$isDark ? '#dcfce7' : '#ffffff'};
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  line-height: 1;
+  
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1.125rem;
+  }
+`;
+
+const StatLabel = styled.div<{ $isDark: boolean }>`
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: ${props => props.$isDark ? 'rgba(220, 252, 231, 0.8)' : 'rgba(255, 255, 255, 0.85)'};
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  
+  @media (max-width: 768px) {
+    font-size: 0.6875rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 0.625rem;
+  }
+`;
+
+const ActionsSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  
+  @media (max-width: 480px) {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+    
+    > * {
+      width: 100%;
+    }
+  }
+`;
+
+const ActionButton = styled.button<{ $variant: 'primary' | 'secondary' | 'danger'; $isDark: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  white-space: nowrap;
+  min-width: 120px;
+  
+  ${props => {
+    if (props.$variant === 'primary') {
+      return css`
+        background: ${props.$isDark 
+          ? 'rgba(255, 255, 255, 0.2)' 
+          : 'rgba(255, 255, 255, 0.25)'};
+        color: ${props.$isDark ? '#f0fdf4' : '#ffffff'};
+        border: 1px solid ${props.$isDark 
+          ? 'rgba(255, 255, 255, 0.3)' 
+          : 'rgba(255, 255, 255, 0.4)'};
+        
+        &:hover {
+          background: ${props.$isDark 
+            ? 'rgba(255, 255, 255, 0.3)' 
+            : 'rgba(255, 255, 255, 0.35)'};
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+        }
+      `;
+    }
+    if (props.$variant === 'secondary') {
+      return css`
+        background: ${props.$isDark 
+          ? 'rgba(34, 197, 94, 0.2)' 
+          : 'rgba(255, 255, 255, 0.15)'};
+        color: ${props.$isDark ? '#dcfce7' : '#ffffff'};
+        border: 1px solid ${props.$isDark 
+          ? 'rgba(34, 197, 94, 0.4)' 
+          : 'rgba(255, 255, 255, 0.3)'};
+        
+        &:hover {
+          background: ${props.$isDark 
+            ? 'rgba(34, 197, 94, 0.3)' 
+            : 'rgba(255, 255, 255, 0.25)'};
+          transform: translateY(-2px);
+        }
+      `;
+    }
+    if (props.$variant === 'danger') {
+      return css`
+        background: ${props.$isDark 
+          ? 'rgba(239, 68, 68, 0.2)' 
+          : 'rgba(239, 68, 68, 0.25)'};
+        color: ${props.$isDark ? '#fecaca' : '#ffffff'};
+        border: 1px solid ${props.$isDark 
+          ? 'rgba(239, 68, 68, 0.4)' 
+          : 'rgba(239, 68, 68, 0.4)'};
+        
+        &:hover {
+          background: ${props.$isDark 
+            ? 'rgba(239, 68, 68, 0.3)' 
+            : 'rgba(239, 68, 68, 0.35)'};
+          transform: translateY(-2px);
+        }
+      `;
+    }
+  }}
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 10px 20px;
+    font-size: 0.875rem;
+    min-width: 100px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 12px 16px;
+    font-size: 0.8125rem;
+    min-width: auto;
+    width: 100%;
+  }
+`;
+
+const FollowButtonWrapper = styled.div`
+  @media (max-width: 480px) {
+    width: 100%;
+    
+    button {
+      width: 100%;
+    }
+  }
+`;
+
+// ==================== COMPONENT ====================
+
+interface BusinessGreenHeaderProps {
+  user: BulgarianUser | null;
+  viewer: BulgarianUser | null;
+  isOwnProfile: boolean;
+  isFollowing: boolean;
+  followLoading: boolean;
+  syncing?: boolean;
+  onFollow: () => void;
+  onMessage: () => void;
+  onProfileSwitch?: (newType: 'private' | 'dealer' | 'company') => void;
+  onGoogleSync?: () => void;
+  onBlockChanged?: (isBlocked: boolean) => void;
+}
+
+export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
+  user,
+  viewer,
+  isOwnProfile,
+  isFollowing,
+  followLoading,
+  syncing = false,
+  onFollow,
+  onMessage,
+  onProfileSwitch,
+  onGoogleSync,
+  onBlockChanged
+}) => {
+  const { language } = useLanguage();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
+  if (!user) return null;
+
+  const displayName = user.displayName || (language === 'bg' ? 'Анонимен' : 'Anonymous');
+  const email = user.email || '';
+  const accountType = user.profileType === 'dealer' || user.profileType === 'company' 
+    ? 'BUSINESS ACCOUNT' 
+    : 'PRIVATE ACCOUNT';
+  
+  const stats = {
+    views: user.stats?.totalViews || 0,
+    listings: user.stats?.activeListings || 0,
+    trust: user.stats?.trustScore || 0
+  };
+
+  return (
+    <GreenHeaderContainer $isDark={isDark}>
+      <HeaderContent>
+        {/* User Info Section */}
+        <UserInfoSection $isDark={isDark}>
+          <UserName $isDark={isDark}>{displayName}</UserName>
+          <UserEmail $isDark={isDark}>{email}</UserEmail>
+          <AccountTypeBadge $isDark={isDark}>
+            <Shield size={12} />
+            {accountType}
+          </AccountTypeBadge>
+        </UserInfoSection>
+
+        {/* Stats Section */}
+        <StatsSection>
+          <StatItem $isDark={isDark}>
+            <StatValue $isDark={isDark}>{stats.views}</StatValue>
+            <StatLabel $isDark={isDark}>
+              {language === 'bg' ? 'Прегледи' : 'Views'}
+            </StatLabel>
+          </StatItem>
+          <StatItem $isDark={isDark}>
+            <StatValue $isDark={isDark}>{stats.listings}</StatValue>
+            <StatLabel $isDark={isDark}>
+              {language === 'bg' ? 'Обяви' : 'Listings'}
+            </StatLabel>
+          </StatItem>
+          <StatItem $isDark={isDark}>
+            <StatValue $isDark={isDark}>{stats.trust}%</StatValue>
+            <StatLabel $isDark={isDark}>
+              {language === 'bg' ? 'Доверие' : 'Trust'}
+            </StatLabel>
+          </StatItem>
+        </StatsSection>
+      </HeaderContent>
+
+      {/* Actions Section */}
+      <ActionsSection>
+        {isOwnProfile ? (
+          <>
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center', marginRight: '8px' }}>
+              <Crown size={16} style={{ position: 'absolute', left: '10px', zIndex: 1, pointerEvents: 'none', color: '#fbbf24' }} />
+              <select
+                value={user.profileType || 'private'}
+                onChange={(e) => onProfileSwitch?.(e.target.value as 'private' | 'dealer' | 'company')}
+                disabled={syncing}
+                style={{
+                  appearance: 'none',
+                  padding: '8px 12px 8px 32px',
+                  borderRadius: '20px',
+                  border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.4)'}`,
+                  background: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.2)',
+                  color: isDark ? '#f0fdf4' : '#ffffff',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  backdropFilter: 'blur(8px)',
+                  outline: 'none'
+                }}
+              >
+                <option value="private" style={{ backgroundColor: isDark ? '#1e293b' : '#ffffff', color: isDark ? '#f0fdf4' : '#1a1a1a' }}>
+                  {language === 'bg' ? 'Частен (Безплатен, 3 обяви)' : 'Private (Free, 3 cars)'}
+                </option>
+                <option value="dealer" style={{ backgroundColor: isDark ? '#1e293b' : '#ffffff', color: isDark ? '#f0fdf4' : '#1a1a1a' }}>
+                  {language === 'bg' ? 'Търговец (€27.78/мес, 30 обяви)' : 'Dealer (€27.78/mo, 30 cars)'}
+                </option>
+                <option value="company" style={{ backgroundColor: isDark ? '#1e293b' : '#ffffff', color: isDark ? '#f0fdf4' : '#1a1a1a' }}>
+                  {language === 'bg' ? 'Компания (€187.88/мес, 200 обяви)' : 'Company (€187.88/mo, 200 cars)'}
+                </option>
+              </select>
+            </div>
+
+            <ActionButton 
+              $variant="secondary" 
+              $isDark={isDark}
+              onClick={onGoogleSync}
+            >
+              <RefreshCw size={16} className={syncing ? 'spinning' : ''} />
+              {syncing
+                ? (language === 'bg' ? 'Синхронизиране...' : 'Syncing...')
+                : (language === 'bg' ? 'Синхронизирай' : 'Sync')}
+            </ActionButton>
+          </>
+        ) : (
+          <>
+            <FollowButtonWrapper>
+              <FollowButton
+                onClick={onFollow}
+                disabled={followLoading}
+                $following={isFollowing}
+              >
+                {isFollowing ? <UserCheck size={16} /> : <UserPlus size={16} />}
+                {isFollowing
+                  ? (language === 'bg' ? 'Последван' : 'Following')
+                  : (language === 'bg' ? 'Последвай' : 'Follow')}
+              </FollowButton>
+            </FollowButtonWrapper>
+            
+            <ActionButton 
+              $variant="primary" 
+              $isDark={isDark}
+              onClick={onMessage}
+            >
+              <PhoneIcon size={18} />
+              {language === 'bg' ? 'Съобщение' : 'Message'}
+            </ActionButton>
+            
+            {viewer?.uid && user?.uid && viewer.uid !== user.uid && (
+              <BlockUserButton
+                targetUserFirebaseId={user.uid}
+                targetUserNumericId={user.numericId}
+                targetUserName={user.displayName || user.email}
+                size="medium"
+                variant="secondary"
+                onBlockChanged={onBlockChanged}
+              />
+            )}
+          </>
+        )}
+      </ActionsSection>
+    </GreenHeaderContainer>
+  );
+};
+
+export default BusinessGreenHeader;

@@ -1765,10 +1765,30 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
   const profileId = car.sellerNumericId || sellerId;
 
   // Handler functions
-  const handleProfileClick = (e: React.MouseEvent) => {
+  const handleProfileClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     if (profileId) {
-      navigate(`/profile/${profileId}`);
+      // 🔒 STRICT: Use /profile/view/{numericId} for other users' profiles
+      let currentUserNumericId: number | undefined;
+      if (currentUser?.uid) {
+        try {
+          const { BulgarianProfileService } = await import('../../../services/bulgarian-profile-service');
+          const currentUserProfile = await BulgarianProfileService.getUserProfile(currentUser.uid);
+          currentUserNumericId = currentUserProfile?.numericId;
+        } catch (error) {
+          logger.debug('Could not get current user numeric ID', { error });
+        }
+      }
+      
+      // Convert profileId to number if it's a string
+      const targetNumericId = typeof profileId === 'string' ? parseInt(profileId, 10) : profileId;
+      const isOwnProfile = currentUserNumericId !== undefined && targetNumericId === currentUserNumericId;
+      
+      if (isOwnProfile) {
+        navigate(`/profile/${targetNumericId}`);
+      } else {
+        navigate(`/profile/view/${targetNumericId}`);
+      }
     }
   };
 
@@ -1814,16 +1834,53 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
     navigate('/finance');
   };
 
-  const handleReviews = () => {
+  const handleReviews = async () => {
     if (profileId) {
-      navigate(`/profile/${profileId}#reviews`);
+      // 🔒 STRICT: Use /profile/view/{numericId} for other users' profiles
+      let currentUserNumericId: number | undefined;
+      if (currentUser?.uid) {
+        try {
+          const { BulgarianProfileService } = await import('../../../services/bulgarian-profile-service');
+          const currentUserProfile = await BulgarianProfileService.getUserProfile(currentUser.uid);
+          currentUserNumericId = currentUserProfile?.numericId;
+        } catch (error) {
+          logger.debug('Could not get current user numeric ID', { error });
+        }
+      }
+      
+      const targetNumericId = typeof profileId === 'string' ? parseInt(profileId, 10) : profileId;
+      const isOwnProfile = currentUserNumericId !== undefined && targetNumericId === currentUserNumericId;
+      
+      if (isOwnProfile) {
+        navigate(`/profile/${targetNumericId}#reviews`);
+      } else {
+        navigate(`/profile/view/${targetNumericId}#reviews`);
+      }
     }
   };
 
-  const handleAllVehicles = () => {
+  const handleAllVehicles = async () => {
     if (profileId) {
-      // Navigate to profile with my-ads tab or filter by seller
-      navigate(`/profile/${profileId}/my-ads`);
+      // 🔒 STRICT: Use /profile/view/{numericId} for other users' profiles
+      let currentUserNumericId: number | undefined;
+      if (currentUser?.uid) {
+        try {
+          const { BulgarianProfileService } = await import('../../../services/bulgarian-profile-service');
+          const currentUserProfile = await BulgarianProfileService.getUserProfile(currentUser.uid);
+          currentUserNumericId = currentUserProfile?.numericId;
+        } catch (error) {
+          logger.debug('Could not get current user numeric ID', { error });
+        }
+      }
+      
+      const targetNumericId = typeof profileId === 'string' ? parseInt(profileId, 10) : profileId;
+      const isOwnProfile = currentUserNumericId !== undefined && targetNumericId === currentUserNumericId;
+      
+      if (isOwnProfile) {
+        navigate(`/profile/${targetNumericId}/my-ads`);
+      } else {
+        navigate(`/profile/view/${targetNumericId}/my-ads`);
+      }
     } else {
       navigate('/cars');
     }
@@ -2500,7 +2557,7 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
                     )}
                     <ProfileLink
                       $isDark={isDark}
-                      href={car.sellerNumericId ? `/profile/${car.sellerNumericId}` : (sellerId ? `/profile/${sellerId}` : '#')}
+                      href={car.sellerNumericId ? `/profile/view/${car.sellerNumericId}` : (sellerId ? `/profile/view/${sellerId}` : '#')}
                       onClick={handleProfileClick}
                     >
                       {car.sellerName || car.companyName || 'Dealer'}

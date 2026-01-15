@@ -19,11 +19,12 @@ import {
   MapPin,
   Mail,
   Phone as PhoneIcon,
-  Crown // Added Crown icon
+  Crown,
+  Heart
 } from 'lucide-react';
 import * as S from './styles';
 import { TabNavigation, TabNavLink, SyncButton, FollowButton } from './TabNavigation.styles';
-import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar, ProfileImageUploader } from '../../../../components/Profile';
+import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar, ProfileImageUploader, BusinessGreenHeader } from '../../../../components/Profile';
 import { ProfileTypeSwitcher } from '../components/ProfileTypeSwitcher'; // Added Import
 import { googleProfileSyncService } from '../../../../services/google/google-profile-sync.service';
 import { followService } from '../../../../services/social/follow.service';
@@ -52,11 +53,33 @@ const ProfilePageWrapper: React.FC = () => {
   const { profileType, theme } = useProfileType();
   const { currentUser } = useAuth();
 
-  // Get target user ID from URL route parameter
-  const targetUserId = params.userId;
+  // 🔒 Get target user ID from URL route parameter
+  // Handle both /profile/{userId} and /profile/view/{userId}
+  const RESERVED_ROUTES = ['settings', 'my-ads', 'campaigns', 'analytics', 'consultations', 'favorites', 'view'];
+  const targetUserId = React.useMemo(() => {
+    // Check if path is /profile/view/{userId}
+    const viewMatch = location.pathname.match(/^\/profile\/view\/(\d+)/);
+    if (viewMatch) {
+      return viewMatch[1];
+    }
+    // Otherwise use params.userId (for /profile/{userId})
+    // But exclude reserved routes
+    if (params.userId && !RESERVED_ROUTES.includes(params.userId)) {
+      return params.userId;
+    }
+    return undefined;
+  }, [location.pathname, params.userId]);
 
   // Check if user is trying to access their own profile without being logged in
   const isAccessingOwnProfile = !targetUserId;
+
+  // Extract numeric ID from targetUserId for useProfile (it handles both numeric ID and Firebase UID)
+  const profileTargetId = React.useMemo(() => {
+    if (!targetUserId) return undefined;
+    // If it's already a numeric ID (from /profile/view/{numericId}), use it directly
+    // If it's from /profile/{numericId}, useProfile will handle it
+    return targetUserId;
+  }, [targetUserId]);
 
   const {
     user,
@@ -68,9 +91,33 @@ const ProfilePageWrapper: React.FC = () => {
     isOwnProfile,
     setUser,
     refresh
-  } = useProfile(targetUserId);
+  } = useProfile(profileTargetId);
 
   const activeProfile = target ?? user;
+
+  // 🔒 CRITICAL: Check if accessing /profile/{numericId} for other user - redirect to /profile/view/{numericId}
+  React.useEffect(() => {
+    if (!currentUser || !targetUserId || !viewer || !activeProfile) return;
+    
+    // Check if URL is /profile/{numericId} (not /profile/view/{numericId})
+    const isDirectProfilePath = location.pathname.startsWith(`/profile/${targetUserId}`) && 
+                                 !location.pathname.startsWith(`/profile/view/`);
+    
+    // Check if this is NOT own profile
+    const isOtherUserProfile = viewer.numericId !== activeProfile.numericId;
+    
+    if (isDirectProfilePath && isOtherUserProfile) {
+      // 🔒 STRICT: Redirect to /profile/view/{numericId}
+      const redirectPath = location.pathname.replace(`/profile/${targetUserId}`, `/profile/view/${targetUserId}`);
+      logger.warn('🔒 STRICT REDIRECT: Attempted direct access to other user profile', {
+        attemptedPath: location.pathname,
+        redirectPath,
+        viewerNumericId: viewer.numericId,
+        targetNumericId: activeProfile.numericId
+      });
+      navigate(redirectPath, { replace: true });
+    }
+  }, [currentUser, targetUserId, viewer, activeProfile, location.pathname, navigate]);
 
   // ⚡ AUTO-REDIRECT: Redirect /profile to /profile/{numericId} for logged-in users
   React.useEffect(() => {
@@ -92,16 +139,17 @@ const ProfilePageWrapper: React.FC = () => {
 
   const basePath = React.useMemo(() => {
     if (isOwnProfile && activeProfile?.numericId) {
+      // 🔒 OWN PROFILE: /profile/{numericId}
       return `/profile/${activeProfile.numericId}`;
     }
     if (!activeProfile?.uid) {
       return '/profile';
     }
-    // For viewing other users, use their numeric ID if available, otherwise Firebase UID
+    // 🔒 OTHER USER'S PROFILE: /profile/view/{numericId}
     if (activeProfile?.numericId) {
-      return `/profile/${activeProfile.numericId}`;
+      return `/profile/view/${activeProfile.numericId}`;
     }
-    return `/profile/${activeProfile.uid}`;
+    return `/profile/view/${activeProfile.uid}`;
   }, [activeProfile?.uid, activeProfile?.numericId, isOwnProfile]);
 
   const [syncing, setSyncing] = React.useState(false);
@@ -347,13 +395,28 @@ const ProfilePageWrapper: React.FC = () => {
       >
         <BusinessBackground isBusinessAccount={isBusinessMode} />
 
-        <S.PageContainer>
+        <S.PageContainer style={{ 
+          paddingBottom: '200px',
+          minHeight: 'calc(100vh - 200px)'
+        }}>
           {/* Tab Navigation */}
           <TabNavigation $themeColor={theme.primary}>
             <TabNavLink to={basePath} end $themeColor={theme.primary}>
               <UserCircle size={16} />
               {language === 'bg' ? 'Профил' : 'Profile'}
             </TabNavLink>
+            {!isOwnProfile && (
+              <>
+                <TabNavLink to={`${basePath}/my-ads`} $themeColor={theme.primary}>
+                  <Car size={16} />
+                  {language === 'bg' ? 'Обяви' : 'Listings'}
+                </TabNavLink>
+                <TabNavLink to={`${basePath}/favorites`} $themeColor={theme.primary}>
+                  <Heart size={16} />
+                  {language === 'bg' ? 'Любими' : 'Favorites'}
+                </TabNavLink>
+              </>
+            )}
             {isOwnProfile && (
               <>
                 <TabNavLink to={`${basePath}/my-ads`} $themeColor={theme.primary}>
@@ -380,25 +443,24 @@ const ProfilePageWrapper: React.FC = () => {
             )}
           </TabNavigation>
 
-          {/* Cover Image + Profile Picture - Only on main /profile page */}
-          {!location.pathname.includes('/my-ads') && !location.pathname.includes('/campaigns') && !location.pathname.includes('/analytics') && !location.pathname.includes('/settings') && !location.pathname.includes('/consultations') ? (
+          {/* Cover Image + Profile Picture - ONLY for own profile */}
+          {/* For other users' profiles, PublicProfileView handles the cover/profile display */}
+          {isOwnProfile && !location.pathname.includes('/my-ads') && !location.pathname.includes('/campaigns') && !location.pathname.includes('/analytics') && !location.pathname.includes('/settings') && !location.pathname.includes('/consultations') ? (
             <S.CoverAndProfileWrapper>
               {/* Cover Image */}
-              {isOwnProfile && (
-                <CoverImageUploader
-                  currentImageUrl={typeof activeProfile.coverImage === 'string' ? activeProfile.coverImage : activeProfile.coverImage?.url}
-                  themeColor={theme.primary}
-                  onUploadSuccess={(url) => {
-                    setUser(prev => prev ? {
-                      ...prev,
-                      coverImage: url
-                    } : null);
-                  }}
-                  onUploadError={(error) => {
-                    logger.error('Cover error', error as Error);
-                  }}
-                />
-              )}
+              <CoverImageUploader
+                currentImageUrl={typeof activeProfile.coverImage === 'string' ? activeProfile.coverImage : activeProfile.coverImage?.url}
+                themeColor={theme.primary}
+                onUploadSuccess={(url) => {
+                  setUser(prev => prev ? {
+                    ...prev,
+                    coverImage: url
+                  } : null);
+                }}
+                onUploadError={(error) => {
+                  logger.error('Cover error', error as Error);
+                }}
+              />
 
               <S.CenteredProfileImageWrapper>
                 <ProfileImageUploader
@@ -421,134 +483,7 @@ const ProfilePageWrapper: React.FC = () => {
             </S.CoverAndProfileWrapper>
           ) : null}
 
-          {/* ✅ Single Modern Stats Bar with Name + 5 Stats */}
-          {!location.pathname.includes('/my-ads') && !location.pathname.includes('/campaigns') && !location.pathname.includes('/analytics') && !location.pathname.includes('/settings') && !location.pathname.includes('/consultations') ? (
-            <S.SingleStatsBar>
-              {/* Name Section */}
-              <S.StatBarNameSection>
-                <S.UserNameCompact>
-                  {activeProfile.displayName || (language === 'bg' ? 'Анонимен' : 'Anonymous')}
-                </S.UserNameCompact>
-                <S.UserEmailCompact>{activeProfile.email}</S.UserEmailCompact>
-              </S.StatBarNameSection>
-
-              {/* Stats Section - Only Views, Listings, Trust */}
-              <S.StatBarStatsSection>
-                <S.StatItem>
-                  <S.StatNumber>{activeProfile.stats?.totalViews || 0}</S.StatNumber>
-                  <S.StatLabel>{language === 'bg' ? 'Views' : 'Views'}</S.StatLabel>
-                </S.StatItem>
-                <S.StatItem>
-                  <S.StatNumber>{activeProfile.stats?.activeListings || 0}</S.StatNumber>
-                  <S.StatLabel>{language === 'bg' ? 'Listings' : 'Listings'}</S.StatLabel>
-                </S.StatItem>
-                <S.StatItem>
-                  <S.StatNumber>{activeProfile.stats?.trustScore || 0}%</S.StatNumber>
-                  <S.StatLabel>{language === 'bg' ? 'Trust' : 'Trust'}</S.StatLabel>
-                </S.StatItem>
-              </S.StatBarStatsSection>
-
-              {/* Actions Section */}
-              <S.StatBarActionsSection>
-                {isOwnProfile ? (
-                  <>
-                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center', marginRight: '8px' }}>
-                      <Crown size={16} className="text-amber-500" style={{ position: 'absolute', left: '10px', zIndex: 1, pointerEvents: 'none' }} />
-                      <select
-                        value={activeProfile.profileType || 'private'}
-                        onChange={(e) => handleProfileSwitch(e.target.value as 'private' | 'dealer' | 'company')}
-                        disabled={syncing}
-                        style={{
-                          appearance: 'none',
-                          padding: '8px 12px 8px 32px',
-                          borderRadius: '20px',
-                          // ✅ Theme-aware colors (light/dark)
-                          border: '1px solid var(--border, rgba(0,0,0,0.12))',
-                          background: 'var(--bg-card, rgba(255,255,255,0.9))',
-                          color: 'var(--text-primary, #1a1a1a)',
-                          fontSize: '0.85rem',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                          // Keep the premium/glass feel while still working in both themes
-                          backdropFilter: 'blur(8px)',
-                          outline: 'none'
-                        }}
-                      >
-                        <option
-                          value="private"
-                          style={{ backgroundColor: 'var(--bg-card, #ffffff)', color: 'var(--text-primary, #1a1a1a)' }}
-                        >
-                          {t(
-                            'profile.plan.private',
-                            language === 'bg' ? 'Частен (Безплатен, 3 обяви)' : 'Private (Free, 3 cars)'
-                          )}
-                        </option>
-                        <option
-                          value="dealer"
-                          style={{ backgroundColor: 'var(--bg-card, #ffffff)', color: 'var(--text-primary, #1a1a1a)' }}
-                        >
-                          {t(
-                            'profile.plan.dealer',
-                            language === 'bg' ? 'Търговец (€27.78/мес, 30 обяви)' : 'Dealer (€27.78/mo, 30 cars)'
-                          )}
-                        </option>
-                        <option
-                          value="company"
-                          style={{ backgroundColor: 'var(--bg-card, #ffffff)', color: 'var(--text-primary, #1a1a1a)' }}
-                        >
-                          {t(
-                            'profile.plan.company',
-                            language === 'bg' ? 'Компания (€187.88/мес, 200 обяви)' : 'Company (€187.88/mo, 200 cars)'
-                          )}
-                        </option>
-                      </select>
-                    </div>
-
-                    <S.ActionButtonCompact $variant="secondary" onClick={handleGoogleSync}>
-                      <RefreshCw size={16} className={syncing ? 'spinning' : ''} />
-                      {syncing
-                        ? (language === 'bg' ? 'Синхронизиране...' : 'Syncing...')
-                        : (language === 'bg' ? 'Синхронизирай' : 'Sync')}
-                    </S.ActionButtonCompact>
-                  </>
-                ) : (
-                  <>
-                    <FollowButton
-                      onClick={handleFollow}
-                      disabled={followLoading}
-                      $following={isFollowing}
-                    >
-                      {isFollowing
-                        ? (language === 'bg' ? 'Последван' : 'Following')
-                        : (language === 'bg' ? 'Последвай' : 'Follow')}
-                    </FollowButton>
-                    <S.ActionButtonCompact $variant="primary" onClick={handleMessage}>
-                      <PhoneIcon size={16} />
-                      {language === 'bg' ? 'Съобщение' : 'Message'}
-                    </S.ActionButtonCompact>
-                    {/* 🔴 CRITICAL: Block User Button - Only show if viewer and target user exist */}
-                    {viewer?.uid && activeProfile?.uid && viewer.uid !== activeProfile.uid && (
-                      <BlockUserButton
-                        targetUserFirebaseId={activeProfile.uid}
-                        targetUserNumericId={activeProfile.numericId}
-                        targetUserName={activeProfile.displayName || activeProfile.email}
-                        size="medium"
-                        variant="secondary"
-                        onBlockChanged={(isBlocked) => {
-                          logger.info('Block status changed', {
-                            targetUserId: activeProfile.uid,
-                            isBlocked,
-                            viewerId: viewer.uid
-                          });
-                          // Optionally refresh UI or disable message button if blocked
-                        }}
-                      />
-                    )}
-                  </>
-                )}
-              </S.StatBarActionsSection>
-            </S.SingleStatsBar>
-          ) : null}
+          {/* ✅ Single Stats Bar removed - Content moved to Green Header at bottom */}
 
           {/* Premium Profile Type Switcher - Toggled via Tier button */}
           {showTypeSwitcher && isOwnProfile && (
@@ -565,6 +500,29 @@ const ProfilePageWrapper: React.FC = () => {
           {/* Content Area - React Router will render child routes here */}
           <Outlet context={{ user: activeProfile, viewer, isOwnProfile, theme, userCars, refresh, setUser }} />
         </S.PageContainer>
+
+        {/* ✅ Green Header - Fixed at bottom - Contains all profile info, stats, and actions */}
+        {!location.pathname.includes('/my-ads') && !location.pathname.includes('/campaigns') && !location.pathname.includes('/analytics') && !location.pathname.includes('/settings') && !location.pathname.includes('/consultations') && (
+          <BusinessGreenHeader
+            user={activeProfile}
+            viewer={viewer}
+            isOwnProfile={isOwnProfile}
+            isFollowing={isFollowing}
+            followLoading={followLoading}
+            syncing={syncing}
+            onFollow={handleFollow}
+            onMessage={handleMessage}
+            onProfileSwitch={handleProfileSwitch}
+            onGoogleSync={handleGoogleSync}
+            onBlockChanged={(isBlocked) => {
+              logger.info('Block status changed in green header', {
+                targetUserId: activeProfile?.uid,
+                isBlocked,
+                viewerId: viewer?.uid
+              });
+            }}
+          />
+        )}
       </S.ProfilePageContainer>
     </ThemeProvider>
   );

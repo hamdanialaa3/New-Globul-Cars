@@ -56,8 +56,8 @@ const LoginIcon = styled.div`
 
 const LoginTitle = styled.h1`
   color: #000000 !important;
-  font-size: 26px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 300;
   margin: 0 0 8px 0;
   line-height: 1.2;
 `;

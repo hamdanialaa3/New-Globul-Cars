@@ -2329,12 +2329,18 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
               <SellerHeader>
                 <SellerLogo
                   onClick={() => {
-                    // Navigate to seller profile using numeric ID
+                    // 🔒 STRICT: Use /profile/{numericId} for own profile, /profile/view/{numericId} for others
                     if (car.sellerNumericId) {
-                      navigate(`/profile/${car.sellerNumericId}`);
+                      if (isOwner) {
+                        // Own profile
+                        navigate(`/profile/${car.sellerNumericId}`);
+                      } else {
+                        // Other user's profile
+                        navigate(`/profile/view/${car.sellerNumericId}`);
+                      }
                     } else if (car.sellerId) {
-                      // Fallback to legacy ID if numeric ID not available
-                      navigate(`/profile/${car.sellerId}`);
+                      // Fallback to legacy ID - always use view path for other users
+                      navigate(`/profile/view/${car.sellerId}`);
                     }
                   }}
                   style={{ cursor: 'pointer' }}

@@ -2,11 +2,11 @@
 
 ## Bulgarian Car Marketplace (Bulgarski Avtomobili) - التفصيل الممل الشامل
 
-> **التاريخ:** 8 يناير 2026  
+> **التاريخ:** 10 يناير 2026  
 > **الحالة:** ✅ Production-Ready  
 > **النسخة:** 0.4.0  
 > **المحلل:** Senior System Architect & Lead Developer  
-> **آخر تحديث:** 7 يناير 2026 - Manual Payment System + Subscription Updates + UI Enhancements 🚀
+> **آخر تحديث:** 10 يناير 2026 - Profile System Strict Access Control + `/profile/view/80` Fixes 🚀
 
 ---
 
@@ -407,7 +407,23 @@ assets/
 
 **صفحات المستخدم:**
 - **`profile/ProfilePage/`** - صفحة الملف الشخصي (52 ملف!)
-  - **`index.tsx`** (1,711 سطر) - المكون الرئيسي
+  - **`ProfilePageWrapper.tsx`** - Wrapper رئيسي لجميع صفحات البروفايل (518 سطر)
+    - يدير Tab Navigation
+    - Cover Image + Profile Image (للبروفايل الخاص فقط)
+    - BusinessGreenHeader (ثابت في الأسفل)
+    - منطق التحقق من ملكية البروفايل وإعادة التوجيه
+    - دعم `/profile/{numericId}` و `/profile/view/{numericId}`
+  - **`index.tsx`** (1,711 سطر) - المكون الرئيسي (Legacy - للبروفايل الخاص)
+  - **`tabs/ProfileOverview.tsx`** - تبويب نظرة عامة
+    - يعرض `PublicProfileView` للبروفايلات الأخرى
+    - يعرض ProfileDashboard للبروفايل الخاص
+  - **`tabs/PublicProfileView.tsx`** - عرض البروفايل للزوار (680 سطر)
+    - HeroHeader مع Cover Image و Profile Avatar
+    - InfoBar (Business Hours, Contact)
+    - Inventory Section (Car Grid)
+    - About Section
+    - Trust Section (للـ Business Accounts)
+    - بدون ازدواجية (Stats و Buttons في GreenHeader فقط)
   - **`ConsultationsTab.tsx`** - تبويب الاستشارات
   - **`hooks/useProfile.ts`** - Hook للملف الشخصي
   - **`components/PrivateProfile.tsx`** - ملف فردي
@@ -966,7 +982,12 @@ const {
 
 **الملفات:**
 - **`MainRoutes.tsx`** - Routes الرئيسية (368+ سطر)
-- **`NumericProfileRouter.tsx`** - Router الملف الشخصي Numeric
+- **`NumericProfileRouter.tsx`** - Router الملف الشخصي Numeric (199 سطر)
+  - يدعم `/profile/{numericId}` (للبروفايل الخاص فقط)
+  - يدعم `/profile/view/{numericId}` (لبروفايلات المستخدمين الآخرين)
+  - Tab Navigation للبروفايلات الأخرى (Profile, Listings, Favorites)
+  - Lazy loading لجميع التبويبات
+  - Code splitting محسن
 
 **Routes الرئيسية:**
 
@@ -983,13 +1004,21 @@ const {
 - `/koli/avarijni` - السيارات الحوادث
 
 **صفحات المستخدم:**
-- `/profile/:numericId` - الملف الشخصي
-- `/profile/:numericId/my-ads` - إعلاناتي
-- `/profile/:numericId/favorites` - المفضلة
-- `/profile/:numericId/campaigns` - الحملات
-- `/profile/:numericId/analytics` - التحليلات
-- `/profile/:numericId/settings` - الإعدادات
-- `/profile/:numericId/consultations` - الاستشارات
+- `/profile/:numericId` - الملف الشخصي (فقط للبروفايل الخاص)
+- `/profile/view/:numericId` - عرض بروفايل مستخدم آخر (CRITICAL - Strict Access Control)
+- `/profile/:numericId/my-ads` - إعلاناتي (للبروفايل الخاص)
+- `/profile/view/:numericId/my-ads` - إعلانات المستخدم الآخر (للزوار)
+- `/profile/:numericId/favorites` - المفضلة (للبروفايل الخاص)
+- `/profile/view/:numericId/favorites` - مفضلة المستخدم الآخر (للزوار)
+- `/profile/:numericId/campaigns` - الحملات (للبروفايل الخاص فقط)
+- `/profile/:numericId/analytics` - التحليلات (للبروفايل الخاص فقط)
+- `/profile/:numericId/settings` - الإعدادات (للبروفايل الخاص فقط)
+- `/profile/:numericId/consultations` - الاستشارات (للبروفايل الخاص فقط)
+
+**ملاحظة مهمة:** نظام Profile Routing يستخدم Strict Access Control:
+- `/profile/{numericId}` - يسمح فقط للمستخدم الحالي بزيارة بروفايله الخاص
+- `/profile/view/{numericId}` - لزيارة بروفايلات المستخدمين الآخرين
+- أي محاولة للوصول إلى `/profile/{otherUserNumericId}` يتم إعادة توجيهها تلقائياً إلى `/profile/view/{otherUserNumericId}`
 
 **صفحات أخرى:**
 - `/login` - تسجيل الدخول
@@ -1857,13 +1886,64 @@ useEffect(() => {
 - ✅ **مكونات UI للفوترة** ✅
 - ✅ **خدمات AI متقدمة** ✅
 
+#### **تحديثات Profile System (10 يناير 2026):**
+- ✅ **نظام Profile Routing المحسن** - Strict Access Control:
+  - `/profile/{numericId}` - فقط للبروفايل الخاص (المستخدم الحالي)
+  - `/profile/view/{numericId}` - لزيارة بروفايلات المستخدمين الآخرين
+  - إعادة توجيه تلقائي صارم من `/profile/{otherUserNumericId}` إلى `/profile/view/{otherUserNumericId}`
+  - منع الوصول المباشر إلى `/profile/{otherUserNumericId}` للبروفايلات الأخرى
+  - **الملفات المعدلة:**
+    - `src/routes/NumericProfileRouter.tsx` - إضافة مسار `/profile/view/:userId`
+    - `src/pages/03_user-pages/profile/ProfilePage/ProfilePageWrapper.tsx` - منطق التحقق وإعادة التوجيه
+    - `src/utils/routing-utils.ts` - تحديث `getProfileUrl` لدعم البروفايل الخاص والبروفايلات الأخرى
+    - `src/utils/numeric-url-helpers.ts` - تحديث `buildProfileUrl` و `buildProfileTabUrl`
+    - جميع الملفات التي تستخدم `navigate('/profile/...')` - تحديث لاستخدام `/profile/view/` للبروفايلات الأخرى
+
+- ✅ **إصلاحات صفحة `/profile/view/80`** - إزالة جميع الازدواجيات:
+  - **إزالة ازدواجية Profile Image:**
+    - `ProfilePageWrapper` يعرض Profile Image فقط للبروفايل الخاص
+    - `PublicProfileView` يعرض Profile Avatar في HeroHeader للبروفايلات الأخرى
+  - **إزالة ازدواجية Cover Image:**
+    - `ProfilePageWrapper` لا يعرض Cover Image للبروفايلات الأخرى
+    - `PublicProfileView` يتحكم في Cover Image في HeroHeader
+  - **إزالة ازدواجية الإحصائيات:**
+    - إزالة StatsGrid من `PublicProfileView`
+    - الاعتماد على `BusinessGreenHeader` فقط (Views, Listings, Trust)
+  - **إزالة ازدواجية الأزرار:**
+    - إزالة FollowButton و BlockUserButton من `PublicProfileView`
+    - الاعتماد على `BusinessGreenHeader` فقط (Follow, Message, Block)
+  - **إضافة Tab Navigation للبروفايلات الأخرى:**
+    - Profile, Listings (my-ads), Favorites
+  - **إضافة padding-bottom للصفحة:**
+    - `paddingBottom: '200px'` لتعويض GreenHeader الثابت
+  - **إزالة Emojis (متوافق مع الدستور):**
+    - إزالة جميع emojis من ProfileBadge
+  - **تنظيف الكود:**
+    - إزالة imports غير مستخدمة
+    - إزالة styled components غير مستخدمة
+  - **الملفات المعدلة:**
+    - `src/pages/03_user-pages/profile/ProfilePage/ProfilePageWrapper.tsx`
+    - `src/pages/03_user-pages/profile/ProfilePage/tabs/PublicProfileView.tsx`
+    - `src/components/Profile/BusinessGreenHeader.tsx`
+    - `src/pages/01_main-pages/components/CarDetailsGermanStyle.tsx`
+    - `src/pages/01_main-pages/components/CarDetailsMobileDEStyle.tsx`
+    - `src/pages/02_error-pages/CarNotFoundPage.tsx`
+    - `src/components/UserBubble/UserBubble.tsx`
+    - `src/components/SocialFeed/EnhancedFeedItemCard.tsx`
+    - `src/components/Posts/PostCard.tsx`
+    - `src/components/SocialFeed/FeedItemCard.tsx`
+    - `src/components/Profile/GarageCarousel.tsx`
+    - `src/pages/03_user-pages/users-directory/UsersDirectoryPage/index.tsx`
+    - `src/pages/01_main-pages/map/MapPage/index.tsx`
+
 ### 📊 إحصائيات التحديثات:
 | الجلسة | التاريخ | الملفات | الأسطر | النوع |
 |--------|---------|---------|--------|-------|
 | Session 6 | 8 يناير 2026 | Services (4) + Hooks (4) + Components (5) + Page (1) + Functions (1) | ~4,516 | TypeScript/TSX |
 | Manual Payment | 9 يناير 2026 | Services (1) + Components (2) + Pages (3) + Config (2) | ~2,200 | TypeScript/TSX |
 | Subscription UI | 7 يناير 2026 | Components (2) + Pages (1) | ~800 | TypeScript/TSX |
-| **الإجمالي** | **7-9 يناير** | **23 ملف** | **~7,516** | - |
+| Profile System Update | 10 يناير 2026 | Routes (1) + Pages (3) + Components (8) + Utils (2) | ~1,500 | TypeScript/TSX |
+| **الإجمالي** | **7-10 يناير** | **37 ملف** | **~9,016** | - |
 
 ### ⚠️ ما يحتاج تحسين:
 - Logo redesign (يحتاج تصميم)
@@ -1879,16 +1959,92 @@ useEffect(() => {
 
 ### ملفات التوثيق الرئيسية:
 - [PROJECT_CONSTITUTION.md](PROJECT_CONSTITUTION.md) - دستور المشروع
+- [MESSAGING_AUDIT_REPORT/CONSTITUTION.md](MESSAGING_AUDIT_REPORT/CONSTITUTION.md) - دستور نظام Numeric ID والروابط
 - [.github/copilot-instructions.md](.github/copilot-instructions.md) - تعليمات AI
 - [MESSAGING_SYSTEM_FINAL.md](MESSAGING_SYSTEM_FINAL.md) - نظام المراسلة
 - [Ai_plans/messege_plan_change.md](Ai_plans/messege_plan_change.md) - خطة المراسلة الجديدة 🚀
 - [SUBSCRIPTION_SYSTEM_PHASE2_REPORT_JAN8_2026.md](SUBSCRIPTION_SYSTEM_PHASE2_REPORT_JAN8_2026.md) - نظام الاشتراكات
 - [SUBSCRIPTION_SYSTEM_OVERHAUL_JAN7_2026.md](SUBSCRIPTION_SYSTEM_OVERHAUL_JAN7_2026.md) - إصلاح الاشتراكات
+- [PROFILE_VIEW_80_FIXES_SUMMARY.md](PROFILE_VIEW_80_FIXES_SUMMARY.md) - ملخص إصلاحات صفحة `/profile/view/80`
+- [PROFILE_VIEW_80_COMPETITIVE_ANALYSIS.md](PROFILE_VIEW_80_COMPETITIVE_ANALYSIS.md) - تحليل تنافسي شامل لصفحة البروفايل
 - [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) - فهرس التوثيق
 
 ---
 
-**تاريخ التقرير:** 8 يناير 2026  
+---
+
+## 🔒 نظام Profile Routing - Strict Access Control (10 يناير 2026)
+
+### القواعد الصارمة (Strict Rules):
+1. **`/profile/{numericId}`** - فقط للبروفايل الخاص (المستخدم الحالي)
+   - المستخدم 80 يزور بروفايله: `/profile/80` ✅
+   - المستخدم 80 يزور بروفايل 90: `/profile/90` ❌ → إعادة توجيه تلقائية إلى `/profile/view/90`
+
+2. **`/profile/view/{numericId}`** - لزيارة بروفايلات المستخدمين الآخرين
+   - المستخدم 80 يزور بروفايل 90: `/profile/view/90` ✅
+
+### الملفات الرئيسية:
+- **`src/routes/NumericProfileRouter.tsx`**
+  - مسار `/profile/view/:userId` للبروفايلات الأخرى
+  - Tabs للبروفايلات الأخرى: Profile, Listings, Favorites
+- **`src/pages/03_user-pages/profile/ProfilePage/ProfilePageWrapper.tsx`**
+  - منطق التحقق من ملكية البروفايل
+  - إعادة التوجيه التلقائي الصارم
+  - Cover/Profile Image فقط للبروفايل الخاص
+- **`src/utils/routing-utils.ts`**
+  - `getProfileUrl(user, currentUserNumericId)` - يحدد تلقائياً إذا كان بروفايل خاص أم لا
+- **`src/utils/numeric-url-helpers.ts`**
+  - `buildProfileUrl(numericId, currentUserNumericId)` - يبني الرابط الصحيح
+
+### الملفات المحدثة (14 ملف):
+1. `src/routes/NumericProfileRouter.tsx`
+2. `src/pages/03_user-pages/profile/ProfilePage/ProfilePageWrapper.tsx`
+3. `src/utils/routing-utils.ts`
+4. `src/utils/numeric-url-helpers.ts`
+5. `src/pages/01_main-pages/components/CarDetailsGermanStyle.tsx`
+6. `src/pages/01_main-pages/components/CarDetailsMobileDEStyle.tsx`
+7. `src/pages/02_error-pages/CarNotFoundPage.tsx`
+8. `src/components/UserBubble/UserBubble.tsx`
+9. `src/components/SocialFeed/EnhancedFeedItemCard.tsx`
+10. `src/components/Posts/PostCard.tsx`
+11. `src/components/SocialFeed/FeedItemCard.tsx`
+12. `src/components/Profile/GarageCarousel.tsx`
+13. `src/pages/03_user-pages/users-directory/UsersDirectoryPage/index.tsx`
+14. `src/pages/01_main-pages/map/MapPage/index.tsx`
+
+---
+
+## 🎨 إصلاحات صفحة `/profile/view/80` (10 يناير 2026)
+
+### المشاكل التي تم إصلاحها:
+1. ✅ **إزالة ازدواجية Profile Image** - تظهر مرة واحدة فقط
+2. ✅ **إزالة ازدواجية Cover Image** - تظهر مرة واحدة فقط في HeroHeader
+3. ✅ **إزالة ازدواجية الإحصائيات** - موحدة في BusinessGreenHeader
+4. ✅ **إزالة ازدواجية الأزرار** - موحدة في BusinessGreenHeader
+5. ✅ **إضافة Tab Navigation للبروفايلات الأخرى** - Profile, Listings, Favorites
+6. ✅ **إضافة padding-bottom للصفحة** - لتعويض GreenHeader الثابت
+7. ✅ **إزالة Emojis** - متوافق مع الدستور
+8. ✅ **تنظيف الكود** - إزالة imports و styled components غير مستخدمة
+
+### البنية النهائية:
+- **Tab Navigation** (أعلى): Profile, Listings, Favorites
+- **HeroHeader** (PublicProfileView): Cover Image, Profile Avatar, Business Info
+- **InfoBar**: Business Hours, Website, Email
+- **Inventory Section**: Car Grid مع Search
+- **About Section**: Business Description
+- **Trust Section**: Trust Badges (للـ Business Accounts)
+- **BusinessGreenHeader** (أسفل - ثابت): User Info, Stats, Actions
+
+### النتيجة:
+- ✅ بدون ازدواجية
+- ✅ تصميم احترافي ومنظم
+- ✅ متوافق مع الدستور
+- ✅ Responsive على جميع الأجهزة
+- ✅ تجربة مستخدم محسنة
+
+---
+
+**تاريخ التقرير:** 10 يناير 2026  
 **المحلل:** Senior System Architect & AI Agent  
 **الحالة:** ✅ Production-Ready  
-**النسخة:** 0.3.1
+**النسخة:** 0.4.0

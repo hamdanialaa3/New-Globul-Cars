@@ -1114,7 +1114,14 @@ const UsersDirectoryPage: React.FC = () => {
         ) : viewMode === 'grid' ? (
           <UsersGrid>
             {filteredUsers.map((user) => (
-              <UserCard key={user.uid} onClick={() => window.location.href = `/profile/${user.uid}`}>
+              <UserCard key={user.uid} onClick={() => {
+                // 🔒 STRICT: Use /profile/view/{numericId} for other users' profiles
+                if (user.numericId) {
+                  window.location.href = `/profile/view/${user.numericId}`;
+                } else {
+                  window.location.href = `/profile/view/${user.uid}`;
+                }
+              }}>
                 <UserHeader>
                   <Avatar 
                     $imageUrl={user.profileImage?.url}
@@ -1152,7 +1159,14 @@ const UsersDirectoryPage: React.FC = () => {
                 const isVerified = user.verification?.emailVerified || user.verification?.phoneVerified;
                 
                 return (
-                  <ListItem key={user.uid} onClick={() => window.location.href = `/profile/${user.uid}`}>
+                  <ListItem key={user.uid} onClick={() => {
+                    // 🔒 STRICT: Use /profile/view/{numericId} for other users' profiles
+                    if (user.numericId) {
+                      window.location.href = `/profile/view/${user.numericId}`;
+                    } else {
+                      window.location.href = `/profile/view/${user.uid}`;
+                    }
+                  }}>
                     <ListAvatar 
                       $imageUrl={user.profileImage?.url}
                       $initial={user.displayName?.[0]?.toUpperCase() || '?'}

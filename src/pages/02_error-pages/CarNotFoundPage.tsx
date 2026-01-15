@@ -83,7 +83,7 @@ export const CarNotFoundPage: React.FC = () => {
           {language === 'bg' ? 'Търсене на други коли' : 'Browse cars'}
         </Button>
         {sellerNumericId && (
-          <Button onClick={() => navigate(`/profile/${sellerNumericId}`)}>
+          <Button onClick={() => navigate(`/profile/view/${sellerNumericId}`)}>
             {language === 'bg' ? 'Профил на продавача' : 'Seller profile'}
           </Button>
         )}

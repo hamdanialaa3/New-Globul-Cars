@@ -73,31 +73,51 @@ export const getCarDetailsUrl = (car: {
 /**
  * Get profile URL according to project constitution
  * 
- * ✅ STRICT CONSTITUTION ENFORCEMENT
- * Pattern: /profile/{userId}
- * Example: User 90 -> /profile/90
+ * 🔒 STRICT PROFILE ACCESS RULES:
+ * - /profile/{numericId} → ONLY for own profile
+ * - /profile/view/{numericId} → For other users' profiles
  * 
  * @param user - User object with numeric ID or Firebase UID
+ * @param currentUserNumericId - Current logged-in user's numeric ID (optional)
  * @returns URL string following constitution format
  * 
  * @example
- * const url = getProfileUrl({ numericId: 90 });
+ * // Own profile
+ * const url = getProfileUrl({ numericId: 90 }, 90);
  * // Returns: "/profile/90"
+ * 
+ * @example
+ * // Other user's profile
+ * const url = getProfileUrl({ numericId: 80 }, 90);
+ * // Returns: "/profile/view/80"
  */
-export const getProfileUrl = (user: {
-  numericId?: number;
-  uid?: string;
-}): string => {
-  // ✅ Constitution-compliant: /profile/{userId}
+export const getProfileUrl = (
+  user: {
+    numericId?: number;
+    uid?: string;
+  },
+  currentUserNumericId?: number
+): string => {
+  // ✅ Constitution-compliant: Check if this is own profile
   if (user.numericId) {
-    logger.debug('Constitution-compliant profile URL generated', { numericId: user.numericId });
-    return `/profile/${user.numericId}`;
+    const isOwnProfile = currentUserNumericId !== undefined && user.numericId === currentUserNumericId;
+    
+    if (isOwnProfile) {
+      // 🔒 OWN PROFILE: /profile/{numericId}
+      logger.debug('Own profile URL generated', { numericId: user.numericId });
+      return `/profile/${user.numericId}`;
+    } else {
+      // 🔒 OTHER USER'S PROFILE: /profile/view/{numericId}
+      logger.debug('Other user profile URL generated', { numericId: user.numericId, currentUserNumericId });
+      return `/profile/view/${user.numericId}`;
+    }
   }
 
   // ⚠️ Fallback: NumericProfileRouter will handle Firebase UID conversion
   if (user.uid) {
     logger.warn('Profile URL using Firebase UID (should use numericId)', { uid: user.uid });
-    return `/profile/${user.uid}`;
+    // For Firebase UID, we can't determine if it's own profile, so use view path
+    return `/profile/view/${user.uid}`;
   }
 
   // Default to current user's profile

@@ -5,19 +5,39 @@
 /**
  * Build profile URL from numeric ID
  * 
+ * 🔒 STRICT PROFILE ACCESS RULES:
+ * - /profile/{numericId} → ONLY for own profile
+ * - /profile/view/{numericId} → For other users' profiles
+ * 
  * @param numericId - User's numeric ID (e.g., 1, 2, 100)
- * @returns Profile URL (e.g., "/profile/1")
+ * @param currentUserNumericId - Current logged-in user's numeric ID (optional)
+ * @returns Profile URL following strict access rules
  * 
  * Examples:
- * - buildProfileUrl(1) → "/profile/1"
- * - buildProfileUrl(100) → "/profile/100"
+ * - buildProfileUrl(90, 90) → "/profile/90" (own profile)
+ * - buildProfileUrl(80, 90) → "/profile/view/80" (other user's profile)
+ * - buildProfileUrl(1) → "/profile/view/1" (no current user, default to view)
  */
-export function buildProfileUrl(numericId: number | null | undefined): string {
+export function buildProfileUrl(
+  numericId: number | null | undefined,
+  currentUserNumericId?: number | null
+): string {
   if (!numericId || numericId <= 0) {
     return '/profile';
   }
   
-  return `/profile/${numericId}`;
+  // 🔒 Check if this is own profile
+  const isOwnProfile = currentUserNumericId !== undefined && 
+                       currentUserNumericId !== null && 
+                       numericId === currentUserNumericId;
+  
+  if (isOwnProfile) {
+    // 🔒 OWN PROFILE: /profile/{numericId}
+    return `/profile/${numericId}`;
+  } else {
+    // 🔒 OTHER USER'S PROFILE: /profile/view/{numericId}
+    return `/profile/view/${numericId}`;
+  }
 }
 
 /**
@@ -71,15 +91,21 @@ export function buildCarEditUrl(
 /**
  * Build profile tab URL
  * 
+ * 🔒 STRICT PROFILE ACCESS RULES:
+ * - Own profile tabs: /profile/{numericId}/{tab}
+ * - Other user's tabs: /profile/view/{numericId}/{tab}
+ * 
  * @param numericId - User's numeric ID
  * @param tab - Tab name (my-ads, campaigns, analytics, settings, consultations)
- * @returns Profile tab URL (e.g., "/profile/1/my-ads")
+ * @param currentUserNumericId - Current logged-in user's numeric ID (optional)
+ * @returns Profile tab URL following strict access rules
  */
 export function buildProfileTabUrl(
   numericId: number | null | undefined,
-  tab: 'my-ads' | 'campaigns' | 'analytics' | 'settings' | 'consultations'
+  tab: 'my-ads' | 'campaigns' | 'analytics' | 'settings' | 'consultations',
+  currentUserNumericId?: number | null
 ): string {
-  const profileUrl = buildProfileUrl(numericId);
+  const profileUrl = buildProfileUrl(numericId, currentUserNumericId);
   
   if (profileUrl === '/profile') {
     return profileUrl;

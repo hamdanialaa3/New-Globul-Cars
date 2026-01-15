@@ -7,15 +7,10 @@ import {
 import styled from 'styled-components';
 
 import { useLanguage } from '../../../../../contexts/LanguageContext';
-import { useAuth } from '../../../../../contexts/AuthProvider';
 import CarCardGermanStyle from '../../../../../components/CarCard/CarCardGermanStyle';
-import { FollowButton } from '../../../../../components/Profile/FollowButton';
 import { CarListing } from '../../../../../types/CarListing';
 import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
 import type { ProfileCar } from '../types';
-// 🔴 CRITICAL: Block User Button integration
-import BlockUserButton from '../../../../../components/messaging/BlockUserButton';
-import { logger } from '../../../../../services/logger-service';
 
 interface PublicProfileViewProps {
   user: BulgarianUser;
@@ -24,7 +19,6 @@ interface PublicProfileViewProps {
 
 export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ user, userCars = [] }) => {
   const { language } = useLanguage();
-  const { currentUser } = useAuth();
   const [inventorySearch, setInventorySearch] = useState('');
 
   // Profile type detection
@@ -97,9 +91,9 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ user, user
               </BusinessName>
               
               <ProfileBadge $profileType={profileType}>
-                {isPrivate && (language === 'bg' ? '🏠 Частен Продавач' : '🏠 Private Garage')}
-                {isDealer && (language === 'bg' ? '🚗 Дилър Автомобили' : '🚗 Car Dealer')}
-                {isCompany && (language === 'bg' ? '🏢 Премиум Дилър' : '🏢 Premium Dealership')}
+                {isPrivate && (language === 'bg' ? 'Частен Продавач' : 'Private Garage')}
+                {isDealer && (language === 'bg' ? 'Дилър Автомобили' : 'Car Dealer')}
+                {isCompany && (language === 'bg' ? 'Премиум Дилър' : 'Premium Dealership')}
               </ProfileBadge>
 
               <ContactRow>
@@ -119,51 +113,8 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ user, user
             </InfoColumn>
           </ProfileSection>
 
-          {/* RIGHT SIDE: Stats + Follow Button */}
-          <ActionSection>
-            <StatsGrid>
-              <StatCard $profileType={profileType}>
-                <StatValue>{userCars.length}</StatValue>
-                <StatLabel>{language === 'bg' ? 'Обяви' : 'Listings'}</StatLabel>
-              </StatCard>
-              <StatCard $profileType={profileType}>
-                <StatValue>{user.stats?.totalViews || 0}</StatValue>
-                <StatLabel>{language === 'bg' ? 'Прегледи' : 'Views'}</StatLabel>
-              </StatCard>
-              <StatCard $profileType={profileType}>
-                <StatValue>
-                  {user.createdAt?.toDate?.() ? 
-                    new Date().getFullYear() - user.createdAt.toDate().getFullYear() : 0}+
-                </StatValue>
-                <StatLabel>{language === 'bg' ? 'Години' : 'Years'}</StatLabel>
-              </StatCard>
-            </StatsGrid>
-
-            <FollowButton 
-              targetUserId={user.uid} 
-              showCount={true}
-              variant="outline"
-              size="large"
-            />
-            {/* 🔴 CRITICAL: Block User Button - Only show if current user exists and is not viewing own profile */}
-            {currentUser?.uid && user?.uid && currentUser.uid !== user.uid && (
-              <BlockUserButton
-                targetUserFirebaseId={user.uid}
-                targetUserNumericId={user.numericId}
-                targetUserName={user.displayName || user.email}
-                size="medium"
-                variant="secondary"
-                onBlockChanged={(isBlocked) => {
-                  logger.info('Block status changed in PublicProfileView', {
-                    targetUserId: user.uid,
-                    isBlocked,
-                    viewerId: currentUser.uid
-                  });
-                  // Optionally refresh UI or disable message/follow buttons if blocked
-                }}
-              />
-            )}
-          </ActionSection>
+          {/* ✅ REMOVED: ActionSection - All stats and actions moved to BusinessGreenHeader at bottom */}
+          {/* Stats (Views, Listings, Trust) and actions (Follow, Message, Block) are now unified in the green header */}
         </HeroContent>
       </HeroHeader>
 
@@ -474,48 +425,8 @@ const ContactItem = styled.div`
   }
 `;
 
-// ===== ACTION SECTION =====
-const ActionSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: flex-end;
-
-  @media (max-width: 768px) {
-    align-items: stretch;
-  }
-`;
-
-const StatsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-`;
-
-const StatCard = styled.div<{ $profileType: string }>`
-  background: ${props => getThemeColor(props.$profileType)}DD;
-  backdrop-filter: blur(10px);
-  padding: 16px;
-  border-radius: 12px;
-  text-align: center;
-  min-width: 90px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-`;
-
-const StatValue = styled.div`
-  font-size: 24px;
-  font-weight: 800;
-  color: white;
-  line-height: 1;
-`;
-
-const StatLabel = styled.div`
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.9);
-  margin-top: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-`;
+// ✅ REMOVED: ActionSection styled component - no longer used
+// All stats and actions are now in BusinessGreenHeader at bottom
 
 // ===== INFO BAR =====
 const InfoBar = styled.div<{ $profileType: string }>`

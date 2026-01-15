@@ -707,7 +707,7 @@ export const EnhancedFeedItemCard: React.FC<EnhancedFeedItemCardProps> = ({
       navigate(getProfileUrl({
         numericId: (item as any).userNumericId,
         uid: item.userId
-      }));
+      }, (user as any)?.numericId));
     }
   };
 
@@ -726,7 +726,7 @@ export const EnhancedFeedItemCard: React.FC<EnhancedFeedItemCardProps> = ({
             navigate(getProfileUrl({
               numericId: (item as any).userNumericId,
               uid: item.userId
-            }));
+            }, (user as any)?.numericId));
           }}>
             <AuthorAvatar
               $imageUrl={item.authorInfo.profileImage}
@@ -783,7 +783,7 @@ export const EnhancedFeedItemCard: React.FC<EnhancedFeedItemCardProps> = ({
                   navigate(getProfileUrl({
                     numericId: (item as any).userNumericId,
                     uid: item.userId
-                  }));
+                  }, (user as any)?.numericId));
                 }}
               >
                 <PlayButton $isDark={isDark}>

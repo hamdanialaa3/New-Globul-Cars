@@ -1,15 +1,14 @@
 // src/routes/NumericProfileRouter.tsx
 // 🔢 Numeric ID Profile Router - World-class URL structure
 // 
-// URL Structure:
-// ✅ /profile                → Current user's profile (auto-redirect or show own)
-// ✅ /profile/18             → User 18 profile (clean, SEO-friendly)
-// ✅ /profile/18/my-ads      → User 18's ads
-// ✅ /profile/18/favorites   → User 18's favorites (NEW)
-// ✅ /profile/18/car/abc123  → User 18's specific car
+// 🔒 STRICT PROFILE ACCESS RULES:
+// ✅ /profile                → Current user's profile (auto-redirect to /profile/{numericId})
+// ✅ /profile/{numericId}    → ONLY for own profile (current user's numericId)
+// ✅ /profile/view/{numericId} → View other users' profiles
+// ✅ /profile/{numericId}/my-ads → Own profile tabs
+// ✅ /profile/view/{numericId}/my-ads → Other user's public tabs
 // 
-// Backward Compatibility:
-// ✅ /profile/{firebaseUID}  → Auto-redirect to /profile/{numericId}
+// ⚠️ CRITICAL: /profile/{otherUserNumericId} will auto-redirect to /profile/view/{otherUserNumericId}
 //
 // Note: This router uses ProfilePageWrapper which handles all the logic via useProfile hook
 // The hook already supports numeric IDs and converts them to Firebase UIDs internally
@@ -106,7 +105,8 @@ export const NumericProfileRouter: React.FC = () => {
           </Suspense>
         } />
 
-        {/* Specific user profile routes */}
+        {/* 🔒 OWN PROFILE ROUTES: /profile/{numericId} - Only accessible for own profile */}
+        {/* ProfilePageWrapper will redirect /profile/{otherUserNumericId} to /profile/view/{otherUserNumericId} */}
         <Route path=":userId">
           {/* User profile overview */}
           <Route index element={
@@ -155,6 +155,35 @@ export const NumericProfileRouter: React.FC = () => {
               <EditCarPage />
             </Suspense>
           } />
+          <Route path="car/:id" element={
+            <Suspense fallback={<TabLoadingFallback />}>
+              <CarDetailsPage />
+            </Suspense>
+          } />
+        </Route>
+
+        {/* 🔒 VIEW OTHER USERS' PROFILES: /profile/view/{numericId} */}
+        <Route path="view/:userId">
+          {/* Other user's profile overview */}
+          <Route index element={
+            <Suspense fallback={<TabLoadingFallback />}>
+              <ProfileOverview />
+            </Suspense>
+          } />
+          
+          {/* Other user's public tabs (read-only) */}
+          <Route path="my-ads" element={
+            <Suspense fallback={<TabLoadingFallback />}>
+              <ProfileMyAds />
+            </Suspense>
+          } />
+          <Route path="favorites" element={
+            <Suspense fallback={<TabLoadingFallback />}>
+              <UserFavoritesPage />
+            </Suspense>
+          } />
+          
+          {/* Car routes for other users */}
           <Route path="car/:id" element={
             <Suspense fallback={<TabLoadingFallback />}>
               <CarDetailsPage />

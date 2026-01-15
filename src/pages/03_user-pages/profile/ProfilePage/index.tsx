@@ -23,7 +23,6 @@ import CompanyProfile from './components/CompanyProfile';
 import { PublicProfileView } from './components/PublicProfileView';
 import {
   LEDProgressAvatar,
-  CoverImageUploader,
   TrustBadge,
   ProfileGallery,
   VerificationPanel,
@@ -77,7 +76,6 @@ import ProfileDashboard from '../../../../components/Profile/ProfileDashboard';
 import VerificationBadge from '../../../../components/Profile/VerificationBadge';
 import ConsultationsTab from './ConsultationsTab';
 import { useToast } from '../../../../components/Toast';
-import ProfileImageUploader from '../../../../components/Profile/ProfileImageUploader';
 import CommunityFeedWidget from '../../../../components/Profile/CommunityFeedWidget';
 import SocialMediaSettings from '../../../../components/Profile/SocialMedia/SocialMediaSettings';
 import { PersonalVehicleService } from '../../../../services/personal-vehicle.service';
@@ -744,37 +742,7 @@ const ProfilePage: React.FC = () => {
             </TabNavigation>
           )}
 
-          {/* Cover Image + Profile Picture Container - ONLY FOR OWN PROFILE */}
-          {isOwnProfile && location.pathname.includes('/profile') && (
-            <S.CoverAndProfileWrapper>
-              {/* Cover Image - Editable for own profile, view-only for others */}
-              <CoverImageUploader
-                currentImageUrl={user?.coverImage?.url}
-                themeColor={theme.primary}
-                onUploadSuccess={(url) => {
-                  if (process.env.NODE_ENV === 'development') {
-                    logger.debug('Cover uploaded', { url });
-                  }
-                  setUser(prev => prev ? {
-                    ...prev,
-                    coverImage: { url, uploadedAt: new Date() }
-                  } : null);
-                }}
-                onUploadError={(error) => {
-                  logger.error('Cover error', error as Error);
-                }}
-              />
-
-              {/* Centered Profile Picture - Overlaps Cover and Info Bar */}
-              <S.CenteredProfileImageWrapper>
-                <ProfileImageUploader
-                  currentImageUrl={user?.profileImage?.url}
-                  onUploadSuccess={() => window.location.reload()}
-                  onUploadError={(err) => alert(err)}
-                />
-              </S.CenteredProfileImageWrapper>
-            </S.CoverAndProfileWrapper>
-          )}
+          {/* ✅ Cover Image + Profile Picture removed - Already handled in ProfilePageWrapper */}
 
           {/* User Info Bar - ONLY FOR OWN PROFILE */}
           {isOwnProfile && location.pathname.includes('/profile') && (

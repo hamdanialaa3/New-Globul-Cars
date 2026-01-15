@@ -279,12 +279,15 @@ export const FeedItemCard: React.FC<FeedItemCardProps> = ({ item }) => {
   const handleClick = () => {
     if (item.type === 'post') {
       navigate(`/posts/${item.id}`);
-    } else if (item.type === 'intro_video') {
-      navigate(`/profile/${item.userId}`);
-    } else if (item.type === 'success_story') {
-      navigate(`/profile/${item.userId}`);
-    } else if (item.type === 'achievement') {
-      navigate(`/profile/${item.userId}`);
+    } else if (item.type === 'intro_video' || item.type === 'success_story' || item.type === 'achievement') {
+      // 🔒 STRICT: Use /profile/view/{numericId} for other users' profiles
+      // FeedItemCard items are always from other users, so use view path
+      const userNumericId = (item as any).userNumericId;
+      if (userNumericId) {
+        navigate(`/profile/view/${userNumericId}`);
+      } else if (item.userId) {
+        navigate(`/profile/view/${item.userId}`);
+      }
     }
   };
 

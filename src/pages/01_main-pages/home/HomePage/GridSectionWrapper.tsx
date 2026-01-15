@@ -23,68 +23,21 @@ const SectionContainer = styled.div<{
 }>`
   position: relative;
   width: 100%;
-  min-height: 400px;
+  height: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
   overflow: hidden;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(7, 1fr);
   
   /* Ultra Professional Gradient Backgrounds - Automotive Evolution Theme - 40% Transparency */
   background: ${props => {
     const { $isDark, $variant } = props;
     
-    // Dark Mode Backgrounds - 40% opacity
+    // Dark Mode Backgrounds - New purple gradient
     if ($isDark) {
-      switch($variant) {
-        case 'vintage':
-          return `
-            radial-gradient(circle at 20% 80%, rgba(139, 69, 19, 0.06) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(184, 134, 11, 0.048) 0%, transparent 50%),
-            linear-gradient(135deg, 
-              rgba(10, 10, 10, 0.4) 0%, 
-              rgba(26, 20, 16, 0.4) 20%,
-              rgba(15, 15, 15, 0.4) 40%,
-              rgba(26, 26, 26, 0.4) 60%,
-              rgba(10, 10, 10, 0.4) 100%
-            )
-          `;
-        case 'modern':
-          return `
-            radial-gradient(circle at 30% 40%, rgba(102, 126, 234, 0.032) 0%, transparent 50%),
-            radial-gradient(circle at 70% 60%, rgba(118, 75, 162, 0.032) 0%, transparent 50%),
-            linear-gradient(135deg,
-              rgba(10, 14, 26, 0.4) 0%,
-              rgba(15, 20, 25, 0.4) 25%,
-              rgba(26, 31, 46, 0.4) 50%,
-              rgba(15, 20, 25, 0.4) 75%,
-              rgba(10, 14, 26, 0.4) 100%
-            )
-          `;
-        case 'future':
-          return `
-            radial-gradient(circle at 50% 0%, rgba(0, 180, 216, 0.06) 0%, transparent 60%),
-            radial-gradient(circle at 100% 100%, rgba(144, 19, 254, 0.048) 0%, transparent 60%),
-            linear-gradient(135deg,
-              rgba(10, 10, 26, 0.4) 0%,
-              rgba(15, 15, 42, 0.4) 20%,
-              rgba(26, 26, 58, 0.4) 40%,
-              rgba(15, 15, 42, 0.4) 60%,
-              rgba(10, 10, 26, 0.4) 100%
-            )
-          `;
-        case 'ai':
-          return `
-            radial-gradient(ellipse at 20% 30%, rgba(102, 126, 234, 0.06) 0%, transparent 50%),
-            radial-gradient(ellipse at 80% 70%, rgba(118, 75, 162, 0.06) 0%, transparent 50%),
-            radial-gradient(circle at 50% 50%, rgba(0, 255, 159, 0.02) 0%, transparent 70%),
-            linear-gradient(160deg,
-              rgba(5, 5, 16, 0.4) 0%,
-              rgba(10, 10, 31, 0.4) 25%,
-              rgba(15, 15, 46, 0.4) 50%,
-              rgba(10, 10, 31, 0.4) 75%,
-              rgba(5, 5, 16, 0.4) 100%
-            )
-          `;
-        default:
-          return `linear-gradient(135deg, rgba(10, 10, 10, 0.4) 0%, rgba(26, 26, 26, 0.4) 100%)`;
-      }
+      return 'linear-gradient(135deg, rgba(15, 23, 42, 1) 6%, rgba(55, 27, 197, 1) 25%, rgba(30, 41, 59, 1) 39%, rgba(15, 23, 42, 1) 100%)';
     } 
     // Light Mode Backgrounds - 40% opacity
     else {
