@@ -460,7 +460,7 @@ export const UnifiedAIChat: React.FC<UnifiedAIChatProps> = ({
         const reply = await geminiChatService.chat(content, {
           page: 'messages',
           language,
-          userType: user?.profileType || 'visitor'
+          userType: (user as any)?.profileType || 'visitor'
         }, user?.uid);
 
         const assistantMessage: ChatMessage = {

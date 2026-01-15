@@ -22,6 +22,10 @@ interface PriceData {
   city: string;
   averagePrice: number;
   sampleSize: number;
+  locationData?: {
+    city?: string;
+    province?: string;
+  };
 }
 
 interface TrendData {
@@ -69,7 +73,7 @@ export const RegionalPriceChart: React.FC<RegionalPriceChartProps> = ({ data }) 
           fontSize={12}
         />
         <Tooltip
-          formatter={(value: number) => [formatCurrency(value), 'Средна цена']}
+          formatter={(value: number | undefined) => [formatCurrency(value || 0), 'Средна цена']}
           labelStyle={{ color: '#000' }}
         />
         <Legend />
@@ -100,8 +104,8 @@ export const MarketTrendsChart: React.FC<MarketTrendsChartProps> = ({ data }) =>
           fontSize={12}
         />
         <Tooltip
-          formatter={(value: number, name: string) => [
-            name === 'searchCount' ? `${value} търсения` : value,
+          formatter={(value: number | undefined, name: string) => [
+            name === 'searchCount' ? `${value || 0} търсения` : value,
             name === 'searchCount' ? 'Търсения' : 'Средна цена'
           ]}
           labelStyle={{ color: '#000' }}
@@ -133,8 +137,8 @@ export const SalesPeakChart: React.FC<SalesPeakChartProps> = ({ data }) => {
         />
         <YAxis fontSize={12} />
         <Tooltip
-          formatter={(value: number, name: string) => [
-            name === 'salesCount' ? `${value} продажби` : value,
+          formatter={(value: number | undefined, name: string) => [
+            name === 'salesCount' ? `${value || 0} продажби` : value,
             name === 'salesCount' ? 'Продажби' : 'Средна цена'
           ]}
           labelFormatter={(hour) => `Час: ${formatHour(hour)}`}
@@ -183,8 +187,8 @@ export const PriceDistributionChart: React.FC<PriceDistributionProps> = ({ data 
           ))}
         </Pie>
         <Tooltip
-          formatter={(value: number, name: string) => [
-            `${value} обяви`,
+          formatter={(value: number | undefined, name: string) => [
+            `${value || 0} обяви`,
             name
           ]}
           labelStyle={{ color: '#000' }}

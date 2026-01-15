@@ -33,6 +33,11 @@ interface FilterOptions {
   sellerType?: string;
   doors?: string;
   seats?: string;
+  locationData?: {
+    province?: string;
+    city?: string;
+    postalCode?: string;
+  };
 }
 
 interface AdvancedFiltersProps {

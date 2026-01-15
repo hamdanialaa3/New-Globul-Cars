@@ -85,6 +85,7 @@ export interface GracePeriodStatus {
   startedAt?: Date;
   endsAt?: Date;
   daysRemaining?: number;
+  remainingDays?: number; // Alias for daysRemaining
   reason: 'payment_failed' | 'subscription_cancelled' | 'none';
 }
 

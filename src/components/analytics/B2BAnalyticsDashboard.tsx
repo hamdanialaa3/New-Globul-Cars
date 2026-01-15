@@ -336,8 +336,9 @@ const B2BAnalyticsDashboard: React.FC<DashboardProps> = ({ subscriptionTier }) =
 
       setAnalytics(result.data as AnalyticsData);
     } catch (error: unknown) {
-      logger.error('Error loading analytics:', error);
-      setError(error.message || 'Failed to load analytics data');
+      const err = error as Error;
+      logger.error('Error loading analytics:', err);
+      setError(err.message || 'Failed to load analytics data');
     } finally {
       setLoading(false);
     }

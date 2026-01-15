@@ -406,7 +406,7 @@ const AddRatingForm: React.FC<AddRatingFormProps> = ({
 
       onRatingAdded();
     } catch (error) {
-      logger.error('Error adding rating:', error);
+      logger.error('Error adding rating:', error as Error);
       alert(t('ratings.errors.submitFailed'));
     } finally {
       setLoading(false);

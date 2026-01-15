@@ -257,8 +257,9 @@ const CarValuation: React.FC<CarValuationProps> = ({ car, onValuationUpdate }) =
         onValuationUpdate(valuationData);
       }
     } catch (error: unknown) {
-      logger.error('Error getting valuation:', error);
-      setError(error.message || 'Failed to get car valuation');
+      const err = error as Error;
+      logger.error('Error getting valuation:', err);
+      setError(err.message || 'Failed to get car valuation');
     } finally {
       setLoading(false);
     }

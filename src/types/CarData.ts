@@ -78,6 +78,13 @@ export interface AdvancedSearchParams {
   doors: string;
   slidingDoor: string;
 
+  // Location
+  locationData?: {
+    city?: string;
+    province?: string;
+    regionName?: string;
+  };
+
   // Price & Condition
   condition: string[];
   paymentType: string[];

@@ -24,7 +24,7 @@ export const AIQuotaDisplay: React.FC = () => {
       const data = await aiQuotaService.getUsageStats(user!.uid);
       setStats(data);
     } catch (error) {
-      logger.error('Failed to load AI stats', error);
+      logger.error('Failed to load AI stats', error as Error);
     } finally {
       setLoading(false);
     }

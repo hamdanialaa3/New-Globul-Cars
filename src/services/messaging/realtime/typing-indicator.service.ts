@@ -25,6 +25,7 @@ import {
   off,
   DatabaseReference,
 } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
 import { logger } from '@/services/logger-service';
 
 // ==================== INTERFACES ====================
@@ -118,6 +119,13 @@ class TypingIndicatorService {
     isTyping: boolean,
     userName?: string
   ): Promise<void> {
+    // ✅ Check authentication first
+    const auth = getAuth();
+    if (!auth.currentUser) {
+      logger.warn('[TypingIndicator] Cannot update: User not authenticated');
+      return;
+    }
+    
     // Validate inputs before attempting database write
     if (!channelId || !userNumericId || userNumericId <= 0) {
       logger.warn('[TypingIndicator] Invalid parameters for typing status update', {
@@ -127,22 +135,43 @@ class TypingIndicatorService {
       return;
     }
     
-    const typingRef = ref(this.db, `typing/${channelId}/${userNumericId}`);
-    
-    if (isTyping) {
-      // Firebase RTDB doesn't accept undefined, use null or omit the field
-      const typingData: { isTyping: boolean; timestamp: number; userName?: string } = {
-        isTyping: true,
-        timestamp: Date.now(),
-      };
-      // Only add userName if it exists
-      if (userName) {
-        typingData.userName = userName;
+    try {
+      const typingRef = ref(this.db, `typing/${channelId}/${userNumericId}`);
+      
+      if (isTyping) {
+        // Firebase RTDB doesn't accept undefined, use null or omit the field
+        const typingData: { 
+          isTyping: boolean; 
+          timestamp: number; 
+          firebaseId: string;
+          userName?: string;
+        } = {
+          isTyping: true,
+          timestamp: Date.now(),
+          firebaseId: auth.currentUser.uid,
+        };
+        // Only add userName if it exists
+        if (userName) {
+          typingData.userName = userName;
+        };
+        // Only add userName if it exists
+        if (userName) {
+          typingData.userName = userName;
+        }
+        await set(typingRef, typingData);
+        logger.debug('[TypingIndicator] User started typing', { channelId, userNumericId });
+      } else {
+        await remove(typingRef);
+        logger.debug('[TypingIndicator] User stopped typing', { channelId, userNumericId });
       }
-      await set(typingRef, typingData);
-      logger.debug('[TypingIndicator] User started typing', { channelId, userNumericId });
-    } else {
-      await remove(typingRef);
+    } catch (error) {
+      logger.error('[TypingIndicator] Failed to update typing status', error as Error, {
+        channelId,
+        userNumericId,
+        isTyping
+      });
+    }
+  }
       logger.debug('[TypingIndicator] User stopped typing', { channelId, userNumericId });
     }
   }

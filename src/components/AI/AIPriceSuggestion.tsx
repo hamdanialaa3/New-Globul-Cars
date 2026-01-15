@@ -38,7 +38,8 @@ export const AIPriceSuggestion: React.FC<Props> = ({ carDetails, onPriceSelect }
       const result = await geminiChatService.suggestPrice(carDetails, user?.uid);
       setSuggestion(result);
     } catch (error: unknown) {
-      if (error.message.includes('quota') || error.message.includes('limit')) {
+      const err = error as Error;
+      if (err.message.includes('quota') || err.message.includes('limit')) {
         setShowUpgrade(true);
         toast.warning('Daily AI limit reached. Upgrade for unlimited suggestions.');
       } else {

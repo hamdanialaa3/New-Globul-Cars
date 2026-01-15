@@ -30,6 +30,7 @@ import {
   off,
   DatabaseReference,
 } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
 import { logger } from '@/services/logger-service';
 
 // ==================== INTERFACES ====================
@@ -181,6 +182,18 @@ class RealtimeMessagingService {
     return RealtimeMessagingService.instance;
   }
 
+  /**
+   * ✅ Check if user is authenticated
+   * فحص ما إذا كان المستخدم مسجلاً الدخول
+   * @private
+   */
+  private ensureAuthenticated(): void {
+    const auth = getAuth();
+    if (!auth.currentUser) {
+      throw new Error('PERMISSION_DENIED: User must be authenticated to perform this action');
+    }
+  }
+
   // ==================== CHANNEL ID GENERATION ====================
 
   /**
@@ -234,6 +247,9 @@ class RealtimeMessagingService {
    * @description This is the main entry point for starting a conversation
    */
   async getOrCreateChannel(params: CreateChannelParams): Promise<RealtimeChannel> {
+    // ✅ Check authentication first
+    this.ensureAuthenticated();
+    
     const { buyer, seller, car } = params;
     
     // ✅ FIX Phase 4.3: Check block status BEFORE creating channel
@@ -453,6 +469,9 @@ class RealtimeMessagingService {
     channelId: string,
     message: Omit<RealtimeMessage, 'id' | 'timestamp' | 'serverTimestamp' | 'read' | 'channelId'>
   ): Promise<string> {
+    // ✅ Check authentication first
+    this.ensureAuthenticated();
+    
     // 🔴 CRITICAL: Check if user is blocked before sending
     try {
       const { blockUserService } = await import('@/services/messaging/block-user.service');
@@ -487,6 +506,12 @@ class RealtimeMessagingService {
         });
         throw error;
       }
+      
+      // Re-throw authentication errors
+      if (error instanceof Error && error.message.includes('PERMISSION_DENIED')) {
+        throw error;
+      }
+      
       // If block check fails, log but continue (fail open)
       logger.warn('Failed to check block status before sending message', error as Error, {
         channelId,
@@ -495,16 +520,17 @@ class RealtimeMessagingService {
       });
     }
     
-    const messagesRef = ref(this.db, `messages/${channelId}`);
-    const newMessageRef = push(messagesRef);
-    const messageId = newMessageRef.key!;
-    
-    const now = Date.now();
-    const fullMessage: RealtimeMessage = {
-      ...message,
-      id: messageId,
-      channelId,
-      timestamp: now,
+    try {
+      const messagesRef = ref(this.db, `messages/${channelId}`);
+      const newMessageRef = push(messagesRef);
+      const messageId = newMessageRef.key!;
+      
+      const now = Date.now();
+      const fullMessage: RealtimeMessage = {
+        ...message,
+        id: messageId,
+        channelId,
+        timestamp: now,
       serverTimestamp: serverTimestamp(),
       read: false,
     };
@@ -532,6 +558,16 @@ class RealtimeMessagingService {
     });
     
     return messageId;
+    
+    } catch (error) {
+      logger.error('[RealtimeMessaging] Failed to send message', error as Error, {
+        channelId,
+        senderId: message.senderId,
+        recipientId: message.recipientId,
+        type: message.type
+      });
+      throw error;
+    }
   }
 
   /**

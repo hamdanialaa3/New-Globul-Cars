@@ -26,6 +26,7 @@ import {
   off,
   DatabaseReference,
 } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
 import { logger } from '@/services/logger-service';
 
 // ==================== INTERFACES ====================
@@ -93,9 +94,18 @@ class PresenceService {
    * @description Call this after user logs in
    */
   async initialize(numericUserId: number, device?: 'mobile' | 'desktop' | 'tablet'): Promise<void> {
+    // ✅ Guard: Check authentication first
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+    
+    if (!currentUser) {
+      logger.warn('[Presence] Cannot initialize: User not authenticated');
+      return;
+    }
+    
     // ✅ Guard: Don't initialize if no numeric ID
     if (!numericUserId || numericUserId <= 0) {
-      logger.warn('Cannot initialize presence without valid numericUserId', { numericUserId });
+      logger.warn('[Presence] Cannot initialize: Invalid numericUserId', { numericUserId });
       return;
     }
     
@@ -109,22 +119,28 @@ class PresenceService {
       if (snapshot.val() === true) {
         // We're connected (or reconnected)
         
-        // Set online status
-        await set(presenceRef, {
-          status: 'online',
-          lastSeen: serverTimestamp(),
-          lastActive: serverTimestamp(),
-          device: device || this.detectDevice(),
-        });
-        
-        // Set up disconnect handler (when connection is lost)
-        await onDisconnect(presenceRef).set({
-          status: 'offline',
-          lastSeen: serverTimestamp(),
-          device: device || this.detectDevice(),
-        });
-        
-        logger.info('[Presence] User is now online', { numericUserId });
+        try {
+          // Set online status
+          await set(presenceRef, {
+            status: 'online',
+            lastSeen: serverTimestamp(),
+            lastActive: serverTimestamp(),
+            device: device || this.detectDevice(),
+            firebaseId: currentUser.uid, // Add Firebase UID for validation
+          });
+          
+          // Set up disconnect handler (when connection is lost)
+          await onDisconnect(presenceRef).set({
+            status: 'offline',
+            lastSeen: serverTimestamp(),
+            device: device || this.detectDevice(),
+            firebaseId: currentUser.uid,
+          });
+          
+          logger.info('[Presence] User is now online', { numericUserId });
+        } catch (error) {
+          logger.error('[Presence] Failed to set online status', error as Error, { numericUserId });
+        }
       }
     });
     

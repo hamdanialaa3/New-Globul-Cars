@@ -2,7 +2,7 @@ import { logger } from '../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { advancedMessagingService } from '../services/messaging/advanced-messaging-service';
+import { realtimeMessagingService } from '../services/messaging/realtime';
 import MessageButton from './messaging/MessageButton';
 import { useAuth } from '../contexts/AuthProvider';
 import { addToBrowsingHistory } from '../pages/01_main-pages/home/HomePage/RecentBrowsingSection';
@@ -355,7 +355,7 @@ const CarDetails: React.FC = () => {
       const conversationId = `car_${car.id}`;
       const receiverId = car.sellerId || 'unknown';
 
-      await advancedMessagingService.sendMessage(
+      await realtimeMessagingService.sendMessage(
         conversationId,
         user.uid,
         receiverId,
@@ -365,7 +365,7 @@ const CarDetails: React.FC = () => {
       setMessage('');
       alert('Съобщението е изпратено успешно!');
     } catch (error) {
-      logger.error('Error sending message:', error);
+      logger.error('Error sending message:', error as Error);
       alert('Грешка при изпращане на съобщението');
     } finally {
       setIsSending(false);

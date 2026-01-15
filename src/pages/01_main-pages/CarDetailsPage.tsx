@@ -13,7 +13,7 @@ import StaticMapEmbed from '../../components/StaticMapEmbed';
 import CarDetailsMobileDEStyle from './components/CarDetailsMobileDEStyle';
 import { useCarDetails } from './hooks/useCarDetails';
 import { useCarEdit } from './hooks/useCarEdit';
-import CarSEO from '../../components/seo/CarSEO';
+import { CarSEO } from '../../components/seo/CarSEO';
 import { CarImageGallery } from './components/CarImageGallery';
 import { CarHeader } from './components/CarHeader';
 import { CarBasicInfo } from './components/CarBasicInfo';

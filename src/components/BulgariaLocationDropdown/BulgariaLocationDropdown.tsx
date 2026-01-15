@@ -35,6 +35,11 @@ export interface BulgariaLocationData {
   city: string;
   postalCode: string;
   isManualEntry?: boolean; // True if user selected "Other"
+  locationData?: {
+    province?: string;
+    city?: string;
+    postalCode?: string;
+  };
 }
 
 interface BulgariaLocationDropdownProps {
