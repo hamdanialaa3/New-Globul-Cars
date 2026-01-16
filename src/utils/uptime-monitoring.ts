@@ -136,7 +136,7 @@ export const createMonitorViaAPI = async (monitorData: any) => {
     logger.info('Monitor created:', data);
     return data;
   } catch (error) {
-    logger.error('Failed to create monitor:', error);
+    logger.error('Failed to create monitor:', error as Error);
   }
 };
 
@@ -166,7 +166,7 @@ export const getMonitorStatus = async () => {
     const data = await response.json();
     return data.monitors;
   } catch (error) {
-    logger.error('Failed to get monitors:', error);
+    logger.error('Failed to get monitors:', error as Error);
   }
 };
 

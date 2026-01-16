@@ -59,7 +59,10 @@ class WebVitalsTracker {
    */
   private onMetric(name: keyof WebVitalsReport, metric: Metric): void {
     const value = metric.value;
-    this.metrics[name] = value;
+    // Only assign to metric properties (not timestamp or url)
+    if (name !== 'timestamp' && name !== 'url') {
+      this.metrics[name] = value;
+    }
 
     // Log to console in development
     if (process.env.NODE_ENV === 'development') {

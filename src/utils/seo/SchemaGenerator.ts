@@ -172,10 +172,10 @@ export class SchemaGenerator {
             offers: {
                 '@type': 'Offer',
                 '@id': `${this.SITE_URL}${url}#offer`,
-                price: car.price || car.netPrice || 0,
+                price: car.price || (car as any).netPrice || 0,
                 priceCurrency: car.currency || 'BGN',
                 priceValidUntil: this.getFutureDate(90),
-                availability: car.isSold
+                availability: (car as any).isSold
                     ? 'https://schema.org/SoldOut'
                     : 'https://schema.org/InStock',
                 itemCondition: car.condition === 'new'

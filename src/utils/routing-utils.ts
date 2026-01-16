@@ -159,11 +159,11 @@ export const getMessagesUrl = (
   // 🚨 CONSTITUTION: Do NOT fallback to UID-based URLs - causes messaging to break
   // Return null or messages list and let caller handle the error
   logger.error('CONSTITUTION VIOLATION: Cannot generate messaging URL without numeric IDs', { 
-    senderNumericId: sender.numericId,
-    recipientNumericId: recipient.numericId,
+    sender: sender.numericId || 'missing',
+    recipient: recipient.numericId || 'missing',
     senderUid: sender.uid,
     recipientUid: recipient.uid
-  });
+  } as any);
 
   // Default to messages list - caller should check numeric IDs before calling
   return '/messages';

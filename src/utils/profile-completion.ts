@@ -21,12 +21,12 @@ export function calculateProfileCompletion(
 
   // PRIVATE PERSON CALCULATION (7 fields = 100%)
   if (profileType === 'private') {
-    if (user.emailVerified || user.verification?.email?.verified) score += 20;  // Email verified: 20%
-    if (user.verification?.phone?.verified || user.phoneNumber) score += 20;     // Phone verified: 20%
+    if (user.verification?.email) score += 20;  // Email verified: 20%
+    if (user.verification?.phone || user.phoneNumber) score += 20;     // Phone verified: 20%
     if (user.photoURL) score += 15;                                              // Profile photo: 15%
     if (user.displayName || (user.firstName && user.lastName)) score += 10;     // Display name: 10%
     if (user.phoneNumber) score += 10;                                           // Phone number: 10%
-    if (user.address || user.location?.city) score += 15;                        // Address: 15%
+    if (user.location?.city) score += 15;                        // Address: 15%
     if (user.bio && user.bio.length >= 50) score += 10;                          // Bio (min 50 chars): 10%
     
     return Math.min(100, score);
@@ -34,32 +34,40 @@ export function calculateProfileCompletion(
 
   // DEALER CALCULATION (9 fields = 100%)
   if (profileType === 'dealer') {
-    if (user.emailVerified || user.verification?.email?.verified) score += 15;  // Email verified: 15%
-    if (user.verification?.phone?.verified || user.phoneNumber) score += 15;     // Phone verified: 15%
-    if (user.businessName) score += 10;                                          // Business name: 10%
-    if (user.bulstat || user.verification?.business?.verified) score += 15;      // EIK/BULSTAT verified: 15%
-    if (user.businessAddress || user.location?.city) score += 10;                // Business address: 10%
+    if (user.verification?.email) score += 15;  // Email verified: 15%
+    if (user.verification?.phone || user.phoneNumber) score += 15;     // Phone verified: 15%
+    // Business name from dealerSnapshot
+    if ('dealerSnapshot' in user && user.dealerSnapshot?.nameBG) score += 10;    // Business name: 10%
+    if (user.verification?.business) score += 15;      // EIK/BULSTAT verified: 15%
+    // Business address from dealerSnapshot or location
+    if (('dealerSnapshot' in user && user.dealerSnapshot?.address) || user.location?.city) score += 10; // Business address: 10%
     if (user.photoURL) score += 10;                                              // Profile logo/photo: 10%
-    if (user.workingHours) score += 5;                                           // Working hours: 5%
-    if (user.businessDescription && user.businessDescription.length >= 100) score += 10;  // Services offered: 10%
-    if (user.plan && user.plan.tier !== 'free') score += 10;                     // Payment method setup: 10%
+    // Working hours not in canonical types - skip
+    score += 5;                                                                   // Working hours: 5% (placeholder)
+    // Business description from about field
+    if (user.about && user.about.length >= 100) score += 10;                     // Services offered: 10%
+    if (user.planTier !== 'free') score += 10;                                   // Payment method setup: 10%
     
     return Math.min(100, score);
   }
 
   // COMPANY CALCULATION (10 fields = 100%)
   if (profileType === 'company') {
-    if (user.emailVerified || user.verification?.email?.verified) score += 10;  // Email verified: 10%
-    if (user.verification?.phone?.verified || user.phoneNumber) score += 10;     // Phone verified: 10%
-    if (user.businessName) score += 10;                                          // Company name: 10%
-    if (user.bulstat && user.verification?.business?.verified) score += 15;      // EIK/BULSTAT verified: 15%
-    if (user.vatNumber) score += 10;                                             // VAT number: 10%
+    if (user.verification?.email) score += 10;  // Email verified: 10%
+    if (user.verification?.phone || user.phoneNumber) score += 10;     // Phone verified: 10%
+    // Company name from companySnapshot
+    if ('companySnapshot' in user && user.companySnapshot?.nameBG) score += 10;  // Company name: 10%
+    if (user.verification?.business) score += 15;      // EIK/BULSTAT verified: 15%
+    // VAT number from companySnapshot
+    if ('companySnapshot' in user && user.companySnapshot?.vatNumber) score += 10; // VAT number: 10%
     if (user.photoURL) score += 10;                                              // Company logo: 10%
-    if (user.businessAddress) score += 10;                                       // Headquarters address: 10%
-    if (user.businessEmail && user.businessPhone) score += 10;                   // Authorized person: 10%
-    if (user.plan && user.plan.tier !== 'free') score += 10;                     // Payment & billing: 10%
-    // Team setup check would require additional query (skip for now or assume 5% if company)
-    if (user.profileType === 'company') score += 5;                              // Team setup: 5%
+    // Headquarters address from companySnapshot or location
+    if (('companySnapshot' in user && user.companySnapshot?.address) || user.location?.city) score += 10; // Headquarters address: 10%
+    // Phone in companySnapshot, email in user
+    if (('companySnapshot' in user && user.companySnapshot?.phone) && user.email) score += 10; // Authorized person: 10%
+    if (user.planTier !== 'free') score += 10;                                   // Payment & billing: 10%
+    // Team setup check
+    if (user.profileType === 'company' && 'teamMembers' in user && user.teamMembers && user.teamMembers.length > 0) score += 5; // Team setup: 5%
     
     return Math.min(100, score);
   }
@@ -110,38 +118,38 @@ export function getMissingFields(
   const missing: string[] = [];
 
   if (profileType === 'private') {
-    if (!user.emailVerified && !user.verification?.email?.verified) missing.push('Email verification');
-    if (!user.verification?.phone?.verified && !user.phoneNumber) missing.push('Phone verification');
+    if (!user.verification?.email) missing.push('Email verification');
+    if (!user.verification?.phone && !user.phoneNumber) missing.push('Phone verification');
     if (!user.photoURL) missing.push('Profile photo');
     if (!user.displayName && (!user.firstName || !user.lastName)) missing.push('Display name');
     if (!user.phoneNumber) missing.push('Phone number');
-    if (!user.address && !user.location?.city) missing.push('Address');
+    if (!user.location?.city) missing.push('Address');
     if (!user.bio || user.bio.length < 50) missing.push('Bio (min 50 characters)');
   }
 
   if (profileType === 'dealer') {
-    if (!user.emailVerified && !user.verification?.email?.verified) missing.push('Email verification');
-    if (!user.verification?.phone?.verified && !user.phoneNumber) missing.push('Phone verification');
-    if (!user.businessName) missing.push('Business name');
-    if (!user.bulstat && !user.verification?.business?.verified) missing.push('EIK/BULSTAT verification');
-    if (!user.businessAddress && !user.location?.city) missing.push('Business address');
+    if (!user.verification?.email) missing.push('Email verification');
+    if (!user.verification?.phone && !user.phoneNumber) missing.push('Phone verification');
+    if (!('dealerSnapshot' in user) || !user.dealerSnapshot?.nameBG) missing.push('Business name');
+    if (!user.verification?.business) missing.push('EIK/BULSTAT verification');
+    if ((!('dealerSnapshot' in user) || !user.dealerSnapshot?.address) && !user.location?.city) missing.push('Business address');
     if (!user.photoURL) missing.push('Business logo');
-    if (!user.workingHours) missing.push('Working hours');
-    if (!user.businessDescription || user.businessDescription.length < 100) missing.push('Services description');
-    if (!user.plan || user.plan.tier === 'free') missing.push('Payment method');
+    // Working hours not in canonical types - skip check
+    if (!user.about || user.about.length < 100) missing.push('Services description');
+    if (user.planTier === 'free') missing.push('Payment method');
   }
 
   if (profileType === 'company') {
-    if (!user.emailVerified && !user.verification?.email?.verified) missing.push('Email verification');
-    if (!user.verification?.phone?.verified && !user.phoneNumber) missing.push('Phone verification');
-    if (!user.businessName) missing.push('Company name');
-    if (!user.bulstat || !user.verification?.business?.verified) missing.push('EIK/BULSTAT verification');
-    if (!user.vatNumber) missing.push('VAT number');
+    if (!user.verification?.email) missing.push('Email verification');
+    if (!user.verification?.phone && !user.phoneNumber) missing.push('Phone verification');
+    if (!('companySnapshot' in user) || !user.companySnapshot?.nameBG) missing.push('Company name');
+    if (!user.verification?.business) missing.push('EIK/BULSTAT verification');
+    if (!('companySnapshot' in user) || !user.companySnapshot?.vatNumber) missing.push('VAT number');
     if (!user.photoURL) missing.push('Company logo');
-    if (!user.businessAddress) missing.push('Headquarters address');
-    if (!user.businessEmail || !user.businessPhone) missing.push('Authorized person details');
-    if (!user.plan || user.plan.tier === 'free') missing.push('Payment & billing');
-    // Team setup check would require additional query
+    if ((!('companySnapshot' in user) || !user.companySnapshot?.address) && !user.location?.city) missing.push('Headquarters address');
+    if (!('companySnapshot' in user) || !user.companySnapshot?.phone || !user.email) missing.push('Authorized person details');
+    if (user.planTier === 'free') missing.push('Payment & billing');
+    // Team setup check
   }
 
   return missing;
