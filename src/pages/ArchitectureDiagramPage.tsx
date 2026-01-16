@@ -249,7 +249,7 @@ const architecture = {
       column: 0,
       row: 5,
       description: "Third-party Services",
-      details: { "Stripe": "Payments", "Google Maps": "Location" },
+      details: { "iCard & Revolut": "Manual Bank Transfers", "Google Maps": "Location" },
       path: null,
       dependencies: []
     },
@@ -367,7 +367,7 @@ const architecture = {
       column: 4,
       row: 5,
       description: "Financial System",
-      details: { "Provider": "Stripe", "Route": "/billing" },
+      details: { "Provider": "Manual Bank Transfer (iCard & Revolut)", "Route": "/billing" },
       path: "/billing",
       dependencies: ["services", "ui"]
     },

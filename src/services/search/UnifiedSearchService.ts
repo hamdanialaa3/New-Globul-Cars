@@ -18,10 +18,11 @@
 import { logger } from '../../services/logger-service';
 import { runUnifiedQuery } from './queryOrchestrator';
 import { SearchData } from '../../pages/05_search-browse/advanced-search/AdvancedSearchPage/types';
-import { queryAllCollections } from '../multi-collection-helper';
+import { queryAllCollections } from './multi-collection-helper';
 import { aiQueryParserService } from './ai-query-parser.service';
 import { retry } from '../../hooks/useRetry';
 import { BulgarianTrustService } from '../trust/bulgarian-trust-service';
+import algoliaSearchService from '../../services/algoliaSearchService';
 
 export interface SearchQuery {
   text?: string;
@@ -187,13 +188,13 @@ export class UnifiedSearchService {
   async invalidateCache(): Promise<void> {
     logger.info('🗑️ Invalidating search cache');
     try {
-      // TODO: Implement actual cache invalidation
-      // For now, we rely on Algolia's auto-indexing and short TTL
-      // In future: clear Redis/memory cache, trigger Algolia re-index
+      // Clear Algolia cache if available
+      if (typeof (algoliaSearchService as any).clearCache === 'function') {
+        await (algoliaSearchService as any).clearCache();
+      }
       logger.info('Search cache invalidated successfully');
     } catch (error) {
       logger.error('Failed to invalidate search cache', error as Error);
-      throw error;
     }
   }
 
@@ -201,8 +202,28 @@ export class UnifiedSearchService {
    * Get search suggestions
    */
   async getSearchSuggestions(query: string): Promise<string[]> {
-    logger.debug('Getting suggestions', { query });
-    return [];
+    if (!query || query.length < 2) return [];
+
+    try {
+      logger.debug('Getting search suggestions', { query });
+
+      // Use Algolia for fast suggestions
+      const res = await algoliaSearchService.searchCars({ searchDescription: query } as any, {
+        page: 0,
+        hitsPerPage: 5
+      });
+
+      const suggestions = new Set<string>();
+      res.cars.forEach((car: any) => {
+        if (car.make) suggestions.add(car.make);
+        if (car.make && car.model) suggestions.add(`${car.make} ${car.model}`);
+      });
+
+      return Array.from(suggestions);
+    } catch (error) {
+      logger.error('Failed to get search suggestions', error as Error);
+      return [];
+    }
   }
 
   /**
@@ -279,7 +300,7 @@ export class UnifiedSearchService {
   private async applyTrustScoreRanking(cars: any[]): Promise<any[]> {
     try {
       const trustService = BulgarianTrustService.getInstance();
-      
+
       // Fetch trust scores for all unique sellers
       const sellerIds = [...new Set(cars.map(car => car.userId || car.sellerId).filter(Boolean))];
       const trustScores = new Map<string, number>();
@@ -302,7 +323,7 @@ export class UnifiedSearchService {
       const carsWithBoost = cars.map(car => {
         const sellerId = car.userId || car.sellerId;
         const trustScore = trustScores.get(sellerId) || 0;
-        
+
         // Calculate boost factor (0-30% based on trust score)
         let boostFactor = 0;
         if (trustScore >= 80) {
@@ -310,11 +331,11 @@ export class UnifiedSearchService {
         } else if (trustScore >= 50) {
           boostFactor = 0.15; // 15% boost for medium-trust
         }
-        
+
         // Apply boost to ranking score (if exists, else use trust as base)
         const baseScore = car.rankingScore || car.score || 0;
         const finalScore = baseScore + (baseScore * boostFactor);
-        
+
         return {
           ...car,
           trustScore,

@@ -303,7 +303,7 @@ export class SchemaGenerator {
             // Business Info
             priceRange: input.priceRange || '€€',
             currenciesAccepted: 'BGN, EUR',
-            paymentAccepted: 'Cash, Credit Card, Bank Transfer',
+            paymentAccepted: 'Bank Transfer (Revolut, iCard)',
 
             // Opening Hours
             ...(input.openingHours && {

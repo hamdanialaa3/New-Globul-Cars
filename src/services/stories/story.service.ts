@@ -13,14 +13,20 @@ import {
     doc,
     setDoc,
     getDocs,
+    getDoc,
     query,
     where,
     orderBy,
     limit,
     Timestamp,
-    serverTimestamp
+    serverTimestamp,
+    increment,
+    arrayUnion,
+    updateDoc,
+    addDoc
 } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { db, storage } from '../../firebase/firebase-config';
 import { unifiedCarService } from '../car/unified-car-service';
 import { numericStoryIdService } from './numeric-story-id.service';
 import { logger } from '../logger-service';
@@ -34,6 +40,18 @@ const checkUserPlanLimit = async (userId: string): Promise<boolean> => {
 
 export const storyService = {
     /**
+     * uploadStoryMedia - Real Firebase Storage upload
+     */
+    async uploadStoryMedia(userId: string, file: File): Promise<string> {
+        const timestamp = Date.now();
+        const fileName = `${userId}_${timestamp}.${file.name.split('.').pop()}`;
+        const storageRef = ref(storage, `stories/${userId}/${fileName}`);
+
+        await uploadBytes(storageRef, file);
+        return await getDownloadURL(storageRef);
+    },
+
+    /**
      * Create a new Story
      * Implements "SEO Handshake" -> Updates Car Doc
      */
@@ -41,11 +59,13 @@ export const storyService = {
         userId: string;
         userNumericId: number;
         carNumericId: number;
-        carId: string; // Needed for Firestore update
+        carId: string;
         type: StoryType;
-        mediaUrl: string;
-        thumbnailUrl: string;
+        mediaFile: File;
+        thumbnailFile?: File; // Optional if we generate it client-side
         durationSec: number;
+        visibility?: 'public' | 'followers' | 'close_friends';
+        caption?: string;
     }): Promise<string> => {
         try {
             // 1. Security & Plan Check
@@ -54,109 +74,190 @@ export const storyService = {
                 throw new Error('User plan limit reached for stories.');
             }
 
-            // 2. Assign Numeric ID
-            const storyNumericId = await numericStoryIdService.getNextStoryNumericId();
-            const storyId = `story-${storyNumericId}`; // Firestore Doc ID
+            // 2. Upload Media
+            const videoUrl = await storyService.uploadStoryMedia(data.userId, data.mediaFile);
+            let thumbnailUrl = '';
+            if (data.thumbnailFile) {
+                thumbnailUrl = await storyService.uploadStoryMedia(data.userId, data.thumbnailFile);
+            }
 
-            // 3. Construct Story Object
+            // 3. Assign Numeric ID
+            const storyNumericId = await numericStoryIdService.getNextStoryNumericId();
+            const storyId = `story-${storyNumericId}`;
+
+            // 4. Fetch Author Info for performance
+            const userDoc = await getDoc(doc(db, 'users', data.userId));
+            const userData = userDoc.exists() ? userDoc.data() : {};
+
+            const now = Date.now();
+            const expiresAt = now + 24 * 60 * 60 * 1000;
+
+            // 5. Construct Story Object
             const storyData: CarStory = {
                 id: storyId,
                 carNumericId: data.carNumericId,
                 sellerNumericId: data.userNumericId,
+                authorId: data.userId,
                 type: data.type,
-                videoUrl: data.mediaUrl,
-                thumbnailUrl: data.thumbnailUrl,
+                videoUrl: videoUrl,
+                thumbnailUrl: thumbnailUrl || videoUrl, // Fallback to video if no thumb
                 durationSec: data.durationSec,
-                createdAt: Date.now(), // Using number timestamp as per interface
-                views: 0,
-                // Additional Metadata helpful for querying but not in strict interface? 
-                // Interface defines minimal set. We should stick to it, but add expiration handling logic here.
-                // However, the interface 'CarStory' doesn't have 'expiresAt'. 
-                // CHECK: Does the user want 'expiresAt' in the interface or just in DB?
-                // The requirement says: "where('expiresAt', '>', Timestamp.now())"
-                // So we MUST save 'expiresAt' to Firestore.
+                createdAt: now,
+                expiresAt: expiresAt,
+                status: 'active',
+                viewCount: 0,
+                viewedBy: [],
+                reactions: {},
+                visibility: data.visibility || 'public',
+                authorInfo: {
+                    displayName: userData.displayName || 'Anonymous',
+                    profileImage: userData.profileImage?.url,
+                    profileType: userData.profileType || 'private',
+                    isVerified: userData.isVerified || false
+                }
             };
 
-            // Enhance with DB-only fields (or cast to any if strict typing blocks)
             const dbPayload = {
                 ...storyData,
-                expiresAt: Timestamp.fromMillis(Date.now() + 24 * 60 * 60 * 1000), // 24 hours expiry
-                createdAt: serverTimestamp(), // Use server timestamp for DB consistency
-                linkedCarId: data.carId // Store reference to parent car doc ID
+                createdAt: serverTimestamp(),
+                expiresAt: Timestamp.fromMillis(expiresAt),
+                linkedCarId: data.carId
             };
 
             const storyRef = doc(db, 'stories', storyId);
 
-            // 4. Save Story
+            // 6. Save Story
             await setDoc(storyRef, dbPayload);
 
-            // 5. SEO Handshake: Update Car Document
-            // This is CRITICAL.
-            // We enable this for ALL story types as they all enhance the listing.
-            if (true) {
-                await unifiedCarService.updateCarVideoStatus(
-                    data.carId,
-                    { hasVideo: true, videoUrl: data.mediaUrl }
-                );
-            }
+            // 7. SEO Handshake: Update Car Document
+            await unifiedCarService.updateCarVideoStatus(
+                data.carId,
+                { hasVideo: true, videoUrl: videoUrl }
+            );
 
             logger.info(`Story created successfully: ${storyId}`);
             return storyId;
 
         } catch (error) {
-            logger.error('Failed to create story', error as Error);
+            logger.error('Failed to create story', error as Error, { userId: data.userId });
             throw error;
         }
     },
 
     /**
      * Get Stories (Smart Feed)
-     * Fetches top 20 active stories
+     * Fetches top 20 active stories globally or for followers
      */
-    getStories: async (): Promise<CarStory[]> => {
+    getStories: async (userId?: string): Promise<CarStory[]> => {
         try {
             const storiesRef = collection(db, 'stories');
+            let q;
 
-            // Query: Not expired, Ordered by Expiry (Ascending -> expiring soonest first? or Descending?)
-            // Usually we want newest first, but the requirement said:
-            // "where('expiresAt', '>', Timestamp.now()) orderBy('expiresAt', 'asc')"
-            // This brings stories that are about to expire soonest? or maybe ensuring index usage?
-            // Let's stick to the prompt's suggestion for now to ensure index compliance if pre-configured.
-            // But realistically for a feed, we usually want 'orderBy created desc'.
-            // Prompt said: "or createAt desc, requires index"
-            // I will use 'createdAt' 'desc' as it makes more sense for a "Feed", enforcing index creation if needed.
-            // Wait, strict guardrails said: "orderBy('expiresAt', 'asc') // or createAt desc"
-            // Let's use createdAt desc for better UX, and I'll handle the index requirement (by expecting it).
-
-            const q = query(
-                storiesRef,
-                where('expiresAt', '>', Timestamp.now()),
-                orderBy('createdAt', 'desc'),
-                limit(20)
-            );
+            if (userId) {
+                // If userId provided, we could prioritize followed users (future logic)
+                // For Phase 1, just get active global stories
+                q = query(
+                    storiesRef,
+                    where('status', '==', 'active'),
+                    where('expiresAt', '>', Timestamp.now()),
+                    orderBy('createdAt', 'desc'),
+                    limit(20)
+                );
+            } else {
+                q = query(
+                    storiesRef,
+                    where('status', '==', 'active'),
+                    where('expiresAt', '>', Timestamp.now()),
+                    orderBy('createdAt', 'desc'),
+                    limit(20)
+                );
+            }
 
             const snapshot = await getDocs(q);
 
             return snapshot.docs.map(doc => {
                 const data = doc.data();
-                // Map back to strict CarStory interface
                 return {
                     id: doc.id,
-                    carNumericId: data.carNumericId,
-                    sellerNumericId: data.sellerNumericId,
-                    type: data.type,
-                    videoUrl: data.videoUrl,
-                    thumbnailUrl: data.thumbnailUrl,
-                    durationSec: data.durationSec,
+                    ...data,
                     createdAt: data.createdAt?.toMillis ? data.createdAt.toMillis() : Date.now(),
-                    views: data.views || 0,
-                    order: data.order
+                    expiresAt: data.expiresAt?.toMillis ? data.expiresAt.toMillis() : Date.now() + 86400000
                 } as CarStory;
             });
 
         } catch (error) {
             logger.error('Failed to get stories', error as Error);
             return [];
+        }
+    },
+
+    /**
+     * Record story view
+     */
+    async recordView(storyId: string, viewerId: string): Promise<void> {
+        try {
+            const storyRef = doc(db, 'stories', storyId);
+            await updateDoc(storyRef, {
+                viewCount: increment(1),
+                viewedBy: arrayUnion(viewerId)
+            });
+
+            // Sub-collection for detailed analytics if needed
+            await addDoc(collection(db, 'stories', storyId, 'views'), {
+                viewerId,
+                viewedAt: serverTimestamp()
+            });
+        } catch (error) {
+            logger.error('Failed to record story view', error as Error);
+        }
+    },
+
+    /**
+     * addReaction
+     */
+    async addReaction(storyId: string, userId: string, emoji: string): Promise<void> {
+        try {
+            const storyRef = doc(db, 'stories', storyId);
+            await updateDoc(storyRef, {
+                [`reactions.${userId}`]: emoji
+            });
+        } catch (error) {
+            logger.error('Failed to add reaction', error as Error);
+        }
+    },
+
+    /**
+     * deleteStory
+     */
+    async deleteStory(storyId: string, userId: string): Promise<void> {
+        try {
+            const storyRef = doc(db, 'stories', storyId);
+            const storyDoc = await getDoc(storyRef);
+
+            if (!storyDoc.exists()) throw new Error('Story not found');
+            if (storyDoc.data().authorId !== userId) throw new Error('Unauthorized');
+
+            // 1. Delete media
+            const storyData = storyDoc.data();
+            if (storyData.videoUrl) {
+                try {
+                    const mediaRef = ref(storage, storyData.videoUrl);
+                    await deleteObject(mediaRef);
+                } catch (e) {
+                    logger.warn('Failed to delete story media from storage', { error: (e as Error).message });
+                }
+            }
+
+            // 2. Mark as deleted in DB
+            await updateDoc(storyRef, {
+                status: 'deleted',
+                deletedAt: serverTimestamp()
+            });
+
+            logger.info(`Story deleted: ${storyId}`);
+        } catch (error) {
+            logger.error('Failed to delete story', error as Error);
+            throw error;
         }
     }
 };

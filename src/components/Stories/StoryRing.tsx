@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Story } from '../../services/social/stories.service';
+import { CarStory } from '../../types/story.types';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -22,8 +22,8 @@ const RingWrapper = styled.div<{ $viewed: boolean }>`
   height: 80px;
   border-radius: 50%;
   padding: 3px;
-  background: ${p => p.$viewed 
-    ? '#dee2e6' 
+  background: ${p => p.$viewed
+    ? '#dee2e6'
     : 'linear-gradient(45deg, #f77737, #ff5722, #ff8a00, #ffb700)'};
   margin-bottom: 8px;
   transition: transform 0.2s;
@@ -37,8 +37,8 @@ const Avatar = styled.div<{ $imageUrl?: string }>`
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: ${p => p.$imageUrl 
-    ? `url(${p.$imageUrl}) center/cover` 
+  background: ${p => p.$imageUrl
+    ? `url(${p.$imageUrl}) center/cover`
     : 'linear-gradient(135deg, #FF8F10, #FF7900)'};
   border: 3px solid white;
   display: flex;
@@ -74,18 +74,18 @@ const ViewCount = styled.div`
 // ==================== COMPONENT ====================
 
 interface StoryRingProps {
-  story: Story;
+  story: CarStory;
   onClick: () => void;
   currentUserId?: string;
 }
 
 const StoryRing: React.FC<StoryRingProps> = ({ story, onClick, currentUserId }) => {
   const isViewed = currentUserId ? story.viewedBy.includes(currentUserId) : false;
-  
+
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   };
-  
+
   return (
     <Container onClick={onClick}>
       <RingWrapper $viewed={isViewed}>
@@ -93,11 +93,11 @@ const StoryRing: React.FC<StoryRingProps> = ({ story, onClick, currentUserId }) 
           {!story.authorInfo.profileImage && getInitials(story.authorInfo.displayName)}
         </Avatar>
       </RingWrapper>
-      
+
       {story.viewCount > 0 && (
         <ViewCount>{story.viewCount}</ViewCount>
       )}
-      
+
       <Username>{story.authorInfo.displayName}</Username>
     </Container>
   );

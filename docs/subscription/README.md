@@ -4,11 +4,16 @@ Updated: January 8, 2026
 
 This document is the single source of truth for the subscription system. It replaces prior scattered reports and phase docs. Use this to understand the plans, features, Stripe integration, and maintenance workflow.
 
-## Plans & Pricing
+## Plans & Pricing (Updated: January 16, 2026)
 
-- Free: €0/mo — 3 listings/month
-- Dealer: €27.78/mo (or €278/yr) — 30 listings/month
-- Company: €137.88/mo (or €1,288/yr) — Unlimited listings
+- **Free**: €0/mo (€0/yr) — 3 listings/month
+- **Dealer**: **€20.11/mo** (€193/yr) — 30 listings/month
+- **Company**: **€100.11/mo** (€961/yr) — Unlimited listings
+
+**Pricing Rules:**
+- Monthly prices end with `.11` cents
+- Annual prices are whole numbers (20% discount)
+- Currency: EUR only
 
 ## Feature Matrix
 

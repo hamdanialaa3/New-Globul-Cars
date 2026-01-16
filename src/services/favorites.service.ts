@@ -9,13 +9,13 @@
  * - Firestore integration with atomic operations
  */
 
-import { 
-  collection, 
-  doc, 
-  setDoc, 
-  deleteDoc, 
-  getDocs, 
-  query, 
+import {
+  collection,
+  doc,
+  setDoc,
+  deleteDoc,
+  getDocs,
+  query,
   where,
   orderBy,
   limit,
@@ -47,7 +47,7 @@ export interface FavoriteItem {
 class FavoritesService {
   private static instance: FavoritesService;
 
-  private constructor() {}
+  private constructor() { }
 
   static getInstance(): FavoritesService {
     if (!this.instance) {
@@ -69,7 +69,7 @@ class FavoritesService {
   ): Promise<void> {
     try {
       const favoriteRef = doc(db, 'favorites', `${userId}_${carId}`);
-      
+
       const favoriteData: FavoriteItem = {
         userId,
         userNumericId,
@@ -81,7 +81,7 @@ class FavoritesService {
       };
 
       await setDoc(favoriteRef, favoriteData);
-      
+
       logger.info('[Favorites] Added to favorites', {
         userId,
         carId,
@@ -103,7 +103,7 @@ class FavoritesService {
     try {
       const favoriteRef = doc(db, 'favorites', `${userId}_${carId}`);
       await deleteDoc(favoriteRef);
-      
+
       logger.info('[Favorites] Removed from favorites', {
         userId,
         carId
@@ -143,12 +143,10 @@ class FavoritesService {
   ): Promise<FavoriteItem[]> {
     try {
       const favoritesRef = collection(db, 'favorites');
-      // Temporary: Remove orderBy until index is fully built
-      // TODO: Re-enable orderBy('addedAt', 'desc') after index completes
       let q = query(
         favoritesRef,
-        where('userId', '==', userId)
-        // orderBy('addedAt', 'desc') // Commented out temporarily
+        where('userId', '==', userId),
+        orderBy('addedAt', 'desc')
       );
 
       if (limitCount) {
@@ -213,7 +211,7 @@ class FavoritesService {
   ): Promise<boolean> {
     try {
       const isFav = await this.isFavorite(userId, carId);
-      
+
       if (isFav) {
         await this.removeFromFavorites(userId, carId);
         return false; // Not favorite anymore
@@ -262,7 +260,7 @@ class FavoritesService {
     try {
       const favoriteIds = await this.getUserFavoriteIds(userId);
       const favoriteSet = new Set(favoriteIds);
-      
+
       const result = new Map<string, boolean>();
       carIds.forEach((carId) => {
         result.set(carId, favoriteSet.has(carId));

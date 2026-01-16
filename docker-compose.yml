@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # React Frontend
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm start
+    depends_on:
+      - firebase-emulators
+
+  # Firebase Emulators
+  firebase-emulators:
+    image: andreysenov/firebase-tools:latest
+    ports:
+      - "4000:4000" # Emulator UI
+      - "9099:9099" # Auth
+      - "5001:5001" # Functions
+      - "8080:8080" # Firestore
+      - "5000:5000" # Hosting
+      - "9000:9000" # Database (RTDB)
+      - "9199:9199" # Storage
+    volumes:
+      - .:/home/node/firebase
+    command: >
+      bash -c "firebase emulators:start --import=./emulator-data --export-on-exit"
+    working_dir: /home/node/firebase

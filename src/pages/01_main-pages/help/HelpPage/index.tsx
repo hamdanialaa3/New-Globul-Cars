@@ -314,7 +314,7 @@ const HelpPage: React.FC = () => {
       {
         id: 'payment-methods',
         question: t('help.faq.payment.q1', 'What payment methods do you accept?'),
-        answer: t('help.faq.payment.a1', 'We support various payment methods including bank transfers, credit cards, and cash payments for transactions.')
+        answer: t('help.faq.payment.a1', 'We support bank transfers via Revolut (international) and iCard (Bulgaria). Direct transfers to your subscription or payment plan are processed within 1-2 hours.')
       },
       {
         id: 'refund-policy',

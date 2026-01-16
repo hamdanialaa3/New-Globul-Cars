@@ -7,7 +7,7 @@ import { logger } from '../../services/logger-service';
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { X, Type, Image, Video, Smile } from 'lucide-react';
-import { storiesService, StoryCreateData } from '../../services/social/stories.service';
+import { storyService } from '../../services/stories/story.service';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
 
@@ -123,8 +123,8 @@ const PreviewArea = styled.div<{ $imageUrl?: string }>`
   width: 100%;
   height: 300px;
   border-radius: 12px;
-  background: ${p => p.$imageUrl 
-    ? `url(${p.$imageUrl}) center/cover` 
+  background: ${p => p.$imageUrl
+    ? `url(${p.$imageUrl}) center/cover`
     : 'rgba(255, 255, 255, 0.05)'};
   display: flex;
   align-items: center;
@@ -206,8 +206,8 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   padding: 14px;
   border-radius: 12px;
   border: none;
-  background: ${p => p.$variant === 'primary' 
-    ? 'linear-gradient(135deg, #FF8F10, #FF7900)' 
+  background: ${p => p.$variant === 'primary'
+    ? 'linear-gradient(135deg, #FF8F10, #FF7900)'
     : 'rgba(255, 255, 255, 0.1)'};
   color: white;
   font-size: 1rem;
@@ -243,55 +243,71 @@ const StoryCreator: React.FC<StoryCreatorProps> = ({ onClose, onSuccess }) => {
   const { t } = useLanguage();
   const imageInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
-  
+
   const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [caption, setCaption] = useState('');
   const [visibility, setVisibility] = useState<'public' | 'followers' | 'close_friends'>('public');
   const [loading, setLoading] = useState(false);
-  
+
+  // NOTE: In a real app, this would be passed from the page context
+  // or selected via a car picker. For now, we'll try to get it from the user's active cars if none provided.
+  const [targetCar, setTargetCar] = useState<{ id: string, numericId: number } | null>(null);
+
   // ==================== HANDLERS ====================
-  
+
   const handleMediaSelect = (file: File) => {
     setMediaFile(file);
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
   };
-  
+
   const handleImageClick = () => {
     imageInputRef.current?.click();
   };
-  
+
   const handleVideoClick = () => {
     videoInputRef.current?.click();
   };
-  
+
   const handleCreateStory = async () => {
     if (!user || !mediaFile) return;
-    
+
     try {
       setLoading(true);
-      
-      const storyData: StoryCreateData = {
+
+      // Get user's numeric ID from metadata/context
+      const userNumericId = (user as any).numericId || 0; // Should be in Auth context
+
+      // For bridging: If no target car, use a placeholder or the first available car
+      // In production, this modal should only open from a car details page or with a picker.
+      const carId = targetCar?.id || 'placeholder-car';
+      const carNumericId = targetCar?.numericId || 0;
+
+      await storyService.createStory({
+        userId: user.uid,
+        userNumericId: userNumericId,
+        carNumericId: carNumericId,
+        carId: carId,
+        type: mediaFile.type.startsWith('video') ? 'engine_sound' : 'interior_360',
         mediaFile,
-        caption: caption.trim() || undefined,
-        visibility
-      };
-      
-      await storiesService.createStory(user.uid, storyData);
-      
+        durationSec: 15,
+        visibility,
+        caption: caption.trim() || undefined
+      });
+
       onSuccess();
       onClose();
     } catch (error) {
-      logger.error('Failed to create story:', error);
+      logger.error('Failed to create story:', error as Error);
       alert('Failed to create story. Please try again.');
     } finally {
       setLoading(false);
     }
   };
-  
+
   // ==================== RENDER ====================
-  
+
   return (
     <Overlay onClick={onClose}>
       <CreatorContainer onClick={e => e.stopPropagation()}>
@@ -301,7 +317,7 @@ const StoryCreator: React.FC<StoryCreatorProps> = ({ onClose, onSuccess }) => {
             <X />
           </CloseButton>
         </Header>
-        
+
         <Content>
           <MediaSection>
             <Label>Choose Media</Label>
@@ -315,11 +331,11 @@ const StoryCreator: React.FC<StoryCreatorProps> = ({ onClose, onSuccess }) => {
                 Video
               </MediaButton>
             </MediaButtons>
-            
+
             <PreviewArea $imageUrl={previewUrl}>
               {!previewUrl && 'Select an image or video to continue'}
             </PreviewArea>
-            
+
             <HiddenInput
               ref={imageInputRef}
               type="file"
@@ -333,7 +349,7 @@ const StoryCreator: React.FC<StoryCreatorProps> = ({ onClose, onSuccess }) => {
               onChange={e => e.target.files?.[0] && handleMediaSelect(e.target.files[0])}
             />
           </MediaSection>
-          
+
           <CaptionSection>
             <Label>Caption (Optional)</Label>
             <CaptionInput
@@ -343,7 +359,7 @@ const StoryCreator: React.FC<StoryCreatorProps> = ({ onClose, onSuccess }) => {
               maxLength={200}
             />
           </CaptionSection>
-          
+
           <VisibilitySection>
             <Label>Who can see this?</Label>
             <VisibilityOptions>
@@ -368,7 +384,7 @@ const StoryCreator: React.FC<StoryCreatorProps> = ({ onClose, onSuccess }) => {
             </VisibilityOptions>
           </VisibilitySection>
         </Content>
-        
+
         <Footer>
           <Button onClick={onClose}>Cancel</Button>
           <Button

@@ -7,9 +7,11 @@ import { logger } from '../../services/logger-service';
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../../contexts/AuthProvider';
-import { storiesService, Story } from '../../services/social/stories.service';
+import { storyService } from '../../services/stories/story.service';
+import { CarStory } from '../../types/story.types';
 import StoryRing from './StoryRing';
 import StoryViewer from './StoryViewer';
+import StoryCreator from './StoryCreator';
 import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // ==================== STYLED COMPONENTS ====================
@@ -175,22 +177,23 @@ const EmptyState = styled.div`
 const StoriesCarousel: React.FC = () => {
   const { user } = useAuth();
   const scrollRef = useRef<HTMLDivElement>(null);
-  
-  const [stories, setStories] = useState<Story[]>([]);
+
+  const [stories, setStories] = useState<CarStory[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedStory, setSelectedStory] = useState<Story | null>(null);
+  const [selectedStory, setSelectedStory] = useState<CarStory | null>(null);
+  const [showCreator, setShowCreator] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
-  
+
   // ==================== EFFECTS ====================
-  
+
   useEffect(() => {
     if (!user) return;
-    
+
     const loadStories = async () => {
       try {
         setLoading(true);
-        const userStories = await storiesService.getFollowedUserStories(user.uid);
+        const userStories = await storyService.getStories(user.uid);
         setStories(userStories);
       } catch (error) {
         logger.error('Failed to load stories:', error);
@@ -198,62 +201,61 @@ const StoriesCarousel: React.FC = () => {
         setLoading(false);
       }
     };
-    
+
     loadStories();
   }, [user]);
-  
+
   useEffect(() => {
     const checkScroll = () => {
       if (!scrollRef.current) return;
-      
+
       const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
       setCanScrollLeft(scrollLeft > 0);
       setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
     };
-    
+
     checkScroll();
     scrollRef.current?.addEventListener('scroll', checkScroll);
-    
+
     return () => {
       scrollRef.current?.removeEventListener('scroll', checkScroll);
     };
   }, [stories]);
-  
+
   // ==================== HANDLERS ====================
-  
+
   const handleScroll = (direction: 'left' | 'right') => {
     if (!scrollRef.current) return;
-    
+
     const scrollAmount = 300;
-    const newScrollLeft = scrollRef.current.scrollLeft + 
+    const newScrollLeft = scrollRef.current.scrollLeft +
       (direction === 'right' ? scrollAmount : -scrollAmount);
-    
+
     scrollRef.current.scrollTo({
       left: newScrollLeft,
       behavior: 'smooth'
     });
   };
-  
-  const handleStoryClick = (story: Story) => {
+
+  const handleStoryClick = (story: CarStory) => {
     setSelectedStory(story);
     if (user) {
-      storiesService.recordView(story.id, user.uid);
+      storyService.recordView(story.id, user.uid);
     }
   };
-  
+
   const handleCloseViewer = () => {
     setSelectedStory(null);
   };
-  
+
   const handleAddStory = () => {
-    // TODO: Open story creator modal
-    logger.info('Add story clicked');
+    setShowCreator(true);
   };
-  
+
   // ==================== RENDER ====================
-  
+
   if (!user || loading) return null;
-  
+
   if (stories.length === 0) {
     return (
       <Container>
@@ -266,14 +268,14 @@ const StoriesCarousel: React.FC = () => {
       </Container>
     );
   }
-  
+
   return (
     <>
       <Container>
         <Header>
           <h3>Stories</h3>
         </Header>
-        
+
         <ScrollContainer>
           {canScrollLeft && (
             <NavButton
@@ -283,7 +285,7 @@ const StoriesCarousel: React.FC = () => {
               <ChevronLeft />
             </NavButton>
           )}
-          
+
           <StoriesWrapper ref={scrollRef}>
             <AddStoryButton onClick={handleAddStory}>
               <AddIconWrapper className="add-icon">
@@ -291,7 +293,7 @@ const StoriesCarousel: React.FC = () => {
               </AddIconWrapper>
               <AddStoryLabel>Your Story</AddStoryLabel>
             </AddStoryButton>
-            
+
             {stories.map(story => (
               <StoryRing
                 key={story.id}
@@ -300,7 +302,7 @@ const StoriesCarousel: React.FC = () => {
               />
             ))}
           </StoriesWrapper>
-          
+
           {canScrollRight && (
             <NavButton
               $position="right"
@@ -311,11 +313,24 @@ const StoriesCarousel: React.FC = () => {
           )}
         </ScrollContainer>
       </Container>
-      
+
       {selectedStory && (
         <StoryViewer
           story={selectedStory}
           onClose={handleCloseViewer}
+        />
+      )}
+
+      {showCreator && (
+        <StoryCreator
+          onClose={() => setShowCreator(false)}
+          onSuccess={() => {
+            setShowCreator(false);
+            // Reload stories
+            if (user) {
+              storyService.getStories(user.uid).then(setStories);
+            }
+          }}
         />
       )}
     </>

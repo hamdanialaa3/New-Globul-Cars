@@ -9,6 +9,8 @@ import { X, Building2, FileText, Upload, CheckCircle, AlertCircle, Loader, Info 
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthProvider';
 import DocumentUpload from './DocumentUpload';
+import { VerificationWorkflowService } from '../../services/profile/VerificationWorkflowService';
+import { advancedUserManagementService } from '../../services/advanced-user-management-service';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -345,26 +347,55 @@ const BusinessVerificationModal: React.FC<BusinessVerificationModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      // Simulate upload and verification request
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // TODO: Integrate with Firebase Storage and Firestore
-      // 1. Upload documents to Firebase Storage
-      // 2. Update user verification status in Firestore
-      // 3. Send notification to admin for review
-      
-      logger.info('📄 Business documents submitted:', {
+      // 1. Determine profile type
+      const fullProfile = await advancedUserManagementService.getUserById(currentUser.uid);
+      const profileType = fullProfile?.profileType || 'dealer'; // Fallback to dealer
+
+      // 2. Upload documents
+      const uploadPromises: Promise<{ type: any; url: string; fileName: string }>[] = [];
+
+      if (documents.businessLicense) {
+        uploadPromises.push(
+          VerificationWorkflowService.uploadDocument(currentUser.uid, documents.businessLicense, 'business_license')
+            .then(url => ({ type: 'business_license' as const, url, fileName: documents.businessLicense!.name }))
+        );
+      }
+
+      if (documents.vatCertificate) {
+        uploadPromises.push(
+          VerificationWorkflowService.uploadDocument(currentUser.uid, documents.vatCertificate, 'vat_certificate')
+            .then(url => ({ type: 'vat_certificate' as const, url, fileName: documents.vatCertificate!.name }))
+        );
+      }
+
+      if (documents.tradeRegister) {
+        uploadPromises.push(
+          VerificationWorkflowService.uploadDocument(currentUser.uid, documents.tradeRegister, 'trade_registry')
+            .then(url => ({ type: 'trade_registry' as const, url, fileName: documents.tradeRegister!.name }))
+        );
+      }
+
+      const uploadedDocs = await Promise.all(uploadPromises);
+
+      // 3. Submit verification
+      await VerificationWorkflowService.submitVerification(
+        currentUser.uid,
+        profileType as any,
+        uploadedDocs
+      );
+
+      logger.info('📄 Business verification submitted successfully', {
         userId: currentUser.uid,
-        documents: Object.keys(documents)
+        uploadedCount: uploadedDocs.length
       });
 
       setStep(2);
     } catch (error) {
-      logger.error('Error submitting business verification:', error);
+      logger.error('Error submitting business verification:', error as Error);
       alert(
         language === 'bg'
-          ? 'Грешка при изпращане на документите'
-          : 'Error submitting documents'
+          ? 'Грешка при изпращане на документите. Моля опитайте отново.'
+          : 'Error submitting documents. Please try again.'
       );
     } finally {
       setIsSubmitting(false);

@@ -41,19 +41,19 @@ describe('Subscription Plans Configuration', () => {
       expect(SUBSCRIPTION_PLANS.free.price.annual).toBe(0);
     });
 
-    it('Dealer plan should be 20 EUR/month', () => {
-      expect(SUBSCRIPTION_PLANS.dealer.price.monthly).toBe(20);
+    it('Dealer plan should be 20.11 EUR/month', () => {
+      expect(SUBSCRIPTION_PLANS.dealer.price.monthly).toBe(20.11);
     });
 
     it('Dealer annual should have 20% discount', () => {
       const monthly = SUBSCRIPTION_PLANS.dealer.price.monthly;
       const annual = SUBSCRIPTION_PLANS.dealer.price.annual;
-      const expectedAnnual = monthly * 12 * 0.8; // 20% off
+      const expectedAnnual = Math.round(monthly * 12 * 0.8); // 20% off
       expect(annual).toBe(expectedAnnual);
     });
 
-    it('Company plan should be 100 EUR/month', () => {
-      expect(SUBSCRIPTION_PLANS.company.price.monthly).toBe(100);
+    it('Company plan should be 100.11 EUR/month', () => {
+      expect(SUBSCRIPTION_PLANS.company.price.monthly).toBe(100.11);
     });
 
     it('All prices should be in EUR', () => {

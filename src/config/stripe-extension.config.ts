@@ -3,25 +3,29 @@
 // Maps Globul Cars plans to Stripe Price IDs
 
 /**
- * Stripe Price IDs for Globul Cars Subscriptions
+ * Stripe Price IDs for Globul Cars (DEPRECATED)
+ *
+ * ⚠️ AS OF JANUARY 16, 2026: Stripe has been DISABLED
+ * Payment system: MANUAL BANK TRANSFER via iCard + Revolut
+ * Configuration: src/config/bank-details.ts
  * 
- * These IDs are from your Stripe Dashboard (Test Mode):
- * https://dashboard.stripe.com/test/products
+ * These IDs are kept for legacy backwards compatibility only.
  */
 export const STRIPE_PRICE_IDS = {
-  // DEALER PLAN (€27.78/month or €278/year - Live)
-  // ✅ Prices match SUBSCRIPTION_PLANS.dealer.price
+  // ⚠️ DEPRECATED - Dealer Plan
+  // Old prices: €27.78/month, €278/year
+  // New prices: €20.11/month, €193/year (manual bank transfer)
   dealer: {
-    monthly: 'price_1Sf7iU3EuPQhDyrBtP0bEc4B',
-    annual: 'price_1Sf7l83EuPQhDyrB3Z3zIpZv',
+    monthly: 'price_1Sf7iU3EuPQhDyrBtP0bEc4B',    // Legacy - DO NOT USE
+    annual: 'price_1Sf7l83EuPQhDyrB3Z3zIpZv',     // Legacy - DO NOT USE
   },
 
-  // COMPANY PLAN (€137.88/month or €1288/year - Live)
-  // ✅ Prices match SUBSCRIPTION_PLANS.company.price
+  // ⚠️ DEPRECATED - Company Plan  
+  // Old prices: €137.88/month, €1288/year
+  // New prices: €100.11/month, €961/year (manual bank transfer)
   company: {
-    monthly: 'price_1Sf7oK3EuPQhDyrBQ6duG8a',
-    annual: 'price_1Sf7pE3EuPQhDyrBfAdjEDFi',
-  },
+    monthly: 'price_1Sf7oK3EuPQhDyrBQ6duG8a',     // Legacy - DO NOT USE
+    annual: 'price_1Sf7pE3EuPQhDyrBfAdjEDFi',    // Legacy - DO NOT USE
 } as const;
 
 /**

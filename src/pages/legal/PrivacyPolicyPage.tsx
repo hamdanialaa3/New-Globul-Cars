@@ -163,7 +163,7 @@ export const PrivacyPolicyPage: React.FC = () => {
           <h3>A. Information You Provide</h3>
           <ul>
             <li><strong>Account Information:</strong> Name, email, phone number, profile picture, location</li>
-            <li><strong>Payment Information:</strong> Card details (processed securely via Stripe)</li>
+            <li><strong>Payment Information:</strong> Bank transfer details for manual payments (IBAN, reference numbers - processed securely via Revolut/iCard)</li>
             <li><strong>Verification Documents:</strong> ID, proof of address, business registration (for dealers)</li>
             <li><strong>Listing Information:</strong> Car details, photos, pricing, descriptions</li>
             <li><strong>Communication:</strong> Messages, reviews, support requests</li>
@@ -216,7 +216,7 @@ export const PrivacyPolicyPage: React.FC = () => {
           <h2>4. Data Sharing</h2>
           <h3>We share your data with:</h3>
           <ul>
-            <li><strong>Service Providers:</strong> Stripe (payments), Firebase (hosting), Google (analytics)</li>
+            <li><strong>Service Providers:</strong> Revolut & iCard (manual bank transfers), Firebase (hosting), Google (analytics)</li>
             <li><strong>Other Users:</strong> Profile information visible to other users per your privacy settings</li>
             <li><strong>Law Enforcement:</strong> When required by law or court order</li>
             <li><strong>Business Partners:</strong> Only with your explicit consent</li>
@@ -225,7 +225,7 @@ export const PrivacyPolicyPage: React.FC = () => {
           <h3>We Do NOT:</h3>
           <ul>
             <li>Sell your personal data to third parties</li>
-            <li>Share payment card information (handled by Stripe)</li>
+            <li>Share bank transfer information (handled securely via Revolut/iCard)</li>
             <li>Share more than necessary to fulfill your requests</li>
           </ul>
         </Section>

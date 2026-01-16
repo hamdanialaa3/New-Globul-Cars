@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { Crown, TrendingUp, Building2, ChevronRight, Sparkles } from 'lucide-react';
 import { useLanguage } from '../../../../../contexts/LanguageContext';
 import { useAuth } from '../../../../../contexts/AuthProvider';
+import { getMaxListings } from '../../../../../config/subscription-plans';
 import billingService from '../../../../../features/billing/BillingService';
 import { Subscription } from '../../../../../features/billing/types';
 import { serviceLogger } from '../../../../../services/logger-service';
@@ -302,18 +303,13 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({ profileType })
   };
 
   const getListingLimit = () => {
-    const planId = subscription?.planId || 'free';
-    const limits: Record<string, number> = {
-      free: 3,
-      premium: 10,
-      dealer_basic: 50,
-      dealer_pro: 150,
-      dealer_enterprise: -1,
-      company_starter: 100,
-      company_pro: -1,
-      company_enterprise: -1,
-    };
-    return limits[planId] || 3;
+    const planTier = subscription?.planId || 'free';
+    // ✅ FIXED: Use getMaxListings from subscription-plans.ts (single source of truth)
+    const validTiers = ['free', 'dealer', 'company'];
+    if (validTiers.includes(planTier)) {
+      return getMaxListings(planTier as 'free' | 'dealer' | 'company');
+    }
+    return 3; // Default fallback
   };
 
   if (loading) {

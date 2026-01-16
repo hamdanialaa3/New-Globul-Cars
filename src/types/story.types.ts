@@ -33,6 +33,9 @@ export interface CarStory {
   
   /** ✅ معرف البائع الرقمي - Seller's numeric ID */
   sellerNumericId: number;
+
+  /** Firebase UID for direct lookups */
+  authorId: string;
   
   /** نوع القصة - Story category */
   type: StoryType;
@@ -48,9 +51,32 @@ export interface CarStory {
   
   /** تاريخ الإنشاء - Creation timestamp */
   createdAt: number;
+
+  /** تاريخ الانتهاء - Expiration timestamp (24h) */
+  expiresAt: number;
+
+  /** الحالة - Status */
+  status: 'active' | 'expired' | 'deleted';
   
   /** عدد المشاهدات - View count */
-  views: number;
+  viewCount: number;
+
+  /** المعرفات التي شاهدت القصة - User IDs who viewed */
+  viewedBy: string[];
+
+  /** التفاعلات - Reactions */
+  reactions?: { [userId: string]: string };
+
+  /** الخصوصية - Visibility */
+  visibility: 'public' | 'followers' | 'close_friends';
+
+  /** معلومات المؤلف - Author info for UI performance */
+  authorInfo?: {
+    displayName: string;
+    profileImage?: string;
+    profileType?: 'private' | 'dealer' | 'company';
+    isVerified?: boolean;
+  };
   
   /** ترتيب العرض (اختياري) - Display order */
   order?: number;

@@ -1,16 +1,17 @@
 // src/pages/03_user-pages/billing/BillingPage.tsx
-// Plans page with toast-based UX and subscription status display
+// Plans page with manual bank transfer payment (iCard + Revolut)
+// ✅ Updated January 16, 2026: Stripe disabled, using manual payment system
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { CreditCard, AlertCircle } from 'lucide-react';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { useAuth } from '../../../contexts/AuthProvider';
 import { useToast } from '../../../components/Toast';
-import { subscriptionService, type BillingInterval } from '../../../services/billing/subscription-service';
+import { BANK_DETAILS } from '../../../config/bank-details';
 import { analyticsService } from '../../../services/analytics/UnifiedAnalyticsService';
 import { logger } from '../../../services/logger-service';
-import type { SubscriptionInfo } from '../../../types/subscription';
 
 const Container = styled.div`
   max-width: 960px;
@@ -18,297 +19,426 @@ const Container = styled.div`
   padding: 16px;
 `;
 
-const StatusBanner = styled.div<{ status?: string }>`
-  background: ${(p) => {
-    switch (p.status) {
-      case 'active': return '#dbeafe';
-      case 'canceled': return '#fecaca';
-      case 'past_due': return '#fed7aa';
-      default: return '#f3f4f6';
-    }
-  }};
-  border-left: 4px solid ${(p) => {
-    switch (p.status) {
-      case 'active': return '#3b82f6';
-      case 'canceled': return '#ef4444';
-      case 'past_due': return '#f97316';
-      default: return '#9ca3af';
-    }
-  }};
-  padding: 16px;
-  border-radius: 8px;
-  margin-bottom: 24px;
+const Header = styled.div`
+  text-align: center;
+  margin-bottom: 40px;
+
+  h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: #666;
+    font-size: 14px;
+  }
 `;
 
-const StatusText = styled.p`
-  margin: 0;
-  font-weight: 500;
+const InfoBanner = styled.div`
+  background: #f0f9ff;
+  border: 1px solid #0284c7;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+
+  svg {
+    color: #0284c7;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  div {
+    font-size: 14px;
+    color: #333;
+
+    strong {
+      display: block;
+      color: #0284c7;
+      margin-bottom: 4px;
+    }
+  }
 `;
 
 const Row = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
 `;
 
 const Card = styled.div`
   border: 1px solid #e5e7eb;
   border-radius: 12px;
-  padding: 20px;
+  padding: 24px;
+  background: white;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: #2563eb;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+  }
+`;
+
+const BadgeFree = styled.span`
+  background: #d1d5db;
+  color: #374151;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 8px;
 `;
 
 const Title = styled.h2`
-  margin: 0 0 8px;
-  font-size: 18px;
+  margin: 8px 0;
+  font-size: 20px;
+  color: #111827;
 `;
 
 const Price = styled.div`
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 700;
-  margin: 8px 0 16px;
+  color: #2563eb;
+  margin: 12px 0;
+
+  span {
+    font-size: 14px;
+    color: #666;
+    font-weight: normal;
+  }
 `;
 
-const Button = styled.button<{ variant?: 'primary' | 'danger' }>`
-  display: inline-block;
-  background: ${(p) => p.variant === 'danger' ? '#ef4444' : '#2563eb'};
-  color: white;
-  padding: 10px 16px;
+const Features = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+
+  li {
+    padding: 6px 0;
+    font-size: 14px;
+    color: #4b5563;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &:before {
+      content: '✓';
+      color: #10b981;
+      font-weight: bold;
+    }
+  }
+`;
+
+const Button = styled.button<{ variant?: 'primary' | 'secondary' | 'disabled' }>`
+  width: 100%;
+  padding: 12px 16px;
   border: none;
   border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.2s;
-  
+  transition: all 0.2s;
+  margin-top: 16px;
+
+  background: ${(p) => {
+    switch (p.variant) {
+      case 'primary':
+        return '#2563eb';
+      case 'secondary':
+        return '#e5e7eb';
+      case 'disabled':
+        return '#d1d5db';
+      default:
+        return '#f3f4f6';
+    }
+  }};
+
+  color: ${(p) => {
+    switch (p.variant) {
+      case 'primary':
+        return 'white';
+      case 'secondary':
+        return '#111827';
+      case 'disabled':
+        return '#9ca3af';
+      default:
+        return '#111827';
+    }
+  }};
+
   &:hover:not(:disabled) {
     opacity: 0.9;
   }
-  
+
   &:disabled {
-    opacity: 0.5;
     cursor: not-allowed;
   }
 `;
 
-const ToggleGroup = styled.div`
-  display: inline-flex;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 20px;
+const BankSelector = styled.div`
+  margin: 20px 0;
+  display: flex;
+  gap: 12px;
 `;
 
-const ToggleBtn = styled.button<{active?: boolean}>`
-  background: ${(p) => (p.active ? '#2563eb' : 'white')};
-  color: ${(p) => (p.active ? 'white' : '#111827')};
-  padding: 8px 12px;
-  border: none;
+const BankOption = styled.button<{ selected?: boolean }>`
+  flex: 1;
+  padding: 12px;
+  border: 2px solid ${(p) => (p.selected ? '#2563eb' : '#e5e7eb')};
+  border-radius: 8px;
+  background: ${(p) => (p.selected ? '#dbeafe' : 'white')};
   cursor: pointer;
+  font-weight: 600;
   transition: all 0.2s;
+
+  &:hover {
+    border-color: #2563eb;
+  }
 `;
 
 const ManageSection = styled.section`
   margin-top: 40px;
   padding-top: 24px;
   border-top: 1px solid #e5e7eb;
+
+  h3 {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  p {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
 `;
+
+const ContactInfo = styled.div`
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 16px;
+  font-size: 14px;
+
+  strong {
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  a {
+    color: #2563eb;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
+interface PlanConfig {
+  id: 'free' | 'dealer' | 'company';
+  name: string;
+  price: {
+    monthly: number;
+    annual: number;
+  };
+  listings: number | string;
+  teamMembers: number;
+  features: string[];
+  isFree?: boolean;
+}
+
+const PLANS: PlanConfig[] = [
+  {
+    id: 'free',
+    name: 'Free',
+    price: { monthly: 0, annual: 0 },
+    listings: 3,
+    teamMembers: 0,
+    features: [
+      'Basic listings',
+      'Standard support',
+      'Search & filter',
+    ],
+    isFree: true,
+  },
+  {
+    id: 'dealer',
+    name: 'Dealer',
+    price: { monthly: 20.11, annual: 193 },
+    listings: 30,
+    teamMembers: 3,
+    features: [
+      'Featured ads',
+      'Priority search',
+      'Team management',
+      'Advanced analytics',
+      'Bulk operations',
+    ],
+  },
+  {
+    id: 'company',
+    name: 'Company',
+    price: { monthly: 100.11, annual: 961 },
+    listings: '∞',
+    teamMembers: 10,
+    features: [
+      'Unlimited ads',
+      'Enterprise support',
+      'Advanced features',
+      'API access',
+      'White-label options',
+    ],
+  },
+];
 
 const BillingPage: React.FC = () => {
   const { t } = useLanguage();
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const { showToast } = useToast();
-  
-  const [interval, setInterval] = useState<BillingInterval>('monthly');
-  const [loading, setLoading] = useState<{dealer?: boolean; company?: boolean}>({});
-  const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
-  const [loadingStatus, setLoadingStatus] = useState(true);
-  const [cancelLoading, setCancelLoading] = useState(false);
 
-  // Fetch subscription status on mount
-  useEffect(() => {
-    if (!currentUser) return;
-    
-    const fetchStatus = async () => {
-      try {
-        setLoadingStatus(true);
-        const status = await subscriptionService.getSubscriptionStatus(currentUser.uid);
-        setSubscription(status);
-      } catch (error: unknown) {
-        logger.warn('Failed to fetch subscription status', error as Error);
-        // Don't show error to user - just show no subscription state
-      } finally {
-        setLoadingStatus(false);
-      }
-    };
-    
-    fetchStatus();
-  }, [currentUser]);
+  const [selectedBank, setSelectedBank] = useState<'icard' | 'revolut'>('icard');
+  const [loading, setLoading] = useState(false);
 
-  const startCheckout = async (planId: 'dealer' | 'company') => {
+  const handleSelectPlan = async (planId: 'free' | 'dealer' | 'company') => {
     if (!currentUser) {
       navigate('/auth/login');
       return;
     }
 
-    try {
-      setLoading((s) => ({ ...s, [planId]: true }));
-      analyticsService.trackEvent('billing_checkout_click', { planId, interval });
+    // Free plan - no payment needed
+    if (planId === 'free') {
+      showToast('info', t('billing.alreadyFree') || 'You are already on the free plan');
+      return;
+    }
 
-      const res = await subscriptionService.createCheckoutSession({
-        userId: currentUser.uid,
-        planId,
-        interval,
+    try {
+      setLoading(true);
+      analyticsService.trackEvent('billing_plan_selected', { planId, bank: selectedBank });
+
+      // Redirect to manual payment page
+      navigate('/billing/manual-payment', {
+        state: {
+          planId,
+          bankAccount: selectedBank,
+        },
       });
-
-      window.location.href = res.checkoutUrl;
     } catch (err: any) {
-      showToast('error', err?.message || t('billing.checkoutError') || 'Failed to start checkout');
-      setLoading((s) => ({ ...s, [planId]: false }));
-    }
-  };
-
-  const handleCancelSubscription = async () => {
-    if (!currentUser) {
-      navigate('/auth/login');
-      return;
-    }
-
-    const confirmed = window.confirm(
-      t('billing.confirmCancel') || 'Are you sure you want to cancel your subscription at the end of the current period?'
-    );
-    
-    if (!confirmed) return;
-
-    try {
-      setCancelLoading(true);
-      analyticsService.trackEvent('billing_cancel_click', {});
-      
-      await subscriptionService.cancelSubscription(currentUser.uid, false);
-      
-      showToast('success', t('billing.cancelScheduled') || 'Cancellation scheduled at period end');
-      
-      // Refresh subscription status
-      const updatedStatus = await subscriptionService.getSubscriptionStatus(currentUser.uid);
-      setSubscription(updatedStatus);
-    } catch (err: any) {
-      showToast('error', err?.message || t('billing.cancelError') || 'Failed to cancel subscription');
+      logger.error('Plan selection failed', err);
+      showToast('error', t('billing.error') || 'An error occurred');
     } finally {
-      setCancelLoading(false);
+      setLoading(false);
     }
   };
-
-  const handleOpenBillingPortal = async () => {
-    if (!currentUser) {
-      navigate('/auth/login');
-      return;
-    }
-    try {
-      analyticsService.trackEvent('billing_portal_click', {});
-      const url = await subscriptionService.createBillingPortalLink();
-      if (url) {
-        window.location.href = url;
-      } else {
-        showToast('error', t('billing.portalError') || 'Failed to open billing portal');
-      }
-    } catch (err: any) {
-      showToast('error', err?.message || t('billing.portalError') || 'Failed to open billing portal');
-    }
-  };
-
-  const hasActiveSubscription = subscription && ['active', 'past_due'].includes(subscription.status);
 
   return (
     <Container>
-      <h1>{t('billing.plans') || 'Billing Plans'}</h1>
+      <Header>
+        <h1>{t('billing.title') || 'Choose Your Plan'}</h1>
+        <p>{t('billing.subtitle') || 'Select the perfect plan for your needs'}</p>
+      </Header>
 
-      {/* Subscription Status Banner */}
-      {!loadingStatus && subscription && (
-        <StatusBanner status={subscription.status}>
-          <StatusText>
-            {subscription.status === 'active' && (
-              <>
-                ✓ {t('billing.activeSubscription') || 'You have an active subscription'}
-                {subscription.currentPeriodEnd && (
-                  <> · {t('billing.renewsOn') || 'Renews on'} {new Date(subscription.currentPeriodEnd).toLocaleDateString()}</>
-                )}
-                {subscription.cancelAtPeriodEnd && (
-                  <> · {t('billing.willBeCanceled') || 'This subscription will be canceled at the end of the current period'}</>
-                )}
-              </>
-            )}
-            {subscription.status === 'canceled' && (
-              <>{t('billing.subscriptionCanceled') || 'Your subscription has been canceled'}</>
-            )}
-            {subscription.status === 'past_due' && (
-              <>{t('billing.paymentFailed') || 'Payment failed. Please update your payment method.'}</>
-            )}
-          </StatusText>
-        </StatusBanner>
-      )}
+      <InfoBanner>
+        <AlertCircle size={20} />
+        <div>
+          <strong>💳 {t('billing.paymentMethod') || 'Payment Method'}</strong>
+          {t('billing.manualPaymentInfo') ||
+            'We accept bank transfers via iCard (Bulgaria) and Revolut (International). Payment is processed within 1-2 hours.'}
+        </div>
+      </InfoBanner>
 
-      {!hasActiveSubscription && (
-        <>
-          <h2>{t('billing.selectPlan') || 'Choose a plan'}</h2>
-          
-          <ToggleGroup>
-            <ToggleBtn active={interval === 'monthly'} onClick={() => setInterval('monthly')}>
-              {t('billing.monthly') || 'Monthly'}
-            </ToggleBtn>
-            <ToggleBtn active={interval === 'annual'} onClick={() => setInterval('annual')}>
-              {t('billing.annual') || 'Annual'}
-            </ToggleBtn>
-          </ToggleGroup>
-
-          <Row>
-            <Card>
-              <Title>{t('billing.dealer') || 'Dealer'}</Title>
-              <Price>{interval === 'monthly' ? '€27.78/mo' : '€278/yr'}</Price>
-              <Button 
-                onClick={() => startCheckout('dealer')} 
-                disabled={!!loading.dealer}
-              >
-                {loading.dealer ? t('common.loading') || 'Loading...' : t('billing.choosePlan') || 'Choose plan'}
-              </Button>
-            </Card>
-            <Card>
-              <Title>{t('billing.company') || 'Company'}</Title>
-              <Price>{interval === 'monthly' ? '€137.88/mo' : '€1288/yr'}</Price>
-              <Button 
-                onClick={() => startCheckout('company')} 
-                disabled={!!loading.company}
-              >
-                {loading.company ? t('common.loading') || 'Loading...' : t('billing.choosePlan') || 'Choose plan'}
-              </Button>
-            </Card>
-          </Row>
-        </>
-      )}
-
-      {/* Manage Subscription Section */}
-      {hasActiveSubscription && (
-        <ManageSection>
-          <h3>{t('billing.manage') || 'Manage Subscription'}</h3>
-          <p style={{ color: '#6b7280' }}>
-            {t('billing.manageHint') || 'You can cancel your active subscription at the end of the current period.'}
-          </p>
-          <Button 
-            variant="danger"
-            onClick={handleCancelSubscription}
-            disabled={cancelLoading || subscription.cancelAtPeriodEnd}
+      <div>
+        <h3 style={{ marginBottom: '12px', fontSize: '16px' }}>
+          {t('billing.selectBank') || 'Select Payment Method:'}
+        </h3>
+        <BankSelector>
+          <BankOption
+            selected={selectedBank === 'icard'}
+            onClick={() => setSelectedBank('icard')}
           >
-            {cancelLoading && (t('common.loading') || 'Loading...')}
-            {!cancelLoading && subscription.cancelAtPeriodEnd && (t('billing.cancellationPending') || 'Cancellation pending')}
-            {!cancelLoading && !subscription.cancelAtPeriodEnd && (t('billing.cancelAtPeriodEnd') || 'Cancel at period end')}
-          </Button>
+            💳 iCard (Bulgaria)
+          </BankOption>
+          <BankOption
+            selected={selectedBank === 'revolut'}
+            onClick={() => setSelectedBank('revolut')}
+          >
+            🌐 Revolut (Int'l)
+          </BankOption>
+        </BankSelector>
+      </div>
 
-          {subscription.status === 'past_due' && (
-            <div style={{ marginTop: 12 }}>
-              <Button onClick={handleOpenBillingPortal}>
-                {t('billing.updatePaymentMethod') || 'Update payment method'}
+      <Row>
+        {PLANS.map((plan) => (
+          <Card key={plan.id}>
+            {plan.isFree && <BadgeFree>ALWAYS FREE</BadgeFree>}
+            <Title>{plan.name}</Title>
+
+            {!plan.isFree ? (
+              <Price>
+                €{plan.price.monthly}
+                <span>/month or €{plan.price.annual}/year</span>
+              </Price>
+            ) : (
+              <Price>€0/month</Price>
+            )}
+
+            <Features>
+              <li>
+                <strong>{plan.listings}</strong> listings
+              </li>
+              <li>
+                <strong>{plan.teamMembers}</strong> team member{plan.teamMembers !== 1 ? 's' : ''}
+              </li>
+              {plan.features.map((feature, idx) => (
+                <li key={idx}>{feature}</li>
+              ))}
+            </Features>
+
+            {!plan.isFree && (
+              <Button
+                variant="primary"
+                onClick={() => handleSelectPlan(plan.id as 'dealer' | 'company')}
+                disabled={loading}
+              >
+                {loading ? 'Loading...' : t('billing.selectPlan') || 'Select Plan'}
               </Button>
-            </div>
-          )}
-        </ManageSection>
-      )}
+            )}
+
+            {plan.isFree && (
+              <Button variant="secondary" disabled>
+                {t('billing.currentPlan') || 'Current Plan'}
+              </Button>
+            )}
+          </Card>
+        ))}
+      </Row>
+
+      <ManageSection>
+        <h3>{t('billing.needHelp') || 'Need Help?'}</h3>
+        <p>
+          {t('billing.supportText') ||
+            'Contact our support team for assistance with subscriptions and payments:'}
+        </p>
+
+        <ContactInfo>
+          <strong>📧 {t('billing.email') || 'Email'}:</strong>
+          <a href="mailto:support@mobilebg.eu">support@mobilebg.eu</a>
+
+          <strong style={{ marginTop: '12px' }}>💬 {t('billing.whatsapp') || 'WhatsApp'}:</strong>
+          <a href="https://wa.me/359879839671" target="_blank" rel="noopener noreferrer">
+            +359 87 983 9671
+          </a>
+
+          <strong style={{ marginTop: '12px' }}>📍 {t('billing.office') || 'Office'}:</strong>
+          <div>Bulgaria, Sofia, Tsar Simeon 77</div>
+        </ContactInfo>
+      </ManageSection>
     </Container>
   );
 };

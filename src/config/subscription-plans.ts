@@ -138,8 +138,8 @@ export const SUBSCRIPTION_PLANS: Record<PlanTier, SubscriptionPlan> = {
       en: 'Ideal for car dealerships'
     },
     price: {
-      monthly: 27.78,
-      annual: 278,
+      monthly: 20.11,
+      annual: 193,
       currency: 'EUR'
     },
     stripePriceIds: {
@@ -185,8 +185,8 @@ export const SUBSCRIPTION_PLANS: Record<PlanTier, SubscriptionPlan> = {
       en: 'For large automotive companies'
     },
     price: {
-      monthly: 137.88,
-      annual: 1288,
+      monthly: 100.11,
+      annual: 961,
       currency: 'EUR'
     },
     stripePriceIds: {

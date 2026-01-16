@@ -18,13 +18,15 @@ import {
   serverTimestamp,
   Timestamp
 } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { db, storage } from '../../firebase/firebase-config';
 import { serviceLogger } from '../logger-service';
 import type { SuccessStory } from '../../types/profile-enhancements.types';
 
 export class SuccessStoriesService {
   private static instance: SuccessStoriesService;
   private readonly collectionName = 'successStories';
+  private readonly storagePath = 'success-stories';
 
   private constructor() {}
 
@@ -33,6 +35,53 @@ export class SuccessStoriesService {
       SuccessStoriesService.instance = new SuccessStoriesService();
     }
     return SuccessStoriesService.instance;
+  }
+
+  /**
+   * Upload story media (image/video) to Firebase Storage
+   */
+  async uploadStoryMedia(
+    userId: string,
+    file: File,
+    storyId: string
+  ): Promise<string> {
+    try {
+      if (!userId || !file || !storyId) {
+        throw new Error('Invalid userId, file, or storyId');
+      }
+
+      const timestamp = Date.now();
+      const fileExtension = file.name.split('.').pop();
+      const fileName = `${storyId}_${timestamp}.${fileExtension}`;
+      const storageRef = ref(storage, `${this.storagePath}/${userId}/${fileName}`);
+
+      await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(storageRef);
+
+      serviceLogger.info(`Story media uploaded: ${fileName} for user: ${userId}`);
+      return downloadURL;
+    } catch (error) {
+      serviceLogger.error('Error uploading story media:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete story media from Firebase Storage
+   */
+  async deleteStoryMedia(mediaUrl: string): Promise<void> {
+    try {
+      if (!mediaUrl || !mediaUrl.includes('firebasestorage.googleapis.com')) {
+        return; // Not a Firebase Storage URL
+      }
+
+      const mediaRef = ref(storage, mediaUrl);
+      await deleteObject(mediaRef);
+      serviceLogger.info('Story media deleted from storage');
+    } catch (error) {
+      // Log but don't throw - media might already be deleted
+      serviceLogger.warn('Could not delete story media:', error);
+    }
   }
 
   /**
@@ -194,7 +243,19 @@ export class SuccessStoriesService {
    */
   async deleteStory(storyId: string): Promise<void> {
     try {
+      // Get story data to delete media if exists
       const storyRef = doc(db, this.collectionName, storyId);
+      const storyDoc = await getDoc(storyRef);
+      
+      if (storyDoc.exists()) {
+        const storyData = storyDoc.data() as SuccessStory & { mediaUrl?: string };
+        
+        // Delete media from storage if exists
+        if (storyData.mediaUrl) {
+          await this.deleteStoryMedia(storyData.mediaUrl);
+        }
+      }
+
       await deleteDoc(storyRef);
       serviceLogger.info(`Success story deleted: ${storyId}`);
     } catch (error) {
