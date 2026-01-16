@@ -184,10 +184,10 @@ export const SearchSchema = z.object({
     page: z.number().int().min(1).default(1),
     limit: z.number().int().min(1).max(100).default(20)
 }).refine(
-    data => !data.priceMin || !data.priceMax || data.priceMin <= data.priceMax,
+    (data: { priceMin?: number; priceMax?: number }) => !data.priceMin || !data.priceMax || data.priceMin <= data.priceMax,
     { message: 'Price min must be less than price max', path: ['priceMin'] }
 ).refine(
-    data => !data.yearMin || !data.yearMax || data.yearMin <= data.yearMax,
+    (data: { yearMin?: number; yearMax?: number }) => !data.yearMin || !data.yearMax || data.yearMin <= data.yearMax,
     { message: 'Year min must be less than year max', path: ['yearMin'] }
 );
 
