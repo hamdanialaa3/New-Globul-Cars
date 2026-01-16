@@ -64,6 +64,14 @@ export const useCarEdit = (
           }
         })
         .catch(error => {
+          // Ignore abort errors as they are expected during rapid navigation
+          if (error instanceof Error && error.name === 'AbortError') {
+            return;
+          }
+          if (error instanceof DOMException && error.name === 'AbortError') {
+            return;
+          }
+
           logger.error('Error loading models for brand', error as Error, { make: editedCar.make });
           setAvailableModels([]);
         });

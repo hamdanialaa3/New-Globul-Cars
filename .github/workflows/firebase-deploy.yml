@@ -145,7 +145,11 @@ jobs:
           echo "📦 Project: $FIREBASE_PROJECT_ID"
           echo "🌍 Region: europe-west1"
           
+          
+          # Deploy only services we have permissions for
+          # Excluding storage to avoid permission errors
           firebase deploy \
+            --only database,firestore,functions,hosting \
             --project "$FIREBASE_PROJECT_ID" \
             --non-interactive || {
               echo "❌ Deployment failed!"

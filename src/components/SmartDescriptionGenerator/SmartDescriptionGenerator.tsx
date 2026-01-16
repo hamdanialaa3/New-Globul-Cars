@@ -91,23 +91,23 @@ const GenerateButton = styled.button<{ $loading?: boolean }>`
 
 const TextareaWrapper = styled.div<{ $valid?: boolean; $error?: boolean }>`
   position: relative;
-  border: 2px solid ${props => 
-    props.$error ? '#ef4444' : 
-    props.$valid ? '#22c55e' : 
-    'var(--border)'};
+  border: 2px solid ${props =>
+    props.$error ? '#ef4444' :
+      props.$valid ? '#22c55e' :
+        'var(--border)'};
   border-radius: 10px;
   background: var(--bg-card);
   transition: all 0.3s ease;
   
   &:focus-within {
-    border-color: ${props => 
-      props.$error ? '#ef4444' : 
-      props.$valid ? '#22c55e' : 
-      'var(--accent-primary)'};
-    box-shadow: 0 0 0 3px ${props => 
-      props.$error ? 'rgba(239, 68, 68, 0.1)' : 
-      props.$valid ? 'rgba(34, 197, 94, 0.1)' : 
-      'rgba(59, 130, 246, 0.1)'};
+    border-color: ${props =>
+    props.$error ? '#ef4444' :
+      props.$valid ? '#22c55e' :
+        'var(--accent-primary)'};
+    box-shadow: 0 0 0 3px ${props =>
+    props.$error ? 'rgba(239, 68, 68, 0.1)' :
+      props.$valid ? 'rgba(34, 197, 94, 0.1)' :
+        'rgba(59, 130, 246, 0.1)'};
   }
 `;
 
@@ -143,10 +143,10 @@ const Footer = styled.div`
 
 const CharCounter = styled.div<{ $warn?: boolean; $error?: boolean }>`
   font-size: 0.875rem;
-  color: ${props => 
-    props.$error ? '#ef4444' : 
-    props.$warn ? '#f59e0b' : 
-    'var(--text-secondary)'};
+  color: ${props =>
+    props.$error ? '#ef4444' :
+      props.$warn ? '#f59e0b' :
+        'var(--text-secondary)'};
   font-weight: 500;
 `;
 
@@ -205,7 +205,7 @@ export const SmartDescriptionGenerator: React.FC<SmartDescriptionGeneratorProps>
 
     // Only validate length if text is provided and minLength > 0
     if (minLength > 0 && text.length < minLength) {
-      setValidationError(language === 'bg' 
+      setValidationError(language === 'bg'
         ? `Описанието е твърде кратко (минимум ${minLength} символа)`
         : `Description too short (minimum ${minLength} characters)`);
       return false;
@@ -231,18 +231,18 @@ export const SmartDescriptionGenerator: React.FC<SmartDescriptionGeneratorProps>
 
       const result = await vehicleDescriptionGenerator.generateDescription(
         vehicleData,
-        { 
+        {
           language: language as 'bg' | 'en',
-          maxLength 
+          maxLength
         }
       );
 
       setDescription(result.description);
       setGenerationSource(result.generatedBy);
 
-      logger.info('Description generated successfully', { 
+      logger.info('Description generated successfully', {
         source: result.generatedBy,
-        length: result.characterCount 
+        length: result.characterCount
       });
 
     } catch (error) {
@@ -295,7 +295,7 @@ export const SmartDescriptionGenerator: React.FC<SmartDescriptionGeneratorProps>
 
       <TextareaWrapper $valid={isValid && description.length > 0} $error={!!validationError}>
         <Textarea
-          value={description}
+          value={description || ''}
           onChange={handleChange}
           placeholder={language === 'bg'
             ? 'Опишете автомобила (по избор)... Или натиснете "AI Генериране" за автоматично описание.'
@@ -309,12 +309,12 @@ export const SmartDescriptionGenerator: React.FC<SmartDescriptionGeneratorProps>
           {generationSource && (
             <GenerationInfo $type={generationSource}>
               {generationSource === 'ai' ? <Sparkles size={14} /> : <CheckCircle size={14} />}
-              {language === 'bg' 
+              {language === 'bg'
                 ? (generationSource === 'ai' ? 'Генерирано от AI' : 'Шаблонно описание')
                 : (generationSource === 'ai' ? 'AI Generated' : 'Template Description')}
             </GenerationInfo>
           )}
-          
+
           {validationError && (
             <ValidationMessage $type="error">
               <AlertCircle size={14} />

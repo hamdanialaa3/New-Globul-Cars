@@ -110,23 +110,27 @@ const MapComponent: React.FC<MapComponentProps> = ({
           zoom={zoom}
           options={mapOptions}
         >
-          <Marker
-            position={center}
-            onClick={() => setShowInfoWindow(true)}
-            title={carTitle || 'موقع السيارة'}
-          />
-          
-          {showInfo && showInfoWindow && (
-            <InfoWindow
-              position={center}
-              onCloseClick={() => setShowInfoWindow(false)}
-            >
-              <InfoContent>
-                {carTitle && <h3>{carTitle}</h3>}
-                {carPrice && <p><strong>السعر:</strong> €{carPrice.toLocaleString()}</p>}
-                {carLocation && <p><strong>الموقع:</strong> {carLocation}</p>}
-              </InfoContent>
-            </InfoWindow>
+          {showMarker && (
+            <>
+              <Marker
+                position={center}
+                onClick={() => setShowInfoWindow(true)}
+                title={carTitle || 'موقع السيارة'}
+              />
+              
+              {showInfo && showInfoWindow && (
+                <InfoWindow
+                  position={center}
+                  onCloseClick={() => setShowInfoWindow(false)}
+                >
+                  <InfoContent>
+                    {carTitle && <h3>{carTitle}</h3>}
+                    {carPrice && <p><strong>السعر:</strong> €{carPrice.toLocaleString()}</p>}
+                    {carLocation && <p><strong>الموقع:</strong> {carLocation}</p>}
+                  </InfoContent>
+                </InfoWindow>
+              )}
+            </>
           )}
         </GoogleMap>
       </LoadScript>
@@ -135,6 +139,17 @@ const MapComponent: React.FC<MapComponentProps> = ({
 };
 
 export default MapComponent;
+
+
+
+
+
+
+
+
+
+
+
 
 
 

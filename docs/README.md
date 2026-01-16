@@ -1,50 +1,48 @@
-# Documentation Index
+# 📚 Documentation Directory
+## دليل ملفات التوثيق
 
-## 📚 Architecture
-- [Master Reference Manual](architecture/PROJECT_MASTER_REFERENCE_MANUAL.md) - Complete technical documentation (107+ services, 50+ features)
-
-## 🚀 Deployment
-- [Deployment Complete Dec 24 2025](deployment/DEPLOYMENT_COMPLETE_DEC_24_2025.md) - Latest deployment report
-
-## ✨ Features
-- [Complete Feature List](features/COMPLETE_FEATURE_LIST.md) - All 50+ implemented features
-- [Favorites System](features/FAVORITES_SYSTEM_DELIVERY.md) - Heart button & favorites implementation
-
-## 🔧 Troubleshooting
-- [Performance Optimization](troubleshooting/PERFORMANCE_OPTIMIZATION.md) - Performance improvements guide
-
-## 📦 Archived
-- [Cleanup Plan](archived/CLEANUP_PLAN.md) - Historical cleanup documentation
+**آخر تحديث:** 15 يناير 2026
 
 ---
 
-## 🏗️ Project Structure
+## 🎯 الملفات الموحدة (استخدم هذه)
 
-```
-New Globul Cars/
-├── docs/                    # All documentation (this folder)
-├── src/                     # Source code
-│   ├── components/          # React components
-│   ├── services/            # Business logic (107+ services)
-│   ├── pages/               # Page components
-│   └── contexts/            # Global state providers
-├── functions/               # Firebase Cloud Functions
-├── scripts/                 # Build & utility scripts
-└── build/                   # Production build output
-```
+### 🔧 الإعداد والنشر
+- **`GOOGLE_MAPS_API_COMPLETE_GUIDE.md`** - دليل شامل لـ Google Maps API
+- **`GITHUB_ACTIONS_DEPLOYMENT_COMPLETE.md`** - دليل نشر GitHub Actions
+- **`GITHUB_SECRETS_SETUP_COMPLETE.md`** - دليل إعداد GitHub Secrets
 
-## 📖 Quick Start
+### 📋 الميزات والنظم
+- **`MESSAGING_QUICK_START_GUIDE.md`** - دليل سريع لنظام المراسلة
+- **`WHATSAPP_QUICK_START_GUIDE.md`** - دليل WhatsApp Integration
+- **`SUBSCRIPTION_SYSTEM_QUICK_START.md`** - دليل نظام الاشتراكات
 
-1. **Read First**: [Master Reference Manual](architecture/PROJECT_MASTER_REFERENCE_MANUAL.md)
-2. **Setup**: See `SECURITY.md` for environment variables
-3. **Deploy**: See [Deployment Guide](deployment/DEPLOYMENT_COMPLETE_DEC_24_2025.md)
+### 🧪 الاختبار
+- **`QUICK_TESTING_GUIDE.md`** - دليل الاختبار السريع
+- **`PROFILE_TESTING_GUIDE.md`** - دليل اختبار البروفايل
+- **`SMART_SEARCH_TESTING_GUIDE.md`** - دليل اختبار البحث الذكي
 
-## 🔗 External Links
-
-- **Live Site**: https://fire-new-globul.web.app
-- **GitHub**: https://github.com/hamdanialaa3/New-Globul-Cars
-- **Firebase Console**: https://console.firebase.google.com/project/fire-new-globul
+### 🏗️ المعمارية
+- **`architecture/PROJECT_MASTER_REFERENCE_MANUAL.md`** - المرجع الشامل للمشروع
 
 ---
 
-**Last Updated**: December 28, 2025
+## 📁 التنظيم
+
+- **`features/`** - توثيق الميزات
+- **`subscription/`** - توثيق نظام الاشتراكات
+- **`troubleshooting/`** - استكشاف الأخطاء
+- **`marketing/`** - الخطط التسويقية
+- **`references/`** - المراجع والملفات الخارجية
+
+---
+
+## 🔗 روابط سريعة
+
+- **الملف الموحد الرئيسي:** `PROJECT_DOCUMENTATION_UNIFIED.md` (في المجلد الرئيسي)
+- **الدستور:** `PROJECT_CONSTITUTION.md` (في المجلد الرئيسي)
+- **الفهرس:** `DOCUMENTATION_INDEX.md` (في المجلد الرئيسي)
+
+---
+
+**ملاحظة:** تم توحيد ودمج جميع التكرارات في الملفات المذكورة أعلاه.

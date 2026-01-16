@@ -20,7 +20,7 @@ import { Bell, X, Check, Car, TrendingDown, MessageSquare } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthProvider';
 import { useLanguage } from '../../../contexts/LanguageContext';
-import { notificationService, Notification } from '../../../services/notification-service';
+import { notificationService, Notification } from '../../../services/notifications/unified-notification.service';
 import { logger } from '../../../services/logger-service';
 
 export const NotificationBell: React.FC = () => {
@@ -54,7 +54,7 @@ export const NotificationBell: React.FC = () => {
           if (!isMounted) return;
 
           setNotifications(newNotifications);
-          
+
           // Count unread
           const unread = newNotifications.filter(n => !n.isRead).length;
           setUnreadCount(unread);
@@ -159,7 +159,7 @@ export const NotificationBell: React.FC = () => {
 
   return (
     <Container ref={dropdownRef}>
-      <BellButton 
+      <BellButton
         onClick={() => setIsOpen(!isOpen)}
         $hasUnread={unreadCount > 0}
         title={`${unreadCount} ${language === 'bg' ? 'нови известия' : 'new notifications'}`}

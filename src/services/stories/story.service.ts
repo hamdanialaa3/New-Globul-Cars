@@ -21,7 +21,7 @@ import {
     serverTimestamp
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
-import { unifiedCarService } from '../UnifiedCarService';
+import { unifiedCarService } from '../car/unified-car-service';
 import { numericStoryIdService } from './numeric-story-id.service';
 import { logger } from '../logger-service';
 import { CarStory, StoryType } from '../../types/story.types';

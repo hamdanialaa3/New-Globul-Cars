@@ -125,12 +125,10 @@ public/           # Static assets & GA config
 
 ## 📚 Documentation
 
-- **[DEPLOYMENT_SUCCESS_CHECKLIST.md](./DEPLOYMENT_SUCCESS_CHECKLIST.md)** - ⭐ **START HERE** - Complete deployment & verification checklist
-- **[FIREBASE_DEPLOYMENT_SETUP.md](./FIREBASE_DEPLOYMENT_SETUP.md)** - Deployment prerequisites and troubleshooting
-- **[PROJECT_CONSTITUTION.md](./PROJECT_CONSTITUTION.md)** - Architectural rules and constraints
-- **[MESSAGING_SYSTEM_FINAL.md](./MESSAGING_SYSTEM_FINAL.md)** - Real-time messaging implementation
-- **[FIRESTORE_INDEXES_GUIDE.md](./FIRESTORE_INDEXES_GUIDE.md)** - Required composite indexes
-- **[DOCUMENTATION_INDEX.md](./DOCUMENTATION_INDEX.md)** - Complete documentation index
+- **[PROJECT_DOCUMENTATION_UNIFIED.md](./PROJECT_DOCUMENTATION_UNIFIED.md)** ⭐ **START HERE** - Master document with latest status, Phase 1 fixes, and architecture.
+- **[PROJECT_CONSTITUTION.md](./PROJECT_CONSTITUTION.md)** ⚠️ **Essential** - Architectural rules, naming conventions, and project principles.
+- **[DOCUMENTATION_INDEX.md](./DOCUMENTATION_INDEX.md)** - Complete index of all technical guides and historical archives.
+- **[PROJECT_COMPLETE_INVENTORY.md](./PROJECT_COMPLETE_INVENTORY.md)** - Comprehensive inventory of components, services, and pages.
 
 ---
 

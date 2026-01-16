@@ -5,7 +5,7 @@
 
 // Mock dependencies
 import { storyService } from './story.service';
-import { unifiedCarService } from '../UnifiedCarService';
+import { unifiedCarService } from '../car/unified-car-service';
 import { logger } from '../logger-service';
 
 // We need to bypass the actual Firestore calls for this test to run in node environment easily, 

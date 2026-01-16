@@ -102,7 +102,7 @@ export class UserOperations {
       // Force a secure password reset so the end-user chooses their own password
       await sendPasswordResetEmail(auth, userData.email);
 
-      await this.logUserActivity(createdBy, ACTIVITY_ACTIONS.USER_CREATED, 'user', userId,
+      await ActivityOperations.logUserActivity(createdBy, ACTIVITY_ACTIONS.USER_CREATED, 'user', userId,
         `User created: ${userData.displayName}`, true);
 
       return newUser;
@@ -158,7 +158,7 @@ export class UserOperations {
         lastModifiedBy: updatedBy
       });
 
-      await this.logUserActivity(updatedBy, ACTIVITY_ACTIONS.USER_UPDATED, 'user', userId,
+      await ActivityOperations.logUserActivity(updatedBy, ACTIVITY_ACTIONS.USER_UPDATED, 'user', userId,
         `User updated: ${Object.keys(updateData).join(', ')}`, true);
     } catch (error) {
       serviceLogger.error('Error updating user', error as Error, { userId, updatedBy });
@@ -172,11 +172,43 @@ export class UserOperations {
       const userRef = doc(db, 'users', userId);
       await deleteDoc(userRef);
 
-      await this.logUserActivity(deletedBy, ACTIVITY_ACTIONS.USER_DELETED, 'user', userId,
+      await ActivityOperations.logUserActivity(deletedBy, ACTIVITY_ACTIONS.USER_DELETED, 'user', userId,
         'User deleted', true);
     } catch (error) {
       serviceLogger.error('Error deleting user', error as Error, { userId, deletedBy });
       throw error;
+    }
+  }
+
+  // Get user's cars
+  static async getUserCars(userId: string): Promise<any[]> {
+    try {
+      const q = query(
+        collection(db, 'cars'),
+        where('userId', '==', userId)
+      );
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+    } catch (error) {
+      serviceLogger.error('Error getting user cars', error as Error, { userId });
+      return [];
+    }
+  }
+
+  // Get user's messages
+  static async getUserMessages(userId: string): Promise<any[]> {
+    try {
+      const q = query(
+        collection(db, 'messages'),
+        where('participants', 'array-contains', userId),
+        orderBy('createdAt', 'desc'),
+        limit(50)
+      );
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+    } catch (error) {
+      serviceLogger.error('Error getting user messages', error as Error, { userId });
+      return [];
     }
   }
 }
@@ -195,6 +227,7 @@ export class RoleOperations {
       const newRole: UserRole = {
         id: roleId,
         ...roleData,
+        isSystemRole: roleData.isSystemRole || false,
         createdBy,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -202,7 +235,7 @@ export class RoleOperations {
 
       await setDoc(roleRef, newRole);
 
-      await this.logUserActivity(createdBy, ACTIVITY_ACTIONS.ROLE_CREATED, 'role', roleId,
+      await ActivityOperations.logUserActivity(createdBy, ACTIVITY_ACTIONS.ROLE_CREATED, 'role', roleId,
         `Role created: ${roleData.name}`, true);
 
       return newRole;

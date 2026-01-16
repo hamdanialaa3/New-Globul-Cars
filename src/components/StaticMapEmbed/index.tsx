@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { MapPin, ExternalLink } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import googleMapsService from '../../services/google-maps-enhanced.service';
+import { GOOGLE_MAPS_API_KEY } from '../../services/maps-config';
 
 const Container = styled.div`
   border-radius: 15px;
@@ -195,7 +196,7 @@ const StaticMapEmbed: React.FC<StaticMapEmbedProps> = ({
       if (!coords) {
         // Geocode the location
         googleMapsService.initialize();
-        const address = `${location.locationData?.cityName}, ${location.region || ''}, Bulgaria`;
+        const address = `${location.locationData?.cityName || location.city}, ${location.region || ''}, Bulgaria`;
         const geocoded = await googleMapsService.geocodeAddress(address);
         coords = geocoded || undefined;
       }
@@ -203,9 +204,18 @@ const StaticMapEmbed: React.FC<StaticMapEmbedProps> = ({
       if (coords) {
         const url = googleMapsService.getStaticMapUrl(coords.lat, coords.lng, zoom);
         setMapUrl(url);
+      } else {
+        // Fallback: Use Maps Embed API with query string instead of coordinates
+        const query = location.locationData?.cityName || location.city || 'Bulgaria';
+        const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(query + ', Bulgaria')}&zoom=${zoom}`;
+        setMapUrl(embedUrl);
       }
     } catch (error) {
       logger.error('Error loading map:', error);
+      // Fallback to basic embed URL
+      const query = location.locationData?.cityName || location.city || 'Bulgaria';
+      const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(query + ', Bulgaria')}&zoom=${zoom}`;
+      setMapUrl(embedUrl);
     } finally {
       setLoading(false);
     }
@@ -252,10 +262,16 @@ const StaticMapEmbed: React.FC<StaticMapEmbedProps> = ({
           src={mapUrl}
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
-          title={`Map of ${location.locationData?.cityName}`}
-          onError={() => {
-            logger.error('Google Maps iframe failed to load');
+          title={`Map of ${location.locationData?.cityName || location.city}`}
+          onError={(e) => {
+            logger.error('Google Maps iframe failed to load', { 
+              error: e, 
+              url: mapUrl,
+              apiKeyConfigured: !!(process.env.REACT_APP_GOOGLE_MAPS_API_KEY || process.env.REACT_APP_GOOGLE_BROWSER_KEY)
+            });
             setLoading(false);
+            // Show error message
+            setMapUrl('');
           }}
         />
       ) : (
@@ -264,7 +280,14 @@ const StaticMapEmbed: React.FC<StaticMapEmbedProps> = ({
             <div style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>⚠️</div>
             <div>{language === 'bg' ? 'Грешка при зареждане на картата' : 'Error loading map'}</div>
             <div style={{ fontSize: '0.8rem', marginTop: '0.5rem', opacity: 0.7 }}>
-              {language === 'bg' ? 'Проверете настройките на Google Maps API' : 'Check Google Maps API settings'}
+              {language === 'bg' 
+                ? 'Google Maps API ключът е невалиден или липсва. Моля, проверете настройките.' 
+                : 'Google Maps API key is invalid or missing. Please check your settings.'}
+            </div>
+            <div style={{ fontSize: '0.75rem', marginTop: '0.5rem', opacity: 0.6 }}>
+              {language === 'bg' 
+                ? 'Добавете REACT_APP_GOOGLE_MAPS_API_KEY в .env файла' 
+                : 'Add REACT_APP_GOOGLE_MAPS_API_KEY to .env file'}
             </div>
           </div>
         </LoadingState>

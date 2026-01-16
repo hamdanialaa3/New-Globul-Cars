@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Bell, X } from 'lucide-react';
-import { notificationService } from '../../services/notification-service';
+import { notificationService } from '../../services/notifications/unified-notification.service';
 
 const Banner = styled.div<{ $show: boolean }>`
   position: fixed;

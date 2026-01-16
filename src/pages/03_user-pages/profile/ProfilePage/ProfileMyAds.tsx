@@ -9,7 +9,7 @@ import { useProfileType } from '../../../../contexts/ProfileTypeContext';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import { toast } from 'react-toastify';
 import { UnifiedCar } from '../../../../services/car';
-import { unifiedCarService } from '../../../../services/UnifiedCarService';
+import { unifiedCarService } from '../../../../services/car/unified-car-service';
 import { logger } from '../../../../services/logger-service';
 import { Plus, ArrowUpDown } from 'lucide-react';
 import BulkUploadWizard from './components/BulkUploadWizard';
@@ -143,10 +143,10 @@ const ProgressBar = styled.div<{ $percentage: number; $isDark?: boolean }>`
     display: block;
     width: ${({ $percentage }) => $percentage}%;
     height: 100%;
-    background: ${({ $percentage, $isDark }) => 
-      $percentage > 80 
-        ? '#ef4444'
-        : ($isDark ? '#22c55e' : '#15803d')};
+    background: ${({ $percentage, $isDark }) =>
+    $percentage > 80
+      ? '#ef4444'
+      : ($isDark ? '#22c55e' : '#15803d')};
     border-radius: 3px;
     transition: width 0.3s ease;
   }
@@ -162,8 +162,8 @@ const ViewModeToggle = styled.div<{ $isDark?: boolean }>`
 
 const ViewModeButton = styled.button<{ $active: boolean; $isDark?: boolean }>`
   padding: 0.5rem 1rem;
-  background: ${({ $active, $isDark }) => 
-    $active 
+  background: ${({ $active, $isDark }) =>
+    $active
       ? ($isDark ? '#475569' : '#ff8f10')
       : 'transparent'};
   color: ${({ $active }) => $active ? '#ffffff' : '#64748b'};
@@ -289,7 +289,7 @@ const ProfileMyAds: React.FC = () => {
   const handleView = (car: UnifiedCar) => {
     const sellerNumericId = (car as any).sellerNumericId || (car as any).ownerNumericId;
     const carNumericId = (car as any).carNumericId || (car as any).userCarSequenceId;
-    
+
     if (sellerNumericId && carNumericId) {
       window.open(`/car/${sellerNumericId}/${carNumericId}`, '_blank');
     } else {

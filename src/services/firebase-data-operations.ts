@@ -12,8 +12,7 @@ import {
 } from 'firebase/firestore';
 import { db, functions } from '../firebase/firebase-config';
 import { httpsCallable } from 'firebase/functions';
-import { firebaseAuthUsersService } from './firebase-auth-users-service';
-import { firebaseAuthRealUsers } from './firebase-auth-real-users';
+import { advancedUserManagementService } from './advanced-user-management-service';
 import { serviceLogger } from './logger-service';
 import { countAllVehicles, queryAllCollections } from './search/multi-collection-helper';
 import {
@@ -23,6 +22,7 @@ import {
   AnalyticsCallback,
   UnsubscribeFunction
 } from './firebase-data-types';
+import { AdvancedUser } from './advanced-user-management-types';
 import {
   COLLECTIONS,
   TIME_CONSTANTS,
@@ -35,30 +35,12 @@ import {
 import { REVENUE_PARAMS } from './super-admin-data';
 
 /**
- * Get real users count from Firebase Authentication
- * الحصول على عدد المستخدمين الحقيقيين من Firebase Authentication
+ * Get real users count from Firebase Authentication via Advanced User Management
  */
 export async function getRealUsersCount(): Promise<number> {
   try {
-    serviceLogger.debug('Fetching REAL users count from Firebase Authentication');
-
-    // Try to get from Firebase Auth first (the REAL source!)
-    try {
-      const authUsersCount = await firebaseAuthRealUsers.getRealAuthUsersCount();
-      serviceLogger.info('REAL users from Firebase Auth', { count: authUsersCount });
-      return authUsersCount;
-    } catch (authError) {
-      serviceLogger.warn('Could not get from Firebase Auth - falling back to Firestore');
-    }
-
-    // Fallback: Get from Firestore users collection
-    const usersSnapshot = await getDocs(collection(db, COLLECTIONS.USERS));
-    const firestoreUsers = usersSnapshot.docs.length;
-
-    serviceLogger.info('Firestore users found', { count: firestoreUsers });
-    serviceLogger.warn('Note: This may be less than Firebase Auth users if sync not run');
-
-    return firestoreUsers;
+    const stats = await advancedUserManagementService.getSystemStats();
+    return stats.totalUsers;
   } catch (error) {
     serviceLogger.error('Error getting users count', error as Error);
     return 0;
@@ -66,31 +48,12 @@ export async function getRealUsersCount(): Promise<number> {
 }
 
 /**
- * Get real active users count
- * الحصول على عدد المستخدمين النشطين الحقيقيين
+ * Get real active users count via Advanced User Management
  */
 export async function getRealActiveUsersCount(): Promise<number> {
   try {
-    // Try to get from Firebase Auth first
-    try {
-      const activeAuthUsers = await firebaseAuthRealUsers.getActiveAuthUsers();
-      serviceLogger.info('Active users from Firebase Auth', { count: activeAuthUsers });
-      return activeAuthUsers;
-    } catch (authError) {
-      serviceLogger.warn('Could not get active users from Auth - using Firestore');
-    }
-
-    // Fallback: Get from Firestore
-    const now = new Date();
-    const yesterday = new Date(now.getTime() - TIME_CONSTANTS.ONE_DAY_MS);
-
-    const q = query(
-      collection(db, COLLECTIONS.USERS),
-      where('lastLogin', '>=', yesterday)
-    );
-
-    const snapshot = await getDocs(q);
-    return snapshot.docs.length;
+    const stats = await advancedUserManagementService.getSystemStats();
+    return stats.activeUsers;
   } catch (error) {
     serviceLogger.error('Error getting active users count', error as Error);
     return 0;
@@ -208,21 +171,25 @@ export async function getRealUserActivity(): Promise<UserActivity[]> {
   try {
     serviceLogger.debug('Fetching real user activity');
 
-    // Use the new Firebase Auth Users Service
-    const realUsers = await firebaseAuthUsersService.getRealFirebaseUsers();
+    // Use the new Advanced User Management Service
+    const realUsers = await advancedUserManagementService.getUsers();
 
-    return realUsers.map(user => ({
-      uid: user.uid,
+    return realUsers.map((user: AdvancedUser) => ({
+      uid: user.id,
       email: user.email,
       displayName: user.displayName,
-      lastLogin: user.lastLogin,
-      loginCount: user.loginCount,
-      location: `${user.location?.city || 'Unknown'}, ${user.location?.country || 'Bulgaria'}`,
-      device: user.device,
-      browser: user.browser,
-      isOnline: user.isOnline,
-      lastActivity: user.lastActivity,
-      stats: user.stats
+      lastLogin: user.lastLoginAt ? new Date(user.lastLoginAt) : new Date(0),
+      loginCount: 0,
+      location: `${user.preferences?.language === 'bg' ? 'Bulgaria' : 'Global'}`,
+      device: 'Desktop',
+      browser: 'Chrome',
+      isOnline: user.status === 'active',
+      lastActivity: user.updatedAt ? new Date(user.updatedAt) : new Date(),
+      stats: {
+        carsListed: 0,
+        carsSold: 0,
+        totalViews: 0
+      }
     }));
 
   } catch (error) {

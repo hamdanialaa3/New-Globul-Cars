@@ -15,6 +15,9 @@
     "messages": {
       "$channelId": {
         ".read": "auth != null",
+        ".indexOn": [
+          "timestamp"
+        ],
         "$messageId": {
           ".write": "auth != null"
         }

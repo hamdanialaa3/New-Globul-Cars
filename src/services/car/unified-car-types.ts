@@ -16,7 +16,7 @@ export interface UnifiedCar {
   power?: number;
   images?: string[];
   mainImage?: string;
-  status: 'active' | 'sold' | 'draft';
+  status: 'active' | 'sold' | 'draft' | 'expired' | 'deleted';
   isActive: boolean;
   isSold: boolean;
   views: number;

@@ -128,7 +128,7 @@ export interface CarListing {
   climateControl?: string; // Alias for airConditioning
 
   // Images
-  images?: File[];
+  images?: string[];
 
   // Pricing
   price: number;
@@ -176,7 +176,7 @@ export interface CarListing {
   // System Fields
   createdAt?: Date;
   updatedAt?: Date;
-  status: 'draft' | 'active' | 'sold' | 'expired' | 'deleted';
+  status: 'active' | 'sold' | 'draft' | 'expired' | 'deleted';
   views?: number;
   favorites?: number;
   isFeatured?: boolean;

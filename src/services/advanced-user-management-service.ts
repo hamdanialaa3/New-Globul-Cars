@@ -25,7 +25,7 @@ import {
 export class AdvancedUserManagementService {
   private static instance: AdvancedUserManagementService;
 
-  private constructor() {}
+  private constructor() { }
 
   public static getInstance(): AdvancedUserManagementService {
     if (!AdvancedUserManagementService.instance) {
@@ -60,6 +60,14 @@ export class AdvancedUserManagementService {
 
   public async deleteUser(userId: string, deletedBy: string): Promise<void> {
     return UserOperations.deleteUser(userId, deletedBy);
+  }
+
+  public async getUserCars(userId: string): Promise<any[]> {
+    return UserOperations.getUserCars(userId);
+  }
+
+  public async getUserMessages(userId: string): Promise<any[]> {
+    return UserOperations.getUserMessages(userId);
   }
 
   // Role operations

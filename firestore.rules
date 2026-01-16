@@ -21,6 +21,13 @@ service cloud.firestore {
         && counterId == 'users' 
         && request.resource.data.count == resource.data.count + 1
         && request.resource.data.keys().hasOnly(['count', 'updatedAt']);
+      
+      // ✅ Allow nested car/seller counters
+      match /cars/sellers/{sellerId} {
+        allow read: if true;
+        allow write: if isOwner(sellerId);
+      }
+      
       // ❌ All other writes disabled - use Cloud Functions only
       allow create, delete: if false;
     }

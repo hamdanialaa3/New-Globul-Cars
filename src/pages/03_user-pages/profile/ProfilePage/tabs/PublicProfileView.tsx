@@ -20,6 +20,7 @@ import { PublicProfileHero } from './components/PublicProfileHero';
 import { ProfileInventoryGrid } from './components/ProfileInventoryGrid';
 import { ProfileBusinessContact } from './components/ProfileBusinessContact';
 import { ProfileTrustSection } from './components/ProfileTrustSection';
+import { ProfileLocationMap } from './components/ProfileLocationMap';
 import { BusinessGreenHeader } from '../../../../../components/Profile/BusinessGreenHeader';
 
 interface PublicProfileViewProps {
@@ -75,6 +76,9 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({
           }}
         />
       )}
+
+      {/* Location Map - Below Hero */}
+      <ProfileLocationMap user={user} />
       
       {/* Content Grid - Main Content + Sidebar */}
       <ContentWrapper $isDark={isDark}>

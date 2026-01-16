@@ -40,10 +40,7 @@ const EventsPage = safeLazy(() => import('../pages/07_advanced-features/EventsPa
 const CreatePostPage = safeLazy(() => import('../pages/03_user-pages/social/CreatePostPage'));
 const DashboardPage = safeLazy(() => import('../pages/03_user-pages/dashboard/DashboardPage'));
 const AdminDashboard = safeLazy(() => import('../components/AdminDashboard'));
-const ThemeTest = safeLazy(() => import('../components/ThemeTest'));
-const BackgroundTest = safeLazy(() => import('../components/BackgroundTest'));
 const FullThemeDemo = safeLazy(() => import('../components/FullThemeDemo'));
-const EffectsTest = safeLazy(() => import('../components/EffectsTest'));
 const PrivacyPolicyPage = safeLazy(() => import('../pages/10_legal/privacy-policy/PrivacyPolicyPage'));
 const TermsOfServicePage = safeLazy(() => import('../pages/10_legal/terms-of-service/TermsOfServicePage'));
 const DataDeletionPage = safeLazy(() => import('../pages/10_legal/data-deletion/DataDeletionPage'));
@@ -55,8 +52,6 @@ const AcceptInvitePage = safeLazy(() => import('../pages/03_user-pages/AcceptInv
 const MigrationPage = safeLazy(() => import('../pages/06_admin/MigrationPage'));
 const DebugCarsPage = safeLazy(() => import('../pages/06_admin/DebugCarsPage'));
 const EditCarPage = safeLazy(() => import('../pages/04_car-selling/EditCarPage'));
-const N8nTestPage = safeLazy(() => import('../pages/11_testing-dev/N8nTestPage'));
-const TestDropdownsPage = safeLazy(() => import('../pages/11_testing-dev/TestDropdownsPage'));
 const B2BAnalyticsPortal = safeLazy(() => import('../pages/07_advanced-features/B2BAnalyticsPortal'));
 const DigitalTwinPage = safeLazy(() => import('../pages/07_advanced-features/DigitalTwinPage'));
 const SubscriptionPage = safeLazy(() => import('../pages/08_payment-billing/SubscriptionPage'));
@@ -92,7 +87,6 @@ const DealerDashboardPage = safeLazy(() => import('../pages/09_dealer-company/De
 const AlgoliaSyncManager = safeLazy(() => import('../pages/06_admin/AlgoliaSyncManager'));
 const AdminCarManagementPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminCarManagementPage'));
 const DeleteMockCarsPage = safeLazy(() => import('../pages/06_admin/DeleteMockCarsPage'));
-const IconShowcasePage = safeLazy(() => import('../pages/11_testing-dev/IconShowcasePage'));
 const IoTDashboardPage = safeLazy(() => import('../pages/03_user-pages/IoTDashboardPage'));
 const CarTrackingPage = safeLazy(() => import('../pages/03_user-pages/CarTrackingPage'));
 const IoTAnalyticsPage = safeLazy(() => import('../pages/03_user-pages/IoTAnalyticsPage'));
@@ -101,7 +95,6 @@ const AIQuotaManager = safeLazy(() => import('../pages/06_admin/AIQuotaManager')
 const IntegrationStatusDashboard = safeLazy(() => import('../components/admin/IntegrationStatusDashboard'));
 const QuickSetupPage = safeLazy(() => import('../pages/06_admin/QuickSetupPage'));
 const CloudServicesManager = safeLazy(() => import('../pages/06_admin/CloudServicesManager'));
-const DevelopmentToolsPage = safeLazy(() => import('../pages/11_testing-dev/DevelopmentToolsPage'));
 const CityCarsPage = safeLazy(() => import('../pages/seo/CityCarsPage'));
 const BrandCityPage = safeLazy(() => import('../pages/seo/BrandCityPage'));
 const NewCarsPage = safeLazy(() => import('../pages/seo/NewCarsPage'));
@@ -122,7 +115,7 @@ const AutoResponderSettings = safeLazy(() => import('../components/messaging/Aut
 const AuthUsersPage = safeLazy(() => import('../pages/06_admin/AuthUsersPage'));
 const SharedInboxPage = safeLazy(() => import('../pages/06_admin/SharedInboxPage'));
 const StripeSetupPage = safeLazy(() => import('../pages/09_dealer-company/StripeSetupPage'));
-const InsurancePage = safeLazy(() => import('../pages/11_testing-dev/InsurancePage'));
+
 
 
 
@@ -386,11 +379,7 @@ export const MainRoutes: React.FC = () => {
                 path="/dashboard"
                 element={<AuthGuard requireAuth={true}><DashboardPage /></AuthGuard>}
             />
-            <Route path="/theme-test" element={<ThemeTest />} />
-            <Route path="/background-test" element={<BackgroundTest />} />
             <Route path="/full-demo" element={<FullThemeDemo />} />
-            <Route path="/effects-test" element={<EffectsTest />} />
-            <Route path="/icon-showcase" element={<IconShowcasePage />} />
             <Route path="/iot-dashboard" element={<AuthGuard requireAuth={true}><IoTDashboardPage /></AuthGuard>} />
             <Route path="/car-tracking" element={<AuthGuard requireAuth={true}><CarTrackingPage /></AuthGuard>} />
             <Route path="/iot-analytics" element={<AuthGuard requireAuth={true}><IoTAnalyticsPage /></AuthGuard>} />
@@ -400,7 +389,7 @@ export const MainRoutes: React.FC = () => {
             <Route path="/admin/setup" element={<AuthGuard requireAuth={true}><QuickSetupPage /></AuthGuard>} />
             <Route path="/admin/cloud-services" element={<AuthGuard requireAuth={true}><CloudServicesManager /></AuthGuard>} />
             <Route path="/admin/algolia-sync" element={<AuthGuard requireAuth={true} requireAdmin={true}><AlgoliaSyncManager /></AuthGuard>} />
-            <Route path="/development-tools" element={<DevelopmentToolsPage />} />
+
 
             {/* Development Tools Routes */}
             <Route path="/admin/backup" element={<AuthGuard requireAuth={true} requireAdmin={true}><BackupManagement /></AuthGuard>} />
@@ -415,10 +404,6 @@ export const MainRoutes: React.FC = () => {
             <Route path="/company/team" element={<RequireCompanyGuard><TeamManagementPage /></RequireCompanyGuard>} />
             <Route path="/company/analytics" element={<RequireCompanyGuard><CompanyAnalyticsDashboard /></RequireCompanyGuard>} />
 
-            <Route path="/insurance" element={<InsurancePage />} />
-
-            <Route path="/n8n-test" element={<N8nTestPage />} />
-            <Route path="/test-dropdowns" element={<TestDropdownsPage />} />
             <Route path="/advanced-search" element={<AuthGuard requireAuth={false}><AdvancedSearchPage /></AuthGuard>} />
             <Route path="/search" element={<AuthGuard requireAuth={false}><AlgoliaSearchPage /></AuthGuard>} />
             <Route path="/my-listings" element={<AuthGuard requireAuth={true}><MyListingsPage /></AuthGuard>} />

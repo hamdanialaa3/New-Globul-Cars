@@ -117,7 +117,7 @@ exports.DeepSeekProxy = DeepSeekProxy;
 /**
  * Cloud Function: General Text Generation
  */
-exports.aiGenerateText = functions.https.onCall(async (data, context) => {
+exports.aiGenerateText = functions.region('europe-west1').https.onCall(async (data, context) => {
     // 1. Authentication Check
     if (!context.auth) {
         throw new functions.https.HttpsError('unauthenticated', 'You must be logged in to use AI features.');
@@ -181,7 +181,7 @@ exports.aiGenerateText = functions.https.onCall(async (data, context) => {
 /**
  * Cloud Function: Specialized Car Description Generator
  */
-exports.aiGenerateCarDescription = functions.https.onCall(async (data, context) => {
+exports.aiGenerateCarDescription = functions.region('europe-west1').https.onCall(async (data, context) => {
     if (!context.auth) {
         throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated.');
     }

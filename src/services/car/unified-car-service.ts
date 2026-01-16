@@ -174,6 +174,39 @@ class UnifiedCarService {
     await deleteCar(carId);
     invalidateCarCache();
   }
+
+  /**
+   * Clone a car listing
+   */
+  async cloneCarListing(sourceCarId: string, userId: string): Promise<string> {
+    const sourceCar = await this.getCarById(sourceCarId);
+    if (!sourceCar) throw new Error('Source car not found');
+
+    const result = await this.createCar({
+      ...sourceCar,
+      sellerId: userId,
+      status: 'draft',
+      isCloned: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+
+    return result.id;
+  }
+
+  /**
+   * Update car video status
+   */
+  async updateCarVideoStatus(
+    carId: string,
+    status: { hasVideo: boolean, videoUrl?: string }
+  ): Promise<void> {
+    await this.updateCar(carId, {
+      hasVideo: status.hasVideo,
+      videoUrl: status.videoUrl,
+      updatedAt: new Date()
+    });
+  }
 }
 
 export const unifiedCarService = new UnifiedCarService();

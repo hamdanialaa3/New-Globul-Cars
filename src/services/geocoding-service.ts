@@ -2,6 +2,7 @@
 // Convert addresses to coordinates using Google Maps Geocoding API
 
 import { serviceLogger } from './logger-service';
+import { GOOGLE_MAPS_API_KEY } from './maps-config';
 
 export interface GeocodeResult {
   latitude: number;
@@ -25,7 +26,7 @@ export class GeocodingService {
   private apiKey: string;
 
   constructor() {
-    this.apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || '';
+    this.apiKey = GOOGLE_MAPS_API_KEY;
   }
 
   /**

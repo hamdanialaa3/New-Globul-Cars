@@ -1,15 +1,15 @@
 import { logger } from '../services/logger-service';
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { 
-  X, 
-  User, 
-  Car, 
-  MessageSquare, 
+import {
+  X,
+  User,
+  Car,
+  MessageSquare,
   Activity,
   TrendingUp
 } from 'lucide-react';
-import { firebaseAuthUsersService } from '../services/firebase-auth-users-service';
+import { advancedUserManagementService } from '../services/advanced-user-management-service';
 import { CarListing } from '../types/CarListing';
 
 interface UserData {
@@ -195,11 +195,11 @@ const LoadingSpinner = styled.div`
   font-size: 18px;
 `;
 
-const UserDetailsModal: React.FC<UserDetailsModalProps> = ({ 
-  isOpen, 
-  onClose, 
-  userId, 
-  userData 
+const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
+  isOpen,
+  onClose,
+  userId,
+  userData
 }) => {
   const [userCars, setUserCars] = useState<Array<CarListing & { id: string; brand?: string; status?: string }>>([]);
   const [userMessages, setUserMessages] = useState<UserMessage[]>([]);
@@ -212,14 +212,14 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
     setLoading(true);
     try {
       const [cars, messages] = await Promise.all([
-        firebaseAuthUsersService.getUserCars(userId),
-        firebaseAuthUsersService.getUserMessages(userId)
+        advancedUserManagementService.getUserCars(userId),
+        advancedUserManagementService.getUserMessages(userId)
       ]);
-      
+
       setUserCars(cars);
       setUserMessages(messages);
     } catch (error) {
-      logger.error('Error loading user details:', error);
+      logger.error('Error loading user details:', error as Error);
     } finally {
       setLoading(false);
     }
@@ -388,7 +388,7 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
                   <InfoItem key={index}>
                     <InfoLabel>Message {index + 1}:</InfoLabel>
                     <InfoValue>
-                      {message.content?.substring(0, 50)}... ({new Date(message.createdAt).toLocaleDateString()})
+                      {message.content?.substring(0, 50)}... ({message.createdAt ? new Date(message.createdAt as any).toLocaleDateString() : 'N/A'})
                     </InfoValue>
                   </InfoItem>
                 ))

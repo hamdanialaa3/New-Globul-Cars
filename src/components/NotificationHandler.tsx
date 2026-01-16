@@ -4,7 +4,7 @@ import { logger } from '../services/logger-service';
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import { useEffect } from 'react';
-import { notificationService } from '../services/notification-service';
+import { notificationService } from '../services/notifications/unified-notification.service';
 import { useToast } from './Toast';
 import { useAuth } from '../contexts/AuthProvider';
 
@@ -24,7 +24,7 @@ const NotificationHandler: React.FC = () => {
       // ✅ CRITICAL FIX: Don't request permission automatically in useEffect
       // Notification.requestPermission() can only be called from a user event handler
       // Instead, only listen for foreground messages (permission will be requested on user interaction)
-      
+
       // 1. Listen for foreground messages only (don't request permission here)
       // Permission will be requested when user clicks a button (e.g., NotificationBanner)
       const unsubscribe = notificationService.onForegroundMessage((payload) => {
