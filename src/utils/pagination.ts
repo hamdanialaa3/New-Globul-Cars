@@ -95,9 +95,7 @@ export async function fetchPaginated<T = DocumentData>(
             hasMore
         };
     } catch (error) {
-        console.error('Pagination error:', error);
-        throw error;
-    }
+    // Pagination error - logged internally
 }
 
 /**

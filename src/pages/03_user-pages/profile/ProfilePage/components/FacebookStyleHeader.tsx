@@ -38,7 +38,7 @@ export const FacebookStyleHeader: React.FC<FacebookStyleHeaderProps> = ({
                     url: url,
                 });
             } catch (err) {
-                console.log('Share cancelled');
+                // Share cancelled by user
             }
         } else {
             navigator.clipboard.writeText(url);

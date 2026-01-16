@@ -621,7 +621,7 @@ const AlgoliaInstantSearch: React.FC = () => {
 
                 // Force navigation to apply filters
                 const newUrl = `${window.location.pathname}?${params.toString()}`;
-                console.log('🤖 AI Navigating to:', newUrl);
+                // AI Navigation - removed console.log for production
                 window.location.href = newUrl; // Force reload to trigger InstantSearch internal routing state
               }}
               variant="secondary"
