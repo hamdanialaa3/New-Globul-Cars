@@ -42,8 +42,9 @@ export function calculateProfileCompletion(
     // Business address from dealerSnapshot or location
     if (('dealerSnapshot' in user && user.dealerSnapshot?.address) || user.location?.city) score += 10; // Business address: 10%
     if (user.photoURL) score += 10;                                              // Profile logo/photo: 10%
-    // Working hours not in canonical types - skip
-    score += 5;                                                                   // Working hours: 5% (placeholder)
+    // TODO: Working hours not in canonical types - needs schema update
+    // Working hours: 5% (placeholder until BaseProfile includes workingHours field)
+    score += 5;
     // Business description from about field
     if (user.about && user.about.length >= 100) score += 10;                     // Services offered: 10%
     if (user.planTier !== 'free') score += 10;                                   // Payment method setup: 10%
@@ -132,9 +133,10 @@ export function getMissingFields(
     if (!user.verification?.phone && !user.phoneNumber) missing.push('Phone verification');
     if (!('dealerSnapshot' in user) || !user.dealerSnapshot?.nameBG) missing.push('Business name');
     if (!user.verification?.business) missing.push('EIK/BULSTAT verification');
-    if ((!('dealerSnapshot' in user) || !user.dealerSnapshot?.address) && !user.location?.city) missing.push('Business address');
+    if (((!('dealerSnapshot' in user) || !user.dealerSnapshot?.address) && !user.location?.city)) missing.push('Business address');
     if (!user.photoURL) missing.push('Business logo');
-    // Working hours not in canonical types - skip check
+    // TODO: Working hours check - not in canonical types yet
+    // if (!user.workingHours) missing.push('Working hours');
     if (!user.about || user.about.length < 100) missing.push('Services description');
     if (user.planTier === 'free') missing.push('Payment method');
   }

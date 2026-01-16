@@ -172,9 +172,11 @@ export class SchemaGenerator {
             offers: {
                 '@type': 'Offer',
                 '@id': `${this.SITE_URL}${url}#offer`,
+                // TODO: netPrice not in CarListing type - needs type extension
                 price: car.price || (car as any).netPrice || 0,
                 priceCurrency: car.currency || 'BGN',
                 priceValidUntil: this.getFutureDate(90),
+                // TODO: isSold not in CarListing type - needs type extension
                 availability: (car as any).isSold
                     ? 'https://schema.org/SoldOut'
                     : 'https://schema.org/InStock',
