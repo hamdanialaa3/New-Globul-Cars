@@ -34,7 +34,7 @@ interface GoogleProductItem {
 }
 
 class GoogleMerchantFeedService {
-  private static readonly BASE_URL = 'https://mobilebg.eu';
+  private static readonly BASE_URL = 'https://koli.one';
   private static readonly PRODUCT_CATEGORY = '916';
   
   static convertCarToGoogleProduct(car: any): GoogleProductItem {
@@ -75,8 +75,8 @@ class GoogleMerchantFeedService {
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
     xml += '<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">\n';
     xml += '  <channel>\n';
-    xml += '    <title>Globul Cars - Bulgarian Car Marketplace</title>\n';
-    xml += '    <link>https://mobilebg.eu</link>\n';
+    xml += '    <title>Globul Cars - Koli One</title>\n';
+    xml += '    <link>https://koli.one</link>\n';
     xml += '    <description>Premium used cars in Bulgaria</description>\n';
     
     items.forEach(item => {

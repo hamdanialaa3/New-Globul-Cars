@@ -34,7 +34,7 @@ All templates support the following variables (use Handlebars syntax):
 - `{{retryUrl}}` - Retry payment URL
 
 ### Contact
-- `{{supportEmail}}` - support@mobilebg.eu
+- `{{supportEmail}}` - support@koli.one
 - `{{supportPhone}}` - +359 87 983 9671
 - `{{whatsappLink}}` - Direct WhatsApp link
 
@@ -47,7 +47,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const msg = {
   to: transaction.userEmail,
-  from: 'noreply@mobilebg.eu',
+  from: 'noreply@koli.one',
   subject: 'Payment Submitted - Globul Cars',
   templateId: 'd-xxxxxxxxxxxxx', // SendGrid template ID
   dynamicTemplateData: {
@@ -65,11 +65,11 @@ await sgMail.send(msg);
 ```javascript
 const mailgun = require('mailgun-js')({
   apiKey: process.env.MAILGUN_API_KEY,
-  domain: 'mobilebg.eu'
+  domain: 'koli.one'
 });
 
 const data = {
-  from: 'Globul Cars <noreply@mobilebg.eu>',
+  from: 'Globul Cars <noreply@koli.one>',
   to: transaction.userEmail,
   subject: 'Payment Submitted',
   template: 'payment_submitted',

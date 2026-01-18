@@ -1,5 +1,5 @@
 // src/firebase/analytics-service.ts
-// Analytics Service for Bulgarian Car Marketplace
+// Analytics Service for Koli One
 
 import { analytics } from './firebase-config';
 import { logEvent, setUserProperties, setUserId } from 'firebase/analytics';

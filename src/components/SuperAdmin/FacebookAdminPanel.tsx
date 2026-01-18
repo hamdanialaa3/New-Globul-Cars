@@ -1,6 +1,6 @@
 // Facebook Admin Panel for Super Admin Dashboard
 // Complete Facebook management interface
-// Bulgarian Car Marketplace
+// Koli One
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';

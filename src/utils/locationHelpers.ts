@@ -1,4 +1,4 @@
-// Location Helper Utilities for Bulgarian Car Marketplace
+// Location Helper Utilities for Koli One
 // أدوات مساعدة للموقع - بلغاريا فقط
 
 import { LocationData, createLocationData } from '../types/LocationData';

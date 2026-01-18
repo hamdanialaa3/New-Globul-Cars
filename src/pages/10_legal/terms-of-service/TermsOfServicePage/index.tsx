@@ -1,5 +1,5 @@
 // src/pages/TermsOfServicePage.tsx
-// Terms of Service Page for Bulgarian Car Marketplace
+// Terms of Service Page for Koli One
 // (Comment removed - was in Arabic)
 
 import React from 'react';
@@ -83,16 +83,16 @@ const TermsOfServicePage: React.FC = () => {
     bg: {
       title: "Общи Условия",
       lastUpdated: "Последна актуализация: 26 септември 2025",
-      intro: "Добре дошли в Bulgarian Car Marketplace! Тези общи условия регулират използването на нашата платформа за търговия с автомобили.",
+      intro: "Добре дошли в Koli One! Тези общи условия регулират използването на нашата платформа за търговия с автомобили.",
       
       section1: {
         title: "1. Приемане на условията",
-        content: "Чрез използването на Bulgarian Car Marketplace, вие се съгласявате с тези общи условия. Ако не се съгласявате с някое от условията, моля не използвайте нашата платформа."
+        content: "Чрез използването на Koli One, вие се съгласявате с тези общи условия. Ако не се съгласявате с някое от условията, моля не използвайте нашата платформа."
       },
 
       section2: {
         title: "2. Описание на услугите",
-        content: "Bulgarian Car Marketplace е онлайн платформа, която:",
+        content: "Koli One е онлайн платформа, която:",
         items: [
           "Свързва купувачи и продавачи на автомобили",
           "Предоставя възможност за публикуване на обяви",
@@ -156,7 +156,7 @@ const TermsOfServicePage: React.FC = () => {
 
       section7: {
         title: "7. Интелектуална собственост",
-        content: "Bulgarian Car Marketplace запазва правата върху:",
+        content: "Koli One запазва правата върху:",
         items: [
           "Дизайна и функционалността на платформата",
           "Логото и търговските марки",
@@ -168,7 +168,7 @@ const TermsOfServicePage: React.FC = () => {
 
       section8: {
         title: "8. Отказ от отговорност",
-        content: "Bulgarian Car Marketplace не носи отговорност за:",
+        content: "Koli One не носи отговорност за:",
         items: [
           "Точността на информацията в обявите",
           "Качеството или състоянието на автомобилите",
@@ -215,7 +215,7 @@ const TermsOfServicePage: React.FC = () => {
       contact: {
         title: "12. Контакт",
         content: "За въпроси относно тези общи условия:",
-        company: "Bulgarian Car Marketplace EOOD",
+        company: "Koli One EOOD",
         address: "гр. София, България",
         email: "legal@bulgariancarmarketplace.com",
         phone: "+359 888 123 456"
@@ -230,16 +230,16 @@ const TermsOfServicePage: React.FC = () => {
     en: {
       title: "Terms of Service",
       lastUpdated: "Last updated: September 26, 2025",
-      intro: "Welcome to Bulgarian Car Marketplace! These terms of service govern your use of our automotive trading platform.",
+      intro: "Welcome to Koli One! These terms of service govern your use of our automotive trading platform.",
       
       section1: {
         title: "1. Acceptance of Terms",
-        content: "By using Bulgarian Car Marketplace, you agree to these terms of service. If you disagree with any part of these terms, please do not use our platform."
+        content: "By using Koli One, you agree to these terms of service. If you disagree with any part of these terms, please do not use our platform."
       },
 
       section2: {
         title: "2. Service Description",
-        content: "Bulgarian Car Marketplace is an online platform that:",
+        content: "Koli One is an online platform that:",
         items: [
           "Connects car buyers and sellers",
           "Provides vehicle listing capabilities",
@@ -303,7 +303,7 @@ const TermsOfServicePage: React.FC = () => {
 
       section7: {
         title: "7. Intellectual Property",
-        content: "Bulgarian Car Marketplace retains rights to:",
+        content: "Koli One retains rights to:",
         items: [
           "Platform design and functionality",
           "Logo and trademarks",
@@ -315,7 +315,7 @@ const TermsOfServicePage: React.FC = () => {
 
       section8: {
         title: "8. Disclaimer",
-        content: "Bulgarian Car Marketplace is not responsible for:",
+        content: "Koli One is not responsible for:",
         items: [
           "Accuracy of information in listings",
           "Quality or condition of vehicles",
@@ -362,7 +362,7 @@ const TermsOfServicePage: React.FC = () => {
       contact: {
         title: "12. Contact",
         content: "For questions about these terms of service:",
-        company: "Bulgarian Car Marketplace EOOD",
+        company: "Koli One EOOD",
         address: "Sofia, Bulgaria",
         email: "legal@bulgariancarmarketplace.com",
         phone: "+359 888 123 456"

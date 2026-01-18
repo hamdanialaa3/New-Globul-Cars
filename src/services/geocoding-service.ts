@@ -1,4 +1,4 @@
-// Geocoding Service for Bulgarian Car Marketplace
+// Geocoding Service for Koli One
 // Convert addresses to coordinates using Google Maps Geocoding API
 
 import { serviceLogger } from './logger-service';

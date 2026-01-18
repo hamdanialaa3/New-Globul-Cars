@@ -1,5 +1,5 @@
 // src/types/CarData.ts
-// Bulgarian Car Marketplace Data Types
+// Koli One Data Types
 
 export interface CarDataFromFile {
   id: string;

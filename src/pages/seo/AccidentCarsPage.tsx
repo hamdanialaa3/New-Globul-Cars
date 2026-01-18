@@ -212,8 +212,8 @@ const AccidentCarsPage: React.FC = () => {
   };
 
   const seoTitle = language === 'bg'
-    ? 'Аварийни коли - Автомобили с повреди - Bulgarski Avtomobili'
-    : 'Accident Cars - Damaged Vehicles - Bulgarski Avtomobili';
+    ? 'Аварийни коли - Автомобили с повреди - Koli One'
+    : 'Accident Cars - Damaged Vehicles - Koli One';
 
   const seoDescription = language === 'bg'
     ? `Намерете автомобили с повреди или след ремонт. Прозрачни цени, детайлни описания на състоянието. Внимателно прочетете описанието преди покупка.`

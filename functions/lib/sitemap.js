@@ -17,7 +17,7 @@ if (!admin.apps.length) {
     admin.initializeApp();
 }
 const db = admin.firestore();
-const BASE_URL = 'https://mobilebg.eu';
+const BASE_URL = 'https://koli.one';
 // Bulgarian cities for SEO pages
 const BULGARIAN_CITIES = [
     'sofia', 'plovdiv', 'varna', 'burgas', 'ruse', 'stara-zagora',

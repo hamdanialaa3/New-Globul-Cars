@@ -1,5 +1,5 @@
 // src/firebase/app-check-service.ts
-// App Check Service for Bulgarian Car Marketplace
+// App Check Service for Koli One
 
 import { getToken, AppCheckTokenResult } from 'firebase/app-check';
 import { appCheck } from './firebase-config';

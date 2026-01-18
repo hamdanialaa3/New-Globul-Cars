@@ -400,7 +400,7 @@ async function main() {
     version: '1.0.0',
     generatedAt: new Date().toISOString(),
     project: {
-      name: 'Bulgarian Car Marketplace',
+      name: 'Koli One',
       description: 'منصة بلغارية لبيع وشراء السيارات',
       path: CONFIG.projectRoot
     },

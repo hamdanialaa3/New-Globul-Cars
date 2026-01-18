@@ -768,7 +768,7 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
         </PrintContent>
 
         <PrintFooter>
-          <div style={{ color: '#666', fontWeight: '600' }}>Bulgarski Mobili - {window.location.origin}</div>
+          <div style={{ color: '#666', fontWeight: '600' }}>Koli One - {window.location.origin}</div>
           <div style={{ color: '#666', fontWeight: '600' }}>{new Date().toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US')}</div>
         </PrintFooter>
 

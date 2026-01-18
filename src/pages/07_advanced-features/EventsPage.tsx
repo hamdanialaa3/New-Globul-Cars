@@ -1,4 +1,4 @@
-// Professional Events Page for Bulgarian Car Marketplace
+// Professional Events Page for Koli One
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import React, { useState, useEffect } from 'react';

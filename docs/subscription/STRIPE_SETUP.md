@@ -1,7 +1,7 @@
 # 🔧 Stripe Integration Setup Guide
 
 **Last Updated:** January 16, 2026  
-**Project:** Bulgarian Car Marketplace  
+**Project:** Koli One  
 **Environment:** Production
 
 ---

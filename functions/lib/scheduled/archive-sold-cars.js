@@ -8,7 +8,7 @@
  * Runs daily at 3 AM (Bulgaria timezone)
  *
  * @since January 6, 2026
- * @author Bulgarian Car Marketplace Team
+ * @author Koli One Team
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cleanupExpiredDrafts = exports.manualArchiveSoldCars = exports.archiveSoldCars = void 0;

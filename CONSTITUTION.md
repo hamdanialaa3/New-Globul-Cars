@@ -1,5 +1,5 @@
 # 🏛️ دستور المشروع - PROJECT CONSTITUTION
-## Bulgarian Car Marketplace (Bulgarski Avtomobili) - معايير التطوير الثابتة
+## Koli One (Koli One) - معايير التطوير الثابتة
 
 ## 4️⃣ المعايير المعمارية (Architectural Standards)
 
@@ -39,7 +39,7 @@ npm run sync-algolia           # Sync Algolia indexes
 ## 1️⃣4️⃣ الروابط المهمة (Important Links)
 
 ### Production
-- **Live Site:** https://mobilebg.eu
+- **Live Site:** https://koli.one
 - **Firebase Hosting:** https://fire-new-globul.web.app
 - **GitHub:** https://github.com/hamdanialaa3/New-Globul-Cars
 - **Firebase Console:** https://console.firebase.google.com/project/fire-new-globul
@@ -48,7 +48,7 @@ npm run sync-algolia           # Sync Algolia indexes
 ---
 
 
-**© 2026 Bulgarian Car Marketplace - All Rights Reserved**  
+**© 2026 Koli One - All Rights Reserved**  
 **Last Updated:** January 4, 2026 by Senior System Architect
 
 
@@ -116,6 +116,6 @@ C:\Users\hamda\Desktop\New Globul Cars\DDD
 الدفع الى فايربوز جوجل الى المشروع :Fire New Globul
 مرتبط وجاهز فقط دفع و حفط 
 النشر على الدومين : 
-https://mobilebg.eu/
+https://koli.one/
 مرتبط و جاهز تعطي انت امر الحفظ و الدفع 
 

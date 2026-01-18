@@ -36,7 +36,7 @@ interface SitemapURL {
 // CONSTANTS
 // ============================================================================
 
-const SITE_URL = 'https://mobilebg.eu';
+const SITE_URL = 'https://koli.one';
 
 const BULGARIAN_CITIES = [
     { slug: 'sofia', name: 'София', priority: 1.0 },

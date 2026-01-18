@@ -147,9 +147,9 @@ async function sendExpirationEmail(transaction) {
         amount: transaction.amount,
         currency: transaction.currency,
         itemDescription: transaction.itemDescription,
-        supportEmail: 'support@mobilebg.eu',
+        supportEmail: 'support@koli.one',
         supportPhone: '+359 87 983 9671',
-        retryUrl: `https://mobilebg.eu/subscription?retry=true&plan=${transaction.metadata?.planTier}`
+        retryUrl: `https://koli.one/subscription?retry=true&plan=${transaction.metadata?.planTier}`
       }
     };
 
@@ -284,7 +284,7 @@ exports.sendDailyPaymentSummary = functions
       logger.info('Daily summary stats', stats);
 
       // TODO: Send email to admins with summary
-      // const adminEmails = ['admin@mobilebg.eu', 'alaa@mobilebg.eu'];
+      // const adminEmails = ['admin@koli.one', 'alaa@koli.one'];
       // await sendDailySummaryEmail(adminEmails, stats);
 
       return { success: true, stats };

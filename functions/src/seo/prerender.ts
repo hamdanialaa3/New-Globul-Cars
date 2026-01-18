@@ -1,5 +1,5 @@
 // functions/src/seo/prerender.ts
-// Prerender Cloud Function - SEO Prerendering for Bulgarian Car Marketplace
+// Prerender Cloud Function - SEO Prerendering for Koli One
 // وظيفة Prerender للـ SEO
 
 import * as functions from 'firebase-functions';
@@ -46,7 +46,7 @@ async function fetchPageData(url: string): Promise<any> {
     if (url === '/' || url === '') {
       return {
         type: 'homepage',
-        title: 'Bulgarski Avtomobili - Продажба на коли в България',
+        title: 'Koli One - Продажба на коли в България',
         description: 'Намерете идеалния автомобил в България. Над 10,000 обяви от частни лица, автосалони и компании.',
       };
     }
@@ -132,7 +132,7 @@ async function getCityPageData(citySlug: string): Promise<any> {
   const totalCars = carsSnapshot.size; // This is just a sample count
 
   return {
-    title: `Продажба на коли в ${cityInfo.bg} - Bulgarski Avtomobili`,
+    title: `Продажба на коли в ${cityInfo.bg} - Koli One`,
     description: `Намерете идеалния автомобил в ${cityInfo.bg}. Над ${totalCars} обяви от частни лица, автосалони и компании.`,
     city: cityInfo.bg,
     citySlug,
@@ -233,7 +233,7 @@ async function getProfilePageData(numericId: number): Promise<any> {
     const userData = usersSnapshot.docs[0].data();
 
     return {
-      title: `${userData.displayName || userData.name || 'Профил'} - Bulgarski Avtomobili`,
+      title: `${userData.displayName || userData.name || 'Профил'} - Koli One`,
       description: `Профил на ${userData.profileType === 'dealer' ? 'автосалон' : userData.profileType === 'company' ? 'компания' : 'продавач'}: ${userData.displayName || userData.name}`,
       name: userData.displayName || userData.name,
       profileType: userData.profileType || 'private',
@@ -254,7 +254,7 @@ function generatePrerenderedHTML(data: any): string {
   }
 
   const structuredData = generateBulgarianStructuredData(data);
-  const baseUrl = 'https://mobilebg.eu';
+  const baseUrl = 'https://koli.one';
   const canonicalUrl = `${baseUrl}${data.url || ''}`;
   const enUrl = `${baseUrl}/en${data.url || ''}`;
   const ogImage = data.image || `${baseUrl}/og-image.jpg`;
@@ -264,7 +264,7 @@ function generatePrerenderedHTML(data: any): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${data.title || 'Bulgarski Avtomobili'}</title>
+  <title>${data.title || 'Koli One'}</title>
   <meta name="description" content="${data.description || ''}">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   
@@ -277,16 +277,16 @@ function generatePrerenderedHTML(data: any): string {
   <!-- OpenGraph -->
   <meta property="og:type" content="${data.type === 'car' ? 'product' : 'website'}">
   <meta property="og:url" content="${canonicalUrl}">
-  <meta property="og:title" content="${data.title || 'Bulgarski Avtomobili'}">
+  <meta property="og:title" content="${data.title || 'Koli One'}">
   <meta property="og:description" content="${data.description || ''}">
   <meta property="og:image" content="${ogImage}">
-  <meta property="og:site_name" content="Bulgarski Avtomobili">
+  <meta property="og:site_name" content="Koli One">
   <meta property="og:locale" content="bg_BG">
   <meta property="og:locale:alternate" content="en_US">
   
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="${data.title || 'Bulgarski Avtomobili'}">
+  <meta name="twitter:title" content="${data.title || 'Koli One'}">
   <meta name="twitter:description" content="${data.description || ''}">
   <meta name="twitter:image" content="${ogImage}">
   
@@ -303,7 +303,7 @@ function generatePrerenderedHTML(data: any): string {
 </head>
 <body>
   <div id="root">
-    <h1>${data.title || 'Bulgarski Avtomobili'}</h1>
+    <h1>${data.title || 'Koli One'}</h1>
     <p>${data.description || ''}</p>
     <!-- React app will hydrate here -->
   </div>
@@ -386,7 +386,7 @@ function generateBulgarianStructuredData(data: any): any {
       return {
         ...base,
         '@type': 'WebPage',
-        name: data.title || 'Bulgarski Avtomobili',
+        name: data.title || 'Koli One',
         description: data.description || '',
       };
   }
@@ -421,7 +421,7 @@ export const prerender = functions
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bulgarski Avtomobili</title>
+  <title>Koli One</title>
 </head>
 <body>
   <div id="root"></div>

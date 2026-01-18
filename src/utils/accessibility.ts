@@ -1,5 +1,5 @@
 // src/utils/accessibility.ts
-// Accessibility utilities for Bulgarian Car Marketplace
+// Accessibility utilities for Koli One
 
 // Generate unique IDs for accessibility
 export class AccessibilityUtils {

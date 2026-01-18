@@ -1,5 +1,5 @@
 // src/services/cache-service.ts
-// Professional Cache Service for Bulgarian Car Marketplace
+// Professional Cache Service for Koli One
 // (Comment removed - was in Arabic)
 
 import { serviceLogger } from './logger-service';

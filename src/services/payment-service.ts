@@ -1,5 +1,5 @@
 // src/services/payment-service.ts
-// Complete Payment Service for Bulgarian Car Marketplace
+// Complete Payment Service for Koli One
 
 import { db } from '../firebase/firebase-config';
 import { collection, addDoc, updateDoc, doc, getDoc, serverTimestamp } from 'firebase/firestore';

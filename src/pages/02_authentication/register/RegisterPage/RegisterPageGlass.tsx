@@ -584,8 +584,8 @@ const RegisterPageGlass: React.FC = () => {
         <Title>{language === 'bg' ? 'Регистрация' : 'Register'}</Title>
         <Subtitle>
           {language === 'bg' 
-            ? 'Създайте акаунт в Bulgarian Car Marketplace' 
-            : 'Create your Bulgarian Car Marketplace account'}
+            ? 'Създайте акаунт в Koli One' 
+            : 'Create your Koli One account'}
         </Subtitle>
 
         {error && (

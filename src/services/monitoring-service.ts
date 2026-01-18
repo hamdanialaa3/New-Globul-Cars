@@ -1,5 +1,5 @@
 // src/services/monitoring-service.ts
-// Monitoring and Analytics Service for Bulgarian Car Marketplace
+// Monitoring and Analytics Service for Koli One
 
 import { errorHandler } from './error-handling-service';
 import { rateLimiter } from './rate-limiting-service';

@@ -36,8 +36,8 @@ Google Maps Platform rejected your request. The provided API key is invalid.
        - `localhost:*`
        - `*.web.app`
        - `*.firebaseapp.com`
-       - `mobilebg.eu`
-       - `*.mobilebg.eu`
+       - `koli.one`
+       - `*.koli.one`
    
    - في **API restrictions**:
      - اختر **Restrict key**

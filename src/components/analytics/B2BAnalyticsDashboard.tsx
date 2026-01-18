@@ -1,6 +1,6 @@
 import { logger } from '../../services/logger-service';
 // src/components/analytics/B2BAnalyticsDashboard.tsx
-// B2B Analytics Dashboard Component for Bulgarian Car Marketplace
+// B2B Analytics Dashboard Component for Koli One
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { httpsCallable } from 'firebase/functions';

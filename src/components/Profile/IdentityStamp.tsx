@@ -1,5 +1,5 @@
 // ╔════════════════════════════════════════════════════════════════════════╗
-// ║               PROFESSIONAL IDENTITY STAMP - mobilebg.eu                 ║
+// ║               PROFESSIONAL IDENTITY STAMP - koli.one                 ║
 // ║  Real-time visual verification stamp for user profiles                  ║
 // ╚════════════════════════════════════════════════════════════════════════╝
 
@@ -167,7 +167,7 @@ const IdentityStamp: React.FC<IdentityStampProps> = ({
           {/* فاصل دائري منقط */}
           <circle cx="400" cy="400" r="210" fill="none" stroke="var(--stamp-color)" strokeWidth="3" strokeDasharray="8 6" />
 
-          {/* ★★★ المركز: mobilebg.eu + الرقم ★★★ */}
+          {/* ★★★ المركز: koli.one + الرقم ★★★ */}
           <g transform="translate(400, 400)">
             {/* مستطيل مركزي محسّن */}
             <rect x="-160" y="-95" width="320" height="190" fill="none" stroke="var(--stamp-color)" strokeWidth="8" rx="6" 
@@ -187,7 +187,7 @@ const IdentityStamp: React.FC<IdentityStampProps> = ({
             
             {/* الدومين - واضح وبارز */}
             <text y="70" fontFamily="'Arial Black', 'Exo 2', sans-serif" fontWeight="900" fontSize="34" fill="var(--stamp-color)" textAnchor="middle" letterSpacing="2">
-              mobilebg.eu
+              koli.one
             </text>
           </g>
 

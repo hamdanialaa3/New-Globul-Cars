@@ -1,5 +1,5 @@
 // src/pages/DigitalTwinPage.tsx
-// Digital Twin Page for Bulgarian Car Marketplace
+// Digital Twin Page for Koli One
 
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';

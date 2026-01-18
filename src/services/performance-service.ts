@@ -1,5 +1,5 @@
 // src/services/performance-service.ts
-// Performance Optimization Service for Bulgarian Car Marketplace
+// Performance Optimization Service for Koli One
 
 import { monitoring } from './monitoring-service';
 import { serviceLogger } from './logger-service';

@@ -24,7 +24,7 @@ interface TikTokProductItem {
 }
 
 class TikTokFeedService {
-  private static readonly BASE_URL = 'https://mobilebg.eu';
+  private static readonly BASE_URL = 'https://koli.one';
   
   static convertCarToTikTokProduct(car: any): TikTokProductItem {
     const baseUrl = this.BASE_URL;

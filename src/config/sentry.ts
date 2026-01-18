@@ -33,7 +33,7 @@ export function initSentry() {
         environment: process.env.NODE_ENV,
 
         // Release version (use git commit hash or package version)
-        release: `bulgarian-car-marketplace@${process.env.REACT_APP_VERSION || '1.0.0'}`,
+        release: `koli-one@${process.env.REACT_APP_VERSION || '1.0.0'}`,
 
         // Performance Monitoring
         integrations: [

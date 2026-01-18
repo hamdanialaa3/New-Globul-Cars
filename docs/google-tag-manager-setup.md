@@ -49,7 +49,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 1. **Using GTM Preview Mode**:
    - Go to: https://tagmanager.google.com/?authuser=1#/container/accounts/6331834008/containers/239485180/workspaces/2
    - Click **"Preview"** button
-   - Enter your website URL: `https://mobilebg.eu/` or `http://localhost:3000`
+   - Enter your website URL: `https://koli.one/` or `http://localhost:3000`
    - GTM will show which tags are firing
 
 2. **Using Browser Console**:

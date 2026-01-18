@@ -1,5 +1,5 @@
 // SEO & Meta Tags Utility
-// Free SEO optimization for Bulgarian Car Marketplace
+// Free SEO optimization for Koli One
 
 import { Helmet } from 'react-helmet-async';
 
@@ -32,7 +32,7 @@ export interface SEOProps {
  * />
  */
 export const SEO: React.FC<SEOProps> = ({
-  title = 'Bulgarski Avtomobili - Най-добрата платформа за автомобили в България',
+  title = 'Koli One - Най-добрата платформа за автомобили в България',
   description = 'Купувайте и продавайте автомобили в България. Хиляди обяви, проверени продавачи, безплатна регистрация.',
   keywords = 'автомобили България, коли втора ръка, продажба коли, купуване коли, автомобили София',
   image = '/og-image.jpg',
@@ -46,7 +46,7 @@ export const SEO: React.FC<SEOProps> = ({
   currency = 'EUR',
   availability = 'in stock'
 }) => {
-  const siteUrl = 'https://mobilebg.eu'; // Update with your domain
+  const siteUrl = 'https://koli.one'; // Update with your domain
   const fullUrl = url ? `${siteUrl}${url}` : siteUrl;
   const fullImage = image.startsWith('http') ? image : `${siteUrl}${image}`;
 
@@ -68,7 +68,7 @@ export const SEO: React.FC<SEOProps> = ({
   } : {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Bulgarski Mobili',
+    name: 'Koli One',
     url: siteUrl,
     description,
     potentialAction: {
@@ -97,7 +97,7 @@ export const SEO: React.FC<SEOProps> = ({
       <meta property="og:description" content={description} />
       <meta property="og:image" content={fullImage} />
       <meta property="og:locale" content={locale} />
-      <meta property="og:site_name" content="Bulgarski Avtomobili" />
+      <meta property="og:site_name" content="Koli One" />
       {publishedTime && <meta property="article:published_time" content={publishedTime} />}
       {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
 

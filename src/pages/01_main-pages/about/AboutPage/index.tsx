@@ -1,5 +1,5 @@
 // src/pages/AboutPage.tsx
-// About Us Page for Bulgarian Car Marketplace
+// About Us Page for Koli One
 
 import React from 'react';
 import styled from 'styled-components';

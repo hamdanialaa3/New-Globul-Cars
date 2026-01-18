@@ -175,8 +175,8 @@ const NewCarsPage: React.FC = () => {
   };
 
   const seoTitle = language === 'bg'
-    ? 'Нови коли - Последни добавени автомобили - Bulgarski Avtomobili'
-    : 'New Cars - Recently Added Vehicles - Bulgarski Avtomobili';
+    ? 'Нови коли - Последни добавени автомобили - Koli One'
+    : 'New Cars - Recently Added Vehicles - Koli One';
 
   const seoDescription = language === 'bg'
     ? `Намерете най-новите автомобили, добавени в последните дни. Голям избор от нови обяви от частни лица, автосалони и компании. Българска платформа за българските автомобилисти.`

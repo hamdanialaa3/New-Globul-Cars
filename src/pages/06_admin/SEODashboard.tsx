@@ -248,7 +248,7 @@ const SEODashboard: React.FC = () => {
                         <tbody>
                             {topPages.slice(0, 10).map((p, i) => (
                                 <tr key={i}>
-                                    <td>{p.page.replace('https://mobilebg.eu', '')}</td>
+                                    <td>{p.page.replace('https://koli.one', '')}</td>
                                     <td>{p.clicks}</td>
                                     <td>{p.impressions}</td>
                                     <td>
@@ -275,7 +275,7 @@ const SEODashboard: React.FC = () => {
                         <CheckCircle size={20} />
                         Test Rich Results
                     </ActionCard>
-                    <ActionCard href="https://pagespeed.web.dev/?url=https://mobilebg.eu" target="_blank">
+                    <ActionCard href="https://pagespeed.web.dev/?url=https://koli.one" target="_blank">
                         <Zap size={20} />
                         PageSpeed Insights
                     </ActionCard>

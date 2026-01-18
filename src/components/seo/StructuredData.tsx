@@ -52,7 +52,7 @@ export const CarStructuredData: React.FC<CarStructuredDataProps> = ({
                     }
                 })
             } : undefined,
-            "url": `https://mobilebg.eu/car/${car.sellerId}/${car.numericId}`
+            "url": `https://koli.one/car/${car.sellerId}/${car.numericId}`
         },
         "image": car.images && car.images.length > 0 ? car.images : undefined,
         "description": car.description,
@@ -89,9 +89,9 @@ interface OrganizationStructuredDataProps {
  * Organization structured data for homepage
  */
 export const OrganizationStructuredData: React.FC<OrganizationStructuredDataProps> = ({
-    name = "Bulgarian Car Marketplace",
-    url = "https://mobilebg.eu",
-    logo = "https://mobilebg.eu/logo.png"
+    name = "Koli One",
+    url = "https://koli.one",
+    logo = "https://koli.one/logo.png"
 }) => {
     const schema = {
         "@context": "https://schema.org",
@@ -156,13 +156,13 @@ interface WebSiteStructuredDataProps {
  * WebSite structured data with search action
  */
 export const WebSiteStructuredData: React.FC<WebSiteStructuredDataProps> = ({
-    searchUrl = "https://mobilebg.eu/cars?search={search_term_string}"
+    searchUrl = "https://koli.one/cars?search={search_term_string}"
 }) => {
     const schema = {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "name": "Bulgarian Car Marketplace",
-        "url": "https://mobilebg.eu",
+        "name": "Koli One",
+        "url": "https://koli.one",
         "potentialAction": {
             "@type": "SearchAction",
             "target": searchUrl,

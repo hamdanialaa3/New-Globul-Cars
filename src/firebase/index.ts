@@ -1,5 +1,5 @@
 // src/firebase/index.ts
-// Firebase Services Index for Bulgarian Car Marketplace
+// Firebase Services Index for Koli One
 
 // Export Firebase configuration and utilities
 export { default as app, auth, db, storage, functions, BulgarianFirebaseUtils } from './firebase-config';

@@ -131,7 +131,7 @@ To deploy manually:
 
 ---
 
-**Project:** Bulgarian Car Marketplace (mobilebg.eu)  
+**Project:** Koli One (koli.one)  
 **Firebase Project:** fire-new-globul  
 **Region:** europe-west1  
 **Last Updated:** January 10, 2026

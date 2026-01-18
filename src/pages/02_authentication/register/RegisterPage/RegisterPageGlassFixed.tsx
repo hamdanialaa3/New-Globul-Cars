@@ -498,8 +498,8 @@ const RegisterPageGlassFixed: React.FC = () => {
         <Title>{language === 'bg' ? 'Регистрация' : 'Register'}</Title>
         <Subtitle>
           {language === 'bg' 
-            ? 'Създайте акаунт в Bulgarian Car Marketplace' 
-            : 'Create your account in Bulgarian Car Marketplace'}
+            ? 'Създайте акаунт в Koli One' 
+            : 'Create your account in Koli One'}
         </Subtitle>
 
         {error && (

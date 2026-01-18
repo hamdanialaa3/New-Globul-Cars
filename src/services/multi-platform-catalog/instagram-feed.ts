@@ -27,7 +27,7 @@ interface InstagramProductItem {
 }
 
 class InstagramFeedService {
-  private static readonly BASE_URL = 'https://mobilebg.eu';
+  private static readonly BASE_URL = 'https://koli.one';
   
   static convertCarToInstagramProduct(car: any): InstagramProductItem {
     const baseUrl = this.BASE_URL;

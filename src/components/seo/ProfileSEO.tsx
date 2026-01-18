@@ -53,8 +53,8 @@ interface ProfileSEOProps {
 // CONSTANTS
 // ============================================================================
 
-const SITE_URL = 'https://mobilebg.eu';
-const SITE_NAME = 'Bulgarski Avtomobili';
+const SITE_URL = 'https://koli.one';
+const SITE_NAME = 'Koli One';
 
 // ============================================================================
 // HELPER FUNCTIONS

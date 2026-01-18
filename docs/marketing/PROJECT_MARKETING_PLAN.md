@@ -1,10 +1,10 @@
-# 📊 خطة التسويق الرقمي الشاملة - Bulgarski Mobili
+# 📊 خطة التسويق الرقمي الشاملة - Koli One
 ## استراتيجية الهيمنة على نتائج Google في بلغاريا وأوروبا
 
 ---
 
 ## 🎯 الهدف الاستراتيجي
-السيطرة على نتائج بحث Google وجعل مشروع Bulgarski Mobili يظهر "في كل مكان" (Search, Maps, Images, Discover, Shopping) عبر استراتيجية تقنية شاملة.
+السيطرة على نتائج بحث Google وجعل مشروع Koli One يظهر "في كل مكان" (Search, Maps, Images, Discover, Shopping) عبر استراتيجية تقنية شاملة.
 
 **الحالة الحالية للمشروع:**
 - ✅ Numeric URL System (`/car/:sellerNumericId/:carNumericId`) - **مكتمل 100%**
@@ -177,7 +177,7 @@ export const sitemap = functions
   })
   .https.onRequest(async (req, res) => {
     try {
-      const baseUrl = 'https://mobilebg.eu'; // أو globulcars.bg
+      const baseUrl = 'https://koli.one'; // أو globulcars.bg
       const xml = await generateCompleteSitemap(baseUrl);
       
       res.set('Content-Type', 'application/xml');
@@ -214,7 +214,7 @@ export const sitemap = functions
 #### 2.4 تقديم Sitemap لـ Google Search Console
 **خطوات يدوية:**
 1. رفع التعديلات: `firebase deploy --only functions,hosting`
-2. التحقق من الرابط: `https://mobilebg.eu/sitemap.xml`
+2. التحقق من الرابط: `https://koli.one/sitemap.xml`
 3. إضافة في Google Search Console > Sitemaps > `sitemap.xml`
 
 ---
@@ -256,7 +256,7 @@ export const googleMerchantFeed = functions
   })
   .https.onRequest(async (req, res) => {
   try {
-    const baseUrl = 'https://mobilebg.eu';
+    const baseUrl = 'https://koli.one';
     
     // جلب السيارات النشطة فقط
     const carsRef = db.collection('cars')
@@ -268,7 +268,7 @@ export const googleMerchantFeed = functions
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
 <channel>
-  <title>Bulgarski Mobili - Used Cars Bulgaria</title>
+  <title>Koli One - Used Cars Bulgaria</title>
   <link>${baseUrl}</link>
   <description>Premium Used Cars Marketplace in Bulgaria</description>`;
 
@@ -328,10 +328,10 @@ export const googleMerchantFeed = functions
 #### 3.3 إعداد Google Merchant Center (يدوي)
 **خطوات:**
 1. إنشاء حساب في [Google Merchant Center](https://merchants.google.com/)
-2. تأكيد ملكية النطاق (mobilebg.eu)
+2. تأكيد ملكية النطاق (koli.one)
 3. Products > Feeds > Add Feed
 4. النوع: Scheduled Fetch
-5. الرابط: `https://mobilebg.eu/feed/products.xml`
+5. الرابط: `https://koli.one/feed/products.xml`
 6. التكرار: Daily
 
 ---
@@ -583,7 +583,7 @@ export const syncCarsToGoogleAds = functions
           headline2: `${car.price.toLocaleString()} ${car.currency || 'EUR'}`,
           headline3: car.locationData?.cityName || 'Bulgaria',
           description: car.description?.substring(0, 80) || `${car.make} ${car.model} للبيع`,
-          finalUrl: `https://mobilebg.eu/car/${car.sellerNumericId}/${car.carNumericId}`,
+          finalUrl: `https://koli.one/car/${car.sellerNumericId}/${car.carNumericId}`,
           imageUrl: car.images?.[0] || car.mainImage,
         };
       });
@@ -666,7 +666,7 @@ export const syncCarsToFacebookAds = functions
           price: car.price * 100, // بالـ cents
           currency: car.currency || 'EUR',
           availability: car.isSold ? 'out of stock' : 'in stock',
-          url: `https://mobilebg.eu/car/${car.sellerNumericId}/${car.carNumericId}`,
+          url: `https://koli.one/car/${car.sellerNumericId}/${car.carNumericId}`,
           brand: car.make,
           category: 'Vehicles > Cars',
           condition: 'used',
@@ -749,7 +749,7 @@ export const syncCarsToTikTokAds = functions
           sale_price: car.price,
           currency: car.currency || 'EUR',
           availability: car.isSold ? 'out_of_stock' : 'in_stock',
-          link: `https://mobilebg.eu/car/${car.sellerNumericId}/${car.carNumericId}`,
+          link: `https://koli.one/car/${car.sellerNumericId}/${car.carNumericId}`,
         };
       });
 

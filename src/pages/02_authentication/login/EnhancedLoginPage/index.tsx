@@ -74,7 +74,7 @@ const EnhancedLoginPage: React.FC = () => {
           <LoginSubtitle>{t('auth.loginSubtitle', 'Sign in to continue to your account')}</LoginSubtitle>
           <BulgarianInfo>
             <Globe size={16} />
-            <span>{t('auth.bulgarianMarketplace', 'Bulgarian Car Marketplace')}</span>
+            <span>{t('auth.bulgarianMarketplace', 'Koli One')}</span>
           </BulgarianInfo>
         </LoginHeader>
 

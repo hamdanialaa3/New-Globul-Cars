@@ -90,6 +90,6 @@ All workflows use:
 
 ---
 
-**Project:** Bulgarian Car Marketplace  
-**Live:** https://mobilebg.eu  
+**Project:** Koli One  
+**Live:** https://koli.one  
 **Firebase Console:** https://console.firebase.google.com/project/fire-new-globul

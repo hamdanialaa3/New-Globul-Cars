@@ -120,8 +120,8 @@ export const monitoringConfig: MonitoringConfig = {
   // Alerts Configuration
   alerts: {
     email: [
-      'admin@mobilebg.eu',
-      'tech@mobilebg.eu'
+      'admin@koli.one',
+      'tech@koli.one'
     ],
     slack: {
       webhookUrl: process.env.REACT_APP_SLACK_WEBHOOK || '',

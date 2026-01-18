@@ -1,6 +1,6 @@
 "use strict";
 // src/firebase/index.ts
-// Firebase Services Index for Bulgarian Car Marketplace
+// Firebase Services Index for Koli One
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteObject = exports.getDownloadURL = exports.uploadBytes = exports.ref = exports.onSnapshot = exports.limit = exports.orderBy = exports.where = exports.query = exports.getDocs = exports.getDoc = exports.deleteDoc = exports.updateDoc = exports.addDoc = exports.doc = exports.collection = exports.sendEmailVerification = exports.sendPasswordResetEmail = exports.updateProfile = exports.onAuthStateChanged = exports.signInWithPopup = exports.FacebookAuthProvider = exports.GoogleAuthProvider = exports.signOut = exports.signInWithEmailAndPassword = exports.createUserWithEmailAndPassword = exports.bulgarianMessagingService = exports.BulgarianMessagingService = exports.bulgarianAuthService = exports.BulgarianAuthService = exports.BulgarianAppCheckService = exports.BulgarianFirebaseUtils = exports.functions = exports.storage = exports.db = exports.auth = exports.app = void 0;
 // Export Firebase configuration and utilities

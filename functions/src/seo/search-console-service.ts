@@ -28,7 +28,7 @@ if (!admin.apps.length) {
 // CONFIGURATION
 // ============================================================================
 
-const SITE_URL = 'https://mobilebg.eu';
+const SITE_URL = 'https://koli.one';
 
 // Service account credentials (store in environment variables)
 const SERVICE_ACCOUNT = {

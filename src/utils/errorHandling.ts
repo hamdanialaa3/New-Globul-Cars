@@ -1,5 +1,5 @@
 // src/utils/errorHandling.ts
-// Error handling utilities for Bulgarian Car Marketplace
+// Error handling utilities for Koli One
 
 import { logger } from '../services/logger-service';
 

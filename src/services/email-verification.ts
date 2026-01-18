@@ -1,5 +1,5 @@
 // src/services/email-verification.ts
-// Email Verification Service for Bulgarian Car Marketplace
+// Email Verification Service for Koli One
 
 import { 
   sendEmailVerification, 

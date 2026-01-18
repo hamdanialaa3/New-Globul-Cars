@@ -68,30 +68,30 @@ class RolloutChecklist {
     }, true);
 
     await this.check('2. All types defined', async () => {
-      return fs.existsSync(path.join(__dirname, '..', 'bulgarian-car-marketplace', 'src', 'types', 'user', 'bulgarian-user.types.ts')) &&
-             fs.existsSync(path.join(__dirname, '..', 'bulgarian-car-marketplace', 'src', 'types', 'dealership', 'dealership.types.ts')) &&
-             fs.existsSync(path.join(__dirname, '..', 'bulgarian-car-marketplace', 'src', 'types', 'company', 'company.types.ts'));
+      return fs.existsSync(path.join(__dirname, '..', 'koli-one', 'src', 'types', 'user', 'bulgarian-user.types.ts')) &&
+             fs.existsSync(path.join(__dirname, '..', 'koli-one', 'src', 'types', 'dealership', 'dealership.types.ts')) &&
+             fs.existsSync(path.join(__dirname, '..', 'koli-one', 'src', 'types', 'company', 'company.types.ts'));
     }, true);
 
     await this.check('3. All repositories implemented', async () => {
-      return fs.existsSync(path.join(__dirname, '..', 'bulgarian-car-marketplace', 'src', 'repositories', 'DealershipRepository.ts')) &&
-             fs.existsSync(path.join(__dirname, '..', 'bulgarian-car-marketplace', 'src', 'repositories', 'CompanyRepository.ts'));
+      return fs.existsSync(path.join(__dirname, '..', 'koli-one', 'src', 'repositories', 'DealershipRepository.ts')) &&
+             fs.existsSync(path.join(__dirname, '..', 'koli-one', 'src', 'repositories', 'CompanyRepository.ts'));
     }, true);
 
     await this.check('4. All services implemented', async () => {
-      return fs.existsSync(path.join(__dirname, '..', 'bulgarian-car-marketplace', 'src', 'services', 'profile', 'ProfileService.ts')) &&
-             fs.existsSync(path.join(__dirname, '..', 'bulgarian-car-marketplace', 'src', 'services', 'profile', 'PermissionsService.ts')) &&
-             fs.existsSync(path.join(__dirname, '..', 'bulgarian-car-marketplace', 'src', 'services', 'profile', 'ProfileMigrationService.ts'));
+      return fs.existsSync(path.join(__dirname, '..', 'koli-one', 'src', 'services', 'profile', 'ProfileService.ts')) &&
+             fs.existsSync(path.join(__dirname, '..', 'koli-one', 'src', 'services', 'profile', 'PermissionsService.ts')) &&
+             fs.existsSync(path.join(__dirname, '..', 'koli-one', 'src', 'services', 'profile', 'ProfileMigrationService.ts'));
     }, true);
 
     await this.check('5. UI components created', async () => {
-      return fs.existsSync(path.join(__dirname, '..', 'bulgarian-car-marketplace', 'src', 'components', 'Profile', 'Forms', 'DealershipProfileForm.tsx')) &&
-             fs.existsSync(path.join(__dirname, '..', 'bulgarian-car-marketplace', 'src', 'components', 'Profile', 'ProfileTypeSwitcher.tsx'));
+      return fs.existsSync(path.join(__dirname, '..', 'koli-one', 'src', 'components', 'Profile', 'Forms', 'DealershipProfileForm.tsx')) &&
+             fs.existsSync(path.join(__dirname, '..', 'koli-one', 'src', 'components', 'Profile', 'ProfileTypeSwitcher.tsx'));
     }, true);
 
     await this.check('6. ProfilePage split complete', async () => {
-      return fs.existsSync(path.join(__dirname, '..', 'bulgarian-car-marketplace', 'src', 'pages', 'ProfilePage', 'layout', 'TabNavigation.tsx')) &&
-             fs.existsSync(path.join(__dirname, '..', 'bulgarian-car-marketplace', 'src', 'pages', 'ProfilePage', 'hooks', 'useProfileData.ts'));
+      return fs.existsSync(path.join(__dirname, '..', 'koli-one', 'src', 'pages', 'ProfilePage', 'layout', 'TabNavigation.tsx')) &&
+             fs.existsSync(path.join(__dirname, '..', 'koli-one', 'src', 'pages', 'ProfilePage', 'hooks', 'useProfileData.ts'));
     }, true);
 
     // Warning-level checks

@@ -1,6 +1,6 @@
 import { logger } from '../services/logger-service';
 // src/components/RatingList.tsx
-// Rating list component for Bulgarian Car Marketplace
+// Rating list component for Koli One
 
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';

@@ -1,5 +1,5 @@
 // src/pages/CarsPage.tsx
-// Cars Page for Bulgarian Car Marketplace - Modern & Professional Design
+// Cars Page for Koli One - Modern & Professional Design
 // صفحة عرض السيارات مع بحث بالكلمات المفتاحية والذكاء الاصطناعي
 // ⚡ Performance Optimized with Firebase Caching + AI Smart Search
 //

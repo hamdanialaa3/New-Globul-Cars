@@ -6,7 +6,7 @@
 # خطة موحّدة (منزوعة التكرار) لمشروع New Globul Cars
 
 ## 0. ملخص تنفيذي
-- الاسم: New Globul Cars (mobilebg.eu) — بلغاريا، أوروبا
+- الاسم: New Globul Cars (koli.one) — بلغاريا، أوروبا
 - الحالة: 🟢 إنتاج نشط | الإنجاز ~99%
 - التقنيات: React 18 + TypeScript (Strict) + Firebase (Firestore/Functions/Storage/Auth) + Algolia + Stripe + i18next (BG/EN)
 - الإحصاءات: 776 مكون React، 727 ملف TS، 404 خدمة، 286 صفحة، 80+ مسار، ~186K سطر كود، 12 Cloud Function (Node.js 20)
@@ -70,7 +70,7 @@ Copilot said: # 🏗️ تقرير فحص شامل لمشروع New-Globul-Cars 
 <div dir="rtl">
 📋 ملخص تنفيذي (Executive Summary)
 🎯 نظرة عامة على المشروع:
-الاسم: New Globul Cars (mobilebg.eu)
+الاسم: New Globul Cars (koli.one)
 الموقع: بلغاريا، أوروبا
 الهدف: منصة متطورة لبيع السيارات للبائعين المتعددين مع تقنيات حديثة
 التقنيات: React 18 + TypeScript (Strict) + Firebase + Algolia
@@ -378,7 +378,7 @@ smart-search.service.ts
 🌐 9. النشر والاستضافة (Deployment & Hosting)
 🔥 Firebase Hosting:
 YAML
-Domain:      https://mobilebg.eu
+Domain:      https://koli.one
 Provider:    Firebase Hosting
 CDN:         Google Cloud CDN (عالمي)
 SSL:         ✅ مُفعّل تلقائياً
@@ -2197,7 +2197,7 @@ YAML
 
 الإجراءات: 
   ✅ إعلانات مقارنة مباشرة: 
-     "mobile.bg vs mobilebg.eu"
+     "mobile.bg vs koli.one"
      "تقنية 2024 vs تقنية 2004"
      "شراء ذكي vs الطريقة القديمة"
 
@@ -3014,7 +3014,7 @@ bash
 حسّن التقنية (يوم 3-4)
 أطلق الميزات الثورية (يوم 5-6)
 ابدأ التسويق (يوم 7)
-في خلال 90 يوماً، سيتحدث الجميع عن mobilebg.eu
+في خلال 90 يوماً، سيتحدث الجميع عن koli.one
 
 في خلال 180 يوماً، سنكون التهديد الحقيقي لـ mobile.bg
 
@@ -3541,13 +3541,13 @@ jobs:
           # روابط الموقع
           echo ""
           echo "🌐 Hosting URLs:"
-          echo "   Production: https://mobilebg.eu"
+          echo "   Production: https://koli.one"
           echo "   Firebase:    https://fire-new-globul.web. app"
           
           # اختبار الاتصال
           echo ""
           echo "🔍 Testing site availability..."
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://mobilebg.eu)
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://koli.one)
           if [ $HTTP_CODE -eq 200 ]; then
             echo "   ✅ Site is reachable (HTTP $HTTP_CODE)"
           else
@@ -4391,7 +4391,7 @@ export const autoIndexNewCar = onDocumentCreated({
   
   // بناء URL السيارة
   const numericId = carData.numericId || carId;
-  const carUrl = `https://mobilebg.eu/car/${numericId}`;
+  const carUrl = `https://koli.one/car/${numericId}`;
   
   try {
     await submitUrlForIndexing(carUrl, 'URL_UPDATED');
@@ -4450,7 +4450,7 @@ export const scheduledIndexing = onSchedule({
       for (const doc of snapshot.docs) {
         const carData = doc.data();
         const numericId = carData.numericId || doc.id;
-        const carUrl = `https://mobilebg.eu/car/${numericId}`;
+        const carUrl = `https://koli.one/car/${numericId}`;
         
         try {
           await submitUrlForIndexing(carUrl, 'URL_UPDATED');
@@ -5387,7 +5387,7 @@ git push origin main
 
 # CI/CD ينشر تلقائياً
 Step 5: Verify Deployment
- افتح https://mobilebg.eu
+ افتح https://koli.one
  تحقق من الصفحة الرئيسية
  جرّب البحث
  جرّب إنشاء إعلان
@@ -5409,7 +5409,7 @@ git push origin main
 firebase deploy --only hosting --project fire-new-globul
 
 # 3. تحقق من العودة
-curl https://mobilebg.eu
+curl https://koli.one
 📊 Metrics to Monitor
 بعد النشر، راقب:
 

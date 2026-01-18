@@ -358,7 +358,7 @@ const AdminDashboard: React.FC = () => {
               <AdminInput
                 type="text"
                 placeholder={t('admin.siteName', 'Site Name')}
-                defaultValue="Bulgarian Car Marketplace"
+                defaultValue="Koli One"
               />
               <AdminInput
                 type="text"

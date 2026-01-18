@@ -1,6 +1,6 @@
 # 📦 الجرد الكامل للمشروع - Complete Project Inventory
 
-## Bulgarian Car Marketplace (Bulgarski Avtomobili) - التفصيل الممل الشامل
+## Koli One (Koli One) - التفصيل الممل الشامل
 
 > **التاريخ:** 10 يناير 2026  
 > **الحالة:** ✅ Production-Ready  

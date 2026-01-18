@@ -1,5 +1,5 @@
 // src/services/error-handling-service.ts
-// Unified Error Handling Service for Bulgarian Car Marketplace
+// Unified Error Handling Service for Koli One
 
 import { serviceLogger } from './logger-service';
 

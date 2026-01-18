@@ -1,5 +1,5 @@
 // Centralized Background Configuration
-// Professional Metal Textures for Bulgarian Car Marketplace
+// Professional Metal Textures for Koli One
 
 export const BACKGROUNDS = {
   // Metal BG 1 - Premium plate with frame (Best for HomePage)

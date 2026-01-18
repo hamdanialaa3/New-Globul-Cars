@@ -303,7 +303,7 @@ export const ExtendedSellerInfo: React.FC<ExtendedSellerInfoProps> = ({ car, lan
             <Footer>
                 <FooterGrid>
                     <FooterColumn>
-                        <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>Bulgarski Avtomobili</h3>
+                        <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>Koli One</h3>
                         <p style={{ fontSize: '14px', color: '#ccc' }}>
                             Най-добрата платформа за купуване и продажба на автомобили в България.
                         </p>
@@ -341,13 +341,13 @@ export const ExtendedSellerInfo: React.FC<ExtendedSellerInfoProps> = ({ car, lan
                             ул. Цар Симеон 77, София 1000<br />
                             България<br /><br />
                             +359 2 123 4567<br />
-                            info@mobilebg.eu
+                            info@koli.one
                         </div>
                     </FooterColumn>
                 </FooterGrid>
 
                 <Copyright>
-                    © 2026 Bulgarski Avtomobili. Всички права запазени.<br />
+                    © 2026 Koli One. Всички права запазени.<br />
                     <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'center', gap: '1rem' }}>
                         <FooterLink href="/privacy">Политика за поверителност</FooterLink>
                         <FooterLink href="/terms">Условия за ползване</FooterLink>

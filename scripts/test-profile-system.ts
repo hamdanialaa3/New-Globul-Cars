@@ -10,10 +10,10 @@
 
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-import { ProfileService } from '../bulgarian-car-marketplace/src/services/profile/ProfileService';
-import { DealershipRepository } from '../bulgarian-car-marketplace/src/repositories/DealershipRepository';
-import { CompanyRepository } from '../bulgarian-car-marketplace/src/repositories/CompanyRepository';
-import { PermissionsService } from '../bulgarian-car-marketplace/src/services/profile/PermissionsService';
+import { ProfileService } from '../koli-one/src/services/profile/ProfileService';
+import { DealershipRepository } from '../koli-one/src/repositories/DealershipRepository';
+import { CompanyRepository } from '../koli-one/src/repositories/CompanyRepository';
+import { PermissionsService } from '../koli-one/src/services/profile/PermissionsService';
 
 const firebaseConfig = {
   projectId: process.env.FIREBASE_PROJECT_ID || 'fire-new-globul'
@@ -130,7 +130,7 @@ class ProfileSystemTests {
   async testTypeGuards() {
     await this.runTest('Type Guards - Runtime type checking', async () => {
       const { isDealerProfile, isCompanyProfile, isPrivateProfile } = 
-        await import('../bulgarian-car-marketplace/src/types/user/bulgarian-user.types');
+        await import('../koli-one/src/types/user/bulgarian-user.types');
 
       const dealerUser: any = { profileType: 'dealer' };
       if (!isDealerProfile(dealerUser)) {

@@ -86,7 +86,7 @@ pricing_cache/
 
 ### External APIs:
 - **Google Gemini 2.5 Flash** (AI Analysis)
-- **Bulgarian Car Marketplaces** (Scraping)
+- **Koli Ones** (Scraping)
 
 ---
 

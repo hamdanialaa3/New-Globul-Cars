@@ -1,4 +1,4 @@
-# Complete Feature List - Bulgarski Mobili
+# Complete Feature List - Koli One
 ## Comprehensive Inventory of All Implemented Features
 
 > **Version**: 1.0.0

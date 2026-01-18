@@ -1098,7 +1098,7 @@ service cloud.firestore {
 ### الملفات الأساسية لنظام البحث:
 
 ```
-📁 bulgarian-car-marketplace/
+📁 koli-one/
 │
 ├── 📁 src/
 │   ├── 📁 pages/

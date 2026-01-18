@@ -783,7 +783,7 @@ const MobileHeader: React.FC = () => {
           </MenuButton>
 
           <Logo onClick={() => navigate('/')}>
-            Bulgarski Mobili
+            Koli One
           </Logo>
 
           <UserSection ref={settingsRef}>
@@ -826,7 +826,7 @@ const MobileHeader: React.FC = () => {
       {/* DRAWER MENU */}
       <MenuDrawer $isOpen={isMenuOpen}>
         <MenuHeader>
-          <MenuLogo>Bulgarski Mobili</MenuLogo>
+          <MenuLogo>Koli One</MenuLogo>
           <CloseButton type="button" onClick={() => setIsMenuOpen(false)}>
             <XIcon />
           </CloseButton>

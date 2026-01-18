@@ -428,7 +428,7 @@ const BillingPage: React.FC = () => {
 
         <ContactInfo>
           <strong>📧 {t('billing.email') || 'Email'}:</strong>
-          <a href="mailto:support@mobilebg.eu">support@mobilebg.eu</a>
+          <a href="mailto:support@koli.one">support@koli.one</a>
 
           <strong style={{ marginTop: '12px' }}>💬 {t('billing.whatsapp') || 'WhatsApp'}:</strong>
           <a href="https://wa.me/359879839671" target="_blank" rel="noopener noreferrer">

@@ -173,7 +173,7 @@ class GeminiChatService {
     const language = languageMap[context.language || 'en'];
     
     let prompt = `
-      You are an expert AI assistant for the Bulgarian Car Marketplace project.
+      You are an expert AI assistant for the Koli One project.
       
       Context:
       - Page: ${context.page || 'general'}

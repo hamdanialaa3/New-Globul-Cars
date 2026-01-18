@@ -141,7 +141,7 @@ exports.sendMessageNotification = functions
                     : notification.messageType === 'offer'
                         ? `Offer: ${notification.content}`
                         : 'Sent you an image',
-                clickAction: `https://mobilebg.eu/messages-v2?channel=${notification.channelId}`,
+                clickAction: `https://koli.one/messages-v2?channel=${notification.channelId}`,
                 icon: '/logo192.png',
                 badge: '/logo192.png'
             },

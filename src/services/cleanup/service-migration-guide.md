@@ -27,11 +27,11 @@ Old services that have been replaced by unified services:
 
 ```bash
 # Find all imports of deprecated services
-grep -r "from.*carDataService" bulgarian-car-marketplace/src/
-grep -r "from.*carListingService" bulgarian-car-marketplace/src/
-grep -r "from.*carService" bulgarian-car-marketplace/src/
-grep -r "from.*firebase-auth-users-service" bulgarian-car-marketplace/src/
-grep -r "from.*notificationService" bulgarian-car-marketplace/src/
+grep -r "from.*carDataService" koli-one/src/
+grep -r "from.*carListingService" koli-one/src/
+grep -r "from.*carService" koli-one/src/
+grep -r "from.*firebase-auth-users-service" koli-one/src/
+grep -r "from.*notificationService" koli-one/src/
 ```
 
 ### Phase 3: Update Imports ⏳

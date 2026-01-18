@@ -1,5 +1,5 @@
 // Algolia Client Configuration
-// Enhanced service for Bulgarian Car Marketplace
+// Enhanced service for Koli One
 
 import algoliasearch from 'algoliasearch/lite';
 import { SearchClient } from 'algoliasearch/lite';

@@ -1,4 +1,4 @@
-# New Globul Cars - Bulgarian Car Marketplace
+# New Globul Cars - Koli One
 
 A modern, feature-rich React + TypeScript application for buying, selling, and trading cars in Bulgaria.
 
@@ -8,7 +8,7 @@ A modern, feature-rich React + TypeScript application for buying, selling, and t
 
 ## 📋 Quick Links
 
-- **Live App:** https://mobilebg.eu (Bulgarian Car Marketplace)
+- **Live App:** https://koli.one (Koli One)
 - **GitHub:** https://github.com/hamdanialaa3/New-Globul-Cars
 - **Firebase Console:** https://console.firebase.google.com/project/fire-new-globul
 - **Google Cloud IAM:** https://console.cloud.google.com/iam-admin/iam?project=fire-new-globul
@@ -229,7 +229,7 @@ Security rules are enforced at the Firestore/Storage level. See Firebase Console
 
 ## 🌐 Custom Domain
 
-**Domain:** https://mobilebg.eu  
+**Domain:** https://koli.one  
 **Provider:** Custom domain connected to Firebase Hosting  
 **SSL:** Auto-managed by Firebase
 
@@ -250,7 +250,7 @@ This project is proprietary software. Unauthorized copying or distribution is pr
 
 ## 👥 Team
 
-**Project:** Bulgarian Car Marketplace  
+**Project:** Koli One  
 **Framework:** React 18 + TypeScript  
 **Backend:** Firebase (Firestore, Auth, Functions, Hosting)  
 **Last Updated:** January 9, 2026

@@ -7,7 +7,7 @@
  * Runs daily at 3 AM (Bulgaria timezone)
  * 
  * @since January 6, 2026
- * @author Bulgarian Car Marketplace Team
+ * @author Koli One Team
  */
 
 import * as functions from "firebase-functions";

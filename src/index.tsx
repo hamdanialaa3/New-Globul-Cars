@@ -1,5 +1,5 @@
 // src/index.tsx
-// Entry point for Bulgarian Car Marketplace
+// Entry point for Koli One
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -53,7 +53,7 @@ if (process.env.NODE_ENV === 'development') {
   }
 }
 
-// Bulgarian Car Marketplace
+// Koli One
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );

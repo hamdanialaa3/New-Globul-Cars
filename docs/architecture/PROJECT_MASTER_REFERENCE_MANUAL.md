@@ -1,5 +1,5 @@
 # Project Master Reference Manual (The Bible)
-## The Source of Truth for "Bulgarski Mobili" (New Globul Cars)
+## The Source of Truth for "Koli One" (New Globul Cars)
 
 > **Version**: 4.0.0 (Phase 4.1 - Stories System + Complete Audit)
 > **Last Updated**: December 27, 2025
@@ -22,7 +22,7 @@ This document is the **absolute reference** for the entire codebase. It describe
 
 ## 🏗️ 1. Project Architecture (From A to Z)
 
-**Bulgarski Mobili** is a high-performance Single Page Application (SPA) designed to dominate the Bulgarian automotive market.
+**Koli One** is a high-performance Single Page Application (SPA) designed to dominate the Bulgarian automotive market.
 
 ### 1.1 Technology Stack
 *   **Frontend Core**: React 18.3.1 (Functional Components, Hooks)
@@ -97,7 +97,7 @@ src/
 The platform **rejects UUIDs** in public URLs. It uses a strict, localized numeric system as defined in the **Constitution**.
 
 *   **Logic**: Every user gets a sequential `numericId`. Every car they sell gets a sequential `carNumericId`.
-*   **URL Format**: `mobilebg.eu/car/{UserNumericID}/{CarNumericID}`
+*   **URL Format**: `koli.one/car/{UserNumericID}/{CarNumericID}`
     *   *Correct*: `/car/80/2` (User #80's 2nd car).
     *   *Forbidden*: `/car-details/UUID-1234`.
 *   **Implementation**: `src/services/numeric-car-system.service.ts`

@@ -1,6 +1,6 @@
 // src/components/ImageUpload.tsx
-// Image Upload Component for Bulgarian Car Marketplace
-// Image Upload component for Bulgarian Car Marketplace
+// Image Upload Component for Koli One
+// Image Upload component for Koli One
 
 import React, { useState, useCallback, useRef } from 'react';
 import styled from 'styled-components';

@@ -45,7 +45,7 @@ exports.syncCarsToGoogleAds = functions
                 headline2: `${car.price.toLocaleString()} ${car.currency || 'EUR'}`,
                 headline3: (((_a = car.locationData) === null || _a === void 0 ? void 0 : _a.cityName) || 'Bulgaria'),
                 description: (car.description || '').substring(0, 80) || `${car.make} ${car.model} for sale`,
-                finalUrl: `https://mobilebg.eu/car/${car.sellerNumericId}/${car.carNumericId}`,
+                finalUrl: `https://koli.one/car/${car.sellerNumericId}/${car.carNumericId}`,
                 imageUrl: ((_b = car.images) === null || _b === void 0 ? void 0 : _b[0]) || car.mainImage,
             };
         }).filter(Boolean); // Remove nulls

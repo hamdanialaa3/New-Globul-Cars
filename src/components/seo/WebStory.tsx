@@ -425,16 +425,16 @@ export function generateCarWebStory(car: any, sellerName: string): WebStoryData 
     return {
         id: `car-story-${car.id}`,
         title: `${car.make} ${car.model} ${car.year} - ${car.price}€`,
-        publisher: 'Bulgarski Avtomobili',
-        publisherLogo: 'https://mobilebg.eu/logo192.png',
-        posterImage: images[0] || 'https://mobilebg.eu/default-car.jpg',
+        publisher: 'Koli One',
+        publisherLogo: 'https://koli.one/logo192.png',
+        posterImage: images[0] || 'https://koli.one/default-car.jpg',
         publishedDate: car.createdAt || new Date().toISOString(),
         slides: [
             // Intro slide
             {
                 id: 'intro',
                 type: 'image' as const,
-                src: images[0] || 'https://mobilebg.eu/default-car.jpg',
+                src: images[0] || 'https://koli.one/default-car.jpg',
                 headline: `${car.make} ${car.model}`,
                 description: `${car.year} • ${car.mileage?.toLocaleString() || 'N/A'} км`,
                 duration: 5,

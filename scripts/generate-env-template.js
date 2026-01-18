@@ -91,7 +91,7 @@ function generateTemplate() {
   const templatePath = path.join(appDir, '.env.template');
   const envPath = path.join(appDir, '.env');
   
-  let template = `# Bulgarian Car Marketplace - Environment Variables Template
+  let template = `# Koli One - Environment Variables Template
 # Generated: ${new Date().toISOString()}
 # Copy this file to .env and fill in your actual values
 

@@ -159,7 +159,7 @@ project_id: fire-new-globul
 
 ✅ Deployment Successful!
 🌐 Hosting: https://fire-new-globul.web.app
-🌐 Custom Domain: https://mobilebg.eu
+🌐 Custom Domain: https://koli.one
 ```
 
 ---

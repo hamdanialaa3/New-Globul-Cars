@@ -1,4 +1,4 @@
-// Professional Notifications Page for Bulgarian Car Marketplace
+// Professional Notifications Page for Koli One
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../../../hooks/useAuth';
 import { useLanguage } from '../../../../contexts/LanguageContext';

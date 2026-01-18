@@ -1,4 +1,4 @@
-// Typography System - Bulgarian Car Marketplace
+// Typography System - Koli One
 // نظام الطباعة الموحد - سوق السيارات البلغاري
 
 export const typography = {

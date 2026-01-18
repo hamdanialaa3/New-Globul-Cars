@@ -708,8 +708,8 @@ const LoginPageGlassFixed: React.FC = () => {
         </TitleWrapper>
         <Subtitle>
           {language === 'bg'
-            ? 'Добре дошли обратно в Bulgarian Car Marketplace'
-            : 'Welcome back to Bulgarian Car Marketplace'}
+            ? 'Добре дошли обратно в Koli One'
+            : 'Welcome back to Koli One'}
         </Subtitle>
 
         {error && (

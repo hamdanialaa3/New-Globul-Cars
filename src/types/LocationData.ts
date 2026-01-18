@@ -1,4 +1,4 @@
-// Location Data Types - Unified Structure for Bulgarian Car Marketplace
+// Location Data Types - Unified Structure for Koli One
 // بنية موحدة لبيانات الموقع - بلغاريا فقط
 
 /**

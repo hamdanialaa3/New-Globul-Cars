@@ -1,4 +1,4 @@
-// Comprehensive Dropdown Options for Bulgarian Car Marketplace
+// Comprehensive Dropdown Options for Koli One
 // بيانات شاملة للقوائم المنسدلة في سوق السيارات البلغاري
 
 export interface DropdownOption {

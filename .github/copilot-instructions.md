@@ -1,4 +1,4 @@
-# Copilot Instructions: Bulgarian Car Marketplace
+# Copilot Instructions: Koli One
 
 **Updated:** January 18, 2026 | **Stack:** React 18.3 + TS 5.6 (strict) + Styled-Components | Firebase 12 | Algolia  
 **Project Size:** 795 components | 780+ TS files | 410+ services | 290 pages | 85+ routes | 195,000+ LOC  
@@ -262,7 +262,7 @@ const {
 | **Revolut** | Revolut Bank UAB | LT44 3250 0419 1285 4116 | Instant   | International            |
 
 **Beneficiary:** Alaa Al-Hamadani  
-**Contact:** support@mobilebg.eu | +359 87 983 9671
+**Contact:** support@koli.one | +359 87 983 9671
 
 ### Plans & Limits (Current)
 
@@ -617,7 +617,7 @@ numeric_ids collection → Maps numeric → Firebase UID
 
 - SPA with rewrites for sitemap & merchant feed
 - Firebase Hosting with CDN
-- Custom domain: mobilebg.eu
+- Custom domain: koli.one
 
 ### Emulator Setup
 

@@ -15,7 +15,7 @@ You asked me to read PROJECT_TARGET and compare it with your current project.
 - 24 Cloud Functions
 - Multiple AI providers (Gemini, OpenAI, DeepSeek)
 - Manual bank payment system
-- **Live in production at mobilebg.eu**
+- **Live in production at koli.one**
 
 ### PROJECT_TARGET Vision 🎯
 - AI-native development platform (not a car marketplace)

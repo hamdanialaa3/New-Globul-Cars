@@ -1,5 +1,5 @@
 // src/firebase/firebase-config.ts
-// Firebase Configuration for Bulgarian Car Marketplace
+// Firebase Configuration for Koli One
 
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';

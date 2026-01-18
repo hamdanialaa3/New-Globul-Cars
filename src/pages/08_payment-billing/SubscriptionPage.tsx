@@ -1,5 +1,5 @@
 // src/pages/SubscriptionPage.tsx - ENHANCED VERSION
-// World-Class Subscription Page for Bulgarian Car Marketplace
+// World-Class Subscription Page for Koli One
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';

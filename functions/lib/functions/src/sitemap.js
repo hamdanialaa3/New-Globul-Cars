@@ -10,7 +10,7 @@ exports.sitemap = functions
 })
     .https.onRequest(async (req, res) => {
     try {
-        const baseUrl = 'https://mobilebg.eu';
+        const baseUrl = 'https://koli.one';
         const xml = await (0, sitemap_generator_1.generateCompleteSitemap)(baseUrl);
         res.set('Content-Type', 'application/xml');
         res.set('Cache-Control', 'public, max-age=3600'); // Cache 1 hour

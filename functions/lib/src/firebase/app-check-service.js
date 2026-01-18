@@ -1,6 +1,6 @@
 "use strict";
 // src/firebase/app-check-service.ts
-// App Check Service for Bulgarian Car Marketplace
+// App Check Service for Koli One
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BulgarianAppCheckService = void 0;
 const app_check_1 = require("firebase/app-check");

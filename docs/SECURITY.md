@@ -1,5 +1,5 @@
 # Security Best Practices Guide
-**Bulgarian Car Marketplace - Security Documentation**
+**Koli One - Security Documentation**
 
 ## Overview
 This document outlines the security measures implemented in the project to protect sensitive data and ensure safe operations.
@@ -73,7 +73,7 @@ Current rules enforce:
 ### API Key Restrictions
 All public API keys should have restrictions:
 - **Firebase**: Enable App Check
-- **Google Maps**: Restrict to domain (mobilebg.eu)
+- **Google Maps**: Restrict to domain (koli.one)
 - **Algolia**: Use search-only key, not admin key
 
 ## 5. Authentication

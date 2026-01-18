@@ -326,7 +326,7 @@ const IntegrationStatusDashboard: React.FC = () => {
     <Dashboard>
       <Header>
         <Title>🚀 حالة التكامل السحابي</Title>
-        <Subtitle>Bulgarian Car Marketplace - Cloud Services Integration</Subtitle>
+        <Subtitle>Koli One - Cloud Services Integration</Subtitle>
       </Header>
 
       <OverallStatus>

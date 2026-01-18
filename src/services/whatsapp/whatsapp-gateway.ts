@@ -25,7 +25,7 @@ class WhatsAppGateway {
     const body = [
       `Здравейте, ${params.buyerName} се интересува от: ${params.carTitle}.`,
       params.message ? `Съобщение: ${params.message}` : null,
-      'Изпратено от Bulgarski Mobili'
+      'Изпратено от Koli One'
     ]
       .filter(Boolean)
       .join('\n');

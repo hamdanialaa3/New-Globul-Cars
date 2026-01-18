@@ -1,6 +1,6 @@
 import { logger } from '../services/logger-service';
 // src/components/CarValuation.tsx
-// AI-Powered Car Valuation Component for Bulgarian Car Marketplace
+// AI-Powered Car Valuation Component for Koli One
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { httpsCallable } from 'firebase/functions';

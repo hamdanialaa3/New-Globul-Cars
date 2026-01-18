@@ -1,6 +1,6 @@
 "use strict";
 // src/firebase/firebase-config.ts
-// Firebase Configuration for Bulgarian Car Marketplace
+// Firebase Configuration for Koli One
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BulgarianFirebaseUtils = exports.analytics = exports.appCheck = exports.realtimeDb = exports.functions = exports.storage = exports.db = exports.auth = void 0;
 const app_1 = require("firebase/app");

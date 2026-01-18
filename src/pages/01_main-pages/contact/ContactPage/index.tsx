@@ -1,5 +1,5 @@
 // src/pages/ContactPage.tsx
-// Contact Page for Bulgarian Car Marketplace
+// Contact Page for Koli One
 
 import React, { useState } from 'react';
 import styled from 'styled-components';

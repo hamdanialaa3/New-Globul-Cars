@@ -1,5 +1,5 @@
 // src/components/RatingDisplay.tsx
-// Rating display component for Bulgarian Car Marketplace
+// Rating display component for Koli One
 
 import React from 'react';
 import styled from 'styled-components';

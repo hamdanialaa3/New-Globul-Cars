@@ -1,5 +1,5 @@
 // src/App.tsx
-// Main App Component for Bulgarian Car Marketplace
+// Main App Component for Koli One
 // Refactored to use AppProviders and AppRoutes for reduced complexity
 
 import React from 'react';

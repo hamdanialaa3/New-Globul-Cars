@@ -1,5 +1,5 @@
 // src/utils/seo.ts
-// SEO utilities for Bulgarian Car Marketplace
+// SEO utilities for Koli One
 
 import { UnifiedCar } from '../services/car/unified-car-types';
 

@@ -1,5 +1,5 @@
 // src/pages/HelpPage.tsx
-// Help Page for Bulgarian Car Marketplace
+// Help Page for Koli One
 
 import React, { useState } from 'react';
 import styled from 'styled-components';

@@ -26,7 +26,7 @@ if (!admin.apps.length) {
 // CONFIGURATION
 // ============================================================================
 const INDEXNOW_KEY = process.env.INDEXNOW_KEY || 'your-indexnow-key-here';
-const SITE_HOST = 'mobilebg.eu';
+const SITE_HOST = 'koli.one';
 const KEY_LOCATION = `https://${SITE_HOST}/${INDEXNOW_KEY}.txt`;
 // IndexNow endpoints (multiple for redundancy)
 const INDEXNOW_ENDPOINTS = [

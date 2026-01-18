@@ -1,6 +1,6 @@
 import { logger } from '../services/logger-service';
 // src/components/AddRatingForm.tsx
-// Add rating form component for Bulgarian Car Marketplace
+// Add rating form component for Koli One
 
 import React, { useState } from 'react';
 import styled from 'styled-components';

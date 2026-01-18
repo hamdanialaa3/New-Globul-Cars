@@ -1,5 +1,5 @@
 // src/pages/SitemapPage.tsx
-// Sitemap Page for Bulgarian Car Marketplace
+// Sitemap Page for Koli One
 
 import React from 'react';
 import styled from 'styled-components';

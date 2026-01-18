@@ -35,7 +35,7 @@ exports.merchantFeed = functions
         res.set('Content-Type', 'application/xml; charset=utf-8');
         res.set('Cache-Control', 'public, max-age=3600'); // Cache for 1 hour
         // Base URL (UPDATE THIS to your production domain)
-        const baseUrl = process.env.BASE_URL || 'https://mobilebg.eu';
+        const baseUrl = process.env.BASE_URL || 'https://koli.one';
         // Fetch active car listings from all vehicle collections
         const vehicleCollections = [
             'cars',
@@ -86,7 +86,7 @@ function generateMerchantFeedXML(cars, baseUrl) {
     const header = `<?xml version="1.0" encoding="UTF-8"?>
 <rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">
   <channel>
-    <title>Bulgarski Mobili - Автомобили</title>
+    <title>Koli One - Автомобили</title>
     <link>${baseUrl}</link>
     <description>Купувайте и продавайте автомобили в България</description>
 `;

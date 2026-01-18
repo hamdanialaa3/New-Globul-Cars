@@ -1,5 +1,5 @@
 // src/pages/AdminDashboard.tsx
-// Admin Dashboard Page for Bulgarian Car Marketplace
+// Admin Dashboard Page for Koli One
 
 import React, { useState, useEffect } from 'react';
 import { logger } from '../../../../services/logger-service';

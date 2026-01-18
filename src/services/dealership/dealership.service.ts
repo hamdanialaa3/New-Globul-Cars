@@ -1,6 +1,6 @@
 /**
  * Dealership Service
- * Handles dealership/showroom profile management for Bulgarian Car Marketplace
+ * Handles dealership/showroom profile management for Koli One
  */
 
 import { 

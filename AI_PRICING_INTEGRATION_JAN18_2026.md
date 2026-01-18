@@ -825,4 +825,4 @@ private getAIAnalysis(specs: CarSpecs): Promise<string> {
 
 ---
 
-**© 2026 Bulgarian Car Marketplace - All Rights Reserved**
+**© 2026 Koli One - All Rights Reserved**

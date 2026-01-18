@@ -1,5 +1,5 @@
 // src/pages/PrivacyPolicyPage.tsx
-// Privacy Policy Page for Bulgarian Car Marketplace
+// Privacy Policy Page for Koli One
 // (Comment removed - was in Arabic)
 
 import React from 'react';
@@ -83,7 +83,7 @@ const PrivacyPolicyPage: React.FC = () => {
     bg: {
       title: "Политика за Поверителност",
       lastUpdated: "Последна актуализация: 26 септември 2025",
-      intro: "Bulgarian Car Marketplace се ангажира да защити вашата лична информация и право на поверителност. Тази политика за поверителност описва как събираме, използваме и защитаваме вашата информация.",
+      intro: "Koli One се ангажира да защити вашата лична информация и право на поверителност. Тази политика за поверителност описва как събираме, използваме и защитаваме вашата информация.",
       
       section1: {
         title: "1. Информация, която събираме",
@@ -101,7 +101,7 @@ const PrivacyPolicyPage: React.FC = () => {
         title: "2. Как използваме вашата информация",
         content: "Използваме събраната информация за:",
         items: [
-          "Предоставяне на услугите на Bulgarian Car Marketplace",
+          "Предоставяне на услугите на Koli One",
           "Обработка на обяви за автомобили",
           "Свързване на купувачи и продавачи",
           "Подобряване на потребителското изживяване",
@@ -206,7 +206,7 @@ const PrivacyPolicyPage: React.FC = () => {
       contact: {
         title: "9. Контакт",
         content: "За въпроси относно тази политика за поверителност:",
-        company: "Bulgarian Car Marketplace EOOD",
+        company: "Koli One EOOD",
         address: "гр. София, България",
         email: "privacy@bulgariancarmarketplace.com",
         phone: "+359 888 123 456",
@@ -222,7 +222,7 @@ const PrivacyPolicyPage: React.FC = () => {
     en: {
       title: "Privacy Policy",
       lastUpdated: "Last updated: September 26, 2025",
-      intro: "Bulgarian Car Marketplace is committed to protecting your personal information and your right to privacy. This privacy policy describes how we collect, use, and protect your information.",
+      intro: "Koli One is committed to protecting your personal information and your right to privacy. This privacy policy describes how we collect, use, and protect your information.",
       
       section1: {
         title: "1. Information We Collect",
@@ -240,7 +240,7 @@ const PrivacyPolicyPage: React.FC = () => {
         title: "2. How We Use Your Information",
         content: "We use the collected information to:",
         items: [
-          "Provide Bulgarian Car Marketplace services",
+          "Provide Koli One services",
           "Process vehicle listings",
           "Connect buyers and sellers",
           "Improve user experience",
@@ -345,7 +345,7 @@ const PrivacyPolicyPage: React.FC = () => {
       contact: {
         title: "9. Contact",
         content: "For questions about this privacy policy:",
-        company: "Bulgarian Car Marketplace EOOD",
+        company: "Koli One EOOD",
         address: "Sofia, Bulgaria",
         email: "privacy@bulgariancarmarketplace.com",
         phone: "+359 888 123 456",

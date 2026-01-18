@@ -170,8 +170,8 @@ const BrandCityPage: React.FC = () => {
 
   const seoData = {
     title: language === 'bg' 
-      ? `${brandDisplay} в ${cityInfo.bg} - Продажба на коли - Bulgarski Avtomobili`
-      : `${brandDisplay} in ${cityInfo.bg} - Car Sales - Bulgarski Avtomobili`,
+      ? `${brandDisplay} в ${cityInfo.bg} - Продажба на коли - Koli One`
+      : `${brandDisplay} in ${cityInfo.bg} - Car Sales - Koli One`,
     description: seoDescription,
     keywords: [
       `${brandDisplay.toLowerCase()} ${cityInfo.bg.toLowerCase()}`,

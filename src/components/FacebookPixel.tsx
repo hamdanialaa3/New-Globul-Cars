@@ -1,6 +1,6 @@
 // Facebook Pixel Integration Component
 // Tracks user behavior for advertising optimization
-// Bulgarian Car Marketplace specific events
+// Koli One specific events
 
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';

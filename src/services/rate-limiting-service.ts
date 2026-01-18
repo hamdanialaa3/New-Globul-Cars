@@ -1,5 +1,5 @@
 // src/services/rate-limiting-service.ts
-// Rate Limiting Service for Bulgarian Car Marketplace
+// Rate Limiting Service for Koli One
 
 import { serviceLogger } from './logger-service';
 

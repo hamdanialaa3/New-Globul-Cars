@@ -1,5 +1,5 @@
 // Mobile Design System - Inspired by mobile.de
-// Professional mobile-first design tokens for Bulgarian Car Marketplace
+// Professional mobile-first design tokens for Koli One
 // Focus: Portrait tablets and mobile devices only
 
 import { css } from 'styled-components';

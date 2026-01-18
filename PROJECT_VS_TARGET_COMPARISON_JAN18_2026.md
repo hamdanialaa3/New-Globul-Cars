@@ -24,7 +24,7 @@
 
 ### الكف اليسرى 🖐️ (Current Project - المشروع الحالي)
 **الواقع:** سوق سيارات بلغاري عامل بالكامل  
-**Reality:** Fully-functional Bulgarian car marketplace at mobilebg.eu
+**Reality:** Fully-functional Bulgarian car marketplace at koli.one
 
 **ما تم تنفيذه:**
 - ✅ 477 مكون React | 477 React Components
@@ -33,7 +33,7 @@
 - ✅ نظام دفع يدوي (iCard + Revolut) | Manual bank payment system
 - ✅ AI متعدد المزودين (Gemini, OpenAI, DeepSeek) | Multi-provider AI
 - ✅ قاعدة بيانات Firebase نشطة | Live Firebase backend
-- ✅ **موقع حقيقي نشط:** https://mobilebg.eu | **Live Production Site**
+- ✅ **موقع حقيقي نشط:** https://koli.one | **Live Production Site**
 
 ---
 
@@ -481,7 +481,7 @@ OVERALL PROJECT COMPLETION:    [████████░░] 44.9%  ⚠️
 4. ✅ إمكانية توسع أكبر (B2B platform > B2C marketplace)
 5. ✅ سوق السيارات يصبح proof-of-concept مثالي
 
-**المشروع الحالي (mobilebg.eu) لا يُحذف - يصبح:**
+**المشروع الحالي (koli.one) لا يُحذف - يصبح:**
 - 📚 تطبيق مرجعي للمنصة
 - 🧪 بيئة اختبار للوكلاء الأذكياء
 - 📊 دراسة حالة للعملاء المحتملين
@@ -543,7 +543,7 @@ OVERALL PROJECT COMPLETION:    [████████░░] 44.9%  ⚠️
 │                PROJECT vs TARGET Comparison                 │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
-│  Current Project (mobilebg.eu)     PROJECT_TARGET Vision   │
+│  Current Project (koli.one)     PROJECT_TARGET Vision   │
 │  ═══════════════════════════        ═══════════════════════ │
 │                                                             │
 │  ✅ 477 React Components            🎯 AI-Native Platform   │
@@ -551,7 +551,7 @@ OVERALL PROJECT COMPLETION:    [████████░░] 44.9%  ⚠️
 │  ✅ 24 Cloud Functions              🎯 SDD Governance       │
 │  ✅ Multi-AI (Gemini/OpenAI)        🎯 A2UI Protocol        │
 │  ✅ Manual Bank Payment             🎯 EU AI Act Compliant  │
-│  ✅ Live at mobilebg.eu             🎯 Multi-Region (DACH)  │
+│  ✅ Live at koli.one             🎯 Multi-Region (DACH)  │
 │                                                             │
 │  Status: WORKING PRODUCT ✅         Status: STRATEGIC VISION│
 │  Region: Bulgaria 🇧🇬              Region: All Europe 🇪🇺  │
@@ -593,7 +593,7 @@ OVERALL PROJECT COMPLETION:    [████████░░] 44.9%  ⚠️
 ## ✍️ الخاتمة / Conclusion
 
 ### الواقع الحالي / Current Reality
-لديك **منتج عامل ممتاز** (mobilebg.eu) مع:
+لديك **منتج عامل ممتاز** (koli.one) مع:
 - ✅ 477 مكون احترافي
 - ✅ 420 خدمة منظمة
 - ✅ نظام AI متقدم (23 خدمة)
@@ -626,4 +626,4 @@ PROJECT_TARGET يريد منك بناء **منصة تطوير** وليس سوق 
 
 ---
 
-**© 2026 Bulgarian Car Marketplace - Confidential Strategic Analysis**
+**© 2026 Koli One - Confidential Strategic Analysis**

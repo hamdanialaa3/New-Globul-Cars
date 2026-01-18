@@ -1,5 +1,5 @@
 // Unified Design System - Mobile & Desktop
-// Bulgarian Car Marketplace
+// Koli One
 
 import { css } from 'styled-components';
 

@@ -26,7 +26,7 @@ Add GTM only if:
 ### 1. Create GTM Container
 ```bash
 # Go to: https://tagmanager.google.com
-# Create new account: "Bulgarski Mobili"
+# Create new account: "Koli One"
 # Container type: Web
 # Copy GTM-XXXXXXX ID
 ```

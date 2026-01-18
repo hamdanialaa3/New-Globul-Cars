@@ -104,7 +104,7 @@ export const getFacebookLoginStatus = (): Promise<any> => {
 };
 
 /**
- * Initialize Facebook for Bulgarian Car Marketplace
+ * Initialize Facebook for Koli One
  */
 export const initializeFacebookSDK = async (): Promise<void> => {
   const appId = process.env.REACT_APP_FACEBOOK_APP_ID;

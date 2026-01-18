@@ -32,7 +32,7 @@ class FacebookAutoPostService {
   private pageAccessToken = process.env.REACT_APP_FACEBOOK_PAGE_ACCESS_TOKEN || '';
   
   private baseUrl = 'https://graph.facebook.com/v18.0';
-  private siteBaseUrl = process.env.REACT_APP_BASE_URL || 'https://bulgarskimobili.bg';
+  private siteBaseUrl = process.env.REACT_APP_BASE_URL || 'https://koli.one';
 
   constructor() {
     if (!this.pageAccessToken || !this.pageId) {

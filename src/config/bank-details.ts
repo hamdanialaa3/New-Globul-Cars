@@ -110,7 +110,7 @@ export const BANK_DETAILS: BankDetailsConfig = {
   // Contact Information
   contact: {
     phone: "+359 87 983 9671",
-    email: "support@mobilebg.eu",
+    email: "support@koli.one",
     workAddress: {
       bg: "България, София, Цар Симеон 77",
       en: "Bulgaria, Sofia, Tsar Simeon 77"

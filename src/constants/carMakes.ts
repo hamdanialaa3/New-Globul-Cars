@@ -1,5 +1,5 @@
 // src/constants/carMakes.ts
-// Comprehensive Car Makes List for Bulgarian Car Marketplace
+// Comprehensive Car Makes List for Koli One
 // (Comment removed - was in Arabic)
 
 export const CAR_MAKES = [

@@ -1,5 +1,5 @@
 // src/pages/CookiePolicyPage.tsx
-// Cookie Policy Page for Bulgarian Car Marketplace
+// Cookie Policy Page for Koli One
 
 import React from 'react';
 import styled from 'styled-components';

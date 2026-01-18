@@ -55,7 +55,7 @@ interface CarSEOProps {
  * />
  */
 export const CarSEO: React.FC<CarSEOProps> = ({ car, seller }) => {
-  const baseUrl = process.env.REACT_APP_BASE_URL || 'https://mobilebg.eu';
+  const baseUrl = process.env.REACT_APP_BASE_URL || 'https://koli.one';
 
   // Generate numeric URL (CRITICAL for Google Merchant Center & Ads)
   const canonicalUrl = `${baseUrl}${buildCarUrl(
@@ -64,12 +64,12 @@ export const CarSEO: React.FC<CarSEOProps> = ({ car, seller }) => {
   )}`;
 
   // SEO-friendly title with all critical info
-  const title = `${car.year} ${car.make} ${car.model} - ${car.price}€${car.location ? ` - ${car.location}` : ''} | Bulgarski Mobili`;
+  const title = `${car.year} ${car.make} ${car.model} - ${car.price}€${car.location ? ` - ${car.location}` : ''} | Koli One`;
 
   // Meta description with key specs
   const description = car.description
     ? car.description.slice(0, 155) + (car.description.length > 155 ? '...' : '')
-    : `${car.year} ${car.make} ${car.model} на ${car.price}€. ${car.mileage ? `${car.mileage}км, ` : ''}${car.fuelType || ''} ${car.transmission || ''}. Проверени обяви на Bulgarski Mobili.`;
+    : `${car.year} ${car.make} ${car.model} на ${car.price}€. ${car.mileage ? `${car.mileage}км, ` : ''}${car.fuelType || ''} ${car.transmission || ''}. Проверени обяви на Koli One.`;
 
   // Primary image with fallback
   const primaryImage = car.images?.[0] || `${baseUrl}/default-car.jpg`;
@@ -224,7 +224,7 @@ export const CarSEO: React.FC<CarSEOProps> = ({ car, seller }) => {
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:locale" content="bg_BG" />
-      <meta property="og:site_name" content="Bulgarski Mobili" />
+      <meta property="og:site_name" content="Koli One" />
       <meta property="product:price:amount" content={car.price.toString()} />
       <meta property="product:price:currency" content={car.currency || 'EUR'} />
 

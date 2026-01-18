@@ -260,7 +260,7 @@ const architecture = {
       column: 0,
       row: 6,
       description: "External Car Data Source",
-      details: { "Domain": "mobilebg.eu", "Type": "Web Scraping", "Data": "Car Listings" },
+      details: { "Domain": "koli.one", "Type": "Web Scraping", "Data": "Car Listings" },
       path: null,
       dependencies: []
     },

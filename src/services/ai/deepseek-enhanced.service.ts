@@ -231,16 +231,16 @@ Return JSON: {"riskLevel": "low|medium|high", "confidence": number, "warnings": 
     try {
       const systemPrompts = {
         bg: {
-          general: 'Ти си полезен асистент за автомобилна борса Bulgarski Mobili.',
+          general: 'Ти си полезен асистент за автомобилна борса Koli One.',
           listing: 'Ти си експерт в създаването на обяви за автомобили.',
           search: 'Ти си експерт в намирането на подходящи автомобили.',
-          support: 'Ти си служител на поддръжката за Bulgarski Mobili.'
+          support: 'Ти си служител на поддръжката за Koli One.'
         },
         en: {
-          general: 'You are a helpful assistant for Bulgarski Mobili car marketplace.',
+          general: 'You are a helpful assistant for Koli One car marketplace.',
           listing: 'You are an expert in creating car listings.',
           search: 'You are an expert in finding suitable cars.',
-          support: 'You are a support agent for Bulgarski Mobili.'
+          support: 'You are a support agent for Koli One.'
         }
       };
 

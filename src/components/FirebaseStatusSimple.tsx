@@ -1,4 +1,4 @@
-// Firebase Status Component - Bulgarian Car Marketplace
+// Firebase Status Component - Koli One
 // Development diagnostic tool
 
 import React, { useState, useEffect, useCallback } from 'react';

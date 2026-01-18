@@ -1,6 +1,6 @@
 import { logger } from '../services/logger-service';
 // src/components/SocialLogin.tsx
-// Social Login Component for Bulgarian Car Marketplace
+// Social Login Component for Koli One
 
 import React, { useState } from 'react';
 import styled from 'styled-components';

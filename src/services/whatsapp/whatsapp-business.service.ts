@@ -295,7 +295,7 @@ class WhatsAppBusinessService {
     carNumericId: number;
   }): Promise<boolean> {
     try {
-      const carUrl = `https://bulgarskimobili.bg/car/${car.sellerNumericId}/${car.carNumericId}`;
+      const carUrl = `https://koli.one/car/${car.sellerNumericId}/${car.carNumericId}`;
 
       // Send image with caption
       const caption = `
@@ -337,7 +337,7 @@ ${carUrl}
             title: '🔍 Подобни'
           }
         ],
-        footer: 'Bulgarski Mobili'
+        footer: 'Koli One'
       });
 
       return true;

@@ -50,7 +50,7 @@ function categorizeByFile(results) {
   const byFile = {};
   
   results.forEach(r => {
-    const relPath = r.file.replace(/\\/g, '/').split('bulgarian-car-marketplace/')[1] || r.file;
+    const relPath = r.file.replace(/\\/g, '/').split('koli-one/')[1] || r.file;
     if (!byFile[relPath]) {
       byFile[relPath] = [];
     }

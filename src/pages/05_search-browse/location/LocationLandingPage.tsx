@@ -128,7 +128,7 @@ const LocationLandingPage: React.FC = () => {
                 : `Find ${fuelName} cars ${priceName} in ${cityName}. Great selection!`;
         }
 
-        return { title: `${title} | Bulgarski Avtomobili`, description, h1 };
+        return { title: `${title} | Koli One`, description, h1 };
     };
 
     const seo = generateSEO();
@@ -210,7 +210,7 @@ const LocationLandingPage: React.FC = () => {
                 <title>{seo.title}</title>
                 <meta name="description" content={seo.description} />
                 <meta name="robots" content="index, follow" />
-                <link rel="canonical" href={`https://mobilebg.eu${window.location.pathname}`} />
+                <link rel="canonical" href={`https://koli.one${window.location.pathname}`} />
                 <script type="application/ld+json">{JSON.stringify(schema)}</script>
             </Helmet>
 

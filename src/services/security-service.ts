@@ -1,5 +1,5 @@
 // src/services/security-service.ts
-// Advanced Security Service for Bulgarian Car Marketplace
+// Advanced Security Service for Koli One
 
 import { errorHandler } from './error-handling-service';
 import { rateLimiter } from './rate-limiting-service';

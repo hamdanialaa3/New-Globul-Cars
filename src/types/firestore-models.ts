@@ -1,5 +1,5 @@
 // src/types/firestore-models.ts
-// Firestore data models for Bulgarian Car Marketplace
+// Firestore data models for Koli One
 // Phase -1: Updated to use canonical BulgarianUser type
 
 import { Timestamp } from 'firebase/firestore';

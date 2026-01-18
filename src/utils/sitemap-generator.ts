@@ -41,7 +41,7 @@ export const generateSitemapXML = (urls: SitemapUrl[]): string => {
  * FREE - Query Firestore directly
  * UPDATED: Uses numeric URLs instead of UUIDs
  */
-export const generateCarListingsSitemap = async (baseUrl: string = 'https://mobilebg.eu'): Promise<SitemapUrl[]> => {
+export const generateCarListingsSitemap = async (baseUrl: string = 'https://koli.one'): Promise<SitemapUrl[]> => {
   try {
     const carsRef = collection(db, 'cars');
     const q = query(
@@ -92,7 +92,7 @@ export const generateCarListingsSitemap = async (baseUrl: string = 'https://mobi
  * Generate static pages sitemap
  * FREE - Hardcoded static routes
  */
-export const generateStaticPagesSitemap = (baseUrl: string = 'https://mobilebg.eu'): SitemapUrl[] => {
+export const generateStaticPagesSitemap = (baseUrl: string = 'https://koli.one'): SitemapUrl[] => {
   const today = new Date().toISOString().split('T')[0];
 
   return [
@@ -115,7 +115,7 @@ export const generateStaticPagesSitemap = (baseUrl: string = 'https://mobilebg.e
  * const xml = await generateCompleteSitemap();
  * // Save to public/sitemap.xml or serve dynamically
  */
-export const generateCompleteSitemap = async (baseUrl: string = 'https://mobilebg.eu'): Promise<string> => {
+export const generateCompleteSitemap = async (baseUrl: string = 'https://koli.one'): Promise<string> => {
   const staticUrls = generateStaticPagesSitemap(baseUrl);
   const carUrls = await generateCarListingsSitemap(baseUrl);
 
@@ -128,7 +128,7 @@ export const generateCompleteSitemap = async (baseUrl: string = 'https://mobileb
  * Generate sitemap index (for large sites with multiple sitemaps)
  * FREE - Splits into multiple files if needed
  */
-export const generateSitemapIndex = (sitemapUrls: string[], baseUrl: string = 'https://mobilebg.eu'): string => {
+export const generateSitemapIndex = (sitemapUrls: string[], baseUrl: string = 'https://koli.one'): string => {
   const today = new Date().toISOString().split('T')[0];
 
   const header = '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -156,7 +156,7 @@ import { generateCompleteSitemap } from './sitemap-generator';
 
 export const sitemap = functions.https.onRequest(async (req, res) => {
   try {
-    const xml = await generateCompleteSitemap('https://mobilebg.eu');
+    const xml = await generateCompleteSitemap('https://koli.one');
     
     res.set('Content-Type', 'application/xml');
     res.set('Cache-Control', 'public, max-age=3600'); // Cache 1 hour

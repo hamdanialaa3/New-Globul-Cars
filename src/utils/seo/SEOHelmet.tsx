@@ -68,8 +68,8 @@ export interface SEOHelmetProps {
 // CONSTANTS
 // ============================================================================
 
-const SITE_NAME = 'Bulgarski Avtomobili';
-const SITE_URL = 'https://mobilebg.eu';
+const SITE_NAME = 'Koli One';
+const SITE_URL = 'https://koli.one';
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 const TWITTER_HANDLE = '@bulgarski_auto';
 

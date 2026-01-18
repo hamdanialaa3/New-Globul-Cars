@@ -54,7 +54,7 @@ firebase deploy --only hosting
 
 ### 3. التحقق من النشر
 
-افتح: `https://mobilebg.eu/pricing`
+افتح: `https://koli.one/pricing`
 
 ---
 

@@ -1,5 +1,5 @@
 // src/components/CarBrandIcons.tsx
-// Car Brand Icons with Original Logos for Bulgarian Car Marketplace
+// Car Brand Icons with Original Logos for Koli One
 
 import React from 'react';
 import styled from 'styled-components';

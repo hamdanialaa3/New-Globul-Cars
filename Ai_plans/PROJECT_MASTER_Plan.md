@@ -1,5 +1,5 @@
 # خطة التطوير الاستراتيجية - PROJECT MASTER PLAN
-## Bulgarian Car Marketplace (Bulgarski Mobili) - Strategic Development Roadmap
+## Koli One (Koli One) - Strategic Development Roadmap
 
 **تاريخ التحديث:** 27 ديسمبر 2025  
 **آخر تحليل للكود:** تم تدقيق 2,100+ ملف، 180K+ سطر برمجي  

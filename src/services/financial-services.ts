@@ -1,5 +1,5 @@
 // src/services/financial-services.ts
-// Financial Services for Bulgarian Car Marketplace
+// Financial Services for Koli One
 // Handles finance leads and insurance quotes
 
 import {

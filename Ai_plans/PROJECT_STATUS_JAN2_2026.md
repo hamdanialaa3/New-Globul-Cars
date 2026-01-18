@@ -151,7 +151,7 @@ HTML:
 Project: fire-new-globul
 Status: ✅ LIVE
 URL: https://fire-new-globul.web.app
-Custom Domain: mobilebg.eu
+Custom Domain: koli.one
 SSL: ✅ Active (auto-renewed)
 CDN: ✅ Firebase CDN
 Files: 1,272 (all deployed)
@@ -182,7 +182,7 @@ Security Level: 🔐 ENTERPRISE-GRADE
 
 ---
 
-### 6. Custom Domain - mobilebg.eu
+### 6. Custom Domain - koli.one
 ```
 Status: ✅ CONNECTED & OPERATIONAL
 Provider: Firebase Hosting
@@ -190,7 +190,7 @@ DNS: ✅ Configured
 SSL: ✅ Active
 Redirects: ✅ Working
 
-URL: https://mobilebg.eu/
+URL: https://koli.one/
 Fallback: https://fire-new-globul.web.app
 ```
 
@@ -253,7 +253,7 @@ Fallback: https://fire-new-globul.web.app
 
 | الرابط | الحالة | النوع |
 |--------|--------|-------|
-| `https://mobilebg.eu/` | ✅ LIVE | Primary |
+| `https://koli.one/` | ✅ LIVE | Primary |
 | `https://fire-new-globul.web.app` | ✅ LIVE | Backup |
 | `https://github.com/hamdanialaa3/New-Globul-Cars` | ✅ LIVE | Repository |
 | `https://console.firebase.google.com/project/fire-new-globul` | ✅ LIVE | Console |
@@ -275,7 +275,7 @@ Firebase Project:
    • Status: ✅ Active
 
 Custom Domain:
-   • Domain: mobilebg.eu
+   • Domain: koli.one
    • Provider: Firebase
    • Status: ✅ Connected
 ```
@@ -306,7 +306,7 @@ Custom Domain:
 │                                             │
 │ 🌍 Custom Domain                           │
 │    └─ Status: ✅ CONNECTED                 │
-│    └─ Domain: mobilebg.eu                  │
+│    └─ Domain: koli.one                  │
 │    └─ SSL: ✅ ACTIVE                       │
 │                                             │
 │ 📦 Build Status                            │
@@ -426,7 +426,7 @@ Custom Domain:
 ## 🚀 الخطوات التالية
 
 ### فوراً (اليوم)
-- [ ] اختبر على mobilebg.eu
+- [ ] اختبر على koli.one
 - [ ] تحقق من جميع المسارات
 - [ ] اختبر المصادقة (جميع المزودين)
 
@@ -464,7 +464,7 @@ Custom Domain:
    [x] No deployment errors
 
 ✅ Custom Domain
-   [x] mobilebg.eu connected
+   [x] koli.one connected
    [x] SSL certificate active
    [x] DNS configured
    [x] Redirects working
@@ -493,7 +493,7 @@ Custom Domain:
 ║  ✅ Ready for production                      ║
 ║                                                ║
 ║  🌐 URLs:                                     ║
-║     • https://mobilebg.eu/                    ║
+║     • https://koli.one/                    ║
 ║     • https://fire-new-globul.web.app         ║
 ║     • https://github.com/hamdanialaa3/...     ║
 ║                                                ║
@@ -526,7 +526,7 @@ Custom Domain:
    - https://console.firebase.google.com/project/fire-new-globul
 
 3. **Domain Support:**
-   - Domain Provider (mobilebg.eu)
+   - Domain Provider (koli.one)
    - Firebase Support (fire-new-globul.web.app)
 
 ---

@@ -88,7 +88,7 @@ const EnhancedRegisterPage: React.FC = () => {
           <RegisterSubtitle>{t('auth.registerSubtitle', 'Join the Bulgarian car marketplace today')}</RegisterSubtitle>
           <BulgarianInfo>
             <Globe size={16} />
-            <span>{t('auth.bulgarianMarketplace', 'Bulgarian Car Marketplace')}</span>
+            <span>{t('auth.bulgarianMarketplace', 'Koli One')}</span>
           </BulgarianInfo>
         </RegisterHeader>
 

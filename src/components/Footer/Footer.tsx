@@ -50,14 +50,14 @@ const Footer: React.FC = () => {
             <div className="footer-brand">
               <img
                 src="/Logo1.png"
-                alt="Bulgarski Avtomobili Logo"
+                alt="Koli One Logo"
                 className="footer-logo footer-logo-enhanced"
                 style={{ width: '50px', height: '50px', objectFit: 'contain' }}
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = '/Logo1.png';
                 }}
               />
-              <h3 className="footer-title">Bulgarski Avtomobili</h3>
+              <h3 className="footer-title">Koli One</h3>
             </div>
             <p className="footer-description">
               {t('footer.description')}
@@ -117,7 +117,7 @@ const Footer: React.FC = () => {
                 <span className="contact-icon">
                   <Mail size={18} />
                 </span>
-                <span>info@mobilebg.eu</span>
+                <span>info@koli.one</span>
               </div>
               <div className="contact-item">
                 <a
@@ -142,7 +142,7 @@ const Footer: React.FC = () => {
           <div className="footer-bottom-content">
             <div className="footer-bottom-main">
               <p className="copyright">
-                © {currentYear} Bulgarski Avtomobili. {t('footer.rights')}
+                © {currentYear} Koli One. {t('footer.rights')}
               </p>
               <div className="footer-bottom-links">
                 <a href="/privacy-policy">{t('footer.privacy')}</a>

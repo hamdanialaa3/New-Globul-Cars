@@ -1640,7 +1640,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // SEO Meta Description Logic
-  const seoDescription = `${car.make} ${car.model} ${car.year}, ${car.price} EUR. ${car.mileage}km. ${language === 'bg' ? 'Вижте повече на Bulgarski Mobili.' : 'See more on Bulgarski Mobili.'
+  const seoDescription = `${car.make} ${car.model} ${car.year}, ${car.price} EUR. ${car.mileage}km. ${language === 'bg' ? 'Вижте повече на Koli One.' : 'See more on Koli One.'
     }`;
 
   const handleDeleteClick = () => {

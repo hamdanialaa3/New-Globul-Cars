@@ -1,5 +1,5 @@
 // src/pages/B2BAnalyticsPortal.tsx
-// B2B Analytics Portal for Bulgarian Car Marketplace Partners
+// B2B Analytics Portal for Koli One Partners
 
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
