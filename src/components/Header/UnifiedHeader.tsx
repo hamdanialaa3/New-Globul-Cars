@@ -59,8 +59,8 @@ const Logo = styled.div<{ $isDark?: boolean }>`
 
   img {
     // Fluid image size
-    width: clamp(32px, 5vw, 50px);
-    height: clamp(32px, 5vw, 50px);
+    width: clamp(120px, 10vw, 200px);
+    height: clamp(50px, 8vw, 80px);
     object-fit: contain;
   }
 

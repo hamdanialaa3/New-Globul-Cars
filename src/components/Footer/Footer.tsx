@@ -52,7 +52,7 @@ const Footer: React.FC = () => {
                 src="/koli-one.png"
                 alt="Koli One Logo"
                 className="footer-logo footer-logo-enhanced"
-                style={{ width: '50px', height: '50px', objectFit: 'contain' }}
+                style={{ width: '150px', height: 'auto', objectFit: 'contain' }}
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = '/koli-one.png';
                 }}

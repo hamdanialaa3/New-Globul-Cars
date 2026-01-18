@@ -189,7 +189,7 @@ const SphereShadow = styled.div`
   left: 50%;
   transform: translateX(-50%);
   width: 400px;
-  height: 60px;
+  height: auto;
   background: radial-gradient(
     ellipse at center,
     rgba(0, 0, 0, 0.6) 0%,
