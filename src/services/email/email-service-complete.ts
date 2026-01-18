@@ -50,7 +50,7 @@ export interface EmailResult {
 
 export class EmailTemplates {
   private static readonly BASE_URL = process.env.REACT_APP_BASE_URL || 'https://fire-new-globul.web.app';
-  private static readonly LOGO_URL = `${this.BASE_URL}/koli-one.png`;
+  private static readonly LOGO_URL = `${this.BASE_URL}/logo.png`;
   private static readonly SUPPORT_EMAIL = 'support@globulcars.bg';
   
   /**

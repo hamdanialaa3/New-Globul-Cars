@@ -119,7 +119,7 @@ export const generateOrganizationStructuredData = () => {
     name: 'MOBILE-EU',
     description: 'Bulgaria\'s largest car marketplace - buy and sell cars with confidence',
     url: window.location.origin,
-    logo: `${window.location.origin}/koli-one.png`,
+    logo: `${window.location.origin}/logo.png`,
     sameAs: [
       'https://www.facebook.com/mobilebgeu',
       'https://www.instagram.com/mobilebgeu',

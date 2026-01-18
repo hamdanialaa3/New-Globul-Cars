@@ -49,12 +49,12 @@ const Footer: React.FC = () => {
           <div className="footer-section">
             <div className="footer-brand">
               <img
-                src="/koli-one.png"
+                src="/logo.png"
                 alt="Koli One Logo"
-                className="footer-logo footer-logo-enhanced"
+                className="footer-logo"
                 style={{ width: '150px', height: 'auto', objectFit: 'contain' }}
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/koli-one.png';
+                  (e.target as HTMLImageElement).src = '/logo.png';
                 }}
               />
               <h3 className="footer-title">Koli One</h3>

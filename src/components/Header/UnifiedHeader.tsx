@@ -58,9 +58,9 @@ const Logo = styled.div<{ $isDark?: boolean }>`
   white-space: nowrap; // Prevent wrapping
 
   img {
-    // Fluid image size
-    width: clamp(120px, 10vw, 200px);
-    height: clamp(50px, 8vw, 80px);
+    // شعار صغير: 40px فقط
+    width: 40px;
+    height: 40px;
     object-fit: contain;
   }
 
@@ -682,7 +682,7 @@ const UnifiedHeader: React.FC = () => {
       <HeaderContainer $isDark={isDark}>
         <HeaderContent>
           <Logo $isDark={isDark} onClick={() => navigate('/')}>
-            <img src="/koli-one.png" alt={language === 'bg' ? 'Коли-Уан' : 'Koli One'} />
+            <img src="/logo.png" alt={language === 'bg' ? 'Коли-Уан' : 'Koli One'} />
             <span>{language === 'bg' ? 'Коли-Уан' : 'Koli One'}</span>
           </Logo>
 

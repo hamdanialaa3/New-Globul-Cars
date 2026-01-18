@@ -560,7 +560,7 @@ const SmartLoaderCSS: React.FC<SmartLoaderCSSProps> = ({
         <SphereContent>
           <SpinnerRing>
             <LogoContainer>
-              <ProjectLogo src="/koli-one.png" alt="Logo" />
+              <ProjectLogo src="/logo.png" alt="Logo" />
             </LogoContainer>
           </SpinnerRing>
           <LoadingText $phase={phase}>{message}</LoadingText>

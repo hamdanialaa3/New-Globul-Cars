@@ -98,7 +98,7 @@ export interface FAQSchemaInput {
 export class SchemaGenerator {
     private static readonly SITE_NAME = 'Koli One';
     private static readonly SITE_URL = 'https://koli.one';
-    private static readonly LOGO_URL = 'https://koli.one/koli-one.png';
+    private static readonly LOGO_URL = 'https://koli.one/logo.png';
 
     /**
      * 🚗 Generate Vehicle/Product Schema for Car Listings

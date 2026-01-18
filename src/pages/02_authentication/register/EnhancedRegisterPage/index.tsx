@@ -79,7 +79,7 @@ const EnhancedRegisterPage: React.FC = () => {
         <RegisterHeader>
           <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
             <img 
-              src="/koli-one.png" 
+              src="/logo.png" 
               alt="MOBILE-EU Logo" 
               style={{ width: '80px', height: '80px', objectFit: 'contain', margin: '0 auto' }}
             />
