@@ -95,7 +95,13 @@ export async function fetchPaginated<T = DocumentData>(
             hasMore
         };
     } catch (error) {
-    // Pagination error - logged internally
+        // Pagination error - logged internally
+        return {
+            data: [],
+            lastDoc: null,
+            hasMore: false
+        };
+    }
 }
 
 /**

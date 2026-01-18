@@ -29,11 +29,30 @@ module.exports = {
     devServerConfig.compress = false;
     // Hot reload with aggressive cache invalidation
     devServerConfig.hot = true;
-    devServerConfig.liveReload = true;
+    // Reduce reload churn for large projects
+    devServerConfig.liveReload = false;
+    // Disable error overlay to avoid extra client processing
+    devServerConfig.client = {
+      ...(devServerConfig.client || {}),
+      overlay: false,
+    };
     // Ensure file watching remains active and responsive
+    // Narrow file watching to src only and ignore heavy folders
     devServerConfig.watchFiles = {
-      paths: ['src/**/*', 'public/**/*'],
-      options: { usePolling: false, interval: 100, ignored: ['**/node_modules/**'] },
+      paths: ['src/**/*'],
+      options: {
+        usePolling: false,
+        interval: 250,
+        ignored: [
+          '**/node_modules/**',
+          '**/build/**',
+          '**/logs/**',
+          '**/docs/**',
+          '**/ARCHIVE/**',
+          '**/scripts/**',
+          '**/public/**',
+        ],
+      },
     };
     // Ensure publicPath matches the port
     devServerConfig.historyApiFallback = true;
@@ -45,6 +64,8 @@ module.exports = {
 
       // Add cache busting in development
       if (config.mode === 'development') {
+        // Use faster devtool for quicker rebuilds
+        config.devtool = 'eval';
         // Use memory cache only (fastest, no disk I/O)
         config.cache = {
           type: 'memory',

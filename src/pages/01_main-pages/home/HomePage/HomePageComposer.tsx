@@ -61,6 +61,9 @@ const AIChatbot = React.lazy(() => import('../../../../components/AI/AIChatbot')
 // ✅ REVENUE FIX: Draft Recovery Prompt (January 6, 2026)
 const DraftRecoveryPrompt = React.lazy(() => import('./DraftRecoveryPrompt'));
 
+// ✅ AI PRICING INTEGRATION (January 18, 2026)
+const AIPricingBanner = React.lazy(() => import('../../../../components/HomePage/AIPricingBanner'));
+
 // ============================================================================
 // STYLED COMPONENTS
 // ============================================================================
@@ -403,6 +406,21 @@ const DraftRecoverySlot: React.FC = () => (
   </Suspense>
 );
 
+/**
+ * Slot 18: AI Pricing Banner
+ * 🤖 Promotional banner for AI-powered car pricing calculator
+ * شريط ترويجي لحاسبة تسعير السيارات بالذكاء الاصطناعي
+ */
+const PricingBannerSlot: React.FC = () => (
+  <GridSectionWrapper intensity="light" variant="modern">
+    <LazySection rootMargin="200px">
+      <Suspense fallback={null}>
+        <AIPricingBanner />
+      </Suspense>
+    </LazySection>
+  </GridSectionWrapper>
+);
+
 // ============================================================================
 // MAIN COMPOSER
 // ============================================================================
@@ -437,6 +455,11 @@ const HomePageComposer: React.FC = React.memo(() => {
 
         {/* Slot 3: Smart Sell Strip */}
         <SmartSellSlot />
+        <SectionSpacer />
+
+        {/* 🤖 AI Pricing Calculator Banner */}
+        {/* شريط حاسبة التسعير بالذكاء الاصطناعي */}
+        <PricingBannerSlot />
         <SectionSpacer />
 
         {/* Slot 4: Cars Showcase - CRITICAL */}

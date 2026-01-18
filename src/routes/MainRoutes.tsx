@@ -36,6 +36,8 @@ const TeamManagement = safeLazy(() => import('../features/team/TeamManagement'))
 const UsersDirectoryPage = safeLazy(() => import('../pages/03_user-pages/users-directory/UsersDirectoryPage'));
 const AllPostsPage = safeLazy(() => import('../pages/03_user-pages/social/AllPostsPage'));
 const AllCarsPage = safeLazy(() => import('../pages/05_search-browse/all-cars/AllCarsPage'));
+const CompetitiveComparisonPage = safeLazy(() => import('../pages/10_landing/CompetitiveComparisonPage'));
+const CarPricingPage = safeLazy(() => import('../features/pricing/CarPricingPage'));
 const EventsPage = safeLazy(() => import('../pages/07_advanced-features/EventsPage'));
 const CreatePostPage = safeLazy(() => import('../pages/03_user-pages/social/CreatePostPage'));
 const DashboardPage = safeLazy(() => import('../pages/03_user-pages/dashboard/DashboardPage'));
@@ -67,6 +69,7 @@ const ContactPage = safeLazy(() => import('../pages/01_main-pages/contact/Contac
 const HelpPage = safeLazy(() => import('../pages/01_main-pages/help/HelpPage'));
 const CookiePolicyPage = safeLazy(() => import('../pages/10_legal/cookie-policy/CookiePolicyPage'));
 const SitemapPage = safeLazy(() => import('../pages/10_legal/sitemap/SitemapPage'));
+const WhyUsPage = safeLazy(() => import('../pages/10_landing/WhyUsPage'));
 const NotificationsPage = safeLazy(() => import('../pages/03_user-pages/notifications/NotificationsPage'));
 const SavedSearchesPage = safeLazy(() => import('../pages/03_user-pages/saved-searches/SavedSearchesPage'));
 const FavoritesPage = safeLazy(() => import('../pages/03_user-pages/favorites/FavoritesPage'));
@@ -86,6 +89,8 @@ const DealerRegistrationPage = safeLazy(() => import('../pages/09_dealer-company
 const DealerDashboardPage = safeLazy(() => import('../pages/09_dealer-company/DealerDashboardPage'));
 const AlgoliaSyncManager = safeLazy(() => import('../pages/06_admin/AlgoliaSyncManager'));
 const AdminCarManagementPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminCarManagementPage'));
+// 🔥 NEW: Car History Report Page - COMPETITIVE ADVANTAGE!
+const CarHistoryPage = safeLazy(() => import('../pages/07_car-details/CarHistoryPage'));
 const DeleteMockCarsPage = safeLazy(() => import('../pages/06_admin/DeleteMockCarsPage'));
 const IoTDashboardPage = safeLazy(() => import('../pages/03_user-pages/IoTDashboardPage'));
 const CarTrackingPage = safeLazy(() => import('../pages/03_user-pages/CarTrackingPage'));
@@ -164,6 +169,12 @@ export const MainRoutes: React.FC = () => {
                     <EditCarPage />
                 </AuthGuard>
             } />
+            {/* 🔥 NEW: Car History Report - COMPETITIVE ADVANTAGE! */}
+            <Route path="/car/:sellerNumericId/:carNumericId/history" element={
+                <Suspense fallback={<div>Loading...</div>}>
+                    <CarHistoryPage />
+                </Suspense>
+            } />
             <Route path="/car/:sellerNumericId/:carNumericId/not-found" element={<CarNotFoundPage />} />
             <Route path="/car/:sellerNumericId/:carNumericId/*" element={<CarNotFoundPage />} />
 
@@ -185,6 +196,15 @@ export const MainRoutes: React.FC = () => {
                     <AuthGuard requireAuth={true}>
                         <DealerDashboardPage />
                     </AuthGuard>
+                }
+            />            
+            {/* Alias for seller-dashboard */}
+            <Route
+                path="/seller-dashboard"
+                element={
+                  <AuthGuard requireAuth={true}>
+                    <DealerDashboardPage />
+                  </AuthGuard>
                 }
             />
             <Route path="/sell" element={<Navigate to="/sell/auto" replace />} />
@@ -418,6 +438,8 @@ export const MainRoutes: React.FC = () => {
             <Route path="/terms-of-service" element={<TermsOfServicePage />} />
             <Route path="/data-deletion" element={<DataDeletionPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/competitive-comparison" element={<CompetitiveComparisonPage />} />
+            <Route path="/pricing" element={<CarPricingPage />} />
             <Route path="/map" element={<MapAnalyticsPage />} />
             <Route path="/top-brands" element={<TopBrandsPage />} />
             <Route path="/brand-gallery" element={<AuthGuard requireAuth={true}><BrandGalleryPage /></AuthGuard>} />
@@ -431,7 +453,21 @@ export const MainRoutes: React.FC = () => {
             <Route path="/support" element={<HelpPage />} />
             <Route path="/cookie-policy" element={<CookiePolicyPage />} />
             <Route path="/sitemap" element={<SitemapPage />} />
-
+            <Route path="/why-us" element={<WhyUsPage />} />
+              <Route
+                path="/launch-offer"
+                lazy={async () => {
+                  const LaunchOfferPage = await import('../pages/10_landing/LaunchOfferPage');
+                  return { Component: LaunchOfferPage.default };
+                }}
+              />
+              <Route
+                path="/competitive-comparison"
+                lazy={async () => {
+                  const CompetitiveComparisonPage = await import('../pages/10_landing/CompetitiveComparisonPage');
+                  return { Component: CompetitiveComparisonPage.default };
+                }}
+              />
             <Route path="*" element={<Suspense fallback={<div>Loading...</div>}><NotFoundPage /></Suspense>} />
         </Routes>
     );

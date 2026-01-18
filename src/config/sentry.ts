@@ -15,12 +15,14 @@ import { BrowserTracing } from '@sentry/tracing';
 export function initSentry() {
     // Only initialize in production
     if (process.env.NODE_ENV !== 'production') {
-    // Sentry disabled in development
+        // Sentry disabled in development
+        return;
+    }
 
     const dsn = process.env.REACT_APP_SENTRY_DSN;
 
     if (!dsn) {
-// Sentry DSN not configured
+        // Sentry DSN not configured
         return;
     }
 

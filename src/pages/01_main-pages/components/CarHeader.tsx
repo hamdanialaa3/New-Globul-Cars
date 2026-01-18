@@ -1,4 +1,6 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FileText } from 'lucide-react';
 import { CarListing } from '../../../types/CarListing';
 import {
   Header,

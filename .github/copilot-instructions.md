@@ -1,7 +1,8 @@
 # Copilot Instructions: Bulgarian Car Marketplace
 
-**Updated:** January 16, 2026 | **Stack:** React 18.3 + TS 5.6 (strict) + Styled-Components | Firebase 12 | Algolia | Stripe  
-**Project Size:** 795 components | 780+ TS files | 410+ services | 290 pages | 85+ routes | 195,000+ LOC
+**Updated:** January 18, 2026 | **Stack:** React 18.3 + TS 5.6 (strict) + Styled-Components | Firebase 12 | Algolia  
+**Project Size:** 795 components | 780+ TS files | 410+ services | 290 pages | 85+ routes | 195,000+ LOC  
+**Payment:** Manual Bank Transfer (iCard + Revolut) - Stripe Deprecated
 
 ## 🚀 Essential Commands
 
@@ -658,7 +659,7 @@ npm run emulate  # Start Firebase emulators
 | Path aliases broken     | Sync tsconfig + craco + jest configs                                                |
 | Port 3000 stuck         | `npm run clean:3000` or `scripts/clean-ports.ps1` (Windows)                         |
 | Cache issues            | `npm run clean:all` then restart                                                    |
-| Firestore limits        | Check composite indexes in [FIRESTORE_INDEXES_GUIDE.md](FIRESTORE_INDEXES_GUIDE.md) |
+| Firestore limits        | Check composite indexes in `firestore.indexes.json`                                  |
 | Hot reload not working  | Clear dev cache with `scripts/clear-dev-caches.ps1`                                 |
 | Build failing           | Run `npm run type-check` first, then check `scripts/ban-console.js` output          |
 | Firebase 401 errors     | Run `scripts/verify-firebase-connection.js`                                         |
@@ -736,7 +737,7 @@ When adding `@/newAlias/*`, update:
 
 - Use `firebase-cache.service` to reduce cross-partition queries
 - Add composite indexes for multi-field filters
-- Reference [FIRESTORE_INDEXES_GUIDE.md](FIRESTORE_INDEXES_GUIDE.md)
+- Reference `firestore.indexes.json` in project root
 
 ### Routing — Use safeLazy() for Code Splitting
 
@@ -799,8 +800,8 @@ LoadingContext; // Global loading state
 
 ## 📚 Key Documentation
 
-- [PROJECT_CONSTITUTION.md](PROJECT_CONSTITUTION.md) — Architectural rules & project stats
-- [MESSAGING_SYSTEM_FINAL.md](MESSAGING_SYSTEM_FINAL.md) — Unified messaging (Phase 1 & 2)
-- [src/routes/README.md](src/routes/README.md) — Route definitions by feature
-- [FIRESTORE_INDEXES_GUIDE.md](FIRESTORE_INDEXES_GUIDE.md) — Required composite indexes
-- [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) — Complete docs index
+- [CONSTITUTION.md](../CONSTITUTION.md) — Architectural rules & project stats
+- [DOCUMENTATION_INDEX.md](../DOCUMENTATION_INDEX.md) — Complete docs index
+- [src/routes/README.md](../src/routes/README.md) — Route definitions by feature
+- `firestore.indexes.json` — Required composite indexes
+- `firestore.rules` — Security rules

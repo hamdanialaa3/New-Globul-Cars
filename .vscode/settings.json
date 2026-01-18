@@ -1,4 +1,13 @@
 {
     "editor.linkedEditing": true,
-    "terminal.integrated.suggest.enabled": true
+    "terminal.integrated.suggest.enabled": true,
+    "localstack.logLevel": "error",
+    "extensions.ignoreRecommendations": true,
+    "[log]": {
+        "editor.wordWrap": "on"
+    },
+    "firebase.debug.enable": false,
+    "firebase.autoRefresh": false,
+    "kubernetes.disable-linters": true,
+    "docker.host": ""
 }

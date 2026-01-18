@@ -187,7 +187,8 @@ export function usePushNotifications(userId: string | null) {
         // Listen for foreground messages
         const handleMessage = (event: Event) => {
             const customEvent = event as CustomEvent;
-        // FCM message received - processed internally
+            // FCM message received - processed internally
+        };
         window.addEventListener('fcm-message', handleMessage);
 
         return () => {

@@ -1,19 +1,19 @@
 version: '3.8'
 
 services:
-  # React Frontend
+  # React Frontend (Development with Hot Reload)
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: node:20-alpine
+    working_dir: /app
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=development
+      - SKIP_PREFLIGHT_CHECK=true
     volumes:
       - .:/app
       - /app/node_modules
-    command: npm start
+    command: sh -c "npm install && npm start"
     depends_on:
       - firebase-emulators
 

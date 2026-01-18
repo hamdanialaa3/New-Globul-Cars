@@ -21,6 +21,8 @@ import { CarEditForm } from './components/CarEditForm';
 import { CarContactMethods } from './components/CarContactMethods';
 import { CarEquipmentDisplay } from './components/CarEquipmentDisplay';
 import { DeleteConfirmDialog } from './components/DeleteConfirmDialog';
+import { FinanceCalculator } from '../../components/finance/FinanceCalculator';
+import { PriceComparisonWidget } from '../../components/comparison/PriceComparisonWidget';
 import {
   Container,
   MainContent,
@@ -474,6 +476,42 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
         onCancel={handleCancelClick}
       />
 
+      {/* 🔥 NEW: Car History Report Button - COMPETITIVE ADVANTAGE! */}
+      {!editHook.isEditMode && car.sellerNumericId && (car.carNumericId || car.numericId) && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0.5rem 0' }}>
+          <button
+            onClick={() => {
+              navigate(`/car/${car.sellerNumericId}/${car.carNumericId || car.numericId}/history`);
+            }}
+            style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: '#fff',
+              padding: '12px 18px',
+              border: 'none',
+              borderRadius: '10px',
+              cursor: 'pointer',
+              fontWeight: 700,
+              letterSpacing: '0.3px',
+              boxShadow: '0 8px 20px rgba(0,0,0,0.08)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              transition: 'all 0.3s ease',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 12px 24px rgba(0,0,0,0.12)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.08)';
+            }}
+          >
+            📋 {language === 'bg' ? 'История на автомобила' : 'Car History Report'}
+          </button>
+        </div>
+      )}
+
       {/* Promote listing CTA for owners */}
       {!editHook.isEditMode && isOwner && (
         <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '1rem 0' }}>
@@ -583,6 +621,26 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
             }}
           />
         </LocationMapContainer>
+      )}
+
+      {/* 🔥 Finance Calculator Integration - Bank Partnerships */}
+      {!editHook.isEditMode && car?.price && (
+        <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+          <FinanceCalculator carPrice={car.price} />
+        </div>
+      )}
+
+      {/* 💰 Price Comparison Widget - Competitive Advantage */}
+      {!editHook.isEditMode && car?.price && car?.make && car?.model && (
+        <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+          <PriceComparisonWidget
+            carPrice={car.price}
+            make={car.make}
+            model={car.model}
+            year={car.year || new Date().getFullYear()}
+            mileage={car.mileage || 0}
+          />
+        </div>
       )}
 
       <DeleteConfirmDialog

@@ -26,6 +26,7 @@ export const STRIPE_PRICE_IDS = {
   company: {
     monthly: 'price_1Sf7oK3EuPQhDyrBQ6duG8a',     // Legacy - DO NOT USE
     annual: 'price_1Sf7pE3EuPQhDyrBfAdjEDFi',    // Legacy - DO NOT USE
+  },
 } as const;
 
 /**

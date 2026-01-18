@@ -1930,10 +1930,26 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
               <Heart size={20} />
             </IconButton>
             {isOwner && onEdit && (
-              <EditButton onClick={onEdit}>
-                <Edit size={18} />
-                {t.edit}
-              </EditButton>
+              <>
+                <EditButton onClick={onEdit}>
+                  <Edit size={18} />
+                  {t.edit}
+                </EditButton>
+                {/* 🔥 NEW: Car History Report Button */}
+                {car.sellerNumericId && (car.carNumericId || (car as any).numericId) && (
+                  <EditButton 
+                    onClick={() => {
+                      window.location.href = `/car/${car.sellerNumericId}/${car.carNumericId || (car as any).numericId}/history`;
+                    }}
+                    style={{
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      marginLeft: '8px'
+                    }}
+                  >
+                    📋 {language === 'bg' ? 'История' : 'History'}
+                  </EditButton>
+                )}
+              </>
             )}
           </HeaderActions>
         </Header>
