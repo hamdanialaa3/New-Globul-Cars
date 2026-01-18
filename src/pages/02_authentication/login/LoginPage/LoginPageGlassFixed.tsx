@@ -702,8 +702,8 @@ const LoginPageGlassFixed: React.FC = () => {
         <TitleWrapper>
           <Title>
             {language === 'bg'
-              ? 'Влезте с Mobili'
-              : 'Login with Mobili'}
+              ? 'Влезте с Koli One'
+              : 'Login with Koli One'}
           </Title>
         </TitleWrapper>
         <Subtitle>

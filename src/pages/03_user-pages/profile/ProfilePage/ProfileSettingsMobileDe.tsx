@@ -171,7 +171,7 @@ const ProfileSettingsMobileDe: React.FC = () => {
 
   const sidebarSections = [
     {
-      title: 'My Mobili BG EU',
+      title: 'My Koli One Account',
       items: [
         { id: 'editInfo', label: language === 'bg' ? 'Редактиране на информация' : 'Edit Information', path: '/profile/settings' },
         { id: 'overview', label: 'Overview', path: '/profile' },

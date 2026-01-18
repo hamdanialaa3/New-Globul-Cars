@@ -232,7 +232,7 @@ interface SmartAutocompleteProps {
 
 const MAX_RECENT_SEARCHES = 5;
 const DEBOUNCE_DELAY = 200;
-const RECENT_SEARCHES_KEY = 'bulgarski_mobili_recent_searches';
+const RECENT_SEARCHES_KEY = 'koli_one_recent_searches';
 
 export const SmartAutocomplete: React.FC<SmartAutocompleteProps> = ({
   value,

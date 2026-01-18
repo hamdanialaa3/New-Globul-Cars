@@ -83,7 +83,7 @@ export const monitoringConfig: MonitoringConfig = {
     applicationId: process.env.REACT_APP_DATADOG_APP_ID || '',
     clientToken: process.env.REACT_APP_DATADOG_CLIENT_TOKEN || '',
     site: 'datadoghq.eu', // موقع أوروبا
-    service: 'bulgarski-mobili',
+    service: 'koli-one',
     env: process.env.NODE_ENV || 'development',
     version: process.env.REACT_APP_VERSION || '1.0.0',
     sampleRate: 100, // 100% من الجلسات

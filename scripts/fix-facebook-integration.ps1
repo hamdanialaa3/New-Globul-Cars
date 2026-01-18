@@ -46,7 +46,7 @@ if ($envContent -notmatch "REACT_APP_BASE_URL") {
     $addition = @"
 
 # Base URL for car links in social media posts
-REACT_APP_BASE_URL=https://bulgarskimobili.bg
+REACT_APP_BASE_URL=https://koli.one
 "@
     
     Add-Content $envFile $addition
