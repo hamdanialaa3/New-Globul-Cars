@@ -97,7 +97,7 @@ export const NotificationBanner: React.FC = () => {
       // Show success message
       new Notification('🎉 تم التفعيل!', {
         body: 'سنرسل لك إشعارات عن السيارات الجديدة',
-        icon: '/Logo1.png'
+        icon: '/koli-one.png'
       });
     }
   };

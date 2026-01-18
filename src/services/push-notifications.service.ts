@@ -142,8 +142,8 @@ class PushNotificationService {
         if ('Notification' in window && Notification.permission === 'granted') {
             new Notification(title, {
                 body,
-                icon: icon || '/logo192.png',
-                badge: '/logo192.png',
+                icon: icon || '/koli-one.png',
+                badge: '/koli-one.png',
                 tag: 'messaging',
                 requireInteraction: false
             });

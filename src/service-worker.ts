@@ -123,8 +123,8 @@ self.addEventListener('push', (event: any) => {
   const title = data.title || 'Globul Cars';
   const options = {
     body: data.body || 'You have a new notification',
-    icon: '/logo192.png',
-    badge: '/logo192.png',
+    icon: '/koli-one.png',
+    badge: '/koli-one.png',
     data: data.url || '/',
     tag: data.tag || 'default',
     requireInteraction: data.requireInteraction || false,

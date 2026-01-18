@@ -682,7 +682,7 @@ const UnifiedHeader: React.FC = () => {
       <HeaderContainer $isDark={isDark}>
         <HeaderContent>
           <Logo $isDark={isDark} onClick={() => navigate('/')}>
-            <img src="/Logo1.png" alt={language === 'bg' ? 'Коли-Уан' : 'Koli One'} />
+            <img src="/koli-one.png" alt={language === 'bg' ? 'Коли-Уан' : 'Koli One'} />
             <span>{language === 'bg' ? 'Коли-Уан' : 'Koli One'}</span>
           </Logo>
 

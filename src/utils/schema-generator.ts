@@ -214,7 +214,7 @@ export const generateArticleSchema = (article: {
       name: 'Globul Cars',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://globulcars.bg/logo.png',
+        url: 'https://koli.one/koli-one.png',
       },
     },
   };
