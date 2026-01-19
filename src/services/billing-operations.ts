@@ -10,6 +10,7 @@ import { httpsCallable } from 'firebase/functions';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { functions } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-service';
+import { normalizeError } from '../utils/error-helpers';
 import {
   BillingTier,
   Invoice,
