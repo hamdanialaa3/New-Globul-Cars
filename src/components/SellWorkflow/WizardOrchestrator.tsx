@@ -8,7 +8,7 @@ import { useWizardTimer } from './hooks/useWizardTimer';
 import BladeStepper from './BladeStepper';
 import { Check, ArrowLeft, ArrowRight, RotateCcw, AlertTriangle, Cloud, Sparkles, Car } from 'lucide-react';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import styled, { keyframes } from 'styled-components';
 import { BulgarianProfileService } from '../../services/bulgarian-profile-service';
@@ -267,6 +267,7 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
     const { language } = useLanguage();
     const { currentUser } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
     // Hooks
     const {
@@ -290,6 +291,71 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
     const [showMenu, setShowMenu] = useState(false);
     const [isPublishing, setIsPublishing] = useState(false);
     const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
+    const [aiDataProcessed, setAiDataProcessed] = useState(false);
+    
+    // ✅ AI MODE: Process AI data from navigation state
+    useEffect(() => {
+        // Check for AI mode in URL
+        const searchParams = new URLSearchParams(location.search);
+        const aiMode = searchParams.get('mode') === 'ai';
+        
+        // Check for AI data in location state
+        const aiData = (location.state as any)?.aiData;
+        
+        if (aiMode && aiData && !aiDataProcessed) {
+            logger.info('Processing AI analysis data', {
+                brand: aiData.analysisResult?.brand?.value,
+                model: aiData.analysisResult?.model?.value
+            });
+            
+            try {
+                const analysis = aiData.analysisResult;
+                const equipment = aiData.equipmentSuggestions;
+                
+                // Pre-fill form data from AI analysis
+                updateFormData({
+                    make: analysis.brand.value,
+                    model: analysis.model.value,
+                    year: analysis.yearRange.value.split('-')[0], // Take first year from range
+                    color: analysis.color.value,
+                    bodyType: analysis.bodyType.value,
+                    // Equipment suggestions from AI
+                    safetyEquipment: equipment?.safety || [],
+                    comfortEquipment: equipment?.comfort || [],
+                    infotainmentEquipment: equipment?.infotainment || [],
+                    // Store AI metadata for reference
+                    _aiGenerated: true,
+                    _aiConfidence: {
+                        brand: analysis.brand.confidence,
+                        model: analysis.model.confidence,
+                        year: analysis.yearRange.confidence
+                    }
+                });
+                
+                // Show success message
+                toast.success(
+                    language === 'bg'
+                        ? `AI анализ завършен! Открита ${analysis.brand.value} ${analysis.model.value}`
+                        : `AI analysis complete! Detected ${analysis.brand.value} ${analysis.model.value}`,
+                    { autoClose: 5000 }
+                );
+                
+                setAiDataProcessed(true);
+                
+                // Jump to step 2 (basic info) since step 1 is vehicle type
+                // and AI has already detected the vehicle
+                goToStep(1); // Step 1 is index 0-based, so 1 = Step 2
+                
+            } catch (error) {
+                logger.error('Failed to process AI data', error as Error);
+                toast.error(
+                    language === 'bg'
+                        ? 'Грешка при обработка на AI данни'
+                        : 'Error processing AI data'
+                );
+            }
+        }
+    }, [location, aiDataProcessed, updateFormData, goToStep, language]);
     
     // Close menu when clicking outside
     useEffect(() => {
