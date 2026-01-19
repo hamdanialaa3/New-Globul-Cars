@@ -51,7 +51,13 @@ interface CarData {
   // Location
   region?: string;
   city?: string;
-  locationData?: any;
+  locationData?: {
+    cityName?: string;
+    regionName?: string;
+    district?: string;
+    latitude?: number;
+    longitude?: number;
+  };
   
   // Media
   images?: string[];

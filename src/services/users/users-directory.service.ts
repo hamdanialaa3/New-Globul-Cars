@@ -37,6 +37,13 @@ export interface UsersQueryFilters {
   region?: string;
   verifiedOnly?: boolean;
   onlineOnly?: boolean;
+  locationData?: {
+    cityName?: string;
+    regionName?: string;
+    district?: string;
+    latitude?: number;
+    longitude?: number;
+  };
 }
 
 export interface UsersQueryResult {

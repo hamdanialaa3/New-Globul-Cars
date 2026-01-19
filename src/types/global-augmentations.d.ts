@@ -13,6 +13,27 @@ declare global {
     /** Optional error code */
     code?: string | number;
   }
+
+  interface LocationData {
+    /** Name of the city */
+    cityName?: string;
+    /** Name of the region */
+    regionName?: string;
+    /** District information */
+    district?: string;
+    /** Country name */
+    country?: string;
+    /** Geographic latitude */
+    latitude?: number;
+    /** Geographic longitude */
+    longitude?: number;
+    /** Postal code */
+    postalCode?: string;
+    /** Full address */
+    address?: string;
+    /** Area identifier */
+    areaId?: string | number;
+  }
 }
 
 // Extend global types to accept unknown in common patterns
