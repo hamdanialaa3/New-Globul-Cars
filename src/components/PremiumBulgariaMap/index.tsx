@@ -322,6 +322,7 @@ export const PremiumBulgariaMap: React.FC<PremiumBulgariaMapProps> = ({
     visible: boolean;
     region?: typeof BULGARIA_REGIONS[0];
     count?: number;
+    locationData?: { cityName?: string; regionName?: string; };
   }>({ x: 0, y: 0, visible: false });
   
   const navigate = useNavigate();

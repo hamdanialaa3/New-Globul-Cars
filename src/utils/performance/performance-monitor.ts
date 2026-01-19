@@ -9,7 +9,7 @@
  * - API Call Times
  */
 
-import { logger } from '../services/logger-service';
+import { logger } from '../../services/logger-service';
 
 interface PerformanceMetric {
   name: string;

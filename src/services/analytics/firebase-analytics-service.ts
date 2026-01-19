@@ -18,7 +18,7 @@
 
 import { analytics } from '../firebase';
 import { logEvent, setUserId, setUserProperties } from 'firebase/analytics';
-import { logger } from './logger-service';
+import { logger } from '../logger-service';
 
 /**
  * Analytics Service

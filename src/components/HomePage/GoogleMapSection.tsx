@@ -9,7 +9,7 @@ import { Car } from 'lucide-react';
 import { BulgarianCity, getCityName } from '../../../../../constants/bulgarianCities';
 import { useLanguage } from '../../../../../contexts/LanguageContext';
 import styled from 'styled-components';
-import { logger } from '../../../../../services/logger-service';
+import { logger } from '../../services/logger-service';
 
 const MapContainer = styled.div`
   position: relative;

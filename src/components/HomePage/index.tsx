@@ -15,7 +15,7 @@ import AdvancedBulgariaMap from '../../../../../components/AdvancedBulgariaMap';
 import LeafletBulgariaMap from '../../../../../components/LeafletBulgariaMap';
 import CityGrid from './CityGrid';
 import * as S from './styles';
-import { logger } from '../../../../../services/logger-service';
+import { logger } from '../../services/logger-service';
 
 const CityCarsSection: React.FC = () => {
   const navigate = useNavigate();

@@ -1,4 +1,4 @@
-import { serviceLogger } from './logger-service';
+import { serviceLogger } from '../logger-service';
 import {
   MarketAnalysis,
   ResaleRecommendation,

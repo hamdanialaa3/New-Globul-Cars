@@ -8,7 +8,7 @@ import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import styled from 'styled-components';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { useAuth } from '../../../contexts/AuthProvider';
-import { logger } from '../../../services/logger-service';
+import { logger } from '../../services/logger-service';
 import { PaymentErrorHandler, PaymentRetryManager } from '../../../services/payment/payment-error-handler';
 
 interface StripeCheckoutFormProps {

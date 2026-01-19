@@ -29,7 +29,7 @@ import { Search, ChevronDown, Car, CheckCircle } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import { brandsModelsDataService } from '../../../../services/brands-models-data.service';
-import { logger } from '../../../../services/logger-service';
+import { logger } from '../services/logger-service';
 import { sanitizeCarMakeModel } from '../../../../utils/inputSanitizer';
 
 // ============================================================================
