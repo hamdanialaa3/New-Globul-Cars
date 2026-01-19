@@ -105,13 +105,13 @@ class ImageStorage {
           throw new Error(ERROR_MESSAGES.MAX_IMAGES_EXCEEDED(IMAGE_CONFIG.MAX_IMAGES));
         }
 
-        // Validate all files
-        files.forEach(file => {
-          const result = validateImage(file);
+        // Validate all files (async validation for deep checks)
+        for (const file of files) {
+          const result = await validateImage(file);
           if (!result.valid) {
             throw new Error(result.error);
           }
-        });
+        }
 
         serviceLogger.info('Saving images to IndexedDB', { count: files.length });
 
@@ -275,7 +275,7 @@ class ImageStorage {
    * Validate image file (static method)
    * التحقق من صحة ملف الصورة (طريقة ثابتة)
    */
-  static validateImage(file: File): ValidationResult {
+  static async validateImage(file: File): Promise<ValidationResult> {
     return validateImage(file);
   }
 }
