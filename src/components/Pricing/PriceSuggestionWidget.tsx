@@ -16,6 +16,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { TrendingUp, DollarSign, AlertCircle, CheckCircle, Zap } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { logger } from '@/services/logger-service';
 
 // ==================== TYPES ====================
 
@@ -369,7 +370,7 @@ export const PriceSuggestionWidget: React.FC<PriceSuggestionWidgetProps> = ({
         };
         setSuggestion(mockSuggestion);
       } catch (error) {
-        console.error('Failed to load price suggestion:', error);
+        logger.error('Failed to load price suggestion', error as Error);
       } finally {
         setLoading(false);
       }

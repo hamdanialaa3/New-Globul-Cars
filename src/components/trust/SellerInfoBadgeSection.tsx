@@ -18,6 +18,7 @@ import { MapPin, MessageSquare } from 'lucide-react';
 import { SellerBadgeDisplay } from './SellerBadgeDisplay';
 import { BulgarianTrustService } from '@/services/bulgarian-trust-service';
 import { UserProfile } from '@/types/user.types';
+import { logger } from '@/services/logger-service';
 
 interface SellerInfoBadgeSectionProps {
   seller: UserProfile;
@@ -154,7 +155,7 @@ export const SellerInfoBadgeSection: React.FC<SellerInfoBadgeSectionProps> = ({
           setTrustData(data);
         }
       } catch (error) {
-        console.error('Failed to load trust data:', error);
+        logger.error('Failed to load trust data', error as Error);
       } finally {
         setLoading(false);
       }
