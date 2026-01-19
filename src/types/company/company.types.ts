@@ -88,6 +88,7 @@ export interface CompanyAddress {
     longitude: number;
   };
   isPrimary?: boolean;
+  locationData?: import('../LocationData').LocationData; // Optional unified location data
 }
 
 // ==================== CONTACT ====================

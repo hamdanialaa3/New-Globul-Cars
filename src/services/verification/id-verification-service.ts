@@ -112,7 +112,7 @@ export class IDVerificationService {
       serviceLogger.error('ID submission failed', error as Error, { userId });
       return {
         success: false,
-        message: error.message || 'Грешка при изпращане / Submission failed'
+        message: normalizeError(error).message || 'Грешка при изпращане / Submission failed'
       };
     }
   }

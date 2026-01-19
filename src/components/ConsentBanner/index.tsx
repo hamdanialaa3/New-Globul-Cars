@@ -306,20 +306,44 @@ const BannerActions = styled.div`
 `;
 
 const Button = styled.button<{ $isDark: boolean }>`
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  border: 1px solid
+    ${({ $isDark }) => ($isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.08)')};
+  background: ${({ $isDark }) =>
+    $isDark
+      ? 'linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))'
+      : 'linear-gradient(135deg, #f8fafc, #e2e8f0)'};
+  color: ${({ $isDark }) => ($isDark ? '#e2e8f0' : '#0f172a')};
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.2px;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: ${({ $isDark }) =>
+    $isDark
+      ? '0 10px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255,255,255,0.08)'
+      : '0 10px 30px rgba(15, 23, 42, 0.1), inset 0 1px 0 rgba(255,255,255,0.7)'};
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: ${({ $isDark }) => 
-      $isDark 
-        ? '0 4px 8px rgba(0, 0, 0, 0.3)' 
-        : '0 4px 8px rgba(0, 0, 0, 0.15)'};
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: ${({ $isDark }) =>
+      $isDark
+        ? '0 14px 32px rgba(0, 0, 0, 0.45)'
+        : '0 14px 32px rgba(15, 23, 42, 0.16)'};
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.99);
+    box-shadow: ${({ $isDark }) =>
+      $isDark
+        ? '0 6px 16px rgba(0, 0, 0, 0.35)'
+        : '0 6px 16px rgba(15, 23, 42, 0.12)'};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ $isDark }) => ($isDark ? '#60a5fa' : '#2563eb')};
+    outline-offset: 2px;
   }
 
   @media (max-width: 480px) {
@@ -328,74 +352,82 @@ const Button = styled.button<{ $isDark: boolean }>`
 `;
 
 const AcceptButton = styled(Button)<{ $isDark: boolean }>`
-  background: ${({ $isDark }) => $isDark ? '#22c55e' : '#28a745'};
-  color: white;
+  background: ${({ $isDark }) =>
+    $isDark
+      ? 'linear-gradient(135deg, #22c55e, #16a34a)'
+      : 'linear-gradient(135deg, #28a745, #22c55e)'};
+  color: #ffffff;
+  border-color: transparent;
 
   &:hover {
-    background: ${({ $isDark }) => $isDark ? '#16a34a' : '#218838'};
+    background: ${({ $isDark }) =>
+      $isDark
+        ? 'linear-gradient(135deg, #1fb152, #15803d)'
+        : 'linear-gradient(135deg, #22c55e, #1faa4d)'};
   }
 
   &:active {
-    background: ${({ $isDark }) => $isDark ? '#15803d' : '#1e7e34'};
+    background: ${({ $isDark }) =>
+      $isDark
+        ? 'linear-gradient(135deg, #15803d, #166534)'
+        : 'linear-gradient(135deg, #1c9d4b, #15803d)'};
   }
 `;
 
 const RejectButton = styled(Button)<{ $isDark: boolean }>`
-  background: ${({ $isDark }) => $isDark ? '#64748b' : '#6c757d'};
-  color: white;
+  background: ${({ $isDark }) =>
+    $isDark
+      ? 'linear-gradient(135deg, #475569, #334155)'
+      : 'linear-gradient(135deg, #6b7280, #4b5563)'};
+  color: #ffffff;
+  border-color: transparent;
 
   &:hover {
-    background: ${({ $isDark }) => $isDark ? '#475569' : '#5a6268'};
+    background: ${({ $isDark }) =>
+      $isDark
+        ? 'linear-gradient(135deg, #3b4758, #232b3a)'
+        : 'linear-gradient(135deg, #4f586c, #374151)'};
   }
 
   &:active {
-    background: ${({ $isDark }) => $isDark ? '#334155' : '#545b62'};
+    background: ${({ $isDark }) =>
+      $isDark
+        ? 'linear-gradient(135deg, #2a3342, #1f2937)'
+        : 'linear-gradient(135deg, #3a4252, #1f2937)'};
   }
 `;
 
 const CustomizeButton = styled(Button)<{ $isDark: boolean }>`
-  background: transparent;
-  color: ${({ $isDark }) => $isDark ? '#f1f5f9' : '#1e293b'};
-  border: 1px solid ${({ $isDark }) => 
-    $isDark 
-      ? 'rgba(255, 255, 255, 0.3)' 
-      : 'rgba(0, 0, 0, 0.2)'};
+  background: ${({ $isDark }) =>
+    $isDark
+      ? 'rgba(255, 255, 255, 0.06)'
+      : 'rgba(255, 255, 255, 0.9)'};
+  border: 1px solid
+    ${({ $isDark }) => ($isDark ? 'rgba(255, 255, 255, 0.25)' : 'rgba(15, 23, 42, 0.12)')};
+  color: ${({ $isDark }) => ($isDark ? '#e2e8f0' : '#0f172a')};
 
   &:hover {
-    background: ${({ $isDark }) => 
-      $isDark 
-        ? 'rgba(255, 255, 255, 0.1)' 
-        : 'rgba(0, 0, 0, 0.05)'};
-  }
-
-  &:active {
-    background: ${({ $isDark }) => 
-      $isDark 
-        ? 'rgba(255, 255, 255, 0.15)' 
-        : 'rgba(0, 0, 0, 0.1)'};
+    background: ${({ $isDark }) =>
+      $isDark
+        ? 'rgba(255, 255, 255, 0.1)'
+        : 'rgba(255, 255, 255, 1)'};
   }
 `;
 
 const BackButton = styled(Button)<{ $isDark: boolean }>`
-  background: transparent;
-  color: ${({ $isDark }) => $isDark ? '#f1f5f9' : '#1e293b'};
-  border: 1px solid ${({ $isDark }) => 
-    $isDark 
-      ? 'rgba(255, 255, 255, 0.3)' 
-      : 'rgba(0, 0, 0, 0.2)'};
+  background: ${({ $isDark }) =>
+    $isDark
+      ? 'rgba(255, 255, 255, 0.05)'
+      : 'rgba(241, 245, 249, 0.95)'};
+  border: 1px solid
+    ${({ $isDark }) => ($isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(15, 23, 42, 0.1)')};
+  color: ${({ $isDark }) => ($isDark ? '#e2e8f0' : '#0f172a')};
 
   &:hover {
-    background: ${({ $isDark }) => 
-      $isDark 
-        ? 'rgba(255, 255, 255, 0.1)' 
-        : 'rgba(0, 0, 0, 0.05)'};
-  }
-
-  &:active {
-    background: ${({ $isDark }) => 
-      $isDark 
-        ? 'rgba(255, 255, 255, 0.15)' 
-        : 'rgba(0, 0, 0, 0.1)'};
+    background: ${({ $isDark }) =>
+      $isDark
+        ? 'rgba(255, 255, 255, 0.08)'
+        : 'rgba(226, 232, 240, 1)'};
   }
 `;
 

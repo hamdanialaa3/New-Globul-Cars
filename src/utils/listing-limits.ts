@@ -11,6 +11,13 @@ import { getMaxListings, hasUnlimitedListings } from '../config/subscription-pla
 // ⚠️ DEPRECATED: Plan limits now defined in subscription-plans.ts
 // This ensures consistency across the entire application
 
+// Plan limits mapping (for getPlanLimit backward compatibility)
+const PLAN_LIMITS: Record<string, number> = {
+  free: 3,
+  dealer: 30,
+  company: Infinity
+};
+
 /**
  * Check if user can add another listing
  * ✅ CRITICAL FIX: Now uses planTier directly (not plan.tier) for consistency

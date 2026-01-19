@@ -1,0 +1,13 @@
+
+> koli-one@0.1.0 prebuild
+> node scripts/ban-console.js
+
+[ban-console] Skipping (NODE_ENV != production)
+
+> koli-one@0.1.0 build
+> craco build
+
+CRACO: Configuring webpack...
+CRACO: Removed ModuleScopePlugin
+CRACO: Webpack configuration complete
+Creating an optimized production build...

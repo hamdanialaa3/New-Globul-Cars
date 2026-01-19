@@ -96,24 +96,44 @@ const ProfilePageWrapper: React.FC = () => {
   const activeProfile = target ?? user;
 
   // 🔒 CRITICAL: Check if accessing /profile/{numericId} for other user - redirect to /profile/view/{numericId}
+  // 🔒 CRITICAL: Constitution Enforced Routing Rules
   React.useEffect(() => {
     if (!currentUser || !targetUserId || !viewer || !activeProfile) return;
     
-    // Check if URL is /profile/{numericId} (not /profile/view/{numericId})
+    // Ensure we are comparing compatible types (convert both to strings)
+    const viewerIdStr = String(viewer.numericId);
+    const targetIdStr = String(activeProfile.numericId);
+    
+    // Check if this is NOT own profile
+    const isOtherUserProfile = viewerIdStr !== targetIdStr;
+    
+    // RULE 1: Unauthorized access to Private Profile Route
+    // If visiting /profile/{id} (Private) but user is NOT the owner -> Redirect to /profile/view/{id} (Public)
     const isDirectProfilePath = location.pathname.startsWith(`/profile/${targetUserId}`) && 
                                  !location.pathname.startsWith(`/profile/view/`);
     
-    // Check if this is NOT own profile
-    const isOtherUserProfile = viewer.numericId !== activeProfile.numericId;
-    
     if (isDirectProfilePath && isOtherUserProfile) {
-      // 🔒 STRICT: Redirect to /profile/view/{numericId}
       const redirectPath = location.pathname.replace(`/profile/${targetUserId}`, `/profile/view/${targetUserId}`);
-      logger.warn('🔒 STRICT REDIRECT: Attempted direct access to other user profile', {
-        attemptedPath: location.pathname,
-        redirectPath,
-        viewerNumericId: viewer.numericId,
-        targetNumericId: activeProfile.numericId
+      logger.warn('🔒 STRICT REDIRECT: Unauthorized private profile access', {
+        from: location.pathname,
+        to: redirectPath,
+        viewer: viewerIdStr,
+        target: targetIdStr
+      });
+      navigate(redirectPath, { replace: true });
+      return;
+    }
+
+    // RULE 2: Owner accessing Public View Route
+    // If visiting /profile/view/{id} (Public) but user IS the owner -> Redirect to /profile/{id} (Private)
+    // Constitution says: "Allowed to visit my profile ... ONLY in this format"
+    const isPublicViewPath = location.pathname.startsWith(`/profile/view/${targetUserId}`);
+
+    if (isPublicViewPath && !isOtherUserProfile) {
+      const redirectPath = location.pathname.replace(`/profile/view/${targetUserId}`, `/profile/${targetUserId}`);
+      logger.info('🔒 REDIRECT: Owner redirected to private dashboard', {
+         from: location.pathname,
+         to: redirectPath
       });
       navigate(redirectPath, { replace: true });
     }

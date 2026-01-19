@@ -71,6 +71,7 @@ export interface DealershipAddress {
     longitude: number;
   };
   mapUrl?: string; // Google Maps URL
+  locationData?: import('../LocationData').LocationData; // Optional unified location data
 }
 
 // ==================== CONTACT ====================
