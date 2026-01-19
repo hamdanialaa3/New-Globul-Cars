@@ -7,6 +7,7 @@ import { db } from '../../firebase/firebase-config';
 import { IDCardData } from '../../components/Profile/IDCardEditor/types';
 import EGNValidator from './egn-validator';
 import { logger } from '../logger-service';
+import { normalizeError } from '@/utils/error-helpers';
 
 /**
  * Sanitized ID data for storage (excluding sensitive fields)

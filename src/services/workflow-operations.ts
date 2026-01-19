@@ -7,6 +7,7 @@
  */
 
 import { serviceLogger } from './logger-service';
+import { normalizeError } from '@/utils/error-helpers';
 import {
   UnifiedWorkflowData,
   TimerState,

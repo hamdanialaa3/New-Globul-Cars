@@ -2,6 +2,7 @@
 import { collection, query, orderBy, limit, startAfter, getDocs, where, DocumentSnapshot } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { logger } from '../../services/logger-service';
+import { normalizeError } from '@/utils/error-helpers';
 import { USERS_DIRECTORY_CONFIG } from '../../config/users-directory.config';
 import type { BulgarianUser } from '../../types/user/bulgarian-user.types';
 

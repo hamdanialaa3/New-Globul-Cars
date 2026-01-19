@@ -14,6 +14,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-service';
+import { normalizeError } from '@/utils/error-helpers';
 
 export interface CarListing {
   id: string;

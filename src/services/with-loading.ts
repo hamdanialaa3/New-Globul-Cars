@@ -14,6 +14,7 @@
  */
 
 import { useLoading } from '@/contexts/LoadingContext';
+import { normalizeError } from '@/utils/error-helpers';
 
 type AsyncFunction = (...args: unknown[]) => Promise<unknown>;
 

@@ -16,6 +16,7 @@ import {
 import { db } from '../firebase/firebase-config';
 import { VehicleReminder, PersonalVehicle } from '../types/personal-vehicle.types';
 import { logger } from './logger-service';
+import { normalizeError } from '@/utils/error-helpers';
 
 const COLLECTION_NAME = 'vehicleReminders';
 
