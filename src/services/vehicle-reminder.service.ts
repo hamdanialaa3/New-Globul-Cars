@@ -226,8 +226,8 @@ export class VehicleReminderService {
       // Inspection reminder
       if (vehicle.inspectionValidUntil) {
         const inspectionDate = new Date(
-          vehicle.inspectionValidUntil.year,
-          vehicle.inspectionValidUntil.month - 1,
+          vehicle.inspectionValidUntil?.year || new Date().getFullYear(),
+          (vehicle.inspectionValidUntil?.month || 1) - 1,
           1
         );
         await this.scheduleInspectionReminder(userId, vehicle.id, inspectionDate);

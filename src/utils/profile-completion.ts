@@ -38,13 +38,14 @@ export function calculateProfileCompletion(
 
   // DEALER CALCULATION (simplified based on actual BaseProfile fields)
   if (profileType === 'dealer') {
+    const dealerUser = user as any; // Type assertion to access dealerSnapshot
     if (user.verification?.email) score += 15;                     // Email verified: 15%
     if (user.verification?.phone || user.phoneNumber) score += 15; // Phone verified: 15%
-    if (user.dealerSnapshot?.nameBG) score += 15;                  // Business name: 15%
+    if (dealerUser.dealerSnapshot?.nameBG) score += 15;            // Business name: 15%
     if (user.verification?.business) score += 20;                  // Business verified: 20%
     if (user.location?.city) score += 10;                          // Business address: 10%
     if (user.photoURL) score += 10;                                 // Profile logo/photo: 10%
-    if (user.dealerSnapshot?.address) score += 5;                  // Full address: 5%
+    if (dealerUser.dealerSnapshot?.address) score += 5;            // Full address: 5%
     if (user.planTier !== 'free') score += 10;                     // Payment method setup: 10%
     
     return Math.min(100, score);
@@ -52,13 +53,14 @@ export function calculateProfileCompletion(
 
   // COMPANY CALCULATION (simplified based on actual BaseProfile fields)
   if (profileType === 'company') {
+    const companyUser = user as any; // Type assertion to access companySnapshot
     if (user.verification?.email) score += 15;                       // Email verified: 15%
     if (user.verification?.phone || user.phoneNumber) score += 15;   // Phone verified: 15%
-    if (user.companySnapshot?.nameBG) score += 15;                   // Company name: 15%
+    if (companyUser.companySnapshot?.nameBG) score += 15;            // Company name: 15%
     if (user.verification?.business) score += 20;                    // EIK/BULSTAT verified: 20%
     if (user.photoURL) score += 10;                                   // Company logo: 10%
     if (user.location?.city) score += 10;                             // Headquarters address: 10%
-    if (user.companySnapshot?.email && user.companySnapshot?.phone) score += 10; // Authorized person: 10%
+    if (companyUser.companySnapshot?.email && companyUser.companySnapshot?.phone) score += 10; // Authorized person: 10%
     if (user.planTier !== 'free') score += 5;                        // Payment setup: 5%
     
     return Math.min(100, score);
@@ -126,9 +128,10 @@ export function getMissingFields(
   }
 
   if (profileType === 'dealer') {
+    const dealerUser = user as any; // Type assertion
     if (!user.verification?.email) missing.push('Email verification');
     if (!user.verification?.phone && !user.phoneNumber) missing.push('Phone verification');
-    if (!user.dealerSnapshot?.nameBG) missing.push('Business name');
+    if (!dealerUser.dealerSnapshot?.nameBG) missing.push('Business name');
     if (!user.verification?.business) missing.push('EIK/BULSTAT verification');
     if (!user.location?.city) missing.push('Business address');
     if (!user.photoURL) missing.push('Business logo');
@@ -136,13 +139,14 @@ export function getMissingFields(
   }
 
   if (profileType === 'company') {
+    const companyUser = user as any; // Type assertion
     if (!user.verification?.email) missing.push('Email verification');
     if (!user.verification?.phone && !user.phoneNumber) missing.push('Phone verification');
-    if (!user.companySnapshot?.nameBG) missing.push('Company name');
+    if (!companyUser.companySnapshot?.nameBG) missing.push('Company name');
     if (!user.verification?.business) missing.push('EIK/BULSTAT verification');
     if (!user.photoURL) missing.push('Company logo');
     if (!user.location?.city) missing.push('Headquarters address');
-    if (!user.companySnapshot?.email || !user.companySnapshot?.phone) missing.push('Authorized person details');
+    if (!companyUser.companySnapshot?.email || !companyUser.companySnapshot?.phone) missing.push('Authorized person details');
     if (user.planTier === 'free') missing.push('Payment & billing');
   }
 

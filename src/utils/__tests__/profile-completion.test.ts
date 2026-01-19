@@ -17,7 +17,7 @@ describe('calculateProfileCompletion', () => {
 
   it('should calculate private profile completion correctly', () => {
     const user: Partial<BulgarianUser> = {
-      emailVerified: true,
+      isVerified: true,
       phoneNumber: '+359888123456',
       photoURL: 'https://example.com/photo.jpg',
       displayName: 'Test User',
@@ -32,7 +32,7 @@ describe('calculateProfileCompletion', () => {
 
   it('should calculate dealer profile completion correctly', () => {
     const user: Partial<BulgarianUser> = {
-      emailVerified: true,
+      isVerified: true,
       phoneNumber: '+359888123456',
       photoURL: 'https://example.com/logo.jpg',
       displayName: 'Test Dealer',
@@ -46,7 +46,7 @@ describe('calculateProfileCompletion', () => {
 
   it('should calculate company profile completion correctly', () => {
     const user: Partial<BulgarianUser> = {
-      emailVerified: true,
+      isVerified: true,
       phoneNumber: '+359888123456',
       photoURL: 'https://example.com/logo.jpg',
       displayName: 'Test Company',
