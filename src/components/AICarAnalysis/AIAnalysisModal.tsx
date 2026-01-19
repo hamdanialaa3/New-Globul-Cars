@@ -27,6 +27,7 @@ interface AIAnalysisModalProps {
   isOpen: boolean;
   onClose: () => void;
   onComplete?: (data: AIAnalysisCompleteData) => void;
+  mode?: 'modal' | 'page';
 }
 
 export interface AIAnalysisCompleteData {
@@ -43,19 +44,41 @@ const Overlay = styled(motion.div)`
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9999;
   padding: 1rem;
   overflow-y: auto;
+  width: 100vw;
+  height: 100vh;
+`;
+
+const PageWrapper = styled.div`
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 3rem 1rem;
+  background: linear-gradient(180deg, rgba(12, 15, 25, 0.85), rgba(18, 22, 35, 0.9));
+
+  @media (max-width: 1024px) {
+    padding: 2.5rem 1.25rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 2rem 1rem;
+    align-items: stretch;
+  }
 `;
 
 const ModalContainer = styled(motion.div)`
   position: relative;
   width: 100%;
   max-width: 800px;
+  margin: 0 auto;
+  align-self: center;
   max-height: 90vh;
   overflow-y: auto;
   border-radius: 2rem;
@@ -181,9 +204,11 @@ const STEPS: AIAnalysisStep[] = ['upload', 'analyzing', 'review', 'pricing'];
 export const AIAnalysisModal: React.FC<AIAnalysisModalProps> = ({
   isOpen,
   onClose,
-  onComplete
+  onComplete,
+  mode = 'modal'
 }) => {
   const { currentLanguage } = useLanguage();
+  const lang = currentLanguage === 'bg' ? 'bg' : 'en';
   const [currentStep, setCurrentStep] = useState<AIAnalysisStep>('upload');
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const [analysisResult, setAnalysisResult] = useState<GeminiCarAnalysisResult | null>(null);
@@ -265,6 +290,105 @@ export const AIAnalysisModal: React.FC<AIAnalysisModalProps> = ({
 
   const getCurrentStepIndex = () => STEPS.indexOf(currentStep);
 
+  const content = (
+    <ModalContainer
+      initial={{ opacity: 0, scale: 0.9, y: 20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.9, y: 20 }}
+      transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <Header>
+        <HeaderTitle>{t.title[lang]}</HeaderTitle>
+        <CloseButton
+          onClick={handleClose}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          aria-label={lang === 'bg' ? 'Затвори' : 'Close'}
+        >
+          <X />
+        </CloseButton>
+      </Header>
+
+      <ProgressBar>
+        {STEPS.map((step, index) => (
+          <ProgressStep
+            key={step}
+            $active={index === getCurrentStepIndex()}
+            $completed={index < getCurrentStepIndex()}
+          />
+        ))}
+      </ProgressBar>
+
+      <Content>
+        <AnimatePresence mode="wait">
+          {currentStep === 'upload' && (
+            <motion.div
+              key="upload"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              <AIUploadStep
+                onContinue={handleUploadComplete}
+                initialImages={uploadedImages}
+              />
+            </motion.div>
+          )}
+
+          {currentStep === 'analyzing' && uploadedImages.length > 0 && (
+            <motion.div
+              key="analyzing"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              <AIAnalyzingStep
+                image={uploadedImages[0]}
+                onComplete={handleAnalysisComplete}
+                onError={handleAnalysisError}
+              />
+            </motion.div>
+          )}
+
+          {currentStep === 'review' && analysisResult && (
+            <motion.div
+              key="review"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              <AIReviewStep
+                result={analysisResult}
+                onContinue={handleReviewComplete}
+                onBack={() => setCurrentStep('upload')}
+              />
+            </motion.div>
+          )}
+
+          {currentStep === 'pricing' && analysisResult && (
+            <motion.div
+              key="pricing"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              <AIPricingStep
+                analysisResult={analysisResult}
+                onComplete={handlePricingComplete}
+                onBack={() => setCurrentStep('review')}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </Content>
+    </ModalContainer>
+  );
+
+  if (mode === 'page') {
+    return <PageWrapper>{content}</PageWrapper>;
+  }
+
   if (!isOpen) return null;
 
   return (
@@ -275,97 +399,7 @@ export const AIAnalysisModal: React.FC<AIAnalysisModalProps> = ({
         exit={{ opacity: 0 }}
         onClick={handleClose}
       >
-        <ModalContainer
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <Header>
-            <HeaderTitle>{t.title[currentLanguage]}</HeaderTitle>
-            <CloseButton
-              onClick={handleClose}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <X />
-            </CloseButton>
-          </Header>
-
-          <ProgressBar>
-            {STEPS.map((step, index) => (
-              <ProgressStep
-                key={step}
-                $active={index === getCurrentStepIndex()}
-                $completed={index < getCurrentStepIndex()}
-              />
-            ))}
-          </ProgressBar>
-
-          <Content>
-            <AnimatePresence mode="wait">
-              {currentStep === 'upload' && (
-                <motion.div
-                  key="upload"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                >
-                  <AIUploadStep
-                    onContinue={handleUploadComplete}
-                    initialImages={uploadedImages}
-                  />
-                </motion.div>
-              )}
-
-              {currentStep === 'analyzing' && uploadedImages.length > 0 && (
-                <motion.div
-                  key="analyzing"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                >
-                  <AIAnalyzingStep
-                    image={uploadedImages[0]}
-                    onComplete={handleAnalysisComplete}
-                    onError={handleAnalysisError}
-                  />
-                </motion.div>
-              )}
-
-              {currentStep === 'review' && analysisResult && (
-                <motion.div
-                  key="review"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                >
-                  <AIReviewStep
-                    result={analysisResult}
-                    onContinue={handleReviewComplete}
-                    onBack={() => setCurrentStep('upload')}
-                  />
-                </motion.div>
-              )}
-
-              {currentStep === 'pricing' && analysisResult && (
-                <motion.div
-                  key="pricing"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                >
-                  <AIPricingStep
-                    analysisResult={analysisResult}
-                    onComplete={handlePricingComplete}
-                    onBack={() => setCurrentStep('review')}
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </Content>
-        </ModalContainer>
+        {content}
       </Overlay>
     </AnimatePresence>
   );

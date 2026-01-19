@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
-import { UnifiedWorkflowPersistenceService, TimerState } from '../../../services/unified-workflow-persistence.service';
+import { unifiedWorkflowPersistence, TimerState } from '../../../services/unified-workflow-persistence.service';
+const UnifiedWorkflowPersistenceService = unifiedWorkflowPersistence;
 
 /**
  * Hook to manage the wizard draft timer.

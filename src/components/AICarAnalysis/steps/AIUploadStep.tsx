@@ -212,6 +212,7 @@ const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 export const AIUploadStep: React.FC<AIUploadStepProps> = ({ onContinue, initialImages = [] }) => {
   const { currentLanguage } = useLanguage();
+  const lang = currentLanguage === 'bg' ? 'bg' : 'en';
   const [images, setImages] = useState<File[]>(initialImages);
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -231,33 +232,29 @@ export const AIUploadStep: React.FC<AIUploadStepProps> = ({ onContinue, initialI
       en: 'Drop images here or click to select'
     },
     dropZoneSubtext: {
-      bg: 'JPEG, PNG или WebP до 10MB всяка',
-      en: 'JPEG, PNG or WebP up to 10MB each'
+      bg: 'JPEG, PNG или WebP (макс. 10MB)',
+      en: 'JPEG, PNG or WebP (max. 10MB)'
     },
     continue: {
-      bg: 'Продължи',
-      en: 'Continue'
-    },
-    cancel: {
-      bg: 'Отказ',
-      en: 'Cancel'
+      bg: 'Продължи с анализ',
+      en: 'Continue with Analysis'
     },
     errors: {
+      noImages: {
+        bg: 'Молим, качете поне една снимка',
+        en: 'Please upload at least one image'
+      },
       tooManyFiles: {
-        bg: `Можете да качите максимум ${MAX_FILES} снимки`,
-        en: `You can upload maximum ${MAX_FILES} images`
+        bg: 'Максимум 5 снимки се допускат',
+        en: 'Maximum 5 images allowed'
       },
       invalidType: {
-        bg: 'Моля, качете само JPEG, PNG или WebP файлове',
-        en: 'Please upload only JPEG, PNG or WebP files'
+        bg: 'Само JPEG, PNG или WebP са разрешени',
+        en: 'Only JPEG, PNG or WebP are allowed'
       },
       tooLarge: {
-        bg: 'Файлът е твърде голям. Максимална големина: 10MB',
-        en: 'File is too large. Maximum size: 10MB'
-      },
-      noImages: {
-        bg: 'Моля, качете поне една снимка',
-        en: 'Please upload at least one image'
+        bg: 'Файлът е твърде голям (макс. 10MB)',
+        en: 'File is too large (max. 10MB)'
       }
     }
   };
@@ -266,18 +263,18 @@ export const AIUploadStep: React.FC<AIUploadStepProps> = ({ onContinue, initialI
     const fileArray = Array.from(files);
     
     if (images.length + fileArray.length > MAX_FILES) {
-      setError(t.errors.tooManyFiles[currentLanguage]);
+      setError(t.errors.tooManyFiles[lang]);
       return null;
     }
     
     for (const file of fileArray) {
       if (!ACCEPTED_TYPES.includes(file.type)) {
-        setError(t.errors.invalidType[currentLanguage]);
+        setError(t.errors.invalidType[lang]);
         return null;
       }
       
       if (file.size > MAX_FILE_SIZE) {
-        setError(t.errors.tooLarge[currentLanguage]);
+        setError(t.errors.tooLarge[lang]);
         return null;
       }
     }
@@ -326,7 +323,7 @@ export const AIUploadStep: React.FC<AIUploadStepProps> = ({ onContinue, initialI
 
   const handleContinue = () => {
     if (images.length === 0) {
-      setError(t.errors.noImages[currentLanguage]);
+      setError(t.errors.noImages[lang]);
       return;
     }
     
@@ -337,8 +334,8 @@ export const AIUploadStep: React.FC<AIUploadStepProps> = ({ onContinue, initialI
   return (
     <Container>
       <GlassCard padding="large">
-        <Title>{t.title[currentLanguage]}</Title>
-        <Description>{t.description[currentLanguage]}</Description>
+        <Title>{t.title[lang]}</Title>
+        <Description>{t.description[lang]}</Description>
         
         <div style={{ marginTop: '1.5rem' }}>
           <DropZone
@@ -357,8 +354,8 @@ export const AIUploadStep: React.FC<AIUploadStepProps> = ({ onContinue, initialI
             >
               {isDragging ? <Upload /> : <Camera />}
             </DropZoneIcon>
-            <DropZoneText>{t.dropZone[currentLanguage]}</DropZoneText>
-            <DropZoneSubtext>{t.dropZoneSubtext[currentLanguage]}</DropZoneSubtext>
+            <DropZoneText>{t.dropZone[lang]}</DropZoneText>
+            <DropZoneSubtext>{t.dropZoneSubtext[lang]}</DropZoneSubtext>
           </DropZone>
           
           <HiddenInput
@@ -426,7 +423,7 @@ export const AIUploadStep: React.FC<AIUploadStepProps> = ({ onContinue, initialI
             onClick={handleContinue}
             disabled={images.length === 0}
           >
-            {t.continue[currentLanguage]}
+            {t.continue[lang]}
           </GlassButton>
         </ButtonGroup>
       </GlassCard>

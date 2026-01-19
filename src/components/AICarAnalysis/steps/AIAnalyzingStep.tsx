@@ -155,23 +155,25 @@ export const AIAnalyzingStep: React.FC<AIAnalyzingStepProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [progressStage, setProgressStage] = useState(0);
 
+  const stages = {
+    bg: [
+      'Подготовка на изображението...',
+      'Анализиране на автомобила...',
+      'Разпознаване на марка и модел...',
+      'Оценка на състоянието...',
+      'Финализиране на резултатите...'
+    ],
+    en: [
+      'Preparing image...',
+      'Analyzing car...',
+      'Recognizing brand and model...',
+      'Assessing condition...',
+      'Finalizing results...'
+    ]
+  };
+
   const t = {
-    stages: {
-      bg: [
-        'Подготовка на изображението...',
-        'Анализиране на автомобила...',
-        'Разпознаване на марка и модел...',
-        'Оценка на състоянието...',
-        'Финализиране на резултатите...'
-      ],
-      en: [
-        'Preparing image...',
-        'Analyzing car...',
-        'Recognizing brand and model...',
-        'Assessing condition...',
-        'Finalizing results...'
-      ]
-    },
+    stages,
     description: {
       bg: 'AI алгоритъмът анализира снимката и извлича информация за автомобила',
       en: 'AI algorithm is analyzing the image and extracting car information'
@@ -211,8 +213,9 @@ export const AIAnalyzingStep: React.FC<AIAnalyzingStepProps> = ({
         // Progress simulation
         const progressInterval = setInterval(() => {
           setProgressStage(prev => {
+            const stagesArray = stages[currentLanguage as 'bg' | 'en'] || stages.en;
             const next = prev + 1;
-            return next >= t.stages[currentLanguage].length ? prev : next;
+            return next >= stagesArray.length ? prev : next;
           });
         }, 1500);
 
@@ -334,7 +337,7 @@ export const AIAnalyzingStep: React.FC<AIAnalyzingStepProps> = ({
             transition={{ duration: 0.3 }}
           >
             <ProgressText>
-              {t.stages[currentLanguage][progressStage] || t.stages[currentLanguage][0]}
+              {stages[currentLanguage as 'bg' | 'en']?.[progressStage] || stages[currentLanguage as 'bg' | 'en']?.[0] || stages.en[0]}
             </ProgressText>
           </motion.div>
 

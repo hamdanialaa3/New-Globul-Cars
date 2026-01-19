@@ -9,6 +9,7 @@ import InactivityWarning from '../components/InactivityWarning';
 // Lazy Loaded Components
 const HomePage = safeLazy(() => import('../pages/01_main-pages/home/HomePage'));
 const CarsPage = safeLazy(() => import('../pages/01_main-pages/CarsPage'));
+const AIAnalysisPage = safeLazy(() => import('../pages/01_main-pages/ai-analysis/AIAnalysisPage'));
 // PHASE 3: Team Management System (Updated path)
 const TeamManagementPage = safeLazy(() => import('../pages/06_admin/TeamManagement/TeamManagementPage'));
 const CompanyAnalyticsDashboard = safeLazy(() => import('../pages/09_dealer-company/CompanyAnalyticsDashboard'));
@@ -134,6 +135,7 @@ export const MainRoutes: React.FC = () => {
     return (
         <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/ai-analysis" element={<AIAnalysisPage />} />
             <Route path="/social" element={<SocialFeedPage />} />
             <Route path="/cars" element={<CarsPage />} />
 

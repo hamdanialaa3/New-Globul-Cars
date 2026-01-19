@@ -9,19 +9,13 @@
  * - Bilingual support (bg/en)
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
 import { Sparkles, Zap, Camera } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
-import AIAnalysisModal from '@/components/AICarAnalysis/AIAnalysisModal';
 import { logger } from '@/services/logger-service';
-import type {
-  GeminiCarAnalysisResult,
-  PriceEstimate,
-  EquipmentSuggestions
-} from '@/types/ai-analysis.types';
 
 const pulse = keyframes`
   0%, 100% {
@@ -188,38 +182,10 @@ const Badge = styled.span`
 export const AISmartSellButton: React.FC = () => {
   const { language } = useLanguage();
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false);
 
   const handleClick = () => {
     logger.info('AI Smart Sell button clicked');
-    setShowModal(true);
-  };
-
-  const handleModalClose = () => {
-    logger.info('AI Analysis modal closed');
-    setShowModal(false);
-  };
-
-  const handleAnalysisComplete = (data: {
-    analysisResult: GeminiCarAnalysisResult;
-    priceEstimates: PriceEstimate[];
-    equipmentSuggestions: EquipmentSuggestions | null;
-    uploadedImages: File[];
-  }) => {
-    logger.info('AI Analysis completed, navigating to sell workflow', {
-      brand: data.analysisResult.brand.value,
-      model: data.analysisResult.model.value
-    });
-
-    // Close modal
-    setShowModal(false);
-
-    // Navigate to sell workflow with AI mode and pass data via state
-    navigate('/sell/auto?mode=ai', {
-      state: {
-        aiData: data
-      }
-    });
+    navigate('/ai-analysis');
   };
 
   const text = {
@@ -251,12 +217,6 @@ export const AISmartSellButton: React.FC = () => {
           <Badge>{text.badge}</Badge>
         </ButtonWrapper>
       </Container>
-
-      <AIAnalysisModal
-        isOpen={showModal}
-        onClose={handleModalClose}
-        onComplete={handleAnalysisComplete}
-      />
     </>
   );
 };

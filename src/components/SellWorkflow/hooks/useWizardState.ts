@@ -1,6 +1,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
-import { UnifiedWorkflowPersistenceService, UnifiedWorkflowData } from '../../../services/unified-workflow-persistence.service';
+import { unifiedWorkflowPersistence, UnifiedWorkflowData } from '../../../services/unified-workflow-persistence.service';
+const UnifiedWorkflowPersistenceService = unifiedWorkflowPersistence;
 import { useAuth } from '../../../contexts/AuthProvider';
 import { logger } from '@/services/logger-service';
 
