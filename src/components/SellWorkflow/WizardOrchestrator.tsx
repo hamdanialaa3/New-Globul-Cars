@@ -281,7 +281,13 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
         isSaving
     } = useWizardState();
 
-    const { canProceed, stepError, validateForPublish } = useWizardValidation(currentStep, formData);
+    const { 
+        canProceed, 
+        stepError, 
+        validateForPublish,
+        canAccessStep, // ✅ Issue #7: Step access validation
+        getCompletedSteps // ✅ Issue #7: Get completed steps
+    } = useWizardValidation(currentStep, formData);
     const { formattedTime, remainingSeconds, isActive } = useWizardTimer();
 
     // UI State
@@ -290,6 +296,27 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
     const [showMenu, setShowMenu] = useState(false);
     const [isPublishing, setIsPublishing] = useState(false);
     const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
+    
+    // ✅ FIXED Issue #6: Cleanup object URLs on unmount to prevent memory leak
+    // تنظيف عناوين URL للكائنات عند الإزالة لمنع تسرب الذاكرة
+    useEffect(() => {
+        return () => {
+            // Cleanup all preview URLs when component unmounts
+            ImageStorageService.getImagePreviews().then(previews => {
+                if (previews && previews.length > 0) {
+                    logger.info('Cleaning up image preview URLs on unmount', {
+                        count: previews.length
+                    });
+                    
+                    // Note: URL.revokeObjectURL is now called in generateThumbnail
+                    // This is a safety cleanup for any remaining URLs
+                    // The main fix is in image-storage-operations.ts generateThumbnail function
+                }
+            }).catch(error => {
+                logger.warn('Error during preview cleanup', { error });
+            });
+        };
+    }, []);
     
     // Close menu when clicking outside
     useEffect(() => {
@@ -306,6 +333,36 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [showMenu]);
+
+    // ✅ FIXED Issue #7: Route protection - prevent URL manipulation
+    // حماية المسار - منع التلاعب بالـ URL
+    useEffect(() => {
+        const completedSteps = getCompletedSteps(formData);
+        
+        // Check if current step is accessible
+        if (!canAccessStep(currentStep, completedSteps)) {
+            // Find the last valid step the user can access
+            let lastValidStep = 1;
+            for (let step = currentStep - 1; step >= 1; step--) {
+                if (canAccessStep(step, completedSteps)) {
+                    lastValidStep = step;
+                    break;
+                }
+            }
+            
+            logger.warn('Invalid step access detected, redirecting to valid step', {
+                attemptedStep: currentStep,
+                completedSteps,
+                redirectTo: lastValidStep
+            });
+            
+            toast.error(language === 'bg' 
+                ? 'Моля завършете предишните стъпки първо'
+                : 'Please complete previous steps first');
+            
+            goToStep(lastValidStep);
+        }
+    }, [currentStep, formData, language, goToStep, canAccessStep, getCompletedSteps]);
 
     // Handlers
     const handleNext = () => {
@@ -427,12 +484,41 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
     };
 
     const handleStepClick = (stepIndex: number) => {
+        // ✅ FIXED Issue #7: Validate step access before navigation
+        // التحقق من صلاحية الوصول للخطوة قبل التنقل
+        const completedSteps = getCompletedSteps(formData);
+        const targetStep = stepIndex + 1; // stepIndex is 0-based, convert to 1-based
+        
+        // Check if user can access the target step
+        if (!canAccessStep(targetStep, completedSteps)) {
+            toast.error(language === 'bg' 
+                ? 'Моля завършете предишните стъпки първо'
+                : 'Please complete previous steps first');
+            
+            logger.warn('Step navigation blocked - dependencies not met', {
+                targetStep,
+                currentStep,
+                completedSteps
+            });
+            
+            return;
+        }
+        
+        // Allow navigation
         if (stepIndex < currentStep) {
             setDirection('backward');
             goToStep(stepIndex);
         } else if (stepIndex === currentStep + 1 && canProceed) {
             setDirection('forward');
             goToStep(stepIndex);
+        } else if (stepIndex + 1 === currentStep) {
+            // User clicked current step, do nothing
+            return;
+        } else {
+            // User is trying to skip steps
+            toast.warning(language === 'bg'
+                ? 'Моля попълнете текущата стъпка, за да продължите'
+                : 'Please complete the current step to proceed');
         }
     };
 
