@@ -32,9 +32,9 @@ class GeminiAnalysisService {
   private initialize(): void {
     // Check for API key in environment
     const apiKey = 
-      import.meta.env.VITE_GEMINI_API_KEY || 
-      process.env.REACT_APP_GEMINI_API_KEY ||
-      process.env.REACT_APP_GOOGLE_GENERATIVE_AI_KEY;
+      process.env.REACT_APP_GEMINI_API_KEY || 
+      process.env.REACT_APP_GOOGLE_GENERATIVE_AI_KEY ||
+      process.env.VITE_GEMINI_API_KEY;
 
     if (!apiKey) {
       logger.warn('Gemini API key not found. AI features will be disabled.');
