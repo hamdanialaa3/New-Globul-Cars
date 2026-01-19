@@ -284,7 +284,7 @@ const IntegrationStatusDashboard: React.FC = () => {
       setOverallHealth(healthPercentage);
       
     } catch (error) {
-      logger.error('Failed to load service status:', error);
+      logger.error('Failed to load service status:', normalizeError(error));
     } finally {
       setLoading(false);
     }

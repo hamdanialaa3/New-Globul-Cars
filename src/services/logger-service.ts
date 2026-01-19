@@ -222,7 +222,7 @@ class LoggerService {
   /**
    * Error level - errors that need attention
    */
-  error(message: string, error?: Error, context?: LogContext) {
+  error(message: string, error?: Error | unknown, context?: LogContext) {
     this.log('error', message, error, context);
     // Send to error tracking service (Sentry)
     sendToErrorTracking(message, error, context, { userId: this.userId || undefined, sessionId: this.sessionId });

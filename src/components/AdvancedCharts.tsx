@@ -1,4 +1,4 @@
-import { logger } from '../services/logger-service';
+import { normalizeError } from '@/utils/error-helpers';import { logger } from '../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { collection, getDocs, query, where } from 'firebase/firestore';
