@@ -436,55 +436,73 @@ const DetailedView = styled.div<{ $isDark: boolean }>`
 `;
 
 const DetailTitle = styled.h3<{ $isDark: boolean }>`
-  font-size: 18px;
-  margin-bottom: 15px;
-  color: ${({ $isDark }) => $isDark ? '#f1f5f9' : '#1e293b'};
+  font-size: 16px;
   font-weight: 600;
+  margin: 0 0 16px 0;
+  padding: 0 16px;
+  color: ${({ $isDark }) => $isDark ? '#e2e8f0' : '#1e293b'};
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 `;
 
 const ConsentOption = styled.div<{ $isDark: boolean }>`
-  margin-bottom: 15px;
-  padding: 12px;
-  background: ${({ $isDark }) => 
-    $isDark 
-      ? 'rgba(255, 255, 255, 0.05)' 
-      : 'rgba(0, 0, 0, 0.03)'};
-  border-radius: 6px;
-  border: 1px solid ${({ $isDark }) => 
-    $isDark 
-      ? 'rgba(255, 255, 255, 0.1)' 
-      : 'rgba(0, 0, 0, 0.1)'};
-  transition: all 0.2s ease;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid ${({ $isDark }) =>
+    $isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(0, 0, 0, 0.05)'};
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 
   &:hover {
-    background: ${({ $isDark }) => 
-      $isDark 
-        ? 'rgba(255, 255, 255, 0.08)' 
-        : 'rgba(0, 0, 0, 0.05)'};
+    background: ${({ $isDark }) =>
+      $isDark
+        ? 'rgba(255, 107, 53, 0.05)'
+        : 'rgba(255, 107, 53, 0.03)'};
+  }
+
+  &:last-child {
+    border-bottom: none;
   }
 `;
 
 const ConsentLabel = styled.label<{ $isDark: boolean }>`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   cursor: pointer;
   font-size: 15px;
-  color: ${({ $isDark }) => $isDark ? '#f1f5f9' : '#1e293b'};
+  font-weight: 500;
+  color: ${({ $isDark }) => $isDark ? '#e2e8f0' : '#1e293b'};
+  margin: 0;
+  width: 100%;
 
   strong {
-    color: ${({ $isDark }) => $isDark ? '#f1f5f9' : '#1e293b'};
+    color: ${({ $isDark }) => $isDark ? '#e2e8f0' : '#1e293b'};
+    font-weight: 600;
   }
 
   input[type="checkbox"] {
     width: 18px;
     height: 18px;
+    min-width: 18px;
     cursor: pointer;
     accent-color: ${({ $isDark }) => $isDark ? '#60a5fa' : '#3b82f6'};
 
     &:disabled {
       cursor: not-allowed;
       opacity: 0.5;
+    }
+
+    &:hover:not(:disabled) {
+      accent-color: ${({ $isDark }) => $isDark ? '#93c5fd' : '#60a5fa'};
     }
   }
 `;
@@ -493,10 +511,11 @@ const ConsentDescription = styled.p<{ $isDark: boolean }>`
   font-size: 13px;
   color: ${({ $isDark }) => 
     $isDark 
-      ? 'rgba(241, 245, 249, 0.7)' 
-      : 'rgba(30, 41, 59, 0.7)'};
-  margin: 5px 0 0 28px;
-  line-height: 1.5;
+      ? 'rgba(226, 232, 240, 0.65)'
+      : 'rgba(30, 41, 59, 0.65)'};
+  margin: 0;
+  line-height: 1.4;
+  padding-left: 30px;
 `;
 
 export default ConsentBanner;
