@@ -184,9 +184,13 @@ export class RealTimeNotificationsService {
   public subscribeToNotifications(callback: (notification: Notification) => void): () => void {
     this.notificationCallbacks.push(callback);
 
+    let isActive = true; // Prevent callback execution after unsubscribe
+
     const unsubscribe = onSnapshot(
       query(collection(db, 'admin_notifications'), orderBy('timestamp', 'desc'), limit(10)),
       (snapshot) => {
+        if (!isActive) return; // Check before processing
+
         snapshot.docChanges().forEach((change) => {
           if (change.type === 'added') {
             const notification = {
@@ -194,7 +198,7 @@ export class RealTimeNotificationsService {
               ...change.doc.data(),
               timestamp: change.doc.data().timestamp?.toDate() || new Date()
             } as Notification;
-            
+
             // إرسال الإشعار للمشتركين
             this.notificationCallbacks.forEach(cb => cb(notification));
           }
@@ -203,10 +207,7 @@ export class RealTimeNotificationsService {
     );
 
     return () => {
-      unsubscribe();
-      const index = this.notificationCallbacks.indexOf(callback);
-      if (index > -1) {
-        this.notificationCallbacks.splice(index, 1);
+      isActive = false; // Disable callback first
       }
     };
   }
