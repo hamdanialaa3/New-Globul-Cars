@@ -76,11 +76,14 @@ export const useWizardState = (workflowId: string = 'default'): WizardStateRetur
                 const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
                 // Save locally
                 // We pass 'currentStep' to ensure it's updated in the main object   
-                persistenceService.saveData(formData, currentStep);   
+                persistenceService.saveData(formData, currentStep);
 
                 // Cloud save (if authenticated)
                 if (currentUser?.uid) {
                     await persistenceService.saveToCloud(currentUser.uid);
+                }
+            } catch (err) {
+                logger.error("Auto-save failed", err as Error);
             } finally {
                 setIsSaving(false);
             }
@@ -88,7 +91,6 @@ export const useWizardState = (workflowId: string = 'default'): WizardStateRetur
 
         // Debounce save
         const timeoutId = setTimeout(saveData, 1000);
-
         return () => clearTimeout(timeoutId);
     }, [formData, currentStep, loading, currentUser]);
 
