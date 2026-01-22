@@ -426,39 +426,14 @@ export class BulgarianProfileService {
       isActive = false; // Disable callback first
       unsubscribe(); // Then unsubscribe
     };
-      const userDoc = await getDoc(userRef);
-      
-      if (userDoc.exists()) {
-        return userDoc.data() as BulgarianUserProfile;
-      }
-      
-      return null;
-    } catch (error) {
-      serviceLogger.error('[SERVICE] Error getting user profile', error as Error, { userId });
-      throw new Error('Failed to get user profile');
-    }
   }
 
   /**
-   * Delete user profile and all associated data
+   * Get user profile
    */
-  static async deleteUserProfile(userId: string): Promise<void> {
-    // ✅ CRITICAL FIX: Guard against null/undefined userId
-    if (!userId || typeof userId !== 'string' || userId.trim() === '') {
-      logger.warn('[BulgarianProfileService] deleteUserProfile called with invalid userId', { userId });
-      throw new Error('Invalid userId provided to deleteUserProfile');
-    }
-
+  static async getUserProfile(userId: string): Promise<BulgarianUserProfile | null> {
     try {
-      // Delete main profile
-      await deleteDoc(doc(db, 'users', userId));
-      
-      // Delete dealer profile if exists
-      try {
-        await deleteDoc(doc(db, 'dealers', userId));
-      } catch (error) {
-        // Dealer profile might not exist
-      }
+      const userRef = doc(db, 'users', userId);
       
       // Delete activity data
       const activityQuery = query(
