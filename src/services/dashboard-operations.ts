@@ -341,6 +341,7 @@ export class RealtimeOperations {
     );
 
     let cancelled = false;
+    let isActive = true; // Prevent setState on unmounted component
     let carsPollingInterval: NodeJS.Timeout | null = null;
 
     const attachListeners = () => {
@@ -348,8 +349,10 @@ export class RealtimeOperations {
 
       // Poll cars data every 10 seconds (can't use onSnapshot with multi-collection)
       const pollCars = async () => {
+        if (!isActive) return; // Check before async operation
         try {
           const cars = await CarsOperations.getRecentCars(userId, QUERY_LIMITS.RECENT_CARS);
+          if (!isActive) return; // Check after async operation
           onCarsUpdate(cars);
           const stats = StatsOperations.calculateStatsFromCars(cars);
           onStatsUpdate(stats);
@@ -361,6 +364,7 @@ export class RealtimeOperations {
       carsPollingInterval = setInterval(pollCars, 10000);
 
       const messagesUnsub = onSnapshot(messagesQueryRef, async (snapshot) => {
+        if (!isActive) return; // Check at start of callback
         const messages = await Promise.all(
           snapshot.docs.map(async (messageDoc) => {
             const data = messageDoc.data();
@@ -382,12 +386,14 @@ export class RealtimeOperations {
             };
           })
         );
+        if (!isActive) return; // Check after async operations
         onMessagesUpdate(messages);
       }, (err) => {
         serviceLogger.warn('[RealtimeOperations] Messages snapshot error', { error: err });
       });
 
       const notificationsUnsub = onSnapshot(notificationsQueryRef, (snapshot) => {
+        if (!isActive) return; // Check at start of callback
         const notifications = snapshot.docs.map((doc: any) => {
           const data = doc.data();
           return {
@@ -424,6 +430,7 @@ export class RealtimeOperations {
     tryAttach();
 
     return () => {
+      isActive = false; // Disable callbacks first
       cancelled = true;
       if (carsPollingInterval) clearInterval(carsPollingInterval);
       this.unsubscribeFunctions.forEach(u => u && u());
