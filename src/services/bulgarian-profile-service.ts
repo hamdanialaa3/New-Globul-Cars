@@ -404,26 +404,28 @@ export class BulgarianProfileService {
       return () => {}; // Return no-op unsubscribe function
     }
 
+    let isActive = true; // Prevent callback execution after unsubscribe
+
     const userRef = doc(db, 'users', userId);
-    
-    return onSnapshot(userRef, (doc) => {
+
+    const unsubscribe = onSnapshot(userRef, (doc) => {
+      if (!isActive) return; // Check before processing
+
       if (doc.exists()) {
         callback(doc.data() as BulgarianUserProfile);
       } else {
         callback(null);
       }
     }, (error) => {
+      if (!isActive) return; // Check before error callback
       serviceLogger.error('[SERVICE] Error in real-time profile listener', error as Error, { userId });
       callback(null);
     });
-  }
 
-  /**
-   * Get user profile
-   */
-  static async getUserProfile(userId: string): Promise<BulgarianUserProfile | null> {
-    try {
-      const userRef = doc(db, 'users', userId);
+    return () => {
+      isActive = false; // Disable callback first
+      unsubscribe(); // Then unsubscribe
+    };
       const userDoc = await getDoc(userRef);
       
       if (userDoc.exists()) {
