@@ -36,7 +36,8 @@ const SellModalPage: React.FC = () => {
       // No existing data - initialize empty workflow to start timer
       // This ensures timer starts even if user hasn't filled any data yet
       persistenceService.saveData({
-        lastSavedAt: Date.now(),
+        currentStep: initialStep,
+        lastSaved: Date.now(),
         isPublished: false,
         completedSteps: []
       }, initialStep);
