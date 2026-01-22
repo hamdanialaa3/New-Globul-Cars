@@ -16,6 +16,7 @@
  */
 
 import { serviceLogger as logger } from './logger-service';
+import { normalizeError } from '@/utils/error-helpers';
 
 // ============================================================================
 // CONSTANTS - الثوابت

@@ -17,6 +17,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage, auth } from '../../firebase/firebase-config';
 import { trustScoreService } from '../profile/trust-score-service';
 import { serviceLogger } from '../logger-service';
+import { normalizeError } from '@/utils/error-helpers';
 
 // ==================== INTERFACES ====================
 

@@ -140,7 +140,7 @@ const FavoriteIcon = styled.div`
 
 const SuggestionContent = styled.div<{ $isDark: boolean }>`
   padding: 1rem;
-  background: ${props => props.$isDark ? '#2a2a2a' : '#ffffff'};
+  background: ${props => props.$isDark ? '#2a2a2a' : 'rgba(255, 255, 255, 0.13)'};
   flex: 1;
   display: flex;
   flex-direction: column;
