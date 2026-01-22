@@ -208,6 +208,10 @@ export class RealTimeNotificationsService {
 
     return () => {
       isActive = false; // Disable callback first
+      unsubscribe();
+      const index = this.notificationCallbacks.indexOf(callback);
+      if (index > -1) {
+        this.notificationCallbacks.splice(index, 1);
       }
     };
   }
