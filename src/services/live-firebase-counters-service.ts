@@ -217,11 +217,21 @@ class LiveFirebaseCountersService {
 
   // Subscribe to real-time updates
   public subscribeToLiveUpdates(callback: (data: unknown) => void): () => void {
+    let isActive = true; // Prevent callback execution after unsubscribe
+
     const unsubscribe = onSnapshot(collection(db, 'users'), () => {
-      this.getLiveAnalytics().then(callback);
+      if (!isActive) return; // Check before async operation
+
+      this.getLiveAnalytics().then((data) => {
+        if (!isActive) return; // Check after async operation
+        callback(data);
+      });
     });
-    
-    return unsubscribe;
+
+    return () => {
+      isActive = false; // Disable callback first
+      unsubscribe(); // Then unsubscribe
+    };
   }
 }
 
