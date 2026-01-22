@@ -240,6 +240,25 @@ const SettingsButton = styled.button<{ $isDark?: boolean }>`
   }
 `;
 
+const StatusLED = styled.div<{ $loggedIn: boolean }>`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: ${props => props.$loggedIn ? '#10b981' : '#ef4444'};
+  box-shadow: 0 0 10px ${props => props.$loggedIn ? 'rgba(16, 185, 129, 0.8)' : 'rgba(239, 68, 68, 0.8)'};
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  
+  @keyframes pulse-led {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  
+  animation: pulse-led 2s infinite ease-in-out;
+`;
+
 const SettingsDropdown = styled.div<{ $isOpen: boolean; $isDark?: boolean }>`
   position: absolute;
   top: calc(100% + 12px);
@@ -705,20 +724,23 @@ const UnifiedHeader: React.FC = () => {
             {/* NEW: Notification Bell Component */}
             <NotificationBell />
 
-            <SettingsButton
-              $isDark={isDark}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsSettingsOpen(!isSettingsOpen);
-              }}
-            >
-              <Settings size={18} />
-              <span>{language === 'bg' ? 'Настройки' : 'Settings'}</span>
-              <ChevronDown size={16} style={{
-                transform: isSettingsOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                transition: 'transform 0.3s ease'
-              }} />
-            </SettingsButton>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', position: 'relative' }}>
+              <StatusLED $loggedIn={!!user} title={user ? (language === 'bg' ? 'Свързан' : 'Connected') : (language === 'bg' ? 'Не сте влезли' : 'Not Logged In')} />
+              <SettingsButton
+                $isDark={isDark}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsSettingsOpen(!isSettingsOpen);
+                }}
+              >
+                <Settings size={18} />
+                <span>{language === 'bg' ? 'Настройки' : 'Settings'}</span>
+                <ChevronDown size={16} style={{
+                  transform: isSettingsOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.3s ease'
+                }} />
+              </SettingsButton>
+            </div>
 
             <MenuButton $isDark={isDark} onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
