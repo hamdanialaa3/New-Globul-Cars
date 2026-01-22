@@ -356,15 +356,22 @@ class AdvancedRealDataService {
 
   // Subscribe to real-time updates
   public subscribeToRealTimeUpdates(callback: (data: unknown) => void): () => void {
+    let isActive = true; // Prevent callback execution after unsubscribe
+
     const unsubscribe = onSnapshot(
       collection(db, 'users'),
       (snapshot) => {
+        if (!isActive) return; // Check before processing
+
         const users = snapshot.docs.map((doc: any) => doc.data());
         callback({ users, timestamp: new Date() });
       }
     );
 
-    return unsubscribe;
+    return () => {
+      isActive = false; // Disable callback first
+      unsubscribe(); // Then unsubscribe
+    };
   }
 
   // Get real-time statistics with live updates
