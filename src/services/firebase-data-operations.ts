@@ -259,9 +259,13 @@ export async function getRealAnalytics(): Promise<RealTimeAnalytics> {
  * الاشتراك في التحديثات في الوقت الفعلي
  */
 export function subscribeToRealTimeUpdates(callback: AnalyticsCallback): UnsubscribeFunction {
+  let isActive = true; // Prevent callback execution after unsubscribe
+
   const unsubscribe = onSnapshot(
     collection(db, COLLECTIONS.USERS),
     (snapshot) => {
+      if (!isActive) return; // Check before processing
+
       const users = snapshot.docs.map((doc: any) => doc.data());
       const data: RealTimeUpdate = {
         users,
@@ -271,5 +275,8 @@ export function subscribeToRealTimeUpdates(callback: AnalyticsCallback): Unsubsc
     }
   );
 
-  return unsubscribe;
+  return () => {
+    isActive = false; // Disable callback first
+    unsubscribe(); // Then unsubscribe
+  };
 }
