@@ -15,7 +15,8 @@ export const useWizardTimer = () => {
 
     useEffect(() => {
         // Initial state
-        setTimerState(UnifiedWorkflowPersistenceService.getTimerState());
+        const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
+        setTimerState(persistenceService.getTimerState());
 
         // Subscribe to updates
         const unsubscribe = UnifiedWorkflowPersistenceService.subscribeToTimer((state) => {

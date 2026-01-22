@@ -25,7 +25,8 @@ export const useUnifiedWorkflow = (currentStep: number) => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const data = UnifiedWorkflowPersistenceService.loadData();
+        const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
+        const data = persistenceService.loadData();
         setWorkflowData(data);
 
         // Load images count
@@ -34,7 +35,7 @@ export const useUnifiedWorkflow = (currentStep: number) => {
 
         // Update workflow data with images count
         if (data && count !== data.imagesCount) {
-          UnifiedWorkflowPersistenceService.saveData(
+          persistenceService.saveData(
             { imagesCount: count },
             currentStep
           );
@@ -76,8 +77,9 @@ export const useUnifiedWorkflow = (currentStep: number) => {
   const updateData = useCallback(
     (updates: Partial<UnifiedWorkflowData>) => {
       try {
+        const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
         // Save to persistence service (now has built-in debouncing)
-        UnifiedWorkflowPersistenceService.saveData(updates, currentStep);
+        persistenceService.saveData(updates, currentStep);
 
         // Update local state optimistically
         setWorkflowData((prev) => ({

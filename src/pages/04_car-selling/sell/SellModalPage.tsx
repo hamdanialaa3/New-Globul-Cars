@@ -19,13 +19,15 @@ const SellModalPage: React.FC = () => {
 
   // ✅ FIX: Start timer automatically when opening /sell/auto page
   useEffect(() => {
-    // Check if there's existing workflow data
-    const existingData = UnifiedWorkflowPersistenceService.loadData();
+    const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
     
+    // Check if there's existing workflow data
+    const existingData = persistenceService.loadData();
+
     if (existingData && !existingData.isPublished) {
       // Timer will start automatically via startTimer() when data exists
       // But we ensure it's running by checking timer state
-      const timerState = UnifiedWorkflowPersistenceService.getTimerState();
+      const timerState = persistenceService.getTimerState();
       if (timerState.isActive && timerState.remainingSeconds > 0) {
         // Timer is already running - no action needed
         return;
@@ -33,9 +35,7 @@ const SellModalPage: React.FC = () => {
     } else {
       // No existing data - initialize empty workflow to start timer
       // This ensures timer starts even if user hasn't filled any data yet
-      UnifiedWorkflowPersistenceService.saveData({
-        currentStep: initialStep,
-        startedAt: Date.now(),
+      persistenceService.saveData({
         lastSavedAt: Date.now(),
         isPublished: false,
         completedSteps: []

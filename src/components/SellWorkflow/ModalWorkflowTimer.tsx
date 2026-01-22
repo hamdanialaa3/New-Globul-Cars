@@ -204,7 +204,8 @@ export const ModalWorkflowTimer: React.FC = () => {
   }
 
   // Double-check that we have active workflow data
-  const workflowData = UnifiedWorkflowPersistenceService.loadData();
+  const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
+  const workflowData = persistenceService.loadData();
   if (!workflowData || workflowData.isPublished) {
     return null;
   }
