@@ -32,11 +32,12 @@ export const useWizardState = (workflowId: string = 'default'): WizardStateRetur
                 setLoading(true);
 
                 // First, load locally saved data for immediate feedback
-                let data = UnifiedWorkflowPersistenceService.loadData();
+                const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
+                let data = persistenceService.loadData();
 
                 // If logged in, attempt to sync with cloud
                 if (currentUser?.uid) {
-                    const cloudData = await UnifiedWorkflowPersistenceService.loadFromCloud(currentUser.uid);
+                    const cloudData = await persistenceService.loadFromCloud(currentUser.uid);
                     if (cloudData) {
                         data = cloudData; // Cloud data is prioritized if newer (handled in service)
                     }
@@ -72,16 +73,14 @@ export const useWizardState = (workflowId: string = 'default'): WizardStateRetur
         const saveData = async () => {
             setIsSaving(true);
             try {
+                const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
                 // Save locally
-                // We pass 'currentStep' to ensure it's updated in the main object
-                UnifiedWorkflowPersistenceService.saveData(formData, currentStep);
+                // We pass 'currentStep' to ensure it's updated in the main object   
+                persistenceService.saveData(formData, currentStep);   
 
                 // Cloud save (if authenticated)
                 if (currentUser?.uid) {
-                    await UnifiedWorkflowPersistenceService.saveToCloud(currentUser.uid);
-                }
-            } catch (err) {
-                logger.error("Auto-save failed", err as Error);
+                    await persistenceService.saveToCloud(currentUser.uid);
             } finally {
                 setIsSaving(false);
             }
@@ -101,14 +100,16 @@ export const useWizardState = (workflowId: string = 'default'): WizardStateRetur
     const goToStep = useCallback((step: number) => {
         setCurrentStep(step);
         // Persist step change immediately
-        UnifiedWorkflowPersistenceService.updateCurrentStep(step);
+        const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
+        persistenceService.updateCurrentStep(step);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, []);
 
     const nextStep = useCallback(() => {
         setCurrentStep(prev => {
             const next = prev + 1;
-            UnifiedWorkflowPersistenceService.updateCurrentStep(next);
+            const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
+            persistenceService.updateCurrentStep(next);
             return next;
         });
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -117,7 +118,8 @@ export const useWizardState = (workflowId: string = 'default'): WizardStateRetur
     const prevStep = useCallback(() => {
         setCurrentStep(prev => {
             const back = Math.max(1, prev - 1);
-            UnifiedWorkflowPersistenceService.updateCurrentStep(back);
+            const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
+            persistenceService.updateCurrentStep(back);
             return back;
         });
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -126,7 +128,8 @@ export const useWizardState = (workflowId: string = 'default'): WizardStateRetur
     const resetWizard = useCallback(async () => {
         setFormData({});
         setCurrentStep(1);
-        await UnifiedWorkflowPersistenceService.executeFullReset();
+        const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
+        await persistenceService.executeFullReset();
     }, []);
 
     return {
