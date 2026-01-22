@@ -184,7 +184,7 @@ export const useAdvancedSearch = () => {
         // Remove from array
         return {
           ...prev,
-          [fieldName]: currentArray.filter(item => item !== value)
+          [fieldName]: currentArray.filter((item: any) => item !== value)
         };
       } else {
         // Add to array

@@ -84,7 +84,7 @@ class VisitorAnalyticsService {
       );
 
       const snapshot = await getDocs(q);
-      const sessions = new Set(snapshot.docs.map(doc => doc.data().sessionId));
+      const sessions = new Set(snapshot.docs.map((doc: any) => doc.data().sessionId));
       
       return sessions.size;
     } catch (error) {
@@ -105,7 +105,7 @@ class VisitorAnalyticsService {
       );
 
       const snapshot = await getDocs(q);
-      const views = snapshot.docs.map(doc => {
+      const views = snapshot.docs.map((doc: any) => {
         const data = doc.data();
         return {
           path: data.path || '/',
@@ -118,7 +118,7 @@ class VisitorAnalyticsService {
       });
 
       const realTimeVisitors = await this.getRealTimeVisitors();
-      const totalVisitorsToday = new Set(views.map(v => v.sessionId)).size;
+      const totalVisitorsToday = new Set(views.map((v: any) => v.sessionId)).size;
       const geoDistribution = this.calculateGeoDistribution(views);
       const deviceStats = this.calculateDeviceStats(views);
       const topPages = this.calculateTopPages(views);
@@ -150,7 +150,7 @@ class VisitorAnalyticsService {
       countries[country].add(view.sessionId);
     });
 
-    const total = new Set(views.map(v => v.sessionId)).size;
+    const total = new Set(views.map((v: any) => v.sessionId)).size;
     
     return Object.entries(countries)
       .map(([country, sessions]) => ({
@@ -206,7 +206,7 @@ class VisitorAnalyticsService {
       sources[source].add(view.sessionId);
     });
 
-    const total = new Set(views.map(v => v.sessionId)).size;
+    const total = new Set(views.map((v: any) => v.sessionId)).size;
     
     return Object.entries(sources)
       .map(([source, sessions]) => ({

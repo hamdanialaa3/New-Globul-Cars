@@ -308,7 +308,7 @@ const VehicleClassificationsSection: React.FC = () => {
               itemMinWidth="300px"
               showArrows={true}
             >
-              {cars.map(car => (
+              {cars.map((car: any) => (
                 <ModernCarCard
                   key={car.id}
                   car={car}

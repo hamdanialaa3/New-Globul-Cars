@@ -83,7 +83,7 @@ const RealDataDisplay: React.FC = () => {
       // Load users
       const usersQuery = query(collection(db, 'users'), orderBy('createdAt', 'desc'), limit(10));
       const usersSnapshot = await getDocs(usersQuery);
-      const usersData = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const usersData = usersSnapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
       setUsers(usersData);
 
       // Load cars - Use queryAllCollections to fetch recent cars from ALL types
@@ -97,7 +97,7 @@ const RealDataDisplay: React.FC = () => {
 
       const carsQuery = query(collection(db, 'cars'), orderBy('createdAt', 'desc'), limit(10));
       const carsSnapshot = await getDocs(carsQuery);
-      const carsData = carsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const carsData = carsSnapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
       setCars(carsData);
 
       // Calculate stats - STRICTLY CORRECT
@@ -159,7 +159,7 @@ const RealDataDisplay: React.FC = () => {
         <DataCard>
           <CardTitle><Users size={20} />آخر المستخدمين</CardTitle>
           <DataList>
-            {users.slice(0, 5).map(user => (
+            {users.slice(0, 5).map((user: any) => (
               <DataItem key={user.id}>
                 <span>{user.displayName || user.email}</span>
                 <span>{user.profileType || 'private'}</span>
@@ -171,7 +171,7 @@ const RealDataDisplay: React.FC = () => {
         <DataCard>
           <CardTitle><Car size={20} />آخر السيارات</CardTitle>
           <DataList>
-            {cars.slice(0, 5).map(car => (
+            {cars.slice(0, 5).map((car: any) => (
               <DataItem key={car.id}>
                 <span>{car.make} {car.model}</span>
                 <span>{car.price}€</span>

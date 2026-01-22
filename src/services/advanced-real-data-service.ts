@@ -43,29 +43,29 @@ class AdvancedRealDataService {
         getDocs(collection(db, 'user_activity')).catch(() => ({ docs: [] }))
       ]);
 
-      const users = usersSnapshot.docs.map(doc => doc.data());
-      const cars = carsSnapshot.docs.map(doc => doc.data());
-      const messages = messagesSnapshot.docs.map(doc => doc.data());
-      const views = viewsSnapshot.docs.map(doc => doc.data());
-      const userActivity = userActivitySnapshot.docs.map(doc => doc.data());
+      const users = usersSnapshot.docs.map((doc: any) => doc.data());
+      const cars = carsSnapshot.docs.map((doc: any) => doc.data());
+      const messages = messagesSnapshot.docs.map((doc: any) => doc.data());
+      const views = viewsSnapshot.docs.map((doc: any) => doc.data());
+      const userActivity = userActivitySnapshot.docs.map((doc: any) => doc.data());
 
       // Calculate real analytics
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
 
-      const activeUsers = users.filter(user => {
+      const activeUsers = users.filter((user: any) => {
         const lastLogin = user.lastLogin?.toDate ? user.lastLogin.toDate() : new Date(user.lastLogin);
         return lastLogin > yesterday;
       }).length;
 
-      const newUsersToday = users.filter(user => {
+      const newUsersToday = users.filter((user: any) => {
         const createdAt = user.createdAt?.toDate ? user.createdAt.toDate() : new Date(user.createdAt);
         return createdAt > today;
       }).length;
 
-      const activeCars = cars.filter(car => car.isActive).length;
-      const carsListedToday = cars.filter(car => {
+      const activeCars = cars.filter((car: any) => car.isActive).length;
+      const carsListedToday = cars.filter((car: any) => {
         const createdAt = car.createdAt?.toDate ? car.createdAt.toDate() : new Date(car.createdAt);
         return createdAt > today;
       }).length;
@@ -189,7 +189,7 @@ class AdvancedRealDataService {
       );
       
       const snapshot = await getDocs(q);
-      const activities = snapshot.docs.map(doc => {
+      const activities = snapshot.docs.map((doc: any) => {
         const data = doc.data();
         return {
           id: doc.id,
@@ -257,7 +257,7 @@ class AdvancedRealDataService {
       logger.debug('Fetching real users...');
       
       const snapshot = await getDocs(collection(db, 'users'));
-      const users = snapshot.docs.map(doc => {
+      const users = snapshot.docs.map((doc: any) => {
         const data = doc.data();
         return {
           id: doc.id,
@@ -292,7 +292,7 @@ class AdvancedRealDataService {
       logger.debug('Fetching real cars...');
       
       const snapshot = await queryAllCollections();
-      const cars = snapshot.docs.map(doc => {
+      const cars = snapshot.docs.map((doc: any) => {
         const data = doc.data();
         return {
           id: doc.id,
@@ -331,7 +331,7 @@ class AdvancedRealDataService {
       logger.debug('Fetching real messages...');
       
       const snapshot = await getDocs(collection(db, 'messages'));
-      const messages = snapshot.docs.map(doc => {
+      const messages = snapshot.docs.map((doc: any) => {
         const data = doc.data();
         return {
           id: doc.id,
@@ -359,7 +359,7 @@ class AdvancedRealDataService {
     const unsubscribe = onSnapshot(
       collection(db, 'users'),
       (snapshot) => {
-        const users = snapshot.docs.map(doc => doc.data());
+        const users = snapshot.docs.map((doc: any) => doc.data());
         callback({ users, timestamp: new Date() });
       }
     );
@@ -383,28 +383,28 @@ class AdvancedRealDataService {
       const thisWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
       const thisMonth = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-      const users = usersSnapshot.docs.map(doc => doc.data());
-      const cars = carsSnapshot.docs.map(doc => doc.data());
-      const messages = messagesSnapshot.docs.map(doc => doc.data());
+      const users = usersSnapshot.docs.map((doc: any) => doc.data());
+      const cars = carsSnapshot.docs.map((doc: any) => doc.data());
+      const messages = messagesSnapshot.docs.map((doc: any) => doc.data());
 
       // Calculate live statistics
       const liveStats = {
         totalUsers: users.length,
-        newUsersToday: users.filter(user => {
+        newUsersToday: users.filter((user: any) => {
           const createdAt = user.createdAt?.toDate ? user.createdAt.toDate() : new Date(user.createdAt);
           return createdAt > today;
         }).length,
-        newUsersThisWeek: users.filter(user => {
+        newUsersThisWeek: users.filter((user: any) => {
           const createdAt = user.createdAt?.toDate ? user.createdAt.toDate() : new Date(user.createdAt);
           return createdAt > thisWeek;
         }).length,
-        newUsersThisMonth: users.filter(user => {
+        newUsersThisMonth: users.filter((user: any) => {
           const createdAt = user.createdAt?.toDate ? user.createdAt.toDate() : new Date(user.createdAt);
           return createdAt > thisMonth;
         }).length,
         totalCars: cars.length,
-        activeCars: cars.filter(car => car.isActive).length,
-        newCarsToday: cars.filter(car => {
+        activeCars: cars.filter((car: any) => car.isActive).length,
+        newCarsToday: cars.filter((car: any) => {
           const createdAt = car.createdAt?.toDate ? car.createdAt.toDate() : new Date(car.createdAt);
           return createdAt > today;
         }).length,
@@ -435,8 +435,8 @@ class AdvancedRealDataService {
         getDocs(collection(db, 'user_activity'))
       ]);
 
-      const users = usersSnapshot.docs.map(doc => doc.data());
-      const activities = userActivitySnapshot.docs.map(doc => doc.data());
+      const users = usersSnapshot.docs.map((doc: any) => doc.data());
+      const activities = userActivitySnapshot.docs.map((doc: any) => doc.data());
 
       // Calculate engagement metrics
       const engagementMetrics = {
@@ -444,7 +444,7 @@ class AdvancedRealDataService {
         mostActiveUsers: users
           .sort((a, b) => (b.loginCount || 0) - (a.loginCount || 0))
           .slice(0, 10)
-          .map(user => ({
+          .map((user: any) => ({
             name: user.displayName,
             email: user.email,
             loginCount: user.loginCount || 0,
@@ -485,7 +485,7 @@ class AdvancedRealDataService {
       logger.debug('Fetching revenue analytics...');
       
       const carsSnapshot = await queryAllCollections();
-      const cars = carsSnapshot.docs.map(doc => doc.data());
+      const cars = carsSnapshot.docs.map((doc: any) => doc.data());
 
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -500,21 +500,21 @@ class AdvancedRealDataService {
           }
           return sum;
         }, 0),
-        revenueToday: cars.filter(car => {
+        revenueToday: cars.filter((car: any) => {
           const soldAt = car.soldAt?.toDate ? car.soldAt.toDate() : new Date(car.soldAt);
           return car.isSold && soldAt > today;
         }).reduce((sum, car) => sum + (car.price * 0.05), 0),
-        revenueThisWeek: cars.filter(car => {
+        revenueThisWeek: cars.filter((car: any) => {
           const soldAt = car.soldAt?.toDate ? car.soldAt.toDate() : new Date(car.soldAt);
           return car.isSold && soldAt > thisWeek;
         }).reduce((sum, car) => sum + (car.price * 0.05), 0),
-        revenueThisMonth: cars.filter(car => {
+        revenueThisMonth: cars.filter((car: any) => {
           const soldAt = car.soldAt?.toDate ? car.soldAt.toDate() : new Date(car.soldAt);
           return car.isSold && soldAt > thisMonth;
         }).reduce((sum, car) => sum + (car.price * 0.05), 0),
         averageCarPrice: cars.reduce((sum, car) => sum + car.price, 0) / cars.length || 0,
-        totalCarsSold: cars.filter(car => car.isSold).length,
-        conversionRate: cars.length > 0 ? (cars.filter(car => car.isSold).length / cars.length) * 100 : 0
+        totalCarsSold: cars.filter((car: any) => car.isSold).length,
+        conversionRate: cars.length > 0 ? (cars.filter((car: any) => car.isSold).length / cars.length) * 100 : 0
       };
 
       logger.info('Revenue analytics fetched successfully', {

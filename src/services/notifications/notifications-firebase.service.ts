@@ -103,7 +103,7 @@ class NotificationsFirebaseService {
       const unsubscribe = onSnapshot(
         q,
         (snapshot) => {
-          const notifications: FirebaseNotification[] = snapshot.docs.map(doc => ({
+          const notifications: FirebaseNotification[] = snapshot.docs.map((doc: any) => ({
             id: doc.id,
             ...doc.data()
           } as FirebaseNotification));

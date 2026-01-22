@@ -131,7 +131,7 @@ export class IDVerificationService {
 
       const snapshot = await getDocs(q);
       
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         submittedAt: doc.data().submittedAt?.toDate() || new Date(),

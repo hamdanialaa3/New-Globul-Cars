@@ -189,7 +189,7 @@ export class CompanyRepository {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => this.snapshotToData(doc));
+      return snapshot.docs.map((doc: any) => this.snapshotToData(doc));
     } catch (error) {
       logger.error('Error fetching verified companies', error as Error);
       throw new Error(`Failed to fetch verified companies: ${(error as Error).message}`);
@@ -210,7 +210,7 @@ export class CompanyRepository {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => this.snapshotToData(doc));
+      return snapshot.docs.map((doc: any) => this.snapshotToData(doc));
     } catch (error) {
       logger.error('Error fetching companies by city', error as Error, { city });
       throw new Error(`Failed to fetch companies by city: ${(error as Error).message}`);
@@ -231,7 +231,7 @@ export class CompanyRepository {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => this.snapshotToData(doc));
+      return snapshot.docs.map((doc: any) => this.snapshotToData(doc));
     } catch (error) {
       logger.error('Error fetching companies by legal form', error as Error, { legalForm });
       throw new Error(`Failed to fetch companies by legal form: ${(error as Error).message}`);
@@ -252,7 +252,7 @@ export class CompanyRepository {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => this.snapshotToData(doc));
+      return snapshot.docs.map((doc: any) => this.snapshotToData(doc));
     } catch (error) {
       logger.error('Error fetching companies by fleet size', error as Error, { minSize });
       throw new Error(`Failed to fetch companies by fleet size: ${(error as Error).message}`);
@@ -364,7 +364,7 @@ export class CompanyRepository {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => this.snapshotToData(doc));
+      return snapshot.docs.map((doc: any) => this.snapshotToData(doc));
     } catch (error) {
       logger.error('Error fetching pending companies', error as Error);
       throw new Error(`Failed to fetch pending companies: ${(error as Error).message}`);

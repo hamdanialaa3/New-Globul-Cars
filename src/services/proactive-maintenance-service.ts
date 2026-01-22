@@ -110,7 +110,7 @@ export class ProactiveMaintenanceService {
       );
 
       const alertsSnapshot = await getDocs(alertsQuery);
-      return alertsSnapshot.docs.map(doc => doc.data() as MaintenanceAlert);
+      return alertsSnapshot.docs.map((doc: any) => doc.data() as MaintenanceAlert);
 
     } catch (error) {
       serviceLogger.error('Failed to get user maintenance alerts', error as Error, { userId });
@@ -212,7 +212,7 @@ export class ProactiveMaintenanceService {
       );
 
       const requestsSnapshot = await getDocs(requestsQuery);
-      return requestsSnapshot.docs.map(doc => doc.data() as MaintenanceRequest);
+      return requestsSnapshot.docs.map((doc: any) => doc.data() as MaintenanceRequest);
 
     } catch (error) {
       serviceLogger.error('Failed to get user maintenance requests', error as Error, { userId });

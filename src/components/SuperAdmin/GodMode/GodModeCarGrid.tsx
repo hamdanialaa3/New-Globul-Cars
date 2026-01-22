@@ -299,7 +299,7 @@ export const GodModeCarGrid: React.FC<GodModeCarGridProps> = ({ onClose }) => {
     }
   };
 
-  const filteredCars = cars.filter(car =>
+  const filteredCars = cars.filter((car: any) =>
     car.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     car.model?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     car.year?.toString().includes(searchTerm)
@@ -335,7 +335,7 @@ export const GodModeCarGrid: React.FC<GodModeCarGridProps> = ({ onClose }) => {
             <div style={{ color: '#fff', gridColumn: '1/-1', textAlign: 'center', padding: '100px' }}>
               ACCESSING SATELLITE FEED...
             </div>
-          ) : filteredCars.map(car => (
+          ) : filteredCars.map((car: any) => (
             <Card key={car.id}>
               <CarImage bg={car.images?.[0]}>
                 <PriceTag>€{car.price?.toLocaleString()}</PriceTag>

@@ -191,7 +191,7 @@ const ProfileMyAds: React.FC = () => {
 
   // Convert and process cars
   const unifiedCars: UnifiedCar[] = useMemo(() => {
-    let cars = ((userCars || []) as any[]).map(car => ({
+    let cars = ((userCars || []) as any[]).map((car: any) => ({
       ...car,
       id: car.id,
       make: car.make || '',
@@ -215,11 +215,11 @@ const ProfileMyAds: React.FC = () => {
 
     // Apply filter
     if (filterBy === 'active') {
-      cars = cars.filter(car => car.isActive === true && car.isSold !== true);
+      cars = cars.filter((car: any) => car.isActive === true && car.isSold !== true);
     } else if (filterBy === 'sold') {
-      cars = cars.filter(car => car.isSold === true);
+      cars = cars.filter((car: any) => car.isSold === true);
     } else if (filterBy === 'pending') {
-      cars = cars.filter(car => car.status === 'pending' || car.isActive === false);
+      cars = cars.filter((car: any) => car.status === 'pending' || car.isActive === false);
     }
 
     // Apply sort

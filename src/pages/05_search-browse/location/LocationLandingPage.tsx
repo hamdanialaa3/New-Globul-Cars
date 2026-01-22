@@ -149,31 +149,31 @@ const LocationLandingPage: React.FC = () => {
                 // For now, we filter client-side for additional conditions
 
                 const snapshot = await getDocs(q);
-                let filteredCars = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                let filteredCars = snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
 
                 // Client-side filtering
                 if (cityData) {
-                    filteredCars = filteredCars.filter(car =>
+                    filteredCars = filteredCars.filter((car: any) =>
                         car.location?.toLowerCase().includes(cityData.bg.toLowerCase()) ||
                         car.city?.toLowerCase().includes(cityData.bg.toLowerCase())
                     );
                 }
 
                 if (params.brand) {
-                    filteredCars = filteredCars.filter(car =>
+                    filteredCars = filteredCars.filter((car: any) =>
                         car.make?.toLowerCase() === params.brand?.toLowerCase()
                     );
                 }
 
                 if (fuelData) {
-                    filteredCars = filteredCars.filter(car =>
+                    filteredCars = filteredCars.filter((car: any) =>
                         car.fuelType?.toLowerCase().includes(fuelData.bg.toLowerCase()) ||
                         car.fuelType?.toLowerCase().includes(fuelData.en.toLowerCase())
                     );
                 }
 
                 if (priceData) {
-                    filteredCars = filteredCars.filter(car =>
+                    filteredCars = filteredCars.filter((car: any) =>
                         (car.price || 0) <= priceData.max
                     );
                 }
@@ -279,7 +279,7 @@ const LocationLandingPage: React.FC = () => {
                     </EmptyState>
                 ) : (
                     <CarsGrid>
-                        {cars.map(car => (
+                        {cars.map((car: any) => (
                             <CarCardGermanStyle key={car.id} car={car} />
                         ))}
                     </CarsGrid>

@@ -181,7 +181,7 @@ export class WorkflowAnalyticsService {
       }
 
       const snapshot = await getDocs(q);
-      const events = snapshot.docs.map(doc => doc.data() as WorkflowEvent);
+      const events = snapshot.docs.map((doc: any) => doc.data() as WorkflowEvent);
 
       // Calculate stats
       const sessions = new Set(events.map(e => e.sessionId));

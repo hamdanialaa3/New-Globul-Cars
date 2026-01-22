@@ -56,7 +56,7 @@ class InstagramFeedService {
   }
   
   static generateCSVFeed(cars: unknown[]): string {
-    const items = cars.map(car => this.convertCarToInstagramProduct(car));
+    const items = cars.map((car: any) => this.convertCarToInstagramProduct(car));
     
     let csv = 'retailer_id,name,description,url,image_url,brand,price,availability,condition,product_type\n';
     
@@ -87,7 +87,7 @@ class InstagramFeedService {
     );
     
     const snapshot = await getDocs(carsQuery);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    return snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
   }
 }
 

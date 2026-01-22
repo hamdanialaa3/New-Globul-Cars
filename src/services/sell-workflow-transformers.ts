@@ -179,7 +179,7 @@ export class SellWorkflowTransformers {
     }
 
     if (Array.isArray(obj)) {
-      return obj.map(item => this.removeUndefinedFields(item));
+      return obj.map((item: any) => this.removeUndefinedFields(item));
     }
 
     if (typeof obj === 'object' && !(obj instanceof Date)) {

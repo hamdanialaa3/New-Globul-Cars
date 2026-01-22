@@ -347,7 +347,7 @@ class AIBillingSystem {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => {
+      return snapshot.docs.map((doc: any) => {
         const data = doc.data();
         return {
           ...data,
@@ -551,7 +551,7 @@ class AIBillingSystem {
       );
 
       const snapshot = await getDocs(q);
-      const bills = snapshot.docs.map(doc => doc.data() as MonthlyBill);
+      const bills = snapshot.docs.map((doc: any) => doc.data() as MonthlyBill);
 
       const paidBills = bills.filter(b => b.paidAt);
       const totalRevenue = paidBills.reduce((sum, b) => sum + b.totalCost, 0);

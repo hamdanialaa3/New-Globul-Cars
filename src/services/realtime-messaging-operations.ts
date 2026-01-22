@@ -230,7 +230,7 @@ export async function getMessages(
         limit(limitCount)
       );
       const querySnapshot = await getDocs(q);
-      const fallbackMessages = querySnapshot.docs.map(doc => ({
+      const fallbackMessages = querySnapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         createdAt: convertTimestampToDate(doc.data().createdAt),

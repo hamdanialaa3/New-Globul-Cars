@@ -209,7 +209,7 @@ const CommunityFeedSection: React.FC = () => {
         </SectionHeader>
         
         <FeedContainer>
-          {posts.map(post => (
+          {posts.map((post: any) => (
             <PostCard
               key={post.id}
               post={post}

@@ -44,7 +44,7 @@ class FirebaseConnectionTestService {
       serviceLogger.info('Firebase connection successful', { usersCount });
       
       // Test 2: Get user details
-      const users = usersSnapshot.docs.map(doc => {
+      const users = usersSnapshot.docs.map((doc: any) => {
         const data = doc.data();
         return {
           id: doc.id,
@@ -156,7 +156,7 @@ class FirebaseConnectionTestService {
       serviceLogger.info('Fetching real users data');
       
       const usersSnapshot = await getDocs(collection(db, 'users'));
-      const users = usersSnapshot.docs.map(doc => {
+      const users = usersSnapshot.docs.map((doc: any) => {
         const data = doc.data();
         return {
           id: doc.id,

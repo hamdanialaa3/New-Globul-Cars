@@ -82,8 +82,8 @@ export async function getFeaturedCars(limitCount: number = 4): Promise<UnifiedCa
         );
         const snapshot = await getDocs(q);
         return snapshot.docs
-          .map(doc => mapDocToCar(doc))
-          .filter(car => {
+          .map((doc: any) => mapDocToCar(doc))
+          .filter((car: any) => {
             // Support multiple status formats: status='published'/'active', or isActive=true
             const isActive = car.isActive !== false; // Default to true if missing
             const isSold = car.isSold === true; // Default to false if missing
@@ -136,8 +136,8 @@ export async function getNewCarsLast24Hours(limitCount: number = 12): Promise<Un
         );
         const snapshot = await getDocs(q);
         return snapshot.docs
-          .map(doc => mapDocToCar(doc))
-          .filter(car => {
+          .map((doc: any) => mapDocToCar(doc))
+          .filter((car: any) => {
             // Support multiple status formats: status='published'/'active', or isActive=true
             const isActive = car.isActive !== false; // Default to true if missing
             const isSold = car.isSold === true; // Default to false if missing
@@ -206,7 +206,7 @@ export async function getSimilarCars(carId: string, limitCount: number = 6): Pro
 
         if (snapshot && !snapshot.empty) {
           return snapshot.docs
-            .map(doc => mapDocToCar(doc))
+            .map((doc: any) => mapDocToCar(doc))
             .filter(c => c.id !== carId && c.isActive !== false);
         }
         return [];
@@ -221,7 +221,7 @@ export async function getSimilarCars(carId: string, limitCount: number = 6): Pro
 
     // Remove duplicates and sort
     const uniqueCars = Array.from(
-      new Map(allCars.map(car => [car.id, car])).values()
+      new Map(allCars.map((car: any) => [car.id, car])).values()
     );
 
     return uniqueCars.slice(0, limitCount);
@@ -263,7 +263,7 @@ export async function searchCars(filters: CarFilters = {}, limitCount: number = 
         q = query(q, limit(limitCount * 2)); // Get more for client-side filtering
 
         const snapshot = await getDocs(q);
-        const cars = snapshot.docs.map(doc => mapDocToCar(doc));
+        const cars = snapshot.docs.map((doc: any) => mapDocToCar(doc));
 
         return cars;
       } catch (error) {
@@ -364,7 +364,7 @@ export async function getUserCars(userId: string): Promise<UnifiedCar[]> {
           where('sellerId', '==', userId)
         );
         const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => mapDocToCar(doc));
+        return snapshot.docs.map((doc: any) => mapDocToCar(doc));
       } catch (error) {
         serviceLogger.warn(`Error querying ${collectionName}`, { error, userId });
         return [];

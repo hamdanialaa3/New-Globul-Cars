@@ -169,7 +169,7 @@ export class RealTimeNotificationsService {
       );
       
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         timestamp: doc.data().timestamp?.toDate() || new Date()
@@ -238,7 +238,7 @@ export class RealTimeNotificationsService {
       const q = query(notificationsRef, where('read', '==', true));
       const snapshot = await getDocs(q);
       
-      const deletePromises = snapshot.docs.map(doc => deleteDoc(doc.ref));
+      const deletePromises = snapshot.docs.map((doc: any) => deleteDoc(doc.ref));
       await Promise.all(deletePromises);
     } catch (error) {
       serviceLogger.error('Error clearing read notifications', error as Error);
@@ -300,7 +300,7 @@ export class RealTimeNotificationsService {
       const notificationsRef = collection(db, 'admin_notifications');
       const snapshot = await getDocs(notificationsRef);
       
-      const notifications = snapshot.docs.map(doc => doc.data());
+      const notifications = snapshot.docs.map((doc: any) => doc.data());
       
       const stats = {
         total: notifications.length,

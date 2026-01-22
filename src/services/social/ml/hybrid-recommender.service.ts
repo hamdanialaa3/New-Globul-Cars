@@ -43,14 +43,14 @@ class HybridRecommenderService {
       const combined = [
         ...this.applyWeight(collaborative, 0.4),
         ...this.applyWeight(contentBased, 0.3),
-        ...trending.map(post => ({
+        ...trending.map((post: any) => ({
           post,
           score: 0.2,
           reason: 'trending',
           confidence: 0.8,
           source: 'hybrid' as const
         })),
-        ...fresh.map(post => ({
+        ...fresh.map((post: any) => ({
           post,
           score: 0.1,
           reason: 'fresh_content',
@@ -96,7 +96,7 @@ class HybridRecommenderService {
     );
 
     const snapshot = await getDocs(postsQuery);
-    const posts = snapshot.docs.map(doc => ({
+    const posts = snapshot.docs.map((doc: any) => ({
       id: doc.id,
       ...doc.data()
     } as Post));
@@ -120,7 +120,7 @@ class HybridRecommenderService {
     );
 
     const snapshot = await getDocs(postsQuery);
-    return snapshot.docs.map(doc => ({
+    return snapshot.docs.map((doc: any) => ({
       id: doc.id,
       ...doc.data()
     } as Post));

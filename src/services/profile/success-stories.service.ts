@@ -167,7 +167,7 @@ export class SuccessStoriesService {
       }
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => {
+      return snapshot.docs.map((doc: any) => {
         const data = doc.data();
         // Ensure date is a valid Timestamp
         let storyDate: Timestamp;

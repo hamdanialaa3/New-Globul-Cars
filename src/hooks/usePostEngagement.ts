@@ -62,7 +62,7 @@ export const usePostEngagement = (item: FeedItem): UsePostEngagementResult => {
         );
 
         const unsubscribe = onSnapshot(commentsQuery, (snapshot) => {
-            const commentsData = snapshot.docs.map(doc => ({
+            const commentsData = snapshot.docs.map((doc: any) => ({
                 id: doc.id,
                 ...doc.data()
             } as PostComment));

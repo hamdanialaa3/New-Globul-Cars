@@ -273,16 +273,16 @@ class ProfileAnalyticsService {
       const eventsSnapshot = await getDocs(eventsQuery);
       
       // Calculate metrics
-      const profileViews = eventsSnapshot.docs.filter(doc => doc.data().type === 'profile_view').length;
+      const profileViews = eventsSnapshot.docs.filter((doc: any) => doc.data().type === 'profile_view').length;
       const uniqueVisitors = new Set(
         eventsSnapshot.docs
-          .filter(doc => doc.data().type === 'profile_view')
-          .map(doc => doc.data().visitorId)
+          .filter((doc: any) => doc.data().type === 'profile_view')
+          .map((doc: any) => doc.data().visitorId)
       ).size;
       
-      const carViews = eventsSnapshot.docs.filter(doc => doc.data().type === 'car_view').length;
-      const inquiries = eventsSnapshot.docs.filter(doc => doc.data().type === 'inquiry').length;
-      const favorites = eventsSnapshot.docs.filter(doc => doc.data().type === 'favorite' && doc.data().action === 'add').length;
+      const carViews = eventsSnapshot.docs.filter((doc: any) => doc.data().type === 'car_view').length;
+      const inquiries = eventsSnapshot.docs.filter((doc: any) => doc.data().type === 'inquiry').length;
+      const favorites = eventsSnapshot.docs.filter((doc: any) => doc.data().type === 'favorite' && doc.data().action === 'add').length;
       
       // Calculate conversion rate (inquiries / profile views)
       const conversionRate = profileViews > 0 ? (inquiries / profileViews) * 100 : 0;
@@ -406,14 +406,14 @@ class ProfileAnalyticsService {
       
       const previousSnapshot = await getDocs(previousQuery);
       
-      const previousViews = previousSnapshot.docs.filter(doc => doc.data().type === 'profile_view').length;
+      const previousViews = previousSnapshot.docs.filter((doc: any) => doc.data().type === 'profile_view').length;
       const previousVisitors = new Set(
         previousSnapshot.docs
-          .filter(doc => doc.data().type === 'profile_view')
-          .map(doc => doc.data().visitorId)
+          .filter((doc: any) => doc.data().type === 'profile_view')
+          .map((doc: any) => doc.data().visitorId)
       ).size;
-      const previousInquiries = previousSnapshot.docs.filter(doc => doc.data().type === 'inquiry').length;
-      const previousFavorites = previousSnapshot.docs.filter(doc => doc.data().type === 'favorite' && doc.data().action === 'add').length;
+      const previousInquiries = previousSnapshot.docs.filter((doc: any) => doc.data().type === 'inquiry').length;
+      const previousFavorites = previousSnapshot.docs.filter((doc: any) => doc.data().type === 'favorite' && doc.data().action === 'add').length;
       
       // Get current period
       const currentQuery = query(
@@ -425,14 +425,14 @@ class ProfileAnalyticsService {
       
       const currentSnapshot = await getDocs(currentQuery);
       
-      const currentViews = currentSnapshot.docs.filter(doc => doc.data().type === 'profile_view').length;
+      const currentViews = currentSnapshot.docs.filter((doc: any) => doc.data().type === 'profile_view').length;
       const currentVisitors = new Set(
         currentSnapshot.docs
-          .filter(doc => doc.data().type === 'profile_view')
-          .map(doc => doc.data().visitorId)
+          .filter((doc: any) => doc.data().type === 'profile_view')
+          .map((doc: any) => doc.data().visitorId)
       ).size;
-      const currentInquiries = currentSnapshot.docs.filter(doc => doc.data().type === 'inquiry').length;
-      const currentFavorites = currentSnapshot.docs.filter(doc => doc.data().type === 'favorite' && doc.data().action === 'add').length;
+      const currentInquiries = currentSnapshot.docs.filter((doc: any) => doc.data().type === 'inquiry').length;
+      const currentFavorites = currentSnapshot.docs.filter((doc: any) => doc.data().type === 'favorite' && doc.data().action === 'add').length;
       
       const viewsChange = previousViews > 0 ? ((currentViews - previousViews) / previousViews) * 100 : 0;
       const visitorsChange = previousVisitors > 0 ? ((currentVisitors - previousVisitors) / previousVisitors) * 100 : 0;

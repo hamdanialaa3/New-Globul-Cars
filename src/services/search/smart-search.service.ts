@@ -466,7 +466,7 @@ class SmartSearchService {
           
           // Execute query
           const snapshot = await getDocs(q);
-          const cars = snapshot.docs.map(doc => ({
+          const cars = snapshot.docs.map((doc: any) => ({
             id: doc.id,
             ...doc.data()
           })) as (CarListing | UnifiedCar)[];
@@ -531,7 +531,7 @@ class SmartSearchService {
   ): (CarListing | UnifiedCar)[] {
     const isDebug = typeof window !== 'undefined' && localStorage.getItem('DEBUG_SEARCH') === 'true';
     
-    const filtered = cars.filter(car => {
+    const filtered = cars.filter((car: any) => {
       // Year filter
       if (parsed.years.length > 0) {
         const carYear = car.year || 0;

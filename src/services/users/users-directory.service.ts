@@ -86,7 +86,7 @@ class UsersDirectoryService {
 
       const snapshot = await getDocs(q);
 
-      const users = snapshot.docs.map(doc => sanitizeUser(doc));
+      const users = snapshot.docs.map((doc: any) => sanitizeUser(doc));
 
       return {
         users,

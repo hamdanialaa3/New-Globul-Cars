@@ -175,7 +175,7 @@ const RatingStats: React.FC<RatingStatsProps> = ({ stats }) => {
         </OverallRating>
 
         <DistributionContainer>
-          {distributionData.map(item => (
+          {distributionData.map((item: any) => (
             <DistributionRow key={item.stars}>
               <StarLabel>
                 {item.stars} ⭐

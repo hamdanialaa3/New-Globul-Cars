@@ -131,7 +131,7 @@ class AILearningSystem {
       }
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         timestamp: doc.data().timestamp.toDate()
@@ -434,7 +434,7 @@ ${commonIssues.map((issue, i) => `${i + 1}. ${issue}`).join('\n')}
   }> {
     try {
       const snapshot = await getDocs(collection(db, this.FEEDBACK_COLLECTION));
-      const feedbacks = snapshot.docs.map(doc => doc.data()) as AIFeedback[];
+      const feedbacks = snapshot.docs.map((doc: any) => doc.data()) as AIFeedback[];
 
       const optimizationsSnapshot = await getDocs(
         collection(db, this.OPTIMIZATIONS_COLLECTION)

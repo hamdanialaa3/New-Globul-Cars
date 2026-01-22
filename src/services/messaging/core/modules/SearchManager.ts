@@ -57,7 +57,7 @@ export class SearchManager {
       
       // Client-side filtering (Firestore doesn't support full-text search natively)
       const results = snapshot.docs
-        .map(doc => ({
+        .map((doc: any) => ({
           id: doc.id,
           ...doc.data(),
           createdAt: doc.data().createdAt?.toDate?.() || new Date()
@@ -120,7 +120,7 @@ export class SearchManager {
       const snapshot = await getDocs(q);
       
       // Apply filters client-side
-      let results = snapshot.docs.map(doc => ({
+      let results = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         lastMessageAt: doc.data().lastMessageAt?.toDate?.() || new Date(),

@@ -43,7 +43,7 @@ function filterCars(cars: CarListing[], params: SearchParams): CarListing[] {
   // Text search
   if (params.query && params.query.length > 0) {
     const query = params.query.toLowerCase();
-    results = results.filter(car => {
+    results = results.filter((car: any) => {
       const searchText = `${car.make} ${car.model} ${car.year} ${car.description || ''}`.toLowerCase();
       return searchText.includes(query);
     });
@@ -51,51 +51,51 @@ function filterCars(cars: CarListing[], params: SearchParams): CarListing[] {
   
   // Filter by make
   if (params.filters?.make) {
-    results = results.filter(car => 
+    results = results.filter((car: any) => 
       car.make.toLowerCase() === params.filters!.make!.toLowerCase()
     );
   }
   
   // Filter by model
   if (params.filters?.model) {
-    results = results.filter(car => 
+    results = results.filter((car: any) => 
       car.model.toLowerCase().includes(params.filters!.model!.toLowerCase())
     );
   }
   
   // Filter by year range
   if (params.filters?.yearFrom) {
-    results = results.filter(car => car.year >= params.filters!.yearFrom!);
+    results = results.filter((car: any) => car.year >= params.filters!.yearFrom!);
   }
   if (params.filters?.yearTo) {
-    results = results.filter(car => car.year <= params.filters!.yearTo!);
+    results = results.filter((car: any) => car.year <= params.filters!.yearTo!);
   }
   
   // Filter by price range
   if (params.filters?.priceFrom) {
-    results = results.filter(car => car.price >= params.filters!.priceFrom!);
+    results = results.filter((car: any) => car.price >= params.filters!.priceFrom!);
   }
   if (params.filters?.priceTo) {
-    results = results.filter(car => car.price <= params.filters!.priceTo!);
+    results = results.filter((car: any) => car.price <= params.filters!.priceTo!);
   }
   
   // Filter by region
   if (params.filters?.region) {
-    results = results.filter(car => 
+    results = results.filter((car: any) => 
       car.region?.toLowerCase() === params.filters!.region!.toLowerCase()
     );
   }
   
   // Filter by fuel type
   if (params.filters?.fuelType) {
-    results = results.filter(car => 
+    results = results.filter((car: any) => 
       car.fuelType?.toLowerCase() === params.filters!.fuelType!.toLowerCase()
     );
   }
   
   // Filter by transmission
   if (params.filters?.transmission) {
-    results = results.filter(car => 
+    results = results.filter((car: any) => 
       car.transmission?.toLowerCase() === params.filters!.transmission!.toLowerCase()
     );
   }

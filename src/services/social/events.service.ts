@@ -196,7 +196,7 @@ class EventsService {
       
       const snapshot = await getDocs(q);
       
-      return snapshot.docs.map(doc => this.convertToEvent(doc));
+      return snapshot.docs.map((doc: any) => this.convertToEvent(doc));
     } catch (error) {
       logger.error('Error getting events', error as Error, { cityFilter, limitCount });
       throw new Error('Failed to load events');
@@ -293,7 +293,7 @@ class EventsService {
         )
       );
       
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         createdAt: doc.data().createdAt.toDate()

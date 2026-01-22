@@ -54,7 +54,7 @@ export const generateCarListingsSitemap = async (baseUrl: string = 'https://koli
     const snapshot = await getDocs(q);
 
     return snapshot.docs
-      .map(doc => {
+      .map((doc: any) => {
         const data = doc.data();
 
         // Skip cars without numeric IDs (legacy data)

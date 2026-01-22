@@ -350,7 +350,7 @@ class VerificationService {
 
       const snapshot = await getDocs(q);
       
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         ...doc.data(),
         submittedAt: doc.data().submittedAt?.toDate() || new Date()
       })) as VerificationRequest[];

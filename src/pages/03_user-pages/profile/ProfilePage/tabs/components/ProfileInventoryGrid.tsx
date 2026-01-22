@@ -36,7 +36,7 @@ export const ProfileInventoryGrid: React.FC<ProfileInventoryGridProps> = ({
 
   // Convert ProfileCar to UnifiedCar format
   const unifiedCars: UnifiedCar[] = useMemo(() => {
-    return ((userCars || []) as any[]).map(car => ({
+    return ((userCars || []) as any[]).map((car: any) => ({
       ...car,
       id: car.id,
       make: car.make || '',
@@ -63,7 +63,7 @@ export const ProfileInventoryGrid: React.FC<ProfileInventoryGridProps> = ({
   const filteredCars = useMemo(() => {
     if (!inventorySearch.trim()) return unifiedCars;
     const lower = inventorySearch.toLowerCase();
-    return unifiedCars.filter(car =>
+    return unifiedCars.filter((car: any) =>
       (car.make?.toLowerCase().includes(lower)) ||
       (car.model?.toLowerCase().includes(lower)) ||
       (car.year?.toString().includes(lower)) ||

@@ -48,7 +48,7 @@ const ProfileSettingsMobileDe: React.FC = () => {
         setLoadingCars(true);
         const cars = await unifiedCarService.getUserCars(user.uid);
         // Only show active, non-sold cars
-        const activeCars = cars.filter(car => car.isActive !== false && car.isSold !== true);
+        const activeCars = cars.filter((car: any) => car.isActive !== false && car.isSold !== true);
         setUserCars(activeCars);
       } catch (error) {
         logger.error('Error loading user cars:', error);
@@ -67,11 +67,11 @@ const ProfileSettingsMobileDe: React.FC = () => {
 
     // Apply filter
     if (filterBy === 'active') {
-      filtered = filtered.filter(car => car.isActive === true && car.isSold !== true);
+      filtered = filtered.filter((car: any) => car.isActive === true && car.isSold !== true);
     } else if (filterBy === 'sold') {
-      filtered = filtered.filter(car => car.isSold === true);
+      filtered = filtered.filter((car: any) => car.isSold === true);
     } else if (filterBy === 'pending') {
-      filtered = filtered.filter(car => car.status === 'pending' || car.isActive === false);
+      filtered = filtered.filter((car: any) => car.status === 'pending' || car.isActive === false);
     }
 
     // Apply sort

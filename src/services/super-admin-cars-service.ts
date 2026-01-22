@@ -131,7 +131,7 @@ class SuperAdminCarsService {
       }
 
       const snapshot = await getDocs(carsQuery);
-      const cars = snapshot.docs.map(doc => ({
+      const cars = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         createdAt: doc.data().createdAt?.toDate() || new Date(),
@@ -145,19 +145,19 @@ class SuperAdminCarsService {
       let filteredCars = cars;
       
       if (filters?.priceMin) {
-        filteredCars = filteredCars.filter(car => car.price >= filters.priceMin!);
+        filteredCars = filteredCars.filter((car: any) => car.price >= filters.priceMin!);
       }
       
       if (filters?.priceMax) {
-        filteredCars = filteredCars.filter(car => car.price <= filters.priceMax!);
+        filteredCars = filteredCars.filter((car: any) => car.price <= filters.priceMax!);
       }
       
       if (filters?.dateFrom) {
-        filteredCars = filteredCars.filter(car => car.createdAt >= filters.dateFrom!);
+        filteredCars = filteredCars.filter((car: any) => car.createdAt >= filters.dateFrom!);
       }
       
       if (filters?.dateTo) {
-        filteredCars = filteredCars.filter(car => car.createdAt <= filters.dateTo!);
+        filteredCars = filteredCars.filter((car: any) => car.createdAt <= filters.dateTo!);
       }
 
       return filteredCars;
@@ -192,7 +192,7 @@ class SuperAdminCarsService {
       }
 
       const snapshot = await getDocs(postsQuery);
-      const posts = snapshot.docs.map(doc => ({
+      const posts = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         createdAt: doc.data().createdAt?.toDate() || new Date(),
@@ -227,12 +227,12 @@ class SuperAdminCarsService {
       // Get user's cars
       const carsQuery = query(collection(db, 'cars'), where('userId', '==', userId));
       const carsSnapshot = await getDocs(carsQuery);
-      const cars = carsSnapshot.docs.map(doc => doc.data());
+      const cars = carsSnapshot.docs.map((doc: any) => doc.data());
 
       // Get user's posts
       const postsQuery = query(collection(db, 'posts'), where('userId', '==', userId));
       const postsSnapshot = await getDocs(postsQuery);
-      const posts = postsSnapshot.docs.map(doc => doc.data());
+      const posts = postsSnapshot.docs.map((doc: any) => doc.data());
 
       // Get user data
       const userDoc = await getDoc(doc(db, 'users', userId));
@@ -240,8 +240,8 @@ class SuperAdminCarsService {
 
       if (!userData) return null;
 
-      const activeCars = cars.filter(car => car.status === 'active').length;
-      const soldCars = cars.filter(car => car.status === 'sold').length;
+      const activeCars = cars.filter((car: any) => car.status === 'active').length;
+      const soldCars = cars.filter((car: any) => car.status === 'sold').length;
       const activePosts = posts.filter(post => post.status === 'active').length;
       
       const totalViews = cars.reduce((sum, car) => sum + (car.views || 0), 0) +
@@ -413,18 +413,18 @@ class SuperAdminCarsService {
         getDocs(collection(db, 'users'))
       ]);
 
-      const cars = carsSnapshot.docs.map(doc => doc.data());
-      const posts = postsSnapshot.docs.map(doc => doc.data());
-      const users = usersSnapshot.docs.map(doc => doc.data());
+      const cars = carsSnapshot.docs.map((doc: any) => doc.data());
+      const posts = postsSnapshot.docs.map((doc: any) => doc.data());
+      const users = usersSnapshot.docs.map((doc: any) => doc.data());
 
-      const activeCars = cars.filter(car => car.status === 'active').length;
-      const soldCars = cars.filter(car => car.status === 'sold').length;
-      const suspendedCars = cars.filter(car => car.status === 'suspended').length;
+      const activeCars = cars.filter((car: any) => car.status === 'active').length;
+      const soldCars = cars.filter((car: any) => car.status === 'sold').length;
+      const suspendedCars = cars.filter((car: any) => car.status === 'suspended').length;
       
       const activePosts = posts.filter(post => post.status === 'active').length;
       const reportedPosts = posts.filter(post => post.reportCount > 0).length;
       
-      const activeUsers = users.filter(user => user.status === 'active').length;
+      const activeUsers = users.filter((user: any) => user.status === 'active').length;
       
       const totalViews = cars.reduce((sum, car) => sum + (car.views || 0), 0) +
                         posts.reduce((sum, post) => sum + (post.views || 0), 0);
@@ -470,14 +470,14 @@ class SuperAdminCarsService {
       
       if (type === 'cars' || type === 'all') {
         const carsSnapshot = await queryAllCollections();
-        const cars = carsSnapshot.docs.map(doc => ({
+        const cars = carsSnapshot.docs.map((doc: any) => ({
           id: doc.id,
           ...doc.data(),
           createdAt: doc.data().createdAt?.toDate() || new Date(),
           updatedAt: doc.data().updatedAt?.toDate() || new Date()
         } as CarListing));
 
-        results.cars = cars.filter(car => 
+        results.cars = cars.filter((car: CarListing) => 
           car.make.toLowerCase().includes(searchTerm.toLowerCase()) ||
           car.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
           car.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -488,7 +488,7 @@ class SuperAdminCarsService {
 
       if (type === 'posts' || type === 'all') {
         const postsSnapshot = await getDocs(collection(db, 'posts'));
-        const posts = postsSnapshot.docs.map(doc => ({
+        const posts = postsSnapshot.docs.map((doc: any) => ({
           id: doc.id,
           ...doc.data(),
           createdAt: doc.data().createdAt?.toDate() || new Date(),

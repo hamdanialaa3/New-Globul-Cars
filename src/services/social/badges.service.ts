@@ -264,7 +264,7 @@ class BadgesService {
         )
       );
       
-      return badgesSnapshot.docs.map(doc => ({
+      return badgesSnapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         unlockedAt: doc.data().unlockedAt.toDate()

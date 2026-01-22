@@ -108,7 +108,7 @@ class MessageSearchService {
       const q = query(messagesRef, ...constraints);
       const snapshot = await getDocs(q);
 
-      let messages = snapshot.docs.map(doc => ({
+      let messages = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       })) as Message[];
@@ -164,7 +164,7 @@ class MessageSearchService {
       );
 
       const snapshot = await getDocs(q);
-      let conversations = snapshot.docs.map(doc => ({
+      let conversations = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       })) as Conversation[];

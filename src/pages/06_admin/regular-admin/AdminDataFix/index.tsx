@@ -33,7 +33,7 @@ const AdminDataFix: React.FC = () => {
 
       // 1. Get all users
       const usersSnapshot = await getDocs(collection(db, 'users'));
-      const usersData = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const usersData = usersSnapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
 
       addLog(`Found ${usersData.length} users. Processing sequences...`);
 

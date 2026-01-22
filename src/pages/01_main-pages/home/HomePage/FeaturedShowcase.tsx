@@ -602,7 +602,7 @@ const FeaturedShowcase: React.FC = memo(() => {
   // Filter cars
   const filteredCars = activeTab === 'all'
     ? CARS_DATA
-    : CARS_DATA.filter(car => car.category === activeTab);
+    : CARS_DATA.filter((car: any) => car.category === activeTab);
 
   // Translations
   const title = isBg ? 'Българска премиум селекция' : 'Bulgarian Premium Selection';

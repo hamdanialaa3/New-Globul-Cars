@@ -250,7 +250,7 @@ export class RatingService {
       }
 
       const snapshot = await getDocs(q);
-      const ratings = snapshot.docs.slice(0, limitCount).map(doc => ({
+      const ratings = snapshot.docs.slice(0, limitCount).map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         createdAt: doc.data().createdAt?.toDate() || new Date()
@@ -291,7 +291,7 @@ export class RatingService {
       const q = query(ratingsRef, where('carId', '==', carId));
       const snapshot = await getDocs(q);
       
-      const ratings = snapshot.docs.map(doc => doc.data().rating as number);
+      const ratings = snapshot.docs.map((doc: any) => doc.data().rating as number);
       const totalRatings = ratings.length;
       const averageRating = totalRatings > 0 ? ratings.reduce((sum, rating) => sum + rating, 0) / totalRatings : 0;
       
@@ -326,7 +326,7 @@ export class RatingService {
       );
       const snapshot = await getDocs(q);
       
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         createdAt: doc.data().createdAt?.toDate() || new Date()

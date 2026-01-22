@@ -215,7 +215,7 @@ class AuditLoggingService {
       q = query(q, limit(limitCount * page));
       
       const snapshot = await getDocs(q);
-      const logs = snapshot.docs.map(doc => ({ 
+      const logs = snapshot.docs.map((doc: any) => ({ 
         ...doc.data(), 
         id: doc.id,
         timestamp: doc.data().timestamp?.toDate() || new Date()
@@ -270,7 +270,7 @@ class AuditLoggingService {
       q = query(q, limit(limitCount * page));
       
       const snapshot = await getDocs(q);
-      const events = snapshot.docs.map(doc => ({ 
+      const events = snapshot.docs.map((doc: any) => ({ 
         ...doc.data(), 
         id: doc.id,
         timestamp: doc.data().timestamp?.toDate() || new Date(),
@@ -322,7 +322,7 @@ class AuditLoggingService {
       );
       
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         ...doc.data(),
         timestamp: doc.data().timestamp?.toDate() || new Date()
       } as SystemMetrics));
@@ -379,8 +379,8 @@ class AuditLoggingService {
         getDocs(eventsQuery)
       ]);
       
-      const logs = logsSnapshot.docs.map(doc => doc.data() as AuditLog);
-      const events = eventsSnapshot.docs.map(doc => doc.data() as SecurityEvent);
+      const logs = logsSnapshot.docs.map((doc: any) => doc.data() as AuditLog);
+      const events = eventsSnapshot.docs.map((doc: any) => doc.data() as SecurityEvent);
       
       // Calculate statistics
       const totalActions = logs.length;

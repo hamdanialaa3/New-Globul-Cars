@@ -970,7 +970,7 @@ const ProfilePage: React.FC = () => {
                       </span>
                     </S.SectionHeader>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
-                      {userCars.slice(0, 6).map(car => (
+                      {userCars.slice(0, 6).map((car: any) => (
                         <div
                           key={car.id || `car-${Math.random()}`}
                           onClick={() => navigate(getCarDetailsUrl(car))}
@@ -1057,7 +1057,7 @@ const ProfilePage: React.FC = () => {
                   {/* 🔒 SECURITY: My Ads only accessible for own profile */}
                   {isOwnProfile ? (
                     <GarageSection
-                      cars={((userCars || []) as any[]).map(car => ({
+                      cars={((userCars || []) as any[]).map((car: any) => ({
                         ...car,
                         currency: 'EUR' as const,
                         createdAt: car.createdAt || new Date(),

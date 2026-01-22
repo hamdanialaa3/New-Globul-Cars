@@ -302,7 +302,7 @@ export class UnifiedSearchService {
       const trustService = BulgarianTrustService.getInstance();
 
       // Fetch trust scores for all unique sellers
-      const sellerIds = [...new Set(cars.map(car => car.userId || car.sellerId).filter(Boolean))];
+      const sellerIds = [...new Set(cars.map((car: any) => car.userId || car.sellerId).filter(Boolean))];
       const trustScores = new Map<string, number>();
 
       // Batch fetch trust scores (optimized)
@@ -320,7 +320,7 @@ export class UnifiedSearchService {
       );
 
       // Apply ranking boost based on trust score
-      const carsWithBoost = cars.map(car => {
+      const carsWithBoost = cars.map((car: any) => {
         const sellerId = car.userId || car.sellerId;
         const trustScore = trustScores.get(sellerId) || 0;
 

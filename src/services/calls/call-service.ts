@@ -180,7 +180,7 @@ export class CallService {
 
       const snapshot = await getDocs(q);
       
-      const calls = snapshot.docs.map(doc => ({
+      const calls = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         createdAt: doc.data().createdAt?.toDate() || new Date(),

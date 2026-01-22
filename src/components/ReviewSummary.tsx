@@ -181,7 +181,7 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({
 
   const formatEquipment = (equipment: string) => {
     if (!equipment) return [];
-    return equipment.split(',').map(item => item.trim()).filter(Boolean);
+    return equipment.split(',').map((item: any) => item.trim()).filter(Boolean);
   };
 
   return (

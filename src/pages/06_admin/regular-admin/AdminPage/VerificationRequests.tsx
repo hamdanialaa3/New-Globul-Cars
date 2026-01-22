@@ -196,7 +196,7 @@ const VerificationRequests: React.FC = () => {
         );
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
-            const data = snapshot.docs.map(doc => ({
+            const data = snapshot.docs.map((doc: any) => ({
                 id: doc.id,
                 ...doc.data(),
                 submittedAt: doc.data().submittedAt?.toDate(),

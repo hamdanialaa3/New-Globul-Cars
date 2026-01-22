@@ -74,7 +74,7 @@ export class UnifiedFirebaseService {
         data = docRef.exists ? (docRef.data() as T) : null;
       } else {
         const snapshot = await db.collection(collection).get();
-        data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as T;
+        data = snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })) as T;
       }
       
       if (data !== null) {

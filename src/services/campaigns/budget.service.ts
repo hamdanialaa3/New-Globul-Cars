@@ -241,7 +241,7 @@ class BudgetService {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => doc.data() as DailySpending);
+      return snapshot.docs.map((doc: any) => doc.data() as DailySpending);
     } catch (error) {
       logger.error('Error getting spending history', error as Error);
       return [];

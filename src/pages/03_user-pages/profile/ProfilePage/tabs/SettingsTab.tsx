@@ -2333,7 +2333,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
           security: settings.security || {},
           carPreferences: settings.carPreferences || {}
         },
-        listings: userCars.map(car => ({
+        listings: userCars.map((car: any) => ({
           id: car.id,
           make: car.make || '',
           model: car.model || '',

@@ -150,7 +150,7 @@ class LiveFirebaseCountersService {
       );
       
       const snapshot = await getDocs(usersQuery);
-      return snapshot.docs.map(doc => {
+      return snapshot.docs.map((doc: any) => {
         const data = doc.data();
         return {
           uid: doc.id,

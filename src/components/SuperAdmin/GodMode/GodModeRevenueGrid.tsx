@@ -244,7 +244,7 @@ export const GodModeRevenueGrid: React.FC<GodModeRevenueGridProps> = ({ onClose 
                 orderBy('created', 'desc')
             );
             const snapshot = await getDocs(q);
-            const data = snapshot.docs.map(doc => ({
+            const data = snapshot.docs.map((doc: any) => ({
                 id: doc.id,
                 path: doc.ref.path,
                 ...doc.data()

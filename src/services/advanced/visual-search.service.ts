@@ -256,7 +256,7 @@ class VisualSearchService {
       const cars = await queryAllCollections<CarListing>(...constraints);
 
       // Calculate similarity scores
-      const carsWithScores = cars.map(car => {
+      const carsWithScores = cars.map((car: any) => {
         const { score, matchedFeatures } = this.calculateSimilarityScore(car, features, analysis);
         return {
           car,

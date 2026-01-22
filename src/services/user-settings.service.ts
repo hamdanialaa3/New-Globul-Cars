@@ -380,14 +380,14 @@ class UserSettingsService {
 
       const exportData = {
         settings,
-        listings: carsSnapshot.docs?.map(doc => ({ id: doc.id, ...doc.data() })) || [],
-        favorites: favoritesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })),
+        listings: carsSnapshot.docs?.map((doc: any) => ({ id: doc.id, ...doc.data() })) || [],
+        favorites: favoritesSnapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })),
         messages: [
-          ...messagesSent.docs.map(doc => ({ id: doc.id, direction: 'sent', ...doc.data() })),
-          ...messagesReceived.docs.map(doc => ({ id: doc.id, direction: 'received', ...doc.data() }))
+          ...messagesSent.docs.map((doc: any) => ({ id: doc.id, direction: 'sent', ...doc.data() })),
+          ...messagesReceived.docs.map((doc: any) => ({ id: doc.id, direction: 'received', ...doc.data() }))
         ],
-        notifications: notificationsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })),
-        reviewsAuthored: reviewsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })),
+        notifications: notificationsSnapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })),
+        reviewsAuthored: reviewsSnapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })),
         exportDate: new Date().toISOString(),
         exportVersion: '1.1',
       };

@@ -332,7 +332,7 @@ class AlgoliaSearchService {
     }
 
     try {
-      const records = cars.map(car => ({
+      const records = cars.map((car: any) => ({
         objectID: car.id,
         make: car.make,
         model: car.model,

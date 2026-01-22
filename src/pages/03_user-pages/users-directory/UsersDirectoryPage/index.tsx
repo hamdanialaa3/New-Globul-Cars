@@ -740,7 +740,7 @@ const UsersDirectoryPage: React.FC = () => {
     
     if (debouncedSearchTerm) {
       const searchLower = debouncedSearchTerm.toLowerCase();
-      filtered = filtered.filter(user => 
+      filtered = filtered.filter((user: any) => 
         user.displayName?.toLowerCase().includes(searchLower) ||
         user.email?.toLowerCase().includes(searchLower) ||
         user.businessInfo?.companyName?.toLowerCase().includes(searchLower)
@@ -748,11 +748,11 @@ const UsersDirectoryPage: React.FC = () => {
     }
     
     if (accountTypeFilter !== 'all') {
-      filtered = filtered.filter(user => user.accountType === accountTypeFilter);
+      filtered = filtered.filter((user: any) => user.accountType === accountTypeFilter);
     }
     
     if (regionFilter !== 'all') {
-      filtered = filtered.filter(user => 
+      filtered = filtered.filter((user: any) => 
         user.location?.region === regionFilter ||
         user.location?.city === regionFilter
       );
@@ -786,7 +786,7 @@ const UsersDirectoryPage: React.FC = () => {
       );
       const snapshot = await getDocs(usersQuery);
       
-      const loadedUsers = snapshot.docs.map(doc => ({
+      const loadedUsers = snapshot.docs.map((doc: any) => ({
         uid: doc.id,
         ...doc.data()
       } as UserProfile));
@@ -820,7 +820,7 @@ const UsersDirectoryPage: React.FC = () => {
       );
       const snapshot = await getDocs(usersQuery);
       
-      const newUsers = snapshot.docs.map(doc => ({
+      const newUsers = snapshot.docs.map((doc: any) => ({
         uid: doc.id,
         ...doc.data()
       } as UserProfile));

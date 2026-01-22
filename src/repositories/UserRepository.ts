@@ -137,7 +137,7 @@ export class UserRepository {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => this.toUser(doc));
+      return snapshot.docs.map((doc: any) => this.toUser(doc));
     } catch (error) {
       logger.error('Error getting users by profile type', error as Error, { profileType });
       return [];

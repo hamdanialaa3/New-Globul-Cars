@@ -289,7 +289,7 @@ export class ReviewService {
       );
 
       const snapshot = await getDocs(q);
-      const reviews = snapshot.docs.map(doc => doc.data() as Review);
+      const reviews = snapshot.docs.map((doc: any) => doc.data() as Review);
 
       if (reviews.length === 0) {
         return {

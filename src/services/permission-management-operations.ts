@@ -67,7 +67,7 @@ export async function getPermissionCategories(): Promise<PermissionCategory[]> {
   try {
     const q = query(collection(db, 'permission_categories'), orderBy('order', 'asc'));
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as PermissionCategory));
+    return snapshot.docs.map((doc: any) => ({ ...doc.data(), id: doc.id } as PermissionCategory));
   } catch (error) {
     serviceLogger.error('Error getting permission categories', error as Error, {});
     return [];
@@ -79,7 +79,7 @@ export async function getPermissionTemplates(): Promise<PermissionTemplate[]> {
   try {
     const q = query(collection(db, 'permission_templates'), orderBy('order', 'asc'));
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as PermissionTemplate));
+    return snapshot.docs.map((doc: any) => ({ ...doc.data(), id: doc.id } as PermissionTemplate));
   } catch (error) {
     serviceLogger.error('Error getting permission templates', error as Error, {});
     return [];
@@ -95,7 +95,7 @@ export async function getPermissionsByCategory(categoryId: string): Promise<Perm
       orderBy('order', 'asc')
     );
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as PermissionTemplate));
+    return snapshot.docs.map((doc: any) => ({ ...doc.data(), id: doc.id } as PermissionTemplate));
   } catch (error) {
     serviceLogger.error('Error getting permissions by category', error as Error, { categoryId });
     return [];
@@ -107,7 +107,7 @@ export async function getRoleTemplates(): Promise<RoleTemplate[]> {
   try {
     const q = query(collection(db, 'role_templates'), orderBy('level', 'asc'));
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as RoleTemplate));
+    return snapshot.docs.map((doc: any) => ({ ...doc.data(), id: doc.id } as RoleTemplate));
   } catch (error) {
     serviceLogger.error('Error getting role templates', error as Error, {});
     return [];

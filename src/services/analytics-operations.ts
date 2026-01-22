@@ -46,7 +46,7 @@ export class AnalyticsOperations {
   static async fetchUsersData(): Promise<any[]> {
     try {
       const snapshot = await getDocs(collection(db, COLLECTIONS.USERS));
-      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      return snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
       serviceLogger.warn('Failed to fetch users data', { error });
       return [];
@@ -73,7 +73,7 @@ export class AnalyticsOperations {
   static async fetchMessagesData(): Promise<any[]> {
     try {
       const snapshot = await getDocs(collection(db, COLLECTIONS.MESSAGES));
-      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      return snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
       serviceLogger.warn('Failed to fetch messages data', { error });
       return [];
@@ -87,7 +87,7 @@ export class AnalyticsOperations {
   static async fetchViewsData(): Promise<any[]> {
     try {
       const snapshot = await getDocs(collection(db, COLLECTIONS.VIEWS));
-      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      return snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
       serviceLogger.warn('Failed to fetch views data', { error });
       return [];
@@ -101,7 +101,7 @@ export class AnalyticsOperations {
   static async fetchUserActivityData(): Promise<any[]> {
     try {
       const snapshot = await getDocs(collection(db, COLLECTIONS.USER_ACTIVITY));
-      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      return snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
       serviceLogger.warn('Failed to fetch user activity data', { error });
       return [];
@@ -265,7 +265,7 @@ export class AnalyticsOperations {
    */
   static calculateRevenue(cars: any[]): number {
     return cars
-      .filter(car => car.status === 'sold' && car.price)
+      .filter((car: any) => car.status === 'sold' && car.price)
       .reduce((sum, car) => sum + (car.price || 0), 0);
   }
 
@@ -282,7 +282,7 @@ export class AnalyticsOperations {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => {
+      return snapshot.docs.map((doc: any) => {
         const data = doc.data();
         return {
           uid: doc.id,
@@ -356,7 +356,7 @@ export class AnalyticsOperations {
         )
       );
 
-      return snapshot.docs.map(doc => {
+      return snapshot.docs.map((doc: any) => {
         const data = doc.data();
         return {
           timestamp: data.timestamp?.toDate() || new Date(),

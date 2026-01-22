@@ -262,7 +262,7 @@ export function subscribeToRealTimeUpdates(callback: AnalyticsCallback): Unsubsc
   const unsubscribe = onSnapshot(
     collection(db, COLLECTIONS.USERS),
     (snapshot) => {
-      const users = snapshot.docs.map(doc => doc.data());
+      const users = snapshot.docs.map((doc: any) => doc.data());
       const data: RealTimeUpdate = {
         users,
         timestamp: new Date()

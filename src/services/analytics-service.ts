@@ -90,18 +90,18 @@ class RealTimeAnalyticsService {
 
       // Calculate metrics
       const totalUsers = users.length;
-      const activeUsers = users.filter(user =>
+      const activeUsers = users.filter((user: any) =>
         user.lastLogin && new Date(user.lastLogin.seconds * 1000) > new Date(Date.now() - TIME_PERIODS.ACTIVE_USER_THRESHOLD)
       ).length;
 
-      const newUsersToday = users.filter(user =>
+      const newUsersToday = users.filter((user: any) =>
         user.createdAt && new Date(user.createdAt.seconds * 1000) >= today
       ).length;
 
       const totalCars = cars.length;
-      const activeCars = cars.filter(car => car.isActive !== false).length;
+      const activeCars = cars.filter((car: any) => car.isActive !== false).length;
 
-      const carsListedToday = cars.filter(car =>
+      const carsListedToday = cars.filter((car: any) =>
         car.createdAt && new Date(car.createdAt.seconds * 1000) >= today
       ).length;
 
@@ -245,7 +245,7 @@ class RealTimeAnalyticsService {
     const unsubscribe = onSnapshot(
       collection(db, COLLECTIONS.USERS),
       (snapshot) => {
-        const activity = snapshot.docs.map(doc => {
+        const activity = snapshot.docs.map((doc: any) => {
           const data = doc.data();
           return {
             uid: doc.id,

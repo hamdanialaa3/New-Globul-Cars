@@ -77,7 +77,7 @@ class SearchHistoryService {
       );
       
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       })) as SearchHistoryEntry[];
@@ -136,7 +136,7 @@ class SearchHistoryService {
       );
       
       const snapshot = await getDocs(q);
-      const deletePromises = snapshot.docs.map(doc => 
+      const deletePromises = snapshot.docs.map((doc: any) => 
         deleteDoc(doc.ref)
       );
       

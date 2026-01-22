@@ -102,7 +102,7 @@ const buildFormData = (profile: BulgarianUser | null): ProfileFormData => {
 };
 
 const mapListingsToCars = (listings: unknown[]): ProfileCar[] =>
-  listings.map(car => ({
+  listings.map((car: any) => ({
     id: car.id || '',
     title: `${car.make} ${car.model}`,
     make: car.make || '',

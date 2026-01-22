@@ -38,7 +38,7 @@ export const useFirestoreNotifications = () => {
         );
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
-            const notifs = snapshot.docs.map(doc => ({
+            const notifs = snapshot.docs.map((doc: any) => ({
                 id: doc.id,
                 ...doc.data(),
                 createdAt: doc.data().createdAt?.toDate() || new Date()

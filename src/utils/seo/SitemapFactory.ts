@@ -136,7 +136,7 @@ ${sitemaps.map(url => `  <sitemap>
         const cars = await this.fetchActiveCars(1000); // Limit to 1000 per sitemap
         const today = new Date().toISOString().split('T')[0];
 
-        const urls: SitemapURL[] = cars.map(car => ({
+        const urls: SitemapURL[] = cars.map((car: any) => ({
             loc: `/car/${car.sellerNumericId}/${car.carNumericId}`,
             lastmod: car.updatedAt || today,
             changefreq: 'weekly' as const,
@@ -309,7 +309,7 @@ ${urlElements}
             .limit(limit)
             .get();
 
-        return snapshot.docs.map(doc => ({
+        return snapshot.docs.map((doc: any) => ({
             ...doc.data(),
             numericId: doc.data().numericId || 0,
             updatedAt: doc.data().updatedAt?.toDate?.()?.toISOString().split('T')[0],

@@ -239,7 +239,7 @@ export const GodModeMessagesGrid: React.FC<GodModeMessagesGridProps> = ({ onClos
         limit(100)
       );
       const snapshot = await getDocs(q);
-      const data = snapshot.docs.map(doc => ({
+      const data = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       }));

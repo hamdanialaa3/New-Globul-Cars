@@ -257,7 +257,7 @@ export class DuplicateDetectionService {
     );
 
     const snapshot = await getDocs(q);
-    const duplicateCarIds = snapshot.docs.map(doc => doc.id);
+    const duplicateCarIds = snapshot.docs.map((doc: any) => doc.id);
 
     return {
       isDuplicate: duplicateCarIds.length > 0,
@@ -293,13 +293,13 @@ export class DuplicateDetectionService {
     
     // Filter by mileage tolerance in memory (Firestore can't do range + equality)
     const duplicateCarIds = snapshot.docs
-      .filter(doc => {
+      .filter((doc: any) => {
         const data = doc.data();
         const carMileage = data.mileage || 0;
         return carMileage >= minMileage && carMileage <= maxMileage;
       })
-      .filter(doc => this.isRecent(doc.data().createdAt))
-      .map(doc => doc.id);
+      .filter((doc: any) => this.isRecent(doc.data().createdAt))
+      .map((doc: any) => doc.id);
 
     return {
       isDuplicate: duplicateCarIds.length > 0,
@@ -330,8 +330,8 @@ export class DuplicateDetectionService {
     
     // Filter by recent (last 30 days)
     const duplicateCarIds = snapshot.docs
-      .filter(doc => this.isRecent(doc.data().createdAt))
-      .map(doc => doc.id);
+      .filter((doc: any) => this.isRecent(doc.data().createdAt))
+      .map((doc: any) => doc.id);
 
     return {
       isDuplicate: duplicateCarIds.length > 0,

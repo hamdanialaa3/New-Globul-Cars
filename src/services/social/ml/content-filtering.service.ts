@@ -138,7 +138,7 @@ class ContentFilteringService {
     );
 
     const snapshot = await getDocs(reactionsQuery);
-    const postIds = snapshot.docs.map(doc => doc.data().postId);
+    const postIds = snapshot.docs.map((doc: any) => doc.data().postId);
 
     const posts: Post[] = [];
     
@@ -181,7 +181,7 @@ class ContentFilteringService {
 
     const snapshot = await getDocs(postsQuery);
     const posts = snapshot.docs
-      .map(doc => ({ id: doc.id, ...doc.data() } as Post))
+      .map((doc: any) => ({ id: doc.id, ...doc.data() } as Post))
       .filter(post => !engagedIds.has(post.id));
 
     return posts.slice(0, limitCount);
@@ -213,7 +213,7 @@ class ContentFilteringService {
     );
 
     const snapshot = await getDocs(usersQuery);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    return snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
   }
 
   // Get common keys between maps

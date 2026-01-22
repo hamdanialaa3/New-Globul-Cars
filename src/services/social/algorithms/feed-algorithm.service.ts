@@ -91,7 +91,7 @@ class FeedAlgorithmService {
       where('followerId', '==', userId)
     );
     const followsSnapshot = await getDocs(followsQuery);
-    const followingIds = followsSnapshot.docs.map(doc => doc.data().followingId);
+    const followingIds = followsSnapshot.docs.map((doc: any) => doc.data().followingId);
 
     if (followingIds.length === 0) {
       return [];
@@ -114,7 +114,7 @@ class FeedAlgorithmService {
         );
         
         const snapshot = await getDocs(postsQuery);
-        posts.push(...snapshot.docs.map(doc => ({ 
+        posts.push(...snapshot.docs.map((doc: any) => ({ 
           id: doc.id, 
           ...doc.data() 
         } as Post)));
@@ -134,7 +134,7 @@ class FeedAlgorithmService {
             );
             
             const snapshot = await getDocs(fallbackQuery);
-            const batchPosts = snapshot.docs.map(doc => ({ 
+            const batchPosts = snapshot.docs.map((doc: any) => ({ 
               id: doc.id, 
               ...doc.data() 
             } as Post));
@@ -179,7 +179,7 @@ class FeedAlgorithmService {
       );
 
       const snapshot = await getDocs(postsQuery);
-      const posts = snapshot.docs.map(doc => ({ 
+      const posts = snapshot.docs.map((doc: any) => ({ 
         id: doc.id, 
         ...doc.data() 
       } as Post));
@@ -207,7 +207,7 @@ class FeedAlgorithmService {
           );
           
           const snapshot = await getDocs(fallbackQuery);
-          const allPosts = snapshot.docs.map(doc => ({ 
+          const allPosts = snapshot.docs.map((doc: any) => ({ 
             id: doc.id, 
             ...doc.data() 
           } as Post));
@@ -252,7 +252,7 @@ class FeedAlgorithmService {
       );
 
       const snapshot = await getDocs(postsQuery);
-      return snapshot.docs.map(doc => ({ 
+      return snapshot.docs.map((doc: any) => ({ 
         id: doc.id, 
         ...doc.data() 
       } as Post));
@@ -272,7 +272,7 @@ class FeedAlgorithmService {
           );
           
           const snapshot = await getDocs(fallbackQuery);
-          const allPosts = snapshot.docs.map(doc => ({ 
+          const allPosts = snapshot.docs.map((doc: any) => ({ 
             id: doc.id, 
             ...doc.data() 
           } as Post));
@@ -445,7 +445,7 @@ class FeedAlgorithmService {
       );
 
       const snapshot = await getDocs(postsQuery);
-      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Post));
+      return snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() } as Post));
     } catch (error) {
       const errorMessage = (error as Error).message;
       
@@ -461,7 +461,7 @@ class FeedAlgorithmService {
           );
           
           const snapshot = await getDocs(fallbackQuery);
-          const allPosts = snapshot.docs.map(doc => ({ 
+          const allPosts = snapshot.docs.map((doc: any) => ({ 
             id: doc.id, 
             ...doc.data() 
           } as Post));
@@ -498,7 +498,7 @@ class FeedAlgorithmService {
       );
 
       const snapshot = await getDocs(postsQuery);
-      const posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Post));
+      const posts = snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() } as Post));
 
       // Sort by likes
       return posts
@@ -521,7 +521,7 @@ class FeedAlgorithmService {
       );
 
       const snapshot = await getDocs(postsQuery);
-      const posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Post));
+      const posts = snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() } as Post));
 
       // Sort by comments
       return posts

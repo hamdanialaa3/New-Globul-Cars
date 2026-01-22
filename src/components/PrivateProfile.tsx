@@ -140,7 +140,7 @@ const PrivateProfile: React.FC<PrivateProfileProps> = ({ user, userCars, isOwner
         <Section>
           <SectionTitle>{language === 'bg' ? 'Автомобили' : 'Cars'} ({userCars.length})</SectionTitle>
           <CarsGrid>
-            {userCars.map(car => {
+            {userCars.map((car: any) => {
               // ✅ CONSTITUTION: Use numeric URL pattern
               const sellerNumericId = (car as any).sellerNumericId || (car as any).ownerNumericId;
               const carNumericId = (car as any).carNumericId || (car as any).userCarSequenceId || (car as any).numericId;

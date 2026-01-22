@@ -231,8 +231,8 @@ class RecommendationsService {
       );
       
       const viewedCars = carDocs
-        .filter(doc => doc.exists())
-        .map(doc => ({ id: doc.id, ...doc.data() }));
+        .filter((doc: any) => doc.exists())
+        .map((doc: any) => ({ id: doc.id, ...doc.data() }));
       
       if (viewedCars.length === 0) {
         return this.getTrendingCars(limitCount);
@@ -304,7 +304,7 @@ class RecommendationsService {
       query(collection(db, 'follows'), where('followerId', '==', userId))
     );
     
-    return followsSnapshot.docs.map(doc => doc.data().followingId);
+    return followsSnapshot.docs.map((doc: any) => doc.data().followingId);
   }
 
   private async getMutualFollowersCount(userId1: string, userId2: string): Promise<number> {
@@ -325,7 +325,7 @@ class RecommendationsService {
       )
     );
     
-    return trendingCars.docs.map(doc => {
+    return trendingCars.docs.map((doc: any) => {
       const car = doc.data();
       return {
         carId: doc.id,

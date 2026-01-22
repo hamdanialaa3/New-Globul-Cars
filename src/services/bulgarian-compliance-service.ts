@@ -232,7 +232,7 @@ class BulgarianComplianceService {
     try {
       const q = query(collection(db, 'compliance_status'), orderBy('lastChecked', 'desc'));
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({ 
+      return snapshot.docs.map((doc: any) => ({ 
         ...doc.data(), 
         id: doc.id,
         lastChecked: doc.data().lastChecked?.toDate() || new Date(),
@@ -577,7 +577,7 @@ class BulgarianComplianceService {
     try {
       const q = query(collection(db, 'compliance_requirements'), orderBy('title', 'asc'));
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({ 
+      return snapshot.docs.map((doc: any) => ({ 
         ...doc.data(), 
         id: doc.id,
         completedAt: doc.data().completedAt?.toDate()

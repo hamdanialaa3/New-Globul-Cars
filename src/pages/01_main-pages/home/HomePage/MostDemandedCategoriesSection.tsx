@@ -527,7 +527,7 @@ const MostDemandedCategoriesSection: React.FC = () => {
         }, 12);
 
         // Filter logic (mock implementation for demo)
-        const filteredCars = result.filter(car =>
+        const filteredCars = result.filter((car: any) =>
           (car.bodyType && car.bodyType.toLowerCase() === selectedCategory) ||
           true // Fallback
         );
@@ -620,7 +620,7 @@ const MostDemandedCategoriesSection: React.FC = () => {
               itemMinWidth="320px"
               showArrows={true}
             >
-              {cars.slice(0, 12).map(car => (
+              {cars.slice(0, 12).map((car: any) => (
                 <WeatherStyleCarCard
                   key={car.id}
                   car={car}

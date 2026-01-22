@@ -270,7 +270,7 @@ export class StripeService {
 
     const subscriptionsSnapshot = await getDocs(subscriptionsQuery);
     
-    return subscriptionsSnapshot.docs.map(doc => ({
+    return subscriptionsSnapshot.docs.map((doc: any) => ({
       id: doc.id,
       ...doc.data(),
     } as StripeSubscription));
@@ -297,7 +297,7 @@ export class StripeService {
     );
 
     return onSnapshot(subscriptionsQuery, (snapshot) => {
-      const subscriptions = snapshot.docs.map(doc => ({
+      const subscriptions = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
       } as StripeSubscription));

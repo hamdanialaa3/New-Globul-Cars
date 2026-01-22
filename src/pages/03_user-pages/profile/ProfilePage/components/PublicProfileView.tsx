@@ -82,7 +82,7 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({
         navigate(`/messages/${user.numericId}`);
     };
 
-    const activeCars = userCars.filter(car =>
+    const activeCars = userCars.filter((car: any) =>
         car.status === 'active' && !car.isDraft && !car.isSold
     );
 

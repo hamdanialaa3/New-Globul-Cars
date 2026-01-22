@@ -259,7 +259,7 @@ export class SuperAdminOperations {
         )
       );
 
-      return usersSnapshot.docs.map(doc => {
+      return usersSnapshot.docs.map((doc: any) => {
         const data = doc.data();
         return {
           uid: doc.id,

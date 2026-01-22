@@ -144,7 +144,7 @@ export class PricingIntelligenceService {
         if (!snapshot || snapshot.empty) return [];
 
         return snapshot.docs
-          .map(doc => {
+          .map((doc: any) => {
             const car = mapDocToCar(doc);
             const similarityScore = this.calculateSimilarityScore(specs, car);
             return {
@@ -170,7 +170,7 @@ export class PricingIntelligenceService {
 
     // Sort by similarity and remove duplicates
     const uniqueCars = Array.from(
-      new Map(allCars.map(car => [car.id, car])).values()
+      new Map(allCars.map((car: any) => [car.id, car])).values()
     );
 
     return uniqueCars

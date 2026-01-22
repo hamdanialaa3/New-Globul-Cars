@@ -267,7 +267,7 @@ class TeamManagementService {
     try {
       const snapshot = await getDocs(collection(db, `users/${companyId}/team_members`));
 
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         invitedAt: doc.data().invitedAt.toDate(),
@@ -319,7 +319,7 @@ class TeamManagementService {
 
       const snapshot = await getDocs(q);
 
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         expiresAt: doc.data().expiresAt.toDate(),

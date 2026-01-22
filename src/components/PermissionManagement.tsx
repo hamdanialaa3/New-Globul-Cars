@@ -376,7 +376,7 @@ const PermissionManagement: React.FC = () => {
         setCategories(categoriesData);
       } else if (activeTab === 'users') {
         const adminPermissionsSnapshot = await getDocs(collection(db, 'admin_permissions'));
-        const adminData = adminPermissionsSnapshot.docs.map(doc => ({
+        const adminData = adminPermissionsSnapshot.docs.map((doc: any) => ({
           ...doc.data(),
           grantedAt: doc.data().grantedAt?.toDate() || new Date(),
           expiresAt: doc.data().expiresAt?.toDate()
@@ -413,7 +413,7 @@ const PermissionManagement: React.FC = () => {
     permission.resource.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const filteredUsers = adminUsers.filter(user =>
+  const filteredUsers = adminUsers.filter((user: any) =>
     user.userId.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.role.toLowerCase().includes(searchTerm.toLowerCase())
   );

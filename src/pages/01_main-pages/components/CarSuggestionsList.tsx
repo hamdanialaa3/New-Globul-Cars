@@ -362,7 +362,7 @@ const CarSuggestionsList: React.FC<CarSuggestionsListProps> = ({
         serviceLogger.info('CarSuggestionsList: similar cars count', { count: similarCars.length });
 
         // Filter out the current car
-        const filtered = similarCars.filter(car => car.id !== carId);
+        const filtered = similarCars.filter((car: any) => car.id !== carId);
         serviceLogger.info('CarSuggestionsList: filtered cars count', { count: filtered.length });
 
         // If no similar cars, try to get featured cars as fallback
@@ -370,7 +370,7 @@ const CarSuggestionsList: React.FC<CarSuggestionsListProps> = ({
           serviceLogger.info('CarSuggestionsList: no similar cars, trying featured');
           try {
             const featuredCars = await unifiedCarService.getFeaturedCars(limit);
-            const fallbackCars = featuredCars.filter(car => car.id !== carId);
+            const fallbackCars = featuredCars.filter((car: any) => car.id !== carId);
             serviceLogger.info('CarSuggestionsList: featured fallback count', { count: fallbackCars.length });
             setSuggestions(fallbackCars.slice(0, limit));
           } catch (fallbackError) {
