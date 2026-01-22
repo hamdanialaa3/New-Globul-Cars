@@ -262,7 +262,7 @@ const ReportsPage: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {users.slice(0, 10).map(user => (
+              {users.slice(0, 10).map((user: any) => (
                 <tr key={user.uid}>
                   <td>{user.displayName}</td>
                   <td>{user.email}</td>
@@ -298,7 +298,7 @@ const ReportsPage: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {cars.slice(0, 10).map(car => (
+              {cars.slice(0, 10).map((car: any) => (
                 <tr key={car.id}>
                   <td>{car.make}</td>
                   <td>{car.model}</td>

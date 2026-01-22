@@ -37,7 +37,7 @@ interface CacheOptions {
  *   'cars-active',
  *   async () => {
  *     const snapshot = await getDocs(query(collection(db, 'cars')));
- *     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+ *     return snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
  *   },
  *   { duration: 5 * 60 * 1000 } // 5 minutes
  * );

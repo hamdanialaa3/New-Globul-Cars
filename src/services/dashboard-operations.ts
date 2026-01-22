@@ -41,20 +41,20 @@ export class StatsOperations {
   // Calculate dashboard stats from cars data
   static calculateStatsFromCars(cars: DashboardCar[]): DashboardStats {
     const totalListings = cars.length;
-    const activeListings = cars.filter(car => car.status === 'active').length;
-    const soldListings = cars.filter(car => car.status === 'sold').length;
-    const pendingListings = cars.filter(car => car.status === 'pending').length;
+    const activeListings = cars.filter((car: any) => car.status === 'active').length;
+    const soldListings = cars.filter((car: any) => car.status === 'sold').length;
+    const pendingListings = cars.filter((car: any) => car.status === 'pending').length;
 
     const totalViews = cars.reduce((sum, car) => sum + car.views, 0);
     const potentialSales = cars
-      .filter(car => car.status === 'active')
+      .filter((car: any) => car.status === 'active')
       .reduce((sum, car) => sum + car.price, 0);
 
     // Get weekly stats (last 7 days)
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-    const weeklyCars = cars.filter(car => car.createdAt >= oneWeekAgo);
+    const weeklyCars = cars.filter((car: any) => car.createdAt >= oneWeekAgo);
     const weeklyViews = weeklyCars.reduce((sum, car) => sum + car.views, 0);
 
     return {
@@ -78,20 +78,20 @@ export class StatsOperations {
 
       // Calculate stats
       const totalListings = cars.length;
-      const activeListings = cars.filter(car => car.status === 'active').length;
-      const soldListings = cars.filter(car => car.status === 'sold').length;
-      const pendingListings = cars.filter(car => car.status === 'draft').length;
+      const activeListings = cars.filter((car: any) => car.status === 'active').length;
+      const soldListings = cars.filter((car: any) => car.status === 'sold').length;
+      const pendingListings = cars.filter((car: any) => car.status === 'draft').length;
 
       const totalViews = cars.reduce((sum, car) => sum + (car.views || 0), 0);
       const potentialSales = cars
-        .filter(car => car.status === 'active')
+        .filter((car: any) => car.status === 'active')
         .reduce((sum, car) => sum + car.price, 0);
 
       // Get weekly stats (last 7 days)
       const oneWeekAgo = new Date();
       oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-      const weeklyCars = cars.filter(car =>
+      const weeklyCars = cars.filter((car: any) =>
         car.createdAt && car.createdAt >= oneWeekAgo
       );
 
@@ -125,7 +125,7 @@ export class CarsOperations {
         limit(limitCount)
       ) as DashboardCar[];
 
-      return cars.map(car => ({
+      return cars.map((car: any) => ({
         id: car.id,
         title: car.title || `${car.make} ${car.model}`,
         make: car.make || '',
@@ -238,7 +238,7 @@ export class NotificationsOperations {
 
       const notificationsSnapshot = await getDocs(notificationsQuery);
 
-      return notificationsSnapshot.docs.map(doc => {
+      return notificationsSnapshot.docs.map((doc: any) => {
         const data = doc.data();
         return {
           id: doc.id,
@@ -341,6 +341,7 @@ export class RealtimeOperations {
     );
 
     let cancelled = false;
+    let isActive = true; // Prevent setState on unmounted component
     let carsPollingInterval: NodeJS.Timeout | null = null;
 
     const attachListeners = () => {
@@ -348,8 +349,10 @@ export class RealtimeOperations {
 
       // Poll cars data every 10 seconds (can't use onSnapshot with multi-collection)
       const pollCars = async () => {
+        if (!isActive) return; // Check before async operation
         try {
           const cars = await CarsOperations.getRecentCars(userId, QUERY_LIMITS.RECENT_CARS);
+          if (!isActive) return; // Check after async operation
           onCarsUpdate(cars);
           const stats = StatsOperations.calculateStatsFromCars(cars);
           onStatsUpdate(stats);
@@ -361,6 +364,7 @@ export class RealtimeOperations {
       carsPollingInterval = setInterval(pollCars, 10000);
 
       const messagesUnsub = onSnapshot(messagesQueryRef, async (snapshot) => {
+        if (!isActive) return; // Check at start of callback
         const messages = await Promise.all(
           snapshot.docs.map(async (messageDoc) => {
             const data = messageDoc.data();
@@ -382,13 +386,15 @@ export class RealtimeOperations {
             };
           })
         );
+        if (!isActive) return; // Check after async operations
         onMessagesUpdate(messages);
       }, (err) => {
         serviceLogger.warn('[RealtimeOperations] Messages snapshot error', { error: err });
       });
 
       const notificationsUnsub = onSnapshot(notificationsQueryRef, (snapshot) => {
-        const notifications = snapshot.docs.map(doc => {
+        if (!isActive) return; // Check at start of callback
+        const notifications = snapshot.docs.map((doc: any) => {
           const data = doc.data();
           return {
             id: doc.id,
@@ -424,6 +430,7 @@ export class RealtimeOperations {
     tryAttach();
 
     return () => {
+      isActive = false; // Disable callbacks first
       cancelled = true;
       if (carsPollingInterval) clearInterval(carsPollingInterval);
       this.unsubscribeFunctions.forEach(u => u && u());

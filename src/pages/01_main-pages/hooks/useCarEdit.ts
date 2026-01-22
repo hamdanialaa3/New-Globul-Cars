@@ -188,7 +188,7 @@ export const useCarEdit = (
       }
     } catch (error) {
       logger.error('Error saving car changes', error as Error, { carId });
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage = error instanceof Error ? (error as Error).message : 'Unknown error';
       alert(language === 'bg'
         ? `Грешка при запазване: ${errorMessage}`
         : `Error saving changes: ${errorMessage}`);

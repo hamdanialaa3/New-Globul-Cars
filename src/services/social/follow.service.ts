@@ -199,7 +199,7 @@ class FollowService {
       );
 
       const snapshot = await getDocs(followersQuery);
-      return snapshot.docs.map(doc => doc.id);
+      return snapshot.docs.map((doc: any) => doc.id);
     } catch (error) {
       serviceLogger.error('Error getting followers', error as Error, { userId, limitCount });
       return [];
@@ -218,7 +218,7 @@ class FollowService {
       );
 
       const snapshot = await getDocs(followingQuery);
-      return snapshot.docs.map(doc => doc.id);
+      return snapshot.docs.map((doc: any) => doc.id);
     } catch (error) {
       serviceLogger.error('Error getting following', error as Error, { userId, limitCount });
       return [];

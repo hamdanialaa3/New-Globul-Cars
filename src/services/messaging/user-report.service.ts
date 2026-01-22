@@ -225,7 +225,7 @@ export async function getReportsAgainstUser(
     
     const snapshot = await getDocs(reportsQuery);
     
-    return snapshot.docs.map(doc => ({
+    return snapshot.docs.map((doc: any) => ({
       id: doc.id,
       ...doc.data()
     })) as UserReport[];
@@ -255,7 +255,7 @@ export async function getPendingReports(maxResults: number = 50): Promise<UserRe
     
     const snapshot = await getDocs(reportsQuery);
     
-    return snapshot.docs.map(doc => ({
+    return snapshot.docs.map((doc: any) => ({
       id: doc.id,
       ...doc.data()
     })) as UserReport[];

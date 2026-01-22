@@ -89,7 +89,7 @@ export const createQuickReply = async (data: {
     return result.data as any;
   } catch (error: unknown) {
     logger.error('Error creating quick reply', error, { category: data.category, language: data.language });
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -103,7 +103,7 @@ export const getQuickReplies = async (params?: {
     return result.data as any;
   } catch (error: unknown) {
     logger.error('Error getting quick replies', error, params);
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -121,7 +121,7 @@ export const updateQuickReply = async (
     return result.data as any;
   } catch (error: unknown) {
     logger.error('Error updating quick reply', error, { templateId });
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -132,7 +132,7 @@ export const deleteQuickReply = async (templateId: string): Promise<{ success: b
     return result.data as any;
   } catch (error: unknown) {
     logger.error('Error deleting quick reply', error, { templateId });
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -146,7 +146,7 @@ export const useQuickReply = async (
     return result.data as any;
   } catch (error: unknown) {
     logger.error('Error using quick reply', error, { templateId, conversationId });
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -163,7 +163,7 @@ export const getAutoResponderSettings = async (): Promise<{
     return result.data as any;
   } catch (error: unknown) {
     logger.error('Error getting auto responder settings', error);
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -176,7 +176,7 @@ export const updateAutoResponderSettings = async (
     return result.data as any;
   } catch (error: unknown) {
     logger.error('Error updating auto responder settings', error);
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -191,7 +191,7 @@ export const calculateLeadScore = async (
     return result.data as any;
   } catch (error: unknown) {
     logger.error('Error calculating lead score', error, { conversationId });
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -206,7 +206,7 @@ export const getLeads = async (params?: {
     return result.data as any;
   } catch (error: unknown) {
     logger.error('Error getting leads', error, params);
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -221,7 +221,7 @@ export const updateLeadStatus = async (
     return result.data as any;
   } catch (error: unknown) {
     logger.error('Error updating lead status', error, { leadId, status });
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -237,7 +237,7 @@ export const assignConversation = async (
     return result.data as any;
   } catch (error: unknown) {
     logger.error('Error assigning conversation', error, { conversationId, assignToUserId });
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -255,7 +255,7 @@ export const getSharedInbox = async (params?: {
     return result.data as any;
   } catch (error: unknown) {
     logger.error('Error getting shared inbox', error, params);
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -269,7 +269,7 @@ export const addInternalNote = async (
     return result.data as any;
   } catch (error: unknown) {
     logger.error('Error adding internal note', error, { conversationId });
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -282,6 +282,6 @@ export const getInternalNotes = async (
     return result.data as any;
   } catch (error: unknown) {
     logger.error('Error getting internal notes', error, { conversationId });
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };

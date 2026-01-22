@@ -89,7 +89,7 @@ export class SitemapGenerator {
       const q = query(carsRef, where('status', '==', 'active'));
       const snapshot = await getDocs(q);
 
-      return snapshot.docs.map(doc => {
+      return snapshot.docs.map((doc: any) => {
         const data = doc.data();
         return {
           loc: `${this.baseUrl}/cars/${doc.id}`,
@@ -115,7 +115,7 @@ export class SitemapGenerator {
       const q = query(vendorsRef, where('role', '==', 'vendor'));
       const snapshot = await getDocs(q);
 
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         loc: `${this.baseUrl}/vendors/${doc.id}`,
         changefreq: 'weekly' as const,
         priority: 0.6

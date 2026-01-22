@@ -55,7 +55,7 @@ export class ContentManagementOperations {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         timestamp: doc.data().timestamp?.toDate() || new Date()
@@ -80,7 +80,7 @@ export class ContentManagementOperations {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         timestamp: doc.data().timestamp?.toDate() || new Date()
@@ -283,10 +283,10 @@ export class ContentManagementOperations {
         getDocs(collection(db, CONTENT_MANAGEMENT_COLLECTIONS.CONTENT_MODERATION))
       ]);
 
-      const cars = carsSnapshot.docs.map(doc => doc.data());
-      const users = usersSnapshot.docs.map(doc => doc.data());
-      const reports = reportsSnapshot.docs.map(doc => doc.data());
-      const moderation = moderationSnapshot.docs.map(doc => doc.data());
+      const cars = carsSnapshot.docs.map((doc: any) => doc.data());
+      const users = usersSnapshot.docs.map((doc: any) => doc.data());
+      const reports = reportsSnapshot.docs.map((doc: any) => doc.data());
+      const moderation = moderationSnapshot.docs.map((doc: any) => doc.data());
 
       return {
         totalContent: cars.length + users.length,
@@ -325,14 +325,14 @@ export class ContentManagementOperations {
       }
 
       const snapshot = await getDocs(q);
-      const results = snapshot.docs.map(doc => ({
+      const results = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       }));
 
       // Filter results by search query (simple text search simulation)
       if (searchQuery) {
-        return results.filter(item =>
+        return results.filter((item: any) =>
           JSON.stringify(item).toLowerCase().includes(searchQuery.toLowerCase())
         );
       }
@@ -358,7 +358,7 @@ export class ContentManagementOperations {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         timestamp: doc.data().timestamp?.toDate() || new Date()
@@ -380,7 +380,7 @@ export class ContentManagementOperations {
     try {
       const contentRef = collection(db, contentType);
       const snapshot = await getDocs(contentRef);
-      const data = snapshot.docs.map(doc => ({
+      const data = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       }));

@@ -1,0 +1,4 @@
+
+> koli-one@0.1.0 type-check
+> cross-env NODE_OPTIONS=--max_old_space_size=8192 tsc --noEmit
+

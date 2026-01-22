@@ -93,7 +93,7 @@ export class CallService {
       logger.error('Initiate call failed', error as Error);
       return {
         success: false,
-        error: error.message
+        error: (error as Error).message
       };
     }
   }
@@ -180,7 +180,7 @@ export class CallService {
 
       const snapshot = await getDocs(q);
       
-      const calls = snapshot.docs.map(doc => ({
+      const calls = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         createdAt: doc.data().createdAt?.toDate() || new Date(),

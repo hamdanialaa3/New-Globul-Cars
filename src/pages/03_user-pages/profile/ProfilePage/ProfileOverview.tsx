@@ -314,7 +314,7 @@ const ProfileOverview: React.FC = () => {
       {/* ⚡ Garage Carousel - Shows user's cars in circular cards */}
       {userCars && userCars.length > 0 && (
         <GarageCarousel
-          cars={userCars.map(car => ({
+          cars={userCars.map((car: any) => ({
             id: car.id,
             make: car.make || '',
             model: car.model || '',

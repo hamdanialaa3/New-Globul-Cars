@@ -96,7 +96,7 @@ class SmartAlertsService {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         timestamp: doc.data().timestamp?.toDate() || new Date()
@@ -149,7 +149,7 @@ class SmartAlertsService {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         timestamp: doc.data().timestamp?.toDate() || new Date(),

@@ -314,7 +314,7 @@ export async function importCarsFromCSV(
         result.failed++;
         result.errors.push({
           row: rowNumber,
-          message: error instanceof Error ? error.message : 'Unknown error',
+          message: error instanceof Error ? (error as Error).message : 'Unknown error',
           data: Object.fromEntries(
             headers.map((header, idx) => [header, row[idx] || ''])
           )
@@ -322,7 +322,7 @@ export async function importCarsFromCSV(
 
         logger.warn('CSV import: row failed', {
           rowNumber,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? (error as Error).message : 'Unknown error'
         });
       }
     }
@@ -342,7 +342,7 @@ export async function importCarsFromCSV(
     
     result.errors.push({
       row: 0,
-      message: error instanceof Error ? error.message : 'Unknown error'
+      message: error instanceof Error ? (error as Error).message : 'Unknown error'
     });
 
     return result;

@@ -70,7 +70,7 @@ export class SellWorkflowOperations {
       return { success: true, id: result.id };
     } catch (error) {
       logger.error('Failed to save workflow data', error, { userId });
-      return { success: false, error: error.message };
+      return { success: false, error: (error as Error).message };
     }
   }
 
@@ -109,7 +109,7 @@ export class SellWorkflowOperations {
       return { success: true };
     } catch (error) {
       logger.error('Failed to update workflow data', error, { docId, userId });
-      return { success: false, error: error.message };
+      return { success: false, error: (error as Error).message };
     }
   }
 
@@ -134,7 +134,7 @@ export class SellWorkflowOperations {
       return { success: true, data: workflowData };
     } catch (error) {
       logger.error('Failed to get workflow data', error, { docId });
-      return { success: false, error: error.message };
+      return { success: false, error: (error as Error).message };
     }
   }
 
@@ -168,7 +168,7 @@ export class SellWorkflowOperations {
       return { success: true };
     } catch (error) {
       logger.error('Failed to delete workflow data', error, { docId, userId });
-      return { success: false, error: error.message };
+      return { success: false, error: (error as Error).message };
     }
   }
 
@@ -204,7 +204,7 @@ export class SellWorkflowOperations {
       return { success: true, id: docRef.id };
     } catch (error) {
       logger.error('Failed to save workflow draft', error, { userId });
-      return { success: false, error: error.message };
+      return { success: false, error: (error as Error).message };
     }
   }
 }

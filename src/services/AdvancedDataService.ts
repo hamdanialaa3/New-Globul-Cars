@@ -174,12 +174,12 @@ class AdvancedDataService {
   private generateSummary(): CarDataSummary {
     return {
       totalCars: this.carData.length,
-      brands: new Set(this.carData.map(car => car.brand)).size,
-      models: new Set(this.carData.map(car => car.model)).size,
-      minPrice: Math.min(...this.carData.map(car => car.price)),
-      maxPrice: Math.max(...this.carData.map(car => car.price)),
-      minYear: Math.min(...this.carData.map(car => car.year)),
-      maxYear: Math.max(...this.carData.map(car => car.year)),
+      brands: new Set(this.carData.map((car: any) => car.brand)).size,
+      models: new Set(this.carData.map((car: any) => car.model)).size,
+      minPrice: Math.min(...this.carData.map((car: any) => car.price)),
+      maxPrice: Math.max(...this.carData.map((car: any) => car.price)),
+      minYear: Math.min(...this.carData.map((car: any) => car.year)),
+      maxYear: Math.max(...this.carData.map((car: any) => car.year)),
       currency: 'EUR',
       country: 'BG',
       lastUpdated: new Date().toISOString()
@@ -232,14 +232,14 @@ class AdvancedDataService {
 
   private applyMakeFilter(results: CarDataFromFile[], make: string): CarDataFromFile[] {
     if (!make) return results;
-    return results.filter(car =>
+    return results.filter((car: any) =>
       car.brand.toLowerCase() === make.toLowerCase()
     );
   }
 
   private applyModelFilter(results: CarDataFromFile[], model: string): CarDataFromFile[] {
     if (!model) return results;
-    return results.filter(car =>
+    return results.filter((car: any) =>
       car.model.toLowerCase().includes(model.toLowerCase())
     );
   }
@@ -249,12 +249,12 @@ class AdvancedDataService {
 
     if (minPrice) {
       const min = parseFloat(minPrice);
-      filtered = filtered.filter(car => car.price >= min);
+      filtered = filtered.filter((car: any) => car.price >= min);
     }
 
     if (maxPrice) {
       const max = parseFloat(maxPrice);
-      filtered = filtered.filter(car => car.price <= max);
+      filtered = filtered.filter((car: any) => car.price <= max);
     }
 
     return filtered;
@@ -265,12 +265,12 @@ class AdvancedDataService {
 
     if (minYear) {
       const min = parseInt(minYear);
-      filtered = filtered.filter(car => car.year >= min);
+      filtered = filtered.filter((car: any) => car.year >= min);
     }
 
     if (maxYear) {
       const max = parseInt(maxYear);
-      filtered = filtered.filter(car => car.year <= max);
+      filtered = filtered.filter((car: any) => car.year <= max);
     }
 
     return filtered;
@@ -281,12 +281,12 @@ class AdvancedDataService {
 
     if (minMileage) {
       const min = parseInt(minMileage);
-      filtered = filtered.filter(car => car.mileage >= min);
+      filtered = filtered.filter((car: any) => car.mileage >= min);
     }
 
     if (maxMileage) {
       const max = parseInt(maxMileage);
-      filtered = filtered.filter(car => car.mileage <= max);
+      filtered = filtered.filter((car: any) => car.mileage <= max);
     }
 
     return filtered;
@@ -294,19 +294,19 @@ class AdvancedDataService {
 
   private applyFuelTypeFilter(results: CarDataFromFile[], fuelTypes: string[]): CarDataFromFile[] {
     if (!fuelTypes || fuelTypes.length === 0) return results;
-    return results.filter(car => fuelTypes.includes(car.fuelType));
+    return results.filter((car: any) => fuelTypes.includes(car.fuelType));
   }
 
   private applyTransmissionFilter(results: CarDataFromFile[], transmissions: string[]): CarDataFromFile[] {
     if (!transmissions || transmissions.length === 0) return results;
-    return results.filter(car => transmissions.includes(car.transmission));
+    return results.filter((car: any) => transmissions.includes(car.transmission));
   }
 
   private applyLocationFilter(results: CarDataFromFile[], city: string, radius: string): CarDataFromFile[] {
     if (!city) return results;
 
     // (Comment removed - was in Arabic)
-    return results.filter(car =>
+    return results.filter((car: any) =>
       car.location.toLowerCase().includes(city.toLowerCase())
     );
   }
@@ -314,7 +314,7 @@ class AdvancedDataService {
   private applyVehicleTypeFilter(results: CarDataFromFile[], vehicleTypes: string[]): CarDataFromFile[] {
     if (!vehicleTypes || vehicleTypes.length === 0) return results;
 
-    return results.filter(car => {
+    return results.filter((car: any) => {
       const carType = this.determineVehicleType(car);
       return vehicleTypes.includes(carType);
     });
@@ -322,7 +322,7 @@ class AdvancedDataService {
 
   private applyConditionFilter(results: CarDataFromFile[], conditions: string[]): CarDataFromFile[] {
     if (!conditions || conditions.length === 0) return results;
-    return results.filter(car => conditions.includes(car.condition));
+    return results.filter((car: any) => conditions.includes(car.condition));
   }
 
   private applySeatsFilter(results: CarDataFromFile[], minSeats: string, maxSeats: string): CarDataFromFile[] {
@@ -330,12 +330,12 @@ class AdvancedDataService {
 
     if (minSeats) {
       const min = parseInt(minSeats);
-      filtered = filtered.filter(car => car.seats >= min);
+      filtered = filtered.filter((car: any) => car.seats >= min);
     }
 
     if (maxSeats) {
       const max = parseInt(maxSeats);
-      filtered = filtered.filter(car => car.seats <= max);
+      filtered = filtered.filter((car: any) => car.seats <= max);
     }
 
     return filtered;
@@ -343,7 +343,7 @@ class AdvancedDataService {
 
   private applyDoorsFilter(results: CarDataFromFile[], doors: string): CarDataFromFile[] {
     if (!doors) return results;
-    return results.filter(car => car.doors === parseInt(doors));
+    return results.filter((car: any) => car.doors === parseInt(doors));
   }
 
   private applyPowerFilter(results: CarDataFromFile[], minPower: string, maxPower: string, powerUnit: 'hp' | 'kw'): CarDataFromFile[] {
@@ -351,7 +351,7 @@ class AdvancedDataService {
 
     if (minPower) {
       const min = parseInt(minPower);
-      filtered = filtered.filter(car => {
+      filtered = filtered.filter((car: any) => {
         const power = powerUnit === 'kw' ? this.convertHpToKw(car.power) : car.power;
         return power >= min;
       });
@@ -359,7 +359,7 @@ class AdvancedDataService {
 
     if (maxPower) {
       const max = parseInt(maxPower);
-      filtered = filtered.filter(car => {
+      filtered = filtered.filter((car: any) => {
         const power = powerUnit === 'kw' ? this.convertHpToKw(car.power) : car.power;
         return power <= max;
       });
@@ -373,12 +373,12 @@ class AdvancedDataService {
 
     if (minEngineSize) {
       const min = parseFloat(minEngineSize);
-      filtered = filtered.filter(car => car.engineSize >= min);
+      filtered = filtered.filter((car: any) => car.engineSize >= min);
     }
 
     if (maxEngineSize) {
       const max = parseFloat(maxEngineSize);
-      filtered = filtered.filter(car => car.engineSize <= max);
+      filtered = filtered.filter((car: any) => car.engineSize <= max);
     }
 
     return filtered;
@@ -389,23 +389,23 @@ class AdvancedDataService {
 
     // (Comment removed - was in Arabic)
     if (params.withPictures) {
-      filtered = filtered.filter(car => car.images && car.images.length > 0);
+      filtered = filtered.filter((car: any) => car.images && car.images.length > 0);
     }
 
     if (params.vatReclaimable) {
-      filtered = filtered.filter(car =>
+      filtered = filtered.filter((car: any) =>
         car.features.some(f => f.toLowerCase().includes('ддс'))
       );
     }
 
     if (params.warranty) {
-      filtered = filtered.filter(car =>
+      filtered = filtered.filter((car: any) =>
         car.features.some(f => f.toLowerCase().includes('гаранция'))
       );
     }
 
     if (params.nonSmoker) {
-      filtered = filtered.filter(car =>
+      filtered = filtered.filter((car: any) =>
         car.features.some(f => f.toLowerCase().includes('непушач'))
       );
     }
@@ -426,13 +426,13 @@ class AdvancedDataService {
   }
 
   getAvailableOptions(): AvailableFilterOptions {
-    const brands = [...new Set(this.carData.map(car => car.brand))].sort();
-    const models = [...new Set(this.carData.map(car => car.model))].sort();
+    const brands = [...new Set(this.carData.map((car: any) => car.brand))].sort();
+    const models = [...new Set(this.carData.map((car: any) => car.model))].sort();
 
     const modelsByMake: Record<string, string[]> = {};
     brands.forEach(brand => {
       modelsByMake[brand] = [...new Set(
-        this.carData.filter(car => car.brand === brand).map(car => car.model)
+        this.carData.filter((car: any) => car.brand === brand).map((car: any) => car.model)
       )].sort();
     });
 

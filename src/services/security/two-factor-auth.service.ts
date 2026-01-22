@@ -88,7 +88,7 @@ class TwoFactorAuthService {
         verificationId: this.confirmationResult.verificationId
       };
     } catch (error: unknown) {
-      logger.error('Send OTP error', error as Error, { errorCode: error.code });
+      logger.error('Send OTP error', error as Error, { errorCode: (error as any).code });
       return {
         success: false,
         message: this.getErrorMessage(error.code)

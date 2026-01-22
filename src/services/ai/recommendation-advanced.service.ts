@@ -98,7 +98,7 @@ class AdvancedRecommendationEngine {
       }
 
       // Score each car
-      const scoredCars = availableCars.map(car => ({
+      const scoredCars = availableCars.map((car: any) => ({
         ...car,
         score: this.calculateMatchScore(car, preferences, behavior)
       }));
@@ -107,7 +107,7 @@ class AdvancedRecommendationEngine {
       const recommendations = scoredCars
         .sort((a, b) => b.score - a.score)
         .slice(0, limit)
-        .map(car => ({
+        .map((car: any) => ({
           carId: car.id,
           make: car.make,
           model: car.model,
@@ -147,14 +147,14 @@ class AdvancedRecommendationEngine {
       const savedCarFeatures = this.extractCommonFeatures(behavior.savedCars, availableCars);
 
       const recommendations = availableCars
-        .filter(car => !behavior.savedCars.includes(car.id))
-        .map(car => ({
+        .filter((car: any) => !behavior.savedCars.includes(car.id))
+        .map((car: any) => ({
           ...car,
           similarity: this.calculateSimilarity(car, savedCarFeatures)
         }))
         .sort((a, b) => b.similarity - a.similarity)
         .slice(0, limit)
-        .map(car => ({
+        .map((car: any) => ({
           carId: car.id,
           make: car.make,
           model: car.model,
@@ -201,7 +201,7 @@ class AdvancedRecommendationEngine {
 
       const recommendations = likedBySimilar
         .slice(0, limit)
-        .map(car => ({
+        .map((car: any) => ({
           carId: car.id,
           make: car.make,
           model: car.model,
@@ -237,7 +237,7 @@ class AdvancedRecommendationEngine {
       const preferences = this.userPreferences.get(userId);
 
       // Filter by location and user preferences
-      const localCars = availableCars.filter(car =>
+      const localCars = availableCars.filter((car: any) =>
         car.location === userLocation &&
         (!preferences?.preferredBodyTypes.length ||
           preferences.preferredBodyTypes.includes(car.bodyType)) &&
@@ -247,7 +247,7 @@ class AdvancedRecommendationEngine {
       );
 
       // Score by view count, inquiry count, and recency
-      const scored = localCars.map(car => ({
+      const scored = localCars.map((car: any) => ({
         ...car,
         trendScore: this.calculateTrendScore(car)
       }));
@@ -255,7 +255,7 @@ class AdvancedRecommendationEngine {
       const recommendations = scored
         .sort((a, b) => b.trendScore - a.trendScore)
         .slice(0, limit)
-        .map(car => ({
+        .map((car: any) => ({
           carId: car.id,
           make: car.make,
           model: car.model,

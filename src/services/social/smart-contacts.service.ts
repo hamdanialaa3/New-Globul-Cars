@@ -49,7 +49,7 @@ class SmartContactsService {
       
       const usersSnapshot = await getDocs(usersQuery);
       const allUsers = usersSnapshot.docs
-        .map(doc => {
+        .map((doc: any) => {
           const data = doc.data();
           return {
             id: doc.id,
@@ -63,10 +63,10 @@ class SmartContactsService {
             relevanceScore: 0,
           };
         })
-        .filter(user => user.id !== currentUserId);
+        .filter((user: any) => user.id !== currentUserId);
 
       // Quick scoring (simplified for performance)
-      const rankedUsers = allUsers.map(user => ({
+      const rankedUsers = allUsers.map((user: any) => ({
         ...user,
         relevanceScore: this.calculateQuickScore(user),
       }));
@@ -240,7 +240,7 @@ class SmartContactsService {
         )
       );
 
-      return usersSnapshot.docs.map(doc => {
+      return usersSnapshot.docs.map((doc: any) => {
         const data = doc.data();
         return {
           id: doc.id,

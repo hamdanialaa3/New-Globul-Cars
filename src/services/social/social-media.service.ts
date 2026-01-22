@@ -35,7 +35,7 @@ class SocialMediaService {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => doc.data() as SocialMediaAccount);
+      return snapshot.docs.map((doc: any) => doc.data() as SocialMediaAccount);
     } catch (error) {
       logger.error('Error getting connected accounts', error as Error, { userId });
       return [];

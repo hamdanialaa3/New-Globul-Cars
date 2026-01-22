@@ -147,7 +147,7 @@ class CarAnalyticsService {
         where('viewedAt', '>=', startDate)
       );
       const viewsSnapshot = await getDocs(viewsQuery);
-      const views = viewsSnapshot.docs.map(doc => doc.data() as CarView);
+      const views = viewsSnapshot.docs.map((doc: any) => doc.data() as CarView);
 
       // Get inquiries
       const inquiriesQuery = query(
@@ -167,7 +167,7 @@ class CarAnalyticsService {
       const favorites = carData?.favorites || 0;
 
       // Calculate metrics
-      const uniqueViewers = new Set(views.map(v => v.userId)).size;
+      const uniqueViewers = new Set(views.map((v: any) => v.userId)).size;
       const totalViews = views.length;
       const totalInquiries = inquiriesSnapshot.size;
       const conversionRate = totalViews > 0 ? (totalInquiries / totalViews) * 100 : 0;
@@ -221,7 +221,7 @@ class CarAnalyticsService {
         where('sellerId', '==', userId)
       );
       const userCarsSnapshot = await getDocs(userCarsQuery);
-      const carIds = userCarsSnapshot.docs.map(doc => doc.id);
+      const carIds = userCarsSnapshot.docs.map((doc: any) => doc.id);
 
       if (carIds.length === 0) {
         return result;
@@ -256,7 +256,7 @@ class CarAnalyticsService {
       const totalInquiries = inquiriesSnapshot.size;
 
       // Calculate average response time (simplified)
-      const inquiries = inquiriesSnapshot.docs.map(doc => doc.data());
+      const inquiries = inquiriesSnapshot.docs.map((doc: any) => doc.data());
       const responseTimes = inquiries
         .filter(inq => inq.respondedAt && inq.createdAt)
         .map(inq => {

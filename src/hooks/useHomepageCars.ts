@@ -104,7 +104,7 @@ export const useHomepageCars = (
       const cars = result.cars as Car[];
       
       // Validate numeric IDs
-      const validCars = cars.filter(car => 
+      const validCars = cars.filter((car: any) => 
         car.sellerNumericId && car.carNumericId
       );
 
@@ -142,7 +142,7 @@ export const useHomepageCars = (
       const cars = result.cars as Car[];
       
       // Validate numeric IDs
-      const validCars = cars.filter(car => 
+      const validCars = cars.filter((car: any) => 
         car.sellerNumericId && car.carNumericId
       );
 
@@ -175,7 +175,7 @@ export const useHomepageCars = (
       const cars = result.cars as Car[];
       
       // Validate numeric IDs
-      const validCars = cars.filter(car => 
+      const validCars = cars.filter((car: any) => 
         car.sellerNumericId && car.carNumericId
       );
 

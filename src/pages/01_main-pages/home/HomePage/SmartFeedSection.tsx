@@ -184,7 +184,7 @@ const SmartFeedSection: React.FC = () => {
     if (!user) return;
 
     // Optimistic update
-    setPosts(prev => prev.map(post => {
+    setPosts(prev => prev.map((post: any) => {
       if (post.id === postId) {
         const field = actionType === 'like' ? 'likes' : actionType + 's';
         return {
@@ -358,7 +358,7 @@ const SmartFeedSection: React.FC = () => {
         )}
 
         <PostsGrid>
-          {posts.map(post => (
+          {posts.map((post: any) => (
             <PostCard
               key={post.id}
               post={post}

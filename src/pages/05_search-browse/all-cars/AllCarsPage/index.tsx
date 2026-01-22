@@ -42,7 +42,7 @@ const AllCarsPage: React.FC = () => {
 
   useEffect(() => {
     if (cars.length > 0) {
-      const makes = Array.from(new Set(cars.map(car => car.make).filter(Boolean))).sort();
+      const makes = Array.from(new Set(cars.map((car: any) => car.make).filter(Boolean))).sort();
       setAvailableMakes(makes);
     }
   }, [cars]);
@@ -62,7 +62,7 @@ const AllCarsPage: React.FC = () => {
           );
           
           const snapshot = await getDocs(q);
-          const carsData = snapshot.docs.map(doc => ({
+          const carsData = snapshot.docs.map((doc: any) => ({
             id: doc.id,
             ...doc.data()
           })) as CarListing[];
@@ -87,7 +87,7 @@ const AllCarsPage: React.FC = () => {
     }
   };
 
-  const filteredCars = cars.filter(car => {
+  const filteredCars = cars.filter((car: any) => {
     // Search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
@@ -116,7 +116,7 @@ const AllCarsPage: React.FC = () => {
 
   // Get available years
   const availableYears = Array.from(
-    new Set(cars.map(car => car.year).filter(Boolean))
+    new Set(cars.map((car: any) => car.year).filter(Boolean))
   ).sort((a, b) => b! - a!);
 
   const t = {
@@ -240,7 +240,7 @@ const AllCarsPage: React.FC = () => {
             columns={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }}
             gap={20}
           >
-            {filteredCars.map(car => (
+            {filteredCars.map((car: any) => (
               <CarCardCompact key={car.id} car={car} />
             ))}
           </ResponsiveGrid>

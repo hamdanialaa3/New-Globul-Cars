@@ -37,7 +37,7 @@ const AllPostsPage: React.FC = () => {
       let q = query(collection(db, 'posts'), where('status', '==', 'published'), orderBy('createdAt', 'desc'));
       
       const snapshot = await getDocs(q);
-      let postsData = snapshot.docs.map(doc => ({
+      let postsData = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       })) as Post[];
@@ -223,7 +223,7 @@ const AllPostsPage: React.FC = () => {
         </EmptyState>
       ) : (
         <PostsList>
-          {filteredPosts.map(post => (
+          {filteredPosts.map((post: any) => (
             <PostCard key={post.id} post={post} />
           ))}
         </PostsList>

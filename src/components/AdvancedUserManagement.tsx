@@ -349,7 +349,7 @@ const AdvancedUserManagement: React.FC = () => {
       }
       
       const usersSnapshot = await getDocs(usersQuery);
-      const usersData = usersSnapshot.docs.map(doc => ({
+      const usersData = usersSnapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         createdAt: doc.data().createdAt?.toDate() || new Date(),
@@ -359,7 +359,7 @@ const AdvancedUserManagement: React.FC = () => {
       let filteredUsers = usersData;
       if (searchTerm) {
         const searchLower = searchTerm.toLowerCase();
-        filteredUsers = usersData.filter(user => 
+        filteredUsers = usersData.filter((user: any) => 
           user.displayName?.toLowerCase().includes(searchLower) ||
           user.email?.toLowerCase().includes(searchLower) ||
           user.location?.city?.toLowerCase().includes(searchLower)

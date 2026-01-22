@@ -165,7 +165,7 @@ export class CarsReportService {
       'تاريخ الإضافة'
     ];
 
-    const rows = cars.map(car => [
+    const rows = cars.map((car: any) => [
       car.id,
       car.make,
       car.model,
@@ -212,7 +212,7 @@ export class CarsReportService {
       'الحالة', 'المشاهدات', 'المفضلة', 'الصور', 'تاريخ الإضافة'
     ];
 
-    const rows = cars.map(car => `
+    const rows = cars.map((car: any) => `
       <tr>
         <td>${car.id}</td>
         <td>${car.make}</td>

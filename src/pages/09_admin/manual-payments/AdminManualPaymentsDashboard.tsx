@@ -27,6 +27,7 @@ import { useLanguage } from '../../../contexts/LanguageContext';
 import { manualPaymentService } from '../../../services/payment/manual-payment-service';
 import type { ManualPaymentTransaction, PaymentStatus } from '../../../types/payment.types';
 import { logger } from '../../../services/logger-service';
+import { AdminService } from '../../../services/admin-service';
 import { BANK_DETAILS } from '../../../config/bank-details';
 
 const AdminManualPaymentsDashboard: React.FC = () => {
@@ -52,16 +53,25 @@ const AdminManualPaymentsDashboard: React.FC = () => {
 
   useEffect(() => {
     // Check admin permissions
-    if (!user || !isAdmin(user)) {
-      toast.error('Access denied. Admin only.');
-      return;
-    }
+    const initializeAdmin = async () => {
+      if (!user) {
+        toast.error('Access denied. Admin only.');
+        return;
+      }
 
-    loadTransactions();
-    
-    // Real-time updates every 30 seconds
-    const interval = setInterval(loadTransactions, 30000);
-    return () => clearInterval(interval);
+      const hasAccess = await checkAdminAccess(user);
+      if (!hasAccess) {
+        return;
+      }
+
+      loadTransactions();
+
+      // Real-time updates every 30 seconds
+      const interval = setInterval(loadTransactions, 30000);
+      return () => clearInterval(interval);
+    };
+
+    initializeAdmin();
   }, [user]);
 
   useEffect(() => {
@@ -83,11 +93,27 @@ const AdminManualPaymentsDashboard: React.FC = () => {
     setFilteredTransactions(filtered);
   }, [transactions, filterStatus, searchQuery]);
 
-  const isAdmin = (currentUser: any): boolean => {
-    // TODO: Implement proper admin check from Firestore
-    // For now, check against admin UIDs or custom claims
-    const adminUIDs = ['ADMIN_UID_1', 'ADMIN_UID_2']; // Replace with actual admin UIDs
-    return adminUIDs.includes(currentUser.uid);
+  const checkAdminAccess = async (currentUser: any): Promise<boolean> => {
+    try {
+      // Check admin permissions from Firestore
+      const adminService = AdminService.getInstance();
+      const hasAccess = await adminService.isAdmin(currentUser.uid);
+      
+      if (!hasAccess) {
+        logger.warn('[AdminManualPayments] Unauthorized access attempt', { 
+          userId: currentUser.uid, 
+          email: currentUser.email 
+        });
+        toast.error('Unauthorized: Admin access required');
+        return false;
+      }
+      
+      return true;
+    } catch (error) {
+      logger.error('[AdminManualPayments] Error checking admin access', error as Error);
+      toast.error('Failed to verify admin permissions');
+      return false;
+    }
   };
 
   const loadTransactions = async () => {

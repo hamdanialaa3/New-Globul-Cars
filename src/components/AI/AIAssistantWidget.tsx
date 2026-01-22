@@ -651,7 +651,7 @@ export const AIAssistantWidget: React.FC = () => {
                   {message.text}
                   {message.carResults && (
                     <div>
-                      {message.carResults.map(car => (
+                      {message.carResults.map((car: any) => (
                         <CarResultCard key={car.id}>
                           <CarThumb>
                             <Car size={24} />

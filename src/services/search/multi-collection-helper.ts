@@ -44,7 +44,7 @@ export async function queryAllCollections<T = DocumentData>(
       queries.map(async ({ collectionName, query: q }) => {
         try {
           const snapshot = await getDocs(q);
-          const docs = snapshot.docs.map(doc => ({
+          const docs = snapshot.docs.map((doc: any) => ({
             id: doc.id,
             _collection: collectionName,
             ...doc.data()
@@ -126,7 +126,7 @@ export async function querySpecificCollections<T = DocumentData>(
           const q = query(collection(db, collectionName), ...queryConstraints);
           const snapshot = await getDocs(q);
           
-          return snapshot.docs.map(doc => ({
+          return snapshot.docs.map((doc: any) => ({
             id: doc.id,
             _collection: collectionName,
             ...doc.data()

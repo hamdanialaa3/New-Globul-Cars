@@ -218,7 +218,7 @@ export const VerificationQueue: React.FC = () => {
                 </EmptyState>
             ) : (
                 <List>
-                    {items.map(item => (
+                    {items.map((item: any) => (
                         <Item key={item.id}>
                             <Header>
                                 <Info>

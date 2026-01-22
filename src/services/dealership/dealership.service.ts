@@ -460,7 +460,7 @@ class DealershipService {
       
       const querySnapshot = await getDocs(query(q, ...constraints));
       
-      return querySnapshot.docs.map(doc => ({
+      return querySnapshot.docs.map((doc: any) => ({
         ...doc.data(),
         createdAt: doc.data().createdAt?.toDate() || new Date(),
         updatedAt: doc.data().updatedAt?.toDate() || new Date()

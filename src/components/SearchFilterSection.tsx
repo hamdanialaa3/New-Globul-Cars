@@ -152,7 +152,7 @@ const SearchFilterSection: React.FC<SearchFilterSectionProps> = ({
     if (checked) {
       onParamChange(key, [...currentArray, value]);
     } else {
-      onParamChange(key, currentArray.filter(item => item !== value));
+      onParamChange(key, currentArray.filter((item: any) => item !== value));
     }
   };
 

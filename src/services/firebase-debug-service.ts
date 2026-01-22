@@ -23,7 +23,7 @@ class FirebaseDebugService {
       // Check users collection
       const usersSnapshot = await getDocs(collection(db, 'users'));
         serviceLogger.debug('Users found', { count: usersSnapshot.docs.length });
-      const users = usersSnapshot.docs.map(doc => ({
+      const users = usersSnapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       }));
@@ -37,7 +37,7 @@ class FirebaseDebugService {
       // Check messages collection
       const messagesSnapshot = await getDocs(collection(db, 'messages'));
         serviceLogger.debug('Messages found', { count: messagesSnapshot.docs.length });
-      const messages = messagesSnapshot.docs.map(doc => ({
+      const messages = messagesSnapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       }));

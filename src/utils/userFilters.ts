@@ -6,7 +6,7 @@ export const filterUsersBySearch = (users: BulgarianUser[], searchTerm: string):
   
   const term = searchTerm.toLowerCase().trim();
   
-  return users.filter(user => {
+  return users.filter((user: any) => {
     const displayName = user.displayName?.toLowerCase() || '';
     const email = user.email?.toLowerCase() || '';
     const companyName = user.profileType === 'dealer' 

@@ -183,7 +183,7 @@ class ProjectAnalysisService {
         value: metrics.filesByType.html + metrics.filesByType.markdown + metrics.filesByType.other,
         percentage: Math.round(((metrics.filesByType.html + metrics.filesByType.markdown + metrics.filesByType.other) / total) * 100)
       }
-    ].filter(item => item.value > 0);
+    ].filter((item: any) => item.value > 0);
   }
 }
 

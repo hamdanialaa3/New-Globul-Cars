@@ -55,7 +55,7 @@ export class DeepSeekService {
             logger.error('AI Service Error', error as Error);
             
             // ✅ If function not found (404), return a graceful fallback
-            if (error.code === 'not-found' || error.message?.includes('404')) {
+            if (error.code === 'not-found' || (error as Error).message?.includes('404')) {
                 logger.warn('AI function not deployed - returning empty response');
                 return {
                     success: false,
@@ -85,7 +85,7 @@ export class DeepSeekService {
             logger.error('AI Description Error', error as Error);
             
             // ✅ If function not found (404), return empty string instead of throwing
-            if (error.code === 'not-found' || error.message?.includes('404')) {
+            if (error.code === 'not-found' || (error as Error).message?.includes('404')) {
                 logger.warn('AI description function not deployed - returning empty description');
                 return '';
             }
@@ -95,8 +95,8 @@ export class DeepSeekService {
     }
 
     private handleError(error: any): Error {
-        const code = error.code;
-        const message = error.message;
+        const code = (error as any).code;
+        const message = (error as Error).message;
 
         if (code === 'resource-exhausted') {
             return new Error('Monthly AI quota exceeded. Please upgrade your plan.');

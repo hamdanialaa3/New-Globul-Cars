@@ -162,7 +162,7 @@ export const UserManager: React.FC = () => {
             </SearchBar>
 
             <div>
-                {results.map(user => (
+                {results.map((user: any) => (
                     <UserCard key={user.uid}>
                         <UserHeader onClick={() => setExpandedUser(expandedUser === user.uid ? null : user.uid)}>
                             <div>

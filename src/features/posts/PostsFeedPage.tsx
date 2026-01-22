@@ -77,7 +77,7 @@ export const PostsFeedPage: React.FC = () => {
         {posts.length === 0 ? (
           <S.EmptyState>{t('posts.noPosts')}</S.EmptyState>
         ) : (
-          posts.map(post => (
+          posts.map((post: any) => (
             <PostCard key={post.id} post={post} onLike={handleLike} onFlag={handleFlag} />
           ))
         )}

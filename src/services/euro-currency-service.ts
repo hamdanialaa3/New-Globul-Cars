@@ -182,7 +182,7 @@ class EuroCurrencyService {
         orderBy('name', 'asc')
       );
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({ 
+      return snapshot.docs.map((doc: any) => ({ 
         ...doc.data(), 
         id: doc.id
       } as CommissionStructure));
@@ -269,7 +269,7 @@ class EuroCurrencyService {
       q = query(q, limit(limitCount));
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         ...doc.data(),
         id: doc.id,
         createdAt: doc.data().createdAt?.toDate() || new Date(),
@@ -312,7 +312,7 @@ class EuroCurrencyService {
       }
 
       const snapshot = await getDocs(q);
-      const transactions = snapshot.docs.map(doc => doc.data() as FinancialTransaction);
+      const transactions = snapshot.docs.map((doc: any) => doc.data() as FinancialTransaction);
 
       const totalRevenue = transactions
         .filter(t => t.type === 'sale')

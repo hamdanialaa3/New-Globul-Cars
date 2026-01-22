@@ -270,7 +270,7 @@ export function getNearestCities(
     .sort((a, b) => a.distance - b.distance)
     .slice(0, count);
   
-  return citiesWithDistance.map(item => item.city);
+  return citiesWithDistance.map((item: any) => item.city);
 }
 
 /**

@@ -79,7 +79,7 @@ export class UnifiedNotificationService {
       );
 
       const unsubscribe = onSnapshot(q, (snapshot) => {
-        const notifications = snapshot.docs.map(doc => ({
+        const notifications = snapshot.docs.map((doc: any) => ({
           id: doc.id,
           ...doc.data()
         } as Notification));

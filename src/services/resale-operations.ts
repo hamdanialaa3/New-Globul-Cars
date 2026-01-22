@@ -193,7 +193,7 @@ export async function analyzeMarketTrends(
 
     if (trendSnapshot.size < DEFAULTS.MIN_TREND_SALES) return 'stable';
 
-    const prices = trendSnapshot.docs.map(doc => doc.data().salePrice);
+    const prices = trendSnapshot.docs.map((doc: any) => doc.data().salePrice);
     const recentAvg = prices.slice(-3).reduce((a, b) => a + b, 0) / 3;
     const olderAvg = prices.slice(0, 3).reduce((a, b) => a + b, 0) / 3;
 

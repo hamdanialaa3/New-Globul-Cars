@@ -259,7 +259,7 @@ class AnalyticsService {
       )
     );
 
-    return postsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    return postsSnapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
   }
 
   private async getNewFollowers(userId: string, dateRange: { start: Date; end: Date }) {
@@ -294,7 +294,7 @@ class AnalyticsService {
     let totalComments = 0;
     let totalShares = 0;
 
-    const topPosts: TopPost[] = posts.map(post => {
+    const topPosts: TopPost[] = posts.map((post: any) => {
       const views = post.views || 0;
       const likes = post.likes || 0;
       const comments = post.comments || 0;

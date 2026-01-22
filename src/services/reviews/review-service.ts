@@ -210,7 +210,7 @@ export class ReviewService {
       serviceLogger.error('Submit review failed', error as Error, { sellerId: data?.sellerId, buyerId: data?.buyerId });
       return {
         success: false,
-        message: error.message || 'Грешка при изпращане / Submission failed'
+        message: (error as Error).message || 'Грешка при изпращане / Submission failed'
       };
     }
   }
@@ -289,7 +289,7 @@ export class ReviewService {
       );
 
       const snapshot = await getDocs(q);
-      const reviews = snapshot.docs.map(doc => doc.data() as Review);
+      const reviews = snapshot.docs.map((doc: any) => doc.data() as Review);
 
       if (reviews.length === 0) {
         return {

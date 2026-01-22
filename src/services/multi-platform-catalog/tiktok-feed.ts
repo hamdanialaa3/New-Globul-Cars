@@ -50,7 +50,7 @@ class TikTokFeedService {
   }
   
   static generateJSONFeed(cars: unknown[]): string {
-    const items = cars.map(car => this.convertCarToTikTokProduct(car));
+    const items = cars.map((car: any) => this.convertCarToTikTokProduct(car));
     
     return JSON.stringify({
       version: '1.0',
@@ -69,7 +69,7 @@ class TikTokFeedService {
     );
     
     const snapshot = await getDocs(carsQuery);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    return snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
   }
 }
 

@@ -55,7 +55,7 @@ export class UsersReportService {
 
       const snapshot = await getDocs(q);
       
-      return snapshot.docs.map(doc => {
+      return snapshot.docs.map((doc: any) => {
         const data = doc.data();
         return {
           uid: doc.id,
@@ -95,7 +95,7 @@ export class UsersReportService {
       'آخر دخول'
     ];
 
-    const rows = users.map(user => [
+    const rows = users.map((user: any) => [
       user.uid,
       user.email,
       user.displayName,
@@ -134,7 +134,7 @@ export class UsersReportService {
       'البريد مُتحقق', 'الهاتف مُتحقق', 'تاريخ التسجيل', 'آخر دخول'
     ];
 
-    const rows = users.map(user => `
+    const rows = users.map((user: any) => `
       <tr>
         <td>${user.uid}</td>
         <td>${user.email}</td>

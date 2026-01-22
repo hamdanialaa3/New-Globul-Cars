@@ -65,7 +65,7 @@ export class SellWorkflowImages {
       return { success: true, url: downloadURL };
     } catch (error) {
       logger.error('Failed to upload image', error, { userId, workflowId, filename: file.name });
-      return { success: false, error: error.message };
+      return { success: false, error: (error as Error).message };
     }
   }
 
@@ -102,7 +102,7 @@ export class SellWorkflowImages {
             file,
             preview,
             uploaded: false,
-            error: error.message
+            error: (error as Error).message
           };
         }
       });
@@ -147,7 +147,7 @@ export class SellWorkflowImages {
       return { success: true };
     } catch (error) {
       logger.error('Failed to delete image', error, { userId, imageUrl });
-      return { success: false, error: error.message };
+      return { success: false, error: (error as Error).message };
     }
   }
 

@@ -514,26 +514,26 @@ export const UserFavoritesPage: React.FC = () => {
 
     // Apply filters
     if (filterMake) {
-      result = result.filter(car => car.make === filterMake);
+      result = result.filter((car: any) => car.make === filterMake);
     }
     if (filterModel) {
-      result = result.filter(car => car.model === filterModel);
+      result = result.filter((car: any) => car.model === filterModel);
     }
     if (filterMinPrice) {
       const minPrice = parseFloat(filterMinPrice);
-      result = result.filter(car => car.price >= minPrice);
+      result = result.filter((car: any) => car.price >= minPrice);
     }
     if (filterMaxPrice) {
       const maxPrice = parseFloat(filterMaxPrice);
-      result = result.filter(car => car.price <= maxPrice);
+      result = result.filter((car: any) => car.price <= maxPrice);
     }
     if (filterMinYear) {
       const minYear = parseInt(filterMinYear);
-      result = result.filter(car => car.year >= minYear);
+      result = result.filter((car: any) => car.year >= minYear);
     }
     if (filterMaxYear) {
       const maxYear = parseInt(filterMaxYear);
-      result = result.filter(car => car.year <= maxYear);
+      result = result.filter((car: any) => car.year <= maxYear);
     }
 
     // Apply sorting
@@ -573,7 +573,7 @@ export const UserFavoritesPage: React.FC = () => {
   );
 
   const handleFavoriteRemoved = (carId: string) => {
-    setCars(cars.filter(car => car.id !== carId));
+    setCars(cars.filter((car: any) => car.id !== carId));
     setFavorites(favorites.filter(fav => fav.carId !== carId));
   };
 
@@ -787,7 +787,7 @@ export const UserFavoritesPage: React.FC = () => {
         </ResultsInfo>
 
         <CarsGrid $viewMode={viewMode}>
-          {filteredAndSortedCars.map(car => (
+          {filteredAndSortedCars.map((car: any) => (
             <CarCardWithFavorites 
               key={car.id} 
               car={car}

@@ -264,7 +264,7 @@ export class GloubulConnectService {
       );
 
       const devicesSnapshot = await getDocs(devicesQuery);
-      return devicesSnapshot.docs.map(doc => doc.data() as GloubulConnectDevice);
+      return devicesSnapshot.docs.map((doc: any) => doc.data() as GloubulConnectDevice);
     } catch (error) {
       serviceLogger.error('GloubulConnectService.getUserDevices failed', error as unknown as Error, { userId });
       return [];

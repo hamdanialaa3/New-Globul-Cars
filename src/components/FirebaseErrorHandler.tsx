@@ -40,7 +40,7 @@ export const FirebaseErrorHandler: React.FC<FirebaseErrorHandlerProps> = ({
       case 'unavailable':
         return 'الخدمة غير متاحة حالياً. يرجى المحاولة لاحقاً.';
       default:
-        logger.warn('Unknown Firebase error', { code: errorCode, message: error.message });
+        logger.warn('Unknown Firebase error', { code: errorCode, message: (error as Error).message });
         return 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.';
     }
   };

@@ -93,7 +93,7 @@ const DashboardPage: React.FC = () => {
             <S.ContentCard>
               <h3>{t('dashboard.myListings')}</h3>
               <S.CarList>
-                {recentCars.length > 0 ? recentCars.map(car => (
+                {recentCars.length > 0 ? recentCars.map((car: any) => (
                   <S.CarItem key={car.id}>
                     <div className="car-image">
                       {car.imageUrl ? (

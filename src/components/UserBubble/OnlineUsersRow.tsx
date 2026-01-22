@@ -114,7 +114,7 @@ export const OnlineUsersRow: React.FC<OnlineUsersRowProps> = ({
       </Header>
       
       <ScrollContainer>
-        {onlineUsers.map(user => (
+        {onlineUsers.map((user: any) => (
           <UserBubble
             key={user.uid}
             user={{ ...user, isOnline: true }}

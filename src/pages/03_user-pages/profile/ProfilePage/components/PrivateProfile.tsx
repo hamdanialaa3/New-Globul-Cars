@@ -148,7 +148,7 @@ export const PrivateProfile: React.FC<PrivateProfileProps> = ({
         
         {userCars.length > 0 ? (
           <CarGrid>
-            {userCars.map(car => (
+            {userCars.map((car: any) => (
               <CarCard key={car.id}>
                 <CarImage 
                   src={car.imageUrl || car.mainImage || '/assets/images/car-placeholder.jpg'} 

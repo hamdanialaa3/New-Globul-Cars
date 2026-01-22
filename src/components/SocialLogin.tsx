@@ -130,7 +130,7 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
         await onGoogleLogin();
       } catch (error: unknown) {
         logger.error('Google login error:', error);
-        if (error.message?.includes('popup') || error.message?.includes('blocked')) {
+        if (error.message?.includes('popup') || (error as Error).message?.includes('blocked')) {
           setPopupError({ provider: 'Google', show: true });
         } else if (onError) {
           onError(error.message || 'Google login failed');
@@ -146,7 +146,7 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
         await onFacebookLogin();
       } catch (error: unknown) {
         logger.error('Facebook login error:', error);
-        if (error.message?.includes('popup') || error.message?.includes('blocked')) {
+        if (error.message?.includes('popup') || (error as Error).message?.includes('blocked')) {
           setPopupError({ provider: 'Facebook', show: true });
         } else if (onError) {
           onError(error.message || 'Facebook login failed');
@@ -162,7 +162,7 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
         await onAppleLogin();
       } catch (error: unknown) {
         logger.error('Apple login error:', error);
-        if (error.message?.includes('popup') || error.message?.includes('blocked')) {
+        if (error.message?.includes('popup') || (error as Error).message?.includes('blocked')) {
           setPopupError({ provider: 'Apple', show: true });
         } else if (onError) {
           onError(error.message || 'Apple login failed');

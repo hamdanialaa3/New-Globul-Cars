@@ -67,7 +67,7 @@ export const useSubmissionFlow = ({ redirectPath = '/profile/my-ads' }: UseSubmi
       navigate(redirectPath);
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : 'Unknown submission error';
+        error instanceof Error ? (error as Error).message : 'Unknown submission error';
       logger.error('Submission failed', error as Error);
       setStatus('error');
       setErrorMessage(message);

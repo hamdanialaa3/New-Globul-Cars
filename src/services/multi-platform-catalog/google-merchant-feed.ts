@@ -70,7 +70,7 @@ class GoogleMerchantFeedService {
   }
   
   static generateXMLFeed(cars: unknown[]): string {
-    const items = cars.map(car => this.convertCarToGoogleProduct(car));
+    const items = cars.map((car: any) => this.convertCarToGoogleProduct(car));
     
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
     xml += '<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">\n';
@@ -128,7 +128,7 @@ class GoogleMerchantFeedService {
     );
     
     const snapshot = await getDocs(carsQuery);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    return snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
   }
 }
 

@@ -164,7 +164,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   return (
     <NavWrapper>
       <NavContent>
-        {navItems.map(item => {
+        {navItems.map((item: any) => {
           const isActive = isPathActive(item.path);
           
           return (

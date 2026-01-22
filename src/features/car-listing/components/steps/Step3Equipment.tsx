@@ -336,10 +336,10 @@ export const Step3Equipment: React.FC = () => {
     } else {
       // Select all
       const newData: Step3Data = {
-        safetyEquipment: EQUIPMENT_CATEGORIES.safety.map(item => item.id),
-        comfortEquipment: EQUIPMENT_CATEGORIES.comfort.map(item => item.id),
-        infotainmentEquipment: EQUIPMENT_CATEGORIES.infotainment.map(item => item.id),
-        extrasEquipment: EQUIPMENT_CATEGORIES.extras.map(item => item.id),
+        safetyEquipment: EQUIPMENT_CATEGORIES.safety.map((item: any) => item.id),
+        comfortEquipment: EQUIPMENT_CATEGORIES.comfort.map((item: any) => item.id),
+        infotainmentEquipment: EQUIPMENT_CATEGORIES.infotainment.map((item: any) => item.id),
+        extrasEquipment: EQUIPMENT_CATEGORIES.extras.map((item: any) => item.id),
       };
       updateStepData('step3', newData);
     }
@@ -387,7 +387,7 @@ export const Step3Equipment: React.FC = () => {
             {category === 'extras' && (language === 'bg' ? 'Екстри' : 'Extras')}
           </SectionTitle>
           <EquipmentGrid>
-            {EQUIPMENT_CATEGORIES[category].map(item => {
+            {EQUIPMENT_CATEGORIES[category].map((item: any) => {
               const IconComponent = item.icon;
               const isSelected = isEquipmentSelected(category, item.id);
               return (

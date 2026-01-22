@@ -129,7 +129,7 @@ const DebugCarsPage: React.FC = () => {
       const q = query(carsRef, limit(20));
       const snapshot = await getDocs(q);
 
-      const carsData = snapshot.docs.map(doc => ({
+      const carsData = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       })) as CarDebugData[];
@@ -187,7 +187,7 @@ const DebugCarsPage: React.FC = () => {
         const carsRef = collection(db, collectionName);
         const snapshot = await getDocs(carsRef);
 
-        const legacyCars = snapshot.docs.filter(doc => {
+        const legacyCars = snapshot.docs.filter((doc: any) => {
           const data = doc.data();
           return !data.carNumericId || !data.sellerNumericId;
         });
@@ -225,7 +225,7 @@ const DebugCarsPage: React.FC = () => {
       for (const collectionName of VEHICLE_COLLECTIONS) {
         const carsRef = collection(db, collectionName);
         const snapshot = await getDocs(carsRef);
-        const carsData = snapshot.docs.map(doc => ({
+        const carsData = snapshot.docs.map((doc: any) => ({
           id: doc.id,
           ...doc.data(),
           _sourceCollection: collectionName
@@ -317,7 +317,7 @@ const DebugCarsPage: React.FC = () => {
         {cars.length > 0 && (
           <CarsList>
             <h2>السيارات ({cars.length}):</h2>
-            {cars.map(car => (
+            {cars.map((car: any) => (
               <CarItem key={car.id}>
                 <h3>{car.make} {car.model} ({car.year || 'N/A'})</h3>
                 <p><strong>ID:</strong> {car.id}</p>

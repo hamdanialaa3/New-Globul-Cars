@@ -113,7 +113,7 @@ const UserPostsFeed: React.FC<UserPostsFeedProps> = ({
       )}
       
       <PostsGrid>
-        {posts.map(post => (
+        {posts.map((post: any) => (
           <PostCard key={post.id} post={post} />
         ))}
       </PostsGrid>

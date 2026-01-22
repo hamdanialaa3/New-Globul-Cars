@@ -144,7 +144,7 @@ class SmartAlertsService {
       );
 
       const snapshot = await getDocs(q);
-      const alerts = snapshot.docs.map(doc => ({
+      const alerts = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         createdAt: doc.data().createdAt?.toDate(),

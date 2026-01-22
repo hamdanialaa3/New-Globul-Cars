@@ -174,8 +174,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (error.code !== 'auth/no-auth-event') {
           // Only log actual errors, not the normal "no redirect pending" case
           logger.error('OAuth redirect error details', error as Error, {
-            code: error.code,
-            message: error.message
+            code: (error as any).code,
+            message: (error as Error).message
           });
         }
 

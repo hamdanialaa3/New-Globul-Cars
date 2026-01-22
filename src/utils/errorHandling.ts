@@ -55,7 +55,7 @@ export class BulgarianErrorHandler {
       }
     };
 
-    const errorCode = error.code || 'unknown-error';
+    const errorCode = (error as any).code || 'unknown-error';
     const translations = firebaseErrors[errorCode] || {
       bg: 'Възникна неочаквана грешка',
       en: 'An unexpected error occurred'
@@ -63,7 +63,7 @@ export class BulgarianErrorHandler {
 
     return {
       code: errorCode,
-      message: error.message || translations.en,
+      message: (error as Error).message || translations.en,
       userMessage: translations.bg,
       details: error,
       timestamp: new Date()
@@ -74,7 +74,7 @@ export class BulgarianErrorHandler {
   static handleApiError(error: any): AppError {
     if (error.response) {
       // Server responded with error status
-      const status = error.response.status;
+      const status = (error as any).response.status;
       const statusMessages: { [key: number]: { bg: string; en: string } } = {
         400: { bg: 'Невалидни данни', en: 'Invalid data' },
         401: { bg: 'Нямате достъп', en: 'Unauthorized access' },
@@ -92,9 +92,9 @@ export class BulgarianErrorHandler {
 
       return {
         code: `HTTP_${status}`,
-        message: error.response.data?.message || message.en,
+        message: (error as any).response.data?.message || message.en,
         userMessage: message.bg,
-        details: error.response.data,
+        details: (error as any).response.data,
         timestamp: new Date()
       };
     } else if (error.request) {
@@ -103,14 +103,14 @@ export class BulgarianErrorHandler {
         code: 'NETWORK_ERROR',
         message: 'Network request failed',
         userMessage: 'Проблем с интернет връзката',
-        details: error.request,
+        details: (error as any).request,
         timestamp: new Date()
       };
     } else {
       // Other error
       return {
         code: 'UNKNOWN_ERROR',
-        message: error.message || 'Unknown error',
+        message: (error as Error).message || 'Unknown error',
         userMessage: 'Възникна неочаквана грешка',
         details: error,
         timestamp: new Date()
@@ -235,14 +235,14 @@ export const useErrorHandler = () => {
   const handleError = (error: Error | unknown, context?: string) => {
     let appError: AppError;
 
-    if (error.code && error.code.startsWith('auth/')) {
+    if (error.code && (error as any).code.startsWith('auth/')) {
       appError = BulgarianErrorHandler.handleFirebaseError(error);
-    } else if (error.response || error.request) {
+    } else if (error.response || (error as any).request) {
       appError = BulgarianErrorHandler.handleApiError(error);
     } else {
       appError = {
         code: 'COMPONENT_ERROR',
-        message: error.message || 'Component error',
+        message: (error as Error).message || 'Component error',
         userMessage: 'Възникна грешка в компонента',
         details: { error, context },
         timestamp: new Date()

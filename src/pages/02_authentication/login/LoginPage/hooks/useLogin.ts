@@ -161,7 +161,7 @@ export const useLogin = (): UseLoginReturn => {
       const errorWithCode = error as Error & { code?: string; message?: string };
 
       // Handle redirect case (especially for Cursor browser)
-      if (error.message === 'REDIRECT_INITIATED' || error.message.includes('REDIRECT')) {
+      if (error.message === 'REDIRECT_INITIATED' || (error as Error).message.includes('REDIRECT')) {
         if (process.env.NODE_ENV === 'development') {
           logger.debug('OAuth redirect initiated - waiting for redirect result');
         }

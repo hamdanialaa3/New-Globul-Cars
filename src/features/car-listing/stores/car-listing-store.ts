@@ -269,9 +269,9 @@ export const useCarListingStore = create<CarListingState>()(
           } catch (error: any) {
             set((state) => {
               state.isSubmitting = false;
-              state.errors.submission = error.message || 'Submission failed';
+              state.errors.submission = (error as Error).message || 'Submission failed';
             });
-            return { success: false, error: error.message || 'Submission failed' };
+            return { success: false, error: (error as Error).message || 'Submission failed' };
           }
         },
         

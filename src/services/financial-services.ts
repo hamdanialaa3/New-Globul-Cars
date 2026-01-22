@@ -107,7 +107,7 @@ export class BulgarianFinancialServices {
       );
 
       const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map(doc => ({
+      return querySnapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       } as ServiceLead));

@@ -298,7 +298,7 @@ const UsersTable: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map(user => (
+                        {users.map((user: any) => (
                             <GlassRow key={user.id}>
                                 <td>
                                     <UserCell>

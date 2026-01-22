@@ -55,6 +55,9 @@ import CategoriesSection from './CategoriesSection';
 import QuickBrandsSection from './QuickBrandsSection';
 import LifeMomentsBrowse from './LifeMomentsBrowse';
 
+// ✨ AI SMART SELL BUTTON (January 22, 2026)
+import AISmartSellButton from './AISmartSellButton';
+
 // Global components (lazy loaded)
 const AIChatbot = React.lazy(() => import('../../../../components/AI/AIChatbot'));
 
@@ -127,6 +130,14 @@ const LoadingFallback = styled.div`
  */
 const HeroSlot: React.FC = () => (
   <UnifiedHeroSection />
+);
+
+/**
+ * Slot 1.5: AI Smart Sell Button  
+ * AI-powered car listing CTA / بائع ذكي مدعوم بالذكاء الاصطناعي
+ */
+const AISmartSellSlot: React.FC = () => (
+  <AISmartSellButton />
 );
 
 /**
@@ -448,7 +459,11 @@ const HomePageComposer: React.FC = React.memo(() => {
       <ContentContainer>
         {/* Slot 1: Hero Section - CRITICAL (Same width as other sections) */}
         <HeroSlot />
+        
+        {/* ✨ AI Smart Sell Button - NEW FEATURE (Jan 22, 2026) */}
+        <AISmartSellSlot />
         <SectionSpacer />
+        
         {/* Slot 2: Featured Showcase - CRITICAL */}
         <FeaturedShowcaseSlot />
         <SectionSpacer />

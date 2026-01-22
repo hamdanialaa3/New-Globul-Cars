@@ -70,7 +70,7 @@ export class TalonScannerService {
         confidence: 0,
         rawText: '',
         fieldsFound: [],
-        errors: [error instanceof Error ? error.message : 'Unknown error']
+        errors: [error instanceof Error ? (error as Error).message : 'Unknown error']
       };
     }
   }

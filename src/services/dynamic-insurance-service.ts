@@ -122,7 +122,7 @@ export class DynamicInsuranceService {
       );
 
       const behaviorSnapshot = await getDocs(behaviorQuery);
-      const behaviors = behaviorSnapshot.docs.map(doc => doc.data() as DrivingBehavior);
+      const behaviors = behaviorSnapshot.docs.map((doc: any) => doc.data() as DrivingBehavior);
 
       if (behaviors.length === 0) return;
 
@@ -331,7 +331,7 @@ export class DynamicInsuranceService {
       );
 
       const claimsSnapshot = await getDocs(claimsQuery);
-      return claimsSnapshot.docs.map(doc => doc.data() as InsuranceClaim);
+      return claimsSnapshot.docs.map((doc: any) => doc.data() as InsuranceClaim);
 
     } catch (error) {
       serviceLogger.error('Failed to get user insurance claims', error as Error, { userId });

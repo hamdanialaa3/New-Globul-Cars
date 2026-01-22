@@ -44,7 +44,7 @@ class FirebaseConnectionTestService {
       serviceLogger.info('Firebase connection successful', { usersCount });
       
       // Test 2: Get user details
-      const users = usersSnapshot.docs.map(doc => {
+      const users = usersSnapshot.docs.map((doc: any) => {
         const data = doc.data();
         return {
           id: doc.id,
@@ -98,7 +98,7 @@ class FirebaseConnectionTestService {
           timestamp: new Date().toISOString(),
           isMockData: true
         },
-        error: error.message || 'Unknown error'
+        error: (error as Error).message || 'Unknown error'
       };
     }
   }
@@ -140,7 +140,7 @@ class FirebaseConnectionTestService {
       return {
         success: false,
         message: 'Firestore write operation failed',
-        error: error.message || 'Unknown error'
+        error: (error as Error).message || 'Unknown error'
       };
     }
   }
@@ -156,7 +156,7 @@ class FirebaseConnectionTestService {
       serviceLogger.info('Fetching real users data');
       
       const usersSnapshot = await getDocs(collection(db, 'users'));
-      const users = usersSnapshot.docs.map(doc => {
+      const users = usersSnapshot.docs.map((doc: any) => {
         const data = doc.data();
         return {
           id: doc.id,
@@ -197,7 +197,7 @@ class FirebaseConnectionTestService {
       return {
         success: false,
         message: 'Failed to fetch real users data',
-        error: error.message || 'Unknown error'
+        error: (error as Error).message || 'Unknown error'
       };
     }
   }
@@ -241,7 +241,7 @@ class FirebaseConnectionTestService {
       return {
         success: false,
         message: 'Real-time updates test failed',
-        error: error.message || 'Unknown error'
+        error: (error as Error).message || 'Unknown error'
       };
     }
   }
@@ -297,7 +297,7 @@ class FirebaseConnectionTestService {
         success: false,
         message: 'Complete Firebase test suite failed',
         results: [],
-        error: error.message || 'Unknown error'
+        error: (error as Error).message || 'Unknown error'
       };
     }
   }

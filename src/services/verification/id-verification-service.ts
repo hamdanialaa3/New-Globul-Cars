@@ -17,6 +17,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage, auth } from '../../firebase/firebase-config';
 import { trustScoreService } from '../profile/trust-score-service';
 import { serviceLogger } from '../logger-service';
+import { normalizeError } from '@/utils/error-helpers';
 
 // ==================== INTERFACES ====================
 
@@ -130,7 +131,7 @@ export class IDVerificationService {
 
       const snapshot = await getDocs(q);
       
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         submittedAt: doc.data().submittedAt?.toDate() || new Date(),

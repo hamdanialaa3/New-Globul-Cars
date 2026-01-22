@@ -852,7 +852,7 @@ export const GarageSectionPro: React.FC<GarageSectionProps> = ({
       {/* Cars Grid */}
       {cars.length > 0 ? (
         <CarsGrid>
-          {cars.map(car => {
+          {cars.map((car: any) => {
             const visual = getCarVisual(car);
             
             return (

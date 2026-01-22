@@ -464,7 +464,7 @@ const SharedCarForm: React.FC<SharedCarFormProps> = ({
     const isChecked = currentArray.includes(value);
     
     if (isChecked) {
-      handleInputChange(fieldName, currentArray.filter(item => item !== value) as any);
+      handleInputChange(fieldName, currentArray.filter((item: any) => item !== value) as any);
     } else {
       handleInputChange(fieldName, [...currentArray, value] as any);
     }

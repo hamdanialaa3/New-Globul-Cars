@@ -205,13 +205,13 @@ const CarEditPage: React.FC<{ carId?: string }> = ({ carId: propCarId }) => {
   })), [language]);
 
   const fuelOptions = useMemo(() => FUEL_TYPES.map(f => ({ value: f, label: (t.fuelTypes as any)[f] || f })), [t]);
-  const transmissionOptions = useMemo(() => TRANSMISSIONS.map(v => ({ value: v, label: (t.transmissions as any)[v] || v })), [t]);
-  const bodyTypeOptions = useMemo(() => IMPORTED_BODY_TYPES.map(v => ({
+  const transmissionOptions = useMemo(() => TRANSMISSIONS.map((v: any) => ({ value: v, label: (t.transmissions as any)[v] || v })), [t]);
+  const bodyTypeOptions = useMemo(() => IMPORTED_BODY_TYPES.map((v: any) => ({
     value: v.value,
     label: language === 'bg' ? v.labelBg : v.labelEn
   })), [language]);
-  const conditionOptions = useMemo(() => CONDITIONS.map(v => ({ value: v, label: (t.conditions as any)[v] || v })), [t]);
-  const driveTypeOptions = useMemo(() => DRIVE_TYPES.map(v => ({ value: v, label: (t.driveTypes as any)[v] || v })), [t]);
+  const conditionOptions = useMemo(() => CONDITIONS.map((v: any) => ({ value: v, label: (t.conditions as any)[v] || v })), [t]);
+  const driveTypeOptions = useMemo(() => DRIVE_TYPES.map((v: any) => ({ value: v, label: (t.driveTypes as any)[v] || v })), [t]);
 
   // Location Options using Services
   const provinceOptions = useMemo(() => BULGARIA_PROVINCES.map(p => ({

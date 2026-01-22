@@ -169,7 +169,7 @@ export class RealTimeNotificationsService {
       );
       
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         timestamp: doc.data().timestamp?.toDate() || new Date()
@@ -184,9 +184,13 @@ export class RealTimeNotificationsService {
   public subscribeToNotifications(callback: (notification: Notification) => void): () => void {
     this.notificationCallbacks.push(callback);
 
+    let isActive = true; // Prevent callback execution after unsubscribe
+
     const unsubscribe = onSnapshot(
       query(collection(db, 'admin_notifications'), orderBy('timestamp', 'desc'), limit(10)),
       (snapshot) => {
+        if (!isActive) return; // Check before processing
+
         snapshot.docChanges().forEach((change) => {
           if (change.type === 'added') {
             const notification = {
@@ -194,7 +198,7 @@ export class RealTimeNotificationsService {
               ...change.doc.data(),
               timestamp: change.doc.data().timestamp?.toDate() || new Date()
             } as Notification;
-            
+
             // إرسال الإشعار للمشتركين
             this.notificationCallbacks.forEach(cb => cb(notification));
           }
@@ -203,6 +207,7 @@ export class RealTimeNotificationsService {
     );
 
     return () => {
+      isActive = false; // Disable callback first
       unsubscribe();
       const index = this.notificationCallbacks.indexOf(callback);
       if (index > -1) {
@@ -238,7 +243,7 @@ export class RealTimeNotificationsService {
       const q = query(notificationsRef, where('read', '==', true));
       const snapshot = await getDocs(q);
       
-      const deletePromises = snapshot.docs.map(doc => deleteDoc(doc.ref));
+      const deletePromises = snapshot.docs.map((doc: any) => deleteDoc(doc.ref));
       await Promise.all(deletePromises);
     } catch (error) {
       serviceLogger.error('Error clearing read notifications', error as Error);
@@ -300,7 +305,7 @@ export class RealTimeNotificationsService {
       const notificationsRef = collection(db, 'admin_notifications');
       const snapshot = await getDocs(notificationsRef);
       
-      const notifications = snapshot.docs.map(doc => doc.data());
+      const notifications = snapshot.docs.map((doc: any) => doc.data());
       
       const stats = {
         total: notifications.length,

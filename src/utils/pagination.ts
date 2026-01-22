@@ -81,7 +81,7 @@ export async function fetchPaginated<T = DocumentData>(
         const docs = hasMore ? snapshot.docs.slice(0, limitCount) : snapshot.docs;
 
         // Extract data
-        const data = docs.map(doc => ({
+        const data = docs.map((doc: any) => ({
             id: doc.id,
             ...doc.data()
         })) as T[];
@@ -173,6 +173,6 @@ export function usePagination<T = DocumentData>(options: PaginationOptions) {
  * 
  * // Load more on scroll
  * <InfiniteScroll onLoadMore={loadMore} hasMore={hasMore} loading={loading}>
- *   {data.map(car => <CarCard key={car.id} car={car} />)}
+ *   {data.map((car: any) => <CarCard key={car.id} car={car} />)}
  * </InfiniteScroll>
  */

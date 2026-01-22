@@ -214,7 +214,7 @@ export const GodModeViewsGrid: React.FC<GodModeViewsGridProps> = ({ onClose }) =
                 limit(50)
             );
             const snapshot = await getDocs(q);
-            const data = snapshot.docs.map(doc => ({
+            const data = snapshot.docs.map((doc: any) => ({
                 id: doc.id,
                 ...doc.data()
             }));
@@ -241,7 +241,7 @@ export const GodModeViewsGrid: React.FC<GodModeViewsGridProps> = ({ onClose }) =
             try {
                 await updateDoc(doc(db, 'cars', carId), { views: 0 });
                 // Update local state
-                setHotItems(prev => prev.map(item =>
+                setHotItems(prev => prev.map((item: any) =>
                     item.id === carId ? { ...item, views: 0 } : item
                 ));
             } catch (error) {
@@ -256,7 +256,7 @@ export const GodModeViewsGrid: React.FC<GodModeViewsGridProps> = ({ onClose }) =
             const newViews = (currentViews || 0) + boostAmount;
             await updateDoc(doc(db, 'cars', carId), { views: newViews });
             // Update local state
-            setHotItems(prev => prev.map(item =>
+            setHotItems(prev => prev.map((item: any) =>
                 item.id === carId ? { ...item, views: newViews } : item
             ));
         } catch (error) {
@@ -289,7 +289,7 @@ export const GodModeViewsGrid: React.FC<GodModeViewsGridProps> = ({ onClose }) =
                             <BarChart size={40} style={{ marginBottom: 20 }} />
                             <div>ANALYZING TRAFFIC PATTERNS...</div>
                         </div>
-                    ) : hotItems.map(item => (
+                    ) : hotItems.map((item: any) => (
                         <Card key={item.id}>
                             <CardHeader>
                                 <Eye color="#888" size={20} />

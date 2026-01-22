@@ -212,7 +212,7 @@ export class MonitoringService {
       this.recordMetric(`${name}_duration`, duration, 'ms', {
         ...context,
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? (error as Error).message : 'Unknown error'
       });
       
       throw error;
@@ -235,7 +235,7 @@ export class MonitoringService {
           service: serviceName,
           status: 'unhealthy',
           lastChecked: new Date(),
-          issues: [error instanceof Error ? error.message : 'Unknown error']
+          issues: [error instanceof Error ? (error as Error).message : 'Unknown error']
         });
       }
     };

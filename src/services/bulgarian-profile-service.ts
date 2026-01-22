@@ -404,18 +404,28 @@ export class BulgarianProfileService {
       return () => {}; // Return no-op unsubscribe function
     }
 
+    let isActive = true; // Prevent callback execution after unsubscribe
+
     const userRef = doc(db, 'users', userId);
-    
-    return onSnapshot(userRef, (doc) => {
+
+    const unsubscribe = onSnapshot(userRef, (doc) => {
+      if (!isActive) return; // Check before processing
+
       if (doc.exists()) {
         callback(doc.data() as BulgarianUserProfile);
       } else {
         callback(null);
       }
     }, (error) => {
+      if (!isActive) return; // Check before error callback
       serviceLogger.error('[SERVICE] Error in real-time profile listener', error as Error, { userId });
       callback(null);
     });
+
+    return () => {
+      isActive = false; // Disable callback first
+      unsubscribe(); // Then unsubscribe
+    };
   }
 
   /**
@@ -424,39 +434,6 @@ export class BulgarianProfileService {
   static async getUserProfile(userId: string): Promise<BulgarianUserProfile | null> {
     try {
       const userRef = doc(db, 'users', userId);
-      const userDoc = await getDoc(userRef);
-      
-      if (userDoc.exists()) {
-        return userDoc.data() as BulgarianUserProfile;
-      }
-      
-      return null;
-    } catch (error) {
-      serviceLogger.error('[SERVICE] Error getting user profile', error as Error, { userId });
-      throw new Error('Failed to get user profile');
-    }
-  }
-
-  /**
-   * Delete user profile and all associated data
-   */
-  static async deleteUserProfile(userId: string): Promise<void> {
-    // ✅ CRITICAL FIX: Guard against null/undefined userId
-    if (!userId || typeof userId !== 'string' || userId.trim() === '') {
-      logger.warn('[BulgarianProfileService] deleteUserProfile called with invalid userId', { userId });
-      throw new Error('Invalid userId provided to deleteUserProfile');
-    }
-
-    try {
-      // Delete main profile
-      await deleteDoc(doc(db, 'users', userId));
-      
-      // Delete dealer profile if exists
-      try {
-        await deleteDoc(doc(db, 'dealers', userId));
-      } catch (error) {
-        // Dealer profile might not exist
-      }
       
       // Delete activity data
       const activityQuery = query(

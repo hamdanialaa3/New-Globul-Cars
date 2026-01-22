@@ -258,7 +258,7 @@ export const SimilarCarsWidget: React.FC<SimilarCarsWidgetProps> = ({ currentCar
         </NavButton>
 
         <ScrollContainer ref={scrollRef}>
-          {similarCars.map(car => (
+          {similarCars.map((car: any) => (
             <CarCard key={car.id} onClick={() => handleCarClick(car)}>
               <ImageWrapper>
                 <OptimizedImage

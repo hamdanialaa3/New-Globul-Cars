@@ -214,7 +214,7 @@ export class BulgarianAuthService {
       if ('code' in error && typeof (error as any).code === 'string') {
         return (error as any).code;
       }
-      // Check for error.message which might contain the code
+      // Check for (error as Error).message which might contain the code
       if ('message' in error && typeof (error as any).message === 'string') {
         const message = (error as any).message;
         // Extract auth/xxx pattern from message
@@ -746,7 +746,7 @@ export class BulgarianAuthService {
         logger.error('Auth error details:', errorDetails, {
           errorCode,
           errorType: error instanceof Error ? error.constructor.name : typeof error,
-          errorMessage: error instanceof Error ? error.message : String(error)
+          errorMessage: error instanceof Error ? (error as Error).message : String(error)
         });
       } catch (logError) {
         // If logging fails, continue anyway (do not use console in production)
@@ -758,7 +758,7 @@ export class BulgarianAuthService {
       
       // If no specific message, try to extract from original error
       if (!bulgarianMessage && error instanceof Error) {
-        bulgarianMessage = error.message;
+        bulgarianMessage = (error as Error).message;
       }
       
       // Final fallback

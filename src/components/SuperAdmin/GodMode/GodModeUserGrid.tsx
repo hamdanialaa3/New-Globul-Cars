@@ -294,7 +294,7 @@ export const GodModeUserGrid: React.FC<GodModeUserGridProps> = ({ onClose }) => 
     }
   };
 
-  const filteredUsers = users.filter(user =>
+  const filteredUsers = users.filter((user: any) =>
     user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.displayName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.phone?.includes(searchTerm)
@@ -330,7 +330,7 @@ export const GodModeUserGrid: React.FC<GodModeUserGridProps> = ({ onClose }) => 
             <div style={{ color: '#fff', gridColumn: '1/-1', textAlign: 'center', padding: '100px' }}>
               ACCESSING MAINFRAME DATA...
             </div>
-          ) : filteredUsers.map(user => (
+          ) : filteredUsers.map((user: any) => (
             <Card key={user.uid}>
               <CardHeader>
                 <UserAvatar>

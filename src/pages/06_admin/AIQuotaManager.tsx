@@ -17,7 +17,7 @@ const AIQuotaManager: React.FC = () => {
   const loadUsers = async () => {
     try {
       const usersSnap = await getDocs(collection(db, 'users'));
-      const usersData = usersSnap.docs.map(doc => ({
+      const usersData = usersSnap.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       }));
@@ -82,7 +82,7 @@ const AIQuotaManager: React.FC = () => {
           <HeaderCell>البريد الإلكتروني</HeaderCell>
           <HeaderCell>الإجراءات</HeaderCell>
         </TableHeader>
-        {users.map(user => (
+        {users.map((user: any) => (
           <TableRow key={user.id}>
             <Cell>{user.displayName || 'غير محدد'}</Cell>
             <Cell>{user.email}</Cell>

@@ -206,7 +206,7 @@ class OfferWorkflowService {
       
       const snapshot = await getDocs(q);
       
-      const offers: Offer[] = snapshot.docs.map(doc => doc.data() as Offer);
+      const offers: Offer[] = snapshot.docs.map((doc: any) => doc.data() as Offer);
 
       // Sort by date (newest first)
       offers.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
@@ -236,7 +236,7 @@ class OfferWorkflowService {
       
       const snapshot = await getDocs(q);
       
-      const offers: Offer[] = snapshot.docs.map(doc => doc.data() as Offer);
+      const offers: Offer[] = snapshot.docs.map((doc: any) => doc.data() as Offer);
 
       // Sort by amount (highest first)
       offers.sort((a, b) => b.offerAmount - a.offerAmount);

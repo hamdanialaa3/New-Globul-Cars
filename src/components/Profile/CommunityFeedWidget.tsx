@@ -277,7 +277,7 @@ const CommunityFeedWidget: React.FC<CommunityFeedWidgetProps> = ({ userId }) => 
 
       {posts.length > 0 && (
         <PostsList>
-          {posts.map(post => (
+          {posts.map((post: any) => (
             <PostCard key={post.id} post={post} />
           ))}
         </PostsList>

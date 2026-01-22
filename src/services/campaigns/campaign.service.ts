@@ -189,7 +189,7 @@ class CampaignService {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       } as Campaign));
@@ -399,7 +399,7 @@ class CampaignService {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       } as Campaign));

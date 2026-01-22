@@ -150,7 +150,7 @@ const SocialFeedPage: React.FC = () => {
         // Trending = high engagement in last 24h + smart score
         const now = Date.now();
         const oneDayAgo = now - 24 * 60 * 60 * 1000;
-        items = items.filter(item => {
+        items = items.filter((item: any) => {
           const itemTime = item.createdAt instanceof Date 
             ? item.createdAt.getTime() 
             : item.createdAt.toMillis ? item.createdAt.toMillis() : 0;

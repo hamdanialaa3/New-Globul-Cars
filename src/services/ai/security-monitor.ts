@@ -472,7 +472,7 @@ class AISecurityMonitor {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         timestamp: doc.data().timestamp.toDate()
@@ -522,7 +522,7 @@ class AISecurityMonitor {
   }> {
     try {
       const eventsSnapshot = await getDocs(collection(db, this.EVENTS_COLLECTION));
-      const events = eventsSnapshot.docs.map(doc => doc.data() as SecurityEvent);
+      const events = eventsSnapshot.docs.map((doc: any) => doc.data() as SecurityEvent);
 
       const suspensionsSnapshot = await getDocs(
         collection(db, this.SUSPENSIONS_COLLECTION)

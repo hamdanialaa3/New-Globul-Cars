@@ -88,7 +88,7 @@ export const usePWA = () => {
         } catch (error) {
           // Only log as warning, not error, as PWA is optional functionality
           logger.warn('Service Worker registration failed - PWA features disabled', {
-            error: error instanceof Error ? error.message : 'Unknown error',
+            error: error instanceof Error ? (error as Error).message : 'Unknown error',
           });
         }
       } else {

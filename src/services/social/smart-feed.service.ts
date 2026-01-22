@@ -129,7 +129,7 @@ export class SmartFeedService {
       ];
 
       // Calculate smart scores
-      const scoredItems = allItems.map(item => ({
+      const scoredItems = allItems.map((item: any) => ({
         ...item,
         score: this.calculateSmartScore(item)
       }));
@@ -224,7 +224,7 @@ export class SmartFeedService {
       );
 
       const snapshot = await getDocs(postsQuery);
-      return snapshot.docs.map(doc => {
+      return snapshot.docs.map((doc: any) => {
         const data = doc.data();
         return {
           id: doc.id,
@@ -325,7 +325,7 @@ export class SmartFeedService {
       );
 
       const snapshot = await getDocs(storiesQuery);
-      return snapshot.docs.map(doc => {
+      return snapshot.docs.map((doc: any) => {
         const story = doc.data();
         return {
           id: doc.id,
@@ -462,7 +462,7 @@ export class SmartFeedService {
    */
   async enrichFeedItems(items: FeedItem[]): Promise<FeedItem[]> {
     try {
-      const userIds = [...new Set(items.map(item => item.userId))];
+      const userIds = [...new Set(items.map((item: any) => item.userId))];
       const userDataMap = new Map<string, any>();
 
       // Fetch user data using doc()
@@ -481,7 +481,7 @@ export class SmartFeedService {
       }
 
       // Enrich items
-      return items.map(item => {
+      return items.map((item: any) => {
         if (item.userId === 'system') return item;
         
         const userData = userDataMap.get(item.userId);

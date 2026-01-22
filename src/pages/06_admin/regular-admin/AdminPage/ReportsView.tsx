@@ -214,7 +214,7 @@ const ReportsView: React.FC = () => {
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const reportsData = snapshot.docs.map(doc => ({
+      const reportsData = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       } as Report));

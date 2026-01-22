@@ -140,7 +140,7 @@ export const validateNumericCar = async (
     });
 
     throw new Error(
-      error.message || `❌ Cannot validate car: /car/${userNumericId}/${carNumericId}`
+      (error as Error).message || `❌ Cannot validate car: /car/${userNumericId}/${carNumericId}`
     );
   }
 };
@@ -222,7 +222,7 @@ export const validateNumericMessage = async (messageData: {
     });
 
     throw new Error(
-      error.message || `❌ Cannot send message to user ${messageData.recipientNumericId}`
+      (error as Error).message || `❌ Cannot send message to user ${messageData.recipientNumericId}`
     );
   }
 };
@@ -274,7 +274,7 @@ export const enforceCarOwnership = async (params: {
 
     return data;
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorMessage = error instanceof Error ? (error as Error).message : String(error);
     logger.error('❌ Ownership verification failed', error instanceof Error ? error : new Error(String(error)), {
       carId: params.carId
     });

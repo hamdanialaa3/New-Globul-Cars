@@ -307,7 +307,7 @@ const AdminCarManagementPage: React.FC = () => {
     }
   };
 
-  const filteredCars = cars.filter(car => {
+  const filteredCars = cars.filter((car: any) => {
     if (!searchTerm) return true;
     const search = searchTerm.toLowerCase();
     return (

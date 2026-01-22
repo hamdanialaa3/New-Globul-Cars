@@ -21,7 +21,7 @@ export const EquipmentSection: React.FC<EquipmentSectionProps> = ({
         <EquipmentCategory>
             <EquipmentTitle $isDark={isDark}>{title}</EquipmentTitle>
             <EquipmentGrid>
-                {items.map(item => {
+                {items.map((item: any) => {
                     const currentList = Array.isArray(formData[fieldName]) ? formData[fieldName] as string[] : [];
                     const isSelected = currentList.includes(item);
                     return (

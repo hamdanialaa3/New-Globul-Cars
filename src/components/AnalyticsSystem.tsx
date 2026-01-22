@@ -124,7 +124,7 @@ export const AnalyticsSystem: React.FC<AnalyticsSystemProps> = ({
         </StatCard>
 
         <StatCard>
-          <StatNumber>{new Set(searchResults.map(car => car.brand)).size}</StatNumber>
+          <StatNumber>{new Set(searchResults.map((car: any) => car.brand)).size}</StatNumber>
           <StatLabel>Различни марки</StatLabel>
         </StatCard>
       </StatsGrid>

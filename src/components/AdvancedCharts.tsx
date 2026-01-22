@@ -119,11 +119,11 @@ const AdvancedCharts: React.FC = () => {
     try {
       // Load users data
       const usersSnapshot = await getDocs(collection(db, 'users'));
-      const users = usersSnapshot.docs.map(doc => doc.data());
+      const users = usersSnapshot.docs.map((doc: any) => doc.data());
 
       // Load cars data
       const carsSnapshot = await getDocs(collection(db, 'cars'));
-      const cars = carsSnapshot.docs.map(doc => doc.data());
+      const cars = carsSnapshot.docs.map((doc: any) => doc.data());
 
       // Process data for charts
       const usersByMonth = processUsersByMonth(users);
@@ -156,7 +156,7 @@ const AdvancedCharts: React.FC = () => {
     const brands = ['BMW', 'Mercedes', 'Audi', 'Toyota', 'Volkswagen'];
     return brands.map(brand => ({
       brand,
-      count: cars.filter(car => car.make === brand).length || Math.floor(Math.random() * 50) + 10
+      count: cars.filter((car: any) => car.make === brand).length || Math.floor(Math.random() * 50) + 10
     }));
   };
 
@@ -164,7 +164,7 @@ const AdvancedCharts: React.FC = () => {
     const cities = ['София', 'Пловдив', 'Варна', 'Бургас', 'Русе'];
     return cities.map(city => ({
       city,
-      count: cars.filter(car => car.location?.city === city).length || Math.floor(Math.random() * 30) + 5
+      count: cars.filter((car: any) => car.location?.city === city).length || Math.floor(Math.random() * 30) + 5
     }));
   };
 
@@ -178,7 +178,7 @@ const AdvancedCharts: React.FC = () => {
     
     return ranges.map(({ range, min, max }) => {
       const carPrices = cars as Array<{ price?: number }>;
-      const count = carPrices.filter(car => {
+      const count = carPrices.filter((car: any) => {
         const price = typeof car.price === 'number' ? car.price : 0;
         return price >= min && price < max;
       }).length || Math.floor(Math.random() * 25) + 5;
@@ -199,10 +199,10 @@ const AdvancedCharts: React.FC = () => {
     );
   }
 
-  const maxUserCount = Math.max(...chartData.usersByMonth.map(item => item.count));
-  const maxBrandCount = Math.max(...chartData.carsByBrand.map(item => item.count));
-  const maxCityCount = Math.max(...chartData.carsByCity.map(item => item.count));
-  const maxPriceCount = Math.max(...chartData.priceRanges.map(item => item.count));
+  const maxUserCount = Math.max(...chartData.usersByMonth.map((item: any) => item.count));
+  const maxBrandCount = Math.max(...chartData.carsByBrand.map((item: any) => item.count));
+  const maxCityCount = Math.max(...chartData.carsByCity.map((item: any) => item.count));
+  const maxPriceCount = Math.max(...chartData.priceRanges.map((item: any) => item.count));
 
   return (
     <Container>

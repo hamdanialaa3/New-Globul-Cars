@@ -521,7 +521,7 @@ const AdvancedSearchPage: React.FC = () => {
             gap: '1.5rem',
             marginTop: '2rem'
           }}>
-            {searchResults.map(car => (
+            {searchResults.map((car: any) => (
               <CarCardCompact key={car.id} car={car} />
             ))}
           </div>

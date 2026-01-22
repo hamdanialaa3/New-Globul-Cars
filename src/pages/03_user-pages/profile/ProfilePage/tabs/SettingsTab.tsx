@@ -1538,7 +1538,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
     } catch (error) {
       logger.error("Error saving user info:", error as Error);
       const errorMessage = error instanceof Error 
-        ? error.message 
+        ? (error as Error).message 
         : (isBg ? 'Грешка при запазване на информацията' : 'Failed to save profile information');
       setSaveError(errorMessage);
       toast.error(errorMessage, { autoClose: 5000 });
@@ -2333,7 +2333,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
           security: settings.security || {},
           carPreferences: settings.carPreferences || {}
         },
-        listings: userCars.map(car => ({
+        listings: userCars.map((car: any) => ({
           id: car.id,
           make: car.make || '',
           model: car.model || '',

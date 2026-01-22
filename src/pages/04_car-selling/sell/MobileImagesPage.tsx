@@ -115,7 +115,7 @@ const MobileImagesPage: React.FC = () => {
         toast.success(`AI detected: ${result.make} ${result.model} (${result.confidence}% confident)`);
       }
     } catch (error: unknown) {
-      if (error.message.includes('quota') || error.message.includes('limit')) {
+      if (error.message.includes('quota') || (error as Error).message.includes('limit')) {
         toast.warning('AI quota exceeded. Upgrade for more analysis.');
       }
     } finally {

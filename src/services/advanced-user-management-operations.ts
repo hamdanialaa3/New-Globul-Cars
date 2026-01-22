@@ -137,7 +137,7 @@ export class UserOperations {
         limit(limitCount)
       );
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as AdvancedUser));
+      return snapshot.docs.map((doc: any) => ({ ...doc.data(), id: doc.id } as AdvancedUser));
     } catch (error) {
       serviceLogger.error('Error getting users', error as Error, { limitCount });
       return [];
@@ -188,7 +188,7 @@ export class UserOperations {
         where('userId', '==', userId)
       );
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+      return snapshot.docs.map((doc: any) => ({ ...doc.data(), id: doc.id }));
     } catch (error) {
       serviceLogger.error('Error getting user cars', error as Error, { userId });
       return [];
@@ -205,7 +205,7 @@ export class UserOperations {
         limit(50)
       );
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+      return snapshot.docs.map((doc: any) => ({ ...doc.data(), id: doc.id }));
     } catch (error) {
       serviceLogger.error('Error getting user messages', error as Error, { userId });
       return [];
@@ -250,7 +250,7 @@ export class RoleOperations {
     try {
       const q = query(collection(db, 'roles'), orderBy('createdAt', 'desc'));
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as UserRole));
+      return snapshot.docs.map((doc: any) => ({ ...doc.data(), id: doc.id } as UserRole));
     } catch (error) {
       serviceLogger.error('Error getting roles', error as Error);
       return [];
@@ -335,7 +335,7 @@ export class ActivityOperations {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as UserActivityLog));
+      return snapshot.docs.map((doc: any) => ({ ...doc.data(), id: doc.id } as UserActivityLog));
     } catch (error) {
       serviceLogger.error('Error getting user activity logs', error as Error, { userId, limitCount });
       return [];
@@ -405,7 +405,7 @@ export class SystemOperations {
         getDocs(collection(db, 'roles'))
       ]);
 
-      const users = usersSnapshot.docs.map(doc => doc.data() as AdvancedUser);
+      const users = usersSnapshot.docs.map((doc: any) => doc.data() as AdvancedUser);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 

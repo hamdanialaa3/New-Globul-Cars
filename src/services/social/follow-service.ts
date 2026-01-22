@@ -163,7 +163,7 @@ export class FollowService {
       
       const snapshot = await getDocs(q);
       const followers = snapshot.docs
-        .map(doc => doc.data().followerId)
+        .map((doc: any) => doc.data().followerId)
         .slice(0, limit);
 
       return followers;
@@ -187,7 +187,7 @@ export class FollowService {
       
       const snapshot = await getDocs(q);
       const following = snapshot.docs
-        .map(doc => doc.data().followingId)
+        .map((doc: any) => doc.data().followingId)
         .slice(0, limit);
 
       return following;

@@ -274,7 +274,7 @@ class GitHubAuthService {
 
       const snapshot = await getDocs(keysQuery);
       
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         key: doc.id,
         userId: doc.data().userId,
         createdAt: doc.data().createdAt?.toDate(),

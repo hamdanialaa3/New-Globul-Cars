@@ -42,7 +42,7 @@ class SearchPersonalizationService {
       const preferences = await this.getUserPreferences(userId);
       
       // 2. Calculate score for each car
-      const scoredCars = cars.map(car => ({
+      const scoredCars = cars.map((car: any) => ({
         car,
         score: this.calculateRelevanceScore(car, preferences)
       }));
@@ -51,7 +51,7 @@ class SearchPersonalizationService {
       scoredCars.sort((a, b) => b.score - a.score);
       
       // 4. Return sorted cars
-      return scoredCars.map(item => item.car);
+      return scoredCars.map((item: any) => item.car);
       
     } catch (error) {
       serviceLogger.warn('Personalization failed, returning original order', { error: (error as Error).message });

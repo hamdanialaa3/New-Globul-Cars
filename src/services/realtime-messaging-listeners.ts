@@ -33,6 +33,8 @@ export function listenToMessages(
     return () => {}; // Return no-op unsubscribe function
   }
 
+  let isActive = true; // Prevent callback execution after unsubscribe
+
   const q = query(
     collection(db, 'messages'),
     where('receiverId', '==', userId),
@@ -41,6 +43,8 @@ export function listenToMessages(
   );
 
   const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    if (!isActive) return; // Check before processing
+
     const messages: Message[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
@@ -56,7 +60,10 @@ export function listenToMessages(
     callback(messages.reverse());
   });
 
-  return unsubscribe;
+  return () => {
+    isActive = false; // Disable callback first
+    unsubscribe(); // Then unsubscribe
+  };
 }
 
 /**
@@ -156,6 +163,8 @@ export function listenToChatRooms(
     return () => {}; // Return no-op unsubscribe function
   }
 
+  let isActive = true; // Prevent callback execution after unsubscribe
+
   const q = query(
     collection(db, 'chatRooms'),
     where('participants', 'array-contains', userId),
@@ -163,6 +172,8 @@ export function listenToChatRooms(
   );
 
   const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    if (!isActive) return; // Check before processing
+
     const chatRooms: ChatRoom[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
@@ -182,7 +193,10 @@ export function listenToChatRooms(
     callback(chatRooms);
   });
 
-  return unsubscribe;
+  return () => {
+    isActive = false; // Disable callback first
+    unsubscribe(); // Then unsubscribe
+  };
 }
 
 /**
@@ -244,6 +258,8 @@ export function listenToTypingIndicators(
     return () => {}; // Return no-op unsubscribe function
   }
 
+  let isActive = true; // Prevent callback execution after unsubscribe
+
   const q = query(
     collection(db, 'typing'),
     where('conversationId', '==', conversationId),
@@ -254,6 +270,8 @@ export function listenToTypingIndicators(
   );
 
   const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    if (!isActive) return; // Check before processing
+
     const indicators: TypingIndicator[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
@@ -271,5 +289,8 @@ export function listenToTypingIndicators(
     callback(indicators);
   });
 
-  return unsubscribe;
+  return () => {
+    isActive = false; // Disable callback first
+    unsubscribe(); // Then unsubscribe
+  };
 }

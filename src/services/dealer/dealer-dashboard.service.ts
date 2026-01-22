@@ -214,7 +214,7 @@ class DealerDashboardService {
 
       // Sort by views (or combined metric)
       const sorted = activeCars
-        .map(car => ({
+        .map((car: any) => ({
           id: car.id || '',
           make: car.make || '',
           model: car.model || '',

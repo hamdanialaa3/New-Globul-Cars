@@ -129,30 +129,30 @@ export class PaymentErrorHandler {
   static handleStripeError(error: Error & { code?: string; type?: string; message?: string; decline_code?: string }): PaymentError {
     logger.error('💳 Payment Error:', {
       type: error.type,
-      code: error.code,
-      message: error.message,
+      code: (error as any).code,
+      message: (error as Error).message,
       decline_code: error.decline_code
     });
 
-    const errorCode = error.code || error.decline_code || 'unknown_error';
+    const errorCode = (error as any).code || error.decline_code || 'unknown_error';
     const knownError = STRIPE_ERROR_CODES[errorCode];
 
     if (knownError) {
       return {
         code: errorCode,
-        message: error.message || 'Unknown error',
+        message: (error as Error).message || 'Unknown error',
         type: knownError.type!,
         userMessage: knownError.userMessage!,
         retryable: knownError.retryable!,
         action: knownError.action,
-        details: { code: error.code, type: error.type, message: error.message }
+        details: { code: (error as any).code, type: error.type, message: (error as Error).message }
       };
     }
 
     // Unknown error
     return {
       code: errorCode,
-      message: error.message || 'Unknown payment error',
+      message: (error as Error).message || 'Unknown payment error',
       type: 'unknown_error',
       userMessage: {
         bg: 'Възникна грешка при плащането. Моля, свържете се с поддръжката.',
@@ -160,7 +160,7 @@ export class PaymentErrorHandler {
       },
       retryable: false,
       action: 'contact_support',
-      details: { code: error.code, type: error.type, message: error.message }
+      details: { code: (error as any).code, type: error.type, message: (error as Error).message }
     };
   }
 
@@ -270,7 +270,7 @@ export class PaymentErrorHandler {
    */
   static logError(error: PaymentError, context?: Record<string, unknown>): void {
     logger.error('💳 Payment Error Logged', {
-      code: error.code,
+      code: (error as any).code,
       type: error.type,
       retryable: error.retryable,
       action: error.action,
@@ -284,7 +284,7 @@ export class PaymentErrorHandler {
           action: 'payment_error',
           severity: error.type === 'unknown_error' ? 'critical' : 'high',
           additionalData: {
-            code: error.code,
+            code: (error as any).code,
             retryable: error.retryable,
             context
           }

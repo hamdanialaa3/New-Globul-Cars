@@ -32,7 +32,7 @@ export const InventorySection: React.FC<InventorySectionProps> = ({
   const filteredCars = useMemo(() => {
     if (!inventorySearch.trim()) return userCars;
     const lower = inventorySearch.toLowerCase();
-    return userCars.filter(car =>
+    return userCars.filter((car: any) =>
       (car.make?.toLowerCase().includes(lower)) ||
       (car.model?.toLowerCase().includes(lower)) ||
       (car.year?.toString().includes(lower)) ||
@@ -63,7 +63,7 @@ export const InventorySection: React.FC<InventorySectionProps> = ({
 
       {filteredCars.length > 0 ? (
         <CarGrid>
-          {filteredCars.map(car => (
+          {filteredCars.map((car: any) => (
             <CarCardGermanStyle
               key={car.id}
               car={car as unknown as CarListing}

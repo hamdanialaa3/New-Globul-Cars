@@ -64,7 +64,7 @@ export const useUsers = ({ pageSize = 10 }: UseUsersOptions = {}): UseUsersResul
             const q = query(usersRef, ...constraints);
             const snapshot = await getDocs(q);
 
-            const fetchedUsers = snapshot.docs.map(doc => ({
+            const fetchedUsers = snapshot.docs.map((doc: any) => ({
                 id: doc.id,
                 ...doc.data()
             } as BulgarianUser & { id: string }));

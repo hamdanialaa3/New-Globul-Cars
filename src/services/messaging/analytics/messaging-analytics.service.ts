@@ -193,7 +193,7 @@ class MessagingAnalytics {
 
       const snapshot = await getDocs(q);
       
-      const analytics: MessageAnalytics[] = snapshot.docs.map(doc => 
+      const analytics: MessageAnalytics[] = snapshot.docs.map((doc: any) => 
         doc.data() as MessageAnalytics
       );
 

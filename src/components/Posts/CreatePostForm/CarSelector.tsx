@@ -38,7 +38,7 @@ const CarSelector: React.FC<CarSelectorProps> = ({ selected, onChange, userId })
       );
 
       const snapshot = await getDocs(carsQuery);
-      setCars(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      setCars(snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })));
     } catch (error) {
       logger.error('Error loading cars:', error);
     } finally {
@@ -77,7 +77,7 @@ const CarSelector: React.FC<CarSelectorProps> = ({ selected, onChange, userId })
         </SelectedCar>
       ) : (
         <CarsList>
-          {cars.map(car => (
+          {cars.map((car: any) => (
             <CarOption key={car.id} onClick={() => onChange(car)}>
               <CarImage src={car.images?.[0]} alt="" />
               <CarInfo>

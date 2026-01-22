@@ -45,7 +45,7 @@ const ProfileCompletion: React.FC<ProfileCompletionProps> = ({
     { completed: idVerified, label: language === 'bg' ? 'Потвърди самоличност' : 'Verify identity' }
   ];
 
-  const completed = items.filter(item => item.completed).length;
+  const completed = items.filter((item: any) => item.completed).length;
   const total = items.length;
   const percentage = Math.floor((completed / total) * 100);
 

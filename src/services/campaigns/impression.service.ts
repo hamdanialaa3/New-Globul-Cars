@@ -211,7 +211,7 @@ class ImpressionService {
       }
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       } as Impression));
@@ -240,7 +240,7 @@ class ImpressionService {
       }
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       } as Impression));

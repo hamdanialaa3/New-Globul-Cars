@@ -307,7 +307,7 @@ const AdminDashboard: React.FC = () => {
     if (activeTab === 'messages') {
       setLoadingTab('messages');
       getDocs(collection(db, 'messages')).then(snapshot => {
-        setMessages(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        setMessages(snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })));
         setLoadingTab('');
       });
     }
@@ -329,7 +329,7 @@ const AdminDashboard: React.FC = () => {
     if (activeTab === 'audit') {
       setLoadingTab('audit');
       getDocs(collection(db, 'audit_logs')).then(snapshot => {
-        setAuditLogs(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        setAuditLogs(snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })));
         setLoadingTab('');
       });
     }
@@ -359,7 +359,7 @@ const AdminDashboard: React.FC = () => {
 
       // Load users
       const usersSnapshot = await getDocs(collection(db, 'users'));
-      const usersData = usersSnapshot.docs.map(doc => ({
+      const usersData = usersSnapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         createdAt: doc.data().createdAt?.toDate() || new Date(),
@@ -369,7 +369,7 @@ const AdminDashboard: React.FC = () => {
 
       // Load cars
       const carsSnapshot = await getDocs(collection(db, 'cars'));
-      const carsData = carsSnapshot.docs.map(doc => ({
+      const carsData = carsSnapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
         createdAt: doc.data().createdAt?.toDate() || new Date()
@@ -380,8 +380,8 @@ const AdminDashboard: React.FC = () => {
       setStats({
         totalUsers: usersData.length,
         totalCars: carsData.length,
-        activeListings: carsData.filter(car => car.status === 'active').length,
-        totalRevenue: carsData.filter(car => car.status === 'sold').length * 100 // Mock revenue calculation
+        activeListings: carsData.filter((car: any) => car.status === 'active').length,
+        totalRevenue: carsData.filter((car: any) => car.status === 'sold').length * 100 // Mock revenue calculation
       });
 
     } catch (error) {
@@ -394,7 +394,7 @@ const AdminDashboard: React.FC = () => {
   const handleUserStatusChange = async (userId: string, newStatus: User['status']) => {
     try {
       await updateDoc(doc(db, 'users', userId), { status: newStatus });
-      setUsers(users.map(user =>
+      setUsers(users.map((user: any) =>
         user.id === userId ? { ...user, status: newStatus } : user
       ));
     } catch (error) {
@@ -405,7 +405,7 @@ const AdminDashboard: React.FC = () => {
   const handleCarStatusChange = async (carId: string, newStatus: Car['status']) => {
     try {
       await updateDoc(doc(db, 'cars', carId), { status: newStatus });
-      setCars(cars.map(car =>
+      setCars(cars.map((car: any) =>
         car.id === carId ? { ...car, status: newStatus } : car
       ));
     } catch (error) {
@@ -417,7 +417,7 @@ const AdminDashboard: React.FC = () => {
     if (window.confirm(t('admin.confirmDeleteUser'))) {
       try {
         await deleteDoc(doc(db, 'users', userId));
-        setUsers(users.filter(user => user.id !== userId));
+        setUsers(users.filter((user: any) => user.id !== userId));
       } catch (error) {
         logger.error('Error deleting user', error as Error, { userId });
       }
@@ -428,7 +428,7 @@ const AdminDashboard: React.FC = () => {
     if (window.confirm(t('admin.confirmDeleteCar'))) {
       try {
         await deleteDoc(doc(db, 'cars', carId));
-        setCars(cars.filter(car => car.id !== carId));
+        setCars(cars.filter((car: any) => car.id !== carId));
       } catch (error) {
         logger.error('Error deleting car', error as Error, { carId });
       }
@@ -522,7 +522,7 @@ const AdminDashboard: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map(user => (
+                  {users.map((user: any) => (
                     <tr key={user.id}>
                       <TableCell>{user.displayName}</TableCell>
                       <TableCell>{user.email}</TableCell>
@@ -561,7 +561,7 @@ const AdminDashboard: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {cars.map(car => (
+                  {cars.map((car: any) => (
                     <tr key={car.id}>
                       <TableCell>{car.title}</TableCell>
                       <TableCell>{car.price} €</TableCell>

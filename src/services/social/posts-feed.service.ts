@@ -38,7 +38,7 @@ class PostsFeedService {
       );
       
       const snapshot = await getDocs(q);
-      let posts = snapshot.docs.map(doc => ({
+      let posts = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       } as Post));
@@ -97,7 +97,7 @@ class PostsFeedService {
           where('followerId', '==', userId)
         )
       );
-      return followingSnapshot.docs.map(doc => doc.data().followingId || doc.id);
+      return followingSnapshot.docs.map((doc: any) => doc.data().followingId || doc.id);
     } catch (error) {
       logger.error('Error getting following', error as Error, { userId });
       return [];
@@ -115,7 +115,7 @@ class PostsFeedService {
       );
       
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       } as Post));

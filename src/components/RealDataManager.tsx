@@ -146,7 +146,7 @@ const RealDataManager: React.FC = () => {
     setLoading(true);
     try {
       const snapshot = await getDocs(collection(db, activeTab));
-      const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const items = snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
       setData(items);
     } catch (error) {
       logger.error('Error loading data:', error);
@@ -208,7 +208,7 @@ const RealDataManager: React.FC = () => {
             <div>نوع الحساب</div>
             <div>الإجراءات</div>
           </TableHeader>
-          {data.map(user => (
+          {data.map((user: any) => (
             <TableRow key={user.id}>
               <div>
                 {editingId === user.id ? (
@@ -274,7 +274,7 @@ const RealDataManager: React.FC = () => {
             <div>السعر</div>
             <div>الإجراءات</div>
           </TableHeader>
-          {data.map(car => (
+          {data.map((car: any) => (
             <TableRow key={car.id}>
               <div>
                 {editingId === car.id ? (

@@ -192,7 +192,7 @@ export class DealershipRepository {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => this.snapshotToData(doc));
+      return snapshot.docs.map((doc: any) => this.snapshotToData(doc));
     } catch (error) {
       const errorMessage = (error as Error).message;
       
@@ -209,7 +209,7 @@ export class DealershipRepository {
           );
           
           const snapshot = await getDocs(fallbackQuery);
-          const results = snapshot.docs.map(doc => this.snapshotToData(doc));
+          const results = snapshot.docs.map((doc: any) => this.snapshotToData(doc));
           
           // Manual sort by createdAt (client-side)
           results.sort((a, b) => {
@@ -245,7 +245,7 @@ export class DealershipRepository {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => this.snapshotToData(doc));
+      return snapshot.docs.map((doc: any) => this.snapshotToData(doc));
     } catch (error) {
       logger.error('Error fetching dealerships by city', error as Error, { city });
       throw new Error(`Failed to fetch dealerships by city: ${(error as Error).message}`);
@@ -266,7 +266,7 @@ export class DealershipRepository {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => this.snapshotToData(doc));
+      return snapshot.docs.map((doc: any) => this.snapshotToData(doc));
     } catch (error) {
       logger.error('Error fetching dealerships by brand', error as Error, { brand });
       throw new Error(`Failed to fetch dealerships by brand: ${(error as Error).message}`);
@@ -378,7 +378,7 @@ export class DealershipRepository {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => this.snapshotToData(doc));
+      return snapshot.docs.map((doc: any) => this.snapshotToData(doc));
     } catch (error) {
       logger.error('Error fetching pending dealerships', error as Error);
       throw new Error(`Failed to fetch pending dealerships: ${(error as Error).message}`);

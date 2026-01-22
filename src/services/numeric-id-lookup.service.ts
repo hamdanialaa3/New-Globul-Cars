@@ -143,7 +143,7 @@ export const getCarsBySellerNumericId = async (sellerNumericId: number): Promise
 
     const snapshot = await getDocs(q);
 
-    return snapshot.docs.map(doc => ({
+    return snapshot.docs.map((doc: any) => ({
       ...doc.data() as CarListing,
       id: doc.id
     }));
