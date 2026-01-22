@@ -198,20 +198,27 @@ export class StripeService {
       }
     );
 
+    let isActive = true; // Prevent callback execution after unsubscribe
+
     // Listen for the extension to update the session with URL or error
     const unsubscribe = onSnapshot(sessionRef, (snap) => {
+      if (!isActive) return; // Check before processing
+
       const data = snap.data() as CheckoutSessionResponse | undefined;
-      
+
       if (data?.error) {
         onError?.(data.error.message);
       }
-      
+
       if (data?.url) {
         onSuccess?.(data.url);
       }
     });
 
-    return unsubscribe;
+    return () => {
+      isActive = false; // Disable callback first
+      unsubscribe(); // Then unsubscribe
+    };
   }
 
   /**
@@ -236,15 +243,21 @@ export class StripeService {
     );
 
     return new Promise((resolve, reject) => {
+      let isActive = true; // Prevent callback execution after unsubscribe
+
       const unsubscribe = onSnapshot(sessionRef, (snap) => {
+        if (!isActive) return; // Check before processing
+
         const data = snap.data() as CheckoutSessionResponse | undefined;
-        
+
         if (data?.error) {
+          isActive = false; // Disable before unsubscribe
           unsubscribe();
           reject(new Error(data.error.message));
         }
-        
+
         if (data?.paymentIntentClientSecret || data?.setupIntentClientSecret) {
+          isActive = false; // Disable before unsubscribe
           unsubscribe();
           resolve(data);
         }
@@ -291,19 +304,28 @@ export class StripeService {
       return () => {};
     }
 
+    let isActive = true; // Prevent callback execution after unsubscribe
+
     const subscriptionsQuery = query(
       collection(db, 'customers', user.uid, 'subscriptions'),
       where('status', 'in', ['trialing', 'active'])
     );
 
-    return onSnapshot(subscriptionsQuery, (snapshot) => {
+    const unsubscribe = onSnapshot(subscriptionsQuery, (snapshot) => {
+      if (!isActive) return; // Check before processing
+
       const subscriptions = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
       } as StripeSubscription));
-      
+
       callback(subscriptions);
     });
+
+    return () => {
+      isActive = false; // Disable callback first
+      unsubscribe(); // Then unsubscribe
+    };
   }
 
   /**
