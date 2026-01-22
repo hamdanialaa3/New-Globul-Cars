@@ -216,11 +216,15 @@ class RealTimeAnalyticsService {
    * الاشتراك في تحديثات التحليلات في الوقت الفعلي
    */
   subscribeToAnalytics(callback: (analytics: RealTimeAnalytics) => void): () => void {
+    let isActive = true; // Prevent callback execution after unsubscribe
+
     const unsubscribe = onSnapshot(
       collection(db, COLLECTIONS.USERS),
       async () => {
+        if (!isActive) return; // Check before async operation
         try {
           const analytics = await this.getRealTimeAnalytics();
+          if (!isActive) return; // Check after async operation
           callback(analytics);
         } catch (error) {
           serviceLogger.error('Error in analytics subscription', error as Error);
@@ -232,6 +236,7 @@ class RealTimeAnalyticsService {
     this.subscriptions.set(subscriptionId, unsubscribe);
 
     return () => {
+      isActive = false; // Disable callback first
       unsubscribe();
       this.subscriptions.delete(subscriptionId);
     };
@@ -242,9 +247,13 @@ class RealTimeAnalyticsService {
    * الاشتراك في تحديثات نشاط المستخدمين
    */
   subscribeToUserActivity(callback: (activity: UserActivity[]) => void): () => void {
+    let isActive = true; // Prevent callback execution after unsubscribe
+
     const unsubscribe = onSnapshot(
       collection(db, COLLECTIONS.USERS),
       (snapshot) => {
+        if (!isActive) return; // Check before processing
+
         const activity = snapshot.docs.map((doc: any) => {
           const data = doc.data();
           return {
@@ -268,6 +277,7 @@ class RealTimeAnalyticsService {
     this.subscriptions.set(subscriptionId, unsubscribe);
 
     return () => {
+      isActive = false; // Disable callback first
       unsubscribe();
       this.subscriptions.delete(subscriptionId);
     };
