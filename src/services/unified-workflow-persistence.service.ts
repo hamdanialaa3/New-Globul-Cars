@@ -184,7 +184,7 @@ export interface LegacyStorageUsage {
  * - IndexedDB (images via ImageStorageService)
  * - Firestore (cloud sync)
  */
-class UnifiedWorkflowPersistenceService {
+export class UnifiedWorkflowPersistenceService {
   private static instance: UnifiedWorkflowPersistenceService;
   
   private data: Partial<UnifiedWorkflowData> = {};
