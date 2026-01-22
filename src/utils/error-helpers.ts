@@ -17,10 +17,10 @@ export function normalizeError(error: unknown): Error {
   }
   
   if (error && typeof error === 'object') {
-    if ('message' in error && typeof error.message === 'string') {
+    if ('message' in error && typeof (error as Error).message === 'string') {
       const err = new Error(error.message);
       if ('code' in error) {
-        (err as any).code = error.code;
+        (err as any).code = (error as any).code;
       }
       if ('stack' in error) {
         err.stack = String(error.stack);

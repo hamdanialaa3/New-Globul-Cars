@@ -291,11 +291,11 @@ class RealtimeMessagingService {
 
     } catch (error) {
       // Re-throw block errors (only when seller blocked buyer)
-      if (error instanceof Error && error.message.includes('CHANNEL_BLOCKED')) {
+      if (error instanceof Error && (error as Error).message.includes('CHANNEL_BLOCKED')) {
         logger.warn('Channel creation blocked due to user block', {
           buyer: buyer.numericId,
           seller: seller.numericId,
-          error: error.message
+          error: (error as Error).message
         });
         throw error;
       }
@@ -542,18 +542,18 @@ class RealtimeMessagingService {
       }
     } catch (error) {
       // Re-throw block errors, log others but continue (fail open for now)
-      if (error instanceof Error && error.message.includes('MESSAGE_BLOCKED')) {
+      if (error instanceof Error && (error as Error).message.includes('MESSAGE_BLOCKED')) {
         logger.warn('Message blocked by block system', {
           channelId,
           senderId: message.senderId,
           recipientId: message.recipientId,
-          error: error.message,
+          error: (error as Error).message,
         });
         throw error;
       }
 
       // Re-throw authentication errors
-      if (error instanceof Error && error.message.includes('PERMISSION_DENIED')) {
+      if (error instanceof Error && (error as Error).message.includes('PERMISSION_DENIED')) {
         throw error;
       }
 

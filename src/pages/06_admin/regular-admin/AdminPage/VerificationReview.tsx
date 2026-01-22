@@ -165,7 +165,7 @@ const VerificationReview: React.FC = () => {
       alert(t('admin.verificationApproved'));
     } catch (error: unknown) {
       logger.error('Approval error:', error);
-      alert(t('admin.approvalError') + ': ' + error.message);
+      alert(t('admin.approvalError') + ': ' + (error as Error).message);
     } finally {
       setProcessing(false);
     }
@@ -194,7 +194,7 @@ const VerificationReview: React.FC = () => {
       alert(t('admin.verificationRejected'));
     } catch (error: unknown) {
       logger.error('Rejection error:', error);
-      alert(t('admin.rejectionError') + ': ' + error.message);
+      alert(t('admin.rejectionError') + ': ' + (error as Error).message);
     } finally {
       setProcessing(false);
     }

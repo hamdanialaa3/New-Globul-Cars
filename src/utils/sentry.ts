@@ -201,8 +201,8 @@ export const showFeedbackDialog = () => {
 export const handleFirebaseError = (error: any, operation: string) => {
   captureException(error, {
     operation,
-    code: error.code,
-    message: error.message,
+    code: (error as any).code,
+    message: (error as Error).message,
   });
   
   logger.error(`Firebase ${operation} error:`, error);
@@ -215,8 +215,8 @@ export const handleAPIError = (error: any, endpoint: string, method: string) => 
   captureException(error, {
     endpoint,
     method,
-    status: error.response?.status,
-    data: error.response?.data,
+    status: (error as any).response?.status,
+    data: (error as any).response?.data,
   });
   
   logger.error(`API ${method} ${endpoint} error:`, error);

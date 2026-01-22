@@ -98,7 +98,7 @@ class FirebaseConnectionTestService {
           timestamp: new Date().toISOString(),
           isMockData: true
         },
-        error: error.message || 'Unknown error'
+        error: (error as Error).message || 'Unknown error'
       };
     }
   }
@@ -140,7 +140,7 @@ class FirebaseConnectionTestService {
       return {
         success: false,
         message: 'Firestore write operation failed',
-        error: error.message || 'Unknown error'
+        error: (error as Error).message || 'Unknown error'
       };
     }
   }
@@ -197,7 +197,7 @@ class FirebaseConnectionTestService {
       return {
         success: false,
         message: 'Failed to fetch real users data',
-        error: error.message || 'Unknown error'
+        error: (error as Error).message || 'Unknown error'
       };
     }
   }
@@ -241,7 +241,7 @@ class FirebaseConnectionTestService {
       return {
         success: false,
         message: 'Real-time updates test failed',
-        error: error.message || 'Unknown error'
+        error: (error as Error).message || 'Unknown error'
       };
     }
   }
@@ -297,7 +297,7 @@ class FirebaseConnectionTestService {
         success: false,
         message: 'Complete Firebase test suite failed',
         results: [],
-        error: error.message || 'Unknown error'
+        error: (error as Error).message || 'Unknown error'
       };
     }
   }

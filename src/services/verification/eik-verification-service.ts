@@ -45,7 +45,7 @@ export const verifyEIK = async (
     return {
       valid: false,
       eik: eik,
-      message: error.message || 'Failed to verify EIK',
+      message: (error as Error).message || 'Failed to verify EIK',
     };
   }
 };

@@ -264,7 +264,7 @@ class BlockUserService {
       return {
         success: false,
         alreadyBlocked: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? (error as Error).message : 'Unknown error',
       };
     }
   }
@@ -323,7 +323,7 @@ class BlockUserService {
       return {
         success: false,
         notBlocked: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? (error as Error).message : 'Unknown error',
       };
     }
   }

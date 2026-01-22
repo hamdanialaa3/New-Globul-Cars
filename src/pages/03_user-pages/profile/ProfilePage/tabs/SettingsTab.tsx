@@ -1538,7 +1538,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
     } catch (error) {
       logger.error("Error saving user info:", error as Error);
       const errorMessage = error instanceof Error 
-        ? error.message 
+        ? (error as Error).message 
         : (isBg ? 'Грешка при запазване на информацията' : 'Failed to save profile information');
       setSaveError(errorMessage);
       toast.error(errorMessage, { autoClose: 5000 });

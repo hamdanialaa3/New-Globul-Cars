@@ -120,7 +120,7 @@ export class EmailVerificationService {
       return {
         success: false,
         message: errorMessage,
-        code: error.code
+        code: (error as any).code
       };
     }
   }
@@ -168,7 +168,7 @@ export class EmailVerificationService {
       return {
         success: false,
         message: errorMessage,
-        code: error.code
+        code: (error as any).code
       };
     }
   }
@@ -258,7 +258,7 @@ export class EmailVerificationService {
       return {
         success: false,
         message: errorMessage,
-        code: error.code
+        code: (error as any).code
       };
     }
   }

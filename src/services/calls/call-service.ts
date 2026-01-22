@@ -93,7 +93,7 @@ export class CallService {
       logger.error('Initiate call failed', error as Error);
       return {
         success: false,
-        error: error.message
+        error: (error as Error).message
       };
     }
   }

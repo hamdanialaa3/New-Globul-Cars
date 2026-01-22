@@ -238,7 +238,7 @@ const CheckoutPage: React.FC = () => {
     } catch (error: unknown) {
       logger.error('Payment error', error as Error, { carId, userId: user?.uid, retryAttempt });
       
-      const errorMessage = error.message || (language === 'bg' ? 'Грешка при плащане' : 'Payment error');
+      const errorMessage = (error as Error).message || (language === 'bg' ? 'Грешка при плащане' : 'Payment error');
       setError(errorMessage);
 
       // Retry mechanism

@@ -174,12 +174,12 @@ export class PaymentService {
 
       monitoring.trackUserAction('payment_failed', 'payment', {
         paymentIntentId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? (error as Error).message : 'Unknown error'
       });
 
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Payment failed'
+        error: error instanceof Error ? (error as Error).message : 'Payment failed'
       };
     }
   }
@@ -239,7 +239,7 @@ export class PaymentService {
 
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Refund failed'
+        error: error instanceof Error ? (error as Error).message : 'Refund failed'
       };
     }
   }

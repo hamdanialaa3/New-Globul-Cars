@@ -213,7 +213,7 @@ export const FormFeedbackWrapper: React.FC<FormFeedbackWrapperProps> = ({
         setError(error);
         
         logger.error('Form submission failed', error, {
-          errorMessage: error.message,
+          errorMessage: (error as Error).message,
           stack: error.stack
         });
 

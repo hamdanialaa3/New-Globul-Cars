@@ -120,7 +120,7 @@ class ImageUploadService {
       serviceLogger.info('Images uploaded successfully', { carId, count: urls.length });
       return urls;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage = error instanceof Error ? (error as Error).message : 'Unknown error';
       const errorDetails = error instanceof Error ? error.stack : String(error);
       serviceLogger.error('❌ Failed to upload images', new Error(errorMessage), { details: errorDetails, carId });
       serviceLogger.error('Failed to upload images', error as Error, { carId, imageCount: validImages.length });

@@ -48,7 +48,7 @@ export const getCommissionPeriods = async (params?: {
     return result.data as any;
   } catch (error: unknown) {
     serviceLogger.error('Error getting commission periods', error as Error, { params });
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -65,7 +65,7 @@ export const getCommissionPeriod = async (
     return result.data as any;
   } catch (error: unknown) {
     serviceLogger.error('Error getting commission period', error as Error, { period });
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -88,7 +88,7 @@ export const getAllCommissionPeriods = async (params?: {
     return result.data as any;
   } catch (error: unknown) {
     serviceLogger.error('Error getting all commission periods', error as Error, { params });
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -104,7 +104,7 @@ export const getCommissionRate = async (): Promise<{
     return result.data as any;
   } catch (error: unknown) {
     serviceLogger.error('Error getting commission rate', error as Error);
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -122,7 +122,7 @@ export const triggerCommissionCharging = async (
     return result.data as any;
   } catch (error: unknown) {
     serviceLogger.error('Error triggering commission charging', error as Error, { period });
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -140,7 +140,7 @@ export const markCommissionPaid = async (
     return result.data as any;
   } catch (error: unknown) {
     serviceLogger.error('Error marking commission paid', error as Error, { period, userId });
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -158,7 +158,7 @@ export const generateCommissionStatement = async (
     return result.data as any;
   } catch (error: unknown) {
     serviceLogger.error('Error generating commission statement', error as Error, { period, userId });
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 };
 

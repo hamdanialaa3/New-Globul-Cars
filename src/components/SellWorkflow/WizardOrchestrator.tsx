@@ -404,18 +404,18 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
                 errorMsg = language === 'bg'
                     ? 'Грешка при качване на снимките. Моля проверете интернет връзката и опитайте отново.'
                     : 'Image upload failed. Please check your internet connection and try again.';
-            } else if (error.message?.includes('numeric IDs') || error.message?.includes('numeric ID')) {
+            } else if (error.message?.includes('numeric IDs') || (error as Error).message?.includes('numeric ID')) {
                 errorMsg = language === 'bg'
                     ? 'Системна грешка при присвояване на ID. Моля опитайте отново.'
                     : 'System error assigning IDs. Please try again.';
             } else if (error.message?.includes('Listing limit')) {
-                errorMsg = error.message; // Already translated
-            } else if (error.message?.includes('Authentication') || error.message?.includes('authenticated')) {
+                errorMsg = (error as Error).message; // Already translated
+            } else if (error.message?.includes('Authentication') || (error as Error).message?.includes('authenticated')) {
                 errorMsg = language === 'bg'
                     ? 'Моля влезте в профила си, за да публикувате обява.'
                     : 'Please log in to publish your listing.';
             } else {
-                errorMsg = error.message || (language === 'bg' 
+                errorMsg = (error as Error).message || (language === 'bg' 
                     ? 'Възникна грешка при публикуването. Моля опитайте отново.'
                     : 'Failed to publish listing. Please try again.');
             }

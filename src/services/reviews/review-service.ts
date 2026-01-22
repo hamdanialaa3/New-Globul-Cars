@@ -210,7 +210,7 @@ export class ReviewService {
       serviceLogger.error('Submit review failed', error as Error, { sellerId: data?.sellerId, buyerId: data?.buyerId });
       return {
         success: false,
-        message: error.message || 'Грешка при изпращане / Submission failed'
+        message: (error as Error).message || 'Грешка при изпращане / Submission failed'
       };
     }
   }

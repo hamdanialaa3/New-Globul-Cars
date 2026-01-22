@@ -334,7 +334,7 @@ const ContactPageUnified: React.FC = () => {
     } catch (error: unknown) {
       logger.error('Error creating listing', error as Error, {
         userId: currentUser?.uid,
-        errorMessage: error.message
+        errorMessage: (error as Error).message
       });
       setError(error.message || (language === 'bg'
         ? 'Възникна грешка при създаване на обявата'

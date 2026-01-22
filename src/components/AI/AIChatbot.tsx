@@ -114,8 +114,8 @@ export const AIChatbot: React.FC<Props> = ({
       logger.error('Chatbot error', error);
 
       const errorMessages = {
-        bg: error.message || 'Съжалявам, възникна грешка. Моля, опитайте отново.',
-        en: error.message || 'Sorry, I encountered an error. Please try again.'
+        bg: (error as Error).message || 'Съжалявам, възникна грешка. Моля, опитайте отново.',
+        en: (error as Error).message || 'Sorry, I encountered an error. Please try again.'
       };
 
       const errorMessage: AIChatMessage = {

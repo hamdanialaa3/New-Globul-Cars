@@ -433,7 +433,7 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
       const error = err instanceof Error ? err : new Error(String(err));
       logger.error('Error updating profile', error);
       toast.error(
-        error.message || 'Failed to update profile / Грешка при обновяване на профила',
+        (error as Error).message || 'Failed to update profile / Грешка при обновяване на профила',
         'Error / Грешка'
       );
     }

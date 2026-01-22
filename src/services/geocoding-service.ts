@@ -159,7 +159,7 @@ export class GeocodingService {
           });
         },
         (error) => {
-          serviceLogger.warn('Error getting location', { error: error.message });
+          serviceLogger.warn('Error getting location', { error: (error as Error).message });
           resolve(null);
         }
       );

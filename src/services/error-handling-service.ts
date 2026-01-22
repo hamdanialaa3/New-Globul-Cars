@@ -139,8 +139,8 @@ export class ErrorHandlingService {
     additionalData?: Record<string, any>;
   }): void {
     const errorDetails: ErrorDetails = {
-      code: error.code || error.name || 'unknown',
-      message: error.message || 'Unknown error',
+      code: (error as any).code || error.name || 'unknown',
+      message: (error as Error).message || 'Unknown error',
       timestamp: new Date(),
       userId: context?.userId,
       action: context?.action,
@@ -187,7 +187,7 @@ export class ErrorHandlingService {
     this.logError(error, {
       action: 'authentication',
       severity: 'medium',
-      additionalData: { errorCode: error.code }
+      additionalData: { errorCode: (error as any).code }
     });
 
     return this.getLocalizedError(error.code, language);
@@ -200,7 +200,7 @@ export class ErrorHandlingService {
     this.logError(error, {
       action: 'firestore',
       severity: 'medium',
-      additionalData: { errorCode: error.code }
+      additionalData: { errorCode: (error as any).code }
     });
 
     return this.getLocalizedError(error.code, language);
@@ -213,7 +213,7 @@ export class ErrorHandlingService {
     this.logError(error, {
       action: 'storage',
       severity: 'medium',
-      additionalData: { errorCode: error.code }
+      additionalData: { errorCode: (error as any).code }
     });
 
     return this.getLocalizedError(error.code, language);

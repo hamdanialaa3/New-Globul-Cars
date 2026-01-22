@@ -303,7 +303,7 @@ const SuperAdminLogin: React.FC = () => {
         await signInWithEmailAndPassword(auth, email, password);
       } catch (authErr) {
         const error = authErr as Error; // Type assertion to fix lint error
-        logger.warn('Firebase Auth sign-in failed, proceeding with local admin session:', { message: error.message });
+        logger.warn('Firebase Auth sign-in failed, proceeding with local admin session:', { message: (error as Error).message });
         // Continue anyway because the local uniqueOwnerService check passed
         // This allows the admin to access the dashboard even if not present in Firebase Auth users yet
       }
