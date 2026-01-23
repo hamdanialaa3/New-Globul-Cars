@@ -318,10 +318,10 @@ export const SellVehicleStep3: React.FC<SellVehicleStep3Props> = ({
     } else {
       // Select all
       onUpdate({
-        safetyEquipment: EQUIPMENT_CATEGORIES.safety.map((item: any) => item.id),
-        comfortEquipment: EQUIPMENT_CATEGORIES.comfort.map((item: any) => item.id),
-        infotainmentEquipment: EQUIPMENT_CATEGORIES.infotainment.map((item: any) => item.id),
-        extrasEquipment: EQUIPMENT_CATEGORIES.extras.map((item: any) => item.id)
+        safetyEquipment: EQUIPMENT_CATEGORIES.safety.map(item => item.id),
+        comfortEquipment: EQUIPMENT_CATEGORIES.comfort.map(item => item.id),
+        infotainmentEquipment: EQUIPMENT_CATEGORIES.infotainment.map(item => item.id),
+        extrasEquipment: EQUIPMENT_CATEGORIES.extras.map(item => item.id)
       });
     }
   };
@@ -367,7 +367,7 @@ export const SellVehicleStep3: React.FC<SellVehicleStep3Props> = ({
             {category === 'extras' && (language === 'bg' ? 'Екстри' : 'Extras')}
           </SectionTitle>
           <EquipmentGrid>
-            {EQUIPMENT_CATEGORIES[category].map((item: any) => {
+            {EQUIPMENT_CATEGORIES[category].map(item => {
               const IconComponent = item.icon;
               const isSelected = isEquipmentSelected(category, item.id);
               return (

@@ -38,6 +38,7 @@ const AllPostsPage = safeLazy(() => import('../pages/03_user-pages/social/AllPos
 const AllCarsPage = safeLazy(() => import('../pages/05_search-browse/all-cars/AllCarsPage'));
 const CompetitiveComparisonPage = safeLazy(() => import('../pages/10_landing/CompetitiveComparisonPage'));
 const CarPricingPage = safeLazy(() => import('../features/pricing/CarPricingPage'));
+const AIAnalysisPage = safeLazy(() => import('../pages/01_main-pages/ai-analysis/AIAnalysisPage'));
 const EventsPage = safeLazy(() => import('../pages/07_advanced-features/EventsPage'));
 const CreatePostPage = safeLazy(() => import('../pages/03_user-pages/social/CreatePostPage'));
 const DashboardPage = safeLazy(() => import('../pages/03_user-pages/dashboard/DashboardPage'));
@@ -440,6 +441,7 @@ export const MainRoutes: React.FC = () => {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/competitive-comparison" element={<CompetitiveComparisonPage />} />
             <Route path="/pricing" element={<CarPricingPage />} />
+            <Route path="/ai-analysis" element={<AIAnalysisPage />} />
             <Route path="/map" element={<MapAnalyticsPage />} />
             <Route path="/top-brands" element={<TopBrandsPage />} />
             <Route path="/brand-gallery" element={<AuthGuard requireAuth={true}><BrandGalleryPage /></AuthGuard>} />

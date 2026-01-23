@@ -335,7 +335,7 @@ class NumericCarSystemService {
 
       const carSnapshot = await getDocs(carQuery);
 
-      const cars: NumericCarData[] = carSnapshot.docs.map((doc: any) => ({
+      const cars: NumericCarData[] = carSnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data() as NumericCarData
       }));

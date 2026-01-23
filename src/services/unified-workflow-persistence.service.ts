@@ -1,967 +1,778 @@
-/**
- * Unified Workflow Persistence Service
- * خدمة موحدة لحفظ بيانات سير العمل
- * 
- * Provides unified workflow data persistence with:
- * - LocalStorage for metadata
- * - IndexedDB for images (via ImageStorageService)
- * - 20-minute auto-deletion timer
- * - Debounced save operations
- * - Cloud sync capability (Firestore)
- * - Backward compatibility with legacy WorkflowPersistenceService
- * 
- * @module unified-workflow-persistence.service
- * @author Koli One Team
- * @date January 2026
- */
+// Unified Workflow Persistence Service
+// خدمة موحدة لحفظ بيانات workflow بيع السيارات
+// يستبدل: WorkflowPersistenceService + StrictWorkflowAutoSaveService
 
-import { serviceLogger as logger } from './logger-service';
-import { normalizeError } from '@/utils/error-helpers';
+import { serviceLogger } from './logger-service';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase/firebase-config';
 
-// ============================================================================
-// CONSTANTS - الثوابت
-// ============================================================================
+// 20 minutes (sufficient to complete all steps without pressure)
+const TIMER_DURATION = 20 * 60 * 1000; // 1200000ms = 20 minutes
 
-/**
- * Timer duration: 20 minutes in milliseconds
- * مدة المؤقت: 20 دقيقة بالميلي ثانية
- */
-export const TIMER_DURATION = 20 * 60 * 1000;
+const STORAGE_KEY = 'unified-workflow-data';
 
-/**
- * Timer update interval: 1 second
- * فترة تحديث المؤقت: ثانية واحدة
- */
-export const TIMER_UPDATE_INTERVAL = 1000;
-
-/**
- * LocalStorage key for workflow data
- * مفتاح التخزين المحلي لبيانات سير العمل
- */
-export const STORAGE_KEY = 'unified-workflow-data';
-
-/**
- * Debounce delay for save operations (milliseconds)
- * تأخير الحفظ للعمليات المتكررة
- */
-export const SAVE_DEBOUNCE_MS = 100;
-
-/**
- * Maximum storage size: 5MB
- * الحد الأقصى لحجم التخزين: 5 ميجابايت
- */
-export const MAX_STORAGE_SIZE = 5 * 1024 * 1024;
-
-/**
- * Workflow steps mapping
- * خريطة خطوات سير العمل
- */
-export const WORKFLOW_STEPS: Record<string, number> = {
-  'vehicle-type': 1,
-  'basic': 2,
-  'features': 3,
-  'description': 4,
-  'pricing': 5,
-  'images': 6,
-  'review': 7,
-};
-
-/**
- * Validation messages
- * رسائل التحقق من الصحة
- */
-export const VALIDATION_MESSAGES = {
-  MISSING_VEHICLE_TYPE: 'Vehicle type is required',
-  MISSING_TITLE: 'Title is required',
-  MISSING_YEAR: 'Year is required',
-  INVALID_YEAR: 'Year must be between 1900 and current year + 1',
-  MISSING_PRICE: 'Price is required',
-  INVALID_PRICE: 'Price must be greater than 0',
-  MISSING_MILEAGE: 'Mileage is required',
-  INVALID_MILEAGE: 'Mileage cannot be negative',
-  MISSING_DESCRIPTION: 'Description is required',
-  MISSING_IMAGES: 'At least one image is required',
-  STORAGE_OVERFLOW: 'Storage size exceeds maximum limit',
-};
-
-// ============================================================================
-// TYPE DEFINITIONS - تعريفات الأنواع
-// ============================================================================
-
-/**
- * Unified workflow data structure
- * بنية بيانات سير العمل الموحدة
- */
 export interface UnifiedWorkflowData {
-  vehicleType?: string;
-  title?: string;
-  year?: number;
+  // Step 1: Vehicle Type
+  vehicleType?: string; // 'car' | 'suv' | 'van' | 'motorcycle' | 'truck' | 'bus'
+
+  // Step 2: Vehicle Details (All fields from VehicleDataPageUnified)
   make?: string;
+  makeRaw?: string; // ✅ ADDED: Raw make input
   model?: string;
-  mileage?: number;
-  price?: number;
-  currency?: string;
-  description?: string;
-  features?: Record<string, any>;
+  year?: string;
+  firstRegistration?: string;
+  mileage?: string;
+  fuelType?: string;
+  transmission?: string;
+  power?: string;
+  powerKW?: string;
+  engineSize?: string;
+  color?: string;
+  doors?: string;
+  seats?: string;
+  exteriorColor?: string; // ✅ ADDED: Exterior color
+  previousOwners?: string; // ✅ ADDED: Previous owners
+  hasAccidentHistory?: boolean; // ✅ ADDED: Accident history
+  hasServiceHistory?: boolean; // ✅ ADDED: Service history
+  variant?: string; // ✅ ADDED: Variant
   condition?: string;
-  images?: string[];
-  currentStep?: string | number;
-  completedSteps?: number[];
-  lastSaved?: number;
-  isPublished?: boolean;
-  userId?: string;
-  [key: string]: any;
-}
+  roadworthy?: boolean;
+  saleType?: string;
+  saleTimeline?: string;
+  bodyType?: string; // ✅ ADDED: Body type
 
-/**
- * Timer state
- * حالة المؤقت
- */
-export interface TimerState {
-  isActive: boolean;
-  remainingTime: number;
-  startTime: number | null;
-  isPaused: boolean;
-}
+  // "Other" fields for free text entry
+  bodyTypeOther?: string;
+  makeOther?: string;
+  modelOther?: string;
+  fuelTypeOther?: string;
+  colorOther?: string;
+  exteriorColorOther?: string;
 
-/**
- * Validation result
- * نتيجة التحقق من الصحة
- */
-export interface ValidationResult {
-  isValid: boolean;
-  errors: string[];
-  warnings: string[];
-}
+  // Location
+  region?: string;
+  city?: string;
+  postalCode?: string;
+  saleProvince?: string; // ✅ ADDED: Specific sale location fields
+  saleCity?: string;
+  salePostalCode?: string;
+  saleCountry?: string;
+  saleLocation?: string;
 
-/**
- * Storage usage information
- * معلومات استخدام التخزين
- */
-export interface StorageUsage {
-  totalSize: number;
-  localStorageSize: number;
-  indexedDBSize: number;
-  percentUsed: number;
-  isNearLimit: boolean;
-}
+  // Step 3: Equipment (Arrays only - NO duplicate strings!)
+  safetyEquipment?: string[];
+  comfortEquipment?: string[];
+  infotainmentEquipment?: string[];
+  extrasEquipment?: string[];
 
-/**
- * Legacy workflow state (for backward compatibility)
- * حالة سير العمل القديمة (للتوافق مع الإصدارات السابقة)
- */
-export interface LegacyWorkflowState {
-  currentStep?: string;
-  vehicleType?: string;
-  basicInfo?: any;
-  features?: any;
+  // Step 4: Images (count only - files stored in IndexedDB)
+  imagesCount?: number;
+
+  // Step 5: Pricing
+  price?: string;
+  currency?: string;
+  priceType?: string;
+  negotiable?: boolean;
+  financing?: boolean;
+  tradeIn?: boolean;
+  warranty?: boolean;
+  warrantyMonths?: string;
+  vatDeductible?: boolean;
+
+  // Contact
+  sellerType?: string;
+  sellerName?: string;
+  sellerEmail?: string;
+  sellerPhone?: string;
+
+  // Additional Info
   description?: string;
-  pricing?: any;
-  images?: string[];
-  lastSaved?: number;
-}
+  hasVideo?: boolean;
+  videoUrl?: string;
 
-/**
- * Legacy storage usage (for backward compatibility)
- * استخدام التخزين القديم (للتوافق مع الإصدارات السابقة)
- */
-export interface LegacyStorageUsage {
-  localStorage: number;
-  indexedDB: number;
-  total: number;
-}
-
-// ============================================================================
-// MAIN SERVICE CLASS - فئة الخدمة الرئيسية
-// ============================================================================
-
-/**
- * Unified Workflow Persistence Service
- * خدمة حفظ سير العمل الموحدة
- * 
- * Singleton service for managing workflow data persistence across:
- * - LocalStorage (metadata)
- * - IndexedDB (images via ImageStorageService)
- * - Firestore (cloud sync)
- */
-export class UnifiedWorkflowPersistenceService {
-  private static instance: UnifiedWorkflowPersistenceService;
-  
-  private data: Partial<UnifiedWorkflowData> = {};
-  private timerState: TimerState = {
-    isActive: false,
-    remainingTime: TIMER_DURATION,
-    startTime: null,
-    isPaused: false,
+  // Location Data (Unified)
+  locationData?: {
+    cityName?: string;
+    cityId?: string;
+    regionName?: string;
   };
-  
-  private timerInterval: NodeJS.Timeout | null = null;
-  private saveDebounceTimer: NodeJS.Timeout | null = null;
-  private timerSubscribers: Set<(state: TimerState) => void> = new Set();
-  private clearSubscribers: Set<() => void> = new Set();
-  private isSaving = false;
+
+  // Metadata
+  currentStep: number | string; // 1-5 or step id
+  startedAt: number; // Timestamp
+  lastSavedAt: number; // Timestamp
+  isPublished: boolean; // Prevents auto-deletion
+  completedSteps: number[]; // Array of completed step numbers
+}
+
+export class UnifiedWorkflowPersistenceService {
+  private static timerInterval: NodeJS.Timeout | null = null;
+  private static listeners: Set<(state: TimerState) => void> = new Set();
+  private static clearListeners: Set<() => void> = new Set(); // ✅ ADDED: Listeners for data clearing
+  private static saveInProgress = false; // Prevent concurrent saves
+  private static lastSaveTimestamp = 0; // Debounce tracking
+  private static debounceLocked = false;
+  private static saveDebounceMs = 100; // Minimum time between saves
 
   /**
-   * Private constructor for singleton pattern
-   * منشئ خاص لنمط السينجلتون
+   * Save workflow data
+   * Saves to localStorage with automatic timer management
    */
-  private constructor() {
-    this.loadDataFromStorage();
-    this.initializeTimer();
-  }
-
-  /**
-   * Get singleton instance
-   * الحصول على نسخة السينجلتون
-   */
-  public static getInstance(): UnifiedWorkflowPersistenceService {
-    if (!UnifiedWorkflowPersistenceService.instance) {
-      UnifiedWorkflowPersistenceService.instance = new UnifiedWorkflowPersistenceService();
-    }
-    return UnifiedWorkflowPersistenceService.instance;
-  }
-
-  // ==========================================================================
-  // INITIALIZATION - التهيئة
-  // ==========================================================================
-
-  /**
-   * Load data from localStorage
-   * تحميل البيانات من التخزين المحلي
-   */
-  private loadDataFromStorage(): void {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        this.data = JSON.parse(stored);
-        logger.info('Loaded workflow data from localStorage', {
-          hasData: Object.keys(this.data).length > 0,
-          currentStep: this.data.currentStep,
-        });
-      }
-    } catch (error) {
-      logger.error('Failed to load workflow data', normalizeError(error));
-      this.data = {};
-    }
-  }
-
-  /**
-   * Initialize auto-deletion timer
-   * تهيئة مؤقت الحذف التلقائي
-   */
-  private initializeTimer(): void {
-    // Check if there's saved data and it's not published
-    if (Object.keys(this.data).length > 0 && !this.data.isPublished) {
-      const lastSaved = this.data.lastSaved || Date.now();
-      const elapsed = Date.now() - lastSaved;
-      const remaining = TIMER_DURATION - elapsed;
-
-      if (remaining > 0) {
-        this.timerState = {
-          isActive: true,
-          remainingTime: remaining,
-          startTime: lastSaved,
-          isPaused: false,
-        };
-        this.startTimerInterval();
-      } else {
-        // Timer expired, clear data
-        this.executeFullReset().catch(error => {
-          logger.error('Failed to clear expired data', normalizeError(error));
-        });
-      }
-    }
-  }
-
-  /**
-   * Start timer interval
-   * بدء فترة المؤقت
-   */
-  private startTimerInterval(): void {
-    if (this.timerInterval) {
-      clearInterval(this.timerInterval);
-    }
-
-    this.timerInterval = setInterval(() => {
-      if (!this.timerState.isPaused && this.timerState.isActive) {
-        this.timerState.remainingTime -= TIMER_UPDATE_INTERVAL;
-
-        if (this.timerState.remainingTime <= 0) {
-          this.timerState.remainingTime = 0;
-          this.timerState.isActive = false;
-          this.stopTimerInterval();
-          
-          // Auto-delete if not published
-          if (!this.data.isPublished) {
-            this.executeFullReset().catch(error => {
-              logger.error('Failed to auto-delete expired data', normalizeError(error));
-            });
-          }
-        }
-
-        this.notifyTimerSubscribers();
-      }
-    }, TIMER_UPDATE_INTERVAL);
-  }
-
-  /**
-   * Stop timer interval
-   * إيقاف فترة المؤقت
-   */
-  private stopTimerInterval(): void {
-    if (this.timerInterval) {
-      clearInterval(this.timerInterval);
-      this.timerInterval = null;
-    }
-  }
-
-  /**
-   * Reset timer
-   * إعادة تعيين المؤقت
-   */
-  private resetTimer(): void {
-    this.timerState = {
-      isActive: true,
-      remainingTime: TIMER_DURATION,
-      startTime: Date.now(),
-      isPaused: false,
-    };
-    this.startTimerInterval();
-    this.notifyTimerSubscribers();
-  }
-
-  // ==========================================================================
-  // SAVE & LOAD OPERATIONS - عمليات الحفظ والتحميل
-  // ==========================================================================
-
-  /**
-   * Save workflow data with debouncing
-   * حفظ بيانات سير العمل مع التأخير
-   * 
-   * @param updates - Partial data to merge
-   * @param currentStep - Optional current step
-   * @returns Promise that resolves when save is complete
-   */
-  public async saveData(
+  static saveData(
     updates: Partial<UnifiedWorkflowData>,
-    currentStep?: string | number
-  ): Promise<void> {
-    return new Promise((resolve, reject) => {
-      // Clear existing debounce timer
-      if (this.saveDebounceTimer) {
-        clearTimeout(this.saveDebounceTimer);
+    currentStep: number | string
+  ): void {
+    try {
+      const now = Date.now();
+
+      // Fresh runs after test resets should not inherit stale flags
+      if (!localStorage.getItem(STORAGE_KEY)) {
+        this.lastSaveTimestamp = 0;
+        this.debounceLocked = false;
       }
 
-      // Debounce the save operation
-      this.saveDebounceTimer = setTimeout(async () => {
-        // Prevent concurrent saves
-        if (this.isSaving) {
-          logger.warn('Save already in progress, skipping');
-          resolve();
-          return;
-        }
+      // Debounce rapid calls
+      if (this.debounceLocked) {
+        return;
+      }
 
-        this.isSaving = true;
+      this.debounceLocked = true;
+      setTimeout(() => {
+        this.debounceLocked = false;
+      }, this.saveDebounceMs);
 
-        try {
-          // Merge updates
-          this.data = { ...this.data, ...updates };
-          
-          if (currentStep !== undefined) {
-            this.data.currentStep = currentStep;
-          }
+      const existing = this.loadData();
 
-          this.data.lastSaved = Date.now();
+      const updated: UnifiedWorkflowData = {
+        ...(existing || {}),
+        ...updates,
+        currentStep,
+        lastSavedAt: now,
+        startedAt: existing?.startedAt || now,
+        isPublished: existing?.isPublished || false,
+        completedSteps: existing?.completedSteps || []
+      };
 
-          // Save to localStorage
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      this.lastSaveTimestamp = now;
 
-          // Reset timer if not published
-          if (!this.data.isPublished) {
-            this.resetTimer();
-          }
+      // Start timer if not started
+      this.startTimer();
 
-          logger.info('Workflow data saved', {
-            currentStep: this.data.currentStep,
-            hasImages: Boolean(this.data.images?.length),
-            dataSize: JSON.stringify(this.data).length,
-          });
-
-          resolve();
-        } catch (error) {
-          logger.error('Failed to save workflow data', normalizeError(error));
-          reject(error);
-        } finally {
-          this.isSaving = false;
-        }
-      }, SAVE_DEBOUNCE_MS);
-    });
+      serviceLogger.info('Unified workflow data saved', {
+        currentStep,
+        fieldsUpdated: Object.keys(updates).length
+      });
+    } catch (error) {
+      serviceLogger.error('Error saving unified workflow data', error as Error, {
+        currentStep
+      });
+      throw new Error('Failed to save workflow data');
+    }
   }
 
   /**
    * Load workflow data
-   * تحميل بيانات سير العمل
-   * 
-   * @returns Workflow data or null if not found
+   * Returns null if expired or not found
    */
-  public loadData(): UnifiedWorkflowData | null {
-    if (Object.keys(this.data).length === 0) {
-      return null;
-    }
-    return { ...this.data } as UnifiedWorkflowData;
-  }
-
-  /**
-   * Get current workflow data (non-null)
-   * الحصول على بيانات سير العمل الحالية
-   * 
-   * @returns Partial workflow data (always returns object)
-   */
-  public getData(): Partial<UnifiedWorkflowData> {
-    return { ...this.data };
-  }
-
-  /**
-   * Clear all workflow data
-   * مسح جميع بيانات سير العمل
-   * 
-   * @returns Promise that resolves when clear is complete
-   */
-  public async clearData(): Promise<void> {
+  static loadData(): UnifiedWorkflowData | null {
     try {
-      // Clear localStorage
-      localStorage.removeItem(STORAGE_KEY);
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return null;
 
-      // Clear IndexedDB images (dynamic import)
-      try {
-        const { ImageStorageService } = await import('./ImageStorageService');
-        await ImageStorageService.clearImages();
-      } catch (error) {
-        logger.warn('Failed to clear IndexedDB images', { error: error instanceof Error ? error : new Error(String(error)) });
+      const data: UnifiedWorkflowData = JSON.parse(saved);
+
+      // Check if expired (20 minutes from last save)
+      const elapsed = Date.now() - data.lastSavedAt;
+
+      if (elapsed > TIMER_DURATION && !data.isPublished) {
+        serviceLogger.info('Workflow data expired, auto-deleting', {
+          elapsedMinutes: Math.round(elapsed / 60000),
+          isPublished: data.isPublished
+        });
+        // ✅ CRITICAL: clearData now clears images from IndexedDB automatically
+        this.clearData().catch((error: unknown) => {
+          serviceLogger.warn('Error clearing expired data (non-critical)', {
+            error: error instanceof Error ? error : new Error(String(error))
+          });
+        });
+        return null;
       }
 
-      // Reset in-memory data
-      this.data = {};
+      // Start timer to monitor expiry
+      this.startTimer();
 
-      // Stop and reset timer
-      this.stopTimerInterval();
-      this.timerState = {
-        isActive: false,
-        remainingTime: TIMER_DURATION,
-        startTime: null,
-        isPaused: false,
+      return data;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  /**
+   * Save draft to cloud (Firestore) for cross-device recovery
+   */
+  static async saveToCloud(userId: string): Promise<boolean> {
+    try {
+      const data = this.loadData();
+      if (!data) return false;
+
+      // Sanitize data
+      const cloudData = {
+        ...data,
+        updatedAt: new Date().toISOString(),
+        userId
       };
 
-      // Notify clear subscribers
-      this.notifyClearSubscribers();
-
-      logger.info('Workflow data cleared successfully');
+      await setDoc(doc(db, 'user_drafts', userId), cloudData);
+      serviceLogger.info('Workflow draft saved to cloud', { userId });
+      return true;
     } catch (error) {
-      logger.error('Failed to clear workflow data', normalizeError(error));
-      throw error;
+      serviceLogger.error('Failed to save draft to cloud', error as Error);
+      return false;
     }
   }
 
-  // ==========================================================================
-  // STEP MANAGEMENT - إدارة الخطوات
-  // ==========================================================================
-
   /**
-   * Get current step
-   * الحصول على الخطوة الحالية
-   * 
-   * @returns Current step name or number, or null
+   * Load draft from cloud
    */
-  public getCurrentStep(): string | number | null {
-    return this.data.currentStep ?? null;
+  static async loadFromCloud(userId: string): Promise<UnifiedWorkflowData | null> {
+    try {
+      const docRef = doc(db, 'user_drafts', userId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const cloudData = docSnap.data() as UnifiedWorkflowData;
+
+        // Check if cloud data is newer than local
+        const localData = this.loadData();
+        if (!localData || (cloudData.lastSavedAt > localData.lastSavedAt)) {
+          // Update local storage
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudData));
+          this.startTimer(); // Ensure timer reflects new data
+          return cloudData;
+        }
+        return localData;
+      }
+      return null;
+    } catch (error) {
+      serviceLogger.error('Failed to load draft from cloud', error as Error);
+      return null;
+    }
   }
 
-  /**
-   * Update current step
-   * تحديث الخطوة الحالية
-   * 
-   * @param step - Step name or number
-   */
-  public updateCurrentStep(step: string | number): void {
-    this.data.currentStep = step;
-    this.data.lastSaved = Date.now();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
-    
-    // Reset timer
-    if (!this.data.isPublished) {
-      this.resetTimer();
-    }
+  static getData(): Partial<UnifiedWorkflowData> {
+    return this.loadData() || {};
+  }
+
+  static getCurrentStep(): string | number | null {
+    const data = this.loadData();
+    return data?.currentStep ?? null;
+  }
+
+  static updateCurrentStep(step: string | number): void {
+    const existing = this.loadData() || { startedAt: Date.now(), lastSavedAt: Date.now(), currentStep: step } as any;
+    this.saveData({ ...existing, currentStep: step }, step);
   }
 
   /**
    * Mark step as completed
-   * تحديد الخطوة كمكتملة
-   * 
-   * @param stepNumber - Step number (1-7)
    */
-  public markStepCompleted(stepNumber: number): void {
-    if (!this.data.completedSteps) {
-      this.data.completedSteps = [];
-    }
-    
-    if (!this.data.completedSteps.includes(stepNumber)) {
-      this.data.completedSteps.push(stepNumber);
-      this.data.lastSaved = Date.now();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
+  static markStepCompleted(stepNumber: number): void {
+    const data = this.loadData();
+    if (!data) return;
+
+    const completedSteps = data.completedSteps || [];
+    if (!completedSteps.includes(stepNumber)) {
+      completedSteps.push(stepNumber);
+      this.saveData({ completedSteps }, data.currentStep);
     }
   }
 
   /**
    * Check if step is completed
-   * التحقق من اكتمال الخطوة
-   * 
-   * @param stepNumber - Step number (1-7)
-   * @returns True if step is completed
    */
-  public isStepCompleted(stepNumber: number): boolean {
-    return this.data.completedSteps?.includes(stepNumber) ?? false;
+  static isStepCompleted(stepNumber: number): boolean {
+    const data = this.loadData();
+    return data?.completedSteps?.includes(stepNumber) || false;
   }
 
   /**
-   * Mark workflow as published (prevents auto-deletion)
-   * تحديد سير العمل كمنشور (يمنع الحذف التلقائي)
+   * Mark as published (prevents auto-deletion)
    */
-  public markAsPublished(): void {
-    this.data.isPublished = true;
-    this.data.lastSaved = Date.now();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
-    
+  static markAsPublished(): void {
+    const data = this.loadData();
+    if (!data) return;
+
+    data.isPublished = true;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
     // Stop timer
-    this.timerState.isActive = false;
-    this.stopTimerInterval();
-    this.notifyTimerSubscribers();
+    this.stopTimer();
+
+    serviceLogger.info('Workflow marked as published', {
+      startedAt: new Date(data.startedAt).toISOString(),
+      publishedAt: new Date().toISOString()
+    });
   }
 
-  // ==========================================================================
-  // TIMER MANAGEMENT - إدارة المؤقت
-  // ==========================================================================
+  /**
+   * Clear all workflow data (including images from IndexedDB)
+   */
+  static async clearData(): Promise<void> {
+    localStorage.removeItem(STORAGE_KEY);
+    this.stopTimer();
+    this.saveInProgress = false;
+    this.lastSaveTimestamp = 0;
+
+    try {
+      const { ImageStorageService } = await import('./ImageStorageService');
+      await ImageStorageService.clearImages();
+      serviceLogger.info('Images cleared from IndexedDB');
+    } catch (error) {
+      serviceLogger.warn('Failed to clear images from IndexedDB (non-critical)', { error });
+    }
+
+    serviceLogger.info('Unified workflow data cleared');
+    this.clearListeners.forEach(callback => {
+      try {
+        callback();
+      } catch (error) {
+        serviceLogger.warn('Error in clear listener', { error });
+      }
+    });
+  }
+
+  /**
+   * Subscribe to data clear events
+   */
+  static subscribeToClear(callback: () => void): () => void {
+    this.clearListeners.add(callback);
+    return () => {
+      this.clearListeners.delete(callback);
+    };
+  }
+
+  /**
+   * ✅ NEW: Execute full reset (same as Reset Memory button)
+   * Clears all workflow data, images, drafts, and localStorage items
+   */
+  static async executeFullReset(): Promise<void> {
+    try {
+      // Get draftId BEFORE clearing localStorage
+      const draftId = localStorage.getItem('current_draft_id');
+
+      // Clear unified workflow data
+      await this.clearData();
+
+      // Clear WorkflowPersistenceService (legacy)
+      try {
+        const { WorkflowPersistenceService } = await import('./unified-workflow-persistence.service');
+        if (WorkflowPersistenceService && typeof WorkflowPersistenceService.clearState === 'function') {
+          WorkflowPersistenceService.clearState();
+        }
+      } catch (error) {
+        // Non-critical
+      }
+
+      // Clear all localStorage items related to workflow
+      localStorage.removeItem('current_draft_id');
+      localStorage.removeItem('workflow_state');
+      localStorage.removeItem('workflow_images');
+      localStorage.removeItem('globul_sell_workflow_state');
+      localStorage.removeItem('globul_unified_workflow');
+      localStorage.removeItem('globul_workflow_timer_paused');
+
+      // Clear sessionStorage items
+      sessionStorage.removeItem('edit_mode');
+      sessionStorage.removeItem('edit_car_id');
+      sessionStorage.removeItem('edit_car_data');
+
+      // Delete draft from Firestore if exists
+      if (draftId) {
+        try {
+          const { default: DraftsService } = await import('./drafts-service');
+          await DraftsService.deleteDraft(draftId);
+          serviceLogger.info('Draft deleted from Firestore during auto-reset', { draftId });
+        } catch (error) {
+          serviceLogger.warn('Failed to delete Firestore draft during auto-reset (non-critical)', {
+            error: error instanceof Error ? error : new Error(String(error)),
+            draftId
+          });
+        }
+      }
+
+      serviceLogger.info('Full workflow reset completed (timer expiry)', { draftId: draftId || 'none' });
+    } catch (error) {
+      serviceLogger.error('Error executing full reset', error as Error);
+      throw error;
+    }
+  }
 
   /**
    * Get timer state
-   * الحصول على حالة المؤقت
-   * 
-   * @returns Current timer state
    */
-  public getTimerState(): TimerState {
-    return { ...this.timerState };
+  static getTimerState(): TimerState {
+    const data = this.loadData();
+
+    if (!data || data.isPublished) {
+      return {
+        isActive: false,
+        remainingSeconds: 0,
+        totalSeconds: TIMER_DURATION / 1000
+      };
+    }
+
+    const elapsed = Date.now() - data.lastSavedAt;
+    const remaining = Math.max(0, TIMER_DURATION - elapsed);
+
+    return {
+      isActive: true,
+      remainingSeconds: Math.floor(remaining / 1000),
+      totalSeconds: TIMER_DURATION / 1000
+    };
   }
 
   /**
    * Subscribe to timer updates
-   * الاشتراك في تحديثات المؤقت
-   * 
-   * @param callback - Callback function
-   * @returns Unsubscribe function
    */
-  public subscribeToTimer(callback: (state: TimerState) => void): () => void {
-    this.timerSubscribers.add(callback);
-    
-    // Immediately notify with current state
+  static subscribeToTimer(callback: (state: TimerState) => void): () => void {
+    this.listeners.add(callback);
+
+    // Send initial state
     callback(this.getTimerState());
-    
+
+    // Return unsubscribe function
     return () => {
-      this.timerSubscribers.delete(callback);
+      this.listeners.delete(callback);
     };
   }
 
   /**
-   * Subscribe to clear events
-   * الاشتراك في أحداث المسح
-   * 
-   * @param callback - Callback function
-   * @returns Unsubscribe function
+   * Get workflow progress (0-100%)
    */
-  public subscribeToClear(callback: () => void): () => void {
-    this.clearSubscribers.add(callback);
-    
-    return () => {
-      this.clearSubscribers.delete(callback);
-    };
-  }
+  static getProgress(): number {
+    const data = this.loadData();
+    if (!data) return 0;
 
-  /**
-   * Notify timer subscribers
-   * إخطار المشتركين في المؤقت
-   */
-  private notifyTimerSubscribers(): void {
-    const state = this.getTimerState();
-    this.timerSubscribers.forEach(callback => {
-      try {
-        callback(state);
-      } catch (error) {
-        logger.error('Timer subscriber error', normalizeError(error));
-      }
-    });
-  }
+    const completedSteps = data.completedSteps || [];
+    const totalSteps = 5; // vehicle, details, equipment, images, preview
 
-  /**
-   * Notify clear subscribers
-   * إخطار المشتركين في المسح
-   */
-  private notifyClearSubscribers(): void {
-    this.clearSubscribers.forEach(callback => {
-      try {
-        callback();
-      } catch (error) {
-        logger.error('Clear subscriber error', normalizeError(error));
-      }
-    });
-  }
-
-  // ==========================================================================
-  // PROGRESS & VALIDATION - التقدم والتحقق
-  // ==========================================================================
-
-  /**
-   * Get workflow progress (0-100)
-   * الحصول على تقدم سير العمل
-   * 
-   * @returns Progress percentage
-   */
-  public getProgress(): number {
-    const totalSteps = Object.keys(WORKFLOW_STEPS).length;
-    const completedCount = this.data.completedSteps?.length ?? 0;
-    return Math.round((completedCount / totalSteps) * 100);
+    return Math.round((completedSteps.length / totalSteps) * 100);
   }
 
   /**
    * Validate workflow data
-   * التحقق من صحة بيانات سير العمل
-   * 
-   * @param strict - If true, requires all fields for publish
-   * @returns Validation result
    */
-  public validateData(strict = false): ValidationResult {
-    const errors: string[] = [];
-    const warnings: string[] = [];
+  static validateData(strict: boolean = false): ValidationResult {
+    const data = this.loadData();
 
-    // Basic validations
-    if (!this.data.vehicleType) {
-      errors.push(VALIDATION_MESSAGES.MISSING_VEHICLE_TYPE);
+    if (!data) {
+      return {
+        isValid: false,
+        critical: ['No workflow data found'],
+        recommended: []
+      };
     }
 
-    if (!this.data.title) {
-      errors.push(VALIDATION_MESSAGES.MISSING_TITLE);
+    const critical: string[] = [];
+    const recommended: string[] = [];
+
+    // Critical fields
+    if (!data.make) critical.push('Make (Марка)');
+    if (!data.model) critical.push('Model (Модел)');
+    if (!data.year) critical.push('Year (Година)');
+    if (!data.imagesCount || data.imagesCount === 0) {
+      critical.push('Images (Снимки) - At least 1 required');
     }
 
-    if (!this.data.year) {
-      errors.push(VALIDATION_MESSAGES.MISSING_YEAR);
-    } else {
-      const currentYear = new Date().getFullYear();
-      if (this.data.year < 1900 || this.data.year > currentYear + 1) {
-        errors.push(VALIDATION_MESSAGES.INVALID_YEAR);
-      }
-    }
+    // Recommended fields
+    if (!data.mileage) recommended.push('Mileage (Пробег)');
+    if (!data.price) recommended.push('Price (Цена)');
+    if (!data.fuelType) recommended.push('Fuel Type (Гориво)');
+    if (!data.transmission) recommended.push('Transmission (Скоростна кутия)');
 
     if (strict) {
-      if (!this.data.price) {
-        errors.push(VALIDATION_MESSAGES.MISSING_PRICE);
-      } else if (this.data.price <= 0) {
-        errors.push(VALIDATION_MESSAGES.INVALID_PRICE);
-      }
-
-      if (this.data.mileage === undefined) {
-        errors.push(VALIDATION_MESSAGES.MISSING_MILEAGE);
-      } else if (this.data.mileage < 0) {
-        errors.push(VALIDATION_MESSAGES.INVALID_MILEAGE);
-      }
-
-      if (!this.data.description) {
-        errors.push(VALIDATION_MESSAGES.MISSING_DESCRIPTION);
-      }
-
-      if (!this.data.images || this.data.images.length === 0) {
-        errors.push(VALIDATION_MESSAGES.MISSING_IMAGES);
-      }
-    } else {
-      // Soft validations (warnings only)
-      if (!this.data.price || this.data.price <= 0) {
-        warnings.push('Price is recommended');
-      }
-      if (!this.data.description) {
-        warnings.push('Description is recommended');
-      }
-      if (!this.data.images || this.data.images.length === 0) {
-        warnings.push('At least one image is recommended');
-      }
+      if (!data.sellerPhone) recommended.push('Phone (Телефон)');
+      if (!data.sellerEmail) recommended.push('Email (Имейл)');
+      if (!data.locationData?.regionName) recommended.push('Region (Област)');
     }
 
     return {
-      isValid: errors.length === 0,
-      errors,
-      warnings,
+      isValid: critical.length === 0,
+      critical,
+      recommended
     };
   }
 
   /**
-   * Get storage usage information
-   * الحصول على معلومات استخدام التخزين
-   * 
-   * @returns Storage usage details
+   * Private: Start timer monitoring
    */
-  public async getStorageUsage(): Promise<StorageUsage> {
-    try {
-      // LocalStorage size
-      const localStorageSize = new Blob([JSON.stringify(this.data)]).size;
+  private static startTimer(): void {
+    if (this.timerInterval) return; // Already running
 
-      // IndexedDB size (estimate from image count)
-      let indexedDBSize = 0;
-      try {
-        const { ImageStorageService } = await import('./ImageStorageService');
-        const imageCount = await ImageStorageService.getImagesCount?.() ?? 0;
-        // Estimate: average 500KB per image
-        indexedDBSize = imageCount * 500 * 1024;
-      } catch (error) {
-        logger.warn('Failed to get IndexedDB size', { error: error instanceof Error ? error : new Error(String(error)) });
-      }
+    this.timerInterval = setInterval(() => {
+      const state = this.getTimerState();
 
-      const totalSize = localStorageSize + indexedDBSize;
-      const percentUsed = (totalSize / MAX_STORAGE_SIZE) * 100;
-      const isNearLimit = percentUsed > 80;
+      // Notify all listeners
+      this.listeners.forEach(callback => callback(state));
 
-      return {
-        totalSize,
-        localStorageSize,
-        indexedDBSize,
-        percentUsed,
-        isNearLimit,
-      };
-    } catch (error) {
-      logger.error('Failed to get storage usage', normalizeError(error));
-      return {
-        totalSize: 0,
-        localStorageSize: 0,
-        indexedDBSize: 0,
-        percentUsed: 0,
-        isNearLimit: false,
-      };
-    }
-  }
+      // ✅ FIX: Auto-delete if expired (timer reached zero)
+      if (state.isActive && state.remainingSeconds === 0) {
+        const data = this.loadData();
+        if (data && !data.isPublished) {
+          serviceLogger.info('Timer reached zero - auto-deleting draft', {
+            startedAt: new Date(data.startedAt).toISOString(),
+            lastSavedAt: new Date(data.lastSavedAt).toISOString()
+          });
 
-  // ==========================================================================
-  // CLOUD SYNC - المزامنة السحابية
-  // ==========================================================================
-
-  /**
-   * Save workflow data to Firestore
-   * حفظ بيانات سير العمل إلى Firestore
-   * 
-   * @param userId - User ID
-   * @returns Promise that resolves when save is complete
-   */
-  public async saveToCloud(userId: string): Promise<void> {
-    try {
-      const { db } = await import('@/firebase/firebase-config');
-      const { doc, setDoc } = await import('firebase/firestore');
-
-      const docRef = doc(db, 'workflow_drafts', userId);
-      await setDoc(docRef, {
-        ...this.data,
-        userId,
-        lastSaved: Date.now(),
-        syncedAt: Date.now(),
-      });
-
-      logger.info('Workflow data saved to cloud', { userId });
-    } catch (error) {
-      logger.error('Failed to save workflow data to cloud', normalizeError(error));
-      throw error;
-    }
-  }
-
-  /**
-   * Load workflow data from Firestore
-   * تحميل بيانات سير العمل من Firestore
-   * 
-   * @param userId - User ID
-   * @returns Promise that resolves when load is complete
-   */
-  public async loadFromCloud(userId: string): Promise<void> {
-    try {
-      const { db } = await import('@/firebase/firebase-config');
-      const { doc, getDoc } = await import('firebase/firestore');
-
-      const docRef = doc(db, 'workflow_drafts', userId);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        const cloudData = docSnap.data() as UnifiedWorkflowData;
-        
-        // Merge with local data (prefer cloud data)
-        this.data = { ...this.data, ...cloudData };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
-
-        // Reset timer if not published
-        if (!this.data.isPublished) {
-          this.resetTimer();
+          // ✅ CRITICAL: Execute full reset (same as Reset Memory button)
+          this.executeFullReset().catch((error: unknown) => {
+            serviceLogger.warn('Error executing full reset on timer expiry (non-critical)', {
+              error: error instanceof Error ? error : new Error(String(error))
+            });
+          });
         }
-
-        logger.info('Workflow data loaded from cloud', { userId });
-      } else {
-        logger.info('No cloud data found for user', { userId });
       }
-    } catch (error) {
-      logger.error('Failed to load workflow data from cloud', normalizeError(error));
-      throw error;
+
+      // Also check for expired data (older than 20 minutes)
+      if (!state.isActive && state.remainingSeconds === 0) {
+        const data = this.loadData();
+        if (data && !data.isPublished) {
+          // ✅ Delete from Firestore drafts if draftId exists
+          const draftId = localStorage.getItem('current_draft_id');
+          if (draftId) {
+            try {
+              const { default: DraftsService } = require('./drafts-service');
+              DraftsService.deleteDraft(draftId).catch((error: unknown) => {
+                // Non-critical - continue with local cleanup
+                serviceLogger.warn('Failed to delete Firestore draft on timer expiry (non-critical)', {
+                  error: error instanceof Error ? error : new Error(String(error)),
+                  draftId
+                });
+              });
+              localStorage.removeItem('current_draft_id');
+            } catch (error) {
+              // Non-critical - continue with local cleanup
+              serviceLogger.warn('Error importing DraftsService for auto-delete (non-critical)', { error });
+            }
+          }
+
+          // ✅ CRITICAL: clearData now clears images from IndexedDB
+          this.clearData().catch((error: unknown) => {
+            serviceLogger.warn('Error clearing data on timer expiry (non-critical)', {
+              error: error instanceof Error ? error : new Error(String(error))
+            });
+          });
+          serviceLogger.info('Workflow auto-deleted after timer expiry', { draftId: draftId || 'none' });
+        }
+      }
+    }, 1000); // Update every second
+
+    serviceLogger.info('Workflow timer started');
+  }
+
+  /**
+   * Private: Stop timer monitoring
+   */
+  private static stopTimer(): void {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+
+      // Notify listeners that timer stopped
+      const state: TimerState = {
+        isActive: false,
+        remainingSeconds: 0,
+        totalSeconds: TIMER_DURATION / 1000
+      };
+      this.listeners.forEach(callback => callback(state));
+
+      serviceLogger.info('Workflow timer stopped');
     }
   }
 
   /**
-   * Delete workflow data from Firestore
-   * حذف بيانات سير العمل من Firestore
-   * 
-   * @param userId - User ID
-   * @returns Promise that resolves when delete is complete
+   * Get storage usage
    */
-  public async deleteFromCloud(userId: string): Promise<void> {
+  static getStorageUsage(): {
+    used: number;
+    percentage: number;
+  } {
     try {
-      const { db } = await import('@/firebase/firebase-config');
-      const { doc, deleteDoc } = await import('firebase/firestore');
+      const saved = localStorage.getItem(STORAGE_KEY);
+      const size = saved ? new Blob([saved]).size : 0;
+      const maxSize = 5 * 1024 * 1024; // 5MB conservative estimate
 
-      const docRef = doc(db, 'workflow_drafts', userId);
-      await deleteDoc(docRef);
-
-      logger.info('Workflow data deleted from cloud', { userId });
+      return {
+        used: size,
+        percentage: (size / maxSize) * 100
+      };
     } catch (error) {
-      logger.error('Failed to delete workflow data from cloud', normalizeError(error));
-      throw error;
+      return { used: 0, percentage: 0 };
     }
-  }
-
-  // ==========================================================================
-  // FULL RESET - إعادة تعيين كاملة
-  // ==========================================================================
-
-  /**
-   * Execute full reset (clear all data and timer)
-   * تنفيذ إعادة تعيين كاملة
-   * 
-   * @returns Promise that resolves when reset is complete
-   */
-  public async executeFullReset(): Promise<void> {
-    await this.clearData();
-    logger.info('Full workflow reset executed');
   }
 }
 
-// ============================================================================
-// SINGLETON EXPORT - تصدير السينجلتون
-// ============================================================================
+export interface TimerState {
+  isActive: boolean;
+  remainingSeconds: number;
+  totalSeconds: number;
+}
+
+export interface ValidationResult {
+  isValid: boolean;
+  critical: string[];
+  recommended: string[];
+}
+
+// ==================== BACKWARD COMPATIBILITY WRAPPERS ====================
+// These wrappers allow old code using WorkflowPersistenceService to work with UnifiedWorkflowPersistenceService
 
 /**
- * Singleton instance of UnifiedWorkflowPersistenceService
- * نسخة السينجلتون من خدمة حفظ سير العمل الموحدة
- */
-export const unifiedWorkflowPersistence = UnifiedWorkflowPersistenceService.getInstance();
-
-// ============================================================================
-// BACKWARD COMPATIBILITY - التوافق مع الإصدارات السابقة
-// ============================================================================
-
-/**
- * Legacy WorkflowPersistenceService (deprecated)
- * خدمة حفظ سير العمل القديمة (مهملة)
- * 
- * @deprecated Use unifiedWorkflowPersistence instead
+ * @deprecated Use UnifiedWorkflowPersistenceService.saveData() instead
+ * Wrapper for backward compatibility with WorkflowPersistenceService.saveState()
  */
 export const WorkflowPersistenceService = {
   /**
-   * Save workflow state (legacy)
-   * @deprecated Use unifiedWorkflowPersistence.saveData()
+   * @deprecated Use UnifiedWorkflowPersistenceService.saveData() instead
    */
-  saveWorkflowState: async (state: LegacyWorkflowState): Promise<void> => {
-    logger.warn('Using deprecated WorkflowPersistenceService.saveWorkflowState');
-    
-    const updates: Partial<UnifiedWorkflowData> = {
-      currentStep: state.currentStep,
-      vehicleType: state.vehicleType,
-      title: state.basicInfo?.title,
-      year: state.basicInfo?.year,
-      make: state.basicInfo?.make,
-      model: state.basicInfo?.model,
-      mileage: state.basicInfo?.mileage,
-      features: state.features,
-      description: state.description,
-      price: state.pricing?.price,
-      currency: state.pricing?.currency,
-      images: state.images,
+  saveState: (data: Record<string, any>, currentStep: string): void => {
+    // Convert step string to number
+    const stepMap: Record<string, number> = {
+      'vehicle-data': 1,
+      'vehicle-details': 2,
+      'equipment': 3,
+      'images': 4,
+      'pricing': 5,
+      'contact': 6,
+      'preview': 7
     };
+    const stepNumber = stepMap[currentStep] || 1;
 
-    await unifiedWorkflowPersistence.saveData(updates, state.currentStep);
+    UnifiedWorkflowPersistenceService.saveData(data as Partial<UnifiedWorkflowData>, stepNumber);
   },
 
   /**
-   * Load workflow state (legacy)
-   * @deprecated Use unifiedWorkflowPersistence.loadData()
+   * @deprecated Use UnifiedWorkflowPersistenceService.loadData() instead
    */
-  loadWorkflowState: (): LegacyWorkflowState | null => {
-    logger.warn('Using deprecated WorkflowPersistenceService.loadWorkflowState');
-    
-    const data = unifiedWorkflowPersistence.loadData();
+  loadState: (): { data: Record<string, any>; images: string[]; lastUpdated: number; currentStep: string } | null => {
+    const data = UnifiedWorkflowPersistenceService.loadData();
     if (!data) return null;
 
+    // Convert step number to string
+    const stepMap: Record<number, string> = {
+      1: 'vehicle-data',
+      2: 'vehicle-details',
+      3: 'equipment',
+      4: 'images',
+      5: 'pricing',
+      6: 'contact',
+      7: 'preview'
+    };
+    const currentStep = stepMap[data.currentStep] || 'vehicle-data';
+
     return {
-      currentStep: typeof data.currentStep === 'string' ? data.currentStep : undefined,
-      vehicleType: data.vehicleType,
-      basicInfo: {
-        title: data.title,
-        year: data.year,
-        make: data.make,
-        model: data.model,
-        mileage: data.mileage,
-      },
-      features: data.features,
-      description: data.description,
-      pricing: {
-        price: data.price,
-        currency: data.currency,
-      },
-      images: data.images,
-      lastSaved: data.lastSaved,
+      data: data as Record<string, any>,
+      images: [], // Images are now in IndexedDB, not in state
+      lastUpdated: data.lastSavedAt,
+      currentStep
     };
   },
 
   /**
-   * Clear workflow state (legacy)
-   * @deprecated Use unifiedWorkflowPersistence.clearData()
+   * @deprecated Use UnifiedWorkflowPersistenceService.clearData() instead
    */
-  clearWorkflowState: async (): Promise<void> => {
-    logger.warn('Using deprecated WorkflowPersistenceService.clearWorkflowState');
-    await unifiedWorkflowPersistence.clearData();
+  clearState: (): void => {
+    UnifiedWorkflowPersistenceService.clearData().catch((error) => {
+      serviceLogger.warn('Error clearing state in wrapper', { error });
+    });
   },
 
   /**
-   * Get current step (legacy)
-   * @deprecated Use unifiedWorkflowPersistence.getCurrentStep()
+   * @deprecated Use ImageStorageService.getImages() instead
+   * Returns empty array for backward compatibility (images are now in IndexedDB)
    */
-  getCurrentStep: (): string | null => {
-    logger.warn('Using deprecated WorkflowPersistenceService.getCurrentStep');
-    const step = unifiedWorkflowPersistence.getCurrentStep();
-    return typeof step === 'string' ? step : null;
+  getImages: (): string[] => {
+    // Images are now stored in IndexedDB via ImageStorageService
+    // Return empty array for backward compatibility
+    // Callers should use ImageStorageService.getImages() to get File objects
+    return [];
   },
 
   /**
-   * Get storage usage (legacy)
-   * @deprecated Use unifiedWorkflowPersistence.getStorageUsage()
+   * @deprecated Use ImageStorageService.getImages() instead
+   * Converts IndexedDB images to File objects
    */
-  getStorageUsage: async (): Promise<LegacyStorageUsage> => {
-    logger.warn('Using deprecated WorkflowPersistenceService.getStorageUsage');
-    const usage = await unifiedWorkflowPersistence.getStorageUsage();
-    return {
-      localStorage: usage.localStorageSize,
-      indexedDB: usage.indexedDBSize,
-      total: usage.totalSize,
+  getImagesAsFiles: async (): Promise<File[]> => {
+    try {
+      const { ImageStorageService } = await import('./ImageStorageService');
+      return await ImageStorageService.getImages();
+    } catch (error) {
+      serviceLogger.error('Error getting images as files', error as Error);
+      return [];
+    }
+  },
+
+  /**
+   * @deprecated Use ImageStorageService.saveImages() instead
+   */
+  saveImages: async (files: File[]): Promise<void> => {
+    const { ImageStorageService } = await import('./ImageStorageService');
+    await ImageStorageService.saveImages(files);
+
+    // Update imagesCount in workflow data
+    const data = UnifiedWorkflowPersistenceService.loadData();
+    if (data) {
+      UnifiedWorkflowPersistenceService.saveData(
+        { imagesCount: files.length },
+        data.currentStep
+      );
+    }
+  },
+
+  /**
+   * @deprecated Use ImageStorageService.clearImages() instead
+   */
+  clearImages: async (): Promise<void> => {
+    const { ImageStorageService } = await import('./ImageStorageService');
+    await ImageStorageService.clearImages();
+  },
+
+  /**
+   * @deprecated Use UnifiedWorkflowPersistenceService.getCurrentStep() instead
+   */
+  getCurrentStep: (): string => {
+    const step = UnifiedWorkflowPersistenceService.getCurrentStep();
+    const stepMap: Record<number, string> = {
+      1: 'vehicle-data',
+      2: 'vehicle-details',
+      3: 'equipment',
+      4: 'images',
+      5: 'pricing',
+      6: 'contact',
+      7: 'preview'
     };
+    return stepMap[step] || 'vehicle-data';
   },
+
+  /**
+   * @deprecated Use UnifiedWorkflowPersistenceService.getProgress() instead
+   */
+  getProgress: (): number => {
+    return UnifiedWorkflowPersistenceService.getProgress();
+  },
+
+  /**
+   * @deprecated Use UnifiedWorkflowPersistenceService.getStorageUsage() instead
+   */
+  getStorageUsage: (): { used: number; max: number; percentage: number } => {
+    const usage = UnifiedWorkflowPersistenceService.getStorageUsage();
+    return {
+      used: usage.used,
+      max: 5 * 1024 * 1024, // 5MB estimate
+      percentage: usage.percentage
+    };
+  }
 };
 
-// ============================================================================
-// DEFAULT EXPORT - التصدير الافتراضي
-// ============================================================================
-
-export default unifiedWorkflowPersistence;
+export default UnifiedWorkflowPersistenceService;

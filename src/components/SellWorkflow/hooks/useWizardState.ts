@@ -32,12 +32,11 @@ export const useWizardState = (workflowId: string = 'default'): WizardStateRetur
                 setLoading(true);
 
                 // First, load locally saved data for immediate feedback
-                const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
-                let data = persistenceService.loadData();
+                let data = UnifiedWorkflowPersistenceService.loadData();
 
                 // If logged in, attempt to sync with cloud
                 if (currentUser?.uid) {
-                    const cloudData = await persistenceService.loadFromCloud(currentUser.uid);
+                    const cloudData = await UnifiedWorkflowPersistenceService.loadFromCloud(currentUser.uid);
                     if (cloudData) {
                         data = cloudData; // Cloud data is prioritized if newer (handled in service)
                     }
@@ -73,14 +72,13 @@ export const useWizardState = (workflowId: string = 'default'): WizardStateRetur
         const saveData = async () => {
             setIsSaving(true);
             try {
-                const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
                 // Save locally
-                // We pass 'currentStep' to ensure it's updated in the main object   
-                persistenceService.saveData(formData, currentStep);
+                // We pass 'currentStep' to ensure it's updated in the main object
+                UnifiedWorkflowPersistenceService.saveData(formData, currentStep);
 
                 // Cloud save (if authenticated)
                 if (currentUser?.uid) {
-                    await persistenceService.saveToCloud(currentUser.uid);
+                    await UnifiedWorkflowPersistenceService.saveToCloud(currentUser.uid);
                 }
             } catch (err) {
                 logger.error("Auto-save failed", err as Error);
@@ -91,6 +89,7 @@ export const useWizardState = (workflowId: string = 'default'): WizardStateRetur
 
         // Debounce save
         const timeoutId = setTimeout(saveData, 1000);
+
         return () => clearTimeout(timeoutId);
     }, [formData, currentStep, loading, currentUser]);
 
@@ -102,16 +101,14 @@ export const useWizardState = (workflowId: string = 'default'): WizardStateRetur
     const goToStep = useCallback((step: number) => {
         setCurrentStep(step);
         // Persist step change immediately
-        const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
-        persistenceService.updateCurrentStep(step);
+        UnifiedWorkflowPersistenceService.updateCurrentStep(step);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, []);
 
     const nextStep = useCallback(() => {
         setCurrentStep(prev => {
             const next = prev + 1;
-            const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
-            persistenceService.updateCurrentStep(next);
+            UnifiedWorkflowPersistenceService.updateCurrentStep(next);
             return next;
         });
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -120,8 +117,7 @@ export const useWizardState = (workflowId: string = 'default'): WizardStateRetur
     const prevStep = useCallback(() => {
         setCurrentStep(prev => {
             const back = Math.max(1, prev - 1);
-            const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
-            persistenceService.updateCurrentStep(back);
+            UnifiedWorkflowPersistenceService.updateCurrentStep(back);
             return back;
         });
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -130,8 +126,7 @@ export const useWizardState = (workflowId: string = 'default'): WizardStateRetur
     const resetWizard = useCallback(async () => {
         setFormData({});
         setCurrentStep(1);
-        const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
-        await persistenceService.executeFullReset();
+        await UnifiedWorkflowPersistenceService.executeFullReset();
     }, []);
 
     return {

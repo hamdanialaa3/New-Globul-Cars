@@ -3,7 +3,7 @@
 // يستبدل: useSellWorkflow + useStrictAutoSave + useEquipmentSelection + useImagesWorkflow
 
 import { useCallback, useEffect, useState } from 'react';
-import UnifiedWorkflowPersistenceService, {
+import unifiedWorkflowPersistence, {
   UnifiedWorkflowData,
   TimerState,
   ValidationResult
@@ -25,8 +25,7 @@ export const useUnifiedWorkflow = (currentStep: number) => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
-        const data = persistenceService.loadData();
+        const data = unifiedWorkflowPersistence.loadData();
         setWorkflowData(data);
 
         // Load images count
@@ -35,7 +34,7 @@ export const useUnifiedWorkflow = (currentStep: number) => {
 
         // Update workflow data with images count
         if (data && count !== data.imagesCount) {
-          persistenceService.saveData(
+          unifiedWorkflowPersistence.saveData(
             { imagesCount: count },
             currentStep
           );
@@ -77,9 +76,8 @@ export const useUnifiedWorkflow = (currentStep: number) => {
   const updateData = useCallback(
     (updates: Partial<UnifiedWorkflowData>) => {
       try {
-        const persistenceService = UnifiedWorkflowPersistenceService.getInstance();
         // Save to persistence service (now has built-in debouncing)
-        persistenceService.saveData(updates, currentStep);
+        unifiedWorkflowPersistence.saveData(updates, currentStep);
 
         // Update local state optimistically
         setWorkflowData((prev) => ({

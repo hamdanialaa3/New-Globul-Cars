@@ -382,7 +382,7 @@ const MobilePreviewPage: React.FC = () => {
 
     return (
       <S.EquipmentList>
-        {items.map((item: any) => (
+        {items.map(item => (
           <S.EquipmentTag key={item}>{item}</S.EquipmentTag>
         ))}
       </S.EquipmentList>

@@ -113,15 +113,20 @@ export const getProfileUrl = (
     }
   }
 
-  // ⚠️ Fallback: NumericProfileRouter will handle Firebase UID conversion
+  // ❌ CRITICAL: Missing numeric ID - This user needs numeric ID assignment!
   if (user.uid) {
-    logger.warn('Profile URL using Firebase UID (should use numericId)', { uid: user.uid });
-    // For Firebase UID, we can't determine if it's own profile, so use view path
-    return `/profile/view/${user.uid}`;
+    logger.error('🚨 CONSTITUTION VIOLATION: Profile URL requires numericId, not Firebase UID!', { 
+      uid: user.uid,
+      email: user.email,
+      message: 'User must be assigned a numeric ID. Run numeric ID assignment service.'
+    });
+    
+    // Return fallback but this should trigger numeric ID assignment
+    return `/profile/view/${user.uid}`; // TODO: NumericProfileRouter should assign numeric ID
   }
 
   // Default to current user's profile
-  logger.warn('Profile URL called without user ID, defaulting to /profile');
+  logger.error('Profile URL called without any user ID');
   return '/profile';
 };
 
