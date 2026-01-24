@@ -139,8 +139,8 @@ export class SmartFeedService {
 
       // Return limited results
       return scoredItems.slice(0, limitCount);
-    } catch (error) {
-      serviceLogger.error('Error getting smart feed:', error);
+    } catch (error: unknown) {
+      serviceLogger.error('Error getting smart feed:', error instanceof Error ? error : new Error(String(error)));
       return [];
     }
   }
@@ -249,8 +249,8 @@ export class SmartFeedService {
           score: 0
         } as FeedItem;
       });
-    } catch (error) {
-      serviceLogger.error('Error getting posts:', error);
+    } catch (error: unknown) {
+      serviceLogger.error('Error getting posts:', error instanceof Error ? error : new Error(String(error)));
       return [];
     }
   }
@@ -305,8 +305,8 @@ export class SmartFeedService {
       }
 
       return videos;
-    } catch (error) {
-      serviceLogger.error('Error getting intro videos:', error);
+    } catch (error: unknown) {
+      serviceLogger.error('Error getting intro videos:', error instanceof Error ? error : new Error(String(error)));
       return [];
     }
   }
@@ -354,8 +354,8 @@ export class SmartFeedService {
           score: 0
         } as FeedItem;
       });
-    } catch (error) {
-      serviceLogger.error('Error getting success stories:', error);
+    } catch (error: unknown) {
+      serviceLogger.error('Error getting success stories:', error instanceof Error ? error : new Error(String(error)));
       return [];
     }
   }
@@ -411,8 +411,8 @@ export class SmartFeedService {
       }
 
       return achievements;
-    } catch (error) {
-      serviceLogger.error('Error getting achievements:', error);
+    } catch (error: unknown) {
+      serviceLogger.error('Error getting achievements:', error instanceof Error ? error : new Error(String(error)));
       return [];
     }
   }
@@ -451,8 +451,8 @@ export class SmartFeedService {
         createdAt: challenge.startDate || Timestamp.now(),
         score: 0
       } as FeedItem));
-    } catch (error) {
-      serviceLogger.error('Error getting challenges:', error);
+    } catch (error: unknown) {
+      serviceLogger.error('Error getting challenges:', error instanceof Error ? error : new Error(String(error)));
       return [];
     }
   }
@@ -475,7 +475,7 @@ export class SmartFeedService {
           if (userDocSnap.exists()) {
             userDataMap.set(userId, userDocSnap.data());
           }
-        } catch (error) {
+        } catch (error: unknown) {
           // Skip if user not found
         }
       }
@@ -498,8 +498,8 @@ export class SmartFeedService {
         }
         return item;
       });
-    } catch (error) {
-      serviceLogger.error('Error enriching feed items:', error);
+    } catch (error: unknown) {
+      serviceLogger.error('Error enriching feed items:', error instanceof Error ? error : new Error(String(error)));
       return items;
     }
   }

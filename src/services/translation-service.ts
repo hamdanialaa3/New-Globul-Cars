@@ -6,9 +6,20 @@ import { serviceLogger } from './logger-service';
 // Mock translation function since google-translate-api-browser is not available
 const mockTranslate = async (text: string, options: { from?: string; to: string }) => {
   // Simple mock - just return the original text with a note
+  const fromLang = options.from || 'auto';
   return {
     text: `[Translated to ${options.to}] ${text}`,
-    from: options.from || 'auto',
+    from: {
+      language: {
+        didYouMean: false,
+        iso: fromLang
+      },
+      text: {
+        autoCorrected: false,
+        value: text,
+        didYouMean: false
+      }
+    },
     raw: ''
   };
 };
@@ -64,8 +75,8 @@ export class BulgarianTranslationService {
         from: result.from,
         raw: result.raw
       };
-    } catch (error) {
-      serviceLogger.error('Translation error', error as Error, { from: options.from, to: options.to });
+    } catch (error: unknown) {
+      serviceLogger.error('Translation error', error instanceof Error ? error : new Error(String(error)), { from: options.from, to: options.to });
       return null;
     }
   }
