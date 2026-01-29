@@ -1,0 +1,172 @@
+/* Logo Gallery Styles */
+
+.logo-gallery {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.logo-gallery.hero {
+  justify-content: center;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.logo-gallery.header {
+  gap: 0.5rem;
+}
+
+.logo-gallery.footer {
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid #e5e5e5;
+  margin-top: 2rem;
+}
+
+.logo-gallery.sidebar {
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.logo-gallery.showcase {
+  justify-content: space-around;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 16px;
+  margin: 2rem 0;
+}
+
+.logo-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.logo-item:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.logo-image {
+  max-width: 100%;
+  max-height: 80px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.logo-image:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Specific logo styles */
+.main-logo .logo-image {
+  max-height: 100px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+.logo-variant-1 .logo-image {
+  max-height: 60px;
+  border-radius: 50%;
+}
+
+.logo-variant-2 .logo-image {
+  max-height: 70px;
+  border: 2px solid #005ca9;
+  border-radius: 12px;
+}
+
+.logo-variant-3 .logo-image {
+  max-height: 65px;
+  background: linear-gradient(45deg, #ffffff, #f8f9fa);
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.logo-variant-4 .logo-image {
+  max-height: 55px;
+  filter: grayscale(20%) contrast(1.1);
+}
+
+.logo-variant-5 .logo-image {
+  max-height: 75px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .logo-gallery {
+    gap: 0.75rem;
+  }
+
+  .logo-gallery.hero {
+    gap: 1rem;
+    flex-direction: column;
+  }
+
+  .logo-gallery.showcase {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .logo-image {
+    max-height: 60px;
+  }
+
+  .main-logo .logo-image {
+    max-height: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-gallery {
+    gap: 0.5rem;
+  }
+
+  .logo-gallery.hero,
+  .logo-gallery.footer,
+  .logo-gallery.showcase {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .logo-image {
+    max-height: 50px;
+  }
+
+  .main-logo .logo-image {
+    max-height: 70px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .logo-gallery.showcase {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+  }
+
+  .logo-gallery.footer {
+    border-top-color: #4a5568;
+  }
+
+  .logo-image {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .logo-image:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* Print styles */
+@media print {
+  .logo-gallery {
+    display: none;
+  }
+}

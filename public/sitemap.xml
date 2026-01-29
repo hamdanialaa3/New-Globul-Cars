@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Main Sitemap Index for Koli One -->
+  
+  <!-- Static Pages -->
+  <sitemap>
+    <loc>https://koli.one/sitemap-static.xml</loc>
+    <lastmod>2026-01-06</lastmod>
+  </sitemap>
+  
+  <!-- Car Listings (Dynamic) -->
+  <sitemap>
+    <loc>https://koli.one/sitemap-cars.xml</loc>
+    <lastmod>2026-01-06</lastmod>
+  </sitemap>
+  
+  <!-- Location Landing Pages (Programmatic SEO) -->
+  <sitemap>
+    <loc>https://koli.one/sitemap-locations.xml</loc>
+    <lastmod>2026-01-06</lastmod>
+  </sitemap>
+  
+  <!-- Dealer Profiles -->
+  <sitemap>
+    <loc>https://koli.one/sitemap-dealers.xml</loc>
+    <lastmod>2026-01-06</lastmod>
+  </sitemap>
+  
+  <!-- Brand Pages -->
+  <sitemap>
+    <loc>https://koli.one/sitemap-brands.xml</loc>
+    <lastmod>2026-01-06</lastmod>
+  </sitemap>
+</sitemapindex>

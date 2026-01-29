@@ -1,0 +1,24 @@
+// Bulgarian translations - Main export
+export { home } from './home';
+export { mapPage } from './mapPage';
+export { cars } from './cars';
+export { sell } from './sell';
+export { nav } from './nav';
+export { header } from './header';
+export { profileTypes } from './profileTypes';
+export { profile } from './profile';
+export { common } from './common';
+export { bodyTypes } from './bodyTypes';
+export { savedSearches } from './savedSearches';
+export { footer } from './footer';
+export { advancedSearch } from './advancedSearch';
+export { auth } from './auth';
+export { settings } from './settings';
+export { errors } from './errors';
+export { billing } from './billing';
+export { dealer } from './dealer';
+export { messages } from './messages';
+export { messaging } from './messaging';
+export { help } from './help';
+export { cookiePolicy } from './cookiePolicy';
+

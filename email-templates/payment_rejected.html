@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="{{language}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{#if (eq language 'bg')}}Плащането е отхвърлено{{else}}Payment Rejected{{/if}}</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .header {
+            background: linear-gradient(135deg, #F44336, #E53935);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        .warning-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .message {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .rejection-card {
+            background: #fff3cd;
+            border-left: 4px solid #F44336;
+            padding: 24px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        .rejection-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #856404;
+            margin-bottom: 12px;
+        }
+        .rejection-reason {
+            font-size: 15px;
+            color: #856404;
+            line-height: 1.6;
+        }
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #F44336;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #666;
+            font-size: 14px;
+        }
+        .info-value {
+            font-weight: 700;
+            color: #333;
+            font-size: 14px;
+        }
+        .steps {
+            margin: 30px 0;
+        }
+        .step {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .step-number {
+            min-width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #0075EB, #00A651);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .step-text {
+            flex: 1;
+            padding-top: 6px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .button {
+            display: inline-block;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #0075EB, #00A651);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            text-align: center;
+            margin: 10px 5px;
+        }
+        .whatsapp-button {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+        }
+        .footer-text {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+        .contact-item {
+            color: #0075EB;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="warning-icon">⚠️</div>
+            <h1>
+                {{#if (eq language 'bg')}}
+                    Плащането не е потвърдено
+                {{else}}
+                    Payment Not Verified
+                {{/if}}
+            </h1>
+            <p>
+                {{#if (eq language 'bg')}}
+                    Не успяхме да потвърдим вашия банков превод
+                {{else}}
+                    We were unable to verify your bank transfer
+                {{/if}}
+            </p>
+        </div>
+
+        <div class="content">
+            <div class="greeting">
+                {{#if (eq language 'bg')}}
+                    Здравейте, {{userName}},
+                {{else}}
+                    Hello, {{userName}},
+                {{/if}}
+            </div>
+
+            <div class="message">
+                {{#if (eq language 'bg')}}
+                    За съжаление, не успяхме да намерим или потвърдим вашия банков превод. Моля, прегледайте причината по-долу и се свържете с нас за повече информация.
+                {{else}}
+                    Unfortunately, we were unable to find or verify your bank transfer. Please review the reason below and contact us for more information.
+                {{/if}}
+            </div>
+
+            <div class="rejection-card">
+                <div class="rejection-title">
+                    {{#if (eq language 'bg')}}
+                        📋 Причина за отхвърляне:
+                    {{else}}
+                        📋 Rejection Reason:
+                    {{/if}}
+                </div>
+                <div class="rejection-reason">
+                    {{rejectionReason}}
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-row">
+                    <span class="info-label">
+                        {{#if (eq language 'bg')}}Референция:{{else}}Reference:{{/if}}
+                    </span>
+                    <span class="info-value">{{referenceNumber}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">
+                        {{#if (eq language 'bg')}}Сума:{{else}}Amount:{{/if}}
+                    </span>
+                    <span class="info-value">{{amount}} {{currency}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">
+                        {{#if (eq language 'bg')}}Банка:{{else}}Bank:{{/if}}
+                    </span>
+                    <span class="info-value">{{bankAccount}}</span>
+                </div>
+            </div>
+
+            <div class="steps">
+                <h3 style="margin-bottom: 20px; color: #333;">
+                    {{#if (eq language 'bg')}}
+                        🔄 Какво можете да направите?
+                    {{else}}
+                        🔄 What Can You Do?
+                    {{/if}}
+                </h3>
+                
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-text">
+                        {{#if (eq language 'bg')}}
+                            <strong>Свържете се с нас</strong> - Нашият екип ще ви помогне да разрешите проблема бързо
+                        {{else}}
+                            <strong>Contact Us</strong> - Our team will help you resolve the issue quickly
+                        {{/if}}
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-text">
+                        {{#if (eq language 'bg')}}
+                            <strong>Проверете детайлите</strong> - Уверете се, че IBAN, BIC и референтният номер са правилни
+                        {{else}}
+                            <strong>Check Details</strong> - Ensure IBAN, BIC and reference number are correct
+                        {{/if}}
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-text">
+                        {{#if (eq language 'bg')}}
+                            <strong>Опитайте отново</strong> - Можете да направите нов превод със същите или различни детайли
+                        {{else}}
+                            <strong>Try Again</strong> - You can make a new transfer with the same or different details
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{whatsappLink}}" class="button whatsapp-button">
+                    💬 {{#if (eq language 'bg')}}Свържи се по WhatsApp{{else}}Contact via WhatsApp{{/if}}
+                </a>
+                <a href="{{retryUrl}}" class="button">
+                    🔄 {{#if (eq language 'bg')}}Опитай отново{{else}}Try Again{{/if}}
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-text">
+                {{#if (eq language 'bg')}}
+                    Извиняваме се за неудобството. Екипът ни е на разположение 24/7.
+                {{else}}
+                    We apologize for the inconvenience. Our team is available 24/7.
+                {{/if}}
+            </div>
+            <div class="contact-info">
+                <a href="tel:{{supportPhone}}" class="contact-item">📞 {{supportPhone}}</a>
+                <a href="mailto:{{supportEmail}}" class="contact-item">📧 {{supportEmail}}</a>
+                <a href="{{whatsappLink}}" class="contact-item">💬 WhatsApp</a>
+            </div>
+            <div style="margin-top: 24px; font-size: 12px; color: #999;">
+                © 2026 Globul Cars | koli.one
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 150 150">
+  <rect width="150" height="150" fill="#e5e7eb"/>
+  <g transform="translate(75,75)">
+    <path d="M-30,-10 L-30,10 L-10,10 L-10,5 L10,5 L10,10 L30,10 L30,-10 L-30,-10 Z M-25,-5 L-15,-5 L-15,5 L-25,5 Z M15,-5 L25,-5 L25,5 L15,5 Z" fill="#9ca3af"/>
+    <ellipse cx="-20" cy="0" rx="8" ry="8" fill="#6b7280"/>
+    <ellipse cx="20" cy="0" rx="8" ry="8" fill="#6b7280"/>
+  </g>
+  <text x="75" y="130" font-family="Arial" font-size="12" fill="#6b7280" text-anchor="middle">Car</text>
+</svg>
