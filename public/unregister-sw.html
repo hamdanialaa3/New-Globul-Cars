@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Unregister Service Worker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .success { color: #22c55e; }
+        .error { color: #ef4444; }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🧹 إلغاء تسجيل Service Worker</h1>
+        <div id="status">جاري التحقق...</div>
+        <button onclick="location.href='http://localhost:3000'">الانتقال إلى التطبيق</button>
+    </div>
+    
+    <script>
+        async function unregisterServiceWorkers() {
+            const status = document.getElementById('status');
+            
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    
+                    if (registrations.length === 0) {
+                        status.innerHTML = '<p class="success">✓ لا توجد Service Workers مسجلة</p>';
+                        return;
+                    }
+                    
+                    status.innerHTML = '<p>🔄 جاري إلغاء التسجيل...</p>';
+                    
+                    for (let registration of registrations) {
+                        await registration.unregister();
+                    }
+                    
+                    // مسح الكاش
+                    if ('caches' in window) {
+                        const cacheNames = await caches.keys();
+                        await Promise.all(
+                            cacheNames.map(name => caches.delete(name))
+                        );
+                    }
+                    
+                    status.innerHTML = `
+                        <p class="success">✓ تم إلغاء تسجيل ${registrations.length} Service Worker(s)</p>
+                        <p class="success">✓ تم مسح الكاش</p>
+                        <p><strong>الرجاء:</strong></p>
+                        <ol>
+                            <li>إغلاق جميع نوافذ المتصفح</li>
+                            <li>إعادة فتح المتصفح</li>
+                            <li>الضغط على Ctrl+Shift+R في الصفحة</li>
+                        </ol>
+                    `;
+                } catch (error) {
+                    status.innerHTML = `<p class="error">❌ خطأ: ${error.message}</p>`;
+                }
+            } else {
+                status.innerHTML = '<p class="error">❌ المتصفح لا يدعم Service Workers</p>';
+            }
+        }
+        
+        // تشغيل عند تحميل الصفحة
+        unregisterServiceWorkers();
+    </script>
+</body>
+</html>

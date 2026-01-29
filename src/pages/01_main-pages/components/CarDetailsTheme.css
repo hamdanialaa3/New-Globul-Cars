@@ -1,0 +1,71 @@
+/**
+ * Global Theme CSS Variables for Car Details Page
+ * Yellow Accent + Gradient System (White→Beige Light, Black→Blue Dark)
+ */
+
+:root {
+  /* Yellow Accent System (replacing orange) */
+  --accent-primary: #ffd700;
+  --accent-secondary: #ffed4e;
+  --accent-hover: #ffc700;
+  --accent-glow: #ffe066;
+  --accent-light: rgba(255, 215, 0, 0.05);
+  
+  /* Light Mode: Ultra-Light Gradients (Much Lighter!) */
+  --bg-primary: linear-gradient(180deg, #ffffff 0%, #fefefe 50%, #fcfcfc 100%);
+  --bg-card: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
+  --bg-header: linear-gradient(90deg, #ffffff 0%, #fefefe 50%, #fdfdfd 100%);
+  --bg-section-1: linear-gradient(135deg, #ffffff 0%, #fefefe 100%);
+  --bg-section-2: linear-gradient(135deg, #fefefe 0%, #fdfdfd 100%);
+  --bg-section-3: linear-gradient(135deg, #fdfdfd 0%, #fcfcfc 100%);
+  --bg-hover: rgba(255, 215, 0, 0.04);
+  --bg-secondary: #fafafa;
+  
+  /* Ultra-Light Borders */
+  --border-primary: #f0f0f0;
+  --border-secondary: #f5f5f5;
+  
+  /* Softer Text Colors */
+  --text-primary: #2a2a2a;
+  --text-secondary: #6a6a6a;
+  --text-muted: #9a9a9a;
+  
+  /* Status Colors */
+  --success-color: #00a400;
+  --warning-color: #ffd700;
+  
+  /* Very Subtle Geometric Grid */
+  --grid-line: rgba(255, 215, 0, 0.02);
+  --grid-opacity: 0.5;
+}
+
+[data-theme='dark'] {
+  /* Yellow Accent (consistent in dark mode) */
+  --accent-primary: #ffd700;
+  --accent-secondary: #ffed4e;
+  --accent-hover: #ffe066;
+  --accent-glow: #ffd700;
+  --accent-light: rgba(255, 215, 0, 0.12);
+  
+  /* Dark Mode: Black → Deep Blue Gradients */
+  --bg-primary: linear-gradient(180deg, #0a0e14 0%, #0f1419 50%, #141b27 100%);
+  --bg-card: linear-gradient(135deg, #1a1f2e 0%, #151a27 100%);
+  --bg-header: linear-gradient(90deg, #0a0e14 0%, #0e1218 50%, #12161f 100%);
+  --bg-section-1: linear-gradient(135deg, #0f141f 0%, #141927 100%);
+  --bg-section-2: linear-gradient(135deg, #141927 0%, #1a1f2e 100%);
+  --bg-section-3: linear-gradient(135deg, #1a1f2e 0%, #1f2533 100%);
+  --bg-hover: rgba(255, 215, 0, 0.12);
+  
+  /* Borders */
+  --border-primary: #2d3748;
+  --border-secondary: #1a202c;
+  
+  /* Text Colors */
+  --text-primary: #e8eaf0;
+  --text-secondary: #a0aec0;
+  --text-muted: #718096;
+  
+  /* Geometric Grid */
+  --grid-line: rgba(100, 150, 255, 0.08);
+  --grid-opacity: 0.6;
+}

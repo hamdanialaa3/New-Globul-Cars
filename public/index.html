@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Google Consent Mode v2 - MUST BE FIRST -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+
+        // Consent mode default (GDPR-compliant - all denied until user consent)
+        gtag('consent', 'default', {
+            'ad_storage': 'denied',
+            'ad_user_data': 'denied',
+            'ad_personalization': 'denied',
+            'analytics_storage': 'denied',
+            'functionality_storage': 'granted',
+            'personalization_storage': 'denied',
+            'security_storage': 'granted',
+            'wait_for_update': 500
+        });
+
+        // Apply saved consent preferences if available
+        (function () {
+            try {
+                const saved = localStorage.getItem('consent_preferences');
+                if (saved) {
+                    const preferences = JSON.parse(saved);
+                    const { timestamp, ...settings } = preferences;
+
+                    // Check if preferences are still valid (7 days)
+                    const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+                    if (timestamp && Date.now() - timestamp <= sevenDaysMs) {
+                        gtag('consent', 'update', settings);
+                    }
+                }
+            } catch (e) {
+                // Silent fail - will use default consent
+            }
+        })();
+    </script>
+
+    <!-- Google Tag Manager -->
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-MKZSPCNC');</script>
+    <!-- End Google Tag Manager -->
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R8JY5KM421"></script>
+    <script>
+        const analyticsCookieDomain = window.location.hostname || 'koli.one';
+        gtag('js', new Date());
+        gtag('config', 'G-R8JY5KM421', {
+            cookie_domain: analyticsCookieDomain,
+            cookie_flags: 'SameSite=None;Secure',
+            send_page_view: true
+        });
+    </script>
+
+    <!-- Facebook Pixel Code -->
+    <script>
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return; n = f.fbq = function () {
+                n.callMethod ?
+                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+            n.queue = []; t = b.createElement(e); t.async = !0;
+            t.src = v; s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '2026958077871354');
+        fbq('track', 'PageView');
+    </script>
+    <noscript>
+        <img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id=2026958077871354&ev=PageView&noscript=1" />
+    </noscript>
+    <!-- End Facebook Pixel Code -->
+
+    <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, private" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta http-equiv="Last-Modified" content="0" />
+    <meta name="cache-control" content="no-cache" />
+    <meta name="expires" content="0" />
+    <link rel="stylesheet" href="%PUBLIC_URL%/styles/koli-one-logo.css" />
+    <link rel="icon" type="image/png" href="%PUBLIC_URL%/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="theme-color" content="#FF7900" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Koli One" />
+    <meta name="description"
+        content="Koli One - Български автомобили - Най-добрата платформа за автомобили в България" />
+    
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://koli.one/" />
+    <meta property="og:title" content="Koli One - Български автомобили" />
+    <meta property="og:description" content="Най-добрата платформа за покупка и продажба на автомобили в България" />
+    <meta property="og:image" content="https://koli.one/logo.png" />
+    <meta property="og:site_name" content="Koli One" />
+    <meta property="og:locale" content="bg_BG" />
+    <meta property="fb:app_id" content="2026958077871354" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://koli.one/" />
+    <meta name="twitter:title" content="Koli One - Български автомобили" />
+    <meta name="twitter:description" content="Най-добрата платформа за покупка и продажба на автомобили в България" />
+    <meta name="twitter:image" content="https://koli.one/logo.png" />
+    <meta name="twitter:site" content="@kolionebg" />
+    <meta name="twitter:creator" content="@kolionebg" />
+    
+    <!-- Social Media Profile Links -->
+    <link rel="me" href="https://www.facebook.com/koli.one/" />
+    <link rel="me" href="https://www.instagram.com/kolione/" />
+    <link rel="me" href="https://www.youtube.com/@Kolionebg" />
+    <link rel="me" href="https://www.linkedin.com/in/koli-one-a011993a9/" />
+    <link rel="me" href="https://x.com/kolionebg" />
+    <link rel="me" href="https://www.tiktok.com/@mobilebg.eu" />
+    <link rel="me" href="https://www.threads.com/@kolione" />
+    
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link href="https://fonts.cdnfonts.com/css/martica" rel="stylesheet">
+
+    <!-- Print Styles -->
+    <link rel="stylesheet" href="%PUBLIC_URL%/print-only.css" media="print" />
+
+    <!-- Google Maps API with Places library and Bulgarian language -->
+    <!-- Load Google Maps JS API with loading=async parameter for best performance -->
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=***REMOVED_FIREBASE_KEY***&libraries=places&language=bg&loading=async"
+        async defer></script>
+
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>Koli One - Български автомобили</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;800&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Caveat:wght@400;700&family=Dancing+Script:wght@700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* --- ULTIMATE GEAR LOGO LOADER --- */
+        #loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(5, 5, 10, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 99999;
+            font-family: 'Exo 2', sans-serif;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader-wrapper {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        #canvas-container canvas {
+            color: rgba(26, 29, 46, 0.25);
+            text-align: center;
+            vertical-align: middle;
+            line-height: 0;
+            width: 100%;
+            height: 100%;
+            background-color: unset;
+            background: unset;
+            background-image: none;
+            box-shadow: none;
+            filter: none;
+        }
+
+        .text-container {
+            position: absolute;
+            bottom: -60px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            z-index: 2;
+        }
+
+        .brand-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #ffffff;
+            text-shadow: 0 0 15px rgba(0, 204, 255, 0.6);
+            margin-bottom: 5px;
+        }
+
+        .status-text {
+            font-size: 0.8rem;
+            color: #00ccff;
+            letter-spacing: 3px;
+            opacity: 0.8;
+            animation: pulseStatus 1.5s infinite;
+        }
+
+        @keyframes pulseStatus {
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MKZSPCNC" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <!-- Facebook Pixel Code (noscript fallback) -->
+    <noscript>
+        <img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id=2026958077871354&ev=PageView&noscript=1" />
+    </noscript>
+    <!-- End Facebook Pixel Code -->
+
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+
+    <!-- ULTIMATE GEAR LOGO LOADER -->
+    <div id="loader-container">
+        <div class="loader-wrapper">
+            <div id="canvas-container"></div>
+            <div class="text-container">
+                <div class="brand-text">Koli One</div>
+                <div class="status-text">INITIALIZING SYSTEMS...</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="root"></div>
+
+    <!-- THREE.JS LOADER MODULE -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        try {
+            // Setup Scene
+            const container = document.getElementById('canvas-container');
+            if (!container) throw new Error('Canvas container not found');
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+            camera.position.z = 22;
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(400, 400);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.3;
+            container.appendChild(renderer.domElement);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+
+            const mainLight = new THREE.DirectionalLight(0xffffff, 2);
+            mainLight.position.set(5, 10, 15);
+            scene.add(mainLight);
+
+            const rimLight = new THREE.PointLight(0x00ccff, 5, 20);
+            rimLight.position.set(-5, -5, 5);
+            scene.add(rimLight);
+
+            // Gear Shape Function
+            function createGearShape(outerRadius, innerRadius, teeth, toothDepth) {
+                const shape = new THREE.Shape();
+                const pi2 = Math.PI * 2;
+                const step = pi2 / (teeth * 2);
+                shape.moveTo(outerRadius, 0);
+                for (let i = 0; i < teeth; i++) {
+                    const angle = (i * 2) * step;
+                    shape.lineTo(Math.cos(angle) * outerRadius, Math.sin(angle) * outerRadius);
+                    shape.lineTo(Math.cos(angle + step * 0.5) * (outerRadius + toothDepth), Math.sin(angle + step * 0.5) * (outerRadius + toothDepth));
+                    shape.lineTo(Math.cos(angle + step * 1.5) * (outerRadius + toothDepth), Math.sin(angle + step * 1.5) * (outerRadius + toothDepth));
+                    shape.lineTo(Math.cos(angle + step * 2) * outerRadius, Math.sin(angle + step * 2) * outerRadius);
+                }
+                const hole = new THREE.Path();
+                hole.absarc(0, 0, innerRadius, 0, Math.PI * 2, true);
+                shape.holes.push(hole);
+                return shape;
+            }
+
+            // Create Gear (Outer Ring)
+            const gearShape = createGearShape(5.5, 4.5, 16, 0.8);
+            const extrudeSettings = {
+                depth: 0.5,
+                bevelEnabled: true,
+                bevelThickness: 0.1,
+                bevelSize: 0.1,
+                bevelSegments: 3
+            };
+            const gearGeometry = new THREE.ExtrudeGeometry(gearShape, extrudeSettings);
+            const gearMaterial = new THREE.MeshStandardMaterial({
+                color: 0x8899aa,
+                metalness: 0.9,
+                roughness: 0.2
+            });
+            const gear = new THREE.Mesh(gearGeometry, gearMaterial);
+            gearGeometry.center();
+            scene.add(gear);
+
+            // Flash Light on Gear
+            const flashGroup = new THREE.Group();
+            scene.add(flashGroup);
+            const flashLight = new THREE.PointLight(0x00ffff, 8, 10);
+            flashLight.position.set(4.8, 0, 1);
+            flashGroup.add(flashLight);
+
+            // Bulgarian Flag Glass Sphere (White, Green, Red)
+            const sphereGeo = new THREE.SphereGeometry(3.5, 64, 64);
+
+            // Create canvas for flag gradient
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+
+            // Draw Bulgarian flag colors (horizontal stripes)
+            // White (top)
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, 512, 170);
+
+            // Green (middle)
+            ctx.fillStyle = '#00966E';
+            ctx.fillRect(0, 170, 512, 171);
+
+            // Red (bottom)
+            ctx.fillStyle = '#D62612';
+            ctx.fillRect(0, 341, 512, 171);
+
+            // Create texture from canvas
+            const flagTexture = new THREE.CanvasTexture(canvas);
+            flagTexture.needsUpdate = true;
+
+            const sphereMat = new THREE.MeshPhysicalMaterial({
+                map: flagTexture,
+                metalness: 0.1,
+                roughness: 0.05,
+                transmission: 0.7,
+                thickness: 1.2,
+                clearcoat: 1,
+                clearcoatRoughness: 0.1,
+                transparent: true,
+                opacity: 0.6
+            });
+            const glassSphere = new THREE.Mesh(sphereGeo, sphereMat);
+            scene.add(glassSphere);
+
+            // Orbits around sphere
+            const orbitGroup = new THREE.Group();
+            scene.add(orbitGroup);
+
+            const ring1Geo = new THREE.TorusGeometry(3.8, 0.03, 16, 100);
+            const ringMat = new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.6
+            });
+            const ring1 = new THREE.Mesh(ring1Geo, ringMat);
+            ring1.rotation.x = Math.PI / 2 + 0.5;
+            orbitGroup.add(ring1);
+
+            const ring2Geo = new THREE.TorusGeometry(4.2, 0.03, 16, 100);
+            const ring2Mat = new THREE.MeshBasicMaterial({
+                color: 0x00ccff,
+                transparent: true,
+                opacity: 0.6
+            });
+            const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
+            ring2.rotation.x = Math.PI / 2 - 0.5;
+            orbitGroup.add(ring2);
+
+            // Animation Loop
+            function animate() {
+                if (!document.getElementById('loader-container')) return;
+                requestAnimationFrame(animate);
+
+                // Rotate gear slowly
+                gear.rotation.z -= 0.005;
+
+                // Rotate flash fast
+                flashGroup.rotation.z += 0.03;
+
+                // Rotate Bulgarian flag sphere slowly
+                glassSphere.rotation.y += 0.008;
+                glassSphere.rotation.x += 0.003;
+
+                // Rotate orbits independently
+                orbitGroup.rotation.y += 0.005;
+                orbitGroup.rotation.z += 0.002;
+
+                // Float effect
+                const floatY = Math.sin(Date.now() * 0.001) * 0.2;
+                scene.position.y = floatY;
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+        } catch (error) {
+            console.error('Loader animation error:', error);
+        }
+    </script>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+</body>
+
+</html>

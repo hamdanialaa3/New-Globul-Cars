@@ -1,0 +1,48 @@
+{
+  "rules": {
+    "presence": {
+      "$numericId": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".validate": "newData.hasChild('uid') && newData.child('uid').val() === auth.uid"
+      }
+    },
+    "channels": {
+      "$channelId": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".validate": "newData.hasChildren(['buyerFirebaseId', 'sellerFirebaseId']) && (newData.child('buyerFirebaseId').val() === auth.uid || newData.child('sellerFirebaseId').val() === auth.uid)"
+      }
+    },
+    "messages": {
+      "$channelId": {
+        ".read": "auth != null && root.child('channels').child($channelId).exists() && (root.child('channels').child($channelId).child('buyerFirebaseId').val() === auth.uid || root.child('channels').child($channelId).child('sellerFirebaseId').val() === auth.uid)",
+        ".indexOn": [
+          "timestamp"
+        ],
+        "$messageId": {
+          ".write": "auth != null && root.child('channels').child($channelId).exists() && (root.child('channels').child($channelId).child('buyerFirebaseId').val() === auth.uid || root.child('channels').child($channelId).child('sellerFirebaseId').val() === auth.uid)"
+        }
+      }
+    },
+    "user_channels": {
+      "$userNumericId": {
+        ".read": "auth != null",
+        "$channelId": {
+          ".write": "auth != null",
+          ".validate": "root.child('channels').child($channelId).exists() && (root.child('channels').child($channelId).child('buyerFirebaseId').val() === auth.uid || root.child('channels').child($channelId).child('sellerFirebaseId').val() === auth.uid)"
+        }
+      }
+    },
+    "typing": {
+      "$channelId": {
+        ".read": "auth != null && root.child('channels').child($channelId).exists() && (root.child('channels').child($channelId).child('buyerFirebaseId').val() === auth.uid || root.child('channels').child($channelId).child('sellerFirebaseId').val() === auth.uid)",
+        "$numericId": {
+          ".write": "auth != null"
+        }
+      }
+    },
+    ".read": false,
+    ".write": false
+  }
+}

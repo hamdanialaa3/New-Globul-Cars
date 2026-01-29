@@ -1,0 +1,699 @@
+// Sell Vehicle Step 2: Vehicle Data
+// الخطوة 2: بيانات المركبة
+
+import React, { useMemo, useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { UnifiedWorkflowData } from '../../../services/unified-workflow-persistence.service';
+import BrandModelMarkdownDropdown from '../../BrandModelMarkdownDropdown/BrandModelMarkdownDropdown';
+import { BODY_TYPES, DOOR_OPTIONS, SEAT_OPTIONS, FUEL_TYPES, TRANSMISSION_TYPES, DRIVE_TYPES, EXTERIOR_COLORS } from '../../../pages/04_car-selling/sell/VehicleData/types';
+import { useProfileType } from '../../../contexts/ProfileTypeContext';
+import { classifyVehicle, getCategoryLabel, getCategoryIcon, getClassificationReason } from '../../../utils/vehicle-classification';
+
+interface SellVehicleStep2Props {
+  workflowData: Partial<UnifiedWorkflowData>;
+  onUpdate: (updates: Partial<UnifiedWorkflowData>) => void;
+  mode?: 'create' | 'edit';
+}
+
+const FormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+`;
+
+const FieldGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+const Label = styled.label`
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+`;
+
+const Input = styled.input`
+  width: 100%;
+  max-width: 450px;
+  padding: 0.75rem 1rem;
+  border: 2px solid #9CA3AF;
+  border-radius: 10px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+`;
+
+const Select = styled.select`
+  width: 100%;
+  max-width: 450px;
+  padding: 0.75rem 1rem;
+  border: 2px solid #9CA3AF;
+  border-radius: 10px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+`;
+
+const SectionDivider = styled.hr`
+  border: none;
+  height: 1px;
+  background: var(--border);
+  margin: 1rem 0;
+  opacity: 0.3;
+`;
+
+const SectionTitle = styled.h3`
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0.5rem 0;
+`;
+
+const ToggleGroup = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+`;
+
+const ToggleButton = styled.button<{ $active: boolean }>`
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  border: 2px solid ${props => props.$active ? 'var(--accent-primary)' : '#9CA3AF'};
+  background: ${props => props.$active ? 'var(--accent-primary)' : 'var(--bg-card)'};
+  color: ${props => props.$active ? 'white' : 'var(--text-primary)'};
+  font-weight: ${props => props.$active ? '700' : '600'};
+  cursor: pointer;
+  transition: all 0.25s ease;
+  
+  &:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-1px);
+  }
+`;
+
+const CategoryBadge = styled.div<{ $category: 'family' | 'sport' | 'standard' }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-top: 1rem;
+  animation: fadeIn 0.3s ease;
+  
+  background: ${props => {
+    if (props.$category === 'family') return 'linear-gradient(135deg, #22c55e, #16a34a)';
+    if (props.$category === 'sport') return 'linear-gradient(135deg, #ef4444, #dc2626)';
+    return 'linear-gradient(135deg, #3b82f6, #2563eb)';
+  }};
+  
+  color: white;
+  box-shadow: 0 4px 15px ${props => {
+    if (props.$category === 'family') return 'rgba(34, 197, 94, 0.3)';
+    if (props.$category === 'sport') return 'rgba(239, 68, 68, 0.3)';
+    return 'rgba(59, 130, 246, 0.3)';
+  }};
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`;
+
+const FIRST_REGISTRATION_MONTHS = [
+  { value: '01', labelBg: 'Януари', labelEn: 'January' },
+  { value: '02', labelBg: 'Февруари', labelEn: 'February' },
+  { value: '03', labelBg: 'Март', labelEn: 'March' },
+  { value: '04', labelBg: 'Април', labelEn: 'April' },
+  { value: '05', labelBg: 'Май', labelEn: 'May' },
+  { value: '06', labelBg: 'Юни', labelEn: 'June' },
+  { value: '07', labelBg: 'Юли', labelEn: 'July' },
+  { value: '08', labelBg: 'Август', labelEn: 'August' },
+  { value: '09', labelBg: 'Септември', labelEn: 'September' },
+  { value: '10', labelBg: 'Октомври', labelEn: 'October' },
+  { value: '11', labelBg: 'Ноември', labelEn: 'November' },
+  { value: '12', labelBg: 'Декември', labelEn: 'December' }
+];
+
+const CONDITION_OPTIONS = [
+  { value: 'new', labelBg: 'Нов', labelEn: 'New' },
+  { value: 'used', labelBg: 'Използван', labelEn: 'Used' },
+  { value: 'damaged', labelBg: 'Повреден', labelEn: 'Damaged' }
+];
+
+const MILEAGE_OPTIONS = [
+  5000, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000,
+  100000, 125000, 150000, 175000, 200000, 250000, 300000, 400000, 500000, 1000000
+];
+
+const POWER_OPTIONS = [
+  30, 60, 90, 120, 150, 180, 210, 240, 270, 300,
+  350, 400, 450, 500, 600, 700, 800, 900, 1000
+];
+
+const AttentionPulse = styled.div<{ $isActive: boolean }>`
+  border-radius: 12px;
+  animation: ${props => props.$isActive ? 'pulse-attention 2s infinite' : 'none'};
+  transition: box-shadow 0.3s ease;
+  
+  @keyframes pulse-attention {
+    0% {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+  }
+`;
+
+const RevealWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const ref = React.useRef<HTMLDivElement>(null);
+  const [isActive, setIsActive] = React.useState(true);
+
+  React.useEffect(() => {
+    if (ref.current) {
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, []);
+
+  const handleInteraction = () => {
+    setIsActive(false);
+  };
+
+  return (
+    <AttentionPulse
+      ref={ref}
+      $isActive={isActive}
+      onClick={handleInteraction}
+      onFocus={handleInteraction}
+      onMouseDown={handleInteraction}
+    >
+      <FieldGroup>{children}</FieldGroup>
+    </AttentionPulse>
+  );
+};
+
+export const SellVehicleStep2: React.FC<SellVehicleStep2Props> = ({
+  workflowData,
+  onUpdate,
+  mode = 'create',
+}) => {
+  const { language } = useLanguage();
+  const { profileType, getProgressToLimit } = useProfileType();
+
+  const [isCustomMileage, setIsCustomMileage] = useState(false);
+  const [isCustomPower, setIsCustomPower] = useState(false);
+
+  // Edit Permissions Logic (Digital Domination v3.0)
+  const isBrandLocked = useMemo(() => {
+    if (mode !== 'edit') return false; // Creation mode unlocked
+
+    if (profileType === 'company') return false; // Unlimited
+    if (profileType === 'private') return true; // Strictly locked
+
+    if (profileType === 'dealer') {
+      // Check Flex-Edit Quota
+      const { used, total } = getProgressToLimit('flexEdits');
+      // If total is 999/-1 (unlimited) or user has not hit limit
+      if (total > 0 && used >= total) return true; // Locked if quota exceeded
+      return false;
+    }
+
+    return false;
+  }, [mode, profileType, getProgressToLimit]);
+
+  // Initialize custom states
+  useEffect(() => {
+    if (workflowData.mileage && !MILEAGE_OPTIONS.includes(Number(workflowData.mileage))) {
+      setIsCustomMileage(true);
+    }
+    if (workflowData.power && !POWER_OPTIONS.includes(Number(workflowData.power))) {
+      setIsCustomPower(true);
+    }
+  }, [workflowData.mileage, workflowData.power]);
+
+  // Helper functions for styling
+  const getLabelStyle = (hasValue: boolean): React.CSSProperties => ({
+    color: hasValue ? '#22c55e' : 'var(--text-primary)',
+    transition: 'color 0.3s ease'
+  });
+
+  const getInputStyle = (hasValue: boolean): React.CSSProperties => ({
+    borderColor: hasValue ? '#22c55e' : 'var(--border)',
+    color: hasValue ? '#22c55e' : 'var(--text-primary)',
+    fontWeight: hasValue ? '600' : 'normal',
+    transition: 'all 0.3s ease'
+  });
+
+  const successColor = '#22c55e';
+
+  // Computed values
+  const hasBrand = !!workflowData.make;
+  const hasModel = !!workflowData.model;
+  const firstRegistrationYear = workflowData.firstRegistration || workflowData.year?.toString() || '';
+  const hasMileage = !!workflowData.mileage;
+  const hasCondition = !!workflowData.condition;
+  const hasFuel = !!workflowData.fuelType;
+  const hasTransmission = !!workflowData.transmission;
+  const hasPower = !!workflowData.power;
+  const hasBody = !!workflowData.bodyType;
+  const hasDoors = !!workflowData.doors;
+  const hasSeats = !!workflowData.seats;
+  const hasColor = !!workflowData.color || !!workflowData.exteriorColor;
+
+  // Smart Classification - التصنيف الذكي
+  const vehicleCategory = useMemo(() => {
+    return classifyVehicle({
+      doors: workflowData.doors,
+      seats: workflowData.seats,
+      power: workflowData.power
+    });
+  }, [workflowData.doors, workflowData.seats, workflowData.power]);
+
+  // Year options
+  const currentYear = new Date().getFullYear();
+  const yearOptions = Array.from({ length: currentYear - 1949 }, (_, i) => currentYear - i);
+
+  return (
+    <FormContainer>
+      {/* Brand & Model */}
+      <FieldGroup>
+        <Label style={getLabelStyle(hasBrand && hasModel)}>
+          {language === 'bg' ? 'Марка и модел' : 'Brand & Model'} *
+          {isBrandLocked && (
+            <span style={{
+              marginLeft: '0.5rem',
+              fontSize: '0.8rem',
+              color: '#ef4444',
+              fontWeight: 'normal'
+            }}>
+              {language === 'bg'
+                ? '(Заключено за редактиране)'
+                : '(Locked for editing)'}
+            </span>
+          )}
+        </Label>
+
+        {isBrandLocked && profileType === 'private' && (
+          <div style={{
+            marginBottom: '0.5rem',
+            padding: '0.5rem',
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid #ef4444',
+            borderRadius: '8px',
+            fontSize: '0.85rem',
+            color: '#ef4444'
+          }}>
+            {language === 'bg'
+              ? 'Частните лица не могат да променят марката и модела на вече публикувана обява.'
+              : 'Private sellers cannot change Brand/Model of an existing listing.'}
+          </div>
+        )}
+
+        {isBrandLocked && profileType === 'dealer' && (
+          <div style={{
+            marginBottom: '0.5rem',
+            padding: '0.5rem',
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid #ef4444',
+            borderRadius: '8px',
+            fontSize: '0.85rem',
+            color: '#ef4444'
+          }}>
+            {language === 'bg'
+              ? 'Достигнахте месечния лимит за корекции на марка/модел (10).'
+              : 'You reached the monthly limit for Brand/Model corrections (10).'}
+          </div>
+        )}
+
+        <BrandModelMarkdownDropdown
+          brand={workflowData.make || ''}
+          model={workflowData.model || ''}
+          onBrandChange={(brand) => onUpdate({ make: brand })}
+          onModelChange={(model) => onUpdate({ model: model })}
+          disabled={isBrandLocked}
+        />
+      </FieldGroup>
+
+      {/* Only show subsequent fields if Model is selected */}
+      {hasModel && (
+        <>
+          <SectionTitle>{language === 'bg' ? 'Основна информация' : 'Basic Information'}</SectionTitle>
+
+          <RevealWrapper>
+            <Label style={getLabelStyle(!!firstRegistrationYear)}>{language === 'bg' ? 'Година на производство' : 'Year of Manufacture'} *</Label>
+            <Select
+              value={firstRegistrationYear}
+              onChange={(e) => {
+                const valYear = e.target.value;
+                onUpdate({
+                  firstRegistration: valYear || '',
+                  year: valYear ? parseInt(valYear) : undefined
+                });
+              }}
+              required
+              style={getInputStyle(!!firstRegistrationYear)}
+            >
+              <option value="">{language === 'bg' ? 'Изберете година' : 'Select year'}</option>
+              {yearOptions.map(year => (
+                <option key={year} value={year.toString()}>{year}</option>
+              ))}
+            </Select>
+          </RevealWrapper>
+
+          {!!firstRegistrationYear && (
+            <RevealWrapper>
+              <Label style={getLabelStyle(hasMileage)}>{language === 'bg' ? 'Пробег (км)' : 'Mileage (km)'}</Label>
+              <Select
+                value={isCustomMileage ? '__other__' : (workflowData.mileage || '')}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === '__other__') {
+                    setIsCustomMileage(true);
+                    onUpdate({ mileage: '' });
+                  } else {
+                    setIsCustomMileage(false);
+                    onUpdate({ mileage: val });
+                  }
+                }}
+                style={getInputStyle(hasMileage || isCustomMileage)}
+              >
+                <option value="">{language === 'bg' ? 'Изберете пробег' : 'Select mileage'}</option>
+                {MILEAGE_OPTIONS.map(opt => (
+                  <option key={opt} value={opt}>{opt.toLocaleString()} km</option>
+                ))}
+                <option value="__other__">{language === 'bg' ? 'Друго' : 'Other'}</option>
+              </Select>
+
+              {isCustomMileage && (
+                <div style={{ marginTop: '0.5rem' }}>
+                  <Input
+                    type="number"
+                    value={workflowData.mileage || ''}
+                    onChange={(e) => {
+                      // Limit to 8 digits
+                      const val = e.target.value.slice(0, 8);
+                      onUpdate({ mileage: val });
+                    }}
+                    placeholder={language === 'bg' ? 'Въведете пробег (точкни км)' : 'Enter exact mileage'}
+                    min="0"
+                    autoFocus
+                    style={getInputStyle(hasMileage)}
+                  />
+                </div>
+              )}
+            </RevealWrapper>
+          )}
+
+          {hasMileage && (
+            <RevealWrapper>
+              <Label style={getLabelStyle(hasCondition)}>{language === 'bg' ? 'Състояние' : 'Condition'}</Label>
+              <ToggleGroup>
+                {CONDITION_OPTIONS.map(option => (
+                  <ToggleButton
+                    key={option.value}
+                    $active={workflowData.condition === option.value}
+                    onClick={() => onUpdate({ condition: option.value })}
+                    style={workflowData.condition === option.value ? { borderColor: successColor, backgroundColor: successColor } : {}}
+                  >
+                    {language === 'bg' ? option.labelBg : option.labelEn}
+                  </ToggleButton>
+                ))}
+              </ToggleGroup>
+            </RevealWrapper>
+          )}
+
+          {hasCondition && (
+            <>
+              <SectionDivider />
+              <SectionTitle>{language === 'bg' ? 'Технически детайли' : 'Technical Details'}</SectionTitle>
+
+              <RevealWrapper>
+                <Label style={getLabelStyle(hasFuel)}>{language === 'bg' ? 'Тип гориво' : 'Fuel Type'}</Label>
+                <Select
+                  value={workflowData.fuelType || ''}
+                  onChange={(e) => onUpdate({ fuelType: e.target.value })}
+                  style={getInputStyle(hasFuel)}
+                >
+                  <option value="">{language === 'bg' ? 'Изберете тип гориво' : 'Select fuel type'}</option>
+                  {FUEL_TYPES.map(type => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </Select>
+              </RevealWrapper>
+            </>
+          )}
+
+          {hasFuel && (
+            <RevealWrapper>
+              <Label style={getLabelStyle(hasTransmission)}>{language === 'bg' ? 'Скоростна кутия' : 'Transmission'}</Label>
+              <Select
+                value={workflowData.transmission || ''}
+                onChange={(e) => onUpdate({ transmission: e.target.value })}
+                style={getInputStyle(hasTransmission)}
+              >
+                <option value="">{language === 'bg' ? 'Изберете скоростна кутия' : 'Select transmission'}</option>
+                {TRANSMISSION_TYPES.map(type => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </Select>
+            </RevealWrapper>
+          )}
+
+          {hasTransmission && (
+            <RevealWrapper>
+              <Label style={getLabelStyle(!!workflowData.driveType)}>{language === 'bg' ? 'Нов на двигател' : 'Drive Type'}</Label>
+              <Select
+                value={workflowData.driveType || ''}
+                onChange={(e) => onUpdate({ driveType: e.target.value })}
+                style={getInputStyle(!!workflowData.driveType)}
+              >
+                <option value="">{language === 'bg' ? 'Изберете нов на двигател' : 'Select drive type'}</option>
+                {DRIVE_TYPES.map(type => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </Select>
+            </RevealWrapper>
+          )}
+
+          {hasTransmission && (
+            <RevealWrapper>
+              <Label style={getLabelStyle(hasPower)}>{language === 'bg' ? 'Мощност (к.с.)' : 'Power (HP)'}</Label>
+              <Select
+                value={isCustomPower ? '__other__' : (workflowData.power || '')}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === '__other__') {
+                    setIsCustomPower(true);
+                    onUpdate({ power: '' });
+                  } else {
+                    setIsCustomPower(false);
+                    onUpdate({ power: val });
+                  }
+                }}
+                style={getInputStyle(hasPower || isCustomPower)}
+              >
+                <option value="">{language === 'bg' ? 'Изберете мощност' : 'Select power'}</option>
+                {POWER_OPTIONS.map(opt => (
+                  <option key={opt} value={opt}>{opt} hp</option>
+                ))}
+                <option value="__other__">{language === 'bg' ? 'Друго' : 'Other'}</option>
+              </Select>
+
+              {isCustomPower && (
+                <div style={{ marginTop: '0.5rem' }}>
+                  <Input
+                    type="text"
+                    maxLength={4} // Limit to 4 characters
+                    value={workflowData.power || ''}
+                    onChange={(e) => {
+                      // Allow only numbers and max 4 digits
+                      const val = e.target.value.replace(/\D/g, '').slice(0, 4);
+                      onUpdate({ power: val });
+                    }}
+                    placeholder={language === 'bg' ? 'Въведете мощност' : 'Enter power'}
+                    autoFocus
+                    style={getInputStyle(hasPower)}
+                  />
+                </div>
+              )}
+            </RevealWrapper>
+          )}
+
+          {hasPower && (
+            <>
+              <SectionDivider />
+              <SectionTitle>{language === 'bg' ? 'Физически детайли' : 'Physical Details'}</SectionTitle>
+
+              <RevealWrapper>
+                <Label style={getLabelStyle(hasBody)}>{language === 'bg' ? 'Тип каросерия' : 'Body Type'}</Label>
+                <Select
+                  value={workflowData.bodyType || ''}
+                  onChange={(e) => onUpdate({ bodyType: e.target.value })}
+                  style={getInputStyle(hasBody)}
+                >
+                  <option value="">{language === 'bg' ? 'Изберете тип каросерия' : 'Select body type'}</option>
+                  {BODY_TYPES.map(type => (
+                    <option key={type.value} value={type.value}>
+                      {language === 'bg' ? type.labelBg : type.labelEn}
+                    </option>
+                  ))}
+                </Select>
+              </RevealWrapper>
+            </>
+          )}
+
+          {hasBody && (
+            <RevealWrapper>
+              <Label style={getLabelStyle(!!workflowData.doors)}>{language === 'bg' ? 'Брой врати' : 'Number of Doors'}</Label>
+              <Select
+                value={workflowData.doors || ''}
+                onChange={(e) => onUpdate({ doors: e.target.value })}
+                style={getInputStyle(!!workflowData.doors)}
+              >
+                <option value="">{language === 'bg' ? 'Изберете брой врати' : 'Select number of doors'}</option>
+                {DOOR_OPTIONS.map(opt => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </Select>
+            </RevealWrapper>
+          )}
+
+          {workflowData.doors && (
+            <RevealWrapper>
+              <Label style={getLabelStyle(!!workflowData.seats)}>{language === 'bg' ? 'Брой места' : 'Number of Seats'}</Label>
+              <Select
+                value={workflowData.seats || ''}
+                onChange={(e) => onUpdate({ seats: e.target.value })}
+                style={getInputStyle(!!workflowData.seats)}
+              >
+                <option value="">{language === 'bg' ? 'Изберете брой места' : 'Select number of seats'}</option>
+                {SEAT_OPTIONS.map(opt => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </Select>
+
+              {/* Smart Classification Badge - بادج التصنيف الذكي */}
+              {(workflowData.seats || workflowData.doors || (workflowData.power && parseInt(String(workflowData.power), 10) > 270)) && 
+               vehicleCategory !== 'standard' && (
+                <CategoryBadge $category={vehicleCategory}>
+                  <span>{getCategoryIcon(vehicleCategory)}</span>
+                  <span>{getCategoryLabel(vehicleCategory, language as 'bg' | 'en')}</span>
+                  <span style={{ fontSize: '0.85rem', opacity: 0.9 }}>
+                    ({getClassificationReason({
+                      doors: workflowData.doors,
+                      seats: workflowData.seats,
+                      power: workflowData.power
+                    }, language as 'bg' | 'en')})
+                  </span>
+                </CategoryBadge>
+              )}
+            </RevealWrapper>
+          )}
+
+          {workflowData.seats && (
+            <RevealWrapper>
+              <Label style={getLabelStyle(hasColor)}>{language === 'bg' ? 'Външен цвят' : 'Exterior Color'}</Label>
+              <Select
+                value={workflowData.color === 'Other' ? 'Other' : (workflowData.color || '')}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === 'Other') {
+                    onUpdate({ color: 'Other', exteriorColor: '' }); // Clear specific color if Other selected
+                  } else {
+                    onUpdate({ color: val, exteriorColor: val, exteriorColorOther: undefined });
+                  }
+                }}
+                style={getInputStyle(hasColor)}
+              >
+                <option value="">{language === 'bg' ? 'Изберете цвят' : 'Select color'}</option>
+                {EXTERIOR_COLORS.map(color => (
+                  <option key={color} value={color}>{color}</option>
+                ))}
+              </Select>
+
+              {workflowData.color === 'Other' && (
+                <div style={{ marginTop: '0.5rem' }}>
+                  <Input
+                    type="text"
+                    value={workflowData.exteriorColorOther || ''}
+                    onChange={(e) => onUpdate({ exteriorColorOther: e.target.value, exteriorColor: e.target.value })}
+                    placeholder={language === 'bg' ? 'Въведете вашия цвят' : 'Enter your color'}
+                    style={getInputStyle(!!workflowData.exteriorColorOther)}
+                    autoFocus
+                  />
+                </div>
+              )}
+            </RevealWrapper>
+          )}
+
+          {/* Show remaining fields only at the very end or group them appropriately if needed */}
+          {hasColor && (
+            <>
+              <SectionDivider />
+              <SectionTitle>{language === 'bg' ? 'Информация за продавача' : 'Seller Information'}</SectionTitle>
+              <RevealWrapper>
+                <Label>{language === 'bg' ? 'Тип продавач' : 'Seller Type'}</Label>
+                <ToggleGroup>
+                  <ToggleButton
+                    $active={workflowData.sellerType === 'private'}
+                    onClick={() => onUpdate({ sellerType: 'private' })}
+                    style={workflowData.sellerType === 'private' ? { borderColor: successColor, backgroundColor: successColor } : {}}
+                  >
+                    {language === 'bg' ? 'Частно лице' : 'Private'}
+                  </ToggleButton>
+                  <ToggleButton
+                    $active={workflowData.sellerType === 'dealer'}
+                    onClick={() => onUpdate({ sellerType: 'dealer' })}
+                    style={workflowData.sellerType === 'dealer' ? { borderColor: successColor, backgroundColor: successColor } : {}}
+                  >
+                    {language === 'bg' ? 'Търговец' : 'Dealer'}
+                  </ToggleButton>
+                  <ToggleButton
+                    $active={workflowData.sellerType === 'company'}
+                    onClick={() => onUpdate({ sellerType: 'company' })}
+                    style={workflowData.sellerType === 'company' ? { borderColor: successColor, backgroundColor: successColor } : {}}
+                  >
+                    {language === 'bg' ? 'Фирма' : 'Company'}
+                  </ToggleButton>
+                </ToggleGroup>
+              </RevealWrapper>
+            </>
+          )}
+        </>
+      )}
+    </FormContainer>
+  );
+};
+
+export default SellVehicleStep2;

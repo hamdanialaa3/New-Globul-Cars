@@ -1,0 +1,13 @@
+{
+  "projects": {
+    "default": "fire-new-globul"
+  },
+  "targets": {},
+  "etags": {
+    "fire-new-globul": {
+      "extensionInstances": {
+        "delete-user-data": "5f12205d5f111d5195b660d4b9cfb64d89cfbddf248be33166d8c61c9e8b6305"
+      }
+    }
+  }
+}

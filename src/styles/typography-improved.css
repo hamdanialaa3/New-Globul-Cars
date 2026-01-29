@@ -1,0 +1,316 @@
+/* ═══════════════════════════════════════════════════════════
+   IMPROVED TYPOGRAPHY SYSTEM
+   نظام محسّن للطباعة - أوضح وأقوى للعين
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  /* ═══ Font Weights - أوزان الخطوط المحسّنة ═══ */
+  --font-thin: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+  --font-black: 900;
+
+  /* ═══ Text Colors - ألوان النصوص المحسّنة ═══ */
+  --text-heading: #0a0a0a;
+  /* عناوين - أسود تقريباً */
+  --text-body: #1a1a1a;
+  /* نص أساسي - أسود داكن */
+  --text-emphasis: #2a2a2a;
+  /* نص مميز - أسود متوسط */
+  --text-label: #404040;
+  /* labels - رمادي غامق */
+  --text-secondary: #4a4a4a;
+  /* نص ثانوي - رمادي */
+  --text-tertiary: #5a5a5a;
+  /* نص أقل أهمية */
+  --text-muted: #707070;
+  /* نص خفيف */
+  --text-disabled: #9a9a9a;
+  /* نص معطّل */
+
+  /* ═══ Font Sizes - أحجام الخطوط المحسّنة ═══ */
+  --text-xs: 0.6875rem;
+  /* 11px - tiny */
+  --text-sm: 0.8125rem;
+  /* 13px - small */
+  --text-base: 0.9375rem;
+  /* 15px - base */
+  --text-md: 1rem;
+  /* 16px - medium */
+  --text-lg: 1.125rem;
+  /* 18px - large */
+  --text-xl: 1.375rem;
+  /* 22px - extra large */
+  --text-2xl: 1.625rem;
+  /* 26px - 2x large */
+  --text-3xl: 2rem;
+  /* 32px - 3x large */
+
+  /* ═══ Line Heights - ارتفاعات الأسطر ═══ */
+  --leading-tight: 1.2;
+  --leading-snug: 1.3;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.7;
+
+  /* ═══ Letter Spacing - تباعد الأحرف ═══ */
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.02em;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DARK MODE TEXT ADJUSTMENTS
+   ═══════════════════════════════════════════════════════════ */
+html[data-theme="dark"],
+.dark-theme {
+  --text-heading: #f5f5f5;
+  --text-body: #e8eaed;
+  --text-emphasis: #d0d3d7;
+  --text-label: #c0c3c7;
+  --text-secondary: #b0b3b8;
+  --text-tertiary: #a0a3a8;
+  --text-muted: #8e9297;
+  --text-disabled: #6e7177;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CAR CARD TYPOGRAPHY - بطاقات السيارات
+   ═══════════════════════════════════════════════════════════ */
+
+/* العناوين الرئيسية */
+.car-title,
+.car-card h3,
+.car-card-title {
+  font-size: var(--text-lg) !important;
+  /* 18px */
+  font-weight: var(--font-bold) !important;
+  /* 700 */
+  color: var(--text-heading) !important;
+  line-height: var(--leading-tight) !important;
+  letter-spacing: var(--tracking-tight) !important;
+}
+
+/* الأسعار */
+.car-price,
+.price-amount {
+  font-size: var(--text-2xl) !important;
+  /* 26px */
+  font-weight: var(--font-extrabold) !important;
+  /* 800 */
+  color: var(--text-heading) !important;
+  line-height: var(--leading-tight) !important;
+}
+
+.price-currency {
+  font-size: var(--text-lg) !important;
+  /* 18px */
+  font-weight: var(--font-bold) !important;
+  /* 700 */
+  color: var(--text-heading) !important;
+}
+
+/* تفاصيل الأسعار */
+.price-details,
+.monthly-label,
+.vat-label {
+  font-size: var(--text-sm) !important;
+  /* 13px */
+  font-weight: var(--font-medium) !important;
+  /* 500 */
+  color: var(--text-label) !important;
+}
+
+/* المواصفات */
+.car-specs,
+.spec-item,
+.spec-line {
+  font-size: var(--text-sm) !important;
+  /* 13px */
+  font-weight: var(--font-medium) !important;
+  /* 500 */
+  color: var(--text-secondary) !important;
+  line-height: var(--leading-snug) !important;
+}
+
+.spec-item strong,
+.spec-line strong {
+  font-weight: var(--font-bold) !important;
+  /* 700 */
+  color: var(--text-body) !important;
+}
+
+/* الموقع */
+.car-location,
+.location-text {
+  font-size: var(--text-sm) !important;
+  /* 13px */
+  font-weight: var(--font-medium) !important;
+  /* 500 */
+  color: var(--text-tertiary) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GENERAL TEXT HIERARCHY - التسلسل الهرمي العام
+   ═══════════════════════════════════════════════════════════ */
+
+/* Headings */
+h1 {
+  font-size: var(--text-3xl) !important;
+  /* 32px */
+  font-weight: var(--font-black) !important;
+  /* 900 */
+  color: var(--text-heading) !important;
+  line-height: var(--leading-tight) !important;
+  letter-spacing: var(--tracking-tight) !important;
+}
+
+h2 {
+  font-size: var(--text-2xl) !important;
+  /* 26px */
+  font-weight: var(--font-extrabold) !important;
+  /* 800 */
+  color: var(--text-heading) !important;
+  line-height: var(--leading-tight) !important;
+}
+
+h3 {
+  font-size: var(--text-xl) !important;
+  /* 22px */
+  font-weight: var(--font-bold) !important;
+  /* 700 */
+  color: var(--text-heading) !important;
+  line-height: var(--leading-snug) !important;
+}
+
+h4 {
+  font-size: var(--text-lg) !important;
+  /* 18px */
+  font-weight: var(--font-bold) !important;
+  /* 700 */
+  color: var(--text-body) !important;
+}
+
+h5 {
+  font-size: var(--text-md) !important;
+  /* 16px */
+  font-weight: var(--font-semibold) !important;
+  /* 600 */
+  color: var(--text-body) !important;
+}
+
+h6 {
+  font-size: var(--text-base) !important;
+  /* 15px */
+  font-weight: var(--font-semibold) !important;
+  /* 600 */
+  color: var(--text-emphasis) !important;
+}
+
+/* Body Text */
+p,
+span,
+div {
+  font-size: var(--text-base);
+  /* 15px */
+  font-weight: var(--font-normal);
+  /* 400 */
+  color: var(--text-body);
+  line-height: var(--leading-normal);
+}
+
+/* Strong Text */
+strong,
+b {
+  font-weight: var(--font-bold) !important;
+  /* 700 */
+  color: var(--text-heading) !important;
+}
+
+/* Links */
+a {
+  font-weight: var(--font-medium) !important;
+  /* 500 */
+  color: var(--accent-primary) !important;
+}
+
+a:hover {
+  font-weight: var(--font-semibold) !important;
+  /* 600 */
+}
+
+/* Labels */
+label {
+  font-size: var(--text-sm) !important;
+  /* 13px */
+  font-weight: var(--font-semibold) !important;
+  /* 600 */
+  color: var(--text-label) !important;
+}
+
+/* Buttons */
+button {
+  font-size: var(--text-base) !important;
+  /* 15px */
+  font-weight: var(--font-semibold) !important;
+  /* 600 */
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SPECIFIC IMPROVEMENTS - تحسينات محددة
+   ═══════════════════════════════════════════════════════════ */
+
+/* Small text that needs to be readable */
+.text-small,
+.small-text,
+.caption {
+  font-size: var(--text-sm) !important;
+  /* 13px */
+  font-weight: var(--font-medium) !important;
+  /* 500 */
+  color: var(--text-secondary) !important;
+}
+
+/* Metadata text */
+.metadata,
+.meta-info,
+.info-text {
+  font-size: var(--text-sm) !important;
+  /* 13px */
+  font-weight: var(--font-medium) !important;
+  /* 500 */
+  color: var(--text-tertiary) !important;
+}
+
+/* Price emphasis */
+.price,
+.price-tag,
+.amount {
+  font-weight: var(--font-extrabold) !important;
+  /* 800 */
+  color: var(--text-heading) !important;
+}
+
+/* Status badges */
+.badge,
+.tag,
+.label {
+  font-size: var(--text-xs) !important;
+  /* 11px */
+  font-weight: var(--font-bold) !important;
+  /* 700 */
+  letter-spacing: var(--tracking-wide) !important;
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANTI-ALIASING - تنعيم الخطوط
+   ═══════════════════════════════════════════════════════════ */
+
+* {
+  text-rendering: optimizeLegibility;
+}
+
+/* For very small text, use subpixel antialiasing */

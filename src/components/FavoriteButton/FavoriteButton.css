@@ -1,0 +1,195 @@
+/* Favorite Button Styles - Premium Animation */
+
+.favorite-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: visible;
+  width: auto;
+  height: auto;
+}
+
+.favorite-button:hover {
+  transform: scale(1.15);
+}
+
+.favorite-button:active {
+  transform: scale(0.9);
+}
+
+/* Icon Styles */
+.favorite-icon {
+  width: 24px;
+  height: 24px;
+  fill: #ef4444;
+  stroke: #ef4444;
+  stroke-width: 0;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.favorite-icon--filled {
+  fill: #ef4444;
+  stroke: #ef4444;
+  stroke-width: 0;
+}
+
+.favorite-button:hover .favorite-icon {
+  fill: #ef4444;
+}
+
+/* Active State - No background */
+.favorite-button--active {
+  background: transparent;
+}
+
+.favorite-button--active:hover {
+  background: transparent;
+}
+
+/* Animation States */
+.favorite-button--animating {
+  animation: heartBeat 0.6s ease-in-out;
+}
+
+.favorite-button--animating .favorite-icon {
+  animation: heartPulse 0.6s ease-in-out;
+}
+
+/* Keyframe Animations */
+@keyframes heartBeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  10%, 30% {
+    transform: scale(0.9);
+  }
+  20%, 40%, 60%, 80% {
+    transform: scale(1.1);
+  }
+  50%, 70% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes heartPulse {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.3);
+  }
+  50% {
+    transform: scale(1);
+  }
+  75% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Remove Ripple Effect - No background needed */
+.favorite-button::before {
+  display: none;
+}
+
+.favorite-button--animating::before {
+  display: none;
+}
+
+@keyframes ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* Text Variant */
+.favorite-button:has(.favorite-text) {
+  border-radius: 20px;
+  padding: 8px 16px;
+}
+
+.favorite-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #212529;
+  white-space: nowrap;
+}
+
+.favorite-button--active .favorite-text {
+  color: #dc3545;
+}
+
+/* Small Variant (for cards) */
+.favorite-button--small {
+  padding: 0;
+  box-shadow: none;
+}
+
+.favorite-button--small .favorite-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Floating Variant (absolute positioned) */
+.favorite-button--floating {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  box-shadow: none;
+  background: transparent;
+}
+
+.favorite-button--floating:hover {
+  box-shadow: none;
+  background: transparent;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .favorite-button {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .favorite-button:hover {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .favorite-text {
+    color: #f8f9fa;
+  }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .favorite-button {
+    padding: 0;
+  }
+
+  .favorite-button:has(.favorite-text) {
+    padding: 8px 16px;
+  }
+
+  .favorite-text {
+    font-size: 13px;
+  }
+}
+
+
