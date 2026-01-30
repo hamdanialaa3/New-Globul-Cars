@@ -12,6 +12,12 @@ const CarsPage = safeLazy(() => import('../pages/01_main-pages/CarsPage'));
 const AIAdvisorPage = safeLazy(() => import('../pages/01_main-pages/advisor/AIAdvisorPage'));
 const AIValuationPage = safeLazy(() => import('../pages/01_main-pages/valuation/AIValuationPage'));
 const AIHistoryPage = safeLazy(() => import('../pages/01_main-pages/history/AIHistoryPage'));
+const MarketplacePage = safeLazy(() => import('../pages/01_main-pages/marketplace/MarketplacePage'));
+const ProductDetailPage = safeLazy(() => import('../pages/01_main-pages/marketplace/ProductDetailPage'));
+const CartPage = safeLazy(() => import('../pages/01_main-pages/marketplace/CartPage'));
+const MarketplaceCheckoutPage = safeLazy(() => import('../pages/01_main-pages/marketplace/CheckoutPage'));
+const BlogPage = safeLazy(() => import('../pages/01_main-pages/blog/BlogPage'));
+const BlogPostPage = safeLazy(() => import('../pages/01_main-pages/blog/BlogPostPage'));
 // PHASE 3: Team Management System (Updated path)
 const TeamManagementPage = safeLazy(() => import('../pages/06_admin/TeamManagement/TeamManagementPage'));
 const CompanyAnalyticsDashboard = safeLazy(() => import('../pages/09_dealer-company/CompanyAnalyticsDashboard'));
@@ -105,6 +111,7 @@ const IntegrationStatusDashboard = safeLazy(() => import('../components/admin/In
 const QuickSetupPage = safeLazy(() => import('../pages/06_admin/QuickSetupPage'));
 const CloudServicesManager = safeLazy(() => import('../pages/06_admin/CloudServicesManager'));
 const CityCarsPage = safeLazy(() => import('../pages/seo/CityCarsPage'));
+const CityCarsLandingPage = safeLazy(() => import('../pages/seo/CityCarsLandingPage'));
 const BrandCityPage = safeLazy(() => import('../pages/seo/BrandCityPage'));
 const NewCarsPage = safeLazy(() => import('../pages/seo/NewCarsPage'));
 const AccidentCarsPage = safeLazy(() => import('../pages/seo/AccidentCarsPage'));
@@ -150,6 +157,19 @@ export const MainRoutes: React.FC = () => {
 
             {/* 📜 AI Car History */}
             <Route path="/history" element={<AIHistoryPage />} />
+
+            {/* 🛒 Marketplace - Parts & Accessories */}
+            <Route path="/marketplace" element={<MarketplacePage />} />
+            <Route path="/marketplace/product/:productId" element={<ProductDetailPage />} />
+            <Route path="/marketplace/cart" element={<CartPage />} />
+            <Route path="/marketplace/checkout" element={<MarketplaceCheckoutPage />} />
+
+            {/* 📝 Blog - Bulgarian Content & SEO */}
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
+
+            {/* 🏙️ SEO: City Landing Pages */}
+            <Route path="/city/:city" element={<CityCarsLandingPage />} />
 
             {/* 🆕 Dynamic Car Showcase Pages (Container Pages) */}
             <Route path="/cars/all" element={<DynamicCarShowcase pageType="all" />} />
