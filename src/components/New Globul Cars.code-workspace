@@ -1,0 +1,18 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../Cars Parts 2026 BG"
+		},
+		{
+			"path": "../../../New G Cars APP"
+		}
+	],
+	"settings": {
+		"terminal.integrated.suggest.enabled": true,
+		"extensions.ignoreRecommendations": true,
+		"chat.promptFilesRecommendations": {}
+	}
+}
