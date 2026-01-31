@@ -60,26 +60,36 @@ export const getCarByNumericIds = async (
   carNumericId: number | string
 ): Promise<CarListing | null> => {
   try {
-    const carsRef = collection(db, 'cars');
+    // ✅ CRITICAL FIX: Search across ALL vehicle collections, not just 'cars'
+    const VEHICLE_COLLECTIONS = ['passenger_cars', 'suvs', 'vans', 'motorcycles', 'trucks', 'buses', 'cars', 'listings'];
+    
     // Prepare permutations for tolerant lookup
     const sValues = [Number(sellerNumericId), String(sellerNumericId)].filter(v => v);
     const cValues = [Number(carNumericId), String(carNumericId)].filter(v => v);
     const idFields = ['numericId', 'carNumericId'];
 
-    // Strategy 1: Direct Lookup
-    for (const s of sValues) {
-      for (const c of cValues) {
-        for (const field of idFields) {
-          const q = query(
-            carsRef,
-            where('sellerNumericId', '==', s),
-            where(field, '==', c),
-            limit(1)
-          );
-          const snap = await getDocs(q);
-          if (!snap.empty) {
-            const carData = snap.docs[0].data() as CarListing;
-            return { ...carData, id: snap.docs[0].id };
+    // Strategy 1: Direct Lookup across all collections
+    for (const collectionName of VEHICLE_COLLECTIONS) {
+      const carsRef = collection(db, collectionName);
+      for (const s of sValues) {
+        for (const c of cValues) {
+          for (const field of idFields) {
+            try {
+              const q = query(
+                carsRef,
+                where('sellerNumericId', '==', s),
+                where(field, '==', c),
+                limit(1)
+              );
+              const snap = await getDocs(q);
+              if (!snap.empty) {
+                const carData = snap.docs[0].data() as CarListing;
+                logger.debug('Car found via direct lookup', { collectionName, sellerNumericId, carNumericId });
+                return { ...carData, id: snap.docs[0].id };
+              }
+            } catch {
+              // Collection might not exist, continue
+            }
           }
         }
       }
@@ -103,18 +113,26 @@ export const getCarByNumericIds = async (
 
     if (sellerUid) {
       logger.debug(`Resolved sellerNumericId ${sellerNumericId} -> UID ${sellerUid}. Searching cars by UID...`);
-      for (const c of cValues) {
-        for (const field of idFields) {
-          const q = query(
-            carsRef,
-            where('sellerId', '==', sellerUid),
-            where(field, '==', c),
-            limit(1)
-          );
-          const snap = await getDocs(q);
-          if (!snap.empty) {
-            const carData = snap.docs[0].data() as CarListing;
-            return { ...carData, id: snap.docs[0].id };
+      for (const collectionName of VEHICLE_COLLECTIONS) {
+        const carsRef = collection(db, collectionName);
+        for (const c of cValues) {
+          for (const field of idFields) {
+            try {
+              const q = query(
+                carsRef,
+                where('sellerId', '==', sellerUid),
+                where(field, '==', c),
+                limit(1)
+              );
+              const snap = await getDocs(q);
+              if (!snap.empty) {
+                const carData = snap.docs[0].data() as CarListing;
+                logger.debug('Car found via UID fallback', { collectionName, sellerNumericId, carNumericId });
+                return { ...carData, id: snap.docs[0].id };
+              }
+            } catch {
+              // Collection might not exist, continue
+            }
           }
         }
       }

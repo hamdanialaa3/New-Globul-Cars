@@ -39,6 +39,7 @@ const GreenHeaderContainer = styled.div<{ $isDark: boolean }>`
   justify-content: space-between;
   gap: 24px;
   margin-top: 20px;
+  margin-bottom: 24px;
   border-radius: 16px 16px 0 0;
   
   /* Desktop Layout */

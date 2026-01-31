@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebase-config';
 import { unifiedCarService } from '../../../services/car';
@@ -9,6 +9,12 @@ import { startAiTrace, endAiTrace } from '../../../services/performance/ai-perfo
 export const useCarDetails = (carId: string | undefined) => {
   const [car, setCar] = useState<CarListing | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // ✅ FIX: Force refresh function to reload data from Firestore
+  const refresh = useCallback(() => {
+    setRefreshKey(prev => prev + 1);
+  }, []);
 
   useEffect(() => {
     const loadCar = async () => {
@@ -18,7 +24,9 @@ export const useCarDetails = (carId: string | undefined) => {
         return;
       }
       
-      logger.info('🔍 Loading car with ID:', carId);
+      // ✅ FIX: Reset loading state on refresh
+      setLoading(true);
+      logger.info('🔍 Loading car with ID:', carId, { refreshKey });
       
       const trace = startAiTrace('car_details_load');
       const startTime = performance.now();
@@ -120,8 +128,7 @@ export const useCarDetails = (carId: string | undefined) => {
     };
 
     loadCar();
-  }, [carId]);
+  }, [carId, refreshKey]);
 
-  return { car, loading, setCar };
+  return { car, loading, setCar, refresh };
 };
-

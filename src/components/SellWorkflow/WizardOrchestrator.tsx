@@ -409,7 +409,10 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
                     ? 'Системна грешка при присвояване на ID. Моля опитайте отново.'
                     : 'System error assigning IDs. Please try again.';
             } else if (error.message?.includes('Listing limit')) {
-                errorMsg = error.message; // Already translated
+                // ✅ FIX: Translate listing limit error to Bulgarian
+                errorMsg = language === 'bg'
+                    ? 'Достигнахте лимита за обяви. Моля надградете плана си или изтрийте съществуващи обяви.'
+                    : 'Listing limit reached. Please upgrade your plan or delete existing listings.';
             } else if (error.message?.includes('Authentication') || error.message?.includes('authenticated')) {
                 errorMsg = language === 'bg'
                     ? 'Моля влезте в профила си, за да публикувате обява.'
@@ -420,7 +423,7 @@ export const WizardOrchestrator: React.FC<WizardOrchestratorProps> = ({ onComple
                     : 'Failed to publish listing. Please try again.');
             }
             
-            toast.error(errorMsg);
+            toast.error(errorMsg, { duration: 6000 }); // Show for 6 seconds to ensure user sees it
         } finally {
             setIsPublishing(false);
         }

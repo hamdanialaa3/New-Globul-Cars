@@ -32,8 +32,8 @@ const CarCard = styled(Link)`
   flex-direction: column;
   position: relative;
   width: 100%;
-  max-width: 224px; /* Reduced by 30%: 320px → 224px */
-  min-height: 280px; /* Reduced by 30%: 400px → 280px */
+  max-width: 220px; /* Mobile.de style: 220px width */
+  min-height: 250px; /* Mobile.de style: 250px height */
   margin: 0 auto; /* Center card in grid cell */
 
   &:hover {
@@ -68,8 +68,8 @@ const FavoriteButton = styled.button<{ $isFavorite: boolean }>`
   }
 
   svg {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     fill: ${props => props.$isFavorite ? '#ef4444' : 'none'};
     stroke: ${props => props.$isFavorite ? '#ef4444' : '#d1d5db'};
     stroke-width: ${props => props.$isFavorite ? '0' : '2'};
@@ -88,7 +88,7 @@ const CarCardContent = styled.div`
 `;
 
 const CarImageWrapper = styled.div`
-  height: 140px; /* Reduced by 30%: 200px → 140px */
+  height: 110px; /* Mobile.de style: compact image */
   position: relative;
   overflow: hidden;
   background: var(--bg-secondary);
@@ -106,7 +106,7 @@ const CarImage = styled.img`
 `;
 
 const PriceTag = styled.div`
-  padding: 8px 10px 6px 10px;
+  padding: 6px 8px 5px 8px;
   background: var(--bg-card);
 `;
 
@@ -118,14 +118,14 @@ const PriceRow = styled.div`
 `;
 
 const PriceAmount = styled.div`
-  font-size: 24px; /* mobile.de standard: 24px / 1.5rem */
-  font-weight: 700; /* mobile.de standard: bold */
+  font-size: 20px; /* Mobile.de compact: 20px */
+  font-weight: 700;
   color: var(--text-primary);
 `;
 
 const PriceCurrency = styled.span`
-  font-size: 16px; /* mobile.de standard: 16px / 1rem */
-  font-weight: 600; /* mobile.de standard: semi-bold */
+  font-size: 14px; /* Mobile.de compact: 14px */
+  font-weight: 600;
   color: var(--text-primary);
 `;
 
@@ -163,15 +163,15 @@ const GoodPriceBadge = styled.div`
 `;
 
 const CarInfo = styled.div`
-  padding: 16px; /* mobile.de standard: 16px padding */
+  padding: 12px; /* Mobile.de compact: 12px padding */
 `;
 
 const CarTitle = styled.h3`
-  font-size: 18px; /* mobile.de standard: 18px / 1.125rem */
-  font-weight: 600; /* mobile.de standard: semi-bold */
+  font-size: 15px; /* Mobile.de compact: 15px */
+  font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 8px 0; /* mobile.de standard: 8px bottom margin */
-  line-height: 1.4; /* mobile.de standard */
+  margin: 0 0 6px 0;
+  line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -180,9 +180,9 @@ const CarTitle = styled.h3`
 const CarSpecs = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  margin-bottom: 8px;
-  font-size: 0.8125rem;
+  gap: 3px;
+  margin-bottom: 6px;
+  font-size: 0.75rem;
   color: var(--text-primary);
   font-weight: 600;
   line-height: 1.3;
@@ -190,21 +190,21 @@ const CarSpecs = styled.div`
 
 const SpecLine = styled.div`
   color: var(--text-primary);
-  font-size: 14px; /* mobile.de standard: 14px / 0.875rem */
-  font-weight: 400; /* mobile.de standard: regular */
-  line-height: 1.6; /* mobile.de standard */
+  font-size: 12px; /* Mobile.de compact: 12px */
+  font-weight: 400;
+  line-height: 1.6;
   
   &:first-child {
     color: var(--text-primary);
-    font-weight: 500; /* mobile.de standard: medium */
+    font-weight: 500;
   }
 `;
 
 const SpecGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 4px 10px;
-  font-size: 0.8125rem;
+  gap: 3px 8px;
+  font-size: 0.75rem;
   color: var(--text-primary);
   font-weight: 600;
 `;
@@ -218,20 +218,20 @@ const SpecItem = styled.div`
 `;
 
 const LeasingInfo = styled.div`
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--text-secondary);
   font-weight: 500;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   line-height: 1.3;
 `;
 
 const CarLocation = styled.div`
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--text-primary);
   font-weight: 600;
-  padding-top: 6px;
+  padding-top: 5px;
   border-top: 1px solid var(--border);
-  margin-top: 6px;
+  margin-top: 5px;
   line-height: 1.3;
 `;
 
@@ -272,11 +272,13 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
 
   const getMainImage = (): string | null => {
     if (car.images && car.images.length > 0) {
-      const firstImage = car.images[0];
-      if (typeof firstImage === 'string') {
-        return firstImage;
-      } else if (firstImage instanceof File) {
-        return URL.createObjectURL(firstImage);
+      // Use featuredImageIndex if available, fallback to first image
+      const featuredIdx = car.featuredImageIndex || 0;
+      const featuredImage = car.images[featuredIdx] || car.images[0];
+      if (typeof featuredImage === 'string') {
+        return featuredImage;
+      } else if (featuredImage instanceof File) {
+        return URL.createObjectURL(featuredImage);
       }
     }
     return null;

@@ -297,7 +297,7 @@ export const CarCardWithFavorites: React.FC<CarCardWithFavoritesProps> = ({
           year: car.year,
           price: car.price,
           currency: car.currency || 'EUR',
-          primaryImage: car.images?.[0],
+          primaryImage: car.images?.[car.featuredImageIndex || 0] || car.images?.[0],
           isActive: car.isActive !== false
         }
       );
@@ -334,7 +334,7 @@ export const CarCardWithFavorites: React.FC<CarCardWithFavoritesProps> = ({
       
       <ImageWrapper>
         <CarImage 
-          src={car.images?.[0] || '/media/car-placeholder.png'} 
+          src={car.images?.[car.featuredImageIndex || 0] || car.images?.[0] || '/media/car-placeholder.png'} 
           alt={`${car.make} ${car.model}`}
           loading="lazy"
         />

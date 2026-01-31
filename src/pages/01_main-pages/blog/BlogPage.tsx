@@ -1,8 +1,8 @@
-6import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useTheme } from '../../../contexts/ThemeContext';
-import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { blogService } from '../../../services/blog/blog.service';
 import type { BlogPost, BlogCategory } from '../../../types/blog.types';
 import { serviceLogger } from '../../../services/logger-service';

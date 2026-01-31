@@ -188,6 +188,7 @@ const CATEGORIES: VehicleCategory[] = [
 const SMART_CLASSIFICATIONS = [
   { id: 'family', labelBg: 'Семейни', labelEn: 'Family Cars', link: '/cars/family', descriptionBg: '7+ места', descriptionEn: '7+ seats' },
   { id: 'sport', labelBg: 'Спортни', labelEn: 'Sport Cars', link: '/cars/sport', descriptionBg: '270+ к.с.', descriptionEn: '270+ HP' },
+  { id: 'womens', labelBg: 'Дамски', labelEn: "Women's Cars", link: '/cars/womens', descriptionBg: 'Розово & Червено', descriptionEn: 'Pink & Red' },
   { id: 'vip', labelBg: 'VIP луксозни', labelEn: 'VIP Luxury', link: '/cars/vip', descriptionBg: '35k+ евро', descriptionEn: '35k+ EUR' },
   { id: 'classic', labelBg: 'Класически', labelEn: 'Classic Cars', link: '/cars/classic', descriptionBg: 'Преди 1995', descriptionEn: 'Before 1995' },
   { id: 'new', labelBg: 'Нови', labelEn: 'New Cars', link: '/cars/new', descriptionBg: '2023+', descriptionEn: '2023+' },

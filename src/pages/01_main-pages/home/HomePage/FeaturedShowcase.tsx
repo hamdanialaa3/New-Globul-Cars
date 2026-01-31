@@ -83,8 +83,9 @@ const mapToDisplayCar = (car: UnifiedCar, language: string): DisplayCar => {
   // Get location
   const location = car.locationData?.city || car.location || (language === 'bg' ? 'България' : 'Bulgaria');
 
-  // Get main image
-  const image = car.mainImage || car.images?.[0] || 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&q=80&w=800';
+  // Get main image - use featuredImageIndex if available, otherwise first image
+  const featuredIdx = car.featuredImageIndex || 0;
+  const image = car.mainImage || car.images?.[featuredIdx] || car.images?.[0] || '/images/placeholder.png';
 
   return {
     id: car.id,
@@ -279,9 +280,9 @@ const Card = styled(motion.div) <{ $isDark: boolean }>`
   flex-direction: column;
   flex: 0 0 auto;
   flex-shrink: 0;
-  width: 300px;
-  min-width: 300px;
-  max-width: 300px;
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
   height: auto;
   background: ${props => props.$isDark
     ? 'rgba(30, 41, 59, 0.4)'
@@ -290,35 +291,35 @@ const Card = styled(motion.div) <{ $isDark: boolean }>`
   border: 1px solid ${props => props.$isDark
     ? 'rgba(255, 255, 255, 0.1)'
     : 'rgba(0, 0, 0, 0.1)'};
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   overflow: hidden;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 
   &:hover {
-    transform: translateY(-0.5rem);
+    transform: translateY(-0.25rem);
     border-color: ${props => props.$isDark
     ? 'rgba(37, 99, 235, 0.5)'
     : 'rgba(37, 99, 235, 0.3)'};
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
   }
 
   @media (max-width: 768px) {
-    width: 280px;
-    min-width: 280px;
-    max-width: 280px;
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
   }
 
   @media (max-width: 640px) {
-    width: 260px;
-    min-width: 260px;
-    max-width: 260px;
+    width: 180px;
+    min-width: 180px;
+    max-width: 180px;
   }
 `;
 
 const CardImageContainer = styled.div`
   position: relative;
-  height: 12rem;
+  height: 6.5rem;
   overflow: hidden;
 `;
 
@@ -343,18 +344,18 @@ const CardImageOverlay = styled.div<{ $isDark: boolean }>`
 
 const Badge = styled.span<{ $isDark: boolean }>`
   position: absolute;
-  top: 0.75rem;
-  left: 0.75rem;
+  top: 0.5rem;
+  left: 0.5rem;
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.75rem;
+  gap: 0.15rem;
+  padding: 0.15rem 0.5rem;
   background: ${props => props.$isDark
     ? 'rgba(37, 99, 235, 0.9)'
     : 'rgba(37, 99, 235, 0.95)'};
   backdrop-filter: blur(8px);
   color: #ffffff;
-  font-size: 0.75rem;
+  font-size: 0.625rem;
   font-weight: 700;
   border-radius: 9999px;
   z-index: 10;
@@ -362,13 +363,13 @@ const Badge = styled.span<{ $isDark: boolean }>`
 
 const FavoriteButton = styled.button<{ $isDark: boolean }>`
   position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  padding: 0.5rem;
-  background: rgba(0, 0, 0, 0.5);
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.35rem;
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 50%;
   border: none;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(0, 0, 0, 0.6);
   cursor: pointer;
   transition: all 0.2s ease;
   z-index: 10;
@@ -378,24 +379,24 @@ const FavoriteButton = styled.button<{ $isDark: boolean }>`
 
   &:hover {
     color: #ef4444;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 1);
   }
 `;
 
 const CardContent = styled.div`
-  padding: 1.25rem;
+  padding: 0.875rem;
 `;
 
 // Skeleton Loading Card
 const SkeletonCard = styled.div<{ $isDark: boolean }>`
   flex: 0 0 auto;
-  width: 300px;
-  min-width: 300px;
-  height: 400px;
+  width: 220px;
+  min-width: 220px;
+  height: 235px;
   background: ${props => props.$isDark
     ? 'rgba(30, 41, 59, 0.4)'
     : 'rgba(255, 255, 255, 0.9)'};
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   overflow: hidden;
   animation: pulse 1.5s ease-in-out infinite;
   
@@ -406,10 +407,10 @@ const SkeletonCard = styled.div<{ $isDark: boolean }>`
 `;
 
 const CardTitle = styled.h3<{ $isDark: boolean }>`
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 600;
   color: ${props => props.$isDark ? '#ffffff' : '#0f172a'};
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.35rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -418,18 +419,18 @@ const CardTitle = styled.h3<{ $isDark: boolean }>`
 const CardLocation = styled.div<{ $isDark: boolean }>`
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.2rem;
   color: ${props => props.$isDark ? '#60a5fa' : '#2563eb'};
-  font-size: 0.875rem;
-  margin-bottom: 1rem;
+  font-size: 0.75rem;
+  margin-bottom: 0.65rem;
 `;
 
 const SpecsGrid = styled.div<{ $isDark: boolean }>`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  font-size: 0.75rem;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.65rem;
   color: ${props => props.$isDark ? '#cbd5e1' : '#64748b'};
 `;
 
@@ -440,14 +441,16 @@ const SpecItem = styled.div<{ $isDark: boolean }>`
   border: 1px solid ${props => props.$isDark
     ? 'rgba(255, 255, 255, 0.05)'
     : 'rgba(0, 0, 0, 0.05)'};
-  border-radius: 0.5rem;
-  padding: 0.5rem;
+  border-radius: 0.375rem;
+  padding: 0.35rem 0.25rem;
   text-align: center;
 
   svg {
     display: block;
-    margin: 0 auto 0.25rem;
+    margin: 0 auto 0.15rem;
     opacity: 0.5;
+    width: 11px;
+    height: 11px;
   }
 `;
 
@@ -455,7 +458,7 @@ const CardFooter = styled.div<{ $isDark: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 1rem;
+  padding-top: 0.65rem;
   border-top: 1px solid ${props => props.$isDark
     ? 'rgba(255, 255, 255, 0.1)'
     : 'rgba(0, 0, 0, 0.1)'};
@@ -464,50 +467,49 @@ const CardFooter = styled.div<{ $isDark: boolean }>`
 const PriceContainer = styled.div``;
 
 const PriceLabel = styled.p<{ $isDark: boolean }>`
-  font-size: 0.75rem;
+  font-size: 0.625rem;
   color: ${props => props.$isDark ? '#94a3b8' : '#64748b'};
-  margin: 0 0 0.25rem;
+  margin: 0 0 0.15rem;
 `;
 
 const Price = styled.p<{ $isDark: boolean }>`
-  font-size: 1.125rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: ${props => props.$isDark ? '#ffffff' : '#0f172a'};
   margin: 0;
 
   span {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     color: ${props => props.$isDark ? '#60a5fa' : '#2563eb'};
   }
 `;
 
 const ViewButton = styled.button<{ $isDark: boolean }>`
-  padding: 0.75rem;
+  padding: 0.5rem;
   background: ${props => props.$isDark ? '#2563eb' : '#2563eb'};
   color: #ffffff;
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: ${props => props.$isDark
-    ? '0 4px 20px rgba(37, 99, 235, 0.2)'
-    : '0 4px 20px rgba(37, 99, 235, 0.3)'};
+    ? '0 2px 8px rgba(37, 99, 235, 0.2)'
+    : '0 2px 8px rgba(37, 99, 235, 0.3)'};
 
   &:hover {
     background: ${props => props.$isDark ? '#1d4ed8' : '#1d4ed8'};
     box-shadow: ${props => props.$isDark
-    ? '0 6px 30px rgba(37, 99, 235, 0.4)'
-    : '0 6px 30px rgba(37, 99, 235, 0.5)'};
-    transform: translateY(-2px);
+    ? '0 4px 12px rgba(37, 99, 235, 0.3)'
+    : '0 4px 12px rgba(37, 99, 235, 0.4)'};
+    transform: translateY(-1px);
   }
 
-  ${Card}:hover & {
-    box-shadow: ${props => props.$isDark
-    ? '0 8px 40px rgba(37, 99, 235, 0.4)'
-    : '0 8px 40px rgba(37, 99, 235, 0.5)'};
+  svg {
+    width: 16px;
+    height: 16px;
   }
 `;
 
@@ -715,7 +717,7 @@ const FeaturedShowcase: React.FC = memo(() => {
             <Description $isDark={isDark}>{loadingText}</Description>
           </Header>
           <CardsContainer>
-            <div style={{ display: 'flex', gap: '1.5rem', padding: '0 24px' }}>
+            <div style={{ display: 'flex', gap: '0.75rem', padding: '0 24px' }}>
               {[1, 2, 3, 4].map((i) => (
                 <SkeletonCard key={i} $isDark={isDark} />
               ))}
@@ -801,9 +803,9 @@ const FeaturedShowcase: React.FC = memo(() => {
         {/* Cards Horizontal Scroll */}
         <CardsContainer>
           <HorizontalScrollContainer
-            gap="1.5rem"
+            gap="0.75rem"
             padding="0"
-            itemMinWidth="300px"
+            itemMinWidth="220px"
             showArrows={true}
           >
             {filteredCars.map((car) => (
@@ -823,12 +825,12 @@ const FeaturedShowcase: React.FC = memo(() => {
                     alt={`${car.make} ${car.model}`}
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.src = 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&q=80&w=800';
+                      target.src = '/images/placeholder.png';
                     }}
                   />
                   <CardImageOverlay $isDark={isDark} />
                   <Badge $isDark={isDark}>
-                    <ShieldCheck size={12} />
+                    <ShieldCheck size={10} />
                     {car.badge}
                   </Badge>
                   <FavoriteButton 
@@ -839,7 +841,7 @@ const FeaturedShowcase: React.FC = memo(() => {
                     }}
                     style={{ color: isFavorite(car.id) ? '#ef4444' : undefined }}
                   >
-                    <Heart size={16} fill={isFavorite(car.id) ? '#ef4444' : 'none'} />
+                    <Heart size={14} fill={isFavorite(car.id) ? '#ef4444' : 'none'} />
                   </FavoriteButton>
                 </CardImageContainer>
 
@@ -849,22 +851,22 @@ const FeaturedShowcase: React.FC = memo(() => {
                     {car.make} {car.model}
                   </CardTitle>
                   <CardLocation $isDark={isDark}>
-                    <MapPin size={14} />
+                    <MapPin size={11} />
                     {car.location}
                   </CardLocation>
 
                   {/* Specs Grid */}
                   <SpecsGrid $isDark={isDark}>
                     <SpecItem $isDark={isDark}>
-                      <Calendar size={12} />
+                      <Calendar size={10} />
                       {car.year}
                     </SpecItem>
                     <SpecItem $isDark={isDark}>
-                      <Gauge size={12} />
+                      <Gauge size={10} />
                       {car.mileage}
                     </SpecItem>
                     <SpecItem $isDark={isDark}>
-                      <Fuel size={12} />
+                      <Fuel size={10} />
                       {car.fuel}
                     </SpecItem>
                   </SpecsGrid>
@@ -879,7 +881,7 @@ const FeaturedShowcase: React.FC = memo(() => {
                       </Price>
                     </PriceContainer>
                     <ViewButton $isDark={isDark}>
-                      <ArrowRight size={20} />
+                      <ArrowRight size={16} />
                     </ViewButton>
                   </CardFooter>
                 </CardContent>

@@ -10,10 +10,12 @@ import { BULGARIA_REGIONS, getCitiesByRegion } from '../../../data/bulgaria-loca
 import { getPostalCodesForCity } from '../../../data/bulgaria-postal-codes';
 import { ALL_COUNTRIES } from '../../../data/country-codes';
 import { BulgarianProfileService } from '../../../services/bulgarian-profile-service';
-import { Check, AlertCircle } from 'lucide-react';
+import { Check, AlertCircle, AlertTriangle, CreditCard } from 'lucide-react';
 import { EmailAutocomplete } from '../../shared/EmailAutocomplete';
 import { CountryFlagSelector } from '../../shared/CountryFlagSelector';
 import { logger } from '@/services/logger-service';
+import { getRemainingListings } from '../../../utils/listing-limits';
+import { Link } from 'react-router-dom';
 
 interface SellVehicleStep6Props {
   workflowData: Partial<UnifiedWorkflowData>;
@@ -100,6 +102,119 @@ const SectionTitle = styled.h3`
   border-bottom: 1px solid var(--border);
 `;
 
+// Listing Limit Modal Overlay
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+`;
+
+const ModalCard = styled.div`
+  background: var(--bg-card, #fff);
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  animation: modalSlideIn 0.3s ease-out;
+  
+  @keyframes modalSlideIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9) translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+`;
+
+const ModalIconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  border-radius: 50%;
+  color: white;
+  margin: 0 auto 1.5rem;
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+`;
+
+const ModalTitle = styled.h2`
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.75rem 0;
+`;
+
+const ModalText = styled.p`
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 1.5rem 0;
+`;
+
+const ModalActions = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+`;
+
+const UpgradeButton = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+  }
+`;
+
+const SecondaryButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: var(--bg-secondary);
+    border-color: var(--text-tertiary);
+  }
+`;
+
 const ErrorText = styled.span`
   color: #ef4444;
   font-size: 0.8rem;
@@ -166,6 +281,26 @@ export const SellVehicleStep6: React.FC<SellVehicleStep6Props> = ({
   const [emailError, setEmailError] = useState('');
   const [phonePrefix, setPhonePrefix] = useState('+359');
   const [profileLoaded, setProfileLoaded] = useState(false);
+  const [remainingListings, setRemainingListings] = useState<number | null>(null);
+  const [showLimitModal, setShowLimitModal] = useState(false);
+
+  // Check listing limit on mount
+  useEffect(() => {
+    const checkLimit = async () => {
+      if (!currentUser) return;
+      try {
+        const remaining = await getRemainingListings(currentUser.uid);
+        setRemainingListings(remaining);
+        if (remaining === 0) {
+          logger.warn('User at listing limit on Step 6', { userId: currentUser.uid });
+          setShowLimitModal(true); // Show modal when limit reached
+        }
+      } catch (error) {
+        logger.error('Failed to check listing limit', error as Error);
+      }
+    };
+    checkLimit();
+  }, [currentUser]);
 
   // Load profile data and set defaults
   useEffect(() => {
@@ -280,7 +415,37 @@ export const SellVehicleStep6: React.FC<SellVehicleStep6Props> = ({
   }, [workflowData.locationData?.cityName, workflowData.city, workflowData.region]);
 
   return (
-    <FormContainer>
+    <>
+      {/* Listing Limit Modal - Centered popup */}
+      {showLimitModal && remainingListings === 0 && (
+        <ModalOverlay onClick={() => setShowLimitModal(false)}>
+          <ModalCard onClick={(e) => e.stopPropagation()}>
+            <ModalIconWrapper>
+              <AlertTriangle size={36} />
+            </ModalIconWrapper>
+            <ModalTitle>
+              {language === 'bg' ? 'Достигнахте лимита за обяви' : 'Listing Limit Reached'}
+            </ModalTitle>
+            <ModalText>
+              {language === 'bg' 
+                ? 'Вашият план не позволява повече обяви. Надградете плана си или изтрийте съществуващи обяви, за да продължите.'
+                : 'Your current plan does not allow more listings. Upgrade your plan or delete existing listings to continue.'}
+            </ModalText>
+            <ModalActions>
+              <UpgradeButton to="/pricing">
+                <CreditCard size={18} />
+                {language === 'bg' ? 'Надградете плана' : 'Upgrade Plan'}
+              </UpgradeButton>
+              <SecondaryButton onClick={() => setShowLimitModal(false)}>
+                {language === 'bg' ? 'Затвори' : 'Close'}
+              </SecondaryButton>
+            </ModalActions>
+          </ModalCard>
+        </ModalOverlay>
+      )}
+
+      <FormContainer>
+
       {/* Contact Section */}
       <SectionTitle>
         {language === 'bg' ? 'Информация за контакт' : 'Contact Information'}
@@ -415,6 +580,7 @@ export const SellVehicleStep6: React.FC<SellVehicleStep6Props> = ({
       )}
 
     </FormContainer>
+    </>
   );
 };
 

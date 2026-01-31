@@ -8,7 +8,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import styled from 'styled-components';
-import { AlertTriangle, Search } from 'lucide-react';
+import { AlertTriangle, Search, ArrowUpDown } from 'lucide-react';
 import { PageType } from '../../types/showcase.types';
 import { CarListing } from '../../types/CarListing';
 import {
@@ -20,6 +20,21 @@ import { logger } from '../../services/logger-service';
 import { useLanguage } from '../../contexts/LanguageContext';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import ModernCarCard from '../01_main-pages/home/HomePage/ModernCarCard';
+
+// Sort options type
+type SortOption = 
+  | 'price-asc' 
+  | 'price-desc' 
+  | 'year-desc' 
+  | 'year-asc' 
+  | 'mileage-asc' 
+  | 'mileage-desc'
+  | 'power-desc'
+  | 'power-asc'
+  | 'name-asc'
+  | 'name-desc'
+  | 'date-desc'
+  | 'date-asc';
 
 interface DynamicCarShowcaseProps {
   pageType: PageType;
@@ -35,6 +50,7 @@ const DynamicCarShowcase: React.FC<DynamicCarShowcaseProps> = ({ pageType }) => 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [totalCount, setTotalCount] = useState(0);
+  const [sortBy, setSortBy] = useState<SortOption>('date-desc');
 
   // Get dynamic param based on page type
   const dynamicParam = pageType === 'city' ? cityName : pageType === 'brand' ? brandName : undefined;
@@ -43,6 +59,81 @@ const DynamicCarShowcase: React.FC<DynamicCarShowcaseProps> = ({ pageType }) => 
   const config = useMemo(() => {
     return getShowcaseConfig(pageType, dynamicParam);
   }, [pageType, dynamicParam]);
+
+  // Sort options with translations
+  const sortOptions = useMemo(() => {
+    const options = [
+      { value: 'date-desc', labelEn: 'Newest First', labelBg: 'Най-нови първо', labelAr: 'الأحدث أولاً' },
+      { value: 'date-asc', labelEn: 'Oldest First', labelBg: 'Най-стари първо', labelAr: 'الأقدم أولاً' },
+      { value: 'price-asc', labelEn: 'Price: Low to High', labelBg: 'Цена: Ниска към Висока', labelAr: 'السعر: من الأقل للأعلى' },
+      { value: 'price-desc', labelEn: 'Price: High to Low', labelBg: 'Цена: Висока към Ниска', labelAr: 'السعر: من الأعلى للأقل' },
+      { value: 'year-desc', labelEn: 'Year: Newest', labelBg: 'Година: Най-нова', labelAr: 'السنة: الأحدث' },
+      { value: 'year-asc', labelEn: 'Year: Oldest', labelBg: 'Година: Най-стара', labelAr: 'السنة: الأقدم' },
+      { value: 'mileage-asc', labelEn: 'Mileage: Low to High', labelBg: 'Километри: Ниски към Високи', labelAr: 'الكيلومترات: من الأقل للأعلى' },
+      { value: 'mileage-desc', labelEn: 'Mileage: High to Low', labelBg: 'Километри: Високи към Ниски', labelAr: 'الكيلومترات: من الأعلى للأقل' },
+      { value: 'power-desc', labelEn: 'Power: High to Low', labelBg: 'Мощност: Висока към Ниска', labelAr: 'القوة: من الأعلى للأقل' },
+      { value: 'power-asc', labelEn: 'Power: Low to High', labelBg: 'Мощност: Ниска към Висока', labelAr: 'القوة: من الأقل للأعلى' },
+      { value: 'name-asc', labelEn: 'Name: A to Z', labelBg: 'Име: А към Я', labelAr: 'الاسم: أ إلى ي' },
+      { value: 'name-desc', labelEn: 'Name: Z to A', labelBg: 'Име: Я към А', labelAr: 'الاسم: ي إلى أ' }
+    ];
+    
+    return options.map(opt => ({
+      value: opt.value as SortOption,
+      label: language === 'bg' ? opt.labelBg : opt.labelEn
+    }));
+  }, [language]);
+
+  // Sorted cars based on selected option
+  const sortedCars = useMemo(() => {
+    if (!cars || cars.length === 0) return [];
+
+    const carsCopy = [...cars];
+
+    switch (sortBy) {
+      case 'price-asc':
+        return carsCopy.sort((a, b) => (a.price || 0) - (b.price || 0));
+      case 'price-desc':
+        return carsCopy.sort((a, b) => (b.price || 0) - (a.price || 0));
+      case 'year-desc':
+        return carsCopy.sort((a, b) => (b.year || 0) - (a.year || 0));
+      case 'year-asc':
+        return carsCopy.sort((a, b) => (a.year || 0) - (b.year || 0));
+      case 'mileage-asc':
+        return carsCopy.sort((a, b) => (a.mileage || 0) - (b.mileage || 0));
+      case 'mileage-desc':
+        return carsCopy.sort((a, b) => (b.mileage || 0) - (a.mileage || 0));
+      case 'power-desc':
+        return carsCopy.sort((a, b) => (b.power || 0) - (a.power || 0));
+      case 'power-asc':
+        return carsCopy.sort((a, b) => (a.power || 0) - (b.power || 0));
+      case 'name-asc':
+        return carsCopy.sort((a, b) => {
+          const nameA = `${a.make} ${a.model}`.toLowerCase();
+          const nameB = `${b.make} ${b.model}`.toLowerCase();
+          return nameA.localeCompare(nameB);
+        });
+      case 'name-desc':
+        return carsCopy.sort((a, b) => {
+          const nameA = `${a.make} ${a.model}`.toLowerCase();
+          const nameB = `${b.make} ${b.model}`.toLowerCase();
+          return nameB.localeCompare(nameA);
+        });
+      case 'date-desc':
+        return carsCopy.sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return dateB - dateA;
+        });
+      case 'date-asc':
+        return carsCopy.sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return dateA - dateB;
+        });
+      default:
+        return carsCopy;
+    }
+  }, [cars, sortBy]);
 
   // Fetch cars on mount or when pageType/param changes
   useEffect(() => {
@@ -174,8 +265,34 @@ const DynamicCarShowcase: React.FC<DynamicCarShowcaseProps> = ({ pageType }) => 
           )}
         </Header>
 
+        <ControlsBar>
+          <ResultsInfo>
+            {language === 'bg' 
+              ? `Показани ${sortedCars.length} автомобили`
+              : `Showing ${sortedCars.length} cars`
+            }
+          </ResultsInfo>
+          
+          <SortContainer>
+            <SortLabel>
+              <ArrowUpDown size={16} />
+              {language === 'bg' ? 'Сортирай по:' : 'Sort by:'}
+            </SortLabel>
+            <SortSelect 
+              value={sortBy} 
+              onChange={(e) => setSortBy(e.target.value as SortOption)}
+            >
+              {sortOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </SortSelect>
+          </SortContainer>
+        </ControlsBar>
+
         <CarsGrid>
-          {cars.map((car) => (
+          {sortedCars.map((car) => (
             <ModernCarCard
               key={car.id}
               car={car}
@@ -205,92 +322,194 @@ export default DynamicCarShowcase;
 const Container = styled.div`
   max-width: 1400px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 24px 16px;
   min-height: 80vh;
 
   @media (max-width: 768px) {
-    padding: 20px 10px;
+    padding: 16px 12px;
   }
 `;
 
 const Header = styled.div`
   text-align: center;
-  margin-bottom: 40px;
-  padding: 30px 20px;
+  margin-bottom: 24px;
+  padding: 20px 16px;
   background: ${({ theme }) => theme.cardBackground || 'rgba(255, 255, 255, 0.05)'};
-  border-radius: 20px;
+  border-radius: 12px;
   backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 `;
 
 const Title = styled.h1`
-  font-size: 42px;
-  font-weight: 800;
-  margin-bottom: 12px;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 
   @media (max-width: 768px) {
-    font-size: 28px;
+    font-size: 24px;
   }
 `;
 
 const Subtitle = styled.p`
-  font-size: 18px;
+  font-size: 15px;
   color: ${({ theme }) => theme.textSecondary || '#888'};
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 
   @media (max-width: 768px) {
-    font-size: 14px;
+    font-size: 13px;
   }
 `;
 
 const ResultsCount = styled.div`
   display: inline-block;
-  margin-top: 16px;
-  padding: 8px 20px;
+  margin-top: 12px;
+  padding: 6px 16px;
   background: rgba(102, 126, 234, 0.15);
-  border-radius: 20px;
+  border-radius: 16px;
   color: #667eea;
   font-weight: 600;
+  font-size: 13px;
+`;
+
+const ControlsBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 14px 18px;
+  background: ${({ theme }) => theme.cardBackground || 'rgba(255, 255, 255, 0.05)'};
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 14px;
+  }
+`;
+
+const ResultsInfo = styled.div`
   font-size: 14px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.text || '#1f2937'};
+
+  @media (max-width: 768px) {
+    font-size: 13px;
+  }
+`;
+
+const SortContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
+
+const SortLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.textSecondary || '#6b7280'};
+  white-space: nowrap;
+
+  svg {
+    color: #667eea;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 13px;
+  }
+`;
+
+const SortSelect = styled.select`
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.text || '#1f2937'};
+  background: ${({ theme }) => theme.background || 'white'};
+  border: 1.5px solid ${({ theme }) => theme.border || '#e5e7eb'};
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  min-width: 180px;
+
+  &:hover {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+
+  &:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
+  }
+
+  option {
+    padding: 6px;
+    background: ${({ theme }) => theme.background || 'white'};
+    color: ${({ theme }) => theme.text || '#1f2937'};
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    min-width: unset;
+    font-size: 12px;
+  }
 `;
 
 const CarsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
   gap: 24px;
-  margin-bottom: 40px;
+  margin-bottom: 32px;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
 
   @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+  }
+
+  @media (max-width: 480px) {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 8px;
   }
 `;
 
 const LoadMoreSection = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 40px;
+  margin-top: 24px;
 `;
 
 const LoadMoreButton = styled.button`
-  padding: 16px 48px;
-  font-size: 16px;
+  padding: 12px 36px;
+  font-size: 14px;
   font-weight: 600;
   color: white;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  transition: all 0.2s ease;
+  box-shadow: 0 3px 12px rgba(102, 126, 234, 0.35);
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.5);
   }
 
   &:active {
@@ -314,32 +533,32 @@ const EmptyIcon = styled.div`
 `;
 
 const EmptyTitle = styled.h2`
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 700;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   color: ${({ theme }) => theme.text || '#fff'};
 `;
 
 const EmptyDescription = styled.p`
-  font-size: 16px;
+  font-size: 14px;
   color: ${({ theme }) => theme.textSecondary || '#888'};
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 `;
 
 const BackButton = styled.button`
-  padding: 12px 32px;
-  font-size: 16px;
+  padding: 10px 28px;
+  font-size: 14px;
   font-weight: 600;
   color: white;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.5);
   }
 `;
 
@@ -358,24 +577,24 @@ const ErrorIcon = styled.div`
 `;
 
 const ErrorText = styled.p`
-  font-size: 18px;
+  font-size: 15px;
   color: ${({ theme }) => theme.textSecondary || '#888'};
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 `;
 
 const RetryButton = styled.button`
-  padding: 12px 32px;
-  font-size: 16px;
+  padding: 10px 28px;
+  font-size: 14px;
   font-weight: 600;
   color: white;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.5);
   }
 `;

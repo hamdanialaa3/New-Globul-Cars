@@ -175,6 +175,7 @@ export const MainRoutes: React.FC = () => {
             <Route path="/cars/all" element={<DynamicCarShowcase pageType="all" />} />
             <Route path="/cars/family" element={<DynamicCarShowcase pageType="family" />} />
             <Route path="/cars/sport" element={<DynamicCarShowcase pageType="sport" />} />
+            <Route path="/cars/womens" element={<DynamicCarShowcase pageType="womens" />} />
             <Route path="/cars/vip" element={<DynamicCarShowcase pageType="vip" />} />
             <Route path="/cars/classic" element={<DynamicCarShowcase pageType="classic" />} />
             <Route path="/cars/new" element={<DynamicCarShowcase pageType="new" />} />
@@ -182,6 +183,30 @@ export const MainRoutes: React.FC = () => {
             <Route path="/cars/economy" element={<DynamicCarShowcase pageType="economy" />} />
             <Route path="/cars/city/:cityName" element={<DynamicCarShowcase pageType="city" />} />
             <Route path="/cars/brand/:brandName" element={<DynamicCarShowcase pageType="brand" />} />
+            
+            {/* ✅ NEW FILTER ROUTES (January 30, 2026) */}
+            {/* ⚡ Electric Cars - fuel_type = electric */}
+            <Route path="/cars/electric" element={<DynamicCarShowcase pageType="electric" />} />
+            {/* 🔋 Hybrid Cars - fuel_type = hybrid */}
+            <Route path="/cars/hybrid" element={<DynamicCarShowcase pageType="hybrid" />} />
+            {/* ✨ Low Mileage (Like New) - mileage <= 3515 km */}
+            <Route path="/cars/low-mileage" element={<DynamicCarShowcase pageType="lowMileage" />} />
+            <Route path="/cars/like-new" element={<DynamicCarShowcase pageType="lowMileage" />} />
+            {/* 🆕 Newly Added - sorted by created_at DESC */}
+            <Route path="/cars/newly-added" element={<DynamicCarShowcase pageType="newlyAdded" />} />
+            <Route path="/cars/latest" element={<DynamicCarShowcase pageType="newlyAdded" />} />
+            {/* 💰 Budget Cars - price < 5000 EUR */}
+            <Route path="/cars/budget" element={<DynamicCarShowcase pageType="budget" />} />
+            <Route path="/cars/cheap" element={<DynamicCarShowcase pageType="budget" />} />
+            {/* ✅ Verified Dealers */}
+            <Route path="/cars/verified-dealers" element={<DynamicCarShowcase pageType="verifiedDealer" />} />
+            {/* 🚙 Body Types */}
+            <Route path="/cars/suv" element={<DynamicCarShowcase pageType="suv" />} />
+            <Route path="/cars/sedan" element={<DynamicCarShowcase pageType="sedan" />} />
+            <Route path="/cars/hatchback" element={<DynamicCarShowcase pageType="hatchback" />} />
+            {/* ⛽ Fuel Types */}
+            <Route path="/cars/diesel" element={<DynamicCarShowcase pageType="diesel" />} />
+            <Route path="/cars/petrol" element={<DynamicCarShowcase pageType="petrol" />} />
 
             {/* �️ PROGRAMMATIC SEO: Location Landing Pages (Long-Tail Trap) */}
             <Route path="/cars/:city" element={<LocationLandingPage />} />

@@ -354,11 +354,11 @@ const CategoriesSection: React.FC = () => {
             >
               <CardImgWrap>
                 <CardImg
-                  src={`https://images.unsplash.com/photo-${category.id === 'suv' ? '1519641471654-76ce0107ad1b' : category.id === 'sedan' ? '1552519507-da3b142c6e3d' : '1560958089-b8a1929cea89'}?auto=format&fit=crop&w=800&q=80`}
+                  src={'/images/placeholder.png'}
                   alt={language === 'bg' ? category.labelBg : category.labelEn}
                   loading="lazy"
                   onError={(e) => {
-                    e.currentTarget.src = '/assets/images/default-car.jpg';
+                    e.currentTarget.src = '/images/placeholder.png';
                   }}
                 />
                 <FrameSvg viewBox="0 0 400 250" preserveAspectRatio="none">

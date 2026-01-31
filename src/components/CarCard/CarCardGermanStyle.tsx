@@ -106,9 +106,12 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
   }, [car.sellerId, car.stories]);
 
   // Fixed: Use string images only, with error state to prevent infinite loops
-  const mainImageSrc = imageError || !car.images?.[0] || typeof car.images[0] !== 'string'
+  // Use featuredImageIndex if available, fallback to first image
+  const featuredIdx = (car as any).featuredImageIndex || 0;
+  const featuredImage = car.images?.[featuredIdx] || car.images?.[0];
+  const mainImageSrc = imageError || !featuredImage || typeof featuredImage !== 'string'
     ? '/images/placeholder-car.jpg'
-    : car.images[0];
+    : featuredImage;
 
   const locationName = (typeof car.location === 'object' ? (car.location as any)?.city : car.location) ||
     (car.locationData?.cityName as any) || 'Location N/A';
