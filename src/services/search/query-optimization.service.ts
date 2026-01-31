@@ -69,6 +69,7 @@ export interface OptimizedSearchResult {
 // CONSTANTS
 // ============================================================================
 
+// Include legacy collections (cars, listings) for backward compatibility with old cars
 const COLLECTIONS = [
   'passenger_cars',
   'suvs',
@@ -76,6 +77,8 @@ const COLLECTIONS = [
   'motorcycles',
   'trucks',
   'buses',
+  'cars',      // Legacy collection
+  'listings',  // Legacy collection
 ];
 
 const DEFAULT_LIMIT = 20;
@@ -169,14 +172,23 @@ class QueryOptimizationService {
     const results = await Promise.all(promises);
     const allCars = results.flat();
 
+    // ✅ FIX: Remove duplicate cars by ID to prevent repeated listings
+    const uniqueCarsMap = new Map<string, CarListing>();
+    allCars.forEach(car => {
+      if (!uniqueCarsMap.has(car.id)) {
+        uniqueCarsMap.set(car.id, car);
+      }
+    });
+    const uniqueCars = Array.from(uniqueCarsMap.values());
+
     // ترتيب النتائج حسب التاريخ (الأحدث أولاً)
-    allCars.sort((a, b) => {
+    uniqueCars.sort((a, b) => {
       const dateA = a.createdAt?.toDate?.() || new Date(0);
       const dateB = b.createdAt?.toDate?.() || new Date(0);
       return dateB.getTime() - dateA.getTime();
     });
 
-    return allCars;
+    return uniqueCars;
   }
 
   /**
@@ -212,8 +224,9 @@ class QueryOptimizationService {
   ): QueryConstraint[] {
     const constraints: QueryConstraint[] = [];
 
-    // 1. الفلاتر الأساسية (دائماً)
-    constraints.push(where('isActive', '==', filters.isActive !== false));
+    // 1. الفلاتر الأساسية - REMOVED isActive filter from Firestore query
+    // Legacy cars may not have isActive field, so we filter client-side instead
+    // This ensures old cars from 'cars' and 'listings' collections are included
 
     // 2. الفلاتر النصية (Make, Model, City)
     if (filters.make) {
@@ -268,6 +281,13 @@ class QueryOptimizationService {
    */
   filterClientSide(cars: CarListing[], filters: SearchFilters): CarListing[] {
     return cars.filter((car) => {
+      // isActive filter - treat missing isActive as true (for legacy cars)
+      if (filters.isActive !== false) {
+        // Show active cars only - legacy cars without isActive field are treated as active
+        const isActive = car.isActive !== false && car.status !== 'sold' && car.status !== 'deleted';
+        if (!isActive) return false;
+      }
+
       // Year Range (إذا كان كلاهما موجود)
       if (filters.yearMin && car.year < filters.yearMin) return false;
       if (filters.yearMax && car.year > filters.yearMax) return false;

@@ -38,103 +38,75 @@ const ModernCarCard: React.FC<ModernCarCardProps> = ({ car }) => {
   const { isFavorite, toggleFavorite } = useFavorites();
   const isFav = isFavorite(car.id);
   const detailsUrl = getCarDetailsUrl(car);
-  const mainImageSrc = imageError ? '/images/placeholder-car.jpg' : (car.images?.[0] || '/images/placeholder-car.jpg');
 
   return (
-    <div className="group bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 h-full flex flex-col">
-      {/* Image Container - Updated Link */}
-      <Link to={detailsUrl} className="block relative aspect-[4/3] overflow-hidden flex-shrink-0">
+    <div
+      className="group relative bg-white dark:bg-[#18181b] rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700 cursor-pointer hover:-translate-y-1 animate-[fadeIn_0.6s_ease]"
+      style={{ width: '100%', maxWidth: 320, minWidth: 260, margin: '0 auto', display: 'flex', flexDirection: 'column' }}
+    >
+      {/* Image */}
+      <div className="relative w-full bg-gray-100 overflow-hidden" style={{aspectRatio:'1/1',height:'auto'}}>
         <img
-          src={mainImageSrc}
-          alt={`${car.make} ${car.model}`}
-          className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
-          onError={() => { if (!imageError) setImageError(true); }}
+          src={imageError ? '/images/placeholder.png' : (car.images?.[car.featuredImageIndex || 0] || car.images?.[0] || car.image || '/images/placeholder.png')}
+          alt={`${car.brand || car.make} ${car.model}`}
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+          style={{aspectRatio:'1/1',width:'100%',height:'100%'}}
+          loading="lazy"
+          onError={() => setImageError(true)}
         />
-        {(car.isSold || car.status === 'sold') && (
-          <RealisticPaperclipBadge 
-            text={window.location.pathname.includes('/bg') || document.documentElement.lang === 'bg' ? 'ПРОДАДЕНО' : 'SOLD'}
-            language={(window.location.pathname.includes('/bg') || document.documentElement.lang === 'bg') ? 'bg' : 'en'}
-          />
+        {/* Badge */}
+        {car.badge && (
+          <span className="absolute top-3 left-3 bg-orange-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+            {car.badge}
+          </span>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
+        {/* Favorite */}
         <button
-          onClick={(e) => {
+          onClick={e => {
             e.preventDefault();
-            toggleFavorite(car.id, {
-              make: car.make,
-              model: car.model,
-              year: car.year,
-              price: car.price,
-              currency: car.currency || 'EUR',
-              sellerNumericId: car.sellerNumericId || 0,
-              carNumericId: car.carNumericId || 0,
-              primaryImage: car.images?.[0]
-            });
+            toggleFavorite(car.id, car);
           }}
-          className="absolute top-3 right-3 p-0 bg-transparent border-none transition-all duration-300 hover:scale-110 active:scale-90 z-10"
-          style={{ cursor: 'pointer' }}
+          className="absolute top-3 right-3 bg-white/80 dark:bg-black/60 rounded-full p-1 border border-gray-200 dark:border-gray-700 shadow hover:scale-110 transition"
         >
-          <Heart
-            size={28}
-            className={isFav ? 'fill-red-500 text-red-500' : 'fill-none text-gray-300'}
-            strokeWidth={isFav ? 0 : 2}
-            style={{
-              filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))',
-              transition: 'all 0.2s ease'
-            }}
-          />
+          <Heart size={18} className={isFav ? 'fill-red-500 text-red-500' : 'fill-none text-gray-600 dark:text-gray-300'} strokeWidth={2} />
         </button>
-
-        <div className="absolute bottom-3 left-3 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-2 group-hover:translate-y-0">
-          <p className="text-xs font-medium bg-black/50 backdrop-blur-md px-2 py-1 rounded-lg">
-            {car.images?.length || 0} Photos
-          </p>
-        </div>
-      </Link>
-
+      </div>
       {/* Content */}
-      <div className="p-4 flex flex-col flex-1">
-        <div className="mb-4">
-          {/* Title - Updated Link */}
-          <Link to={detailsUrl}>
-            <h3 className="font-bold text-gray-900 text-lg mb-1 truncate group-hover:text-blue-600 transition-colors">
-              {car.make} {car.model}
-            </h3>
-          </Link>
-          <p className="text-gray-500 text-sm truncate">{car.variant || `${car.year} • ${car.transmission || ''}`}</p>
+      <div className="p-4 flex flex-col gap-2 flex-1" style={{minHeight:140,justifyContent:'space-between'}}>
+        {/* Title */}
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight truncate" style={{marginBottom:2}}>
+          {(car.brand || car.make) + ' ' + car.model} <span className="text-gray-500">{car.year}</span>
+        </h3>
+        {/* Price */}
+        <p className="text-2xl font-extrabold text-green-600">
+          {car.price ? formatCurrency(car.price) : '--'}
+        </p>
+        {/* Specs */}
+        <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 dark:text-gray-300">
+          <span>⏱ {car.mileage?.toLocaleString() || '--'} km</span>
+          <span>⛽ {car.fuel || car.fuelType || '--'}</span>
+          <span>⚙️ {car.transmission || '--'}</span>
+          <span>🏎 {car.hp || car.power || '--'} hp</span>
         </div>
-
-        <div className="grid grid-cols-2 gap-3 mb-4 mt-auto">
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Calendar size={16} className="text-gray-400" />
-            <span>{car.year}</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Gauge size={16} className="text-gray-400" />
-            <span>{car.mileage?.toLocaleString()} km</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Fuel size={16} className="text-gray-400" />
-            <span>{car.fuelType}</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <MapPin size={16} className="text-gray-400" />
-            <span className="truncate">{car.location?.city || (car.locationData?.cityName as any) || 'N/A'}</span>
-          </div>
+        {/* Location */}
+        <div className="text-xs text-gray-500 flex items-center gap-1">
+          <MapPin size={13} className="inline-block mr-1 text-gray-400" />
+          {car.location?.city || car.location || (car.locationData?.cityName as any) || 'N/A'}
         </div>
-
-        <div className="flex items-center justify-between pt-4 border-t border-gray-50">
-          <div className="text-xl font-bold text-blue-600">
-            {formatCurrency(car.price)}
+        {/* AI Highlight */}
+        {car.aiHighlight && (
+          <div className="text-xs text-blue-600 font-semibold bg-blue-50 p-2 rounded-lg">
+            🔍 AI Insight: {car.aiHighlight}
           </div>
-          <Link
-            to={detailsUrl}
-            className="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors"
-          >
-            View Details
-          </Link>
-        </div>
+        )}
+        {/* CTA */}
+        <Link
+          to={detailsUrl}
+          className="mt-3 w-full block bg-gray-900 text-white py-2 rounded-xl font-semibold hover:bg-gray-800 transition text-center"
+          style={{fontSize:15,marginTop:8}}
+        >
+          View Details
+        </Link>
       </div>
     </div>
   );

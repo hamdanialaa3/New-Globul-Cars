@@ -43,6 +43,75 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       metaDescription: 'Browse the best spacious family cars with 7 or more seats. Perfect for large families and long trips.',
       metaKeywords: 'family cars, 7 seats, spacious cars, minivan, large SUV'
     },
+    // ✅ NEW: Electric cars filter - fuel_type = electric
+    electric: {
+      pageType: 'electric' as PageType,
+      title: 'Електрически автомобили',
+      subtitle: '100% електрическо задвижване - нулеви емисии',
+      defaultSort: 'year-desc',
+      metaTitle: 'Electric Cars for Sale in Bulgaria | Globul Cars',
+      metaDescription: 'Browse electric vehicles with zero emissions. Tesla, BMW i, Nissan Leaf and more.',
+      metaKeywords: 'electric cars, EV, Tesla, zero emissions, електрически коли'
+    },
+    // ✅ NEW: Hybrid cars filter
+    hybrid: {
+      pageType: 'hybrid' as PageType,
+      title: 'Хибридни автомобили',
+      subtitle: 'Комбинация от бензин и електричество',
+      defaultSort: 'year-desc',
+      metaTitle: 'Hybrid Cars for Sale in Bulgaria | Globul Cars',
+      metaDescription: 'Browse hybrid vehicles for lower fuel costs. Plug-in and self-charging hybrids.',
+      metaKeywords: 'hybrid cars, PHEV, plug-in hybrid, хибридни коли'
+    },
+    // ✅ NEW: Low mileage (like new) - mileage <= 3515 km
+    lowMileage: {
+      pageType: 'lowMileage' as PageType,
+      title: 'Като нови (нисък пробег)',
+      subtitle: 'Автомобили с под 3,515 км пробег',
+      defaultSort: 'mileage-asc',
+      metaTitle: 'Low Mileage Cars for Sale | Globul Cars',
+      metaDescription: 'Cars in like-new condition with under 3,515 km mileage.',
+      metaKeywords: 'low mileage, like new, minimal use, нисък пробег'
+    },
+    // ✅ NEW: Newly added - sorted by created_at DESC
+    newlyAdded: {
+      pageType: 'newlyAdded' as PageType,
+      title: 'Ново добавени обяви',
+      subtitle: 'Последните обяви първи',
+      defaultSort: 'created-desc',
+      metaTitle: 'Newly Added Cars for Sale | Globul Cars',
+      metaDescription: 'Latest car listings updated every day. Be the first to see new offers.',
+      metaKeywords: 'new listings, latest cars, recent ads, нови обяви'
+    },
+    // ✅ NEW: Budget cars - price < 5000
+    budget: {
+      pageType: 'budget' as PageType,
+      title: 'Бюджетни автомобили',
+      subtitle: 'Под 5,000 EUR',
+      defaultSort: 'price-asc',
+      metaTitle: 'Budget Cars Under 5000 EUR | Globul Cars',
+      metaDescription: 'Affordable cars priced under 5,000 euros. Great value for money.',
+      metaKeywords: 'cheap cars, budget, under 5000, евтини коли'
+    },
+    // ✅ NEW: Verified dealers
+    verifiedDealer: {
+      pageType: 'verifiedDealer' as PageType,
+      title: 'Проверени дилъри',
+      subtitle: 'Гарантирано качество от сертифицирани автокъщи',
+      defaultSort: 'year-desc',
+      metaTitle: 'Verified Car Dealers in Bulgaria | Globul Cars',
+      metaDescription: 'Buy from verified and certified car dealers. Guaranteed quality.',
+      metaKeywords: 'verified dealers, certified, trusted, проверени дилъри'
+    },
+    womens: {
+      pageType: 'womens' as PageType,
+      title: 'Дамски автомобили',
+      subtitle: 'Красиви автомобили в розово и червено - за дамите',
+      defaultSort: 'year-desc',
+      metaTitle: "Women's Cars Pink & Red - Koli.one",
+      metaDescription: 'Beautiful cars in pink and red colors. Stylish vehicles perfect for women.',
+      metaKeywords: "women's cars, pink cars, red cars, дамски коли"
+    },
     sport: {
       pageType: 'sport',
       title: 'Спортни автомобили',
@@ -114,10 +183,57 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       metaTitle: 'Economy Cars - Low Fuel Consumption | Globul Cars',
       metaDescription: 'Browse economical cars with low fuel consumption. Save on operating costs.',
       metaKeywords: 'economy cars, low consumption, fuel saving'
+    },
+    // ✅ NEW: Body type filters
+    suv: {
+      pageType: 'suv' as PageType,
+      title: 'SUV & Джипове',
+      subtitle: 'Високопроходими автомобили за всякакви условия',
+      defaultSort: 'year-desc',
+      metaTitle: 'SUV and Jeeps for Sale in Bulgaria | Globul Cars',
+      metaDescription: 'Browse SUV and Jeep vehicles. Off-road capable cars for city and adventure.',
+      metaKeywords: 'SUV, jeep, 4x4, off-road, джипове'
+    },
+    sedan: {
+      pageType: 'sedan' as PageType,
+      title: 'Седани',
+      subtitle: 'Класически 4-вратни автомобили',
+      defaultSort: 'year-desc',
+      metaTitle: 'Sedans for Sale in Bulgaria | Globul Cars',
+      metaDescription: 'Browse classic sedan cars. Elegant and comfortable 4-door vehicles.',
+      metaKeywords: 'sedan, saloon, 4-door, седан'
+    },
+    hatchback: {
+      pageType: 'hatchback' as PageType,
+      title: 'Хечбеци',
+      subtitle: 'Компактни и практични автомобили',
+      defaultSort: 'year-desc',
+      metaTitle: 'Hatchbacks for Sale in Bulgaria | Globul Cars',
+      metaDescription: 'Browse compact hatchback cars. Practical city vehicles.',
+      metaKeywords: 'hatchback, compact, city car, хечбек'
+    },
+    // ✅ NEW: Fuel type filters
+    diesel: {
+      pageType: 'diesel' as PageType,
+      title: 'Дизелови автомобили',
+      subtitle: 'Икономични дизелови двигатели',
+      defaultSort: 'year-desc',
+      metaTitle: 'Diesel Cars for Sale in Bulgaria | Globul Cars',
+      metaDescription: 'Browse fuel-efficient diesel cars. Lower consumption for long trips.',
+      metaKeywords: 'diesel, fuel efficient, дизел, дизелови'
+    },
+    petrol: {
+      pageType: 'petrol' as PageType,
+      title: 'Бензинови автомобили',
+      subtitle: 'Класически бензинови двигатели',
+      defaultSort: 'year-desc',
+      metaTitle: 'Petrol Cars for Sale in Bulgaria | Globul Cars',
+      metaDescription: 'Browse petrol and gasoline cars. Various power options available.',
+      metaKeywords: 'petrol, gasoline, бензин, бензинови'
     }
   };
 
-  return configs[pageType];
+  return configs[pageType] || configs.all;
 }
 
 /**
@@ -137,6 +253,43 @@ export function buildQueryConstraints(
     case 'sport':
       // Note: Sport requires OR logic (doors = 2 OR power >= 270)
       // This will be handled by merging two queries in fetchSportCars()
+      break;
+
+    // ✅ NEW: Electric cars - fuel_type = electric
+    case 'electric':
+      constraints.push(where('fuelType', '==', 'electric'));
+      break;
+
+    // ✅ NEW: Hybrid cars - fuel_type = hybrid
+    case 'hybrid':
+      constraints.push(where('fuelType', '==', 'hybrid'));
+      break;
+
+    // ✅ NEW: Low mileage (like new) - mileage <= 3515 km
+    case 'lowMileage':
+      constraints.push(where('mileage', '<=', 3515));
+      break;
+
+    // ✅ NEW: Newly added - will be sorted by createdAt DESC
+    case 'newlyAdded':
+      // No filter, just sorting handled separately
+      break;
+
+    // ✅ NEW: Budget cars - price < 5000
+    case 'budget':
+      constraints.push(where('price', '<', 5000));
+      break;
+
+    // ✅ NEW: Verified dealers
+    case 'verifiedDealer':
+      constraints.push(where('dealerVerified', '==', true));
+      constraints.push(where('sellerType', '==', 'dealer'));
+      break;
+
+    // ✅ NEW: Women's cars (pink and red colors)
+    case 'womens':
+      // Note: Color filtering is done client-side to avoid composite index requirement
+      // Firestore 'in' operator with ordering requires a composite index
       break;
 
     case 'vip':
@@ -170,6 +323,28 @@ export function buildQueryConstraints(
     case 'economy':
       // Low fuel consumption (< 6L/100km)
       constraints.push(where('fuelConsumption', '<', 6));
+      break;
+
+    // ✅ NEW: Body type filters
+    case 'suv':
+      constraints.push(where('bodyType', '==', 'suv'));
+      break;
+
+    case 'sedan':
+      constraints.push(where('bodyType', '==', 'sedan'));
+      break;
+
+    case 'hatchback':
+      constraints.push(where('bodyType', '==', 'hatchback'));
+      break;
+
+    // ✅ NEW: Additional fuel type filters
+    case 'diesel':
+      constraints.push(where('fuelType', '==', 'diesel'));
+      break;
+
+    case 'petrol':
+      constraints.push(where('fuelType', '==', 'petrol'));
       break;
 
     case 'all':
@@ -206,7 +381,9 @@ export async function fetchCarsForPageType(
     // Standard query for other page types
     const constraints = buildQueryConstraints(pageType, dynamicParam);
     const config = getShowcaseConfig(pageType, dynamicParam);
-    const collectionNames = getCollectionNames();
+    // Include legacy collections for backward compatibility
+    const legacyCollections = ['cars', 'listings'];
+    const collectionNames = [...getCollectionNames(), ...legacyCollections];
 
     const allCars: CarListing[] = [];
 
@@ -242,8 +419,30 @@ export async function fetchCarsForPageType(
       });
     }
 
+    // Apply client-side filters for specific page types
+    let filteredCars = allCars;
+    if (pageType === 'womens') {
+      // Filter by feminine color variants (case-insensitive, substring match) in color, exteriorColor, or colorOther
+      const feminineColors = [
+        'red', 'pink', 'rose', 'magenta', 'cherry', 'fuchsia', 'coral', 'ruby', 'blush', 'wine', 'burgundy', 'raspberry', 'hot pink', 'salmon', 'flamingo', 'carmine', 'crimson', 'maroon', 'mulberry', 'peach', 'melon', 'bubblegum', 'cerise', 'azalea', 'candy', 'rouge', 'poppy', 'sangria', 'strawberry', 'currant', 'garnet', 'berry', 'lipstick', 'plum', 'orchid', 'lavender', 'amaranth', 'watermelon', 'shocking pink', 'rosewood', 'mauve', 'pastel pink', 'pastel red'
+      ];
+      filteredCars = allCars.filter(car => {
+        const colorFields = [car.color, car.exteriorColor, car.colorOther].map(v => (v || '').toLowerCase());
+        return feminineColors.some(femColor => colorFields.some(field => field.includes(femColor)));
+      });
+    }
+
+    // For legacy cars, treat missing status/isActive as active by default
+    filteredCars = filteredCars.filter(car => {
+      const isActive = car.isActive !== false;
+      const status = (car as any).status;
+      const isPublished = status === 'published' || status === 'active' || status === undefined;
+      const isSold = car.isSold === true;
+      // Exclude sold cars
+      return (isActive || isPublished) && !isSold;
+    });
     // Sort and limit combined results
-    const sortedCars = sortCars(allCars, config.defaultSort);
+    const sortedCars = sortCars(filteredCars, config.defaultSort);
     return sortedCars.slice(0, limitCount);
 
   } catch (error) {
@@ -264,20 +463,18 @@ async function fetchSportCars(limitCount: number = 50): Promise<CarListing[]> {
     for (const collectionName of collectionNames) {
       const collectionRef = collection(db, collectionName);
 
-      // Query 1: doors = 2
+      // Query 1: doors = 2 (no orderBy to avoid index requirement)
       const query1 = query(
         collectionRef,
         where('numberOfDoors', '==', 2),
-        orderBy('power', 'desc'),
-        limit(limitCount)
+        limit(limitCount * 2) // Fetch extra to account for filtering
       );
 
-      // Query 2: power >= 270
+      // Query 2: power >= 270 (no orderBy to avoid index requirement)
       const query2 = query(
         collectionRef,
         where('power', '>=', 270),
-        orderBy('power', 'desc'),
-        limit(limitCount)
+        limit(limitCount * 2) // Fetch extra to account for filtering
       );
 
       // Execute both queries in parallel
@@ -296,7 +493,7 @@ async function fetchSportCars(limitCount: number = 50): Promise<CarListing[]> {
       });
     }
 
-    // Convert to array and sort by power (descending)
+    // Convert to array and sort by power (descending) - CLIENT SIDE
     const sportCarsArray = Array.from(allSportCars.values());
     return sportCarsArray
       .sort((a, b) => (b.power || 0) - (a.power || 0))

@@ -12,11 +12,15 @@ import {
   updateDoc,
   doc,
   increment,
-  Timestamp
+  Timestamp,
+  getDoc
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { logger } from '../logger-service';
 import { queryAllCollections } from '../search/multi-collection-helper';
+
+// All vehicle collections to search
+const VEHICLE_COLLECTIONS = ['passenger_cars', 'suvs', 'vans', 'motorcycles', 'trucks', 'buses', 'cars', 'listings'];
 
 interface CarView {
   carId: string;
@@ -53,6 +57,25 @@ class CarAnalyticsService {
   }
 
   /**
+   * Find which collection a car belongs to
+   * Returns the collection name or null if not found
+   */
+  private async findCarCollection(carId: string): Promise<string | null> {
+    for (const collectionName of VEHICLE_COLLECTIONS) {
+      try {
+        const carRef = doc(db, collectionName, carId);
+        const snap = await getDoc(carRef);
+        if (snap.exists()) {
+          return collectionName;
+        }
+      } catch {
+        // Continue to next collection
+      }
+    }
+    return null;
+  }
+
+  /**
    * Track car view
    */
   async trackView(carId: string, userId?: string): Promise<void> {
@@ -67,8 +90,15 @@ class CarAnalyticsService {
         sessionId: this.getSessionId()
       });
 
+      // Find the correct collection for this car
+      const collectionName = await this.findCarCollection(carId);
+      if (!collectionName) {
+        logger.warn('Car not found in any collection for view tracking', { carId });
+        return;
+      }
+
       // Update car view count
-      await updateDoc(doc(db, 'cars', carId), {
+      await updateDoc(doc(db, collectionName, carId), {
         views: increment(1),
         lastViewedAt: serverTimestamp()
       });
@@ -101,10 +131,14 @@ class CarAnalyticsService {
         status: 'pending'
       });
 
-      // Update car inquiry count
-      await updateDoc(doc(db, 'cars', carId), {
-        inquiries: increment(1)
-      });
+      // Find the correct collection for this car
+      const collectionName = await this.findCarCollection(carId);
+      if (collectionName) {
+        // Update car inquiry count
+        await updateDoc(doc(db, collectionName, carId), {
+          inquiries: increment(1)
+        });
+      }
 
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Car inquiry tracked', { carId, fromUserId, toUserId });
@@ -119,9 +153,13 @@ class CarAnalyticsService {
    */
   async trackFavorite(carId: string, userId: string, added: boolean): Promise<void> {
     try {
-      await updateDoc(doc(db, 'cars', carId), {
-        favorites: increment(added ? 1 : -1)
-      });
+      // Find the correct collection for this car
+      const collectionName = await this.findCarCollection(carId);
+      if (collectionName) {
+        await updateDoc(doc(db, collectionName, carId), {
+          favorites: increment(added ? 1 : -1)
+        });
+      }
 
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Car favorite tracked', { carId, action: added ? 'added' : 'removed' });

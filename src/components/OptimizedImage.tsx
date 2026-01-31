@@ -15,6 +15,8 @@ interface OptimizedImageProps {
   fallback?: string;
   onLoad?: () => void;
   onError?: () => void;
+  onClick?: (e: React.MouseEvent) => void;
+  style?: React.CSSProperties;
 }
 
 const ImageContainer = styled.div<{ $loaded: boolean; $hasError: boolean }>`
@@ -94,7 +96,9 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   className,
   fallback = '/images/placeholder.png',
   onLoad,
-  onError
+  onError,
+  onClick,
+  style
 }) => {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
@@ -180,7 +184,8 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
       $loaded={loaded}
       $hasError={error}
       className={className}
-      style={{ width, height }}
+      style={{ width, height, ...style, cursor: onClick ? 'pointer' : undefined }}
+      onClick={onClick}
     >
       {!loaded && !error && <Placeholder />}
       {error && currentSrc === fallback && (

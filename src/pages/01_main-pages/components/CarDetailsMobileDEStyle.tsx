@@ -394,6 +394,197 @@ const EditButton = styled.button`
   }
 `;
 
+// Lightbox Styled Components
+const LightboxOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const LightboxHeader = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 100%);
+  z-index: 10;
+`;
+
+const LightboxCounter = styled.span`
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+`;
+
+const LightboxCloseBtn = styled.button`
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+  }
+`;
+
+const LightboxImageContainer = styled.div<{ $zoom: number; $panX: number; $panY: number; $isDragging: boolean }>`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  overflow: hidden;
+  cursor: ${props => props.$zoom > 1 ? (props.$isDragging ? 'grabbing' : 'grab') : 'zoom-in'};
+  
+  img {
+    max-width: 90vw;
+    max-height: 80vh;
+    object-fit: contain;
+    transform: scale(${props => props.$zoom}) translate(${props => props.$panX / props.$zoom}px, ${props => props.$panY / props.$zoom}px);
+    transition: ${props => props.$isDragging ? 'none' : 'transform 0.2s ease'};
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+`;
+
+const LightboxNavButton = styled.button<{ $position: 'left' | 'right' }>`
+  position: absolute;
+  top: 50%;
+  ${props => props.$position}: 1rem;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 5;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-50%) scale(1.1);
+  }
+  
+  @media (max-width: 768px) {
+    width: 40px;
+    height: 40px;
+    ${props => props.$position}: 0.5rem;
+  }
+`;
+
+const LightboxControls = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+`;
+
+const ZoomButton = styled.button`
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: white;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1.25rem;
+  font-weight: bold;
+  
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+  }
+  
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+`;
+
+const ZoomLevel = styled.span`
+  color: white;
+  font-size: 0.9rem;
+  min-width: 50px;
+  text-align: center;
+`;
+
+const LightboxThumbnails = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  overflow-x: auto;
+  max-width: 90vw;
+  
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+  }
+`;
+
+const LightboxThumb = styled.button<{ $active: boolean }>`
+  flex-shrink: 0;
+  width: 60px;
+  height: 45px;
+  border: 2px solid ${props => props.$active ? 'var(--accent-primary)' : 'transparent'};
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  opacity: ${props => props.$active ? 1 : 0.6};
+  transition: all 0.2s;
+  background: transparent;
+  padding: 0;
+  
+  &:hover {
+    opacity: 1;
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+`;
+
 const MainContent = styled.div`
   display: grid;
   grid-template-columns: 1fr 380px;
@@ -1683,6 +1874,14 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   const [featuredImageIndex, setFeaturedImageIndex] = useState<number>(
     (car as any).featuredImageIndex ?? 0
   );
+  
+  // Lightbox state
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
   const images = car.images && car.images.length > 0 ? car.images : ['/assets/placeholder-car.jpg'];
 
@@ -1695,8 +1894,15 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
       try {
         const { doc, updateDoc } = await import('firebase/firestore');
         const { db } = await import('../../../firebase/firebase-config');
-        const carRef = doc(db, 'cars', car.id);
+        const { SellWorkflowCollections } = await import('../../../services/sell-workflow-collections');
+        
+        // Determine correct collection based on vehicleType
+        const vehicleType = (car as any).vehicleType || 'car';
+        const collectionName = SellWorkflowCollections.getCollectionNameForVehicleType(vehicleType);
+        
+        const carRef = doc(db, collectionName, car.id);
         await updateDoc(carRef, { featuredImageIndex: index });
+        logger.info('Featured image updated', { carId: car.id, collection: collectionName, index });
       } catch (error) {
         logger.error('Error updating featured image', error as Error);
       }
@@ -1712,6 +1918,127 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   const handleNextImage = () => {
     setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
+
+  // Lightbox handlers
+  const openLightbox = (index: number) => {
+    setLightboxIndex(index);
+    setZoomLevel(1);
+    setPanPosition({ x: 0, y: 0 });
+    setLightboxOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+    setZoomLevel(1);
+    setPanPosition({ x: 0, y: 0 });
+    document.body.style.overflow = '';
+  };
+
+  const handleLightboxPrev = () => {
+    setLightboxIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+    setZoomLevel(1);
+    setPanPosition({ x: 0, y: 0 });
+  };
+
+  const handleLightboxNext = () => {
+    setLightboxIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+    setZoomLevel(1);
+    setPanPosition({ x: 0, y: 0 });
+  };
+
+  const handleZoomIn = () => {
+    setZoomLevel((prev) => Math.min(prev + 0.5, 4));
+  };
+
+  const handleZoomOut = () => {
+    setZoomLevel((prev) => {
+      const newZoom = Math.max(prev - 0.5, 1);
+      if (newZoom === 1) setPanPosition({ x: 0, y: 0 });
+      return newZoom;
+    });
+  };
+
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    if (e.deltaY < 0) {
+      handleZoomIn();
+    } else {
+      handleZoomOut();
+    }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (zoomLevel > 1) {
+      setIsDragging(true);
+      setDragStart({ x: e.clientX - panPosition.x, y: e.clientY - panPosition.y });
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging && zoomLevel > 1) {
+      setPanPosition({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (zoomLevel > 1 && e.touches.length === 1) {
+      setIsDragging(true);
+      setDragStart({ 
+        x: e.touches[0].clientX - panPosition.x, 
+        y: e.touches[0].clientY - panPosition.y 
+      });
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (isDragging && zoomLevel > 1 && e.touches.length === 1) {
+      setPanPosition({
+        x: e.touches[0].clientX - dragStart.x,
+        y: e.touches[0].clientY - dragStart.y
+      });
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+  };
+
+  // Keyboard navigation for lightbox
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    
+    const handleKeyDown = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case 'Escape':
+          closeLightbox();
+          break;
+        case 'ArrowLeft':
+          handleLightboxPrev();
+          break;
+        case 'ArrowRight':
+          handleLightboxNext();
+          break;
+        case '+':
+        case '=':
+          handleZoomIn();
+          break;
+        case '-':
+          handleZoomOut();
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxOpen, images.length]);
 
   // Share menu handlers
   useEffect(() => {
@@ -2007,6 +2334,8 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
                 <MainImage
                   src={typeof images[currentImageIndex] === 'string' ? images[currentImageIndex] : URL.createObjectURL(images[currentImageIndex] as File)}
                   alt={`${car.make} ${car.model}`}
+                  onClick={() => openLightbox(currentImageIndex)}
+                  style={{ cursor: 'zoom-in' }}
                 />
                 {isSold && <RealisticPaperclipBadge text={t.soldMark} language={language} />}
                 {images.length > 1 && (
@@ -2031,6 +2360,8 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
                       $active={index === currentImageIndex}
                       $isFeatured={index === featuredImageIndex}
                       onClick={() => setCurrentImageIndex(index)}
+                      onDoubleClick={() => openLightbox(index)}
+                      title={language === 'bg' ? 'Кликнете два пъти за пълен екран' : 'Double-click for fullscreen'}
                     >
                       {index === featuredImageIndex && (
                         <FeaturedBadge>
@@ -2579,6 +2910,97 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
         </StickyMobileAction>
 
       </Container>
+
+      {/* Image Lightbox Modal */}
+      {lightboxOpen && (
+        <LightboxOverlay onClick={closeLightbox}>
+          <LightboxHeader onClick={(e) => e.stopPropagation()}>
+            <LightboxCounter>
+              {lightboxIndex + 1} / {images.length}
+            </LightboxCounter>
+            <LightboxCloseBtn onClick={closeLightbox} title={language === 'bg' ? 'Затвори' : 'Close'}>
+              <XIcon size={24} />
+            </LightboxCloseBtn>
+          </LightboxHeader>
+
+          {images.length > 1 && (
+            <>
+              <LightboxNavButton
+                $position="left"
+                onClick={(e) => { e.stopPropagation(); handleLightboxPrev(); }}
+                title={language === 'bg' ? 'Предишна' : 'Previous'}
+              >
+                <ChevronLeft size={28} />
+              </LightboxNavButton>
+              <LightboxNavButton
+                $position="right"
+                onClick={(e) => { e.stopPropagation(); handleLightboxNext(); }}
+                title={language === 'bg' ? 'Следваща' : 'Next'}
+              >
+                <ChevronRight size={28} />
+              </LightboxNavButton>
+            </>
+          )}
+
+          <LightboxImageContainer
+            $zoom={zoomLevel}
+            $panX={panPosition.x}
+            $panY={panPosition.y}
+            $isDragging={isDragging}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (zoomLevel === 1) handleZoomIn();
+            }}
+            onWheel={handleWheel}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <img
+              src={typeof images[lightboxIndex] === 'string' 
+                ? images[lightboxIndex] 
+                : URL.createObjectURL(images[lightboxIndex] as File)}
+              alt={`${car.make} ${car.model} - ${lightboxIndex + 1}`}
+              draggable={false}
+            />
+          </LightboxImageContainer>
+
+          <LightboxControls onClick={(e) => e.stopPropagation()}>
+            <ZoomButton onClick={handleZoomOut} disabled={zoomLevel <= 1} title={language === 'bg' ? 'Намали' : 'Zoom Out'}>
+              −
+            </ZoomButton>
+            <ZoomLevel>{Math.round(zoomLevel * 100)}%</ZoomLevel>
+            <ZoomButton onClick={handleZoomIn} disabled={zoomLevel >= 4} title={language === 'bg' ? 'Увеличи' : 'Zoom In'}>
+              +
+            </ZoomButton>
+          </LightboxControls>
+
+          {images.length > 1 && (
+            <LightboxThumbnails onClick={(e) => e.stopPropagation()}>
+              {images.map((img, index) => (
+                <LightboxThumb
+                  key={index}
+                  $active={index === lightboxIndex}
+                  onClick={() => {
+                    setLightboxIndex(index);
+                    setZoomLevel(1);
+                    setPanPosition({ x: 0, y: 0 });
+                  }}
+                >
+                  <img
+                    src={typeof img === 'string' ? img : URL.createObjectURL(img as File)}
+                    alt={`Thumbnail ${index + 1}`}
+                  />
+                </LightboxThumb>
+              ))}
+            </LightboxThumbnails>
+          )}
+        </LightboxOverlay>
+      )}
 
       {/* Print Dialog - Outside Container, positioned below Header */}
       {showPrintDialog && (

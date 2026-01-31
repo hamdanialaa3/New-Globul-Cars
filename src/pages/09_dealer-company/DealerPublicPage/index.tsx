@@ -216,7 +216,7 @@ const DealerPublicPage: React.FC = () => {
               {listings.map((listing) => (
                 <ListingCard key={listing.id} onClick={() => navigate(`/cars/${listing.id}`)}>
                   <ListingImage
-                    src={listing.images[0] || '/default-car.jpg'}
+                    src={listing.images?.[listing.featuredImageIndex || 0] || listing.images?.[0] || '/default-car.jpg'}
                     alt={`${listing.make} ${listing.model}`}
                   />
                   <ListingInfo>

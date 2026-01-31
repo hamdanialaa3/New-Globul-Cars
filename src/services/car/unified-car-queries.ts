@@ -71,7 +71,9 @@ export async function getFeaturedCars(limitCount: number = 4): Promise<UnifiedCa
 
     // ⚡ PERFORMANCE: Query each collection with where clauses to filter at database level
     // ✅ FIX: Use fallback query to support both status-based and isActive-based filtering
-    const queryPromises = VEHICLE_COLLECTIONS.map(async (collectionName) => {
+    // VEHICLE_COLLECTIONS already includes 'cars', just add 'listings' for legacy support
+    const allCollections = [...VEHICLE_COLLECTIONS, 'listings'];
+    const queryPromises = allCollections.map(async (collectionName) => {
       // Use simpler query without where clauses to support all status formats
       // Filter client-side to handle: status='published'/'active', isActive=true, isSold=false
       try {
@@ -104,8 +106,17 @@ export async function getFeaturedCars(limitCount: number = 4): Promise<UnifiedCa
     const results = await Promise.all(queryPromises);
     results.forEach(cars => allCars.push(...cars));
 
+    // ✅ FIX: Remove duplicate cars by ID to prevent repeated listings
+    const uniqueCarsMap = new Map<string, UnifiedCar>();
+    allCars.forEach(car => {
+      if (!uniqueCarsMap.has(car.id)) {
+        uniqueCarsMap.set(car.id, car);
+      }
+    });
+    const uniqueCars = Array.from(uniqueCarsMap.values());
+
     // Sort by date (newest first) and limit
-    const sorted = allCars.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    const sorted = uniqueCars.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
     return sorted.slice(0, limitCount);
   } catch (error) {
@@ -299,10 +310,10 @@ export async function searchCars(filters: CarFilters = {}, limitCount: number = 
 
     // Filter 1: isActive
     if (filters.isActive !== undefined) {
-      filteredCars = filteredCars.filter(c => (c.isActive !== false) === filters.isActive);
+      filteredCars = filteredCars.filter(c => (c.isActive !== false || c.isActive === undefined) === filters.isActive);
     } else {
-      // Default: show only active cars
-      filteredCars = filteredCars.filter(c => c.isActive !== false);
+      // Default: show only active cars (missing isActive treated as true)
+      filteredCars = filteredCars.filter(c => c.isActive !== false || c.isActive === undefined);
     }
 
     // Filter 2: isSold (only if explicitly specified)

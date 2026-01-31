@@ -154,15 +154,29 @@ const CarEditPage: React.FC<{ carId?: string }> = ({ carId: propCarId }) => {
     if (!carId || !currentUser) return;
     setSaving(true);
     try {
-      // Upload new images if any (files)
-      // ... Logic to upload images via storage service ...
-      // For brevity, assuming unifiedCarService handles this or we mock it.
-      // Actually unifiedCarService expects URLs. We need to upload first.
+      // ✅ FIX: Upload new images (File objects) to Firebase Storage first
+      const uploadedImages: string[] = [];
+      for (const img of images) {
+        if (typeof img === 'string') {
+          // Already a URL, keep it
+          uploadedImages.push(img);
+        } else if (img instanceof File) {
+          // Upload File to Firebase Storage and get URL
+          try {
+            const { ImageUploadService } = await import('../../../services/image-upload-service');
+            const url = await ImageUploadService.uploadSingleImage(img, `cars/${currentUser.uid}/${carId}/${Date.now()}_${img.name}`);
+            uploadedImages.push(url);
+          } catch (uploadError) {
+            logger.error('Failed to upload image', uploadError as Error);
+            // Skip failed uploads but continue with others
+          }
+        }
+      }
 
-      // MOCK: Assuming files are converted or service handles it. 
-      // In real app, we'd loop through images, upload Files, get URLs.
+      const finalData = { ...formData, images: uploadedImages };
 
-      const finalData = { ...formData, images: images }; // Logic simplified for split
+      // ✅ DEBUG: Log what we're saving
+      logger.info('Saving car data', { carId, fieldsCount: Object.keys(finalData).length, imagesCount: uploadedImages.length });
 
       await unifiedCarService.updateCar(carId, finalData as UnifiedCar);
 
@@ -174,6 +188,19 @@ const CarEditPage: React.FC<{ carId?: string }> = ({ carId: propCarId }) => {
 
       toast.success(t.success.saved);
       setHasChanges(false);
+      
+      // ✅ FIX: Navigate back to view page with refresh flag to force data reload
+      const sellerNumericId = formData.sellerNumericId || car?.sellerNumericId;
+      const carNumericId = formData.carNumericId || car?.carNumericId;
+      if (sellerNumericId && carNumericId) {
+        // Short delay to ensure Firestore has synced
+        setTimeout(() => {
+          navigate(`/car/${sellerNumericId}/${carNumericId}`, { 
+            replace: true,
+            state: { refreshData: true, timestamp: Date.now() }
+          });
+        }, 300);
+      }
     } catch (err) {
       logger.error('Save failed', err as Error);
       toast.error(t.errors.saveError);

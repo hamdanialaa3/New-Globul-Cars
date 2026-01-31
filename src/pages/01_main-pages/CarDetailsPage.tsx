@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -44,6 +44,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
   const { id: paramId } = useParams<{ id: string }>();
   const carId = forcedCarId || paramId;
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const { language } = useLanguage();
   const { currentUser } = useAuth();
@@ -67,7 +68,18 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
   }, []);
 
   // Use custom hooks
-  const { car, loading, setCar } = useCarDetails(carId);
+  const { car, loading, setCar, refresh } = useCarDetails(carId);
+
+  // ✅ FIX: Force refresh when navigating back from edit page
+  useEffect(() => {
+    const state = location.state as { refreshData?: boolean; timestamp?: number } | null;
+    if (state?.refreshData) {
+      logger.info('Refreshing car data after edit', { timestamp: state.timestamp });
+      refresh();
+      // Clear the state to prevent re-refreshing on subsequent renders
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, refresh, navigate, location.pathname]);
 
   // Auto-track car views
   useCarViewTracking(carId, car?.sellerId);

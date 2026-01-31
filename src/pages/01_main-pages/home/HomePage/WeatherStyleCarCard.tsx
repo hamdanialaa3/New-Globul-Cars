@@ -378,9 +378,13 @@ const WeatherStyleCarCard: React.FC<WeatherStyleCarCardProps> = ({ car }) => {
   const imageUrl = useMemo(() => {
     if (imageError) return '';
     if (car.mainImage) return car.mainImage;
-    if (Array.isArray(car.images) && car.images.length > 0) return car.images[0];
+    if (Array.isArray(car.images) && car.images.length > 0) {
+      // Use featuredImageIndex if available, fallback to first image
+      const featuredIdx = car.featuredImageIndex || 0;
+      return car.images[featuredIdx] || car.images[0];
+    }
     return '';
-  }, [car.images, car.mainImage, imageError]);
+  }, [car.images, car.mainImage, car.featuredImageIndex, imageError]);
 
   const handleViewDetails = () => {
     // ✅ CONSTITUTION: Use numeric URL pattern
