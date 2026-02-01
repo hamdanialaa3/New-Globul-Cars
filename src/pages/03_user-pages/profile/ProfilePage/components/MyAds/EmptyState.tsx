@@ -128,31 +128,69 @@ const ClearFiltersButton = styled.button<{ $isDark?: boolean }>`
   }
 `;
 
-// SVG Car Illustration Component
-const CarIllustration: React.FC = () => (
+// SVG Car Illustration Component - Professional Garage Theme
+const CarIllustration: React.FC<{ isDark?: boolean }> = ({ isDark = false }) => (
   <svg
-    width="200"
-    height="150"
-    viewBox="0 0 200 150"
+    width="280"
+    height="180"
+    viewBox="0 0 280 180"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    {/* Car Body */}
-    <rect x="30" y="70" width="140" height="50" rx="8" fill="#ff8f10" opacity="0.2" />
-    <rect x="40" y="80" width="120" height="30" rx="6" fill="#ff8f10" />
+    {/* Background Garage Shape */}
+    <rect x="20" y="30" width="240" height="120" rx="12" fill={isDark ? '#1e293b' : '#f1f5f9'} />
+    <path d="M140 10L260 50V30H20V50L140 10Z" fill={isDark ? '#334155' : '#e2e8f0'} />
     
-    {/* Windows */}
-    <rect x="50" y="85" width="35" height="20" rx="2" fill="#ffffff" opacity="0.3" />
-    <rect x="95" y="85" width="35" height="20" rx="2" fill="#ffffff" opacity="0.3" />
+    {/* Garage Floor */}
+    <rect x="30" y="130" width="220" height="20" rx="4" fill={isDark ? '#0f172a' : '#cbd5e1'} />
     
-    {/* Wheels */}
-    <circle cx="60" cy="120" r="12" fill="#1e293b" />
-    <circle cx="60" cy="120" r="8" fill="#64748b" />
-    <circle cx="140" cy="120" r="12" fill="#1e293b" />
-    <circle cx="140" cy="120" r="8" fill="#64748b" />
+    {/* Center Parking Lines */}
+    <rect x="90" y="135" width="4" height="10" rx="1" fill="#ff8f10" />
+    <rect x="138" y="135" width="4" height="10" rx="1" fill="#ff8f10" />
+    <rect x="186" y="135" width="4" height="10" rx="1" fill="#ff8f10" />
     
-    {/* Headlights */}
-    <circle cx="165" cy="95" r="6" fill="#fbbf24" />
+    {/* Empty Garage Symbol */}
+    <circle cx="140" cy="85" r="35" fill={isDark ? '#334155' : '#e2e8f0'} stroke="#ff8f10" strokeWidth="3" strokeDasharray="8 4" />
+    
+    {/* Car Silhouette (Ghost/Placeholder) */}
+    <g opacity="0.4">
+      {/* Car Body */}
+      <path 
+        d="M95 95C95 91.6863 97.6863 89 101 89H179C182.314 89 185 91.6863 185 95V110C185 113.314 182.314 116 179 116H101C97.6863 116 95 113.314 95 110V95Z" 
+        fill={isDark ? '#64748b' : '#94a3b8'} 
+      />
+      {/* Car Roof */}
+      <path 
+        d="M110 89L120 70H160L170 89H110Z" 
+        fill={isDark ? '#64748b' : '#94a3b8'} 
+      />
+      {/* Windows */}
+      <path 
+        d="M122 72H158L166 87H114L122 72Z" 
+        fill={isDark ? '#1e293b' : '#e2e8f0'} 
+      />
+    </g>
+    
+    {/* Plus Icon in Center */}
+    <circle cx="140" cy="85" r="18" fill="#ff8f10" />
+    <rect x="136" y="76" width="8" height="18" rx="2" fill="white" />
+    <rect x="131" y="81" width="18" height="8" rx="2" fill="white" />
+    
+    {/* Decorative Elements */}
+    <circle cx="55" cy="60" r="8" fill={isDark ? '#334155' : '#e2e8f0'} />
+    <circle cx="225" cy="60" r="8" fill={isDark ? '#334155' : '#e2e8f0'} />
+    
+    {/* Tool Icons */}
+    <rect x="50" y="56" width="10" height="2" rx="1" fill={isDark ? '#64748b' : '#94a3b8'} />
+    <rect x="53" y="53" width="4" height="14" rx="1" fill={isDark ? '#64748b' : '#94a3b8'} />
+    
+    <rect x="220" y="56" width="10" height="2" rx="1" fill={isDark ? '#64748b' : '#94a3b8'} />
+    <rect x="223" y="53" width="4" height="14" rx="1" fill={isDark ? '#64748b' : '#94a3b8'} />
+    
+    {/* Koli One Branding */}
+    <text x="140" y="165" textAnchor="middle" fontSize="10" fontWeight="600" fill="#ff8f10">
+      KOLI ONE GARAGE
+    </text>
   </svg>
 );
 
@@ -205,15 +243,15 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         animate={{ y: [0, -10, 0] }}
         transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
       >
-        <CarIllustration />
+        <CarIllustration isDark={isDark} />
       </IconContainer>
       <Title $isDark={isDark}>
-        {language === 'bg' ? 'Все още нямате обяви' : 'No Listings Yet'}
+        {language === 'bg' ? 'Няма коли в този гараж' : 'No cars in this garage'}
       </Title>
       <Subtitle $isDark={isDark}>
         {language === 'bg'
-          ? 'Започнете да продавате своя автомобил днес! Създайте първата си обява и я споделете с хиляди потенциални купувачи.'
-          : 'Start selling your car today! Create your first listing and share it with thousands of potential buyers.'}
+          ? 'Гаражът ви е празен. Добавете първата си кола и започнете да продавате на хиляди потенциални купувачи!'
+          : 'Your garage is empty. Add your first car and start selling to thousands of potential buyers!'}
       </Subtitle>
       {isOwnProfile && (
         <CTAButton
@@ -223,7 +261,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           whileTap={{ scale: 0.95 }}
         >
           <Plus size={20} />
-          {language === 'bg' ? 'Добави първа обява' : 'Add First Listing'}
+          {language === 'bg' ? 'Добави кола' : 'Add a Car'}
         </CTAButton>
       )}
     </EmptyContainer>

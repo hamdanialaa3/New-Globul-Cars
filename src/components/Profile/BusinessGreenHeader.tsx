@@ -1,8 +1,9 @@
 /**
- * Business Green Header Component
- * شريط أخضر احترافي تحت الصورة الشخصية
+ * Business Header Component (Dynamic Colors)
+ * شريط ديناميكي احترافي تحت الصورة الشخصية
  * يحتوي على معلومات المستخدم والإحصائيات والأزرار
  * يدعم الوضع الفاتح والغامق واللغات (BG/EN) والاستجابة الكاملة
+ * 🎨 COLORS: Private=Orange, Dealer=Green, Company=Blue
  */
 
 import React from 'react';
@@ -14,44 +15,71 @@ import BlockUserButton from '../messaging/BlockUserButton';
 import { FollowButton } from '../../pages/03_user-pages/profile/ProfilePage/TabNavigation.styles';
 import type { BulgarianUser } from '../../types/user/bulgarian-user.types';
 
+// ==================== COLOR CONFIGURATIONS ====================
+// 🟧 Private (Personal) = ORANGE
+// 🟩 Dealer = GREEN  
+// 🟦 Company = BLUE
+const HEADER_COLORS = {
+  private: {
+    light: 'linear-gradient(135deg, rgba(255, 143, 16, 0.98) 0%, rgba(255, 159, 42, 0.95) 50%, rgba(255, 121, 0, 0.98) 100%)',
+    dark: 'radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 0%, rgba(255, 143, 16, 0.9) 28%)',
+    border: 'rgba(255, 143, 16, 0.6)',
+    shadow: 'rgba(255, 143, 16, 0.2)',
+  },
+  dealer: {
+    light: 'linear-gradient(135deg, rgba(16, 163, 74, 0.98) 0%, rgba(34, 197, 94, 0.95) 50%, rgba(22, 163, 74, 0.98) 100%)',
+    dark: 'radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 0%, rgba(34, 197, 94, 0.9) 28%)',
+    border: 'rgba(34, 197, 94, 0.6)',
+    shadow: 'rgba(16, 163, 74, 0.2)',
+  },
+  company: {
+    light: 'linear-gradient(135deg, rgba(29, 78, 216, 0.98) 0%, rgba(59, 130, 246, 0.95) 50%, rgba(30, 64, 175, 0.98) 100%)',
+    dark: 'radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 0%, rgba(59, 130, 246, 0.9) 28%)',
+    border: 'rgba(59, 130, 246, 0.6)',
+    shadow: 'rgba(29, 78, 216, 0.2)',
+  },
+};
+
 // ==================== STYLED COMPONENTS ====================
 
-const GreenHeaderContainer = styled.div<{ $isDark: boolean }>`
+const GreenHeaderContainer = styled.div<{ $isDark: boolean; $profileType?: 'private' | 'dealer' | 'company' }>`
   position: relative;
   width: 100%;
-  background: ${props => props.$isDark
-    ? 'radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 0%, rgba(21, 177, 188, 1) 28%)'
-    : 'linear-gradient(135deg, rgba(16, 163, 74, 0.98) 0%, rgba(34, 197, 94, 0.95) 50%, rgba(22, 163, 74, 0.98) 100%)'};
+  background: ${props => {
+    const colors = HEADER_COLORS[props.$profileType || 'dealer'];
+    return props.$isDark ? colors.dark : colors.light;
+  }};
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-image: ${props => props.$isDark 
-    ? 'linear-gradient(90deg, rgba(218, 16, 174, 0.6) 0%, rgba(255, 255, 255, 1) 100%) 1'
-    : 'none'};
-  border-top: 3px solid ${props => props.$isDark ? 'rgba(34, 197, 94, 0.6)' : 'rgba(16, 153, 162, 0.8)'};
-  box-shadow: 
-    0 4px 16px rgba(16, 163, 74, 0.2),
-    0 2px 8px rgba(16, 163, 74, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  padding: 20px 36px;
+  border-top: 3px solid ${props => {
+    const colors = HEADER_COLORS[props.$profileType || 'dealer'];
+    return colors.border;
+  }};
+  box-shadow: ${props => {
+    const colors = HEADER_COLORS[props.$profileType || 'dealer'];
+    return `0 4px 16px ${colors.shadow}, 0 2px 8px ${colors.shadow}, inset 0 1px 0 rgba(255, 255, 255, 0.1)`;
+  }};
+  padding: 24px 36px;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  margin-top: 20px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 20px;
+  margin-top: 60px;
   margin-bottom: 24px;
-  border-radius: 16px 16px 0 0;
+  border-radius: 16px;
   
   /* Desktop Layout */
   @media (min-width: 1025px) {
-    padding: 20px 48px;
-    gap: 32px;
+    padding: 28px 48px;
+    gap: 24px;
+    margin-top: 60px;
   }
   
   /* Tablet Layout */
   @media (min-width: 769px) and (max-width: 1024px) {
-    padding: 18px 36px;
-    gap: 24px;
+    padding: 22px 36px;
+    gap: 20px;
+    margin-top: 50px;
   }
   
   /* Mobile Layout */
@@ -60,22 +88,25 @@ const GreenHeaderContainer = styled.div<{ $isDark: boolean }>`
     padding: 16px 20px;
     gap: 16px;
     align-items: stretch;
+    margin-top: 40px;
   }
   
   /* Small Mobile */
   @media (max-width: 480px) {
     padding: 14px 16px;
     gap: 12px;
+    margin-top: 30px;
   }
 `;
-
 const HeaderContent = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 32px;
   flex: 1;
   min-width: 0;
+  flex-wrap: wrap;
   
   @media (max-width: 768px) {
     flex-direction: column;
@@ -87,96 +118,245 @@ const HeaderContent = styled.div`
 const UserInfoSection = styled.div<{ $isDark: boolean }>`
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  min-width: 200px;
-  flex-shrink: 0;
+  gap: 8px;
+  min-width: 180px;
+  max-width: 280px;
+  flex-shrink: 1;
   
   @media (max-width: 768px) {
     min-width: auto;
+    max-width: 100%;
     width: 100%;
+    text-align: center;
+    align-items: center;
   }
 `;
 
 const UserName = styled.h2<{ $isDark: boolean }>`
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-weight: 700;
   margin: 0;
   color: ${props => props.$isDark ? '#f0fdf4' : '#ffffff'};
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.3;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   
   @media (max-width: 768px) {
-    font-size: 1.125rem;
+    font-size: 1.25rem;
   }
   
   @media (max-width: 480px) {
-    font-size: 1rem;
+    font-size: 1.125rem;
   }
 `;
 
 const UserEmail = styled.div<{ $isDark: boolean }>`
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   color: ${props => props.$isDark ? 'rgba(240, 253, 244, 0.85)' : 'rgba(255, 255, 255, 0.9)'};
   font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   
   @media (max-width: 768px) {
-    font-size: 0.8125rem;
+    font-size: 0.85rem;
   }
   
   @media (max-width: 480px) {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
   }
 `;
 
-const AccountTypeBadge = styled.div<{ $isDark: boolean }>`
+// 🎨 LED STRIP ANIMATION - Pulsing glow effect
+const ledPulse = css`
+  @keyframes ledPulse {
+    0% {
+      opacity: 1;
+      box-shadow: 
+        0 0 5px currentColor,
+        0 0 10px currentColor,
+        0 0 20px currentColor,
+        0 0 30px currentColor;
+    }
+    50% {
+      opacity: 0.6;
+      box-shadow: 
+        0 0 2px currentColor,
+        0 0 5px currentColor,
+        0 0 10px currentColor;
+    }
+    100% {
+      opacity: 1;
+      box-shadow: 
+        0 0 5px currentColor,
+        0 0 10px currentColor,
+        0 0 20px currentColor,
+        0 0 30px currentColor;
+    }
+  }
+`;
+
+const ledSweep = css`
+  @keyframes ledSweep {
+    0% {
+      background-position: -200% center;
+    }
+    100% {
+      background-position: 200% center;
+    }
+  }
+`;
+
+// 🌟 LED SUBSCRIPTION BADGE - Premium animated badge
+const AccountTypeBadge = styled.div<{ $isDark: boolean; $profileType?: 'private' | 'dealer' | 'company' }>`
+  ${ledPulse}
+  ${ledSweep}
+  
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  background: ${props => props.$isDark 
-    ? 'rgba(34, 197, 94, 0.25)' 
-    : 'rgba(255, 255, 255, 0.2)'};
-  border: 1px solid ${props => props.$isDark 
-    ? 'rgba(34, 197, 94, 0.4)' 
-    : 'rgba(255, 255, 255, 0.3)'};
-  border-radius: 8px;
-  font-size: 0.6875rem;
-  font-weight: 700;
-  color: ${props => props.$isDark ? '#dcfce7' : '#ffffff'};
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: 2px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  width: fit-content;
+  gap: 8px;
+  padding: 8px 16px;
+  margin-top: 4px;
+  
+  /* Dynamic background based on profile type */
+  background: ${props => {
+    const colors = {
+      private: 'linear-gradient(90deg, rgba(255, 143, 16, 0.15) 0%, rgba(255, 121, 0, 0.25) 50%, rgba(255, 143, 16, 0.15) 100%)',
+      dealer: 'linear-gradient(90deg, rgba(34, 197, 94, 0.15) 0%, rgba(22, 163, 74, 0.25) 50%, rgba(34, 197, 94, 0.15) 100%)',
+      company: 'linear-gradient(90deg, rgba(59, 130, 246, 0.15) 0%, rgba(29, 78, 216, 0.25) 50%, rgba(59, 130, 246, 0.15) 100%)'
+    };
+    return colors[props.$profileType || 'private'];
+  }};
+  
+  /* LED Strip Border */
+  border: 2px solid ${props => {
+    const colors = { private: '#FF8F10', dealer: '#22c55e', company: '#3b82f6' };
+    return colors[props.$profileType || 'private'];
+  }};
+  border-radius: 25px;
+  
+  /* LED Glow Color */
+  color: ${props => {
+    const colors = { private: '#FF8F10', dealer: '#22c55e', company: '#3b82f6' };
+    return colors[props.$profileType || 'private'];
+  }};
+  
+  /* Pulsing LED Animation */
+  animation: ledPulse 2s ease-in-out infinite;
+  
+  /* Glass effect */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  
+  /* LED Sweep Effect Overlay */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 25px;
+    background: ${props => {
+      const colors = { private: '#FF8F10', dealer: '#22c55e', company: '#3b82f6' };
+      const color = colors[props.$profileType || 'private'];
+      return `linear-gradient(90deg, transparent 0%, ${color}40 50%, transparent 100%)`;
+    }};
+    background-size: 200% 100%;
+    animation: ledSweep 3s linear infinite;
+    pointer-events: none;
+  }
+  
+  /* Inner glow line */
+  &::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: ${props => {
+      const colors = { private: '#FF8F10', dealer: '#22c55e', company: '#3b82f6' };
+      const color = colors[props.$profileType || 'private'];
+      return `linear-gradient(90deg, transparent, ${color}, transparent)`;
+    }};
+    border-radius: 2px;
+    opacity: 0.8;
+  }
   
   @media (max-width: 768px) {
-    font-size: 0.625rem;
-    padding: 3px 8px;
+    padding: 6px 12px;
+    font-size: 0.7rem;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 5px 10px;
+  }
+`;
+
+const BadgeIcon = styled.div<{ $profileType?: 'private' | 'dealer' | 'company' }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${props => {
+    const colors = { private: '#FF8F10', dealer: '#22c55e', company: '#3b82f6' };
+    return colors[props.$profileType || 'private'];
+  }};
+  filter: drop-shadow(0 0 4px currentColor);
+`;
+
+const BadgeText = styled.div<{ $profileType?: 'private' | 'dealer' | 'company' }>`
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+`;
+
+const BadgeTitle = styled.span<{ $profileType?: 'private' | 'dealer' | 'company' }>`
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: ${props => {
+    const colors = { private: '#FF8F10', dealer: '#22c55e', company: '#3b82f6' };
+    return colors[props.$profileType || 'private'];
+  }};
+  text-shadow: 0 0 10px currentColor;
+  
+  @media (max-width: 768px) {
+    font-size: 0.65rem;
+  }
+`;
+
+const BadgeSubtitle = styled.span`
+  font-size: 0.55rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  
+  @media (max-width: 768px) {
+    font-size: 0.5rem;
   }
 `;
 
 const StatsSection = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 16px;
   align-items: center;
   flex: 1;
   justify-content: center;
+  flex-wrap: wrap;
   
   @media (max-width: 768px) {
-    gap: 8px;
+    gap: 10px;
     width: 100%;
-    justify-content: space-between;
+    justify-content: center;
   }
   
   @media (max-width: 480px) {
-    gap: 6px;
+    gap: 8px;
+    justify-content: space-around;
   }
 `;
 
@@ -184,16 +364,16 @@ const StatItem = styled.div<{ $isDark: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  min-width: 100px;
-  padding: 10px 14px;
+  gap: 4px;
+  min-width: 90px;
+  padding: 12px 16px;
   background: ${props => props.$isDark 
     ? 'rgba(34, 197, 94, 0.15)' 
     : 'rgba(255, 255, 255, 0.15)'};
   border: 1px solid ${props => props.$isDark 
     ? 'rgba(34, 197, 94, 0.3)' 
     : 'rgba(255, 255, 255, 0.25)'};
-  border-radius: 10px;
+  border-radius: 12px;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   
@@ -226,32 +406,36 @@ const StatValue = styled.div<{ $isDark: boolean }>`
 `;
 
 const StatLabel = styled.div<{ $isDark: boolean }>`
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: ${props => props.$isDark ? 'rgba(220, 252, 231, 0.8)' : 'rgba(255, 255, 255, 0.85)'};
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
+  text-align: center;
+  white-space: nowrap;
   
   @media (max-width: 768px) {
-    font-size: 0.625rem;
+    font-size: 0.7rem;
   }
   
   @media (max-width: 480px) {
-    font-size: 0.5625rem;
+    font-size: 0.65rem;
   }
 `;
 
 const ActionsSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 12px;
   flex-wrap: wrap;
-  flex-shrink: 0;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
   
   @media (max-width: 768px) {
     width: 100%;
-    justify-content: space-between;
-    gap: 8px;
+    justify-content: center;
+    gap: 10px;
   }
   
   @media (max-width: 480px) {
@@ -409,9 +593,25 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
 
   const displayName = user.displayName || (language === 'bg' ? 'Анонимен' : 'Anonymous');
   const email = user.email || '';
-  const accountType = user.profileType === 'dealer' || user.profileType === 'company' 
-    ? 'BUSINESS ACCOUNT' 
-    : 'PRIVATE ACCOUNT';
+  const userProfileType = (user.profileType as 'private' | 'dealer' | 'company') || 'private';
+  
+  // 🎨 Dynamic account type labels
+  const accountTypeLabels = {
+    private: { 
+      title: language === 'bg' ? 'ЛИЧЕН' : 'PERSONAL',
+      subtitle: language === 'bg' ? 'Безплатен план' : 'Free Plan'
+    },
+    dealer: { 
+      title: language === 'bg' ? 'ДИЛЪР' : 'DEALER',
+      subtitle: language === 'bg' ? 'Бизнес план' : 'Business Plan'
+    },
+    company: { 
+      title: language === 'bg' ? 'КОМПАНИЯ' : 'COMPANY',
+      subtitle: language === 'bg' ? 'Корпоративен план' : 'Corporate Plan'
+    }
+  };
+  
+  const accountLabel = accountTypeLabels[userProfileType];
   
   const stats = {
     views: user.stats?.totalViews || 0,
@@ -420,15 +620,22 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
   };
 
   return (
-    <GreenHeaderContainer $isDark={isDark}>
+    <GreenHeaderContainer $isDark={isDark} $profileType={userProfileType}>
       <HeaderContent>
         {/* User Info Section */}
         <UserInfoSection $isDark={isDark}>
           <UserName $isDark={isDark}>{displayName}</UserName>
           <UserEmail $isDark={isDark}>{email}</UserEmail>
-          <AccountTypeBadge $isDark={isDark}>
-            <Shield size={10} />
-            {accountType}
+          
+          {/* 🌟 LED Subscription Badge */}
+          <AccountTypeBadge $isDark={isDark} $profileType={userProfileType}>
+            <BadgeIcon $profileType={userProfileType}>
+              {userProfileType === 'company' ? <Crown size={14} /> : <Shield size={14} />}
+            </BadgeIcon>
+            <BadgeText>
+              <BadgeTitle $profileType={userProfileType}>{accountLabel.title}</BadgeTitle>
+              <BadgeSubtitle>{accountLabel.subtitle}</BadgeSubtitle>
+            </BadgeText>
           </AccountTypeBadge>
         </UserInfoSection>
 

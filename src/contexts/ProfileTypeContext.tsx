@@ -54,12 +54,15 @@ interface ProfileTypeContextState {
 const ProfileTypeContext = createContext<ProfileTypeContextState | undefined>(undefined);
 
 // Theme Configurations
+// 🟧 Private (Personal) = ORANGE
+// 🟩 Dealer = GREEN  
+// 🟦 Company = BLUE
 const THEMES: Record<ProfileType, ProfileTheme> = {
   private: {
     primary: '#FF8F10',     // Orange
     secondary: '#FFDF00',   // Yellow
     accent: '#FF7900',      // Dark Orange
-    gradient: 'linear-gradient(135deg,rgb(16, 255, 16) 0%,rgb(17, 255, 0) 100%)'
+    gradient: 'linear-gradient(135deg, #FF8F10 0%, #FF7900 100%)'  // Orange gradient
   },
   dealer: {
     primary: '#16a34a',     // Green

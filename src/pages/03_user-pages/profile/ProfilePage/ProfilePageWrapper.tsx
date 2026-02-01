@@ -52,7 +52,7 @@ const ProfilePageWrapper: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams<{ userId?: string }>();
-  const { profileType, theme } = useProfileType();
+  const { profileType: contextProfileType, theme: contextTheme } = useProfileType();
   const { currentUser } = useAuth();
 
   // 🔒 Get target user ID from URL route parameter
@@ -400,6 +400,32 @@ const ProfilePageWrapper: React.FC = () => {
   // Business mode check
   const isBusinessMode = activeProfile?.profileType === 'dealer' || activeProfile?.profileType === 'company';
 
+  // 🎨 DYNAMIC THEME: Based on activeProfile.profileType (not logged-in user's type)
+  // This ensures theme matches the profile being viewed
+  const DYNAMIC_THEMES = {
+    private: {
+      primary: '#FF8F10',     // Orange
+      secondary: '#FFDF00',
+      accent: '#FF7900',
+      gradient: 'linear-gradient(135deg, #FF8F10 0%, #FF7900 100%)'
+    },
+    dealer: {
+      primary: '#16a34a',     // Green
+      secondary: '#22c55e',
+      accent: '#15803d',
+      gradient: 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)'
+    },
+    company: {
+      primary: '#1d4ed8',     // Blue
+      secondary: '#3b82f6',
+      accent: '#1e40af',
+      gradient: 'linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%)'
+    }
+  };
+  
+  const activeProfileType = (activeProfile?.profileType as 'private' | 'dealer' | 'company') || 'private';
+  const theme = DYNAMIC_THEMES[activeProfileType] || DYNAMIC_THEMES.private;
+
   // ⚡ FIX: Check if following - with cleanup for promise
   // Only check if targetUserId is a valid user ID (not a route like 'settings', 'my-ads', etc.)
   React.useEffect(() => {
@@ -605,7 +631,7 @@ const ProfilePageWrapper: React.FC = () => {
   };
 
   return (
-    <ThemeProvider theme={PROFILE_THEMES[profileType] || PROFILE_THEMES['private']}>
+    <ThemeProvider theme={PROFILE_THEMES[activeProfileType] || PROFILE_THEMES['private']}>
       <S.ProfilePageContainer
         $isBusinessMode={isBusinessMode}
         $profileType={(activeProfile?.profileType as any) ?? 'private'}
@@ -614,18 +640,18 @@ const ProfilePageWrapper: React.FC = () => {
 
         <S.PageContainer>
           {/* Tab Navigation */}
-          <TabNavigation $themeColor={theme?.colors?.primary?.main || '#007bff'}>
-            <TabNavLink to={basePath} end $themeColor={theme?.colors?.primary?.main || '#007bff'}>
+          <TabNavigation $themeColor={theme?.primary || '#FF8F10'}>
+            <TabNavLink to={basePath} end $themeColor={theme?.primary || '#FF8F10'}>
               <UserCircle size={16} />
               {language === 'bg' ? 'Профил' : 'Profile'}
             </TabNavLink>
             {!isOwnProfile && (
               <>
-                <TabNavLink to={`${basePath}/my-ads`} $themeColor={theme?.colors?.primary?.main || '#007bff'}>
+                <TabNavLink to={`${basePath}/my-ads`} $themeColor={theme?.primary || '#FF8F10'}>
                   <Car size={16} />
                   {language === 'bg' ? 'Обяви' : 'Listings'}
                 </TabNavLink>
-                <TabNavLink to={`${basePath}/favorites`} $themeColor={theme?.colors?.primary?.main || '#007bff'}>
+                <TabNavLink to={`${basePath}/favorites`} $themeColor={theme?.primary || '#FF8F10'}>
                   <Heart size={16} />
                   {language === 'bg' ? 'Любими' : 'Favorites'}
                 </TabNavLink>
@@ -633,23 +659,23 @@ const ProfilePageWrapper: React.FC = () => {
             )}
             {isOwnProfile && (
               <>
-                <TabNavLink to={`${basePath}/my-ads`} $themeColor={theme?.colors?.primary?.main || '#007bff'}>
+                <TabNavLink to={`${basePath}/my-ads`} $themeColor={theme?.primary || '#FF8F10'}>
                   <Car size={16} />
                   {language === 'bg' ? 'Моите обяви' : 'My Ads'}
                 </TabNavLink>
-                <TabNavLink to={`${basePath}/campaigns`} $themeColor={theme?.colors?.primary?.main || '#007bff'}>
+                <TabNavLink to={`${basePath}/campaigns`} $themeColor={theme?.primary || '#FF8F10'}>
                   <Megaphone size={16} />
                   {language === 'bg' ? 'Реклами' : 'Campaigns'}
                 </TabNavLink>
-                <TabNavLink to={`${basePath}/analytics`} $themeColor={theme?.colors?.primary?.main || '#007bff'}>
+                <TabNavLink to={`${basePath}/analytics`} $themeColor={theme?.primary || '#FF8F10'}>
                   <BarChart3 size={16} />
                   {language === 'bg' ? 'Статистика' : 'Analytics'}
                 </TabNavLink>
-                <TabNavLink to={`${basePath}/settings`} $themeColor={theme?.colors?.primary?.main || '#007bff'}>
+                <TabNavLink to={`${basePath}/settings`} $themeColor={theme?.primary || '#FF8F10'}>
                   <Shield size={16} />
                   {language === 'bg' ? 'Настройки' : 'Settings'}
                 </TabNavLink>
-                <TabNavLink to={`${basePath}/consultations`} $themeColor={theme?.colors?.primary?.main || '#007bff'}>
+                <TabNavLink to={`${basePath}/consultations`} $themeColor={theme?.primary || '#FF8F10'}>
                   <MessageCircle size={18} />
                   {language === 'bg' ? 'Консултации' : 'Consultations'}
                 </TabNavLink>
@@ -664,7 +690,7 @@ const ProfilePageWrapper: React.FC = () => {
               {/* Cover Image */}
               <CoverImageUploader
                 currentImageUrl={typeof activeProfile.coverImage === 'string' ? activeProfile.coverImage : activeProfile.coverImage?.url}
-                themeColor={theme?.colors?.primary?.main || '#007bff'}
+                themeColor={theme?.primary || '#FF8F10'}
                 onUploadSuccess={(url) => {
                   setUser(prev => prev ? {
                     ...prev,

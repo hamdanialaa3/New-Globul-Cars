@@ -1,6 +1,7 @@
 // src/App.tsx
 // Main App Component for Koli One
 // Refactored to use AppProviders and AppRoutes for reduced complexity
+// Enhanced with Professional Page Loader and Scroll Management
 
 import React from 'react';
 import { AppProviders } from './providers';
@@ -11,6 +12,8 @@ import { InstallPrompt } from './components/PWA/InstallPrompt';
 import GuestExpirationModal from './components/auth/GuestExpirationModal';
 import ConsentBanner from './components/ConsentBanner';
 import PendingFavoriteHandler from './components/PendingFavoriteHandler';
+import ScrollToTop from './components/Navigation/ScrollToTop';
+import PageLoader from './components/Navigation/PageLoader';
 // 🔴 CRITICAL: Global ErrorBoundary to prevent white screen of death
 import { ErrorBoundary } from './components/ErrorBoundary';
 // ✅ MERGED: AIChatbotWidget merged into UnifiedAIChat in MainLayout
@@ -40,6 +43,7 @@ const App: React.FC = () => {
         loader.style.opacity = '0';
         setTimeout(() => {
           loader.remove();
+          logger.info('[App] Initial loader removed successfully');
         }, 500);
       }, 500);
     }
@@ -50,6 +54,12 @@ const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <AppProviders>
+        {/* 🔝 Automatic scroll to top on route change */}
+        <ScrollToTop />
+        
+        {/* ⚙️ Professional page transition loader */}
+        <PageLoader />
+        
         {/* ✅ MERGED: AIChatbotWidget moved to UnifiedAIChat in MainLayout */}
         <PendingFavoriteHandler />
         <AppRoutes />

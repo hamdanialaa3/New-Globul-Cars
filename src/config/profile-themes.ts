@@ -118,8 +118,8 @@ const companyTheme: ProfileThemeConfig = {
 const standardTheme: ProfileThemeConfig = {
     mode: 'standard',
     colors: {
-        primary: '#f97316',     // Orange-500
-        secondary: '#fdba74',
+        primary: '#FF8F10',     // Koli One Orange (Brand Color)
+        secondary: '#FFDF00',   // Yellow
         background: '#ffffff',
         surface: '#ffffff',
         border: '#e5e7eb',      // Gray-200
@@ -135,12 +135,12 @@ const standardTheme: ProfileThemeConfig = {
     components: {
         cardBorder: '1px solid #f3f4f6', // Very soft
         buttonStyle: `
-      background: #f97316;
+      background: #FF8F10;
       border-radius: 9999px; // Pill shape for friendliness
       color: white;
       font-weight: 500;
       &:hover {
-        background: #ea580c;
+        background: #FF7900;
       }
     `,
     },
