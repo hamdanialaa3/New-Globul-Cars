@@ -60,9 +60,9 @@ const Logo = styled.div<{ $isDark?: boolean }>`
   white-space: nowrap; // Prevent wrapping
 
   img {
-    // شعار صغير: 40px فقط
-    width: 40px;
-    height: 40px;
+    // شعار مكبر: 60px (40px * 1.5)
+    width: 60px;
+    height: 60px;
     object-fit: contain;
   }
 
@@ -75,8 +75,8 @@ const Logo = styled.div<{ $isDark?: boolean }>`
     }
     
     img {
-      width: 42px;
-      height: 42px;
+      width: 63px;
+      height: 63px;
     }
   }
 `;

@@ -1,3 +1,8 @@
+// src/components/LoadingSpinner.tsx
+// Enhanced Loading Spinner with Car Theme
+// Koli One - Bulgarian Car Marketplace
+// Now uses professional gear animation matching PageLoader
+
 import React, { memo } from 'react';
 import styled, { keyframes } from 'styled-components';
 
@@ -12,46 +17,90 @@ const spin = keyframes`
   100% { transform: rotate(360deg); }
 `;
 
+const reverseSpin = keyframes`
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+`;
+
 const SpinnerContainer = styled.div<{ size: string }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: ${({ theme }) => theme.spacing.md};
+  padding: ${({ theme }) => theme.spacing.lg};
 `;
 
-const Spinner = styled.div<{ size: string; color: string }>`
+// Professional gear-style spinner
+const GearContainer = styled.div<{ size: string }>`
+  position: relative;
   width: ${({ size }) =>
-    size === 'small' ? '20px' :
-      size === 'medium' ? '40px' : '60px'
+    size === 'small' ? '40px' :
+      size === 'medium' ? '60px' : '80px'
   };
   height: ${({ size }) =>
-    size === 'small' ? '20px' :
-      size === 'medium' ? '40px' : '60px'
+    size === 'small' ? '40px' :
+      size === 'medium' ? '60px' : '80px'
   };
-  border: 3px solid ${({ color }) => color}20;
-  border-top: 3px solid ${({ color }) => color};
+`;
+
+const OuterGear = styled.div<{ color: string }>`
+  position: absolute;
+  inset: 0;
+  border: 3px solid rgba(209, 213, 219, 0.3);
+  border-top-color: ${({ color }) => color};
+  border-right-color: ${({ color }) => color};
   border-radius: 50%;
-  animation: ${spin} 1s linear infinite;
+  animation: ${spin} 1.5s linear infinite;
+`;
+
+const InnerGear = styled.div<{ color: string }>`
+  position: absolute;
+  inset: 8px;
+  border: 2px solid rgba(156, 163, 175, 0.4);
+  border-bottom-color: ${({ color }) => color};
+  border-left-color: ${({ color }) => color};
+  border-radius: 50%;
+  animation: ${reverseSpin} 2s linear infinite;
+`;
+
+const CenterHub = styled.div<{ color: string }>`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 25%;
+  height: 25%;
+  background-color: ${({ color }) => color};
+  border-radius: 50%;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 `;
 
 const SpinnerText = styled.p`
   margin: 0;
   color: ${({ theme }) => theme.colors.text.secondary};
   font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  text-align: center;
+  font-weight: 500;
 `;
 
-export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
+export const LoadingSpinner: React.FC<LoadingSpinnerProps> = memo(({
   size = 'medium',
-  color = '#2563eb',
+  color = '#FF8F10', // Koli One orange
   text
 }) => {
   return (
     <SpinnerContainer size={size}>
-      <Spinner size={size} color={color} />
+      <GearContainer size={size}>
+        <OuterGear color={color} />
+        <InnerGear color={color} />
+        <CenterHub color={color} />
+      </GearContainer>
       {text && <SpinnerText>{text}</SpinnerText>}
     </SpinnerContainer>
   );
-};
+});
 
-export default memo(LoadingSpinner);
+LoadingSpinner.displayName = 'LoadingSpinner';
+
+export default LoadingSpinner;

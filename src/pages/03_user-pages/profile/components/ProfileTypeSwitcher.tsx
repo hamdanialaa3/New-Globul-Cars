@@ -9,10 +9,16 @@ import { db } from '../../../../firebase/firebase-config';
 import { logger } from '../../../../services/logger-service';
 import { toast } from 'react-toastify';
 
-// Colors & Gradients
-const gradientPrivate = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-const gradientDealer = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
-const gradientCompany = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
+// Colors & Gradients - CORRECTED to match CONSTITUTION
+// 🟧 Private (Personal) = ORANGE
+// 🟩 Dealer = GREEN  
+// 🟦 Company = BLUE
+const gradientPrivate = 'linear-gradient(135deg, #FF8F10 0%, #FF7900 100%)';  // Orange
+const gradientDealer = 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)';   // Green
+const gradientCompany = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';  // Blue
+const colorPrivate = '#FF8F10';
+const colorDealer = '#16a34a';
+const colorCompany = '#3b82f6';
 const glassBg = 'rgba(255, 255, 255, 0.7)';
 const glassBorder = 'rgba(255, 255, 255, 0.5)';
 const darkGlassBg = 'rgba(30, 41, 59, 0.7)';
@@ -85,7 +91,7 @@ const Card = styled.div<{ $isActive: boolean; $type: 'private' | 'dealer' | 'com
             : 'transparent'};
   border: 2px solid ${({ $isActive, $type, $isDark }) =>
         $isActive
-            ? ($type === 'private' ? '#10b981' : $type === 'dealer' ? '#f59e0b' : '#3b82f6')
+            ? ($type === 'private' ? colorPrivate : $type === 'dealer' ? colorDealer : colorCompany)
             : ($isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)')};
   border-radius: 16px;
   padding: 20px;
@@ -101,7 +107,7 @@ const Card = styled.div<{ $isActive: boolean; $type: 'private' | 'dealer' | 'com
   &:hover {
     transform: translateY(-4px);
     border-color: ${({ $type }) =>
-        $type === 'private' ? '#10b981' : $type === 'dealer' ? '#f59e0b' : '#3b82f6'};
+        $type === 'private' ? colorPrivate : $type === 'dealer' ? colorDealer : colorCompany};
   }
 `;
 
@@ -182,14 +188,14 @@ const SelectButton = styled.button<{ $isActive: boolean; $type: 'private' | 'dea
   transition: all 0.2s;
   background: ${({ $isActive, $type }) =>
         $isActive
-            ? ($type === 'private' ? '#10b981' : $type === 'dealer' ? '#f59e0b' : '#3b82f6')
+            ? ($type === 'private' ? colorPrivate : $type === 'dealer' ? colorDealer : colorCompany)
             : 'rgba(148, 163, 184, 0.1)'};
   color: ${({ $isActive }) => $isActive ? 'white' : '#64748b'};
 
   &:hover {
     background: ${({ $isActive, $type }) =>
         $isActive
-            ? ($type === 'private' ? '#059669' : $type === 'dealer' ? '#d97706' : '#2563eb')
+            ? ($type === 'private' ? '#FF7900' : $type === 'dealer' ? '#15803d' : '#2563eb')
             : 'rgba(148, 163, 184, 0.2)'};
     color: ${({ $isActive }) => $isActive ? 'white' : '#475569'};
   }
@@ -288,6 +294,11 @@ export const ProfileTypeSwitcher = () => {
                     ? 'Профилът е актуализиран към PRIVATE'
                     : 'Profile updated to PRIVATE'
             );
+            
+            // ✅ CRITICAL: Reload page to apply theme changes
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
         } catch (error) {
             logger.error('Failed to update profile type', error as Error);
             toast.error(
