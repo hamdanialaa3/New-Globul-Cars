@@ -531,6 +531,32 @@ export const UserNameCompact = styled.h2`
   }
 `;
 
+// NEW: Public Display Name - Shows above username based on profile type
+export const PublicDisplayName = styled.div<{ $profileType?: string }>`
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+  color: ${props => {
+    switch(props.$profileType) {
+      case 'dealer': return '#16a34a'; // Green
+      case 'company': return '#1d4ed8'; // Blue  
+      default: return '#ea580c'; // Orange for private
+    }
+  }};
+  
+  html[data-theme="dark"] & {
+    color: ${props => {
+      switch(props.$profileType) {
+        case 'dealer': return '#4ade80';
+        case 'company': return '#60a5fa';
+        default: return '#fb923c';
+      }
+    }};
+  }
+  
+  transition: color 0.3s ease;
+`;
+
 export const UserEmailCompact = styled.div`
   font-size: 0.875rem;
   color: var(--text-secondary);
@@ -623,23 +649,53 @@ export const StatCardActions = styled.div`
 
 // ==================== PLAN BAR ====================
 
-export const PlanBar = styled.div<{ $themeColor?: string }>`
+export const PlanBar = styled.div<{ $themeColor?: string; $profileType?: 'private' | 'dealer' | 'company' }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: ${props => props.$themeColor ? `linear-gradient(90deg, ${props.$themeColor}15 0%, ${props.$themeColor}05 100%)` : 'var(--bg-secondary)'};
+  position: relative;
+  overflow: hidden;
+  
+  /* Background Image based on profile type */
+  background-image: ${props => {
+    const imageFile = props.$profileType === 'dealer' 
+      ? 'dealer-bg.png' 
+      : props.$profileType === 'company' 
+        ? 'company-bg.png' 
+        : 'private-bg.png';
+    return `url('/assets/images/profile-backgrounds/${imageFile}')`;
+  }};
+  background-size: cover;
+  background-position: center;
+  
+  /* Color overlay on top of image */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: ${props => props.$themeColor 
+      ? `linear-gradient(90deg, ${props.$themeColor}CC 0%, ${props.$themeColor}99 100%)` 
+      : 'rgba(0, 0, 0, 0.55)'};
+    z-index: 0;
+  }
+  
+  /* Ensure content is above overlay */
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+  
   border: 1px solid ${props => props.$themeColor ? `${props.$themeColor}30` : 'var(--border-primary)'};
   padding: 0.5rem 1.5rem;
   border-radius: 50px;
   margin-bottom: 1.5rem;
-  backdrop-filter: blur(10px);
   min-height: 48px;
-  color: var(--text-primary);
+  color: white;
   
   html[data-theme="dark"] & {
-    background: ${props => props.$themeColor
-    ? `linear-gradient(90deg, ${props.$themeColor}20 0%, ${props.$themeColor}10 100%)`
-    : '#1e293b'};
     border-color: ${props => props.$themeColor
     ? `${props.$themeColor}40`
     : 'rgba(255, 255, 255, 0.1)'};
@@ -662,33 +718,20 @@ export const PlanInfoItem = styled.div`
   align-items: center;
   gap: 6px;
   font-size: 0.9rem;
-  color: var(--text-primary);
+  color: white;
   
   span.label {
-    opacity: 0.7;
+    opacity: 0.85;
     font-weight: 500;
     font-size: 0.85rem;
     text-transform: uppercase;
-    color: var(--text-secondary);
-    
-    html[data-theme="dark"] & {
-      color: #cbd5e1;
-      opacity: 0.8;
-    }
+    color: rgba(255, 255, 255, 0.9);
   }
   
   span.value {
     font-weight: 700;
     font-size: 0.95rem;
-    color: var(--text-primary);
-    
-    html[data-theme="dark"] & {
-      color: #f8fafc;
-    }
-  }
-  
-  html[data-theme="dark"] & {
-    color: #f8fafc;
+    color: white;
   }
   
   transition: color 0.3s ease;
@@ -699,15 +742,10 @@ export const PlanInfoItem = styled.div`
       display: block;
       width: 1px;
       height: 16px;
-      background: var(--border-primary);
+      background: rgba(255, 255, 255, 0.3);
       margin-left: 16px;
       margin-right: 8px;
       opacity: 0.5;
-      
-      html[data-theme="dark"] & {
-        background: rgba(255, 255, 255, 0.1);
-        opacity: 0.6;
-      }
     }
   }
 `;
@@ -735,5 +773,133 @@ export const PlanUpgradeButton = styled.button<{ $themeColor?: string }>`
   
   &:active {
     transform: translateY(0);
+  }
+`;
+
+// ============================================================================
+// BIO SECTION - Professional LinkedIn/Twitter Inspired Design
+// ============================================================================
+
+export const BioCard = styled.div<{ $profileType?: string }>`
+  position: relative;
+  margin: 16px 0;
+  padding: 24px 32px;
+  background: var(--bg-card);
+  border-radius: 16px;
+  border-left: 4px solid ${props => {
+    switch(props.$profileType) {
+      case 'dealer': return '#10B981';
+      case 'company': return '#3B82F6';
+      default: return '#F97316';
+    }
+  }};
+  box-shadow: var(--shadow-card);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+  }
+
+  @media (max-width: 768px) {
+    padding: 20px 24px;
+    margin: 12px 0;
+  }
+`;
+
+export const BioHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  
+  svg {
+    color: var(--accent-primary);
+  }
+`;
+
+export const BioTitle = styled.h3`
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  
+  html[data-theme="dark"] & {
+    color: #f1f5f9;
+  }
+`;
+
+export const BioContent = styled.div`
+  position: relative;
+  padding: 0 24px;
+`;
+
+export const BioQuoteIcon = styled.span<{ $end?: boolean }>`
+  position: absolute;
+  font-size: 48px;
+  font-family: Georgia, 'Times New Roman', serif;
+  color: var(--text-tertiary);
+  opacity: 0.3;
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+  
+  ${props => props.$end ? `
+    bottom: -16px;
+    right: 0;
+    transform: rotate(180deg);
+  ` : `
+    top: -8px;
+    left: 0;
+  `}
+
+  @media (max-width: 768px) {
+    font-size: 36px;
+  }
+`;
+
+export const BioText = styled.p`
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  font-style: italic;
+  text-align: center;
+  white-space: pre-wrap;
+  word-break: break-word;
+  
+  html[data-theme="dark"] & {
+    color: #e2e8f0;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+`;
+
+export const BioEditHint = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-primary);
+  font-size: 13px;
+  color: var(--text-tertiary);
+  
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  a {
+    color: var(--accent-primary);
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
   }
 `;

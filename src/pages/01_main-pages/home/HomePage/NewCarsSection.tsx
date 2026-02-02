@@ -9,6 +9,7 @@ import { Sparkles, Clock, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { unifiedCarService, UnifiedCar } from '../../../../services/car';
 import ModernCarCard from './ModernCarCard';
+import PremiumHomeCarCard from '../../../../components/CarCard/PremiumHomeCarCard';
 import { logger } from '../../../../services/logger-service';
 import { glassSecondaryButton } from '../../../../styles/glassmorphism-buttons';
 
@@ -379,9 +380,9 @@ const NewCarsSection: React.FC<NewCarsSectionProps> = ({ activeFilters = new Set
 
       <CarsGrid>
         {newCars.map((car) => (
-          <div key={car.id} style={{ position: 'relative' }}>
-            <ModernCarCard car={car} showStatus={true} />
-            <TimeBadge>
+          <div key={car.id} style={{ position: 'relative', perspective: '1000px' }}>
+            <PremiumHomeCarCard car={car} />
+            <TimeBadge style={{ position: 'absolute', bottom: '-40px', left: '0', width: '100%', justifyContent: 'center', background: 'transparent', border: 'none' }}>
               <Clock />
               {getTimeAgo(car.createdAt)}
             </TimeBadge>

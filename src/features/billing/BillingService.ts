@@ -127,13 +127,23 @@ class BillingService {
    */
   async cancelSubscription(userId: string): Promise<void> {
     try {
+      // Update user's subscription status in Firestore
       await updateDoc(doc(db, 'users', userId), {
         'plan.status': 'canceled',
-        'plan.canceledAt': Timestamp.now()
+        'plan.canceledAt': Timestamp.now(),
+        'plan.renewsAt': Timestamp.now(), // Stop renewal immediately
       });
 
-      // TODO: Cancel in Stripe (requires Stripe API call)
-      // Note: Currently cancels in Firestore only, Stripe cancellation via webhook
+      // Call Stripe Extension Cloud Function to handle Stripe-side cancellation
+      const cancelSubscription = httpsCallable(functions, 'ext-firestore-stripe-payments-cancelSubscription');
+      
+      try {
+        await cancelSubscription({ userId });
+      } catch (stripeError) {
+        // Log Stripe cancellation error but continue - Firestore is already updated
+        logger.warn('Stripe cancellation failed (Firestore updated):', stripeError as Error);
+      }
+
       logger.info('Subscription canceled for user:', { userId });
     } catch (error) {
       logger.error('Error canceling subscription:', error as Error);
@@ -145,9 +155,89 @@ class BillingService {
    * Get invoices for user
    */
   async getInvoices(userId: string): Promise<Invoice[]> {
-    // TODO: Query invoices collection
-    // For now, return empty
-    return [];
+    try {
+      const invoicesCollection = collection(db, 'users', userId, 'invoices');
+      const invoicesQuery = query(
+        invoicesCollection,
+        where('status', '!=', 'draft')
+      );
+      
+      const invoiceSnaps = await getDocs(invoicesQuery);
+      
+      return invoiceSnaps.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          userId,
+          planId: data.planId,
+          amount: data.amount,
+          currency: data.currency || 'BGN',
+          status: data.status || 'paid',
+          issuedAt: data.issuedAt?.toDate() || new Date(),
+          dueDate: data.dueDate?.toDate() || new Date(),
+          pdfUrl: data.pdfUrl || '',
+          description: data.description || '',
+        };
+      }).sort((a, b) => b.issuedAt.getTime() - a.issuedAt.getTime());
+    } catch (error) {
+      logger.error('Error fetching invoices:', error as Error);
+      return [];
+    }
+  }
+
+  /**
+   * Download invoice PDF
+   */
+  async downloadInvoice(userId: string, invoiceId: string): Promise<void> {
+    try {
+      const invoiceDoc = await getDoc(doc(db, 'users', userId, 'invoices', invoiceId));
+      
+      if (!invoiceDoc.exists()) {
+        throw new Error('Invoice not found');
+      }
+
+      const data = invoiceDoc.data();
+      if (data.pdfUrl) {
+        window.open(data.pdfUrl, '_blank');
+      } else {
+        throw new Error('PDF URL not available');
+      }
+    } catch (error) {
+      logger.error('Error downloading invoice:', error as Error);
+      throw error;
+    }
+  }
+
+  /**
+   * Retry failed payment for invoice
+   */
+  async retryInvoicePayment(userId: string, invoiceId: string): Promise<{ url: string; sessionId: string }> {
+    try {
+      const invoiceDoc = await getDoc(doc(db, 'users', userId, 'invoices', invoiceId));
+      
+      if (!invoiceDoc.exists()) {
+        throw new Error('Invoice not found');
+      }
+
+      const invoiceData = invoiceDoc.data();
+      
+      // Create a new checkout session for the invoice
+      const result = await subscriptionService.createCheckoutSession({
+        userId,
+        planId: invoiceData.planId,
+        interval: invoiceData.interval || 'monthly',
+        successUrl: `${window.location.origin}/billing/success?session_id={CHECKOUT_SESSION_ID}&invoice_id=${invoiceId}`,
+        cancelUrl: `${window.location.origin}/billing/invoices`
+      });
+
+      return {
+        url: result.url,
+        sessionId: result.sessionId || '',
+      };
+    } catch (error) {
+      logger.error('Error retrying invoice payment:', error as Error);
+      throw error;
+    }
   }
 
   /**

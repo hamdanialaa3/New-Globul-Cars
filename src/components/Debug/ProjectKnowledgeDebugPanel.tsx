@@ -6,11 +6,16 @@
  */
 
 import React, { useState, useEffect } from 'react';
+
+const IS_DEV = import.meta.env.MODE === 'development';
+
 import styled from 'styled-components';
 import { projectKnowledgeService } from '../../services/ai/project-knowledge.service';
 import { logger } from '@/services/logger-service';
 
 export const ProjectKnowledgeDebugPanel: React.FC = () => {
+  if (!IS_DEV) return null;
+
   const [isOpen, setIsOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [query, setQuery] = useState('');

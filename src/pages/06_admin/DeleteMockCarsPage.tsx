@@ -8,6 +8,10 @@
  */
 
 import React, { useState } from 'react';
+import { Navigate } from 'react-router-dom';
+
+const IS_DEV = import.meta.env.MODE === 'development';
+
 import styled from 'styled-components';
 import { db } from '@/firebase/firebase-config';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
@@ -289,6 +293,11 @@ function isMockCar(carData: any, carId: string): boolean {
 }
 
 const DeleteMockCarsPage: React.FC = () => {
+  // Security check: If in production, redirect to home
+  if (!IS_DEV) {
+    return <Navigate to="/" replace />;
+  }
+
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [stats, setStats] = useState<{

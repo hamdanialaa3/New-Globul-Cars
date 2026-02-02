@@ -43,23 +43,20 @@ const AzureLoginButton: React.FC<AzureLoginButtonProps> = ({
     try {
       logger.info('Azure login initiated', { mode });
 
-      let result;
+      // Use the centralized Bulgarian Auth Service (Firebase)
+      // This automatically handles Popup flow, User creation/update, and numeric ID assignment
+      const { BulgarianAuthService } = await import('@/firebase/auth-service');
+      const result = await BulgarianAuthService.getInstance().signInWithMicrosoft();
 
-      if (mode === 'popup') {
-        result = await azureAuthService.loginWithPopup();
-        
-        if (result.success && result.account) {
-          logger.info('Azure login successful', { 
-            username: result.account.username 
-          });
-          
-          onSuccess?.(result.account);
-        } else {
-          throw new Error(result.error || 'Login failed');
-        }
+      if (result.user) {
+        logger.info('Azure login successful', {
+          uid: result.user.uid,
+          email: result.user.email
+        });
+
+        onSuccess?.(result.user);
       } else {
-        // Redirect mode - page will reload after login
-        await azureAuthService.loginWithRedirect();
+        throw new Error('Login failed - no user returned');
       }
 
     } catch (error) {
@@ -93,10 +90,10 @@ const AzureLoginButton: React.FC<AzureLoginButtonProps> = ({
           <MicrosoftIcon />
         )}
       </IconWrapper>
-      
+
       <ButtonText>
-        {loading 
-          ? 'جارٍ تسجيل الدخول...' 
+        {loading
+          ? 'جارٍ تسجيل الدخول...'
           : text || 'تسجيل الدخول بحساب Microsoft'
         }
       </ButtonText>
@@ -108,8 +105,8 @@ const AzureLoginButton: React.FC<AzureLoginButtonProps> = ({
 // Styled Components
 // ============================================================================
 
-const StyledButton = styled.button<{ 
-  $variant: 'primary' | 'secondary' | 'outline'; 
+const StyledButton = styled.button<{
+  $variant: 'primary' | 'secondary' | 'outline';
   $fullWidth: boolean;
 }>`
   display: flex;
@@ -148,10 +145,10 @@ const StyledButton = styled.button<{
   
   &:hover:not(:disabled) {
     background: ${props => {
-      if (props.$variant === 'primary') return '#106ebe';
-      if (props.$variant === 'secondary') return '#e1dfdd';
-      return 'rgba(0, 120, 212, 0.1)';
-    }};
+    if (props.$variant === 'primary') return '#106ebe';
+    if (props.$variant === 'secondary') return '#e1dfdd';
+    return 'rgba(0, 120, 212, 0.1)';
+  }};
     
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 120, 212, 0.2);
@@ -177,17 +174,17 @@ const ButtonText = styled.span`
 
 // Microsoft Logo Icon (SVG)
 const MicrosoftIcon = () => (
-  <svg 
-    width="20" 
-    height="20" 
-    viewBox="0 0 23 23" 
-    fill="none" 
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 23 23"
+    fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect width="11" height="11" fill="#F25022"/>
-    <rect x="12" width="11" height="11" fill="#7FBA00"/>
-    <rect y="12" width="11" height="11" fill="#00A4EF"/>
-    <rect x="12" y="12" width="11" height="11" fill="#FFB900"/>
+    <rect width="11" height="11" fill="#F25022" />
+    <rect x="12" width="11" height="11" fill="#7FBA00" />
+    <rect y="12" width="11" height="11" fill="#00A4EF" />
+    <rect x="12" y="12" width="11" height="11" fill="#FFB900" />
   </svg>
 );
 

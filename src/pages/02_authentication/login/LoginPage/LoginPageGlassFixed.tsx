@@ -23,6 +23,7 @@ import {
 import { useTranslation } from '../../../../hooks/useTranslation';
 import { useLogin } from './hooks/useLogin';
 import PhoneAuthModal from '../../../../components/PhoneAuthModal';
+// Azure Login removed - requires @azure/msal-browser setup
 
 
 // Background images

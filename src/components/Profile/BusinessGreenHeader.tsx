@@ -12,7 +12,8 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { MessageCircle, UserPlus, UserCheck, Shield, Phone as PhoneIcon, RefreshCw, Crown } from 'lucide-react';
 import BlockUserButton from '../messaging/BlockUserButton';
-import { FollowButton } from '../../pages/03_user-pages/profile/ProfilePage/TabNavigation.styles';
+import { FollowButton as StyledFollowButton } from '../../pages/03_user-pages/profile/ProfilePage/TabNavigation.styles';
+import FollowButton from '../social/FollowButton';
 import type { BulgarianUser } from '../../types/user/bulgarian-user.types';
 
 // ==================== COLOR CONFIGURATIONS ====================
@@ -591,7 +592,10 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
 
   if (!user) return null;
 
-  const displayName = user.displayName || (language === 'bg' ? 'Анонимен' : 'Anonymous');
+  // ✅ STRICT: Show personal name (firstName + lastName)
+  const userAny = user as any;
+  const personalName = `${userAny.firstName || ''} ${userAny.lastName || ''}`.trim();
+  const displayName = personalName || user.displayName || (language === 'bg' ? 'Анонимен' : 'Anonymous');
   const email = user.email || '';
   const userProfileType = (user.profileType as 'private' | 'dealer' | 'company') || 'private';
   
@@ -616,7 +620,9 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
   const stats = {
     views: user.stats?.totalViews || 0,
     listings: user.stats?.activeListings || 0,
-    trust: user.stats?.trustScore || 0
+    trust: user.stats?.trustScore || 0,
+    followers: (user.stats as any)?.followersCount || 0,
+    following: (user.stats as any)?.followingCount || 0
   };
 
   return (
@@ -657,6 +663,18 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
             <StatValue $isDark={isDark}>{stats.trust}%</StatValue>
             <StatLabel $isDark={isDark}>
               {language === 'bg' ? 'Доверие' : 'Trust'}
+            </StatLabel>
+          </StatItem>
+          <StatItem $isDark={isDark}>
+            <StatValue $isDark={isDark}>{stats.followers}</StatValue>
+            <StatLabel $isDark={isDark}>
+              {language === 'bg' ? 'Следващи' : 'Followers'}
+            </StatLabel>
+          </StatItem>
+          <StatItem $isDark={isDark}>
+            <StatValue $isDark={isDark}>{stats.following}</StatValue>
+            <StatLabel $isDark={isDark}>
+              {language === 'bg' ? 'Следва' : 'Following'}
             </StatLabel>
           </StatItem>
         </StatsSection>
@@ -713,15 +731,16 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
           <>
             <FollowButtonWrapper>
               <FollowButton
-                onClick={onFollow}
-                disabled={followLoading}
-                $following={isFollowing}
-              >
-                {isFollowing ? <UserCheck size={14} /> : <UserPlus size={14} />}
-                {isFollowing
-                  ? (language === 'bg' ? 'Последван' : 'Following')
-                  : (language === 'bg' ? 'Последвай' : 'Follow')}
-              </FollowButton>
+                targetUserId={user.uid}
+                initialIsFollowing={isFollowing}
+                onStatusChange={(status) => {
+                  onFollow(); // Let parent know something changed
+                }}
+                accentColor={
+                  userProfileType === 'company' ? '#1d4ed8' : 
+                  userProfileType === 'dealer' ? '#16a34a' : '#FF8F10'
+                }
+              />
             </FollowButtonWrapper>
             
             <ActionButton 

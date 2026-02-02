@@ -2,6 +2,7 @@
  * Query Builder Service
  * Builds Firestore queries for dynamic car showcase pages
  * Handles OR logic workaround by merging multiple queries
+ * ✅ FIXED: Now supports cursor-based pagination
  */
 
 import {
@@ -13,12 +14,22 @@ import {
   getDocs,
   QueryConstraint,
   DocumentData,
-  Query
+  Query,
+  startAfter,
+  DocumentSnapshot
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { PageType, ShowcaseQuery, ShowcaseConfig } from '../types/showcase.types';
 import { CarListing } from '../types/CarListing';
 import { logger } from './logger-service';
+
+// ✅ NEW: Pagination result type
+export interface PaginatedResult<T> {
+  items: T[];
+  lastDoc: DocumentSnapshot | null;
+  hasMore: boolean;
+  totalFetched: number;
+}
 
 /**
  * Get showcase configuration for page type
@@ -447,6 +458,109 @@ export async function fetchCarsForPageType(
 
   } catch (error) {
     logger.error('Error fetching cars for page type', error, { pageType, dynamicParam });
+    throw error;
+  }
+}
+
+/**
+ * ✅ NEW: Fetch cars with cursor-based pagination
+ * Returns paginated results with cursor for next page
+ */
+export async function fetchCarsForPageTypePaginated(
+  pageType: PageType,
+  dynamicParam?: string,
+  pageSize: number = 20,
+  lastDocument?: DocumentSnapshot | null
+): Promise<PaginatedResult<CarListing>> {
+  try {
+    // Special handling for sport cars - no pagination for OR queries
+    if (pageType === 'sport') {
+      const cars = await fetchSportCars(pageSize);
+      return {
+        items: cars,
+        lastDoc: null,
+        hasMore: false,
+        totalFetched: cars.length
+      };
+    }
+
+    const constraints = buildQueryConstraints(pageType, dynamicParam);
+    const config = getShowcaseConfig(pageType, dynamicParam);
+    // Use primary collection for paginated queries
+    const primaryCollection = 'passenger_cars';
+    const collectionRef = collection(db, primaryCollection);
+    
+    // Build query constraints
+    const queryConstraints: QueryConstraint[] = [...constraints];
+    
+    // Add sorting - must be consistent for pagination
+    if (config.defaultSort === 'price-asc') {
+      queryConstraints.push(orderBy('price', 'asc'));
+    } else if (config.defaultSort === 'price-desc') {
+      queryConstraints.push(orderBy('price', 'desc'));
+    } else if (config.defaultSort === 'year-desc') {
+      queryConstraints.push(orderBy('year', 'desc'));
+    } else if (config.defaultSort === 'year-asc') {
+      queryConstraints.push(orderBy('year', 'asc'));
+    } else if (config.defaultSort === 'power-desc') {
+      queryConstraints.push(orderBy('power', 'desc'));
+    } else if (config.defaultSort === 'seats-desc') {
+      queryConstraints.push(orderBy('numberOfSeats', 'desc'));
+    } else {
+      // Default sort by createdAt
+      queryConstraints.push(orderBy('createdAt', 'desc'));
+    }
+
+    // Add cursor if provided
+    if (lastDocument) {
+      queryConstraints.push(startAfter(lastDocument));
+    }
+
+    // Fetch one extra to check if there are more
+    queryConstraints.push(limit(pageSize + 1));
+
+    const q = query(collectionRef, ...queryConstraints);
+    const snapshot = await getDocs(q);
+
+    const cars: CarListing[] = [];
+    snapshot.docs.forEach(doc => {
+      cars.push({ id: doc.id, ...doc.data() } as CarListing);
+    });
+
+    // Filter for active, non-sold cars
+    const filteredCars = cars.filter(car => {
+      const isActive = car.isActive !== false;
+      const status = (car as any).status;
+      const isPublished = status === 'published' || status === 'active' || status === undefined;
+      const isSold = car.isSold === true;
+      return (isActive || isPublished) && !isSold;
+    });
+
+    // Check if there are more results
+    const hasMore = filteredCars.length > pageSize;
+    const pageItems = hasMore ? filteredCars.slice(0, pageSize) : filteredCars;
+    
+    // Get last document for next page cursor
+    const lastDoc = snapshot.docs.length > 0 
+      ? snapshot.docs[Math.min(snapshot.docs.length - 1, pageSize - 1)]
+      : null;
+
+    logger.info('Paginated cars fetched', {
+      pageType,
+      dynamicParam,
+      itemCount: pageItems.length,
+      hasMore
+    });
+
+    return {
+      items: pageItems,
+      lastDoc,
+      hasMore,
+      totalFetched: pageItems.length
+    };
+
+  } catch (error) {
+    logger.error('Error fetching paginated cars', error, { pageType, dynamicParam });
     throw error;
   }
 }

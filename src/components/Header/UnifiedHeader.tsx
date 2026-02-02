@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { Menu, X, User, Settings, Heart, MessageCircle, Calendar, LogOut, Search, Car, ChevronDown, Bell, Map, Code } from 'lucide-react';
+import { Menu, X, User, Settings, Heart, MessageCircle, Calendar, LogOut, Search, Car, ChevronDown, Bell, Map, Code, Gavel } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -712,9 +712,9 @@ const UnifiedHeader: React.FC = () => {
               <Search size={18} />
               <span>{language === 'bg' ? 'Търси коли' : 'Search Cars'}</span>
             </MainNavButton>
-            <MainNavButton $isDark={isDark} onClick={() => navigate('/map')}>
-              <Map size={18} />
-              <span>{language === 'bg' ? 'Карта' : 'Map'}</span>
+            <MainNavButton $isDark={isDark} onClick={() => navigate('/auctions')}>
+              <Gavel size={18} />
+              <span>{language === 'bg' ? 'Търгове' : 'Auctions'}</span>
             </MainNavButton>
             <MainNavButton $isDark={isDark} $primary onClick={() => navigate('/sell')}>
               <Car size={18} />

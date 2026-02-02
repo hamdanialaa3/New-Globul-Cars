@@ -1,8 +1,5 @@
 import { logger } from '@/services/logger-service';
-// ❌ ZOMBIE IMPORT: File does not exist - commented out temporarily
-// TODO: Find correct MessageOperations implementation or remove this dependency
-// import { MessageOperations } from '../../../../../DDD/deprecated-messaging/advanced-messaging-operations';
-import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, updateDoc, serverTimestamp, collection, query, where, getDocs, writeBatch, Timestamp } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-config';
 
 /**
@@ -23,16 +20,47 @@ export class StatusManager {
         userId
       });
 
-      // ❌ ZOMBIE CODE: MessageOperations not found - commented out
-      // TODO: Implement markMessagesAsRead directly or find correct service
-      // await MessageOperations.markMessagesAsRead(conversationId, userId);
+      // ✅ FIXED: Implement markMessagesAsRead using Firestore batch update
+      const messagesRef = collection(db, 'messages');
+      const unreadQuery = query(
+        messagesRef,
+        where('conversationId', '==', conversationId),
+        where('recipientId', '==', userId),
+        where('read', '==', false)
+      );
+
+      const unreadMessages = await getDocs(unreadQuery);
       
-      // Temporary: Log the action instead
-      logger.info('markAsRead called (MessageOperations unavailable)', { conversationId, userId });
+      if (unreadMessages.empty) {
+        logger.info('[StatusManager] No unread messages to mark', { conversationId, userId });
+        return;
+      }
+
+      // Batch update all unread messages
+      const batch = writeBatch(db);
+      const now = Timestamp.now();
+      
+      unreadMessages.docs.forEach((messageDoc) => {
+        batch.update(messageDoc.ref, {
+          read: true,
+          readAt: now,
+          status: 'read'
+        });
+      });
+
+      await batch.commit();
+
+      // Update conversation's last read timestamp for this user
+      const conversationRef = doc(db, 'conversations', conversationId);
+      await updateDoc(conversationRef, {
+        [`lastReadAt.${userId}`]: serverTimestamp(),
+        [`unreadCount.${userId}`]: 0
+      });
 
       logger.info('[StatusManager] Marked as read successfully', {
         conversationId,
-        userId
+        userId,
+        messagesMarked: unreadMessages.size
       });
     } catch (error) {
       logger.error('[StatusManager] Failed to mark as read', error as Error, {

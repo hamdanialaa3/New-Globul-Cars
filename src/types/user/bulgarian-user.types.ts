@@ -23,6 +23,12 @@ export interface BaseProfile {
   photoURL?: string;
   coverImage?: string;
 
+  // ✅ NEW: Public Display Name - Shows as main name in profiles
+  // For private: User's chosen public name
+  // For dealer: Dealership name (e.g., "Auto Sofia")
+  // For company: Company name (e.g., "Cars Bulgaria Ltd")
+  publicDisplayName?: string;
+
   // ✅ NEW: Numeric ID for clean URLs (e.g. /profile/18)
   numericId?: number;
 
@@ -30,11 +36,23 @@ export interface BaseProfile {
   phoneNumber?: string;
   phoneCountryCode: '+359';
 
-  // Location (Bulgarian cities only)
+  // ✅ NEW: Structured Location Data (Primary Source of Truth)
+  locationData?: {
+    cityName: string;
+    regionName: string;
+    address?: string;
+    coordinates?: {
+      latitude: number;
+      longitude: number;
+    };
+  };
+
+  // Location (Bulgarian cities only) - Legacy format
   location?: {
     city: string;
     region: string;
     country: 'Bulgaria';
+    address?: string;
     coordinates?: {
       latitude: number;
       longitude: number;
@@ -72,6 +90,8 @@ export interface BaseProfile {
     totalViews: number;
     totalMessages: number;
     trustScore: number;
+    followersCount?: number;
+    followingCount?: number;
   };
 
   // ✅ Quota Tracking (Digital Domination v3.0)

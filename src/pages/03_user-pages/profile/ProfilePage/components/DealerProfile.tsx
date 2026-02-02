@@ -293,7 +293,10 @@ export const DealerProfile: React.FC<DealerProfileProps> = ({
   
   if (!user) return null;
 
-  const businessName = user.businessName || user.displayName || 'Dealer';
+  // ✅ STRICT: Show personal name (firstName + lastName)
+  const userAny = user as any;
+  const personalName = `${userAny.firstName || ''} ${userAny.lastName || ''}`.trim();
+  const businessName = personalName || user.displayName || 'Dealer';
   const isVerified = user.verification?.business?.verified || false;
   const trustScore = user.trust?.score || user.verification?.trustScore || 50;
   const totalViews = user.stats?.totalViews || 0;

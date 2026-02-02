@@ -112,15 +112,14 @@ const BusinessBackground: React.FC<BusinessBackgroundProps> = ({
 
   // Business background images
   const businessImages = [
-    '/assets/images/Pic/pexels-boris-dahm-2150922402-31729752.jpg',
-    '/assets/images/Pic/pexels-bylukemiller-29566897.jpg',
-    '/assets/images/Pic/pexels-bylukemiller-29566898.jpg',
-    '/assets/images/Pic/pexels-bylukemiller-29566908 (1).jpg'
+    '/assets/images/profile-backgrounds/dealer-bg.png',
+    '/assets/images/profile-backgrounds/company-bg.png',
+    '/assets/images/1920x1080.webp'
   ];
 
   // Debug log
   useEffect(() => {
-    logger.info('🏢 BusinessBackground - isBusinessAccount:', isBusinessAccount);
+    logger.info('🏢 BusinessBackground - isBusinessAccount:', { isBusinessAccount });
   }, [isBusinessAccount]);
 
   // Rotate background images every 10 seconds
@@ -141,7 +140,7 @@ const BusinessBackground: React.FC<BusinessBackgroundProps> = ({
     return null;
   }
 
-  logger.info('🏢 BusinessBackground rendering with image:', businessImages[currentImageIndex]);
+  logger.info('🏢 BusinessBackground rendering with image:', { image: businessImages[currentImageIndex] });
 
   return (
     <>

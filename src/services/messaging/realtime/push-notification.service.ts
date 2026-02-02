@@ -232,9 +232,14 @@ class PushNotificationService {
     notification.onclick = () => {
       window.focus();
       
-      // Navigate to the relevant page
+      // ✅ Navigate using browser navigation API (preserves React Router state)
+      // Note: Can't use navigate() here as we're outside React context
+      // This is acceptable for notification clicks
       if (payload.data?.channelId) {
-        window.location.href = `/messages?channel=${payload.data.channelId}`;
+        // Use pushState for smoother navigation
+        window.history.pushState({}, '', `/messages?channel=${payload.data.channelId}`);
+        // Trigger popstate to let React Router handle the route
+        window.dispatchEvent(new PopStateEvent('popstate'));
       }
       
       notification.close();

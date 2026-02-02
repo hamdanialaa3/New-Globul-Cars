@@ -6,7 +6,7 @@ import { logger } from '../../services/logger-service';
 import { VerificationQueue } from './components/VerificationQueue/VerificationQueue';
 import { RevenueMonitor } from './components/RevenueMonitor/RevenueMonitor';
 import { UserManager } from './components/UserManager/UserManager';
-import { SearchAnalyticsDashboard } from '../admin/SearchAnalyticsDashboard';
+import { SearchAnalyticsDashboard } from './reports/SearchAnalyticsDashboard';
 import { adminService } from '../../services/admin/admin-service';
 import { Shield, Users, CreditCard, LayoutDashboard, LogOut, CheckCircle, BarChart3 } from 'lucide-react';
 import { toast } from 'react-toastify';

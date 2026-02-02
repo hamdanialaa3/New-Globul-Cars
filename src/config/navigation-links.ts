@@ -33,7 +33,7 @@ export const navigationLinks = {
     dashboard: '/admin',
     users: '/admin/users',
     listings: '/admin/listings',
-    payments: '/admin/manual-payments',
+    payments: '/super-admin/finance/manual-payments',
   }
 };
 

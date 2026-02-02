@@ -28,6 +28,7 @@ import LazySection from '../../../../components/LazySection';
 // Import section components
 import UnifiedHeroSection from './UnifiedHeroSection';
 import StickySearchBar from './StickySearchBar'; // ✅ NEW: Sticky Search Bar
+import SmartHeroRecommendations from './SmartHeroRecommendations'; // ✅ NEW: Smart Recommendations
 import FeaturedShowcase from './FeaturedShowcase';
 import UnifiedCarsShowcase from './UnifiedCarsShowcase';
 import SmartSellStrip from './SmartSellStrip';
@@ -124,6 +125,23 @@ const LoadingFallback = styled.div`
 const HeroSlot: React.FC = () => (
   <UnifiedHeroSection />
 );
+
+/**
+ * Slot 1.2: Smart Hero Recommendations
+ * AI-powered personalized car recommendations / Персонализирани препоръки
+ * ✅ NEW: Displays cars based on user behavior and preferences
+ */
+const SmartHeroSlot: React.FC = () => {
+  const { t } = useLanguage();
+
+  return (
+    <LazySection rootMargin="50px">
+      <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
+        <SmartHeroRecommendations />
+      </Suspense>
+    </LazySection>
+  );
+};
 
 /**
  * Slot 1.5: AI Smart Sell Button  
@@ -465,6 +483,10 @@ const HomePageComposer: React.FC = React.memo(() => {
       <ContentContainer>
         {/* 1. Hero Section - CRITICAL (Main Search Entry Point) */}
         <HeroSlot />
+        
+        {/* ✅ NEW: Smart Hero Recommendations (AI-Powered Personalization) */}
+        <SmartHeroSlot />
+        <SectionSpacer />
         
         {/* ✨ AI Smart Sell Button - Quick CTA */}
         <AISmartSellSlot />

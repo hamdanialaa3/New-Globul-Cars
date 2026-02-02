@@ -6,6 +6,9 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import SellRouteRedirect from '../components/SellWorkflow/SellRouteRedirect';
 import InactivityWarning from '../components/InactivityWarning';
 
+const IS_DEV = import.meta.env.MODE === 'development';
+
+
 // Lazy Loaded Components
 const HomePage = safeLazy(() => import('../pages/01_main-pages/home/HomePage'));
 const CarsPage = safeLazy(() => import('../pages/01_main-pages/CarsPage'));
@@ -16,6 +19,8 @@ const MarketplacePage = safeLazy(() => import('../pages/01_main-pages/marketplac
 const ProductDetailPage = safeLazy(() => import('../pages/01_main-pages/marketplace/ProductDetailPage'));
 const CartPage = safeLazy(() => import('../pages/01_main-pages/marketplace/CartPage'));
 const MarketplaceCheckoutPage = safeLazy(() => import('../pages/01_main-pages/marketplace/CheckoutPage'));
+const OrderSuccessPage = safeLazy(() => import('../pages/01_main-pages/marketplace/OrderSuccessPage'));
+const StripePaymentPage = safeLazy(() => import('../pages/01_main-pages/marketplace/StripePaymentPage'));
 const BlogPage = safeLazy(() => import('../pages/01_main-pages/blog/BlogPage'));
 const BlogPostPage = safeLazy(() => import('../pages/01_main-pages/blog/BlogPostPage'));
 // PHASE 3: Team Management System (Updated path)
@@ -132,6 +137,8 @@ const AutoResponderSettings = safeLazy(() => import('../components/messaging/Aut
 const AuthUsersPage = safeLazy(() => import('../pages/06_admin/AuthUsersPage'));
 const SharedInboxPage = safeLazy(() => import('../pages/06_admin/SharedInboxPage'));
 const StripeSetupPage = safeLazy(() => import('../pages/09_dealer-company/StripeSetupPage'));
+const AdminManualPaymentsDashboard = safeLazy(() => import('../pages/06_admin/finance/manual-payments/AdminManualPaymentsDashboard'));
+const AuctionsPage = safeLazy(() => import('../pages/01_main-pages/auctions/AuctionsPage'));
 
 
 
@@ -163,6 +170,8 @@ export const MainRoutes: React.FC = () => {
             <Route path="/marketplace/product/:productId" element={<ProductDetailPage />} />
             <Route path="/marketplace/cart" element={<CartPage />} />
             <Route path="/marketplace/checkout" element={<MarketplaceCheckoutPage />} />
+            <Route path="/marketplace/payment" element={<StripePaymentPage />} />
+            <Route path="/marketplace/order-success" element={<OrderSuccessPage />} />
 
             {/* 📝 Blog - Bulgarian Content & SEO */}
             <Route path="/blog" element={<BlogPage />} />
@@ -425,13 +434,15 @@ export const MainRoutes: React.FC = () => {
                 }
             />
             <Route
-                path="/admin/delete-mock-cars"
+                path="/super-admin/finance/manual-payments"
                 element={
                     <AuthGuard requireAuth={true} requireAdmin={true}>
-                        <DeleteMockCarsPage />
+                        <AdminManualPaymentsDashboard />
                     </AuthGuard>
                 }
             />
+            {/* Moved to Dev Tools Block */},
+            {/* Moved to Dev Tools Block */}
             <Route
                 path="/notifications"
                 element={
@@ -470,14 +481,20 @@ export const MainRoutes: React.FC = () => {
             <Route path="/admin/algolia-sync" element={<AuthGuard requireAuth={true} requireAdmin={true}><AlgoliaSyncManager /></AuthGuard>} />
 
 
-            {/* Development Tools Routes */}
-            <Route path="/admin/backup" element={<AuthGuard requireAuth={true} requireAdmin={true}><BackupManagement /></AuthGuard>} />
-            <Route path="/admin/leads" element={<AuthGuard requireAuth={true} requireAdmin={true}><LeadScoringDashboard /></AuthGuard>} />
-            <Route path="/messages/quick-replies" element={<AuthGuard requireAuth={true}><QuickReplyManager /></AuthGuard>} />
-            <Route path="/messages/auto-responder" element={<AuthGuard requireAuth={true}><AutoResponderSettings /></AuthGuard>} />
-            <Route path="/admin/auth-users" element={<AuthGuard requireAuth={true} requireAdmin={true}><AuthUsersPage /></AuthGuard>} />
-            <Route path="/admin/shared-inbox" element={<AuthGuard requireAuth={true} requireAdmin={true}><SharedInboxPage /></AuthGuard>} />
-            <Route path="/dealer/stripe-setup" element={<AuthGuard requireAuth={true}><StripeSetupPage /></AuthGuard>} />
+            {/* Development Tools Routes - ONLY AVAILABLE IN DEV */}
+            {IS_DEV && (
+                <>
+                    <Route path="/admin/backup" element={<AuthGuard requireAuth={true} requireAdmin={true}><BackupManagement /></AuthGuard>} />
+                    <Route path="/admin/leads" element={<AuthGuard requireAuth={true} requireAdmin={true}><LeadScoringDashboard /></AuthGuard>} />
+                    <Route path="/messages/quick-replies" element={<AuthGuard requireAuth={true}><QuickReplyManager /></AuthGuard>} />
+                    <Route path="/messages/auto-responder" element={<AuthGuard requireAuth={true}><AutoResponderSettings /></AuthGuard>} />
+                    <Route path="/admin/auth-users" element={<AuthGuard requireAuth={true} requireAdmin={true}><AuthUsersPage /></AuthGuard>} />
+                    <Route path="/admin/shared-inbox" element={<AuthGuard requireAuth={true} requireAdmin={true}><SharedInboxPage /></AuthGuard>} />
+                    <Route path="/dealer/stripe-setup" element={<AuthGuard requireAuth={true}><StripeSetupPage /></AuthGuard>} />
+                    <Route path="/admin/delete-mock-cars" element={<AuthGuard requireAuth={true} requireAdmin={true}><DeleteMockCarsPage /></AuthGuard>} />
+                    <Route path="/debug-cars" element={<AuthGuard requireAuth={true}><DebugCarsPage /></AuthGuard>} />
+                </>
+            )}
 
             {/* Company Routes */}
             <Route path="/company/team" element={<RequireCompanyGuard><TeamManagementPage /></RequireCompanyGuard>} />
@@ -491,7 +508,7 @@ export const MainRoutes: React.FC = () => {
             <Route path="/digital-twin" element={<AuthGuard requireAuth={true}><DigitalTwinPage /></AuthGuard>} />
             <Route path="/subscription" element={<AuthGuard requireAuth={true}><SubscriptionPage /></AuthGuard>} />
             <Route path="/migration" element={<AuthGuard requireAuth={true}><MigrationPage /></AuthGuard>} />
-            <Route path="/debug-cars" element={<AuthGuard requireAuth={true}><DebugCarsPage /></AuthGuard>} />
+            {/* Moved to Dev Tools Block */}
 
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/terms-of-service" element={<TermsOfServicePage />} />
@@ -502,6 +519,7 @@ export const MainRoutes: React.FC = () => {
             <Route path="/pricing" element={<CarPricingPage />} />
             <Route path="/ai-analysis" element={<AIAnalysisPage />} />
             <Route path="/map" element={<MapAnalyticsPage />} />
+            <Route path="/auctions" element={<AuctionsPage />} />
             <Route path="/top-brands" element={<TopBrandsPage />} />
             <Route path="/brand-gallery" element={<AuthGuard requireAuth={true}><BrandGalleryPage /></AuthGuard>} />
             <Route path="/dealers" element={<AuthGuard requireAuth={true}><DealersPage /></AuthGuard>} />

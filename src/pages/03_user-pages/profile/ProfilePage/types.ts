@@ -141,6 +141,6 @@ export interface UseProfileReturn extends ProfileState, ProfileActions {
     canImportCSV: boolean;
     canUseAPI: boolean;
   };
-  planTier?: 'free' | 'premium' | 'dealer_basic' | 'dealer_pro' | 'dealer_enterprise' |
+  planTier?: 'free' | 'dealer' | 'company' | 'premium' | 'dealer_basic' | 'dealer_pro' | 'dealer_enterprise' |
   'company_starter' | 'company_pro' | 'company_enterprise' | 'custom';
 }

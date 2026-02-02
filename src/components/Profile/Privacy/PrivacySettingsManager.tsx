@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { Eye, EyeOff, Shield, Lock, Unlock, Save } from 'lucide-react';
 import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 import { profileService } from '../../../services/profile/UnifiedProfileService';
 import { DEFAULT_PRIVACY_SETTINGS } from '../../../types/dealership/dealership.types';
 import type { PrivacySettings } from '../../../types/dealership/dealership.types';
@@ -18,6 +19,8 @@ const PrivacySettingsManager: React.FC<PrivacySettingsManagerProps> = ({
   accountType = 'individual'
 }) => {
   const { language } = useLanguage();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const { showToast } = useToast();
   const [settings, setSettings] = useState<PrivacySettings>(DEFAULT_PRIVACY_SETTINGS);
   const [loading, setLoading] = useState(true);
@@ -155,21 +158,22 @@ const PrivacySettingsManager: React.FC<PrivacySettingsManagerProps> = ({
   const t = translations[language as 'bg' | 'en'];
 
   return (
-    <Container>
-      <Header>
+    <Container $isDark={isDark}>
+      <Header $isDark={isDark}>
         <Shield size={24} />
         <div>
-          <Title>{t.title}</Title>
-          <Subtitle>{t.subtitle}</Subtitle>
+          <Title $isDark={isDark}>{t.title}</Title>
+          <Subtitle $isDark={isDark}>{t.subtitle}</Subtitle>
         </div>
       </Header>
 
       {/* Profile Visibility */}
       <Section>
-        <SectionTitle>{t.profileVisibility}</SectionTitle>
+        <SectionTitle $isDark={isDark}>{t.profileVisibility}</SectionTitle>
         <VisibilityOptions>
           <VisibilityOption
             $active={settings.profileVisibility === 'public'}
+            $isDark={isDark}
             onClick={() => handleVisibilityChange('public')}
           >
             <Unlock size={20} />
@@ -177,6 +181,7 @@ const PrivacySettingsManager: React.FC<PrivacySettingsManagerProps> = ({
           </VisibilityOption>
           <VisibilityOption
             $active={settings.profileVisibility === 'registered_only'}
+            $isDark={isDark}
             onClick={() => handleVisibilityChange('registered_only')}
           >
             <Eye size={20} />
@@ -184,6 +189,7 @@ const PrivacySettingsManager: React.FC<PrivacySettingsManagerProps> = ({
           </VisibilityOption>
           <VisibilityOption
             $active={settings.profileVisibility === 'private'}
+            $isDark={isDark}
             onClick={() => handleVisibilityChange('private')}
           >
             <Lock size={20} />
@@ -194,10 +200,10 @@ const PrivacySettingsManager: React.FC<PrivacySettingsManagerProps> = ({
 
       {/* Personal Information */}
       <Section>
-        <SectionTitle>{t.personalInfo}</SectionTitle>
+        <SectionTitle $isDark={isDark}>{t.personalInfo}</SectionTitle>
         <SettingsList>
-          <SettingItem>
-            <SettingLabel>{t.showFullName}</SettingLabel>
+          <SettingItem $isDark={isDark}>
+            <SettingLabel $isDark={isDark}>{t.showFullName}</SettingLabel>
             <ToggleSwitch
               $active={settings.showFullName}
               onClick={() => handleToggle('showFullName')}
@@ -413,14 +419,17 @@ const PrivacySettingsManager: React.FC<PrivacySettingsManagerProps> = ({
   );
 };
 
-// Styled Components
-const Container = styled.div`
+// Styled Components with Dark/Light Mode Support
+const Container = styled.div<{ $isDark: boolean }>`
   max-width: 800px;
   margin: 0 auto;
   padding: 24px;
+  background: ${props => props.$isDark ? '#0F172A' : '#FFFFFF'};
+  border-radius: 16px;
+  transition: all 0.3s ease;
 `;
 
-const Header = styled.div`
+const Header = styled.div<{ $isDark: boolean }>`
   display: flex;
   align-items: flex-start;
   gap: 16px;
@@ -432,28 +441,30 @@ const Header = styled.div`
   }
 `;
 
-const Title = styled.h2`
+const Title = styled.h2<{ $isDark: boolean }>`
   margin: 0 0 4px 0;
   font-size: 24px;
   font-weight: 700;
   color: #FF8F10;
 `;
 
-const Subtitle = styled.p`
+const Subtitle = styled.p<{ $isDark: boolean }>`
   margin: 0;
   font-size: 14px;
-  color: #6c757d;
+  color: ${props => props.$isDark ? '#94A3B8' : '#6c757d'};
+  transition: color 0.3s ease;
 `;
 
 const Section = styled.div`
   margin-bottom: 32px;
 `;
 
-const SectionTitle = styled.h3`
+const SectionTitle = styled.h3<{ $isDark: boolean }>`
   margin: 0 0 16px 0;
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: ${props => props.$isDark ? '#F8FAFC' : '#333'};
+  transition: color 0.3s ease;
 `;
 
 const VisibilityOptions = styled.div`
@@ -462,24 +473,27 @@ const VisibilityOptions = styled.div`
   gap: 12px;
 `;
 
-const VisibilityOption = styled.div<{ $active: boolean }>`
+const VisibilityOption = styled.div<{ $active: boolean; $isDark: boolean }>`
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 16px;
-  border: 2px solid ${props => props.$active ? '#FF8F10' : '#e0e0e0'};
+  border: 2px solid ${props => props.$active ? '#FF8F10' : props.$isDark ? '#334155' : '#e0e0e0'};
   border-radius: 12px;
-  background: ${props => props.$active ? 'rgba(255, 143, 16, 0.1)' : '#fff'};
+  background: ${props => {
+    if (props.$active) return 'rgba(255, 143, 16, 0.1)';
+    return props.$isDark ? '#1E293B' : '#fff';
+  }};
   cursor: pointer;
   transition: all 0.3s ease;
   
   svg {
-    color: ${props => props.$active ? '#FF8F10' : '#6c757d'};
+    color: ${props => props.$active ? '#FF8F10' : props.$isDark ? '#94A3B8' : '#6c757d'};
   }
   
   span {
     font-weight: ${props => props.$active ? '600' : '400'};
-    color: ${props => props.$active ? '#FF8F10' : '#333'};
+    color: ${props => props.$active ? '#FF8F10' : props.$isDark ? '#E2E8F0' : '#333'};
   }
   
   &:hover {
@@ -494,23 +508,25 @@ const SettingsList = styled.div`
   gap: 12px;
 `;
 
-const SettingItem = styled.div`
+const SettingItem = styled.div<{ $isDark: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: #f8f9fa;
+  background: ${props => props.$isDark ? '#1E293B' : '#f8f9fa'};
   border-radius: 8px;
-  transition: background 0.2s ease;
+  border: 1px solid ${props => props.$isDark ? '#334155' : 'transparent'};
+  transition: all 0.2s ease;
   
   &:hover {
-    background: #e9ecef;
+    background: ${props => props.$isDark ? '#334155' : '#e9ecef'};
   }
 `;
 
-const SettingLabel = styled.span`
+const SettingLabel = styled.span<{ $isDark: boolean }>`
   font-size: 14px;
-  color: #333;
+  color: ${props => props.$isDark ? '#E2E8F0' : '#333'};
+  transition: color 0.3s ease;
 `;
 
 const ToggleSwitch = styled.button<{ $active: boolean }>`

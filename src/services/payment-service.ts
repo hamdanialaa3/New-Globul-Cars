@@ -267,9 +267,22 @@ export class PaymentService {
 
   /**
    * Get Stripe publishable key
+   * @throws Error if REACT_APP_STRIPE_PUBLIC_KEY is not configured
    */
   public getStripePublicKey(): string {
-    return this.STRIPE_PUBLIC_KEY || 'pk_test_placeholder';
+    if (!this.STRIPE_PUBLIC_KEY) {
+      throw new Error(
+        'Stripe public key is not configured. Please set REACT_APP_STRIPE_PUBLIC_KEY in your environment variables.'
+      );
+    }
+    return this.STRIPE_PUBLIC_KEY;
+  }
+
+  /**
+   * Check if Stripe is properly configured
+   */
+  public isStripeConfigured(): boolean {
+    return !!this.STRIPE_PUBLIC_KEY && this.STRIPE_PUBLIC_KEY.startsWith('pk_');
   }
 }
 

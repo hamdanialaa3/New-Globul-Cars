@@ -1,20 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { useAuth } from '../../../hooks/useAuth';
-import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
-
-interface CartItem {
-  id: string;
-  productId: string;
-  title: string;
-  image: string;
-  price: number;
-  quantity: number;
-  inStock: boolean;
-}
+import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Loader } from 'lucide-react';
+import { cartService, CartItem } from '../../../services/marketplace/cart.service';
+import { logger } from '../../../services/logger-service';
 
 const CartPage: React.FC = () => {
   const { theme } = useTheme();
@@ -24,6 +16,9 @@ const CartPage: React.FC = () => {
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const isInitialLoad = useRef(true);
 
   const texts = {
     bg: {
@@ -33,10 +28,15 @@ const CartPage: React.FC = () => {
       remove: 'Премахни',
       subtotal: 'Междинна сума',
       shipping: 'Доставка',
+      tax: 'ДДС (20%)',
       total: 'Общо',
       proceedToCheckout: 'Продължи към плащане',
       outOfStock: 'Няма наличност',
       bgn: 'лв',
+      freeShipping: 'Безплатна',
+      loadError: 'Грешка при зареждане на количката',
+      updateError: 'Грешка при обновяване',
+      loginToCheckout: 'Влезте за да продължите',
     },
     en: {
       title: 'My Cart',
@@ -45,63 +45,139 @@ const CartPage: React.FC = () => {
       remove: 'Remove',
       subtotal: 'Subtotal',
       shipping: 'Shipping',
+      tax: 'VAT (20%)',
       total: 'Total',
       proceedToCheckout: 'Proceed to Checkout',
       outOfStock: 'Out of Stock',
       bgn: 'BGN',
+      freeShipping: 'Free',
+      loadError: 'Error loading cart',
+      updateError: 'Error updating cart',
+      loginToCheckout: 'Login to checkout',
     },
   };
 
   const t = texts[language] || texts.bg;
 
+  // Load cart on mount and subscribe to changes
   useEffect(() => {
     loadCart();
+    
+    // Subscribe to cart changes
+    const unsubscribe = cartService.subscribe(() => {
+      if (!isInitialLoad.current) {
+        setCartItems(cartService.getItems());
+      }
+    });
+    
+    return () => unsubscribe();
   }, []);
 
-  const loadCart = async () => {
-    // TODO: Load from localStorage or API
-    setLoading(false);
-    // Mock data for demo
-    setCartItems([]);
-  };
+  // Sync cart with Firestore when user logs in
+  useEffect(() => {
+    if (user) {
+      cartService.syncWithFirestore(user.uid).catch((err) => {
+        logger.error('Failed to sync cart with Firestore', err);
+      });
+    }
+  }, [user]);
 
-  const updateQuantity = (itemId: string, newQuantity: number) => {
+  const loadCart = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Initialize cart service
+      await cartService.loadCart();
+      
+      // If user is logged in, sync with Firestore
+      if (user) {
+        await cartService.syncWithFirestore(user.uid);
+      }
+      
+      setCartItems(cartService.getItems());
+      isInitialLoad.current = false;
+    } catch (err) {
+      logger.error('Failed to load cart', err as Error);
+      setError(t.loadError);
+    } finally {
+      setLoading(false);
+    }
+  }, [user, t.loadError]);
+
+  const updateQuantity = useCallback(async (itemId: string, newQuantity: number) => {
     if (newQuantity < 1) return;
-    setCartItems(items =>
-      items.map(item =>
-        item.id === itemId ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
+    
+    try {
+      setUpdating(itemId);
+      await cartService.updateItemQuantity(itemId, newQuantity);
+      setCartItems(cartService.getItems());
+    } catch (err) {
+      logger.error('Failed to update quantity', err as Error);
+      setError(t.updateError);
+    } finally {
+      setUpdating(null);
+    }
+  }, [t.updateError]);
 
-  const removeItem = (itemId: string) => {
-    setCartItems(items => items.filter(item => item.id !== itemId));
-  };
+  const removeItem = useCallback(async (itemId: string) => {
+    try {
+      setUpdating(itemId);
+      await cartService.removeItem(itemId);
+      setCartItems(cartService.getItems());
+    } catch (err) {
+      logger.error('Failed to remove item', err as Error);
+      setError(t.updateError);
+    } finally {
+      setUpdating(null);
+    }
+  }, [t.updateError]);
 
-  const calculateSubtotal = () => {
-    return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  };
+  const getSummary = useCallback(() => {
+    return cartService.getCartSummary();
+  }, []);
 
-  const calculateShipping = () => {
-    return cartItems.length > 0 ? 5 : 0; // Flat rate
-  };
-
-  const calculateTotal = () => {
-    return calculateSubtotal() + calculateShipping();
-  };
-
-  const handleCheckout = () => {
+  const handleCheckout = useCallback(() => {
     if (!user) {
-      navigate('/login');
+      navigate('/login', { state: { from: '/marketplace/checkout' } });
       return;
     }
+    
+    const validation = cartService.validateForCheckout();
+    if (!validation.valid) {
+      setError(validation.errors.join(', '));
+      return;
+    }
+    
     navigate('/marketplace/checkout');
-  };
+  }, [user, navigate]);
 
+  // Loading state
+  if (loading) {
+    return (
+      <PageContainer>
+        <ContentWrapper>
+          <LoadingState>
+            <Loader size={48} className="spinner" />
+          </LoadingState>
+        </ContentWrapper>
+      </PageContainer>
+    );
+  }
+
+  // Error message component
+  const ErrorMessage = error ? (
+    <ErrorBanner onClick={() => setError(null)}>
+      {error}
+    </ErrorBanner>
+  ) : null;
+
+  // Empty cart
   if (cartItems.length === 0) {
     return (
       <PageContainer>
         <ContentWrapper>
+          {ErrorMessage}
           <EmptyState>
             <ShoppingBag size={80} color={theme?.colors?.textSecondary || '#999'} />
             <EmptyTitle>{t.empty}</EmptyTitle>
@@ -114,15 +190,18 @@ const CartPage: React.FC = () => {
     );
   }
 
+  const summary = getSummary();
+
   return (
     <PageContainer>
       <ContentWrapper>
+        {ErrorMessage}
         <Title>{t.title}</Title>
 
         <CartGrid>
           <ItemsSection>
             {cartItems.map(item => (
-              <CartItemCard key={item.id}>
+              <CartItemCard key={item.id} $disabled={updating === item.id}>
                 <ItemImage>
                   <img src={item.image} alt={item.title} />
                 </ItemImage>
@@ -137,19 +216,24 @@ const CartPage: React.FC = () => {
                   <QuantityControl>
                     <QuantityButton
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      disabled={!item.inStock}
+                      disabled={!item.inStock || updating === item.id}
                     >
                       <Minus size={16} />
                     </QuantityButton>
-                    <QuantityDisplay>{item.quantity}</QuantityDisplay>
+                    <QuantityDisplay>
+                      {updating === item.id ? <Loader size={14} className="spinner" /> : item.quantity}
+                    </QuantityDisplay>
                     <QuantityButton
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      disabled={!item.inStock}
+                      disabled={!item.inStock || updating === item.id}
                     >
                       <Plus size={16} />
                     </QuantityButton>
                   </QuantityControl>
-                  <RemoveButton onClick={() => removeItem(item.id)}>
+                  <RemoveButton 
+                    onClick={() => removeItem(item.id)}
+                    disabled={updating === item.id}
+                  >
                     <Trash2 size={18} />
                     {t.remove}
                   </RemoveButton>
@@ -163,19 +247,28 @@ const CartPage: React.FC = () => {
               <SummaryTitle>{t.total}</SummaryTitle>
               <SummaryRow>
                 <SummaryLabel>{t.subtotal}:</SummaryLabel>
-                <SummaryValue>{calculateSubtotal().toFixed(2)} {t.bgn}</SummaryValue>
+                <SummaryValue>{summary.subtotal.toFixed(2)} {t.bgn}</SummaryValue>
               </SummaryRow>
               <SummaryRow>
                 <SummaryLabel>{t.shipping}:</SummaryLabel>
-                <SummaryValue>{calculateShipping().toFixed(2)} {t.bgn}</SummaryValue>
+                <SummaryValue>
+                  {summary.shipping === 0 ? t.freeShipping : `${summary.shipping.toFixed(2)} ${t.bgn}`}
+                </SummaryValue>
+              </SummaryRow>
+              <SummaryRow>
+                <SummaryLabel>{t.tax}:</SummaryLabel>
+                <SummaryValue>{summary.tax.toFixed(2)} {t.bgn}</SummaryValue>
               </SummaryRow>
               <Divider />
               <SummaryRow $bold>
                 <SummaryLabel>{t.total}:</SummaryLabel>
-                <SummaryValue>{calculateTotal().toFixed(2)} {t.bgn}</SummaryValue>
+                <SummaryValue>{summary.total.toFixed(2)} {t.bgn}</SummaryValue>
               </SummaryRow>
-              <CheckoutButton onClick={handleCheckout}>
-                {t.proceedToCheckout}
+              <CheckoutButton 
+                onClick={handleCheckout}
+                disabled={!!updating}
+              >
+                {!user ? t.loginToCheckout : t.proceedToCheckout}
                 <ArrowRight size={20} />
               </CheckoutButton>
             </SummaryCard>
@@ -196,6 +289,36 @@ const PageContainer = styled.div`
 const ContentWrapper = styled.div`
   max-width: 1200px;
   margin: 0 auto;
+`;
+
+const LoadingState = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  
+  .spinner {
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+`;
+
+const ErrorBanner = styled.div`
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  text-align: center;
+  
+  &:hover {
+    background: #fecaca;
+  }
 `;
 
 const Title = styled.h1`
@@ -220,7 +343,7 @@ const ItemsSection = styled.div`
   gap: 1rem;
 `;
 
-const CartItemCard = styled.div`
+const CartItemCard = styled.div<{ $disabled?: boolean }>`
   background: white;
   padding: 1.5rem;
   border-radius: 12px;
@@ -228,6 +351,9 @@ const CartItemCard = styled.div`
   grid-template-columns: 100px 1fr auto;
   gap: 1.5rem;
   align-items: center;
+  opacity: ${props => props.$disabled ? 0.6 : 1};
+  pointer-events: ${props => props.$disabled ? 'none' : 'auto'};
+  transition: opacity 0.2s;
 
   @media (max-width: 768px) {
     grid-template-columns: 80px 1fr;

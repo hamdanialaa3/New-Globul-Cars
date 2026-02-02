@@ -22,7 +22,9 @@ const DEFAULT_STATS = {
   activeListings: 0,
   totalViews: 0,
   totalMessages: 0,
-  trustScore: 0
+  trustScore: 0,
+  followersCount: 0,
+  followingCount: 0
 };
 
 const DEFAULT_VERIFICATION = {
@@ -34,7 +36,7 @@ const DEFAULT_VERIFICATION = {
 
 const RESERVED_ROUTES = ['settings', 'my-ads', 'campaigns', 'analytics', 'consultations'];
 
-const normalizeUser = (raw: BulgarianUser | null): BulgarianUser | null => {
+const normalizeUser = (raw: any): BulgarianUser | null => {
   if (!raw) return null;
   return {
     ...raw,
@@ -42,11 +44,11 @@ const normalizeUser = (raw: BulgarianUser | null): BulgarianUser | null => {
     planTier: raw.planTier ?? 'free',
     stats: { ...DEFAULT_STATS, ...raw.stats },
     verification: { ...DEFAULT_VERIFICATION, ...raw.verification }
-  };
+  } as BulgarianUser;
 };
 
-// Extended profile type for form data (includes optional fields that might not be in BulgarianUser)
-interface ExtendedProfileData extends BulgarianUser {
+// Extended profile type for form data
+type ExtendedProfileData = BulgarianUser & {
   accountType?: string;
   middleName?: string;
   dateOfBirth?: string;
@@ -67,12 +69,14 @@ interface ExtendedProfileData extends BulgarianUser {
   address?: string;
   city?: string;
   postalCode?: string;
-}
+  firstName?: string;
+  lastName?: string;
+};
 
 const buildFormData = (profile: BulgarianUser | null): ProfileFormData => {
   const extended = profile as ExtendedProfileData | null;
   return {
-    accountType: extended?.accountType || 'individual',
+    accountType: (extended?.accountType as any) || 'individual',
     firstName: extended?.firstName || '',
     lastName: extended?.lastName || '',
     middleName: extended?.middleName || '',
@@ -81,7 +85,7 @@ const buildFormData = (profile: BulgarianUser | null): ProfileFormData => {
     businessName: extended?.businessName || '',
     bulstat: extended?.bulstat || '',
     vatNumber: extended?.vatNumber || '',
-    businessType: extended?.businessType || 'dealership',
+    businessType: (extended?.businessType as any) || 'dealership',
     registrationNumber: extended?.registrationNumber || '',
     businessAddress: extended?.businessAddress || '',
     businessCity: extended?.businessCity || '',

@@ -16,6 +16,8 @@
 import React, { Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ProfilePageWrapper from '../pages/03_user-pages/profile/ProfilePage/ProfilePageWrapper';
+import ProtectedRoute from '../components/ProtectedRoute';
+import ProtectedRouteAuth from '../components/auth/ProtectedRoute';
 
 // ✅ Phase 4.1.1: Code Splitting - Lazy load tabs for better performance
 const ProfileOverview = React.lazy(() => import('../pages/03_user-pages/profile/ProfilePage/tabs/ProfileOverview'));
@@ -28,6 +30,7 @@ const SettingsPage = React.lazy(() => import('../pages/03_user-pages/profile/Pro
 const EditCarPage = React.lazy(() => import('../pages/04_car-selling/EditCarPage'));
 const CarDetailsPage = React.lazy(() => import('../pages/01_main-pages/CarDetailsPage'));
 const UserFavoritesPage = React.lazy(() => import('../pages/03_user-profile/UserFavoritesPage'));
+const FollowingTab = React.lazy(() => import('../pages/03_user-pages/profile/ProfilePage/tabs/FollowingTab'));
 
 // Loading fallback component
 const TabLoadingFallback: React.FC = () => (
@@ -62,8 +65,12 @@ const TabLoadingFallback: React.FC = () => (
 export const NumericProfileRouter: React.FC = () => {
   return (
     <Routes>
-      {/* Main profile page with nested routes */}
-      <Route path="" element={<ProfilePageWrapper />}>
+      {/* ✅ PROTECTED: Main profile page with nested routes */}
+      <Route path="" element={
+        <ProtectedRoute>
+          <ProfilePageWrapper />
+        </ProtectedRoute>
+      }>
         {/* Default: Show current user's profile overview */}
         <Route index element={
           <Suspense fallback={<TabLoadingFallback />}>
@@ -102,6 +109,11 @@ export const NumericProfileRouter: React.FC = () => {
         <Route path="favorites" element={
           <Suspense fallback={<TabLoadingFallback />}>
             <UserFavoritesPage />
+          </Suspense>
+        } />
+        <Route path="following" element={
+          <Suspense fallback={<TabLoadingFallback />}>
+            <FollowingTab />
           </Suspense>
         } />
 
@@ -148,6 +160,11 @@ export const NumericProfileRouter: React.FC = () => {
               <UserFavoritesPage />
             </Suspense>
           } />
+          <Route path="following" element={
+            <Suspense fallback={<TabLoadingFallback />}>
+              <FollowingTab />
+            </Suspense>
+          } />
           
           {/* Car routes */}
           <Route path="car/:carId/edit" element={
@@ -180,6 +197,11 @@ export const NumericProfileRouter: React.FC = () => {
           <Route path="favorites" element={
             <Suspense fallback={<TabLoadingFallback />}>
               <UserFavoritesPage />
+            </Suspense>
+          } />
+          <Route path="following" element={
+            <Suspense fallback={<TabLoadingFallback />}>
+              <FollowingTab />
             </Suspense>
           } />
           

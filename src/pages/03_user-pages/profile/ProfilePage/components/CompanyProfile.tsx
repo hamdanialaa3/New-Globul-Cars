@@ -323,7 +323,10 @@ export const CompanyProfile: React.FC<CompanyProfileProps> = ({
   
   if (!user) return null;
 
-  const companyName = user.businessName || user.displayName || 'Company';
+  // ✅ STRICT: Show personal name (firstName + lastName)
+  const userAny = user as any;
+  const personalName = `${userAny.firstName || ''} ${userAny.lastName || ''}`.trim();
+  const companyName = personalName || user.displayName || 'Company';
   const isVerified = user.verification?.business?.verified || false;
   const trustScore = user.trust?.score || user.verification?.trustScore || 50;
   const totalViews = user.stats?.totalViews || 0;

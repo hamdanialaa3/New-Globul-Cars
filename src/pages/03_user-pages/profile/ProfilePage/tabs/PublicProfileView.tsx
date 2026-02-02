@@ -18,10 +18,11 @@ import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.typ
 import type { ProfileCar } from '../types';
 import { PublicProfileHero } from './components/PublicProfileHero';
 import { ProfileInventoryGrid } from './components/ProfileInventoryGrid';
-import { ProfileBusinessContact } from './components/ProfileBusinessContact';
 import { ProfileTrustSection } from './components/ProfileTrustSection';
 import { ProfileLocationMap } from './components/ProfileLocationMap';
 import { BusinessGreenHeader } from '../../../../../components/Profile/BusinessGreenHeader';
+import FollowingTab from './FollowingTab';
+import { HorizontalContactSection } from './components/HorizontalContactSection';
 
 interface PublicProfileViewProps {
   user: BulgarianUser;
@@ -33,14 +34,14 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({
   userCars = [] 
 }) => {
   const { language } = useLanguage();
-  const theme = useTheme();
+  const { theme } = useTheme();
   const outletContext = useOutletContext<any>();
   const viewer = outletContext?.viewer || null;
   const isFollowing = outletContext?.isFollowing || false;
   const followLoading = outletContext?.followLoading || false;
   const handleFollow = outletContext?.handleFollow || (() => {});
   const handleMessage = outletContext?.handleMessage || (() => {});
-  const [activeTab, setActiveTab] = useState<'inventory' | 'about' | 'feed'>('inventory');
+  const [activeTab, setActiveTab] = useState<'inventory' | 'about' | 'feed' | 'following'>('inventory');
 
   const profileType = user.profileType || 'private';
   const isPrivate = profileType === 'private';
@@ -77,12 +78,15 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({
         />
       )}
 
-      {/* Location Map - Below Hero */}
+      {/* Location Map */}
       <ProfileLocationMap user={user} />
+
+      {/* ✅ NEW: Horizontal Contact Section (Smart Layout) */}
+      <HorizontalContactSection user={user} />
       
-      {/* Content Grid - Main Content + Sidebar */}
+      {/* Content Grid - Single Column now */}
       <ContentWrapper $isDark={isDark}>
-        <section>
+        <section style={{ width: '100%' }}>
           {/* Tab Navigation (Simple) */}
           <TabNavigation $isDark={isDark}>
             <TabButton 
@@ -110,6 +114,14 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({
               $isDark={isDark}
             >
               {language === 'bg' ? 'Публикации' : 'Social Feed'}
+            </TabButton>
+            <TabButton 
+              $active={activeTab === 'following'} 
+              onClick={() => setActiveTab('following')}
+              $profileType={profileType}
+              $isDark={isDark}
+            >
+              {language === 'bg' ? 'Следвани' : 'Following'}
             </TabButton>
           </TabNavigation>
 
@@ -140,12 +152,13 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({
               <p>{language === 'bg' ? 'Социална лента - скоро' : 'Social Feed - Coming Soon'}</p>
             </SocialFeedPlaceholder>
           )}
-        </section>
 
-        {/* Sidebar - Sticky */}
-        <aside>
-          <ProfileBusinessContact user={user} />
-        </aside>
+          {activeTab === 'following' && (
+            <div style={{ background: isDark ? '#1E293B' : 'white', borderRadius: '16px', padding: '20px' }}>
+              <FollowingTab />
+            </div>
+          )}
+        </section>
       </ContentWrapper>
     </ViewContainer>
   );
@@ -176,25 +189,14 @@ const ViewContainer = styled.div<{ $isDark: boolean }>`
 const ContentWrapper = styled.main<{ $isDark: boolean }>`
   max-width: 1280px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 30px;
-  padding: 40px 20px;
-  margin-top: 24px;
+  display: block; /* ✅ Changed from grid to block for horizontal layout */
+  padding: 0 20px;
+  margin-top: 10px;
   background: ${props => props.$isDark ? '#0F1419' : 'transparent'};
   transition: background 0.3s ease;
 
   @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
     padding: 20px;
-  }
-
-  section {
-    min-width: 0; // Prevent grid overflow
-  }
-
-  aside {
-    min-width: 0; // Prevent grid overflow
   }
 `;
 

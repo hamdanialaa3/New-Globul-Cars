@@ -110,6 +110,8 @@ export const ProfileOverview: React.FC<ProfileOverviewProps> = (props) => {
         <CurrentPlanCard profileType={user.profileType || 'private'} />
       )}
 
+      {renderProfile()}
+
       {showDashboard && <ProfileDashboard user={user} />}
 
       {/* Profile Enhancements - Phase 1 */}
@@ -128,8 +130,6 @@ export const ProfileOverview: React.FC<ProfileOverviewProps> = (props) => {
       <IntroVideoSection userId={user.uid} isOwnProfile={isOwnProfile} />
       <LeaderboardSection userId={user.uid} isOwnProfile={isOwnProfile} />
       <AchievementsGallerySection userId={user.uid} isOwnProfile={isOwnProfile} />
-
-      {renderProfile()}
     </OverviewContainer>
   );
 };

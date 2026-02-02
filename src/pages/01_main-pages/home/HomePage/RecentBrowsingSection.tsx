@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import ModernCarCard from './ModernCarCard';
+import PremiumHomeCarCard from '../../../../components/CarCard/PremiumHomeCarCard';
 import { getBrowsingHistory, clearBrowsingHistory, BrowsingHistoryItem } from './browsingHistory';
 import { History, Clock, Eye, Trash2, Search, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
@@ -385,21 +385,19 @@ const RecentBrowsingSection: React.FC = () => {
           showArrows={true}
         >
           {sortedHistory.map((item, index) => (
-            <div key={`${item.listing.id}-${index}`} style={{ position: 'relative' }}>
-// No changes needed here because ModernCarCard inside handles the navigation logic and the 'listing' object from history should contain the IDs if they were saved.
-              // However, if we want to force hydration or validation, we could. 
-              // But let's skip this for now and focus on LatestCarsSection which had clear hardcoding issues.
-              <TimeBadgeOverlay>
-                <Clock size={14} />
-                {formatTimeAgo(item.viewedAt)}
-              </TimeBadgeOverlay>
-              <ViewCountBadge>
-                <Eye size={14} />
-                {item.viewCount} {language === 'bg'
-                  ? (item.viewCount === 1 ? 'преглед' : 'прегледа')
-                  : (item.viewCount === 1 ? 'view' : 'views')}
-              </ViewCountBadge>
-            </div>
+              <div key={`${item.listing.id}-${index}`} style={{ position: 'relative', perspective: '1000px' }}>
+                <PremiumHomeCarCard car={item.listing as any} />
+                <TimeBadgeOverlay>
+                  <Clock size={14} />
+                  {formatTimeAgo(item.viewedAt)}
+                </TimeBadgeOverlay>
+                <ViewCountBadge>
+                  <Eye size={14} />
+                  {item.viewCount} {language === 'bg'
+                    ? (item.viewCount === 1 ? 'преглед' : 'прегледа')
+                    : (item.viewCount === 1 ? 'view' : 'views')}
+                </ViewCountBadge>
+              </div>
           ))}
         </HorizontalScrollContainer>
       </CarsContainer>
