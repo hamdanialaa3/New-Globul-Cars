@@ -90,6 +90,33 @@ const DealerProfile: React.FC<DealerProfileProps> = ({ user, userCars, isOwner }
 
   return (
     <Container>
+      {userCars && userCars.length > 0 && (
+        <Section>
+          <SectionTitle>{language === 'bg' ? 'Налични автомобили' : 'Available Cars'} ({userCars.length})</SectionTitle>
+          <CarsGrid>
+            {userCars.map((car: any) => {
+              // ✅ CONSTITUTION: Use numeric URL pattern
+              const sellerNumericId = (car as any).sellerNumericId || (car as any).ownerNumericId;
+              const carNumericId = (car as any).carNumericId || (car as any).userCarSequenceId || (car as any).numericId;
+              const carUrl = sellerNumericId && carNumericId ? `/car/${sellerNumericId}/${carNumericId}` : '/cars';
+              
+              return (
+                <CarCard key={car.id} onClick={() => window.location.href = carUrl}>
+                  <CarImage src={car.imageUrl || car.mainImage || '/placeholder-car.jpg'} alt={car.title} />
+                  <CarInfo>
+                    <CarTitle>{car.make} {car.model}</CarTitle>
+                    <div style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.5rem' }}>
+                      {car.year} • {car.mileage?.toLocaleString()} km
+                    </div>
+                    <CarPrice>{car.price?.toLocaleString()} €</CarPrice>
+                  </CarInfo>
+                </CarCard>
+              );
+            })}
+          </CarsGrid>
+        </Section>
+      )}
+
       <Section>
         <SectionTitle><Building2 size={20} />{language === 'bg' ? 'Информация за дилъра' : 'Dealer Information'}</SectionTitle>
         <InfoGrid>
@@ -138,33 +165,6 @@ const DealerProfile: React.FC<DealerProfileProps> = ({ user, userCars, isOwner }
         <Section>
           <SectionTitle>{language === 'bg' ? 'За дилъра' : 'About Dealer'}</SectionTitle>
           <p style={{ color: 'rgba(255, 255, 255, 0.7)', lineHeight: 1.6 }}>{dealerInfo.businessDescription}</p>
-        </Section>
-      )}
-
-      {userCars && userCars.length > 0 && (
-        <Section>
-          <SectionTitle>{language === 'bg' ? 'Налични автомобили' : 'Available Cars'} ({userCars.length})</SectionTitle>
-          <CarsGrid>
-            {userCars.map((car: any) => {
-              // ✅ CONSTITUTION: Use numeric URL pattern
-              const sellerNumericId = (car as any).sellerNumericId || (car as any).ownerNumericId;
-              const carNumericId = (car as any).carNumericId || (car as any).userCarSequenceId || (car as any).numericId;
-              const carUrl = sellerNumericId && carNumericId ? `/car/${sellerNumericId}/${carNumericId}` : '/cars';
-              
-              return (
-                <CarCard key={car.id} onClick={() => window.location.href = carUrl}>
-                  <CarImage src={car.imageUrl || car.mainImage || '/placeholder-car.jpg'} alt={car.title} />
-                  <CarInfo>
-                    <CarTitle>{car.make} {car.model}</CarTitle>
-                    <div style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.5rem' }}>
-                      {car.year} • {car.mileage?.toLocaleString()} km
-                    </div>
-                    <CarPrice>{car.price?.toLocaleString()} €</CarPrice>
-                  </CarInfo>
-                </CarCard>
-              );
-            })}
-          </CarsGrid>
         </Section>
       )}
     </Container>

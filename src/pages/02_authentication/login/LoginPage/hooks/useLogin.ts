@@ -6,6 +6,7 @@ import { SocialAuthService } from '../../../../../firebase/social-auth-service';
 import { bulgarianAuthService } from '../../../../../firebase';
 import { LoginFormData, LoginState, LoginActions, UseLoginReturn } from '../types';
 import { logger } from '../../../../../services/logger-service';
+import { useProfileIntent } from '../../../../../hooks/useProfileIntent';
 
 export const useLogin = (): UseLoginReturn => {
   const { t } = useTranslation();
@@ -13,6 +14,7 @@ export const useLogin = (): UseLoginReturn => {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
+  const { getIntent, clearIntent } = useProfileIntent();
 
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
@@ -26,15 +28,21 @@ export const useLogin = (): UseLoginReturn => {
   const [success, setSuccess] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
-  // Get redirect URL from query params or location state
+  // Get redirect URL from multiple sources with priority
   const getRedirectPath = (): string => {
-    // Priority 1: Check URL query parameter
+    // Priority 1: Check Profile Intent (saved before auth redirect)
+    const intent = getIntent();
+    if (intent?.returnUrl) {
+      return intent.returnUrl;
+    }
+
+    // Priority 2: Check URL query parameter
     const redirectParam = searchParams.get('redirect');
     if (redirectParam) {
       return redirectParam;
     }
 
-    // Priority 2: Check location state (from Navigate component)
+    // Priority 3: Check location state (from Navigate component)
     const locationState = location.state as { from?: { pathname: string } } | null;
     if (locationState?.from?.pathname) {
       return locationState.from.pathname;
@@ -117,6 +125,7 @@ export const useLogin = (): UseLoginReturn => {
       if (result && result.user) {
         setSuccess(t('auth.loginSuccess', 'Login successful! Redirecting...'));
         const redirectPath = getRedirectPath();
+        
         setTimeout(() => {
           navigate(redirectPath, { replace: true });
         }, 1000);

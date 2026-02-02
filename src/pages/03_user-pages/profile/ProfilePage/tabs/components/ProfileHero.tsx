@@ -41,12 +41,11 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({ user }) => {
   const isDealer = profileType === 'dealer';
   const isCompany = profileType === 'company';
 
-  // Business info extraction
-  const businessName = isDealer 
-    ? user.dealerSnapshot?.name 
-    : isCompany 
-      ? user.companySnapshot?.name 
-      : user.displayName;
+  // ✅ STRICT: Show personal name (firstName + lastName) in Hero
+  // Business/Company name is shown separately near the avatar
+  const userAny = user as any;
+  const personalName = `${userAny.firstName || ''} ${userAny.lastName || ''}`.trim();
+  const businessName = personalName || user.displayName;
   
   const businessAddress = isDealer 
     ? user.dealerSnapshot?.address 

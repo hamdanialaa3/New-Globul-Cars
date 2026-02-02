@@ -29,7 +29,7 @@
  */
 
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { logger } from '../../services/logger-service';
@@ -419,14 +419,19 @@ export interface AuthGuardProps {
  */
 const LoginRequiredMessage: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { t } = useLanguage();
 
   const handleLogin = () => {
-    window.location.href = `/login?redirect=${encodeURIComponent(location.pathname)}`;
+    // ✅ Preserve current location using state (better than query params)
+    navigate('/login', { 
+      state: { from: location },
+      replace: false 
+    });
   };
 
   const handleBack = () => {
-    window.location.href = '/';
+    navigate('/', { replace: true });
   };
 
   const getPageName = (pathname: string): string => {
@@ -479,9 +484,10 @@ const LoginRequiredMessage: React.FC = () => {
  */
 const AdminRequiredMessage: React.FC = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   const handleBack = () => {
-    window.location.href = '/';
+    navigate('/', { replace: true });
   };
 
   return (
@@ -511,13 +517,14 @@ const AdminRequiredMessage: React.FC = () => {
  */
 const VerificationRequiredMessage: React.FC = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   const handleVerify = () => {
-    window.location.href = '/verification';
+    navigate('/verification', { replace: false });
   };
 
   const handleBack = () => {
-    window.location.href = '/';
+    navigate('/', { replace: true });
   };
 
   return (

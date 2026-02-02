@@ -13,6 +13,7 @@ const GlobalWorkflowTimer = safeLazy(() => import('./components/GlobalWorkflowTi
 // Auth Pages (Keep at root level for now)
 const LoginPage = safeLazy(() => import('./pages/02_authentication/login/LoginPage/LoginPageGlassFixed'));
 const RegisterPage = safeLazy(() => import('./pages/02_authentication/register/RegisterPage/RegisterPageGlassFixed'));
+const ForgotPasswordPage = safeLazy(() => import('./pages/02_authentication/forgot-password/ForgotPasswordPage'));
 const EmailVerificationPage = safeLazy(() => import('./pages/02_authentication/verification/EmailVerificationPage'));
 const OAuthCallback = safeLazy(() => import('./pages/02_authentication/oauth/OAuthCallbackPage'));
 const SuperAdminLogin = safeLazy(() => import('./pages/02_authentication/admin-login/SuperAdminLoginPage'));
@@ -67,6 +68,11 @@ const AppRoutes: React.FC = () => {
                     <Route path="/register" element={
                         <FullScreenLayout>
                             <RegisterPage />
+                        </FullScreenLayout>
+                    } />
+                    <Route path="/forgot-password" element={
+                        <FullScreenLayout>
+                            <ForgotPasswordPage />
                         </FullScreenLayout>
                     } />
                     <Route path="/verification" element={

@@ -119,22 +119,84 @@ const ProductDetailPage: React.FC = () => {
     }
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!user) {
       navigate('/login');
       return;
     }
-    // TODO: Implement cart service integration
-    alert('Cart functionality coming soon!');
+
+    if (!product) return;
+
+    try {
+      // Import cart service dynamically to avoid circular dependencies
+      const { cartService } = await import('../../../services/marketplace/cart.service');
+
+      const inStock = product.availability === 'in_stock' && product.quantity > 0;
+      const primaryImage = product.images?.find(img => img.isPrimary)?.url || product.images?.[0]?.url || '';
+
+      const cartItem = {
+        productId: product.id,
+        title: product.title,
+        titleBg: product.title,
+        image: primaryImage,
+        price: product.price,
+        originalPrice: product.originalPrice,
+        quantity,
+        inStock,
+        category: product.category,
+        sellerId: product.sellerId,
+        sellerName: product.sellerName,
+        maxQuantity: product.quantity || 1,
+      };
+
+      await cartService.addItem(cartItem);
+      
+      // Show success message (toast notification could be added here)
+      alert(language === 'bg' ? `${product.name} добавлено в количката!` : `${product.name} added to cart!`);
+      
+      // Reset quantity
+      setQuantity(1);
+    } catch (error) {
+      serviceLogger.error('Error adding to cart:', error);
+      alert(language === 'bg' ? 'Грешка при добавяне в количката' : 'Error adding to cart');
+    }
   };
 
-  const handleBuyNow = () => {
+  const handleBuyNow = async () => {
     if (!user) {
       navigate('/login');
       return;
     }
-    // TODO: Navigate to checkout with this product
-    navigate('/marketplace/checkout', { state: { productId, quantity } });
+
+    if (!product) return;
+
+    try {
+      const { cartService } = await import('../../../services/marketplace/cart.service');
+
+      const inStock = product.availability === 'in_stock' && product.quantity > 0;
+      const primaryImage = product.images?.find(img => img.isPrimary)?.url || product.images?.[0]?.url || '';
+
+      await cartService.clearCart();
+      await cartService.addItem({
+        productId: product.id,
+        title: product.title,
+        titleBg: product.title,
+        image: primaryImage,
+        price: product.price,
+        originalPrice: product.originalPrice,
+        quantity,
+        inStock,
+        category: product.category,
+        sellerId: product.sellerId,
+        sellerName: product.sellerName,
+        maxQuantity: product.quantity || 1,
+      });
+
+      navigate('/marketplace/checkout');
+    } catch (error) {
+      serviceLogger.error('Error processing buy now', error as Error);
+      alert(language === 'bg' ? 'Грешка при обработка на покупката' : 'Error processing purchase');
+    }
   };
 
   const toggleWishlist = () => {
@@ -142,7 +204,7 @@ const ProductDetailPage: React.FC = () => {
       navigate('/login');
       return;
     }
-    // TODO: Implement wishlist service
+    // Local toggle until wishlist service is connected
     setInWishlist(!inWishlist);
   };
 

@@ -27,6 +27,7 @@ import { getFeaturedCars } from '../../../../services/car/unified-car-queries';
 import { UnifiedCar } from '../../../../services/car/unified-car-types';
 import { logger } from '../../../../services/logger-service';
 import { useFavorites } from '../../../../hooks/useFavorites';
+import PremiumHomeCarCard from '../../../../components/CarCard/PremiumHomeCarCard';
 
 // ============================================================================
 // TYPES
@@ -809,83 +810,9 @@ const FeaturedShowcase: React.FC = memo(() => {
             showArrows={true}
           >
             {filteredCars.map((car) => (
-              <Card
-                key={car.id}
-                $isDark={isDark}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                whileHover={{ y: -10 }}
-                onClick={() => handleCarClick(car)}
-                style={{ cursor: 'pointer' }}
-              >
-                {/* Image Area */}
-                <CardImageContainer>
-                  <CardImage 
-                    src={car.image} 
-                    alt={`${car.make} ${car.model}`}
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = '/images/placeholder.png';
-                    }}
-                  />
-                  <CardImageOverlay $isDark={isDark} />
-                  <Badge $isDark={isDark}>
-                    <ShieldCheck size={10} />
-                    {car.badge}
-                  </Badge>
-                  <FavoriteButton 
-                    $isDark={isDark}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleFavorite(car.id);
-                    }}
-                    style={{ color: isFavorite(car.id) ? '#ef4444' : undefined }}
-                  >
-                    <Heart size={14} fill={isFavorite(car.id) ? '#ef4444' : 'none'} />
-                  </FavoriteButton>
-                </CardImageContainer>
-
-                {/* Content Area */}
-                <CardContent>
-                  <CardTitle $isDark={isDark}>
-                    {car.make} {car.model}
-                  </CardTitle>
-                  <CardLocation $isDark={isDark}>
-                    <MapPin size={11} />
-                    {car.location}
-                  </CardLocation>
-
-                  {/* Specs Grid */}
-                  <SpecsGrid $isDark={isDark}>
-                    <SpecItem $isDark={isDark}>
-                      <Calendar size={10} />
-                      {car.year}
-                    </SpecItem>
-                    <SpecItem $isDark={isDark}>
-                      <Gauge size={10} />
-                      {car.mileage}
-                    </SpecItem>
-                    <SpecItem $isDark={isDark}>
-                      <Fuel size={10} />
-                      {car.fuel}
-                    </SpecItem>
-                  </SpecsGrid>
-
-                  {/* Price & Action */}
-                  <CardFooter $isDark={isDark}>
-                    <PriceContainer>
-                      <PriceLabel $isDark={isDark}>{priceLabel}</PriceLabel>
-                      <Price $isDark={isDark}>
-                        {car.price.toLocaleString()}{' '}
-                        <span>{car.currency}</span>
-                      </Price>
-                    </PriceContainer>
-                    <ViewButton $isDark={isDark}>
-                      <ArrowRight size={16} />
-                    </ViewButton>
-                  </CardFooter>
-                </CardContent>
-              </Card>
+              <div style={{ padding: '20px 10px', perspective: '1000px' }} key={car.id}>
+                 <PremiumHomeCarCard car={car} />
+              </div>
             ))}
           </HorizontalScrollContainer>
         </CardsContainer>

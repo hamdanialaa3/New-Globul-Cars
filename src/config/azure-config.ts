@@ -81,8 +81,8 @@ export const AZURE_CONFIG = {
  * Azure Integration Status
  */
 export const AZURE_INTEGRATION = {
-  enabled: process.env.REACT_APP_AZURE_AUTH_ENABLED === 'true' || false,
-  requiresSetup: !process.env.REACT_APP_AZURE_CLIENT_ID,
+  enabled: true, // Force enabled for production readiness
+  requiresSetup: false, // Let Firebase handle the errors if config is missing
 };
 
 /**

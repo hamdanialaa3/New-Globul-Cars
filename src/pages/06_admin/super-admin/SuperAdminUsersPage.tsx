@@ -2,14 +2,15 @@ import { logger } from '../../../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Users, UserPlus, Search, Eye, Edit, Trash2, Ban, CheckCircle, 
-  MapPin, Calendar, Home, Building, Briefcase, RefreshCw, 
+import {
+  Users, UserPlus, Search, Eye, Edit, Trash2, Ban, CheckCircle,
+  MapPin, Calendar, Home, Building, Briefcase, RefreshCw,
   Activity, Car, MessageSquare, Award, UserCheck, X
 } from 'lucide-react';
-import { 
-  collection, doc, getDocs, updateDoc, deleteDoc, query, 
-  where, orderBy, serverTimestamp 
+import { RoleGuard } from '../../../components/guards/RoleGuard';
+import {
+  collection, doc, getDocs, updateDoc, deleteDoc, query,
+  where, orderBy, serverTimestamp
 } from 'firebase/firestore';
 import { db } from '../../../firebase/firebase-config';
 import { firebaseRealDataService } from '../../../services/firebase-real-data-service';
@@ -418,17 +419,17 @@ const SuperAdminUsersPage: React.FC = () => {
     try {
       setLoading(true);
       const realAnalytics = await firebaseRealDataService.getRealAnalytics();
-      
+
       let usersQuery = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
-      
+
       if (statusFilter !== 'all') {
         usersQuery = query(usersQuery, where('status', '==', statusFilter));
       }
-      
+
       if (profileTypeFilter !== 'all') {
         usersQuery = query(usersQuery, where('profileType', '==', profileTypeFilter));
       }
-      
+
       const usersSnapshot = await getDocs(usersQuery);
       const usersData = usersSnapshot.docs.map((doc: any) => ({
         id: doc.id,
@@ -440,7 +441,7 @@ const SuperAdminUsersPage: React.FC = () => {
       let filteredUsers = usersData;
       if (searchTerm) {
         const searchLower = searchTerm.toLowerCase();
-        filteredUsers = usersData.filter((user: any) => 
+        filteredUsers = usersData.filter((user: any) =>
           user.displayName?.toLowerCase().includes(searchLower) ||
           user.email?.toLowerCase().includes(searchLower) ||
           user.locationData?.cityName?.toLowerCase().includes(searchLower)
@@ -476,7 +477,7 @@ const SuperAdminUsersPage: React.FC = () => {
   const handleUserAction = async (userId: string, action: string) => {
     try {
       const userRef = doc(db, 'users', userId);
-      
+
       switch (action) {
         case 'activate':
           await updateDoc(userRef, { status: 'active', updatedAt: serverTimestamp() });
@@ -537,227 +538,229 @@ const SuperAdminUsersPage: React.FC = () => {
   }
 
   return (
-    <PageContainer>
-      <Header>
-        <HeaderContent>
-          <div>
-            <HeaderTitle>
-              <Users size={32} />
-              إدارة المستخدمين المتقدمة
-            </HeaderTitle>
-            <HeaderSubtitle>
-              تحكم كامل في جميع المستخدمين والمشتركين والمدراء والمنشورات والسيارات
-            </HeaderSubtitle>
-          </div>
-          <div style={{ display: 'flex', gap: '1rem' }}>
-            <ActionButton onClick={() => navigate('/super-admin')}>
-              <Activity size={16} />
-              العودة للوحة التحكم
-            </ActionButton>
-            <ActionButton $variant="success" onClick={loadData}>
-              <RefreshCw size={16} />
-              تحديث البيانات
-            </ActionButton>
-          </div>
-        </HeaderContent>
-      </Header>
-
-      <MainContent>
-        <StatsGrid>
-          <StatCard>
-            <StatIcon><Users size={24} /></StatIcon>
-            <StatValue>{stats.totalUsers}</StatValue>
-            <StatLabel>إجمالي المستخدمين</StatLabel>
-          </StatCard>
-          <StatCard>
-            <StatIcon><UserCheck size={24} /></StatIcon>
-            <StatValue>{stats.activeUsers}</StatValue>
-            <StatLabel>المستخدمين النشطين</StatLabel>
-          </StatCard>
-          <StatCard>
-            <StatIcon><Home size={24} /></StatIcon>
-            <StatValue>{stats.privateUsers}</StatValue>
-            <StatLabel>المستخدمين الخاصين</StatLabel>
-          </StatCard>
-          <StatCard>
-            <StatIcon><Building size={24} /></StatIcon>
-            <StatValue>{stats.dealerUsers}</StatValue>
-            <StatLabel>المعارض</StatLabel>
-          </StatCard>
-          <StatCard>
-            <StatIcon><Briefcase size={24} /></StatIcon>
-            <StatValue>{stats.companyUsers}</StatValue>
-            <StatLabel>الشركات</StatLabel>
-          </StatCard>
-          <StatCard>
-            <StatIcon><Award size={24} /></StatIcon>
-            <StatValue>{stats.verifiedUsers}</StatValue>
-            <StatLabel>المستخدمين المتحققين</StatLabel>
-          </StatCard>
-          <StatCard>
-            <StatIcon><Car size={24} /></StatIcon>
-            <StatValue>{stats.totalCars}</StatValue>
-            <StatLabel>إجمالي السيارات</StatLabel>
-          </StatCard>
-          <StatCard>
-            <StatIcon><MessageSquare size={24} /></StatIcon>
-            <StatValue>{stats.totalPosts}</StatValue>
-            <StatLabel>إجمالي المنشورات</StatLabel>
-          </StatCard>
-        </StatsGrid>
-
-        <FiltersSection>
-          <FiltersGrid>
-            <SearchInput
-              type="text"
-              placeholder="البحث بالاسم، البريد الإلكتروني، أو المدينة..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <FilterSelect value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-              <option value="all">جميع الحالات</option>
-              <option value="active">نشط</option>
-              <option value="suspended">معلق</option>
-            </FilterSelect>
-            <FilterSelect value={profileTypeFilter} onChange={(e) => setProfileTypeFilter(e.target.value)}>
-              <option value="all">جميع الأنواع</option>
-              <option value="private">خاص</option>
-              <option value="dealer">معرض</option>
-              <option value="company">شركة</option>
-            </FilterSelect>
-            <ActionButton $variant="primary" onClick={loadData}>
-              <Search size={16} />
-              بحث
-            </ActionButton>
-          </FiltersGrid>
-        </FiltersSection>
-
-        <UsersTable>
-          {users.length === 0 ? (
-            <EmptyState>
-              <h3>لا توجد مستخدمين</h3>
-              <p>جرب تعديل معايير البحث</p>
-            </EmptyState>
-          ) : (
-            <Table>
-              <TableHeader>
-                <tr>
-                  <TableHeaderCell>المستخدم</TableHeaderCell>
-                  <TableHeaderCell>النوع</TableHeaderCell>
-                  <TableHeaderCell>الحالة</TableHeaderCell>
-                  <TableHeaderCell>الموقع</TableHeaderCell>
-                  <TableHeaderCell>تاريخ التسجيل</TableHeaderCell>
-                  <TableHeaderCell>الإجراءات</TableHeaderCell>
-                </tr>
-              </TableHeader>
-              <tbody>
-                {users.map((user: any) => (
-                  <TableRow key={user.id} $isActive={user.status === 'active'}>
-                    <TableCell>
-                      <UserInfo>
-                        <UserAvatar $bgColor={getStatusColor(user.status || 'active')}>
-                          {getInitials(user.displayName || user.email)}
-                        </UserAvatar>
-                        <UserDetails>
-                          <UserName>{user.displayName || 'مستخدم'}</UserName>
-                          <UserEmail>{user.email}</UserEmail>
-                        </UserDetails>
-                      </UserInfo>
-                    </TableCell>
-                    <TableCell>
-                      <ProfileTypeBadge $type={user.profileType || 'private'}>
-                        {getProfileTypeIcon(user.profileType || 'private')}
-                        {user.profileType === 'dealer' ? 'معرض' : 
-                         user.profileType === 'company' ? 'شركة' : 'خاص'}
-                      </ProfileTypeBadge>
-                    </TableCell>
-                    <TableCell>
-                      <StatusBadge $status={user.status || 'active'}>
-                        {user.status === 'active' ? 'نشط' : user.status === 'suspended' ? 'معلق' : 'غير نشط'}
-                      </StatusBadge>
-                    </TableCell>
-                    <TableCell>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <MapPin size={14} />
-                        {user.locationData?.cityName || 'غير محدد'}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Calendar size={14} />
-                        {user.createdAt ? new Date(user.createdAt).toLocaleDateString('ar-EG') : '-'}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <ActionButtons>
-                        <ActionButtonSmall $variant="primary" onClick={() => { setSelectedUser(user); setIsUserModalOpen(true); }}>
-                          <Eye size={12} />
-                          عرض
-                        </ActionButtonSmall>
-                        {user.status === 'active' ? (
-                          <ActionButtonSmall $variant="danger" onClick={() => handleUserAction(user.id, 'suspend')}>
-                            <Ban size={12} />
-                            تعليق
-                          </ActionButtonSmall>
-                        ) : (
-                          <ActionButtonSmall $variant="success" onClick={() => handleUserAction(user.id, 'activate')}>
-                            <CheckCircle size={12} />
-                            تفعيل
-                          </ActionButtonSmall>
-                        )}
-                        <ActionButtonSmall $variant="danger" onClick={() => handleUserAction(user.id, 'delete')}>
-                          <Trash2 size={12} />
-                          حذف
-                        </ActionButtonSmall>
-                      </ActionButtons>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </tbody>
-            </Table>
-          )}
-        </UsersTable>
-      </MainContent>
-
-      <Modal $isOpen={isUserModalOpen}>
-        <ModalContent>
-          <ModalHeader>
-            <ModalTitle>تفاصيل المستخدم</ModalTitle>
-            <CloseButton onClick={() => setIsUserModalOpen(false)}>
-              <X size={20} />
-            </CloseButton>
-          </ModalHeader>
-          {selectedUser && (
+    <RoleGuard requireSuperAdmin={true}>
+      <PageContainer>
+        <Header>
+          <HeaderContent>
             <div>
-              <UserInfo style={{ marginBottom: '1.5rem' }}>
-                <UserAvatar $bgColor={getStatusColor(selectedUser.status || 'active')}>
-                  {getInitials(selectedUser.displayName || selectedUser.email)}
-                </UserAvatar>
-                <UserDetails>
-                  <UserName style={{ fontSize: '1.2rem' }}>{selectedUser.displayName || 'مستخدم'}</UserName>
-                  <UserEmail style={{ fontSize: '1rem' }}>{selectedUser.email}</UserEmail>
-                </UserDetails>
-              </UserInfo>
-              <div style={{ display: 'grid', gap: '1rem' }}>
-                <div><strong>النوع:</strong> {selectedUser.profileType === 'dealer' ? 'معرض' : selectedUser.profileType === 'company' ? 'شركة' : 'خاص'}</div>
-                <div><strong>الحالة:</strong> {selectedUser.status === 'active' ? 'نشط' : selectedUser.status === 'suspended' ? 'معلق' : 'غير نشط'}</div>
-                <div><strong>المدينة:</strong> {selectedUser.locationData?.cityName || 'غير محدد'}</div>
-                <div><strong>رقم الهاتف:</strong> {selectedUser.phoneNumber || 'غير محدد'}</div>
-                <div><strong>تاريخ التسجيل:</strong> {selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleDateString('ar-EG') : '-'}</div>
-                <div><strong>البريد الإلكتروني متحقق:</strong> {selectedUser.emailVerified ? 'نعم' : 'لا'}</div>
-              </div>
-              <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-                <ActionButton onClick={() => setIsUserModalOpen(false)}>إغلاق</ActionButton>
-                <ActionButton $variant="primary" onClick={() => window.open(`/profile/${selectedUser.id}`, '_blank')}>
-                  <Eye size={16} />
-                  عرض الملف الشخصي
-                </ActionButton>
-              </div>
+              <HeaderTitle>
+                <Users size={32} />
+                إدارة المستخدمين المتقدمة
+              </HeaderTitle>
+              <HeaderSubtitle>
+                تحكم كامل في جميع المستخدمين والمشتركين والمدراء والمنشورات والسيارات
+              </HeaderSubtitle>
             </div>
-          )}
-        </ModalContent>
-      </Modal>
-    </PageContainer>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <ActionButton onClick={() => navigate('/super-admin')}>
+                <Activity size={16} />
+                العودة للوحة التحكم
+              </ActionButton>
+              <ActionButton $variant="success" onClick={loadData}>
+                <RefreshCw size={16} />
+                تحديث البيانات
+              </ActionButton>
+            </div>
+          </HeaderContent>
+        </Header>
+
+        <MainContent>
+          <StatsGrid>
+            <StatCard>
+              <StatIcon><Users size={24} /></StatIcon>
+              <StatValue>{stats.totalUsers}</StatValue>
+              <StatLabel>إجمالي المستخدمين</StatLabel>
+            </StatCard>
+            <StatCard>
+              <StatIcon><UserCheck size={24} /></StatIcon>
+              <StatValue>{stats.activeUsers}</StatValue>
+              <StatLabel>المستخدمين النشطين</StatLabel>
+            </StatCard>
+            <StatCard>
+              <StatIcon><Home size={24} /></StatIcon>
+              <StatValue>{stats.privateUsers}</StatValue>
+              <StatLabel>المستخدمين الخاصين</StatLabel>
+            </StatCard>
+            <StatCard>
+              <StatIcon><Building size={24} /></StatIcon>
+              <StatValue>{stats.dealerUsers}</StatValue>
+              <StatLabel>المعارض</StatLabel>
+            </StatCard>
+            <StatCard>
+              <StatIcon><Briefcase size={24} /></StatIcon>
+              <StatValue>{stats.companyUsers}</StatValue>
+              <StatLabel>الشركات</StatLabel>
+            </StatCard>
+            <StatCard>
+              <StatIcon><Award size={24} /></StatIcon>
+              <StatValue>{stats.verifiedUsers}</StatValue>
+              <StatLabel>المستخدمين المتحققين</StatLabel>
+            </StatCard>
+            <StatCard>
+              <StatIcon><Car size={24} /></StatIcon>
+              <StatValue>{stats.totalCars}</StatValue>
+              <StatLabel>إجمالي السيارات</StatLabel>
+            </StatCard>
+            <StatCard>
+              <StatIcon><MessageSquare size={24} /></StatIcon>
+              <StatValue>{stats.totalPosts}</StatValue>
+              <StatLabel>إجمالي المنشورات</StatLabel>
+            </StatCard>
+          </StatsGrid>
+
+          <FiltersSection>
+            <FiltersGrid>
+              <SearchInput
+                type="text"
+                placeholder="البحث بالاسم، البريد الإلكتروني، أو المدينة..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <FilterSelect value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                <option value="all">جميع الحالات</option>
+                <option value="active">نشط</option>
+                <option value="suspended">معلق</option>
+              </FilterSelect>
+              <FilterSelect value={profileTypeFilter} onChange={(e) => setProfileTypeFilter(e.target.value)}>
+                <option value="all">جميع الأنواع</option>
+                <option value="private">خاص</option>
+                <option value="dealer">معرض</option>
+                <option value="company">شركة</option>
+              </FilterSelect>
+              <ActionButton $variant="primary" onClick={loadData}>
+                <Search size={16} />
+                بحث
+              </ActionButton>
+            </FiltersGrid>
+          </FiltersSection>
+
+          <UsersTable>
+            {users.length === 0 ? (
+              <EmptyState>
+                <h3>لا توجد مستخدمين</h3>
+                <p>جرب تعديل معايير البحث</p>
+              </EmptyState>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <tr>
+                    <TableHeaderCell>المستخدم</TableHeaderCell>
+                    <TableHeaderCell>النوع</TableHeaderCell>
+                    <TableHeaderCell>الحالة</TableHeaderCell>
+                    <TableHeaderCell>الموقع</TableHeaderCell>
+                    <TableHeaderCell>تاريخ التسجيل</TableHeaderCell>
+                    <TableHeaderCell>الإجراءات</TableHeaderCell>
+                  </tr>
+                </TableHeader>
+                <tbody>
+                  {users.map((user: any) => (
+                    <TableRow key={user.id} $isActive={user.status === 'active'}>
+                      <TableCell>
+                        <UserInfo>
+                          <UserAvatar $bgColor={getStatusColor(user.status || 'active')}>
+                            {getInitials(user.displayName || user.email)}
+                          </UserAvatar>
+                          <UserDetails>
+                            <UserName>{user.displayName || 'مستخدم'}</UserName>
+                            <UserEmail>{user.email}</UserEmail>
+                          </UserDetails>
+                        </UserInfo>
+                      </TableCell>
+                      <TableCell>
+                        <ProfileTypeBadge $type={user.profileType || 'private'}>
+                          {getProfileTypeIcon(user.profileType || 'private')}
+                          {user.profileType === 'dealer' ? 'معرض' :
+                            user.profileType === 'company' ? 'شركة' : 'خاص'}
+                        </ProfileTypeBadge>
+                      </TableCell>
+                      <TableCell>
+                        <StatusBadge $status={user.status || 'active'}>
+                          {user.status === 'active' ? 'نشط' : user.status === 'suspended' ? 'معلق' : 'غير نشط'}
+                        </StatusBadge>
+                      </TableCell>
+                      <TableCell>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <MapPin size={14} />
+                          {user.locationData?.cityName || 'غير محدد'}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <Calendar size={14} />
+                          {user.createdAt ? new Date(user.createdAt).toLocaleDateString('ar-EG') : '-'}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <ActionButtons>
+                          <ActionButtonSmall $variant="primary" onClick={() => { setSelectedUser(user); setIsUserModalOpen(true); }}>
+                            <Eye size={12} />
+                            عرض
+                          </ActionButtonSmall>
+                          {user.status === 'active' ? (
+                            <ActionButtonSmall $variant="danger" onClick={() => handleUserAction(user.id, 'suspend')}>
+                              <Ban size={12} />
+                              تعليق
+                            </ActionButtonSmall>
+                          ) : (
+                            <ActionButtonSmall $variant="success" onClick={() => handleUserAction(user.id, 'activate')}>
+                              <CheckCircle size={12} />
+                              تفعيل
+                            </ActionButtonSmall>
+                          )}
+                          <ActionButtonSmall $variant="danger" onClick={() => handleUserAction(user.id, 'delete')}>
+                            <Trash2 size={12} />
+                            حذف
+                          </ActionButtonSmall>
+                        </ActionButtons>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </tbody>
+              </Table>
+            )}
+          </UsersTable>
+        </MainContent>
+
+        <Modal $isOpen={isUserModalOpen}>
+          <ModalContent>
+            <ModalHeader>
+              <ModalTitle>تفاصيل المستخدم</ModalTitle>
+              <CloseButton onClick={() => setIsUserModalOpen(false)}>
+                <X size={20} />
+              </CloseButton>
+            </ModalHeader>
+            {selectedUser && (
+              <div>
+                <UserInfo style={{ marginBottom: '1.5rem' }}>
+                  <UserAvatar $bgColor={getStatusColor(selectedUser.status || 'active')}>
+                    {getInitials(selectedUser.displayName || selectedUser.email)}
+                  </UserAvatar>
+                  <UserDetails>
+                    <UserName style={{ fontSize: '1.2rem' }}>{selectedUser.displayName || 'مستخدم'}</UserName>
+                    <UserEmail style={{ fontSize: '1rem' }}>{selectedUser.email}</UserEmail>
+                  </UserDetails>
+                </UserInfo>
+                <div style={{ display: 'grid', gap: '1rem' }}>
+                  <div><strong>النوع:</strong> {selectedUser.profileType === 'dealer' ? 'معرض' : selectedUser.profileType === 'company' ? 'شركة' : 'خاص'}</div>
+                  <div><strong>الحالة:</strong> {selectedUser.status === 'active' ? 'نشط' : selectedUser.status === 'suspended' ? 'معلق' : 'غير نشط'}</div>
+                  <div><strong>المدينة:</strong> {selectedUser.locationData?.cityName || 'غير محدد'}</div>
+                  <div><strong>رقم الهاتف:</strong> {selectedUser.phoneNumber || 'غير محدد'}</div>
+                  <div><strong>تاريخ التسجيل:</strong> {selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleDateString('ar-EG') : '-'}</div>
+                  <div><strong>البريد الإلكتروني متحقق:</strong> {selectedUser.emailVerified ? 'نعم' : 'لا'}</div>
+                </div>
+                <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+                  <ActionButton onClick={() => setIsUserModalOpen(false)}>إغلاق</ActionButton>
+                  <ActionButton $variant="primary" onClick={() => window.open(`/profile/${selectedUser.id}`, '_blank')}>
+                    <Eye size={16} />
+                    عرض الملف الشخصي
+                  </ActionButton>
+                </div>
+              </div>
+            )}
+          </ModalContent>
+        </Modal>
+      </PageContainer>
+    </RoleGuard >
   );
 };
 

@@ -58,7 +58,9 @@ import {
   MessageCircle,
   Megaphone,
   ArrowDown,
-  Plus
+  Plus,
+  Quote,
+  Edit3
 } from 'lucide-react';
 import * as S from './styles';
 import { TabNavigation, TabButton, TabNavLink, SyncButton, FollowButton } from './TabNavigation.styles';
@@ -749,8 +751,9 @@ const ProfilePage: React.FC = () => {
             <S.UserInfoBar>
 
               <S.UserInfoLeft>
+                {/* ✅ STRICT: Show personal name (firstName + lastName) */}
                 <S.UserName>
-                  {user.displayName || t('profile.anonymous')}
+                  {`${(user as any).firstName || ''} ${(user as any).lastName || ''}`.trim() || user.displayName || t('profile.anonymous')}
                   <VerificationBadge
                     type="email"
                     status={user?.email ? 'verified' : 'unverified'}
@@ -826,9 +829,9 @@ const ProfilePage: React.FC = () => {
             </S.UserInfoBar>
           )}
 
-          {/* NEW: Plan Bar */}
+          {/* NEW: Plan Bar with Profile Background Image */}
           {location.pathname.includes('/profile') && isOwnProfile && (
-            <S.PlanBar $themeColor={theme.colors.primary.main}>
+            <S.PlanBar $themeColor={theme.colors.primary.main} $profileType={profileType as 'private' | 'dealer' | 'company'}>
               <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                 <S.PlanInfoItem>
                   <span className="value" style={{ textTransform: 'capitalize', fontSize: '1rem' }}>
@@ -843,7 +846,7 @@ const ProfilePage: React.FC = () => {
 
                 <S.PlanInfoItem>
                   <span className="label">{language === 'bg' ? 'Статус:' : 'Status:'}</span>
-                  <span className="value" style={{ color: '#4CAF50' }}>{language === 'bg' ? 'Активен' : 'Active'}</span>
+                  <span className="value" style={{ color: '#90EE90' }}>{language === 'bg' ? 'Активен' : 'Active'}</span>
                 </S.PlanInfoItem>
               </div>
 
@@ -852,6 +855,53 @@ const ProfilePage: React.FC = () => {
                 {language === 'bg' ? 'Подобри' : 'Upgrade'}
               </S.PlanUpgradeButton>
             </S.PlanBar>
+          )}
+
+          {/* ✨ Bio Section - Professional LinkedIn-style */}
+          {user?.bio && (
+            <S.BioCard $profileType={profileType}>
+              <S.BioHeader>
+                <Quote size={20} />
+                <S.BioTitle>{language === 'bg' ? 'За мен' : 'About Me'}</S.BioTitle>
+              </S.BioHeader>
+              <S.BioContent>
+                <S.BioQuoteIcon>"</S.BioQuoteIcon>
+                <S.BioText>{user.bio}</S.BioText>
+                <S.BioQuoteIcon $end>"</S.BioQuoteIcon>
+              </S.BioContent>
+              {isOwnProfile && (
+                <S.BioEditHint>
+                  <Edit3 size={14} />
+                  <span>{language === 'bg' ? 'Редактирайте във' : 'Edit in'}</span>
+                  <a href="#" onClick={(e) => { e.preventDefault(); navigate(`/profile/${user.numericId}/settings`); }}>
+                    {language === 'bg' ? 'Настройки' : 'Settings'}
+                  </a>
+                </S.BioEditHint>
+              )}
+            </S.BioCard>
+          )}
+
+          {/* Empty Bio Prompt for own profile */}
+          {isOwnProfile && !user?.bio && (
+            <S.BioCard $profileType={profileType} style={{ opacity: 0.7 }}>
+              <S.BioHeader>
+                <Quote size={20} />
+                <S.BioTitle>{language === 'bg' ? 'За мен' : 'About Me'}</S.BioTitle>
+              </S.BioHeader>
+              <S.BioContent>
+                <S.BioText style={{ fontStyle: 'normal', color: 'var(--text-tertiary)' }}>
+                  {language === 'bg' 
+                    ? '✍️ Добавете кратко описание за себе си, за да изградите доверие с купувачите...'
+                    : '✍️ Add a short bio about yourself to build trust with buyers...'}
+                </S.BioText>
+              </S.BioContent>
+              <S.BioEditHint>
+                <Edit3 size={14} />
+                <a href="#" onClick={(e) => { e.preventDefault(); navigate(`/profile/${user.numericId}/settings`); }}>
+                  {language === 'bg' ? 'Добави биография' : 'Add Bio'}
+                </a>
+              </S.BioEditHint>
+            </S.BioCard>
           )}
 
           {/* Profile Grid (Modified for single column) */}

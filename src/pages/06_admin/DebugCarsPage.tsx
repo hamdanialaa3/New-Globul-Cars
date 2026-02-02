@@ -1,5 +1,11 @@
 // Debug Page - Check Cars in Firestore
 // صفحة فحص السيارات في قاعدة البيانات
+// SECURED: Only available in development environment
+
+import { Navigate } from 'react-router-dom';
+
+const IS_DEV = import.meta.env.MODE === 'development';
+
 
 import React, { useState, useEffect } from 'react';
 import { logger } from '../../services/logger-service';
@@ -118,6 +124,11 @@ interface DebugStats {
 }
 
 const DebugCarsPage: React.FC = () => {
+  // Security check: If in production, redirect to home
+  if (!IS_DEV) {
+    return <Navigate to="/" replace />;
+  }
+
   const [loading, setLoading] = useState(false);
   const [cars, setCars] = useState<CarDebugData[]>([]);
   const [stats, setStats] = useState<DebugStats | null>(null);

@@ -2,6 +2,9 @@ import { logger } from '../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { collection, getDocs, doc, updateDoc, deleteDoc, addDoc } from 'firebase/firestore';
+
+const IS_DEV = import.meta.env.MODE === 'development';
+
 import { db } from '../firebase/firebase-config';
 import { Database, Edit, Trash2, Plus, Save, X } from 'lucide-react';
 
@@ -132,6 +135,8 @@ interface DataItem {
 }
 
 const RealDataManager: React.FC = () => {
+  if (!IS_DEV) return null;
+
   const [activeTab, setActiveTab] = useState('users');
   const [data, setData] = useState<DataItem[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);

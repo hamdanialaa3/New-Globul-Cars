@@ -186,10 +186,27 @@ export class SuperAdminOperations {
    */
   static async getUserGrowthData(): Promise<UserGrowthData[]> {
     try {
-      // Implementation for user growth analysis
-      // This would typically query user creation dates
-      const growthData: UserGrowthData[] = [];
-      // Placeholder implementation
+      const usersRef = collection(db, SUPER_ADMIN_COLLECTIONS.USERS);
+      // Get all users to aggregate by creation date (optimization: in a real app, use a dedicated analytics collection)
+      const q = query(usersRef, orderBy('createdAt', 'desc'));
+      const snapshot = await getDocs(q);
+
+      const growthMap = new Map<string, number>();
+
+      snapshot.docs.forEach(doc => {
+        const data = doc.data();
+        if (data.createdAt) {
+          const date = data.createdAt.toDate();
+          const key = date.toISOString().split('T')[0].slice(0, 7); // YYYY-MM
+          growthMap.set(key, (growthMap.get(key) || 0) + 1);
+        }
+      });
+
+      const growthData: UserGrowthData[] = Array.from(growthMap.entries())
+        .map(([date, count]) => ({ date, count }))
+        .sort((a, b) => a.date.localeCompare(b.date))
+        .slice(-12); // Last 12 months
+
       return growthData;
     } catch (error) {
       serviceLogger.error('Error getting user growth data', error as Error);
@@ -203,9 +220,32 @@ export class SuperAdminOperations {
    */
   static async getCarListingsData(): Promise<CarListingsData[]> {
     try {
-      // Implementation for car listings analysis
-      const listingsData: CarListingsData[] = [];
-      // Placeholder implementation
+      // Fetch from all collections
+      const allCars = await queryAllCollections();
+
+      const listingsMap = new Map<string, number>();
+
+      allCars.forEach((doc: any) => {
+        // Handle object data structure
+        const data = typeof doc.data === 'function' ? doc.data() : doc;
+
+        if (data.createdAt) {
+          try {
+            // Handle both Firestore Timestamp and JS Date
+            const date = data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt);
+            const key = date.toISOString().split('T')[0].slice(0, 7); // YYYY-MM
+            listingsMap.set(key, (listingsMap.get(key) || 0) + 1);
+          } catch (e) {
+            // Ignore invalid dates
+          }
+        }
+      });
+
+      const listingsData: CarListingsData[] = Array.from(listingsMap.entries())
+        .map(([date, count]) => ({ date, count }))
+        .sort((a, b) => a.date.localeCompare(b.date))
+        .slice(-12); // Last 12 months
+
       return listingsData;
     } catch (error) {
       serviceLogger.error('Error getting car listings data', error as Error);
@@ -338,9 +378,11 @@ export class SuperAdminOperations {
       // Delete user data
       batch.delete(doc(db, SUPER_ADMIN_COLLECTIONS.USERS, userId));
 
-      // Delete user's cars (placeholder - needs queryAllCollections)
-      // const carsSnapshot = await getDocs(queryAllCollections(where('sellerId', '==', userId)));
-      // carsSnapshot.docs.forEach(doc => batch.delete(doc.ref));
+      // Delete user's cars
+      const userCars = await queryAllCollections(where('sellerId', '==', userId));
+      userCars.forEach((carDoc) => {
+          batch.delete(carDoc.ref);
+      });
 
       // Delete user's messages
       const messagesSnapshot = await getDocs(

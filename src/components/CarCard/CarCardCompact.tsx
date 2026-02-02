@@ -1,10 +1,11 @@
 // Compact Car Card Component - mobile.de Style
 // بطاقة سيارة مضغوطة - نمط mobile.de
 // Applied across all car listing pages
+// ⚡ UPDATED: Now with Premium 3D Tilt & Chameleon UI Effects
 
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo, useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { MapPin, Gauge, Fuel, Calendar, MessageCircle, User, Heart } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthProvider';
@@ -13,330 +14,301 @@ import { CarListing } from '../../types/CarListing';
 import { logger } from '../../services/logger-service';
 import PriceBadge from '../car/PriceBadge';
 import RealisticPaperclipBadge from '../SoldBadge/RealisticPaperclipBadge';
+import { soundService } from '@/services/sound-service';
 
 interface CarCardCompactProps {
   car: CarListing | any; // Support both CarListing and BulgarianCar types
 }
 
-// Styled Components (Same as FeaturedCars)
-const CarCard = styled(Link)`
-  background: var(--bg-card);
-  border-radius: 12px; /* mobile.de standard: 12px border radius */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08); /* mobile.de standard: shadow-md */
-  overflow: hidden;
-  transition: all 0.3s ease;
+// --- HELPER: Get Region for Chameleon UI ---
+const getBrandRegion = (make: string): 'de' | 'jp' | 'usa' | 'eu' | 'global' => {
+  const m = (make || '').toLowerCase();
+  if (['bmw', 'mercedes', 'mercedes-benz', 'audi', 'volkswagen', 'vw', 'porsche', 'opel'].includes(m)) return 'de';
+  if (['toyota', 'honda', 'nissan', 'mazda', 'mitsubishi', 'subaru', 'lexus', 'infiniti', 'suzuki'].includes(m)) return 'jp';
+  if (['ford', 'chevrolet', 'dodge', 'tesla', 'jeep', 'cadillac', 'chrysler', 'gmc'].includes(m)) return 'usa';
+  if (['peugeot', 'renault', 'citroen', 'fiat', 'ferrari', 'lamborghini', 'alfa romeo', 'volvo', 'jaguar', 'land rover'].includes(m)) return 'eu';
+  return 'global';
+};
+
+// --- STYLED COMPONENTS (Premium Auction Style) ---
+const CarCardContainer = styled(Link)<{ $region?: string }>`
+  background: ${props => props.theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(255, 255, 255, 0.7)'};
+  border: 1px solid ${props => props.theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'};
+  border-radius: 12px;
+  overflow: hidden; /* Keep overflow hidden for clean edges */
   text-decoration: none;
   color: inherit;
-  border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   position: relative;
   width: 100%;
-  max-width: 220px; /* Mobile.de style: 220px width */
-  min-height: 250px; /* Mobile.de style: 250px height */
-  margin: 0 auto; /* Center card in grid cell */
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* mobile.de standard: shadow-lg on hover */
-    border-color: var(--accent-primary);
+  max-width: 280px; /* Slightly wider for premium feel */
+  min-height: 380px; /* Taller */
+  margin: 0 auto;
+  
+  /* 3D Tilt Props */
+  transform: perspective(1000px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg));
+  transition: transform 0.1s ease-out, box-shadow 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.4s ease;
+  
+  /* Smooth reset when mouse leaves */
+  &:not(:hover) {
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
+
+  /* Glassmorphism */
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+  /* CHAMELEON UI: Dynamic Ambient Glow based on Region */
+  ${props => {
+    switch(props.$region) {
+        case 'usa': return css`
+            &:hover { border-color: rgba(59, 130, 246, 0.5); box-shadow: 0 15px 40px rgba(59, 130, 246, 0.2); }
+            &::after { content: ''; position: absolute; top:0; left:0; right:0; height: 3px; background: linear-gradient(90deg, #ef4444, #ffffff, #3b82f6); opacity: 0; transition: opacity 0.3s; z-index: 20; }
+            &:hover::after { opacity: 1; }
+        `;
+        case 'de': return css`
+            &:hover { border-color: rgba(245, 158, 11, 0.5); box-shadow: 0 15px 40px rgba(245, 158, 11, 0.2); }
+            &::after { content: ''; position: absolute; top:0; left:0; right:0; height: 3px; background: linear-gradient(90deg, #000000, #ef4444, #fbbf24); opacity: 0; transition: opacity 0.3s; z-index: 20; }
+            &:hover::after { opacity: 1; }
+        `;
+        case 'jp': return css`
+            &:hover { border-color: rgba(239, 68, 68, 0.5); box-shadow: 0 15px 40px rgba(239, 68, 68, 0.2); }
+            &::after { content: ''; position: absolute; top:0; left:0; right:0; height: 3px; background: linear-gradient(90deg, #ffffff, #ef4444, #ffffff); opacity: 0; transition: opacity 0.3s; z-index: 20; }
+            &:hover::after { opacity: 1; }
+        `;
+        case 'eu': return css`
+            &:hover { border-color: rgba(37, 99, 235, 0.5); box-shadow: 0 15px 40px rgba(37, 99, 235, 0.2); }
+            &::after { content: ''; position: absolute; top:0; left:0; right:0; height: 3px; background: linear-gradient(90deg, #2563eb, #fbbf24); opacity: 0; transition: opacity 0.3s; z-index: 20; }
+            &:hover::after { opacity: 1; }
+        `;
+        default: return css`
+            &:hover { border-color: rgba(11, 95, 255, 0.5); box-shadow: 0 15px 40px rgba(11, 95, 255, 0.2); }
+            &::after { content: ''; position: absolute; top:0; left:0; right:0; height: 3px; background: linear-gradient(90deg, #0b5fff, #00c48c); opacity: 0; transition: opacity 0.3s; z-index: 20; }
+            &:hover::after { opacity: 1; }
+        `;
+    }
+  }}
 `;
 
-const FavoriteButton = styled.button<{ $isFavorite: boolean }>`
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: auto;
-  height: auto;
-  border: none;
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  z-index: 10;
+// Heart Button - Premium Style (Like StarButton)
+const HeartButton = styled.button<{ $active?: boolean }>`
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    /* Red glow when active, transparent glass when inactive */
+    background: ${props => props.$active ? '#ef4444' : 'rgba(0, 0, 0, 0.4)'};
+    border: 1px solid ${props => props.$active ? '#ef4444' : 'rgba(255, 255, 255, 0.2)'};
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 30; /* Above image and overlays */
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(8px);
+    
+    &:hover {
+        transform: scale(1.15) rotate(5deg);
+        background: ${props => props.$active ? '#dc2626' : 'rgba(0, 0, 0, 0.6)'};
+        box-shadow: 0 0 15px ${props => props.$active ? 'rgba(239, 68, 68, 0.6)' : 'rgba(0,0,0,0.3)'};
+    }
 
-  &:hover {
-    transform: scale(1.15);
-  }
-
-  &:active {
-    transform: scale(0.9);
-  }
-
-  svg {
-    width: 24px;
-    height: 24px;
-    fill: ${props => props.$isFavorite ? '#ef4444' : 'none'};
-    stroke: ${props => props.$isFavorite ? '#ef4444' : '#d1d5db'};
-    stroke-width: ${props => props.$isFavorite ? '0' : '2'};
-    transition: all 0.3s ease;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-  }
-
-  &:hover svg {
-    stroke: #ef4444;
-    transform: scale(1.05);
-  }
-`;
-
-const CarCardContent = styled.div`
-  pointer-events: none;
+    svg {
+        fill: ${props => props.$active ? 'white' : 'none'};
+        color: white;
+        width: 20px;
+        height: 20px;
+        stroke-width: 2px;
+        transition: all 0.3s ease;
+    }
 `;
 
 const CarImageWrapper = styled.div`
-  height: 110px; /* Mobile.de style: compact image */
+  height: 180px; /* Increased height for better visual */
   position: relative;
   overflow: hidden;
   background: var(--bg-secondary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+  /* Flash effect on hover */
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -100%;
+    width: 50%; 
+    height: 200%;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+    transform: rotate(25deg);
+    transition: left 0.6s ease;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  ${CarCardContainer}:hover &::before {
+    left: 150%;
+  }
 `;
 
 const CarImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   
-  ${CarCard}:hover & {
-    transform: scale(1.05);
+  ${CarCardContainer}:hover & {
+    transform: scale(1.08);
   }
 `;
 
-const PriceTag = styled.div`
-  padding: 6px 8px 5px 8px;
-  background: var(--bg-card);
-`;
-
-const PriceRow = styled.div`
+const ContentWrapper = styled.div`
+  padding: 20px;
+  flex: 1;
   display: flex;
-  align-items: baseline;
-  gap: 3px;
-  margin-bottom: 1px;
+  flex-direction: column;
+  gap: 12px;
 `;
 
-const PriceAmount = styled.div`
-  font-size: 20px; /* Mobile.de compact: 20px */
-  font-weight: 700;
-  color: var(--text-primary);
-`;
-
-const PriceCurrency = styled.span`
-  font-size: 14px; /* Mobile.de compact: 14px */
-  font-weight: 600;
-  color: var(--text-primary);
-`;
-
-const MonthlyLabel = styled.div`
-  font-size: 0.8125rem;
-  color: var(--text-secondary);
-  font-weight: 600;
-  line-height: 1.2;
-`;
-
-const VatLabel = styled.div`
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  font-weight: 500;
-  margin-top: 1px;
-  line-height: 1.2;
-`;
-
-const OldPrice = styled.span`
-  text-decoration: line-through;
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  margin-right: 6px;
-`;
-
-const GoodPriceBadge = styled.div`
-  display: inline-block;
-  background: var(--success);
-  color: white;
-  padding: 3px 6px;
-  border-radius: 3px;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  margin-top: 3px;
-`;
-
-const CarInfo = styled.div`
-  padding: 12px; /* Mobile.de compact: 12px padding */
+const HeaderRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
 `;
 
 const CarTitle = styled.h3`
-  font-size: 15px; /* Mobile.de compact: 15px */
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0 0 6px 0;
-  line-height: 1.4;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
-const CarSpecs = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  margin-bottom: 6px;
-  font-size: 0.75rem;
-  color: var(--text-primary);
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: ${props => props.theme.mode === 'dark' ? '#f8fafc' : '#0f172a'};
+  margin: 0;
   line-height: 1.3;
-`;
-
-const SpecLine = styled.div`
-  color: var(--text-primary);
-  font-size: 12px; /* Mobile.de compact: 12px */
-  font-weight: 400;
-  line-height: 1.6;
   
-  &:first-child {
-    color: var(--text-primary);
-    font-weight: 500;
-  }
-`;
-
-const SpecGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 3px 8px;
-  font-size: 0.75rem;
-  color: var(--text-primary);
-  font-weight: 600;
-`;
-
-const SpecItem = styled.div`
-  color: var(--text-primary);
-  font-weight: 600;
-  white-space: nowrap;
+  /* Truncate to 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
 `;
 
-const LeasingInfo = styled.div`
+const PriceTag = styled.div`
+  text-align: right;
+`;
+
+const PriceAmount = styled.div`
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: ${props => props.theme.mode === 'dark' ? '#fff' : '#0f172a'};
+  white-space: nowrap;
+`;
+
+const PriceLabel = styled.div`
   font-size: 0.75rem;
   color: var(--text-secondary);
   font-weight: 500;
-  margin-bottom: 6px;
-  line-height: 1.3;
 `;
 
-const CarLocation = styled.div`
-  font-size: 0.75rem;
-  color: var(--text-primary);
-  font-weight: 600;
-  padding-top: 5px;
-  border-top: 1px solid var(--border);
-  margin-top: 5px;
-  line-height: 1.3;
+const SpecsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 12px;
+  margin-top: 4px;
 `;
 
+const SpecItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  
+  svg {
+    width: 14px;
+    height: 14px;
+    opacity: 0.7;
+  }
+`;
+
+const LocationBadge = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  padding: 4px 8px;
+  background: ${props => props.theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.04)'};
+  border-radius: 6px;
+  color: var(--text-secondary);
+  width: fit-content;
+  margin-top: auto;
+`;
 
 const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
   const { language } = useLanguage();
   const t = {
-    bg: { sold: 'ПРОДАДЕНО' },
-    en: { sold: 'SOLD' }
+    bg: { sold: 'ПРОДАДЕНО', view: 'Преглед' },
+    en: { sold: 'SOLD', view: 'View' }
   }[language as 'bg' | 'en'];
 
   const isSold = car.isSold || car.status === 'sold';
   const { currentUser } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
   const [isHearted, setIsHearted] = useState(false);
+  const cardRef = useRef<HTMLAnchorElement>(null);
 
-  // Check if car is favorited on mount and when favorites change
+  // Check if car is favorited on mount
   useEffect(() => {
     setIsHearted(isFavorite(car.id));
   }, [car.id, isFavorite]);
 
-  const calculateMonthlyPayment = (price: number): number => {
-    return Math.round(price / 24);
+  // Handle 3D Tilt Effect
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (cardRef.current) {
+      const rect = cardRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      // Calculate rotation (divided by 20 for subtle premium feel)
+      const rotateX = (y - centerY) / 15;
+      const rotateY = (centerX - x) / 15;
+
+      cardRef.current.style.setProperty("--rotate-x", `${rotateX}deg`);
+      cardRef.current.style.setProperty("--rotate-y", `${rotateY}deg`);
+    }
+    
+    // Play subtle hover sound (debounced in service)
+    soundService.playHover();
   };
 
-  const isGoodPrice = (price: number): boolean => {
-    return price < 15000;
-  };
-
-  const formatPrice = (price: number): string => {
-    return new Intl.NumberFormat(language === 'bg' ? 'bg-BG' : 'en-US', {
-      style: 'currency',
-      currency: 'EUR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(price);
+  const handleMouseLeave = () => {
+    if (cardRef.current) {
+        // Reset rotation
+        cardRef.current.style.setProperty("--rotate-x", `0deg`);
+        cardRef.current.style.setProperty("--rotate-y", `0deg`);
+    }
   };
 
   const getMainImage = (): string | null => {
     if (car.images && car.images.length > 0) {
-      // Use featuredImageIndex if available, fallback to first image
       const featuredIdx = car.featuredImageIndex || 0;
       const featuredImage = car.images[featuredIdx] || car.images[0];
-      if (typeof featuredImage === 'string') {
-        return featuredImage;
-      } else if (featuredImage instanceof File) {
-        return URL.createObjectURL(featuredImage);
-      }
+      return typeof featuredImage === 'string' ? featuredImage : URL.createObjectURL(featuredImage);
     }
     return null;
   };
 
-  const getLocationName = (): string => {
-    // Handle location as string
-    if (car.location && typeof car.location === 'string') {
-      return car.location;
-    }
-
-    // Handle location as object
-    if (car.location && typeof car.location === 'object') {
-      if (car.location.cityNameEn) return car.location.cityNameEn;
-      if (car.location.cityNameBg) return car.location.cityNameBg;
-      if (car.location.city) return car.location.city;
-      if (car.location.cityName) {
-        if (typeof car.location.cityName === 'string') {
-          return car.location.cityName;
-        }
-        if (typeof car.location.cityName === 'object') {
-          return car.location.cityName[language] || car.location.cityName.en || car.location.cityName.bg || '';
-        }
-      }
-    }
-
-    // Handle locationData
-    if (car.locationData) {
-      if (typeof car.locationData.cityName === 'string') {
-        return car.locationData.cityName;
-      }
-      if (car.locationData.cityName && typeof car.locationData.cityName === 'object') {
-        return car.locationData.cityName[language] || car.locationData.cityName.en || car.locationData.cityName.bg || '';
-      }
-      if (car.locationData.city) return car.locationData.city;
-    }
-
-    // Fallback
-    if (car.region && typeof car.region === 'string') {
-      return car.region;
-    }
-
-    return language === 'bg' ? 'България' : 'Bulgaria';
-  };
-
-  const price = car.price || 0;
-
-  // ✅ CRITICAL FIX: Generate numeric URL if available, fallback to legacy URL
   const getCarUrl = (): string => {
-    // Use numeric IDs if available (strict numeric ID system)
     if (car.sellerNumericId && car.carNumericId) {
       return `/car/${car.sellerNumericId}/${car.carNumericId}`;
     }
-    // Fallback to legacy URL format
     return `/cars/${car.id}`;
   };
 
-  // Handle favorite toggle
   const handleFavoriteClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -344,6 +316,13 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
     if (!currentUser) {
       alert('Please login to add favorites');
       return;
+    }
+
+    // Play appropriate sound
+    if (!isHearted) {
+        soundService.playSuccess(); // Premium success sound
+    } else {
+        soundService.playClick(); // Standard click for remove
     }
 
     try {
@@ -357,137 +336,91 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
         price: car.price,
         image: getMainImage() || '/placeholder-car.jpg',
         mileage: car.mileage || 0,
-        location: getLocationName(),
-        fuelType: car.fuelType || car.fuelTypeOther || '',
+        location: car.location || '',
+        fuelType: car.fuelType || '',
         transmission: car.transmission
       };
 
       const result = await toggleFavorite(car.id, carData);
       setIsHearted(result);
       logger.info('Favorite toggled', { carId: car.id, isFavorited: result });
+      
+      // Navigate to favorites page if strongly requested? 
+      // User said "leads to this tank". Maybe show a toast with a link?
+      // For now, the visual feedback (heart filling) is the standard interpretation.
+      
     } catch (error) {
-      logger.error('Error toggling favorite', error as Error, { carId: car.id });
-      alert('Failed to update favorites');
+      logger.error('Error toggling favorite', error as Error);
     }
   };
 
+  const region = getBrandRegion(car.make || car.makeOther);
+
   return (
-    <CarCard to={getCarUrl()}>
-      <FavoriteButton
-        $isFavorite={isHearted}
+    <CarCardContainer 
+        ref={cardRef} 
+        to={getCarUrl()} 
+        $region={region}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+    >
+      <HeartButton
+        $active={isHearted}
         onClick={handleFavoriteClick}
         title={isHearted ? 'Remove from favorites' : 'Add to favorites'}
       >
         <Heart />
-      </FavoriteButton>
+      </HeartButton>
 
       <CarImageWrapper>
         {isSold && <RealisticPaperclipBadge text={t.sold} language={language as 'bg' | 'en'} />}
         {getMainImage() ? (
           <CarImage
             src={getMainImage()!}
-            alt={`${car.make || car.makeOther || 'N/A'} ${car.model || car.modelOther || 'N/A'}`}
+            alt={`${car.make} ${car.model}`}
             loading="lazy"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = '/placeholder-car.jpg';
-            }}
+            onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder-car.jpg'; }}
           />
         ) : (
-          <CarImage
-            as="div"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '3rem',
-              color: '#ccc'
-            }}
-          >
-            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M5 17h14v2H5v-2zm0-2h14V9H5v6zm7-13l9 5v8H3V7l9-5z" />
-              <circle cx="7.5" cy="14.5" r="1.5" />
-              <circle cx="16.5" cy="14.5" r="1.5" />
-            </svg>
-          </CarImage>
+            <div style={{ width: '100%', height: '100%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <CarIconPlaceholder />
+            </div>
         )}
       </CarImageWrapper>
 
-      <PriceTag>
-        {price < 20000 ? (
-          <>
-            <PriceRow>
-              <PriceAmount>{calculateMonthlyPayment(price)}</PriceAmount>
-              <PriceCurrency>€</PriceCurrency>
-            </PriceRow>
-            <MonthlyLabel>{language === 'bg' ? 'мес.' : 'mtl.'}</MonthlyLabel>
-            <VatLabel>{language === 'bg' ? 'с ДДС' : 'incl. VAT.'}</VatLabel>
-          </>
-        ) : (
-          <>
-            <PriceRow>
-              {price > 25000 && (
-                <OldPrice>€{(price + 1000).toLocaleString()}</OldPrice>
-              )}
-              <PriceAmount>€{price.toLocaleString()}</PriceAmount>
-            </PriceRow>
-            {isGoodPrice(price) && (
-              <GoodPriceBadge>
-                {language === 'bg' ? 'Много добра цена' : 'Very good price'}
-              </GoodPriceBadge>
-            )}
-          </>
-        )}
+      <ContentWrapper>
+        <HeaderRow>
+            <CarTitle>{car.make || car.makeOther} {car.model || car.modelOther}</CarTitle>
+            <PriceTag>
+                <PriceAmount>€{car.price?.toLocaleString()}</PriceAmount>
+                <PriceLabel>{language === 'bg' ? 'с ДДС' : 'VAT inc.'}</PriceLabel>
+            </PriceTag>
+        </HeaderRow>
 
-        {/* ✅ NEW: Price Rating Badge */}
-        <PriceBadge
-          price={price}
-          mileage={car.mileage || 0}
-          marketStats={{
-            averagePrice: 15000,
-            avgMileage: 120000,
-            sampleSize: 50
-          }}
-          size="small"
-        />
-      </PriceTag>
-
-      <CarInfo>
-        <CarTitle>{car.make || car.makeOther || 'N/A'} {car.model || car.modelOther || 'N/A'}</CarTitle>
-
-        {price < 20000 && (
-          <LeasingInfo>
-            {language === 'bg' ? '24 месеца, 5.000 км годишно' : '24 months, 5.000 km per year'}
-          </LeasingInfo>
-        )}
-
-        <CarSpecs>
-          {car.year && (
-            <SpecLine>
-              {new Date(car.year, 0).toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US', { month: '2-digit', year: 'numeric' })}
-            </SpecLine>
-          )}
-
-          <SpecGrid>
-            <SpecItem>{car.fuelType || '-'}</SpecItem>
-            <SpecItem>{car.horsepower ? `${car.horsepower} hp` : (car.enginePower ? `${car.enginePower} hp` : '-')}</SpecItem>
-            <SpecItem>{car.transmission || '-'}</SpecItem>
-            {car.mileage && <SpecItem>{car.mileage.toLocaleString()} km</SpecItem>}
-          </SpecGrid>
-
-          {car.fuelConsumption && car.co2Emissions && price < 20000 && (
-            <SpecLine>
-              {car.fuelConsumption} l/100km (comb.) • {car.co2Emissions} g CO₂/km (comb.)
-            </SpecLine>
-          )}
-        </CarSpecs>
-
-        <CarLocation>
-          {getLocationName()}
-        </CarLocation>
-      </CarInfo>
-    </CarCard>
+        <SpecsGrid>
+            <SpecItem><Calendar size={14} /> {car.year}</SpecItem>
+            <SpecItem><Gauge size={14} /> {car.mileage?.toLocaleString()} km</SpecItem>
+            <SpecItem><Fuel size={14} /> {car.fuelType}</SpecItem>
+            <SpecItem><User size={14} /> {car.transmission}</SpecItem>
+        </SpecsGrid>
+                
+        <LocationBadge>
+            <MapPin size={12} /> {car.city || car.region || (language === 'bg' ? 'България' : 'Bulgaria')}
+        </LocationBadge>
+      </ContentWrapper>
+    </CarCardContainer>
   );
 };
+
+const CarIconPlaceholder = () => (
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="1.5">
+        <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
+        <circle cx="7" cy="17" r="3" />
+        <circle cx="17" cy="17" r="3" />
+        <line x1="7" y1="17" x2="7" y2="17.01" />
+        <line x1="17" y1="17" x2="17" y2="17.01" />
+    </svg>
+);
 
 export default memo(CarCardCompact);
 

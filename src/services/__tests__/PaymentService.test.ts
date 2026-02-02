@@ -5,6 +5,8 @@ describe('PaymentService', () => {
     let paymentService: PaymentService;
 
     beforeEach(() => {
+        // Mock Stripe public key environment variable
+        process.env.REACT_APP_STRIPE_PUBLIC_KEY = 'pk_test_mock_stripe_key_for_testing';
         paymentService = PaymentService.getInstance();
     });
 

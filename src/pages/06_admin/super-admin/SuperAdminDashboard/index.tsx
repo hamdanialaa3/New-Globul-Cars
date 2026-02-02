@@ -15,6 +15,7 @@ import { carsReportService } from '../../../../services/reports/cars-report-serv
 import { Download, FileSpreadsheet, FileJson, Users, Flame, Database, Image, Zap, Globe, BarChart2, Cpu, Settings, DollarSign, FileText, Key, Activity, Layers, Server } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import GlobulCarLogo from '../../../../components/icons/GlobulCarLogo';
+import { RoleGuard } from '../../../../components/guards/RoleGuard';
 
 // Import components
 import AdminHeader from '../../../../components/SuperAdmin/AdminHeader';
@@ -388,495 +389,497 @@ const SuperAdminDashboard: React.FC = () => {
   }
 
   return (
-    <DashboardContainer>
-      <AdminHeader session={session} onLogout={handleLogout} />
+    <RoleGuard requireSuperAdmin={true}>
+      <DashboardContainer>
+        <AdminHeader session={session} onLogout={handleLogout} />
 
-      {/* Quick Links Navigation - All Project Pages (moved to top, below header) */}
-      <QuickLinksNavigation />
+        {/* Quick Links Navigation - All Project Pages (moved to top, below header) */}
+        <QuickLinksNavigation />
 
-      <AdminNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+        <AdminNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
-      {/* Tab Content appears directly after navigation */}
-      <TabContent>
-        {activeTab === 'overview' && (
-          <>
-            <AdminOverview
-              analytics={analytics}
-              userActivity={userActivity}
-              onUserClick={handleUserClick}
-            />
-            {isOwnerAuthed && (
-              <>
-                <LiveCounters stats={marketStats} onAction={handleGodModeAction} />
-                <RealTimeAlertsPanel />
-                <FirebaseConnectionTest />
-              </>
-            )}
-          </>
-        )}
+        {/* Tab Content appears directly after navigation */}
+        <TabContent>
+          {activeTab === 'overview' && (
+            <>
+              <AdminOverview
+                analytics={analytics}
+                userActivity={userActivity}
+                onUserClick={handleUserClick}
+              />
+              {isOwnerAuthed && (
+                <>
+                  <LiveCounters stats={marketStats} onAction={handleGodModeAction} />
+                  <RealTimeAlertsPanel />
+                  <FirebaseConnectionTest />
+                </>
+              )}
+            </>
+          )}
 
-        {/* GOD MODE OVERLAYS */}
-        {godMode.active && godMode.type === 'users' && (
-          <GodModeUserGrid onClose={() => setGodMode({ active: false, type: null })} />
-        )}
-        {godMode.active && godMode.type === 'cars' && (
-          <GodModeCarGrid onClose={() => setGodMode({ active: false, type: null })} />
-        )}
-        {godMode.active && godMode.type === 'messages' && (
-          <GodModeMessagesGrid onClose={() => setGodMode({ active: false, type: null })} />
-        )}
-        {godMode.active && godMode.type === 'revenue' && (
-          <GodModeRevenueGrid onClose={() => setGodMode({ active: false, type: null })} />
-        )}
-        {godMode.active && godMode.type === 'views' && (
-          <GodModeViewsGrid onClose={() => setGodMode({ active: false, type: null })} />
-        )}
+          {/* GOD MODE OVERLAYS */}
+          {godMode.active && godMode.type === 'users' && (
+            <GodModeUserGrid onClose={() => setGodMode({ active: false, type: null })} />
+          )}
+          {godMode.active && godMode.type === 'cars' && (
+            <GodModeCarGrid onClose={() => setGodMode({ active: false, type: null })} />
+          )}
+          {godMode.active && godMode.type === 'messages' && (
+            <GodModeMessagesGrid onClose={() => setGodMode({ active: false, type: null })} />
+          )}
+          {godMode.active && godMode.type === 'revenue' && (
+            <GodModeRevenueGrid onClose={() => setGodMode({ active: false, type: null })} />
+          )}
+          {godMode.active && godMode.type === 'views' && (
+            <GodModeViewsGrid onClose={() => setGodMode({ active: false, type: null })} />
+          )}
 
-        {activeTab === 'realdata' && (
-          <RealDataDisplay />
-        )}
+          {activeTab === 'realdata' && (
+            <RealDataDisplay />
+          )}
 
-        {activeTab === 'charts' && (
-          <AdvancedCharts />
-        )}
+          {activeTab === 'charts' && (
+            <AdvancedCharts />
+          )}
 
-        {activeTab === 'data' && (
-          <RealDataManager />
-        )}
+          {activeTab === 'data' && (
+            <RealDataManager />
+          )}
 
-        {activeTab === 'analytics' && (
-          <>
-            <VisitorAnalyticsPanel />
-            <AdvancedAnalytics analytics={analytics} />
-          </>
-        )}
+          {activeTab === 'analytics' && (
+            <>
+              <VisitorAnalyticsPanel />
+              <AdvancedAnalytics analytics={analytics} />
+            </>
+          )}
 
-        {activeTab === 'notifications' && (
-          <NotificationsManagement />
-        )}
+          {activeTab === 'notifications' && (
+            <NotificationsManagement />
+          )}
 
-        {activeTab === 'users' && (
-          <div style={{ textAlign: 'center', padding: '2rem', background: '#ffffff', border: '1px solid #e0e0e0', borderRadius: '4px' }}>
-            <h2 style={{ color: '#1a1a1a', marginBottom: '1rem', fontSize: '18px', fontWeight: '600' }}>User Management</h2>
-            <p style={{ color: '#666666', marginBottom: '2rem', fontSize: '14px' }}>Complete control over all users, subscribers, and administrators</p>
-            <ActionButton
-              onClick={() => navigate('/super-admin/users')}
-              style={{
-                background: '#1a1a1a',
-                color: '#ffffff',
-                padding: '10px 20px',
-                fontSize: '14px',
-                fontWeight: '500',
-                border: '1px solid #d0d0d0',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
-            >
-              <Users size={16} />
-              Open User Management
-            </ActionButton>
-          </div>
-        )}
+          {activeTab === 'users' && (
+            <div style={{ textAlign: 'center', padding: '2rem', background: '#ffffff', border: '1px solid #e0e0e0', borderRadius: '4px' }}>
+              <h2 style={{ color: '#1a1a1a', marginBottom: '1rem', fontSize: '18px', fontWeight: '600' }}>User Management</h2>
+              <p style={{ color: '#666666', marginBottom: '2rem', fontSize: '14px' }}>Complete control over all users, subscribers, and administrators</p>
+              <ActionButton
+                onClick={() => navigate('/super-admin/users')}
+                style={{
+                  background: '#1a1a1a',
+                  color: '#ffffff',
+                  padding: '10px 20px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  border: '1px solid #d0d0d0',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                <Users size={16} />
+                Open User Management
+              </ActionButton>
+            </div>
+          )}
 
-        {activeTab === 'permissions' && (
-          <PermissionManagement />
-        )}
+          {activeTab === 'permissions' && (
+            <PermissionManagement />
+          )}
 
-        {activeTab === 'audit' && (
-          <AuditLogging />
-        )}
+          {activeTab === 'audit' && (
+            <AuditLogging />
+          )}
 
-        {activeTab === 'content' && (
-          <AdvancedContentManagement />
-        )}
+          {activeTab === 'content' && (
+            <AdvancedContentManagement />
+          )}
 
-        {activeTab === 'project' && (
-          <ProjectInfoPanel />
-        )}
+          {activeTab === 'project' && (
+            <ProjectInfoPanel />
+          )}
 
-        {activeTab === 'architecture' && (
-          <ArchitecturePanel language={language} />
-        )}
+          {activeTab === 'architecture' && (
+            <ArchitecturePanel language={language} />
+          )}
 
-        {activeTab === 'facebook' && (
-          <FacebookAdminPanel language="bg" />
-        )}
+          {activeTab === 'facebook' && (
+            <FacebookAdminPanel language="bg" />
+          )}
 
-        {activeTab === 'ai' && (
-          <AIDashboard />
-        )}
-      </TabContent>
+          {activeTab === 'ai' && (
+            <AIDashboard />
+          )}
+        </TabContent>
 
-      {/* User Details Modal */}
-      <UserDetailsModal
-        isOpen={isUserModalOpen}
-        onClose={handleCloseUserModal}
-        userId={selectedUser?.uid || ''}
-        userData={selectedUser}
-      />
+        {/* User Details Modal */}
+        <UserDetailsModal
+          isOpen={isUserModalOpen}
+          onClose={handleCloseUserModal}
+          userId={selectedUser?.uid || ''}
+          userData={selectedUser}
+        />
 
-      {/* Super Admin Footer - Owner Only */}
-      <SuperAdminFooter>
-        {/* Firebase Quick Links Section */}
-        <FirebaseLinksSection>
-          <SectionTitle><Flame size={18} /> روابط Firebase السريعة</SectionTitle>
-          <LinksGrid>
-            <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data', '_blank')}>
-              <LinkIcon><Database size={20} /></LinkIcon>
-              <LinkName>Firestore Database</LinkName>
-              <LinkDesc>عرض وإدارة البيانات</LinkDesc>
-            </LinkCard>
+        {/* Super Admin Footer - Owner Only */}
+        <SuperAdminFooter>
+          {/* Firebase Quick Links Section */}
+          <FirebaseLinksSection>
+            <SectionTitle><Flame size={18} /> روابط Firebase السريعة</SectionTitle>
+            <LinksGrid>
+              <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data', '_blank')}>
+                <LinkIcon><Database size={20} /></LinkIcon>
+                <LinkName>Firestore Database</LinkName>
+                <LinkDesc>عرض وإدارة البيانات</LinkDesc>
+              </LinkCard>
 
-            <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/storage', '_blank')}>
-              <LinkIcon><Image size={20} /></LinkIcon>
-              <LinkName>Storage</LinkName>
-              <LinkDesc>الصور والملفات</LinkDesc>
-            </LinkCard>
+              <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/storage', '_blank')}>
+                <LinkIcon><Image size={20} /></LinkIcon>
+                <LinkName>Storage</LinkName>
+                <LinkDesc>الصور والملفات</LinkDesc>
+              </LinkCard>
 
-            <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/authentication/users', '_blank')}>
-              <LinkIcon><Users size={20} /></LinkIcon>
-              <LinkName>Authentication</LinkName>
-              <LinkDesc>المستخدمين المسجلين</LinkDesc>
-            </LinkCard>
+              <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/authentication/users', '_blank')}>
+                <LinkIcon><Users size={20} /></LinkIcon>
+                <LinkName>Authentication</LinkName>
+                <LinkDesc>المستخدمين المسجلين</LinkDesc>
+              </LinkCard>
 
-            <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/functions', '_blank')}>
-              <LinkIcon><Zap size={20} /></LinkIcon>
-              <LinkName>Cloud Functions</LinkName>
-              <LinkDesc>الوظائف السحابية</LinkDesc>
-            </LinkCard>
+              <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/functions', '_blank')}>
+                <LinkIcon><Zap size={20} /></LinkIcon>
+                <LinkName>Cloud Functions</LinkName>
+                <LinkDesc>الوظائف السحابية</LinkDesc>
+              </LinkCard>
 
-            <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/hosting', '_blank')}>
-              <LinkIcon><Globe size={20} /></LinkIcon>
-              <LinkName>Hosting</LinkName>
-              <LinkDesc>استضافة الموقع</LinkDesc>
-            </LinkCard>
+              <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/hosting', '_blank')}>
+                <LinkIcon><Globe size={20} /></LinkIcon>
+                <LinkName>Hosting</LinkName>
+                <LinkDesc>استضافة الموقع</LinkDesc>
+              </LinkCard>
 
-            <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/analytics', '_blank')}>
-              <LinkIcon><BarChart2 size={20} /></LinkIcon>
-              <LinkName>Analytics</LinkName>
-              <LinkDesc>إحصائيات الاستخدام</LinkDesc>
-            </LinkCard>
-          </LinksGrid>
-        </FirebaseLinksSection>
+              <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/analytics', '_blank')}>
+                <LinkIcon><BarChart2 size={20} /></LinkIcon>
+                <LinkName>Analytics</LinkName>
+                <LinkDesc>إحصائيات الاستخدام</LinkDesc>
+              </LinkCard>
+            </LinksGrid>
+          </FirebaseLinksSection>
 
-        {/* AI Management Section */}
-        <AIManagementSection>
-          <SectionTitle><Cpu size={18} /> إدارة الذكاء الاصطناعي</SectionTitle>
-          <LinksGrid>
-            <LinkCard onClick={() => navigate('/ai-dashboard')}>
-              <LinkIcon><BarChart2 size={20} /></LinkIcon>
-              <LinkName>AI Dashboard</LinkName>
-              <LinkDesc>لوحة تحكم الذكاء الاصطناعي</LinkDesc>
-            </LinkCard>
+          {/* AI Management Section */}
+          <AIManagementSection>
+            <SectionTitle><Cpu size={18} /> إدارة الذكاء الاصطناعي</SectionTitle>
+            <LinksGrid>
+              <LinkCard onClick={() => navigate('/ai-dashboard')}>
+                <LinkIcon><BarChart2 size={20} /></LinkIcon>
+                <LinkName>AI Dashboard</LinkName>
+                <LinkDesc>لوحة تحكم الذكاء الاصطناعي</LinkDesc>
+              </LinkCard>
 
-            <LinkCard onClick={() => navigate('/admin/ai-quotas')}>
-              <LinkIcon><Settings size={20} /></LinkIcon>
-              <LinkName>AI Quotas Manager</LinkName>
-              <LinkDesc>إدارة حصص المستخدمين</LinkDesc>
-            </LinkCard>
+              <LinkCard onClick={() => navigate('/admin/ai-quotas')}>
+                <LinkIcon><Settings size={20} /></LinkIcon>
+                <LinkName>AI Quotas Manager</LinkName>
+                <LinkDesc>إدارة حصص المستخدمين</LinkDesc>
+              </LinkCard>
 
-            <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_quotas', '_blank')}>
-              <LinkIcon><DollarSign size={20} /></LinkIcon>
-              <LinkName>AI Quotas</LinkName>
-              <LinkDesc>حصص المستخدمين</LinkDesc>
-            </LinkCard>
+              <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_quotas', '_blank')}>
+                <LinkIcon><DollarSign size={20} /></LinkIcon>
+                <LinkName>AI Quotas</LinkName>
+                <LinkDesc>حصص المستخدمين</LinkDesc>
+              </LinkCard>
 
-            <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_usage_logs', '_blank')}>
-              <LinkIcon><FileText size={20} /></LinkIcon>
-              <LinkName>Usage Logs</LinkName>
-              <LinkDesc>سجل الاستخدام</LinkDesc>
-            </LinkCard>
+              <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_usage_logs', '_blank')}>
+                <LinkIcon><FileText size={20} /></LinkIcon>
+                <LinkName>Usage Logs</LinkName>
+                <LinkDesc>سجل الاستخدام</LinkDesc>
+              </LinkCard>
 
-            <LinkCard onClick={() => window.open('https://makersuite.google.com/app/apikey', '_blank')}>
-              <LinkIcon><Key size={20} /></LinkIcon>
-              <LinkName>Gemini API Keys</LinkName>
-              <LinkDesc>مفاتيح API</LinkDesc>
-            </LinkCard>
+              <LinkCard onClick={() => window.open('https://makersuite.google.com/app/apikey', '_blank')}>
+                <LinkIcon><Key size={20} /></LinkIcon>
+                <LinkName>Gemini API Keys</LinkName>
+                <LinkDesc>مفاتيح API</LinkDesc>
+              </LinkCard>
 
-            <LinkCard onClick={() => window.open('https://console.cloud.google.com/apis/api/generativelanguage.googleapis.com', '_blank')}>
-              <LinkIcon><Settings size={20} /></LinkIcon>
-              <LinkName>API Settings</LinkName>
-              <LinkDesc>إعدادات API</LinkDesc>
-            </LinkCard>
+              <LinkCard onClick={() => window.open('https://console.cloud.google.com/apis/api/generativelanguage.googleapis.com', '_blank')}>
+                <LinkIcon><Settings size={20} /></LinkIcon>
+                <LinkName>API Settings</LinkName>
+                <LinkDesc>إعدادات API</LinkDesc>
+              </LinkCard>
 
-            <LinkCard onClick={() => window.open('https://console.cloud.google.com/billing', '_blank')}>
-              <LinkIcon><DollarSign size={20} /></LinkIcon>
-              <LinkName>Billing</LinkName>
-              <LinkDesc>الفوترة والتكاليف</LinkDesc>
-            </LinkCard>
-          </LinksGrid>
-        </AIManagementSection>
+              <LinkCard onClick={() => window.open('https://console.cloud.google.com/billing', '_blank')}>
+                <LinkIcon><DollarSign size={20} /></LinkIcon>
+                <LinkName>Billing</LinkName>
+                <LinkDesc>الفوترة والتكاليف</LinkDesc>
+              </LinkCard>
+            </LinksGrid>
+          </AIManagementSection>
 
-        {/* IoT Management Section */}
-        <IoTManagementSection>
-          <SectionTitle><Globe size={18} /> إدارة إنترنت الأشياء (IoT)</SectionTitle>
-          <LinksGrid>
-            <LinkCard onClick={() => navigate('/iot-dashboard')}>
-              <LinkIcon><Activity size={20} /></LinkIcon>
-              <LinkName>IoT Dashboard</LinkName>
-              <LinkDesc>لوحة تحكم أجهزة IoT</LinkDesc>
-            </LinkCard>
+          {/* IoT Management Section */}
+          <IoTManagementSection>
+            <SectionTitle><Globe size={18} /> إدارة إنترنت الأشياء (IoT)</SectionTitle>
+            <LinksGrid>
+              <LinkCard onClick={() => navigate('/iot-dashboard')}>
+                <LinkIcon><Activity size={20} /></LinkIcon>
+                <LinkName>IoT Dashboard</LinkName>
+                <LinkDesc>لوحة تحكم أجهزة IoT</LinkDesc>
+              </LinkCard>
 
-            <LinkCard onClick={() => navigate('/car-tracking')}>
-              <LinkIcon><Globe size={20} /></LinkIcon>
-              <LinkName>Car Tracking</LinkName>
-              <LinkDesc>تتبع السيارات المباشر</LinkDesc>
-            </LinkCard>
+              <LinkCard onClick={() => navigate('/car-tracking')}>
+                <LinkIcon><Globe size={20} /></LinkIcon>
+                <LinkName>Car Tracking</LinkName>
+                <LinkDesc>تتبع السيارات المباشر</LinkDesc>
+              </LinkCard>
 
-            <LinkCard onClick={() => navigate('/iot-analytics')}>
-              <LinkIcon><BarChart2 size={20} /></LinkIcon>
-              <LinkName>IoT Analytics</LinkName>
-              <LinkDesc>تحليلات بيانات IoT</LinkDesc>
-            </LinkCard>
+              <LinkCard onClick={() => navigate('/iot-analytics')}>
+                <LinkIcon><BarChart2 size={20} /></LinkIcon>
+                <LinkName>IoT Analytics</LinkName>
+                <LinkDesc>تحليلات بيانات IoT</LinkDesc>
+              </LinkCard>
 
-            <LinkCard onClick={() => window.open('https://700633997329-ggu6enoq.us-east-1.console.aws.amazon.com/iot/home?region=us-east-1#/connectdevice', '_blank')}>
-              <LinkIcon><Zap size={20} /></LinkIcon>
-              <LinkName>AWS IoT Console</LinkName>
-              <LinkDesc>وحدة تحكم AWS IoT</LinkDesc>
-            </LinkCard>
+              <LinkCard onClick={() => window.open('https://700633997329-ggu6enoq.us-east-1.console.aws.amazon.com/iot/home?region=us-east-1#/connectdevice', '_blank')}>
+                <LinkIcon><Zap size={20} /></LinkIcon>
+                <LinkName>AWS IoT Console</LinkName>
+                <LinkDesc>وحدة تحكم AWS IoT</LinkDesc>
+              </LinkCard>
 
-            <LinkCard onClick={() => window.open('https://700633997329-ggu6enoq.us-east-1.console.aws.amazon.com/dynamodb/home?region=us-east-1#tables:', '_blank')}>
-              <LinkIcon><Database size={20} /></LinkIcon>
-              <LinkName>DynamoDB Tables</LinkName>
-              <LinkDesc>جداول بيانات IoT</LinkDesc>
-            </LinkCard>
+              <LinkCard onClick={() => window.open('https://700633997329-ggu6enoq.us-east-1.console.aws.amazon.com/dynamodb/home?region=us-east-1#tables:', '_blank')}>
+                <LinkIcon><Database size={20} /></LinkIcon>
+                <LinkName>DynamoDB Tables</LinkName>
+                <LinkDesc>جداول بيانات IoT</LinkDesc>
+              </LinkCard>
 
-            <LinkCard onClick={() => window.open('https://700633997329-ggu6enoq.us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1', '_blank')}>
-              <LinkIcon><Activity size={20} /></LinkIcon>
-              <LinkName>CloudWatch</LinkName>
-              <LinkDesc>مراقبة الأداء</LinkDesc>
-            </LinkCard>
+              <LinkCard onClick={() => window.open('https://700633997329-ggu6enoq.us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1', '_blank')}>
+                <LinkIcon><Activity size={20} /></LinkIcon>
+                <LinkName>CloudWatch</LinkName>
+                <LinkDesc>مراقبة الأداء</LinkDesc>
+              </LinkCard>
 
-            <LinkCard onClick={() => navigate('/admin/integration-status')}>
-              <LinkIcon><Layers size={20} /></LinkIcon>
-              <LinkName>Integration Status</LinkName>
-              <LinkDesc>حالة تكامل الخدمات السحابية</LinkDesc>
-            </LinkCard>
+              <LinkCard onClick={() => navigate('/admin/integration-status')}>
+                <LinkIcon><Layers size={20} /></LinkIcon>
+                <LinkName>Integration Status</LinkName>
+                <LinkDesc>حالة تكامل الخدمات السحابية</LinkDesc>
+              </LinkCard>
 
-            <LinkCard onClick={() => navigate('/admin/setup')}>
-              <LinkIcon><Settings size={20} /></LinkIcon>
-              <LinkName>Quick Setup</LinkName>
-              <LinkDesc>إعداد سريع للخدمات</LinkDesc>
-            </LinkCard>
-          </LinksGrid>
-        </IoTManagementSection>
+              <LinkCard onClick={() => navigate('/admin/setup')}>
+                <LinkIcon><Settings size={20} /></LinkIcon>
+                <LinkName>Quick Setup</LinkName>
+                <LinkDesc>إعداد سريع للخدمات</LinkDesc>
+              </LinkCard>
+            </LinksGrid>
+          </IoTManagementSection>
 
-        {/* Reports Export Section */}
-        <ReportsSection>
-          <ReportsTitle>📊 تصدير التقارير</ReportsTitle>
-          <ReportsGrid>
-            {/* تقرير جميع المستخدمين */}
-            <ReportCard>
-              <ReportIcon>👥</ReportIcon>
-              <ReportName>جميع المستخدمين</ReportName>
-              <ReportButtons>
-                <ExportBtn onClick={async () => {
-                  const users = await usersReportService.getAllUsers();
-                  const csv = await usersReportService.exportToCSV(users);
-                  usersReportService.downloadReport(csv, 'all-users', 'csv');
-                }}>
-                  <FileSpreadsheet size={16} />
-                  CSV
-                </ExportBtn>
-                <ExportBtn onClick={async () => {
-                  const users = await usersReportService.getAllUsers();
-                  const excel = await usersReportService.exportToExcel(users);
-                  usersReportService.downloadReport(excel, 'all-users', 'xls');
-                }}>
-                  <FileSpreadsheet size={16} />
-                  Excel
-                </ExportBtn>
-                <ExportBtn onClick={async () => {
-                  const users = await usersReportService.getAllUsers();
-                  const json = await usersReportService.exportToJSON(users);
-                  usersReportService.downloadReport(json, 'all-users', 'json');
-                }}>
-                  <FileJson size={16} />
-                  JSON
-                </ExportBtn>
-              </ReportButtons>
-            </ReportCard>
+          {/* Reports Export Section */}
+          <ReportsSection>
+            <ReportsTitle>📊 تصدير التقارير</ReportsTitle>
+            <ReportsGrid>
+              {/* تقرير جميع المستخدمين */}
+              <ReportCard>
+                <ReportIcon>👥</ReportIcon>
+                <ReportName>جميع المستخدمين</ReportName>
+                <ReportButtons>
+                  <ExportBtn onClick={async () => {
+                    const users = await usersReportService.getAllUsers();
+                    const csv = await usersReportService.exportToCSV(users);
+                    usersReportService.downloadReport(csv, 'all-users', 'csv');
+                  }}>
+                    <FileSpreadsheet size={16} />
+                    CSV
+                  </ExportBtn>
+                  <ExportBtn onClick={async () => {
+                    const users = await usersReportService.getAllUsers();
+                    const excel = await usersReportService.exportToExcel(users);
+                    usersReportService.downloadReport(excel, 'all-users', 'xls');
+                  }}>
+                    <FileSpreadsheet size={16} />
+                    Excel
+                  </ExportBtn>
+                  <ExportBtn onClick={async () => {
+                    const users = await usersReportService.getAllUsers();
+                    const json = await usersReportService.exportToJSON(users);
+                    usersReportService.downloadReport(json, 'all-users', 'json');
+                  }}>
+                    <FileJson size={16} />
+                    JSON
+                  </ExportBtn>
+                </ReportButtons>
+              </ReportCard>
 
-            {/* تقرير المعارض */}
-            <ReportCard>
-              <ReportIcon>🏢</ReportIcon>
-              <ReportName>المعارض</ReportName>
-              <ReportButtons>
-                <ExportBtn onClick={async () => {
-                  const dealers = await usersReportService.getAllUsers({ profileType: 'dealer' });
-                  const csv = await usersReportService.exportToCSV(dealers);
-                  usersReportService.downloadReport(csv, 'dealers', 'csv');
-                }}>
-                  <FileSpreadsheet size={16} />
-                  CSV
-                </ExportBtn>
-                <ExportBtn onClick={async () => {
-                  const dealers = await usersReportService.getAllUsers({ profileType: 'dealer' });
-                  const excel = await usersReportService.exportToExcel(dealers);
-                  usersReportService.downloadReport(excel, 'dealers', 'xls');
-                }}>
-                  <FileSpreadsheet size={16} />
-                  Excel
-                </ExportBtn>
-              </ReportButtons>
-            </ReportCard>
+              {/* تقرير المعارض */}
+              <ReportCard>
+                <ReportIcon>🏢</ReportIcon>
+                <ReportName>المعارض</ReportName>
+                <ReportButtons>
+                  <ExportBtn onClick={async () => {
+                    const dealers = await usersReportService.getAllUsers({ profileType: 'dealer' });
+                    const csv = await usersReportService.exportToCSV(dealers);
+                    usersReportService.downloadReport(csv, 'dealers', 'csv');
+                  }}>
+                    <FileSpreadsheet size={16} />
+                    CSV
+                  </ExportBtn>
+                  <ExportBtn onClick={async () => {
+                    const dealers = await usersReportService.getAllUsers({ profileType: 'dealer' });
+                    const excel = await usersReportService.exportToExcel(dealers);
+                    usersReportService.downloadReport(excel, 'dealers', 'xls');
+                  }}>
+                    <FileSpreadsheet size={16} />
+                    Excel
+                  </ExportBtn>
+                </ReportButtons>
+              </ReportCard>
 
-            {/* تقرير جميع السيارات */}
-            <ReportCard>
-              <ReportIcon>
-                <GlobulCarLogo size={32} />
-              </ReportIcon>
-              <ReportName>جميع السيارات</ReportName>
-              <ReportButtons>
-                <ExportBtn onClick={async () => {
-                  const cars = await carsReportService.getAllCars();
-                  const csv = await carsReportService.exportToCSV(cars);
-                  carsReportService.downloadReport(csv, 'all-cars', 'csv');
-                }}>
-                  <FileSpreadsheet size={16} />
-                  CSV
-                </ExportBtn>
-                <ExportBtn onClick={async () => {
-                  const cars = await carsReportService.getAllCars();
-                  const excel = await carsReportService.exportToExcel(cars);
-                  carsReportService.downloadReport(excel, 'all-cars', 'xls');
-                }}>
-                  <FileSpreadsheet size={16} />
-                  Excel
-                </ExportBtn>
-                <ExportBtn onClick={async () => {
-                  const cars = await carsReportService.getAllCars();
-                  const json = await carsReportService.exportToJSON(cars);
-                  carsReportService.downloadReport(json, 'all-cars', 'json');
-                }}>
-                  <FileJson size={16} />
-                  JSON
-                </ExportBtn>
-              </ReportButtons>
-            </ReportCard>
+              {/* تقرير جميع السيارات */}
+              <ReportCard>
+                <ReportIcon>
+                  <GlobulCarLogo size={32} />
+                </ReportIcon>
+                <ReportName>جميع السيارات</ReportName>
+                <ReportButtons>
+                  <ExportBtn onClick={async () => {
+                    const cars = await carsReportService.getAllCars();
+                    const csv = await carsReportService.exportToCSV(cars);
+                    carsReportService.downloadReport(csv, 'all-cars', 'csv');
+                  }}>
+                    <FileSpreadsheet size={16} />
+                    CSV
+                  </ExportBtn>
+                  <ExportBtn onClick={async () => {
+                    const cars = await carsReportService.getAllCars();
+                    const excel = await carsReportService.exportToExcel(cars);
+                    carsReportService.downloadReport(excel, 'all-cars', 'xls');
+                  }}>
+                    <FileSpreadsheet size={16} />
+                    Excel
+                  </ExportBtn>
+                  <ExportBtn onClick={async () => {
+                    const cars = await carsReportService.getAllCars();
+                    const json = await carsReportService.exportToJSON(cars);
+                    carsReportService.downloadReport(json, 'all-cars', 'json');
+                  }}>
+                    <FileJson size={16} />
+                    JSON
+                  </ExportBtn>
+                </ReportButtons>
+              </ReportCard>
 
-            {/* تقرير سيارات صوفيا */}
-            <ReportCard>
-              <ReportIcon>🏙️</ReportIcon>
-              <ReportName>سيارات صوفيا</ReportName>
-              <ReportButtons>
-                <ExportBtn onClick={async () => {
-                  const cars = await carsReportService.getAllCars({ city: 'София' });
-                  const csv = await carsReportService.exportToCSV(cars);
-                  carsReportService.downloadReport(csv, 'sofia-cars', 'csv');
-                }}>
-                  <FileSpreadsheet size={16} />
-                  CSV
-                </ExportBtn>
-                <ExportBtn onClick={async () => {
-                  const cars = await carsReportService.getAllCars({ city: 'София' });
-                  const excel = await carsReportService.exportToExcel(cars);
-                  carsReportService.downloadReport(excel, 'sofia-cars', 'xls');
-                }}>
-                  <FileSpreadsheet size={16} />
-                  Excel
-                </ExportBtn>
-              </ReportButtons>
-            </ReportCard>
+              {/* تقرير سيارات صوفيا */}
+              <ReportCard>
+                <ReportIcon>🏙️</ReportIcon>
+                <ReportName>سيارات صوفيا</ReportName>
+                <ReportButtons>
+                  <ExportBtn onClick={async () => {
+                    const cars = await carsReportService.getAllCars({ city: 'София' });
+                    const csv = await carsReportService.exportToCSV(cars);
+                    carsReportService.downloadReport(csv, 'sofia-cars', 'csv');
+                  }}>
+                    <FileSpreadsheet size={16} />
+                    CSV
+                  </ExportBtn>
+                  <ExportBtn onClick={async () => {
+                    const cars = await carsReportService.getAllCars({ city: 'София' });
+                    const excel = await carsReportService.exportToExcel(cars);
+                    carsReportService.downloadReport(excel, 'sofia-cars', 'xls');
+                  }}>
+                    <FileSpreadsheet size={16} />
+                    Excel
+                  </ExportBtn>
+                </ReportButtons>
+              </ReportCard>
 
-            {/* تقرير السيارات النشطة */}
-            <ReportCard>
-              <ReportIcon>✅</ReportIcon>
-              <ReportName>السيارات النشطة</ReportName>
-              <ReportButtons>
-                <ExportBtn onClick={async () => {
-                  const cars = await carsReportService.getAllCars({ status: 'active' });
-                  const csv = await carsReportService.exportToCSV(cars);
-                  carsReportService.downloadReport(csv, 'active-cars', 'csv');
-                }}>
-                  <FileSpreadsheet size={16} />
-                  CSV
-                </ExportBtn>
-                <ExportBtn onClick={async () => {
-                  const cars = await carsReportService.getAllCars({ status: 'active' });
-                  const excel = await carsReportService.exportToExcel(cars);
-                  carsReportService.downloadReport(excel, 'active-cars', 'xls');
-                }}>
-                  <FileSpreadsheet size={16} />
-                  Excel
-                </ExportBtn>
-              </ReportButtons>
-            </ReportCard>
+              {/* تقرير السيارات النشطة */}
+              <ReportCard>
+                <ReportIcon>✅</ReportIcon>
+                <ReportName>السيارات النشطة</ReportName>
+                <ReportButtons>
+                  <ExportBtn onClick={async () => {
+                    const cars = await carsReportService.getAllCars({ status: 'active' });
+                    const csv = await carsReportService.exportToCSV(cars);
+                    carsReportService.downloadReport(csv, 'active-cars', 'csv');
+                  }}>
+                    <FileSpreadsheet size={16} />
+                    CSV
+                  </ExportBtn>
+                  <ExportBtn onClick={async () => {
+                    const cars = await carsReportService.getAllCars({ status: 'active' });
+                    const excel = await carsReportService.exportToExcel(cars);
+                    carsReportService.downloadReport(excel, 'active-cars', 'xls');
+                  }}>
+                    <FileSpreadsheet size={16} />
+                    Excel
+                  </ExportBtn>
+                </ReportButtons>
+              </ReportCard>
 
-            {/* تقرير المستخدمين المتحققين */}
-            <ReportCard>
-              <ReportIcon>✓</ReportIcon>
-              <ReportName>المستخدمين المتحققين</ReportName>
-              <ReportButtons>
-                <ExportBtn onClick={async () => {
-                  const users = await usersReportService.getAllUsers({ verifiedOnly: true });
-                  const csv = await usersReportService.exportToCSV(users);
-                  usersReportService.downloadReport(csv, 'verified-users', 'csv');
-                }}>
-                  <FileSpreadsheet size={16} />
-                  CSV
-                </ExportBtn>
-                <ExportBtn onClick={async () => {
-                  const users = await usersReportService.getAllUsers({ verifiedOnly: true });
-                  const excel = await usersReportService.exportToExcel(users);
-                  usersReportService.downloadReport(excel, 'verified-users', 'xls');
-                }}>
-                  <FileSpreadsheet size={16} />
-                  Excel
-                </ExportBtn>
-              </ReportButtons>
-            </ReportCard>
+              {/* تقرير المستخدمين المتحققين */}
+              <ReportCard>
+                <ReportIcon>✓</ReportIcon>
+                <ReportName>المستخدمين المتحققين</ReportName>
+                <ReportButtons>
+                  <ExportBtn onClick={async () => {
+                    const users = await usersReportService.getAllUsers({ verifiedOnly: true });
+                    const csv = await usersReportService.exportToCSV(users);
+                    usersReportService.downloadReport(csv, 'verified-users', 'csv');
+                  }}>
+                    <FileSpreadsheet size={16} />
+                    CSV
+                  </ExportBtn>
+                  <ExportBtn onClick={async () => {
+                    const users = await usersReportService.getAllUsers({ verifiedOnly: true });
+                    const excel = await usersReportService.exportToExcel(users);
+                    usersReportService.downloadReport(excel, 'verified-users', 'xls');
+                  }}>
+                    <FileSpreadsheet size={16} />
+                    Excel
+                  </ExportBtn>
+                </ReportButtons>
+              </ReportCard>
 
-            {/* تقرير حصص AI */}
-            <ReportCard>
-              <ReportIcon>🤖</ReportIcon>
-              <ReportName>حصص الذكاء الاصطناعي</ReportName>
-              <ReportButtons>
-                <ExportBtn onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_quotas', '_blank')}>
-                  <FileSpreadsheet size={16} />
-                  View
-                </ExportBtn>
-              </ReportButtons>
-            </ReportCard>
+              {/* تقرير حصص AI */}
+              <ReportCard>
+                <ReportIcon>🤖</ReportIcon>
+                <ReportName>حصص الذكاء الاصطناعي</ReportName>
+                <ReportButtons>
+                  <ExportBtn onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_quotas', '_blank')}>
+                    <FileSpreadsheet size={16} />
+                    View
+                  </ExportBtn>
+                </ReportButtons>
+              </ReportCard>
 
-            {/* تقرير استخدام AI */}
-            <ReportCard>
-              <ReportIcon>📊</ReportIcon>
-              <ReportName>سجل استخدام AI</ReportName>
-              <ReportButtons>
-                <ExportBtn onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_usage_logs', '_blank')}>
-                  <FileSpreadsheet size={16} />
-                  View
-                </ExportBtn>
-              </ReportButtons>
-            </ReportCard>
-          </ReportsGrid>
-        </ReportsSection>
+              {/* تقرير استخدام AI */}
+              <ReportCard>
+                <ReportIcon>📊</ReportIcon>
+                <ReportName>سجل استخدام AI</ReportName>
+                <ReportButtons>
+                  <ExportBtn onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_usage_logs', '_blank')}>
+                    <FileSpreadsheet size={16} />
+                    View
+                  </ExportBtn>
+                </ReportButtons>
+              </ReportCard>
+            </ReportsGrid>
+          </ReportsSection>
 
-        <FooterStatsGrid>
-          <FooterStat>
-            <StatLabel>إجمالي الزيارات</StatLabel>
-            <StatValue>{analytics?.totalViews ?? 0}</StatValue>
-          </FooterStat>
-          <FooterStat>
-            <StatLabel>عدد المستخدمين</StatLabel>
-            <StatValue>{analytics?.totalUsers ?? 0}</StatValue>
-          </FooterStat>
-          <FooterStat>
-            <StatLabel>عدد السيارات</StatLabel>
-            <StatValue>{analytics?.totalCars ?? 0}</StatValue>
-          </FooterStat>
-          <FooterStat>
-            <StatLabel>آخر تحديث</StatLabel>
-            <StatValue>{analytics?.lastUpdated ? new Date(analytics.lastUpdated).toLocaleString('ar-EG') : '-'}</StatValue>
-          </FooterStat>
-        </FooterStatsGrid>
-        <FooterNote>هذه المعلومات خاصة بالمالك (Super Admin) ولا تظهر للمستخدمين العاديين.</FooterNote>
-      </SuperAdminFooter>
-    </DashboardContainer >
+          <FooterStatsGrid>
+            <FooterStat>
+              <StatLabel>إجمالي الزيارات</StatLabel>
+              <StatValue>{analytics?.totalViews ?? 0}</StatValue>
+            </FooterStat>
+            <FooterStat>
+              <StatLabel>عدد المستخدمين</StatLabel>
+              <StatValue>{analytics?.totalUsers ?? 0}</StatValue>
+            </FooterStat>
+            <FooterStat>
+              <StatLabel>عدد السيارات</StatLabel>
+              <StatValue>{analytics?.totalCars ?? 0}</StatValue>
+            </FooterStat>
+            <FooterStat>
+              <StatLabel>آخر تحديث</StatLabel>
+              <StatValue>{analytics?.lastUpdated ? new Date(analytics.lastUpdated).toLocaleString('ar-EG') : '-'}</StatValue>
+            </FooterStat>
+          </FooterStatsGrid>
+          <FooterNote>هذه المعلومات خاصة بالمالك (Super Admin) ولا تظهر للمستخدمين العاديين.</FooterNote>
+        </SuperAdminFooter>
+      </DashboardContainer >
+    </RoleGuard>
   );
 };
 

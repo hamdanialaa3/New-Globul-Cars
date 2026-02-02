@@ -93,6 +93,20 @@ service cloud.firestore {
       allow update: if isOwner(userId) && (
         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['numericId', 'numericIdAssignedAt', 'updatedAt'])
       );
+      
+      // ✅ NEW: Allow updating followersCount/followingCount by others (for Follow feature)
+      // This is necessary because when User A follows User B:
+      // 1. User A updates their own 'followingCount' (allowed by isOwner)
+      // 2. User A updates User B's 'followersCount' (needs this rule)
+      // ⚡ FIX: Use get() with default 0 to handle cases where counters don't exist yet
+      allow update: if isAuthenticated() 
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['followersCount', 'followingCount', 'updatedAt'])
+        && (
+          (request.resource.data.followersCount == resource.data.get('followersCount', 0) + 1)
+          || (request.resource.data.followersCount == resource.data.get('followersCount', 0) - 1)
+          || (request.resource.data.followingCount == resource.data.get('followingCount', 0) + 1)
+          || (request.resource.data.followingCount == resource.data.get('followingCount', 0) - 1)
+        );
     }
     
     // Stripe Customers & Checkout Sessions (Explicit Rule)
@@ -213,16 +227,9 @@ service cloud.firestore {
     // ==================== FOLLOWS COLLECTION ====================
     // Follow System: User-to-User following relationships
     // Document ID format: {followerId}_{followingId}
-    // Security:
-    // - Read: If you're the follower or the one being followed
-    // - Create: If authenticated and not following yourself
-    // - Delete: Only if you're the follower (unfollow your own action)
     match /follows/{followId} {
-      // Allow reading if you're involved in the relationship
-      allow read: if isAuthenticated() && (
-        followId.matches('^' + request.auth.uid + '_.*') ||  // You're the follower
-        followId.matches('.*_' + request.auth.uid + '$')     // You're being followed
-      );
+      // ✅ Public Read: Allow anyone to see who follows whom (Social Network Standard)
+      allow read: if true;
 
       // Allow creating a follow if:
       // 1. Authenticated
@@ -549,8 +556,11 @@ service cloud.firestore {
     // Block relationships between users
     match /blocked_users/{blockId} {
       // blockId format: {blockerNumericId}_{blockedNumericId} or {blockerFirebaseId}_{blockedFirebaseId}
-      // 🔒 Privacy: Only blocker can read their block list
-      allow read: if isAuthenticated() && resource.data.blockerFirebaseId == request.auth.uid;
+      // 🔒 Privacy: Allow read if you are the blocker OR the blocked user (to know you are blocked)
+      allow read: if isAuthenticated() && (
+        resource.data.blockerFirebaseId == request.auth.uid || 
+        resource.data.blockedFirebaseId == request.auth.uid
+      );
 
       // Create: Only if you're the blocker (can't block on behalf of others)
       allow create: if isAuthenticated() 

@@ -7,6 +7,7 @@ import { useProfile } from './hooks/useProfile';
 import { useProfileType } from '../../../../contexts/ProfileTypeContext';
 import { useAuth } from '../../../../contexts/AuthProvider';
 import { AuthGuard } from '../../../../components/guards/AuthGuard';
+import { auth } from '../../../../firebase/firebase-config';
 import {
   UserCircle,
   Car,
@@ -27,7 +28,7 @@ import { TabNavigation, TabNavLink, SyncButton, FollowButton } from './TabNaviga
 import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar, ProfileImageUploader, BusinessGreenHeader } from '../../../../components/Profile';
 import { ProfileTypeSwitcher } from '../components/ProfileTypeSwitcher'; // Added Import
 import { googleProfileSyncService } from '../../../../services/google/google-profile-sync.service';
-import { followService } from '../../../../services/social/follow.service';
+import { followService } from '../../../../services/social/follow-service';
 import { logger } from '../../../../services/logger-service';
 import { profileStatsService } from '../../../../services/profile/profile-stats.service';
 import { ThemeProvider } from 'styled-components';
@@ -57,7 +58,7 @@ const ProfilePageWrapper: React.FC = () => {
 
   // 🔒 Get target user ID from URL route parameter
   // Handle both /profile/{userId} and /profile/view/{userId}
-  const RESERVED_ROUTES = ['settings', 'my-ads', 'campaigns', 'analytics', 'consultations', 'favorites', 'view'];
+  const RESERVED_ROUTES = ['settings', 'my-ads', 'campaigns', 'analytics', 'consultations', 'favorites', 'following', 'view'];
   const targetUserId = React.useMemo(() => {
     // Check if path is /profile/view/{userId}
     const viewMatch = location.pathname.match(/^\/profile\/view\/(\d+)/);
@@ -450,10 +451,10 @@ const ProfilePageWrapper: React.FC = () => {
     if (!viewer || !isOwnProfile) return;
     setSyncing(true);
     try {
-      const updated = await googleProfileSyncService.syncProfileData(viewer.uid);
-      if (updated) {
-        setUser(prev => prev ? { ...prev, ...updated } : null);
+      if (auth.currentUser) {
+        await googleProfileSyncService.syncGoogleProfile(auth.currentUser);
         await refresh();
+        toast.success(language === 'bg' ? 'Профилът е синхронизиран!' : 'Profile synced successfully!');
       }
     } catch (error) {
       logger.error('Sync error:', error as Error);
@@ -598,22 +599,19 @@ const ProfilePageWrapper: React.FC = () => {
     return null;
   }
 
-  // Handle follow/unfollow
+  // Handle follow status change - called by FollowButton
   const handleFollow = async () => {
     if (!viewer || !activeProfile || viewer.uid === activeProfile.uid) return;
-    setFollowLoading(true);
+    
     try {
-      if (isFollowing) {
-        await followService.unfollowUser(viewer.uid, activeProfile.uid);
-        setIsFollowing(false);
-      } else {
-        await followService.followUser(viewer.uid, activeProfile.uid);
-        setIsFollowing(true);
-      }
+      // Re-fetch follow status to sync UI
+      const status = await followService.isFollowing(viewer.uid, activeProfile.uid);
+      setIsFollowing(status);
+      
+      // Also refresh profile stats to show updated counters
+      refresh();
     } catch (error) {
-      logger.error('Follow error:', error as Error);
-    } finally {
-      setFollowLoading(false);
+      logger.error('Error handling follow change:', error as Error);
     }
   };
 
@@ -631,7 +629,7 @@ const ProfilePageWrapper: React.FC = () => {
   };
 
   return (
-    <ThemeProvider theme={PROFILE_THEMES[activeProfileType] || PROFILE_THEMES['private']}>
+    <ThemeProvider theme={(PROFILE_THEMES[activeProfileType] || PROFILE_THEMES['private']) as any}>
       <S.ProfilePageContainer
         $isBusinessMode={isBusinessMode}
         $profileType={(activeProfile?.profileType as any) ?? 'private'}
@@ -654,6 +652,10 @@ const ProfilePageWrapper: React.FC = () => {
                 <TabNavLink to={`${basePath}/favorites`} $themeColor={theme?.primary || '#FF8F10'}>
                   <Heart size={16} />
                   {language === 'bg' ? 'Любими' : 'Favorites'}
+                </TabNavLink>
+                <TabNavLink to={`${basePath}/following`} $themeColor={theme?.primary || '#FF8F10'}>
+                  <Users size={16} />
+                  {language === 'bg' ? 'Следвани' : 'Following'}
                 </TabNavLink>
               </>
             )}
@@ -679,17 +681,21 @@ const ProfilePageWrapper: React.FC = () => {
                   <MessageCircle size={18} />
                   {language === 'bg' ? 'Консултации' : 'Consultations'}
                 </TabNavLink>
+                <TabNavLink to={`${basePath}/following`} $themeColor={theme?.primary || '#FF8F10'}>
+                  <Users size={16} />
+                  {language === 'bg' ? 'Следвани' : 'Following'}
+                </TabNavLink>
               </>
             )}
           </TabNavigation>
 
           {/* Cover Image + Profile Picture - ONLY for own profile */}
           {/* For other users' profiles, PublicProfileView handles the cover/profile display */}
-          {isOwnProfile && !location.pathname.includes('/my-ads') && !location.pathname.includes('/campaigns') && !location.pathname.includes('/analytics') && !location.pathname.includes('/settings') && !location.pathname.includes('/consultations') ? (
+          {isOwnProfile && !location.pathname.includes('/my-ads') && !location.pathname.includes('/campaigns') && !location.pathname.includes('/analytics') && !location.pathname.includes('/settings') && !location.pathname.includes('/consultations') && !location.pathname.includes('/following') && !location.pathname.includes('/favorites') ? (
             <S.CoverAndProfileWrapper>
               {/* Cover Image */}
               <CoverImageUploader
-                currentImageUrl={typeof activeProfile.coverImage === 'string' ? activeProfile.coverImage : activeProfile.coverImage?.url}
+                currentImageUrl={activeProfile.coverImage || ''}
                 themeColor={theme?.primary || '#FF8F10'}
                 onUploadSuccess={(url) => {
                   setUser(prev => prev ? {
@@ -698,7 +704,7 @@ const ProfilePageWrapper: React.FC = () => {
                   } : null);
                 }}
                 onUploadError={(error) => {
-                  logger.error('Cover error', error as Error);
+                  logger.error('Cover error', error as any);
                 }}
               />
 
@@ -715,8 +721,8 @@ const ProfilePageWrapper: React.FC = () => {
                     refresh();
                   }}
                   onUploadError={(err) => {
-                    logger.error('Profile image upload error', err as Error);
-                    alert(language === 'bg' ? `Грешка при качване: ${err}` : `Upload error: ${err}`);
+                    logger.error('Profile image upload error', err as any);
+                    alert(language === 'bg' ? `Грешка при качване: ${String(err)}` : `Upload error: ${String(err)}`);
                   }}
                 />
               </S.CenteredProfileImageWrapper>
@@ -725,7 +731,7 @@ const ProfilePageWrapper: React.FC = () => {
 
           {/* ✅ Green Header Bar - Under Profile Image - Only for own profile */}
           {/* For other users' profiles, PublicProfileView handles the green header */}
-          {isOwnProfile && !location.pathname.includes('/my-ads') && !location.pathname.includes('/campaigns') && !location.pathname.includes('/analytics') && !location.pathname.includes('/settings') && !location.pathname.includes('/consultations') && (
+          {isOwnProfile && !location.pathname.includes('/my-ads') && !location.pathname.includes('/campaigns') && !location.pathname.includes('/analytics') && !location.pathname.includes('/settings') && !location.pathname.includes('/consultations') && !location.pathname.includes('/following') && !location.pathname.includes('/favorites') && (
             <BusinessGreenHeader
               user={activeProfile}
               viewer={viewer}

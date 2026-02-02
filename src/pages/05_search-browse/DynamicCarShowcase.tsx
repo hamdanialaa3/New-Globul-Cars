@@ -4,17 +4,20 @@
  * Supports: family, sport, vip, classic, city, brand, new, used, economy, all
  */
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import styled from 'styled-components';
-import { AlertTriangle, Search, ArrowUpDown } from 'lucide-react';
+import { AlertTriangle, Search, ArrowUpDown, Loader } from 'lucide-react';
+import { DocumentSnapshot } from 'firebase/firestore';
 import { PageType } from '../../types/showcase.types';
 import { CarListing } from '../../types/CarListing';
 import {
   fetchCarsForPageType,
+  fetchCarsForPageTypePaginated,
   getShowcaseConfig,
-  countCarsForPageType
+  countCarsForPageType,
+  PaginatedResult
 } from '../../services/queryBuilder.service';
 import { logger } from '../../services/logger-service';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -48,9 +51,13 @@ const DynamicCarShowcase: React.FC<DynamicCarShowcaseProps> = ({ pageType }) => 
   // State
   const [cars, setCars] = useState<CarListing[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [totalCount, setTotalCount] = useState(0);
   const [sortBy, setSortBy] = useState<SortOption>('date-desc');
+  const [hasMore, setHasMore] = useState(false);
+  const lastDocRef = useRef<DocumentSnapshot | null>(null);
+  const PAGE_SIZE = 20;
 
   // Get dynamic param based on page type
   const dynamicParam = pageType === 'city' ? cityName : pageType === 'brand' ? brandName : undefined;
@@ -141,12 +148,15 @@ const DynamicCarShowcase: React.FC<DynamicCarShowcaseProps> = ({ pageType }) => 
       try {
         setLoading(true);
         setError(null);
+        lastDocRef.current = null;
 
         logger.info('Fetching cars for showcase', { pageType, dynamicParam });
 
-        // Fetch cars
-        const fetchedCars = await fetchCarsForPageType(pageType, dynamicParam, 50);
-        setCars(fetchedCars);
+        // ✅ FIXED: Use paginated fetch
+        const result = await fetchCarsForPageTypePaginated(pageType, dynamicParam, PAGE_SIZE, null);
+        setCars(result.items);
+        setHasMore(result.hasMore);
+        lastDocRef.current = result.lastDoc;
 
         // Count total (optional - can be heavy)
         const count = await countCarsForPageType(pageType, dynamicParam);
@@ -154,8 +164,9 @@ const DynamicCarShowcase: React.FC<DynamicCarShowcaseProps> = ({ pageType }) => 
 
         logger.info('Cars fetched successfully', { 
           pageType, 
-          count: fetchedCars.length,
-          totalCount: count 
+          count: result.items.length,
+          totalCount: count,
+          hasMore: result.hasMore
         });
 
       } catch (err) {
@@ -171,6 +182,38 @@ const DynamicCarShowcase: React.FC<DynamicCarShowcaseProps> = ({ pageType }) => 
 
     loadCars();
   }, [pageType, dynamicParam]);
+
+  // ✅ NEW: Load more handler with cursor-based pagination
+  const handleLoadMore = useCallback(async () => {
+    if (loadingMore || !hasMore) return;
+
+    try {
+      setLoadingMore(true);
+      
+      const result = await fetchCarsForPageTypePaginated(
+        pageType, 
+        dynamicParam, 
+        PAGE_SIZE, 
+        lastDocRef.current
+      );
+      
+      setCars(prev => [...prev, ...result.items]);
+      setHasMore(result.hasMore);
+      lastDocRef.current = result.lastDoc;
+
+      logger.info('More cars loaded', {
+        pageType,
+        newItems: result.items.length,
+        totalLoaded: cars.length + result.items.length,
+        hasMore: result.hasMore
+      });
+
+    } catch (err) {
+      logger.error('Error loading more cars', err, { pageType, dynamicParam });
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [pageType, dynamicParam, loadingMore, hasMore, cars.length]);
 
   // Handle car click
   const handleCarClick = (car: CarListing) => {
@@ -301,14 +344,29 @@ const DynamicCarShowcase: React.FC<DynamicCarShowcaseProps> = ({ pageType }) => 
           ))}
         </CarsGrid>
 
-        {totalCount > 50 && (
+        {hasMore && (
           <LoadMoreSection>
-            <LoadMoreButton onClick={() => {
-              // TODO: Implement pagination
-              logger.info('Load more clicked - pagination not yet implemented');
-            }}>
-              {language === 'bg' ? 'Покажи повече' : 'Load More'}
+            <LoadMoreButton 
+              onClick={handleLoadMore}
+              disabled={loadingMore}
+            >
+              {loadingMore ? (
+                <>
+                  <Loader size={18} className="animate-spin" />
+                  {language === 'bg' ? 'Зареждане...' : 'Loading...'}
+                </>
+              ) : (
+                language === 'bg' ? 'Покажи повече' : 'Load More'
+              )}
             </LoadMoreButton>
+            {totalCount > 0 && (
+              <LoadMoreInfo>
+                {language === 'bg' 
+                  ? `Показани ${sortedCars.length} от ${totalCount} автомобили`
+                  : `Showing ${sortedCars.length} of ${totalCount} cars`
+                }
+              </LoadMoreInfo>
+            )}
           </LoadMoreSection>
         )}
       </Container>
@@ -491,11 +549,16 @@ const CarsGrid = styled.div`
 
 const LoadMoreSection = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
   margin-top: 24px;
 `;
 
 const LoadMoreButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 12px 36px;
   font-size: 14px;
   font-weight: 600;
@@ -507,14 +570,33 @@ const LoadMoreButton = styled.button`
   transition: all 0.2s ease;
   box-shadow: 0 3px 12px rgba(102, 126, 234, 0.35);
 
-  &:hover {
+  &:hover:not(:disabled) {
     transform: translateY(-1px);
     box-shadow: 0 4px 16px rgba(102, 126, 234, 0.5);
   }
 
-  &:active {
+  &:active:not(:disabled) {
     transform: translateY(0);
   }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+`;
+
+const LoadMoreInfo = styled.span`
+  font-size: 13px;
+  color: ${({ theme }) => theme.textSecondary || '#6b7280'};
 `;
 
 const EmptyState = styled.div`

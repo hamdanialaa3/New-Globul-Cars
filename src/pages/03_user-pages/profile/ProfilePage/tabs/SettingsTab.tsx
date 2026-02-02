@@ -1405,6 +1405,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
     displayName: user?.displayName || '',
+    publicDisplayName: (user as any)?.publicDisplayName || '', // NEW: Public display name based on profile type
     phoneNumber: settings.phone || user?.phoneNumber || '',
     email: settings.email || user?.email || '',
     city: user?.locationData?.cityName || user?.location?.city || '',
@@ -1429,6 +1430,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
       firstName: user?.firstName || '',
       lastName: user?.lastName || '',
       displayName: user?.displayName || `${user?.firstName || ''} ${user?.lastName || ''}`.trim(),
+      publicDisplayName: (user as any)?.publicDisplayName || '', // NEW: Public display name
       phoneNumber: settings.phone || user?.phoneNumber || '',
       email: settings.email || user?.email || '',
       city: user?.locationData?.cityName || user?.location?.city || '',
@@ -1490,6 +1492,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
         firstName: userInfo.firstName.trim(),
         lastName: userInfo.lastName.trim(),
         displayName: displayName,
+        publicDisplayName: userInfo.publicDisplayName.trim() || '', // NEW: Public display name
         phoneNumber: userInfo.phoneNumber.trim() || '',
         bio: userInfo.bio.trim() || '',
         // ✅ حفظ الموقع بالهيكل الصحيح
@@ -1644,6 +1647,38 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
         <FormTitle>
           {isBg ? 'Лична информация' : 'Personal Information'}
         </FormTitle>
+
+        {/* NEW: Public Display Name based on profile type */}
+        <SettingGroup>
+          <Label $required>
+            {user?.profileType === 'dealer' 
+              ? (isBg ? '🏪 Име на автокъща' : '🏪 Dealership Name')
+              : user?.profileType === 'company'
+              ? (isBg ? '🏢 Име на компания' : '🏢 Company Name')
+              : (isBg ? '👤 Публично име' : '👤 Public Display Name')
+            }
+          </Label>
+          <Input
+            type="text"
+            value={userInfo.publicDisplayName}
+            onChange={(e) => setUserInfo({ ...userInfo, publicDisplayName: e.target.value })}
+            placeholder={
+              user?.profileType === 'dealer'
+                ? (isBg ? 'Въведете името на автокъщата' : 'Enter dealership name')
+                : user?.profileType === 'company'
+                ? (isBg ? 'Въведете името на компанията' : 'Enter company name')
+                : (isBg ? 'Въведете публичното си име' : 'Enter your public display name')
+            }
+          />
+          <HelpText>
+            {user?.profileType === 'dealer'
+              ? (isBg ? 'Това е името, което ще виждат клиентите' : 'This is the name customers will see')
+              : user?.profileType === 'company'
+              ? (isBg ? 'Официалното име на вашата компания' : 'Your official company name')
+              : (isBg ? 'Името, което ще виждат другите потребители' : 'The name other users will see')
+            }
+          </HelpText>
+        </SettingGroup>
 
         {/* BUG FIX 1: Remove duplicate displayName field - use firstName + lastName only */}
         <FormRow>
