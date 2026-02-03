@@ -130,3 +130,72 @@ export interface RevenueData {
   bySource: { source: string; amount: number }[];
   currency: string;
 }
+
+/**
+ * User data type for analytics
+ * نوع بيانات المستخدم للتحليلات
+ */
+export interface UserData {
+  id: string;
+  email?: string;
+  displayName?: string;
+  createdAt?: Date | { toDate: () => Date };
+  country?: string;
+  city?: string;
+  [key: string]: unknown;
+}
+
+/**
+ * Car data type for analytics
+ * نوع بيانات السيارة للتحليلات
+ */
+export interface CarData {
+  id: string;
+  make?: string;
+  model?: string;
+  year?: number;
+  price?: number;
+  status?: string;
+  createdAt?: Date | { toDate: () => Date };
+  [key: string]: unknown;
+}
+
+/**
+ * Message data type for analytics
+ * نوع بيانات الرسالة للتحليلات
+ */
+export interface MessageData {
+  id: string;
+  senderId?: string;
+  receiverId?: string;
+  content?: string;
+  createdAt?: Date | { toDate: () => Date };
+  [key: string]: unknown;
+}
+
+/**
+ * View data type for analytics
+ * نوع بيانات المشاهدة للتحليلات
+ */
+export interface ViewData {
+  id: string;
+  userId?: string;
+  carId?: string;
+  path?: string;
+  timestamp?: Date | { toDate: () => Date };
+  [key: string]: unknown;
+}
+
+/**
+ * Activity data type for analytics
+ * نوع بيانات النشاط للتحليلات
+ */
+export interface ActivityData {
+  id: string;
+  userId?: string;
+  action?: string;
+  source?: string;
+  device?: string;
+  timestamp?: Date | { toDate: () => Date };
+  [key: string]: unknown;
+}
