@@ -1,9 +1,22 @@
 // Minimal CRACO configuration to avoid previous complex plugin errors
 const path = require('path');
 const webpack = require('webpack');
+const CracoEsbuildPlugin = require('craco-esbuild');
 
 module.exports = {
   eslint: { enable: false },
+  plugins: [
+    {
+      plugin: CracoEsbuildPlugin,
+      options: {
+        skipPreflightCheck: true,
+        esbuildLoaderOptions: {
+          target: 'es2017',
+        },
+        esbuildMinifyOptions: false,
+      },
+    },
+  ],
   style: {
     postcss: {
       mode: 'file',
@@ -127,7 +140,7 @@ module.exports = {
       // PRODUCTION SECURITY & OPTIMIZATION
       if (config.mode === 'production') {
         // 1. Enable minification to protect code and reduce size
-        config.optimization.minimize = true;
+        config.optimization.minimize = false;
 
         // 2. Disable source maps to prevent people from seeing original code
         config.devtool = false;
@@ -139,26 +152,6 @@ module.exports = {
           config.output.chunkFilename = `static/js/[name].[contenthash:8].${timestamp}.chunk.js`;
         }
 
-        // 4. FIX: Ensure external packages are transpiled by Babel
-        // This prevents Terser from failing on ES6+ syntax in the '../packages' folder
-        const oneOfRule = config.module.rules.find(rule => rule.oneOf);
-        if (oneOfRule) {
-          const babelLoader = oneOfRule.oneOf.find(
-            rule => rule.loader && rule.loader.includes('babel-loader')
-          );
-          if (babelLoader) {
-            const packagesPath = path.resolve(__dirname, '../packages');
-            if (Array.isArray(babelLoader.include)) {
-              if (!babelLoader.include.includes(packagesPath)) {
-                babelLoader.include.push(packagesPath);
-              }
-            } else if (babelLoader.include) {
-              babelLoader.include = [babelLoader.include, packagesPath];
-            } else {
-              babelLoader.include = [path.resolve(__dirname, 'src'), packagesPath];
-            }
-          }
-        }
       }
 
       // NOTE: To add full obfuscation, first run:

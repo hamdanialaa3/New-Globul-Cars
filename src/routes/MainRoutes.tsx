@@ -6,7 +6,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import SellRouteRedirect from '../components/SellWorkflow/SellRouteRedirect';
 import InactivityWarning from '../components/InactivityWarning';
 
-const IS_DEV = import.meta.env.MODE === 'development';
+const IS_DEV = process.env.NODE_ENV === 'development';
 
 
 // Lazy Loaded Components
@@ -192,7 +192,7 @@ export const MainRoutes: React.FC = () => {
             <Route path="/cars/economy" element={<DynamicCarShowcase pageType="economy" />} />
             <Route path="/cars/city/:cityName" element={<DynamicCarShowcase pageType="city" />} />
             <Route path="/cars/brand/:brandName" element={<DynamicCarShowcase pageType="brand" />} />
-            
+
             {/* ✅ NEW FILTER ROUTES (January 30, 2026) */}
             {/* ⚡ Electric Cars - fuel_type = electric */}
             <Route path="/cars/electric" element={<DynamicCarShowcase pageType="electric" />} />

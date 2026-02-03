@@ -10,7 +10,7 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
-const IS_DEV = import.meta.env.MODE === 'development';
+const IS_DEV = process.env.NODE_ENV === 'development';
 
 import styled from 'styled-components';
 import { db } from '@/firebase/firebase-config';
@@ -512,7 +512,7 @@ const DeleteMockCarsPage: React.FC = () => {
               <ResultItem key={collectionName}>
                 <ResultCollection>{collectionName}</ResultCollection>
                 <ResultCount>
-                  Total: {data.total} | Real: <span style={{ color: '#10b981' }}>{data.real}</span> | 
+                  Total: {data.total} | Real: <span style={{ color: '#10b981' }}>{data.real}</span> |
                   Mock: <span style={{ color: '#ef4444' }}>{data.mock}</span>
                 </ResultCount>
               </ResultItem>
