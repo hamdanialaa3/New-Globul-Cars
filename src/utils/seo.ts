@@ -2,6 +2,10 @@
 // SEO utilities for Koli One
 
 import { UnifiedCar } from '../services/car/unified-car-types';
+import { CarListing } from '../types/CarListing';
+
+// Type guard to check if car has numeric IDs
+type CarWithNumericIds = UnifiedCar & Partial<Pick<CarListing, 'sellerNumericId' | 'ownerNumericId' | 'carNumericId' | 'userCarSequenceId' | 'numericId'>>;
 
 // Generate meta tags for car pages
 export const generateCarMetaTags = (car: UnifiedCar) => {
@@ -9,8 +13,9 @@ export const generateCarMetaTags = (car: UnifiedCar) => {
   const description = `${car.make} ${car.model} ${car.year} година, ${car.mileage.toLocaleString('bg-BG')} км, ${car.fuelType}, ${car.transmission}. Цена: ${car.price}€. ${car.locationData?.cityName}, ${car.location.region}, България.`;
 
   // ✅ CONSTITUTION: Use numeric URL pattern for SEO
-  const sellerNumericId = (car as any).sellerNumericId || (car as any).ownerNumericId;
-  const carNumericId = (car as any).carNumericId || (car as any).userCarSequenceId || (car as any).numericId;
+  const carWithIds = car as CarWithNumericIds;
+  const sellerNumericId = carWithIds.sellerNumericId ?? carWithIds.ownerNumericId;
+  const carNumericId = carWithIds.carNumericId ?? carWithIds.userCarSequenceId ?? carWithIds.numericId;
   const carUrl = sellerNumericId && carNumericId
     ? `${window.location.origin}/car/${sellerNumericId}/${carNumericId}`
     : `${window.location.origin}/cars`;
@@ -248,8 +253,9 @@ export const generateSitemapUrls = (cars: UnifiedCar[]) => {
   // Add car URLs
   // ✅ CONSTITUTION: Use numeric URL pattern for sitemap
   cars.forEach(car => {
-    const sellerNumericId = (car as any).sellerNumericId || (car as any).ownerNumericId;
-    const carNumericId = (car as any).carNumericId || (car as any).userCarSequenceId || (car as any).numericId;
+    const carWithIds = car as CarWithNumericIds;
+    const sellerNumericId = carWithIds.sellerNumericId ?? carWithIds.ownerNumericId;
+    const carNumericId = carWithIds.carNumericId ?? carWithIds.userCarSequenceId ?? carWithIds.numericId;
 
     if (sellerNumericId && carNumericId) {
       urls.push({

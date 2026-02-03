@@ -6,13 +6,19 @@
 import { Timestamp } from 'firebase/firestore';
 
 /**
+ * Type for various timestamp formats we might receive
+ */
+type TimestampLike = Date | Timestamp | { seconds: number; nanoseconds?: number } | number | string | null | undefined;
+
+/**
  * Convert various timestamp formats to Date
  */
-export function convertTimestamp(ts: any): Date {
+export function convertTimestamp(ts: TimestampLike): Date {
   if (!ts) return new Date();
   if (ts instanceof Date) return ts;
-  if (ts.toDate && typeof ts.toDate === 'function') return ts.toDate();
-  if (ts.seconds !== undefined) {
+  if (ts instanceof Timestamp) return ts.toDate();
+  if (typeof ts === 'object' && 'toDate' in ts && typeof ts.toDate === 'function') return ts.toDate();
+  if (typeof ts === 'object' && 'seconds' in ts && typeof ts.seconds === 'number') {
     // Firestore Timestamp object
     return new Date(ts.seconds * 1000);
   }
@@ -25,7 +31,7 @@ export function convertTimestamp(ts: any): Date {
 /**
  * Convert multiple timestamp fields in an object
  */
-export function convertTimestamps<T extends Record<string, any>>(
+export function convertTimestamps<T extends Record<string, unknown>>(
   data: T,
   fields: (keyof T)[]
 ): T {
@@ -33,7 +39,7 @@ export function convertTimestamps<T extends Record<string, any>>(
   
   for (const field of fields) {
     if (result[field]) {
-      result[field] = convertTimestamp(result[field]) as any;
+      result[field] = convertTimestamp(result[field] as TimestampLike) as T[keyof T];
     }
   }
   
@@ -59,7 +65,7 @@ export function toTimestamp(date: Date | string | number): Timestamp {
 /**
  * Safely convert timestamp with fallback
  */
-export function safeConvertTimestamp(ts: any, fallback: Date = new Date()): Date {
+export function safeConvertTimestamp(ts: TimestampLike, fallback: Date = new Date()): Date {
   try {
     return convertTimestamp(ts);
   } catch (error) {
