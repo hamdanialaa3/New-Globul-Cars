@@ -63,9 +63,9 @@ import IdentityStamp from '../../../../../components/Profile/IdentityStamp';
 
 const highlightPulse = `
   @keyframes highlight-pulse {
-    0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); border-color: #2563eb; }
-    70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); border-color: #2563eb; }
-    100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+    0% { box-shadow: 0 0 0 0 var(--accent-primary)66; border-color: var(--accent-primary); }
+    70% { box-shadow: 0 0 0 10px var(--accent-primary)00; border-color: var(--accent-primary); }
+    100% { box-shadow: 0 0 0 0 var(--accent-primary)00; }
   }
 `;
 
@@ -252,7 +252,8 @@ const AvatarImage = styled.img<{ $isDark?: boolean }>`
 const UploadingOverlay = styled.div`
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--bg-overlay);
+  opacity: 0.9;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -355,9 +356,9 @@ const AvatarDeleteButton = styled.button<{ $isDark?: boolean }>`
   }
   
   &:hover {
-    background: ${props => props.$isDark ? '#dc2626' : '#dc2626'};
+    background: var(--error);
     transform: scale(1.1);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--shadow-md);
   }
   
   &:active {
@@ -455,9 +456,7 @@ const SidebarItem = styled.button<{ $active?: boolean; $isDark?: boolean }>`
     flex-shrink: 0;
     color: ${props => {
     if (props.$active) return 'var(--accent-primary)';
-    if (props.$isDark) return 'var(--text-secondary)';
-    // في الوضع النهاري: استخدم لون أغمق للأيقونات
-    return '#2D3748'; // رمادي داكن للوضوح
+    return 'var(--text-secondary)';
   }};
     transition: color 0.2s ease;
     stroke-width: ${props => props.$active ? 2.5 : 2};
@@ -505,14 +504,18 @@ const SectionHeader = styled.div`
   align-items: center;
   gap: 12px;
   padding-bottom: 16px;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-  color: #FF8F10;
+  border-bottom: 2px solid var(--border-primary);
+  color: var(--accent-primary);
+  
+  svg {
+    flex-shrink: 0;
+  }
 `;
 
 const SectionTitle = styled.h3`
   font-size: 1.5rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 0;
 `;
 
@@ -525,13 +528,13 @@ const SettingGroup = styled.div`
 const Label = styled.label<{ $required?: boolean }>`
   font-size: 0.95rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
   margin-bottom: 4px;
   
   ${props => props.$required && `
     &::after {
       content: ' *';
-      color: #ef4444;
+      color: var(--error);
       margin-left: 4px;
     }
   `}
@@ -540,10 +543,10 @@ const Label = styled.label<{ $required?: boolean }>`
 const Input = styled.input<{ $hasError?: boolean }>`
   width: 100%;
   padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 2px solid ${props => props.$hasError ? '#ef4444' : 'rgba(255, 255, 255, 0.1)'};
+  background: var(--bg-secondary);
+  border: 2px solid ${props => props.$hasError ? 'var(--error)' : 'var(--border-primary)'};
   border-radius: 8px;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 0.9375rem;
   line-height: 1.5;
   min-height: 38px;
@@ -551,18 +554,22 @@ const Input = styled.input<{ $hasError?: boolean }>`
 
   &:focus {
     outline: none;
-    border-color: ${props => props.$hasError ? '#ef4444' : '#FF8F10'};
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: ${props => props.$hasError ? '0 0 0 3px rgba(239, 68, 68, 0.1)' : '0 0 0 3px rgba(255, 143, 16, 0.1)'};
+    border-color: ${props => props.$hasError ? 'var(--error)' : 'var(--accent-primary)'};
+    background: var(--bg-card);
+    box-shadow: ${props => props.$hasError ? '0 0 0 3px var(--error)22' : '0 0 0 3px var(--accent-primary)22'};
   }
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-muted);
   }
 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+  
+  &:hover:not(:disabled) {
+    border-color: var(--border-hover);
   }
 `;
 
@@ -571,20 +578,20 @@ const InputWithIcon = styled.div<{ $hasError?: boolean }>`
   align-items: center;
   gap: 10px;
   padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 2px solid ${props => props.$hasError ? '#ef4444' : 'rgba(255, 255, 255, 0.1)'};
+  background: var(--bg-secondary);
+  border: 2px solid ${props => props.$hasError ? 'var(--error)' : 'var(--border-primary)'};
   border-radius: 8px;
   min-height: 38px;
   transition: all 0.2s ease;
 
   &:focus-within {
-    border-color: ${props => props.$hasError ? '#ef4444' : '#FF8F10'};
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: ${props => props.$hasError ? '0 0 0 3px rgba(239, 68, 68, 0.1)' : '0 0 0 3px rgba(255, 143, 16, 0.1)'};
+    border-color: ${props => props.$hasError ? 'var(--error)' : 'var(--accent-primary)'};
+    background: var(--bg-card);
+    box-shadow: ${props => props.$hasError ? '0 0 0 3px var(--error)22' : '0 0 0 3px var(--accent-primary)22'};
   }
 
   svg {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary);
     flex-shrink: 0;
     width: 18px;
     height: 18px;
@@ -594,7 +601,7 @@ const InputWithIcon = styled.div<{ $hasError?: boolean }>`
     flex: 1;
     background: transparent;
     border: none;
-    color: #ffffff;
+    color: var(--text-primary);
     font-size: 0.9375rem;
     padding: 0;
     line-height: 1.5;
@@ -604,7 +611,7 @@ const InputWithIcon = styled.div<{ $hasError?: boolean }>`
     }
 
     &::placeholder {
-      color: rgba(255, 255, 255, 0.4);
+      color: var(--text-muted);
     }
   }
 `;
@@ -612,10 +619,10 @@ const InputWithIcon = styled.div<{ $hasError?: boolean }>`
 const TextArea = styled.textarea`
   width: 100%;
   padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-primary);
   border-radius: 8px;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 0.9375rem;
   font-family: inherit;
   line-height: 1.5;
@@ -625,23 +632,27 @@ const TextArea = styled.textarea`
 
   &:focus {
     outline: none;
-    border-color: #FF8F10;
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.1);
+    border-color: var(--accent-primary);
+    background: var(--bg-card);
+    box-shadow: 0 0 0 3px var(--accent-primary)22;
   }
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-muted);
+  }
+  
+  &:hover {
+    border-color: var(--border-hover);
   }
 `;
 
 const Select = styled.select`
   width: 100%;
   padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-primary);
   border-radius: 8px;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 0.9375rem;
   line-height: 1.5;
   min-height: 38px;
@@ -650,21 +661,25 @@ const Select = styled.select`
 
   &:focus {
     outline: none;
-    border-color: #FF8F10;
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.1);
+    border-color: var(--accent-primary);
+    background: var(--bg-card);
+    box-shadow: 0 0 0 3px var(--accent-primary)22;
+  }
+  
+  &:hover {
+    border-color: var(--border-hover);
   }
 
   option {
-    background: #1a1a1a;
-    color: #ffffff;
+    background: var(--bg-card);
+    color: var(--text-primary);
     padding: 8px;
   }
 `;
 
 const HelpText = styled.p`
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.4;
   text-transform: none;
@@ -748,11 +763,9 @@ const SwitchKnob = styled.div<{ $active: boolean }>`
   height: 20px;
   top: 2.5px;
   left: 2.5px;
-  background-color: #3e3e3e;
+  background-color: var(--bg-card);
   border-radius: 50%;
-  box-shadow: 
-    2.5px 2.5px 5px rgba(0, 0, 0, 0.5), 
-    -2.5px -2.5px 5px rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-sm);
   transition: background-color 0.4s ease;
 `;
 
@@ -765,8 +778,8 @@ const SwitchKnobNeon = styled.div<{ $active: boolean }>`
   border-radius: 50%;
   transform: translate(-50%, -50%);
   box-shadow: ${props => props.$active
-    ? '0 0 5px #0f0, 0 0 10px #0f0, 0 0 15px #0f0, 0 0 20px #0f0'
-    : '0 0 5px #ff8c00, 0 0 10px #ff8c00'};
+    ? '0 0 5px var(--success), 0 0 10px var(--success), 0 0 15px var(--success)'
+    : '0 0 5px var(--accent-primary), 0 0 10px var(--accent-primary)'};
   transition: box-shadow 0.4s ease;
   pointer-events: none;
 `;
@@ -777,14 +790,14 @@ const SwitchRow = styled.div<{ $active: boolean }>`
   gap: 16px;
   width: 100%;
   padding: 16px 20px;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-secondary);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 2px solid ${props => props.$active ? 'rgba(15, 255, 0, 0.3)' : 'transparent'};
+  border: 2px solid ${props => props.$active ? 'var(--success)' : 'transparent'};
 
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-hover);
     transform: translateY(-2px);
   }
 `;
@@ -798,7 +811,7 @@ const SwitchLabel = styled.div`
   z-index: 1;
 
   svg {
-    color: #ffffff;
+    color: var(--text-primary);
     margin-top: 2px;
     flex-shrink: 0;
     width: 18px;
@@ -807,7 +820,7 @@ const SwitchLabel = styled.div`
 
   strong {
     display: block;
-    color: #ffffff;
+    color: var(--text-primary);
     font-size: 0.95rem;
     margin-bottom: 4px;
     transition: color 0.2s ease;
@@ -849,7 +862,7 @@ const ToggleLabel = styled.div`
   z-index: 1;
 
   svg {
-    color: #ffffff;
+    color: var(--text-primary);
     margin-top: 2px;
     flex-shrink: 0;
     width: 18px;
@@ -858,7 +871,7 @@ const ToggleLabel = styled.div`
 
   strong {
     display: block;
-    color: #ffffff;
+    color: var(--text-primary);
     font-size: 0.95rem;
     margin-bottom: 4px;
     transition: color 0.2s ease;
@@ -876,14 +889,16 @@ const Toggle = styled.input.attrs({ type: 'checkbox' })`
   width: 52px;
   height: 28px;
   appearance: none;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
   border-radius: 14px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
   flex-shrink: 0;
 
   &:checked {
-    background: #FF8F10;
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
   }
 
   &::before {
@@ -893,9 +908,10 @@ const Toggle = styled.input.attrs({ type: 'checkbox' })`
     left: 3px;
     width: 22px;
     height: 22px;
-    background: #ffffff;
+    background: var(--text-on-header);
     border-radius: 50%;
     transition: transform 0.3s ease;
+    box-shadow: var(--shadow-sm);
   }
 
   &:checked::before {
@@ -916,13 +932,14 @@ const RadioOptionRow = styled.div<{ $active: boolean }>`
   gap: 16px;
   width: 100%;
   padding: 16px 20px;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-secondary);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
+  border: 2px solid ${props => props.$active ? 'var(--accent-primary)' : 'transparent'};
 
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-hover);
     transform: translateY(-2px);
   }
 `;
@@ -948,7 +965,7 @@ const RadioLabel = styled.div<{ $active: boolean }>`
   z-index: 1;
 
   svg {
-    color: ${props => props.$active ? '#0f0' : '#ef4444'};
+    color: ${props => props.$active ? 'var(--success)' : 'var(--text-secondary)'};
     margin-top: 2px;
     flex-shrink: 0;
     width: 18px;
@@ -958,7 +975,7 @@ const RadioLabel = styled.div<{ $active: boolean }>`
 
   strong {
     display: block;
-    color: ${props => props.$active ? '#0f0' : '#ef4444'};
+    color: ${props => props.$active ? 'var(--accent-primary)' : 'var(--text-primary)'};
     font-size: 0.95rem;
     margin-bottom: 4px;
     transition: color 0.2s ease;
@@ -975,14 +992,15 @@ const NotificationGroup = styled.div`
   flex-direction: column;
   gap: 16px;
   padding: 20px;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-secondary);
   border-radius: 12px;
+  border: 1px solid var(--border-primary);
 `;
 
 const GroupTitle = styled.h4`
   font-size: 1.1rem;
   font-weight: 600;
-  color: #FF8F10;
+  color: var(--accent-primary);
   margin: 0 0 8px 0;
 `;
 
@@ -1003,25 +1021,26 @@ const ThemeOption = styled.div<{ $active?: boolean }>`
   justify-content: center;
   gap: 12px;
   padding: 24px;
-  background: ${props => props.$active ? 'rgba(255, 143, 16, 0.15)' : 'rgba(255, 255, 255, 0.05)'};
-  border: 2px solid ${props => props.$active ? '#FF8F10' : 'rgba(255, 255, 255, 0.1)'};
+  background: ${props => props.$active ? 'var(--accent-primary)22' : 'var(--bg-secondary)'};
+  border: 2px solid ${props => props.$active ? 'var(--accent-primary)' : 'var(--border-primary)'};
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${props => props.$active ? 'rgba(255, 143, 16, 0.2)' : 'rgba(255, 255, 255, 0.08)'};
+    background: ${props => props.$active ? 'var(--accent-primary)33' : 'var(--bg-hover)'};
     transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
   }
 
   svg {
-    color: ${props => props.$active ? '#FF8F10' : '#ffffff'};
+    color: ${props => props.$active ? 'var(--accent-primary)' : 'var(--text-primary)'};
   }
 
   span {
     font-size: 0.95rem;
     font-weight: ${props => props.$active ? 600 : 400};
-    color: ${props => props.$active ? '#FF8F10' : '#ffffff'};
+    color: ${props => props.$active ? 'var(--accent-primary)' : 'var(--text-primary)'};
   }
 `;
 
@@ -1031,7 +1050,7 @@ const PriceRangeContainer = styled.div`
   gap: 12px;
 
   span {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary);
     font-weight: 600;
   }
 `;
@@ -1045,19 +1064,19 @@ const InfoBox = styled.div`
   align-items: flex-start;
   gap: 16px;
   padding: 20px;
-  background: rgba(59, 130, 246, 0.1);
-  border: 2px solid rgba(59, 130, 246, 0.3);
+  background: var(--info)22;
+  border: 2px solid var(--info);
   border-radius: 12px;
 
   svg {
-    color: #3b82f6;
+    color: var(--info);
     flex-shrink: 0;
     margin-top: 2px;
   }
 
   strong {
     display: block;
-    color: #ffffff;
+    color: var(--text-primary);
     font-size: 1rem;
     margin-bottom: 4px;
   }
@@ -1068,19 +1087,19 @@ const DangerBox = styled.div`
   align-items: flex-start;
   gap: 16px;
   padding: 20px;
-  background: rgba(239, 68, 68, 0.1);
-  border: 2px solid rgba(239, 68, 68, 0.3);
+  background: var(--error)22;
+  border: 2px solid var(--error);
   border-radius: 12px;
 
   svg {
-    color: #ef4444;
+    color: var(--error);
     flex-shrink: 0;
     margin-top: 2px;
   }
 
   strong {
     display: block;
-    color: #ffffff;
+    color: var(--text-primary);
     font-size: 1rem;
     margin-bottom: 4px;
   }
@@ -1088,7 +1107,7 @@ const DangerBox = styled.div`
 
 const Divider = styled.div`
   height: 2px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--border-primary);
   margin: 16px 0;
 `;
 
@@ -1273,7 +1292,7 @@ const PasswordButtonGroup = styled.div`
 
 const LoadingMessage = styled.div`
   text-align: center;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-secondary);
   padding: 40px;
   font-size: 1.1rem;
 `;
@@ -1281,8 +1300,8 @@ const LoadingMessage = styled.div`
 const Spinner = styled.div`
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #ffffff;
+  border: 2px solid var(--border-primary);
+  border-top-color: var(--accent-primary);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 

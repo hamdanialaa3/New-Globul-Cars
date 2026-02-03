@@ -521,17 +521,18 @@ const LoadingContainer = styled.div`
   justify-content: center;
   align-items: center;
   padding: 48px;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 16px;
 `;
 
 const Section = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
   padding: 24px;
   margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e5e7eb;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-primary);
+  transition: all 0.3s ease;
 `;
 
 const SectionHeader = styled.div`
@@ -540,17 +541,18 @@ const SectionHeader = styled.div`
   gap: 12px;
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 2px solid #f3f4f6;
+  border-bottom: 2px solid var(--border-primary);
   
   h3 {
     margin: 0;
     font-size: 18px;
     font-weight: 600;
-    color: #1f2937;
+    color: var(--text-primary);
   }
   
   svg {
-    color: #16a34a;
+    color: var(--accent-primary);
+    flex-shrink: 0;
   }
 `;
 
@@ -569,40 +571,58 @@ const FormGroup = styled.div`
 const Label = styled.label`
   font-size: 14px;
   font-weight: 500;
-  color: #374151;
+  color: var(--text-primary);
 `;
 
 const Input = styled.input`
   padding: 10px 14px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-primary);
   border-radius: 8px;
   font-size: 14px;
-  transition: all 0.2s;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: all 0.2s ease;
   
   &:focus {
     outline: none;
-    border-color: #16a34a;
-    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px var(--accent-primary)22;
+    background: var(--bg-card);
   }
   
   &::placeholder {
-    color: #9ca3af;
+    color: var(--text-muted);
+  }
+  
+  &:hover {
+    border-color: var(--border-hover);
   }
 `;
 
 const Select = styled.select`
   padding: 10px 14px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-primary);
   border-radius: 8px;
   font-size: 14px;
-  background: white;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   
   &:focus {
     outline: none;
-    border-color: #16a34a;
-    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px var(--accent-primary)22;
+    background: var(--bg-card);
+  }
+  
+  &:hover {
+    border-color: var(--border-hover);
+  }
+  
+  option {
+    background: var(--bg-card);
+    color: var(--text-primary);
   }
 `;
 
@@ -617,27 +637,28 @@ const CheckboxLabel = styled.label`
   align-items: center;
   gap: 8px;
   padding: 10px 12px;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   
   &:hover {
-    background: #f3f4f6;
-    border-color: #16a34a;
+    background: var(--bg-hover);
+    border-color: var(--accent-primary);
+    transform: translateY(-1px);
   }
   
   input[type="checkbox"] {
     width: 18px;
     height: 18px;
     cursor: pointer;
-    accent-color: #16a34a;
+    accent-color: var(--accent-primary);
   }
   
   span {
     font-size: 14px;
-    color: #374151;
+    color: var(--text-primary);
   }
 `;
 
@@ -648,20 +669,24 @@ const SaveButton = styled.button`
   gap: 8px;
   width: 100%;
   padding: 14px 24px;
-  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-dark) 100%);
+  color: var(--text-on-header);
   border: none;
   border-radius: 10px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-button);
   
   &:hover:not(:disabled) {
-    background: linear-gradient(135deg, #15803d 0%, #166534 100%);
+    background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-primary) 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(22, 163, 74, 0.4);
+    box-shadow: var(--shadow-hover);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
   }
   
   &:disabled {
