@@ -48,7 +48,7 @@ const ProfileAnalytics: React.FC = () => {
         {language === 'bg' ? '📊 Статистика и аналитика' : '📊 Analytics & Statistics'}
       </h2>
       
-      <ProfileAnalyticsDashboard userId={user.uid} themeColor={theme.colors.primary.main} />
+      <ProfileAnalyticsDashboard userId={user.uid} themeColor={theme.primary} />
     </S.ContentSection>
   );
 };

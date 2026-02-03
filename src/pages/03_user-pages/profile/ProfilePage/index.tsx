@@ -704,39 +704,39 @@ const ProfilePage: React.FC = () => {
         <S.PageContainer>
           {/* Tab Navigation - 🎨 DYNAMIC Theme Colors with React Router NavLinks */}
           {isOwnProfile && (
-            <TabNavigation $themeColor={theme.colors.primary.main}>
+            <TabNavigation $themeColor={theme.primary}>
               {/* Profile tab removed - not needed in navigation */}
               <TabNavLink
                 to="/my-listings"
-                $themeColor={theme.colors.primary.main}
+                $themeColor={theme.primary}
               >
                 <Car size={16} />
                 {language === 'bg' ? 'Моите обяви' : 'My Ads'}
               </TabNavLink>
               <TabNavLink
                 to="/profile/campaigns"
-                $themeColor={theme.colors.primary.main}
+                $themeColor={theme.primary}
               >
                 <Megaphone size={16} />
                 {language === 'bg' ? 'Реклами' : 'Campaigns'}
               </TabNavLink>
               <TabNavLink
                 to="/profile/analytics"
-                $themeColor={theme.colors.primary.main}
+                $themeColor={theme.primary}
               >
                 <BarChart3 size={16} />
                 {language === 'bg' ? 'Статистика' : 'Analytics'}
               </TabNavLink>
               <TabNavLink
                 to="/profile/settings"
-                $themeColor={theme.colors.primary.main}
+                $themeColor={theme.primary}
               >
                 <Shield size={16} />
                 {language === 'bg' ? 'Настройки' : 'Settings'}
               </TabNavLink>
               <TabNavLink
                 to="/profile/consultations"
-                $themeColor={theme.colors.primary.main}
+                $themeColor={theme.primary}
               >
                 <MessageCircle size={18} />
                 {language === 'bg' ? 'Консултации' : 'Consultations'}
@@ -786,7 +786,7 @@ const ProfilePage: React.FC = () => {
               <S.UserInfoRight>
                 {isOwnProfile ? (
                   <>
-                    <S.ActionButton $variant="secondary" onClick={() => navigate('/profile/settings')} $themeColor={theme.colors.primary.main}>
+                    <S.ActionButton $variant="secondary" onClick={() => navigate('/profile/settings')} $themeColor={theme.primary}>
                       <SettingsIcon size={18} />
                       {language === 'bg' ? 'Настройки' : 'Settings'}
                     </S.ActionButton>
@@ -831,7 +831,7 @@ const ProfilePage: React.FC = () => {
 
           {/* NEW: Plan Bar with Profile Background Image */}
           {location.pathname.includes('/profile') && isOwnProfile && (
-            <S.PlanBar $themeColor={theme.colors.primary.main} $profileType={profileType as 'private' | 'dealer' | 'company'}>
+            <S.PlanBar $themeColor={theme.primary} $profileType={profileType as 'private' | 'dealer' | 'company'}>
               <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                 <S.PlanInfoItem>
                   <span className="value" style={{ textTransform: 'capitalize', fontSize: '1rem' }}>
@@ -850,7 +850,7 @@ const ProfilePage: React.FC = () => {
                 </S.PlanInfoItem>
               </div>
 
-              <S.PlanUpgradeButton $themeColor={theme.colors.primary.main} onClick={() => navigate('/plans')}>
+              <S.PlanUpgradeButton $themeColor={theme.primary} onClick={() => navigate('/plans')}>
                 <ArrowDown size={14} style={{ transform: 'rotate(-90deg)' }} />
                 {language === 'bg' ? 'Подобри' : 'Upgrade'}
               </S.PlanUpgradeButton>
@@ -928,7 +928,7 @@ const ProfilePage: React.FC = () => {
 
                 {/* Contact Information - For other users (sellers) */}
                 {!isOwnProfile && user?.accountType === 'business' && (
-                  <S.ContentSection $themeColor={theme.colors.primary.main}>
+                  <S.ContentSection $themeColor={theme.primary}>
                     <S.SectionHeader>
                       <h2>{language === 'bg' ? 'Информация за контакт' : 'Contact Information'}</h2>
                     </S.SectionHeader>
@@ -970,7 +970,7 @@ const ProfilePage: React.FC = () => {
                 )}
                 {/* Photo Gallery */}
                 {isOwnProfile && (
-                  <S.ContentSection $themeColor={theme.colors.primary.main}>
+                  <S.ContentSection $themeColor={theme.primary}>
                     <ProfileGallery
                       userId={user.uid}
                       images={(user.gallery || []).map(img => typeof img === 'string' ? img : img.url)}
@@ -1002,7 +1002,7 @@ const ProfilePage: React.FC = () => {
                 {isOwnProfile && (
                   <PersonalVehiclesSection
                     language={language as 'bg' | 'en'}
-                    themePrimary={theme.colors.primary.main}
+                    themePrimary={theme.primary}
                     personalVehicles={personalVehicles}
                     isLoading={isPersonalVehiclesLoading}
                     onAddVehicle={() => setIsAddVehicleModalOpen(true)}
@@ -1012,7 +1012,7 @@ const ProfilePage: React.FC = () => {
 
                 {/* User's Cars - For other users (sellers) */}
                 {!isOwnProfile && user?.uid && user.accountType === 'business' && userCars && userCars.length > 0 && (
-                  <S.ContentSection $themeColor={theme.colors.primary.main}>
+                  <S.ContentSection $themeColor={theme.primary}>
                     <S.SectionHeader>
                       <h2>{language === 'bg' ? 'Активни обяви' : 'Active Listings'}</h2>
                       <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
@@ -1065,7 +1065,7 @@ const ProfilePage: React.FC = () => {
 
                 {/* Reviews Section - For other users only */}
                 {!isOwnProfile && user?.uid && (
-                  <S.ContentSection $themeColor={theme.colors.primary.main} data-section="reviews">
+                  <S.ContentSection $themeColor={theme.primary} data-section="reviews">
                     <S.SectionHeader>
                       <h2>{language === 'bg' ? 'Отзиви' : 'Reviews'}</h2>
                     </S.SectionHeader>
@@ -1206,7 +1206,7 @@ const ProfilePage: React.FC = () => {
                   {isOwnProfile ? (
                     <>
                       {/* ✅ Personal Information Section */}
-                      <S.ContentSection $themeColor={theme.colors.primary.main} $isBusinessMode={isBusinessMode}>
+                      <S.ContentSection $themeColor={theme.primary} $isBusinessMode={isBusinessMode}>
                         <S.SectionHeader>
                           <h2>{t('profile.personalInfo')}</h2>
                           {!editing && (
@@ -1232,9 +1232,9 @@ const ProfilePage: React.FC = () => {
                                   style={{
                                     flex: 1,
                                     padding: '10px 16px',
-                                    border: `2px solid ${formData.accountType === 'business' ? theme.colors.primary.main : 'var(--border)'}`,
-                                    background: formData.accountType === 'business' ? `${theme.colors.primary.main}10` : 'var(--bg-card)',
-                                    color: formData.accountType === 'business' ? theme.colors.primary.main : 'var(--text-secondary)',
+                                    border: `2px solid ${formData.accountType === 'business' ? theme.primary : 'var(--border)'}`,
+                                    background: formData.accountType === 'business' ? `${theme.primary}10` : 'var(--bg-card)',
+                                    color: formData.accountType === 'business' ? theme.primary : 'var(--text-secondary)',
                                     borderRadius: '6px',
                                     cursor: 'pointer',
                                     fontSize: '0.85rem',
@@ -1255,9 +1255,9 @@ const ProfilePage: React.FC = () => {
                                   style={{
                                     flex: 1,
                                     padding: '10px 16px',
-                                    border: `2px solid ${formData.accountType === 'individual' ? theme.colors.primary.main : 'var(--border)'}`,
-                                    background: formData.accountType === 'individual' ? `${theme.colors.primary.main}10` : 'var(--bg-card)',
-                                    color: formData.accountType === 'individual' ? theme.colors.primary.main : 'var(--text-secondary)',
+                                    border: `2px solid ${formData.accountType === 'individual' ? theme.primary : 'var(--border)'}`,
+                                    background: formData.accountType === 'individual' ? `${theme.primary}10` : 'var(--bg-card)',
+                                    color: formData.accountType === 'individual' ? theme.primary : 'var(--text-secondary)',
                                     borderRadius: '6px',
                                     cursor: 'pointer',
                                     fontSize: '0.85rem',
@@ -1297,16 +1297,16 @@ const ProfilePage: React.FC = () => {
                             </div>
 
                             {/* Required Fields */}
-                            <div style={{ marginBottom: '12px', padding: '10px', background: `${theme.colors.primary.main}10`, borderRadius: '6px', border: `2px solid ${theme.colors.primary.main}` }}>
-                              <h4 style={{ margin: '0 0 8px 0', color: theme.colors.primary.main, display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem' }}>
-                                <IconWrapper $color={theme.colors.primary.main} $size={16}><AlertCircle /></IconWrapper>
+                            <div style={{ marginBottom: '12px', padding: '10px', background: `${theme.primary}10`, borderRadius: '6px', border: `2px solid ${theme.primary}` }}>
+                              <h4 style={{ margin: '0 0 8px 0', color: theme.primary, display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem' }}>
+                                <IconWrapper $color={theme.primary} $size={16}><AlertCircle /></IconWrapper>
                                 {language === 'bg' ? 'Задължителни полета' : 'Required Fields'}
                               </h4>
 
                               {formData.accountType === 'individual' ? (
                                 <S.FormGrid>
                                   <S.FormGroup>
-                                    <label style={{ color: theme.colors.primary.main, fontWeight: 'bold' }}>
+                                    <label style={{ color: theme.primary, fontWeight: 'bold' }}>
                                       {language === 'bg' ? 'Име' : 'First Name'} <span style={{ color: 'var(--error)' }}>*</span>
                                     </label>
                                     <input
@@ -1318,12 +1318,12 @@ const ProfilePage: React.FC = () => {
                                       onBlur={() => setActiveField(undefined)}
                                       placeholder="СЛАВИНА"
                                       required
-                                      style={{ borderColor: theme.colors.primary.main, borderWidth: '2px' }}
+                                      style={{ borderColor: theme.primary, borderWidth: '2px' }}
                                     />
                                   </S.FormGroup>
 
                                   <S.FormGroup>
-                                    <label style={{ color: theme.colors.primary.main, fontWeight: 'bold' }}>
+                                    <label style={{ color: theme.primary, fontWeight: 'bold' }}>
                                       {language === 'bg' ? 'Фамилия' : 'Last Name'} <span style={{ color: 'var(--error)' }}>*</span>
                                     </label>
                                     <input
@@ -1335,13 +1335,13 @@ const ProfilePage: React.FC = () => {
                                       onBlur={() => setActiveField(undefined)}
                                       placeholder="ИВАНОВА"
                                       required
-                                      style={{ borderColor: theme.colors.primary.main, borderWidth: '2px' }}
+                                      style={{ borderColor: theme.primary, borderWidth: '2px' }}
                                     />
                                   </S.FormGroup>
                                 </S.FormGrid>
                               ) : (
                                 <S.FormGroup>
-                                  <label style={{ color: theme.colors.primary.main, fontWeight: 'bold' }}>
+                                  <label style={{ color: theme.primary, fontWeight: 'bold' }}>
                                     {language === 'bg' ? 'Име на фирмата' : 'Business Name'} <span style={{ color: 'var(--error)' }}>*</span>
                                   </label>
                                   <input
@@ -1672,15 +1672,15 @@ const ProfilePage: React.FC = () => {
                           <div>
                             {/* Personal Info */}
                             <div style={{ marginBottom: '24px' }}>
-                              <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: `2px solid ${theme.colors.primary.main}4D`, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: theme.colors.primary.main, fontWeight: '700' }}>
-                                <IconWrapper $color={theme.colors.primary.main} $size={18}><UserCircle /></IconWrapper>
+                              <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: `2px solid ${theme.primary}4D`, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: theme.primary, fontWeight: '700' }}>
+                                <IconWrapper $color={theme.primary} $size={18}><UserCircle /></IconWrapper>
                                 {language === 'bg' ? 'Лична информация' : 'Personal Information'}
                               </h4>
 
                               {/* Account Type - Show only for Dealer/Company */}
                               {(profileType === 'dealer' || profileType === 'company') && (
                                 <S.NeumorphicFieldWrapper style={{ marginBottom: '20px', gridColumn: '1 / -1' }}>
-                                  <S.NeumorphicFieldLabel $themeColor={theme.colors.primary.main}>
+                                  <S.NeumorphicFieldLabel $themeColor={theme.primary}>
                                     {language === 'bg' ? 'Тип акаунт' : 'Account Type'}
                                   </S.NeumorphicFieldLabel>
                                   <div style={{
@@ -1691,17 +1691,17 @@ const ProfilePage: React.FC = () => {
                                     padding: '16px',
                                     background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 249, 250, 0.9) 100%)',
                                     borderRadius: '12px',
-                                    border: `2px solid ${theme.colors.primary.main}33`
+                                    border: `2px solid ${theme.primary}33`
                                   }}>
                                     {/* Business Option (Priority) - Clickable when active */}
                                     <div
                                       style={{
                                         padding: '16px',
                                         background: user?.accountType === 'business'
-                                          ? `linear-gradient(135deg, ${theme.colors.primary.main}15 0%, ${theme.colors.primary.main}08 100%)`
+                                          ? `linear-gradient(135deg, ${theme.primary}15 0%, ${theme.primary}08 100%)`
                                           : 'transparent',
                                         borderRadius: '10px',
-                                        border: `2px solid ${user?.accountType === 'business' ? theme.colors.primary.main : '#dee2e6'}`,
+                                        border: `2px solid ${user?.accountType === 'business' ? theme.primary : '#dee2e6'}`,
                                         cursor: user?.accountType === 'business' ? 'pointer' : 'default',
                                         transition: 'all 0.3s ease',
                                         display: 'flex',
@@ -1727,7 +1727,7 @@ const ProfilePage: React.FC = () => {
                                       onMouseEnter={(e) => {
                                         if (user?.accountType === 'business') {
                                           e.currentTarget.style.transform = 'translateX(4px)';
-                                          e.currentTarget.style.boxShadow = `0 4px 12px ${theme.colors.primary.main}30`;
+                                          e.currentTarget.style.boxShadow = `0 4px 12px ${theme.primary}30`;
                                         }
                                       }}
                                       onMouseLeave={(e) => {
@@ -1741,8 +1741,8 @@ const ProfilePage: React.FC = () => {
                                         width: '20px',
                                         height: '20px',
                                         borderRadius: '50%',
-                                        border: `2px solid ${user?.accountType === 'business' ? theme.colors.primary.main : '#dee2e6'}`,
-                                        background: user?.accountType === 'business' ? theme.colors.primary.main : 'white',
+                                        border: `2px solid ${user?.accountType === 'business' ? theme.primary : '#dee2e6'}`,
+                                        background: user?.accountType === 'business' ? theme.primary : 'white',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
@@ -1756,7 +1756,7 @@ const ProfilePage: React.FC = () => {
                                         <div style={{
                                           fontWeight: '700',
                                           fontSize: '1rem',
-                                          color: user?.accountType === 'business' ? theme.colors.primary.main : '#495057',
+                                          color: user?.accountType === 'business' ? theme.primary : '#495057',
                                           marginBottom: '4px',
                                           display: 'flex',
                                           alignItems: 'center',
@@ -1773,7 +1773,7 @@ const ProfilePage: React.FC = () => {
                                         {user?.accountType === 'business' && (
                                           <div style={{
                                             fontSize: '0.75rem',
-                                            color: theme.colors.primary.main,
+                                            color: theme.primary,
                                             marginTop: '8px',
                                             fontWeight: '600',
                                             display: 'flex',
@@ -1793,10 +1793,10 @@ const ProfilePage: React.FC = () => {
                                     <div style={{
                                       padding: '16px',
                                       background: user?.accountType === 'individual' || !user?.accountType
-                                        ? `linear-gradient(135deg, ${theme.colors.primary.main}15 0%, ${theme.colors.primary.main}08 100%)`
+                                        ? `linear-gradient(135deg, ${theme.primary}15 0%, ${theme.primary}08 100%)`
                                         : 'transparent',
                                       borderRadius: '10px',
-                                      border: `2px solid ${user?.accountType === 'individual' || !user?.accountType ? theme.colors.primary.main : '#dee2e6'}`,
+                                      border: `2px solid ${user?.accountType === 'individual' || !user?.accountType ? theme.primary : '#dee2e6'}`,
                                       cursor: 'default',
                                       transition: 'all 0.3s ease',
                                       display: 'flex',
@@ -1807,8 +1807,8 @@ const ProfilePage: React.FC = () => {
                                         width: '20px',
                                         height: '20px',
                                         borderRadius: '50%',
-                                        border: `2px solid ${user?.accountType === 'individual' || !user?.accountType ? theme.colors.primary.main : '#dee2e6'}`,
-                                        background: user?.accountType === 'individual' || !user?.accountType ? theme.colors.primary.main : 'white',
+                                        border: `2px solid ${user?.accountType === 'individual' || !user?.accountType ? theme.primary : '#dee2e6'}`,
+                                        background: user?.accountType === 'individual' || !user?.accountType ? theme.primary : 'white',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
@@ -1822,7 +1822,7 @@ const ProfilePage: React.FC = () => {
                                         <div style={{
                                           fontWeight: '700',
                                           fontSize: '1rem',
-                                          color: user?.accountType === 'individual' || !user?.accountType ? theme.colors.primary.main : '#495057',
+                                          color: user?.accountType === 'individual' || !user?.accountType ? theme.primary : '#495057',
                                           marginBottom: '4px',
                                           display: 'flex',
                                           alignItems: 'center',
@@ -1844,25 +1844,25 @@ const ProfilePage: React.FC = () => {
 
                               <S.NeumorphicInfoGrid>
                                 <S.NeumorphicFieldWrapper>
-                                  <S.NeumorphicFieldLabel $themeColor={theme.colors.primary.main}>{language === 'bg' ? 'Име' : 'First Name'}</S.NeumorphicFieldLabel>
+                                  <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Име' : 'First Name'}</S.NeumorphicFieldLabel>
                                   <S.NeumorphicInfoField>
                                     <S.NeumorphicFieldValue>{user?.firstName || t('profile.notSet')}</S.NeumorphicFieldValue>
                                   </S.NeumorphicInfoField>
                                 </S.NeumorphicFieldWrapper>
                                 <S.NeumorphicFieldWrapper>
-                                  <S.NeumorphicFieldLabel $themeColor={theme.colors.primary.main}>{language === 'bg' ? 'Презиме' : 'Middle Name'}</S.NeumorphicFieldLabel>
+                                  <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Презиме' : 'Middle Name'}</S.NeumorphicFieldLabel>
                                   <S.NeumorphicInfoField>
                                     <S.NeumorphicFieldValue>{user?.middleName || t('profile.notSet')}</S.NeumorphicFieldValue>
                                   </S.NeumorphicInfoField>
                                 </S.NeumorphicFieldWrapper>
                                 <S.NeumorphicFieldWrapper>
-                                  <S.NeumorphicFieldLabel $themeColor={theme.colors.primary.main}>{language === 'bg' ? 'Фамилия' : 'Last Name'}</S.NeumorphicFieldLabel>
+                                  <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Фамилия' : 'Last Name'}</S.NeumorphicFieldLabel>
                                   <S.NeumorphicInfoField>
                                     <S.NeumorphicFieldValue>{user?.lastName || t('profile.notSet')}</S.NeumorphicFieldValue>
                                   </S.NeumorphicInfoField>
                                 </S.NeumorphicFieldWrapper>
                                 <S.NeumorphicFieldWrapper>
-                                  <S.NeumorphicFieldLabel $themeColor={theme.colors.primary.main}>{language === 'bg' ? 'Дата на раждане' : 'Date of Birth'}</S.NeumorphicFieldLabel>
+                                  <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Дата на раждане' : 'Date of Birth'}</S.NeumorphicFieldLabel>
                                   <S.NeumorphicInfoField>
                                     <S.NeumorphicFieldValue>
                                       {user?.dateOfBirth ? new Date(user?.dateOfBirth || '').toLocaleDateString('bg-BG') : t('profile.notSet')}
@@ -1870,7 +1870,7 @@ const ProfilePage: React.FC = () => {
                                   </S.NeumorphicInfoField>
                                 </S.NeumorphicFieldWrapper>
                                 <S.NeumorphicFieldWrapper>
-                                  <S.NeumorphicFieldLabel $themeColor={theme.colors.primary.main}>{language === 'bg' ? 'Място на راждане' : 'Place of Birth'}</S.NeumorphicFieldLabel>
+                                  <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Място на راждане' : 'Place of Birth'}</S.NeumorphicFieldLabel>
                                   <S.NeumorphicInfoField>
                                     <S.NeumorphicFieldValue>{user?.placeOfBirth || t('profile.notSet')}</S.NeumorphicFieldValue>
                                   </S.NeumorphicInfoField>
@@ -1880,19 +1880,19 @@ const ProfilePage: React.FC = () => {
 
                             {/* Contact */}
                             <div style={{ marginBottom: '24px' }}>
-                              <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: `2px solid ${theme.colors.primary.main}4D`, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: theme.colors.primary.main, fontWeight: '700' }}>
-                                <IconWrapper $color={theme.colors.primary.main} $size={18}><Phone /></IconWrapper>
+                              <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: `2px solid ${theme.primary}4D`, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: theme.primary, fontWeight: '700' }}>
+                                <IconWrapper $color={theme.primary} $size={18}><Phone /></IconWrapper>
                                 {language === 'bg' ? 'Контактна информация' : 'Contact Information'}
                               </h4>
                               <S.NeumorphicInfoGrid>
                                 <S.NeumorphicFieldWrapper>
-                                  <S.NeumorphicFieldLabel $themeColor={theme.colors.primary.main}>{language === 'bg' ? 'Телефон' : 'Phone'}</S.NeumorphicFieldLabel>
+                                  <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Телефон' : 'Phone'}</S.NeumorphicFieldLabel>
                                   <S.NeumorphicInfoField>
                                     <S.NeumorphicFieldValue>{user?.phoneNumber || t('profile.notSet')}</S.NeumorphicFieldValue>
                                   </S.NeumorphicInfoField>
                                 </S.NeumorphicFieldWrapper>
                                 <S.NeumorphicFieldWrapper>
-                                  <S.NeumorphicFieldLabel $themeColor={theme.colors.primary.main}>{language === 'bg' ? 'Имейл' : 'Email'}</S.NeumorphicFieldLabel>
+                                  <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Имейл' : 'Email'}</S.NeumorphicFieldLabel>
                                   <S.NeumorphicInfoField>
                                     <S.NeumorphicFieldValue>{user?.email || t('profile.notSet')}</S.NeumorphicFieldValue>
                                   </S.NeumorphicInfoField>
@@ -1902,19 +1902,19 @@ const ProfilePage: React.FC = () => {
 
                             {/* Address */}
                             <div style={{ marginBottom: '24px' }}>
-                              <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: `2px solid ${theme.colors.primary.main}4D`, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: theme.colors.primary.main, fontWeight: '700' }}>
-                                <IconWrapper $color={theme.colors.primary.main} $size={18}><Home /></IconWrapper>
+                              <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: `2px solid ${theme.primary}4D`, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: theme.primary, fontWeight: '700' }}>
+                                <IconWrapper $color={theme.primary} $size={18}><Home /></IconWrapper>
                                 {language === 'bg' ? 'Адресна информация' : 'Address Information'}
                               </h4>
                               <S.NeumorphicInfoGrid>
                                 <S.NeumorphicFieldWrapper>
-                                  <S.NeumorphicFieldLabel $themeColor={theme.colors.primary.main}>{language === 'bg' ? 'Град' : 'City'}</S.NeumorphicFieldLabel>
+                                  <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Град' : 'City'}</S.NeumorphicFieldLabel>
                                   <S.NeumorphicInfoField>
                                     <S.NeumorphicFieldValue>{user?.location?.city || t('profile.notSet')}</S.NeumorphicFieldValue>
                                   </S.NeumorphicInfoField>
                                 </S.NeumorphicFieldWrapper>
                                 <S.NeumorphicFieldWrapper>
-                                  <S.NeumorphicFieldLabel $themeColor={theme.colors.primary.main}>{language === 'bg' ? 'Пощенски код' : 'Postal Code'}</S.NeumorphicFieldLabel>
+                                  <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Пощенски код' : 'Postal Code'}</S.NeumorphicFieldLabel>
                                   <S.NeumorphicInfoField>
                                     <S.NeumorphicFieldValue>{user?.postalCode || t('profile.notSet')}</S.NeumorphicFieldValue>
                                   </S.NeumorphicInfoField>
@@ -1922,7 +1922,7 @@ const ProfilePage: React.FC = () => {
                               </S.NeumorphicInfoGrid>
                               {user?.address && (
                                 <S.NeumorphicFieldWrapper style={{ marginTop: '16px' }}>
-                                  <S.NeumorphicFieldLabel $themeColor={theme.colors.primary.main}>{language === 'bg' ? 'Адрес' : 'Address'}</S.NeumorphicFieldLabel>
+                                  <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Адрес' : 'Address'}</S.NeumorphicFieldLabel>
                                   <S.NeumorphicInfoField>
                                     <S.NeumorphicFieldValue>{user?.address}</S.NeumorphicFieldValue>
                                   </S.NeumorphicInfoField>
@@ -1932,13 +1932,13 @@ const ProfilePage: React.FC = () => {
 
                             {/* Other */}
                             <div style={{ marginBottom: '24px' }}>
-                              <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: `2px solid ${theme.colors.primary.main}4D`, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: theme.colors.primary.main, fontWeight: '700' }}>
-                                <IconWrapper $color={theme.colors.primary.main} $size={18}><SettingsIcon /></IconWrapper>
+                              <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: `2px solid ${theme.primary}4D`, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: theme.primary, fontWeight: '700' }}>
+                                <IconWrapper $color={theme.primary} $size={18}><SettingsIcon /></IconWrapper>
                                 {language === 'bg' ? 'Други' : 'Other'}
                               </h4>
                               <S.NeumorphicInfoGrid>
                                 <S.NeumorphicFieldWrapper>
-                                  <S.NeumorphicFieldLabel $themeColor={theme.colors.primary.main}>{t('profile.preferredLanguage')}</S.NeumorphicFieldLabel>
+                                  <S.NeumorphicFieldLabel $themeColor={theme.primary}>{t('profile.preferredLanguage')}</S.NeumorphicFieldLabel>
                                   <S.NeumorphicInfoField>
                                     <S.NeumorphicFieldValue>
                                       {user?.preferredLanguage === 'bg' ? '🇧🇬 ' + t('languages.bulgarian') : '🇬🇧 ' + t('languages.english')}
@@ -1946,7 +1946,7 @@ const ProfilePage: React.FC = () => {
                                   </S.NeumorphicInfoField>
                                 </S.NeumorphicFieldWrapper>
                                 <S.NeumorphicFieldWrapper>
-                                  <S.NeumorphicFieldLabel $themeColor={theme.colors.primary.main}>{t('profile.memberSince')}</S.NeumorphicFieldLabel>
+                                  <S.NeumorphicFieldLabel $themeColor={theme.primary}>{t('profile.memberSince')}</S.NeumorphicFieldLabel>
                                   <S.NeumorphicInfoField>
                                     <S.NeumorphicFieldValue>
                                       {user?.createdAt ? new Date(user?.createdAt || '').toLocaleDateString('bg-BG') : t('profile.notSet')}
@@ -1968,13 +1968,13 @@ const ProfilePage: React.FC = () => {
 
                       {/* ✅ Verification Panel */}
                       {user && (
-                        <S.ContentSection $themeColor={theme.colors.primary.main} style={{ marginTop: '24px' }}>
+                        <S.ContentSection $themeColor={theme.primary} style={{ marginTop: '24px' }}>
                           <VerificationPanel
                             emailVerified={user?.emailVerified || user?.verification?.email?.verified || false}
                             phoneVerified={user?.verification?.phone?.verified || false}
                             idVerified={user?.verification?.identity?.verified || false}
                             businessVerified={user?.verification?.business?.verified || false}
-                            themeColor={theme.colors.primary.main}
+                            themeColor={theme.primary}
                           />
                         </S.ContentSection>
                       )}
@@ -2096,3 +2096,4 @@ const ProfilePage: React.FC = () => {
 };
 
 export default ProfilePage;
+

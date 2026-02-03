@@ -143,11 +143,11 @@ export const CompactHeader: React.FC<CompactHeaderProps> = ({
   if (!user) return null;
 
   return (
-    <HeaderContainer $themeColor={theme.colors.primary.main}>
+    <HeaderContainer $themeColor={theme.primary}>
       <ProfileImageSmall 
         src={user.photoURL || '/default-avatar.png'} 
         alt={user.displayName}
-        $themeColor={theme.colors.primary.main}
+        $themeColor={theme.primary}
       />
       
       <UserInfo>

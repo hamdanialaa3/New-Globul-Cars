@@ -85,7 +85,7 @@ const TabButton = styled(NavLink)<{ $theme: ProfileTheme }>`
     box-shadow: 
       4px 4px 8px rgba(0, 0, 0, 0.4),
       -4px -4px 8px rgba(255, 255, 255, 0.08),
-      inset 0 0 15px ${props => props.$theme.colors.primary.main}40;
+      inset 0 0 15px ${props => props.$theme.primary}40;
   }
   
   &:hover:not(.active) {

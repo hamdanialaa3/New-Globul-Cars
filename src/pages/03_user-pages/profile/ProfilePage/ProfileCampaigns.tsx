@@ -48,7 +48,7 @@ const ProfileCampaigns: React.FC = () => {
         {language === 'bg' ? '📢 Рекламни кампании' : '📢 Advertising Campaigns'}
       </h2>
       
-      <CampaignsList userId={user.uid} themeColor={theme.colors.primary.main} />
+      <CampaignsList userId={user.uid} themeColor={theme.primary} />
     </S.ContentSection>
   );
 };
