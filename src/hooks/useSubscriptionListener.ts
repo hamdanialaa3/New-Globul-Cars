@@ -19,11 +19,15 @@ export const useSubscriptionListener = () => {
             return;
         }
 
+        let isMounted = true; // Track component mount state
+
         // Listen to customers/{uid}/subscriptions
         const subsRef = collection(db, 'customers', user.uid, 'subscriptions');
         const q = query(subsRef, where('status', 'in', ['active', 'trialing']));
 
         const unsubscribe = onSnapshot(q, async (snapshot) => {
+            if (!isMounted) return; // Prevent state updates after unmount
+            
             if (snapshot.empty) {
                 setActivePlan(null);
                 setLoading(false);
@@ -50,6 +54,8 @@ export const useSubscriptionListener = () => {
                 if (subDoc.role === 'company') detectedTier = 'company';
             }
 
+            if (!isMounted) return; // Check again before state update
+            
             setActivePlan(detectedTier);
             setLoading(false);
 
@@ -76,11 +82,16 @@ export const useSubscriptionListener = () => {
                 }
             }
         }, (error) => {
+            if (!isMounted) return; // Don't process error if unmounted
             logger.error('Error listening to subscriptions', error);
             setLoading(false);
         });
 
-        return () => unsubscribe();
+        // Cleanup function
+        return () => {
+            isMounted = false;
+            unsubscribe();
+        };
     }, [user, profileType, refreshProfileType]);
 
     return { activePlan, loading };

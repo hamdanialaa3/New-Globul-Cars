@@ -12,25 +12,38 @@ export const useNotifications = () => {
 
   // Initialize FCM service
   useEffect(() => {
+    let isMounted = true; // Track component mount state
+    
     const initializeFCM = async () => {
       try {
         const token = await fcmService.initialize();
+        
+        if (!isMounted) return; // Don't update state if unmounted
+        
         if (token && process.env.NODE_ENV === 'development') {
           logger.debug('FCM initialized successfully');
         }
         setIsInitialized(true);
       } catch (error) {
+        if (!isMounted) return; // Don't log error if unmounted
         logger.error('Failed to initialize FCM', error as Error);
         setIsInitialized(true); // Still mark as initialized to avoid infinite loading
       }
     };
 
     initializeFCM();
+    
+    // Cleanup
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Load notifications and subscribe to updates
   useEffect(() => {
     if (!isInitialized) return;
+
+    let isMounted = true;
 
     // Load initial notifications
     setNotifications(fcmService.getNotifications());
@@ -38,11 +51,16 @@ export const useNotifications = () => {
 
     // Subscribe to notification updates
     const unsubscribe = fcmService.subscribe((notification) => {
+      if (!isMounted) return; // Prevent state updates after unmount
       setNotifications(fcmService.getNotifications());
       setUnreadCount(fcmService.getUnreadCount());
     });
 
-    return unsubscribe;
+    // Cleanup
+    return () => {
+      isMounted = false;
+      unsubscribe?.();
+    };
   }, [isInitialized]);
 
   // Mark notification as read
