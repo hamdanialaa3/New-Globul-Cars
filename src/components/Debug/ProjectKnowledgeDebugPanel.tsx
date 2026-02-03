@@ -7,7 +7,7 @@
 
 import React, { useState, useEffect } from 'react';
 
-const IS_DEV = import.meta.env.MODE === 'development';
+const IS_DEV = process.env.NODE_ENV === 'development';
 
 import styled from 'styled-components';
 import { projectKnowledgeService } from '../../services/ai/project-knowledge.service';
@@ -30,7 +30,7 @@ export const ProjectKnowledgeDebugPanel: React.FC = () => {
   const loadKnowledge = async () => {
     const loaded = await projectKnowledgeService.loadKnowledgeBase();
     setIsLoaded(loaded);
-    
+
     if (loaded) {
       const statistics = projectKnowledgeService.getStats();
       setStats(statistics);
@@ -39,7 +39,7 @@ export const ProjectKnowledgeDebugPanel: React.FC = () => {
 
   const handleSearch = async () => {
     if (!query.trim()) return;
-    
+
     setLoading(true);
     try {
       const searchResults = await projectKnowledgeService.search(query, 10);
@@ -53,7 +53,7 @@ export const ProjectKnowledgeDebugPanel: React.FC = () => {
 
   const handleIntelligentSearch = async () => {
     if (!query.trim()) return;
-    
+
     setLoading(true);
     try {
       const searchResults = await projectKnowledgeService.intelligentSearch(query);
@@ -88,7 +88,7 @@ export const ProjectKnowledgeDebugPanel: React.FC = () => {
           <StatusBadge $status={isLoaded}>
             {isLoaded ? '✅ Loaded' : '❌ Not Loaded'}
           </StatusBadge>
-          
+
           {isLoaded && stats && (
             <Stats>
               <Stat>📁 Files: <strong>{stats.totalFiles}</strong></Stat>
@@ -153,13 +153,13 @@ export const ProjectKnowledgeDebugPanel: React.FC = () => {
                     </ResultMeta>
                     <ResultReason>🔍 {result.matchReason}</ResultReason>
                     <ResultDescription>{result.file.summary.description.slice(0, 200)}...</ResultDescription>
-                    
+
                     {result.file.analysis.functions && result.file.analysis.functions.length > 0 && (
                       <ResultFunctions>
                         ⚙️ Functions: {result.file.analysis.functions.slice(0, 5).join(', ')}
                       </ResultFunctions>
                     )}
-                    
+
                     {result.file.analysis.classes && result.file.analysis.classes.length > 0 && (
                       <ResultClasses>
                         🏛️ Classes: {result.file.analysis.classes.slice(0, 3).join(', ')}

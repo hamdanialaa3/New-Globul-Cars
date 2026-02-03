@@ -4,7 +4,7 @@
 
 import { Navigate } from 'react-router-dom';
 
-const IS_DEV = import.meta.env.MODE === 'development';
+const IS_DEV = process.env.NODE_ENV === 'development';
 
 
 import React, { useState, useEffect } from 'react';

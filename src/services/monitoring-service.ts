@@ -78,8 +78,8 @@ export class MonitoringService {
       this.analyticsEvents = this.analyticsEvents.slice(-this.MAX_EVENTS);
     }
 
-  // Log for debugging
-  serviceLogger.debug('Analytics event tracked', { eventName: event.eventName, userId: event.userId });
+    // Log for debugging
+    serviceLogger.debug('Analytics event tracked', { eventName: event.eventName, userId: event.userId });
 
     // ✅ DONE: Send to analytics service (Google Analytics, Mixpanel, etc.)
     this.sendToAnalyticsService(event);
@@ -183,7 +183,7 @@ export class MonitoringService {
       this.performanceMetrics = this.performanceMetrics.slice(-this.MAX_METRICS);
     }
 
-  serviceLogger.debug('Performance metric recorded', { name: metric.name, value: metric.value, unit: metric.unit });
+    serviceLogger.debug('Performance metric recorded', { name: metric.name, value: metric.value, unit: metric.unit });
   }
 
   /**
@@ -195,26 +195,26 @@ export class MonitoringService {
     context?: Record<string, any>
   ): Promise<T> {
     const start = performance.now();
-    
+
     try {
       const result = await fn();
       const duration = performance.now() - start;
-      
+
       this.recordMetric(`${name}_duration`, duration, 'ms', {
         ...context,
         success: true
       });
-      
+
       return result;
     } catch (error) {
       const duration = performance.now() - start;
-      
+
       this.recordMetric(`${name}_duration`, duration, 'ms', {
         ...context,
         success: false,
         error: error instanceof Error ? (error as Error).message : 'Unknown error'
       });
-      
+
       throw error;
     }
   }
@@ -264,7 +264,7 @@ export class MonitoringService {
     const services = Array.from(this.healthChecks.values());
     const unhealthyServices = services.filter(s => s.status === 'unhealthy');
     const degradedServices = services.filter(s => s.status === 'degraded');
-    
+
     let overall: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
     const issues: string[] = [];
 
@@ -284,7 +284,7 @@ export class MonitoringService {
     // Calculate metrics
     const totalEvents = this.analyticsEvents.length;
     const totalMetrics = this.performanceMetrics.length;
-    
+
     // Calculate error rate from recent events
     const recentEvents = this.analyticsEvents.filter(
       e => Date.now() - e.timestamp.getTime() < 300000 // Last 5 minutes
@@ -373,7 +373,7 @@ export class MonitoringService {
 
     // Process performance metrics
     const performanceMetrics = new Map<string, { sum: number; count: number; unit: string }>();
-    
+
     this.performanceMetrics.forEach(metric => {
       const existing = performanceMetrics.get(metric.name);
       if (existing) {
@@ -466,20 +466,20 @@ export class MonitoringService {
     if (!this.navigationTiming) return;
 
     const timing = this.navigationTiming;
-    
+
     // Record key metrics
     this.recordMetric('dom_content_loaded', timing.domContentLoadedEventEnd - timing.domContentLoadedEventStart);
     this.recordMetric('load_complete', timing.loadEventEnd - timing.loadEventStart);
-    
+
     // Use startTime instead of navigationStart (PerformanceNavigationTiming extends PerformanceEntry)
     const startTime = timing.startTime || 0;
     this.recordMetric('first_byte', timing.responseStart - startTime);
-    
+
     // domLoading is not available in PerformanceNavigationTiming, use domInteractive instead
     if (timing.domInteractive > 0 && timing.domComplete > 0) {
       this.recordMetric('dom_processing', timing.domComplete - timing.domInteractive);
     }
-    
+
     // Record resource timing
     if (timing.domContentLoadedEventEnd > 0) {
       this.recordMetric('time_to_interactive', timing.domContentLoadedEventEnd - startTime);
@@ -537,7 +537,7 @@ export class MonitoringService {
           custom_parameters: event.properties
         });
       }
-      
+
       // Mixpanel (if available)
       if (typeof window !== 'undefined' && (window as any).mixpanel) {
         (window as any).mixpanel.track(event.eventName, {
@@ -548,7 +548,7 @@ export class MonitoringService {
           timestamp: event.timestamp.toISOString()
         });
       }
-      
+
       // Facebook Pixel (if available and enabled)
       const pixelId = process.env.REACT_APP_FACEBOOK_PIXEL_ID;
       const pixelEnabled = Boolean(
@@ -557,11 +557,11 @@ export class MonitoringService {
       if (pixelEnabled && typeof window !== 'undefined' && (window as any).fbq) {
         (window as any).fbq('trackCustom', event.eventName, event.properties);
       }
-      
-      serviceLogger.debug('Analytics service event sent', { 
-        eventName: event.eventName, 
+
+      serviceLogger.debug('Analytics service event sent', {
+        eventName: event.eventName,
         userId: event.userId,
-        services: ['gtag', 'mixpanel', 'fbq'].filter(service => 
+        services: ['gtag', 'mixpanel', 'fbq'].filter(service =>
           typeof window !== 'undefined' && (window as any)[service]
         )
       });
@@ -595,7 +595,7 @@ export const trackUserAction = (
   monitoring.trackUserAction(action, category, properties);
 };
 
-export const measureExecution = <T>(
+export const measureExecution = <T,>(
   name: string,
   fn: () => Promise<T>,
   context?: Record<string, any>

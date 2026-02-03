@@ -212,7 +212,7 @@ export class BulgarianErrorHandler {
 export const errorHandler = BulgarianErrorHandler.getInstance();
 
 // Utility function to handle async errors
-export const handleAsyncError = async <T>(
+export const handleAsyncError = async <T,>(
   asyncFn: () => Promise<T>,
   errorHandler?: (error: AppError) => void
 ): Promise<T | null> => {

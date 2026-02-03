@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { collection, getDocs, doc, updateDoc, deleteDoc, addDoc } from 'firebase/firestore';
 
-const IS_DEV = import.meta.env.MODE === 'development';
+const IS_DEV = process.env.NODE_ENV === 'development';
 
 import { db } from '../firebase/firebase-config';
 import { Database, Edit, Trash2, Plus, Save, X } from 'lucide-react';
@@ -167,7 +167,7 @@ const RealDataManager: React.FC = () => {
 
   const handleSave = async () => {
     if (!editingId) return;
-    
+
     try {
       const { id, ...updateData } = editData;
       await updateDoc(doc(db, activeTab, editingId), updateData);
@@ -181,7 +181,7 @@ const RealDataManager: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     if (!window.confirm('هل أنت متأكد من حذف هذا العنصر؟')) return;
-    
+
     try {
       await deleteDoc(doc(db, activeTab, id));
       await loadData();
@@ -191,10 +191,10 @@ const RealDataManager: React.FC = () => {
   };
 
   const handleAdd = async () => {
-    const newItem = activeTab === 'users' 
+    const newItem = activeTab === 'users'
       ? { displayName: 'مستخدم جديد', email: 'new@example.com', profileType: 'private' }
       : { make: 'BMW', model: 'X5', price: 25000, status: 'active' };
-    
+
     try {
       await addDoc(collection(db, activeTab), newItem);
       await loadData();
@@ -219,7 +219,7 @@ const RealDataManager: React.FC = () => {
                 {editingId === user.id ? (
                   <Input
                     value={editData.displayName || ''}
-                    onChange={(e) => setEditData({...editData, displayName: e.target.value})}
+                    onChange={(e) => setEditData({ ...editData, displayName: e.target.value })}
                   />
                 ) : (
                   user.displayName || 'غير محدد'
@@ -229,7 +229,7 @@ const RealDataManager: React.FC = () => {
                 {editingId === user.id ? (
                   <Input
                     value={editData.email || ''}
-                    onChange={(e) => setEditData({...editData, email: e.target.value})}
+                    onChange={(e) => setEditData({ ...editData, email: e.target.value })}
                   />
                 ) : (
                   user.email
@@ -239,7 +239,7 @@ const RealDataManager: React.FC = () => {
                 {editingId === user.id ? (
                   <Input
                     value={editData.profileType || ''}
-                    onChange={(e) => setEditData({...editData, profileType: e.target.value})}
+                    onChange={(e) => setEditData({ ...editData, profileType: e.target.value })}
                   />
                 ) : (
                   user.profileType || 'private'
@@ -285,7 +285,7 @@ const RealDataManager: React.FC = () => {
                 {editingId === car.id ? (
                   <Input
                     value={editData.make || ''}
-                    onChange={(e) => setEditData({...editData, make: e.target.value})}
+                    onChange={(e) => setEditData({ ...editData, make: e.target.value })}
                   />
                 ) : (
                   car.make
@@ -295,7 +295,7 @@ const RealDataManager: React.FC = () => {
                 {editingId === car.id ? (
                   <Input
                     value={editData.model || ''}
-                    onChange={(e) => setEditData({...editData, model: e.target.value})}
+                    onChange={(e) => setEditData({ ...editData, model: e.target.value })}
                   />
                 ) : (
                   car.model
@@ -306,7 +306,7 @@ const RealDataManager: React.FC = () => {
                   <Input
                     type="number"
                     value={editData.price || ''}
-                    onChange={(e) => setEditData({...editData, price: parseInt(e.target.value)})}
+                    onChange={(e) => setEditData({ ...editData, price: parseInt(e.target.value) })}
                   />
                 ) : (
                   `${car.price}€`
@@ -343,7 +343,7 @@ const RealDataManager: React.FC = () => {
   return (
     <Container>
       <Title><Database size={24} />إدارة البيانات الحقيقية</Title>
-      
+
       <TabsContainer>
         <Tab active={activeTab === 'users'} onClick={() => setActiveTab('users')}>
           المستخدمين ({data.length})

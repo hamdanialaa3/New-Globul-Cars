@@ -65,7 +65,7 @@ export const formatTimer = (seconds: number): string => {
 /**
  * Deep clone object (simple implementation)
  */
-export const deepClone = <T>(obj: T): T => {
+export const deepClone = <T,>(obj: T): T => {
   if (obj === null || typeof obj !== 'object') return obj;
   return JSON.parse(JSON.stringify(obj));
 };
@@ -166,14 +166,14 @@ export const arraysEqual = (a: unknown[], b: unknown[]): boolean => {
 /**
  * Remove duplicates from array
  */
-export const uniqueArray = <T>(arr: T[]): T[] => {
+export const uniqueArray = <T,>(arr: T[]): T[] => {
   return Array.from(new Set(arr));
 };
 
 /**
  * Safe JSON parse
  */
-export const safeJSONParse = <T>(json: string, fallback: T): T => {
+export const safeJSONParse = <T,>(json: string, fallback: T): T => {
   try {
     return JSON.parse(json);
   } catch {
