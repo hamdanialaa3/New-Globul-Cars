@@ -21,6 +21,8 @@ export const useAuthRedirectHandler = () => {
   });
 
   useEffect(() => {
+    let isMounted = true; // Track if component is still mounted
+    
     const handleRedirectResult = async () => {
       try {
         if (process.env.NODE_ENV === 'development') {
@@ -28,6 +30,9 @@ export const useAuthRedirectHandler = () => {
         }
         
         const result = await getRedirectResult(auth);
+        
+        // Only update state if component is still mounted
+        if (!isMounted) return;
         
         if (result && result.user) {
           if (process.env.NODE_ENV === 'development') {
@@ -42,19 +47,22 @@ export const useAuthRedirectHandler = () => {
           // Sync user to Firestore
           await SocialAuthService.createOrUpdateBulgarianProfile(result.user);
           
+          // Check again after async operation
+          if (!isMounted) return;
+          
           setState({
             loading: false,
             user: result.user,
             error: null
           });
           
-          // Optionally show success message
           if (process.env.NODE_ENV === 'development') {
             logger.debug('Sign-in completed successfully');
           }
           
         } else {
-          // No redirect result
+          // No redirect result - only log in development
+          if (!isMounted) return;
           setState({
             loading: false,
             user: null,
@@ -63,17 +71,19 @@ export const useAuthRedirectHandler = () => {
         }
         
       } catch (error: unknown) {
+        if (!isMounted) return; // Don't log error if component unmounted
+        
         logger.error('OAuth redirect error', error as Error);
         
         let errorMessage = 'An error occurred during login. Please try again. / Възникна грешка при вход. Моля, опитайте отново.';
         
-        if (error.code === 'auth/popup-blocked') {
+        if ((error as any)?.code === 'auth/popup-blocked') {
           errorMessage = 'Popup windows are blocked. Please allow popups in your browser settings. / Прозорците са блокирани. Позволете показване на прозорци в настройките.';
-        } else if (error.code === 'auth/operation-not-allowed') {
+        } else if ((error as any)?.code === 'auth/operation-not-allowed') {
           errorMessage = 'Login is currently disabled. Please contact support. / Влизането е деактивирано. Свържете се с поддръжката.';
-        } else if (error.code === 'auth/unauthorized-domain') {
+        } else if ((error as any)?.code === 'auth/unauthorized-domain') {
           errorMessage = 'This domain is not authorized for login. Please contact support. / Този домейн не е оторизиран. Свържете се с поддръжката.';
-        } else if (error.code === 'auth/network-request-failed') {
+        } else if ((error as any)?.code === 'auth/network-request-failed') {
           errorMessage = 'Network error. Please check your internet connection. / Грешка в мрежата. Проверете интернет връзката.';
         }
         
@@ -86,6 +96,11 @@ export const useAuthRedirectHandler = () => {
     };
 
     handleRedirectResult();
+    
+    // Cleanup function - mark component as unmounted
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return state;
