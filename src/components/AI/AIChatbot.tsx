@@ -8,7 +8,8 @@ import { AIChatMessage, AIChatContext } from '../../types/ai.types';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { logger } from '../../services/logger-service';
-import { X, MessageSquare } from 'lucide-react';
+import { X } from 'lucide-react';
+import { AIRobotIcon } from '../icons/AIRobotIcon';
 
 interface Props {
   context?: AIChatContext;
@@ -151,7 +152,9 @@ export const AIChatbot: React.FC<Props> = ({
         <ChatWindow $position={position}>
           <ChatHeader>
             <HeaderTitle>
-              <BotIcon>🤖</BotIcon>
+              <BotIcon>
+                <AIRobotIcon size={18} />
+              </BotIcon>
               <span>{language === 'bg' ? 'AI Асистент' : 'AI Assistant'}</span>
             </HeaderTitle>
             <CloseButton onClick={toggleChat}>✕</CloseButton>
@@ -201,7 +204,7 @@ export const AIChatbot: React.FC<Props> = ({
           $position={position}
           aria-label="AI Chatbot"
         >
-          {isOpen ? <X size={24} /> : <MessageSquare size={24} />}
+          {isOpen ? <X size={24} /> : <AIRobotIcon size={24} />}
         </ChatButton>
       )}
     </>
@@ -300,7 +303,11 @@ const HeaderTitle = styled.div`
 `;
 
 const BotIcon = styled.span`
-  font-size: 24px;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const CloseButton = styled.button`

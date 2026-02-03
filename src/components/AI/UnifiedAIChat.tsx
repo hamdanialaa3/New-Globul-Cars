@@ -4,11 +4,12 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send, Wand2, Maximize2, Minimize2 } from 'lucide-react';
+import { X, Send, Maximize2, Minimize2 } from 'lucide-react';
 import { geminiChatService } from '../../services/ai/gemini-chat.service';
 import { logger } from '../../services/logger-service';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { AIRobotIcon } from '../icons/AIRobotIcon';
 
 // ==================== TYPES ====================
 
@@ -598,7 +599,7 @@ export const UnifiedAIChat: React.FC<UnifiedAIChatProps> = ({
             : (language === 'bg' ? 'Отвори AI чат' : 'Open AI Chat')
           }
         >
-          <MessageCircle size={28} />
+          <AIRobotIcon size={28} />
           
           <Badge $show={showBadge}>!</Badge>
         </ChatButton>
@@ -623,7 +624,7 @@ export const UnifiedAIChat: React.FC<UnifiedAIChatProps> = ({
           >
             <Header>
               <Title>
-                <MessageCircle size={18} />
+                <AIRobotIcon size={18} />
                 {t('messaging.ai.title') ?? 'AI Assistant'}
               </Title>
               <HeaderActions>

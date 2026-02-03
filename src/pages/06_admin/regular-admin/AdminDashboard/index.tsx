@@ -9,7 +9,7 @@ import { db } from '../firebase';
 import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { advancedContentManagementService } from '../../../../services/advanced-content-management-service';
 import { permissionManagementService } from '../../../../services/permission-management-service';
-import { adminService } from '../../../../services/admin-service';
+import { adminService } from '../../../../services/admin-permissions.service';
 import { monitoring } from '../../../../services/monitoring-service';
 
 const AdminContainer = styled.div`

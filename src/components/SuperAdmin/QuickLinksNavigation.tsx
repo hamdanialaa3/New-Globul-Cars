@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { 
-  Home, Car, User, Settings, Shield, BarChart3, 
+import {
+  Home, Car, User, Settings, Shield, BarChart3,
   MessageSquare, Heart, Search, Bell, Bookmark,
   TrendingUp, Users, Package, DollarSign, FileText,
-  Lock, Eye, Database, Activity, Zap, 
+  Lock, Eye, Database, Activity, Zap,
   ShoppingCart, CreditCard, Award, Flag, HelpCircle,
   Mail, Phone, MapPin, Info, Cookie, Layout,
   Github, Facebook, Instagram, Send, Share2,
@@ -12,30 +12,32 @@ import {
   RefreshCw, Save, X, Check, AlertCircle,
   Menu, Grid, List, Filter, SortAsc, Tag,
   Calendar, Clock, TrendingDown, BarChart2,
-  PieChart, LineChart, Target, Briefcase
+  PieChart, LineChart, Target, Briefcase, Megaphone
 } from 'lucide-react';
 
 // Styled Components
 const NavigationContainer = styled.div`
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  border: 2px solid #ffd700;
-  border-radius: 15px;
+  background: #0a0d14;
+  border: 2px solid #ff8c61;
+  border-radius: 12px;
   margin: 20px;
   margin-top: 40px;
-  padding: 20px;
-  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
-  /* Removed order: 999 to allow natural flow to bottom */
+  padding: 32px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 140, 97, 0.1);
 `;
 
 const Title = styled.h2`
-  color: #ffd700;
+  color: #ff8c61;
   text-align: center;
-  margin-bottom: 20px;
-  font-size: 24px;
+  margin-bottom: 24px;
+  font-size: 20px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2px;
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
 `;
 
 const CategoryContainer = styled.div`
@@ -46,40 +48,41 @@ const CategoryHeader = styled.div<{ $isOpen: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: ${props => props.$isOpen ? 'rgba(255, 215, 0, 0.2)' : 'rgba(255, 215, 0, 0.1)'};
-  padding: 12px 15px;
-  border-radius: 10px;
+  background: ${props => props.$isOpen ? '#1e2432' : '#141a21'};
+  padding: 14px 18px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border: 1px solid ${props => props.$isOpen ? '#ffd700' : 'transparent'};
+  transition: all 0.2s ease;
+  border: 1px solid ${props => props.$isOpen ? '#ff8c61' : '#2d3748'};
 
   &:hover {
-    background: rgba(255, 215, 0, 0.25);
-    border-color: #ffd700;
+    background: #1e2432;
+    border-color: #ff8c61;
   }
 `;
 
 const CategoryTitle = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: #ffd700;
-  font-size: 16px;
+  gap: 12px;
+  color: #f8fafc;
+  font-size: 15px;
   font-weight: 600;
 
   svg {
     width: 20px;
     height: 20px;
+    color: #ff8c61;
   }
 `;
 
 const CategoryBadge = styled.span`
-  background: #ffd700;
-  color: #000;
-  padding: 4px 10px;
+  background: #ff8c61;
+  color: #0f1419;
+  padding: 2px 10px;
   border-radius: 12px;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 800;
 `;
 
 const LinksGrid = styled.div<{ $isOpen: boolean }>`
@@ -93,28 +96,32 @@ const LinksGrid = styled.div<{ $isOpen: boolean }>`
 const LinkButton = styled.button<{ $protected?: boolean; $admin?: boolean }>`
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  background: #ffffff;
-  color: #1a1a1a;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #1e2432;
+  color: #cbd5e1;
+  border: 1px solid #2d3748;
+  border-radius: 6px;
   cursor: pointer;
-  transition: border-color 0.15s;
+  transition: all 0.2s ease;
   font-size: 12px;
   font-weight: 500;
   text-align: left;
+  position: relative;
 
   svg {
     width: 14px;
     height: 14px;
     flex-shrink: 0;
+    color: #ff8c61;
   }
 
   &:hover {
-    border-color: #999999;
+    border-color: #ff8c61;
+    color: #f8fafc;
+    background: #252b3a;
+    transform: translateX(4px);
   }
-
 `;
 
 const ProtectionBadge = styled.span<{ $type: 'protected' | 'admin' | 'public' }>`
@@ -124,10 +131,10 @@ const ProtectionBadge = styled.span<{ $type: 'protected' | 'admin' | 'public' }>
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: ${props => 
+  background: ${props =>
     props.$type === 'admin' ? '#ff0000' :
-    props.$type === 'protected' ? '#00ff00' :
-    '#888'
+      props.$type === 'protected' ? '#00ff00' :
+        '#888'
   };
 `;
 
@@ -138,50 +145,54 @@ const SearchContainer = styled.div`
 
 const SearchInput = styled.input`
   width: 100%;
-  padding: 12px 45px 12px 15px;
-  background: rgba(255, 215, 0, 0.1);
-  border: 2px solid #ffd700;
-  border-radius: 10px;
-  color: #ffd700;
+  padding: 14px 45px 14px 18px;
+  background: #141a21;
+  border: 1px solid #2d3748;
+  border-radius: 8px;
+  color: #f8fafc;
   font-size: 14px;
   outline: none;
   transition: all 0.3s ease;
 
   &::placeholder {
-    color: rgba(255, 215, 0, 0.5);
+    color: #64748b;
   }
 
   &:focus {
-    background: rgba(255, 215, 0, 0.15);
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+    border-color: #ff8c61;
+    background: #1e2432;
+    box-shadow: 0 0 15px rgba(255, 140, 97, 0.15);
   }
 `;
 
 const SearchIcon = styled(Search)`
   position: absolute;
-  right: 15px;
+  right: 18px;
   top: 50%;
   transform: translateY(-50%);
-  color: #ffd700;
-  width: 20px;
-  height: 20px;
+  color: #ff8c61;
+  width: 18px;
+  height: 18px;
 `;
 
 const Legend = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 24px;
   justify-content: center;
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid rgba(255, 215, 0, 0.3);
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #2d3748;
 `;
 
 const LegendItem = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: #ffd700;
-  font-size: 12px;
+  gap: 10px;
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 `;
 
 const LegendDot = styled.div<{ $color: string }>`
@@ -277,6 +288,8 @@ const QuickLinksNavigation: React.FC = () => {
         { name: 'لوحة الإدارة', path: '/admin', icon: Shield, admin: true },
         { name: 'تسجيل دخول السوبر أدمن', path: '/super-admin-login', icon: Lock },
         { name: 'لوحة السوبر أدمن', path: '/super-admin', icon: Shield, admin: true },
+        { name: 'إدارة الإعلانات', path: '/super-admin?tab=ads', icon: Target, admin: true },
+        { name: 'صفحة اختبار الإعلانات', path: '/debug/ads', icon: Activity, admin: true },
       ]
     },
     {
@@ -311,20 +324,20 @@ const QuickLinksNavigation: React.FC = () => {
   ];
 
   const toggleCategory = (categoryName: string) => {
-    setOpenCategories(prev => 
-      prev.includes(categoryName) 
+    setOpenCategories(prev =>
+      prev.includes(categoryName)
         ? prev.filter(c => c !== categoryName)
         : [...prev, categoryName]
     );
   };
 
   const handleNavigate = (path: string) => {
-      window.open(path, '_blank');
+    window.open(path, '_blank');
   };
 
   const filteredCategories = categories.map(category => ({
     ...category,
-    links: category.links.filter(link => 
+    links: category.links.filter(link =>
       link.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       link.path.toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -333,9 +346,9 @@ const QuickLinksNavigation: React.FC = () => {
   return (
     <NavigationContainer>
       <Title>🚀 جميع صفحات المشروع</Title>
-      
+
       <SearchContainer>
-        <SearchInput 
+        <SearchInput
           type="text"
           placeholder="ابحث عن صفحة..."
           value={searchTerm}
@@ -346,7 +359,7 @@ const QuickLinksNavigation: React.FC = () => {
 
       {filteredCategories.map((category) => (
         <CategoryContainer key={category.name}>
-          <CategoryHeader 
+          <CategoryHeader
             $isOpen={openCategories.includes(category.name)}
             onClick={() => toggleCategory(category.name)}
           >
@@ -356,7 +369,7 @@ const QuickLinksNavigation: React.FC = () => {
             </CategoryTitle>
             <CategoryBadge>{category.links.length}</CategoryBadge>
           </CategoryHeader>
-          
+
           <LinksGrid $isOpen={openCategories.includes(category.name)}>
             {category.links.map((link) => (
               <LinkButton
@@ -368,8 +381,8 @@ const QuickLinksNavigation: React.FC = () => {
               >
                 <link.icon />
                 <span>{link.name}</span>
-                <ProtectionBadge 
-                  $type={link.admin ? 'admin' : link.protected ? 'protected' : 'public'} 
+                <ProtectionBadge
+                  $type={link.admin ? 'admin' : link.protected ? 'protected' : 'public'}
                 />
               </LinkButton>
             ))}

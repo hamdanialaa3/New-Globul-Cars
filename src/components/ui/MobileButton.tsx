@@ -249,6 +249,11 @@ export const MobileButton: React.FC<MobileButtonProps> = ({
   type = 'button',
   className
 }) => {
+  const combinedClassName = ['text-smart', 'text-responsive', className]
+    .filter(Boolean)
+    .join(' ');
+  const textClassName = 'text-smart text-ellipsis';
+
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!disabled && !loading && onClick) {
       onClick(e);
@@ -265,17 +270,17 @@ export const MobileButton: React.FC<MobileButtonProps> = ({
       disabled={disabled || loading}
       onClick={handleClick}
       type={type}
-      className={className}
+      className={combinedClassName}
     >
       {loading ? (
         <>
           <LoadingSpinner />
-          <span>Loading...</span>
+          <span className={textClassName}>Loading...</span>
         </>
       ) : (
         <>
           {icon && <IconWrapper>{icon}</IconWrapper>}
-          <span>{children}</span>
+          <span className={textClassName}>{children}</span>
         </>
       )}
     </StyledButton>

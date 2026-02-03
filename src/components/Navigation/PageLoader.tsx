@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from '../../hooks/useTranslation';
 import { logger } from '../../services/logger-service';
+import aiIcon from '../../assets/icons/koli_one_ai_Icon2.png';
 
 /**
  * PageLoader Component
@@ -89,33 +90,57 @@ const PageLoader: React.FC = () => {
 
       {/* Animated Gear and Progress Section */}
       <div className="flex flex-col items-center gap-4">
-        {/* Mechanical Gear Animation (Car Theme) */}
+        {/* Mechanical Gear Animation (Car Theme) with AI Icon */}
         <div className="relative w-20 h-20">
-          {/* Outer gear ring */}
+          {/* Outer gear ring - 40% opacity */}
           <div
             className="
               absolute inset-0
-              border-4 border-gray-300/30 rounded-full
+              border-4 rounded-full
               border-t-orange-500 border-r-orange-500
               animate-spin
             "
-            style={{ animationDuration: '1.5s' }}
+            style={{ 
+              animationDuration: '1.5s',
+              borderColor: 'rgba(209, 213, 219, 0.12)', // 40% of 30% = 12%
+              borderTopColor: 'rgba(249, 115, 22, 0.4)', // orange-500 with 40% opacity
+              borderRightColor: 'rgba(249, 115, 22, 0.4)'
+            }}
           />
           
-          {/* Inner gear */}
+          {/* Inner gear - 40% opacity */}
           <div
             className="
               absolute inset-2
-              border-3 border-gray-400/40 rounded-full
+              border-3 rounded-full
               border-b-orange-400 border-l-orange-400
               animate-spin
             "
-            style={{ animationDuration: '2s', animationDirection: 'reverse' }}
+            style={{ 
+              animationDuration: '2s', 
+              animationDirection: 'reverse',
+              borderColor: 'rgba(156, 163, 175, 0.16)', // 40% of 40% = 16%
+              borderBottomColor: 'rgba(251, 146, 60, 0.4)', // orange-400 with 40% opacity
+              borderLeftColor: 'rgba(251, 146, 60, 0.4)'
+            }}
           />
 
-          {/* Center hub */}
+          {/* Center hub - 40% opacity */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-4 h-4 bg-orange-500 rounded-full shadow-lg" />
+            <div 
+              className="w-4 h-4 rounded-full shadow-lg" 
+              style={{ backgroundColor: 'rgba(249, 115, 22, 0.4)' }} // orange-500 with 40% opacity
+            />
+          </div>
+
+          {/* AI Icon in front of gear */}
+          <div className="absolute inset-0 flex items-center justify-center z-10">
+            <img 
+              src={aiIcon} 
+              alt="AI" 
+              className="w-12 h-12 object-contain"
+              style={{ filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3))' }}
+            />
           </div>
         </div>
 

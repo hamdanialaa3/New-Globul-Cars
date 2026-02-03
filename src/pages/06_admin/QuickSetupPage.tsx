@@ -6,13 +6,13 @@ import { logger } from '../../services/logger-service';
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { 
-  Settings, 
-  Key, 
-  Save, 
-  Eye, 
-  EyeOff, 
-  CheckCircle, 
+import {
+  Settings,
+  Key,
+  Save,
+  Eye,
+  EyeOff,
+  CheckCircle,
   AlertTriangle,
   ExternalLink,
   Copy,
@@ -39,9 +39,10 @@ interface ConfigField {
 const Container = styled.div`
   max-width: 1000px;
   margin: 0 auto;
-  padding: 24px;
-  background: #f8fafc;
+  padding: 32px;
+  background: #0f1419;
   min-height: 100vh;
+  color: #f8fafc;
 `;
 
 const Header = styled.div`
@@ -50,16 +51,19 @@ const Header = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 2.5rem;
+  font-size: 24px;
   font-weight: 700;
-  color: #1a202c;
-  margin-bottom: 8px;
+  color: #ff8c61;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 `;
 
 const Subtitle = styled.p`
-  font-size: 1.1rem;
-  color: #718096;
+  font-size: 14px;
+  color: #cbd5e1;
   margin: 0;
+  font-weight: 500;
 `;
 
 const ServicesContainer = styled.div`
@@ -68,20 +72,25 @@ const ServicesContainer = styled.div`
 `;
 
 const ServiceCard = styled.div`
-  background: white;
+  background: #1e2432;
   border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e2e8f0;
+  padding: 32px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  border: 1px solid #2d3748;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: #ff8c61;
+  }
 `;
 
 const ServiceHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #2d3748;
 `;
 
 const ServiceInfo = styled.div`
@@ -89,28 +98,33 @@ const ServiceInfo = styled.div`
 `;
 
 const ServiceName = styled.h3`
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #2d3748;
-  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #ff8c61;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 `;
 
 const ServiceDescription = styled.p`
-  font-size: 0.9rem;
-  color: #718096;
+  font-size: 13px;
+  color: #cbd5e1;
   margin: 0;
+  font-weight: 500;
 `;
 
 const StatusIndicator = styled.div<{ $configured: boolean }>`
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
+  padding: 6px 16px;
   border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  background: ${p => p.$configured ? '#f0fff4' : '#fef5e7'};
-  color: ${p => p.$configured ? '#38a169' : '#d69e2e'};
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: ${p => p.$configured ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)'};
+  color: ${p => p.$configured ? '#10b981' : '#f59e0b'};
+  border: 1px solid ${p => p.$configured ? '#10b981' : '#f59e0b'};
 `;
 
 const FieldsGrid = styled.div`
@@ -125,12 +139,14 @@ const FieldGroup = styled.div`
 `;
 
 const FieldLabel = styled.label`
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #4a5568;
+  font-size: 13px;
+  font-weight: 700;
+  color: #f8fafc;
   display: flex;
   align-items: center;
   gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 `;
 
 const RequiredIndicator = styled.span`
@@ -145,15 +161,21 @@ const InputContainer = styled.div`
 const Input = styled.input`
   width: 100%;
   padding: 12px 16px;
-  border: 1px solid #e2e8f0;
+  background: #0f1419;
+  border: 1px solid #2d3748;
   border-radius: 8px;
-  font-size: 0.9rem;
-  transition: border-color 0.2s ease;
+  font-size: 14px;
+  color: #f8fafc;
+  transition: all 0.2s ease;
 
   &:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: #ff8c61;
+    box-shadow: 0 0 0 3px rgba(255, 140, 97, 0.1);
+  }
+
+  &::placeholder {
+    color: #4a5568;
   }
 
   &.password {
@@ -168,19 +190,20 @@ const ToggleButton = styled.button`
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: #718096;
+  color: #4a5568;
   cursor: pointer;
   padding: 4px;
 
   &:hover {
-    color: #4a5568;
+    color: #ff8c61;
   }
 `;
 
 const FieldDescription = styled.p`
-  font-size: 0.8rem;
-  color: #718096;
+  font-size: 11px;
+  color: #94a3b8;
   margin: 4px 0 0 0;
+  font-weight: 500;
 `;
 
 const ActionsContainer = styled.div`
@@ -191,48 +214,66 @@ const ActionsContainer = styled.div`
 `;
 
 const Button = styled.button<{ $variant?: 'primary' | 'secondary' | 'outline' }>`
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   
   ${p => {
     switch (p.$variant) {
       case 'primary':
         return `
-          background: #667eea;
-          color: white;
+          background: #ff8c61;
+          color: #0f1419;
           border: none;
-          &:hover { background: #5a67d8; }
+          &:hover { 
+            background: #ffa885;
+            transform: translateY(-1px);
+          }
         `;
       case 'secondary':
         return `
-          background: #edf2f7;
-          color: #4a5568;
+          background: #2d3748;
+          color: #f8fafc;
           border: none;
-          &:hover { background: #e2e8f0; }
+          &:hover { 
+            background: #4a5568;
+            transform: translateY(-1px);
+          }
         `;
       case 'outline':
         return `
           background: transparent;
-          color: #667eea;
-          border: 1px solid #667eea;
-          &:hover { background: #667eea; color: white; }
+          color: #ff8c61;
+          border: 1px solid #ff8c61;
+          &:hover { 
+            background: rgba(255, 140, 97, 0.1);
+            transform: translateY(-1px);
+          }
         `;
       default:
         return `
-          background: #edf2f7;
-          color: #4a5568;
+          background: #2d3748;
+          color: #f8fafc;
           border: none;
-          &:hover { background: #e2e8f0; }
+          &:hover { 
+            background: #4a5568;
+          }
         `;
     }
   }}
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
 
 const QuickSetupPage: React.FC = () => {
@@ -382,19 +423,19 @@ const QuickSetupPage: React.FC = () => {
 
   const saveServiceConfig = async (serviceName: string) => {
     setSaving(prev => ({ ...prev, [serviceName]: true }));
-    
+
     try {
       // في التطبيق الحقيقي، سيتم حفظ هذه القيم في متغيرات البيئة
       // أو في خدمة إدارة التكوين الآمنة
-      
+
       const serviceConfig = configs[serviceName] || {};
       logger.info(`Saving config for ${serviceName}:`, serviceConfig);
-      
+
       // محاكاة حفظ البيانات
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       alert(`تم حفظ إعدادات ${serviceName} بنجاح!`);
-      
+
     } catch (error) {
       logger.error('Error saving config:', error);
       alert(`خطأ في حفظ إعدادات ${serviceName}`);
@@ -422,10 +463,10 @@ const QuickSetupPage: React.FC = () => {
   const isServiceConfigured = (serviceName: string): boolean => {
     const service = services.find(s => s.name === serviceName);
     if (!service) return false;
-    
+
     const serviceConfig = configs[serviceName] || {};
     const requiredFields = service.fields.filter(f => f.required);
-    
+
     return requiredFields.every(field => serviceConfig[field.key]?.trim());
   };
 
@@ -469,9 +510,9 @@ const QuickSetupPage: React.FC = () => {
                   <InputContainer>
                     <Input
                       type={
-                        field.type === 'password' && 
-                        !showPasswords[`${service.name}-${field.key}`] 
-                          ? 'password' 
+                        field.type === 'password' &&
+                          !showPasswords[`${service.name}-${field.key}`]
+                          ? 'password'
                           : 'text'
                       }
                       placeholder={field.placeholder}

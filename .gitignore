@@ -44,3 +44,42 @@ secrets/
 keys/
 service-account/
 functions/node_modules/
+
+# Build and cache directories
+.cache/
+.next/
+coverage/
+.nyc_output/
+*.tsbuildinfo
+
+# Temporary files
+*.tmp
+*.temp
+desktop.ini
+Thumbs.db
+*.bat
+*_output.txt
+*-output.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+venv/
+.Python
+
+# Scripts (organized in scripts/ folder)
+*.sh
+*.ps1
+
+# Documentation (organized in docs/ folder)
+*REPORT.md
+*COMPLETE.md
+*SUMMARY.md
+*ROADMAP.md
+*CHECKLIST.md
+*GUIDE.md
+*PLAN.md
+*ANALYSIS.md

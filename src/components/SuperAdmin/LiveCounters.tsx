@@ -30,22 +30,24 @@ interface LiveCountersProps {
 }
 
 const CountersContainer = styled.div`
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
+  background: #0f1419;
+  border: 1px solid #2d3748;
+  border-radius: 8px;
   padding: 24px;
   margin: 0 20px 20px 20px;
-  color: #1a1a1a;
+  color: #f8fafc;
 `;
 
 const SectionTitle = styled.h2`
-  color: #1a1a1a;
+  color: #ff8c61;
   font-size: 16px;
-  font-weight: 600;
-  margin: 0 0 20px 0;
+  font-weight: 700;
+  margin: 0 0 24px 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 `;
 
 const CountersGrid = styled.div`
@@ -56,42 +58,44 @@ const CountersGrid = styled.div`
 `;
 
 const CounterCard = styled.div<{ $interactive?: boolean }>`
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  padding: 16px;
+  background: #1e2432;
+  border: 1px solid #2d3748;
+  border-radius: 8px;
+  padding: 20px;
   text-align: center;
   transition: all 0.2s ease;
   position: relative;
   cursor: ${props => props.$interactive ? 'pointer' : 'default'};
+  overflow: hidden;
   
   &:hover {
-    border-color: ${props => props.$interactive ? '#1a1a1a' : '#999999'};
-    transform: ${props => props.$interactive ? 'translateY(-2px)' : 'none'};
-    box-shadow: ${props => props.$interactive ? '0 4px 12px rgba(0,0,0,0.1)' : 'none'};
+    border-color: #ff8c61;
+    transform: ${props => props.$interactive ? 'translateY(-4px)' : 'none'};
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    background: #252b3a;
   }
 `;
 
 const ActionButton = styled.button`
   width: 100%;
-  margin-top: 12px;
-  padding: 6px;
-  background: #1a1a1a;
-  color: #fff;
+  margin-top: 16px;
+  padding: 8px;
+  background: #ff8c61;
+  color: #0f1419;
   border: none;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 6px;
   opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.2s;
+  transform: translateY(20px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
 
   ${CounterCard}:hover & {
     opacity: 1;
@@ -99,36 +103,38 @@ const ActionButton = styled.button`
   }
   
   &:hover {
-    background: #000;
+    background: #ffa885;
   }
 `;
 
 const CounterIcon = styled.div`
-  background: #f5f5f5;
-  color: #1a1a1a;
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
+  background: #252b3a;
+  color: #ff8c61;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 12px;
+  margin: 0 auto 16px;
   font-size: 20px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #2d3748;
 `;
 
 const CounterValue = styled.div`
-  font-size: 24px;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 6px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-bottom: 8px;
 `;
 
 const CounterLabel = styled.div`
-  font-size: 12px;
-  color: #666666;
-  font-weight: 500;
+  font-size: 11px;
+  color: #cbd5e1;
+  font-weight: 700;
   margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 `;
 
 const CounterChange = styled.div<{ $positive: boolean; $neutral?: boolean }>`
@@ -146,17 +152,25 @@ const CounterChange = styled.div<{ $positive: boolean; $neutral?: boolean }>`
 
 const StatusIndicator = styled.div<{ $status: 'online' | 'offline' | 'warning' }>`
   position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 8px;
-  height: 8px;
+  top: 12px;
+  right: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
+  box-shadow: 0 0 10px ${props => {
+    switch (props.$status) {
+      case 'online': return '#4ade80';
+      case 'warning': return '#fbbf24';
+      case 'offline': return '#f87171';
+      default: return '#64748b';
+    }
+  }};
   background: ${props => {
     switch (props.$status) {
-      case 'online': return '#2d5a2d';
-      case 'warning': return '#8b5a2d';
-      case 'offline': return '#8b2d2d';
-      default: return '#666666';
+      case 'online': return '#4ade80';
+      case 'warning': return '#fbbf24';
+      case 'offline': return '#f87171';
+      default: return '#64748b';
     }
   }};
 `;

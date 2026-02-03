@@ -5,9 +5,9 @@
 import React, { useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { 
-  MessageCircle, 
-  UserPlus, 
+import {
+  MessageCircle,
+  UserPlus,
   UserCheck,
   CheckCircle
 } from 'lucide-react';
@@ -73,8 +73,8 @@ const BubbleWrapper = styled.div<{ $isOnline: boolean }>`
   }
 `;
 
-const BubbleAvatar = styled.div<{ 
-  $imageUrl?: string; 
+const BubbleAvatar = styled.div<{
+  $imageUrl?: string;
   $size: number;
   $borderColor: string;
   $isOnline: boolean;
@@ -83,8 +83,8 @@ const BubbleAvatar = styled.div<{
   width: ${p => p.$size}px;
   height: ${p => p.$size}px;
   border-radius: 50%;
-  background: ${props => props.$imageUrl 
-    ? `url(${props.$imageUrl})` 
+  background: ${props => props.$imageUrl
+    ? `url(${props.$imageUrl})`
     : 'linear-gradient(135deg, #FF8F10 0%, #FF7900 50%, #FF6600 100%)'
   };
   background-size: cover;
@@ -160,7 +160,6 @@ const UserName = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 `;
 
 const UserRole = styled.div<{ $type: string }>`
@@ -226,8 +225,8 @@ const HoverAvatar = styled.div<{ $url?: string; $initial: string }>`
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: ${p => p.$url 
-    ? `url(${p.$url})` 
+  background: ${p => p.$url
+    ? `url(${p.$url})`
     : 'linear-gradient(135deg, #FF8F10, #FF7900)'};
   background-size: cover;
   background-position: center;
@@ -307,7 +306,7 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   gap: 6px;
   transition: all 0.2s ease;
   
-  ${p => p.$variant === 'primary' 
+  ${p => p.$variant === 'primary'
     ? `
       background: linear-gradient(135deg, #FF7900 0%, #FF9533 100%);
       color: white;
@@ -381,14 +380,14 @@ export const UserBubble: React.FC<UserBubbleProps> = ({
 }) => {
   const navigate = useNavigate();
   const [showCard, setShowCard] = useState(false);
-  
+
   const bubbleSize = SIZES[size];
   const borderColor = BORDER_COLORS[user.profileType || 'default'];
   const isOnline = user.isOnline || false;
   const onlineStatus: 'online' | 'away' | 'offline' = isOnline ? 'online' : 'offline';
   const initial = user.displayName?.[0]?.toUpperCase() || '?';
   const isVerified = user.verification?.emailVerified || user.verification?.phoneVerified;
-  
+
   const handleClick = () => {
     if (onClick) {
       onClick();
@@ -411,17 +410,17 @@ export const UserBubble: React.FC<UserBubbleProps> = ({
       }
     }
   };
-  
+
   const handleFollow = (e: React.MouseEvent) => {
     e.stopPropagation();
     onFollow?.();
   };
-  
+
   const handleMessage = (e: React.MouseEvent) => {
     e.stopPropagation();
     onMessage?.();
   };
-  
+
   return (
     <BubbleContainer
       onMouseEnter={() => showHoverCard && setShowCard(true)}
@@ -436,34 +435,34 @@ export const UserBubble: React.FC<UserBubbleProps> = ({
           $initial={initial}
           onClick={handleClick}
         />
-        
+
         {size !== 'small' && (
           <OnlineIndicator $status={onlineStatus} />
         )}
-        
+
         {isVerified && size !== 'small' && (
           <VerifiedBadge title="Verified User">
             <CheckCircle size={12} color="white" />
           </VerifiedBadge>
         )}
-        
+
         {showHoverCard && showCard && (
           <HoverCard className="hover-card">
             <HoverCardHeader>
-              <HoverAvatar 
+              <HoverAvatar
                 $url={user.profileImage?.url}
                 $initial={initial}
               />
               <HoverCardInfo>
                 <h4>{user.displayName}</h4>
                 <p>
-                  {user.profileType === 'dealer' ? 'Dealer' 
-                   : user.profileType === 'company' ? 'Company' 
-                   : 'Private'}
+                  {user.profileType === 'dealer' ? 'Dealer'
+                    : user.profileType === 'company' ? 'Company'
+                      : 'Private'}
                 </p>
               </HoverCardInfo>
             </HoverCardHeader>
-            
+
             <HoverCardStats>
               <div>
                 <div className="value">{user.stats?.followers || 0}</div>
@@ -478,7 +477,7 @@ export const UserBubble: React.FC<UserBubbleProps> = ({
                 <div className="label">Trust</div>
               </div>
             </HoverCardStats>
-            
+
             <HoverCardActions>
               <ActionButton $variant="primary" onClick={handleMessage}>
                 <MessageCircle size={14} />
@@ -492,14 +491,14 @@ export const UserBubble: React.FC<UserBubbleProps> = ({
           </HoverCard>
         )}
       </BubbleWrapper>
-      
+
       <UserName>{user.displayName}</UserName>
-      
+
       {user.profileType && size !== 'small' && (
         <UserRole $type={user.profileType}>
-          {user.profileType === 'dealer' ? 'Dealer' 
-           : user.profileType === 'company' ? 'Company' 
-           : 'Private'}
+          {user.profileType === 'dealer' ? 'Dealer'
+            : user.profileType === 'company' ? 'Company'
+              : 'Private'}
         </UserRole>
       )}
     </BubbleContainer>

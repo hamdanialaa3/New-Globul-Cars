@@ -13,44 +13,46 @@ import { smartAlertsService, Alert } from '../../services/smart-alerts-service';
 import { logger } from '../../services/logger-service';
 
 const PanelContainer = styled.div`
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  border: 2px solid #ffd700;
-  border-radius: 15px;
-  padding: 30px;
-  margin: 20px;
-  box-shadow: 0 20px 40px rgba(255, 215, 0, 0.2);
-  color: #ffd700;
+  background: #0f1419;
+  border: 1px solid #2d3748;
+  border-radius: 12px;
+  padding: 32px;
+  margin: 0 20px 20px 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  color: #f8fafc;
 `;
 
 const SectionTitle = styled.h2`
-  color: #ffd700;
-  font-size: 20px;
+  color: #ff8c61;
+  font-size: 18px;
   font-weight: 700;
-  margin: 0 0 25px 0;
-  text-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+  margin: 0 0 24px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 `;
 
 const RefreshButton = styled.button`
-  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-  color: #000000;
-  border: 2px solid #ffd700;
-  border-radius: 8px;
+  background: #ff8c61;
+  color: #0f1419;
+  border: 1px solid #ff8c61;
+  border-radius: 6px;
   padding: 8px 16px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
-  transition: all 0.3s ease;
+  gap: 8px;
+  transition: all 0.2s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+    background: #ffa885;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 140, 97, 0.3);
   }
 `;
 
@@ -60,23 +62,25 @@ const AlertsGrid = styled.div`
 `;
 
 const AlertCard = styled.div<{ $severity: string }>`
-  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-  border-left: 4px solid ${props => {
+  background: #1e2432;
+  border: 1px solid #2d3748;
+  border-left: 6px solid ${props => {
     switch (props.$severity) {
       case 'critical': return '#dc2626';
-      case 'error': return '#f87171';
+      case 'error': return '#ef4444';
       case 'warning': return '#fbbf24';
-      case 'info': return '#60a5fa';
-      default: return '#6b7280';
+      case 'info': return '#3b82f6';
+      default: return '#64748b';
     }
   }};
   border-radius: 8px;
-  padding: 20px;
-  transition: all 0.3s ease;
+  padding: 24px;
+  transition: all 0.2s ease;
 
   &:hover {
-    transform: translateX(5px);
-    box-shadow: 0 5px 20px rgba(255, 215, 0, 0.2);
+    border-color: #ff8c61;
+    background: #252b3a;
+    transform: translateX(6px);
   }
 `;
 
@@ -94,37 +98,38 @@ const AlertTitleSection = styled.div`
 `;
 
 const AlertTitle = styled.h3`
-  color: #ffd700;
-  font-size: 14px;
-  font-weight: 600;
+  color: #f8fafc;
+  font-size: 15px;
+  font-weight: 700;
   margin: 0;
 `;
 
 const AlertBadge = styled.span<{ $severity: string }>`
   background: ${props => smartAlertsService.getSeverityColor(props.$severity)};
-  color: #ffffff;
-  padding: 3px 8px;
-  border-radius: 4px;
+  color: #0f1419;
+  padding: 2px 10px;
+  border-radius: 12px;
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
 `;
 
 const AlertDescription = styled.p`
-  color: #ffd700;
+  color: #cbd5e1;
   font-size: 13px;
-  margin: 0 0 12px 0;
-  opacity: 0.9;
+  margin: 0 0 16px 0;
+  line-height: 1.6;
 `;
 
 const AlertAction = styled.div`
-  color: #60a5fa;
+  color: #3b82f6;
   font-size: 12px;
-  margin-bottom: 12px;
-  padding: 10px;
-  background: rgba(96, 165, 250, 0.1);
-  border-radius: 6px;
-  border-left: 3px solid #60a5fa;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+  font-weight: 500;
 `;
 
 const AlertFooter = styled.div`
@@ -137,28 +142,31 @@ const AlertFooter = styled.div`
 `;
 
 const AlertTimestamp = styled.div`
-  color: #ffd700;
+  color: #94a3b8;
   font-size: 11px;
-  opacity: 0.7;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
+  font-weight: 600;
 `;
 
 const ResolveButton = styled.button`
-  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
-  color: #000000;
+  background: #10b981;
+  color: #ffffff;
   border: none;
   border-radius: 6px;
-  padding: 6px 12px;
+  padding: 6px 14px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 
   &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 3px 10px rgba(74, 222, 128, 0.4);
+    background: #059669;
+    transform: translateY(-1px);
   }
 `;
 
@@ -196,12 +204,12 @@ const RealTimeAlertsPanel: React.FC = () => {
       setLoading(true);
       const systemAlerts = await smartAlertsService.checkSystemHealth();
       const firestoreAlerts = await smartAlertsService.getActiveAlerts();
-      
+
       const combinedAlerts = [...systemAlerts, ...firestoreAlerts];
       const uniqueAlerts = Array.from(
         new Map(combinedAlerts.map(alert => [alert.title, alert])).values()
       );
-      
+
       setAlerts(uniqueAlerts);
     } catch (error) {
       logger.error('Failed to load alerts', error as Error);
@@ -218,7 +226,7 @@ const RealTimeAlertsPanel: React.FC = () => {
 
   const handleResolve = async (alertId?: string) => {
     if (!alertId) return;
-    
+
     try {
       await smartAlertsService.resolveAlert(alertId);
       await loadAlerts();

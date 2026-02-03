@@ -13,7 +13,7 @@ import GuestExpirationModal from './components/auth/GuestExpirationModal';
 import ConsentBanner from './components/ConsentBanner';
 import PendingFavoriteHandler from './components/PendingFavoriteHandler';
 import ScrollToTop from './components/Navigation/ScrollToTop';
-import PageLoader from './components/Navigation/PageLoader';
+import ProgressBar from './components/ProgressBar';
 // 🔴 CRITICAL: Global ErrorBoundary to prevent white screen of death
 import { ErrorBoundary } from './components/ErrorBoundary';
 // ✅ MERGED: AIChatbotWidget merged into UnifiedAIChat in MainLayout
@@ -57,8 +57,8 @@ const App: React.FC = () => {
         {/* 🔝 Automatic scroll to top on route change */}
         <ScrollToTop />
         
-        {/* ⚙️ Professional page transition loader */}
-        <PageLoader />
+        {/* ⚙️ Sleek top-left progress bar on page transitions */}
+        <ProgressBar />
         
         {/* ✅ MERGED: AIChatbotWidget moved to UnifiedAIChat in MainLayout */}
         <PendingFavoriteHandler />

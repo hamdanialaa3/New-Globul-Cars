@@ -15,7 +15,7 @@ import { carsReportService } from '../../../../services/reports/cars-report-serv
 import { Download, FileSpreadsheet, FileJson, Users, Flame, Database, Image, Zap, Globe, BarChart2, Cpu, Settings, DollarSign, FileText, Key, Activity, Layers, Server } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import GlobulCarLogo from '../../../../components/icons/GlobulCarLogo';
-import { RoleGuard } from '../../../../components/guards/RoleGuard';
+
 
 // Import components
 import AdminHeader from '../../../../components/SuperAdmin/AdminHeader';
@@ -45,16 +45,18 @@ import { GodModeCarGrid } from '../../../../components/SuperAdmin/GodMode/GodMod
 import { GodModeMessagesGrid } from '../../../../components/SuperAdmin/GodMode/GodModeMessagesGrid';
 import { GodModeRevenueGrid } from '../../../../components/SuperAdmin/GodMode/GodModeRevenueGrid';
 import { GodModeViewsGrid } from '../../../../components/SuperAdmin/GodMode/GodModeViewsGrid';
+import { AdManagerDashboard } from '../../../../features/ads/admin/AdManagerDashboard';
+import { DebugAdsPage } from '../../../../features/ads/pages/DebugAdsPage';
 
 // ... (existing code)
 
 // Styled Components - Professional Minimal Design
 const DashboardContainer = styled.div`
   min-height: 100vh;
-  background: #f5f5f5;
+  background: #0f1419; /* Dark Background */
   padding: 0 0 40px 0;
   margin: 0;
-  color: #1a1a1a;
+  color: #f8fafc; /* Light Text */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
 `;
 
@@ -70,52 +72,55 @@ const LoadingState = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
-  color: #333333;
+  color: #f8fafc;
   font-size: 16px;
   font-weight: 500;
   gap: 12px;
-  background: #ffffff;
+  background: #0f1419;
 `;
 
 const LoadingMessage = styled.div`
   font-size: 14px;
-  color: #666666;
+  color: #cbd5e1;
   max-width: 600px;
   text-align: center;
   line-height: 1.5;
 `;
 
 const ActionButton = styled.button`
-  background: #1a1a1a;
-  color: #ffffff;
-  border: 1px solid #d0d0d0;
+  background: #ff8c61; /* Premium Accent */
+  color: #0f1419;
+  border: 1px solid #ff8c61;
   padding: 10px 20px;
   border-radius: 4px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.15s;
+  transition: all 0.2s ease;
   margin-top: 8px;
 
   &:hover {
-    background: #333333;
+    background: #ffa885;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 140, 97, 0.3);
   }
 `;
 
 const LoginButton = styled.button`
-  background: #1a1a1a;
-  color: #ffffff;
-  border: 1px solid #d0d0d0;
+  background: #ff8c61;
+  color: #0f1419;
+  border: 1px solid #ff8c61;
   padding: 10px 20px;
   border-radius: 4px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.15s;
+  transition: all 0.2s ease;
   margin-top: 8px;
 
   &:hover {
-    background: #333333;
+    background: #ffa885;
+    box-shadow: 0 4px 12px rgba(255, 140, 97, 0.3);
   }
 `;
 
@@ -257,8 +262,13 @@ const SuperAdminDashboard: React.FC = () => {
             if (cancelled) return;
             const realUserActivity = await firebaseRealDataService.getRealUserActivity();
 
+            const mappedUserActivity = realUserActivity.map((activity: any) => ({
+              ...activity,
+              email: activity.email || 'no-email@koli.one'
+            }));
+
             if (cancelled) return;
-            setUserActivity(realUserActivity);
+            setUserActivity(mappedUserActivity as any);
 
             logger.info('✅ Real Firebase data loaded successfully');
           }
@@ -319,6 +329,13 @@ const SuperAdminDashboard: React.FC = () => {
 
     initializeDashboard();
     loadMarketStats();
+
+    // Check for tab query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
 
     // Refresh stats every 30 seconds
     const statsInterval = setInterval(() => {
@@ -389,7 +406,7 @@ const SuperAdminDashboard: React.FC = () => {
   }
 
   return (
-    <RoleGuard requireSuperAdmin={true}>
+    <>
       <DashboardContainer>
         <AdminHeader session={session} onLogout={handleLogout} />
 
@@ -458,9 +475,9 @@ const SuperAdminDashboard: React.FC = () => {
           )}
 
           {activeTab === 'users' && (
-            <div style={{ textAlign: 'center', padding: '2rem', background: '#ffffff', border: '1px solid #e0e0e0', borderRadius: '4px' }}>
-              <h2 style={{ color: '#1a1a1a', marginBottom: '1rem', fontSize: '18px', fontWeight: '600' }}>User Management</h2>
-              <p style={{ color: '#666666', marginBottom: '2rem', fontSize: '14px' }}>Complete control over all users, subscribers, and administrators</p>
+            <div style={{ textAlign: 'center', padding: '2rem', background: '#1e2432', border: '1px solid #2d3748', borderRadius: '4px' }}>
+              <h2 style={{ color: '#f8fafc', marginBottom: '1rem', fontSize: '18px', fontWeight: '600' }}>User Management</h2>
+              <p style={{ color: '#cbd5e1', marginBottom: '2rem', fontSize: '14px' }}>Complete control over all users, subscribers, and administrators</p>
               <ActionButton
                 onClick={() => navigate('/super-admin/users')}
                 style={{
@@ -509,6 +526,10 @@ const SuperAdminDashboard: React.FC = () => {
 
           {activeTab === 'ai' && (
             <AIDashboard />
+          )}
+
+          {activeTab === 'ads' && (
+            <AdManagerDashboard />
           )}
         </TabContent>
 
@@ -879,194 +900,198 @@ const SuperAdminDashboard: React.FC = () => {
           <FooterNote>هذه المعلومات خاصة بالمالك (Super Admin) ولا تظهر للمستخدمين العاديين.</FooterNote>
         </SuperAdminFooter>
       </DashboardContainer >
-    </RoleGuard>
+    </>
   );
 };
 
 // Styled footer for Super Admin only - Professional Minimal
 const SuperAdminFooter = styled.footer`
-  background: #ffffff;
-  color: #1a1a1a;
-  padding: 24px 0 16px 0;
-  margin - top: 40px;
-  border - top: 1px solid #e0e0e0;
-  text - align: center;
-  `;
+      background: #0a0d14;
+      color: #f8fafc;
+      padding: 32px 0 24px 0;
+      margin-top: 40px;
+      border-top: 1px solid #2d3748;
+      text-align: center;
+      `;
 
 const FooterStatsGrid = styled.div`
-  display: flex;
-  justify - content: center;
-  gap: 32px;
-  flex - wrap: wrap;
-  margin - bottom: 12px;
-  `;
+      display: flex;
+      justify - content: center;
+      gap: 32px;
+      flex - wrap: wrap;
+      margin - bottom: 12px;
+      `;
 
 const FooterStat = styled.div`
-  min - width: 100px;
-  `;
+      min - width: 100px;
+      `;
 
 const StatLabel = styled.div`
-  font - size: 12px;
-  color: #666666;
-  margin - bottom: 4px;
-  font - weight: 500;
-  `;
+      font-size: 12px;
+      color: #cbd5e1;
+      margin-bottom: 4px;
+      font-weight: 500;
+      `;
 
 const StatValue = styled.div`
-  font - size: 18px;
-  font - weight: 600;
-  color: #1a1a1a;
-  `;
+      font - size: 18px;
+      font - weight: 600;
+      color: #1a1a1a;
+      `;
 
 const FooterNote = styled.div`
-  font - size: 12px;
-  color: #999999;
-  margin - top: 8px;
-  `;
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 8px;
+      `;
 
 // Reports Section Styles - Professional Minimal
 // Firebase Links Section Styles
 const FirebaseLinksSection = styled.div`
-  padding: 24px 16px;
-  margin - bottom: 24px;
-  border - bottom: 1px solid #e0e0e0;
-  background: #ffffff;
-  `;
+      padding: 24px 16px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid #2d3748;
+      background: #0f1419;
+      `;
 
 const SectionTitle = styled.h3`
-  font - size: 16px;
-  color: #1a1a1a;
-  text - align: center;
-  margin - bottom: 16px;
-  font - weight: 600;
-  `;
+      font - size: 16px;
+      color: #1a1a1a;
+      text - align: center;
+      margin - bottom: 16px;
+      font - weight: 600;
+      `;
 
 const LinksGrid = styled.div`
-  display: grid;
-  grid - template - columns: repeat(auto - fit, minmax(180px, 1fr));
-  gap: 12px;
-  max - width: 1200px;
-  margin: 0 auto;
-  `;
+      display: grid;
+      grid - template - columns: repeat(auto - fit, minmax(180px, 1fr));
+      gap: 12px;
+      max - width: 1200px;
+      margin: 0 auto;
+      `;
 
 const LinkCard = styled.div`
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  border - radius: 4px;
-  padding: 16px;
-  cursor: pointer;
-  transition: border - color 0.15s;
-  text - align: center;
-  
-  &:hover {
-    border - color: #999999;
+      background: #1e2432;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+
+      &:hover {
+        border-color: #ff8c61;
+        background: #252b3a;
+        transform: translateY(-2px);
   }
-  `;
+      `;
 
 const LinkIcon = styled.div`
-  font - size: 24px;
-  margin - bottom: 8px;
-  `;
+      font - size: 24px;
+      margin - bottom: 8px;
+      `;
 
 const LinkName = styled.div`
-  font - size: 13px;
-  color: #1a1a1a;
-  font - weight: 500;
-  margin - bottom: 4px;
-  `;
+      font-size: 13px;
+      color: #f8fafc;
+      font-weight: 600;
+      margin-bottom: 4px;
+      `;
 
 const LinkDesc = styled.div`
-  font - size: 11px;
-  color: #666666;
-  `;
+      font - size: 11px;
+      color: #666666;
+      `;
 
 const AIManagementSection = styled.div`
-  padding: 24px 16px;
-  margin - bottom: 24px;
-  border - bottom: 1px solid #e0e0e0;
-  background: #ffffff;
-  `;
+      padding: 24px 16px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid #2d3748;
+      background: #0f1419;
+      `;
 
 const IoTManagementSection = styled.div`
-  padding: 24px 16px;
-  margin - bottom: 24px;
-  border - bottom: 1px solid #e0e0e0;
-  background: #ffffff;
-  `;
+      padding: 24px 16px;
+      margin - bottom: 24px;
+      border - bottom: 1px solid #e0e0e0;
+      background: #ffffff;
+      `;
 
 const ReportsSection = styled.div`
-  padding: 24px 16px;
-  margin - bottom: 24px;
-  border - bottom: 1px solid #e0e0e0;
-  background: #ffffff;
-  `;
+      padding: 24px 16px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid #2d3748;
+      background: #0f1419;
+      `;
 
 const ReportsTitle = styled.h3`
-  font - size: 16px;
-  color: #1a1a1a;
-  text - align: center;
-  margin - bottom: 16px;
-  font - weight: 600;
-  `;
+      font - size: 16px;
+      color: #1a1a1a;
+      text - align: center;
+      margin - bottom: 16px;
+      font - weight: 600;
+      `;
 
 const ReportsGrid = styled.div`
-  display: grid;
-  grid - template - columns: repeat(auto - fit, minmax(260px, 1fr));
-  gap: 12px;
-  max - width: 1200px;
-  margin: 0 auto;
-  `;
+      display: grid;
+      grid - template - columns: repeat(auto - fit, minmax(260px, 1fr));
+      gap: 12px;
+      max - width: 1200px;
+      margin: 0 auto;
+      `;
 
 const ReportCard = styled.div`
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  border - radius: 4px;
-  padding: 16px;
-  transition: border - color 0.15s;
-  
-  &:hover {
-    border - color: #999999;
+      background: #1e2432;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+      padding: 24px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: #ff8c61;
+        background: #252b3a;
   }
-  `;
+      `;
 
 const ReportIcon = styled.div`
-  font - size: 24px;
-  text - align: center;
-  margin - bottom: 8px;
-  `;
+      font - size: 24px;
+      text - align: center;
+      margin - bottom: 8px;
+      `;
 
 const ReportName = styled.div`
-  font - size: 13px;
-  color: #1a1a1a;
-  text - align: center;
-  margin - bottom: 12px;
-  font - weight: 500;
-  `;
+      font-size: 13px;
+      color: #f8fafc;
+      text-align: center;
+      margin-bottom: 16px;
+      font-weight: 600;
+      `;
 
 const ReportButtons = styled.div`
-  display: flex;
-  gap: 6px;
-  justify - content: center;
-  flex - wrap: wrap;
-  `;
+      display: flex;
+      gap: 6px;
+      justify - content: center;
+      flex - wrap: wrap;
+      `;
 
 const ExportBtn = styled.button`
-  display: flex;
-  align - items: center;
-  gap: 4px;
-  padding: 6px 12px;
-  background: #1a1a1a;
-  color: #ffffff;
-  border: 1px solid #d0d0d0;
-  border - radius: 4px;
-  font - size: 12px;
-  font - weight: 500;
-  cursor: pointer;
-  transition: background - color 0.15s;
-  
-  &:hover {
-    background: #333333;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: #ff8c61;
+      color: #0f1419;
+      border: 1px solid #ff8c61;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: #ffa885;
+        box-shadow: 0 4px 10px rgba(255, 140, 97, 0.4);
   }
-  `;
+      `;
 
 export default SuperAdminDashboard;

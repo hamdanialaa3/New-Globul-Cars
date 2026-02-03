@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { adminService, Subscriber } from '../../../../services/admin/admin-service';
+import { adminService, Subscriber } from '../../../../services/admin/admin-verification.service';
 import { logger } from '../../../../services/logger-service';
 import { SUBSCRIPTION_PLANS } from '../../../../config/billing-config';
 import { CreditCard, TrendingUp, AlertCircle, RefreshCw, BarChart } from 'lucide-react';

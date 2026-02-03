@@ -8,34 +8,44 @@ import type { AIAnalysisCompleteData } from '@/components/AICarAnalysis/AIAnalys
 import type { GeminiCarAnalysisResult, PriceEstimate, EquipmentSuggestions } from '@/types/ai-analysis.types';
 
 const PageShell = styled.div`
-  min-height: 100vh;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
   background: radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.08), transparent 35%),
     radial-gradient(circle at 80% 10%, rgba(147, 51, 234, 0.08), transparent 35%),
     linear-gradient(180deg, rgba(12, 15, 25, 0.95), rgba(18, 22, 35, 0.98));
-  padding: 3rem 1rem 3.5rem;
 
   @media (max-width: 1024px) {
-    padding: 2.5rem 1.25rem 3rem;
+    padding: 1.5rem;
   }
 
   @media (max-width: 768px) {
-    padding: 2rem 1rem 2.5rem;
+    padding: 1rem;
   }
 `;
 
 const Header = styled.div`
-  max-width: 1080px;
-  margin: 0 auto 1.75rem auto;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  padding: 1.5rem 2rem;
+  background: radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.08), transparent 35%),
+    radial-gradient(circle at 80% 10%, rgba(147, 51, 234, 0.08), transparent 35%),
+    linear-gradient(180deg, rgba(12, 15, 25, 0.95), rgba(18, 22, 35, 0.98));
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 0 0.25rem;
+  gap: 2rem;
 
   @media (max-width: 768px) {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    gap: 1rem;
   }
 `;
 
@@ -44,22 +54,24 @@ const Title = styled.h1`
   font-size: 2rem;
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: ${({ theme }) => (theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.95)' : 'rgba(10, 12, 26, 0.95)')};
+  color: rgba(255, 255, 255, 0.95);
+  flex: 1;
 
   @media (max-width: 768px) {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
   }
 `;
 
 const Subtitle = styled.p`
-  margin: 0.25rem 0 0 0;
-  font-size: 1rem;
-  color: ${({ theme }) => (theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.75)' : 'rgba(15, 18, 32, 0.72)')};
-  max-width: 720px;
-  line-height: 1.6;
+  margin: 0.5rem 0 0 0;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+  display: none;
 
   @media (max-width: 768px) {
-    font-size: 0.95rem;
+    display: block;
+    font-size: 0.85rem;
   }
 `;
 
@@ -67,12 +79,15 @@ const BackLink = styled.button`
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: rgba(255, 255, 255, 0.08);
   color: white;
-  padding: 0.65rem 1rem;
-  border-radius: 0.9rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.8rem;
   cursor: pointer;
-  font-weight: 700;
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
   transition: all 0.2s ease;
   backdrop-filter: blur(12px);
+  flex-shrink: 0;
 
   &:hover {
     transform: translateY(-1px);
@@ -80,13 +95,14 @@ const BackLink = styled.button`
   }
 
   @media (max-width: 768px) {
-    width: fit-content;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
   }
 `;
 
 const Frame = styled.div`
-  max-width: 1080px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 900px;
 `;
 
 const AIAnalysisPage: React.FC = () => {
@@ -128,26 +144,25 @@ const AIAnalysisPage: React.FC = () => {
   };
 
   return (
-    <PageShell>
+    <>
       <Header>
-        <div>
-          <Title>{copy.title[lang]}</Title>
-          <Subtitle>{copy.subtitle[lang]}</Subtitle>
-        </div>
+        <Title>{copy.title[lang]}</Title>
         <BackLink onClick={() => navigate(-1)} aria-label={copy.back[lang]}>
           {copy.back[lang]}
         </BackLink>
       </Header>
 
-      <Frame>
-        <AIAnalysisModal
-          mode="page"
-          isOpen
-          onClose={() => navigate(-1)}
-          onComplete={handleComplete}
-        />
-      </Frame>
-    </PageShell>
+      <PageShell>
+        <Frame>
+          <AIAnalysisModal
+            mode="page"
+            isOpen
+            onClose={() => navigate(-1)}
+            onComplete={handleComplete}
+          />
+        </Frame>
+      </PageShell>
+    </>
   );
 };
 

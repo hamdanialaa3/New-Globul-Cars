@@ -10,6 +10,7 @@ import { unifiedCarService } from '../../../../services/car';
 import brandsData from '../../../../data/car-brands-complete.json';
 import { BrandWithStats } from './types';
 import { calculateBrandStats, categorizeBrands } from './utils';
+import { useTheme } from '../../../../contexts/ThemeContext';
 import CategorySection from './CategorySection';
 import {
   PageContainer,
@@ -23,6 +24,8 @@ import {
 const TopBrandsPage: React.FC = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [brandsWithStats, setBrandsWithStats] = useState<BrandWithStats[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -31,14 +34,14 @@ const TopBrandsPage: React.FC = () => {
     const loadBrandStats = async () => {
       try {
         setLoading(true);
-        
+
         const allBrands = brandsData.brands;
         let brandCounts: Record<string, number> = {};
-        
+
         try {
           // Fetch cars and count by brand
           const allCars = await unifiedCarService.searchCars({}, 1000);
-          
+
           allCars.forEach(car => {
             const make = car.make;
             brandCounts[make] = (brandCounts[make] || 0) + 1;
@@ -46,9 +49,9 @@ const TopBrandsPage: React.FC = () => {
         } catch (error) {
           logger.error('Error fetching car counts:', error);
         }
-        
+
         // Map brands with statistics
-        const brandsWithCounts = allBrands.map((brand) => 
+        const brandsWithCounts = allBrands.map((brand) =>
           calculateBrandStats(
             brand.id,
             brand.name,
@@ -57,7 +60,7 @@ const TopBrandsPage: React.FC = () => {
             brandCounts[brand.name] || 0
           )
         );
-        
+
         setBrandsWithStats(brandsWithCounts);
       } catch (error) {
         logger.error('Error loading brand statistics:', error);
@@ -78,8 +81,8 @@ const TopBrandsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <PageContainer>
-        <LoadingContainer>
+      <PageContainer $isDark={isDark}>
+        <LoadingContainer $isDark={isDark}>
           {language === 'bg' ? 'Зареждане...' : 'Loading...'}
         </LoadingContainer>
       </PageContainer>
@@ -87,13 +90,13 @@ const TopBrandsPage: React.FC = () => {
   }
 
   return (
-    <PageContainer>
-      <PageHeader>
-        <PageTitle>
+    <PageContainer $isDark={isDark}>
+      <PageHeader $isDark={isDark}>
+        <PageTitle $isDark={isDark}>
           {language === 'bg' ? 'Топ Марки Автомобили' : 'Top Car Brands'}
         </PageTitle>
-        <PageSubtitle>
-          {language === 'bg' 
+        <PageSubtitle $isDark={isDark}>
+          {language === 'bg'
             ? 'Разгледайте най-популярните автомобилни марки в България с реални данни и статистика'
             : 'Explore the most popular car brands in Bulgaria with real data and statistics'}
         </PageSubtitle>
@@ -111,6 +114,7 @@ const TopBrandsPage: React.FC = () => {
           brands={popular}
           language={language}
           onBrandClick={handleBrandClick}
+          isDark={isDark}
         />
 
         <CategorySection
@@ -124,6 +128,7 @@ const TopBrandsPage: React.FC = () => {
           brands={electric}
           language={language}
           onBrandClick={handleBrandClick}
+          isDark={isDark}
         />
 
         <CategorySection
@@ -137,6 +142,7 @@ const TopBrandsPage: React.FC = () => {
           brands={others}
           language={language}
           onBrandClick={handleBrandClick}
+          isDark={isDark}
         />
       </ContentContainer>
     </PageContainer>

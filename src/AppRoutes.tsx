@@ -6,6 +6,7 @@ import { useTheme } from './contexts/ThemeContext';
 import { safeLazy } from './utils/lazyImport';
 import SmartLoader from './components/SmartLoaderCSS';
 import InactivityWarning from './components/InactivityWarning';
+import { DebugAdsPage } from './features/ads/pages/DebugAdsPage';
 
 // Lazy Loaded Components
 const GlobalWorkflowTimer = safeLazy(() => import('./components/GlobalWorkflowTimer'));
@@ -98,6 +99,11 @@ const AppRoutes: React.FC = () => {
                     <Route path="/super-admin/users" element={
                         <FullScreenLayout>
                             <SuperAdminUsersPage />
+                        </FullScreenLayout>
+                    } />
+                    <Route path="/debug/ads" element={
+                        <FullScreenLayout>
+                            <DebugAdsPage />
                         </FullScreenLayout>
                     } />
 

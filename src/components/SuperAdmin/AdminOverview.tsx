@@ -1,17 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
-import { 
-  Users, 
-  Car, 
-  MessageSquare, 
-  Eye, 
-  DollarSign, 
+import {
+  Users,
+  Car,
+  MessageSquare,
+  Eye,
+  DollarSign,
   TrendingUp,
   Activity,
   MapPin,
   Clock
 } from 'lucide-react';
-import { RealTimeAnalytics, UserActivity } from '../../services/super-admin-service';
+import { RealTimeAnalytics, UserActivity } from '../../services/super-admin-types';
 
 interface AdminOverviewProps {
   analytics: RealTimeAnalytics | null;
@@ -20,12 +20,12 @@ interface AdminOverviewProps {
 }
 
 const OverviewContainer = styled.div`
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
+  background: #0f1419;
+  border: 1px solid #2d3748;
+  border-radius: 8px;
   padding: 24px;
   margin: 0 20px 20px 20px;
-  color: #1a1a1a;
+  color: #f8fafc;
 `;
 
 const StatsGrid = styled.div`
@@ -36,93 +36,102 @@ const StatsGrid = styled.div`
 `;
 
 const StatCard = styled.div`
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  padding: 16px;
+  background: #1e2432;
+  border: 1px solid #2d3748;
+  border-radius: 8px;
+  padding: 24px;
   text-align: center;
-  transition: border-color 0.15s;
+  transition: all 0.2s ease;
   
   &:hover {
-    border-color: #999999;
+    border-color: #ff8c61;
+    background: #252b3a;
+    transform: translateY(-2px);
   }
 `;
 
 const StatIcon = styled.div`
-  background: #f5f5f5;
-  color: #1a1a1a;
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
+  background: #252b3a;
+  color: #ff8c61;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 12px;
+  margin: 0 auto 16px;
   font-size: 20px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #2d3748;
 `;
 
 const StatValue = styled.div`
-  font-size: 24px;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 4px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-bottom: 6px;
 `;
 
 const StatLabel = styled.div`
   font-size: 12px;
-  color: #666666;
-  font-weight: 500;
-  margin-bottom: 8px;
+  color: #cbd5e1;
+  font-weight: 600;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 `;
 
 const StatChange = styled.div<{ $positive: boolean }>`
   font-size: 11px;
-  font-weight: 500;
-  color: ${props => props.$positive ? '#2d5a2d' : '#8b2d2d'};
+  font-weight: 700;
+  color: ${props => props.$positive ? '#4ade80' : '#f87171'};
 `;
 
 const SectionTitle = styled.h3`
-  color: #1a1a1a;
+  color: #ff8c61;
   font-size: 16px;
-  font-weight: 600;
-  margin: 24px 0 16px 0;
+  font-weight: 700;
+  margin: 32px 0 20px 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 `;
 
 const UserActivityTable = styled.div`
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
+  background: #1e2432;
+  border: 1px solid #2d3748;
+  border-radius: 8px;
   overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 `;
 
 const TableHeader = styled.div`
-  background: #f5f5f5;
-  color: #1a1a1a;
-  padding: 12px 16px;
-  font-weight: 600;
+  background: #141a21;
+  color: #cbd5e1;
+  padding: 16px 20px;
+  font-weight: 700;
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
   gap: 12px;
   align-items: center;
-  font-size: 12px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 `;
 
 const TableRow = styled.div`
-  padding: 12px 16px;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 14px 20px;
+  border-bottom: 1px solid #2d3748;
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
   gap: 12px;
   align-items: center;
   cursor: pointer;
-  transition: background-color 0.15s;
+  transition: all 0.2s ease;
   
   &:hover {
-    background: #f5f5f5;
+    background: #252b3a;
   }
   
   &:last-child {
@@ -137,17 +146,17 @@ const UserInfo = styled.div`
 `;
 
 const UserAvatar = styled.div`
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
-  background: #f5f5f5;
-  color: #1a1a1a;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #252b3a;
+  color: #ff8c61;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  font-size: 12px;
-  border: 1px solid #e0e0e0;
+  font-weight: 700;
+  font-size: 14px;
+  border: 1px solid #2d3748;
 `;
 
 const UserDetails = styled.div`
@@ -156,30 +165,32 @@ const UserDetails = styled.div`
 `;
 
 const UserName = styled.div`
-  font-weight: 500;
-  color: #1a1a1a;
+  font-weight: 600;
+  color: #f8fafc;
   font-size: 13px;
 `;
 
 const UserEmail = styled.div`
-  color: #666666;
+  color: #94a3b8;
   font-size: 11px;
 `;
 
 const StatusBadge = styled.div<{ $online: boolean }>`
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 500;
-  background: ${props => props.$online ? '#f0f9f0' : '#fff5f5'};
-  color: ${props => props.$online ? '#2d5a2d' : '#8b2d2d'};
-  border: 1px solid ${props => props.$online ? '#d0e8d0' : '#f0d0d0'};
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  background: ${props => props.$online ? 'rgba(74, 222, 128, 0.1)' : 'rgba(248, 113, 113, 0.1)'};
+  color: ${props => props.$online ? '#4ade80' : '#f87171'};
+  border: 1px solid ${props => props.$online ? '#4ade80' : '#f87171'};
+  text-transform: uppercase;
 `;
 
-const AdminOverview: React.FC<AdminOverviewProps> = ({ 
-  analytics, 
-  userActivity, 
-  onUserClick 
+const AdminOverview: React.FC<AdminOverviewProps> = ({
+  analytics,
+  userActivity,
+  onUserClick
 }) => {
   if (!analytics) {
     return (
@@ -262,7 +273,7 @@ const AdminOverview: React.FC<AdminOverviewProps> = ({
           <div>Last Login</div>
           <div>Activity</div>
         </TableHeader>
-        
+
         {userActivity.slice(0, 5).map((user, index) => (
           <TableRow key={index} onClick={() => onUserClick(user)}>
             <UserInfo>

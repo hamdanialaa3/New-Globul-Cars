@@ -13,24 +13,25 @@ import { visitorAnalyticsService, VisitorMetrics } from '../../services/visitor-
 import { logger } from '../../services/logger-service';
 
 const PanelContainer = styled.div`
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  border: 2px solid #ffd700;
-  border-radius: 15px;
-  padding: 30px;
-  margin: 20px;
-  box-shadow: 0 20px 40px rgba(255, 215, 0, 0.2);
-  color: #ffd700;
+  background: #0f1419;
+  border: 1px solid #2d3748;
+  border-radius: 12px;
+  padding: 32px;
+  margin: 0 20px 20px 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  color: #f8fafc;
 `;
 
 const SectionTitle = styled.h2`
-  color: #ffd700;
-  font-size: 20px;
+  color: #ff8c61;
+  font-size: 18px;
   font-weight: 700;
-  margin: 0 0 25px 0;
-  text-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+  margin: 0 0 24px 0;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 `;
 
 const MetricsGrid = styled.div`
@@ -41,62 +42,66 @@ const MetricsGrid = styled.div`
 `;
 
 const MetricCard = styled.div`
-  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-  border: 2px solid #ffd700;
+  background: #1e2432;
+  border: 1px solid #2d3748;
   border-radius: 12px;
-  padding: 20px;
+  padding: 24px;
   text-align: center;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
+    border-color: #ff8c61;
+    transform: translateY(-4px);
+    background: #252b3a;
   }
 `;
 
 const MetricIcon = styled.div`
-  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-  color: #000000;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
+  background: #252b3a;
+  color: #ff8c61;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 12px;
-  border: 3px solid #ffd700;
+  margin: 0 auto 16px;
+  border: 1px solid #2d3748;
 `;
 
 const MetricValue = styled.div`
-  font-size: 28px;
-  font-weight: 800;
-  color: #ffd700;
-  margin-bottom: 6px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-bottom: 8px;
 `;
 
 const MetricLabel = styled.div`
-  font-size: 12px;
-  color: #ffd700;
-  font-weight: 600;
+  font-size: 11px;
+  color: #cbd5e1;
+  font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 `;
 
 const ChartSection = styled.div`
-  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-  border: 2px solid #ffd700;
+  background: #1e2432;
+  border: 1px solid #2d3748;
   border-radius: 12px;
-  padding: 25px;
-  margin-bottom: 25px;
+  padding: 24px;
+  margin-bottom: 24px;
 `;
 
 const ChartTitle = styled.h3`
-  color: #ffd700;
-  font-size: 16px;
-  font-weight: 600;
+  color: #ff8c61;
+  font-size: 15px;
+  font-weight: 700;
   margin: 0 0 20px 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 `;
 
 const DataRow = styled.div`
@@ -106,18 +111,19 @@ const DataRow = styled.div`
 const DataLabel = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-size: 13px;
-  color: #ffd700;
+  color: #cbd5e1;
+  font-weight: 500;
 `;
 
 const ProgressBar = styled.div`
   width: 100%;
   height: 8px;
-  background: #1a1a1a;
+  background: #141a21;
   border-radius: 4px;
   overflow: hidden;
-  border: 1px solid #ffd700;
+  border: 1px solid #2d3748;
 `;
 
 const ProgressFill = styled.div<{ $percentage: number; $color: string }>`
@@ -128,27 +134,30 @@ const ProgressFill = styled.div<{ $percentage: number; $color: string }>`
 `;
 
 const ListSection = styled.div`
-  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-  border: 2px solid #ffd700;
+  background: #1e2432;
+  border: 1px solid #2d3748;
   border-radius: 12px;
-  padding: 25px;
-  margin-bottom: 25px;
+  padding: 24px;
+  margin-bottom: 24px;
 `;
 
 const ListItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px;
-  background: #1a1a1a;
-  border-radius: 6px;
-  margin-bottom: 10px;
-  border-left: 3px solid #ffd700;
+  padding: 14px 18px;
+  background: #141a21;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border-left: 4px solid #ff8c61;
   font-size: 13px;
-  color: #ffd700;
+  color: #cbd5e1;
+  transition: all 0.2s ease;
 
   &:hover {
-    background: #2d2d2d;
+    background: #1e2432;
+    color: #f8fafc;
+    transform: translateX(4px);
   }
 `;
 
@@ -179,7 +188,7 @@ const VisitorAnalyticsPanel: React.FC = () => {
     };
 
     loadMetrics();
-    
+
     const interval = setInterval(loadMetrics, 30000);
     return () => clearInterval(interval);
   }, []);
@@ -285,9 +294,9 @@ const VisitorAnalyticsPanel: React.FC = () => {
             <span>{metrics.deviceStats.mobile} users</span>
           </DataLabel>
           <ProgressBar>
-            <ProgressFill 
-              $percentage={metrics.totalVisitorsToday > 0 ? Math.round((metrics.deviceStats.mobile / metrics.totalVisitorsToday) * 100) : 0} 
-              $color={getDeviceColor('mobile')} 
+            <ProgressFill
+              $percentage={metrics.totalVisitorsToday > 0 ? Math.round((metrics.deviceStats.mobile / metrics.totalVisitorsToday) * 100) : 0}
+              $color={getDeviceColor('mobile')}
             />
           </ProgressBar>
         </DataRow>
@@ -297,9 +306,9 @@ const VisitorAnalyticsPanel: React.FC = () => {
             <span>{metrics.deviceStats.desktop} users</span>
           </DataLabel>
           <ProgressBar>
-            <ProgressFill 
-              $percentage={metrics.totalVisitorsToday > 0 ? Math.round((metrics.deviceStats.desktop / metrics.totalVisitorsToday) * 100) : 0} 
-              $color={getDeviceColor('desktop')} 
+            <ProgressFill
+              $percentage={metrics.totalVisitorsToday > 0 ? Math.round((metrics.deviceStats.desktop / metrics.totalVisitorsToday) * 100) : 0}
+              $color={getDeviceColor('desktop')}
             />
           </ProgressBar>
         </DataRow>
@@ -309,9 +318,9 @@ const VisitorAnalyticsPanel: React.FC = () => {
             <span>{metrics.deviceStats.tablet} users</span>
           </DataLabel>
           <ProgressBar>
-            <ProgressFill 
-              $percentage={metrics.totalVisitorsToday > 0 ? Math.round((metrics.deviceStats.tablet / metrics.totalVisitorsToday) * 100) : 0} 
-              $color={getDeviceColor('tablet')} 
+            <ProgressFill
+              $percentage={metrics.totalVisitorsToday > 0 ? Math.round((metrics.deviceStats.tablet / metrics.totalVisitorsToday) * 100) : 0}
+              $color={getDeviceColor('tablet')}
             />
           </ProgressBar>
         </DataRow>

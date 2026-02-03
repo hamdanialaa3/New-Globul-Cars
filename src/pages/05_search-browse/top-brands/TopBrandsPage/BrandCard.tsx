@@ -17,29 +17,31 @@ interface BrandCardProps {
   brand: BrandWithStats;
   language: 'bg' | 'en';
   onClick: (brandId: string) => void;
+  isDark?: boolean;
 }
 
-const BrandCard: React.FC<BrandCardProps> = ({ brand, language, onClick }) => {
+const BrandCard: React.FC<BrandCardProps> = ({ brand, language, onClick, isDark }) => {
   const getBadgeLabel = (reason?: string): string => {
     if (!reason) return '';
-    
+
     if (reason === 'popular') {
       return language === 'bg' ? 'Популярен' : 'Popular';
     }
-    
+
     if (reason === 'electric') {
       return language === 'bg' ? 'Електрически' : 'Electric';
     }
-    
+
     return '';
   };
 
   return (
     <StyledCard
       featured={brand.featured}
+      $isDark={isDark}
       onClick={() => onClick(brand.id)}
     >
-      <BrandLogoWrapper featured={brand.featured}>
+      <BrandLogoWrapper featured={brand.featured} $isDark={isDark}>
         <img
           src={brand.logo}
           alt={brand.name}
@@ -52,27 +54,27 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, language, onClick }) => {
           }}
         />
       </BrandLogoWrapper>
-      
-      <BrandName featured={brand.featured}>
+
+      <BrandName featured={brand.featured} $isDark={isDark}>
         {brand.name}
       </BrandName>
-      
-      <BrandStats featured={brand.featured}>
-        <StatItem featured={brand.featured}>
+
+      <BrandStats featured={brand.featured} $isDark={isDark}>
+        <StatItem featured={brand.featured} $isDark={isDark}>
           <div className="label">
             {language === 'bg' ? 'Серии' : 'Series'}
           </div>
           <div className="value">{brand.totalSeries}</div>
         </StatItem>
-        
-        <StatItem featured={brand.featured}>
+
+        <StatItem featured={brand.featured} $isDark={isDark}>
           <div className="label">
             {language === 'bg' ? 'Коли' : 'Cars'}
           </div>
           <div className="value">{brand.totalCars}</div>
         </StatItem>
       </BrandStats>
-      
+
       {brand.reason && (
         <BadgeContainer>
           <Badge variant={brand.reason}>

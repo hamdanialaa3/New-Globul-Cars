@@ -1,91 +1,91 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { 
-  CheckCircle, 
-  XCircle, 
-  Loader2, 
-  Database, 
-  Users, 
+import {
+  CheckCircle,
+  XCircle,
+  Loader2,
+  Database,
+  Users,
   Activity,
   Zap,
   AlertTriangle,
-  
+
 } from 'lucide-react';
 import { firebaseConnectionTestService } from '../../services/firebase-connection-test';
 import { logger } from '../../services/logger-service';
 
 const TestContainer = styled.div`
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  border: 2px solid #ffd700;
-  border-radius: 15px;
-  padding: 30px;
+  background: #0f1419;
+  border: 1px solid #2d3748;
+  border-radius: 12px;
+  padding: 32px;
   margin: 0 20px 20px 20px;
-  box-shadow: 0 20px 40px rgba(255, 215, 0, 0.2);
-  color: #ffd700;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  color: #f8fafc;
 `;
 
 const TestHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #ffd700;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #2d3748;
 `;
 
 const TestTitle = styled.h2`
-  color: #ffd700;
-  font-size: 24px;
+  color: #ff8c61;
+  font-size: 18px;
   font-weight: 700;
   margin: 0;
-  text-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 `;
 
 const TestButton = styled.button<{ $variant: 'primary' | 'success' | 'danger' }>`
-  padding: 10px 20px;
-  border: 2px solid #ffd700;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   
   ${props => {
     switch (props.$variant) {
       case 'success':
         return `
-          background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
-          color: #000000;
+          background: #10b981;
+          color: #ffffff;
           &:hover { 
-            background: linear-gradient(135deg, #22c55e 0%, #4ade80 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(74, 222, 128, 0.4);
+            background: #059669;
+            transform: translateY(-1px);
           }
         `;
       case 'danger':
         return `
-          background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+          background: #ef4444;
           color: #ffffff;
           &:hover { 
-            background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(248, 113, 113, 0.4);
+            background: #dc2626;
+            transform: translateY(-1px);
           }
         `;
       default:
         return `
-          background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-          color: #000000;
+          background: #ff8c61;
+          color: #0f1419;
           &:hover { 
-            background: linear-gradient(135deg, #ffed4e 0%, #ffd700 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+            background: #ffa885;
+            transform: translateY(-1px);
           }
         `;
     }
@@ -98,28 +98,25 @@ const TestResults = styled.div`
 `;
 
 const TestResult = styled.div<{ $success: boolean }>`
-  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-  border: 2px solid ${props => props.$success ? '#4ade80' : '#f87171'};
+  background: #1e2432;
+  border: 1px solid ${props => props.$success ? '#10b981' : '#ef4444'};
   border-radius: 12px;
-  padding: 20px;
+  padding: 24px;
   display: flex;
   align-items: center;
-  gap: 15px;
-  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+  gap: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 `;
 
 const TestIcon = styled.div<{ $success: boolean }>`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${props => props.$success 
-    ? 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)' 
-    : 'linear-gradient(135deg, #f87171 0%, #ef4444 100%)'
-  };
-  color: ${props => props.$success ? '#000000' : '#ffffff'};
+  background: ${props => props.$success ? '#10b981' : '#ef4444'};
+  color: #ffffff;
   font-size: 20px;
 `;
 
@@ -128,23 +125,23 @@ const TestInfo = styled.div`
 `;
 
 const TestName = styled.div`
-  font-size: 16px;
-  font-weight: 600;
-  color: #ffd700;
-  margin-bottom: 5px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-bottom: 4px;
 `;
 
 const TestMessage = styled.div`
-  font-size: 14px;
-  color: #ffed4e;
+  font-size: 13px;
+  color: #cbd5e1;
   opacity: 0.9;
 `;
 
 const TestData = styled.div`
-  font-size: 12px;
-  color: #ffd700;
-  margin-top: 5px;
-  opacity: 0.8;
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 8px;
+  font-weight: 500;
 `;
 
 const LoadingSpinner = styled.div`
@@ -166,15 +163,15 @@ const FirebaseConnectionTest: React.FC = () => {
     setLoading(true);
     try {
       logger.info('Starting Firebase connection test...');
-      
+
       const result = await firebaseConnectionTestService.runCompleteTest();
-      
+
       setTestResults(result.results);
       setLastTestTime(new Date());
-      
+
       logger.info('Firebase connection test completed');
       logger.debug('Firebase connection test results', { result });
-      
+
     } catch (error) {
       logger.error('Firebase connection test failed', error as Error);
     } finally {
@@ -186,12 +183,12 @@ const FirebaseConnectionTest: React.FC = () => {
     setLoading(true);
     try {
       logger.info('Running quick Firebase test...');
-      
+
       const result = await firebaseConnectionTestService.testConnection();
-      
+
       setTestResults([{ test: 'Quick Connection', ...result }]);
       setLastTestTime(new Date());
-      
+
     } catch (error) {
       logger.error('Quick Firebase test failed', error as Error);
     } finally {
@@ -203,12 +200,12 @@ const FirebaseConnectionTest: React.FC = () => {
     setLoading(true);
     try {
       logger.info('Testing real users data...');
-      
+
       const result = await firebaseConnectionTestService.getRealUsersData();
-      
+
       setTestResults([{ test: 'Real Users Data', ...result }]);
       setLastTestTime(new Date());
-      
+
     } catch (error) {
       logger.error('Real users test failed', error as Error);
     } finally {
@@ -252,9 +249,9 @@ const FirebaseConnectionTest: React.FC = () => {
       ) : (
         <>
           {lastTestTime && (
-            <div style={{ 
-              color: '#ffd700', 
-              fontSize: '14px', 
+            <div style={{
+              color: '#ffd700',
+              fontSize: '14px',
               marginBottom: '20px',
               textAlign: 'center',
               opacity: 0.8
@@ -285,9 +282,9 @@ const FirebaseConnectionTest: React.FC = () => {
           </TestResults>
 
           {testResults.length === 0 && (
-            <div style={{ 
-              textAlign: 'center', 
-              color: '#ffd700', 
+            <div style={{
+              textAlign: 'center',
+              color: '#ffd700',
               fontSize: '18px',
               padding: '40px'
             }}>
