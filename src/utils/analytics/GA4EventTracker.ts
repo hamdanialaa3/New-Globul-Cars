@@ -36,6 +36,19 @@ interface GA4EventParams {
     [key: string]: any;
 }
 
+/**
+ * Car data interface for GA4 tracking
+ */
+interface CarForGA4 {
+    id: string;
+    make?: string;
+    model?: string;
+    year?: number;
+    price?: number;
+    fuelType?: string;
+    [key: string]: unknown;
+}
+
 // Extend window type for gtag
 declare global {
     interface Window {
@@ -109,7 +122,7 @@ export class GA4EventTracker {
     /**
      * 📋 Track car list view (grid/search results)
      */
-    static viewItemList(cars: any[], listName: string): void {
+    static viewItemList(cars: CarForGA4[], listName: string): void {
         const items = cars.slice(0, 20).map((car, index) =>
             this.carToItem(car, index)
         );
@@ -124,7 +137,7 @@ export class GA4EventTracker {
     /**
      * ❤️ Track add to favorites/wishlist
      */
-    static addToWishlist(car: any): void {
+    static addToWishlist(car: CarForGA4): void {
         const item = this.carToItem(car);
 
         this.sendEvent('add_to_wishlist', {
@@ -147,7 +160,7 @@ export class GA4EventTracker {
     /**
      * 📞 Track inquiry/contact (begin_checkout equivalent)
      */
-    static beginInquiry(car: any): void {
+    static beginInquiry(car: CarForGA4): void {
         const item = this.carToItem(car);
 
         this.sendEvent('begin_checkout', {
@@ -160,7 +173,7 @@ export class GA4EventTracker {
     /**
      * ✅ Track successful inquiry sent
      */
-    static inquirySent(car: any): void {
+    static inquirySent(car: CarForGA4): void {
         const item = this.carToItem(car);
 
         this.sendEvent('generate_lead', {
@@ -173,7 +186,7 @@ export class GA4EventTracker {
     /**
      * 📱 Track phone reveal
      */
-    static phoneReveal(car: any): void {
+    static phoneReveal(car: CarForGA4): void {
         this.sendEvent('select_content', {
             content_type: 'phone_reveal',
             content_id: car.id,
@@ -251,7 +264,7 @@ export class GA4EventTracker {
     /**
      * 🚗 Track car comparison
      */
-    static compare(cars: any[]): void {
+    static compare(cars: CarForGA4[]): void {
         const items = cars.map((car, index) => this.carToItem(car, index));
 
         this.sendEvent('select_content', {
@@ -263,7 +276,7 @@ export class GA4EventTracker {
     /**
      * 💰 Track price alert set
      */
-    static setPriceAlert(car: any, targetPrice: number): void {
+    static setPriceAlert(car: CarForGA4, targetPrice: number): void {
         this.sendEvent('select_content', {
             content_type: 'price_alert',
             item_id: car.id,

@@ -139,7 +139,7 @@ class VisitorAnalyticsService {
     }
   }
 
-    private calculateGeoDistribution(views: any[]): Array<{ country: string; visitors: number; percentage: number }> {
+    private calculateGeoDistribution(views: PageView[]): Array<{ country: string; visitors: number; percentage: number }> {
     const countries: { [key: string]: Set<string> } = {};
     
     views.forEach(view => {
@@ -150,7 +150,7 @@ class VisitorAnalyticsService {
       countries[country].add(view.sessionId);
     });
 
-    const total = new Set(views.map((v: any) => v.sessionId)).size;
+    const total = new Set(views.map(v => v.sessionId)).size;
     
     return Object.entries(countries)
       .map(([country, sessions]) => ({
@@ -162,7 +162,7 @@ class VisitorAnalyticsService {
       .slice(0, 10);
   }
 
-    private calculateDeviceStats(views: any[]): { mobile: number; desktop: number; tablet: number } {
+    private calculateDeviceStats(views: PageView[]): { mobile: number; desktop: number; tablet: number } {
     const devices = { mobile: 0, desktop: 0, tablet: 0 };
     const sessions: { [key: string]: string } = {};
 
@@ -176,7 +176,7 @@ class VisitorAnalyticsService {
     return devices;
   }
 
-    private calculateTopPages(views: any[]): Array<{ path: string; views: number; percentage: number }> {
+    private calculateTopPages(views: PageView[]): Array<{ path: string; views: number; percentage: number }> {
     const pages: { [key: string]: number } = {};
     
     views.forEach(view => {
@@ -195,7 +195,7 @@ class VisitorAnalyticsService {
       .slice(0, 10);
   }
 
-    private calculateTrafficSources(views: any[]): Array<{ source: string; visitors: number; percentage: number }> {
+    private calculateTrafficSources(views: PageView[]): Array<{ source: string; visitors: number; percentage: number }> {
     const sources: { [key: string]: Set<string> } = {};
     
     views.forEach(view => {

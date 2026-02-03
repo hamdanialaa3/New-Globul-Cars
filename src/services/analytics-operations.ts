@@ -23,7 +23,12 @@ import {
   UserActivity,
   ContentModeration,
   SystemPerformance,
-  AnalyticsResult
+  AnalyticsResult,
+  UserData,
+  CarData,
+  MessageData,
+  ViewData,
+  ActivityData
 } from './analytics-types';
 import {
   COLLECTIONS,
@@ -43,10 +48,10 @@ export class AnalyticsOperations {
    * Fetch users data from Firebase
    * جلب بيانات المستخدمين من Firebase
    */
-  static async fetchUsersData(): Promise<any[]> {
+  static async fetchUsersData(): Promise<UserData[]> {
     try {
       const snapshot = await getDocs(collection(db, COLLECTIONS.USERS));
-      return snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
       serviceLogger.warn('Failed to fetch users data', { error });
       return [];
@@ -57,9 +62,9 @@ export class AnalyticsOperations {
    * Fetch cars data from Firebase
    * جلب بيانات السيارات من Firebase
    */
-  static async fetchCarsData(): Promise<any[]> {
+  static async fetchCarsData(): Promise<CarData[]> {
     try {
-      return await countAllVehicles();
+      return await countAllVehicles() as CarData[];
     } catch (error) {
       serviceLogger.warn('Failed to fetch cars data', { error });
       return [];
@@ -70,10 +75,10 @@ export class AnalyticsOperations {
    * Fetch messages data from Firebase
    * جلب بيانات الرسائل من Firebase
    */
-  static async fetchMessagesData(): Promise<any[]> {
+  static async fetchMessagesData(): Promise<MessageData[]> {
     try {
       const snapshot = await getDocs(collection(db, COLLECTIONS.MESSAGES));
-      return snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
       serviceLogger.warn('Failed to fetch messages data', { error });
       return [];
@@ -84,10 +89,10 @@ export class AnalyticsOperations {
    * Fetch views data from Firebase
    * جلب بيانات المشاهدات من Firebase
    */
-  static async fetchViewsData(): Promise<any[]> {
+  static async fetchViewsData(): Promise<ViewData[]> {
     try {
       const snapshot = await getDocs(collection(db, COLLECTIONS.VIEWS));
-      return snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
       serviceLogger.warn('Failed to fetch views data', { error });
       return [];
@@ -98,10 +103,10 @@ export class AnalyticsOperations {
    * Fetch user activity data from Firebase
    * جلب بيانات نشاط المستخدمين من Firebase
    */
-  static async fetchUserActivityData(): Promise<any[]> {
+  static async fetchUserActivityData(): Promise<ActivityData[]> {
     try {
       const snapshot = await getDocs(collection(db, COLLECTIONS.USER_ACTIVITY));
-      return snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
       serviceLogger.warn('Failed to fetch user activity data', { error });
       return [];
@@ -112,13 +117,13 @@ export class AnalyticsOperations {
    * Calculate user growth over time
    * حساب نمو المستخدمين مع الوقت
    */
-  static calculateUserGrowth(users: any[]): { date: string; count: number }[] {
+  static calculateUserGrowth(users: UserData[]): { date: string; count: number }[] {
     const growth: { [key: string]: number } = {};
     const now = new Date();
 
     users.forEach(user => {
       if (user.createdAt) {
-        const date = new Date(user.createdAt.seconds * 1000);
+        const date = user.createdAt instanceof Date ? user.createdAt : user.createdAt.toDate();
         const dateKey = date.toISOString().split('T')[0];
         growth[dateKey] = (growth[dateKey] || 0) + 1;
       }
@@ -143,13 +148,13 @@ export class AnalyticsOperations {
    * Calculate car listings growth over time
    * حساب نمو قوائم السيارات مع الوقت
    */
-  static calculateCarListingsGrowth(cars: any[]): { date: string; count: number }[] {
+  static calculateCarListingsGrowth(cars: CarData[]): { date: string; count: number }[] {
     const growth: { [key: string]: number } = {};
     const now = new Date();
 
     cars.forEach(car => {
       if (car.createdAt) {
-        const date = new Date(car.createdAt.seconds * 1000);
+        const date = car.createdAt instanceof Date ? car.createdAt : car.createdAt.toDate();
         const dateKey = date.toISOString().split('T')[0];
         growth[dateKey] = (growth[dateKey] || 0) + 1;
       }
@@ -174,7 +179,7 @@ export class AnalyticsOperations {
    * Calculate traffic sources
    * حساب مصادر الزيارات
    */
-  static calculateTrafficSources(userActivity: any[]): { [key: string]: number } {
+  static calculateTrafficSources(userActivity: ActivityData[]): { [key: string]: number } {
     const sources: { [key: string]: number } = {};
     userActivity.forEach(activity => {
       if (activity.trafficSource) {
@@ -188,7 +193,7 @@ export class AnalyticsOperations {
    * Calculate geographic distribution
    * حساب التوزيع الجغرافي
    */
-  static calculateGeoDistribution(users: any[]): { [key: string]: number } {
+  static calculateGeoDistribution(users: UserData[]): { [key: string]: number } {
     const distribution: { [key: string]: number } = {};
     users.forEach(user => {
       const location = user.locationData?.cityName || user.location?.city || 'Unknown';
@@ -201,7 +206,7 @@ export class AnalyticsOperations {
    * Calculate device usage
    * حساب استخدام الأجهزة
    */
-  static calculateDeviceUsage(userActivity: any[]): { [key: string]: number } {
+  static calculateDeviceUsage(userActivity: ActivityData[]): { [key: string]: number } {
     const devices: { [key: string]: number } = {};
     userActivity.forEach(activity => {
       if (activity.device) {
@@ -215,7 +220,7 @@ export class AnalyticsOperations {
    * Calculate page views
    * حساب مشاهدات الصفحات
    */
-  static calculatePageViews(views: any[]): { [key: string]: number } {
+  static calculatePageViews(views: ViewData[]): { [key: string]: number } {
     const pages: { [key: string]: number } = {};
     views.forEach(view => {
       if (view.page) {
@@ -229,7 +234,7 @@ export class AnalyticsOperations {
    * Get top countries
    * الحصول على أكثر الدول
    */
-  static getTopCountries(users: any[], limit: number = QUERY_LIMITS.TOP_COUNTRIES): { country: string; count: number }[] {
+  static getTopCountries(users: UserData[], limit: number = QUERY_LIMITS.TOP_COUNTRIES): { country: string; count: number }[] {
     const countryCounts: { [key: string]: number } = {};
     users.forEach(user => {
       const country = user.location?.country || 'Bulgaria';
@@ -246,7 +251,7 @@ export class AnalyticsOperations {
    * Get top cities
    * الحصول على أكثر المدن
    */
-  static getTopCities(users: any[], limit: number = QUERY_LIMITS.TOP_CITIES): { city: string; count: number }[] {
+  static getTopCities(users: UserData[], limit: number = QUERY_LIMITS.TOP_CITIES): { city: string; count: number }[] {
     const cityCounts: { [key: string]: number } = {};
     users.forEach(user => {
       const city = user.locationData?.cityName || user.location?.city || 'Unknown';
@@ -263,9 +268,9 @@ export class AnalyticsOperations {
    * Calculate revenue from sold cars
    * حساب الإيرادات من السيارات المباعة
    */
-  static calculateRevenue(cars: any[]): number {
+  static calculateRevenue(cars: CarData[]): number {
     return cars
-      .filter((car: any) => car.status === 'sold' && car.price)
+      .filter(car => car.status === 'sold' && car.price)
       .reduce((sum, car) => sum + (car.price || 0), 0);
   }
 
