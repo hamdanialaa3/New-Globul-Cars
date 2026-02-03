@@ -51,21 +51,21 @@ const StyledButton = styled(motion.button)<{
     switch ($size) {
       case 'small':
         return `
-          padding: 0.5rem 1.5rem;
-          font-size: 0.875rem;
-          border-radius: 1rem;
+          padding: 0.5rem 1.25rem;
+          font-size: 0.75rem;
+          border-radius: 0.8rem;
         `;
       case 'large':
         return `
-          padding: 1rem 2.5rem;
-          font-size: 1.125rem;
-          border-radius: 1.5rem;
+          padding: 0.875rem 2rem;
+          font-size: 0.95rem;
+          border-radius: 1.25rem;
         `;
       default:
         return `
-          padding: 0.75rem 2rem;
-          font-size: 1rem;
-          border-radius: 1.25rem;
+          padding: 0.65rem 1.5rem;
+          font-size: 0.875rem;
+          border-radius: 1rem;
         `;
     }
   }}

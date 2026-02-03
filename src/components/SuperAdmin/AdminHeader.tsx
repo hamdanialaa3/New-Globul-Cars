@@ -11,8 +11,8 @@ interface AdminHeaderProps {
 }
 
 const AdminToolbar = styled.div`
-  background: #ffffff;
-  border-bottom: 1px solid #e0e0e0;
+  background: #0a0d14; /* Deep dark */
+  border-bottom: 1px solid #2d3748;
   padding: 12px 20px;
   display: flex;
   justify-content: space-between;
@@ -23,13 +23,13 @@ const AdminToolbar = styled.div`
 `;
 
 const SessionInfo = styled.div`
-  background: #f5f5f5;
-  color: #1a1a1a;
+  background: #1e2432;
+  color: #ff8c61;
   padding: 6px 12px;
   border-radius: 4px;
   font-size: 12px;
-  font-weight: 500;
-  border: 1px solid #d0d0d0;
+  font-weight: 600;
+  border: 1px solid #2d3748;
 `;
 
 const HeaderControls = styled.div`
@@ -39,55 +39,53 @@ const HeaderControls = styled.div`
 `;
 
 const DashboardHeader = styled.div`
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  padding: 16px;
+  background: #1e2432;
+  border: 1px solid #2d3748;
+  border-radius: 8px;
+  padding: 24px;
   margin: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   text-align: center;
-  color: #1a1a1a;
+  color: #f8fafc;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 `;
 
 const ControlButton = styled.button<{ $variant: 'primary' | 'danger' }>`
-  padding: 6px 12px;
-  border: 1px solid #d0d0d0;
+  padding: 6px 14px;
+  border: 1px solid ${props => props.$variant === 'danger' ? '#ef4444' : '#ff8c61'};
   border-radius: 4px;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.15s;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   white-space: nowrap;
   
-  ${props => props.$variant === 'primary' ? `
-    background: #1a1a1a;
-    color: #ffffff;
-    &:hover { 
-      background: #333333;
-    }
-  ` : `
-    background: #1a1a1a;
-    color: #ffffff;
-    &:hover { 
-      background: #333333;
-    }
-  `}
+  background: ${props => props.$variant === 'danger' ? '#ef4444' : '#ff8c61'};
+  color: ${props => props.$variant === 'danger' ? '#ffffff' : '#0f1419'};
+
+  &:hover { 
+    background: ${props => props.$variant === 'danger' ? '#dc2626' : '#ffa885'};
+    border-color: ${props => props.$variant === 'danger' ? '#dc2626' : '#ffa885'};
+    transform: translateY(-1px);
+  }
 `;
 
 const HeaderTitle = styled.h1`
-  color: #1a1a1a;
-  font-size: 16px;
-  font-weight: 600;
-  margin: 0 0 4px 0;
+  color: #ff8c61; /* Accent Color */
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 6px 0;
+  letter-spacing: 1px;
 `;
 
 const HeaderSubtitle = styled.p`
-  color: #666666;
+  color: #cbd5e1;
   font-size: 12px;
   margin: 0;
+  font-weight: 500;
 `;
 
 const AdminHeader: React.FC<AdminHeaderProps> = ({ session, onLogout }) => {
@@ -106,7 +104,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ session, onLogout }) => {
         <SessionInfo>
           Unique Owner Session
         </SessionInfo>
-        
+
         <HeaderControls>
           <ControlButton $variant="primary" onClick={handleInitializeData}>
             <Settings size={12} />
@@ -130,7 +128,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ session, onLogout }) => {
           </ControlButton>
         </HeaderControls>
       </AdminToolbar>
-      
+
       <DashboardHeader>
         <HeaderTitle>SUPER ADMIN DASHBOARD</HeaderTitle>
         <HeaderSubtitle>Welcome, {session?.name || 'Admin'}! Real-time Firebase data monitoring and control center</HeaderSubtitle>

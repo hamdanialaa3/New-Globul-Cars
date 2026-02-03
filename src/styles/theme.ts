@@ -241,7 +241,7 @@ export const bulgarianShadows = {
   // Aliases for design-system components
   button: '0 4px 6px -1px rgba(0, 51, 102, 0.1), 0 2px 4px -1px rgba(0, 51, 102, 0.06)', // md
   hover: '0 10px 15px -3px rgba(0, 51, 102, 0.1), 0 4px 6px -2px rgba(0, 51, 102, 0.05)'   // lg
-  ,card: '0 1px 2px 0 rgba(0, 51, 102, 0.05)'
+  , card: '0 1px 2px 0 rgba(0, 51, 102, 0.05)'
 };
 
 // Bulgarian Border Radius
@@ -322,6 +322,7 @@ export const GlobalStyles = createGlobalStyle`
   html {
     font-size: 16px;
     line-height: ${bulgarianTypography.lineHeight.normal};
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
@@ -330,8 +331,21 @@ export const GlobalStyles = createGlobalStyle`
     background-color: var(--bg-primary);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
     transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  :root {
+    --text-min: 12px;
+    --text-max: 16px;
+    --text-clamp: clamp(var(--text-min), 2.5vw, var(--text-max));
+  }
+
+  @media (max-width: 480px) {
+    :root {
+      --text-min: 11px;
+      --text-max: 15px;
+    }
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -372,6 +386,49 @@ export const GlobalStyles = createGlobalStyle`
 
   li, ul, ol, label, input, select, textarea, button, small, strong, em, span, div {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  /* Global smart text handling for long words (e.g., Bulgarian) */
+  .text-smart {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  .text-responsive {
+    font-size: var(--text-clamp);
+  }
+
+  .text-ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  .text-icon-fallback {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  :where(h1, h2, h3, h4, h5, h6, p, span, label, button, a, li) {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  :where(button, [role='button'], [role='tab'], .btn, .button, .tab) {
+    min-width: 0;
+  }
+
+  @media (max-width: 768px) {
+    :where(button, [role='button'], [role='tab'], .btn, .button, .tab) {
+      font-size: var(--text-clamp);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   .leaflet-tooltip {

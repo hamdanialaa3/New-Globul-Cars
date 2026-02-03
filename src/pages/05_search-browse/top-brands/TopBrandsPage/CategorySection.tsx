@@ -19,6 +19,7 @@ interface CategorySectionProps {
   brands: BrandWithStats[];
   language: 'bg' | 'en';
   onBrandClick: (brandId: string) => void;
+  isDark?: boolean;
 }
 
 const CategorySection: React.FC<CategorySectionProps> = ({
@@ -27,22 +28,23 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   icon,
   brands,
   language,
-  onBrandClick
+  onBrandClick,
+  isDark
 }) => {
   if (brands.length === 0) return null;
 
   return (
-    <StyledSection>
-      <CategoryHeader>
-        <CategoryTitle>
+    <StyledSection $isDark={isDark}>
+      <CategoryHeader $isDark={isDark}>
+        <CategoryTitle $isDark={isDark}>
           <span className="icon">{icon}</span>
           {title}
         </CategoryTitle>
-        <CategoryDescription>
+        <CategoryDescription $isDark={isDark}>
           {description}
         </CategoryDescription>
       </CategoryHeader>
-      
+
       <BrandsGrid>
         {brands.map((brand) => (
           <BrandCard
@@ -50,6 +52,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
             brand={brand}
             language={language}
             onClick={onBrandClick}
+            isDark={isDark}
           />
         ))}
       </BrandsGrid>

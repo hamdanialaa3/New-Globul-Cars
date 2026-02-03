@@ -1,8 +1,10 @@
 // src/components/ProgressBar.tsx
-// Circular Loading Spinner with Percentage - Replaces Loading Spinner
+// Sleek Loading Bar - Copper Orange with shimmer (mobile-friendly)
+// Shows top-left progress bar on page transitions
 
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { useLocation } from 'react-router-dom';
 
 interface ProgressBarProps {
   duration?: number; // Duration in milliseconds (default: 2000ms)
@@ -10,9 +12,10 @@ interface ProgressBarProps {
   size?: number; // Size of the circle in pixels
 }
 
-const spin = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+const shimmer = keyframes`
+  0% { transform: translateX(-100%); opacity: 0; }
+  50% { opacity: 0.9; }
+  100% { transform: translateX(200%); opacity: 0; }
 `;
 
 const ProgressBar: React.FC<ProgressBarProps> = ({
@@ -20,13 +23,14 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   color = '#FF8F10', // Orange theme color
   size = 50,
 }) => {
+  const location = useLocation();
   const [progress, setProgress] = useState(0);
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Reset on mount
-    setProgress(0);
+    // Start progress bar on route change
     setIsVisible(true);
+    setProgress(0);
 
     // Simulate realistic progress from 0 to 100%
     const interval = 30; // Update every 30ms for smooth animation
@@ -50,59 +54,29 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         // Hide after reaching 100%
         setTimeout(() => {
           setIsVisible(false);
-        }, 400);
+        }, 200);
       } else {
         setProgress(Math.min(calculatedProgress, 99.9));
       }
     }, interval);
 
     return () => clearInterval(timer);
-  }, [duration]);
+  }, [location.pathname, duration]);
 
   if (!isVisible) {
     return null;
   }
 
-  // Calculate stroke-dasharray and stroke-dashoffset for circular progress
-  const radius = (size - 8) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDasharray = circumference;
-  const strokeDashoffset = circumference - (progress / 100) * circumference;
-
   return (
-    <SpinnerContainer>
-      <SpinnerWrapper size={size}>
-        <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-          {/* Background circle */}
-          <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            fill="none"
-            stroke="rgba(0, 0, 0, 0.1)"
-            strokeWidth="4"
-          />
-          {/* Progress circle */}
-          <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            fill="none"
-            stroke={color}
-            strokeWidth="4"
-            strokeLinecap="round"
-            strokeDasharray={strokeDasharray}
-            strokeDashoffset={strokeDashoffset}
-            style={{
-              transition: 'stroke-dashoffset 0.3s ease-out',
-            }}
-          />
-        </svg>
-        <PercentageText color={color} size={size}>
-          {Math.round(progress)}%
-        </PercentageText>
-      </SpinnerWrapper>
-    </SpinnerContainer>
+    <BarContainer>
+      <BarTrack>
+        <BarFill
+          $progress={progress}
+          $color={color}
+          aria-hidden
+        />
+      </BarTrack>
+    </BarContainer>
   );
 };
 
@@ -110,41 +84,57 @@ export default ProgressBar;
 
 // Styled Components
 
-const SpinnerContainer = styled.div`
+const BarContainer = styled.div`
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 9998;
+  top: 8px;
+  left: 12px;
+  z-index: 1100;
+  pointer-events: none;
   display: flex;
   align-items: center;
-  justify-content: center;
-  pointer-events: none; /* لا يتداخل مع النقرات */
-`;
+  justify-content: flex-start;
 
-const SpinnerWrapper = styled.div<{ size: number }>`
-  position: relative;
-  width: ${({ size }) => size}px;
-  height: ${({ size }) => size}px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.6; /* شفافية 60% */
-`;
-
-const PercentageText = styled.span<{ color: string; size: number }>`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: ${({ size }) => size * 0.24}px;
-  font-weight: 700;
-  color: ${({ color }) => color};
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  line-height: 1;
-  
   @media (max-width: 768px) {
-    font-size: ${({ size }) => size * 0.22}px;
+    top: 6px;
+    left: 8px;
+  }
+`;
+
+const BarTrack = styled.div`
+  width: 170px;
+  height: 6px;
+  background: rgba(15, 23, 42, 0.25);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(6px);
+
+  @media (max-width: 768px) {
+    width: 140px;
+    height: 5px;
+  }
+`;
+
+const BarFill = styled.div<{ $progress: number; $color: string }>`
+  height: 100%;
+  width: ${({ $progress }) => `${Math.max(3, $progress)}%`};
+  background: linear-gradient(90deg, #C8741A 0%, #FF8F10 45%, #FFB35C 100%);
+  box-shadow: 0 0 10px rgba(255, 143, 16, 0.55), 0 0 20px rgba(255, 143, 16, 0.35);
+  border-radius: 999px;
+  position: relative;
+  transition: width 220ms ease-out;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 0;
+    width: 40px;
+    height: 16px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.75), transparent);
+    transform: translateX(-100%);
+    animation: ${shimmer} 1.4s ease-in-out infinite;
+    filter: blur(2px);
   }
 `;
 

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { Search, ChevronDown, CheckCircle, Car } from 'lucide-react';
+import { Search, ChevronDown, CheckCircle, Car, Sparkles } from 'lucide-react';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -78,6 +78,7 @@ const Tab = styled.button<{ $active: boolean; $isDark: boolean; $tabType?: 'all'
   padding: 12px 16px;
   font-weight: 600;
   font-size: 15px; /* Readable size */
+  min-width: 0;
   border: none;
   background: ${props => {
     if (props.$active) return props.$isDark ? '#334155' : '#ffffff';
@@ -97,6 +98,7 @@ const Tab = styled.button<{ $active: boolean; $isDark: boolean; $tabType?: 'all'
   align-items: center;
   justify-content: center;
   gap: 8px;
+  white-space: nowrap;
 
   @media (max-width: 768px) {
     padding: 10px;
@@ -112,6 +114,28 @@ const Tab = styled.button<{ $active: boolean; $isDark: boolean; $tabType?: 'all'
     ? (props.$isDark ? '#38bdf8' : '#FF7900')
     : (props.$isDark ? '#94a3b8' : '#64748b')};
     box-shadow: none;
+  }
+`;
+
+const TabLabel = styled.span`
+  display: inline-block;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const TabLabelShort = styled.span`
+  display: none;
+  white-space: nowrap;
+
+  @media (max-width: 768px) {
+    display: inline-block;
+    font-size: 13px;
   }
 `;
 
@@ -378,6 +402,18 @@ const SearchWidget: React.FC = () => {
 
   const t = (en: string, bg: string) => language === 'bg' ? bg : en;
 
+  const tabLabels = {
+    all: { en: 'All Cars', bg: 'Всички' },
+    used: { en: 'Used', bg: 'Употребявани' },
+    new: { en: 'New', bg: 'Нови' }
+  } as const;
+
+  const tabShortLabels = {
+    all: { en: 'All', bg: 'Всички' },
+    used: { en: 'Used', bg: 'Употр.' },
+    new: { en: 'New', bg: 'Нови' }
+  } as const;
+
   // ✅ Get search button text with real car count
   const getSearchButtonText = (): string => {
     if (isLoadingCount) {
@@ -403,26 +439,33 @@ const SearchWidget: React.FC = () => {
           $isDark={isDark}
           $tabType="all"
           onClick={() => setActiveTab('all')}
+          aria-label={language === 'bg' ? tabLabels.all.bg : tabLabels.all.en}
         >
           <Car size={16} />
-          {t('All Cars', 'Всички')}
+          <TabLabel>{language === 'bg' ? tabLabels.all.bg : tabLabels.all.en}</TabLabel>
+          <TabLabelShort>{language === 'bg' ? tabShortLabels.all.bg : tabShortLabels.all.en}</TabLabelShort>
         </Tab>
         <Tab
           $active={activeTab === 'used'}
           $isDark={isDark}
           $tabType="used"
           onClick={() => setActiveTab('used')}
+          aria-label={language === 'bg' ? tabLabels.used.bg : tabLabels.used.en}
         >
           <CheckCircle size={16} />
-          {t('Used', 'Употребявани')}
+          <TabLabel>{language === 'bg' ? tabLabels.used.bg : tabLabels.used.en}</TabLabel>
+          <TabLabelShort>{language === 'bg' ? tabShortLabels.used.bg : tabShortLabels.used.en}</TabLabelShort>
         </Tab>
         <Tab
           $active={activeTab === 'new'}
           $isDark={isDark}
           $tabType="new"
           onClick={() => setActiveTab('new')}
+          aria-label={language === 'bg' ? tabLabels.new.bg : tabLabels.new.en}
         >
-          {t('New', 'Нови')}
+          <Sparkles size={16} />
+          <TabLabel>{language === 'bg' ? tabLabels.new.bg : tabLabels.new.en}</TabLabel>
+          <TabLabelShort>{language === 'bg' ? tabShortLabels.new.bg : tabShortLabels.new.en}</TabLabelShort>
         </Tab>
       </TabsContainer>
 

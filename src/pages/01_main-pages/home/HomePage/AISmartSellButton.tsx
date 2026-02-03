@@ -4,7 +4,7 @@
  * 
  * Features:
  * - Eye-catching glassmorphism design
- * - Animated sparkles effect
+ * - Animated AI Robot icon
  * - Opens AI Analysis Modal
  * - Bilingual support (bg/en)
  */
@@ -12,10 +12,11 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
-import { Sparkles, Zap, Camera } from 'lucide-react';
+import { Zap, Camera } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { logger } from '@/services/logger-service';
+import { AIRobotIcon } from '@/components/icons/AIRobotIcon';
 
 const pulse = keyframes`
   0%, 100% {
@@ -204,7 +205,7 @@ export const AISmartSellButton: React.FC = () => {
         >
           <StyledButton onClick={handleClick} aria-label={text.button}>
             <IconWrapper $animate>
-              <Sparkles />
+              <AIRobotIcon size={20} animate />
             </IconWrapper>
             <ButtonText>{text.button}</ButtonText>
             <IconWrapper>

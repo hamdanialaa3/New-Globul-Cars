@@ -9,10 +9,7 @@ import { aiQuotaService } from '../../../services/ai/ai-quota.service';
 import { AI_TIER_CONFIGS } from '../../../config/ai-tiers.config';
 import { AIQuotaDisplay, AIPricingModal } from '../../../components/AI';
 import { logger } from '../../../services/logger-service';
-import imageAnalysisIcon from '../../../assets/icons/ai/image-analysis-ai.svg';
-import priceSuggestionsIcon from '../../../assets/icons/ai/price-suggestions-ai.svg';
-import chatMessagesIcon from '../../../assets/icons/ai/chat-messages-ai.svg';
-import profileAnalysisIcon from '../../../assets/icons/ai/profile-analysis-ai.svg';
+import aiUnifiedIcon from '../../../assets/icons/ai/koli_one_ai_Icon2.png';
 
 export const AIDashboardPage: React.FC = () => {
   const { user } = useAuth();
@@ -101,22 +98,30 @@ export const AIDashboardPage: React.FC = () => {
           <SectionTitle>Daily Usage Limits</SectionTitle>
           <UsageGrid>
             <UsageCard>
-              <UsageIcon src={ImageAnalysisAIIcon} alt="Image Analysis" />
+              <UsageIconWrapper>
+                <UsageIcon src={aiUnifiedIcon} alt="Image Analysis" />
+              </UsageIconWrapper>
               <UsageLabel>Image Analysis</UsageLabel>
               <UsageValue>{stats.currentUsage.imageAnalysis}</UsageValue>
             </UsageCard>
             <UsageCard>
-              <UsageIcon src={PriceSuggestionsAIIcon} alt="Price Suggestions" />
+              <UsageIconWrapper>
+                <UsageIcon src={aiUnifiedIcon} alt="Price Suggestions" />
+              </UsageIconWrapper>
               <UsageLabel>Price Suggestions</UsageLabel>
               <UsageValue>{stats.currentUsage.priceSuggestions}</UsageValue>
             </UsageCard>
             <UsageCard>
-              <UsageIcon src={ChatMessagesAIIcon} alt="Chat Messages" />
+              <UsageIconWrapper>
+                <UsageIcon src={aiUnifiedIcon} alt="Chat Messages" />
+              </UsageIconWrapper>
               <UsageLabel>Chat Messages</UsageLabel>
               <UsageValue>{stats.currentUsage.chatMessages}</UsageValue>
             </UsageCard>
             <UsageCard>
-              <UsageIcon src={ProfileAnalysisAIIcon} alt="Profile Analysis" />
+              <UsageIconWrapper>
+                <UsageIcon src={aiUnifiedIcon} alt="Profile Analysis" />
+              </UsageIconWrapper>
               <UsageLabel>Profile Analysis</UsageLabel>
               <UsageValue>{stats.currentUsage.profileAnalysis}</UsageValue>
             </UsageCard>
@@ -296,10 +301,20 @@ const UsageCard = styled.div`
   border: 1px solid #e5e7eb;
 `;
 
-const UsageIcon = styled.img`
+const UsageIconWrapper = styled.div`
   width: 48px;
   height: 48px;
-  margin-bottom: 8px;
+  margin: 0 auto 8px;
+  overflow: hidden;
+`;
+
+const UsageIcon = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  transform: scale(3);
+  transform-origin: center;
 `;
 
 const UsageLabel = styled.div`

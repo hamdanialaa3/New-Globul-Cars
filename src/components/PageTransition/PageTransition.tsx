@@ -45,8 +45,7 @@ const TransitionContainer = styled.div<{ $isExiting: boolean; $isVisible: boolea
   }} 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   animation-fill-mode: both;
   
-  /* GPU acceleration - critical for performance */
-  will-change: opacity, transform;
+  /* Transition optimizations handled by hardware acceleration automatically */
   backface-visibility: hidden;
   transform: translateZ(0);
   perspective: 1000px;
@@ -76,7 +75,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
     if (location.pathname !== displayLocation.pathname) {
       setTransitionStage('exiting');
       setIsVisible(true);
-      
+
       // Short delay to allow exit animation to start (100ms = half of 200ms animation)
       timeoutRef.current = setTimeout(() => {
         setDisplayLocation(location);

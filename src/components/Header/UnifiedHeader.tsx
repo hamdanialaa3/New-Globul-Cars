@@ -1044,9 +1044,9 @@ const UnifiedHeader: React.FC = () => {
         <MobileMenuItem $isDark={isDark} onClick={() => navigate('/dealers')}>
           {t('nav.dealers')}
         </MobileMenuItem>
-        <MobileMenuItem $isDark={isDark} onClick={() => navigate('/map')}>
-          <Map size={20} />
-          {language === 'bg' ? 'Карта' : 'Map'}
+        <MobileMenuItem $isDark={isDark} onClick={() => navigate('/auctions')}>
+          <Gavel size={20} />
+          {language === 'bg' ? 'Търгове' : 'Auctions'}
         </MobileMenuItem>
         <MobileMenuItem $isDark={isDark} onClick={() => navigate('/favorites')}>
           <Heart size={20} />

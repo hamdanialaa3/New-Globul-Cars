@@ -1,9 +1,10 @@
 // src/pages/HelpPage.tsx
-// Help Page for Koli One
+// Help Page for Koli One - Redesigned with Obsidian & Peach Theme
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from '../../../../hooks/useTranslation';
+import { useTheme } from '../../../../contexts/ThemeContext';
 import { SOCIAL_LINKS } from '../../../../constants/socialLinks';
 import {
   Search,
@@ -27,240 +28,272 @@ import {
 } from 'lucide-react';
 
 // Styled Components
-const HelpContainer = styled.div`
-min - height: 100vh;
-background: ${({ theme }) =>
-    theme.mode === 'dark'
-      ? 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)'
-      : 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'
-  };
-padding: 2rem 0;
+const HelpContainer = styled.div<{ $isDark: boolean }>`
+  min-height: 100vh;
+  background: ${props => props.$isDark ? '#0F1419' : 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'};
+  padding: 40px 0;
+  transition: all 0.3s ease;
 `;
 
 const Container = styled.div`
-max - width: 1200px;
-margin: 0 auto;
-padding: 0 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
 `;
 
-const Header = styled.section`
-text - align: center;
-padding: 3rem 0;
-background: ${({ theme }) =>
-    theme.mode === 'dark'
-      ? 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)'
-      : 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)'
-  };
-color: white;
-border - radius: 24px;
-margin - bottom: 3rem;
+const Header = styled.section<{ $isDark: boolean }>`
+  text-align: center;
+  padding: 64px 24px;
+  background: ${props => props.$isDark
+    ? 'linear-gradient(135deg, #1A1F2E 0%, #0F1419 100%)'
+    : 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)'};
+  color: white;
+  border-radius: 24px;
+  margin-bottom: 48px;
+  border: 1px solid ${props => props.$isDark ? '#2d3748' : 'transparent'};
 
   h1 {
-  font - size: 2.5rem;
-  font - weight: 700;
-  margin - bottom: 1rem;
-}
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    margin-bottom: 16px;
+    color: ${props => props.$isDark ? '#FF8C61' : 'white'};
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 
   p {
-  font - size: 1.1rem;
-  opacity: 0.9;
-  max - width: 600px;
-  margin: 0 auto 2rem;
-}
+    font-size: 1.15rem;
+    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.9)'};
+    max-width: 650px;
+    margin: 0 auto 32px;
+    font-weight: 500;
+  }
 `;
 
-const SearchBox = styled.div`
-max - width: 500px;
-margin: 0 auto;
-position: relative;
+const SearchBox = styled.div<{ $isDark: boolean }>`
+  max-width: 500px;
+  margin: 0 auto;
+  position: relative;
 
   input {
-  width: 100 %;
-  padding: 1rem 1rem 1rem 3rem;
-  border: none;
-  border - radius: 12px;
-  font - size: 1rem;
-  box - shadow: 0 4px 20px ${({ theme }) => theme.mode === 'dark' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.1)'};
-  background: ${({ theme }) => theme.colors?.background?.paper || theme.colors.background.light || 'white'};
-  color: ${({ theme }) => theme.colors?.text?.primary || theme.text?.primary || '#333'};
+    width: 100%;
+    padding: 16px 16px 16px 48px;
+    border: 2px solid ${props => props.$isDark ? '#2d3748' : 'transparent'};
+    border-radius: 12px;
+    font-size: 1rem;
+    background: ${props => props.$isDark ? '#0F1419' : 'white'};
+    color: ${props => props.$isDark ? '#f8fafc' : '#1F2937'};
+    box-shadow: ${props => props.$isDark ? '0 10px 30px rgba(0, 0, 0, 0.4)' : '0 4px 20px rgba(0, 0, 0, 0.1)'};
+    transition: all 0.3s ease;
 
     &:focus {
-    outline: none;
+      outline: none;
+      border-color: ${props => props.$isDark ? '#FF8C61' : '#3b82f6'};
+    }
   }
-}
 
-  .search - icon {
-  position: absolute;
-  left: 1rem;
-  top: 50 %;
-  transform: translateY(-50 %);
-  color: ${({ theme }) => theme.colors?.text?.secondary || theme.text?.secondary || '#64748b'};
-}
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: ${props => props.$isDark ? '#FF8C61' : '#64748b'};
+  }
 `;
 
 const HelpGrid = styled.div`
-display: grid;
-grid - template - columns: 1fr 2fr;
-gap: 3rem;
-margin - bottom: 3rem;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
 
-@media(max - width: 768px) {
-  grid - template - columns: 1fr;
-  gap: 2rem;
-}
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
 `;
 
-const CategoriesSidebar = styled.div`
-background: ${({ theme }) => theme.colors?.background?.paper || theme.colors.background.light || 'white'};
-padding: 2rem;
-border - radius: 20px;
-box - shadow: 0 4px 20px ${({ theme }) => theme.mode === 'dark' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.1)'};
-height: fit - content;
+const CategoriesSidebar = styled.div<{ $isDark: boolean }>`
+  background: ${props => props.$isDark ? '#1E2432' : 'white'};
+  padding: 32px;
+  border-radius: 24px;
+  box-shadow: ${props => props.$isDark ? '0 10px 30px rgba(0, 0, 0, 0.4)' : '0 4px 20px rgba(0, 0, 0, 0.1)'};
+  border: 1px solid ${props => props.$isDark ? '#2d3748' : 'rgba(0,0,0,0.05)'};
+  height: fit-content;
 
   h3 {
-  font - size: 1.3rem;
-  font - weight: 600;
-  color: ${({ theme }) => theme.colors?.primary?.main || theme.colors.primary.main || '#1e40af'};
-  margin - bottom: 1.5rem;
-}
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: ${props => props.$isDark ? '#FF8C61' : '#1e40af'};
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 `;
 
-const CategoryItem = styled.div<{ $active: boolean }>`
-display: flex;
-align - items: center;
-gap: 0.75rem;
-padding: 0.75rem;
-border - radius: 8px;
-cursor: pointer;
-transition: all 0.3s ease;
-background: ${({ $active, theme }) =>
-    $active
-      ? (theme.mode === 'dark' ? 'rgba(30, 64, 175, 0.2)' : '#f1f5f9')
+const CategoryItem = styled.div<{ $active: boolean; $isDark: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: ${props =>
+    props.$active
+      ? (props.$isDark ? 'rgba(255, 140, 97, 0.15)' : '#f1f5f9')
       : 'transparent'
   };
-color: ${({ $active, theme }) =>
-    $active
-      ? (theme.colors?.primary?.main || theme.colors.primary.main || '#1e40af')
-      : (theme.colors?.text?.secondary || theme.text?.secondary || '#64748b')
+  color: ${props =>
+    props.$active
+      ? (props.$isDark ? '#FF8C61' : '#1e40af')
+      : (props.$isDark ? '#94a3b8' : '#64748b')
   };
+  font-weight: ${props => props.$active ? '700' : '500'};
 
   &:hover {
-  background: ${({ theme }) => theme.mode === 'dark' ? 'rgba(30, 64, 175, 0.1)' : '#f1f5f9'};
-  color: ${({ theme }) => theme.colors?.primary?.main || theme.colors.primary.main || '#1e40af'};
-}
+    background: ${props => props.$isDark ? 'rgba(255, 140, 97, 0.1)' : '#f1f5f9'};
+    color: ${props => props.$isDark ? '#FF8C61' : '#1e40af'};
+    transform: translateX(5px);
+  }
 
   .icon {
-  width: 20px;
-  height: 20px;
-}
+    width: 20px;
+    height: 20px;
+  }
 `;
 
-const ContentArea = styled.div`
-background: ${({ theme }) => theme.colors?.background?.paper || theme.colors.background.light || 'white'};
-padding: 2rem;
-border - radius: 20px;
-box - shadow: 0 4px 20px ${({ theme }) => theme.mode === 'dark' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.1)'};
+const ContentArea = styled.div<{ $isDark: boolean }>`
+  background: ${props => props.$isDark ? '#1E2432' : 'white'};
+  padding: 32px;
+  border-radius: 24px;
+  box-shadow: ${props => props.$isDark ? '0 15px 40px rgba(0, 0, 0, 0.4)' : '0 4px 20px rgba(0, 0, 0, 0.1)'};
+  border: 1px solid ${props => props.$isDark ? '#2d3748' : 'rgba(0,0,0,0.05)'};
 `;
 
-const FAQSection = styled.div`
+const FAQSection = styled.div<{ $isDark: boolean }>`
   h2 {
-  font - size: 1.8rem;
-  font - weight: 600;
-  color: ${({ theme }) => theme.colors?.primary?.main || theme.colors.primary.main || '#1e40af'};
-  margin - bottom: 1.5rem;
-}
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: ${props => props.$isDark ? '#FF8C61' : '#1e40af'};
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 `;
 
-const FAQItem = styled.div<{ $isOpen: boolean }>`
-border: 1px solid ${({ theme }) => theme.colors?.border || theme.colors.border.default || '#e2e8f0'};
-border - radius: 8px;
-margin - bottom: 1rem;
-overflow: hidden;
+const FAQItem = styled.div<{ $isOpen: boolean; $isDark: boolean }>`
+  border: 1px solid ${props => props.$isDark ? '#2d3748' : '#e2e8f0'};
+  border-radius: 12px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: ${props => props.$isDark ? '#FF8C61' : '#3b82f6'};
+  }
 
   .question {
-  background: ${({ theme }) => theme.mode === 'dark' ? 'rgba(30, 64, 175, 0.1)' : '#f8fafc'};
-  padding: 1rem;
-  font - weight: 600;
-  color: ${({ theme }) => theme.colors?.primary?.main || theme.colors.primary.main || '#1e40af'};
-  cursor: pointer;
-  display: flex;
-  justify - content: space - between;
-  align - items: center;
-  transition: background 0.3s ease;
+    background: ${props => props.$isDark ? '#1A1F2E' : '#f8fafc'};
+    padding: 16px 20px;
+    font-weight: 700;
+    color: ${props => props.$isDark ? '#f8fafc' : '#1e40af'};
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s ease;
 
     &:hover {
-    background: ${({ theme }) => theme.mode === 'dark' ? 'rgba(30, 64, 175, 0.2)' : '#f1f5f9'};
+      background: ${props => props.$isDark ? '#2d3748' : '#f1f5f9'};
+    }
   }
-}
 
   .answer {
-  padding: 1rem;
-  color: ${({ theme }) => theme.colors?.text?.secondary || theme.text?.secondary || '#64748b'};
-  line - height: 1.6;
-  border - top: 1px solid ${({ theme }) => theme.colors?.border || theme.colors.border.default || '#e2e8f0'};
-  max - height: ${props => props.$isOpen ? '200px' : '0'};
-  overflow: hidden;
-  transition: max - height 0.3s ease;
-}
+    padding: 20px;
+    color: ${props => props.$isDark ? '#cbd5e1' : '#64748b'};
+    line-height: 1.7;
+    border-top: 1px solid ${props => props.$isDark ? '#2d3748' : '#e2e8f0'};
+    background: ${props => props.$isDark ? '#1E2432' : 'white'};
+    font-weight: 500;
+    max-height: ${props => props.$isOpen ? '500px' : '0'};
+    padding: ${props => props.$isOpen ? '20px' : '0 20px'};
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 `;
 
-const ContactSupport = styled.div`
-background: ${({ theme }) =>
-    theme.mode === 'dark'
-      ? 'linear-gradient(135deg, #1e293b 0%, #334155 100%)'
+const ContactSupport = styled.div<{ $isDark: boolean }>`
+  background: ${props =>
+    props.$isDark
+      ? '#1A1F2E'
       : 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)'
   };
-padding: 2rem;
-border - radius: 20px;
-text - align: center;
-margin - top: 3rem;
+  padding: 48px;
+  border-radius: 24px;
+  text-align: center;
+  margin-top: 48px;
+  border: 1px solid ${props => props.$isDark ? '#2d3748' : 'transparent'};
 
   h2 {
-  font - size: 1.8rem;
-  font - weight: 600;
-  color: ${({ theme }) => theme.colors?.primary?.main || theme.colors.primary.main || '#1e40af'};
-  margin - bottom: 1rem;
-}
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: ${props => props.$isDark ? '#FF8C61' : '#1e40af'};
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 
   p {
-  color: ${({ theme }) => theme.colors?.text?.secondary || theme.text?.secondary || '#64748b'};
-  margin - bottom: 2rem;
-}
+    color: ${props => props.$isDark ? '#94a3b8' : '#64748b'};
+    margin-bottom: 32px;
+    font-size: 1.1rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: 500;
+  }
 `;
 
 const SupportButtons = styled.div`
-display: grid;
-grid - template - columns: repeat(auto - fit, minmax(200px, 1fr));
-gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
 `;
 
-const SupportButton = styled.button`
-background: ${({ theme }) => theme.colors?.background?.paper || theme.colors.background.light || 'white'};
-border: 2px solid ${({ theme }) => theme.colors?.border || theme.colors.border.default || '#e2e8f0'};
-padding: 1rem;
-border - radius: 12px;
-cursor: pointer;
-transition: all 0.3s ease;
-display: flex;
-align - items: center;
-gap: 0.75rem;
-font - weight: 500;
-color: ${({ theme }) => theme.colors?.primary?.main || theme.colors.primary.main || '#1e40af'};
+const SupportButton = styled.button<{ $isDark: boolean }>`
+  background: ${props => props.$isDark ? '#0F1419' : 'white'};
+  border: 2px solid ${props => props.$isDark ? '#2d3748' : '#e2e8f0'};
+  padding: 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-weight: 700;
+  color: ${props => props.$isDark ? '#f8fafc' : '#1e40af'};
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 
   &:hover {
-  border - color: ${({ theme }) => theme.colors?.primary?.main || theme.colors.primary.main || '#3b82f6'};
-  transform: translateY(-2px);
-  box - shadow: 0 4px 20px ${({ theme }) => theme.mode === 'dark' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.1)'};
-}
+    border-color: ${props => props.$isDark ? '#FF8C61' : '#3b82f6'};
+    transform: translateY(-5px);
+    box-shadow: ${props => props.$isDark ? '0 10px 20px rgba(0, 0, 0, 0.4)' : '0 4px 20px rgba(0, 0, 0, 0.1)'};
+    color: ${props => props.$isDark ? '#FF8C61' : '#3b82f6'};
+  }
 
   .icon {
-  width: 20px;
-  height: 20px;
-}
+    width: 20px;
+    height: 20px;
+  }
 `;
 
 const HelpPage: React.FC = () => {
   const { t } = useTranslation();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [activeCategory, setActiveCategory] = useState('general');
   const [openFAQ, setOpenFAQ] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -277,9 +310,9 @@ const HelpPage: React.FC = () => {
   const faqs = {
     general: [
       {
-        id: 'what-is-globul-cars',
-        question: t('help.faq.general.q1', 'What is Globul Cars?'),
-        answer: t('help.faq.general.a1', 'Globul Cars is Bulgaria\'s leading online marketplace for buying and selling cars. We connect buyers and sellers with quality vehicles and exceptional service.')
+        id: 'what-is-koli-one',
+        question: t('help.faq.general.q1', 'What is Koli One?'),
+        answer: t('help.faq.general.a1', 'Koli One is Bulgaria\'s leading online marketplace for buying and selling cars. We connect buyers and sellers with quality vehicles and exceptional service.')
       },
       {
         id: 'how-to-register',
@@ -288,7 +321,7 @@ const HelpPage: React.FC = () => {
       },
       {
         id: 'is-it-free',
-        question: t('help.faq.general.q3', 'Is using Globul Cars free?'),
+        question: t('help.faq.general.q3', 'Is using Koli One free?'),
         answer: t('help.faq.general.a3', 'Yes, basic features are completely free. We offer premium features for enhanced visibility and additional services.')
       }
     ],
@@ -371,15 +404,15 @@ const HelpPage: React.FC = () => {
   const currentFAQs = faqs[activeCategory as keyof typeof faqs] || [];
 
   return (
-    <HelpContainer>
+    <HelpContainer $isDark={isDark}>
       <Container>
-        <Header>
+        <Header $isDark={isDark}>
           <h1>{t('help.title', 'Help Center')}</h1>
           <p>
             {t('help.subtitle', 'Find answers to your questions and get the support you need.')}
           </p>
 
-          <SearchBox>
+          <SearchBox $isDark={isDark}>
             <Search className="search-icon" size={20} />
             <input
               type="text"
@@ -391,12 +424,13 @@ const HelpPage: React.FC = () => {
         </Header>
 
         <HelpGrid>
-          <CategoriesSidebar>
+          <CategoriesSidebar $isDark={isDark}>
             <h3>{t('help.categories.title', 'Categories')}</h3>
             {categories.map((category) => (
               <CategoryItem
                 key={category.id}
                 $active={activeCategory === category.id}
+                $isDark={isDark}
                 onClick={() => setActiveCategory(category.id)}
               >
                 <category.icon className="icon" size={20} />
@@ -405,12 +439,12 @@ const HelpPage: React.FC = () => {
             ))}
           </CategoriesSidebar>
 
-          <ContentArea>
-            <FAQSection>
+          <ContentArea $isDark={isDark}>
+            <FAQSection $isDark={isDark}>
               <h2>{t('help.faq.title', 'Frequently Asked Questions')}</h2>
 
               {currentFAQs.map((faq) => (
-                <FAQItem key={faq.id} $isOpen={openFAQ === faq.id}>
+                <FAQItem key={faq.id} $isOpen={openFAQ === faq.id} $isDark={isDark}>
                   <div className="question" onClick={() => toggleFAQ(faq.id)}>
                     {faq.question}
                     {openFAQ === faq.id ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
@@ -424,140 +458,115 @@ const HelpPage: React.FC = () => {
           </ContentArea>
         </HelpGrid>
 
-        <ContactSupport>
+        <ContactSupport $isDark={isDark}>
           <h2>{t('help.contact.title', 'Still Need Help?')}</h2>
           <p>
             {t('help.contact.subtitle', 'Our support team at Alaa Technologies is here to help you with any questions or concerns.')}
           </p>
 
           <SupportButtons>
-            <SupportButton>
+            <SupportButton $isDark={isDark}>
               <MessageCircle className="icon" size={20} />
               {t('help.contact.chat', 'Live Chat')}
             </SupportButton>
-            <SupportButton>
+            <SupportButton $isDark={isDark}>
               <Mail className="icon" size={20} />
               {t('help.contact.email', 'Email Support')}
             </SupportButton>
-            <SupportButton>
+            <SupportButton $isDark={isDark}>
               <Phone className="icon" size={20} />
               {t('help.contact.phone', 'Text Support')}
             </SupportButton>
-            <SupportButton>
+            <SupportButton $isDark={isDark}>
               <BookOpen className="icon" size={20} />
               {t('help.contact.docs', 'Documentation')}
             </SupportButton>
           </SupportButtons>
 
-          {/* Department Contact Information */}
-          <div style={{ marginTop: '2rem', padding: '2rem', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '12px', textAlign: 'left' }}>
-            <h3 style={{ marginBottom: '1.5rem', textAlign: 'center', fontSize: '1.4rem' }}>
+          <div style={{ marginTop: '2rem', padding: '2rem', background: isDark ? '#141A26' : 'rgba(59, 130, 246, 0.1)', borderRadius: '12px', textAlign: 'left', border: isDark ? '1px solid #2d3748' : 'none' }}>
+            <h3 style={{ marginBottom: '1.5rem', textAlign: 'center', fontSize: '1.4rem', color: isDark ? '#FF8C61' : '#1e40af', textTransform: 'uppercase', letterSpacing: '1px' }}>
               {t('help.contact.departments', 'Contact by Department')}
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
               <div>
-                <strong>📧 {t('help.contact.general', 'General Inquiries')}:</strong><br />
-                <a href="mailto:info@koli.one" style={{ color: '#3b82f6' }}>info@koli.one</a>
+                <strong style={{ color: isDark ? '#f8fafc' : '#333' }}>📧 {t('help.contact.general', 'General Inquiries')}:</strong><br />
+                <a href="mailto:info@koli.one" style={{ color: isDark ? '#FF8C61' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>info@koli.one</a>
               </div>
               <div>
-                <strong>🛠️ {t('help.contact.technical', 'Technical Support')}:</strong><br />
-                <a href="mailto:support@koli.one" style={{ color: '#3b82f6' }}>support@koli.one</a>
+                <strong style={{ color: isDark ? '#f8fafc' : '#333' }}>🛠️ {t('help.contact.technical', 'Technical Support')}:</strong><br />
+                <a href="mailto:support@koli.one" style={{ color: isDark ? '#FF8C61' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>support@koli.one</a>
               </div>
               <div>
-                <strong>💼 {t('help.contact.sales', 'Sales')}:</strong><br />
-                <a href="mailto:sales@koli.one" style={{ color: '#3b82f6' }}>sales@koli.one</a>
+                <strong style={{ color: isDark ? '#f8fafc' : '#333' }}>💼 {t('help.contact.sales', 'Sales')}:</strong><br />
+                <a href="mailto:sales@koli.one" style={{ color: isDark ? '#FF8C61' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>sales@koli.one</a>
               </div>
               <div>
-                <strong>🤖 {t('help.contact.ai', 'AI Services')}:</strong><br />
-                <a href="mailto:ai@koli.one" style={{ color: '#3b82f6' }}>ai@koli.one</a>
+                <strong style={{ color: isDark ? '#f8fafc' : '#333' }}>🤖 {t('help.contact.ai', 'AI Services')}:</strong><br />
+                <a href="mailto:ai@koli.one" style={{ color: isDark ? '#FF8C61' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>ai@koli.one</a>
               </div>
               <div>
-                <strong>⚙️ {t('help.contact.service', 'Services')}:</strong><br />
-                <a href="mailto:service@koli.one" style={{ color: '#3b82f6' }}>service@koli.one</a>
+                <strong style={{ color: isDark ? '#f8fafc' : '#333' }}>⚙️ {t('help.contact.service', 'Services')}:</strong><br />
+                <a href="mailto:service@koli.one" style={{ color: isDark ? '#FF8C61' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>service@koli.one</a>
               </div>
               <div>
-                <strong>💳 {t('help.contact.payments', 'Payments')}:</strong><br />
-                <a href="mailto:payments@koli.one" style={{ color: '#3b82f6' }}>payments@koli.one</a>
+                <strong style={{ color: isDark ? '#f8fafc' : '#333' }}>💳 {t('help.contact.payments', 'Payments')}:</strong><br />
+                <a href="mailto:payments@koli.one" style={{ color: isDark ? '#FF8C61' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>payments@koli.one</a>
               </div>
               <div>
-                <strong>👔 {t('help.contact.management', 'Management')}:</strong><br />
-                <a href="mailto:management@koli.one" style={{ color: '#3b82f6' }}>management@koli.one</a>
+                <strong style={{ color: isDark ? '#f8fafc' : '#333' }}>👔 {t('help.contact.management', 'Management')}:</strong><br />
+                <a href="mailto:management@koli.one" style={{ color: isDark ? '#FF8C61' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>management@koli.one</a>
               </div>
             </div>
-
           </div>
 
-          {/* Social Media Section */}
-          <div style={{ marginTop: '2rem', padding: '2rem', background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15))', borderRadius: '16px', textAlign: 'center' }}>
-            <h3 style={{ marginBottom: '1rem', fontSize: '1.3rem', fontWeight: '600' }}>
-              {t('help.contact.followUs', 'Follow Us on Social Media')}
+          <div style={{ marginTop: '32px', padding: '32px', background: isDark ? 'linear-gradient(135deg, rgba(255, 140, 97, 0.1), rgba(0, 0, 0, 0.2))' : 'linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15))', borderRadius: '24px', textAlign: 'center', border: isDark ? '1px solid #2d3748' : 'none' }}>
+            <h3 style={{ marginBottom: '16px', fontSize: '1.5rem', fontWeight: '800', color: isDark ? '#FF8C61' : '#1e40af', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              {t('help.contact.followUs', 'Follow Us')}
             </h3>
-            <p style={{ marginBottom: '1.5rem', opacity: 0.9, fontSize: '0.95rem' }}>
+            <p style={{ marginBottom: '24px', opacity: 0.9, fontSize: '1rem', color: isDark ? '#cbd5e1' : '#475569', fontWeight: 500 }}>
               {t('help.contact.socialDescription', 'Stay updated with our latest news, tips, and automotive content')}
             </p>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
               <a href={SOCIAL_LINKS.facebook} target="_blank" rel="noopener noreferrer"
-                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '50px', height: '50px', borderRadius: '50%', background: '#1877f2', color: 'white', textDecoration: 'none', transition: 'all 0.3s ease', boxShadow: '0 4px 12px rgba(24, 119, 242, 0.3)' }}
-                onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-5px) scale(1.1)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(24, 119, 242, 0.5)'; }}
-                onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(24, 119, 242, 0.3)'; }}
+                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '56px', height: '56px', borderRadius: '50%', background: '#1877f2', color: 'white', textDecoration: 'none', transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)', boxShadow: '0 4px 12px rgba(24, 119, 242, 0.3)' }}
                 title="Facebook" aria-label="Facebook">
                 <Facebook size={24} />
               </a>
               <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer"
-                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '50px', height: '50px', borderRadius: '50%', background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)', color: 'white', textDecoration: 'none', transition: 'all 0.3s ease', boxShadow: '0 4px 12px rgba(225, 48, 108, 0.3)' }}
-                onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-5px) scale(1.1)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(225, 48, 108, 0.5)'; }}
-                onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(225, 48, 108, 0.3)'; }}
+                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '56px', height: '56px', borderRadius: '50%', background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)', color: 'white', textDecoration: 'none', transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)', boxShadow: '0 4px 12px rgba(225, 48, 108, 0.3)' }}
                 title="Instagram" aria-label="Instagram">
                 <Instagram size={24} />
               </a>
               <a href={SOCIAL_LINKS.youtube} target="_blank" rel="noopener noreferrer"
-                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '50px', height: '50px', borderRadius: '50%', background: '#ff0000', color: 'white', textDecoration: 'none', transition: 'all 0.3s ease', boxShadow: '0 4px 12px rgba(255, 0, 0, 0.3)' }}
-                onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-5px) scale(1.1)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(255, 0, 0, 0.5)'; }}
-                onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 0, 0, 0.3)'; }}
+                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '56px', height: '56px', borderRadius: '50%', background: '#ff0000', color: 'white', textDecoration: 'none', transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)', boxShadow: '0 4px 12px rgba(255, 0, 0, 0.3)' }}
                 title="YouTube" aria-label="YouTube">
                 <Youtube size={24} />
               </a>
               <a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener noreferrer"
-                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '50px', height: '50px', borderRadius: '50%', background: '#0077b5', color: 'white', textDecoration: 'none', transition: 'all 0.3s ease', boxShadow: '0 4px 12px rgba(0, 119, 181, 0.3)' }}
-                onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-5px) scale(1.1)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(0, 119, 181, 0.5)'; }}
-                onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 119, 181, 0.3)'; }}
+                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '56px', height: '56px', borderRadius: '50%', background: '#0077b5', color: 'white', textDecoration: 'none', transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)', boxShadow: '0 4px 12px rgba(0, 119, 181, 0.3)' }}
                 title="LinkedIn" aria-label="LinkedIn">
                 <Linkedin size={24} />
               </a>
               <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer"
-                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '50px', height: '50px', borderRadius: '50%', background: '#000000', color: 'white', textDecoration: 'none', transition: 'all 0.3s ease', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)' }}
-                onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-5px) scale(1.1)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.5)'; }}
-                onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)'; }}
+                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '56px', height: '56px', borderRadius: '50%', background: '#000000', color: 'white', textDecoration: 'none', transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)' }}
                 title="X (Twitter)" aria-label="X (Twitter)">
                 <Twitter size={24} />
               </a>
               <a href={SOCIAL_LINKS.tiktok} target="_blank" rel="noopener noreferrer"
-                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '50px', height: '50px', borderRadius: '50%', background: '#000000', color: 'white', textDecoration: 'none', transition: 'all 0.3s ease', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)' }}
-                onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-5px) scale(1.1)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.5)'; }}
-                onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)'; }}
+                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '56px', height: '56px', borderRadius: '50%', background: '#000000', color: 'white', textDecoration: 'none', transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)' }}
                 title="TikTok" aria-label="TikTok">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
                 </svg>
               </a>
-              <a href={SOCIAL_LINKS.threads} target="_blank" rel="noopener noreferrer"
-                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '50px', height: '50px', borderRadius: '50%', background: '#000000', color: 'white', textDecoration: 'none', transition: 'all 0.3s ease', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)' }}
-                onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-5px) scale(1.1)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.5)'; }}
-                onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)'; }}
-                title="Threads" aria-label="Threads">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.781 3.631 2.695 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142l-.126 1.974a11.881 11.881 0 0 0-2.588-.12c-1.014.057-1.83.339-2.43.84-.537.449-.827 1.014-.794 1.546.032.496.296.936.764 1.273.555.4 1.27.574 2.068.527 1.06-.058 1.857-.4 2.37-1.016.45-.54.73-1.314.833-2.3-.73-.244-1.485-.43-2.252-.555-2.81-.457-5.03.196-6.61 1.942-1.298 1.437-1.946 3.305-1.875 5.403.07 2.098.948 3.834 2.541 5.02 1.412.952 3.14 1.43 5.14 1.43 3.302 0 5.83-1.218 7.513-3.619 1.31-1.869 1.972-4.302 1.972-7.236 0-2.933-.663-5.366-1.972-7.236-1.683-2.401-4.21-3.619-7.513-3.619z" />
-                </svg>
-              </a>
             </div>
           </div>
 
-          {/* Company Information */}
-          <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(148, 163, 184, 0.1)', borderRadius: '12px', textAlign: 'center', fontSize: '0.95em' }}>
-            <strong>Alaa Technologies</strong><br />
+          <div style={{ marginTop: '32px', padding: '24px', background: isDark ? '#0F1419' : 'rgba(148, 163, 184, 0.1)', borderRadius: '16px', textAlign: 'center', fontSize: '1rem', color: isDark ? '#94a3b8' : '#475569', fontWeight: 600, border: isDark ? '1px solid #2d3748' : 'none' }}>
+            <strong style={{ color: isDark ? '#f8fafc' : '#1F2937', fontSize: '1.1rem' }}>Alaa Technologies</strong><br />
             {t('help.contact.address', '77 Tsar Simeon Blvd, Sofia, Bulgaria')} |
-            📞 <strong>+359 87 983 9671</strong> ({t('help.contact.textOnly', 'Text messages only - No voice calls')})<br />
-            <span style={{ fontSize: '0.9em', opacity: 0.8 }}>
+            📞 <strong style={{ color: isDark ? '#FF8C61' : '#3b82f6' }}>+359 87 983 9671</strong> ({t('help.contact.textOnly', 'Text messages only')})<br />
+            <span style={{ fontSize: '0.9rem', opacity: 0.8, fontWeight: 500 }}>
               {t('help.contact.jurisdiction', 'Operating under Bulgarian and EU law (GDPR compliant)')}
             </span>
           </div>
@@ -568,4 +577,3 @@ const HelpPage: React.FC = () => {
 };
 
 export default HelpPage;
-

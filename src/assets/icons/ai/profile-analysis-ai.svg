@@ -1,7 +1,5 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="32" cy="24" r="10" stroke="currentColor" stroke-width="4" fill="transparent"/>
-  <path d="M16 50C16 41.1634 23.1634 34 32 34C40.8366 34 48 41.1634 48 50" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-  <path d="M44 44L52 52" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-  <circle cx="52" cy="52" r="4" stroke="currentColor" stroke-width="3" fill="transparent"/>
+  <image href="./koli_one_ai_Icon2.png" x="-64" y="-64" width="192" height="192" preserveAspectRatio="xMidYMid meet" />
+</svg>
 </svg>
 

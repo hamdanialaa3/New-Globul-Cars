@@ -69,11 +69,11 @@ const LEDRing = styled.svg<{ progress: number; color: string; size: number }>`
       stroke: ${p => p.color};
       stroke-width: 4.5;
       stroke-dasharray: ${p => {
-        const radius = 50;
-        const circumference = 2 * Math.PI * radius;
-        const dashLength = (p.progress / 100) * circumference;
-        return `${dashLength} ${circumference}`;
-      }};
+    const radius = 50;
+    const circumference = 2 * Math.PI * radius;
+    const dashLength = (p.progress / 100) * circumference;
+    return `${dashLength} ${circumference}`;
+  }};
       stroke-linecap: round;
       transition: stroke-dasharray 0.6s cubic-bezier(0.4, 0, 0.2, 1), stroke-width 0.2s ease;
       /* ⚡ FIXED: Removed drop-shadow to prevent flickering */
@@ -117,9 +117,7 @@ const ProgressText = styled.div<{ progress: number }>`
   
   /* ⚡ FIXED: Prevent text flickering */
   backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 `;
 
 const HelperText = styled.div`
@@ -134,9 +132,7 @@ const HelperText = styled.div`
   
   /* ⚡ FIXED: Prevent text flickering */
   backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 `;
 
 const CompletionBadge = styled.div`
@@ -197,15 +193,15 @@ export const LEDProgressAvatar: React.FC<LEDProgressAvatarProps> = ({
   onClick
 }) => {
   const { language } = useLanguage();
-  
+
   // Calculate completion percentage
   const progress = calculateProfileCompletion(user, profileType);
-  
+
   // Use defaults if not provided
   const avatarSize = size || DEFAULT_SIZES[profileType];
   const avatarShape = shape || DEFAULT_SHAPES[profileType];
   const ringColor = ledColor || DEFAULT_LED_COLORS[profileType];
-  
+
   // ⚡ FIXED: Better default avatar handling
   const getPhotoURL = (): string => {
     if (typeof user?.photoURL === 'string') {
@@ -219,17 +215,17 @@ export const LEDProgressAvatar: React.FC<LEDProgressAvatarProps> = ({
     }
     // Generate default SVG avatar
     const initial = user?.firstName?.[0] || user?.businessName?.[0] || '?';
-  return `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"%3E%3Crect fill="%23f0f0f0" width="120" height="120"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Martica" font-size="48" fill="%23999"%3E${initial}%3C/text%3E%3C/svg%3E`;
+    return `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"%3E%3Crect fill="%23f0f0f0" width="120" height="120"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Martica" font-size="48" fill="%23999"%3E${initial}%3C/text%3E%3C/svg%3E`;
   };
 
   const photoURL = getPhotoURL();
-  
+
   // Get progress message
   const progressMessage = getProgressMessage(progress, language);
-  
+
   return (
-    <AvatarContainer 
-      size={avatarSize} 
+    <AvatarContainer
+      size={avatarSize}
       onClick={onClick}
       role={onClick ? 'button' : undefined}
       aria-label={onClick ? 'Change profile picture' : 'Profile picture'}
@@ -255,9 +251,9 @@ export const LEDProgressAvatar: React.FC<LEDProgressAvatarProps> = ({
           />
         </LEDRing>
       )}
-      
+
       {/* Avatar Image */}
-      <AvatarImage 
+      <AvatarImage
         src={photoURL}
         alt={user?.displayName || user?.businessName || 'Profile'}
         shape={avatarShape}
@@ -268,25 +264,25 @@ export const LEDProgressAvatar: React.FC<LEDProgressAvatarProps> = ({
         }}
         loading="eager"
       />
-      
+
       {/* Completion Badge (100% only) */}
       {progress === 100 && (
         <CompletionBadge title="Profile Complete">
           ✓
         </CompletionBadge>
       )}
-      
+
       {/* Progress Text */}
       {showProgress && (
         <>
           <ProgressText progress={progress}>
             {progressMessage}
           </ProgressText>
-          
+
           {/* Helper Text (Company only, when not complete) */}
           {profileType === 'company' && progress < 100 && (
             <HelperText>
-              {language === 'bg' 
+              {language === 'bg'
                 ? 'Завършете профила за достъп до всички функции'
                 : 'Complete profile to unlock all enterprise features'}
             </HelperText>

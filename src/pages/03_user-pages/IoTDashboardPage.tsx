@@ -8,15 +8,18 @@ const PageContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 80px 24px;
-  background: #f7f7f7;
+  background: #0f1419;
   min-height: 100vh;
+  color: #f8fafc;
 `;
 
 const PageTitle = styled.h1`
-  font-size: 2rem;
+  font-size: 24px;
   font-weight: 700;
-  color: #000;
+  color: #ff8c61;
   margin: 0 0 32px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 `;
 
 const StatsGrid = styled.div`
@@ -27,26 +30,33 @@ const StatsGrid = styled.div`
 `;
 
 const StatCard = styled.div`
-  background: white;
+  background: #1e2432;
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid #2d3748;
   display: flex;
   align-items: center;
   gap: 16px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #ff8c61;
+    transform: translateY(-2px);
+  }
 `;
 
 const StatIcon = styled.div<{ $color: string }>`
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: ${p => p.$color}20;
+  background: #0f1419;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid #2d3748;
   
   svg {
-    color: ${p => p.$color};
+    color: #ff8c61;
   }
 `;
 
@@ -57,13 +67,16 @@ const StatContent = styled.div`
 const StatValue = styled.div`
   font-size: 1.5rem;
   font-weight: 700;
-  color: #000;
+  color: #f8fafc;
   margin-bottom: 4px;
 `;
 
 const StatLabel = styled.div`
-  font-size: 0.875rem;
-  color: #666;
+  font-size: 11px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
 `;
 
 const DevicesGrid = styled.div`
@@ -73,10 +86,16 @@ const DevicesGrid = styled.div`
 `;
 
 const DeviceCard = styled.div`
-  background: white;
+  background: #1e2432;
   border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 32px;
+  border: 1px solid #2d3748;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: #ff8c61;
+  }
 `;
 
 const DeviceHeader = styled.div`
@@ -88,29 +107,33 @@ const DeviceHeader = styled.div`
 
 const DeviceTitle = styled.h3`
   font-size: 1.125rem;
-  font-weight: 600;
-  color: #000;
+  font-weight: 700;
+  color: #ff8c61;
   margin: 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 `;
 
 const StatusBadge = styled.div<{ $online: boolean }>`
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
+  gap: 8px;
+  padding: 6px 16px;
   border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  background: ${p => p.$online ? '#e8f5e9' : '#ffebee'};
-  color: ${p => p.$online ? '#2e7d32' : '#c62828'};
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: ${p => p.$online ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)'};
+  color: ${p => p.$online ? '#10b981' : '#ef4444'};
+  border: 1px solid ${p => p.$online ? '#10b981' : '#ef4444'};
 `;
 
 const AddDeviceCard = styled.div`
-  background: white;
-  border: 2px dashed #ddd;
+  background: #141a21;
+  border: 2px dashed #2d3748;
   border-radius: 12px;
   padding: 48px 24px;
   text-align: center;
@@ -118,8 +141,9 @@ const AddDeviceCard = styled.div`
   transition: all 0.2s ease;
   
   &:hover {
-    border-color: #ff7900;
-    background: #fff8f0;
+    border-color: #ff8c61;
+    background: #1e2432;
+    transform: translateY(-2px);
   }
 `;
 
@@ -127,22 +151,25 @@ const AddDeviceIcon = styled.div`
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: #f5f5f5;
+  background: #0f1419;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 16px;
+  border: 1px solid #2d3748;
   
   svg {
-    color: #999;
+    color: #ff8c61;
   }
 `;
 
 const AddDeviceText = styled.div`
-  font-size: 1rem;
-  font-weight: 600;
-  color: #333;
+  font-size: 15px;
+  font-weight: 700;
+  color: #f8fafc;
   margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 `;
 
 const IoTDashboardPage: React.FC = () => {

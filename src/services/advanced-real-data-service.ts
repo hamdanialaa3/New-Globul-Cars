@@ -1,20 +1,21 @@
-import { 
-  collection, 
-  getDocs, 
-  query, 
-  where, 
-  orderBy, 
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  orderBy,
   limit,
   onSnapshot
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { logger } from './logger-service';
+import { queryAllCollections } from './search/multi-collection-helper';
 
 // Advanced Real Data Service for 100% real data
 class AdvancedRealDataService {
   private static instance: AdvancedRealDataService;
 
-  private constructor() {}
+  private constructor() { }
 
   public static getInstance(): AdvancedRealDataService {
     if (!AdvancedRealDataService.instance) {
@@ -27,7 +28,7 @@ class AdvancedRealDataService {
   public async getRealTimeAnalytics(): Promise<any> {
     try {
       logger.debug('Fetching real analytics data...');
-      
+
       // Get all collections in parallel
       const [
         usersSnapshot,
@@ -181,13 +182,13 @@ class AdvancedRealDataService {
   public async getRealUserActivity(): Promise<any[]> {
     try {
       logger.debug('Fetching real user activity...');
-      
+
       const q = query(
         collection(db, 'user_activity'),
         orderBy('timestamp', 'desc'),
         limit(50)
       );
-      
+
       const snapshot = await getDocs(q);
       const activities = snapshot.docs.map((doc: any) => {
         const data = doc.data();
@@ -218,7 +219,7 @@ class AdvancedRealDataService {
   public async getRealContentModeration(): Promise<any> {
     try {
       logger.debug('Fetching real content moderation...');
-      
+
       // ⚡ FIX: Silently handle permission errors for non-critical collections
       const [
         reportedCarsSnapshot,
@@ -255,7 +256,7 @@ class AdvancedRealDataService {
   public async getRealUsers(): Promise<any[]> {
     try {
       logger.debug('Fetching real users...');
-      
+
       const snapshot = await getDocs(collection(db, 'users'));
       const users = snapshot.docs.map((doc: any) => {
         const data = doc.data();
@@ -290,7 +291,7 @@ class AdvancedRealDataService {
   public async getRealCars(): Promise<any[]> {
     try {
       logger.debug('Fetching real cars...');
-      
+
       const snapshot = await queryAllCollections();
       const cars = snapshot.docs.map((doc: any) => {
         const data = doc.data();
@@ -329,7 +330,7 @@ class AdvancedRealDataService {
   public async getRealMessages(): Promise<any[]> {
     try {
       logger.debug('Fetching real messages...');
-      
+
       const snapshot = await getDocs(collection(db, 'messages'));
       const messages = snapshot.docs.map((doc: any) => {
         const data = doc.data();
@@ -378,7 +379,7 @@ class AdvancedRealDataService {
   public async getLiveStatistics(): Promise<any> {
     try {
       logger.debug('Fetching live statistics...');
-      
+
       const [usersSnapshot, carsSnapshot, messagesSnapshot] = await Promise.all([
         getDocs(collection(db, 'users')),
         queryAllCollections(),
@@ -436,7 +437,7 @@ class AdvancedRealDataService {
   public async getUserEngagementMetrics(): Promise<any> {
     try {
       logger.debug('Fetching user engagement metrics...');
-      
+
       const [usersSnapshot, userActivitySnapshot] = await Promise.all([
         getDocs(collection(db, 'users')),
         getDocs(collection(db, 'user_activity'))
@@ -490,7 +491,7 @@ class AdvancedRealDataService {
   public async getRevenueAnalytics(): Promise<any> {
     try {
       logger.debug('Fetching revenue analytics...');
-      
+
       const carsSnapshot = await queryAllCollections();
       const cars = carsSnapshot.docs.map((doc: any) => doc.data());
 

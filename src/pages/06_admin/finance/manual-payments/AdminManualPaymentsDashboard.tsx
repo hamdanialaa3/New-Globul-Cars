@@ -27,7 +27,7 @@ import { useLanguage } from '../../../../contexts/LanguageContext';
 import { manualPaymentService } from '../../../../services/payment/manual-payment-service';
 import type { ManualPaymentTransaction, PaymentStatus } from '../../../../types/payment.types';
 import { logger } from '../../../../services/logger-service';
-import { AdminService } from '../../../../services/admin-service';
+import { AdminService } from '../../../../services/admin-permissions.service';
 import { BANK_DETAILS } from '../../../../config/bank-details';
 
 const AdminManualPaymentsDashboard: React.FC = () => {

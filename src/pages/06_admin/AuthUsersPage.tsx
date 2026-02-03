@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { adminService } from '../../services/admin/admin-service';
+import { adminService } from '../../services/admin/admin-verification.service';
 import { BulgarianUser } from '../../types/user/bulgarian-user.types'; // Fixed import
 import { Loader, Search, Shield, User as UserIcon, Briefcase, Mail } from 'lucide-react';
 import { toast } from 'react-toastify';

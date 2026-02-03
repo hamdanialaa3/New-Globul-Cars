@@ -4,58 +4,63 @@ import { useNavigate } from 'react-router-dom';
 import { Network, Info, Zap, Database, Cloud, Cpu, Globe, Lock } from 'lucide-react';
 
 const ArchitectureSection = styled.div`
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  border-radius: 16px;
-  padding: 2rem;
-  margin: 2rem 0;
-  border: 2px solid rgba(102, 126, 234, 0.3);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  background: #0f1419;
+  border-radius: 12px;
+  padding: 32px;
+  margin: 0 20px 32px 20px;
+  border: 1px solid #2d3748;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 `;
 
 const SectionHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #2d3748;
 `;
 
 const Title = styled.h2<{ language: string }>`
-  color: #ffd700;
-  font-size: 1.8rem;
+  color: #ff8c61;
+  font-size: 18px;
   font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   direction: ${props => props.language === 'bg' ? 'ltr' : 'rtl'};
 `;
 
 const ViewButton = styled.button`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #ff8c61;
+  color: #0f1419;
   border: none;
-  padding: 12px 32px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 
   &:hover {
+    background: #ffa885;
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 5px 15px rgba(255, 140, 97, 0.3);
   }
 `;
 
 const Description = styled.div<{ language: string }>`
-  color: #b0b0b0;
-  font-size: 1rem;
-  line-height: 1.8;
-  margin-bottom: 2rem;
+  color: #cbd5e1;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 24px;
   direction: ${props => props.language === 'bg' ? 'ltr' : 'rtl'};
   text-align: ${props => props.language === 'bg' ? 'left' : 'right'};
 `;
@@ -68,78 +73,81 @@ const FeaturesGrid = styled.div`
 `;
 
 const FeatureCard = styled.div`
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(102, 126, 234, 0.2);
+  background: #1e2432;
+  border: 1px solid #2d3748;
   border-radius: 12px;
-  padding: 1.5rem;
-  transition: all 0.3s ease;
+  padding: 24px;
+  transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(102, 126, 234, 0.1);
-    border-color: rgba(102, 126, 234, 0.4);
+    background: #252b3a;
+    border-color: #ff8c61;
     transform: translateY(-4px);
   }
 `;
 
 const FeatureIcon = styled.div`
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  background: #252b3a;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1rem;
-  color: white;
+  margin-bottom: 16px;
+  color: #ff8c61;
+  border: 1px solid #2d3748;
 `;
 
 const FeatureTitle = styled.h3<{ language: string }>`
-  color: #ffd700;
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+  color: #f8fafc;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 8px;
   direction: ${props => props.language === 'bg' ? 'ltr' : 'rtl'};
   text-align: ${props => props.language === 'bg' ? 'left' : 'right'};
 `;
 
 const FeatureDesc = styled.p<{ language: string }>`
-  color: #b0b0b0;
-  font-size: 0.9rem;
-  line-height: 1.6;
+  color: #94a3b8;
+  font-size: 12px;
+  line-height: 1.5;
   direction: ${props => props.language === 'bg' ? 'ltr' : 'rtl'};
   text-align: ${props => props.language === 'bg' ? 'left' : 'right'};
 `;
 
 const DetailedExplanation = styled.div<{ language: string }>`
-  background: rgba(0, 0, 0, 0.3);
+  background: #141a21;
   border-radius: 12px;
-  padding: 1.5rem;
-  margin-top: 2rem;
-  border-left: 4px solid #667eea;
+  padding: 24px;
+  margin-top: 32px;
+  border-left: 4px solid #ff8c61;
   direction: ${props => props.language === 'bg' ? 'ltr' : 'rtl'};
 `;
 
 const ExplanationTitle = styled.h3<{ language: string }>`
-  color: #667eea;
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
+  color: #ff8c61;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   direction: ${props => props.language === 'bg' ? 'ltr' : 'rtl'};
 `;
 
 const ExplanationList = styled.ul<{ language: string }>`
-  color: #e0e0e0;
-  font-size: 0.95rem;
+  color: #cbd5e1;
+  font-size: 13px;
   line-height: 1.8;
   list-style-position: inside;
   direction: ${props => props.language === 'bg' ? 'ltr' : 'rtl'};
   text-align: ${props => props.language === 'bg' ? 'left' : 'right'};
   
   li {
-    margin-bottom: 0.8rem;
+    margin-bottom: 12px;
     padding-left: ${props => props.language === 'bg' ? '0' : '1rem'};
     padding-right: ${props => props.language === 'bg' ? '1rem' : '0'};
   }

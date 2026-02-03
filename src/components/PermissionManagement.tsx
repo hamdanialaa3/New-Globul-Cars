@@ -26,10 +26,10 @@ import {
   UserX
 } from 'lucide-react';
 import { permissionManagementService } from '../services/permission-management-service';
-import { adminService } from '../services/admin-service';
+import { adminService } from '../services/admin-permissions.service';
 import { PERMISSIONS, hasPermission, listRolePermissions, type Role } from '../constants/rbac';
 import type { PermissionCategory, PermissionTemplate, RoleTemplate } from '../services/permission-management-types';
-import type { AdminPermissions } from '../services/admin-service';
+import type { AdminPermissions } from '../services/admin-permissions.service';
 import { logger } from '../services/logger-service';
 import { useAuth } from '../contexts/AuthProvider';
 import { toast } from 'react-toastify';

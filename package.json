@@ -4,7 +4,6 @@
   "private": true,
   "homepage": "/",
   "dependencies": {
-      "socket.io-client": "^4.7.5",
     "@algolia/autocomplete-js": "^1.19.4",
     "@google/generative-ai": "^0.24.1",
     "@hcaptcha/react-hcaptcha": "^1.12.1",
@@ -52,6 +51,7 @@
     "react-toastify": "^11.0.5",
     "react-virtuoso": "^4.6.2",
     "recharts": "^3.2.1",
+    "socket.io-client": "^4.7.5",
     "styled-components": "^6.1.19",
     "three": "^0.182.0",
     "translate": "^3.0.1",

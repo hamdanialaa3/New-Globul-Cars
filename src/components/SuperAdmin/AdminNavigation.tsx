@@ -12,7 +12,9 @@ import {
   Facebook,
   FolderOpen,
   Network,
-  Sparkles
+  Sparkles,
+  Target,
+  Megaphone
 } from 'lucide-react';
 
 interface AdminNavigationProps {
@@ -22,32 +24,32 @@ interface AdminNavigationProps {
 
 const NavigationTabs = styled.div`
   display: flex;
-  gap: 4px;
-  background: #ffffff;
-  padding: 4px;
-  border-radius: 4px;
-  margin: 0 20px 20px 20px;
-  border: 1px solid #e0e0e0;
+  gap: 6px;
+  background: #1e2432;
+  padding: 6px;
+  border-radius: 8px;
+  margin: 0 20px 24px 20px;
+  border: 1px solid #2d3748;
   overflow-x: auto;
   scrollbar-width: thin;
-  scrollbar-color: #d0d0d0 #f5f5f5;
+  scrollbar-color: #ff8c61 #0f1419;
   
   &::-webkit-scrollbar {
     height: 4px;
   }
   
   &::-webkit-scrollbar-track {
-    background: #f5f5f5;
+    background: #0f1419;
     border-radius: 2px;
   }
   
   &::-webkit-scrollbar-thumb {
-    background: #d0d0d0;
+    background: #2d3748;
     border-radius: 2px;
   }
   
   &::-webkit-scrollbar-thumb:hover {
-    background: #999999;
+    background: #ff8c61;
   }
 `;
 
@@ -66,16 +68,16 @@ const TabButton = styled.button<{ $active: boolean }>`
   min-width: fit-content;
   
   ${props => props.$active ? `
-    background: #1a1a1a;
-    color: #ffffff;
-    border-color: #d0d0d0;
+    background: #ff8c61;
+    color: #0f1419;
+    font-weight: 700;
   ` : `
     background: transparent;
-    color: #666666;
+    color: #cbd5e1;
     border-color: transparent;
     &:hover {
-      background: #f5f5f5;
-      color: #1a1a1a;
+      background: #2d3748;
+      color: #ff8c61;
     }
   `}
 `;
@@ -95,6 +97,7 @@ const AdminNavigation: React.FC<AdminNavigationProps> = ({ activeTab, onTabChang
     { id: 'audit', label: 'Audit', icon: FileText },
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'content', label: 'Content', icon: Settings },
+    { id: 'ads', label: 'Ads Management', icon: Target },
     { id: 'ai', label: 'DeepSeek AI', icon: Sparkles }
   ];
 
