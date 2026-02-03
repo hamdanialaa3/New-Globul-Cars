@@ -43,8 +43,8 @@ const ProfileCampaigns: React.FC = () => {
   }
 
   return (
-    <S.ContentSection $themeColor={theme.colors.primary.main}>
-      <h2 style={{ fontSize: '1.75rem', marginBottom: '1.5rem', color: '#fff', fontWeight: '700' }}>
+    <S.ContentSection>
+      <h2 style={{ fontSize: '1.75rem', marginBottom: '1.5rem', color: 'var(--text-primary)', fontWeight: '700' }}>
         {language === 'bg' ? '📢 Рекламни кампании' : '📢 Advertising Campaigns'}
       </h2>
       
