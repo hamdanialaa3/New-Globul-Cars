@@ -32,6 +32,19 @@ interface SitemapURL {
     }>;
 }
 
+interface SitemapCar {
+    sellerNumericId: number;
+    carNumericId: number;
+    updatedAt?: string;
+    [key: string]: unknown;
+}
+
+interface SitemapDealer {
+    numericId: number;
+    updatedAt?: string;
+    [key: string]: unknown;
+}
+
 // ============================================================================
 // CONSTANTS
 // ============================================================================
@@ -277,9 +290,9 @@ ${urlElements}
             .replace(/'/g, '&apos;');
     }
 
-    private async fetchActiveCars(limit: number): Promise<any[]> {
+    private async fetchActiveCars(limit: number): Promise<SitemapCar[]> {
         const collections = ['cars', 'passenger_cars', 'suvs', 'vans'];
-        const allCars: any[] = [];
+        const allCars: SitemapCar[] = [];
 
         for (const col of collections) {
             const snapshot = await this.db.collection(col)
@@ -295,25 +308,25 @@ ${urlElements}
                     sellerNumericId: data.sellerNumericId || 0,
                     carNumericId: data.carNumericId || 0,
                     updatedAt: data.updatedAt?.toDate?.()?.toISOString().split('T')[0],
-                });
+                } as SitemapCar);
             });
         }
 
         return allCars;
     }
 
-    private async fetchDealers(limit: number): Promise<any[]> {
+    private async fetchDealers(limit: number): Promise<SitemapDealer[]> {
         const snapshot = await this.db.collection('users')
             .where('profileType', 'in', ['dealer', 'company'])
             .orderBy('createdAt', 'desc')
             .limit(limit)
             .get();
 
-        return snapshot.docs.map((doc: any) => ({
+        return snapshot.docs.map(doc => ({
             ...doc.data(),
             numericId: doc.data().numericId || 0,
             updatedAt: doc.data().updatedAt?.toDate?.()?.toISOString().split('T')[0],
-        }));
+        } as SitemapDealer));
     }
 }
 
