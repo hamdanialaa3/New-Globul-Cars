@@ -30,7 +30,7 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ user, theme }) => {
 
   return (
     <AnalyticsContainer>
-      <ProfileAnalyticsDashboard userId={user.uid} themeColor={theme.colors.primary.main} />
+      <ProfileAnalyticsDashboard userId={user.uid} />
     </AnalyticsContainer>
   );
 };

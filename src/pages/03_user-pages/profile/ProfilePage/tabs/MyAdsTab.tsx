@@ -31,7 +31,6 @@ export const MyAdsTab: React.FC<MyAdsTabProps> = ({ userCars, theme, isOwnProfil
       <GarageSection 
         cars={userCars}
         isOwnGarage={isOwnProfile}
-        themeColor={theme.colors.primary.main}
       />
     </FullWidthContent>
   );

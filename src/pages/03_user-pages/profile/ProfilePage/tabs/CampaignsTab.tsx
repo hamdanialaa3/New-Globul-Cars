@@ -30,7 +30,7 @@ export const CampaignsTab: React.FC<CampaignsTabProps> = ({ user, theme }) => {
 
   return (
     <CampaignsContainer>
-      <CampaignsList userId={user.uid} themeColor={theme.colors.primary.main} />
+      <CampaignsList userId={user.uid} />
     </CampaignsContainer>
   );
 };
