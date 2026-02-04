@@ -92,6 +92,22 @@ export const settings = {
   "dealerInfo": "Dealership Information",
   "companyInfo": "Company Information",
   "hour": "hour",
-  "hours": "hours"
+  "hours": "hours",
+  "googleAnalytics": "Google Analytics",
+  "googleAnalyticsHelp": "View and manage your website visit and behavior tracking data",
+  "bigQueryExport": "BigQuery Export",
+  "bigQueryExportHelp": "Export advanced analytics data to Google BigQuery for deeper analysis",
+  "connect": "Connect",
+  "configure": "Configure",
+  "disconnect": "Disconnect",
+  "export": "Export",
+  "viewGADeletion": "View GA Data Deletion",
+  "setupBigQuery": "Setup BigQuery Export",
+  "guestAlert": {
+    "title": "Complete Your Profile",
+    "description": "Your account is currently unverified. Complete your profile information to build trust with other users.",
+    "button": "Complete Profile",
+    "subtext": "Guest accounts may not be trusted by other users."
+  }
 } as const;
 

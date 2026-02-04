@@ -117,10 +117,19 @@ class BlockUserService {
         blockData.blockedNumericId === otherUserNumericId
       );
     } catch (error) {
-      logger.error('Failed to check if user is blocked', error as Error, {
-        currentUserNumericId,
-        otherUserNumericId,
-      });
+      // Permission-denied is expected if document doesn't exist or user not involved
+      const firebaseError = error as { code?: string };
+      if (firebaseError.code === 'permission-denied') {
+        logger.debug('Block check: permission denied (likely not blocked)', {
+          currentUserNumericId,
+          otherUserNumericId,
+        });
+      } else {
+        logger.warn('Failed to check if user is blocked', error as Error, {
+          currentUserNumericId,
+          otherUserNumericId,
+        });
+      }
       return false; // Fail open - don't block messages if check fails
     }
   }
@@ -154,10 +163,19 @@ class BlockUserService {
         blockData.blockedNumericId === currentUserNumericId
       );
     } catch (error) {
-      logger.error('Failed to check if user has blocked me', error as Error, {
-        currentUserNumericId,
-        otherUserNumericId,
-      });
+      // Permission-denied is expected if document doesn't exist or user not involved
+      const firebaseError = error as { code?: string };
+      if (firebaseError.code === 'permission-denied') {
+        logger.debug('Block check: permission denied (likely not blocked by this user)', {
+          currentUserNumericId,
+          otherUserNumericId,
+        });
+      } else {
+        logger.warn('Failed to check if user has blocked me', error as Error, {
+          currentUserNumericId,
+          otherUserNumericId,
+        });
+      }
       return false; // Fail open
     }
   }
@@ -176,10 +194,19 @@ class BlockUserService {
       const blockSnap = await getDoc(blockRef);
       return blockSnap.exists();
     } catch (error) {
-      logger.error('Failed to check blocking relationship', error as Error, {
-        user1NumericId,
-        user2NumericId,
-      });
+      // Permission-denied is expected if document doesn't exist or user not involved
+      const firebaseError = error as { code?: string };
+      if (firebaseError.code === 'permission-denied') {
+        logger.debug('Blocking relationship check: permission denied (likely no relationship)', {
+          user1NumericId,
+          user2NumericId,
+        });
+      } else {
+        logger.warn('Failed to check blocking relationship', error as Error, {
+          user1NumericId,
+          user2NumericId,
+        });
+      }
       return false;
     }
   }

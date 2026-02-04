@@ -17,6 +17,8 @@ import { useAuth } from '@/contexts/AuthProvider';
 import { favoritesService } from '@/services/favorites.service';
 import { logger } from '@/services/logger-service';
 import { UnifiedCar } from '@/services/car';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/firebase/firebase-config';
 
 interface CarCardWithFavoritesProps {
   car: UnifiedCar;
@@ -278,19 +280,25 @@ export const CarCardWithFavorites: React.FC<CarCardWithFavoritesProps> = ({
       const newFavoriteStatus = !isFavorite;
       setIsFavorite(newFavoriteStatus);
 
-      // Get user numeric ID from AuthContext
-      const userDoc = await favoritesService['db']
-        .collection('users')
-        .doc(user.uid)
-        .get();
+      // Get user numeric ID from Firestore
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
       const userNumericId = userDoc.data()?.numericId || 0;
+
+      // Get seller numeric ID if missing
+      let sellerNumericId = car.sellerNumericId || 0;
+      if (!sellerNumericId && car.sellerId) {
+        const sellerDoc = await getDoc(doc(db, 'users', car.sellerId));
+        if (sellerDoc.exists()) {
+          sellerNumericId = sellerDoc.data()?.numericId || 0;
+        }
+      }
 
       await favoritesService.toggleFavorite(
         user.uid,
         userNumericId,
         car.id,
         car.carNumericId || 0,
-        car.sellerNumericId || 0,
+        sellerNumericId,
         {
           make: car.make,
           model: car.model,

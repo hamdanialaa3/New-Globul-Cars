@@ -525,11 +525,12 @@ const SettingGroup = styled.div`
   gap: 8px;
 `;
 
-const Label = styled.label<{ $required?: boolean }>`
+const Label = styled.label<{ $required?: boolean; $orange?: boolean }>`
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: ${props => props.$orange ? `var(--accent-primary)` : `var(--text-primary)`};
   margin-bottom: 4px;
+  transition: color 0.2s ease;
   
   ${props => props.$required && `
     &::after {
@@ -677,14 +678,15 @@ const Select = styled.select`
   }
 `;
 
-const HelpText = styled.p`
-  font-size: 0.875rem;
-  color: var(--text-secondary);
+const HelpText = styled.p<{ $gray?: boolean }>`
+  font-size: ${props => props.$gray ? '0.75rem' : '0.875rem'};
+  color: ${props => props.$gray ? 'var(--text-secondary)' : 'var(--text-secondary)'};
   margin: 0;
   line-height: 1.4;
   text-transform: none;
   letter-spacing: normal;
   font-weight: 400;
+  opacity: ${props => props.$gray ? '0.85' : '1'};
 `;
 
 const PhoneInputWrapper = styled.div`
@@ -1669,7 +1671,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
 
         {/* NEW: Public Display Name based on profile type */}
         <SettingGroup>
-          <Label $required>
+          <Label $required $orange>
             {user?.profileType === 'dealer' 
               ? (isBg ? '🏪 Име на автокъща' : '🏪 Dealership Name')
               : user?.profileType === 'company'
@@ -1689,7 +1691,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
                 : (isBg ? 'Въведете публичното си име' : 'Enter your public display name')
             }
           />
-          <HelpText>
+          <HelpText $gray>
             {user?.profileType === 'dealer'
               ? (isBg ? 'Това е името, което ще виждат клиентите' : 'This is the name customers will see')
               : user?.profileType === 'company'
@@ -1702,7 +1704,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
         {/* BUG FIX 1: Remove duplicate displayName field - use firstName + lastName only */}
         <FormRow>
           <SettingGroup style={{ flex: 1 }}>
-            <Label $required>{isBg ? 'Име' : 'First Name'}</Label>
+            <Label $required $orange>{isBg ? 'Име' : 'First Name'}</Label>
             <Input
               type="text"
               value={userInfo.firstName}
@@ -1712,7 +1714,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
           </SettingGroup>
 
           <SettingGroup style={{ flex: 1 }}>
-            <Label $required>{isBg ? 'Фамилия' : 'Last Name'}</Label>
+            <Label $required $orange>{isBg ? 'Фамилия' : 'Last Name'}</Label>
             <Input
               type="text"
               value={userInfo.lastName}
@@ -1721,14 +1723,14 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
             />
           </SettingGroup>
         </FormRow>
-        <HelpText style={{ marginTop: '-12px', marginBottom: '16px' }}>
+        <HelpText style={{ marginTop: '-12px', marginBottom: '16px' }} $gray>
           {isBg 
             ? `Името за показване: ${userInfo.displayName || '(автоматично от първото и последното име)'}` 
             : `Display name: ${userInfo.displayName || '(automatically from first and last name)'}`}
         </HelpText>
 
         <SettingGroup>
-          <Label $required>
+          <Label $required $orange>
             <Mail size={16} style={{ marginRight: '8px', display: 'inline-block' }} />
             {isBg ? 'Имейл' : 'Email'}
           </Label>
@@ -1739,7 +1741,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
             placeholder="example@email.com"
             disabled={isGuest || !currentUser?.emailVerified}
           />
-          <HelpText>
+          <HelpText $gray>
             {isGuest 
               ? (isBg ? 'Имейлът не може да бъде променен за гост акаунти' : 'Email cannot be changed for guest accounts')
               : !currentUser?.emailVerified
@@ -1750,7 +1752,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
         </SettingGroup>
 
         <SettingGroup>
-          <Label>
+          <Label $orange>
             <Phone size={16} style={{ marginRight: '8px', display: 'inline-block' }} />
             {isBg ? 'Телефон' : 'Phone Number'}
           </Label>
@@ -1772,20 +1774,20 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
               style={{ flex: 1 }}
             />
           </div>
-          <HelpText style={{ fontSize: '0.8rem', marginTop: '4px' }}>
+          <HelpText $gray style={{ fontSize: '0.75rem', marginTop: '4px' }}>
             {isBg 
-              ? 'الصيغة: +359 XXX XXX XXX (سيتم التحويل تلقائياً من 0XXX إلى +359XXX)' 
-              : 'Format: +359 XXX XXX XXX (auto-converts 0XXX to +359XXX)'}
+              ? 'Формат: +359 XXX XXX XXX (Ще бъде автоматично преобразувано от 0XXX в +359XXX)' 
+              : 'Format: +359 XXX XXX XXX (Will be automatically converted from 0XXX to +359XXX)'}
           </HelpText>
         </SettingGroup>
 
-        <FormTitle style={{ marginTop: '2rem' }}>
+        <FormTitle style={{ marginTop: '2rem', color: 'var(--accent-primary)' }}>
           {isBg ? 'Местоположение' : 'Location'}
         </FormTitle>
 
         <FormRow>
           <SettingGroup style={{ flex: 1 }}>
-            <Label>{isBg ? 'Област' : 'Region'}</Label>
+            <Label $orange>{isBg ? 'Област' : 'Region'}</Label>
             <select
               value={userInfo.region}
               onChange={(e) => setUserInfo({ ...userInfo, region: e.target.value, city: '' })}
@@ -1811,7 +1813,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
           </SettingGroup>
 
           <SettingGroup style={{ flex: 1 }}>
-            <Label>{isBg ? 'Град' : 'City'}</Label>
+            <Label $orange>{isBg ? 'Град' : 'City'}</Label>
             <select
               value={userInfo.city}
               onChange={(e) => setUserInfo({ ...userInfo, city: e.target.value })}
@@ -1841,7 +1843,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
               ))}
             </select>
             {!userInfo.region && (
-              <HelpText style={{ color: '#ff6b35', fontSize: '0.8rem', marginTop: '4px' }}>
+              <HelpText $gray style={{ color: '#ff6b35', fontSize: '0.75rem', marginTop: '4px' }}>
                 {isBg ? 'Моля, първо изберете област' : 'Please select a region first'}
               </HelpText>
             )}

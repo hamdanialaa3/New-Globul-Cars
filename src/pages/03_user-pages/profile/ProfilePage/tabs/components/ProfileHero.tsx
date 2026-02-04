@@ -118,7 +118,11 @@ const HeroHeader = styled.div<{ $coverImage: string; $profileType: string }>`
   position: relative;
   height: 380px;
   width: 100%;
-  background: url(${props => props.$coverImage}) center/cover no-repeat;
+  background-color: ${props => getThemeColor(props.$profileType)};
+  background-image: url(${props => props.$coverImage});
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   display: flex;
   align-items: flex-end;
   overflow: hidden;
@@ -131,11 +135,12 @@ const HeroHeader = styled.div<{ $coverImage: string; $profileType: string }>`
 
 const HeroOverlay = styled.div<{ $profileType: string }>`
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: ${props => {
-    const color = getThemeColor(props.$profileType);
-    return `linear-gradient(to top, ${color}F0 0%, ${color}CC 50%, transparent 100%)`;
-  }};
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.2) 70%, rgba(0, 0, 0, 0.6) 100%);
+  z-index: 1;
 `;
 
 const HeroContent = styled.div`

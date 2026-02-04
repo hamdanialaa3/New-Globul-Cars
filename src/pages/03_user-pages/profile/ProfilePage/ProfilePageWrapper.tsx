@@ -337,15 +337,23 @@ const ProfilePageWrapper: React.FC = () => {
       return `/profile/view/${activeProfile.numericId}`;
     }
     
-    // ❌ CRITICAL: No numeric ID available - this shouldn't happen
-    logger.error('🔴 basePath: No numeric ID available for profile', {
-      uid: activeProfile?.uid,
-      isOwnProfile
-    });
+    // If still loading, return a temporary path
+    if (loading) {
+      return '/profile';
+    }
+    
+    // ⚠️ No numeric ID available yet - this can happen during initial load
+    // Only log if we have activeProfile but no numericId (indicates data issue)
+    if (activeProfile?.uid && !activeProfile?.numericId) {
+      logger.warn('⚠️ basePath: Profile loaded but no numeric ID', {
+        uid: activeProfile?.uid,
+        isOwnProfile
+      });
+    }
     
     // Fallback to /profile (will trigger redirect or error)
     return '/profile';
-  }, [activeProfile?.uid, activeProfile?.numericId, currentUserNumericId, isOwnProfile]);
+  }, [activeProfile?.uid, activeProfile?.numericId, currentUserNumericId, isOwnProfile, loading]);
 
   const [syncing, setSyncing] = React.useState(false);
   const [showTypeSwitcher, setShowTypeSwitcher] = React.useState(false); // Added State
@@ -695,7 +703,7 @@ const ProfilePageWrapper: React.FC = () => {
             <S.CoverAndProfileWrapper>
               {/* Cover Image */}
               <CoverImageUploader
-                currentImageUrl={activeProfile.coverImage || ''}
+                currentImageUrl={activeProfile.coverImage}
                 themeColor={theme?.primary || '#FF8F10'}
                 onUploadSuccess={(url) => {
                   setUser(prev => prev ? {

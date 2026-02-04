@@ -354,11 +354,19 @@ const ErrorBanner = styled.div`
 // ==================== COMPONENT ====================
 
 interface CoverImageUploaderProps {
-  currentImageUrl?: string;
+  currentImageUrl?: string | { url?: string; uploadedAt?: any };
   onUploadSuccess?: (url: string) => void;
   onUploadError?: (error: string) => void;
   themeColor?: string;
 }
+
+// Helper to extract URL from string or object
+const getCoverImageUrl = (image?: string | { url?: string; uploadedAt?: any }): string | undefined => {
+  if (!image) return undefined;
+  if (typeof image === 'string') return image;
+  if (typeof image === 'object' && image.url) return image.url;
+  return undefined;
+};
 
 const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
   currentImageUrl,
@@ -371,12 +379,22 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
   const toast = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [imageUrl, setImageUrl] = useState<string | undefined>(currentImageUrl);
+  // Extract URL from string or object format
+  const resolvedImageUrl = getCoverImageUrl(currentImageUrl);
+  const [imageUrl, setImageUrl] = useState<string | undefined>(resolvedImageUrl);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isRepositioning, setIsRepositioning] = useState(false);
+
+  // Update imageUrl when currentImageUrl changes
+  React.useEffect(() => {
+    const newUrl = getCoverImageUrl(currentImageUrl);
+    if (newUrl !== imageUrl) {
+      setImageUrl(newUrl);
+    }
+  }, [currentImageUrl]);
 
   // Handle file selection
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {

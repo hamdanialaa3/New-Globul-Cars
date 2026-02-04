@@ -92,6 +92,22 @@ export const settings = {
   "dealerInfo": "Информация за търговец",
   "companyInfo": "Информация за компания",
   "hour": "час",
-  "hours": "часа"
+  "hours": "часа",
+  "googleAnalytics": "Google Analytics",
+  "googleAnalyticsHelp": "Преглед и управление на данните за проследяване на посещенията и поведението на вашия уебсайт",
+  "bigQueryExport": "Експорт в BigQuery",
+  "bigQueryExportHelp": "Експортирайте разширени данни за анализ в Google BigQuery за по-дълбок анализ",
+  "connect": "Свързване",
+  "configure": "Конфигуриране",
+  "disconnect": "Разединяване",
+  "export": "Експортиране",
+  "viewGADeletion": "Преглед на GA Изтриване на Данни",
+  "setupBigQuery": "Настройка BigQuery Експорт",
+  "guestAlert": {
+    "title": "Попълнете профила си",
+    "description": "Вашият акаунт е в момента непроверен. Попълнете информацията на профила си, за да изградите доверие с други потребители.",
+    "button": "Попълнете профила",
+    "subtext": "Гост акаунтите може да не бъдат доверявани от други потребители."
+  }
 } as const;
 

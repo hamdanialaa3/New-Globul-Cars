@@ -67,10 +67,48 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
   const isFav = isFavorite(car.id || '');
   const detailsUrl = getCarDetailsUrl(car);
 
-  const handleFavoriteClick = (e: React.MouseEvent) => {
+  const handleFavoriteClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    toggleFavorite(car.id || '');
+    
+    if (!user) {
+      alert('Please login to add favorites');
+      return;
+    }
+
+    try {
+      // ✅ FIX: Get numeric IDs from Firestore if not available in car object
+      let carNumericId = car.carNumericId || 0;
+      let sellerNumericId = (car as any).sellerNumericId || (car as any).ownerNumericId || 0;
+
+      // If sellerNumericId is missing, fetch from seller profile
+      if (!sellerNumericId && car.sellerId) {
+        try {
+          const sellerDoc = await getDoc(doc(db, 'users', car.sellerId));
+          if (sellerDoc.exists()) {
+            sellerNumericId = sellerDoc.data().numericId || 0;
+          }
+        } catch (error) {
+          logger.error('[CarCardGermanStyle] Failed to fetch seller numeric ID', error as Error);
+        }
+      }
+
+      // ✅ FIXED: Pass car data with numeric IDs (now dynamically fetched if missing)
+      const carData = {
+        make: car.make || '',
+        model: car.model || '',
+        year: car.year || 0,
+        price: car.price || 0,
+        currency: car.currency || 'EUR',
+        carNumericId: carNumericId,
+        sellerNumericId: sellerNumericId,
+        primaryImage: typeof car.images?.[0] === 'string' ? car.images[0] : undefined
+      };
+
+      await toggleFavorite(car.id || '', carData);
+    } catch (error) {
+      logger.error('Error toggling favorite', error as Error);
+    }
   };
 
   // Load seller trust data and stories
@@ -163,17 +201,32 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
           )}
         </div>
 
-        {/* Favorite Button */}
+        {/* Favorite Button - Professional Red Heart */}
         <button
           onClick={handleFavoriteClick}
-          className={`absolute top-2 right-2 p-2 rounded-full transition-all duration-200 ${isFav
-            ? 'bg-red-50 text-red-500'
-            : 'bg-white/80 text-gray-600 hover:bg-white hover:text-red-500'
-            }`}
+          className={`absolute top-2 right-2 p-2.5 rounded-full transition-all duration-300 backdrop-blur-md shadow-lg hover:scale-110 active:scale-95 ${
+            isFav
+              ? 'bg-gradient-to-br from-red-500 to-red-600 text-white border-2 border-white shadow-red-500/50'
+              : 'bg-black/50 text-white border border-white/30 hover:bg-black/70'
+          }`}
+          style={{
+            animation: isFav ? 'heartPulse 1.5s ease-in-out infinite' : 'none'
+          }}
         >
-          <Heart size={18} className={isFav ? 'fill-current' : ''} />
+          <Heart size={18} className={isFav ? 'fill-current' : ''} strokeWidth={isFav ? 0 : 2.5} />
         </button>
       </Link>
+
+      <style>{`
+        @keyframes heartPulse {
+          0%, 100% {
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.5), 0 0 0 0 rgba(239, 68, 68, 0.7);
+          }
+          50% {
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.5), 0 0 0 8px rgba(239, 68, 68, 0);
+          }
+        }
+      `}</style>
 
       {/* Content Section */}
       <div className="flex-1 p-4 flex flex-col justify-between min-w-0">

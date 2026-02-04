@@ -70,12 +70,13 @@ class FavoritesService {
     try {
       const favoriteRef = doc(db, 'favorites', `${userId}_${carId}`);
 
+      // ✅ CRITICAL FIX: Ensure numeric IDs are never undefined
       const favoriteData: FavoriteItem = {
         userId,
-        userNumericId,
+        userNumericId: userNumericId || 0,
         carId,
-        carNumericId,
-        sellerNumericId,
+        carNumericId: carNumericId || 0,
+        sellerNumericId: sellerNumericId || 0,
         addedAt: Timestamp.now(),
         carPreview
       };
@@ -85,7 +86,7 @@ class FavoritesService {
       logger.info('[Favorites] Added to favorites', {
         userId,
         carId,
-        carNumericId
+        carNumericId: favoriteData.carNumericId
       });
     } catch (error) {
       logger.error('[Favorites] Failed to add favorite', error as Error, {
