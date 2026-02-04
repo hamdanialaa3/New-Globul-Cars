@@ -4,7 +4,7 @@
  * 
  * Features:
  * - VAT registration tracking
- * - Tax number validation
+ * - Tax number validation (EIK with full checksum)
  * - Financial audit management
  * - Currency compliance (EUR)
  * 
@@ -24,6 +24,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { serviceLogger } from '../logger-service';
+import { isValidEIKChecksum, cleanEIK } from '../verification/eik-verification-service';
 
 export interface FinancialCompliance {
   id: string;
@@ -152,10 +153,11 @@ export class FinancialComplianceService {
   }
 
   /**
-   * Validate Bulgarian EIK (ЕИК) - Unified Identification Code (9 or 13 digits)
+   * Validate Bulgarian EIK - Unified Identification Code (9 or 13 digits)
+   * Uses complete checksum validation algorithm
    */
   public validateEIK(eik: string): { valid: boolean; message: string } {
-    const cleaned = eik.replace(/\s/g, '');
+    const cleaned = cleanEIK(eik);
     
     if (!/^\d{9}$|^\d{13}$/.test(cleaned)) {
       return {
@@ -164,11 +166,17 @@ export class FinancialComplianceService {
       };
     }
     
-    // TODO: Implement EIK checksum validation algorithm
+    // Use the complete EIK checksum validation
+    if (!isValidEIKChecksum(cleaned)) {
+      return {
+        valid: false,
+        message: 'Invalid EIK checksum - number may be incorrect'
+      };
+    }
     
     return {
       valid: true,
-      message: 'Valid EIK format'
+      message: 'Valid EIK with correct checksum'
     };
   }
 

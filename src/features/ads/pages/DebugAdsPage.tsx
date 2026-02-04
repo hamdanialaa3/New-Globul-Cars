@@ -71,6 +71,32 @@ export const DebugAdsPage = () => {
 
                 <Label>global_footer_banner</Label>
                 <AdSlot placementId="global_footer_banner" debug />
+                <AdSlot placementId="global_footer_banner" debug />
+            </Section>
+
+            {/* 1.5 Google Smart Unit Test */}
+            <Section>
+                <h2>Google Smart Unit (Simulated)</h2>
+                <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '16px' }}>
+                    This slot forces a `google_smart` ad type to test the new component.
+                </p>
+                <div style={{ border: '1px dashed #ff8c61', padding: '10px' }}>
+                    <AdRenderer
+                        ad={{
+                            id: 'debug-smart-1',
+                            name: 'Debug Smart Ad',
+                            type: 'google_smart',
+                            isActive: true,
+                            placementIds: ['debug_smart'],
+                            targetDevices: 'both',
+                            startDate: new Date().toISOString(),
+                            weight: 100,
+                            scriptCode: '1234567890' // Test Slot ID
+                        }}
+                        placementId="debug_smart"
+                        hasConsent={true}
+                    />
+                </div>
             </Section>
 
             {/* 2. Listing In-Feed */}
