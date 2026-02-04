@@ -10,7 +10,7 @@
  */
 
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { logger } from '@/services/logger-service';
+import { logger } from '../../logger-service';
 
 /**
  * Image Upload Result
