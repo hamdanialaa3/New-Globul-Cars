@@ -15,6 +15,7 @@ const FloatingAddButton = safeLazy(() => import('../components/FloatingAddButton
 // ✅ MERGED: RobotChatIcon and AIChatbotWidget merged into UnifiedAIChat
 const UnifiedAIChat = safeLazy(() => import('../components/AI/UnifiedAIChat'));
 const GracePeriodBanner = safeLazy(() => import('../components/billing/GracePeriodBanner'));
+const IncompleteProfileAlert = safeLazy(() => import('../components/GuestAccountAlert/IncompleteProfileAlert'));
 
 export const MainLayout: React.FC = () => {
     const location = useLocation();
@@ -45,6 +46,25 @@ export const MainLayout: React.FC = () => {
                         </Suspense>
                     </div>
                 </header>
+            )}
+
+            {/* ✅ Incomplete Profile Alert - BELOW header, ABOVE main content */}
+            {!isSellPage && (
+                <div 
+                    className="incomplete-profile-banner" 
+                    style={{ 
+                        width: '100%',
+                        position: 'fixed',
+                        top: '70px', /* Below header */
+                        left: 0,
+                        right: 0,
+                        zIndex: 999,
+                    }}
+                >
+                    <Suspense fallback={null}>
+                        <IncompleteProfileAlert />
+                    </Suspense>
+                </div>
             )}
 
             <main

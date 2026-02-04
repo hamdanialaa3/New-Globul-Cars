@@ -33,37 +33,37 @@ const spin = keyframes`
 `;
 
 const StyledButton = styled.button<{ 
-  isFollowing: boolean; 
-  accentColor: string;
-  size: 'small' | 'medium' | 'large';
+  $isFollowing: boolean; 
+  $accentColor: string;
+  $size: 'small' | 'medium' | 'large';
 }>`
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   padding: ${props => {
-    if (props.size === 'small') return '0.4rem 0.8rem';
-    if (props.size === 'large') return '0.75rem 1.5rem';
+    if (props.$size === 'small') return '0.4rem 0.8rem';
+    if (props.$size === 'large') return '0.75rem 1.5rem';
     return '0.6rem 1.2rem';
   }};
   font-size: ${props => {
-    if (props.size === 'small') return '0.8rem';
-    if (props.size === 'large') return '1rem';
+    if (props.$size === 'small') return '0.8rem';
+    if (props.$size === 'large') return '1rem';
     return '0.9rem';
   }};
   font-weight: 600;
   border-radius: 20px;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1.5px solid ${props => props.accentColor};
+  border: 1.5px solid ${props => props.$accentColor};
   
-  background: ${props => props.isFollowing ? 'transparent' : props.accentColor};
-  color: ${props => props.isFollowing ? props.accentColor : 'white'};
+  background: ${props => props.$isFollowing ? 'transparent' : props.$accentColor};
+  color: ${props => props.$isFollowing ? props.$accentColor : 'white'};
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px ${props => props.accentColor}40;
-    background: ${props => props.isFollowing ? props.accentColor + '10' : props.accentColor};
+    box-shadow: 0 4px 12px ${props => props.$accentColor}40;
+    background: ${props => props.$isFollowing ? props.$accentColor + '10' : props.$accentColor};
     filter: brightness(1.05);
   }
 
@@ -78,8 +78,8 @@ const StyledButton = styled.button<{
   }
 
   svg {
-    width: ${props => props.size === 'small' ? '14px' : '18px'};
-    height: ${props => props.size === 'small' ? '14px' : '18px'};
+    width: ${props => props.$size === 'small' ? '14px' : '18px'};
+    height: ${props => props.$size === 'small' ? '14px' : '18px'};
   }
 `;
 
@@ -169,9 +169,9 @@ export const FollowButton: React.FC<FollowButtonProps> = ({
     return (
       <StyledButton 
         disabled 
-        isFollowing={false} 
-        accentColor={accentColor}
-        size={size}
+        $isFollowing={false} 
+        $accentColor={accentColor}
+        $size={size}
       >
         <Spinner />
       </StyledButton>
@@ -192,9 +192,9 @@ export const FollowButton: React.FC<FollowButtonProps> = ({
 
   return (
     <StyledButton
-      isFollowing={isFollowing}
-      accentColor={accentColor}
-      size={size}
+      $isFollowing={isFollowing}
+      $accentColor={accentColor}
+      $size={size}
       onClick={handleToggleFollow}
       disabled={isActionLoading}
     >

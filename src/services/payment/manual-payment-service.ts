@@ -437,6 +437,51 @@ class ManualPaymentService {
       logger.error('Failed to check expired transactions', error as Error);
     }
   }
+
+  /**
+   * Upload payment receipt (screenshot)
+   */
+  async uploadReceipt(file: File, transactionId: string): Promise<string> {
+    try {
+      // Lazy load standard storage functions to avoid circular deps or init issues
+      const { getStorage, ref, uploadBytes, getDownloadURL } = await import('firebase/storage');
+      const storage = getStorage();
+      
+      const fileExt = file.name.split('.').pop();
+      const fileName = `manual-payments/${transactionId}_receipt_${Date.now()}.${fileExt}`;
+      const storageRef = ref(storage, fileName);
+      
+      await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(storageRef);
+      
+      await this.updateTransactionReceipt(transactionId, downloadURL, file.name);
+      
+      return downloadURL;
+    } catch (error) {
+      logger.error('Failed to upload receipt', error as Error, { transactionId });
+      throw error;
+    }
+  }
+
+  /**
+   * Update transaction with receipt URL
+   */
+  async updateTransactionReceipt(transactionId: string, receiptUrl: string, fileName: string): Promise<void> {
+    try {
+      const docRef = doc(db, this.COLLECTION_NAME, transactionId);
+      await updateDoc(docRef, {
+        receiptUrl,
+        receiptFileName: fileName,
+        receiptUploadedAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+      
+      logger.info('Transaction updated with receipt', { transactionId });
+    } catch (error) {
+      logger.error('Failed to update transaction receipt', error as Error, { transactionId });
+      throw error;
+    }
+  }
 }
 
 export const manualPaymentService = ManualPaymentService.getInstance();

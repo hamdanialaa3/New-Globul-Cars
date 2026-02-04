@@ -5,10 +5,10 @@
  * @since January 9, 2026
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-import { CheckCircle, Home, Receipt, Clock, Mail, Phone, Copy, Check } from 'lucide-react';
+import { CheckCircle, Home, Receipt, Clock, Mail, Phone, Copy, Check, Upload, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthProvider';
@@ -22,10 +22,13 @@ const ManualPaymentSuccessPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const { language } = useLanguage();
   const { user } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [transaction, setTransaction] = useState<ManualPaymentTransaction | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
 
   const transactionId = searchParams.get('transactionId');
   const referenceNumber = searchParams.get('reference');
@@ -44,6 +47,9 @@ const ManualPaymentSuccessPage: React.FC = () => {
     try {
       const data = await manualPaymentService.getTransaction(transactionId);
       setTransaction(data);
+      if (data?.receiptUrl) {
+        setUploadedUrl(data.receiptUrl);
+      }
     } catch (error) {
       logger.error('Failed to load transaction', error, { transactionId, userId: user?.uid });
       toast.error(language === 'bg' ? 'Грешка при зареждане на плащането' : 'Failed to load transaction');
@@ -67,6 +73,40 @@ const ManualPaymentSuccessPage: React.FC = () => {
     }
   };
 
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !transaction) return;
+
+    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      toast.error(language === 'bg' ? 'Файлът е твърде голям (макс 5MB)' : 'File too large (max 5MB)');
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      toast.error(language === 'bg' ? 'Моля качете снимка' : 'Please upload an image');
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const url = await manualPaymentService.uploadReceipt(file, transaction.id);
+      setUploadedUrl(url);
+      toast.success(language === 'bg' ? '✅ Разписката е качена успешно!' : '✅ Receipt uploaded successfully!');
+
+      // Refresh transaction data
+      loadTransaction();
+    } catch (error) {
+      logger.error('Failed to upload receipt', error as Error);
+      toast.error(language === 'bg' ? 'Грешка при качване' : 'Upload failed');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const triggerFileUpload = () => {
+    fileInputRef.current?.click();
+  };
+
   if (loading) {
     return (
       <PageContainer>
@@ -83,7 +123,7 @@ const ManualPaymentSuccessPage: React.FC = () => {
         </SuccessIcon>
 
         <Title>
-          {language === 'bg' 
+          {language === 'bg'
             ? '🎉 Заявката е получена успешно!'
             : '🎉 Payment Request Received!'}
         </Title>
@@ -98,7 +138,7 @@ const ManualPaymentSuccessPage: React.FC = () => {
         {transaction && (
           <DetailsCard>
             <CardTitle>{language === 'bg' ? 'Детайли на транзакцията' : 'Transaction Details'}</CardTitle>
-            
+
             <DetailRow>
               <DetailLabel>{language === 'bg' ? 'Референтен номер:' : 'Reference Number:'}</DetailLabel>
               <ReferenceValue>
@@ -133,6 +173,61 @@ const ManualPaymentSuccessPage: React.FC = () => {
               </StatusBadge>
             </DetailRow>
           </DetailsCard>
+        )}
+
+        {/* Upload Proof Section - NEW */}
+        {transaction && transaction.status === 'pending_manual_verification' && (
+          <UploadCard highlight={!uploadedUrl}>
+            <CardTitle style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Upload size={20} />
+              {language === 'bg' ? 'Качете платежно нареждане' : 'Upload Proof of Payment'}
+            </CardTitle>
+
+            <UploadDescription>
+              {language === 'bg'
+                ? 'За да ускорите обработката, моля прикачете снимка на платежното нареждане или скрийншот от банкирането.'
+                : 'To speed up processing, please attach a photo of the payment receipt or a screenshot from your banking app.'}
+            </UploadDescription>
+
+            {uploadedUrl ? (
+              <UploadedPreview>
+                <ImageIcon size={48} color="#00A651" />
+                <UploadedInfo>
+                  <UploadedText>
+                    {language === 'bg' ? '✅ Разписката е качена' : '✅ Receipt uploaded'}
+                  </UploadedText>
+                  <ReUploadButton onClick={triggerFileUpload} disabled={uploading}>
+                    {language === 'bg' ? 'Качи друга' : 'Upload another'}
+                  </ReUploadButton>
+                </UploadedInfo>
+              </UploadedPreview>
+            ) : (
+              <UploadArea onClick={triggerFileUpload}>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                />
+                {uploading ? (
+                  <UploadText>{language === 'bg' ? 'Качване...' : 'Uploading...'}</UploadText>
+                ) : (
+                  <>
+                    <UploadIconWrapper>
+                      <Upload size={24} />
+                    </UploadIconWrapper>
+                    <UploadText>
+                      {language === 'bg' ? 'Натиснете тук за избор на файл' : 'Click here to select file'}
+                    </UploadText>
+                    <UploadSubtext>
+                      {language === 'bg' ? '(Снимка, JPG, PNG - макс 5MB)' : '(Image, JPG, PNG - max 5MB)'}
+                    </UploadSubtext>
+                  </>
+                )}
+              </UploadArea>
+            )}
+          </UploadCard>
         )}
 
         {/* Next Steps */}
@@ -396,7 +491,7 @@ const CopyButton = styled.button`
 
 const StatusBadge = styled.span<{ status: string }>`
   padding: 6px 16px;
-  background: ${props => props.status === 'pending_manual_verification' 
+  background: ${props => props.status === 'pending_manual_verification'
     ? 'rgba(255, 193, 7, 0.2)'
     : 'rgba(0, 166, 81, 0.2)'};
   border: 1px solid ${props => props.status === 'pending_manual_verification'
@@ -406,6 +501,96 @@ const StatusBadge = styled.span<{ status: string }>`
   color: ${props => props.status === 'pending_manual_verification' ? '#FFC107' : '#00A651'};
   font-size: 14px;
   font-weight: 600;
+`;
+
+/* New Upload Styles */
+const UploadCard = styled(DetailsCard) <{ highlight?: boolean }>`
+    border: 2px dashed ${props => props.highlight ? '#0075EB' : 'rgba(255, 255, 255, 0.15)'};
+    background: ${props => props.highlight ? 'rgba(0, 117, 235, 0.05)' : 'rgba(255, 255, 255, 0.08)'};
+`;
+
+const UploadDescription = styled.p`
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 24px;
+    line-height: 1.5;
+`;
+
+const UploadArea = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+`;
+
+const UploadIconWrapper = styled.div`
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(0, 117, 235, 0.2);
+    color: #0075EB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+`;
+
+const UploadText = styled.div`
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 8px;
+`;
+
+const UploadSubtext = styled.div`
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+`;
+
+const UploadedPreview = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: rgba(0, 166, 81, 0.1);
+    border: 1px solid rgba(0, 166, 81, 0.3);
+    border-radius: 12px;
+`;
+
+const UploadedInfo = styled.div`
+    flex: 1;
+`;
+
+const UploadedText = styled.div`
+    font-size: 16px;
+    font-weight: 600;
+    color: #00A651;
+    margin-bottom: 4px;
+`;
+
+const ReUploadButton = styled.button`
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+
+    &:hover {
+        color: #fff;
+    }
 `;
 
 const StepsCard = styled.div`

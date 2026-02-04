@@ -9,6 +9,8 @@ import { soundService } from '../../services/sound-service';
 import RealisticPaperclipBadge from '../SoldBadge/RealisticPaperclipBadge';
 import { UnifiedCar } from '../../services/car/unified-car-types';
 import { logger } from '../../services/logger-service';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../firebase/firebase-config';
 
 // --- Animations ---
 const pulse = keyframes`
@@ -346,6 +348,22 @@ export const PremiumHomeCarCard: React.FC<PremiumHomeCarCardProps> = ({ car }) =
       const carMake = car.make || car.makeOther || 'N/A';
       const carModel = car.model || car.modelOther || 'N/A';
       
+      // ✅ FIX: Get numeric IDs from Firestore if not available
+      let carNumericId = car.carNumericId || car.numericId || 0;
+      let sellerNumericId = car.sellerNumericId || 0;
+
+      // If numeric IDs are missing, fetch from seller profile
+      if (!sellerNumericId && car.sellerId) {
+        try {
+          const sellerDoc = await getDoc(doc(db, 'users', car.sellerId));
+          if (sellerDoc.exists()) {
+            sellerNumericId = sellerDoc.data().numericId || 0;
+          }
+        } catch (error) {
+          logger.error('[PremiumHomeCarCard] Failed to fetch seller numeric ID', error as Error);
+        }
+      }
+      
       // Handle both UnifiedCar and DisplayCar shapes
       const carData = {
         title: `${carMake} ${carModel}`,
@@ -353,11 +371,15 @@ export const PremiumHomeCarCard: React.FC<PremiumHomeCarCardProps> = ({ car }) =
         model: carModel,
         year: car.year,
         price: car.price,
+        currency: car.currency || 'EUR', // ✅ CRITICAL: Add currency
         image: getMainImage(),
         mileage: car.mileage || 0,
         location: car.location || (car.locationData?.cityName) || '',
-        fuelType: car.fuelType || car.fuel || '', // Handle varied property names
-        transmission: car.transmission
+        fuelType: car.fuelType || car.fuel || '',
+        transmission: car.transmission,
+        carNumericId: carNumericId, // ✅ CRITICAL: Add numeric IDs
+        sellerNumericId: sellerNumericId,
+        primaryImage: getMainImage() || undefined
       };
 
       const result = await toggleFavorite(car.id, carData);

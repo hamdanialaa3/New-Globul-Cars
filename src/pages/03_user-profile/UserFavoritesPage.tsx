@@ -492,10 +492,19 @@ export const UserFavoritesPage: React.FC = () => {
         const favs = await favoritesService.getUserFavorites(user.uid);
         setFavorites(favs);
 
-        // Load car details
-        const carPromises = favs.map(fav => 
-          unifiedCarService.getCarById(fav.carId).catch(() => null)
-        );
+        // Load car details and merge with favorite data (to get numeric IDs)
+        const carPromises = favs.map(async (fav) => {
+          const car = await unifiedCarService.getCarById(fav.carId).catch(() => null);
+          if (car) {
+            // ✅ Merge numeric IDs from FavoriteItem into car object
+            return {
+              ...car,
+              carNumericId: fav.carNumericId,
+              sellerNumericId: fav.sellerNumericId
+            };
+          }
+          return null;
+        });
         const carsData = await Promise.all(carPromises);
         setCars(carsData.filter(Boolean) as UnifiedCar[]);
       } catch (error) {

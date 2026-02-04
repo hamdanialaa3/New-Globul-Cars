@@ -229,7 +229,11 @@ const CoverSection = styled.div<{ $coverImage: string }>`
   position: relative;
   height: 320px;
   width: 100%;
-  background: url(${props => props.$coverImage}) center/cover no-repeat;
+  background-color: #1e293b;
+  background-image: url(${props => props.$coverImage});
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   border-radius: 0 0 16px 16px;
   
   @media (max-width: 768px) {

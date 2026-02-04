@@ -44,6 +44,9 @@ export const useFirestoreNotifications = () => {
                 createdAt: doc.data().createdAt?.toDate() || new Date()
             })) as Notification[];
 
+            // Sort client-side to avoid missing index issues
+            notifs.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
             setNotifications(notifs);
             setUnreadCount(notifs.filter(n => !n.read).length);
             setLoading(false);

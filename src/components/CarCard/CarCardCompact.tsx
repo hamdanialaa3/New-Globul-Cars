@@ -12,6 +12,8 @@ import { useAuth } from '../../contexts/AuthProvider';
 import { useFavorites } from '../../hooks/useFavorites';
 import { CarListing } from '../../types/CarListing';
 import { logger } from '../../services/logger-service';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../firebase/firebase-config';
 import PriceBadge from '../car/PriceBadge';
 import RealisticPaperclipBadge from '../SoldBadge/RealisticPaperclipBadge';
 import { soundService } from '@/services/sound-service';
@@ -91,38 +93,83 @@ const CarCardContainer = styled(Link)<{ $region?: string }>`
   }}
 `;
 
-// Heart Button - Premium Style (Like StarButton)
+// Heart Button - Premium Style with Professional Animation
 const HeartButton = styled.button<{ $active?: boolean }>`
     position: absolute;
     top: 15px;
     right: 15px;
     /* Red glow when active, transparent glass when inactive */
-    background: ${props => props.$active ? '#ef4444' : 'rgba(0, 0, 0, 0.4)'};
-    border: 1px solid ${props => props.$active ? '#ef4444' : 'rgba(255, 255, 255, 0.2)'};
+    background: ${props => props.$active 
+        ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' 
+        : 'rgba(0, 0, 0, 0.5)'};
+    border: ${props => props.$active 
+        ? '2px solid #fff' 
+        : '1px solid rgba(255, 255, 255, 0.3)'};
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     z-index: 30; /* Above image and overlays */
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    backdrop-filter: blur(8px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(12px);
+    box-shadow: ${props => props.$active 
+        ? '0 4px 20px rgba(239, 68, 68, 0.5), 0 0 0 0 rgba(239, 68, 68, 0.7)' 
+        : '0 2px 8px rgba(0, 0, 0, 0.3)'};
+    
+    /* Pulse animation when active */
+    ${props => props.$active && `
+        animation: heartPulse 1.5s ease-in-out infinite;
+    `}
+
+    @keyframes heartPulse {
+        0%, 100% {
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.5), 0 0 0 0 rgba(239, 68, 68, 0.7);
+        }
+        50% {
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.5), 0 0 0 8px rgba(239, 68, 68, 0);
+        }
+    }
     
     &:hover {
-        transform: scale(1.15) rotate(5deg);
-        background: ${props => props.$active ? '#dc2626' : 'rgba(0, 0, 0, 0.6)'};
-        box-shadow: 0 0 15px ${props => props.$active ? 'rgba(239, 68, 68, 0.6)' : 'rgba(0,0,0,0.3)'};
+        transform: scale(1.2) rotate(${props => props.$active ? '-5deg' : '5deg'});
+        background: ${props => props.$active 
+            ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' 
+            : 'rgba(0, 0, 0, 0.7)'};
+        box-shadow: ${props => props.$active 
+            ? '0 6px 25px rgba(239, 68, 68, 0.6)' 
+            : '0 4px 12px rgba(0, 0, 0, 0.4)'};
+    }
+
+    &:active {
+        transform: scale(0.95);
     }
 
     svg {
-        fill: ${props => props.$active ? 'white' : 'none'};
-        color: white;
-        width: 20px;
-        height: 20px;
-        stroke-width: 2px;
-        transition: all 0.3s ease;
+        fill: ${props => props.$active ? '#fff' : 'none'};
+        color: ${props => props.$active ? '#fff' : '#fff'};
+        width: 22px;
+        height: 22px;
+        stroke-width: ${props => props.$active ? '0' : '2.5px'};
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        filter: ${props => props.$active 
+            ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))' 
+            : 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'};
+        
+        /* Heart beat animation when favorited */
+        ${props => props.$active && `
+            animation: heartBeat 0.6s ease-in-out;
+        `}
+    }
+
+    @keyframes heartBeat {
+        0%, 100% { transform: scale(1); }
+        15% { transform: scale(1.3); }
+        30% { transform: scale(1.1); }
+        45% { transform: scale(1.25); }
+        60% { transform: scale(1); }
     }
 `;
 
@@ -328,26 +375,45 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
     try {
       const carMake = car.make || car.makeOther || 'N/A';
       const carModel = car.model || car.modelOther || 'N/A';
+      
+      // ✅ FIX: Get numeric IDs from Firestore if not available in car object
+      let carNumericId = car.carNumericId || car.numericId || 0;
+      let sellerNumericId = car.sellerNumericId || 0;
+
+      // If numeric IDs are missing, fetch from seller profile
+      if (!sellerNumericId && car.sellerId) {
+        try {
+          const sellerDoc = await getDoc(doc(db, 'users', car.sellerId));
+          if (sellerDoc.exists()) {
+            sellerNumericId = sellerDoc.data().numericId || 0;
+          }
+        } catch (error) {
+          logger.error('[CarCard] Failed to fetch seller numeric ID', error as Error);
+        }
+      }
+      
+      // ✅ FIXED: Include numeric IDs required by favoritesService
       const carData = {
         title: `${carMake} ${carModel}`,
         make: carMake,
         model: carModel,
         year: car.year,
         price: car.price,
+        currency: car.currency || 'EUR',
         image: getMainImage() || '/placeholder-car.jpg',
         mileage: car.mileage || 0,
         location: car.location || '',
         fuelType: car.fuelType || '',
-        transmission: car.transmission
+        transmission: car.transmission,
+        // ✅ CRITICAL: Add numeric IDs (now dynamically fetched if missing)
+        carNumericId: carNumericId,
+        sellerNumericId: sellerNumericId,
+        primaryImage: getMainImage() || undefined
       };
 
       const result = await toggleFavorite(car.id, carData);
       setIsHearted(result);
       logger.info('Favorite toggled', { carId: car.id, isFavorited: result });
-      
-      // Navigate to favorites page if strongly requested? 
-      // User said "leads to this tank". Maybe show a toast with a link?
-      // For now, the visual feedback (heart filling) is the standard interpretation.
       
     } catch (error) {
       logger.error('Error toggling favorite', error as Error);
