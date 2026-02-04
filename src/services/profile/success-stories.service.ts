@@ -100,10 +100,13 @@ export class SuccessStoriesService {
       const storyRef = doc(collection(db, this.collectionName));
       
       // Ensure date is a Timestamp, not null
-      const storyDate = storyData.date 
-        ? (storyData.date instanceof Timestamp 
-            ? storyData.date 
-            : Timestamp.fromDate(storyData.date instanceof Date ? storyData.date : new Date(storyData.date)))
+      const rawDate = storyData.date as unknown;
+      const storyDate = rawDate
+        ? rawDate instanceof Timestamp
+          ? rawDate
+          : rawDate instanceof Date
+            ? Timestamp.fromDate(rawDate)
+            : Timestamp.fromDate(new Date(rawDate as string | number))
         : Timestamp.now();
 
       const story: SuccessStory = {

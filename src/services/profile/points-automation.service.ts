@@ -178,7 +178,7 @@ export class PointsAutomationService {
 
       const lastActivity = userPoints.lastActivityAt;
       if (lastActivity) {
-        const lastActivityDate = lastActivity.toDate ? lastActivity.toDate() : new Date(lastActivity);
+        const lastActivityDate = lastActivity.toDate();
         const today = new Date();
         if (
           lastActivityDate.getDate() === today.getDate() &&

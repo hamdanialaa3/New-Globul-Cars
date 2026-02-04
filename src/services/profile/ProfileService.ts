@@ -26,7 +26,8 @@ import type {
   BulgarianUserUpdate,
   ProfileType,
   DealerProfile,
-  CompanyProfile
+  CompanyProfile,
+  ProfilePermissions
 } from '../../types/user/bulgarian-user.types';
 import type { DealershipInfo } from '../../types/dealership/dealership.types';
 import type { CompanyInfo } from '../../types/company/company.types';
@@ -397,6 +398,27 @@ export class ProfileService {
     displayName: string
   ): Promise<void> {
     try {
+      const defaultPermissions: ProfilePermissions = {
+        canAddListings: true,
+        maxListings: 3,
+        maxMonthlyListings: 3,
+        canEditLockedFields: false,
+        maxFlexEditsPerMonth: 0,
+        canBulkUpload: false,
+        bulkUploadLimit: 0,
+        canCloneListing: false,
+        hasAnalytics: false,
+        hasAdvancedAnalytics: false,
+        hasTeam: false,
+        canExportData: false,
+        hasPrioritySupport: false,
+        canUseQuickReplies: false,
+        canBulkEdit: false,
+        canImportCSV: false,
+        canUseAPI: false,
+        themeMode: 'standard'
+      };
+
       const userRef = doc(db, 'users', uid);
 
       // Check if already exists
@@ -416,14 +438,7 @@ export class ProfileService {
         currency: 'EUR',
         profileType: 'private',
         planTier: 'free',
-        permissions: {
-          canAddListings: true,
-          maxListings: 3,
-          hasAnalytics: false,
-          hasTeam: false,
-          canExportData: false,
-          canUseAPI: false
-        },
+        permissions: defaultPermissions,
         verification: {
           email: false,
           phone: false,
