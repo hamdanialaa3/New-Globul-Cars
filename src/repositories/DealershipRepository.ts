@@ -139,8 +139,22 @@ export class DealershipRepository {
       const existing = await this.getById(uid);
 
       if (existing) {
-        await this.update(uid, data);
-        return { ...existing, ...data, updatedAt: serverTimestamp() as any };
+        const normalizedVerification = data.verification
+          ? {
+              status: data.verification.status ?? existing.verification.status,
+              submittedAt: data.verification.submittedAt ?? existing.verification.submittedAt,
+              reviewedAt: data.verification.reviewedAt ?? existing.verification.reviewedAt,
+              reviewedBy: data.verification.reviewedBy ?? existing.verification.reviewedBy,
+              notes: data.verification.notes ?? existing.verification.notes
+            }
+          : undefined;
+        const updateData: DealershipInfoUpdate = {
+          ...data,
+          verification: normalizedVerification
+        };
+
+        await this.update(uid, updateData);
+        return { ...existing, ...updateData, updatedAt: serverTimestamp() as any };
       } else {
         return await this.create(uid, data);
       }

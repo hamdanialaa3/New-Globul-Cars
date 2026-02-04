@@ -13,6 +13,7 @@ import {
   where, 
   getDocs,
   serverTimestamp,
+  FieldValue,
   Timestamp
 } from 'firebase/firestore';
 import { 
@@ -25,7 +26,7 @@ import { db, storage } from '../../firebase/firebase-config';
 import type { 
   DealershipInfo, 
   DealershipDocument, 
-  DealershipMedia,
+  DealershipMediaItem,
   PrivacySettings,
   WorkingHours,
   DealershipServices,
@@ -45,7 +46,7 @@ class DealershipService {
       const dealershipRef = doc(db, 'dealerships', userId);
       
       // ✅ FIXED: Type-safe (removed 'any')
-      const dataToSave: Partial<DealershipInfo> & { updatedAt: Timestamp; createdAt?: Timestamp } = {
+      const dataToSave: Omit<Partial<DealershipInfo>, 'updatedAt' | 'createdAt'> & { updatedAt: FieldValue; createdAt?: FieldValue } = {
         ...dealershipData,
         updatedAt: serverTimestamp()
       };
@@ -80,16 +81,24 @@ class DealershipService {
       // Convert Timestamps to Dates
       return {
         ...data,
-        createdAt: data.createdAt?.toDate() || new Date(),
-        updatedAt: data.updatedAt?.toDate() || new Date(),
+        createdAt: data.createdAt || Timestamp.now(),
+        updatedAt: data.updatedAt || Timestamp.now(),
         documents: data.documents?.map((docItem: DealershipDocument) => ({
           ...docItem,
-          uploadedAt: docItem.uploadedAt?.toDate() || new Date(),
-          verifiedAt: docItem.verifiedAt?.toDate()
+          uploadedAt: docItem.uploadedAt instanceof Timestamp
+            ? docItem.uploadedAt
+            : Timestamp.fromDate(docItem.uploadedAt || new Date()),
+          verifiedAt: docItem.verifiedAt instanceof Timestamp
+            ? docItem.verifiedAt
+            : docItem.verifiedAt
+              ? Timestamp.fromDate(docItem.verifiedAt)
+              : undefined
         })) || [],
-        galleryImages: data.galleryImages?.map((img: DealershipMedia) => ({
+        galleryImages: data.galleryImages?.map((img: DealershipMediaItem) => ({
           ...img,
-          uploadedAt: img.uploadedAt?.toDate() || new Date()
+          uploadedAt: img.uploadedAt instanceof Timestamp
+            ? img.uploadedAt
+            : Timestamp.fromDate(img.uploadedAt || new Date())
         })) || []
       } as DealershipInfo;
     } catch (error) {
@@ -189,9 +198,9 @@ class DealershipService {
   async uploadMedia(
     userId: string,
     file: File,
-    mediaType: DealershipMedia['type'],
+    mediaType: DealershipMediaItem['type'],
     caption?: string
-  ): Promise<DealershipMedia> {
+  ): Promise<DealershipMediaItem> {
     try {
       const timestamp = Date.now();
       const filename = `${userId}_${mediaType}_${timestamp}_${file.name}`;
@@ -200,7 +209,7 @@ class DealershipService {
       await uploadBytes(storageRef, file);
       const url = await getDownloadURL(storageRef);
       
-      const newMedia: DealershipMedia = {
+      const newMedia: DealershipMediaItem = {
         id: `${mediaType}_${timestamp}`,
         type: mediaType,
         url,
@@ -240,7 +249,7 @@ class DealershipService {
       }
       
       const media = dealershipSnap.data().galleryImages || [];
-      const mediaToDelete = media.find((m: DealershipMedia) => m.id === mediaId);
+      const mediaToDelete = media.find((m: DealershipMediaItem) => m.id === mediaId);
       
       if (!mediaToDelete) {
         throw new Error('Media not found');
@@ -251,7 +260,7 @@ class DealershipService {
       await deleteObject(storageRef);
       
       // Update Firestore
-      const updatedMedia = media.filter((m: DealershipMedia) => m.id !== mediaId);
+      const updatedMedia = media.filter((m: DealershipMediaItem) => m.id !== mediaId);
       await updateDoc(dealershipRef, {
         galleryImages: updatedMedia,
         updatedAt: serverTimestamp()
@@ -440,6 +449,7 @@ class DealershipService {
     region?: string;
     verified?: boolean;
     featured?: boolean;
+    locationData?: { cityName?: string };
   }): Promise<DealershipInfo[]> {
     try {
       let q = collection(db, 'dealerships');
