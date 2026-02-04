@@ -20,7 +20,8 @@ import {
   updateDoc,
   arrayUnion,
   arrayRemove,
-  serverTimestamp
+  serverTimestamp,
+  getDoc
 } from 'firebase/firestore';
 import { storage, db } from '../../firebase/firebase-config';
 import { logger } from '../logger-service';
