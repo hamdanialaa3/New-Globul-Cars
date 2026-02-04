@@ -149,7 +149,9 @@ class RateLimiterService {
     const now = Date.now();
     let cleaned = 0;
 
-    for (const [key, record] of this.rateLimitMap.entries()) {
+    // Use Array.from to avoid downlevelIteration issues
+    const entries = Array.from(this.rateLimitMap.entries());
+    for (const [key, record] of entries) {
       if (now > record.resetTime) {
         this.rateLimitMap.delete(key);
         cleaned++;

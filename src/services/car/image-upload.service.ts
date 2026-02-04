@@ -141,7 +141,7 @@ class ImageUploadService {
           await deleteObject(imageRef);
         } catch (error) {
           // If delete fails, log but don't throw (image might already be deleted)
-          serviceLogger.warn('Failed to delete image', error as Error, { carId, url });
+          serviceLogger.warn('Failed to delete image', { carId, url, error: (error as Error).message });
         }
       });
 
