@@ -55,7 +55,11 @@ export const AdSlot: React.FC<AdSlotProps> = ({
 
     return (
         <div className={className} style={style} data-placement={placementId}>
-            <AdRenderer ad={ad} placementId={placementId} />
+            <AdRenderer
+                ad={ad}
+                placementId={placementId}
+                hasConsent={true} // In real app, get from CookieConsentContext
+            />
         </div>
     );
 };

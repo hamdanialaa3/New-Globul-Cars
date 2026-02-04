@@ -16,7 +16,7 @@
  */
 
 import { db } from '@/firebase/firebase-config';
-import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
 import { logger } from '@/services/logger-service';
 
 // ==================== INTERFACES ====================
@@ -235,80 +235,161 @@ export class CarHistoryService {
   }
   
   private async getOwnershipHistory(carData: any): Promise<any> {
-    // Mock implementation - في الواقع يتم الاستعلام من قاعدة بيانات حكومية بلغارية
-    const ownerCount = Math.floor(Math.random() * 3) + 1; // 1-3 owners
-    
-    const records: OwnershipRecord[] = [];
-    for (let i = 0; i < ownerCount; i++) {
-      records.push({
-        ownerNumber: i + 1,
-        periodStart: new Date(carData.year + i, 0, 1),
-        periodEnd: i === ownerCount - 1 ? undefined : new Date(carData.year + i + 2, 0, 1),
-        region: 'Sofia' // Mock
-      });
+    // Real implementation - based on seller-provided data + crowdsourced records
+    try {
+      // Check for ownership records in Firestore (crowdsourced)
+      const ownershipRef = collection(db, 'car_ownership_records');
+      const q = query(ownershipRef, where('carId', '==', carData.id));
+      const snapshot = await getDocs(q);
+      
+      if (!snapshot.empty) {
+        // Use real crowdsourced data
+        const records: OwnershipRecord[] = [];
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          records.push({
+            ownerNumber: data.ownerNumber,
+            periodStart: data.periodStart?.toDate(),
+            periodEnd: data.periodEnd?.toDate(),
+            region: data.region
+          });
+        });
+        return {
+          count: records.length,
+          records: records.sort((a, b) => a.ownerNumber - b.ownerNumber)
+        };
+      }
+      
+      // Fallback: Use seller-provided data
+      const ownerCount = carData.previousOwners || carData.ownerCount || 1;
+      const records: OwnershipRecord[] = [{
+        ownerNumber: 1,
+        periodStart: carData.firstRegistration ? new Date(carData.firstRegistration) : new Date(carData.year, 0, 1),
+        periodEnd: ownerCount === 1 ? undefined : undefined,
+        region: carData.registrationCity || carData.city || 'Bulgaria'
+      }];
+      
+      return {
+        count: ownerCount,
+        records,
+        source: 'seller_provided'
+      };
+    } catch (error) {
+      logger.warn('Failed to get ownership history, using seller data', { carId: carData.id });
+      return {
+        count: carData.previousOwners || 1,
+        records: [],
+        source: 'fallback'
+      };
     }
-    
-    return {
-      count: ownerCount,
-      records
-    };
   }
   
   private async getAccidentHistory(carData: any): Promise<any> {
-    // Mock implementation - في الواقع يتم الاستعلام من سجلات التأمين
-    const hasAccidents = Math.random() > 0.7; // 30% chance of accidents
-    
-    if (!hasAccidents) {
+    // Real implementation - based on seller disclosure + crowdsourced reports
+    try {
+      // Check for accident reports in Firestore (crowdsourced)
+      const accidentRef = collection(db, 'car_accident_reports');
+      const q = query(accidentRef, where('carId', '==', carData.id));
+      const snapshot = await getDocs(q);
+      
+      if (!snapshot.empty) {
+        // Use real crowdsourced data
+        const records: AccidentRecord[] = [];
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          records.push({
+            date: data.date?.toDate(),
+            severity: data.severity || 'minor',
+            description: data.description,
+            repaired: data.repaired ?? true,
+            cost: data.cost
+          });
+        });
+        
+        const severity = records.some(r => r.severity === 'severe') ? 'severe' : 
+                        records.some(r => r.severity === 'moderate') ? 'moderate' : 'minor';
+        
+        return {
+          hasAccidents: true,
+          count: records.length,
+          severity,
+          records,
+          source: 'crowdsourced'
+        };
+      }
+      
+      // Use seller-disclosed accident info
+      const hasAccidents = carData.hasAccidentHistory || carData.accidentFree === false || false;
+      
+      return {
+        hasAccidents,
+        count: hasAccidents ? (carData.accidentCount || 1) : 0,
+        severity: hasAccidents ? (carData.accidentSeverity || 'minor') : 'none' as const,
+        records: [],
+        source: hasAccidents ? 'seller_disclosed' : 'no_records'
+      };
+    } catch (error) {
+      logger.warn('Failed to get accident history', { carId: carData.id });
       return {
         hasAccidents: false,
         count: 0,
         severity: 'none' as const,
-        records: []
+        records: [],
+        source: 'unavailable'
       };
     }
-    
-    const accidentCount = Math.floor(Math.random() * 2) + 1;
-    const records: AccidentRecord[] = [];
-    
-    for (let i = 0; i < accidentCount; i++) {
-      records.push({
-        date: new Date(carData.year + i + 1, Math.floor(Math.random() * 12), 1),
-        severity: i === 0 ? 'minor' : 'moderate',
-        description: 'Minor collision',
-        repaired: true,
-        cost: Math.floor(Math.random() * 2000) + 500
-      });
-    }
-    
-    return {
-      hasAccidents: true,
-      count: accidentCount,
-      severity: records.some(r => r.severity === 'severe') ? 'severe' : 
-               records.some(r => r.severity === 'moderate') ? 'moderate' : 'minor',
-      records
-    };
   }
   
   private async getServiceHistory(carData: any): Promise<any> {
-    // Mock implementation - في الواقع يتم الاستعلام من ورش الصيانة
-    const serviceCount = Math.floor((new Date().getFullYear() - carData.year) * 1.5);
-    const records: ServiceRecord[] = [];
-    
-    for (let i = 0; i < Math.min(serviceCount, 10); i++) {
-      records.push({
-        date: new Date(carData.year + i, Math.floor(Math.random() * 12), 1),
-        type: i % 2 === 0 ? 'maintenance' : 'inspection',
-        description: i % 2 === 0 ? 'Oil change and filter replacement' : 'Annual inspection',
-        mileage: carData.mileage - (serviceCount - i) * 10000,
-        cost: Math.floor(Math.random() * 300) + 100
-      });
+    // Real implementation - based on seller-provided service records
+    try {
+      // Check for service records in Firestore (crowdsourced/uploaded)
+      const serviceRef = collection(db, 'car_service_records');
+      const q = query(serviceRef, where('carId', '==', carData.id), orderBy('date', 'desc'), limit(10));
+      const snapshot = await getDocs(q);
+      
+      if (!snapshot.empty) {
+        // Use real service records
+        const records: ServiceRecord[] = [];
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          records.push({
+            date: data.date?.toDate(),
+            type: data.type || 'maintenance',
+            description: data.description,
+            mileage: data.mileage,
+            cost: data.cost,
+            provider: data.provider
+          });
+        });
+        
+        return {
+          lastServiceDate: records[0]?.date,
+          totalServices: records.length,
+          records,
+          source: 'documented'
+        };
+      }
+      
+      // Use seller-provided service info
+      const hasServiceBook = carData.hasServiceBook || carData.serviceHistory || false;
+      const lastService = carData.lastServiceDate || carData.lastService;
+      
+      return {
+        lastServiceDate: lastService ? new Date(lastService) : undefined,
+        totalServices: hasServiceBook ? (carData.serviceCount || 0) : 0,
+        records: [],
+        source: hasServiceBook ? 'seller_confirmed' : 'no_records'
+      };
+    } catch (error) {
+      logger.warn('Failed to get service history', { carId: carData.id });
+      return {
+        lastServiceDate: undefined,
+        totalServices: 0,
+        records: [],
+        source: 'unavailable'
+      };
     }
-    
-    return {
-      lastServiceDate: records[0]?.date,
-      totalServices: serviceCount,
-      records: records.slice(0, 5) // Latest 5 records
-    };
   }
   
   private getRegistrationInfo(carData: any): any {
@@ -323,28 +404,62 @@ export class CarHistoryService {
   }
   
   private async verifyMileage(carData: any): Promise<any> {
-    // Mock implementation - في الواقع يتم التحقق من سجلات الفحص الفني
-    const currentMileage = carData.mileage || 0;
-    const carAge = new Date().getFullYear() - carData.year;
-    const expectedMileage = carAge * 15000; // Average 15k km/year
-    
-    const suspiciousActivity = Math.abs(currentMileage - expectedMileage) > 50000;
-    
-    const history: MileageRecord[] = [];
-    for (let i = 0; i < Math.min(carAge, 5); i++) {
-      history.push({
-        date: new Date(carData.year + i, 0, 1),
-        mileage: i * 15000 + Math.floor(Math.random() * 5000),
-        source: 'inspection' as const
-      });
+    // Real implementation - based on seller data + crowdsourced mileage records
+    try {
+      const currentMileage = carData.mileage || carData.kilometers || 0;
+      const carAge = new Date().getFullYear() - (carData.year || 2020);
+      const expectedMileage = carAge * 15000; // Average 15k km/year in Bulgaria
+      
+      // Check for mileage records in Firestore (from inspections/uploads)
+      const mileageRef = collection(db, 'car_mileage_records');
+      const q = query(mileageRef, where('carId', '==', carData.id), orderBy('date', 'desc'));
+      const snapshot = await getDocs(q);
+      
+      const history: MileageRecord[] = [];
+      let hasRecords = false;
+      
+      if (!snapshot.empty) {
+        hasRecords = true;
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          history.push({
+            date: data.date?.toDate(),
+            mileage: data.mileage,
+            source: data.source || 'documented'
+          });
+        });
+      }
+      
+      // Suspicious if mileage differs significantly from expected OR if records show rollback
+      let suspiciousActivity = Math.abs(currentMileage - expectedMileage) > 80000;
+      
+      // Check for mileage rollback (decreasing mileage over time)
+      if (history.length >= 2) {
+        for (let i = 0; i < history.length - 1; i++) {
+          if (history[i].mileage < history[i + 1].mileage) {
+            suspiciousActivity = true;
+            break;
+          }
+        }
+      }
+      
+      return {
+        currentMileage,
+        verified: hasRecords && !suspiciousActivity,
+        suspiciousActivity,
+        history: history.slice(0, 5),
+        source: hasRecords ? 'documented' : 'seller_provided'
+      };
+    } catch (error) {
+      logger.warn('Failed to verify mileage', { carId: carData.id });
+      return {
+        currentMileage: carData.mileage || 0,
+        verified: false,
+        suspiciousActivity: false,
+        history: [],
+        source: 'unavailable'
+      };
     }
-    
-    return {
-      currentMileage,
-      verified: !suspiciousActivity,
-      suspiciousActivity,
-      history
-    };
   }
   
   private calculateOverallScore(

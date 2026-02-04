@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { AdCampaign } from '../types';
 import { useAdTracker } from '../hooks/useAdHooks';
+import { SmartAdSenseUnit } from './SmartAdSenseUnit'; // New Import
 
 const AdWrapper = styled.div`
   display: flex;
@@ -49,6 +50,25 @@ export const AdRenderer: React.FC<AdRendererProps> = ({ ad, placementId, hasCons
     const handleClick = () => {
         trackClick();
     };
+
+    // Google Smart Unit - New Professional Integration
+    if (ad.type === 'google_smart') {
+        // Assuming scriptCode might contain the slot ID or we use a separate field in future
+        // For now, let's parse slot ID from scriptCode if it's there, or fallback to a test slot
+        // A better way is to add 'slotId' to AdCampaign type, but let's be flexible
+        const slotId = ad.scriptCode || '1234567890'; // Default/Fallback
+
+        return (
+            <AdWrapper id={`ad-${ad.id}`} className="ad-unit ad-smart">
+                <SmartAdSenseUnit
+                    slot={slotId}
+                    format="auto"
+                    responsive={true}
+                    debug={process.env.NODE_ENV === 'development'}
+                />
+            </AdWrapper>
+        );
+    }
 
     if (ad.type === 'image' && ad.imageUrl) {
         return (

@@ -7,6 +7,18 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import { logger } from '../../services/logger-service';
+import { 
+  collection, 
+  query, 
+  where, 
+  orderBy, 
+  getDocs,
+  doc,
+  updateDoc,
+  increment,
+  Timestamp 
+} from 'firebase/firestore';
+import { db } from '../../firebase/firebase-config';
 import {
   Calendar,
   MapPin,
@@ -23,7 +35,11 @@ import './EventsPage.css';
 interface Event {
   id: string;
   title: string;
+  titleBg?: string;
+  titleEn?: string;
   description: string;
+  descriptionBg?: string;
+  descriptionEn?: string;
   date: Date;
   time: string;
   location: string;
@@ -56,98 +72,82 @@ const EventsPage: React.FC = () => {
     try {
       setLoading(true);
       
-      // Mock events data with BG/EN support
-      const mockEvents: Event[] = [
-        {
-          id: '1',
-          title: language === 'bg' ? 'София Авто Шоу 2025' : 'Sofia Auto Show 2025',
-          description: language === 'bg' 
-            ? 'Най-голямото автомобилно изложение в България с над 200 автомобила'
-            : 'The biggest car exhibition in Bulgaria with over 200 cars',
-          date: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days from now
-          time: '10:00 - 18:00',
-          location: language === 'bg' ? 'Интер Експо Център' : 'Inter Expo Center',
-          city: language === 'bg' ? 'София' : 'Sofia',
-          organizer: 'Bulgarian Auto Association',
-          attendees: 1250,
-          maxAttendees: 5000,
-          category: 'exhibition',
-          featured: true,
-          saved: false
-        },
-        {
-          id: '2',
-          title: language === 'bg' ? 'БМВ Клуб Среща' : 'BMW Club Meetup',
-          description: language === 'bg'
-            ? 'Месечна среща на собственици на БМВ - кафе и разговори'
-            : 'Monthly BMW owners meetup - coffee and conversations',
-          date: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3), // 3 days from now
-          time: '15:00 - 19:00',
-          location: language === 'bg' ? 'Boyana Lake' : 'Boyana Lake',
-          city: language === 'bg' ? 'София' : 'Sofia',
-          organizer: 'BMW Club Bulgaria',
-          attendees: 45,
-          maxAttendees: 100,
-          category: 'meetup',
-          featured: false,
-          saved: true
-        },
-        {
-          id: '3',
-          title: language === 'bg' ? 'Класически Автомобили - Аукцион' : 'Classic Cars Auction',
-          description: language === 'bg'
-            ? 'Аукцион на класически и ретро автомобили'
-            : 'Auction of classic and vintage cars',
-          date: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14), // 14 days from now
-          time: '12:00 - 20:00',
-          location: language === 'bg' ? 'Grand Hotel Sofia' : 'Grand Hotel Sofia',
-          city: language === 'bg' ? 'София' : 'Sofia',
-          organizer: 'Classic Auto Bulgaria',
-          attendees: 320,
-          maxAttendees: 500,
-          category: 'auction',
-          featured: true,
-          saved: false
-        },
-        {
-          id: '4',
-          title: language === 'bg' ? 'Авто Механика Работилница' : 'Auto Mechanics Workshop',
-          description: language === 'bg'
-            ? 'Практическа работилница за основна поддръжка на автомобили'
-            : 'Practical workshop for basic car maintenance',
-          date: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5), // 5 days from now
-          time: '09:00 - 17:00',
-          location: language === 'bg' ? 'Автосервиз Еврокар' : 'Eurocar Service',
-          city: language === 'bg' ? 'Пловдив' : 'Plovdiv',
-          organizer: 'Auto Education BG',
-          attendees: 12,
-          maxAttendees: 20,
-          category: 'workshop',
-          featured: false,
-          saved: false
-        },
-        {
-          id: '5',
-          title: language === 'bg' ? 'ПистаДен - Пловдив' : 'Track Day - Plovdiv',
-          description: language === 'bg'
-            ? 'Ден на пистата за любители на скоростта'
-            : 'Track day for speed enthusiasts',
-          date: new Date(Date.now() + 1000 * 60 * 60 * 24 * 10), // 10 days from now
-          time: '08:00 - 18:00',
-          location: language === 'bg' ? 'Пистата Пловдив' : 'Plovdiv Circuit',
-          city: language === 'bg' ? 'Пловдив' : 'Plovdiv',
-          organizer: 'Track Events Bulgaria',
-          attendees: 85,
-          maxAttendees: 120,
-          category: 'racing',
-          featured: true,
-          saved: true
+      // Fetch real events from Firestore
+      const eventsRef = collection(db, 'events');
+      let q = query(eventsRef, orderBy('date', 'asc'));
+      
+      // Apply filter for upcoming events only
+      if (filter === 'upcoming' || filter === 'today') {
+        const now = Timestamp.now();
+        q = query(eventsRef, where('date', '>=', now), orderBy('date', 'asc'));
+      }
+      
+      const snapshot = await getDocs(q);
+      
+      if (snapshot.empty) {
+        // No events in database - show empty state
+        setEvents([]);
+        return;
+      }
+      
+      const firestoreEvents: Event[] = [];
+      
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        firestoreEvents.push({
+          id: docSnap.id,
+          title: language === 'bg' ? (data.titleBg || data.title) : (data.titleEn || data.title),
+          titleBg: data.titleBg,
+          titleEn: data.titleEn,
+          description: language === 'bg' ? (data.descriptionBg || data.description) : (data.descriptionEn || data.description),
+          descriptionBg: data.descriptionBg,
+          descriptionEn: data.descriptionEn,
+          date: data.date?.toDate?.() || new Date(data.date),
+          time: data.time || '',
+          location: data.location || '',
+          city: data.city || '',
+          organizer: data.organizer || '',
+          attendees: data.attendees || 0,
+          maxAttendees: data.maxAttendees,
+          category: data.category || 'meetup',
+          image: data.image,
+          featured: data.featured || false,
+          saved: false // Will be updated with user's saved events
+        });
+      });
+      
+      // Check user's saved events
+      if (user?.uid) {
+        const savedRef = collection(db, 'users', user.uid, 'saved_events');
+        const savedSnapshot = await getDocs(savedRef);
+        const savedIds = new Set(savedSnapshot.docs.map(d => d.id));
+        
+        firestoreEvents.forEach(event => {
+          event.saved = savedIds.has(event.id);
+        });
+        
+        // Filter by saved if needed
+        if (filter === 'saved') {
+          const savedEvents = firestoreEvents.filter(e => e.saved);
+          setEvents(savedEvents);
+          return;
         }
-      ];
-
-      setEvents(mockEvents);
+      }
+      
+      // Filter by today
+      if (filter === 'today') {
+        const today = new Date();
+        const todayEvents = firestoreEvents.filter(e => 
+          e.date.toDateString() === today.toDateString()
+        );
+        setEvents(todayEvents);
+        return;
+      }
+      
+      setEvents(firestoreEvents);
     } catch (error) {
       logger.error('Error loading events', error as Error);
+      setEvents([]);
     } finally {
       setLoading(false);
     }

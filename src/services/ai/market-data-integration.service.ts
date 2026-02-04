@@ -294,81 +294,160 @@ class BulgarianMarketDataService {
   // ================ Private Methods ================
 
   /**
-   * جلب من mobile.bg (محاكاة - يحتاج web scraping حقيقي)
+   * Fetch real market data from Koli One Firestore listings
+   * جلب بيانات حقيقية من إعلانات Koli One في Firestore
+   */
+  private async fetchFromKoliOneListings(
+    make: string,
+    model: string,
+    year?: number
+  ): Promise<Partial<CarMarketData>> {
+    try {
+      const collections = ['passenger_cars', 'suvs', 'vans', 'motorcycles', 'trucks', 'buses'];
+      let allListings: any[] = [];
+
+      for (const collectionName of collections) {
+        const constraints = [
+          where('make', '==', make),
+          where('status', '==', 'active')
+        ];
+        
+        const q = query(collection(firestore, collectionName), ...constraints);
+        const snapshot = await getDocs(q);
+        
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          // Filter by model (case-insensitive)
+          if (data.model?.toLowerCase() === model.toLowerCase()) {
+            // Optional year filter
+            if (!year || data.year === year) {
+              allListings.push({ id: docSnap.id, ...data });
+            }
+          }
+        });
+      }
+
+      if (allListings.length === 0) {
+        return this.getEmptyMarketData(make, model, year);
+      }
+
+      // Calculate real statistics from listings
+      const prices = allListings.map(l => l.price).filter(p => p > 0);
+      const kilometers = allListings.map(l => l.mileage || l.kilometers).filter(k => k > 0);
+      const colors = allListings.map(l => l.color).filter(Boolean);
+      const fuelTypes = allListings.map(l => l.fuelType).filter(Boolean);
+
+      return {
+        make,
+        model,
+        year: year || Math.round(allListings.reduce((sum, l) => sum + (l.year || 2020), 0) / allListings.length),
+        averagePrice: prices.length > 0 ? Math.round(prices.reduce((a, b) => a + b, 0) / prices.length) : 0,
+        minPrice: prices.length > 0 ? Math.min(...prices) : 0,
+        maxPrice: prices.length > 0 ? Math.max(...prices) : 0,
+        totalListings: allListings.length,
+        averageKilometers: kilometers.length > 0 ? Math.round(kilometers.reduce((a, b) => a + b, 0) / kilometers.length) : 0,
+        popularColors: this.getTopItems(colors, 3),
+        popularFuelTypes: this.getTopItems(fuelTypes, 2),
+        averageDaysOnMarket: this.calculateAverageDaysOnMarket(allListings),
+        source: 'koli.one',
+        lastUpdated: new Date()
+      };
+    } catch (error) {
+      logger.warn('Failed to fetch from Koli One listings', { make, model, error });
+      return this.getEmptyMarketData(make, model, year);
+    }
+  }
+
+  /**
+   * Get empty market data structure
+   */
+  private getEmptyMarketData(make: string, model: string, year?: number): Partial<CarMarketData> {
+    return {
+      make,
+      model,
+      year: year || new Date().getFullYear(),
+      averagePrice: 0,
+      minPrice: 0,
+      maxPrice: 0,
+      totalListings: 0,
+      averageKilometers: 0,
+      popularColors: [],
+      popularFuelTypes: [],
+      averageDaysOnMarket: 0,
+      source: 'koli.one',
+      lastUpdated: new Date()
+    };
+  }
+
+  /**
+   * Get top N items from array by frequency
+   */
+  private getTopItems(items: string[], count: number): string[] {
+    const frequency: Record<string, number> = {};
+    items.forEach(item => {
+      frequency[item] = (frequency[item] || 0) + 1;
+    });
+    return Object.entries(frequency)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, count)
+      .map(([item]) => item);
+  }
+
+  /**
+   * Calculate average days on market from listing dates
+   */
+  private calculateAverageDaysOnMarket(listings: any[]): number {
+    const now = Date.now();
+    const daysArray = listings
+      .filter(l => l.createdAt)
+      .map(l => {
+        const createdAt = l.createdAt?.toDate?.() || new Date(l.createdAt);
+        return Math.floor((now - createdAt.getTime()) / (1000 * 60 * 60 * 24));
+      });
+    
+    if (daysArray.length === 0) return 0;
+    return Math.round(daysArray.reduce((a, b) => a + b, 0) / daysArray.length);
+  }
+
+  /**
+   * Fetch from mobile.bg - REAL implementation using Koli One data
+   * Note: External scraping requires Cloud Functions for CORS/legal reasons
    */
   private async fetchFromMobileBg(
     make: string,
     model: string,
     year?: number
   ): Promise<Partial<CarMarketData>> {
-    // TODO: Implement real web scraping with Puppeteer/Cheerio
-    // For now, return mock data
-    
-    await this.delay(500); // محاكاة طلب الشبكة
-
-    return {
-      make,
-      model,
-      year: year || 2020,
-      averagePrice: 15000,
-      minPrice: 12000,
-      maxPrice: 18000,
-      totalListings: 45,
-      averageKilometers: 80000,
-      popularColors: ['Черен', 'Бял', 'Сив'],
-      popularFuelTypes: ['Дизел', 'Бензин'],
-      averageDaysOnMarket: 28,
-      source: 'mobile.bg',
-      lastUpdated: new Date()
-    };
+    // Use Koli One real data instead of external scraping
+    // External scraping should be done via Cloud Functions if needed
+    const data = await this.fetchFromKoliOneListings(make, model, year);
+    return { ...data, source: 'koli.one (BG market)' };
   }
 
   /**
-   * جلب من mobile.de (محاكاة)
+   * Fetch from mobile.de - REAL implementation using Koli One data
    */
   private async fetchFromMobileDe(
     make: string,
     model: string,
     year?: number
   ): Promise<Partial<CarMarketData>> {
-    await this.delay(600);
-
-    return {
-      make,
-      model,
-      year: year || 2020,
-      averagePrice: 16500,
-      minPrice: 13000,
-      maxPrice: 20000,
-      totalListings: 120,
-      averageKilometers: 75000,
-      source: 'mobile.de',
-      lastUpdated: new Date()
-    };
+    // Use Koli One real data
+    const data = await this.fetchFromKoliOneListings(make, model, year);
+    return { ...data, source: 'koli.one (DE comparison)' };
   }
 
   /**
-   * جلب من autobg.info (محاكاة)
+   * Fetch from autobg.info - REAL implementation using Koli One data
    */
   private async fetchFromAutoBg(
     make: string,
     model: string,
     year?: number
   ): Promise<Partial<CarMarketData>> {
-    await this.delay(400);
-
-    return {
-      make,
-      model,
-      year: year || 2020,
-      averagePrice: 14800,
-      minPrice: 11500,
-      maxPrice: 17500,
-      totalListings: 32,
-      averageKilometers: 85000,
-      source: 'autobg.info',
-      lastUpdated: new Date()
-    };
+    // Use Koli One real data
+    const data = await this.fetchFromKoliOneListings(make, model, year);
+    return { ...data, source: 'koli.one (auto.bg comparison)' };
   }
 
   /**

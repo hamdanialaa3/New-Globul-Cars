@@ -1,4 +1,4 @@
-export type AdType = 'google_adsense' | 'google_gam' | 'image' | 'html_js';
+export type AdType = 'google_adsense' | 'google_gam' | 'image' | 'html_js' | 'google_smart';
 export type DeviceType = 'desktop' | 'mobile' | 'both';
 
 export interface AdContext {
