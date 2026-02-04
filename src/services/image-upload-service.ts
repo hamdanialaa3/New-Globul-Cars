@@ -2,7 +2,7 @@
 // خدمة رفع الصور مع تتبع التقدم وإعادة المحاولة
 
 import { ref, uploadBytesResumable, getDownloadURL, UploadTask } from 'firebase/storage';
-import { storage } from '../firebase/firebase-config';
+import { storage, auth } from '../firebase/firebase-config';
 import imageCompression from 'browser-image-compression';
 import { serviceLogger } from './logger-service';
 
@@ -126,7 +126,8 @@ export class ImageUploadService {
   ): Promise<string> {
     return new Promise((resolve, reject) => {
       const storageRef = ref(storage, path);
-      const uploadTask = uploadBytesResumable(storageRef, file);
+      const metadata = { customMetadata: { ownerId: auth.currentUser?.uid || 'unknown', uploadType: 'general', uploadedAt: new Date().toISOString() } };
+      const uploadTask = uploadBytesResumable(storageRef, file, metadata);
 
       // Store task for potential cancellation
       this.uploadTasks.set(file.name, uploadTask);

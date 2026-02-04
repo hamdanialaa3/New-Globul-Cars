@@ -451,7 +451,8 @@ class ManualPaymentService {
       const fileName = `manual-payments/${transactionId}_receipt_${Date.now()}.${fileExt}`;
       const storageRef = ref(storage, fileName);
       
-      await uploadBytes(storageRef, file);
+      const metadata = { customMetadata: { ownerId: transactionId, type: 'payment-receipt', uploadedAt: new Date().toISOString() } };
+      await uploadBytes(storageRef, file, metadata);
       const downloadURL = await getDownloadURL(storageRef);
       
       await this.updateTransactionReceipt(transactionId, downloadURL, file.name);
