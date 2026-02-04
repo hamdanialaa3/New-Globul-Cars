@@ -67,7 +67,8 @@ export class IntroVideoService {
 
       // Upload video
       const videoRef = ref(storage, `${this.storagePath}/${userId}/${Date.now()}_${videoFile.name}`);
-      await uploadBytes(videoRef, videoFile);
+      const metadata = { customMetadata: { ownerId: userId, type: 'intro-video', uploadedAt: new Date().toISOString() } };
+        await uploadBytes(videoRef, videoFile, metadata);
       const videoUrl = await getDownloadURL(videoRef);
 
       // Upload thumbnail if provided

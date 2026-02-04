@@ -4,7 +4,7 @@
  */
 
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { storage } from '../../firebase/firebase-config';
+import { storage, auth } from '../../firebase/firebase-config';
 import { serviceLogger } from '../logger-service';
 
 class ImageUploadService {
@@ -100,7 +100,8 @@ class ImageUploadService {
             path: imagePath
           });
 
-          const snapshot = await uploadBytes(imageRef, image);
+          const metadata = { customMetadata: { ownerId: auth.currentUser?.uid || 'unknown', carId: carId, uploadedAt: new Date().toISOString() } };
+          const snapshot = await uploadBytes(imageRef, image, metadata);
           const downloadUrl = await getDownloadURL(snapshot.ref);
 
           return downloadUrl;
