@@ -60,6 +60,14 @@ export interface DealershipInfo {
     reviewedBy?: string; // Admin UID
     notes?: string;
   };
+
+  // Legacy compatibility (Phase 4 migration)
+  documents?: DealershipDocument[];
+  galleryImages?: DealershipMediaItem[];
+  verified?: boolean;
+  verifiedAt?: Timestamp;
+  verifiedBy?: string;
+  featuredDealer?: boolean;
   
   // Timestamps
   createdAt: Timestamp;
@@ -234,6 +242,27 @@ export interface GalleryImage {
   category?: 'exterior' | 'interior' | 'team' | 'cars' | 'other';
   uploadedAt: Timestamp;
   order?: number; // For sorting
+}
+
+// ==================== LEGACY MEDIA & DOCUMENTS ====================
+
+export interface DealershipDocument {
+  id: string;
+  type: string;
+  name: string;
+  url: string;
+  uploadedAt: Timestamp | Date;
+  verified: boolean;
+  verifiedAt?: Timestamp | Date;
+  verifiedBy?: string;
+}
+
+export interface DealershipMediaItem {
+  id: string;
+  type: 'image' | 'video' | 'logo' | 'cover' | 'gallery';
+  url: string;
+  caption?: string;
+  uploadedAt: Timestamp | Date;
 }
 
 // ==================== SETTINGS ====================

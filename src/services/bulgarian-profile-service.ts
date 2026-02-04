@@ -33,7 +33,7 @@ import { auth, db, storage } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-service';
 
 // ✅ NEW: Import from canonical types file
-import type { BulgarianUser, DealerProfile as DealerUserProfile } from '../types/user/bulgarian-user.types';
+import type { BulgarianUser, ProfilePermissions } from '../types/user/bulgarian-user.types';
 import type { DealershipInfo } from '../types/dealership/dealership.types';
 
 /**
@@ -117,9 +117,9 @@ export class BulgarianProfileService {
    */
   static async createCompleteProfile(
     userId: string,
-    profileData: Partial<BulgarianUserProfile>,
+    profileData: Partial<BulgarianUser>,
     dealerData?: DealerProfile
-  ): Promise<BulgarianUserProfile> {
+  ): Promise<BulgarianUser> {
     const { runTransaction, doc, serverTimestamp } = await import('firebase/firestore');
 
     try {
@@ -135,8 +135,34 @@ export class BulgarianProfileService {
         const numericId = currentCount + 1;
 
         // 2. Prepare Profile Data
-        const now = new Date();
-        const completeProfile: BulgarianUserProfile = {
+        const now = Timestamp.now();
+        const resolvedProfileType = profileData.profileType || (dealerData ? 'dealer' : 'private');
+        const resolvedPlanTier = resolvedProfileType === 'company'
+          ? 'company'
+          : resolvedProfileType === 'dealer'
+            ? 'dealer'
+            : 'free';
+        const defaultPermissions: ProfilePermissions = {
+          canAddListings: true,
+          maxListings: resolvedPlanTier === 'free' ? 3 : resolvedPlanTier === 'dealer' ? 30 : 200,
+          maxMonthlyListings: resolvedPlanTier === 'free' ? 3 : resolvedPlanTier === 'dealer' ? 30 : 200,
+          canEditLockedFields: resolvedPlanTier !== 'free',
+          maxFlexEditsPerMonth: resolvedPlanTier === 'dealer' ? 5 : 0,
+          canBulkUpload: resolvedPlanTier !== 'free',
+          bulkUploadLimit: resolvedPlanTier === 'dealer' ? 5 : resolvedPlanTier === 'company' ? 20 : 0,
+          canCloneListing: resolvedPlanTier !== 'free',
+          hasAnalytics: resolvedPlanTier !== 'free',
+          hasAdvancedAnalytics: resolvedPlanTier === 'company',
+          hasTeam: resolvedPlanTier !== 'free',
+          canExportData: resolvedPlanTier !== 'free',
+          hasPrioritySupport: resolvedPlanTier !== 'free',
+          canUseQuickReplies: resolvedPlanTier !== 'free',
+          canBulkEdit: resolvedPlanTier !== 'free',
+          canImportCSV: resolvedPlanTier !== 'free',
+          canUseAPI: resolvedPlanTier === 'company',
+          themeMode: resolvedPlanTier === 'company' ? 'company-led' : resolvedPlanTier === 'dealer' ? 'dealer-led' : 'standard'
+        };
+        const baseProfile = {
           uid: userId,
           numericId, // ✨ Assigned atomically
           email: profileData.email || null,
@@ -145,47 +171,51 @@ export class BulgarianProfileService {
           lastName: profileData.lastName || '',
           photoURL: profileData.photoURL || null,
           phoneNumber: profileData.phoneNumber || null,
-          emailVerified: profileData.emailVerified || false,
+          verification: {
+            email: profileData.verification?.email ?? false,
+            phone: profileData.verification?.phone ?? false,
+            id: profileData.verification?.id ?? false,
+            business: profileData.verification?.business ?? false
+          },
 
           location: {
             city: profileData.location?.city || '',
             region: profileData.location?.region || '',
-            country: 'Bulgaria'
+            country: 'Bulgaria' as const
           },
           preferredLanguage: profileData.preferredLanguage || 'bg',
-          currency: 'EUR',
-          phoneCountryCode: '+359',
+          currency: 'EUR' as const,
+          phoneCountryCode: '+359' as const,
 
-          profileType: profileData.profileType || (dealerData ? 'dealer' : 'private'),
-          dealershipRef: dealerData ? `dealerships/${userId}` : undefined,
+          permissions: profileData.permissions || defaultPermissions,
+          dealershipRef: dealerData ? (`dealerships/${userId}` as `dealerships/${string}`) : undefined,
           dealerSnapshot: dealerData ? {
-            nameBG: dealerData.dealershipNameBG || dealerData.companyName || '',
+            nameBG: dealerData.dealershipNameBG || '',
             nameEN: dealerData.dealershipNameEN || '',
-            logo: dealerData.logo,
-            status: 'pending'
+            logo: dealerData.media?.logo,
+            status: 'pending' as const
           } : undefined,
-
-          linkedProviders: profileData.linkedProviders || [],
           lastLoginAt: now,
           createdAt: now,
           updatedAt: now,
 
-          notifications: {
-            email: true,
-            sms: false,
-            push: true,
-            marketing: false
+          stats: {
+            totalListings: 0,
+            activeListings: 0,
+            totalViews: 0,
+            totalMessages: 0,
+            trustScore: 0
           },
 
-          favoriteCarBrands: [],
-          searchHistory: [],
-          viewedCars: [],
-          inquiredCars: [],
-
-          profileVisibility: 'dealers',
-          showPhone: false,
-          showEmail: false
+          isActive: true,
+          isBanned: false,
         };
+
+        const completeProfile: BulgarianUser = resolvedProfileType === 'dealer'
+          ? { ...baseProfile, profileType: 'dealer', planTier: 'dealer' }
+          : resolvedProfileType === 'company'
+            ? { ...baseProfile, profileType: 'company', planTier: 'company' }
+            : { ...baseProfile, profileType: 'private', planTier: resolvedPlanTier };
 
         // 3. Update counter and user doc in same transaction
         transaction.set(counterRef, { count: numericId, updatedAt: serverTimestamp() }, { merge: true });
@@ -213,7 +243,7 @@ export class BulgarianProfileService {
   /**
    * Update user profile with enhanced validation
    */
-  static async updateUserProfile(userId: string, updates: Partial<BulgarianUserProfile>): Promise<void> {
+  static async updateUserProfile(userId: string, updates: Partial<BulgarianUser>): Promise<void> {
     try {
       // Validate Bulgarian phone number
       if (updates.phoneNumber) {
@@ -411,7 +441,7 @@ export class BulgarianProfileService {
   /**
    * Get user profile with real-time updates
    */
-  static getUserProfileRealtime(userId: string | null | undefined, callback: (profile: BulgarianUserProfile | null) => void): () => void {
+  static getUserProfileRealtime(userId: string | null | undefined, callback: (profile: BulgarianUser | null) => void): () => void {
     // ✅ FIX: Guard against null/undefined userId BEFORE constructing query
     if (!userId) {
       serviceLogger.warn('[SERVICE] getUserProfileRealtime called with null/undefined userId - returning no-op unsubscribe');
@@ -423,7 +453,7 @@ export class BulgarianProfileService {
 
     return onSnapshot(userRef, (doc) => {
       if (doc.exists()) {
-        callback(doc.data() as BulgarianUserProfile);
+        callback(doc.data() as BulgarianUser);
       } else {
         callback(null);
       }
@@ -436,13 +466,13 @@ export class BulgarianProfileService {
   /**
    * Get user profile
    */
-  static async getUserProfile(userId: string): Promise<BulgarianUserProfile | null> {
+  static async getUserProfile(userId: string): Promise<BulgarianUser | null> {
     try {
       const userRef = doc(db, 'users', userId);
       const userDoc = await getDoc(userRef);
 
       if (userDoc.exists()) {
-        return userDoc.data() as BulgarianUserProfile;
+        return userDoc.data() as BulgarianUser;
       }
 
       return null;
@@ -533,9 +563,11 @@ export class BulgarianProfileService {
       await sendEmailVerification(auth.currentUser);
 
       // Update Firestore profile
-      await this.updateUserProfile(auth.currentUser.uid, {
+      const userRef = doc(db, 'users', auth.currentUser.uid);
+      await updateDoc(userRef, {
         email: newEmail,
-        emailVerified: false
+        'verification.email': false,
+        updatedAt: serverTimestamp()
       });
 
     } catch (error) {
