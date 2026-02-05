@@ -67,19 +67,22 @@ $configuredSecrets = @()
 $skippedSecrets = @()
 
 # Header
-Write-Host "📋 We'll configure 4 secrets for payment integration:" -ForegroundColor Yellow
-Write-Host "   1. ICARD_WEBHOOK_SECRET" -ForegroundColor White
-Write-Host "   2. ICARD_API_KEY" -ForegroundColor White
-Write-Host "   3. REVOLUT_WEBHOOK_SECRET" -ForegroundColor White
-Write-Host "   4. REVOLUT_API_KEY" -ForegroundColor White
+Write-Host "📋 نموذجان للإعداد:" -ForegroundColor Yellow
 Write-Host ""
-Write-Host "⚠️  IMPORTANT: Get these values from provider dashboards FIRST" -ForegroundColor Yellow
+Write-Host "   [1] إعداد أساسي (موصى به للبداية)" -ForegroundColor Green
+Write-Host "       ✅ ICARD_WEBHOOK_SECRET" -ForegroundColor White
+Write-Host "       ✅ REVOLUT_WEBHOOK_SECRET" -ForegroundColor White
+Write-Host "       ℹ️  كافية لاستقبال المدفوعات" -ForegroundColor DarkGray
 Write-Host ""
-$ready = Read-Host "Ready to start? (y/n)"
-if ($ready -ne 'y') {
-    Write-Host "Exiting... Run this script again when ready." -ForegroundColor Yellow
-    exit 0
-}
+Write-Host "   [2] إعداد متقدم (اختياري)" -ForegroundColor Cyan
+Write-Host "       🔹 ICARD_API_KEY" -ForegroundColor DarkGray
+Write-Host "       🔹 REVOLUT_API_KEY" -ForegroundColor DarkGray
+Write-Host "       ℹ️  للميزات المتقدمة (Refunds, Status queries)" -ForegroundColor DarkGray
+Write-Host ""
+Write-Host "⚠️  نصيحة: ابدأ بالإعداد الأساسي فقط، يمكن إضافة API Keys لاحقاً" -ForegroundColor Yellow
+Write-Host ""
+$setupMode = Read-Host "اختر: [1] أساسي فقط  [2] أساسي + متقدم  (default: 1)"
+if ($setupMode -eq "") { $setupMode = "1" }
 Write-Host ""
 
 # Secret 1: iCard Webhook Secret
@@ -98,21 +101,27 @@ $result = Set-FirebaseSecret -SecretName "ICARD_WEBHOOK_SECRET" -ProviderName "i
 if ($result) { $configuredSecrets += "ICARD_WEBHOOK_SECRET" } else { $skippedSecrets += "ICARD_WEBHOOK_SECRET" }
 Write-Host ""
 
-# Secret 2: iCard API Key
-Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-Write-Host "  2/4: iCard API Key" -ForegroundColor Cyan
-Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "Where to find:" -ForegroundColor Yellow
-Write-Host "  1. Login to iCard Merchant Portal: https://dashboard.icard.bg/" -ForegroundColor White
-Write-Host "  2. Go to: Settings → API → API Keys" -ForegroundColor White
-Write-Host "  3. Create new API key OR copy existing key" -ForegroundColor White
-Write-Host "  4. This is used for reconciliation API calls" -ForegroundColor White
-Write-Host ""
+# Secret 2: iCard API Key (OPTIONAL)
+if ($setupMode -eq "2") {
+    Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
+    Write-Host "  2/4: iCard API Key (اختياري)" -ForegroundColor Cyan
+    Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "Where to find:" -ForegroundColor Yellow
+    Write-Host "  1. Login to iCard Merchant Portal: https://dashboard.icard.bg/" -ForegroundColor White
+    Write-Host "  2. Go to: Settings → API → API Keys" -ForegroundColor White
+    Write-Host "  3. Create new API key OR copy existing key" -ForegroundColor White
+    Write-Host "  4. This is used for reconciliation API calls" -ForegroundColor White
+    Write-Host ""
 
-$result = Set-FirebaseSecret -SecretName "ICARD_API_KEY" -ProviderName "iCard" -Description "API access for reconciliation"
-if ($result) { $configuredSecrets += "ICARD_API_KEY" } else { $skippedSecrets += "ICARD_API_KEY" }
-Write-Host ""
+    $result = Set-FirebaseSecret -SecretName "ICARD_API_KEY" -ProviderName "iCard" -Description "API access for reconciliation"
+    if ($result) { $configuredSecrets += "ICARD_API_KEY" } else { $skippedSecrets += "ICARD_API_KEY" }
+    Write-Host ""
+} else {
+    Write-Host "⏩ تخطي ICARD_API_KEY (غير مطلوب للإعداد الأساسي)" -ForegroundColor DarkGray
+    Write-Host ""
+    $skippedSecrets += "ICARD_API_KEY"
+}
 
 # Secret 3: Revolut Webhook Secret
 Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
@@ -130,21 +139,27 @@ $result = Set-FirebaseSecret -SecretName "REVOLUT_WEBHOOK_SECRET" -ProviderName 
 if ($result) { $configuredSecrets += "REVOLUT_WEBHOOK_SECRET" } else { $skippedSecrets += "REVOLUT_WEBHOOK_SECRET" }
 Write-Host ""
 
-# Secret 4: Revolut API Key
-Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-Write-Host "  4/4: Revolut API Key" -ForegroundColor Cyan
-Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "Where to find:" -ForegroundColor Yellow
-Write-Host "  1. Login to Revolut Business: https://business.revolut.com/" -ForegroundColor White
-Write-Host "  2. Go to: Developer → API → Create API Key" -ForegroundColor White
-Write-Host "  3. Select scope: 'Read transactions' (for reconciliation)" -ForegroundColor White
-Write-Host "  4. Store this key securely - shown only once!" -ForegroundColor White
-Write-Host ""
+# Secret 4: Revolut API Key (OPTIONAL)
+if ($setupMode -eq "2") {
+    Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
+    Write-Host "  4/4: Revolut API Key (اختياري)" -ForegroundColor Cyan
+    Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "Where to find:" -ForegroundColor Yellow
+    Write-Host "  1. Login to Revolut Business: https://business.revolut.com/" -ForegroundColor White
+    Write-Host "  2. Go to: Developer → API → Create API Key" -ForegroundColor White
+    Write-Host "  3. Select scope: 'Read transactions' (for reconciliation)" -ForegroundColor White
+    Write-Host "  4. Store this key securely - shown only once!" -ForegroundColor White
+    Write-Host ""
 
-$result = Set-FirebaseSecret -SecretName "REVOLUT_API_KEY" -ProviderName "Revolut" -Description "API access for reconciliation"
-if ($result) { $configuredSecrets += "REVOLUT_API_KEY" } else { $skippedSecrets += "REVOLUT_API_KEY" }
-Write-Host ""
+    $result = Set-FirebaseSecret -SecretName "REVOLUT_API_KEY" -ProviderName "Revolut" -Description "API access for reconciliation"
+    if ($result) { $configuredSecrets += "REVOLUT_API_KEY" } else { $skippedSecrets += "REVOLUT_API_KEY" }
+    Write-Host ""
+} else {
+    Write-Host "⏩ تخطي REVOLUT_API_KEY (غير مطلوب للإعداد الأساسي)" -ForegroundColor DarkGray
+    Write-Host ""
+    $skippedSecrets += "REVOLUT_API_KEY"
+}
 
 # Summary
 Write-Host "==============================================================" -ForegroundColor Cyan
@@ -172,34 +187,50 @@ if ($skippedSecrets.Count -gt 0) {
 }
 
 # Next steps
-if ($configuredSecrets.Count -eq 4) {
-    Write-Host "🎉 All secrets configured! Next steps:" -ForegroundColor Green
+$requiredSecrets = @("ICARD_WEBHOOK_SECRET", "REVOLUT_WEBHOOK_SECRET")
+$hasRequiredSecrets = ($requiredSecrets | Where-Object { $configuredSecrets -contains $_ }).Count -eq 2
+
+if ($hasRequiredSecrets) {
+    Write-Host "🎉 الإعداد الأساسي مكتمل! الخطوات التالية:" -ForegroundColor Green
     Write-Host ""
-    Write-Host "1. Redeploy webhook functions to use new secrets:" -ForegroundColor Cyan
+    Write-Host "1. أعد نشر webhook functions:" -ForegroundColor Cyan
     Write-Host "   firebase deploy --only functions:icardWebhooks,functions:revolutWebhooks" -ForegroundColor White
     Write-Host ""
-    Write-Host "2. Register webhook URLs in provider dashboards:" -ForegroundColor Cyan
+    Write-Host "2. سجل Webhooks في لوحات التحكم:" -ForegroundColor Cyan
     Write-Host "   iCard:    https://europe-west1-fire-new-globul.cloudfunctions.net/icardWebhooks" -ForegroundColor White
     Write-Host "   Revolut:  https://europe-west1-fire-new-globul.cloudfunctions.net/revolutWebhooks" -ForegroundColor White
     Write-Host ""
-    Write-Host "3. Test with sandbox payments (see PAYMENT_QUICK_START.md)" -ForegroundColor Cyan
+    Write-Host "3. اختبر بدفعات Sandbox (راجع PAYMENT_SETUP_SIMPLIFIED_AR.md)" -ForegroundColor Cyan
     Write-Host ""
+    
+    if ($setupMode -eq "1") {
+        Write-Host "💡 ملاحظة: يمكنك إضافة API Keys لاحقاً عند الحاجة:" -ForegroundColor Yellow
+        Write-Host "   firebase functions:secrets:set ICARD_API_KEY" -ForegroundColor DarkGray
+        Write-Host "   firebase functions:secrets:set REVOLUT_API_KEY" -ForegroundColor DarkGray
+        Write-Host ""
+    }
 } elseif ($configuredSecrets.Count -gt 0) {
-    Write-Host "⚠️  Partial configuration complete." -ForegroundColor Yellow
-    Write-Host "   Configure remaining secrets before deploying." -ForegroundColor Yellow
+    Write-Host "⚠️  إعداد جزئي مكتمل." -ForegroundColor Yellow
+    Write-Host "   أكمل الـ Secrets المطلوبة قبل النشر:" -ForegroundColor Yellow
+    foreach ($req in $requiredSecrets) {
+        if ($configuredSecrets -notcontains $req) {
+            Write-Host "   ❌ $req" -ForegroundColor Red
+        }
+    }
     Write-Host ""
 } else {
-    Write-Host "ℹ️  No secrets were configured." -ForegroundColor Blue
-    Write-Host "   Run this script again when you have the secret values." -ForegroundColor Blue
+    Write-Host "ℹ️  لم يتم ضبط أي secrets." -ForegroundColor Blue
+    Write-Host "   شغل السكريبت مرة أخرى عندما تكون جاهزاً." -ForegroundColor Blue
     Write-Host ""
 }
 
 Write-Host "==============================================================" -ForegroundColor Cyan
-Write-Host "   📚 Documentation" -ForegroundColor Cyan
+Write-Host "   📚 الوثائق المتاحة" -ForegroundColor Cyan
 Write-Host "==============================================================" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "• Quick Start Guide:     functions\PAYMENT_QUICK_START.md" -ForegroundColor White
-Write-Host "• Full Integration:      functions\PAYMENT_INTEGRATION_GUIDE.md" -ForegroundColor White
-Write-Host "• Monitoring:            functions\POST_DEPLOYMENT_MONITORING.md" -ForegroundColor White
+Write-Host "• دليل مبسّط (بالعربي):  PAYMENT_SETUP_SIMPLIFIED_AR.md  ⭐" -ForegroundColor Green
+Write-Host "• Quick Start Guide:      PAYMENT_QUICK_START.md" -ForegroundColor White
+Write-Host "• Full Integration:       PAYMENT_INTEGRATION_GUIDE.md" -ForegroundColor White
+Write-Host "• Test Scenarios:         PAYMENT_TEST_SCENARIOS.md" -ForegroundColor White
 Write-Host ""
 Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
