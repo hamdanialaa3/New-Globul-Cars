@@ -2,7 +2,9 @@
     "name": "functions",
     "scripts": {
         "lint": "eslint --ext .js,.ts .",
-        "build": "tsc",
+        "clean": "node -e \"require('fs').rmSync('lib',{recursive:true,force:true})\"",
+        "prebuild": "npm run clean",
+        "build": "tsc && node -e \"require('fs').copyFileSync('manual-payment-expiration.js','lib/manual-payment-expiration.js')\"",
         "build:watch": "tsc --watch",
         "serve": "npm run build && firebase emulators:start --only functions",
         "shell": "npm run build && firebase functions:shell",
@@ -11,7 +13,7 @@
         "logs": "firebase functions:log"
     },
     "engines": {
-        "node": "20"
+        "node": "22"
     },
     "main": "lib/index.js",
     "dependencies": {
