@@ -1940,6 +1940,12 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   const [isSettingFeatured, setIsSettingFeatured] = useState(false);
   const [settingFeaturedIndex, setSettingFeaturedIndex] = useState<number | null>(null);
   
+  // ✅ Sync featuredImageIndex with car prop when it changes (e.g., after page reload)
+  useEffect(() => {
+    const carFeaturedIndex = (car as any).featuredImageIndex ?? 0;
+    setFeaturedImageIndex(carFeaturedIndex);
+  }, [car.id, (car as any).featuredImageIndex]);
+  
   // Lightbox state
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
