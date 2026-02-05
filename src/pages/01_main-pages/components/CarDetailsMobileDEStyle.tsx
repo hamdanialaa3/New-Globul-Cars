@@ -701,7 +701,7 @@ const ThumbnailGrid = styled.div`
   border-top: 1px solid var(--border-primary);
 `;
 
-const Thumbnail = styled.div<{ $active: boolean; $isFeatured?: boolean }>`
+const Thumbnail = styled.div<{ $active: boolean; $isFeatured?: boolean; $isSettingFeatured?: boolean }>`
   width: 100%;
   padding-top: 75%;
   position: relative;
@@ -709,11 +709,17 @@ const Thumbnail = styled.div<{ $active: boolean; $isFeatured?: boolean }>`
   overflow: hidden;
   cursor: pointer;
   border: 2px solid ${props => props.$isFeatured ? 'var(--accent-primary)' : props.$active ? 'var(--accent-primary)' : 'transparent'};
-  transition: all 0.2s;
-  box-shadow: ${props => props.$isFeatured ? '0 0 12px rgba(255, 215, 0, 0.4)' : 'none'};
+  transition: all 0.3s ease-out;
+  box-shadow: ${props => props.$isFeatured ? '0 0 16px rgba(255, 215, 0, 0.5)' : 'none'};
+  ${props => props.$isFeatured && `animation: ${pulseGold} 2s ease-out;`}
+  ${props => props.$isSettingFeatured && `
+    opacity: 0.7;
+    pointer-events: none;
+  `}
 
   &:hover {
     border-color: var(--accent-primary);
+    transform: scale(1.02);
   }
 
   .optimized-image {
@@ -726,33 +732,58 @@ const Thumbnail = styled.div<{ $active: boolean; $isFeatured?: boolean }>`
   }
 `;
 
-const SetFeaturedButton = styled.button`
+const SetFeaturedButton = styled.button<{ $isLoading?: boolean; $isSuccess?: boolean }>`
   position: absolute;
   top: 4px;
   right: 4px;
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   border: none;
-  background: rgba(0, 0, 0, 0.6);
-  color: #fff;
-  cursor: pointer;
+  background: ${props => props.$isSuccess ? 'var(--accent-primary)' : 'rgba(0, 0, 0, 0.7)'};
+  color: ${props => props.$isSuccess ? '#1a1a1a' : '#fff'};
+  cursor: ${props => props.$isLoading ? 'wait' : 'pointer'};
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
   z-index: 5;
   backdrop-filter: blur(4px);
+  opacity: ${props => props.$isLoading ? 0.8 : 1};
+  box-shadow: ${props => props.$isSuccess ? '0 2px 8px rgba(255, 215, 0, 0.5)' : '0 2px 4px rgba(0, 0, 0, 0.2)'};
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: var(--accent-primary);
     color: #1a1a1a;
-    transform: scale(1.1);
+    transform: scale(1.15);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
   }
 
   svg {
     width: 16px;
     height: 16px;
+  }
+
+  /* Loading spinner */
+  &::after {
+    content: '';
+    display: ${props => props.$isLoading ? 'block' : 'none'};
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: ${spinLoader} 0.8s linear infinite;
   }
 `;
 
@@ -760,21 +791,24 @@ const FeaturedBadge = styled.div`
   position: absolute;
   top: 4px;
   left: 4px;
-  background: var(--accent-primary);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, #ffc107 100%);
   color: #1a1a1a;
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 5px 10px;
+  border-radius: 8px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   z-index: 5;
-  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+  box-shadow: 0 3px 12px rgba(255, 215, 0, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  animation: ${checkmarkPop} 0.4s ease-out;
 
   svg {
-    width: 12px;
-    height: 12px;
+    width: 13px;
+    height: 13px;
   }
 `;
 
@@ -782,6 +816,29 @@ const pulseRed = keyframes`
   0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
   70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
   100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+`;
+
+// 🌟 Featured image selection animation
+const pulseGold = keyframes`
+  0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
+  50% { box-shadow: 0 0 0 8px rgba(255, 215, 0, 0.3); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+`;
+
+const shimmer = keyframes`
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+`;
+
+const checkmarkPop = keyframes`
+  0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+  50% { transform: scale(1.2) rotate(-45deg); opacity: 1; }
+  100% { transform: scale(1) rotate(-45deg); opacity: 1; }
+`;
+
+const spinLoader = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 `;
 
 const StatusLED = styled.div`
@@ -1874,6 +1931,8 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   const [featuredImageIndex, setFeaturedImageIndex] = useState<number>(
     (car as any).featuredImageIndex ?? 0
   );
+  const [isSettingFeatured, setIsSettingFeatured] = useState(false);
+  const [settingFeaturedIndex, setSettingFeaturedIndex] = useState<number | null>(null);
   
   // Lightbox state
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -1887,10 +1946,22 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
 
   const handleSetFeatured = async (index: number, event: React.MouseEvent) => {
     event.stopPropagation();
+    
+    // Prevent double-clicks and setting the same image
+    if (isSettingFeatured || index === featuredImageIndex) {
+      return;
+    }
+    
+    const previousIndex = featuredImageIndex;
+    
+    // Optimistic update - set immediately for instant feedback
     setFeaturedImageIndex(index);
+    setSettingFeaturedIndex(index);
 
-    // If owner, save to database
+    // If owner, save to database with full feedback
     if (isOwner && car.id) {
+      setIsSettingFeatured(true);
+      
       try {
         const { doc, updateDoc } = await import('firebase/firestore');
         const { db } = await import('../../../firebase/firebase-config');
@@ -1902,10 +1973,36 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
         
         const carRef = doc(db, collectionName, car.id);
         await updateDoc(carRef, { featuredImageIndex: index });
+        
         logger.info('Featured image updated', { carId: car.id, collection: collectionName, index });
+        
+        // Success toast
+        toast.success(
+          language === 'bg' 
+            ? `Снимка ${index + 1} е зададена като основна!` 
+            : `Image ${index + 1} set as featured!`,
+          language === 'bg' ? 'Успешно' : 'Success'
+        );
+        
       } catch (error) {
+        // Rollback on error
+        setFeaturedImageIndex(previousIndex);
         logger.error('Error updating featured image', error as Error);
+        
+        // Error toast with helpful message
+        toast.error(
+          language === 'bg' 
+            ? 'Неуспешна промяна. Моля, опитайте отново.' 
+            : 'Failed to update. Please try again.',
+          language === 'bg' ? 'Грешка' : 'Error'
+        );
+      } finally {
+        setIsSettingFeatured(false);
+        setSettingFeaturedIndex(null);
       }
+    } else {
+      // Not owner - just local update (for preview purposes)
+      setSettingFeaturedIndex(null);
     }
   };
 
@@ -2359,6 +2456,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
                       key={index}
                       $active={index === currentImageIndex}
                       $isFeatured={index === featuredImageIndex}
+                      $isSettingFeatured={settingFeaturedIndex === index}
                       onClick={() => setCurrentImageIndex(index)}
                       onDoubleClick={() => openLightbox(index)}
                       title={language === 'bg' ? 'Кликнете два пъти за пълен екран' : 'Double-click for fullscreen'}
@@ -2369,12 +2467,14 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
                           {language === 'bg' ? 'Основна' : 'Featured'}
                         </FeaturedBadge>
                       )}
-                      {isOwner && (
+                      {isOwner && index !== featuredImageIndex && (
                         <SetFeaturedButton
                           onClick={(e) => handleSetFeatured(index, e)}
                           title={language === 'bg' ? 'Задай като основна снимка' : 'Set as featured image'}
+                          $isLoading={settingFeaturedIndex === index && isSettingFeatured}
+                          disabled={isSettingFeatured}
                         >
-                          <Crown />
+                          {settingFeaturedIndex === index && isSettingFeatured ? null : <Crown />}
                         </SetFeaturedButton>
                       )}
                       <OptimizedImage

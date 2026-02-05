@@ -1,0 +1,112 @@
+{
+  "rules": {
+    // ==================== DEFAULT: DENY ALL ====================
+    ".read": false,
+    ".write": false,
+
+    // ==================== CHANNELS (Conversations) ====================
+    // Path: /channels/{channelId}
+    // Channel ID format: {buyerNumericId}_{sellerNumericId}_{carNumericId}
+    "channels": {
+      "$channelId": {
+        // Read: Only participants can read channel data
+        ".read": "auth != null && (
+          data.child('buyerNumericId').val() == root.child('users').child(auth.uid).child('numericId').val() ||
+          data.child('sellerNumericId').val() == root.child('users').child(auth.uid).child('numericId').val()
+        )",
+        // Write: Only participants can write
+        ".write": "auth != null && (
+          data.child('buyerNumericId').val() == root.child('users').child(auth.uid).child('numericId').val() ||
+          data.child('sellerNumericId').val() == root.child('users').child(auth.uid).child('numericId').val() ||
+          !data.exists()
+        )",
+        // Unread count per user
+        "unreadCount": {
+          "$userNumericId": {
+            ".read": "auth != null",
+            ".write": "auth != null"
+          }
+        }
+      }
+    },
+
+    // ==================== MESSAGES ====================
+    // Path: /messages/{channelId}/{messageId}
+    "messages": {
+      "$channelId": {
+        // Read: Only channel participants
+        ".read": "auth != null && (
+          root.child('channels').child($channelId).child('buyerNumericId').val() == root.child('users').child(auth.uid).child('numericId').val() ||
+          root.child('channels').child($channelId).child('sellerNumericId').val() == root.child('users').child(auth.uid).child('numericId').val()
+        )",
+        "$messageId": {
+          // Write: Only sender can create, participants can update status
+          ".write": "auth != null && (
+            !data.exists() && newData.child('senderFirebaseId').val() == auth.uid ||
+            data.exists() && (
+              root.child('channels').child($channelId).child('buyerNumericId').val() == root.child('users').child(auth.uid).child('numericId').val() ||
+              root.child('channels').child($channelId).child('sellerNumericId').val() == root.child('users').child(auth.uid).child('numericId').val()
+            )
+          )",
+          // Validate message structure
+          ".validate": "newData.hasChildren(['senderId', 'content', 'timestamp', 'type'])"
+        }
+      }
+    },
+
+    // ==================== USER CHANNELS INDEX ====================
+    // Path: /user_channels/{userNumericId}/{channelId}
+    // Fast lookup for user's conversations
+    "user_channels": {
+      "$userNumericId": {
+        // Read/Write: Only the user who owns this index
+        ".read": "auth != null && root.child('users').child(auth.uid).child('numericId').val() == $userNumericId",
+        ".write": "auth != null && root.child('users').child(auth.uid).child('numericId').val() == $userNumericId"
+      }
+    },
+
+    // ==================== TYPING INDICATORS ====================
+    // Path: /typing/{channelId}/{userNumericId}
+    "typing": {
+      "$channelId": {
+        // Read: Channel participants
+        ".read": "auth != null && (
+          root.child('channels').child($channelId).child('buyerNumericId').val() == root.child('users').child(auth.uid).child('numericId').val() ||
+          root.child('channels').child($channelId).child('sellerNumericId').val() == root.child('users').child(auth.uid).child('numericId').val()
+        )",
+        "$userNumericId": {
+          // Write: Only the typing user
+          ".write": "auth != null && root.child('users').child(auth.uid).child('numericId').val() == $userNumericId"
+        }
+      }
+    },
+
+    // ==================== PRESENCE ====================
+    // Path: /presence/{userNumericId}
+    "presence": {
+      "$userNumericId": {
+        // Read: Anyone authenticated (for online status display)
+        ".read": "auth != null",
+        // Write: Only the user themselves
+        ".write": "auth != null && root.child('users').child(auth.uid).child('numericId').val() == $userNumericId",
+        // Validate presence structure
+        ".validate": "newData.hasChildren(['online', 'lastSeen'])"
+      }
+    },
+
+    // ==================== SOCIAL FEED (Optional - if using RTDB for real-time feed) ====================
+    "feed": {
+      "$userId": {
+        ".read": "auth != null && auth.uid == $userId",
+        ".write": false
+      }
+    },
+
+    // ==================== ADMIN UTILITIES ====================
+    // Restricted to Cloud Functions only (via service account)
+    "_admin": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}
