@@ -192,3 +192,15 @@ export const sendWelcomeEmail = emailTriggers.sendWelcomeEmail;
 export const sendAdStatusEmail = emailTriggers.sendAdStatusEmail;
 export const sendPaymentReceiptEmail = emailTriggers.sendPaymentReceiptEmail;
 export const sendMessageNotificationEmail = emailTriggers.sendMessageNotificationEmail;
+
+// 💳 NEW: Payment Webhooks - iCard, Revolut (February 5, 2026)
+import * as icardPayments from './payment-webhooks/icard-webhooks';
+import * as revolutPayments from './payment-webhooks/revolut-webhooks';
+export const icardWebhooks = icardPayments.icardWebhooks;
+export const revolutWebhooks = revolutPayments.revolutWebhooks;
+
+// 📊 NEW: Payment Reconciliation & Monitoring (February 5, 2026)
+import * as paymentReconciliation from './services/payment-reconciliation';
+export const dailyReconciliation = paymentReconciliation.dailyReconciliation;
+export const triggerReconciliation = paymentReconciliation.triggerReconciliation;
+export const exportReconciliationReport = paymentReconciliation.exportReconciliationReport;

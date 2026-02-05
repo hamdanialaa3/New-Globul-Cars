@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.onVanSold = exports.onSuvSold = exports.onPassengerCarSold = exports.onBusDeleted = exports.onTruckDeleted = exports.onMotorcycleDeleted = exports.onVanDeleted = exports.onSuvDeleted = exports.onPassengerCarDeleted = exports.exportB2BAnalytics = exports.getB2BAnalytics = exports.exportB2BLeads = exports.cleanupExpiredDrafts = exports.manualArchiveSoldCars = exports.archiveSoldCars = exports.stripeWebhooks = exports.batchSyncAllCarsToAlgolia = exports.syncBusesToAlgolia = exports.syncTrucksToAlgolia = exports.syncMotorcyclesToAlgolia = exports.syncVansToAlgolia = exports.syncSuvsToAlgolia = exports.syncPassengerCarsToAlgolia = exports.evaluateCar = exports.prerenderSEO = exports.logSearchEvent = exports.requestIndexing = exports.syncCarsToFacebookAds = exports.syncCarsToGoogleAds = exports.manualSitemapRegeneration = exports.scheduledSitemapRegeneration = exports.sitemap = exports.cleanupDeletedImages = exports.optimizeUploadedImage = exports.updateMerchantFeedCache = exports.merchantFeedGenerator = exports.merchantFeed = exports.cleanupOldNotifications = exports.notifyFollowersOnNewCar = exports.dailyReminder = exports.onVerificationUpdate = exports.onNewOffer = exports.onNewInquiry = exports.onCarViewed = exports.onNewMessage = exports.onPriceUpdate = exports.onNewCarPosted = exports.geminiPriceSuggestion = exports.aiQuotaCheck = exports.geminiChat = void 0;
-exports.sendMessageNotificationEmail = exports.sendPaymentReceiptEmail = exports.sendAdStatusEmail = exports.sendWelcomeEmail = exports.getUserNumericId = exports.onUserCreate = exports.beforeUserCreated = exports.manualExpirePayments = exports.onPaymentVerified = exports.sendDailyPaymentSummary = exports.checkExpiredManualPayments = exports.onUserDelete = exports.cleanupExpiredOffers = exports.onOfferStatusChange = exports.onNewRealtimeMessage = exports.cleanupOrphanedData = exports.dailyOrphanedDataCleanup = exports.onDeleteOffer = exports.onDeleteProfile = exports.onDeleteCar = exports.onBusSold = exports.onTruckSold = exports.onMotorcycleSold = void 0;
+exports.exportReconciliationReport = exports.triggerReconciliation = exports.dailyReconciliation = exports.revolutWebhooks = exports.icardWebhooks = exports.sendMessageNotificationEmail = exports.sendPaymentReceiptEmail = exports.sendAdStatusEmail = exports.sendWelcomeEmail = exports.getUserNumericId = exports.onUserCreate = exports.beforeUserCreated = exports.manualExpirePayments = exports.onPaymentVerified = exports.sendDailyPaymentSummary = exports.checkExpiredManualPayments = exports.onUserDelete = exports.cleanupExpiredOffers = exports.onOfferStatusChange = exports.onNewRealtimeMessage = exports.cleanupOrphanedData = exports.dailyOrphanedDataCleanup = exports.onDeleteOffer = exports.onDeleteProfile = exports.onDeleteCar = exports.onBusSold = exports.onTruckSold = exports.onMotorcycleSold = void 0;
 const notifications = require("./notifications");
 const merchantFeedModule = require("./merchant-feed");
 const imageOptimizer = require("./image-optimizer");
@@ -165,4 +165,14 @@ exports.sendWelcomeEmail = emailTriggers.sendWelcomeEmail;
 exports.sendAdStatusEmail = emailTriggers.sendAdStatusEmail;
 exports.sendPaymentReceiptEmail = emailTriggers.sendPaymentReceiptEmail;
 exports.sendMessageNotificationEmail = emailTriggers.sendMessageNotificationEmail;
+// 💳 NEW: Payment Webhooks - iCard, Revolut (February 5, 2026)
+const icardPayments = require("./payment-webhooks/icard-webhooks");
+const revolutPayments = require("./payment-webhooks/revolut-webhooks");
+exports.icardWebhooks = icardPayments.icardWebhooks;
+exports.revolutWebhooks = revolutPayments.revolutWebhooks;
+// 📊 NEW: Payment Reconciliation & Monitoring (February 5, 2026)
+const paymentReconciliation = require("./services/payment-reconciliation");
+exports.dailyReconciliation = paymentReconciliation.dailyReconciliation;
+exports.triggerReconciliation = paymentReconciliation.triggerReconciliation;
+exports.exportReconciliationReport = paymentReconciliation.exportReconciliationReport;
 //# sourceMappingURL=index.js.map
