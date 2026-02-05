@@ -5,7 +5,11 @@
 
 name: ci (Docker - Optional)
 
-# Workflow disabled - enable if you need Docker builds
+# Workflow disabled - runs only on manual trigger
+# To re-enable automatic builds, replace workflow_dispatch with push trigger
+on:
+  workflow_dispatch:
+
 # on:
 #   push:
 #     branches:

@@ -8,9 +8,9 @@ if (!admin.apps.length) {
 }
 
 const db = admin.firestore();
-// Use functions.config() to access environment variables in production
-// Ensure you set this via: firebase functions:config:set deepseek.api_key="YOUR_KEY"
-const DEEPSEEK_API_KEY = functions.config().deepseek?.api_key || process.env.DEEPSEEK_API_KEY;
+// Use environment variables (functions.config() deprecated March 2026)
+// Set DEEPSEEK_API_KEY in functions/.env
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
 const DEEPSEEK_BASE_URL = 'https://api.deepseek.com';
 
 // Quota configuration based on user type

@@ -5,7 +5,7 @@
  * Deployment:
  * 1. cd functions
  * 2. npm install algoliasearch
- * 3. firebase functions:config:set algolia.app_id="YOUR_APP_ID" algolia.admin_key="YOUR_ADMIN_KEY"
+ * 3. Set ALGOLIA_APP_ID and ALGOLIA_ADMIN_KEY in functions/.env
  * 4. firebase deploy --only functions:syncCarToAlgolia
  * 
  * @since December 2025
@@ -21,9 +21,9 @@ if (!admin.apps.length) {
   admin.initializeApp();
 }
 
-// Algolia configuration from Firebase config
-const ALGOLIA_APP_ID = functions.config().algolia?.app_id || process.env.ALGOLIA_APP_ID;
-const ALGOLIA_ADMIN_KEY = functions.config().algolia?.admin_key || process.env.ALGOLIA_ADMIN_KEY;
+// Algolia configuration from environment variables
+const ALGOLIA_APP_ID = process.env.ALGOLIA_APP_ID || '';
+const ALGOLIA_ADMIN_KEY = process.env.ALGOLIA_ADMIN_KEY || '';
 const ALGOLIA_INDEX_NAME = 'cars_bg_production';
 
 // Initialize Algolia client (v4 API)

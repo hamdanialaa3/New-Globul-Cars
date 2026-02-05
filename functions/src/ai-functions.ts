@@ -10,43 +10,13 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 // Firebase Admin is already initialized in index.ts - no need to initialize again
 const db = admin.firestore();
 
-// Initialize Gemini - CRITICAL: Check for empty key
-// Try process.env first (for emulators/local), then functions.config() (for production)
-const getApiKey = () => {
+// Initialize Gemini - uses process.env (functions.config() deprecated March 2026)
+const getApiKey = (): string | undefined => {
   const envKey = process.env.GOOGLE_GENERATIVE_AI_KEY;
   if (envKey) {
-    console.log('[ai-functions] Using API key from environment variable');
-    console.log('[ai-functions] Key length:', envKey.length);
-    console.log('[ai-functions] Key starts with:', envKey.substring(0, 10));
-    console.log('[ai-functions] Key ends with:', envKey.substring(envKey.length - 10));
-    return envKey;
+    console.log('[ai-functions] API key loaded, length:', envKey.length);
+    return envKey.trim();
   }
-  
-  try {
-    // This will work in production after firebase functions:config:set
-    const configKey = functions.config().gemini?.key;
-    if (configKey) {
-      console.log('[ai-functions] Using API key from functions.config()');
-      console.log('[ai-functions] Key length:', configKey.length);
-      console.log('[ai-functions] Key starts with:', configKey.substring(0, 10));
-      console.log('[ai-functions] Key ends with:', configKey.substring(configKey.length - 10));
-      // Check for whitespace
-      const hasWhitespace = /\s/.test(configKey);
-      console.log('[ai-functions] Has whitespace?', hasWhitespace);
-      if (hasWhitespace) {
-        console.warn('[ai-functions] WARNING: API key contains whitespace!');
-        // Trim and clean the key
-        const cleanedKey = configKey.trim().replace(/\s/g, '');
-        console.log('[ai-functions] Cleaned key length:', cleanedKey.length);
-        return cleanedKey;
-      }
-      return configKey;
-    }
-  } catch (e) {
-    // functions.config() will throw if not configured - that's okay
-    console.error('[ai-functions] Error reading functions.config():', e);
-  }
-  
   return undefined;
 };
 

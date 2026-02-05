@@ -1,5 +1,4 @@
 import * as nodemailer from 'nodemailer';
-import * as functions from 'firebase-functions';
 
 // Simple types for email data
 interface EmailData {
@@ -17,12 +16,12 @@ export class EmailService {
     // 1. Try environment variables
     // 2. Fallback to a dummy "stream" transport for local dev if config is missing
     const smtpConfig = {
-      host: process.env.SMTP_HOST || functions.config().smtp?.host,
-      port: parseInt(process.env.SMTP_PORT || functions.config().smtp?.port || '587'),
-      secure: (process.env.SMTP_SECURE || functions.config().smtp?.secure) === 'true',
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || '587'),
+      secure: process.env.SMTP_SECURE === 'true',
       auth: {
-        user: process.env.SMTP_USER || functions.config().smtp?.user,
-        pass: process.env.SMTP_PASS || functions.config().smtp?.pass,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
       },
     };
 
@@ -43,7 +42,7 @@ export class EmailService {
   async sendEmail(email: EmailData): Promise<void> {
     try {
       const html = this.generateHtml(email.template, email.data);
-      const from = process.env.SMTP_FROM || functions.config().smtp?.from || '"Koli One" <noreply@koli.one>';
+      const from = process.env.SMTP_FROM || '"Koli One" <noreply@koli.one>';
 
       const info = await this.transporter.sendMail({
         from,
