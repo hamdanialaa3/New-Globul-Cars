@@ -20,7 +20,8 @@ import {
   updateDoc,
   arrayUnion,
   arrayRemove,
-  serverTimestamp
+  serverTimestamp,
+  getDoc
 } from 'firebase/firestore';
 import { storage, db } from '../../firebase/firebase-config';
 import { logger } from '../logger-service';
@@ -57,7 +58,8 @@ export class ProfileMediaService {
       const fileName = `profile_${timestamp}.${file.name.split('.').pop()}`;
       const storageRef = ref(storage, `users/${uid}/profile/${fileName}`);
 
-      await uploadBytes(storageRef, optimizedFile);
+      const metadata = { customMetadata: { ownerId: uid, type: 'profile', uploadedAt: new Date().toISOString() } };
+        await uploadBytes(storageRef, optimizedFile, metadata);
       const downloadURL = await getDownloadURL(storageRef);
 
       // Update user document
@@ -91,7 +93,8 @@ export class ProfileMediaService {
       const fileName = `cover_${timestamp}.${file.name.split('.').pop()}`;
       const storageRef = ref(storage, `users/${uid}/cover/${fileName}`);
 
-      await uploadBytes(storageRef, optimizedFile);
+      const metadata = { customMetadata: { ownerId: uid, type: 'profile', uploadedAt: new Date().toISOString() } };
+        await uploadBytes(storageRef, optimizedFile, metadata);
       const downloadURL = await getDownloadURL(storageRef);
 
       // Update user document
@@ -129,7 +132,8 @@ export class ProfileMediaService {
       const fileName = `gallery_${timestamp}.${file.name.split('.').pop()}`;
       const storageRef = ref(storage, `users/${uid}/gallery/${fileName}`);
 
-      await uploadBytes(storageRef, optimizedFile);
+      const metadata = { customMetadata: { ownerId: uid, type: 'profile', uploadedAt: new Date().toISOString() } };
+        await uploadBytes(storageRef, optimizedFile, metadata);
       const downloadURL = await getDownloadURL(storageRef);
 
       // Update based on profile type

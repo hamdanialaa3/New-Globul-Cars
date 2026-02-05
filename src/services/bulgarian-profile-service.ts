@@ -117,9 +117,9 @@ export class BulgarianProfileService {
    */
   static async createCompleteProfile(
     userId: string,
-    profileData: Partial<BulgarianUserProfile>,
+    profileData: Partial<BulgarianUser>,
     dealerData?: DealerProfile
-  ): Promise<BulgarianUserProfile> {
+  ): Promise<BulgarianUser> {
     const { runTransaction, doc, serverTimestamp } = await import('firebase/firestore');
 
     try {
@@ -136,7 +136,7 @@ export class BulgarianProfileService {
 
         // 2. Prepare Profile Data
         const now = new Date();
-        const completeProfile: BulgarianUserProfile = {
+        const completeProfile: BulgarianUser = {
           uid: userId,
           numericId, // ✨ Assigned atomically
           email: profileData.email || null,
@@ -213,7 +213,7 @@ export class BulgarianProfileService {
   /**
    * Update user profile with enhanced validation
    */
-  static async updateUserProfile(userId: string, updates: Partial<BulgarianUserProfile>): Promise<void> {
+  static async updateUserProfile(userId: string, updates: Partial<BulgarianUser>): Promise<void> {
     try {
       // Validate Bulgarian phone number
       if (updates.phoneNumber) {
@@ -411,7 +411,7 @@ export class BulgarianProfileService {
   /**
    * Get user profile with real-time updates
    */
-  static getUserProfileRealtime(userId: string | null | undefined, callback: (profile: BulgarianUserProfile | null) => void): () => void {
+  static getUserProfileRealtime(userId: string | null | undefined, callback: (profile: BulgarianUser | null) => void): () => void {
     // ✅ FIX: Guard against null/undefined userId BEFORE constructing query
     if (!userId) {
       serviceLogger.warn('[SERVICE] getUserProfileRealtime called with null/undefined userId - returning no-op unsubscribe');
@@ -423,7 +423,7 @@ export class BulgarianProfileService {
 
     return onSnapshot(userRef, (doc) => {
       if (doc.exists()) {
-        callback(doc.data() as BulgarianUserProfile);
+        callback(doc.data() as BulgarianUser);
       } else {
         callback(null);
       }
@@ -436,13 +436,13 @@ export class BulgarianProfileService {
   /**
    * Get user profile
    */
-  static async getUserProfile(userId: string): Promise<BulgarianUserProfile | null> {
+  static async getUserProfile(userId: string): Promise<BulgarianUser | null> {
     try {
       const userRef = doc(db, 'users', userId);
       const userDoc = await getDoc(userRef);
 
       if (userDoc.exists()) {
-        return userDoc.data() as BulgarianUserProfile;
+        return userDoc.data() as BulgarianUser;
       }
 
       return null;

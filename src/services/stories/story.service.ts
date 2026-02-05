@@ -47,7 +47,8 @@ export const storyService = {
         const fileName = `${userId}_${timestamp}.${file.name.split('.').pop()}`;
         const storageRef = ref(storage, `stories/${userId}/${fileName}`);
 
-        await uploadBytes(storageRef, file);
+        const metadata = { customMetadata: { ownerId: userId, type: 'story', uploadedAt: new Date().toISOString() } };
+        await uploadBytes(storageRef, file, metadata);
         return await getDownloadURL(storageRef);
     },
 

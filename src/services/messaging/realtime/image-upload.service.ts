@@ -10,7 +10,7 @@
  */
 
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { logger } from '@/services/logger-service';
+import { logger } from '../../logger-service';
 
 /**
  * Image Upload Result
@@ -129,7 +129,8 @@ class ImageUploadService {
 
       // Upload full image
       logger.debug('[ImageUpload] Uploading image', { fileName, size: file.size });
-      const snapshot = await uploadBytes(storageRef, file);
+        const metadata = { customMetadata: { ownerId: userId, uploadedAt: new Date().toISOString() } };
+        const snapshot = await uploadBytes(storageRef, file, metadata);
       const url = await getDownloadURL(snapshot.ref);
 
       logger.info('[ImageUpload] Image uploaded successfully', { fileName, url });

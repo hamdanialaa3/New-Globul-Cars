@@ -2,7 +2,7 @@
 // Split from sellWorkflowService.ts to comply with 300-line limit
 
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { storage } from '../firebase/firebase-config';
+import { storage, auth } from '../firebase/firebase-config';
 import { logger } from './logger-service';
 import { rateLimiter, RATE_LIMIT_CONFIGS } from './rate-limiting/rateLimiter.service';
 import { WorkflowImageUpload } from './sell-workflow-types';
@@ -51,7 +51,8 @@ export class SellWorkflowImages {
       const storageRef = ref(storage, `workflow-images/${userId}/${filename}`);
 
       // Upload file
-      const snapshot = await uploadBytes(storageRef, file);
+      const metadata = { customMetadata: { ownerId: auth.currentUser?.uid || 'unknown', uploadedAt: new Date().toISOString() } };
+      const snapshot = await uploadBytes(storageRef, file, metadata);
       const downloadURL = await getDownloadURL(snapshot.ref);
 
       logger.info('Image uploaded successfully', {

@@ -114,7 +114,8 @@ class DealershipService {
       const storageRef = ref(storage, `dealerships/${userId}/documents/${filename}`);
       
       // Upload file
-      await uploadBytes(storageRef, file);
+      const metadata = { customMetadata: { ownerId: userId, type: 'dealership-logo', uploadedAt: new Date().toISOString() } };
+      await uploadBytes(storageRef, file, metadata);
       const url = await getDownloadURL(storageRef);
       
       // Create document record
@@ -197,7 +198,8 @@ class DealershipService {
       const filename = `${userId}_${mediaType}_${timestamp}_${file.name}`;
       const storageRef = ref(storage, `dealerships/${userId}/media/${filename}`);
       
-      await uploadBytes(storageRef, file);
+      const metadata = { customMetadata: { ownerId: userId, type: 'dealership-logo', uploadedAt: new Date().toISOString() } };
+      await uploadBytes(storageRef, file, metadata);
       const url = await getDownloadURL(storageRef);
       
       const newMedia: DealershipMedia = {
