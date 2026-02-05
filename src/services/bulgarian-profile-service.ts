@@ -33,7 +33,7 @@ import { auth, db, storage } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-service';
 
 // ✅ NEW: Import from canonical types file
-import type { BulgarianUser, DealerProfile as DealerUserProfile } from '../types/user/bulgarian-user.types';
+import type { BulgarianUser } from '../types/user/bulgarian-user.types';
 import type { DealershipInfo } from '../types/dealership/dealership.types';
 
 /**
@@ -480,9 +480,8 @@ export class BulgarianProfileService {
       );
 
       const activityDocs = await getDocs(activityQuery);
-      activityDocs.forEach(async (doc) => {
-        await deleteDoc(doc.ref);
-      });
+      const deletionPromises = activityDocs.docs.map(doc => deleteDoc(doc.ref));
+      await Promise.all(deletionPromises);
 
       // Delete profile picture if exists
       try {
