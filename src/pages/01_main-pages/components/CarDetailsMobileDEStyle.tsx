@@ -734,7 +734,11 @@ const Thumbnail = styled.div<{ $active: boolean; $isFeatured?: boolean; $isSetti
   border: 2px solid ${props => props.$isFeatured ? 'var(--accent-primary)' : props.$active ? 'var(--accent-primary)' : 'transparent'};
   transition: all 0.3s ease-out;
   box-shadow: ${props => props.$isFeatured ? '0 0 16px rgba(255, 215, 0, 0.5)' : 'none'};
-  ${props => props.$isFeatured && css`animation: ${pulseGold} 2s ease-out;`}
+  
+  ${props => props.$isFeatured && css`
+    animation: ${pulseGold} 2s ease-out;
+  `}
+  
   ${props => props.$isSettingFeatured && css`
     opacity: 0.7;
     pointer-events: none;
@@ -797,17 +801,19 @@ const SetFeaturedButton = styled.button<{ $isLoading?: boolean; $isSuccess?: boo
   }
 
   /* Loading spinner */
-  &::after {
-    content: '';
-    display: ${props => props.$isLoading ? 'block' : 'none'};
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    border: 2px solid transparent;
-    border-top-color: currentColor;
-    border-radius: 50%;
-    animation: ${spinLoader} 0.8s linear infinite;
-  }
+  ${props => props.$isLoading && css`
+    &::after {
+      content: '';
+      display: block;
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border: 2px solid transparent;
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: ${spinLoader} 0.8s linear infinite;
+    }
+  `}
 `;
 
 const FeaturedBadge = styled.div`
@@ -827,7 +833,7 @@ const FeaturedBadge = styled.div`
   box-shadow: 0 3px 12px rgba(255, 215, 0, 0.5);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  animation: ${checkmarkPop} 0.4s ease-out;
+  ${css`animation: ${checkmarkPop} 0.4s ease-out;`}
 
   svg {
     width: 13px;
@@ -847,7 +853,7 @@ const StatusLED = styled.div`
   border-radius: 50%;
   background: #ef4444;
   box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
-  animation: ${pulseRed} 2s infinite;
+  ${css`animation: ${pulseRed} 2s infinite;`}
   display: inline-block;
   margin-left: 10px;
   flex-shrink: 0;
