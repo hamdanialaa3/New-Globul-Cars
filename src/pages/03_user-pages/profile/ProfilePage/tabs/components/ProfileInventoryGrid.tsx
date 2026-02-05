@@ -47,7 +47,7 @@ export const ProfileInventoryGrid: React.FC<ProfileInventoryGridProps> = ({
       fuelType: car.fuelType || car.fuel,
       transmission: car.transmission || car.gearbox,
       images: car.images || (car.mainImage ? [car.mainImage] : []),
-      mainImage: car.mainImage || car.images?.[0],
+      mainImage: car.mainImage || car.images?.[car.featuredImageIndex || 0] || car.images?.[0],
       location: car.location || (car.locationData?.cityName ? { city: car.locationData?.cityName } : undefined),
       condition: car.condition || 'used',
       isFeatured: car.isFeatured || false,

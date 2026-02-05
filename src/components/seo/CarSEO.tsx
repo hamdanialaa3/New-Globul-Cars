@@ -71,8 +71,8 @@ export const CarSEO: React.FC<CarSEOProps> = ({ car, seller }) => {
     ? car.description.slice(0, 155) + (car.description.length > 155 ? '...' : '')
     : `${car.year} ${car.make} ${car.model} на ${car.price}€. ${car.mileage ? `${car.mileage}км, ` : ''}${car.fuelType || ''} ${car.transmission || ''}. Проверени обяви на Koli One.`;
 
-  // Primary image with fallback
-  const primaryImage = car.images?.[0] || `${baseUrl}/default-car.jpg`;
+  // Primary image with fallback - use featuredImageIndex if available
+  const primaryImage = car.images?.[(car as any).featuredImageIndex || 0] || car.images?.[0] || `${baseUrl}/default-car.jpg`;
   const fullImageUrl = primaryImage.startsWith('http') ? primaryImage : `${baseUrl}${primaryImage}`;
 
   // Keywords for SEO

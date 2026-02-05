@@ -69,7 +69,7 @@ export const CarsGridSection: React.FC<CarsGridSectionProps> = ({
                 {cars.map((car) => (
                     <S.CarCard key={car.id} onClick={() => handleCarClick(car.numericId)}>
                         <S.CarImage
-                            src={car.images?.[0] || '/images/default-car.jpg'}
+                            src={car.images?.[(car as any).featuredImageIndex || 0] || car.images?.[0] || '/images/default-car.jpg'}
                             alt={`${car.make} ${car.model}`}
                             onError={(e) => {
                                 const img = e.currentTarget;
