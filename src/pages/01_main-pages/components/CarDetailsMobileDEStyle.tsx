@@ -692,6 +692,29 @@ const ImageCounter = styled.div`
   backdrop-filter: blur(8px);
 `;
 
+// 🌟 Featured image selection animations (MUST be defined before styled components that use them)
+const pulseGold = keyframes`
+  0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
+  50% { box-shadow: 0 0 0 8px rgba(255, 215, 0, 0.3); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+`;
+
+const shimmer = keyframes`
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+`;
+
+const checkmarkPop = keyframes`
+  0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+  50% { transform: scale(1.2) rotate(-45deg); opacity: 1; }
+  100% { transform: scale(1) rotate(-45deg); opacity: 1; }
+`;
+
+const spinLoader = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
 const ThumbnailGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -816,29 +839,6 @@ const pulseRed = keyframes`
   0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
   70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
   100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-`;
-
-// 🌟 Featured image selection animation
-const pulseGold = keyframes`
-  0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
-  50% { box-shadow: 0 0 0 8px rgba(255, 215, 0, 0.3); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
-`;
-
-const shimmer = keyframes`
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-`;
-
-const checkmarkPop = keyframes`
-  0% { transform: scale(0) rotate(-45deg); opacity: 0; }
-  50% { transform: scale(1.2) rotate(-45deg); opacity: 1; }
-  100% { transform: scale(1) rotate(-45deg); opacity: 1; }
-`;
-
-const spinLoader = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
 `;
 
 const StatusLED = styled.div`
