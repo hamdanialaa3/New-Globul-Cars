@@ -214,7 +214,7 @@ export class PointsLevelsService {
         activityType,
         points,
         description: description || this.getActivityDescription(activityType),
-        createdAt: new Date() // Changed from serverTimestamp()
+        createdAt: Timestamp.now()
       };
 
       // Update points
