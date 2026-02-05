@@ -35,6 +35,32 @@ import { db, auth } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-service';
 import { BulgarianProfileService } from './bulgarian-profile-service';
 
+/**
+ * ✅ CRITICAL: Remove undefined fields from object (recursive)
+ * Firestore does not accept undefined values - they must be removed
+ */
+function removeUndefinedFields(obj: any): any {
+  if (obj === null || obj === undefined) {
+    return null;
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(item => removeUndefinedFields(item)).filter(item => item !== undefined);
+  }
+  if (typeof obj === 'object' && !(obj instanceof Date) && !(obj instanceof Timestamp)) {
+    const cleaned: any = {};
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const value = obj[key];
+        if (value !== undefined) {
+          cleaned[key] = removeUndefinedFields(value);
+        }
+      }
+    }
+    return cleaned;
+  }
+  return obj;
+}
+
 export interface NumericCarData {
   id: string;
   sellerId: string;
@@ -155,8 +181,11 @@ class NumericCarSystemService {
           updatedAt: serverTimestamp()
         };
 
+        // ✅ CRITICAL FIX: Remove undefined fields before saving to Firestore
+        const cleanedCarData = removeUndefinedFields(fullCarData);
+
         // 4️⃣ Execute operations in transaction
-        transaction.set(carRef, fullCarData);
+        transaction.set(carRef, cleanedCarData);
         transaction.update(userRef, {
           'stats.activeListings': increment(1),
           'stats.totalListings': increment(1),
