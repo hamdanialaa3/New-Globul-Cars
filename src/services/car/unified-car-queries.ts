@@ -47,6 +47,9 @@ export function mapDocToCar(doc: DocumentSnapshot): UnifiedCar {
     carNumericId: data.carNumericId ? Number(data.carNumericId) : (data.numericId ? Number(data.numericId) : undefined),
     numericId: data.numericId ? Number(data.numericId) : (data.carNumericId ? Number(data.carNumericId) : undefined),
 
+    // ✅ FIX: Ensure featuredImageIndex is passed through (default to 0 = first image)
+    featuredImageIndex: typeof data.featuredImageIndex === 'number' ? data.featuredImageIndex : 0,
+
     createdAt: data?.createdAt?.toDate ? data.createdAt.toDate() : (data?.createdAt instanceof Date ? data.createdAt : new Date()),
     updatedAt: data?.updatedAt?.toDate ? data.updatedAt.toDate() : (data?.updatedAt instanceof Date ? data.updatedAt : new Date())
   } as UnifiedCar;

@@ -16,6 +16,7 @@ export interface UnifiedCar {
   power?: number;
   images?: string[];
   mainImage?: string;
+  featuredImageIndex?: number; // Index of the featured/main image in images array
   status: 'active' | 'sold' | 'draft' | 'expired' | 'deleted';
   isActive: boolean;
   isSold: boolean;
