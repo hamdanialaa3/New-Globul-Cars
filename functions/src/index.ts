@@ -1,5 +1,5 @@
 import * as notifications from './notifications';
-import * as merchantFeed from './merchant-feed';
+import * as merchantFeedModule from './merchant-feed';
 import * as imageOptimizer from './image-optimizer';
 import * as sitemapFunc from './sitemap';
 import * as googleAdsSync from './google-ads-sync';
@@ -28,8 +28,10 @@ export const notifyFollowersOnNewCar = newCarNotifications.notifyFollowersOnNewC
 export const cleanupOldNotifications = newCarNotifications.cleanupOldNotifications;
 
 // Google Merchant Center Feed (for Google Shopping)
-export const merchantFeedGenerator = merchantFeed.merchantFeed;
-export const updateMerchantFeedCache = merchantFeed.updateMerchantFeedCache;
+// Expose expected function name for hosting rewrite
+export const merchantFeed = merchantFeedModule.merchantFeed;
+export const merchantFeedGenerator = merchantFeedModule.merchantFeed;
+export const updateMerchantFeedCache = merchantFeedModule.updateMerchantFeedCache;
 
 // Image Optimization (automatic WebP conversion & responsive sizes)
 export const optimizeUploadedImage = imageOptimizer.optimizeImage;
