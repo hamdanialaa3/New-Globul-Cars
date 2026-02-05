@@ -17,6 +17,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
+      - name: Verify package-lock.json exists
+        run: |
+          echo "Verifying package-lock.json..."
+          if [ -f "functions/package-lock.json" ]; then
+            echo "✅ Found: functions/package-lock.json"
+          else
+            echo "❌ NOT FOUND: functions/package-lock.json"
+            exit 1
+          fi
+      
       - name: Clean old outputs
         run: |
           rm -rf lib dist || true
@@ -26,7 +36,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: './functions/package-lock.json'
+          cache-dependency-path: 'functions/package-lock.json'
+        continue-on-error: true
       
       - name: Install dependencies
         run: npm ci
