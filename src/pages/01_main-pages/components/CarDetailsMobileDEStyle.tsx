@@ -15,7 +15,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import './CarDetailsTheme.css'; // Import theme CSS
 import { useToast } from '../../../components/Toast';
 import OptimizedImage from '../../../components/OptimizedImage';
@@ -734,8 +734,8 @@ const Thumbnail = styled.div<{ $active: boolean; $isFeatured?: boolean; $isSetti
   border: 2px solid ${props => props.$isFeatured ? 'var(--accent-primary)' : props.$active ? 'var(--accent-primary)' : 'transparent'};
   transition: all 0.3s ease-out;
   box-shadow: ${props => props.$isFeatured ? '0 0 16px rgba(255, 215, 0, 0.5)' : 'none'};
-  ${props => props.$isFeatured && `animation: ${pulseGold} 2s ease-out;`}
-  ${props => props.$isSettingFeatured && `
+  ${props => props.$isFeatured && css`animation: ${pulseGold} 2s ease-out;`}
+  ${props => props.$isSettingFeatured && css`
     opacity: 0.7;
     pointer-events: none;
   `}
