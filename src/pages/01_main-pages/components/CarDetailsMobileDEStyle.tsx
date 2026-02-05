@@ -453,12 +453,16 @@ const LightboxImageContainer = styled.div<{ $zoom: number; $panX: number; $panY:
   align-items: center;
   justify-content: center;
   width: 100%;
+  height: 100%;
+  min-height: 50vh;
   overflow: hidden;
   cursor: ${props => props.$zoom > 1 ? (props.$isDragging ? 'grabbing' : 'grab') : 'zoom-in'};
   
   img {
     max-width: 90vw;
     max-height: 80vh;
+    width: auto;
+    height: auto;
     object-fit: contain;
     transform: scale(${props => props.$zoom}) translate(${props => props.$panX / props.$zoom}px, ${props => props.$panY / props.$zoom}px);
     transition: ${props => props.$isDragging ? 'none' : 'transform 0.2s ease'};
@@ -1986,15 +1990,32 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
         const carRef = doc(db, collectionName, car.id);
         await updateDoc(carRef, { featuredImageIndex: index });
         
-        logger.info('Featured image updated', { carId: car.id, collection: collectionName, index });
+        // ✅ Verify the save by reading back the data
+        const { getDoc } = await import('firebase/firestore');
+        const verifySnap = await getDoc(carRef);
+        const verifiedIndex = verifySnap.data()?.featuredImageIndex;
         
-        // Success toast
-        toast.success(
-          language === 'bg' 
-            ? `Снимка ${index + 1} е зададена като основна!` 
-            : `Image ${index + 1} set as featured!`,
-          language === 'bg' ? 'Успешно' : 'Success'
-        );
+        if (verifiedIndex === index) {
+          logger.info('Featured image updated and verified', { carId: car.id, collection: collectionName, index });
+          
+          // Success toast
+          toast.success(
+            language === 'bg' 
+              ? `Снимка ${index + 1} е зададена като основна!` 
+              : `Image ${index + 1} set as featured!`,
+            language === 'bg' ? 'Успешно' : 'Success'
+          );
+        } else {
+          // Save didn't persist - rollback
+          setFeaturedImageIndex(previousIndex);
+          logger.error('Featured image save verification failed', null, { carId: car.id, expected: index, actual: verifiedIndex });
+          toast.error(
+            language === 'bg' 
+              ? 'Неуспешна промяна. Моля, опитайте отново.' 
+              : 'Failed to save. Please try again.',
+            language === 'bg' ? 'Грешка' : 'Error'
+          );
+        }
         
       } catch (error) {
         // Rollback on error
@@ -3078,6 +3099,15 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
                 : URL.createObjectURL(images[lightboxIndex] as File)}
               alt={`${car.make} ${car.model} - ${lightboxIndex + 1}`}
               draggable={false}
+              onError={(e) => {
+                logger.error('Lightbox image failed to load', null, { 
+                  index: lightboxIndex, 
+                  src: (e.target as HTMLImageElement).src 
+                });
+                // Try showing a placeholder
+                (e.target as HTMLImageElement).src = '/images/placeholder.png';
+              }}
+              style={{ display: 'block', minWidth: '200px', minHeight: '200px' }}
             />
           </LightboxImageContainer>
 
