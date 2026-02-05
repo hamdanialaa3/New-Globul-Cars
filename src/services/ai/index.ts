@@ -1,7 +1,52 @@
 // AI Services Index
 // فهرس خدمات الذكاء الاصطناعي
 
+// ============================================
+// NEW: AI Pipeline System (Feb 2026)
+// نظام خط الأنابيب الذكي - إصلاح جذري
+// ============================================
+export { 
+  runAdGenerationPipeline, 
+  validateExistingOutput,
+  getPipelineHealth 
+} from './ai-pipeline.service';
+
+export { 
+  validateAdOutput, 
+  validateAndFix, 
+  isValidAdOutput 
+} from './validators/ad-schema.validator';
+
+export { 
+  preCheckAllMedia, 
+  checkMedia, 
+  hasValidMedia, 
+  filterValidMedia 
+} from './media-precheck.service';
+
+export { 
+  withSmartRetry, 
+  retry, 
+  classifyError, 
+  isRetryableError, 
+  shouldEscalate,
+  createCircuitBreaker 
+} from './smart-retry.service';
+
+export { 
+  buildCompletePrompt, 
+  buildAdGenerationPrompt, 
+  SYSTEM_PROMPTS,
+  REFERENCE_DOCS,
+  estimateTokens,
+  validatePromptSize 
+} from './prompt-templates.service';
+
+export { aiMetrics, printMetricsReport } from './ai-metrics.service';
+
+// ============================================
 // Core Services (Existing)
+// ============================================
 export { geminiVisionService } from './gemini-vision.service';
 export { geminiChatService } from './gemini-chat.service';
 export { aiQuotaService } from './ai-quota.service';
