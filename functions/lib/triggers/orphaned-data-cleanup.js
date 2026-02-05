@@ -10,7 +10,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cleanupOrphanedData = exports.dailyOrphanedDataCleanup = exports.onDeleteOffer = exports.onDeleteProfile = exports.onDeleteCar = void 0;
 const admin = require("firebase-admin");
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const logger = require("firebase-functions/logger");
 // Initialize admin if not already initialized
 if (!admin.apps.length) {

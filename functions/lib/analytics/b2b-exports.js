@@ -10,7 +10,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.exportB2BAnalytics = exports.getB2BAnalytics = exports.exportB2BLeads = void 0;
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 // Use firebase-functions built-in logger
 const logger = functions.logger;

@@ -13,7 +13,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateMerchantFeedCache = exports.merchantFeed = void 0;
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 const logger = functions.logger;
 // Initialize Firebase Admin if not already initialized

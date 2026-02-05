@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.requestIndexing = exports.indexingService = exports.GoogleIndexingService = void 0;
 // functions/src/seo/indexing-service.ts
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const googleapis_1 = require("googleapis");
 const logger = functions.logger;
 // Ensure you have this file deployed or use environment variables for credentials

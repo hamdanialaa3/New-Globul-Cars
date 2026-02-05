@@ -1,8 +1,7 @@
 "use strict";
-var _a, _b, _c, _d;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.stripeWebhooks = void 0;
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 const stripe_1 = require("stripe");
 const logger = require("firebase-functions/logger");
@@ -15,8 +14,6 @@ const db = admin.firestore();
 const stripeKey = process.env.STRIPE_SECRET_KEY ||
     process.env.STRIPE_SECRET ||
     process.env.STRIPE_API_KEY ||
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ((_d = (_c = (_b = (_a = functions).config) === null || _b === void 0 ? void 0 : _b.call(_a)) === null || _c === void 0 ? void 0 : _c.stripe) === null || _d === void 0 ? void 0 : _d.secret) ||
     "sk_test_nonprod";
 // Use package default apiVersion to avoid invalid override issues
 const stripe = new stripe_1.default(stripeKey);
@@ -29,12 +26,8 @@ const stripe = new stripe_1.default(stripeKey);
 exports.stripeWebhooks = functions
     .region("europe-west1")
     .https.onRequest(async (req, res) => {
-    var _a, _b, _c, _d;
     const sig = req.headers["stripe-signature"];
-    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET ||
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ((_d = (_c = (_b = (_a = functions).config) === null || _b === void 0 ? void 0 : _b.call(_a)) === null || _c === void 0 ? void 0 : _c.stripe) === null || _d === void 0 ? void 0 : _d.webhook) ||
-        "";
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
     if (!sig || !webhookSecret) {
         logger.error("Missing Stripe signature or webhook secret");
         res.status(400).send("Missing signature or secret");

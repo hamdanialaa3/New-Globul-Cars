@@ -18,7 +18,7 @@
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.onCarSold = exports.onCarCreatedIndexing = exports.getSearchPerformanceDashboard = exports.requestIndexing = exports.SearchConsoleService = void 0;
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 const googleapis_1 = require("googleapis");
 // Initialize

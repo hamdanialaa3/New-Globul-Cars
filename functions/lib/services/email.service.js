@@ -2,20 +2,18 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.emailService = exports.EmailService = void 0;
 const nodemailer = require("nodemailer");
-const functions = require("firebase-functions");
 class EmailService {
     constructor() {
-        var _a, _b, _c, _d, _e;
         // Determine transport configuration
         // 1. Try environment variables
         // 2. Fallback to a dummy "stream" transport for local dev if config is missing
         const smtpConfig = {
-            host: process.env.SMTP_HOST || ((_a = functions.config().smtp) === null || _a === void 0 ? void 0 : _a.host),
-            port: parseInt(process.env.SMTP_PORT || ((_b = functions.config().smtp) === null || _b === void 0 ? void 0 : _b.port) || '587'),
-            secure: (process.env.SMTP_SECURE || ((_c = functions.config().smtp) === null || _c === void 0 ? void 0 : _c.secure)) === 'true',
+            host: process.env.SMTP_HOST,
+            port: parseInt(process.env.SMTP_PORT || '587'),
+            secure: process.env.SMTP_SECURE === 'true',
             auth: {
-                user: process.env.SMTP_USER || ((_d = functions.config().smtp) === null || _d === void 0 ? void 0 : _d.user),
-                pass: process.env.SMTP_PASS || ((_e = functions.config().smtp) === null || _e === void 0 ? void 0 : _e.pass),
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_PASS,
             },
         };
         if (!smtpConfig.host || !smtpConfig.auth.user) {
@@ -33,10 +31,9 @@ class EmailService {
      * Send an email using a predefined template
      */
     async sendEmail(email) {
-        var _a;
         try {
             const html = this.generateHtml(email.template, email.data);
-            const from = process.env.SMTP_FROM || ((_a = functions.config().smtp) === null || _a === void 0 ? void 0 : _a.from) || '"Koli One" <noreply@koli.one>';
+            const from = process.env.SMTP_FROM || '"Koli One" <noreply@koli.one>';
             const info = await this.transporter.sendMail({
                 from,
                 to: email.to,

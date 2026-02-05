@@ -1,4 +1,4 @@
-import * as functions from "firebase-functions";
+import * as functions from "firebase-functions/v1";
 import * as admin from "firebase-admin";
 import Stripe from "stripe";
 import * as logger from "firebase-functions/logger";
@@ -14,8 +14,6 @@ const stripeKey =
     process.env.STRIPE_SECRET_KEY ||
     process.env.STRIPE_SECRET ||
     process.env.STRIPE_API_KEY ||
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ((functions as any).config?.()?.stripe?.secret) ||
     "sk_test_nonprod";
 
 // Use package default apiVersion to avoid invalid override issues
@@ -32,10 +30,7 @@ export const stripeWebhooks = functions
     .https.onRequest(async (req, res) => {
     const sig = req.headers["stripe-signature"];
     const webhookSecret =
-      process.env.STRIPE_WEBHOOK_SECRET ||
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ((functions as any).config?.()?.stripe?.webhook) ||
-      "";
+      process.env.STRIPE_WEBHOOK_SECRET || "";
 
     if (!sig || !webhookSecret) {
         logger.error("Missing Stripe signature or webhook secret");

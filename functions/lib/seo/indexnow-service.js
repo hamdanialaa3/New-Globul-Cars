@@ -15,7 +15,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.submitToIndexNow = exports.onCarCreated = exports.IndexNowService = void 0;
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 // Note: Using native fetch (Node 18+) instead of node-fetch
 // Initialize if needed

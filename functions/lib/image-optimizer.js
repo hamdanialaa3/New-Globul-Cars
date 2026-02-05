@@ -15,7 +15,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getResponsiveImageUrl = exports.cleanupOptimizedImages = exports.optimizeImage = void 0;
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const logger = require("firebase-functions/logger");
 const admin = require("firebase-admin");
 const sharp = require("sharp");

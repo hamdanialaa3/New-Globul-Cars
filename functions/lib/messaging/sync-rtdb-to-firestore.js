@@ -11,7 +11,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cleanOldNotifications = exports.syncReadStatusToFirestore = exports.sendMessageNotification = exports.syncMessageToFirestore = void 0;
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 // Initialize if not already initialized
 if (!admin.apps.length) {

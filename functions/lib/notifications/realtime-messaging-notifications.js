@@ -15,7 +15,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cleanupExpiredOffers = exports.onOfferStatusChange = exports.onNewRealtimeMessage = void 0;
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 // Ensure admin is initialized
 if (!admin.apps.length) {

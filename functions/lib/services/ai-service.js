@@ -4,7 +4,7 @@ exports.AIService = void 0;
 // functions/src/services/ai-service.ts
 const vertexai_1 = require("@google-cloud/vertexai");
 const axios_1 = require("axios");
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 class AIService {
     constructor() {
         functions.logger.info('AIService initializing');

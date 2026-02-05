@@ -20,7 +20,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUserNumericId = exports.onUserCreate = void 0;
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 500;

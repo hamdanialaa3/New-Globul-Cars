@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.logSearchEvent = exports.streamSearchEventToBigQuery = void 0;
 // functions/src/analytics/bigquery-service.ts
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const bigquery_1 = require("@google-cloud/bigquery");
 const logger = functions.logger;
 const bigquery = new bigquery_1.BigQuery(); // Uses ADC automatically

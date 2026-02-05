@@ -1,5 +1,5 @@
 // functions/src/analytics/bigquery-service.ts
-import * as functions from 'firebase-functions';
+import * as functions from 'firebase-functions/v1';
 import { BigQuery } from '@google-cloud/bigquery';
 
 const logger = functions.logger;

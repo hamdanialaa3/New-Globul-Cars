@@ -16,7 +16,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.beforeUserCreated = void 0;
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 const crypto_1 = require("crypto"); // ✅ Node.js built-in module
 // Rate limit configuration

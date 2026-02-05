@@ -9,7 +9,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendRealtimeMessageNotification = exports.sendMessageNotification = void 0;
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 // Initialize Admin SDK if not already initialized
 if (!admin.apps.length) {

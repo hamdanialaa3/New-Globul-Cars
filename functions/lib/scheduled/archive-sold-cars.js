@@ -12,7 +12,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cleanupExpiredDrafts = exports.manualArchiveSoldCars = exports.archiveSoldCars = void 0;
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 const logger = require("firebase-functions/logger");
 const db = admin.firestore();

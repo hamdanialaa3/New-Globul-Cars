@@ -7,7 +7,7 @@
  * @since January 9, 2026
  */
 
-const functions = require('firebase-functions');
+const functions = require('firebase-functions/v1');
 const admin = require('firebase-admin');
 const { logger } = require('firebase-functions/v2');
 

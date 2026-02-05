@@ -6,15 +6,14 @@
  * Deployment:
  * 1. cd functions
  * 2. npm install algoliasearch
- * 3. firebase functions:config:set algolia.app_id="YOUR_APP_ID" algolia.admin_key="YOUR_ADMIN_KEY"
+ * 3. Set ALGOLIA_APP_ID and ALGOLIA_ADMIN_KEY in functions/.env
  * 4. firebase deploy --only functions:syncCarToAlgolia
  *
  * @since December 2025
  */
-var _a, _b;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.batchSyncAllCarsToAlgolia = exports.syncBusesToAlgolia = exports.syncTrucksToAlgolia = exports.syncMotorcyclesToAlgolia = exports.syncVansToAlgolia = exports.syncSuvsToAlgolia = exports.syncPassengerCarsToAlgolia = void 0;
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 const logger = require("firebase-functions/logger");
 const algoliasearch_1 = require("algoliasearch");
@@ -22,9 +21,9 @@ const algoliasearch_1 = require("algoliasearch");
 if (!admin.apps.length) {
     admin.initializeApp();
 }
-// Algolia configuration from Firebase config
-const ALGOLIA_APP_ID = ((_a = functions.config().algolia) === null || _a === void 0 ? void 0 : _a.app_id) || process.env.ALGOLIA_APP_ID;
-const ALGOLIA_ADMIN_KEY = ((_b = functions.config().algolia) === null || _b === void 0 ? void 0 : _b.admin_key) || process.env.ALGOLIA_ADMIN_KEY;
+// Algolia configuration from environment variables
+const ALGOLIA_APP_ID = process.env.ALGOLIA_APP_ID || '';
+const ALGOLIA_ADMIN_KEY = process.env.ALGOLIA_ADMIN_KEY || '';
 const ALGOLIA_INDEX_NAME = 'cars_bg_production';
 // Initialize Algolia client (v4 API)
 const client = (0, algoliasearch_1.default)(ALGOLIA_APP_ID, ALGOLIA_ADMIN_KEY);

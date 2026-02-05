@@ -1,7 +1,7 @@
 // functions/src/services/ai-service.ts
 import { VertexAI, GenerativeModel } from '@google-cloud/vertexai';
 import axios from 'axios';
-import * as functions from 'firebase-functions';
+import * as functions from 'firebase-functions/v1';
 
 export class AIService {
     private vertexAI: VertexAI;

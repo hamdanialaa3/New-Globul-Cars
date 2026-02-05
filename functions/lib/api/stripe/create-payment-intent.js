@@ -8,7 +8,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.onPromotionPaymentSucceeded = exports.createPromotionPaymentIntent = void 0;
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 const stripe_1 = require("stripe");
 const logger = require("firebase-functions/logger");

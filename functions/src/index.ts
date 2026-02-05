@@ -65,7 +65,7 @@ export const logSearchEvent = bqAnalytics.logSearchEvent;
 export const prerenderSEO = prerender.prerender;
 
 // Hybrid AI Engine (Phase 2 - Gemini + DeepSeek) 🧠
-import * as functions from "firebase-functions";
+import * as functions from "firebase-functions/v1";
 // import { AIService } from "./services/ai-service";
 
 const getAiService = () => {

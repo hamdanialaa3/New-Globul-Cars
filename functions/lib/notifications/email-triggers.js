@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendMessageNotificationEmail = exports.sendPaymentReceiptEmail = exports.sendAdStatusEmail = exports.sendWelcomeEmail = void 0;
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 const email_service_1 = require("../services/email.service");
 const db = admin.firestore();
