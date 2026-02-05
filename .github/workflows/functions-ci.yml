@@ -1,0 +1,72 @@
+name: Firebase Functions CI
+
+on: [push, pull_request]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: functions
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Clean old outputs
+        run: |
+          rm -rf lib dist || true
+      
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: functions/package-lock.json
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build functions
+        run: npm run build
+      
+      - name: Run linter (if exists)
+        run: npm run lint --if-present
+        continue-on-error: true
+      
+      - name: Check for forbidden patterns
+        run: |
+          echo "=== Checking for functions.config() usage ==="
+          if grep -r "functions\.config()" src lib --include="*.ts" --include="*.js" | grep -v "^//"; then
+            echo "❌ ERROR: functions.config() found in source code"
+            exit 1
+          else
+            echo "✅ No functions.config() usage found"
+          fi
+          
+          echo "=== Checking for plain firebase-functions imports ==="
+          if grep -r "from ['\"]firebase-functions['\"]" src --include="*.ts" | grep -v "/v1" | grep -v "/v2" | grep -v "/logger"; then
+            echo "❌ ERROR: Plain firebase-functions imports found (missing /v1 or /v2)"
+            exit 1
+          else
+            echo "✅ All firebase-functions imports are versioned"
+          fi
+      
+      - name: Verify build artifacts
+        run: |
+          if [ ! -d "lib" ]; then
+            echo "❌ ERROR: lib/ directory not created by build"
+            exit 1
+          fi
+          
+          if [ ! -f "lib/index.js" ]; then
+            echo "❌ ERROR: lib/index.js not found"
+            exit 1
+          fi
+          
+          if [ ! -f "lib/manual-payment-expiration.js" ]; then
+            echo "❌ ERROR: lib/manual-payment-expiration.js not copied"
+            exit 1
+          fi
+          
+          echo "✅ All build artifacts present"
