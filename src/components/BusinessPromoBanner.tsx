@@ -229,10 +229,14 @@ const Title = styled.h2`
   text-shadow: 
     0 2px 6px rgba(0, 0, 0, 0.3),
     0 3px 12px rgba(0, 0, 0, 0.2);
-  white-space: nowrap;
   
   @media (max-width: 768px) {
     font-size: 1.25rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.1rem;
+    white-space: normal;
   }
 `;
 
@@ -322,6 +326,10 @@ const NewPrice = styled.span`
   
   @media (max-width: 768px) {
     font-size: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.25rem;
   }
 `;
 
@@ -556,6 +564,7 @@ const PrimaryCTA = styled.button`
     padding: 9px 16px;
     font-size: 0.75rem;
     justify-content: center;
+    padding-left: 32px;
     
     &::after {
       width: 20px;

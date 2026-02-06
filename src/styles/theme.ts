@@ -420,14 +420,25 @@ export const GlobalStyles = createGlobalStyle`
 
   :where(button, [role='button'], [role='tab'], .btn, .button, .tab) {
     min-width: 0;
+    max-width: 100%;
   }
 
   @media (max-width: 768px) {
     :where(button, [role='button'], [role='tab'], .btn, .button, .tab) {
       font-size: var(--text-clamp);
-      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    :where(h1) { font-size: clamp(1.5rem, 5vw, 2.25rem); }
+    :where(h2) { font-size: clamp(1.25rem, 4vw, 1.875rem); }
+    :where(h3) { font-size: clamp(1.1rem, 3.5vw, 1.5rem); }
+    :where(h4) { font-size: clamp(1rem, 3vw, 1.25rem); }
+  }
+
+  @media (max-width: 480px) {
+    :where(button, [role='button'], [role='tab'], .btn, .button, .tab) {
+      font-size: clamp(11px, 3vw, 14px);
     }
   }
 

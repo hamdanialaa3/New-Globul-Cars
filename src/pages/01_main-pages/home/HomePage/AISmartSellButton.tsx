@@ -126,6 +126,12 @@ const StyledButton = styled.button`
     padding: 0.875rem 1.5rem;
     gap: 0.5rem;
   }
+
+  @media (max-width: 360px) {
+    font-size: 0.8rem;
+    padding: 0.75rem 1rem;
+    gap: 0.375rem;
+  }
 `;
 
 const IconWrapper = styled.span<{ $animate?: boolean }>`
@@ -153,9 +159,15 @@ const ButtonText = styled.span`
   z-index: 1;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   
   @media (max-width: 480px) {
     font-size: 0.95em;
+  }
+
+  @media (max-width: 360px) {
+    font-size: 0.85em;
   }
 `;
 

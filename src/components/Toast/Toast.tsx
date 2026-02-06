@@ -91,6 +91,9 @@ const Title = styled.div`
   font-size: 0.95rem;
   color: #333;
   margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const Message = styled.div`

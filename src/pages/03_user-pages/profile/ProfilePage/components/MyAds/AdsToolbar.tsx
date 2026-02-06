@@ -63,6 +63,10 @@ const Label = styled.label<{ $isDark?: boolean }>`
   color: ${({ $isDark }) => $isDark ? '#e2e8f0' : '#1e293b'};
   white-space: nowrap;
   flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const Select = styled.select<{ $isDark?: boolean }>`

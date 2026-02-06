@@ -46,6 +46,14 @@ const Description = styled.p`
   font-size: 1.125rem;
   opacity: 0.9;
   max-width: 600px;
+
+  @media (max-width: 768px) {
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.875rem;
+  }
 `;
 
 const Button = styled.button`
@@ -66,6 +74,16 @@ const Button = styled.button`
   );
   color: #fff;
   border: 1px solid rgba(255, 143, 16, 0.4);
+  
+  @media (max-width: 480px) {
+    font-size: 0.875rem;
+    padding: 12px 20px;
+  }
+
+  @media (max-width: 360px) {
+    font-size: 0.8rem;
+    padding: 10px 16px;
+  }
   
   &:hover {
     background: linear-gradient(135deg, 

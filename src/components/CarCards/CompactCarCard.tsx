@@ -351,6 +351,11 @@ const CardTitle = styled(Link)`
   flex: 1;
   line-height: 1.3;
   transition: color 0.2s ease;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 
   &:hover {
     color: var(--accent-primary);
@@ -422,6 +427,11 @@ const Price = styled.div`
   font-weight: 800;
   color: var(--accent-primary);
   letter-spacing: -0.5px;
+  white-space: nowrap;
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+  }
 
   html[data-theme="dark"] & {
     color: #ff8f10;

@@ -36,6 +36,9 @@ const StyledButton = styled.button<{
   border: none;
   position: relative;
   overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
   
   min-height: 44px;
   min-width: ${props => props.$hasIcon && !props.children ? '44px' : 'auto'};

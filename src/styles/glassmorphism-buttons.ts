@@ -20,10 +20,18 @@ export const glassmorphismBase = css`
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 
   @media (max-width: 640px) {
     font-size: 13px;
     padding: 8px 16px;
+  }
+
+  @media (max-width: 360px) {
+    font-size: 12px;
+    padding: 6px 12px;
   }
 `;
 
@@ -55,6 +63,16 @@ export const glassPrimaryButton = css`
   cursor: pointer;
   position: relative;
   overflow: hidden;
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+    padding: 10px 24px;
+  }
+
+  @media (max-width: 360px) {
+    font-size: 13px;
+    padding: 8px 18px;
+  }
   
   /* Glow effect / تأثير التوهج */
   &::before {
@@ -130,6 +148,11 @@ export const glassSecondaryButton = css`
   cursor: pointer;
   position: relative;
   overflow: hidden;
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+    padding: 10px 24px;
+  }
   
   &::before {
     content: '';
@@ -204,6 +227,11 @@ export const glassTertiaryButton = css`
   cursor: pointer;
   position: relative;
   overflow: hidden;
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+    padding: 10px 24px;
+  }
   
   &::before {
     content: '';
@@ -278,6 +306,11 @@ export const glassNeutralButton = css`
   cursor: pointer;
   position: relative;
   overflow: hidden;
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+    padding: 10px 24px;
+  }
   
   &::before {
     content: '';

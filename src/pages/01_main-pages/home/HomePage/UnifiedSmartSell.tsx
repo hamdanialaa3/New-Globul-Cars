@@ -267,9 +267,18 @@ const StatLabel = styled.span<{ $isDark: boolean }>`
   font-weight: 500;
   color: ${props => props.$isDark ? '#94a3b8' : '#64748b'};
   text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   
   @media (max-width: 480px) {
     font-size: 0.65rem;
+  }
+
+  @media (max-width: 360px) {
+    font-size: 0.6rem;
   }
 `;
 
@@ -305,6 +314,17 @@ const CTAButton = styled(motion.button)`
   @media (max-width: 768px) {
     padding: 14px 32px;
     font-size: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    gap: 6px;
+  }
+
+  @media (max-width: 360px) {
+    padding: 10px 16px;
+    font-size: 0.8rem;
   }
 `;
 

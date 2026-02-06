@@ -134,6 +134,8 @@ const QuickSearchButton = styled.button`
   
   @media (max-width: 768px) {
     justify-content: center;
+    font-size: 0.875rem;
+    padding: 0.75rem 1.5rem;
   }
 `;
 

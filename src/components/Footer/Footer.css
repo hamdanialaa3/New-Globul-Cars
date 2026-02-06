@@ -18,7 +18,7 @@
 
 .footer-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 2rem;
   margin-bottom: 2rem;
 }
@@ -488,6 +488,18 @@
     gap: 1.5rem;
   }
 
+  .footer-title {
+    font-size: 1.25rem;
+  }
+
+  .footer-subtitle {
+    font-size: 1rem;
+  }
+
+  .stat-number {
+    font-size: 1.1rem;
+  }
+
   .footer-stats {
     justify-content: center;
   }
@@ -517,6 +529,18 @@
 @media (max-width: 480px) {
   .footer-container {
     padding: 0 0.5rem;
+  }
+
+  .footer-title {
+    font-size: 1.125rem;
+  }
+
+  .footer-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .stat-number {
+    font-size: 1rem;
   }
 
   .footer-stats {

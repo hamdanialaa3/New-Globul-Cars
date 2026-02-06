@@ -19,7 +19,7 @@ const MobileContactBarContainer = styled(motion.div)`
   bottom: 0;
   left: 0;
   right: 0;
-  width: 100vw;
+  width: 100%;
   z-index: 1000;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
@@ -54,6 +54,7 @@ const ContactButton = styled.button<{ $variant: 'primary' | 'secondary' }>`
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  overflow: hidden;
   text-overflow: ellipsis;
   
   ${props => props.$variant === 'primary' 

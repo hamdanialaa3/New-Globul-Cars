@@ -220,6 +220,11 @@ const FormSelect = styled.select`
   cursor: pointer;
   appearance: none;
   transition: all 0.3s;
+
+  @media (max-width: 576px) {
+    height: 48px;
+    font-size: 0.9rem;
+  }
   background-image: ${({ theme }) =>
     theme.mode === 'dark'
       ? 'linear-gradient(to bottom, #1a1a20, #0a0a0e)'
@@ -285,6 +290,19 @@ const SearchBtn = styled.button`
   position: relative;
   overflow: hidden;
   grid-column: span 1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  @media (max-width: 576px) {
+    height: 48px;
+    padding: 0 24px;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 360px) {
+    font-size: 0.8rem;
+    padding: 0 16px;
+  }
 
   &::before {
       content: '';
