@@ -64,6 +64,8 @@ import { ExtendedSellerInfo } from './ExtendedSellerInfo';
 import { Battery, ShieldCheck, Info } from 'lucide-react';
 import RealisticPaperclipBadge from '../../../components/SoldBadge/RealisticPaperclipBadge';
 import { logger } from '../../../services/logger-service';
+import { FacebookSmartButton } from '../../../components/social/FacebookSmartButton';
+import { PrintableWindowCard } from '../../../components/print/PrintableWindowCard';
 
 
 
@@ -1944,13 +1946,13 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   const [isSettingFeatured, setIsSettingFeatured] = useState(false);
   const [settingFeaturedIndex, setSettingFeaturedIndex] = useState<number | null>(null);
   const [lightboxImageLoaded, setLightboxImageLoaded] = useState(false);
-  
+
   // Sync featuredImageIndex with car prop when it changes (e.g., after page reload)
   useEffect(() => {
     const carFeaturedIndex = car.featuredImageIndex ?? 0;
     setFeaturedImageIndex(carFeaturedIndex);
   }, [car.id, car.featuredImageIndex]);
-  
+
   // Lightbox state
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -1963,14 +1965,14 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
 
   const handleSetFeatured = async (index: number, event: React.MouseEvent) => {
     event.stopPropagation();
-    
+
     // Prevent double-clicks and setting the same image
     if (isSettingFeatured || index === featuredImageIndex) {
       return;
     }
-    
+
     const previousIndex = featuredImageIndex;
-    
+
     // Optimistic update - set immediately for instant feedback
     setFeaturedImageIndex(index);
     setSettingFeaturedIndex(index);
@@ -1978,31 +1980,31 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
     // If owner, save to database with full feedback
     if (isOwner && car.id) {
       setIsSettingFeatured(true);
-      
+
       try {
         const { doc, updateDoc } = await import('firebase/firestore');
         const { db } = await import('../../../firebase/firebase-config');
         const { SellWorkflowCollections } = await import('../../../services/sell-workflow-collections');
-        
+
         // Determine correct collection based on vehicleType
         const vehicleType = (car as any).vehicleType || 'car';
         const collectionName = SellWorkflowCollections.getCollectionNameForVehicleType(vehicleType);
-        
+
         const carRef = doc(db, collectionName, car.id);
         await updateDoc(carRef, { featuredImageIndex: index });
-        
+
         // ✅ Verify the save by reading back the data
         const { getDoc } = await import('firebase/firestore');
         const verifySnap = await getDoc(carRef);
         const verifiedIndex = verifySnap.data()?.featuredImageIndex;
-        
+
         if (verifiedIndex === index) {
           logger.info('Featured image updated and verified', { carId: car.id, collection: collectionName, index });
-          
+
           // Success toast
           toast.success(
-            language === 'bg' 
-              ? `Снимка ${index + 1} е зададена като основна!` 
+            language === 'bg'
+              ? `Снимка ${index + 1} е зададена като основна!`
               : `Image ${index + 1} set as featured!`,
             language === 'bg' ? 'Успешно' : 'Success'
           );
@@ -2011,22 +2013,22 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
           setFeaturedImageIndex(previousIndex);
           logger.error('Featured image save verification failed', null, { carId: car.id, expected: index, actual: verifiedIndex });
           toast.error(
-            language === 'bg' 
-              ? 'Неуспешна промяна. Моля, опитайте отново.' 
+            language === 'bg'
+              ? 'Неуспешна промяна. Моля, опитайте отново.'
               : 'Failed to save. Please try again.',
             language === 'bg' ? 'Грешка' : 'Error'
           );
         }
-        
+
       } catch (error) {
         // Rollback on error
         setFeaturedImageIndex(previousIndex);
         logger.error('Error updating featured image', error as Error);
-        
+
         // Error toast with helpful message
         toast.error(
-          language === 'bg' 
-            ? 'Неуспешна промяна. Моля, опитайте отново.' 
+          language === 'bg'
+            ? 'Неуспешна промяна. Моля, опитайте отново.'
             : 'Failed to update. Please try again.',
           language === 'bg' ? 'Грешка' : 'Error'
         );
@@ -2125,9 +2127,9 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   const handleTouchStart = (e: React.TouchEvent) => {
     if (zoomLevel > 1 && e.touches.length === 1) {
       setIsDragging(true);
-      setDragStart({ 
-        x: e.touches[0].clientX - panPosition.x, 
-        y: e.touches[0].clientY - panPosition.y 
+      setDragStart({
+        x: e.touches[0].clientX - panPosition.x,
+        y: e.touches[0].clientY - panPosition.y
       });
     }
   };
@@ -2148,7 +2150,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   // Keyboard navigation for lightbox
   useEffect(() => {
     if (!lightboxOpen) return;
-    
+
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
         case 'Escape':
@@ -2203,7 +2205,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   const getCarShareUrl = () => {
     const sellerNumericId = car.sellerNumericId || (car as any).ownerNumericId;
     const carNumericId = car.carNumericId || (car as any).userCarSequenceId || (car as any).numericId;
-    
+
     if (sellerNumericId && carNumericId) {
       return `${window.location.origin}/car/${sellerNumericId}/${carNumericId}`;
     }
@@ -2390,6 +2392,14 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
             <IconButton>
               <Heart size={20} />
             </IconButton>
+            {isOwner && (
+              <FacebookSmartButton
+                adId={car.id}
+                adData={car}
+                isOwner={isOwner}
+                className="mr-2"
+              />
+            )}
             {isOwner && onEdit && (
               <>
                 <EditButton onClick={onEdit}>
@@ -2398,7 +2408,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
                 </EditButton>
                 {/* 🔥 NEW: Car History Report Button */}
                 {car.sellerNumericId && (car.carNumericId || (car as any).numericId) && (
-                  <EditButton 
+                  <EditButton
                     onClick={() => {
                       window.location.href = `/car/${car.sellerNumericId}/${car.carNumericId || (car as any).numericId}/history`;
                     }}
@@ -2830,7 +2840,15 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
                   style={{ cursor: 'pointer' }}
                   title={language === 'bg' ? 'Виж профила на продавача' : 'View seller profile'}
                 >
-                  {car.sellerName ? car.sellerName.charAt(0).toUpperCase() : <User />}
+                  {(car as any).sellerAvatarUrl || (car as any).user?.photoURL ? (
+                    <img
+                      src={(car as any).sellerAvatarUrl || (car as any).user?.photoURL}
+                      alt="Seller"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '6px' }}
+                    />
+                  ) : (
+                    car.sellerName ? car.sellerName.charAt(0).toUpperCase() : <User />
+                  )}
                 </SellerLogo>
                 <SellerInfo>
                   <SellerName>{car.sellerName || t.notSpecified}</SellerName>
@@ -3109,9 +3127,9 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
               draggable={false}
               onLoad={() => setLightboxImageLoaded(true)}
               onError={(e) => {
-                logger.error('Lightbox image failed to load', null, { 
-                  index: lightboxIndex, 
-                  src: (e.target as HTMLImageElement).src 
+                logger.error('Lightbox image failed to load', null, {
+                  index: lightboxIndex,
+                  src: (e.target as HTMLImageElement).src
                 });
                 (e.target as HTMLImageElement).src = '/images/placeholder.png';
                 setLightboxImageLoaded(true);

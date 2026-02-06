@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { CarListing } from '../../../../types/CarListing';
-import { MapPin, Phone, Mail, Clock, ChevronDown, ChevronUp, ExternalLink, Globe } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, ChevronDown, ChevronUp, ExternalLink, Globe, User } from 'lucide-react';
 import { useTheme } from '../../../contexts/ThemeContext';
 
 interface ExtendedSellerInfoProps {
-    car: CarListing;
-    language: 'bg' | 'en';
+  car: CarListing;
+  language: 'bg' | 'en';
 }
 
 const Container = styled.div`
@@ -187,174 +187,174 @@ const Copyright = styled.div`
 `;
 
 export const ExtendedSellerInfo: React.FC<ExtendedSellerInfoProps> = ({ car, language }) => {
-    const { theme } = useTheme();
-    const [isPrivacyOpen, setPrivacyOpen] = useState(false);
-    const [isCookieOpen, setCookieOpen] = useState(false);
+  const { theme } = useTheme();
+  const [isPrivacyOpen, setPrivacyOpen] = useState(false);
+  const [isCookieOpen, setCookieOpen] = useState(false);
 
-    // Construct map query from available location data
-    const mapQuery = [car.city, car.region].filter(Boolean).join(', ');
-    const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(mapQuery || 'Bulgaria')}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+  // Construct map query from available location data
+  const mapQuery = [car.city, car.region].filter(Boolean).join(', ');
+  const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(mapQuery || 'Bulgaria')}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
 
-    return (
-        <Container>
-            {/* Dealer Info Section */}
-            <Section>
-                <Grid>
-                    <div>
-                        <SectionTitle>{car.sellerName || 'Claas Wehner Autohaus GmbH'}</SectionTitle>
-                        <InfoGroup>
-                            <Value>
-                                {car.companyAddress || 'Hanomagstraße 15'}<br />
-                                {car.city ? `${car.postalCode || ''} ${car.city}` : 'DE-21244 Buchholz'}
-                            </Value>
-                            <Link href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${car.companyAddress || ''} ${car.city || ''}`)}`} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '8px' }}>
-                                <MapPin size={14} />
-                                Calculate route
-                            </Link>
-                        </InfoGroup>
+  return (
+    <Container>
+      {/* Dealer Info Section */}
+      <Section>
+        <Grid>
+          <div>
+            <SectionTitle>{car.sellerName || 'Claas Wehner Autohaus GmbH'}</SectionTitle>
+            <InfoGroup>
+              <Value>
+                {car.companyAddress || 'Hanomagstraße 15'}<br />
+                {car.city ? `${car.postalCode || ''} ${car.city}` : 'DE-21244 Buchholz'}
+              </Value>
+              <Link href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${car.companyAddress || ''} ${car.city || ''}`)}`} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '8px' }}>
+                <MapPin size={14} />
+                Calculate route
+              </Link>
+            </InfoGroup>
 
-                        {car.sellerType !== 'private' && (
-                            <InfoGroup>
-                                <Label>Additional services</Label>
-                                <ServiceList>
-                                    <ServiceItem>Repair Center</ServiceItem>
-                                    <ServiceItem>Financing</ServiceItem>
-                                    <ServiceItem>Used vehicle trade-in</ServiceItem>
-                                </ServiceList>
-                            </InfoGroup>
-                        )}
-                    </div>
+            {car.sellerType !== 'private' && (
+              <InfoGroup>
+                <Label>Additional services</Label>
+                <ServiceList>
+                  <ServiceItem>Repair Center</ServiceItem>
+                  <ServiceItem>Financing</ServiceItem>
+                  <ServiceItem>Used vehicle trade-in</ServiceItem>
+                </ServiceList>
+              </InfoGroup>
+            )}
+          </div>
 
-                    <div>
-                        <SectionTitle>Imprint</SectionTitle>
-                        <InfoGroup>
-                            <Value>
-                                <strong>{car.sellerName || 'Claas Wehner Autohaus GmbH'}</strong><br />
-                                {car.companyAddress || 'Volksparkstrasse 38'}<br />
-                                {car.city ? `${car.postalCode || ''} ${car.city}` : 'DE-22525 Hamburg'}<br /><br />
-                                Telefon: {car.sellerPhone || '040 244 260'}<br />
-                                eMail: {car.sellerEmail || 'ah-wehner@mobile.de'}<br /><br />
-                                Handelsregister: Amtsgericht Hamburg<br />
-                                Handelsregisternr.: HRB63320<br />
-                                Umsatzsteuer-Identifikationsnr.: DE189336425<br />
-                                Vertretungsberechtigt: Claas Wehner
-                            </Value>
-                        </InfoGroup>
-                    </div>
-                </Grid>
-            </Section>
+          <div>
+            <SectionTitle>Imprint</SectionTitle>
+            <InfoGroup>
+              <Value>
+                <strong>{car.sellerName || 'Claas Wehner Autohaus GmbH'}</strong><br />
+                {car.companyAddress || 'Volksparkstrasse 38'}<br />
+                {car.city ? `${car.postalCode || ''} ${car.city}` : 'DE-22525 Hamburg'}<br /><br />
+                Telefon: {car.sellerPhone || '040 244 260'}<br />
+                eMail: {car.sellerEmail || 'ah-wehner@mobile.de'}<br /><br />
+                Handelsregister: Amtsgericht Hamburg<br />
+                Handelsregisternr.: HRB63320<br />
+                Umsatzsteuer-Identifikationsnr.: DE189336425<br />
+                Vertretungsberechtigt: Claas Wehner
+              </Value>
+            </InfoGroup>
+          </div>
+        </Grid>
+      </Section>
 
-            {/* Map Section */}
-            <Section>
-                <SectionTitle>
-                    <MapPin />
-                    {language === 'bg' ? 'Местоположение' : 'Location'}
-                </SectionTitle>
-                <Value>
-                    {car.city || 'Sofia'}, {car.region || 'Sofia-City'}
-                </Value>
-                <MapContainer>
-                    <MapFrame
-                        src={mapUrl}
-                        loading="lazy"
-                        title="Seller Location"
-                        $isDark={theme === 'dark'}
-                    />
-                </MapContainer>
-            </Section>
+      {/* Map Section */}
+      <Section>
+        <SectionTitle>
+          <MapPin />
+          {language === 'bg' ? 'Местоположение' : 'Location'}
+        </SectionTitle>
+        <Value>
+          {car.city || 'Sofia'}, {car.region || 'Sofia-City'}
+        </Value>
+        <MapContainer>
+          <MapFrame
+            src={mapUrl}
+            loading="lazy"
+            title="Seller Location"
+            $isDark={theme === 'dark'}
+          />
+        </MapContainer>
+      </Section>
 
-            {/* Legal / Data Protection (Collapsible) */}
-            <Section>
-                <CollapsibleHeader $isOpen={isPrivacyOpen} onClick={() => setPrivacyOpen(!isPrivacyOpen)}>
-                    <span style={{ fontWeight: 600 }}>Data Protection & Privacy Policy</span>
-                    {isPrivacyOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                </CollapsibleHeader>
-                <CollapsibleContent $isOpen={isPrivacyOpen}>
-                    <strong>Name und Anschrift des Datenschutzbeauftragten</strong><br />
-                    Der Datenschutzbeauftragte des Verantwortlichen ist:<br /><br />
-                    Niklas Wehner<br />
-                    Claas Wehner Autohaus GmbH<br />
-                    Volksparkstraße 38 + 42<br />
-                    22525 Hamburg<br />
-                    Deutschland<br />
-                    Tel.: +49 40 - 244 260<br />
-                    E-Mail: n.wehner@autohaus-wehner.de<br />
-                    Website: www.autohaus-wehner.de<br /><br />
-                    <strong>ZWECK DER DATENVERARBEITUNG</strong><br />
-                    Eine Registrierung des Nutzers ist für das Bereithalten bestimmter Inhalte und Leistungen auf unserer Website erforderlich.<br />
-                    • Zustellen von Prospekten<br />
-                    • Kontaktaufnahme & Vergabe von Werkstattterminen<br />
-                    • Kontaktaufnahme & Vergabe von Probefahrten<br /><br />
-                    Die Daten werden gelöscht, sobald sie für die Erreichung des Zweckes ihrer Erhebung nicht mehr erforderlich sind.
-                </CollapsibleContent>
+      {/* Legal / Data Protection (Collapsible) */}
+      <Section>
+        <CollapsibleHeader $isOpen={isPrivacyOpen} onClick={() => setPrivacyOpen(!isPrivacyOpen)}>
+          <span style={{ fontWeight: 600 }}>Data Protection & Privacy Policy</span>
+          {isPrivacyOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+        </CollapsibleHeader>
+        <CollapsibleContent $isOpen={isPrivacyOpen}>
+          <strong>Name und Anschrift des Datenschutzbeauftragten</strong><br />
+          Der Datenschutzbeauftragte des Verantwortlichen ist:<br /><br />
+          Niklas Wehner<br />
+          Claas Wehner Autohaus GmbH<br />
+          Volksparkstraße 38 + 42<br />
+          22525 Hamburg<br />
+          Deutschland<br />
+          Tel.: +49 40 - 244 260<br />
+          E-Mail: n.wehner@autohaus-wehner.de<br />
+          Website: www.autohaus-wehner.de<br /><br />
+          <strong>ZWECK DER DATENVERARBEITUNG</strong><br />
+          Eine Registrierung des Nutzers ist für das Bereithalten bestimmter Inhalte und Leistungen auf unserer Website erforderlich.<br />
+          • Zustellen von Prospekten<br />
+          • Kontaktaufnahme & Vergabe von Werkstattterminen<br />
+          • Kontaktaufnahme & Vergabe von Probefahrten<br /><br />
+          Die Daten werden gelöscht, sobald sie für die Erreichung des Zweckes ihrer Erhebung nicht mehr erforderlich sind.
+        </CollapsibleContent>
 
-                <CollapsibleHeader $isOpen={isCookieOpen} onClick={() => setCookieOpen(!isCookieOpen)} style={{ marginTop: '1rem' }}>
-                    <span style={{ fontWeight: 600 }}>Cookie Policy</span>
-                    {isCookieOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                </CollapsibleHeader>
-                <CollapsibleContent $isOpen={isCookieOpen}>
-                    <strong>Verwendung von Cookies</strong><br />
-                    Beschreibung und Umfang der Datenverarbeitung<br />
-                    Unsere Webseite verwendet Cookies. Bei Cookies handelt es sich um Textdateien, die im Internetbrowser bzw. vom Internetbrowser auf dem Computersystem des Nutzers gespeichert werden...
-                </CollapsibleContent>
-            </Section>
+        <CollapsibleHeader $isOpen={isCookieOpen} onClick={() => setCookieOpen(!isCookieOpen)} style={{ marginTop: '1rem' }}>
+          <span style={{ fontWeight: 600 }}>Cookie Policy</span>
+          {isCookieOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+        </CollapsibleHeader>
+        <CollapsibleContent $isOpen={isCookieOpen}>
+          <strong>Verwendung von Cookies</strong><br />
+          Beschreibung und Umfang der Datenverarbeitung<br />
+          Unsere Webseite verwendet Cookies. Bei Cookies handelt es sich um Textdateien, die im Internetbrowser bzw. vom Internetbrowser auf dem Computersystem des Nutzers gespeichert werden...
+        </CollapsibleContent>
+      </Section>
 
-            {/* Specific Footer */}
-            <Footer>
-                <FooterGrid>
-                    <FooterColumn>
-                        <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>Koli One</h3>
-                        <p style={{ fontSize: '14px', color: '#ccc' }}>
-                            Най-добрата платформа за купуване и продажба на автомобили в България.
-                        </p>
-                        <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                            <div>
-                                <strong style={{ display: 'block', fontSize: '18px', color: '#fff' }}>15,000+</strong>
-                                <span style={{ fontSize: '12px', color: '#888' }}>Коли</span>
-                            </div>
-                            <div>
-                                <strong style={{ display: 'block', fontSize: '18px', color: '#fff' }}>8,500+</strong>
-                                <span style={{ fontSize: '12px', color: '#888' }}>Доволни клиенти</span>
-                            </div>
-                        </div>
-                    </FooterColumn>
+      {/* Specific Footer */}
+      <Footer>
+        <FooterGrid>
+          <FooterColumn>
+            <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>Koli One</h3>
+            <p style={{ fontSize: '14px', color: '#ccc' }}>
+              Най-добрата платформа за купуване и продажба на автомобили в България.
+            </p>
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+              <div>
+                <strong style={{ display: 'block', fontSize: '18px', color: '#fff' }}>15,000+</strong>
+                <span style={{ fontSize: '12px', color: '#888' }}>Коли</span>
+              </div>
+              <div>
+                <strong style={{ display: 'block', fontSize: '18px', color: '#fff' }}>8,500+</strong>
+                <span style={{ fontSize: '12px', color: '#888' }}>Доволни клиенти</span>
+              </div>
+            </div>
+          </FooterColumn>
 
-                    <FooterColumn>
-                        <FooterTitle>Бързи връзки</FooterTitle>
-                        <FooterLink href="/">Начало</FooterLink>
-                        <FooterLink href="/search">Търси коли</FooterLink>
-                        <FooterLink href="/sell">Продай</FooterLink>
-                        <FooterLink href="/brands">Бранд Галерия</FooterLink>
-                    </FooterColumn>
+          <FooterColumn>
+            <FooterTitle>Бързи връзки</FooterTitle>
+            <FooterLink href="/">Начало</FooterLink>
+            <FooterLink href="/search">Търси коли</FooterLink>
+            <FooterLink href="/sell">Продай</FooterLink>
+            <FooterLink href="/brands">Бранд Галерия</FooterLink>
+          </FooterColumn>
 
-                    <FooterColumn>
-                        <FooterTitle>Услуги</FooterTitle>
-                        <FooterLink href="/financing">Финансови решения</FooterLink>
-                        <FooterLink href="/insurance">Застраховка</FooterLink>
-                        <FooterLink href="/verified">Проверени обяви</FooterLink>
-                        <FooterLink href="/support">Поддръжка</FooterLink>
-                    </FooterColumn>
+          <FooterColumn>
+            <FooterTitle>Услуги</FooterTitle>
+            <FooterLink href="/financing">Финансови решения</FooterLink>
+            <FooterLink href="/insurance">Застраховка</FooterLink>
+            <FooterLink href="/verified">Проверени обяви</FooterLink>
+            <FooterLink href="/support">Поддръжка</FooterLink>
+          </FooterColumn>
 
-                    <FooterColumn>
-                        <FooterTitle>Контакт</FooterTitle>
-                        <div style={{ fontSize: '14px', color: '#ccc', lineHeight: '1.6' }}>
-                            ул. Цар Симеон 77, София 1000<br />
-                            България<br /><br />
-                            +359 2 123 4567<br />
-                            info@koli.one
-                        </div>
-                    </FooterColumn>
-                </FooterGrid>
+          <FooterColumn>
+            <FooterTitle>Контакт</FooterTitle>
+            <div style={{ fontSize: '14px', color: '#ccc', lineHeight: '1.6' }}>
+              ул. Цар Симеон 77, София 1000<br />
+              България<br /><br />
+              +359 2 123 4567<br />
+              info@koli.one
+            </div>
+          </FooterColumn>
+        </FooterGrid>
 
-                <Copyright>
-                    © 2026 Koli One. Всички права запазени.<br />
-                    <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'center', gap: '1rem' }}>
-                        <FooterLink href="/privacy">Политика за поверителност</FooterLink>
-                        <FooterLink href="/terms">Условия за ползване</FooterLink>
-                        <FooterLink href="/cookies">Политика за бисквитки</FooterLink>
-                    </div>
-                </Copyright>
-            </Footer>
-        </Container>
-    );
+        <Copyright>
+          © 2026 Koli One. Всички права запазени.<br />
+          <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'center', gap: '1rem' }}>
+            <FooterLink href="/privacy">Политика за поверителност</FooterLink>
+            <FooterLink href="/terms">Условия за ползване</FooterLink>
+            <FooterLink href="/cookies">Политика за бисквитки</FooterLink>
+          </div>
+        </Copyright>
+      </Footer>
+    </Container>
+  );
 };

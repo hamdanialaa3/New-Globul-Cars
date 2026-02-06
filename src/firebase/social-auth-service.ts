@@ -238,16 +238,44 @@ export class SocialAuthService {
 
   /**
    * Sign in anonymously (Guest Mode)
+   * 
+   * Persistent Guest Identity:
+   * 1. Check Cookie/localStorage for existing guest UID
+   * 2. If found -> restore via custom token (same account)
+   * 3. If not found -> create new anonymous account
+   * 4. Save identity to Cookie + localStorage for next visit
    */
   static async signInAnonymously() {
     try {
-      logger.info('👤 Initiating anonymous sign-in...');
+      logger.info('[Guest] Initiating guest sign-in...');
+
+      // Step 1: Check for existing guest identity
+      const { guestIdentityService } = await import('../services/guest-identity.service');
+      const storedUid = guestIdentityService.getStoredUid();
+
+      if (storedUid) {
+        // Step 2: Try to restore existing guest account
+        try {
+          const restored = await SocialAuthService.restoreGuestAccount(storedUid);
+          if (restored) {
+            logger.info('[Guest] Restored existing account', { uid: storedUid });
+            return restored;
+          }
+        } catch (restoreErr) {
+          logger.warn('[Guest] Failed to restore, creating new account', {
+            storedUid, error: String(restoreErr)
+          });
+          // Clear stale identity and fall through to create new
+          guestIdentityService.clearIdentity();
+        }
+      }
+
+      // Step 3: Create new anonymous account
       const result = await signInAnonymously(auth);
 
-      // 🚨 FIX: Create guest user profile in Firestore
       const guestProfile = {
         uid: result.user.uid,
-        email: null, // Guests don't have email
+        email: null,
         displayName: 'Guest User',
         phoneNumber: null,
         isAnonymous: true,
@@ -257,22 +285,48 @@ export class SocialAuthService {
         updatedAt: new Date(),
       };
 
-      // Save to Firestore
       const { doc, setDoc } = await import('firebase/firestore');
       const { db } = await import('./index');
       await setDoc(doc(db, 'users', result.user.uid), guestProfile, { merge: true });
 
-      logger.info('✅ Guest user profile created', { uid: result.user.uid });
+      // Step 4: Save identity for future visits
+      guestIdentityService.saveIdentity(result.user.uid);
 
-      if (process.env.NODE_ENV === 'development') {
-        logger.debug('Anonymous sign-in successful', { uid: result.user.uid });
-      }
-
+      logger.info('[Guest] New account created', { uid: result.user.uid });
       return result;
     } catch (error) {
-      logger.error('❌ Anonymous sign-in error', error as Error);
+      logger.error('[Guest] Sign-in error', error as Error);
       throw error;
     }
+  }
+
+  /**
+   * Restore an existing guest account via Cloud Function custom token
+   */
+  private static async restoreGuestAccount(
+    guestUid: string
+  ): Promise<UserCredential | null> {
+    const { getFunctions, httpsCallable } = await import('firebase/functions');
+    const { signInWithCustomToken } = await import('firebase/auth');
+
+    const functions = getFunctions(undefined, 'europe-west1');
+    const getToken = httpsCallable(functions, 'getGuestCustomToken');
+
+    const response = await getToken({ guestUid });
+    const { token, numericId } = response.data as {
+      token: string; numericId: number | null
+    };
+
+    if (!token) return null;
+
+    // Sign in with the custom token -> restores the same Firebase user
+    const credential = await signInWithCustomToken(auth, token);
+
+    // Update stored identity with numericId if available
+    const { guestIdentityService } = await import('../services/guest-identity.service');
+    guestIdentityService.saveIdentity(guestUid, numericId ?? undefined);
+
+    return credential;
   }
 }
 

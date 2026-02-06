@@ -186,7 +186,11 @@ import * as userCreateTrigger from './triggers/onUserCreate';
 export const onUserCreate = userCreateTrigger.onUserCreate;
 export const getUserNumericId = userCreateTrigger.getUserNumericId;
 
-// 📧 NEW: Email Notifications System
+// Guest Identity Restoration (February 6, 2026)
+import * as guestToken from './auth/guest-token';
+export const getGuestCustomToken = guestToken.getGuestCustomToken;
+
+// Email Notifications System
 import * as emailTriggers from './notifications/email-triggers';
 export const sendWelcomeEmail = emailTriggers.sendWelcomeEmail;
 export const sendAdStatusEmail = emailTriggers.sendAdStatusEmail;
