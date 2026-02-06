@@ -397,16 +397,18 @@ const EditButton = styled.button`
 // Lightbox Styled Components
 const LightboxOverlay = styled.div`
   position: fixed;
-  top: 0;
+  top: 60px;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(0, 0, 0, 0.96);
   z-index: 10000;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
 `;
 
 const LightboxHeader = styled.div`
@@ -453,14 +455,12 @@ const LightboxImageContainer = styled.div<{ $zoom: number; $panX: number; $panY:
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 100%;
-  min-height: 50vh;
   overflow: hidden;
   cursor: ${props => props.$zoom > 1 ? (props.$isDragging ? 'grabbing' : 'grab') : 'zoom-in'};
   
   img {
     max-width: 90vw;
-    max-height: 80vh;
+    max-height: calc(100vh - 200px);
     width: auto;
     height: auto;
     object-fit: contain;
@@ -2492,13 +2492,13 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
                     <Thumbnail
                       key={index}
                       $active={index === currentImageIndex}
-                      $isFeatured={index === featuredImageIndex}
+                      $isFeatured={isOwner && index === featuredImageIndex}
                       $isSettingFeatured={settingFeaturedIndex === index}
                       onClick={() => setCurrentImageIndex(index)}
                       onDoubleClick={() => openLightbox(index)}
                       title={language === 'bg' ? 'Кликнете два пъти за пълен екран' : 'Double-click for fullscreen'}
                     >
-                      {index === featuredImageIndex && (
+                      {isOwner && index === featuredImageIndex && (
                         <FeaturedBadge>
                           <Crown />
                           {language === 'bg' ? 'Основна' : 'Featured'}
