@@ -20,10 +20,10 @@ jobs:
       - name: Verify package-lock.json exists
         run: |
           echo "Verifying package-lock.json..."
-          if [ -f "functions/package-lock.json" ]; then
-            echo "✅ Found: functions/package-lock.json"
+          if [ -f "package-lock.json" ]; then
+            echo "✅ Found: package-lock.json"
           else
-            echo "❌ NOT FOUND: functions/package-lock.json"
+            echo "❌ NOT FOUND: package-lock.json"
             exit 1
           fi
       
