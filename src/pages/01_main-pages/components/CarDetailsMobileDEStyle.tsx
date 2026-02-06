@@ -66,6 +66,7 @@ import RealisticPaperclipBadge from '../../../components/SoldBadge/RealisticPape
 import { logger } from '../../../services/logger-service';
 import { FacebookSmartButton } from '../../../components/social/FacebookSmartButton';
 import { PrintableWindowCard } from '../../../components/print/PrintableWindowCard';
+import { userService } from '../../../services/user/canonical-user.service';
 
 
 
@@ -1895,6 +1896,26 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   /* Fix Toast Context usage */
   const toast = useToast();
 
+  const [fetchedSellerAvatar, setFetchedSellerAvatar] = useState<string | null>(null);
+
+  // Fetch seller avatar if missing from car object
+  useEffect(() => {
+    const hasAvatar = (car as any).sellerAvatarUrl || (car as any).user?.photoURL;
+    if (!hasAvatar) {
+      // Try to fetch using sellerNumericId or sellerId
+      const fetchId = car.sellerId || (car.sellerNumericId ? String(car.sellerNumericId) : undefined);
+      if (fetchId) {
+        userService.getUserProfile(fetchId).then(profile => {
+          if (profile && profile.photoURL) {
+            setFetchedSellerAvatar(profile.photoURL);
+          }
+        }).catch(err => {
+          logger.warn('Failed to fetch seller avatar', err as Error);
+        });
+      }
+    }
+  }, [car.sellerId, car.sellerNumericId, (car as any).sellerAvatarUrl, (car as any).user?.photoURL]);
+
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -2840,9 +2861,9 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
                   style={{ cursor: 'pointer' }}
                   title={language === 'bg' ? 'Виж профила на продавача' : 'View seller profile'}
                 >
-                  {(car as any).sellerAvatarUrl || (car as any).user?.photoURL ? (
+                  {(car as any).sellerAvatarUrl || (car as any).user?.photoURL || fetchedSellerAvatar ? (
                     <img
-                      src={(car as any).sellerAvatarUrl || (car as any).user?.photoURL}
+                      src={(car as any).sellerAvatarUrl || (car as any).user?.photoURL || fetchedSellerAvatar}
                       alt="Seller"
                       style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '6px' }}
                     />

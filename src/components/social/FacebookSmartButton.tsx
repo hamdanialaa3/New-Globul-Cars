@@ -4,10 +4,10 @@ import { Facebook } from 'lucide-react';
 import axios from 'axios';
 
 interface FacebookSmartButtonProps {
-    adId: string;
-    adData: any;
-    isOwner: boolean;
-    className?: string; // Allow external positioning
+  adId: string;
+  adData: any;
+  isOwner: boolean;
+  className?: string; // Allow external positioning
 }
 
 const pulse = keyframes`
@@ -80,43 +80,30 @@ const Tooltip = styled.div`
 const PUBLISHER_API_URL = 'http://localhost:3005/webhooks/ad-published';
 
 export const FacebookSmartButton: React.FC<FacebookSmartButtonProps> = ({ adId, adData, isOwner, className }) => {
-    const [loading, setLoading] = useState(false);
-    const [published, setPublished] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [published, setPublished] = useState(false);
 
-    if (!isOwner) return null;
+  if (!isOwner) return null;
 
-    const handlePublish = async () => {
-        if (!window.confirm('Start Automated Facebook Publishing for this ad?')) return;
+  const handlePublish = async () => {
+    const shareUrl = `https://koli.one/car/${adData.sellerNumericId || 'view'}/${adData.carNumericId || adId}`;
+    const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
 
-        setLoading(true);
-        try {
-            // In production, you would proxy this via your backend.
-            // For localhost demo, request directly.
-            await axios.post(PUBLISHER_API_URL, {
-                ad_id: adId,
-                content: {
-                    description: `${adData.make} ${adData.model} ${adData.year} - ${adData.price} BGN. ${adData.description || ''}`,
-                    images: adData.images || []
-                }
-            });
-            setPublished(true);
-            alert('🚀 Auto-Publishing Started! Check the Koli One Facebook Page.');
-        } catch (error) {
-            console.error('Publish failed', error);
-            alert('Failed to trigger automation. Check console.');
-        } finally {
-            setLoading(false);
-        }
-    };
+    // Open the share dialog
+    window.open(facebookShareUrl, 'fb-share', 'width=580,height=296');
 
-    return (
-        <div className={className} style={{ position: 'relative' }}>
-            <Button onClick={handlePublish} $loading={loading} disabled={loading || published}>
-                {loading ? <Spinner /> : <Facebook size={24} fill="white" />}
-                <Tooltip>
-                    {published ? 'Published!' : 'Auto-Post to FB'}
-                </Tooltip>
-            </Button>
-        </div>
-    );
+    setPublished(true);
+    // Optional: Call the automation endpoint silently if needed in future
+  };
+
+  return (
+    <div className={className} style={{ position: 'relative' }}>
+      <Button onClick={handlePublish} $loading={loading} disabled={loading || published}>
+        {loading ? <Spinner /> : <Facebook size={24} fill="white" />}
+        <Tooltip>
+          {published ? 'Published!' : 'Auto-Post to FB'}
+        </Tooltip>
+      </Button>
+    </div>
+  );
 };

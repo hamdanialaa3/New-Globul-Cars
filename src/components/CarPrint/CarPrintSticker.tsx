@@ -5,6 +5,7 @@
  */
 
 import React, { useRef, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import styled, { createGlobalStyle } from 'styled-components';
 
 import { Printer, Download, X } from 'lucide-react';
@@ -135,9 +136,9 @@ const PrintOverlay = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* Start from top, allow scrolling */
   gap: 1.5rem;
-  padding: 2rem;
+  padding: 2rem 0; /* Vertical padding */
   overflow-y: auto;
 
   @media print {
@@ -161,6 +162,10 @@ const PrintContainer = styled.div`
   width: 210mm;
   min-height: 297mm;
   max-height: 297mm;
+  /* Screen Mode: A4 Preview positioned below header */
+  transform: scale(0.85); /* Slight scale to fit on smaller laptop screens if needed, or remove if strict A4 required */
+  transform-origin: top center;
+  margin-top: 80px; /* Push below header */
   padding: 15mm;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   position: relative;
@@ -547,261 +552,261 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
       }
     } catch (error) {
       logger.error('PDF generation error', error as Error, { carId: car.id });
-      alert(language === 'bg' 
-        ? 'Моля инсталирайте библиотеките: npm install jspdf html2canvas' 
+      alert(language === 'bg'
+        ? 'Моля инсталирайте библиотеките: npm install jspdf html2canvas'
         : 'Please install libraries: npm install jspdf html2canvas');
     }
   };
 
-  const mainImage = car.images && car.images.length > 0 
+  const mainImage = car.images && car.images.length > 0
     ? (typeof car.images[0] === 'string' ? car.images[0] : URL.createObjectURL(car.images[0] as File))
     : null;
 
-  return (
+  return createPortal(
     <>
       <PrintGlobalStyle />
       <PrintOverlay data-print-root onClick={onClose}>
         <PrintContainer ref={printRef} data-print-content onClick={(e) => e.stopPropagation()}>
-        <CloseButton className="print-close" onClick={onClose}>
-          <X size={24} />
-        </CloseButton>
+          <CloseButton className="print-close" onClick={onClose}>
+            <X size={24} />
+          </CloseButton>
 
-        <PrintHeader>
-          <div style={{ color: '#000000' }}>
-            <PrintTitle style={{ color: '#000000' }}>{car.make} {car.model} {car.year}</PrintTitle>
-          </div>
-          <PrintPrice style={{ color: '#000000' }}>{formatPrice(car.price)}</PrintPrice>
-        </PrintHeader>
+          <PrintHeader>
+            <div style={{ color: '#000000' }}>
+              <PrintTitle style={{ color: '#000000' }}>{car.make} {car.model} {car.year}</PrintTitle>
+            </div>
+            <PrintPrice style={{ color: '#000000' }}>{formatPrice(car.price)}</PrintPrice>
+          </PrintHeader>
 
-        {mainImage && (
-          <PrintImageContainer>
-            <PrintImage src={mainImage} alt={`${car.make} ${car.model}`} />
-          </PrintImageContainer>
-        )}
+          {mainImage && (
+            <PrintImageContainer>
+              <PrintImage src={mainImage} alt={`${car.make} ${car.model}`} />
+            </PrintImageContainer>
+          )}
 
-        <PrintContent>
-          <PrintSection>
-            <SectionTitle>{t.make} / {t.model}</SectionTitle>
-            <SectionContent>
-              <PrintRow>
-                <PrintLabel>{t.make}:</PrintLabel>
-                <PrintValue>{car.make}</PrintValue>
-              </PrintRow>
-              <PrintRow>
-                <PrintLabel>{t.model}:</PrintLabel>
-                <PrintValue>{car.model}</PrintValue>
-              </PrintRow>
-              <PrintRow>
-                <PrintLabel>{t.year}:</PrintLabel>
-                <PrintValue>{car.year}</PrintValue>
-              </PrintRow>
-              {car.vin && (
-                <PrintRow>
-                  <PrintLabel>{t.vin}:</PrintLabel>
-                  <PrintValue style={{ fontSize: '10px' }}>{car.vin}</PrintValue>
-                </PrintRow>
-              )}
-              <PrintRow>
-                <PrintLabel>{t.mileage}:</PrintLabel>
-                <PrintValue>{car.mileage ? formatMileage(car.mileage) : 'N/A'}</PrintValue>
-              </PrintRow>
-            </SectionContent>
-          </PrintSection>
-
-          <PrintSection>
-            <SectionTitle>{t.fuel} / {t.transmission}</SectionTitle>
-            <SectionContent>
-              <PrintRow>
-                <PrintLabel>{t.fuel}:</PrintLabel>
-                <PrintValue>{car.fuelType || 'N/A'}</PrintValue>
-              </PrintRow>
-              <PrintRow>
-                <PrintLabel>{t.transmission}:</PrintLabel>
-                <PrintValue>{car.transmission || 'N/A'}</PrintValue>
-              </PrintRow>
-              {(car.power || car.powerKW) && (
-                <PrintRow>
-                  <PrintLabel>{t.power}:</PrintLabel>
-                  <PrintValue>{car.powerKW ? `${car.powerKW} kW` : car.power ? `${car.power} hp` : 'N/A'}</PrintValue>
-                </PrintRow>
-              )}
-              {car.engineSize && (
-                <PrintRow>
-                  <PrintLabel>{t.engineSize}:</PrintLabel>
-                  <PrintValue>{car.engineSize} cm³</PrintValue>
-                </PrintRow>
-              )}
-              {car.driveType && (
-                <PrintRow>
-                  <PrintLabel>{t.driveType}:</PrintLabel>
-                  <PrintValue>{car.driveType}</PrintValue>
-                </PrintRow>
-              )}
-              {car.color && (
-                <PrintRow>
-                  <PrintLabel>{t.color}:</PrintLabel>
-                  <PrintValue>{car.color}</PrintValue>
-                </PrintRow>
-              )}
-              {(car.doors || car.numberOfDoors) && (
-                <PrintRow>
-                  <PrintLabel>{t.doors}:</PrintLabel>
-                  <PrintValue>{car.numberOfDoors || car.doors || 'N/A'}</PrintValue>
-                </PrintRow>
-              )}
-              {(car.seats || car.numberOfSeats) && (
-                <PrintRow>
-                  <PrintLabel>{t.seats}:</PrintLabel>
-                  <PrintValue>{car.numberOfSeats || car.seats || 'N/A'}</PrintValue>
-                </PrintRow>
-              )}
-            </SectionContent>
-          </PrintSection>
-
-          <PrintSection>
-            <SectionTitle>{t.condition} / {t.serviceHistory}</SectionTitle>
-            <SectionContent>
-              {car.previousOwners && (
-                <PrintRow>
-                  <PrintLabel>{t.previousOwners}:</PrintLabel>
-                  <PrintValue>{car.previousOwners}</PrintValue>
-                </PrintRow>
-              )}
-              <PrintRow>
-                <PrintLabel>{t.accidentFree}:</PrintLabel>
-                <PrintValue>{car.accidentHistory ? (language === 'bg' ? 'Не' : 'No') : (language === 'bg' ? 'Да' : 'Yes')}</PrintValue>
-              </PrintRow>
-              <PrintRow>
-                <PrintLabel>{t.serviceHistory}:</PrintLabel>
-                <PrintValue>{car.serviceHistory ? (language === 'bg' ? 'Да' : 'Yes') : (language === 'bg' ? 'Не' : 'No')}</PrintValue>
-              </PrintRow>
-              {car.firstRegistrationDate && (
-                <PrintRow>
-                  <PrintLabel>{t.firstRegistration}:</PrintLabel>
-                  <PrintValue>{new Date(car.firstRegistrationDate).toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US')}</PrintValue>
-                </PrintRow>
-              )}
-              {car.inspectionValidUntil && (
-                <PrintRow>
-                  <PrintLabel>{t.inspectionValid}:</PrintLabel>
-                  <PrintValue>{new Date(car.inspectionValidUntil).toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US')}</PrintValue>
-                </PrintRow>
-              )}
-              <PrintRow>
-                <PrintLabel>{t.warranty}:</PrintLabel>
-                <PrintValue>{car.warranty ? (car.warrantyMonths ? `${car.warrantyMonths} ${language === 'bg' ? 'месеца' : 'months'}` : (language === 'bg' ? 'Да' : 'Yes')) : (language === 'bg' ? 'Не' : 'No')}</PrintValue>
-              </PrintRow>
-            </SectionContent>
-          </PrintSection>
-
-          {(car.fuelConsumption || car.co2Emissions || car.euroStandard) && (
+          <PrintContent>
             <PrintSection>
-              <SectionTitle>{language === 'bg' ? 'Екология' : 'Ecology'}</SectionTitle>
+              <SectionTitle>{t.make} / {t.model}</SectionTitle>
               <SectionContent>
-                {car.fuelConsumption && (
+                <PrintRow>
+                  <PrintLabel>{t.make}:</PrintLabel>
+                  <PrintValue>{car.make}</PrintValue>
+                </PrintRow>
+                <PrintRow>
+                  <PrintLabel>{t.model}:</PrintLabel>
+                  <PrintValue>{car.model}</PrintValue>
+                </PrintRow>
+                <PrintRow>
+                  <PrintLabel>{t.year}:</PrintLabel>
+                  <PrintValue>{car.year}</PrintValue>
+                </PrintRow>
+                {car.vin && (
                   <PrintRow>
-                    <PrintLabel>{t.consumption}:</PrintLabel>
-                    <PrintValue>{car.fuelConsumption} l/100km</PrintValue>
+                    <PrintLabel>{t.vin}:</PrintLabel>
+                    <PrintValue style={{ fontSize: '10px' }}>{car.vin}</PrintValue>
                   </PrintRow>
                 )}
-                {car.co2Emissions && (
+                <PrintRow>
+                  <PrintLabel>{t.mileage}:</PrintLabel>
+                  <PrintValue>{car.mileage ? formatMileage(car.mileage) : 'N/A'}</PrintValue>
+                </PrintRow>
+              </SectionContent>
+            </PrintSection>
+
+            <PrintSection>
+              <SectionTitle>{t.fuel} / {t.transmission}</SectionTitle>
+              <SectionContent>
+                <PrintRow>
+                  <PrintLabel>{t.fuel}:</PrintLabel>
+                  <PrintValue>{car.fuelType || 'N/A'}</PrintValue>
+                </PrintRow>
+                <PrintRow>
+                  <PrintLabel>{t.transmission}:</PrintLabel>
+                  <PrintValue>{car.transmission || 'N/A'}</PrintValue>
+                </PrintRow>
+                {(car.power || car.powerKW) && (
                   <PrintRow>
-                    <PrintLabel>{t.co2Emissions}:</PrintLabel>
-                    <PrintValue>{car.co2Emissions} g/km</PrintValue>
+                    <PrintLabel>{t.power}:</PrintLabel>
+                    <PrintValue>{car.powerKW ? `${car.powerKW} kW` : car.power ? `${car.power} hp` : 'N/A'}</PrintValue>
                   </PrintRow>
                 )}
-                {car.euroStandard && (
+                {car.engineSize && (
                   <PrintRow>
-                    <PrintLabel>{t.euroStandard}:</PrintLabel>
-                    <PrintValue>{car.euroStandard}</PrintValue>
+                    <PrintLabel>{t.engineSize}:</PrintLabel>
+                    <PrintValue>{car.engineSize} cm³</PrintValue>
+                  </PrintRow>
+                )}
+                {car.driveType && (
+                  <PrintRow>
+                    <PrintLabel>{t.driveType}:</PrintLabel>
+                    <PrintValue>{car.driveType}</PrintValue>
+                  </PrintRow>
+                )}
+                {car.color && (
+                  <PrintRow>
+                    <PrintLabel>{t.color}:</PrintLabel>
+                    <PrintValue>{car.color}</PrintValue>
+                  </PrintRow>
+                )}
+                {(car.doors || car.numberOfDoors) && (
+                  <PrintRow>
+                    <PrintLabel>{t.doors}:</PrintLabel>
+                    <PrintValue>{car.numberOfDoors || car.doors || 'N/A'}</PrintValue>
+                  </PrintRow>
+                )}
+                {(car.seats || car.numberOfSeats) && (
+                  <PrintRow>
+                    <PrintLabel>{t.seats}:</PrintLabel>
+                    <PrintValue>{car.numberOfSeats || car.seats || 'N/A'}</PrintValue>
                   </PrintRow>
                 )}
               </SectionContent>
             </PrintSection>
+
+            <PrintSection>
+              <SectionTitle>{t.condition} / {t.serviceHistory}</SectionTitle>
+              <SectionContent>
+                {car.previousOwners && (
+                  <PrintRow>
+                    <PrintLabel>{t.previousOwners}:</PrintLabel>
+                    <PrintValue>{car.previousOwners}</PrintValue>
+                  </PrintRow>
+                )}
+                <PrintRow>
+                  <PrintLabel>{t.accidentFree}:</PrintLabel>
+                  <PrintValue>{car.accidentHistory ? (language === 'bg' ? 'Не' : 'No') : (language === 'bg' ? 'Да' : 'Yes')}</PrintValue>
+                </PrintRow>
+                <PrintRow>
+                  <PrintLabel>{t.serviceHistory}:</PrintLabel>
+                  <PrintValue>{car.serviceHistory ? (language === 'bg' ? 'Да' : 'Yes') : (language === 'bg' ? 'Не' : 'No')}</PrintValue>
+                </PrintRow>
+                {car.firstRegistrationDate && (
+                  <PrintRow>
+                    <PrintLabel>{t.firstRegistration}:</PrintLabel>
+                    <PrintValue>{new Date(car.firstRegistrationDate).toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US')}</PrintValue>
+                  </PrintRow>
+                )}
+                {car.inspectionValidUntil && (
+                  <PrintRow>
+                    <PrintLabel>{t.inspectionValid}:</PrintLabel>
+                    <PrintValue>{new Date(car.inspectionValidUntil).toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US')}</PrintValue>
+                  </PrintRow>
+                )}
+                <PrintRow>
+                  <PrintLabel>{t.warranty}:</PrintLabel>
+                  <PrintValue>{car.warranty ? (car.warrantyMonths ? `${car.warrantyMonths} ${language === 'bg' ? 'месеца' : 'months'}` : (language === 'bg' ? 'Да' : 'Yes')) : (language === 'bg' ? 'Не' : 'No')}</PrintValue>
+                </PrintRow>
+              </SectionContent>
+            </PrintSection>
+
+            {(car.fuelConsumption || car.co2Emissions || car.euroStandard) && (
+              <PrintSection>
+                <SectionTitle>{language === 'bg' ? 'Екология' : 'Ecology'}</SectionTitle>
+                <SectionContent>
+                  {car.fuelConsumption && (
+                    <PrintRow>
+                      <PrintLabel>{t.consumption}:</PrintLabel>
+                      <PrintValue>{car.fuelConsumption} l/100km</PrintValue>
+                    </PrintRow>
+                  )}
+                  {car.co2Emissions && (
+                    <PrintRow>
+                      <PrintLabel>{t.co2Emissions}:</PrintLabel>
+                      <PrintValue>{car.co2Emissions} g/km</PrintValue>
+                    </PrintRow>
+                  )}
+                  {car.euroStandard && (
+                    <PrintRow>
+                      <PrintLabel>{t.euroStandard}:</PrintLabel>
+                      <PrintValue>{car.euroStandard}</PrintValue>
+                    </PrintRow>
+                  )}
+                </SectionContent>
+              </PrintSection>
+            )}
+
+            <PrintSection style={{ color: '#000000' }}>
+              <SectionTitle style={{ color: '#000000' }}>{t.location}</SectionTitle>
+              <SectionContent style={{ color: '#000000' }}>
+                <PrintRow>
+                  <PrintLabel>{t.location}:</PrintLabel>
+                  <PrintValue>{car.city && car.region ? `${car.city}, ${car.region}` : car.city || car.region || 'N/A'}</PrintValue>
+                </PrintRow>
+                {car.postalCode && (
+                  <PrintRow>
+                    <PrintLabel>{language === 'bg' ? 'Пощенски код' : 'Postal Code'}:</PrintLabel>
+                    <PrintValue>{car.postalCode}</PrintValue>
+                  </PrintRow>
+                )}
+              </SectionContent>
+            </PrintSection>
+
+            <PrintSection style={{ color: '#000000' }}>
+              <SectionTitle style={{ color: '#000000' }}>{t.contact}</SectionTitle>
+              <SectionContent style={{ color: '#000000' }}>
+                {car.sellerName && (
+                  <PrintRow>
+                    <PrintLabel>{t.seller}:</PrintLabel>
+                    <PrintValue>{car.sellerName}</PrintValue>
+                  </PrintRow>
+                )}
+                {car.sellerPhone && (
+                  <PrintRow>
+                    <PrintLabel>{t.phone}:</PrintLabel>
+                    <PrintValue>{car.sellerPhone}</PrintValue>
+                  </PrintRow>
+                )}
+                {car.sellerEmail && (
+                  <PrintRow>
+                    <PrintLabel>{t.email}:</PrintLabel>
+                    <PrintValue style={{ fontSize: '11px', wordBreak: 'break-all', fontWeight: '900', color: '#000000' }}>{car.sellerEmail}</PrintValue>
+                  </PrintRow>
+                )}
+                {car.companyName && (
+                  <PrintRow>
+                    <PrintLabel>{language === 'bg' ? 'Фирма' : 'Company'}:</PrintLabel>
+                    <PrintValue>{car.companyName}</PrintValue>
+                  </PrintRow>
+                )}
+              </SectionContent>
+            </PrintSection>
+          </PrintContent>
+
+          <PrintFooter>
+            <div style={{ color: '#666', fontWeight: '600' }}>Koli One - {window.location.origin}</div>
+            <div style={{ color: '#666', fontWeight: '600' }}>{new Date().toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US')}</div>
+          </PrintFooter>
+
+          {/* الختم الاحترافي لمعلومات البائع */}
+          {sellerInfo && (
+            <div style={{
+              position: 'absolute',
+              top: '-168px',
+              right: '10mm',
+              bottom: '10mm',
+              left: '368px',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(6, 1fr)',
+              gridTemplateRows: 'repeat(5, 1fr)',
+              width: 'fit-content',
+              height: 'fit-content',
+              transform: 'scale(0.7)',
+              transformOrigin: 'right bottom',
+              zIndex: 9999
+            }}>
+              <IdentityStamp
+                firstName={sellerInfo.firstName || car.sellerName?.split(' ')[0] || 'SELLER'}
+                lastName={sellerInfo.lastName || car.sellerName?.split(' ').slice(1).join(' ') || 'NAME'}
+                email={sellerInfo.email || car.sellerEmail || 'EMAIL@EXAMPLE.COM'}
+                phone={sellerInfo.phoneNumber || car.sellerPhone || '+359 00 000 000'}
+                region={sellerInfo.region || car.region || 'REGION'}
+                city={sellerInfo.city || car.city || 'CITY'}
+                address={sellerInfo.address || 'ADDRESS'}
+                numericId={sellerInfo.numericId || 0}
+                isDark={false}
+              />
+            </div>
           )}
-
-          <PrintSection style={{ color: '#000000' }}>
-            <SectionTitle style={{ color: '#000000' }}>{t.location}</SectionTitle>
-            <SectionContent style={{ color: '#000000' }}>
-              <PrintRow>
-                <PrintLabel>{t.location}:</PrintLabel>
-                <PrintValue>{car.city && car.region ? `${car.city}, ${car.region}` : car.city || car.region || 'N/A'}</PrintValue>
-              </PrintRow>
-              {car.postalCode && (
-                <PrintRow>
-                  <PrintLabel>{language === 'bg' ? 'Пощенски код' : 'Postal Code'}:</PrintLabel>
-                  <PrintValue>{car.postalCode}</PrintValue>
-                </PrintRow>
-              )}
-            </SectionContent>
-          </PrintSection>
-
-          <PrintSection style={{ color: '#000000' }}>
-            <SectionTitle style={{ color: '#000000' }}>{t.contact}</SectionTitle>
-            <SectionContent style={{ color: '#000000' }}>
-              {car.sellerName && (
-                <PrintRow>
-                  <PrintLabel>{t.seller}:</PrintLabel>
-                  <PrintValue>{car.sellerName}</PrintValue>
-                </PrintRow>
-              )}
-              {car.sellerPhone && (
-                <PrintRow>
-                  <PrintLabel>{t.phone}:</PrintLabel>
-                  <PrintValue>{car.sellerPhone}</PrintValue>
-                </PrintRow>
-              )}
-              {car.sellerEmail && (
-                <PrintRow>
-                  <PrintLabel>{t.email}:</PrintLabel>
-                  <PrintValue style={{ fontSize: '11px', wordBreak: 'break-all', fontWeight: '900', color: '#000000' }}>{car.sellerEmail}</PrintValue>
-                </PrintRow>
-              )}
-              {car.companyName && (
-                <PrintRow>
-                  <PrintLabel>{language === 'bg' ? 'Фирма' : 'Company'}:</PrintLabel>
-                  <PrintValue>{car.companyName}</PrintValue>
-                </PrintRow>
-              )}
-            </SectionContent>
-          </PrintSection>
-        </PrintContent>
-
-        <PrintFooter>
-          <div style={{ color: '#666', fontWeight: '600' }}>Koli One - {window.location.origin}</div>
-          <div style={{ color: '#666', fontWeight: '600' }}>{new Date().toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US')}</div>
-        </PrintFooter>
-
-        {/* الختم الاحترافي لمعلومات البائع */}
-        {sellerInfo && (
-          <div style={{ 
-            position: 'absolute', 
-            top: '-168px',
-            right: '10mm',
-            bottom: '10mm',
-            left: '368px',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(6, 1fr)',
-            gridTemplateRows: 'repeat(5, 1fr)',
-            width: 'fit-content',
-            height: 'fit-content',
-            transform: 'scale(0.7)',
-            transformOrigin: 'right bottom',
-            zIndex: 9999
-          }}>
-            <IdentityStamp
-              firstName={sellerInfo.firstName || car.sellerName?.split(' ')[0] || 'SELLER'}
-              lastName={sellerInfo.lastName || car.sellerName?.split(' ').slice(1).join(' ') || 'NAME'}
-              email={sellerInfo.email || car.sellerEmail || 'EMAIL@EXAMPLE.COM'}
-              phone={sellerInfo.phoneNumber || car.sellerPhone || '+359 00 000 000'}
-              region={sellerInfo.region || car.region || 'REGION'}
-              city={sellerInfo.city || car.city || 'CITY'}
-              address={sellerInfo.address || 'ADDRESS'}
-              numericId={sellerInfo.numericId || 0}
-              isDark={false}
-            />
-          </div>
-        )}
         </PrintContainer>
 
         {/* أزرار الطباعة أسفل الورقة */}
@@ -816,7 +821,8 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
           </ActionButton>
         </PrintActions>
       </PrintOverlay>
-    </>
+    </>,
+    document.body
   );
 };
 
