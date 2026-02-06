@@ -463,6 +463,27 @@ class RealtimeMessagingService {
   }
 
   /**
+   * Get a single channel by ID directly from RTDB
+   * جلب قناة واحدة بواسطة المعرف مباشرة من RTDB
+   */
+  async getChannelById(channelId: string): Promise<RealtimeChannel | null> {
+    try {
+      const channelRef = ref(this.db, `channels/${channelId}`);
+      const snapshot = await get(channelRef);
+
+      if (!snapshot.exists()) {
+        logger.debug('[RealtimeMessaging] Channel not found', { channelId });
+        return null;
+      }
+
+      return { id: channelId, ...snapshot.val() } as RealtimeChannel;
+    } catch (error) {
+      logger.error('[RealtimeMessaging] Failed to fetch channel', error as Error, { channelId });
+      return null;
+    }
+  }
+
+  /**
    * Subscribe to user's channels (real-time updates)
    * الاشتراك في تحديثات قنوات المستخدم
    */

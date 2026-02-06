@@ -137,9 +137,25 @@ export function useRealtimeMessaging(
     setError(null);
 
     try {
-      // Find channel in list
-      const channel = channels.find((c) => c.id === channelId);
-      if (channel) {
+      // Find channel in list first (fast path)
+      let channel = channels.find((c) => c.id === channelId) || null;
+
+      // If not in list, fetch directly from RTDB (handles race condition
+      // where channel was just created but subscription hasn't fired yet)
+      if (!channel) {
+        logger.debug('[useRealtimeMessaging] Channel not in list, fetching directly', { channelId });
+        channel = await realtimeMessagingService.getChannelById(channelId);
+
+        // Add to local channels list so subsequent renders find it
+        if (channel && isActiveRef.current) {
+          setChannels((prev) => {
+            if (prev.find((c) => c.id === channelId)) return prev;
+            return [channel!, ...prev];
+          });
+        }
+      }
+
+      if (channel && isActiveRef.current) {
         setCurrentChannel(channel);
       }
 

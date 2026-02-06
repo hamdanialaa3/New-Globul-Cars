@@ -9,7 +9,7 @@
  * @date January 8, 2026
  */
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import styledBase, { keyframes } from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -199,6 +199,9 @@ export const RealtimeMessagesPage: React.FC = () => {
   // Get current channel from URL
   const channelIdFromUrl = searchParams.get('channel');
   
+  // Track which channel IDs we already attempted to select (prevent loops)
+  const attemptedChannelRef = useRef<string | null>(null);
+  
   // Mobile state
   const [showChat, setShowChat] = useState(!!channelIdFromUrl);
   
@@ -290,15 +293,21 @@ export const RealtimeMessagesPage: React.FC = () => {
   }, [setSearchParams]);
   
   // Auto-select channel from URL on mount
+  // Works even if channels list hasn't loaded yet —
+  // selectChannel will fetch directly from RTDB if needed
   useEffect(() => {
-    if (channelIdFromUrl && channels.length > 0) {
-      const channelExists = channels.find((c) => c.id === channelIdFromUrl);
-      if (channelExists) {
-        selectChannel(channelIdFromUrl);
-        setShowChat(true);
-      }
-    }
-  }, [channelIdFromUrl, channels, selectChannel]);
+    if (!channelIdFromUrl || !currentUserNumericId) return;
+
+    // Already selected this channel
+    if (currentChannel?.id === channelIdFromUrl) return;
+
+    // Already attempted this channel (prevent retry loop if not found in RTDB)
+    if (attemptedChannelRef.current === channelIdFromUrl) return;
+
+    attemptedChannelRef.current = channelIdFromUrl;
+    selectChannel(channelIdFromUrl);
+    setShowChat(true);
+  }, [channelIdFromUrl, currentUserNumericId, channels, selectChannel, currentChannel]);
   
   // Log errors
   useEffect(() => {
