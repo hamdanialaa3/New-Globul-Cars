@@ -1,0 +1,134 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "LLM Output Schema for Social Post",
+    "type": "object",
+    "required": [
+        "language",
+        "variants",
+        "primary"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "language": {
+            "type": "string",
+            "enum": [
+                "ar",
+                "en"
+            ]
+        },
+        "primary": {
+            "type": "object",
+            "required": [
+                "title",
+                "description",
+                "hashtags",
+                "cta"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "maxLength": 60
+                },
+                "description": {
+                    "type": "string",
+                    "maxLength": 220
+                },
+                "hashtags": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 5,
+                    "items": {
+                        "type": "string",
+                        "pattern": "^#\\S+"
+                    }
+                },
+                "cta": {
+                    "type": "string",
+                    "maxLength": 60
+                }
+            }
+        },
+        "variants": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 3,
+            "items": {
+                "type": "object",
+                "required": [
+                    "title",
+                    "description",
+                    "hashtags"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 60
+                    },
+                    "description": {
+                        "type": "string",
+                        "maxLength": 220
+                    },
+                    "hashtags": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 5,
+                        "items": {
+                            "type": "string",
+                            "pattern": "^#\\S+"
+                        }
+                    }
+                }
+            }
+        },
+        "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "ad_id": {
+                    "type": "string"
+                },
+                "confidence": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                },
+                "requires_review": {
+                    "type": "boolean"
+                }
+            }
+        }
+    },
+    "examples": [
+        {
+            "language": "ar",
+            "primary": {
+                "title": "تويوتا كورولا 2018 — 12,000 BGN",
+                "description": "تويوتا كورولا موديل 2018 بحالة ممتازة، 120,000 كم، موقع: صوفيا. شاهد التفاصيل الآن.",
+                "hashtags": [
+                    "#Toyota",
+                    "#Corolla",
+                    "#Sofia"
+                ],
+                "cta": "شاهد التفاصيل"
+            },
+            "variants": [
+                {
+                    "title": "تويوتا كورولا 2018 — فرصة",
+                    "description": "تويوتا كورولا بحالة جيدة، صيانة كاملة، 120,000 كم. تواصل عبر الموقع.",
+                    "hashtags": [
+                        "#تويوتا",
+                        "#كورولا",
+                        "#بيع"
+                    ]
+                }
+            ],
+            "meta": {
+                "ad_id": "ad_123",
+                "confidence": 0.92,
+                "requires_review": false
+            }
+        }
+    ]
+}
