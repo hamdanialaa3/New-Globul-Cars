@@ -262,7 +262,7 @@ export const SimilarCarsWidget: React.FC<SimilarCarsWidgetProps> = ({ currentCar
             <CarCard key={car.id} onClick={() => handleCarClick(car)}>
               <ImageWrapper>
                 <OptimizedImage
-                  src={car.images && car.images.length > 0 ? (typeof car.images[0] === 'string' ? car.images[0] : URL.createObjectURL(car.images[0])) : '/assets/car-placeholder.png'}
+                  src={car.images && car.images.length > 0 ? car.images[car.featuredImageIndex || 0] || car.images[0] : '/images/placeholder.png'}
                   alt={`${car.make} ${car.model}`}
                 />
               </ImageWrapper>

@@ -126,6 +126,7 @@ export class SellWorkflowTransformers {
       // Images
       images: imageUrls,
       imagesCount: imageUrls.length,
+      featuredImageIndex: typeof workflowData.mainImageIndex === 'number' ? workflowData.mainImageIndex : 0,
 
       // Pricing
       price: typeof workflowData.price === 'string' ? parseFloat(workflowData.price) : workflowData.price,

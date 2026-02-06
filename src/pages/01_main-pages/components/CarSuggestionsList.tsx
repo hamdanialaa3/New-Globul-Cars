@@ -496,7 +496,7 @@ const CarSuggestionsList: React.FC<CarSuggestionsListProps> = ({
                       alt={`${car.make} ${car.model}`}
                       loading="lazy"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = '/images/placeholder-car.jpg';
+                        (e.target as HTMLImageElement).src = '/images/placeholder.png';
                       }}
                     />
                   ) : (

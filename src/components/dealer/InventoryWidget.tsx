@@ -177,7 +177,7 @@ export const InventoryWidget: React.FC<InventoryWidgetProps> = ({ listings }) =>
                             <tr key={car.id}>
                                 <Td>
                                     <CarInfo>
-                                        <CarImage src={car.mainImage || '/default-car.png'} alt={`${car.make} ${car.model}`} />
+                                        <CarImage src={car.images?.[car.featuredImageIndex || 0] || car.mainImage || '/images/placeholder.png'} alt={`${car.make} ${car.model}`} />
                                         <CarDetails>
                                             <CarTitle>{car.make} {car.model}</CarTitle>
                                             <CarSubtitle>{car.year}</CarSubtitle>

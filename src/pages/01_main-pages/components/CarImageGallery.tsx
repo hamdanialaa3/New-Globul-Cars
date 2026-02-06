@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Crown } from 'lucide-react';
 import { CarIcon } from '../../../components/icons/CarIcon';
 import { CarListing } from '../../../types/CarListing';
 import {
@@ -42,6 +43,7 @@ interface CarImageGalleryProps {
   onDragLeave: () => void;
   onDrop: (e: React.DragEvent) => void;
   onRemovePhoto: (index: number) => void;
+  onSetFeatured?: (index: number) => void;
 }
 
 export const CarImageGallery: React.FC<CarImageGalleryProps> = ({
@@ -58,8 +60,10 @@ export const CarImageGallery: React.FC<CarImageGalleryProps> = ({
   onDragLeave,
   onDrop,
   onRemovePhoto,
+  onSetFeatured,
 }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const featuredIdx = car.featuredImageIndex ?? 0;
   const previewUrlsRef = useRef<Map<number, string>>(new Map());
 
   // Cleanup preview URLs for File objects
@@ -137,17 +141,34 @@ export const CarImageGallery: React.FC<CarImageGalleryProps> = ({
                 key={index}
                 $isActive={index === selectedImageIndex}
                 onClick={() => setSelectedImageIndex(index)}
+                style={index === featuredIdx ? { border: '2px solid #d4a017', boxShadow: '0 0 6px rgba(212,160,23,0.4)' } : undefined}
               >
+                {index === featuredIdx && (
+                  <span style={{ position: 'absolute', top: 2, left: 2, zIndex: 3, background: 'rgba(212,160,23,0.9)', color: '#fff', fontSize: '0.6rem', padding: '1px 4px', borderRadius: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Crown size={10} />
+                    {language === 'bg' ? 'Основна' : 'Featured'}
+                  </span>
+                )}
+                {isOwner && onSetFeatured && index !== featuredIdx && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onSetFeatured(index); }}
+                    title={language === 'bg' ? 'Задай като основна' : 'Set as featured'}
+                    style={{ position: 'absolute', top: 2, right: 2, zIndex: 3, background: 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '50%', width: 24, height: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
+                  >
+                    <Crown size={12} />
+                  </button>
+                )}
                 <ThumbnailImage
                   src={typeof image === 'string' ? String(image) : previewUrlsRef.current.get(index) || ''}
                   alt={getAltText(index)}
+                  onError={(e) => { (e.target as HTMLImageElement).src = '/images/placeholder.png'; }}
                 />
                 {isEditMode && isOwner && (
                   <PhotoRemoveButton
                     onClick={(e) => handleDeleteImage(e, typeof image === 'string' ? image : '')}
                     title={language === 'bg' ? 'Изтрий снимка' : 'Delete image'}
                   >
-                    ×
+                    x
                   </PhotoRemoveButton>
                 )}
               </ThumbnailItem>

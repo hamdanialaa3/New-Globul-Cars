@@ -926,7 +926,7 @@ const FavoritesPage: React.FC = () => {
             >
               <CarImage
                 view={view}
-                image={fav.carData.image || '/placeholder-car.jpg'}
+                image={fav.carData.image || '/images/placeholder.png'}
               >
                 <BadgeOverlay>
                   <div>

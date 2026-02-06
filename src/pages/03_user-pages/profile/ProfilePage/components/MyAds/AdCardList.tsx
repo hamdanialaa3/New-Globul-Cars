@@ -324,22 +324,26 @@ export const AdCardList: React.FC<AdCardListProps> = ({
         // Enhanced image URL handling - try multiple sources
         let imageUrl = '';
         
-        // Try mainImage first
-        if (car.mainImage) {
+        // Try images array with featuredImageIndex first
+        if (car.images && car.images.length > 0) {
+          const idx = car.featuredImageIndex || 0;
+          const featuredImg = car.images[idx];
+          if (typeof featuredImg === 'string' && featuredImg.length > 0) {
+            imageUrl = featuredImg;
+          } else {
+            const firstImage = car.images[0];
+            if (typeof firstImage === 'string') {
+              imageUrl = firstImage;
+            }
+          }
+        }
+        
+        // Try mainImage if images array failed
+        if (!imageUrl && car.mainImage) {
           if (typeof car.mainImage === 'string') {
             imageUrl = car.mainImage;
           } else if (car.mainImage && typeof car.mainImage === 'object') {
             imageUrl = (car.mainImage as any).url || (car.mainImage as any).src || '';
-          }
-        }
-        
-        // Try images array if mainImage failed
-        if (!imageUrl && car.images && car.images.length > 0) {
-          const firstImage = car.images[0];
-          if (typeof firstImage === 'string') {
-            imageUrl = firstImage;
-          } else if (firstImage && typeof firstImage === 'object') {
-            imageUrl = (firstImage as any).url || (firstImage as any).src || '';
           }
         }
         

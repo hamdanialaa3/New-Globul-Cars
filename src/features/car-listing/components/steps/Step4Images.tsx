@@ -270,7 +270,7 @@ export const Step4Images: React.FC = () => {
     } finally {
       setIsCompressing(false);
     }
-  }, [imageFiles, addImages, setValue, updateStepData, markStepComplete, mainImageIndex, language]);
+  }, [imageFiles, addImages, updateStepData, markStepComplete, mainImageIndex, language]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();

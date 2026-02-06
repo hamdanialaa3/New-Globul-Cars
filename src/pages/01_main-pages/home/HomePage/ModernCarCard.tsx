@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Heart, MapPin, Gauge, Calendar, Fuel } from 'lucide-react';
 import { CarListing } from '../../../../types/CarListing';
 import { useFavorites } from '../../../../hooks/useFavorites';
+import { getCarDisplayImage, CAR_PLACEHOLDER } from '../../../../utils/getCarDisplayImage';
 import RealisticPaperclipBadge from '../../../../components/SoldBadge/RealisticPaperclipBadge';
 
 // ✅ CONSTITUTION: /car/{userId}/{carLocalId}
@@ -47,7 +48,7 @@ const ModernCarCard: React.FC<ModernCarCardProps> = ({ car }) => {
       {/* Image */}
       <div className="relative w-full bg-gray-100 overflow-hidden" style={{aspectRatio:'1/1',height:'auto'}}>
         <img
-          src={imageError ? '/images/placeholder.png' : (car.images?.[car.featuredImageIndex || 0] || car.images?.[0] || car.image || '/images/placeholder.png')}
+          src={imageError ? CAR_PLACEHOLDER : getCarDisplayImage(car)}
           alt={`${car.brand || car.make} ${car.model}`}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
           style={{aspectRatio:'1/1',width:'100%',height:'100%'}}

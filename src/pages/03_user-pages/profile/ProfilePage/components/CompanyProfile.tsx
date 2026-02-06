@@ -458,13 +458,13 @@ export const CompanyProfile: React.FC<CompanyProfileProps> = ({
             {userCars.map((car: any) => (
               <CarCard key={car.id}>
                 <CarImage 
-                  src={car.imageUrl || car.mainImage || '/assets/images/car-placeholder.jpg'} 
+                  src={car.images?.[car.featuredImageIndex || 0] || car.imageUrl || car.mainImage || '/images/placeholder.png'} 
                   alt={`${car.make} ${car.model}`}
                   onError={(e) => {
                     const img = e.target as HTMLImageElement;
                     if (!img.dataset.errorHandled) {
                       img.dataset.errorHandled = 'true';
-                      img.src = '/assets/images/car-placeholder.svg';
+                      img.src = '/images/placeholder.png';
                     }
                   }}
                 />

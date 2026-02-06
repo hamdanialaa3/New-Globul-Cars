@@ -400,7 +400,7 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
         year: car.year,
         price: car.price,
         currency: car.currency || 'EUR',
-        image: getMainImage() || '/placeholder-car.jpg',
+        image: getMainImage() || '/images/placeholder.png',
         mileage: car.mileage || 0,
         location: car.location || '',
         fuelType: car.fuelType || '',
@@ -445,7 +445,7 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
             src={getMainImage()!}
             alt={`${car.make} ${car.model}`}
             loading="lazy"
-            onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder-car.jpg'; }}
+            onError={(e) => { (e.target as HTMLImageElement).src = '/images/placeholder.png'; }}
           />
         ) : (
             <div style={{ width: '100%', height: '100%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

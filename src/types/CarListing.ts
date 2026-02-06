@@ -129,6 +129,8 @@ export interface CarListing {
 
   // Images
   images?: string[];
+  mainImage?: string;
+  featuredImageIndex?: number;
 
   // Pricing
   price: number;

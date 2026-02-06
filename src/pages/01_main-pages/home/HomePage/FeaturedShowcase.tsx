@@ -27,6 +27,7 @@ import { getFeaturedCars } from '../../../../services/car/unified-car-queries';
 import { UnifiedCar } from '../../../../services/car/unified-car-types';
 import { logger } from '../../../../services/logger-service';
 import { useFavorites } from '../../../../hooks/useFavorites';
+import { getCarDisplayImage } from '../../../../utils/getCarDisplayImage';
 import PremiumHomeCarCard from '../../../../components/CarCard/PremiumHomeCarCard';
 
 // ============================================================================
@@ -84,9 +85,8 @@ const mapToDisplayCar = (car: UnifiedCar, language: string): DisplayCar => {
   // Get location
   const location = car.locationData?.city || car.location || (language === 'bg' ? 'България' : 'Bulgaria');
 
-  // Get main image - use featuredImageIndex if available, otherwise first image
-  const featuredIdx = car.featuredImageIndex || 0;
-  const image = car.mainImage || car.images?.[featuredIdx] || car.images?.[0] || '/images/placeholder.png';
+  // Get main image - use unified resolver
+  const image = getCarDisplayImage(car);
 
   return {
     id: car.id,

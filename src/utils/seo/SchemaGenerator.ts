@@ -108,7 +108,7 @@ export class SchemaGenerator {
         const { car, seller, url } = input;
 
         const imageUrls = car.images?.filter(Boolean) || [];
-        const primaryImage = imageUrls[0] || `${this.SITE_URL}/default-car.jpg`;
+        const primaryImage = imageUrls[0] || `${this.SITE_URL}/images/placeholder.png`;
 
         return {
             '@context': 'https://schema.org',

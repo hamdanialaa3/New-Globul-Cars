@@ -54,7 +54,7 @@ const CompactCarCard: React.FC<CompactCarCardProps> = ({
 }) => {
   const [imageError, setImageError] = React.useState(false);
   const detailsUrl = getCarDetailsUrl(car);
-  const mainImage = imageError ? '/images/placeholder-car.jpg' : (car.images?.[car.featuredImageIndex || 0] || car.images?.[0] || car.mainImage?.url || '/images/placeholder-car.jpg');
+  const mainImage = imageError ? '/images/placeholder.png' : (car.images?.[car.featuredImageIndex || 0] || car.images?.[0] || car.mainImage?.url || '/images/placeholder.png');
   
   // Status determination
   const isActive = car.isActive !== false && car.isSold !== true;

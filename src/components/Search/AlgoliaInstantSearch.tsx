@@ -500,7 +500,7 @@ const Hit: React.FC<HitProps> = ({ hit }) => {
     <HitCard onClick={handleClick}>
       <HitImage>
         <img
-          src={hit.images?.[0] || '/assets/images/placeholder-car.jpg'}
+          src={hit.images?.[0] || '/images/placeholder.png'}
           alt={`${hit.make} ${hit.model}`}
           loading="lazy"
         />

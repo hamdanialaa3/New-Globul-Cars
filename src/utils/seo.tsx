@@ -134,7 +134,7 @@ export const generateCarSchema = (car: any) => ({
   '@type': 'Car',
   name: `${car.year} ${car.make} ${car.model}`,
   description: car.description,
-  image: car.images?.[car.featuredImageIndex || 0] || car.images?.[0] || '/default-car.jpg',
+  image: car.images?.[car.featuredImageIndex || 0] || car.images?.[0] || '/images/placeholder.png',
   brand: {
     '@type': 'Brand',
     name: car.make

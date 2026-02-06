@@ -265,7 +265,7 @@ const BattleModeComparison: React.FC<BattleModeComparisonProps> = ({
           <CarColumn>
             <CarHeader>
               <CarImage 
-                src={carA.imageUrl || '/placeholder-car.jpg'} 
+                src={carA.imageUrl || '/images/placeholder.png'} 
                 alt={`${carA.make} ${carA.model}`}
               />
               <CarTitle>{carA.make} {carA.model}</CarTitle>
@@ -322,7 +322,7 @@ const BattleModeComparison: React.FC<BattleModeComparisonProps> = ({
           <CarColumn>
             <CarHeader>
               <CarImage 
-                src={carB.imageUrl || '/placeholder-car.jpg'} 
+                src={carB.imageUrl || '/images/placeholder.png'} 
                 alt={`${carB.make} ${carB.model}`}
               />
               <CarTitle>{carB.make} {carB.model}</CarTitle>

@@ -1931,7 +1931,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
       });
     }
   };
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(car.featuredImageIndex ?? 0);
   const [showPhoneNumber, setShowPhoneNumber] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [isLinkCopied, setIsLinkCopied] = useState(false);
@@ -1939,16 +1939,17 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   const shareMenuRef = useRef<HTMLDivElement>(null);
   const shareButtonRef = useRef<HTMLButtonElement>(null);
   const [featuredImageIndex, setFeaturedImageIndex] = useState<number>(
-    (car as any).featuredImageIndex ?? 0
+    car.featuredImageIndex ?? 0
   );
   const [isSettingFeatured, setIsSettingFeatured] = useState(false);
   const [settingFeaturedIndex, setSettingFeaturedIndex] = useState<number | null>(null);
+  const [lightboxImageLoaded, setLightboxImageLoaded] = useState(false);
   
-  // ✅ Sync featuredImageIndex with car prop when it changes (e.g., after page reload)
+  // Sync featuredImageIndex with car prop when it changes (e.g., after page reload)
   useEffect(() => {
-    const carFeaturedIndex = (car as any).featuredImageIndex ?? 0;
+    const carFeaturedIndex = car.featuredImageIndex ?? 0;
     setFeaturedImageIndex(carFeaturedIndex);
-  }, [car.id, (car as any).featuredImageIndex]);
+  }, [car.id, car.featuredImageIndex]);
   
   // Lightbox state
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -1958,7 +1959,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
-  const images = car.images && car.images.length > 0 ? car.images : ['/assets/placeholder-car.jpg'];
+  const images = car.images && car.images.length > 0 ? car.images : ['/images/placeholder.png'];
 
   const handleSetFeatured = async (index: number, event: React.MouseEvent) => {
     event.stopPropagation();
@@ -2054,6 +2055,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
     setLightboxIndex(index);
     setZoomLevel(1);
     setPanPosition({ x: 0, y: 0 });
+    setLightboxImageLoaded(false);
     setLightboxOpen(true);
     document.body.style.overflow = 'hidden';
   };
@@ -2066,12 +2068,14 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   };
 
   const handleLightboxPrev = () => {
+    setLightboxImageLoaded(false);
     setLightboxIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
     setZoomLevel(1);
     setPanPosition({ x: 0, y: 0 });
   };
 
   const handleLightboxNext = () => {
+    setLightboxImageLoaded(false);
     setLightboxIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
     setZoomLevel(1);
     setPanPosition({ x: 0, y: 0 });
@@ -2462,7 +2466,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
             <ImageGallery>
               <MainImageContainer>
                 <MainImage
-                  src={typeof images[currentImageIndex] === 'string' ? images[currentImageIndex] : URL.createObjectURL(images[currentImageIndex] as File)}
+                  src={images[currentImageIndex] || '/images/placeholder.png'}
                   alt={`${car.make} ${car.model}`}
                   onClick={() => openLightbox(currentImageIndex)}
                   style={{ cursor: 'zoom-in' }}
@@ -2511,7 +2515,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
                         </SetFeaturedButton>
                       )}
                       <OptimizedImage
-                        src={typeof img === 'string' ? img : URL.createObjectURL(img as File)}
+                        src={img || '/images/placeholder.png'}
                         alt={`Thumbnail ${index + 1}`}
                         className="optimized-image"
                         width={200}
@@ -3093,21 +3097,26 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
+            {!lightboxImageLoaded && (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '200px', minHeight: '200px' }}>
+                <div style={{ width: '40px', height: '40px', border: '3px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+              </div>
+            )}
             <img
-              src={typeof images[lightboxIndex] === 'string' 
-                ? images[lightboxIndex] 
-                : URL.createObjectURL(images[lightboxIndex] as File)}
+              src={images[lightboxIndex] || '/images/placeholder.png'}
               alt={`${car.make} ${car.model} - ${lightboxIndex + 1}`}
               draggable={false}
+              onLoad={() => setLightboxImageLoaded(true)}
               onError={(e) => {
                 logger.error('Lightbox image failed to load', null, { 
                   index: lightboxIndex, 
                   src: (e.target as HTMLImageElement).src 
                 });
-                // Try showing a placeholder
                 (e.target as HTMLImageElement).src = '/images/placeholder.png';
+                setLightboxImageLoaded(true);
               }}
-              style={{ display: 'block', minWidth: '200px', minHeight: '200px' }}
+              style={{ display: lightboxImageLoaded ? 'block' : 'none', minWidth: '200px', minHeight: '200px' }}
             />
           </LightboxImageContainer>
 
@@ -3134,7 +3143,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
                   }}
                 >
                   <img
-                    src={typeof img === 'string' ? img : URL.createObjectURL(img as File)}
+                    src={typeof img === 'string' && img.length > 0 ? img : '/images/placeholder.png'}
                     alt={`Thumbnail ${index + 1}`}
                   />
                 </LightboxThumb>

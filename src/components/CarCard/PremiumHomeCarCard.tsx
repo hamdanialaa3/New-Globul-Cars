@@ -319,7 +319,7 @@ export const PremiumHomeCarCard: React.FC<PremiumHomeCarCardProps> = ({ car }) =
       const img = car.images[featuredIdx] || car.images[0];
       return typeof img === 'string' ? img : URL.createObjectURL(img);
     }
-    return '/placeholder-car.jpg';
+    return '/images/placeholder.png';
   };
 
   const getCarUrl = (): string => {
@@ -415,7 +415,7 @@ export const PremiumHomeCarCard: React.FC<PremiumHomeCarCardProps> = ({ car }) =
             src={imageSrc}
             alt={`${car.make} ${car.model}`}
             loading="lazy"
-            onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder-car.jpg'; }}
+            onError={(e) => { (e.target as HTMLImageElement).src = '/images/placeholder.png'; }}
         />
       </ImageWrapper>
 

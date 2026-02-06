@@ -320,7 +320,7 @@ const ProfileOverview: React.FC = () => {
             model: car.model || '',
             year: car.year || 2000,
             price: car.price || 0,
-            mainImage: car.mainImage || car.imageUrl,
+            mainImage: car.images?.[car.featuredImageIndex || 0] || car.mainImage || car.imageUrl,
             imageUrl: car.imageUrl,
             status: (car.status as any) || 'active',
             views: car.views

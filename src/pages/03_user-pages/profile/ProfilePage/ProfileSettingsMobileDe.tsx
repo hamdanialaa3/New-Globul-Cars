@@ -378,13 +378,13 @@ const ProfileSettingsMobileDe: React.FC = () => {
                   onClick={() => navigate(carUrl)}
                 >
                   <S.VehicleImage 
-                    src={car.images?.[car.featuredImageIndex || 0] || car.images?.[0] || car.mainImage || car.photoURL || '/placeholder-car.jpg'} 
+                    src={car.images?.[car.featuredImageIndex || 0] || car.images?.[0] || car.mainImage || car.photoURL || '/images/placeholder.png'} 
                     alt={car.make && car.model ? `${car.make} ${car.model}` : 'Vehicle'}
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       if (!target.dataset.errorHandled) {
                         target.dataset.errorHandled = 'true';
-                        target.src = '/assets/images/car-placeholder.svg';
+                        target.src = '/images/placeholder.png';
                       }
                     }}
                   />

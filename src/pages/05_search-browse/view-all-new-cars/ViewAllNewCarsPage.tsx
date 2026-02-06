@@ -375,7 +375,7 @@ const ViewAllNewCarsPage: React.FC = () => {
                 onClick={() => window.location.href = `/car/${car.sellerNumericId}/${car.carNumericId}`}
               >
                 <CarImage
-                  $image={car.images?.[car.featuredImageIndex || 0] || car.images?.[0] || '/placeholder-car.jpg'}
+                  $image={car.images?.[car.featuredImageIndex || 0] || car.images?.[0] || '/images/placeholder.png'}
                   $viewMode={viewMode}
                 />
                 <CarInfo>

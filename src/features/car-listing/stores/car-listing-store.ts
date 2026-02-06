@@ -193,26 +193,36 @@ export const useCarListingStore = create<CarListingState>()(
         // Image Actions
         addImages: async (files) => {
           const { imageFiles, updateStepData } = get();
+          const currentMainIndex = get().formData.step4?.mainImageIndex ?? 0;
           const newFiles = [...imageFiles, ...files].slice(0, 20); // Max 20 images
           
           set((state) => {
             state.imageFiles = newFiles;
           });
           
-          // Update form data
+          // Update form data - preserve the user's main image selection
           updateStepData('step4', {
             images: newFiles,
-            mainImageIndex: 0,
+            mainImageIndex: currentMainIndex,
           } as Partial<Step4Data>);
         },
         
         removeImage: (index) => set((state) => {
+          const currentMain = get().formData.step4?.mainImageIndex ?? 0;
           state.imageFiles = state.imageFiles.filter((_, i) => i !== index);
           const { updateStepData } = get();
           if (state.imageFiles.length > 0) {
+            // Correctly adjust mainImageIndex relative to removed image
+            let newMain = currentMain;
+            if (index < currentMain) {
+              newMain = currentMain - 1; // shift down
+            } else if (index === currentMain) {
+              newMain = 0; // reset to first if main was deleted
+            }
+            newMain = Math.min(newMain, state.imageFiles.length - 1);
             updateStepData('step4', {
               images: state.imageFiles,
-              mainImageIndex: Math.min(index, state.imageFiles.length - 1),
+              mainImageIndex: newMain,
             } as Partial<Step4Data>);
           }
         }),

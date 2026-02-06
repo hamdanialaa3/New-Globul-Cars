@@ -26,7 +26,7 @@ const mockCarData = [
     technicalInspectionValid: true,
     description: 'Отличен автомобил в перфектно състояние. Нисък пробег, пълен сервиз.',
     features: ['Климатроник', 'Навигация', 'Камера за обратно виждане', 'LED фарове'],
-    images: ['/placeholder-car.jpg'],
+    images: ['/images/placeholder.png'],
     seller: {
       id: 'seller1',
       name: 'Автокъща София',
@@ -50,7 +50,7 @@ const mockCarData = [
     technicalInspectionValid: true,
     description: 'Луксозен седан с всички екстри. Перфектно състояние.',
     features: ['Панорамен покрив', 'Масажни седалки', '360° камера', 'Адаптивен круиз контрол'],
-    images: ['/placeholder-car.jpg'],
+    images: ['/images/placeholder.png'],
     seller: {
       id: 'seller2',
       name: 'Мерцедес Център',
@@ -424,7 +424,7 @@ const CarDetails: React.FC = () => {
 
       <ImageGallery>
         <MainImage
-          src={car.images?.[currentImageIndex] || '/placeholder-car.jpg'}
+          src={car.images?.[currentImageIndex] || '/images/placeholder.png'}
           alt={`${car.make} ${car.model}`}
           loading={currentImageIndex === 0 ? "eager" : "lazy"}  // ⚡ First image eager, rest lazy
           decoding="async"  // ⚡ Non-blocking decode

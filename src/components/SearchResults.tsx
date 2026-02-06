@@ -499,7 +499,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
               <LazyImage
                 src={result.image}
                 alt={result.title}
-                placeholder="/placeholder-car.jpg"
+                placeholder="/images/placeholder.png"
               />
               <SearchResultBadges>
                 {result.isPromoted && (

@@ -8,6 +8,7 @@ import { userService } from '../../services/user/canonical-user.service';
 import { realtimeMessagingService } from '../../services/messaging/realtime';
 import { useCarViewTracking } from '../../hooks/useProfileTracking';
 import { unifiedCarService } from '../../services/car';
+import { SellWorkflowCollections } from '../../services/sell-workflow-collections';
 import DistanceIndicator from '../../components/DistanceIndicator';
 import StaticMapEmbed from '../../components/StaticMapEmbed';
 import CarDetailsMobileDEStyle from './components/CarDetailsMobileDEStyle';
@@ -183,6 +184,23 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
   };
 
   // Contact Method Handlers
+  const handleSetFeaturedImage = useCallback(async (index: number) => {
+    if (!car || !isOwner) return;
+    try {
+      const { doc, updateDoc } = await import('firebase/firestore');
+      const { db } = await import('../../firebaseConfig');
+      const collectionName = SellWorkflowCollections.getCollectionNameForVehicleType(
+        (car as any).vehicleType || 'car'
+      );
+      const carRef = doc(db, collectionName, car.id);
+      await updateDoc(carRef, { featuredImageIndex: index, updatedAt: new Date() });
+      setCar({ ...car, featuredImageIndex: index } as CarListing);
+      logger.info('Featured image updated in edit mode', { carId: car.id, index });
+    } catch (err) {
+      logger.error('Failed to set featured image', err as Error);
+    }
+  }, [car, isOwner, setCar]);
+
   const handleContactClick = useCallback(async (method: string) => {
     if (editHook.isEditMode) return;
 
@@ -590,6 +608,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
           onDragLeave={editHook.handleDragLeave}
           onDrop={editHook.handleDrop}
           onRemovePhoto={editHook.removePhoto}
+          onSetFeatured={handleSetFeaturedImage}
         />
 
         {editHook.isEditMode ? (

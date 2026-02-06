@@ -427,14 +427,14 @@ export function generateCarWebStory(car: any, sellerName: string): WebStoryData 
         title: `${car.make} ${car.model} ${car.year} - ${car.price}€`,
         publisher: 'Koli One',
         publisherLogo: 'https://koli.one/logo192.png',
-        posterImage: images[0] || 'https://koli.one/default-car.jpg',
+        posterImage: images[0] || 'https://koli.one/images/placeholder.png',
         publishedDate: car.createdAt || new Date().toISOString(),
         slides: [
             // Intro slide
             {
                 id: 'intro',
                 type: 'image' as const,
-                src: images[0] || 'https://koli.one/default-car.jpg',
+                src: images[0] || 'https://koli.one/images/placeholder.png',
                 headline: `${car.make} ${car.model}`,
                 description: `${car.year} • ${car.mileage?.toLocaleString() || 'N/A'} км`,
                 duration: 5,

@@ -102,7 +102,7 @@ const DealerProfile: React.FC<DealerProfileProps> = ({ user, userCars, isOwner }
               
               return (
                 <CarCard key={car.id} onClick={() => window.location.href = carUrl}>
-                  <CarImage src={car.imageUrl || car.mainImage || '/placeholder-car.jpg'} alt={car.title} />
+                  <CarImage src={car.images?.[car.featuredImageIndex || 0] || car.imageUrl || car.mainImage || '/images/placeholder.png'} alt={car.title} />
                   <CarInfo>
                     <CarTitle>{car.make} {car.model}</CarTitle>
                     <div style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.5rem' }}>

@@ -1042,7 +1042,7 @@ const ProfilePage: React.FC = () => {
                           }}
                         >
                           <img
-                            src={car.imageUrl || car.mainImage || '/placeholder-car.jpg'}
+                            src={car.images?.[car.featuredImageIndex || 0] || car.imageUrl || car.mainImage || '/images/placeholder.png'}
                             alt={car.title}
                             style={{ width: '100%', height: '180px', objectFit: 'cover' }}
                           />
