@@ -188,7 +188,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
     if (!car || !isOwner) return;
     try {
       const { doc, updateDoc } = await import('firebase/firestore');
-      const { db } = await import('../../firebaseConfig');
+      const { db } = await import('../../firebase/firebase-config');
       const collectionName = SellWorkflowCollections.getCollectionNameForVehicleType(
         (car as any).vehicleType || 'car'
       );
