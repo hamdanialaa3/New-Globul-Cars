@@ -31,6 +31,7 @@ firebaserc # Optional: keep if you want to share project alias
 *.key
 *.json
 !package.json
+!package-lock.json
 !tsconfig.json
 !.eslintrc.json
 !firebase.json
