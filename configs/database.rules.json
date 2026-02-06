@@ -74,8 +74,8 @@
         ".read": "auth != null",
         // Write: Any authenticated user (client validates own numericId)
         ".write": "auth != null",
-        // Validate presence structure
-        ".validate": "newData.hasChildren(['online', 'lastSeen'])"
+        // Validate presence structure (field is 'status' not 'online')
+        ".validate": "newData.hasChildren(['status', 'lastSeen'])"
       }
     },
 
