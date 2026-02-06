@@ -10,7 +10,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 // Firebase Admin is already initialized in index.ts - no need to initialize again
 const db = admin.firestore();
 
-// Initialize Gemini - uses process.env (functions.config() deprecated March 2026)
+// Initialize Gemini - uses process.env (deprecated config API ref removed)
 const getApiKey = (): string | undefined => {
   const envKey = process.env.GOOGLE_GENERATIVE_AI_KEY;
   if (envKey) {
@@ -132,7 +132,7 @@ export const geminiChat = functions.region('europe-west1').https.onCall(async (d
     // Check and initialize quota (stricter limits for guests)
     const quotaRef = db.collection('ai_quotas').doc(userId);
     let quotaCheck = await quotaRef.get();
-    
+
     if (!quotaCheck.exists) {
       // Auto-initialize quota for new user/guest
       const newQuota = {
@@ -168,7 +168,7 @@ export const geminiChat = functions.region('europe-west1').https.onCall(async (d
 
     // Call Gemini
     console.log(`[geminiChat] Calling Gemini (${isAuthenticated ? 'authenticated' : 'guest'}) with message:`, message.substring(0, 50) + '...');
-    
+
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
     const result = await model.generateContent(message.trim());
     const response = result.response.text();
@@ -195,13 +195,13 @@ export const geminiChat = functions.region('europe-west1').https.onCall(async (d
     const quotaRemaining = dailyLimit - (usedToday + 1);
     console.log('[geminiChat] Success - quota remaining:', quotaRemaining);
 
-    return { 
-      message: response, 
+    return {
+      message: response,
       quotaRemaining: quotaRemaining
     };
   } catch (error: any) {
     console.error('[geminiChat] Error:', error);
-    
+
     // Return specific error messages for debugging
     if (error.code === 'resource-exhausted') {
       throw error;
