@@ -137,10 +137,37 @@ export default defineConfig(({ mode }) => {
     
     // Optimization
     optimizeDeps: {
-      include: ['react', 'react-dom', 'firebase/app', 'firebase/auth', 'firebase/firestore'],
+      include: [
+        'react', 
+        'react-dom', 
+        'react/jsx-runtime',
+        'firebase/app', 
+        'firebase/auth', 
+        'firebase/firestore',
+        'styled-components',
+        '@mui/material',
+        '@mui/icons-material',
+        'react-select',
+        'framer-motion',
+      ],
+      exclude: ['@firebase/firestore'],
       esbuildOptions: {
         target: 'es2017', // Match craco config
+        define: {
+          global: 'globalThis',
+        },
       },
+    },
+    
+    // Define global variables for compatibility
+    define: {
+      'process.env.NODE_ENV': JSON.stringify(mode),
+      global: 'globalThis',
+    },
+    
+    // SSR configuration to handle styled-components and other libraries
+    ssr: {
+      noExternal: ['styled-components', '@mui/material'],
     },
   };
 });
