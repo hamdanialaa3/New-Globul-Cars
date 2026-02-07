@@ -198,8 +198,6 @@
   p {
     margin: 0 0 8pt 0 !important;
     color: #000000 !important;
-    orphans: 3 !important;
-    widows: 3 !important;
   }
 
   /* Force ALL text elements to black */
