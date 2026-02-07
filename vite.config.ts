@@ -87,11 +87,10 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: (id) => {
-            // React vendor bundle (including react-is for styled-components)
+            // React vendor bundle
             if (id.includes('node_modules/react') || 
                 id.includes('node_modules/react-dom') || 
-                id.includes('node_modules/react-router-dom') ||
-                id.includes('node_modules/react-is')) {
+                id.includes('node_modules/react-router-dom')) {
               return 'vendor-react';
             }
             
@@ -101,9 +100,10 @@ export default defineConfig(({ mode }) => {
               return 'vendor-firebase';
             }
             
-            // UI libraries vendor bundle
+            // UI libraries vendor bundle (including react-is for styled-components)
             if (id.includes('node_modules/@mui') ||
                 id.includes('node_modules/styled-components') ||
+                id.includes('node_modules/react-is') ||
                 id.includes('node_modules/framer-motion') ||
                 id.includes('node_modules/lucide-react')) {
               return 'vendor-ui';
