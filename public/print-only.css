@@ -198,14 +198,8 @@
   p {
     margin: 0 0 8pt 0 !important;
     color: #000000 !important;
-    /* orphans & widows only valid in @media print - ensure they're in print context */
-  }
-  
-  @media print {
-    p {
-      orphans: 3 !important;
-      widows: 3 !important;
-    }
+    orphans: 3 !important;
+    widows: 3 !important;
   }
 
   /* Force ALL text elements to black */
