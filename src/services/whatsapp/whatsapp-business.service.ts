@@ -67,10 +67,10 @@ class WhatsAppBusinessService {
 
   constructor() {
     this.config = {
-      phoneNumberId: process.env.REACT_APP_WHATSAPP_PHONE_NUMBER_ID || '',
-      businessAccountId: process.env.REACT_APP_WHATSAPP_BUSINESS_ACCOUNT_ID || '',
-      accessToken: process.env.REACT_APP_WHATSAPP_ACCESS_TOKEN || '',
-      apiVersion: process.env.REACT_APP_WHATSAPP_API_VERSION || 'v18.0'
+      phoneNumberId: import.meta.env.VITE_WHATSAPP_PHONE_NUMBER_ID || '',
+      businessAccountId: import.meta.env.VITE_WHATSAPP_BUSINESS_ACCOUNT_ID || '',
+      accessToken: import.meta.env.VITE_WHATSAPP_ACCESS_TOKEN || '',
+      apiVersion: import.meta.env.VITE_WHATSAPP_API_VERSION || 'v18.0'
     };
 
     this.baseUrl = `https://graph.facebook.com/${this.config.apiVersion}/${this.config.phoneNumberId}`;

@@ -89,9 +89,9 @@ export class AuthErrorHandler {
       url: typeof window !== 'undefined' ? window.location.href : undefined,
       userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
       firebaseConfig: {
-        apiKey: process.env.REACT_APP_FIREBASE_API_KEY ? (process.env.REACT_APP_FIREBASE_API_KEY.slice(0, 10) + '...') : undefined,
-        authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-        projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID
+        apiKey: import.meta.env.VITE_FIREBASE_API_KEY ? (import.meta.env.VITE_FIREBASE_API_KEY.slice(0, 10) + '...') : undefined,
+        authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+        projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID
       }
     });
   }

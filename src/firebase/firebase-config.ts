@@ -25,15 +25,15 @@ declare global {
 // Project Number: 973379297533
 const firebaseConfig = {
   // ✅ UPDATED: Using Environment Variables with Fallbacks
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "***REMOVED_FIREBASE_KEY***",
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "fire-new-globul.firebaseapp.com",
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "fire-new-globul",
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "fire-new-globul.firebasestorage.app",
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "973379297533",
-  appId: process.env.REACT_APP_FIREBASE_APP_ID || "1:973379297533:web:59c6534d61a29cae5d9e94",
-  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID || "G-R8JY5KM421",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "***REMOVED_FIREBASE_KEY***",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "fire-new-globul.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "fire-new-globul",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "fire-new-globul.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "973379297533",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:973379297533:web:59c6534d61a29cae5d9e94",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-R8JY5KM421",
   // 🔥 CRITICAL: Realtime Database URL (europe-west1 region)
-  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL || "https://fire-new-globul-default-rtdb.europe-west1.firebasedatabase.app"
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || "https://fire-new-globul-default-rtdb.europe-west1.firebasedatabase.app"
 };
 
 // Initialize Firebase
@@ -48,11 +48,11 @@ try {
 
 // Initialize App Check - ENABLED ONLY IN PRODUCTION for security
 let appCheck: any = null;
-if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_RECAPTCHA_SITE_KEY) {
+if (process.env.NODE_ENV === 'production' && import.meta.env.VITE_RECAPTCHA_SITE_KEY) {
   try {
     const { initializeAppCheck, ReCaptchaV3Provider } = require('firebase/app-check');
     appCheck = initializeAppCheck(app, {
-      provider: new ReCaptchaV3Provider(process.env.REACT_APP_RECAPTCHA_SITE_KEY),
+      provider: new ReCaptchaV3Provider(import.meta.env.VITE_RECAPTCHA_SITE_KEY),
       isTokenAutoRefreshEnabled: true
     });
     logger.info('Firebase App Check initialized successfully (production only)');

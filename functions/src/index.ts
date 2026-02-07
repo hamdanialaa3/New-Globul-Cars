@@ -208,3 +208,8 @@ import * as paymentReconciliation from './services/payment-reconciliation';
 export const dailyReconciliation = paymentReconciliation.dailyReconciliation;
 export const triggerReconciliation = paymentReconciliation.triggerReconciliation;
 export const exportReconciliationReport = paymentReconciliation.exportReconciliationReport;
+
+// 🔔 NEW: Price Drop Alerts System (February 7, 2026 - TASK-07)
+import * as priceDropAlerts from './triggers/price-drop-alerts';
+export const onCarPriceUpdate = priceDropAlerts.onCarPriceUpdate;
+export const cleanupOldPriceAlerts = priceDropAlerts.cleanupOldPriceAlerts;

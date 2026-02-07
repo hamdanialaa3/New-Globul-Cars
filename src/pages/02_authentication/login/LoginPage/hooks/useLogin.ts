@@ -185,8 +185,8 @@ export const useLogin = (): UseLoginReturn => {
         currentURL: window.location.href,
         protocol: window.location.protocol,
         host: window.location.host,
-        hasApiKey: !!process.env.REACT_APP_FIREBASE_API_KEY,
-        hasAuthDomain: !!process.env.REACT_APP_FIREBASE_AUTH_DOMAIN
+        hasApiKey: !!import.meta.env.VITE_FIREBASE_API_KEY,
+        hasAuthDomain: !!import.meta.env.VITE_FIREBASE_AUTH_DOMAIN
       });
 
       // User-friendly error message

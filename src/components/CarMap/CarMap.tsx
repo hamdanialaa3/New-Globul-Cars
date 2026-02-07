@@ -27,7 +27,7 @@ const CarMap: React.FC<CarMapProps> = ({ lat, lng }) => {
 
   // It's crucial to load the Google Maps API key from environment variables
   // and not hardcode it.
-  const googleMapsApiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+  const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
   if (!googleMapsApiKey) {
     return <div>Error: Google Maps API key is missing.</div>;

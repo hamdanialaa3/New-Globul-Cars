@@ -109,7 +109,7 @@ export const health = functions.https.onRequest(async (req, res) => {
  * Use API to create monitors programmatically
  */
 export const createMonitorViaAPI = async (monitorData: any) => {
-  const API_KEY = process.env.REACT_APP_UPTIMEROBOT_API_KEY; // Get from uptimerobot.com
+  const API_KEY = import.meta.env.VITE_UPTIMEROBOT_API_KEY; // Get from uptimerobot.com
   
   if (!API_KEY) {
     logger.warn('UptimeRobot API key not configured');
@@ -144,7 +144,7 @@ export const createMonitorViaAPI = async (monitorData: any) => {
  * Get monitor status via API (FREE)
  */
 export const getMonitorStatus = async () => {
-  const API_KEY = process.env.REACT_APP_UPTIMEROBOT_API_KEY;
+  const API_KEY = import.meta.env.VITE_UPTIMEROBOT_API_KEY;
   
   if (!API_KEY) {
     logger.warn('UptimeRobot API key not configured');

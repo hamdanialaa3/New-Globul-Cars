@@ -74,8 +74,8 @@ export function buildFirestoreQuery(filters: InputFilters, options: QueryBuilder
   let q = query(collection(db, targetCollection));
 
   // Restrict to active listings unless explicitly disabled via option or env flag
-  const requireActive = (typeof process !== 'undefined' && process.env && process.env.REACT_APP_SEARCH_REQUIRE_ACTIVE)
-    ? process.env.REACT_APP_SEARCH_REQUIRE_ACTIVE !== 'false'
+  const requireActive = (typeof process !== 'undefined' && process.env && import.meta.env.VITE_SEARCH_REQUIRE_ACTIVE)
+    ? import.meta.env.VITE_SEARCH_REQUIRE_ACTIVE !== 'false'
     : true;
   if (!includeInactive && requireActive) {
     q = query(q, where('status', '==', 'active'));

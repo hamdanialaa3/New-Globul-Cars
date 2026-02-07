@@ -19,7 +19,7 @@ const FacebookMessengerWidget: React.FC<FacebookMessengerWidgetProps> = ({
 }) => {
   const { language } = useLanguage();
   
-  const defaultPageId = pageId || process.env.REACT_APP_FACEBOOK_PAGE_ID || '100080260449528';
+  const defaultPageId = pageId || import.meta.env.VITE_FACEBOOK_PAGE_ID || '100080260449528';
 
   useEffect(() => {
     if (!defaultPageId) {

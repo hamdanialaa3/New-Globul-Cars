@@ -13,17 +13,17 @@ import { BillingTier } from './billing-types';
  * إعدادات Stripe
  */
 export const STRIPE_CONFIG = {
-  PUBLISHABLE_KEY: process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY,
+  PUBLISHABLE_KEY: import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY,
   PRICES: {
-    basic: process.env.REACT_APP_STRIPE_PRICE_BASIC,
-    premium: process.env.REACT_APP_STRIPE_PRICE_PREMIUM,
-    enterprise: process.env.REACT_APP_STRIPE_PRICE_ENTERPRISE,
-    dealer_basic: process.env.REACT_APP_STRIPE_PRICE_DEALER_BASIC,
-    dealer_premium: process.env.REACT_APP_STRIPE_PRICE_DEALER_PREMIUM,
-    dealer_enterprise: process.env.REACT_APP_STRIPE_PRICE_DEALER_ENTERPRISE,
-    company_basic: process.env.REACT_APP_STRIPE_PRICE_COMPANY_BASIC,
-    company_premium: process.env.REACT_APP_STRIPE_PRICE_COMPANY_PREMIUM,
-    company_enterprise: process.env.REACT_APP_STRIPE_PRICE_COMPANY_ENTERPRISE,
+    basic: import.meta.env.VITE_STRIPE_PRICE_BASIC,
+    premium: import.meta.env.VITE_STRIPE_PRICE_PREMIUM,
+    enterprise: import.meta.env.VITE_STRIPE_PRICE_ENTERPRISE,
+    dealer_basic: import.meta.env.VITE_STRIPE_PRICE_DEALER_BASIC,
+    dealer_premium: import.meta.env.VITE_STRIPE_PRICE_DEALER_PREMIUM,
+    dealer_enterprise: import.meta.env.VITE_STRIPE_PRICE_DEALER_ENTERPRISE,
+    company_basic: import.meta.env.VITE_STRIPE_PRICE_COMPANY_BASIC,
+    company_premium: import.meta.env.VITE_STRIPE_PRICE_COMPANY_PREMIUM,
+    company_enterprise: import.meta.env.VITE_STRIPE_PRICE_COMPANY_ENTERPRISE,
   },
 } as const;
 

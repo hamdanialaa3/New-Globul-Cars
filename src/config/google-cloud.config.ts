@@ -23,20 +23,20 @@ const googleConfigSchema = z.object({
 
 const processEnv = {
   firebase: {
-    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.REACT_APP_FIREBASE_APP_ID,
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
   },
   gcp: {
     indexingServiceAccount: process.env.GOOGLE_INDEXING_SERVICE_ACCOUNT,
     bigQueryDataset: process.env.BIGQUERY_DATASET,
   },
   marketing: {
-    gtmId: process.env.REACT_APP_GTM_ID || 'GTM-MKZSPCNC',
-    ga4Id: process.env.REACT_APP_GA4_ID || 'G-R8JY5KM421',
+    gtmId: import.meta.env.VITE_GTM_ID || 'GTM-MKZSPCNC',
+    ga4Id: import.meta.env.VITE_GA4_ID || 'G-R8JY5KM421',
   }
 };
 

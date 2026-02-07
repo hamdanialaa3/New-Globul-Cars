@@ -12,7 +12,7 @@ class GeminiVisionService {
   private isInitialized = false;
 
   constructor() {
-    const apiKey = process.env.REACT_APP_GOOGLE_GENERATIVE_AI_KEY || process.env.REACT_APP_GEMINI_KEY;
+    const apiKey = import.meta.env.VITE_GOOGLE_GENERATIVE_AI_KEY || import.meta.env.VITE_GEMINI_KEY;
     if (!apiKey) {
       logger.warn('Google Generative AI key not found. AI features will be disabled.');
       return;

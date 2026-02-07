@@ -21,9 +21,9 @@ class GoogleAdsIntegrationService {
   private static instance: GoogleAdsIntegrationService;
   
   private readonly config: GoogleAdsConfig = {
-    conversionId: process.env.REACT_APP_GOOGLE_ADS_CONVERSION_ID,
-    customerId: process.env.REACT_APP_GOOGLE_ADS_CUSTOMER_ID || '425-581-1541',
-    accountName: process.env.REACT_APP_GOOGLE_ADS_ACCOUNT_NAME || 'Glo Bul G AD'
+    conversionId: import.meta.env.VITE_GOOGLE_ADS_CONVERSION_ID,
+    customerId: import.meta.env.VITE_GOOGLE_ADS_CUSTOMER_ID || '425-581-1541',
+    accountName: import.meta.env.VITE_GOOGLE_ADS_ACCOUNT_NAME || 'Glo Bul G AD'
   };
 
   private constructor() {}

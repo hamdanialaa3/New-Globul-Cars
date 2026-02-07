@@ -30,9 +30,9 @@ class GoogleAnalyticsDataDeletionService {
   // Google Analytics Configuration
   // TODO: Update these values with your actual Google Analytics account information
   // يرجى تحديث هذه القيم بمعلومات حساب Google Analytics الفعلية
-  private readonly ACCOUNT_ID = process.env.REACT_APP_GA_ACCOUNT_ID || '368904922';
-  private readonly PROPERTY_ID = process.env.REACT_APP_GA_PROPERTY_ID || '507597643';
-  private readonly MEASUREMENT_ID = process.env.REACT_APP_FIREBASE_MEASUREMENT_ID || process.env.REACT_APP_GA4_MEASUREMENT_ID || 'G-R8JY5KM421';
+  private readonly ACCOUNT_ID = import.meta.env.VITE_GA_ACCOUNT_ID || '368904922';
+  private readonly PROPERTY_ID = import.meta.env.VITE_GA_PROPERTY_ID || '507597643';
+  private readonly MEASUREMENT_ID = import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || import.meta.env.VITE_GA4_MEASUREMENT_ID || 'G-R8JY5KM421';
   
   // Data Deletion API Endpoint
   private readonly DELETION_API_URL = 'https://www.googleapis.com/analytics/admin/v1beta';
@@ -241,7 +241,7 @@ class GoogleAnalyticsDataDeletionService {
     location: string;
     bigQueryConsoleUrl: string;
   } {
-    const projectId = process.env.REACT_APP_FIREBASE_PROJECT_ID || 'fire-new-globul';
+    const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID || 'fire-new-globul';
     const datasetId = process.env.BIGQUERY_DATASET || 'car_market_analytics';
     const location = process.env.BIGQUERY_LOCATION || 'EU';
 

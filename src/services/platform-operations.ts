@@ -319,11 +319,11 @@ export class PlatformOperations {
       case 'gemini':
         return geminiVisionService.isReady();
       case 'algolia':
-        return !!process.env.REACT_APP_ALGOLIA_APP_ID;
+        return !!import.meta.env.VITE_ALGOLIA_APP_ID;
       case 'stripe':
-        return !!process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
+        return !!import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
       case 'iot':
-        return !!process.env.REACT_APP_IOT_ENDPOINT;
+        return !!import.meta.env.VITE_IOT_ENDPOINT;
       case 'firebase':
         return true; // Always available
       default:

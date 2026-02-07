@@ -49,7 +49,7 @@ interface SmartAdSenseUnitProps {
 }
 
 export const SmartAdSenseUnit: React.FC<SmartAdSenseUnitProps> = ({
-    client = process.env.REACT_APP_GOOGLE_ADSENSE_ID || 'ca-pub-TEST', // Fallback for dev
+    client = import.meta.env.VITE_GOOGLE_ADSENSE_ID || 'ca-pub-TEST', // Fallback for dev
     slot,
     format = 'auto',
     layoutKey,

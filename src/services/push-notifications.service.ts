@@ -13,7 +13,7 @@ import { db } from '@/firebase/firebase-config';
 import { logger } from './logger-service';
 
 // FCM Vapid Key (get from Firebase Console → Project Settings → Cloud Messaging)
-const VAPID_KEY = process.env.REACT_APP_FCM_VAPID_KEY || '';
+const VAPID_KEY = import.meta.env.VITE_FCM_VAPID_KEY || '';
 
 class PushNotificationService {
     private static instance: PushNotificationService;

@@ -45,8 +45,8 @@ class GoogleDriveService {
         (window as any).gapi.load('client:auth2', async () => {
           try {
             await (window as any).gapi.client.init({
-              apiKey: process.env.REACT_APP_GOOGLE_API_KEY,
-              clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+              apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
+              clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
               discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
               scope: 'https://www.googleapis.com/auth/drive.file'
             });

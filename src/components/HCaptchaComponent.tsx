@@ -22,7 +22,7 @@ export const HCaptchaComponent = forwardRef<any, HCaptchaComponentProps>(
       execute: () => captchaRef.current?.execute(),
     }));
 
-    const siteKey = process.env.REACT_APP_HCAPTCHA_SITE_KEY || '';
+    const siteKey = import.meta.env.VITE_HCAPTCHA_SITE_KEY || '';
 
     if (!siteKey || siteKey === 'your-hcaptcha-site-key') {
       return (

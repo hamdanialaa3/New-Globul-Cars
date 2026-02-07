@@ -196,7 +196,7 @@ const AdvancedSearchPage: React.FC = () => {
   const [searching, setSearching] = useState(false);
   const [lastSource, setLastSource] = useState<string>('');
   const [lastMs, setLastMs] = useState<number | undefined>(undefined);
-  const showSearchDebug = process.env.REACT_APP_SHOW_SEARCH_DEBUG === 'true';
+  const showSearchDebug = import.meta.env.VITE_SHOW_SEARCH_DEBUG === 'true';
 
   const convertToSavedSearchFilters = (data: SearchData): any => {
     return {

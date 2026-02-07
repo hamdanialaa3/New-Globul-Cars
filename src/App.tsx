@@ -16,8 +16,8 @@ import ScrollToTop from './components/Navigation/ScrollToTop';
 import ProgressBar from './components/ProgressBar';
 // 🔴 CRITICAL: Global ErrorBoundary to prevent white screen of death
 import { ErrorBoundary } from './components/ErrorBoundary';
-// ✅ MERGED: AIChatbotWidget merged into UnifiedAIChat in MainLayout
-// import AIChatbotWidget from './components/messaging/AIChatbotWidget';
+// NEW: Hook for robust loading state
+import { useInitialLoad } from './hooks/useInitialLoad';
 
 // 🔧 Dev utilities (available in console)
 if (process.env.NODE_ENV === 'development') {
@@ -28,44 +28,54 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
+/**
+ * AppContent - Inner component with access to AuthProvider
+ * This component is wrapped by AppProviders, so it can use useAuth safely
+ */
+const AppContent: React.FC = () => {
+  // ✅ NOW SAFE: useInitialLoad can access useAuth because we're inside AppProviders
+  const isReady = useInitialLoad();
+
+  // Effect to handle the loader DOM element
+  React.useEffect(() => {
+    if (isReady) {
+      const loader = document.getElementById('loader-container');
+      if (loader) {
+        // Start fade out
+        loader.style.opacity = '0';
+
+        // Remove after transition finishes
+        setTimeout(() => {
+          loader.remove();
+          logger.info('[App] Loader removed - App Ready');
+        }, 500); // 500ms matches CSS transition duration
+      }
+    }
+  }, [isReady]);
+
+  return (
+    <>
+      <AppRoutes />
+      <InstallPrompt />
+      <GuestExpirationModal />
+      <ConsentBanner />
+      <PendingFavoriteHandler />
+      <ScrollToTop />
+      <ProgressBar />
+    </>
+  );
+};
+
 const App: React.FC = () => {
-
-
   // Initialize activity tracker on mount
   React.useEffect(() => {
     IndexedDBActivityTracker.initialize();
-
-    // Remove initial loader
-    const loader = document.getElementById('loader-container');
-    if (loader) {
-      // Small delay to ensure smooth transition
-      setTimeout(() => {
-        loader.style.opacity = '0';
-        setTimeout(() => {
-          loader.remove();
-          logger.info('[App] Initial loader removed successfully');
-        }, 500);
-      }, 500);
-    }
   }, []);
-
-
 
   return (
     <ErrorBoundary>
       <AppProviders>
-        {/* 🔝 Automatic scroll to top on route change */}
-        <ScrollToTop />
-        
-        {/* ⚙️ Sleek top-left progress bar on page transitions */}
-        <ProgressBar />
-        
-        {/* ✅ MERGED: AIChatbotWidget moved to UnifiedAIChat in MainLayout */}
-        <PendingFavoriteHandler />
-        <AppRoutes />
-        <GuestExpirationModal />
-        <InstallPrompt />
-        <ConsentBanner />
+        <AppContent />
       </AppProviders>
     </ErrorBoundary>
   );

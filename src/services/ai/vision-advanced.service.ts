@@ -70,7 +70,7 @@ class AdvancedComputerVisionService {
   private visionModel: any;
 
   private constructor() {
-    const apiKey = process.env.REACT_APP_GOOGLE_GENERATIVE_AI_KEY;
+    const apiKey = import.meta.env.VITE_GOOGLE_GENERATIVE_AI_KEY;
     if (!apiKey) {
       logger.warn('Google Generative AI Key not configured for vision');
     }

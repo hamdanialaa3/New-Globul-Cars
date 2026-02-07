@@ -181,14 +181,14 @@ export class SocialTokenProvider {
   private readEnv(platform: SocialPlatform): string | null {
     switch (platform) {
       case 'tiktok':
-        return process.env.REACT_APP_TIKTOK_ACCESS_TOKEN || null;
+        return import.meta.env.VITE_TIKTOK_ACCESS_TOKEN || null;
       case 'instagram':
-        return process.env.REACT_APP_INSTAGRAM_ACCESS_TOKEN || null;
+        return import.meta.env.VITE_INSTAGRAM_ACCESS_TOKEN || null;
       case 'facebook':
-        return process.env.REACT_APP_FACEBOOK_ACCESS_TOKEN || null;
+        return import.meta.env.VITE_FACEBOOK_ACCESS_TOKEN || null;
       case 'threads':
         // Threads may reuse Instagram or have separate token strategy later
-        return process.env.REACT_APP_INSTAGRAM_ACCESS_TOKEN || null;
+        return import.meta.env.VITE_INSTAGRAM_ACCESS_TOKEN || null;
       default:
         return null;
     }

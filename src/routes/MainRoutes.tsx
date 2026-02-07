@@ -57,7 +57,7 @@ const EventsPage = safeLazy(() => import('../pages/07_advanced-features/EventsPa
 const CreatePostPage = safeLazy(() => import('../pages/03_user-pages/social/CreatePostPage'));
 const DashboardPage = safeLazy(() => import('../pages/03_user-pages/dashboard/DashboardPage'));
 const AdminDashboard = safeLazy(() => import('../components/AdminDashboard'));
-const FullThemeDemo = safeLazy(() => import('../components/FullThemeDemo'));
+// DEAD COMPONENT: const FullThemeDemo = safeLazy(() => import('../components/FullThemeDemo'));
 const PrivacyPolicyPage = safeLazy(() => import('../pages/10_legal/privacy-policy/PrivacyPolicyPage'));
 const TermsOfServicePage = safeLazy(() => import('../pages/10_legal/terms-of-service/TermsOfServicePage'));
 const DataDeletionPage = safeLazy(() => import('../pages/10_legal/data-deletion/DataDeletionPage'));
@@ -70,7 +70,7 @@ const MigrationPage = safeLazy(() => import('../pages/06_admin/MigrationPage'));
 const DebugCarsPage = safeLazy(() => import('../pages/06_admin/DebugCarsPage'));
 const EditCarPage = safeLazy(() => import('../pages/04_car-selling/EditCarPage'));
 const B2BAnalyticsPortal = safeLazy(() => import('../pages/07_advanced-features/B2BAnalyticsPortal'));
-const DigitalTwinPage = safeLazy(() => import('../pages/07_advanced-features/DigitalTwinPage'));
+// DEAD PAGE: const DigitalTwinPage = safeLazy(() => import('../pages/07_advanced-features/DigitalTwinPage'));
 const SubscriptionPage = safeLazy(() => import('../pages/08_payment-billing/SubscriptionPage'));
 const AboutPage = safeLazy(() => import('../pages/01_main-pages/about/AboutPage'));
 const BrandGalleryPage = safeLazy(() => import('../pages/05_search-browse/brand-gallery/BrandGalleryPage'));
@@ -107,7 +107,7 @@ const AdminCarManagementPage = safeLazy(() => import('../pages/06_admin/regular-
 // 🔥 NEW: Car History Report Page - COMPETITIVE ADVANTAGE!
 const CarHistoryPage = safeLazy(() => import('../pages/07_car-details/CarHistoryPage'));
 const DeleteMockCarsPage = safeLazy(() => import('../pages/06_admin/DeleteMockCarsPage'));
-const IoTDashboardPage = safeLazy(() => import('../pages/03_user-pages/IoTDashboardPage'));
+// DEAD PAGE: const IoTDashboardPage = safeLazy(() => import('../pages/03_user-pages/IoTDashboardPage'));
 const CarTrackingPage = safeLazy(() => import('../pages/03_user-pages/CarTrackingPage'));
 const IoTAnalyticsPage = safeLazy(() => import('../pages/03_user-pages/IoTAnalyticsPage'));
 const AIDashboardPage = safeLazy(() => import('../pages/03_user-pages/ai-dashboard/AIDashboardPage'));
@@ -469,8 +469,8 @@ export const MainRoutes: React.FC = () => {
                 path="/dashboard"
                 element={<AuthGuard requireAuth={true}><DashboardPage /></AuthGuard>}
             />
-            <Route path="/full-demo" element={<FullThemeDemo />} />
-            <Route path="/iot-dashboard" element={<AuthGuard requireAuth={true}><IoTDashboardPage /></AuthGuard>} />
+            {/* DEAD ROUTE: <Route path="/full-demo" element={<FullThemeDemo />} /> */}
+            {/* DEAD ROUTE: <Route path="/iot-dashboard" element={<AuthGuard requireAuth={true}><IoTDashboardPage /></AuthGuard>} /> */}
             <Route path="/car-tracking" element={<AuthGuard requireAuth={true}><CarTrackingPage /></AuthGuard>} />
             <Route path="/iot-analytics" element={<AuthGuard requireAuth={true}><IoTAnalyticsPage /></AuthGuard>} />
             <Route path="/ai-dashboard" element={<AuthGuard requireAuth={true}><AIDashboardPage /></AuthGuard>} />
@@ -505,7 +505,7 @@ export const MainRoutes: React.FC = () => {
             <Route path="/my-listings" element={<AuthGuard requireAuth={true}><MyListingsPage /></AuthGuard>} />
             <Route path="/my-drafts" element={<AuthGuard requireAuth={true}><MyDraftsPage /></AuthGuard>} />
             <Route path="/analytics" element={<AuthGuard requireAuth={true}><B2BAnalyticsPortal /></AuthGuard>} />
-            <Route path="/digital-twin" element={<AuthGuard requireAuth={true}><DigitalTwinPage /></AuthGuard>} />
+            {/* DEAD ROUTE: <Route path="/digital-twin" element={<AuthGuard requireAuth={true}><DigitalTwinPage /></AuthGuard>} /> */}
             <Route path="/subscription" element={<AuthGuard requireAuth={true}><SubscriptionPage /></AuthGuard>} />
             <Route path="/migration" element={<AuthGuard requireAuth={true}><MigrationPage /></AuthGuard>} />
             {/* Moved to Dev Tools Block */}

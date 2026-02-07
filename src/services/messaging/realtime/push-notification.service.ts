@@ -48,7 +48,7 @@ class PushNotificationService {
   private foregroundCallbacks: Set<NotificationCallback> = new Set();
   
   // VAPID Key (from Firebase Console -> Project Settings -> Cloud Messaging)
-  private readonly VAPID_KEY = process.env.REACT_APP_FIREBASE_VAPID_KEY || '';
+  private readonly VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY || '';
 
   private constructor() {
     if (typeof window !== 'undefined' && 'Notification' in window) {

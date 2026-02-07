@@ -28,11 +28,11 @@ interface FacebookPostResponse {
 }
 
 class FacebookAutoPostService {
-  private pageId = process.env.REACT_APP_FACEBOOK_PAGE_ID || '100080260449528';
-  private pageAccessToken = process.env.REACT_APP_FACEBOOK_PAGE_ACCESS_TOKEN || '';
+  private pageId = import.meta.env.VITE_FACEBOOK_PAGE_ID || '100080260449528';
+  private pageAccessToken = import.meta.env.VITE_FACEBOOK_PAGE_ACCESS_TOKEN || '';
   
   private baseUrl = 'https://graph.facebook.com/v18.0';
-  private siteBaseUrl = process.env.REACT_APP_BASE_URL || 'https://koli.one';
+  private siteBaseUrl = import.meta.env.VITE_BASE_URL || 'https://koli.one';
 
   constructor() {
     if (!this.pageAccessToken || !this.pageId) {

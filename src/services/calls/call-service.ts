@@ -44,7 +44,7 @@ export interface CallHistory {
 
 export class CallService {
   private static instance: CallService;
-  private readonly APP_ID = process.env.REACT_APP_AGORA_APP_ID || '';
+  private readonly APP_ID = import.meta.env.VITE_AGORA_APP_ID || '';
 
   private constructor() {}
 

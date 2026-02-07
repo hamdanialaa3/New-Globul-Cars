@@ -40,7 +40,7 @@ export class BulgarianCaptchaService {
   // Verify captcha token on server side
   async verifyToken(token: string): Promise<CaptchaResult> {
     try {
-      const secretKey = process.env.REACT_APP_HCAPTCHA_SECRET_KEY || '';
+      const secretKey = import.meta.env.VITE_HCAPTCHA_SECRET_KEY || '';
 
       if (!secretKey) {
         serviceLogger.warn('hCaptcha secret key not configured');
@@ -113,7 +113,7 @@ export class BulgarianCaptchaService {
 // Utility functions
 export const verifyCaptcha = async (token: string): Promise<CaptchaResult> => {
   const service = new BulgarianCaptchaService({
-    siteKey: process.env.REACT_APP_HCAPTCHA_SITE_KEY || ''
+    siteKey: import.meta.env.VITE_HCAPTCHA_SITE_KEY || ''
   });
   return await service.verifyToken(token);
 };
@@ -124,7 +124,7 @@ export const createCaptchaService = (options: CaptchaOptions): BulgarianCaptchaS
 
 // Default instance
 const defaultCaptchaService = new BulgarianCaptchaService({
-  siteKey: process.env.REACT_APP_HCAPTCHA_SITE_KEY || 'your-hcaptcha-site-key',
+  siteKey: import.meta.env.VITE_HCAPTCHA_SITE_KEY || 'your-hcaptcha-site-key',
   theme: 'light',
   size: 'normal',
   language: 'bg'

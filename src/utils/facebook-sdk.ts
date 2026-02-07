@@ -107,7 +107,7 @@ export const getFacebookLoginStatus = (): Promise<any> => {
  * Initialize Facebook for Koli One
  */
 export const initializeFacebookSDK = async (): Promise<void> => {
-  const appId = process.env.REACT_APP_FACEBOOK_APP_ID;
+  const appId = import.meta.env.VITE_FACEBOOK_APP_ID;
   
   if (!appId) {
     if (process.env.NODE_ENV === 'development') {

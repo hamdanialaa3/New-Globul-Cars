@@ -41,7 +41,7 @@ export const enforceHttpsInProduction = () => {
  */
 export const getApiUrl = (): string => {
   if (typeof window === 'undefined') {
-    return process.env.REACT_APP_API_URL || 'https://api.koliauction.com';
+    return import.meta.env.VITE_API_URL || 'https://api.koliauction.com';
   }
 
   const protocol = isSecureContext() ? 'https' : 'http';

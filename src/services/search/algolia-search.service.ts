@@ -38,9 +38,9 @@ class AlgoliaSearchService {
 
   private constructor() {
     // Initialize only if env vars exist
-    const appId = process.env.REACT_APP_ALGOLIA_APP_ID;
-    const searchApiKey = process.env.REACT_APP_ALGOLIA_SEARCH_API_KEY;
-    const indexName = process.env.REACT_APP_ALGOLIA_INDEX_NAME || 'cars';
+    const appId = import.meta.env.VITE_ALGOLIA_APP_ID;
+    const searchApiKey = import.meta.env.VITE_ALGOLIA_SEARCH_API_KEY;
+    const indexName = import.meta.env.VITE_ALGOLIA_INDEX_NAME || 'cars';
 
     if (appId && searchApiKey) {
       try {

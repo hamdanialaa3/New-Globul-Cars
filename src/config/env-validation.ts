@@ -48,11 +48,11 @@ export function validateEnvironmentVariables(): void {
   });
 
   // Admin credentials (warnings only - app can work without them)
-  if (!process.env.REACT_APP_ADMIN_EMAIL) {
+  if (!import.meta.env.VITE_ADMIN_EMAIL) {
     warnings.push('REACT_APP_ADMIN_EMAIL not set - Super Admin login will not work');
   }
 
-  if (!process.env.REACT_APP_ADMIN_PASSWORD) {
+  if (!import.meta.env.VITE_ADMIN_PASSWORD) {
     warnings.push('REACT_APP_ADMIN_PASSWORD not set - Super Admin login will not work');
   }
 
@@ -82,7 +82,7 @@ export function validateEnvironmentVariables(): void {
  * Returns empty string if not set (for security)
  */
 export function getAdminEmail(): string {
-  return process.env.REACT_APP_ADMIN_EMAIL || '';
+  return import.meta.env.VITE_ADMIN_EMAIL || '';
 }
 
 /**
@@ -90,7 +90,7 @@ export function getAdminEmail(): string {
  * Returns empty string if not set (for security)
  */
 export function getAdminPassword(): string {
-  return process.env.REACT_APP_ADMIN_PASSWORD || '';
+  return import.meta.env.VITE_ADMIN_PASSWORD || '';
 }
 
 /**
@@ -98,9 +98,9 @@ export function getAdminPassword(): string {
  */
 export function isAdminConfigured(): boolean {
   return !!(
-    process.env.REACT_APP_ADMIN_EMAIL &&
-    process.env.REACT_APP_ADMIN_PASSWORD &&
-    process.env.REACT_APP_ADMIN_EMAIL.trim() !== '' &&
-    process.env.REACT_APP_ADMIN_PASSWORD.trim() !== ''
+    import.meta.env.VITE_ADMIN_EMAIL &&
+    import.meta.env.VITE_ADMIN_PASSWORD &&
+    import.meta.env.VITE_ADMIN_EMAIL.trim() !== '' &&
+    import.meta.env.VITE_ADMIN_PASSWORD.trim() !== ''
   );
 }

@@ -36,7 +36,7 @@ export const usePWA = () => {
     const registerServiceWorker = async () => {
       // Only register service worker in production or if explicitly enabled
       const shouldRegisterSW = process.env.NODE_ENV === 'production' || 
-                              process.env.REACT_APP_ENABLE_SW === 'true';
+                              import.meta.env.VITE_ENABLE_SW === 'true';
 
       if (!shouldRegisterSW) {
         if (process.env.NODE_ENV === 'development') {

@@ -18,7 +18,7 @@ import { BrowserTracing } from '@sentry/tracing';
  * - User feedback
  */
 export const initSentry = () => {
-  const dsn = process.env.REACT_APP_SENTRY_DSN;
+  const dsn = import.meta.env.VITE_SENTRY_DSN;
   
   if (!dsn || dsn === 'https://your-sentry-dsn@sentry.io/project-id') {
     logger.warn('⚠️ Sentry DSN not configured - error monitoring disabled');
@@ -32,7 +32,7 @@ export const initSentry = () => {
     environment: process.env.NODE_ENV || 'development',
     
     // Release tracking (FREE - track which version has bugs)
-    release: `globul-cars@${process.env.REACT_APP_VERSION || '1.0.0'}`,
+    release: `globul-cars@${import.meta.env.VITE_VERSION || '1.0.0'}`,
     
     // Performance monitoring (FREE - 10K transactions/month)
     integrations: [

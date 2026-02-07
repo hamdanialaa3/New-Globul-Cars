@@ -64,9 +64,9 @@ export class FirebaseHealthCheck {
   static logEnvironmentInfo(): void {
     logger.info('Firebase Environment Info', {
       nodeEnv: process.env.NODE_ENV,
-      hasApiKey: !!process.env.REACT_APP_GOOGLE_FIREBASE_WEB_KEY,
-      hasProjectId: !!process.env.REACT_APP_FIREBASE_PROJECT_ID,
-      hasAuthDomain: !!process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+      hasApiKey: !!import.meta.env.VITE_GOOGLE_FIREBASE_WEB_KEY,
+      hasProjectId: !!import.meta.env.VITE_FIREBASE_PROJECT_ID,
+      hasAuthDomain: !!import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
       userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'Server'
     });
   }

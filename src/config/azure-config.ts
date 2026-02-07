@@ -15,12 +15,12 @@
 
 export const AZURE_CONFIG = {
   // ✅ Azure Tenant Information
-  tenantId: process.env.REACT_APP_AZURE_TENANT_ID || 'fdb9a393-7d60-4dae-b17b-0bb89edad2fe',
+  tenantId: import.meta.env.VITE_AZURE_TENANT_ID || 'fdb9a393-7d60-4dae-b17b-0bb89edad2fe',
   tenantName: 'hamdanialaahotmail.onmicrosoft.com',
   tenantRegion: 'Bulgaria',
   
   // ✅ Application Registration (To be created in Azure Portal)
-  clientId: process.env.REACT_APP_AZURE_CLIENT_ID || '', // Will be filled after app registration
+  clientId: import.meta.env.VITE_AZURE_CLIENT_ID || '', // Will be filled after app registration
   
   // ✅ Redirect URIs
   redirectUri: process.env.NODE_ENV === 'production' 

@@ -55,7 +55,7 @@ interface CarSEOProps {
  * />
  */
 export const CarSEO: React.FC<CarSEOProps> = ({ car, seller }) => {
-  const baseUrl = process.env.REACT_APP_BASE_URL || 'https://koli.one';
+  const baseUrl = import.meta.env.VITE_BASE_URL || 'https://koli.one';
 
   // Generate numeric URL (CRITICAL for Google Merchant Center & Ads)
   const canonicalUrl = `${baseUrl}${buildCarUrl(

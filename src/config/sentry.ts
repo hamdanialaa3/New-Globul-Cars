@@ -19,7 +19,7 @@ export function initSentry() {
         return;
     }
 
-    const dsn = process.env.REACT_APP_SENTRY_DSN;
+    const dsn = import.meta.env.VITE_SENTRY_DSN;
 
     if (!dsn) {
         // Sentry DSN not configured
@@ -33,7 +33,7 @@ export function initSentry() {
         environment: process.env.NODE_ENV,
 
         // Release version (use git commit hash or package version)
-        release: `koli-one@${process.env.REACT_APP_VERSION || '1.0.0'}`,
+        release: `koli-one@${import.meta.env.VITE_VERSION || '1.0.0'}`,
 
         // Performance Monitoring
         integrations: [

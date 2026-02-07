@@ -11,7 +11,7 @@ import { serviceLogger } from '../logger-service';
 
 class FCMService {
   private messaging: Messaging | null = null;
-  private readonly vapidKey = process.env.REACT_APP_FIREBASE_VAPID_KEY;
+  private readonly vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
 
   /**
    * Initialize Firebase Messaging

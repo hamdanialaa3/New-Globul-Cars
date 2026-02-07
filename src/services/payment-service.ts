@@ -44,7 +44,7 @@ export interface Transaction {
 
 export class PaymentService {
   private static instance: PaymentService;
-  private readonly STRIPE_PUBLIC_KEY = process.env.REACT_APP_STRIPE_PUBLIC_KEY;
+  private readonly STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
 
   private constructor() {}
 

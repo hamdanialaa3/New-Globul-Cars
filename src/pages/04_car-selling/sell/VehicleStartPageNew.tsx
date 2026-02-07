@@ -11,7 +11,7 @@ import SplitScreenLayout from '../../../components/SplitScreenLayout';
 import { useAuth } from '../../../contexts/AuthProvider';
 import { useProfileType } from '../../../contexts/ProfileTypeContext';
 import { toast } from 'react-toastify';
-import N8nIntegrationService from '../../../services/n8n-integration';
+// DEAD SERVICE: import N8nIntegrationService from '../../../services/n8n-integration';
 import { SellWorkflowLayout } from '../../../components/SellWorkflow';
 import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
 import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
@@ -187,14 +187,15 @@ const VehicleStartPageNew: React.FC = () => {
       params.set('st', profileType);
     }
     
+    // DEAD SERVICE - N8N Integration commented out
     // N8N Integration: Trigger vehicle type selection
-    if (user?.uid) {
-      try {
-        await N8nIntegrationService.onVehicleTypeSelected(user.uid, typeId);
-      } catch (error) {
-        logger.warn('N8N trigger failed (non-critical)', { userId: user.uid, typeId, error });
-      }
-    }
+    // if (user?.uid) {
+    //   try {
+    //     await N8nIntegrationService.onVehicleTypeSelected(user.uid, typeId);
+    //   } catch (error) {
+    //     logger.warn('N8N trigger failed (non-critical)', { userId: user.uid, typeId, error });
+    //   }
+    // }
     
     SellWorkflowStepStateService.markCompleted('vehicle-selection');
 

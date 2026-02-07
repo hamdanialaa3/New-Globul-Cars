@@ -267,7 +267,7 @@ const StaticMapEmbed: React.FC<StaticMapEmbedProps> = ({
             logger.error('Google Maps iframe failed to load', { 
               error: e, 
               url: mapUrl,
-              apiKeyConfigured: !!(process.env.REACT_APP_GOOGLE_MAPS_API_KEY || process.env.REACT_APP_GOOGLE_BROWSER_KEY)
+              apiKeyConfigured: !!(import.meta.env.VITE_GOOGLE_MAPS_API_KEY || import.meta.env.VITE_GOOGLE_BROWSER_KEY)
             });
             setLoading(false);
             // Show error message

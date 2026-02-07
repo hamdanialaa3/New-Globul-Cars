@@ -17,7 +17,7 @@ const CAMPAIGNS_COLLECTION = 'ad_campaigns';
 const ANALYTICS_COLLECTION = 'ad_analytics';
 
 // Feature Flag
-const ADS_ENABLED = process.env.REACT_APP_ADS_ENABLED !== 'false';
+const ADS_ENABLED = import.meta.env.VITE_ADS_ENABLED !== 'false';
 
 export const adService = {
     /**

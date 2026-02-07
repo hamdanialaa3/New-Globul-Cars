@@ -70,7 +70,7 @@ export interface AlertsConfig {
 export const monitoringConfig: MonitoringConfig = {
   // Sentry Configuration
   sentry: {
-    dsn: process.env.REACT_APP_SENTRY_DSN || '',
+    dsn: import.meta.env.VITE_SENTRY_DSN || '',
     environment: process.env.NODE_ENV || 'development',
     tracesSampleRate: 0.1, // 10% من الطلبات يتم تتبعها
     replaysSessionSampleRate: 0.1, // 10% من الجلسات يتم تسجيلها
@@ -80,12 +80,12 @@ export const monitoringConfig: MonitoringConfig = {
 
   // Datadog RUM Configuration
   datadog: {
-    applicationId: process.env.REACT_APP_DATADOG_APP_ID || '',
-    clientToken: process.env.REACT_APP_DATADOG_CLIENT_TOKEN || '',
+    applicationId: import.meta.env.VITE_DATADOG_APP_ID || '',
+    clientToken: import.meta.env.VITE_DATADOG_CLIENT_TOKEN || '',
     site: 'datadoghq.eu', // موقع أوروبا
     service: 'koli-one',
     env: process.env.NODE_ENV || 'development',
-    version: process.env.REACT_APP_VERSION || '1.0.0',
+    version: import.meta.env.VITE_VERSION || '1.0.0',
     sampleRate: 100, // 100% من الجلسات
     trackInteractions: true,
     trackResources: true,
@@ -124,12 +124,12 @@ export const monitoringConfig: MonitoringConfig = {
       'tech@koli.one'
     ],
     slack: {
-      webhookUrl: process.env.REACT_APP_SLACK_WEBHOOK || '',
+      webhookUrl: import.meta.env.VITE_SLACK_WEBHOOK || '',
       channel: '#ai-alerts'
     },
     telegram: {
-      botToken: process.env.REACT_APP_TELEGRAM_BOT_TOKEN || '',
-      chatId: process.env.REACT_APP_TELEGRAM_CHAT_ID || ''
+      botToken: import.meta.env.VITE_TELEGRAM_BOT_TOKEN || '',
+      chatId: import.meta.env.VITE_TELEGRAM_CHAT_ID || ''
     }
   }
 };

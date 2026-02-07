@@ -43,8 +43,8 @@ interface SearchResult {
  */
 class AlgoliaSearchService {
   private config: AlgoliaConfig = {
-    appId: process.env.REACT_APP_ALGOLIA_APP_ID || '',
-    searchApiKey: process.env.REACT_APP_ALGOLIA_SEARCH_KEY || '',
+    appId: import.meta.env.VITE_ALGOLIA_APP_ID || '',
+    searchApiKey: import.meta.env.VITE_ALGOLIA_SEARCH_KEY || '',
     indexName: 'cars'
   };
 

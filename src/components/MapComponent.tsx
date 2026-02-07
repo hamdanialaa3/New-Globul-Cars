@@ -90,7 +90,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
   };
 
   // Get API key from environment
-  const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
   if (!apiKey || apiKey === 'YOUR_GOOGLE_MAPS_API_KEY') {
     return (

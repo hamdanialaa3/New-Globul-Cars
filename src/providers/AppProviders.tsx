@@ -165,7 +165,7 @@ const ThemedApp: React.FC<{ children: React.ReactNode; recaptchaKey: string }> =
  */
 export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
     // Get reCAPTCHA key from environment
-    const recaptchaKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
+    const recaptchaKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
     // Warn if reCAPTCHA is not configured in production
     if (!recaptchaKey && process.env.NODE_ENV === 'production') {

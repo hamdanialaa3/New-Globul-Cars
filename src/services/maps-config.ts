@@ -8,8 +8,8 @@
  * مفتاح واجهة برمجة التطبيقات من البيئة
  */
 export const GOOGLE_MAPS_API_KEY = 
-  process.env.REACT_APP_GOOGLE_BROWSER_KEY || 
-  process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 
+  import.meta.env.VITE_GOOGLE_BROWSER_KEY || 
+  import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 
   'AIzaSyAchmKCk8ipzv0dDwbQ2xU1Pa6o4CQsEu8';
 
 /**

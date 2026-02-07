@@ -138,44 +138,44 @@ export type {
 export function getAIServicesStatus(): Record<string, { available: boolean; status: string }> {
   return {
     geminiVision: {
-      available: !!process.env.REACT_APP_GEMINI_API_KEY,
-      status: process.env.REACT_APP_GEMINI_API_KEY ? '✅ Ready' : '⚠️ Not configured'
+      available: !!import.meta.env.VITE_GEMINI_API_KEY,
+      status: import.meta.env.VITE_GEMINI_API_KEY ? '✅ Ready' : '⚠️ Not configured'
     },
     geminiChat: {
-      available: !!process.env.REACT_APP_GEMINI_API_KEY,
-      status: process.env.REACT_APP_GEMINI_API_KEY ? '✅ Ready' : '⚠️ Not configured'
+      available: !!import.meta.env.VITE_GEMINI_API_KEY,
+      status: import.meta.env.VITE_GEMINI_API_KEY ? '✅ Ready' : '⚠️ Not configured'
     },
     openAI_GPT4: {
-      available: !!process.env.REACT_APP_OPENAI_API_KEY,
-      status: process.env.REACT_APP_OPENAI_API_KEY ? '✅ Ready' : '⚠️ Not configured'
+      available: !!import.meta.env.VITE_OPENAI_API_KEY,
+      status: import.meta.env.VITE_OPENAI_API_KEY ? '✅ Ready' : '⚠️ Not configured'
     },
     whisper_VoiceAI: {
-      available: !!process.env.REACT_APP_OPENAI_API_KEY,
-      status: process.env.REACT_APP_OPENAI_API_KEY ? '✅ Ready' : '⚠️ Not configured'
+      available: !!import.meta.env.VITE_OPENAI_API_KEY,
+      status: import.meta.env.VITE_OPENAI_API_KEY ? '✅ Ready' : '⚠️ Not configured'
     },
     sentimentAnalysis: {
       available: true,
       status: '✅ Ready (Local)'
     },
     computerVision_Advanced: {
-      available: !!process.env.REACT_APP_GOOGLE_GENERATIVE_AI_KEY,
-      status: process.env.REACT_APP_GOOGLE_GENERATIVE_AI_KEY ? '✅ Ready' : '⚠️ Not configured'
+      available: !!import.meta.env.VITE_GOOGLE_GENERATIVE_AI_KEY,
+      status: import.meta.env.VITE_GOOGLE_GENERATIVE_AI_KEY ? '✅ Ready' : '⚠️ Not configured'
     },
     recommendations: {
       available: true,
       status: '✅ Ready (Local)'
     },
     multiLanguageNLU: {
-      available: !!process.env.REACT_APP_GOOGLE_GENERATIVE_AI_KEY,
-      status: process.env.REACT_APP_GOOGLE_GENERATIVE_AI_KEY ? '✅ Ready' : '⚠️ Not configured'
+      available: !!import.meta.env.VITE_GOOGLE_GENERATIVE_AI_KEY,
+      status: import.meta.env.VITE_GOOGLE_GENERATIVE_AI_KEY ? '✅ Ready' : '⚠️ Not configured'
     },
     projectKnowledge: {
       available: true,
       status: '✅ Ready (RAG System)'
     },
     firebaseFunctions: {
-      available: !!process.env.REACT_APP_FIREBASE_PROJECT_ID,
-      status: process.env.REACT_APP_FIREBASE_PROJECT_ID ? '✅ Ready' : '⚠️ Not configured'
+      available: !!import.meta.env.VITE_FIREBASE_PROJECT_ID,
+      status: import.meta.env.VITE_FIREBASE_PROJECT_ID ? '✅ Ready' : '⚠️ Not configured'
     }
   };
 }

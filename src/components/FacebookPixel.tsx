@@ -20,8 +20,8 @@ let pendingEvents: Array<{ eventName: string; parameters?: Record<string, any> }
 let pixelReady = false;
 
 const getPixelConfig = () => {
-  const id = process.env.REACT_APP_FACEBOOK_PIXEL_ID;
-  const isExplicitlyEnabled = process.env.REACT_APP_ENABLE_PIXEL === 'true';
+  const id = import.meta.env.VITE_FACEBOOK_PIXEL_ID;
+  const isExplicitlyEnabled = import.meta.env.VITE_ENABLE_PIXEL === 'true';
   const isProduction = process.env.NODE_ENV === 'production';
 
   return {
@@ -49,8 +49,8 @@ const flushPendingEvents = () => {
 const FacebookPixel: React.FC<FacebookPixelProps> = ({ pixelId }) => {
   const location = useLocation();
   
-  const defaultPixelId = pixelId || process.env.REACT_APP_FACEBOOK_PIXEL_ID;
-  const isExplicitlyEnabled = process.env.REACT_APP_ENABLE_PIXEL === 'true';
+  const defaultPixelId = pixelId || import.meta.env.VITE_FACEBOOK_PIXEL_ID;
+  const isExplicitlyEnabled = import.meta.env.VITE_ENABLE_PIXEL === 'true';
   const isProduction = process.env.NODE_ENV === 'production';
   const isPixelEnabled = Boolean(defaultPixelId && (isProduction || isExplicitlyEnabled));
 

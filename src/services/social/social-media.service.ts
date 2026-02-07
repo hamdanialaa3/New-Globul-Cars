@@ -77,7 +77,7 @@ class SocialMediaService {
     switch (platform) {
       case 'facebook':
         return `${config.authUrl}?` +
-          `client_id=${process.env.REACT_APP_FACEBOOK_APP_ID}&` +
+          `client_id=${import.meta.env.VITE_FACEBOOK_APP_ID}&` +
           `redirect_uri=${redirectUri}&` +
           `scope=${config.scopes.join(',')}&` +
           `state=${state}`;
@@ -85,7 +85,7 @@ class SocialMediaService {
       case 'twitter':
         return `${config.authUrl}?` +
           `response_type=code&` +
-          `client_id=${process.env.REACT_APP_TWITTER_CLIENT_ID}&` +
+          `client_id=${import.meta.env.VITE_TWITTER_CLIENT_ID}&` +
           `redirect_uri=${redirectUri}&` +
           `scope=${config.scopes.join(' ')}&` +
           `state=${state}`;
@@ -93,7 +93,7 @@ class SocialMediaService {
       case 'linkedin':
         return `${config.authUrl}?` +
           `response_type=code&` +
-          `client_id=${process.env.REACT_APP_LINKEDIN_CLIENT_ID}&` +
+          `client_id=${import.meta.env.VITE_LINKEDIN_CLIENT_ID}&` +
           `redirect_uri=${redirectUri}&` +
           `scope=${config.scopes.join(' ')}&` +
           `state=${state}`;
@@ -101,14 +101,14 @@ class SocialMediaService {
       case 'youtube':
         return `${config.authUrl}?` +
           `response_type=code&` +
-          `client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&` +
+          `client_id=${import.meta.env.VITE_GOOGLE_CLIENT_ID}&` +
           `redirect_uri=${redirectUri}&` +
           `scope=${config.scopes.join(' ')}&` +
           `state=${state}`;
 
       case 'tiktok':
         return `${config.authUrl}?` +
-          `client_key=${process.env.REACT_APP_TIKTOK_CLIENT_KEY}&` +
+          `client_key=${import.meta.env.VITE_TIKTOK_CLIENT_KEY}&` +
           `response_type=code&` +
           `redirect_uri=${redirectUri}&` +
           `scope=${config.scopes.join(',')}&` +

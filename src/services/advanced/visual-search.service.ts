@@ -32,7 +32,7 @@ export interface ImageAnalysisResult {
 
 class VisualSearchService {
   private static instance: VisualSearchService;
-  private readonly GOOGLE_VISION_API_KEY = process.env.REACT_APP_GOOGLE_VISION_API_KEY;
+  private readonly GOOGLE_VISION_API_KEY = import.meta.env.VITE_GOOGLE_VISION_API_KEY;
   private readonly MAX_RESULTS = 20;
 
   // Car makes database for recognition

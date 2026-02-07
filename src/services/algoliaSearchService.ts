@@ -9,8 +9,8 @@ import { CarListing } from '../types/CarListing';
 import { serviceLogger } from './logger-service';
 
 // Algolia configuration from environment
-const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID || 'RTGDK12KTJ';
-const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY || '';
+const ALGOLIA_APP_ID = import.meta.env.VITE_ALGOLIA_APP_ID || 'RTGDK12KTJ';
+const ALGOLIA_SEARCH_KEY = import.meta.env.VITE_ALGOLIA_SEARCH_KEY || '';
 const ALGOLIA_INDEX_NAME = 'cars_bg';
 
 interface SearchOptions {

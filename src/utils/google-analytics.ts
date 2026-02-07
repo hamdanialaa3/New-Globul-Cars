@@ -21,7 +21,7 @@ import { initConsentMode, applySavedConsent } from './consent-mode';
  * import { initGA } from './utils/google-analytics';
  * useEffect(() => { initGA(); }, []);
  */
-export const initGA = (measurementId: string = process.env.REACT_APP_FIREBASE_MEASUREMENT_ID || process.env.REACT_APP_GA4_MEASUREMENT_ID || 'G-R8JY5KM421') => {
+export const initGA = (measurementId: string = import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || import.meta.env.VITE_GA4_MEASUREMENT_ID || 'G-R8JY5KM421') => {
   if (!measurementId) {
     logger.warn('GA4 Measurement ID not configured - add REACT_APP_FIREBASE_MEASUREMENT_ID to .env');
     return;

@@ -148,7 +148,7 @@ const MainContent: React.FC<MainContentProps> = ({ isVisible }) => {
   const [response, setResponse] = useState('');
   const [showResponse, setShowResponse] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const apiKey = process.env.REACT_APP_GEMINI_API_KEY || '';
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
 
   const callGemini = async (prompt: string) => {
     if (!apiKey) {

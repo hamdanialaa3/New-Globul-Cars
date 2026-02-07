@@ -45,7 +45,7 @@ class OpenAIGPT4Service {
   private isConfigured: boolean = false;
 
   private constructor() {
-    const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
+    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
     if (!apiKey) {
       logger.warn('⚠️ OpenAI API Key not configured - AI features will be disabled');
       this.isConfigured = false;
