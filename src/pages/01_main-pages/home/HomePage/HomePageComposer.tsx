@@ -73,6 +73,9 @@ import HomeLoyaltyAndSignup from './HomeLoyaltyAndSignup';
 import { GridSectionWrapper } from './GridSectionWrapper';
 import LinkableSection from './LinkableSection';
 
+// 🆕 Smart Strips (mobile.de parity)
+import { HomeHeroStrips } from '../../../../components/home/HomeHeroStrips';
+
 // Global components (lazy loaded)
 const AIChatbot = React.lazy(() => import('../../../../components/AI/AIChatbot'));
 
@@ -100,13 +103,16 @@ const ContentContainer = styled.div`
   max-width: 1400px; /* mobile.de standard: 1400px max-width */
   margin: 0 auto; /* Center the container */
   padding: 0 24px; /* mobile.de standard: 24px horizontal padding */
+  padding-bottom: 80px;
 
   @media (max-width: 1024px) {
     padding: 0 20px;
+    padding-bottom: 60px;
   }
 
   @media (max-width: 768px) {
     padding: 0 16px; /* mobile.de mobile: 16px padding */
+    padding-bottom: 40px;
   }
 `;
 
@@ -470,6 +476,14 @@ const HomePageComposer: React.FC = React.memo(() => {
         <SectionSpacer />
 
         {/* ═══════════════════════════════════════════════════════════════ */}
+        {/* 🆕 SMART HERO STRIPS (mobile.de Style)                         */}
+        {/* Recently Viewed + Top Deals                                     */}
+        {/* Placed strictly under the 3rd "Hero" element (Banner)           */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        <HomeHeroStrips />
+        <SectionSpacer />
+
+        {/* ═══════════════════════════════════════════════════════════════ */}
         {/* SECTION 4: 🆕 VISUAL SEARCH - UNIQUE COMPETITIVE ADVANTAGE      */}
         {/* No Bulgarian competitor has this feature!                       */}
         {/* ═══════════════════════════════════════════════════════════════ */}
@@ -567,7 +581,7 @@ const HomePageComposer: React.FC = React.memo(() => {
       {/* ═══════════════════════════════════════════════════════════════ */}
       {/* FLOATING COMPONENTS                                             */}
       {/* ═══════════════════════════════════════════════════════════════ */}
-      
+
       {/* AI Chatbot */}
       <AIChatbotSlot />
 
