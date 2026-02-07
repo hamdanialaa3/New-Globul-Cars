@@ -11,6 +11,7 @@ const IS_DEV = process.env.NODE_ENV === 'development';
 
 // Lazy Loaded Components
 const HomePage = safeLazy(() => import('../pages/01_main-pages/home/HomePage'));
+const SEOCityBrandPage = safeLazy(() => import('../pages/SEOCityBrandPage'));
 const CarsPage = safeLazy(() => import('../pages/01_main-pages/CarsPage'));
 const AIAdvisorPage = safeLazy(() => import('../pages/01_main-pages/advisor/AIAdvisorPage'));
 const AIValuationPage = safeLazy(() => import('../pages/01_main-pages/valuation/AIValuationPage'));
@@ -547,6 +548,10 @@ export const MainRoutes: React.FC = () => {
                     return { Component: CompetitiveComparisonPage.default };
                 }}
             />
+            
+            {/* SEO City-Brand Pages: /bmw-sofia, /audi-plovdiv, etc. */}
+            <Route path="/:slug" element={<SEOCityBrandPage />} />
+            
             <Route path="*" element={<Suspense fallback={<div>Loading...</div>}><NotFoundPage /></Suspense>} />
         </Routes>
     );
