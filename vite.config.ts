@@ -87,10 +87,11 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: (id) => {
-            // React vendor bundle
+            // React vendor bundle (including react-is for styled-components)
             if (id.includes('node_modules/react') || 
                 id.includes('node_modules/react-dom') || 
-                id.includes('node_modules/react-router-dom')) {
+                id.includes('node_modules/react-router-dom') ||
+                id.includes('node_modules/react-is')) {
               return 'vendor-react';
             }
             
@@ -137,7 +138,7 @@ export default defineConfig(({ mode }) => {
     
     // Optimization
     optimizeDeps: {
-      include: ['react', 'react-dom', 'firebase/app', 'firebase/auth', 'firebase/firestore'],
+      include: ['react', 'react-dom', 'react-is', 'firebase/app', 'firebase/auth', 'firebase/firestore'],
       esbuildOptions: {
         target: 'es2017', // Match craco config
       },
