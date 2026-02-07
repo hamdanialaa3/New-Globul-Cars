@@ -1,3 +1,7 @@
 {
-    "markdown.validate.enabled": true
+    "markdown.validate.enabled": true,
+    "editor.formatOnType": false,
+    "diffEditor.codeLens": true,
+    "editor.find.autoFindInSelection": "always",
+    "editor.cursorSurroundingLinesStyle": "all"
 }

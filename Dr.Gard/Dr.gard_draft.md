@@ -1503,3 +1503,148 @@ chmod +x dev_s_media/scripts/scale_workers.sh
 شغّل الهجرة في staging ثم نفّذ اختبارات التحمل.
 
 شغّل Guardian Doctor في وضع مراقبة فقط لمدة 72 ساعة قبل تفعيل أي إجراء تلقائي.
+Review
+تقرير تحديث وتطوير "الحارس الطبيب" (Dr. Guardian Modernization Report)
+IMPORTANT
+
+ملخص تنفيذي (Executive Summary) التحليل الحالي لملف 
+Dr.gard_draft.md
+ يظهر تصميماً جيداً لـ "Runcook Automation script" تقليدي، ولكنه لا يرقى لمستوى "Autonomous AI Agent" بالمفهوم الحديث لعام 2025/2026. المقترحات أدناه تهدف لتحويل المشروع من مجرد "نصوص برمجية للمراقبة" (Scripted Monitoring) إلى وكيل ذكاء اصطناعي استنتاجي (Reasoning AI Agent) يمتلك "إدراك" (Cognition) لحالة النظام وقادر على حل المشكلات غير المتوقعة باستخدام RAG و ReAct Patterns.
+
+1. تحليل الوضع الحالي (Current State Analysis)
+نقاط القوة (Strengths)
+هيكلية واضحة: التقسيم إلى monitor و actions و notifications منطقي جداً.
+التركيز على المشاكل الحقيقية: معالجة طوابير الانتظار (Queues) وDLQ (Dead Letter Queue) هي أولويات صحيحة.
+الأمان: وجود Gatekeeper للموافقة البشرية هو ممارسة ممتازة.
+نقاط الضعف والفجوات (Weaknesses & Gaps)
+صلابة القواعد (Rigidity): يعتمد النظام كلياً على if-this-then-that. إذا حدثت مشكلة لم يتم كتابة كود لها خصيصاً، سيعجز الوكيل عن الحل.
+غياب "الذاكرة" (No Memory): الوكيل لا "يتذكر" المحاولات السابقة أو سياق المشكلة عبر الزمن، مما قد يؤدي لتكرار حلول فاشلة (Flapping).
+مراقبة بدائية (Primitive Monitoring): الاعتماد على console.log أو إشعارات Slack مباشرة يفتقر للمعايير القياسية مثل OpenTelemetry، مما يجعل تتبع المشكلة عبر الخدمات (Distributed Tracing) مستحيلاً.
+عزل عن المعرفة (Knowledge Isolation): الوكيل لا يستطيع قراءة وثائق المشروع أو الـ Runbooks الموجودة لحل المشاكل، بل يعتمد فقط على المنطق المكتوب بداخله (Hardcoded).
+2. استراتيجية التحديث: "الحارس الطبيب v2.0" (The Guardian Doctor v2.0)
+لتحويل هذا المشروع إلى مستوى عالمي، نقترح الانتقال إلى معمارية Agentic Workflow باستخدام التقنيات التالية:
+
+أ. العقل المدبر: LangGraph (بدلاً من Scripts)
+بدلاً من حلقة while بسيطة، نستخدم State Graph. الوكيل لديه "حالة" (State) وينتقل بين عقد التفكير (Reasoning)، التخطيط (Planning)، والتنفيذ (Execution).
+
+لماذا؟: لتمكين الوكيل من "التراجع" (Backtracking) إذا فشلت خطة، أو طلب المزيد من المعلومات قبل التصرف.
+ب. الإدراك: RAG & Vector Database
+الوكيل يجب أن يكون متصلاً بـ قاعدة معرفة (Knowledge Base) تحتوي على:
+
+جميع ملفات الـ Runbooks.
+وثائق الـ API للخدمات الخارجية.
+سجلات الأخطاء التاريخية وحلولها.
+السيناريو: عند حدوث خطأ غريب، يقوم الوكيل بالبحث في قاعدة المعرفة (Retrieval) عن حالات مشابهة، ثم يولد خطة إصلاح بناءً عليها.
+ج. المراقبة الشاملة: OpenTelemetry (OTel)
+بدلاً من إرسال رسائل Slack مباشرة، يجب أن يصدر الوكيل Traces و Metrics قياسية.
+
+الميزة: يمكنك رؤية "تدفق التفكير" (Thought Process) للوكيل جنباً إلى جنب مع أداء النظام في لوحة تحكم واحدة (Grafana/Datadog).
+3. المعمارية المقترحة (Architecture Diagram)
+Memory & Knowledge
+Dr. Guardian v2.0 (The Agent)
+Brain (LangGraph)
+Traces & Metrics
+Known Issue
+Unknown Issue
+Safe
+Risky
+Execute Tool
+The Environment (System)
+Redis Queue
+External APIs
+System Logs
+OTel Sensor/Observer
+Current State
+Analyze Situation
+Execute Playbook
+RAG Research
+Generate Plan
+Ask Human Approval
+Environment Actions
+Vector DB: Runbooks/Docs
+Short-term Memory
+4. أمثلة برمجية حديثة (Modern Implementation Examples)
+مثال 1: تحويل healthPoller إلى عقدة في LangGraph
+بدلاً من دالة بسيطة، سنجعلها "عقدة" في رسم بياني، مما يسمح للوكيل باتخاذ قرارات معقدة.
+
+typescript
+// Modern approach using LangGraph concepts (Conceptual)
+import { StateGraph, END } from "@langchain/langgraph";
+// تعريف حالة الوكيل
+interface AgentState {
+  healthStatus: "healthy" | "degraded" | "critical";
+  lastCheck: number;
+  activeIncidents: string[];
+  messages: BaseMessage[];
+}
+// عقدة المراقبة الذكية
+async function monitorNode(state: AgentState) {
+  const health = await checkSystemHealth(); // دالة فحص محسنة
+  
+  if (health.status === 'critical') {
+    // الوكيل يقرر هنا: هل هذه مشكلة معروفة؟
+    const diagnosis = await diagnoseWithLLM(health.logs);
+    return { 
+      healthStatus: 'critical', 
+      messages: [new HumanMessage(`Alert: ${diagnosis.summary}`)] 
+    };
+  }
+  
+  return { healthStatus: 'healthy' };
+}
+// تعريف الرسم البياني (سير العمل)
+const workflow = new StateGraph<AgentState>({ channels: ... })
+  .addNode("monitor", monitorNode)
+  .addNode("remediate", remediationAgent)
+  .addNode("human_approval", humanApprovalNode)
+  .addEdge("monitor", "remediate") // انتقال ذكي
+  .compile();
+مثال 2: استخدام RAG للتشخيص الذكي (بدلاً من askLLMForDiagnosis البسيط)
+بدلاً من إرسال السجلات فقط للـ LLM، سنبحث أولاً في الوثائق.
+
+typescript
+async function smartDiagnose(errorLog: string) {
+  // 1. Retrieval: بحث في وثائق المشروع عن هذا الخطأ
+  const relevantDocs = await vectorStore.similaritySearch(errorLog, 3);
+  
+  // 2. Augmentation: إضافة السياق لطلب الـ LLM
+  const prompt = `
+    You are Dr. Guardian. The system encountered this error: "${errorLog}".
+    
+    Here are relevant excerpts from our Runbooks:
+    ${relevantDocs.map(d => d.pageContent).join('\n')}
+    
+    Based on the docs, what is the specific fix? Return a JSON action plan.
+  `;
+  
+  // 3. Generation
+  return await llm.invoke(prompt);
+}
+مثال 3: OpenTelemetry Integration
+كيفية جعل الوكيل "قابلاً للمراقبة" (Observable).
+
+typescript
+import { trace, context } from '@opentelemetry/api';
+const tracer = trace.getTracer('dr-guardian');
+async function performAction(actionName: string) {
+  return tracer.startActiveSpan(`Execute Action: ${actionName}`, async (span) => {
+    try {
+      span.setAttribute('agent.decision', 'retry_queue');
+      // تنفيذ المنطق...
+      await executeLogic();
+    } catch (err) {
+      span.recordException(err);
+      span.setStatus({ code: SpanStatusCode.ERROR });
+    } finally {
+      span.end();
+    }
+  });
+}
+5. توصيات فورية (Immediate Recommendations)
+تبني LangGraph أو إطار عمل مشابه: هذا سينقل الكود من "Spaghetti Scripts" إلى "Workflow Graph" قابل للإدارة والتوسع بصرياً.
+إعداد Vector Database محلية (مثل ChromaDB أو pgvector): ابدأ بفهرسة ملفات الـ Markdown الموجودة في مجلد DOCUMENTATION، لتصبح "دماغ" الوكيل.
+تفعيل OpenTelemetry: حتى لو بشكل بسيط في البداية، لتوحيد تنسيق السجلات.
+إنشاء "أدوات" (Tools) قياسية: غلف كل شيفرات actions/* كـ "Tools" يمكن للـ LLM استدعاؤها (Agent Tools)، بدلاً من استدعائها يدوياً في الكود. هذا يسمح للذكاء الاصطناعي باختيار الأداة المناسبة بنفسه.
+TIP
+
+الخلاصة المسودة الحالية ممتازة كبداية (MVP)، ولكن لتحقيق "الاحترافية الصارمة" في عصر الذكاء الاصطناعي، يجب أن ننتقل من "الأتمتة المبرمجة مسبقاً" (Hardcoded Automation) إلى "الأتمتة المعرفية" (Cognitive Automation) التي يقودها وكيل ذكي يمتلك أدوات وذاكرة.
