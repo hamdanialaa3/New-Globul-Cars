@@ -99,7 +99,7 @@ const translations = {
     transmission: 'Скоростна кутия',
     previousOwners: 'Предишни собственици',
     accidentFree: 'Без аварии',
-    accidentFree: 'Без аварии',
+
     serviceHistory: 'Сервизна книжка',
     fullServiceHistory: 'Пълна сервизна история',
     technicalData: 'Технически данни',
@@ -177,7 +177,7 @@ const translations = {
     transmission: 'Transmission',
     previousOwners: 'Previous owners',
     accidentFree: 'Accident-free',
-    accidentFree: 'Accident-free',
+
     serviceHistory: 'Service history',
     fullServiceHistory: 'Full service history',
     technicalData: 'Technical data',
@@ -644,7 +644,7 @@ const MainImageContainer = styled.div`
   cursor: pointer;
 
   @media (max-width: 768px) {
-    height: 300px;
+    height: min(300px, 60vh);
   }
 `;
 

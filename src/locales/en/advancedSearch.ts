@@ -3,11 +3,11 @@ export const advancedSearch = {
   // Header
   title: 'Advanced Search',
   subtitle: 'Find your perfect car with over 30 filters',
-  
+
   // Search Results
   searchResults: 'Search Results',
   applyFiltersAbove: 'Apply filters above to start searching',
-  
+
   // Sections
   basicData: 'Basic Data',
   technicalData: 'Technical Data',
@@ -17,7 +17,7 @@ export const advancedSearch = {
   offerDetails: 'Offer Details',
   location: 'Location',
   typeAndCondition: 'Type & Condition',
-  
+
   // Make & Model
   make: 'Make',
   model: 'Model',
@@ -31,7 +31,7 @@ export const advancedSearch = {
   sports: 'Sports Car',
   van: 'Van',
   other: 'Other',
-  
+
   // Condition
   condition: 'Condition',
   newCondition: 'New',
@@ -41,11 +41,11 @@ export const advancedSearch = {
   employeeCondition: 'Employee Car',
   classicCondition: 'Classic Car',
   demonstrationCondition: 'Demonstration',
-  
+
   // Yes/No
   yes: 'Yes',
   no: 'No',
-  
+
   // Basic filters
   all: 'All',
   allOptions: 'All Options',
@@ -53,12 +53,12 @@ export const advancedSearch = {
   to: 'To',
   fromPlaceholder: 'From',
   toPlaceholder: 'To',
-  
+
   // Numbers & Specs
   numberOfSeats: 'Number of Seats',
   numberOfDoors: 'Number of Doors',
   slidingDoor: 'Sliding Door',
-  
+
   // Payment & Price
   paymentType: 'Payment Type',
   price: 'Price',
@@ -68,7 +68,7 @@ export const advancedSearch = {
   purchaseOption: 'Purchase',
   leasingOption: 'Leasing',
   tryQuickSearch: 'Try Quick Search',
-  
+
   // Registration & History
   firstRegistration: 'First Registration',
   mileage: 'Mileage',
@@ -77,7 +77,7 @@ export const advancedSearch = {
   numberOfOwners: 'Number of Owners',
   fullServiceHistory: 'Full Service History',
   roadworthy: 'Roadworthy',
-  
+
   // Technical Data
   fuelType: 'Fuel Type',
   power: 'Power',
@@ -102,7 +102,7 @@ export const advancedSearch = {
   noSticker: 'No Sticker',
   emissionClass: 'Emission Class',
   particulateFilter: 'Particulate Filter',
-  
+
   // Exterior
   exteriorColor: 'Exterior Color',
   trailerCoupling: 'Trailer Coupling',
@@ -118,7 +118,7 @@ export const advancedSearch = {
   selfParkingSensors: 'Self-Parking',
   parkAssistParkingSensors: 'Park Assist',
   cruiseControl: 'Cruise Control',
-  
+
   // Interior
   interiorColor: 'Interior Color',
   interiorMaterial: 'Interior Material',
@@ -131,7 +131,7 @@ export const advancedSearch = {
   manualAirConditioning: 'Manual',
   automaticAirConditioning: 'Automatic',
   noAirConditioning: 'No Air Conditioning',
-  extras: 'Extras',
+
   absExtras: 'ABS',
   edcExtras: 'EDC',
   navigationExtras: 'Navigation System',
@@ -144,7 +144,7 @@ export const advancedSearch = {
   panoramaRoofExtras: 'Panorama Roof',
   bluetoothExtras: 'Bluetooth',
   heatedSeatsExtras: 'Heated Seats',
-  
+
   // Offer Details
   seller: 'Seller',
   dealer: 'Dealer',
@@ -177,34 +177,34 @@ export const advancedSearch = {
   includeDamaged: 'Include damaged vehicles',
   commercialExport: 'Commercial Export',
   approvedUsedProgramme: 'Approved Used Programme',
-  
+
   // Location
   country: 'Country',
   city: 'City',
   radius: 'Radius',
   deliveryOffers: 'Delivery Offers',
   onlyDeliveryOffers: 'Only with delivery',
-  
+
   // Description Search
   searchInDescription: 'Search in Description',
   descriptionPlaceholder: 'Description',
   enterKeywords: 'Enter keywords...',
-  
+
   // Actions
   resetFilters: 'Reset Filters',
   saveSearch: 'Save Search',
   searchCars: 'Search Cars',
-  
+
   // Units
   km: 'km',
-  
+
   // Countries
   bulgaria: 'Bulgaria',
   germany: 'Germany',
   austria: 'Austria',
   switzerland: 'Switzerland',
   countryOther: 'Other',
-  
+
   // Bulgarian Provinces (28 Oblast)
   blagoevgrad: 'Blagoevgrad',
   burgas: 'Burgas',
@@ -234,7 +234,7 @@ export const advancedSearch = {
   vidin: 'Vidin',
   vratsa: 'Vratsa',
   yambol: 'Yambol',
-  
+
   // Fuel Types
   gasolineFuel: 'Gasoline',
   dieselFuel: 'Diesel',
@@ -247,7 +247,7 @@ export const advancedSearch = {
   naturalGasFuel: 'Natural Gas (CNG)',
   otherFuel: 'Other',
   pluginHybridFuel: 'Plug-in Hybrid',
-  
+
   // Exterior Colors
   black: 'Black',
   beige: 'Beige',
@@ -264,7 +264,7 @@ export const advancedSearch = {
   purple: 'Purple',
   matte: 'Matte',
   metallic: 'Metallic',
-  
+
   // Interior Colors
   interiorBeige: 'Beige',
   interiorBlack: 'Black',
@@ -273,7 +273,7 @@ export const advancedSearch = {
   interiorGray: 'Gray',
   interiorRed: 'Red',
   interiorOther: 'Other',
-  
+
   // Interior Materials
   alcantara: 'Alcantara',
   fabric: 'Fabric',
@@ -282,7 +282,7 @@ export const advancedSearch = {
   fullLeather: 'Full Leather',
   velour: 'Velour',
   materialOther: 'Other',
-  
+
   // Manual input placeholders for "Other" option
   enterOtherMake: 'Enter make manually',
   enterOtherVehicleType: 'Enter vehicle type manually'

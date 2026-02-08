@@ -24,6 +24,7 @@ import { MobileContactBar } from './components/MobileContactBar';
 import { CarEquipmentDisplay } from './components/CarEquipmentDisplay';
 import { DeleteConfirmDialog } from './components/DeleteConfirmDialog';
 import { FinanceCalculator } from '../../components/finance/FinanceCalculator';
+import FinancingCalculatorWidget from '../../components/financing/FinancingCalculatorWidget';
 import { PriceComparisonWidget } from '../../components/comparison/PriceComparisonWidget';
 import {
   Container,
@@ -670,9 +671,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
 
       {/* 🔥 Finance Calculator Integration - Bank Partnerships */}
       {!editHook.isEditMode && car?.price && (
-        <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-          <FinanceCalculator carPrice={car.price} />
-        </div>
+        <FinancingCalculatorWidget carPrice={car.price} />
       )}
 
       {/* 💰 Price Comparison Widget - Competitive Advantage */}

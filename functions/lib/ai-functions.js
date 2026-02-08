@@ -10,7 +10,7 @@ const functions = require("firebase-functions/v1");
 const generative_ai_1 = require("@google/generative-ai");
 // Firebase Admin is already initialized in index.ts - no need to initialize again
 const db = admin.firestore();
-// Initialize Gemini - uses process.env (functions.config() deprecated March 2026)
+// Initialize Gemini - uses process.env (deprecated config API ref removed)
 const getApiKey = () => {
     const envKey = process.env.GOOGLE_GENERATIVE_AI_KEY;
     if (envKey) {

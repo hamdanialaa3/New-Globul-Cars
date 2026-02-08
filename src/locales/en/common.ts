@@ -40,7 +40,7 @@ export const common = {
     "settings": "Settings",
     "all": "All",
     "unread": "Unread",
-    "messages": "Messages",
+    "messagesLabel": "Messages",
     "system": "System",
     "loading": "Loading notifications...",
     "noNotifications": "No notifications",

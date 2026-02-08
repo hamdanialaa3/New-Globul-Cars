@@ -34,37 +34,29 @@ export const MainLayout: React.FC = () => {
             })
         }}>
             {!isSellPage && (
-                <header role="banner">
+                <header role="banner" style={{ 
+                    flexShrink: 0,
+                    height: '64px',   /* Spacer for fixed header */
+                    minHeight: '64px'
+                }}>
                     <div className="desktop-header-only">
-                        <Suspense fallback={<div style={{ height: '70px' }} />}>
+                        <Suspense fallback={null}>
                             <Header />
                         </Suspense>
                     </div>
                     <div className="mobile-header-only">
-                        <Suspense fallback={<div style={{ height: '60px' }} />}>
+                        <Suspense fallback={null}>
                             <MobileHeader />
                         </Suspense>
                     </div>
                 </header>
             )}
 
-            {/* ✅ Incomplete Profile Alert - BELOW header, ABOVE main content */}
+            {/* Incomplete Profile Alert - flows naturally after header spacer */}
             {!isSellPage && (
-                <div 
-                    className="incomplete-profile-banner" 
-                    style={{ 
-                        width: '100%',
-                        position: 'fixed',
-                        top: '70px', /* Below header */
-                        left: 0,
-                        right: 0,
-                        zIndex: 999,
-                    }}
-                >
-                    <Suspense fallback={null}>
-                        <IncompleteProfileAlert />
-                    </Suspense>
-                </div>
+                <Suspense fallback={null}>
+                    <IncompleteProfileAlert />
+                </Suspense>
             )}
 
             <main
@@ -72,17 +64,19 @@ export const MainLayout: React.FC = () => {
                 role="main"
                 style={{
                     flex: 1,
-                    padding: isSellPage ? '0' : '0',
-                    paddingTop: isSellPage ? '0' : '80px',
-                    paddingBottom: isSellPage ? '0' : '80px',
+                    paddingTop: isSellPage ? '0' : '0',
+                    paddingBottom: isSellPage ? '0' : '0',
+                    marginTop: isSellPage ? '0' : '0',
                     backgroundColor: 'transparent',
                     transition: 'background-color 0.3s ease',
                     position: 'relative',
+                    boxSizing: 'border-box',
                     ...(isSellPage && {
                         overflow: 'hidden',
                         height: '100vh',
                         padding: '0',
-                        margin: '0'
+                        margin: '0',
+                        marginTop: '0'
                     })
                 }}
                 tabIndex={-1}
@@ -119,12 +113,13 @@ export const MainLayout: React.FC = () => {
                 </footer>
             )}
 
+            {/* MobileBottomNav: always rendered (hides itself on ≥768px via CSS) */}
+            <Suspense fallback={null}>
+                <MobileBottomNav />
+            </Suspense>
+
             {!hideFooter && (
                 <>
-                    <Suspense fallback={<div style={{ height: '60px' }} />}>
-                        <MobileBottomNav />
-                    </Suspense>
-
                     <Suspense fallback={null}>
                         <FloatingAddButton />
                     </Suspense>

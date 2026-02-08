@@ -7,17 +7,17 @@
  * @since January 9, 2026
  */
 
-import { 
-  collection, 
-  query, 
-  where, 
-  orderBy, 
-  limit, 
+import {
+  collection,
+  query,
+  where,
+  orderBy,
+  limit,
   getDocs,
   Timestamp,
   QueryConstraint
 } from 'firebase/firestore';
-import { db } from '@/config/firebase-config';
+import { db } from '@/firebase/firebase-config';
 import { logger } from '@/services/logger-service';
 import { Message, Conversation } from '@/types/messaging.types';
 
@@ -48,9 +48,9 @@ class MessageSearchService {
    */
   async searchMessages(filters: SearchFilters): Promise<SearchResult> {
     try {
-      const { 
-        userId, 
-        searchTerm, 
+      const {
+        userId,
+        searchTerm,
         conversationId,
         startDate,
         endDate,
@@ -116,7 +116,7 @@ class MessageSearchService {
       // Filter by search term (client-side for flexibility)
       if (searchTerm && searchTerm.trim()) {
         const term = searchTerm.toLowerCase().trim();
-        messages = messages.filter(msg => 
+        messages = messages.filter(msg =>
           msg.content?.toLowerCase().includes(term) ||
           msg.metadata?.subject?.toLowerCase().includes(term)
         );
@@ -155,7 +155,7 @@ class MessageSearchService {
   ): Promise<Conversation[]> {
     try {
       const conversationsRef = collection(db, this.CONVERSATIONS_COLLECTION);
-      
+
       const q = query(
         conversationsRef,
         where('participants', 'array-contains', userId),
@@ -174,7 +174,7 @@ class MessageSearchService {
         const term = searchTerm.toLowerCase().trim();
         conversations = conversations.filter(conv => {
           // Search in participant names
-          const participantMatch = conv.participantDetails?.some(p => 
+          const participantMatch = conv.participantDetails?.some(p =>
             p.displayName?.toLowerCase().includes(term)
           );
 

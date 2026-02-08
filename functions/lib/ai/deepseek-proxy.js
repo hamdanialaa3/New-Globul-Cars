@@ -9,7 +9,7 @@ if (!admin.apps.length) {
     admin.initializeApp();
 }
 const db = admin.firestore();
-// Use environment variables instead of functions.config()
+// Use environment variables (process.env) instead of deprecated config methods
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 const DEEPSEEK_BASE_URL = 'https://api.deepseek.com';
 // Quota configuration based on user type

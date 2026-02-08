@@ -24,7 +24,7 @@ import {
   writeBatch,
   Timestamp
 } from 'firebase/firestore';
-import { db } from '@/config/firebase-config';
+import { db } from '@/firebase/firebase-config';
 import { logger } from '@/services/logger-service';
 
 // ============================================================================

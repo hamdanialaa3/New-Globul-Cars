@@ -65,7 +65,7 @@ export const profile = {
   "uploadingPhoto": "Uploading photo...",
   "photoUploadSuccess": "Photo uploaded successfully",
   "photoUploadError": "Error uploading photo",
-  "garage": "Garage",
+  "garageLabel": "Garage",
   "myGarage": "My Garage",
   "addFirstVehicle": "Add your first vehicle",
   "addAnotherVehicle": "Add another vehicle",

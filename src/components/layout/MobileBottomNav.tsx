@@ -3,32 +3,44 @@ import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const NavWrapper = styled.nav`
-  position: fixed;
-  bottom: 0;
+  position: fixed !important;
+  bottom: 0 !important;
   left: 0;
   right: 0;
-  background: var(--bg-primary);
-  border-top: 1px solid var(--border-primary);
-  z-index: 40;
-  box-shadow: var(--shadow-sm);
+  width: 100%;
+  height: auto;
+  min-height: 56px;
+  background: var(--bg-primary, #ffffff);
+  border-top: 1px solid var(--border-primary, #e5e7eb);
+  z-index: 9999;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease, border-color 0.3s ease;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
   
-  /* Hide on desktop */
+  /* Hide on tablet+ (768px and up) */
   @media (min-width: 768px) {
-    display: none;
+    display: none !important;
   }
   
-  /* Safe area for devices with notches (iPhone X+) */
-  padding-bottom: env(safe-area-inset-bottom, 0);
+  /* Mobile safe area */
+  @supports (padding: max(0px)) {
+    padding-bottom: max(0px, env(safe-area-inset-bottom, 0px));
+  }
 `;
 
 const NavContent = styled.div`
   display: flex;
-  justify-content: space-around;
+  flex-direction: row;
+  justify-content: space-evenly;
   align-items: center;
-  max-width: 600px;
+  width: 100%;
+  max-width: 500px;
   margin: 0 auto;
-  padding: 8px 0;
+  padding: 6px 8px;
+  gap: 4px;
 `;
 
 const NavItem = styled.button<{ $isActive: boolean }>`
@@ -36,33 +48,35 @@ const NavItem = styled.button<{ $isActive: boolean }>`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  background: transparent;
+  gap: 2px;
+  background: ${props => props.$isActive ? 'rgba(168, 85, 247, 0.1)' : 'transparent'};
   border: none;
-  padding: 8px 12px;
+  padding: 6px 4px;
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-  color: ${props => props.$isActive ? 'var(--accent-primary)' : 'var(--text-secondary)'};
-  min-width: 60px;
-  min-height: 60px;
-  transition: all 0.2s ease, background-color 0.3s ease, color 0.3s ease;
-  border-radius: 12px;
+  color: ${props => props.$isActive ? 'var(--accent-primary, #a855f7)' : 'var(--text-secondary, #6b7280)'};
+  flex: 1;
+  min-height: 48px;
+  max-width: 72px;
+  transition: all 0.2s ease;
+  border-radius: 10px;
+  position: relative;
   
   &:active {
-    transform: scale(0.95);
-    background: ${props => props.$isActive ? 'var(--accent-primary)' : 'var(--bg-hover)'};
-    color: ${props => props.$isActive ? 'var(--btn-primary-text)' : 'var(--text-primary)'};
+    transform: scale(0.92);
+    background: ${props => props.$isActive ? 'rgba(168, 85, 247, 0.18)' : 'rgba(0, 0, 0, 0.05)'};
   }
   
   svg {
-    width: 24px;
-    height: 24px;
-    transition: all 0.2s ease, color 0.3s ease;
+    width: 22px;
+    height: 22px;
+    transition: all 0.2s ease;
     color: currentColor;
   }
   
   ${props => props.$isActive && `
+    font-weight: 600;
     svg {
       transform: scale(1.1);
     }
@@ -70,11 +84,13 @@ const NavItem = styled.button<{ $isActive: boolean }>`
 `;
 
 const NavLabel = styled.span<{ $isActive: boolean }>`
-  font-size: 11px;
-  font-weight: ${props => props.$isActive ? '600' : '400'};
+  font-size: 10px;
+  font-weight: ${props => props.$isActive ? '700' : '500'};
   font-family: 'Martica', 'Arial', sans-serif;
-  line-height: 1;
+  line-height: 1.2;
   color: currentColor;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
 `;
 
 const Badge = styled.span`

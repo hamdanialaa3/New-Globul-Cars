@@ -817,6 +817,57 @@ service cloud.firestore {
         && resource.data.userId == request.auth.uid;
     }
 
+    // 🎛️ App Settings - Homepage Sections Control
+    // Explicit rule for the homepage_sections document
+    // TODO: Add admin role verification once SuperAdmin auth is integrated with Firebase Auth
+    match /app_settings/homepage_sections {
+      // ✅ Allow READ for everyone
+      allow read: if true;
+      
+      // ✅ TEMPORARY: Allow CREATE/UPDATE for everyone (needs admin role check later)
+      allow create, update: if true;
+      
+      // ✅ Prevent deletion
+      allow delete: if false;
+    }
+
+    // 🎛️ App Settings - Site Settings Control
+    // TODO: Add admin role verification once SuperAdmin auth is integrated with Firebase Auth
+    match /app_settings/site_settings {
+      // ✅ Allow READ for everyone (public visibility of features)
+      allow read: if true;
+      
+      // ✅ TEMPORARY: Allow CREATE/UPDATE for everyone (needs admin role check later)
+      allow create, update: if true;
+      
+      // ✅ Prevent deletion
+      allow delete: if false;
+    }
+
+    // 🎛️ App Settings - Theme Settings Control
+    match /app_settings/theme_settings {
+      // ✅ Allow READ for everyone (public theme visibility)
+      allow read: if true;
+      
+      // ✅ TEMPORARY: Allow CREATE/UPDATE for everyone (needs admin role check later)
+      allow create, update: if true;
+      
+      // ✅ Prevent deletion
+      allow delete: if false;
+    }
+
+    // 🎛️ App Settings - Featured Content Control
+    match /app_settings/featured_content {
+      // ✅ Allow READ for everyone (public featured content)
+      allow read: if true;
+      
+      // ✅ TEMPORARY: Allow CREATE/UPDATE for everyone (needs admin role check later)
+      allow create, update: if true;
+      
+      // ✅ Prevent deletion
+      allow delete: if false;
+    }
+
     // General fallback (deny by default, but opened for dev/debugging if needed - keep strict for now)
     // Default: Deny all other access
     match /{document=**} {

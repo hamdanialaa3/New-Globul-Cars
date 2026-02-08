@@ -34,6 +34,7 @@ import React, { Suspense } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useAuth } from '../../../../contexts/AuthProvider';
+import { useSectionVisibility } from '../../../../hooks/useSectionVisibility';
 import LazySection from '../../../../components/LazySection';
 
 // ============================================================================
@@ -446,18 +447,19 @@ const HomePageComposer: React.FC = React.memo(() => {
   // Check if user is authenticated for conditional sections
   const { user } = useAuth();
   const hasRecentlyBrowsed = typeof window !== 'undefined' && localStorage.getItem('recentBrowsing');
+  const { isVisible } = useSectionVisibility();
 
   return (
     <ComposerContainer>
       {/* 0. Sticky Search Bar (Floating - appears on scroll > 400px) */}
-      <StickySearchBar />
+      {isVisible('sticky_search') && <StickySearchBar />}
 
       {/* Content Container (Max Width 1400px) */}
       <ContentContainer>
         {/* ═══════════════════════════════════════════════════════════════ */}
         {/* SECTION 1: HERO - Main Entry Point                              */}
         {/* ═══════════════════════════════════════════════════════════════ */}
-        <HeroSlot />
+        {isVisible('hero') && <HeroSlot />}
         <SectionSpacer />
 
         {/* ═══════════════════════════════════════════════════════════════ */}
@@ -465,14 +467,14 @@ const HomePageComposer: React.FC = React.memo(() => {
         {/* AI-powered personalized recommendations (2nd position!)         */}
         {/* Logged-in: Personalized / Anonymous: Trending Cars              */}
         {/* ═══════════════════════════════════════════════════════════════ */}
-        <SmartHeroSlot />
+        {isVisible('smart_recommendations') && <SmartHeroSlot />}
         <SectionSpacer />
 
         {/* ═══════════════════════════════════════════════════════════════ */}
         {/* SECTION 3: 🆕 AI ANALYSIS BANNER - Explain how AI works         */}
         {/* Eye-catching banner: Upload → AI Analyze → Get Price → Publish  */}
         {/* ═══════════════════════════════════════════════════════════════ */}
-        <AIAnalysisBannerSlot />
+        {isVisible('ai_analysis_banner') && <AIAnalysisBannerSlot />}
         <SectionSpacer />
 
         {/* ═══════════════════════════════════════════════════════════════ */}
@@ -480,97 +482,89 @@ const HomePageComposer: React.FC = React.memo(() => {
         {/* Recently Viewed + Top Deals                                     */}
         {/* Placed strictly under the 3rd "Hero" element (Banner)           */}
         {/* ═══════════════════════════════════════════════════════════════ */}
-        <HomeHeroStrips />
+        {isVisible('hero_strips') && <HomeHeroStrips />}
         <SectionSpacer />
 
         {/* ═══════════════════════════════════════════════════════════════ */}
         {/* SECTION 4: 🆕 VISUAL SEARCH - UNIQUE COMPETITIVE ADVANTAGE      */}
         {/* No Bulgarian competitor has this feature!                       */}
         {/* ═══════════════════════════════════════════════════════════════ */}
-        <VisualSearchSlot />
+        {isVisible('visual_search') && <VisualSearchSlot />}
         <SectionSpacer />
 
         {/* ═══════════════════════════════════════════════════════════════ */}
         {/* SECTION 5: VEHICLE CLASSIFICATIONS                              */}
         {/* Body types (Sedan, SUV, Hatchback, etc.)                        */}
         {/* ═══════════════════════════════════════════════════════════════ */}
-        <VehicleClassificationsSlot />
+        {isVisible('vehicle_classifications') && <VehicleClassificationsSlot />}
         <SectionSpacer />
 
-        {/* ═══════════════════════════════════════════════════════════════ */}
         {/* SECTION 6: 🆕 LIFE MOMENTS BROWSE                               */}
         {/* Emotional discovery - Find car for your life moment             */}
         {/* ═══════════════════════════════════════════════════════════════ */}
-        <LifeMomentsSlot />
+        {isVisible('life_moments') && <LifeMomentsSlot />}
         <SectionSpacer />
 
-        {/* ═══════════════════════════════════════════════════════════════ */}
         {/* SECTION 7: CARS SHOWCASE - MAIN CONTENT                         */}
         {/* Tabbed view: Latest / New / Featured                            */}
         {/* ═══════════════════════════════════════════════════════════════ */}
-        <CarsShowcaseSlot />
+        {isVisible('cars_showcase') && <CarsShowcaseSlot />}
         <SectionSpacer />
 
         {/* ═══════════════════════════════════════════════════════════════ */}
         {/* SECTION 6: POPULAR BRANDS                                       */}
         {/* Grid of 21 popular car brands                                   */}
         {/* ═══════════════════════════════════════════════════════════════ */}
-        <PopularBrandsSlot />
+        {isVisible('popular_brands') && <PopularBrandsSlot />}
         <SectionSpacer />
 
         {/* ═══════════════════════════════════════════════════════════════ */}
         {/* SECTION 7: MOST DEMANDED CATEGORIES                             */}
         {/* AI-powered trending categories                                  */}
         {/* ═══════════════════════════════════════════════════════════════ */}
-        <MostDemandedCategoriesSlot />
+        {isVisible('most_demanded') && <MostDemandedCategoriesSlot />}
         <SectionSpacer />
 
         {/* ═══════════════════════════════════════════════════════════════ */}
         {/* SECTION 8: FEATURED SHOWCASE                                    */}
         {/* VIP and verified dealer cars                                    */}
         {/* ═══════════════════════════════════════════════════════════════ */}
-        <FeaturedShowcaseSlot />
+        {isVisible('featured_showcase') && <FeaturedShowcaseSlot />}
         <SectionSpacer />
 
-        {/* ═══════════════════════════════════════════════════════════════ */}
         {/* SECTION 9: 🆕 UNIFIED SMART SELL                               */}
         {/* Merged SmartSellStrip + AISmartSellButton                       */}
         {/* ═══════════════════════════════════════════════════════════════ */}
-        <UnifiedSmartSellSlot />
+        {isVisible('smart_sell') && <UnifiedSmartSellSlot />}
         <SectionSpacer />
 
-        {/* ═══════════════════════════════════════════════════════════════ */}
         {/* SECTION 11: DEALERS SPOTLIGHT                                   */}
         {/* Verified dealers with trust badges                              */}
         {/* ═══════════════════════════════════════════════════════════════ */}
-        <DealersSlot />
+        {isVisible('dealers') && <DealersSlot />}
         <SectionSpacer />
 
-        {/* ═══════════════════════════════════════════════════════════════ */}
         {/* SECTION 12: TRUST & STATS                                       */}
         {/* Trust indicators and platform statistics                        */}
         {/* ═══════════════════════════════════════════════════════════════ */}
-        <TrustSlot />
+        {isVisible('trust_stats') && <TrustSlot />}
         <SectionSpacer />
 
-        {/* ═══════════════════════════════════════════════════════════════ */}
         {/* SECTION 13: SOCIAL EXPERIENCE                                   */}
         {/* Social proof, reviews, community                                */}
         {/* ═══════════════════════════════════════════════════════════════ */}
-        <SocialSlot />
+        {isVisible('social') && <SocialSlot />}
         <SectionSpacer />
 
-        {/* ═══════════════════════════════════════════════════════════════ */}
         {/* SECTION 14: LOYALTY & SIGNUP                                    */}
         {/* Subscription plans and loyalty program                          */}
         {/* ═══════════════════════════════════════════════════════════════ */}
-        <LoyaltySlot />
+        {isVisible('loyalty') && <LoyaltySlot />}
 
-        {/* ═══════════════════════════════════════════════════════════════ */}
         {/* CONDITIONAL: RECENT BROWSING                                    */}
         {/* Shows only for returning users with browsing history            */}
         {/* ═══════════════════════════════════════════════════════════════ */}
-        {hasRecentlyBrowsed && (
+        {isVisible('recent_browsing') && hasRecentlyBrowsed && (
           <>
             <SectionSpacer />
             <RecentBrowsingSlot />
@@ -583,10 +577,10 @@ const HomePageComposer: React.FC = React.memo(() => {
       {/* ═══════════════════════════════════════════════════════════════ */}
 
       {/* AI Chatbot */}
-      <AIChatbotSlot />
+      {isVisible('ai_chatbot') && <AIChatbotSlot />}
 
       {/* Draft Recovery Prompt (Floating Toast) */}
-      <DraftRecoverySlot />
+      {isVisible('draft_recovery') && <DraftRecoverySlot />}
     </ComposerContainer>
   );
 });

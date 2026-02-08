@@ -19,9 +19,15 @@ const SectionContainer = styled.section<{ $isDark: boolean }>`
   position: relative;
   overflow: hidden;
   transition: background 0.3s ease;
+  /* 🟣 إطار بنفسجي خفيف */
+  border: 1px solid rgba(168, 85, 247, 0.12);
+  border-radius: 8px;
+  margin: 0 12px;
+  box-shadow: inset 0 0 8px rgba(168, 85, 247, 0.06);
 
   @media (max-width: 768px) {
     padding: 50px 16px;
+    margin: 0 8px;
   }
 `;
 

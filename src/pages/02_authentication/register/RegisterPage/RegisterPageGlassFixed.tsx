@@ -85,6 +85,10 @@ const GlassWrapper = styled.div`
   z-index: 10;
   animation: ${fadeIn} 0.6s ease;
 
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+
   @media (max-width: 768px) {
     max-width: 100%;
     padding: 30px 20px;
@@ -104,12 +108,16 @@ const Title = styled.h1`
   margin-bottom: 12px;
   animation: ${slideIn} 0.6s ease;
 
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+
   @media (max-width: 768px) {
-    font-size: 36px;
+    font-size: 32px;
   }
 
   @media (max-width: 480px) {
-    font-size: 30px;
+    font-size: 26px;
   }
 `;
 

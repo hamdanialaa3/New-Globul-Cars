@@ -11,6 +11,15 @@ export const Container = styled.div`
   background: var(--bg-primary);
   min-height: 100vh;
   transition: background-color 0.3s ease;
+  overflow-x: hidden;
+
+  @media (max-width: 768px) {
+    padding: 0.75rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+  }
 `;
 
 export const Header = styled.div`

@@ -41,7 +41,7 @@ export const common = {
     "settings": "Настройки",
     "all": "Всички",
     "unread": "Непрочетени",
-    "messages": "Съобщения",
+    "messagesLabel": "Съобщения",
     "system": "Система",
     "loading": "Зареждане на известия...",
     "noNotifications": "Няма известия",

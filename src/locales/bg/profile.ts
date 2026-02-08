@@ -41,7 +41,7 @@ export const profile = {
   "noCars": "Нямате добавени коли",
   "noCarsDescription": "Започнете да продавате вашите автомобили сега",
   "addFirstCar": "Добави първа кола",
-  "garage": {
+  "garageStats": {
     "title": "Моят гараж",
     "myGarage": "Моят гараж",
     "viewGarage": "Преглед на гаража",
@@ -76,7 +76,7 @@ export const profile = {
   "uploadingPhoto": "Качване на снимка...",
   "photoUploadSuccess": "Снимката е качена успешно",
   "photoUploadError": "Грешка при качване на снимка",
-  "garage": "Гараж",
+  "garageLabel": "Гараж",
   "myGarage": "Моят гараж",
   "addFirstVehicle": "Добави първата си кола",
   "addAnotherVehicle": "Добави друга кола",

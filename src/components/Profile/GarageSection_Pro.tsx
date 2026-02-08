@@ -270,7 +270,7 @@ const StatLabel = styled.div`
 
 const CarsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
   padding: 1.5rem 2rem;
   background: var(--bg-primary);
@@ -278,13 +278,13 @@ const CarsGrid = styled.div`
   width: 100%;
 
   @media (max-width: 1024px) {
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.25rem;
     padding: 1.25rem 1.5rem;
   }
 
   @media (max-width: 768px) {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
     padding: 1rem;
   }

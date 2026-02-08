@@ -181,6 +181,17 @@ const PrintContainer = styled.div`
     color: #000000 !important;
   }
 
+  @media (max-width: 768px) {
+    width: min(92vw, calc((100vh - 180px) * 210 / 297));
+    min-height: auto;
+    max-height: none;
+    aspect-ratio: 210 / 297;
+    margin-top: 60px;
+    padding: clamp(8px, 3vw, 15mm);
+    transform: none;
+    border-radius: 10px;
+  }
+
   @media print {
     /* Become the single A4 page */
     box-shadow: none !important;
@@ -211,7 +222,7 @@ const PrintHeader = styled.div`
 `;
 
 const PrintTitle = styled.h1`
-  font-size: 28px;
+  font-size: clamp(18px, 5vw, 28px);
   font-weight: 900;
   color: #000000;
   margin: 0;
@@ -220,7 +231,7 @@ const PrintTitle = styled.h1`
 `;
 
 const PrintPrice = styled.div`
-  font-size: 36px;
+  font-size: clamp(20px, 6vw, 36px);
   font-weight: 900;
   color: #FF8F10;
   text-align: right;
@@ -232,6 +243,11 @@ const PrintContent = styled.div`
   gap: 1.5rem;
   flex: 1;
   width: 100%;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 `;
 
 const PrintImageContainer = styled.div`
@@ -330,6 +346,13 @@ const PrintActions = styled.div`
   border-radius: 12px;
   backdrop-filter: blur(10px);
 
+  @media (max-width: 600px) {
+    flex-direction: column;
+    padding: 0.75rem 1rem;
+    gap: 0.5rem;
+    width: min(92vw, 360px);
+  }
+
   @media print {
     display: none !important;
   }
@@ -344,12 +367,18 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.75rem;
   transition: all 0.3s;
   background: ${props => props.$variant === 'primary' ? '#FF8F10' : '#fff'};
   color: ${props => props.$variant === 'primary' ? '#fff' : '#000'};
   border: ${props => props.$variant === 'primary' ? 'none' : '2px solid #fff'};
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+
+  @media (max-width: 600px) {
+    padding: 0.75rem 1.5rem;
+    font-size: 14px;
+  }
 
   &:hover {
     transform: translateY(-3px);
@@ -779,7 +808,7 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
 
           {/* الختم الاحترافي لمعلومات البائع */}
           {sellerInfo && (
-            <div style={{
+            <div className="print-identity-stamp" style={{
               position: 'absolute',
               top: '-168px',
               right: '10mm',
@@ -794,6 +823,13 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
               transformOrigin: 'right bottom',
               zIndex: 9999
             }}>
+              <style>{`
+                @media (max-width: 768px) {
+                  .print-identity-stamp {
+                    display: none !important;
+                  }
+                }
+              `}</style>
               <IdentityStamp
                 firstName={sellerInfo.firstName || car.sellerName?.split(' ')[0] || 'SELLER'}
                 lastName={sellerInfo.lastName || car.sellerName?.split(' ').slice(1).join(' ') || 'NAME'}

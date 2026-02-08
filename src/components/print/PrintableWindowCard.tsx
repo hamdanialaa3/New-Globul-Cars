@@ -47,21 +47,29 @@ const Toolbar = styled.div`
 const PrintArea = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 40px;
+  padding: clamp(12px, 4vw, 40px);
   background: #eee;
   display: flex;
   justify-content: center;
 `;
 
 const A4Page = styled.div`
-  width: 210mm;
-  height: 297mm;
+  width: min(210mm, 88vw, calc((100vh - 220px) * 210 / 297));
+  height: auto;
+  aspect-ratio: 210 / 297;
   background: white;
-  padding: 20mm;
+  padding: clamp(16px, 6vw, 20mm);
   box-shadow: 0 0 20px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
   position: relative;
+  max-width: 100%;
+
+  @media (max-width: 768px) {
+    width: min(94vw, calc((100vh - 180px) * 210 / 297));
+    max-height: calc(100% - 12px);
+    border-radius: 10px;
+  }
 
   @media print {
     width: 100%;
@@ -84,7 +92,7 @@ const PromoHeader = styled.div`
 `;
 
 const MainTitle = styled.h1`
-  font-size: 42px;
+  font-size: clamp(24px, 6vw, 42px);
   font-weight: 900;
   color: #111;
   margin: 0;
@@ -93,7 +101,7 @@ const MainTitle = styled.h1`
 `;
 
 const SubTitle = styled.h2`
-  font-size: 24px;
+  font-size: clamp(14px, 4vw, 24px);
   color: #666;
   margin: 5px 0 0;
   font-weight: 300;
@@ -101,7 +109,7 @@ const SubTitle = styled.h2`
 
 const MainImage = styled.div<{ src: string }>`
   width: 100%;
-  height: 350px;
+  height: clamp(160px, 35vw, 350px);
   background-image: url(${props => props.src});
   background-size: cover;
   background-position: center;
@@ -115,6 +123,11 @@ const SpecsGrid = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   margin-bottom: 30px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 `;
 
 const SpecCard = styled.div`
@@ -134,7 +147,7 @@ const SpecLabel = styled.div`
 `;
 
 const SpecValue = styled.div`
-  font-size: 20px;
+  font-size: clamp(16px, 4.2vw, 20px);
   font-weight: 700;
   color: #111;
 `;
@@ -142,14 +155,17 @@ const SpecValue = styled.div`
 const PriceTag = styled.div`
   background: #E31E24;
   color: white;
-  font-size: 64px;
+  font-size: clamp(24px, 7vw, 64px);
   font-weight: 900;
   text-align: center;
-  padding: 20px;
+  padding: clamp(12px, 3vw, 20px);
   border-radius: 12px;
   margin: 20px 0;
-  letter-spacing: -2px;
+  letter-spacing: -1px;
   box-shadow: 0 10px 30px rgba(227, 30, 36, 0.3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const Footer = styled.div`
@@ -159,6 +175,12 @@ const Footer = styled.div`
   align-items: center;
   border-top: 2px solid #eee;
   padding-top: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
 `;
 
 const ContactInfo = styled.div`
@@ -166,7 +188,7 @@ const ContactInfo = styled.div`
 `;
 
 const PhoneLarge = styled.div`
-  font-size: 32px;
+  font-size: clamp(18px, 6vw, 32px);
   font-weight: 800;
   color: #111;
   display: flex;

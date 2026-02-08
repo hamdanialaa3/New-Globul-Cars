@@ -39,6 +39,17 @@ const SectionContainer = styled.section`
   max-width: 1400px;
   margin: 0 auto;
   padding: 40px 20px;
+  /* 🟣 إطار بنفسجي خفيف */
+  border: 1px solid rgba(168, 85, 247, 0.15);
+  border-radius: 16px;
+  background: rgba(168, 85, 247, 0.02);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: rgba(168, 85, 247, 0.25);
+    background: rgba(168, 85, 247, 0.04);
+    box-shadow: inset 0 0 12px rgba(168, 85, 247, 0.1);
+  }
   
   @media (max-width: 768px) {
     padding: 24px 16px;

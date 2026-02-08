@@ -49,9 +49,10 @@ export default defineConfig(({ mode }) => {
     },
     
     server: {
-      port: parseInt(env.PORT || '3000', 10),
+      port: parseInt(env.PORT || '5173', 10),
       host: env.HOST || 'localhost',
       open: false,
+      strictPort: false, // 🔧 جرب بورت آخر إذا كان المطلوب مشغول
       
       // Cache control headers (from craco config)
       headers: {

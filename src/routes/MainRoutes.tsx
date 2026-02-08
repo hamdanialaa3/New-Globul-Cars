@@ -81,6 +81,8 @@ const ViewAllNewCarsPage = safeLazy(() => import('../pages/05_search-browse/view
 const ViewAllDealersPage = safeLazy(() => import('../pages/05_search-browse/view-all-dealers/ViewAllDealersPage'));
 const MapAnalyticsPage = safeLazy(() => import('../pages/01_main-pages/map/MapPage'));
 const FinancePage = safeLazy(() => import('../pages/05_search-browse/finance/FinancePage'));
+const FinancingCalculatorPage = safeLazy(() => import('../pages/financing/FinancingCalculatorPage'));
+const FinancingComparisonPage = safeLazy(() => import('../pages/financing/FinancingComparisonPage'));
 const ContactPage = safeLazy(() => import('../pages/01_main-pages/contact/ContactPage'));
 const HelpPage = safeLazy(() => import('../pages/01_main-pages/help/HelpPage'));
 const CookiePolicyPage = safeLazy(() => import('../pages/10_legal/cookie-policy/CookiePolicyPage'));
@@ -103,6 +105,7 @@ const ManualCheckoutPage = safeLazy(() => import('../pages/08_payment-billing/Ma
 const ManualPaymentSuccessPage = safeLazy(() => import('../pages/08_payment-billing/ManualPaymentSuccessPage'));
 const DealerRegistrationPage = safeLazy(() => import('../pages/09_dealer-company/DealerRegistrationPage'));
 const DealerDashboardPage = safeLazy(() => import('../pages/09_dealer-company/DealerDashboardPage'));
+const SubscriptionSelectionPage = safeLazy(() => import('../pages/dealer/SubscriptionSelectionPage'));
 const AlgoliaSyncManager = safeLazy(() => import('../pages/06_admin/AlgoliaSyncManager'));
 const AdminCarManagementPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminCarManagementPage'));
 // 🔥 NEW: Car History Report Page - COMPETITIVE ADVANTAGE!
@@ -165,6 +168,10 @@ export const MainRoutes: React.FC = () => {
 
             {/* 📜 AI Car History */}
             <Route path="/history" element={<AIHistoryPage />} />
+
+            {/* 💳 Financing Calculator */}
+            <Route path="/financing" element={<FinancingCalculatorPage />} />
+            <Route path="/financing/compare" element={<FinancingComparisonPage />} />
 
             {/* 🛒 Marketplace - Parts & Accessories */}
             <Route path="/marketplace" element={<MarketplacePage />} />
@@ -259,6 +266,14 @@ export const MainRoutes: React.FC = () => {
 
             <Route path="/dealer/:slug" element={<DealerPublicPage />} />
             <Route path="/dealer-registration" element={<DealerRegistrationPage />} />
+            <Route
+                path="/dealer/subscription"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <SubscriptionSelectionPage />
+                    </AuthGuard>
+                }
+            />
             <Route
                 path="/dealer-dashboard"
                 element={

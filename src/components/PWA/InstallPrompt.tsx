@@ -22,6 +22,7 @@ const PromptContainer = styled.div`
   gap: 16px;
   z-index: 10000;
   max-width: 90%;
+  width: min(720px, 94vw);
   animation: slideUp 0.3s ease-out;
 
   @keyframes slideUp {
@@ -39,6 +40,10 @@ const PromptContainer = styled.div`
     bottom: 10px;
     padding: 12px 16px;
     font-size: 14px;
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    gap: 10px;
   }
 `;
 
@@ -53,22 +58,36 @@ const IconWrapper = styled.div`
 
 const Content = styled.div`
   flex: 1;
+  min-width: 0;
 `;
 
 const Title = styled.div`
   font-weight: 600;
-  font-size: 16px;
+  font-size: clamp(14px, 2.8vw, 16px);
   margin-bottom: 4px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 `;
 
 const Description = styled.div`
-  font-size: 13px;
+  font-size: clamp(12px, 2.6vw, 13px);
   opacity: 0.9;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 `;
 
 const Actions = styled.div`
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
@@ -81,6 +100,12 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: nowrap;
+
+  @media (max-width: 768px) {
+    flex: 1;
+    min-width: 120px;
+  }
 
   &:hover {
     transform: translateY(-2px);

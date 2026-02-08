@@ -8,6 +8,8 @@
   transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
   position: relative;
   z-index: 10; /* Below modals and drawers (1000+) but above content */
+  /* 🟣 شريط LED بنفسجي */
+  box-shadow: inset 0 2px 8px rgba(168, 85, 247, 0.3), 0 -2px 4px rgba(168, 85, 247, 0.2);
 }
 
 .footer-container {
@@ -18,7 +20,7 @@
 
 .footer-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
   gap: 2rem;
   margin-bottom: 2rem;
 }

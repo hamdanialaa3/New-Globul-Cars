@@ -138,18 +138,18 @@ export const SUBSCRIPTION_PLANS: Record<PlanTier, SubscriptionPlan> = {
       en: 'Ideal for car dealerships'
     },
     price: {
-      monthly: 20.11,
-      annual: 193,
+      monthly: 50,
+      annual: 480,
       currency: 'EUR'
     },
     stripePriceIds: {
-      monthly: 'price_1Sf7iU3EuPQhDyrBtP0bEc4B',
-      annual: 'price_1Sf7l83EuPQhDyrB3Z3zIpZv'
+      monthly: 'price_dealer_monthly_50eur',
+      annual: 'price_dealer_annual_480eur'
     },
     features: {
-      maxListings: 30, // ✅ FIXED: Was 10, now correctly 30
+      maxListings: 100,
       maxTeamMembers: 3,
-      maxCampaigns: 5,
+      maxCampaigns: 10,
       canBulkUpload: true,
       canFeatureListings: true,
       canExportData: true,
@@ -185,18 +185,18 @@ export const SUBSCRIPTION_PLANS: Record<PlanTier, SubscriptionPlan> = {
       en: 'For large automotive companies'
     },
     price: {
-      monthly: 100.11,
-      annual: 961,
+      monthly: 500,
+      annual: 4800,
       currency: 'EUR'
     },
     stripePriceIds: {
-      monthly: 'price_1Sf7oK3EuPQhDyrBQ6duG8aV',
-      annual: 'price_1Sf7pE3EuPQhDyrBfAdjEDFi'
+      monthly: 'price_enterprise_monthly_500eur',
+      annual: 'price_enterprise_annual_4800eur'
     },
     features: {
-      maxListings: -1, // Unlimited
-      maxTeamMembers: 10,
-      maxCampaigns: -1, // Unlimited
+      maxListings: -1,
+      maxTeamMembers: 20,
+      maxCampaigns: -1,
       canBulkUpload: true,
       canFeatureListings: true,
       canExportData: true,
@@ -207,7 +207,7 @@ export const SUBSCRIPTION_PLANS: Record<PlanTier, SubscriptionPlan> = {
       canExportAnalytics: true,
       canUseAPI: true,
       hasWebhooks: true,
-      apiRateLimitPerHour: 1000,
+      apiRateLimitPerHour: 5000,
       canCreateCampaigns: true,
       canUseEmailMarketing: true,
       hasPrioritySupport: true,

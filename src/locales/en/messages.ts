@@ -16,5 +16,5 @@ export const messages = {
   messageSent: "Message sent!",
   cannotMessageSelf: "You cannot message yourself",
   sendError: "Failed to send message",
-  loginRequired: "Please login to send messages"
+  loginRequiredMsg: "Please login to send messages"
 };

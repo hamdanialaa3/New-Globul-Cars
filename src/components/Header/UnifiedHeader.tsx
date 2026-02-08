@@ -23,9 +23,10 @@ const HeaderContainer = styled.header<{ $isDark?: boolean }>`
   -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
   border-bottom: 1px solid ${({ $isDark }) =>
     $isDark ? 'rgba(148, 163, 184, 0.12)' : 'rgba(0, 0, 0, 0.06)'} !important;
+  /* 🟣 شريط LED بنفسجي */
+  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3), inset 0 -2px 4px rgba(168, 85, 247, 0.2) !important;
   z-index: ${zIndex.sticky};
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  transition: background 0.3s ease, border-color 0.3s ease;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   
   /* Override any global header styles */
   background-color: ${({ $isDark }) =>

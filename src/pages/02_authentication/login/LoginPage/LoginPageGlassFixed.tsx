@@ -57,7 +57,7 @@ const GlassWrapper = styled.div`
   position: relative;
   width: 100%;
   max-width: 480px;
-  min-height: 550px;
+  min-height: min(550px, 85vh);
   background: rgba(255, 255, 255, 0.98);
   border: 2px solid rgba(255, 255, 255, 0.8);
   border-radius: 24px;

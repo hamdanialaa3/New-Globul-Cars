@@ -213,3 +213,13 @@ export const exportReconciliationReport = paymentReconciliation.exportReconcilia
 import * as priceDropAlerts from './triggers/price-drop-alerts';
 export const onCarPriceUpdate = priceDropAlerts.onCarPriceUpdate;
 export const cleanupOldPriceAlerts = priceDropAlerts.cleanupOldPriceAlerts;
+
+// 🔄 NEW: Auto-Renewal Cron (February 8, 2026)
+import * as autoRenewal from './auto-renewal-cron';
+export const dailyAutoRenewal = autoRenewal.dailyAutoRenewal;
+
+// 💳 NEW: ePay & EasyPay Webhooks (February 8, 2026)
+import * as paymentWebhook from './payment-webhook';
+export const handleEpayWebhook = paymentWebhook.handleEpayWebhook;
+export const handleEasypayWebhook = paymentWebhook.handleEasypayWebhook;
+export const verifyPaymentStatus = paymentWebhook.verifyPaymentStatus;

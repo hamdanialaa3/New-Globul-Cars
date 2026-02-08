@@ -47,6 +47,10 @@ const SectionContainer = styled.section`
   will-change: transform;
   transition: background-color 0.3s ease;
   background: transparent;
+  /* 🟣 إطار بنفسجي خفيف */
+  border: 1px solid rgba(168, 85, 247, 0.12);
+  border-radius: 8px;
+  box-shadow: inset 0 0 8px rgba(168, 85, 247, 0.06);
   
   /* ✅ Removed background image and overlay */
   

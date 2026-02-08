@@ -19,7 +19,7 @@ import { SOCIAL_LINKS } from '../../constants/socialLinks';
 // STYLED COMPONENTS
 // ========================================
 
-const HEADER_BUTTON_SIZE = '56px';
+const HEADER_BUTTON_SIZE = 'clamp(44px, 12vw, 56px)';
 
 const HeaderContainer = styled.header`
   position: fixed;
@@ -35,7 +35,8 @@ const HeaderContainer = styled.header`
   display: flex;
   align-items: center;
   padding: 0 16px;
-  box-shadow: var(--shadow-sm);
+  /* 🟣 شريط LED بنفسجي */
+  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3), inset 0 -2px 4px rgba(168, 85, 247, 0.2);
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 `;
 
@@ -128,7 +129,8 @@ const SettingsDropdown = styled.div<{ $isOpen: boolean }>`
   position: absolute;
   top: calc(100% + 12px);
   right: 0;
-  min-width: 280px;
+  min-width: min(280px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
   max-height: 400px;
   overflow-y: auto;
   background: var(--bg-card);

@@ -68,6 +68,22 @@
         "function": "merchantFeed"
       },
       {
+        "source": "/car/**",
+        "function": "prerenderSEO"
+      },
+      {
+        "source": "/profile/**",
+        "function": "prerenderSEO"
+      },
+      {
+        "source": "/koli/**",
+        "function": "prerenderSEO"
+      },
+      {
+        "source": "/marka/**",
+        "function": "prerenderSEO"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

@@ -61,7 +61,7 @@ class MultiLanguageNLUService {
   private static instance: MultiLanguageNLUService;
   private genAI: GoogleGenerativeAI;
   private supportedLanguages: Set<SupportedLanguage> = new Set(['bg', 'en', 'ar', 'ru', 'tr']);
-  
+
   private languageConfigs: LanguageConfig = {
     bg: {
       name: 'Bulgarian',
@@ -123,7 +123,7 @@ class MultiLanguageNLUService {
       logger.info('Detecting language', { textLength: text.length });
 
       const model = this.genAI.getGenerativeModel({ model: 'gemini-pro' });
-      
+
       const prompt = `
         Detect the language of this text:
         "${text}"
@@ -142,7 +142,7 @@ class MultiLanguageNLUService {
 
       const response = await model.generateContent(prompt);
       const responseText = response.response.text();
-      
+
       const jsonMatch = responseText.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         return {
@@ -188,7 +188,7 @@ class MultiLanguageNLUService {
       }
 
       const model = this.genAI.getGenerativeModel({ model: 'gemini-pro' });
-      
+
       const sourceName = this.languageConfigs[source]?.name || source;
       const targetName = this.languageConfigs[targetLanguage]?.name || targetLanguage;
 
@@ -223,7 +223,7 @@ class MultiLanguageNLUService {
       logger.info('Analyzing intent', { textLength: text.length });
 
       const model = this.genAI.getGenerativeModel({ model: 'gemini-pro' });
-      
+
       const prompt = `
         Analyze the intent of this user input for a car marketplace:
         "${text}"
@@ -245,7 +245,7 @@ class MultiLanguageNLUService {
 
       const response = await model.generateContent(prompt);
       const responseText = response.response.text();
-      
+
       const jsonMatch = responseText.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         return {
@@ -278,7 +278,7 @@ class MultiLanguageNLUService {
       logger.info('Simplifying text', { textLength: text.length, level: targetLevel });
 
       const model = this.genAI.getGenerativeModel({ model: 'gemini-pro' });
-      
+
       const prompt = `
         Simplify this text to a ${targetLevel} level:
         "${text}"
@@ -295,7 +295,7 @@ class MultiLanguageNLUService {
 
       const response = await model.generateContent(prompt);
       const responseText = response.response.text();
-      
+
       const jsonMatch = responseText.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         return {
@@ -321,7 +321,7 @@ class MultiLanguageNLUService {
       logger.info('Extracting search parameters', { query });
 
       const model = this.genAI.getGenerativeModel({ model: 'gemini-pro' });
-      
+
       const prompt = `
         Extract car search parameters from this query:
         "${query}"
@@ -345,14 +345,14 @@ class MultiLanguageNLUService {
 
       const response = await model.generateContent(prompt);
       const responseText = response.response.text();
-      
+
       const jsonMatch = responseText.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         return {};
       }
 
       const params = JSON.parse(jsonMatch[0]);
-      
+
       // Clean up undefined values
       return Object.fromEntries(
         Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== '')
@@ -398,7 +398,7 @@ class MultiLanguageNLUService {
         return `${month}/${day}/${year}`;
       case 'dd/MM/yyyy':
         return `${day}/${month}/${year}`;
-      case 'dd.MM.yyyy':
+
       default:
         return `${day}.${month}.${year}`;
     }
@@ -410,7 +410,7 @@ class MultiLanguageNLUService {
   getSearchVariations(searchTerm: string, language: SupportedLanguage): string[] {
     // Basic variations (in real implementation, would use NLP)
     const variations = [searchTerm];
-    
+
     // Add language-specific variations
     const config = this.languageConfigs[language];
     if (config?.searchTermVariations) {

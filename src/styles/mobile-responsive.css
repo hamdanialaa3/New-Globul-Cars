@@ -1,13 +1,17 @@
 /* ═══════════════════════════════════════════════════════════════════
    GLOBAL MOBILE & TABLET RESPONSIVE STYLES
    Koli One - Optimized for ALL devices
+   
+   ⚠️  CRITICAL: DO NOT use wildcard selectors like [class*="flex"],
+       [class*="grid"], [class*="Card"] etc. They break styled-components
+       and third-party libraries. Use SPECIFIC class names only.
    ═══════════════════════════════════════════════════════════════════ */
 
 /* ═══════════════════════════════════════════════════════════════════
    HEADER VISIBILITY CONTROL - Desktop vs Mobile
    ═══════════════════════════════════════════════════════════════════ */
 
-/* ✅ Desktop (>768px): Show desktop header ONLY, hide mobile header */
+/* Desktop (>768px): Show desktop header ONLY, hide mobile header */
 .desktop-header-only {
   display: block;
 }
@@ -16,22 +20,14 @@
   display: none !important;
 }
 
-/* ✅ Mobile & Tablet Portrait (≤768px): Show mobile header ONLY */
+/* Mobile & Tablet Portrait (≤768px): Show mobile header ONLY */
 @media (max-width: 768px) {
-  /* Hide desktop header */
   .desktop-header-only {
     display: none !important;
   }
-  
-  /* Show mobile header */
+
   .mobile-header-only {
     display: block !important;
-  }
-  
-  /* Add padding for mobile header - OPTIMIZED */
-  body {
-    padding-top: 80px !important; /* Reduced from 120px - better mobile UX */
-    margin: 0;
   }
 }
 
@@ -65,89 +61,42 @@
     border-radius: 10px;
   }
 
-  /* Dropdowns and selects */
   select {
     background-size: 20px;
     padding-right: 40px;
   }
 
-  /* Cards and containers */
-  .card,
-  [class*="card"] {
-    padding: 20px;
-    border-radius: 16px;
-  }
-
-  /* Modal dialogs */
-  .modal,
-  [class*="modal"] {
-    max-width: 90vw;
-    max-height: 90vh;
-    border-radius: 20px;
-    overflow-y: auto;
-  }
-
   /* Typography */
-  h1 {
-    font-size: 2rem;
-  }
-
-  h2 {
-    font-size: 1.75rem;
-  }
-
-  h3 {
-    font-size: 1.5rem;
-  }
-
-  p {
-    font-size: 1rem;
-    line-height: 1.6;
-  }
-
-  /* Grid layouts */
-  [class*="grid"] {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
-  }
-
-  /* Spacing */
-  .section {
-    padding: 2.5rem 1.5rem;
-  }
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.5rem; }
+  p { font-size: 1rem; line-height: 1.6; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
    MOBILE OPTIMIZATION (max-width: 768px)
+   
+   SAFE rules only — targets HTML elements directly, NOT wildcard
+   class selectors that would break styled-components.
    ═══════════════════════════════════════════════════════════════════ */
 
 @media (max-width: 768px) {
-  /* Global spacing adjustment */
+  /* Base mobile settings */
   body {
     text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
   }
 
-  /* Add spacing for fixed header */
-  body > #root {
-    padding-top: 0; /* ✅ MOBILE: REMOVED! Body already has padding, no need for extra */
-  }
-
-  /* Touch targets - 44px minimum for accessibility (Apple HIG standard) */
+  /* Touch targets - 44px minimum for accessibility (Apple HIG) */
   button,
   a.button,
   input[type="button"],
-  input[type="submit"],
-  .btn,
-  [class*="button"] {
-    min-height: 44px !important; /* Apple standard - reduced from 48px for better layout */
-    min-width: 44px !important;
-    padding: 12px 18px !important; /* Better text spacing */
-    font-size: 1rem !important; /* Readable but not too large */
-    border-radius: 10px !important;
-    font-weight: 600 !important;
-    touch-action: manipulation; /* Faster click response */
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1); /* Visual feedback */
+  input[type="submit"] {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
   }
 
   /* Form inputs - optimized for mobile typing */
@@ -159,145 +108,50 @@
   input[type="search"],
   select,
   textarea {
-    min-height: 48px !important; /* Comfortable for typing */
-    padding: 12px 16px !important;
-    font-size: 1rem !important; /* Prevents iOS zoom on focus */
-    border-radius: 10px !important;
-    border-width: 2px !important;
-    transition: border-color 0.2s ease;
+    min-height: 48px;
+    padding: 12px 16px;
+    font-size: 1rem; /* Prevents iOS zoom on focus */
+    border-radius: 10px;
   }
 
-  /* Select dropdowns - better UX */
+  /* Select dropdowns */
   select {
     background-size: 20px;
-    padding-right: 44px !important; /* Space for arrow icon */
+    padding-right: 44px;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 12px center;
-    cursor: pointer;
   }
 
-  /* Focus states for better accessibility */
+  /* Focus states */
   input:focus,
   select:focus,
   textarea:focus {
     outline: 2px solid #FF8F10;
     outline-offset: 2px;
-    border-color: #FF8F10;
   }
 
-  /* Textarea */
   textarea {
-    min-height: 120px !important;
+    min-height: 120px;
     resize: vertical;
   }
 
   /* Labels */
   label {
-    font-size: 1rem !important;
-    font-weight: 600 !important;
-    margin-bottom: 8px !important;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
     display: block;
   }
 
-  /* Cards and containers */
-  .card,
-  [class*="Card"],
-  [class*="-card"] {
-    padding: 20px !important;
-    border-radius: 16px !important;
-    margin-bottom: 16px !important;
-  }
-
-  /* Modal dialogs - Full screen */
-  .modal,
-  [class*="Modal"],
-  [class*="-modal"] {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100vw !important;
-    max-width: 100vw !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
-    border-radius: 0 !important;
-    margin: 0 !important;
-  }
-
-  /* Dropdown menus - Full screen */
-  [class*="dropdown"],
-  [class*="Dropdown"],
-  [class*="-menu"] {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: auto !important;
-    width: 100vw !important;
-    max-width: 100vw !important;
-    min-width: 100vw !important;
-    border-radius: 0 0 20px 20px !important;
-    max-height: 80vh !important;
-    overflow-y: auto !important;
-  }
-
-  /* Typography - Larger and readable */
-  h1 {
-    font-size: 1.875rem !important;
-    line-height: 1.3 !important;
-  }
-
-  h2 {
-    font-size: 1.625rem !important;
-    line-height: 1.3 !important;
-  }
-
-  h3 {
-    font-size: 1.375rem !important;
-    line-height: 1.4 !important;
-  }
-
-  h4 {
-    font-size: 1.125rem !important;
-    line-height: 1.4 !important;
-  }
-
-  p {
-    font-size: 1.05rem !important;
-    line-height: 1.7 !important;
-  }
-
-  /* Grid layouts - Single column */
-  [class*="grid"],
-  [class*="Grid"] {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
-  }
-
-  /* Flexbox layouts */
-  [class*="flex"] {
-    flex-direction: column !important;
-    gap: 12px !important;
-  }
-
-  /* Spacing */
-  .section,
-  [class*="section"],
-  [class*="Section"] {
-    padding: 2rem 1rem !important;
-  }
-
-  .container,
-  [class*="container"],
-  [class*="Container"] {
-    padding: 0 1rem !important;
-    max-width: 100% !important;
-  }
+  /* Typography - reasonable defaults, no !important */
+  h1 { font-size: 1.875rem; line-height: 1.3; }
+  h2 { font-size: 1.625rem; line-height: 1.3; }
+  h3 { font-size: 1.375rem; line-height: 1.4; }
+  h4 { font-size: 1.125rem; line-height: 1.4; }
 
   /* Images - responsive */
   img {
@@ -312,33 +166,13 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Hide desktop-only elements */
-  .desktop-only,
-  [class*="desktop-only"] {
+  /* Utility classes for explicit mobile control */
+  .desktop-only {
     display: none !important;
   }
 
-  /* Show mobile-only elements */
-  .mobile-only,
-  [class*="mobile-only"] {
+  .mobile-only {
     display: block !important;
-  }
-
-  /* Tabs - full width */
-  [class*="tab"],
-  [class*="Tab"] {
-    flex: 1;
-    min-height: 52px !important;
-    font-size: 1rem !important;
-    padding: 14px 12px !important;
-  }
-
-  /* List items - larger touch target */
-  li,
-  [class*="list-item"],
-  [class*="ListItem"] {
-    padding: 16px 20px !important;
-    min-height: 60px !important;
   }
 }
 
@@ -347,54 +181,24 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 @media (max-width: 480px) {
-  /* Touch targets */
   button,
   a.button {
-    min-height: 48px !important;
-    padding: 14px 18px !important;
-    font-size: 1rem !important;
+    min-height: 48px;
+    padding: 14px 18px;
+    font-size: 1rem;
   }
 
-  /* Form inputs */
   input,
   select,
   textarea {
-    min-height: 50px !important;
-    padding: 12px 16px !important;
-    font-size: 1rem !important;
+    min-height: 50px;
+    padding: 12px 16px;
+    font-size: 1rem;
   }
 
-  /* Typography */
-  h1 {
-    font-size: 1.625rem !important;
-  }
-
-  h2 {
-    font-size: 1.4rem !important;
-  }
-
-  h3 {
-    font-size: 1.2rem !important;
-  }
-
-  p {
-    font-size: 1rem !important;
-  }
-
-  /* Spacing */
-  .section {
-    padding: 1.5rem 0.875rem !important;
-  }
-
-  .container {
-    padding: 0 0.875rem !important;
-  }
-
-  /* Cards */
-  .card {
-    padding: 16px !important;
-    border-radius: 14px !important;
-  }
+  h1 { font-size: 1.625rem; }
+  h2 { font-size: 1.4rem; }
+  h3 { font-size: 1.2rem; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -402,15 +206,8 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 @media (max-width: 900px) and (orientation: landscape) {
-  /* Adjust for landscape mode on tablets/phones */
   .section {
-    padding: 1.5rem 1rem !important;
-  }
-
-  .modal,
-  .settings-dropdown {
-    max-height: 90vh !important;
-    overflow-y: auto !important;
+    padding: 1.5rem 1rem;
   }
 }
 
@@ -419,40 +216,37 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 @media (hover: none) and (pointer: coarse) {
-  /* Touch device specific */
   button,
   a {
     -webkit-tap-highlight-color: rgba(255, 143, 16, 0.2);
   }
+}
 
-  /* Increase clickable area */
-  button::before,
-  a::before {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: -8px;
-    right: -8px;
-    bottom: -8px;
+/* ═══════════════════════════════════════════════════════════════════
+   MOBILE BOTTOM NAVIGATION
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  /* Hide desktop footer on mobile to show bottom nav instead */
+  footer[role="contentinfo"],
+  footer.main-footer {
+    display: none !important;
+  }
+
+  /* Ensure main content has bottom space for fixed bottom nav */
+  #main-content {
+    padding-bottom: 80px !important;
   }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   SMOOTH SCROLLING ON MOBILE
+   SMOOTH SCROLLING
    ═══════════════════════════════════════════════════════════════════ */
 
 @media (max-width: 768px) {
-  * {
-    -webkit-overflow-scrolling: touch;
-  }
-
   html {
     scroll-behavior: smooth;
-  }
-
-  /* Prevent horizontal scroll */
-  body {
-    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
   }
 }
 

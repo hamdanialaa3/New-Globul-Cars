@@ -1,0 +1,409 @@
+
+> koli-one@0.1.0 prebuild
+> node scripts/ban-console.js
+
+[ban-console] Skipping (NODE_ENV != production)
+
+> koli-one@0.1.0 build
+> vite build && npm run generate:sitemap
+
+The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
+[36mvite v5.4.11 [32mbuilding for production...[36m[39m
+transforming...
+[plugin:vite:esbuild] [plugin vite:esbuild] src/pages/01_main-pages/components/CarDetailsMobileDEStyle.tsx: Duplicate key "accidentFree" in object literal
+100|      previousOwners: 'ðƒÐÇðÁð┤ð©Ðêð¢ð© Ðüð¥ð▒ÐüÐéð▓ðÁð¢ð©Ðåð©',
+101|      accidentFree: 'ðæðÁðÀ ð░ð▓ð░ÐÇð©ð©',
+102|      accidentFree: 'ðæðÁðÀ ð░ð▓ð░ÐÇð©ð©',
+   |      ^
+103|      serviceHistory: 'ðíðÁÐÇð▓ð©ðÀð¢ð░ ð║ð¢ð©ðÂð║ð░',
+104|      fullServiceHistory: 'ðƒÐèð╗ð¢ð░ ÐüðÁÐÇð▓ð©ðÀð¢ð░ ð©ÐüÐéð¥ÐÇð©ÐÅ',
+
+[plugin:vite:esbuild] [plugin vite:esbuild] src/pages/01_main-pages/components/CarDetailsMobileDEStyle.tsx: Duplicate key "accidentFree" in object literal
+178|      previousOwners: 'Previous owners',
+179|      accidentFree: 'Accident-free',
+180|      accidentFree: 'Accident-free',
+   |      ^
+181|      serviceHistory: 'Service history',
+182|      fullServiceHistory: 'Full service history',
+
+[plugin:vite:esbuild] [plugin vite:esbuild] src/locales/bg/profile.ts: Duplicate key "garage" in object literal
+77 |    "photoUploadSuccess": "ðíð¢ð©ð╝ð║ð░Ðéð░ ðÁ ð║ð░ÐçðÁð¢ð░ ÐâÐüð┐ðÁÐêð¢ð¥",
+78 |    "photoUploadError": "ðôÐÇðÁÐêð║ð░ ð┐ÐÇð© ð║ð░Ðçð▓ð░ð¢ðÁ ð¢ð░ Ðüð¢ð©ð╝ð║ð░",
+79 |    "garage": "ðôð░ÐÇð░ðÂ",
+   |    ^
+80 |    "myGarage": "ð£ð¥ÐÅÐé ð│ð░ÐÇð░ðÂ",
+81 |    "addFirstVehicle": "ðöð¥ð▒ð░ð▓ð© ð┐ÐèÐÇð▓ð░Ðéð░ Ðüð© ð║ð¥ð╗ð░",
+
+[plugin:vite:esbuild] [plugin vite:esbuild] src/locales/bg/profile.ts: Duplicate key "garage" in object literal
+83 |    "noVehicles": "ðÆÐüðÁ ð¥ÐëðÁ ð¢ÐÅð╝ð░ ð░ð▓Ðéð¥ð╝ð¥ð▒ð©ð╗ð©",
+84 |    "loadingVehicles": "ðùð░ÐÇðÁðÂð┤ð░ð¢ðÁ ð¢ð░ ð░ð▓Ðéð¥ð╝ð¥ð▒ð©ð╗ð©...",
+85 |    "garage": {
+   |    ^
+86 |      "viewAll": "ðƒð¥ð║ð░ðÂð© ð▓Ðüð©Ðçð║ð©",
+87 |      "sortBy": "ðíð¥ÐÇÐéð©ÐÇð░ð╣ ð┐ð¥",
+
+[plugin:vite:esbuild] [plugin vite:esbuild] src/locales/bg/common.ts: Duplicate key "messages" in object literal
+66 |        "system": "ðƒð¥ð┤ð┤ÐÇÐèðÂð║ð░ ð¢ð░ Ðüð©ÐüÐéðÁð╝ð░Ðéð░"
+67 |      },
+68 |      "messages": {
+   |      ^
+69 |        "newMessage": "ðÿð╝ð░ÐéðÁ ð¢ð¥ð▓ð¥ ÐüÐèð¥ð▒ÐëðÁð¢ð©ðÁ ðÀð░ ð▓ð░Ðêð░Ðéð░ ð¥ð▒ÐÅð▓ð░ BMW X5",
+70 |        "searchMatch": "ðØð¥ð▓ð© ð░ð▓Ðéð¥ð╝ð¥ð▒ð©ð╗ð©, ð¥Ðéð│ð¥ð▓ð░ÐÇÐÅÐëð© ð¢ð░ ð▓ð░ÐêðÁÐéð¥ ÐéÐèÐÇÐüðÁð¢ðÁ ðÀð░ \"Audi A4\" ð┐ð¥ð┤ 20000 EUR",
+
+[plugin:vite:esbuild] [plugin vite:esbuild] src/locales/bg/advancedSearch.ts: Duplicate key "extras" in object literal
+134|    automaticAirConditioning: 'ðÉð▓Ðéð¥ð╝ð░Ðéð©ÐçðÁð¢',
+135|    noAirConditioning: 'ðæðÁðÀ ð║ð╗ð©ð╝ð░Ðéð©ð║',
+136|    extras: 'ðòð║ÐüÐéÐÇð©',
+   |    ^
+137|    absExtras: 'ABS',
+138|    edcExtras: 'EDC',
+
+[plugin:vite:esbuild] [plugin vite:esbuild] src/locales/en/messages.ts: Duplicate key "loginRequired" in object literal
+17 |    cannotMessageSelf: "You cannot message yourself",
+18 |    sendError: "Failed to send message",
+19 |    loginRequired: "Please login to send messages"
+   |    ^
+20 |  };
+21 |  
+
+[plugin:vite:esbuild] [plugin vite:esbuild] src/locales/en/common.ts: Duplicate key "messages" in object literal
+65 |        "system": "System Maintenance"
+66 |      },
+67 |      "messages": {
+   |      ^
+68 |        "newMessage": "You have a new message about your BMW X5 listing",
+69 |        "searchMatch": "New cars matching your search for \"Audi A4\" under 20000 EUR",
+
+[plugin:vite:esbuild] [plugin vite:esbuild] src/locales/en/profile.ts: Duplicate key "garage" in object literal
+72 |    "noVehicles": "No vehicles yet",
+73 |    "loadingVehicles": "Loading vehicles...",
+74 |    "garage": {
+   |    ^
+75 |      "viewAll": "Show all",
+76 |      "sortBy": "Sort by",
+
+[plugin:vite:esbuild] [plugin vite:esbuild] src/locales/en/advancedSearch.ts: Duplicate key "extras" in object literal
+132|    automaticAirConditioning: 'Automatic',
+133|    noAirConditioning: 'No Air Conditioning',
+134|    extras: 'Extras',
+   |    ^
+135|    absExtras: 'ABS',
+136|    edcExtras: 'EDC',
+
+[plugin:vite:esbuild] [plugin vite:esbuild] src/services/ai/nlu-multilingual.service.ts: This case clause will never be evaluated because it duplicates an earlier case clause
+399|        case 'dd/MM/yyyy':
+400|          return `${day}/${month}/${year}`;
+401|        case 'dd.MM.yyyy':
+   |             ^
+402|        default:
+403|          return `${day}.${month}.${year}`;
+
+[32mÔ£ô[39m 4866 modules transformed.
+rendering chunks...
+[plugin:vite:reporter] [plugin vite:reporter] 
+(!) C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/unified-workflow-persistence.service.ts is dynamically imported by C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/unified-workflow-persistence.service.ts but also statically imported by C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/GlobalWorkflowTimer.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/SellWorkflow/ModalWorkflowTimer.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/SellWorkflow/hooks/useWizardState.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/SellWorkflow/hooks/useWizardTimer.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/04_car-selling/sell/SellModalPage.js, dynamic import will not move module into another chunk.
+
+[plugin:vite:reporter] [plugin vite:reporter] 
+(!) C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/map-entities.service.ts is dynamically imported by C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/01_main-pages/map/MapPage/index.tsx but also statically imported by C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/01_main-pages/map/MapPage/index.tsx, dynamic import will not move module into another chunk.
+
+[plugin:vite:reporter] [plugin vite:reporter] 
+(!) C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/01_main-pages/home/HomePage/DemandStats.tsx is dynamically imported by C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/01_main-pages/home/HomePage/HomeTrustAndStats.tsx but also statically imported by C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/01_main-pages/home/HomePage/MostDemandedCategoriesSection.tsx, dynamic import will not move module into another chunk.
+
+[plugin:vite:reporter] [plugin vite:reporter] 
+(!) C:/Users/hamda/Desktop/Koli_One_Root/web/src/firebase/firebase-config.ts is dynamically imported by C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/PendingFavoriteHandler.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/01_main-pages/CarDetailsPage.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/01_main-pages/components/CarDetailsMobileDEStyle.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/03_user-pages/profile/ProfilePage/ProfilePageWrapper.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/03_user-pages/profile/ProfilePage/tabs/SettingsTab.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/analytics/google-analytics-data-deletion.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/analytics/google-analytics-data-deletion.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/logger-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/logger-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/profile/profile-stats.service.ts but also statically imported by C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/AdvancedCharts.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/CarCard/CarCardCompact.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/CarCard/CarCardGermanStyle.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/CarCard/PremiumHomeCarCard.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/CarCardWithFavorites.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/GuestAccountAlert/IncompleteProfileAlert.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/PermissionManagement.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/Posts/CreatePostForm/CarSelector.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/Profile/CoverImageUploader.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/Profile/EmailVerificationFlow.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/Profile/PhoneVerificationFlow.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/Profile/ProfileImageUploader.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/RealDataDisplay.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/RealDataManager.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/SocialFeed/ReportModal.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/SuperAdmin/GodMode/GodModeCarGrid.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/SuperAdmin/GodMode/GodModeMessagesGrid.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/SuperAdmin/GodMode/GodModeRevenueGrid.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/SuperAdmin/GodMode/GodModeUserGrid.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/SuperAdmin/GodMode/GodModeViewsGrid.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/analytics/B2BAnalyticsDashboard.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/billing/PromotionPurchaseModal.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/guards/NumericIdGuard.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/contexts/AuthProvider.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/contexts/ProfileTypeContext.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/features/ads/services/adService.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/features/analytics/PrivateDashboard.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/features/pricing/pricing-ai-enhanced.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/features/verification/VerificationService.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/firebase/app-check-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/firebase/auth-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/firebase/index.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/firebase/messaging-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/firebase/social-auth-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/hooks/useFavorites.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/hooks/usePostEngagement.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/hooks/useSectionVisibility.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/hooks/useUsers.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/index.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/01_main-pages/NumericCarDetailsPage.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/01_main-pages/components/SimilarCarsWidget.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/01_main-pages/home/HomePage/DealerSpotlight.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/01_main-pages/hooks/useCarDetails.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/02_authentication/admin-login/SuperAdminLoginPage/index.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/03_user-pages/my-listings/MyListingsPage/services.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/03_user-pages/profile/ProfilePage/ProfilePageWrapper.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/03_user-pages/profile/ProfilePage/hooks/useProfile.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/03_user-pages/profile/ProfilePage/tabs/SettingsTab.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/03_user-pages/profile/components/ProfileTypeSwitcher.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/03_user-pages/social/AllPostsPage/index.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/03_user-pages/users-directory/UsersDirectoryPage/index.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/03_user-profile/FavoritesRedirectPage.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/05_search-browse/all-cars/AllCarsPage/index.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/05_search-browse/location/LocationLandingPage.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/06_admin/AIQuotaManager.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/06_admin/DebugCarsPage.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/06_admin/DeleteMockCarsPage.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/06_admin/regular-admin/AdminPage/ReportsView.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/06_admin/regular-admin/AdminPage/UsersTable.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/06_admin/regular-admin/AdminPage/VerificationReview.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/06_admin/regular-admin/AdminPage/index.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/06_admin/super-admin/SuperAdminDashboard/index.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/06_admin/super-admin/SuperAdminUsersPage.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/07_advanced-features/B2BAnalyticsPortal.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/07_advanced-features/EventsPage.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/08_payment-billing/CheckoutPage.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/09_dealer-company/DealerPublicPage/index.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/seo/AccidentCarsPage.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/seo/BrandCityPage.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/seo/CityCarsPage.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/pages/seo/NewCarsPage.tsx, C:/Users/hamda/Desktop/Koli_One_Root/web/src/repositories/CompanyRepository.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/repositories/DealershipRepository.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/admin-permissions.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/admin/admin-verification.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/advanced-real-data-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/ai/DeepSeekService.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/ai/ai-cost-optimizer.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/ai/ai-quota.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/ai/billing-system.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/ai/gemini-chat.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/ai/learning-system.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/ai/security-monitor.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/analytics/profile-analytics.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/analytics/search-analytics.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/audit-logging-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/billing-operations.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/billing/churn-prevention.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/billing/subscription-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/blog/blog.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/bulgarian-profile-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/campaigns/budget.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/campaigns/campaign.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/campaigns/impression.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/car-count.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/car/car-listing.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/car/image-upload.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/car/unified-car-mutations.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/car/unified-car-queries.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/commission-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/company/team-management-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/compliance/gdpr.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/content-management-operations.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/dashboard-operations.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/drafts-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/email-verification.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/favorites.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/favoritesService.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/firebase-connection-test.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/firebase-data-operations.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/garage/car-delete.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/google/google-profile-sync.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/history/car-history.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/image-upload-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/live-firebase-counters-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/marketplace/cart.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/marketplace/marketplace-product.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/marketplace/order.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/messaging/cloud-messaging-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/messaging/realtime/push-notification.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/notifications/notifications-firebase.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/notifications/unified-notification.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/numeric-car-system.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/payment-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/payment/manual-payment-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/permission-management-operations.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/pricing/pricing-intelligence.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/profile/ProfileService.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/profile/UnifiedProfileService.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/profile/VerificationWorkflowService.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/profile/achievements-gallery.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/profile/availability-calendar.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/profile/car-story.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/profile/challenges.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/profile/groups.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/profile/image-processing-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/profile/intro-video.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/profile/leaderboard.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/profile/points-levels.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/profile/profile-stats-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/profile/profile-stats.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/profile/success-stories.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/profile/transactions.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/profile/trust-network.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/profile/trust-score-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/queryBuilder.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/real-data-initializer.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/real-time-notifications-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/reports/cars-report-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/reports/users-report-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/savedSearchesService.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/search/firestoreQueryBuilder.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/search/multi-collection-helper.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/search/query-optimization.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/search/search-history.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/search/search-personalization.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/search/smart-search.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/section-visibility.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/sell-workflow-images.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/sell-workflow-operations.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/site-settings.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/smart-alerts-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/social/algorithms/feed-algorithm.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/social/algorithms/personalization.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/social/algorithms/post-scoring.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/social/comments.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/social/consultations.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/social/follow-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/social/follow.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/social/posts-engagement.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/social/posts.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/social/realtime-feed.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/social/smart-contacts.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/social/smart-feed.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/social/social-media.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/trust/bulgarian-trust-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/unified-workflow-persistence.service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/unique-owner-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/verification/id-verification-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/verification/phone-verification-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/services/visitor-analytics-service.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/utils/checkCarsStatus.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/utils/firebase-health-check.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/utils/listing-limits.ts, C:/Users/hamda/Desktop/Koli_One_Root/web/src/utils/migrate-locations-browser.ts, dynamic import will not move module into another chunk.
+
+[plugin:vite:reporter] [plugin vite:reporter] 
+(!) C:/Users/hamda/Desktop/Koli_One_Root/web/src/components/ProgressBar.tsx is dynamically imported by C:/Users/hamda/Desktop/Koli_One_Root/web/src/providers/AppProviders.tsx but also statically imported by C:/Users/hamda/Desktop/Koli_One_Root/web/src/App.tsx, dynamic import will not move module into another chunk.
+
+computing gzip size...
+[2mbuild/[22m[32mindex.html                                                          [39m[1m[2m   12.66 kB[22m[1m[22m[2m Ôöé gzip:   3.99 kB[22m
+[2mbuild/[22m[32massets/koli_one_ai_Icon2.PQP85DB9.png                               [39m[1m[2m1,328.54 kB[22m[1m[22m
+[2mbuild/[22m[35massets/CarDetailsPage.Glstk7pl.css                                  [39m[1m[2m    1.64 kB[22m[1m[22m[2m Ôöé gzip:   0.48 kB[22m
+[2mbuild/[22m[35massets/index.CivyX8Ij.css                                           [39m[1m[2m    2.09 kB[22m[1m[22m[2m Ôöé gzip:   0.71 kB[22m
+[2mbuild/[22m[35massets/AlgoliaSearchPage.DPq25wiV.css                               [39m[1m[2m    5.12 kB[22m[1m[22m[2m Ôöé gzip:   1.20 kB[22m
+[2mbuild/[22m[35massets/CyberToggle.D6TPg4p6.css                                     [39m[1m[2m    5.84 kB[22m[1m[22m[2m Ôöé gzip:   1.37 kB[22m
+[2mbuild/[22m[35massets/index.hMwsgRAM.css                                           [39m[1m[2m    7.84 kB[22m[1m[22m[2m Ôöé gzip:   1.86 kB[22m
+[2mbuild/[22m[35massets/Footer.yB9I8Adb.css                                          [39m[1m[2m    7.98 kB[22m[1m[22m[2m Ôöé gzip:   2.03 kB[22m
+[2mbuild/[22m[35massets/EventsPage.BJx-kTAK.css                                      [39m[1m[2m    8.01 kB[22m[1m[22m[2m Ôöé gzip:   2.05 kB[22m
+[2mbuild/[22m[35massets/index.ah0XLm99.css                                           [39m[1m[2m   14.58 kB[22m[1m[22m[2m Ôöé gzip:   3.30 kB[22m
+[2mbuild/[22m[35massets/vendor.CJkMZWfJ.css                                          [39m[1m[2m   74.26 kB[22m[1m[22m[2m Ôöé gzip:  15.99 kB[22m
+[2mbuild/[22m[36massets/AuthContext.DsDtqZ9K.mlctqaen.js                             [39m[1m[2m    0.22 kB[22m[1m[22m[2m Ôöé gzip:   0.19 kB[22m
+[2mbuild/[22m[36massets/subscription-theme.BbZFAgOy.mlctqaen.js                      [39m[1m[2m    0.26 kB[22m[1m[22m[2m Ôöé gzip:   0.16 kB[22m
+[2mbuild/[22m[36massets/inputSanitizer.D3bhnORp.mlctqaen.js                          [39m[1m[2m    0.27 kB[22m[1m[22m[2m Ôöé gzip:   0.22 kB[22m
+[2mbuild/[22m[36massets/useTranslation.BrpR2Owg.mlctqaen.js                          [39m[1m[2m    0.39 kB[22m[1m[22m[2m Ôöé gzip:   0.29 kB[22m
+[2mbuild/[22m[36massets/ai-performance-traces.DLmYhdye.mlctqaen.js                   [39m[1m[2m    0.62 kB[22m[1m[22m[2m Ôöé gzip:   0.39 kB[22m
+[2mbuild/[22m[36massets/sell-workflow-collections.X8HopcZs.mlctqaen.js               [39m[1m[2m    0.92 kB[22m[1m[22m[2m Ôöé gzip:   0.40 kB[22m
+[2mbuild/[22m[36massets/AIRobotIcon.CfZKEMKJ.mlctqaen.js                             [39m[1m[2m    0.95 kB[22m[1m[22m[2m Ôöé gzip:   0.54 kB[22m
+[2mbuild/[22m[36massets/bulgaria-locations.service.CZYIddas.mlctqaen.js              [39m[1m[2m    0.99 kB[22m[1m[22m[2m Ôöé gzip:   0.61 kB[22m
+[2mbuild/[22m[36massets/design-system.CTYabXwi.mlctqaen.js                           [39m[1m[2m    0.99 kB[22m[1m[22m[2m Ôöé gzip:   0.55 kB[22m
+[2mbuild/[22m[36massets/UnifiedAnalyticsService.D8viCEtS.mlctqaen.js                 [39m[1m[2m    1.00 kB[22m[1m[22m[2m Ôöé gzip:   0.48 kB[22m
+[2mbuild/[22m[36massets/EmptyState.CbrOpmG9.mlctqaen.js                              [39m[1m[2m    1.02 kB[22m[1m[22m[2m Ôöé gzip:   0.51 kB[22m
+[2mbuild/[22m[36massets/GlobulCarLogo.DEwfpfPO.mlctqaen.js                           [39m[1m[2m    1.08 kB[22m[1m[22m[2m Ôöé gzip:   0.63 kB[22m
+[2mbuild/[22m[36massets/multi-collection-helper.BB8UU7xw.mlctqaen.js                 [39m[1m[2m    1.15 kB[22m[1m[22m[2m Ôöé gzip:   0.61 kB[22m
+[2mbuild/[22m[36massets/useProfileIntent.B9zuR64x.mlctqaen.js                        [39m[1m[2m    1.16 kB[22m[1m[22m[2m Ôöé gzip:   0.55 kB[22m
+[2mbuild/[22m[36massets/RealisticPaperclipBadge.BiR27ddz.mlctqaen.js                 [39m[1m[2m    1.28 kB[22m[1m[22m[2m Ôöé gzip:   0.64 kB[22m
+[2mbuild/[22m[36massets/routing-utils.CyNnZAeQ.mlctqaen.js                           [39m[1m[2m    1.31 kB[22m[1m[22m[2m Ôöé gzip:   0.66 kB[22m
+[2mbuild/[22m[36massets/types.Cq9kU8m5.mlctqaen.js                                   [39m[1m[2m    1.34 kB[22m[1m[22m[2m Ôöé gzip:   0.86 kB[22m
+[2mbuild/[22m[36massets/listing-limits.Cyq4rEUa.mlctqaen.js                          [39m[1m[2m    1.38 kB[22m[1m[22m[2m Ôöé gzip:   0.60 kB[22m
+[2mbuild/[22m[36massets/numeric-id-assignment.service.BEqTd9vW.mlctqaen.js           [39m[1m[2m    1.40 kB[22m[1m[22m[2m Ôöé gzip:   0.71 kB[22m
+[2mbuild/[22m[36massets/homepage-cache.service.Dihv6BVj.mlctqaen.js                  [39m[1m[2m    1.41 kB[22m[1m[22m[2m Ôöé gzip:   0.76 kB[22m
+[2mbuild/[22m[36massets/cloud-messaging-service.CfrK-N04.mlctqaen.js                 [39m[1m[2m    1.57 kB[22m[1m[22m[2m Ôöé gzip:   0.49 kB[22m
+[2mbuild/[22m[36massets/index.B_FDVjpW.mlctqaen.js                                   [39m[1m[2m    1.59 kB[22m[1m[22m[2m Ôöé gzip:   0.73 kB[22m
+[2mbuild/[22m[36massets/subscription-service.zdhpRZDg.mlctqaen.js                    [39m[1m[2m    1.70 kB[22m[1m[22m[2m Ôöé gzip:   0.88 kB[22m
+[2mbuild/[22m[36massets/numeric-id-counter.service.CFoMu5BX.mlctqaen.js              [39m[1m[2m    1.75 kB[22m[1m[22m[2m Ôöé gzip:   0.69 kB[22m
+[2mbuild/[22m[36massets/guest-identity.service.DyD7Cf1L.mlctqaen.js                  [39m[1m[2m    1.75 kB[22m[1m[22m[2m Ôöé gzip:   0.80 kB[22m
+[2mbuild/[22m[36massets/index.C63g8B8w.mlctqaen.js                                   [39m[1m[2m    1.77 kB[22m[1m[22m[2m Ôöé gzip:   0.81 kB[22m
+[2mbuild/[22m[36massets/socialLinks.DUXXfR-Q.mlctqaen.js                             [39m[1m[2m    1.80 kB[22m[1m[22m[2m Ôöé gzip:   1.01 kB[22m
+[2mbuild/[22m[36massets/checkCarsStatus.BJjL44fi.mlctqaen.js                         [39m[1m[2m    1.86 kB[22m[1m[22m[2m Ôöé gzip:   0.92 kB[22m
+[2mbuild/[22m[36massets/FacebookPixel.DQ_o0rpm.mlctqaen.js                           [39m[1m[2m    1.88 kB[22m[1m[22m[2m Ôöé gzip:   0.94 kB[22m
+[2mbuild/[22m[36massets/ResponsiveGrid.DYmnnprL.mlctqaen.js                          [39m[1m[2m    1.90 kB[22m[1m[22m[2m Ôöé gzip:   0.68 kB[22m
+[2mbuild/[22m[36massets/rateLimiter.service.D34azLpe.mlctqaen.js                     [39m[1m[2m    2.03 kB[22m[1m[22m[2m Ôöé gzip:   0.78 kB[22m
+[2mbuild/[22m[36massets/sound-service.CH_4RqT5.mlctqaen.js                           [39m[1m[2m    2.30 kB[22m[1m[22m[2m Ôöé gzip:   0.64 kB[22m
+[2mbuild/[22m[36massets/CarIcon.CLUQsGLl.mlctqaen.js                                 [39m[1m[2m    2.30 kB[22m[1m[22m[2m Ôöé gzip:   0.77 kB[22m
+[2mbuild/[22m[36massets/useFavorites.Dm0Mlijb.mlctqaen.js                            [39m[1m[2m    2.35 kB[22m[1m[22m[2m Ôöé gzip:   1.06 kB[22m
+[2mbuild/[22m[36massets/RecentlySold.BS5m7MHu.mlctqaen.js                            [39m[1m[2m    2.35 kB[22m[1m[22m[2m Ôöé gzip:   0.95 kB[22m
+[2mbuild/[22m[36massets/posts-engagement.service.CiEjzkK1.mlctqaen.js                [39m[1m[2m    2.40 kB[22m[1m[22m[2m Ôöé gzip:   0.97 kB[22m
+[2mbuild/[22m[36massets/image-upload.service.D9EtI86j.mlctqaen.js                    [39m[1m[2m    2.44 kB[22m[1m[22m[2m Ôöé gzip:   1.25 kB[22m
+[2mbuild/[22m[36massets/car-listing.service.P2h5nLck.mlctqaen.js                     [39m[1m[2m    2.66 kB[22m[1m[22m[2m Ôöé gzip:   0.90 kB[22m
+[2mbuild/[22m[36massets/DescriptionPreview.D9LUPMWA.mlctqaen.js                      [39m[1m[2m    2.70 kB[22m[1m[22m[2m Ôöé gzip:   0.84 kB[22m
+[2mbuild/[22m[36massets/favorites.service.cKoJQB7t.mlctqaen.js                       [39m[1m[2m    2.73 kB[22m[1m[22m[2m Ôöé gzip:   1.00 kB[22m
+[2mbuild/[22m[36massets/subscription-plans.jQGky-m8.mlctqaen.js                      [39m[1m[2m    2.80 kB[22m[1m[22m[2m Ôöé gzip:   1.13 kB[22m
+[2mbuild/[22m[36massets/gemini-vision.service.SJw2sMCo.mlctqaen.js                   [39m[1m[2m    2.86 kB[22m[1m[22m[2m Ôöé gzip:   1.22 kB[22m
+[2mbuild/[22m[36massets/payment-service.D-CCqA5p.mlctqaen.js                         [39m[1m[2m    2.87 kB[22m[1m[22m[2m Ôöé gzip:   1.14 kB[22m
+[2mbuild/[22m[36massets/drafts-service.CuBLFtRD.mlctqaen.js                          [39m[1m[2m    2.93 kB[22m[1m[22m[2m Ôöé gzip:   1.16 kB[22m
+[2mbuild/[22m[36massets/section-visibility-defaults.ji5o6dkr.mlctqaen.js             [39m[1m[2m    3.02 kB[22m[1m[22m[2m Ôöé gzip:   1.03 kB[22m
+[2mbuild/[22m[36massets/points-automation.service.Daybgm5c.mlctqaen.js               [39m[1m[2m    3.11 kB[22m[1m[22m[2m Ôöé gzip:   0.99 kB[22m
+[2mbuild/[22m[36massets/numeric-id-lookup.service.NfrxgHLE.mlctqaen.js               [39m[1m[2m    3.12 kB[22m[1m[22m[2m Ôöé gzip:   1.20 kB[22m
+[2mbuild/[22m[36massets/CyberToggle.DD6L6LQy.mlctqaen.js                             [39m[1m[2m    3.23 kB[22m[1m[22m[2m Ôöé gzip:   0.82 kB[22m
+[2mbuild/[22m[36massets/PullToRefreshIndicator.BpHxeIjH.mlctqaen.js                  [39m[1m[2m    3.28 kB[22m[1m[22m[2m Ôöé gzip:   1.34 kB[22m
+[2mbuild/[22m[36massets/CarNotFoundPage.C13klssh.mlctqaen.js                         [39m[1m[2m    3.28 kB[22m[1m[22m[2m Ôöé gzip:   1.32 kB[22m
+[2mbuild/[22m[36massets/image-upload-service.BU1LjX_N.mlctqaen.js                    [39m[1m[2m    3.31 kB[22m[1m[22m[2m Ôöé gzip:   1.53 kB[22m
+[2mbuild/[22m[36massets/canonical-user.service.D8OdrcCj.mlctqaen.js                  [39m[1m[2m    3.37 kB[22m[1m[22m[2m Ôöé gzip:   1.47 kB[22m
+[2mbuild/[22m[36massets/brands-models-data.service.BlWOptcI.mlctqaen.js              [39m[1m[2m    3.40 kB[22m[1m[22m[2m Ôöé gzip:   1.36 kB[22m
+[2mbuild/[22m[36massets/bulgarianCities.D2NDoYPm.mlctqaen.js                         [39m[1m[2m    3.51 kB[22m[1m[22m[2m Ôöé gzip:   1.47 kB[22m
+[2mbuild/[22m[36massets/trust-score-service.FgD3OIIJ.mlctqaen.js                     [39m[1m[2m    3.63 kB[22m[1m[22m[2m Ôöé gzip:   1.65 kB[22m
+[2mbuild/[22m[36massets/NotFoundPage.CYtpOIBD.mlctqaen.js                            [39m[1m[2m    3.65 kB[22m[1m[22m[2m Ôöé gzip:   1.03 kB[22m
+[2mbuild/[22m[36massets/unique-owner-service.Doc05mJ8.mlctqaen.js                    [39m[1m[2m    3.72 kB[22m[1m[22m[2m Ôöé gzip:   1.50 kB[22m
+[2mbuild/[22m[36massets/facebook-auto-post.service._zkdpKf6.mlctqaen.js              [39m[1m[2m    3.77 kB[22m[1m[22m[2m Ôöé gzip:   1.73 kB[22m
+[2mbuild/[22m[36massets/index.DhI6E-zj.mlctqaen.js                                   [39m[1m[2m    3.84 kB[22m[1m[22m[2m Ôöé gzip:   1.28 kB[22m
+[2mbuild/[22m[36massets/marketplace-product.service.BntgXv7V.mlctqaen.js             [39m[1m[2m    4.02 kB[22m[1m[22m[2m Ôöé gzip:   1.23 kB[22m
+[2mbuild/[22m[36massets/block-user.service.B3wQHFC2.mlctqaen.js                      [39m[1m[2m    4.04 kB[22m[1m[22m[2m Ôöé gzip:   1.24 kB[22m
+[2mbuild/[22m[36massets/GlobalWorkflowTimer.3iaVMhmT.mlctqaen.js                     [39m[1m[2m    4.08 kB[22m[1m[22m[2m Ôöé gzip:   1.59 kB[22m
+[2mbuild/[22m[36massets/BillingService.CR_LNiHU.mlctqaen.js                          [39m[1m[2m    4.10 kB[22m[1m[22m[2m Ôöé gzip:   1.65 kB[22m
+[2mbuild/[22m[36massets/TeamManagement.DzKaHR0w.mlctqaen.js                          [39m[1m[2m    4.20 kB[22m[1m[22m[2m Ôöé gzip:   1.19 kB[22m
+[2mbuild/[22m[36massets/google-analytics-data-deletion.service.B2zQNGnF.mlctqaen.js  [39m[1m[2m    4.44 kB[22m[1m[22m[2m Ôöé gzip:   1.79 kB[22m
+[2mbuild/[22m[36massets/TrustSection.Dm6bML69.mlctqaen.js                            [39m[1m[2m    4.48 kB[22m[1m[22m[2m Ôöé gzip:   1.65 kB[22m
+[2mbuild/[22m[36massets/NumericCarDetailsPage.CVX-orVM.mlctqaen.js                   [39m[1m[2m    4.63 kB[22m[1m[22m[2m Ôöé gzip:   1.83 kB[22m
+[2mbuild/[22m[36massets/HomeSocialExperience.B7glw7Yf.mlctqaen.js                    [39m[1m[2m    4.85 kB[22m[1m[22m[2m Ôöé gzip:   1.35 kB[22m
+[2mbuild/[22m[36massets/index.S5X5uxKS.mlctqaen.js                                   [39m[1m[2m    4.88 kB[22m[1m[22m[2m Ôöé gzip:   1.51 kB[22m
+[2mbuild/[22m[36massets/vehicle-description-generator.service.CRFQiK36.mlctqaen.js   [39m[1m[2m    5.02 kB[22m[1m[22m[2m Ôöé gzip:   2.71 kB[22m
+[2mbuild/[22m[36massets/ai-quota.service.DjNvQy2f.mlctqaen.js                        [39m[1m[2m    5.04 kB[22m[1m[22m[2m Ôöé gzip:   1.87 kB[22m
+[2mbuild/[22m[36massets/social-media.service.DLzxEmG1.mlctqaen.js                    [39m[1m[2m    5.16 kB[22m[1m[22m[2m Ôöé gzip:   2.00 kB[22m
+[2mbuild/[22m[36massets/BillingCanceledPage.Bq302W8G.mlctqaen.js                     [39m[1m[2m    5.27 kB[22m[1m[22m[2m Ôöé gzip:   1.71 kB[22m
+[2mbuild/[22m[36massets/gdpr.service.CwJN5KjU.mlctqaen.js                            [39m[1m[2m    5.32 kB[22m[1m[22m[2m Ôöé gzip:   2.02 kB[22m
+[2mbuild/[22m[36massets/order.service.BprueTW5.mlctqaen.js                           [39m[1m[2m    5.38 kB[22m[1m[22m[2m Ôöé gzip:   1.72 kB[22m
+[2mbuild/[22m[36massets/AISearchButton.mgi28DN8.mlctqaen.js                          [39m[1m[2m    5.47 kB[22m[1m[22m[2m Ôöé gzip:   1.92 kB[22m
+[2mbuild/[22m[36massets/StatsSection.DZH4IOz3.mlctqaen.js                            [39m[1m[2m    5.48 kB[22m[1m[22m[2m Ôöé gzip:   0.88 kB[22m
+[2mbuild/[22m[36massets/useSavedSearches.DLu1Qakr.mlctqaen.js                        [39m[1m[2m    5.49 kB[22m[1m[22m[2m Ôöé gzip:   1.74 kB[22m
+[2mbuild/[22m[36massets/FavoritesRedirectPage.CRE4AXzN.mlctqaen.js                   [39m[1m[2m    5.54 kB[22m[1m[22m[2m Ôöé gzip:   1.78 kB[22m
+[2mbuild/[22m[36massets/openai.service.Dduk0hVP.mlctqaen.js                          [39m[1m[2m    5.59 kB[22m[1m[22m[2m Ôöé gzip:   2.23 kB[22m
+[2mbuild/[22m[36massets/blog.service.CA04TYHz.mlctqaen.js                            [39m[1m[2m    5.73 kB[22m[1m[22m[2m Ôöé gzip:   1.85 kB[22m
+[2mbuild/[22m[36massets/cart.service.CcrUVZqY.mlctqaen.js                            [39m[1m[2m    5.87 kB[22m[1m[22m[2m Ôöé gzip:   1.95 kB[22m
+[2mbuild/[22m[36massets/DealershipRepository.1usVreTY.mlctqaen.js                    [39m[1m[2m    5.94 kB[22m[1m[22m[2m Ôöé gzip:   1.67 kB[22m
+[2mbuild/[22m[36massets/ai-router.service.BvNxY6D6.mlctqaen.js                       [39m[1m[2m    6.03 kB[22m[1m[22m[2m Ôöé gzip:   2.80 kB[22m
+[2mbuild/[22m[36massets/unified-car-queries.C5vcQdhx.mlctqaen.js                     [39m[1m[2m    6.17 kB[22m[1m[22m[2m Ôöé gzip:   2.03 kB[22m
+[2mbuild/[22m[36massets/google-maps-enhanced.service.CiRqoWBM.mlctqaen.js            [39m[1m[2m    6.18 kB[22m[1m[22m[2m Ôöé gzip:   2.51 kB[22m
+[2mbuild/[22m[36massets/PaymentSuccessPage.HsAiJ8pw.mlctqaen.js                      [39m[1m[2m    6.22 kB[22m[1m[22m[2m Ôöé gzip:   1.74 kB[22m
+[2mbuild/[22m[36massets/success-stories.service.CUcVEMWH.mlctqaen.js                 [39m[1m[2m    6.35 kB[22m[1m[22m[2m Ôöé gzip:   2.58 kB[22m
+[2mbuild/[22m[36massets/CarBrandLogo.BkGx67NJ.mlctqaen.js                            [39m[1m[2m    6.43 kB[22m[1m[22m[2m Ôöé gzip:   1.40 kB[22m
+[2mbuild/[22m[36massets/messaging-service.v--oWsGq.mlctqaen.js                       [39m[1m[2m    6.45 kB[22m[1m[22m[2m Ôöé gzip:   2.41 kB[22m
+[2mbuild/[22m[36massets/ImageStorageService.DXQhmf3a.mlctqaen.js                     [39m[1m[2m    6.48 kB[22m[1m[22m[2m Ôöé gzip:   2.44 kB[22m
+[2mbuild/[22m[36massets/MobileBottomNav.DK3TZd-6.mlctqaen.js                         [39m[1m[2m    6.50 kB[22m[1m[22m[2m Ôöé gzip:   1.74 kB[22m
+[2mbuild/[22m[36massets/team-management-service.CR5Ol8XQ.mlctqaen.js                 [39m[1m[2m    6.55 kB[22m[1m[22m[2m Ôöé gzip:   2.07 kB[22m
+[2mbuild/[22m[36massets/index.C0MQaNoR.mlctqaen.js                                   [39m[1m[2m    6.55 kB[22m[1m[22m[2m Ôöé gzip:   2.03 kB[22m
+[2mbuild/[22m[36massets/LoyaltyBanner.BLRGzkKg.mlctqaen.js                           [39m[1m[2m    6.62 kB[22m[1m[22m[2m Ôöé gzip:   1.99 kB[22m
+[2mbuild/[22m[36massets/FiltersSection.k0k-96Tw.mlctqaen.js                          [39m[1m[2m    6.63 kB[22m[1m[22m[2m Ôöé gzip:   1.17 kB[22m
+[2mbuild/[22m[36massets/numeric-car-system.service.BD_O5eiM.mlctqaen.js              [39m[1m[2m    6.72 kB[22m[1m[22m[2m Ôöé gzip:   2.17 kB[22m
+[2mbuild/[22m[36massets/profile-analytics.service.oU-DYKEQ.mlctqaen.js               [39m[1m[2m    6.81 kB[22m[1m[22m[2m Ôöé gzip:   2.01 kB[22m
+[2mbuild/[22m[36massets/ModernCarCard.CHN3HMG7.mlctqaen.js                           [39m[1m[2m    6.91 kB[22m[1m[22m[2m Ôöé gzip:   2.01 kB[22m
+[2mbuild/[22m[36massets/AIAnalyticsTeaser.CcEn0Tpw.mlctqaen.js                       [39m[1m[2m    6.91 kB[22m[1m[22m[2m Ôöé gzip:   1.44 kB[22m
+[2mbuild/[22m[36massets/SharedInboxPage.CSVuC3hy.mlctqaen.js                         [39m[1m[2m    7.03 kB[22m[1m[22m[2m Ôöé gzip:   1.96 kB[22m
+[2mbuild/[22m[36massets/UnifiedProfileService.BiFydMLC.mlctqaen.js                   [39m[1m[2m    7.07 kB[22m[1m[22m[2m Ôöé gzip:   2.27 kB[22m
+[2mbuild/[22m[36massets/bulgaria-locations.CECWg90u.mlctqaen.js                      [39m[1m[2m    7.07 kB[22m[1m[22m[2m Ôöé gzip:   3.71 kB[22m
+[2mbuild/[22m[36massets/LatestCarsSection.Dfle3ABo.mlctqaen.js                       [39m[1m[2m    7.25 kB[22m[1m[22m[2m Ôöé gzip:   2.41 kB[22m
+[2mbuild/[22m[36massets/IncompleteProfileAlert.DN-Qn1Zw.mlctqaen.js                  [39m[1m[2m    7.33 kB[22m[1m[22m[2m Ôöé gzip:   2.57 kB[22m
+[2mbuild/[22m[36massets/unified-car-service.BGdUeBlo.mlctqaen.js                     [39m[1m[2m    7.54 kB[22m[1m[22m[2m Ôöé gzip:   2.55 kB[22m
+[2mbuild/[22m[36massets/index.JYyFiFu6.mlctqaen.js                                   [39m[1m[2m    7.66 kB[22m[1m[22m[2m Ôöé gzip:   2.32 kB[22m
+[2mbuild/[22m[36massets/bulgarian-profile-service.Cjm3zu0Z.mlctqaen.js               [39m[1m[2m    7.78 kB[22m[1m[22m[2m Ôöé gzip:   2.80 kB[22m
+[2mbuild/[22m[36massets/BrandCityPage.DGH8YjD4.mlctqaen.js                           [39m[1m[2m    7.86 kB[22m[1m[22m[2m Ôöé gzip:   2.61 kB[22m
+[2mbuild/[22m[36massets/DraftRecoveryPrompt.Bx_kGT3E.mlctqaen.js                     [39m[1m[2m    7.96 kB[22m[1m[22m[2m Ôöé gzip:   2.15 kB[22m
+[2mbuild/[22m[36massets/DealerSpotlight.ZzxijftN.mlctqaen.js                         [39m[1m[2m    8.16 kB[22m[1m[22m[2m Ôöé gzip:   2.30 kB[22m
+[2mbuild/[22m[36massets/gemini-chat.service.7TOOIuqu.mlctqaen.js                     [39m[1m[2m    8.27 kB[22m[1m[22m[2m Ôöé gzip:   3.29 kB[22m
+[2mbuild/[22m[36massets/BillingSuccessPage.B0CGdhCx.mlctqaen.js                      [39m[1m[2m    8.60 kB[22m[1m[22m[2m Ôöé gzip:   2.41 kB[22m
+[2mbuild/[22m[36massets/CarTrackingPage.Dic2BQ6k.mlctqaen.js                         [39m[1m[2m    8.60 kB[22m[1m[22m[2m Ôöé gzip:   1.75 kB[22m
+[2mbuild/[22m[36massets/AIHistoryPage.Bl6jw9Xf.mlctqaen.js                           [39m[1m[2m    8.86 kB[22m[1m[22m[2m Ôöé gzip:   2.54 kB[22m
+[2mbuild/[22m[36massets/SmartDescriptionGenerator.DQwEt-H-.mlctqaen.js               [39m[1m[2m    8.88 kB[22m[1m[22m[2m Ôöé gzip:   2.55 kB[22m
+[2mbuild/[22m[36massets/manual-payment-service.B3C0v3Ss.mlctqaen.js                  [39m[1m[2m    8.95 kB[22m[1m[22m[2m Ôöé gzip:   3.46 kB[22m
+[2mbuild/[22m[36massets/PaymentFailedPage.C3JFzCV0.mlctqaen.js                       [39m[1m[2m    9.00 kB[22m[1m[22m[2m Ôöé gzip:   2.50 kB[22m
+[2mbuild/[22m[36massets/AIQuotaManager.XwCLJ0nX.mlctqaen.js                          [39m[1m[2m    9.16 kB[22m[1m[22m[2m Ôöé gzip:   2.13 kB[22m
+[2mbuild/[22m[36massets/AIAdvisorPage.CblOaTQQ.mlctqaen.js                           [39m[1m[2m    9.26 kB[22m[1m[22m[2m Ôöé gzip:   2.91 kB[22m
+[2mbuild/[22m[36massets/auth-service.BUZWjynt.mlctqaen.js                            [39m[1m[2m    9.27 kB[22m[1m[22m[2m Ôöé gzip:   3.25 kB[22m
+[2mbuild/[22m[36massets/index.JjIpFb8N.mlctqaen.js                                   [39m[1m[2m    9.32 kB[22m[1m[22m[2m Ôöé gzip:   3.13 kB[22m
+[2mbuild/[22m[36massets/FollowingTab.DG6UB4WD.mlctqaen.js                            [39m[1m[2m    9.43 kB[22m[1m[22m[2m Ôöé gzip:   2.74 kB[22m
+[2mbuild/[22m[36massets/challenges.service.BUIEth0R.mlctqaen.js                      [39m[1m[2m    9.46 kB[22m[1m[22m[2m Ôöé gzip:   3.06 kB[22m
+[2mbuild/[22m[36massets/advanced-user-management-service.DmcuL5Z6.mlctqaen.js        [39m[1m[2m    9.57 kB[22m[1m[22m[2m Ôöé gzip:   2.83 kB[22m
+[2mbuild/[22m[36massets/NewCarsPage.6QULQ8KX.mlctqaen.js                             [39m[1m[2m    9.70 kB[22m[1m[22m[2m Ôöé gzip:   2.76 kB[22m
+[2mbuild/[22m[36massets/IdentityStamp.BMWRx61N.mlctqaen.js                           [39m[1m[2m    9.88 kB[22m[1m[22m[2m Ôöé gzip:   2.20 kB[22m
+[2mbuild/[22m[36massets/AIChatbot.BkdQw_jU.mlctqaen.js                               [39m[1m[2m    9.92 kB[22m[1m[22m[2m Ôöé gzip:   3.10 kB[22m
+[2mbuild/[22m[36massets/ViewAllDealersPage.BPLe7s8o.mlctqaen.js                      [39m[1m[2m    9.92 kB[22m[1m[22m[2m Ôöé gzip:   2.41 kB[22m
+[2mbuild/[22m[36massets/unified-workflow-persistence.service.J7RB_IxO.mlctqaen.js    [39m[1m[2m   10.08 kB[22m[1m[22m[2m Ôöé gzip:   3.25 kB[22m
+[2mbuild/[22m[36massets/audit-logging-service.ioqWa3jg.mlctqaen.js                   [39m[1m[2m   10.14 kB[22m[1m[22m[2m Ôöé gzip:   3.42 kB[22m
+[2mbuild/[22m[36massets/IoTAnalyticsPage.DhcXpqry.mlctqaen.js                        [39m[1m[2m   10.36 kB[22m[1m[22m[2m Ôöé gzip:   1.82 kB[22m
+[2mbuild/[22m[36massets/index.BG28Ngvb.mlctqaen.js                                   [39m[1m[2m   10.46 kB[22m[1m[22m[2m Ôöé gzip:   3.70 kB[22m
+[2mbuild/[22m[36massets/UpdatePaymentMethodPage.BkF5nQj1.mlctqaen.js                 [39m[1m[2m   10.54 kB[22m[1m[22m[2m Ôöé gzip:   2.93 kB[22m
+[2mbuild/[22m[36massets/useProfile.ClqfkLt7.mlctqaen.js                              [39m[1m[2m   10.73 kB[22m[1m[22m[2m Ôöé gzip:   4.17 kB[22m
+[2mbuild/[22m[36massets/index.DnkTSwM4.mlctqaen.js                                   [39m[1m[2m   10.77 kB[22m[1m[22m[2m Ôöé gzip:   2.87 kB[22m
+[2mbuild/[22m[36massets/BackupManagement.DEsanFVY.mlctqaen.js                        [39m[1m[2m   10.77 kB[22m[1m[22m[2m Ôöé gzip:   2.40 kB[22m
+[2mbuild/[22m[36massets/index.4o6lFv7S.mlctqaen.js                                   [39m[1m[2m   10.90 kB[22m[1m[22m[2m Ôöé gzip:   2.33 kB[22m
+[2mbuild/[22m[36massets/AccidentCarsPage.CFqTwyK1.mlctqaen.js                        [39m[1m[2m   10.98 kB[22m[1m[22m[2m Ôöé gzip:   3.18 kB[22m
+[2mbuild/[22m[36massets/FloatingAddButton.98fXmeqT.mlctqaen.js                       [39m[1m[2m   11.06 kB[22m[1m[22m[2m Ôöé gzip:   2.55 kB[22m
+[2mbuild/[22m[36massets/SocialMediaSection.CJttF8An.mlctqaen.js                      [39m[1m[2m   11.07 kB[22m[1m[22m[2m Ôöé gzip:   2.77 kB[22m
+[2mbuild/[22m[36massets/CloudServicesManager.CkUkaa3O.mlctqaen.js                    [39m[1m[2m   11.09 kB[22m[1m[22m[2m Ôöé gzip:   3.18 kB[22m
+[2mbuild/[22m[36massets/DebugCarsPage.7gfyF9Nl.mlctqaen.js                           [39m[1m[2m   11.15 kB[22m[1m[22m[2m Ôöé gzip:   2.83 kB[22m
+[2mbuild/[22m[36massets/AuthUsersPage.CbrG-9HW.mlctqaen.js                           [39m[1m[2m   11.64 kB[22m[1m[22m[2m Ôöé gzip:   3.32 kB[22m
+[2mbuild/[22m[36massets/BillingPage.D7mwlTGY.mlctqaen.js                             [39m[1m[2m   11.90 kB[22m[1m[22m[2m Ôöé gzip:   3.61 kB[22m
+[2mbuild/[22m[36massets/CompactCarCard.B-Y-TAgf.mlctqaen.js                          [39m[1m[2m   11.94 kB[22m[1m[22m[2m Ôöé gzip:   2.79 kB[22m
+[2mbuild/[22m[36massets/index.Ca8aILkN.mlctqaen.js                                   [39m[1m[2m   12.00 kB[22m[1m[22m[2m Ôöé gzip:   3.01 kB[22m
+[2mbuild/[22m[36massets/index.DAim3RLP.mlctqaen.js                                   [39m[1m[2m   12.08 kB[22m[1m[22m[2m Ôöé gzip:   3.00 kB[22m
+[2mbuild/[22m[36massets/ViewAllNewCarsPage.OnmA7HLe.mlctqaen.js                      [39m[1m[2m   12.16 kB[22m[1m[22m[2m Ôöé gzip:   2.68 kB[22m
+[2mbuild/[22m[36massets/LaunchOfferPage.DoCCeera.mlctqaen.js                         [39m[1m[2m   12.22 kB[22m[1m[22m[2m Ôöé gzip:   3.27 kB[22m
+[2mbuild/[22m[36massets/CompetitiveComparisonPage.s8rRqltM.mlctqaen.js               [39m[1m[2m   12.48 kB[22m[1m[22m[2m Ôöé gzip:   3.14 kB[22m
+[2mbuild/[22m[36massets/ProfileService.NgREZrrL.mlctqaen.js                          [39m[1m[2m   12.58 kB[22m[1m[22m[2m Ôöé gzip:   3.16 kB[22m
+[2mbuild/[22m[36massets/InvoicesPage.Tjwc0ICs.mlctqaen.js                            [39m[1m[2m   12.68 kB[22m[1m[22m[2m Ôöé gzip:   2.68 kB[22m
+[2mbuild/[22m[36massets/FeaturedCarsSection.B62mn1WC.mlctqaen.js                     [39m[1m[2m   12.80 kB[22m[1m[22m[2m Ôöé gzip:   3.46 kB[22m
+[2mbuild/[22m[36massets/BlogPage.C2Wgewsc.mlctqaen.js                                [39m[1m[2m   13.11 kB[22m[1m[22m[2m Ôöé gzip:   2.99 kB[22m
+[2mbuild/[22m[36massets/AIValuationPage.BCIotvum.mlctqaen.js                         [39m[1m[2m   13.22 kB[22m[1m[22m[2m Ôöé gzip:   2.95 kB[22m
+[2mbuild/[22m[36massets/QuickSetupPage.BE9Ognpp.mlctqaen.js                          [39m[1m[2m   13.36 kB[22m[1m[22m[2m Ôöé gzip:   3.57 kB[22m
+[2mbuild/[22m[36massets/NewCarsSection.DFs4H7zi.mlctqaen.js                          [39m[1m[2m   13.56 kB[22m[1m[22m[2m Ôöé gzip:   3.09 kB[22m
+[2mbuild/[22m[36massets/GracePeriodBanner.DxWGEIzf.mlctqaen.js                       [39m[1m[2m   13.65 kB[22m[1m[22m[2m Ôöé gzip:   3.66 kB[22m
+[2mbuild/[22m[36massets/index.BZ7N_mZb.mlctqaen.js                                   [39m[1m[2m   13.96 kB[22m[1m[22m[2m Ôöé gzip:   3.02 kB[22m
+[2mbuild/[22m[36massets/AcceptInvitePage.BlHIfcBl.mlctqaen.js                        [39m[1m[2m   13.96 kB[22m[1m[22m[2m Ôöé gzip:   3.57 kB[22m
+[2mbuild/[22m[36massets/ForgotPasswordPage.DjKIoDJX.mlctqaen.js                      [39m[1m[2m   14.10 kB[22m[1m[22m[2m Ôöé gzip:   3.29 kB[22m
+[2mbuild/[22m[36massets/CheckoutPage.Bna56u3U.mlctqaen.js                            [39m[1m[2m   14.11 kB[22m[1m[22m[2m Ôöé gzip:   3.32 kB[22m
+[2mbuild/[22m[36massets/index.Ckwms5Fs.mlctqaen.js                                   [39m[1m[2m   14.29 kB[22m[1m[22m[2m Ôöé gzip:   3.36 kB[22m
+[2mbuild/[22m[36massets/MarketplacePage.C8milFPX.mlctqaen.js                         [39m[1m[2m   14.35 kB[22m[1m[22m[2m Ôöé gzip:   3.22 kB[22m
+[2mbuild/[22m[36massets/StripePaymentPage.Bn8xw2Kq.mlctqaen.js                       [39m[1m[2m   14.74 kB[22m[1m[22m[2m Ôöé gzip:   3.29 kB[22m
+[2mbuild/[22m[36massets/SEOCityBrandPage.CPSqacq2.mlctqaen.js                        [39m[1m[2m   14.94 kB[22m[1m[22m[2m Ôöé gzip:   3.49 kB[22m
+[2mbuild/[22m[36massets/QuickReplyManager.mB_9y9u_.mlctqaen.js                       [39m[1m[2m   15.07 kB[22m[1m[22m[2m Ôöé gzip:   3.42 kB[22m
+[2mbuild/[22m[36massets/PhoneAuthModal.DVO9hi93.mlctqaen.js                          [39m[1m[2m   15.11 kB[22m[1m[22m[2m Ôöé gzip:   3.83 kB[22m
+[2mbuild/[22m[36massets/AnalyticsDashboard.DGh-1x9I.mlctqaen.js                      [39m[1m[2m   15.33 kB[22m[1m[22m[2m Ôöé gzip:   2.53 kB[22m
+[2mbuild/[22m[36massets/DeleteMockCarsPage.BqFOhw9J.mlctqaen.js                      [39m[1m[2m   15.39 kB[22m[1m[22m[2m Ôöé gzip:   3.39 kB[22m
+[2mbuild/[22m[36massets/CommissionsPage.iREkzZWE.mlctqaen.js                         [39m[1m[2m   15.78 kB[22m[1m[22m[2m Ôöé gzip:   3.25 kB[22m
+[2mbuild/[22m[36massets/CarCardCompact.XOYFBGe6.mlctqaen.js                          [39m[1m[2m   16.36 kB[22m[1m[22m[2m Ôöé gzip:   4.61 kB[22m
+[2mbuild/[22m[36massets/monitoring-service.mK9alm2r.mlctqaen.js                      [39m[1m[2m   16.37 kB[22m[1m[22m[2m Ôöé gzip:   5.65 kB[22m
+[2mbuild/[22m[36massets/index.Dmz_RgxZ.mlctqaen.js                                   [39m[1m[2m   16.54 kB[22m[1m[22m[2m Ôöé gzip:   3.07 kB[22m
+[2mbuild/[22m[36massets/CityCarsLandingPage.CZiTZwHr.mlctqaen.js                     [39m[1m[2m   16.98 kB[22m[1m[22m[2m Ôöé gzip:   4.23 kB[22m
+[2mbuild/[22m[36massets/EventsPage.CM1TeSr1.mlctqaen.js                              [39m[1m[2m   17.37 kB[22m[1m[22m[2m Ôöé gzip:   3.40 kB[22m
+[2mbuild/[22m[36massets/BlogPostPage.D83857hK.mlctqaen.js                            [39m[1m[2m   17.66 kB[22m[1m[22m[2m Ôöé gzip:   3.43 kB[22m
+[2mbuild/[22m[36massets/CartPage.BHPv0DsJ.mlctqaen.js                                [39m[1m[2m   17.77 kB[22m[1m[22m[2m Ôöé gzip:   3.49 kB[22m
+[2mbuild/[22m[36massets/UnifiedAIChat.aP1GGw7a.mlctqaen.js                           [39m[1m[2m   17.80 kB[22m[1m[22m[2m Ôöé gzip:   4.90 kB[22m
+[2mbuild/[22m[36massets/B2BAnalyticsPortal.Uj9X2zKk.mlctqaen.js                      [39m[1m[2m   18.12 kB[22m[1m[22m[2m Ôöé gzip:   3.54 kB[22m
+[2mbuild/[22m[36massets/MigrationPage.pORyQV73.mlctqaen.js                           [39m[1m[2m   18.13 kB[22m[1m[22m[2m Ôöé gzip:   4.31 kB[22m
+[2mbuild/[22m[36massets/AlgoliaSyncManager.Bkiofcyt.mlctqaen.js                      [39m[1m[2m   18.50 kB[22m[1m[22m[2m Ôöé gzip:   3.84 kB[22m
+[2mbuild/[22m[36massets/OrderSuccessPage.Ctrewzly.mlctqaen.js                        [39m[1m[2m   19.26 kB[22m[1m[22m[2m Ôöé gzip:   3.46 kB[22m
+[2mbuild/[22m[36massets/MessageBubble.PlnU3vFX.mlctqaen.js                           [39m[1m[2m   19.62 kB[22m[1m[22m[2m Ôöé gzip:   4.64 kB[22m
+[2mbuild/[22m[36massets/CityCarsPage.eRk6lvuE.mlctqaen.js                            [39m[1m[2m   19.69 kB[22m[1m[22m[2m Ôöé gzip:   6.16 kB[22m
+[2mbuild/[22m[36massets/AutoResponderSettings.V1I9BjFE.mlctqaen.js                   [39m[1m[2m   19.79 kB[22m[1m[22m[2m Ôöé gzip:   3.68 kB[22m
+[2mbuild/[22m[36massets/StripeSetupPage.CBNiHSMt.mlctqaen.js                         [39m[1m[2m   20.43 kB[22m[1m[22m[2m Ôöé gzip:   4.35 kB[22m
+[2mbuild/[22m[36massets/ListingsGrid.BbVBXKmj.mlctqaen.js                            [39m[1m[2m   20.68 kB[22m[1m[22m[2m Ôöé gzip:   2.45 kB[22m
+[2mbuild/[22m[36massets/push-notification.service.BzV0mF2P.mlctqaen.js               [39m[1m[2m   20.88 kB[22m[1m[22m[2m Ôöé gzip:   6.33 kB[22m
+[2mbuild/[22m[36massets/index.Bu7kzdI3.mlctqaen.js                                   [39m[1m[2m   20.93 kB[22m[1m[22m[2m Ôöé gzip:   6.01 kB[22m
+[2mbuild/[22m[36massets/index.BFHIbFa7.mlctqaen.js                                   [39m[1m[2m   21.26 kB[22m[1m[22m[2m Ôöé gzip:   4.23 kB[22m
+[2mbuild/[22m[36massets/LeadScoringDashboard.B7n5KQeQ.mlctqaen.js                    [39m[1m[2m   21.32 kB[22m[1m[22m[2m Ôöé gzip:   3.89 kB[22m
+[2mbuild/[22m[36massets/WhyUsPage.DRVhcvDW.mlctqaen.js                               [39m[1m[2m   21.68 kB[22m[1m[22m[2m Ôöé gzip:   4.31 kB[22m
+[2mbuild/[22m[36massets/index.1lpug1H-.mlctqaen.js                                   [39m[1m[2m   21.78 kB[22m[1m[22m[2m Ôöé gzip:   5.43 kB[22m
+[2mbuild/[22m[36massets/index.2K4a1x9O.mlctqaen.js                                   [39m[1m[2m   22.08 kB[22m[1m[22m[2m Ôöé gzip:   5.07 kB[22m
+[2mbuild/[22m[36massets/IntegrationStatusDashboard.GC1PHjSu.mlctqaen.js              [39m[1m[2m   22.43 kB[22m[1m[22m[2m Ôöé gzip:   6.56 kB[22m
+[2mbuild/[22m[36massets/BrandModelMarkdownDropdown.D89SRdkZ.mlctqaen.js              [39m[1m[2m   22.44 kB[22m[1m[22m[2m Ôöé gzip:   5.34 kB[22m
+[2mbuild/[22m[36massets/SubscriptionBanner.C_Dxh4Ts.mlctqaen.js                      [39m[1m[2m   22.70 kB[22m[1m[22m[2m Ôöé gzip:   5.33 kB[22m
+[2mbuild/[22m[36massets/AdminDashboard.0779JOKM.mlctqaen.js                          [39m[1m[2m   24.03 kB[22m[1m[22m[2m Ôöé gzip:   2.80 kB[22m
+[2mbuild/[22m[36massets/CompanyAnalyticsDashboard.Db241BqZ.mlctqaen.js               [39m[1m[2m   24.64 kB[22m[1m[22m[2m Ôöé gzip:   4.00 kB[22m
+[2mbuild/[22m[36massets/DealerRegistrationPage.JKIU_t38.mlctqaen.js                  [39m[1m[2m   24.75 kB[22m[1m[22m[2m Ôöé gzip:   3.85 kB[22m
+[2mbuild/[22m[36massets/index.BhrdrUBw.mlctqaen.js                                   [39m[1m[2m   25.11 kB[22m[1m[22m[2m Ôöé gzip:   5.74 kB[22m
+[2mbuild/[22m[36massets/AlgoliaSearchPage.DhQcBhay.mlctqaen.js                       [39m[1m[2m   25.24 kB[22m[1m[22m[2m Ôöé gzip:   4.84 kB[22m
+[2mbuild/[22m[36massets/index.CVPkVTGc.mlctqaen.js                                   [39m[1m[2m   25.29 kB[22m[1m[22m[2m Ôöé gzip:   5.35 kB[22m
+[2mbuild/[22m[36massets/Footer.B96vDmNK.mlctqaen.js                                  [39m[1m[2m   25.34 kB[22m[1m[22m[2m Ôöé gzip:   4.20 kB[22m
+[2mbuild/[22m[36massets/index.ClcwnnrK.mlctqaen.js                                   [39m[1m[2m   25.59 kB[22m[1m[22m[2m Ôöé gzip:   4.52 kB[22m
+[2mbuild/[22m[36massets/index.Jk6_gTUH.mlctqaen.js                                   [39m[1m[2m   26.42 kB[22m[1m[22m[2m Ôöé gzip:   5.91 kB[22m
+[2mbuild/[22m[36massets/ProfileAnalytics.CMJ2qnku.mlctqaen.js                        [39m[1m[2m   26.62 kB[22m[1m[22m[2m Ôöé gzip:   5.03 kB[22m
+[2mbuild/[22m[36massets/index.L4yqC8RN.mlctqaen.js                                   [39m[1m[2m   26.77 kB[22m[1m[22m[2m Ôöé gzip:   4.45 kB[22m
+[2mbuild/[22m[36massets/RegisterPageGlassFixed.CXBUe1f3.mlctqaen.js                  [39m[1m[2m   26.85 kB[22m[1m[22m[2m Ôöé gzip:   5.11 kB[22m
+[2mbuild/[22m[36massets/ManualPaymentSuccessPage.DXJPFI_G.mlctqaen.js                [39m[1m[2m   27.27 kB[22m[1m[22m[2m Ôöé gzip:   5.19 kB[22m
+[2mbuild/[22m[36massets/index.Ce2fjX8k.mlctqaen.js                                   [39m[1m[2m   27.57 kB[22m[1m[22m[2m Ôöé gzip:   5.13 kB[22m
+[2mbuild/[22m[36massets/VerificationPage.DLaAtWwf.mlctqaen.js                        [39m[1m[2m   28.22 kB[22m[1m[22m[2m Ôöé gzip:   6.80 kB[22m
+[2mbuild/[22m[36massets/ProfileConsultations.DWJKU8ft.mlctqaen.js                    [39m[1m[2m   28.54 kB[22m[1m[22m[2m Ôöé gzip:   6.48 kB[22m
+[2mbuild/[22m[36massets/LoginPageGlassFixed.DzK7Q1y5.mlctqaen.js                     [39m[1m[2m   29.47 kB[22m[1m[22m[2m Ôöé gzip:   5.97 kB[22m
+[2mbuild/[22m[36massets/ProductDetailPage.8V4y7xsF.mlctqaen.js                       [39m[1m[2m   29.62 kB[22m[1m[22m[2m Ôöé gzip:   5.24 kB[22m
+[2mbuild/[22m[36massets/index.UMbD2rie.mlctqaen.js                                   [39m[1m[2m   29.96 kB[22m[1m[22m[2m Ôöé gzip:   4.03 kB[22m
+[2mbuild/[22m[36massets/index.BUGYYZBU.mlctqaen.js                                   [39m[1m[2m   31.85 kB[22m[1m[22m[2m Ôöé gzip:   7.24 kB[22m
+[2mbuild/[22m[36massets/DynamicCarShowcase.DXiwBuYX.mlctqaen.js                      [39m[1m[2m   32.52 kB[22m[1m[22m[2m Ôöé gzip:   8.62 kB[22m
+[2mbuild/[22m[36massets/index.ep1qo9HB.mlctqaen.js                                   [39m[1m[2m   32.93 kB[22m[1m[22m[2m Ôöé gzip:   5.96 kB[22m
+[2mbuild/[22m[36massets/index.WWr0oGK0.mlctqaen.js                                   [39m[1m[2m   33.95 kB[22m[1m[22m[2m Ôöé gzip:   5.28 kB[22m
+[2mbuild/[22m[36massets/index.DIlH8z4x.mlctqaen.js                                   [39m[1m[2m   33.96 kB[22m[1m[22m[2m Ôöé gzip:   4.39 kB[22m
+[2mbuild/[22m[36massets/CarHistoryPage.Baf68L0N.mlctqaen.js                          [39m[1m[2m   34.07 kB[22m[1m[22m[2m Ôöé gzip:   6.52 kB[22m
+[2mbuild/[22m[36massets/UserFavoritesPage.FWj3W9EE.mlctqaen.js                       [39m[1m[2m   34.86 kB[22m[1m[22m[2m Ôöé gzip:   6.50 kB[22m
+[2mbuild/[22m[36massets/SmartFeedSection.DWl6pxAT.mlctqaen.js                        [39m[1m[2m   35.57 kB[22m[1m[22m[2m Ôöé gzip:   9.11 kB[22m
+[2mbuild/[22m[36massets/ManualCheckoutPage.OGYwDZ-c.mlctqaen.js                      [39m[1m[2m   35.70 kB[22m[1m[22m[2m Ôöé gzip:   6.44 kB[22m
+[2mbuild/[22m[36massets/CheckoutPage.Cu5gC-tC.mlctqaen.js                            [39m[1m[2m   37.81 kB[22m[1m[22m[2m Ôöé gzip:   5.97 kB[22m
+[2mbuild/[22m[36massets/smart-search.service.DLckPu24.mlctqaen.js                    [39m[1m[2m   40.95 kB[22m[1m[22m[2m Ôöé gzip:  14.00 kB[22m
+[2mbuild/[22m[36massets/SuperAdminUsersPage.DuEOgHQ2.mlctqaen.js                     [39m[1m[2m   41.72 kB[22m[1m[22m[2m Ôöé gzip:   6.29 kB[22m
+[2mbuild/[22m[36massets/PostCard.DQuO7nux.mlctqaen.js                                [39m[1m[2m   41.73 kB[22m[1m[22m[2m Ôöé gzip:   8.42 kB[22m
+[2mbuild/[22m[36massets/TeamManagementPage.B3WX-Ta1.mlctqaen.js                      [39m[1m[2m   42.31 kB[22m[1m[22m[2m Ôöé gzip:   6.36 kB[22m
+[2mbuild/[22m[36massets/AuctionsPage.DcWZHFo-.mlctqaen.js                            [39m[1m[2m   43.00 kB[22m[1m[22m[2m Ôöé gzip:   9.73 kB[22m
+[2mbuild/[22m[36massets/index.BFvt4b4e.mlctqaen.js                                   [39m[1m[2m   43.55 kB[22m[1m[22m[2m Ôöé gzip:   7.52 kB[22m
+[2mbuild/[22m[36massets/LocationLandingPage.BLHJTGiq.mlctqaen.js                     [39m[1m[2m   44.38 kB[22m[1m[22m[2m Ôöé gzip:  10.23 kB[22m
+[2mbuild/[22m[36massets/MessagesPage.DiLHkIpl.mlctqaen.js                            [39m[1m[2m   45.17 kB[22m[1m[22m[2m Ôöé gzip:   8.79 kB[22m
+[2mbuild/[22m[36massets/AdminManualPaymentsDashboard.YQfY-Hxl.mlctqaen.js            [39m[1m[2m   45.24 kB[22m[1m[22m[2m Ôöé gzip:   7.36 kB[22m
+[2mbuild/[22m[36massets/index.DnusiUqo.mlctqaen.js                                   [39m[1m[2m   47.40 kB[22m[1m[22m[2m Ôöé gzip:   4.15 kB[22m
+[2mbuild/[22m[36massets/index.BMM1RUlM.mlctqaen.js                                   [39m[1m[2m   49.97 kB[22m[1m[22m[2m Ôöé gzip:  10.93 kB[22m
+[2mbuild/[22m[36massets/CarsPage.7W6FyGHr.mlctqaen.js                                [39m[1m[2m   51.84 kB[22m[1m[22m[2m Ôöé gzip:  13.21 kB[22m
+[2mbuild/[22m[36massets/CarPricingPage.Dq8WHAAE.mlctqaen.js                          [39m[1m[2m   53.90 kB[22m[1m[22m[2m Ôöé gzip:  11.23 kB[22m
+[2mbuild/[22m[36massets/UnifiedHeader.KazAUbxa.mlctqaen.js                           [39m[1m[2m   54.53 kB[22m[1m[22m[2m Ôöé gzip:   9.20 kB[22m
+[2mbuild/[22m[36massets/DealerDashboardPage.BGntSJ3n.mlctqaen.js                     [39m[1m[2m   55.80 kB[22m[1m[22m[2m Ôöé gzip:   8.72 kB[22m
+[2mbuild/[22m[36massets/ProfileCampaigns.CC3Vo8ON.mlctqaen.js                        [39m[1m[2m   63.86 kB[22m[1m[22m[2m Ôöé gzip:  11.64 kB[22m
+[2mbuild/[22m[36massets/index.C-YRyVT6.mlctqaen.js                                   [39m[1m[2m   64.87 kB[22m[1m[22m[2m Ôöé gzip:  11.51 kB[22m
+[2mbuild/[22m[36massets/MobileHeader.Drr3k6fc.mlctqaen.js                            [39m[1m[2m   67.14 kB[22m[1m[22m[2m Ôöé gzip:   8.01 kB[22m
+[2mbuild/[22m[36massets/AIAnalysisPage.C1QKSf7K.mlctqaen.js                          [39m[1m[2m   69.19 kB[22m[1m[22m[2m Ôöé gzip:  13.18 kB[22m
+[2mbuild/[22m[36massets/RealtimeMessagesPage.DHrlMc6o.mlctqaen.js                    [39m[1m[2m   75.12 kB[22m[1m[22m[2m Ôöé gzip:  14.57 kB[22m
+[2mbuild/[22m[36massets/EditCarPage.DC7fVNTV.mlctqaen.js                             [39m[1m[2m   78.27 kB[22m[1m[22m[2m Ôöé gzip:  15.65 kB[22m
+[2mbuild/[22m[36massets/ProfileMyAds.CiRHeyLh.mlctqaen.js                            [39m[1m[2m   80.31 kB[22m[1m[22m[2m Ôöé gzip:  15.10 kB[22m
+[2mbuild/[22m[36massets/SubscriptionPage.D6-Abnas.mlctqaen.js                        [39m[1m[2m   87.59 kB[22m[1m[22m[2m Ôöé gzip:  16.46 kB[22m
+[2mbuild/[22m[36massets/AIDashboardPage.CtlEjAXW.mlctqaen.js                         [39m[1m[2m   94.51 kB[22m[1m[22m[2m Ôöé gzip:  24.15 kB[22m
+[2mbuild/[22m[36massets/index.SBeuDmmA.mlctqaen.js                                   [39m[1m[2m   97.81 kB[22m[1m[22m[2m Ôöé gzip:  12.46 kB[22m
+[2mbuild/[22m[36massets/index.BrRfNQtV.mlctqaen.js                                   [39m[1m[2m  102.09 kB[22m[1m[22m[2m Ôöé gzip:  18.52 kB[22m
+[2mbuild/[22m[36massets/index.DI-8N9Nm.mlctqaen.js                                   [39m[1m[2m  168.01 kB[22m[1m[22m[2m Ôöé gzip:  24.67 kB[22m
+[2mbuild/[22m[36massets/SellModalPage.BUMb97yw.mlctqaen.js                           [39m[1m[2m  196.17 kB[22m[1m[22m[2m Ôöé gzip:  45.34 kB[22m
+[2mbuild/[22m[36massets/SettingsPage.wN6EgfAH.mlctqaen.js                            [39m[1m[2m  204.12 kB[22m[1m[22m[2m Ôöé gzip:  30.18 kB[22m
+[2mbuild/[22m[36massets/ProfileOverview.DTbuwMdO.mlctqaen.js                         [39m[1m[2m  217.23 kB[22m[1m[22m[2m Ôöé gzip:  33.25 kB[22m
+[2mbuild/[22m[36massets/NumericProfileRouter.CWe7efv7.mlctqaen.js                    [39m[1m[33m  317.00 kB[39m[22m[2m Ôöé gzip:  58.49 kB[22m
+[2mbuild/[22m[36massets/index.BO4pONWn.mlctqaen.js                                   [39m[1m[33m  357.46 kB[39m[22m[2m Ôöé gzip:  91.82 kB[22m
+[2mbuild/[22m[36massets/index.D4DPLsuF.mlctqaen.js                                   [39m[1m[33m  378.41 kB[39m[22m[2m Ôöé gzip:  74.61 kB[22m
+[2mbuild/[22m[36massets/CarDetailsPage.CwxAQg2A.mlctqaen.js                          [39m[1m[33m  397.00 kB[39m[22m[2m Ôöé gzip:  69.82 kB[22m
+[2mbuild/[22m[36massets/index.TGOQGy0j.mlctqaen.js                                   [39m[1m[33m  748.44 kB[39m[22m[2m Ôöé gzip: 100.71 kB[22m
+[2mbuild/[22m[36massets/vendor-firebase.kTDS5NXz.mlctqaen.js                         [39m[1m[33m1,051.99 kB[39m[22m[2m Ôöé gzip: 239.70 kB[22m
+[2mbuild/[22m[36massets/vendor.C98mTt6X.mlctqaen.js                                  [39m[1m[33m2,621.11 kB[39m[22m[2m Ôöé gzip: 782.24 kB[22m
+
+(!) Some chunks are larger than 244 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[32mÔ£ô built in 3m 1s[39m
+
+> koli-one@0.1.0 generate:sitemap
+> tsx src/scripts/generate-sitemap.ts
+
+­ƒö¿ Generating SEO files...
+Ô£à Generated: C:\Users\hamda\Desktop\Koli_One_Root\web\build\sitemap.xml
+­ƒôè Total URLs: 78
+Ô£à Generated: C:\Users\hamda\Desktop\Koli_One_Root\web\build\robots.txt
+Ô£¿ SEO files generated successfully!

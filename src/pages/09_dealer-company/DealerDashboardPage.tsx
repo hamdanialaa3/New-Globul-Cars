@@ -14,8 +14,11 @@ import {
   TasksWidget,
   InventoryWidget
 } from '../../components/dealer';
-import { Package, TrendingUp } from 'lucide-react';
+import { BulkUploadModal } from '../../components/dealer/BulkUploadModal';
+import { Package, TrendingUp, Upload, Crown, AlertCircle } from 'lucide-react';
 import { logger } from '../../services/logger-service';
+import { SUBSCRIPTION_PLANS } from '../../config/subscription-plans';
+import { subscriptionService } from '../../services/billing/subscription-service';
 
 const Container = styled.div`
   max-width: 1400px;
@@ -102,6 +105,115 @@ const FullWidthWidget = styled.div`
   grid-column: 1 / -1;
 `;
 
+const SubscriptionStatusWidget = styled.div`
+  background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
+`;
+
+const SubscriptionInfo = styled.div`
+  h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 0.95rem;
+  }
+`;
+
+const UpgradeButton = styled.button`
+  background: white;
+  color: #0066cc;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+`;
+
+const BulkUploadButton = styled.button`
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: #059669;
+  }
+
+  &:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+`;
+
+const UsageBar = styled.div`
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  height: 8px;
+  overflow: hidden;
+  margin-top: 12px;
+`;
+
+const UsageFill = styled.div<{ percentage: number }>`
+  width: ${props => Math.min(props.percentage, 100)}%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  transition: width 0.3s ease;
+`;
+
+const UsageText = styled.span`
+  font-size: 0.85rem;
+  opacity: 0.9;
+  margin-top: 4px;
+  display: block;
+`;
+
+const HeaderActions = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+`;
+
+const LimitWarning = styled.div<{ isWarning: boolean }>`
+  background: ${props => props.isWarning ? '#fef3c7' : '#d1e7f1'};
+  border: 1px solid ${props => props.isWarning ? '#f59e0b' : '#3b82f6'};
+  border-left: 4px solid ${props => props.isWarning ? '#f59e0b' : '#3b82f6'};
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 12px;
+  color: ${props => props.isWarning ? '#92400e' : '#1e40af'};
+`;
+
 const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -126,10 +238,13 @@ const DealerDashboardPage: React.FC = () => {
   const [dashboardData, setDashboardData] = useState<DealerDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [userPlan, setUserPlan] = useState<string>('free');
+  const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
 
   useEffect(() => {
     if (currentUser?.uid) {
       loadDashboardData();
+      loadUserPlan();
     }
   }, [currentUser]);
 
@@ -148,6 +263,46 @@ const DealerDashboardPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const loadUserPlan = async () => {
+    try {
+      const plan = await subscriptionService.getUserPlan(currentUser?.uid || '');
+      setUserPlan(plan || 'free');
+    } catch (err) {
+      logger.error('Error loading user plan', err as Error);
+      setUserPlan('free');
+    }
+  };
+
+  const handleUpgradeClick = () => {
+    window.location.href = '/dealer/subscription';
+  };
+
+  const handleBulkUploadComplete = () => {
+    setBulkUploadModalOpen(false);
+    loadDashboardData();
+  };
+
+  const getUsagePercentage = (current: number, limit: number): number => {
+    if (limit === -1) return 0;
+    return (current / limit) * 100;
+  };
+
+  const getSubscriptionStatus = () => {
+    if (userPlan === 'free') {
+      return {
+        name: 'Free Plan',
+        color: '#6b7280',
+        unlimitedListings: false
+      };
+    }
+    const plan = SUBSCRIPTION_PLANS[userPlan as any];
+    return {
+      name: plan?.name || 'Free',
+      color: userPlan === 'dealer' ? '#0066cc' : '#9333ea',
+      unlimitedListings: plan?.maxListings === -1
+    };
   };
 
   const handleDismissAlert = (alertId: string) => {
@@ -222,6 +377,54 @@ const DealerDashboardPage: React.FC = () => {
         </Subtitle>
       </Header>
 
+      <SubscriptionStatusWidget>
+        <SubscriptionInfo>
+          <h3>
+            <Crown size={24} />
+            {language === 'bg' ? 'Текущ план' : 'Current Plan'}
+          </h3>
+          <p>{getSubscriptionStatus().name}</p>
+          {!getSubscriptionStatus().unlimitedListings && dashboardData && (
+            <>
+              <UsageBar>
+                <UsageFill
+                  percentage={getUsagePercentage(
+                    dashboardData.stats.activeListings,
+                    SUBSCRIPTION_PLANS[userPlan as any]?.maxListings || 10
+                  )}
+                />
+              </UsageBar>
+              <UsageText>
+                {dashboardData.stats.activeListings} / {SUBSCRIPTION_PLANS[userPlan as any]?.maxListings || 10} listings
+              </UsageText>
+            </>
+          )}
+        </SubscriptionInfo>
+        {userPlan === 'free' && <UpgradeButton onClick={handleUpgradeClick}>
+          Upgrade Now
+        </UpgradeButton>}
+      </SubscriptionStatusWidget>
+
+      {userPlan === 'free' && (
+        <LimitWarning isWarning={true}>
+          <AlertCircle size={20} />
+          <div>
+            {language === 'bg'
+              ? 'Безплатен план съдържа само 10 активни обяви. Надстройте на Dealer или Enterprise за неограничени обяви.'
+              : 'Free plan limited to 10 listings. Upgrade to Dealer or Enterprise for unlimited listings.'}
+          </div>
+        </LimitWarning>
+      )}
+
+      {(userPlan === 'dealer' || userPlan === 'company') && (
+        <HeaderActions>
+          <BulkUploadButton onClick={() => setBulkUploadModalOpen(true)}>
+            <Upload size={18} />
+            {language === 'bg' ? 'Групово качване' : 'Bulk Upload'}
+          </BulkUploadButton>
+        </HeaderActions>
+      )}
+
       <StatsOverview>
         <StatCard>
           <StatIcon color="#FF7900">
@@ -283,6 +486,12 @@ const DealerDashboardPage: React.FC = () => {
           <InventoryWidget listings={dashboardData.recentListings || []} />
         </FullWidthWidget>
       </WidgetsGrid>
+
+      <BulkUploadModal
+        isOpen={bulkUploadModalOpen}
+        onClose={() => setBulkUploadModalOpen(false)}
+        onUploadComplete={handleBulkUploadComplete}
+      />
     </Container>
   );
 };

@@ -71,6 +71,11 @@ const Container = styled.section<{ $isDark: boolean }>`
     : 'linear-gradient(to bottom, rgba(245, 241, 235, 0.2), rgba(248, 247, 246, 0.2))'};
   padding: 3rem 0;
   overflow: hidden;
+  /* 🟣 إطار بنفسجي خفيف */
+  border: 1px solid rgba(168, 85, 247, 0.1);
+  border-radius: 12px;
+  margin: 0 12px;
+  box-shadow: inset 0 0 12px rgba(168, 85, 247, 0.05);
 
   @media (max-width: 768px) {
     padding: 2.5rem 0;
@@ -78,6 +83,7 @@ const Container = styled.section<{ $isDark: boolean }>`
 
   @media (max-width: 640px) {
     padding: 2rem 0;
+    margin: 0 8px;
   }
 `;
 

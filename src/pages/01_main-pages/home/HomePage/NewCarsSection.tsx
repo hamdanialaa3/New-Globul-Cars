@@ -380,7 +380,7 @@ const NewCarsSection: React.FC<NewCarsSectionProps> = ({ activeFilters = new Set
 
       <CarsGrid>
         {newCars.map((car) => (
-          <div key={car.id} style={{ position: 'relative', perspective: '1000px' }}>
+          <div key={car.id} style={{ position: 'relative', perspective: '1000px', marginBottom: '40px' }}>
             <PremiumHomeCarCard car={car} />
             <TimeBadge style={{ position: 'absolute', bottom: '-40px', left: '0', width: '100%', justifyContent: 'center', background: 'transparent', border: 'none' }}>
               <Clock />

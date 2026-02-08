@@ -14,7 +14,14 @@ import {
   Network,
   Sparkles,
   Target,
-  Megaphone
+  Megaphone,
+  LayoutGrid,
+  Sliders,
+  Palette,
+  Tag,
+  Globe as GlobeIcon,
+  Zap,
+  Archive
 } from 'lucide-react';
 
 interface AdminNavigationProps {
@@ -85,6 +92,14 @@ const TabButton = styled.button<{ $active: boolean }>`
 const AdminNavigation: React.FC<AdminNavigationProps> = ({ activeTab, onTabChange }) => {
   const tabs = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },
+    { id: 'sections', label: 'Sections', icon: LayoutGrid },
+    { id: 'settings', label: 'Site Settings', icon: Sliders },
+    { id: 'theme', label: 'Theme', icon: Palette },
+    { id: 'featured', label: 'Featured', icon: Tag },
+    { id: 'seo', label: 'SEO', icon: GlobeIcon },
+    { id: 'announcements', label: 'Announcements', icon: Megaphone },
+    { id: 'backup', label: 'Backup', icon: Archive },
+    { id: 'actions', label: 'Quick Actions', icon: Zap },
     { id: 'project', label: 'Project', icon: FolderOpen },
     { id: 'architecture', label: 'Architecture', icon: Network },
     { id: 'facebook', label: 'Facebook', icon: Facebook },

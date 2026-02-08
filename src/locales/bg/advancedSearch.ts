@@ -3,11 +3,11 @@ export const advancedSearch = {
   // Header
   title: 'Разширено търсене',
   subtitle: 'Намерете перфектния автомобил с над 30 филтъра',
-  
+
   // Search Results
   searchResults: 'Резултати от търсенето',
   applyFiltersAbove: 'Приложете филтри отгоре за да стартирате търсенето',
-  
+
   // Sections
   basicData: 'Основни данни',
   technicalData: 'Технически данни',
@@ -17,7 +17,7 @@ export const advancedSearch = {
   offerDetails: 'Детайли на офертата',
   location: 'Местоположение',
   typeAndCondition: 'Тип и състояние',
-  
+
   // Make & Model
   make: 'Марка',
   model: 'Модел',
@@ -33,7 +33,7 @@ export const advancedSearch = {
   sports: 'Спортен автомобил',
   van: 'Бус',
   other: 'Друго',
-  
+
   // Condition
   condition: 'Състояние',
   newCondition: 'Нов',
@@ -43,11 +43,11 @@ export const advancedSearch = {
   employeeCondition: 'Служебен автомобил',
   classicCondition: 'Класическа кола',
   demonstrationCondition: 'Демонстрационен',
-  
+
   // Yes/No
   yes: 'Да',
   no: 'Не',
-  
+
   // Basic filters
   all: 'Всички',
   allOptions: 'Всички опции',
@@ -55,12 +55,12 @@ export const advancedSearch = {
   to: 'До',
   fromPlaceholder: 'От',
   toPlaceholder: 'До',
-  
+
   // Numbers & Specs
   numberOfSeats: 'Брой места',
   numberOfDoors: 'Брой врати',
   slidingDoor: 'Плъзгаща врата',
-  
+
   // Payment & Price
   paymentType: 'Тип плащане',
   price: 'Цена',
@@ -70,7 +70,7 @@ export const advancedSearch = {
   purchaseOption: 'Покупка',
   leasingOption: 'Лизинг',
   tryQuickSearch: 'Опитайте бързо търсене',
-  
+
   // Registration & History
   firstRegistration: 'Първа регистрация',
   mileage: 'Пробег',
@@ -79,7 +79,7 @@ export const advancedSearch = {
   numberOfOwners: 'Брой собственици',
   fullServiceHistory: 'Пълна сервизна история',
   roadworthy: 'Годно за движение',
-  
+
   // Technical Data
   fuelType: 'Тип гориво',
   power: 'Мощност',
@@ -104,7 +104,7 @@ export const advancedSearch = {
   noSticker: 'Без стикер',
   emissionClass: 'Клас емисии',
   particulateFilter: 'Филтър за частици',
-  
+
   // Exterior
   exteriorColor: 'Цвят екстериор',
   trailerCoupling: 'Теглич',
@@ -120,7 +120,7 @@ export const advancedSearch = {
   selfParkingSensors: 'Самопаркиране',
   parkAssistParkingSensors: 'Асистент за паркиране',
   cruiseControl: 'Круиз контрол',
-  
+
   // Interior
   interiorColor: 'Цвят интериор',
   interiorMaterial: 'Материал интериор',
@@ -133,7 +133,7 @@ export const advancedSearch = {
   manualAirConditioning: 'Ръчен',
   automaticAirConditioning: 'Автоматичен',
   noAirConditioning: 'Без климатик',
-  extras: 'Екстри',
+
   absExtras: 'ABS',
   edcExtras: 'EDC',
   navigationExtras: 'Навигационна система',
@@ -146,7 +146,7 @@ export const advancedSearch = {
   panoramaRoofExtras: 'Панорамен покрив',
   bluetoothExtras: 'Bluetooth',
   heatedSeatsExtras: 'Затопляне на седалките',
-  
+
   // Offer Details
   seller: 'Продавач',
   dealer: 'Търговец',
@@ -179,34 +179,34 @@ export const advancedSearch = {
   includeDamaged: 'Включи повредени превозни средства',
   commercialExport: 'Търговски износ',
   approvedUsedProgramme: 'Одобрена програма за употребявани',
-  
+
   // Location
   country: 'Държава',
   city: 'Град',
   radius: 'Радиус',
   deliveryOffers: 'Оферти с доставка',
   onlyDeliveryOffers: 'Само с доставка',
-  
+
   // Description Search
   searchInDescription: 'Търсене в описанието',
   descriptionPlaceholder: 'Описание',
   enterKeywords: 'Въведете ключови думи...',
-  
+
   // Actions
   resetFilters: 'Изчисти филтрите',
   saveSearch: 'Запази търсенето',
   searchCars: 'Търси автомобили',
-  
+
   // Units
   km: 'км',
-  
+
   // Countries
   bulgaria: 'България',
   germany: 'Германия',
   austria: 'Австрия',
   switzerland: 'Швейцария',
   countryOther: 'Друго',
-  
+
   // Bulgarian Provinces (28 Области)
   blagoevgrad: 'Благоевград',
   burgas: 'Бургас',
@@ -236,7 +236,7 @@ export const advancedSearch = {
   vidin: 'Видин',
   vratsa: 'Враца',
   yambol: 'Ямбол',
-  
+
   // Fuel Types
   gasolineFuel: 'Бензин',
   dieselFuel: 'Дизел',
@@ -249,7 +249,7 @@ export const advancedSearch = {
   naturalGasFuel: 'Природен газ (CNG)',
   otherFuel: 'Друго',
   pluginHybridFuel: 'Plug-in хибрид',
-  
+
   // Exterior Colors
   black: 'Черен',
   beige: 'Бежов',
@@ -266,7 +266,7 @@ export const advancedSearch = {
   purple: 'Лилав',
   matte: 'Мат',
   metallic: 'Металик',
-  
+
   // Interior Colors
   interiorBeige: 'Бежов',
   interiorBlack: 'Черен',
@@ -275,7 +275,7 @@ export const advancedSearch = {
   interiorGray: 'Сив',
   interiorRed: 'Червен',
   interiorOther: 'Друго',
-  
+
   // Interior Materials
   alcantara: 'Алкантара',
   fabric: 'Текстил',

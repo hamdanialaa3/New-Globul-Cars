@@ -47,6 +47,15 @@ import { GodModeRevenueGrid } from '../../../../components/SuperAdmin/GodMode/Go
 import { GodModeViewsGrid } from '../../../../components/SuperAdmin/GodMode/GodModeViewsGrid';
 import { AdManagerDashboard } from '../../../../features/ads/admin/AdManagerDashboard';
 import { DebugAdsPage } from '../../../../features/ads/pages/DebugAdsPage';
+import SectionControlPanel from '../../../../components/SuperAdmin/SectionControlPanel';
+import SiteSettingsControl from '../../../../components/SuperAdmin/SiteSettingsControl';
+import ThemeControl from '../../../../components/SuperAdmin/ThemeControl';
+import FeaturedContentManager from '../../../../components/SuperAdmin/FeaturedContentManager';
+import SEOControl from '../../../../components/SuperAdmin/SEOControl';
+import AnnouncementManager from '../../../../components/SuperAdmin/AnnouncementManager';
+import BackupRestoreManager from '../../../../components/SuperAdmin/BackupRestoreManager';
+import QuickActionsPanel from '../../../../components/SuperAdmin/QuickActionsPanel';
+import PlatformStatusDashboard from '../../../../components/SuperAdmin/PlatformStatusDashboard';
 
 // ... (existing code)
 
@@ -419,6 +428,7 @@ const SuperAdminDashboard: React.FC = () => {
         <TabContent>
           {activeTab === 'overview' && (
             <>
+              <PlatformStatusDashboard />
               <AdminOverview
                 analytics={analytics}
                 userActivity={userActivity}
@@ -449,6 +459,38 @@ const SuperAdminDashboard: React.FC = () => {
           )}
           {godMode.active && godMode.type === 'views' && (
             <GodModeViewsGrid onClose={() => setGodMode({ active: false, type: null })} />
+          )}
+
+          {activeTab === 'sections' && (
+            <SectionControlPanel />
+          )}
+
+          {activeTab === 'settings' && (
+            <SiteSettingsControl />
+          )}
+
+          {activeTab === 'theme' && (
+            <ThemeControl />
+          )}
+
+          {activeTab === 'featured' && (
+            <FeaturedContentManager />
+          )}
+
+          {activeTab === 'seo' && (
+            <SEOControl />
+          )}
+
+          {activeTab === 'announcements' && (
+            <AnnouncementManager />
+          )}
+
+          {activeTab === 'backup' && (
+            <BackupRestoreManager />
+          )}
+
+          {activeTab === 'actions' && (
+            <QuickActionsPanel />
           )}
 
           {activeTab === 'realdata' && (
