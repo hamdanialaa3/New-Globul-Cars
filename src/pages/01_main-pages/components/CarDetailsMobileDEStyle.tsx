@@ -297,6 +297,16 @@ const Header = styled.div`
   border-bottom: 1px solid var(--border-primary);
   background: var(--bg-header);
   position: relative;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  
+  @media (max-width: 768px) {
+    padding: 1rem 1.25rem;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 0.75rem 0.75rem;
+  }
 
   /* Subtle bottom accent line */
   &::after {
@@ -323,6 +333,14 @@ const HeaderLeft = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-wrap: wrap;
+  align-content: center;
+  
+  @media (max-width: 480px) {
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: flex-start;
+  }
 `;
 
 const BackButton = styled.button`
@@ -332,16 +350,28 @@ const BackButton = styled.button`
   background: none;
   border: none;
   color: var(--text-secondary);
-  font-size: 15px;
+  font-size: clamp(0.813rem, 2.5vw, 15px);
   font-weight: 600;
   cursor: pointer;
-  padding: 8px 12px;
+  padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2.5vw, 12px);
   border-radius: 8px;
   transition: all 0.2s;
+  white-space: nowrap;
+
+  svg {
+    width: clamp(18px, 5vw, 22px);
+    height: clamp(18px, 5vw, 22px);
+    flex-shrink: 0;
+  }
 
   &:hover {
     background: var(--bg-hover);
     color: var(--text-primary);
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 13px;
+    padding: 6px 8px;
   }
 `;
 
@@ -349,25 +379,50 @@ const HeaderActions = styled.div`
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  
+  @media (max-width: 768px) {
+    gap: 0.5rem;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 0.375rem;
+    flex-wrap: wrap;
+  }
 `;
 
 const IconButton = styled.button<{ $primary?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: clamp(36px, 8vw, 40px);
+  height: clamp(36px, 8vw, 40px);
   border-radius: 8px;
   border: 1px solid var(--border-primary);
   background: ${props => props.$primary ? 'var(--accent-primary)' : 'transparent'};
   color: ${props => props.$primary ? '#1a1a1a' : 'var(--text-secondary)'};
   cursor: pointer;
   transition: all 0.2s;
+  flex-shrink: 0;
+
+  svg {
+    width: clamp(24px, 65%, 28px);
+    height: clamp(24px, 65%, 28px);
+  }
 
   &:hover {
     background: ${props => props.$primary ? 'var(--accent-hover)' : 'var(--bg-hover)'};
     border-color: var(--accent-primary);
     color: ${props => props.$primary ? '#1a1a1a' : 'var(--accent-primary)'};
+  }
+  
+  @media (max-width: 480px) {
+    width: 36px;
+    height: 36px;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
   }
 `;
 
@@ -378,12 +433,19 @@ const EditButton = styled.button`
   background: var(--accent-primary);
   border: none;
   color: #1a1a1a;
-  font-size: 15px;
+  font-size: clamp(0.813rem, 2.5vw, 15px);
   font-weight: 600;
   cursor: pointer;
-  padding: 10px 20px;
+  padding: clamp(8px, 2vw, 10px) clamp(16px, 3vw, 20px);
   border-radius: 8px;
   transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  svg {
+    width: clamp(18px, 5vw, 22px);
+    height: clamp(18px, 5vw, 22px);
+  }
 
   &:hover {
     background: var(--accent-hover);
@@ -394,6 +456,12 @@ const EditButton = styled.button`
   &:active {
     background: var(--accent-active);
     transform: translateY(0);
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 13px;
+    padding: 6px 12px;
+    gap: 0.375rem;
   }
 `;
 

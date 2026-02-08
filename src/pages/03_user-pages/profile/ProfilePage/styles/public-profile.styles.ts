@@ -123,6 +123,14 @@ export const ContentContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
+
+  @media (max-width: 768px) {
+    padding: 0 12px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 8px;
+  }
 `;
 
 // Header Info Section
@@ -134,11 +142,17 @@ export const HeaderInfoSection = styled.div`
 
   @media (max-width: 768px) {
     padding-top: 80px;
+    padding-bottom: 16px;
+  }
+
+  @media (max-width: 480px) {
+    padding-top: 70px;
+    padding-bottom: 12px;
   }
 `;
 
 export const ProfileName = styled.h1`
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 5vw, 2rem);
   font-weight: 700;
   margin: 16px 0 8px;
   color: #111827;
@@ -146,18 +160,31 @@ export const ProfileName = styled.h1`
   align-items: center;
   justify-content: center;
   gap: 12px;
+  flex-wrap: wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 
-  @media (max-width: 768px) {
-    font-size: 1.5rem;
+  @media (max-width: 480px) {
+    gap: 6px;
+  }
+
+  svg {
+    flex-shrink: 0;
   }
 `;
 
 export const ProfileBio = styled.p`
-  font-size: 1rem;
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
   color: #6b7280;
   max-width: 600px;
   margin: 0 auto 16px;
   line-height: 1.6;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+
+  @media (max-width: 480px) {
+    font-size: 0.875rem;
+  }
 `;
 
 // Action Buttons Row
@@ -167,6 +194,16 @@ export const ActionButtonsRow = styled.div`
   justify-content: center;
   margin-top: 20px;
   flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    gap: 8px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 6px;
+    flex-direction: row;
+    justify-content: space-around;
+  }
 `;
 
 export const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' | 'outline' }>`
@@ -178,8 +215,22 @@ export const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' |
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   border: none;
+  white-space: nowrap;
+  flex: 0 1 auto;
+
+  @media (max-width: 768px) {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    flex: 0 1 calc(50% - 3px);
+  }
 
   ${props => {
     if (props.$variant === 'primary') {
@@ -218,6 +269,12 @@ export const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' |
   svg {
     width: 18px;
     height: 18px;
+    flex-shrink: 0;
+
+    @media (max-width: 480px) {
+      width: 16px;
+      height: 16px;
+    }
   }
 `;
 
@@ -228,6 +285,16 @@ export const StatsRow = styled.div`
   justify-content: center;
   margin: 20px 0;
   flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    gap: 20px;
+    margin: 16px 0;
+  }
+
+  @media (max-width: 480px) {
+    gap: 12px;
+    margin: 12px 0;
+  }
 `;
 
 export const StatItem = styled.div`
@@ -235,16 +302,17 @@ export const StatItem = styled.div`
 
   .stat-number {
     display: block;
-    font-size: 1.5rem;
+    font-size: clamp(1.25rem, 4vw, 1.5rem);
     font-weight: 700;
     color: #111827;
   }
 
   .stat-label {
     display: block;
-    font-size: 0.875rem;
+    font-size: clamp(0.75rem, 2.5vw, 0.875rem);
     color: #6b7280;
     margin-top: 4px;
+    white-space: nowrap;
   }
 `;
 
@@ -255,6 +323,17 @@ export const TabNavigation = styled.div`
   border-bottom: 2px solid #e5e7eb;
   margin: 24px 0;
   overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+
+  @media (max-width: 768px) {
+    margin: 16px 0;
+    gap: 4px;
+  }
+
+  @media (max-width: 480px) {
+    margin: 12px 0;
+  }
 
   &::-webkit-scrollbar {
     height: 4px;
@@ -267,8 +346,8 @@ export const TabNavigation = styled.div`
 `;
 
 export const TabButton = styled.button<{ $active?: boolean; $profileType: 'company' | 'dealer' | 'personal' }>`
-  padding: 12px 24px;
-  font-size: 0.95rem;
+  padding: clamp(8px, 2vw, 12px) clamp(12px, 3vw, 24px);
+  font-size: clamp(0.8rem, 2.5vw, 0.95rem);
   font-weight: 600;
   background: none;
   border: none;
@@ -277,6 +356,7 @@ export const TabButton = styled.button<{ $active?: boolean; $profileType: 'compa
   border-bottom: 3px solid ${props => props.$active ? profileThemes[props.$profileType].primary : 'transparent'};
   transition: all 0.2s ease;
   white-space: nowrap;
+  flex-shrink: 0;
 
   &:hover {
     color: ${props => profileThemes[props.$profileType].primary};

@@ -47,6 +47,16 @@
     font-size: 1rem;
   }
 
+  /* SVG icons inside buttons - scale proportionally */
+  button svg,
+  a.button svg {
+    width: 24px;
+    height: 24px;
+    min-width: 20px;
+    min-height: 20px;
+    flex-shrink: 0;
+  }
+
   /* Form inputs */
   input[type="text"],
   input[type="email"],
@@ -97,6 +107,16 @@
     min-width: 44px;
     touch-action: manipulation;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  }
+
+  /* SVG icons inside buttons - scale to fill touch targets */
+  button svg,
+  a.button svg {
+    width: clamp(22px, 55%, 28px);
+    height: clamp(22px, 55%, 28px);
+    min-width: 22px;
+    min-height: 22px;
+    flex-shrink: 0;
   }
 
   /* Form inputs - optimized for mobile typing */
@@ -186,6 +206,16 @@
     min-height: 48px;
     padding: 14px 18px;
     font-size: 1rem;
+  }
+
+  /* SVG icons inside buttons - bigger on small screens */
+  button svg,
+  a.button svg {
+    width: clamp(24px, 60%, 30px);
+    height: clamp(24px, 60%, 30px);
+    min-width: 24px;
+    min-height: 24px;
+    flex-shrink: 0;
   }
 
   input,

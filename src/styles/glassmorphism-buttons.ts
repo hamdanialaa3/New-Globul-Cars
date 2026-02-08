@@ -24,14 +24,30 @@ export const glassmorphismBase = css`
   text-overflow: ellipsis;
   max-width: 100%;
 
+  /* SVG icons inside buttons scale properly */
+  svg {
+    flex-shrink: 0;
+    vertical-align: middle;
+  }
+
   @media (max-width: 640px) {
     font-size: 13px;
     padding: 8px 16px;
+    
+    svg {
+      width: 22px;
+      height: 22px;
+    }
   }
 
   @media (max-width: 360px) {
     font-size: 12px;
     padding: 6px 12px;
+    
+    svg {
+      width: 20px;
+      height: 20px;
+    }
   }
 `;
 
@@ -418,6 +434,14 @@ export const glassIconButton = css`
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  padding: 0;
+
+  /* SVG icons scale to fill the button */
+  svg {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
   
   &:hover {
     background: rgba(255, 255, 255, 0.25);
