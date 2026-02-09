@@ -55,3 +55,5 @@ cline_mcp_config.json
 *.zip
 *.tar.gz
 *.7z
+
+server.log
