@@ -6,6 +6,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { logger } from '@/services/logger-service';
 
 interface AlertData {
   title: string;
@@ -209,16 +210,16 @@ export const GuestAccountAlert: React.FC<GuestAccountAlertProps> = ({ dismissibl
   useEffect(() => {
     const checkGuestStatus = async () => {
       if (!currentUser) {
-        console.log('[GuestAlert] No current user');
+        logger.debug('[GuestAlert] No current user');
         setIsGuest(false);
         return;
       }
 
-      console.log('[GuestAlert] Checking guest status for user:', currentUser.uid);
+      logger.debug('[GuestAlert] Checking guest status for user:', currentUser.uid);
 
       // Check if user is anonymous (Firebase guest)
       if (currentUser.isAnonymous) {
-        console.log('[GuestAlert] User is anonymous (Firebase guest)');
+        logger.debug('[GuestAlert] User is anonymous (Firebase guest)');
         setIsGuest(true);
         setUserId(currentUser.uid);
         return;
@@ -230,7 +231,7 @@ export const GuestAccountAlert: React.FC<GuestAccountAlertProps> = ({ dismissibl
         if (userDoc.exists()) {
           const userData = userDoc.data();
           const guestStatus = userData.isGuest === true || userData.accountType === 'guest';
-          console.log('[GuestAlert] User data from Firestore:', {
+          logger.debug('[GuestAlert] User data from Firestore:', {
             isGuest: userData.isGuest,
             accountType: userData.accountType,
             guestStatus
@@ -239,10 +240,10 @@ export const GuestAccountAlert: React.FC<GuestAccountAlertProps> = ({ dismissibl
           setUserId(currentUser.uid);
           setUserNumericId(userData.numericId || null);
         } else {
-          console.log('[GuestAlert] User document does not exist in Firestore');
+          logger.debug('[GuestAlert] User document does not exist in Firestore');
         }
       } catch (error) {
-        console.error('[GuestAlert] Error checking guest status:', error);
+        logger.error('[GuestAlert] Error checking guest status:', error);
       }
     };
 
@@ -274,11 +275,11 @@ export const GuestAccountAlert: React.FC<GuestAccountAlertProps> = ({ dismissibl
 
   if (!isGuest || isDismissed || !userId) {
     // 🔧 DEVELOPMENT MODE: Uncomment to always show alert for testing
-    // console.log('[GuestAlert] Not showing alert:', { isGuest, isDismissed, userId });
+    // logger.debug('[GuestAlert] Not showing alert:', { isGuest, isDismissed, userId });
     return null;
   }
 
-  console.log('[GuestAlert] Showing guest alert!');
+  logger.debug('[GuestAlert] Showing guest alert!');
 
   const lang = (language as 'en' | 'bg' | 'ar') || 'en';
   const strings = translations[lang] || translations.en;

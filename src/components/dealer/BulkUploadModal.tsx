@@ -13,6 +13,7 @@ import { X, Upload, FileText, AlertCircle, CheckCircle, Download } from 'lucide-
 import { csvParserService, type ParseResult } from '../../services/dealer/csv-parser.service';
 import { bulkUploadService } from '../../services/dealer/bulk-upload.service';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { logger } from '@/services/logger-service';
 
 interface BulkUploadModalProps {
   isOpen: boolean;
@@ -58,7 +59,7 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
 
       setParseResult(result);
     } catch (error) {
-      console.error('File parsing error:', error);
+      logger.error('File parsing error:', error);
       alert('Failed to parse file. Please check the format and try again.');
     }
   };
@@ -81,7 +82,7 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
         handleClose();
       }, 2000);
     } catch (error) {
-      console.error('Upload error:', error);
+      logger.error('Upload error:', error);
       alert('Upload failed. Please try again.');
     } finally {
       setUploading(false);

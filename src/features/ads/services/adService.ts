@@ -12,6 +12,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-config';
 import { AdCampaign, AdContext, DeviceType } from '../types';
+import { logger } from '@/services/logger-service';
 
 const CAMPAIGNS_COLLECTION = 'ad_campaigns';
 const ANALYTICS_COLLECTION = 'ad_analytics';
@@ -74,7 +75,7 @@ export const adService = {
             return this.selectWeightedAd(candidates);
 
         } catch (error) {
-            console.error('[AdService] Error fetching ads:', error);
+            logger.error('[AdService] Error fetching ads:', error);
             return null;
         }
     },
@@ -103,9 +104,9 @@ export const adService = {
             const campaignRef = doc(db, CAMPAIGNS_COLLECTION, campaignId);
             updateDoc(campaignRef, {
                 'stats.impressions': increment(1)
-            }).catch(e => console.warn('[AdService] Impression track failed', e));
+            }).catch(e => logger.warn('[AdService] Impression track failed', e));
         } catch (e) {
-            console.warn('[AdService] Impression track failed', e);
+            logger.warn('[AdService] Impression track failed', e);
         }
     },
 
@@ -115,9 +116,9 @@ export const adService = {
             const campaignRef = doc(db, CAMPAIGNS_COLLECTION, campaignId);
             updateDoc(campaignRef, {
                 'stats.clicks': increment(1)
-            }).catch(e => console.warn('[AdService] Click track failed', e));
+            }).catch(e => logger.warn('[AdService] Click track failed', e));
         } catch (e) {
-            console.warn('[AdService] Click track failed', e);
+            logger.warn('[AdService] Click track failed', e);
         }
     },
 
@@ -150,7 +151,7 @@ export const adService = {
             const snap = await getDocs(q);
             return snap.docs.map(doc => ({ ...doc.data(), id: doc.id } as AdCampaign));
         } catch (e) {
-            console.error('[AdService] Get campaigns failed', e);
+            logger.error('[AdService] Get campaigns failed', e);
             return [];
         }
     }

@@ -36,6 +36,7 @@ import {
 } from '../../../../services/recommendation';
 import { behaviorService } from '../../../../services/recommendation/behavior.service';
 import PremiumHomeCarCard from '../../../../components/CarCard/PremiumHomeCarCard';
+import { logger } from '@/services/logger-service';
 
 // ============================================================================
 // TRANSLATIONS
@@ -357,7 +358,7 @@ const SmartHeroRecommendations: React.FC = () => {
       
       setRecommendations(response);
     } catch (err) {
-      console.error('[SmartHero] Failed to load recommendations:', err);
+      logger.error('[SmartHero] Failed to load recommendations:', err);
       setError('Failed to load recommendations');
     } finally {
       setLoading(false);

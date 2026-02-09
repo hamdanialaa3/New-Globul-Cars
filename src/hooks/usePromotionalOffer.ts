@@ -21,6 +21,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { doc, onSnapshot, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-config';
+import { logger } from '@/services/logger-service';
 
 // ─── Firestore Path ───
 const PROMO_DOC_PATH = {
@@ -89,7 +90,7 @@ export function usePromotionalOffer() {
         // Debug: log state changes for troubleshooting
         if (typeof window !== 'undefined' && (window as any).__PROMO_DEBUG !== false) {
           // eslint-disable-next-line no-console
-          console.log('[usePromotionalOffer] State:', newConfig.isActive ? 'ACTIVE ✅' : 'OFF ❌', newConfig);
+          logger.debug('[usePromotionalOffer] State:', newConfig.isActive ? 'ACTIVE ✅' : 'OFF ❌', newConfig);
         }
       },
       (error) => {

@@ -15,6 +15,7 @@ import ModernCarCard from '../../home/HomePage/ModernCarCard';
 import LoadingSpinner from '../../../../components/LoadingSpinner';
 import { Sparkles, RefreshCw } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
+import { logger } from '@/services/logger-service';
 
 interface ResultsProps {
     data: AdvisorData;
@@ -121,7 +122,7 @@ const AdvisorResults: React.FC<ResultsProps> = ({ data, onReset }) => {
                 }, 2000); // Fake delay for "AI Thinking"
 
             } catch (err) {
-                console.error("AI Advisor Error", err);
+                logger.error("AI Advisor Error", err);
                 setLoading(false);
             }
         };

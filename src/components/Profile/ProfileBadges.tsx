@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useProfileTheme } from './ProfileShell';
 import type { BadgeType, ProfileBadgesProps } from '@/types/profile.types';
+import { logger } from '@/services/logger-service';
 
 /**
  * Badge icon mapping
@@ -263,7 +264,7 @@ const ProfileBadges: React.FC<ProfileBadgesProps> = ({
           title={`${hiddenCount} more badges`}
           onClick={() => {
             // Emit event to expand or navigate to full badge list
-            console.info(`[ProfileBadges] Clicked count badge: ${hiddenCount} more`);
+            logger.info(`[ProfileBadges] Clicked count badge: ${hiddenCount} more`);
           }}
         >
           +{hiddenCount}

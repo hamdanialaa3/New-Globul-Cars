@@ -15,6 +15,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { logger } from '@/services/logger-service';
 
 interface AlertData {
   title: string;
@@ -296,7 +297,7 @@ export const IncompleteProfileAlert: React.FC = () => {
           }
         }
       } catch (error) {
-        console.error('[IncompleteProfileAlert] Error checking profile:', error);
+        logger.error('[IncompleteProfileAlert] Error checking profile:', error);
       }
     };
 

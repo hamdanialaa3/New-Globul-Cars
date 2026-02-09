@@ -13,6 +13,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { marketplaceProductService } from '@/services/marketplace/marketplace-product.service';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import type { Product, ProductCategory } from '@/types/marketplace.types';
+import { logger } from '@/services/logger-service';
 
 // Styled Components
 const PageContainer = styled.div<{ $isDark: boolean }>`
@@ -270,7 +271,7 @@ const MarketplacePage: React.FC = () => {
       const products = await marketplaceProductService.getFeaturedProducts(12);
       setFeaturedProducts(products);
     } catch (error) {
-      console.error('Error loading featured products:', error);
+      logger.error('Error loading featured products:', error);
     } finally {
       setLoading(false);
     }

@@ -7,6 +7,7 @@ import { MarketplaceProductService } from '../../../services/marketplace/marketp
 import { Product, MarketplaceFilters } from '../../../types/marketplace.types';
 import LoadingSpinner from '../../../components/LoadingSpinner';
 import { Search, Filter, Grid, List, Star } from 'lucide-react';
+import { logger } from '@/services/logger-service';
 
 const SearchResultsPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -105,7 +106,7 @@ const SearchResultsPage: React.FC = () => {
       const results = await productService.searchProducts(filters);
       setProducts(results);
     } catch (error) {
-      console.error('Error loading products:', error);
+      logger.error('Error loading products:', error);
       setProducts([]);
     } finally {
       setLoading(false);

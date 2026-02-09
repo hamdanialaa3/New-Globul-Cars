@@ -1,6 +1,7 @@
 // src/config/azure-config.ts
 // Azure (Microsoft Entra) Authentication Configuration
 // Project: Koli One - Bulgaria
+import { logger } from '@/services/logger-service';
 
 /**
  * Azure (Microsoft Entra ID) Configuration
@@ -57,16 +58,16 @@ export const AZURE_CONFIG = {
         if (process.env.NODE_ENV === 'development') {
           switch (level) {
             case 0: // Error
-              console.error('[Azure MSAL]', message);
+              logger.error('[Azure MSAL]', undefined, { message });
               break;
             case 1: // Warning
-              console.warn('[Azure MSAL]', message);
+              logger.warn('[Azure MSAL]', { message });
               break;
             case 2: // Info
-              console.info('[Azure MSAL]', message);
+              logger.info('[Azure MSAL]', { message });
               break;
             case 3: // Verbose
-              console.debug('[Azure MSAL]', message);
+              logger.debug('[Azure MSAL]', { message });
               break;
           }
         }

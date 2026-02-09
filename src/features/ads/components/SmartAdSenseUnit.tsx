@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import { logger } from '@/services/logger-service';
 
 // Add type definition for window.adsbygoogle
 declare global {
@@ -84,7 +85,7 @@ export const SmartAdSenseUnit: React.FC<SmartAdSenseUnitProps> = ({
             pushAd();
 
         } catch (e) {
-            console.error('AdSense push error:', e);
+            logger.error('AdSense push error:', e);
             setError(true);
         }
     }, [slot]); // Re-run if slot changes

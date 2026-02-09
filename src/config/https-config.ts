@@ -75,15 +75,15 @@ export const initializeHttpsEnforcement = () => {
     enforceHttpsInProduction();
     
     // Log HTTPS status
-    console.info('[HTTPS] Production mode: HTTPS enforcement enabled');
+    logger.info('[HTTPS] Production mode: HTTPS enforcement enabled');
   } else {
-    console.info('[HTTPS] Development mode: HTTPS enforcement disabled');
+    logger.info('[HTTPS] Development mode: HTTPS enforcement disabled');
   }
 
   // Monitor for mixed content warnings
   if (window.addEventListener) {
     window.addEventListener('securitypolicyviolation', (event: SecurityPolicyViolationEvent) => {
-      console.warn('[Mixed Content] Security policy violation:', {
+      logger.warn('[Mixed Content] Security policy violation:', {
         blockedURI: event.blockedURI,
         violatedDirective: event.violatedDirective,
         sourceFile: event.sourceFile,

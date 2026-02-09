@@ -15,6 +15,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { searchCars } from '@/services/car/unified-car-queries';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { UnifiedCar } from '@/services/car/unified-car-types';
+import { logger } from '@/services/logger-service';
 
 // Styled Components
 const PageContainer = styled.div<{ $isDark: boolean }>`
@@ -197,7 +198,7 @@ const AIValuationPage: React.FC = () => {
             }, 1500);
 
         } catch (error) {
-            console.error(error);
+            logger.error(error);
             setLoading(false);
         }
     };

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { adService } from '../services/adService';
 import { AdCampaign, AdContext, DeviceType } from '../types';
+import { logger } from '@/services/logger-service';
 
 export const useAdInventory = (placementId: string, context: AdContext = {}) => {
     const [ad, setAd] = useState<AdCampaign | null>(null);
@@ -24,7 +25,7 @@ export const useAdInventory = (placementId: string, context: AdContext = {}) => 
                 const campaign = await adService.getAdForPlacement(placementId, fullContext);
                 if (isMounted) setAd(campaign);
             } catch (err) {
-                console.error('[useAdInventory] Fetch failed', err);
+                logger.error('[useAdInventory] Fetch failed', err);
             } finally {
                 if (isMounted) setLoading(false);
             }
