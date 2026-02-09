@@ -1,0 +1,57 @@
+# ============================
+# Koli One Root .gitignore
+# ============================
+
+# --- OS & Editor ---
+desktop.ini
+Thumbs.db
+.DS_Store
+*.swp
+*.swo
+*~
+.idea/workspace.xml
+.idea/shelf/
+.cursor/
+
+# --- Secrets & Credentials ---
+*.env
+*.env.*
+!*.env.example
+!*.env.template
+firebase-service-account.json
+google-services.json
+GoogleService-Info.plist
+*.key
+*.pem
+*.p12
+*.pfx
+serviceAccountKey.json
+
+# --- Build artifacts ---
+node_modules/
+dist/
+build/
+.cache/
+*.bundle
+
+# --- Backup/Temp files ---
+*.bak
+*.backup
+*.tmp
+*.orig
+*.old
+*.ts.backup
+
+# --- Reports & generated ---
+type-errors-all.txt
+ts-prune-report.txt
+gitleaks-report.json
+cline_mcp_config.json
+
+# --- Stray lockfiles (only valid in app dirs) ---
+# package-lock.json at root is not valid
+
+# --- Archives ---
+*.zip
+*.tar.gz
+*.7z

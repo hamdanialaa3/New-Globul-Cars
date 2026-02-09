@@ -1,0 +1,6 @@
+# Dev Social Media - Secrets
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
