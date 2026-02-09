@@ -1,0 +1,31 @@
+# Pre-commit Configuration with detect-secrets
+# Prevents committing API keys, tokens, and other secrets
+
+repos:
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        exclude: package.json|package-lock.json|.env.example
+        
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-json
+        exclude: node_modules/
+      - id: check-yaml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ['--maxkb=500']
+
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.44.0
+    hooks:
+      - id: eslint
+        args: ['--fix']
+        types: [javascript, jsx, typescript, tsx]
+        additional_dependencies: ['eslint']
+        exclude: node_modules/|\.next/
