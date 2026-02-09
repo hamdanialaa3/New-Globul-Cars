@@ -13,6 +13,8 @@ import { useTheme } from '../../../../contexts/ThemeContext';
 import { SUBSCRIPTION_PLANS } from '../../../../config/subscription-plans';
 // ✅ استيراد ملف الإعدادات المركزي
 import subscriptionTheme from '../../../../components/subscription/subscription-theme';
+// ✅ FREE OFFER: Import promotional offer hook
+import { usePromotionalOffer } from '../../../../hooks/usePromotionalOffer';
 
 // SVG icon from svgrepo (rocket)
 const RocketIcon: React.FC<{ size?: number }> = ({ size = 28 }) => (
@@ -395,6 +397,71 @@ const PlanName = styled.h3`
   margin-bottom: 0.5rem;
 `;
 
+// ─── FREE OFFER: Red strikethrough + badge ───
+
+const FreeOfferBanner = styled.div`
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: #fff;
+  padding: 0.5rem 1.25rem;
+  border-radius: 24px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+  animation: ${pulse} 2s ease-in-out infinite;
+  box-shadow: 0 4px 20px rgba(220, 38, 38, 0.4);
+`;
+
+const PriceStrikeWrapper = styled.div`
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+`;
+
+const StrikethroughPrice = styled.div`
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.15rem;
+  opacity: 0.6;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -6px;
+    right: -6px;
+    height: 4px;
+    background: #dc2626;
+    transform: rotate(-8deg);
+    border-radius: 2px;
+    box-shadow: 0 0 8px rgba(220, 38, 38, 0.6);
+  }
+`;
+
+const FreeBadge = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  color: #fff;
+  padding: 0.4rem 1.25rem;
+  border-radius: 20px;
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 16px rgba(22, 163, 74, 0.4);
+  animation: ${float} 3s ease-in-out infinite;
+
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+    padding: 0.35rem 1rem;
+  }
+`;
+
 const Price = styled.div<{ $free?: boolean }>`
   text-align: center;
   margin: 1.5rem 0;
@@ -592,6 +659,7 @@ const SubscriptionBanner: React.FC = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const navigate = useNavigate();
+  const { isFreeOffer, config: promoConfig } = usePromotionalOffer();
 
   const isBg = language === 'bg';
 
@@ -654,8 +722,12 @@ const SubscriptionBanner: React.FC = () => {
       return;
     }
 
-    // Always navigate to subscription page for all plans with plan ID
-    navigate(`/subscription?plan=${planId}`);
+    // If free offer is active, navigate directly to free activation
+    if (isFreeOffer) {
+      navigate(`/subscription?plan=${planId}&promo=free`);
+    } else {
+      navigate(`/subscription?plan=${planId}`);
+    }
   };
 
   return (
@@ -672,6 +744,16 @@ const SubscriptionBanner: React.FC = () => {
               : 'Sell more cars with our professional tools and analytics'
             }
           </Subtitle>
+
+          {/* ✅ FREE OFFER BANNER — motivational message */}
+          {isFreeOffer && (
+            <FreeOfferBanner>
+              {promoConfig.motivationalText
+                ? (isBg ? promoConfig.motivationalText.bg : promoConfig.motivationalText.en)
+                : (isBg ? '🎉 Специална оферта — Безплатно!' : '🎉 Special Offer — Free!')
+              }
+            </FreeOfferBanner>
+          )}
         </Content>
 
         <PlansGrid>
@@ -713,6 +795,18 @@ const SubscriptionBanner: React.FC = () => {
                 <Price $free={isFree}>
                   {isFree ? (
                     <div className="amount">{plan.price}</div>
+                  ) : isFreeOffer ? (
+                    /* ✅ FREE OFFER ACTIVE: Red strikethrough on price + FREE badge */
+                    <PriceStrikeWrapper>
+                      <StrikethroughPrice>
+                        <span className="currency" style={{ fontSize: '0.9rem', opacity: 0.7 }}>€</span>
+                        <span style={{ fontSize: '1.5rem', fontWeight: 700 }}>{priceNum.toFixed(2)}</span>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{plan.period}</span>
+                      </StrikethroughPrice>
+                      <FreeBadge>
+                        {isBg ? 'БЕЗПЛАТНО' : 'FREE'}
+                      </FreeBadge>
+                    </PriceStrikeWrapper>
                   ) : (
                     <>
                       <div className="amount">
@@ -750,7 +844,10 @@ const SubscriptionBanner: React.FC = () => {
                 </FeaturesList>
 
                 <CTAButton $variant={plan.variant} $isDark={isDark}>
-                  {plan.cta}
+                  {isFreeOffer && !isFree
+                    ? (isBg ? 'Активирайте безплатно' : 'Activate Free')
+                    : plan.cta
+                  }
                   <ChevronRight />
                 </CTAButton>
               </PlanCard>

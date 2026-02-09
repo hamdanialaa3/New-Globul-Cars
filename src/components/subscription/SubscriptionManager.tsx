@@ -10,6 +10,10 @@ import subscriptionTheme, { getPrimaryGradient, getPrimaryGradientWithMiddle, ge
 import { logger } from '../../services/logger-service';
 // ✅ CRITICAL: Import subscription plans for accurate pricing
 import { SUBSCRIPTION_PLANS } from '../../config/subscription-plans';
+import { usePromotionalOffer } from '../../hooks/usePromotionalOffer';
+import { activateFreePlan } from '../../services/billing/free-plan-activation.service';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 
 // ==================== ANIMATIONS ====================
@@ -904,6 +908,8 @@ const SubscriptionManagerEnhanced: React.FC = () => {
   const [currentPlan, setCurrentPlan] = useState<string | null>(null);
   const { language, t } = useLanguage();
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
+  const { isFreeOffer } = usePromotionalOffer();
 
   const isBg = language === 'bg';
   const plans = useMemo(() => billingService.getAvailablePlans(), []);
@@ -1067,24 +1073,50 @@ const SubscriptionManagerEnhanced: React.FC = () => {
       return;
     }
 
-    setLoading(true);
-    try {
-      const { url } = await billingService.createCheckoutSession(
-        currentUser.uid,
-        plan.id as any,
-        interval
-      );
+    const planTier = plan.id as 'dealer' | 'company';
 
-      // Redirect to Stripe Checkout
-      window.location.href = url;
-    } catch (error: unknown) {
-      logger.error('Subscription error:', error as Error);
-      alert(isBg
-        ? 'Грешка при създаване на сесия. Опитайте отново.'
-        : 'Error creating checkout session. Please try again.'
-      );
-      setLoading(false);
+    // ──── FREE OFFER PATH: activate directly without payment ────
+    if (isFreeOffer) {
+      setLoading(true);
+      try {
+        toast.info(isBg ? 'Активиране на безплатен план...' : 'Activating free plan...');
+        const result = await activateFreePlan({
+          userId: currentUser.uid,
+          userEmail: currentUser.email || '',
+          userName: currentUser.displayName || 'Unknown',
+          planTier,
+        });
+
+        if (result.success) {
+          toast.success(isBg
+            ? `🎉 Вашият ${planTier === 'dealer' ? 'Дилър' : 'Фирма'} план е активиран безплатно!`
+            : `🎉 Your ${planTier === 'dealer' ? 'Dealer' : 'Company'} plan has been activated for free!`
+          );
+          navigate('/profile');
+        } else if (result.error === 'FREE_OFFER_EXPIRED') {
+          toast.warning(isBg
+            ? 'Безплатната оферта вече не е активна. Моля, завършете плащане.'
+            : 'The free offer is no longer active. Please complete payment.'
+          );
+          navigate(`/billing/manual-checkout?plan=${planTier}&interval=${interval}&type=subscription`);
+        } else {
+          toast.error(isBg ? 'Грешка при активиране.' : 'Activation failed.');
+        }
+      } catch (error) {
+        logger.error('Free activation error:', error as Error);
+        toast.error(isBg ? 'Грешка при активиране' : 'Activation error');
+      } finally {
+        setLoading(false);
+      }
+      return;
     }
+
+    // ──── NORMAL PAYMENT PATH: redirect to manual bank transfer checkout ────
+    toast.info(isBg
+      ? 'Преминаваме към страница за банков превод...'
+      : 'Redirecting to bank transfer page...'
+    );
+    navigate(`/billing/manual-checkout?plan=${planTier}&interval=${interval}&type=subscription`);
   };
 
 

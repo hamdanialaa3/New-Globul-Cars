@@ -2,12 +2,14 @@
 // World-Class Subscription Page for Koli One
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { useLanguage } from '../../contexts/LanguageContext';
 import SubscriptionManager from '../../components/subscription/SubscriptionManager';
 import { useAuth } from '../../contexts/AuthProvider';
 import { subscriptionService } from '../../services/billing/subscription-service';
+import { activateFreePlan } from '../../services/billing/free-plan-activation.service';
+import { usePromotionalOffer } from '../../hooks/usePromotionalOffer';
 import { logger } from '../../services/logger-service';
 import { toast } from 'react-toastify';
 // ✅ استيراد ملف الإعدادات المركزي
@@ -886,11 +888,17 @@ const CTAButton = styled.button`
 
 const SubscriptionPage: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { language } = useLanguage();
   const { currentUser } = useAuth();
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null); // Track which plan is loading
   const isBg = language === 'bg';
+
+  // ✅ Promotional free offer
+  const { isFreeOffer, isLoaded: promoLoaded } = usePromotionalOffer();
+  const isPromoFromUrl = searchParams.get('promo') === 'free';
+  const effectiveFreeOffer = isFreeOffer || isPromoFromUrl;
 
   const handleSubscribe = async (planId: 'dealer' | 'company', interval: 'monthly' | 'annual' = 'monthly') => {
     if (!currentUser) {
@@ -900,8 +908,44 @@ const SubscriptionPage: React.FC = () => {
 
     try {
       setLoadingPlan(planId);
-      
-      // ✅ UPDATED: Redirect to manual bank transfer checkout
+
+      // ──── FREE OFFER PATH: activate directly without payment ────
+      if (effectiveFreeOffer) {
+        toast.info(isBg
+          ? 'Активиране на безплатен план...'
+          : 'Activating free plan...'
+        );
+
+        const result = await activateFreePlan({
+          userId: currentUser.uid,
+          userEmail: currentUser.email || '',
+          userName: currentUser.displayName || 'Unknown',
+          planTier: planId,
+        });
+
+        if (result.success) {
+          toast.success(isBg
+            ? `🎉 Вашият ${planId === 'dealer' ? 'Дилър' : 'Фирма'} план е активиран безплатно!`
+            : `🎉 Your ${planId === 'dealer' ? 'Dealer' : 'Company'} plan has been activated for free!`
+          );
+          navigate('/profile');
+        } else if (result.error === 'FREE_OFFER_EXPIRED') {
+          toast.warning(isBg
+            ? 'Безплатната оферта вече не е активна. Моля, завършете плащане.'
+            : 'The free offer is no longer active. Please complete payment.'
+          );
+          // Fall through to normal payment
+          navigate(`/billing/manual-checkout?plan=${planId}&interval=${interval}&type=subscription`);
+        } else {
+          toast.error(isBg
+            ? 'Грешка при активиране. Моля, опитайте отново.'
+            : 'Activation failed. Please try again.'
+          );
+        }
+        return;
+      }
+
+      // ──── NORMAL PAYMENT PATH: redirect to bank transfer checkout ────
       toast.info(isBg 
         ? 'Преминаваме към страница за банков превод...' 
         : 'Redirecting to bank transfer page...'

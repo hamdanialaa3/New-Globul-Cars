@@ -8,12 +8,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { ArrowLeft, CheckCircle, AlertCircle, Loader } from 'lucide-react';
+import { ArrowLeft, CheckCircle, AlertCircle, Loader, Gift } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
 import BankTransferDetails from '../../components/payment/BankTransferDetails';
 import { manualPaymentService } from '../../services/payment/manual-payment-service';
+import { activateFreePlan } from '../../services/billing/free-plan-activation.service';
+import { usePromotionalOffer } from '../../hooks/usePromotionalOffer';
 import { SUBSCRIPTION_PLANS } from '../../config/subscription-plans';
 import type { BankAccountType, PaymentType } from '../../types/payment.types';
 import { logger } from '../../services/logger-service';
@@ -34,9 +36,60 @@ const ManualCheckoutPage: React.FC = () => {
   const planTier = (searchParams.get('plan') as 'dealer' | 'company') || 'dealer';
   const interval = (searchParams.get('interval') as 'monthly' | 'annual') || 'monthly';
   const paymentType = (searchParams.get('type') as PaymentType) || 'subscription';
+  const isPromoFromUrl = searchParams.get('promo') === 'free';
 
   const plan = SUBSCRIPTION_PLANS[planTier];
   const amount = interval === 'monthly' ? plan.price.monthly : plan.price.annual;
+
+  // ✅ Promotional free offer
+  const { isFreeOffer, isLoaded: promoLoaded } = usePromotionalOffer();
+  const effectiveFreeOffer = isFreeOffer || isPromoFromUrl;
+  const [freeActivating, setFreeActivating] = useState(false);
+
+  // ──── FREE OFFER: auto-activate plan without payment ────
+  const handleFreeActivation = async () => {
+    if (!user || freeActivating) return;
+
+    setFreeActivating(true);
+    try {
+      const result = await activateFreePlan({
+        userId: user.uid,
+        userEmail: user.email || '',
+        userName: user.displayName || 'Unknown',
+        planTier,
+      });
+
+      if (result.success) {
+        toast.success(language === 'bg'
+          ? `🎉 Планът ${plan.name[language]} е активиран безплатно!`
+          : `🎉 ${plan.name[language]} plan activated for free!`
+        );
+        navigate('/profile');
+      } else if (result.error === 'FREE_OFFER_EXPIRED') {
+        toast.warning(language === 'bg'
+          ? 'Безплатната оферта вече не е активна. Моля, довършете плащане.'
+          : 'The free offer has expired. Please complete payment.'
+        );
+        // Remove promo param so user sees the normal payment form
+        searchParams.delete('promo');
+        navigate(`/billing/manual-checkout?${searchParams.toString()}`, { replace: true });
+        // Page will re-render without free offer UI
+      } else {
+        toast.error(language === 'bg'
+          ? 'Грешка при активиране. Моля, опитайте отново.'
+          : 'Activation error. Please try again.'
+        );
+      }
+    } catch (error) {
+      logger.error('Free activation failed from ManualCheckoutPage', error as Error);
+      toast.error(language === 'bg'
+        ? 'Неочаквана грешка при активиране'
+        : 'Unexpected activation error'
+      );
+    } finally {
+      setFreeActivating(false);
+    }
+  };
 
   useEffect(() => {
     if (!user) {
@@ -110,6 +163,69 @@ const ManualCheckoutPage: React.FC = () => {
 
   if (!user) {
     return null;
+  }
+
+  // ──── FREE OFFER UI ────
+  if (effectiveFreeOffer && promoLoaded) {
+    return (
+      <PageContainer>
+        <ContentWrapper>
+          <Header>
+            <BackButton onClick={() => navigate(-1)}>
+              <ArrowLeft size={20} />
+              {language === 'bg' ? 'Назад' : 'Back'}
+            </BackButton>
+            <Title>{language === 'bg' ? '🎉 Безплатна активация' : '🎉 Free Activation'}</Title>
+          </Header>
+
+          <OrderSummary>
+            <SummaryTitle>{language === 'bg' ? 'Безплатна оферта' : 'Free Offer'}</SummaryTitle>
+            <SummaryRow>
+              <SummaryLabel>{language === 'bg' ? 'План:' : 'Plan:'}</SummaryLabel>
+              <SummaryValue>{plan.name[language]}</SummaryValue>
+            </SummaryRow>
+            <SummaryRow>
+              <SummaryLabel>{language === 'bg' ? 'Цена:' : 'Price:'}</SummaryLabel>
+              <SummaryValue style={{ textDecoration: 'line-through', color: '#999' }}>
+                €{amount.toFixed(2)}
+              </SummaryValue>
+            </SummaryRow>
+            <Divider />
+            <TotalRow>
+              <TotalLabel>{language === 'bg' ? 'Ваша цена:' : 'Your Price:'}</TotalLabel>
+              <TotalValue style={{ color: '#27ae60' }}>
+                {language === 'bg' ? 'БЕЗПЛАТНО' : 'FREE'} €0.00
+              </TotalValue>
+            </TotalRow>
+          </OrderSummary>
+
+          <FreeActivationBox>
+            <Gift size={40} color="#27ae60" />
+            <FreeActivationText>
+              {language === 'bg'
+                ? 'Специална промоционална оферта! Кликнете бутона по-долу, за да активирате планът си безплатно.'
+                : 'Special promotional offer! Click the button below to activate your plan for free.'}
+            </FreeActivationText>
+            <FreeActivateButton
+              onClick={handleFreeActivation}
+              disabled={freeActivating}
+            >
+              {freeActivating ? (
+                <>
+                  <Loader size={20} className="spinner" />
+                  {language === 'bg' ? 'Активиране...' : 'Activating...'}
+                </>
+              ) : (
+                <>
+                  <CheckCircle size={20} />
+                  {language === 'bg' ? 'Активирайте безплатно' : 'Activate for Free'}
+                </>
+              )}
+            </FreeActivateButton>
+          </FreeActivationBox>
+        </ContentWrapper>
+      </PageContainer>
+    );
   }
 
   return (
@@ -475,5 +591,63 @@ const SubmitButton = styled.button`
   @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+  }
+`;
+
+// ── Free Offer Styled Components ──
+
+const FreeActivationBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  background: rgba(39, 174, 96, 0.1);
+  border: 2px solid rgba(39, 174, 96, 0.4);
+  border-radius: 20px;
+  padding: 40px 32px;
+  margin-top: 24px;
+  text-align: center;
+`;
+
+const FreeActivationText = styled.p`
+  margin: 0;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  max-width: 500px;
+`;
+
+const FreeActivateButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 48px;
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(39, 174, 96, 0.4);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(39, 174, 96, 0.6);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .spinner {
+    animation: spin 1s linear infinite;
   }
 `;

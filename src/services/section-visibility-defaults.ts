@@ -33,6 +33,14 @@ export const DEFAULT_HOMEPAGE_SECTIONS: HomepageSection[] = [
     category: 'main',
   },
   {
+    key: 'our_cars',
+    label: 'Our Cars Showcase',
+    description: 'All real user-added listings grid — OurCarsShowcase (Нашите коли)',
+    visible: true,
+    order: 2.5,
+    category: 'main',
+  },
+  {
     key: 'smart_recommendations',
     label: 'Smart Recommendations',
     description: 'AI-powered car recommendations — SmartHeroRecommendations',

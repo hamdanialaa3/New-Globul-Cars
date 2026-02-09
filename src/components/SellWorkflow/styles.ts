@@ -190,9 +190,29 @@ export const NavigationButtons = styled.div`
 
   @media (max-width: 640px) {
     flex-direction: column-reverse;
-    gap: 1.5rem;
-    padding-top: 1.5rem;
-    margin-top: 1.5rem;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    margin-top: 0;
+    position: sticky;
+    bottom: 0;
+    background: ${({ theme }) =>
+      theme.mode === 'dark'
+        ? 'rgba(15, 23, 42, 0.97)'
+        : 'rgba(255, 255, 255, 0.97)'
+    };
+    backdrop-filter: blur(12px);
+    border-top: 1px solid ${({ theme }) =>
+      theme.mode === 'dark'
+        ? 'rgba(255, 255, 255, 0.1)'
+        : 'rgba(0, 0, 0, 0.08)'
+    };
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+    border-radius: 0;
+    flex-shrink: 0;
+
+    &::before {
+      display: none;
+    }
     
     & > div {
       width: 100%;
@@ -292,20 +312,20 @@ export const ResetButton = styled.button<{ disabled?: boolean }>`
   
   /* Mobile Styles */
   @media (max-width: 640px) and (orientation: portrait) {
-    padding: 0.75rem 1rem;
-    font-size: 0;
-    min-width: 48px;
-    width: auto;
+    padding: 0.625rem 1rem;
+    font-size: 0.8125rem;
+    min-width: unset;
+    width: 100%;
     justify-content: center;
     
     svg {
-      width: 20px;
-      height: 20px;
-      margin: 0;
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
     }
     
     span {
-      display: none;
+      display: inline;
     }
   }
   

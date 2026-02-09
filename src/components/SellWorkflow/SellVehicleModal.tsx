@@ -189,15 +189,15 @@ const WizardContainer = styled.div`
   flex-direction: column;
   min-height: 0; /* Allow flex shrinking */
   width: 100%;
-  height: 100%;
-  overflow-y: auto;
+  /* ModalContainer handles scrolling - no nested scroll here */
 
   @media (max-width: 768px) {
     padding: 1.5rem 1rem;
   }
   
   @media (max-width: 640px) {
-    padding: 1.5rem 1rem;
+    padding: 1rem 0.75rem;
+    padding-bottom: 0;
   }
 `;
 

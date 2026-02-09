@@ -56,6 +56,7 @@ import UnifiedCarsShowcase from './UnifiedCarsShowcase';
 import FeaturedShowcase from './FeaturedShowcase';
 import PopularBrandsSection from './PopularBrandsSection';
 import MostDemandedCategoriesSection from './MostDemandedCategoriesSection';
+import OurCarsShowcase from './OurCarsShowcase';
 
 // 4. Personalization (Conditional)
 import SmartHeroRecommendations from './SmartHeroRecommendations';
@@ -163,6 +164,23 @@ const AIAnalysisBannerSlot: React.FC = () => (
     </Suspense>
   </LazySection>
 );
+
+/**
+ * Slot: 🆕 Our Cars Showcase (Нашите коли)
+ * All real user-added listings — 4×3 grid on desktop
+ * عرض جميع إعلانات المستخدمين الحقيقية
+ */
+const OurCarsSlot: React.FC = () => {
+  const { t } = useLanguage();
+
+  return (
+    <LazySection rootMargin="100px">
+      <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
+        <OurCarsShowcase />
+      </Suspense>
+    </LazySection>
+  );
+};
 
 /**
  * Slot 3: 🆕 Visual Search Teaser
@@ -460,6 +478,13 @@ const HomePageComposer: React.FC = React.memo(() => {
         {/* SECTION 1: HERO - Main Entry Point                              */}
         {/* ═══════════════════════════════════════════════════════════════ */}
         {isVisible('hero') && <HeroSlot />}
+        <SectionSpacer />
+
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        {/* SECTION 1.5: 🆕 OUR CARS — ALL REAL USER LISTINGS               */}
+        {/* Нашите коли — 4×3 grid, newest first, all collections           */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        {isVisible('our_cars') && <OurCarsSlot />}
         <SectionSpacer />
 
         {/* ═══════════════════════════════════════════════════════════════ */}

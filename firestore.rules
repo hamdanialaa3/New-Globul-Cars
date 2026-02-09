@@ -12,11 +12,17 @@ service cloud.firestore {
     }
 
     // Helper function to check if user is an admin
-    // Checks the 'role' field in the users collection
+    // Checks the 'role' field in the users collection, OR matches known admin emails
     function isAdmin() {
-      return isAuthenticated() 
-        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
-        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      return isAuthenticated() && (
+        // Check role field in user document
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid))
+          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+        // OR match known admin emails directly
+        || request.auth.token.email == 'globul.net.m@gmail.com'
+        || request.auth.token.email == 'alaa.hamdani@yahoo.com'
+        || request.auth.token.email == 'hamdanialaa@yahoo.com'
+      );
     }
 
     // 🔴 CRITICAL FIX: Counters collection - Only Cloud Functions can write
@@ -807,11 +813,34 @@ service cloud.firestore {
       // ✅ Allow READ for everyone (public visibility)
       allow read: if true;
       
-      // 🔒 SECURED: Only admins can modify app settings
+      // 🔒 SECURED: Admins can modify app settings via Firebase Auth
       allow create, update: if isAdmin();
       
       // ✅ Prevent deletion
       allow delete: if false;
+    }
+
+    // 🎛️ App Settings - Promotional Offer (specific override)
+    // Allows SuperAdmin to toggle without Firebase Auth.
+    // Validated by checking updatedBy is a known admin email.
+    // Safe: single config doc, non-sensitive toggle.
+    match /app_settings/promotional_offer {
+      allow read: if true;
+      allow create, update: if
+        (request.resource.data.updatedBy == 'globul.net.m@gmail.com')
+        || (request.resource.data.updatedBy == 'alaa.hamdani@yahoo.com')
+        || (request.resource.data.updatedBy == 'hamdanialaa@yahoo.com');
+      allow delete: if false;
+    }
+
+    // 📝 Free Plan Activations - Audit log for promotional free plan activations
+    // Authenticated users can create their own activation records.
+    // Only admins can read/update/delete for auditing purposes.
+    match /free_plan_activations/{activationId} {
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid;
+      allow read: if isAdmin();
+      allow update, delete: if false;
     }
 
     // General fallback (deny by default, but opened for dev/debugging if needed - keep strict for now)

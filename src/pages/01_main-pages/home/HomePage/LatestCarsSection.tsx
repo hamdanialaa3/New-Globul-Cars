@@ -7,8 +7,9 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { MapPin, Calendar, Gauge, TrendingUp, Clock, Heart } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
-import { getFirestore, collection, query, orderBy, limit, getDocs, where } from 'firebase/firestore';
-import { UnifiedCar, mapDocToCar } from '../../../../services/car';
+import { collection, query, orderBy, limit, getDocs, where } from 'firebase/firestore';
+import { db } from '../../../../firebase/firebase-config';
+import { UnifiedCar, VEHICLE_COLLECTIONS, mapDocToCar } from '../../../../services/car';
 import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
 import { logger } from '../../../../services/logger-service';
 import { useFavorites } from '../../../../hooks/useFavorites';
@@ -129,59 +130,73 @@ const LatestCarsSection: React.FC<LatestCarsSectionProps> = ({ activeFilters = n
     const fetchLatestCars = async () => {
       try {
         setLoading(true);
-        const db = getFirestore();
-        const carsRef = collection(db, 'cars');
 
-        // Base query - still sorting by newest
-        let q = query(
-          carsRef,
-          orderBy('createdAt', 'desc'),
-          limit(30) // Increased limit to allow for more effective client-side filtering
-        );
-
-        // Apply basic Firestore filters if selected (to minimize data transfer)
-        if (activeFilters.has('fuel')) {
-          q = query(q, where('fuelType', '==', 'electric'));
-        }
-
-        const querySnapshot = await getDocs(q);
-        let latestCars: UnifiedCar[] = [];
-
-        querySnapshot.forEach((doc) => {
+        // ✅ FIX: Query ALL vehicle collections, not just 'cars'
+        const queryPromises = VEHICLE_COLLECTIONS.map(async (collectionName) => {
           try {
-            const car = mapDocToCar(doc);
+            let q = query(
+              collection(db, collectionName),
+              orderBy('createdAt', 'desc'),
+              limit(30)
+            );
+
+            // Apply basic Firestore filters if selected
+            if (activeFilters.has('fuel')) {
+              q = query(q, where('fuelType', '==', 'electric'));
+            }
+
+            const snapshot = await getDocs(q);
+            return snapshot.docs
+              .map((doc) => {
+                try {
+                  return mapDocToCar(doc);
+                } catch (e) {
+                  logger.error(`Error mapping car from ${collectionName}`, e as Error);
+                  return null;
+                }
+              })
+              .filter((car): car is UnifiedCar => car !== null);
+          } catch (error) {
+            logger.error(`Error querying ${collectionName} for latest cars`, error as Error);
+            return [];
+          }
+        });
+
+        const results = await Promise.all(queryPromises);
+        let allCars: UnifiedCar[] = results.flat();
+
+        // Filter by active/published status
+        let latestCars = allCars.filter((car) => {
             const status = (car as any).status;
             const isPublished = status === 'published' || status === 'active';
             const isActive = car.isActive !== false;
 
-            // Basic activation check
-            if (!(isActive || isPublished)) return;
+            if (!(isActive || isPublished)) return false;
 
-            // --- Apply Remaining Filters Client-Side (Logical Gaps fix) ---
+            // --- Apply Remaining Filters Client-Side ---
 
             // 1. Price Filter ("Great Price" < 15,000 EUR for Bulgaria)
-            if (activeFilters.has('price') && (car.price || 0) > 15000) return;
+            if (activeFilters.has('price') && (car.price || 0) > 15000) return false;
 
             // 2. Type Filter ("Family cars" = SUV, Wagon, or MPV)
             if (activeFilters.has('type')) {
               const familyTypes = ['SUV', 'Wagon', 'MPV', 'Van'];
-              if (!familyTypes.includes(car.bodyType || '')) return;
+              if (!familyTypes.includes(car.bodyType || '')) return false;
             }
 
             // 3. Condition Filter ("Excellent" = Year >= 2020 or low mileage)
             if (activeFilters.has('condition')) {
               const isNewish = (parseInt(car.year?.toString() || '0') >= 2020);
               const isLowMileage = ((car.mileage || 0) < 50000);
-              if (!isNewish && !isLowMileage) return;
+              if (!isNewish && !isLowMileage) return false;
             }
 
-            latestCars.push(car);
-          } catch (e) {
-            logger.error('Error mapping car in LatestCarsSection', e as Error);
-          }
+            return true;
         });
 
-        setCars(latestCars.slice(0, 20)); // Return top 20 after filtering
+        // Sort newest first across all collections, then take top 20
+        latestCars.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+        setCars(latestCars.slice(0, 20));
       } catch (error) {
         logger.error('Failed to fetch latest cars:', error as Error, {
           context: 'LatestCarsSection',

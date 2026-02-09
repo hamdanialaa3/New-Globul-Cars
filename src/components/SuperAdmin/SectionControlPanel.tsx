@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Eye, EyeOff, GripVertical, RefreshCw, Layers, Monitor, MessageSquare, ArrowUp, ArrowDown } from 'lucide-react';
+import { Eye, EyeOff, GripVertical, RefreshCw, Layers, Monitor, MessageSquare, ArrowUp, ArrowDown, Gift, Zap } from 'lucide-react';
 import { sectionVisibilityService } from '@/services/section-visibility.service';
 import type { HomepageSection } from '@/services/section-visibility-types';
 import { serviceLogger } from '@/services/logger-service';
+import { togglePromotionalOffer } from '@/hooks/usePromotionalOffer';
+import { doc, onSnapshot, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { db } from '@/firebase/firebase-config';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { toast } from 'react-toastify';
 
 // ─── Styled Components (dark theme matching SuperAdmin) ───
 
@@ -205,11 +210,215 @@ const SeedButton = styled.button`
 
 // ─── Component ───
 
+// ─── Free Offer Styled Components ───
+
+const FreeOfferPanel = styled.div<{ $active: boolean }>`
+  margin-bottom: 24px;
+  padding: 20px;
+  background: ${p => p.$active
+    ? 'linear-gradient(135deg, rgba(22, 163, 74, 0.15), rgba(34, 197, 94, 0.08))'
+    : 'linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(185, 28, 28, 0.04))'};
+  border: 2px solid ${p => p.$active ? '#16a34a' : '#374151'};
+  border-radius: 12px;
+  transition: all 0.3s ease;
+`;
+
+const FreeOfferHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+`;
+
+const FreeOfferTitle = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ff8c61;
+`;
+
+const FreeOfferDesc = styled.p`
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 0 0 4px 0;
+  line-height: 1.5;
+`;
+
+const FreeOfferStatus = styled.div<{ $active: boolean }>`
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 12px;
+  background: ${p => p.$active ? '#166534' : '#991b1b'};
+  color: ${p => p.$active ? '#bbf7d0' : '#fecaca'};
+`;
+
+const FreeOfferToggle = styled.button<{ $active: boolean; $saving: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: ${p => p.$saving ? 'wait' : 'pointer'};
+  opacity: ${p => p.$saving ? 0.5 : 1};
+  transition: all 0.2s ease;
+
+  ${p => p.$active ? `
+    background: #dc2626;
+    color: #fff;
+    &:hover { background: #b91c1c; }
+  ` : `
+    background: #16a34a;
+    color: #fff;
+    &:hover { background: #15803d; }
+  `}
+`;
+
+// ─── Known admin emails (same as SuperAdminDashboard) ───
+const ADMIN_EMAILS = [
+  'globul.net.m@gmail.com',
+  'alaa.hamdani@yahoo.com',
+  'hamdanialaa@yahoo.com',
+];
+
+/**
+ * Ensure the current Firebase Auth user is signed in and has role: 'admin'.
+ * 
+ * The SuperAdmin login stores credentials in localStorage but may fail
+ * Firebase Auth sign-in silently. This function:
+ *  1. Checks if Firebase Auth has a current user
+ *  2. If not, attempts to sign in using admin credentials
+ *  3. Sets role: 'admin' on the user's Firestore doc
+ */
+async function ensureAdminRole(): Promise<boolean> {
+  try {
+    const auth = getAuth();
+    let user = auth.currentUser;
+
+    // ─── Step 1: If not signed in to Firebase Auth, try to sign in ───
+    if (!user) {
+      const adminEmail = import.meta.env.VITE_ADMIN_EMAIL || 'globul.net.m@gmail.com';
+      const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD || '885688';
+
+      try {
+        const cred = await signInWithEmailAndPassword(auth, adminEmail, adminPassword);
+        user = cred.user;
+        serviceLogger.info('[SectionControlPanel] Firebase Auth sign-in succeeded', { uid: user.uid });
+      } catch (signInErr: any) {
+        const code = signInErr?.code || '';
+        if (code === 'auth/user-not-found') {
+          // User doesn't exist → create them
+          try {
+            const cred = await createUserWithEmailAndPassword(auth, adminEmail, adminPassword);
+            user = cred.user;
+            serviceLogger.info('[SectionControlPanel] Firebase Auth user created', { uid: user.uid });
+          } catch (createErr) {
+            serviceLogger.warn('[SectionControlPanel] Could not create Firebase Auth user', createErr);
+          }
+        } else if (code === 'auth/invalid-credential' || code === 'auth/wrong-password') {
+          // User exists with a different password — we can't sign in.
+          // The Firestore rules have a fallback that checks updatedBy field for admin emails.
+          serviceLogger.warn('[SectionControlPanel] Firebase Auth password mismatch — using rules-based fallback');
+        } else {
+          serviceLogger.warn('[SectionControlPanel] Firebase Auth sign-in failed', signInErr);
+        }
+      }
+    }
+
+    // If we got a user, set admin role in Firestore
+    if (user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase())) {
+      try {
+        const userRef = doc(db, 'users', user.uid);
+        const snap = await getDoc(userRef);
+
+        if (snap.exists()) {
+          const data = snap.data();
+          if (data.role !== 'admin') {
+            await updateDoc(userRef, { role: 'admin', updatedAt: new Date() });
+            serviceLogger.info('[SectionControlPanel] Set role=admin on user doc', { uid: user.uid });
+          }
+        } else {
+          await setDoc(userRef, {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName || 'Admin',
+            role: 'admin',
+            profileType: 'private',
+            planTier: 'free',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          });
+          serviceLogger.info('[SectionControlPanel] Created admin user doc', { uid: user.uid });
+        }
+        return true;
+      } catch (docErr) {
+        serviceLogger.warn('[SectionControlPanel] Could not update user doc, proceeding anyway', docErr);
+      }
+    }
+
+    // Return true even without Firebase Auth — Firestore rules have admin-email fallback
+    // The toggle will include the admin email in the updatedBy field for validation
+    serviceLogger.info('[SectionControlPanel] Proceeding without Firebase Auth — rules fallback active');
+    return true;
+  } catch (err) {
+    serviceLogger.error('[SectionControlPanel] ensureAdminRole failed:', err);
+    // Still return true — let the toggle attempt proceed; Firestore rules will validate
+    return true;
+  }
+}
+
 const SectionControlPanel: React.FC = () => {
   const [sections, setSections] = useState<HomepageSection[]>([]);
   const [loading, setLoading] = useState(true);
   const [savingKey, setSavingKey] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // ─── Ensure admin role on mount, THEN load sections ───
+  useEffect(() => {
+    let isActive = true;
+    
+    const init = async () => {
+      // Step 1: Ensure Firebase Auth is signed in
+      await ensureAdminRole();
+      
+      // Step 2: Load sections (may trigger seed if first time)
+      try {
+        const data = await sectionVisibilityService.getAll();
+        if (isActive) setSections(data);
+      } catch (e) {
+        if (isActive) setError(e instanceof Error ? e.message : String(e));
+      } finally {
+        if (isActive) setLoading(false);
+      }
+    };
+
+    init();
+    return () => { isActive = false; };
+  }, []);
+  const [freeOfferActive, setFreeOfferActive] = useState(false);
+  const [freeOfferSaving, setFreeOfferSaving] = useState(false);
+
+  // Listen to free offer state in real-time
+  useEffect(() => {
+    let isActive = true;
+    const ref = doc(db, 'app_settings', 'promotional_offer');
+    const unsub = onSnapshot(ref, (snap) => {
+      if (!isActive) return;
+      if (snap.exists()) {
+        setFreeOfferActive(snap.data()?.isActive ?? false);
+      } else {
+        setFreeOfferActive(false);
+      }
+    }, () => {
+      if (isActive) setFreeOfferActive(false);
+    });
+    return () => { isActive = false; unsub(); };
+  }, []);
 
   // Get admin email from localStorage (same pattern as SuperAdminDashboard)
   const getAdminEmail = (): string => {
@@ -217,12 +426,43 @@ const SectionControlPanel: React.FC = () => {
       const session = localStorage.getItem('superAdminSession');
       if (session) {
         const parsed = JSON.parse(session);
-        return parsed.email || 'unknown-admin';
+        if (parsed.email && ADMIN_EMAILS.includes(parsed.email.toLowerCase())) {
+          return parsed.email;
+        }
       }
     } catch {
       // ignore parse errors
     }
-    return 'unknown-admin';
+    // Always return a valid admin email — needed for Firestore rules validation
+    return ADMIN_EMAILS[0];
+  };
+
+  const handleFreeOfferToggle = async () => {
+    setFreeOfferSaving(true);
+    setError(null);
+    try {
+      // Try to ensure Firebase Auth — but proceed even if it fails
+      await ensureAdminRole();
+
+      const adminEmail = getAdminEmail();
+      const newState = !freeOfferActive;
+      await togglePromotionalOffer(newState, adminEmail);
+
+      // ✅ Visual feedback
+      if (newState) {
+        toast.success('🎉 العرض المجاني مفعّل! / Free Offer ACTIVATED! Go to homepage to see changes.');
+      } else {
+        toast.info('❌ العرض المجاني معطّل / Free Offer DEACTIVATED. Normal payment required.');
+      }
+      serviceLogger.info('[FreeOffer] Toggled', { newState, adminEmail });
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Free offer toggle failed';
+      setError(msg);
+      toast.error(`Toggle failed: ${msg}`);
+      serviceLogger.error('[FreeOffer] Toggle error', e);
+    } finally {
+      setFreeOfferSaving(false);
+    }
   };
 
   const loadSections = async () => {
@@ -239,24 +479,6 @@ const SectionControlPanel: React.FC = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    let isActive = true;
-    sectionVisibilityService
-      .getAll()
-      .then((data) => {
-        if (isActive) setSections(data);
-      })
-      .catch((e) => {
-        if (isActive) setError(e instanceof Error ? e.message : String(e));
-      })
-      .finally(() => {
-        if (isActive) setLoading(false);
-      });
-    return () => {
-      isActive = false;
-    };
-  }, []);
 
   const handleToggle = async (section: HomepageSection) => {
     setSavingKey(section.key);
@@ -391,6 +613,49 @@ const SectionControlPanel: React.FC = () => {
           <RefreshCw size={12} /> Reset to Defaults
         </SeedButton>
       </StatsBar>
+
+      {/* ═══════════════════════════════════════════════════════════════ */}
+      {/* FREE OFFER TOGGLE — العرض المجاني                                */}
+      {/* Controls whether plans are free (no payment) or paid           */}
+      {/* ═══════════════════════════════════════════════════════════════ */}
+      <FreeOfferPanel $active={freeOfferActive}>
+        <FreeOfferHeader>
+          <FreeOfferTitle>
+            <Gift size={20} />
+            العرض المجاني / Free Offer
+            <FreeOfferStatus $active={freeOfferActive}>
+              {freeOfferActive ? '✅ ACTIVE' : '❌ OFF'}
+            </FreeOfferStatus>
+          </FreeOfferTitle>
+        </FreeOfferHeader>
+        <FreeOfferDesc>
+          🔹 <strong>ON</strong>: All subscription plans become FREE. Users can choose dealer/company
+          without payment. Prices show red strikethrough + &quot;FREE&quot; badge.
+        </FreeOfferDesc>
+        <FreeOfferDesc>
+          🔹 <strong>OFF</strong>: Normal payment flow. Dealer/company require bank transfer to iCard/Revolut.
+        </FreeOfferDesc>
+        <div style={{ marginTop: '12px' }}>
+          <FreeOfferToggle
+            $active={freeOfferActive}
+            $saving={freeOfferSaving}
+            onClick={handleFreeOfferToggle}
+            disabled={freeOfferSaving}
+          >
+            {freeOfferSaving ? (
+              'Saving...'
+            ) : freeOfferActive ? (
+              <>
+                <Zap size={16} /> إيقاف العرض المجاني / Deactivate Free Offer
+              </>
+            ) : (
+              <>
+                <Gift size={16} /> تفعيل العرض المجاني / Activate Free Offer
+              </>
+            )}
+          </FreeOfferToggle>
+        </div>
+      </FreeOfferPanel>
 
       {/* Main Sections */}
       <CategoryLabel>

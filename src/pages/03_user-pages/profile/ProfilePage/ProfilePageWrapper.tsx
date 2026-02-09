@@ -28,6 +28,8 @@ import { TabNavigation, TabNavLink, SyncButton, FollowButton } from './TabNaviga
 import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar, ProfileImageUploader, BusinessGreenHeader } from '../../../../components/Profile';
 import { ProfileTypeSwitcher } from '../components/ProfileTypeSwitcher'; // Added Import
 import { googleProfileSyncService } from '../../../../services/google/google-profile-sync.service';
+import { usePromotionalOffer } from '../../../../hooks/usePromotionalOffer';
+import { activateFreePlan } from '../../../../services/billing/free-plan-activation.service';
 import { followService } from '../../../../services/social/follow-service';
 import { logger } from '../../../../services/logger-service';
 import { profileStatsService } from '../../../../services/profile/profile-stats.service';
@@ -472,6 +474,9 @@ const ProfilePageWrapper: React.FC = () => {
     }
   };
 
+  // ─── Promotional Offer Hook ───
+  const { isFreeOffer } = usePromotionalOffer();
+
   // ⚡ PAYMENT & SWITCH LOGIC
   const handleProfileSwitch = async (newType: 'private' | 'dealer' | 'company') => {
     if (!user) return;
@@ -479,59 +484,79 @@ const ProfilePageWrapper: React.FC = () => {
 
     if (newType === currentType) return;
 
-    // Payment Logic for Dealer/Company
-    // ✅ CRITICAL: Use SUBSCRIPTION_PLANS as single source of truth
-    if (newType === 'dealer' || newType === 'company') {
+    // ─── Downgrade to Private: always free ───
+    if (newType === 'private') {
+      try {
+        setSyncing(true);
+        const { doc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+        const { db } = await import('../../../../firebase/firebase-config');
+        const userRef = doc(db, 'users', user.uid);
+        await updateDoc(userRef, {
+          profileType: 'private',
+          planTier: 'free',
+          updatedAt: serverTimestamp()
+        });
+        setUser(prev => prev ? { ...prev, profileType: 'private', planTier: 'free' as any } : null);
+        toast.success(language === 'bg' ? 'Профилът е променен на Частен' : 'Profile switched to Private');
+      } catch (err) {
+        logger.error('Failed to switch to private', err as Error);
+        toast.error('Failed to update profile');
+      } finally {
+        setSyncing(false);
+      }
+      return;
+    }
+
+    // ─── Upgrade to Dealer/Company ───
+    if (isFreeOffer) {
+      // 🎉 FREE OFFER ACTIVE: activate directly without payment
+      setSyncing(true);
+      try {
+        toast.info(language === 'bg' ? 'Активиране на безплатен план...' : 'Activating free plan...');
+        const result = await activateFreePlan({
+          userId: user.uid,
+          userEmail: user.email || '',
+          userName: user.displayName || 'Unknown',
+          planTier: newType as 'dealer' | 'company',
+        });
+
+        if (result.success) {
+          // Update local state
+          setUser(prev => prev ? { ...prev, profileType: newType, planTier: newType as any } : null);
+          toast.success(language === 'bg'
+            ? `🎉 План ${newType === 'dealer' ? 'Търговец' : 'Компания'} е активиран безплатно!`
+            : `🎉 ${newType === 'dealer' ? 'Dealer' : 'Company'} plan activated for free!`
+          );
+        } else if (result.error === 'FREE_OFFER_EXPIRED') {
+          toast.warning(language === 'bg'
+            ? 'Безплатната оферта изтече. Пренасочване към плащане...'
+            : 'Free offer expired. Redirecting to payment...'
+          );
+          navigate(`/billing/manual-checkout?plan=${newType}&interval=monthly&type=subscription`);
+        } else {
+          toast.error(language === 'bg' ? 'Грешка при активиране' : 'Activation failed');
+        }
+      } catch (err) {
+        logger.error('Free plan activation failed', err as Error);
+        toast.error('Failed to activate plan');
+      } finally {
+        setSyncing(false);
+      }
+    } else {
+      // 💳 PAID: redirect to manual checkout
       const { SUBSCRIPTION_PLANS } = await import('@/config/subscription-plans');
-      const cost = newType === 'dealer' 
-        ? `€${SUBSCRIPTION_PLANS.dealer.price.monthly}` // ✅ €27.78
-        : `€${SUBSCRIPTION_PLANS.company.price.monthly}`; // ✅ €137.88
+      const cost = newType === 'dealer'
+        ? `€${SUBSCRIPTION_PLANS.dealer.price.monthly}`
+        : `€${SUBSCRIPTION_PLANS.company.price.monthly}`;
       const confirmed = window.confirm(
         language === 'bg'
-          ? `Активиране на план ${newType.toUpperCase()}?\nЦена: ${cost}/месец.\nЩе бъдете пренасочени към плащане.`
-          : `Activate ${newType.toUpperCase()} Plan?\nCost: ${cost}/month.\nProceed to Stripe Checkout?`
+          ? `Активиране на план ${newType === 'dealer' ? 'Търговец' : 'Компания'}?\nЦена: ${cost}/месец.\nЩе бъдете пренасочени към плащане.`
+          : `Activate ${newType === 'dealer' ? 'Dealer' : 'Company'} Plan?\nCost: ${cost}/month.\nProceed to payment?`
       );
 
       if (!confirmed) return;
 
-      // Simulate Payment Processing
-      const toastId = toast.loading(language === 'bg' ? 'Обработване на плащане...' : 'Processing payment...');
-
-      // 2 second delay to simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      toast.update(toastId, {
-        render: language === 'bg' ? 'Плащането е успешно! Планът е активиран.' : 'Payment Successful! Plan activated.',
-        type: "success",
-        isLoading: false,
-        autoClose: 3000
-      });
-    }
-
-    try {
-      setSyncing(true); // Loading state
-      const { doc, updateDoc, serverTimestamp } = await import('firebase/firestore');
-      const { db } = await import('../../../../firebase/firebase-config');
-
-      const userRef = doc(db, 'users', user.uid);
-      let planTier = 'free';
-      if (newType === 'dealer') planTier = 'dealer';
-      if (newType === 'company') planTier = 'company';
-
-      await updateDoc(userRef, {
-        profileType: newType,
-        planTier: planTier,
-        updatedAt: serverTimestamp()
-      });
-
-      // Optimistic Update
-      setUser(prev => prev ? { ...prev, profileType: newType, planTier: planTier as any } : null);
-
-    } catch (err) {
-      logger.error('Failed to switch profile', err as Error);
-      toast.error('Failed to update profile');
-    } finally {
-      setSyncing(false);
+      navigate(`/billing/manual-checkout?plan=${newType}&interval=monthly&type=subscription`);
     }
   };
 

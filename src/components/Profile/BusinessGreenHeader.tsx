@@ -15,6 +15,8 @@ import BlockUserButton from '../messaging/BlockUserButton';
 import { FollowButton as StyledFollowButton } from '../../pages/03_user-pages/profile/ProfilePage/TabNavigation.styles';
 import FollowButton from '../social/FollowButton';
 import type { BulgarianUser } from '../../types/user/bulgarian-user.types';
+import { usePromotionalOffer } from '../../hooks/usePromotionalOffer';
+import { SUBSCRIPTION_PLANS } from '../../config/subscription-plans';
 
 // ==================== COLOR CONFIGURATIONS ====================
 // 🟧 Private (Personal) = ORANGE
@@ -589,6 +591,13 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
   const { language } = useLanguage();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const { isFreeOffer } = usePromotionalOffer();
+
+  // Dynamic plan labels based on free offer state
+  const dealerPrice = `€${SUBSCRIPTION_PLANS.dealer.price.monthly}`;
+  const companyPrice = `€${SUBSCRIPTION_PLANS.company.price.monthly}`;
+  const dealerListings = SUBSCRIPTION_PLANS.dealer.features.maxListings;
+  const companyListings = SUBSCRIPTION_PLANS.company.features.maxListings === -1 ? '∞' : SUBSCRIPTION_PLANS.company.features.maxListings;
 
   if (!user) return null;
 
@@ -708,10 +717,14 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
                   {language === 'bg' ? 'Частен (Безплатен, 3 обяви)' : 'Private (Free, 3 cars)'}
                 </option>
                 <option value="dealer" style={{ backgroundColor: isDark ? '#1e293b' : '#ffffff', color: isDark ? '#f0fdf4' : '#1a1a1a' }}>
-                  {language === 'bg' ? 'Търговец (€27.78/мес, 30 обяви)' : 'Dealer (€27.78/mo, 30 cars)'}
+                  {isFreeOffer
+                    ? (language === 'bg' ? `Търговец (БЕЗПЛАТНО ✨, ${dealerListings} обяви)` : `Dealer (FREE ✨, ${dealerListings} cars)`)
+                    : (language === 'bg' ? `Търговец (${dealerPrice}/мес, ${dealerListings} обяви)` : `Dealer (${dealerPrice}/mo, ${dealerListings} cars)`)}
                 </option>
                 <option value="company" style={{ backgroundColor: isDark ? '#1e293b' : '#ffffff', color: isDark ? '#f0fdf4' : '#1a1a1a' }}>
-                  {language === 'bg' ? 'Компания (€187.88/мес, 200 обяви)' : 'Company (€187.88/mo, 200 cars)'}
+                  {isFreeOffer
+                    ? (language === 'bg' ? `Компания (БЕЗПЛАТНО ✨, ${companyListings} обяви)` : `Company (FREE ✨, ${companyListings} cars)`)
+                    : (language === 'bg' ? `Компания (${companyPrice}/мес, ${companyListings} обяви)` : `Company (${companyPrice}/mo, ${companyListings} cars)`)}
                 </option>
               </select>
             </div>
