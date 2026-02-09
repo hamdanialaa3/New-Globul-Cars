@@ -134,6 +134,20 @@ jobs:
         env:
           CI: false
           NODE_OPTIONS: --max_old_space_size=4096
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: fire-new-globul.firebaseapp.com
+          VITE_FIREBASE_PROJECT_ID: fire-new-globul
+          VITE_FIREBASE_STORAGE_BUCKET: fire-new-globul.firebasestorage.app
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+          VITE_FIREBASE_MEASUREMENT_ID: ${{ secrets.VITE_FIREBASE_MEASUREMENT_ID }}
+          VITE_FIREBASE_DATABASE_URL: https://fire-new-globul-default-rtdb.europe-west1.firebasedatabase.app
+          VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_GOOGLE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
+          VITE_GOOGLE_GENERATIVE_AI_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
+          VITE_ALGOLIA_APP_ID: ${{ secrets.VITE_ALGOLIA_APP_ID }}
+          VITE_ALGOLIA_SEARCH_API_KEY: ${{ secrets.VITE_ALGOLIA_SEARCH_API_KEY }}
 
       - name: Deploy to Firebase
         env:
