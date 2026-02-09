@@ -327,14 +327,14 @@ service cloud.firestore {
     // Search Analytics: Track search queries and clicks
     match /searchAnalytics/{analyticsId} {
       allow read: if isAuthenticated();
-      allow create: if true; // Allow anonymous search tracking
+      allow create: if isAuthenticated(); // Require auth for search tracking
       allow update: if isAuthenticated();
       allow delete: if false; // No deletes
     }
 
     match /searchClicks/{clickId} {
       allow read: if isAuthenticated();
-      allow create: if true; // Allow anonymous click tracking
+      allow create: if isAuthenticated(); // Require auth for click tracking
       allow update: if false; // No updates
       allow delete: if false; // No deletes
     }
@@ -641,7 +641,7 @@ service cloud.firestore {
     // Profile Analytics: Track profile views, car views, inquiries
     match /analytics_events/{eventId} {
       allow read: if isAuthenticated();
-      allow create: if true; // Allow anonymous tracking
+      allow create: if isAuthenticated(); // Require auth for analytics tracking
       allow update: if false; // No updates
       allow delete: if false; // No deletes
     }
