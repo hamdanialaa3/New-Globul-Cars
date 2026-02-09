@@ -5,7 +5,7 @@
 API key not valid. Please pass a valid API key.
 ```
 
-المفتاح الحالي `AIzaSyCeOj0W6Zf8aHkQ7vEcW-JLz8n_4bO_aV5` غير صالح أو منتهي الصلاحية.
+المفتاح الحالي `REDACTED_GEMINI_KEY` غير صالح أو منتهي الصلاحية.
 
 ---
 
