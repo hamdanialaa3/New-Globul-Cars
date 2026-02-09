@@ -120,7 +120,11 @@ const GoogleMapSection: React.FC<GoogleMapSectionProps> = ({
   const [activeMarker, setActiveMarker] = useState<string | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
 
-  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '***REMOVED_FIREBASE_KEY***';
+  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+  
+  if (!apiKey) {
+    throw new Error('VITE_GOOGLE_MAPS_API_KEY environment variable is not set. Please configure it in your .env file.');
+  }
   
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',

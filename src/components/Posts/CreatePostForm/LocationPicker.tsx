@@ -34,7 +34,15 @@ interface LocationPickerProps {
 }
 
 // Google Maps API Key (from .env)
-const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '***REMOVED_FIREBASE_KEY***';
+const validateMapAPIKey = (): string => {
+  const key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+  if (!key) {
+    throw new Error('VITE_GOOGLE_MAPS_API_KEY environment variable is not set. Please configure it in your .env file.');
+  }
+  return key;
+};
+
+const GOOGLE_MAPS_API_KEY = validateMapAPIKey();
 
 const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange }) => {
   const { language } = useLanguage();

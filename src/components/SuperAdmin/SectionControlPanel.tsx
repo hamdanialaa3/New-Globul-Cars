@@ -302,8 +302,12 @@ async function ensureAdminRole(): Promise<boolean> {
 
     // ─── Step 1: If not signed in to Firebase Auth, try to sign in ───
     if (!user) {
-      const adminEmail = import.meta.env.VITE_ADMIN_EMAIL || 'globul.net.m@gmail.com';
-      const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD || '885688';
+      const adminEmail = import.meta.env.VITE_ADMIN_EMAIL;
+      const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD;
+      
+      if (!adminEmail || !adminPassword) {
+        throw new Error('❌ CRITICAL: Admin credentials not configured. Check .env file.');
+      }
 
       try {
         const cred = await signInWithEmailAndPassword(auth, adminEmail, adminPassword);

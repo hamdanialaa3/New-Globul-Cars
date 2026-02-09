@@ -148,8 +148,9 @@
 
     <!-- Google Maps API with Places library and Bulgarian language -->
     <!-- Load Google Maps JS API with loading=async parameter for best performance -->
+    <!-- API key injected from VITE_GOOGLE_MAPS_API_KEY environment variable at build time -->
     <script
-        src="https://maps.googleapis.com/maps/api/js?key=***REMOVED_FIREBASE_KEY***&libraries=places&language=bg&loading=async"
+        src="https://maps.googleapis.com/maps/api/js?key=%VITE_GOOGLE_MAPS_API_KEY%&libraries=places&language=bg&loading=async"
         async defer></script>
 
     <!--

@@ -1,8 +1,16 @@
-# Enable CORS for all origins
+# ✅ SECURITY: CORS restricted to allowed domains only
 <IfModule mod_headers.c>
-    Header set Access-Control-Allow-Origin "*"
-    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-    Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+    # Get the origin from the request
+    SetEnvIf Origin "^https?://(fire-new-globul\.web\.app|fire-new-globul\.firebaseapp\.com|mobilebg\.eu|koli\.one|www\.koli\.one|localhost|localhost:3000|localhost:5173)$" CORS_ORIGIN=$0
+    
+    # Set CORS headers only if origin is allowed
+    Header set Access-Control-Allow-Origin "%{CORS_ORIGIN}e" env=CORS_ORIGIN
+    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" env=CORS_ORIGIN
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization" env=CORS_ORIGIN
+    Header set Access-Control-Allow-Credentials "true" env=CORS_ORIGIN
+    
+    # Handle preflight requests (OPTIONS)
+    Header set Access-Control-Max-Age "3600" env=CORS_ORIGIN
 </IfModule>
 
 # Handle React Router (for SPA)

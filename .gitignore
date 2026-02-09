@@ -42,6 +42,13 @@ firebaserc # Optional: keep if you want to share project alias
 !algolia-index-config.json
 !algolia-record-template.json
 !storage-cors.json
+
+# Firebase Config Files (NEVER commit real configs)
+google-services.json
+GoogleService-Info.plist
+google-services.template.json
+GoogleService-Info.template.plist
+
 .github/secrets/
 secrets/
 keys/

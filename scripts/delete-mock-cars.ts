@@ -16,9 +16,15 @@ import { getFirestore, collection, getDocs, deleteDoc, doc, query, where } from 
 import { logger } from '../src/services/logger-service';
 import { VEHICLE_COLLECTIONS } from '../src/services/search/multi-collection-helper';
 
-// Firebase config
+// Firebase config - requires environment variables (no hardcoded fallbacks)
+const requireEnv = (name: string): string => {
+  const val = process.env[name];
+  if (!val) throw new Error(`Missing required env var: ${name}`);
+  return val;
+};
+
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "***REMOVED_FIREBASE_KEY***",
+  apiKey: requireEnv('REACT_APP_FIREBASE_API_KEY'),
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "fire-new-globul.firebaseapp.com",
   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "fire-new-globul",
 };

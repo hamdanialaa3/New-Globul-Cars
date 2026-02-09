@@ -19,10 +19,15 @@ const algoliasearch = require('algoliasearch');
 require('dotenv').config({ path: '.env.local' });
 
 // ============================================
-// CONFIGURATION
-// ============================================
-const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID || 'RTGDK12KTJ';
-const ALGOLIA_ADMIN_KEY = '47f0015ced4e86add8acc2e35ea01395'; // Write API Key
+const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID || process.env.ALGOLIA_APP_ID;
+const ALGOLIA_ADMIN_KEY = process.env.ALGOLIA_ADMIN_KEY;
+
+// ✅ SECURITY: Require environment variables - no hardcoded keys
+if (!ALGOLIA_APP_ID || !ALGOLIA_ADMIN_KEY) {
+  console.error('❌ CRITICAL: ALGOLIA_APP_ID and ALGOLIA_ADMIN_KEY must be set in .env.local');
+  process.exit(1);
+}
+
 const ALGOLIA_INDEX_NAME = process.env.REACT_APP_ALGOLIA_INDEX_NAME || 'cars';
 
 // Collections to sync (all vehicle types)

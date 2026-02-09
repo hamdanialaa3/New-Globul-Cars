@@ -2,18 +2,16 @@ import { logger } from '../services/logger-service';
 // Google API Keys Configuration
 // تكوين مفاتيح Google API
 
+const validateKey = (name: string, value: string | undefined): string => {
+  if (!value) throw new Error(`❌ CRITICAL: ${name} not set in environment`);
+  return value;
+};
+
 export const GOOGLE_API_KEYS = {
-  // Generative AI (Gemini) - للذكاء الاصطناعي
-  GENERATIVE_AI: import.meta.env.VITE_GOOGLE_GENERATIVE_AI_KEY || 'AIzaSyC1YsQz2rpK8z_6cZev9y99rV1kIUVsrFI',
-  
-  // Firebase Web - لخدمات Firebase
-  FIREBASE_WEB: import.meta.env.VITE_GOOGLE_FIREBASE_WEB_KEY || '***REMOVED_FIREBASE_KEY***',
-  
-  // Browser Key - للخدمات العامة
-  BROWSER: import.meta.env.VITE_GOOGLE_BROWSER_KEY || 'AIzaSyAchmKCk8ipzv0dDwbQ2xU1Pa6o4CQsEu8',
-  
-  // Maps API - للخرائط
-  MAPS: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || import.meta.env.VITE_GOOGLE_BROWSER_KEY || 'AIzaSyAchmKCk8ipzv0dDwbQ2xU1Pa6o4CQsEu8'
+  GENERATIVE_AI: validateKey('VITE_GOOGLE_GENERATIVE_AI_KEY', import.meta.env.VITE_GOOGLE_GENERATIVE_AI_KEY),
+  FIREBASE_WEB: validateKey('VITE_GOOGLE_FIREBASE_WEB_KEY', import.meta.env.VITE_GOOGLE_FIREBASE_WEB_KEY),
+  BROWSER: validateKey('VITE_GOOGLE_BROWSER_KEY', import.meta.env.VITE_GOOGLE_BROWSER_KEY),
+  MAPS: validateKey('VITE_GOOGLE_MAPS_API_KEY', import.meta.env.VITE_GOOGLE_MAPS_API_KEY)
 } as const;
 
 // Validation function
