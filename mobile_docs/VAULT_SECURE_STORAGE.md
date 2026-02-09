@@ -44,9 +44,9 @@
 ### 🔑 3. API Keys & Service Credentials
 | Service | Key / ID | Purpose |
 |---------|----------|---------|
-| **Firebase API Key** | `AIzaSyAUYM_qygK5pUrlXtdDLmEi-_Kh9SyvRmk` | Database & Auth |
-| **Gemini AI Key** | `AIzaSyC1YsQz2rpK8z_6cZev9y99rV1kIUVsrFI` | AI Neural Logic |
-| **Google Maps Key** | `AIzaSyAchmKCk8ipzv0dDwbQ2xU1Pa6o4CQsEu8` | Map Integration |
+| **Firebase API Key** | `REDACTED_FIREBASE_KEY_2` | Database & Auth |
+| **Gemini AI Key** | `REDACTED_GEMINI_AI_KEY` | AI Neural Logic |
+| **Google Maps Key** | `REDACTED_MAPS_KEY` | Map Integration |
 | **LogRocket App ID** | `9ggmh8/koli-one-rocket` | User Analytics |
 | **EAS Project ID** | `a2efe325-74d5-4772-a200-0d44d16b484e` | Expo Build Service |
 | **Azure Tenant ID** | `fdb9a393-7d60-4dae-b17b-0bb89edad2fe` | Azure AD Login |
