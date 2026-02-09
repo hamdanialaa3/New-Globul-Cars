@@ -9,9 +9,10 @@ Thumbs.db
 *.swp
 *.swo
 *~
-.idea/workspace.xml
-.idea/shelf/
+.idea/
 .cursor/
+.vscode/settings.json
+*.iml
 
 # --- Secrets & Credentials ---
 *.env
@@ -57,3 +58,6 @@ cline_mcp_config.json
 *.7z
 
 server.log
+
+# --- Build artifacts in submodules ---
+web/build/
