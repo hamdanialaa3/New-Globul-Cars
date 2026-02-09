@@ -1,4 +1,4 @@
-# 🔧 سكريبت تحرير البورت 3000
+http://localhost:3000/profile/90/my-ads# 🔧 سكريبت تحرير البورت 3000
 # Script to free port 3000 and manage Docker ports
 
 Write-Host "======================================" -ForegroundColor Cyan

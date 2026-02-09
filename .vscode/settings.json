@@ -3,5 +3,25 @@
     "editor.formatOnType": false,
     "diffEditor.codeLens": true,
     "editor.find.autoFindInSelection": "always",
-    "editor.cursorSurroundingLinesStyle": "all"
+    "editor.cursorSurroundingLinesStyle": "all",
+    "workbench.editor.autoLockGroups": {
+        "default": true,
+        "mainThreadWebview-markdown.preview": true,
+        "workbench.input.interactive": true,
+        "workbench.editorinputs.searchEditorInput": true,
+        "notebookOutputEditor": true,
+        "jupyter-notebook": true,
+        "repl": true,
+        "workbench.editors.gettingStartedInput": true,
+        "imagePreview.previewEditor": true,
+        "vscode.audioPreview": true,
+        "vscode.videoPreview": true,
+        "jsProfileVisualizer.cpuprofile.table": true,
+        "jsProfileVisualizer.heapprofile.table": true,
+        "jsProfileVisualizer.heapsnapshot.table": true,
+        "phpprofiler.cachegrind": true,
+        "decompiled.javaClass": true,
+        "java.formatterSettingsEditor": true,
+        "pdf.preview": true
+    }
 }
