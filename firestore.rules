@@ -11,6 +11,14 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
+    // Helper function to check if user is an admin
+    // Checks the 'role' field in the users collection
+    function isAdmin() {
+      return isAuthenticated() 
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
     // 🔴 CRITICAL FIX: Counters collection - Only Cloud Functions can write
     // Numeric ID counters must be protected to prevent corruption
     match /counters/{userId} {
@@ -634,40 +642,37 @@ service cloud.firestore {
 
     match /profile_analytics/{userId} {
       allow read: if isAuthenticated() && request.auth.uid == userId;
-      allow create: if true; // System creates
-      allow update: if true; // System updates
+      allow create: if isOwner(userId); // Only owner or Cloud Functions
+      allow update: if isOwner(userId); // Only owner can update their analytics
       allow delete: if false;
     }
 
     match /profile_metrics/{userId} {
       allow read: if isAuthenticated() && request.auth.uid == userId;
-      allow create: if true; // System creates
-      allow update: if true; // System updates metrics
+      allow create: if isOwner(userId); // Only owner or Cloud Functions
+      allow update: if isOwner(userId); // Only owner can update their metrics
       allow delete: if false;
     }
 
     // ==================== USER POINTS & LEVELS ====================
     match /userPoints/{userId} {
       allow read: if isAuthenticated() && request.auth.uid == userId;
-      allow create: if true; // System creates
-      allow update: if true; // System updates points
+      allow create: if isOwner(userId); // Only owner or Cloud Functions
+      allow update: if isOwner(userId); // Only owner can update their points
       allow delete: if false;
     }
 
     // ==================== PROFILE STATS ====================
     match /profile_stats/{statsId} {
       allow read: if isAuthenticated();
-      allow create: if true; // System creates
-      allow update: if true; // System updates
+      allow create: if isAuthenticated(); // Authenticated users can create stats
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid; // Only owner
       allow delete: if false;
     }
 
-    match /profiles/{profileId} {
-      allow read: if true;
-      allow write: if isOwner(resource.data.userId) || (request.resource.data.userId == request.auth.uid);
-    }
+    // NOTE: Duplicate profiles rule removed — primary rule is above (line ~78)
 
-    // ==================== SAVED SEARCHES ====================
+    // ==================== SAVED SEARCHES ==
     match /saved_searches/{searchId} {
       allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
       allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
@@ -683,27 +688,12 @@ service cloud.firestore {
       allow delete: if isAuthenticated() && resource.data.authorId == request.auth.uid;
     }
 
-    // ==================== SEARCH ANALYTICS ====================
-    match /searchAnalytics/{analyticsId} {
-      allow read: if isAuthenticated();
-      allow create: if true; // Allow anonymous
-      allow update: if isAuthenticated();
-      allow delete: if false;
-    }
-
-    match /searchClicks/{clickId} {
-      allow read: if isAuthenticated();
-      allow create: if true; // Allow anonymous
-      allow update: if false;
-      allow delete: if false;
-    }
+    // NOTE: Duplicate searchAnalytics/searchClicks rules removed — primary rules are above (line ~320)
 
     // ==================== LEADERBOARD ====================
     match /leaderboard/{entryId} {
       allow read: if true; // Public leaderboard
-      allow create: if true; // System creates
-      allow update: if true; // System updates
-      allow delete: if false;
+      allow write: if false; // 🔒 SECURED: Cloud Functions only — no client writes
     }
 
     // ==================== CHALLENGES ====================
@@ -748,33 +738,27 @@ service cloud.firestore {
     }
 
     // ==================== ACHIEVEMENTS ====================
+    // 🔒 SECURED: Achievements are system-managed — Cloud Functions only
     match /achievements/{achievementId} {
       allow read: if true; // Public achievements
-      allow create: if true; // System creates
-      allow update: if true; // System updates
-      allow delete: if false;
+      allow write: if false; // 🔒 Cloud Functions only
     }
 
     match /user_achievements/{entryId} {
       allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if true; // System creates
-      allow update: if true; // System updates
-      allow delete: if false;
+      allow write: if false; // 🔒 Cloud Functions only
     }
 
     // ==================== BADGES ====================
+    // 🔒 SECURED: Badges are system-managed — Cloud Functions only
     match /badges/{badgeId} {
       allow read: if true; // Public badges
-      allow create: if true; // System creates
-      allow update: if true; // System updates
-      allow delete: if false;
+      allow write: if false; // 🔒 Cloud Functions only
     }
 
     match /user_badges/{entryId} {
       allow read: if true; // Public user badges
-      allow create: if true; // System creates
-      allow update: if true; // System updates
-      allow delete: if false;
+      allow write: if false; // 🔒 Cloud Functions only
     }
 
     // ==================== SEARCH HISTORY ====================
@@ -792,8 +776,8 @@ service cloud.firestore {
       allow read: if true;
       // Allow creating groups if authenticated
       allow create: if isAuthenticated();
-      // Allow updates if authenticated (ideally restricted to group admins)
-      allow update: if isAuthenticated();
+      // 🔒 SECURED: Only group creator can update
+      allow update: if isAuthenticated() && resource.data.createdBy == request.auth.uid;
       // Delete not allowed (archive instead)
       allow delete: if false;
     }
@@ -817,52 +801,14 @@ service cloud.firestore {
         && resource.data.userId == request.auth.uid;
     }
 
-    // 🎛️ App Settings - Homepage Sections Control
-    // Explicit rule for the homepage_sections document
-    // TODO: Add admin role verification once SuperAdmin auth is integrated with Firebase Auth
-    match /app_settings/homepage_sections {
-      // ✅ Allow READ for everyone
+    // 🎛️ App Settings - All settings documents
+    // 🔒 SECURED (2026-02-09): Admin-only writes — closes critical P0 vulnerability
+    match /app_settings/{settingDoc} {
+      // ✅ Allow READ for everyone (public visibility)
       allow read: if true;
       
-      // ✅ TEMPORARY: Allow CREATE/UPDATE for everyone (needs admin role check later)
-      allow create, update: if true;
-      
-      // ✅ Prevent deletion
-      allow delete: if false;
-    }
-
-    // 🎛️ App Settings - Site Settings Control
-    // TODO: Add admin role verification once SuperAdmin auth is integrated with Firebase Auth
-    match /app_settings/site_settings {
-      // ✅ Allow READ for everyone (public visibility of features)
-      allow read: if true;
-      
-      // ✅ TEMPORARY: Allow CREATE/UPDATE for everyone (needs admin role check later)
-      allow create, update: if true;
-      
-      // ✅ Prevent deletion
-      allow delete: if false;
-    }
-
-    // 🎛️ App Settings - Theme Settings Control
-    match /app_settings/theme_settings {
-      // ✅ Allow READ for everyone (public theme visibility)
-      allow read: if true;
-      
-      // ✅ TEMPORARY: Allow CREATE/UPDATE for everyone (needs admin role check later)
-      allow create, update: if true;
-      
-      // ✅ Prevent deletion
-      allow delete: if false;
-    }
-
-    // 🎛️ App Settings - Featured Content Control
-    match /app_settings/featured_content {
-      // ✅ Allow READ for everyone (public featured content)
-      allow read: if true;
-      
-      // ✅ TEMPORARY: Allow CREATE/UPDATE for everyone (needs admin role check later)
-      allow create, update: if true;
+      // 🔒 SECURED: Only admins can modify app settings
+      allow create, update: if isAdmin();
       
       // ✅ Prevent deletion
       allow delete: if false;

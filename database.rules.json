@@ -7,15 +7,15 @@
     // ==================== CHANNELS (Conversations) ====================
     // Path: /channels/{channelId}
     // Channel ID format: msg_{sellerNumericId}_{buyerNumericId}_car_{carNumericId}
-    // Note: Participant validation is done client-side via Firestore numericId.
-    // RTDB rules cannot cross-reference Firestore, so we validate auth only.
+    // 🔒 SECURED (2026-02-09): Access restricted to channel participants only
+    // Participants are tracked in the channel's 'participants' child node
     "channels": {
       "$channelId": {
-        // Read/Write: Any authenticated user
-        // Channel discovery is controlled via /user_channels index
-        ".read": "auth != null",
-        ".write": "auth != null",
-        // Unread count per user
+        // Read/Write: Only participants of this channel
+        // Falls back to auth-only if participants node doesn't exist yet (creation)
+        ".read": "auth != null && (data.child('participants').child(auth.uid).exists() || !data.exists())",
+        ".write": "auth != null && (data.child('participants').child(auth.uid).exists() || !data.exists())",
+        // Unread count per user — only own count
         "unreadCount": {
           "$userNumericId": {
             ".read": "auth != null",
@@ -27,14 +27,14 @@
 
     // ==================== MESSAGES ====================
     // Path: /messages/{channelId}/{messageId}
+    // 🔒 SECURED: Only channel participants can read/write messages
     "messages": {
       "$channelId": {
-        // Read: Any authenticated user (channel discovery is via /user_channels)
-        ".read": "auth != null",
+        // Read: Only participants of the parent channel
+        ".read": "auth != null && root.child('channels').child($channelId).child('participants').child(auth.uid).exists()",
         "$messageId": {
-          // Write: Authenticated users can create and update messages
-          // senderFirebaseId is set client-side for sender identity
-          ".write": "auth != null",
+          // Write: Only participants of the parent channel
+          ".write": "auth != null && root.child('channels').child($channelId).child('participants').child(auth.uid).exists()",
           // Validate message structure on creation
           ".validate": "newData.hasChildren(['senderId', 'content', 'timestamp', 'type'])"
         }
@@ -42,44 +42,43 @@
     },
 
     // ==================== USER CHANNELS INDEX ====================
-    // Path: /user_channels/{userNumericId}/{channelId}
-    // Fast lookup for user's conversations
-    // Note: numericId is stored in Firestore (not RTDB), so we allow
-    // any authenticated user (including guests) to manage channels.
-    // The client validates ownership via Firestore numericId lookup.
+    // Path: /user_channels/{userFirebaseUid}/{channelId}
+    // 🔒 SECURED: Users can only read/write their own channel index
     "user_channels": {
-      "$userNumericId": {
-        ".read": "auth != null",
-        ".write": "auth != null"
+      "$userUid": {
+        ".read": "auth != null && auth.uid == $userUid",
+        ".write": "auth != null && auth.uid == $userUid"
       }
     },
 
     // ==================== TYPING INDICATORS ====================
     // Path: /typing/{channelId}/{userNumericId}
+    // 🔒 SECURED: Only channel participants can set typing indicators
     "typing": {
       "$channelId": {
-        // Read/Write: Any authenticated user (channel access controlled via /user_channels)
-        ".read": "auth != null",
+        // Read: Channel participants only
+        ".read": "auth != null && root.child('channels').child($channelId).child('participants').child(auth.uid).exists()",
         "$userNumericId": {
-          ".write": "auth != null"
+          ".write": "auth != null && root.child('channels').child($channelId).child('participants').child(auth.uid).exists()"
         }
       }
     },
 
     // ==================== PRESENCE ====================
-    // Path: /presence/{userNumericId}
+    // Path: /presence/{userFirebaseUid}
+    // 🔒 SECURED: Users can only update their own presence
     "presence": {
-      "$userNumericId": {
+      "$userUid": {
         // Read: Anyone authenticated (for online status display)
         ".read": "auth != null",
-        // Write: Any authenticated user (client validates own numericId)
-        ".write": "auth != null",
-        // Validate presence structure (field is 'status' not 'online')
+        // Write: Only the user themselves
+        ".write": "auth != null && auth.uid == $userUid",
+        // Validate presence structure
         ".validate": "newData.hasChildren(['status', 'lastSeen'])"
       }
     },
 
-    // ==================== SOCIAL FEED (Optional - if using RTDB for real-time feed) ====================
+    // ==================== SOCIAL FEED ====================
     "feed": {
       "$userId": {
         ".read": "auth != null && auth.uid == $userId",

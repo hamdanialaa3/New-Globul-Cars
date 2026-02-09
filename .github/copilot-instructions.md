@@ -1,7 +1,7 @@
 ````instructions
 # Koli One – Copilot Instructions
 
-**Stack:** React 18 + TS 5.6 (strict) + Styled-Components; Firebase 12 (Firestore, Functions Node 20, Auth, Storage); Algolia search  
+**Stack:** React 18 + TS 5.9 (strict) + Styled-Components; Vite 5.4; Firebase 12 (Firestore, Functions Node 20, Auth, Storage); Algolia search  
 **Market:** Bulgaria (bg/en, EUR)  
 **Domain:** https://koli.one  
 **Policy:** No file deletions—move unwanted files to `DDD/`
@@ -21,15 +21,15 @@
 ## Core commands (Windows-optimized)
 
 **Development:**
-- `npm start` - CRACO webpack dev server (port 3000, opens browser)
-- `npm run start:dev` - Optimized dev server (no browser, 4GB memory, recommended)
+- `npm start` - Vite dev server (port 5173)
+- `npm run start:dev` - Vite dev server (recommended)
 - `START_DEV.bat` - Windows helper script (auto port cleanup)
 - `npm run emulate` - Firebase emulators (Auth:9099, Firestore:8080, Functions:5001)
 
 **Quality gates:**
 - `npm run type-check` - TypeScript strict mode check (REQUIRED before commits)
 - `npm run build` - Production build (prebuild runs `ban-console.js`)
-- `npm test` - Jest test suite
+- `npm test` - Vitest test suite
 - `npm run test:ci` - CI mode with coverage
 
 **Deployment:**
@@ -155,7 +155,7 @@ Located in `src/services/` organized by domain:
 ## Coding patterns
 
 **Path Aliases (REQUIRED):**
-Configured in `tsconfig.json`, `craco.config.js`, `jest.config.js`:
+Configured in `tsconfig.json` and `vite.config.ts`:
 ```typescript
 import { UnifiedCarService } from '@/services/car/unified-car-service';
 import { useAuth } from '@/hooks/useAuth';
@@ -220,12 +220,12 @@ const collectionName = SellWorkflowCollections.getCollectionNameForVehicleType(v
 
 ## Testing
 
-**Framework:** Jest 27 + Testing Library + TypeScript
+**Framework:** Vitest 2.1.8 + Testing Library + TypeScript
 - **Location:** Co-locate in `__tests__/` folders
 - **Mocks:** `src/__mocks__/firebase/firebase-config.ts` (centralized Firebase mocks)
 - **Provider wrappers:** ALWAYS wrap renders with `ThemeProvider` + `LanguageProvider`
-- **Mock order:** Place `jest.mock(...)` BEFORE imports (hoisting issues)
-- **Path aliases:** `moduleNameMapper` in `jest.config.js` MUST match `tsconfig.json`
+- **Mock order:** Place `vi.mock(...)` BEFORE imports (hoisting issues)
+- **Path aliases:** `resolve.alias` in `vite.config.ts` MUST match `tsconfig.json`
 
 **Commands:**
 - `npm test` - Watch mode (interactive)
@@ -241,7 +241,7 @@ import { ThemeProvider } from 'styled-components';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import MyComponent from '../MyComponent';
 
-jest.mock('@/services/logger-service'); // Before imports!
+vi.mock('@/services/logger-service'); // Before imports!
 
 const renderWithProviders = (ui: React.ReactElement) => (
   render(
@@ -300,9 +300,9 @@ web/
 
 **Starting Development:**
 1. Recommended: `START_DEV.bat` (Windows) or `npm run start:dev`
-2. Alternative: `npm start` (slower, opens browser)
-3. First run: 35-65s (Webpack + TypeScript + ESLint)
-4. Hot reload: 2-5s (Fast Refresh)
+2. Alternative: `npm start`
+3. First run: ~5s (Vite + TypeScript + ESLint)
+4. Hot reload: <1s (Vite HMR)
 5. Troubleshoot: `docs/getting-started/FIXY.md`
 
 **Pre-Commit Checklist:**
@@ -315,7 +315,7 @@ web/
 **Debugging:**
 - **Port conflicts:** `npm run clean:3000` or `scripts/CLEAN_PORT_3000.bat`
 - **Memory issues:** `npm run clean:cache`, then `npm ci`
-- **Slow builds:** Check `craco.config.js` cache settings (memory cache in dev)
+- **Slow builds:** Check `vite.config.ts` settings (Vite uses esbuild for dev)
 - **Firebase emulator:** Access UI at `http://localhost:4000`
 - **Logs:** `logger-service` outputs to console in dev, Sentry in prod
 
@@ -384,10 +384,10 @@ web/
 
 - **TypeScript:** `strict` mode, target ES2017, no `any` types
 - **Node:** v20.x LTS for Functions, v20+ for local dev
-- **Bundler:** CRACO (webpack 5) - do NOT migrate to Vite without team approval
+- **Bundler:** Vite 5.4 (migrated from CRACO/webpack, with gzip+brotli compression)
 - **CI/CD:** GitHub Actions on `main` push (`.github/workflows/firebase-deploy.yml`)
 - **Monitoring:** Sentry for errors, Google Analytics 4 for events
-- **SEO:** Server-side rendering via Firebase Hosting, dynamic meta tags
+- **SEO:** SPA with Helmet meta tags, env-driven siteUrl, structured data (JSON-LD)
 - **Performance:** Code splitting by route, lazy loading, WebP images only
 - **Security:** CSP headers in `firebase.json`, no Firebase UIDs in URLs
 

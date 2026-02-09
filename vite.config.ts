@@ -2,6 +2,7 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import compression from 'vite-plugin-compression';
 
 // CRA → Vite Migration (TASK-15)
 // Migrated from craco.config.js (288 lines)
@@ -18,6 +19,18 @@ export default defineConfig(({ mode }) => {
           process: true,
         },
         protocolImports: true,
+      }),
+      // Gzip compression for production builds
+      compression({
+        algorithm: 'gzip',
+        ext: '.gz',
+        threshold: 1024, // Only compress files > 1KB
+      }),
+      // Brotli compression for modern browsers
+      compression({
+        algorithm: 'brotliCompress',
+        ext: '.br',
+        threshold: 1024,
       }),
     ],
     

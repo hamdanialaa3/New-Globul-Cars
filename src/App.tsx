@@ -4,6 +4,7 @@
 // Enhanced with Professional Page Loader and Scroll Management
 
 import React from 'react';
+import styled from 'styled-components';
 import { AppProviders } from './providers';
 import AppRoutes from './AppRoutes';
 import IndexedDBActivityTracker from './services/indexeddb-activity-tracker';
@@ -18,6 +19,26 @@ import ProgressBar from './components/ProgressBar';
 import { ErrorBoundary } from './components/ErrorBoundary';
 // NEW: Hook for robust loading state
 import { useInitialLoad } from './hooks/useInitialLoad';
+
+// ♿ Accessibility: Skip-to-content link for keyboard users
+const SkipToContent = styled.a`
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  padding: 0.75rem 1.5rem;
+  background: #FF7900;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 0 0 8px 8px;
+  text-decoration: none;
+  transition: top 0.2s ease;
+
+  &:focus {
+    top: 0;
+  }
+`;
 
 // 🔧 Dev utilities (available in console)
 if (process.env.NODE_ENV === 'development') {
@@ -74,6 +95,9 @@ const App: React.FC = () => {
 
   return (
     <ErrorBoundary>
+      <SkipToContent href="#main-content">
+        Преминете към съдържанието
+      </SkipToContent>
       <AppProviders>
         <AppContent />
       </AppProviders>

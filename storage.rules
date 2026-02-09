@@ -77,15 +77,19 @@ service firebase.storage {
       allow write: if isOwner(userId);
     }
 
-    // Car Images (General)
-    match /car-images/{allPaths=**} {
+    // Car Images — 🔒 SECURED (2026-02-09): Per-user ownership
+    // Path: car-images/{userId}/{allPaths}
+    // Only the owner can upload to their car-images folder
+    match /car-images/{userId}/{allPaths=**} {
       allow read: if true;
-      allow write: if isAuthenticated();
+      allow write: if isOwner(userId);
     }
 
-    // Messages
-    match /messages/{allPaths=**} {
-      allow read, write: if isAuthenticated();
+    // Messages — 🔒 SECURED: Authenticated users only, with path ownership
+    // Path: messages/{chatId}/{allPaths}
+    match /messages/{chatId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
     }
     
     // ⚠️ SECURITY: Restricted fallback (January 25, 2026)

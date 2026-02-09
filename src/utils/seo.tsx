@@ -46,7 +46,7 @@ export const SEO: React.FC<SEOProps> = ({
   currency = 'EUR',
   availability = 'in stock'
 }) => {
-  const siteUrl = 'https://koli.one'; // Update with your domain
+  const siteUrl = import.meta.env.VITE_SITE_URL || 'https://koli.one';
   const fullUrl = url ? `${siteUrl}${url}` : siteUrl;
   const fullImage = image.startsWith('http') ? image : `${siteUrl}${image}`;
 
@@ -118,8 +118,8 @@ export const SEO: React.FC<SEOProps> = ({
       <meta name="theme-color" content="#FF8F10" />
 
       {/* Language alternates (FREE - Multi-language SEO) */}
-      <link rel="alternate" hrefLang="bg" href={`${siteUrl}/bg${url || ''}`} />
-      <link rel="alternate" hrefLang="en" href={`${siteUrl}/en${url || ''}`} />
+      <link rel="alternate" hrefLang="bg" href={fullUrl} />
+      <link rel="alternate" hrefLang="en" href={fullUrl} />
       <link rel="alternate" hrefLang="x-default" href={fullUrl} />
     </Helmet>
   );
