@@ -1,0 +1,1170 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { marked } from 'marked';
+
+// --- CSS Styles (Embedded for Single File Portability) ---
+const styles = `
+/* --- VARIABLES --- */
+:root {
+  --bg-dark: #0b0f19;
+  --card-glass: rgba(255, 255, 255, 0.03);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --text-main: #ffffff;
+  --text-muted: #94a3b8;
+  --accent-blue: #3b82f6;
+  --accent-green: #10b981;
+  --accent-red: #ef4444; 
+  --accent-gold: #f59e0b; 
+  --accent-purple: #8b5cf6; 
+  --accent-teal: #14b8a6; 
+  --viber-purple: #7360f2;
+  --glow: 0 0 20px rgba(59, 130, 246, 0.15);
+  --ai-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
+}
+
+.auctions-wrapper {
+  font-family: 'Exo 2', sans-serif;
+  background-color: var(--bg-dark);
+  background-image: 
+      radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(245, 158, 11, 0.05) 0%, transparent 40%);
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.auctions-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* --- NAV & LANG SWITCHER --- */
+.auctions-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  position: sticky;
+  top: 0;
+  background: rgba(11, 15, 25, 0.85);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+}
+
+.auctions-logo {
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  background: linear-gradient(90deg, #fff, #94a3b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.lang-switch {
+  display: flex;
+  gap: 8px;
+  background: rgba(255,255,255,0.05);
+  padding: 4px;
+  border-radius: 30px;
+}
+
+.lang-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 0.9rem;
+}
+
+.lang-btn.active {
+  background: var(--accent-blue);
+  color: white;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+}
+
+/* --- HERO SECTION --- */
+.auctions-header {
+  text-align: center;
+  padding: 50px 0 30px;
+}
+
+.auctions-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  line-height: 1.2;
+  background: linear-gradient(to right, #ffffff, #a5b4fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.auctions-header p {
+  color: var(--text-muted);
+  font-size: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* --- SEARCH BAR --- */
+.search-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+  padding: 0 20px;
+}
+
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 12px 12px 45px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  color: white;
+  font-size: 1rem;
+  font-family: 'Exo 2', sans-serif;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.search-input:focus {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+  outline: none;
+}
+
+/* --- LIVE STATS TICKER --- */
+.live-stats-container {
+  margin-bottom: 60px;
+  display: flex;
+  justify-content: center;
+}
+
+.stats-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  background: rgba(16, 185, 129, 0.05);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 15px 30px;
+  border-radius: 50px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+.stat-item:last-child {
+  border-right: none;
+}
+
+.stat-icon {
+  color: var(--accent-green);
+  font-size: 1.2rem;
+  margin-right: 10px;
+  animation: pulse 2s infinite;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-number {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+}
+
+.live-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent-red);
+  border-radius: 50%;
+  margin-right: 8px;
+  box-shadow: 0 0 8px var(--accent-red);
+  animation: blink 1s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* --- SECTIONS --- */
+.market-section { margin-bottom: 50px; }
+
+.section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.section-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+}
+
+.section-flag-icon {
+  width: 32px;
+  height: 24px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 12px;
+  box-shadow: 0 0 10px rgba(255,255,255,0.1);
+}
+
+/* --- CARDS --- */
+.auctions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.auction-card {
+  background: var(--card-glass);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+}
+
+.card-bg-flag {
+  position: absolute;
+  top: -20px;
+  right: -30px;
+  width: 140px;
+  height: auto;
+  opacity: 0.07;
+  transform: rotate(15deg);
+  z-index: -1;
+  filter: grayscale(0.3);
+  transition: all 0.4s ease;
+  pointer-events: none;
+}
+
+.auction-card:hover .card-bg-flag {
+  opacity: 0.15;
+  transform: rotate(0deg) scale(1.1);
+  filter: grayscale(0);
+}
+
+.auction-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255,255,255,0.25);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+}
+
+.auction-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.06), transparent 40%);
+  opacity: 0;
+  transition: opacity 0.5s;
+  pointer-events: none;
+  z-index: 0;
+}
+.auction-card:hover::before { opacity: 1; }
+
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.card-tag {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.05);
+  align-self: flex-start;
+}
+
+.flag-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.1);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  flex-shrink: 0;
+}
+
+.flag-badge img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.us-tag { color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.2); }
+.de-tag { color: var(--accent-gold); border: 1px solid rgba(245, 158, 11, 0.2); }
+.eu-tag { color: var(--accent-blue); border: 1px solid rgba(59, 130, 246, 0.2); }
+.jp-tag { color: var(--accent-purple); border: 1px solid rgba(139, 92, 246, 0.2); }
+.gl-tag { color: var(--accent-teal); border: 1px solid rgba(20, 184, 166, 0.2); }
+
+.auction-card h3 {
+  font-size: 1.35rem;
+  color: #fff;
+  margin: 0;
+}
+
+.auction-card p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+  line-height: 1.4;
+  flex-grow: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-visit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.1);
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: 0.3s;
+  position: relative;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.btn-flag-img {
+  width: 20px;
+  height: 15px;
+  object-fit: cover;
+  border-radius: 2px;
+  margin-right: 10px;
+  transition: transform 0.3s;
+}
+
+.btn-visit:hover {
+  background: var(--text-main);
+  color: var(--bg-dark);
+  transform: scale(1.01);
+  box-shadow: 0 0 15px rgba(255,255,255,0.3);
+}
+
+.btn-visit:hover .btn-flag-img {
+  transform: scale(1.2) rotate(5deg);
+}
+
+/* --- FOOTER --- */
+.auctions-footer {
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding: 30px 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 40px;
+}
+
+/* --- AI & VIBER WIDGETS --- */
+.widgets-container {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 999;
+}
+
+.ai-fab, .viber-fab {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.ai-fab {
+  background: var(--ai-gradient);
+  animation: pulse-glow 3s infinite;
+}
+
+.viber-fab {
+  background: var(--viber-purple);
+  text-decoration: none;
+}
+
+.ai-fab:hover, .viber-fab:hover {
+  transform: scale(1.1);
+}
+
+.ai-fab i, .viber-fab i {
+  color: white;
+  font-size: 1.5rem;
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+  70% { box-shadow: 0 0 0 20px rgba(59, 130, 246, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+}
+
+.ai-chat-window {
+  position: fixed;
+  bottom: 100px;
+  right: 30px;
+  width: 350px;
+  height: 500px;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+}
+
+.ai-chat-window.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+}
+
+.chat-header {
+  padding: 15px 20px;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-title {
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+}
+
+.chat-title i {
+  color: #3b82f6;
+}
+
+.close-chat {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.message {
+  max-width: 85%;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.message.bot {
+  background: rgba(255,255,255,0.05);
+  align-self: flex-start;
+  border-bottom-left-radius: 2px;
+  color: #fff;
+}
+
+.message.user {
+  background: var(--accent-blue);
+  align-self: flex-end;
+  border-bottom-right-radius: 2px;
+  color: white;
+}
+
+.chat-input-area {
+  padding: 15px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  gap: 10px;
+}
+
+.chat-input {
+  flex: 1;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 15px;
+  border-radius: 20px;
+  color: white;
+  font-family: inherit;
+  outline: none;
+}
+
+.chat-input:focus {
+  border-color: var(--accent-blue);
+}
+
+.send-btn {
+  background: var(--ai-gradient);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.send-btn:hover {
+  transform: scale(1.05);
+}
+
+.api-key-container {
+  padding: 10px 20px;
+  background: rgba(239, 68, 68, 0.1);
+  font-size: 0.8rem;
+  display: none;
+}
+
+.api-key-input {
+  width: 100%;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 5px;
+  color: white;
+  border-radius: 4px;
+  margin-top: 5px;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .auctions-header h1 { font-size: 2rem; }
+  .auctions-grid { grid-template-columns: 1fr; }
+  .card-bg-flag { width: 100px; opacity: 0.1; }
+  .stats-bar { flex-direction: column; gap: 10px; border-radius: 20px; width: 100%; }
+  .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+  .stat-item:last-child { border-bottom: none; }
+  .ai-chat-window { width: 90%; right: 5%; bottom: 100px; }
+  .widgets-container { right: 20px; bottom: 20px; }
+}
+`;
+
+// --- Interfaces ---
+interface TranslationData {
+  header_title: string;
+  header_sub: string;
+  search_placeholder: string;
+  
+  // Section Titles
+  usa_title: string;
+  de_title: string;
+  eu_title: string;
+  jp_title: string;
+  global_title: string;
+  
+  // Stats
+  stat_live: string;
+  stat_sold: string;
+  stat_bidders: string;
+  stat_transit: string;
+
+  // Types
+  type_salvage: string;
+  type_insurance: string;
+  type_wholesale: string;
+  type_marketplace: string;
+  type_eu_wide: string;
+  type_auction: string;
+  type_leasing: string;
+  type_canada: string;
+  type_remarketing: string;
+  type_nordic: string;
+  type_export: string;
+  type_korea: string;
+  type_uae: string;
+
+  // Descriptions
+  desc_copart: string;
+  desc_iaai: string;
+  desc_manheim: string;
+  desc_impact: string;
+  desc_mobile: string;
+  desc_autoscout: string;
+  desc_adesa: string;
+  desc_bca: string;
+  desc_exleasing: string;
+  desc_kvd: string;
+  desc_sbt: string;
+  desc_beforward: string;
+  desc_uss: string;
+  desc_autowini: string;
+  desc_encar: string;
+  desc_emirates: string;
+
+  btn_visit: string;
+  footer_rights: string;
+  
+  [key: string]: string; // Index signature for dynamic access
+}
+
+type Lang = 'en' | 'bg';
+
+const translations: Record<Lang, TranslationData> = {
+  en: {
+      header_title: "Global Auction Gateways",
+      header_sub: "The ultimate directory for vehicle auctions from USA, Europe, Japan, and Korea.",
+      search_placeholder: "Search for auction (e.g. Copart, Japan, Salvage)...",
+      
+      usa_title: "USA & North America",
+      de_title: "German Market",
+      eu_title: "Europe & Leasing",
+      jp_title: "Japan Market",
+      global_title: "Korea, UAE & Others",
+      
+      stat_live: "Live Auctions",
+      stat_sold: "Sold Today (Global)",
+      stat_bidders: "Active Bidders",
+      stat_transit: "Vehicles in Transit",
+
+      type_salvage: "Salvage & Used",
+      type_insurance: "Insurance",
+      type_wholesale: "Wholesale",
+      type_marketplace: "Marketplace",
+      type_eu_wide: "EU Wide",
+      type_auction: "Dealer Auction",
+      type_leasing: "Ex-Leasing",
+      type_canada: "Canadian Auction",
+      type_remarketing: "Remarketing",
+      type_nordic: "Nordic Auction",
+      type_export: "Global Exporter",
+      type_korea: "South Korea",
+      type_uae: "Middle East",
+
+      desc_copart: "The world's largest online car auction. Huge inventory of repairable vehicles.",
+      desc_iaai: "Premium insurance auto auctions. Great for parts or restoration projects.",
+      desc_manheim: "Largest wholesale marketplace. Mostly for licensed dealers.",
+      desc_impact: "Leading salvage auction in Canada. Good for specific market needs.",
+      
+      desc_mobile: "Germany's biggest vehicle market. Essential for finding specific German cars.",
+      desc_autoscout: "Pan-European marketplace with a heavy focus on German inventory.",
+      
+      desc_adesa: "Professional platform for car traders across Europe. Formerly Adesa.",
+      desc_bca: "Europe's largest vehicle remarketing company with auctions in multiple countries.",
+      desc_exleasing: "Vehicles directly from banks and leasing companies across EU.",
+      desc_kvd: "Sweden's largest marketplace. Great for winter-spec vehicles and Volvos.",
+
+      desc_sbt: "One of the largest global used car exporters. Huge stock ready for shipping.",
+      desc_beforward: "Popular choice for export. Competitive prices and reliable shipping.",
+      desc_uss: "The largest auction group in Japan. Requires a registered agent to bid.",
+
+      desc_autowini: "The leading marketplace for Korean cars (Hyundai, Kia) for export.",
+      desc_encar: "Korea's largest used car trading platform. Massive domestic inventory.",
+      desc_emirates: "Leading auction in UAE. Luxury cars and government fleet sales.",
+
+      btn_visit: "Visit Website",
+      footer_rights: "All Rights Reserved."
+  },
+  bg: {
+      header_title: "Глобални Автомобилни Търгове",
+      header_sub: "Крайната директория за автомобилни търгове от САЩ, Европа, Япония и Корея.",
+      search_placeholder: "Търсете търг (напр. Copart, Япония, Salvage)...",
+
+      usa_title: "САЩ и Северна Америка",
+      de_title: "Немски Пазар",
+      eu_title: "Европа и Лизинг",
+      jp_title: "Японски Пазар",
+      global_title: "Корея, ОАЕ и Други",
+      
+      stat_live: "Активни Търгове",
+      stat_sold: "Продадени Днес (Глобално)",
+      stat_bidders: "Активни Купувачи",
+      stat_transit: "Автомобили на път",
+
+      type_salvage: "Употребявани & Salvage",
+      type_insurance: "Застрахователни",
+      type_wholesale: "Търговия на едро",
+      type_marketplace: "Обяви",
+      type_eu_wide: "Цяла Европа",
+      type_auction: "Дилърски Търгове",
+      type_leasing: "Върнати от Лизинг",
+      type_canada: "Канадски Търг",
+      type_remarketing: "Ремаркетинг",
+      type_nordic: "Скандинавски Пазар",
+      type_export: "Глобален Износител",
+      type_korea: "Южна Корея",
+      type_uae: "Близък Изток",
+
+      desc_copart: "Най-големият онлайн търг в света. Огромен избор на автомобили за ремонт.",
+      desc_iaai: "Премиум застрахователни търгове. Чудесни за части или реставрация.",
+      desc_manheim: "Най-големият пазар на едро. Основно за лицензирани дилъри.",
+      desc_impact: "Водещ търг за salvage автомобили в Канада.",
+
+      desc_mobile: "Най-големият пазар в Германия. Основен източник за немски коли.",
+      desc_autoscout: "Паневропейски пазар със силен фокус върху немския инвентар.",
+
+      desc_adesa: "Професионална платформа за търговци в Европа. Бившата Adesa.",
+      desc_bca: "Най-голямата компания за ремаркетинг в Европа с търгове в много страни.",
+      desc_exleasing: "Автомобили директно от банки и лизингови компании в ЕС.",
+      desc_kvd: "Най-големият пазар в Швеция. Страхотен за зимни автомобили и Волво.",
+
+      desc_sbt: "Един от най-големите износители. Огромен склад готов за доставка.",
+      desc_beforward: "Популярен избор за експорт. Конкурентни цени и надеждна доставка.",
+      desc_uss: "Най-голямата аукционна група в Япония. Изисква се регистриран агент.",
+
+      desc_autowini: "Водещият пазар за корейски автомобили (Hyundai, Kia) за износ.",
+      desc_encar: "Най-голямата платформа за употребявани коли в Корея. Огромен инвентар.",
+      desc_emirates: "Водещ търг в ОАЕ. Луксозни коли и правителствени разпродажби.",
+
+      btn_visit: "Към Сайта",
+      footer_rights: "Всички права запазени."
+  }
+};
+
+// --- Data Structure for Search ---
+interface AuctionItem {
+    id: string;
+    region: 'usa' | 'de' | 'eu' | 'jp' | 'global';
+    title: string;
+    descKey: string;
+    tagKey: string;
+    tagClass: string;
+    link: string;
+    flagBg: string;
+    badge: string;
+    btnFlag: string;
+}
+
+const AUCTIONS_DATA: AuctionItem[] = [
+    // USA
+    { id: 'copart', region: 'usa', title: 'Copart', descKey: 'desc_copart', tagKey: 'type_salvage', tagClass: 'us-tag', link: 'https://www.copart.com', flagBg: 'https://flagcdn.com/svg/us.svg', badge: 'https://flagcdn.com/svg/us.svg', btnFlag: 'https://flagcdn.com/w40/us.png' },
+    { id: 'iaai', region: 'usa', title: 'IAAI', descKey: 'desc_iaai', tagKey: 'type_insurance', tagClass: 'us-tag', link: 'https://www.iaai.com', flagBg: 'https://flagcdn.com/svg/us.svg', badge: 'https://flagcdn.com/svg/us.svg', btnFlag: 'https://flagcdn.com/w40/us.png' },
+    { id: 'manheim', region: 'usa', title: 'Manheim', descKey: 'desc_manheim', tagKey: 'type_wholesale', tagClass: 'us-tag', link: 'https://www.manheim.com', flagBg: 'https://flagcdn.com/svg/us.svg', badge: 'https://flagcdn.com/svg/us.svg', btnFlag: 'https://flagcdn.com/w40/us.png' },
+    { id: 'impact', region: 'usa', title: 'Impact Auto', descKey: 'desc_impact', tagKey: 'type_canada', tagClass: 'us-tag', link: 'https://www.impactauto.ca', flagBg: 'https://flagcdn.com/svg/ca.svg', badge: 'https://flagcdn.com/svg/ca.svg', btnFlag: 'https://flagcdn.com/w40/ca.png' },
+    
+    // Germany
+    { id: 'mobile', region: 'de', title: 'Mobile.de', descKey: 'desc_mobile', tagKey: 'type_marketplace', tagClass: 'de-tag', link: 'https://www.mobile.de', flagBg: 'https://flagcdn.com/svg/de.svg', badge: 'https://flagcdn.com/svg/de.svg', btnFlag: 'https://flagcdn.com/w40/de.png' },
+    { id: 'autoscout', region: 'de', title: 'AutoScout24', descKey: 'desc_autoscout', tagKey: 'type_eu_wide', tagClass: 'de-tag', link: 'https://www.autoscout24.com', flagBg: 'https://flagcdn.com/svg/eu.svg', badge: 'https://flagcdn.com/svg/eu.svg', btnFlag: 'https://flagcdn.com/w40/eu.png' },
+
+    // Europe
+    { id: 'openlane', region: 'eu', title: 'Openlane', descKey: 'desc_adesa', tagKey: 'type_auction', tagClass: 'eu-tag', link: 'https://www.openlane.eu', flagBg: 'https://flagcdn.com/svg/eu.svg', badge: 'https://flagcdn.com/svg/eu.svg', btnFlag: 'https://flagcdn.com/w40/eu.png' },
+    { id: 'bca', region: 'eu', title: 'BCA Europe', descKey: 'desc_bca', tagKey: 'type_remarketing', tagClass: 'eu-tag', link: 'https://www.bca.com', flagBg: 'https://flagcdn.com/svg/eu.svg', badge: 'https://flagcdn.com/svg/eu.svg', btnFlag: 'https://flagcdn.com/w40/eu.png' },
+    { id: 'exleasing', region: 'eu', title: 'Exleasingcar', descKey: 'desc_exleasing', tagKey: 'type_leasing', tagClass: 'eu-tag', link: 'https://www.exleasingcar.com', flagBg: 'https://flagcdn.com/svg/eu.svg', badge: 'https://flagcdn.com/svg/eu.svg', btnFlag: 'https://flagcdn.com/w40/eu.png' },
+    { id: 'kvd', region: 'eu', title: 'KVD Cars', descKey: 'desc_kvd', tagKey: 'type_nordic', tagClass: 'eu-tag', link: 'https://www.kvdcars.com', flagBg: 'https://flagcdn.com/svg/se.svg', badge: 'https://flagcdn.com/svg/se.svg', btnFlag: 'https://flagcdn.com/w40/se.png' },
+
+    // Japan
+    { id: 'sbt', region: 'jp', title: 'SBT Japan', descKey: 'desc_sbt', tagKey: 'type_export', tagClass: 'jp-tag', link: 'https://www.sbtjapan.com', flagBg: 'https://flagcdn.com/svg/jp.svg', badge: 'https://flagcdn.com/svg/jp.svg', btnFlag: 'https://flagcdn.com/w40/jp.png' },
+    { id: 'beforward', region: 'jp', title: 'Be Forward', descKey: 'desc_beforward', tagKey: 'type_export', tagClass: 'jp-tag', link: 'https://www.beforward.jp', flagBg: 'https://flagcdn.com/svg/jp.svg', badge: 'https://flagcdn.com/svg/jp.svg', btnFlag: 'https://flagcdn.com/w40/jp.png' },
+    { id: 'uss', region: 'jp', title: 'USS Auction', descKey: 'desc_uss', tagKey: 'type_auction', tagClass: 'jp-tag', link: 'http://www.ussnet.co.jp/en/', flagBg: 'https://flagcdn.com/svg/jp.svg', badge: 'https://flagcdn.com/svg/jp.svg', btnFlag: 'https://flagcdn.com/w40/jp.png' },
+
+    // Global
+    { id: 'autowini', region: 'global', title: 'Autowini', descKey: 'desc_autowini', tagKey: 'type_korea', tagClass: 'gl-tag', link: 'https://www.autowini.com', flagBg: 'https://flagcdn.com/svg/kr.svg', badge: 'https://flagcdn.com/svg/kr.svg', btnFlag: 'https://flagcdn.com/w40/kr.png' },
+    { id: 'encar', region: 'global', title: 'Encar', descKey: 'desc_encar', tagKey: 'type_korea', tagClass: 'gl-tag', link: 'http://www.globalencar.com', flagBg: 'https://flagcdn.com/svg/kr.svg', badge: 'https://flagcdn.com/svg/kr.svg', btnFlag: 'https://flagcdn.com/w40/kr.png' },
+    { id: 'emirates', region: 'global', title: 'Emirates', descKey: 'desc_emirates', tagKey: 'type_uae', tagClass: 'gl-tag', link: 'https://www.emiratesauction.com', flagBg: 'https://flagcdn.com/svg/ae.svg', badge: 'https://flagcdn.com/svg/ae.svg', btnFlag: 'https://flagcdn.com/w40/ae.png' },
+];
+
+// --- Helper Component: AuctionCard ---
+interface AuctionCardProps {
+    flagBg: string;
+    badge: string;
+    tag: string;
+    tagClass: string;
+    title: string;
+    desc: string;
+    link: string;
+    btnFlag: string;
+    btnText: string;
+    onMouseMove: (e: React.MouseEvent<HTMLDivElement>) => void;
+}
+
+const AuctionCard: React.FC<AuctionCardProps> = ({ 
+    flagBg, badge, tag, tagClass, title, desc, link, btnFlag, btnText, onMouseMove 
+}) => {
+    return (
+        <div className="auction-card" onMouseMove={onMouseMove}>
+            <img src={flagBg} className="card-bg-flag" alt="" />
+            <span className={`card-tag ${tagClass}`}>{tag}</span>
+            <div className="card-header-row">
+                <h3>{title}</h3>
+                <div className="flag-badge"><img src={badge} alt="" /></div>
+            </div>
+            <p>{desc}</p>
+            <a href={link} target="_blank" rel="noopener noreferrer" className="btn-visit">
+                <img src={btnFlag} className="btn-flag-img" alt="" />
+                <span>{btnText}</span>
+            </a>
+        </div>
+    );
+};
+
+// --- Main Component: GlobalAuctions ---
+export const GlobalAuctions: React.FC = () => {
+    // State
+    const [lang, setLang] = useState<Lang>('en');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [isChatOpen, setIsChatOpen] = useState(false);
+    const [apiKey, setApiKey] = useState('');
+    const [messages, setMessages] = useState<{ text: string; sender: 'user' | 'bot'; isHtml?: boolean }[]>([
+        { text: "Hello! I am your AI Auction Assistant ✨. Ask me about auction terms, repair estimates, or import rules to Bulgaria!", sender: 'bot' }
+    ]);
+    const [chatInput, setChatInput] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    // Stats State
+    const [liveAuctions, setLiveAuctions] = useState(4285);
+    const [soldToday, setSoldToday] = useState(15492);
+    const [activeBidders, setActiveBidders] = useState(124050);
+
+    const chatContainerRef = useRef<HTMLDivElement>(null);
+    const t = translations[lang];
+
+    // Scroll to bottom of chat
+    useEffect(() => {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+    }, [messages, isChatOpen]);
+
+    // Live Stats Simulation
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (Math.random() > 0.5) {
+                setSoldToday(prev => prev + Math.floor(Math.random() * 3));
+            }
+            setLiveAuctions(prev => prev + (Math.floor(Math.random() * 10) - 5));
+            setActiveBidders(prev => prev + (Math.floor(Math.random() * 50) - 20));
+        }, 3000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    // Interactive Card Effect
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        const card = e.currentTarget;
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty("--mouse-x", `${x}px`);
+        card.style.setProperty("--mouse-y", `${y}px`);
+    };
+
+    // Filter Logic
+    const filteredAuctions = AUCTIONS_DATA.filter(item => {
+        const titleMatch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
+        const descMatch = t[item.descKey]?.toLowerCase().includes(searchTerm.toLowerCase());
+        const regionMatch = item.region.toLowerCase().includes(searchTerm.toLowerCase());
+        return titleMatch || descMatch || regionMatch;
+    });
+
+    const renderSection = (regionCode: string, titleKey: string, flagUrl: string) => {
+        const regionItems = filteredAuctions.filter(item => item.region === regionCode);
+        if (regionItems.length === 0) return null;
+
+        return (
+            <section className="market-section">
+                <div className="section-header">
+                    <img src={flagUrl} alt="Region Flag" className="section-flag-icon" />
+                    <h2>{t[titleKey] || titleKey}</h2>
+                </div>
+                <div className="auctions-grid">
+                    {regionItems.map(item => (
+                        <AuctionCard 
+                            key={item.id}
+                            flagBg={item.flagBg}
+                            badge={item.badge}
+                            tag={t[item.tagKey] || item.tagKey}
+                            tagClass={item.tagClass}
+                            title={item.title}
+                            desc={t[item.descKey] || item.descKey}
+                            link={item.link}
+                            btnFlag={item.btnFlag}
+                            btnText={t.btn_visit}
+                            onMouseMove={handleMouseMove}
+                        />
+                    ))}
+                </div>
+            </section>
+        );
+    };
+
+    // Chat Functions
+    const callGemini = async (userPrompt: string): Promise<string> => {
+        if (!apiKey) {
+            return "Please enter a valid Gemini API Key in the settings field above to start.";
+        }
+
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+        
+        const systemPrompt = "You are an expert automotive consultant for 'AutoPort BG', a global car auction portal. You help users understand car auctions (Copart, IAAI, Mobile.de, etc.), estimate repair costs based on descriptions (give ranges in EUR/BGN), and explain import regulations to Bulgaria. Be concise, professional, and helpful. Use emojis occasionally. If asked about prices, give estimated market ranges.";
+
+        const payload = {
+            contents: [{ parts: [{ text: userPrompt }] }],
+            systemInstruction: { parts: [{ text: systemPrompt }] }
+        };
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error('Gemini API Error');
+        const data = await response.json();
+        return data.candidates[0].content.parts[0].text;
+    };
+
+    const handleSendMessage = async () => {
+        if (!chatInput.trim()) return;
+        const userText = chatInput;
+        setMessages(prev => [...prev, { text: userText, sender: 'user' }]);
+        setChatInput('');
+        setIsLoading(true);
+
+        try {
+            const response = await callGemini(userText);
+            const htmlContent = await marked.parse(response);
+            setMessages(prev => [...prev, { text: htmlContent, sender: 'bot', isHtml: true }]);
+        } catch (error) {
+            setMessages(prev => [...prev, { text: "Error: Please check your API Key or try again.", sender: 'bot' }]);
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') handleSendMessage();
+    };
+
+    return (
+        <div className="auctions-wrapper">
+            <style>{styles}</style>
+            <div className="auctions-container">
+                {/* Nav */}
+                <nav className="auctions-nav">
+                    <div className="auctions-logo">Auto<span style={{color:'var(--accent-blue)'}}>Port</span> BG</div>
+                    <div className="lang-switch">
+                        <button className={`lang-btn ${lang === 'en' ? 'active' : ''}`} onClick={() => setLang('en')}>EN</button>
+                        <button className={`lang-btn ${lang === 'bg' ? 'active' : ''}`} onClick={() => setLang('bg')}>BG</button>
+                    </div>
+                </nav>
+
+                {/* Header */}
+                <header className="auctions-header">
+                    <h1>{t.header_title}</h1>
+                    <p>{t.header_sub}</p>
+                </header>
+
+                {/* Search Bar (New Feature) */}
+                <div className="search-container">
+                    <div className="search-wrapper">
+                        <i className="fa-solid fa-search search-icon"></i>
+                        <input 
+                            type="text" 
+                            className="search-input" 
+                            placeholder={t.search_placeholder}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+                </div>
+
+                {/* Live Stats */}
+                <div className="live-stats-container">
+                    <div className="stats-bar">
+                        <div className="stat-item">
+                            <span className="live-dot"></span>
+                            <div className="stat-content">
+                                <span className="stat-number">{liveAuctions.toLocaleString()}</span>
+                                <span className="stat-label">{t.stat_live}</span>
+                            </div>
+                        </div>
+                        <div className="stat-item">
+                            <i className="fa-solid fa-gavel stat-icon"></i>
+                            <div className="stat-content">
+                                <span className="stat-number">{soldToday.toLocaleString()}</span>
+                                <span className="stat-label">{t.stat_sold}</span>
+                            </div>
+                        </div>
+                        <div className="stat-item">
+                            <i className="fa-solid fa-users stat-icon"></i>
+                            <div className="stat-content">
+                                <span className="stat-number">{activeBidders.toLocaleString()}</span>
+                                <span className="stat-label">{t.stat_bidders}</span>
+                            </div>
+                        </div>
+                        <div className="stat-item">
+                            <i className="fa-solid fa-ship stat-icon"></i>
+                            <div className="stat-content">
+                                <span className="stat-number">8,730</span>
+                                <span className="stat-label">{t.stat_transit}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Dynamic Sections */}
+                {renderSection('usa', 'usa_title', 'https://flagcdn.com/w80/us.png')}
+                {renderSection('de', 'de_title', 'https://flagcdn.com/w80/de.png')}
+                {renderSection('eu', 'eu_title', 'https://flagcdn.com/w80/eu.png')}
+                {renderSection('jp', 'jp_title', 'https://flagcdn.com/w80/jp.png')}
+                {renderSection('global', 'global_title', 'https://flagcdn.com/w80/kr.png')}
+
+                {/* Empty State */}
+                {filteredAuctions.length === 0 && (
+                    <div style={{textAlign: 'center', padding: '50px', color: 'var(--text-muted)'}}>
+                        <i className="fa-solid fa-ghost" style={{fontSize: '3rem', marginBottom: '15px'}}></i>
+                        <p>No auctions found matching "{searchTerm}"</p>
+                    </div>
+                )}
+
+                {/* Footer */}
+                <footer className="auctions-footer">
+                    <p>&copy; 2024 AutoPort BG. {t.footer_rights}</p>
+                </footer>
+            </div>
+
+            {/* Widgets (Viber & AI) */}
+            <div className="widgets-container">
+                {/* Viber Button (New Feature) */}
+                <a href="viber://chat?number=%2B359000000000" className="viber-fab" title="Chat on Viber">
+                    <i className="fa-brands fa-viber"></i>
+                </a>
+
+                {/* AI Button */}
+                <div 
+                    className="ai-fab" 
+                    onClick={() => setIsChatOpen(true)}
+                    style={{ transform: isChatOpen ? 'scale(0)' : 'scale(1)' }}
+                    title="AI Assistant"
+                >
+                    <i className="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+            </div>
+
+            <div className={`ai-chat-window ${isChatOpen ? 'active' : ''}`}>
+                <div className="chat-header">
+                    <span className="chat-title"><i className="fa-solid fa-robot"></i> AutoPort AI Advisor</span>
+                    <button className="close-chat" onClick={() => setIsChatOpen(false)}><i className="fa-solid fa-xmark"></i></button>
+                </div>
+
+                {!apiKey && (
+                    <div className="api-key-container" style={{display: 'block'}}>
+                        <label>API Key Required (Gemini):</label>
+                        <input 
+                            type="password" 
+                            className="api-key-input" 
+                            placeholder="Paste your Gemini API Key here..."
+                            onChange={(e) => setApiKey(e.target.value)}
+                            value={apiKey}
+                        />
+                    </div>
+                )}
+
+                <div className="chat-messages" ref={chatContainerRef}>
+                    {messages.map((msg, idx) => (
+                        <div key={idx} className={`message ${msg.sender}`}>
+                            {msg.isHtml ? <span dangerouslySetInnerHTML={{ __html: msg.text }} /> : msg.text}
+                        </div>
+                    ))}
+                    {isLoading && <div className="message bot"><i className="fa-solid fa-spinner fa-spin"></i> Thinking...</div>}
+                </div>
+
+                <div className="chat-input-area">
+                    <input 
+                        type="text" 
+                        className="chat-input" 
+                        placeholder="Ask about a car or auction term..."
+                        value={chatInput}
+                        onChange={(e) => setChatInput(e.target.value)}
+                        onKeyPress={handleKeyPress}
+                    />
+                    <button className="send-btn" onClick={handleSendMessage}><i className="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default GlobalAuctions;

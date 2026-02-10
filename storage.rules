@@ -96,10 +96,11 @@ service firebase.storage {
     // Previous: Allowed all authenticated writes (permissive)
     // Current: Block everything not explicitly allowed above
     // 
-    // If a legitimate upload path is blocked, add it explicitly above with proper owner checks
+    // All public-read paths (car images, profiles, media) are explicitly allowed above.
+    // Unmatched paths require authentication to prevent unintended data exposure.
     // DO NOT revert to permissive fallback without security review
     match /{allPaths=**} {
-      allow read: if true; // Public read maintained for compatibility
+      allow read: if isAuthenticated(); // Auth required for unmatched paths
       allow write: if false; // ✅ Block all writes except explicit paths above
     }
   }
