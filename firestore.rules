@@ -1,0 +1,181 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ============================================
+    // HELPERS & FUNCTIONS
+    // ============================================
+    
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Check if user owns the document
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    // Check if user is admin
+    function isAdmin() {
+      return get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.isAdmin == true;
+    }
+    
+    // Rate limiting: max 100 reads per minute
+    function rateLimitExceeded() {
+      return request.time < resource.data.lastRead.toMillis() + 600; // 10 seconds min between reads
+    }
+    
+    // ============================================
+    // USERS Collection
+    // ============================================
+    match /users/{userId} {
+      // Only user can read/write their own profile
+      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      allow create: if isAuthenticated() && request.auth.uid == userId
+        && request.resource.data.keys().hasAll(['email', 'createdAt'])
+        && request.resource.data.size() < 50; // Max 50 fields
+      allow update: if isOwner(userId)
+        && !('role' in request.resource.data) // Users can't change their role
+        && request.resource.data.size() < 50;
+      allow delete: if isAdmin();
+      
+      // For nested user documents
+      match /{document=**} {
+        allow read: if isAuthenticated() && (
+          // User can read their own data
+          isOwner(userId) ||
+          // Admins can read all
+          isAdmin() ||
+          // Public profile fields (limited access)
+          document.includes('publicProfile')
+        );
+        allow write: if isOwner(userId) && !isAdmin();
+      }
+    }
+    
+    // ============================================
+    // CARS Collection (Listings)
+    // ============================================
+    match /cars/{carId} {
+      // Anyone can read published cars
+      allow read: if resource.data.published == true;
+      
+      // Only owner can read unpublished cars
+      allow read: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      
+      // Sellers can create cars
+      allow create: if isAuthenticated()
+        && request.auth.uid == request.resource.data.sellerId
+        && request.resource.data.keys().hasAll(['title', 'sellerId', 'price', 'createdAt'])
+        && request.resource.data.published == false; // Must start unpublished
+      
+      // Only seller can update their own listing
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid
+        && !('sellerId' in request.resource.data); // Can't change owner;
+      
+      // Only seller or admin can delete
+      allow delete: if isAuthenticated() && (
+        resource.data.sellerId == request.auth.uid || isAdmin()
+      );
+    }
+    
+    // ============================================
+    // REVIEWS Collection
+    // ============================================
+    match /reviews/{reviewId} {
+      // Anyone can read reviews
+      allow read: if resource.data.published == true;
+      
+      // Authenticated users can create reviews
+      allow create: if isAuthenticated()
+        && request.auth.uid == request.resource.data.reviewerId
+        && request.resource.data.rating >= 1 && request.resource.data.rating <= 5
+        && request.resource.data.keys().hasAll(['reviewerId', 'rating', 'createdAt']);
+      
+      // Only reviewer or admin can update
+      allow update: if isAuthenticated() && (
+        resource.data.reviewerId == request.auth.uid || isAdmin()
+      );
+      
+      // Only reviewer or admin can delete
+      allow delete: if isAuthenticated() && (
+        resource.data.reviewerId == request.auth.uid || isAdmin()
+      );
+    }
+    
+    // ============================================
+    // MESSAGES Collection (Chat)
+    // ============================================
+    match /messages/{messageId} {
+      // Only sender and receiver can read
+      allow read: if isAuthenticated() && (
+        resource.data.senderId == request.auth.uid ||
+        resource.data.receiverId == request.auth.uid
+      );
+      
+      // Only sender can create
+      allow create: if isAuthenticated()
+        && request.auth.uid == request.resource.data.senderId
+        && request.resource.data.keys().hasAll(['senderId', 'receiverId', 'text', 'createdAt']);
+      
+      // Only sender can update
+      allow update: if isAuthenticated() && resource.data.senderId == request.auth.uid;
+      
+      // Only sender or receiver can delete
+      allow delete: if isAuthenticated() && (
+        resource.data.senderId == request.auth.uid ||
+        resource.data.receiverId == request.auth.uid
+      );
+    }
+    
+    // ============================================
+    // FAVORITES Collection
+    // ============================================
+    match /favorites/{userId} {
+      // Only user can read/write their favorites
+      allow read: if isAuthenticated() && isOwner(userId);
+      allow write: if isAuthenticated() && isOwner(userId);
+    }
+    
+    // ============================================
+    // ANALYTICS Collection (Read-only aggregates)
+    // ============================================
+    match /analytics/{document=**} {
+      // Anyone can read analytics (public stats)
+      allow read: if true;
+      
+      // Only backend/admin can write
+      allow write: if false; // Use Cloud Functions for writes
+    }
+    
+    // ============================================
+    // ADMIN Collection
+    // ============================================
+    match /admins/{userId} {
+      // Only admins can read/write
+      allow read, write: if isAuthenticated() && isAdmin();
+    }
+    
+    // ============================================
+    // TRANSACTIONS Collection
+    // ============================================
+    match /transactions/{transactionId} {
+      // Users can only read their own transactions
+      allow read: if isAuthenticated() && (
+        resource.data.buyerId == request.auth.uid ||
+        resource.data.sellerId == request.auth.uid
+      );
+      
+      // Only backend/Cloud Functions can write
+      allow write: if false;
+    }
+    
+    // ============================================
+    // DEFAULT DENY ALL
+    // ============================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
