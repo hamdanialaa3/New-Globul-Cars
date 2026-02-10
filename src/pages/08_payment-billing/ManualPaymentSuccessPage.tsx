@@ -1,8 +1,10 @@
 /**
  * Manual Payment Success Page
  * Shows confirmation and next steps after manual payment submission
+ * Theme: "Royal Night" integration
  * 
  * @since January 9, 2026
+ * Updated: February 10, 2026
  */
 
 import React, { useEffect, useState, useRef } from 'react';
@@ -14,6 +16,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthProvider';
 import { manualPaymentService } from '../../services/payment/manual-payment-service';
 import { BANK_DETAILS } from '../../config/bank-details';
+import { subscriptionTheme } from '../../components/subscription/subscription-theme';
 import type { ManualPaymentTransaction } from '../../types/payment.types';
 import { logger } from '../../services/logger-service';
 
@@ -177,7 +180,7 @@ const ManualPaymentSuccessPage: React.FC = () => {
 
         {/* Upload Proof Section - NEW */}
         {transaction && transaction.status === 'pending_manual_verification' && (
-          <UploadCard highlight={!uploadedUrl}>
+          <UploadCard $highlight={!uploadedUrl}>
             <CardTitle style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Upload size={20} />
               {language === 'bg' ? 'Качете платежно нареждане' : 'Upload Proof of Payment'}
@@ -341,25 +344,13 @@ export default ManualPaymentSuccessPage;
 // ============================================================================
 
 const scaleIn = keyframes`
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
 `;
 
 const fadeInUp = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 `;
 
 // ============================================================================
@@ -368,11 +359,16 @@ const fadeInUp = keyframes`
 
 const PageContainer = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  background-color: ${subscriptionTheme.colors.bg.primary};
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(124, 58, 237, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.15) 0px, transparent 50%);
   padding: 40px 20px;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: white;
+  font-family: 'Inter', sans-serif;
 `;
 
 const ContentWrapper = styled.div`
@@ -383,7 +379,7 @@ const ContentWrapper = styled.div`
 
 const LoadingText = styled.div`
   color: #fff;
-  font-size: 18px;
+  font-size: 1.1rem;
   text-align: center;
 `;
 
@@ -402,7 +398,7 @@ const SuccessIcon = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 700;
   color: #fff;
   text-align: center;
@@ -410,7 +406,7 @@ const Title = styled.h1`
 `;
 
 const Subtitle = styled.p`
-  font-size: 18px;
+  font-size: 1.1rem;
   color: rgba(255, 255, 255, 0.8);
   text-align: center;
   margin: 0 0 40px 0;
@@ -418,16 +414,16 @@ const Subtitle = styled.p`
 `;
 
 const DetailsCard = styled.div`
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 16px;
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
   padding: 32px;
   margin-bottom: 24px;
 `;
 
 const CardTitle = styled.h3`
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 600;
   color: #fff;
   margin: 0 0 24px 0;
@@ -446,13 +442,13 @@ const DetailRow = styled.div`
 `;
 
 const DetailLabel = styled.span`
-  font-size: 14px;
+  font-size: 0.95rem;
   color: rgba(255, 255, 255, 0.7);
   font-weight: 500;
 `;
 
 const DetailValue = styled.span`
-  font-size: 16px;
+  font-size: 1rem;
   color: #fff;
   font-weight: 600;
 `;
@@ -464,8 +460,8 @@ const ReferenceValue = styled.div`
 `;
 
 const ReferenceText = styled.span`
-  font-size: 16px;
-  color: #FFC107;
+  font-size: 1.1rem;
+  color: ${subscriptionTheme.colors.text.accent};
   font-weight: 700;
   font-family: 'Courier New', monospace;
 `;
@@ -476,15 +472,15 @@ const CopyButton = styled.button`
   justify-content: center;
   width: 32px;
   height: 32px;
-  background: rgba(255, 193, 7, 0.2);
-  border: 1px solid rgba(255, 193, 7, 0.5);
+  background: rgba(168, 85, 247, 0.2);
+  border: 1px solid rgba(168, 85, 247, 0.5);
   border-radius: 6px;
-  color: #FFC107;
+  color: ${subscriptionTheme.colors.text.accent};
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(255, 193, 7, 0.3);
+    background: rgba(168, 85, 247, 0.3);
     transform: scale(1.1);
   }
 `;
@@ -499,18 +495,18 @@ const StatusBadge = styled.span<{ status: string }>`
     : 'rgba(0, 166, 81, 0.5)'};
   border-radius: 20px;
   color: ${props => props.status === 'pending_manual_verification' ? '#FFC107' : '#00A651'};
-  font-size: 14px;
+  font-size: 0.9rem;
   font-weight: 600;
 `;
 
 /* New Upload Styles */
-const UploadCard = styled(DetailsCard) <{ highlight?: boolean }>`
-    border: 2px dashed ${props => props.highlight ? '#0075EB' : 'rgba(255, 255, 255, 0.15)'};
-    background: ${props => props.highlight ? 'rgba(0, 117, 235, 0.05)' : 'rgba(255, 255, 255, 0.08)'};
+const UploadCard = styled(DetailsCard) <{ $highlight?: boolean }>`
+    border: 2px dashed ${props => props.$highlight ? subscriptionTheme.colors.primary.main : 'rgba(255, 255, 255, 0.15)'};
+    background: ${props => props.$highlight ? 'rgba(124, 58, 237, 0.05)' : 'rgba(30, 41, 59, 0.6)'};
 `;
 
 const UploadDescription = styled.p`
-    font-size: 14px;
+    font-size: 0.95rem;
     color: rgba(255, 255, 255, 0.7);
     margin-bottom: 24px;
     line-height: 1.5;
@@ -538,8 +534,8 @@ const UploadIconWrapper = styled.div`
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: rgba(0, 117, 235, 0.2);
-    color: #0075EB;
+    background: rgba(168, 85, 247, 0.2);
+    color: ${subscriptionTheme.colors.text.accent};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -547,14 +543,14 @@ const UploadIconWrapper = styled.div`
 `;
 
 const UploadText = styled.div`
-    font-size: 16px;
+    font-size: 1.1rem;
     font-weight: 600;
     color: #fff;
     margin-bottom: 8px;
 `;
 
 const UploadSubtext = styled.div`
-    font-size: 13px;
+    font-size: 0.9rem;
     color: rgba(255, 255, 255, 0.5);
 `;
 
@@ -573,7 +569,7 @@ const UploadedInfo = styled.div`
 `;
 
 const UploadedText = styled.div`
-    font-size: 16px;
+    font-size: 1.1rem;
     font-weight: 600;
     color: #00A651;
     margin-bottom: 4px;
@@ -583,7 +579,7 @@ const ReUploadButton = styled.button`
     background: none;
     border: none;
     color: rgba(255, 255, 255, 0.6);
-    font-size: 13px;
+    font-size: 0.9rem;
     cursor: pointer;
     padding: 0;
     text-decoration: underline;
@@ -594,16 +590,16 @@ const ReUploadButton = styled.button`
 `;
 
 const StepsCard = styled.div`
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 32px;
   margin-bottom: 24px;
 `;
 
 const StepsTitle = styled.h3`
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 600;
   color: #fff;
   margin: 0 0 24px 0;
@@ -627,10 +623,10 @@ const StepNumber = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0075EB, #00A651);
+  background: ${subscriptionTheme.gradients.dealer};
   border-radius: 50%;
   color: #fff;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   flex-shrink: 0;
 `;
@@ -640,14 +636,14 @@ const StepContent = styled.div`
 `;
 
 const StepTitle = styled.div`
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #fff;
   margin-bottom: 6px;
 `;
 
 const StepDescription = styled.div`
-  font-size: 14px;
+  font-size: 0.95rem;
   color: rgba(255, 255, 255, 0.7);
   line-height: 1.5;
 `;
@@ -655,12 +651,13 @@ const StepDescription = styled.div`
 const InfoBox = styled.div`
   display: flex;
   gap: 16px;
-  padding: 20px;
-  background: rgba(0, 117, 235, 0.1);
-  border: 1px solid rgba(0, 117, 235, 0.3);
-  border-radius: 12px;
+  padding: 24px;
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 20px;
   margin-bottom: 24px;
-  color: #0075EB;
+  color: ${subscriptionTheme.colors.text.accent};
+  align-items: flex-start;
 `;
 
 const InfoText = styled.div`
@@ -668,14 +665,14 @@ const InfoText = styled.div`
 `;
 
 const InfoTitle = styled.div`
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #fff;
   margin-bottom: 6px;
 `;
 
 const InfoDescription = styled.div`
-  font-size: 14px;
+  font-size: 0.95rem;
   color: rgba(255, 255, 255, 0.8);
   line-height: 1.6;
 `;
@@ -685,19 +682,19 @@ const ContactCard = styled.div`
   padding: 24px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  border-radius: 20px;
   margin-bottom: 32px;
 `;
 
 const ContactTitle = styled.h4`
-  font-size: 18px;
+  font-size: 1.1rem;
   font-weight: 600;
   color: #fff;
   margin: 0 0 12px 0;
 `;
 
 const ContactText = styled.p`
-  font-size: 14px;
+  font-size: 0.95rem;
   color: rgba(255, 255, 255, 0.7);
   margin: 0 0 16px 0;
 `;
@@ -714,18 +711,17 @@ const ContactButton = styled.a`
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: rgba(0, 117, 235, 0.2);
-  border: 1px solid rgba(0, 117, 235, 0.4);
-  border-radius: 8px;
-  color: #0075EB;
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 12px;
+  color: ${subscriptionTheme.colors.text.accent};
   text-decoration: none;
-  font-size: 14px;
+  font-size: 0.95rem;
   font-weight: 500;
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(0, 117, 235, 0.3);
-    border-color: rgba(0, 117, 235, 0.6);
+    background: rgba(168, 85, 247, 0.2);
     transform: translateY(-2px);
   }
 `;
@@ -744,19 +740,19 @@ const PrimaryButton = styled.button`
   justify-content: center;
   gap: 10px;
   padding: 16px 24px;
-  background: linear-gradient(135deg, #0075EB, #00A651);
+  background: ${subscriptionTheme.gradients.dealer};
   border: none;
   border-radius: 12px;
   color: #fff;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 117, 235, 0.3);
+  box-shadow: ${subscriptionTheme.shadows.glow};
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 117, 235, 0.5);
+    filter: brightness(1.1);
   }
 `;
 
@@ -772,7 +768,7 @@ const SecondaryButton = styled.button`
   border: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
   color: #fff;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;

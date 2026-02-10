@@ -290,17 +290,26 @@ const LoadingFallback = styled.div<{ $isDark: boolean }>`
   .spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid ${props => props.$isDark
-    ? 'rgba(255,255,255,0.1)'
-    : 'rgba(12,26,42,0.1)'};
-    border-top-color: ${props => props.$isDark
-    ? '#5eb3ff'
-    : '#0c5bad'};
     border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        #FF8F10 90deg,
+        transparent 100deg,
+        transparent 360deg
+      );
+      animation: led-orbit 1.2s linear infinite;
+    }
   }
 
-  @keyframes spin {
+  @keyframes led-orbit {
     to { transform: rotate(360deg); }
   }
 `;

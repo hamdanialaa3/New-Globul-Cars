@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import {
   Users,
   Car,
@@ -9,9 +9,13 @@ import {
   TrendingUp,
   Activity,
   MapPin,
-  Clock
+  Clock,
+  ArrowUpRight,
+  Zap
 } from 'lucide-react';
 import { RealTimeAnalytics, UserActivity } from '../../services/super-admin-types';
+import { adminTheme } from './styles/admin-theme';
+import { useAdminLang } from '../../contexts/AdminLanguageContext';
 
 interface AdminOverviewProps {
   analytics: RealTimeAnalytics | null;
@@ -19,121 +23,178 @@ interface AdminOverviewProps {
   onUserClick: (user: any) => void;
 }
 
+const pulse = keyframes`
+  0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+`;
+
 const OverviewContainer = styled.div`
-  background: #0f1419;
-  border: 1px solid #2d3748;
-  border-radius: 8px;
-  padding: 24px;
-  margin: 0 20px 20px 20px;
-  color: #f8fafc;
+  /* No background, let the shell's aurora show through */
+  color: ${adminTheme.colors.text.primary};
 `;
 
 const StatsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
 `;
 
 const StatCard = styled.div`
-  background: #1e2432;
-  border: 1px solid #2d3748;
-  border-radius: 8px;
+  ${adminTheme.glass.card}
+  border-radius: 16px;
   padding: 24px;
-  text-align: center;
-  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(15, 23, 42, 0.6);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, ${adminTheme.colors.accent.primary}, ${adminTheme.colors.accent.secondary});
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
   
   &:hover {
-    border-color: #ff8c61;
-    background: #252b3a;
-    transform: translateY(-2px);
+    transform: translateY(-4px);
+    box-shadow: ${adminTheme.shadows.glow};
+    border-color: rgba(99, 102, 241, 0.3);
+
+    &::before {
+      opacity: 1;
+    }
+
+    .icon-wrapper {
+      transform: scale(1.1) rotate(5deg);
+      background: rgba(99, 102, 241, 0.2);
+    }
   }
 `;
 
-const StatIcon = styled.div`
-  background: #252b3a;
-  color: #ff8c61;
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
+const CardHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+`;
+
+const IconWrapper = styled.div`
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(30, 41, 59, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 16px;
-  font-size: 20px;
-  border: 1px solid #2d3748;
+  color: ${adminTheme.colors.accent.secondary};
+  transition: all 0.3s ease;
+  border: 1px solid ${adminTheme.colors.border.light};
+
+  svg {
+    filter: drop-shadow(0 0 2px rgba(168, 85, 247, 0.5));
+  }
+`;
+
+const TrendBadge = styled.div<{ $positive: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: ${p => p.$positive ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)'};
+  color: ${p => p.$positive ? adminTheme.colors.status.success : adminTheme.colors.status.error};
+  border: 1px solid ${p => p.$positive ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'};
 `;
 
 const StatValue = styled.div`
-  font-size: 28px;
-  font-weight: 700;
-  color: #f8fafc;
-  margin-bottom: 6px;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -1px;
+  margin-bottom: 4px;
+  text-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+  font-family: ${adminTheme.typography.fontFamily.mono};
 `;
 
 const StatLabel = styled.div`
-  font-size: 12px;
-  color: #cbd5e1;
-  font-weight: 600;
-  margin-bottom: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 0.875rem;
+  color: ${adminTheme.colors.text.secondary};
+  font-weight: 500;
 `;
 
-const StatChange = styled.div<{ $positive: boolean }>`
-  font-size: 11px;
-  font-weight: 700;
-  color: ${props => props.$positive ? '#4ade80' : '#f87171'};
+const SectionHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 40px 0 20px 0;
+`;
+
+const LiveIndicator = styled.div`
+  width: 10px;
+  height: 10px;
+  background: ${adminTheme.colors.status.success};
+  border-radius: 50%;
+  box-shadow: 0 0 10px ${adminTheme.colors.status.success};
+  animation: ${pulse} 2s infinite;
 `;
 
 const SectionTitle = styled.h3`
-  color: #ff8c61;
-  font-size: 16px;
+  font-size: 1.25rem;
   font-weight: 700;
-  margin: 32px 0 20px 0;
+  color: #fff;
+  letter-spacing: -0.5px;
   display: flex;
   align-items: center;
   gap: 10px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
 `;
 
-const UserActivityTable = styled.div`
-  background: #1e2432;
-  border: 1px solid #2d3748;
-  border-radius: 8px;
+const TableCard = styled.div`
+  ${adminTheme.glass.card}
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  padding: 0;
 `;
 
 const TableHeader = styled.div`
-  background: #141a21;
-  color: #cbd5e1;
-  padding: 16px 20px;
-  font-weight: 700;
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-  gap: 12px;
-  align-items: center;
-  font-size: 11px;
+  grid-template-columns: 2fr 1fr 1.5fr 1.5fr 2fr;
+  padding: 16px 24px;
+  background: rgba(15, 23, 42, 0.8);
+  border-bottom: 1px solid ${adminTheme.colors.border.subtle};
+  color: ${adminTheme.colors.text.muted};
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+  font-weight: 600;
 `;
 
 const TableRow = styled.div`
-  padding: 14px 20px;
-  border-bottom: 1px solid #2d3748;
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-  gap: 12px;
+  grid-template-columns: 2fr 1fr 1.5fr 1.5fr 2fr;
+  padding: 16px 24px;
   align-items: center;
+  border-bottom: 1px solid ${adminTheme.colors.border.subtle};
+  transition: all 0.2s;
   cursor: pointer;
-  transition: all 0.2s ease;
-  
+
   &:hover {
-    background: #252b3a;
+    background: rgba(99, 102, 241, 0.05);
+
+    ${IconWrapper} {
+      background: ${adminTheme.colors.accent.primary};
+      color: white;
+    }
   }
-  
+
   &:last-child {
     border-bottom: none;
   }
@@ -142,49 +203,70 @@ const TableRow = styled.div`
 const UserInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  
+  [dir="rtl"] & {
+    gap: 12px;
+  }
 `;
 
-const UserAvatar = styled.div`
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  background: #252b3a;
-  color: #ff8c61;
+const Avatar = styled.div`
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, ${adminTheme.colors.bg.tertiary}, ${adminTheme.colors.bg.secondary});
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 14px;
-  border: 1px solid #2d3748;
+  color: ${adminTheme.colors.text.accent};
+  border: 1px solid ${adminTheme.colors.border.light};
+  font-size: 1rem;
 `;
 
-const UserDetails = styled.div`
+const InfoText = styled.div`
   display: flex;
   flex-direction: column;
+  
+  strong {
+    color: ${adminTheme.colors.text.primary};
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  
+  span {
+    color: ${adminTheme.colors.text.muted};
+    font-size: 0.75rem;
+  }
 `;
 
-const UserName = styled.div`
-  font-weight: 600;
-  color: #f8fafc;
-  font-size: 13px;
-`;
-
-const UserEmail = styled.div`
-  color: #94a3b8;
-  font-size: 11px;
-`;
-
-const StatusBadge = styled.div<{ $online: boolean }>`
+const StatusChip = styled.span<{ $online: boolean }>`
   display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 10px;
-  font-weight: 700;
-  background: ${props => props.$online ? 'rgba(74, 222, 128, 0.1)' : 'rgba(248, 113, 113, 0.1)'};
-  color: ${props => props.$online ? '#4ade80' : '#f87171'};
-  border: 1px solid ${props => props.$online ? '#4ade80' : '#f87171'};
-  text-transform: uppercase;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: ${p => p.$online ? 'rgba(16, 185, 129, 0.1)' : 'rgba(148, 163, 184, 0.1)'};
+  color: ${p => p.$online ? adminTheme.colors.status.success : adminTheme.colors.text.muted};
+  border: 1px solid ${p => p.$online ? 'rgba(16, 185, 129, 0.2)' : 'rgba(148, 163, 184, 0.2)'};
+
+  &::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+`;
+
+const LoadingState = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+  color: ${adminTheme.colors.text.muted};
+  font-family: ${adminTheme.typography.fontFamily.mono};
 `;
 
 const AdminOverview: React.FC<AdminOverviewProps> = ({
@@ -192,112 +274,132 @@ const AdminOverview: React.FC<AdminOverviewProps> = ({
   userActivity,
   onUserClick
 }) => {
+  const { t } = useAdminLang();
+
   if (!analytics) {
     return (
       <OverviewContainer>
-        <div style={{ textAlign: 'center', color: '#666666', fontSize: '14px' }}>
-          Loading analytics data...
-        </div>
+        <LoadingState>{t.common.initializing}</LoadingState>
       </OverviewContainer>
     );
   }
 
+  const stats = [
+    {
+      label: t.dashboard.totalUsers,
+      value: analytics.totalUsers,
+      trend: `+${analytics.activeUsers} ${t.trends.active}`,
+      positive: true,
+      icon: Users,
+    },
+    {
+      label: t.dashboard.listings,
+      value: analytics.totalCars,
+      trend: `+${analytics.activeCars} ${t.trends.active}`,
+      positive: true,
+      icon: Car,
+    },
+    {
+      label: t.dashboard.messages,
+      value: analytics.totalMessages,
+      trend: t.trends.spike,
+      positive: true,
+      icon: Zap,
+    },
+    {
+      label: t.dashboard.views,
+      value: analytics.totalViews,
+      trend: t.trends.growing,
+      positive: true,
+      icon: Eye,
+    },
+    {
+      label: t.dashboard.revenue,
+      value: `€${analytics.revenue.toFixed(2)}`,
+      trend: `+12% ${t.trends.growth}`,
+      positive: true,
+      icon: DollarSign,
+    },
+    {
+      label: t.dashboard.uptime,
+      value: '99.9%',
+      trend: t.trends.optimal,
+      positive: true,
+      icon: Activity,
+    },
+  ];
+
   return (
     <OverviewContainer>
       <StatsGrid>
-        <StatCard>
-          <StatIcon>
-            <Users size={24} />
-          </StatIcon>
-          <StatValue>{analytics.totalUsers}</StatValue>
-          <StatLabel>Total Users</StatLabel>
-          <StatChange $positive={true}>+{analytics.activeUsers} active</StatChange>
-        </StatCard>
-
-        <StatCard>
-          <StatIcon>
-            <Car size={24} />
-          </StatIcon>
-          <StatValue>{analytics.totalCars}</StatValue>
-          <StatLabel>Total Cars</StatLabel>
-          <StatChange $positive={true}>+{analytics.activeCars} active</StatChange>
-        </StatCard>
-
-        <StatCard>
-          <StatIcon>
-            <MessageSquare size={24} />
-          </StatIcon>
-          <StatValue>{analytics.totalMessages}</StatValue>
-          <StatLabel>Messages</StatLabel>
-          <StatChange $positive={true}>Recent activity</StatChange>
-        </StatCard>
-
-        <StatCard>
-          <StatIcon>
-            <Eye size={24} />
-          </StatIcon>
-          <StatValue>{analytics.totalViews}</StatValue>
-          <StatLabel>Total Views</StatLabel>
-          <StatChange $positive={true}>Growing</StatChange>
-        </StatCard>
-
-        <StatCard>
-          <StatIcon>
-            <DollarSign size={24} />
-          </StatIcon>
-          <StatValue>€{analytics.revenue.toFixed(2)}</StatValue>
-          <StatLabel>Revenue</StatLabel>
-          <StatChange $positive={true}>+12% this month</StatChange>
-        </StatCard>
-
-        <StatCard>
-          <StatIcon>
-            <TrendingUp size={24} />
-          </StatIcon>
-          <StatValue>98.5%</StatValue>
-          <StatLabel>Uptime</StatLabel>
-          <StatChange $positive={true}>Excellent</StatChange>
-        </StatCard>
+        {stats.map((stat, i) => (
+          <StatCard key={i}>
+            <CardHeader>
+              <IconWrapper className="icon-wrapper">
+                <stat.icon size={22} />
+              </IconWrapper>
+              <TrendBadge $positive={stat.positive}>
+                <TrendingUp size={12} />
+                {stat.trend}
+              </TrendBadge>
+            </CardHeader>
+            <StatValue>{stat.value}</StatValue>
+            <StatLabel>{stat.label}</StatLabel>
+          </StatCard>
+        ))}
       </StatsGrid>
 
-      <SectionTitle>
-        <Activity size={20} />
-        Recent User Activity
-      </SectionTitle>
+      <SectionHeader>
+        <LiveIndicator />
+        <SectionTitle>{t.dashboard.recentActivity}</SectionTitle>
+      </SectionHeader>
 
-      <UserActivityTable>
+      <TableCard>
         <TableHeader>
-          <div>User</div>
-          <div>Status</div>
-          <div>Location</div>
-          <div>Last Login</div>
-          <div>Activity</div>
+          <div>{t.table.identity}</div>
+          <div>{t.common.status}</div>
+          <div>{t.table.coordinates}</div>
+          <div>{t.table.lastUplink}</div>
+          <div>{t.table.clientVector}</div>
         </TableHeader>
 
         {userActivity.slice(0, 5).map((user, index) => (
           <TableRow key={index} onClick={() => onUserClick(user)}>
             <UserInfo>
-              <UserAvatar>
+              <Avatar>
                 {user.displayName?.charAt(0) || 'U'}
-              </UserAvatar>
-              <UserDetails>
-                <UserName>{user.displayName || 'Unknown User'}</UserName>
-                <UserEmail>{user.email || 'N/A'}</UserEmail>
-              </UserDetails>
+              </Avatar>
+              <InfoText>
+                <strong>{user.displayName || t.common.unknown}</strong>
+                <span>{user.email || t.table.noSignature}</span>
+              </InfoText>
             </UserInfo>
-            <StatusBadge $online={user.isOnline || false}>
-              {user.isOnline ? 'Online' : 'Offline'}
-            </StatusBadge>
-            <div>{user.location || 'Unknown'}</div>
+
             <div>
-              {user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'N/A'}
+              <StatusChip $online={user.isOnline || false}>
+                {user.isOnline ? t.common.online : t.common.offline}
+              </StatusChip>
             </div>
-            <div>
-              {user.device || 'Unknown'} / {user.browser || 'Unknown'}
-            </div>
+
+            <InfoText>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <MapPin size={12} /> {user.location || t.common.unknown}
+              </span>
+            </InfoText>
+
+            <InfoText>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <Clock size={12} />
+                {user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'N/A'}
+              </span>
+            </InfoText>
+
+            <InfoText>
+              <span>{user.browser?.split(' ')[0] || t.common.unknown}</span>
+            </InfoText>
           </TableRow>
         ))}
-      </UserActivityTable>
+      </TableCard>
     </OverviewContainer>
   );
 };

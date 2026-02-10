@@ -1,57 +1,13 @@
 /**
- * Simple Loading Overlay - Percentage Counter Only
- * No animations, no logos, no AI - just clean numbers
+ * Glass Sphere Loading Overlay
  */
 
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import { KoliSphereLoader } from '../KoliSphereLoader';
 
 interface LightweightLoadingOverlayProps {
   isVisible: boolean;
 }
-
-// ============================================
-// Styled Components
-// ============================================
-
-const LoaderContainer = styled.div<{ isVisible: boolean }>`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: ${props => (props.isVisible ? 'flex' : 'none')};
-  justify-content: center;
-  align-items: center;
-  background: #000000;
-  z-index: 1000;
-`;
-
-const LoaderContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-`;
-
-const Percentage = styled.div`
-  font-size: 4rem;
-  font-weight: 700;
-  color: #ffffff;
-  font-family: 'Arial', sans-serif;
-`;
-
-const Label = styled.div`
-  font-size: 1rem;
-  font-weight: 400;
-  color: #999999;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-`;
-
-// ============================================
-// Component
-// ============================================
 
 const LightweightLoadingOverlay: React.FC<LightweightLoadingOverlayProps> = ({ 
   isVisible
@@ -78,13 +34,14 @@ const LightweightLoadingOverlay: React.FC<LightweightLoadingOverlayProps> = ({
     return () => clearInterval(loadInterval);
   }, [isVisible]);
 
+  if (!isVisible) return null;
+
   return (
-    <LoaderContainer isVisible={isVisible}>
-      <LoaderContent>
-        <Percentage>{percent}%</Percentage>
-        <Label>Loading...</Label>
-      </LoaderContent>
-    </LoaderContainer>
+    <KoliSphereLoader
+      fullscreen
+      progress={percent}
+      showPercentage
+    />
   );
 };
 

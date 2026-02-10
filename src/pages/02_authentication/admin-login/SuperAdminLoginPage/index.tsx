@@ -6,7 +6,7 @@ import { Shield, Lock, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-reac
 import { uniqueOwnerService } from '../../../../services/unique-owner-service';
 import { auth } from '../../../../firebase/firebase-config';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { getAdminEmail, isAdminConfigured } from '../../../../config/env-validation';
+import { signOut } from 'firebase/auth';
 
 // Styled Components - Professional Minimal Design
 // Styled Components - Professional Minimal Design
@@ -266,23 +266,11 @@ const SecurityBadge = styled.div`
 
 const SuperAdminLogin: React.FC = () => {
   const navigate = useNavigate();
-  // ✅ Security: Use environment variables instead of hardcoded credentials
-  const [email, setEmail] = useState('globul.net.m@gmail.com');
-  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
-
-  // Warn if admin credentials are not configured
-  useEffect(() => {
-    if (!isAdminConfigured()) {
-      setMessage({
-        type: 'error',
-        text: 'Admin credentials not configured. Please set REACT_APP_ADMIN_EMAIL and REACT_APP_ADMIN_PASSWORD in your .env file.'
-      });
-    }
-  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -290,31 +278,28 @@ const SuperAdminLogin: React.FC = () => {
     setMessage(null);
 
     try {
-      // Step 1: Validate unique owner session (local gate)
-      const isAuthenticated = await uniqueOwnerService.authenticateUniqueOwner(email, password, phone);
-      if (!isAuthenticated) {
-        setMessage({ type: 'error', text: 'Invalid credentials. Only the unique owner can access this system.' });
+      await signInWithEmailAndPassword(auth, email, password);
+
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error('Missing authenticated user session');
+      }
+
+      const isAdmin = await uniqueOwnerService.startAdminSession(user);
+      if (!isAdmin) {
+        await signOut(auth);
+        setMessage({ type: 'error', text: 'Access denied. Admin role is required.' });
         setLoading(false);
         return;
       }
 
-      // Step 2: Sign in to Firebase Auth (required for 100% REAL data)
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-      } catch (authErr) {
-        const error = authErr as Error; // Type assertion to fix lint error
-        logger.warn('Firebase Auth sign-in failed, proceeding with local admin session:', { message: (error as Error).message });
-        // Continue anyway because the local uniqueOwnerService check passed
-        // This allows the admin to access the dashboard even if not present in Firebase Auth users yet
-      }
-
-      setMessage({ type: 'success', text: 'Owner authenticated. Redirecting to Super Admin dashboard…' });
+      setMessage({ type: 'success', text: 'Admin authenticated. Redirecting to Super Admin dashboard…' });
       setTimeout(() => {
         navigate('/super-admin');
       }, 1000);
     } catch (error) {
       logger.error('Authentication error:', error as Error);
-      setMessage({ type: 'error', text: 'Authentication failed. Please try again.' });
+      setMessage({ type: 'error', text: 'Authentication failed. Please check your credentials.' });
       setLoading(false);
     }
   };
@@ -353,18 +338,6 @@ const SuperAdminLogin: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter owner email"
-              required
-              disabled={loading}
-            />
-          </FormGroup>
-
-          <FormGroup>
-            <Label>Owner Phone Number</Label>
-            <Input
-              type="text"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="Enter owner phone"
               required
               disabled={loading}
             />
@@ -421,15 +394,15 @@ const SuperAdminLogin: React.FC = () => {
           <AdminInfoGrid>
             <AdminInfoItem>
               <AdminInfoLabel>Owner Name</AdminInfoLabel>
-              <AdminInfoValue>Alaa Hamid</AdminInfoValue>
+              <AdminInfoValue>{import.meta.env.VITE_OWNER_NAME || 'Alaa Hamid'}</AdminInfoValue>
             </AdminInfoItem>
             <AdminInfoItem>
               <AdminInfoLabel>Email</AdminInfoLabel>
-              <AdminInfoValue>alaa.hamdani@yahoo.com</AdminInfoValue>
+              <AdminInfoValue>{email || 'Enter admin email'}</AdminInfoValue>
             </AdminInfoItem>
             <AdminInfoItem>
               <AdminInfoLabel>Phone</AdminInfoLabel>
-              <AdminInfoValue>+359879839671</AdminInfoValue>
+              <AdminInfoValue>{import.meta.env.VITE_OWNER_PHONE || '+359879839671'}</AdminInfoValue>
             </AdminInfoItem>
             <AdminInfoItem>
               <AdminInfoLabel>Location</AdminInfoLabel>

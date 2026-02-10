@@ -7,6 +7,7 @@ const IS_DEV = process.env.NODE_ENV === 'development';
 
 import { db } from '../firebase/firebase-config';
 import { Database, Edit, Trash2, Plus, Save, X } from 'lucide-react';
+import { useAdminLang } from '../contexts/AdminLanguageContext';
 
 const Container = styled.div`
   padding: 2rem;
@@ -135,6 +136,7 @@ interface DataItem {
 }
 
 const RealDataManager: React.FC = () => {
+  const { t } = useAdminLang();
   if (!IS_DEV) return null;
 
   const [activeTab, setActiveTab] = useState('users');
@@ -180,7 +182,7 @@ const RealDataManager: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('هل أنت متأكد من حذف هذا العنصر؟')) return;
+    if (!window.confirm(`${t.common.delete}?`)) return;
 
     try {
       await deleteDoc(doc(db, activeTab, id));
@@ -192,7 +194,7 @@ const RealDataManager: React.FC = () => {
 
   const handleAdd = async () => {
     const newItem = activeTab === 'users'
-      ? { displayName: 'مستخدم جديد', email: 'new@example.com', profileType: 'private' }
+      ? { displayName: t.realData.newUserDefault, email: 'new@example.com', profileType: 'private' }
       : { make: 'BMW', model: 'X5', price: 25000, status: 'active' };
 
     try {
@@ -208,10 +210,10 @@ const RealDataManager: React.FC = () => {
       return (
         <>
           <TableHeader>
-            <div>الاسم</div>
-            <div>البريد الإلكتروني</div>
-            <div>نوع الحساب</div>
-            <div>الإجراءات</div>
+            <div>{t.realData.name}</div>
+            <div>{t.realData.email}</div>
+            <div>{t.realData.accountType}</div>
+            <div>{t.common.actions}</div>
           </TableHeader>
           {data.map((user: any) => (
             <TableRow key={user.id}>
@@ -222,7 +224,7 @@ const RealDataManager: React.FC = () => {
                     onChange={(e) => setEditData({ ...editData, displayName: e.target.value })}
                   />
                 ) : (
-                  user.displayName || 'غير محدد'
+                  user.displayName || t.common.unknown
                 )}
               </div>
               <div>
@@ -274,10 +276,10 @@ const RealDataManager: React.FC = () => {
       return (
         <>
           <TableHeader>
-            <div>الماركة</div>
-            <div>الموديل</div>
-            <div>السعر</div>
-            <div>الإجراءات</div>
+            <div>{t.realData.make}</div>
+            <div>{t.realData.model}</div>
+            <div>{t.realData.price}</div>
+            <div>{t.common.actions}</div>
           </TableHeader>
           {data.map((car: any) => (
             <TableRow key={car.id}>
@@ -342,25 +344,25 @@ const RealDataManager: React.FC = () => {
 
   return (
     <Container>
-      <Title><Database size={24} />إدارة البيانات الحقيقية</Title>
+      <Title><Database size={24} />{t.realData.manageRealData}</Title>
 
       <TabsContainer>
         <Tab active={activeTab === 'users'} onClick={() => setActiveTab('users')}>
-          المستخدمين ({data.length})
+          {t.realData.usersTab} ({data.length})
         </Tab>
         <Tab active={activeTab === 'cars'} onClick={() => setActiveTab('cars')}>
-          السيارات ({data.length})
+          {t.realData.carsTab} ({data.length})
         </Tab>
       </TabsContainer>
 
       <AddButton onClick={handleAdd}>
         <Plus size={20} />
-        إضافة {activeTab === 'users' ? 'مستخدم' : 'سيارة'} جديد
+        {activeTab === 'users' ? t.realData.addUser : t.realData.addCar}
       </AddButton>
 
       {loading ? (
         <div style={{ textAlign: 'center', padding: '2rem' }}>
-          جاري التحميل...
+          {t.common.loading}
         </div>
       ) : (
         <DataTable>

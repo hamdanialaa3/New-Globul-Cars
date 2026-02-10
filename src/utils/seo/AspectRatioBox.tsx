@@ -67,18 +67,26 @@ const Container = styled.div<{
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.1) 50%,
-      transparent 100%
-    );
-    animation: shimmer 1.5s infinite;
+    background-color: rgba(255, 143, 16, 0.03);
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
   }
   
-  @keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+  @keyframes skeleton-pulse {
+    0%, 100% {
+      background-color: rgba(255, 143, 16, 0.03);
+      opacity: 0.6;
+    }
+    50% {
+      background-color: rgba(255, 143, 16, 0.08);
+      opacity: 1;
+    }
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    &::before {
+      animation: none;
+      background-color: rgba(255, 143, 16, 0.05);
+    }
   }
 `;
 
@@ -151,26 +159,23 @@ const SkeletonPulse = styled.div<{ $width?: string; $height?: string; $borderRad
   width: ${props => props.$width || '100%'};
   height: ${props => props.$height || '20px'};
   border-radius: ${props => props.$borderRadius || '4px'};
-  background: var(--bg-tertiary, #2a2a3e);
-  position: relative;
-  overflow: hidden;
+  background-color: rgba(255, 143, 16, 0.03);
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
   
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.08) 50%,
-      transparent 100%
-    );
-    animation: shimmer 1.5s infinite;
+  @keyframes skeleton-pulse {
+    0%, 100% {
+      background-color: rgba(255, 143, 16, 0.03);
+      opacity: 0.6;
+    }
+    50% {
+      background-color: rgba(255, 143, 16, 0.08);
+      opacity: 1;
+    }
   }
   
-  @keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    background-color: rgba(255, 143, 16, 0.05);
   }
 `;
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { getAuth } from 'firebase/auth';
 import styled from 'styled-components';
 import {
   Globe,
@@ -267,18 +268,7 @@ const SEOControl: React.FC = () => {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [newKeyword, setNewKeyword] = useState('');
 
-  const adminEmail = (() => {
-    try {
-      const session = localStorage.getItem('superAdminSession');
-      if (session) {
-        const parsed = JSON.parse(session);
-        return parsed.email || 'admin@kolione.com';
-      }
-    } catch (e) {
-      // Ignore
-    }
-    return 'admin@kolione.com';
-  })();
+  const adminEmail = getAuth().currentUser?.email || 'unknown';
 
 const loadSettings = useCallback(async () => {
     try {

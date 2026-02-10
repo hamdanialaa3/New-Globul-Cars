@@ -461,11 +461,32 @@ const DraftRecoverySlot: React.FC = () => (
  * @performance optimized lazy loading
  * @competitive unique features highlighted at top
  */
+const SECTION_MAP: Record<string, React.FC> = {
+  hero: HeroSlot,
+  our_cars: OurCarsSlot,
+  smart_recommendations: SmartHeroSlot,
+  ai_analysis_banner: AIAnalysisBannerSlot,
+  hero_strips: HomeHeroStrips,
+  visual_search: VisualSearchSlot,
+  vehicle_classifications: VehicleClassificationsSlot,
+  life_moments: LifeMomentsSlot,
+  cars_showcase: CarsShowcaseSlot,
+  popular_brands: PopularBrandsSlot,
+  most_demanded: MostDemandedCategoriesSlot,
+  featured_showcase: FeaturedShowcaseSlot,
+  smart_sell: UnifiedSmartSellSlot,
+  dealers: DealersSlot,
+  trust_stats: TrustSlot,
+  social: SocialSlot,
+  loyalty: LoyaltySlot,
+  // Conditional sections handled separately
+};
+
 const HomePageComposer: React.FC = React.memo(() => {
   // Check if user is authenticated for conditional sections
   const { user } = useAuth();
   const hasRecentlyBrowsed = typeof window !== 'undefined' && localStorage.getItem('recentBrowsing');
-  const { isVisible } = useSectionVisibility();
+  const { sections, isVisible } = useSectionVisibility();
 
   return (
     <ComposerContainer>
@@ -474,117 +495,43 @@ const HomePageComposer: React.FC = React.memo(() => {
 
       {/* Content Container (Max Width 1400px) */}
       <ContentContainer>
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {/* SECTION 1: HERO - Main Entry Point                              */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {isVisible('hero') && <HeroSlot />}
-        <SectionSpacer />
-
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {/* SECTION 1.5: 🆕 OUR CARS — ALL REAL USER LISTINGS               */}
-        {/* Нашите коли — 4×3 grid, newest first, all collections           */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {isVisible('our_cars') && <OurCarsSlot />}
-        <SectionSpacer />
-
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {/* SECTION 2: 🎯 SMART HERO RECOMMENDATIONS - PICKED FOR YOU       */}
-        {/* AI-powered personalized recommendations (2nd position!)         */}
-        {/* Logged-in: Personalized / Anonymous: Trending Cars              */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {isVisible('smart_recommendations') && <SmartHeroSlot />}
-        <SectionSpacer />
-
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {/* SECTION 3: 🆕 AI ANALYSIS BANNER - Explain how AI works         */}
-        {/* Eye-catching banner: Upload → AI Analyze → Get Price → Publish  */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {isVisible('ai_analysis_banner') && <AIAnalysisBannerSlot />}
-        <SectionSpacer />
-
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {/* 🆕 SMART HERO STRIPS (mobile.de Style)                         */}
-        {/* Recently Viewed + Top Deals                                     */}
-        {/* Placed strictly under the 3rd "Hero" element (Banner)           */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {isVisible('hero_strips') && <HomeHeroStrips />}
-        <SectionSpacer />
-
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {/* SECTION 4: 🆕 VISUAL SEARCH - UNIQUE COMPETITIVE ADVANTAGE      */}
-        {/* No Bulgarian competitor has this feature!                       */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {isVisible('visual_search') && <VisualSearchSlot />}
-        <SectionSpacer />
-
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {/* SECTION 5: VEHICLE CLASSIFICATIONS                              */}
-        {/* Body types (Sedan, SUV, Hatchback, etc.)                        */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {isVisible('vehicle_classifications') && <VehicleClassificationsSlot />}
-        <SectionSpacer />
-
-        {/* SECTION 6: 🆕 LIFE MOMENTS BROWSE                               */}
-        {/* Emotional discovery - Find car for your life moment             */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {isVisible('life_moments') && <LifeMomentsSlot />}
-        <SectionSpacer />
-
-        {/* SECTION 7: CARS SHOWCASE - MAIN CONTENT                         */}
-        {/* Tabbed view: Latest / New / Featured                            */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {isVisible('cars_showcase') && <CarsShowcaseSlot />}
-        <SectionSpacer />
-
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {/* SECTION 6: POPULAR BRANDS                                       */}
-        {/* Grid of 21 popular car brands                                   */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {isVisible('popular_brands') && <PopularBrandsSlot />}
-        <SectionSpacer />
-
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {/* SECTION 7: MOST DEMANDED CATEGORIES                             */}
-        {/* AI-powered trending categories                                  */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {isVisible('most_demanded') && <MostDemandedCategoriesSlot />}
-        <SectionSpacer />
-
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {/* SECTION 8: FEATURED SHOWCASE                                    */}
-        {/* VIP and verified dealer cars                                    */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {isVisible('featured_showcase') && <FeaturedShowcaseSlot />}
-        <SectionSpacer />
-
-        {/* SECTION 9: 🆕 UNIFIED SMART SELL                               */}
-        {/* Merged SmartSellStrip + AISmartSellButton                       */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {isVisible('smart_sell') && <UnifiedSmartSellSlot />}
-        <SectionSpacer />
-
-        {/* SECTION 11: DEALERS SPOTLIGHT                                   */}
-        {/* Verified dealers with trust badges                              */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {isVisible('dealers') && <DealersSlot />}
-        <SectionSpacer />
-
-        {/* SECTION 12: TRUST & STATS                                       */}
-        {/* Trust indicators and platform statistics                        */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {isVisible('trust_stats') && <TrustSlot />}
-        <SectionSpacer />
-
-        {/* SECTION 13: SOCIAL EXPERIENCE                                   */}
-        {/* Social proof, reviews, community                                */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {isVisible('social') && <SocialSlot />}
-        <SectionSpacer />
-
-        {/* SECTION 14: LOYALTY & SIGNUP                                    */}
-        {/* Subscription plans and loyalty program                          */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {isVisible('loyalty') && <LoyaltySlot />}
+        {sections.length > 0 ? (
+          /* Dynamic Rendering based on sorted 'main' sections */
+          sections
+            .filter(section => section.category === 'main' && section.visible)
+            .sort((a, b) => a.order - b.order)
+            .map(section => {
+              const Component = SECTION_MAP[section.key];
+              if (!Component) return null;
+              return (
+                <React.Fragment key={section.key}>
+                  <Component />
+                  <SectionSpacer />
+                </React.Fragment>
+              );
+            })
+        ) : (
+          /* Fallback while loading config or if empty - Default Order */
+          <>
+            <HeroSlot /><SectionSpacer />
+            <OurCarsSlot /><SectionSpacer />
+            <SmartHeroSlot /><SectionSpacer />
+            <AIAnalysisBannerSlot /><SectionSpacer />
+            <HomeHeroStrips /><SectionSpacer />
+            <VisualSearchSlot /><SectionSpacer />
+            <VehicleClassificationsSlot /><SectionSpacer />
+            <LifeMomentsSlot /><SectionSpacer />
+            <CarsShowcaseSlot /><SectionSpacer />
+            <PopularBrandsSlot /><SectionSpacer />
+            <MostDemandedCategoriesSlot /><SectionSpacer />
+            <FeaturedShowcaseSlot /><SectionSpacer />
+            <UnifiedSmartSellSlot /><SectionSpacer />
+            <DealersSlot /><SectionSpacer />
+            <TrustSlot /><SectionSpacer />
+            <SocialSlot /><SectionSpacer />
+            <LoyaltySlot />
+          </>
+        )}
 
         {/* CONDITIONAL: RECENT BROWSING                                    */}
         {/* Shows only for returning users with browsing history            */}

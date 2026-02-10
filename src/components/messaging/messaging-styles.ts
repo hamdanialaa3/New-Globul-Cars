@@ -304,16 +304,30 @@ export const Divider = styled.div`
   margin: 12px 0;
 `;
 
-// Loading spinner
+// Loading spinner - LED ring style
 export const Spinner = styled.div`
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  position: relative;
   
-  @keyframes spin {
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      #FF8F10 90deg,
+      transparent 100deg,
+      transparent 360deg
+    );
+    animation: led-orbit 1.2s linear infinite;
+  }
+  
+  @keyframes led-orbit {
+    from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
 `;

@@ -175,7 +175,7 @@
         href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Caveat:wght@400;700&family=Dancing+Script:wght@700&display=swap"
         rel="stylesheet" media="print" onload="this.media='all'" />
     <style>
-        /* --- ULTIMATE GEAR LOGO LOADER --- */
+        /* --- KOLI ONE GLASS SPHERE LOADER --- */
         #loader-container {
             position: fixed;
             top: 0;
@@ -183,6 +183,7 @@
             width: 100%;
             height: 100%;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             background: rgba(5, 5, 10, 0.95);
@@ -192,74 +193,111 @@
             transition: opacity 0.5s ease;
         }
 
-        .loader-wrapper {
+        .sphere-wrapper {
             position: relative;
-            width: 400px;
-            height: 400px;
+            width: 120px;
+            height: 120px;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        #canvas-container {
+        .glass-sphere {
             position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(
+                circle at 35% 35%,
+                rgba(255, 255, 255, 0.25) 0%,
+                rgba(255, 143, 16, 0.15) 25%,
+                rgba(255, 143, 16, 0.08) 50%,
+                rgba(0, 0, 0, 0.3) 100%
+            );
+            box-shadow:
+                0 0 25px rgba(255, 143, 16, 0.4),
+                inset 0 -10px 20px rgba(0, 0, 0, 0.4),
+                inset 0 10px 20px rgba(255, 255, 255, 0.1);
             z-index: 1;
         }
 
-        #canvas-container canvas {
-            color: rgba(26, 29, 46, 0.25);
-            text-align: center;
-            vertical-align: middle;
-            line-height: 0;
+        .led-ring {
+            position: absolute;
             width: 100%;
             height: 100%;
-            background-color: unset;
-            background: unset;
-            background-image: none;
-            box-shadow: none;
-            filter: none;
-        }
-
-        .text-container {
-            position: absolute;
-            bottom: -60px;
-            width: 100%;
-            text-align: center;
-            color: white;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0deg,
+                #FF8F10 30deg,
+                #FFB366 60deg,
+                #FF8F10 90deg,
+                transparent 100deg,
+                transparent 360deg
+            );
+            mask-image: radial-gradient(
+                circle,
+                transparent 56px,
+                black 56px,
+                black 59px,
+                transparent 59px
+            );
+            -webkit-mask-image: radial-gradient(
+                circle,
+                transparent 56px,
+                black 56px,
+                black 59px,
+                transparent 59px
+            );
+            filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.8));
+            animation: led-orbit 1.2s linear infinite, led-pulse 2s ease-in-out infinite;
             z-index: 2;
         }
 
+        .sphere-logo {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            z-index: 3;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
         .brand-text {
+            margin-top: 32px;
             font-size: 1.5rem;
             font-weight: 700;
             letter-spacing: 2px;
             text-transform: uppercase;
             color: #ffffff;
-            text-shadow: 0 0 15px rgba(0, 204, 255, 0.6);
-            margin-bottom: 5px;
+            text-shadow: 0 0 15px rgba(255, 143, 16, 0.6);
         }
 
-        .status-text {
-            font-size: 0.8rem;
-            color: #00ccff;
-            letter-spacing: 3px;
-            opacity: 0.8;
-            animation: pulseStatus 1.5s infinite;
-        }
-
-        @keyframes pulseStatus {
-
-            0%,
-            100% {
-                opacity: 0.5;
+        @keyframes led-orbit {
+            from {
+                transform: rotate(0deg);
             }
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
+        @keyframes led-pulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.8));
+            }
             50% {
-                opacity: 1;
+                filter: drop-shadow(0 0 16px rgba(255, 143, 16, 1));
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .led-ring {
+                animation: led-pulse 2s ease-in-out infinite;
+            }
+            @keyframes led-orbit {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(0deg); }
             }
         }
     </style>
@@ -280,21 +318,39 @@
     </noscript>
     <!-- End Facebook Pixel Code -->
 
-    <!-- ULTIMATE GEAR LOGO LOADER -->
+    <!-- KOLI ONE GLASS SPHERE LOADER -->
     <div id="loader-container">
-        <div class="loader-wrapper">
-            <div id="canvas-container"></div>
-            <div class="text-container">
-                <div class="brand-text">Koli One</div>
-                <div class="status-text">INITIALIZING SYSTEMS...</div>
-            </div>
+        <div class="sphere-wrapper">
+            <div class="glass-sphere"></div>
+            <div class="led-ring"></div>
+            <img src="/koli_one_ai_Icon2.png" class="sphere-logo" alt="Koli One" />
         </div>
+        <div class="brand-text">Koli One</div>
     </div>
 
     <div id="root"></div>
 
-    <!-- THREE.JS LOADER MODULE -->
-    <script type="module" src="/loader-animation.js"></script>
+    <!-- Hide loader when React mounts -->
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            var rootEl = document.getElementById('root');
+            var loaderEl = document.getElementById('loader-container');
+            
+            if (rootEl && loaderEl) {
+                var observer = new MutationObserver(function(mutations) {
+                    if (rootEl.children.length > 0) {
+                        loaderEl.style.opacity = '0';
+                        setTimeout(function() {
+                            loaderEl.style.display = 'none';
+                        }, 500);
+                        observer.disconnect();
+                    }
+                });
+                
+                observer.observe(rootEl, { childList: true, subtree: false });
+            }
+        });
+    </script>
 
     <!-- REACT APP ENTRY POINT -->
     <script type="module" src="/src/index.tsx"></script>

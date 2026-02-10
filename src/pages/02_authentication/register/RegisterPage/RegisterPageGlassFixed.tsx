@@ -85,6 +85,14 @@ const GlassWrapper = styled.div`
   z-index: 10;
   animation: ${fadeIn} 0.6s ease;
 
+  @media (prefers-color-scheme: dark) {
+    background: rgba(26, 32, 44, 0.98);
+    border: 2px solid rgba(255, 143, 16, 0.3);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.6),
+      0 4px 16px rgba(255, 143, 16, 0.2);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     animation: none;
   }
@@ -108,6 +116,10 @@ const Title = styled.h1`
   margin-bottom: 12px;
   animation: ${slideIn} 0.6s ease;
 
+  @media (prefers-color-scheme: dark) {
+    color: #ffffff;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     animation: none;
   }
@@ -127,6 +139,10 @@ const Subtitle = styled.p`
   font-size: 15px;
   margin-bottom: 30px;
   animation: ${slideIn} 0.6s ease 0.1s backwards;
+
+  @media (prefers-color-scheme: dark) {
+    color: rgba(255, 255, 255, 0.7);
+  }
 
   @media (max-width: 480px) {
     font-size: 14px;
@@ -171,6 +187,21 @@ const Input = styled.input`
     box-shadow: 0 0 20px rgba(255, 143, 16, 0.2);
   }
 
+  @media (prefers-color-scheme: dark) {
+    background: rgba(45, 55, 72, 0.6);
+    border: 2px solid rgba(74, 85, 104, 0.5);
+    color: #ffffff;
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    &:focus {
+      background: rgba(45, 55, 72, 0.9);
+      border-color: #FF8F10;
+    }
+  }
+
   @media (max-width: 480px) {
     height: 48px;
     font-size: 15px;
@@ -182,26 +213,34 @@ const InputIcon = styled.div`
   right: 20px;
   top: 50%;
   transform: translateY(-50%);
-  color: rgba(255, 255, 255, 0.8);
+  color: #6c757d;
   cursor: pointer;
 
   &:hover {
-    color: #fff;
+    color: #2c3e50;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: rgba(255, 255, 255, 0.6);
+
+    &:hover {
+      color: #FF8F10;
+    }
   }
 `;
 
 const SubmitButton = styled.button`
   width: 100%;
   height: 52px;
-  background: #fff;
+  background: #FF8F10;
   border: none;
   border-radius: 50px;
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: #ffffff;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(255, 143, 16, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -211,8 +250,8 @@ const SubmitButton = styled.button`
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
-    background: #f0f0f0;
+    box-shadow: 0 6px 20px rgba(255, 143, 16, 0.4);
+    background: #e67e00;
   }
 
   &:disabled {
@@ -222,6 +261,16 @@ const SubmitButton = styled.button`
 
   .spin {
     animation: ${spin} 1s linear infinite;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: #FF8F10;
+    color: #1a202c;
+
+    &:hover:not(:disabled) {
+      background: #ffa43d;
+      box-shadow: 0 6px 20px rgba(255, 143, 16, 0.5);
+    }
   }
 
   @media (max-width: 480px) {
@@ -241,14 +290,25 @@ const Divider = styled.div`
     content: '';
     flex: 1;
     height: 1px;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(208, 215, 222, 0.3);
   }
 
   span {
     padding: 0 15px;
-    color: rgba(255, 255, 255, 0.8);
+    color: #6c757d;
     font-size: 14px;
     white-space: nowrap;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    &::before,
+    &::after {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    span {
+      color: rgba(255, 255, 255, 0.6);
+    }
   }
 
   @media (max-width: 480px) {
@@ -279,24 +339,35 @@ const SocialButton = styled.button`
   justify-content: center;
   gap: 8px;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(208, 215, 222, 0.1);
+  border: 2px solid rgba(208, 215, 222, 0.3);
   border-radius: 50px;
-  color: #fff;
+  color: #2c3e50;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(208, 215, 222, 0.2);
+    border-color: rgba(208, 215, 222, 0.5);
     transform: translateY(-2px);
   }
 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(45, 55, 72, 0.4);
+    border: 2px solid rgba(74, 85, 104, 0.5);
+    color: #ffffff;
+
+    &:hover:not(:disabled) {
+      background: rgba(45, 55, 72, 0.6);
+      border-color: rgba(255, 143, 16, 0.5);
+    }
   }
 
   @media (max-width: 480px) {
@@ -307,29 +378,50 @@ const SocialButton = styled.button`
 
 const GuestButton = styled(SocialButton)`
   grid-column: 1 / -1;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(208, 215, 222, 0.15);
   font-weight: 600;
 
   &:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(208, 215, 222, 0.25);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(45, 55, 72, 0.5);
+
+    &:hover:not(:disabled) {
+      background: rgba(45, 55, 72, 0.7);
+    }
   }
 `;
 
 const LoginLink = styled.div`
   text-align: center;
   margin-top: 20px;
-  color: rgba(255, 255, 255, 0.9);
+  color: #6c757d;
   font-size: 14px;
   animation: ${slideIn} 0.6s ease 0.7s backwards;
 
   a {
-    color: #fff;
+    color: #2c3e50;
     text-decoration: none;
     font-weight: 600;
     margin-left: 5px;
 
     &:hover {
       text-decoration: underline;
+      color: #FF8F10;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: rgba(255, 255, 255, 0.7);
+
+    a {
+      color: #FF8F10;
+
+      &:hover {
+        color: #ffa43d;
+      }
     }
   }
 
@@ -349,14 +441,26 @@ const Message = styled.div<{ $type: 'error' | 'success' }>`
   animation: ${fadeIn} 0.3s ease;
   
   ${props => props.$type === 'error' ? `
-    background: rgba(239, 68, 68, 0.2);
-    border: 1px solid rgba(239, 68, 68, 0.5);
-    color: #fff;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #dc2626;
   ` : `
-    background: rgba(34, 197, 94, 0.2);
-    border: 1px solid rgba(34, 197, 94, 0.5);
-    color: #fff;
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    color: #16a34a;
   `}
+
+  @media (prefers-color-scheme: dark) {
+    ${props => props.$type === 'error' ? `
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      color: #fca5a5;
+    ` : `
+      background: rgba(34, 197, 94, 0.2);
+      border: 1px solid rgba(34, 197, 94, 0.5);
+      color: #86efac;
+    `}
+  }
 
   @media (max-width: 480px) {
     font-size: 13px;
@@ -371,11 +475,16 @@ const SecurityBadge = styled.div`
   gap: 8px;
   margin-top: 20px;
   padding: 10px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(208, 215, 222, 0.1);
   border-radius: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  color: #6c757d;
   font-size: 12px;
   animation: ${slideIn} 0.6s ease 0.8s backwards;
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(45, 55, 72, 0.3);
+    color: rgba(255, 255, 255, 0.5);
+  }
 
   @media (max-width: 480px) {
     font-size: 11px;

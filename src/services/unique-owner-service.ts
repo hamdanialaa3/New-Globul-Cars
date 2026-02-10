@@ -2,12 +2,12 @@
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp, collection } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-service';
-import { getAdminEmail, getAdminPassword, isAdminConfigured } from '../config/env-validation';
+import { getAuth, getIdTokenResult, signOut, User } from 'firebase/auth';
 
 export interface UniqueOwnerSession {
   email: string;
   name: string;
-  role: 'unique_owner';
+  role: 'admin';
   permissions: string[];
   loginTime: Date;
   isUnique: boolean;
@@ -33,20 +33,10 @@ export interface SecurityLog {
 
 export class UniqueOwnerService {
   private static instance: UniqueOwnerService;
-  // ✅ Security: Use environment variables instead of hardcoded credentials
-  private readonly UNIQUE_OWNER_EMAIL: string;
-  private readonly UNIQUE_OWNER_PASSWORD: string;
   private currentSession: UniqueOwnerSession | null = null;
 
   private constructor() {
-    // Get credentials from environment variables
-    this.UNIQUE_OWNER_EMAIL = getAdminEmail();
-    this.UNIQUE_OWNER_PASSWORD = getAdminPassword();
-
-    // Warn if admin credentials are not configured
-    if (!isAdminConfigured()) {
-      serviceLogger.warn('Admin credentials not configured - Super Admin login will not work');
-    }
+    // Intentionally empty: admin auth is handled via Firebase Auth + role checks
   }
 
   public static getInstance(): UniqueOwnerService {
@@ -56,21 +46,36 @@ export class UniqueOwnerService {
     return UniqueOwnerService.instance;
   }
 
-  // التحقق من هوية المالك الفريد
-  public async authenticateUniqueOwner(email: string, password: string, phone: string): Promise<boolean> {
-    const isMatch = email === this.UNIQUE_OWNER_EMAIL && password === this.UNIQUE_OWNER_PASSWORD;
+  // تحقق من صلاحيات الأدمن عبر Firebase Auth + دور المستخدم
+  private async isAdminUser(user: User): Promise<boolean> {
+    try {
+      const token = await getIdTokenResult(user, true);
+      if (token?.claims?.admin === true) {
+        return true;
+      }
 
-    if (!isMatch) {
-      await this.logSecurityEvent('failed_authentication', { email, timestamp: new Date() });
+      const userRef = doc(db, 'users', user.uid);
+      const snap = await getDoc(userRef);
+      return snap.exists() && snap.data()?.role === 'admin';
+    } catch (error) {
+      serviceLogger.warn('Admin role check failed', { error });
+      return false;
+    }
+  }
+
+  // إنشاء جلسة أدمن بعد تسجيل الدخول عبر Firebase
+  public async startAdminSession(user: User): Promise<boolean> {
+    const isAdmin = await this.isAdminUser(user);
+    if (!isAdmin) {
+      await this.logSecurityEvent('failed_authentication', { email: user.email, timestamp: new Date() });
       return false;
     }
 
-    // إنشاء جلسة فريدة
     const sessionId = this.generateUniqueSessionId();
     const session: UniqueOwnerSession = {
-      email: this.UNIQUE_OWNER_EMAIL,
-      name: 'Alaa Hamid',
-      role: 'unique_owner',
+      email: user.email || 'unknown',
+      name: user.displayName || 'Admin',
+      role: 'admin',
       permissions: ['all'],
       loginTime: new Date(),
       isUnique: true,
@@ -81,35 +86,37 @@ export class UniqueOwnerService {
     };
 
     this.currentSession = session;
-    await this.saveSessionToStorage(session);
-    await this.logSecurityEvent('successful_authentication', { email, sessionId });
-
+    await this.logSecurityEvent('successful_authentication', { email: user.email, sessionId });
     return true;
   }
 
   // التحقق من الجلسة النشطة
   public async validateCurrentSession(): Promise<boolean> {
     try {
-      const storedSession = localStorage.getItem('superAdminSession');
-      if (!storedSession) return false;
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (!user) return false;
 
-      const session = JSON.parse(storedSession);
-      if (!session.isUnique || session.email !== this.UNIQUE_OWNER_EMAIL) {
+      const isAdmin = await this.isAdminUser(user);
+      if (!isAdmin) {
         await this.logout();
         return false;
       }
 
-      // التحقق من انتهاء الجلسة (24 ساعة)
-      const loginTime = new Date(session.loginTime);
-      const now = new Date();
-      const hoursDiff = (now.getTime() - loginTime.getTime()) / (1000 * 60 * 60);
+      const sessionId = this.generateUniqueSessionId();
+      this.currentSession = {
+        email: user.email || 'unknown',
+        name: user.displayName || 'Admin',
+        role: 'admin',
+        permissions: ['all'],
+        loginTime: new Date(),
+        isUnique: true,
+        sessionId,
+        lastActivity: new Date(),
+        securityLevel: 'maximum',
+        accessLog: []
+      };
 
-      if (hoursDiff > 24) {
-        await this.logout();
-        return false;
-      }
-
-      this.currentSession = session;
       return true;
     } catch (error) {
       serviceLogger.error('Error validating session', error as Error);
@@ -128,8 +135,11 @@ export class UniqueOwnerService {
     }
 
     this.currentSession = null;
-    localStorage.removeItem('superAdminSession');
-    localStorage.removeItem('adminUser');
+    try {
+      await signOut(getAuth());
+    } catch (error) {
+      serviceLogger.warn('Failed to sign out admin user', { error });
+    }
   }
 
   // الحصول على الجلسة الحالية
@@ -193,10 +203,7 @@ export class UniqueOwnerService {
     return `unique_owner_${timestamp}_${random}`;
   }
 
-  // حفظ الجلسة في التخزين المحلي
-  private async saveSessionToStorage(session: UniqueOwnerSession): Promise<void> {
-    localStorage.setItem('superAdminSession', JSON.stringify(session));
-  }
+  // Session storage removed for security (use Firebase Auth instead)
 
   // الحصول على عنوان IP (محاكاة)
   private async getClientIP(): Promise<string> {

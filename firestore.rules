@@ -11,18 +11,23 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
+    // Helper function to check if user has admin claim
+    function hasAdminClaim() {
+      return isAuthenticated() && request.auth.token.admin == true;
+    }
+
     // Helper function to check if user is an admin
-    // Checks the 'role' field in the users collection, OR matches known admin emails
+    // Uses custom claims first, then role in user document
     function isAdmin() {
       return isAuthenticated() && (
-        // Check role field in user document
-        (exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        hasAdminClaim()
+        || (exists(/databases/$(database)/documents/users/$(request.auth.uid))
           && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
-        // OR match known admin emails directly
-        || request.auth.token.email == 'globul.net.m@gmail.com'
-        || request.auth.token.email == 'alaa.hamdani@yahoo.com'
-        || request.auth.token.email == 'hamdanialaa@yahoo.com'
       );
+    }
+
+    function adminFieldsChanged() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'isAdmin', 'admin']);
     }
 
     // 🔴 CRITICAL FIX: Counters collection - Only Cloud Functions can write
@@ -100,14 +105,23 @@ service cloud.firestore {
     match /users/{userId} {
       allow read: if isAuthenticated();
       // ✅ Allow initial user creation (for guest or new users)
-      allow create: if isAuthenticated() && request.auth.uid == userId;
-      // ✅ Allow users to update their own data including numericId assignment
-      allow update, delete: if isOwner(userId);
+      // 🔒 Prevent client-side role assignment unless admin claim exists
+      allow create: if isAuthenticated()
+        && request.auth.uid == userId
+        && (!request.resource.data.keys().hasAny(['role', 'isAdmin', 'admin']) || hasAdminClaim());
+
+      // ✅ Allow users to update their own data
+      // 🔒 Block admin field changes by non-admins
+      allow update: if isOwner(userId) && !adminFieldsChanged();
+
+      // ✅ Allow admins to change admin-related fields
+      allow update: if isAdmin() && adminFieldsChanged();
+
       // ✅ Allow updating numericId and related fields
       allow update: if isOwner(userId) && (
         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['numericId', 'numericIdAssignedAt', 'updatedAt'])
       );
-      
+
       // ✅ NEW: Allow updating followersCount/followingCount by others (for Follow feature)
       // This is necessary because when User A follows User B:
       // 1. User A updates their own 'followingCount' (allowed by isOwner)
@@ -121,6 +135,8 @@ service cloud.firestore {
           || (request.resource.data.followingCount == resource.data.get('followingCount', 0) + 1)
           || (request.resource.data.followingCount == resource.data.get('followingCount', 0) - 1)
         );
+
+      allow delete: if isOwner(userId) || isAdmin();
     }
     
     // Stripe Customers & Checkout Sessions (Explicit Rule)
@@ -821,16 +837,19 @@ service cloud.firestore {
     }
 
     // 🎛️ App Settings - Promotional Offer (specific override)
-    // Allows SuperAdmin to toggle without Firebase Auth.
-    // Validated by checking updatedBy is a known admin email.
-    // Safe: single config doc, non-sensitive toggle.
+    // Admin-only updates via Firebase Auth
     match /app_settings/promotional_offer {
       allow read: if true;
-      allow create, update: if
-        (request.resource.data.updatedBy == 'globul.net.m@gmail.com')
-        || (request.resource.data.updatedBy == 'alaa.hamdani@yahoo.com')
-        || (request.resource.data.updatedBy == 'hamdanialaa@yahoo.com');
+      allow create, update: if isAdmin();
       allow delete: if false;
+    }
+
+    // 🎛️ App Settings - Admin Configs (Homepage, Featured, Site, Theme)
+    // Admin-only updates via Firebase Auth
+    match /app_settings/{configDoc} {
+      allow create, update: if
+        (configDoc in ['homepage_sections', 'featured_content', 'site_settings', 'theme_settings'])
+        && isAdmin();
     }
 
     // 📝 Free Plan Activations - Audit log for promotional free plan activations

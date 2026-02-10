@@ -15,6 +15,7 @@ import {
   RefreshCw,
   Zap
 } from 'lucide-react';
+import { useAdminLang } from '../../contexts/AdminLanguageContext';
 
 const Container = styled.div`
   background: #0f1419;
@@ -41,6 +42,10 @@ const Title = styled.h2`
   display: flex;
   align-items: center;
   gap: 10px;
+  
+  [dir="rtl"] & {
+    gap: 10px;
+  }
 `;
 
 const Subtitle = styled.p`
@@ -176,13 +181,13 @@ const SectionTitle = styled.h3`
   border-bottom: 1px solid #374151;
 `;
 
-const StatsGrid = styled.div`
+const StatsGrid2 = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 16px;
 `;
 
-const StatCard = styled.div`
+const StatCard2 = styled.div`
   background: #0f1419;
   border: 1px solid #374151;
   border-radius: 8px;
@@ -224,17 +229,18 @@ const LastUpdate = styled.div`
 const PlatformStatusDashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [lastUpdate, setLastUpdate] = useState(new Date());
+  const { t, adminLang } = useAdminLang();
 
-  const [services, setServices] = useState([
-    { name: 'Firebase Firestore', status: 'online' as const, uptime: '99.9%', latency: '45ms' },
-    { name: 'Firebase Storage', status: 'online' as const, uptime: '99.8%', size: '2.4 GB' },
-    { name: 'Firebase Auth', status: 'online' as const, users: '1,234', latency: '32ms' },
-    { name: 'Algolia Search', status: 'online' as const, indexes: '3', latency: '12ms' },
-    { name: 'Firebase Hosting', status: 'online' as const, uptime: '100%', bandwidth: '120 GB' },
-    { name: 'Cloud Functions', status: 'warning' as const, active: '8/10', errors: '2%' }
+  const [services] = useState([
+    { id: 'firestore', name: 'Firebase Firestore', status: 'online' as const, uptime: '99.9%', latency: '45ms' },
+    { id: 'storage', name: 'Firebase Storage', status: 'online' as const, uptime: '99.8%', size: '2.4 GB' },
+    { id: 'auth', name: 'Firebase Auth', status: 'online' as const, users: '1,234', latency: '32ms' },
+    { id: 'search', name: 'Algolia Search', status: 'online' as const, indexes: '3', latency: '12ms' },
+    { id: 'hosting', name: 'Firebase Hosting', status: 'online' as const, uptime: '100%', bandwidth: '120 GB' },
+    { id: 'functions', name: 'Cloud Functions', status: 'warning' as const, active: '8/10', errors: '2%' }
   ]);
 
-  const [stats, setStats] = useState({
+  const [stats] = useState({
     totalUsers: { value: 1234, change: 12.5, positive: true },
     activeCars: { value: 5678, change: 8.3, positive: true },
     totalMessages: { value: 12890, change: 15.2, positive: true },
@@ -265,21 +271,32 @@ const PlatformStatusDashboard: React.FC = () => {
     return <XCircle size={14} />;
   };
 
+  const getStatusText = (status: 'online' | 'warning' | 'offline') => {
+    if (status === 'online') return t.common.online;
+    if (status === 'warning') return t.common.warning;
+    return t.common.offline;
+  }
+
+  const getServiceName = (id: string) => {
+    // @ts-ignore
+    return t.platform.services[id] || id;
+  }
+
   return (
     <Container>
       <Header>
         <HeaderLeft>
           <Title>
             <Activity size={24} />
-            حالة المنصة المباشرة
+            {t.platform.statusTitle}
           </Title>
           <Subtitle>
-            مراقبة الخوادم، الأداء، والإحصائيات في الوقت الفعلي
+            {t.platform.statusSubtitle}
           </Subtitle>
         </HeaderLeft>
         <RefreshButton onClick={handleRefresh} disabled={loading}>
           <RefreshCw size={14} className={loading ? 'spin' : ''} />
-          تحديث
+          {t.common.refresh}
         </RefreshButton>
       </Header>
 
@@ -288,10 +305,10 @@ const PlatformStatusDashboard: React.FC = () => {
         {services.map((service, index) => (
           <StatusCard key={index} $status={service.status}>
             <ServiceHeader>
-              <ServiceName>{service.name}</ServiceName>
+              <ServiceName>{getServiceName(service.id)}</ServiceName>
               <StatusBadge $status={service.status}>
                 {getStatusIcon(service.status)}
-                {service.status === 'online' ? 'متصل' : service.status === 'warning' ? 'تحذير' : 'غير متصل'}
+                {getStatusText(service.status)}
               </StatusBadge>
             </ServiceHeader>
             <ServiceMetrics>
@@ -315,7 +332,7 @@ const PlatformStatusDashboard: React.FC = () => {
               )}
               {service.users && (
                 <MetricRow>
-                  <MetricLabel>Users:</MetricLabel>
+                  <MetricLabel>{t.common.users}:</MetricLabel>
                   <MetricValue>{service.users}</MetricValue>
                 </MetricRow>
               )}
@@ -352,86 +369,86 @@ const PlatformStatusDashboard: React.FC = () => {
       <StatsSection>
         <SectionTitle>
           <TrendingUp size={18} />
-          إحصائيات المنصة المباشرة
+          {t.platform.statsTitle}
         </SectionTitle>
-        
-        <StatsGrid>
-          <StatCard>
-            <StatLabel>إجمالي المستخدمين</StatLabel>
+
+        <StatsGrid2>
+          <StatCard2>
+            <StatLabel>{t.dashboard.totalUsers}</StatLabel>
             <StatValue>
               <Users size={20} />
               {stats.totalUsers.value.toLocaleString()}
             </StatValue>
             <StatChange $positive={stats.totalUsers.positive}>
               {stats.totalUsers.positive ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-              {Math.abs(stats.totalUsers.change)}% من الشهر الماضي
+              {Math.abs(stats.totalUsers.change)}% {t.platform.fromLastMonth}
             </StatChange>
-          </StatCard>
+          </StatCard2>
 
-          <StatCard>
-            <StatLabel>السيارات النشطة</StatLabel>
+          <StatCard2>
+            <StatLabel>{t.dashboard.listings}</StatLabel>
             <StatValue>
               <Car size={20} />
               {stats.activeCars.value.toLocaleString()}
             </StatValue>
             <StatChange $positive={stats.activeCars.positive}>
               {stats.activeCars.positive ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-              {Math.abs(stats.activeCars.change)}% من الشهر الماضي
+              {Math.abs(stats.activeCars.change)}% {t.platform.fromLastMonth}
             </StatChange>
-          </StatCard>
+          </StatCard2>
 
-          <StatCard>
-            <StatLabel>إجمالي الرسائل</StatLabel>
+          <StatCard2>
+            <StatLabel>{t.dashboard.messages}</StatLabel>
             <StatValue>
               <MessageSquare size={20} />
               {stats.totalMessages.value.toLocaleString()}
             </StatValue>
             <StatChange $positive={stats.totalMessages.positive}>
               {stats.totalMessages.positive ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-              {Math.abs(stats.totalMessages.change)}% من الشهر الماضي
+              {Math.abs(stats.totalMessages.change)}% {t.platform.fromLastMonth}
             </StatChange>
-          </StatCard>
+          </StatCard2>
 
-          <StatCard>
-            <StatLabel>الإيرادات (SAR)</StatLabel>
+          <StatCard2>
+            <StatLabel>{t.dashboard.revenue} (SAR)</StatLabel>
             <StatValue>
               <DollarSign size={20} />
               {stats.revenue.value.toLocaleString()}
             </StatValue>
             <StatChange $positive={stats.revenue.positive}>
               {stats.revenue.positive ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-              {Math.abs(stats.revenue.change)}% من الشهر الماضي
+              {Math.abs(stats.revenue.change)}% {t.platform.fromLastMonth}
             </StatChange>
-          </StatCard>
+          </StatCard2>
 
-          <StatCard>
-            <StatLabel>الصفقات النشطة</StatLabel>
+          <StatCard2>
+            <StatLabel>{t.platform.activeDeals}</StatLabel>
             <StatValue>
               <Zap size={20} />
               {stats.activeDeals.value.toLocaleString()}
             </StatValue>
             <StatChange $positive={stats.activeDeals.positive}>
               {stats.activeDeals.positive ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-              {Math.abs(stats.activeDeals.change)}% من الشهر الماضي
+              {Math.abs(stats.activeDeals.change)}% {t.platform.fromLastMonth}
             </StatChange>
-          </StatCard>
+          </StatCard2>
 
-          <StatCard>
-            <StatLabel>جديد اليوم</StatLabel>
+          <StatCard2>
+            <StatLabel>{t.platform.newToday}</StatLabel>
             <StatValue>
               <Circle size={20} fill="#ff8c61" />
               {stats.newToday.value}
             </StatValue>
             <StatChange $positive={stats.newToday.positive}>
               {stats.newToday.positive ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-              {Math.abs(stats.newToday.change)}% من الأمس
+              {Math.abs(stats.newToday.change)}% {t.platform.fromYesterday}
             </StatChange>
-          </StatCard>
-        </StatsGrid>
+          </StatCard2>
+        </StatsGrid2>
       </StatsSection>
 
       <LastUpdate>
-        آخر تحديث: {lastUpdate.toLocaleTimeString('ar-SA')} - {lastUpdate.toLocaleDateString('ar-SA')}
+        {t.platform.lastUpdate}: {lastUpdate.toLocaleTimeString(adminLang === 'en' ? 'en-US' : adminLang === 'ar' ? 'ar-SA' : 'bg-BG')} - {lastUpdate.toLocaleDateString(adminLang === 'en' ? 'en-US' : adminLang === 'ar' ? 'ar-SA' : 'bg-BG')}
       </LastUpdate>
 
       <style>{`

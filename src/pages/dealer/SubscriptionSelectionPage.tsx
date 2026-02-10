@@ -3,20 +3,36 @@
  * Dealer can upgrade from Free to Dealer/Enterprise
  * Location: Bulgaria
  * Currency: EUR
+ * Theme: "Royal Night" (Deep Blue + Aurora)
  * 
  * File: src/pages/dealer/SubscriptionSelectionPage.tsx
- * Created: February 8, 2026
+ * Updated: February 10, 2026
  */
 
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import { Check, X, ArrowRight } from 'lucide-react';
+import styled, { keyframes, css } from 'styled-components';
+import { Check, X, ArrowRight, Zap, Award, ShieldCheck, Sparkles } from 'lucide-react';
 import { SUBSCRIPTION_PLANS, type PlanTier } from '../../config/subscription-plans';
 import { bulgarianPaymentService } from '../../services/payment/bulgarian-payment.service';
-import { subscriptionService } from '../../services/billing/subscription-service';
+import { subscriptionTheme } from '../../components/subscription/subscription-theme';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { serviceLogger } from '../../services/logger-service';
+
+// ==================== ANIMATIONS ====================
+
+const float = keyframes`
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+`;
+
+const glowPulse = keyframes`
+  0% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.2); }
+  50% { box-shadow: 0 0 40px rgba(168, 85, 247, 0.5); }
+  100% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.2); }
+`;
+
+// ==================== COMPONENT ====================
 
 interface PaymentMethod {
   id: 'epay' | 'easypay';
@@ -34,7 +50,7 @@ export const SubscriptionSelectionPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   if (!user) {
-    return <div>Please log in to view subscription plans.</div>;
+    return <PageContainer>Please log in to view subscription plans.</PageContainer>;
   }
 
   const paymentMethods: PaymentMethod[] = [
@@ -68,7 +84,7 @@ export const SubscriptionSelectionPage: React.FC = () => {
 
     try {
       const planConfig = SUBSCRIPTION_PLANS[selectedPlan];
-      
+
       const paymentRequest = {
         orderId: `order_${user.uid}_${Date.now()}`,
         amount: planConfig.price.monthly,
@@ -95,182 +111,150 @@ export const SubscriptionSelectionPage: React.FC = () => {
   };
 
   return (
-    <Container>
-      <Header>
-        <Title>Choose Your Plan</Title>
-        <Subtitle>Upgrade to unlock unlimited listings and advanced features</Subtitle>
-      </Header>
+    <PageContainer>
+      <ContentWrapper>
+        <Header>
+          <Title>Choose Your Plan</Title>
+          <Subtitle>Upgrade to unlock unlimited listings and advanced features</Subtitle>
+        </Header>
 
-      <PlansGrid>
-        {Object.entries(SUBSCRIPTION_PLANS).map(([tier, plan]) => (
-          <PlanCard key={tier} selected={selectedPlan === tier} onClick={() => handleSelectPlan(tier as PlanTier)}>
-            <PlanName>{plan.name}</PlanName>
-            
-            <PriceSection>
-              <Price>€{plan.price.monthly}</Price>
-              <Period>/month</Period>
-              <AnnualOffer>Save 20% → €{plan.price.annual}/year</AnnualOffer>
-            </PriceSection>
-
+        <PlansGrid>
+          {/* FREE PLAN */}
+          <PlanCard
+            $tier="free"
+            $selected={selectedPlan === 'free'}
+            onClick={() => handleSelectPlan('free')}
+            style={{ opacity: 0.7 }}
+          >
+            <CardHeader>
+              <PlanIcon><Zap /></PlanIcon>
+              <PlanName>Free</PlanName>
+              <Price>
+                <span style={{ fontSize: '1.2rem', color: '#ef4444', textDecoration: 'line-through', display: 'block' }}>€9.99</span>
+                €0<Period>/mo</Period>
+              </Price>
+            </CardHeader>
             <FeaturesList>
-              <FeatureItem included={tier !== 'free'}>
-                <Check size={18} />
-                {plan.maxListings === -1 ? 'Unlimited listings' : `${plan.maxListings} active listings`}
-              </FeatureItem>
-
-              <FeatureItem included={plan.maxCampaigns !== undefined && plan.maxCampaigns > 0}>
-                <Check size={18} />
-                {plan.maxCampaigns ? `${plan.maxCampaigns} campaigns/month` : 'Limited campaigns'}
-              </FeatureItem>
-
-              <FeatureItem included={plan.maxTeamMembers !== undefined && plan.maxTeamMembers > 1}>
-                <Check size={18} />
-                {plan.maxTeamMembers && plan.maxTeamMembers > 1 ? `${plan.maxTeamMembers} team members` : 'Single user'}
-              </FeatureItem>
-
-              <FeatureItem included={plan.apiRateLimitPerHour !== undefined}>
-                <Check size={18} />
-                {plan.apiRateLimitPerHour ? `${plan.apiRateLimitPerHour.toLocaleString()} API calls/hour` : 'Limited API access'}
-              </FeatureItem>
-
-              <FeatureItem included={tier === 'company'}>
-                <Check size={18} />
-                {tier === 'company' ? 'Priority support' : 'Standard support'}
-              </FeatureItem>
-
-              <FeatureItem included={tier === 'company'}>
-                <Check size={18} />
-                {tier === 'company' ? 'Auto-renewal available' : 'No auto-renewal'}
-              </FeatureItem>
+              <FeatureItem $included><Check /> 3 Active Listings</FeatureItem>
+              <FeatureItem $included><Check /> Basic Support</FeatureItem>
             </FeaturesList>
-
-            {tier === 'free' ? (
-              <CurrentPlanButton>Your Current Plan</CurrentPlanButton>
-            ) : (
-              <SelectButton 
-                selected={selectedPlan === tier}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSelectPlan(tier as PlanTier);
-                }}
-              >
-                {selectedPlan === tier ? 'Selected' : 'Select Plan'}
-              </SelectButton>
-            )}
+            <SelectButton $tier="free" $selected={selectedPlan === 'free'} disabled>Current Plan</SelectButton>
           </PlanCard>
-        ))}
-      </PlansGrid>
 
-      {selectedPlan && selectedPlan !== 'free' && (
-        <PaymentSection>
-          <PaymentHeader>
-            <h3>Select Payment Method</h3>
-            <Description>Secure payment through Bulgarian payment gateways</Description>
-          </PaymentHeader>
+          {/* DEALER PLAN */}
+          <PlanCard
+            $tier="dealer"
+            $selected={selectedPlan === 'dealer'}
+            $highlight
+            onClick={() => handleSelectPlan('dealer')}
+          >
+            <PopularBadge><Sparkles size={14} fill="white" /> Most Popular</PopularBadge>
+            <CardHeader>
+              <PlanIcon style={{ background: subscriptionTheme.gradients.dealer }}>
+                <Award />
+              </PlanIcon>
+              <PlanName>Dealer</PlanName>
+              <Price>€{SUBSCRIPTION_PLANS.dealer.price.monthly}<Period>/mo</Period></Price>
+            </CardHeader>
+            <FeaturesList>
+              <FeatureItem $included><Check /> {SUBSCRIPTION_PLANS.dealer.maxListings} Listings</FeatureItem>
+              <FeatureItem $included><Check /> Priority Support</FeatureItem>
+              <FeatureItem $included><Check /> AI Analytics</FeatureItem>
+            </FeaturesList>
+            <SelectButton $tier="dealer" $selected={selectedPlan === 'dealer'}>
+              {selectedPlan === 'dealer' ? 'Selected' : 'Select Dealer'}
+            </SelectButton>
+          </PlanCard>
 
-          <PaymentMethods>
-            {paymentMethods.map((method) => (
-              <PaymentOption
-                key={method.id}
-                selected={selectedPayment === method.id}
-                onClick={() => setSelectedPayment(method.id)}
-              >
-                <RadioButton checked={selectedPayment === method.id} />
-                <MethodInfo>
-                  <MethodName>{method.name}</MethodName>
-                  <MethodDescription>{method.description}</MethodDescription>
-                </MethodInfo>
-              </PaymentOption>
-            ))}
-          </PaymentMethods>
+          {/* COMPANY PLAN */}
+          <PlanCard
+            $tier="company"
+            $selected={selectedPlan === 'company'}
+            onClick={() => handleSelectPlan('company')}
+          >
+            <CardHeader>
+              <PlanIcon><ShieldCheck /></PlanIcon>
+              <PlanName>Enterprise</PlanName>
+              <Price>€{SUBSCRIPTION_PLANS.company.price.monthly}<Period>/mo</Period></Price>
+            </CardHeader>
+            <FeaturesList>
+              <FeatureItem $included><Check /> Unlimited Listings</FeatureItem>
+              <FeatureItem $included><Check /> Dedicated Manager</FeatureItem>
+              <FeatureItem $included><Check /> API Access</FeatureItem>
+            </FeaturesList>
+            <SelectButton $tier="company" $selected={selectedPlan === 'company'}>
+              {selectedPlan === 'company' ? 'Selected' : 'Select Enterprise'}
+            </SelectButton>
+          </PlanCard>
+        </PlansGrid>
 
-          {error && (
-            <ErrorMessage>
-              {error}
-            </ErrorMessage>
-          )}
+        {selectedPlan && selectedPlan !== 'free' && (
+          <PaymentSection>
+            <PaymentHeader>
+              <h3>Select Payment Method</h3>
+              <Description>Secure payment through Bulgarian payment gateways</Description>
+            </PaymentHeader>
 
-          <PaymentActions>
-            <CancelButton onClick={() => setSelectedPlan(null)}>
-              Cancel
-            </CancelButton>
-            <UpgradeButton onClick={handleUpgrade} disabled={loading}>
-              {loading ? 'Processing...' : `Upgrade to ${selectedPlan} (€${SUBSCRIPTION_PLANS[selectedPlan].price.monthly})`}
-              {!loading && <ArrowRight size={18} />}
-            </UpgradeButton>
-          </PaymentActions>
+            <PaymentMethods>
+              {paymentMethods.map((method) => (
+                <PaymentOption
+                  key={method.id}
+                  $selected={selectedPayment === method.id}
+                  onClick={() => setSelectedPayment(method.id)}
+                >
+                  <RadioButton $checked={selectedPayment === method.id} />
+                  <MethodInfo>
+                    <MethodName>{method.name}</MethodName>
+                    <MethodDescription>{method.description}</MethodDescription>
+                  </MethodInfo>
+                </PaymentOption>
+              ))}
+            </PaymentMethods>
 
-          <SecurityNote>
-            <strong>🔒 Secure Payment:</strong> Your payment information is encrypted and processed securely through ePay.bg or EasyPay. No card details are stored on our servers.
-          </SecurityNote>
-        </PaymentSection>
-      )}
+            {error && (
+              <ErrorMessage>
+                {error}
+              </ErrorMessage>
+            )}
 
-      <ComparisonTable>
-        <h3>Feature Comparison</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Feature</th>
-              <th>{SUBSCRIPTION_PLANS.free.name}</th>
-              <th>{SUBSCRIPTION_PLANS.dealer.name}</th>
-              <th>{SUBSCRIPTION_PLANS.company.name}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Active Listings</td>
-              <td>{SUBSCRIPTION_PLANS.free.maxListings}</td>
-              <td>{SUBSCRIPTION_PLANS.dealer.maxListings}</td>
-              <td>Unlimited</td>
-            </tr>
-            <tr>
-              <td>Campaigns/Month</td>
-              <td>{SUBSCRIPTION_PLANS.free.maxCampaigns || 0}</td>
-              <td>{SUBSCRIPTION_PLANS.dealer.maxCampaigns || 0}</td>
-              <td>{SUBSCRIPTION_PLANS.company.maxCampaigns || 'Unlimited'}</td>
-            </tr>
-            <tr>
-              <td>Bulk Upload</td>
-              <td><X size={18} /></td>
-              <td><Check size={18} /></td>
-              <td><Check size={18} /></td>
-            </tr>
-            <tr>
-              <td>Auto-Renewal</td>
-              <td><X size={18} /></td>
-              <td><Check size={18} /></td>
-              <td><Check size={18} /></td>
-            </tr>
-            <tr>
-              <td>Team Members</td>
-              <td>1</td>
-              <td>1</td>
-              <td>{SUBSCRIPTION_PLANS.company.maxTeamMembers}</td>
-            </tr>
-            <tr>
-              <td>API Rate Limit</td>
-              <td>Limited</td>
-              <td>{SUBSCRIPTION_PLANS.dealer.apiRateLimitPerHour?.toLocaleString()}/hour</td>
-              <td>{SUBSCRIPTION_PLANS.company.apiRateLimitPerHour?.toLocaleString()}/hour</td>
-            </tr>
-            <tr>
-              <td>Support</td>
-              <td>Email</td>
-              <td>Email + Chat</td>
-              <td>Priority 24/7</td>
-            </tr>
-          </tbody>
-        </table>
-      </ComparisonTable>
-    </Container>
+            <PaymentActions>
+              <CancelButton onClick={() => setSelectedPlan(null)}>
+                Cancel
+              </CancelButton>
+              <UpgradeButton onClick={handleUpgrade} disabled={loading}>
+                {loading ? 'Processing...' : `Upgrade to ${selectedPlan} (€${SUBSCRIPTION_PLANS[selectedPlan].price.monthly})`}
+                {!loading && <ArrowRight size={18} />}
+              </UpgradeButton>
+            </PaymentActions>
+
+            <SecurityNote>
+              <strong>🔒 Secure Payment:</strong> Your payment information is encrypted and processed securely.
+            </SecurityNote>
+          </PaymentSection>
+        )}
+      </ContentWrapper>
+    </PageContainer>
   );
 };
 
-const Container = styled.div`
+export default SubscriptionSelectionPage;
+
+// ==================== STYLED COMPONENTS ====================
+
+const PageContainer = styled.div`
+  min-height: 100vh;
+  background-color: ${subscriptionTheme.colors.bg.primary};
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(124, 58, 237, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.15) 0px, transparent 50%);
+  color: ${subscriptionTheme.colors.text.primary};
+  padding: 40px 20px;
+  font-family: 'Inter', sans-serif;
+`;
+
+const ContentWrapper = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 20px;
 `;
 
 const Header = styled.div`
@@ -279,177 +263,238 @@ const Header = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 36px;
-  font-weight: 700;
-  margin: 0 0 12px 0;
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 `;
 
 const Subtitle = styled.p`
-  font-size: 18px;
-  color: #666;
-  margin: 0;
+  font-size: 1.1rem;
+  color: ${subscriptionTheme.colors.text.secondary};
 `;
 
 const PlansGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
-  margin-bottom: 50px;
+  gap: 2rem;
+  margin-bottom: 4rem;
+  align-items: start;
 `;
 
-const PlanCard = styled.div<{ selected: boolean }>`
-  border: 2px solid ${props => props.selected ? '#0066cc' : '#e0e0e0'};
-  border-radius: 12px;
-  padding: 24px;
-  cursor: pointer;
+const PlanCard = styled.div<{ $tier: PlanTier; $selected?: boolean; $highlight?: boolean }>`
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(24px);
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  position: relative;
   transition: all 0.3s ease;
-  background: ${props => props.selected ? '#f0f8ff' : 'white'};
+  cursor: pointer;
+
+  /* LED Strip (Thin glowing border) */
+  border: 1px solid ${p => {
+    if (p.$tier === 'free') return '#f97316';
+    if (p.$tier === 'dealer') return '#22c55e';
+    return '#3b82f6';
+  }};
+  box-shadow: 0 0 15px -5px ${p => {
+    if (p.$tier === 'free') return 'rgba(249, 115, 22, 0.5)';
+    if (p.$tier === 'dealer') return 'rgba(34, 197, 94, 0.5)';
+    return 'rgba(59, 130, 246, 0.5)';
+  }};
+
+  ${p => p.$highlight && css`
+    background: linear-gradient(180deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+    transform: scale(1.05);
+    z-index: 10;
+  `}
 
   &:hover {
-    border-color: #0066cc;
-    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.15);
+    transform: ${p => p.$highlight ? 'scale(1.08)' : 'translateY(-5px)'};
+    box-shadow: 0 0 25px -5px ${p => {
+    if (p.$tier === 'free') return 'rgba(249, 115, 22, 0.8)';
+    if (p.$tier === 'dealer') return 'rgba(34, 197, 94, 0.8)';
+    return 'rgba(59, 130, 246, 0.8)';
+  }};
+  }
+`;
+
+const PopularBadge = styled.div`
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: ${subscriptionTheme.gradients.dealer};
+  color: white;
+  padding: 0.4rem 1rem;
+  border-radius: 99px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+`;
+
+const CardHeader = styled.div`
+  text-align: center;
+  margin-bottom: 2rem;
+`;
+
+const PlanIcon = styled.div`
+  width: 56px;
+  height: 56px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  
+  svg {
+    width: 28px;
+    height: 28px;
+    color: white;
   }
 `;
 
 const PlanName = styled.h3`
-  font-size: 20px;
-  font-weight: 600;
-  margin: 0 0 16px 0;
-`;
-
-const PriceSection = styled.div`
-  margin-bottom: 24px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.5rem;
 `;
 
 const Price = styled.div`
-  font-size: 36px;
-  font-weight: 700;
-  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: white;
 `;
 
 const Period = styled.span`
-  color: #666;
-  font-size: 14px;
-`;
-
-const AnnualOffer = styled.div`
-  font-size: 13px;
-  color: #28a745;
-  margin-top: 8px;
+  font-size: 1rem;
+  color: ${subscriptionTheme.colors.text.secondary};
   font-weight: 500;
 `;
 
 const FeaturesList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: 1rem;
+  margin-bottom: 2rem;
 `;
 
-const FeatureItem = styled.div<{ included: boolean }>`
+const FeatureItem = styled.div<{ $included?: boolean }>`
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 14px;
-  color: ${props => props.included ? '#333' : '#999'};
+  font-size: 0.95rem;
+  color: ${p => p.$included ? 'white' : 'rgba(255,255,255,0.4)'};
   
   svg {
-    color: ${props => props.included ? '#28a745' : '#ccc'};
-    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: ${p => p.$included ? subscriptionTheme.colors.text.accent : 'rgba(255,255,255,0.2)'};
   }
 `;
 
-const SelectButton = styled.button<{ selected: boolean }>`
+const SelectButton = styled.button<{ $tier: PlanTier; $selected?: boolean }>`
   width: 100%;
-  padding: 12px 16px;
+  padding: 1rem;
+  border-radius: 12px;
   border: none;
-  border-radius: 8px;
-  background: ${props => props.selected ? '#0066cc' : '#f0f0f0'};
-  color: ${props => props.selected ? 'white' : '#333'};
+  font-weight: 600;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all 0.3s;
+  color: white;
+  
+  ${p => {
+    let color = '';
+    if (p.$tier === 'free') color = '#f97316';
+    else if (p.$tier === 'dealer') color = '#22c55e';
+    else color = '#3b82f6';
 
-  &:hover {
-    background: ${props => props.selected ? '#0052a3' : '#e0e0e0'};
+    if (p.$selected) {
+      return css`
+            background: ${color};
+            box-shadow: 0 4px 20px ${color}66;
+        `;
+    }
+    return css`
+        background: rgba(255, 255, 255, 0.1);
+        &:hover { background: rgba(255, 255, 255, 0.15); border: 1px solid ${color}; }
+    `;
+  }}
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(255, 255, 255, 0.05);
   }
-`;
-
-const CurrentPlanButton = styled.button`
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background: white;
-  color: #666;
-  cursor: not-allowed;
-  font-weight: 500;
 `;
 
 const PaymentSection = styled.div`
-  background: #f9f9f9;
-  border-radius: 12px;
-  padding: 32px;
-  margin-bottom: 50px;
+  background: rgba(30, 41, 59, 0.4);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 3rem;
+  animation: ${glowPulse} 2s infinite alternate;
 `;
 
 const PaymentHeader = styled.div`
-  margin-bottom: 24px;
-
-  h3 {
-    font-size: 20px;
-    margin: 0 0 8px 0;
-  }
+  margin-bottom: 2rem;
+  h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: white; }
 `;
 
 const Description = styled.p`
-  color: #666;
-  margin: 0;
+  color: ${subscriptionTheme.colors.text.secondary};
 `;
 
 const PaymentMethods = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: 1rem;
+  margin-bottom: 2rem;
 `;
 
-const PaymentOption = styled.div<{ selected: boolean }>`
+const PaymentOption = styled.div<{ $selected: boolean }>`
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 16px;
-  border: 2px solid ${props => props.selected ? '#0066cc' : '#e0e0e0'};
-  border-radius: 8px;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: ${p => p.$selected ? 'rgba(168, 85, 247, 0.1)' : 'rgba(255, 255, 255, 0.05)'};
+  border: 1px solid ${p => p.$selected ? '#a855f7' : 'rgba(255, 255, 255, 0.1)'};
+  border-radius: 16px;
   cursor: pointer;
-  background: ${props => props.selected ? '#f0f8ff' : 'white'};
-  transition: all 0.2s ease;
+  transition: all 0.2s;
 
   &:hover {
-    border-color: #0066cc;
+    border-color: #a855f7;
+    background: rgba(168, 85, 247, 0.05);
   }
 `;
 
-const RadioButton = styled.div<{ checked: boolean }>`
-  width: 20px;
-  height: 20px;
-  border: 2px solid ${props => props.checked ? '#0066cc' : '#ccc'};
+const RadioButton = styled.div<{ $checked: boolean }>`
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  flex-shrink: 0;
+  border: 2px solid ${p => p.$checked ? '#a855f7' : 'rgba(255, 255, 255, 0.4)'};
   display: flex;
   align-items: center;
   justify-content: center;
 
-  ${props => props.checked && `
-    background: #0066cc;
-    &::after {
-      content: '';
-      width: 8px;
-      height: 8px;
-      background: white;
-      border-radius: 50%;
-    }
-  `}
+  &::after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #a855f7;
+    opacity: ${p => p.$checked ? 1 : 0};
+    transition: opacity 0.2s;
+  }
 `;
 
 const MethodInfo = styled.div`
@@ -457,116 +502,75 @@ const MethodInfo = styled.div`
 `;
 
 const MethodName = styled.div`
-  font-weight: 500;
-  margin-bottom: 4px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 0.2rem;
 `;
 
 const MethodDescription = styled.div`
-  font-size: 13px;
-  color: #666;
+  font-size: 0.9rem;
+  color: ${subscriptionTheme.colors.text.secondary};
 `;
 
 const PaymentActions = styled.div`
   display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 `;
 
 const CancelButton = styled.button`
   flex: 1;
-  padding: 14px 24px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background: white;
-  color: #333;
+  padding: 1rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all 0.2s;
 
-  &:hover {
-    background: #f5f5f5;
-  }
+  &:hover { background: rgba(255, 255, 255, 0.05); }
 `;
 
 const UpgradeButton = styled.button`
   flex: 2;
-  padding: 14px 24px;
+  padding: 1rem;
+  background: ${subscriptionTheme.gradients.dealer};
   border: none;
-  border-radius: 8px;
-  background: #0066cc;
+  border-radius: 12px;
   color: white;
-  cursor: pointer;
   font-weight: 600;
-  font-size: 16px;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  transition: all 0.2s ease;
+  gap: 0.5rem;
+  box-shadow: ${subscriptionTheme.shadows.glow};
+  transition: all 0.2s;
 
   &:hover:not(:disabled) {
-    background: #0052a3;
+    transform: translateY(-2px);
+    filter: brightness(1.1);
   }
-
-  &:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-  }
+  
+  &:disabled { opacity: 0.7; cursor: wait; }
 `;
 
 const ErrorMessage = styled.div`
-  background: #f8d7da;
-  color: #721c24;
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  border: 1px solid #f5c6cb;
+  background: rgba(239, 68, 68, 0.1);
+  color: #fca5a5;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(239, 68, 68, 0.2);
 `;
 
 const SecurityNote = styled.div`
-  background: #d1ecf1;
-  color: #0c5460;
-  padding: 12px 16px;
-  border-radius: 8px;
-  border: 1px solid #bee5eb;
-  font-size: 13px;
-`;
-
-const ComparisonTable = styled.div`
-  h3 {
-    font-size: 24px;
-    margin: 0 0 20px 0;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  th, td {
-    padding: 16px;
-    text-align: left;
-    border-bottom: 1px solid #e0e0e0;
-  }
-
-  th {
-    background: #f0f0f0;
-    font-weight: 600;
-  }
-
-  tr:last-child td {
-    border-bottom: none;
-  }
-
-  td:first-child {
-    font-weight: 500;
-  }
-
-  svg {
-    margin: 0 auto;
-    display: block;
-  }
+  padding: 1rem;
+  background: rgba(14, 165, 233, 0.1);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  border-radius: 12px;
+  color: #7dd3fc;
+  font-size: 0.9rem;
+  text-align: center;
 `;

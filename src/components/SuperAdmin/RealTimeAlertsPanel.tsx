@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { smartAlertsService, Alert } from '../../services/smart-alerts-service';
 import { logger } from '../../services/logger-service';
+import { useAdminLang } from '../../contexts/AdminLanguageContext';
 
 const PanelContainer = styled.div`
   background: #0f1419;
@@ -33,6 +34,10 @@ const SectionTitle = styled.h2`
   gap: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
+  
+  [dir="rtl"] & {
+    flex-direction: row-reverse;
+  }
 `;
 
 const RefreshButton = styled.button`
@@ -76,11 +81,28 @@ const AlertCard = styled.div<{ $severity: string }>`
   border-radius: 8px;
   padding: 24px;
   transition: all 0.2s ease;
+  
+  [dir="rtl"] & {
+    border-left: 1px solid #2d3748;
+    border-right: 6px solid ${props => {
+    switch (props.$severity) {
+      case 'critical': return '#dc2626';
+      case 'error': return '#ef4444';
+      case 'warning': return '#fbbf24';
+      case 'info': return '#3b82f6';
+      default: return '#64748b';
+    }
+  }};
+  }
 
   &:hover {
     border-color: #ff8c61;
     background: #252b3a;
     transform: translateX(6px);
+    
+    [dir="rtl"] & {
+       transform: translateX(-6px);
+    }
   }
 `;
 
@@ -130,6 +152,11 @@ const AlertAction = styled.div`
   border-radius: 8px;
   border-left: 4px solid #3b82f6;
   font-weight: 500;
+  
+  [dir="rtl"] & {
+    border-left: none;
+    border-right: 4px solid #3b82f6;
+  }
 `;
 
 const AlertFooter = styled.div`
@@ -198,6 +225,7 @@ const LoadingState = styled.div`
 const RealTimeAlertsPanel: React.FC = () => {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useAdminLang();
 
   const loadAlerts = async () => {
     try {
@@ -242,16 +270,17 @@ const RealTimeAlertsPanel: React.FC = () => {
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
 
-    if (minutes < 1) return 'Just now';
-    if (minutes < 60) return `${minutes}m ago`;
-    if (hours < 24) return `${hours}h ago`;
-    return `${days}d ago`;
+    // Basic localization for time ago
+    if (minutes < 1) return t.alerts.justNow;
+    if (minutes < 60) return `${minutes}m ${t.alerts.ago}`;
+    if (hours < 24) return `${hours}h ${t.alerts.ago}`;
+    return `${days}d ${t.alerts.ago}`;
   };
 
   if (loading) {
     return (
       <PanelContainer>
-        <LoadingState>Loading alerts...</LoadingState>
+        <LoadingState>{t.common.loading}</LoadingState>
       </PanelContainer>
     );
   }
@@ -261,11 +290,11 @@ const RealTimeAlertsPanel: React.FC = () => {
       <SectionTitle>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <AlertCircle />
-          Real-Time System Alerts
+          {t.alerts.title}
         </div>
         <RefreshButton onClick={loadAlerts}>
           <RefreshCw size={14} />
-          Refresh
+          {t.common.refresh}
         </RefreshButton>
       </SectionTitle>
 
@@ -274,7 +303,7 @@ const RealTimeAlertsPanel: React.FC = () => {
           <EmptyStateIcon>
             <CheckCircle size={64} color="#4ade80" />
           </EmptyStateIcon>
-          <EmptyStateText>No active alerts - All systems operational!</EmptyStateText>
+          <EmptyStateText>{t.alerts.noAlerts}</EmptyStateText>
         </EmptyState>
       ) : (
         <AlertsGrid>
@@ -295,7 +324,7 @@ const RealTimeAlertsPanel: React.FC = () => {
 
               {alert.actionRequired && (
                 <AlertAction>
-                  <strong>Action Required:</strong> {alert.actionRequired}
+                  <strong>{t.alerts.actionRequired}:</strong> {alert.actionRequired}
                 </AlertAction>
               )}
 
@@ -307,7 +336,7 @@ const RealTimeAlertsPanel: React.FC = () => {
                 {alert.id && (
                   <ResolveButton onClick={() => handleResolve(alert.id)}>
                     <CheckCircle size={12} />
-                    Resolve
+                    {t.alerts.resolve}
                   </ResolveButton>
                 )}
               </AlertFooter>
@@ -320,4 +349,3 @@ const RealTimeAlertsPanel: React.FC = () => {
 };
 
 export default RealTimeAlertsPanel;
-

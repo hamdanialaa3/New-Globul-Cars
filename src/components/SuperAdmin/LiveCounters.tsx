@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import {
   Users,
   Car,
@@ -11,178 +11,27 @@ import {
   Download,
   Zap,
   Activity,
-  TrendingUp,
-  TrendingDown,
-  Clock,
   CheckCircle,
   AlertCircle,
-  AlertTriangle
+  Layers,
+  Server
 } from 'lucide-react';
 import { liveFirebaseCountersService } from '../../services/live-firebase-counters-service';
 import { logger } from '../../services/logger-service';
+import { adminTheme } from './styles/admin-theme';
+import { useAdminLang } from '../../contexts/AdminLanguageContext';
 
-interface LiveCountersProps {
-  stats: {
-    totalCars: number;
-    totalUsers: number;
-    totalViews: number;
-  };
-}
-
-const CountersContainer = styled.div`
-  background: #0f1419;
-  border: 1px solid #2d3748;
-  border-radius: 8px;
-  padding: 24px;
-  margin: 0 20px 20px 20px;
-  color: #f8fafc;
+// Animations
+const float = keyframes`
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
+  100% { transform: translateY(0px); }
 `;
 
-const SectionTitle = styled.h2`
-  color: #ff8c61;
-  font-size: 16px;
-  font-weight: 700;
-  margin: 0 0 24px 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-`;
-
-const CountersGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
-`;
-
-const CounterCard = styled.div<{ $interactive?: boolean }>`
-  background: #1e2432;
-  border: 1px solid #2d3748;
-  border-radius: 8px;
-  padding: 20px;
-  text-align: center;
-  transition: all 0.2s ease;
-  position: relative;
-  cursor: ${props => props.$interactive ? 'pointer' : 'default'};
-  overflow: hidden;
-  
-  &:hover {
-    border-color: #ff8c61;
-    transform: ${props => props.$interactive ? 'translateY(-4px)' : 'none'};
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    background: #252b3a;
-  }
-`;
-
-const ActionButton = styled.button`
-  width: 100%;
-  margin-top: 16px;
-  padding: 8px;
-  background: #ff8c61;
-  color: #0f1419;
-  border: none;
-  border-radius: 6px;
-  font-size: 10px;
-  font-weight: 800;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-
-  ${CounterCard}:hover & {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  
-  &:hover {
-    background: #ffa885;
-  }
-`;
-
-const CounterIcon = styled.div`
-  background: #252b3a;
-  color: #ff8c61;
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 16px;
-  font-size: 20px;
-  border: 1px solid #2d3748;
-`;
-
-const CounterValue = styled.div`
-  font-size: 26px;
-  font-weight: 700;
-  color: #f8fafc;
-  margin-bottom: 8px;
-`;
-
-const CounterLabel = styled.div`
-  font-size: 11px;
-  color: #cbd5e1;
-  font-weight: 700;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-`;
-
-const CounterChange = styled.div<{ $positive: boolean; $neutral?: boolean }>`
-  font-size: 11px;
-  font-weight: 500;
-  color: ${props => {
-    if (props.$neutral) return '#666666';
-    return props.$positive ? '#2d5a2d' : '#8b2d2d';
-  }};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-`;
-
-const StatusIndicator = styled.div<{ $status: 'online' | 'offline' | 'warning' }>`
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  box-shadow: 0 0 10px ${props => {
-    switch (props.$status) {
-      case 'online': return '#4ade80';
-      case 'warning': return '#fbbf24';
-      case 'offline': return '#f87171';
-      default: return '#64748b';
-    }
-  }};
-  background: ${props => {
-    switch (props.$status) {
-      case 'online': return '#4ade80';
-      case 'warning': return '#fbbf24';
-      case 'offline': return '#f87171';
-      default: return '#64748b';
-    }
-  }};
-`;
-
-const LoadingSpinner = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
-  color: #666666;
-  font-size: 14px;
-  gap: 8px;
+const pulse = keyframes`
+  0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
 `;
 
 interface LiveCountersProps {
@@ -194,22 +43,146 @@ interface LiveCountersProps {
   onAction?: (action: string) => void;
 }
 
-const LiveCounters: React.FC<LiveCountersProps> = ({ stats = { totalCars: 0, totalUsers: 0, totalViews: 0 }, onAction }) => {
-  const [counters, setCounters] = useState({
-    totalUsers: 0,
-    totalCars: 0,
-    totalMessages: 0,
-    totalViews: 0,
-    totalRevenue: 0,
-    firestoreReads: 0,
-    firestoreWrites: 0,
-    storageUsage: 0,
-    functionInvocations: 0,
-    activeSessions: 0,
-    lastUpdated: new Date(),
-    systemHealth: 'OK',
-    alerts: 0
-  });
+const CountersContainer = styled.div`
+  margin-bottom: 40px;
+  position: relative;
+`;
+
+const SectionHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-left: 8px;
+`;
+
+const LivePulse = styled.div`
+  width: 8px;
+  height: 8px;
+  background: ${adminTheme.colors.status.success};
+  border-radius: 50%;
+  animation: ${pulse} 2s infinite;
+`;
+
+const SectionTitle = styled.h2`
+  color: ${adminTheme.colors.text.primary};
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: -0.5px;
+  
+  svg {
+    color: ${adminTheme.colors.accent.tertiary};
+  }
+`;
+
+const CountersGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  perspective: 1000px;
+`;
+
+const CounterCard = styled.div<{ $interactive?: boolean }>`
+  ${adminTheme.glass.card}
+  border-radius: 16px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(10px);
+  cursor: ${props => props.$interactive ? 'pointer' : 'default'};
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+    pointer-events: none;
+  }
+
+  &:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3), 0 0 15px rgba(99, 102, 241, 0.1);
+    background: rgba(30, 41, 59, 0.5);
+    border-color: ${adminTheme.colors.accent.primary};
+
+    .icon-bg {
+      transform: scale(1.1);
+      background: rgba(99, 102, 241, 0.2);
+    }
+  }
+`;
+
+const IconWrapper = styled.div`
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(30, 41, 59, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  border: 1px solid ${adminTheme.colors.border.light};
+  transition: all 0.3s ease;
+  color: ${adminTheme.colors.accent.secondary};
+  
+  svg {
+    filter: drop-shadow(0 0 3px rgba(168, 85, 247, 0.4));
+  }
+`;
+
+const CounterValue = styled.div`
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+  font-family: ${adminTheme.typography.fontFamily.mono};
+  letter-spacing: -1px;
+`;
+
+const CounterLabel = styled.div`
+  font-size: 0.75rem;
+  color: ${adminTheme.colors.text.muted};
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`;
+
+const ActionBadge = styled.div`
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: all 0.3s ease;
+  background: ${adminTheme.colors.accent.primary};
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+
+  ${CounterCard}:hover & {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  [dir="rtl"] & {
+    right: auto;
+    left: 12px;
+    transform: translateX(-10px);
+  }
+`;
+
+const LiveCounters: React.FC<LiveCountersProps> = ({ stats, onAction }) => {
+  const [counters, setCounters] = useState<any>({});
+  const { t } = useAdminLang();
 
   useEffect(() => {
     const fetchCounters = async () => {
@@ -217,93 +190,120 @@ const LiveCounters: React.FC<LiveCountersProps> = ({ stats = { totalCars: 0, tot
         const data = await liveFirebaseCountersService.getLiveAnalytics();
         setCounters(data);
       } catch (error) {
-        logger.error('Error fetching live counters', error as Error);
+        logger.error('Error fetching counters', error as Error);
       }
     };
 
     fetchCounters();
-    const interval = setInterval(fetchCounters, 5000); // Refresh every 5 seconds
-
+    const interval = setInterval(fetchCounters, 5000);
     return () => clearInterval(interval);
   }, []);
 
+  const items = [
+    // Interactive Metrics
+    {
+      id: 'users',
+      label: t.dashboard.totalUsers,
+      value: stats?.totalUsers || 0,
+      icon: Users,
+      action: t.dashboard.manage,
+      interactive: true
+    },
+    {
+      id: 'cars',
+      label: t.dashboard.listings,
+      value: stats?.totalCars || 0,
+      icon: Car,
+      action: t.dashboard.manage,
+      interactive: true
+    },
+    {
+      id: 'views',
+      label: t.dashboard.views,
+      value: stats?.totalViews || 0,
+      icon: Eye,
+      action: t.dashboard.analyze,
+      interactive: true
+    },
+    {
+      id: 'messages',
+      label: t.dashboard.messages,
+      value: counters?.totalMessages || 0,
+      icon: MessageSquare,
+      action: t.dashboard.inbox,
+      interactive: true
+    },
+    {
+      id: 'revenue',
+      label: t.dashboard.revenue,
+      value: `€${counters?.totalRevenue || 0}`,
+      icon: DollarSign,
+      action: t.dashboard.audit,
+      interactive: true
+    },
+    // System Metrics
+    {
+      id: 'storage',
+      label: t.dashboard.storage,
+      value: `${counters?.storageUsage || 0} MB`,
+      icon: HardDrive,
+    },
+    {
+      id: 'reads',
+      label: t.dashboard.dbReads,
+      value: counters?.firestoreReads || 0,
+      icon: Database,
+    },
+    {
+      id: 'writes',
+      label: t.dashboard.dbWrites,
+      value: counters?.firestoreWrites || 0,
+      icon: Server,
+    },
+    {
+      id: 'functions',
+      label: t.dashboard.functions,
+      value: counters?.functionInvocations || 0,
+      icon: Zap,
+    },
+    {
+      id: 'health',
+      label: t.dashboard.health,
+      value: counters?.systemHealth || 'OK',
+      icon: Activity,
+    },
+  ];
+
   return (
     <CountersContainer>
-      <SectionTitle>
-        <Activity />
-        Live Platform Statistics
-      </SectionTitle>
+      <SectionHeader>
+        <LivePulse />
+        <SectionTitle>
+          {t.dashboard.metrics}
+        </SectionTitle>
+      </SectionHeader>
+
       <CountersGrid>
-        <CounterCard $interactive onClick={() => onAction?.('users')}>
-          <CounterIcon><Users /></CounterIcon>
-          <CounterValue>{(stats?.totalUsers || 0).toLocaleString()}</CounterValue>
-          <CounterLabel>Total Users</CounterLabel>
-          <ActionButton>Manage Users</ActionButton>
-        </CounterCard>
+        {items.map((item) => (
+          <CounterCard
+            key={item.id}
+            $interactive={item.interactive}
+            onClick={() => item.interactive && onAction?.(item.id)}
+          >
+            <IconWrapper className="icon-bg">
+              <item.icon size={20} />
+            </IconWrapper>
 
-        <CounterCard $interactive onClick={() => onAction?.('cars')}>
-          <CounterIcon><Car /></CounterIcon>
-          <CounterValue>{(stats?.totalCars || 0).toLocaleString()}</CounterValue>
-          <CounterLabel>Total Cars</CounterLabel>
-          <ActionButton>Manage Fleet</ActionButton>
-        </CounterCard>
+            {item.interactive && (
+              <ActionBadge>{item.action}</ActionBadge>
+            )}
 
-        <CounterCard $interactive onClick={() => onAction?.('views')}>
-          <CounterIcon><Eye /></CounterIcon>
-          <CounterValue>{(stats?.totalViews || 0).toLocaleString()}</CounterValue>
-          <CounterLabel>Total Views</CounterLabel>
-          <ActionButton>View Analytics</ActionButton>
-        </CounterCard>
-
-        <CounterCard $interactive onClick={() => onAction?.('messages')}>
-          <CounterIcon><MessageSquare /></CounterIcon>
-          <CounterValue>{(counters?.totalMessages || 0).toLocaleString()}</CounterValue>
-          <CounterLabel>Total Messages</CounterLabel>
-          <ActionButton>Open Inbox</ActionButton>
-        </CounterCard>
-
-        <CounterCard $interactive onClick={() => onAction?.('revenue')}>
-          <CounterIcon><DollarSign /></CounterIcon>
-          <CounterValue>€{(counters?.totalRevenue || 0).toLocaleString()}</CounterValue>
-          <CounterLabel>Total Revenue</CounterLabel>
-          <ActionButton>Details</ActionButton>
-        </CounterCard>
-
-        <CounterCard>
-          <CounterIcon><HardDrive /></CounterIcon>
-          <CounterValue>{(counters?.storageUsage || 0).toLocaleString()} MB</CounterValue>
-          <CounterLabel>Storage Usage</CounterLabel>
-        </CounterCard>
-        <CounterCard>
-          <CounterIcon><Database /></CounterIcon>
-          <CounterValue>{(counters?.firestoreReads || 0).toLocaleString()}</CounterValue>
-          <CounterLabel>Firestore Reads</CounterLabel>
-        </CounterCard>
-        <CounterCard>
-          <CounterIcon><Database /></CounterIcon>
-          <CounterValue>{(counters?.firestoreWrites || 0).toLocaleString()}</CounterValue>
-          <CounterLabel>Firestore Writes</CounterLabel>
-        </CounterCard>
-        <CounterCard>
-          <CounterIcon><Download /></CounterIcon>
-          <CounterValue>{(counters?.functionInvocations || 0).toLocaleString()}</CounterValue>
-          <CounterLabel>Function Invocations</CounterLabel>
-        </CounterCard>
-        <CounterCard>
-          <CounterIcon><Zap /></CounterIcon>
-          <CounterValue>{(counters?.activeSessions || 0).toLocaleString()}</CounterValue>
-          <CounterLabel>Active Sessions</CounterLabel>
-        </CounterCard>
-        <CounterCard>
-          <CounterIcon><CheckCircle /></CounterIcon>
-          <CounterValue>{counters?.systemHealth || 'OK'}</CounterValue>
-          <CounterLabel>System Health</CounterLabel>
-        </CounterCard>
-        <CounterCard>
-          <CounterIcon><AlertCircle /></CounterIcon>
-          <CounterValue>{(counters?.alerts || 0).toLocaleString()}</CounterValue>
-          <CounterLabel>Alerts</CounterLabel>
-        </CounterCard>
+            <CounterValue>
+              {typeof item.value === 'number' ? item.value.toLocaleString() : item.value}
+            </CounterValue>
+            <CounterLabel>{item.label}</CounterLabel>
+          </CounterCard>
+        ))}
       </CountersGrid>
     </CountersContainer>
   );

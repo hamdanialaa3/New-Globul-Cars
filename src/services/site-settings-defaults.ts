@@ -56,7 +56,8 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
     featuredAdPrice: 100,
     topAdPrice: 150,
     platformFeePercentage: 2.5,
-    currency: 'SAR'
+    currency: 'SAR',
+    subscriptionMode: 'paid'
   },
 
   // SEO & Meta

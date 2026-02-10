@@ -5,6 +5,7 @@ import { collection, getDocs, query, orderBy, limit, where } from 'firebase/fire
 import { db } from '../firebase/firebase-config';
 import { Database, Users, Car, Activity, TrendingUp } from 'lucide-react';
 import { queryAllCollections, countAllVehicles } from '../services/search/multi-collection-helper';
+import { useAdminLang } from '../contexts/AdminLanguageContext';
 
 const Container = styled.div`
   padding: 2rem;
@@ -64,6 +65,7 @@ const DataItem = styled.div`
 `;
 
 const RealDataDisplay: React.FC = () => {
+  const { t } = useAdminLang();
   const [users, setUsers] = useState<any[]>([]);
   const [cars, setCars] = useState<any[]>([]);
   const [stats, setStats] = useState({
@@ -124,40 +126,40 @@ const RealDataDisplay: React.FC = () => {
   if (loading) {
     return (
       <Container>
-        <Title><Database size={24} />جاري تحميل البيانات الحقيقية...</Title>
+        <Title><Database size={24} />{t.common.loading}</Title>
       </Container>
     );
   }
 
   return (
     <Container>
-      <Title><Database size={24} />البيانات الحقيقية من Firebase</Title>
+      <Title><Database size={24} />{t.realData.title}</Title>
 
       <DataGrid>
         <DataCard>
-          <CardTitle><TrendingUp size={20} />إحصائيات عامة</CardTitle>
+          <CardTitle><TrendingUp size={20} />{t.realData.generalStats}</CardTitle>
           <DataList>
             <DataItem>
-              <span>إجمالي المستخدمين</span>
+              <span>{t.realData.totalUsers}</span>
               <strong>{stats.totalUsers}</strong>
             </DataItem>
             <DataItem>
-              <span>إجمالي السيارات</span>
+              <span>{t.realData.totalCars}</span>
               <strong>{stats.totalCars}</strong>
             </DataItem>
             <DataItem>
-              <span>السيارات النشطة</span>
+              <span>{t.realData.activeCars}</span>
               <strong>{stats.activeCars}</strong>
             </DataItem>
             <DataItem>
-              <span>المستخدمين المتحققين</span>
+              <span>{t.realData.verifiedUsers}</span>
               <strong>{stats.verifiedUsers}</strong>
             </DataItem>
           </DataList>
         </DataCard>
 
         <DataCard>
-          <CardTitle><Users size={20} />آخر المستخدمين</CardTitle>
+          <CardTitle><Users size={20} />{t.realData.lastUsers}</CardTitle>
           <DataList>
             {users.slice(0, 5).map((user: any) => (
               <DataItem key={user.id}>
@@ -169,7 +171,7 @@ const RealDataDisplay: React.FC = () => {
         </DataCard>
 
         <DataCard>
-          <CardTitle><Car size={20} />آخر السيارات</CardTitle>
+          <CardTitle><Car size={20} />{t.realData.lastCars}</CardTitle>
           <DataList>
             {cars.slice(0, 5).map((car: any) => (
               <DataItem key={car.id}>
@@ -181,18 +183,18 @@ const RealDataDisplay: React.FC = () => {
         </DataCard>
 
         <DataCard>
-          <CardTitle><Activity size={20} />النشاط الحالي</CardTitle>
+          <CardTitle><Activity size={20} />{t.realData.currentActivity}</CardTitle>
           <DataList>
             <DataItem>
-              <span>المستخدمين النشطين اليوم</span>
+              <span>{t.realData.activeUsersToday}</span>
               <strong>{Math.floor(stats.totalUsers * 0.1)}</strong>
             </DataItem>
             <DataItem>
-              <span>السيارات المضافة اليوم</span>
+              <span>{t.realData.carsAddedToday}</span>
               <strong>{Math.floor(stats.totalCars * 0.05)}</strong>
             </DataItem>
             <DataItem>
-              <span>المشاهدات اليوم</span>
+              <span>{t.realData.viewsToday}</span>
               <strong>{Math.floor(stats.totalCars * 15)}</strong>
             </DataItem>
           </DataList>

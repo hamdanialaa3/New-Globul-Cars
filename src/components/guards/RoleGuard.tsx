@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
+import { getAuth, getIdTokenResult } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/firebase/firebase-config';
 import { useAuth } from '../../contexts/AuthProvider';
 import { logger } from '../../services/logger-service';
-
-// Hardcoded Super Admin emails for strict security
-const SUPER_ADMIN_EMAILS = [
-    'alaa.hamdani@yahoo.com',
-    'hamdanialaa@yahoo.com',
-    'globul.net.m@gmail.com'
-];
 
 interface RoleGuardProps {
     children: React.ReactNode;
     requiredRole?: string; // 'super_admin', 'admin', etc.
-    requireSuperAdmin?: boolean; // If true, checks against the hardcoded email list
+    requireSuperAdmin?: boolean; // If true, checks admin claim or Firestore role
 }
 
 export const RoleGuard: React.FC<RoleGuardProps> = ({
@@ -34,28 +30,42 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({
             return;
         }
 
-        let authorized = false;
+        const checkAuthorization = async () => {
+            try {
+                // 1. Check Firebase custom claims first
+                const tokenResult = await getIdTokenResult(currentUser, true);
+                if (tokenResult.claims.admin === true || tokenResult.claims.role === 'super_admin') {
+                    setIsAuthorized(true);
+                    return;
+                }
 
-        if (requireSuperAdmin) {
-            // Strict check against hardcoded emails
-            if (currentUser.email && SUPER_ADMIN_EMAILS.includes(currentUser.email)) {
-                authorized = true;
-            } else {
-                logger.warn('RoleGuard: User is not in Super Admin email list', {
+                // 2. Fallback: check Firestore user document role
+                const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    if (userData?.role === 'super_admin' || userData?.role === 'admin') {
+                        setIsAuthorized(true);
+                        return;
+                    }
+                }
+
+                logger.warn('RoleGuard: User lacks admin privileges', {
                     uid: currentUser.uid,
                     email: currentUser.email
                 });
+                setIsAuthorized(false);
+            } catch (error) {
+                logger.error('RoleGuard: Authorization check failed', { error });
+                setIsAuthorized(false);
             }
-        } else {
-            // Future-proofing: Check against custom claims or Firestore role
-            // For now, we assume if it's not requiring Super Admin, we might check other logic
-            // But since we only have Super Admin context currently, default to false if not matching above
-            // or implement custom logic here if needed.
-            // For this implementation, we focus on Super Admin.
-            authorized = false;
-        }
+        };
 
-        setIsAuthorized(authorized);
+        if (requireSuperAdmin) {
+            checkAuthorization();
+        } else {
+            // Non-admin roles: for now allow authenticated users
+            setIsAuthorized(true);
+        }
 
     }, [currentUser, loading, requireSuperAdmin, location.pathname]);
 

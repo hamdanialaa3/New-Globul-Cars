@@ -3,10 +3,20 @@
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
 import React from 'react';
-import styled from 'styled-components';
-import { shimmerEffect } from '../../styles/animations';
+import styled, { keyframes } from 'styled-components';
 
 // ==================== STYLED COMPONENTS ====================
+
+const skeletonPulse = keyframes`
+  0%, 100% {
+    background-color: rgba(255, 143, 16, 0.03);
+    opacity: 0.6;
+  }
+  50% {
+    background-color: rgba(255, 143, 16, 0.08);
+    opacity: 1;
+  }
+`;
 
 const SkeletonContainer = styled.div`
   width: 100%;
@@ -17,24 +27,42 @@ const SkeletonCover = styled.div`
   width: 100%;
   height: 300px;
   border-radius: 16px;
-  ${shimmerEffect}
+  background-color: rgba(255, 143, 16, 0.03);
+  animation: ${skeletonPulse} 1.5s ease-in-out infinite;
   margin-bottom: 60px;
+  
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    background-color: rgba(255, 143, 16, 0.05);
+  }
 `;
 
 const SkeletonProfile = styled.div`
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  ${shimmerEffect}
+  background-color: rgba(255, 143, 16, 0.03);
+  animation: ${skeletonPulse} 1.5s ease-in-out infinite;
   margin: -80px auto 20px;
+  
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    background-color: rgba(255, 143, 16, 0.05);
+  }
 `;
 
 const SkeletonText = styled.div<{ $width?: string; $height?: string }>`
   width: ${props => props.$width || '100%'};
   height: ${props => props.$height || '20px'};
   border-radius: 8px;
-  ${shimmerEffect}
+  background-color: rgba(255, 143, 16, 0.03);
+  animation: ${skeletonPulse} 1.5s ease-in-out infinite;
   margin: 8px 0;
+  
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    background-color: rgba(255, 143, 16, 0.05);
+  }
 `;
 
 const SkeletonCard = styled.div`
@@ -56,7 +84,13 @@ const SkeletonGrid = styled.div`
 const SkeletonGridItem = styled.div`
   aspect-ratio: 1;
   border-radius: 12px;
-  ${shimmerEffect}
+  background-color: rgba(255, 143, 16, 0.03);
+  animation: ${skeletonPulse} 1.5s ease-in-out infinite;
+  
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    background-color: rgba(255, 143, 16, 0.05);
+  }
 `;
 
 // ==================== COMPONENT ====================

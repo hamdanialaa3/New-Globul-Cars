@@ -8,6 +8,12 @@ import compression from 'vite-plugin-compression';
 // Migrated from craco.config.js (288 lines)
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
+  const securityHeaders = {
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()'
+  };
   
   return {
     plugins: [
@@ -73,6 +79,7 @@ export default defineConfig(({ mode }) => {
         'Pragma': 'no-cache',
         'Expires': '0',
         'Surrogate-Control': 'no-store',
+        ...securityHeaders,
       },
       
       // HMR configuration
@@ -90,6 +97,12 @@ export default defineConfig(({ mode }) => {
           '**/ARCHIVE/**',
           '**/scripts/**',
         ],
+      },
+    },
+
+    preview: {
+      headers: {
+        ...securityHeaders,
       },
     },
     

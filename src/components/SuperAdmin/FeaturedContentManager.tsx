@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { getAuth } from 'firebase/auth';
 import styled from 'styled-components';
 import {
   Star,
@@ -18,6 +19,7 @@ import {
 import { siteSettingsService } from '@/services/site-settings.service';
 import type { FeaturedContent } from '@/services/site-settings-types';
 import { DEFAULT_FEATURED_CONTENT } from '@/services/site-settings-defaults';
+import { useAdminLang } from '@/contexts/AdminLanguageContext';
 
 const Container = styled.div`
   background: #0f1419;
@@ -366,31 +368,21 @@ const SearchIcon = styled.div`
 `;
 
 const FeaturedContentManager: React.FC = () => {
+  const { t } = useAdminLang();
   const [content, setContent] = useState<FeaturedContent>(DEFAULT_FEATURED_CONTENT);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  const adminEmail = (() => {
-    try {
-      const session = localStorage.getItem('superAdminSession');
-      if (session) {
-        const parsed = JSON.parse(session);
-        return parsed.email || 'admin@kolione.com';
-      }
-    } catch (e) {
-      // Ignore
-    }
-    return 'admin@kolione.com';
-  })();
+  const adminEmail = getAuth().currentUser?.email || 'unknown';
 
-const loadContent = useCallback(async () => {
+  const loadContent = useCallback(async () => {
     try {
       setLoading(true);
       const data = await siteSettingsService.getFeaturedContent();
       setContent(data);
     } catch (error) {
-      showMessage('error', 'فشل تحميل المحتوى المميز');
+      showMessage('error', t.featured.loadError);
     } finally {
       setLoading(false);
     }
@@ -409,25 +401,25 @@ const loadContent = useCallback(async () => {
     try {
       setSaving(true);
       await siteSettingsService.updateFeaturedContent(content, adminEmail);
-      showMessage('success', '✅ تم حفظ المحتوى المميز بنجاح');
+      showMessage('success', '✅ ' + t.featured.saveSuccess);
     } catch (error) {
-      showMessage('error', '❌ فشل حفظ المحتوى');
+      showMessage('error', '❌ ' + t.featured.saveError);
     } finally {
       setSaving(false);
     }
   };
 
   const handleReset = async () => {
-    if (!window.confirm('⚠️ هل أنت متأكد من إعادة تعيين المحتوى المميز؟')) {
+    if (!window.confirm('⚠️ ' + t.featured.confirmReset)) {
       return;
     }
     try {
       setSaving(true);
       await siteSettingsService.updateFeaturedContent(DEFAULT_FEATURED_CONTENT, adminEmail);
       setContent(DEFAULT_FEATURED_CONTENT);
-      showMessage('success', '✅ تم إعادة التعيين');
+      showMessage('success', '✅ ' + t.featured.resetSuccess);
     } catch (error) {
-      showMessage('error', '❌ فشل إعادة التعيين');
+      showMessage('error', '❌ ' + t.featured.resetError);
     } finally {
       setSaving(false);
     }
@@ -518,7 +510,7 @@ const loadContent = useCallback(async () => {
   const updateBanner = (index: number, field: string, value: any) => {
     setContent(prev => ({
       ...prev,
-      homepageBanners: prev.homepageBanners.map((banner, i) => 
+      homepageBanners: prev.homepageBanners.map((banner, i) =>
         i === index ? { ...banner, [field]: value } : banner
       )
     }));
@@ -537,7 +529,7 @@ const loadContent = useCallback(async () => {
 
     const banners = [...content.homepageBanners];
     [banners[index], banners[newIndex]] = [banners[newIndex], banners[index]];
-    
+
     // Update order values
     banners.forEach((banner, i) => {
       banner.order = i + 1;
@@ -553,7 +545,7 @@ const loadContent = useCallback(async () => {
     return (
       <Container>
         <Header>
-          <Title><Star size={24} /> جاري التحميل...</Title>
+          <Title><Star size={24} /> {t.common.loading}</Title>
         </Header>
       </Container>
     );
@@ -564,10 +556,10 @@ const loadContent = useCallback(async () => {
       <Header>
         <Title>
           <Star size={24} />
-          إدارة المحتوى المميز
+          {t.featured.title}
         </Title>
         <Subtitle>
-          التحكم في السيارات المميزة، الوكلاء المميزين، والبنرات الإعلانية
+          {t.featured.subtitle}
         </Subtitle>
       </Header>
 
@@ -582,12 +574,12 @@ const loadContent = useCallback(async () => {
       <Section>
         <SectionTitle>
           <Car size={18} />
-          السيارات المميزة ({content.featuredCars.length})
+          {t.featured.featuredCars} ({content.featuredCars.length})
         </SectionTitle>
 
         <SearchContainer>
           <SearchInput
-            placeholder="ابحث عن سيارة بالـ ID أو رقم الإعلان..."
+            placeholder={t.featured.searchCar}
             disabled={saving}
           />
           <SearchIcon>
@@ -602,7 +594,7 @@ const loadContent = useCallback(async () => {
                 type="text"
                 value={carId}
                 onChange={(e) => updateFeaturedCar(index, e.target.value)}
-                placeholder="أدخل ID السيارة"
+                placeholder={t.featured.placeholderCarId}
                 disabled={saving}
               />
               <IconButton
@@ -618,7 +610,7 @@ const loadContent = useCallback(async () => {
 
         <AddButton onClick={addFeaturedCar} disabled={saving}>
           <Plus size={16} />
-          إضافة سيارة مميزة
+          {t.featured.addFeaturedCar}
         </AddButton>
       </Section>
 
@@ -626,12 +618,12 @@ const loadContent = useCallback(async () => {
       <Section>
         <SectionTitle>
           <Building2 size={18} />
-          الوكلاء المميزون ({content.featuredDealers.length})
+          {t.featured.featuredDealers} ({content.featuredDealers.length})
         </SectionTitle>
 
         <SearchContainer>
           <SearchInput
-            placeholder="ابحث عن وكيل بالـ ID أو الاسم..."
+            placeholder={t.featured.searchDealer}
             disabled={saving}
           />
           <SearchIcon>
@@ -646,7 +638,7 @@ const loadContent = useCallback(async () => {
                 type="text"
                 value={dealerId}
                 onChange={(e) => updateFeaturedDealer(index, e.target.value)}
-                placeholder="أدخل ID الوكيل"
+                placeholder={t.featured.placeholderDealerId}
                 disabled={saving}
               />
               <IconButton
@@ -662,7 +654,7 @@ const loadContent = useCallback(async () => {
 
         <AddButton onClick={addFeaturedDealer} disabled={saving}>
           <Plus size={16} />
-          إضافة وكيل مميز
+          {t.featured.addFeaturedDealer}
         </AddButton>
       </Section>
 
@@ -670,7 +662,7 @@ const loadContent = useCallback(async () => {
       <Section>
         <SectionTitle>
           <Star size={18} />
-          الماركات المميزة ({content.featuredBrands.length})
+          {t.featured.featuredBrands} ({content.featuredBrands.length})
         </SectionTitle>
 
         <ItemsList>
@@ -680,7 +672,7 @@ const loadContent = useCallback(async () => {
                 type="text"
                 value={brand}
                 onChange={(e) => updateFeaturedBrand(index, e.target.value)}
-                placeholder="أدخل اسم الماركة"
+                placeholder={t.featured.placeholderBrand}
                 disabled={saving}
               />
               <IconButton
@@ -696,7 +688,7 @@ const loadContent = useCallback(async () => {
 
         <AddButton onClick={addFeaturedBrand} disabled={saving}>
           <Plus size={16} />
-          إضافة ماركة مميزة
+          {t.featured.addFeaturedBrand}
         </AddButton>
       </Section>
 
@@ -704,7 +696,7 @@ const loadContent = useCallback(async () => {
       <Section>
         <SectionTitle>
           <ImageIcon size={18} />
-          بنرات الصفحة الرئيسية ({content.homepageBanners.length})
+          {t.featured.homeBanners} ({content.homepageBanners.length})
         </SectionTitle>
 
         {content.homepageBanners.map((banner, index) => (
@@ -714,7 +706,7 @@ const loadContent = useCallback(async () => {
                 <ImageIcon size={14} />
                 Banner #{index + 1}
                 <StatusBadge $active={banner.active}>
-                  {banner.active ? 'نشط' : 'معطل'}
+                  {banner.active ? t.featured.active : t.common.inactive}
                 </StatusBadge>
               </BannerTitle>
               <BannerControls>
@@ -742,18 +734,18 @@ const loadContent = useCallback(async () => {
 
             <BannerFields>
               <div>
-                <FieldLabel>عنوان البنر</FieldLabel>
+                <FieldLabel>{t.featured.bannerTitle}</FieldLabel>
                 <ItemInput
                   type="text"
                   value={banner.title}
                   onChange={(e) => updateBanner(index, 'title', e.target.value)}
-                  placeholder="أدخل عنوان البنر"
+                  placeholder={t.featured.bannerTitle}
                   disabled={saving}
                 />
               </div>
 
               <div>
-                <FieldLabel>رابط الصورة</FieldLabel>
+                <FieldLabel>{t.featured.bannerImage}</FieldLabel>
                 <ItemInput
                   type="text"
                   value={banner.image}
@@ -764,7 +756,7 @@ const loadContent = useCallback(async () => {
               </div>
 
               <div>
-                <FieldLabel>رابط الهدف (عند الضغط)</FieldLabel>
+                <FieldLabel>{t.featured.bannerLink}</FieldLabel>
                 <ItemInput
                   type="text"
                   value={banner.link}
@@ -775,7 +767,7 @@ const loadContent = useCallback(async () => {
               </div>
 
               <div>
-                <FieldLabel>تفعيل البنر</FieldLabel>
+                <FieldLabel>{t.featured.activateBanner}</FieldLabel>
                 <ToggleSwitch $active={banner.active}>
                   <input
                     type="checkbox"
@@ -792,7 +784,7 @@ const loadContent = useCallback(async () => {
 
         <AddButton onClick={addBanner} disabled={saving}>
           <Plus size={16} />
-          إضافة بنر جديد
+          {t.featured.addBanner}
         </AddButton>
       </Section>
 

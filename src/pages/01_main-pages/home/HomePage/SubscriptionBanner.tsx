@@ -5,7 +5,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes, css } from 'styled-components';
-import { Crown, TrendingUp, Building2, ChevronRight, Zap, Star, CheckCircle, Sparkles, Car, MessageSquare, Upload, BarChart3, Plug, Link2, Target, Headphones, UserCog, Palette } from 'lucide-react';
+import { Crown, TrendingUp, Building2, ChevronRight, Zap, CheckCircle, Sparkles, Car, MessageSquare, Upload, BarChart3, Plug, Link2, Target, Headphones, UserCog, Palette, Award, Gem, Rocket, User } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useAuth } from '../../../../contexts/AuthProvider';
 import { useTheme } from '../../../../contexts/ThemeContext';
@@ -16,43 +16,7 @@ import subscriptionTheme from '../../../../components/subscription/subscription-
 // ✅ FREE OFFER: Import promotional offer hook
 import { usePromotionalOffer } from '../../../../hooks/usePromotionalOffer';
 
-// SVG icon from svgrepo (rocket)
-const RocketIcon: React.FC<{ size?: number }> = ({ size = 28 }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M12 2c-2.8 0-5 2.2-5 5v3.4l-1.8 2.4c-.1.2-.2.5-.2.8V17c0 .6.4 1 .9 1l3.1-.8L11 20c.3.3.7.5 1 .5s.7-.2 1-.5l1.1-2.8 3.1.8c.5.1.9-.4.9-1v-3.4c0-.3-.1-.6-.2-.8L17 10.4V7c0-2.8-2.2-5-5-5Z"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M10 13.5c.6-.3 1.3-.5 2-.5s1.4.2 2 .5"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M9.5 17.5c-.8.3-1.5 1-1.8 1.9"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-    />
-    <path
-      d="M14.5 17.5c.8.3 1.5 1 1.8 1.9"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-    />
-  </svg>
-);
+// SVG icon removal - replaced with Lucide icons for professional look
 
 // ==================== ANIMATIONS ====================
 const fadeInUp = keyframes`
@@ -230,15 +194,15 @@ const PlanCard = styled.div<{ $highlight?: boolean; $isDark: boolean; $free?: bo
     right: 0;
     bottom: 0;
     background-image: ${p => {
-      if (p.$planId === 'free' || p.$planId === 'private') {
-        return 'url(/assets/images/seller-cards/private.png)';
-      } else if (p.$planId === 'dealer') {
-        return 'url(/assets/images/seller-cards/dealer.png)';
-      } else if (p.$planId === 'company') {
-        return 'url(/assets/images/seller-cards/company.png)';
-      }
-      return 'none';
-    }};
+    if (p.$planId === 'free' || p.$planId === 'private') {
+      return 'url(/assets/images/seller-cards/private.png)';
+    } else if (p.$planId === 'dealer') {
+      return 'url(/assets/images/seller-cards/dealer.png)';
+    } else if (p.$planId === 'company') {
+      return 'url(/assets/images/seller-cards/company.png)';
+    }
+    return 'none';
+  }};
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -285,14 +249,14 @@ const PlanCard = styled.div<{ $highlight?: boolean; $isDark: boolean; $free?: bo
     &:hover {
       transform: ${p => p.$highlight ? 'scale(1.08)' : 'scale(1.03)'};
       box-shadow: ${p => {
-        const baseShadow = p.$highlight
-          ? `0 25px 70px ${() => subscriptionTheme.shadows.small}`
-          : 'var(--shadow-xl)';
-        const lightBorder = p.$highlight
-          ? 'inset 0 0 0 1px rgba(255, 143, 16, 0.6), 0 0 0 1px rgba(255, 215, 0, 0.4)'
-          : 'inset 0 0 0 1px rgba(255, 255, 255, 0.1)';
-        return `${baseShadow}, ${lightBorder}`;
-      }};
+    const baseShadow = p.$highlight
+      ? `0 25px 70px ${() => subscriptionTheme.shadows.small}`
+      : 'var(--shadow-xl)';
+    const lightBorder = p.$highlight
+      ? 'inset 0 0 0 1px rgba(255, 143, 16, 0.6), 0 0 0 1px rgba(255, 215, 0, 0.4)'
+      : 'inset 0 0 0 1px rgba(255, 255, 255, 0.1)';
+    return `${baseShadow}, ${lightBorder}`;
+  }};
     }
   }
 
@@ -323,31 +287,13 @@ const PopularBadge = styled.div`
   z-index: 1;
 
   svg {
-    width: 14px;
-    height: 14px;
-    animation: ${pulse} 2s ease-in-out infinite;
+    width: 16px;
+    height: 16px;
   }
 `;
 
 const PopularityIndicator = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25rem;
-  margin-bottom: 1rem;
-  
-  svg {
-    width: 16px;
-    height: 16px;
-    color: #fbbf24;
-    animation: ${fadeInUp} 0.3s ease-out;
-    
-    &:nth-child(1) { animation-delay: 0s; }
-    &:nth-child(2) { animation-delay: 0.1s; }
-    &:nth-child(3) { animation-delay: 0.2s; }
-    &:nth-child(4) { animation-delay: 0.3s; }
-    &:nth-child(5) { animation-delay: 0.4s; }
-  }
+  display: none; /* Removed as per request for cleaner professional look */
 `;
 
 const IconWrapper = styled.div<{ $color: string }>`
@@ -666,15 +612,16 @@ const SubscriptionBanner: React.FC = () => {
   const plans = [
     {
       id: 'private',
-      icon: Crown,
+      icon: User, // Changed from Crown to User for "Private/Individual"
       iconColor: 'linear-gradient(135deg, #FF8F10 0%, #fb923c 100%)',
       name: isBg ? 'Личен' : 'Private',
       price: isBg ? 'Безплатно' : 'Free',
+      originalPrice: '€9.99', // Added for strikethrough effect
       features: [
-        isBg ? '✓ 3 обяви' : '✓ 3 listings',
-        isBg ? '✓ Основно търсене' : '✓ Basic search',
-        isBg ? '✓ Trust Score' : '✓ Trust Score',
-        isBg ? '✓ Контакти' : '✓ Contact sellers',
+        isBg ? '✓ 3 активни обяви' : '✓ 3 Active Listings',
+        isBg ? '✓ 15 снимки на кола' : '✓ 15 Photos per Car',
+        isBg ? '✓ Валидност 60 дни' : '✓ 60 Days Validity',
+        isBg ? '✓ Базова статистика' : '✓ Basic Stats',
       ],
       cta: isBg ? 'Започнете' : 'Get Started',
       variant: 'secondary' as const,
@@ -735,7 +682,7 @@ const SubscriptionBanner: React.FC = () => {
       <Container $isDark={isDark}>
         <Content>
           <Title $isDark={isDark}>
-            <RocketIcon size={28} />
+            <Rocket size={32} className="text-orange-500" />
             {isBg ? 'Избери плана, който ти подхожда' : 'Choose Your Perfect Plan'}
           </Title>
           <Subtitle $isDark={isDark}>
@@ -745,13 +692,10 @@ const SubscriptionBanner: React.FC = () => {
             }
           </Subtitle>
 
-          {/* ✅ FREE OFFER BANNER — motivational message */}
+          {/* ✅ FREE OFFER BANNER — Professional and clean */}
           {isFreeOffer && (
             <FreeOfferBanner>
-              {promoConfig.motivationalText
-                ? (isBg ? promoConfig.motivationalText.bg : promoConfig.motivationalText.en)
-                : (isBg ? '🎉 Специална оферта — Безплатно!' : '🎉 Special Offer — Free!')
-              }
+              {isBg ? '🎉 Специална оферта — Всички планове са отключени' : '🎉 Special Offer — All Plans Unlocked'}
             </FreeOfferBanner>
           )}
         </Content>
@@ -760,7 +704,7 @@ const SubscriptionBanner: React.FC = () => {
           {plans.map((plan) => {
             const isFree = plan.id === 'private';
             const priceNum = isFree ? 0 : parseFloat(plan.price);
-            
+
             return (
               <PlanCard
                 key={plan.id}
@@ -771,19 +715,10 @@ const SubscriptionBanner: React.FC = () => {
                 onClick={() => handlePlanClick(plan.id)}
               >
                 {plan.popular && (
-                  <>
-                    <PopularBadge>
-                      <Zap fill="white" />
-                      {isBg ? 'ПОПУЛЯРЕН' : 'POPULAR'}
-                    </PopularBadge>
-                    <PopularityIndicator>
-                      <Star fill="#fbbf24" />
-                      <Star fill="#fbbf24" />
-                      <Star fill="#fbbf24" />
-                      <Star fill="#fbbf24" />
-                      <Star fill="#fbbf24" />
-                    </PopularityIndicator>
-                  </>
+                  <PopularBadge>
+                    <Sparkles fill="white" size={14} />
+                    {isBg ? 'ПОПУЛЯРЕН' : 'POPULAR'}
+                  </PopularBadge>
                 )}
 
                 <IconWrapper $color={plan.iconColor}>
@@ -794,7 +729,12 @@ const SubscriptionBanner: React.FC = () => {
 
                 <Price $free={isFree}>
                   {isFree ? (
-                    <div className="amount">{plan.price}</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <StrikethroughPrice style={{ fontSize: '1.2rem', color: '#ef4444', textDecoration: 'line-through', marginBottom: '-5px' }}>
+                        €9.99
+                      </StrikethroughPrice>
+                      <div className="amount" style={{ color: '#22c55e' }}>{plan.price}</div>
+                    </div>
                   ) : isFreeOffer ? (
                     /* ✅ FREE OFFER ACTIVE: Red strikethrough on price + FREE badge */
                     <PriceStrikeWrapper>

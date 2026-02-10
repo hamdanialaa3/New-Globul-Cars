@@ -1,107 +1,121 @@
 /**
  * Subscription Theme Configuration
- * 🎨 ملف إعدادات الألوان والتصميم لصفحة الاشتراكات
+ * 🎨 "Royal Night" Theme - World Class Design
  * 
- * ✅ الحل: استخدام CSS Variables بدلاً من القيم المباشرة
- * هذا يضمن أن الألوان تتغير مع نظام Theme (الداكن/الفاتح)
- * 
- * لتغيير الألوان بسهولة، عدّل القيم في هذا الملف فقط!
- * 
- * ⚠️ مهم: بعد تغيير الألوان، أعد تحميل الصفحة (F5) أو أعد تشغيل Dev Server
+ * DESIGN SYSTEM:
+ * - Background: Deep Midnight Blue (#0f172a -> #1e1b4b)
+ * - Glassmorphism: Heavy blurs, thin white borders
+ * - Accents: 
+ *    - Primary: Electric Purple/Pink (Dealer)
+ *    - Secondary: Cyan/Blue (Company)
+ *    - Tertiary: Slate/Grey (Free)
  */
 
-// ==================== PRIMARY COLORS ====================
-// ✅ عدّل هذه القيم لتغيير جميع الألوان
-// 🔴 تجريب: تم التغيير إلى الأخضر
 export const subscriptionTheme = {
-  // ✅ الألوان الأساسية - عدّل هنا لتغيير جميع الألوان
-  // 🔴 تجريب: تم التغيير إلى الأخضر
-  primary: {
-    main: '#16a34a',      // الأخضر الرئيسي (كان:rgb(74, 12, 139))
-    light: '#22c55e',     // الأخضر الفاتح (كان:rgb(60, 89, 251))
-    dark: '#15803d',      // الأخضر الداكن (كان:rgb(0, 179, 229))
-    gradient: 'linear-gradient(135deg,rgb(76, 22, 163) 0%,rgb(34, 37, 197) 100%)',
-    gradientWithMiddle: 'linear-gradient(135deg,rgb(11, 3, 236) 0%,rgb(50, 34, 197) 50%,rgb(22, 48, 163) 100%)',
+  // Core Colors
+  colors: {
+    bg: {
+      primary: '#0f172a',   // Slate 900
+      secondary: '#1e1b4b', // Indigo 950
+      card: 'rgba(30, 41, 59, 0.7)', // Slate 800 with opacity
+    },
+    text: {
+      primary: '#f8fafc',   // Slate 50
+      secondary: '#94a3b8', // Slate 400
+      accent: '#c084fc',    // Purple 400
+    },
+    primary: {
+      main: '#a855f7',
+      light: '#c084fc',
+      dark: '#7e22ce',
+    },
+    border: {
+      subtle: 'rgba(255, 255, 255, 0.08)',
+      highlight: 'rgba(255, 255, 255, 0.2)',
+    }
   },
 
-  // ✅ الألوان الثانوية
-  secondary: {
-    main: '#16a34a',      // الأخضر
-    light: '#22c55e',     // الأخضر الفاتح
-    dark: '#15803d',      // الأخضر الداكن
+  // Gradients for Plans & UI
+  gradients: {
+    // 🟣 Dealer: Purple to Pink
+    dealer: 'linear-gradient(135deg, #a855f7 0%, #ec4899 100%)',
+    dealerHover: 'linear-gradient(135deg, #9333ea 0%, #db2777 100%)',
+
+    // 🔵 Company: Blue to Cyan
+    company: 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)',
+    companyHover: 'linear-gradient(135deg, #0284c7 0%, #0891b2 100%)',
+
+    // ⚪ Free: Slate
+    free: 'linear-gradient(135deg, #475569 0%, #64748b 100%)',
+
+    // 🌌 Aurora Background
+    aurora: 'radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.15) 0%, rgba(15, 23, 42, 0) 50%), radial-gradient(circle at 80% 10%, rgba(236, 72, 153, 0.1) 0%, rgba(15, 23, 42, 0) 40%)',
   },
 
-  // ✅ ألوان الظلال
-  // 🔴 تجريب: تم التغيير إلى الأخضر
+  // Shadows
   shadows: {
-    small: 'rgba(22, 163, 74, 0.35)',
-    medium: 'rgba(22, 163, 74, 0.45)',
-    large: 'rgba(22, 163, 74, 0.5)',
-    hover: 'rgba(22, 163, 74, 0.6)',
+    card: '0 8px 32px 0 rgba(0, 0, 0, 0.3)',
+    glow: '0 0 20px rgba(168, 85, 247, 0.4)',
+    button: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
   },
 
-  // ✅ ألوان الحدود
-  // 🔴 تجريب: تم التغيير إلى الأخضر
-  borders: {
-    primary: 'rgba(255, 255, 255, 0.3)',
-    secondary: 'rgba(22, 163, 74, 0.2)',
-    highlight: '#16a34a',
-  },
-
-  // ✅ ألوان الخلفيات
-  // 🔴 تجريب: تم التغيير إلى الأخضر
-  backgrounds: {
-    overlay: 'rgba(22, 163, 74, 0.1)',
-    hover: 'rgba(22, 163, 74, 0.08)',
-    active: 'rgba(22, 163, 74, 0.05)',
-  },
+  // Glassmorphism Utils
+  glass: {
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    backdrop: 'blur(16px)',
+  }
 } as const;
 
-// ==================== HELPER FUNCTIONS ====================
-// ✅ هذه الدوال تقرأ القيم مباشرة من subscriptionTheme في كل مرة
+// Compatible Exports for Existing Code (Legacy Support)
+// These map the new theme to the old structure to prevent immediate breakages
+// while we refactor the components.
 
-/**
- * Get primary gradient - يقرأ القيمة مباشرة
- */
+export const legacyTheme = {
+  primary: {
+    main: '#a855f7',
+    light: '#c084fc',
+    dark: '#7e22ce',
+    gradient: subscriptionTheme.gradients.dealer,
+    gradientWithMiddle: 'linear-gradient(135deg, #a855f7 0%, #d946ef 50%, #ec4899 100%)',
+  },
+  secondary: {
+    main: '#0ea5e9',
+    light: '#38bdf8',
+    dark: '#0284c7',
+  },
+  shadows: {
+    small: 'rgba(168, 85, 247, 0.2)',
+    medium: 'rgba(168, 85, 247, 0.3)',
+    large: 'rgba(168, 85, 247, 0.4)',
+    hover: 'rgba(168, 85, 247, 0.5)',
+  },
+  borders: {
+    primary: subscriptionTheme.colors.border.subtle,
+    secondary: subscriptionTheme.colors.border.highlight,
+    highlight: '#a855f7',
+  },
+  backgrounds: {
+    overlay: 'rgba(168, 85, 247, 0.1)',
+    hover: 'rgba(255, 255, 255, 0.05)',
+    active: 'rgba(255, 255, 255, 0.1)',
+  },
+};
+
+export default legacyTheme;
+
+// Helper Functions (Modified to use new theme)
 export function getPrimaryGradient(): string {
-  return subscriptionTheme.primary.gradient;
+  return legacyTheme.primary.gradient;
 }
 
-/**
- * Get primary gradient with middle color - يقرأ القيمة مباشرة
- */
 export function getPrimaryGradientWithMiddle(): string {
-  return subscriptionTheme.primary.gradientWithMiddle;
+  return legacyTheme.primary.gradientWithMiddle;
 }
 
-/**
- * Get shadow color with opacity - يقرأ القيمة مباشرة
- */
 export function getShadowColor(opacity: number = 0.35): string {
-  // 🔴 تجريب: تم التغيير إلى الأخضر
-  return `rgba(22, 163, 74, ${opacity})`;
+  return `rgba(168, 85, 247, ${opacity})`;
 }
 
-/**
- * Get border color - يقرأ القيمة مباشرة
- */
 export function getBorderColor(type: 'primary' | 'secondary' | 'highlight' = 'primary'): string {
-  return subscriptionTheme.borders[type];
+  return legacyTheme.borders[type];
 }
-
-// ==================== IMPORTANT NOTE ====================
-/**
- * ⚠️ ملاحظة مهمة:
- * 
- * إذا كانت الألوان لا تتغير، قد يكون السبب:
- * 1. CSS Variables في unified-theme.css تتجاوز الألوان
- * 2. ProfileTypeContext يحدد الألوان حسب نوع البروفايل
- * 3. styled-components لا يعيد التقييم تلقائياً
- * 
- * الحل:
- * - أعد تحميل الصفحة بعد تغيير الألوان (F5)
- * - أو أعد تشغيل Dev Server
- */
-
-// ==================== EXPORT ====================
-export default subscriptionTheme;

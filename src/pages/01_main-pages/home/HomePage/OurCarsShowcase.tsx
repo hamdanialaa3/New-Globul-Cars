@@ -189,10 +189,11 @@ const LoadingState = styled.div`
   gap: 1rem;
 
   svg {
-    animation: spin 1s linear infinite;
+    animation: led-orbit 1.2s linear infinite;
+    color: #FF8F10;
   }
 
-  @keyframes spin {
+  @keyframes led-orbit {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }

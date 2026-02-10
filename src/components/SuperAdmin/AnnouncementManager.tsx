@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getAuth } from 'firebase/auth';
 import styled from 'styled-components';
 import {
   Megaphone,
@@ -14,6 +15,7 @@ import {
   Type,
   Users
 } from 'lucide-react';
+import { useAdminLang } from '@/contexts/AdminLanguageContext';
 
 const Container = styled.div`
   background: #0f1419;
@@ -356,6 +358,7 @@ interface Announcement {
 }
 
 const AnnouncementManager: React.FC = () => {
+  const { t } = useAdminLang();
   const [announcements, setAnnouncements] = useState<Announcement[]>([
     {
       id: '1',
@@ -367,7 +370,7 @@ const AnnouncementManager: React.FC = () => {
       startDate: '2026-02-07',
       endDate: '2026-02-14',
       createdAt: '2026-02-05',
-      createdBy: 'admin@kolione.com'
+      createdBy: 'system'
     },
     {
       id: '2',
@@ -379,7 +382,7 @@ const AnnouncementManager: React.FC = () => {
       startDate: '2026-02-07',
       endDate: '2026-02-15',
       createdAt: '2026-02-06',
-      createdBy: 'admin@kolione.com'
+      createdBy: 'system'
     }
   ]);
 
@@ -429,22 +432,11 @@ const AnnouncementManager: React.FC = () => {
 
   const handleSubmit = () => {
     if (!formData.title || !formData.message) {
-      showMessage('error', '❌ يرجى ملء جميع الحقول المطلوبة');
+      showMessage('error', '❌ ' + t.announcements.fillRequired);
       return;
     }
 
-    const adminEmail = (() => {
-      try {
-        const session = localStorage.getItem('superAdminSession');
-        if (session) {
-          const parsed = JSON.parse(session);
-          return parsed.email || 'admin@kolione.com';
-        }
-      } catch (e) {
-        // Ignore
-      }
-      return 'admin@kolione.com';
-    })();
+    const adminEmail = getAuth().currentUser?.email || 'unknown';
 
     if (editingId) {
       // Update existing
@@ -452,13 +444,13 @@ const AnnouncementManager: React.FC = () => {
         prev.map(a =>
           a.id === editingId
             ? {
-                ...a,
-                ...formData
-              }
+              ...a,
+              ...formData
+            }
             : a
         )
       );
-      showMessage('success', '✅ تم تحديث الإعلان بنجاح');
+      showMessage('success', '✅ ' + t.announcements.updateSuccess);
     } else {
       // Create new
       const newAnnouncement: Announcement = {
@@ -469,7 +461,7 @@ const AnnouncementManager: React.FC = () => {
         createdBy: adminEmail
       };
       setAnnouncements(prev => [newAnnouncement, ...prev]);
-      showMessage('success', '✅ تم إنشاء الإعلان بنجاح');
+      showMessage('success', '✅ ' + t.announcements.createSuccess);
     }
 
     setShowForm(false);
@@ -481,31 +473,31 @@ const AnnouncementManager: React.FC = () => {
         a.id === id ? { ...a, active: !a.active } : a
       )
     );
-    showMessage('success', '✅ تم تحديث حالة الإعلان');
+    showMessage('success', '✅ ' + t.announcements.statusSuccess);
   };
 
   const handleDelete = (id: string) => {
-    if (window.confirm('⚠️ هل أنت متأكد من حذف هذا الإعلان؟')) {
+    if (window.confirm('⚠️ ' + t.announcements.deleteConfirm)) {
       setAnnouncements(prev => prev.filter(a => a.id !== id));
-      showMessage('success', '✅ تم حذف الإعلان');
+      showMessage('success', '✅ ' + t.announcements.deleteSuccess);
     }
   };
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'info': return 'معلومة';
-      case 'warning': return 'تحذير';
-      case 'success': return 'نجاح';
+      case 'info': return t.announcements.info;
+      case 'warning': return t.common.warning;
+      case 'success': return t.announcements.success;
       default: return type;
     }
   };
 
   const getTargetLabel = (target: string) => {
     switch (target) {
-      case 'all': return 'الجميع';
-      case 'buyers': return 'المشترون';
-      case 'sellers': return 'البائعون';
-      case 'dealers': return 'الوكلاء';
+      case 'all': return t.announcements.all;
+      case 'buyers': return t.announcements.buyers;
+      case 'sellers': return t.announcements.sellers;
+      case 'dealers': return t.announcements.dealers;
       default: return target;
     }
   };
@@ -515,10 +507,10 @@ const AnnouncementManager: React.FC = () => {
       <Header>
         <Title>
           <Megaphone size={24} />
-          إدارة الإعلانات والإشعارات
+          {t.announcements.title}
         </Title>
         <Subtitle>
-          إنشاء وإدارة الإعلانات والرسائل للمستخدمين
+          {t.announcements.subtitle}
         </Subtitle>
       </Header>
 
@@ -533,12 +525,12 @@ const AnnouncementManager: React.FC = () => {
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           <Megaphone size={20} color="#9ca3af" />
           <span style={{ color: '#9ca3af', fontSize: '14px' }}>
-            {announcements.filter(a => a.active).length} إعلان نشط
+            {announcements.filter(a => a.active).length} {t.announcements.activeAds}
           </span>
         </div>
         <Button onClick={handleCreate}>
           <Plus size={16} />
-          إعلان جديد
+          {t.announcements.newAd}
         </Button>
       </ActionBar>
 
@@ -554,7 +546,7 @@ const AnnouncementManager: React.FC = () => {
                 <CardMeta>
                   <MetaBadge $variant={
                     announcement.type === 'success' ? 'success' :
-                    announcement.type === 'warning' ? 'warning' : 'info'
+                      announcement.type === 'warning' ? 'warning' : 'info'
                   }>
                     <Type size={10} />
                     {getTypeLabel(announcement.type)}
@@ -565,7 +557,7 @@ const AnnouncementManager: React.FC = () => {
                   </MetaBadge>
                   <MetaBadge $variant={announcement.active ? 'success' : 'warning'}>
                     {announcement.active ? <Eye size={10} /> : <EyeOff size={10} />}
-                    {announcement.active ? 'نشط' : 'معطل'}
+                    {announcement.active ? t.featured.active : t.common.inactive}
                   </MetaBadge>
                 </CardMeta>
               </div>
@@ -588,10 +580,10 @@ const AnnouncementManager: React.FC = () => {
               <div style={{ display: 'flex', gap: '16px' }}>
                 <span>
                   <Calendar size={12} style={{ display: 'inline', marginLeft: '4px' }} />
-                  من {announcement.startDate} إلى {announcement.endDate}
+                  {t.announcements.startDate} {announcement.startDate} {t.announcements.endDate} {announcement.endDate}
                 </span>
               </div>
-              <span>بواسطة {announcement.createdBy}</span>
+              <span>{t.announcements.by} {announcement.createdBy}</span>
             </CardFooter>
           </AnnouncementCard>
         ))}
@@ -604,56 +596,56 @@ const AnnouncementManager: React.FC = () => {
           <FormModal>
             <FormTitle>
               <Megaphone size={20} />
-              {editingId ? 'تعديل الإعلان' : 'إعلان جديد'}
+              {editingId ? t.announcements.update : t.announcements.newAd}
             </FormTitle>
 
             <FormField>
-              <Label>عنوان الإعلان *</Label>
+              <Label>{t.announcements.titleLabel} *</Label>
               <Input
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="أدخل عنوان الإعلان"
+                placeholder={t.announcements.titleLabel}
               />
             </FormField>
 
             <FormField>
-              <Label>نص الإعلان *</Label>
+              <Label>{t.announcements.messageLabel} *</Label>
               <TextArea
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                placeholder="أدخل نص الإعلان..."
+                placeholder={t.announcements.messageLabel}
               />
             </FormField>
 
             <FormField>
-              <Label>نوع الإعلان</Label>
+              <Label>{t.announcements.typeLabel}</Label>
               <Select
                 value={formData.type}
                 onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
               >
-                <option value="info">معلومة</option>
-                <option value="warning">تحذير</option>
-                <option value="success">نجاح</option>
+                <option value="info">{t.announcements.info}</option>
+                <option value="warning">{t.common.warning}</option>
+                <option value="success">{t.announcements.success}</option>
               </Select>
             </FormField>
 
             <FormField>
-              <Label>الفئة المستهدفة</Label>
+              <Label>{t.announcements.targetLabel}</Label>
               <Select
                 value={formData.target}
                 onChange={(e) => setFormData({ ...formData, target: e.target.value as any })}
               >
-                <option value="all">الجميع</option>
-                <option value="buyers">المشترون</option>
-                <option value="sellers">البائعون</option>
-                <option value="dealers">الوكلاء</option>
+                <option value="all">{t.announcements.all}</option>
+                <option value="buyers">{t.announcements.buyers}</option>
+                <option value="sellers">{t.announcements.sellers}</option>
+                <option value="dealers">{t.announcements.dealers}</option>
               </Select>
             </FormField>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
               <FormField>
-                <Label>تاريخ البداية</Label>
+                <Label>{t.announcements.startDateLabel}</Label>
                 <Input
                   type="date"
                   value={formData.startDate}
@@ -662,7 +654,7 @@ const AnnouncementManager: React.FC = () => {
               </FormField>
 
               <FormField>
-                <Label>تاريخ النهاية</Label>
+                <Label>{t.announcements.endDateLabel}</Label>
                 <Input
                   type="date"
                   value={formData.endDate}
@@ -674,10 +666,10 @@ const AnnouncementManager: React.FC = () => {
             <FormActions>
               <Button onClick={handleSubmit}>
                 <Send size={16} />
-                {editingId ? 'تحديث' : 'نشر الإعلان'}
+                {editingId ? t.announcements.update : t.announcements.publish}
               </Button>
               <Button $variant="secondary" onClick={() => setShowForm(false)}>
-                إلغاء
+                {t.common.cancel}
               </Button>
             </FormActions>
           </FormModal>

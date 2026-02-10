@@ -1,260 +1,116 @@
 /* src/styles/loader-animations.css */
-/* Professional Loader Animations for Koli One */
-/* Car-themed mechanical animations */
+/* Koli One Glass Sphere Loader Animations */
+/* Unified LED pulse design system */
 
-/* Fade in animation for loader appearance */
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
+/* LED glow pulse animation */
+@keyframes led-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.3));
   }
-  to {
+  50% {
+    filter: drop-shadow(0 0 16px rgba(255, 143, 16, 0.6));
+  }
+}
+
+/* LED orbit animation for indeterminate state */
+@keyframes led-orbit {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Sphere entrance animation */
+@keyframes sphere-entrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
     opacity: 1;
     transform: scale(1);
   }
 }
 
-/* Clockwise spin for outer gear */
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Counter-clockwise spin for inner gear */
-@keyframes reverse-spin {
-  from {
-    transform: rotate(360deg);
-  }
-  to {
-    transform: rotate(0deg);
-  }
-}
-
-/* Pulse animation for center hub */
-@keyframes pulse {
-  0%, 100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
+/* LED complete flash when loading finishes */
+@keyframes led-complete {
+  0% {
+    filter: drop-shadow(0 0 24px rgba(255, 143, 16, 1));
   }
   50% {
-    transform: translate(-50%, -50%) scale(1.1);
-    opacity: 0.8;
-  }
-}
-
-/* Progress bar fill animation */
-@keyframes progress-fill {
-  from {
-    width: 0%;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-/* Shimmer effect for loading text */
-@keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
+    filter: drop-shadow(0 0 32px rgba(255, 143, 16, 1));
   }
   100% {
-    background-position: 1000px 0;
+    filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.3));
   }
 }
 
-/* Utility classes for Tailwind */
-.animate-fade-in {
-  animation: fade-in 0.3s ease-out;
-}
-
-.animate-spin-slow {
-  animation: spin 1.5s linear infinite;
-}
-
-.animate-reverse-spin {
-  animation: reverse-spin 2s linear infinite;
-}
-
-.animate-pulse-center {
-  animation: pulse 2s ease-in-out infinite;
-}
-
-/* Custom loader overlay */
-.loader-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  transition: opacity 0.2s ease-out;
-}
-
-.loader-overlay.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* Gear container */
-.gear-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Outer gear ring */
-.gear-outer {
-  position: absolute;
-  border-radius: 50%;
-  border-width: 4px;
-  border-style: solid;
-  border-color: rgba(209, 213, 219, 0.3);
-  border-top-color: #FF8F10;
-  border-right-color: #FF8F10;
-  animation: spin 1.5s linear infinite;
-}
-
-/* Inner gear ring */
-.gear-inner {
-  position: absolute;
-  border-radius: 50%;
-  border-width: 3px;
-  border-style: solid;
-  border-color: rgba(156, 163, 175, 0.4);
-  border-bottom-color: #FF8F10;
-  border-left-color: #FF8F10;
-  animation: reverse-spin 2s linear infinite;
-}
-
-/* Center hub */
-.gear-hub {
-  position: absolute;
-  background-color: #FF8F10;
-  border-radius: 50%;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-              0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  animation: pulse 2s ease-in-out infinite;
-}
-
-/* Progress counter */
-.progress-counter {
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.05em;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  color: #ffffff;
-  font-weight: 700;
-}
-
-/* Progress bar */
-.progress-bar {
-  width: 12rem; /* 192px */
-  height: 0.25rem; /* 4px */
-  background-color: rgba(55, 65, 81, 0.5);
-  border-radius: 9999px;
-  overflow: hidden;
-}
-
-.progress-bar-fill {
-  height: 100%;
-  background: linear-gradient(to right, #FF8F10, #FFB366);
-  transition: width 200ms ease-out;
-  box-shadow: 0 0 8px rgba(255, 143, 16, 0.5);
-}
-
-/* Logo styles */
-.loader-logo {
-  filter: brightness(1.1) drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3));
-  animation: fade-in 0.3s ease-out;
-}
-
-/* Loading message */
-.loader-message {
-  color: #ffffff;
-  text-align: center;
-  padding: 0 1rem;
-  font-weight: 500;
-  letter-spacing: 0.025em;
-  animation: shimmer 3s ease-in-out infinite;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.8) 0%,
-    rgba(255, 255, 255, 1) 50%,
-    rgba(255, 255, 255, 0.8) 100%
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Responsive adjustments */
-@media (max-width: 640px) {
-  .gear-outer {
-    border-width: 3px;
+/* Skeleton pulse animation - subtle LED glow aesthetic */
+@keyframes skeleton-pulse {
+  0%, 100% {
+    opacity: 1;
+    background-color: rgba(255, 143, 16, 0.03);
   }
-  
-  .gear-inner {
-    border-width: 2px;
-  }
-  
-  .progress-counter {
-    font-size: 1.875rem; /* 30px */
-  }
-  
-  .loader-message {
-    font-size: 0.875rem; /* 14px */
+  50% {
+    opacity: 0.8;
+    background-color: rgba(255, 143, 16, 0.08);
   }
 }
 
-@media (min-width: 768px) {
-  .progress-counter {
-    font-size: 2.25rem; /* 36px */
-  }
-  
-  .loader-message {
-    font-size: 1rem; /* 16px */
-  }
+/* Utility classes */
+.animate-sphere-entrance {
+  animation: sphere-entrance 0.3s ease-out;
+}
+
+.animate-led-pulse {
+  animation: led-pulse 2s ease-in-out infinite;
+}
+
+.animate-led-orbit {
+  animation: led-orbit 1.2s linear infinite;
+}
+
+.animate-skeleton-pulse {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
 }
 
 /* Accessibility: Respect user preferences */
 @media (prefers-reduced-motion: reduce) {
-  .gear-outer,
-  .gear-inner,
-  .gear-hub,
-  .animate-fade-in,
-  .loader-message {
+  .animate-sphere-entrance,
+  .animate-led-pulse,
+  .animate-led-orbit,
+  .animate-skeleton-pulse {
     animation: none !important;
   }
   
-  .progress-bar-fill {
-    transition: none !important;
+  *[data-loading] {
+    animation: none !important;
   }
 }
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
-  .loader-overlay {
-    background: rgba(0, 0, 0, 0.6);
-  }
-  
-  .loader-message {
-    color: #f3f4f6;
+  @keyframes skeleton-pulse {
+    0%, 100% {
+      opacity: 1;
+      background-color: rgba(255, 143, 16, 0.05);
+    }
+    50% {
+      opacity: 0.8;
+      background-color: rgba(255, 143, 16, 0.12);
+    }
   }
 }
 
-/* Print mode - hide loader */
+/* Print mode - hide all loading elements */
 @media print {
-  .loader-overlay {
+  [data-loading],
+  .animate-sphere-entrance,
+  .animate-led-pulse,
+  .animate-led-orbit,
+  .animate-skeleton-pulse {
     display: none !important;
   }
 }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { getAuth } from 'firebase/auth';
 import styled from 'styled-components';
 import {
   Settings,
@@ -261,19 +262,7 @@ const SiteSettingsControl: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  // Get admin email from localStorage
-  const adminEmail = (() => {
-    try {
-      const session = localStorage.getItem('superAdminSession');
-      if (session) {
-        const parsed = JSON.parse(session);
-        return parsed.email || 'admin@kolione.com';
-      }
-    } catch (e) {
-      // Ignore parse errors
-    }
-    return 'admin@kolione.com';
-  })();
+  const adminEmail = getAuth().currentUser?.email || 'unknown';
 
   // Load settings on mount
   const loadSettings = useCallback(async () => {

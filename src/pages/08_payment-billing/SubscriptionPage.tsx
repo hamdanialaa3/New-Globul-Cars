@@ -1,130 +1,38 @@
-// src/pages/SubscriptionPage.tsx - ENHANCED VERSION
-// World-Class Subscription Page for Koli One
+// src/pages/SubscriptionPage.tsx - WORLD CLASS REDESIGN
+// Theme: Royal Night (Deep Blue + Aurora)
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { useLanguage } from '../../contexts/LanguageContext';
 import SubscriptionManager from '../../components/subscription/SubscriptionManager';
 import { useAuth } from '../../contexts/AuthProvider';
-import { subscriptionService } from '../../services/billing/subscription-service';
-import { activateFreePlan } from '../../services/billing/free-plan-activation.service';
-import { usePromotionalOffer } from '../../hooks/usePromotionalOffer';
-import { logger } from '../../services/logger-service';
-import { toast } from 'react-toastify';
-// ✅ استيراد ملف الإعدادات المركزي
-import subscriptionTheme, { getPrimaryGradient, getPrimaryGradientWithMiddle, getShadowColor } from '../../components/subscription/subscription-theme';
+import { subscriptionTheme } from '../../components/subscription/subscription-theme'; // Use new theme
 import {
-  Crown, ArrowLeft, Star, Shield, TrendingUp, Users,
-  CheckCircle, Sparkles, Award, Zap, Clock, HeartHandshake,
-  ChevronDown, Quote, MessageSquare, ThumbsUp, Rocket,
-  BarChart3, HelpCircle, Target
+  ArrowLeft, CheckCircle, Sparkles, Zap, ChevronDown,
+  HelpCircle, Target, Shield, Globe, Award,
+  BarChart3, MessageSquare, Quote, Star
 } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 // ============================================================================
 // ANIMATIONS
 // ============================================================================
 
-const fadeInUp = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
-
-const fadeIn = keyframes`
-  from { opacity: 0; }
-  to { opacity: 1; }
-`;
-
-const foggyBlur = keyframes`
-  0%, 100% { 
-    filter: blur(8px) brightness(0.9);
-    opacity: 0.4;
-  }
-  50% { 
-    filter: blur(12px) brightness(1.1);
-    opacity: 0.6;
-  }
-`;
-
-const smokeFloat = keyframes`
-  0% { 
-    transform: translateY(0) translateX(0) scale(1);
-    opacity: 0.3;
-  }
-  33% { 
-    transform: translateY(-20px) translateX(10px) scale(1.1);
-    opacity: 0.5;
-  }
-  66% { 
-    transform: translateY(-10px) translateX(-10px) scale(0.9);
-    opacity: 0.4;
-  }
-  100% { 
-    transform: translateY(0) translateX(0) scale(1);
-    opacity: 0.3;
-  }
-`;
-
-const imageTransition = keyframes`
-  0% { opacity: 0; transform: scale(1.1); filter: blur(15px); }
-  10% { opacity: 1; transform: scale(1); filter: blur(8px); }
-  30% { opacity: 1; transform: scale(1); filter: blur(8px); }
-  40% { opacity: 0; transform: scale(1.1); filter: blur(15px); }
-  100% { opacity: 0; transform: scale(1.1); filter: blur(15px); }
+const auroraMovement = keyframes`
+  0% { background-position: 50% 50%, 50% 50%; }
+  50% { background-position: 100% 0%, 0% 100%; }
+  100% { background-position: 50% 50%, 50% 50%; }
 `;
 
 const float = keyframes`
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
+  50% { transform: translateY(-10px); }
 `;
 
-const pulse = keyframes`
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-`;
-
-const shimmer = keyframes`
-  0% { background-position: -1000px 0; }
-  100% { background-position: 1000px 0; }
-`;
-
-const scaleIn = keyframes`
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-`;
-
-const slideInLeft = keyframes`
-  from {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-`;
-
-const slideInRight = keyframes`
-  from {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+const fadeInUp = keyframes`
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 `;
 
 // ============================================================================
@@ -133,1170 +41,429 @@ const slideInRight = keyframes`
 
 const PageContainer = styled.div`
   min-height: 100vh;
-  background: var(--bg-primary);
-  position: relative;
+  background-color: ${subscriptionTheme.colors.bg.primary};
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(124, 58, 237, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.15) 0px, transparent 50%);
+  color: ${subscriptionTheme.colors.text.primary};
+  font-family: 'Inter', sans-serif;
   overflow-x: hidden;
-`;
-
-// Hero Header with Premium Design - صور متغيرة بايومشن ضبابي ودخاني
-const HeroHeader = styled.header`
-  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 50%, var(--accent-primary) 100%);
-  background-size: 200% 200%;
-  animation: ${shimmer} 8s linear infinite;
-  padding: 2rem 0;
   position: relative;
-  overflow: hidden;
 
-  /* Smoke effect overlay */
-  & > * {
-    position: relative;
-    z-index: 2;
+  /* Global Scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #0f172a;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 4px;
   }
 `;
 
-const HeroBackgroundImages = styled.div`
+// --- Navigation ---
+const NavHeader = styled.nav`
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
-  z-index: 0;
-  overflow: hidden;
-`;
-
-const BackgroundImage = styled.div<{ $image: string; $delay: number }>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url(${p => p.$image});
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: 0;
-  animation: ${imageTransition} 15s infinite ${p => p.$delay}s, ${smokeFloat} 12s ease-in-out infinite ${p => p.$delay}s;
-  filter: blur(18px) brightness(0.5) contrast(1.2);
-  transform: scale(1.15);
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-    animation: ${smokeFloat} 8s ease-in-out infinite ${p => p.$delay + 2}s;
-  }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at 70% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
-    animation: ${smokeFloat} 10s ease-in-out infinite reverse ${p => p.$delay + 4}s;
-  }
-`;
-
-const HeroContent = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  position: relative;
-  z-index: 2;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 50;
 `;
 
 const BackButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 1rem;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50px;
-  color: white;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-bottom: 1rem;
-  animation: ${fadeIn} 0.5s ease;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: translateX(-5px);
-  }
-
-  svg {
-    width: 16px;
-    height: 16px;
-  }
-`;
-
-const HeroTitleWrapper = styled.div`
-  text-align: center;
-  animation: ${fadeInUp} 0.8s ease;
-`;
-
-const HeroIconBadge = styled.div`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 50px;
-  height: 50px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 14px;
-  margin: 0 auto 1rem;
-  box-shadow: 
-    0 4px 20px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  animation: ${float} 3s ease-in-out infinite, ${foggyBlur} 6s ease-in-out infinite;
-
-  svg {
-    width: 26px;
-    height: 26px;
-    color: white;
-    filter: drop-shadow(0 2px 8px rgba(255, 143, 16, 0.5)) blur(0.5px);
-    opacity: 0.9;
-  }
-`;
-
-const HeroTitle = styled.h1`
-  font-size: 2rem;
-  font-weight: 700;
-  color: white;
-  margin: 0 0 0.5rem;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  letter-spacing: -0.5px;
-
-  @media (max-width: 768px) {
-    font-size: 1.5rem;
-  }
-`;
-
-const HeroSubtitle = styled.p`
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.95);
-  margin: 0 0 1rem;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.5;
-
-  @media (max-width: 768px) {
-    font-size: 0.9rem;
-  }
-`;
-
-const HeroStats = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 1.5rem;
-  flex-wrap: wrap;
-  animation: ${fadeInUp} 1s ease 0.3s backwards;
-`;
-
-const StatItem = styled.div`
-  text-align: center;
-  
-  .stat-number {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: white;
-    margin-bottom: 0.25rem;
-    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
-  }
-
-  .stat-label {
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 500;
-  }
-`;
-
-// Trust Badges Section
-const TrustSection = styled.section`
-  background: var(--bg-card);
-  padding: 1rem 0;
-  box-shadow: var(--shadow-md);
-  position: relative;
-  z-index: 3;
-  margin-top: -1.5rem;
-  animation: ${fadeInUp} 0.8s ease 0.5s backwards;
-`;
-
-const TrustContent = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  gap: 2rem;
-`;
-
-const TrustBadge = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: rgba(255, 143, 16, 0.08);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 50px;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-
-  &:hover {
-    background: rgba(255, 143, 16, 0.12);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(255, 143, 16, 0.2);
-  }
-
-  svg {
-    width: 18px;
-    height: 18px;
-    color: var(--accent-primary);
-    filter: drop-shadow(0 0 6px rgba(255, 143, 16, 0.4)) blur(0.5px);
-    opacity: 0.9;
-    transition: all 0.3s ease;
-  }
-
-  &:hover svg {
-    filter: drop-shadow(0 0 10px rgba(255, 143, 16, 0.6)) blur(0.3px);
-    opacity: 1;
-    transform: scale(1.1);
-  }
-
-  span {
-    font-weight: 600;
-    color: var(--text-primary);
-    font-size: 0.85rem;
-  }
-`;
-
-// Main Content
-const MainContent = styled.main`
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem 2rem 4rem;
-`;
-
-// Section Title Component
-const SectionTitle = styled.h2`
-  font-size: 2.5rem;
-  font-weight: 800;
-  text-align: center;
-  margin: 0 0 1rem;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-
-  svg {
-    width: 2.5rem;
-    height: 2.5rem;
-    color: var(--accent-primary);
-    filter: drop-shadow(0 0 12px rgba(255, 143, 16, 0.4)) blur(0.5px);
-    opacity: 0.9;
-    transition: all 0.3s ease;
-  }
-
-  &:hover svg {
-    filter: drop-shadow(0 0 16px rgba(255, 143, 16, 0.6)) blur(0.3px);
-    opacity: 1;
-    transform: scale(1.05);
-  }
-`;
-
-const SectionSubtitle = styled.p`
-  font-size: 1.2rem;
-  text-align: center;
-  color: var(--text-secondary);
-  margin: 0 0 3rem;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-`;
-
-// Comparison Table Section
-const ComparisonSection = styled.section`
-  margin: 5rem 0;
-  padding: 4rem 0;
-  background: linear-gradient(135deg, 
-    rgba(255, 143, 16, 0.08) 0%, 
-    rgba(255, 215, 0, 0.05) 50%,
-    transparent 100%
-  );
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 30px;
-  animation: ${fadeIn} 1s ease;
-  box-shadow: 
-    0 4px 20px rgba(0, 0, 0, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-`;
-
-const ComparisonTable = styled.div`
-  max-width: 1000px;
-  margin: 0 auto;
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-`;
-
-const TableHeader = styled.div`
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 1rem;
-  padding: 1.5rem;
-  background: linear-gradient(135deg, 
-    rgba(255, 143, 16, 0.15) 0%, 
-    rgba(255, 215, 0, 0.12) 50%, 
-    rgba(255, 143, 16, 0.15) 100%
-  );
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  font-weight: 700;
-  color: var(--text-primary);
-  font-size: 1.1rem;
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-`;
-
-const TableRow = styled.div<{ $highlight?: boolean }>`
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 1rem;
-  padding: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.3s ease;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-
-  ${p => p.$highlight && `
-    background: linear-gradient(135deg, 
-      rgba(255, 143, 16, 0.08) 0%, 
-      rgba(255, 215, 0, 0.05) 100%
-    );
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-  `}
-
-  &:hover {
-    background: linear-gradient(135deg, 
-      rgba(255, 143, 16, 0.12) 0%, 
-      rgba(255, 215, 0, 0.08) 100%
-    );
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    transform: translateX(4px);
-  }
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-`;
-
-const FeatureCell = styled.div`
-  font-weight: 600;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-
-  svg {
-    width: 20px;
-    height: 20px;
-    color: var(--accent-primary);
-    filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.4));
-    opacity: 0.85;
-    transition: all 0.3s ease;
-  }
-
-  &:hover svg {
-    filter: drop-shadow(0 0 12px rgba(255, 143, 16, 0.6));
-    opacity: 1;
-    transform: scale(1.1);
-  }
-
-  @media (max-width: 768px) {
-    justify-content: center;
-  }
-`;
-
-const ValueCell = styled.div`
-  text-align: center;
-  color: var(--text-secondary);
-  font-weight: 500;
-
-  svg {
-    width: 20px;
-    height: 20px;
-    color: var(--accent-primary);
-    margin: 0 auto;
-    filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.4)) blur(0.5px);
-    opacity: 0.85;
-    transition: all 0.3s ease;
-  }
-
-  &:hover svg {
-    filter: drop-shadow(0 0 12px rgba(255, 143, 16, 0.6)) blur(0.3px);
-    opacity: 1;
-    transform: scale(1.15);
-  }
-`;
-
-// Testimonials Section
-const TestimonialsSection = styled.section`
-  margin: 5rem 0;
-  animation: ${fadeInUp} 1s ease;
-`;
-
-const TestimonialsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  margin-top: 3rem;
-
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-`;
-
-const TestimonialCard = styled.div`
   background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 2rem;
-  border-radius: 20px;
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  position: relative;
-  transition: all 0.3s ease;
-  animation: ${scaleIn} 0.6s ease backwards;
-  animation-delay: calc(var(--index) * 0.1s);
-
-  &:hover {
-    transform: translateY(-5px);
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    box-shadow: 
-      0 12px 40px rgba(0, 0, 0, 0.15),
-      0 0 30px rgba(255, 143, 16, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.2);
-  }
-`;
-
-const QuoteIcon = styled.div`
-  width: 50px;
-  height: 50px;
-  background: linear-gradient(135deg, 
-    rgba(255, 143, 16, 0.3) 0%, 
-    rgba(255, 215, 0, 0.25) 100%
-  );
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1rem;
-  box-shadow: 
-    0 4px 15px rgba(255, 143, 16, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  animation: ${foggyBlur} 5s ease-in-out infinite;
-
-  svg {
-    width: 24px;
-    height: 24px;
-    color: var(--accent-primary);
-    filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.5)) blur(0.5px);
-    opacity: 0.9;
-  }
-`;
-
-const TestimonialText = styled.p`
-  font-size: 1rem;
-  line-height: 1.7;
-  color: var(--text-primary);
-  margin: 0 0 1.5rem;
-  font-style: italic;
-`;
-
-const TestimonialAuthor = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-`;
-
-const AuthorAvatar = styled.div`
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  color: white;
-  font-size: 1.25rem;
-`;
-
-const AuthorInfo = styled.div`
-  .name {
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 0.25rem;
-  }
-
-  .role {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-  }
-`;
-
-const Stars = styled.div`
-  display: flex;
-  gap: 0.25rem;
-  margin-bottom: 1rem;
-
-  svg {
-    width: 16px;
-    height: 16px;
-    fill: #fbbf24;
-    color: #fbbf24;
-    filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.5)) blur(0.3px);
-    opacity: 0.9;
-    transition: all 0.3s ease;
-  }
-
-  &:hover svg {
-    filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.7)) blur(0.2px);
-    opacity: 1;
-    transform: scale(1.1);
-  }
-`;
-
-// FAQ Section
-const FAQSection = styled.section`
-  margin: 5rem 0;
-  animation: ${fadeInUp} 1s ease;
-`;
-
-const FAQList = styled.div`
-  max-width: 800px;
-  margin: 3rem auto 0;
-`;
-
-const FAQItem = styled.div<{ $isOpen: boolean }>`
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 15px;
-  margin-bottom: 1rem;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-
-  ${p => p.$isOpen && `
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: 
-      0 4px 20px ${() => subscriptionTheme.shadows.small},
-      0 0 25px rgba(255, 143, 16, 0.15);
-    border-color: rgba(255, 255, 255, 0.15);
-  `}
-`;
-
-const FAQQuestion = styled.button`
-  width: 100%;
-  padding: 1.5rem;
-  background: none;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  color: ${subscriptionTheme.colors.text.secondary};
+  padding: 0.5rem 1rem;
+  border-radius: 99px;
+  font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  text-align: left;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
 
   &:hover {
-    color: var(--accent-primary);
-  }
-
-  svg {
-    width: 24px;
-    height: 24px;
-    transition: transform 0.3s ease;
-    color: var(--accent-primary);
-    filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.4)) blur(0.5px);
-    opacity: 0.85;
-  }
-
-  &:hover svg {
-    filter: drop-shadow(0 0 12px rgba(255, 143, 16, 0.6)) blur(0.3px);
-    opacity: 1;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transform: translateX(-2px);
   }
 `;
 
-const FAQAnswer = styled.div<{ $isOpen: boolean }>`
-  max-height: ${p => p.$isOpen ? '500px' : '0'};
-  overflow: hidden;
-  transition: max-height 0.4s ease;
-  padding: ${p => p.$isOpen ? '0 1.5rem 1.5rem' : '0 1.5rem'};
-  color: var(--text-secondary);
-  line-height: 1.7;
-`;
-
-// CTA Section
-const CTASection = styled.section`
-  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-  padding: 4rem 2rem;
-  border-radius: 30px;
+// --- Hero Section ---
+const HeroSection = styled.header`
+  padding: 8rem 1rem 4rem;
   text-align: center;
-  margin: 5rem 0;
   position: relative;
-  overflow: hidden;
-  animation: ${scaleIn} 1s ease;
+  max-width: 1200px;
+  margin: 0 auto;
 
+  /* Ambient light behind text */
   &::before {
     content: '';
     position: absolute;
-    top: -50%;
-    right: -10%;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-    border-radius: 50%;
-    animation: ${float} 6s ease-in-out infinite;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, transparent 70%);
+    z-index: -1;
+    filter: blur(40px);
   }
 `;
 
-const CTAContent = styled.div`
-  position: relative;
-  z-index: 1;
-  max-width: 600px;
-  margin: 0 auto;
-`;
-
-const CTATitle = styled.h2`
-  font-size: 2.5rem;
-  font-weight: 900;
-  color: white;
-  margin: 0 0 1rem;
-  display: flex;
+const Badge = styled.div`
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 1rem;
+  gap: 0.5rem;
+  padding: 0.35rem 1rem;
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 99px;
+  color: #d8b4fe;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  animation: ${fadeInUp} 0.6s ease-out;
 
-  svg {
-    width: 2.5rem;
-    height: 2.5rem;
-    color: white;
-  }
+  svg { width: 14px; height: 14px; }
+`;
+
+const Title = styled.h1`
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(to right, #ffffff, #94a3b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: ${fadeInUp} 0.6s ease-out 0.1s backwards;
 
   @media (max-width: 768px) {
-    font-size: 2rem;
+    font-size: 2.25rem;
   }
 `;
 
-const CTAText = styled.p`
+const Subtitle = styled.p`
   font-size: 1.25rem;
-  color: rgba(255, 255, 255, 0.95);
-  margin: 0 0 2rem;
+  color: ${subscriptionTheme.colors.text.secondary};
+  max-width: 600px;
+  margin: 0 auto 3rem;
+  line-height: 1.6;
+  animation: ${fadeInUp} 0.6s ease-out 0.2s backwards;
+
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+  }
 `;
 
-const CTAButton = styled.button`
-  padding: 1.25rem 3rem;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  color: var(--accent-primary);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50px;
-  font-size: 1.1rem;
-  font-weight: 700;
-  cursor: pointer;
+// --- Pricing Container (Managed by SubscriptionManager) ---
+const PricingContainer = styled.div`
+  padding: 0 1rem;
+  margin-bottom: 6rem;
+  animation: ${fadeInUp} 0.8s ease-out 0.3s backwards;
+`;
+
+// --- Trust/Social Proof ---
+const TrustSection = styled.div`
+  border-top: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  background: rgba(0,0,0,0.2);
+  padding: 2rem 0;
+  margin-bottom: 6rem;
+`;
+
+const MarqueeContainer = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 3rem;
+  opacity: 0.5;
+
+  div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: white;
+    font-size: 1.1rem;
+    
+    svg { color: #a855f7; }
+  }
+`;
+
+// --- Comparison Table ---
+const ComparisonSection = styled.section`
+  max-width: 1000px;
+  margin: 0 auto 6rem;
+  padding: 0 1rem;
+`;
+
+const GlassCard = styled.div`
+  background: rgba(30, 41, 59, 0.4);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 2rem;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    overflow-x: auto;
+  }
+`;
+
+const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px; // ensure scroll on mobile
+`;
+
+const Th = styled.th`
+  text-align: left;
+  padding: 1.5rem 1rem;
+  color: ${subscriptionTheme.colors.text.secondary};
+  font-weight: 500;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  
+  &:first-child { width: 40%; }
+  &:not(:first-child) { 
+    text-align: center; 
+    width: 20%;
+    color: white;
+    font-weight: 700;
+  }
+`;
+
+const Td = styled.td`
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: ${subscriptionTheme.colors.text.primary};
+
+  &:not(:first-child) {
+    text-align: center;
+  }
+
+  svg {
+    color: #a855f7;
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+// --- FAQ Section ---
+const FAQSection = styled.section`
+  max-width: 800px;
+  margin: 0 auto 8rem;
+  padding: 0 1rem;
+`;
+
+const FAQHeader = styled.div`
+  text-align: center;
+  margin-bottom: 3rem;
+  
+  h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+  }
+  p {
+    color: ${subscriptionTheme.colors.text.secondary};
+  }
+`;
+
+const AccordionItem = styled.div<{ $isOpen: boolean }>`
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  overflow: hidden;
   transition: all 0.3s ease;
-  box-shadow: 
-    0 4px 20px rgba(0, 0, 0, 0.2),
-    0 0 30px rgba(255, 143, 16, 0.3);
-  filter: drop-shadow(0 0 10px rgba(255, 143, 16, 0.2));
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 
-      0 6px 30px rgba(0, 0, 0, 0.3),
-      0 0 40px rgba(255, 143, 16, 0.4);
-    background: rgba(255, 255, 255, 1);
-    filter: drop-shadow(0 0 15px rgba(255, 143, 16, 0.4));
-  }
+  ${p => p.$isOpen && css`
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(168, 85, 247, 0.3);
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.05);
+  `}
+`;
 
-  &:active {
-    transform: translateY(0);
+const AccordionTrigger = styled.button`
+  width: 100%;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: none;
+  color: white;
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  text-align: left;
+
+  svg {
+    transition: transform 0.3s ease;
+    color: ${subscriptionTheme.colors.text.secondary};
   }
 `;
 
-// ============================================================================
-// COMPONENT
-// ============================================================================
+const AccordionContent = styled.div<{ $isOpen: boolean }>`
+  max-height: ${p => p.$isOpen ? '300px' : '0'};
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0 1.5rem;
+  
+  p {
+    padding-bottom: 1.5rem;
+    color: ${subscriptionTheme.colors.text.secondary};
+    line-height: 1.6;
+    margin: 0;
+  }
+`;
 
+// --- Component Logic ---
 const SubscriptionPage: React.FC = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const { language } = useLanguage();
-  const { currentUser } = useAuth();
-  const [openFAQ, setOpenFAQ] = useState<number | null>(null);
-  const [loadingPlan, setLoadingPlan] = useState<string | null>(null); // Track which plan is loading
   const isBg = language === 'bg';
+  const [openFAQ, setOpenFAQ] = useState<number | null>(null);
 
-  // ✅ Promotional free offer
-  const { isFreeOffer, isLoaded: promoLoaded } = usePromotionalOffer();
-  const isPromoFromUrl = searchParams.get('promo') === 'free';
-  const effectiveFreeOffer = isFreeOffer || isPromoFromUrl;
-
-  const handleSubscribe = async (planId: 'dealer' | 'company', interval: 'monthly' | 'annual' = 'monthly') => {
-    if (!currentUser) {
-      navigate('/login', { state: { from: '/subscription' } });
-      return;
-    }
-
-    try {
-      setLoadingPlan(planId);
-
-      // ──── FREE OFFER PATH: activate directly without payment ────
-      if (effectiveFreeOffer) {
-        toast.info(isBg
-          ? 'Активиране на безплатен план...'
-          : 'Activating free plan...'
-        );
-
-        const result = await activateFreePlan({
-          userId: currentUser.uid,
-          userEmail: currentUser.email || '',
-          userName: currentUser.displayName || 'Unknown',
-          planTier: planId,
-        });
-
-        if (result.success) {
-          toast.success(isBg
-            ? `🎉 Вашият ${planId === 'dealer' ? 'Дилър' : 'Фирма'} план е активиран безплатно!`
-            : `🎉 Your ${planId === 'dealer' ? 'Dealer' : 'Company'} plan has been activated for free!`
-          );
-          navigate('/profile');
-        } else if (result.error === 'FREE_OFFER_EXPIRED') {
-          toast.warning(isBg
-            ? 'Безплатната оферта вече не е активна. Моля, завършете плащане.'
-            : 'The free offer is no longer active. Please complete payment.'
-          );
-          // Fall through to normal payment
-          navigate(`/billing/manual-checkout?plan=${planId}&interval=${interval}&type=subscription`);
-        } else {
-          toast.error(isBg
-            ? 'Грешка при активиране. Моля, опитайте отново.'
-            : 'Activation failed. Please try again.'
-          );
-        }
-        return;
-      }
-
-      // ──── NORMAL PAYMENT PATH: redirect to bank transfer checkout ────
-      toast.info(isBg 
-        ? 'Преминаваме към страница за банков превод...' 
-        : 'Redirecting to bank transfer page...'
-      );
-
-      // Navigate to manual checkout page with plan details
-      navigate(`/billing/manual-checkout?plan=${planId}&interval=${interval}&type=subscription`);
-      
-    } catch (error) {
-      logger.error('Failed to navigate to checkout', error as Error);
-      toast.error(isBg ? 'Грешка при преминаване към плащане' : 'Failed to navigate to payment');
-    } finally {
-      setLoadingPlan(null);
+  // Content Data
+  const texts = {
+    back: isBg ? 'Назад' : 'Back',
+    badge: isBg ? 'Премиум Планове' : 'Premium Plans',
+    title: isBg ? 'Отключете пълния си потенциал' : 'Unlock Your Full Potential',
+    subtitle: isBg
+      ? 'Изберете план, който отговаря на вашите нужди. Без скрити такси. Прозрачно и честно.'
+      : 'Choose a plan that fits your ambition. No hidden fees. Transparent and fair.',
+    trust: {
+      secure: isBg ? 'SSL Защита' : 'SSL Secure',
+      support: isBg ? '24/7 Поддръжка' : '24/7 Support',
+      guarantee: isBg ? '30 дни гаранция' : '30-Day Guarantee',
+    },
+    comparison: {
+      title: isBg ? 'Сравнете плановете' : 'Compare Plans',
+      features: isBg ? 'Функция' : 'Feature',
+      free: isBg ? 'Безплатен' : 'Free',
+      dealer: isBg ? 'Дилър' : 'Dealer',
+      company: isBg ? 'Компания' : 'Company',
     }
   };
 
-  // Scroll animations
-  useEffect(() => {
-    const handleScroll = () => {
-      const elements = document.querySelectorAll('[data-animate]');
-      elements.forEach((el) => {
-        const rect = el.getBoundingClientRect();
-        const isVisible = rect.top < window.innerHeight * 0.8;
-        if (isVisible) {
-          el.classList.add('visible');
-        }
-      });
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial check
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const testimonials = [
-    {
-      name: 'Иван Петров',
-      role: isBg ? 'Автокъща София' : 'Car Dealership Sofia',
-      text: isBg
-        ? 'С Dealer плана продажбите ни се увеличиха с 40%. AI оценките са невероятно точни!'
-        : 'With the Dealer plan, our sales increased by 40%. AI valuations are incredibly accurate!',
-      avatar: 'ИП',
-      rating: 5
-    },
-    {
-      name: 'Мария Георгиева',
-      role: isBg ? 'Частен продавач' : 'Private Seller',
-      text: isBg
-        ? 'Безплатният план ми позволи да продам колата си за 2 дни. Лесна употреба!'
-        : 'The free plan allowed me to sell my car in 2 days. Easy to use!',
-      avatar: 'МГ',
-      rating: 5
-    },
-    {
-      name: 'Стоян Николов',
-      role: isBg ? 'Fleet Manager' : 'Fleet Manager',
-      text: isBg
-        ? 'Company планът е идеален за нашия fleet. Неограничените AI функции спестяват часове!'
-        : 'The Company plan is perfect for our fleet. Unlimited AI features save hours!',
-      avatar: 'СН',
-      rating: 5
-    }
+  const comparisonData = [
+    { feature: isBg ? 'Обяви' : 'Listings', free: '3', dealer: '100', company: '∞' },
+    { feature: isBg ? 'AI Оценка' : 'AI Valuation', free: 'Basic', dealer: 'Advanced', company: 'Pro' },
+    { feature: isBg ? 'Снимки/Кола' : 'Photos/Car', free: '10', dealer: '30', company: '50' },
+    { feature: isBg ? 'Поддръжка' : 'Support', free: 'Email', dealer: 'Priority', company: 'Dedicated' },
   ];
 
   const faqs = [
     {
-      question: isBg ? 'Какво включва безплатният план?' : 'What does the free plan include?',
-      answer: isBg
-        ? 'Безплатният план ви позволява да публикувате до 5 автомобила месечно с основни функции - директни съобщения, до 10 снимки на кола и видимост в търсачката.'
-        : 'The free plan allows you to post up to 5 cars per month with basic features - direct messaging, up to 10 photos per car, and search visibility.'
+      q: isBg ? 'Мога ли да откажа по всяко време?' : 'Can I cancel at any time?',
+      a: isBg ? 'Да, можете да прекратите абонамента си по всяко време без неустойки.' : 'Yes, you can cancel your subscription at any time with no penalties.'
     },
     {
-      question: isBg ? 'Как работят AI функциите?' : 'How do AI features work?',
-      answer: isBg
-        ? 'Нашите AI функции използват машинно обучение за анализ на пазарни данни, определяне на конкурентни цени и предоставяне на интелигентни препоръки за вашите обяви.'
-        : 'Our AI features use machine learning to analyze market data, determine competitive pricing, and provide intelligent recommendations for your listings.'
+      q: isBg ? 'Какви методи на плащане приемате?' : 'What payment methods do you accept?',
+      a: isBg ? 'Приемаме всички основни кредитни карти и банкови преводи.' : 'We accept all major credit cards and bank transfers.'
     },
     {
-      question: isBg ? 'Мога ли да сменя плана си по всяко време?' : 'Can I change my plan anytime?',
-      answer: isBg
-        ? 'Да! Можете да надградите или понижите плана си по всяко време. При надграждане, ще получите пропорционален кредит за неизползваното време.'
-        : 'Yes! You can upgrade or downgrade your plan at any time. When upgrading, you\'ll receive prorated credit for unused time.'
-    },
-    {
-      question: isBg ? 'Какво означава "неограничени AI функции"?' : 'What does "unlimited AI" mean?',
-      answer: isBg
-        ? 'С Company плана получавате неограничен достъп до всички AI инструменти - оценка на цени, анализ на пазара, оптимизация на обяви, подобряване на снимки и много други.'
-        : 'With the Company plan, you get unlimited access to all AI tools - price valuation, market analysis, listing optimization, photo enhancement, and more.'
-    },
-    {
-      question: isBg ? 'Има ли скрити такси?' : 'Are there any hidden fees?',
-      answer: isBg
-        ? 'Не! Цената която виждате е цената която плащате. Без скрити такси, без изненади. Прозрачни и честни цени.'
-        : 'No! The price you see is the price you pay. No hidden fees, no surprises. Transparent and fair pricing.'
-    }
-  ];
-
-  const comparisonFeatures = [
-    {
-      feature: isBg ? 'Брой обяви месечно' : 'Monthly listings',
-      free: '3',
-      dealer: '30',
-      company: isBg ? 'Неограничено' : 'Unlimited'
-    },
-    {
-      feature: isBg ? 'Анализи' : 'Analytics',
-      free: '—',
-      dealer: isBg ? 'Основни' : 'Basic',
-      company: isBg ? 'Разширени' : 'Advanced'
-    },
-    {
-      feature: isBg ? 'Групово качване' : 'Bulk upload',
-      free: '—',
-      dealer: '✓',
-      company: '✓'
-    },
-    {
-      feature: isBg ? 'Отличаване/Badge' : 'Featured badge',
-      free: '—',
-      dealer: '✓',
-      company: '✓'
-    },
-    {
-      feature: isBg ? 'Управление на екип' : 'Team management',
-      free: '0',
-      dealer: '3',
-      company: '10'
-    },
-    {
-      feature: isBg ? 'API достъп' : 'API access',
-      free: '—',
-      dealer: '—',
-      company: '✓'
-    },
-    {
-      feature: isBg ? 'Приоритетна поддръжка' : 'Priority support',
-      free: '—',
-      dealer: '✓',
-      company: '✓'
-    },
-    {
-      feature: isBg ? 'Маркетинг кампании' : 'Marketing campaigns',
-      free: '—',
-      dealer: '5',
-      company: isBg ? 'Неограничено' : 'Unlimited'
+      q: isBg ? 'Има ли безплатен пробен период?' : 'Is there a free trial?',
+      a: isBg ? 'Предлагаме 14-дневен пробен период за Дилърския план.' : 'We offer a 14-day free trial on the Dealer plan.'
     }
   ];
 
   return (
     <PageContainer>
-      {/* Hero Header */}
-      <HeroHeader>
-        <HeroBackgroundImages>
-          <BackgroundImage $image="/assets/images/seller-cards/private.png" $delay={0} />
-          <BackgroundImage $image="/assets/images/seller-cards/dealer.png" $delay={5} />
-          <BackgroundImage $image="/assets/images/seller-cards/company.png" $delay={10} />
-        </HeroBackgroundImages>
-        <HeroContent>
-          <BackButton onClick={() => navigate(-1)}>
-            <ArrowLeft />
-            <span>{isBg ? 'Назад' : 'Back'}</span>
-          </BackButton>
+      <NavHeader>
+        <BackButton onClick={() => navigate(-1)}>
+          <ArrowLeft size={16} />
+          {texts.back}
+        </BackButton>
+      </NavHeader>
 
-          <HeroTitleWrapper>
-            <HeroIconBadge>
-              <Crown />
-            </HeroIconBadge>
+      <HeroSection>
+        <Badge>
+          <Sparkles />
+          {texts.badge}
+        </Badge>
+        <Title>{texts.title}</Title>
+        <Subtitle>{texts.subtitle}</Subtitle>
+      </HeroSection>
 
-            <HeroTitle>
-              {isBg ? 'Изберете перфектния план' : 'Choose Your Perfect Plan'}
-            </HeroTitle>
+      <PricingContainer>
+        <SubscriptionManager />
+      </PricingContainer>
 
-            <HeroSubtitle>
-              {isBg
-                ? 'Продавайте повече автомобили с интелигентни инструменти и AI технологии от световна класа'
-                : 'Sell more cars with intelligent tools and world-class AI technology'}
-            </HeroSubtitle>
-
-            <HeroStats>
-              <StatItem>
-                <div className="stat-number">10,000+</div>
-                <div className="stat-label">{isBg ? 'Продадени коли' : 'Cars Sold'}</div>
-              </StatItem>
-              <StatItem>
-                <div className="stat-number">98%</div>
-                <div className="stat-label">{isBg ? 'Доволни клиенти' : 'Happy Customers'}</div>
-              </StatItem>
-              <StatItem>
-                <div className="stat-number">24/7</div>
-                <div className="stat-label">{isBg ? 'Поддръжка' : 'Support'}</div>
-              </StatItem>
-            </HeroStats>
-          </HeroTitleWrapper>
-        </HeroContent>
-      </HeroHeader>
-
-      {/* Trust Badges */}
       <TrustSection>
-        <TrustContent>
-          <TrustBadge>
-            <Shield />
-            <span>{isBg ? 'SSL Защита' : 'SSL Secure'}</span>
-          </TrustBadge>
-          <TrustBadge>
-            <Award />
-            <span>{isBg ? 'Най-добра платформа 2025' : 'Best Platform 2025'}</span>
-          </TrustBadge>
-          <TrustBadge>
-            <HeartHandshake />
-            <span>{isBg ? '30 дни гаранция' : '30-Day Guarantee'}</span>
-          </TrustBadge>
-          <TrustBadge>
-            <Clock />
-            <span>{isBg ? 'Бърза активация' : 'Instant Activation'}</span>
-          </TrustBadge>
-        </TrustContent>
+        <MarqueeContainer>
+          <div><Shield size={20} /> {texts.trust.secure}</div>
+          <div><Globe size={20} /> Global Reach</div>
+          <div><Award size={20} /> Top Rated</div>
+          <div><CheckCircle size={20} /> Verified</div>
+        </MarqueeContainer>
       </TrustSection>
 
-      {/* Main Content */}
-      <MainContent>
-        {/* Plans - Managed by SubscriptionManager */}
-        <SubscriptionManager />
+      <ComparisonSection>
+        <FAQHeader>
+          <h2>{texts.comparison.title}</h2>
+        </FAQHeader>
+        <GlassCard>
+          <Table>
+            <thead>
+              <tr>
+                <Th>{texts.comparison.features}</Th>
+                <Th>{texts.comparison.free}</Th>
+                <Th>{texts.comparison.dealer}</Th>
+                <Th>{texts.comparison.company}</Th>
+              </tr>
+            </thead>
+            <tbody>
+              {comparisonData.map((row, i) => (
+                <tr key={i}>
+                  <Td>{row.feature}</Td>
+                  <Td>{row.free}</Td>
+                  <Td>{row.dealer}</Td>
+                  <Td>{row.company}</Td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </GlassCard>
+      </ComparisonSection>
 
-        {/* Comparison Table */}
-        <ComparisonSection data-animate>
-          <SectionTitle>
-            <BarChart3 />
-            {isBg ? 'Подробно сравнение' : 'Detailed Comparison'}
-          </SectionTitle>
-          <SectionSubtitle>
-            {isBg
-              ? 'Вижте какво получавате с всеки план'
-              : 'See what you get with each plan'}
-          </SectionSubtitle>
-
-          <ComparisonTable>
-            <TableHeader>
-              <div>{isBg ? 'Функция' : 'Feature'}</div>
-              <div>{isBg ? 'Безплатен' : 'Free'}</div>
-              <div>{isBg ? 'Търговец' : 'Dealer'}</div>
-              <div>{isBg ? 'Компания' : 'Company'}</div>
-            </TableHeader>
-
-            {comparisonFeatures.map((item, index) => (
-              <TableRow key={index} $highlight={index % 2 === 0}>
-                <FeatureCell>
-                  <Sparkles />
-                  {item.feature}
-                </FeatureCell>
-                <ValueCell>
-                  {item.free === '✓' ? <CheckCircle /> : item.free}
-                </ValueCell>
-                <ValueCell>
-                  {item.dealer === '✓' ? <CheckCircle /> : item.dealer}
-                </ValueCell>
-                <ValueCell>
-                  {item.company === '✓' ? <CheckCircle /> : item.company}
-                </ValueCell>
-              </TableRow>
-            ))}
-          </ComparisonTable>
-        </ComparisonSection>
-
-        {/* Testimonials */}
-        <TestimonialsSection data-animate>
-          <SectionTitle>
-            <MessageSquare />
-            {isBg ? 'Какво казват нашите клиенти' : 'What Our Customers Say'}
-          </SectionTitle>
-          <SectionSubtitle>
-            {isBg
-              ? 'Истории на успех от хора като вас'
-              : 'Success stories from people like you'}
-          </SectionSubtitle>
-
-          <TestimonialsGrid>
-            {testimonials.map((testimonial, index) => (
-              <TestimonialCard
-                key={index}
-                style={{ '--index': index } as React.CSSProperties}
-              >
-                <QuoteIcon>
-                  <Quote />
-                </QuoteIcon>
-                <Stars>
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} />
-                  ))}
-                </Stars>
-                <TestimonialText>"{testimonial.text}"</TestimonialText>
-                <TestimonialAuthor>
-                  <AuthorAvatar>{testimonial.avatar}</AuthorAvatar>
-                  <AuthorInfo>
-                    <div className="name">{testimonial.name}</div>
-                    <div className="role">{testimonial.role}</div>
-                  </AuthorInfo>
-                </TestimonialAuthor>
-              </TestimonialCard>
-            ))}
-          </TestimonialsGrid>
-        </TestimonialsSection>
-
-        {/* FAQ */}
-        <FAQSection data-animate>
-          <SectionTitle>
-            <HelpCircle />
-            {isBg ? 'Често задавани въпроси' : 'Frequently Asked Questions'}
-          </SectionTitle>
-          <SectionSubtitle>
-            {isBg
-              ? 'Всичко което трябва да знаете'
-              : 'Everything you need to know'}
-          </SectionSubtitle>
-
-          <FAQList>
-            {faqs.map((faq, index) => (
-              <FAQItem key={index} $isOpen={openFAQ === index}>
-                <FAQQuestion onClick={() => setOpenFAQ(openFAQ === index ? null : index)}>
-                  <span>{faq.question}</span>
-                  <ChevronDown
-                    style={{
-                      transform: openFAQ === index ? 'rotate(180deg)' : 'rotate(0)'
-                    }}
-                  />
-                </FAQQuestion>
-                <FAQAnswer $isOpen={openFAQ === index}>
-                  {faq.answer}
-                </FAQAnswer>
-              </FAQItem>
-            ))}
-          </FAQList>
-        </FAQSection>
-
-        {/* CTA Section */}
-        <CTASection data-animate>
-          <CTAContent>
-            <CTATitle>
-              <Target />
-              {isBg ? 'Готови да започнете?' : 'Ready to Get Started?'}
-            </CTATitle>
-            <CTAText>
-              {isBg
-                ? 'Присъединете се към хиляди доволни клиенти днес'
-                : 'Join thousands of happy customers today'}
-            </CTAText>
-            <CTAButton onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-              {isBg ? 'Изберете план сега' : 'Choose Plan Now'}
-            </CTAButton>
-          </CTAContent>
-        </CTASection>
-      </MainContent>
+      <FAQSection>
+        <FAQHeader>
+          <h2>FAQ</h2>
+          <p>{isBg ? 'Често задавани въпроси' : 'Frequently Asked Questions'}</p>
+        </FAQHeader>
+        {faqs.map((item, idx) => (
+          <AccordionItem key={idx} $isOpen={openFAQ === idx}>
+            <AccordionTrigger onClick={() => setOpenFAQ(openFAQ === idx ? null : idx)}>
+              {item.q}
+              <ChevronDown
+                size={20}
+                style={{ transform: openFAQ === idx ? 'rotate(180deg)' : 'rotate(0)' }}
+              />
+            </AccordionTrigger>
+            <AccordionContent $isOpen={openFAQ === idx}>
+              <p>{item.a}</p>
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </FAQSection>
     </PageContainer>
   );
 };

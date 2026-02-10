@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Eye, EyeOff, GripVertical, RefreshCw, Layers, Monitor, MessageSquare, ArrowUp, ArrowDown, Gift, Zap } from 'lucide-react';
 import { sectionVisibilityService } from '@/services/section-visibility.service';
+import { siteSettingsService } from '@/services/site-settings.service';
 import type { HomepageSection } from '@/services/section-visibility-types';
 import { serviceLogger } from '@/services/logger-service';
 import { togglePromotionalOffer } from '@/hooks/usePromotionalOffer';
-import { doc, onSnapshot, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, onSnapshot, getDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-config';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, getIdTokenResult } from 'firebase/auth';
 import { toast } from 'react-toastify';
+import { useAdminLang } from '@/contexts/AdminLanguageContext';
 
 // ─── Styled Components (dark theme matching SuperAdmin) ───
 
@@ -279,104 +281,38 @@ const FreeOfferToggle = styled.button<{ $active: boolean; $saving: boolean }>`
   `}
 `;
 
-// ─── Known admin emails (same as SuperAdminDashboard) ───
-const ADMIN_EMAILS = [
-  'globul.net.m@gmail.com',
-  'alaa.hamdani@yahoo.com',
-  'hamdanialaa@yahoo.com',
-];
-
 /**
  * Ensure the current Firebase Auth user is signed in and has role: 'admin'.
- * 
- * The SuperAdmin login stores credentials in localStorage but may fail
- * Firebase Auth sign-in silently. This function:
- *  1. Checks if Firebase Auth has a current user
- *  2. If not, attempts to sign in using admin credentials
- *  3. Sets role: 'admin' on the user's Firestore doc
  */
 async function ensureAdminRole(): Promise<boolean> {
   try {
     const auth = getAuth();
-    let user = auth.currentUser;
-
-    // ─── Step 1: If not signed in to Firebase Auth, try to sign in ───
+    const user = auth.currentUser;
     if (!user) {
-      const adminEmail = import.meta.env.VITE_ADMIN_EMAIL;
-      const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD;
-      
-      if (!adminEmail || !adminPassword) {
-        throw new Error('❌ CRITICAL: Admin credentials not configured. Check .env file.');
-      }
-
-      try {
-        const cred = await signInWithEmailAndPassword(auth, adminEmail, adminPassword);
-        user = cred.user;
-        serviceLogger.info('[SectionControlPanel] Firebase Auth sign-in succeeded', { uid: user.uid });
-      } catch (signInErr: any) {
-        const code = signInErr?.code || '';
-        if (code === 'auth/user-not-found') {
-          // User doesn't exist → create them
-          try {
-            const cred = await createUserWithEmailAndPassword(auth, adminEmail, adminPassword);
-            user = cred.user;
-            serviceLogger.info('[SectionControlPanel] Firebase Auth user created', { uid: user.uid });
-          } catch (createErr) {
-            serviceLogger.warn('[SectionControlPanel] Could not create Firebase Auth user', createErr);
-          }
-        } else if (code === 'auth/invalid-credential' || code === 'auth/wrong-password') {
-          // User exists with a different password — we can't sign in.
-          // The Firestore rules have a fallback that checks updatedBy field for admin emails.
-          serviceLogger.warn('[SectionControlPanel] Firebase Auth password mismatch — using rules-based fallback');
-        } else {
-          serviceLogger.warn('[SectionControlPanel] Firebase Auth sign-in failed', signInErr);
-        }
-      }
+      throw new Error('Admin authentication required. Please sign in.');
     }
 
-    // If we got a user, set admin role in Firestore
-    if (user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase())) {
-      try {
-        const userRef = doc(db, 'users', user.uid);
-        const snap = await getDoc(userRef);
-
-        if (snap.exists()) {
-          const data = snap.data();
-          if (data.role !== 'admin') {
-            await updateDoc(userRef, { role: 'admin', updatedAt: new Date() });
-            serviceLogger.info('[SectionControlPanel] Set role=admin on user doc', { uid: user.uid });
-          }
-        } else {
-          await setDoc(userRef, {
-            uid: user.uid,
-            email: user.email,
-            displayName: user.displayName || 'Admin',
-            role: 'admin',
-            profileType: 'private',
-            planTier: 'free',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          });
-          serviceLogger.info('[SectionControlPanel] Created admin user doc', { uid: user.uid });
-        }
-        return true;
-      } catch (docErr) {
-        serviceLogger.warn('[SectionControlPanel] Could not update user doc, proceeding anyway', docErr);
-      }
+    const token = await getIdTokenResult(user, true);
+    if (token?.claims?.admin === true) {
+      return true;
     }
 
-    // Return true even without Firebase Auth — Firestore rules have admin-email fallback
-    // The toggle will include the admin email in the updatedBy field for validation
-    serviceLogger.info('[SectionControlPanel] Proceeding without Firebase Auth — rules fallback active');
-    return true;
+    const userRef = doc(db, 'users', user.uid);
+    const snap = await getDoc(userRef);
+    const role = snap.exists() ? snap.data()?.role : null;
+    if (role === 'admin') {
+      return true;
+    }
+
+    throw new Error('Access denied. Admin role required.');
   } catch (err) {
-    serviceLogger.error('[SectionControlPanel] ensureAdminRole failed:', err);
-    // Still return true — let the toggle attempt proceed; Firestore rules will validate
-    return true;
+    serviceLogger.error('[SectionControlPanel] ensureAdminRole failed:', { error: err });
+    return false;
   }
 }
 
 const SectionControlPanel: React.FC = () => {
+  const { t } = useAdminLang();
   const [sections, setSections] = useState<HomepageSection[]>([]);
   const [loading, setLoading] = useState(true);
   const [savingKey, setSavingKey] = useState<string | null>(null);
@@ -385,11 +321,18 @@ const SectionControlPanel: React.FC = () => {
   // ─── Ensure admin role on mount, THEN load sections ───
   useEffect(() => {
     let isActive = true;
-    
+
     const init = async () => {
       // Step 1: Ensure Firebase Auth is signed in
-      await ensureAdminRole();
-      
+      const isAdmin = await ensureAdminRole();
+      if (!isAdmin) {
+        if (isActive) {
+          setError('Admin access required. Please sign in with an admin account.');
+          setLoading(false);
+        }
+        return;
+      }
+
       // Step 2: Load sections (may trigger seed if first time)
       try {
         const data = await sectionVisibilityService.getAll();
@@ -424,21 +367,9 @@ const SectionControlPanel: React.FC = () => {
     return () => { isActive = false; unsub(); };
   }, []);
 
-  // Get admin email from localStorage (same pattern as SuperAdminDashboard)
   const getAdminEmail = (): string => {
-    try {
-      const session = localStorage.getItem('superAdminSession');
-      if (session) {
-        const parsed = JSON.parse(session);
-        if (parsed.email && ADMIN_EMAILS.includes(parsed.email.toLowerCase())) {
-          return parsed.email;
-        }
-      }
-    } catch {
-      // ignore parse errors
-    }
-    // Always return a valid admin email — needed for Firestore rules validation
-    return ADMIN_EMAILS[0];
+    const auth = getAuth();
+    return auth.currentUser?.email || 'unknown';
   };
 
   const handleFreeOfferToggle = async () => {
@@ -450,7 +381,24 @@ const SectionControlPanel: React.FC = () => {
 
       const adminEmail = getAdminEmail();
       const newState = !freeOfferActive;
+
+      // 1. Update Promotional Offer (Existing logic)
       await togglePromotionalOffer(newState, adminEmail);
+
+      // 2. Sync with Site Settings (New logic for parity)
+      try {
+        const currentSettings = await siteSettingsService.getSiteSettings();
+        await siteSettingsService.updateSiteSettings({
+          pricing: {
+            ...currentSettings.pricing,
+            subscriptionMode: newState ? 'free' : 'paid'
+          }
+        }, adminEmail);
+        serviceLogger.info('[FreeOffer] Synced with SiteSettings', { mode: newState ? 'free' : 'paid' });
+      } catch (syncErr) {
+        serviceLogger.warn('[FreeOffer] Failed to sync SiteSettings, but Promotional Offer applied', { error: syncErr });
+        // Do not fail the whole operation if site settings sync fails (e.g. permission strictness)
+      }
 
       // ✅ Visual feedback
       if (newState) {
@@ -463,7 +411,7 @@ const SectionControlPanel: React.FC = () => {
       const msg = e instanceof Error ? e.message : 'Free offer toggle failed';
       setError(msg);
       toast.error(`Toggle failed: ${msg}`);
-      serviceLogger.error('[FreeOffer] Toggle error', e);
+      serviceLogger.error('[FreeOffer] Toggle error', { error: e });
     } finally {
       setFreeOfferSaving(false);
     }
@@ -478,7 +426,7 @@ const SectionControlPanel: React.FC = () => {
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : String(e);
       setError(msg);
-      serviceLogger.error('[SectionControlPanel] Load failed:', e);
+      serviceLogger.error('[SectionControlPanel] Load failed:', { error: e });
     } finally {
       setLoading(false);
     }
@@ -593,11 +541,9 @@ const SectionControlPanel: React.FC = () => {
   return (
     <PanelContainer>
       <PanelHeader>
-        <Title>🎛️ Homepage Section Control</Title>
+        <Title>🎛️ {t.sections.title}</Title>
         <Subtitle>
-          Toggle visibility and reorder sections. Changes are saved to Firestore
-          and apply in real-time via onSnapshot. Use arrow buttons to reorder sections
-          within each category (Main, Conditional, Floating).
+          {t.sections.subtitle}
         </Subtitle>
       </PanelHeader>
 
@@ -605,16 +551,16 @@ const SectionControlPanel: React.FC = () => {
 
       <StatsBar>
         <StatItem>
-          Total: <span>{sections.length}</span>
+          {t.sections.total}: <span>{sections.length}</span>
         </StatItem>
         <StatItem>
-          Visible: <span>{visibleCount}</span>
+          {t.sections.visible}: <span>{visibleCount}</span>
         </StatItem>
         <StatItem>
-          Hidden: <span>{sections.length - visibleCount}</span>
+          {t.sections.hidden}: <span>{sections.length - visibleCount}</span>
         </StatItem>
         <SeedButton onClick={handleSeedDefaults}>
-          <RefreshCw size={12} /> Reset to Defaults
+          <RefreshCw size={12} /> {t.sections.reset}
         </SeedButton>
       </StatsBar>
 
@@ -626,18 +572,17 @@ const SectionControlPanel: React.FC = () => {
         <FreeOfferHeader>
           <FreeOfferTitle>
             <Gift size={20} />
-            العرض المجاني / Free Offer
+            {t.sections.freeOffer}
             <FreeOfferStatus $active={freeOfferActive}>
-              {freeOfferActive ? '✅ ACTIVE' : '❌ OFF'}
+              {freeOfferActive ? `✅ ${t.sections.freeOfferActive}` : `❌ ${t.sections.freeOfferInactive}`}
             </FreeOfferStatus>
           </FreeOfferTitle>
         </FreeOfferHeader>
         <FreeOfferDesc>
-          🔹 <strong>ON</strong>: All subscription plans become FREE. Users can choose dealer/company
-          without payment. Prices show red strikethrough + &quot;FREE&quot; badge.
+          🔹 <strong>{t.sections.freeOfferActive}</strong>: {t.sections.freeDescOn}
         </FreeOfferDesc>
         <FreeOfferDesc>
-          🔹 <strong>OFF</strong>: Normal payment flow. Dealer/company require bank transfer to iCard/Revolut.
+          🔹 <strong>{t.sections.freeOfferInactive}</strong>: {t.sections.freeDescOff}
         </FreeOfferDesc>
         <div style={{ marginTop: '12px' }}>
           <FreeOfferToggle
@@ -647,14 +592,14 @@ const SectionControlPanel: React.FC = () => {
             disabled={freeOfferSaving}
           >
             {freeOfferSaving ? (
-              'Saving...'
+              t.sections.save
             ) : freeOfferActive ? (
               <>
-                <Zap size={16} /> إيقاف العرض المجاني / Deactivate Free Offer
+                <Zap size={16} /> {t.sections.deactivateFree}
               </>
             ) : (
               <>
-                <Gift size={16} /> تفعيل العرض المجاني / Activate Free Offer
+                <Gift size={16} /> {t.sections.activateFree}
               </>
             )}
           </FreeOfferToggle>
@@ -664,7 +609,7 @@ const SectionControlPanel: React.FC = () => {
       {/* Main Sections */}
       <CategoryLabel>
         <Monitor size={12} style={{ display: 'inline', marginRight: 6 }} />
-        Main Sections ({mainSections.length})
+        {t.sections.mainSections} ({mainSections.length})
       </CategoryLabel>
       {mainSections.map((s, idx) => (
         <SectionRow key={s.key} $visible={s.visible}>
@@ -703,14 +648,14 @@ const SectionControlPanel: React.FC = () => {
             disabled={savingKey === s.key}
           >
             {savingKey === s.key ? (
-              'Saving...'
+              t.sections.save
             ) : s.visible ? (
               <>
-                <Eye size={14} /> Visible
+                <Eye size={14} /> {t.sections.visible}
               </>
             ) : (
               <>
-                <EyeOff size={14} /> Hidden
+                <EyeOff size={14} /> {t.sections.hidden}
               </>
             )}
           </ToggleButton>
@@ -720,7 +665,7 @@ const SectionControlPanel: React.FC = () => {
       {/* Conditional Sections */}
       <CategoryLabel>
         <Layers size={12} style={{ display: 'inline', marginRight: 6 }} />
-        Conditional Sections ({conditionalSections.length})
+        {t.sections.conditionalSections} ({conditionalSections.length})
       </CategoryLabel>
       {conditionalSections.map((s, idx) => (
         <SectionRow key={s.key} $visible={s.visible}>
@@ -759,14 +704,14 @@ const SectionControlPanel: React.FC = () => {
             disabled={savingKey === s.key}
           >
             {savingKey === s.key ? (
-              'Saving...'
+              t.sections.save
             ) : s.visible ? (
               <>
-                <Eye size={14} /> Visible
+                <Eye size={14} /> {t.sections.visible}
               </>
             ) : (
               <>
-                <EyeOff size={14} /> Hidden
+                <EyeOff size={14} /> {t.sections.hidden}
               </>
             )}
           </ToggleButton>
@@ -776,7 +721,7 @@ const SectionControlPanel: React.FC = () => {
       {/* Floating Elements */}
       <CategoryLabel>
         <MessageSquare size={12} style={{ display: 'inline', marginRight: 6 }} />
-        Floating Elements ({floatingSections.length})
+        {t.sections.floatingSections} ({floatingSections.length})
       </CategoryLabel>
       {floatingSections.map((s, idx) => (
         <SectionRow key={s.key} $visible={s.visible}>
@@ -815,14 +760,14 @@ const SectionControlPanel: React.FC = () => {
             disabled={savingKey === s.key}
           >
             {savingKey === s.key ? (
-              'Saving...'
+              t.sections.save
             ) : s.visible ? (
               <>
-                <Eye size={14} /> Visible
+                <Eye size={14} /> {t.sections.visible}
               </>
             ) : (
               <>
-                <EyeOff size={14} /> Hidden
+                <EyeOff size={14} /> {t.sections.hidden}
               </>
             )}
           </ToggleButton>

@@ -1,13 +1,15 @@
 /**
  * Manual Bank Transfer Checkout Page
  * Complete payment flow for manual bank transfers
+ * Theme: "Royal Night" integration
  * 
  * @since January 9, 2026
+ * Updated: February 10, 2026
  */
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { ArrowLeft, CheckCircle, AlertCircle, Loader, Gift } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../contexts/AuthProvider';
@@ -17,6 +19,7 @@ import { manualPaymentService } from '../../services/payment/manual-payment-serv
 import { activateFreePlan } from '../../services/billing/free-plan-activation.service';
 import { usePromotionalOffer } from '../../hooks/usePromotionalOffer';
 import { SUBSCRIPTION_PLANS } from '../../config/subscription-plans';
+import { subscriptionTheme } from '../../components/subscription/subscription-theme';
 import type { BankAccountType, PaymentType } from '../../types/payment.types';
 import { logger } from '../../services/logger-service';
 
@@ -73,7 +76,6 @@ const ManualCheckoutPage: React.FC = () => {
         // Remove promo param so user sees the normal payment form
         searchParams.delete('promo');
         navigate(`/billing/manual-checkout?${searchParams.toString()}`, { replace: true });
-        // Page will re-render without free offer UI
       } else {
         toast.error(language === 'bg'
           ? 'Грешка при активиране. Моля, опитайте отново.'
@@ -100,7 +102,7 @@ const ManualCheckoutPage: React.FC = () => {
 
   const handleConfirmPayment = async () => {
     if (!confirmedTransfer) {
-      toast.error(language === 'bg' 
+      toast.error(language === 'bg'
         ? 'Моля, потвърдете че сте извършили превода'
         : 'Please confirm that you have sent the transfer');
       return;
@@ -119,8 +121,8 @@ const ManualCheckoutPage: React.FC = () => {
         currency: 'EUR',
         paymentType,
         itemId: planTier,
-        itemDescription: `${plan.name[language]} - ${interval === 'monthly' ? 
-          (language === 'bg' ? 'Месечен' : 'Monthly') : 
+        itemDescription: `${plan.name[language]} - ${interval === 'monthly' ?
+          (language === 'bg' ? 'Месечен' : 'Monthly') :
           (language === 'bg' ? 'Годишен' : 'Annual')}`,
         selectedBankAccount: selectedBank,
         userConfirmedTransfer: confirmedTransfer,
@@ -153,7 +155,7 @@ const ManualCheckoutPage: React.FC = () => {
         amount
       });
 
-      toast.error(language === 'bg' 
+      toast.error(language === 'bg'
         ? 'Грешка при обработка на заявката'
         : 'Error processing payment request');
     } finally {
@@ -249,7 +251,7 @@ const ManualCheckoutPage: React.FC = () => {
           <SummaryRow>
             <SummaryLabel>{language === 'bg' ? 'Период:' : 'Billing Period:'}</SummaryLabel>
             <SummaryValue>
-              {interval === 'monthly' 
+              {interval === 'monthly'
                 ? (language === 'bg' ? 'Месечен' : 'Monthly')
                 : (language === 'bg' ? 'Годишен (20% отстъпка)' : 'Annual (20% discount)')}
             </SummaryValue>
@@ -262,19 +264,21 @@ const ManualCheckoutPage: React.FC = () => {
         </OrderSummary>
 
         {/* Bank Transfer Details */}
-        <BankTransferDetails
-          amount={amount}
-          currency="EUR"
-          paymentType={paymentType}
-          itemId={planTier}
-          onBankSelected={setSelectedBank}
-          showInstructions={true}
-        />
+        <BankTransferContainer>
+          <BankTransferDetails
+            amount={amount}
+            currency="EUR"
+            paymentType={paymentType}
+            itemId={planTier}
+            onBankSelected={setSelectedBank}
+            showInstructions={true}
+          />
+        </BankTransferContainer>
 
         {/* User Confirmation Form */}
         <ConfirmationForm>
           <FormTitle>{language === 'bg' ? 'Потвърждение на превода' : 'Transfer Confirmation'}</FormTitle>
-          
+
           <FormField>
             <Checkbox
               type="checkbox"
@@ -283,7 +287,7 @@ const ManualCheckoutPage: React.FC = () => {
               onChange={(e) => setConfirmedTransfer(e.target.checked)}
             />
             <CheckboxLabel htmlFor="confirm">
-              {language === 'bg' 
+              {language === 'bg'
                 ? 'Потвърждавам, че извърших банков превод на посочената сума'
                 : 'I confirm that I have sent a bank transfer for the specified amount'}
             </CheckboxLabel>
@@ -302,7 +306,7 @@ const ManualCheckoutPage: React.FC = () => {
           <FormField>
             <Label>{language === 'bg' ? 'Допълнителни бележки:' : 'Additional notes:'}</Label>
             <TextArea
-              placeholder={language === 'bg' 
+              placeholder={language === 'bg'
                 ? 'Напр: Превел съм на DD/MM/YYYY от банка XYZ'
                 : 'E.g: Transfer made on DD/MM/YYYY from XYZ bank'}
               value={userNotes}
@@ -314,7 +318,7 @@ const ManualCheckoutPage: React.FC = () => {
           <InfoBox>
             <AlertCircle size={20} />
             <InfoText>
-              {language === 'bg' 
+              {language === 'bg'
                 ? 'Вашият абонамент ще бъде активиран до 1-2 часа след като потвърдим превода.'
                 : 'Your subscription will be activated within 1-2 hours after we confirm the transfer.'}
             </InfoText>
@@ -344,14 +348,17 @@ const ManualCheckoutPage: React.FC = () => {
 
 export default ManualCheckoutPage;
 
-// ============================================================================
-// STYLED COMPONENTS
-// ============================================================================
+// ==================== STYLED COMPONENTS ====================
 
 const PageContainer = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  background-color: ${subscriptionTheme.colors.bg.primary};
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(124, 58, 237, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.15) 0px, transparent 50%);
+  color: ${subscriptionTheme.colors.text.primary};
   padding: 40px 20px;
+  font-family: 'Inter', sans-serif;
 `;
 
 const ContentWrapper = styled.div`
@@ -370,8 +377,8 @@ const BackButton = styled.button`
   padding: 8px 16px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  color: #fff;
+  border-radius: 99px;
+  color: ${subscriptionTheme.colors.text.primary};
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -384,25 +391,25 @@ const BackButton = styled.button`
 `;
 
 const Title = styled.h1`
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 700;
-  color: #fff;
+  color: white;
   margin: 0;
 `;
 
 const OrderSummary = styled.div`
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 16px;
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
   padding: 24px;
   margin-bottom: 24px;
 `;
 
 const SummaryTitle = styled.h3`
-  font-size: 18px;
+  font-size: 1.1rem;
   font-weight: 600;
-  color: #fff;
+  color: white;
   margin: 0 0 16px 0;
 `;
 
@@ -414,19 +421,19 @@ const SummaryRow = styled.div`
 `;
 
 const SummaryLabel = styled.span`
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.95rem;
+  color: ${subscriptionTheme.colors.text.secondary};
 `;
 
 const SummaryValue = styled.span`
-  font-size: 14px;
-  color: #fff;
+  font-size: 0.95rem;
+  color: white;
   font-weight: 500;
 `;
 
 const Divider = styled.div`
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: rgba(255, 255, 255, 0.1);
   margin: 12px 0;
 `;
 
@@ -437,30 +444,44 @@ const TotalRow = styled.div`
 `;
 
 const TotalLabel = styled.span`
-  font-size: 18px;
+  font-size: 1.1rem;
   font-weight: 700;
-  color: #fff;
+  color: white;
 `;
 
 const TotalValue = styled.span`
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: #0075EB;
+  color: ${subscriptionTheme.colors.primary.light};
+`;
+
+const BankTransferContainer = styled.div`
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 24px;
+  /* Ensure children inherit white text */
+  color: white;
+  
+  h3 { color: white; margin-bottom: 1rem; }
+  p { color: ${subscriptionTheme.colors.text.secondary}; }
 `;
 
 const ConfirmationForm = styled.div`
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 16px;
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
   padding: 32px;
   margin-top: 24px;
 `;
 
 const FormTitle = styled.h3`
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 600;
-  color: #fff;
+  color: white;
   margin: 0 0 24px 0;
 `;
 
@@ -472,22 +493,22 @@ const Checkbox = styled.input`
   width: 20px;
   height: 20px;
   cursor: pointer;
-  accent-color: #0075EB;
+  accent-color: ${subscriptionTheme.colors.primary.main};
 `;
 
 const CheckboxLabel = styled.label`
   margin-left: 12px;
-  font-size: 15px;
-  color: #fff;
+  font-size: 0.95rem;
+  color: white;
   cursor: pointer;
   user-select: none;
 `;
 
 const Label = styled.label`
   display: block;
-  font-size: 14px;
+  font-size: 0.9rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
+  color: ${subscriptionTheme.colors.text.secondary};
   margin-bottom: 8px;
 `;
 
@@ -497,18 +518,18 @@ const Input = styled.input`
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
-  color: #fff;
-  font-size: 14px;
+  color: white;
+  font-size: 1rem;
   transition: all 0.2s ease;
 
   &:focus {
     outline: none;
-    border-color: #0075EB;
+    border-color: ${subscriptionTheme.colors.primary.main};
     background: rgba(255, 255, 255, 0.08);
   }
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.3);
   }
 `;
 
@@ -518,20 +539,20 @@ const TextArea = styled.textarea`
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
-  color: #fff;
-  font-size: 14px;
+  color: white;
+  font-size: 1rem;
   font-family: inherit;
   resize: vertical;
   transition: all 0.2s ease;
 
   &:focus {
     outline: none;
-    border-color: #0075EB;
+    border-color: ${subscriptionTheme.colors.primary.main};
     background: rgba(255, 255, 255, 0.08);
   }
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.3);
   }
 `;
 
@@ -539,17 +560,18 @@ const InfoBox = styled.div`
   display: flex;
   gap: 12px;
   padding: 16px;
-  background: rgba(0, 117, 235, 0.1);
-  border: 1px solid rgba(0, 117, 235, 0.3);
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.3);
   border-radius: 12px;
   margin-bottom: 24px;
-  color: #0075EB;
+  color: ${subscriptionTheme.colors.text.accent};
+  align-items: center;
 `;
 
 const InfoText = styled.p`
   margin: 0;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  color: white;
   line-height: 1.5;
 `;
 
@@ -560,19 +582,19 @@ const SubmitButton = styled.button`
   gap: 12px;
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, #0075EB, #00A651);
+  background: ${subscriptionTheme.gradients.dealer};
   border: none;
   border-radius: 12px;
-  color: #fff;
-  font-size: 16px;
+  color: white;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 117, 235, 0.3);
+  box-shadow: ${subscriptionTheme.shadows.glow};
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 117, 235, 0.5);
+    filter: brightness(1.1);
   }
 
   &:active:not(:disabled) {
@@ -601,8 +623,8 @@ const FreeActivationBox = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  background: rgba(39, 174, 96, 0.1);
-  border: 2px solid rgba(39, 174, 96, 0.4);
+  background: rgba(39, 174, 96, 0.15);
+  border: 1px solid rgba(39, 174, 96, 0.4);
   border-radius: 20px;
   padding: 40px 32px;
   margin-top: 24px;
@@ -611,8 +633,8 @@ const FreeActivationBox = styled.div`
 
 const FreeActivationText = styled.p`
   margin: 0;
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+  color: white;
   line-height: 1.6;
   max-width: 500px;
 `;
@@ -626,8 +648,8 @@ const FreeActivateButton = styled.button`
   background: linear-gradient(135deg, #27ae60, #2ecc71);
   border: none;
   border-radius: 12px;
-  color: #fff;
-  font-size: 18px;
+  color: white;
+  font-size: 1.2rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -636,10 +658,6 @@ const FreeActivateButton = styled.button`
   &:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(39, 174, 96, 0.6);
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(0);
   }
 
   &:disabled {

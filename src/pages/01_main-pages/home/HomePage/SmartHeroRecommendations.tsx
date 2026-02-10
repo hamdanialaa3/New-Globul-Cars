@@ -191,7 +191,7 @@ const RefreshButton = styled.button<{ $loading?: boolean }>`
     `}
   }
   
-  @keyframes spin {
+  @keyframes led-orbit {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }

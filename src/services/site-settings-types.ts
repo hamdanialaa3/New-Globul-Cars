@@ -51,6 +51,7 @@ export interface SiteSettings {
     topAdPrice: number;
     platformFeePercentage: number;
     currency: string;
+    subscriptionMode: 'free' | 'paid';
   };
 
   // ─── SEO & Meta ───

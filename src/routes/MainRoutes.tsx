@@ -247,7 +247,7 @@ export const MainRoutes: React.FC = () => {
             } />
             {/* 🔥 NEW: Car History Report - COMPETITIVE ADVANTAGE! */}
             <Route path="/car/:sellerNumericId/:carNumericId/history" element={
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={<LoadingSpinner size="medium" />}>
                     <CarHistoryPage />
                 </Suspense>
             } />
@@ -567,7 +567,7 @@ export const MainRoutes: React.FC = () => {
             {/* SEO City-Brand Pages: /bmw-sofia, /audi-plovdiv, etc. */}
             <Route path="/:slug" element={<SEOCityBrandPage />} />
             
-            <Route path="*" element={<Suspense fallback={<div>Loading...</div>}><NotFoundPage /></Suspense>} />
+            <Route path="*" element={<Suspense fallback={<LoadingSpinner size="medium" />}><NotFoundPage /></Suspense>} />
         </Routes>
     );
 };
