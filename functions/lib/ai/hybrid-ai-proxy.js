@@ -96,14 +96,16 @@ function selectProvider(operationType, userType, budget) {
  * Call Gemini API
  */
 async function callGemini(prompt, language) {
-    // Implementation placeholder - use actual Gemini SDK
     const API_KEY = process.env.GOOGLE_GENERATIVE_AI_KEY;
     if (!API_KEY) {
         throw new Error('Gemini API key not configured');
     }
-    // Using a mock response for now
-    console.log('[callGemini] Calling Gemini API', { language });
-    return 'Gemini generated description placeholder';
+    const { GoogleGenerativeAI } = require('@google/generative-ai');
+    const ai = new GoogleGenerativeAI(API_KEY);
+    const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const result = await model.generateContent(`[Language: ${language}] ${prompt}`);
+    const response = result.response;
+    return response.text();
 }
 /**
  * Call DeepSeek API

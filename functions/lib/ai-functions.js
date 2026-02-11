@@ -26,7 +26,10 @@ if (!apiKey) {
 else {
     console.log('[ai-functions] API key successfully loaded');
 }
-const genAI = new generative_ai_1.GoogleGenerativeAI(apiKey || 'MISSING_KEY');
+const genAI = apiKey ? new generative_ai_1.GoogleGenerativeAI(apiKey) : null;
+if (!genAI) {
+    console.warn('[ai-functions] Gemini AI is disabled - no API key configured');
+}
 // ==================== AI QUOTA MANAGEMENT ====================
 /**
  * Check AI quota for user
@@ -148,6 +151,9 @@ exports.geminiChat = functions.region('europe-west1').https.onCall(async (data, 
         }
         // Call Gemini
         console.log(`[geminiChat] Calling Gemini (${isAuthenticated ? 'authenticated' : 'guest'}) with message:`, message.substring(0, 50) + '...');
+        if (!genAI) {
+            throw new functions.https.HttpsError('internal', 'AI service not configured');
+        }
         const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
         const result = await model.generateContent(message.trim());
         const response = result.response.text();
@@ -208,6 +214,9 @@ exports.geminiPriceSuggestion = functions.region('europe-west1').https.onCall(as
     const userId = context.auth.uid;
     const { make, model, year, mileage, condition, location } = data;
     try {
+        if (!genAI) {
+            throw new functions.https.HttpsError('internal', 'AI service not configured');
+        }
         const modelObj = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
         const prompt = `
     As a Bulgarian car market expert, suggest a fair price for:

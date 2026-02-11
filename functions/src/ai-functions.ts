@@ -172,6 +172,9 @@ export const geminiChat = functions.region('europe-west1').https.onCall(async (d
     // Call Gemini
     console.log(`[geminiChat] Calling Gemini (${isAuthenticated ? 'authenticated' : 'guest'}) with message:`, message.substring(0, 50) + '...');
 
+    if (!genAI) {
+      throw new functions.https.HttpsError('internal', 'AI service not configured');
+    }
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
     const result = await model.generateContent(message.trim());
     const response = result.response.text();
@@ -237,6 +240,9 @@ export const geminiPriceSuggestion = functions.region('europe-west1').https.onCa
   const { make, model, year, mileage, condition, location } = data as any;
 
   try {
+    if (!genAI) {
+      throw new functions.https.HttpsError('internal', 'AI service not configured');
+    }
     const modelObj = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const prompt = `
