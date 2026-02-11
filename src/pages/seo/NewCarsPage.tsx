@@ -190,7 +190,7 @@ const NewCarsPage: React.FC = () => {
         <meta name="keywords" content={language === 'bg' 
           ? 'нови коли, последни обяви, нови автомобили, българия, продажба коли'
           : 'new cars, latest listings, new vehicles, bulgaria, car sales'} />
-        <link rel="canonical" href="https://globulcars.bg/koli/novi" />
+        <link rel="canonical" href="https://koli.one/koli/novi" />
         <meta property="og:title" content={seoTitle} />
         <meta property="og:description" content={seoDescription} />
         <meta property="og:locale" content="bg_BG" />

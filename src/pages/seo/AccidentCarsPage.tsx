@@ -227,7 +227,7 @@ const AccidentCarsPage: React.FC = () => {
         <meta name="keywords" content={language === 'bg' 
           ? 'аварийни коли, повредени автомобили, коли след ремонт, евтини коли, българия'
           : 'accident cars, damaged vehicles, cars after repair, cheap cars, bulgaria'} />
-        <link rel="canonical" href="https://globulcars.bg/koli/avarijni" />
+        <link rel="canonical" href="https://koli.one/koli/avarijni" />
         <meta property="og:title" content={seoTitle} />
         <meta property="og:description" content={seoDescription} />
         <meta property="og:locale" content="bg_BG" />

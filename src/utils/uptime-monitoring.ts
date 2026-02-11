@@ -30,20 +30,20 @@ export const MONITOR_TYPES = {
 // Example monitors to create (copy to UptimeRobot Dashboard):
 export const RECOMMENDED_MONITORS = [
   {
-    name: 'Globul Cars - Homepage',
+    name: 'Koli One - Homepage',
     type: 'HTTP(S)',
-    url: 'https://globulcars.bg',
+    url: 'https://koli.one',
     interval: 5, // 5 minutes (FREE tier)
-    alert_contacts: 'your-email@example.com',
-    keyword_type: 'exists', // Optional: check if "Globul Cars" exists
-    keyword_value: 'Globul Cars',
+    alert_contacts: 'support@koli.one',
+    keyword_type: 'exists', // Optional: check if "Koli One" exists
+    keyword_value: 'Koli One',
   },
   {
-    name: 'Globul Cars - API Health',
+    name: 'Koli One - API Health',
     type: 'HTTP(S)',
-    url: 'https://globulcars.bg/api/health', // Create health endpoint
+    url: 'https://koli.one/api/health', // Create health endpoint
     interval: 5,
-    alert_contacts: 'your-email@example.com',
+    alert_contacts: 'support@koli.one',
   },
   {
     name: 'Firebase - Firestore',
@@ -62,9 +62,9 @@ export const RECOMMENDED_MONITORS = [
   {
     name: 'SSL Certificate',
     type: 'HTTP(S)',
-    url: 'https://globulcars.bg',
+    url: 'https://koli.one',
     interval: 1440, // Daily check (FREE)
-    alert_contacts: 'your-email@example.com',
+    alert_contacts: 'support@koli.one',
     ssl_expiry_reminder: 30, // Alert 30 days before expiry
   },
 ];
@@ -181,7 +181,7 @@ export const getMonitorStatus = async () => {
  * 5. Get public URL: https://status.uptimerobot.com/your-page
  * 
  * Add link to your footer:
- * <a href="https://status.uptimerobot.com/globulcars">System Status</a>
+ * <a href="https://status.uptimerobot.com/kolione">System Status</a>
  */
 
 /**
@@ -210,7 +210,7 @@ export const uptimeWebhook = functions.https.onRequest(async (req, res) => {
   if (alertType === 1) {
     // Site is DOWN - send urgent email
     await sendEmail({
-      to: 'admin@globulcars.bg',
+      to: 'admin@koli.one',
       subject: '🚨 URGENT: Site Down!',
       html: \`
         <h2>Site Down Alert</h2>

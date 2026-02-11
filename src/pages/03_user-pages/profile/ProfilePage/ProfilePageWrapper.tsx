@@ -468,7 +468,7 @@ const ProfilePageWrapper: React.FC = () => {
       }
     } catch (error) {
       logger.error('Sync error:', error as Error);
-      alert(language === 'bg' ? 'Грешка при синхронизация' : 'Sync error');
+      toast.error(language === 'bg' ? 'Грешка при синхронизация' : 'Sync error');
     } finally {
       setSyncing(false);
     }
@@ -755,7 +755,7 @@ const ProfilePageWrapper: React.FC = () => {
                   }}
                   onUploadError={(err) => {
                     logger.error('Profile image upload error', err as any);
-                    alert(language === 'bg' ? `Грешка при качване: ${String(err)}` : `Upload error: ${String(err)}`);
+                    toast.error(language === 'bg' ? `Грешка при качване: ${String(err)}` : `Upload error: ${String(err)}`);
                   }}
                 />
               </S.CenteredProfileImageWrapper>

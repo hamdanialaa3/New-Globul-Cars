@@ -12,6 +12,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import styledBase, { keyframes } from 'styled-components';
 import { logger } from '@/services/logger-service';
+import { toast } from 'react-toastify';
 import { 
   Send, 
   Image as ImageIcon, 
@@ -440,13 +441,13 @@ export const MessageInput: React.FC<MessageInputProps> = ({
     
     // Validate file type
     if (!file.type.startsWith('image/')) {
-      alert(locale === 'bg' ? 'Моля изберете файл изображение' : 'Please select an image file');
+      toast.error(locale === 'bg' ? 'Моля изберете файл изображение' : 'Please select an image file');
       return;
     }
     
     // Validate file size (5MB max)
     if (file.size > 5 * 1024 * 1024) {
-      alert(locale === 'bg' ? 'Файлът е твърде голям (макс 5MB)' : 'File too large (max 5MB)');
+      toast.warning(locale === 'bg' ? 'Файлът е твърде голям (макс 5MB)' : 'File too large (max 5MB)');
       return;
     }
     
@@ -459,7 +460,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
       }
     } catch (error) {
       logger.error('Failed to send image', error as Error);
-      alert(locale === 'bg' ? 'Грешка при изпращане на снимката' : 'Failed to send image');
+      toast.error(locale === 'bg' ? 'Грешка при изпращане на снимката' : 'Failed to send image');
     } finally {
       setIsSending(false);
     }

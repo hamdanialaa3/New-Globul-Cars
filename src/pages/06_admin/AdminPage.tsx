@@ -108,7 +108,7 @@ const AccessDeniedContainer = styled.div`
 // In production, move this to specific detailed claims or Firestore permissions
 const SUPER_ADMINS = [
   'hamdanialaa3@gmail.com',
-  'admin@globulcars.com',
+  'admin@koli.one',
   'admin@example.com' // Testing only
 ];
 

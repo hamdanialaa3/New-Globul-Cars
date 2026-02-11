@@ -10,6 +10,7 @@ import styled from 'styled-components';
 interface RealisticPaperclipBadgeProps {
   text: string;
   language?: 'bg' | 'en';
+  variant?: 'red' | 'yellow';
 }
 
 // Container - positioned in center of image
@@ -22,10 +23,10 @@ const RibbonContainer = styled.div`
   pointer-events: none;
 `;
 
-// Simple red ribbon - wider and thinner for longer text
-const RedRibbon = styled.div`
-  background: #dc2626;
-  color: white;
+// Dynamic ribbon - wider and thinner for longer text
+const Ribbon = styled.div<{ $variant: 'red' | 'yellow' }>`
+  background: ${p => p.$variant === 'yellow' ? '#EAB308' : '#dc2626'};
+  color: ${p => p.$variant === 'yellow' ? '#000000' : 'white'};
   padding: 8px 80px;
   font-weight: 900;
   font-size: 2.5rem;
@@ -56,15 +57,16 @@ const RedRibbon = styled.div`
   }
 `;
 
-const RealisticPaperclipBadge: React.FC<RealisticPaperclipBadgeProps> = ({ 
+const RealisticPaperclipBadge: React.FC<RealisticPaperclipBadgeProps> = ({
   text,
-  language = 'en'
+  language = 'en',
+  variant = 'red'
 }) => {
   return (
     <RibbonContainer>
-      <RedRibbon>
+      <Ribbon $variant={variant}>
         {text}
-      </RedRibbon>
+      </Ribbon>
     </RibbonContainer>
   );
 };

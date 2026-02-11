@@ -3,6 +3,7 @@ import { logger } from '../../../../services/logger-service';
 // Admin panel for reviewing verification requests
 
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { 
   collection, 
   query, 
@@ -162,10 +163,10 @@ const VerificationReview: React.FC = () => {
 
       setShowApproveModal(false);
       setSelectedRequest(null);
-      alert(t('admin.verificationApproved'));
+      toast.success(t('admin.verificationApproved'));
     } catch (error: unknown) {
       logger.error('Approval error:', error);
-      alert(t('admin.approvalError') + ': ' + (error as Error).message);
+      toast.error(t('admin.approvalError') + ': ' + (error as Error).message);
     } finally {
       setProcessing(false);
     }
@@ -174,7 +175,7 @@ const VerificationReview: React.FC = () => {
   // Reject verification
   const handleReject = async () => {
     if (!selectedRequest || !rejectionReason.trim()) {
-      alert(t('admin.rejectionReasonRequired'));
+      toast.info(t('admin.rejectionReasonRequired'));
       return;
     }
 
@@ -191,10 +192,10 @@ const VerificationReview: React.FC = () => {
       setShowRejectModal(false);
       setSelectedRequest(null);
       setRejectionReason('');
-      alert(t('admin.verificationRejected'));
+      toast.success(t('admin.verificationRejected'));
     } catch (error: unknown) {
       logger.error('Rejection error:', error);
-      alert(t('admin.rejectionError') + ': ' + (error as Error).message);
+      toast.error(t('admin.rejectionError') + ': ' + (error as Error).message);
     } finally {
       setProcessing(false);
     }

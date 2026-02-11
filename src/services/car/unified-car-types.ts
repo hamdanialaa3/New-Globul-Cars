@@ -20,6 +20,7 @@ export interface UnifiedCar {
   status: 'active' | 'sold' | 'draft' | 'expired' | 'deleted';
   isActive: boolean;
   isSold: boolean;
+  isNotReady?: boolean;
   views: number;
   favorites: number;
   createdAt: Date;

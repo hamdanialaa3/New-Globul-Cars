@@ -1,4 +1,5 @@
 import { logger } from '../../../services/logger-service';
+import { toast } from 'react-toastify';
 // src/components/Profile/Security/PrivacySettings.tsx
 // Privacy Settings Component
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
@@ -245,7 +246,7 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ userId }) => {
       }
     } catch (error) {
       logger.error('❌ Save error:', error);
-      alert(language === 'bg' ? 'Грешка при запазване' : 'Save error');
+      toast.error(language === 'bg' ? 'Грешка при запазване' : 'Save error');
     } finally {
       setLoading(false);
     }
@@ -283,7 +284,7 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ userId }) => {
       language === 'bg' ? 'Въведете "DELETE" за потвърждение:' : 'Type "DELETE" to confirm:'
     );
     if (c2 !== 'DELETE') {
-      alert(language === 'bg' ? 'Отказано' : 'Cancelled');
+      toast.info(language === 'bg' ? 'Отказано' : 'Cancelled');
       return;
     }
 
@@ -307,10 +308,10 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ userId }) => {
     }
 
     if (result.success) {
-      alert(language === 'bg' ? 'Акаунтът е изтрит' : 'Account deleted');
+      toast.success(language === 'bg' ? 'Акаунтът е изтрит' : 'Account deleted');
       window.location.href = '/';
     } else {
-      alert(
+      toast.error(
         language === 'bg'
           ? `Грешка при изтриване: ${result.error || ''}`
           : `Delete error: ${result.error || ''}`

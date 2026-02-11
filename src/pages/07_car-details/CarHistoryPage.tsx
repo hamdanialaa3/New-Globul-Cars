@@ -20,6 +20,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
 import { 
   FileText, Shield, AlertTriangle, CheckCircle,
   Calendar, Users, Wrench, Gauge, ClipboardCheck,
@@ -323,12 +324,10 @@ const CarHistoryPage: React.FC = () => {
   };
   
   const handleDownloadPDF = () => {
-    // TODO: Implement PDF generation
-    alert('PDF download feature coming soon!');
+    window.print();
   };
   
   const handleShare = () => {
-    // TODO: Implement share functionality
     if (navigator.share) {
       navigator.share({
         title: `Car History Report - ${carId}`,

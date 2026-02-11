@@ -1,4 +1,5 @@
 import { logger } from '../../../services/logger-service';
+import { toast } from 'react-toastify';
 // Location Picker - Google Maps Location Selector (Like Facebook)
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -117,13 +118,13 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange }) => {
         },
         (error) => {
           logger.error('Geolocation error:', error);
-          alert(language === 'bg' 
+          toast.error(language === 'bg' 
             ? 'Не можахме да определим местоположението ви'
             : 'Could not determine your location');
         }
       );
     } else {
-      alert(language === 'bg'
+      toast.error(language === 'bg'
         ? 'Геолокацията не се поддържа от вашия браузър'
         : 'Geolocation is not supported by your browser');
     }

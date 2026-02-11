@@ -638,7 +638,7 @@ const AdvancedContentManagement: React.FC = () => {
       {activeTab === 'search' && (
         <div style={{ padding: '2rem', textAlign: 'center', color: '#aaa' }}>
           <Search size={48} style={{ marginBottom: '1rem', opacity: 0.5 }} />
-          <div>Content search feature coming soon</div>
+          <div>Use the search bar above to find content</div>
         </div>
       )}
     </Container>

@@ -205,7 +205,7 @@ const EventsPage: React.FC = () => {
       <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
         <div style="background: white; padding: 32px; border-radius: 16px; max-width: 500px; width: 90%;">
           <h2 style="margin: 0 0 16px 0; color: #212529;">Create New Event</h2>
-          <p style="color: #6c757d; margin: 0 0 24px 0;">Event creation feature coming soon!</p>
+          <p style="color: #6c757d; margin: 0 0 24px 0;">Event creation is not yet available. Stay tuned for updates!</p>
           <button onclick="this.closest('div').remove()" style="background: #FF8F10; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer;">Close</button>
         </div>
       </div>

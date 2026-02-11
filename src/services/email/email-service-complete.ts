@@ -51,7 +51,7 @@ export interface EmailResult {
 export class EmailTemplates {
   private static readonly BASE_URL = import.meta.env.VITE_BASE_URL || 'https://fire-new-globul.web.app';
   private static readonly LOGO_URL = `${this.BASE_URL}/logo.png`;
-  private static readonly SUPPORT_EMAIL = 'support@globulcars.bg';
+  private static readonly SUPPORT_EMAIL = 'support@koli.one';
   
   /**
    * Base HTML template wrapper

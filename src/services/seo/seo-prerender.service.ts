@@ -85,7 +85,7 @@ export class SEOPrerenderService {
         price: car.price,
         priceCurrency: 'BGN',
         availability: 'https://schema.org/InStock',
-        url: `https://globulcars.bg/car/${car.make.toLowerCase()}/${car.model.toLowerCase()}`
+        url: `https://koli.one/car/${car.make.toLowerCase()}/${car.model.toLowerCase()}`
       },
       ...(car.imageUrl && {
         image: car.imageUrl
@@ -113,7 +113,7 @@ export class SEOPrerenderService {
       '@type': 'CollectionPage',
       name: `Продажба на коли в ${cityData.cityBg}`,
       description: `Намерете идеалния автомобил в ${cityData.cityBg}. Над ${cityData.totalCars} обяви от частни лица, автосалони и компании.`,
-      url: `https://globulcars.bg/koli/${cityData.city.toLowerCase()}`,
+      url: `https://koli.one/koli/${cityData.city.toLowerCase()}`,
       mainEntity: {
         '@type': 'ItemList',
         numberOfItems: cityData.totalCars,
@@ -166,7 +166,7 @@ export class SEOPrerenderService {
       keywords,
       structuredData,
       htmlContent,
-      canonicalUrl: `https://globulcars.bg/koli/${cityData.city.toLowerCase()}`
+      canonicalUrl: `https://koli.one/koli/${cityData.city.toLowerCase()}`
     };
   }
 

@@ -1,10 +1,12 @@
 import { logger } from '../services/logger-service';
+import { toast } from 'react-toastify';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { realtimeMessagingService } from '../services/messaging/realtime';
 import MessageButton from './messaging/MessageButton';
 import { useAuth } from '../contexts/AuthProvider';
+import { useLanguage } from '../contexts/LanguageContext';
 import { addToBrowsingHistory } from '../pages/01_main-pages/home/HomePage/RecentBrowsingSection';
 
 // Mock car data for demonstration
@@ -321,6 +323,7 @@ const CarDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { language } = useLanguage();
   const [car, setCar] = useState<any>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [message, setMessage] = useState('');
@@ -347,7 +350,9 @@ const CarDetails: React.FC = () => {
     try {
       // Use the auth hook instead of auth service directly
       if (!user) {
-        alert('Трябва да сте влезли в системата за да изпратите съобщение');
+        toast.warning(language === 'bg'
+          ? 'Трябва да сте влезли в системата за да изпратите съобщение'
+          : 'You must be logged in to send a message');
         return;
       }
 
@@ -363,10 +368,14 @@ const CarDetails: React.FC = () => {
       );
 
       setMessage('');
-      alert('Съобщението е изпратено успешно!');
+      toast.success(language === 'bg'
+        ? 'Съобщението е изпратено успешно!'
+        : 'Message sent successfully!');
     } catch (error) {
       logger.error('Error sending message:', error as Error);
-      alert('Грешка при изпращане на съобщението');
+      toast.error(language === 'bg'
+        ? 'Грешка при изпращане на съобщението'
+        : 'Error sending message');
     } finally {
       setIsSending(false);
     }

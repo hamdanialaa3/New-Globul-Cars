@@ -26,7 +26,10 @@ if (!apiKey) {
 } else {
   console.log('[ai-functions] API key successfully loaded');
 }
-const genAI = new GoogleGenerativeAI(apiKey || 'MISSING_KEY');
+const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
+if (!genAI) {
+  console.warn('[ai-functions] Gemini AI is disabled - no API key configured');
+}
 
 // ==================== AI QUOTA MANAGEMENT ====================
 

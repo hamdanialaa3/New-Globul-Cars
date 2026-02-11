@@ -519,7 +519,7 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
   const { currentUser } = useAuth();
   const [copied, setCopied] = useState(false);
 
-  const referralLink = `https://globulcars.bg/ref/${referralCode}`;
+  const referralLink = `https://koli.one/ref/${referralCode}`;
 
   const t = {
     bg: {

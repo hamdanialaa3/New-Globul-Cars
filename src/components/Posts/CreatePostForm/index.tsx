@@ -1,4 +1,5 @@
 import { logger } from '../../../services/logger-service';
+import { toast } from 'react-toastify';
 // Create Post Form - Main Component
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 // Splitted into multiple files (as per constitution - max 300 lines)
@@ -154,8 +155,8 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
 
       // Success - show message
       const message = language === 'bg' 
-        ? 'Публикацията е създадена успешно! 🎉' 
-        : 'Post created successfully! 🎉';
+        ? 'Публикацията е създадена успешно!' 
+        : 'Post created successfully!';
       
       const crossMsg = crossPostPlatforms.length > 0
         ? (language === 'bg' 
@@ -163,7 +164,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
           : `\n(Sharing to ${crossPostPlatforms.length} platforms...)`)
         : '';
       
-      alert(message + crossMsg);
+      toast.success(message + crossMsg);
 
       // Close modal first
       onClose();
@@ -175,7 +176,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
 
     } catch (error) {
       logger.error('Error creating post:', error);
-      alert(language === 'bg'
+      toast.error(language === 'bg'
         ? 'Грешка при създаване на публикацията'
         : 'Error creating post');
     } finally {

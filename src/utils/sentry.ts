@@ -32,13 +32,13 @@ export const initSentry = () => {
     environment: process.env.NODE_ENV || 'development',
     
     // Release tracking (FREE - track which version has bugs)
-    release: `globul-cars@${import.meta.env.VITE_VERSION || '1.0.0'}`,
+    release: `koli-one@${import.meta.env.VITE_VERSION || '1.0.0'}`,
     
     // Performance monitoring (FREE - 10K transactions/month)
     integrations: [
       new BrowserTracing({
         // Track navigation performance
-        tracingOrigins: ['localhost', 'globulcars.bg', /^\//],
+        tracingOrigins: ['localhost', 'koli.one', 'mobilebg.eu', /^\//, /fire-new-globul/],
       }),
     ],
     

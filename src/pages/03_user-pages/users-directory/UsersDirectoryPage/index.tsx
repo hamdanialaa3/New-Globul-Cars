@@ -4,6 +4,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
 import { Virtuoso } from 'react-virtuoso';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useAuth } from '../../../../contexts/AuthProvider';
@@ -851,7 +852,7 @@ const UsersDirectoryPage: React.FC = () => {
   
   const handleFollow = useCallback(async (userId: string) => {
     if (!currentUser) {
-      alert(language === 'bg' ? 'Моля, влезте в профила си' : 'Please login');
+      toast.warning(language === 'bg' ? 'Моля, влезте в профила си' : 'Please login');
       return;
     }
 
@@ -877,7 +878,7 @@ const UsersDirectoryPage: React.FC = () => {
   }, [currentUser, followingUsers, language]);
   
   const handleMessage = (userId: string) => {
-    alert('Messaging feature coming soon!');
+    toast.info(language === 'bg' ? 'Функцията за съобщения ще бъде налична скоро' : 'Messaging feature will be available soon');
   };
   
   const t = (key: string) => {

@@ -10,6 +10,7 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import {
   DollarSign,
@@ -101,7 +102,7 @@ export const FinancingCalculatorPage: React.FC = () => {
       });
     } catch (error) {
       serviceLogger.error('Calculation failed', error as Error);
-      alert('Error calculating financing. Please check your inputs.');
+      toast.error('Error calculating financing. Please check your inputs.');
     }
   };
 

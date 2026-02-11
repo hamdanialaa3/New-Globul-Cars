@@ -12,7 +12,7 @@ export const FEATURE_FLAGS = {
   ENABLE_CODE_COVERAGE: false,
 
   // (Comment removed - was in Arabic)
-  ENABLE_PERFORMANCE_MONITORING: false,
+  ENABLE_PERFORMANCE_MONITORING: true,
   ENABLE_BUNDLE_ANALYZER: false
 };
 

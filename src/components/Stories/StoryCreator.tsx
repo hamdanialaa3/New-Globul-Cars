@@ -1,4 +1,5 @@
 import { logger } from '../../services/logger-service';
+import { toast } from 'react-toastify';
 /**
  * StoryCreator - Create stories with filters and overlays
  * Location: Bulgaria | Languages: BG/EN | Currency: EUR
@@ -300,7 +301,7 @@ const StoryCreator: React.FC<StoryCreatorProps> = ({ onClose, onSuccess }) => {
       onClose();
     } catch (error) {
       logger.error('Failed to create story:', error as Error);
-      alert('Failed to create story. Please try again.');
+      toast.error('Failed to create story. Please try again.');
     } finally {
       setLoading(false);
     }

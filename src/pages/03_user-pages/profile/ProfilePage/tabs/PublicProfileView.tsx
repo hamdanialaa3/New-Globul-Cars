@@ -149,7 +149,7 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({
 
           {activeTab === 'feed' && (
             <SocialFeedPlaceholder $isDark={isDark}>
-              <p>{language === 'bg' ? 'Социална лента - скоро' : 'Social Feed - Coming Soon'}</p>
+              <p>{language === 'bg' ? 'Социална лента' : 'Social Feed'}</p>
             </SocialFeedPlaceholder>
           )}
 

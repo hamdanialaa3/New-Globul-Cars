@@ -2,6 +2,7 @@
 // Insurance quote modal for Bulgarian car marketplace
 
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { bulgarianFinancialServices } from '../services/financial-services';
 import { InsuranceQuoteData } from '../types/firestore-models';
@@ -295,7 +296,7 @@ const InsuranceModal: React.FC<InsuranceModalProps> = ({
       // Submit the insurance quote request
       await bulgarianFinancialServices.submitInsuranceQuote(carData.id, formData);
 
-      alert('Заявката за застраховка е изпратена успешно! Ще се свържем с Вас скоро.');
+      toast.success('Insurance quote request sent successfully! We will contact you soon.');
       onClose();
 
     } catch (error: unknown) {

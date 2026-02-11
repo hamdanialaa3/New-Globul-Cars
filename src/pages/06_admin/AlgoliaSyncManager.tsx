@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { Zap, RefreshCw, Trash2, CheckCircle, AlertCircle, Loader } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -346,8 +347,8 @@ const AlgoliaSyncManager: React.FC = () => {
 
       const result = await clearFunction();
       
-      logger.info('✅ All indices cleared:', result.data);
-      alert('✅ تم مسح جميع الفهارس بنجاح / All indices cleared successfully');
+      logger.info('All indices cleared:', result.data);
+      toast.success('All indices cleared successfully');
     } catch (err: any) {
       logger.error('❌ Clear failed:', err);
       setError(err.message || 'An error occurred during clearing');

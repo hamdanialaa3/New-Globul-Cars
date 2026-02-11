@@ -2,7 +2,7 @@
 // Inline search component for HomePage hero section
 // Mobile.bg competitive feature - Quick search directly on homepage
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { Search, TrendingUp, DollarSign, Zap } from 'lucide-react';
@@ -243,7 +243,34 @@ const HeroSearchInline: React.FC = () => {
   const [selectedModel, setSelectedModel] = useState('');
   const [priceFrom, setPriceFrom] = useState('');
   const [priceTo, setPriceTo] = useState('');
-  const [carCount] = useState(50000); // TODO: Get from Firestore count
+  const [carCount, setCarCount] = useState(0);
+
+  useEffect(() => {
+    const fetchCarCount = async () => {
+      try {
+        const cached = sessionStorage.getItem('koli_car_count');
+        const cacheTime = sessionStorage.getItem('koli_car_count_ts');
+        if (cached && cacheTime && Date.now() - Number(cacheTime) < 3600000) {
+          setCarCount(Number(cached));
+          return;
+        }
+        const { getCountFromServer, collection } = await import('firebase/firestore');
+        const { db } = await import('@/firebase/firebase-config');
+        const collections = ['passenger_cars', 'suvs', 'vans', 'motorcycles', 'trucks', 'buses'];
+        let total = 0;
+        for (const col of collections) {
+          const snapshot = await getCountFromServer(collection(db, col));
+          total += snapshot.data().count;
+        }
+        setCarCount(total || 1);
+        sessionStorage.setItem('koli_car_count', String(total));
+        sessionStorage.setItem('koli_car_count_ts', String(Date.now()));
+      } catch {
+        setCarCount(0);
+      }
+    };
+    fetchCarCount();
+  }, []);
 
   // Load brands on mount
   useEffect(() => {

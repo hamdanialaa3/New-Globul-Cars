@@ -15,6 +15,7 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -2169,14 +2170,13 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
 
                             // Use toast or alert based on availability
                             const msg = language === 'bg' ? 'Снимката е зададена като основна' : 'Main photo updated';
-                            // try/catch for toast if not available
-                            try { require('react-toastify').toast.success(msg); } catch (e) { alert(msg); }
+                            toast.success(msg);
 
                           } catch (error) {
                             logger.error('Failed to update main photo', error as Error);
                             // Revert on error would go here ideally
                             const msg = language === 'bg' ? 'Грешка при обновяване' : 'Update failed';
-                            try { require('react-toastify').toast.error(msg); } catch (e) { alert(msg); }
+                            toast.error(msg);
                           }
                         }}
                         style={{

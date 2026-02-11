@@ -1,5 +1,6 @@
 // src/components/CarCardGermanStyle.tsx
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import {
   Heart,
@@ -72,7 +73,7 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
     e.stopPropagation();
     
     if (!user) {
-      alert('Please login to add favorites');
+      toast.warning('Please login to add favorites');
       return;
     }
 

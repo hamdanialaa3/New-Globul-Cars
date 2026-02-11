@@ -1,4 +1,5 @@
 import { logger } from '../../../../services/logger-service';
+import { toast } from 'react-toastify';
 // src/pages/MyListingsPage/index.tsx
 // Main MyListingsPage component that composes all sections
 
@@ -316,7 +317,7 @@ const MyListingsPage: React.FC = () => {
         }
       } catch (error) {
         logger.error('Error deleting listing:', error);
-        alert('Failed to delete listing. Please try again.');
+        toast.error('Failed to delete listing. Please try again.');
       }
     }
   };
@@ -339,7 +340,7 @@ const MyListingsPage: React.FC = () => {
       }
     } catch (error) {
       logger.error('Error toggling featured status:', error);
-      alert('Failed to update featured status. Please try again.');
+      toast.error('Failed to update featured status. Please try again.');
     }
   };
 
@@ -362,7 +363,7 @@ const MyListingsPage: React.FC = () => {
       }
     } catch (error) {
       logger.error('Error updating status:', error);
-      alert('Failed to update status. Please try again.');
+      toast.error('Failed to update status. Please try again.');
     }
   };
 

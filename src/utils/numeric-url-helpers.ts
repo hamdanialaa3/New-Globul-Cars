@@ -180,7 +180,7 @@ export function buildProfileMetaTitle(
   displayName: string,
   numericId: number
 ): string {
-  return `${displayName} - Profile #${numericId} | Globul Cars`;
+  return `${displayName} - Profile #${numericId} | Koli One`;
 }
 
 /**
@@ -199,5 +199,5 @@ export function buildCarMetaTitle(
   sellerNumericId: number,
   carNumericId: number
 ): string {
-  return `${carTitle} | Seller #${sellerNumericId} | Globul Cars`;
+  return `${carTitle} | Seller #${sellerNumericId} | Koli One`;
 }

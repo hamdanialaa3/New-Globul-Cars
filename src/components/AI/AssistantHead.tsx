@@ -160,16 +160,16 @@ export const AssistantHead: React.FC = () => {
 
   const label =
     language === 'bg'
-      ? 'AI помощник (скоро)'
-      : 'AI assistant (coming soon)';
+      ? 'AI помощник'
+      : 'AI assistant';
 
   return (
     <>
       {showTooltip && (
         <Tooltip onClick={() => setShowTooltip(false)}>
           {language === 'bg'
-            ? 'Скоро: интелигентен асистент за оценка и помощ при продажбата на автомобили.'
-            : 'Coming soon: smart assistant for valuation and selling your car.'}
+            ? 'Интелигентен асистент за оценка и помощ при продажбата на автомобили.'
+            : 'Smart assistant for valuation and selling your car.'}
         </Tooltip>
       )}
       <FloatingButton

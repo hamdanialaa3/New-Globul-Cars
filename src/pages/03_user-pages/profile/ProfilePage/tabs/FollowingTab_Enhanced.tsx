@@ -3,6 +3,7 @@ import { useOutletContext, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { followService } from '@/services/social/follow-service';
 import { userService } from '@/services/user/canonical-user.service';
+import { useAuth } from '@/hooks/useAuth';
 import { BulgarianUser } from '@/types/user/bulgarian-user.types';
 import { logger } from '@/services/logger-service';
 import { useLanguage } from '../../../../../contexts/LanguageContext';
@@ -407,6 +408,7 @@ const FollowingTab: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<UserDetailsModal>({ user: null, isOpen: false });
   const { language } = useLanguage();
   const navigate = useNavigate();
+  const { user: currentUser } = useAuth();
 
   const translations = {
     bg: {
@@ -444,9 +446,18 @@ const FollowingTab: React.FC = () => {
   const loadFollowingUsers = async () => {
     try {
       setIsLoading(true);
-      // TODO: Implement actual API call to fetch following users
-      // const users = await followService.getFollowingUsers();
-      // setFollowingUsers(users);
+      if (!currentUser?.uid) return;
+      const followingIds = await followService.getFollowing(currentUser.uid);
+      if (followingIds.length === 0) {
+        setFollowingUsers([]);
+        return;
+      }
+      const profilesMap = await userService.getUserProfilesBatch(followingIds.slice(0, 30));
+      const users: FollowingUser[] = [];
+      profilesMap.forEach((profile, uid) => {
+        users.push({ ...profile, uid } as FollowingUser);
+      });
+      setFollowingUsers(users);
     } catch (error) {
       logger.error('Error loading following users', error);
     } finally {
@@ -456,7 +467,8 @@ const FollowingTab: React.FC = () => {
 
   const handleUnfollow = async (userId: string) => {
     try {
-      // TODO: Implement unfollow logic
+      if (!currentUser?.uid) return;
+      await followService.unfollowUser(currentUser.uid, userId);
       setFollowingUsers(prev => prev.filter(u => u.uid !== userId));
       setSelectedUser({ user: null, isOpen: false });
     } catch (error) {

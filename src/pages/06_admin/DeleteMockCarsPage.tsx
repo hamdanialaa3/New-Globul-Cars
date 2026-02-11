@@ -13,6 +13,7 @@ import { Navigate } from 'react-router-dom';
 const IS_DEV = process.env.NODE_ENV === 'development';
 
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
 import { db } from '@/firebase/firebase-config';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { logger } from '@/services/logger-service';
@@ -361,7 +362,7 @@ const DeleteMockCarsPage: React.FC = () => {
       logger.info(`✅ Analysis complete: ${statsData.totalCars} total, ${statsData.realCars} real, ${statsData.mockCars} mock`);
     } catch (error) {
       logger.error('Error analyzing cars', error as Error);
-      alert('Error analyzing cars. Check console.');
+      toast.error('Error analyzing cars. Check console.');
     } finally {
       setAnalyzing(false);
     }
@@ -370,7 +371,7 @@ const DeleteMockCarsPage: React.FC = () => {
   // Delete mock cars
   const deleteMockCars = async () => {
     if (!stats || stats.mockCars === 0) {
-      alert('No mock cars to delete. Please analyze first.');
+      toast.info('No mock cars to delete. Please analyze first.');
       return;
     }
 
@@ -441,7 +442,7 @@ const DeleteMockCarsPage: React.FC = () => {
       await analyzeCars();
     } catch (error) {
       logger.error('Error deleting mock cars', error as Error);
-      alert('Error deleting mock cars. Check console.');
+      toast.error('Error deleting mock cars. Check console.');
     } finally {
       setLoading(false);
     }

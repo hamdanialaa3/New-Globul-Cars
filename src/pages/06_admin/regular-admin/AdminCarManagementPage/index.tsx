@@ -12,6 +12,7 @@ import { CarListing } from '../../../../types/CarListing';
 import { Search, Filter, Trash2, Eye, CheckCircle, XCircle } from 'lucide-react';
 import { CarIcon } from '../../../../components/icons/CarIcon';
 import { logger } from '../../../../services/logger-service';
+import { toast } from 'react-toastify';
 import { getCarDetailsUrl } from '../../../../utils/routing-utils';
 
 const PageContainer = styled.div`
@@ -276,7 +277,7 @@ const AdminCarManagementPage: React.FC = () => {
       CityCarCountService.clearAllCache();
     } catch (error) {
       logger.error('Error deleting car (admin)', error as Error, { id });
-      alert('Error deleting car');
+      toast.error('Error deleting car');
     }
   };
 

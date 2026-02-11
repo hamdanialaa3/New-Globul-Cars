@@ -296,7 +296,7 @@ const ProfileMyAds: React.FC = () => {
     } else {
       // ⛔ CONSTITUTION VIOLATION: Car missing numeric IDs
       logger.error('Car missing numeric IDs - data integrity issue', new Error('Invalid car data'), { carId: car.id, car });
-      alert('This listing has invalid data. Please contact support.');
+      toast.error('This listing has invalid data. Please contact support.');
     }
   };
 

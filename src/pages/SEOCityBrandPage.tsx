@@ -26,9 +26,26 @@ const SEOCityBrandPage: React.FC = () => {
   useEffect(() => {
     if (!metadata) return;
 
-    // TODO: Fetch real listings from Firestore
-    // For now, show placeholder
-    setLoading(false);
+    const fetchListings = async () => {
+      try {
+        const { collection, query, where, limit, getDocs } = await import('firebase/firestore');
+        const { db } = await import('@/firebase/firebase-config');
+        const q = query(
+          collection(db, 'passenger_cars'),
+          where('make', '==', metadata.brand),
+          where('city', '==', metadata.city),
+          where('status', '==', 'active'),
+          limit(20)
+        );
+        const snap = await getDocs(q);
+        setListings(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      } catch {
+        // Silent fail - SEO page still renders with metadata
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchListings();
   }, [metadata]);
 
   if (!metadata) {

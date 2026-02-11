@@ -7,6 +7,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { aiLearningSystem } from '../../services/ai/learning-system';
 import { aiBillingSystem } from '../../services/ai/billing-system';
@@ -346,20 +347,20 @@ const AIDashboard: React.FC = () => {
   const handleRunAutoLearning = async () => {
     try {
       await aiLearningSystem.runAutoLearning();
-      alert('✅ التعلم التلقائي تم بنجاح!');
+      toast.success('Auto-learning completed successfully');
       await loadDashboardData();
     } catch (error) {
-      alert('❌ فشل التعلم التلقائي');
+      toast.error('Auto-learning failed');
     }
   };
 
   const handleGenerateBills = async () => {
     try {
       await aiBillingSystem.generateMonthlyBills();
-      alert('✅ تم توليد الفواتير الشهرية!');
+      toast.success('Monthly bills generated successfully');
       await loadDashboardData();
     } catch (error) {
-      alert('❌ فشل توليد الفواتير');
+      toast.error('Failed to generate bills');
     }
   };
 
@@ -367,10 +368,10 @@ const AIDashboard: React.FC = () => {
     if (confirm('هل أنت متأكد من إعادة تعيين جميع الحصص؟')) {
       try {
         await aiBillingSystem.resetMonthlyQuotas();
-        alert('✅ تم إعادة تعيين الحصص!');
+        toast.success('Quotas reset successfully');
         await loadDashboardData();
       } catch (error) {
-        alert('❌ فشلت إعادة التعيين');
+        toast.error('Failed to reset quotas');
       }
     }
   };
@@ -545,7 +546,7 @@ const AIDashboard: React.FC = () => {
           إعادة تعيين الحصص
         </ActionButton>
 
-        <ActionButton variant="danger" onClick={() => alert('قريباً')}>
+        <ActionButton variant="danger" onClick={() => toast.info('Coming soon')}>
           <Shield size={18} />
           تقرير الأمان الكامل
         </ActionButton>

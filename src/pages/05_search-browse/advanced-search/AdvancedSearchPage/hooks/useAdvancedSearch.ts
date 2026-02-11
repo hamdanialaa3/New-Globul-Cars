@@ -10,6 +10,7 @@ import { CarListing } from '../../../../../types/CarListing';
 import algoliaSearchService from '../../../../../services/algoliaSearchService';
 import { useFilters } from '../../../../../contexts/FilterContext';
 import { brandsModelsDataService } from '../../../../../services/brands-models-data.service';
+import { toast } from 'react-toastify';
 
 const createInitialSearchData = (): SearchData => ({
   // Basic Data
@@ -285,8 +286,7 @@ export const useAdvancedSearch = () => {
       navigate(`/cars?${searchParams.toString()}`);
     } catch (error) {
       logger.error('❌ Algolia search error:', error);
-      const { t } = useTranslation();
-      alert(t('search.error') || 'An error occurred during search. Please try again. / Възникна грешка при търсенето. Моля, опитайте отново.');
+      toast.error(t('search.error') || 'An error occurred during search. Please try again. / Възникна грешка при търсенето. Моля, опитайте отново.');
     } finally {
       setIsSearching(false);
     }

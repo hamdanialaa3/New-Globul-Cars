@@ -65,7 +65,7 @@ jobs:
           server_port: 465
           username: \${{ secrets.EMAIL_USERNAME }}
           password: \${{ secrets.EMAIL_PASSWORD }}
-          to: admin@globulcars.bg
+          to: admin@koli.one
           from: GitHub Actions
           subject: ❌ Firebase Backup Failed
           body: Check GitHub Actions logs for details.

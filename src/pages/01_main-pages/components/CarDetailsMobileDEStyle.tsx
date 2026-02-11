@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import styled, { keyframes, css } from 'styled-components';
 import './CarDetailsTheme.css'; // Import theme CSS
 import { useToast } from '../../../components/Toast';
+import { toast } from 'react-toastify';
 import OptimizedImage from '../../../components/OptimizedImage';
 import {
   Calendar,
@@ -2413,7 +2414,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
         onDelete();
       }
     } else {
-      alert(warningMessage);
+      toast.warning(warningMessage);
     }
   };
 
@@ -3306,7 +3307,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
               }
             } catch (error) {
               logger.error('PDF generation error', error as Error);
-              alert(language === 'bg'
+              toast.error(language === 'bg'
                 ? 'Моля инсталирайте библиотеките: npm install jspdf html2canvas'
                 : 'Please install libraries: npm install jspdf html2canvas');
             }

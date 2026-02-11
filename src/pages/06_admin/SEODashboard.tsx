@@ -12,6 +12,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '@/firebase/firebase-config';
@@ -121,9 +122,9 @@ const SEODashboard: React.FC = () => {
         try {
             const requestIdx = httpsCallable(functions, 'requestIndexing');
             await requestIdx({ url });
-            alert(`Indexing requested for ${url}`);
+            toast.success(`Indexing requested for ${url}`);
         } catch (err: any) {
-            alert(`Failed: ${err.message}`);
+            toast.error(`Failed: ${err.message}`);
         }
     };
 

@@ -322,7 +322,7 @@ export class BulgarianAuthService {
       try {
         const { ensureUserNumericId } = await import('../services/numeric-id-assignment.service');
         const numericId = await ensureUserNumericId(userCredential.user.uid);
-        
+
         if (!numericId) {
           logger.error('Failed to assign numeric ID to new user', {
             uid: userCredential.user.uid,
@@ -708,12 +708,12 @@ export class BulgarianAuthService {
 
     // Save user profile first
     await this.saveUserProfile(bulgarianUser);
-    
+
     // ✅ FIX: Assign numeric ID for social auth users
     // This fixes the missing numericId bug from all 4 audit reports
     const { ensureUserNumericId } = await import('../services/numeric-id-assignment.service');
     const numericId = await ensureUserNumericId(user.uid);
-    
+
     if (!numericId) {
       logger.error('Failed to assign numeric ID to social auth user', new Error('numericId assignment failed'), {
         uid: user.uid,
@@ -762,6 +762,14 @@ export class BulgarianAuthService {
         'auth/requires-recent-login': 'Изисква се повторен вход за тази операция'
       };
 
+      // SPECIAL CASE: MFA Required
+      // We must return the original error object because it contains the 'resolver' property
+      // needed to complete the sign-in flow.
+      if (errorCode === 'auth/multi-factor-auth-required') {
+        logger.info('MFA challenge required for user login');
+        return error as Error;
+      }
+
       // Log the original error for debugging (safely)
       try {
         const errorDetails = new Error(`Auth error: ${errorCode}`);
@@ -777,24 +785,24 @@ export class BulgarianAuthService {
 
       // Get message or use default
       let bulgarianMessage = errorMessages[errorCode];
-      
+
       // If no specific message, try to extract from original error
       if (!bulgarianMessage && error instanceof Error) {
         bulgarianMessage = (error as Error).message;
       }
-      
+
       // Final fallback
       if (!bulgarianMessage) {
         bulgarianMessage = 'Възникна грешка при вход';
       }
-      
+
       // Create new error with the Bulgarian message
       const handledError = new Error(bulgarianMessage);
       // Preserve original error code if available
       if (errorCode !== 'unknown' && error && typeof error === 'object' && 'code' in error) {
         (handledError as any).code = errorCode;
       }
-      
+
       return handledError;
     } catch (handlingError) {
       // If handleAuthError itself fails, return a safe error

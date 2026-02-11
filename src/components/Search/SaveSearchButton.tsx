@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import styled, { keyframes } from 'styled-components';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useLanguage } from '@/contexts';
@@ -276,7 +277,7 @@ const SaveSearchButton: React.FC<SaveSearchButtonProps> = ({
 
   const handleClick = () => {
     if (!currentUser) {
-      alert(language === 'bg' ? 'Моля, влезте в профила си' : 'Please login to save searches');
+      toast.info(language === 'bg' ? 'Моля, влезте в профила си' : 'Please login to save searches');
       return;
     }
     setShowModal(true);
@@ -309,7 +310,7 @@ const SaveSearchButton: React.FC<SaveSearchButtonProps> = ({
       logger.info('Search saved successfully', { userId: currentUser.uid, searchName });
     } catch (error) {
       logger.error('Failed to save search', error as Error);
-      alert(language === 'bg' ? 'Грешка при запазване' : 'Failed to save search');
+      toast.error(language === 'bg' ? 'Грешка при запазване' : 'Failed to save search');
     } finally {
       setIsSaving(false);
     }

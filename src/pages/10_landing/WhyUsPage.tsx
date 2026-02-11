@@ -412,7 +412,7 @@ export const WhyUsPage: React.FC = () => {
   const comparisonLabels = {
     bg: {
       feature: 'Характеристика',
-      globulCars: 'Globul Cars',
+      globulCars: 'Koli One',
       competitors: 'Конкуренти',
       speed: 'Скорост на зареждане',
       pricing: 'AI ценови препоръки',
@@ -423,7 +423,7 @@ export const WhyUsPage: React.FC = () => {
     },
     en: {
       feature: 'Feature',
-      globulCars: 'Globul Cars',
+      globulCars: 'Koli One',
       competitors: 'Competitors',
       speed: 'Page Load Speed',
       pricing: 'AI Price Suggestions',

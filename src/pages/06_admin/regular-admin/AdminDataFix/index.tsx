@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
 import { collection, getDocs, query, orderBy, where, writeBatch, doc } from 'firebase/firestore';
 import { db } from '../../../../firebase';
 import { logger } from '../../../../services/logger-service';
@@ -72,13 +73,13 @@ const AdminDataFix: React.FC = () => {
         await batch.commit();
       }
 
-      addLog(`✅ Successfully assigned sequences to ${totalUpdated} cars!`);
-      alert(`✅ Successfully assigned sequences to ${totalUpdated} cars!`);
+      addLog(`Successfully assigned sequences to ${totalUpdated} cars!`);
+      toast.success(`Successfully assigned sequences to ${totalUpdated} cars!`);
 
     } catch (error) {
       logger.error('Error fixing car sequences:', error);
-      addLog(`❌ Error: ${(error as Error).message}`);
-      alert('Error fixing car sequences: ' + (error as Error).message);
+      addLog(`Error: ${(error as Error).message}`);
+      toast.error('Error fixing car sequences: ' + (error as Error).message);
     } finally {
       setFixing(false);
     }

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { toast } from 'react-toastify';
 import { useParams, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthProvider';
@@ -217,7 +218,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
             const buyerProfile = await userService.getUserProfile(currentUser.uid);
             if (!buyerProfile?.numericId) {
               logger.error('[CarDetailsPage] Buyer has no numericId');
-              alert(language === 'bg' ? 'Грешка при зареждане на профила.' : 'Error loading user profile.');
+              toast.error(language === 'bg' ? 'Грешка при зареждане на профила.' : 'Error loading user profile.');
               return;
             }
 
@@ -227,7 +228,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
 
             if (!sellerNumericId || !carNumericId || !sellerFirebaseId) {
               logger.error('[CarDetailsPage] Missing seller, car numericId, or sellerId');
-              alert(language === 'bg' ? 'Грешка при зареждане на данните.' : 'Error loading data.');
+              toast.error(language === 'bg' ? 'Грешка при зареждане на данните.' : 'Error loading data.');
               return;
             }
 
@@ -269,17 +270,17 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
             
             // Check if error is due to being blocked by the other user
             if (err instanceof Error && err.message.includes('This user has blocked you')) {
-              alert(
+              toast.error(
                 language === 'bg'
-                  ? '❌ Този потребител ви е блокирал и не може да получава съобщения от вас.'
-                  : '❌ This user has blocked you and cannot receive messages from you.'
+                  ? 'This user has blocked you and cannot receive messages from you.'
+                  : 'This user has blocked you and cannot receive messages from you.'
               );
             } else {
-              alert(language === 'bg' ? 'Грешка при свързване.' : 'Connection error.');
+              toast.error(language === 'bg' ? 'Грешка при свързване.' : 'Connection error.');
             }
           }
         } else {
-          alert(language === 'bg' ? 'Моля влезте в профила си, за да изпратите съобщение.' : 'Please log in to send a message.');
+          toast.warning(language === 'bg' ? 'Моля влезте в профила си, за да изпратите съобщение.' : 'Please log in to send a message.');
         }
         break;
 
@@ -287,7 +288,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
         if (phone) {
           window.location.href = `tel:${phone}`;
         } else {
-          alert(language === 'bg' ? 'Няма наличен телефонен номер' : 'No phone number available');
+          toast.warning(language === 'bg' ? 'Няма наличен телефонен номер' : 'No phone number available');
         }
         break;
 
@@ -295,7 +296,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
         if (email) {
           window.location.href = `mailto:${email}?subject=${encodeURIComponent(`Inquiry about ${car?.make} ${car?.model} ${car?.year}`)}`;
         } else {
-          alert(language === 'bg' ? 'Няма наличен имейл адрес' : 'No email address available');
+          toast.warning(language === 'bg' ? 'Няма наличен имейл адрес' : 'No email address available');
         }
         break;
 
@@ -304,7 +305,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
           const message = encodeURIComponent(`Hello! I'm interested in your ${car?.make} ${car?.model} ${car?.year}`);
           window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank');
         } else {
-          alert(language === 'bg' ? 'Няма наличен телефонен номер за WhatsApp' : 'No phone number available for WhatsApp');
+          toast.warning(language === 'bg' ? 'Няма наличен телефонен номер за WhatsApp' : 'No phone number available for WhatsApp');
         }
         break;
 
@@ -312,7 +313,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
         if (phone) {
           window.open(`viber://chat?number=${cleanPhone}`, '_blank');
         } else {
-          alert(language === 'bg' ? 'Няма наличен телефонен номер за Viber' : 'No phone number available for Viber');
+          toast.warning(language === 'bg' ? 'Няма наличен телефонен номер за Viber' : 'No phone number available for Viber');
         }
         break;
 
@@ -320,7 +321,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
         if (phone) {
           window.open(`https://t.me/${cleanPhone}`, '_blank');
         } else {
-          alert(language === 'bg' ? 'Няма наличен телефонен номер за Telegram' : 'No phone number available for Telegram');
+          toast.warning(language === 'bg' ? 'Няма наличен телефонен номер за Telegram' : 'No phone number available for Telegram');
         }
         break;
 
@@ -328,13 +329,13 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
         if (email || phone) {
           window.open('https://www.messenger.com/', '_blank');
           setTimeout(() => {
-            alert(language === 'bg'
+            toast.info(language === 'bg'
               ? `Свържете се чрез Messenger: ${email || phone}`
               : `Contact via Messenger: ${email || phone}`
             );
           }, 500);
         } else {
-          alert(language === 'bg' ? 'Няма налична информация за контакт' : 'No contact information available');
+          toast.warning(language === 'bg' ? 'Няма налична информация за контакт' : 'No contact information available');
         }
         break;
 
@@ -343,7 +344,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
           const smsBody = encodeURIComponent(`Hi, I'm interested in your ${car?.make} ${car?.model} ${car?.year}`);
           window.location.href = `sms:${phone}${/iPhone|iPad|iPod/.test(navigator.userAgent) ? '&' : '?'}body=${smsBody}`;
         } else {
-          alert(language === 'bg' ? 'Няма наличен телефонен номер за SMS' : 'No phone number available for SMS');
+          toast.warning(language === 'bg' ? 'Няма наличен телефонен номер за SMS' : 'No phone number available for SMS');
         }
         break;
 
@@ -365,12 +366,12 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
           }).catch(() => {
             // Fallback to clipboard if share fails
             navigator.clipboard.writeText(carUrl);
-            alert(language === 'bg' ? 'Линкът е копиран в клипборда!' : 'Link copied to clipboard!');
+            toast.success(language === 'bg' ? 'Линкът е копиран в клипборда!' : 'Link copied to clipboard!');
           });
         } else {
           // Fallback: Copy to clipboard and show share options
           navigator.clipboard.writeText(carUrl).then(() => {
-            alert(language === 'bg'
+            toast.success(language === 'bg'
               ? `Линкът е копиран! Споделете го: ${carUrl}`
               : `Link copied! Share it: ${carUrl}`);
           });
@@ -418,7 +419,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
 
   const handleDeleteConfirm = async (isSold: boolean) => {
     if (!currentUser) {
-      alert(language === 'bg' ? 'Моля влезте в профила си' : 'Please log in');
+      toast.warning(language === 'bg' ? 'Моля влезте в профила си' : 'Please log in');
       return;
     }
 
@@ -435,14 +436,14 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
     const success = await editHook.handleDelete(currentUser.uid);
 
     if (success) {
-      alert(
+      toast.success(
         language === 'bg'
           ? isSold
-            ? '✅ Честито за продажбата! Обявата е изтрита успешно.'
-            : '✅ Обявата е изтрита успешно.'
+            ? 'Честито за продажбата! Обявата е изтрита успешно.'
+            : 'Обявата е изтрита успешно.'
           : isSold
-            ? '✅ Congratulations on the sale! Listing deleted successfully.'
-            : '✅ Listing deleted successfully.'
+            ? 'Congratulations on the sale! Listing deleted successfully.'
+            : 'Listing deleted successfully.'
       );
       navigate('/profile/my-ads');
     }

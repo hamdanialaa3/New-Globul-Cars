@@ -1,4 +1,5 @@
 import React from 'react';
+import { toast } from 'react-toastify';
 import { useLanguage } from '../../../../../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { UserPlus, UserCheck, MessageCircle, Share2, MoreHorizontal } from 'lucide-react';
@@ -42,7 +43,7 @@ export const FacebookStyleHeader: React.FC<FacebookStyleHeaderProps> = ({
             }
         } else {
             navigator.clipboard.writeText(url);
-            alert(language === 'bg' ? 'Линкът е копиран!' : 'Link copied!');
+            toast.success(language === 'bg' ? 'Линкът е копиран!' : 'Link copied!');
         }
     };
 

@@ -48,10 +48,10 @@ export const getApiUrl = (): string => {
   const hostname = window.location.hostname;
   
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return 'http://localhost:3001';
+    return import.meta.env.VITE_API_URL || 'http://localhost:3001';
   }
 
-  return `${protocol}://${hostname}`;
+  return import.meta.env.VITE_API_URL || `${protocol}://${hostname}`;
 };
 
 /**

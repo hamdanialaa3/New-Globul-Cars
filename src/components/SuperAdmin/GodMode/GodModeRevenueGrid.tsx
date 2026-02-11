@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { X, DollarSign, Trash2, Search, RefreshCw, CreditCard, TrendingUp } from 'lucide-react';
 import { collectionGroup, query, orderBy, getDocs, updateDoc, doc, where } from 'firebase/firestore';
@@ -284,9 +285,9 @@ export const GodModeRevenueGrid: React.FC<GodModeRevenueGridProps> = ({ onClose 
                 // Hack: simple alert for now as real termination requires Stripe API secret key usually not on client.
                 // OR: Update local status to 'canceled' in Firestore and hope extension picks it up or UI updates (Extension typically handles 'cancel_at_period_end' via fields).
 
-                alert("NOTE: To fully cancel, use Stripe Dashboard. This view is read-only for safety in this version.");
+                toast.info("NOTE: To fully cancel, use Stripe Dashboard. This view is read-only for safety in this version.");
             } catch (error) {
-                alert('Failed: ' + error);
+                toast.error('Failed: ' + error);
             }
         }
     };

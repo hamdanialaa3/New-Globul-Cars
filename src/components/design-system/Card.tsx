@@ -274,7 +274,7 @@ import { Button } from '@/components/design-system/Button';
 
 4️⃣ CLICKABLE CARD:
 ────────────────────
-<Card clickable onClick={() => alert('Card clicked!')}>
+<Card clickable onClick={() => toast.info('Card clicked!')}>
   <CardBody>Click me!</CardBody>
 </Card>
 

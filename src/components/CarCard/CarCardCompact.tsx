@@ -6,6 +6,7 @@
 import React, { memo, useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
+import { toast } from 'react-toastify';
 import { MapPin, Gauge, Fuel, Calendar, MessageCircle, User, Heart } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthProvider';
@@ -361,7 +362,9 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
     e.stopPropagation();
 
     if (!currentUser) {
-      alert('Please login to add favorites');
+      toast.warning(language === 'bg'
+        ? 'Моля, влезте, за да добавите любими'
+        : 'Please login to add favorites');
       return;
     }
 

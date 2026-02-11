@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { X, Edit, User, Shield, Trash2, Search, RefreshCw, CheckCircle, AlertCircle } from 'lucide-react';
 import { usersReportService } from '../../../services/reports/users-report-service';
@@ -278,7 +279,7 @@ export const GodModeUserGrid: React.FC<GodModeUserGridProps> = ({ onClose }) => 
       await updateDoc(doc(db, 'users', userId), { isVerified: !currentStatus });
       setUsers(prev => prev.map(u => u.uid === userId ? { ...u, isVerified: !currentStatus } : u));
     } catch (error) {
-      alert('Failed to verify user: ' + error);
+      toast.error('Failed to verify user: ' + error);
     }
   };
 
@@ -287,9 +288,9 @@ export const GodModeUserGrid: React.FC<GodModeUserGridProps> = ({ onClose }) => 
       try {
         await deleteDoc(doc(db, 'users', userId));
         setUsers(prev => prev.filter(u => u.uid !== userId));
-        alert('User terminated.');
+        toast.success('User terminated.');
       } catch (error) {
-        alert('Failed to delete user: ' + error);
+        toast.error('Failed to delete user: ' + error);
       }
     }
   };

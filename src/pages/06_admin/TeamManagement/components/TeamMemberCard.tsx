@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { TeamMember, teamManagementService } from '@/services/company/team-management-service';
 import { RoleBadge } from './RoleBadge';
 import { FaEllipsisV, FaEdit, FaTrash, FaBan, FaCheck } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 import { logger } from '@/services/logger-service';
 
 interface Props {
@@ -36,7 +37,7 @@ export const TeamMemberCard: React.FC<Props> = ({ member, companyId, onUpdate })
       onUpdate();
     } catch (error) {
       logger.error(`Failed to ${action} member`, error as Error);
-      alert('فشلت العملية. حاول مرة أخرى.');
+      toast.error('Operation failed. Please try again.');
     } finally {
       setLoading(false);
       setShowMenu(false);

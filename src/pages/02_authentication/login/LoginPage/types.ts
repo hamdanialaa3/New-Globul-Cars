@@ -11,6 +11,7 @@ export interface LoginState {
   error: string | null;
   success: string | null;
   validationErrors: Record<string, string>;
+  mfaRequired: boolean; // Added MFA Support
 }
 
 export interface LoginActions {
@@ -20,6 +21,7 @@ export interface LoginActions {
   setError: React.Dispatch<React.SetStateAction<string | null>>;
   setSuccess: React.Dispatch<React.SetStateAction<string | null>>;
   setValidationErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  setMfaRequired: React.Dispatch<React.SetStateAction<boolean>>; // Added MFA Support
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: React.FormEvent) => Promise<void>;
   handleGoogleLogin: () => Promise<void>;

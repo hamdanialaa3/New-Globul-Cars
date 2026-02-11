@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { toast } from 'react-toastify';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { Menu, X, User, Settings, Heart, MessageCircle, Calendar, LogOut, Search, Car, ChevronDown, Bell, Map, Code, Gavel } from 'lucide-react';
@@ -695,7 +696,7 @@ const UnifiedHeader: React.FC = () => {
       navigate('/development-tools');
     } else {
       setDevCode('');
-      alert(language === 'bg' ? 'Неверен код' : 'Invalid code');
+      toast.error(language === 'bg' ? 'Неверен код' : 'Invalid code');
     }
   };
 

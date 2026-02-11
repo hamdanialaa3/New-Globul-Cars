@@ -2,6 +2,7 @@
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { Send } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -55,12 +56,12 @@ export const CommentForm: React.FC<CommentFormProps> = ({
     e.preventDefault();
 
     if (!currentUser) {
-      window.alert(text.loginRequired);
+      toast.warning(text.loginRequired);
       return;
     }
 
     if (content.trim().length < 3) {
-      window.alert(text.minLength);
+      toast.warning(text.minLength);
       return;
     }
 
@@ -79,7 +80,7 @@ export const CommentForm: React.FC<CommentFormProps> = ({
         onCommentAdded();
       }
     } catch (error) {
-      window.alert(text.error);
+      toast.error(text.error);
     } finally {
       setSubmitting(false);
     }

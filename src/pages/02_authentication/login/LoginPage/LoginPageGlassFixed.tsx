@@ -23,6 +23,7 @@ import {
 import { useTranslation } from '../../../../hooks/useTranslation';
 import { useLogin } from './hooks/useLogin';
 import PhoneAuthModal from '../../../../components/PhoneAuthModal';
+import MFAChallengeModal from '../../../../components/MFAChallengeModal'; // Added MFA Modal
 // Azure Login removed - requires @azure/msal-browser setup
 
 
@@ -684,7 +685,8 @@ const LoginPageGlassFixed: React.FC = () => {
     showPassword,
     loading,
     error,
-    success
+    success,
+    mfaRequired // MFA State
   } = state;
 
   const {
@@ -694,11 +696,21 @@ const LoginPageGlassFixed: React.FC = () => {
     handleFacebookLogin,
     handleAppleLogin,
     handleAnonymousLogin,
-    setShowPassword
+    setShowPassword,
+    setMfaRequired, // MFA Action
+    setSuccess // Added setSuccess
   } = actions;
 
   return (
     <PageContainer>
+      <div id="recaptcha-container" /> {/* Required for MFA */}
+      <MFAChallengeModal
+        isOpen={mfaRequired}
+        onClose={() => setMfaRequired(false)}
+        onSuccess={() => {
+          setSuccess(language === 'bg' ? 'Входът е успешен! Пренасочване...' : 'Login successful! Redirecting...');
+        }}
+      />
       <GlassWrapper>
         <TitleWrapper>
           <Title>

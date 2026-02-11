@@ -3,6 +3,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
 import { CheckCircle, XCircle, AlertCircle, Play, RefreshCw } from 'lucide-react';
 import { migrateCarLocations, checkMigrationStatus } from '../../utils/migrate-locations-browser';
 import { logger } from '../../services/logger-service';
@@ -135,7 +136,7 @@ const MigrationPage: React.FC = () => {
       logger.info('Migration status checked', statusResult);
     } catch (error) {
       logger.error('Error checking status', error as Error);
-      alert('خطأ في التحقق من الحالة');
+      toast.error('Error checking migration status');
     } finally {
       setMigrating(false);
     }
@@ -149,7 +150,7 @@ const MigrationPage: React.FC = () => {
       logger.info('Dry run complete', migrationResult);
     } catch (error) {
       logger.error('Dry run failed', error as Error);
-      alert('خطأ في المحاكاة');
+      toast.error('Dry run simulation failed');
     } finally {
       setMigrating(false);
     }
@@ -166,13 +167,13 @@ const MigrationPage: React.FC = () => {
       setResult(migrationResult);
       logger.info('Migration complete', migrationResult);
       
-      alert(`✅ تم بنجاح!\n\nتم الترحيل: ${migrationResult.migrated}\nمتخطى: ${migrationResult.skipped}\nأخطاء: ${migrationResult.errors}`);
+      toast.success(`Migration complete! Migrated: ${migrationResult.migrated}, Skipped: ${migrationResult.skipped}, Errors: ${migrationResult.errors}`);
       
       // Reload page to see updated counts
       setTimeout(() => window.location.href = '/', 2000);
     } catch (error) {
       logger.error('Migration failed', error as Error);
-      alert('❌ فشل الترحيل! تحقق من Console');
+      toast.error('Migration failed! Check console');
     } finally {
       setMigrating(false);
     }

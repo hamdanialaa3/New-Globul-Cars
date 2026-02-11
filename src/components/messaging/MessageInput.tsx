@@ -1,4 +1,5 @@
 import { logger } from '../../services/logger-service';
+import { toast } from 'react-toastify';
 // src/components/Messaging/MessageInput.tsx
 // Message Input Component - مكون إدخال الرسالة
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
@@ -205,7 +206,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
 
     } catch (error) {
       logger.error('Error sending message:', error as Error);
-      alert(language === 'bg'
+      toast.error(language === 'bg'
         ? 'Грешка при изпращане на съобщение'
         : 'Error sending message');
     } finally {

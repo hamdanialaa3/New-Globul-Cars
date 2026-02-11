@@ -7,6 +7,7 @@ import { bulgarianAuthService } from '../../../../../firebase';
 import { LoginFormData, LoginState, LoginActions, UseLoginReturn } from '../types';
 import { logger } from '../../../../../services/logger-service';
 import { useProfileIntent } from '../../../../../hooks/useProfileIntent';
+import { twoFactorAuthService } from '../../../../../services/security/two-factor-auth.service';
 
 export const useLogin = (): UseLoginReturn => {
   const { t } = useTranslation();
@@ -27,6 +28,7 @@ export const useLogin = (): UseLoginReturn => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [mfaRequired, setMfaRequired] = useState(false); // MFA State
 
   // Get redirect URL from multiple sources with priority
   const getRedirectPath = (): string => {
@@ -58,7 +60,8 @@ export const useLogin = (): UseLoginReturn => {
     loading,
     error,
     success,
-    validationErrors
+    validationErrors,
+    mfaRequired // Include in state
   };
 
   // Redirect if user is already logged in
@@ -115,6 +118,7 @@ export const useLogin = (): UseLoginReturn => {
     setLoading(true);
     setError(null);
     setSuccess(null);
+    setMfaRequired(false);
 
     try {
       const result = await bulgarianAuthService.signIn(
@@ -122,10 +126,30 @@ export const useLogin = (): UseLoginReturn => {
         formData.password
       );
 
+      // Check if the result is actually an Error object (MFA Required case)
+      // Since specific handleAuthError modification returns Error object for MFA
+      if (result instanceof Error) {
+        if ((result as any).code === 'auth/multi-factor-auth-required') {
+          // Initialize reCAPTCHA before triggering challenge
+          // We assume a container with ID 'recaptcha-container' exists in the UI
+          twoFactorAuthService.initializeRecaptcha('recaptcha-container');
+
+          const mfaResult = await twoFactorAuthService.handleMFAChallenge(result);
+          if (mfaResult.success) {
+            setMfaRequired(true);
+          } else {
+            setError(mfaResult.message);
+          }
+          return;
+        }
+        // Other errors returned as objects
+        throw result;
+      }
+
       if (result && result.user) {
         setSuccess(t('auth.loginSuccess', 'Login successful! Redirecting...'));
         const redirectPath = getRedirectPath();
-        
+
         setTimeout(() => {
           navigate(redirectPath, { replace: true });
         }, 1000);
@@ -133,6 +157,18 @@ export const useLogin = (): UseLoginReturn => {
         setError(t('auth.loginFailed', 'Login failed. Please try again.'));
       }
     } catch (err) {
+      if ((err as any).code === 'auth/multi-factor-auth-required') {
+        // This block handles the case where it was thrown instead of returned
+        twoFactorAuthService.initializeRecaptcha('recaptcha-container');
+        const mfaResult = await twoFactorAuthService.handleMFAChallenge(err);
+        if (mfaResult.success) {
+          setMfaRequired(true);
+        } else {
+          setError(mfaResult.message);
+        }
+        return;
+      }
+
       logger.error('Login error:', err instanceof Error ? err : new Error(String(err)));
       // Use the error message from handleAuthError (already translated to Bulgarian)
       const errorMessage = err instanceof Error ? err.message : t('auth.unexpectedError', 'An unexpected error occurred. Please try again.');
@@ -306,6 +342,7 @@ export const useLogin = (): UseLoginReturn => {
     setError,
     setSuccess,
     setValidationErrors,
+    setMfaRequired, // added action
     handleInputChange,
     handleSubmit,
     handleGoogleLogin,

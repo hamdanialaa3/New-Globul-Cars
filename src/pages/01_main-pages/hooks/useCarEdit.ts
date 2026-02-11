@@ -6,6 +6,7 @@ import { logger } from '../../../services/logger-service';
 import { getCitiesByRegion } from '../../../data/bulgaria-locations';
 import { brandsModelsDataService } from '../../../services/brands-models-data.service';
 import { carDeleteService } from '../../../services/garage/car-delete.service';
+import { toast } from 'react-toastify';
 
 export const useCarEdit = (
   car: CarListing | null,
@@ -181,7 +182,7 @@ export const useCarEdit = (
       setPhotos([]);
       setPhotoUrls([]);
 
-      alert(language === 'bg' ? 'Промените са запазени успешно!' : 'Changes saved successfully!');
+      toast.success(language === 'bg' ? 'Промените са запазени успешно!' : 'Changes saved successfully!');
 
       if (onSaveSuccess) {
         onSaveSuccess();
@@ -189,7 +190,7 @@ export const useCarEdit = (
     } catch (error) {
       logger.error('Error saving car changes', error as Error, { carId });
       const errorMessage = error instanceof Error ? (error as Error).message : 'Unknown error';
-      alert(language === 'bg'
+      toast.error(language === 'bg'
         ? `Грешка при запазване: ${errorMessage}`
         : `Error saving changes: ${errorMessage}`);
     } finally {
@@ -256,12 +257,12 @@ export const useCarEdit = (
       const updatedImages = (car?.images || []).filter(img => img !== imageUrl);
       await unifiedCarService.updateCar(carId!, { images: updatedImages });
 
-      alert(language === 'bg' ? 'Снимката е изтрита!' : 'Image deleted successfully!');
+      toast.success(language === 'bg' ? 'Снимката е изтрита!' : 'Image deleted successfully!');
 
       return updatedImages;
     } catch (error) {
       logger.error('Error deleting existing image', error as Error, { carId, imageUrl });
-      alert(language === 'bg' ? 'Грешка при изтриване' : 'Error deleting image');
+      toast.error(language === 'bg' ? 'Грешка при изтриване' : 'Error deleting image');
       return null;
     }
   };
@@ -286,12 +287,12 @@ export const useCarEdit = (
         return true;
       } else {
         logger.error('Car deletion failed', new Error(result.message), { carId });
-        alert(result.message);
+        toast.error(result.message);
         return false;
       }
     } catch (error) {
       logger.error('Exception during car deletion', error as Error, { carId, userId });
-      alert(language === 'bg' ? 'Грешка при изтриване на обявата' : 'Error deleting listing');
+      toast.error(language === 'bg' ? 'Грешка при изтриване на обявата' : 'Error deleting listing');
       return false;
     }
   };

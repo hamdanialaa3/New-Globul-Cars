@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { X, MessageSquare, Trash2, Search, RefreshCw, Eye, User, Lock } from 'lucide-react';
 import { collection, query, orderBy, getDocs, deleteDoc, doc, limit } from 'firebase/firestore';
@@ -261,7 +262,7 @@ export const GodModeMessagesGrid: React.FC<GodModeMessagesGridProps> = ({ onClos
         await deleteDoc(doc(db, 'conversations', convoId));
         setMessages(prev => prev.filter(m => m.id !== convoId));
       } catch (error) {
-        alert('Failed to delete conversation: ' + error);
+        toast.error('Failed to delete conversation: ' + error);
       }
     }
   };

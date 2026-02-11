@@ -1,4 +1,5 @@
 import { logger } from '../../services/logger-service';
+import { toast } from 'react-toastify';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { TrendingUp, Eye, Car, MessageSquare, AlertCircle, Plus, Edit, Settings as SettingsIcon, RefreshCw, MapPin, Mail, Phone as PhoneIcon, Users } from 'lucide-react';
@@ -557,11 +558,11 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ user: propUser }) =
     try {
       const updated = await googleProfileSyncService.syncProfileData(user.uid);
       if (updated) {
-        alert(language === 'bg' ? 'Профилът е синхронизиран!' : 'Profile synced!');
+        toast.success(language === 'bg' ? 'Профилът е синхронизиран!' : 'Profile synced!');
       }
     } catch (error) {
       logger.error('Sync error:', error);
-      alert(language === 'bg' ? 'Грешка при синхронизация' : 'Sync error');
+      toast.error(language === 'bg' ? 'Грешка при синхронизация' : 'Sync error');
     } finally {
       setSyncing(false);
     }

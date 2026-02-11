@@ -57,14 +57,14 @@ export class EmailVerificationService {
         url: `${window.location.origin}/email-verified?lang=${language}`,
         handleCodeInApp: true,
         iOS: {
-          bundleId: 'bg.globulcars.app'
+          bundleId: 'com.hamdani.kolione'
         },
         android: {
-          packageName: 'bg.globulcars.app',
+          packageName: 'com.hamdani.kolione',
           installApp: true,
           minimumVersion: '1.0'
         },
-        dynamicLinkDomain: 'globulcars.page.link'
+        dynamicLinkDomain: 'kolione.page.link'
       };
 
       await sendEmailVerification(user, actionCodeSettings);

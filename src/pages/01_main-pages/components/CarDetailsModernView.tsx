@@ -985,7 +985,7 @@ const CarDetailsModernView: React.FC<CarDetailsModernViewProps> = ({
                   <span>•</span>
                   <span>{text.ratingHighlights}: {language === 'bg' ? 'професионално обслужване' : 'excellent advice'}</span>
                 </RatingHighlights>
-                <ReportLink onClick={() => window.open('mailto:support@globulcars.bg?subject=Listing%20report')}>
+                <ReportLink onClick={() => window.open('mailto:support@koli.one?subject=Listing%20report')}>
                   ⚠ {text.reportLabel}
                 </ReportLink>
               </Card>

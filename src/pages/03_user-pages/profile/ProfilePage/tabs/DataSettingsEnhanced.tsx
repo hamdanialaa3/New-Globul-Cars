@@ -499,7 +499,7 @@ const DataSettingsEnhanced: React.FC = () => {
       setExportItems(prev => prev.filter(item => item.id !== selectedItem));
       setShowConfirm(false);
       setSelectedItem(null);
-      setSuccessMessage('تم حذف البيانات بنجاح');
+      setSuccessMessage(language === 'bg' ? 'Данните са изтрити успешно' : 'Data deleted successfully');
       setTimeout(() => setSuccessMessage(null), 3000);
     } catch (error) {
       logger.error('Delete failed', error);
@@ -507,7 +507,7 @@ const DataSettingsEnhanced: React.FC = () => {
   };
 
   const formatSize = (bytes: number) => {
-    if (bytes === 0) return 'حساب الحجم...';
+    if (bytes === 0) return language === 'bg' ? 'Изчисляване...' : 'Calculating...';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));

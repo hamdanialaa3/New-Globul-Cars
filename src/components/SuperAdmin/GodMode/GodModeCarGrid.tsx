@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { X, Edit, Car, Shield, Trash2, Search, RefreshCw, Eye, DollarSign, TrendingUp } from 'lucide-react';
 import { carsReportService } from '../../../services/reports/cars-report-service';
@@ -262,9 +263,9 @@ export const GodModeCarGrid: React.FC<GodModeCarGridProps> = ({ onClose }) => {
       try {
         await deleteDoc(doc(db, 'cars', carId)); // Note: Should handle collection detection if using multi-collection
         setCars(prev => prev.filter(c => c.id !== carId));
-        alert('Listing terminated.');
+        toast.success('Listing terminated.');
       } catch (error) {
-        alert('Failed to delete listing: ' + error);
+        toast.error('Failed to delete listing: ' + error);
       }
     }
   };
@@ -293,7 +294,7 @@ export const GodModeCarGrid: React.FC<GodModeCarGridProps> = ({ onClose }) => {
       const newViews = (currentViews || 0) + 1000;
       await updateDoc(doc(db, 'cars', carId), { views: newViews });
       setCars(prev => prev.map(c => c.id === carId ? { ...c, views: newViews } : c));
-      alert('Boosted +1000 views!');
+      toast.success('Boosted +1000 views!');
     } catch (error) {
       logger.error('Failed to boost', error as Error, { carId });
     }

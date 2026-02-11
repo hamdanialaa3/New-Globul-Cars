@@ -1,4 +1,5 @@
 import { logger } from '../../services/logger-service';
+import { toast } from 'react-toastify';
 /**
  * Quick Setup Page
  * صفحة الإعداد السريع لجميع الخدمات السحابية
@@ -434,11 +435,11 @@ const QuickSetupPage: React.FC = () => {
       // محاكاة حفظ البيانات
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      alert(`تم حفظ إعدادات ${serviceName} بنجاح!`);
+      toast.success(`${serviceName} settings saved successfully!`);
 
     } catch (error) {
       logger.error('Error saving config:', error);
-      alert(`خطأ في حفظ إعدادات ${serviceName}`);
+      toast.error(`Error saving ${serviceName} settings`);
     } finally {
       setSaving(prev => ({ ...prev, [serviceName]: false }));
     }
@@ -449,15 +450,15 @@ const QuickSetupPage: React.FC = () => {
       logger.info(`Testing connection for ${serviceName}`);
       // محاكاة اختبار الاتصال
       await new Promise(resolve => setTimeout(resolve, 1500));
-      alert(`اختبار ${serviceName} نجح!`);
+      toast.success(`${serviceName} connection test passed!`);
     } catch (error) {
-      alert(`فشل اختبار ${serviceName}`);
+      toast.error(`${serviceName} connection test failed`);
     }
   };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    alert('تم النسخ إلى الحافظة!');
+    toast.success('Copied to clipboard!');
   };
 
   const isServiceConfigured = (serviceName: string): boolean => {

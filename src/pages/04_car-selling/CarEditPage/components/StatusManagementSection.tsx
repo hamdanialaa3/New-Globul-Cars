@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { UnifiedCar } from '../../../../services/car';
 import { Card } from '../styles';
-import { Eye, EyeOff, Tag, Lock, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, Tag, Lock, CheckCircle, Clock } from 'lucide-react';
 
 const pulseGreen = keyframes`
   0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
@@ -16,20 +16,26 @@ const pulseRed = keyframes`
   100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 `;
 
+const pulseYellow = keyframes`
+  0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(234, 179, 8, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
+`;
+
 const SectionWrapper = styled(Card)`
   display: flex;
   gap: 1.5rem;
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  
+
   @media (max-width: 640px) {
     flex-direction: column;
     gap: 1rem;
   }
 `;
 
-const StatusButton = styled.button<{ $isActive: boolean; $color: 'green' | 'red'; $isDark: boolean }>`
+const StatusButton = styled.button<{ $isActive: boolean; $color: 'green' | 'red' | 'yellow'; $isDark: boolean }>`
   position: relative;
   flex: 1;
   display: flex;
@@ -37,18 +43,21 @@ const StatusButton = styled.button<{ $isActive: boolean; $color: 'green' | 'red'
   gap: 1rem;
   padding: 1.25rem;
   border-radius: 16px;
-  background: ${p => p.$isDark
-    ? (p.$isActive ? (p.$color === 'green' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)') : '#0f172a')
-    : (p.$isActive ? (p.$color === 'green' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)') : '#ffffff')};
-  
-  border: 2px solid ${p => p.$isActive
-    ? (p.$color === 'green' ? '#22c55e' : '#ef4444')
-    : (p.$isDark ? '#334155' : '#e2e8f0')};
-  
-  color: ${p => p.$isActive
-    ? (p.$color === 'green' ? '#16a34a' : '#dc2626')
-    : (p.$isDark ? '#94a3b8' : '#64748b')};
-    
+  background: ${
+    p => p.$isDark
+      ? (p.$isActive ? (p.$color === 'green' ? 'rgba(34, 197, 94, 0.1)' : p.$color === 'yellow' ? 'rgba(234, 179, 8, 0.1)' : 'rgba(239, 68, 68, 0.1)') : '#0f172a')
+      : (p.$isActive ? (p.$color === 'green' ? 'rgba(34, 197, 94, 0.1)' : p.$color === 'yellow' ? 'rgba(234, 179, 8, 0.1)' : 'rgba(239, 68, 68, 0.1)') : '#ffffff')
+  };
+  border: 2px solid ${
+    p => p.$isActive
+      ? (p.$color === 'green' ? '#22c55e' : p.$color === 'yellow' ? '#EAB308' : '#ef4444')
+      : (p.$isDark ? '#334155' : '#e2e8f0')
+  };
+  color: ${
+    p => p.$isActive
+      ? (p.$color === 'green' ? '#16a34a' : p.$color === 'yellow' ? '#CA8A04' : '#dc2626')
+      : (p.$isDark ? '#94a3b8' : '#64748b')
+  };
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
@@ -57,17 +66,21 @@ const StatusButton = styled.button<{ $isActive: boolean; $color: 'green' | 'red'
 
   &:hover {
     transform: translateY(-2px);
-    border-color: ${p => p.$color === 'green' ? 'rgba(34, 197, 94, 0.5)' : 'rgba(239, 68, 68, 0.5)'};
-    box-shadow: 0 10px 20px -10px ${p => p.$color === 'green' ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)'};
+    border-color: ${p => p.$color === 'green' ? 'rgba(34, 197, 94, 0.5)' : p.$color === 'yellow' ? 'rgba(234, 179, 8, 0.5)' : 'rgba(239, 68, 68, 0.5)'};
+    box-shadow: 0 10px 20px -10px ${p => p.$color === 'green' ? 'rgba(34, 197, 94, 0.3)' : p.$color === 'yellow' ? 'rgba(234, 179, 8, 0.3)' : 'rgba(239, 68, 68, 0.3)'};
   }
 
   &::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: ${p => p.$color === 'green'
-    ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.1), transparent)'
-    : 'linear-gradient(135deg, rgba(239, 68, 68, 0.1), transparent)'};
+    background: ${
+      p => p.$color === 'green'
+        ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.1), transparent)'
+        : p.$color === 'yellow'
+          ? 'linear-gradient(135deg, rgba(234, 179, 8, 0.1), transparent)'
+          : 'linear-gradient(135deg, rgba(239, 68, 68, 0.1), transparent)'
+    };
     opacity: ${p => p.$isActive ? 1 : 0};
     transition: opacity 0.3s;
   }
@@ -93,31 +106,35 @@ const Description = styled.span`
   text-align: left;
 `;
 
-const LED = styled.div<{ $state: 'on' | 'off' | 'standby'; $color: 'green' | 'red' }>`
+const LED = styled.div<{ $state: 'on' | 'off' | 'standby'; $color: 'green' | 'red' | 'yellow' }>`
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: ${p => {
-    if (p.$state === 'off') return '#cbd5e1';
-    return p.$color === 'green' ? '#22c55e' : '#ef4444';
-  }};
-  box-shadow: ${p => {
-    if (p.$state === 'off') return 'inset 0 1px 2px rgba(0,0,0,0.1)';
-    const color = p.$color === 'green' ? 'rgba(34, 197, 94, 0.6)' : 'rgba(239, 68, 68, 0.6)';
-    return `0 0 10px ${color}, 0 0 20px ${color}`;
-  }};
-  animation: ${p => p.$state === 'on' ? css`${p.$color === 'green' ? pulseGreen : pulseRed} 2s infinite` : 'none'};
+  background: ${
+    p => {
+      if (p.$state === 'off') return '#cbd5e1';
+      return p.$color === 'green' ? '#22c55e' : p.$color === 'yellow' ? '#EAB308' : '#ef4444';
+    }
+  };
+  box-shadow: ${
+    p => {
+      if (p.$state === 'off') return 'inset 0 1px 2px rgba(0,0,0,0.1)';
+      const color = p.$color === 'green' ? 'rgba(34, 197, 94, 0.6)' : p.$color === 'yellow' ? 'rgba(234, 179, 8, 0.6)' : 'rgba(239, 68, 68, 0.6)';
+      return `0 0 10px ${color}, 0 0 20px ${color}`;
+    }
+  };
+  animation: ${p => p.$state === 'on' ? css`${p.$color === 'green' ? pulseGreen : (p.$color === 'yellow' ? pulseYellow : pulseRed)} 2s infinite` : 'none'};
   flex-shrink: 0;
   margin-left: auto;
 `;
 
-const Stamp = styled.div<{ $visible: boolean }>`
+const Stamp = styled.div<{ $visible: boolean; $color?: string }>`
   position: absolute;
   right: -20px;
   bottom: -20px;
   transform: rotate(-15deg);
-  border: 4px solid #ef4444;
-  color: #ef4444;
+  border: 4px solid ${p => p.$color || '#ef4444'};
+  color: ${p => p.$color || '#ef4444'};
   font-weight: 900;
   font-size: 24px;
   padding: 0.5rem 1rem;
@@ -142,7 +159,7 @@ export const StatusManagementSection: React.FC<StatusManagementSectionProps> = (
 }) => {
   const isVisible = formData.status === 'active' || formData.status === 'sold';
   const isSold = formData.isSold || formData.status === 'sold';
-  const isHidden = formData.status === 'draft';
+  const isNotReady = formData.isNotReady || false;
 
   const toggleVisibility = () => {
     // Toggle bewteen Visible (active/sold) and Hidden (draft)
@@ -168,6 +185,11 @@ export const StatusManagementSection: React.FC<StatusManagementSectionProps> = (
     // If hidden, status remains 'draft', but isSold flag is updated.
   };
 
+  const toggleNotReady = () => {
+    const newIsNotReady = !isNotReady;
+    handleInputChange('isNotReady', newIsNotReady);
+  };
+
   return (
     <SectionWrapper $isDark={isDark}>
       {/* Visibility Toggle Button */}
@@ -176,21 +198,37 @@ export const StatusManagementSection: React.FC<StatusManagementSectionProps> = (
         $color="green"
         $isDark={isDark}
         onClick={toggleVisibility}
-        title={t.tooltips?.visibility || "Toggles whether the ad is publicly visible to everyone or hidden (private)."}
+        title={t.tooltips?.visibility || "Toggles whether the ad is publicly visible."}
       >
         <Eye size={24} />
         <Content>
           <Title>{t.statusControl?.visibilityTitle || "Ad Visibility"}</Title>
           <Description>
             {isVisible
-              ? (t.statusControl?.visibleDesc || "Publicly Visible")
+              ? (t.statusControl?.visibleDesc || "Publicly Visible (Active)")
               : (t.statusControl?.hiddenDesc || "Hidden (Private Only)")}
           </Description>
         </Content>
-        <LED
-          $state={isVisible ? 'on' : 'standby'}
-          $color={isVisible ? 'green' : 'red'}
-        />
+        <LED $state={isVisible ? 'on' : 'standby'} $color="green" />
+      </StatusButton>
+
+      {/* Not Ready Button */}
+      <StatusButton
+        $isActive={isNotReady}
+        $color="yellow"
+        $isDark={isDark}
+        onClick={toggleNotReady}
+        title={t.tooltips?.notReady || "Marks the car as Not Ready."}
+      >
+        <Clock size={24} />
+        <Content>
+          <Title>{t.statusControl?.notReadyTitle || (t.language === 'bg' || t.lang === 'bg' ? "НЕ Е ГОТОВО" : "Mark as Not Ready")}</Title>
+          <Description>
+             {(t.language === 'bg' || t.lang === 'bg' ? "Маркирай като не е готово" : "Mark listing as Not Ready")}
+          </Description>
+        </Content>
+        <LED $state={'on'} $color={isNotReady ? 'yellow' : 'green'} />
+        <Stamp $visible={isNotReady} $color="#EAB308">WAIT</Stamp>
       </StatusButton>
 
       {/* Sold Toggle Button */}
@@ -199,23 +237,20 @@ export const StatusManagementSection: React.FC<StatusManagementSectionProps> = (
         $color="red"
         $isDark={isDark}
         onClick={toggleSold}
-        title={t.tooltips?.sold || "Marks the car as sold and displays a SOLD stamp on the listing."}
+        title={t.tooltips?.sold || "Marks the car as sold."}
       >
         {isSold ? <CheckCircle size={24} /> : <Tag size={24} />}
         <Content>
-          <Title>{t.statusControl?.soldTitle || "Mark as Sold"}</Title>
+          <Title>{t.statusControl?.soldTitle || "Mark as SOLD"}</Title>
           <Description>
             {isSold
               ? (t.statusControl?.soldDesc || "Item is marked SOLD")
-              : (t.statusControl?.availableDesc || "Mark item as SOLD")}
+              : (t.statusControl?.availableDesc || "Mark listing as sold")}
           </Description>
         </Content>
-        <LED
-          $state={'on'}
-          $color={isSold ? 'red' : 'green'}
-        />
+        <LED $state={'on'} $color={isSold ? 'red' : 'green'} />
         {/* Visual Stamp Effect inside button for preview */}
-        <Stamp $visible={true}>SOLD</Stamp>
+        <Stamp $visible={isSold} $color="#ef4444">SOLD</Stamp>
       </StatusButton>
     </SectionWrapper>
   );

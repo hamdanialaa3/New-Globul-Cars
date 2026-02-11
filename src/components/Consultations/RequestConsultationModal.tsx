@@ -1,4 +1,5 @@
 import { logger } from '../../services/logger-service';
+import { toast } from 'react-toastify';
 // src/components/Consultations/RequestConsultationModal.tsx
 // Request Consultation Modal
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
@@ -206,7 +207,7 @@ export const RequestConsultationModal: React.FC<RequestConsultationModalProps> =
       onClose();
     } catch (error) {
       logger.error('Error requesting consultation:', error);
-      alert(language === 'bg' 
+      toast.error(language === 'bg' 
         ? 'Грешка при изпращане на заявката' 
         : 'Error sending request');
     } finally {

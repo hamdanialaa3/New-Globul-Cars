@@ -15,7 +15,7 @@ interface EmptyStateProps {
   onClearFilters?: () => void;
 }
 
-const EmptyContainer = styled(motion.div)<{ $isDark?: boolean }>`
+const EmptyContainer = styled(motion.div) <{ $isDark?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -33,20 +33,18 @@ const EmptyContainer = styled(motion.div)<{ $isDark?: boolean }>`
   }
 `;
 
-const IconContainer = styled(motion.div)<{ $isDark?: boolean }>`
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: ${({ $isDark }) => $isDark ? 'rgba(255, 143, 16, 0.1)' : 'rgba(255, 143, 16, 0.05)'};
+const IconContainer = styled(motion.div)`
+  width: 180px;
+  height: 180px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 
-  svg {
-    width: 64px;
-    height: 64px;
-    color: #ff8f10;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 `;
 
@@ -73,12 +71,12 @@ const Subtitle = styled.p<{ $isDark?: boolean }>`
   }
 `;
 
-const CTAButton = styled(motion.button)<{ $isDark?: boolean }>`
+const CTAButton = styled(motion.button) <{ $isDark?: boolean }>`
   display: flex;
   align-items: center;
   gap: 0.5rem;
   padding: 1rem 2rem;
-  background: #ff8f10;
+  background: #FF8C61;
   color: #ffffff;
   border: none;
   border-radius: 12px;
@@ -123,75 +121,18 @@ const ClearFiltersButton = styled.button<{ $isDark?: boolean }>`
 
   &:hover {
     background: ${({ $isDark }) => $isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'};
-    border-color: #ff8f10;
-    color: #ff8f10;
+    border-color: #FF8C61;
+    color: #FF8C61;
   }
 `;
 
-// SVG Car Illustration Component - Professional Garage Theme
-const CarIllustration: React.FC<{ isDark?: boolean }> = ({ isDark = false }) => (
-  <svg
-    width="280"
-    height="180"
-    viewBox="0 0 280 180"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    {/* Background Garage Shape */}
-    <rect x="20" y="30" width="240" height="120" rx="12" fill={isDark ? '#1e293b' : '#f1f5f9'} />
-    <path d="M140 10L260 50V30H20V50L140 10Z" fill={isDark ? '#334155' : '#e2e8f0'} />
-    
-    {/* Garage Floor */}
-    <rect x="30" y="130" width="220" height="20" rx="4" fill={isDark ? '#0f172a' : '#cbd5e1'} />
-    
-    {/* Center Parking Lines */}
-    <rect x="90" y="135" width="4" height="10" rx="1" fill="#ff8f10" />
-    <rect x="138" y="135" width="4" height="10" rx="1" fill="#ff8f10" />
-    <rect x="186" y="135" width="4" height="10" rx="1" fill="#ff8f10" />
-    
-    {/* Empty Garage Symbol */}
-    <circle cx="140" cy="85" r="35" fill={isDark ? '#334155' : '#e2e8f0'} stroke="#ff8f10" strokeWidth="3" strokeDasharray="8 4" />
-    
-    {/* Car Silhouette (Ghost/Placeholder) */}
-    <g opacity="0.4">
-      {/* Car Body */}
-      <path 
-        d="M95 95C95 91.6863 97.6863 89 101 89H179C182.314 89 185 91.6863 185 95V110C185 113.314 182.314 116 179 116H101C97.6863 116 95 113.314 95 110V95Z" 
-        fill={isDark ? '#64748b' : '#94a3b8'} 
-      />
-      {/* Car Roof */}
-      <path 
-        d="M110 89L120 70H160L170 89H110Z" 
-        fill={isDark ? '#64748b' : '#94a3b8'} 
-      />
-      {/* Windows */}
-      <path 
-        d="M122 72H158L166 87H114L122 72Z" 
-        fill={isDark ? '#1e293b' : '#e2e8f0'} 
-      />
-    </g>
-    
-    {/* Plus Icon in Center */}
-    <circle cx="140" cy="85" r="18" fill="#ff8f10" />
-    <rect x="136" y="76" width="8" height="18" rx="2" fill="white" />
-    <rect x="131" y="81" width="18" height="8" rx="2" fill="white" />
-    
-    {/* Decorative Elements */}
-    <circle cx="55" cy="60" r="8" fill={isDark ? '#334155' : '#e2e8f0'} />
-    <circle cx="225" cy="60" r="8" fill={isDark ? '#334155' : '#e2e8f0'} />
-    
-    {/* Tool Icons */}
-    <rect x="50" y="56" width="10" height="2" rx="1" fill={isDark ? '#64748b' : '#94a3b8'} />
-    <rect x="53" y="53" width="4" height="14" rx="1" fill={isDark ? '#64748b' : '#94a3b8'} />
-    
-    <rect x="220" y="56" width="10" height="2" rx="1" fill={isDark ? '#64748b' : '#94a3b8'} />
-    <rect x="223" y="53" width="4" height="14" rx="1" fill={isDark ? '#64748b' : '#94a3b8'} />
-    
-    {/* Koli One Branding */}
-    <text x="140" y="165" textAnchor="middle" fontSize="10" fontWeight="600" fill="#ff8f10">
-      KOLI ONE GARAGE
-    </text>
-  </svg>
+// Project Logo Component
+const ProjectLogo: React.FC = () => (
+  <img
+    src="/assets/images/logo_last.png"
+    alt="Koli One Logo"
+    style={{ width: '160px', height: '160px' }}
+  />
 );
 
 export const EmptyState: React.FC<EmptyStateProps> = ({
@@ -218,7 +159,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           {language === 'bg' ? 'Няма резултати' : 'No Results'}
         </Title>
         <Subtitle $isDark={isDark}>
-          {language === 'bg' 
+          {language === 'bg'
             ? 'Няма обяви, които отговарят на избраните филтри. Опитайте да промените критериите за търсене.'
             : 'No listings match the selected filters. Try adjusting your search criteria.'}
         </Subtitle>
@@ -239,11 +180,11 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       transition={{ duration: 0.3 }}
     >
       <IconContainer
-        $isDark={isDark}
+        initial={{ y: 0 }}
         animate={{ y: [0, -10, 0] }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
       >
-        <CarIllustration isDark={isDark} />
+        <ProjectLogo />
       </IconContainer>
       <Title $isDark={isDark}>
         {language === 'bg' ? 'Няма коли в този гараж' : 'No cars in this garage'}

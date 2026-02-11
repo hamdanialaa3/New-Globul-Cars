@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import styled, { css, keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Heart, MapPin, Calendar, Gauge, Fuel, User } from 'lucide-react';
@@ -36,7 +37,7 @@ const getBrandRegion = (make?: string): 'de' | 'jp' | 'usa' | 'eu' | 'global' =>
 
 // --- Styled Components ---
 
-const CardContainer = styled(Link)<{ $region: string }>`
+const CardContainer = styled(Link) <{ $region: string }>`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -287,10 +288,10 @@ export const PremiumHomeCarCard: React.FC<PremiumHomeCarCardProps> = ({ car }) =
       const rect = cardRef.current.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      
+
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-      
+
       // Calculate rotation (divided by 15 for subtle premium feel)
       const rotateX = (y - centerY) / 15;
       const rotateY = (centerX - x) / 15;
@@ -298,15 +299,15 @@ export const PremiumHomeCarCard: React.FC<PremiumHomeCarCardProps> = ({ car }) =
       cardRef.current.style.setProperty("--rotate-x", `${rotateX}deg`);
       cardRef.current.style.setProperty("--rotate-y", `${rotateY}deg`);
     }
-    
+
     // Play subtle hover sound
     soundService.playHover();
   };
 
   const handleMouseLeave = () => {
     if (cardRef.current) {
-        cardRef.current.style.setProperty("--rotate-x", `0deg`);
-        cardRef.current.style.setProperty("--rotate-y", `0deg`);
+      cardRef.current.style.setProperty("--rotate-x", `0deg`);
+      cardRef.current.style.setProperty("--rotate-y", `0deg`);
     }
   };
 
@@ -334,20 +335,20 @@ export const PremiumHomeCarCard: React.FC<PremiumHomeCarCardProps> = ({ car }) =
     e.stopPropagation();
 
     if (!currentUser) {
-      alert(language === 'bg' ? 'Моля, влезте в профила си' : 'Please login to add favorites');
+      toast.info(language === 'bg' ? 'Моля, влезте в профила си' : 'Please login to add favorites');
       return;
     }
 
     if (!isHearted) {
-        soundService.playSuccess(); 
+      soundService.playSuccess();
     } else {
-        soundService.playClick();
+      soundService.playClick();
     }
 
     try {
       const carMake = car.make || car.makeOther || 'N/A';
       const carModel = car.model || car.modelOther || 'N/A';
-      
+
       // ✅ FIX: Get numeric IDs from Firestore if not available
       let carNumericId = car.carNumericId || car.numericId || 0;
       let sellerNumericId = car.sellerNumericId || 0;
@@ -363,7 +364,7 @@ export const PremiumHomeCarCard: React.FC<PremiumHomeCarCardProps> = ({ car }) =
           logger.error('[PremiumHomeCarCard] Failed to fetch seller numeric ID', error as Error);
         }
       }
-      
+
       // Handle both UnifiedCar and DisplayCar shapes
       const carData = {
         title: `${carMake} ${carModel}`,
@@ -394,12 +395,12 @@ export const PremiumHomeCarCard: React.FC<PremiumHomeCarCardProps> = ({ car }) =
   const imageSrc = getMainImage();
 
   return (
-    <CardContainer 
-        ref={cardRef} 
-        to={getCarUrl()} 
-        $region={region}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
+    <CardContainer
+      ref={cardRef}
+      to={getCarUrl()}
+      $region={region}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
     >
       <HeartButton
         $active={isHearted}
@@ -410,33 +411,34 @@ export const PremiumHomeCarCard: React.FC<PremiumHomeCarCardProps> = ({ car }) =
       </HeartButton>
 
       <ImageWrapper>
-        {isSold && <RealisticPaperclipBadge text={t.sold} language={language as 'bg' | 'en'} />}
+        {isSold && <RealisticPaperclipBadge text={t.sold} language={language as 'bg' | 'en'} variant="red" />}
+        {car.isNotReady && <RealisticPaperclipBadge text={language === 'bg' ? 'НЕ Е ГОТОВО' : 'NOT READY'} language={language as 'bg' | 'en'} variant="yellow" />}
         <CarImage
-            src={imageSrc}
-            alt={`${car.make} ${car.model}`}
-            loading="lazy"
-            onError={(e) => { (e.target as HTMLImageElement).src = '/images/placeholder.png'; }}
+          src={imageSrc}
+          alt={`${car.make} ${car.model}`}
+          loading="lazy"
+          onError={(e) => { (e.target as HTMLImageElement).src = '/images/placeholder.png'; }}
         />
       </ImageWrapper>
 
       <ContentWrapper>
         <HeaderRow>
-            <CarTitle>{car.make || car.makeOther} {car.model || car.modelOther}</CarTitle>
-            <PriceTag>
-                <PriceAmount>€{car.price?.toLocaleString()}</PriceAmount>
-                {/* <PriceLabel>{language === 'bg' ? 'с ДДС' : 'VAT inc.'}</PriceLabel> */}
-            </PriceTag>
+          <CarTitle>{car.make || car.makeOther} {car.model || car.modelOther}</CarTitle>
+          <PriceTag>
+            <PriceAmount>€{car.price?.toLocaleString()}</PriceAmount>
+            {/* <PriceLabel>{language === 'bg' ? 'с ДДС' : 'VAT inc.'}</PriceLabel> */}
+          </PriceTag>
         </HeaderRow>
 
         <SpecsGrid>
-            <SpecItem><Calendar size={14} /> {car.year}</SpecItem>
-            <SpecItem><Gauge size={14} /> {typeof car.mileage === 'number' ? car.mileage.toLocaleString() : car.mileage} {typeof car.mileage === 'number' ? 'km' : ''}</SpecItem>
-            <SpecItem><Fuel size={14} /> {car.fuelType || car.fuel}</SpecItem>
-            <SpecItem><User size={14} /> {car.transmission || 'Manual'}</SpecItem>
+          <SpecItem><Calendar size={14} /> {car.year}</SpecItem>
+          <SpecItem><Gauge size={14} /> {typeof car.mileage === 'number' ? car.mileage.toLocaleString() : car.mileage} {typeof car.mileage === 'number' ? 'km' : ''}</SpecItem>
+          <SpecItem><Fuel size={14} /> {car.fuelType || car.fuel}</SpecItem>
+          <SpecItem><User size={14} /> {car.transmission || 'Manual'}</SpecItem>
         </SpecsGrid>
-                
+
         <LocationBadge>
-            <MapPin size={12} /> {car.city || car.region || car.location || (language === 'bg' ? 'България' : 'Bulgaria')}
+          <MapPin size={12} /> {car.city || car.region || car.location || (language === 'bg' ? 'България' : 'Bulgaria')}
         </LocationBadge>
       </ContentWrapper>
     </CardContainer>

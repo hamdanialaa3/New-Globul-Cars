@@ -131,11 +131,11 @@ const VehicleStartPageNew: React.FC = () => {
 
   const vehicleTypes = [
     { id: 'car', IconComponent: Car, disabled: false },
-    { id: 'van', IconComponent: Caravan, disabled: true },
-    { id: 'motorcycle', IconComponent: Bike, disabled: true },
-    { id: 'truck', IconComponent: Truck, disabled: true },
-    { id: 'bus', IconComponent: Bus, disabled: true },
-    { id: 'parts', IconComponent: Wrench, disabled: true }
+    { id: 'van', IconComponent: Caravan, disabled: false },
+    { id: 'motorcycle', IconComponent: Bike, disabled: false },
+    { id: 'truck', IconComponent: Truck, disabled: false },
+    { id: 'bus', IconComponent: Bus, disabled: false },
+    { id: 'parts', IconComponent: Wrench, disabled: false }
   ];
 
   const handleSelect = async (typeId: string, disabled?: boolean) => {
@@ -234,16 +234,7 @@ const VehicleStartPageNew: React.FC = () => {
                     ? (language === 'bg' ? 'Резервни части и аксесоари' : 'Spare parts and accessories')
                     : t(`sell.start.vehicleTypes.${vehicle.id}.desc`)}
                 </VehicleDesc>
-                {isDisabled && (
-                  <div style={{ 
-                    marginTop: '0.5rem', 
-                    fontSize: '0.875rem', 
-                    fontWeight: 600,
-                    color: '#6c757d'
-                  }}>
-                    {language === 'bg' ? 'Скоро' : 'Coming Soon'}
-                  </div>
-                )}
+
               </VehicleOption>
             );
           })}

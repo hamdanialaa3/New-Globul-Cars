@@ -1,4 +1,5 @@
 import { logger } from '../../services/logger-service';
+import { toast } from 'react-toastify';
 import React, { useEffect, useState } from 'react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import styled from 'styled-components';
@@ -32,7 +33,7 @@ interface MonitoringStats {
 }
 
 export const MonitoringDashboard: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [stats, setStats] = useState<MonitoringStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -72,7 +73,9 @@ export const MonitoringDashboard: React.FC = () => {
       loadMonitoringStats();
     } catch (err: any) {
       logger.error('Failed to acknowledge alert:', err);
-      alert('Failed to acknowledge alert: ' + err.message);
+      toast.error(language === 'bg'
+        ? 'Неуспешно потвърждаване на сигнала: ' + err.message
+        : 'Failed to acknowledge alert: ' + err.message);
     }
   };
 

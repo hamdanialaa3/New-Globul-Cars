@@ -1,5 +1,7 @@
 import React from 'react';
+import { toast } from 'react-toastify';
 import { useAuth } from '../contexts/AuthProvider';
+import { useLanguage } from '../contexts/LanguageContext';
 import { Lock } from 'lucide-react';
 import styled from 'styled-components';
 
@@ -41,6 +43,7 @@ const EnhancedNavLink: React.FC<NavLinkProps> = ({
   requireAuth = false 
 }) => {
   const { user } = useAuth();
+  const { language } = useLanguage();
 
   // (Comment removed - was in Arabic)
   if (!requireAuth) {
@@ -65,9 +68,11 @@ const EnhancedNavLink: React.FC<NavLinkProps> = ({
     <NavLinkWrapper>
       <ProtectedNavLink 
         className={className}
-        title="يتطلب تسجيل الدخول"
+        title={language === 'bg' ? 'Изисква вход' : 'Requires login'}
         onClick={() => {
-          alert('يجب تسجيل الدخول للوصول إلى هذه الصفحة');
+          toast.warning(language === 'bg'
+            ? 'Трябва да влезете, за да получите достъп до тази страница'
+            : 'You must log in to access this page');
           window.location.href = '/login';
         }}
       >

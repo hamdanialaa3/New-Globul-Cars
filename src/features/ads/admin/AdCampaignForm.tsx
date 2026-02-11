@@ -1,4 +1,5 @@
 import React from 'react';
+import { toast } from 'react-toastify';
 import { useForm, useFieldArray } from 'react-hook-form';
 import styled from 'styled-components';
 import { adService } from '../services/adService';
@@ -71,7 +72,7 @@ export const AdCampaignForm: React.FC<{ onSuccess: () => void, initialData?: AdC
             }
             onSuccess();
         } catch (e) {
-            alert('Error saving campaign: ' + e);
+            toast.error('Error saving campaign: ' + e);
         }
     };
 

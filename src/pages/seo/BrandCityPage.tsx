@@ -189,7 +189,7 @@ const BrandCityPage: React.FC = () => {
         <title>{seoData.title}</title>
         <meta name="description" content={seoData.description} />
         <meta name="keywords" content={seoData.keywords.join(', ')} />
-        <link rel="canonical" href={`https://globulcars.bg/koli/${city}/${brand}`} />
+        <link rel="canonical" href={`https://koli.one/koli/${city}/${brand}`} />
         <meta property="og:title" content={seoData.title} />
         <meta property="og:description" content={seoData.description} />
         <meta property="og:locale" content="bg_BG" />

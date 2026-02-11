@@ -1,4 +1,5 @@
 import { logger } from '../../services/logger-service';
+import { toast } from 'react-toastify';
 // src/components/Posts/CreatePostModal.tsx
 // Create Post Modal - Instagram/LinkedIn style
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
@@ -288,7 +289,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
       onClose();
     } catch (error) {
       logger.error('Error creating post:', error);
-      alert(language === 'bg' 
+      toast.error(language === 'bg' 
         ? 'Грешка при създаване на публикация' 
         : 'Error creating post');
     } finally {

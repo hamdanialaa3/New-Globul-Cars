@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTheme } from '../../../contexts/ThemeContext';
@@ -117,7 +118,7 @@ const BlogPostPage: React.FC = () => {
       }
     } else {
       navigator.clipboard.writeText(window.location.href);
-      alert(language === 'bg' ? 'Линкът е копиран!' : 'Link copied!');
+      toast.success(language === 'bg' ? 'Линкът е копиран!' : 'Link copied!');
     }
   };
 

@@ -10,6 +10,7 @@
  */
 
 import React, { useRef, useEffect, useCallback } from 'react';
+import { toast } from 'react-toastify';
 import styledBase, { keyframes } from 'styled-components';
 import { ArrowLeft, MoreVertical, Phone, Video, Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -519,7 +520,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     } else {
       // Show notification that phone number is not available
       logger.warn('[ChatWindow] Phone number not available');
-      alert(locale === 'bg' 
+      toast.warning(locale === 'bg' 
         ? 'Телефонният номер не е наличен' 
         : 'Phone number not available');
     }
@@ -529,9 +530,9 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   const handleVideoCall = useCallback(() => {
     // For future WebRTC integration
     logger.info('[ChatWindow] Video call requested (not implemented yet)');
-    alert(locale === 'bg' 
-      ? 'Видео обажданията ще бъдат налични скоро!' 
-      : 'Video calls coming soon!');
+    toast.info(locale === 'bg' 
+      ? 'Видео разговорите ще бъдат налични скоро' 
+      : 'Video calls will be available in a future update');
     
     // TODO: Integrate WebRTC or external video call service
     // Example: Jitsi, Agora, Twilio Video
@@ -547,9 +548,9 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     // - Other user profile
     // - Shared photos
     // - Offer history
-    alert(locale === 'bg' 
-      ? `Информация за ${channel.carTitle}\nПродавач: ${otherUserName}` 
-      : `Info about ${channel.carTitle}\nSeller: ${otherUserName}`);
+    toast.info(locale === 'bg' 
+      ? `Информация за ${channel.carTitle} | Продавач: ${otherUserName}` 
+      : `Info about ${channel.carTitle} | Seller: ${otherUserName}`);
   }, [channel, otherUserName, locale]);
   
   // Handle More Options

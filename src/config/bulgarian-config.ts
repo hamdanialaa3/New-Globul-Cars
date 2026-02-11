@@ -71,7 +71,7 @@ export const BULGARIAN_CONFIG = {
 
   // API Endpoints
   api: {
-    baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:5001',
+    baseUrl: import.meta.env.VITE_API_URL || 'https://us-central1-fire-new-globul.cloudfunctions.net',
     firebase: {
       apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
       authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,

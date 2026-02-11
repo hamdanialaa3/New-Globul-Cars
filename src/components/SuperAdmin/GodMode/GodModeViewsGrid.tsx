@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { X, Eye, TrendingUp, RefreshCw, BarChart, ArrowUpCircle, RotateCcw } from 'lucide-react';
 import { collection, query, orderBy, getDocs, updateDoc, doc, limit } from 'firebase/firestore';
@@ -245,7 +246,7 @@ export const GodModeViewsGrid: React.FC<GodModeViewsGridProps> = ({ onClose }) =
                     item.id === carId ? { ...item, views: 0 } : item
                 ));
             } catch (error) {
-                alert('Failed: ' + error);
+                toast.error('Failed: ' + error);
             }
         }
     };
@@ -260,7 +261,7 @@ export const GodModeViewsGrid: React.FC<GodModeViewsGridProps> = ({ onClose }) =
                 item.id === carId ? { ...item, views: newViews } : item
             ));
         } catch (error) {
-            alert('Failed: ' + error);
+            toast.error('Failed: ' + error);
         }
     };
 

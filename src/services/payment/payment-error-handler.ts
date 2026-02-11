@@ -249,8 +249,8 @@ export class PaymentErrorHandler {
         en: 'Please try again.'
       },
       contact_support: {
-        bg: 'Моля, свържете се с поддръжката на support@globulcars.bg',
-        en: 'Please contact support at support@globulcars.bg'
+        bg: 'Моля, свържете се с поддръжката на support@koli.one',
+        en: 'Please contact support at support@koli.one'
       },
       update_card: {
         bg: 'Моля, актуализирайте данните на картата си.',

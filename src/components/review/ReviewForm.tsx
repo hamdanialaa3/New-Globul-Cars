@@ -3,6 +3,7 @@
 // الهدف: نموذج شامل لكتابة تقييم احترافي
 
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { Star, Send, MessageSquare } from 'lucide-react';
 import { useLanguage } from '@/contexts';
@@ -49,7 +50,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
     e.preventDefault();
 
     if (formData.rating === 0) {
-      alert(language === 'bg' 
+      toast.error(language === 'bg' 
         ? 'Моля, поставете обща оценка' 
         : 'Please provide an overall rating'
       );
@@ -77,7 +78,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
       const result = await postSaleReviewService.createReview(reviewData);
 
       // Show success message with incentive
-      alert(
+      toast.success(
         language === 'bg'
           ? `Благодарим! Спечелихте ${result.incentive.pointsAwarded} точки!`
           : `Thank you! You earned ${result.incentive.pointsAwarded} points!`
@@ -85,7 +86,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
 
       if (onSuccess) onSuccess();
     } catch (error) {
-      alert(
+      toast.error(
         language === 'bg'
           ? 'Грешка при изпращане на отзива'
           : 'Error submitting review'

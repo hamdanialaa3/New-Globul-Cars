@@ -2,8 +2,10 @@
 // Finance application modal for Bulgarian car marketplace
 
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { bulgarianFinancialServices } from '../services/financial-services';
+import { useLanguage } from '../contexts/LanguageContext';
 import { FinanceLeadData } from '../types/firestore-models';
 
 const ModalOverlay = styled.div`
@@ -269,6 +271,7 @@ const FinanceModal: React.FC<FinanceModalProps> = ({
     employerName: '',
     additionalInfo: ''
   });
+  const { language } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [monthlyPayment, setMonthlyPayment] = useState(0);
@@ -318,7 +321,9 @@ const FinanceModal: React.FC<FinanceModalProps> = ({
       // Submit the finance lead
       await bulgarianFinancialServices.submitFinanceLead(carData.id, formData);
 
-      alert('Заявката за финансиране е изпратена успешно! Ще се свържем с Вас скоро.');
+      toast.success(language === 'bg'
+        ? 'Заявката за финансиране е изпратена успешно! Ще се свържем с Вас скоро.'
+        : 'Finance request sent successfully! We will contact you soon.');
       onClose();
 
     } catch (error: unknown) {

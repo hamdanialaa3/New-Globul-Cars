@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { StripeService, StripeSubscription } from '../../services/stripe-service';
 import { CreditCard, Check, Shield, Star, Crown, Zap, AlertCircle, Loader } from 'lucide-react';
@@ -225,7 +226,7 @@ const StripeSetupPage: React.FC = () => {
         window.location.assign(url);
       }, (err) => {
         logger.error('Stripe Checkout Error', err);
-        alert('Connection to payment gateway failed. Please try again.');
+        toast.error('Connection to payment gateway failed. Please try again.');
         setActionLoading(false);
       });
     } catch (e) {
@@ -241,7 +242,7 @@ const StripeSetupPage: React.FC = () => {
     } catch (e) {
       logger.error('Portal Error', e);
       setActionLoading(false);
-      alert('Could not redirect to billing portal.');
+      toast.error('Could not redirect to billing portal.');
     }
   };
 

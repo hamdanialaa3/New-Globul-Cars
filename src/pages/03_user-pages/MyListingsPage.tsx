@@ -358,10 +358,10 @@ const MyListingsPage: React.FC = () => {
 
       // Refresh listings immediately
       await loadListings();
-      alert(language === 'bg' ? 'Обявата е изтрита успешно!' : 'Listing deleted successfully!');
+      toast.success(language === 'bg' ? 'Обявата е изтрита успешно!' : 'Listing deleted successfully!');
     } catch (err) {
       logger.error('Error deleting listing', err as Error, { carId });
-      alert(language === 'bg' ? 'Грешка при изтриване: ' + (err as Error).message : 'Error deleting listing: ' + (err as Error).message);
+      toast.error(language === 'bg' ? 'Грешка при изтриване: ' + (err as Error).message : 'Error deleting listing: ' + (err as Error).message);
     } finally {
       setLoading(false);
     }

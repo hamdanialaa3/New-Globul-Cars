@@ -3,6 +3,7 @@
 // ⚡ Shows requirements and limits for each profile type
 
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import { createPortal } from 'react-dom';
 import styled, { keyframes } from 'styled-components';
 import { X, AlertCircle, Check, User, Building2, Store } from 'lucide-react';
@@ -174,7 +175,7 @@ const ProfileTypeConfirmModal: React.FC<ProfileTypeConfirmModalProps> = ({
 
   const handleConfirm = () => {
     if (!agreedToTerms) {
-      alert(isBulgarian 
+      toast.info(isBulgarian 
         ? 'Моля, потвърдете, че сте съгласни с условията.' 
         : 'Please confirm that you agree to the terms.');
       return;

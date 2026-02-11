@@ -105,7 +105,7 @@ export const TeamManagement: React.FC = () => {
   const toast = useToast();
 
   const handleInvite = () => {
-    toast.info(language === 'bg' ? 'Функцията скоро' : 'Coming soon');
+    toast.info(language === 'bg' ? 'Управлението на екипа ще бъде налично в бъдеща версия' : 'Team management will be available in a future update');
   };
 
   return (

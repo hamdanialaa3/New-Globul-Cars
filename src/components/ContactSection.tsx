@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Phone, Mail, MapPin, MessageSquare } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 import { CarListing } from '../types/CarListing';
 import { logger } from '@/services/logger-service';
@@ -19,11 +20,11 @@ export function ContactSection({ car }: ContactSectionProps) {
     try {
       // TODO: Implement messaging logic
       logger.info('send_message', { carId: car.id, message });
-      alert('Message sent successfully!');
+      toast.success('Message sent successfully!');
       setMessage('');
     } catch (error) {
       logger.error('send_message_failed', error as Error, { carId: car.id });
-      alert('Failed to send message');
+      toast.error('Failed to send message');
     } finally {
       setIsSending(false);
     }

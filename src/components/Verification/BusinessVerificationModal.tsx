@@ -1,4 +1,5 @@
 import { logger } from '../../services/logger-service';
+import { toast } from 'react-toastify';
 // src/components/Verification/BusinessVerificationModal.tsx
 // Business Verification Modal - نافذة التحقق من البيزنس
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
@@ -392,7 +393,7 @@ const BusinessVerificationModal: React.FC<BusinessVerificationModalProps> = ({
       setStep(2);
     } catch (error) {
       logger.error('Error submitting business verification:', error as Error);
-      alert(
+      toast.error(
         language === 'bg'
           ? 'Грешка при изпращане на документите. Моля опитайте отново.'
           : 'Error submitting documents. Please try again.'

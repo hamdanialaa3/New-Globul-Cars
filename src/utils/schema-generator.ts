@@ -45,8 +45,8 @@ interface OrganizationData {
 export const generateCarSchema = (car: CarData, language: 'bg' | 'en' = 'bg') => {
   // ✅ CONSTITUTION: Use numeric URL pattern for SEO
   const carUrl = car.sellerNumericId && car.carNumericId
-    ? `https://globulcars.bg/car/${car.sellerNumericId}/${car.carNumericId}`
-    : `https://globulcars.bg/cars`; // Fallback to cars list
+    ? `https://koli.one/car/${car.sellerNumericId}/${car.carNumericId}`
+    : `https://koli.one/cars`; // Fallback to cars list
   
   const schema = {
     '@context': 'https://schema.org',
@@ -167,8 +167,8 @@ export const generateWebsiteSchema = (language: 'bg' | 'en' = 'bg') => {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Globul Cars',
-    url: 'https://globulcars.bg',
+    name: 'Koli One',
+    url: 'https://koli.one',
     description: language === 'bg' 
       ? 'Купи или продай автомобил в България. Най-голямата платформа за продажба на коли.' 
       : 'Buy or sell a car in Bulgaria. The largest car marketplace platform.',
@@ -176,7 +176,7 @@ export const generateWebsiteSchema = (language: 'bg' | 'en' = 'bg') => {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: 'https://globulcars.bg/cars?search={search_term_string}',
+        urlTemplate: 'https://koli.one/cars?search={search_term_string}',
       },
       'query-input': 'required name=search_term_string',
     },
@@ -211,7 +211,7 @@ export const generateArticleSchema = (article: {
     url: article.url,
     publisher: {
       '@type': 'Organization',
-      name: 'Globul Cars',
+      name: 'Koli One',
       logo: {
         '@type': 'ImageObject',
         url: 'https://koli.one/logo.png',

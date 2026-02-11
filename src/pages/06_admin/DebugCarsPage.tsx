@@ -10,6 +10,7 @@ const IS_DEV = process.env.NODE_ENV === 'development';
 import React, { useState, useEffect } from 'react';
 import { logger } from '../../services/logger-service';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
 import { collection, getDocs, query, limit, DocumentData } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { CarListing } from '../../types/CarListing';
@@ -168,7 +169,7 @@ const DebugCarsPage: React.FC = () => {
 
     } catch (error) {
       logger.error('Error fetching cars (debug page)', error as Error);
-      alert('Error fetching cars! Check console.');
+      toast.error('Error fetching cars! Check console.');
     } finally {
       setLoading(false);
     }
@@ -214,15 +215,15 @@ const DebugCarsPage: React.FC = () => {
       }
 
       if (totalDeleted === 0) {
-        alert('No legacy cars found to delete in any collection.');
+        toast.info('No legacy cars found to delete in any collection.');
       } else {
-        alert(`Successfully deleted ${totalDeleted} legacy cars across all collections.`);
+        toast.success(`Successfully deleted ${totalDeleted} legacy cars across all collections.`);
         fetchAllCars(); // Refresh list
       }
 
     } catch (error) {
       logger.error('Error deleting legacy cars', error as Error);
-      alert('Error deleting legacy cars! Check console.');
+      toast.error('Error deleting legacy cars! Check console.');
     } finally {
       setLoading(false);
     }
@@ -267,7 +268,7 @@ const DebugCarsPage: React.FC = () => {
 
     } catch (error) {
       logger.error('Error fetching all cars (debug page)', error as Error);
-      alert('Error fetching all cars! Check console.');
+      toast.error('Error fetching all cars! Check console.');
     } finally {
       setLoading(false);
     }

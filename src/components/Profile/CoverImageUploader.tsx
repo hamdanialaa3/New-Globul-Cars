@@ -532,8 +532,8 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
     // For now, show user-friendly message
     toast.info(
       language === 'bg' 
-        ? 'Функцията за репозициониране скоро ще бъде достъпна. За сега можете да изтриете и качите отново изображението.' 
-        : 'Reposition feature coming soon. For now, you can delete and re-upload the image.',
+        ? 'За да промените рамката, качете отново снимката.' 
+        : 'To adjust framing, please re-upload the image.',
       language === 'bg' ? 'Информация' : 'Info'
     );
   };

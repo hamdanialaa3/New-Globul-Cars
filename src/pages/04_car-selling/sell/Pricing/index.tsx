@@ -2,6 +2,7 @@
 // صفحة التسعير مع الأتمتة
 
 import React, { useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import SplitScreenLayout from '../../../../components/SplitScreenLayout';
@@ -42,7 +43,7 @@ const PricingPageNew: React.FC = () => {
 
   const handleContinue = () => {
     if (!pricingData.price) {
-      alert(language === 'bg' ? 'Моля, въведете цена!' : 'Please enter a price!');
+      toast.warning(language === 'bg' ? 'Моля, въведете цена!' : 'Please enter a price!');
       return;
     }
 

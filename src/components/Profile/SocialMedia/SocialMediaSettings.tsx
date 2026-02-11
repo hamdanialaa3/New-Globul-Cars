@@ -1,4 +1,5 @@
 import { logger } from '../../../services/logger-service';
+import { toast } from 'react-toastify';
 // SocialMediaSettings.tsx - Connect Social Media Accounts
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 // Inspired by: Buffer, Hootsuite, Later
@@ -112,7 +113,7 @@ const SocialMediaSettings: React.FC = () => {
       await socialMediaService.initiateOAuth(platform, user!.uid);
     } catch (error) {
       logger.error('Error connecting:', error);
-      alert('Connection failed. Please try again.');
+      toast.error('Connection failed. Please try again.');
     } finally {
       setConnecting(null);
     }

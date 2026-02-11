@@ -2,6 +2,7 @@
 // Admin Dashboard Page for Koli One
 
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { logger } from '../../../../services/logger-service';
 import styled from 'styled-components';
 import { useTranslation } from '../../../../hooks/useTranslation';
@@ -707,7 +708,7 @@ const AdminDashboard: React.FC = () => {
                     <option value="EUR">يورو</option>
                   </select>
                 </label>
-                <button type="button" onClick={() => alert('تم حفظ الإعدادات!')}>حفظ</button>
+                <button type="button" onClick={() => toast.success('Settings saved!')}>حفظ</button>
               </form>
             </div>
           )}
@@ -771,7 +772,7 @@ const AdminDashboard: React.FC = () => {
                     <li>عدد المدراء: {ownerStats.totalAdmins}</li>
                   </ul>
                   <button onClick={() => window.location.reload()}>تحديث شامل</button>
-                  <button onClick={() => alert('تم تسجيل الخروج!')}>تسجيل الخروج</button>
+                  <button onClick={() => toast.info('Logged out!')}>تسجيل الخروج</button>
                 </div>
               )}
             </div>
@@ -864,7 +865,7 @@ const AdminDashboard: React.FC = () => {
                     <option value="EUR">يورو</option>
                   </select>
                 </label>
-                <button type="button" onClick={() => alert('تم حفظ الإعدادات!')}>حفظ</button>
+                <button type="button" onClick={() => toast.success('Settings saved!')}>حفظ</button>
               </form>
             </div>
           )}
@@ -931,7 +932,7 @@ const AdminDashboard: React.FC = () => {
                     <li>عدد المدراء: {ownerStats.totalAdmins}</li>
                   </ul>
                   <button onClick={() => window.location.reload()}>تحديث شامل</button>
-                  <button onClick={() => alert('تم تسجيل الخروج!')}>تسجيل الخروج</button>
+                  <button onClick={() => toast.info('Logged out!')}>تسجيل الخروج</button>
                 </div>
               )}
             </div>

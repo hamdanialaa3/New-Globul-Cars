@@ -255,9 +255,6 @@ const AuctionsPage: React.FC = () => {
                     {watchlist.length === 0 ? (
                         <EmptyGarage>
                             Your dream garage is waiting! Start watching auctions to park them here.
-                            <div style={{marginTop: '10px', fontSize: '0.8rem', opacity: 0.7}}>
-                                (Coming Soon: 3D Visualization of your monitored cars)
-                            </div>
                         </EmptyGarage>
                     ) : (
                         <GarageGrid>

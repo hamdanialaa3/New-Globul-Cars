@@ -1,4 +1,5 @@
 import { logger } from '../../services/logger-service';
+import { toast } from 'react-toastify';
 import React, { useEffect, useState } from 'react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import styled from 'styled-components';
@@ -11,7 +12,7 @@ interface Backup {
 }
 
 export const BackupManagement: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [backups, setBackups] = useState<Backup[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -54,13 +55,17 @@ export const BackupManagement: React.FC = () => {
       
       const result = await manualBackupFunc({ collectionIds });
       
-      alert('Backup started successfully! Check back in a few minutes.');
+      toast.success(language === 'bg'
+        ? 'Бакъпът е стартиран успешно! Проверете след няколко минути.'
+        : 'Backup started successfully! Check back in a few minutes.');
       
       // Reload backups after 2 minutes
       setTimeout(loadBackups, 2 * 60 * 1000);
     } catch (err: any) {
       logger.error('Failed to create backup:', err);
-      alert('Failed to create backup: ' + err.message);
+      toast.error(language === 'bg'
+        ? 'Неуспешно създаване на бакъп: ' + err.message
+        : 'Failed to create backup: ' + err.message);
     } finally {
       setCreating(false);
     }
@@ -86,10 +91,14 @@ export const BackupManagement: React.FC = () => {
         confirmationText,
       });
       
-      alert('Restore started successfully! This may take 10-30 minutes.');
+      toast.success(language === 'bg'
+        ? 'Възстановяването е стартирано успешно! Може да отнеме 10-30 минути.'
+        : 'Restore started successfully! This may take 10-30 minutes.');
     } catch (err: any) {
       logger.error('Failed to restore backup:', err);
-      alert('Failed to restore backup: ' + err.message);
+      toast.error(language === 'bg'
+        ? 'Неуспешно възстановяване на бакъп: ' + err.message
+        : 'Failed to restore backup: ' + err.message);
     } finally {
       setRestoring(false);
     }

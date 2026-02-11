@@ -3,6 +3,7 @@
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
 import React, { useState, useRef } from 'react';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { Plus, X, Image as ImageIcon, Loader } from 'lucide-react';
 // import { useLanguage } from '../../contexts/LanguageContext'; // Unused
@@ -166,7 +167,7 @@ const ProfileGallery: React.FC<ProfileGalleryProps> = ({
     if (!file) return;
 
     if (gallery.length >= maxImages) {
-      alert(`Maximum ${maxImages} images allowed`);
+      toast.info(`Maximum ${maxImages} images allowed`);
       return;
     }
 
@@ -189,7 +190,7 @@ const ProfileGallery: React.FC<ProfileGalleryProps> = ({
       }
     } catch (error) {
       logger.error('Gallery upload failed', error as Error, { userId, fileName: file.name });
-      alert('Upload failed');
+      toast.error('Upload failed');
     } finally {
       setUploading(null);
       if (fileInputRef.current) {

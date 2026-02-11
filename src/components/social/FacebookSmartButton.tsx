@@ -77,7 +77,7 @@ const Tooltip = styled.div`
   }
 `;
 
-const PUBLISHER_API_URL = 'http://localhost:3005/webhooks/ad-published';
+const PUBLISHER_API_URL = import.meta.env.VITE_PUBLISHER_API_URL || 'https://us-central1-fire-new-globul.cloudfunctions.net/webhooks-ad-published';
 
 export const FacebookSmartButton: React.FC<FacebookSmartButtonProps> = ({ adId, adData, isOwner, className }) => {
   const [loading, setLoading] = useState(false);

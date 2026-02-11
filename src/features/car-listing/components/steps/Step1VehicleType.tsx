@@ -173,11 +173,11 @@ export const Step1VehicleType: React.FC = () => {
 
   const vehicleTypes = [
     { id: 'car', IconComponent: Car, label: t('sell.start.vehicleTypes.car.title'), disabled: false },
-    { id: 'van', IconComponent: Caravan, label: t('sell.start.vehicleTypes.van.title'), disabled: true },
-    { id: 'motorcycle', IconComponent: Bike, label: t('sell.start.vehicleTypes.motorcycle.title'), disabled: true },
-    { id: 'truck', IconComponent: Truck, label: t('sell.start.vehicleTypes.truck.title'), disabled: true },
-    { id: 'bus', IconComponent: Bus, label: t('sell.start.vehicleTypes.bus.title'), disabled: true },
-    { id: 'parts', IconComponent: Wrench, label: t('sell.start.vehicleTypes.parts.title'), disabled: true },
+    { id: 'van', IconComponent: Caravan, label: t('sell.start.vehicleTypes.van.title'), disabled: false },
+    { id: 'motorcycle', IconComponent: Bike, label: t('sell.start.vehicleTypes.motorcycle.title'), disabled: false },
+    { id: 'truck', IconComponent: Truck, label: t('sell.start.vehicleTypes.truck.title'), disabled: false },
+    { id: 'bus', IconComponent: Bus, label: t('sell.start.vehicleTypes.bus.title'), disabled: false },
+    { id: 'parts', IconComponent: Wrench, label: t('sell.start.vehicleTypes.parts.title'), disabled: false },
   ];
 
   const handleVehicleSelect = (id: string, disabled: boolean) => {
@@ -223,7 +223,7 @@ export const Step1VehicleType: React.FC = () => {
                 $disabled={disabled}
                 onClick={() => handleVehicleSelect(id, disabled)}
               >
-                {disabled && <ComingSoonBadge>Coming Soon</ComingSoonBadge>}
+
                 <VehicleIcon $selected={isSelected} $disabled={disabled}>
                   <IconComponent />
                 </VehicleIcon>

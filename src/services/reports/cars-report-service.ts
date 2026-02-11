@@ -249,7 +249,9 @@ export class CarsReportService {
         </style>
       </head>
       <body>
-        <h2>تقرير السيارات - Globul Cars</h2>
+        <h2>Car Report - Koli One</h2>
+        <p>Report Date: ${new Date().toLocaleDateString('bg-BG')}</p>
+        <p>Total Cars: ${cars.length}</p>", "oldString": "        <h2>تقرير السيارات - Globul Cars</h2>
         <p>تاريخ التقرير: ${new Date().toLocaleDateString('bg-BG')}</p>
         <p>إجمالي السيارات: ${cars.length}</p>
         <table>

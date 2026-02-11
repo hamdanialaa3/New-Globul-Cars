@@ -1,4 +1,5 @@
 import { logger } from '../services/logger-service';
+import { toast } from 'react-toastify';
 // src/components/AddRatingForm.tsx
 // Add rating form component for Koli One
 
@@ -359,17 +360,17 @@ const AddRatingForm: React.FC<AddRatingFormProps> = ({
     e.preventDefault();
 
     if (formData.rating === 0) {
-      alert(t('ratings.errors.noRating'));
+      toast.error(t('ratings.errors.noRating'));
       return;
     }
 
     if (!formData.title.trim()) {
-      alert(t('ratings.errors.noTitle'));
+      toast.error(t('ratings.errors.noTitle'));
       return;
     }
 
     if (!formData.comment.trim()) {
-      alert(t('ratings.errors.noComment'));
+      toast.error(t('ratings.errors.noComment'));
       return;
     }
 
@@ -379,7 +380,7 @@ const AddRatingForm: React.FC<AddRatingFormProps> = ({
       .map(([category]) => category);
 
     if (unratedCategories.length > 0) {
-      alert(t('ratings.errors.unratedCategories'));
+      toast.error(t('ratings.errors.unratedCategories'));
       return;
     }
 
@@ -407,7 +408,7 @@ const AddRatingForm: React.FC<AddRatingFormProps> = ({
       onRatingAdded();
     } catch (error) {
       logger.error('Error adding rating:', error as Error);
-      alert(t('ratings.errors.submitFailed'));
+      toast.error(t('ratings.errors.submitFailed'));
     } finally {
       setLoading(false);
     }

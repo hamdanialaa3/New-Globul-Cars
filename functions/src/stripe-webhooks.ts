@@ -9,15 +9,18 @@ if (!admin.apps.length) {
 }
 const db = admin.firestore();
 
-// Initialize Stripe - prefer env/secrets; fallback to safe test key
+// Initialize Stripe - require env key; no fallback to prevent accidental test key usage
 const stripeKey =
     process.env.STRIPE_SECRET_KEY ||
     process.env.STRIPE_SECRET ||
-    process.env.STRIPE_API_KEY ||
-    "sk_test_nonprod";
+    process.env.STRIPE_API_KEY;
+
+if (!stripeKey) {
+    logger.warn('STRIPE_SECRET_KEY not configured - Stripe webhooks will be non-functional');
+}
 
 // Use package default apiVersion to avoid invalid override issues
-const stripe = new Stripe(stripeKey);
+const stripe = stripeKey ? new Stripe(stripeKey) : null;
 
 /**
  * Stripe Webhook Handler - Complete Payment Lifecycle Management
@@ -35,6 +38,12 @@ export const stripeWebhooks = functions
     if (!sig || !webhookSecret) {
         logger.error("Missing Stripe signature or webhook secret");
         res.status(400).send("Missing signature or secret");
+        return;
+    }
+
+    if (!stripe) {
+        logger.error("Stripe is not configured - missing STRIPE_SECRET_KEY");
+        res.status(503).send("Stripe not configured");
         return;
     }
 

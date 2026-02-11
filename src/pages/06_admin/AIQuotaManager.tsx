@@ -1,6 +1,7 @@
 import { logger } from '../../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
 import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { aiQuotaService } from '../../services/ai/ai-quota.service';
@@ -32,19 +33,19 @@ const AIQuotaManager: React.FC = () => {
   const initializeQuota = async (userId: string) => {
     try {
       await aiQuotaService.getUserQuota(userId);
-      alert('تم إنشاء حصة AI للمستخدم بنجاح');
+      toast.success('AI quota initialized successfully');
       loadUsers();
     } catch (error) {
-      alert('فشل إنشاء الحصة');
+      toast.error('Failed to initialize quota');
     }
   };
 
   const upgradeTier = async (userId: string, tier: string) => {
     try {
       await aiQuotaService.upgradeTier(userId, tier as any);
-      alert(`تم ترقية المستخدم إلى ${tier}`);
+      toast.success(`User upgraded to ${tier}`);
     } catch (error) {
-      alert('فشلت الترقية');
+      toast.error('Upgrade failed');
     }
   };
 

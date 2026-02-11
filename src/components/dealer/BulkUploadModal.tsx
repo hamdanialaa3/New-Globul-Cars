@@ -13,6 +13,7 @@ import { X, Upload, FileText, AlertCircle, CheckCircle, Download } from 'lucide-
 import { csvParserService, type ParseResult } from '../../services/dealer/csv-parser.service';
 import { bulkUploadService } from '../../services/dealer/bulk-upload.service';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { toast } from 'react-toastify';
 import { logger } from '@/services/logger-service';
 
 interface BulkUploadModalProps {
@@ -26,7 +27,7 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
   onClose,
   onUploadComplete
 }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [file, setFile] = useState<File | null>(null);
   const [parseResult, setParseResult] = useState<ParseResult | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -41,7 +42,7 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
 
     const fileExtension = selectedFile.name.split('.').pop()?.toLowerCase();
     if (!['csv', 'xlsx', 'xls'].includes(fileExtension || '')) {
-      alert('Please upload a CSV or Excel file');
+      toast.error(language === 'bg' ? 'Моля, качете CSV или Excel файл' : 'Please upload a CSV or Excel file');
       return;
     }
 
@@ -60,7 +61,7 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
       setParseResult(result);
     } catch (error) {
       logger.error('File parsing error:', error);
-      alert('Failed to parse file. Please check the format and try again.');
+      toast.error(language === 'bg' ? 'Неуспешно обработване на файла. Проверете формата и опитайте отново.' : 'Failed to parse file. Please check the format and try again.');
     }
   };
 
@@ -83,7 +84,7 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
       }, 2000);
     } catch (error) {
       logger.error('Upload error:', error);
-      alert('Upload failed. Please try again.');
+      toast.error(language === 'bg' ? 'Качването не бе успешно. Моля, опитайте отново.' : 'Upload failed. Please try again.');
     } finally {
       setUploading(false);
     }

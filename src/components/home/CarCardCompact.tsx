@@ -320,7 +320,9 @@ export const CarCardCompact: React.FC<Props> = ({ car }) => {
           <MapPin />
           <span>
             {car.locationPostalCode && `${car.locationPostalCode}, `}
-            {car.locationCity}
+            {typeof car.locationCity === 'object' && car.locationCity !== null
+              ? ((car.locationCity as any).city || (car.locationCity as any).address || '')
+              : car.locationCity}
           </span>
         </LocationRow>
       </Content>

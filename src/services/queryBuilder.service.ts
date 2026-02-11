@@ -41,7 +41,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: 'Всички автомобили',
       subtitle: 'Разгледайте всички налични обяви',
       defaultSort: 'year-desc',
-      metaTitle: 'All Cars for Sale in Bulgaria | Globul Cars',
+      metaTitle: 'All Cars for Sale in Bulgaria | Koli One',
       metaDescription: 'Browse thousands of cars for sale in Bulgaria. Competitive prices and guaranteed quality.',
       metaKeywords: 'cars for sale, Bulgaria, used cars, new cars'
     },
@@ -50,7 +50,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: 'Семейни автомобили',
       subtitle: 'Просторни автомобили с 7+ места - идеални за големи семейства',
       defaultSort: 'seats-desc',
-      metaTitle: 'Family Cars 7 Seats for Sale in Bulgaria | Globul Cars',
+      metaTitle: 'Family Cars 7 Seats for Sale in Bulgaria | Koli One',
       metaDescription: 'Browse the best spacious family cars with 7 or more seats. Perfect for large families and long trips.',
       metaKeywords: 'family cars, 7 seats, spacious cars, minivan, large SUV'
     },
@@ -60,7 +60,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: 'Електрически автомобили',
       subtitle: '100% електрическо задвижване - нулеви емисии',
       defaultSort: 'year-desc',
-      metaTitle: 'Electric Cars for Sale in Bulgaria | Globul Cars',
+      metaTitle: 'Electric Cars for Sale in Bulgaria | Koli One',
       metaDescription: 'Browse electric vehicles with zero emissions. Tesla, BMW i, Nissan Leaf and more.',
       metaKeywords: 'electric cars, EV, Tesla, zero emissions, електрически коли'
     },
@@ -70,7 +70,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: 'Хибридни автомобили',
       subtitle: 'Комбинация от бензин и електричество',
       defaultSort: 'year-desc',
-      metaTitle: 'Hybrid Cars for Sale in Bulgaria | Globul Cars',
+      metaTitle: 'Hybrid Cars for Sale in Bulgaria | Koli One',
       metaDescription: 'Browse hybrid vehicles for lower fuel costs. Plug-in and self-charging hybrids.',
       metaKeywords: 'hybrid cars, PHEV, plug-in hybrid, хибридни коли'
     },
@@ -80,7 +80,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: 'Като нови (нисък пробег)',
       subtitle: 'Автомобили с под 3,515 км пробег',
       defaultSort: 'mileage-asc',
-      metaTitle: 'Low Mileage Cars for Sale | Globul Cars',
+      metaTitle: 'Low Mileage Cars for Sale | Koli One',
       metaDescription: 'Cars in like-new condition with under 3,515 km mileage.',
       metaKeywords: 'low mileage, like new, minimal use, нисък пробег'
     },
@@ -90,7 +90,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: 'Ново добавени обяви',
       subtitle: 'Последните обяви първи',
       defaultSort: 'created-desc',
-      metaTitle: 'Newly Added Cars for Sale | Globul Cars',
+      metaTitle: 'Newly Added Cars for Sale | Koli One',
       metaDescription: 'Latest car listings updated every day. Be the first to see new offers.',
       metaKeywords: 'new listings, latest cars, recent ads, нови обяви'
     },
@@ -100,7 +100,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: 'Бюджетни автомобили',
       subtitle: 'Под 5,000 EUR',
       defaultSort: 'price-asc',
-      metaTitle: 'Budget Cars Under 5000 EUR | Globul Cars',
+      metaTitle: 'Budget Cars Under 5000 EUR | Koli One',
       metaDescription: 'Affordable cars priced under 5,000 euros. Great value for money.',
       metaKeywords: 'cheap cars, budget, under 5000, евтини коли'
     },
@@ -110,7 +110,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: 'Проверени дилъри',
       subtitle: 'Гарантирано качество от сертифицирани автокъщи',
       defaultSort: 'year-desc',
-      metaTitle: 'Verified Car Dealers in Bulgaria | Globul Cars',
+      metaTitle: 'Verified Car Dealers in Bulgaria | Koli One',
       metaDescription: 'Buy from verified and certified car dealers. Guaranteed quality.',
       metaKeywords: 'verified dealers, certified, trusted, проверени дилъри'
     },
@@ -128,7 +128,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: 'Спортни автомобили',
       subtitle: 'Автомобили с мощни двигатели 270+ к.с. и купе дизайн',
       defaultSort: 'power-desc',
-      metaTitle: 'Powerful Sport Cars for Sale - 270+ HP | Globul Cars',
+      metaTitle: 'Powerful Sport Cars for Sale - 270+ HP | Koli One',
       metaDescription: 'Discover sport cars with powerful engines and coupe design. Speed and exceptional performance at competitive prices.',
       metaKeywords: 'sport cars, coupe, powerful engine, speed, high performance'
     },
@@ -137,7 +137,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: 'VIP луксозни автомобили',
       subtitle: 'Луксозни автомобили на цена от 35,000 евро и повече',
       defaultSort: 'price-desc',
-      metaTitle: 'VIP Luxury Cars for Sale in Bulgaria | Globul Cars',
+      metaTitle: 'VIP Luxury Cars for Sale in Bulgaria | Koli One',
       metaDescription: 'Browse the finest luxury cars from Mercedes, BMW, Audi and more. Exceptional luxury and quality.',
       metaKeywords: 'luxury cars, VIP, Mercedes, BMW, Audi, premium cars'
     },
@@ -146,7 +146,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: 'Класически автомобили',
       subtitle: 'Отличителни класически автомобили от деветдесетте и по-рано',
       defaultSort: 'year-asc',
-      metaTitle: 'Classic Vintage Cars for Sale | Globul Cars',
+      metaTitle: 'Classic Vintage Cars for Sale | Koli One',
       metaDescription: 'Discover rare and distinctive classic cars from the eighties and nineties. Historical pieces for enthusiasts and collectors.',
       metaKeywords: 'classic cars, vintage cars, old cars, rare cars'
     },
@@ -155,7 +155,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: `Автомобили в ${dynamicParam || 'града'}`,
       subtitle: `Разгледайте всички налични автомобили в ${dynamicParam || 'този град'}`,
       defaultSort: 'price-asc',
-      metaTitle: `Cars for Sale in ${dynamicParam} | Globul Cars`,
+      metaTitle: `Cars for Sale in ${dynamicParam} | Koli One`,
       metaDescription: `Browse all cars for sale in ${dynamicParam}, Bulgaria. Suitable prices and guaranteed quality.`,
       metaKeywords: `cars ${dynamicParam}, cars for sale ${dynamicParam}, Bulgaria`
     },
@@ -164,7 +164,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: `Автомобили ${dynamicParam || 'марка'}`,
       subtitle: `Всички автомобили ${dynamicParam || 'тази марка'} на разположение за продажба`,
       defaultSort: 'year-desc',
-      metaTitle: `${dynamicParam} Cars for Sale in Bulgaria | Globul Cars`,
+      metaTitle: `${dynamicParam} Cars for Sale in Bulgaria | Koli One`,
       metaDescription: `Browse all ${dynamicParam} cars for sale. Various models and competitive prices.`,
       metaKeywords: `${dynamicParam}, ${dynamicParam} cars, ${dynamicParam} for sale`
     },
@@ -173,7 +173,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: 'Нови автомобили',
       subtitle: 'Модерни автомобили от 2023 г. и нагоре',
       defaultSort: 'year-desc',
-      metaTitle: 'New Cars for Sale in Bulgaria | Globul Cars',
+      metaTitle: 'New Cars for Sale in Bulgaria | Koli One',
       metaDescription: 'Browse the latest new and nearly new cars. 2023 and later models at suitable prices.',
       metaKeywords: 'new cars, modern models, 2023, 2024, recent cars'
     },
@@ -182,7 +182,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: 'Употребявани автомобили',
       subtitle: 'Употребявани автомобили в добро състояние и на подходящи цени',
       defaultSort: 'price-asc',
-      metaTitle: 'Used Cars for Sale in Bulgaria | Globul Cars',
+      metaTitle: 'Used Cars for Sale in Bulgaria | Koli One',
       metaDescription: 'Browse thousands of used cars in excellent condition. Comprehensive inspection and quality guarantee.',
       metaKeywords: 'used cars, second hand cars, pre-owned cars'
     },
@@ -191,7 +191,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: 'Икономични автомобили',
       subtitle: 'Автомобили с нисък разход на гориво',
       defaultSort: 'price-asc',
-      metaTitle: 'Economy Cars - Low Fuel Consumption | Globul Cars',
+      metaTitle: 'Economy Cars - Low Fuel Consumption | Koli One',
       metaDescription: 'Browse economical cars with low fuel consumption. Save on operating costs.',
       metaKeywords: 'economy cars, low consumption, fuel saving'
     },
@@ -201,7 +201,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: 'SUV & Джипове',
       subtitle: 'Високопроходими автомобили за всякакви условия',
       defaultSort: 'year-desc',
-      metaTitle: 'SUV and Jeeps for Sale in Bulgaria | Globul Cars',
+      metaTitle: 'SUV and Jeeps for Sale in Bulgaria | Koli One',
       metaDescription: 'Browse SUV and Jeep vehicles. Off-road capable cars for city and adventure.',
       metaKeywords: 'SUV, jeep, 4x4, off-road, джипове'
     },
@@ -210,7 +210,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: 'Седани',
       subtitle: 'Класически 4-вратни автомобили',
       defaultSort: 'year-desc',
-      metaTitle: 'Sedans for Sale in Bulgaria | Globul Cars',
+      metaTitle: 'Sedans for Sale in Bulgaria | Koli One',
       metaDescription: 'Browse classic sedan cars. Elegant and comfortable 4-door vehicles.',
       metaKeywords: 'sedan, saloon, 4-door, седан'
     },
@@ -219,7 +219,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: 'Хечбеци',
       subtitle: 'Компактни и практични автомобили',
       defaultSort: 'year-desc',
-      metaTitle: 'Hatchbacks for Sale in Bulgaria | Globul Cars',
+      metaTitle: 'Hatchbacks for Sale in Bulgaria | Koli One',
       metaDescription: 'Browse compact hatchback cars. Practical city vehicles.',
       metaKeywords: 'hatchback, compact, city car, хечбек'
     },
@@ -229,7 +229,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: 'Дизелови автомобили',
       subtitle: 'Икономични дизелови двигатели',
       defaultSort: 'year-desc',
-      metaTitle: 'Diesel Cars for Sale in Bulgaria | Globul Cars',
+      metaTitle: 'Diesel Cars for Sale in Bulgaria | Koli One',
       metaDescription: 'Browse fuel-efficient diesel cars. Lower consumption for long trips.',
       metaKeywords: 'diesel, fuel efficient, дизел, дизелови'
     },
@@ -238,7 +238,7 @@ export function getShowcaseConfig(pageType: PageType, dynamicParam?: string): Sh
       title: 'Бензинови автомобили',
       subtitle: 'Класически бензинови двигатели',
       defaultSort: 'year-desc',
-      metaTitle: 'Petrol Cars for Sale in Bulgaria | Globul Cars',
+      metaTitle: 'Petrol Cars for Sale in Bulgaria | Koli One',
       metaDescription: 'Browse petrol and gasoline cars. Various power options available.',
       metaKeywords: 'petrol, gasoline, бензин, бензинови'
     }

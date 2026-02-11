@@ -3,6 +3,7 @@ import { logger } from '../../../../services/logger-service';
 // صفحة التقارير للمسؤولين
 
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { Download, Users, Car, FileText, Filter, BarChart3 } from 'lucide-react';
 import { usersReportService, UserReportData } from '../../../../services/reports/users-report-service';
@@ -53,7 +54,7 @@ const ReportsPage: React.FC = () => {
       }
     } catch (error) {
       logger.error('Error fetching data:', error);
-      alert('خطأ في جلب البيانات');
+      toast.error('Error fetching data');
     } finally {
       setLoading(false);
     }
@@ -91,10 +92,10 @@ const ReportsPage: React.FC = () => {
         carsReportService.downloadReport(content, filename, format);
       }
       
-      alert(`✅ تم تحميل التقرير بنجاح!`);
+      toast.success('Report downloaded successfully');
     } catch (error) {
       logger.error('Error exporting:', error);
-      alert('خطأ في التصدير');
+      toast.error('Export failed');
     } finally {
       setLoading(false);
     }

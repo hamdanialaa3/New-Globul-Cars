@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTheme } from '../../../contexts/ThemeContext';
@@ -152,13 +153,13 @@ const ProductDetailPage: React.FC = () => {
       await cartService.addItem(cartItem);
       
       // Show success message (toast notification could be added here)
-      alert(language === 'bg' ? `${product.name} добавлено в количката!` : `${product.name} added to cart!`);
+      toast.success(language === 'bg' ? `${product.name} добавлено в количката!` : `${product.name} added to cart!`);
       
       // Reset quantity
       setQuantity(1);
     } catch (error) {
       serviceLogger.error('Error adding to cart:', error);
-      alert(language === 'bg' ? 'Грешка при добавяне в количката' : 'Error adding to cart');
+      toast.error(language === 'bg' ? 'Грешка при добавяне в количката' : 'Error adding to cart');
     }
   };
 
@@ -195,7 +196,7 @@ const ProductDetailPage: React.FC = () => {
       navigate('/marketplace/checkout');
     } catch (error) {
       serviceLogger.error('Error processing buy now', error as Error);
-      alert(language === 'bg' ? 'Грешка при обработка на покупката' : 'Error processing purchase');
+      toast.error(language === 'bg' ? 'Грешка при обработка на покупката' : 'Error processing purchase');
     }
   };
 
@@ -222,7 +223,7 @@ const ProductDetailPage: React.FC = () => {
     } else {
       // Fallback: Copy link
       navigator.clipboard.writeText(window.location.href);
-      alert('Link copied!');
+      toast.success('Link copied!');
     }
   };
 

@@ -60,6 +60,8 @@ import { SocialAuthService } from '../../../../../firebase/social-auth-service';
 import { COUNTRIES, DEFAULT_COUNTRY, getCountryByPhoneCode, type Country } from '../../../../../data/countries-with-flags';
 import { BULGARIA_PROVINCES, MAJOR_CITIES_BG } from '../../../../../services/bulgaria-locations.service';
 import IdentityStamp from '../../../../../components/Profile/IdentityStamp';
+import EnableMFAFlow from '../../../../../components/Profile/Security/EnableMFAFlow';
+import { twoFactorAuthService } from '../../../../../services/security/two-factor-auth.service';
 
 const highlightPulse = `
   @keyframes highlight-pulse {
@@ -1504,10 +1506,10 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
 
     try {
       logger.info('💾 Saving user account information', { userId: currentUser.uid });
-      
+
       // ✅ توليد displayName تلقائياً من firstName + lastName
       const displayName = `${userInfo.firstName.trim()} ${userInfo.lastName.trim()}`.trim();
-      
+
       // ✅ حفظ جميع البيانات الشخصية بشكل كامل
       const updateData: any = {
         firstName: userInfo.firstName.trim(),
@@ -1549,8 +1551,8 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
 
       logger.info('✅ User account information saved successfully');
       toast.success(
-        isBg 
-          ? 'Информацията е запазена успешно!' 
+        isBg
+          ? 'Информацията е запазена успешно!'
           : 'Information saved successfully!',
         { autoClose: 3000 }
       );
@@ -1561,8 +1563,8 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
 
     } catch (error) {
       logger.error("Error saving user info:", error as Error);
-      const errorMessage = error instanceof Error 
-        ? (error as Error).message 
+      const errorMessage = error instanceof Error
+        ? (error as Error).message
         : (isBg ? 'Грешка при запазване на информацията' : 'Failed to save profile information');
       setSaveError(errorMessage);
       toast.error(errorMessage, { autoClose: 5000 });
@@ -1664,7 +1666,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
           numericId={user?.numericId || 0}
           isDark={isDarkMode}
         />
-        
+
         <FormTitle>
           {isBg ? 'Лична информация' : 'Personal Information'}
         </FormTitle>
@@ -1672,11 +1674,11 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
         {/* NEW: Public Display Name based on profile type */}
         <SettingGroup>
           <Label $required $orange>
-            {user?.profileType === 'dealer' 
+            {user?.profileType === 'dealer'
               ? (isBg ? '🏪 Име на автокъща' : '🏪 Dealership Name')
               : user?.profileType === 'company'
-              ? (isBg ? '🏢 Име на компания' : '🏢 Company Name')
-              : (isBg ? '👤 Публично име' : '👤 Public Display Name')
+                ? (isBg ? '🏢 Име на компания' : '🏢 Company Name')
+                : (isBg ? '👤 Публично име' : '👤 Public Display Name')
             }
           </Label>
           <Input
@@ -1687,16 +1689,16 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
               user?.profileType === 'dealer'
                 ? (isBg ? 'Въведете името на автокъщата' : 'Enter dealership name')
                 : user?.profileType === 'company'
-                ? (isBg ? 'Въведете името на компанията' : 'Enter company name')
-                : (isBg ? 'Въведете публичното си име' : 'Enter your public display name')
+                  ? (isBg ? 'Въведете името на компанията' : 'Enter company name')
+                  : (isBg ? 'Въведете публичното си име' : 'Enter your public display name')
             }
           />
           <HelpText $gray>
             {user?.profileType === 'dealer'
               ? (isBg ? 'Това е името, което ще виждат клиентите' : 'This is the name customers will see')
               : user?.profileType === 'company'
-              ? (isBg ? 'Официалното име на вашата компания' : 'Your official company name')
-              : (isBg ? 'Името, което ще виждат другите потребители' : 'The name other users will see')
+                ? (isBg ? 'Официалното име на вашата компания' : 'Your official company name')
+                : (isBg ? 'Името, което ще виждат другите потребители' : 'The name other users will see')
             }
           </HelpText>
         </SettingGroup>
@@ -1724,8 +1726,8 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
           </SettingGroup>
         </FormRow>
         <HelpText style={{ marginTop: '-12px', marginBottom: '16px' }} $gray>
-          {isBg 
-            ? `Името за показване: ${userInfo.displayName || '(автоматично от първото и последното име)'}` 
+          {isBg
+            ? `Името за показване: ${userInfo.displayName || '(автоматично от първото и последното име)'}`
             : `Display name: ${userInfo.displayName || '(automatically from first and last name)'}`}
         </HelpText>
 
@@ -1742,11 +1744,11 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
             disabled={isGuest || !currentUser?.emailVerified}
           />
           <HelpText $gray>
-            {isGuest 
+            {isGuest
               ? (isBg ? 'Имейлът не може да бъде променен за гост акаунти' : 'Email cannot be changed for guest accounts')
               : !currentUser?.emailVerified
-              ? (isBg ? 'Моля, потвърдете имейла си преди промяна' : 'Please verify your email before changing it')
-              : (isBg ? 'Имейлът не може да бъде променен' : 'Email cannot be changed')
+                ? (isBg ? 'Моля, потвърдете имейла си преди промяна' : 'Please verify your email before changing it')
+                : (isBg ? 'Имейлът не може да бъде променен' : 'Email cannot be changed')
             }
           </HelpText>
         </SettingGroup>
@@ -1775,8 +1777,8 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
             />
           </div>
           <HelpText $gray style={{ fontSize: '0.75rem', marginTop: '4px' }}>
-            {isBg 
-              ? 'Формат: +359 XXX XXX XXX (Ще бъде автоматично преобразувано от 0XXX в +359XXX)' 
+            {isBg
+              ? 'Формат: +359 XXX XXX XXX (Ще бъде автоматично преобразувано от 0XXX в +359XXX)'
               : 'Format: +359 XXX XXX XXX (Will be automatically converted from 0XXX to +359XXX)'}
           </HelpText>
         </SettingGroup>
@@ -1832,7 +1834,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
               }}
             >
               <option value="">
-                {userInfo.region 
+                {userInfo.region
                   ? (isBg ? 'Изберете град' : 'Select city')
                   : (isBg ? 'Първо изберете област' : 'Select region first')}
               </option>
@@ -1909,8 +1911,8 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
         )}
 
         <ActionButtonsContainer>
-          <SaveButton 
-            onClick={saveUserInfoHandler} 
+          <SaveButton
+            onClick={saveUserInfoHandler}
             disabled={saving || savingUserInfo || !userInfo.firstName.trim() || !userInfo.lastName.trim()}
             style={{
               opacity: (!userInfo.firstName.trim() || !userInfo.lastName.trim()) ? 0.5 : 1,
@@ -2060,6 +2062,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
   // Guest account upgrade state
   const [showEmailVerification, setShowEmailVerification] = useState(false);
   const [showPhoneVerification, setShowPhoneVerification] = useState(false);
+  const [showMFAEnrollment, setShowMFAEnrollment] = useState(false); // ✅ NEW: MFA Modal State
   const isGuest = currentUser?.isAnonymous || (user as any)?.isGuest || (user as any)?.accountType === 'guest';
   const isVerified = !isGuest && (user?.emailVerified || user?.phoneVerified);
 
@@ -2620,7 +2623,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
           currentUser.email || undefined,
           'User account deletion request'
         );
-        
+
         if (deletionResult.success) {
           logger.info('Google Analytics deletion request submitted', {
             requestId: deletionResult.requestId,
@@ -3252,10 +3255,38 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                 <SettingGroup>
                   <ToggleRow
                     $active={settings.security.twoFactorEnabled}
-                    onClick={() => setSettings({
-                      ...settings,
-                      security: { ...settings.security, twoFactorEnabled: !settings.security.twoFactorEnabled }
-                    })}
+                    onClick={() => {
+                      if (settings.security.twoFactorEnabled) {
+                        // Handle Disable 2FA
+                        if (window.confirm(language === 'bg'
+                          ? 'Сигурни ли сте, че искате да изключите двуфакторната аутентикация?'
+                          : 'Are you sure you want to disable Two-Factor Authentication?')) {
+
+                          setSaving(true); // Reuse saving state for UI feedback
+                          twoFactorAuthService.disable2FA(currentUser!)
+                            .then((result) => {
+                              if (result.success) {
+                                setSettings({
+                                  ...settings,
+                                  security: { ...settings.security, twoFactorEnabled: false }
+                                });
+                                toast.success(result.message);
+                                if (refresh) refresh();
+                              } else {
+                                toast.error(result.message);
+                              }
+                            })
+                            .catch((error) => {
+                              logger.error('Error disabling 2FA', error);
+                              toast.error(language === 'bg' ? 'Грешка при изключване на 2FA' : 'Error disabling 2FA');
+                            })
+                            .finally(() => setSaving(false));
+                        }
+                      } else {
+                        // Handle Enable 2FA -> Open Modal
+                        setShowMFAEnrollment(true);
+                      }
+                    }}
                   >
                     <ToggleLabel>
                       <ShieldCheck size={18} />
@@ -3382,21 +3413,21 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                         // 3. Invalidate all tokens (would require backend support)
                         const { signOut } = await import('firebase/auth');
                         const { auth } = await import('../../../../../firebase/firebase-config');
-                        
+
                         // Clear local storage and session storage
                         localStorage.clear();
                         sessionStorage.clear();
-                        
+
                         // Sign out from Firebase
                         await signOut(auth);
-                        
+
                         toast.success(
                           language === 'bg'
                             ? 'Излязохте от всички устройства успешно'
                             : 'Logged out from all devices successfully',
                           { autoClose: 3000 }
                         );
-                        
+
                         // Redirect to home page after a short delay
                         setTimeout(() => {
                           window.location.href = '/';
@@ -3552,7 +3583,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                       </HelpText>
                     </div>
                   </InfoBox>
-                  <SecondaryButton 
+                  <SecondaryButton
                     onClick={() => {
                       const gaService = require('../../../../../services/analytics/google-analytics-data-deletion.service').default;
                       const info = gaService.getPropertyInfo();
@@ -3576,7 +3607,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                       </HelpText>
                     </div>
                   </InfoBox>
-                  <SecondaryButton 
+                  <SecondaryButton
                     onClick={() => {
                       const gaService = require('../../../../../services/analytics/google-analytics-data-deletion.service').default;
                       const info = gaService.getPropertyInfo();
@@ -3628,6 +3659,23 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
           isGuest={isGuest}
           onVerified={handleVerificationSuccess}
           onClose={() => setShowPhoneVerification(false)}
+        />
+      )}
+
+      {/* MFA Enrollment Modal */}
+      {showMFAEnrollment && (
+        <EnableMFAFlow
+          currentPhone={user?.phoneNumber}
+          onSuccess={() => {
+            setSettings({
+              ...settings,
+              security: { ...settings.security, twoFactorEnabled: true }
+            });
+            if (refresh) refresh();
+            // Toast is handled inside EnableMFAFlow, but we can add one here if needed
+            setShowMFAEnrollment(false);
+          }}
+          onClose={() => setShowMFAEnrollment(false)}
         />
       )}
     </SettingsStyleWrapper >

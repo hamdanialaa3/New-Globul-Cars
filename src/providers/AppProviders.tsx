@@ -49,7 +49,7 @@ import { AuthProvider } from '../contexts/AuthProvider';
 import { ProfileTypeProvider } from '../contexts/ProfileTypeContext';
 import { ToastProvider } from '../components/Toast';
 import { FilterProvider } from '../contexts/FilterContext';
-import StripeProvider from './StripeProvider';
+// StripeProvider removed - Stripe deprecated, using manual bank transfers
 
 // Components
 import ErrorBoundary from '../components/ErrorBoundary';
@@ -110,7 +110,6 @@ const ThemedApp: React.FC<{ children: React.ReactNode; recaptchaKey: string }> =
             <GlobalStyles />
             <HelmetProvider>
                 <AuthProvider>
-                    <StripeProvider>
                         <ProfileTypeProvider>
                             <ToastProvider>
                                 <GoogleReCaptchaProvider reCaptchaKey={recaptchaKey}>
@@ -142,7 +141,6 @@ const ThemedApp: React.FC<{ children: React.ReactNode; recaptchaKey: string }> =
                                 </GoogleReCaptchaProvider>
                             </ToastProvider>
                         </ProfileTypeProvider>
-                    </StripeProvider>
                 </AuthProvider>
             </HelmetProvider>
         </ThemeProvider>

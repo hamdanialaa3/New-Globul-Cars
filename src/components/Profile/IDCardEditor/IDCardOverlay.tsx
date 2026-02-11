@@ -2,6 +2,7 @@
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { useTheme } from '../../../contexts/ThemeContext';
@@ -76,7 +77,7 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
     const egn = formData.personalNumber;
     
     if (!egn || egn.length !== 10) {
-      alert(language === 'bg' 
+      toast.error(language === 'bg' 
         ? 'Моля, въведете валиден ЕГН първо!' 
         : 'Please enter a valid EGN first!');
       return;
@@ -88,7 +89,7 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
       const analysis = EGNValidator.analyzeEGN(egn);
       
       if (!analysis.valid) {
-        alert(language === 'bg'
+        toast.error(language === 'bg'
           ? `Невалиден ЕГН: ${analysis.errors?.join(', ')}`
           : `Invalid EGN: ${analysis.errors?.join(', ')}`);
         setAutoFilling(false);
@@ -109,9 +110,9 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
       
       setAutoFilling(false);
       
-      alert(language === 'bg'
-        ? '✅ Данните са попълнени автоматично от ЕГН!'
-        : '✅ Data auto-filled from EGN!');
+      toast.success(language === 'bg'
+        ? 'Данните са попълнени автоматично от ЕГН!'
+        : 'Data auto-filled from EGN!');
     }, 500);
   };
 
@@ -151,7 +152,7 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
     const validation = validateForm();
     
     if (!validation.valid) {
-      alert(language === 'bg'
+      toast.error(language === 'bg'
         ? `Моля, коригирайте грешките: ${validation.errors.join(', ')}`
         : `Please fix errors: ${validation.errors.join(', ')}`);
       return;

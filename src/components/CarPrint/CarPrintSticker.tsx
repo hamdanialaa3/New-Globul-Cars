@@ -10,6 +10,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 
 import { Printer, Download, X } from 'lucide-react';
 
+import { toast } from 'react-toastify';
 import { CarListing } from '../../types/CarListing';
 import IdentityStamp from '../Profile/IdentityStamp';
 import { userService } from '../../services/user/canonical-user.service';
@@ -581,7 +582,7 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
       }
     } catch (error) {
       logger.error('PDF generation error', error as Error, { carId: car.id });
-      alert(language === 'bg'
+      toast.error(language === 'bg'
         ? 'Моля инсталирайте библиотеките: npm install jspdf html2canvas'
         : 'Please install libraries: npm install jspdf html2canvas');
     }

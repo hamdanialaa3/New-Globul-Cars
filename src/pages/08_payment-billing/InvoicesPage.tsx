@@ -15,6 +15,7 @@ import {
   getInvoiceStatusText,
 } from '../../services/billing-service';
 import { logger } from '../../services/logger-service';
+import { toast } from 'react-toastify';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -298,12 +299,12 @@ const InvoicesPage: React.FC = () => {
     try {
       const result = await sendInvoiceEmail(invoiceId);
       if (result.success) {
-        alert(language === 'bg' ? 'Фактурата е изпратена успешно!' : 'Invoice sent successfully!');
+        toast.success(language === 'bg' ? 'Фактурата е изпратена успешно!' : 'Invoice sent successfully!');
         await loadInvoices();
       }
     } catch (error) {
       logger.error('Error sending invoice email', error as Error, { invoiceId });
-      alert(language === 'bg' ? 'Грешка при изпращане на фактура' : 'Error sending invoice');
+      toast.error(language === 'bg' ? 'Грешка при изпращане на фактура' : 'Error sending invoice');
     }
   };
 

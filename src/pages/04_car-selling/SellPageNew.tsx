@@ -1,4 +1,5 @@
 import { logger } from '../../services/logger-service';
+import { toast } from 'react-toastify';
 // Sell Page with Workflow Visualization
 // صفحة البيع مع تصور الأتمتة - تصميم split screen
 /* eslint-disable jsx-a11y/control-has-associated-label */
@@ -718,7 +719,7 @@ const SellPageNew: React.FC = () => {
             {t('sell.hero.startNow')}
           </StartButton>
 
-          <SmartButton onClick={() => alert(t('sell.hero.smartAddDescription'))}>
+          <SmartButton onClick={() => toast.info(t('sell.hero.smartAddDescription'))}>
             <Sparkles size={20} />
             {t('sell.hero.smartAdd')}
             <Badge>Soon</Badge>
