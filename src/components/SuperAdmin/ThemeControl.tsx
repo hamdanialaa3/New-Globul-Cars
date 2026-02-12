@@ -299,7 +299,7 @@ const loadTheme = useCallback(async () => {
       const data = await siteSettingsService.getThemeSettings();
       setTheme(data);
     } catch (error) {
-      showMessage('error', 'فشل تحميل إعدادات المظهر');
+      showMessage('error', 'Failed to load theme settings');
     } finally {
       setLoading(false);
     }
@@ -318,25 +318,25 @@ const loadTheme = useCallback(async () => {
     try {
       setSaving(true);
       await siteSettingsService.updateThemeSettings(theme, adminEmail);
-      showMessage('success', '✅ تم حفظ إعدادات المظهر بنجاح');
+      showMessage('success', '✅ Theme settings saved successfully');
     } catch (error) {
-      showMessage('error', '❌ فشل حفظ الإعدادات');
+      showMessage('error', '❌ Failed to save settings');
     } finally {
       setSaving(false);
     }
   };
 
   const handleReset = async () => {
-    if (!window.confirm('⚠️ هل أنت متأكد من إعادة تعيين المظهر للقيم الافتراضية؟')) {
+    if (!window.confirm('⚠️ Are you sure you want to reset the theme to defaults?')) {
       return;
     }
     try {
       setSaving(true);
       await siteSettingsService.updateThemeSettings(DEFAULT_THEME_SETTINGS, adminEmail);
       setTheme(DEFAULT_THEME_SETTINGS);
-      showMessage('success', '✅ تم إعادة تعيين المظهر');
+      showMessage('success', '✅ Theme has been reset');
     } catch (error) {
-      showMessage('error', '❌ فشل إعادة التعيين');
+      showMessage('error', '❌ Failed to reset');
     } finally {
       setSaving(false);
     }
@@ -366,7 +366,7 @@ const loadTheme = useCallback(async () => {
     return (
       <Container>
         <Header>
-          <Title><Palette size={24} /> جاري التحميل...</Title>
+          <Title><Palette size={24} /> Loading...</Title>
         </Header>
       </Container>
     );
@@ -377,10 +377,10 @@ const loadTheme = useCallback(async () => {
       <Header>
         <Title>
           <Palette size={24} />
-          تخصيص المظهر
+          Theme Customization
         </Title>
         <Subtitle>
-          تحكم في الألوان، الشعار، والعلامة التجارية للمنصة
+          Control colors, logo, and platform branding
         </Subtitle>
       </Header>
 
@@ -395,7 +395,7 @@ const loadTheme = useCallback(async () => {
       <Section>
         <SectionTitle>
           <Palette size={18} />
-          ألوان العلامة التجارية
+          Brand Colors
         </SectionTitle>
 
         <ColorGrid>
@@ -427,7 +427,7 @@ const loadTheme = useCallback(async () => {
         <PreviewSection>
           <PreviewTitle>
             <Eye size={14} />
-            معاينة مباشرة
+            Live Preview
           </PreviewTitle>
           <PreviewGrid>
             <PreviewBox $bg={theme.colors.primary}>Primary</PreviewBox>
@@ -444,11 +444,11 @@ const loadTheme = useCallback(async () => {
       <Section>
         <SectionTitle>
           <ImageIcon size={18} />
-          الشعارات والأيقونات
+          Logos & Icons
         </SectionTitle>
 
         <LogoItem>
-          <LogoLabel>شعار الوضع الفاتح (Light Mode)</LogoLabel>
+          <LogoLabel>Light Mode Logo</LogoLabel>
           <InputField
             type="text"
             value={theme.logo.lightMode}
@@ -459,7 +459,7 @@ const loadTheme = useCallback(async () => {
         </LogoItem>
 
         <LogoItem>
-          <LogoLabel>شعار الوضع الداكن (Dark Mode)</LogoLabel>
+          <LogoLabel>Dark Mode Logo</LogoLabel>
           <InputField
             type="text"
             value={theme.logo.darkMode}
@@ -470,7 +470,7 @@ const loadTheme = useCallback(async () => {
         </LogoItem>
 
         <LogoItem>
-          <LogoLabel>Favicon (أيقونة المتصفح)</LogoLabel>
+          <LogoLabel>Favicon (Browser Icon)</LogoLabel>
           <InputField
             type="text"
             value={theme.favicon}
@@ -489,7 +489,7 @@ const loadTheme = useCallback(async () => {
           disabled={saving}
         >
           <Save size={16} />
-          {saving ? 'جاري الحفظ...' : 'حفظ التغييرات'}
+          {saving ? 'Saving...' : 'Save Changes'}
         </Button>
 
         <Button
@@ -498,7 +498,7 @@ const loadTheme = useCallback(async () => {
           disabled={saving}
         >
           <RefreshCw size={16} />
-          تحديث
+          Refresh
         </Button>
 
         <Button
@@ -507,7 +507,7 @@ const loadTheme = useCallback(async () => {
           disabled={saving}
         >
           <AlertCircle size={16} />
-          إعادة تعيين
+          Reset
         </Button>
       </ActionButtons>
     </Container>

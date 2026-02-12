@@ -62,13 +62,13 @@ export const PopupBlockerWarning: React.FC<PopupBlockerWarningProps> = ({
   const getProviderInstructions = (provider: string) => {
     switch (provider) {
       case 'Google':
-        return 'تأكد من السماح للنوافذ المنبثقة من accounts.google.com';
+        return 'Make sure to allow popups from accounts.google.com';
       case 'Facebook':
-        return 'تأكد من السماح للنوافذ المنبثقة من facebook.com';
+        return 'Make sure to allow popups from facebook.com';
       case 'Apple':
-        return 'تأكد من السماح للنوافذ المنبثقة من appleid.apple.com';
+        return 'Make sure to allow popups from appleid.apple.com';
       default:
-        return 'تأكد من السماح للنوافذ المنبثقة من الموقع';
+        return 'Make sure to allow popups from this site';
     }
   };
 
@@ -76,27 +76,27 @@ export const PopupBlockerWarning: React.FC<PopupBlockerWarningProps> = ({
     <WarningContainer>
       <WarningIcon>⚠️</WarningIcon>
       <WarningContent>
-        <WarningTitle>تم حظر النافذة المنبثقة</WarningTitle>
+        <WarningTitle>Popup Blocked</WarningTitle>
         <WarningText>
-          المتصفح منع فتح نافذة تسجيل الدخول مع {provider}.
-          هذا أمر شائع ويمكن إصلاحه بسهولة.
+          The browser blocked the {provider} sign-in popup.
+          This is common and can be easily fixed.
         </WarningText>
 
         <InstructionsList>
           <InstructionItem>
-            انقر على أيقونة الدرع/القفل في شريط العنوان
+            Click the shield/lock icon in the address bar
           </InstructionItem>
           <InstructionItem>
-            ابحث عن "Pop-up blocker" أو "حظر النوافذ المنبثقة"
+            Look for &quot;Pop-up blocker&quot;
           </InstructionItem>
           <InstructionItem>
-            قم بتعطيل حظر النوافذ المنبثقة لهذا الموقع
+            Disable the popup blocker for this site
           </InstructionItem>
           <InstructionItem>
             {getProviderInstructions(provider)}
           </InstructionItem>
           <InstructionItem>
-            أعد المحاولة مرة أخرى
+            Try again
           </InstructionItem>
         </InstructionsList>
 
@@ -114,7 +114,7 @@ export const PopupBlockerWarning: React.FC<PopupBlockerWarningProps> = ({
               fontSize: '14px'
             }}
           >
-            إعادة المحاولة
+            Retry
           </button>
         )}
       </WarningContent>

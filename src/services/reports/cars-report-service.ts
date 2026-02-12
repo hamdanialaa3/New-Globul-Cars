@@ -1,5 +1,5 @@
 // src/services/reports/cars-report-service.ts
-// خدمة تصدير تقارير السيارات
+// Car reports export service
 
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 import { queryAllCollections, countAllVehicles, VEHICLE_COLLECTIONS } from '../search/multi-collection-helper';
@@ -38,7 +38,7 @@ export class CarsReportService {
   }
 
   /**
-   * جلب جميع السيارات مع فلاتر
+   * Fetch all cars with filters
    */
   async getAllCars(filters?: {
     city?: string;
@@ -52,17 +52,17 @@ export class CarsReportService {
     try {
       let q = query(collection(db, 'cars'), orderBy('createdAt', 'desc'));
 
-      // فلتر المدينة
+      // City filter
       if (filters?.city) {
         q = query(q, where('location', '==', filters.locationData?.cityName));
       }
 
-      // فلتر الحالة
+      // Status filter
       if (filters?.status) {
         q = query(q, where('status', '==', filters.status));
       }
 
-      // فلتر الماركة
+      // Make filter
       if (filters?.make) {
         q = query(q, where('make', '==', filters.make));
       }
@@ -74,13 +74,13 @@ export class CarsReportService {
       for (const doc of snapshot.docs) {
         const data = doc.data();
         
-        // فلاتر إضافية (في الذاكرة)
+        // Additional filters (in memory)
         if (filters?.yearFrom && data.year < filters.yearFrom) continue;
         if (filters?.yearTo && data.year > filters.yearTo) continue;
         if (filters?.priceFrom && data.price < filters.priceFrom) continue;
         if (filters?.priceTo && data.price > filters.priceTo) continue;
 
-        // جلب معلومات البائع
+        // Fetch seller info
         const sellerData = await this.getSellerInfo(data.sellerId);
 
         cars.push({
@@ -113,7 +113,7 @@ export class CarsReportService {
   }
 
   /**
-   * جلب معلومات البائع
+   * Fetch seller info
    */
   private async getSellerInfo(sellerId: string): Promise<{
     name: string;
@@ -128,41 +128,41 @@ export class CarsReportService {
       if (!userDoc.empty) {
         const userData = userDoc.docs[0].data();
         return {
-          name: userData.displayName || 'غير معروف',
+          name: userData.displayName || 'Unknown',
           email: userData.email || '',
           phone: userData.phoneNumber,
         };
       }
 
-      return { name: 'غير معروف', email: '' };
+      return { name: 'Unknown', email: '' };
     } catch (error) {
-      return { name: 'خطأ في الجلب', email: '' };
+      return { name: 'Fetch error', email: '' };
     }
   }
 
   /**
-   * تصدير إلى CSV
+   * Export to CSV
    */
   async exportToCSV(cars: CarReportData[]): Promise<string> {
     const headers = [
       'ID',
-      'الماركة',
-      'الموديل',
-      'السنة',
-      'السعر (EUR)',
-      'المسافة (كم)',
-      'الوقود',
-      'ناقل الحركة',
-      'الموقع',
-      'اسم البائع',
-      'بريد البائع',
-      'هاتف البائع',
-      'نوع البائع',
-      'الحالة',
-      'المشاهدات',
-      'المفضلة',
-      'عدد الصور',
-      'تاريخ الإضافة'
+      'Make',
+      'Model',
+      'Year',
+      'Price (EUR)',
+      'Mileage (km)',
+      'Fuel',
+      'Transmission',
+      'Location',
+      'Seller Name',
+      'Seller Email',
+      'Seller Phone',
+      'Seller Type',
+      'Status',
+      'Views',
+      'Favorites',
+      'Photos',
+      'Date Added'
     ];
 
     const rows = cars.map((car: any) => [
@@ -178,7 +178,7 @@ export class CarsReportService {
       car.sellerName,
       car.sellerEmail,
       car.sellerPhone || '-',
-      car.sellerType === 'private' ? 'خاص' : 'معرض',
+      car.sellerType === 'private' ? 'Private' : 'Dealer',
       this.translateStatus(car.status),
       car.views.toString(),
       car.favorites.toString(),
@@ -195,21 +195,21 @@ export class CarsReportService {
   }
 
   /**
-   * تصدير إلى JSON
+   * Export to JSON
    */
   async exportToJSON(cars: CarReportData[]): Promise<string> {
     return JSON.stringify(cars, null, 2);
   }
 
   /**
-   * تصدير إلى Excel (HTML Table)
+   * Export to Excel (HTML Table)
    */
   async exportToExcel(cars: CarReportData[]): Promise<string> {
     const headers = [
-      'ID', 'الماركة', 'الموديل', 'السنة', 'السعر (EUR)', 
-      'المسافة', 'الوقود', 'ناقل الحركة', 'الموقع',
-      'اسم البائع', 'بريد البائع', 'هاتف البائع', 'نوع البائع',
-      'الحالة', 'المشاهدات', 'المفضلة', 'الصور', 'تاريخ الإضافة'
+      'ID', 'Make', 'Model', 'Year', 'Price (EUR)', 
+      'Mileage', 'Fuel', 'Transmission', 'Location',
+      'Seller Name', 'Seller Email', 'Seller Phone', 'Seller Type',
+      'Status', 'Views', 'Favorites', 'Photos', 'Date Added'
     ];
 
     const rows = cars.map((car: any) => `
@@ -219,14 +219,14 @@ export class CarsReportService {
         <td>${car.model}</td>
         <td>${car.year}</td>
         <td>${car.price.toLocaleString()} €</td>
-        <td>${car.mileage.toLocaleString()} كم</td>
+        <td>${car.mileage.toLocaleString()} km</td>
         <td>${car.fuelType}</td>
         <td>${car.transmission}</td>
         <td>${car.location}</td>
         <td>${car.sellerName}</td>
         <td>${car.sellerEmail}</td>
         <td>${car.sellerPhone || '-'}</td>
-        <td>${car.sellerType === 'private' ? 'خاص' : 'معرض'}</td>
+        <td>${car.sellerType === 'private' ? 'Private' : 'Dealer'}</td>
         <td>${this.translateStatus(car.status)}</td>
         <td>${car.views}</td>
         <td>${car.favorites}</td>
@@ -240,8 +240,8 @@ export class CarsReportService {
       <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <style>
-          table { border-collapse: collapse; width: 100%; direction: rtl; }
-          th, td { border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 12px; }
+          table { border-collapse: collapse; width: 100%; }
+          th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 12px; }
           th { background-color: #FF6B35; color: white; font-weight: bold; }
           tr:nth-child(even) { background-color: #f2f2f2; }
           .sold { background-color: #ffebee; }
@@ -251,9 +251,7 @@ export class CarsReportService {
       <body>
         <h2>Car Report - Koli One</h2>
         <p>Report Date: ${new Date().toLocaleDateString('bg-BG')}</p>
-        <p>Total Cars: ${cars.length}</p>", "oldString": "        <h2>تقرير السيارات - Globul Cars</h2>
-        <p>تاريخ التقرير: ${new Date().toLocaleDateString('bg-BG')}</p>
-        <p>إجمالي السيارات: ${cars.length}</p>
+        <p>Total Cars: ${cars.length}</p>
         <table>
           <thead>
             <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
@@ -268,7 +266,7 @@ export class CarsReportService {
   }
 
   /**
-   * تحميل التقرير
+   * Download report
    */
   downloadReport(content: string, filename: string, type: 'csv' | 'json' | 'xls') {
     const mimeTypes = {
@@ -286,19 +284,19 @@ export class CarsReportService {
   }
 
   /**
-   * ترجمة الحالة
+   * Translate status
    */
   private translateStatus(status: string): string {
     const translations: { [key: string]: string } = {
-      'active': 'نشط',
-      'sold': 'مباع',
-      'inactive': 'غير نشط'
+      'active': 'Active',
+      'sold': 'Sold',
+      'inactive': 'Inactive'
     };
     return translations[status] || status;
   }
 
   /**
-   * إحصائيات سريعة
+   * Quick statistics
    */
   async getCarStatistics(city?: string): Promise<{
     total: number;

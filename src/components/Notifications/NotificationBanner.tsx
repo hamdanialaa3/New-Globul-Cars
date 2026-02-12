@@ -95,8 +95,8 @@ export const NotificationBanner: React.FC = () => {
     if (result) {
       setShow(false);
       // Show success message
-      new Notification('🎉 تم التفعيل!', {
-        body: 'سنرسل لك إشعارات عن السيارات الجديدة',
+      new Notification('🎉 Enabled!', {
+        body: 'We will send you notifications about new cars',
         icon: '/logo.png'
       });
     }
@@ -115,10 +115,10 @@ export const NotificationBanner: React.FC = () => {
     <Banner $show={show}>
       <Bell size={24} />
       <Content>
-        <Title>🔔 فعّل الإشعارات</Title>
-        <Message>احصل على تنبيهات فورية عن السيارات الجديدة والعروض</Message>
+        <Title>🔔 Enable Notifications</Title>
+        <Message>Get instant alerts about new cars and offers</Message>
       </Content>
-      <Button onClick={handleEnable}>تفعيل</Button>
+      <Button onClick={handleEnable}>Enable</Button>
       <CloseButton onClick={handleClose}>
         <X size={20} />
       </CloseButton>

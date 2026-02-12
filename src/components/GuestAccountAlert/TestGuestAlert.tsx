@@ -1,6 +1,6 @@
 /**
  * Test Guest Alert Component
- * هذا المكون للاختبار فقط - يظهر الـ Alert دائماً
+ * This component is for testing only - always shows the Alert
  */
 
 import React from 'react';
@@ -29,12 +29,7 @@ const translations: Record<string, AlertData> = {
     button: 'Попълнете профила',
     subtext: 'Гост акаунтите може да не бъдат доверявани от други потребители.'
   },
-  ar: {
-    title: 'أكمل ملفك الشخصي',
-    description: 'حسابك غير مُتحقق حالياً. أكمل معلومات ملفك الشخصي لبناء الثقة مع المستخدمين الآخرين.',
-    button: 'أكمل الملف الشخصي',
-    subtext: 'قد لا يثق المستخدمون الآخرون بحسابات الضيف.'
-  }
+
 };
 
 const AlertContainer = styled.div<{ $theme: string }>`

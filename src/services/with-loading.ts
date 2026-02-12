@@ -9,7 +9,7 @@
  *   async () => {
  *     return await fetchCars();
  *   },
- *   'جاري جلب السيارات...'
+ *   'Fetching cars...'
  * );
  */
 
@@ -29,7 +29,7 @@ export const createLoadingWrapper = (useLoadingHook: typeof useLoading) => {
     return (async (...args: unknown[]) => {
       const { showLoading, hideLoading } = useLoadingHook();
       
-      showLoading(loadingMessage || 'جاري المعالجة...');
+      showLoading(loadingMessage || 'Processing...');
       
       try {
         const result = await fn(...args);
@@ -51,7 +51,7 @@ export const createLoadingWrapper = (useLoadingHook: typeof useLoading) => {
  * 
  * const handleFetch = withLoading(
  *   async () => await fetchCars(),
- *   'جاري جلب البيانات...'
+ *   'Fetching data...'
  * );
  */
 export const useLoadingWrapper = () => {
@@ -62,7 +62,7 @@ export const useLoadingWrapper = () => {
     loadingMessage?: string
   ): ((...args: Parameters<T>) => Promise<Awaited<ReturnType<T>>>) => {
     return async (...args: Parameters<T>) => {
-      showLoading(loadingMessage || 'جاري المعالجة...');
+      showLoading(loadingMessage || 'Processing...');
       
       try {
         const result = await fn(...args);

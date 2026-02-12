@@ -303,7 +303,7 @@ export const VerificationUploader: React.FC<VerificationUploaderProps> = ({
             onClick={handleSubmit}
             disabled={uploading}
           >
-            {uploading ? 'جاري الرفع...' : `إرسال ${documents.length} مستند للتحقق`}
+            {uploading ? 'Uploading...' : `Submit ${documents.length} document(s) for verification`}
           </SubmitButton>
         </>
       )}

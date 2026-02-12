@@ -486,7 +486,7 @@ const SuperAdminUsersPage: React.FC = () => {
           await updateDoc(userRef, { status: 'suspended', updatedAt: serverTimestamp() });
           break;
         case 'delete':
-          if (window.confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
+          if (window.confirm('Are you sure you want to delete this user?')) {
             await deleteDoc(userRef);
           }
           break;
@@ -531,7 +531,7 @@ const SuperAdminUsersPage: React.FC = () => {
       <PageContainer>
         <LoadingState>
           <RefreshCw size={24} className="animate-spin" />
-          <div>جاري تحميل بيانات المستخدمين...</div>
+          <div>Loading user data...</div>
         </LoadingState>
       </PageContainer>
     );
@@ -545,20 +545,20 @@ const SuperAdminUsersPage: React.FC = () => {
             <div>
               <HeaderTitle>
                 <Users size={32} />
-                إدارة المستخدمين المتقدمة
+                Advanced User Management
               </HeaderTitle>
               <HeaderSubtitle>
-                تحكم كامل في جميع المستخدمين والمشتركين والمدراء والمنشورات والسيارات
+                Full control over all users, subscribers, admins, posts, and vehicles
               </HeaderSubtitle>
             </div>
             <div style={{ display: 'flex', gap: '1rem' }}>
               <ActionButton onClick={() => navigate('/super-admin')}>
                 <Activity size={16} />
-                العودة للوحة التحكم
+                Back to Dashboard
               </ActionButton>
               <ActionButton $variant="success" onClick={loadData}>
                 <RefreshCw size={16} />
-                تحديث البيانات
+                Refresh Data
               </ActionButton>
             </div>
           </HeaderContent>
@@ -569,42 +569,42 @@ const SuperAdminUsersPage: React.FC = () => {
             <StatCard>
               <StatIcon><Users size={24} /></StatIcon>
               <StatValue>{stats.totalUsers}</StatValue>
-              <StatLabel>إجمالي المستخدمين</StatLabel>
+              <StatLabel>Total Users</StatLabel>
             </StatCard>
             <StatCard>
               <StatIcon><UserCheck size={24} /></StatIcon>
               <StatValue>{stats.activeUsers}</StatValue>
-              <StatLabel>المستخدمين النشطين</StatLabel>
+              <StatLabel>Active Users</StatLabel>
             </StatCard>
             <StatCard>
               <StatIcon><Home size={24} /></StatIcon>
               <StatValue>{stats.privateUsers}</StatValue>
-              <StatLabel>المستخدمين الخاصين</StatLabel>
+              <StatLabel>Private Users</StatLabel>
             </StatCard>
             <StatCard>
               <StatIcon><Building size={24} /></StatIcon>
               <StatValue>{stats.dealerUsers}</StatValue>
-              <StatLabel>المعارض</StatLabel>
+              <StatLabel>Dealers</StatLabel>
             </StatCard>
             <StatCard>
               <StatIcon><Briefcase size={24} /></StatIcon>
               <StatValue>{stats.companyUsers}</StatValue>
-              <StatLabel>الشركات</StatLabel>
+              <StatLabel>Companies</StatLabel>
             </StatCard>
             <StatCard>
               <StatIcon><Award size={24} /></StatIcon>
               <StatValue>{stats.verifiedUsers}</StatValue>
-              <StatLabel>المستخدمين المتحققين</StatLabel>
+              <StatLabel>Verified Users</StatLabel>
             </StatCard>
             <StatCard>
               <StatIcon><Car size={24} /></StatIcon>
               <StatValue>{stats.totalCars}</StatValue>
-              <StatLabel>إجمالي السيارات</StatLabel>
+              <StatLabel>Total Cars</StatLabel>
             </StatCard>
             <StatCard>
               <StatIcon><MessageSquare size={24} /></StatIcon>
               <StatValue>{stats.totalPosts}</StatValue>
-              <StatLabel>إجمالي المنشورات</StatLabel>
+              <StatLabel>Total Posts</StatLabel>
             </StatCard>
           </StatsGrid>
 
@@ -612,24 +612,24 @@ const SuperAdminUsersPage: React.FC = () => {
             <FiltersGrid>
               <SearchInput
                 type="text"
-                placeholder="البحث بالاسم، البريد الإلكتروني، أو المدينة..."
+                placeholder="Search by name, email, or city..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               <FilterSelect value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-                <option value="all">جميع الحالات</option>
-                <option value="active">نشط</option>
-                <option value="suspended">معلق</option>
+                <option value="all">All Statuses</option>
+                <option value="active">Active</option>
+                <option value="suspended">Suspended</option>
               </FilterSelect>
               <FilterSelect value={profileTypeFilter} onChange={(e) => setProfileTypeFilter(e.target.value)}>
-                <option value="all">جميع الأنواع</option>
-                <option value="private">خاص</option>
-                <option value="dealer">معرض</option>
-                <option value="company">شركة</option>
+                <option value="all">All Types</option>
+                <option value="private">Private</option>
+                <option value="dealer">Dealer</option>
+                <option value="company">Company</option>
               </FilterSelect>
               <ActionButton $variant="primary" onClick={loadData}>
                 <Search size={16} />
-                بحث
+                Search
               </ActionButton>
             </FiltersGrid>
           </FiltersSection>
@@ -637,19 +637,19 @@ const SuperAdminUsersPage: React.FC = () => {
           <UsersTable>
             {users.length === 0 ? (
               <EmptyState>
-                <h3>لا توجد مستخدمين</h3>
-                <p>جرب تعديل معايير البحث</p>
+                <h3>No users found</h3>
+                <p>Try adjusting your search criteria</p>
               </EmptyState>
             ) : (
               <Table>
                 <TableHeader>
                   <tr>
-                    <TableHeaderCell>المستخدم</TableHeaderCell>
-                    <TableHeaderCell>النوع</TableHeaderCell>
-                    <TableHeaderCell>الحالة</TableHeaderCell>
-                    <TableHeaderCell>الموقع</TableHeaderCell>
-                    <TableHeaderCell>تاريخ التسجيل</TableHeaderCell>
-                    <TableHeaderCell>الإجراءات</TableHeaderCell>
+                    <TableHeaderCell>User</TableHeaderCell>
+                    <TableHeaderCell>Type</TableHeaderCell>
+                    <TableHeaderCell>Status</TableHeaderCell>
+                    <TableHeaderCell>Location</TableHeaderCell>
+                    <TableHeaderCell>Registration Date</TableHeaderCell>
+                    <TableHeaderCell>Actions</TableHeaderCell>
                   </tr>
                 </TableHeader>
                 <tbody>
@@ -661,7 +661,7 @@ const SuperAdminUsersPage: React.FC = () => {
                             {getInitials(user.displayName || user.email)}
                           </UserAvatar>
                           <UserDetails>
-                            <UserName>{user.displayName || 'مستخدم'}</UserName>
+                            <UserName>{user.displayName || 'User'}</UserName>
                             <UserEmail>{user.email}</UserEmail>
                           </UserDetails>
                         </UserInfo>
@@ -669,19 +669,19 @@ const SuperAdminUsersPage: React.FC = () => {
                       <TableCell>
                         <ProfileTypeBadge $type={user.profileType || 'private'}>
                           {getProfileTypeIcon(user.profileType || 'private')}
-                          {user.profileType === 'dealer' ? 'معرض' :
-                            user.profileType === 'company' ? 'شركة' : 'خاص'}
+                          {user.profileType === 'dealer' ? 'Dealer' :
+                            user.profileType === 'company' ? 'Company' : 'Private'}
                         </ProfileTypeBadge>
                       </TableCell>
                       <TableCell>
                         <StatusBadge $status={user.status || 'active'}>
-                          {user.status === 'active' ? 'نشط' : user.status === 'suspended' ? 'معلق' : 'غير نشط'}
+                          {user.status === 'active' ? 'Active' : user.status === 'suspended' ? 'Suspended' : 'Inactive'}
                         </StatusBadge>
                       </TableCell>
                       <TableCell>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                           <MapPin size={14} />
-                          {user.locationData?.cityName || 'غير محدد'}
+                          {user.locationData?.cityName || 'Not specified'}
                         </div>
                       </TableCell>
                       <TableCell>
@@ -694,22 +694,22 @@ const SuperAdminUsersPage: React.FC = () => {
                         <ActionButtons>
                           <ActionButtonSmall $variant="primary" onClick={() => { setSelectedUser(user); setIsUserModalOpen(true); }}>
                             <Eye size={12} />
-                            عرض
+                            View
                           </ActionButtonSmall>
                           {user.status === 'active' ? (
                             <ActionButtonSmall $variant="danger" onClick={() => handleUserAction(user.id, 'suspend')}>
                               <Ban size={12} />
-                              تعليق
+                              Suspend
                             </ActionButtonSmall>
                           ) : (
                             <ActionButtonSmall $variant="success" onClick={() => handleUserAction(user.id, 'activate')}>
                               <CheckCircle size={12} />
-                              تفعيل
+                              Activate
                             </ActionButtonSmall>
                           )}
                           <ActionButtonSmall $variant="danger" onClick={() => handleUserAction(user.id, 'delete')}>
                             <Trash2 size={12} />
-                            حذف
+                            Delete
                           </ActionButtonSmall>
                         </ActionButtons>
                       </TableCell>
@@ -724,7 +724,7 @@ const SuperAdminUsersPage: React.FC = () => {
         <Modal $isOpen={isUserModalOpen}>
           <ModalContent>
             <ModalHeader>
-              <ModalTitle>تفاصيل المستخدم</ModalTitle>
+              <ModalTitle>User Details</ModalTitle>
               <CloseButton onClick={() => setIsUserModalOpen(false)}>
                 <X size={20} />
               </CloseButton>
@@ -736,23 +736,23 @@ const SuperAdminUsersPage: React.FC = () => {
                     {getInitials(selectedUser.displayName || selectedUser.email)}
                   </UserAvatar>
                   <UserDetails>
-                    <UserName style={{ fontSize: '1.2rem' }}>{selectedUser.displayName || 'مستخدم'}</UserName>
+                    <UserName style={{ fontSize: '1.2rem' }}>{selectedUser.displayName || 'User'}</UserName>
                     <UserEmail style={{ fontSize: '1rem' }}>{selectedUser.email}</UserEmail>
                   </UserDetails>
                 </UserInfo>
                 <div style={{ display: 'grid', gap: '1rem' }}>
-                  <div><strong>النوع:</strong> {selectedUser.profileType === 'dealer' ? 'معرض' : selectedUser.profileType === 'company' ? 'شركة' : 'خاص'}</div>
-                  <div><strong>الحالة:</strong> {selectedUser.status === 'active' ? 'نشط' : selectedUser.status === 'suspended' ? 'معلق' : 'غير نشط'}</div>
-                  <div><strong>المدينة:</strong> {selectedUser.locationData?.cityName || 'غير محدد'}</div>
-                  <div><strong>رقم الهاتف:</strong> {selectedUser.phoneNumber || 'غير محدد'}</div>
-                  <div><strong>تاريخ التسجيل:</strong> {selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleDateString('ar-EG') : '-'}</div>
-                  <div><strong>البريد الإلكتروني متحقق:</strong> {selectedUser.emailVerified ? 'نعم' : 'لا'}</div>
+                  <div><strong>Type:</strong> {selectedUser.profileType === 'dealer' ? 'Dealer' : selectedUser.profileType === 'company' ? 'Company' : 'Private'}</div>
+                  <div><strong>Status:</strong> {selectedUser.status === 'active' ? 'Active' : selectedUser.status === 'suspended' ? 'Suspended' : 'Inactive'}</div>
+                  <div><strong>City:</strong> {selectedUser.locationData?.cityName || 'Not specified'}</div>
+                  <div><strong>Phone:</strong> {selectedUser.phoneNumber || 'Not specified'}</div>
+                  <div><strong>Registration Date:</strong> {selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleDateString('en-US') : '-'}</div>
+                  <div><strong>Email Verified:</strong> {selectedUser.emailVerified ? 'Yes' : 'No'}</div>
                 </div>
                 <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-                  <ActionButton onClick={() => setIsUserModalOpen(false)}>إغلاق</ActionButton>
+                  <ActionButton onClick={() => setIsUserModalOpen(false)}>Close</ActionButton>
                   <ActionButton $variant="primary" onClick={() => window.open(`/profile/${selectedUser.id}`, '_blank')}>
                     <Eye size={16} />
-                    عرض الملف الشخصي
+                    View Profile
                   </ActionButton>
                 </div>
               </div>

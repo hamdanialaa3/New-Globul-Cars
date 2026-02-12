@@ -95,8 +95,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
   if (!apiKey || apiKey === 'YOUR_GOOGLE_MAPS_API_KEY') {
     return (
       <ErrorMessage>
-        <strong>⚠️ Google Maps API Key غير مكوّن</strong>
-        <p>يرجى إضافة REACT_APP_GOOGLE_MAPS_API_KEY في ملف .env</p>
+        <strong>⚠️ Google Maps API Key not configured</strong>
+        <p>Please add VITE_GOOGLE_MAPS_API_KEY to your .env file</p>
       </ErrorMessage>
     );
   }
@@ -115,7 +115,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
               <Marker
                 position={center}
                 onClick={() => setShowInfoWindow(true)}
-                title={carTitle || 'موقع السيارة'}
+                title={carTitle || 'Car location'}
               />
               
               {showInfo && showInfoWindow && (
@@ -125,8 +125,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 >
                   <InfoContent>
                     {carTitle && <h3>{carTitle}</h3>}
-                    {carPrice && <p><strong>السعر:</strong> €{carPrice.toLocaleString()}</p>}
-                    {carLocation && <p><strong>الموقع:</strong> {carLocation}</p>}
+                    {carPrice && <p><strong>Price:</strong> €{carPrice.toLocaleString()}</p>}
+                    {carLocation && <p><strong>Location:</strong> {carLocation}</p>}
                   </InfoContent>
                 </InfoWindow>
               )}

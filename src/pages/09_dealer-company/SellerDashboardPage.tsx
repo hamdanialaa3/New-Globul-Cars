@@ -1,6 +1,6 @@
 /**
  * Seller Dashboard Page
- * لوحة تحكم البائع - إحصائيات وتنبيهات ومهام
+ * Seller control panel - stats, alerts and tasks
  * 
  * Features:
  * - Dashboard statistics (listings, views, messages)
@@ -22,6 +22,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { dealerDashboardService } from '@/services/dealer/dealer-dashboard.service';
+import { serviceLogger } from '@/services/logger-service';
 
 // ==================== TYPES ====================
 
@@ -359,15 +360,23 @@ export const SellerDashboardPage: React.FC = () => {
         const tasksData = await dealerDashboardService.getTasks(user.uid);
         setTasks(tasksData || []);
       } catch (error) {
-        // If service not available, use mock data
+        // Show error state instead of silently falling back to mock data
+        serviceLogger.error('SellerDashboard', 'Failed to load dashboard data', error);
         setStats({
-          activeListings: 5,
-          totalViews: 1200,
-          totalMessages: 8,
-          avgResponseTime: 2,
-          responseRate: 95
+          activeListings: 0,
+          totalViews: 0,
+          totalMessages: 0,
+          avgResponseTime: 0,
+          responseRate: 0
         });
-        setAlerts([]);
+        setAlerts([{
+          id: 'load-error',
+          type: 'error' as const,
+          title: language === 'bg' ? 'Грешка при зареждане' : 'Loading Error',
+          message: language === 'bg'
+            ? 'Не успяхме да заредим данните. Моля, опитайте отново по-късно.'
+            : 'Failed to load dashboard data. Please try again later.',
+        }]);
         setTasks([]);
       } finally {
         setLoading(false);

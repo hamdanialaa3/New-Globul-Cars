@@ -77,7 +77,22 @@ const SEOCityBrandPage: React.FC = () => {
             'name': title,
             'description': description,
             'url': metadata.canonical,
-            'itemListElement': [] // TODO: Add real listings
+            'numberOfItems': listings.length,
+            'itemListElement': listings.slice(0, 10).map((item, idx) => ({
+              '@type': 'ListItem',
+              'position': idx + 1,
+              'item': {
+                '@type': 'Car',
+                'name': `${item.make || ''} ${item.model || ''}`.trim(),
+                'url': `https://koli.one/listing/${item.numericId || item.id}`,
+                'offers': item.price ? {
+                  '@type': 'Offer',
+                  'price': item.price,
+                  'priceCurrency': 'EUR',
+                  'availability': 'https://schema.org/InStock'
+                } : undefined
+              }
+            }))
           })}
         </script>
       </Helmet>
@@ -100,11 +115,15 @@ const SEOCityBrandPage: React.FC = () => {
         {/* Stats Section */}
         <StatsSection>
           <StatCard>
-            <StatNumber>12+</StatNumber>
+            <StatNumber>{listings.length > 0 ? `${listings.length}+` : '—'}</StatNumber>
             <StatLabel>{brand.nameBg} в {city.nameBg}</StatLabel>
           </StatCard>
           <StatCard>
-            <StatNumber>5,000 лв - 50,000 лв</StatNumber>
+            <StatNumber>
+              {listings.length > 0
+                ? `${Math.min(...listings.map(l => l.price || 0).filter(Boolean)).toLocaleString()} - ${Math.max(...listings.map(l => l.price || 0)).toLocaleString()} €`
+                : '—'}
+            </StatNumber>
             <StatLabel>Ценови диапазон</StatLabel>
           </StatCard>
           <StatCard>
@@ -119,13 +138,29 @@ const SEOCityBrandPage: React.FC = () => {
           
           {loading ? (
             <LoadingText>Зареждане на обяви...</LoadingText>
+          ) : listings.length > 0 ? (
+            <ListingsGrid>
+              {listings.slice(0, 6).map((item) => (
+                <ListingCard key={item.id}>
+                  {item.images?.[0] && (
+                    <ListingImage src={item.images[0]} alt={`${item.make} ${item.model}`} loading="lazy" />
+                  )}
+                  <ListingInfo>
+                    <ListingTitle>{item.make} {item.model} {item.year || ''}</ListingTitle>
+                    {item.price && <ListingPrice>{item.price.toLocaleString()} €</ListingPrice>}
+                    <Link to={`/listing/${item.numericId || item.id}`}>
+                      Виж обявата →
+                    </Link>
+                  </ListingInfo>
+                </ListingCard>
+              ))}
+            </ListingsGrid>
           ) : (
             <ListingsGrid>
-              {/* TODO: Real listings from Firestore */}
               <PlaceholderCard>
-                <p>Обявите се зареждат динамично...</p>
-                <Link to={`/search?brand=${brandId}&city=${cityId}`}>
-                  Виж всички →
+                <p>Няма намерени обяви за {brand.nameBg} в {city.nameBg}.</p>
+                <Link to={`/search?brand=${brandId}`}>
+                  Търси {brand.nameBg} в цяла България →
                 </Link>
               </PlaceholderCard>
             </ListingsGrid>
@@ -330,6 +365,49 @@ const CityLink = styled(Link)`
 
 const BrandsGrid = styled(CitiesGrid)``;
 const BrandLink = styled(CityLink)``;
+
+const ListingCard = styled.div`
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  a {
+    color: ${props => props.theme.colors.primary};
+    font-weight: 600;
+    text-decoration: none;
+  }
+`;
+
+const ListingImage = styled.img`
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+`;
+
+const ListingInfo = styled.div`
+  padding: 1rem;
+`;
+
+const ListingTitle = styled.h3`
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: ${props => props.theme.colors.text};
+`;
+
+const ListingPrice = styled.div`
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: ${props => props.theme.colors.primary};
+  margin-bottom: 0.5rem;
+`;
 
 const LoadingText = styled.p`
   text-align: center;

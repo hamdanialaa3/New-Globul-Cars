@@ -55,7 +55,7 @@ export const TeamManagementPage: React.FC = () => {
         setState(prev => ({
           ...prev,
           loading: false,
-          error: 'فشل تحميل أعضاء الفريق'
+          error: 'Грешка при зареждане на екипа'
         }));
       }
     };
@@ -88,8 +88,8 @@ export const TeamManagementPage: React.FC = () => {
       <Container>
         <AccessDenied>
           <FaShieldAlt />
-          <h2>Access Denied</h2>
-          <p>هذه الصفحة متاحة فقط لحسابات الشركات</p>
+          <h2>Достъпът е забранен</h2>
+          <p>Тази страница е достъпна само за фирмени акаунти</p>
         </AccessDenied>
       </Container>
     );
@@ -102,11 +102,11 @@ export const TeamManagementPage: React.FC = () => {
         <HeaderContent>
           <Title>
             <FaUsers />
-            <span>إدارة الفريق</span>
+            <span>Управление на екипа</span>
           </Title>
           <InviteButton onClick={() => setShowInviteModal(true)}>
             <FaUserPlus />
-            <span>دعوة عضو جديد</span>
+            <span>Покани нов член</span>
           </InviteButton>
         </HeaderContent>
       </Header>
@@ -118,7 +118,7 @@ export const TeamManagementPage: React.FC = () => {
       <Filters>
         <SearchInput
           type="text"
-          placeholder="بحث بالاسم أو البريد الإلكتروني..."
+          placeholder="Търсене по име или имейл..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -127,39 +127,39 @@ export const TeamManagementPage: React.FC = () => {
             active={roleFilter === 'all'}
             onClick={() => setRoleFilter('all')}
           >
-            الكل ({state.members.length})
+            Всички ({state.members.length})
           </FilterButton>
           <FilterButton
             active={roleFilter === 'admin'}
             onClick={() => setRoleFilter('admin')}
           >
-            مدراء ({state.members.filter(m => m.role === 'admin').length})
+            Админи ({state.members.filter(m => m.role === 'admin').length})
           </FilterButton>
           <FilterButton
             active={roleFilter === 'agent'}
             onClick={() => setRoleFilter('agent')}
           >
-            وكلاء ({state.members.filter(m => m.role === 'agent').length})
+            Агенти ({state.members.filter(m => m.role === 'agent').length})
           </FilterButton>
           <FilterButton
             active={roleFilter === 'viewer'}
             onClick={() => setRoleFilter('viewer')}
           >
-            مشاهدين ({state.members.filter(m => m.role === 'viewer').length})
+            Наблюдатели ({state.members.filter(m => m.role === 'viewer').length})
           </FilterButton>
         </RoleFilters>
       </Filters>
 
       {/* Members Grid */}
       {state.loading ? (
-        <LoadingState>جاري التحميل...</LoadingState>
+        <LoadingState>Зареждане...</LoadingState>
       ) : state.error ? (
         <ErrorState>{state.error}</ErrorState>
       ) : filteredMembers.length === 0 ? (
         <EmptyState>
           <FaUsers />
-          <p>لا يوجد أعضاء بعد</p>
-          <small>ابدأ بدعوة أعضاء فريقك</small>
+          <p>Все още няма членове</p>
+          <small>Започнете като поканите членовете на вашия екип</small>
         </EmptyState>
       ) : (
         <MembersGrid>

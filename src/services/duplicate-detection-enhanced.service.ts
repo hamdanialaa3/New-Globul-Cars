@@ -119,7 +119,7 @@ export class DuplicateDetectionService {
             isDuplicate: true,
             confidence: 'very-high',
             duplicateCarIds: vinResult.duplicateCarIds,
-            reason: 'نفس رقم VIN موجود في قاعدة البيانات',
+            reason: 'Same VIN already exists in the database',
             score: DETECTION_CONFIG.SCORES.VIN_EXACT,
             details: {
               vinMatch: true
@@ -143,7 +143,7 @@ export class DuplicateDetectionService {
             isDuplicate: true,
             confidence: 'high',
             duplicateCarIds: specResult.duplicateCarIds,
-            reason: 'سيارة مطابقة تماماً (الماركة، الموديل، السنة، الكيلومترات)',
+            reason: 'Exact match found (make, model, year, mileage)',
             score: DETECTION_CONFIG.SCORES.SPEC_EXACT,
             details: {
               specMatch: true
@@ -175,8 +175,8 @@ export class DuplicateDetectionService {
           confidence,
           duplicateCarIds: similarResult.duplicateCarIds,
           reason: isSuspicious
-            ? '⚠️ بائع لديه تاريخ في الإعلانات المكررة'
-            : 'سيارة مشابهة جداً موجودة بالفعل',
+            ? '⚠️ Seller has a history of duplicate listings'
+            : 'A very similar car already exists',
           score,
           details: {
             specMatch: true,
@@ -200,7 +200,7 @@ export class DuplicateDetectionService {
             isDuplicate: true,
             confidence: 'medium',
             duplicateCarIds: imageResult.duplicateCarIds,
-            reason: 'صور مشابهة جداً لإعلان آخر',
+            reason: 'Photos are very similar to another listing',
             score: DETECTION_CONFIG.SCORES.IMAGE_SIMILAR,
             details: {
               imageMatch: true
@@ -219,7 +219,7 @@ export class DuplicateDetectionService {
         isDuplicate: false,
         confidence: 'low',
         duplicateCarIds: [],
-        reason: 'لا توجد إعلانات مكررة',
+        reason: 'No duplicate listings found',
         score: 0
       };
 
@@ -234,7 +234,7 @@ export class DuplicateDetectionService {
         isDuplicate: false,
         confidence: 'low',
         duplicateCarIds: [],
-        reason: 'خطأ في فحص التكرار - السماح بالإعلان',
+        reason: 'Duplicate check error - listing allowed',
         score: 0
       };
     }

@@ -24,6 +24,12 @@ const OrderSuccessPage = safeLazy(() => import('../pages/01_main-pages/marketpla
 const StripePaymentPage = safeLazy(() => import('../pages/01_main-pages/marketplace/StripePaymentPage'));
 const BlogPage = safeLazy(() => import('../pages/01_main-pages/blog/BlogPage'));
 const BlogPostPage = safeLazy(() => import('../pages/01_main-pages/blog/BlogPostPage'));
+const AiValuationDeepDive = safeLazy(() => import('../pages/01_main-pages/blog/posts/AiValuationDeepDive'));
+const BulgarianCarMarket2026 = safeLazy(() => import('../pages/01_main-pages/blog/posts/BulgarianCarMarket2026'));
+const MarketplaceComparison2026 = safeLazy(() => import('../pages/01_main-pages/blog/posts/MarketplaceComparison2026'));
+const HybridSearchDeepDive = safeLazy(() => import('../pages/01_main-pages/blog/posts/HybridSearchDeepDive'));
+const NeuralPricingDeepDive = safeLazy(() => import('../pages/01_main-pages/blog/posts/NeuralPricingDeepDive'));
+const ConstitutionalCodingDeepDive = safeLazy(() => import('../pages/01_main-pages/blog/posts/ConstitutionalCodingDeepDive'));
 // PHASE 3: Team Management System (Updated path)
 const TeamManagementPage = safeLazy(() => import('../pages/06_admin/TeamManagement/TeamManagementPage'));
 const CompanyAnalyticsDashboard = safeLazy(() => import('../pages/09_dealer-company/CompanyAnalyticsDashboard'));
@@ -51,6 +57,7 @@ const TeamManagement = safeLazy(() => import('../features/team/TeamManagement'))
 const UsersDirectoryPage = safeLazy(() => import('../pages/03_user-pages/users-directory/UsersDirectoryPage'));
 const AllPostsPage = safeLazy(() => import('../pages/03_user-pages/social/AllPostsPage'));
 const AllCarsPage = safeLazy(() => import('../pages/05_search-browse/all-cars/AllCarsPage'));
+const SearchPage = safeLazy(() => import('../pages/05_search-browse/SearchPage'));
 const CompetitiveComparisonPage = safeLazy(() => import('../pages/10_landing/CompetitiveComparisonPage'));
 const CarPricingPage = safeLazy(() => import('../features/pricing/CarPricingPage'));
 const AIAnalysisPage = safeLazy(() => import('../pages/01_main-pages/ai-analysis/AIAnalysisPage'));
@@ -131,7 +138,7 @@ const CarNotFoundPage = safeLazy(() => import('../pages/02_error-pages/CarNotFou
 const NotFoundPage = safeLazy(() => import('../components/NotFoundPage'));
 
 // 🆕 Dynamic Car Showcase Pages (Container Pages)
-const DynamicCarShowcase = safeLazy(() => import('../pages/05_search-browse/DynamicCarShowcase'));
+const DynamicCarShowcase = safeLazy(() => import('../pages/05_search-browse/DynamicCarShowcase')) as unknown as React.ComponentType<any>;
 
 // Helper for dev tools components
 const BackupManagement = safeLazy(() => import('../components/admin/BackupManagement'));
@@ -159,6 +166,7 @@ export const MainRoutes: React.FC = () => {
             <Route path="/" element={<HomePage />} />
             <Route path="/social" element={<SocialFeedPage />} />
             <Route path="/cars" element={<CarsPage />} />
+            <Route path="/search" element={<SearchPage />} />
 
             {/* 🤖 AI Car Advisor */}
             <Route path="/advisor" element={<AIAdvisorPage />} />
@@ -183,6 +191,12 @@ export const MainRoutes: React.FC = () => {
 
             {/* 📝 Blog - Bulgarian Content & SEO */}
             <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/ai-valuation-works" element={<AiValuationDeepDive />} />
+            <Route path="/blog/bulgarian-market-2026" element={<BulgarianCarMarket2026 />} />
+            <Route path="/blog/marketplace-comparison" element={<MarketplaceComparison2026 />} />
+            <Route path="/blog/technical-deep-dive" element={<HybridSearchDeepDive />} />
+            <Route path="/blog/neural-pricing" element={<NeuralPricingDeepDive />} />
+            <Route path="/blog/constitutional-coding" element={<ConstitutionalCodingDeepDive />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />
 
             {/* 🏙️ SEO: City Landing Pages */}
@@ -517,7 +531,7 @@ export const MainRoutes: React.FC = () => {
             <Route path="/company/analytics" element={<RequireCompanyGuard><CompanyAnalyticsDashboard /></RequireCompanyGuard>} />
 
             <Route path="/advanced-search" element={<AuthGuard requireAuth={false}><AdvancedSearchPage /></AuthGuard>} />
-            <Route path="/search" element={<AuthGuard requireAuth={false}><AlgoliaSearchPage /></AuthGuard>} />
+
             <Route path="/my-listings" element={<AuthGuard requireAuth={true}><MyListingsPage /></AuthGuard>} />
             <Route path="/my-drafts" element={<AuthGuard requireAuth={true}><MyDraftsPage /></AuthGuard>} />
             <Route path="/analytics" element={<AuthGuard requireAuth={true}><B2BAnalyticsPortal /></AuthGuard>} />
@@ -563,10 +577,10 @@ export const MainRoutes: React.FC = () => {
                     return { Component: CompetitiveComparisonPage.default };
                 }}
             />
-            
+
             {/* SEO City-Brand Pages: /bmw-sofia, /audi-plovdiv, etc. */}
             <Route path="/:slug" element={<SEOCityBrandPage />} />
-            
+
             <Route path="*" element={<Suspense fallback={<LoadingSpinner size="medium" />}><NotFoundPage /></Suspense>} />
         </Routes>
     );

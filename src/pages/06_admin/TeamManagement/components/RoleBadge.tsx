@@ -16,19 +16,19 @@ interface Props {
 
 const ROLE_CONFIG = {
   admin: {
-    label: 'مدير',
+    label: 'Admin',
     icon: FaShieldAlt,
     color: '#3b82f6',
     bg: '#eff6ff'
   },
   agent: {
-    label: 'وكيل',
+    label: 'Agent',
     icon: FaUserTie,
     color: '#10b981',
     bg: '#ecfdf5'
   },
   viewer: {
-    label: 'مشاهد',
+    label: 'Viewer',
     icon: FaEye,
     color: '#6b7280',
     bg: '#f3f4f6'

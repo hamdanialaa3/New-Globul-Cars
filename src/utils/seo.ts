@@ -1,4 +1,7 @@
 // src/utils/seo.ts
+// @deprecated For new schema generation, use SchemaGenerator from '@/utils/seo/SchemaGenerator.ts'
+// This file is kept for backward compatibility. The canonical Schema.org generator is SchemaGenerator.ts
+// which supports Vehicle, VideoObject, AutoDealer, Breadcrumb, and FAQ schemas.
 // SEO utilities for Koli One
 
 import { UnifiedCar } from '../services/car/unified-car-types';
@@ -128,7 +131,7 @@ export const generateOrganizationStructuredData = () => {
     sameAs: [
       'https://www.facebook.com/koli.one/',
       'https://www.instagram.com/kolione/',
-      'https://www.tiktok.com/@mobilebg.eu',
+      'https://www.tiktok.com/@kolione',
       'https://www.threads.com/@kolione',
       'https://www.youtube.com/@Kolionebg',
       'https://www.linkedin.com/in/koli-one-a011993a9/',

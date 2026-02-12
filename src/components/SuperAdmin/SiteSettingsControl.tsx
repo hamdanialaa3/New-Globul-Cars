@@ -271,7 +271,7 @@ const SiteSettingsControl: React.FC = () => {
       const data = await siteSettingsService.getSiteSettings();
       setSettings(data);
     } catch (error) {
-      showMessage('error', 'فشل تحميل الإعدادات');
+      showMessage('error', 'Failed to load settings');
     } finally {
       setLoading(false);
     }
@@ -289,25 +289,25 @@ const SiteSettingsControl: React.FC = () => {
     try {
       setSaving(true);
       await siteSettingsService.updateSiteSettings(settings, adminEmail);
-      showMessage('success', '✅ تم حفظ الإعدادات بنجاح');
+      showMessage('success', '✅ Settings saved successfully');
     } catch (error) {
-      showMessage('error', '❌ فشل حفظ الإعدادات');
+      showMessage('error', '❌ Failed to save settings');
     } finally {
       setSaving(false);
     }
   };
 
   const handleReset = async () => {
-    if (!window.confirm('⚠️ هل أنت متأكد من إعادة تعيين جميع الإعدادات للقيم الافتراضية؟')) {
+    if (!window.confirm('⚠️ Are you sure you want to reset all settings to default values?')) {
       return;
     }
     try {
       setSaving(true);
       await siteSettingsService.updateSiteSettings(DEFAULT_SITE_SETTINGS, adminEmail);
       setSettings(DEFAULT_SITE_SETTINGS);
-      showMessage('success', '✅ تم إعادة تعيين الإعدادات');
+      showMessage('success', '✅ Settings have been reset');
     } catch (error) {
-      showMessage('error', '❌ فشل إعادة التعيين');
+      showMessage('error', '❌ Reset failed');
     } finally {
       setSaving(false);
     }
@@ -333,7 +333,7 @@ const SiteSettingsControl: React.FC = () => {
     return (
       <Container>
         <Header>
-          <Title><Settings size={24} /> جاري التحميل...</Title>
+          <Title><Settings size={24} /> Loading...</Title>
         </Header>
       </Container>
     );
@@ -344,10 +344,10 @@ const SiteSettingsControl: React.FC = () => {
       <Header>
         <Title>
           <Settings size={24} />
-          إعدادات الموقع
+          Site Settings
         </Title>
         <Subtitle>
-          التحكم الكامل في إعدادات المنصة، الميزات، الحدود، والأسعار
+          Full control over platform settings, features, limits, and pricing
         </Subtitle>
       </Header>
 
@@ -362,17 +362,17 @@ const SiteSettingsControl: React.FC = () => {
       <CategorySection>
         <CategoryTitle>
           <Wrench size={18} />
-          الصيانة والحالة
+          Maintenance & Status
         </CategoryTitle>
 
         <SettingRow>
           <SettingInfo>
             <SettingLabel>
               <AlertCircle size={14} />
-              وضع الصيانة
+              Maintenance Mode
             </SettingLabel>
             <SettingDescription>
-              تفعيل وضع الصيانة لإخفاء الموقع عن المستخدمين
+              Enable maintenance mode to hide the site from users
             </SettingDescription>
           </SettingInfo>
           <ToggleButton
@@ -380,19 +380,19 @@ const SiteSettingsControl: React.FC = () => {
             onClick={() => updateSetting('maintenanceMode', !settings.maintenanceMode)}
             disabled={saving}
           >
-            {settings.maintenanceMode ? 'مفعّل' : 'معطّل'}
+            {settings.maintenanceMode ? 'Enabled' : 'Disabled'}
           </ToggleButton>
         </SettingRow>
 
         {settings.maintenanceMode && (
           <SettingRow>
             <SettingInfo>
-              <SettingLabel>رسالة الصيانة</SettingLabel>
-              <TextArea
-                value={settings.maintenanceMessage}
-                onChange={(e) => updateSetting('maintenanceMessage', e.target.value)}
-                disabled={saving}
-                placeholder="أدخل الرسالة التي ستظهر للمستخدمين"
+            <SettingLabel>Maintenance Message</SettingLabel>
+            <TextArea
+              value={settings.maintenanceMessage}
+              onChange={(e) => updateSetting('maintenanceMessage', e.target.value)}
+              disabled={saving}
+              placeholder="Enter the message to display to users"
               />
             </SettingInfo>
           </SettingRow>
@@ -402,10 +402,10 @@ const SiteSettingsControl: React.FC = () => {
           <SettingInfo>
             <SettingLabel>
               <Shield size={14} />
-              السماح للادمن بالدخول أثناء الصيانة
+              Allow admin access during maintenance
             </SettingLabel>
             <SettingDescription>
-              المدراء يمكنهم الوصول للموقع حتى في وضع الصيانة
+              Admins can access the site even in maintenance mode
             </SettingDescription>
           </SettingInfo>
           <ToggleButton
@@ -413,7 +413,7 @@ const SiteSettingsControl: React.FC = () => {
             onClick={() => updateSetting('allowAdminAccessDuringMaintenance', !settings.allowAdminAccessDuringMaintenance)}
             disabled={saving}
           >
-            {settings.allowAdminAccessDuringMaintenance ? 'مفعّل' : 'معطّل'}
+            {settings.allowAdminAccessDuringMaintenance ? 'Enabled' : 'Disabled'}
           </ToggleButton>
         </SettingRow>
       </CategorySection>
@@ -422,17 +422,17 @@ const SiteSettingsControl: React.FC = () => {
       <CategorySection>
         <CategoryTitle>
           <UserPlus size={18} />
-          التسجيل والوصول
+          Registration & Access
         </CategoryTitle>
 
         <SettingRow>
           <SettingInfo>
             <SettingLabel>
               <UserPlus size={14} />
-              تفعيل التسجيل الجديد
+              Enable New Registration
             </SettingLabel>
             <SettingDescription>
-              السماح للمستخدمين الجدد بالتسجيل في المنصة
+              Allow new users to register on the platform
             </SettingDescription>
           </SettingInfo>
           <ToggleButton
@@ -440,7 +440,7 @@ const SiteSettingsControl: React.FC = () => {
             onClick={() => updateSetting('registrationEnabled', !settings.registrationEnabled)}
             disabled={saving}
           >
-            {settings.registrationEnabled ? 'مفعّل' : 'معطّل'}
+            {settings.registrationEnabled ? 'Enabled' : 'Disabled'}
           </ToggleButton>
         </SettingRow>
 
@@ -448,10 +448,10 @@ const SiteSettingsControl: React.FC = () => {
           <SettingInfo>
             <SettingLabel>
               <Mail size={14} />
-              طلب تأكيد البريد الإلكتروني
+              Require Email Verification
             </SettingLabel>
             <SettingDescription>
-              المستخدمون الجدد يجب أن يؤكدوا بريدهم الإلكتروني
+              New users must verify their email
             </SettingDescription>
           </SettingInfo>
           <ToggleButton
@@ -459,7 +459,7 @@ const SiteSettingsControl: React.FC = () => {
             onClick={() => updateSetting('requireEmailVerification', !settings.requireEmailVerification)}
             disabled={saving}
           >
-            {settings.requireEmailVerification ? 'مفعّل' : 'معطّل'}
+            {settings.requireEmailVerification ? 'Enabled' : 'Disabled'}
           </ToggleButton>
         </SettingRow>
 
@@ -467,10 +467,10 @@ const SiteSettingsControl: React.FC = () => {
           <SettingInfo>
             <SettingLabel>
               <Phone size={14} />
-              طلب تأكيد رقم الجوال
+              Require Phone Verification
             </SettingLabel>
             <SettingDescription>
-              المستخدمون الجدد يجب أن يؤكدوا رقم جوالهم
+              New users must verify their phone number
             </SettingDescription>
           </SettingInfo>
           <ToggleButton
@@ -478,7 +478,7 @@ const SiteSettingsControl: React.FC = () => {
             onClick={() => updateSetting('requirePhoneVerification', !settings.requirePhoneVerification)}
             disabled={saving}
           >
-            {settings.requirePhoneVerification ? 'مفعّل' : 'معطّل'}
+            {settings.requirePhoneVerification ? 'Enabled' : 'Disabled'}
           </ToggleButton>
         </SettingRow>
       </CategorySection>
@@ -487,23 +487,23 @@ const SiteSettingsControl: React.FC = () => {
       <CategorySection>
         <CategoryTitle>
           <Star size={18} />
-          تفعيل الميزات
+          Feature Toggles
         </CategoryTitle>
 
         <SettingRow>
           <SettingInfo>
             <SettingLabel>
               <MessageSquare size={14} />
-              نظام المراسلات
+              Messaging System
             </SettingLabel>
-            <SettingDescription>المحادثات بين المستخدمين والبائعين</SettingDescription>
+            <SettingDescription>Conversations between users and sellers</SettingDescription>
           </SettingInfo>
           <ToggleButton
             $active={settings.features.messaging}
             onClick={() => updateSetting('features.messaging', !settings.features.messaging)}
             disabled={saving}
           >
-            {settings.features.messaging ? 'مفعّل' : 'معطّل'}
+            {settings.features.messaging ? 'Enabled' : 'Disabled'}
           </ToggleButton>
         </SettingRow>
 
@@ -511,16 +511,16 @@ const SiteSettingsControl: React.FC = () => {
           <SettingInfo>
             <SettingLabel>
               <Star size={14} />
-              التقييمات والمراجعات
+              Ratings & Reviews
             </SettingLabel>
-            <SettingDescription>السماح للمستخدمين بكتابة التقييمات</SettingDescription>
+            <SettingDescription>Allow users to write reviews</SettingDescription>
           </SettingInfo>
           <ToggleButton
             $active={settings.features.reviews}
             onClick={() => updateSetting('features.reviews', !settings.features.reviews)}
             disabled={saving}
           >
-            {settings.features.reviews ? 'مفعّل' : 'معطّل'}
+            {settings.features.reviews ? 'Enabled' : 'Disabled'}
           </ToggleButton>
         </SettingRow>
 
@@ -528,16 +528,16 @@ const SiteSettingsControl: React.FC = () => {
           <SettingInfo>
             <SettingLabel>
               <Image size={14} />
-              البحث المرئي
+              Visual Search
             </SettingLabel>
-            <SettingDescription>البحث عن السيارات بالصور</SettingDescription>
+            <SettingDescription>Search for cars by images</SettingDescription>
           </SettingInfo>
           <ToggleButton
             $active={settings.features.visualSearch}
             onClick={() => updateSetting('features.visualSearch', !settings.features.visualSearch)}
             disabled={saving}
           >
-            {settings.features.visualSearch ? 'مفعّل' : 'معطّل'}
+            {settings.features.visualSearch ? 'Enabled' : 'Disabled'}
           </ToggleButton>
         </SettingRow>
 
@@ -545,16 +545,16 @@ const SiteSettingsControl: React.FC = () => {
           <SettingInfo>
             <SettingLabel>
               <Brain size={14} />
-              التحليل بالذكاء الاصطناعي
+              AI Analysis
             </SettingLabel>
-            <SettingDescription>تحليل السيارات بواسطة AI</SettingDescription>
+            <SettingDescription>Car analysis powered by AI</SettingDescription>
           </SettingInfo>
           <ToggleButton
             $active={settings.features.aiAnalysis}
             onClick={() => updateSetting('features.aiAnalysis', !settings.features.aiAnalysis)}
             disabled={saving}
           >
-            {settings.features.aiAnalysis ? 'مفعّل' : 'معطّل'}
+            {settings.features.aiAnalysis ? 'Enabled' : 'Disabled'}
           </ToggleButton>
         </SettingRow>
 
@@ -562,16 +562,16 @@ const SiteSettingsControl: React.FC = () => {
           <SettingInfo>
             <SettingLabel>
               <DollarSign size={14} />
-              تقدير الأسعار
+              Price Estimation
             </SettingLabel>
-            <SettingDescription>أداة تقدير سعر السيارة</SettingDescription>
+            <SettingDescription>Car price estimation tool</SettingDescription>
           </SettingInfo>
           <ToggleButton
             $active={settings.features.priceEstimator}
             onClick={() => updateSetting('features.priceEstimator', !settings.features.priceEstimator)}
             disabled={saving}
           >
-            {settings.features.priceEstimator ? 'مفعّل' : 'معطّل'}
+            {settings.features.priceEstimator ? 'Enabled' : 'Disabled'}
           </ToggleButton>
         </SettingRow>
 
@@ -579,16 +579,16 @@ const SiteSettingsControl: React.FC = () => {
           <SettingInfo>
             <SettingLabel>
               <TrendingUp size={14} />
-              التوصيات الذكية
+              Smart Recommendations
             </SettingLabel>
-            <SettingDescription>توصيات السيارات المخصصة</SettingDescription>
+            <SettingDescription>Personalized car recommendations</SettingDescription>
           </SettingInfo>
           <ToggleButton
             $active={settings.features.smartRecommendations}
             onClick={() => updateSetting('features.smartRecommendations', !settings.features.smartRecommendations)}
             disabled={saving}
           >
-            {settings.features.smartRecommendations ? 'مفعّل' : 'معطّل'}
+            {settings.features.smartRecommendations ? 'Enabled' : 'Disabled'}
           </ToggleButton>
         </SettingRow>
 
@@ -596,16 +596,16 @@ const SiteSettingsControl: React.FC = () => {
           <SettingInfo>
             <SettingLabel>
               <Share2 size={14} />
-              المشاركة الاجتماعية
+              Social Sharing
             </SettingLabel>
-            <SettingDescription>مشاركة الإعلانات على وسائل التواصل</SettingDescription>
+            <SettingDescription>Share listings on social media</SettingDescription>
           </SettingInfo>
           <ToggleButton
             $active={settings.features.socialSharing}
             onClick={() => updateSetting('features.socialSharing', !settings.features.socialSharing)}
             disabled={saving}
           >
-            {settings.features.socialSharing ? 'مفعّل' : 'معطّل'}
+            {settings.features.socialSharing ? 'Enabled' : 'Disabled'}
           </ToggleButton>
         </SettingRow>
 
@@ -613,16 +613,16 @@ const SiteSettingsControl: React.FC = () => {
           <SettingInfo>
             <SettingLabel>
               <Heart size={14} />
-              المفضلة
+              Favorites
             </SettingLabel>
-            <SettingDescription>إضافة السيارات للمفضلة</SettingDescription>
+            <SettingDescription>Add cars to favorites</SettingDescription>
           </SettingInfo>
           <ToggleButton
             $active={settings.features.favorites}
             onClick={() => updateSetting('features.favorites', !settings.features.favorites)}
             disabled={saving}
           >
-            {settings.features.favorites ? 'مفعّل' : 'معطّل'}
+            {settings.features.favorites ? 'Enabled' : 'Disabled'}
           </ToggleButton>
         </SettingRow>
 
@@ -630,16 +630,16 @@ const SiteSettingsControl: React.FC = () => {
           <SettingInfo>
             <SettingLabel>
               <Search size={14} />
-              المقارنات
+              Comparisons
             </SettingLabel>
-            <SettingDescription>مقارنة السيارات مع بعضها</SettingDescription>
+            <SettingDescription>Compare cars with each other</SettingDescription>
           </SettingInfo>
           <ToggleButton
             $active={settings.features.comparisons}
             onClick={() => updateSetting('features.comparisons', !settings.features.comparisons)}
             disabled={saving}
           >
-            {settings.features.comparisons ? 'مفعّل' : 'معطّل'}
+            {settings.features.comparisons ? 'Enabled' : 'Disabled'}
           </ToggleButton>
         </SettingRow>
 
@@ -647,16 +647,16 @@ const SiteSettingsControl: React.FC = () => {
           <SettingInfo>
             <SettingLabel>
               <Bell size={14} />
-              تنبيهات انخفاض الأسعار
+              Price Drop Alerts
             </SettingLabel>
-            <SettingDescription>إشعارات عند انخفاض أسعار السيارات المفضلة</SettingDescription>
+            <SettingDescription>Notifications when favorite car prices drop</SettingDescription>
           </SettingInfo>
           <ToggleButton
             $active={settings.features.priceAlerts}
             onClick={() => updateSetting('features.priceAlerts', !settings.features.priceAlerts)}
             disabled={saving}
           >
-            {settings.features.priceAlerts ? 'مفعّل' : 'معطّل'}
+            {settings.features.priceAlerts ? 'Enabled' : 'Disabled'}
           </ToggleButton>
         </SettingRow>
       </CategorySection>
@@ -665,13 +665,13 @@ const SiteSettingsControl: React.FC = () => {
       <CategorySection>
         <CategoryTitle>
           <Upload size={18} />
-          حدود الرفع
+          Upload Limits
         </CategoryTitle>
 
         <SettingRow>
           <SettingInfo>
-            <SettingLabel>الحد الأقصى للصور لكل إعلان</SettingLabel>
-            <SettingDescription>عدد الصور المسموح رفعها لكل إعلان</SettingDescription>
+            <SettingLabel>Max images per listing</SettingLabel>
+            <SettingDescription>Number of images allowed per listing</SettingDescription>
           </SettingInfo>
           <InputField
             type="number"
@@ -685,8 +685,8 @@ const SiteSettingsControl: React.FC = () => {
 
         <SettingRow>
           <SettingInfo>
-            <SettingLabel>الحد الأقصى لحجم الصورة (MB)</SettingLabel>
-            <SettingDescription>أقصى حجم ملف للصورة الواحدة بالميجابايت</SettingDescription>
+            <SettingLabel>Max image size (MB)</SettingLabel>
+            <SettingDescription>Maximum file size per image in megabytes</SettingDescription>
           </SettingInfo>
           <InputField
             type="number"
@@ -700,8 +700,8 @@ const SiteSettingsControl: React.FC = () => {
 
         <SettingRow>
           <SettingInfo>
-            <SettingLabel>مدة الفيديو القصوى (ثانية)</SettingLabel>
-            <SettingDescription>أقصى مدة للفيديو المرفوع بالثواني</SettingDescription>
+            <SettingLabel>Max video duration (seconds)</SettingLabel>
+            <SettingDescription>Maximum uploaded video duration in seconds</SettingDescription>
           </SettingInfo>
           <InputField
             type="number"
@@ -718,13 +718,13 @@ const SiteSettingsControl: React.FC = () => {
       <CategorySection>
         <CategoryTitle>
           <Shield size={18} />
-          حدود الإعلانات
+          Listing Limits
         </CategoryTitle>
 
         <SettingRow>
           <SettingInfo>
-            <SettingLabel>عدد الإعلانات المجانية لكل مستخدم</SettingLabel>
-            <SettingDescription>الحد المجاني من الإعلانات قبل الطلب للترقية</SettingDescription>
+            <SettingLabel>Free listings per user</SettingLabel>
+            <SettingDescription>Free ad limit before upgrade is required</SettingDescription>
           </SettingInfo>
           <InputField
             type="number"
@@ -738,8 +738,8 @@ const SiteSettingsControl: React.FC = () => {
 
         <SettingRow>
           <SettingInfo>
-            <SettingLabel>الحد الأقصى للإعلانات النشطة</SettingLabel>
-            <SettingDescription>أقصى عدد إعلانات نشطة لكل مستخدم</SettingDescription>
+            <SettingLabel>Max active listings</SettingLabel>
+            <SettingDescription>Maximum active listings per user</SettingDescription>
           </SettingInfo>
           <InputField
             type="number"
@@ -753,8 +753,8 @@ const SiteSettingsControl: React.FC = () => {
 
         <SettingRow>
           <SettingInfo>
-            <SettingLabel>مدة الإعلان (أيام)</SettingLabel>
-            <SettingDescription>عدد الأيام التي يظل فيها الإعلان نشطاً</SettingDescription>
+            <SettingLabel>Listing duration (days)</SettingLabel>
+            <SettingDescription>Number of days a listing stays active</SettingDescription>
           </SettingInfo>
           <InputField
             type="number"
@@ -770,10 +770,10 @@ const SiteSettingsControl: React.FC = () => {
           <SettingInfo>
             <SettingLabel>
               <Shield size={14} />
-              طلب موافقة الادمن
+              Require Admin Approval
             </SettingLabel>
             <SettingDescription>
-              الإعلانات الجديدة تحتاج موافقة المدير قبل النشر
+              New listings require admin approval before publishing
             </SettingDescription>
           </SettingInfo>
           <ToggleButton
@@ -781,7 +781,7 @@ const SiteSettingsControl: React.FC = () => {
             onClick={() => updateSetting('listingLimits.requireAdminApproval', !settings.listingLimits.requireAdminApproval)}
             disabled={saving}
           >
-            {settings.listingLimits.requireAdminApproval ? 'مفعّل' : 'معطّل'}
+            {settings.listingLimits.requireAdminApproval ? 'Enabled' : 'Disabled'}
           </ToggleButton>
         </SettingRow>
       </CategorySection>
@@ -790,13 +790,13 @@ const SiteSettingsControl: React.FC = () => {
       <CategorySection>
         <CategoryTitle>
           <DollarSign size={18} />
-          الأسعار والرسوم
+          Pricing & Fees
         </CategoryTitle>
 
         <SettingRow>
           <SettingInfo>
-            <SettingLabel>سعر الإعلان المميز (SAR)</SettingLabel>
-            <SettingDescription>سعر ترقية الإعلان ليكون مميزاً</SettingDescription>
+            <SettingLabel>Premium ad price (SAR)</SettingLabel>
+            <SettingDescription>Price to upgrade a listing to premium</SettingDescription>
           </SettingInfo>
           <InputField
             type="number"
@@ -809,8 +809,8 @@ const SiteSettingsControl: React.FC = () => {
 
         <SettingRow>
           <SettingInfo>
-            <SettingLabel>سعر الإعلان Featured (SAR)</SettingLabel>
-            <SettingDescription>سعر ظهور الإعلان في قسم المميزة</SettingDescription>
+            <SettingLabel>Featured ad price (SAR)</SettingLabel>
+            <SettingDescription>Price for listing to appear in featured section</SettingDescription>
           </SettingInfo>
           <InputField
             type="number"
@@ -823,8 +823,8 @@ const SiteSettingsControl: React.FC = () => {
 
         <SettingRow>
           <SettingInfo>
-            <SettingLabel>سعر الإعلان في الأعلى (SAR)</SettingLabel>
-            <SettingDescription>سعر ظهور الإعلان في أعلى نتائج البحث</SettingDescription>
+            <SettingLabel>Top ad price (SAR)</SettingLabel>
+            <SettingDescription>Price for listing to appear at top of search results</SettingDescription>
           </SettingInfo>
           <InputField
             type="number"
@@ -837,8 +837,8 @@ const SiteSettingsControl: React.FC = () => {
 
         <SettingRow>
           <SettingInfo>
-            <SettingLabel>نسبة عمولة المنصة (%)</SettingLabel>
-            <SettingDescription>العمولة على كل عملية بيع</SettingDescription>
+            <SettingLabel>Platform commission rate (%)</SettingLabel>
+            <SettingDescription>Commission on every sale</SettingDescription>
           </SettingInfo>
           <InputField
             type="number"
@@ -856,14 +856,14 @@ const SiteSettingsControl: React.FC = () => {
       <CategorySection>
         <CategoryTitle>
           <Globe size={18} />
-          معلومات الاتصال
+          Contact Information
         </CategoryTitle>
 
         <SettingRow>
           <SettingInfo>
             <SettingLabel>
               <Mail size={14} />
-              بريد الدعم الفني
+              Support Email
             </SettingLabel>
           </SettingInfo>
           <InputField
@@ -879,7 +879,7 @@ const SiteSettingsControl: React.FC = () => {
           <SettingInfo>
             <SettingLabel>
               <Phone size={14} />
-              هاتف الدعم
+              Support Phone
             </SettingLabel>
           </SettingInfo>
           <InputField
@@ -895,7 +895,7 @@ const SiteSettingsControl: React.FC = () => {
           <SettingInfo>
             <SettingLabel>
               <MessageSquare size={14} />
-              رقم واتساب
+              WhatsApp Number
             </SettingLabel>
           </SettingInfo>
           <InputField
@@ -916,7 +916,7 @@ const SiteSettingsControl: React.FC = () => {
           disabled={saving}
         >
           <Save size={16} />
-          {saving ? 'جاري الحفظ...' : 'حفظ التغييرات'}
+          {saving ? 'Saving...' : 'Save Changes'}
         </Button>
 
         <Button
@@ -925,7 +925,7 @@ const SiteSettingsControl: React.FC = () => {
           disabled={saving}
         >
           <RefreshCw size={16} />
-          تحديث
+          Refresh
         </Button>
 
         <Button
@@ -934,7 +934,7 @@ const SiteSettingsControl: React.FC = () => {
           disabled={saving}
         >
           <AlertCircle size={16} />
-          إعادة تعيين للافتراضي
+          Reset to Default
         </Button>
       </ActionButtons>
     </Container>

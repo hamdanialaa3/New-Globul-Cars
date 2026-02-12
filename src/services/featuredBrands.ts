@@ -1,5 +1,4 @@
 // Featured Brands - Popular in Bulgarian Market
-// الماركات المميزة - الشائعة في السوق البلغاري
 // These brands appear first in dropdowns with special styling
 
 export interface FeaturedBrand {
@@ -12,11 +11,11 @@ export interface FeaturedBrand {
 // POPULAR BRANDS - Most common in Bulgaria
 // ============================================
 export const POPULAR_BRANDS: string[] = [
-  'Mercedes-Benz', // #1 في السوق الفاخر
-  'BMW',           // #2 في السوق الفاخر
-  'Volkswagen',    // #1 في السوق العام
-  'Toyota',        // الأكثر موثوقية
-  'BYD'            // الرائد في الكهرباء
+  'Mercedes-Benz', // #1 in luxury market
+  'BMW',           // #2 in luxury market
+  'Volkswagen',    // #1 in general market
+  'Toyota',        // Most reliable
+  'BYD'            // EV leader
 ];
 
 // ============================================
@@ -47,14 +46,14 @@ export const COMMERCIAL_VAN_MODELS: string[] = [
 // ============================================
 export const FEATURED_BRANDS_ORDER: FeaturedBrand[] = [
   // Popular brands first
-  { name: 'Mercedes-Benz', reason: 'popular', description: 'الأكثر شيوعاً' },
-  { name: 'Volkswagen', reason: 'popular', description: 'الأكثر مبيعاً' },
-  { name: 'BMW', reason: 'popular', description: 'شائع جداً' },
-  { name: 'Toyota', reason: 'popular', description: 'الأكثر موثوقية' },
-  { name: 'BYD', reason: 'electric', description: 'الرائد في الكهرباء' },
+  { name: 'Mercedes-Benz', reason: 'popular', description: 'Most popular' },
+  { name: 'Volkswagen', reason: 'popular', description: 'Best seller' },
+  { name: 'BMW', reason: 'popular', description: 'Very popular' },
+  { name: 'Toyota', reason: 'popular', description: 'Most reliable' },
+  { name: 'BYD', reason: 'electric', description: 'EV leader' },
   
   // Electric brands
-  { name: 'Tesla', reason: 'electric', description: 'كهرباء فقط' },
+  { name: 'Tesla', reason: 'electric', description: 'EV only' },
   { name: 'Hyundai', reason: 'electric', description: 'Ioniq Series' },
   { name: 'Kia', reason: 'electric', description: 'EV6, EV9' }
 ];

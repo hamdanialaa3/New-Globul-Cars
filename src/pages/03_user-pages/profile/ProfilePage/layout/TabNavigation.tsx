@@ -115,12 +115,12 @@ const TabButton = styled(NavLink)<{ $theme: ProfileTheme }>`
 
 export const TabNavigation: React.FC<TabNavigationProps> = ({ theme, currentTab, isOwnProfile }) => {
   const tabs: Tab[] = [
-    { id: 'profile', label: 'الملف الشخصي', labelEN: 'Profile', icon: <User />, path: '' },
-    { id: 'my-ads', label: 'إعلاناتي', labelEN: 'My Ads', icon: <Car />, path: 'my-ads' },
-    { id: 'campaigns', label: 'الحملات', labelEN: 'Campaigns', icon: <TrendingUp />, path: 'campaigns' },
-    { id: 'analytics', label: 'الإحصائيات', labelEN: 'Analytics', icon: <BarChart3 />, path: 'analytics' },
-    { id: 'settings', label: 'الإعدادات', labelEN: 'Settings', icon: <Settings />, path: 'settings' },
-    { id: 'consultations', label: 'الاستشارات', labelEN: 'Consultations', icon: <MessageSquare />, path: 'consultations' }
+    { id: 'profile', label: 'Профил', labelEN: 'Profile', icon: <User />, path: '' },
+    { id: 'my-ads', label: 'Моите обяви', labelEN: 'My Ads', icon: <Car />, path: 'my-ads' },
+    { id: 'campaigns', label: 'Кампании', labelEN: 'Campaigns', icon: <TrendingUp />, path: 'campaigns' },
+    { id: 'analytics', label: 'Анализи', labelEN: 'Analytics', icon: <BarChart3 />, path: 'analytics' },
+    { id: 'settings', label: 'Настройки', labelEN: 'Settings', icon: <Settings />, path: 'settings' },
+    { id: 'consultations', label: 'Консултации', labelEN: 'Consultations', icon: <MessageSquare />, path: 'consultations' }
   ];
 
   // Filter tabs based on ownership

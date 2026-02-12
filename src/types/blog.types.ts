@@ -3,13 +3,14 @@
  * Bulgarian content management for SEO and user engagement
  */
 
-export type BlogCategory = 
+export type BlogCategory =
   | 'buying-tips' // Съвети за покупка
   | 'selling-tips' // Съвети за продажба
   | 'market-trends' // Пазарни тенденции
   | 'car-reviews' // Ревюта на коли
-  | 'maintenance' // Поддръжка
+  | 'maintenance' // Подدръжка
   | 'legal' // Правна информация
+  | 'engineering' // Инженерни технологии
   | 'news'; // Новини
 
 export type BlogStatus = 'draft' | 'published' | 'archived';
@@ -49,7 +50,7 @@ export interface BlogPost {
   views: number;
   likes: number;
   shares: number;
-  
+
   // SEO
   metaTitle?: {
     bg: string;
@@ -60,16 +61,16 @@ export interface BlogPost {
     en: string;
   };
   keywords: string[];
-  
+
   // Engagement
   readingTime: number; // minutes
   commentsCount: number;
-  
+
   // Timestamps
   createdAt: Date;
   updatedAt: Date;
   publishedAt?: Date;
-  
+
   // Related content
   relatedPosts?: string[]; // IDs of related posts
   relatedCars?: string[]; // IDs of related cars

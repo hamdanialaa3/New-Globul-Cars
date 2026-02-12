@@ -304,11 +304,11 @@ const ViewAllDealersPage: React.FC = () => {
       <ContentWrapper>
         <PageHeader>
           <PageTitle>
-            {isRTL ? 'جميع الوكلاء المعتمدين' : 'All Featured Dealers'}
+            {isRTL ? 'All Featured Dealers' : 'All Featured Dealers'}
           </PageTitle>
           <PageDescription>
             {isRTL 
-              ? 'تصفح شبكة وكلائنا المعتمدين في بلغاريا'
+              ? 'Browse our network of certified dealers across Bulgaria'
               : 'Browse our network of certified dealers across Bulgaria'
             }
           </PageDescription>
@@ -317,7 +317,7 @@ const ViewAllDealersPage: React.FC = () => {
         <SearchBar>
           <SearchInput
             type="text"
-            placeholder={isRTL ? 'ابحث عن وكيل أو موقع...' : 'Search for dealer or location...'}
+            placeholder={isRTL ? 'Search for dealer or location...' : 'Search for dealer or location...'}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -325,12 +325,12 @@ const ViewAllDealersPage: React.FC = () => {
         
         {loading ? (
           <LoadingContainer>
-            {isRTL ? 'جارٍ التحميل...' : 'Loading...'}
+            {isRTL ? 'Loading...' : 'Loading...'}
           </LoadingContainer>
         ) : filteredDealers.length === 0 ? (
           <EmptyState>
-            <h3>{isRTL ? 'لا توجد نتائج' : 'No Results Found'}</h3>
-            <p>{isRTL ? 'جرب مصطلح بحث مختلف' : 'Try a different search term'}</p>
+            <h3>{isRTL ? 'No Results Found' : 'No Results Found'}</h3>
+            <p>{isRTL ? 'Try a different search term' : 'Try a different search term'}</p>
           </EmptyState>
         ) : (
           <DealersGrid>
@@ -338,7 +338,7 @@ const ViewAllDealersPage: React.FC = () => {
               <DealerCard key={dealer.id}>
                 <DealerImage $image={dealer.image}>
                   <DealerBadge>
-                    {dealer.totalCars} {isRTL ? 'سيارة' : 'Cars'}
+                    {dealer.totalCars} {isRTL ? 'Cars' : 'Cars'}
                   </DealerBadge>
                 </DealerImage>
                 <DealerInfo>

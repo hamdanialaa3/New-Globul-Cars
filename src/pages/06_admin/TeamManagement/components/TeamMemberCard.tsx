@@ -23,7 +23,7 @@ export const TeamMemberCard: React.FC<Props> = ({ member, companyId, onUpdate })
   const [loading, setLoading] = useState(false);
 
   const handleAction = async (action: 'remove' | 'suspend' | 'reactivate') => {
-    if (!confirm(`هل أنت متأكد من ${action === 'remove' ? 'حذف' : action === 'suspend' ? 'تعليق' : 'تفعيل'} هذا العضو?`)) return;
+    if (!confirm(`Are you sure you want to ${action === 'remove' ? 'remove' : action === 'suspend' ? 'suspend' : 'reactivate'} this member?`)) return;
 
     try {
       setLoading(true);
@@ -45,15 +45,15 @@ export const TeamMemberCard: React.FC<Props> = ({ member, companyId, onUpdate })
   };
 
   const getLastActiveText = () => {
-    if (!member.lastActive) return 'لم يسجل دخول بعد';
+    if (!member.lastActive) return 'Never logged in';
     const now = new Date();
     const diffMs = now.getTime() - member.lastActive.getTime();
     const diffMins = Math.floor(diffMs / 60000);
-    if (diffMins < 60) return `منذ ${diffMins} دقيقة`;
+    if (diffMins < 60) return `${diffMins} minutes ago`;
     const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `منذ ${diffHours} ساعة`;
+    if (diffHours < 24) return `${diffHours} hours ago`;
     const diffDays = Math.floor(diffHours / 24);
-    return `منذ ${diffDays} يوم`;
+    return `${diffDays} days ago`;
   };
 
   return (
@@ -72,15 +72,15 @@ export const TeamMemberCard: React.FC<Props> = ({ member, companyId, onUpdate })
             <DropdownMenu>
               {member.status === 'active' ? (
                 <MenuItem onClick={() => handleAction('suspend')}>
-                  <FaBan /> تعليق
+                  <FaBan /> Suspend
                 </MenuItem>
               ) : (
                 <MenuItem onClick={() => handleAction('reactivate')}>
-                  <FaCheck /> تفعيل
+                  <FaCheck /> Reactivate
                 </MenuItem>
               )}
               <MenuItem danger onClick={() => handleAction('remove')}>
-                <FaTrash /> حذف
+                <FaTrash /> Remove
               </MenuItem>
             </DropdownMenu>
           )}
@@ -91,13 +91,13 @@ export const TeamMemberCard: React.FC<Props> = ({ member, companyId, onUpdate })
 
       <Stats>
         <Stat>
-          <Label>الحالة</Label>
+          <Label>Status</Label>
           <Value status={member.status}>
-            {member.status === 'active' ? 'نشط' : member.status === 'pending' ? 'معلق' : 'موقوف'}
+            {member.status === 'active' ? 'Active' : member.status === 'pending' ? 'Pending' : 'Suspended'}
           </Value>
         </Stat>
         <Stat>
-          <Label>آخر نشاط</Label>
+          <Label>Last Activity</Label>
           <Value>{getLastActiveText()}</Value>
         </Stat>
       </Stats>

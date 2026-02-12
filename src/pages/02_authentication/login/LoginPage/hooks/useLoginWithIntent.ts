@@ -92,15 +92,15 @@ export const useLoginWithIntent = (): UseLoginReturn => {
     const errors: Record<string, string> = {};
 
     if (!formData.email.trim()) {
-      errors.email = t('auth.emailRequired', 'البريد الإلكتروني مطلوب');
+      errors.email = t('auth.emailRequired', 'Email is required');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      errors.email = t('auth.emailInvalid', 'يرجى إدخال بريد إلكتروني صحيح');
+      errors.email = t('auth.emailInvalid', 'Please enter a valid email');
     }
 
     if (!formData.password) {
-      errors.password = t('auth.passwordRequired', 'كلمة المرور مطلوبة');
+      errors.password = t('auth.passwordRequired', 'Password is required');
     } else if (formData.password.length < 6) {
-      errors.password = t('auth.passwordTooShort', 'يجب أن تكون كلمة المرور 6 أحرف على الأقل');
+      errors.password = t('auth.passwordTooShort', 'Password must be at least 6 characters');
     }
 
     setValidationErrors(errors);
@@ -140,12 +140,12 @@ export const useLoginWithIntent = (): UseLoginReturn => {
 
       await bulgarianAuthService.loginWithEmail(formData.email, formData.password);
 
-      setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح'));
+      setSuccess(t('auth.loginSuccess', 'Login successful'));
       logger.info('[useLoginWithIntent] Login successful');
 
-      // لا تقم بالتنقل هنا - useEffect سيقوم به تلقائياً عند تحديث user context
+      // Don't navigate here - useEffect will handle it automatically when user context updates
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'فشل تسجيل الدخول';
+      const errorMessage = err instanceof Error ? err.message : 'Login failed';
       setError(errorMessage);
       logger.error('[useLoginWithIntent] Login failed:', err);
     } finally {
@@ -160,9 +160,9 @@ export const useLoginWithIntent = (): UseLoginReturn => {
     try {
       logger.info('[useLoginWithIntent] Attempting Google login');
       await SocialAuthService.loginWithGoogle();
-      setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح'));
+      setSuccess(t('auth.loginSuccess', 'Login successful'));
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'فشل تسجيل الدخول عبر Google';
+      const errorMessage = err instanceof Error ? err.message : 'Google login failed';
       setError(errorMessage);
       logger.error('[useLoginWithIntent] Google login failed:', err);
     } finally {
@@ -177,9 +177,9 @@ export const useLoginWithIntent = (): UseLoginReturn => {
     try {
       logger.info('[useLoginWithIntent] Attempting Facebook login');
       await SocialAuthService.loginWithFacebook();
-      setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح'));
+      setSuccess(t('auth.loginSuccess', 'Login successful'));
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'فشل تسجيل الدخول عبر Facebook';
+      const errorMessage = err instanceof Error ? err.message : 'Facebook login failed';
       setError(errorMessage);
       logger.error('[useLoginWithIntent] Facebook login failed:', err);
     } finally {
@@ -194,9 +194,9 @@ export const useLoginWithIntent = (): UseLoginReturn => {
     try {
       logger.info('[useLoginWithIntent] Attempting Apple login');
       await SocialAuthService.loginWithApple();
-      setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح'));
+      setSuccess(t('auth.loginSuccess', 'Login successful'));
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'فشل تسجيل الدخول عبر Apple';
+      const errorMessage = err instanceof Error ? err.message : 'Apple login failed';
       setError(errorMessage);
       logger.error('[useLoginWithIntent] Apple login failed:', err);
     } finally {
@@ -211,9 +211,9 @@ export const useLoginWithIntent = (): UseLoginReturn => {
     try {
       logger.info('[useLoginWithIntent] Attempting anonymous login');
       await bulgarianAuthService.signInAnonymously();
-      setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح'));
+      setSuccess(t('auth.loginSuccess', 'Login successful'));
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'فشل تسجيل الدخول المجهول';
+      const errorMessage = err instanceof Error ? err.message : 'Anonymous login failed';
       setError(errorMessage);
       logger.error('[useLoginWithIntent] Anonymous login failed:', err);
     } finally {

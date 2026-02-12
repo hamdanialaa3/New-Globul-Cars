@@ -18,7 +18,7 @@ export interface GloubulConnectDevice {
 
 export interface VehicleLiveData {
   deviceId: string;
-  vin: string; // إضافة VIN للبيانات الحية
+  vin: string; // Adding VIN for live data
   timestamp: Timestamp;
   location: GeoPoint;
   speed: number;
@@ -81,7 +81,7 @@ export class GloubulConnectService {
 
     } catch (error) {
       serviceLogger.error('GloubulConnectService.registerDevice failed', error as unknown as Error, { deviceId: deviceData.deviceId });
-      throw new Error('فشل في تسجيل جهاز Gloubul Connect');
+      throw new Error('Failed to register Gloubul Connect device');
     }
   }
 
@@ -102,7 +102,7 @@ export class GloubulConnectService {
 
     } catch (error) {
       serviceLogger.error('GloubulConnectService.updateLiveData failed', error as unknown as Error, { vin: liveData.vin });
-      throw new Error('فشل في تحديث بيانات السيارة');
+      throw new Error('Failed to update vehicle data');
     }
   }
 
@@ -114,7 +114,7 @@ export class GloubulConnectService {
     const initialTwin: DigitalTwin = {
       vin,
       userId,
-      lastLocation: new GeoPoint(42.6977, 23.3219), // صوفيا كافتراضي
+      lastLocation: new GeoPoint(42.6977, 23.3219), // Sofia as default
       fuelLevelPercent: 100,
       engineHealth: 'good',
       activeErrorCodes: [],
@@ -147,7 +147,7 @@ export class GloubulConnectService {
     const twinDoc = await getDoc(twinRef);
 
     if (!twinDoc.exists()) {
-      throw new Error('التوأم الرقمي غير موجود');
+      throw new Error('Digital twin not found');
     }
 
     const currentTwin = twinDoc.data() as DigitalTwin;
@@ -281,7 +281,7 @@ export class GloubulConnectService {
     );
 
     // (Comment removed - was in Arabic)
-    return totalAcceleration > 29.4; // 3G في m/s²
+    return totalAcceleration > 29.4; // 3G in m/s²
   }
 
   /**

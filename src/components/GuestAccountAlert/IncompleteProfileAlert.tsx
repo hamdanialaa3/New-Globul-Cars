@@ -1,10 +1,10 @@
 /**
  * Incomplete Profile Alert Component
  * 
- * يظهر فقط للمستخدمين الذين:
- * - ليس لديهم email مُتحقق منه
- * - ليس لديهم displayName (اسم)
- * - حساب ضيف (guest/anonymous)
+ * Shows only for users who:
+ * - Don't have a verified email
+ * - Don't have a displayName
+ * - Guest/anonymous account
  */
 
 import React, { useState, useEffect } from 'react';
@@ -37,12 +37,7 @@ const translations: Record<string, AlertData> = {
     button: 'Попълнете профила сега',
     subtext: 'Непълните профили може да не бъдат доверявани от други потребители.'
   },
-  ar: {
-    title: '⚠️ أكمل ملفك الشخصي',
-    description: 'ملفك الشخصي غير مكتمل. أضف اسمك وتحقق من بريدك الإلكتروني لبناء الثقة مع المستخدمين الآخرين.',
-    button: 'أكمل الملف الشخصي الآن',
-    subtext: 'الملفات الشخصية غير المكتملة قد لا يثق بها المستخدمون الآخرون.'
-  }
+
 };
 
 const slideIn = keyframes`

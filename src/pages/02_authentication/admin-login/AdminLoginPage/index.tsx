@@ -120,7 +120,7 @@ const AdminLoginPage: React.FC = () => {
       }, 800);
     } else {
       setTimeout(() => {
-        setError('اسم المستخدم أو كلمة المرور غير صحيحة');
+        setError('Incorrect username or password');
         setLoading(false);
       }, 500);
     }

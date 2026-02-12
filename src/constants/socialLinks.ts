@@ -1,6 +1,6 @@
 export const SOCIAL_LINKS = {
     instagram: "https://www.instagram.com/kolione/",
-    tiktok: "https://www.tiktok.com/@mobilebg.eu",
+    tiktok: "https://www.tiktok.com/@kolione",
     threads: "https://www.threads.com/@kolione",
     linkedin: "https://www.linkedin.com/in/koli-one-a011993a9/",
     facebook: "https://www.facebook.com/koli.one/",

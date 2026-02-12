@@ -325,7 +325,7 @@ const QuickActionsPanel: React.FC = () => {
       setProcessing(actionId);
       await actionFn();
     } catch (error) {
-      showMessage('error', 'حدث خطأ أثناء تنفيذ العملية');
+      showMessage('error', 'An error occurred while executing the operation');
     } finally {
       setProcessing(null);
     }
@@ -339,62 +339,62 @@ const QuickActionsPanel: React.FC = () => {
     await new Promise(resolve => setTimeout(resolve, 2000));
     localStorage.clear();
     sessionStorage.clear();
-    showMessage('success', '✅ تم مسح الكاش بنجاح');
+    showMessage('success', '✅ Cache cleared successfully');
   };
 
   const seedDemoData = async () => {
     await new Promise(resolve => setTimeout(resolve, 3000));
-    showMessage('success', '✅ تم إضافة البيانات التجريبية بنجاح');
+    showMessage('success', '✅ Demo data added successfully');
   };
 
   const exportAllData = async () => {
     await new Promise(resolve => setTimeout(resolve, 2000));
-    showMessage('success', '✅ جاري تحميل ملف التصدير...');
+    showMessage('success', '✅ Downloading export file...');
   };
 
   const cleanupDatabase = async () => {
     await new Promise(resolve => setTimeout(resolve, 3000));
-    showMessage('success', '✅ تم تنظيف قاعدة البيانات بنجاح');
+    showMessage('success', '✅ Database cleaned successfully');
   };
 
   const rebuildIndexes = async () => {
     await new Promise(resolve => setTimeout(resolve, 4000));
-    showMessage('success', '✅ تم إعادة بناء الفهارس بنجاح');
+    showMessage('success', '✅ Indexes rebuilt successfully');
   };
 
   const sendTestNotification = async () => {
     await new Promise(resolve => setTimeout(resolve, 1000));
-    showMessage('success', '✅ تم إرسال إشعار تجريبي');
+    showMessage('success', '✅ Test notification sent');
   };
 
   const generateReports = async () => {
     await new Promise(resolve => setTimeout(resolve, 2000));
-    showMessage('success', '✅ تم إنشاء التقارير بنجاح');
+    showMessage('success', '✅ Reports generated successfully');
   };
 
   const backupDatabase = async () => {
     await new Promise(resolve => setTimeout(resolve, 3000));
-    showMessage('success', '✅ تم إنشاء نسخة احتياطية بنجاح');
+    showMessage('success', '✅ Backup created successfully');
   };
 
   const optimizeImages = async () => {
     await new Promise(resolve => setTimeout(resolve, 2500));
-    showMessage('success', '✅ تم تحسين الصور بنجاح');
+    showMessage('success', '✅ Images optimized successfully');
   };
 
   const syncAlgolia = async () => {
     await new Promise(resolve => setTimeout(resolve, 3000));
-    showMessage('success', '✅ تم مزامنة Algolia بنجاح');
+    showMessage('success', '✅ Algolia synced successfully');
   };
 
   const clearOldLogs = async () => {
     await new Promise(resolve => setTimeout(resolve, 2000));
-    showMessage('success', '✅ تم مسح السجلات القديمة');
+    showMessage('success', '✅ Old logs cleared');
   };
 
   const refreshStatistics = async () => {
     await new Promise(resolve => setTimeout(resolve, 1500));
-    showMessage('success', '✅ تم تحديث الإحصائيات');
+    showMessage('success', '✅ Statistics refreshed');
   };
 
   return (
@@ -402,10 +402,10 @@ const QuickActionsPanel: React.FC = () => {
       <Header>
         <Title>
           <Zap size={24} />
-          الإجراءات السريعة
+          Quick Actions
         </Title>
         <Subtitle>
-          عمليات صيانة وإدارة المنصة بضغطة واحدة
+          One-click platform maintenance and management operations
         </Subtitle>
       </Header>
 
@@ -425,28 +425,28 @@ const QuickActionsPanel: React.FC = () => {
             <ActionIcon $variant="warning">
               <Trash2 size={20} />
             </ActionIcon>
-            <ActionTitle>مسح الكاش</ActionTitle>
+            <ActionTitle>Clear Cache</ActionTitle>
           </ActionHeader>
           <ActionDescription>
-            مسح جميع البيانات المخزنة مؤقتاً في المتصفح (LocalStorage & SessionStorage)
+            Clear all temporarily stored data in browser (LocalStorage & SessionStorage)
           </ActionDescription>
           <ActionButton
             $variant="warning"
             onClick={() => handleAction('clearCache', clearCache, {
-              title: 'مسح الكاش',
-              message: 'هل أنت متأكد من مسح جميع البيانات المؤقتة؟ قد تحتاج لإعادة تسجيل الدخول.'
+              title: 'Clear Cache',
+              message: 'Are you sure you want to clear all temporary data? You may need to re-login.'
             })}
             disabled={processing === 'clearCache'}
           >
             {processing === 'clearCache' ? (
               <>
                 <Loader size={14} className="spin" />
-                جاري المسح...
+                Clearing...
               </>
             ) : (
               <>
                 <Trash2 size={14} />
-                مسح الآن
+                Clear Now
               </>
             )}
           </ActionButton>
@@ -458,10 +458,10 @@ const QuickActionsPanel: React.FC = () => {
             <ActionIcon>
               <Package size={20} />
             </ActionIcon>
-            <ActionTitle>إضافة بيانات تجريبية</ActionTitle>
+            <ActionTitle>Add Demo Data</ActionTitle>
           </ActionHeader>
           <ActionDescription>
-            إضافة سيارات، مستخدمين، ومعاملات تجريبية لاختبار المنصة
+            Add sample cars, users, and transactions for testing the platform
           </ActionDescription>
           <ActionButton
             onClick={() => handleAction('seedDemoData', seedDemoData)}
@@ -470,12 +470,12 @@ const QuickActionsPanel: React.FC = () => {
             {processing === 'seedDemoData' ? (
               <>
                 <Loader size={14} className="spin" />
-                جاري الإضافة...
+                Adding...
               </>
             ) : (
               <>
                 <Package size={14} />
-                إضافة بيانات
+                Add Data
               </>
             )}
           </ActionButton>
@@ -487,10 +487,10 @@ const QuickActionsPanel: React.FC = () => {
             <ActionIcon $variant="success">
               <Download size={20} />
             </ActionIcon>
-            <ActionTitle>تصدير جميع البيانات</ActionTitle>
+            <ActionTitle>Export All Data</ActionTitle>
           </ActionHeader>
           <ActionDescription>
-            تصدير كل البيانات من Firestore إلى ملف JSON للنسخ الاحتياطي
+            Export all data from Firestore to a JSON file for backup
           </ActionDescription>
           <ActionButton
             $variant="success"
@@ -500,12 +500,12 @@ const QuickActionsPanel: React.FC = () => {
             {processing === 'exportAllData' ? (
               <>
                 <Loader size={14} className="spin" />
-                جاري التصدير...
+                Exporting...
               </>
             ) : (
               <>
                 <Download size={14} />
-                تصدير الآن
+                Export Now
               </>
             )}
           </ActionButton>
@@ -517,28 +517,28 @@ const QuickActionsPanel: React.FC = () => {
             <ActionIcon $variant="danger">
               <Database size={20} />
             </ActionIcon>
-            <ActionTitle>تنظيف قاعدة البيانات</ActionTitle>
+            <ActionTitle>Clean Up Database</ActionTitle>
           </ActionHeader>
           <ActionDescription>
-            حذف البيانات القديمة، المكررة، والمعاملات المنتهية الصلاحية
+            Delete old data, duplicates, and expired transactions
           </ActionDescription>
           <ActionButton
             $variant="danger"
             onClick={() => handleAction('cleanupDatabase', cleanupDatabase, {
-              title: 'تنظيف قاعدة البيانات',
-              message: 'تحذير: هذه العملية ستحذف البيانات غير المستخدمة بشكل نهائي!'
+              title: 'Clean Up Database',
+              message: 'Warning: This operation will permanently delete unused data!'
             })}
             disabled={processing === 'cleanupDatabase'}
           >
             {processing === 'cleanupDatabase' ? (
               <>
                 <Loader size={14} className="spin" />
-                جاري التنظيف...
+                Cleaning...
               </>
             ) : (
               <>
                 <Database size={14} />
-                تنظيف الآن
+                Clean Now
               </>
             )}
           </ActionButton>
@@ -550,10 +550,10 @@ const QuickActionsPanel: React.FC = () => {
             <ActionIcon>
               <Settings size={20} />
             </ActionIcon>
-            <ActionTitle>إعادة بناء الفهارس</ActionTitle>
+            <ActionTitle>Rebuild Indexes</ActionTitle>
           </ActionHeader>
           <ActionDescription>
-            إعادة بناء فهارس البحث والفرز لتحسين الأداء والسرعة
+            Rebuild search and sorting indexes to improve performance and speed
           </ActionDescription>
           <ActionButton
             onClick={() => handleAction('rebuildIndexes', rebuildIndexes)}
@@ -562,12 +562,12 @@ const QuickActionsPanel: React.FC = () => {
             {processing === 'rebuildIndexes' ? (
               <>
                 <Loader size={14} className="spin" />
-                جاري البناء...
+                Building...
               </>
             ) : (
               <>
                 <Settings size={14} />
-                إعادة البناء
+                Rebuild
               </>
             )}
           </ActionButton>
@@ -579,10 +579,10 @@ const QuickActionsPanel: React.FC = () => {
             <ActionIcon>
               <Bell size={20} />
             </ActionIcon>
-            <ActionTitle>إرسال إشعار تجريبي</ActionTitle>
+            <ActionTitle>Send Test Notification</ActionTitle>
           </ActionHeader>
           <ActionDescription>
-            إرسال إشعار تجريبي لاختبار نظام الإشعارات
+            Send a test notification to test the notification system
           </ActionDescription>
           <ActionButton
             onClick={() => handleAction('sendTestNotification', sendTestNotification)}
@@ -591,12 +591,12 @@ const QuickActionsPanel: React.FC = () => {
             {processing === 'sendTestNotification' ? (
               <>
                 <Loader size={14} className="spin" />
-                جاري الإرسال...
+                Sending...
               </>
             ) : (
               <>
                 <Bell size={14} />
-                إرسال الآن
+                Send Now
               </>
             )}
           </ActionButton>
@@ -608,10 +608,10 @@ const QuickActionsPanel: React.FC = () => {
             <ActionIcon>
               <FileText size={20} />
             </ActionIcon>
-            <ActionTitle>إنشاء التقارير</ActionTitle>
+            <ActionTitle>Generate Reports</ActionTitle>
           </ActionHeader>
           <ActionDescription>
-            إنشاء تقارير شاملة عن الأداء، المبيعات، والإحصائيات
+            Generate comprehensive reports on performance, sales, and statistics
           </ActionDescription>
           <ActionButton
             onClick={() => handleAction('generateReports', generateReports)}
@@ -620,12 +620,12 @@ const QuickActionsPanel: React.FC = () => {
             {processing === 'generateReports' ? (
               <>
                 <Loader size={14} className="spin" />
-                جاري الإنشاء...
+                Generating...
               </>
             ) : (
               <>
                 <FileText size={14} />
-                إنشاء التقارير
+                Generate Reports
               </>
             )}
           </ActionButton>
@@ -637,10 +637,10 @@ const QuickActionsPanel: React.FC = () => {
             <ActionIcon $variant="success">
               <HardDrive size={20} />
             </ActionIcon>
-            <ActionTitle>نسخة احتياطية</ActionTitle>
+            <ActionTitle>Backup</ActionTitle>
           </ActionHeader>
           <ActionDescription>
-            إنشاء نسخة احتياطية كاملة من قاعدة البيانات
+            Create a full backup of the database
           </ActionDescription>
           <ActionButton
             $variant="success"
@@ -650,12 +650,12 @@ const QuickActionsPanel: React.FC = () => {
             {processing === 'backupDatabase' ? (
               <>
                 <Loader size={14} className="spin" />
-                جاري النسخ...
+                Backing up...
               </>
             ) : (
               <>
                 <HardDrive size={14} />
-                نسخ احتياطي
+                Backup Now
               </>
             )}
           </ActionButton>
@@ -667,10 +667,10 @@ const QuickActionsPanel: React.FC = () => {
             <ActionIcon>
               <Upload size={20} />
             </ActionIcon>
-            <ActionTitle>تحسين الصور</ActionTitle>
+            <ActionTitle>Optimize Images</ActionTitle>
           </ActionHeader>
           <ActionDescription>
-            ضغط وتحسين جودة الصور المرفوعة لتوفير المساحة
+            Compress and optimize uploaded image quality to save space
           </ActionDescription>
           <ActionButton
             onClick={() => handleAction('optimizeImages', optimizeImages)}
@@ -679,12 +679,12 @@ const QuickActionsPanel: React.FC = () => {
             {processing === 'optimizeImages' ? (
               <>
                 <Loader size={14} className="spin" />
-                جاري التحسين...
+                Optimizing...
               </>
             ) : (
               <>
                 <Upload size={14} />
-                تحسين الآن
+                Optimize Now
               </>
             )}
           </ActionButton>
@@ -696,10 +696,10 @@ const QuickActionsPanel: React.FC = () => {
             <ActionIcon>
               <RefreshCw size={20} />
             </ActionIcon>
-            <ActionTitle>مزامنة Algolia</ActionTitle>
+            <ActionTitle>Sync Algolia</ActionTitle>
           </ActionHeader>
           <ActionDescription>
-            مزامنة بيانات البحث مع Algolia لتحديث نتائج البحث
+            Sync search data with Algolia to update search results
           </ActionDescription>
           <ActionButton
             onClick={() => handleAction('syncAlgolia', syncAlgolia)}
@@ -708,12 +708,12 @@ const QuickActionsPanel: React.FC = () => {
             {processing === 'syncAlgolia' ? (
               <>
                 <Loader size={14} className="spin" />
-                جاري المزامنة...
+                Syncing...
               </>
             ) : (
               <>
                 <RefreshCw size={14} />
-                مزامنة الآن
+                Sync Now
               </>
             )}
           </ActionButton>
@@ -725,10 +725,10 @@ const QuickActionsPanel: React.FC = () => {
             <ActionIcon $variant="warning">
               <Trash2 size={20} />
             </ActionIcon>
-            <ActionTitle>مسح السجلات القديمة</ActionTitle>
+            <ActionTitle>Clear Old Logs</ActionTitle>
           </ActionHeader>
           <ActionDescription>
-            حذف سجلات النظام القديمة (أكثر من 90 يوم)
+            Delete old system logs (older than 90 days)
           </ActionDescription>
           <ActionButton
             $variant="warning"
@@ -738,12 +738,12 @@ const QuickActionsPanel: React.FC = () => {
             {processing === 'clearOldLogs' ? (
               <>
                 <Loader size={14} className="spin" />
-                جاري المسح...
+                Clearing...
               </>
             ) : (
               <>
                 <Trash2 size={14} />
-                مسح السجلات
+                Clear Logs
               </>
             )}
           </ActionButton>
@@ -755,10 +755,10 @@ const QuickActionsPanel: React.FC = () => {
             <ActionIcon>
               <BarChart3 size={20} />
             </ActionIcon>
-            <ActionTitle>تحديث الإحصائيات</ActionTitle>
+            <ActionTitle>Refresh Statistics</ActionTitle>
           </ActionHeader>
           <ActionDescription>
-            إعادة حساب جميع الإحصائيات والعدادات في المنصة
+            Recalculate all statistics and counters on the platform
           </ActionDescription>
           <ActionButton
             onClick={() => handleAction('refreshStatistics', refreshStatistics)}
@@ -767,12 +767,12 @@ const QuickActionsPanel: React.FC = () => {
             {processing === 'refreshStatistics' ? (
               <>
                 <Loader size={14} className="spin" />
-                جاري التحديث...
+                Refreshing...
               </>
             ) : (
               <>
                 <BarChart3 size={14} />
-                تحديث الآن
+                Refresh Now
               </>
             )}
           </ActionButton>
@@ -795,13 +795,13 @@ const QuickActionsPanel: React.FC = () => {
                 onClick={confirmAction.action}
                 style={{ flex: 1 }}
               >
-                تأكيد
+                Confirm
               </ActionButton>
               <ActionButton
                 onClick={() => setConfirmAction(null)}
                 style={{ flex: 1, background: '#374151' }}
               >
-                إلغاء
+                Cancel
               </ActionButton>
             </DialogButtons>
           </ConfirmDialog>

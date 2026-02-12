@@ -438,7 +438,7 @@ export const PremiumHomeCarCard: React.FC<PremiumHomeCarCardProps> = ({ car }) =
         </SpecsGrid>
 
         <LocationBadge>
-          <MapPin size={12} /> {car.city || car.region || car.location || (language === 'bg' ? 'България' : 'Bulgaria')}
+          <MapPin size={12} /> {car.city || (typeof car.location === 'object' ? car.location?.city : car.location) || car.region || (language === 'bg' ? 'България' : 'Bulgaria')}
         </LocationBadge>
       </ContentWrapper>
     </CardContainer>

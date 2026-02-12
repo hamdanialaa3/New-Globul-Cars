@@ -70,18 +70,18 @@ const DynamicCarShowcase: React.FC<DynamicCarShowcaseProps> = ({ pageType }) => 
   // Sort options with translations
   const sortOptions = useMemo(() => {
     const options = [
-      { value: 'date-desc', labelEn: 'Newest First', labelBg: 'Най-нови първо', labelAr: 'الأحدث أولاً' },
-      { value: 'date-asc', labelEn: 'Oldest First', labelBg: 'Най-стари първо', labelAr: 'الأقدم أولاً' },
-      { value: 'price-asc', labelEn: 'Price: Low to High', labelBg: 'Цена: Ниска към Висока', labelAr: 'السعر: من الأقل للأعلى' },
-      { value: 'price-desc', labelEn: 'Price: High to Low', labelBg: 'Цена: Висока към Ниска', labelAr: 'السعر: من الأعلى للأقل' },
-      { value: 'year-desc', labelEn: 'Year: Newest', labelBg: 'Година: Най-нова', labelAr: 'السنة: الأحدث' },
-      { value: 'year-asc', labelEn: 'Year: Oldest', labelBg: 'Година: Най-стара', labelAr: 'السنة: الأقدم' },
-      { value: 'mileage-asc', labelEn: 'Mileage: Low to High', labelBg: 'Километри: Ниски към Високи', labelAr: 'الكيلومترات: من الأقل للأعلى' },
-      { value: 'mileage-desc', labelEn: 'Mileage: High to Low', labelBg: 'Километри: Високи към Ниски', labelAr: 'الكيلومترات: من الأعلى للأقل' },
-      { value: 'power-desc', labelEn: 'Power: High to Low', labelBg: 'Мощност: Висока към Ниска', labelAr: 'القوة: من الأعلى للأقل' },
-      { value: 'power-asc', labelEn: 'Power: Low to High', labelBg: 'Мощност: Ниска към Висока', labelAr: 'القوة: من الأقل للأعلى' },
-      { value: 'name-asc', labelEn: 'Name: A to Z', labelBg: 'Име: А към Я', labelAr: 'الاسم: أ إلى ي' },
-      { value: 'name-desc', labelEn: 'Name: Z to A', labelBg: 'Име: Я към А', labelAr: 'الاسم: ي إلى أ' }
+      { value: 'date-desc', labelEn: 'Newest First', labelBg: 'Най-нови първо', labelAr: 'Newest First' },
+      { value: 'date-asc', labelEn: 'Oldest First', labelBg: 'Най-стари първо', labelAr: 'Oldest First' },
+      { value: 'price-asc', labelEn: 'Price: Low to High', labelBg: 'Цена: Ниска към Висока', labelAr: 'Price: Low to High' },
+      { value: 'price-desc', labelEn: 'Price: High to Low', labelBg: 'Цена: Висока към Ниска', labelAr: 'Price: High to Low' },
+      { value: 'year-desc', labelEn: 'Year: Newest', labelBg: 'Година: Най-нова', labelAr: 'Year: Newest' },
+      { value: 'year-asc', labelEn: 'Year: Oldest', labelBg: 'Година: Най-стара', labelAr: 'Year: Oldest' },
+      { value: 'mileage-asc', labelEn: 'Mileage: Low to High', labelBg: 'Километри: Ниски към Високи', labelAr: 'Mileage: Low to High' },
+      { value: 'mileage-desc', labelEn: 'Mileage: High to Low', labelBg: 'Километри: Високи към Ниски', labelAr: 'Mileage: High to Low' },
+      { value: 'power-desc', labelEn: 'Power: High to Low', labelBg: 'Мощност: Висока към Ниска', labelAr: 'Power: High to Low' },
+      { value: 'power-asc', labelEn: 'Power: Low to High', labelBg: 'Мощност: Ниска към Висока', labelAr: 'Power: Low to High' },
+      { value: 'name-asc', labelEn: 'Name: A to Z', labelBg: 'Име: А към Я', labelAr: 'Name: A to Z' },
+      { value: 'name-desc', labelEn: 'Name: Z to A', labelBg: 'Име: Я към А', labelAr: 'Name: Z to A' }
     ];
     
     return options.map(opt => ({

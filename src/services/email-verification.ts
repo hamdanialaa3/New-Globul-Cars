@@ -203,8 +203,6 @@ export class EmailVerificationService {
         success: true,
         message: language === 'bg'
           ? `Имейл за потвърждение е изпратен на ${newEmail}`
-          : language === 'ar'
-          ? `تم إرسال رسالة التحقق إلى ${newEmail}`
           : `Verification email sent to ${newEmail}`
       };
 
@@ -217,29 +215,21 @@ export class EmailVerificationService {
         case 'auth/email-already-in-use':
           errorMessage = language === 'bg'
             ? 'Този имейл вече се използва'
-            : language === 'ar'
-            ? 'هذا الإيميل مستخدم بالفعل'
             : 'Email is already in use';
           break;
         case 'auth/invalid-email':
           errorMessage = language === 'bg'
             ? 'Невалиден имейл адрес'
-            : language === 'ar'
-            ? 'عنوان إيميل غير صالح'
             : 'Invalid email address';
           break;
         case 'auth/requires-recent-login':
           errorMessage = language === 'bg'
             ? 'Моля, влезте отново за да промените имейла'
-            : language === 'ar'
-            ? 'يرجى تسجيل الدخول مرة أخرى لتغيير الإيميل'
             : 'Please sign in again to change email';
           break;
         default:
           errorMessage = language === 'bg'
             ? 'Грешка при промяна на имейл'
-            : language === 'ar'
-            ? 'خطأ في تغيير الإيميل'
             : 'Error changing email';
       }
 

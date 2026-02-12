@@ -1,6 +1,5 @@
 /**
  * Enhanced Validation Service
- * خدمة التحقق من صحة البيانات - نسخة محسّنة للسوق البلغاري
  * 
  * Bulgarian Market-Specific Validators:
  * - Price validation (EUR currency)
@@ -107,35 +106,35 @@ export function validatePrice(
   
   // Basic validation
   if (typeof price !== 'number' || isNaN(price)) {
-    errors.push('السعر يجب أن يكون رقماً صحيحاً');
+    errors.push('Price must be a valid number');
     return { isValid: false, errors, warnings };
   }
   
   if (price <= 0) {
-    errors.push('السعر يجب أن يكون أكبر من صفر');
+    errors.push('Price must be greater than zero');
   }
   
   // Range validation
   if (priceInEUR < minPrice) {
-    errors.push(`السعر منخفض جداً (الحد الأدنى: ${minPrice}€)`);
+    errors.push(`Price is too low (minimum: ${minPrice}€)`);
   }
   
   if (priceInEUR > maxPrice) {
-    errors.push(`السعر مرتفع جداً (الحد الأقصى: ${maxPrice}€)`);
+    errors.push(`Price is too high (maximum: ${maxPrice}€)`);
   }
   
   // Suspicious price warnings
   if (priceInEUR < suspiciousLowThreshold && priceInEUR >= minPrice) {
-    warnings.push('⚠️ السعر منخفض بشكل غير عادي - يرجى التحقق من صحته');
+    warnings.push('⚠️ Unusually low price - please verify');
   }
   
   if (priceInEUR > suspiciousHighThreshold && priceInEUR <= maxPrice) {
-    warnings.push('⚠️ السعر مرتفع جداً - يتطلب معلومات إضافية للتحقق');
+    warnings.push('⚠️ Very high price - additional verification required');
   }
   
   // Round number warning (potential fake price)
   if (price % 1000 === 0 && price > 10000) {
-    warnings.push('💡 السعر رقم مدور - تأكد من دقة السعر');
+    warnings.push('💡 Price is a round number - verify accuracy');
   }
   
   return {
@@ -166,32 +165,32 @@ export function validateYear(
   
   // Basic validation
   if (typeof year !== 'number' || isNaN(year)) {
-    errors.push('السنة يجب أن تكون رقماً صحيحاً');
+    errors.push('Year must be a valid number');
     return { isValid: false, errors, warnings };
   }
   
   // Range validation
   if (year < minYear) {
-    errors.push(`السنة قديمة جداً (الحد الأدنى: ${minYear})`);
+    errors.push(`Year is too old (minimum: ${minYear})`);
   }
   
   if (year > maxYear) {
-    errors.push(`السنة غير صحيحة (الحد الأقصى: ${maxYear})`);
+    errors.push(`Invalid year (maximum: ${maxYear})`);
   }
   
   // Future year validation
   if (!allowFuture && year > currentYear) {
-    errors.push('لا يمكن إدخال سنة مستقبلية');
+    errors.push('Future year is not allowed');
   }
   
   // Classic car warning
   if (year < BULGARIAN_STANDARDS.CLASSIC_CAR_THRESHOLD) {
-    warnings.push(`🚗 سيارة كلاسيكية (${currentYear - year} سنة) - تتطلب معلومات خاصة`);
+    warnings.push(`🚗 Classic car (${currentYear - year} years old) - special information required`);
   }
   
   // Very new car warning
   if (year === currentYear || year === currentYear + 1) {
-    warnings.push('🆕 سيارة جديدة - تأكد من صحة البيانات');
+    warnings.push('🆕 New car - verify data accuracy');
   }
   
   return {
@@ -225,16 +224,16 @@ export function validateMileage(
   
   // Basic validation
   if (typeof mileage !== 'number' || isNaN(mileage)) {
-    errors.push('المسافة المقطوعة يجب أن تكون رقماً صحيحاً');
+    errors.push('Mileage must be a valid number');
     return { isValid: false, errors, warnings };
   }
   
   if (mileage < 0) {
-    errors.push('المسافة المقطوعة لا يمكن أن تكون سالبة');
+    errors.push('Mileage cannot be negative');
   }
   
   if (mileageInKm > maxMileage) {
-    errors.push(`المسافة المقطوعة مرتفعة جداً (الحد الأقصى: ${maxMileage.toLocaleString()} كم)`);
+    errors.push(`Mileage is too high (maximum: ${maxMileage.toLocaleString()} km)`);
   }
   
   // Suspicious mileage checks (if year provided)
@@ -250,25 +249,25 @@ export function validateMileage(
       // Very high mileage
       if (mileageInKm > highThreshold) {
         warnings.push(
-          `⚠️ المسافة المقطوعة مرتفعة جداً للسنة (متوقع: ~${Math.round(expectedMileage).toLocaleString()} كم)`
+          `⚠️ Mileage is too high for the year (expected: ~${Math.round(expectedMileage).toLocaleString()} km)`
         );
       }
       
       // Very low mileage (suspicious for old cars)
       if (mileageInKm < lowThreshold && vehicleAge > 1) {
         warnings.push(
-          `⚠️ المسافة المقطوعة منخفضة جداً للسنة (متوقع: ~${Math.round(expectedMileage).toLocaleString()} كم)`
+          `⚠️ Mileage is too low for the year (expected: ~${Math.round(expectedMileage).toLocaleString()} km)`
         );
       }
       
       // Round number warning
       if (mileageInKm % 10000 === 0 && mileageInKm > 0) {
-        warnings.push('💡 المسافة المقطوعة رقم مدور - تأكد من الدقة');
+        warnings.push('💡 Mileage is a round number - verify accuracy');
       }
       
       // Zero mileage for old car
       if (mileageInKm === 0 && vehicleAge > 1) {
-        warnings.push('⚠️ سيارة بدون مسافة مقطوعة - تأكد من صحة البيانات');
+        warnings.push('⚠️ Car with zero mileage - verify data accuracy');
       }
     }
   }
@@ -290,7 +289,7 @@ export function validateVIN(vin: string): ValidationResult {
   const warnings: string[] = [];
   
   if (!vin || typeof vin !== 'string') {
-    errors.push('رقم الشاصي (VIN) مطلوب');
+    errors.push('VIN (Vehicle Identification Number) is required');
     return { isValid: false, errors, warnings };
   }
   
@@ -298,7 +297,7 @@ export function validateVIN(vin: string): ValidationResult {
   
   // Length check
   if (cleanVIN.length !== BULGARIAN_STANDARDS.VIN_LENGTH) {
-    errors.push(`رقم الشاصي يجب أن يحتوي على ${BULGARIAN_STANDARDS.VIN_LENGTH} حرفاً`);
+    errors.push(`VIN must be ${BULGARIAN_STANDARDS.VIN_LENGTH} characters long`);
   }
   
   // Character check
@@ -306,20 +305,20 @@ export function validateVIN(vin: string): ValidationResult {
   const hasInvalidChars = invalidChars.some(char => cleanVIN.includes(char));
   
   if (hasInvalidChars) {
-    errors.push(`رقم الشاصي لا يمكن أن يحتوي على الأحرف: ${invalidChars.join(', ')}`);
+    errors.push(`VIN cannot contain the characters: ${invalidChars.join(', ')}`);
   }
   
   // Format check (A-Z, 0-9 only)
   const vinRegex = /^[A-HJ-NPR-Z0-9]{17}$/;
   if (!vinRegex.test(cleanVIN)) {
-    errors.push('رقم الشاصي يحتوي على أحرف غير صحيحة');
+    errors.push('VIN contains invalid characters');
   }
   
   // Check digit validation (optional - complex algorithm)
   if (errors.length === 0) {
     const isValidCheckDigit = validateVINCheckDigit(cleanVIN);
     if (!isValidCheckDigit) {
-      warnings.push('⚠️ رقم الشاصي قد لا يكون صحيحاً - يرجى التحقق');
+      warnings.push('⚠️ VIN may be invalid - please verify');
     }
   }
   
@@ -365,7 +364,7 @@ export function validateBulgarianPhone(phone: string): ValidationResult {
   const warnings: string[] = [];
   
   if (!phone || typeof phone !== 'string') {
-    errors.push('رقم الهاتف مطلوب');
+    errors.push('Phone number is required');
     return { isValid: false, errors, warnings };
   }
   
@@ -373,7 +372,7 @@ export function validateBulgarianPhone(phone: string): ValidationResult {
   
   // Bulgarian mobile format: +359 8X XXX XXXX or 08X XXX XXXX
   if (!BULGARIAN_STANDARDS.BULGARIAN_PHONE_REGEX.test(cleanPhone)) {
-    errors.push('رقم الهاتف غير صحيح (الصيغة الصحيحة: +359 8X XXX XXXX أو 08X XXX XXXX)');
+    errors.push('Invalid phone number (valid format: +359 8X XXX XXXX or 08X XXX XXXX)');
   }
   
   return {
@@ -393,7 +392,7 @@ export function validateBulgarianRegistration(registration: string): ValidationR
   const warnings: string[] = [];
   
   if (!registration || typeof registration !== 'string') {
-    errors.push('رقم اللوحة مطلوب');
+    errors.push('Registration number is required');
     return { isValid: false, errors, warnings };
   }
   
@@ -401,7 +400,7 @@ export function validateBulgarianRegistration(registration: string): ValidationR
   
   // Bulgarian format: XX1234XX or XX123456
   if (!BULGARIAN_STANDARDS.BULGARIAN_REGISTRATION_REGEX.test(cleanRegistration)) {
-    errors.push('رقم اللوحة غير صحيح (الصيغة الصحيحة: XX1234XX أو XX123456)');
+    errors.push('Invalid registration number (valid format: XX1234XX or XX123456)');
   }
   
   return {

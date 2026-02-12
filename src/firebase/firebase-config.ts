@@ -91,8 +91,8 @@ try {
   db = initializeFirestore(app, {
     localCache: memoryLocalCache?.() || undefined // In-memory cache only (no persistence)
   });
-  
-  logger.info('Firestore initialized with persistent local cache');
+
+  logger.info('Firestore initialized (cache settings applied: memory/default)');
 } catch (error) {
   logger.error('Failed to initialize Firestore', error as Error);
   throw error;
@@ -123,12 +123,12 @@ export function enableRealtimeMessagingPersistence(userNumericId: number): void 
     logger.warn('Cannot enable RTDB persistence: Missing numericId');
     return;
   }
-  
+
   // ✅ RTDB automatically caches data when listeners are active
   // Just ensure goOnline() is called (it's on by default)
   try {
     goOnline(realtimeDb);
-    
+
     logger.info('RTDB online mode enabled (auto-caching active)', { userNumericId });
   } catch (error) {
     logger.error('Failed to enable RTDB online mode', error as Error, { userNumericId });

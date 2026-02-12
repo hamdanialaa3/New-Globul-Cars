@@ -1,9 +1,9 @@
 /**
  * AI Learning System
- * نظام التعلم الآلي - يجمع التغذية الراجعة ويحسن القوالب تلقائياً
+ * Collects feedback and automatically improves templates
  * 
  * @module learning-system
- * @description يتعلم من تقييمات المستخدمين ويحسن جودة الذكاء الاصطناعي
+ * @description Learns from user ratings and improves AI quality
  */
 
 import { db } from '../../firebase/firebase-config';
@@ -80,7 +80,7 @@ class AILearningSystem {
   // ================ Feedback Collection ================
 
   /**
-   * جمع التغذية الراجعة من المستخدم
+   * Collect user feedback
    */
   async collectFeedback(feedback: Omit<AIFeedback, 'id' | 'timestamp'>): Promise<string> {
     try {
@@ -97,7 +97,7 @@ class AILearningSystem {
         featureType: feedback.featureType
       });
 
-      // إذا كان التقييم منخفض، حاول التحسين فوراً
+      // If rating is low, try to optimize immediately
       if (feedback.rating <= 2) {
         await this.triggerOptimization(feedbackRef.id, feedback);
       }
@@ -111,7 +111,7 @@ class AILearningSystem {
   }
 
   /**
-   * الحصول على جميع التغذيات الراجعة لميزة معينة
+   * Get all feedback for a specific feature
    */
   async getFeedbackByFeature(
     featureType: string,
@@ -146,7 +146,7 @@ class AILearningSystem {
   // ================ Template Optimization ================
 
   /**
-   * تحسين القوالب بناءً على التغذية الراجعة
+   * Improve templates based on feedback
    */
   private async triggerOptimization(
     feedbackId: string,
@@ -158,17 +158,17 @@ class AILearningSystem {
         rating: feedback.rating
       });
 
-      // جمع تغذيات مشابهة
+      // Collect similar feedback
       const similarFeedback = await this.getFeedbackByFeature(
         feedback.featureType,
         undefined,
         50
       );
 
-      // تحليل المشاكل الشائعة
+      // Analyze common issues
       const commonIssues = this.analyzeCommonIssues(similarFeedback);
 
-      // توليد قالب محسّن
+      // Generate optimized template
       const optimizedTemplate = await this.generateOptimizedTemplate(
         feedback.featureType,
         feedback.prompt,
@@ -177,18 +177,18 @@ class AILearningSystem {
         commonIssues
       );
 
-      // حفظ التحسين
+      // Save optimization
       await this.saveOptimization({
         templateId: `${feedback.featureType}_optimized`,
         originalTemplate: feedback.prompt,
         optimizedTemplate: optimizedTemplate,
-        improvementScore: 0, // سيتم حسابه لاحقاً
+        improvementScore: 0, // will be calculated later
         appliedAt: new Date(),
         feedbackCount: similarFeedback.length,
         averageRating: this.calculateAverageRating(similarFeedback)
       });
 
-      // تحديث حالة التغذية
+      // Update feedback status
       await updateDoc(doc(db, this.FEEDBACK_COLLECTION, feedbackId), {
         processed: true,
         optimizationApplied: true,
@@ -206,7 +206,7 @@ class AILearningSystem {
   }
 
   /**
-   * توليد قالب محسّن باستخدام AI
+   * Generate optimized template using AI
    */
   private async generateOptimizedTemplate(
     featureType: string,
@@ -217,42 +217,42 @@ class AILearningSystem {
   ): Promise<string> {
     try {
       const optimizationPrompt = `
-أنت خبير في تحسين قوالب الذكاء الاصطناعي. لديك القالب التالي الذي حصل على تقييم منخفض:
+You are an expert in improving AI templates. You have the following template that received a low rating:
 
-**نوع الميزة:** ${featureType}
+**Feature type:** ${featureType}
 
-**القالب الأصلي:**
+**Original template:**
 \`\`\`
 ${originalPrompt}
 \`\`\`
 
-**الرد المُولد:**
+**Generated response:**
 \`\`\`
 ${originalResponse}
 \`\`\`
 
-**تعليقات المستخدم:**
+**User comments:**
 "${userFeedback}"
 
-**المشاكل الشائعة المكتشفة:**
+**Common issues detected:**
 ${commonIssues.map((issue, i) => `${i + 1}. ${issue}`).join('\n')}
 
-**المطلوب:**
-قم بتحسين القالب الأصلي بناءً على:
-1. تعليقات المستخدم
-2. المشاكل الشائعة
-3. أفضل الممارسات للغة البلغارية
-4. تحسين الوضوح والدقة
-5. إضافة قيود واضحة لتجنب الأخطاء
+**Required:**
+Improve the original template based on:
+1. User comments
+2. Common issues
+3. Best practices for Bulgarian language
+4. Improve clarity and accuracy
+5. Add clear constraints to avoid errors
 
-**تعليمات التحسين:**
-- احتفظ بالهيكل العام للقالب
-- أضف تعليمات أكثر وضوحاً
-- حسّن جودة اللغة البلغارية
-- تجنب الأخطاء السابقة
-- أضف أمثلة إذا لزم الأمر
+**Improvement instructions:**
+- Keep the overall structure of the template
+- Add clearer instructions
+- Improve Bulgarian language quality
+- Avoid previous errors
+- Add examples if necessary
 
-أخرج القالب المحسّن فقط، بدون شرح إضافي.
+Output only the improved template, without additional explanation.
       `.trim();
 
       const result = await deepSeekService.generate(optimizationPrompt, {
@@ -274,7 +274,7 @@ ${commonIssues.map((issue, i) => `${i + 1}. ${issue}`).join('\n')}
   }
 
   /**
-   * حفظ التحسين في قاعدة البيانات
+   * Save optimization to database
    */
   private async saveOptimization(optimization: TemplateOptimization): Promise<void> {
     try {
@@ -296,7 +296,7 @@ ${commonIssues.map((issue, i) => `${i + 1}. ${issue}`).join('\n')}
   // ================ Analysis Methods ================
 
   /**
-   * تحليل المشاكل الشائعة
+   * Analyze common issues
    */
   private analyzeCommonIssues(feedbacks: AIFeedback[]): string[] {
     const lowRatedFeedback = feedbacks.filter(f => f.rating <= 2);
@@ -305,14 +305,14 @@ ${commonIssues.map((issue, i) => `${i + 1}. ${issue}`).join('\n')}
       return [];
     }
 
-    // استخراج الكلمات المفتاحية من التعليقات
+    // Extract keywords from comments
     const keywords: Record<string, number> = {};
     const commonPhrases: string[] = [];
 
     lowRatedFeedback.forEach(feedback => {
       const words = feedback.feedback.toLowerCase().split(/\s+/);
       
-      // البحث عن كلمات شائعة
+      // Search for common words
       const negativeWords = ['грешка', 'неточен', 'лош', 'проблем', 'не', 'слаб'];
       words.forEach(word => {
         if (negativeWords.some(neg => word.includes(neg))) {
@@ -320,23 +320,23 @@ ${commonIssues.map((issue, i) => `${i + 1}. ${issue}`).join('\n')}
         }
       });
 
-      // جمل شائعة
+      // Common phrases
       if (feedback.feedback.length > 20) {
         commonPhrases.push(feedback.feedback);
       }
     });
 
-    // ترتيب حسب التكرار
+    // Sort by frequency
     const sortedIssues = Object.entries(keywords)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
-      .map(([word, count]) => `"${word}" ظهرت ${count} مرة`);
+      .map(([word, count]) => `"${word}" appeared ${count} times`);
 
     return sortedIssues;
   }
 
   /**
-   * حساب متوسط التقييم
+   * Calculate average rating
    */
   private calculateAverageRating(feedbacks: AIFeedback[]): number {
     if (feedbacks.length === 0) return 0;
@@ -346,7 +346,7 @@ ${commonIssues.map((issue, i) => `${i + 1}. ${issue}`).join('\n')}
   }
 
   /**
-   * الحصول على رؤى التعلم
+   * Get learning insights
    */
   async getLearningInsights(featureType: string): Promise<LearningInsight> {
     try {
@@ -356,13 +356,13 @@ ${commonIssues.map((issue, i) => `${i + 1}. ${issue}`).join('\n')}
       const averageRating = this.calculateAverageRating(feedbacks);
       const commonIssues = this.analyzeCommonIssues(feedbacks);
 
-      // أنماط النجاح (تقييمات عالية)
+      // Success patterns (high ratings)
       const successPatterns = feedbacks
         .filter(f => f.rating >= 4)
         .slice(0, 5)
         .map(f => f.feedback);
 
-      // اقتراحات التحسين
+      // Improvement suggestions
       const improvementSuggestions = await this.generateImprovementSuggestions(
         featureType,
         feedbacks
@@ -384,14 +384,14 @@ ${commonIssues.map((issue, i) => `${i + 1}. ${issue}`).join('\n')}
   }
 
   /**
-   * توليد اقتراحات التحسين
+   * Generate improvement suggestions
    */
   private async generateImprovementSuggestions(
     featureType: string,
     feedbacks: AIFeedback[]
   ): Promise<string[]> {
     if (feedbacks.length < 5) {
-      return ['جمع المزيد من التغذية الراجعة لتوليد اقتراحات'];
+      return ['Collect more feedback to generate suggestions'];
     }
 
     const lowRated = feedbacks.filter(f => f.rating <= 2);
@@ -399,23 +399,23 @@ ${commonIssues.map((issue, i) => `${i + 1}. ${issue}`).join('\n')}
 
     const suggestions: string[] = [];
 
-    // مقارنة الأنماط
+    // Compare patterns
     if (lowRated.length > 0) {
-      suggestions.push(`تحسين جودة الردود - ${lowRated.length} تقييم منخفض`);
+      suggestions.push(`Improve response quality - ${lowRated.length} low ratings`);
     }
 
     if (highRated.length > 0) {
-      suggestions.push(`الاستفادة من الأنماط الناجحة - ${highRated.length} تقييم عالٍ`);
+      suggestions.push(`Leverage successful patterns - ${highRated.length} high ratings`);
     }
 
-    // معدل الاستجابة
+    // Response rate
     const avgResponseLength = feedbacks.reduce((acc, f) => 
       acc + f.response.length, 0) / feedbacks.length;
 
     if (avgResponseLength < 100) {
-      suggestions.push('زيادة طول الردود لمزيد من التفاصيل');
+      suggestions.push('Increase response length for more detail');
     } else if (avgResponseLength > 500) {
-      suggestions.push('اختصار الردود لتكون أكثر وضوحاً');
+      suggestions.push('Shorten responses for more clarity');
     }
 
     return suggestions;
@@ -424,7 +424,7 @@ ${commonIssues.map((issue, i) => `${i + 1}. ${issue}`).join('\n')}
   // ================ Statistics ================
 
   /**
-   * الحصول على إحصائيات شاملة
+   * Get comprehensive statistics
    */
   async getSystemStatistics(): Promise<{
     totalFeedback: number;
@@ -440,12 +440,12 @@ ${commonIssues.map((issue, i) => `${i + 1}. ${issue}`).join('\n')}
         collection(db, this.OPTIMIZATIONS_COLLECTION)
       );
 
-      // حساب التقييم العام
+      // Calculate overall rating
       const averageRating = feedbacks.length > 0
         ? feedbacks.reduce((acc, f) => acc + f.rating, 0) / feedbacks.length
         : 0;
 
-      // أفضل الميزات
+      // Top features
       const featureRatings: Record<string, { total: number; count: number }> = {};
       feedbacks.forEach(f => {
         if (!featureRatings[f.featureType]) {
@@ -478,13 +478,13 @@ ${commonIssues.map((issue, i) => `${i + 1}. ${issue}`).join('\n')}
   // ================ Auto-Learning ================
 
   /**
-   * تشغيل التعلم التلقائي (يُنفذ دورياً)
+   * Run auto-learning (executed periodically)
    */
   async runAutoLearning(): Promise<void> {
     try {
       logger.info('Starting auto-learning cycle');
 
-      // الحصول على التغذيات غير المعالجة
+      // Get unprocessed feedback
       const unprocessedQuery = query(
         collection(db, this.FEEDBACK_COLLECTION),
         where('processed', '==', false),

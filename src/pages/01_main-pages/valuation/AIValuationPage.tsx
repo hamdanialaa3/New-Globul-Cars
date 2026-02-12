@@ -7,6 +7,7 @@
  */
 
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calculator, TrendingUp, DollarSign, Search, CheckCircle, AlertCircle } from 'lucide-react';
@@ -147,6 +148,31 @@ const AIValuationPage: React.FC = () => {
     const isDark = theme === 'dark';
     const isBg = language === 'bg';
 
+    // Schema.org Article Structured Data (Stronger SEO Version)
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "How Koli One's AI Valuation Works",
+        "author": {
+            "@type": "Organization",
+            "name": "Koli One"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Koli One",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://koli.one/logo.png"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://koli.one/valuation"
+        },
+        "datePublished": "2026-02-12",
+        "image": "https://koli.one/blog/images/ai-valuation-cover.jpg"
+    };
+
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState<{ min: number; max: number; avg: number; count: number } | null>(null);
 
@@ -198,7 +224,7 @@ const AIValuationPage: React.FC = () => {
             }, 1500);
 
         } catch (error) {
-            logger.error(error);
+            logger.error(error instanceof Error ? error.message : String(error));
             setLoading(false);
         }
     };
@@ -218,13 +244,25 @@ const AIValuationPage: React.FC = () => {
 
     return (
         <PageContainer $isDark={isDark}>
+            <Helmet>
+                <script type="application/ld+json">
+                    {JSON.stringify(structuredData)}
+                </script>
+            </Helmet>
             <ContentWrapper>
                 <HeroSection>
                     <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
                         <Calculator size={48} color="#10b981" />
                     </motion.div>
                     <Title>{t.title}</Title>
-                    <p style={{ fontSize: '1.25rem', color: isDark ? '#cbd5e1' : '#64748b' }}>{t.subtitle}</p>
+                    <p style={{ fontSize: '1.25rem', color: isDark ? '#cbd5e1' : '#64748b' }}>
+                        {t.subtitle}
+                        <span style={{ display: 'block', fontSize: '1rem', marginTop: '0.5rem', opacity: 0.8 }}>
+                            <a href="/blog/ai-valuation-works" style={{ color: '#10b981', textDecoration: 'none', fontWeight: 600 }}>
+                                {isBg ? '→ Вижте как работи нашата AI система' : '→ Learn how our AI system works'}
+                            </a>
+                        </span>
+                    </p>
                 </HeroSection>
 
                 <div style={{ display: 'grid', gridTemplateColumns: result ? '1fr 1fr' : '1fr', gap: '2rem' }}>

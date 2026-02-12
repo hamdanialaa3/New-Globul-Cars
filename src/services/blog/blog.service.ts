@@ -32,12 +32,244 @@ import type {
   BlogStatus
 } from '@/types/blog.types';
 
+// Static/Official Posts (Always available)
+const STATIC_POSTS: BlogPost[] = [
+  {
+    id: 'ai-valuation-works-static',
+    title: {
+      bg: 'AI Оценка: Как работи бъдещето на ценообразуването',
+      en: 'AI Valuation: How the Future of Pricing Works'
+    },
+    slug: {
+      bg: 'ai-valuation-works',
+      en: 'ai-valuation-works'
+    },
+    excerpt: {
+      bg: 'Подробен поглед върху AI модела на Koli One, обучен върху над 200,000 сделки в България.',
+      en: 'A deep dive into Koli One’s AI model, trained on 200,000+ transactions in Bulgaria.'
+    },
+    content: { bg: '', en: '' },
+    category: 'market-trends',
+    tags: ['AI', 'България', 'Технологии'],
+    author: {
+      id: 'koli-one',
+      name: 'Koli One Team',
+      role: 'Official',
+      avatar: 'https://koli.one/logo.png'
+    },
+    coverImage: 'https://koli.one/blog/images/ai-valuation-cover.jpg',
+    images: [],
+    status: 'published',
+    views: 1540,
+    likes: 82,
+    shares: 24,
+    readingTime: 8,
+    commentsCount: 0,
+    keywords: ['AI', 'valuation', 'Bulgaria', 'pricing'],
+    metaTitle: { bg: 'Как работи AI оценката', en: 'How AI Valuation Works' },
+    metaDescription: { bg: 'Подробна информация за модела на Koli One', en: 'Detailed info about Koli One model' },
+    createdAt: new Date('2026-02-12'),
+    updatedAt: new Date('2026-02-12'),
+    publishedAt: new Date('2026-02-12')
+  },
+  {
+    id: 'bulgarian-market-2026-static',
+    title: {
+      bg: 'Автомобилният пазар в България през 2026: Тенденции и прогнози',
+      en: 'The Bulgarian Car Market in 2026: Trends and Predictions'
+    },
+    slug: {
+      bg: 'bulgarian-market-2026',
+      en: 'bulgarian-market-2026'
+    },
+    excerpt: {
+      bg: 'Подробен анализ на пазара: от възхода на електрическите автомобили до доминацията на SUV сегмента.',
+      en: 'Detailed market analysis: from the rise of EVs to the dominance of the SUV segment.'
+    },
+    content: { bg: '', en: '' },
+    category: 'market-trends',
+    tags: ['Market Analysis', 'Trends', 'Bulgaria', '2026'],
+    author: {
+      id: 'koli-one-research',
+      name: 'Koli One Research',
+      role: 'Official',
+      avatar: 'https://koli.one/logo.png'
+    },
+    coverImage: 'https://koli.one/blog/images/market-2026-cover.jpg',
+    images: [],
+    status: 'published',
+    views: 980,
+    likes: 45,
+    shares: 12,
+    readingTime: 10,
+    commentsCount: 0,
+    keywords: ['market', 'trends', 'Bulgaria', '2026', 'SUV', 'EV'],
+    metaTitle: { bg: 'Пазарът на коли в България 2026', en: 'Bulgarian Car Market 2026' },
+    metaDescription: { bg: 'Тенденции وпрогнози за автомобилния пазар', en: 'Trends and predictions for the car market' },
+    createdAt: new Date('2026-02-12'),
+    updatedAt: new Date('2026-02-12'),
+    publishedAt: new Date('2026-02-12')
+  },
+  {
+    id: 'marketplace-comparison-static',
+    title: {
+      bg: 'Koli One срещу Mobile.bg и Auto.bg: Сравнение 2026',
+      en: 'Koli One vs Mobile.bg vs Auto.bg: 2026 Comparison'
+    },
+    slug: {
+      bg: 'marketplace-comparison',
+      en: 'marketplace-comparison'
+    },
+    excerpt: {
+      bg: 'Обективно сравнение на водещите автомобилни платформи в България: технологии, цени и функции.',
+      en: 'An objective comparison of Bulgaria’s leading car platforms: tech, pricing, and features.'
+    },
+    content: { bg: '', en: '' },
+    category: 'market-trends',
+    tags: ['Comparison', 'Koli One', 'Marketplace', 'Technology'],
+    author: {
+      id: 'koli-one-insights',
+      name: 'Koli One Insights',
+      role: 'Official',
+      avatar: 'https://koli.one/logo.png'
+    },
+    coverImage: 'https://koli.one/blog/images/comparison-2026-cover.jpg',
+    images: [],
+    status: 'published',
+    views: 1250,
+    likes: 67,
+    shares: 18,
+    readingTime: 12,
+    commentsCount: 0,
+    keywords: ['comparison', 'Mobile.bg', 'Auto.bg', 'Koli One', 'Bulgaria'],
+    metaTitle: { bg: 'Koli One vs Mobile.bg vs Auto.bg', en: 'Platform Comparison 2026' },
+    metaDescription: { bg: 'Коя е най-добрата платформа за продажба на коли?', en: 'Which is the best platform for car selling?' },
+    createdAt: new Date('2026-02-12'),
+    updatedAt: new Date('2026-02-12'),
+    publishedAt: new Date('2026-02-12')
+  },
+  {
+    id: 'technical-deep-dive-static',
+    title: {
+      bg: 'Хибридно търсене в Koli One: Интеграция на Algolia + Firestore',
+      en: 'Building Hybrid Search: Algolia + Firestore Integration'
+    },
+    slug: {
+      bg: 'technical-deep-dive',
+      en: 'technical-deep-dive'
+    },
+    excerpt: {
+      bg: 'Технически поглед върху архитектурата на Koli One: баланс между бързина, точност и консистентност.',
+      en: 'A technical deep-dive into Koli One’s architecture: balancing speed, accuracy, and consistency.'
+    },
+    content: { bg: '', en: '' },
+    category: 'engineering',
+    tags: ['Engineering', 'Architecture', 'Firebase', 'Algolia'],
+    author: {
+      id: 'koli-one-engineering',
+      name: 'Koli One Engineering',
+      role: 'Official',
+      avatar: 'https://koli.one/logo.png'
+    },
+    coverImage: 'https://koli.one/blog/images/hybrid-search-cover.jpg',
+    images: [],
+    status: 'published',
+    views: 1850,
+    likes: 92,
+    shares: 34,
+    readingTime: 15,
+    commentsCount: 0,
+    keywords: ['architecture', 'Algolia', 'Firestore', 'hybrid search', 'cloud functions'],
+    metaTitle: { bg: 'Техническа архитектура на търсенето', en: 'Search Architecture Deep Dive' },
+    metaDescription: { bg: 'Как работи хибридното търсене в Koli One?', en: 'How does hybrid search work in Koli One?' },
+    createdAt: new Date('2026-02-12'),
+    updatedAt: new Date('2026-02-12'),
+    publishedAt: new Date('2026-02-12')
+  },
+  {
+    id: 'neural-pricing-static',
+    title: {
+      bg: 'Neural Pricing System: Как AI нормализира цените в Европа',
+      en: 'Neural Pricing System: How AI Normalizes Car Prices Across Europe'
+    },
+    slug: {
+      bg: 'neural-pricing',
+      en: 'neural-pricing'
+    },
+    excerpt: {
+      bg: 'Вижте как нашият AI робот проследява цените в 7 държави, за да намери "справедливата стойност".',
+      en: 'See how our AI bot tracks prices across 7 countries to find the "fair value".'
+    },
+    content: { bg: '', en: '' },
+    category: 'engineering',
+    tags: ['AI', 'Pricing', 'Web Scraping', 'Big Data'],
+    author: {
+      id: 'koli-one-research',
+      name: 'Koli One Research',
+      role: 'Official',
+      avatar: 'https://koli.one/logo.png'
+    },
+    coverImage: 'https://koli.one/blog/images/neural-pricing-cover.jpg',
+    images: [],
+    status: 'published',
+    views: 1120,
+    likes: 56,
+    shares: 22,
+    readingTime: 12,
+    commentsCount: 0,
+    keywords: ['pricing', 'AI', 'scraper', 'Europe', 'arbitrage'],
+    metaTitle: { bg: 'Neural Pricing System', en: 'Neural Pricing System' },
+    metaDescription: { bg: 'Как работи AI ценообразуването?', en: 'How does AI pricing work?' },
+    createdAt: new Date('2026-02-12'),
+    updatedAt: new Date('2026-02-12'),
+    publishedAt: new Date('2026-02-12')
+  },
+  {
+    id: 'constitutional-coding-static',
+    title: {
+      bg: 'Constitutional Coding: Защо нашият код следва закона',
+      en: 'Constitutional Coding: Why Our Code Obeys The Law'
+    },
+    slug: {
+      bg: 'constitutional-coding',
+      en: 'constitutional-coding'
+    },
+    excerpt: {
+      bg: 'Как вградихме правните изисквания (DAC7, GDPR) директно в нашите TypeScript интерфейси.',
+      en: 'How we embedded legal requirements (DAC7, GDPR) directly into our TypeScript interfaces.'
+    },
+    content: { bg: '', en: '' },
+    category: 'engineering',
+    tags: ['Compliance', 'Philosophy', 'Architecture', 'Legal'],
+    author: {
+      id: 'koli-one-engineering',
+      name: 'Koli One Engineering',
+      role: 'Official',
+      avatar: 'https://koli.one/logo.png'
+    },
+    coverImage: 'https://koli.one/blog/images/constitution-cover.jpg',
+    images: [],
+    status: 'published',
+    views: 890,
+    likes: 42,
+    shares: 15,
+    readingTime: 10,
+    commentsCount: 0,
+    keywords: ['compliance', 'DAC7', 'coding standards', 'philosophy'],
+    metaTitle: { bg: 'Constitutional Coding', en: 'Constitutional Coding' },
+    metaDescription: { bg: 'Философия на програмиране в Koli One', en: 'Coding philosophy at Koli One' },
+    createdAt: new Date('2026-02-12'),
+    updatedAt: new Date('2026-02-12'),
+    publishedAt: new Date('2026-02-12')
+  }
+];
+
 class BlogService {
   private static instance: BlogService;
   private readonly COLLECTION = 'blog_posts';
   private readonly COMMENTS_COLLECTION = 'blog_comments';
 
-  private constructor() {}
+  private constructor() { }
 
   static getInstance(): BlogService {
     if (!BlogService.instance) {
@@ -63,10 +295,10 @@ class BlogService {
       };
 
       const docRef = await addDoc(collection(db, this.COLLECTION), newPost);
-      serviceLogger.info('Blog post created:', docRef.id);
+      serviceLogger.info('Blog post created:', { id: docRef.id });
       return docRef.id;
     } catch (error) {
-      serviceLogger.error('Error creating blog post:', error);
+      serviceLogger.error('Error creating blog post:', { error });
       throw new Error('Failed to create blog post');
     }
   }
@@ -76,6 +308,12 @@ class BlogService {
    */
   async getPost(postId: string): Promise<BlogPost | null> {
     try {
+      // Check static posts first (for hardcoded high-value content)
+      const staticPost = STATIC_POSTS.find(p => p.id === postId || p.slug.bg === postId || p.slug.en === postId);
+      if (staticPost) {
+        return staticPost;
+      }
+
       const docRef = doc(db, this.COLLECTION, postId);
       const docSnap = await getDoc(docRef);
 
@@ -92,7 +330,7 @@ class BlogService {
         publishedAt: data.publishedAt?.toDate()
       } as BlogPost;
     } catch (error) {
-      serviceLogger.error('Error fetching blog post:', error);
+      serviceLogger.error('Error fetching blog post:', { error });
       throw new Error('Failed to fetch blog post');
     }
   }
@@ -139,6 +377,9 @@ class BlogService {
     lastDoc?: DocumentSnapshot
   ): Promise<{ posts: BlogPost[]; lastDoc: DocumentSnapshot | null }> {
     try {
+      // 1. Use Global Static Posts
+      const staticPosts = STATIC_POSTS;
+
       let q = query(collection(db, this.COLLECTION));
 
       // Apply filters
@@ -181,9 +422,31 @@ class BlogService {
 
       const newLastDoc = snapshot.docs[snapshot.docs.length - 1] || null;
 
-      return { posts, lastDoc: newLastDoc };
+      // Merge with static posts if this is the first page
+      let combinedPosts = [...posts];
+
+      if (!lastDoc) {
+        // Filter static posts based on requested filters
+        const filteredStatics = staticPosts.filter(sp => {
+          // 1. Filter by Category
+          if (filters.category && sp.category !== filters.category) return false;
+          // 2. Filter by Status (Default to published)
+          if (filters.status && sp.status !== filters.status) return false;
+          // 3. Filter by Tag
+          if (filters.tags && filters.tags.length > 0) {
+            const hasTag = sp.tags.some(t => filters.tags?.includes(t));
+            if (!hasTag) return false;
+          }
+          return true;
+        });
+
+        // Prepend static posts to Firestore results
+        combinedPosts = [...filteredStatics, ...posts];
+      }
+
+      return { posts: combinedPosts, lastDoc: newLastDoc };
     } catch (error) {
-      serviceLogger.error('Error fetching posts:', error);
+      serviceLogger.error('Error fetching posts:', { error });
       throw new Error('Failed to fetch posts');
     }
   }
@@ -205,7 +468,7 @@ class BlogService {
       }
 
       await updateDoc(docRef, updateData);
-      serviceLogger.info('Blog post updated:', postId);
+      serviceLogger.info('Blog post updated:', { postId });
     } catch (error) {
       serviceLogger.error('Error updating blog post:', error);
       throw new Error('Failed to update blog post');
@@ -218,7 +481,7 @@ class BlogService {
   async deletePost(postId: string): Promise<void> {
     try {
       await deleteDoc(doc(db, this.COLLECTION, postId));
-      serviceLogger.info('Blog post deleted:', postId);
+      serviceLogger.info('Blog post deleted:', { postId });
     } catch (error) {
       serviceLogger.error('Error deleting blog post:', error);
       throw new Error('Failed to delete blog post');
@@ -351,9 +614,9 @@ class BlogService {
     try {
       // Simple client-side search (for better results, use Algolia)
       const { posts } = await this.getPosts({}, limitCount);
-      
+
       const lowerQuery = searchQuery.toLowerCase();
-      return posts.filter(post => 
+      return posts.filter(post =>
         post.title.bg.toLowerCase().includes(lowerQuery) ||
         post.title.en.toLowerCase().includes(lowerQuery) ||
         post.excerpt.bg.toLowerCase().includes(lowerQuery) ||
@@ -372,7 +635,7 @@ class BlogService {
   async getStats(): Promise<BlogStats> {
     try {
       const allPosts = await getDocs(collection(db, this.COLLECTION));
-      
+
       let totalViews = 0;
       let totalLikes = 0;
       let totalComments = 0;
@@ -384,10 +647,11 @@ class BlogService {
         'car-reviews': 0,
         'maintenance': 0,
         'legal': 0,
+        'engineering': 0,
         'news': 0
       };
 
-      const publishedPosts: Array<{ id: string; title: string; views: number }> = [];
+      const publishedPosts: Array<{ postId: string; title: string; views: number }> = [];
       let draftCount = 0;
 
       allPosts.docs.forEach(doc => {
@@ -403,7 +667,7 @@ class BlogService {
 
         if (data.status === 'published') {
           publishedPosts.push({
-            id: doc.id,
+            postId: doc.id,
             title: data.title?.bg || data.title?.en || 'Untitled',
             views: data.views || 0
           });

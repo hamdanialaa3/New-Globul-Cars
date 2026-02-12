@@ -92,7 +92,7 @@ const Footer: React.FC = () => {
             <h4 className="footer-subtitle">{t('footer.services')}</h4>
             <ul className="footer-links">
               <li><a href="/finance">{t('home.features.finance.title')}</a></li>
-              <li><a href="/insurance">{t('home.features.insurance.title')}</a></li>
+              <li><a href="/financing">{language === 'bg' ? 'Калкулатор за финансиране' : 'Financing Calculator'}</a></li>
               <li><a href="/verification">{t('home.features.verified.title')}</a></li>
               <li><a href="/support">{t('footer.support')}</a></li>
             </ul>

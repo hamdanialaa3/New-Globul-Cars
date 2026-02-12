@@ -1,5 +1,5 @@
 // Debug Page - Check Cars in Firestore
-// صفحة فحص السيارات في قاعدة البيانات
+// Debug Page - Check Cars in Firestore Database
 // SECURED: Only available in development environment
 
 import { Navigate } from 'react-router-dom';
@@ -277,15 +277,15 @@ const DebugCarsPage: React.FC = () => {
   return (
     <PageContainer>
       <ContentCard>
-        <Title>🔍 فحص السيارات في قاعدة البيانات</Title>
+        <Title>🔍 Debug Cars in Database</Title>
         <p>Debug: Check Cars in Firestore</p>
 
         <Button onClick={fetchCars} disabled={loading}>
-          {loading ? 'جاري التحميل...' : 'عرض 20 سيارة'}
+          {loading ? 'Loading...' : 'Show 20 Cars'}
         </Button>
 
         <Button onClick={fetchAllCars} disabled={loading}>
-          {loading ? 'جاري التحميل...' : 'عرض كل السيارات'}
+          {loading ? 'Loading...' : 'Show All Cars'}
         </Button>
 
         <Button
@@ -293,33 +293,33 @@ const DebugCarsPage: React.FC = () => {
           disabled={loading}
           style={{ background: '#e53e3e' }}
         >
-          {loading ? 'جاري الحذف...' : 'حذف السيارات القديمة (Non-Numeric)'}
+          {loading ? 'Deleting...' : 'Delete Legacy Cars (Non-Numeric)'}
         </Button>
 
         {stats && (
           <Stats>
             <StatCard>
               <h3>{stats.total}</h3>
-              <p>إجمالي السيارات</p>
+              <p>Total Cars</p>
             </StatCard>
             <StatCard>
               <h3>{stats.withUnifiedLocation}</h3>
-              <p>مع بنية موحدة ✅</p>
+              <p>Unified Structure ✅</p>
             </StatCard>
             <StatCard>
               <h3>{stats.withOldCity}</h3>
-              <p>بنية قديمة ⚠️</p>
+              <p>Old Structure ⚠️</p>
             </StatCard>
             <StatCard>
               <h3>{stats.withoutCity}</h3>
-              <p>بدون مدينة ❌</p>
+              <p>No City ❌</p>
             </StatCard>
           </Stats>
         )}
 
         {stats && stats.cityBreakdown && (
           <div style={{ marginTop: '2rem' }}>
-            <h2>توزيع السيارات حسب المدينة:</h2>
+            <h2>Cars Distribution by City:</h2>
             <CodeBlock>
               {JSON.stringify(stats.cityBreakdown, null, 2)}
             </CodeBlock>
@@ -328,7 +328,7 @@ const DebugCarsPage: React.FC = () => {
 
         {cars.length > 0 && (
           <CarsList>
-            <h2>السيارات ({cars.length}):</h2>
+            <h2>Cars ({cars.length}):</h2>
             {cars.map((car: any) => (
               <CarItem key={car.id}>
                 <h3>{car.make} {car.model} ({car.year || 'N/A'})</h3>
@@ -336,7 +336,7 @@ const DebugCarsPage: React.FC = () => {
 
                 <details>
                   <summary style={{ cursor: 'pointer', fontWeight: 'bold', marginTop: '0.5rem' }}>
-                    📍 Location Data (انقر للعرض)
+                    📍 Location Data (click to view)
                   </summary>
                   <CodeBlock>
                     {JSON.stringify({

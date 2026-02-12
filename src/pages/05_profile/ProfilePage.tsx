@@ -1,5 +1,5 @@
-// ProfilePage - صفحة عرض البروفايل
-// `/profile/:numericId` - يعرض بروفايل البائع
+// ProfilePage - Profile display page
+// `/profile/:numericId` - displays seller profile
 
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
@@ -12,12 +12,12 @@ import { logger } from '@/services/logger-service';
 import type { SellerProfile } from '@/types/profile.types';
 
 /**
- * صفحة عرض بروفايل البائع
+ * Seller profile display page
  * 
- * السلوك:
- * - `/profile/:numericId` - عرض البروفايل (للمستخدمين المسجلين فقط)
- * - إذا لم يكن مسجل → توجيه إلى تسجيل الدخول
- * - بعد تسجيل الدخول → العودة إلى نفس الصفحة
+ * Behavior:
+ * - `/profile/:numericId` - display profile (registered users only)
+ * - If not registered → redirect to login
+ * - After login → return to the same page
  */
 
 const PageContainer = styled.div`
@@ -69,11 +69,11 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
     return isNaN(id || 0) ? null : id;
   }, [numericId]);
 
-  // تحميل بيانات البروفايل
+  // Load profile data
   useEffect(() => {
     if (!profileNumericId) {
       setError(language === 'bg' 
-        ? 'معرف البروفايل غير صحيح'
+        ? 'Невалиден идентификатор на профил'
         : 'Invalid profile ID'
       );
       setIsLoading(false);
@@ -97,7 +97,7 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
         
         setError(
           language === 'bg'
-            ? `فشل تحميل البروفايل: ${errorMessage}`
+            ? `Грешка при зареждане на профил: ${errorMessage}`
             : `Failed to load profile: ${errorMessage}`
         );
         setProfile(null);
@@ -109,25 +109,25 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
     loadProfile();
   }, [profileNumericId, language]);
 
-  // تحديد ما إذا كان البروفايل الخاص بالمستخدم الحالي
+  // Determine if this is the current user's profile
   const isOwnProfile = useMemo(
     () => currentUser?.numericId === profileNumericId,
     [currentUser?.numericId, profileNumericId]
   );
 
-  // معالج إجراءات البروفايل
+  // Profile action handler
   const handleProfileAction = (action: string, payload?: any) => {
     logger.info(`[ProfilePage] Action triggered: ${action}`, payload);
 
     switch (action) {
       case 'contact':
         logger.info('[ProfilePage] Opening contact form');
-        // TODO: فتح نموذج الاتصال
+        // TODO: Open contact form
         break;
 
       case 'message':
         logger.info('[ProfilePage] Opening messaging interface');
-        // TODO: فتح واجهة الرسائل
+        // TODO: Open messaging interface
         break;
 
       default:
@@ -135,38 +135,38 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
     }
   };
 
-  // حالة التحميل
+  // Loading state
   if (isLoading) {
     return (
       <PageContainer>
         <LoadingContainer>
-          {language === 'bg' ? 'جاري التحميل...' : 'Loading...'}
+          {language === 'bg' ? 'Зареждане...' : 'Loading...'}
         </LoadingContainer>
       </PageContainer>
     );
   }
 
-  // حالة الخطأ
+  // Error state
   if (error) {
     return (
       <PageContainer>
         <ErrorContainer>
-          <h1>{language === 'bg' ? 'خطأ' : 'Error'}</h1>
+          <h1>{language === 'bg' ? 'Грешка' : 'Error'}</h1>
           <p>{error}</p>
         </ErrorContainer>
       </PageContainer>
     );
   }
 
-  // عدم العثور على البروفايل
+  // Profile not found
   if (!profile) {
     return (
       <PageContainer>
         <ErrorContainer>
-          <h1>{language === 'bg' ? 'البروفايل غير موجود' : 'Profile Not Found'}</h1>
+          <h1>{language === 'bg' ? 'Профилът не е намерен' : 'Profile Not Found'}</h1>
           <p>
             {language === 'bg'
-              ? 'لم نتمكن من العثور على البروفايل المطلوب'
+              ? 'Не можахме да намерим търсения профил'
               : 'We could not find the requested profile'}
           </p>
         </ErrorContainer>

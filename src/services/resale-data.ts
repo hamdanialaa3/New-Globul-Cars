@@ -1,19 +1,17 @@
 /**
  * RESALE ANALYSIS DATA
- * بيانات تحليل إعادة البيع
  */
 
 /**
  * Bulgarian market data
- * بيانات السوق البلغاري
  */
 export const BULGARIAN_MARKET_DATA = {
   depreciation: {
-    '1_year': 0.15,   // 15% في السنة الأولى
-    '2_years': 0.25,  // 25% في السنتين الأولى
-    '3_years': 0.35,  // 35% في 3 سنوات
-    '4_years': 0.45,  // 45% في 4 سنوات
-    '5+_years': 0.55  // 55% بعد 5 سنوات
+    '1_year': 0.15,   // 15% in the first year
+    '2_years': 0.25,  // 25% in first two years
+    '3_years': 0.35,  // 35% in 3 years
+    '4_years': 0.45,  // 45% in 4 years
+    '5+_years': 0.55  // 55% after 5 years
   },
   seasonalFactors: {
     January: 0.90,
@@ -33,7 +31,6 @@ export const BULGARIAN_MARKET_DATA = {
 
 /**
  * Base market values for popular models (in BGN)
- * القيم السوقية الأساسية للنماذج الشائعة (بالليف البلغاري)
  */
 export const BASE_MARKET_VALUES: Record<string, number> = {
   'BMW 3 Series': 35000,
@@ -60,7 +57,6 @@ export const BASE_MARKET_VALUES: Record<string, number> = {
 
 /**
  * Similarity thresholds
- * عتبات التشابه
  */
 export const SIMILARITY_THRESHOLDS = {
   MIN_SIMILARITY: 60,
@@ -71,7 +67,6 @@ export const SIMILARITY_THRESHOLDS = {
 
 /**
  * Confidence levels
- * مستويات الثقة
  */
 export const CONFIDENCE_LEVELS = {
   NO_COMPARABLES: 30,
@@ -82,7 +77,6 @@ export const CONFIDENCE_LEVELS = {
 
 /**
  * Age adjustment factors
- * عوامل تعديل العمر
  */
 export const AGE_ADJUSTMENTS = {
   '1_year': 0.95,
@@ -94,7 +88,6 @@ export const AGE_ADJUSTMENTS = {
 
 /**
  * Mileage adjustment factors
- * عوامل تعديل المسافة المقطوعة
  */
 export const MILEAGE_ADJUSTMENTS = {
   VERY_LOW: { max: 20000, factor: 1.05 },
@@ -106,7 +99,6 @@ export const MILEAGE_ADJUSTMENTS = {
 
 /**
  * Pricing strategies
- * استراتيجيات التسعير
  */
 export const PRICING_STRATEGIES = {
   aggressive: {
@@ -124,28 +116,25 @@ export const PRICING_STRATEGIES = {
 };
 
 /**
- * Recommendation reasoning templates (Bulgarian)
- * قوالب أسباب التوصية (بالبلغارية)
+ * Recommendation reasoning templates
  */
 export const RECOMMENDATION_REASONS = {
-  HIGH_DEMAND: 'الطلب مرتفع والسوق في ارتفاع',
-  WAIT_SEASON: 'التوقيت غير مثالي - انتظار موسم أفضل',
-  STABLE_MARKET: 'السوق مستقر - الاحتفاظ بالسيارة'
+  HIGH_DEMAND: 'High demand and rising market',
+  WAIT_SEASON: 'Timing is not ideal - wait for a better season',
+  STABLE_MARKET: 'Market is stable - keep the car'
 };
 
 /**
- * Alternative actions (Bulgarian)
- * الإجراءات البديلة (بالبلغارية)
+ * Alternative actions
  */
 export const ALTERNATIVE_ACTIONS = [
-  'تحسين حالة السيارة لزيادة القيمة',
-  'إضافة ميزات إضافية',
-  'انتظار انخفاض المخزون'
+  'Improve car condition to increase value',
+  'Add extra features',
+  'Wait for inventory to decrease'
 ];
 
 /**
  * Default values
- * القيم الافتراضية
  */
 export const DEFAULTS = {
   BASE_PRICE: 15000, // Default base price in BGN

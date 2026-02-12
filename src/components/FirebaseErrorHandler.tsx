@@ -1,5 +1,5 @@
 // Firebase Error Handler Component
-// لعرض رسائل خطأ واضحة للمستخدم
+// Display clear error messages to the user
 
 import React from 'react';
 import { logger } from '../services/logger-service';
@@ -22,26 +22,26 @@ export const FirebaseErrorHandler: React.FC<FirebaseErrorHandlerProps> = ({
     
     switch (errorCode) {
       case 'auth/network-request-failed':
-        return 'مشكلة في الاتصال بالإنترنت. يرجى التحقق من اتصالك والمحاولة مرة أخرى.';
+        return 'Network connection issue. Please check your connection and try again.';
       case 'auth/too-many-requests':
-        return 'تم إجراء محاولات كثيرة جداً. يرجى الانتظار قليلاً والمحاولة مرة أخرى.';
+        return 'Too many attempts. Please wait a moment and try again.';
       case 'auth/user-not-found':
-        return 'المستخدم غير موجود. يرجى التحقق من البيانات أو إنشاء حساب جديد.';
+        return 'User not found. Please verify your details or create a new account.';
       case 'auth/wrong-password':
-        return 'كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى.';
+        return 'Incorrect password. Please try again.';
       case 'auth/invalid-email':
-        return 'عنوان البريد الإلكتروني غير صحيح.';
+        return 'Invalid email address.';
       case 'auth/user-disabled':
-        return 'تم تعطيل هذا الحساب. يرجى التواصل مع الدعم الفني.';
+        return 'This account has been disabled. Please contact support.';
       case 'auth/operation-not-allowed':
-        return 'هذه العملية غير مسموحة حالياً.';
+        return 'This operation is not currently allowed.';
       case 'permission-denied':
-        return 'ليس لديك صلاحية للوصول إلى هذه البيانات.';
+        return 'You do not have permission to access this data.';
       case 'unavailable':
-        return 'الخدمة غير متاحة حالياً. يرجى المحاولة لاحقاً.';
+        return 'Service is currently unavailable. Please try again later.';
       default:
         logger.warn('Unknown Firebase error', { code: errorCode, message: (error as Error).message });
-        return 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.';
+        return 'An unexpected error occurred. Please try again.';
     }
   };
 
@@ -64,7 +64,7 @@ export const FirebaseErrorHandler: React.FC<FirebaseErrorHandlerProps> = ({
       color: '#c33'
     }}>
       <div style={{ marginBottom: '12px', fontWeight: 'bold' }}>
-        ⚠️ خطأ في الاتصال
+        ⚠️ Connection Error
       </div>
       <div style={{ marginBottom: '12px' }}>
         {getErrorMessage(error)}
@@ -81,7 +81,7 @@ export const FirebaseErrorHandler: React.FC<FirebaseErrorHandlerProps> = ({
             cursor: 'pointer'
           }}
         >
-          إعادة المحاولة
+          Retry
         </button>
       )}
     </div>

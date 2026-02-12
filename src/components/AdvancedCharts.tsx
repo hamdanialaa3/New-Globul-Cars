@@ -145,7 +145,7 @@ const AdvancedCharts: React.FC = () => {
   };
 
   const processUsersByMonth = (users: unknown[]) => {
-    const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'];
+    const months = ['January', 'February', 'March', 'April', 'May', 'June'];
     return months.map((month, index) => ({
       label: month,
       value: Math.floor(users.length * (0.1 + index * 0.15))
@@ -194,7 +194,7 @@ const AdvancedCharts: React.FC = () => {
   if (loading) {
     return (
       <Container>
-        <Title><BarChart3 size={24} />جاري تحميل الرسوم البيانية...</Title>
+        <Title><BarChart3 size={24} />Loading charts...</Title>
       </Container>
     );
   }
@@ -206,11 +206,11 @@ const AdvancedCharts: React.FC = () => {
 
   return (
     <Container>
-      <Title><BarChart3 size={24} />الرسوم البيانية المتقدمة</Title>
+      <Title><BarChart3 size={24} />Advanced Charts</Title>
       
       <ChartsGrid>
         <ChartCard>
-          <ChartTitle><Calendar size={20} />المستخدمين الجدد شهرياً</ChartTitle>
+          <ChartTitle><Calendar size={20} />New Users Monthly</ChartTitle>
           <SimpleChart>
             {chartData.usersByMonth.map((item, index) => (
               <Bar key={index} height={(item.value / maxUserCount) * 100}>
@@ -229,7 +229,7 @@ const AdvancedCharts: React.FC = () => {
         </ChartCard>
 
         <ChartCard>
-          <ChartTitle><PieChart size={20} />السيارات حسب الماركة</ChartTitle>
+          <ChartTitle><PieChart size={20} />Cars by Brand</ChartTitle>
           <SimpleChart>
             {chartData.carsByBrand.map((item, index) => (
               <Bar 
@@ -252,7 +252,7 @@ const AdvancedCharts: React.FC = () => {
         </ChartCard>
 
         <ChartCard>
-          <ChartTitle><TrendingUp size={20} />السيارات حسب المدينة</ChartTitle>
+          <ChartTitle><TrendingUp size={20} />Cars by City</ChartTitle>
           <SimpleChart>
             {chartData.carsByCity.map((item, index) => (
               <Bar 
@@ -275,7 +275,7 @@ const AdvancedCharts: React.FC = () => {
         </ChartCard>
 
         <ChartCard>
-          <ChartTitle><BarChart3 size={20} />توزيع الأسعار</ChartTitle>
+          <ChartTitle><BarChart3 size={20} />Price Distribution</ChartTitle>
           <SimpleChart>
             {chartData.priceRanges.map((item, index) => (
               <Bar 

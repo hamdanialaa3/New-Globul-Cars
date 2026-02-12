@@ -1,5 +1,5 @@
 // Migration Page - Browser-based Location Migration
-// صفحة الترحيل - ترحيل المواقع من المتصفح
+// Migration Page - Browser-based Location Migration
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
@@ -157,7 +157,7 @@ const MigrationPage: React.FC = () => {
   };
 
   const handleMigrate = async () => {
-    if (!window.confirm('هل أنت متأكد من تشغيل الترحيل الفعلي؟ هذا سيعدّل البيانات!')) {
+    if (!window.confirm('Are you sure you want to run the actual migration? This will modify data!')) {
       return;
     }
 
@@ -182,32 +182,32 @@ const MigrationPage: React.FC = () => {
   return (
     <PageContainer>
       <ContentCard>
-        <Title>🗺️ ترحيل بيانات المواقع</Title>
-        <Subtitle>Location Data Migration</Subtitle>
+        <Title>🗺️ Location Data Migration</Title>
+        <Subtitle>Migrate location data across all vehicles</Subtitle>
 
         <StatusCard type="info">
-          <h3 style={{ marginBottom: '1rem' }}>📋 ما هذا؟</h3>
+          <h3 style={{ marginBottom: '1rem' }}>📋 What is this?</h3>
           <p>
-            هذه الأداة تقوم بتحديث بنية المواقع في جميع السيارات المضافة سابقاً.
-            بعد التشغيل، ستظهر أرقام السيارات الصحيحة على الخريطة!
+            This tool updates the location structure for all previously added vehicles.
+            After running, the correct vehicle numbers will appear on the map!
           </p>
         </StatusCard>
 
         {status && (
           <StatusCard type={status.withoutUnifiedLocation > 0 ? 'warning' : 'success'}>
-            <h3>📊 الحالة الحالية:</h3>
+            <h3>📊 Current Status:</h3>
             <ResultsTable>
               <tbody>
                 <tr>
-                  <td><strong>إجمالي السيارات:</strong></td>
+                  <td><strong>Total Vehicles:</strong></td>
                   <td>{status.total}</td>
                 </tr>
                 <tr>
-                  <td><strong>مع بنية موحدة:</strong></td>
+                  <td><strong>With Unified Structure:</strong></td>
                   <td style={{ color: '#28a745' }}>{status.withUnifiedLocation}</td>
                 </tr>
                 <tr>
-                  <td><strong>بحاجة للترحيل:</strong></td>
+                  <td><strong>Needs Migration:</strong></td>
                   <td style={{ color: status.withoutUnifiedLocation > 0 ? '#dc3545' : '#28a745' }}>
                     {status.withoutUnifiedLocation}
                   </td>
@@ -219,19 +219,19 @@ const MigrationPage: React.FC = () => {
 
         {result && (
           <StatusCard type={result.errors > 0 ? 'warning' : 'success'}>
-            <h3>✅ نتيجة الترحيل:</h3>
+            <h3>✅ Migration Result:</h3>
             <ResultsTable>
               <tbody>
                 <tr>
-                  <td><CheckCircle color="#28a745" /> تم الترحيل:</td>
+                  <td><CheckCircle color="#28a745" /> Migrated:</td>
                   <td><strong>{result.migrated}</strong></td>
                 </tr>
                 <tr>
-                  <td><AlertCircle color="#ffc107" /> متخطى:</td>
+                  <td><AlertCircle color="#ffc107" /> Skipped:</td>
                   <td><strong>{result.skipped}</strong></td>
                 </tr>
                 <tr>
-                  <td><XCircle color="#dc3545" /> أخطاء:</td>
+                  <td><XCircle color="#dc3545" /> Errors:</td>
                   <td><strong>{result.errors}</strong></td>
                 </tr>
               </tbody>
@@ -240,7 +240,7 @@ const MigrationPage: React.FC = () => {
             {result.errorDetails && result.errorDetails.length > 0 && (
               <details style={{ marginTop: '1rem' }}>
                 <summary style={{ cursor: 'pointer', color: '#dc3545' }}>
-                  عرض الأخطاء ({result.errorDetails.length})
+                  Show Errors ({result.errorDetails.length})
                 </summary>
                 <pre style={{ fontSize: '0.85rem', marginTop: '0.5rem', maxHeight: '200px', overflow: 'auto' }}>
                   {JSON.stringify(result.errorDetails, null, 2)}
@@ -253,12 +253,12 @@ const MigrationPage: React.FC = () => {
         <ButtonGroup>
           <Button onClick={handleCheckStatus} disabled={migrating}>
             <RefreshCw size={20} />
-            التحقق من الحالة
+            Check Status
           </Button>
           
           <Button onClick={handleDryRun} disabled={migrating} variant="secondary">
             <Play size={20} />
-            تجربة (Dry Run)
+            Dry Run
           </Button>
 
           <Button 
@@ -267,17 +267,17 @@ const MigrationPage: React.FC = () => {
             variant="primary"
           >
             <CheckCircle size={20} />
-            {migrating ? 'جاري الترحيل...' : 'تشغيل الترحيل'}
+            {migrating ? 'Migrating...' : 'Run Migration'}
           </Button>
         </ButtonGroup>
 
         <StatusCard type="warning">
-          <h3>⚠️ ملاحظات مهمة:</h3>
+          <h3>⚠️ Important Notes:</h3>
           <ul style={{ marginLeft: '1.5rem', lineHeight: '1.8' }}>
-            <li>استخدم "التحقق من الحالة" أولاً لمعرفة عدد السيارات</li>
-            <li>استخدم "تجربة" للتأكد من أن كل شيء سيعمل بشكل صحيح</li>
-            <li>بعد "تشغيل الترحيل"، سيتم تحديث الصفحة تلقائياً</li>
-            <li>الخريطة ستعرض الأرقام الصحيحة فوراً!</li>
+            <li>Use "Check Status" first to see the number of vehicles</li>
+            <li>Use "Dry Run" to make sure everything will work correctly</li>
+            <li>After "Run Migration", the page will refresh automatically</li>
+            <li>The map will display the correct numbers immediately!</li>
           </ul>
         </StatusCard>
       </ContentCard>

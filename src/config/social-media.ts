@@ -15,7 +15,7 @@ export const SOCIAL_MEDIA_LINKS = {
   youtube: 'https://www.youtube.com/@Kolionebg',
   linkedin: 'https://www.linkedin.com/in/koli-one-a011993a9/',
   twitter: 'https://x.com/kolionebg',
-  tiktok: 'https://www.tiktok.com/@mobilebg.eu',
+  tiktok: 'https://www.tiktok.com/@kolione',
   threads: 'https://www.threads.com/@kolione',
 } as const;
 

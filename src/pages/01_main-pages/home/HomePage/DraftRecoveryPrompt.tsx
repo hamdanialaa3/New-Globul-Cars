@@ -1,6 +1,6 @@
 /**
  * DraftRecoveryPrompt Component
- * استعادة المسودات غير المكتملة
+ * Restore incomplete drafts
  * 
  * ✅ REVENUE FIX: Recover abandoned drafts to improve conversion rate
  * Revenue impact: Increases sell workflow completion by 15-25%
@@ -351,15 +351,15 @@ const DraftRecoveryPrompt: React.FC<DraftRecoveryPromptProps> = ({
     
     if (diffDays > 0) {
       return isRTL 
-        ? `منذ ${diffDays} ${diffDays === 1 ? 'يوم' : 'أيام'}`
+        ? `${diffDays} day${diffDays === 1 ? '' : 's'} ago`
         : `${diffDays} day${diffDays === 1 ? '' : 's'} ago`;
     }
     if (diffHours > 0) {
       return isRTL
-        ? `منذ ${diffHours} ${diffHours === 1 ? 'ساعة' : 'ساعات'}`
+        ? `${diffHours} hour${diffHours === 1 ? '' : 's'} ago`
         : `${diffHours} hour${diffHours === 1 ? '' : 's'} ago`;
     }
-    return isRTL ? 'مؤخراً' : 'Recently';
+    return isRTL ? 'Recently' : 'Recently';
   }, [isRTL]);
   
   if (!isVisible || !draft) return null;
@@ -377,7 +377,7 @@ const DraftRecoveryPrompt: React.FC<DraftRecoveryPromptProps> = ({
       <Content>
         <Title>
           {isRTL 
-            ? 'لديك مسودة غير مكتملة' 
+            ? 'You have an unfinished listing' 
             : 'You have an unfinished listing'}
         </Title>
         
@@ -386,17 +386,17 @@ const DraftRecoveryPrompt: React.FC<DraftRecoveryPromptProps> = ({
           <span>{getTimeAgo(draft.updatedAt)}</span>
           <span>•</span>
           <Progress>{draft.completionPercentage}%</Progress>
-          <span>{isRTL ? 'مكتمل' : 'complete'}</span>
+          <span>{isRTL ? 'complete' : 'complete'}</span>
         </Subtitle>
         
         <Actions>
           <ContinueButton onClick={handleContinue}>
-            {isRTL ? 'متابعة' : 'Continue'}
+            {isRTL ? 'Continue' : 'Continue'}
             <ArrowRight size={16} />
           </ContinueButton>
           
           <DismissButton onClick={handleDismiss}>
-            {isRTL ? 'لاحقاً' : 'Later'}
+            {isRTL ? 'Later' : 'Later'}
           </DismissButton>
         </Actions>
       </Content>

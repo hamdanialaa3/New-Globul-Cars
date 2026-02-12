@@ -44,7 +44,7 @@ export const AIImageAnalyzer: React.FC<Props> = ({ onAnalysisComplete, onError }
       
     } catch (error) {
       logger.error('Image analysis failed', error as Error);
-      onError?.('فشل التحليل. حاول مرة أخرى.');
+      onError?.('Analysis failed. Please try again.');
     } finally {
       setTimeout(() => {
         setAnalyzing(false);
@@ -66,14 +66,14 @@ export const AIImageAnalyzer: React.FC<Props> = ({ onAnalysisComplete, onError }
         />
         <label htmlFor="ai-image-upload">
           <UploadButton disabled={analyzing}>
-            {analyzing ? '🔄 جاري التحليل...' : '📸 رفع صورة للتحليل بالذكاء الاصطناعي'}
+            {analyzing ? '🔄 Analyzing...' : '📸 Upload image for AI analysis'}
           </UploadButton>
         </label>
         
         {analyzing && (
           <AnalyzingState>
             <Spinner />
-            <ProgressText>جاري التعرف على السيارة...</ProgressText>
+            <ProgressText>Identifying vehicle...</ProgressText>
             <ProgressBar>
               <Progress style={{ width: `${progress}%` }} />
             </ProgressBar>
@@ -82,18 +82,18 @@ export const AIImageAnalyzer: React.FC<Props> = ({ onAnalysisComplete, onError }
         
         {result && !analyzing && (
           <ResultPreview>
-            <ResultTitle>✅ تم التعرف بنجاح!</ResultTitle>
+            <ResultTitle>✅ Identified successfully!</ResultTitle>
             <ResultInfo>
               <strong>{result.make} {result.model}</strong>
               <span>{result.year} • {result.color}</span>
-              <Confidence>دقة: {result.confidence}%</Confidence>
+              <Confidence>Accuracy: {result.confidence}%</Confidence>
             </ResultInfo>
           </ResultPreview>
         )}
       </UploadArea>
       
       <AIBadge>
-        🤖 مدعوم بـ Google Gemini (مجاني)
+        🤖 Powered by Google Gemini (Free)
       </AIBadge>
     </Container>
   );

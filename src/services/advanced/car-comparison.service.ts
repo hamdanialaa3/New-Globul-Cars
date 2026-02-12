@@ -1,5 +1,5 @@
-// Car Comparison Service - خدمة مقارنة السيارات
-// يسمح بمقارنة حتى 4 سيارات جنبًا إلى جنب
+// Car Comparison Service
+// Compare up to 4 cars side by side
 
 import { db } from '../../firebase/firebase-config';
 import { collection, doc, getDoc, addDoc, getDocs, query, where, deleteDoc, Timestamp } from 'firebase/firestore';
@@ -324,19 +324,19 @@ class CarComparisonService {
 
     // Define fields to compare
     const fieldsToCompare = [
-      { field: 'price', label: 'السعر', type: 'number' },
-      { field: 'year', label: 'السنة', type: 'number' },
-      { field: 'mileage', label: 'الكيلومترات', type: 'number' },
-      { field: 'fuelType', label: 'نوع الوقود', type: 'string' },
-      { field: 'transmission', label: 'ناقل الحركة', type: 'string' },
-      { field: 'power', label: 'القوة (حصان)', type: 'number' },
-      { field: 'engineSize', label: 'سعة المحرك (لتر)', type: 'number' },
-      { field: 'doors', label: 'الأبواب', type: 'number' },
-      { field: 'seats', label: 'المقاعد', type: 'number' },
-      { field: 'color', label: 'اللون', type: 'string' },
-      { field: 'condition', label: 'الحالة', type: 'string' },
-      { field: 'warranty', label: 'الضمان', type: 'boolean' },
-      { field: 'serviceHistory', label: 'سجل الصيانة', type: 'boolean' }
+      { field: 'price', label: 'Price', type: 'number' },
+      { field: 'year', label: 'Year', type: 'number' },
+      { field: 'mileage', label: 'Mileage', type: 'number' },
+      { field: 'fuelType', label: 'Fuel Type', type: 'string' },
+      { field: 'transmission', label: 'Transmission', type: 'string' },
+      { field: 'power', label: 'Power (HP)', type: 'number' },
+      { field: 'engineSize', label: 'Engine Size (L)', type: 'number' },
+      { field: 'doors', label: 'Doors', type: 'number' },
+      { field: 'seats', label: 'Seats', type: 'number' },
+      { field: 'color', label: 'Color', type: 'string' },
+      { field: 'condition', label: 'Condition', type: 'string' },
+      { field: 'warranty', label: 'Warranty', type: 'boolean' },
+      { field: 'serviceHistory', label: 'Service History', type: 'boolean' }
     ];
 
     fieldsToCompare.forEach(({ field, label, type }) => {
@@ -365,7 +365,7 @@ class CarComparisonService {
     // Add equipment comparison
     differences.push({
       field: 'totalEquipment',
-      label: 'إجمالي التجهيزات',
+      label: 'Total Equipment',
       values: cars.reduce((acc, { carId, car }) => {
         acc[carId] = this.countEquipment(car);
         return acc;

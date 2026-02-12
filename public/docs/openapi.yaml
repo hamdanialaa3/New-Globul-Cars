@@ -1,0 +1,332 @@
+openapi: 3.0.3
+info:
+  title: Koli One — Bulgarian Car Marketplace API
+  version: "1.0.0"
+  description: |
+    Public API reference for Koli One (koli.one), Bulgaria's leading AI-powered car marketplace.
+    
+    This document describes the publicly accessible endpoints and data models.
+    For full API access (CRUD, webhooks), a Company/Enterprise subscription is required.
+    
+    ## About Koli One
+    Koli One enables users to buy and sell cars in Bulgaria with AI-driven tools:
+    - AI Valuation: ML-based price estimation using Bulgarian market data
+    - AI Description: Automatic SEO-optimized listing text in Bulgarian and English
+    - AI Car Advisor: Interactive chat for car recommendations
+    - Smart Search: Natural language query parsing with Algolia
+    
+    ## Subscription Plans
+    | Plan | Price | Listings | API Access |
+    |------|-------|----------|------------|
+    | Free | €0/mo | 3/month | No |
+    | Dealer | €50/mo | 100/month | No |
+    | Company | €500/mo | Unlimited | Yes |
+    
+    ## Contact
+    - Website: https://koli.one
+    - Email: support@koli.one
+    - Company: Alaa Technologies, Sofia, Bulgaria
+  contact:
+    name: Koli One Support
+    email: support@koli.one
+    url: https://koli.one/contact
+  license:
+    name: Proprietary
+    url: https://koli.one/terms-of-service
+
+servers:
+  - url: https://koli.one
+    description: Production
+
+tags:
+  - name: Search
+    description: Car search and discovery
+  - name: Listings
+    description: Car listing details
+  - name: Valuation
+    description: AI-powered car valuation
+  - name: Plans
+    description: Subscription plans and pricing
+
+paths:
+  /search:
+    get:
+      tags: [Search]
+      summary: Search car listings
+      description: |
+        Search for car listings with filters. Supports natural language queries 
+        and faceted filtering by brand, model, year, price, fuel type, city, etc.
+        Available to all users without authentication.
+      parameters:
+        - name: q
+          in: query
+          description: Search query (supports natural language, e.g., "blue BMW under 20000 in Sofia")
+          schema:
+            type: string
+          example: "BMW X5 Sofia"
+        - name: brand
+          in: query
+          description: Car brand/make filter
+          schema:
+            type: string
+          example: "BMW"
+        - name: model
+          in: query
+          description: Car model filter
+          schema:
+            type: string
+          example: "X5"
+        - name: yearFrom
+          in: query
+          description: Minimum year
+          schema:
+            type: integer
+          example: 2018
+        - name: yearTo
+          in: query
+          description: Maximum year
+          schema:
+            type: integer
+          example: 2024
+        - name: priceFrom
+          in: query
+          description: Minimum price in EUR
+          schema:
+            type: number
+          example: 10000
+        - name: priceTo
+          in: query
+          description: Maximum price in EUR
+          schema:
+            type: number
+          example: 50000
+        - name: fuelType
+          in: query
+          description: Fuel type filter
+          schema:
+            type: string
+            enum: [petrol, diesel, electric, hybrid, plug-in-hybrid, lpg, cng]
+        - name: city
+          in: query
+          description: City filter (Bulgarian city name)
+          schema:
+            type: string
+          example: "Sofia"
+        - name: condition
+          in: query
+          description: Vehicle condition
+          schema:
+            type: string
+            enum: [new, used]
+        - name: page
+          in: query
+          description: Page number (1-based)
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Results per page
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CarListingSummary'
+                  total:
+                    type: integer
+                    description: Total number of matching listings
+                  page:
+                    type: integer
+                  pages:
+                    type: integer
+
+  /car/{sellerId}/{carId}:
+    get:
+      tags: [Listings]
+      summary: Get car listing details
+      description: |
+        Retrieve full details of a specific car listing including specs, photos,
+        price, seller info, and AI-generated description. Uses numeric IDs for 
+        privacy (no Firebase UIDs exposed).
+      parameters:
+        - name: sellerId
+          in: path
+          required: true
+          description: Seller numeric ID
+          schema:
+            type: integer
+        - name: carId
+          in: path
+          required: true
+          description: Car numeric ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Car listing details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CarListing'
+        '404':
+          description: Listing not found
+
+  /valuation:
+    get:
+      tags: [Valuation]
+      summary: AI Car Valuation page
+      description: |
+        Access the AI-powered car valuation tool. Users can enter vehicle details
+        (make, model, year, mileage, condition) and receive an estimated market
+        price based on Bulgarian market data and ML models.
+        
+        Free users: 1 valuation/month
+        Basic plan: 10/month
+        Professional: 50/month  
+        Enterprise: Unlimited
+      responses:
+        '200':
+          description: Valuation page
+
+  /advisor:
+    get:
+      tags: [Valuation]
+      summary: AI Car Advisor chat
+      description: |
+        Interactive AI chat assistant for car recommendations, market insights,
+        and buying guidance. Powered by Google Gemini.
+        
+        Free users: 3 chats/month
+        Basic plan: 20/month
+        Professional: 100/month
+        Enterprise: Unlimited
+      responses:
+        '200':
+          description: Advisor chat page
+
+components:
+  schemas:
+    CarListingSummary:
+      type: object
+      properties:
+        carNumericId:
+          type: integer
+          description: Unique numeric car ID
+        sellerNumericId:
+          type: integer
+          description: Seller numeric ID
+        title:
+          type: string
+          example: "2018 BMW X5 xDrive30d"
+        make:
+          type: string
+          example: "BMW"
+        model:
+          type: string
+          example: "X5"
+        year:
+          type: integer
+          example: 2018
+        price:
+          type: number
+          example: 45000
+        currency:
+          type: string
+          example: "EUR"
+        mileage:
+          type: integer
+          example: 120000
+        fuelType:
+          type: string
+          example: "diesel"
+        city:
+          type: string
+          example: "Sofia"
+        thumbnail:
+          type: string
+          format: uri
+        status:
+          type: string
+          enum: [published, featured]
+
+    CarListing:
+      type: object
+      properties:
+        carNumericId:
+          type: integer
+        sellerNumericId:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+          description: Full listing description (may be AI-generated)
+        make:
+          type: string
+        model:
+          type: string
+        year:
+          type: integer
+        price:
+          type: number
+        currency:
+          type: string
+          enum: [EUR, BGN]
+        mileage:
+          type: integer
+        fuelType:
+          type: string
+        transmission:
+          type: string
+          enum: [manual, automatic]
+        engineSize:
+          type: integer
+          description: Engine displacement in cc
+        power:
+          type: integer
+          description: Engine power in HP
+        color:
+          type: string
+        doors:
+          type: string
+        condition:
+          type: string
+          enum: [new, used]
+        city:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+            format: uri
+        features:
+          type: array
+          items:
+            type: string
+        seller:
+          type: object
+          properties:
+            numericId:
+              type: integer
+            displayName:
+              type: string
+            type:
+              type: string
+              enum: [private, dealer, company]
+        createdAt:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [published, featured, sold]

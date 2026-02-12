@@ -145,6 +145,6 @@ export function getSEOMetadata(brandId: string, cityId: string) {
       `автомобили ${city.nameBg}`
     ],
     url: `/${brandId}-${cityId}`,
-    canonical: `https://kolione.bg/${brandId}-${cityId}`
+    canonical: `https://koli.one/${brandId}-${cityId}`
   };
 }

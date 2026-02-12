@@ -276,7 +276,7 @@ const loadSettings = useCallback(async () => {
       const data = await siteSettingsService.getSiteSettings();
       setSettings(data);
     } catch (error) {
-      showMessage('error', 'فشل تحميل إعدادات SEO');
+      showMessage('error', 'Failed to load SEO settings');
     } finally {
       setLoading(false);
     }
@@ -295,9 +295,9 @@ const loadSettings = useCallback(async () => {
     try {
       setSaving(true);
       await siteSettingsService.updateSiteSettings(settings, adminEmail);
-      showMessage('success', '✅ تم حفظ إعدادات SEO بنجاح');
+      showMessage('success', '✅ SEO settings saved successfully');
     } catch (error) {
-      showMessage('error', '❌ فشل حفظ الإعدادات');
+      showMessage('error', '❌ Failed to save settings');
     } finally {
       setSaving(false);
     }
@@ -357,7 +357,7 @@ const loadSettings = useCallback(async () => {
     return (
       <Container>
         <Header>
-          <Title><Globe size={24} /> جاري التحميل...</Title>
+          <Title><Globe size={24} /> Loading...</Title>
         </Header>
       </Container>
     );
@@ -368,10 +368,10 @@ const loadSettings = useCallback(async () => {
       <Header>
         <Title>
           <Globe size={24} />
-          التحكم في SEO والتحليلات
+          SEO & Analytics Control
         </Title>
         <Subtitle>
-          إدارة محركات البحث، الوسوم، والتحليلات لزيادة الظهور والوصول
+          Manage search engines, tags, and analytics to increase visibility and reach
         </Subtitle>
       </Header>
 
@@ -386,33 +386,33 @@ const loadSettings = useCallback(async () => {
       <Section>
         <SectionTitle>
           <SearchIcon size={18} />
-          إعدادات SEO الأساسية
+          Basic SEO Settings
         </SectionTitle>
 
         <div>
-          <FieldLabel>اسم الموقع</FieldLabel>
+          <FieldLabel>Site Name</FieldLabel>
           <InputField
             type="text"
             value={settings.seo.siteName}
             onChange={(e) => updateSEO('siteName', e.target.value)}
             disabled={saving}
-            placeholder="Koli One - كل ون"
+            placeholder="Koli One"
           />
         </div>
 
         <div>
-          <FieldLabel>وصف الموقع (Meta Description)</FieldLabel>
+          <FieldLabel>Site Description (Meta Description)</FieldLabel>
           <TextArea
             value={settings.seo.siteDescription}
             onChange={(e) => updateSEO('siteDescription', e.target.value)}
             disabled={saving}
-            placeholder="منصة بيع وشراء السيارات الأولى في المملكة..."
+            placeholder="The leading car buying and selling platform..."
           />
         </div>
 
         {/* Preview */}
         <PreviewBox>
-          <PreviewTitle>معاينة نتائج Google</PreviewTitle>
+          <PreviewTitle>Google Results Preview</PreviewTitle>
           <PreviewLink href="#">{settings.seo.siteName}</PreviewLink>
           <PreviewContent>
             {settings.seo.siteDescription}
@@ -424,7 +424,7 @@ const loadSettings = useCallback(async () => {
       <Section>
         <SectionTitle>
           <Globe size={18} />
-          الكلمات المفتاحية ({settings.seo.keywords.length})
+          Keywords ({settings.seo.keywords.length})
         </SectionTitle>
 
         <KeywordsContainer>
@@ -448,7 +448,7 @@ const loadSettings = useCallback(async () => {
             onChange={(e) => setNewKeyword(e.target.value)}
             onKeyPress={handleKeywordKeyPress}
             disabled={saving}
-            placeholder="أضف كلمة مفتاحية (اضغط Enter)"
+            placeholder="Add a keyword (press Enter)"
             style={{ marginBottom: 0 }}
           />
           <Button
@@ -464,11 +464,11 @@ const loadSettings = useCallback(async () => {
       <Section>
         <SectionTitle>
           <Share2 size={18} />
-          إعدادات وسائل التواصل (Open Graph)
+          Social Media Settings (Open Graph)
         </SectionTitle>
 
         <div>
-          <FieldLabel>صورة Open Graph (OG Image)</FieldLabel>
+          <FieldLabel>Open Graph Image (OG Image)</FieldLabel>
           <InputField
             type="text"
             value={settings.seo.ogImage}
@@ -479,7 +479,7 @@ const loadSettings = useCallback(async () => {
         </div>
 
         <div>
-          <FieldLabel>حساب Twitter</FieldLabel>
+          <FieldLabel>Twitter Account</FieldLabel>
           <InputField
             type="text"
             value={settings.seo.twitterHandle}
@@ -491,7 +491,7 @@ const loadSettings = useCallback(async () => {
 
         {/* Preview */}
         <PreviewBox>
-          <PreviewTitle>معاينة عند المشاركة</PreviewTitle>
+          <PreviewTitle>Share Preview</PreviewTitle>
           {settings.seo.ogImage && (
             <div style={{ marginBottom: '8px', color: '#6b7280', fontSize: '12px' }}>
               📸 {settings.seo.ogImage}
@@ -510,7 +510,7 @@ const loadSettings = useCallback(async () => {
       <Section>
         <SectionTitle>
           <ImageIcon size={18} />
-          التحليلات والتتبع
+          Analytics & Tracking
         </SectionTitle>
 
         <div>
@@ -545,7 +545,7 @@ const loadSettings = useCallback(async () => {
             style={{ width: '18px', height: '18px', cursor: 'pointer' }}
           />
           <FieldLabel htmlFor="enableTracking" style={{ margin: 0, cursor: 'pointer' }}>
-            تفعيل التتبع (Analytics & Pixels)
+            Enable Tracking (Analytics & Pixels)
           </FieldLabel>
         </div>
       </Section>
@@ -558,7 +558,7 @@ const loadSettings = useCallback(async () => {
           disabled={saving}
         >
           <Save size={16} />
-          {saving ? 'جاري الحفظ...' : 'حفظ التغييرات'}
+          {saving ? 'Saving...' : 'Save Changes'}
         </Button>
 
         <Button
@@ -567,7 +567,7 @@ const loadSettings = useCallback(async () => {
           disabled={saving}
         >
           <RefreshCw size={16} />
-          تحديث
+          Refresh
         </Button>
       </ActionButtons>
     </Container>

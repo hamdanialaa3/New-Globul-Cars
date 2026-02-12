@@ -60,6 +60,26 @@
     ],
     "rewrites": [
       {
+        "source": "/robots.txt",
+        "destination": "/robots.txt"
+      },
+      {
+        "source": "/llms.txt",
+        "destination": "/llms.txt"
+      },
+      {
+        "source": "/llms-full.txt",
+        "destination": "/llms-full.txt"
+      },
+      {
+        "source": "/.well-known/**",
+        "destination": "/.well-known/ai-plugin.json"
+      },
+      {
+        "source": "/docs/**",
+        "destination": "/docs/openapi.yaml"
+      },
+      {
         "source": "/sitemap.xml",
         "function": "sitemap"
       },

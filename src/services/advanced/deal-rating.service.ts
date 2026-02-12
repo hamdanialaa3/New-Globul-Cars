@@ -1,5 +1,5 @@
-// Deal Rating Service - نظام تقييم الصفقات
-// يحلل السعر مقارنة بالسوق ويعطي تقييم للصفقة
+// Deal Rating Service
+// Analyzes price compared to market and rates the deal
 
 import { db } from '../../firebase/firebase-config';
 import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
@@ -416,33 +416,33 @@ class DealRatingService {
 
     // Price reasons
     if (marketStats.savingsPercentage > 15) {
-      reasons.push(`${marketStats.savingsPercentage}% أقل من متوسط السوق (توفير ${marketStats.savings} лв)`);
+      reasons.push(`${marketStats.savingsPercentage}% below market average (saving ${marketStats.savings} лв)`);
     } else if (marketStats.savingsPercentage < -15) {
-      reasons.push(`${Math.abs(marketStats.savingsPercentage)}% أعلى من متوسط السوق`);
+      reasons.push(`${Math.abs(marketStats.savingsPercentage)}% above market average`);
     } else {
-      reasons.push(`السعر قريب من متوسط السوق`);
+      reasons.push(`Price is close to market average`);
     }
 
     // Mileage reasons
     if (factors.mileageScore >= 70 && car.mileage) {
-      reasons.push(`كيلومترات قليلة (${car.mileage.toLocaleString()} كم)`);
+      reasons.push(`Low mileage (${car.mileage.toLocaleString()} km)`);
     } else if (factors.mileageScore < 40 && car.mileage) {
-      reasons.push(`كيلومترات عالية (${car.mileage.toLocaleString()} كم)`);
+      reasons.push(`High mileage (${car.mileage.toLocaleString()} km)`);
     }
 
     // Condition reasons
     if (factors.conditionScore >= 80) {
-      reasons.push(`حالة ممتازة`);
+      reasons.push(`Excellent condition`);
     }
 
     // Age reasons
     if (factors.ageScore >= 80) {
-      reasons.push(`سيارة حديثة (${car.year})`);
+      reasons.push(`Recent model (${car.year})`);
     }
 
     // Equipment reasons
     if (factors.equipmentScore >= 70) {
-      reasons.push(`تجهيزات غنية`);
+      reasons.push(`Rich equipment`);
     }
 
     return reasons;
@@ -459,21 +459,21 @@ class DealRatingService {
     const recommendations: string[] = [];
 
     if (factors.priceScore >= 70) {
-      recommendations.push('صفقة جيدة - ينصح بالتفاوض بسرعة');
+      recommendations.push('Good deal - negotiate quickly');
     } else if (factors.priceScore < 40) {
-      recommendations.push('حاول التفاوض على السعر بنسبة 10-15%');
+      recommendations.push('Try to negotiate the price by 10-15%');
     }
 
     if (marketStats.sampleSize < 10) {
-      recommendations.push('قارن مع المزيد من الخيارات المشابهة');
+      recommendations.push('Compare with more similar options');
     }
 
     if (factors.mileageScore < 50) {
-      recommendations.push('تحقق من تاريخ الصيانة بعناية');
+      recommendations.push('Check the service history carefully');
     }
 
     if (factors.sellerScore < 60) {
-      recommendations.push('تحقق من سمعة البائع وتقييماته');
+      recommendations.push('Check the seller reputation and ratings');
     }
 
     return recommendations;
@@ -487,7 +487,7 @@ class DealRatingService {
       score: 50,
       rating: 'Unknown',
       confidence: 0,
-      reasons: ['بيانات غير كافية لتقييم الصفقة'],
+      reasons: ['Not enough data to rate this deal'],
       marketComparison: {
         averagePrice: car.price,
         medianPrice: car.price,
@@ -506,7 +506,7 @@ class DealRatingService {
         equipmentScore: 50,
         sellerScore: 50
       },
-      recommendations: ['ابحث عن المزيد من السيارات المشابهة للمقارنة']
+      recommendations: ['Search for more similar cars to compare']
     };
   }
 

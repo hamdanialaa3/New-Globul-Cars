@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
+import { postSaleReviewService } from '../services/review/post-sale-review.service';
 
 interface AddRatingFormProps {
   carId: string;
@@ -290,7 +291,7 @@ const AddRatingForm: React.FC<AddRatingFormProps> = ({
   onCancel,
   className
 }) => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     rating: 0,
@@ -387,24 +388,29 @@ const AddRatingForm: React.FC<AddRatingFormProps> = ({
     setLoading(true);
 
     try {
-      // TODO: Implement rating service
-      logger.info('Rating data:', {
+      const reviewData = {
         carId,
-        userId,
-        userName,
-        userAvatar,
+        sellerId: carId, // The car owner
+        buyerId: userId,
         rating: formData.rating,
-        title: formData.title.trim(),
-        comment: formData.comment.trim(),
-        pros: formData.pros.length > 0 ? formData.pros : undefined,
-        cons: formData.cons.length > 0 ? formData.cons : undefined,
-        verifiedPurchase: formData.verifiedPurchase,
-        categories: formData.categories
-      });
+        reviewType: 'seller' as const,
+        reviewerRole: 'buyer' as const,
+        comment: `${formData.title.trim()}\n\n${formData.comment.trim()}${formData.pros.length > 0 ? '\n\nPros: ' + formData.pros.join(', ') : ''}${formData.cons.length > 0 ? '\nCons: ' + formData.cons.join(', ') : ''}`,
+        aspectRatings: {
+          communication: formData.categories.reliability || formData.rating,
+          accuracy: formData.categories.performance || formData.rating,
+          condition: formData.categories.comfort || formData.rating,
+          fairness: formData.categories.value || formData.rating
+        },
+        verified: formData.verifiedPurchase,
+        helpful: 0,
+        reportCount: 0,
+        status: 'pending' as const
+      };
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
+      await postSaleReviewService.createReview(reviewData);
+      logger.info('Rating submitted successfully', { carId, userId });
+      toast.success(language === 'bg' ? 'Благодарим за отзива!' : 'Thank you for your review!');
       onRatingAdded();
     } catch (error) {
       logger.error('Error adding rating:', error as Error);

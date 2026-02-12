@@ -214,7 +214,7 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
         {/* Instructions */}
         <Instructions $isDark={isDark}>
           {language === 'bg'
-            ? 'Попълнете данните си точно както са изписани на личната ви карта. النظام يتكيف تلقائياً مع حجم شاشتك!'
+            ? 'Попълнете данните си точно както са изписани на личната ви карта. The system auto-adapts to your screen size!'
             : 'Fill in your information exactly as it appears on your ID card. System auto-adapts to your screen!'}
         </Instructions>
 
@@ -495,7 +495,7 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
           {/* RIGHT COLUMN: Reference Image */}
           <ImageColumn $isDark={isDark}>
             <ImageLabel $isDark={isDark}>
-              📸 {language === 'bg' ? 'مرجع للمقارنة' : 'Reference for Comparison'}
+              📸 {language === 'bg' ? 'Справка за сравнение' : 'Reference for Comparison'}
             </ImageLabel>
             <ReferenceImage src={backgroundImage} alt="ID Card Reference" />
           </ImageColumn>

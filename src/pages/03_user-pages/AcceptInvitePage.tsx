@@ -76,7 +76,7 @@ const AcceptInvitePage: React.FC = () => {
   // Validate invite code and fetch company details
   const handleValidateCode = async (code: string) => {
     if (!currentUser) {
-      setErrorMessage('يجب تسجيل الدخول أولاً | You must be logged in first');
+      setErrorMessage('You must be logged in first');
       return;
     }
 
@@ -88,21 +88,21 @@ const AcceptInvitePage: React.FC = () => {
       const invitation = await teamManagementService.getInvitationByCode(code);
       
       if (!invitation) {
-        setErrorMessage('كود غير صحيح | Invalid invite code');
+        setErrorMessage('Invalid invite code');
         setIsValidating(false);
         return;
       }
 
       // Check if expired (7 days)
       if (invitation.expiresAt.toMillis() < Date.now()) {
-        setErrorMessage('انتهت صلاحية الكود | Invite code has expired');
+        setErrorMessage('Invite code has expired');
         setIsValidating(false);
         return;
       }
 
       // Check if already accepted
       if (invitation.status === 'accepted') {
-        setErrorMessage('تم قبول الدعوة مسبقاً | Invitation already accepted');
+        setErrorMessage('Invitation already accepted');
         setIsValidating(false);
         return;
       }
@@ -119,7 +119,7 @@ const AcceptInvitePage: React.FC = () => {
       
     } catch (error) {
       logger.error('Error validating invite code', error as Error, { code });
-      setErrorMessage('حدث خطأ أثناء التحقق من الكود | Error validating code');
+      setErrorMessage('Error validating code');
     } finally {
       setIsValidating(false);
     }
@@ -135,7 +135,7 @@ const AcceptInvitePage: React.FC = () => {
     try {
       await teamManagementService.acceptInvitation(inviteCode, currentUser.uid);
       
-      setSuccessMessage(`مرحباً بك في ${companyPreview?.companyName || 'الفريق'}! | Welcome to ${companyPreview?.companyName || 'the team'}!`);
+      setSuccessMessage(`Welcome to ${companyPreview?.companyName || 'the team'}!`);
       setStep('success');
 
       // Redirect after 2 seconds
@@ -145,7 +145,7 @@ const AcceptInvitePage: React.FC = () => {
 
     } catch (error: any) {
       logger.error('Error accepting invitation', error as Error, { code: inviteCode });
-      setErrorMessage(error.message || 'فشل قبول الدعوة | Failed to accept invitation');
+      setErrorMessage(error.message || 'Failed to accept invitation');
       setIsLoading(false);
     }
   };
@@ -156,8 +156,8 @@ const AcceptInvitePage: React.FC = () => {
       case 'input':
         return (
           <>
-            <Title>انضم إلى فريق | Join a Team</Title>
-            <Subtitle>أدخل كود الدعوة المكون من 8 أحرف | Enter the 8-character invite code</Subtitle>
+            <Title>Join a Team</Title>
+            <Subtitle>Enter the 8-character invite code</Subtitle>
             
             <CodeInputWrapper>
               <CodeInput
@@ -180,8 +180,7 @@ const AcceptInvitePage: React.FC = () => {
             )}
 
             <InfoText>
-              💡 الكود يتكون من 8 أحرف (A-Z, 2-9) بدون مسافات<br />
-              Codes are 8 characters (A-Z, 2-9) without spaces
+              💡 Codes are 8 characters (A-Z, 2-9) without spaces
             </InfoText>
           </>
         );
@@ -193,30 +192,30 @@ const AcceptInvitePage: React.FC = () => {
               <CheckCircle size={60} color="#10B981" />
             </SuccessIcon>
             
-            <Title>تفاصيل الدعوة | Invitation Details</Title>
+            <Title>Invitation Details</Title>
             
             <CompanyCard>
               <CompanyHeader>
                 <CompanyName>{companyPreview?.companyName}</CompanyName>
                 <RoleBadge $role={companyPreview?.role || 'agent'}>
-                  {companyPreview?.role === 'admin' ? 'مسؤول | Admin' : 
-                   companyPreview?.role === 'agent' ? 'وكيل | Agent' : 
-                   'مشاهد | Viewer'}
+                  {companyPreview?.role === 'admin' ? 'Admin' : 
+                   companyPreview?.role === 'agent' ? 'Agent' : 
+                   'Viewer'}
                 </RoleBadge>
               </CompanyHeader>
               
               <CompanyInfo>
                 <InfoRow>
-                  <strong>دعاك:</strong> {companyPreview?.ownerName}
+                  <strong>Invited by:</strong> {companyPreview?.ownerName}
                 </InfoRow>
                 <InfoRow>
-                  <strong>حجم الفريق:</strong> {companyPreview?.teamSize} عضو
+                  <strong>Team size:</strong> {companyPreview?.teamSize} members
                 </InfoRow>
                 <InfoRow>
-                  <strong>الصلاحيات:</strong> {
-                    companyPreview?.role === 'admin' ? 'كامل الصلاحيات' :
-                    companyPreview?.role === 'agent' ? 'إنشاء وتعديل إعلانات' :
-                    'مشاهدة فقط'
+                  <strong>Permissions:</strong> {
+                    companyPreview?.role === 'admin' ? 'Full access' :
+                    companyPreview?.role === 'agent' ? 'Create and edit listings' :
+                    'View only'
                   }
                 </InfoRow>
               </CompanyInfo>
@@ -227,7 +226,7 @@ const AcceptInvitePage: React.FC = () => {
               disabled={isLoading}
               $variant="primary"
             >
-              {isLoading ? 'جاري الانضمام...' : 'انضم الآن | Join Now'}
+              {isLoading ? 'Joining...' : 'Join Now'}
               {!isLoading && <ArrowRight size={20} style={{ marginLeft: '8px' }} />}
             </ActionButton>
 
@@ -248,7 +247,7 @@ const AcceptInvitePage: React.FC = () => {
             </SuccessIcon>
             
             <Title>{successMessage}</Title>
-            <Subtitle>سيتم تحويلك إلى لوحة الفريق... | Redirecting to team dashboard...</Subtitle>
+            <Subtitle>Redirecting to team dashboard...</Subtitle>
             
             <LoadingSpinner />
           </>
@@ -270,7 +269,7 @@ const AcceptInvitePage: React.FC = () => {
         
         {step === 'input' && (
           <BackLink onClick={() => navigate('/')}>
-            العودة للصفحة الرئيسية | Back to Home
+            Back to Home
           </BackLink>
         )}
       </ContentCard>

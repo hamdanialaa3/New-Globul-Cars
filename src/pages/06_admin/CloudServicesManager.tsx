@@ -29,7 +29,7 @@ const CloudServicesManager: React.FC = () => {
   };
 
   const handleDeactivate = (serviceId: string) => {
-    if (window.confirm('هل أنت متأكد من تعطيل هذه الخدمة؟')) {
+    if (window.confirm('Are you sure you want to deactivate this service?')) {
       cloudServicesConfig.deactivateService(serviceId);
       loadServices();
     }
@@ -46,9 +46,9 @@ const CloudServicesManager: React.FC = () => {
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'active': return 'مفعل';
-      case 'inactive': return 'غير مفعل';
-      case 'needs-setup': return 'يحتاج إعداد';
+      case 'active': return 'Active';
+      case 'inactive': return 'Inactive';
+      case 'needs-setup': return 'Needs Setup';
       default: return status;
     }
   };
@@ -56,8 +56,8 @@ const CloudServicesManager: React.FC = () => {
   return (
     <Container>
       <Header>
-        <Title>🌐 إدارة الخدمات السحابية</Title>
-        <Subtitle>تفعيل وإدارة خدمات AWS، Google AI، والمدفوعات</Subtitle>
+        <Title>🌐 Cloud Services Management</Title>
+        <Subtitle>Activate and manage AWS, Google AI, and payment services</Subtitle>
       </Header>
 
       <ServicesGrid>
@@ -72,7 +72,7 @@ const CloudServicesManager: React.FC = () => {
             </StatusBadge>
 
             <FeaturesList>
-              <FeaturesTitle>المميزات:</FeaturesTitle>
+              <FeaturesTitle>Features:</FeaturesTitle>
               {service.featuresAr.map((feature, idx) => (
                 <Feature key={idx}>{feature}</Feature>
               ))}
@@ -82,7 +82,7 @@ const CloudServicesManager: React.FC = () => {
               <SetupForm>
                 <Input
                   type="password"
-                  placeholder="أدخل API Key"
+                  placeholder="Enter API Key"
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
                 />
@@ -93,26 +93,26 @@ const CloudServicesManager: React.FC = () => {
               {service.status === 'active' ? (
                 <DeactivateBtn onClick={() => handleDeactivate(service.id)}>
                   <X size={16} />
-                  تعطيل
+                  Deactivate
                 </DeactivateBtn>
               ) : (
                 <ActivateBtn onClick={() => handleActivate(service.id)}>
                   <Check size={16} />
-                  {selectedService?.id === service.id ? 'تأكيد التفعيل' : 'تفعيل'}
+                  {selectedService?.id === service.id ? 'Confirm Activation' : 'Activate'}
                 </ActivateBtn>
               )}
               
               {service.setupUrl && (
                 <SetupBtn onClick={() => window.open(service.setupUrl, '_blank')}>
                   <Settings size={16} />
-                  إعداد الخدمة
+                  Service Setup
                 </SetupBtn>
               )}
               
               {service.docsUrl && (
                 <DocsBtn onClick={() => window.open(service.docsUrl, '_blank')}>
                   <ExternalLink size={16} />
-                  الوثائق
+                  Documentation
                 </DocsBtn>
               )}
             </ButtonGroup>

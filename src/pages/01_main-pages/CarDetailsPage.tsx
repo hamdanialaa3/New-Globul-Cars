@@ -267,7 +267,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
 
           } catch (err) {
             logger.error('[CarDetailsPage] Error starting chat', err instanceof Error ? err : undefined);
-            
+
             // Check if error is due to being blocked by the other user
             if (err instanceof Error && err.message.includes('This user has blocked you')) {
               toast.error(
@@ -494,6 +494,7 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
         language={(language as 'bg' | 'en')}
         onBack={() => navigate(-1)}
         onEdit={isOwner ? handleEditClick : undefined}
+        onDelete={isOwner ? handleDeleteClick : undefined}
         isOwner={Boolean(isOwner)}
         onContact={handleContactClick}
       />

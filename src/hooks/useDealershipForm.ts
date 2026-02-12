@@ -68,34 +68,34 @@ export const useDealershipForm = (
 
     // Required fields
     if (!formData.dealershipNameBG) {
-      newErrors.dealershipNameBG = 'اسم المعرض مطلوب';
+      newErrors.dealershipNameBG = 'Dealership name is required';
     }
 
     if (!formData.eik) {
-      newErrors.eik = 'رقم EIK مطلوب';
+      newErrors.eik = 'EIK number is required';
     } else if (!isValidEIK(formData.eik)) {
-      newErrors.eik = 'رقم EIK غير صالح (يجب أن يكون 9 أو 13 رقم)';
+      newErrors.eik = 'Invalid EIK number (must be 9 or 13 digits)';
     }
 
     if (!formData.contact?.phone) {
-      newErrors['contact.phone'] = 'رقم الهاتف مطلوب';
+      newErrors['contact.phone'] = 'Phone number is required';
     }
 
     if (!formData.contact?.email) {
-      newErrors['contact.email'] = 'البريد الإلكتروني مطلوب';
+      newErrors['contact.email'] = 'Email is required';
     }
 
     if (!formData.address?.street) {
-      newErrors['address.street'] = 'الشارع مطلوب';
+      newErrors['address.street'] = 'Street is required';
     }
 
     if (!formData.address?.city) {
-      newErrors['address.locationData?.cityName'] = 'المدينة مطلوبة';
+      newErrors['address.locationData?.cityName'] = 'City is required';
     }
 
     // Validate working hours
     if (formData.workingHours && !validateWorkingHours(formData.workingHours)) {
-      newErrors.workingHours = 'ساعات العمل غير صالحة';
+      newErrors.workingHours = 'Invalid working hours';
     }
 
     setErrors(newErrors);

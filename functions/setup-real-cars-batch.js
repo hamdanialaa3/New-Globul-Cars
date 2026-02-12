@@ -76,27 +76,31 @@ async function setupRealCars() {
     console.log(`👤 Seller: ID 1 (${sellerId})`);
 
     // 2. Prepare Data & Clean Up
-    console.log('🧹 Cleaning up existing cars for User 1...');
+    console.log('🧹 Cleaning up existing cars for User 1 from ALL collections...');
 
-    // Delete by sellerId
-    const snapshot1 = await db.collection('cars').where('sellerId', '==', sellerId).get();
+    const VEHICLE_COLLECTIONS = ['cars', 'passenger_cars', 'suvs', 'vans', 'motorcycles', 'trucks', 'buses'];
     const batchDelete = db.batch();
-    snapshot1.docs.forEach(doc => {
-        batchDelete.delete(doc.ref);
-    });
+    let deleteCount = 0;
 
-    // Delete by sellerNumericId (just in case)
-    const snapshot2 = await db.collection('cars').where('sellerNumericId', '==', 1).get();
-    snapshot2.docs.forEach(doc => {
-        batchDelete.delete(doc.ref); // FireStore handles double-deletes gracefully
-    });
+    for (const collectionName of VEHICLE_COLLECTIONS) {
+        const snapshot = await db.collection(collectionName).where('sellerId', '==', sellerId).get();
+        snapshot.docs.forEach(doc => {
+            batchDelete.delete(doc.ref);
+            deleteCount++;
+        });
 
-    // Delete any "fake" or "real" prefixed cars that might belong to this user via other means
-    // (e.g. if RealDataInitializer used a different ID strategy but linked to this user)
-    // This is covered by sellerId check usually, but let's be thorough.
+        // Also cleanup by numeric ID just in case
+        const snapshotNum = await db.collection(collectionName).where('sellerNumericId', '==', 1).get();
+        snapshotNum.docs.forEach(doc => {
+            batchDelete.delete(doc.ref); // Firestore de-dupes deletes on same ref automatically in SDK usually, or it's fine
+            deleteCount++;
+        });
+    }
 
-    await batchDelete.commit();
-    console.log(`✅ Deleted ${snapshot1.size + snapshot2.size} existing/fake car listings.`);
+    if (deleteCount > 0) {
+        await batchDelete.commit();
+    }
+    console.log(`✅ Deleted ${deleteCount} existing/fake car listings from all collections.`);
 
     // We need items from 500 to 540 inclusive.
     if (CAR_MODELS.length !== 41) {

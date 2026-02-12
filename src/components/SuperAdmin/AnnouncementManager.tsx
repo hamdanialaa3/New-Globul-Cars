@@ -362,8 +362,8 @@ const AnnouncementManager: React.FC = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([
     {
       id: '1',
-      title: 'ترقية النظام',
-      message: 'سيتم ترقية النظام يوم الجمعة من الساعة 12 AM - 2 AM. لن تتأثر الخدمات.',
+      title: 'System Upgrade',
+      message: 'System upgrade scheduled Friday 12 AM - 2 AM. Services will not be affected.','
       type: 'info',
       target: 'all',
       active: true,
@@ -374,8 +374,8 @@ const AnnouncementManager: React.FC = () => {
     },
     {
       id: '2',
-      title: 'عرض خاص للوكلاء',
-      message: 'خصم 50% على الإعلانات المميزة للوكلاء الجدد لمدة أسبوع!',
+      title: 'Special Offer for Dealers',
+      message: '50% discount on featured listings for new dealers for one week!',
       type: 'success',
       target: 'dealers',
       active: true,

@@ -1,5 +1,10 @@
 /**
- * Schema.org Structured Data Generator
+ * @deprecated Use SchemaGenerator from '@/utils/seo/SchemaGenerator.ts' instead.
+ * This file is kept for backward compatibility only.
+ * The canonical Schema.org generator is in web/src/utils/seo/SchemaGenerator.ts
+ * which supports Vehicle, VideoObject, AutoDealer, Breadcrumb, and FAQ schemas.
+ * 
+ * Schema.org Structured Data Generator (LEGACY)
  * Generates JSON-LD schemas for better SEO and rich snippets
  */
 

@@ -144,13 +144,13 @@ class TeamManagementService {
       // Check if user already invited
       const existingInvite = await this.getInvitationByEmail(companyId, params.email);
       if (existingInvite && existingInvite.status === 'pending') {
-        throw new Error('هذا المستخدم لديه دعوة معلقة بالفعل');
+        throw new Error('This user already has a pending invitation');
       }
 
       // Check if already a team member
       const existingMember = await this.getMemberByEmail(companyId, params.email);
       if (existingMember) {
-        throw new Error('هذا المستخدم عضو بالفعل في الفريق');
+        throw new Error('This user is already a team member');
       }
 
       const inviteCode = this.generateInviteCode();
@@ -347,7 +347,7 @@ class TeamManagementService {
 
       const snapshot = await getDocs(q);
       if (snapshot.empty) {
-        throw new Error('رمز الدعوة غير صالح أو منتهي الصلاحية');
+        throw new Error('Invalid or expired invitation code');
       }
 
       const inviteDoc = snapshot.docs[0];
@@ -358,7 +358,7 @@ class TeamManagementService {
         await updateDoc(doc(db, 'team_invitations', inviteDoc.id), {
           status: 'expired'
         });
-        throw new Error('انتهت صلاحية رمز الدعوة');
+        throw new Error('Invitation code has expired');
       }
 
       const batch = writeBatch(db);
@@ -448,7 +448,7 @@ class TeamManagementService {
       const memberDoc = await getDoc(memberRef);
 
       if (!memberDoc.exists()) {
-        throw new Error('العضو غير موجود');
+        throw new Error('Member not found');
       }
 
       const currentPermissions = memberDoc.data().permissions;

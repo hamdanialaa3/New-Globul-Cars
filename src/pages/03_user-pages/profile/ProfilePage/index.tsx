@@ -1437,7 +1437,7 @@ const ProfilePage: React.FC = () => {
                                   </S.FormGroup>
 
                                   <S.FormGroup>
-                                    <label>{language === 'bg' ? 'Имейл на فирмата' : 'Business Email'}</label>
+                                    <label>{language === 'bg' ? 'Имейл на фирмата' : 'Business Email'}</label>
                                     <input
                                       type="email"
                                       name="businessEmail"
@@ -1482,7 +1482,7 @@ const ProfilePage: React.FC = () => {
                                 </S.FormGrid>
 
                                 <S.FormGroup style={{ marginTop: '8px' }}>
-                                  <label>{language === 'bg' ? 'Адрес на فирмата' : 'Business Address'}</label>
+                                  <label>{language === 'bg' ? 'Адрес на фирмата' : 'Business Address'}</label>
                                   <input
                                     type="text"
                                     name="businessAddress"
@@ -1870,7 +1870,7 @@ const ProfilePage: React.FC = () => {
                                   </S.NeumorphicInfoField>
                                 </S.NeumorphicFieldWrapper>
                                 <S.NeumorphicFieldWrapper>
-                                  <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Място на راждане' : 'Place of Birth'}</S.NeumorphicFieldLabel>
+                                  <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Място на раждане' : 'Place of Birth'}</S.NeumorphicFieldLabel>
                                   <S.NeumorphicInfoField>
                                     <S.NeumorphicFieldValue>{user?.placeOfBirth || t('profile.notSet')}</S.NeumorphicFieldValue>
                                   </S.NeumorphicInfoField>
@@ -2007,7 +2007,7 @@ const ProfilePage: React.FC = () => {
                               </div>
                               <div style={{ fontSize: '14px', color: '#78350f' }}>
                                 {language === 'bg'
-                                  ? 'За да попълните информация за вашата автокъща, моля превключете типа на профила си على "Дилър" от бутоните по-горе.'
+                                  ? 'За да попълните информация за вашата автокъща, моля превключете типа на профила си на "Дилър" от бутоните по-горе.'
                                   : 'To fill in your dealership information, please switch your profile type to "Dealer" using the buttons above.'}
                               </div>
                             </div>

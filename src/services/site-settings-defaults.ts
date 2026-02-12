@@ -12,7 +12,7 @@ export const SITE_SETTINGS_PATH = {
 export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   // Maintenance & Status
   maintenanceMode: false,
-  maintenanceMessage: 'نعتذر، الموقع تحت الصيانة حالياً. سنعود قريباً.',
+  maintenanceMessage: 'We apologize, the site is currently under maintenance. We will be back soon.',
   allowAdminAccessDuringMaintenance: true,
 
   // Registration & Access
@@ -56,15 +56,15 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
     featuredAdPrice: 100,
     topAdPrice: 150,
     platformFeePercentage: 2.5,
-    currency: 'SAR',
+    currency: 'BGN',
     subscriptionMode: 'paid'
   },
 
   // SEO & Meta
   seo: {
-    siteName: 'Koli One - كل ون',
-    siteDescription: 'منصة بيع وشراء السيارات الأولى في المملكة',
-    keywords: ['سيارات', 'بيع سيارات', 'شراء سيارات', 'سيارات مستعملة', 'معارض سيارات'],
+    siteName: 'Koli One',
+    siteDescription: 'The leading car marketplace in Bulgaria',
+    keywords: ['cars', 'buy cars', 'sell cars', 'used cars', 'car dealerships'],
     ogImage: '/assets/og-image.jpg',
     twitterHandle: '@KoliOne'
   },
@@ -72,8 +72,8 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   // Contact & Support
   contact: {
     supportEmail: 'support@kolione.com',
-    supportPhone: '+966 50 000 0000',
-    whatsappNumber: '+966500000000',
+    supportPhone: '+359 00 000 0000',
+    whatsappNumber: '+359000000000',
     facebookUrl: 'https://facebook.com/kolione',
     instagramUrl: 'https://instagram.com/kolione'
   },
@@ -119,7 +119,7 @@ export const DEFAULT_FEATURED_CONTENT: FeaturedContent = {
       id: 'banner-1',
       image: '/banners/default-1.jpg',
       link: '/browse',
-      title: 'تصفح أحدث السيارات',
+      title: 'Browse the latest cars',
       active: true,
       order: 1
     }

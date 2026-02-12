@@ -6,6 +6,9 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Helmet } from 'react-helmet-async';
 import { MapPin, TrendingUp, Users, Car, Search } from 'lucide-react';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '@/firebase/firebase-config';
+import { SellWorkflowCollections } from '@/services/sell-workflow-collections';
 
 // Bulgarian cities with SEO data
 const CITIES = {
@@ -189,12 +192,65 @@ const CityCarsLandingPage: React.FC = () => {
   const t = texts[language] || texts.bg;
 
   useEffect(() => {
-    // TODO: Load real data from Firestore
-    // Simulated data for now
-    setCarsCount(Math.floor(Math.random() * 500) + 100);
-    setAvgPrice(Math.floor(Math.random() * 15000) + 5000);
-    setPopularBrands(['BMW', 'Mercedes-Benz', 'Audi', 'Volkswagen', 'Toyota']);
-  }, [city]);
+    let isActive = true;
+    const loadCityData = async () => {
+      if (!cityData) return;
+      try {
+        const vehicleCollections = SellWorkflowCollections.getAllCollections();
+        let totalCount = 0;
+        let totalPrice = 0;
+        let priceCount = 0;
+        const brandMap: Record<string, number> = {};
+
+        const promises = vehicleCollections.map(async (col) => {
+          try {
+            const q = query(
+              collection(db, col),
+              where('city', '==', cityData.bg),
+              where('status', '==', 'active')
+            );
+            const snap = await getDocs(q);
+            snap.docs.forEach((d) => {
+              const data = d.data();
+              totalCount++;
+              if (data.price && typeof data.price === 'number') {
+                totalPrice += data.price;
+                priceCount++;
+              }
+              const make = data.make || data.brand;
+              if (make) {
+                brandMap[make] = (brandMap[make] || 0) + 1;
+              }
+            });
+          } catch {
+            // Collection may not exist yet — skip silently
+          }
+        });
+
+        await Promise.all(promises);
+
+        if (!isActive) return;
+
+        setCarsCount(totalCount);
+        setAvgPrice(priceCount > 0 ? Math.round(totalPrice / priceCount) : 0);
+
+        const sortedBrands = Object.entries(brandMap)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5)
+          .map(([brand]) => brand);
+        setPopularBrands(sortedBrands.length > 0 ? sortedBrands : ['BMW', 'Mercedes-Benz', 'Audi', 'Volkswagen', 'Toyota']);
+      } catch (err) {
+        serviceLogger.error('CityCarsLandingPage', 'Failed to load city data', err);
+        if (isActive) {
+          setCarsCount(0);
+          setAvgPrice(0);
+          setPopularBrands([]);
+        }
+      }
+    };
+    loadCityData();
+    return () => { isActive = false; };
+  }, [city, cityData]);
 
   if (!cityData) {
     return (

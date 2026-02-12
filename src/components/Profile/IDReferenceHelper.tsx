@@ -1,6 +1,6 @@
 // src/components/Profile/IDReferenceHelper.tsx
-// ID Reference Helper - مساعد البطاقة المرجعي
-// الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
+// ID Reference Helper
+// Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
@@ -79,12 +79,12 @@ const IDImage = styled.img`
   width: 100%;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  opacity: 0.4; /* 40% opacity - شفافية 40% */
+  opacity: 0.4; /* 40% opacity */
   transition: transform 0.3s ease, opacity 0.3s ease;
   
   &:hover {
     transform: scale(1.02);
-    opacity: 0.6; /* زيادة الوضوح قليلاً عند التمرير */
+    opacity: 0.6; /* Slightly increased opacity on hover */
   }
 `;
 
@@ -234,7 +234,7 @@ const IDReferenceHelper: React.FC<IDReferenceHelperProps> = ({
       <HelperContent $show={!collapsed}>
         <InfoBadge>
           {language === 'bg' 
-            ? '💡 البطاقة للمساعدة في ملء البيانات'
+            ? '💡 Card helps you fill the data'
             : '💡 Card helps you fill the data'}
         </InfoBadge>
 

@@ -1,5 +1,5 @@
-// TabNavigation.SIMPLIFIED.styles.ts - نسخة مبسطة بدون gradients
-// ✅ تستخدم CSS Variables فقط من unified-theme.css
+// TabNavigation.SIMPLIFIED.styles.ts - Simplified version without gradients
+// ✅ Uses only CSS Variables from unified-theme.css
 import styled from 'styled-components';
 
 export const TabNavigation = styled.div`

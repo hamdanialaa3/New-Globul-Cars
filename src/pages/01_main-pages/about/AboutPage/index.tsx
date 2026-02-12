@@ -1,11 +1,15 @@
 // src/pages/AboutPage.tsx
 // About Us Page for Koli One
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from '../../../../hooks/useTranslation';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import { SOCIAL_LINKS } from '../../../../constants/socialLinks';
+import { collection, getCountFromServer } from 'firebase/firestore';
+import { db } from '@/firebase/firebase-config';
+import { SellWorkflowCollections } from '@/services/sell-workflow-collections';
+import { serviceLogger } from '@/services/logger-service';
 import {
   Car,
   Users,
@@ -333,6 +337,55 @@ const AboutPage: React.FC = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
+  const [stats, setStats] = useState({ cars: 0, users: 0, cities: 0 });
+
+  useEffect(() => {
+    let isActive = true;
+    const loadStats = async () => {
+      try {
+        const vehicleCollections = SellWorkflowCollections.getAllCollections();
+        let totalCars = 0;
+        const citySet = new Set<string>();
+
+        await Promise.all(vehicleCollections.map(async (col) => {
+          try {
+            const colRef = collection(db, col);
+            const snapshot = await getCountFromServer(colRef);
+            totalCars += snapshot.data().count;
+          } catch {
+            // Collection may not exist
+          }
+        }));
+
+        // Get user count from users collection
+        let userCount = 0;
+        try {
+          const usersSnap = await getCountFromServer(collection(db, 'users'));
+          userCount = usersSnap.data().count;
+        } catch {
+          // fallback
+        }
+
+        if (isActive) {
+          setStats({
+            cars: totalCars,
+            users: userCount,
+            cities: 28 // Bulgarian cities covered by the platform
+          });
+        }
+      } catch (err) {
+        serviceLogger.error('AboutPage', 'Failed to load stats', err);
+      }
+    };
+    loadStats();
+    return () => { isActive = false; };
+  }, []);
+
+  const formatNumber = (n: number) => {
+    if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, '')}K+`;
+    return n > 0 ? `${n}+` : '—';
+  };
+
   return (
     <AboutContainer $isDark={isDark}>
       <Container>
@@ -348,14 +401,14 @@ const AboutPage: React.FC = () => {
             <div className="icon">
               <Car size={24} />
             </div>
-            <div className="number">15,000+</div>
+            <div className="number">{formatNumber(stats.cars)}</div>
             <div className="label">{t('about.stats.cars', 'Cars Listed')}</div>
           </StatCard>
           <StatCard>
             <div className="icon">
               <Users size={24} />
             </div>
-            <div className="number">8,500+</div>
+            <div className="number">{formatNumber(stats.users)}</div>
             <div className="label">{t('about.stats.users', 'Happy Customers')}</div>
           </StatCard>
           <StatCard>
@@ -369,7 +422,7 @@ const AboutPage: React.FC = () => {
             <div className="icon">
               <MapPin size={24} />
             </div>
-            <div className="number">28</div>
+            <div className="number">{stats.cities}</div>
             <div className="label">{t('about.stats.cities', 'Cities Covered')}</div>
           </StatCard>
         </StatsGrid>

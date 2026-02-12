@@ -14,7 +14,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Search, RefreshCw, Filter } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 
 interface NoSearchResultsProps {
@@ -122,7 +122,7 @@ const NoSearchResults: React.FC<NoSearchResultsProps> = ({
       <IconWrapper>
         <Search size={48} />
       </IconWrapper>
-      
+
       <Title>
         {isBg
           ? query
@@ -132,7 +132,7 @@ const NoSearchResults: React.FC<NoSearchResultsProps> = ({
             ? `No results for "${query}"`
             : 'No results found'}
       </Title>
-      
+
       <Description>
         {isBg
           ? query

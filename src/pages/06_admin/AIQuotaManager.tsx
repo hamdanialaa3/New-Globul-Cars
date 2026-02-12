@@ -50,27 +50,27 @@ const AIQuotaManager: React.FC = () => {
   };
 
   if (loading) {
-    return <Container><Loading>جاري التحميل...</Loading></Container>;
+    return <Container><Loading>Loading...</Loading></Container>;
   }
 
   return (
     <Container>
       <Header>
-        <Title>🤖 إدارة حصص الذكاء الاصطناعي</Title>
-        <Subtitle>إنشاء وإدارة حصص AI للمستخدمين</Subtitle>
+        <Title>🤖 AI Quota Management</Title>
+        <Subtitle>Create and manage AI quotas for users</Subtitle>
       </Header>
 
       <InfoBox>
-        <InfoTitle>📋 الباقات المتاحة:</InfoTitle>
+        <InfoTitle>📋 Available Plans:</InfoTitle>
         <TiersList>
           {Object.entries(AI_TIER_CONFIGS).map(([key, config]) => (
             <TierItem key={key}>
               <TierName>{config.name.ar}</TierName>
-              <TierPrice>€{config.price.monthly}/شهر</TierPrice>
+              <TierPrice>€{config.price.monthly}/month</TierPrice>
               <TierLimits>
-                <Limit>📸 {config.limits.dailyImageAnalysis === -1 ? '∞' : config.limits.dailyImageAnalysis} صورة</Limit>
-                <Limit>💰 {config.limits.dailyPriceSuggestions === -1 ? '∞' : config.limits.dailyPriceSuggestions} سعر</Limit>
-                <Limit>💬 {config.limits.dailyChatMessages === -1 ? '∞' : config.limits.dailyChatMessages} رسالة</Limit>
+                <Limit>📸 {config.limits.dailyImageAnalysis === -1 ? '∞' : config.limits.dailyImageAnalysis} images</Limit>
+                <Limit>💰 {config.limits.dailyPriceSuggestions === -1 ? '∞' : config.limits.dailyPriceSuggestions} prices</Limit>
+                <Limit>💬 {config.limits.dailyChatMessages === -1 ? '∞' : config.limits.dailyChatMessages} messages</Limit>
               </TierLimits>
             </TierItem>
           ))}
@@ -79,21 +79,21 @@ const AIQuotaManager: React.FC = () => {
 
       <UsersTable>
         <TableHeader>
-          <HeaderCell>المستخدم</HeaderCell>
-          <HeaderCell>البريد الإلكتروني</HeaderCell>
-          <HeaderCell>الإجراءات</HeaderCell>
+          <HeaderCell>User</HeaderCell>
+          <HeaderCell>Email</HeaderCell>
+          <HeaderCell>Actions</HeaderCell>
         </TableHeader>
         {users.map((user: any) => (
           <TableRow key={user.id}>
-            <Cell>{user.displayName || 'غير محدد'}</Cell>
+            <Cell>{user.displayName || 'Not specified'}</Cell>
             <Cell>{user.email}</Cell>
             <Cell>
               <ActionButtons>
                 <InitBtn onClick={() => initializeQuota(user.id)}>
-                  إنشاء حصة
+                  Initialize Quota
                 </InitBtn>
                 <TierSelect onChange={(e) => upgradeTier(user.id, e.target.value)}>
-                  <option value="">ترقية...</option>
+                  <option value="">Upgrade...</option>
                   <option value="free">Free</option>
                   <option value="basic">Basic</option>
                   <option value="pro">Pro</option>

@@ -1,5 +1,5 @@
 // Firebase Status Component
-// لعرض حالة الاتصال مع Firebase
+// Display Firebase connection status
 
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthProvider';
@@ -36,7 +36,7 @@ export const FirebaseStatus: React.FC<FirebaseStatusProps> = ({ showDetails = fa
   }
 
   const getStatusColor = (isHealthy: boolean) => isHealthy ? '#28a745' : '#dc3545';
-  const getStatusText = (isHealthy: boolean) => isHealthy ? '✅ متصل' : '❌ غير متصل';
+  const getStatusText = (isHealthy: boolean) => isHealthy ? '✅ Connected' : '❌ Disconnected';
 
   return (
     <div style={{
@@ -56,11 +56,11 @@ export const FirebaseStatus: React.FC<FirebaseStatusProps> = ({ showDetails = fa
       </div>
       
       {loading ? (
-        <div>🔄 جاري التحميل...</div>
+        <div>🔄 Loading...</div>
       ) : (
         <>
           <div style={{ color: getStatusColor(!!currentUser) }}>
-            المصادقة: {currentUser ? `✅ ${currentUser.email}` : '❌ غير مسجل'}
+            Auth: {currentUser ? `✅ ${currentUser.email}` : '❌ Not signed in'}
           </div>
           
           {healthStatus && (

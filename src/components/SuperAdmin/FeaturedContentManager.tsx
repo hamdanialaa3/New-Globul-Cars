@@ -796,7 +796,7 @@ const FeaturedContentManager: React.FC = () => {
           disabled={saving}
         >
           <Save size={16} />
-          {saving ? 'جاري الحفظ...' : 'حفظ التغييرات'}
+          {saving ? 'Saving...' : 'Save Changes'}
         </Button>
 
         <Button
@@ -805,7 +805,7 @@ const FeaturedContentManager: React.FC = () => {
           disabled={saving}
         >
           <RefreshCw size={16} />
-          تحديث
+          Refresh
         </Button>
 
         <Button
@@ -814,7 +814,7 @@ const FeaturedContentManager: React.FC = () => {
           disabled={saving}
         >
           <AlertCircle size={16} />
-          إعادة تعيين
+          Reset
         </Button>
       </ActionButtons>
     </Container>

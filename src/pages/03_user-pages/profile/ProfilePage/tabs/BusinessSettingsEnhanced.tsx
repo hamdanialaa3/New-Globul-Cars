@@ -296,51 +296,51 @@ const BusinessSettingsEnhanced: React.FC = () => {
       legalNotice: 'All business settings are subject to administrator approval.'
     },
     ar: {
-      title: 'إعدادات الأعمال',
-      subtitle: 'إدارة معاملات أعمالك والخيارات الخاصة بك',
-      accountType: 'نوع الحساب',
-      businessOptions: 'خيارات الأعمال',
-      verificationStatus: 'حالة التحقق',
-      success: 'تم تفعيل الإعداد بنجاح!',
-      businessHours: 'ساعات العمل',
-      serviceArea: 'منطقة الخدمة',
-      featured: 'الإعلانات المميزة',
-      analytics: 'التحليلات والإحصائيات',
-      messaging: 'الرسائل ذات الأولوية',
-      customBranding: 'العلامة التجارية المخصصة',
-      legalNotice: 'جميع إعدادات الأعمال تخضع لموافقة المسؤول.'
+      title: 'Business Settings',
+      subtitle: 'Manage your business parameters and options',
+      accountType: 'Account Type',
+      businessOptions: 'Business Options',
+      verificationStatus: 'Verification Status',
+      success: 'Setting was successfully activated!',
+      businessHours: 'Business Hours',
+      serviceArea: 'Service Area',
+      featured: 'Featured Listings',
+      analytics: 'Analytics & Statistics',
+      messaging: 'Priority Messaging',
+      customBranding: 'Custom Branding',
+      legalNotice: 'All business settings are subject to administrator approval.'
     }
   };
 
   const businessSettings: BusinessSetting[] = [
     {
       id: 'businessHours',
-      labelAr: 'ساعات العمل',
+      labelAr: 'Business Hours',
       labelEn: 'Business Hours'
     },
     {
       id: 'serviceArea',
-      labelAr: 'منطقة الخدمة',
+      labelAr: 'Service Area',
       labelEn: 'Service Area'
     },
     {
       id: 'featured',
-      labelAr: 'الإعلانات المميزة',
+      labelAr: 'Featured Listings',
       labelEn: 'Featured Listings'
     },
     {
       id: 'analytics',
-      labelAr: 'التحليلات',
+      labelAr: 'Analytics & Statistics',
       labelEn: 'Analytics & Statistics'
     },
     {
       id: 'messaging',
-      labelAr: 'الرسائل ذات الأولوية',
+      labelAr: 'Priority Messaging',
       labelEn: 'Priority Messaging'
     },
     {
       id: 'customBranding',
-      labelAr: 'العلامة التجارية',
+      labelAr: 'Custom Branding',
       labelEn: 'Custom Branding'
     }
   ];
@@ -433,7 +433,7 @@ const BusinessSettingsEnhanced: React.FC = () => {
       {selectedSettings.size > 0 && (
         <Section>
           <SectionTitle>
-            مختار ({selectedSettings.size}) / Selected ({selectedSettings.size})
+            Selected ({selectedSettings.size})
           </SectionTitle>
           <div style={{
             display: 'flex',

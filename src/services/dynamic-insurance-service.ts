@@ -6,24 +6,24 @@ export interface DrivingBehavior {
   userId: string;
   vin: string;
   date: Timestamp;
-  totalDistance: number; // كم
-  averageSpeed: number; // كم/ساعة
+  totalDistance: number; // km
+  averageSpeed: number; // km/h
   maxSpeed: number;
-  harshAcceleration: number; // عدد المرات
-  harshBraking: number; // عدد المرات
-  speedingEvents: number; // عدد المرات
-  nightDriving: number; // نسبة مئوية
-  cityDriving: number; // نسبة مئوية
-  highwayDriving: number; // نسبة مئوية
-  idleTime: number; // دقائق
-  fuelEfficiency: number; // لتر/100كم
+  harshAcceleration: number; // count
+  harshBraking: number; // count
+  speedingEvents: number; // count
+  nightDriving: number; // percentage
+  cityDriving: number; // percentage
+  highwayDriving: number; // percentage
+  idleTime: number; // minutes
+  fuelEfficiency: number; // liters/100km
   accidentHistory: number;
 }
 
 export interface RiskScore {
   userId: string;
   vin: string;
-  overallScore: number; // 0-100 (100 = مخاطر عالية)
+  overallScore: number; // 0-100 (100 = high risk)
   speedRisk: number;
   accelerationRisk: number;
   distanceRisk: number;
@@ -37,9 +37,9 @@ export interface DynamicInsurancePolicy {
   policyId: string;
   userId: string;
   vin: string;
-  basePremium: number; // يورو شهرياً
+  basePremium: number; // EUR per month
   currentPremium: number;
-  riskAdjustment: number; // نسبة مئوية (±)
+  riskAdjustment: number; // percentage (±)
   coverage: {
     liability: boolean;
     collision: boolean;
@@ -76,7 +76,7 @@ export interface InsuranceClaim {
   estimatedDamage: number;
   approvedAmount: number;
   status: 'submitted' | 'under_review' | 'approved' | 'denied' | 'paid';
-  documents: string[]; // روابط الملفات
+  documents: string[]; // file links
   adjusterNotes: string;
 }
 
@@ -101,7 +101,7 @@ export class DynamicInsuranceService {
 
     } catch (error) {
       serviceLogger.error('Failed to record driving behavior', error as Error, { userId: behavior.userId, vin: behavior.vin });
-      throw new Error('فشل في تسجيل سلوك القيادة');
+      throw new Error('Failed to record driving behavior');
     }
   }
 
@@ -181,7 +181,7 @@ export class DynamicInsuranceService {
     accelerationRisk = Math.min(accelerationRisk, 40);
 
     let distanceRisk = 0;
-    if (behavior.totalDistance > 2000) distanceRisk = -10; // مكافأة للقيادة المنخفضة
+    if (behavior.totalDistance > 2000) distanceRisk = -10; // bonus for low driving
     else if (behavior.totalDistance < 500) distanceRisk = 10;
 
     let timeRisk = 0;
@@ -195,8 +195,8 @@ export class DynamicInsuranceService {
     ));
 
     return {
-      userId: '', // سيتم تعيينه لاحقاً
-      vin: '', // سيتم تعيينه لاحقاً
+      userId: '', // will be assigned later
+      vin: '', // will be assigned later
       overallScore,
       speedRisk,
       accelerationRisk,
@@ -204,7 +204,7 @@ export class DynamicInsuranceService {
       timeRisk,
       accidentRisk,
       lastUpdated: Timestamp.now(),
-      trend: 'stable' // في الإنتاج سيتم حساب الاتجاه
+      trend: 'stable' // in production, trend will be calculated
     };
   }
 
@@ -227,10 +227,10 @@ export class DynamicInsuranceService {
 
         // (Comment removed - was in Arabic)
         let riskAdjustment = 0;
-        if (riskScore.overallScore < 20) riskAdjustment = -15; // خصم 15%
-        else if (riskScore.overallScore < 40) riskAdjustment = -5; // خصم 5%
-        else if (riskScore.overallScore > 70) riskAdjustment = 25; // زيادة 25%
-        else if (riskScore.overallScore > 50) riskAdjustment = 10; // زيادة 10%
+        if (riskScore.overallScore < 20) riskAdjustment = -15; // 15% discount
+        else if (riskScore.overallScore < 40) riskAdjustment = -5; // 5% discount
+        else if (riskScore.overallScore > 70) riskAdjustment = 25; // 25% increase
+        else if (riskScore.overallScore > 50) riskAdjustment = 10; // 10% increase
 
         const newPremium = policy.basePremium * (1 + riskAdjustment / 100);
 
@@ -316,7 +316,7 @@ export class DynamicInsuranceService {
 
     } catch (error) {
       serviceLogger.error('Failed to file insurance claim', error as Error, { userId: claimData.userId, vin: claimData.vin });
-      throw new Error('فشل في تقديم مطالبة التأمين');
+      throw new Error('Failed to file insurance claim');
     }
   }
 
@@ -376,16 +376,16 @@ export class DynamicInsuranceService {
 
       // (Comment removed - was in Arabic)
       const claimData = {
-        policyId: '', // سيتم البحث عنه
+        policyId: '', // will be looked up
         userId: twin.userId,
         vin,
         incidentDate: Timestamp.now(),
         type: 'accident' as const,
-        description: `حادث تلقائي مكتشف - شدة: ${severity}`,
+        description: `Auto-detected accident - severity: ${severity}`,
         location: {
           latitude: location.latitude,
           longitude: location.longitude,
-          address: 'موقع الحادث (GPS)'
+          address: 'Accident location (GPS)'
         },
         estimatedDamage,
         approvedAmount: 0,

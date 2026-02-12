@@ -255,10 +255,10 @@ export const ProfileTypeSwitcher: React.FC<ProfileTypeSwitcherProps> = ({
         'Специален мениджър на акаунта'
       ],
       requirements: [
-        'رقم BULSTAT صالح',
-        'سجل تجاري',
-        'معلومات كاملة عن الشركة',
-        'حد أدنى من حجم الأسطول'
+        'Valid BULSTAT number',
+        'Trade register',
+        'Complete company information',
+        'Minimum fleet size'
       ]
     }
   ];
@@ -287,7 +287,7 @@ export const ProfileTypeSwitcher: React.FC<ProfileTypeSwitcherProps> = ({
 
   return (
     <SwitcherContainer>
-      <Title>اختر نوع الحساب</Title>
+      <Title>Choose Account Type</Title>
 
       <TypeOptionsGrid>
         {typeOptions.map(option => (
@@ -299,7 +299,7 @@ export const ProfileTypeSwitcher: React.FC<ProfileTypeSwitcherProps> = ({
             onClick={() => !loading && currentType !== option.type && setSelectedType(option.type)}
           >
             {currentType === option.type && (
-              <CurrentBadge $color={option.color}>الحالي</CurrentBadge>
+              <CurrentBadge $color={option.color}>Current</CurrentBadge>
             )}
 
             <TypeIcon $color={option.color}>
@@ -322,7 +322,7 @@ export const ProfileTypeSwitcher: React.FC<ProfileTypeSwitcherProps> = ({
               <RequirementsList>
                 <RequirementTitle>
                   <AlertCircle size={16} />
-                  المتطلبات:
+                  Requirements:
                 </RequirementTitle>
                 {option.requirements.map((req, idx) => (
                   <Requirement key={idx}>• {req}</Requirement>
@@ -341,7 +341,7 @@ export const ProfileTypeSwitcher: React.FC<ProfileTypeSwitcherProps> = ({
             disabled={loading}
           >
             <X size={18} />
-            إلغاء
+            Cancel
           </Button>
           <Button 
             $variant="primary" 
@@ -350,7 +350,7 @@ export const ProfileTypeSwitcher: React.FC<ProfileTypeSwitcherProps> = ({
             disabled={loading}
           >
             <ArrowRight size={18} />
-            {loading ? 'جاري التحويل...' : 'تحويل الحساب'}
+            {loading ? 'Switching...' : 'Switch Account'}
           </Button>
         </ButtonGroup>
       )}

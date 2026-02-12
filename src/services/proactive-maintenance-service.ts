@@ -27,17 +27,17 @@ export interface ServiceCenterOffer {
   centerId: string;
   centerName: string;
   location: string;
-  distance: number; // كم
+  distance: number; // km
   rating: number;
   reviewCount: number;
   price: number;
   currency: 'EUR';
-  availability: string; // تاريخ ووقت متاح
+  availability: string; // Available date and time
   contactInfo: {
     phone: string;
     email: string;
   };
-  warranty: string; // مدة الضمان
+  warranty: string; // Warranty duration
 }
 
 export interface MaintenanceRequest {
@@ -93,7 +93,7 @@ export class ProactiveMaintenanceService {
 
     } catch (error) {
       serviceLogger.error('Failed to create maintenance alert', error as Error, { userId: alertData.userId, vin: alertData.vin });
-      throw new Error('فشل في إنشاء تنبيه الصيانة');
+      throw new Error('Failed to create maintenance alert');
     }
   }
 
@@ -127,7 +127,7 @@ export class ProactiveMaintenanceService {
       const alertDoc = await getDoc(alertRef);
 
       if (!alertDoc.exists()) {
-        throw new Error('تنبيه الصيانة غير موجود');
+        throw new Error('Maintenance alert not found');
       }
 
       const alert = alertDoc.data() as MaintenanceAlert;
@@ -141,7 +141,7 @@ export class ProactiveMaintenanceService {
 
     } catch (error) {
       serviceLogger.error('Failed to submit service offer', error as Error, { alertId, centerId: offer.centerId });
-      throw new Error('فشل في إرسال عرض الخدمة');
+      throw new Error('Failed to submit service offer');
     }
   }
 
@@ -154,14 +154,14 @@ export class ProactiveMaintenanceService {
       const alertDoc = await getDoc(alertRef);
 
       if (!alertDoc.exists()) {
-        throw new Error('تنبيه الصيانة غير موجود');
+        throw new Error('Maintenance alert not found');
       }
 
       const alert = alertDoc.data() as MaintenanceAlert;
       const selectedOffer = alert.serviceCenters.find(offer => offer.centerId === centerId);
 
       if (!selectedOffer) {
-        throw new Error('عرض الخدمة غير موجود');
+        throw new Error('Service offer not found');
       }
 
       // (Comment removed - was in Arabic)
@@ -196,7 +196,7 @@ export class ProactiveMaintenanceService {
 
     } catch (error) {
       serviceLogger.error('Failed to accept service offer', error as Error, { alertId, centerId });
-      throw new Error('فشل في قبول عرض الخدمة');
+      throw new Error('Failed to accept service offer');
     }
   }
 
@@ -234,7 +234,7 @@ export class ProactiveMaintenanceService {
 
     } catch (error) {
       serviceLogger.error('Failed to update maintenance request', error as Error, { requestId });
-      throw new Error('فشل في تحديث طلب الصيانة');
+      throw new Error('Failed to update maintenance request');
     }
   }
 
@@ -298,32 +298,32 @@ export class ProactiveMaintenanceService {
 
     // (Comment removed - was in Arabic)
     if (digitalTwin.fuelLevelPercent < 15) {
-      issues.push('مستوى الوقود منخفض');
-      actions.push('تزويد الوقود');
+      issues.push('Low fuel level');
+      actions.push('Refuel');
     }
 
     // (Comment removed - was in Arabic)
     if (digitalTwin.engineHealth === 'critical') {
-      issues.push('حالة المحرك حرجة - أكواد أعطال نشطة');
-      actions.push('فحص تشخيصي شامل للمحرك');
-      actions.push('إصلاح الأعطال المكتشفة');
+      issues.push('Critical engine condition - active error codes');
+      actions.push('Comprehensive engine diagnostic check');
+      actions.push('Repair detected faults');
     } else if (digitalTwin.engineHealth === 'warning') {
-      issues.push('تحذير من حالة المحرك');
-      actions.push('فحص وقائي للمحرك');
+      issues.push('Engine condition warning');
+      actions.push('Preventive engine inspection');
     }
 
     // (Comment removed - was in Arabic)
     if (digitalTwin.totalMileage >= digitalTwin.nextServiceDueKm) {
-      issues.push('الصيانة الدورية مطلوبة');
-      actions.push('تغيير زيت المحرك وفلاتر');
-      actions.push('فحص المكابح والإطارات');
-      actions.push('فحص السوائل والأنظمة الكهربائية');
+      issues.push('Scheduled maintenance required');
+      actions.push('Change engine oil and filters');
+      actions.push('Inspect brakes and tires');
+      actions.push('Inspect fluids and electrical systems');
     }
 
     // (Comment removed - was in Arabic)
     if (digitalTwin.batteryLevel < 30) {
-      issues.push('بطارية الجهاز ضعيفة');
-      actions.push('فحص وشحن بطارية الجهاز');
+      issues.push('Device battery low');
+      actions.push('Check and charge device battery');
     }
 
     if (issues.length === 0) {
@@ -332,9 +332,9 @@ export class ProactiveMaintenanceService {
 
     // (Comment removed - was in Arabic)
     let priority: 'low' | 'medium' | 'high' | 'critical' = 'low';
-    if (issues.some(issue => issue.includes('حرجة') || issue.includes('critical'))) {
+    if (issues.some(issue => issue.includes('Critical') || issue.includes('critical'))) {
       priority = 'critical';
-    } else if (issues.some(issue => issue.includes('تحذير') || issue.includes('warning'))) {
+    } else if (issues.some(issue => issue.includes('warning') || issue.includes('Warning'))) {
       priority = 'high';
     } else if (issues.length > 1) {
       priority = 'medium';
@@ -346,8 +346,8 @@ export class ProactiveMaintenanceService {
       userId: digitalTwin.userId,
       type: 'proactive',
       priority,
-      title: 'تنبيه صيانة استباقي',
-      description: `تم اكتشاف ${issues.length} مشاكل محتملة في سيارتك`,
+      title: 'Proactive Maintenance Alert',
+      description: `${issues.length} potential issues detected in your car`,
       issues,
       recommendedActions: actions,
       estimatedCost: {

@@ -101,7 +101,7 @@ const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSuccess, onEr
         setShowInstructions(true);
       }
       
-      onError?.(error.message || 'فشل تسجيل الدخول مع Google');
+      onError?.(error.message || 'Google sign-in failed');
     } finally {
       setLoading(false);
     }
@@ -113,9 +113,9 @@ const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSuccess, onEr
     <div>
       <Button onClick={handleGoogleSignIn} disabled={loading || redirecting}>
         {loading ? (
-          <>⏳ جاري تسجيل الدخول...</>
+          <>⏳ Signing in...</>
         ) : redirecting ? (
-          <>🔄 جاري التوجيه...</>
+          <>🔄 Redirecting...</>
         ) : (
           <>
             <svg width="18" height="18" viewBox="0 0 24 24">
@@ -124,37 +124,37 @@ const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSuccess, onEr
               <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
               <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            تسجيل الدخول مع Google
+            Sign in with Google
           </>
         )}
       </Button>
 
       {redirecting && (
         <RedirectNotice>
-          🔄 جاري توجيهك إلى Google للمصادقة...
+          🔄 Redirecting you to Google for authentication...
           <br />
-          إذا لم يحدث شيء، يرجى إعادة تحميل الصفحة.
+          If nothing happens, please reload the page.
         </RedirectNotice>
       )}
 
       {showPopupWarning && (
         <PopupWarning>
-          ⚠️ تم حجب النافذة المنبثقة! يتم الآن استخدام طريقة التوجيه البديلة.
+          ⚠️ Popup was blocked! Using redirect method instead.
         </PopupWarning>
       )}
 
       {showInstructions && (
         <Instructions>
-          <strong>💡 لتجنب هذه المشكلة في المستقبل:</strong>
+          <strong>💡 To avoid this issue in the future:</strong>
           <br />
-          1. في Chrome: انقر على أيقونة النافذة المنبثقة في شريط العنوان
+          1. In Chrome: click the popup icon in the address bar
           <br />
-          2. اختر "السماح بالنوافذ المنبثقة لهذا الموقع"
+          2. Choose &quot;Allow popups for this site&quot;
           <br />
-          3. أعد تحميل الصفحة وجرب مرة أخرى
+          3. Reload the page and try again
           <br />
           <br />
-          <strong>أو</strong> يمكنك الاستمرار مع طريقة التوجيه البديلة.
+          <strong>Or</strong> you can continue with the redirect method.
         </Instructions>
       )}
     </div>

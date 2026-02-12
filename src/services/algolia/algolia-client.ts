@@ -14,14 +14,14 @@ export const algoliaClient: SearchClient = algoliasearch(APP_ID, SEARCH_KEY);
 
 // Index names
 export const INDICES = {
-  CARS: 'cars',
+  CARS: 'cars_bg',
   USERS: 'users',
   DEALERSHIPS: 'dealerships',
   // Replica indices for sorting
-  CARS_PRICE_ASC: 'cars_price_asc',
-  CARS_PRICE_DESC: 'cars_price_desc',
-  CARS_YEAR_DESC: 'cars_year_desc',
-  CARS_MILEAGE_ASC: 'cars_mileage_asc'
+  CARS_PRICE_ASC: 'cars_bg_price_asc',
+  CARS_PRICE_DESC: 'cars_bg_price_desc',
+  CARS_YEAR_DESC: 'cars_bg_year_desc',
+  CARS_MILEAGE_ASC: 'cars_bg_mileage_asc'
 } as const;
 
 // Initialize indices

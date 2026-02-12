@@ -218,21 +218,21 @@ const IntegrationStatusDashboard: React.FC = () => {
         {
           name: 'Firebase',
           status: status.services.firebase ? 'active' : 'inactive',
-          description: 'قاعدة البيانات الأساسية والمصادقة',
+          description: 'Core database and authentication',
           icon: <Cloud size={24} />,
           details: 'Firestore, Auth, Storage, Functions'
         },
         {
           name: 'Google Gemini AI',
           status: status.services.gemini ? 'active' : 'inactive',
-          description: 'تحليل صور السيارات بالذكاء الاصطناعي',
+          description: 'AI-powered vehicle image analysis',
           icon: <Brain size={24} />,
           details: 'Image analysis, Car recognition'
         },
         {
           name: 'AWS IoT Core',
           status: status.services.iot ? 'active' : 'warning',
-          description: 'تتبع السيارات في الوقت الفعلي',
+          description: 'Real-time vehicle tracking',
           icon: <Wifi size={24} />,
           details: 'Real-time telemetry, Device management',
           actionRequired: !status.services.iot
@@ -240,7 +240,7 @@ const IntegrationStatusDashboard: React.FC = () => {
         {
           name: 'Algolia Search',
           status: status.services.algolia ? 'active' : 'warning',
-          description: 'البحث المتقدم والفلترة الذكية',
+          description: 'Advanced search and smart filtering',
           icon: <Search size={24} />,
           details: 'Advanced search, Autocomplete, Facets',
           actionRequired: !status.services.algolia
@@ -248,7 +248,7 @@ const IntegrationStatusDashboard: React.FC = () => {
         {
           name: 'Stripe Payments',
           status: status.services.stripe ? 'active' : 'warning',
-          description: 'معالجة المدفوعات الآمنة',
+          description: 'Secure payment processing',
           icon: <CreditCard size={24} />,
           details: 'Payment processing, Subscriptions',
           actionRequired: !status.services.stripe
@@ -256,14 +256,14 @@ const IntegrationStatusDashboard: React.FC = () => {
         {
           name: 'AWS Analytics',
           status: status.services.aws ? 'active' : 'inactive',
-          description: 'تحليلات متقدمة وذكاء الأعمال',
+          description: 'Advanced analytics and business intelligence',
           icon: <BarChart3 size={24} />,
           details: 'QuickSight, Kinesis, Personalize'
         },
         {
           name: 'Security & Compliance',
           status: 'warning',
-          description: 'الأمان والامتثال للقوانين',
+          description: 'Security and regulatory compliance',
           icon: <Shield size={24} />,
           details: 'WAF, Macie, GDPR compliance',
           actionRequired: true
@@ -271,7 +271,7 @@ const IntegrationStatusDashboard: React.FC = () => {
         {
           name: 'Performance Monitoring',
           status: 'active',
-          description: 'مراقبة الأداء والتحسين',
+          description: 'Performance monitoring and optimization',
           icon: <Zap size={24} />,
           details: 'Real-time monitoring, Alerts'
         }
@@ -279,7 +279,7 @@ const IntegrationStatusDashboard: React.FC = () => {
 
       setServices(serviceList);
       
-      // حساب الصحة العامة
+      // Calculate overall health
       const activeServices = serviceList.filter(s => s.status === 'active').length;
       const healthPercentage = (activeServices / serviceList.length) * 100;
       setOverallHealth(healthPercentage);
@@ -305,11 +305,11 @@ const IntegrationStatusDashboard: React.FC = () => {
   const getStatusText = (status: 'active' | 'inactive' | 'warning') => {
     switch (status) {
       case 'active':
-        return 'نشط';
+        return 'Active';
       case 'warning':
-        return 'يحتاج إعداد';
+        return 'Needs Setup';
       case 'inactive':
-        return 'غير مفعل';
+        return 'Inactive';
     }
   };
 
@@ -317,7 +317,7 @@ const IntegrationStatusDashboard: React.FC = () => {
     return (
       <Dashboard>
         <Header>
-          <Title>جاري التحميل...</Title>
+          <Title>Loading...</Title>
         </Header>
       </Dashboard>
     );
@@ -326,7 +326,7 @@ const IntegrationStatusDashboard: React.FC = () => {
   return (
     <Dashboard>
       <Header>
-        <Title>🚀 حالة التكامل السحابي</Title>
+        <Title>🚀 Cloud Integration Status</Title>
         <Subtitle>Koli One - Cloud Services Integration</Subtitle>
       </Header>
 
@@ -335,10 +335,10 @@ const IntegrationStatusDashboard: React.FC = () => {
           {overallHealth >= 70 ? <CheckCircle size={40} /> : <AlertCircle size={40} />}
         </StatusIndicator>
         <h2 style={{ margin: '0 0 8px 0', color: '#1F2937' }}>
-          الصحة العامة: {Math.round(overallHealth)}%
+          Overall Health: {Math.round(overallHealth)}%
         </h2>
         <p style={{ margin: 0, color: '#6B7280' }}>
-          {services.filter(s => s.status === 'active').length} من {services.length} خدمة نشطة
+          {services.filter(s => s.status === 'active').length} of {services.length} services active
         </p>
       </OverallStatus>
 
@@ -362,7 +362,7 @@ const IntegrationStatusDashboard: React.FC = () => {
             {service.details && (
               <ServiceDetails>
                 <DetailItem>
-                  <span style={{ color: '#6B7280' }}>المميزات:</span>
+                  <span style={{ color: '#6B7280' }}>Features:</span>
                   <span style={{ color: '#1F2937', fontWeight: 500 }}>{service.details}</span>
                 </DetailItem>
               </ServiceDetails>
@@ -371,7 +371,7 @@ const IntegrationStatusDashboard: React.FC = () => {
             {service.actionRequired && (
               <ActionButton onClick={() => window.open('/admin/setup', '_blank')}>
                 <Settings size={16} style={{ marginRight: '6px' }} />
-                إعداد الخدمة
+                Service Setup
               </ActionButton>
             )}
           </ServiceCard>

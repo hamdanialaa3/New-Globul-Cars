@@ -5,7 +5,7 @@
 
 import { generateSEORoutes } from '../data/seo-locations';
 
-const BASE_URL = 'https://kolione.bg';
+const BASE_URL = 'https://koli.one';
 
 interface SitemapURL {
   loc: string;
@@ -53,6 +53,49 @@ const STATIC_ROUTES: SitemapURL[] = [
     lastmod: new Date().toISOString().split('T')[0],
     changefreq: 'yearly',
     priority: 0.3
+  },
+  // --- BLOG POSTS (Strategy: High Priority) ---
+  {
+    loc: '/blog',
+    lastmod: new Date().toISOString().split('T')[0],
+    changefreq: 'daily',
+    priority: 0.9
+  },
+  {
+    loc: '/blog/technical-deep-dive',
+    lastmod: new Date().toISOString().split('T')[0],
+    changefreq: 'monthly',
+    priority: 1.0
+  },
+  {
+    loc: '/blog/neural-pricing',
+    lastmod: new Date().toISOString().split('T')[0],
+    changefreq: 'monthly',
+    priority: 1.0
+  },
+  {
+    loc: '/blog/constitutional-coding',
+    lastmod: new Date().toISOString().split('T')[0],
+    changefreq: 'monthly',
+    priority: 1.0
+  },
+  {
+    loc: '/blog/ai-valuation-works',
+    lastmod: new Date().toISOString().split('T')[0],
+    changefreq: 'monthly',
+    priority: 0.9
+  },
+  {
+    loc: '/blog/marketplace-comparison',
+    lastmod: new Date().toISOString().split('T')[0],
+    changefreq: 'monthly',
+    priority: 0.9
+  },
+  {
+    loc: '/blog/bulgarian-market-2026',
+    lastmod: new Date().toISOString().split('T')[0],
+    changefreq: 'monthly',
+    priority: 0.8
   }
 ];
 

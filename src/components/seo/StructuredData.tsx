@@ -95,14 +95,35 @@ export const OrganizationStructuredData: React.FC<OrganizationStructuredDataProp
 }) => {
     const schema = {
         "@context": "https://schema.org",
-        "@type": "Organization",
+        "@type": ["Organization", "AutoDealer"],
         "name": name,
+        "alternateName": "Koli One - Български автомобили",
         "url": url,
         "logo": logo,
+        "description": "Bulgaria's leading AI-powered car marketplace. Buy and sell cars with AI-driven pricing, automatic descriptions, smart search, and dealer tools.",
+        "slogan": "Bulgaria's AI-Powered Car Marketplace",
+        "foundingDate": "2024",
+        "areaServed": {
+            "@type": "Country",
+            "name": "Bulgaria",
+            "sameAs": "https://www.wikidata.org/wiki/Q219"
+        },
+        "availableLanguage": ["Bulgarian", "English"],
+        "knowsAbout": [
+            "Cars",
+            "Automobiles",
+            "Car marketplace",
+            "AI car valuation",
+            "Vehicle trading",
+            "Bulgarian automotive market",
+            "Used cars Bulgaria",
+            "Car price estimation",
+            "AI-powered car descriptions"
+        ],
         "sameAs": [
             "https://www.facebook.com/koli.one/",
             "https://www.instagram.com/kolione/",
-            "https://www.tiktok.com/@mobilebg.eu",
+            "https://www.tiktok.com/@kolione",
             "https://www.threads.com/@kolione",
             "https://www.youtube.com/@Kolionebg",
             "https://www.linkedin.com/in/koli-one-a011993a9/",
@@ -111,8 +132,32 @@ export const OrganizationStructuredData: React.FC<OrganizationStructuredDataProp
         "contactPoint": {
             "@type": "ContactPoint",
             "contactType": "Customer Service",
+            "email": "support@koli.one",
             "availableLanguage": ["Bulgarian", "English"]
-        }
+        },
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Sofia",
+            "addressCountry": "BG"
+        },
+        "makesOffer": [
+            {
+                "@type": "Offer",
+                "itemOffered": {
+                    "@type": "Service",
+                    "name": "AI Car Valuation",
+                    "description": "ML-based car price estimation using Bulgarian market data"
+                }
+            },
+            {
+                "@type": "Offer",
+                "itemOffered": {
+                    "@type": "Service",
+                    "name": "Car Listing",
+                    "description": "List cars for sale with AI-generated descriptions and smart pricing"
+                }
+            }
+        ]
     };
 
     return (

@@ -165,7 +165,7 @@ export const CompactHeader: React.FC<CompactHeaderProps> = ({
               <SettingsIcon /> إعدادات
             </QuickActionButton>
             <QuickActionButton onClick={onLogoutClick} $variant="secondary">
-              <LogOut /> خروج
+              <LogOut /> Logout
             </QuickActionButton>
           </>
         ) : (
@@ -173,7 +173,7 @@ export const CompactHeader: React.FC<CompactHeaderProps> = ({
             onClick={onFollowClick} 
             $variant={isFollowing ? "success" : "primary"}
           >
-            <UserPlus /> {isFollowing ? 'متابَع' : 'متابعة'}
+            <UserPlus /> {isFollowing ? 'Following' : 'Follow'}
           </QuickActionButton>
         )}
       </QuickActionsContainer>

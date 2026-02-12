@@ -6,6 +6,9 @@ import styled from 'styled-components';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import { SOCIAL_LINKS } from '../../../../constants/socialLinks';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../../../../firebase/firebase-config';
+import { logger } from '../../../../services/logger-service';
 import {
   Mail,
   Phone,
@@ -348,19 +351,29 @@ const ContactPage: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    try {
+      await addDoc(collection(db, 'contact_submissions'), {
+        ...formData,
+        createdAt: serverTimestamp(),
+        status: 'new',
+        source: 'website'
+      });
 
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      subject: '',
-      message: '',
-      inquiryType: 'general'
-    });
+      logger.info('Contact form submitted', { inquiryType: formData.inquiryType });
+      setIsSubmitted(true);
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        subject: '',
+        message: '',
+        inquiryType: 'general'
+      });
+    } catch (error) {
+      logger.error('Contact form submission failed', error as Error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

@@ -8,7 +8,7 @@ import { logger } from '../../services/logger-service';
 
 /**
  * Algolia Sync Manager - Admin Tool
- * إدارة مزامنة Algolia - أداة المسؤول
+ * Algolia Sync Manager - Admin Tool
  * 
  * Features:
  * - Bulk sync all 7 collections to Algolia
@@ -331,7 +331,7 @@ const AlgoliaSyncManager: React.FC = () => {
   };
 
   const handleClearIndices = async () => {
-    if (!window.confirm('⚠️ هل أنت متأكد؟ سيتم حذف جميع البيانات من Algolia! / Are you sure? This will delete all data from Algolia!')) {
+    if (!window.confirm('⚠️ Are you sure? This will delete all data from Algolia!')) {
       return;
     }
 

@@ -222,103 +222,103 @@ const QuickLinksNavigation: React.FC = () => {
 
   const categories: Category[] = [
     {
-      name: 'الصفحات الرئيسية',
+      name: 'Main Pages',
       icon: Home,
       links: [
-        { name: 'الرئيسية', path: '/', icon: Home },
-        { name: 'السيارات', path: '/cars', icon: Car },
-        { name: 'عن الموقع', path: '/about', icon: Info },
-        { name: 'اتصل بنا', path: '/contact', icon: Mail },
-        { name: 'المساعدة', path: '/help', icon: HelpCircle },
-        { name: 'خريطة الموقع', path: '/sitemap', icon: Layout },
+        { name: 'Home', path: '/', icon: Home },
+        { name: 'Cars', path: '/cars', icon: Car },
+        { name: 'About', path: '/about', icon: Info },
+        { name: 'Contact Us', path: '/contact', icon: Mail },
+        { name: 'Help', path: '/help', icon: HelpCircle },
+        { name: 'Sitemap', path: '/sitemap', icon: Layout },
       ]
     },
     {
-      name: 'المصادقة',
+      name: 'Authentication',
       icon: Lock,
       links: [
-        { name: 'تسجيل الدخول', path: '/login', icon: Lock },
-        { name: 'إنشاء حساب', path: '/register', icon: User },
-        { name: 'التحقق', path: '/verification', icon: Check },
+        { name: 'Login', path: '/login', icon: Lock },
+        { name: 'Register', path: '/register', icon: User },
+        { name: 'Verification', path: '/verification', icon: Check },
       ]
     },
     {
-      name: 'صفحات المستخدم',
+      name: 'User Pages',
       icon: User,
       links: [
-        { name: 'البروفايل', path: '/profile', icon: User, protected: true },
-        { name: 'سياراتي', path: '/my-listings', icon: Car, protected: true },
-        { name: 'الرسائل', path: '/messages', icon: MessageSquare, protected: true },
-        { name: 'المفضلة', path: '/favorites', icon: Heart, protected: true },
-        { name: 'الإشعارات', path: '/notifications', icon: Bell, protected: true },
-        { name: 'البحث المحفوظ', path: '/saved-searches', icon: Bookmark, protected: true },
-        { name: 'لوحة التحكم', path: '/dashboard', icon: BarChart3, protected: true },
+        { name: 'Profile', path: '/profile', icon: User, protected: true },
+        { name: 'My Cars', path: '/my-listings', icon: Car, protected: true },
+        { name: 'Messages', path: '/messages', icon: MessageSquare, protected: true },
+        { name: 'Favorites', path: '/favorites', icon: Heart, protected: true },
+        { name: 'Notifications', path: '/notifications', icon: Bell, protected: true },
+        { name: 'Saved Searches', path: '/saved-searches', icon: Bookmark, protected: true },
+        { name: 'Dashboard', path: '/dashboard', icon: BarChart3, protected: true },
       ]
     },
     {
-      name: 'بيع السيارات',
+      name: 'Sell Cars',
       icon: ShoppingCart,
       links: [
-        { name: 'بيع سيارة (Modal)', path: '/sell/auto', icon: PlusCircle, protected: true },
-        { name: 'صفحة البداية (Hero)', path: '/sell', icon: Car, protected: true },
-        // ⚠️ Routes القديمة - تُعيد التوجيه تلقائياً للـ Modal
-        { name: 'بيانات المركبة (Step 1)', path: '/sell/inserat/car/data', icon: Database, protected: true },
-        { name: 'التجهيزات (Step 2)', path: '/sell/inserat/car/equipment', icon: Package, protected: true },
-        { name: 'الصور (Step 3)', path: '/sell/inserat/car/images', icon: Upload, protected: true },
-        { name: 'السعر (Step 4)', path: '/sell/inserat/car/pricing', icon: DollarSign, protected: true },
-        { name: 'بيانات الاتصال (Step 5)', path: '/sell/inserat/car/contact', icon: Phone, protected: true },
+        { name: 'Sell a Car (Modal)', path: '/sell/auto', icon: PlusCircle, protected: true },
+        { name: 'Start Page (Hero)', path: '/sell', icon: Car, protected: true },
+        // ⚠️ Legacy routes - auto-redirect to Modal
+        { name: 'Vehicle Data (Step 1)', path: '/sell/inserat/car/data', icon: Database, protected: true },
+        { name: 'Equipment (Step 2)', path: '/sell/inserat/car/equipment', icon: Package, protected: true },
+        { name: 'Images (Step 3)', path: '/sell/inserat/car/images', icon: Upload, protected: true },
+        { name: 'Pricing (Step 4)', path: '/sell/inserat/car/pricing', icon: DollarSign, protected: true },
+        { name: 'Contact Info (Step 5)', path: '/sell/inserat/car/contact', icon: Phone, protected: true },
       ]
     },
     {
-      name: 'البحث والتصفح',
+      name: 'Search & Browse',
       icon: Search,
       links: [
-        { name: 'البحث المتقدم', path: '/advanced-search', icon: Search, protected: true },
-        { name: 'العلامات الرائجة', path: '/top-brands', icon: TrendingUp },
-        { name: 'معرض العلامات', path: '/brand-gallery', icon: Grid, protected: true },
-        { name: 'التجار', path: '/dealers', icon: Briefcase, protected: true },
-        { name: 'التمويل', path: '/finance', icon: CreditCard, protected: true },
+        { name: 'Advanced Search', path: '/advanced-search', icon: Search, protected: true },
+        { name: 'Top Brands', path: '/top-brands', icon: TrendingUp },
+        { name: 'Brand Gallery', path: '/brand-gallery', icon: Grid, protected: true },
+        { name: 'Dealers', path: '/dealers', icon: Briefcase, protected: true },
+        { name: 'Finance', path: '/finance', icon: CreditCard, protected: true },
       ]
     },
     {
-      name: 'الإدارة',
+      name: 'Administration',
       icon: Shield,
       links: [
-        { name: 'تسجيل دخول الإدارة', path: '/admin-login', icon: Lock },
-        { name: 'لوحة الإدارة', path: '/admin', icon: Shield, admin: true },
-        { name: 'تسجيل دخول السوبر أدمن', path: '/super-admin-login', icon: Lock },
-        { name: 'لوحة السوبر أدمن', path: '/super-admin', icon: Shield, admin: true },
-        { name: 'إدارة الإعلانات', path: '/super-admin?tab=ads', icon: Target, admin: true },
-        { name: 'صفحة اختبار الإعلانات', path: '/debug/ads', icon: Activity, admin: true },
+        { name: 'Admin Login', path: '/admin-login', icon: Lock },
+        { name: 'Admin Panel', path: '/admin', icon: Shield, admin: true },
+        { name: 'Super Admin Login', path: '/super-admin-login', icon: Lock },
+        { name: 'Super Admin Panel', path: '/super-admin', icon: Shield, admin: true },
+        { name: 'Ad Management', path: '/super-admin?tab=ads', icon: Target, admin: true },
+        { name: 'Ad Test Page', path: '/debug/ads', icon: Activity, admin: true },
       ]
     },
     {
-      name: 'الصفحات المتقدمة',
+      name: 'Advanced Pages',
       icon: Activity,
       links: [
-        { name: 'تحليلات B2B', path: '/analytics', icon: BarChart2, protected: true },
-        { name: 'التوأم الرقمي', path: '/digital-twin', icon: Zap, protected: true },
-        { name: 'الاشتراكات', path: '/subscription', icon: Award, protected: true },
+        { name: 'B2B Analytics', path: '/analytics', icon: BarChart2, protected: true },
+        { name: 'Digital Twin', path: '/digital-twin', icon: Zap, protected: true },
+        { name: 'Subscriptions', path: '/subscription', icon: Award, protected: true },
       ]
     },
     {
-      name: 'الصفحات القانونية',
+      name: 'Legal Pages',
       icon: FileText,
       links: [
-        { name: 'سياسة الخصوصية', path: '/privacy-policy', icon: Eye },
-        { name: 'شروط الخدمة', path: '/terms-of-service', icon: FileText },
-        { name: 'حذف البيانات', path: '/data-deletion', icon: Trash2 },
-        { name: 'سياسة الكوكيز', path: '/cookie-policy', icon: Cookie },
+        { name: 'Privacy Policy', path: '/privacy-policy', icon: Eye },
+        { name: 'Terms of Service', path: '/terms-of-service', icon: FileText },
+        { name: 'Data Deletion', path: '/data-deletion', icon: Trash2 },
+        { name: 'Cookie Policy', path: '/cookie-policy', icon: Cookie },
       ]
     },
     {
-      name: 'صفحات الاختبار',
+      name: 'Test Pages',
       icon: Activity,
       links: [
-        { name: 'اختبار الثيم', path: '/theme-test', icon: Activity },
-        { name: 'اختبار الخلفية', path: '/background-test', icon: Layout },
-        { name: 'عرض شامل', path: '/full-demo', icon: Grid },
-        { name: 'اختبار التأثيرات', path: '/effects-test', icon: Zap },
+        { name: 'Theme Test', path: '/theme-test', icon: Activity },
+        { name: 'Background Test', path: '/background-test', icon: Layout },
+        { name: 'Full Demo', path: '/full-demo', icon: Grid },
+        { name: 'Effects Test', path: '/effects-test', icon: Zap },
       ]
     },
   ];
@@ -345,12 +345,12 @@ const QuickLinksNavigation: React.FC = () => {
 
   return (
     <NavigationContainer>
-      <Title>🚀 جميع صفحات المشروع</Title>
+      <Title>🚀 All Project Pages</Title>
 
       <SearchContainer>
         <SearchInput
           type="text"
-          placeholder="ابحث عن صفحة..."
+          placeholder="Search for a page..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -393,15 +393,15 @@ const QuickLinksNavigation: React.FC = () => {
       <Legend>
         <LegendItem>
           <LegendDot $color="#888" />
-          <span>صفحات عامة</span>
+          <span>Public Pages</span>
         </LegendItem>
         <LegendItem>
           <LegendDot $color="#00ff00" />
-          <span>صفحات محمية</span>
+          <span>Protected Pages</span>
         </LegendItem>
         <LegendItem>
           <LegendDot $color="#ff0000" />
-          <span>صفحات إدارية</span>
+          <span>Admin Pages</span>
         </LegendItem>
       </Legend>
     </NavigationContainer>

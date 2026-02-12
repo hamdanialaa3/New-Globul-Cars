@@ -368,7 +368,7 @@ const BackupRestoreManager: React.FC = () => {
 
   const handleCreateBackup = async () => {
     setLoading(true);
-    showMessage('info', '⏳ جاري إنشاء نسخة احتياطية...');
+    showMessage('info', '⏳ Creating backup...');
 
     // Simulate backup creation
     await new Promise(resolve => setTimeout(resolve, 3000));
@@ -384,39 +384,39 @@ const BackupRestoreManager: React.FC = () => {
 
     setBackups(prev => [newBackup, ...prev]);
     setLoading(false);
-    showMessage('success', '✅ تم إنشاء النسخة الاحتياطية بنجاح');
+    showMessage('success', '✅ Backup created successfully');
   };
 
   const handleRestoreBackup = async (backup: Backup) => {
-    if (!window.confirm(`⚠️ هل أنت متأكد من استعادة النسخة الاحتياطية: ${backup.name}?\n\nسيتم استبدال جميع البيانات الحالية!`)) {
+    if (!window.confirm(`⚠️ Are you sure you want to restore backup: ${backup.name}?\n\nAll current data will be replaced!`)) {
       return;
     }
 
     setLoading(true);
-    showMessage('info', '⏳ جاري استعادة البيانات...');
+    showMessage('info', '⏳ Restoring data...');
 
     // Simulate restore
     await new Promise(resolve => setTimeout(resolve, 4000));
 
     setLoading(false);
-    showMessage('success', '✅ تمت استعادة البيانات بنجاح');
+    showMessage('success', '✅ Data restored successfully');
   };
 
   const handleDownloadBackup = (backup: Backup) => {
-    showMessage('info', `📥 جاري تحميل: ${backup.name}`);
+    showMessage('info', `📥 Downloading: ${backup.name}`);
     // Simulate download
     setTimeout(() => {
-      showMessage('success', '✅ تم التحميل بنجاح');
+      showMessage('success', '✅ Downloaded successfully');
     }, 1500);
   };
 
   const handleDeleteBackup = (id: string) => {
-    if (!window.confirm('⚠️ هل أنت متأكد من حذف هذه النسخة الاحتياطية؟')) {
+    if (!window.confirm('⚠️ Are you sure you want to delete this backup?')) {
       return;
     }
 
     setBackups(prev => prev.filter(b => b.id !== id));
-    showMessage('success', '✅ تم حذف النسخة الاحتياطية');
+    showMessage('success', '✅ Backup deleted');
   };
 
   const handleImportBackup = () => {
@@ -427,22 +427,22 @@ const BackupRestoreManager: React.FC = () => {
       const file = e.target.files[0];
       if (file) {
         setLoading(true);
-        showMessage('info', `⏳ جاري استيراد: ${file.name}`);
+        showMessage('info', `⏳ Importing: ${file.name}`);
         
         // Simulate import
         await new Promise(resolve => setTimeout(resolve, 3000));
         
         setLoading(false);
-        showMessage('success', '✅ تم الاستيراد بنجاح');
+        showMessage('success', '✅ Imported successfully');
       }
     };
     input.click();
   };
 
   const handleScheduleBackup = () => {
-    showMessage('info', '⏰ جاري تفعيل النسخ الاحتياطي التلقائي...');
+    showMessage('info', '⏰ Enabling automatic backup...');
     setTimeout(() => {
-      showMessage('success', '✅ تم تفعيل النسخ الاحتياطي اليومي - الساعة 2:00 صباحاً');
+      showMessage('success', '✅ Daily backup enabled - at 2:00 AM');
     }, 1500);
   };
 
@@ -451,10 +451,10 @@ const BackupRestoreManager: React.FC = () => {
       <Header>
         <Title>
           <Database size={24} />
-          إدارة النسخ الاحتياطي والاستعادة
+          Backup & Restore Management
         </Title>
         <Subtitle>
-          إنشاء واستعادة وإدارة النسخ الاحتياطية للبيانات
+          Create, restore, and manage data backups
         </Subtitle>
       </Header>
 
@@ -474,7 +474,7 @@ const BackupRestoreManager: React.FC = () => {
           </StatIcon>
           <StatContent>
             <StatValue>{backups.length}</StatValue>
-            <StatLabel>نسخة احتياطية</StatLabel>
+            <StatLabel>Backups</StatLabel>
           </StatContent>
         </StatCard>
 
@@ -484,7 +484,7 @@ const BackupRestoreManager: React.FC = () => {
           </StatIcon>
           <StatContent>
             <StatValue>128.1 MB</StatValue>
-            <StatLabel>مساحة مستخدمة</StatLabel>
+            <StatLabel>Used Space</StatLabel>
           </StatContent>
         </StatCard>
 
@@ -493,8 +493,8 @@ const BackupRestoreManager: React.FC = () => {
             <Clock size={20} />
           </StatIcon>
           <StatContent>
-            <StatValue>آخر نسخة</StatValue>
-            <StatLabel>منذ يومين</StatLabel>
+            <StatValue>Last Backup</StatValue>
+            <StatLabel>2 days ago</StatLabel>
           </StatContent>
         </StatCard>
       </StatsGrid>
@@ -504,13 +504,13 @@ const BackupRestoreManager: React.FC = () => {
           <CardIcon $variant="primary">
             <Download size={24} />
           </CardIcon>
-          <CardTitle>إنشاء نسخة احتياطية جديدة</CardTitle>
+          <CardTitle>Create New Backup</CardTitle>
           <CardDescription>
-            احفظ جميع بيانات المنصة الحالية في ملف احتياطي آمن
+            Save all current platform data in a secure backup file
           </CardDescription>
           <Button onClick={handleCreateBackup} disabled={loading}>
             <Download size={16} />
-            إنشاء نسخة احتياطية
+            Create Backup
           </Button>
         </ActionCard>
 
@@ -518,13 +518,13 @@ const BackupRestoreManager: React.FC = () => {
           <CardIcon $variant="success">
             <Upload size={24} />
           </CardIcon>
-          <CardTitle>استيراد نسخة احتياطية</CardTitle>
+          <CardTitle>Import Backup</CardTitle>
           <CardDescription>
-            استيراد نسخة احتياطية من ملف خارجي
+            Import a backup from an external file
           </CardDescription>
           <Button onClick={handleImportBackup} disabled={loading}>
             <Upload size={16} />
-            استيراد ملف
+            Import File
           </Button>
         </ActionCard>
 
@@ -532,13 +532,13 @@ const BackupRestoreManager: React.FC = () => {
           <CardIcon $variant="warning">
             <Clock size={24} />
           </CardIcon>
-          <CardTitle>نسخ احتياطي تلقائي</CardTitle>
+          <CardTitle>Automatic Backup</CardTitle>
           <CardDescription>
-            جدولة النسخ الاحتياطي اليومي التلقائي
+            Schedule automatic daily backup
           </CardDescription>
           <Button $variant="secondary" onClick={handleScheduleBackup} disabled={loading}>
             <RefreshCw size={16} />
-            جدولة تلقائية
+            Auto Schedule
           </Button>
         </ActionCard>
       </ActionGrid>
@@ -546,7 +546,7 @@ const BackupRestoreManager: React.FC = () => {
       <Section>
         <SectionTitle>
           <Archive size={20} />
-          النسخ الاحتياطية المحفوظة
+          Saved Backups
         </SectionTitle>
         <BackupList>
           {backups.map(backup => (
@@ -567,18 +567,18 @@ const BackupRestoreManager: React.FC = () => {
                   </span>
                   <span>
                     <Database size={12} style={{ display: 'inline', marginLeft: '4px' }} />
-                    {backup.collections} مجموعة
+                    {backup.collections} collections
                   </span>
                 </BackupMeta>
               </BackupInfo>
               <BackupActions>
                 <IconButton onClick={() => handleRestoreBackup(backup)} disabled={loading}>
                   <RefreshCw size={14} />
-                  استعادة
+                  Restore
                 </IconButton>
                 <IconButton onClick={() => handleDownloadBackup(backup)} disabled={loading}>
                   <Download size={14} />
-                  تحميل
+                  Download
                 </IconButton>
                 <IconButton $variant="danger" onClick={() => handleDeleteBackup(backup.id)} disabled={loading}>
                   <Trash2 size={14} />

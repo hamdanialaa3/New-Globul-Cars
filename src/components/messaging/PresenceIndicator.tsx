@@ -8,12 +8,12 @@ import { logger } from '@/services/logger-service';
 import { useLanguage } from '@/contexts';
 
 /**
- * نوع حالة الحضور - Presence status type
+ * Presence status type
  */
 export type PresenceStatus = 'online' | 'offline' | 'away';
 
 /**
- * معلومات الحضور - Presence info
+ * Presence info
  */
 export interface PresenceInfo {
   status: PresenceStatus;
@@ -32,13 +32,12 @@ interface PresenceIndicatorProps {
 }
 
 /**
- * مكون مؤشر الحضور والكتابة
  * Presence and typing indicator component
  * 
- * يعرض:
- * - حالة الاتصال (متصل/غير متصل/بعيد)
- * - آخر ظهور
- * - مؤشر الكتابة
+ * Displays:
+ * - Connection status (online/offline/away)
+ * - Last seen
+ * - Typing indicator
  */
 const PresenceIndicator: React.FC<PresenceIndicatorProps> = ({
   userId,
@@ -53,7 +52,7 @@ const PresenceIndicator: React.FC<PresenceIndicatorProps> = ({
   const [presence, setPresence] = useState<PresenceInfo | null>(null);
   const [isTyping, setIsTyping] = useState(false);
 
-  // مراقبة حالة الحضور - Monitor presence status
+  // Monitor presence status
   useEffect(() => {
     if (!userId) return;
 
@@ -85,7 +84,7 @@ const PresenceIndicator: React.FC<PresenceIndicatorProps> = ({
     };
   }, [userId]);
 
-  // مراقبة حالة الكتابة - Monitor typing status
+  // Monitor typing status
   useEffect(() => {
     if (!showTyping || !conversationId) return;
 
@@ -96,7 +95,7 @@ const PresenceIndicator: React.FC<PresenceIndicatorProps> = ({
       (typingUsers) => {
         if (!isActive) return;
         
-        // تحقق إذا كان المستخدم يكتب
+        // Check if user is typing
         const userIsTyping = typingUsers.some(id => id === userId);
         setIsTyping(userIsTyping);
       }
@@ -114,7 +113,7 @@ const PresenceIndicator: React.FC<PresenceIndicatorProps> = ({
     };
   }, [showTyping, conversationId, userId]);
 
-  // تنسيق آخر ظهور - Format last seen
+  // Format last seen
   const formatLastSeen = (lastSeen: Date) => {
     try {
       return formatDistanceToNow(lastSeen, { 
@@ -126,7 +125,7 @@ const PresenceIndicator: React.FC<PresenceIndicatorProps> = ({
     }
   };
 
-  // نص الحالة - Status text
+  // Status text
   const getStatusText = () => {
     if (isTyping && showTyping) {
       return language === 'bg' ? 'Пише...' : 'Typing...';
@@ -152,7 +151,7 @@ const PresenceIndicator: React.FC<PresenceIndicatorProps> = ({
     }
   };
 
-  // العرض المدمج - Compact view
+  // Compact view
   if (compact) {
     return (
       <CompactContainer className={className}>
@@ -161,7 +160,7 @@ const PresenceIndicator: React.FC<PresenceIndicatorProps> = ({
     );
   }
 
-  // العرض الكامل - Full view
+  // Full view
   return (
     <Container className={className}>
       <StatusRow>
@@ -170,7 +169,7 @@ const PresenceIndicator: React.FC<PresenceIndicatorProps> = ({
         <StatusText $isTyping={isTyping}>
           {isTyping && showTyping ? (
             <>
-              {userName || 'المستخدم'} {getStatusText()}
+              {userName || 'User'} {getStatusText()}
               <TypingAnimation>
                 <TypingDot $delay={0} />
                 <TypingDot $delay={0.2} />
@@ -186,7 +185,7 @@ const PresenceIndicator: React.FC<PresenceIndicatorProps> = ({
   );
 };
 
-// النسخة مع Avatar - Version with avatar
+// Version with avatar
 interface PresenceWithAvatarProps extends PresenceIndicatorProps {
   avatarUrl?: string;
   avatarSize?: number;

@@ -196,25 +196,25 @@ const IoTAnalyticsPage: React.FC = () => {
         <MetricCard>
           <MetricValue>65</MetricValue>
           <MetricLabel>{text.avgSpeed} (km/h)</MetricLabel>
-          <MetricChange $positive={false}>-5% من الأسبوع الماضي</MetricChange>
+          <MetricChange $positive={false}>-5% {language === 'bg' ? 'от миналата седмица' : 'from last week'}</MetricChange>
         </MetricCard>
 
         <MetricCard>
           <MetricValue>1,247</MetricValue>
           <MetricLabel>{text.totalDistance} (km)</MetricLabel>
-          <MetricChange $positive={true}>+12% من الأسبوع الماضي</MetricChange>
+          <MetricChange $positive={true}>+12% {language === 'bg' ? 'от миналата седмица' : 'from last week'}</MetricChange>
         </MetricCard>
 
         <MetricCard>
           <MetricValue>8.5</MetricValue>
           <MetricLabel>{text.fuelEfficiency} (L/100km)</MetricLabel>
-          <MetricChange $positive={true}>+3% تحسن</MetricChange>
+          <MetricChange $positive={true}>+3% {language === 'bg' ? 'подобрение' : 'improvement'}</MetricChange>
         </MetricCard>
 
         <MetricCard>
           <MetricValue>87°C</MetricValue>
           <MetricLabel>{text.engineTemp}</MetricLabel>
-          <MetricChange $positive={true}>طبيعي</MetricChange>
+          <MetricChange $positive={true}>{language === 'bg' ? 'Нормално' : 'Normal'}</MetricChange>
         </MetricCard>
       </MetricsGrid>
     </PageContainer>

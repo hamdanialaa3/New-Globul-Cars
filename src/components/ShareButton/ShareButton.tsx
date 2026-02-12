@@ -16,13 +16,13 @@ interface ShareButtonProps {
 
 /**
  * Share Button Component
- * احترافي و أنيق لمشاركة الروابط الفريدة
+ * Professional and elegant link sharing
  * 
- * المميزات:
- * - نسخ الرابط إلى Clipboard
- * - مشاركة عبر Social Media
- * - تأثيرات بصرية احترافية
- * - دعم اللغات (AR/EN)
+ * Features:
+ * - Copy link to Clipboard
+ * - Share via Social Media
+ * - Professional visual effects
+ * - Language support (BG/EN)
  */
 
 const ShareContainer = styled.div`
@@ -226,7 +226,7 @@ const CopyButton = styled.button`
 
 export const ShareButton: React.FC<ShareButtonProps> = ({
   url,
-  title = 'جديد Globul Cars',
+  title = 'Globul Cars',
   text,
   showLabel = true,
   variant = 'button',
@@ -295,7 +295,7 @@ export const ShareButton: React.FC<ShareButtonProps> = ({
       setTimeout(() => setIsCopied(false), 2000);
     } catch (error) {
       logger.error('Failed to copy link', error as Error);
-      toast?.error('خطأ في نسخ الرابط');
+      toast?.error(language === 'bg' ? 'Грешка при копиране на линка' : 'Failed to copy link');
     }
   };
 

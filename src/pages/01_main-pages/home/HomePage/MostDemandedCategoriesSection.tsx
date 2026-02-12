@@ -531,16 +531,17 @@ const MostDemandedCategoriesSection: React.FC = () => {
           isActive: true,
         }, 12);
 
-        // Filter logic (mock implementation for demo)
+        // Filter by body type
         const filteredCars = result.filter((car: any) =>
-          (car.bodyType && car.bodyType.toLowerCase() === selectedCategory) ||
-          true // Fallback
+          car.bodyType && car.bodyType.toLowerCase() === selectedCategory
         );
 
-        setCars(filteredCars.slice(0, 12));
+        setCars(filteredCars.length > 0 ? filteredCars.slice(0, 12) : result.slice(0, 12));
 
-        // Calculate demand (mock)
-        const demand = Math.floor(Math.random() * (98 - 75 + 1) + 75);
+        // Calculate demand based on actual listing ratio
+        const totalCount = result.length || 1;
+        const matchCount = filteredCars.length;
+        const demand = totalCount > 0 ? Math.min(98, Math.round((matchCount / totalCount) * 100) + 60) : 0;
         setDemandPercentage(demand);
 
       } catch (error) {

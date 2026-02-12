@@ -1,6 +1,5 @@
 /**
  * Comprehensive Validation Service
- * خدمة التحقق الشاملة - معايير السوق البلغاري
  * 
  * @version 2.0.0
  * @date December 15, 2025
@@ -77,28 +76,28 @@ export class PriceValidator {
     
     // Basic validation
     if (price < minPrice) {
-      errors.push(`السعر منخفض جداً. الحد الأدنى ${minPrice}€`);
+      errors.push(`Price is too low. Minimum: ${minPrice}€`);
     }
     
     if (price > maxPrice) {
-      errors.push(`السعر مرتفع جداً. الحد الأقصى ${maxPrice}€`);
+      errors.push(`Price is too high. Maximum: ${maxPrice}€`);
     }
     
     // Suspicious pricing
     if (price < suspiciousThreshold) {
-      warnings.push('⚠️ السعر منخفض بشكل مريب. يرجى التحقق من حالة السيارة.');
-      suggestions.push('تأكد من أن السعر صحيح، أو أن السيارة ليست تالفة أو تحتاج إصلاحات كبيرة.');
+      warnings.push('⚠️ Suspiciously low price. Please verify the car condition.');
+      suggestions.push('Make sure the price is correct, or that the car is not damaged or in need of major repairs.');
     }
     
     if (price > MARKET_CONSTANTS.SUSPICIOUS_HIGH) {
-      warnings.push('⚠️ السعر مرتفع جداً. يتطلب تحقق إضافي.');
-      suggestions.push('للسيارات الفاخرة والنادرة، يرجى إرفاق وثائق التقييم.');
+      warnings.push('⚠️ Price is very high. Additional verification required.');
+      suggestions.push('For luxury and rare cars, please attach valuation documents.');
     }
     
     // Price vs Year analysis
     const carAge = new Date().getFullYear() - year;
     if (carAge > 10 && price > 50000) {
-      warnings.push('⚠️ السيارة قديمة لكن السعر مرتفع. تأكد من الحالة والمواصفات.');
+      warnings.push('⚠️ Car is old but price is high. Verify the condition and specifications.');
     }
     
     // Log validation
@@ -160,9 +159,9 @@ export class VINValidator {
     // Length check
     if (normalizedVIN.length !== 17) {
       if (normalizedVIN.length === 0) {
-        errors.push('رقم VIN مطلوب للسيارات المستعملة.');
+        errors.push('VIN is required for used cars.');
       } else {
-        errors.push(`رقم VIN يجب أن يكون 17 حرفاً. الحالي: ${normalizedVIN.length}`);
+        errors.push(`VIN must be 17 characters. Current: ${normalizedVIN.length}`);
       }
       return { isValid: false, errors, warnings };
     }
@@ -170,18 +169,18 @@ export class VINValidator {
     // Character validation (no I, O, Q allowed in VIN)
     const invalidChars = normalizedVIN.match(/[IOQ]/g);
     if (invalidChars) {
-      errors.push(`رقم VIN يحتوي على أحرف غير صالحة: ${invalidChars.join(', ')}`);
+      errors.push(`VIN contains invalid characters: ${invalidChars.join(', ')}`);
     }
     
     // Valid characters check
     if (!/^[A-HJ-NPR-Z0-9]{17}$/.test(normalizedVIN)) {
-      errors.push('رقم VIN يحتوي على أحرف غير صالحة. يجب أن يحتوي على أحرف وأرقام فقط (باستثناء I, O, Q).');
+      errors.push('VIN contains invalid characters. Must contain only letters and numbers (except I, O, Q).');
     }
     
     // Checksum validation (9th digit)
     const checksumValid = this.validateChecksum(normalizedVIN);
     if (!checksumValid) {
-      warnings.push('⚠️ رقم VIN قد لا يكون صحيحاً (فشل التحقق من checksum). يرجى التحقق مرة أخرى.');
+      warnings.push('⚠️ VIN may be invalid (checksum verification failed). Please verify again.');
     }
     
     // Determine VIN type
@@ -264,17 +263,17 @@ export class MileageValidator {
     
     // Basic validation
     if (mileage < MARKET_CONSTANTS.MIN_MILEAGE) {
-      errors.push('الكيلومترات لا يمكن أن تكون سالبة.');
+      errors.push('Mileage cannot be negative.');
     }
     
     if (mileage > MARKET_CONSTANTS.MAX_MILEAGE) {
-      errors.push(`الكيلومترات مرتفعة جداً. الحد الأقصى ${MARKET_CONSTANTS.MAX_MILEAGE.toLocaleString()} كم`);
+      errors.push(`Mileage is too high. Maximum: ${MARKET_CONSTANTS.MAX_MILEAGE.toLocaleString()} km`);
     }
     
     // Suspicious mileage
     if (mileage > MARKET_CONSTANTS.SUSPICIOUS_MILEAGE) {
-      warnings.push('⚠️ الكيلومترات مرتفعة جداً. قد تحتاج السيارة صيانة كبيرة.');
-      suggestions.push('يرجى إرفاق سجل الصيانة وتوضيح حالة السيارة.');
+      warnings.push('⚠️ Very high mileage. The car may need major maintenance.');
+      suggestions.push('Please attach the service history and clarify the car condition.');
     }
     
     // Mileage vs Age analysis
@@ -283,19 +282,19 @@ export class MileageValidator {
     
     // Average: 15,000-20,000 km/year in Bulgaria
     if (avgKmPerYear > 30000) {
-      warnings.push('⚠️ متوسط الكيلومترات سنوياً مرتفع جداً (أكثر من 30,000 كم/سنة).');
-      suggestions.push('قد تكون السيارة مستخدمة لمسافات طويلة (تاكسي، توصيل، إلخ).');
+      warnings.push('⚠️ Average annual mileage is very high (over 30,000 km/year).');
+      suggestions.push('The car may have been used for long distances (taxi, delivery, etc.).');
     }
     
     if (carAge > 3 && avgKmPerYear < 5000) {
-      warnings.push('⚠️ متوسط الكيلومترات سنوياً منخفض جداً (أقل من 5,000 كم/سنة).');
-      suggestions.push('تأكد من صحة قراءة العداد. الكيلومترات المنخفضة جداً قد تكون مريبة.');
+      warnings.push('⚠️ Average annual mileage is very low (less than 5,000 km/year).');
+      suggestions.push('Verify the odometer reading. Very low mileage may be suspicious.');
     }
     
     // Brand-specific checks
     if (make === 'Mercedes-Benz' || make === 'BMW' || make === 'Audi') {
       if (mileage > 300000) {
-        warnings.push('⚠️ سيارات ألمانية فاخرة مع كيلومترات عالية قد تحتاج صيانة مكلفة.');
+        warnings.push('⚠️ German luxury cars with high mileage may need expensive maintenance.');
       }
     }
     
@@ -331,23 +330,23 @@ export class YearValidator {
     const currentYear = new Date().getFullYear();
     
     if (year < MARKET_CONSTANTS.MIN_YEAR) {
-      errors.push(`السنة قديمة جداً. الحد الأدنى ${MARKET_CONSTANTS.MIN_YEAR}`);
+      errors.push(`Year is too old. Minimum: ${MARKET_CONSTANTS.MIN_YEAR}`);
     }
     
     if (year > MARKET_CONSTANTS.MAX_YEAR) {
-      errors.push(`السنة غير صحيحة. الحد الأقصى ${MARKET_CONSTANTS.MAX_YEAR}`);
+      errors.push(`Invalid year. Maximum: ${MARKET_CONSTANTS.MAX_YEAR}`);
     }
     
     // Classic car (>25 years)
     const carAge = currentYear - year;
     if (carAge > 25) {
-      warnings.push('⚠️ سيارة كلاسيكية (أكثر من 25 سنة).');
-      suggestions.push('قد تحتاج وثائق خاصة للسيارات الكلاسيكية.');
+      warnings.push('⚠️ Classic car (over 25 years old).');
+      suggestions.push('Special documentation may be required for classic cars.');
     }
     
     // Very old car (>40 years)
     if (carAge > 40) {
-      warnings.push('⚠️ سيارة قديمة جداً. تأكد من حالتها وقابليتها للاستخدام اليومي.');
+      warnings.push('⚠️ Very old car. Verify its condition and suitability for daily use.');
     }
     
     logger.info('Year validation completed', {
@@ -376,11 +375,11 @@ export class EngineValidator {
     const warnings: string[] = [];
     
     if (engineSize < MARKET_CONSTANTS.MIN_ENGINE_SIZE) {
-      errors.push(`حجم المحرك صغير جداً. الحد الأدنى ${MARKET_CONSTANTS.MIN_ENGINE_SIZE}L`);
+      errors.push(`Engine size is too small. Minimum: ${MARKET_CONSTANTS.MIN_ENGINE_SIZE}L`);
     }
     
     if (engineSize > MARKET_CONSTANTS.MAX_ENGINE_SIZE) {
-      errors.push(`حجم المحرك كبير جداً. الحد الأقصى ${MARKET_CONSTANTS.MAX_ENGINE_SIZE}L`);
+      errors.push(`Engine size is too large. Maximum: ${MARKET_CONSTANTS.MAX_ENGINE_SIZE}L`);
     }
     
     return {
@@ -398,15 +397,15 @@ export class EngineValidator {
     const warnings: string[] = [];
     
     if (horsepower < MARKET_CONSTANTS.MIN_HORSEPOWER) {
-      errors.push(`القوة الحصانية منخفضة جداً. الحد الأدنى ${MARKET_CONSTANTS.MIN_HORSEPOWER} HP`);
+      errors.push(`Horsepower is too low. Minimum: ${MARKET_CONSTANTS.MIN_HORSEPOWER} HP`);
     }
     
     if (horsepower > MARKET_CONSTANTS.MAX_HORSEPOWER) {
-      errors.push(`القوة الحصانية مرتفعة جداً. الحد الأقصى ${MARKET_CONSTANTS.MAX_HORSEPOWER} HP`);
+      errors.push(`Horsepower is too high. Maximum: ${MARKET_CONSTANTS.MAX_HORSEPOWER} HP`);
     }
     
     if (horsepower > 500) {
-      warnings.push('⚠️ سيارة عالية الأداء. تأكد من تأمين مناسب وتكاليف صيانة.');
+      warnings.push('⚠️ High-performance car. Ensure proper insurance and maintenance costs.');
     }
     
     return {

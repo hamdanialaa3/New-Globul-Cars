@@ -32,7 +32,7 @@ export const InviteMemberModal: React.FC<Props> = ({ companyId, invitedBy, onClo
     e.preventDefault();
     
     if (!formData.email || !formData.displayName) {
-      setError('جميع الحقول مطلوبة');
+      setError('All fields are required');
       return;
     }
 
@@ -54,7 +54,7 @@ export const InviteMemberModal: React.FC<Props> = ({ companyId, invitedBy, onClo
       }, 5000);
     } catch (err: any) {
       logger.error('Failed to invite member', err);
-      setError(err.message || 'فشل إرسال الدعوة');
+      setError(err.message || 'Failed to send invitation');
     } finally {
       setLoading(false);
     }
@@ -66,24 +66,24 @@ export const InviteMemberModal: React.FC<Props> = ({ companyId, invitedBy, onClo
       <Overlay onClick={onClose}>
         <Modal onClick={(e) => e.stopPropagation()}>
           <SuccessHeader>
-            <h2>✅ تم إرسال الدعوة بنجاح!</h2>
+            <h2>✅ Invitation sent successfully!</h2>
           </SuccessHeader>
           <SuccessContent>
             <InviteCodeBox>
-              <Label>رمز الدعوة:</Label>
+              <Label>Invite Code:</Label>
               <Code>{inviteCode}</Code>
-              <Hint>أرسل هذا الرمز إلى {formData.email}</Hint>
+              <Hint>Send this code to {formData.email}</Hint>
             </InviteCodeBox>
             <Instructions>
-              <p><strong>الخطوات التالية:</strong></p>
+              <p><strong>Next Steps:</strong></p>
               <ol>
-                <li>انسخ رمز الدعوة أعلاه</li>
-                <li>أرسله إلى {formData.email} عبر البريد أو واتساب</li>
-                <li>سيستخدمه المستخدم للانضمام إلى فريقك</li>
-                <li>صلاحية الرمز: 7 أيام</li>
+                <li>Copy the invite code above</li>
+                <li>Send it to {formData.email} via email or WhatsApp</li>
+                <li>The user will use it to join your team</li>
+                <li>Code validity: 7 days</li>
               </ol>
             </Instructions>
-            <CloseButton onClick={onSuccess}>فهمت</CloseButton>
+            <CloseButton onClick={onSuccess}>Got it</CloseButton>
           </SuccessContent>
         </Modal>
       </Overlay>
@@ -94,7 +94,7 @@ export const InviteMemberModal: React.FC<Props> = ({ companyId, invitedBy, onClo
     <Overlay onClick={onClose}>
       <Modal onClick={(e) => e.stopPropagation()}>
         <Header>
-          <Title>دعوة عضو جديد</Title>
+          <Title>Invite New Member</Title>
           <CloseIcon onClick={onClose}><FaTimes /></CloseIcon>
         </Header>
 
@@ -104,7 +104,7 @@ export const InviteMemberModal: React.FC<Props> = ({ companyId, invitedBy, onClo
           <FormGroup>
             <Label>
               <FaEnvelope />
-              البريد الإلكتروني
+              Email
             </Label>
             <Input
               type="email"
@@ -118,53 +118,53 @@ export const InviteMemberModal: React.FC<Props> = ({ companyId, invitedBy, onClo
           <FormGroup>
             <Label>
               <FaUser />
-              الاسم الكامل
+              Full Name
             </Label>
             <Input
               type="text"
               value={formData.displayName}
               onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
-              placeholder="أحمد الخطيب"
+              placeholder="John Doe"
               required
             />
           </FormGroup>
 
           <FormGroup>
-            <Label>الدور الوظيفي</Label>
+            <Label>Role</Label>
             <RoleSelector>
               <RoleOption
                 selected={formData.role === 'admin'}
                 onClick={() => setFormData({ ...formData, role: 'admin' })}
               >
                 <FaShieldAlt />
-                <span>مدير</span>
-                <RoleDescription>صلاحيات كاملة</RoleDescription>
+                <span>Admin</span>
+                <RoleDescription>Full permissions</RoleDescription>
               </RoleOption>
               <RoleOption
                 selected={formData.role === 'agent'}
                 onClick={() => setFormData({ ...formData, role: 'agent' })}
               >
                 <FaUserTie />
-                <span>وكيل</span>
-                <RoleDescription>إضافة إعلانات فقط</RoleDescription>
+                <span>Agent</span>
+                <RoleDescription>Add listings only</RoleDescription>
               </RoleOption>
               <RoleOption
                 selected={formData.role === 'viewer'}
                 onClick={() => setFormData({ ...formData, role: 'viewer' })}
               >
                 <FaEye />
-                <span>مشاهد</span>
-                <RoleDescription>مشاهدة فقط</RoleDescription>
+                <span>Viewer</span>
+                <RoleDescription>View only</RoleDescription>
               </RoleOption>
             </RoleSelector>
           </FormGroup>
 
           <Actions>
             <CancelButton type="button" onClick={onClose}>
-              إلغاء
+              Cancel
             </CancelButton>
             <SubmitButton type="submit" disabled={loading}>
-              {loading ? 'جاري الإرسال...' : 'إرسال الدعوة'}
+              {loading ? 'Sending...' : 'Send Invitation'}
             </SubmitButton>
           </Actions>
         </Form>

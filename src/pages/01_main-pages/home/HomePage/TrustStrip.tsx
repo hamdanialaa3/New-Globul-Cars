@@ -2,12 +2,15 @@
 // Lightweight trust & marketplace pulse strip displayed near top of homepage
 // Shows key marketplace statistics to build confidence and conversion.
 
-import React, { memo, useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { analyticsService } from '../../../../services/analytics/UnifiedAnalyticsService';
 import { glassPrimaryButton } from '../../../../styles/glassmorphism-buttons';
+import { collection, getCountFromServer, query, where } from 'firebase/firestore';
+import { db } from '@/firebase/firebase-config';
+import { SellWorkflowCollections } from '@/services/sell-workflow-collections';
 
 // Styled components kept minimal (<300 lines total file) as per governance
 const StripContainer = styled.section`
@@ -81,14 +84,57 @@ interface TrustStripProps {
   lastUpdatedMinutesAgo?: number;
 }
 
-const TrustStrip: React.FC<TrustStripProps> = memo(({ 
-  activeListings = 15234,
-  verifiedSellers = 874,
-  successfulDeals = 312,
+const TrustStrip: React.FC<TrustStripProps> = memo(({
+  activeListings: propActiveListings,
+  verifiedSellers: propVerifiedSellers,
+  successfulDeals: propSuccessfulDeals,
   lastUpdatedMinutesAgo = 5
 }) => {
   const { t } = useLanguage();
   const trustStripRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+
+  const [liveStats, setLiveStats] = useState({
+    activeListings: propActiveListings || 0,
+    verifiedSellers: propVerifiedSellers || 0,
+    successfulDeals: propSuccessfulDeals || 0,
+  });
+
+  useEffect(() => {
+    // Skip fetching if all props were passed from parent
+    if (propActiveListings && propVerifiedSellers && propSuccessfulDeals) return;
+
+    let isActive = true;
+    const loadLiveStats = async () => {
+      try {
+        const vehicleCollections = SellWorkflowCollections.getAllCollections();
+        let totalListings = 0;
+        await Promise.all(vehicleCollections.map(async (col) => {
+          try {
+            const q = query(collection(db, col), where('status', '==', 'active'));
+            const snap = await getCountFromServer(q);
+            totalListings += snap.data().count;
+          } catch { /* skip */ }
+        }));
+
+        let sellers = 0;
+        try {
+          const snap = await getCountFromServer(collection(db, 'users'));
+          sellers = snap.data().count;
+        } catch { /* skip */ }
+
+        if (isActive) {
+          setLiveStats({
+            activeListings: totalListings || 0,
+            verifiedSellers: sellers || 0,
+            successfulDeals: propSuccessfulDeals || 0,
+          });
+        }
+      } catch { /* silent */ }
+    };
+    loadLiveStats();
+    return () => { isActive = false; };
+  }, [propActiveListings, propVerifiedSellers, propSuccessfulDeals]);
 
 useEffect(() => {
   // fire 'home_truststrip_view' when component becomes visible (IntersectionObserver)
@@ -125,15 +171,15 @@ const handleSellClick = () => {
   return (
     <StripContainer aria-label={t('home.trustStrip.marketplacePulse')}>
       <StatItem>
-        <StatValue>{activeListings.toLocaleString()}</StatValue>
+        <StatValue>{liveStats.activeListings.toLocaleString()}</StatValue>
         <StatLabel>{t('home.trustStrip.activeListings')}</StatLabel>
       </StatItem>
       <StatItem>
-        <StatValue>{verifiedSellers.toLocaleString()}</StatValue>
+        <StatValue>{liveStats.verifiedSellers.toLocaleString()}</StatValue>
         <StatLabel>{t('home.trustStrip.verifiedSellers')}</StatLabel>
       </StatItem>
       <StatItem>
-        <StatValue>{successfulDeals.toLocaleString()}</StatValue>
+        <StatValue>{liveStats.successfulDeals.toLocaleString()}</StatValue>
         <StatLabel>{t('home.trustStrip.successfulDeals')}</StatLabel>
       </StatItem>
       <StatItem>

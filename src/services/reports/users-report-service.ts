@@ -1,5 +1,5 @@
 // src/services/reports/users-report-service.ts
-// خدمة تصدير تقارير المستخدمين
+// User reports export service
 
 import { collection, query, where, getDocs, orderBy, Timestamp } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
@@ -30,7 +30,7 @@ export class UsersReportService {
   }
 
   /**
-   * جلب جميع المستخدمين
+   * Fetch all users
    */
   async getAllUsers(filters?: {
     profileType?: 'private' | 'dealer' | 'company';
@@ -40,7 +40,7 @@ export class UsersReportService {
     try {
       let q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
 
-      // إضافة فلاتر
+      // Add filters
       if (filters?.profileType) {
         q = query(q, where('profileType', '==', filters.profileType));
       }
@@ -78,21 +78,21 @@ export class UsersReportService {
   }
 
   /**
-   * تصدير المستخدمين إلى CSV
+   * Export users to CSV
    */
   async exportToCSV(users: UserReportData[]): Promise<string> {
     const headers = [
       'UID',
-      'البريد الإلكتروني',
-      'الاسم',
-      'رقم الهاتف',
-      'نوع الحساب',
-      'المدينة',
-      'الإعلانات النشطة',
-      'البريد مُتحقق',
-      'الهاتف مُتحقق',
-      'تاريخ التسجيل',
-      'آخر دخول'
+      'Email',
+      'Name',
+      'Phone Number',
+      'Account Type',
+      'City',
+      'Active Listings',
+      'Email Verified',
+      'Phone Verified',
+      'Registration Date',
+      'Last Login'
     ];
 
     const rows = users.map((user: any) => [
@@ -103,8 +103,8 @@ export class UsersReportService {
       this.translateProfileType(user.profileType),
       user.locationData?.cityName || '-',
       user.activeListings?.toString() || '0',
-      user.verifiedEmail ? 'نعم' : 'لا',
-      user.verifiedPhone ? 'نعم' : 'لا',
+      user.verifiedEmail ? 'Yes' : 'No',
+      user.verifiedPhone ? 'Yes' : 'No',
       user.createdAt.toLocaleDateString('bg-BG'),
       user.lastLogin?.toLocaleDateString('bg-BG') || '-'
     ]);
@@ -118,20 +118,20 @@ export class UsersReportService {
   }
 
   /**
-   * تصدير إلى JSON
+   * Export to JSON
    */
   async exportToJSON(users: UserReportData[]): Promise<string> {
     return JSON.stringify(users, null, 2);
   }
 
   /**
-   * تصدير إلى Excel (HTML Table يفتح في Excel)
+   * Export to Excel (HTML Table opens in Excel)
    */
   async exportToExcel(users: UserReportData[]): Promise<string> {
     const headers = [
-      'UID', 'البريد الإلكتروني', 'الاسم', 'رقم الهاتف', 
-      'نوع الحساب', 'المدينة', 'الإعلانات النشطة',
-      'البريد مُتحقق', 'الهاتف مُتحقق', 'تاريخ التسجيل', 'آخر دخول'
+      'UID', 'Email', 'Name', 'Phone Number', 
+      'Account Type', 'City', 'Active Listings',
+      'Email Verified', 'Phone Verified', 'Registration Date', 'Last Login'
     ];
 
     const rows = users.map((user: any) => `
@@ -143,8 +143,8 @@ export class UsersReportService {
         <td>${this.translateProfileType(user.profileType)}</td>
         <td>${user.locationData?.cityName || '-'}</td>
         <td>${user.activeListings || 0}</td>
-        <td>${user.verifiedEmail ? 'نعم' : 'لا'}</td>
-        <td>${user.verifiedPhone ? 'نعم' : 'لا'}</td>
+        <td>${user.verifiedEmail ? 'Yes' : 'No'}</td>
+        <td>${user.verifiedPhone ? 'Yes' : 'No'}</td>
         <td>${user.createdAt.toLocaleDateString('bg-BG')}</td>
         <td>${user.lastLogin?.toLocaleDateString('bg-BG') || '-'}</td>
       </tr>
@@ -155,8 +155,8 @@ export class UsersReportService {
       <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <style>
-          table { border-collapse: collapse; width: 100%; direction: rtl; }
-          th, td { border: 1px solid #ddd; padding: 8px; text-align: right; }
+          table { border-collapse: collapse; width: 100%; }
+          th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
           th { background-color: #4CAF50; color: white; font-weight: bold; }
           tr:nth-child(even) { background-color: #f2f2f2; }
         </style>
@@ -176,7 +176,7 @@ export class UsersReportService {
   }
 
   /**
-   * تحميل التقرير
+   * Download report
    */
   downloadReport(content: string, filename: string, type: 'csv' | 'json' | 'xls') {
     const mimeTypes = {
@@ -194,19 +194,19 @@ export class UsersReportService {
   }
 
   /**
-   * ترجمة نوع البروفايل
+   * Translate profile type
    */
   private translateProfileType(type: string): string {
     const translations: { [key: string]: string } = {
-      'private': 'خاص',
-      'dealer': 'معرض',
-      'company': 'شركة'
+      'private': 'Private',
+      'dealer': 'Dealer',
+      'company': 'Company'
     };
     return translations[type] || type;
   }
 
   /**
-   * إحصائيات سريعة
+   * Quick statistics
    */
   async getUserStatistics(): Promise<{
     total: number;

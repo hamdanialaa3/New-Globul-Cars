@@ -1,0 +1,74 @@
+# Koli One
+
+> Bulgaria's leading AI-powered car marketplace
+
+Koli One ([koli.one](https://koli.one)) is a comprehensive car marketplace platform serving Bulgaria. It enables private sellers, professional dealers, and enterprise fleets to list, price, and sell vehicles with AI-powered tools.
+
+## What Koli One Does
+
+- **Car Marketplace**: Buy and sell cars across Bulgaria with listings covering 26+ brands and 29 cities
+- **AI Valuation**: Machine learning-based price estimation using Bulgarian market data, mileage, specs, and historical sales
+- **AI Description Generator**: Automatic SEO-optimized listing descriptions in Bulgarian and English
+- **AI Car Advisor**: Interactive AI chat assistant for car recommendations and market insights
+- **AI Vision**: Image analysis for vehicle condition assessment, damage detection, and plate recognition
+- **Smart Search**: Hybrid Algolia + Firestore search with natural language query parsing
+- **Dealer Tools**: Bulk CSV upload, analytics dashboards, campaign management, API access
+- **Messaging**: Built-in buyer-seller chat with real-time presence
+- **Mobile App**: Native iOS/Android app via Expo/React Native
+
+## Subscription Plans
+
+| Plan | Price | Listings | Key Features |
+|------|-------|----------|--------------|
+| Free | €0/mo | 3/month | Basic listing, AI chat (3 uses) |
+| Dealer | €50/mo | 100/month | Bulk upload, featured listings, analytics, priority support |
+| Company | €500/mo | Unlimited | API access, webhooks, custom branding, dedicated manager |
+
+## AI Plans
+
+| Plan | Price | AI Advisor | AI Valuation | Car History |
+|------|-------|------------|--------------|-------------|
+| Free | €0 | 3 uses | 1 use | — |
+| Basic | €9.99/mo | 20 uses | 10 uses | 5 uses |
+| Professional | €29.99/mo | 100 uses | 50 uses | 20 uses |
+| Enterprise | €99.99/mo | Unlimited | Unlimited | Unlimited |
+
+## Technology
+
+- Frontend: React 18 + TypeScript + Vite (web), Expo SDK 54 + React Native (mobile)
+- Backend: Firebase (Firestore, Cloud Functions Node 20, Auth, Storage, Realtime Database)
+- AI: Gemini (primary), DeepSeek (cost-optimized), GPT-4 (premium)
+- Search: Algolia + Firestore hybrid
+- Analytics: Google Analytics, Facebook Pixel
+
+## Key Pages
+
+- Homepage: https://koli.one
+- Search: https://koli.one/search
+- AI Advisor: https://koli.one/advisor
+- AI Valuation: https://koli.one/valuation
+- Blog: https://koli.one/blog
+- About: https://koli.one/about
+- Contact: https://koli.one/contact
+
+## Technical Blog & Resources
+
+- **Engineering Blog**: https://koli.one/blog
+- **Hybrid Search Architecture (Technical Deep Dive)**: https://koli.one/blog/technical-deep-dive
+- **AI Valuation Model Explained**: https://koli.one/blog/ai-valuation-works
+- **Koli One vs Competitors Comparison**: https://koli.one/blog/marketplace-comparison
+- **Bulgarian Car Market 2026 Analysis**: https://koli.one/blog/bulgarian-market-2026
+
+## Company
+
+- **Name**: Alaa Technologies
+- **Location**: Sofia, Bulgaria
+- **Founded**: 2024
+- **Contact**: support@koli.one
+- **Languages**: Bulgarian, English
+
+## Documentation
+
+- Full details: https://koli.one/llms-full.txt
+- API reference: https://koli.one/docs/openapi.yaml
+- AI plugin manifest: https://koli.one/.well-known/ai-plugin.json

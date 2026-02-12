@@ -159,7 +159,7 @@ const CarTrackingPage: React.FC = () => {
           <InfoContent>
             {text.sofia}<br />
             42.6977° N, 23.3219° E<br />
-            آخر تحديث: منذ 5 دقائق
+            {language === 'bg' ? 'Последно обновяване: преди 5 минути' : 'Last update: 5 minutes ago'}
           </InfoContent>
         </InfoCard>
 
@@ -173,15 +173,15 @@ const CarTrackingPage: React.FC = () => {
           <InfoContent>
             <LocationItem>
               <LocationName>{text.sofia}</LocationName>
-              <LocationTime>الآن</LocationTime>
+              <LocationTime>{language === 'bg' ? 'Сега' : 'Now'}</LocationTime>
             </LocationItem>
             <LocationItem>
               <LocationName>{text.plovdiv}</LocationName>
-              <LocationTime>منذ ساعتين</LocationTime>
+              <LocationTime>{language === 'bg' ? 'Преди 2 часа' : '2 hours ago'}</LocationTime>
             </LocationItem>
             <LocationItem>
               <LocationName>{text.varna}</LocationName>
-              <LocationTime>أمس</LocationTime>
+              <LocationTime>{language === 'bg' ? 'Вчера' : 'Yesterday'}</LocationTime>
             </LocationItem>
           </InfoContent>
         </InfoCard>

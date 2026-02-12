@@ -93,8 +93,8 @@ const AzureLoginButton: React.FC<AzureLoginButtonProps> = ({
 
       <ButtonText>
         {loading
-          ? 'جارٍ تسجيل الدخول...'
-          : text || 'تسجيل الدخول بحساب Microsoft'
+          ? 'Signing in...'
+          : text || 'Sign in with Microsoft'
         }
       </ButtonText>
     </StyledButton>

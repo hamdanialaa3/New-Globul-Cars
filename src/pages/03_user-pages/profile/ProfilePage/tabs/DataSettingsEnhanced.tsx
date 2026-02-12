@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import { useLanguage } from '../../../../../contexts/LanguageContext';
 import { Download, Trash2, AlertCircle, CheckCircle2, Clock } from 'lucide-react';
 import { logger } from '../../../../../services/logger-service';
+import { db } from '../../../../../firebase/firebase-config';
+import { collection, getDocs, doc, deleteDoc, query, where } from 'firebase/firestore';
+import { getAuth, deleteUser, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 
 // 🎨 Styling Components
 const DataSection = styled.div`
@@ -387,28 +390,28 @@ const DataSettingsEnhanced: React.FC = () => {
   const [exportItems, setExportItems] = useState<DataExportItem[]>([
     {
       id: 'personal',
-      name: 'بيانات شخصية',
+      name: language === 'bg' ? 'Лични данни' : 'Personal Data',
       size: 0,
       format: 'JSON',
       lastGenerated: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
     },
     {
       id: 'listings',
-      name: 'الإعلانات',
+      name: language === 'bg' ? 'Обяви' : 'Listings',
       size: 0,
       format: 'JSON',
       lastGenerated: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
     },
     {
       id: 'messages',
-      name: 'الرسائل',
+      name: language === 'bg' ? 'Съобщения' : 'Messages',
       size: 0,
       format: 'JSON',
       lastGenerated: undefined
     },
     {
       id: 'activity',
-      name: 'السجل النشاط',
+      name: language === 'bg' ? 'Дневник на активността' : 'Activity Log',
       size: 0,
       format: 'JSON',
       lastGenerated: new Date()
@@ -477,7 +480,41 @@ const DataSettingsEnhanced: React.FC = () => {
   const handleDownload = async (itemId: string) => {
     try {
       logger.info(`Downloading ${itemId} data`);
-      // TODO: Implement actual download logic
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (!user) return;
+
+      let exportData: Record<string, any> = {};
+
+      if (itemId === 'personal') {
+        const userDoc = await getDocs(query(collection(db, 'users'), where('__name__', '==', user.uid)));
+        exportData = userDoc.docs.map(d => ({ id: d.id, ...d.data() }))[0] || {};
+      } else if (itemId === 'listings') {
+        const collections = ['passenger_cars', 'suvs', 'vans', 'motorcycles', 'trucks', 'buses'];
+        for (const col of collections) {
+          const q = query(collection(db, col), where('userId', '==', user.uid));
+          const snap = await getDocs(q);
+          exportData[col] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        }
+      } else if (itemId === 'messages') {
+        const q = query(collection(db, 'conversations'), where('participants', 'array-contains', user.uid));
+        const snap = await getDocs(q);
+        exportData.conversations = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      } else if (itemId === 'activity') {
+        exportData = { email: user.email, uid: user.uid, exportDate: new Date().toISOString() };
+      }
+
+      // Create and download JSON file
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `koli-one-${itemId}-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
       setSuccessMessage(t.success);
       setTimeout(() => setSuccessMessage(null), 3000);
     } catch (error) {
@@ -495,7 +532,47 @@ const DataSettingsEnhanced: React.FC = () => {
 
     try {
       logger.info(`Deleting ${selectedItem} data`);
-      // TODO: Implement actual delete logic
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (!user) return;
+
+      if (selectedItem === 'personal') {
+        // Delete user document and their Auth account
+        try {
+          await deleteDoc(doc(db, 'users', user.uid));
+          await deleteUser(user);
+          // Redirect will happen automatically via auth state listener
+        } catch (reauthError: any) {
+          if (reauthError?.code === 'auth/requires-recent-login') {
+            setShowConfirm(false);
+            setSelectedItem(null);
+            setSuccessMessage(
+              language === 'bg'
+                ? 'Моля, влезте отново и опитайте пак за изтриване.'
+                : 'Please sign in again and retry the deletion.'
+            );
+            setTimeout(() => setSuccessMessage(null), 5000);
+            return;
+          }
+          throw reauthError;
+        }
+      } else if (selectedItem === 'listings') {
+        const collections = ['passenger_cars', 'suvs', 'vans', 'motorcycles', 'trucks', 'buses'];
+        for (const col of collections) {
+          const q = query(collection(db, col), where('userId', '==', user.uid));
+          const snap = await getDocs(q);
+          for (const d of snap.docs) {
+            await deleteDoc(d.ref);
+          }
+        }
+      } else if (selectedItem === 'messages') {
+        const q = query(collection(db, 'conversations'), where('participants', 'array-contains', user.uid));
+        const snap = await getDocs(q);
+        for (const d of snap.docs) {
+          await deleteDoc(d.ref);
+        }
+      }
+
       setExportItems(prev => prev.filter(item => item.id !== selectedItem));
       setShowConfirm(false);
       setSelectedItem(null);

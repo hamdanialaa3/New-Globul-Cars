@@ -2,7 +2,7 @@ import { logger } from '../../services/logger-service';
 import { toast } from 'react-toastify';
 /**
  * Quick Setup Page
- * صفحة الإعداد السريع لجميع الخدمات السحابية
+ * Quick Setup Page for all cloud services
  */
 
 import React, { useState } from 'react';
@@ -285,7 +285,7 @@ const QuickSetupPage: React.FC = () => {
   const services: ServiceConfig[] = [
     {
       name: 'Algolia Search',
-      description: 'البحث المتقدم والفلترة الذكية للسيارات',
+      description: 'Advanced search and smart filtering for vehicles',
       documentation: 'https://www.algolia.com/doc/',
       testEndpoint: 'search',
       fields: [
@@ -295,7 +295,7 @@ const QuickSetupPage: React.FC = () => {
           type: 'text',
           placeholder: 'YourAppID',
           required: true,
-          description: 'معرف التطبيق من لوحة تحكم Algolia'
+          description: 'Application ID from Algolia dashboard'
         },
         {
           key: 'REACT_APP_ALGOLIA_SEARCH_KEY',
@@ -303,7 +303,7 @@ const QuickSetupPage: React.FC = () => {
           type: 'password',
           placeholder: 'your_search_api_key',
           required: true,
-          description: 'مفتاح البحث (Search-Only API Key)'
+          description: 'Search-Only API Key'
         },
         {
           key: 'REACT_APP_ALGOLIA_ADMIN_KEY',
@@ -311,13 +311,13 @@ const QuickSetupPage: React.FC = () => {
           type: 'password',
           placeholder: 'your_admin_api_key',
           required: false,
-          description: 'مفتاح الإدارة لرفع البيانات'
+          description: 'Admin key for uploading data'
         }
       ]
     },
     {
       name: 'Stripe Payments',
-      description: 'معالجة المدفوعات والاشتراكات',
+      description: 'Payment processing and subscriptions',
       documentation: 'https://stripe.com/docs',
       testEndpoint: 'payments',
       fields: [
@@ -327,7 +327,7 @@ const QuickSetupPage: React.FC = () => {
           type: 'text',
           placeholder: 'pk_test_...',
           required: true,
-          description: 'المفتاح العام للواجهة الأمامية'
+          description: 'Public key for the frontend'
         },
         {
           key: 'STRIPE_SECRET_KEY',
@@ -335,7 +335,7 @@ const QuickSetupPage: React.FC = () => {
           type: 'password',
           placeholder: 'sk_test_...',
           required: true,
-          description: 'المفتاح السري للخادم (Cloud Functions)'
+          description: 'Secret key for server (Cloud Functions)'
         },
         {
           key: 'STRIPE_WEBHOOK_SECRET',
@@ -343,13 +343,13 @@ const QuickSetupPage: React.FC = () => {
           type: 'password',
           placeholder: 'whsec_...',
           required: false,
-          description: 'سر webhook للتحقق من الأحداث'
+          description: 'Webhook secret for event verification'
         }
       ]
     },
     {
       name: 'Google Gemini AI',
-      description: 'تحليل صور السيارات بالذكاء الاصطناعي',
+      description: 'AI-powered vehicle image analysis',
       documentation: 'https://ai.google.dev/docs',
       testEndpoint: 'ai',
       fields: [
@@ -359,13 +359,13 @@ const QuickSetupPage: React.FC = () => {
           type: 'password',
           placeholder: 'AIza...',
           required: true,
-          description: 'مفتاح Google AI Studio'
+          description: 'Google AI Studio key'
         }
       ]
     },
     {
       name: 'AWS Services',
-      description: 'خدمات أمازون السحابية (IoT, Rekognition, etc.)',
+      description: 'Amazon cloud services (IoT, Rekognition, etc.)',
       documentation: 'https://docs.aws.amazon.com/',
       fields: [
         {
@@ -374,7 +374,7 @@ const QuickSetupPage: React.FC = () => {
           type: 'text',
           placeholder: 'eu-central-1',
           required: true,
-          description: 'منطقة AWS (Frankfurt للأداء الأمثل في بلغاريا)'
+          description: 'AWS Region (Frankfurt for best performance in Bulgaria)'
         },
         {
           key: 'REACT_APP_IOT_ENDPOINT',
@@ -382,7 +382,7 @@ const QuickSetupPage: React.FC = () => {
           type: 'url',
           placeholder: 'https://your-iot-endpoint.iot.eu-central-1.amazonaws.com',
           required: true,
-          description: 'نقطة نهاية AWS IoT Core'
+          description: 'AWS IoT Core endpoint'
         },
         {
           key: 'AWS_ACCESS_KEY_ID',
@@ -390,7 +390,7 @@ const QuickSetupPage: React.FC = () => {
           type: 'password',
           placeholder: 'AKIA...',
           required: true,
-          description: 'مفتاح الوصول AWS'
+          description: 'AWS access key'
         },
         {
           key: 'AWS_SECRET_ACCESS_KEY',
@@ -398,7 +398,7 @@ const QuickSetupPage: React.FC = () => {
           type: 'password',
           placeholder: 'your_secret_key',
           required: true,
-          description: 'المفتاح السري AWS'
+          description: 'AWS secret key'
         }
       ]
     }
@@ -426,13 +426,13 @@ const QuickSetupPage: React.FC = () => {
     setSaving(prev => ({ ...prev, [serviceName]: true }));
 
     try {
-      // في التطبيق الحقيقي، سيتم حفظ هذه القيم في متغيرات البيئة
-      // أو في خدمة إدارة التكوين الآمنة
+      // In production, these values would be saved in environment variables
+      // or in a secure configuration management service
 
       const serviceConfig = configs[serviceName] || {};
       logger.info(`Saving config for ${serviceName}:`, serviceConfig);
 
-      // محاكاة حفظ البيانات
+      // Simulating data save
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       toast.success(`${serviceName} settings saved successfully!`);
@@ -448,7 +448,7 @@ const QuickSetupPage: React.FC = () => {
   const testServiceConnection = async (serviceName: string) => {
     try {
       logger.info(`Testing connection for ${serviceName}`);
-      // محاكاة اختبار الاتصال
+      // Simulating connection test
       await new Promise(resolve => setTimeout(resolve, 1500));
       toast.success(`${serviceName} connection test passed!`);
     } catch (error) {
@@ -474,8 +474,8 @@ const QuickSetupPage: React.FC = () => {
   return (
     <Container>
       <Header>
-        <Title>⚙️ الإعداد السريع للخدمات</Title>
-        <Subtitle>قم بإعداد جميع الخدمات السحابية في مكان واحد</Subtitle>
+        <Title>⚙️ Quick Service Setup</Title>
+        <Subtitle>Set up all cloud services in one place</Subtitle>
       </Header>
 
       <ServicesContainer>
@@ -490,12 +490,12 @@ const QuickSetupPage: React.FC = () => {
                 {isServiceConfigured(service.name) ? (
                   <>
                     <CheckCircle size={16} />
-                    مُعدّ
+                    Configured
                   </>
                 ) : (
                   <>
                     <AlertTriangle size={16} />
-                    يحتاج إعداد
+                    Needs Setup
                   </>
                 )}
               </StatusIndicator>
@@ -552,7 +552,7 @@ const QuickSetupPage: React.FC = () => {
                 ) : (
                   <Save size={16} />
                 )}
-                حفظ الإعدادات
+                Save Settings
               </Button>
 
               {service.testEndpoint && (
@@ -561,7 +561,7 @@ const QuickSetupPage: React.FC = () => {
                   onClick={() => testServiceConnection(service.name)}
                 >
                   <Settings size={16} />
-                  اختبار الاتصال
+                  Test Connection
                 </Button>
               )}
 
@@ -570,7 +570,7 @@ const QuickSetupPage: React.FC = () => {
                 onClick={() => window.open(service.documentation, '_blank')}
               >
                 <ExternalLink size={16} />
-                الوثائق
+                Documentation
               </Button>
             </ActionsContainer>
           </ServiceCard>

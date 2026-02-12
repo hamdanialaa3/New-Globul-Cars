@@ -402,9 +402,9 @@ const SectionControlPanel: React.FC = () => {
 
       // ✅ Visual feedback
       if (newState) {
-        toast.success('🎉 العرض المجاني مفعّل! / Free Offer ACTIVATED! Go to homepage to see changes.');
+        toast.success('🎉 Free Offer ACTIVATED! Go to homepage to see changes.');
       } else {
-        toast.info('❌ العرض المجاني معطّل / Free Offer DEACTIVATED. Normal payment required.');
+        toast.info('❌ Free Offer DEACTIVATED. Normal payment required.');
       }
       serviceLogger.info('[FreeOffer] Toggled', { newState, adminEmail });
     } catch (e: unknown) {
@@ -565,7 +565,7 @@ const SectionControlPanel: React.FC = () => {
       </StatsBar>
 
       {/* ═══════════════════════════════════════════════════════════════ */}
-      {/* FREE OFFER TOGGLE — العرض المجاني                                */}
+      {/* FREE OFFER TOGGLE — Free Offer                                */}
       {/* Controls whether plans are free (no payment) or paid           */}
       {/* ═══════════════════════════════════════════════════════════════ */}
       <FreeOfferPanel $active={freeOfferActive}>

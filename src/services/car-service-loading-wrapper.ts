@@ -21,29 +21,29 @@ export const useCarServiceWithLoading = () => {
 
   return {
     /**
-     * جلب جميع السيارات
+     * Fetch all cars
      */
     getAllCars: withLoading(
       async () => {
         const response = await fetch('/api/cars');
         return response.json();
       },
-      'جاري جلب السيارات...'
+      'Fetching cars...'
     ),
 
     /**
-     * جلب سيارة بواسطة ID
+     * Fetch car by ID
      */
     getCarById: withLoading(
       async (id: string) => {
         const response = await fetch(`/api/cars/${id}`);
         return response.json();
       },
-      'جاري تحميل السيارة...'
+      'Loading car...'
     ),
 
     /**
-     * البحث عن السيارات
+     * Search cars
      */
     searchCars: withLoading(
       async (filters: Record<string, string | number | boolean>) => {
@@ -55,11 +55,11 @@ export const useCarServiceWithLoading = () => {
         const response = await fetch(`/api/cars/search?${queryParams}`);
         return response.json();
       },
-      'جاري البحث...'
+      'Searching...'
     ),
 
     /**
-     * إنشاء سيارة جديدة
+     * Create a new car
      */
     createCar: withLoading(
       async (data: Record<string, unknown>) => {
@@ -70,11 +70,11 @@ export const useCarServiceWithLoading = () => {
         });
         return response.json();
       },
-      'جاري حفظ السيارة...'
+      'Saving car...'
     ),
 
     /**
-     * تحديث سيارة
+     * Update car
      */
     updateCar: withLoading(
       async (id: string, data: Record<string, unknown>) => {
@@ -85,11 +85,11 @@ export const useCarServiceWithLoading = () => {
         });
         return response.json();
       },
-      'جاري تحديث البيانات...'
+      'Updating data...'
     ),
 
     /**
-     * حذف سيارة
+     * Delete car
      */
     deleteCar: withLoading(
       async (id: string) => {
@@ -98,33 +98,33 @@ export const useCarServiceWithLoading = () => {
         });
         return response.json();
       },
-      'جاري الحذف...'
+      'Deleting...'
     ),
 
     /**
-     * جلب السيارات المميزة
+     * Fetch featured cars
      */
     getFeaturedCars: withLoading(
       async () => {
         const response = await fetch('/api/cars/featured');
         return response.json();
       },
-      'جاري تحميل السيارات المميزة...'
+      'Loading featured cars...'
     ),
 
     /**
-     * جلب أحدث السيارات المضافة
+     * Fetch latest cars
      */
     getLatestCars: withLoading(
       async (limit) => {
         const response = await fetch(`/api/cars/latest?limit=${limit}`);
         return response.json();
       },
-      'جاري تحميل أحدث السيارات...'
+      'Loading latest cars...'
     ),
 
     /**
-     * حفظ سيارة في المفضلة
+     * Add car to favorites
      */
     addToFavorites: withLoading(
       async (carId: string) => {
@@ -135,11 +135,11 @@ export const useCarServiceWithLoading = () => {
         });
         return response.json();
       },
-      'جاري الحفظ في المفضلة...'
+      'Adding to favorites...'
     ),
 
     /**
-     * حذف سيارة من المفضلة
+     * Remove car from favorites
      */
     removeFromFavorites: withLoading(
       async (carId: string) => {
@@ -148,7 +148,7 @@ export const useCarServiceWithLoading = () => {
         });
         return response.json();
       },
-      'جاري الحذف من المفضلة...'
+      'Removing from favorites...'
     ),
   };
 };

@@ -1,5 +1,5 @@
 import { logger } from '../../../../services/logger-service';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { unifiedCarService, UnifiedCar } from '../../../../services/car';
@@ -179,15 +179,15 @@ const SmartDescription = styled.div<{ $isDark: boolean }>`
 `;
 
 // Categories Data (Bulgarian + New Smart Classifications)
-const CATEGORIES: VehicleCategory[] = [
-  { id: 'sedan', labelBg: 'Седан', labelEn: 'Sedan', iconName: 'sedan', count: 1240 },
-  { id: 'suv', labelBg: 'Джип / SUV', labelEn: 'SUV', iconName: 'suv', count: 980 },
-  { id: 'hatchback', labelBg: 'Хечбек', labelEn: 'Hatchback', iconName: 'hatchback', count: 850 },
-  { id: 'coupe', labelBg: 'Купе', labelEn: 'Coupe', iconName: 'coupe', count: 320 },
-  { id: 'wagon', labelBg: 'Комби', labelEn: 'Wagon', iconName: 'wagon', count: 450 },
-  { id: 'convertible', labelBg: 'Кабрио', labelEn: 'Convertible', iconName: 'convertible', count: 180 },
-  { id: 'pickup', labelBg: 'Пикап', labelEn: 'Pickup', iconName: 'pickup', count: 150 },
-  { id: 'minivan', labelBg: 'Миниван', labelEn: 'Minivan', iconName: 'minivan', count: 210 }
+const CATEGORIES_BASE: VehicleCategory[] = [
+  { id: 'sedan', labelBg: 'Седан', labelEn: 'Sedan', iconName: 'sedan', count: 0 },
+  { id: 'suv', labelBg: 'Джип / SUV', labelEn: 'SUV', iconName: 'suv', count: 0 },
+  { id: 'hatchback', labelBg: 'Хечбек', labelEn: 'Hatchback', iconName: 'hatchback', count: 0 },
+  { id: 'coupe', labelBg: 'Купе', labelEn: 'Coupe', iconName: 'coupe', count: 0 },
+  { id: 'wagon', labelBg: 'Комби', labelEn: 'Wagon', iconName: 'wagon', count: 0 },
+  { id: 'convertible', labelBg: 'Кабрио', labelEn: 'Convertible', iconName: 'convertible', count: 0 },
+  { id: 'pickup', labelBg: 'Пикап', labelEn: 'Pickup', iconName: 'pickup', count: 0 },
+  { id: 'minivan', labelBg: 'Миниван', labelEn: 'Minivan', iconName: 'minivan', count: 0 }
 ];
 
 // 🆕 Smart Classifications (New Container Pages)
@@ -209,6 +209,34 @@ const VehicleClassificationsSection: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('sedan');
   const [cars, setCars] = useState<UnifiedCar[]>([]);
   const [loading, setLoading] = useState(true);
+  const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
+
+  // Load body type counts once
+  useEffect(() => {
+    let isActive = true;
+    const loadCounts = async () => {
+      try {
+        const allCars = await unifiedCarService.searchCars({ isActive: true }, 500);
+        const counts: Record<string, number> = {};
+        allCars.forEach((car: any) => {
+          const bt = (car.bodyType || '').toLowerCase();
+          if (bt) counts[bt] = (counts[bt] || 0) + 1;
+        });
+        if (isActive) setCategoryCounts(counts);
+      } catch { /* silent */ }
+    };
+    loadCounts();
+    return () => { isActive = false; };
+  }, []);
+
+  // Merge live counts into categories
+  const CATEGORIES = useMemo(() =>
+    CATEGORIES_BASE.map(cat => ({
+      ...cat,
+      count: categoryCounts[cat.id] || cat.count
+    })),
+    [categoryCounts]
+  );
 
   useEffect(() => {
     const loadCars = async () => {
