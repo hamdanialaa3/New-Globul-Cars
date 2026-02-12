@@ -148,3 +148,9 @@ globul.net.m@gmail.com
 
 
 Firebase API Key (firebaseApiKey): Found in Firebase Console > Project Settings.
+----------------------------------------------------
+nagement options, visit the CLI documentation (https://firebase.google.com/docs/cli#update-cli)   │
+   │                                                                                                                     │
+   │                                                                                                                     │
+   │                                                                                                                     │
+   ╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯

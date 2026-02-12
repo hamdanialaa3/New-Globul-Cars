@@ -1,0 +1,69 @@
+{
+  "short_name": "Koli One",
+  "name": "Koli One - Български автомобили",
+  "description": "Най-добрата платформа за автомобили в България - The best car marketplace in Bulgaria",
+  "icons": [
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#FF7900",
+  "background_color": "#ffffff",
+  "categories": ["automotive", "shopping", "marketplace"],
+  "lang": "bg",
+  "dir": "ltr",
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Продай кола",
+      "short_name": "Продай",
+      "description": "Добави нова обява за продажба",
+      "url": "/sell/auto",
+      "icons": [{ "src": "logo192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Моите обяви",
+      "short_name": "Моите",
+      "description": "Преглед на моите обяви",
+      "url": "/profile/my-ads",
+      "icons": [{ "src": "logo192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Съобщения",
+      "short_name": "Съобщения",
+      "description": "Преглед на съобщенията",
+      "url": "/messages",
+      "icons": [{ "src": "logo192.png", "sizes": "192x192" }]
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "image",
+          "accept": ["image/*"]
+        }
+      ]
+    }
+  },
+  "prefer_related_applications": false
+}
