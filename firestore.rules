@@ -1,869 +1,179 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper function to check if user is authenticated
+    
+    // ============================================
+    // HELPERS & FUNCTIONS
+    // ============================================
+    
+    // Check if user is authenticated
     function isAuthenticated() {
       return request.auth != null;
     }
-
-    // Helper function to check if user is accessing their own data
+    
+    // Check if user owns the document
     function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
+      return request.auth.uid == userId;
     }
-
-    // Helper function to check if user has admin claim
-    function hasAdminClaim() {
-      return isAuthenticated() && request.auth.token.admin == true;
-    }
-
-    // Helper function to check if user is an admin
-    // Uses custom claims first, then role in user document
+    
+    // Check if user is admin
     function isAdmin() {
-      return isAuthenticated() && (
-        hasAdminClaim()
-        || (exists(/databases/$(database)/documents/users/$(request.auth.uid))
-          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
-      );
-    }
-
-    function adminFieldsChanged() {
-      return request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'isAdmin', 'admin']);
-    }
-
-    // 🔴 CRITICAL FIX: Counters collection - Only Cloud Functions can write
-    // Numeric ID counters must be protected to prevent corruption
-    match /counters/{userId} {
-      // ✅ Allow users to read their own counters
-      allow read: if isAuthenticated();
-      
-      // 🔒 HARDENED: Only allow update via strict increment logic, deny direct write/create
-      allow update: if isOwner(userId)
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['count', 'updatedAt'])
-        && request.resource.data.count == resource.data.count + 1;
-      
-      allow create, delete: if false;
-      
-      // ✅ Nested car counters per user
-      match /cars {
-        allow read: if isAuthenticated();
-        allow update: if isOwner(userId)
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['count', 'updatedAt'])
-          && request.resource.data.count == resource.data.count + 1;
-        allow create, delete: if false;
-      }
+      return get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.isAdmin == true;
     }
     
-    // ✅ Global users counter (for numeric ID assignment)
-    match /counters/users {
-      allow read: if true; // Public read OK
-      // 🔒 Hardened: client writes are not allowed; increments must happen via backend/Cloud Function
-      // TODO: MANUAL REVIEW REQUIRED - move all numeric ID assignment to backend trigger
-      allow create, update, delete: if false;
-    }
-
-    // ✅ CRITICAL FIX: Car counters document (container)
-    // Path: counters/cars (this is a DOCUMENT in counters collection)
-    match /counters/cars {
-      allow read: if isAuthenticated();
-      allow write: if false; // Container document - no direct writes
+    // Rate limiting: max 100 reads per minute
+    function rateLimitExceeded() {
+      return request.time < resource.data.lastRead.toMillis() + 600; // 10 seconds min between reads
     }
     
-    // ✅ CRITICAL FIX: Car counters per seller (subcollection under counters/cars document)
-    // Path: counters/cars/sellers/{sellerId}
-    match /counters/cars/sellers/{sellerId} {
-      // ✅ Allow any authenticated user to read (needed for transaction.get())
-      allow read: if isAuthenticated();
-      
-      // ✅ Allow users to create their own car counter with initial count = 1
-      allow create: if isOwner(sellerId)
-        && request.resource.data.keys().hasAll(['count', 'updatedAt'])
-        && request.resource.data.count == 1;
-      
-      // ✅ Allow users to update their own counter with strict increment
-      allow update: if isOwner(sellerId)
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['count', 'updatedAt'])
-        && request.resource.data.count == resource.data.count + 1;
-      
-      allow delete: if false;
-    }
-
-    // Profiles
-    match /profiles/{profileId} {
-      allow read: if true;
-      // ✅ CRITICAL FIX: Allow write if:
-      // 1. User owns the profile (userId matches), OR
-      // 2. Creating/updating with userId matching auth.uid, OR
-      // 3. Updating own profile (profileId == auth.uid) with userId field included
-      allow write: if isOwner(resource.data.userId) 
-        || (request.resource.data.userId == request.auth.uid)
-        || (isAuthenticated() 
-            && request.auth.uid == profileId 
-            && request.resource.data.userId == request.auth.uid);
-    }
-    
-    // Users collection
+    // ============================================
+    // USERS Collection
+    // ============================================
     match /users/{userId} {
-      allow read: if isAuthenticated();
-      // ✅ Allow initial user creation (for guest or new users)
-      // 🔒 Prevent client-side role assignment unless admin claim exists
-      allow create: if isAuthenticated()
-        && request.auth.uid == userId
-        && (!request.resource.data.keys().hasAny(['role', 'isAdmin', 'admin']) || hasAdminClaim());
-
-      // ✅ Allow users to update their own data
-      // 🔒 Block admin field changes by non-admins
-      allow update: if isOwner(userId) && !adminFieldsChanged();
-
-      // ✅ Allow admins to change admin-related fields
-      allow update: if isAdmin() && adminFieldsChanged();
-
-      // ✅ Allow updating numericId and related fields
-      allow update: if isOwner(userId) && (
-        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['numericId', 'numericIdAssignedAt', 'updatedAt'])
-      );
-
-      // ✅ NEW: Allow updating followersCount/followingCount by others (for Follow feature)
-      // This is necessary because when User A follows User B:
-      // 1. User A updates their own 'followingCount' (allowed by isOwner)
-      // 2. User A updates User B's 'followersCount' (needs this rule)
-      // ⚡ FIX: Use get() with default 0 to handle cases where counters don't exist yet
-      allow update: if isAuthenticated() 
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['followersCount', 'followingCount', 'updatedAt'])
-        && (
-          (request.resource.data.followersCount == resource.data.get('followersCount', 0) + 1)
-          || (request.resource.data.followersCount == resource.data.get('followersCount', 0) - 1)
-          || (request.resource.data.followingCount == resource.data.get('followingCount', 0) + 1)
-          || (request.resource.data.followingCount == resource.data.get('followingCount', 0) - 1)
+      // Only user can read/write their own profile
+      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      allow create: if isAuthenticated() && request.auth.uid == userId
+        && request.resource.data.keys().hasAll(['email', 'createdAt'])
+        && request.resource.data.size() < 50; // Max 50 fields
+      allow update: if isOwner(userId)
+        && !('role' in request.resource.data) // Users can't change their role
+        && request.resource.data.size() < 50;
+      allow delete: if isAdmin();
+      
+      // For nested user documents
+      match /{document=**} {
+        allow read: if isAuthenticated() && (
+          // User can read their own data
+          isOwner(userId) ||
+          // Admins can read all
+          isAdmin() ||
+          // Public profile fields (limited access)
+          document.includes('publicProfile')
         );
-
-      allow delete: if isOwner(userId) || isAdmin();
+        allow write: if isOwner(userId) && !isAdmin();
+      }
     }
     
-    // Stripe Customers & Checkout Sessions (Explicit Rule)
-    match /customers/{uid} {
-      allow read: if request.auth.uid == uid;
-      allow write: if request.auth.uid == uid;
-
-      match /checkout_sessions/{id} {
-        allow read, write: if request.auth.uid == uid;
-      }
-      match /subscriptions/{id} {
-        allow read: if request.auth.uid == uid;
-      }
-    }
-
-    // Cars/Listings
-    // ✅ CRITICAL FIX: Allow write for legacy cars collection (many cars still use this)
+    // ============================================
+    // CARS Collection (Listings)
+    // ============================================
     match /cars/{carId} {
-      allow read: if true;
-      allow create: if isAuthenticated() && (
-        request.resource.data.userId == request.auth.uid || 
-        request.resource.data.sellerId == request.auth.uid
+      // Anyone can read published cars
+      allow read: if resource.data.published == true;
+      
+      // Only owner can read unpublished cars
+      allow read: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      
+      // Sellers can create cars
+      allow create: if isAuthenticated()
+        && request.auth.uid == request.resource.data.sellerId
+        && request.resource.data.keys().hasAll(['title', 'sellerId', 'price', 'createdAt'])
+        && request.resource.data.published == false; // Must start unpublished
+      
+      // Only seller can update their own listing
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid
+        && !('sellerId' in request.resource.data); // Can't change owner;
+      
+      // Only seller or admin can delete
+      allow delete: if isAuthenticated() && (
+        resource.data.sellerId == request.auth.uid || isAdmin()
       );
-      allow update, delete: if isAuthenticated() && (
-        resource.data.userId == request.auth.uid || 
-        resource.data.sellerId == request.auth.uid ||
-        resource.data.ownerId == request.auth.uid
-      );
-    }
-
-    // ✅ NEW: Explicitly allow other vehicle types (Restricted to Owner)
-    // ✅ CRITICAL FIX: Check BOTH userId AND sellerId for ownership
-    match /passenger_cars/{carId} { 
-      allow read: if true; 
-      allow create: if isAuthenticated() && (
-        request.resource.data.userId == request.auth.uid || 
-        request.resource.data.sellerId == request.auth.uid
-      );
-      allow update, delete: if isAuthenticated() && (
-        resource.data.userId == request.auth.uid || 
-        resource.data.sellerId == request.auth.uid ||
-        resource.data.ownerId == request.auth.uid
-      ); 
-    }
-    match /suvs/{carId} { 
-      allow read: if true; 
-      allow create: if isAuthenticated() && (
-        request.resource.data.userId == request.auth.uid || 
-        request.resource.data.sellerId == request.auth.uid
-      );
-      allow update, delete: if isAuthenticated() && (
-        resource.data.userId == request.auth.uid || 
-        resource.data.sellerId == request.auth.uid ||
-        resource.data.ownerId == request.auth.uid
-      ); 
-    }
-    match /vans/{carId} { 
-      allow read: if true; 
-      allow create: if isAuthenticated() && (
-        request.resource.data.userId == request.auth.uid || 
-        request.resource.data.sellerId == request.auth.uid
-      );
-      allow update, delete: if isAuthenticated() && (
-        resource.data.userId == request.auth.uid || 
-        resource.data.sellerId == request.auth.uid ||
-        resource.data.ownerId == request.auth.uid
-      ); 
-    }
-    match /motorcycles/{carId} { 
-      allow read: if true; 
-      allow create: if isAuthenticated() && (
-        request.resource.data.userId == request.auth.uid || 
-        request.resource.data.sellerId == request.auth.uid
-      );
-      allow update, delete: if isAuthenticated() && (
-        resource.data.userId == request.auth.uid || 
-        resource.data.sellerId == request.auth.uid ||
-        resource.data.ownerId == request.auth.uid
-      ); 
-    }
-    match /trucks/{carId} { 
-      allow read: if true; 
-      allow create: if isAuthenticated() && (
-        request.resource.data.userId == request.auth.uid || 
-        request.resource.data.sellerId == request.auth.uid
-      );
-      allow update, delete: if isAuthenticated() && (
-        resource.data.userId == request.auth.uid || 
-        resource.data.sellerId == request.auth.uid ||
-        resource.data.ownerId == request.auth.uid
-      ); 
-    }
-    match /buses/{carId} { 
-      allow read: if true; 
-      allow create: if isAuthenticated() && (
-        request.resource.data.userId == request.auth.uid || 
-        request.resource.data.sellerId == request.auth.uid
-      );
-      allow update, delete: if isAuthenticated() && (
-        resource.data.userId == request.auth.uid || 
-        resource.data.sellerId == request.auth.uid ||
-        resource.data.ownerId == request.auth.uid
-      ); 
     }
     
-    // Legacy support for listings collection if used
-    match /listings/{listingId} {
-      allow read: if true;
-      allow write: if false; // 🔒 LOCKED: Legacy collection
-    }
-
-    
-    match /listingMetrics/{metricId} {
-       allow read: if true;
-       allow write: if isAuthenticated();
-    }
-
-    // ==================== FOLLOWS COLLECTION ====================
-    // Follow System: User-to-User following relationships
-    // Document ID format: {followerId}_{followingId}
-    match /follows/{followId} {
-      // ✅ Public Read: Allow anyone to see who follows whom (Social Network Standard)
-      allow read: if true;
-
-      // Allow creating a follow if:
-      // 1. Authenticated
-      // 2. followerId matches your UID
-      // 3. Not following yourself (followerId != followingId)
-      allow create: if isAuthenticated() 
-        && request.resource.data.followerId == request.auth.uid
-        && request.resource.data.followerId != request.resource.data.followingId
-        && request.resource.data.keys().hasAll(['followerId', 'followingId', 'createdAt']);
-
-      // Allow deleting only if you're the follower (unfollowing)
-      allow delete: if isAuthenticated() 
-        && resource.data.followerId == request.auth.uid;
-
-      // No updates allowed (follow/unfollow only)
-      allow update: if false;
-    }
-
-    // ==================== NOTIFICATIONS COLLECTION ====================
-    // Notification System: Real-time alerts for users
-    // Security:
-    // - Read: Only your own notifications
-    // - Create: Only Cloud Functions (deny client writes)
-    // - Update: Only to mark as read (isRead field)
-    // - Delete: Only your own notifications
-    match /notifications/{notificationId} {
-      // Read: Only if notification belongs to you
-      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
-
-      // Create: Deny (only Cloud Functions can create)
-      allow create: if false;
-
-      // Update: Only mark as read (isRead field)
-      allow update: if isAuthenticated() 
-        && resource.data.userId == request.auth.uid
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isRead']);
-
-      // Delete: Only your own notifications
-      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
-    }
-
-    // PHASE 3: Team Management (Company Infrastructure)
-    // Team Members Sub-collection: users/{companyId}/team_members/{memberId}
-    match /users/{companyId}/team_members/{memberId} {
-      // Helper: Check if user is the company owner
-      function isCompanyOwner() {
-        return isAuthenticated() && request.auth.uid == companyId;
-      }
-
-      // Helper: Check if user is an active team admin
-      function isTeamAdmin() {
-        return exists(/databases/$(database)/documents/users/$(companyId)/team_members/$(memberId))
-          && get(/databases/$(database)/documents/users/$(companyId)/team_members/$(memberId)).data.linkedUserId == request.auth.uid
-          && get(/databases/$(database)/documents/users/$(companyId)/team_members/$(memberId)).data.role == 'admin'
-          && get(/databases/$(database)/documents/users/$(companyId)/team_members/$(memberId)).data.status == 'active';
-      }
-
-      // Read: Company owner or active team members
-      allow read: if isCompanyOwner() || isTeamAdmin();
-
-      // Create/Update/Delete: Only company owner or team admins
-      allow create, update, delete: if isCompanyOwner() || isTeamAdmin();
-    }
-
-    // Team Invitations Collection: team_invitations/{inviteId}
-    match /team_invitations/{inviteId} {
-      // Read: Any authenticated user (to check invite codes)
-      allow read: if isAuthenticated();
-
-      // Create: Only company owners
-      allow create: if isAuthenticated() && request.resource.data.companyId == request.auth.uid;
-
-      // Update: Only invitation owner (to revoke/accept)
-      allow update: if isAuthenticated() && resource.data.companyId == request.auth.uid;
-
-      // Delete: Only invitation owner
-      allow delete: if isAuthenticated() && resource.data.companyId == request.auth.uid;
-    }
-
-    // ==================== ANALYTICS COLLECTIONS ====================
-    // Search Analytics: Track search queries and clicks
-    match /searchAnalytics/{analyticsId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated(); // Require auth for search tracking
-      allow update: if isAuthenticated();
-      allow delete: if false; // No deletes
-    }
-
-    match /searchClicks/{clickId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated(); // Require auth for click tracking
-      allow update: if false; // No updates
-      allow delete: if false; // No deletes
-    }
-
-    match /searchAggregates/{aggregateId} {
-      allow read: if true; // Public read for popular searches
-      allow create: if isAuthenticated();
-      allow update: if isAuthenticated();
-      allow delete: if false;
-    }
-
-    // ==================== CAMPAIGNS COLLECTION ====================
-    // Marketing Campaigns
-    match /campaigns/{campaignId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated();
-      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
-    }
-
-    // ==================== CONSULTATIONS COLLECTION ====================
-    // Expert Consultations
-    match /consultations/{consultationId} {
-      allow read: if isAuthenticated() && (
-        resource.data.requesterId == request.auth.uid ||
-        resource.data.expertId == request.auth.uid
-      );
-      allow create: if isAuthenticated() && request.resource.data.requesterId == request.auth.uid;
-      allow update: if isAuthenticated() && (
-        resource.data.requesterId == request.auth.uid ||
-        resource.data.expertId == request.auth.uid
-      );
-      allow delete: if isAuthenticated() && resource.data.requesterId == request.auth.uid;
-    }
-
-    // ==================== REVIEWS COLLECTION ====================
-    // Post-Sale Reviews
+    // ============================================
+    // REVIEWS Collection
+    // ============================================
     match /reviews/{reviewId} {
-      allow read: if true; // Public reviews
-      allow create: if isAuthenticated();
-      allow update: if isAuthenticated() && resource.data.buyerId == request.auth.uid;
-      allow delete: if false; // No review deletion (admin only via backend)
-    }
-
-    // ==================== CAR STORIES COLLECTION ====================
-    // User Car Stories and Experience
-    // Document ID: userId (one story per user)
-    // Security:
-    // - Read: Public (anyone can read car stories)
-    // - Write: Only owner can create/update their story
-    match /carStories/{userId} {
-      allow read: if true; // Public read for all car stories
-      allow write: if isOwner(userId); // Only owner can edit their story
-    }
-
-    // ==================== INTRO VIDEOS COLLECTION ====================
-    // User Introduction Videos
-    // Document ID: userId (one video per user)
-    // Security:
-    // - Read: Public (showcase videos)
-    // - Write: Only owner can manage their video
-    match /introVideos/{userId} {
-      allow read: if true; // Public read
-      allow write: if isOwner(userId); // Owner only
-    }
-
-    // ==================== SUCCESS STORIES COLLECTION ====================
-    // User Success Stories and Achievements
-    // Security:
-    // - Read: Public (inspirational stories)
-    // - Create: Authenticated users
-    // - Update/Delete: Only owner
-    match /successStories/{storyId} {
-      allow read: if true; // Public read
-      allow create: if isAuthenticated();
-      allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
-    }
-
-    // ==================== AVAILABILITY CALENDARS COLLECTION ====================
-    // User Availability for Appointments
-    // Document ID: userId (one calendar per user)
-    // Security:
-    // - Read: Public (anyone can see availability)
-    // - Write: Only owner can manage their calendar
-    match /availabilityCalendars/{userId} {
-      allow read: if true; // Public read for booking
-      allow write: if isOwner(userId); // Owner only
-    }
-
-    // ==================== ACHIEVEMENTS COLLECTION ====================
-    // User Achievements, Badges, and Certificates
-    // Security:
-    // - Read: Public (showcase achievements)
-    // - Write: Only owner or admin (badges awarded by system)
-    match /achievements/{achievementId} {
-      allow read: if true; // Public read
-      allow create: if isAuthenticated();
-      allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
-    }
-
-    // ==================== DRAFTS COLLECTION ====================
-    // Car Listing Drafts
-    // Security: Only owner can access their drafts
-    match /drafts/{draftId} {
-      // ✅ FIX: Allow read if authenticated and draftId starts with userId
-      // Pattern: drafts are stored as {userId}_{timestamp} or similar
-      allow read: if isAuthenticated();
+      // Anyone can read reviews
+      allow read: if resource.data.published == true;
       
-      // ✅ FIX: Allow write operations if authenticated
-      allow create: if isAuthenticated() 
-        && request.resource.data.userId == request.auth.uid;
+      // Authenticated users can create reviews
+      allow create: if isAuthenticated()
+        && request.auth.uid == request.resource.data.reviewerId
+        && request.resource.data.rating >= 1 && request.resource.data.rating <= 5
+        && request.resource.data.keys().hasAll(['reviewerId', 'rating', 'createdAt']);
       
-      allow update, delete: if isAuthenticated() 
-        && (resource.data.userId == request.auth.uid 
-            || request.resource.data.userId == request.auth.uid);
-    }
-
-    // ==================== EVENTS COLLECTION ====================
-    // Community Events
-    // Security:
-    // - Read: Public
-    // - Create: Authenticated users
-    // - Update/Delete: Owner only
-    match /events/{eventId} {
-      allow read: if true; // Public events
-      allow create: if isAuthenticated();
-      allow update, delete: if isAuthenticated() && resource.data.organizerId == request.auth.uid;
-    }
-
-    // ==================== EVENT RSVPs COLLECTION ====================
-    // Event Attendance Tracking
-    match /eventRSVPs/{rsvpId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
-    }
-
-    // ==================== LEADERBOARDS COLLECTION ====================
-    // User Rankings and Scores
-    // Security: Public read, system writes only
-    match /leaderboards/{userId} {
-      allow read: if true; // Public leaderboard
-      allow write: if false; // System/Cloud Functions only
-    }
-
-    // ==================== SAVED SEARCHES COLLECTION ====================
-    // User Saved Search Filters
-    match /savedSearches/{searchId} {
-      allow read, write: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-    }
-
-    // ==================== SOCIAL MEDIA ACCOUNTS COLLECTION ====================
-    // Linked Social Media Profiles
-    // Document ID: userId
-    match /socialMediaAccounts/{userId} {
-      allow read: if true; // Public profiles
-      allow write: if isOwner(userId); // Owner only
-    }
-
-    // ==================== TRANSACTIONS COLLECTION ====================
-    // Financial Transactions
-    // Security: Strict owner-only access
-    match /transactions/{transactionId} {
-      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if false; // No modifications (audit trail)
-    }
-
-    // ==================== TRUST CONNECTIONS COLLECTION ====================
-    // Trust Network Relationships
-    match /trustConnections/{connectionId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && request.resource.data.requesterId == request.auth.uid;
+      // Only reviewer or admin can update
       allow update: if isAuthenticated() && (
-        resource.data.requesterId == request.auth.uid ||
+        resource.data.reviewerId == request.auth.uid || isAdmin()
+      );
+      
+      // Only reviewer or admin can delete
+      allow delete: if isAuthenticated() && (
+        resource.data.reviewerId == request.auth.uid || isAdmin()
+      );
+    }
+    
+    // ============================================
+    // MESSAGES Collection (Chat)
+    // ============================================
+    match /messages/{messageId} {
+      // Only sender and receiver can read
+      allow read: if isAuthenticated() && (
+        resource.data.senderId == request.auth.uid ||
         resource.data.receiverId == request.auth.uid
       );
-      allow delete: if isAuthenticated() && resource.data.requesterId == request.auth.uid;
-    }
-
-    // ==================== WORKFLOW ANALYTICS COLLECTION ====================
-    // System Analytics (Admin/Cloud Functions)
-    match /workflow_analytics/{analyticsId} {
-      allow read: if isAuthenticated(); // Users can read aggregate stats
-      allow write: if false; // System only
-    }
-
-    // ==================== DEALERSHIPS COLLECTION ====================
-    // Verified Dealerships/Companies
-    match /dealerships/{dealershipId} {
-      allow read: if true; // Public read for all verified dealerships
-      allow create: if isAuthenticated();
-      allow update: if isAuthenticated() && resource.data.uid == request.auth.uid;
-      allow delete: if false; // No deletion (admin only via backend)
-    }
-
-    // ==================== POSTS COLLECTION (Social Feed) ====================
-    // Community Posts
-    match /posts/{postId} {
-      allow read: if true; // Public posts visible to everyone
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
-
-      // Comments sub-collection
-      match /comments/{commentId} {
-        allow read: if true; // Public comments
-        allow create: if isAuthenticated();
-        allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
-        allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      }
-
-      // Likes sub-collection
-      match /likes/{likeId} {
-        allow read: if true; // Public likes count
-        allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-        allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
-        allow update: if false; // No updates to likes
-      }
-    }
-
-    // ==================== FAVORITES COLLECTION ====================
-    // User Favorites (saved cars)
-    match /favorites/{favoriteId} {
-      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow update: if false; // No updates to favorites
-    }
-
-    // 🔴 CRITICAL: Blocked Users Collection (January 2026 - User Safety)
-    // Block relationships between users
-    match /blocked_users/{blockId} {
-      // blockId format: {blockerNumericId}_{blockedNumericId} or {blockerFirebaseId}_{blockedFirebaseId}
-      // 🔒 Privacy: Allow read if you are the blocker OR the blocked user (to know you are blocked)
-      allow read: if isAuthenticated() && (
-        resource.data.blockerFirebaseId == request.auth.uid || 
-        resource.data.blockedFirebaseId == request.auth.uid
-      );
-
-      // Create: Only if you're the blocker (can't block on behalf of others)
-      allow create: if isAuthenticated() 
-        && request.resource.data.blockerFirebaseId == request.auth.uid
-        && request.resource.data.blockerFirebaseId != request.resource.data.blockedFirebaseId // Can't block yourself
-        && request.resource.data.keys().hasAll(['blockerNumericId', 'blockerFirebaseId', 'blockedNumericId', 'blockedFirebaseId', 'createdAt', 'updatedAt']);
-
-      // Update: Only if you're the blocker (can update reason)
-      allow update: if isAuthenticated() 
-        && resource.data.blockerFirebaseId == request.auth.uid
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reason', 'updatedAt']);
-
-      // Delete: Only if you're the blocker (can unblock)
-      allow delete: if isAuthenticated() && resource.data.blockerFirebaseId == request.auth.uid;
-    }
-
-    // 🔴 CRITICAL: Reports Collection (January 2026 - Content Moderation)
-    // User reports for spam, abuse, fake content
-    match /reports/{reportId} {
-      // Read: Only if you're the reporter (users can see their own reports)
-      allow read: if isAuthenticated() && resource.data.reporterFirebaseId == request.auth.uid;
-
-      // Create: Only authenticated users can create reports
+      
+      // Only sender can create
       allow create: if isAuthenticated()
-        && request.resource.data.reporterFirebaseId == request.auth.uid
-        && request.resource.data.reporterFirebaseId != request.resource.data.reportedUserFirebaseId // Can't report yourself
-        && request.resource.data.keys().hasAll(['reporterFirebaseId', 'reporterNumericId', 'reportedUserFirebaseId', 'reportedUserNumericId', 'reportType', 'contentType', 'reason', 'description', 'status', 'createdAt', 'updatedAt']);
-
-      // Update: Only admins can update reports (via Cloud Functions)
-      allow update: if false; // Only Cloud Functions can update
-
-      // Delete: No deletes (archival only)
-      allow delete: if false;
-    }
-
-    // ==================== MESSAGES & CONVERSATIONS ====================
-    // Direct Messages
-    match /messages/{messageId} {
-      allow read: if isAuthenticated() && (
+        && request.auth.uid == request.resource.data.senderId
+        && request.resource.data.keys().hasAll(['senderId', 'receiverId', 'text', 'createdAt']);
+      
+      // Only sender can update
+      allow update: if isAuthenticated() && resource.data.senderId == request.auth.uid;
+      
+      // Only sender or receiver can delete
+      allow delete: if isAuthenticated() && (
         resource.data.senderId == request.auth.uid ||
-        resource.data.recipientId == request.auth.uid
+        resource.data.receiverId == request.auth.uid
       );
-      allow create: if isAuthenticated() && request.resource.data.senderId == request.auth.uid;
-      allow update: if isAuthenticated() && (
-        resource.data.senderId == request.auth.uid ||
-        resource.data.recipientId == request.auth.uid
-      );
-      allow delete: if false; // No message deletion
     }
-
-    // Conversations metadata
-    match /conversations/{conversationId} {
+    
+    // ============================================
+    // FAVORITES Collection
+    // ============================================
+    match /favorites/{userId} {
+      // Only user can read/write their favorites
+      allow read: if isAuthenticated() && isOwner(userId);
+      allow write: if isAuthenticated() && isOwner(userId);
+    }
+    
+    // ============================================
+    // ANALYTICS Collection (Read-only aggregates)
+    // ============================================
+    match /analytics/{document=**} {
+      // Anyone can read analytics (public stats)
+      allow read: if true;
+      
+      // Only backend/admin can write
+      allow write: if false; // Use Cloud Functions for writes
+    }
+    
+    // ============================================
+    // ADMIN Collection
+    // ============================================
+    match /admins/{userId} {
+      // Only admins can read/write
+      allow read, write: if isAuthenticated() && isAdmin();
+    }
+    
+    // ============================================
+    // TRANSACTIONS Collection
+    // ============================================
+    match /transactions/{transactionId} {
+      // Users can only read their own transactions
       allow read: if isAuthenticated() && (
-        conversationId.matches('.*' + request.auth.uid + '.*')
+        resource.data.buyerId == request.auth.uid ||
+        resource.data.sellerId == request.auth.uid
       );
-      allow create: if isAuthenticated();
-      allow update: if isAuthenticated() && (
-        conversationId.matches('.*' + request.auth.uid + '.*')
-      );
-      allow delete: if false; // No conversation deletion
-    }
-
-    // ==================== ANALYTICS EVENTS & METRICS ====================
-    // Profile Analytics: Track profile views, car views, inquiries
-    match /analytics_events/{eventId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated(); // Require auth for analytics tracking
-      allow update: if false; // No updates
-      allow delete: if false; // No deletes
-    }
-
-    match /profile_analytics/{userId} {
-      allow read: if isAuthenticated() && request.auth.uid == userId;
-      allow create: if isOwner(userId); // Only owner or Cloud Functions
-      allow update: if isOwner(userId); // Only owner can update their analytics
-      allow delete: if false;
-    }
-
-    match /profile_metrics/{userId} {
-      allow read: if isAuthenticated() && request.auth.uid == userId;
-      allow create: if isOwner(userId); // Only owner or Cloud Functions
-      allow update: if isOwner(userId); // Only owner can update their metrics
-      allow delete: if false;
-    }
-
-    // ==================== USER POINTS & LEVELS ====================
-    match /userPoints/{userId} {
-      allow read: if isAuthenticated() && request.auth.uid == userId;
-      allow create: if isOwner(userId); // Only owner or Cloud Functions
-      allow update: if isOwner(userId); // Only owner can update their points
-      allow delete: if false;
-    }
-
-    // ==================== PROFILE STATS ====================
-    match /profile_stats/{statsId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated(); // Authenticated users can create stats
-      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid; // Only owner
-      allow delete: if false;
-    }
-
-    // NOTE: Duplicate profiles rule removed — primary rule is above (line ~78)
-
-    // ==================== SAVED SEARCHES ==
-    match /saved_searches/{searchId} {
-      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
-    }
-
-    // ==================== LISTING REVIEWS ====================
-    match /listing_reviews/{reviewId} {
-      allow read: if true; // Public reviews
-      allow create: if isAuthenticated();
-      allow update: if isAuthenticated() && resource.data.authorId == request.auth.uid;
-      allow delete: if isAuthenticated() && resource.data.authorId == request.auth.uid;
-    }
-
-    // NOTE: Duplicate searchAnalytics/searchClicks rules removed — primary rules are above (line ~320)
-
-    // ==================== LEADERBOARD ====================
-    match /leaderboard/{entryId} {
-      allow read: if true; // Public leaderboard
-      allow write: if false; // 🔒 SECURED: Cloud Functions only — no client writes
-    }
-
-    // ==================== CHALLENGES ====================
-    // Monthly Challenges System
-    match /challenges/{challengeId} {
-      allow read: if true; // Public challenges
-      allow create: if isAuthenticated();
-      allow update: if isAuthenticated() && resource.data.createdBy == request.auth.uid;
-      allow delete: if isAuthenticated() && resource.data.createdBy == request.auth.uid;
-    }
-
-    // Monthly Challenges (New Collection Name)
-    match /monthlyChallenges/{challengeId} {
-      allow read: if true; // Public challenges
-      allow create: if isAuthenticated();
-      allow update: if isAuthenticated() && resource.data.createdBy == request.auth.uid;
-      allow delete: if isAuthenticated() && resource.data.createdBy == request.auth.uid;
-    }
-
-    // User Challenge Progress (Old Collection Name)
-    match /user_challenges/{entryId} {
-      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
-    }
-
-    // User Challenge Progress (New Collection Name)
-    match /userChallengeProgress/{entryId} {
-      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
-    }
-
-    // ==================== STORIES ====================
-    match /stories/{storyId} {
-      allow read: if true; // Public stories
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
-    }
-
-    // ==================== ACHIEVEMENTS ====================
-    // 🔒 SECURED: Achievements are system-managed — Cloud Functions only
-    match /achievements/{achievementId} {
-      allow read: if true; // Public achievements
-      allow write: if false; // 🔒 Cloud Functions only
-    }
-
-    match /user_achievements/{entryId} {
-      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow write: if false; // 🔒 Cloud Functions only
-    }
-
-    // ==================== BADGES ====================
-    // 🔒 SECURED: Badges are system-managed — Cloud Functions only
-    match /badges/{badgeId} {
-      allow read: if true; // Public badges
-      allow write: if false; // 🔒 Cloud Functions only
-    }
-
-    match /user_badges/{entryId} {
-      allow read: if true; // Public user badges
-      allow write: if false; // 🔒 Cloud Functions only
-    }
-
-    // ==================== SEARCH HISTORY ====================
-    match /searchHistory/{historyId} {
-      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
-    }
-
-    // ==================== USER GROUPS & MEMBERSHIPS ====================
-    // User Groups (Community Feature)
-    match /userGroups/{groupId} {
-      // Allow reading groups (public groups or browsing)
-      allow read: if true;
-      // Allow creating groups if authenticated
-      allow create: if isAuthenticated();
-      // 🔒 SECURED: Only group creator can update
-      allow update: if isAuthenticated() && resource.data.createdBy == request.auth.uid;
-      // Delete not allowed (archive instead)
-      allow delete: if false;
-    }
-
-    // Group Memberships
-    match /groupMemberships/{membershipId} {
-      // Allow reading memberships to check status (Public for profile views)
-      // Required for getUserMemberships query on public profiles
-      allow read: if true;
       
-      // Allow joining (creating membership) for yourself
-      allow create: if isAuthenticated() 
-        && request.resource.data.userId == request.auth.uid;
-        
-      // Allow updating own membership (e.g., settings)
-      allow update: if isAuthenticated() 
-        && resource.data.userId == request.auth.uid;
-        
-      // Allow leaving (deleting membership)
-      allow delete: if isAuthenticated() 
-        && resource.data.userId == request.auth.uid;
+      // Only backend/Cloud Functions can write
+      allow write: if false;
     }
-
-    // 🎛️ App Settings - All settings documents
-    // 🔒 SECURED (2026-02-09): Admin-only writes — closes critical P0 vulnerability
-    match /app_settings/{settingDoc} {
-      // ✅ Allow READ for everyone (public visibility)
-      allow read: if true;
-      
-      // 🔒 SECURED: Admins can modify app settings via Firebase Auth
-      allow create, update: if isAdmin();
-      
-      // ✅ Prevent deletion
-      allow delete: if false;
-    }
-
-    // 🎛️ App Settings - Promotional Offer (specific override)
-    // Admin-only updates via Firebase Auth
-    match /app_settings/promotional_offer {
-      allow read: if true;
-      allow create, update: if isAdmin();
-      allow delete: if false;
-    }
-
-    // 🎛️ App Settings - Admin Configs (Homepage, Featured, Site, Theme)
-    // Admin-only updates via Firebase Auth
-    match /app_settings/{configDoc} {
-      allow create, update: if
-        (configDoc in ['homepage_sections', 'featured_content', 'site_settings', 'theme_settings'])
-        && isAdmin();
-    }
-
-    // 📝 Free Plan Activations - Audit log for promotional free plan activations
-    // Authenticated users can create their own activation records.
-    // Only admins can read/update/delete for auditing purposes.
-    match /free_plan_activations/{activationId} {
-      allow create: if isAuthenticated()
-        && request.resource.data.userId == request.auth.uid;
-      allow read: if isAdmin();
-      allow update, delete: if false;
-    }
-
-    // General fallback (deny by default, but opened for dev/debugging if needed - keep strict for now)
-    // Default: Deny all other access
+    
+    // ============================================
+    // DEFAULT DENY ALL
+    // ============================================
     match /{document=**} {
       allow read, write: if false;
     }

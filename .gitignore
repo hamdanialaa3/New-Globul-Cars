@@ -1,95 +1,63 @@
-# Basics
-.DS_Store
-node_modules/
-build/
-dist/
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-functions/.env
-functions/.env.*
+# ============================
+# Koli One Root .gitignore
+# ============================
 
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-firebase-debug.log*
-*.log
-
-# Editor directories
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Firebase
-.firebase/
-firebase-debug.log
-firebaserc # Optional: keep if you want to share project alias
-
-# Secrets and Keys (CRITICAL)
-*.key
-*.json
-!package.json
-!package-lock.json
-!tsconfig.json
-!.eslintrc.json
-!firebase.json
-!database.rules.json
-!firestore.indexes.json
-!algolia-index-config.json
-!algolia-record-template.json
-!storage-cors.json
-
-# Firebase Config Files (NEVER commit real configs)
-google-services.json
-GoogleService-Info.plist
-google-services.template.json
-GoogleService-Info.template.plist
-
-.github/secrets/
-secrets/
-keys/
-service-account/
-functions/node_modules/
-
-# Build and cache directories
-.cache/
-.next/
-coverage/
-.nyc_output/
-*.tsbuildinfo
-
-# Temporary files
-*.tmp
-*.temp
+# --- OS & Editor ---
 desktop.ini
 Thumbs.db
-*.bat
-*_output.txt
-*-output.txt
+.DS_Store
+*.swp
+*.swo
+*~
+.idea/
+.cursor/
+.vscode/settings.json
+*.iml
 
-# Python
-__pycache__/
-*.py[cod]
-*.so
-*.egg
-*.egg-info/
-venv/
-.Python
+# --- Secrets & Credentials ---
+*.env
+*.env.*
+!*.env.example
+!*.env.template
+firebase-service-account.json
+google-services.json
+GoogleService-Info.plist
+*.key
+*.pem
+*.p12
+*.pfx
+serviceAccountKey.json
 
-# Scripts (organized in scripts/ folder)
-*.sh
-*.ps1
+# --- Build artifacts ---
+node_modules/
+dist/
+build/
+.cache/
+*.bundle
 
-# Documentation (organized in docs/ folder)
-*REPORT.md
-*COMPLETE.md
-*SUMMARY.md
-*ROADMAP.md
-*CHECKLIST.md
-*GUIDE.md
-*PLAN.md
-*ANALYSIS.md
+# --- Backup/Temp files ---
+*.bak
+*.backup
+*.tmp
+*.orig
+*.old
+*.ts.backup
+
+# --- Reports & generated ---
+type-errors-all.txt
+ts-prune-report.txt
+gitleaks-report.json
+cline_mcp_config.json
+
+# --- Stray lockfiles (only valid in app dirs) ---
+# package-lock.json at root is not valid
+
+# --- Archives ---
+*.zip
+*.tar.gz
+*.7z
+
+server.log
+
+# --- Build artifacts in submodules ---
+web/build/
