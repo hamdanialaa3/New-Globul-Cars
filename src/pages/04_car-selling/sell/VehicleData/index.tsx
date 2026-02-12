@@ -18,6 +18,7 @@ import { getErrorMessage } from '../../../../constants/ErrorMessages';
 import useDraftAutoSave from '../../../../hooks/useDraftAutoSave';
 import useWorkflowStep from '../../../../hooks/useWorkflowStep';
 import KeyboardShortcutsHelper from '../../../../components/KeyboardShortcutsHelper';
+import { logger } from '../../../../services/logger-service';
 import { SellWorkflowLayout } from '../../../../components/SellWorkflow';
 import { useProfileType } from '../../../../contexts/ProfileTypeContext';
 import SellWorkflowStepStateService from '../../../../services/sellWorkflowStepState';

@@ -2,6 +2,7 @@ import { db, functions } from '../../firebase/firebase-config';
 import { collection, addDoc, onSnapshot } from 'firebase/firestore';
 import { httpsCallable } from 'firebase/functions';
 import { SUBSCRIPTION_PLANS, PlanTier } from '../../config/subscription-plans';
+import { logger } from '../logger-service';
 import type { BillingInterval } from '../../features/billing/types';
 
 export interface CheckoutSession {

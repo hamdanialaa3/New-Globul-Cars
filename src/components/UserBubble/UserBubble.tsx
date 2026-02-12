@@ -4,6 +4,7 @@
 
 import React, { useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
+import { logger } from '../../services/logger-service';
 import { useNavigate } from 'react-router-dom';
 import {
   MessageCircle,

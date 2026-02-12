@@ -3,6 +3,7 @@
  * Enforces HTTPS in production and secure contexts
  * Eliminates third-party cookie partition warnings
  */
+import { logger } from '../services/logger-service';
 
 /**
  * Check if current environment should use HTTPS

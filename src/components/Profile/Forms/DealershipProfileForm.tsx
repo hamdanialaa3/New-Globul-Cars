@@ -11,6 +11,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Building2, Phone, Mail, Globe, MapPin, Clock, Save, X } from 'lucide-react';
+import { logger } from '../../../services/logger-service';
 import { DealershipRepository } from '../../../repositories/DealershipRepository';
 import { ProfileMediaService } from '../../../services/profile/ProfileMediaService';
 import { useToast } from '../../Toast';

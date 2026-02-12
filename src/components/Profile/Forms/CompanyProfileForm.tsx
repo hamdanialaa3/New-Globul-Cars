@@ -11,6 +11,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Building2, Phone, Mail, Globe, MapPin, Users, Save, X, Briefcase } from 'lucide-react';
+import { logger } from '../../../services/logger-service';
 import { CompanyRepository } from '../../../repositories/CompanyRepository';
 import { useToast } from '../../Toast';
 import { useLanguage } from '../../../contexts/LanguageContext';

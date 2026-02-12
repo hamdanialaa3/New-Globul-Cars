@@ -24,6 +24,7 @@
 
 import React, { memo, useState, useEffect, Suspense } from 'react';
 import styled from 'styled-components';
+import { logger } from '../../../../services/logger-service';
 import { motion } from 'framer-motion';
 import { Star, CheckCircle, TrendingUp, Users, Building2 } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
