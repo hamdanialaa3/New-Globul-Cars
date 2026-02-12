@@ -55,29 +55,107 @@ service cloud.firestore {
     }
     
     // ============================================
-    // CARS Collection (Listings)
+    // CARS Collection (Listings) - Legacy
     // ============================================
     match /cars/{carId} {
-      // Anyone can read published cars
-      allow read: if resource.data.published == true;
-      
-      // Only owner can read unpublished cars
-      allow read: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      // Anyone can read active/published cars
+      allow read: if true;
       
       // Sellers can create cars
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId
-        && request.resource.data.keys().hasAll(['title', 'sellerId', 'price', 'createdAt'])
-        && request.resource.data.published == false; // Must start unpublished
+        && request.auth.uid == request.resource.data.sellerId;
       
       // Only seller can update their own listing
-      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid
-        && !('sellerId' in request.resource.data); // Can't change owner;
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
       
       // Only seller or admin can delete
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
       );
+    }
+    
+    // ============================================
+    // VEHICLE COLLECTIONS (All Vehicle Types)
+    // ============================================
+    match /passenger_cars/{carId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      allow delete: if isAuthenticated() && (
+        resource.data.sellerId == request.auth.uid || isAdmin()
+      );
+    }
+    
+    match /suvs/{carId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      allow delete: if isAuthenticated() && (
+        resource.data.sellerId == request.auth.uid || isAdmin()
+      );
+    }
+    
+    match /vans/{carId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      allow delete: if isAuthenticated() && (
+        resource.data.sellerId == request.auth.uid || isAdmin()
+      );
+    }
+    
+    match /motorcycles/{carId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      allow delete: if isAuthenticated() && (
+        resource.data.sellerId == request.auth.uid || isAdmin()
+      );
+    }
+    
+    match /trucks/{carId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      allow delete: if isAuthenticated() && (
+        resource.data.sellerId == request.auth.uid || isAdmin()
+      );
+    }
+    
+    match /buses/{carId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      allow delete: if isAuthenticated() && (
+        resource.data.sellerId == request.auth.uid || isAdmin()
+      );
+    }
+    
+    match /listings/{carId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      allow delete: if isAuthenticated() && (
+        resource.data.sellerId == request.auth.uid || isAdmin()
+      );
+    }
+    
+    // ============================================
+    // WORKFLOW Collections (Drafts, Progress, Images)
+    // ============================================
+    match /workflow_drafts/{docId} {
+      allow read: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      allow write: if isAuthenticated();
+    }
+    
+    match /workflow_progress/{docId} {
+      allow read: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      allow write: if isAuthenticated();
+    }
+    
+    match /workflow_images/{docId} {
+      allow read: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      allow write: if isAuthenticated();
     }
     
     // ============================================

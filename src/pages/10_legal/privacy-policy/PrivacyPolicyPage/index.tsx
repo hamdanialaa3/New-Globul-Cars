@@ -1,6 +1,5 @@
 // src/pages/PrivacyPolicyPage.tsx
-// Privacy Policy Page for Koli One
-// (Comment removed - was in Arabic)
+// Privacy Policy Page for Koli One - Updated for Dark Mode & Personal Details
 
 import React from 'react';
 import styled from 'styled-components';
@@ -10,9 +9,11 @@ const Container = styled.div`
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
-  background: white;
+  background: var(--bg-card);
+  color: var(--text-primary);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-primary);
 
   @media (max-width: 768px) {
     margin: 1rem;
@@ -21,7 +22,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  color: ${props => props.theme.colors.primary};
+  color: var(--text-primary);
   font-size: 2.5rem;
   margin-bottom: 1rem;
   text-align: center;
@@ -33,20 +34,21 @@ const Title = styled.h1`
 
 const Section = styled.section`
   margin-bottom: 2rem;
+  background: transparent;
 `;
 
 const SectionTitle = styled.h2`
-  color: ${props => props.theme.colors.text};
+  color: var(--text-primary);
   font-size: 1.5rem;
   margin-bottom: 1rem;
-  border-bottom: 2px solid ${props => props.theme.colors.primary};
+  border-bottom: 2px solid var(--accent-primary);
   padding-bottom: 0.5rem;
 `;
 
 const Paragraph = styled.p`
   line-height: 1.6;
   margin-bottom: 1rem;
-  color: ${props => props.theme.colors.secondary};
+  color: var(--text-secondary);
 `;
 
 const List = styled.ul`
@@ -55,25 +57,40 @@ const List = styled.ul`
   
   li {
     margin-bottom: 0.5rem;
-    color: ${props => props.theme.colors.secondary};
+    color: var(--text-secondary);
   }
 `;
 
 const ContactInfo = styled.div`
-  background: ${props => props.theme.colors.grey[100]};
+  background: var(--bg-secondary);
   padding: 1.5rem;
   border-radius: 8px;
   margin: 1rem 0;
+  border: 1px solid var(--border-secondary);
+
+  p {
+    color: var(--text-secondary);
+  }
+  strong {
+    color: var(--text-primary);
+  }
+  a {
+    color: var(--text-link);
+    &:hover {
+      color: var(--text-link-hover);
+    }
+  }
 `;
 
 const LastUpdated = styled.div`
   text-align: center;
   margin: 2rem 0;
   padding: 1rem;
-  background: ${props => props.theme.colors.grey[100]};
+  background: var(--bg-secondary);
   border-radius: 8px;
   font-style: italic;
-  color: ${props => props.theme.colors.secondary};
+  color: var(--text-secondary);
+  border: 1px solid var(--border-secondary);
 `;
 
 const PrivacyPolicyPage: React.FC = () => {
@@ -82,9 +99,9 @@ const PrivacyPolicyPage: React.FC = () => {
   const content = {
     bg: {
       title: "Политика за Поверителност",
-      lastUpdated: "Последна актуализация: 28 януари 2026",
-      intro: "Алаа Технолоджи (оператор на Koli One) е съзнателен контролер на данни, базиран в София, България (бул. Цар Симеон 77). Ние се ангажираме да защитим вашата лична информация и право на поверителност в строго съответствие със Закона за защита на личните данни на Република България и Общия регламент относно защитата на данните (GDPR) (Регламент (ЕС) 2016/679). Тази политика за поверителност описва как събираме, използваме, съхраняваме и защитаваме вашата информация.",
-      
+      lastUpdated: "Последна актуализация: 12 февруари 2026",
+      intro: "Alaa Al Hamadani (оператор на Koli One) е съзнателен контролер на данни, базиран в Багдад, Ирак (Al Rasafa 505-2-10). Ние се ангажираме да защитим вашата лична информация и право на поверителност. Тази политика за поверителност описва как събираме, използваме, съхраняваме и защитаваме вашата информация.",
+
       section1: {
         title: "1. Информация, която събираме",
         content: "Ние събираме следните видове информация:",
@@ -138,8 +155,8 @@ const PrivacyPolicyPage: React.FC = () => {
       },
 
       section5: {
-        title: "5. Вашите права (GDPR)",
-        content: "Съгласно GDPR, имате следните права:",
+        title: "5. Вашите права",
+        content: "Имате следните права по отношение на вашите данни:",
         items: [
           "Право на достъп до вашите данни",
           "Право на корекция на неточни данни",
@@ -189,7 +206,7 @@ const PrivacyPolicyPage: React.FC = () => {
 
       section8a: {
         title: "8.1. Заявка за изтриване на данни от Facebook",
-        content: "В съответствие с GDPR и политиките на Facebook, можете да поискате изтриване на вашите лични данни:",
+        content: "В съответствие с политиките на Facebook, можете да поискате изтриване на вашите лични данни:",
         items: [
           "Имате право да поискате изтриване на всички данни, свързани с вашия Facebook акаунт",
           "Заявката за изтриване се обработва в рамките на 30 дни",
@@ -199,17 +216,17 @@ const PrivacyPolicyPage: React.FC = () => {
           "Уведомяваме ви за завършване на процеса на изтриване"
         ],
         process: "За заявка за изтриване на данни, изпратете имейл на support@koli.one със заглавие 'DELETE DATA' и вашия Facebook ID.",
-        note: "След изтриване на данните, няма да можете да възстановите вашия акаунт или активността си. Процесът се завършва в рамките на 30 дни съгласно GDPR.",
+        note: "След изтриване на данните, няма да можете да възстановите вашия акаунт или активността си.",
         deletionUrl: "Можете също да използвате автоматичната система за изтриване: https://koli.one/data-deletion"
       },
 
       contact: {
         title: "9. Контакт",
-        content: "За въпроси относно тази политика за поверителност или упражняване на вашите права по GDPR, моля свържете се с нас:",
-        company: "Alaa Technologies",
-        address: "бул. Цар Симеон 77, София, България",
+        content: "За въпроси относно тази политика за поверителност, моля свържете се с нас:",
+        company: "Alaa Al Hamadani",
+        address: "Al Rasafa 505-2-10, Baghdad, Iraq",
         email: "info@koli.one",
-        phone: "+359 87 983 9671",
+        phone: "+964 773 383 9004",
         phoneNote: "(само текстови съобщения)",
         dataProtection: "За въпроси относно защита на данните: info@koli.one"
       },
@@ -222,9 +239,9 @@ const PrivacyPolicyPage: React.FC = () => {
 
     en: {
       title: "Privacy Policy",
-      lastUpdated: "Last updated: January 28, 2026",
-      intro: "Alaa Technologies (operator of Koli One) is committed to protecting your personal information and your right to privacy in accordance with the Bulgarian Personal Data Protection Act and the General Data Protection Regulation (GDPR). This privacy policy describes how we collect, use, and protect your information.",
-      
+      lastUpdated: "Last updated: February 12, 2026",
+      intro: "Alaa Al Hamadani (operator of Koli One) is committed to protecting your personal information and your right to privacy. This privacy policy describes how we collect, use, and protect your information. We are based in Baghdad, Iraq (Al Rasafa 505-2-10).",
+
       section1: {
         title: "1. Information We Collect",
         content: "We collect the following types of information:",
@@ -278,8 +295,8 @@ const PrivacyPolicyPage: React.FC = () => {
       },
 
       section5: {
-        title: "5. Your Rights (GDPR)",
-        content: "Under GDPR, you have the following rights:",
+        title: "5. Your Rights",
+        content: "You have the following rights regarding your data:",
         items: [
           "Right to access your data",
           "Right to correct inaccurate data",
@@ -329,7 +346,7 @@ const PrivacyPolicyPage: React.FC = () => {
 
       section8a: {
         title: "8.1. Facebook Data Deletion Request",
-        content: "In accordance with GDPR and Facebook policies, you can request deletion of your personal data:",
+        content: "In accordance with Facebook policies, you can request deletion of your personal data:",
         items: [
           "You have the right to request deletion of all data associated with your Facebook account",
           "Deletion requests are processed within 30 days",
@@ -339,17 +356,17 @@ const PrivacyPolicyPage: React.FC = () => {
           "We notify you when the deletion process is complete"
         ],
         process: "To request data deletion, send an email to support@koli.one with subject 'DELETE DATA' and your Facebook ID.",
-        note: "After data deletion, you will not be able to recover your account or activity. The process is completed within 30 days as per GDPR.",
+        note: "After data deletion, you will not be able to recover your account or activity.",
         deletionUrl: "You can also use the automated deletion system: https://koli.one/data-deletion"
       },
 
       contact: {
         title: "9. Contact",
-        content: "For questions about this privacy policy or to exercise your GDPR rights, please contact us:",
-        company: "Alaa Technologies",
-        address: "77 Tsar Simeon Blvd, Sofia, Bulgaria",
+        content: "For questions about this privacy policy, please contact us:",
+        company: "Alaa Al Hamadani",
+        address: "Al Rasafa 505-2-10, Baghdad, Iraq",
         email: "info@koli.one",
-        phone: "+359 87 983 9671",
+        phone: "+964 773 383 9004",
         phoneNote: "(text messages only)",
         dataProtection: "For data protection inquiries: info@koli.one"
       },
@@ -366,7 +383,7 @@ const PrivacyPolicyPage: React.FC = () => {
   return (
     <Container>
       <Title>{currentContent.title}</Title>
-      
+
       <LastUpdated>
         {currentContent.lastUpdated}
       </LastUpdated>
@@ -469,7 +486,7 @@ const PrivacyPolicyPage: React.FC = () => {
         <ContactInfo style={{ marginTop: '1rem' }}>
           <p><strong>{language === 'bg' ? 'Процедура' : 'Process'}:</strong> {currentContent.section8a.process}</p>
           <p><strong>{language === 'bg' ? 'Забележка' : 'Note'}:</strong> {currentContent.section8a.note}</p>
-          <p><strong>{language === 'bg' ? 'Автоматично изтриване' : 'Automatic Deletion'}:</strong> <a href="https://bulgariancarmarketplace.com/data-deletion" target="_blank" rel="noopener noreferrer">{currentContent.section8a.deletionUrl}</a></p>
+          <p><strong>{language === 'bg' ? 'Автоматично изтриване' : 'Automatic Deletion'}:</strong> <a href="https://koli.one/data-deletion" target="_blank" rel="noopener noreferrer">{currentContent.section8a.deletionUrl}</a></p>
         </ContactInfo>
       </Section>
 
