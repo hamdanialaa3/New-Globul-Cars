@@ -22,7 +22,7 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ user, theme }) => {
     return (
       <AnalyticsContainer>
         <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.6)' }}>
-          جاري التحميل...
+          Loading...
         </div>
       </AnalyticsContainer>
     );

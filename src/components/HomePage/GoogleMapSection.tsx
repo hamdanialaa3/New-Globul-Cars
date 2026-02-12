@@ -1,5 +1,4 @@
 // Google Maps Interactive Section for Bulgarian Cities
-// خريطة Google Maps التفاعلية للمدن البلغارية
 // Note: Using @react-google-maps/api Marker component which wraps google.maps.Marker
 // TODO: Migrate to AdvancedMarkerElement when @react-google-maps/api adds support
 
@@ -14,7 +13,7 @@ import { logger } from '../../services/logger-service';
 const MapContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 400px; /* ارتفاع أقل - عرضاني */
+  height: 400px; /* Reduced height - landscape */
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 30px rgba(0, 92, 169, 0.15);

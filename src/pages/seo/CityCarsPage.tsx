@@ -1,7 +1,7 @@
 // src/pages/seo/CityCarsPage.tsx
-// City Cars Page - صفحة السيارات في المدينة
-// الهدف: صفحات SEO محسّنة لكل مدينة في بلغاريا مع محتوى بلغاري أصيل
-// الموقع: بلغاريا | اللغات: BG/EN
+// City Cars Page - City cars page
+// Goal: Optimized SEO pages for each city in Bulgaria with authentic Bulgarian content
+// Location: Bulgaria | Languages: BG/EN
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';

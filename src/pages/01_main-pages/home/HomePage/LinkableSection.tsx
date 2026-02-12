@@ -39,7 +39,7 @@ const SectionContainer = styled.section`
   max-width: 1400px;
   margin: 0 auto;
   padding: 40px 20px;
-  /* 🟣 إطار بنفسجي خفيف */
+  /* 🟣 Light purple border */
   border: 1px solid rgba(168, 85, 247, 0.15);
   border-radius: 16px;
   background: rgba(168, 85, 247, 0.02);

@@ -2,16 +2,14 @@
 // خدمة البحث المتقدم باستخدام Algolia
 // Advanced search service using Algolia for high-performance search
 
-// Use Algolia v4 lite build in browsers (default export)
-import algoliasearch, { SearchClient, SearchIndex } from 'algoliasearch/lite';
+// Use the canonical Algolia client shared across the app
+import { SearchClient, SearchIndex } from 'algoliasearch/lite';
+import { algoliaClient, INDICES } from './algolia/algolia-client';
 import { SearchData } from '../pages/AdvancedSearchPage/types';
 import { CarListing } from '../types/CarListing';
 import { serviceLogger } from './logger-service';
 
-// Algolia configuration from environment
-const ALGOLIA_APP_ID = import.meta.env.VITE_ALGOLIA_APP_ID || 'RTGDK12KTJ';
-const ALGOLIA_SEARCH_KEY = import.meta.env.VITE_ALGOLIA_SEARCH_KEY || '';
-const ALGOLIA_INDEX_NAME = 'cars_bg';
+const ALGOLIA_INDEX_NAME = INDICES.CARS;
 
 interface SearchOptions {
   page?: number;
@@ -24,13 +22,8 @@ class AlgoliaSearchService {
   private index: SearchIndex | null = null;
 
   constructor() {
-    if (!ALGOLIA_SEARCH_KEY) {
-      serviceLogger.warn('Algolia search key not configured');
-      return;
-    }
-    
     try {
-      this.client = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
+      this.client = algoliaClient;
       this.index = this.client.initIndex(ALGOLIA_INDEX_NAME);
     } catch (error) {
       serviceLogger.error('Failed to initialize Algolia client', error as Error);

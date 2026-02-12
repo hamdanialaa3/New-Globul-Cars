@@ -1,5 +1,5 @@
 // AI Tier Configuration
-// تكوين مستويات الذكاء الاصطناعي
+// AI tier configuration
 
 import { AITierConfig } from '../types/ai-quota.types';
 
@@ -16,10 +16,10 @@ export const AI_TIER_CONFIGS: Record<string, AITierConfig> = {
       perUse: 0
     },
     limits: {
-      dailyImageAnalysis: 5,        // 5 تحليلات صور يومياً
-      dailyPriceSuggestions: 3,     // 3 اقتراحات أسعار يومياً
-      dailyChatMessages: 20,        // 20 رسالة محادثة يومياً
-      dailyProfileAnalysis: 1       // تحليل ملف واحد يومياً
+      dailyImageAnalysis: 5,        // 5 daily image analyses
+      dailyPriceSuggestions: 3,     // 3 daily price suggestions
+      dailyChatMessages: 20,        // 20 daily chat messages
+      dailyProfileAnalysis: 1       // 1 daily profile analysis
     },
     features: [
       'Basic car image recognition',
@@ -39,7 +39,7 @@ export const AI_TIER_CONFIGS: Record<string, AITierConfig> = {
     },
     price: {
       monthly: 9.99,
-      perUse: 0.02  // 2 سنت لكل طلب
+      perUse: 0.02  // 2 cents per request
     },
     limits: {
       dailyImageAnalysis: 50,
@@ -66,7 +66,7 @@ export const AI_TIER_CONFIGS: Record<string, AITierConfig> = {
     },
     price: {
       monthly: 29.99,
-      perUse: 0.015  // 1.5 سنت لكل طلب
+      perUse: 0.015  // 1.5 cents per request
     },
     limits: {
       dailyImageAnalysis: 200,
@@ -94,7 +94,7 @@ export const AI_TIER_CONFIGS: Record<string, AITierConfig> = {
     },
     price: {
       monthly: 99.99,
-      perUse: 0.01  // 1 سنت لكل طلب
+      perUse: 0.01  // 1 cent per request
     },
     limits: {
       dailyImageAnalysis: -1,  // Unlimited

@@ -5,42 +5,42 @@ import { Database, Image, Users, Zap, Globe, BarChart2, Flame } from 'lucide-rea
 const FirebaseLinks: React.FC = () => {
     return (
         <Section>
-            <SectionTitle><Flame size={18} /> روابط Firebase السريعة</SectionTitle>
+            <SectionTitle><Flame size={18} /> Firebase Quick Links</SectionTitle>
             <LinksGrid>
                 <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data', '_blank')}>
                     <LinkIcon><Database size={20} /></LinkIcon>
                     <LinkName>Firestore Database</LinkName>
-                    <LinkDesc>عرض وإدارة البيانات</LinkDesc>
+                    <LinkDesc>View & manage data</LinkDesc>
                 </LinkCard>
 
                 <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/storage', '_blank')}>
                     <LinkIcon><Image size={20} /></LinkIcon>
                     <LinkName>Storage</LinkName>
-                    <LinkDesc>الصور والملفات</LinkDesc>
+                    <LinkDesc>Images & files</LinkDesc>
                 </LinkCard>
 
                 <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/authentication/users', '_blank')}>
                     <LinkIcon><Users size={20} /></LinkIcon>
                     <LinkName>Authentication</LinkName>
-                    <LinkDesc>المستخدمين المسجلين</LinkDesc>
+                    <LinkDesc>Registered users</LinkDesc>
                 </LinkCard>
 
                 <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/functions', '_blank')}>
                     <LinkIcon><Zap size={20} /></LinkIcon>
                     <LinkName>Cloud Functions</LinkName>
-                    <LinkDesc>الوظائف السحابية</LinkDesc>
+                    <LinkDesc>Cloud functions</LinkDesc>
                 </LinkCard>
 
                 <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/hosting', '_blank')}>
                     <LinkIcon><Globe size={20} /></LinkIcon>
                     <LinkName>Hosting</LinkName>
-                    <LinkDesc>استضافة الموقع</LinkDesc>
+                    <LinkDesc>Website hosting</LinkDesc>
                 </LinkCard>
 
                 <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/analytics', '_blank')}>
                     <LinkIcon><BarChart2 size={20} /></LinkIcon>
                     <LinkName>Analytics</LinkName>
-                    <LinkDesc>إحصائيات الاستخدام</LinkDesc>
+                    <LinkDesc>Usage statistics</LinkDesc>
                 </LinkCard>
             </LinksGrid>
         </Section>

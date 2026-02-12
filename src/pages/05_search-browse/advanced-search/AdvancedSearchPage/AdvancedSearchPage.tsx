@@ -181,7 +181,7 @@ const AdvancedSearchPage: React.FC = () => {
 
   const { saveSearch, getSearchSummary } = useSavedSearches();
   const [searchParams] = useSearchParams();
-  const mode = searchParams.get('mode'); // 'smart' للبحث الذكي
+  const mode = searchParams.get('mode'); // 'smart' for smart search
 
   // ⚡ Quick/Smart Search State
   const [quickSearchQuery, setQuickSearchQuery] = useState('');

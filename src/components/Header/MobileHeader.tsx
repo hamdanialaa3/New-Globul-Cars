@@ -26,7 +26,7 @@ const HeaderContainer = styled.header`
   top: 0;
   left: 0;
   right: 0;
-  height: 60px;
+  height: 72px;
   background: var(--bg-primary);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border-primary);
@@ -35,7 +35,7 @@ const HeaderContainer = styled.header`
   display: flex;
   align-items: center;
   padding: 0 16px;
-  /* 🟣 شريط LED بنفسجي */
+  /* 🟣 Purple LED strip */
   box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3), inset 0 -2px 4px rgba(168, 85, 247, 0.2);
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 `;
@@ -81,6 +81,7 @@ const Logo = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   font-size: 20px;
   font-weight: 700;
   color: var(--accent-primary);
@@ -88,6 +89,22 @@ const Logo = styled.div`
   user-select: none;
   letter-spacing: 0.5px;
   transition: color 0.3s ease;
+
+  img {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    transition: filter 0.3s ease;
+  }
+
+  .dark-theme & img {
+    filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.5));
+  }
+
+  .light-theme & img,
+  :root:not(.dark-theme) & img {
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3)) drop-shadow(0 0 1px rgba(0,0,0,0.15)) contrast(1.15) brightness(0.92);
+  }
 `;
 
 const UserSection = styled.div`
@@ -786,7 +803,7 @@ const MobileHeader: React.FC = () => {
           </MenuButton>
 
           <Logo onClick={() => navigate('/')}>
-            Koli One
+            <img src="/logo.png" alt="Koli One" />
           </Logo>
 
           <UserSection ref={settingsRef}>

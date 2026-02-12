@@ -1,9 +1,9 @@
 /**
  * Monitoring Configuration
- * تكوين مراقبة الأداء والأخطاء
+ * Performance and error monitoring configuration
  * 
  * @module MonitoringConfig
- * @description تكوين شامل لـ Sentry, Datadog, وأدوات المراقبة الأخرى
+ * @description Comprehensive config for Sentry, Datadog, and other monitoring tools
  */
 
 import { logger } from '../services/logger-service';
@@ -72,9 +72,9 @@ export const monitoringConfig: MonitoringConfig = {
   sentry: {
     dsn: import.meta.env.VITE_SENTRY_DSN || '',
     environment: process.env.NODE_ENV || 'development',
-    tracesSampleRate: 0.1, // 10% من الطلبات يتم تتبعها
-    replaysSessionSampleRate: 0.1, // 10% من الجلسات يتم تسجيلها
-    replaysOnErrorSampleRate: 1.0, // 100% من الجلسات مع أخطاء
+    tracesSampleRate: 0.1, // 10% of requests are traced
+    replaysSessionSampleRate: 0.1, // 10% of sessions are recorded
+    replaysOnErrorSampleRate: 1.0, // 100% of sessions with errors
     enabled: process.env.NODE_ENV === 'production'
   },
 
@@ -82,11 +82,11 @@ export const monitoringConfig: MonitoringConfig = {
   datadog: {
     applicationId: import.meta.env.VITE_DATADOG_APP_ID || '',
     clientToken: import.meta.env.VITE_DATADOG_CLIENT_TOKEN || '',
-    site: 'datadoghq.eu', // موقع أوروبا
+    site: 'datadoghq.eu', // Europe site
     service: 'koli-one',
     env: process.env.NODE_ENV || 'development',
     version: import.meta.env.VITE_VERSION || '1.0.0',
-    sampleRate: 100, // 100% من الجلسات
+    sampleRate: 100, // 100% of sessions
     trackInteractions: true,
     trackResources: true,
     trackLongTasks: true,
@@ -96,13 +96,13 @@ export const monitoringConfig: MonitoringConfig = {
   // Custom AI Metrics
   customMetrics: {
     aiResponseTime: {
-      warning: 3000, // 3 ثواني
-      critical: 5000, // 5 ثواني
+      warning: 3000, // 3 seconds
+      critical: 5000, // 5 seconds
       unit: 'ms'
     },
     aiCostPerRequest: {
-      warning: 0.05, // 5 سنت
-      critical: 0.10, // 10 سنت
+      warning: 0.05, // 5 cents
+      critical: 0.10, // 10 cents
       unit: 'USD'
     },
     aiAccuracyScore: {
@@ -111,8 +111,8 @@ export const monitoringConfig: MonitoringConfig = {
       unit: 'percentage'
     },
     userSatisfaction: {
-      warning: 3.5, // تقييم 3.5/5
-      critical: 3.0, // تقييم 3.0/5
+      warning: 3.5, // rating 3.5/5
+      critical: 3.0, // rating 3.0/5
       unit: 'rating'
     }
   },
@@ -206,11 +206,11 @@ export const initializeDatadog = async () => {
       env: monitoringConfig.datadog.env,
       version: monitoringConfig.datadog.version,
       sessionSampleRate: monitoringConfig.datadog.sampleRate,
-      sessionReplaySampleRate: 20, // 20% من الجلسات يتم تسجيلها
+      sessionReplaySampleRate: 20, // 20% of sessions are recorded
       trackUserInteractions: monitoringConfig.datadog.trackInteractions,
       trackResources: monitoringConfig.datadog.trackResources,
       trackLongTasks: monitoringConfig.datadog.trackLongTasks,
-      defaultPrivacyLevel: 'mask-user-input' // حماية البيانات الحساسة
+      defaultPrivacyLevel: 'mask-user-input' // protect sensitive data
     });
 
     datadogRum.startSessionReplayRecording();

@@ -1,5 +1,5 @@
 // src/pages/seo/BrandCityPage.tsx
-// Brand City Page - صفحة الماركة في المدينة
+// Brand City Page - Brand page in the city
 // Route: /koli/:city/:brand
 // Example: /koli/sofia/bmw
 

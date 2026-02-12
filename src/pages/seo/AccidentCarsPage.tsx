@@ -1,7 +1,7 @@
 // src/pages/seo/AccidentCarsPage.tsx
-// Accident Cars Page - صفحة السيارات الحوادث
+// Accident Cars Page - Accident cars page
 // Route: /koli/avarijni
-// الهدف: عرض السيارات التي تعرضت لحوادث أو تحتاج إصلاح
+// Goal: Display cars that have been in accidents or need repair
 
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';

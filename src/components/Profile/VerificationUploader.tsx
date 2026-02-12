@@ -248,7 +248,7 @@ export const VerificationUploader: React.FC<VerificationUploaderProps> = ({
 
   return (
     <UploaderContainer>
-      <Title>رفع مستندات التحقق</Title>
+      <Title>Upload Verification Documents</Title>
 
       <UploadArea
         $isDragging={isDragging}
@@ -261,8 +261,8 @@ export const VerificationUploader: React.FC<VerificationUploaderProps> = ({
         <UploadIcon $themeColor={themeColor}>
           <Upload size={32} />
         </UploadIcon>
-        <UploadText>اسحب الملفات هنا أو انقر للاختيار</UploadText>
-        <UploadHint>PDF أو صور (حتى 10 MB)</UploadHint>
+        <UploadText>Drag files here or click to select</UploadText>
+        <UploadHint>PDF or images (up to 10 MB)</UploadHint>
         <input
           id="file-input"
           type="file"

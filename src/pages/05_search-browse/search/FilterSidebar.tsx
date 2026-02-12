@@ -41,6 +41,7 @@ const SearchIcon = () => (
 );
 
 /* Color swatch component — renders hex circle with label */
+/* Color swatch component — renders hex circle ONLY (ball) */
 const ColorSwatch: React.FC<{
     hex: string;
     name: string;
@@ -48,41 +49,46 @@ const ColorSwatch: React.FC<{
     selected: boolean;
     onSelect: () => void;
 }> = ({ hex, name, count, selected, onSelect }) => (
-    <button
+    <div
+        role="button"
         onClick={onSelect}
         aria-label={`${name} (${count})`}
         title={`${name} (${count})`}
         style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 6,
-            padding: '4px 8px',
-            border: selected ? '2px solid var(--accent-primary)' : '1px solid var(--border-primary)',
-            borderRadius: 20,
-            background: selected ? 'var(--bg-accent)' : 'transparent',
+            width: 36,
+            height: 36,
+            borderRadius: '50%',
+            backgroundColor: hex,
+            // Add inset shadow to define edges for dark colors on dark background
+            boxShadow: selected
+                ? '0 0 0 2px var(--bg-surface), 0 0 0 4px var(--accent-primary)'
+                : 'inset 0 0 0 1px rgba(255,255,255,0.15), 0 1px 3px rgba(0,0,0,0.3)',
             cursor: 'pointer',
-            transition: 'all 0.15s ease',
-            fontSize: 12,
+            transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+            flexShrink: 0,
+            position: 'relative',
+            // Border mostly for white/light colors to distinguish from white background (if light mode)
+            border: selected
+                ? '2px solid var(--accent-primary)'
+                : (['#ffffff', '#f5f5dc', '#ffff00'].includes(hex.toLowerCase()) ? '1px solid #ccc' : 'none'),
         }}
+        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
+        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
     >
-        <span
-            style={{
-                display: 'inline-block',
-                width: 16,
-                height: 16,
-                borderRadius: '50%',
-                background: hex,
-                border: hex === '#FFFFFF' || hex === '#F5F5DC' ? '1px solid #ccc' : '1px solid transparent',
-                flexShrink: 0,
-            }}
-        />
-        <span style={{ color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
-            {name}
-        </span>
-        <span style={{ color: 'var(--text-muted)', fontSize: 10 }}>
-            ({count})
-        </span>
-    </button>
+        {selected && (
+            <span style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                // Dynamic checkmark color
+                color: (['#ffffff', '#f5f5dc', '#ffff00', '#c0c0c0', '#d3d3d3'].includes(hex.toLowerCase())) ? 'black' : 'white',
+                fontSize: 16,
+                fontWeight: 'bold',
+                textShadow: '0 0 3px rgba(0,0,0,0.5)',
+            }}>✓</span>
+        )}
+    </div>
 );
 
 const FilterSidebar: React.FC<FilterSidebarProps> = ({
@@ -112,6 +118,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
         setExpandedGroups((prev) => ({ ...prev, [id]: !prev[id] }));
 
     const [searchText, setSearchText] = useState('');
+    const [showCustomColor, setShowCustomColor] = useState(false);
 
     // Year options from DB range
     const yearOptions = () => {
@@ -356,37 +363,84 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                     expanded={expandedGroups.color}
                     onToggle={() => toggleGroup('color')}
                 >
-                    {filterOptions?.colors && filterOptions.colors.length > 0 ? (
-                        <div style={{
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            gap: 6,
-                        }}>
-                            {filterOptions.colors.map((c) => (
-                                <ColorSwatch
-                                    key={c.hex + c.name}
-                                    hex={c.hex}
-                                    name={c.name}
-                                    count={c.count}
-                                    selected={filters.colorHex === c.hex || filters.color === c.name.toLowerCase()}
-                                    onSelect={() => {
-                                        if (filters.colorHex === c.hex) {
-                                            // Deselect
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                        {filterOptions?.colors && filterOptions.colors.length > 0 ? (
+                            <div style={{
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                gap: 10,
+                                padding: '4px 2px'
+                            }}>
+                                {filterOptions.colors.map((c) => (
+                                    <ColorSwatch
+                                        key={c.hex + c.name}
+                                        hex={c.hex}
+                                        name={c.name}
+                                        count={c.count}
+                                        selected={filters.colorHex === c.hex}
+                                        onSelect={() => {
+                                            // Case-insensitive toggle check
+                                            if ((filters.colorHex || '').toLowerCase() === c.hex.toLowerCase()) {
+                                                // Deselect
+                                                onChange('colorHex', '');
+                                                onChange('color', '');
+                                            } else {
+                                                onChange('colorHex', c.hex);
+                                                onChange('color', c.name.toLowerCase());
+                                                setShowCustomColor(false);
+                                            }
+                                        }}
+                                    />
+                                ))}
+                                {/* "Other" Button */}
+                                <button
+                                    onClick={() => {
+                                        setShowCustomColor(!showCustomColor);
+                                        if (!showCustomColor) {
+                                            // Reset hex when opening custom input to avoid conflict
                                             onChange('colorHex', '');
                                             onChange('color', '');
-                                        } else {
-                                            onChange('colorHex', c.hex);
-                                            onChange('color', c.name.toLowerCase());
                                         }
                                     }}
+                                    title="Other / Custom Color"
+                                    style={{
+                                        width: 32, height: 32, borderRadius: '50%',
+                                        background: showCustomColor ? 'var(--bg-accent)' : 'transparent',
+                                        border: '1px dashed var(--text-muted)',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        cursor: 'pointer', color: 'var(--text-primary)',
+                                        fontSize: 20, fontWeight: '300',
+                                        transition: 'all 0.2s'
+                                    }}
+                                >
+                                    +
+                                </button>
+                            </div>
+                        ) : (
+                            <div style={{ color: 'var(--text-muted)', fontSize: 12, padding: '8px 0' }}>
+                                Loading colors...
+                            </div>
+                        )}
+
+                        {/* Custom Color Input */}
+                        {showCustomColor && (
+                            <div style={{ animation: 'fadeIn 0.2s ease-in-out' }}>
+                                <FilterInput
+                                    placeholder="Type specific color..."
+                                    value={filters.colorHex ? '' : filters.color || ''}
+                                    onChange={(e) => {
+                                        // When typing, clear the hex filter so text search takes over
+                                        if (filters.colorHex) onChange('colorHex', '');
+                                        onChange('color', e.target.value);
+                                    }}
+                                    autoFocus
                                 />
-                            ))}
-                        </div>
-                    ) : (
-                        <div style={{ color: 'var(--text-muted)', fontSize: 12, padding: '8px 0' }}>
-                            No color data available
-                        </div>
-                    )}
+                                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>
+                                    Search for specific shades (e.g. "Nardo Grey", "Midnight Blue")
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </FilterGroup>
 
                 {/* ─── City — DYNAMIC ─── */}

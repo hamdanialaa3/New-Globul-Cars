@@ -1,5 +1,5 @@
 // Workflow Flow Visualization Component
-// مكون تصور سير العمل - القرص الدائري المحسّن
+// Enhanced circular progress disc visualization
 
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -11,7 +11,7 @@ interface WorkflowFlowProps {
   currentStepIndex: number;
   totalSteps: number;
   language?: 'bg' | 'en';
-  carBrand?: string; // اسم ماركة السيارة
+  carBrand?: string; // Car brand name
   variant?: 'panel' | 'inline';
   className?: string;
 }
@@ -41,7 +41,7 @@ const WorkflowFlow: React.FC<WorkflowFlowProps> = ({
   variant = 'panel',
   className
 }) => {
-  // حساب النسبة المئوية (0-100%) بناءً على البيانات الفعلية + الخطوات المكتملة
+  // Calculate percentage (0-100%) based on actual data + completed steps
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {

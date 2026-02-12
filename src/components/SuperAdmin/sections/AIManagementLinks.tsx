@@ -8,48 +8,48 @@ const AIManagementLinks: React.FC = () => {
 
     return (
         <Section>
-            <SectionTitle><Cpu size={18} /> إدارة الذكاء الاصطناعي</SectionTitle>
+            <SectionTitle><Cpu size={18} /> AI Management</SectionTitle>
             <LinksGrid>
                 <LinkCard onClick={() => navigate('/ai-dashboard')}>
                     <LinkIcon><BarChart2 size={20} /></LinkIcon>
                     <LinkName>AI Dashboard</LinkName>
-                    <LinkDesc>لوحة تحكم الذكاء الاصطناعي</LinkDesc>
+                    <LinkDesc>AI control panel</LinkDesc>
                 </LinkCard>
 
                 <LinkCard onClick={() => navigate('/admin/ai-quotas')}>
                     <LinkIcon><Settings size={20} /></LinkIcon>
                     <LinkName>AI Quotas Manager</LinkName>
-                    <LinkDesc>إدارة حصص المستخدمين</LinkDesc>
+                    <LinkDesc>Manage user quotas</LinkDesc>
                 </LinkCard>
 
                 <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_quotas', '_blank')}>
                     <LinkIcon><DollarSign size={20} /></LinkIcon>
                     <LinkName>AI Quotas</LinkName>
-                    <LinkDesc>حصص المستخدمين</LinkDesc>
+                    <LinkDesc>User quotas</LinkDesc>
                 </LinkCard>
 
                 <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_usage_logs', '_blank')}>
                     <LinkIcon><FileText size={20} /></LinkIcon>
                     <LinkName>Usage Logs</LinkName>
-                    <LinkDesc>سجل الاستخدام</LinkDesc>
+                    <LinkDesc>Usage logs</LinkDesc>
                 </LinkCard>
 
                 <LinkCard onClick={() => window.open('https://makersuite.google.com/app/apikey', '_blank')}>
                     <LinkIcon><Key size={20} /></LinkIcon>
                     <LinkName>Gemini API Keys</LinkName>
-                    <LinkDesc>مفاتيح API</LinkDesc>
+                    <LinkDesc>API keys</LinkDesc>
                 </LinkCard>
 
                 <LinkCard onClick={() => window.open('https://console.cloud.google.com/apis/api/generativelanguage.googleapis.com', '_blank')}>
                     <LinkIcon><Settings size={20} /></LinkIcon>
                     <LinkName>API Settings</LinkName>
-                    <LinkDesc>إعدادات API</LinkDesc>
+                    <LinkDesc>API settings</LinkDesc>
                 </LinkCard>
 
                 <LinkCard onClick={() => window.open('https://console.cloud.google.com/billing', '_blank')}>
                     <LinkIcon><DollarSign size={20} /></LinkIcon>
                     <LinkName>Billing</LinkName>
-                    <LinkDesc>الفوترة والتكاليف</LinkDesc>
+                    <LinkDesc>Billing & costs</LinkDesc>
                 </LinkCard>
             </LinksGrid>
         </Section>

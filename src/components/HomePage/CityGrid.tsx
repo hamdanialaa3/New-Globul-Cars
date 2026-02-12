@@ -1,5 +1,4 @@
 // City Grid Component with Show More/Less functionality
-// مكون عرض المدن في شبكة مع إظهار المزيد/أقل
 
 import React, { useState } from 'react';
 import { MapPin, Car, ChevronDown, ChevronUp } from 'lucide-react';
@@ -22,12 +21,12 @@ const CityGrid: React.FC<CityGridProps> = ({
   onCityClick,
   loading,
   language,
-  initialDisplayCount = 8 // عرض 8 مدن بشكل افتراضي
+  initialDisplayCount = 8 // Display 8 cities by default
 }) => {
   const { t } = useLanguage();
   const [showAll, setShowAll] = useState(false);
 
-  // تحديد المدن المعروضة - جميع الـ 28 مدينة
+  // Determine displayed cities - all 28 cities
   const displayedCities = showAll ? cities : cities.slice(0, initialDisplayCount);
   const hasMore = cities.length > initialDisplayCount;
 
@@ -67,17 +66,17 @@ const CityGrid: React.FC<CityGridProps> = ({
               aria-label={`View cars in ${cityName}`}
               title={`${cityName} - ${carCount} ${t('home.cityCars.carsAvailable')}`}
             >
-              {/* أيقونة المدينة */}
+              {/* City icon */}
               <S.CityIcon>
                 <MapPin size={28} color="#005ca9" />
               </S.CityIcon>
 
-              {/* اسم المدينة */}
+              {/* City name */}
               <S.CityName>
                 {cityName}
               </S.CityName>
 
-              {/* عدد السيارات */}
+              {/* Number of cars */}
               {carCount > 0 && (
                 <S.CarCount>
                   <Car size={14} />
@@ -85,7 +84,7 @@ const CityGrid: React.FC<CityGridProps> = ({
                 </S.CarCount>
               )}
 
-              {/* شارة العاصمة */}
+              {/* Capital badge */}
               {city.isCapital && (
                 <div
                   style={{

@@ -1033,7 +1033,7 @@ export const LeafletBulgariaMap: React.FC<LeafletBulgariaMapProps> = ({
   const [provinceCars, setProvinceCars] = useState<any[]>([]);
   const [realCarCounts, setRealCarCounts] = useState<Record<string, number>>({});
   const [isLoadingCounts, setIsLoadingCounts] = useState(true);
-  const [showAllLegend, setShowAllLegend] = useState(false); // ✅ NEW: للتحكم في عرض المدن
+  const [showAllLegend, setShowAllLegend] = useState(false); // ✅ NEW: to control city display
   
   const navigate = useNavigate();
   const { language } = useLanguage();

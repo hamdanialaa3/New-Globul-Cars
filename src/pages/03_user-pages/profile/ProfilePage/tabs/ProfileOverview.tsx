@@ -54,7 +54,7 @@ export const ProfileOverview: React.FC<ProfileOverviewProps> = (props) => {
     return (
       <OverviewContainer>
         <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.6)' }}>
-          جاري التحميل...
+          Loading...
         </div>
       </OverviewContainer>
     );

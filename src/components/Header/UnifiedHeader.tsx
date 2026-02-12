@@ -24,7 +24,7 @@ const HeaderContainer = styled.header<{ $isDark?: boolean }>`
   -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
   border-bottom: 1px solid ${({ $isDark }) =>
     $isDark ? 'rgba(148, 163, 184, 0.12)' : 'rgba(0, 0, 0, 0.06)'} !important;
-  /* 🟣 شريط LED بنفسجي */
+  /* 🟣 Purple LED strip */
   box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3), inset 0 -2px 4px rgba(168, 85, 247, 0.2) !important;
   z-index: ${zIndex.sticky};
   transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
@@ -41,10 +41,10 @@ const HeaderContent = styled.div`
   padding: ${spacing.md} 20px;
   max-width: 1100px;
   margin: 0 auto;
-  height: 64px;
+  height: 77px;
 
   ${media.maxMobile} {
-    height: 60px;
+    height: 72px;
     padding: ${spacing.sm} 14px;
   }
 `;
@@ -62,10 +62,16 @@ const Logo = styled.div<{ $isDark?: boolean }>`
   white-space: nowrap; // Prevent wrapping
 
   img {
-    // شعار مكبر: 60px (40px * 1.5)
+    // Enlarged logo: 60px (40px * 1.5)
     width: 60px;
     height: 60px;
     object-fit: contain;
+    transition: filter 0.3s ease;
+    // Light mode: add contrast + dark outline so logo is visible on white bg
+    filter: ${({ $isDark }) => $isDark
+      ? 'drop-shadow(0 0 6px rgba(168, 85, 247, 0.5))'
+      : 'drop-shadow(0 1px 2px rgba(0,0,0,0.3)) drop-shadow(0 0 1px rgba(0,0,0,0.15)) contrast(1.15) brightness(0.92)'
+    };
   }
 
   ${media.maxMobile} {

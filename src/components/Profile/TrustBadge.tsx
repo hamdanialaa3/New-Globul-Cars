@@ -1,6 +1,6 @@
 // src/components/Profile/TrustBadge.tsx
-// Trust Badge Component - مكون عرض درجة الثقة والشارات
-// الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
+// Trust Badge Component - Trust score and badges display
+// Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import React, { useEffect, useState } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';

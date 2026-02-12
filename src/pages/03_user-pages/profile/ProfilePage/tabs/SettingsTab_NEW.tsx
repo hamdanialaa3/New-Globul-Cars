@@ -12,15 +12,15 @@ interface SettingsTabProps {
 export const SettingsTab: React.FC<SettingsTabProps> = () => {
   return (
     <Container>
-      <Title>🎯 TEST - الصفحة المحدثة</Title>
-      <UpdateTime>التحديث: 3:20 مساءً - November 9, 2025</UpdateTime>
+      <Title>🎯 TEST - Updated Page</Title>
+      <UpdateTime>Updated: 3:20 PM - November 9, 2025</UpdateTime>
       
       <BigSuccess>
-        ✅✅✅ التغيير ظهر بنجاح! ✅✅✅
+        ✅✅✅ Change applied successfully! ✅✅✅
       </BigSuccess>
 
       <InfoText>
-        إذا رأيت هذه الرسالة، فالـ Hot Reload يعمل بنجاح!
+        If you see this message, Hot Reload is working successfully!
       </InfoText>
     </Container>
   );

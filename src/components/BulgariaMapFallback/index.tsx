@@ -174,7 +174,7 @@ const BulgariaMapFallback: React.FC<BulgariaMapFallbackProps> = ({
     <MapContainer>
       <InfoBanner>
         {language === 'bg' 
-          ? '🗺️ خريطة تفاعلية لبلغاريا - اضغط على أي مدينة لعرض السيارات'
+          ? '🗺️ Interactive map of Bulgaria - Click on any city to view cars'
           : '🗺️ Interactive Bulgaria Map - Click any city to view cars'}
       </InfoBanner>
 

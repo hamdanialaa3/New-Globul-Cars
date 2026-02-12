@@ -1,7 +1,7 @@
 // src/components/Profile/trust/TrustGaugeStyles.ts
 // Trust Gauge Styled Components
 // 🎨 Premium Aluminum & Orange Theme with Glassmorphism
-// الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
+// Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import styled from 'styled-components';
 import { TrustLevel } from '../../../services/profile/trust-score-service';
@@ -419,7 +419,7 @@ export const NeedleContainer = styled.div<{ $score: number }>`
 
 export const LEDRing = styled.div<{ $color: string }>`
   position: absolute;
-  /* إصعاد بمقدار نصف حجمه (~90px) + حركة لليسار (~90px) */
+  /* Slide up by half its height (~90px) + move left (~90px) */
   top: calc(50% - 90px);
   left: calc(50% - 90px);
   transform: translate(-50%, -50%);

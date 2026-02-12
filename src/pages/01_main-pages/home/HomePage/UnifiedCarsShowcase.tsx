@@ -71,7 +71,7 @@ const Container = styled.section<{ $isDark: boolean }>`
     : 'linear-gradient(to bottom, rgba(245, 241, 235, 0.2), rgba(248, 247, 246, 0.2))'};
   padding: 3rem 0;
   overflow: hidden;
-  /* 🟣 إطار بنفسجي خفيف */
+  /* 🟣 Light purple border */
   border: 1px solid rgba(168, 85, 247, 0.1);
   border-radius: 12px;
   margin: 0 12px;

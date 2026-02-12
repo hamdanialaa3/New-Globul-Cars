@@ -8,54 +8,54 @@ const IoTManagementLinks: React.FC = () => {
 
     return (
         <Section>
-            <SectionTitle><Globe size={18} /> إدارة إنترنت الأشياء (IoT)</SectionTitle>
+            <SectionTitle><Globe size={18} /> IoT Management</SectionTitle>
             <LinksGrid>
                 <LinkCard onClick={() => navigate('/iot-dashboard')}>
                     <LinkIcon><Activity size={20} /></LinkIcon>
                     <LinkName>IoT Dashboard</LinkName>
-                    <LinkDesc>لوحة تحكم أجهزة IoT</LinkDesc>
+                    <LinkDesc>IoT device dashboard</LinkDesc>
                 </LinkCard>
 
                 <LinkCard onClick={() => navigate('/car-tracking')}>
                     <LinkIcon><Globe size={20} /></LinkIcon>
                     <LinkName>Car Tracking</LinkName>
-                    <LinkDesc>تتبع السيارات المباشر</LinkDesc>
+                    <LinkDesc>Live car tracking</LinkDesc>
                 </LinkCard>
 
                 <LinkCard onClick={() => navigate('/iot-analytics')}>
                     <LinkIcon><BarChart2 size={20} /></LinkIcon>
                     <LinkName>IoT Analytics</LinkName>
-                    <LinkDesc>تحليلات بيانات IoT</LinkDesc>
+                    <LinkDesc>IoT data analytics</LinkDesc>
                 </LinkCard>
 
                 <LinkCard onClick={() => window.open('https://700633997329-ggu6enoq.us-east-1.console.aws.amazon.com/iot/home?region=us-east-1#/connectdevice', '_blank')}>
                     <LinkIcon><Zap size={20} /></LinkIcon>
                     <LinkName>AWS IoT Console</LinkName>
-                    <LinkDesc>وحدة تحكم AWS IoT</LinkDesc>
+                    <LinkDesc>AWS IoT console</LinkDesc>
                 </LinkCard>
 
                 <LinkCard onClick={() => window.open('https://700633997329-ggu6enoq.us-east-1.console.aws.amazon.com/dynamodb/home?region=us-east-1#tables:', '_blank')}>
                     <LinkIcon><Database size={20} /></LinkIcon>
                     <LinkName>DynamoDB Tables</LinkName>
-                    <LinkDesc>جداول بيانات IoT</LinkDesc>
+                    <LinkDesc>IoT data tables</LinkDesc>
                 </LinkCard>
 
                 <LinkCard onClick={() => window.open('https://700633997329-ggu6enoq.us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1', '_blank')}>
                     <LinkIcon><Activity size={20} /></LinkIcon>
                     <LinkName>CloudWatch</LinkName>
-                    <LinkDesc>مراقبة الأداء</LinkDesc>
+                    <LinkDesc>Performance monitoring</LinkDesc>
                 </LinkCard>
 
                 <LinkCard onClick={() => navigate('/admin/integration-status')}>
                     <LinkIcon><Layers size={20} /></LinkIcon>
                     <LinkName>Integration Status</LinkName>
-                    <LinkDesc>حالة تكامل الخدمات السحابية</LinkDesc>
+                    <LinkDesc>Cloud services integration status</LinkDesc>
                 </LinkCard>
 
                 <LinkCard onClick={() => navigate('/admin/setup')}>
                     <LinkIcon><Settings size={20} /></LinkIcon>
                     <LinkName>Quick Setup</LinkName>
-                    <LinkDesc>إعداد سريع للخدمات</LinkDesc>
+                    <LinkDesc>Quick service setup</LinkDesc>
                 </LinkCard>
             </LinksGrid>
         </Section>

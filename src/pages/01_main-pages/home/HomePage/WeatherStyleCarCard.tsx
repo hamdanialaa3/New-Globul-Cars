@@ -24,6 +24,7 @@ import { Eye, Heart, Calendar, MapPin } from 'lucide-react';
 import { UnifiedCar } from '../../../../services/car';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useTheme } from '../../../../contexts/ThemeContext';
+import { useFavorites } from '../../../../hooks/useFavorites';
 
 // ============================================================================
 // STYLED COMPONENTS
@@ -347,7 +348,7 @@ const WeatherStyleCarCard: React.FC<WeatherStyleCarCardProps> = ({ car }) => {
   const isDark = theme === 'dark';
   const isBg = language === 'bg';
   
-  const [isSaved, setIsSaved] = useState(false);
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [imageError, setImageError] = useState(false);
 
   // Color scheme based on car price
@@ -401,8 +402,16 @@ const WeatherStyleCarCard: React.FC<WeatherStyleCarCardProps> = ({ car }) => {
 
   const handleToggleSave = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsSaved(!isSaved);
-    // TODO: Integrate with favorites service
+    toggleFavorite(car.id, {
+      make: car.make || '',
+      model: car.model || '',
+      year: car.year || 0,
+      price: car.price || 0,
+      currency: 'EUR',
+      sellerNumericId: car.sellerNumericId || (car as any).ownerNumericId || 0,
+      carNumericId: car.carNumericId || (car as any).userCarSequenceId || 0,
+      primaryImage: imageUrl || undefined,
+    });
   };
 
   // Format price
@@ -480,12 +489,12 @@ const WeatherStyleCarCard: React.FC<WeatherStyleCarCardProps> = ({ car }) => {
         
         <ActionButton 
           $isDark={isDark}
-          $isSaved={isSaved}
+          $isSaved={isFavorite(car.id)}
           onClick={handleToggleSave}
-          title={isSaved ? (isBg ? 'Премахни' : 'Remove') : (isBg ? 'Запази' : 'Save')}
+          title={isFavorite(car.id) ? (isBg ? 'Премахни' : 'Remove') : (isBg ? 'Запази' : 'Save')}
         >
-          <Heart size={18} fill={isSaved ? '#ef4444' : 'none'} />
-          <ButtonLabel>{isSaved ? (isBg ? 'Запазено' : 'Saved') : (isBg ? 'Запази' : 'Save')}</ButtonLabel>
+          <Heart size={18} fill={isFavorite(car.id) ? '#ef4444' : 'none'} />
+          <ButtonLabel>{isFavorite(car.id) ? (isBg ? 'Запазено' : 'Saved') : (isBg ? 'Запази' : 'Save')}</ButtonLabel>
         </ActionButton>
       </ActionsSection>
     </Card>

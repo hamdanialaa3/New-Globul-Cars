@@ -18,7 +18,7 @@ const SectionContainer = styled.section<{ $isDark: boolean }>`
   background: ${props => props.$isDark
     ? 'linear-gradient(135deg, rgba(5, 15, 35, 0.95) 0%, rgba(10, 25, 50, 0.95) 50%, rgba(15, 35, 65, 0.95) 100%)'
     : 'linear-gradient(135deg, rgba(240, 248, 255, 0.95) 0%, rgba(230, 240, 255, 0.95) 100%)'};
-  /* 🟣 إطار بنفسجي خفيف */
+  /* 🟣 Light purple border */
   border: 1px solid rgba(168, 85, 247, 0.12);
   border-radius: 8px;
   margin: 0 12px;

@@ -21,9 +21,9 @@ const Title = styled.h2`
 const AdvancedAnalytics: React.FC<{ analytics: any }> = ({ analytics }) => {
   return (
     <Container>
-      <Title><TrendingUp size={24} />التحليلات المتقدمة</Title>
-      <div>إجمالي المستخدمين: {analytics?.totalUsers || 0}</div>
-      <div>إجمالي السيارات: {analytics?.totalCars || 0}</div>
+      <Title><TrendingUp size={24} />Advanced Analytics</Title>
+      <div>Total Users: {analytics?.totalUsers || 0}</div>
+      <div>Total Cars: {analytics?.totalCars || 0}</div>
     </Container>
   );
 };

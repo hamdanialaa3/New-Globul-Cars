@@ -1,5 +1,5 @@
-// ProtectedRoute - يحمي المسارات التي تحتاج تسجيل دخول
-// يحفظ النية (Intent) ويعيد التوجيه للـ Login
+// ProtectedRoute - Protects routes that require authentication
+// Saves intent and redirects to Login
 
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
@@ -15,16 +15,16 @@ interface ProtectedRouteProps {
 
 /**
  * ProtectedRoute Component
- * يحمي المسارات من الدخول غير المصرح به
+ * Protects routes from unauthorized access
  * 
- * الاستخدام:
+ * Usage:
  * <ProtectedRoute>
  *   <ProfilePage />
  * </ProtectedRoute>
  * 
- * @param children - المكونات المحمية
- * @param requireAuth - يتطلب تسجيل دخول (افتراضي: true)
- * @param redirectTo - مسار إعادة التوجيه (افتراضي: /auth/login)
+ * @param children - Protected components
+ * @param requireAuth - Requires authentication (default: true)
+ * @param redirectTo - Redirect path (default: /auth/login)
  */
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
@@ -35,7 +35,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const location = useLocation();
   const { saveIntent } = useProfileIntent();
 
-  // انتظار تحميل حالة المصادقة
+  // Wait for auth state to load
   if (isLoading) {
     return (
       <div style={{
@@ -46,14 +46,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         fontSize: '1.25rem',
         color: '#666'
       }}>
-        جاري التحميل...
+                Loading...
       </div>
     );
   }
 
-  // إذا كان المستخدم غير مسجل الدخول
+  // If user is not logged in
   if (requireAuth && !user) {
-    // حفظ النية (المسار الحالي + البيانات)
+    // Save intent (current path + data)
     saveIntent({
       action: 'view_profile',
       returnUrl: location.pathname + location.search,
@@ -68,11 +68,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       redirectTo,
     });
 
-    // إعادة التوجيه لصفحة Login
+    // Redirect to Login page
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
 
-  // إذا كان المستخدم مسجل الدخول - عرض المحتوى
+  // If user is logged in - show content
   return <>{children}</>;
 };
 

@@ -117,7 +117,7 @@ const Section = styled.section<{ $isDark: boolean }>`
   padding: 5rem 0;
   overflow: hidden;
   background: ${props => props.$isDark ? '#0f172a' : '#f8fafc'};
-  /* 🟣 إطار بنفسجي خفيف */
+  /* 🟣 Light purple border */
   border-top: 1px solid rgba(168, 85, 247, 0.1);
   border-bottom: 1px solid rgba(168, 85, 247, 0.1);
   box-shadow: inset 0 2px 8px rgba(168, 85, 247, 0.04);

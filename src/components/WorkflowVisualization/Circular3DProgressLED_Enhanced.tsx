@@ -1,5 +1,4 @@
-// Enhanced Circular 3D LED Progress Indicator
-// مؤشر التقدم الدائري ثلاثي الأبعاد المحسّن مع شعار السيارة والمسننات
+// Enhanced Circular 3D LED Progress Indicator with Car Logo and Gears
 
 import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
@@ -10,7 +9,7 @@ interface Circular3DProgressLEDEnhancedProps {
   totalSteps: number;
   currentStep: number;
   language?: 'bg' | 'en';
-  carBrand?: string; // اسم ماركة السيارة لعرض الشعار
+  carBrand?: string; // car brand name to display logo
   variant?: 'full' | 'compact';
   className?: string;
 }
@@ -214,7 +213,7 @@ const InnerCircle = styled.div`
   }
 `;
 
-// القرص الزجاجي الشفاف الدوار
+// Rotating transparent glass disc
 const GlassyOrbit = styled.div<{ $show: boolean }>`
   position: absolute;
   top: 50%;
@@ -260,7 +259,7 @@ const GlassyOrbit = styled.div<{ $show: boolean }>`
   }
 `;
 
-// شعار السيارة في الوسط - شكل مسنن ⚙️
+// Car logo in center - gear shape
 const CarLogoContainer = styled.div<{ $show: boolean }>`
   position: relative;
   z-index: 3;
@@ -272,7 +271,7 @@ const CarLogoContainer = styled.div<{ $show: boolean }>`
   align-items: center;
   justify-content: center;
   
-  /* شكل مسنن بدلاً من الدائرة */
+  /* Gear shape instead of circle */
   clip-path: polygon(
     50% 0%, 61% 10%, 71% 8%, 79% 21%, 90% 29%, 
     92% 42%, 100% 50%, 92% 58%, 90% 71%, 79% 79%, 
@@ -285,7 +284,7 @@ const CarLogoContainer = styled.div<{ $show: boolean }>`
     radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08), transparent 70%);
   padding: 0.75rem;
   
-  /* تأثير التوهج حول الشعار */
+  /* Glow effect around logo */
   &::before {
     content: '';
     position: absolute;
@@ -338,7 +337,7 @@ const PercentSymbol = styled.span`
   opacity: 0.8;
 `;
 
-// LED Indicator احترافي بدلاً من الإيموجي
+// Professional LED Indicator instead of emoji
 const StatusLEDIndicator = styled.div<{ $color: string }>`
   width: 12px;
   height: 12px;
@@ -381,7 +380,7 @@ const ProgressDescription = styled.div<{ $color: string }>`
   gap: 0.75rem;
 `;
 
-// Star Icon احترافي بدلاً من ★
+// Professional Star Icon instead of ★
 const StarIcon = styled.div<{ $color: string }>`
   width: 20px;
   height: 20px;
@@ -430,7 +429,7 @@ const QualityBadge = styled.div<{ $color: string }>`
     inset 0 1px 0 ${props => `${props.$color}40`};
 `;
 
-// ==================== GEARBOX (المسننات) ====================
+// ==================== GEARBOX ====================
 
 const GearboxContainer = styled.div<{ $gearsCount: number }>`
   position: relative;
@@ -618,7 +617,7 @@ const getQualityLevel = (progress: number, language: 'bg' | 'en' = 'bg'): string
   return lang.excellent;
 };
 
-// عدد المسننات بناءً على التقدم
+// Number of gears based on progress
 const getGearsCount = (progress: number): number => {
   if (progress < 25) return 1;
   if (progress < 50) return 2;
@@ -626,7 +625,7 @@ const getGearsCount = (progress: number): number => {
   return 4;
 };
 
-// عدد أشرطة Loading Bar بناءً على التقدم
+// Number of loading bars based on progress
 const getLoadingBarsCount = (progress: number): number => {
   return Math.max(5, Math.min(20, Math.floor(progress / 5)));
 };
@@ -731,7 +730,7 @@ const Circular3DProgressLEDEnhanced: React.FC<Circular3DProgressLEDEnhancedProps
   return (
     <Container className={className}>
       {circleContent}
-      {/* النسبة المئوية تحت القرص */}
+      {/* Percentage below the disc */}
       <ProgressPercentage $color={progressColor}>
         {progress}<PercentSymbol>%</PercentSymbol>
       </ProgressPercentage>
@@ -746,7 +745,7 @@ const Circular3DProgressLEDEnhanced: React.FC<Circular3DProgressLEDEnhancedProps
         {qualityLevel}
       </QualityBadge>
 
-      {/* المسننات المتحركة - تزداد مع التقدم */}
+      {/* Animated gears - increase with progress */}
       <GearboxContainer $gearsCount={gearsCount}>
         <Gearbox>
           {gears.map((gear, index) => (
@@ -772,7 +771,7 @@ const Circular3DProgressLEDEnhanced: React.FC<Circular3DProgressLEDEnhancedProps
         </Gearbox>
       </GearboxContainer>
 
-      {/* Loading Bar - تظهر عند التقدم */}
+      {/* Loading Bar - appears on progress */}
       <LoadingBarContainer $show={progress > 10}>
         {Array.from({ length: loadingBarsCount }).map((_, i) => (
           <LoadingBarSpan 

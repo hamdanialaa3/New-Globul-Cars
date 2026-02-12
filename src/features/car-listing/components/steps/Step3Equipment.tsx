@@ -1,5 +1,4 @@
 // Step 3: Equipment Selection
-// الخطوة 3: اختيار المعدات
 import React, { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -82,7 +81,7 @@ const EquipmentButton = styled.button<{ $active: boolean }>`
   }
 `;
 
-// Neumorphism Switch Container - الحفاظ على التصميم
+// Neumorphism Switch Container - preserve design
 const SwitchContainer = styled.div<{ $isOn: boolean }>`
   display: flex;
   flex-direction: column;
@@ -353,7 +352,7 @@ export const Step3Equipment: React.FC = () => {
           : 'Equipment is optional. You can add it later.'}
       </p>
 
-      {/* ✅ Neumorphism Switch - الحفاظ على التصميم */}
+      {/* ✅ Neumorphism Switch - preserve design */}
       <SwitchContainer $isOn={isAllEquipmentSelected} onClick={toggleAllEquipment}>
         <SwitchLabel>
           <Sparkles />

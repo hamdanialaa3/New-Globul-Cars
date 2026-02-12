@@ -23,14 +23,14 @@ interface QuickActionsPanelProps {
 }
 
 /**
- * لوحة الإجراءات السريعة
+ * Quick Actions Panel
  * Quick actions panel for messaging
  * 
- * يتيح:
- * - إرسال عرض سعر
- * - حجز موعد معاينة
- * - مشاركة الموقع
- * - طلب تقرير فحص
+ * Allows:
+ * - Send price offer
+ * - Book inspection appointment
+ * - Share location
+ * - Request inspection report
  */
 const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
   conversationId,
@@ -53,7 +53,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
   const [appointmentTime, setAppointmentTime] = useState('');
   const [appointmentNote, setAppointmentNote] = useState('');
 
-  // إرسال عرض سعر - Send offer
+  // Send offer
   const handleSendOffer = async () => {
     const amount = parseFloat(offerAmount);
     if (!amount || amount <= 0) {
@@ -151,7 +151,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
-          const locationText = `📍 موقعي\n\nhttps://www.google.com/maps?q=${latitude},${longitude}`;
+          const locationText = `📍 My location\n\nhttps://www.google.com/maps?q=${latitude},${longitude}`;
           await messagingOrchestrator.sendMessage({
             conversationId,
             senderId: currentUser.uid,

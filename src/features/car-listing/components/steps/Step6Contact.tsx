@@ -1,5 +1,4 @@
 // Step 6: Contact & Publish
-// الخطوة 6: الاتصال والنشر
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -331,7 +330,7 @@ export const Step6Contact: React.FC = () => {
           <Label>
             {language === 'bg' ? 'Регион и град' : 'Region & City'} *
           </Label>
-          {/* ✅ استخدام BulgariaLocationDropdown الحالي */}
+          {/* ✅ Using the existing BulgariaLocationDropdown */}
           <BulgariaLocationDropdown
             value={{
               province: region || '',

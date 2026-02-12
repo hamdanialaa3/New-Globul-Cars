@@ -1,5 +1,4 @@
 // Sell Vehicle Step 3: Equipment
-// الخطوة 3: المعدات
 
 import React, { useMemo } from 'react';
 import styled, { keyframes, css } from 'styled-components';

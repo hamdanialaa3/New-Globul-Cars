@@ -1,5 +1,4 @@
 // City Cars Section Styles
-// تنسيقات قسم السيارات حسب المدن
 // 🌐 3D Glass Ball City Cards with Professional Design
 
 import styled, { keyframes } from 'styled-components';
@@ -142,7 +141,7 @@ export const MapHint = styled.p`
   font-style: italic;
 `;
 
-// City Grid Styles - دائري/كروي بحجم أصغر
+// City Grid Styles - Circular/spherical with smaller size
 export const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -173,7 +172,7 @@ export const CityCard = styled.div<{ $isActive?: boolean }>`
     rgba(255, 255, 255, 0.85) 50%,
     rgba(240, 240, 255, 0.9) 100%
   );
-  border-radius: 50%; /* دائري كامل */
+  border-radius: 50%; /* Fully circular */
   width: 160px;
   height: 160px;
   display: flex;
@@ -469,7 +468,7 @@ export const CarCountNumber = styled.span`
 `;
 
 export const ViewCarsButton = styled.button`
-  display: none; /* مخفي في التصميم الدائري */
+  display: none; /* Hidden in circular design */
 `;
 
 export const LoadingCard = styled(CityCard)`

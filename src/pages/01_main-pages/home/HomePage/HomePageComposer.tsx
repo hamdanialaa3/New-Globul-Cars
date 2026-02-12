@@ -155,7 +155,7 @@ const HeroSlot: React.FC = () => (
 /**
  * Slot 2: 🆕 AI Analysis Banner
  * Eye-catching banner explaining AI car analysis flow
- * شريط شرح تحليل السيارات بالذكاء الاصطناعي
+ * AI car analysis explanation banner
  */
 const AIAnalysisBannerSlot: React.FC = () => (
   <LazySection rootMargin="50px">
@@ -168,7 +168,7 @@ const AIAnalysisBannerSlot: React.FC = () => (
 /**
  * Slot: 🆕 Our Cars Showcase (Нашите коли)
  * All real user-added listings — 4×3 grid on desktop
- * عرض جميع إعلانات المستخدمين الحقيقية
+ * Display all real user listings
  */
 const OurCarsSlot: React.FC = () => {
   const { t } = useLanguage();
@@ -185,7 +185,7 @@ const OurCarsSlot: React.FC = () => {
 /**
  * Slot 3: 🆕 Visual Search Teaser
  * UNIQUE COMPETITIVE ADVANTAGE - No competitor has this!
- * البحث بالصورة - ميزة حصرية!
+ * Visual Search - exclusive feature!
  */
 const VisualSearchSlot: React.FC = () => (
   <LazySection rootMargin="50px">
@@ -197,7 +197,7 @@ const VisualSearchSlot: React.FC = () => (
 
 /**
  * Slot 4: Vehicle Classifications
- * Body types + Drive types combined / تصنيفات المركبات
+ * Body types + Drive types combined
  */
 const VehicleClassificationsSlot: React.FC = () => {
   const { t } = useLanguage();
@@ -214,7 +214,7 @@ const VehicleClassificationsSlot: React.FC = () => {
 /**
  * Slot 5: 🆕 Life Moments Browse
  * Emotional car discovery - Find car for your life moment
- * اكتشاف السيارة حسب لحظات الحياة
+ * Discover cars by life moments
  */
 const LifeMomentsSlot: React.FC = () => (
   <LazySection rootMargin="100px">
@@ -227,7 +227,7 @@ const LifeMomentsSlot: React.FC = () => (
 /**
  * Slot 6: Cars Showcase (Main Content)
  * Car showcase (Latest/Featured/New) - with tabs
- * العرض الرئيسي للسيارات
+ * Main cars showcase
  */
 const CarsShowcaseSlot: React.FC = () => {
   const { t } = useLanguage();
@@ -235,10 +235,10 @@ const CarsShowcaseSlot: React.FC = () => {
   return (
     <LinkableSection
       title="Latest Cars"
-      titleAr="أحدث السيارات"
+      titleAr="Latest Cars"
       viewAllLink="/cars"
       viewAllText="View All"
-      viewAllTextAr="عرض الكل"
+      viewAllTextAr="View All"
     >
       <LazySection rootMargin="100px">
         <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
@@ -251,7 +251,7 @@ const CarsShowcaseSlot: React.FC = () => {
 
 /**
  * Slot 6: Popular Brands
- * العلامات التجارية الشهيرة
+ * Popular brands
  */
 const PopularBrandsSlot: React.FC = () => {
   const { t } = useLanguage();
@@ -267,7 +267,7 @@ const PopularBrandsSlot: React.FC = () => {
 
 /**
  * Slot 7: Most Demanded Categories
- * الفئات الأكثر طلباً (AI Trending)
+ * Most demanded categories (AI Trending)
  */
 const MostDemandedCategoriesSlot: React.FC = () => {
   const { t } = useLanguage();
@@ -283,7 +283,7 @@ const MostDemandedCategoriesSlot: React.FC = () => {
 
 /**
  * Slot 8: Featured Showcase (VIP Cars)
- * Premium featured cars / السيارات المميزة VIP
+ * Premium featured cars / VIP
  */
 const FeaturedShowcaseSlot: React.FC = () => (
   <LazySection rootMargin="100px">
@@ -295,7 +295,7 @@ const FeaturedShowcaseSlot: React.FC = () => (
 
 /**
  * Slot 9: Smart Hero Recommendations (For Logged-in Users)
- * AI-powered personalized recommendations / توصيات AI مخصصة
+ * AI-powered personalized recommendations
  * Shows only for authenticated users
  */
 const SmartHeroSlot: React.FC = () => {
@@ -313,7 +313,7 @@ const SmartHeroSlot: React.FC = () => {
 /**
  * Slot 10: 🆕 Unified Smart Sell (Merged CTA)
  * Combined SmartSellStrip + AISmartSellButton
- * CTA موحد للبيع الذكي
+ * Unified Smart Sell CTA
  */
 const UnifiedSmartSellSlot: React.FC = () => (
   <LazySection rootMargin="100px">
@@ -325,7 +325,7 @@ const UnifiedSmartSellSlot: React.FC = () => (
 
 /**
  * Slot 11: Dealer Spotlight
- * التجار المعتمدون + Trust Badges
+ * Certified dealers + Trust Badges
  */
 const DealersSlot: React.FC = () => {
   const { t } = useLanguage();
@@ -333,10 +333,10 @@ const DealersSlot: React.FC = () => {
   return (
     <LinkableSection
       title="Featured Dealers"
-      titleAr="الوكلاء المميزون"
+      titleAr="Featured Dealers"
       viewAllLink="/dealers"
       viewAllText="View All Dealers"
-      viewAllTextAr="عرض جميع الوكلاء"
+      viewAllTextAr="View All Dealers"
     >
       <LazySection rootMargin="100px">
         <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
@@ -349,7 +349,7 @@ const DealersSlot: React.FC = () => {
 
 /**
  * Slot 12: Trust & Stats (Compact)
- * الثقة والإحصائيات - مضغوط
+ * Trust & Stats - compact
  */
 const TrustSlot: React.FC = () => {
   const { t } = useLanguage();
@@ -365,7 +365,7 @@ const TrustSlot: React.FC = () => {
 
 /**
  * Slot 13: Social Experience
- * الدليل الاجتماعي والمراجعات
+ * Social proof and reviews
  */
 const SocialSlot: React.FC = () => {
   const { t } = useLanguage();
@@ -381,7 +381,7 @@ const SocialSlot: React.FC = () => {
 
 /**
  * Slot 14: Loyalty & Signup
- * الاشتراكات + برنامج الولاء
+ * Subscriptions + Loyalty program
  */
 const LoyaltySlot: React.FC = () => (
   <LazySection rootMargin="200px">
@@ -393,7 +393,7 @@ const LoyaltySlot: React.FC = () => (
 
 /**
  * Slot CONDITIONAL: Recent Browsing
- * يظهر فقط للمستخدمين العائدين
+ * Shows only for returning users
  */
 const RecentBrowsingSlot: React.FC = () => (
   <GridSectionWrapper intensity="light" variant="modern">
@@ -407,7 +407,7 @@ const RecentBrowsingSlot: React.FC = () => (
 
 /**
  * Floating: AI Chatbot
- * مساعد الذكاء الاصطناعي العائم
+ * Floating AI assistant
  */
 const AIChatbotSlot: React.FC = () => (
   <Suspense fallback={null}>

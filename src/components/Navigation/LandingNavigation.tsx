@@ -1,6 +1,5 @@
 /**
  * Navigation Bar with New Landing Page Links
- * شريط التنقل مع روابط الصفحات الجديدة
  * 
  * @since January 17, 2026
  */
@@ -9,7 +8,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { navigationLinks } from '@/config/navigation-links'; // المسارات متاحة الآن
+import { navigationLinks } from '@/config/navigation-links'; // Navigation paths available
 
 // ==================== STYLES ====================
 

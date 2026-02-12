@@ -1,6 +1,6 @@
 // src/components/trust/TrustBadge.tsx
-// Trust Badge Component - شارة الثقة البلغارية
-// الهدف: عرض شارة "Гарантиран Продавач" (بائع مضمون) للمستخدمين المتحققين
+// Trust Badge Component - Bulgarian Trust Badge
+// Purpose: Display "Гарантиран Продавач" (Guaranteed Seller) badge for verified users
 
 import React from 'react';
 import styled from 'styled-components';
@@ -21,7 +21,7 @@ interface TrustBadgeProps {
 
 /**
  * Trust Badge Component
- * عرض شارة الثقة بناءً على مستوى التحقق
+ * Display trust badge based on verification level
  */
 const TrustBadge: React.FC<TrustBadgeProps> = ({
   trustData,
@@ -32,11 +32,11 @@ const TrustBadge: React.FC<TrustBadgeProps> = ({
 }) => {
   const { t, language } = useLanguage();
 
-  // تحديد اللون والأيقونة بناءً على مستوى التحقق
+  // Determine color and icon based on verification level
   const getBadgeConfig = () => {
     if (trustData.verificationLevel === 'premium') {
       return {
-        color: '#FFD700', // ذهبي
+        color: '#FFD700', // Gold
         bgColor: '#FFF9E6',
         icon: Award,
         labelBg: 'Гарантиран Продавач',
@@ -45,7 +45,7 @@ const TrustBadge: React.FC<TrustBadgeProps> = ({
       };
     } else if (trustData.verificationLevel === 'verified') {
       return {
-        color: '#10B981', // أخضر
+        color: '#10B981', // Green
         bgColor: '#ECFDF5',
         icon: CheckCircle,
         labelBg: 'Потвърден',
@@ -54,7 +54,7 @@ const TrustBadge: React.FC<TrustBadgeProps> = ({
       };
     } else {
       return {
-        color: '#6B7280', // رمادي
+        color: '#6B7280', // Gray
         bgColor: '#F3F4F6',
         icon: Shield,
         labelBg: 'Основен',
@@ -68,7 +68,7 @@ const TrustBadge: React.FC<TrustBadgeProps> = ({
   const Icon = config.icon;
   const label = language === 'bg' ? config.labelBg : config.labelEn;
 
-  // حساب النسبة المئوية للثقة
+  // Calculate trust percentage
   const trustPercentage = Math.round(trustData.trustScore);
 
   if (variant === 'compact') {

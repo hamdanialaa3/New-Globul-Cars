@@ -1,5 +1,4 @@
 // Sell Vehicle Step 2: Vehicle Data
-// الخطوة 2: بيانات المركبة
 
 import React, { useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
@@ -291,7 +290,7 @@ export const SellVehicleStep2: React.FC<SellVehicleStep2Props> = ({
   const hasSeats = !!workflowData.seats;
   const hasColor = !!workflowData.color || !!workflowData.exteriorColor;
 
-  // Smart Classification - التصنيف الذكي
+  // Smart Classification
   const vehicleCategory = useMemo(() => {
     return classifyVehicle({
       doors: workflowData.doors,
@@ -603,7 +602,7 @@ export const SellVehicleStep2: React.FC<SellVehicleStep2Props> = ({
                 ))}
               </Select>
 
-              {/* Smart Classification Badge - بادج التصنيف الذكي */}
+              {/* Smart Classification Badge */}
               {(workflowData.seats || workflowData.doors || (workflowData.power && parseInt(String(workflowData.power), 10) > 270)) && 
                vehicleCategory !== 'standard' && (
                 <CategoryBadge $category={vehicleCategory}>

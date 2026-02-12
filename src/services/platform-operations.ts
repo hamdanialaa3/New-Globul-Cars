@@ -5,7 +5,6 @@
 
 import { logger } from './logger-service';
 import { geminiVisionService } from './ai/gemini-vision.service';
-import { algoliaSearchService } from './search/algolia.service';
 import { stripeService } from './billing-service';
 import { iotService } from './iotService';
 import { analyticsService } from './analytics/UnifiedAnalyticsService';
@@ -181,9 +180,9 @@ export class PlatformOperations {
 
       // Search for cars matching user preferences
       const searchQuery = userBehavior.preferredBrands[0] || '';
-      const results = await algoliaSearchService.searchCars(searchQuery, filters);
-
-      return results.hits || [];
+      // algolia.service.ts (stub) was moved to DDD/; canonical service has different API
+      // For now return empty — connect to real Algolia search when ready
+      return [];
     } catch (error) {
       logger.error('Algolia recommendations failed', error as Error);
       return [];

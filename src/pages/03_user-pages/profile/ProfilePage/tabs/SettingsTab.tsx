@@ -1437,7 +1437,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
     bio: settings.bio || user?.bio || ''
   });
 
-  // ✅ تحديث displayName تلقائياً عند تغيير firstName أو lastName
+  // ✅ Auto-update displayName when firstName or lastName changes
   useEffect(() => {
     if (userInfo.firstName || userInfo.lastName) {
       const autoDisplayName = `${userInfo.firstName} ${userInfo.lastName}`.trim();
@@ -1484,14 +1484,14 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
       return;
     }
 
-    // ✅ التحقق من الحقول المطلوبة
+    // ✅ Validate required fields
     if (!userInfo.firstName.trim() || !userInfo.lastName.trim()) {
       setSaveError(isBg ? 'Моля, попълнете първото и последното име' : 'Please fill in first and last name');
       toast.error(isBg ? 'Моля, попълнете първото и последното име' : 'Please fill in first and last name');
       return;
     }
 
-    // ✅ التحقق من صحة رقم الهاتف إذا كان موجود
+    // ✅ Validate phone number if provided
     if (userInfo.phoneNumber && userInfo.phoneNumber.trim()) {
       const phoneRegex = /^(\+359|0)[0-9]{9}$/;
       if (!phoneRegex.test(userInfo.phoneNumber.replace(/\s/g, ''))) {
@@ -1507,10 +1507,10 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
     try {
       logger.info('💾 Saving user account information', { userId: currentUser.uid });
 
-      // ✅ توليد displayName تلقائياً من firstName + lastName
+      // ✅ Auto-generate displayName from firstName + lastName
       const displayName = `${userInfo.firstName.trim()} ${userInfo.lastName.trim()}`.trim();
 
-      // ✅ حفظ جميع البيانات الشخصية بشكل كامل
+      // ✅ Save all personal data completely
       const updateData: any = {
         firstName: userInfo.firstName.trim(),
         lastName: userInfo.lastName.trim(),
@@ -1518,33 +1518,33 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
         publicDisplayName: userInfo.publicDisplayName.trim() || '', // NEW: Public display name
         phoneNumber: userInfo.phoneNumber.trim() || '',
         bio: userInfo.bio.trim() || '',
-        // ✅ حفظ الموقع بالهيكل الصحيح
+        // ✅ Save location with correct structure
         locationData: {
           cityName: userInfo.city.trim() || '',
           regionName: userInfo.region.trim() || '',
           address: userInfo.address.trim() || '',
           coordinates: user?.locationData?.coordinates || null
         },
-        // ✅ حفظ Location بشكل منفصل للتوافق مع الكود القديم
+        // ✅ Save Location separately for backward compatibility
         location: userInfo.city.trim() || userInfo.region.trim() || '',
-        // ✅ تحديث timestamp
+        // ✅ Update timestamp
         updatedAt: new Date().toISOString()
       };
 
-      // ✅ حفظ البيانات في Firestore
+      // ✅ Save data to Firestore
       await profileService.updateUserProfile(currentUser.uid, updateData);
 
-      // ✅ تحديث البيانات المحلية
+      // ✅ Update local data
       if (setUser) {
         setUser(prev => prev ? { ...prev, ...updateData } : null);
       }
 
-      // ✅ تحديث settings إذا كانت موجودة
+      // ✅ Update settings if available
       if (settings) {
         await handleSave();
       }
 
-      // ✅ إعادة تحميل البيانات
+      // ✅ Reload data
       if (refresh) {
         await refresh();
       }
@@ -1557,7 +1557,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
         { autoClose: 3000 }
       );
 
-      // ✅ إظهار رسالة نجاح
+      // ✅ Show success message
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 5000);
 
@@ -1654,7 +1654,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
 
       {/* Personal Information Form with Floating Identity Stamp */}
       <FormSection>
-        {/* الختم الطافي - لا يأخذ مساحة */}
+        {/* Floating stamp - takes no space */}
         <IdentityStamp
           firstName={userInfo.firstName || 'FIRST NAME'}
           lastName={userInfo.lastName || 'LAST NAME'}
@@ -1764,11 +1764,11 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
               value={userInfo.phoneNumber}
               onChange={(e) => {
                 let value = e.target.value;
-                // ✅ تلقائي: إضافة +359 إذا كان الرقم يبدأ بـ 0
+                // ✅ Auto: Add +359 if number starts with 0
                 if (value.startsWith('0') && !value.startsWith('+')) {
                   value = '+359' + value.substring(1);
                 }
-                // ✅ تنظيف الإدخال: إزالة المسافات الزائدة
+                // ✅ Clean input: Remove extra spaces
                 value = value.replace(/\s{2,}/g, ' ');
                 setUserInfo({ ...userInfo, phoneNumber: value });
               }}

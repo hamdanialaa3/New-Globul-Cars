@@ -144,8 +144,8 @@ const SearchResultsMap: React.FC<SearchResultsMapProps> = ({
   if (!apiKey || apiKey === 'YOUR_GOOGLE_MAPS_API_KEY') {
     return (
       <ErrorMessage>
-              <strong>Google Maps API Key غير مكوّن</strong>
-        <p>يرجى إضافة REACT_APP_GOOGLE_MAPS_API_KEY في ملف .env</p>
+              <strong>Google Maps API Key is not configured</strong>
+        <p>Please add REACT_APP_GOOGLE_MAPS_API_KEY to your .env file</p>
       </ErrorMessage>
     );
   }
@@ -153,8 +153,8 @@ const SearchResultsMap: React.FC<SearchResultsMapProps> = ({
   if (carsWithLocations.length === 0) {
     return (
       <ErrorMessage>
-              <strong>لا توجد سيارات بمواقع محددة</strong>
-        <p>لا يمكن عرض الخريطة لأن السيارات لا تحتوي على إحداثيات</p>
+              <strong>No cars with specified locations</strong>
+        <p>Cannot display the map because the cars have no coordinates</p>
       </ErrorMessage>
     );
   }
@@ -174,7 +174,7 @@ const SearchResultsMap: React.FC<SearchResultsMapProps> = ({
   return (
     <>
       <ResultsCount>
-         {carsWithLocations.length} سيارة معروضة على الخريطة
+         {carsWithLocations.length} cars shown on map
       </ResultsCount>
       
       <MapContainer>
@@ -225,7 +225,7 @@ const SearchResultsMap: React.FC<SearchResultsMapProps> = ({
                      {selectedCar.locationData?.cityName}, {selectedCar.location.region}
                   </div>
                   <button className="view-button">
-                    عرض التفاصيل
+                    View Details
                   </button>
                 </InfoContent>
               </InfoWindow>

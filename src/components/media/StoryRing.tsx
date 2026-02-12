@@ -1,6 +1,6 @@
 // src/components/media/StoryRing.tsx
-// Story Ring Component - حلقة ملونة حول صورة البائع تشير لوجود قصص
-// الهدف: عرض مؤشر بصري جذاب لوجود Stories جديدة
+// Story Ring Component - Colored ring around seller photo indicating stories exist
+// Goal: Display attractive visual indicator for new Stories
 
 import React from 'react';
 import styled from 'styled-components';
@@ -15,12 +15,12 @@ interface StoryRingProps {
   imageUrl: string;
   size?: 'small' | 'medium' | 'large';
   onClick?: () => void;
-  viewed?: boolean; // هل شاهد المستخدم القصص
+  viewed?: boolean; // Has the user viewed the stories
 }
 
 /**
  * Story Ring Component
- * حلقة ملونة تدور حول صورة البروفايل (مثل Instagram)
+ * Colored ring around profile photo (like Instagram)
  */
 const StoryRing: React.FC<StoryRingProps> = ({
   hasStories,
@@ -83,8 +83,8 @@ const RingContainer = styled.div<{
   border-radius: 50%;
   padding: 3px;
   background: ${props => props.$viewed
-    ? 'linear-gradient(45deg, #9CA3AF, #D1D5DB)' // رمادي للقصص المشاهدة
-    : 'linear-gradient(45deg, #FF6B6B, #4ECDC4, #FFD93D, #FF6B6B)' // ألوان نابضة بالحياة
+    ? 'linear-gradient(45deg, #9CA3AF, #D1D5DB)' // gray for viewed stories
+    : 'linear-gradient(45deg, #FF6B6B, #4ECDC4, #FFD93D, #FF6B6B)' // vibrant colors
   };
   background-size: 200% 200%;
   animation: ${props => !props.$viewed && 'gradientRotate 3s ease infinite'};

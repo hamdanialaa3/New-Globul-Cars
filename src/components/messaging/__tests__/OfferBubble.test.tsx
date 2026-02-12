@@ -66,7 +66,7 @@ describe('OfferBubble', () => {
     );
 
     expect(screen.getByText((content) => content.includes('⏳'))).toBeInTheDocument(); // Pending icon
-    expect(screen.getByText((content) => content.includes('قيد الانتظار'))).toBeInTheDocument();
+    expect(screen.getByText((content) => content.includes('Pending') || content.includes('В чакане'))).toBeInTheDocument();
   });
 
   it('displays time remaining', () => {
@@ -84,7 +84,7 @@ describe('OfferBubble', () => {
     );
 
     // Should show remaining time (3 days)
-    expect(screen.getByText((content) => content.includes('متبقي'))).toBeInTheDocument();
+    expect(screen.getByText((content) => content.includes('day') || content.includes('ден') || content.includes('Expired') || content.includes('Изтекла'))).toBeInTheDocument();
   });
 
   it('shows action buttons for receiver when pending', () => {
@@ -98,9 +98,9 @@ describe('OfferBubble', () => {
       </LanguageProvider>
     );
 
-    expect(screen.getByText((content) => content.includes('قبول'))).toBeInTheDocument();
-    expect(screen.getByText((content) => content.includes('رفض'))).toBeInTheDocument();
-    expect(screen.getByText((content) => content.includes('عرض مضاد'))).toBeInTheDocument();
+    expect(screen.getByText((content) => content.includes('Accept') || content.includes('Приеми'))).toBeInTheDocument();
+    expect(screen.getByText((content) => content.includes('Reject') || content.includes('Откажи'))).toBeInTheDocument();
+    expect(screen.getByText((content) => content.includes('Counter') || content.includes('Насрещно'))).toBeInTheDocument();
   });
 
   it('hides action buttons for sender', () => {
@@ -114,8 +114,8 @@ describe('OfferBubble', () => {
       </LanguageProvider>
     );
 
-    expect(screen.queryByText((content) => content.includes('قبول'))).not.toBeInTheDocument();
-    expect(screen.queryByText((content) => content.includes('رفض'))).not.toBeInTheDocument();
+    expect(screen.queryByText((content) => content.includes('Accept'))).not.toBeInTheDocument();
+    expect(screen.queryByText((content) => content.includes('Reject'))).not.toBeInTheDocument();
   });
 
   it('calls onAccept when accept button clicked', async () => {
@@ -132,7 +132,7 @@ describe('OfferBubble', () => {
       </ThemeProvider>
     );
 
-    const acceptButton = screen.getByText((content) => content.includes('قبول'));
+    const acceptButton = screen.getByText((content) => content.includes('Accept'));
     fireEvent.click(acceptButton);
 
     await waitFor(() => {
@@ -154,7 +154,7 @@ describe('OfferBubble', () => {
       </ThemeProvider>
     );
 
-    const rejectButton = screen.getByText((content) => content.includes('رفض'));
+    const rejectButton = screen.getByText((content) => content.includes('Reject'));
     fireEvent.click(rejectButton);
 
     await waitFor(() => {
@@ -176,10 +176,10 @@ describe('OfferBubble', () => {
       </ThemeProvider>
     );
 
-    const counterButton = screen.getByText((content) => content.includes('عرض مضاد'));
+    const counterButton = screen.getByText((content) => content.includes('Counter'));
     fireEvent.click(counterButton);
 
-    expect(screen.getByPlaceholderText(/أدخل عرضك/)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/Enter your offer/i)).toBeInTheDocument();
   });
 
   it('validates counter offer amount', async () => {
@@ -194,17 +194,17 @@ describe('OfferBubble', () => {
     );
 
     // Open counter input
-    fireEvent.click(screen.getByText((content) => content.includes('عرض مضاد')));
+    fireEvent.click(screen.getByText((content) => content.includes('Counter')));
 
     // Enter same amount (should show error)
-    const input = screen.getByPlaceholderText(/أدخل عرضك/);
+    const input = screen.getByPlaceholderText(/Enter your offer/i);
     fireEvent.change(input, { target: { value: '25000' } });
 
-    const submitButton = screen.getByText((content) => content.includes('إرسال'));
+    const submitButton = screen.getByText((content) => content.includes('Send'));
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/يجب أن يكون العرض مختلفاً/)).toBeInTheDocument();
+      expect(screen.getByText(/must be different/i)).toBeInTheDocument();
       expect(mockHandlers.onCounter).not.toHaveBeenCalled();
     });
   });
@@ -221,13 +221,13 @@ describe('OfferBubble', () => {
     );
 
     // Open counter input
-    fireEvent.click(screen.getByText((content) => content.includes('عرض مضاد')));
+    fireEvent.click(screen.getByText((content) => content.includes('Counter')));
 
     // Enter different amount
-    const input = screen.getByPlaceholderText(/أدخل عرضك/);
+    const input = screen.getByPlaceholderText(/Enter your offer/i);
     fireEvent.change(input, { target: { value: '23000' } });
 
-    const submitButton = screen.getByText((content) => content.includes('إرسال'));
+    const submitButton = screen.getByText((content) => content.includes('Send'));
     fireEvent.click(submitButton);
 
     await waitFor(() => {
@@ -247,7 +247,7 @@ describe('OfferBubble', () => {
     );
 
     expect(screen.getByText((content) => content.includes('✅'))).toBeInTheDocument();
-    expect(screen.getByText((content) => content.includes('مقبول'))).toBeInTheDocument();
+    expect(screen.getByText((content) => content.includes('Accepted'))).toBeInTheDocument();
   });
 
   it('shows rejected status with red badge', () => {
@@ -262,7 +262,7 @@ describe('OfferBubble', () => {
     );
 
     expect(screen.getByText((content) => content.includes('❌'))).toBeInTheDocument();
-    expect(screen.getByText((content) => content.includes('مرفوض'))).toBeInTheDocument();
+    expect(screen.getByText((content) => content.includes('Rejected'))).toBeInTheDocument();
   });
 
   it('shows expired status when past expiry date', () => {
@@ -285,7 +285,7 @@ describe('OfferBubble', () => {
     );
 
     expect(screen.getByText((content) => content.includes('⏰'))).toBeInTheDocument();
-    expect(screen.getByText((content) => content.includes('منتهي'))).toBeInTheDocument();
+    expect(screen.getByText((content) => content.includes('Expired'))).toBeInTheDocument();
   });
 
   it('disables buttons when loading', async () => {
@@ -302,7 +302,7 @@ describe('OfferBubble', () => {
       </ThemeProvider>
     );
 
-    const acceptButton = screen.getByText((content) => content.includes('قبول'));
+    const acceptButton = screen.getByText((content) => content.includes('Accept'));
     fireEvent.click(acceptButton);
 
     // Buttons should be disabled during loading

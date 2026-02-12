@@ -1,9 +1,7 @@
 /**
  * Migration Runner - Admin Panel Integration
- * واجهة تشغيل الترحيل - للإضافة في لوحة التحكم
  * 
  * Usage: Add this button to your Admin Dashboard
- * الاستخدام: أضف هذا الزر للوحة تحكم الأدمن
  */
 
 import React, { useState } from 'react';
@@ -151,9 +149,9 @@ export const MigrationRunner: React.FC = () => {
     <MigrationPanel>
       <Title>🔧 Legacy Cars Migration</Title>
       <Description>
-        هذا الأداة تمنح أرقام تعريفية (Numeric IDs) للسيارات القديمة التي لا تملكها.
+        This tool assigns Numeric IDs to legacy cars that don't have them.
         <br />
-        <strong>تحذير:</strong> يُنفذ مرة واحدة فقط. تأكد من أخذ نسخة احتياطية قبل التشغيل.
+        <strong>Warning:</strong> Run only once. Make sure to take a backup before running.
       </Description>
 
       <div>
@@ -162,7 +160,7 @@ export const MigrationRunner: React.FC = () => {
           onClick={handleMigrate}
           disabled={loading}
         >
-          {loading ? '⏳ جاري الترحيل...' : '🚀 Start Migration'}
+          {loading ? '⏳ Migrating...' : '🚀 Start Migration'}
         </Button>
         
         <Button 

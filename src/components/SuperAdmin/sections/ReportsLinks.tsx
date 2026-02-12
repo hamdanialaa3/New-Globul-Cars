@@ -8,12 +8,12 @@ import { carsReportService } from '../../../services/reports/cars-report-service
 const ReportsLinks: React.FC = () => {
     return (
         <Section>
-            <SectionTitle>📊 تصدير التقارير</SectionTitle>
+            <SectionTitle>📊 Export Reports</SectionTitle>
             <ReportsGrid>
                 {/* All Users Report */}
                 <ReportCard>
                     <ReportIcon>👥</ReportIcon>
-                    <ReportName>جميع المستخدمين</ReportName>
+                    <ReportName>All Users</ReportName>
                     <ReportButtons>
                         <ExportBtn onClick={async () => {
                             const users = await usersReportService.getAllUsers();
@@ -45,7 +45,7 @@ const ReportsLinks: React.FC = () => {
                 {/* Dealers Report */}
                 <ReportCard>
                     <ReportIcon>🏢</ReportIcon>
-                    <ReportName>المعارض</ReportName>
+                    <ReportName>Dealers</ReportName>
                     <ReportButtons>
                         <ExportBtn onClick={async () => {
                             const dealers = await usersReportService.getAllUsers({ profileType: 'dealer' });
@@ -71,7 +71,7 @@ const ReportsLinks: React.FC = () => {
                     <ReportIcon>
                         <GlobulCarLogo size={32} />
                     </ReportIcon>
-                    <ReportName>جميع السيارات</ReportName>
+                    <ReportName>All Cars</ReportName>
                     <ReportButtons>
                         <ExportBtn onClick={async () => {
                             const cars = await carsReportService.getAllCars();
@@ -103,7 +103,7 @@ const ReportsLinks: React.FC = () => {
                 {/* Sofia Cars Report */}
                 <ReportCard>
                     <ReportIcon>🏙️</ReportIcon>
-                    <ReportName>سيارات صوفيا</ReportName>
+                    <ReportName>Sofia Cars</ReportName>
                     <ReportButtons>
                         <ExportBtn onClick={async () => {
                             const cars = await carsReportService.getAllCars({ city: 'София' });
@@ -127,7 +127,7 @@ const ReportsLinks: React.FC = () => {
                 {/* Active Cars Report */}
                 <ReportCard>
                     <ReportIcon>✅</ReportIcon>
-                    <ReportName>السيارات النشطة</ReportName>
+                    <ReportName>Active Cars</ReportName>
                     <ReportButtons>
                         <ExportBtn onClick={async () => {
                             const cars = await carsReportService.getAllCars({ status: 'active' });
@@ -151,7 +151,7 @@ const ReportsLinks: React.FC = () => {
                 {/* Verified Users Report */}
                 <ReportCard>
                     <ReportIcon>✓</ReportIcon>
-                    <ReportName>المستخدمين المتحققين</ReportName>
+                    <ReportName>Verified Users</ReportName>
                     <ReportButtons>
                         <ExportBtn onClick={async () => {
                             const users = await usersReportService.getAllUsers({ verifiedOnly: true });
@@ -175,7 +175,7 @@ const ReportsLinks: React.FC = () => {
                 {/* AI Quotas Report */}
                 <ReportCard>
                     <ReportIcon>🤖</ReportIcon>
-                    <ReportName>حصص الذكاء الاصطناعي</ReportName>
+                    <ReportName>AI Quotas</ReportName>
                     <ReportButtons>
                         <ExportBtn onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_quotas', '_blank')}>
                             <FileSpreadsheet size={16} />
@@ -187,7 +187,7 @@ const ReportsLinks: React.FC = () => {
                 {/* AI Usage Logs Report */}
                 <ReportCard>
                     <ReportIcon>📊</ReportIcon>
-                    <ReportName>سجل استخدام AI</ReportName>
+                    <ReportName>AI Usage Logs</ReportName>
                     <ReportButtons>
                         <ExportBtn onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_usage_logs', '_blank')}>
                             <FileSpreadsheet size={16} />

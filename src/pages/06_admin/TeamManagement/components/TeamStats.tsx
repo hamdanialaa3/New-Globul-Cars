@@ -50,7 +50,7 @@ export const TeamStats: React.FC<Props> = ({ companyId }) => {
   }, [companyId]);
 
   if (loading) {
-    return <Container>جاري التحميل...</Container>;
+    return <Container>Loading...</Container>;
   }
 
   return (
@@ -59,7 +59,7 @@ export const TeamStats: React.FC<Props> = ({ companyId }) => {
         <Icon><FaUsers /></Icon>
         <Content>
           <Value>{stats.totalMembers}</Value>
-          <Label>إجمالي الأعضاء</Label>
+          <Label>Total Members</Label>
         </Content>
       </StatCard>
 
@@ -67,7 +67,7 @@ export const TeamStats: React.FC<Props> = ({ companyId }) => {
         <Icon><FaUserCheck /></Icon>
         <Content>
           <Value>{stats.activeMembers}</Value>
-          <Label>أعضاء نشطون</Label>
+          <Label>Active Members</Label>
         </Content>
       </StatCard>
 
@@ -75,7 +75,7 @@ export const TeamStats: React.FC<Props> = ({ companyId }) => {
         <Icon><FaClock /></Icon>
         <Content>
           <Value>{stats.pendingInvites}</Value>
-          <Label>دعوات معلقة</Label>
+          <Label>Pending Invites</Label>
         </Content>
       </StatCard>
 
@@ -83,7 +83,7 @@ export const TeamStats: React.FC<Props> = ({ companyId }) => {
         <Icon><FaShieldAlt /></Icon>
         <Content>
           <Value>{stats.adminCount}</Value>
-          <Label>مدراء</Label>
+          <Label>Admins</Label>
         </Content>
       </StatCard>
 
@@ -91,7 +91,7 @@ export const TeamStats: React.FC<Props> = ({ companyId }) => {
         <Icon><FaUserTie /></Icon>
         <Content>
           <Value>{stats.agentCount}</Value>
-          <Label>وكلاء</Label>
+          <Label>Agents</Label>
         </Content>
       </StatCard>
 
@@ -99,7 +99,7 @@ export const TeamStats: React.FC<Props> = ({ companyId }) => {
         <Icon><FaEye /></Icon>
         <Content>
           <Value>{stats.viewerCount}</Value>
-          <Label>مشاهدين</Label>
+          <Label>Viewers</Label>
         </Content>
       </StatCard>
     </Container>

@@ -19,7 +19,7 @@ const SectionContainer = styled.section<{ $isDark: boolean }>`
   position: relative;
   overflow: hidden;
   transition: background 0.3s ease;
-  /* 🟣 إطار بنفسجي خفيف */
+  /* 🟣 Light purple border */
   border: 1px solid rgba(168, 85, 247, 0.12);
   border-radius: 8px;
   margin: 0 12px;

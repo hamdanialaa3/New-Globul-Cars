@@ -1,5 +1,4 @@
 // LED Progress Bar Component
-// شريط التقدم LED الاحترافي
 
 import React from 'react';
 import styled from 'styled-components';
@@ -13,9 +12,9 @@ interface ProgressLEDProps {
 const LEDContainer = styled.div`
   width: 100%;
   padding: 1.5rem;
-  background: transparent; /* خلفية شفافة */
+  background: transparent; /* transparent background */
   border-radius: 15px;
-  border: 2px solid rgba(255, 143, 16, 0.15); /* حدود خفيفة */
+  border: 2px solid rgba(255, 143, 16, 0.15); /* light border */
   position: relative;
   overflow: hidden;
 
@@ -31,7 +30,7 @@ const LEDContainer = styled.div`
 `;
 
 const LEDTitle = styled.div`
-  color: #495057; /* لون داكن بدلاً من الفاتح */
+  color: #495057; /* dark color instead of light */
   font-size: 0.875rem; /* 14px */
   font-weight: 600;
   margin-bottom: 1rem;
@@ -55,10 +54,10 @@ const LEDStrip = styled.div`
   display: flex;
   gap: 0.3rem;
   padding: 0.75rem;
-  background: rgba(255, 143, 16, 0.03); /* خلفية خفيفة جداً برتقالية */
+  background: rgba(255, 143, 16, 0.03); /* very light orange background */
   border-radius: 10px;
-  border: 1px solid rgba(255, 143, 16, 0.15); /* حدود خفيفة */
-  box-shadow: none; /* إزالة الظل الداخلي */
+  border: 1px solid rgba(255, 143, 16, 0.15); /* light border */
+  box-shadow: none; /* remove inner shadow */
 `;
 
 const LEDSegment = styled.div<{ $isActive: boolean; $index: number }>`
@@ -67,7 +66,7 @@ const LEDSegment = styled.div<{ $isActive: boolean; $index: number }>`
   border-radius: 6px;
   background: ${props => props.$isActive 
     ? 'linear-gradient(135deg, #ff8f10, #ffb347)' 
-    : 'rgba(200, 200, 200, 0.25)' /* رمادي فاتح بدلاً من أبيض */
+    : 'rgba(200, 200, 200, 0.25)' /* light gray instead of white */
   };
   
   ${props => props.$isActive && `
@@ -101,14 +100,14 @@ const StepIndicator = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 0.75rem;
-  color: #6c757d; /* لون أغمق للوضوح */
+  color: #6c757d; /* darker color for clarity */
   font-size: 0.75rem; /* 12px */
   font-weight: 500;
   line-height: 1.4;
 `;
 
 const ProgressLED: React.FC<ProgressLEDProps> = ({ progress, totalSteps, currentStep }) => {
-  const segments = 20; // عدد شرائط LED
+  const segments = 20; // number of LED segments
   const activeSegments = Math.ceil((progress / 100) * segments);
 
   return (

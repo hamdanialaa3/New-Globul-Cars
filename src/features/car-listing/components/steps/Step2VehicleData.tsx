@@ -1,5 +1,4 @@
 // Step 2: Vehicle Data with BrandModelMarkdownDropdown
-// الخطوة 2: بيانات السيارة مع الحفاظ على BrandModelMarkdownDropdown
 import React, { useEffect, useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -104,7 +103,7 @@ const Select = styled.select<{ $hasValue?: boolean }>`
     color: var(--text-primary);
   }
   
-  /* ✅ Featured brands styling - الحفاظ على الألوان */
+  /* ✅ Featured brands styling - preserve colors */
   option.featured-brand {
     font-weight: 700;
     color: #ff8f10;
@@ -264,7 +263,7 @@ export const Step2VehicleData: React.FC = () => {
         updateStepData('step2', data);
         markStepComplete(1);
       })}>
-        {/* ✅ BrandModelMarkdownDropdown - الحفاظ على المكون الحالي مع جميع التفاصيل */}
+        {/* ✅ BrandModelMarkdownDropdown - preserve current component with all details */}
         <FieldGroup>
           <Label $hasValue={!!(make && model)}>
             {language === 'bg' ? 'Марка и модел' : 'Brand & Model'} *

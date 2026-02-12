@@ -1,7 +1,7 @@
 // src/components/Profile/Analytics/ProfileAnalyticsDashboard.tsx
 // Profile Analytics Dashboard Component - 100% Real Data!
 // 🎯 No Mock Data - Everything is Real from Firebase
-// الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
+// Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
@@ -625,7 +625,7 @@ export const ProfileAnalyticsDashboard: React.FC<ProfileAnalyticsDashboardProps>
         </h4>
         <ul>
           <li>{language === 'bg' 
-            ? `الأفضل يوم: ${getBestDay()}` 
+            ? `Най-добрият ден: ${getBestDay()}` 
             : `Your profile gets most views on ${getBestDay()}`}</li>
           {analytics.responseTime > 0 && (
             <li>{language === 'bg'

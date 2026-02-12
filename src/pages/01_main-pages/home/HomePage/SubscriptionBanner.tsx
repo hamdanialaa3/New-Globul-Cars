@@ -1,6 +1,6 @@
 // src/pages/home/HomePage/SubscriptionBanner.tsx
 // Subscription Banner for HomePage - Promote Plans
-// ✅ نسخ تصميم البطاقات من صفحة /subscription
+// ✅ Card design copied from /subscription page
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +11,7 @@ import { useAuth } from '../../../../contexts/AuthProvider';
 import { useTheme } from '../../../../contexts/ThemeContext';
 // ✅ CRITICAL: Import subscription plans for accurate pricing
 import { SUBSCRIPTION_PLANS } from '../../../../config/subscription-plans';
-// ✅ استيراد ملف الإعدادات المركزي
+// ✅ Import centralized settings file
 import subscriptionTheme from '../../../../components/subscription/subscription-theme';
 // ✅ FREE OFFER: Import promotional offer hook
 import { usePromotionalOffer } from '../../../../hooks/usePromotionalOffer';
@@ -174,7 +174,7 @@ const PlanCard = styled.div<{ $highlight?: boolean; $isDark: boolean; $free?: bo
   color: var(--text-primary);
   cursor: pointer;
 
-  /* Light border outline effect - خيط ضوئي رفيع using box-shadow */
+  /* Light border outline effect - thin light thread using box-shadow */
   box-shadow: ${p => {
     const baseShadow = p.$highlight
       ? `0 20px 60px ${() => subscriptionTheme.shadows.small}`

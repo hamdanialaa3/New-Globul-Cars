@@ -14,7 +14,7 @@ import {
 import { useLanguage } from '@/contexts';
 
 /**
- * نوع الرسالة - Message type
+ * Message type
  * @interface Message
  */
 export interface Message {
@@ -40,10 +40,8 @@ interface InteractiveMessageBubbleProps {
 }
 
 /**
- * مكون عرض الرسالة التفاعلي
  * Interactive message bubble component
  * 
- * يدعم أنواع مختلفة: text, offer, action, voice, system
  * Supports different types: text, offer, action, voice, system
  */
 const InteractiveMessageBubble: React.FC<InteractiveMessageBubbleProps> = ({
@@ -53,7 +51,7 @@ const InteractiveMessageBubble: React.FC<InteractiveMessageBubbleProps> = ({
   onOfferAction,
   className
 }) => {
-  // تنسيق الوقت بالبلغارية - Format time in Bulgarian
+  // Format time in Bulgarian
   const formatTime = (timestamp: Date) => {
     try {
       return format(timestamp, 'HH:mm', { locale: bg });
@@ -62,7 +60,7 @@ const InteractiveMessageBubble: React.FC<InteractiveMessageBubbleProps> = ({
     }
   };
 
-  // رمز حالة التوصيل - Delivery status icon
+  // Delivery status icon
   const renderDeliveryStatus = () => {
     if (!isSender || !message.deliveryStatus) return null;
     
@@ -91,14 +89,14 @@ const InteractiveMessageBubble: React.FC<InteractiveMessageBubbleProps> = ({
     return null;
   };
 
-  // عرض محتوى الرسالة حسب النوع - Render content by type
+  // Render content by type
   const renderContent = () => {
     switch (message.type) {
       case 'text':
         return <TextContent>{message.content}</TextContent>;
       
       case 'offer':
-        // TODO: استخدام OfferBubble component
+        // TODO: Use OfferBubble component
         return (
           <ActionContent>
             <ActionIcon>💰</ActionIcon>
@@ -107,7 +105,7 @@ const InteractiveMessageBubble: React.FC<InteractiveMessageBubbleProps> = ({
         );
       
       case 'action':
-        // رسائل الإجراءات (حجز موعد، مشاركة موقع، إلخ)
+        // Action messages (appointment booking, share location, etc.)
         return (
           <ActionContent>
             <ActionIcon>{getActionIcon(message.metadata?.actionType)}</ActionIcon>
@@ -116,7 +114,7 @@ const InteractiveMessageBubble: React.FC<InteractiveMessageBubbleProps> = ({
         );
       
       case 'voice':
-        // TODO: استخدام VoiceMessageBubble component
+        // TODO: Use VoiceMessageBubble component
         const { language } = useLanguage();
         return (
           <ActionContent>
@@ -126,7 +124,7 @@ const InteractiveMessageBubble: React.FC<InteractiveMessageBubbleProps> = ({
         );
       
       case 'system':
-        // رسائل النظام (انضم مستخدم، غادر، إلخ)
+        // System messages (user joined, left, etc.)
         return (
           <SystemContent>
             <SystemIcon>ℹ️</SystemIcon>
@@ -139,7 +137,7 @@ const InteractiveMessageBubble: React.FC<InteractiveMessageBubbleProps> = ({
     }
   };
 
-  // أيقونة نوع الإجراء - Action type icon
+  // Action type icon
   const getActionIcon = (actionType?: string) => {
     switch (actionType) {
       case 'appointment':
@@ -155,7 +153,7 @@ const InteractiveMessageBubble: React.FC<InteractiveMessageBubbleProps> = ({
     }
   };
 
-  // رسائل النظام لها تصميم مختلف - System messages have different design
+  // System messages have different design
   if (message.type === 'system') {
     return (
       <SystemMessageContainer className={className}>
@@ -167,7 +165,7 @@ const InteractiveMessageBubble: React.FC<InteractiveMessageBubbleProps> = ({
   return (
     <MessageContainer $isSender={isSender} className={className}>
       <MessageRow>
-        {/* Avatar للمستقبل فقط - Avatar for receiver only */}
+        {/* Avatar for receiver only */}
         {showAvatar && !isSender && message.senderAvatar && (
           <AvatarContainer>
             <Avatar 
@@ -182,7 +180,7 @@ const InteractiveMessageBubble: React.FC<InteractiveMessageBubbleProps> = ({
         )}
         
         <BubbleWrapper>
-          {/* اسم المرسل (للمستقبل فقط) - Sender name (for receiver only) */}
+          {/* Sender name (for receiver only) */}
           {showAvatar && !isSender && message.senderName && (
             <SenderName>{message.senderName}</SenderName>
           )}

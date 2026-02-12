@@ -363,7 +363,7 @@ const AnnouncementManager: React.FC = () => {
     {
       id: '1',
       title: 'System Upgrade',
-      message: 'System upgrade scheduled Friday 12 AM - 2 AM. Services will not be affected.','
+      message: 'System upgrade scheduled Friday 12 AM - 2 AM. Services will not be affected.',
       type: 'info',
       target: 'all',
       active: true,

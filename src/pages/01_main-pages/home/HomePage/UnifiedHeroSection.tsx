@@ -46,7 +46,7 @@ const HeroContainer = styled.section<{ $isDark: boolean }>`
   width: 100%;
   max-width: 1400px; /* Same width as other sections */
   margin: 0 auto; /* Center the container */
-  /* 🟣 شريط LED بنفسجي */
+  /* 🟣 Purple LED strip */
   border: 1px solid rgba(168, 85, 247, 0.15);
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(168, 85, 247, 0.1), inset 0 0 20px rgba(168, 85, 247, 0.05);

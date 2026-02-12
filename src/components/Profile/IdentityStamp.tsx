@@ -15,7 +15,7 @@ interface IdentityStampProps {
   city?: string;
   address?: string;
   numericId?: number;
-  isDark?: boolean; // للتحكم بالألوان حسب الوضع
+  isDark?: boolean; // Controls colors based on theme mode
 }
 
 const StampContainer = styled.div`
@@ -70,14 +70,14 @@ const StampSVG = styled.svg<{ $isDark?: boolean }>`
   height: 100%;
   filter: url(#ink-bleed-pro);
   
-  /* تحسين جودة الرندر */
+  /* Improve render quality */
   shape-rendering: geometricPrecision;
   text-rendering: optimizeLegibility;
   
-  /* ألوان ديناميكية حسب الوضع */
+  /* Dynamic colors based on theme mode */
   --stamp-color: ${props => props.$isDark 
-    ? 'rgba(96, 165, 250, 0.95)' /* أزرق فاتح مضيء للوضع الداكن */
-    : 'rgba(28, 49, 116, 0.88)' /* نيلي غامق للوضع الفاتح */
+    ? 'rgba(96, 165, 250, 0.95)' /* Light blue glow for dark mode */
+    : 'rgba(28, 49, 116, 0.88)' /* Dark navy for light mode */
   };
   
   --stamp-glow: ${props => props.$isDark 
@@ -99,7 +99,7 @@ const IdentityStamp: React.FC<IdentityStampProps> = ({
 }) => {
   const stampRef = useRef<HTMLDivElement>(null);
 
-  // تأثير البصمة عند تحديث البيانات
+  // Stamp animation effect when data updates
   useEffect(() => {
     if (stampRef.current) {
       stampRef.current.style.transform = 'rotate(-5deg) scale(1.1)';
@@ -112,19 +112,19 @@ const IdentityStamp: React.FC<IdentityStampProps> = ({
     }
   }, [firstName, lastName, email, phone, region, city, address, numericId]);
 
-  // تنسيق رقم المستخدم (6 خانات)
+  // Format user number (6 digits)
   const formattedId = numericId.toString().padStart(6, '0').slice(-6);
 
-  // تنسيق النصوص - حلقتان فقط للوضوح
-  // الحلقة الخارجية: الاسم + الإيميل + الهاتف
+  // Format text - two rings only for clarity
+  // Outer ring: Name + Email + Phone
   const outerRingText = `${firstName.toUpperCase()} ${lastName.toUpperCase()} ● ${email.toUpperCase()} ● ${phone}`;
   
-  // الحلقة الداخلية: العنوان الكامل
+  // Inner ring: Full address
   const innerRingText = `${city.toUpperCase()} ● ${region.toUpperCase()} ● ${address.toUpperCase()}`;
 
   return (
     <>
-      {/* فلتر الحبر الاحترافي */}
+      {/* Professional ink filter */}
       <svg style={{ position: 'absolute', width: 0, height: 0 }}>
         <filter id="ink-bleed-pro">
           <feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="5" result="noise" />
@@ -138,13 +138,13 @@ const IdentityStamp: React.FC<IdentityStampProps> = ({
 
       <StampContainer ref={stampRef}>
         <StampSVG viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg" $isDark={isDark}>
-          {/* الإطار الخارجي المزخرف - جودة عالية */}
+          {/* Decorative outer frame - high quality */}
           <circle cx="400" cy="400" r="390" fill="none" stroke="var(--stamp-color)" strokeWidth="3" strokeDasharray="6 10" 
             style={{ filter: 'drop-shadow(var(--stamp-glow))' }} />
           <circle cx="400" cy="400" r="372" fill="none" stroke="var(--stamp-color)" strokeWidth="8" 
             style={{ filter: 'drop-shadow(var(--stamp-glow))' }} />
           
-          {/* ★★★ الحلقة الخارجية: الاسم + الإيميل + الهاتف ★★★ */}
+          {/* ★★★ Outer ring: Name + Email + Phone ★★★ */}
           <path id="pathOuter" d="M 80,400 A 320,320 0 1,1 720,400 A 320,320 0 1,1 80,400" fill="none" />
           <text fontFamily="'Arial Black', 'Exo 2', sans-serif" fontWeight="900" fontSize="44" fill="var(--stamp-color)" letterSpacing="2">
             <textPath xlinkHref="#pathOuter" startOffset="50%" textAnchor="middle">
@@ -152,11 +152,11 @@ const IdentityStamp: React.FC<IdentityStampProps> = ({
             </textPath>
           </text>
 
-          {/* فاصل دائري سميك */}
+          {/* Thick circular separator */}
           <circle cx="400" cy="400" r="290" fill="none" stroke="var(--stamp-color)" strokeWidth="5" 
             style={{ opacity: 0.8 }} />
 
-          {/* ★★★ الحلقة الداخلية: العنوان الكامل ★★★ */}
+          {/* ★★★ Inner ring: Full address ★★★ */}
           <path id="pathInner" d="M 140,400 A 260,260 0 1,0 660,400 A 260,260 0 1,0 140,400" fill="none" />
           <text fontFamily="'Arial Black', 'Exo 2', sans-serif" fontWeight="900" fontSize="38" fill="var(--stamp-color)" letterSpacing="2">
             <textPath xlinkHref="#pathInner" startOffset="50%" textAnchor="middle">
@@ -164,34 +164,34 @@ const IdentityStamp: React.FC<IdentityStampProps> = ({
             </textPath>
           </text>
 
-          {/* فاصل دائري منقط */}
+          {/* Dotted circular separator */}
           <circle cx="400" cy="400" r="210" fill="none" stroke="var(--stamp-color)" strokeWidth="3" strokeDasharray="8 6" />
 
-          {/* ★★★ المركز: koli.one + الرقم ★★★ */}
+          {/* ★★★ Center: koli.one + Number ★★★ */}
           <g transform="translate(400, 400)">
-            {/* مستطيل مركزي محسّن */}
+            {/* Improved center rectangle */}
             <rect x="-160" y="-95" width="320" height="190" fill="none" stroke="var(--stamp-color)" strokeWidth="8" rx="6" 
               style={{ filter: 'drop-shadow(var(--stamp-glow))' }} />
             <rect x="-150" y="-85" width="300" height="170" fill="none" stroke="var(--stamp-color)" strokeWidth="2" rx="4" 
               style={{ opacity: 0.6 }} />
             
-            {/* رقم المستخدم - أكبر وأوضح */}
+            {/* User number - larger and clearer */}
             <text y="-10" fontFamily="'Impact', 'Arial Black', sans-serif" fontWeight="900" fontSize="70" fill="var(--stamp-color)" textAnchor="middle" letterSpacing="6">
               {formattedId}
             </text>
             
-            {/* خط فاصل مزخرف */}
+            {/* Decorative separator line */}
             <line x1="-130" y1="30" x2="130" y2="30" stroke="var(--stamp-color)" strokeWidth="4" strokeLinecap="round" />
             <circle cx="-130" cy="30" r="3" fill="var(--stamp-color)" />
             <circle cx="130" cy="30" r="3" fill="var(--stamp-color)" />
             
-            {/* الدومين - واضح وبارز */}
+            {/* Domain - clear and prominent */}
             <text y="70" fontFamily="'Arial Black', 'Exo 2', sans-serif" fontWeight="900" fontSize="34" fill="var(--stamp-color)" textAnchor="middle" letterSpacing="2">
               koli.one
             </text>
           </g>
 
-          {/* نجوم التوثيق الاحترافية - أكبر حجماً */}
+          {/* Professional verification stars - larger size */}
           <text x="100" y="416" fontSize="48" fill="var(--stamp-color)" style={{ filter: 'drop-shadow(var(--stamp-glow))' }}>★</text>
           <text x="652" y="416" fontSize="48" fill="var(--stamp-color)" style={{ filter: 'drop-shadow(var(--stamp-glow))' }}>★</text>
           <text x="400" y="70" fontSize="42" fill="var(--stamp-color)" textAnchor="middle">★</text>

@@ -159,10 +159,10 @@ export const CompactHeader: React.FC<CompactHeaderProps> = ({
         {isOwnProfile ? (
           <>
             <QuickActionButton onClick={onEditClick} $variant="secondary">
-              <Edit /> تعديل
+              <Edit /> Edit
             </QuickActionButton>
             <QuickActionButton onClick={onSettingsClick} $variant="secondary">
-              <SettingsIcon /> إعدادات
+              <SettingsIcon /> Settings
             </QuickActionButton>
             <QuickActionButton onClick={onLogoutClick} $variant="secondary">
               <LogOut /> Logout

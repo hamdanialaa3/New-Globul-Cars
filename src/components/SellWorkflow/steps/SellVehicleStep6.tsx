@@ -1,5 +1,4 @@
 // Sell Vehicle Step 6: Contact & Location
-// الخطوة 6: معلومات الاتصال والموقع
 
 import React, { useEffect, useMemo, useState } from 'react';
 import styled, { keyframes } from 'styled-components';

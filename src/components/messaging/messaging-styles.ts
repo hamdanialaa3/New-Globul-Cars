@@ -1,42 +1,41 @@
 import styled from 'styled-components';
 
 /**
- * الأنماط المشتركة لنظام المراسلة
  * Shared styles for messaging system
  */
 
-// ألوان النظام - System Colors
+// System Colors
 export const MessagingColors = {
-  // رسائل المرسل - Sender messages
-  senderBg: '#FF8F10',      // البرتقالي البلغاري
+  // Sender messages
+  senderBg: '#FF8F10',      // Bulgarian orange
   senderText: '#FFFFFF',
   
-  // رسائل المستقبل - Receiver messages
+  // Receiver messages
   receiverBg: '#F5F5F5',
   receiverText: '#003366',
   
-  // حالات العرض - Offer states
-  offerPending: '#FFA500',  // برتقالي
-  offerAccepted: '#16a34a', // أخضر
-  offerRejected: '#DC2626', // أحمر
-  offerExpired: '#9CA3AF',  // رمادي
-  offerCountered: '#3B82F6', // أزرق
+  // Offer states
+  offerPending: '#FFA500',  // Orange
+  offerAccepted: '#16a34a', // Green
+  offerRejected: '#DC2626', // Red
+  offerExpired: '#9CA3AF',  // Gray
+  offerCountered: '#3B82F6', // Blue
   
-  // حضور المستخدم - User presence
-  online: '#10B981',        // أخضر
-  offline: '#6B7280',       // رمادي
-  away: '#F59E0B',          // برتقالي فاتح
-  typing: '#3B82F6',        // أزرق
+  // User presence
+  online: '#10B981',        // Green
+  offline: '#6B7280',       // Gray
+  away: '#F59E0B',          // Light orange
+  typing: '#3B82F6',        // Blue
   
-  // حالات التوصيل - Delivery status
-  sending: '#9CA3AF',       // رمادي
-  sent: '#9CA3AF',          // رمادي
-  delivered: '#9CA3AF',     // رمادي
-  read: '#3B82F6',          // أزرق
-  failed: '#EF4444',        // أحمر
+  // Delivery status
+  sending: '#9CA3AF',       // Gray
+  sent: '#9CA3AF',          // Gray
+  delivered: '#9CA3AF',     // Gray
+  read: '#3B82F6',          // Blue
+  failed: '#EF4444',        // Red
 };
 
-// Container مشترك - Shared container
+// Shared container
 export const MessageContainer = styled.div<{ $isSender?: boolean }>`
   display: flex;
   flex-direction: column;
@@ -46,7 +45,7 @@ export const MessageContainer = styled.div<{ $isSender?: boolean }>`
   max-width: 100%;
 `;
 
-// Bubble مشترك - Shared bubble
+// Shared bubble
 export const BubbleBase = styled.div<{ $isSender?: boolean }>`
   max-width: 70%;
   padding: 10px 14px;
@@ -64,7 +63,7 @@ export const BubbleBase = styled.div<{ $isSender?: boolean }>`
   
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   
-  /* ذيل الفقاعة - Bubble tail */
+  /* Bubble tail */
   &::after {
     content: '';
     position: absolute;
@@ -89,7 +88,7 @@ export const BubbleBase = styled.div<{ $isSender?: boolean }>`
   }
 `;
 
-// Timestamp مشترك - Shared timestamp
+// Shared timestamp
 export const Timestamp = styled.span`
   font-size: 11px;
   color: #6B7280;
@@ -151,7 +150,7 @@ export const TimeRow = styled.div`
   gap: 4px;
 `;
 
-// Message group container (للرسائل المتتالية من نفس المرسل)
+// Message group container (for consecutive messages from same sender)
 export const MessageGroup = styled.div`
   display: flex;
   flex-direction: column;
@@ -202,7 +201,7 @@ export const OnlineDot = styled.span<{ $status: 'online' | 'offline' | 'away' }>
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
 `;
 
-// Card base للعروض والإجراءات
+// Card base for offers and actions
 export const CardBase = styled.div`
   background: white;
   border-radius: 12px;

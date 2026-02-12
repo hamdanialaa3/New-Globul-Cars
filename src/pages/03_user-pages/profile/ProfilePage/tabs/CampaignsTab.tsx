@@ -22,7 +22,7 @@ export const CampaignsTab: React.FC<CampaignsTabProps> = ({ user, theme }) => {
     return (
       <CampaignsContainer>
         <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.6)' }}>
-          جاري التحميل...
+          Loading...
         </div>
       </CampaignsContainer>
     );

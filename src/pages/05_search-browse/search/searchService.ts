@@ -22,8 +22,9 @@ import { resolveCanonicalBrand } from '../../../services/brand-normalization';
 
 // ─── Color name → hex mapping (used when colorHex is missing) ───
 const COLOR_NAME_TO_HEX: Record<string, string> = {
+    // Basic
     white: '#FFFFFF',
-    black: '#1A1A1A',
+    black: '#000000',
     silver: '#C0C0C0',
     gray: '#808080',
     grey: '#808080',
@@ -37,9 +38,15 @@ const COLOR_NAME_TO_HEX: Record<string, string> = {
     gold: '#DAA520',
     purple: '#6A0DAD',
     pink: '#FF69B4',
-    // Bulgarian labels too
+    bronze: '#CD7F32',
+    maroon: '#800000',
+    teal: '#008080',
+    turquoise: '#40E0D0',
+    metallic: '#BCC6CC',
+
+    // Bulgarian
     'бял': '#FFFFFF',
-    'черен': '#1A1A1A',
+    'черен': '#000000',
     'сребърен': '#C0C0C0',
     'сив': '#808080',
     'червен': '#CC0000',
@@ -52,25 +59,43 @@ const COLOR_NAME_TO_HEX: Record<string, string> = {
     'златист': '#DAA520',
     'лилав': '#6A0DAD',
     'розов': '#FF69B4',
-    // German colors from imports
+    'бронзов': '#CD7F32',
+    'бордо': '#800000',
+    'тюркоазен': '#40E0D0',
+    'металик': '#BCC6CC',
+
+    // German
     'weiß': '#FFFFFF',
-    'schwarz': '#1A1A1A',
+    'schwarz': '#000000',
     'silber': '#C0C0C0',
     'grau': '#808080',
     'rot': '#CC0000',
     'blau': '#0044CC',
     'grün': '#228B22',
     'gelb': '#FFD700',
+    'orange': '#FF8C00',
     'braun': '#8B4513',
-    // Extended names
-    'midnight blue': '#0B3D91',
-    'metallic gray': '#808080',
-    'pearl white': '#F5F5F0',
-    'deep black': '#111111',
-    'alpine white': '#F0F0F0',
-    'mineral grey': '#6E6E6E',
-    'sapphire blue': '#1A3BC4',
-    'carbon black': '#222222',
+    'beige': '#F5F5DC',
+    'gold': '#DAA520',
+    'lila': '#6A0DAD',
+    'rosa': '#FF69B4',
+    'bronze': '#CD7F32',
+    'maroon': '#800000',
+    'türkis': '#40E0D0',
+
+    // Common Variations
+    'anthracite': '#383E42',
+    'graphite': '#4B4E53',
+    'navy': '#000080',
+    'pearl': '#FDEEF4',
+    'champagne': '#F7E7CE',
+    'burgundy': '#800020',
+    'lime': '#32CD32',
+    'olive': '#808000',
+    'cyan': '#00FFFF',
+    'magenta': '#FF00FF',
+    'cream': '#FFFDD0',
+    'ivory': '#FFFFF0',
 };
 
 function resolveColorHex(colorName?: string, colorHex?: string): string | null {
@@ -125,7 +150,7 @@ export interface DynamicFilterOptions {
     fuelTypes: string[];
     transmissions: string[];
     bodyTypes: string[];
-    colors: Array<{ name: string; hex: string; count: number }>;
+    colors: Array<{ name: string; hex: string; count: number; isBase?: boolean }>;
     yearRange: { min: number; max: number };
     priceRange: { min: number; max: number };
     conditions: string[];
@@ -216,17 +241,26 @@ function mapRawDoc(docData: any, docId: string, collectionName: string): Firesto
 
     const sellerType = docData.sellerType || (docData.dealerId ? 'dealer' : 'private');
 
-    // Timestamps
+    // Timestamps normalization
     let createdAt: Date;
     let updatedAt: Date;
-    if (docData.createdAt?.toDate) createdAt = docData.createdAt.toDate();
-    else if (docData.createdAt instanceof Date) createdAt = docData.createdAt;
-    else if (typeof docData.createdAt === 'number') createdAt = new Date(docData.createdAt);
-    else createdAt = new Date();
 
-    if (docData.updatedAt?.toDate) updatedAt = docData.updatedAt.toDate();
-    else if (docData.updatedAt instanceof Date) updatedAt = docData.updatedAt;
-    else updatedAt = createdAt;
+    const parseDate = (val: any): Date => {
+        if (!val) return new Date();
+        if (typeof val.toDate === 'function') return val.toDate(); // Firestore Timestamp
+        if (val instanceof Date) return val;
+        if (typeof val === 'number') return new Date(val);
+        if (typeof val === 'string') {
+            const d = new Date(val);
+            return isNaN(d.getTime()) ? new Date() : d;
+        }
+        // Handle { seconds, nanoseconds } object without toDate (e.g. serialized)
+        if (val && typeof val.seconds === 'number') return new Date(val.seconds * 1000);
+        return new Date();
+    };
+
+    createdAt = parseDate(docData.createdAt);
+    updatedAt = parseDate(docData.updatedAt || docData.createdAt);
 
     return {
         id: docId,
@@ -266,8 +300,9 @@ function mapRawDoc(docData: any, docId: string, collectionName: string): Firesto
         condition: docData.condition || '',
         description: docData.description,
         ...docData, // preserve any extra fields
-        // Overwrite with normalized values
+        // Overwrite with normalized values to ensure type safety
         make, model, year, price, mileage, fuelType, transmission, power, bodyType, color, city, region, images, mainImage,
+        createdAt, updatedAt, // <--- CRITICAL FIX: Overwrite docData.createdAt with parsed Date
     };
 }
 
@@ -306,6 +341,57 @@ async function fetchAllActiveCars(): Promise<FirestoreCarResult[]> {
     return allCars;
 }
 
+// ─── Color Normalization Map ───
+const COLOR_ALIASES: Record<string, string> = {
+    // Black
+    'black': 'black', 'schwarz': 'black', 'черен': 'black',
+    'deep black': 'black', 'carbon black': 'black', 'jet black': 'black', 'obsidian': 'black',
+    // White
+    'white': 'white', 'weiß': 'white', 'бял': 'white',
+    'pearl white': 'white', 'alpine white': 'white', 'ivory': 'white', 'cream': 'white',
+    // Silver
+    'silver': 'silver', 'silber': 'silver', 'сребърен': 'silver',
+    'metallic': 'silver', 'platinum': 'silver',
+    // Grey
+    'gray': 'grey', 'grey': 'grey', 'grau': 'grey', 'сив': 'grey',
+    'anthracite': 'grey', 'graphite': 'grey', 'charcoal': 'grey', 'gunmetal': 'grey', 'metallic gray': 'grey', 'mineral grey': 'grey',
+    // Red
+    'red': 'red', 'rot': 'red', 'червен': 'red',
+    'maroon': 'red', 'burgundy': 'red', 'crimson': 'red', 'cherry': 'red', 'bordó': 'red', 'бордо': 'red',
+    // Blue
+    'blue': 'blue', 'blau': 'blue', 'син': 'blue',
+    'navy': 'blue', 'azure': 'blue', 'sapphire': 'blue', 'midnight blue': 'blue', 'baby blue': 'blue', 'sky blue': 'blue',
+    // Green
+    'green': 'green', 'grün': 'green', 'зелен': 'green',
+    'lime': 'green', 'olive': 'green', 'emerald': 'green', 'forest green': 'green',
+    // Yellow
+    'yellow': 'yellow', 'gelb': 'yellow', 'жълт': 'yellow',
+    'gold': 'yellow', 'mustard': 'yellow', 'златист': 'yellow',
+    // Orange
+    'orange': 'orange', 'оранжев': 'orange',
+    'copper': 'orange', 'sunset': 'orange',
+    // Brown
+    'brown': 'brown', 'braun': 'brown', 'кафяв': 'brown',
+    'chocolate': 'brown', 'coffee': 'brown', 'bronze': 'brown', 'бронзов': 'brown',
+    // Beige
+    'beige': 'beige', 'бежов': 'beige',
+    'fawn': 'beige', 'tan': 'beige', 'champagne': 'beige',
+};
+
+function normalizeToCanonicalColor(rawColor?: string): string {
+    if (!rawColor) return 'other';
+    const lower = rawColor.toLowerCase().trim();
+    // 1. Direct lookup
+    if (COLOR_ALIASES[lower]) return COLOR_ALIASES[lower];
+
+    // 2. Contains match (e.g. "metallic black" -> "black")
+    for (const [alias, canonical] of Object.entries(COLOR_ALIASES)) {
+        if (lower.includes(alias)) return canonical;
+    }
+
+    return 'other';
+}
+
 // ═══════════════════════════════════════════
 // GET FILTER OPTIONS — Dynamic from DB
 // ═══════════════════════════════════════════
@@ -325,12 +411,33 @@ export async function getFilterOptions(forceRefresh = false): Promise<DynamicFil
     const bodyTypesSet = new Set<string>();
     const conditionsSet = new Set<string>();
     const sellerTypesSet = new Set<string>();
-    const colorMap: Record<string, { name: string; hex: string; count: number }> = {};
 
     let minYear = Infinity, maxYear = -Infinity;
     let minPrice = Infinity, maxPrice = -Infinity;
+    const BASE_COLORS = [
+        { id: 'black', name: 'Black', hex: '#000000' },
+        { id: 'white', name: 'White', hex: '#FFFFFF' },
+        { id: 'silver', name: 'Silver', hex: '#C0C0C0' },
+        { id: 'grey', name: 'Grey', hex: '#808080' },
+        { id: 'red', name: 'Red', hex: '#CC0000' },
+        { id: 'blue', name: 'Blue', hex: '#0044CC' },
+        { id: 'green', name: 'Green', hex: '#228B22' },
+        { id: 'yellow', name: 'Yellow', hex: '#FFD700' },
+        { id: 'orange', name: 'Orange', hex: '#FF8C00' },
+        { id: 'brown', name: 'Brown', hex: '#8B4513' },
+        { id: 'beige', name: 'Beige', hex: '#F5F5DC' },
+    ];
 
+    // Initialize with base colors
+    const colorMap: Record<string, { name: string; hex: string; count: number; isBase: boolean }> = {};
+
+    BASE_COLORS.forEach(c => {
+        colorMap[c.id] = { name: c.name, hex: c.hex, count: 0, isBase: true };
+    });
+
+    // Aggregation loop
     for (const car of allCars) {
+        // ... (existing loops for makes, models, etc. untouched)
         if (car.make) makesSet.add(car.make);
         if (car.model) modelsSet.add(car.model);
         if (car.city) citiesSet.add(car.city);
@@ -351,18 +458,22 @@ export async function getFilterOptions(forceRefresh = false): Promise<DynamicFil
 
         // Color aggregation
         if (car.color) {
-            const normalizedColor = car.color.toLowerCase().trim();
-            const hex = car.colorHex || COLOR_NAME_TO_HEX[normalizedColor] || '#888888';
-            if (!colorMap[normalizedColor]) {
-                colorMap[normalizedColor] = {
-                    name: car.color,
-                    hex,
-                    count: 0,
-                };
+            const canonical = normalizeToCanonicalColor(car.color);
+            if (colorMap[canonical]) {
+                colorMap[canonical].count++;
             }
-            colorMap[normalizedColor].count++;
+            // If canonical is 'other', we don't count it for the buttons, 
+            // but it's available via search.
         }
     }
+
+    const sortedColors = Object.values(colorMap).sort((a, b) => {
+        // Base colors first
+        if (a.isBase && !b.isBase) return -1;
+        if (!a.isBase && b.isBase) return 1;
+        // Then by count
+        return b.count - a.count;
+    });
 
     const options: DynamicFilterOptions = {
         makes: Array.from(makesSet).sort(),
@@ -371,7 +482,7 @@ export async function getFilterOptions(forceRefresh = false): Promise<DynamicFil
         fuelTypes: Array.from(fuelTypesSet).sort(),
         transmissions: Array.from(transmissionsSet).sort(),
         bodyTypes: Array.from(bodyTypesSet).sort(),
-        colors: Object.values(colorMap).sort((a, b) => b.count - a.count),
+        colors: sortedColors,
         yearRange: {
             min: minYear === Infinity ? 2000 : minYear,
             max: maxYear === -Infinity ? new Date().getFullYear() : maxYear,
@@ -468,10 +579,47 @@ export async function searchCarsFromDB(req: SearchRequest): Promise<SearchRespon
 
     // Color (by name or hex)
     if (req.colorHex) {
-        filtered = filtered.filter(c => c.colorHex === req.colorHex);
+        // If searching by HEX, we assume it's one of our BASE COLORS.
+        // We should filter cars that NORMALIZE to this base color.
+        // Or if it's a specific hex, we check match.
+
+        // Find if this hex belongs to a base color
+        // Note: we can't await here easily without refactoring, but we know our base colors.
+
+        // Strategy: 
+        // 1. Check if the requested hex matches a base color hex.
+        // 2. If so, filter by normalized canonical name (e.g. 'red').
+        // 3. If not, filter by exact hex match.
+
+        const BASE_COLORS_MAP: Record<string, string> = {
+            '#000000': 'black', '#FFFFFF': 'white', '#C0C0C0': 'silver', '#808080': 'grey',
+            '#CC0000': 'red', '#0044CC': 'blue', '#228B22': 'green', '#FFD700': 'yellow',
+            '#FF8C00': 'orange', '#8B4513': 'brown', '#F5F5DC': 'beige'
+        };
+
+        const canonical = BASE_COLORS_MAP[req.colorHex] || BASE_COLORS_MAP[req.colorHex.toUpperCase()];
+
+        if (canonical) {
+            filtered = filtered.filter(c => normalizeToCanonicalColor(c.color) === canonical);
+        } else {
+            filtered = filtered.filter(c => c.colorHex === req.colorHex);
+        }
+
     } else if (req.color) {
         const colorLower = req.color.toLowerCase();
-        filtered = filtered.filter(c => (c.color || '').toLowerCase() === colorLower);
+        // If searched by text (via "Other"), use partial match or exact?
+        // User might type "Nardo Grey". normalizeToCanonicalColor("Nardo Grey") -> "grey".
+        // But user might want SPECIFICALLY Nardo Grey.
+        // If user typed "Red", they want all reds.
+
+        // Check if input is a canonical color name
+        const canonical = normalizeToCanonicalColor(req.color);
+        if (canonical !== 'other') {
+            filtered = filtered.filter(c => normalizeToCanonicalColor(c.color) === canonical);
+        } else {
+            // Specific search (e.g. "Magenta")
+            filtered = filtered.filter(c => (c.color || '').toLowerCase().includes(colorLower));
+        }
     }
 
     // City

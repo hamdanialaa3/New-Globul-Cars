@@ -40,7 +40,18 @@
   width: 40px;
   height: 40px;
   margin-right: 12px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  transition: filter 0.3s ease;
+}
+
+/* Light mode: add contrast so logo is visible on light footer bg */
+.light-theme .footer-logo,
+:root:not(.dark-theme) .footer-logo {
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3)) drop-shadow(0 0 1px rgba(0,0,0,0.15)) contrast(1.15) brightness(0.92);
+}
+
+/* Dark mode: purple glow to match header */
+.dark-theme .footer-logo {
+  filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.5)) drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 /* Enhanced Footer Logo with Ultra-Fine Glow */

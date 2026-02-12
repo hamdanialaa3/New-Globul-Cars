@@ -275,7 +275,7 @@ const NeuralPricingDeepDive: React.FC = () => {
                     </p>
                     <ul>
                         <li><strong>Rule #1:</strong> Never suggest a price below the raw import cost excluding VAT.</li>
-                        <li><strong>Rule #2:</strong> Flag anomalies >20% deviation from the cluster mean.</li>
+                        <li><strong>Rule #2:</strong> Flag anomalies {'>'} 20% deviation from the cluster mean.</li>
                         <li><strong>Rule #3:</strong> Always prioritize recent (last 30 days) sales data over active listings.</li>
                     </ul>
                 </section>

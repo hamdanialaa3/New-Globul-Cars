@@ -82,7 +82,7 @@ const VehicleOption = styled.div<{ $selected: boolean; $disabled: boolean }>`
     `}
   }
   
-  /* Responsive padding - تدرج تلقائي حسب حجم الشاشة */
+  /* Responsive padding - Auto-scales based on screen size */
   @media (max-width: 1024px) {
     padding: 1.25rem 1rem;
   }
@@ -124,7 +124,7 @@ const VehicleIcon = styled.div<{ $selected: boolean; $disabled: boolean }>`
     height: 32px;
   }
   
-  /* Tablet - حجم متوسط */
+  /* Tablet - Medium size */
   @media (max-width: 1024px) {
     margin-bottom: 0.6rem;
     
@@ -134,7 +134,7 @@ const VehicleIcon = styled.div<{ $selected: boolean; $disabled: boolean }>`
     }
   }
   
-  /* Landscape mobile - حجم أصغر قليلاً */
+  /* Landscape mobile - Slightly smaller */
   @media (max-width: 896px) and (orientation: landscape) {
     margin-bottom: 0.5rem;
     
@@ -144,7 +144,7 @@ const VehicleIcon = styled.div<{ $selected: boolean; $disabled: boolean }>`
     }
   }
   
-  /* Portrait mobile - حجم مناسب للموبايل */
+  /* Portrait mobile - Mobile-friendly size */
   @media (max-width: 640px) and (orientation: portrait) {
     margin-bottom: 0.5rem;
     
@@ -154,7 +154,7 @@ const VehicleIcon = styled.div<{ $selected: boolean; $disabled: boolean }>`
     }
   }
   
-  /* Very small screens - أصغر حجم */
+  /* Very small screens - smallest size */
   @media (max-width: 480px) {
     margin-bottom: 0.4rem;
     
@@ -174,29 +174,29 @@ const VehicleLabel = styled.div<{ $disabled: boolean }>`
   text-align: center;
   line-height: 1.3;
   
-  /* Tablet size - تصغير طفيف */
+  /* Tablet size - Slightly smaller */
   @media (max-width: 1024px) {
     font-size: 0.88rem;
   }
   
-  /* Landscape mobile - تصغير أكثر */
+  /* Landscape mobile - Even smaller */
   @media (max-width: 896px) and (orientation: landscape) {
     font-size: 0.78rem;
   }
   
-  /* Portrait mobile - تصغير ملحوظ لكن مقروء */
+  /* Portrait mobile - Noticeably smaller but readable */
   @media (max-width: 640px) and (orientation: portrait) {
     font-size: 0.7rem;
     font-weight: 500;
   }
   
-  /* Very small screens - أصغر حجم لكن لا يختفي */
+  /* Very small screens - Smallest size but still visible */
   @media (max-width: 480px) {
     font-size: 0.65rem;
     line-height: 1.2;
   }
   
-  /* Extra tiny screens - أصغر حجم ممكن */
+  /* Extra tiny screens - Smallest possible size */
   @media (max-width: 360px) {
     font-size: 0.6rem;
   }

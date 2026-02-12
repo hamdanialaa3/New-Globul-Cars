@@ -505,7 +505,7 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
   const t = translations[language];
   const [sellerInfo, setSellerInfo] = useState<BulgarianUser | null>(null);
 
-  // جلب معلومات البائع (صاحب السيارة)
+  // Fetch seller info (car owner)
   useEffect(() => {
     if (car.sellerId) {
       userService.getUserProfile(car.sellerId).then(profile => {
@@ -535,7 +535,7 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
       return;
     }
 
-    // طباعة مباشرة للمحتوى المرئي فقط
+    // Direct print of visible content only
     setTimeout(() => {
       window.print();
     }, 100);
@@ -807,7 +807,7 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
             <div style={{ color: '#666', fontWeight: '600' }}>{new Date().toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US')}</div>
           </PrintFooter>
 
-          {/* الختم الاحترافي لمعلومات البائع */}
+          {/* Professional seller info stamp */}
           {sellerInfo && (
             <div className="print-identity-stamp" style={{
               position: 'absolute',
@@ -846,7 +846,7 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
           )}
         </PrintContainer>
 
-        {/* أزرار الطباعة أسفل الورقة */}
+        {/* Print buttons below the page */}
         <PrintActions className="print-actions">
           <ActionButton $variant="primary" onClick={handlePrint}>
             <Printer size={20} />

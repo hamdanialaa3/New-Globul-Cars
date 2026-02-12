@@ -1,5 +1,4 @@
 // City Cars Section - Main Component
-// قسم السيارات حسب المدن البلغارية
 
 import React, { useState, useEffect, memo } from 'react';
 import { useNavigate } from 'react-router-dom';

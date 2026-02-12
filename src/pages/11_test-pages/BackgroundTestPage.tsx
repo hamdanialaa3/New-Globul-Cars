@@ -116,14 +116,14 @@ const BackgroundTestPage: React.FC = () => {
       play: "Старт"
     },
     ar: {
-      title: "الحركة السينمائية",
-      desc: "انتقالات غامرة عالية الدقة مدعومة بتسريع الأجهزة المتقدم عبر CSS.",
-      fast: "سريع",
-      normal: "طبيعي",
-      slow: "بطيء",
-      effects: "التأثيرات",
-      pause: "إيقاف",
-      play: "تشغيل"
+      title: "Cinematic Motion",
+      desc: "Immersive high-precision transitions powered by advanced CSS hardware acceleration.",
+      fast: "Fast",
+      normal: "Normal",
+      slow: "Slow",
+      effects: "Effects",
+      pause: "Pause",
+      play: "Play"
     }
   };
 

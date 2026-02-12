@@ -1,5 +1,4 @@
 // Professional Interactive Bulgaria Map with SVG
-// خريطة بلغاريا التفاعلية الاحترافية مع SVG
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
@@ -32,7 +31,7 @@ const MapContainer = styled.div`
 const SVGContainer = styled.div`
   position: relative;
   width: 100%;
-  aspect-ratio: 2.2 / 1; /* عرضاني أكثر */
+  aspect-ratio: 2.2 / 1; /* More landscape */
   background: linear-gradient(
     135deg,
     rgba(230, 243, 255, 0.3) 0%,

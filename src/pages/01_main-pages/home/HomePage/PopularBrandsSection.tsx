@@ -47,7 +47,7 @@ const SectionContainer = styled.section`
   will-change: transform;
   transition: background-color 0.3s ease;
   background: transparent;
-  /* 🟣 إطار بنفسجي خفيف */
+  /* 🟣 Light purple border */
   border: 1px solid rgba(168, 85, 247, 0.12);
   border-radius: 8px;
   box-shadow: inset 0 0 8px rgba(168, 85, 247, 0.06);
@@ -156,7 +156,7 @@ const BrandCard = styled.button`
   max-width: 142px;
   max-height: 153px;
   
-  /* 🌟 Glass Metallic Effect - تأثير زجاجي معدني عصري */
+  /* 🌟 Glass Metallic Effect - modern glass metallic style */
   background: linear-gradient(135deg, 
     rgba(255, 255, 255, 0.25) 0%,
     rgba(255, 255, 255, 0.15) 50%,
@@ -165,7 +165,7 @@ const BrandCard = styled.button`
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(10px);
   border: 2px solid rgba(200, 200, 200, 0.4);
-  border-top: 2px solid rgba(255, 255, 255, 0.6); /* highlight على الحافة العلوية */
+  border-top: 2px solid rgba(255, 255, 255, 0.6); /* highlight on top edge */
   border-radius: 16px;
   padding: 1rem 0.75rem;
   cursor: pointer;
@@ -182,8 +182,8 @@ const BrandCard = styled.button`
   margin: 0;
   box-shadow: 
     0 4px 15px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5), /* highlight داخلي */
-    inset 0 -1px 0 rgba(0, 0, 0, 0.1); /* shadow داخلي */
+    inset 0 1px 0 rgba(255, 255, 255, 0.5), /* inner highlight */
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1); /* inner shadow */
   
   @media (max-width: 768px) {
     width: 120px;
@@ -219,7 +219,7 @@ const BrandCard = styled.button`
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
-  /* تأثير بريق معدني */
+  /* Metallic shimmer effect */
   &::before {
     content: '';
     position: absolute;
@@ -243,7 +243,7 @@ const BrandCard = styled.button`
     transform: rotate(45deg) translateX(100%);
   }
 
-  /* تأثير انعكاس معدني */
+  /* Metallic reflection effect */
   &::after {
     content: '';
     position: absolute;
@@ -269,11 +269,11 @@ const BrandCard = styled.button`
     border-color: rgba(220, 220, 220, 0.5);
     border-top: 2px solid rgba(255, 255, 255, 0.7);
     background: linear-gradient(135deg, 
-      #F0F0F0 0%,      /* فضي فاتح جداً */
-      #E0E0E0 25%,    /* فضي فاتح */
-      #D0D0D0 50%,    /* فضي */
-      #E0E0E0 75%,    /* فضي فاتح */
-      #F0F0F0 100%    /* فضي فاتح جداً */
+      #F0F0F0 0%,      /* Very light silver */
+      #E0E0E0 25%,    /* Light silver */
+      #D0D0D0 50%,    /* Silver */
+      #E0E0E0 75%,    /* Light silver */
+      #F0F0F0 100%    /* Very light silver */
     );
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
@@ -287,11 +287,11 @@ const BrandCard = styled.button`
     border-color: rgba(180, 180, 180, 0.4);
     border-top: 2px solid rgba(220, 220, 220, 0.5);
     background: linear-gradient(135deg, 
-      #5A5A5A 0%,      /* رمادي داكن فاتح */
-      #4A4A4A 25%,     /* رمادي داكن */
-      #3A3A3A 50%,     /* رمادي داكن */
-      #4A4A4A 75%,     /* رمادي داكن */
-      #5A5A5A 100%     /* رمادي داكن فاتح */
+      #5A5A5A 0%,      /* Light dark gray */
+      #4A4A4A 25%,     /* Dark gray */
+      #3A3A3A 50%,     /* Dark gray */
+      #4A4A4A 75%,     /* Dark gray */
+      #5A5A5A 100%     /* Light dark gray */
     );
   }
   

@@ -4,6 +4,7 @@
  * Handles: filter options loading, search execution, debouncing, pagination
  */
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useFavorites } from '../../../hooks/useFavorites';
 import {
     getFilterOptions,
     searchCarsFromDB,
@@ -70,7 +71,8 @@ export function useSearchData() {
     const [isSearching, setIsSearching] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [missingFieldReports, setMissingFieldReports] = useState<any[]>([]);
-    const [favorites, setFavorites] = useState<Set<string>>(new Set());
+    const { isFavorite, toggleFavorite: toggleFav, favorites: favList } = useFavorites();
+    const favorites = new Set(favList.map(f => f.carId));
     const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
 
     const debounceTimer = useRef<NodeJS.Timeout | null>(null);
@@ -226,14 +228,9 @@ export function useSearchData() {
         setFilters(prev => ({ ...prev, sortBy, page: 1 }));
     }, []);
 
-    const toggleFavorite = useCallback((carId: string) => {
-        setFavorites(prev => {
-            const next = new Set(prev);
-            if (next.has(carId)) next.delete(carId);
-            else next.add(carId);
-            return next;
-        });
-    }, []);
+    const toggleFavorite = useCallback((carId: string, carData?: any) => {
+        toggleFav(carId, carData);
+    }, [toggleFav]);
 
     const clearFilter = useCallback((key: keyof SearchFiltersState) => {
         updateFilter(key, key === 'features' ? [] : '');

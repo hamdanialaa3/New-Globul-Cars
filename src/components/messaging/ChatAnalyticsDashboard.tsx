@@ -26,15 +26,14 @@ interface ConversationSummary {
 }
 
 /**
- * لوحة تحليلات المحادثة
  * Chat analytics dashboard
  * 
- * يعرض:
- * - عدد الرسائل والعروض
- * - متوسط وقت الرد
- * - درجة العميل المحتمل
- * - معدل التحويل
- * - رسوم بيانية
+ * Shows:
+ * - Number of messages and offers
+ * - Average response time
+ * - Lead score
+ * - Conversion rate
+ * - Charts
  */
 const ChatAnalyticsDashboard: React.FC<ChatAnalyticsDashboardProps> = ({
   conversationId,
@@ -192,7 +191,7 @@ const ChatAnalyticsDashboard: React.FC<ChatAnalyticsDashboardProps> = ({
         <ChartCard>
           <ChartTitle>
             <ChartIcon>📈</ChartIcon>
-            النشاط اليومي (آخر 7 أيام)
+            Daily Activity (Last 7 days)
           </ChartTitle>
           <ChartContainer>
             <ResponsiveContainer width="100%" height={250}>
@@ -211,13 +210,13 @@ const ChatAnalyticsDashboard: React.FC<ChatAnalyticsDashboardProps> = ({
                 <Bar 
                   dataKey="messages" 
                   fill={MessagingColors.senderBg} 
-                  name="الرسائل"
+                  name="Messages"
                   radius={[8, 8, 0, 0]}
                 />
                 <Bar 
                   dataKey="offers" 
                   fill={MessagingColors.offerAccepted} 
-                  name="العروض"
+                  name="Offers"
                   radius={[8, 8, 0, 0]}
                 />
               </BarChart>
@@ -229,7 +228,7 @@ const ChatAnalyticsDashboard: React.FC<ChatAnalyticsDashboardProps> = ({
         <ChartCard>
           <ChartTitle>
             <ChartIcon>📊</ChartIcon>
-            توزيع أنواع الرسائل
+            Message Types Distribution
           </ChartTitle>
           <ChartContainer>
             <ResponsiveContainer width="100%" height={250}>
@@ -259,7 +258,7 @@ const ChatAnalyticsDashboard: React.FC<ChatAnalyticsDashboardProps> = ({
       <InsightsSection>
         <InsightsTitle>
           <InsightsIcon>💡</InsightsIcon>
-          رؤى ذكية
+          Smart Insights
         </InsightsTitle>
         
         <InsightsList>
@@ -267,7 +266,7 @@ const ChatAnalyticsDashboard: React.FC<ChatAnalyticsDashboardProps> = ({
             <InsightItem $type="success">
               <InsightBullet $type="success">✅</InsightBullet>
               <InsightText>
-                عميل محتمل قوي جداً! معدل التفاعل مرتفع والرد سريع.
+                Very strong lead! High engagement rate and quick responses.
               </InsightText>
             </InsightItem>
           )}
@@ -276,7 +275,7 @@ const ChatAnalyticsDashboard: React.FC<ChatAnalyticsDashboardProps> = ({
             <InsightItem $type="success">
               <InsightBullet $type="success">⚡</InsightBullet>
               <InsightText>
-                وقت الرد ممتاز! أقل من دقيقتين في المتوسط.
+                Excellent response time! Under two minutes on average.
               </InsightText>
             </InsightItem>
           )}
@@ -285,7 +284,7 @@ const ChatAnalyticsDashboard: React.FC<ChatAnalyticsDashboardProps> = ({
             <InsightItem $type="info">
               <InsightBullet $type="info">💰</InsightBullet>
               <InsightText>
-                تم إرسال {summary.totalOffers} عرض. العميل جاد في الشراء.
+                {summary.totalOffers} offers sent. The buyer is serious about purchasing.
               </InsightText>
             </InsightItem>
           )}
@@ -294,7 +293,7 @@ const ChatAnalyticsDashboard: React.FC<ChatAnalyticsDashboardProps> = ({
             <InsightItem $type="success">
               <InsightBullet $type="success">🎯</InsightBullet>
               <InsightText>
-                معدل تحويل ممتاز {summary.conversionRate}%! احتمالية عالية لإتمام الصفقة.
+                Excellent conversion rate {summary.conversionRate}%! High probability of closing the deal.
               </InsightText>
             </InsightItem>
           )}
@@ -303,7 +302,7 @@ const ChatAnalyticsDashboard: React.FC<ChatAnalyticsDashboardProps> = ({
             <InsightItem $type="warning">
               <InsightBullet $type="warning">⚠️</InsightBullet>
               <InsightText>
-                درجة العميل منخفضة. قد تحتاج إلى متابعة أكثر نشاطاً.
+                Low lead score. May need more active follow-up.
               </InsightText>
             </InsightItem>
           )}
