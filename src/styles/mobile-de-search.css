@@ -1,0 +1,247 @@
+/* Mobile.de Replica Styles */
+:root {
+  --mde-bg-body: #f5f5f5;
+  --mde-bg-card: #ffffff;
+  --mde-border: #e0e0e0;
+  --mde-text-primary: #303030;
+  --mde-text-secondary: #757575;
+  --mde-primary: #ff8f00; /* Koli Orange instead of Mobile.de Blue */
+  --mde-link: #0064d2; /* Mobile.de Link Blue for vehicle titles */
+  --mde-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+
+.mde-grid-container {
+  display: flex !important;
+  max-width: 1240px !important;
+  margin: 0 auto !important;
+  padding: 20px 10px !important;
+  gap: 20px !important;
+  align-items: flex-start !important;
+}
+
+/* Sidebar Specifics */
+.mde-sidebar {
+  width: 280px !important;
+  flex-shrink: 0 !important;
+  background: white !important;
+  border: 1px solid var(--mde-border) !important;
+  border-radius: 4px !important;
+  padding: 16px !important;
+}
+
+.mde-sidebar h4 {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  margin-bottom: 12px !important;
+  color: var(--mde-text-primary) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+}
+
+.mde-sidebar .ais-RefinementList-item {
+  margin-bottom: 6px !important;
+}
+
+.mde-sidebar .ais-RefinementList-label {
+  font-size: 14px !important;
+  color: var(--mde-text-primary) !important;
+  gap: 8px !important;
+}
+
+.mde-sidebar .ais-RefinementList-count {
+  background: none !important;
+  color: var(--mde-text-secondary) !important;
+  font-size: 12px !important;
+}
+
+/* Main Content Area */
+.mde-main-content {
+  flex-grow: 1 !important;
+  width: calc(100% - 300px) !important;
+}
+
+/* Header Area */
+.mde-search-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 16px !important;
+  padding-bottom: 16px !important;
+  border-bottom: 1px solid var(--mde-border) !important;
+}
+
+.mde-result-count {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: var(--mde-text-primary) !important;
+}
+
+.mde-sort-dropdown select {
+  padding: 8px 12px !important;
+  border: 1px solid var(--mde-border) !important;
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  color: var(--mde-text-primary) !important;
+  background-color: white !important;
+}
+
+/* Card Styles - Horizontal Layout */
+.mde-card {
+  display: flex !important;
+  background: white !important;
+  border: 1px solid var(--mde-border) !important;
+  border-radius: 4px !important;
+  margin-bottom: 16px !important;
+  overflow: hidden !important;
+  transition: box-shadow 0.2s ease !important;
+  cursor: pointer !important;
+  min-height: 200px !important;
+}
+
+.mde-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+  border-color: #b0b0b0 !important;
+}
+
+.mde-card-image {
+  width: 280px !important;
+  flex-shrink: 0 !important;
+  position: relative !important;
+  background: #eee !important;
+}
+
+.mde-card-image img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.mde-card-content {
+  flex-grow: 1 !important;
+  padding: 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+}
+
+.mde-card-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+}
+
+.mde-card-title {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: var(--mde-link) !important; /* Mobile.de Link Color */
+  margin: 0 0 8px 0 !important;
+  line-height: 1.4 !important;
+}
+
+.mde-card-title:hover {
+  text-decoration: underline !important;
+}
+
+.mde-card-price {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  color: var(--mde-text-primary) !important;
+  text-align: right !important;
+}
+
+.mde-card-price small {
+  display: block !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  color: var(--mde-text-secondary) !important;
+  margin-top: 4px !important;
+}
+
+.mde-card-attributes {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 16px !important;
+  margin-bottom: 12px !important;
+  font-size: 14px !important;
+  color: var(--mde-text-primary) !important;
+}
+
+.mde-attr-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.mde-card-footer {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-top: auto !important;
+  padding-top: 12px !important;
+  border-top: 1px solid #f0f0f0 !important;
+  font-size: 12px !important;
+  color: var(--mde-text-secondary) !important;
+}
+
+.mde-location {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+.mde-rating {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  color: var(--mde-text-primary) !important;
+  font-weight: 600 !important;
+}
+
+.mde-badge-new {
+  position: absolute !important;
+  top: 10px !important;
+  left: 10px !important;
+  background: #00875a !important;
+  color: white !important;
+  padding: 4px 8px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  border-radius: 2px !important;
+  z-index: 2 !important;
+}
+
+/* Mobile specific overrides */
+@media (max-width: 768px) {
+  .mde-grid-container {
+      flex-direction: column !important;
+      padding: 10px !important;
+  }
+  
+  .mde-sidebar {
+      display: none !important; /* Hide sidebar on mobile, use drawer */
+  }
+
+  .mde-main-content {
+      width: 100% !important;
+  }
+  
+  .mde-card {
+      flex-direction: column !important;
+  }
+  
+  .mde-card-image {
+      width: 100% !important;
+      height: 200px !important;
+  }
+  
+  .mde-card-header {
+      flex-direction: column-reverse !important;
+      gap: 8px !important;
+  }
+  
+  .mde-card-price {
+      text-align: left !important;
+      font-size: 20px !important;
+      color: var(--mde-primary) !important; /* Use orange on mobile for price emphasis */
+  }
+}

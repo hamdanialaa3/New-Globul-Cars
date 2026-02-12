@@ -1,0 +1,33 @@
+# Reduce build context size
+node_modules
+build
+.cache
+.eslintcache
+coverage
+public/*.map
+src/**/*.map
+.DS_Store
+.git
+.gitignore
+.env*
+assets
+**/*.mp4
+**/*.mov
+**/*.zip
+**/*.tar
+**/*.7z
+**/*.iso
+
+# Project specific ignores
+ARCHIVE
+Ai_plans
+docs
+documentation
+functions/node_modules
+.firebase
+.gemini
+.vscode
+.husky
+*.pdf
+firebase-debug.log
+emulator-data

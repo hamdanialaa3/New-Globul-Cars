@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الثيم - Theme Test</title>
+    <style>
+        /* Import the unified theme */
+        @import url('../src/styles/unified-theme.css');
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-primary);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: var(--shadow-card);
+        }
+        
+        .toggle-btn {
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: var(--shadow-button);
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-btn:hover {
+            background: var(--btn-primary-hover);
+            transform: translateY(-2px);
+        }
+        
+        h1 {
+            color: var(--accent-primary);
+        }
+        
+        p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .color-samples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .color-box {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .bg-primary { background: var(--bg-primary); color: var(--text-primary); border: 2px solid var(--border-primary); }
+        .bg-secondary { background: var(--bg-secondary); color: var(--text-primary); }
+        .bg-card { background: var(--bg-card); color: var(--text-primary); border: 2px solid var(--border-primary); }
+        .bg-accent { background: var(--bg-accent); color: var(--text-primary); }
+        .accent-primary { background: var(--accent-primary); color: white; }
+        .text-sample { background: var(--bg-card); color: var(--text-primary); border: 2px solid var(--border-primary); }
+        
+        .status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-card);
+            padding: 15px 25px;
+            border-radius: 8px;
+            border: 2px solid var(--border-accent);
+            font-weight: bold;
+            color: var(--accent-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="status" id="status">الوضع الحالي: جاري الفحص...</div>
+    
+    <div class="container">
+        <div class="card">
+            <h1>🎨 اختبار نظام الثيم الموحد</h1>
+            <p>هذه الصفحة تختبر ما إذا كانت CSS Variables تعمل بشكل صحيح في الوضعين الليلي والنهاري.</p>
+            
+            <button class="toggle-btn" onclick="toggleTheme()">
+                🌓 تبديل الوضع (Toggle Theme)
+            </button>
+        </div>
+        
+        <div class="card">
+            <h2 style="color: var(--text-primary);">عينات الألوان - Color Samples</h2>
+            <div class="color-samples">
+                <div class="color-box bg-primary">bg-primary</div>
+                <div class="color-box bg-secondary">bg-secondary</div>
+                <div class="color-box bg-card">bg-card</div>
+                <div class="color-box bg-accent">bg-accent</div>
+                <div class="color-box accent-primary">accent-primary</div>
+                <div class="color-box text-sample">
+                    <div style="color: var(--text-primary);">text-primary</div>
+                    <div style="color: var(--text-secondary);">text-secondary</div>
+                    <div style="color: var(--text-tertiary);">text-tertiary</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 style="color: var(--text-primary);">معلومات تقنية</h2>
+            <div id="tech-info" style="font-family: monospace; background: var(--bg-secondary); padding: 20px; border-radius: 8px; color: var(--text-secondary);"></div>
+        </div>
+    </div>
+    
+    <script>
+        function updateStatus() {
+            const theme = document.documentElement.getAttribute('data-theme') || 'light';
+            const status = document.getElementById('status');
+            status.textContent = `الوضع الحالي: ${theme === 'dark' ? '🌙 ليلي (Dark)' : '☀️ نهاري (Light)'}`;
+            
+            // Technical info
+            const techInfo = document.getElementById('tech-info');
+            const styles = getComputedStyle(document.documentElement);
+            techInfo.innerHTML = `
+                <strong>data-theme:</strong> ${theme}<br>
+                <strong>--bg-primary:</strong> ${styles.getPropertyValue('--bg-primary')}<br>
+                <strong>--text-primary:</strong> ${styles.getPropertyValue('--text-primary')}<br>
+                <strong>--accent-primary:</strong> ${styles.getPropertyValue('--accent-primary')}<br>
+                <strong>body background:</strong> ${getComputedStyle(document.body).backgroundColor}<br>
+                <strong>body color:</strong> ${getComputedStyle(document.body).color}
+            `;
+        }
+        
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            // Remove old class
+            document.documentElement.classList.remove('light-theme', 'dark-theme');
+            
+            // Add new class and attribute
+            document.documentElement.classList.add(`${newTheme}-theme`);
+            document.documentElement.setAttribute('data-theme', newTheme);
+            
+            // Save to localStorage
+            localStorage.setItem('theme', newTheme);
+            
+            updateStatus();
+        }
+        
+        // Load saved theme
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.classList.add(`${savedTheme}-theme`);
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateStatus();
+        });
+    </script>
+</body>
+</html>

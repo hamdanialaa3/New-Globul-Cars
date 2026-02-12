@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Cache - Cursor Browser</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .code-block {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Clear Cache - Cursor Browser</h1>
+        
+        <h2>Method 1: JavaScript Console Commands</h2>
+        <p>افتح Developer Console (F12) ثم انسخ والصق الأوامر التالية:</p>
+        
+        <div class="code-block" id="clearAll">
+// تنظيف شامل للكاش
+(async () => {
+    console.log('🧹 بدء تنظيف الكاش...');
+    
+    // 1. تنظيف localStorage
+    try {
+        localStorage.clear();
+        console.log('✅ تم تنظيف localStorage');
+    } catch (e) {
+        console.error('❌ خطأ في تنظيف localStorage:', e);
+    }
+    
+    // 2. تنظيف sessionStorage
+    try {
+        sessionStorage.clear();
+        console.log('✅ تم تنظيف sessionStorage');
+    } catch (e) {
+        console.error('❌ خطأ في تنظيف sessionStorage:', e);
+    }
+    
+    // 3. تنظيف جميع الـ Caches
+    if ('caches' in window) {
+        try {
+            const cacheNames = await caches.keys();
+            await Promise.all(
+                cacheNames.map(cacheName => {
+                    console.log(`🗑️ حذف cache: ${cacheName}`);
+                    return caches.delete(cacheName);
+                })
+            );
+            console.log('✅ تم تنظيف جميع الـ Caches');
+        } catch (e) {
+            console.error('❌ خطأ في تنظيف Caches:', e);
+        }
+    }
+    
+    // 4. إلغاء تسجيل Service Workers
+    if ('serviceWorker' in navigator) {
+        try {
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(
+                registrations.map(registration => {
+                    console.log(`🗑️ إلغاء تسجيل Service Worker: ${registration.scope}`);
+                    return registration.unregister();
+                })
+            );
+            console.log('✅ تم إلغاء تسجيل جميع Service Workers');
+        } catch (e) {
+            console.error('❌ خطأ في إلغاء تسجيل Service Workers:', e);
+        }
+    }
+    
+    // 5. تنظيف IndexedDB
+    if ('indexedDB' in window) {
+        try {
+            const databases = await indexedDB.databases();
+            await Promise.all(
+                databases.map(db => {
+                    console.log(`🗑️ حذف IndexedDB: ${db.name}`);
+                    return new Promise((resolve, reject) => {
+                        const deleteReq = indexedDB.deleteDatabase(db.name);
+                        deleteReq.onsuccess = () => resolve();
+                        deleteReq.onerror = () => reject(deleteReq.error);
+                        deleteReq.onblocked = () => resolve();
+                    });
+                })
+            );
+            console.log('✅ تم تنظيف IndexedDB');
+        } catch (e) {
+            console.error('❌ خطأ في تنظيف IndexedDB:', e);
+        }
+    }
+    
+    console.log('🎉 اكتمل تنظيف الكاش! قم بإعادة تحميل الصفحة (Ctrl+Shift+R)');
+    alert('✅ تم تنظيف الكاش بنجاح! قم بإعادة تحميل الصفحة (Ctrl+Shift+R)');
+})();
+        </div>
+        
+        <button onclick="copyToClipboard('clearAll')">📋 نسخ الكود</button>
+        
+        <h2>Method 2: Quick Clear (سريع)</h2>
+        <div class="code-block" id="quickClear">
+// تنظيف سريع
+localStorage.clear();
+sessionStorage.clear();
+if ('caches' in window) {
+    caches.keys().then(names => Promise.all(names.map(name => caches.delete(name))));
+}
+navigator.serviceWorker.getRegistrations().then(registrations => 
+    Promise.all(registrations.map(reg => reg.unregister()))
+);
+console.log('✅ تم تنظيف الكاش!');
+location.reload(true);
+        </div>
+        
+        <button onclick="copyToClipboard('quickClear')">📋 نسخ الكود</button>
+        
+        <h2>Method 3: Hard Reload</h2>
+        <p>اضغط على:</p>
+        <ul>
+            <li><strong>Windows/Linux:</strong> Ctrl + Shift + R أو Ctrl + F5</li>
+            <li><strong>Mac:</strong> Cmd + Shift + R</li>
+        </ul>
+        
+        <h2>Method 4: Clear via Browser Settings</h2>
+        <ol>
+            <li>اضغط F12 لفتح Developer Tools</li>
+            <li>اذهب إلى تبويب "Application" أو "Storage"</li>
+            <li>انقر بزر الماوس الأيمن على "Clear storage"</li>
+            <li>اختر "Clear site data"</li>
+        </ol>
+        
+        <div id="result"></div>
+    </div>
+    
+    <script>
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent.trim();
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const result = document.getElementById('result');
+                result.innerHTML = '<div class="success">✅ تم نسخ الكود إلى الحافظة!</div>';
+                setTimeout(() => {
+                    result.innerHTML = '';
+                }, 3000);
+            }).catch(err => {
+                const result = document.getElementById('result');
+                result.innerHTML = '<div class="error">❌ فشل النسخ. انسخ يدوياً.</div>';
+            });
+        }
+        
+        // Auto-run quick clear if requested
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('clear') === 'true') {
+            setTimeout(() => {
+                localStorage.clear();
+                sessionStorage.clear();
+                if ('caches' in window) {
+                    caches.keys().then(names => Promise.all(names.map(name => caches.delete(name))));
+                }
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.getRegistrations().then(registrations => 
+                        Promise.all(registrations.map(reg => reg.unregister()))
+                    );
+                }
+                alert('✅ تم تنظيف الكاش! سيتم إعادة تحميل الصفحة...');
+                location.reload(true);
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
+

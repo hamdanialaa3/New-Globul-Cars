@@ -1,0 +1,116 @@
+/* src/styles/loader-animations.css */
+/* Koli One Glass Sphere Loader Animations */
+/* Unified LED pulse design system */
+
+/* LED glow pulse animation */
+@keyframes led-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(255, 143, 16, 0.6));
+  }
+}
+
+/* LED orbit animation for indeterminate state */
+@keyframes led-orbit {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Sphere entrance animation */
+@keyframes sphere-entrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* LED complete flash when loading finishes */
+@keyframes led-complete {
+  0% {
+    filter: drop-shadow(0 0 24px rgba(255, 143, 16, 1));
+  }
+  50% {
+    filter: drop-shadow(0 0 32px rgba(255, 143, 16, 1));
+  }
+  100% {
+    filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.3));
+  }
+}
+
+/* Skeleton pulse animation - subtle LED glow aesthetic */
+@keyframes skeleton-pulse {
+  0%, 100% {
+    opacity: 1;
+    background-color: rgba(255, 143, 16, 0.03);
+  }
+  50% {
+    opacity: 0.8;
+    background-color: rgba(255, 143, 16, 0.08);
+  }
+}
+
+/* Utility classes */
+.animate-sphere-entrance {
+  animation: sphere-entrance 0.3s ease-out;
+}
+
+.animate-led-pulse {
+  animation: led-pulse 2s ease-in-out infinite;
+}
+
+.animate-led-orbit {
+  animation: led-orbit 1.2s linear infinite;
+}
+
+.animate-skeleton-pulse {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* Accessibility: Respect user preferences */
+@media (prefers-reduced-motion: reduce) {
+  .animate-sphere-entrance,
+  .animate-led-pulse,
+  .animate-led-orbit,
+  .animate-skeleton-pulse {
+    animation: none !important;
+  }
+  
+  *[data-loading] {
+    animation: none !important;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  @keyframes skeleton-pulse {
+    0%, 100% {
+      opacity: 1;
+      background-color: rgba(255, 143, 16, 0.05);
+    }
+    50% {
+      opacity: 0.8;
+      background-color: rgba(255, 143, 16, 0.12);
+    }
+  }
+}
+
+/* Print mode - hide all loading elements */
+@media print {
+  [data-loading],
+  .animate-sphere-entrance,
+  .animate-led-pulse,
+  .animate-led-orbit,
+  .animate-skeleton-pulse {
+    display: none !important;
+  }
+}

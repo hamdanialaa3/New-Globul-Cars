@@ -1,0 +1,57 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "types": ["vitest/globals", "@testing-library/jest-dom"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "downlevelIteration": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "tsBuildInfoFile": "./.tsbuildinfo",
+    "baseUrl": "src",
+    "paths": {
+      "@/services/*": ["services/*"],
+      "@/components/*": ["components/*"],
+      "@/contexts/*": ["contexts/*"],
+      "@/config/*": ["config/*"],
+      "@/utils/*": ["utils/*"],
+      "@/types/*": ["types/*"],
+      "@/hooks/*": ["hooks/*"],
+      "@/pages/*": ["pages/*"],
+      "@/firebase/*": ["firebase/*"],
+      "@/data/*": ["data/*"],
+      "@/constants/*": ["constants/*"],
+      "@/features/*": ["features/*"],
+      "@/assets/*": ["assets/*"],
+      "@globul-cars/core": ["../packages/core/src/index"],
+      "@globul-cars/core/*": ["../packages/core/src/*"],
+      "@globul-cars/services": ["../packages/services/src/index"],
+      "@globul-cars/services/*": ["../packages/services/src/*"]
+    }
+  },
+  "include": [
+    "src",
+    "src/types"
+  ],
+  "exclude": [
+    "src/locales/translations.ts",
+    "../DDD/**",
+    "../DEPRECATED_FILES_BACKUP/**",
+    "../dist/**"
+  ]
+}

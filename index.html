@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Google Consent Mode v2 - MUST BE FIRST -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+
+        // Consent mode default (GDPR-compliant - all denied until user consent)
+        gtag('consent', 'default', {
+            'ad_storage': 'denied',
+            'ad_user_data': 'denied',
+            'ad_personalization': 'denied',
+            'analytics_storage': 'denied',
+            'functionality_storage': 'granted',
+            'personalization_storage': 'denied',
+            'security_storage': 'granted',
+            'wait_for_update': 500
+        });
+
+        // Apply saved consent preferences if available
+        (function () {
+            try {
+                const saved = localStorage.getItem('consent_preferences');
+                if (saved) {
+                    const preferences = JSON.parse(saved);
+                    const { timestamp, ...settings } = preferences;
+
+                    // Check if preferences are still valid (7 days)
+                    const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+                    if (timestamp && Date.now() - timestamp <= sevenDaysMs) {
+                        gtag('consent', 'update', settings);
+                    }
+                }
+            } catch (e) {
+                // Silent fail - will use default consent
+            }
+        })();
+    </script>
+
+    <!-- Google Tag Manager (deferred to prevent layout forced warning) -->
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            var w = window, d = document, l = 'dataLayer', i = 'GTM-MKZSPCNC';
+            w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+            var j = d.createElement('script'), dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            d.head.appendChild(j);
+        });
+    </script>
+    <!-- End Google Tag Manager -->
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R8JY5KM421"></script>
+    <script>
+        const analyticsCookieDomain = window.location.hostname || 'koli.one';
+        gtag('js', new Date());
+        gtag('config', 'G-R8JY5KM421', {
+            cookie_domain: analyticsCookieDomain,
+            cookie_flags: 'SameSite=None;Secure',
+            send_page_view: true
+        });
+    </script>
+
+    <!-- Facebook Pixel Code -->
+    <script>
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return; n = f.fbq = function () {
+                n.callMethod ?
+                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+            n.queue = []; t = b.createElement(e); t.async = !0;
+            t.src = v; s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '2026958077871354');
+        fbq('track', 'PageView');
+    </script>
+    <!-- End Facebook Pixel Code -->
+
+    <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, private" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta http-equiv="Last-Modified" content="0" />
+    <meta name="cache-control" content="no-cache" />
+    <meta name="expires" content="0" />
+    <link rel="stylesheet" href="/styles/koli-one-logo.css" />
+    <!-- 🎨 Official Koli One Logo - Used Everywhere -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" href="/logo.png" sizes="any" />
+    <link rel="icon" type="image/png" href="/favicon.png" sizes="192x192" />
+    <link rel="shortcut icon" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="theme-color" content="#FF7900" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Koli One" />
+    <meta name="description"
+        content="Koli One - Български автомобили - Най-добрата платформа за автомобили в България" />
+    
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://koli.one/" />
+    <meta property="og:title" content="Koli One - Български автомобили" />
+    <meta property="og:description" content="Най-добрата платформа за покупка и продажба на автомобили в България" />
+    <meta property="og:image" content="https://koli.one/logo.png" />
+    <meta property="og:site_name" content="Koli One" />
+    <meta property="og:locale" content="bg_BG" />
+    <meta property="fb:app_id" content="2026958077871354" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://koli.one/" />
+    <meta name="twitter:title" content="Koli One - Български автомобили" />
+    <meta name="twitter:description" content="Най-добрата платформа за покупка и продажба на автомобили в България" />
+    <meta name="twitter:image" content="https://koli.one/logo.png" />
+    <meta name="twitter:site" content="@kolionebg" />
+    <meta name="twitter:creator" content="@kolionebg" />
+    
+    <!-- Social Media Profile Links -->
+    <link rel="me" href="https://www.facebook.com/koli.one/" />
+    <link rel="me" href="https://www.instagram.com/kolione/" />
+    <link rel="me" href="https://www.youtube.com/@Kolionebg" />
+    <link rel="me" href="https://www.linkedin.com/in/koli-one-a011993a9/" />
+    <link rel="me" href="https://x.com/kolionebg" />
+    <link rel="me" href="https://www.tiktok.com/@kolione" />
+    <link rel="me" href="https://www.threads.com/@kolione" />
+    
+    <!-- 🎨 Official Koli One Logo - Apple Devices -->
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="/manifest.json" />
+    <link href="https://fonts.cdnfonts.com/css/martica" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="https://fonts.cdnfonts.com/css/martica" rel="stylesheet" /></noscript>
+
+    <!-- Print Styles -->
+    <link rel="stylesheet" href="/print-only.css" media="print" />
+
+    <!-- Google Maps API with Places library and Bulgarian language -->
+    <!-- Load Google Maps JS API with loading=async parameter for best performance -->
+    <!-- API key injected from VITE_GOOGLE_MAPS_API_KEY environment variable at build time -->
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=%VITE_GOOGLE_MAPS_API_KEY%&libraries=places&language=bg&loading=async"
+        async defer></script>
+
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+    <title>Koli One - Български автомобили</title>
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;800&family=Playfair+Display:wght@700&display=swap" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;800&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet" media="print" onload="this.media='all'" />
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Caveat:wght@400;700&family=Dancing+Script:wght@700&display=swap" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Caveat:wght@400;700&family=Dancing+Script:wght@700&display=swap"
+        rel="stylesheet" media="print" onload="this.media='all'" />
+    <style>
+        /* --- KOLI ONE GLASS SPHERE LOADER --- */
+        #loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(5, 5, 10, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 99999;
+            font-family: 'Exo 2', sans-serif;
+            transition: opacity 0.5s ease;
+        }
+
+        .sphere-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .glass-sphere {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(
+                circle at 35% 35%,
+                rgba(255, 255, 255, 0.25) 0%,
+                rgba(255, 143, 16, 0.15) 25%,
+                rgba(255, 143, 16, 0.08) 50%,
+                rgba(0, 0, 0, 0.3) 100%
+            );
+            box-shadow:
+                0 0 25px rgba(255, 143, 16, 0.4),
+                inset 0 -10px 20px rgba(0, 0, 0, 0.4),
+                inset 0 10px 20px rgba(255, 255, 255, 0.1);
+            z-index: 1;
+        }
+
+        .led-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0deg,
+                #FF8F10 30deg,
+                #FFB366 60deg,
+                #FF8F10 90deg,
+                transparent 100deg,
+                transparent 360deg
+            );
+            mask-image: radial-gradient(
+                circle,
+                transparent 56px,
+                black 56px,
+                black 59px,
+                transparent 59px
+            );
+            -webkit-mask-image: radial-gradient(
+                circle,
+                transparent 56px,
+                black 56px,
+                black 59px,
+                transparent 59px
+            );
+            filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.8));
+            animation: led-orbit 1.2s linear infinite, led-pulse 2s ease-in-out infinite;
+            z-index: 2;
+        }
+
+        .sphere-logo {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            z-index: 3;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .brand-text {
+            margin-top: 32px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #ffffff;
+            text-shadow: 0 0 15px rgba(255, 143, 16, 0.6);
+        }
+
+        @keyframes led-orbit {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes led-pulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.8));
+            }
+            50% {
+                filter: drop-shadow(0 0 16px rgba(255, 143, 16, 1));
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .led-ring {
+                animation: led-pulse 2s ease-in-out infinite;
+            }
+            @keyframes led-orbit {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(0deg); }
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MKZSPCNC" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+
+    <!-- Facebook Pixel Code (noscript fallback) -->
+    <noscript>
+        <img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id=2026958077871354&ev=PageView&noscript=1" />
+    </noscript>
+    <!-- End Facebook Pixel Code -->
+
+    <!-- KOLI ONE GLASS SPHERE LOADER -->
+    <div id="loader-container">
+        <div class="sphere-wrapper">
+            <div class="glass-sphere"></div>
+            <div class="led-ring"></div>
+            <img src="/koli_one_ai_Icon2.png" class="sphere-logo" alt="Koli One" />
+        </div>
+        <div class="brand-text">Koli One</div>
+    </div>
+
+    <div id="root"></div>
+
+    <!-- Hide loader when React mounts -->
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            var rootEl = document.getElementById('root');
+            var loaderEl = document.getElementById('loader-container');
+            
+            if (rootEl && loaderEl) {
+                var observer = new MutationObserver(function(mutations) {
+                    if (rootEl.children.length > 0) {
+                        loaderEl.style.opacity = '0';
+                        setTimeout(function() {
+                            loaderEl.style.display = 'none';
+                        }, 500);
+                        observer.disconnect();
+                    }
+                });
+                
+                observer.observe(rootEl, { childList: true, subtree: false });
+            }
+        });
+    </script>
+
+    <!-- REACT APP ENTRY POINT -->
+    <script type="module" src="/src/index.tsx"></script>
+    
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+</body>
+
+</html>

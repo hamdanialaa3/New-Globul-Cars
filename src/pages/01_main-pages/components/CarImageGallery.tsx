@@ -1,0 +1,264 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { Crown } from 'lucide-react';
+import { CarIcon } from '../../../components/icons/CarIcon';
+import { CarListing } from '../../../types/CarListing';
+import {
+  ImageSection,
+  LogoContainer,
+  LogoImage,
+  LogoBrandName,
+  GalleryContainer,
+  GalleryTitle,
+  MainImageContainer,
+  MainImage,
+  ImageCount,
+  ThumbnailGrid,
+  ThumbnailItem,
+  ThumbnailImage,
+  ImagePlaceholder,
+  PhotoUploadSection,
+  PhotoUploadTitle,
+  PhotoUploadArea,
+  UploadIcon,
+  UploadText,
+  ChoosePhotosButton,
+  HiddenFileInput,
+  PhotoGrid,
+  PhotoItem,
+  PhotoImg,
+  PhotoRemoveButton,
+} from '../CarDetailsPage.styles';
+
+interface CarImageGalleryProps {
+  car: CarListing;
+  isEditMode: boolean;
+  isOwner: boolean;
+  language: 'bg' | 'en';
+  photos: File[];
+  photoUrls: string[];
+  isDragOver: boolean;
+  onImageSelect: (files: FileList | null) => void;
+  onImageDelete: (imageUrl: string) => Promise<string[] | null>;
+  onDragOver: (e: React.DragEvent) => void;
+  onDragLeave: () => void;
+  onDrop: (e: React.DragEvent) => void;
+  onRemovePhoto: (index: number) => void;
+  onSetFeatured?: (index: number) => void;
+}
+
+export const CarImageGallery: React.FC<CarImageGalleryProps> = ({
+  car,
+  isEditMode,
+  isOwner,
+  language,
+  photos,
+  photoUrls,
+  isDragOver,
+  onImageSelect,
+  onImageDelete,
+  onDragOver,
+  onDragLeave,
+  onDrop,
+  onRemovePhoto,
+  onSetFeatured,
+}) => {
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const featuredIdx = car.featuredImageIndex ?? 0;
+  const previewUrlsRef = useRef<Map<number, string>>(new Map());
+
+  // Cleanup preview URLs for File objects
+  useEffect(() => {
+    previewUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
+    previewUrlsRef.current.clear();
+
+    car.images?.forEach((image, index) => {
+      if (typeof image !== 'string') {
+        const url = URL.createObjectURL(image);
+        previewUrlsRef.current.set(index, url);
+      }
+    });
+
+    return () => {
+      previewUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
+      previewUrlsRef.current.clear();
+    };
+  }, [car.images]);
+
+  const handleDeleteImage = async (e: React.MouseEvent, imageUrl: string) => {
+    e.stopPropagation();
+    const updatedImages = await onImageDelete(imageUrl);
+    if (updatedImages && updatedImages.length > 0 && selectedImageIndex >= updatedImages.length) {
+      setSelectedImageIndex(updatedImages.length - 1);
+    }
+  };
+
+  // ✅ SEO: Dynamic Alt Text Generator
+  const getAltText = (index: number) => {
+    const cityName = car.locationData?.cityName || car.city || (language === 'bg' ? 'България' : 'Bulgaria');
+    const colorName = car.color || (language === 'bg' ? 'неизвестен цвят' : 'unknown color');
+    const action = language === 'bg' ? 'за продажба в' : 'for sale in';
+
+    return `${car.make} ${car.model} ${car.year} ${colorName} ${action} ${cityName} - photo ${index + 1}`;
+  };
+
+  return (
+    <ImageSection>
+      {car.make && (
+        <LogoContainer>
+          <LogoImage
+            src={`/assets/images/professional_car_logos/${car.make}.png`}
+            alt={car.make}
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = `/assets/images/professional_car_logos/mein_logo_rest.png`;
+            }}
+          />
+          <LogoBrandName>{car.make}</LogoBrandName>
+        </LogoContainer>
+      )}
+
+      {car.images && car.images.length > 0 && (
+        <GalleryContainer>
+          <GalleryTitle>
+            {language === 'bg' ? 'Снимки на превозното средство' : 'Vehicle Photos'} ({car.images.length})
+          </GalleryTitle>
+
+          <MainImageContainer>
+            <MainImage
+              src={
+                typeof car.images[selectedImageIndex] === 'string'
+                  ? String(car.images[selectedImageIndex])
+                  : previewUrlsRef.current.get(selectedImageIndex) || ''
+              }
+              alt={getAltText(selectedImageIndex)}
+            />
+            <ImageCount>{selectedImageIndex + 1} / {car.images.length}</ImageCount>
+          </MainImageContainer>
+
+          <ThumbnailGrid>
+            {car.images.map((image, index) => (
+              <ThumbnailItem
+                key={index}
+                $isActive={index === selectedImageIndex}
+                onClick={() => setSelectedImageIndex(index)}
+                style={index === featuredIdx ? { border: '2px solid #d4a017', boxShadow: '0 0 6px rgba(212,160,23,0.4)' } : undefined}
+              >
+                {index === featuredIdx && (
+                  <span style={{ position: 'absolute', top: 2, left: 2, zIndex: 3, background: 'rgba(212,160,23,0.9)', color: '#fff', fontSize: '0.6rem', padding: '1px 4px', borderRadius: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Crown size={10} />
+                    {language === 'bg' ? 'Основна' : 'Featured'}
+                  </span>
+                )}
+                {isOwner && onSetFeatured && index !== featuredIdx && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onSetFeatured(index); }}
+                    title={language === 'bg' ? 'Задай като основна' : 'Set as featured'}
+                    style={{ position: 'absolute', top: 2, right: 2, zIndex: 3, background: 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '50%', width: 24, height: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
+                  >
+                    <Crown size={12} />
+                  </button>
+                )}
+                <ThumbnailImage
+                  src={typeof image === 'string' ? String(image) : previewUrlsRef.current.get(index) || ''}
+                  alt={getAltText(index)}
+                  onError={(e) => { (e.target as HTMLImageElement).src = '/images/placeholder.png'; }}
+                />
+                {isEditMode && isOwner && (
+                  <PhotoRemoveButton
+                    onClick={(e) => handleDeleteImage(e, typeof image === 'string' ? image : '')}
+                    title={language === 'bg' ? 'Изтрий снимка' : 'Delete image'}
+                  >
+                    x
+                  </PhotoRemoveButton>
+                )}
+              </ThumbnailItem>
+            ))}
+          </ThumbnailGrid>
+        </GalleryContainer>
+      )}
+
+      {(!car.images || car.images.length === 0) && (
+        <div style={{ marginTop: '2rem' }}>
+          <ImagePlaceholder>
+            <CarIcon size={60} color="var(--accent-primary)" />
+          </ImagePlaceholder>
+          <p style={{ textAlign: 'center', color: 'var(--text-tertiary)', fontSize: '0.875rem', marginTop: '1rem' }}>
+            {language === 'bg' ? 'Няма налични снимки' : 'No photos available'}
+          </p>
+        </div>
+      )}
+
+      {/* Photo Upload Section */}
+      {isEditMode && isOwner && (
+        <PhotoUploadSection style={{ marginTop: '1rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+            <PhotoUploadTitle>
+              {language === 'bg' ? 'Добави снимки' : 'Add Photos'}
+            </PhotoUploadTitle>
+            <span style={{ fontSize: '0.688rem', color: 'var(--text-tertiary)', fontWeight: 500 }}>
+              {car?.images?.length || 0} + {photos.length} / 20
+            </span>
+          </div>
+
+          <PhotoUploadArea
+            $isDragOver={isDragOver}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            onDrop={onDrop}
+            onClick={() => document.getElementById('photo-upload-main')?.click()}
+          >
+            <UploadIcon>
+              <svg width="40" height="40" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="32" cy="32" r="30" fill="url(#camera-gradient-compact)" opacity="0.2" />
+                <path d="M23 18L26 14H38L41 18H50C51.1 18 52 18.9 52 20V46C52 47.1 51.1 48 50 48H14C12.9 48 12 47.1 12 46V20C12 18.9 12.9 18 14 18H23Z" fill="url(#camera-body-compact)" />
+                <circle cx="32" cy="32" r="8" fill="url(#lens-gradient-compact)" />
+                <circle cx="32" cy="32" r="5" fill="white" opacity="0.3" />
+                <defs>
+                  <linearGradient id="camera-gradient-compact" x1="2" y1="2" x2="62" y2="62" gradientUnits="userSpaceOnUse">
+                    <stop style={{ stopColor: 'var(--accent-primary)' }} />
+                    <stop offset="1" style={{ stopColor: 'var(--accent-light)' }} />
+                  </linearGradient>
+                  <linearGradient id="camera-body-compact" x1="12" y1="14" x2="52" y2="48" gradientUnits="userSpaceOnUse">
+                    <stop style={{ stopColor: 'var(--accent-primary)' }} />
+                    <stop offset="1" style={{ stopColor: 'var(--accent-light)' }} />
+                  </linearGradient>
+                  <linearGradient id="lens-gradient-compact" x1="24" y1="24" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                    <stop style={{ stopColor: 'var(--text-primary)' }} />
+                    <stop offset="1" style={{ stopColor: 'var(--text-secondary)' }} />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </UploadIcon>
+            <UploadText>
+              {language === 'bg' ? 'Drag & Drop или кликнете' : 'Drag & Drop or click'}
+            </UploadText>
+            <ChoosePhotosButton type="button">
+              {language === 'bg' ? 'Избери' : 'Choose'}
+            </ChoosePhotosButton>
+            <HiddenFileInput
+              id="photo-upload-main"
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={(e) => onImageSelect(e.target.files)}
+            />
+          </PhotoUploadArea>
+
+          {photoUrls.length > 0 && (
+            <PhotoGrid>
+              {photoUrls.map((url, index) => (
+                <PhotoItem key={index}>
+                  <PhotoImg src={url} alt={`Photo ${index + 1}`} />
+                  <PhotoRemoveButton onClick={() => onRemovePhoto(index)}>
+                    ×
+                  </PhotoRemoveButton>
+                </PhotoItem>
+              ))}
+            </PhotoGrid>
+          )}
+        </PhotoUploadSection>
+      )}
+    </ImageSection>
+  );
+};
+

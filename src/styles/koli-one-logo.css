@@ -1,0 +1,93 @@
+/* 
+ * Koli One Logo - Global Styles
+ * Ensures consistent, clear, and professional logo display across all pages
+ * Applied automatically to all logo instances
+ */
+
+/* Main logo styling for transparent background */
+img[src*="koli-one"],
+img[src*="Logo.png"],
+img[src*="Logo1.png"] {
+  /* Remove any background */
+  background: transparent !important;
+  
+  /* Optimal sizing for clarity */
+  min-width: 120px;
+  max-width: 200px;
+  height: auto;
+  
+  /* Ensure proper rendering */
+  object-fit: contain;
+  object-position: center;
+  
+  /* Smooth rendering */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  
+  /* Remove any padding/margin that might create white box effect */
+  padding: 0;
+  margin: 0;
+  
+  /* Ensure transparency is respected */
+  mix-blend-mode: normal;
+}
+
+/* Header logo - larger and more prominent */
+header img[src*="koli-one"],
+header img[src*="Logo"] {
+  min-width: 140px;
+  max-width: 220px;
+  height: auto;
+}
+
+/* Footer logo - medium size */
+footer img[src*="koli-one"],
+footer img[src*="Logo"] {
+  min-width: 120px;
+  max-width: 180px;
+  height: auto;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  img[src*="koli-one"],
+  img[src*="Logo.png"],
+  img[src*="Logo1.png"] {
+    min-width: 100px;
+    max-width: 150px;
+  }
+  
+  header img[src*="koli-one"],
+  header img[src*="Logo"] {
+    min-width: 110px;
+    max-width: 160px;
+  }
+}
+
+/* Loading screens and splash */
+.loader img[src*="koli-one"],
+.splash img[src*="koli-one"] {
+  min-width: 150px;
+  max-width: 250px;
+  height: auto;
+}
+
+/* Prevent white box effect on any container */
+*[class*="logo" i],
+*[class*="Logo" i] {
+  background: transparent !important;
+}
+
+/* Icon sizes (favicon, meta tags) */
+link[rel="icon"][href*="koli-one"],
+link[rel="apple-touch-icon"][href*="koli-one"] {
+  /* Browser will handle these automatically */
+}
+
+/* Notification icons */
+.notification img[src*="koli-one"],
+.notification-icon[src*="koli-one"] {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}

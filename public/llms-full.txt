@@ -1,0 +1,381 @@
+# Koli One — Full Platform Reference
+
+> This document provides comprehensive information about Koli One (koli.one) for AI models, search engines, and automated systems. Last updated: 2026-02-12.
+
+---
+
+## 1. Platform Overview
+
+**Koli One** (https://koli.one) is Bulgaria's leading AI-powered car marketplace platform. Built by Alaa Technologies and headquartered in Sofia, Bulgaria, it serves as a comprehensive ecosystem for buying and selling vehicles.
+
+The platform combines a modern web application with a native mobile app, offering AI-driven tools for pricing, listing optimization, vehicle analysis, and market intelligence. It supports the Bulgarian and English languages and operates primarily in the Bulgarian automotive market.
+
+### Mission
+To democratize car trading in Bulgaria by making it faster, smarter, and more transparent through AI technology.
+
+### Key Stats
+- 776+ React components
+- 80+ routes and pages
+- 404+ service modules
+- 30+ AI service files
+- Coverage: 29 Bulgarian cities, 26+ car brands
+- Bilingual: Bulgarian (primary), English
+
+---
+
+## 2. Users and Roles
+
+### User Types
+
+**Guest (Visitor)**
+- Browse all listings without registration
+- View car details, photos, and specifications
+- Use basic search and filters
+- Access public pages (blog, FAQ, about, pricing)
+
+**Free Seller (Registered)**
+- Publish up to 3 listings per month
+- Basic AI features (3 AI advisor chats, 1 valuation)
+- Receive buyer messages
+- Draft saving and resume
+
+**Professional Dealer (€50/month or €480/year)**
+- Up to 100 listings per month
+- Bulk upload via CSV with image ZIP
+- Featured listing placement
+- Basic analytics dashboard
+- Marketing campaigns
+- Priority support
+- Team access (up to 3 members)
+
+**Corporate / Enterprise (€500/month or €4,800/year)**
+- Unlimited listings
+- Full API access with webhooks
+- Advanced analytics
+- Custom branding
+- Dedicated account manager
+- Team access (up to 20 members)
+- Email marketing tools
+- SLA guarantees
+
+**Support Agent**
+- Access to support tools and user logs
+- Account recovery assistance
+- Limited administrative capabilities
+
+**System Administrator**
+- Full system management
+- User and content moderation
+- Subscription and billing management
+- Audit log access
+
+---
+
+## 3. Core Features
+
+### 3.1 Sell Wizard
+A multi-step guided workflow for creating car listings:
+1. Select make, model, year
+2. Enter technical specifications (mileage, fuel type, transmission, engine size, power, color, doors)
+3. Set price (manual or AI-suggested)
+4. Upload photos (up to 10, client-side compressed, resumable uploads)
+5. Write description (manual or AI-generated)
+6. Review and publish
+
+Supports draft saving — users can close and resume later.
+
+### 3.2 AI Valuation
+Machine learning model that estimates fair market price based on:
+- Bulgarian market transaction data
+- Vehicle specifications (make, model, year, mileage, condition)
+- Regional pricing differences across Bulgarian cities
+- Historical sales trends
+- Seasonal demand patterns
+
+### 3.3 AI Description Generator
+Automatically generates SEO-optimized listing descriptions:
+- Available in Bulgarian and English
+- Highlights key selling points
+- Uses proper automotive terminology
+- Optimized for search engine visibility
+
+### 3.4 AI Car Advisor
+Interactive chat assistant powered by Gemini AI:
+- Car recommendations based on budget and needs
+- Market insights and trends
+- Comparison between models
+- Buying guidance and tips
+- Available in Bulgarian and English
+
+### 3.5 AI Vision
+Computer vision capabilities for vehicle images:
+- Vehicle condition assessment
+- Damage detection and severity estimation
+- License plate recognition
+- Image quality scoring
+- Background removal suggestions
+
+### 3.6 Smart Search
+Hybrid search combining Algolia and Firestore:
+- Natural language query parsing ("blue BMW under 20000 euros in Sofia")
+- Faceted filtering (brand, model, year range, price range, fuel type, city, condition)
+- AI-powered query understanding
+- Real-time results with typo tolerance
+
+### 3.7 Messaging System
+Built-in buyer-seller communication:
+- Real-time chat using Firebase Realtime Database
+- Presence indicators (online/offline)
+- Push notifications
+- Message history and archiving
+- AI smart reply suggestions
+
+### 3.8 Analytics
+Performance tracking for listings:
+- Views, clicks, and contact rate (CTR)
+- Listing performance over time
+- Market demand indicators
+- Campaign ROI tracking
+- Competitive pricing insights
+
+### 3.9 Dealer Bulk Tools
+Enterprise-grade listing management:
+- CSV import with image ZIP upload
+- Batch editing and status management
+- Inventory synchronization
+- Featured listing management
+- Team collaboration
+
+### 3.10 API and Webhooks (Enterprise)
+Programmatic access for integrations:
+- RESTful API for listings CRUD
+- Webhook notifications for events (listing.created, listing.updated, subscription.paid)
+- JWT authentication with scopes
+- Rate limiting: 100 req/min (default), higher for Enterprise
+
+---
+
+## 4. Subscription Plans — Detailed
+
+### Listing Plans
+
+| Feature | Free | Dealer (€50/mo) | Company (€500/mo) |
+|---------|------|------------------|--------------------|
+| Listings per month | 3 | 100 | Unlimited |
+| Bulk upload | No | Yes (CSV + ZIP) | Yes |
+| Featured listings | No | Yes | Yes |
+| Analytics | Basic | Standard | Advanced |
+| API access | No | No | Yes |
+| Webhooks | No | No | Yes |
+| Team members | 1 | 3 | 20 |
+| Custom branding | No | No | Yes |
+| Dedicated manager | No | No | Yes |
+| Priority support | No | Yes | Yes |
+| Annual pricing | — | €480/year (20% off) | €4,800/year (20% off) |
+
+### AI Feature Plans
+
+| Feature | Free | Basic (€9.99/mo) | Professional (€29.99/mo) | Enterprise (€99.99/mo) |
+|---------|------|-------------------|--------------------------|------------------------|
+| AI Advisor chats | 3/month | 20/month | 100/month | Unlimited |
+| AI Valuations | 1/month | 10/month | 50/month | Unlimited |
+| Car History reports | 0 | 5/month | 20/month | Unlimited |
+| Advanced analytics | No | No | Yes | Yes |
+| Bulk operations | No | No | Yes | Yes |
+| API access | No | No | No | Yes |
+| Custom branding | No | No | No | Yes |
+| Annual pricing | — | €99/year | €299/year | €999/year |
+
+### Policies
+- **Upgrade**: Instant, prorated credit for remaining period
+- **Downgrade**: Effective at end of billing cycle
+- **Cancellation**: Anytime, access until end of paid period
+- **Money-back guarantee**: 30 days for paid plans
+- **Payment methods**: Manual bank transfer (iCard/Revolut)
+
+---
+
+## 5. Technology Stack
+
+### Web Application
+- **Framework**: React 18 with TypeScript 5.9 (strict mode)
+- **Build Tool**: Vite 5.4
+- **Styling**: Styled-Components 6
+- **Forms**: React Hook Form + Zod validation
+- **State**: React Context + custom hooks
+- **Charts**: Recharts
+- **Maps**: Google Maps + Leaflet
+- **SEO**: react-helmet-async, JSON-LD generators, Cloud Function prerendering
+
+### Mobile Application
+- **Framework**: Expo SDK 54 with React Native 0.81
+- **Router**: Expo Router 6
+- **State**: Zustand
+- **Auth**: Firebase 11 + Google Sign-In
+- **Styling**: styled-components/native
+- **Maps**: react-native-maps
+
+### Backend
+- **Platform**: Firebase (Google Cloud)
+- **Database**: Cloud Firestore (primary), Realtime Database (messaging)
+- **Auth**: Firebase Authentication (email, Google, phone)
+- **Functions**: Cloud Functions for Firebase (Node.js 20)
+- **Storage**: Firebase Storage (images, documents)
+- **Search**: Algolia (real-time indexing)
+- **Monitoring**: Sentry (errors), Google Analytics
+
+### AI Infrastructure
+- **Primary Model**: Google Gemini (quality-first)
+- **Cost Model**: DeepSeek (budget operations)
+- **Premium Model**: GPT-4 (high-stakes valuations)
+- **Router**: AI Smart Router — dynamically selects model based on task complexity and budget
+- **Quota System**: Tiered usage with per-user tracking
+- **30+ AI services**: valuation, description, vision, search, recommendations, sentiment, NLU, voice (Whisper)
+
+---
+
+## 6. SEO Infrastructure
+
+### Programmatic Pages
+- **72 city-brand SEO pages**: `/bmw-sofia`, `/audi-plovdiv`, etc.
+- **City landing pages**: `/koli/sofia`, `/koli/plovdiv`, etc.
+- **Brand-city pages**: `/koli/sofia/bmw`
+- **18+ showcase pages**: `/cars/electric`, `/cars/hybrid`, `/cars/suv`, `/cars/family`, `/cars/sport`, `/cars/vip`, `/cars/classic`, `/cars/budget`, etc.
+
+### Structured Data
+- Vehicle/Product schema for every car listing (Rich Snippets, Google Shopping)
+- Organization schema for homepage and about page
+- BreadcrumbList for navigation (Sitelinks)
+- FAQPage schema for FAQ sections
+- VideoObject for Stories (Video Carousel)
+- AutoDealer for dealer profiles (Local Pack + Maps)
+
+### Feeds
+- Google Merchant Center product feed (`/feed/products.xml`)
+- TikTok Shopping feed
+- Instagram catalog feed
+- Google Ads sync
+- Facebook Ads sync
+
+### Prerendering
+- Server-side prerendering via Cloud Function for bot crawlers
+- Full HTML with meta tags, JSON-LD, and OG tags for car detail and profile pages
+- 6-hour in-memory cache
+
+---
+
+## 7. Public Routes and Pages
+
+### No Authentication Required
+| Route | Description |
+|-------|-------------|
+| `/` | Homepage — hero, featured cars, brands, stats, trust indicators |
+| `/search` | Full search with Algolia |
+| `/advanced-search` | Advanced multi-faceted search |
+| `/car/:sellerId/:carId` | Individual car listing detail |
+| `/advisor` | AI Car Advisor chat |
+| `/valuation` | AI Car Valuation tool |
+| `/history` | AI Car History reports |
+| `/financing` | Financing calculator |
+| `/financing/compare` | Financing comparison tool |
+| `/marketplace` | Parts and accessories |
+| `/blog` | Blog index |
+| `/blog/:slug` | Individual blog post |
+| `/about` | About Koli One |
+| `/contact` | Contact information |
+| `/help` | Help center |
+| `/why-us` | Value proposition |
+| `/top-brands` | Popular car brands |
+| `/auctions` | Car auctions |
+| `/map` | Map analytics |
+| `/social` | Social feed |
+| `/dealer/:slug` | Dealer public profile |
+| `/privacy-policy` | Privacy policy |
+| `/terms-of-service` | Terms of service |
+| `/data-deletion` | Data deletion request |
+| `/cookie-policy` | Cookie policy |
+| `/sitemap` | HTML sitemap |
+
+---
+
+## 8. Security and Privacy
+
+- **Data encryption**: At rest and in transit
+- **Authentication**: Firebase Auth with MFA support (TOTP, WebAuthn, SMS)
+- **Authorization**: Role-based access control (RBAC) via Firestore Security Rules
+- **Secrets management**: Google Cloud Secret Manager (no secrets in code)
+- **Image security**: Signed URLs with TTL, orphan image cleanup via Cloud Function
+- **GDPR compliance**: Data export, deletion on request, cookie consent (Consent Mode v2)
+- **Code security**: SAST/DAST in CI, npm audit, dependency scanning
+- **Content Security Policy**: Strict CSP headers via Firebase Hosting
+- **Incident response**: Documented playbooks for detection, containment, recovery
+
+---
+
+## 9. Company Information
+
+- **Legal Name**: Alaa Technologies
+- **Brand Name**: Koli One
+- **Website**: https://koli.one
+- **Location**: Sofia, Bulgaria
+- **Founded**: 2024
+- **Contact**: support@koli.one
+- **Social Media**:
+  - Facebook: https://www.facebook.com/koli.one/
+  - Instagram: https://www.instagram.com/kolione/
+  - YouTube: https://www.youtube.com/@Kolionebg
+  - LinkedIn: https://www.linkedin.com/in/koli-one-a011993a9/
+  - X (Twitter): https://x.com/kolionebg
+  - TikTok: https://www.tiktok.com/@kolione
+  - Threads: https://www.threads.com/@kolione
+
+---
+
+## 10. Frequently Asked Questions
+
+**Q: What is Koli One?**
+A: Koli One (koli.one) is Bulgaria's leading AI-powered car marketplace. It enables users to buy and sell cars with AI-driven pricing, automatic description generation, and smart search.
+
+**Q: Is Koli One free to use?**
+A: Yes. Browsing and searching is completely free. Sellers can list up to 3 cars per month for free. Paid plans offer more listings and advanced features.
+
+**Q: How does AI Valuation work?**
+A: Our AI analyzes Bulgarian market data, vehicle specifications, mileage, condition, and regional trends to estimate a fair market price. It uses machine learning models trained on real transaction data.
+
+**Q: What languages does Koli One support?**
+A: Bulgarian (primary) and English. The interface, AI assistant, and generated descriptions are available in both languages.
+
+**Q: How do I list a car?**
+A: Create a free account, go to the Sell section, follow the step-by-step wizard (specs, photos, price, description), and publish. You can save drafts and resume later.
+
+**Q: Is my data safe?**
+A: Yes. We use encryption at rest and in transit, Firebase Authentication with MFA, strict database rules, and comply with GDPR. Photos are stored securely with signed URLs.
+
+**Q: Do you offer an API?**
+A: Yes, for Enterprise/Company plan subscribers. The API supports listing CRUD operations, webhooks for events, and JWT authentication.
+
+**Q: How is Koli One different from mobile.bg or auto.bg?**
+A: Koli One is AI-first — we offer AI-powered pricing, automatic SEO descriptions, smart search with natural language, vision-based vehicle analysis, and modern mobile apps. Traditional platforms lack these AI capabilities.
+
+**Q: Which cities are covered?**
+A: All major Bulgarian cities including Sofia, Plovdiv, Varna, Burgas, Ruse, Stara Zagora, Pleven, Dobrich, Sliven, Shumen, Pernik, Haskovo, Yambol, Pazardzhik, Blagoevgrad, Veliko Tarnovo, Vratsa, Gabrovo, Asenovgrad, Vidin, Kazanlak, Kardzhali, Targovishte, Kyustendil, Montana, Dimitrovgrad, Lovech, Silistra, and Razgrad.
+
+**Q: Can I use Koli One on mobile?**
+A: Yes. We have a responsive web app and a native mobile app for iOS and Android built with Expo/React Native.
+
+---
+
+## 11. Competitive Advantages
+
+1. **AI-First Approach**: Only Bulgarian car marketplace with integrated AI valuation, description generation, and vision analysis
+2. **Modern Technology**: React + TypeScript + Vite (not legacy PHP/jQuery like competitors)
+3. **Mobile-Native**: Full-featured mobile app, not just a responsive website
+4. **Smart Search**: Natural language queries ("blue BMW under 20000 in Sofia") vs. basic form filters
+5. **Dealer Automation**: Bulk upload, API, webhooks — enterprise-grade tools
+6. **Transparent Pricing**: AI-backed valuations help sellers and buyers understand fair prices
+7. **SEO Excellence**: 72+ programmatic city-brand pages, full Schema.org implementation, Google Merchant feed
+8. **Privacy-First**: GDPR compliant, strict security, no data selling
+
+---
+
+*This document is maintained by Alaa Technologies. For updates, visit https://koli.one or contact support@koli.one.*

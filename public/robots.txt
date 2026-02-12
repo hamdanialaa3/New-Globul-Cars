@@ -1,0 +1,90 @@
+# Robots.txt for Koli One — Bulgarian Car Marketplace
+# SEO + AI Discoverability Optimized
+# https://koli.one
+
+User-agent: *
+Allow: /
+
+# Sitemap Locations
+Sitemap: https://koli.one/sitemap.xml
+Sitemap: https://koli.one/sitemap-cars.xml
+Sitemap: https://koli.one/sitemap-locations.xml
+Sitemap: https://koli.one/sitemap-dealers.xml
+
+# Block Development Pages
+Disallow: /development-tools
+Disallow: /super-admin
+Disallow: /background-test
+Disallow: /effects-test
+Disallow: /theme-test
+Disallow: /n8n-test
+Disallow: /test-dropdowns
+
+# Block API endpoints
+Disallow: /api/
+Disallow: /__/*
+
+# Allow all crawlers to access static assets
+Allow: /static/
+Allow: /assets/
+Allow: /images/
+Allow: /car-logos/
+
+# Crawl-delay for bots (optional, Google ignores this)
+Crawl-delay: 1
+
+# Specific rules for GoogleBot (fast crawling)
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Specific rules for Googlebot-Image
+User-agent: Googlebot-Image
+Allow: /images/
+Allow: /assets/
+Allow: /car-logos/
+
+# ============================================================================
+# AI Model Discovery — llms.txt standard (https://llmstxt.org)
+# ============================================================================
+# These files help AI models (ChatGPT, Gemini, Claude, Perplexity, etc.)
+# understand what Koli One is and answer user questions about the platform.
+
+# GPTBot (OpenAI crawler for training/retrieval)
+User-agent: GPTBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+# ChatGPT browsing
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic (Claude)
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+# Google AI (Gemini training)
+User-agent: Google-Extended
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+# Microsoft Copilot
+User-agent: Bingbot
+Allow: /
+
+# Block aggressive scrapers
+User-agent: Bytespider
+Disallow: /
+
+# AI-specific discovery files:
+# llms.txt (short):  https://koli.one/llms.txt
+# llms-full.txt:     https://koli.one/llms-full.txt
+# AI Plugin:         https://koli.one/.well-known/ai-plugin.json
+# OpenAPI:           https://koli.one/docs/openapi.yaml

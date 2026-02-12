@@ -1,0 +1,47 @@
+{
+    "name": "functions",
+    "scripts": {
+        "lint": "eslint --ext .js,.ts .",
+        "clean": "node -e \"require('fs').rmSync('lib',{recursive:true,force:true})\"",
+        "prebuild": "npm run clean",
+        "build": "tsc && node -e \"require('fs').copyFileSync('manual-payment-expiration.js','lib/manual-payment-expiration.js')\"",
+        "build:watch": "tsc --watch",
+        "serve": "npm run build && firebase emulators:start --only functions",
+        "shell": "npm run build && firebase functions:shell",
+        "start": "npm run shell",
+        "deploy": "firebase deploy --only functions",
+        "logs": "firebase functions:log"
+    },
+    "engines": {
+        "node": "22"
+    },
+    "main": "lib/index.js",
+    "dependencies": {
+        "@google-cloud/bigquery": "^8.1.1",
+        "@google-cloud/vertexai": "^1.10.0",
+        "@google/generative-ai": "^0.24.1",
+        "@types/markdown-it": "^14.1.1",
+        "algoliasearch": "^4.25.3",
+        "axios": "^1.13.2",
+        "firebase-admin": "^11.8.0",
+        "firebase-functions": "^7.0.5",
+        "google-ads-api": "^21.0.1",
+        "googleapis": "^169.0.0",
+        "markdown-it": "^14.1.0",
+        "nodemailer": "^7.0.13",
+        "sharp": "^0.33.0",
+        "stripe": "^20.1.0",
+        "zod": "^4.2.1"
+    },
+    "devDependencies": {
+        "@types/nodemailer": "^7.0.9",
+        "@typescript-eslint/eslint-plugin": "^5.12.0",
+        "@typescript-eslint/parser": "^5.12.0",
+        "eslint": "^8.9.0",
+        "eslint-config-google": "^0.14.0",
+        "eslint-plugin-import": "^2.25.4",
+        "firebase-functions-test": "^3.1.0",
+        "typescript": "^4.9.0"
+    },
+    "private": true
+}

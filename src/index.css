@@ -1,0 +1,51 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   🚗 UNIFIED CAR MARKETPLACE - CORE CSS ENTRY
+   
+   Stack: CSS Variables (unified-theme.css) + Styled Components
+   Refactored: February 2026 (Phase 1 Purge)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* 1️⃣ Core Theme & Variables */
+@import './styles/unified-theme.css';
+
+/* 2️⃣ Typography Imports */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;700;800;900&family=Dancing+Script:wght@400;500;600;700&display=swap');
+
+/* 3️⃣ Base Reset & Tailwind-like Utilities (Minimal) */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  /* Smooth theme transitions */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  margin: 0;
+}
+
+/* 4️⃣ Critical Utility Classes (Keep strict subset) */
+.text-center { text-align: center; }
+.hidden { display: none; }
+
+/* 5️⃣ Legacy Support (DEPRECATED - To be removed in Phase 2) */
+/* Kept strictly to prevent immediate breakage of older components not yet refactored to Styled Components */
+.btn {
+  /* Temporary shim until all buttons use <Button /> */
+  cursor: pointer;
+  border-radius: 8px;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
