@@ -1,11 +1,22 @@
 # Script to add Google Maps API Key to .env file
 # سكريبت لإضافة مفتاح Google Maps API إلى ملف .env
 
-# Get API key from user input or use default
-# الحصول على المفتاح من المستخدم أو استخدام الافتراضي
+# Get API key from user input or environment variable
+# 🔒 SECURITY FIX: No default hardcoded API key
+# الحصول على المفتاح من المستخدم أو متغير البيئة
 param(
-    [string]$apiKey = "AIzaSyBNNqHpz4tjaEwbHtPadlS0kk_BUgulmMo"
+    [string]$apiKey = $env:GOOGLE_MAPS_API_KEY
 )
+
+# Validate API key is provided
+if ([string]::IsNullOrWhiteSpace($apiKey)) {
+    Write-Host "❌ خطأ: يجب توفير مفتاح Google Maps API" -ForegroundColor Red
+    Write-Host "Error: Google Maps API key is required" -ForegroundColor Red
+    Write-Host "`nالاستخدام / Usage:" -ForegroundColor Yellow
+    Write-Host "  .\add-google-maps-key.ps1 -apiKey YOUR_API_KEY" -ForegroundColor Cyan
+    Write-Host "  OR set environment variable: `$env:GOOGLE_MAPS_API_KEY='YOUR_KEY'" -ForegroundColor Cyan
+    exit 1
+}
 $envFile = ".env"
 $keyName = "REACT_APP_GOOGLE_MAPS_API_KEY"
 

@@ -16,6 +16,8 @@ export const adminDictTR = {
         actions: 'İşlemler',
         active: 'Aktif',
         inactive: 'Pasif',
+        free: 'Ücretsiz',
+        paid: 'Ücretli',
         pending: 'Bekliyor',
         all: 'Tümü',
         confirmLogout: 'Süper Yönetici panelinden çıkmak istediğinize emin misiniz?',

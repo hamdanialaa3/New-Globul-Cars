@@ -16,6 +16,8 @@ export const adminDictDE = {
         actions: 'Aktionen',
         active: 'Aktiv',
         inactive: 'Inaktiv',
+        free: 'Kostenlos',
+        paid: 'Kostenpflichtig',
         pending: 'Ausstehend',
         all: 'Alle',
         confirmLogout: 'Möchten Sie sich wirklich vom Super Admin Panel abmelden?',

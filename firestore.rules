@@ -36,7 +36,7 @@ service cloud.firestore {
         && request.resource.data.keys().hasAll(['email', 'createdAt'])
         && request.resource.data.size() < 50; // Max 50 fields
       allow update: if isOwner(userId)
-        && !('role' in request.resource.data) // Users can't change their role
+        && (!('role' in request.resource.data) || request.resource.data.role == resource.data.role) // Users can't change their role (but existing role is preserved on merge)
         && request.resource.data.size() < 50;
       allow delete: if isAdmin();
       
@@ -52,6 +52,14 @@ service cloud.firestore {
         );
         allow write: if isOwner(userId) && !isAdmin();
       }
+    }
+    
+    // ============================================
+    // APP SETTINGS Collection
+    // ============================================
+    match /app_settings/{docId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && isAdmin();
     }
     
     // ============================================
@@ -123,6 +131,60 @@ service cloud.firestore {
     }
     
     match /buses/{carId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      allow delete: if isAuthenticated() && (
+        resource.data.sellerId == request.auth.uid || isAdmin()
+      );
+    }
+    
+    match /construction_machines/{carId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      allow delete: if isAuthenticated() && (
+        resource.data.sellerId == request.auth.uid || isAdmin()
+      );
+    }
+    
+    match /agricultural_machines/{carId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      allow delete: if isAuthenticated() && (
+        resource.data.sellerId == request.auth.uid || isAdmin()
+      );
+    }
+    
+    match /trailers/{carId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      allow delete: if isAuthenticated() && (
+        resource.data.sellerId == request.auth.uid || isAdmin()
+      );
+    }
+    
+    match /campers/{carId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      allow delete: if isAuthenticated() && (
+        resource.data.sellerId == request.auth.uid || isAdmin()
+      );
+    }
+    
+    match /forklifts/{carId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      allow delete: if isAuthenticated() && (
+        resource.data.sellerId == request.auth.uid || isAdmin()
+      );
+    }
+    
+    match /boats/{carId} {
       allow read: if true;
       allow create: if isAuthenticated();
       allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
@@ -258,10 +320,15 @@ service cloud.firestore {
     // ============================================
     // FAVORITES Collection
     // ============================================
-    match /favorites/{userId} {
-      // Only user can read/write their favorites
-      allow read: if isAuthenticated() && isOwner(userId);
-      allow write: if isAuthenticated() && isOwner(userId);
+    match /favorites/{document=**} {
+      // Users can read only their own favorites
+      allow read: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || 
+         request.query.userId == request.auth.uid);
+      
+      // Users can write only their own favorites
+      allow write: if isAuthenticated() && 
+        request.resource.data.userId == request.auth.uid;
     }
     
     // ============================================

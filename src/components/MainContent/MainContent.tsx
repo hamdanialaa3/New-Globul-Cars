@@ -1,11 +1,13 @@
 /**
  * MainContent Component
  * Shown after loading completes
- * Contains AI Chat Interface
+ * Contains AI Chat Interface (routed through Cloud Functions)
  */
 
 import React, { useState } from 'react';
 import StyledComponents from 'styled-components';
+import { httpsCallable } from 'firebase/functions';
+import { functions } from '../../firebase/firebase-config';
 import { logger } from '../../services/logger-service';
 
 const styled = StyledComponents;
@@ -148,40 +150,17 @@ const MainContent: React.FC<MainContentProps> = ({ isVisible }) => {
   const [response, setResponse] = useState('');
   const [showResponse, setShowResponse] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
 
   const callGemini = async (prompt: string) => {
-    if (!apiKey) {
-      setResponse('API key not configured');
-      setShowResponse(true);
-      return;
-    }
-    
     try {
-      const apiResponse = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            systemInstruction: {
-              parts: [
-                {
-                  text: "You are 'AutoHub Expert', a professional car mechanic and market analyst. Answer the user's question concisely and professionally. If they ask about buying, suggest checking the platform's listings.",
-                },
-              ],
-            },
-          }),
-        }
-      );
-
-      const data = await apiResponse.json();
-      return data.candidates[0].content.parts[0].text;
+      const geminiChatFn = httpsCallable(functions, 'geminiChat');
+      const result = await geminiChatFn({ message: prompt });
+      const data = result.data as { message: string; quotaRemaining?: number };
+      return data.message;
     } catch (error) {
-      logger.error('Gemini API error:', error as Error, {
+      logger.error('Gemini Cloud Function error:', error as Error, {
         context: 'MainContent',
-        action: 'callGeminiAPI'
+        action: 'callGeminiCF'
       });
       throw error;
     }

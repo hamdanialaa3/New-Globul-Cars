@@ -18,6 +18,9 @@ import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
  * Service for handling social authentication
  */
 export class SocialAuthService {
+  // Guard against concurrent profile sync calls (React Strict Mode / double-fire)
+  private static _syncInProgress = false;
+
   /**
    * Sign in with Google
    */
@@ -104,32 +107,90 @@ export class SocialAuthService {
   }
 
   /**
-   * Create or update user profile in Firestore
+   * Wait for Firestore to be ready with auth token attached
+   * This prevents permission-denied errors on getDoc/setDoc calls
+   */
+  private static async waitForFirestoreReady(maxRetries = 5): Promise<void> {
+    for (let i = 0; i < maxRetries; i++) {
+      // Small delay to let Firestore attach auth token
+      await new Promise(resolve => setTimeout(resolve, 50 * (i + 1)));
+      
+      // Firestore will be ready once it has the auth token
+      // We can verify by checking if auth is properly initialized
+      if (auth.currentUser) {
+        return;
+      }
+    }
+  }
+
+  /**
+   * Create or update user profile in Firestore with retry logic
    */
   static async createOrUpdateBulgarianProfile(user: User): Promise<void> {
     if (!user) return;
 
-    try {
-      const userRef = doc(db, 'users', user.uid);
-      const userSnap = await getDoc(userRef);
+    // Prevent concurrent calls (React Strict Mode double-invoke)
+    if (SocialAuthService._syncInProgress) {
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Profile sync already in progress, skipping duplicate call');
+      }
+      return;
+    }
 
-      const userData = {
+    SocialAuthService._syncInProgress = true;
+    try {
+      // ✅ CRITICAL: Wait for Firestore to be ready with auth token
+      await SocialAuthService.waitForFirestoreReady();
+
+      const userRef = doc(db, 'users', user.uid);
+      
+      // Retry logic for getDoc in case of temporary permission-denied
+      let userSnap: any = null;
+      let lastError: Error | null = null;
+      
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          userSnap = await getDoc(userRef);
+          break; // Success, exit retry loop
+        } catch (error: any) {
+          lastError = error;
+          if (error.code === 'permission-denied' && attempt < 2) {
+            // Retry on permission-denied (likely due to auth token not being attached yet)
+            if (process.env.NODE_ENV === 'development') {
+              logger.debug(`Retrying getDoc after permission-denied (attempt ${attempt + 1}/3)`, {
+                userId: user.uid
+              });
+            }
+            await new Promise(resolve => setTimeout(resolve, 100 * (attempt + 1)));
+            continue;
+          }
+          throw error; // Re-throw on non-permission-denied errors
+        }
+      }
+
+      if (!userSnap) {
+        throw lastError || new Error('Failed to read user document after retries');
+      }
+
+      const isNewUser =!userSnap.exists();
+      const userData: Record<string, any> = {
         uid: user.uid,
         email: user.email,
         displayName: user.displayName || '',
         photoURL: user.photoURL || '',
         lastLogin: serverTimestamp(),
-        // Add default Bulgarian settings if new user
-        ...(!userSnap.exists() && {
-          createdAt: serverTimestamp(),
-          role: 'user',
-          preferences: {
-            language: 'bg',
-            currency: 'BGN',
-            notifications: true
-          }
-        })
       };
+
+      // Add default Bulgarian settings only for new users
+      if (isNewUser) {
+        userData.createdAt = serverTimestamp();
+        userData.role = 'user';
+        userData.preferences = {
+          language: 'bg',
+          currency: 'BGN',
+          notifications: true
+        };
+      }
 
       await setDoc(userRef, userData, { merge: true });
 
@@ -139,6 +200,8 @@ export class SocialAuthService {
     } catch (error) {
       logger.error('Error syncing user profile to Firestore', error as Error);
       // Non-blocking error
+    } finally {
+      SocialAuthService._syncInProgress = false;
     }
   }
 

@@ -48,3 +48,16 @@ shared/
 ├── tsconfig.json
 └── README.md
 ```
+
+## Sync to Mobile
+
+The mobile app vendors a copy of this package at `mobile_new/src/shared/`.
+After editing any file here, run:
+
+```bash
+node scripts/sync-shared.js
+```
+
+This copies `shared/src/` → `mobile_new/src/shared/` and verifies integrity via SHA-256 hashing.
+
+> **Never edit `mobile_new/src/shared/` directly** — changes will be overwritten on next sync.

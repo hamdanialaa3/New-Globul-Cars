@@ -190,7 +190,6 @@ async function resolveByNumeric(sellerNum: number, carNum: number, useLegacyNume
 
         try {
             logger.info(`🕵️‍♂️ resolveByNumeric: Checking ${col}...`, { sellerNum, carNum });
-            console.log(`🕵️‍♂️ resolveByNumeric: Checking ${col}...`, { sellerNum, carNum });
 
             const colRef = collection(db, col);
             const numField = useLegacyNumericId ? 'numericId' : 'carNumericId';
@@ -211,7 +210,6 @@ async function resolveByNumeric(sellerNum: number, carNum: number, useLegacyNume
                 ]);
             } catch (timeoutErr) {
                 logger.error(`⏳ Timeout resolving numeric ID in ${col}`, timeoutErr as Error);
-                console.error(`⏳ Timeout resolving numeric ID in ${col}`, timeoutErr);
                 continue; // skip this collection on timeout
             }
 
@@ -236,7 +234,7 @@ async function resolveByNumeric(sellerNum: number, carNum: number, useLegacyNume
                 ]);
             } catch (timeoutErr) {
                 logger.error(`⏳ Timeout resolving numeric ID (string fallback) in ${col}`, timeoutErr as Error);
-                console.error(`⏳ Timeout resolving numeric ID (string fallback) in ${col}`, timeoutErr);
+
                 continue;
             }
 

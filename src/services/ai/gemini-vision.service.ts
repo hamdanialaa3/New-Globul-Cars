@@ -1,34 +1,21 @@
 // Gemini Vision Service - FREE + PAID Image Analysis
 // مجاني + مدفوع مع نظام الحصص
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { httpsCallable } from 'firebase/functions';
+import { functions } from '../../firebase/firebase-config';
 import { CarAnalysisResult, ImageQualityAnalysis } from '../../types/ai.types';
 import { logger } from '../logger-service';
 import { aiQuotaService } from './ai-quota.service';
 
 class GeminiVisionService {
-  private genAI: GoogleGenerativeAI;
-  private model: any;
-  private isInitialized = false;
+  private isInitialized = true; // Always true now as we use Cloud Functions
 
   constructor() {
-    const apiKey = import.meta.env.VITE_GOOGLE_GENERATIVE_AI_KEY || import.meta.env.VITE_GEMINI_KEY;
-    if (!apiKey) {
-      logger.warn('Google Generative AI key not found. AI features will be disabled.');
-      return;
-    }
-    
-    this.genAI = new GoogleGenerativeAI(apiKey);
-    this.model = this.genAI.getGenerativeModel({ model: "gemini-pro-vision" });
-    this.isInitialized = true;
+    // No local API key needed anymore!
   }
 
   async analyzeCarImage(imageFile: File, userId?: string): Promise<CarAnalysisResult> {
-    if (!this.isInitialized) {
-      throw new Error('Gemini service not initialized. Check API key.');
-    }
-
-    // Check quota if userId provided
+    // Check quota if userId provided (Fail fast UX)
     if (userId) {
       const quotaCheck = await aiQuotaService.canUseFeature(userId, 'image_analysis');
       if (!quotaCheck.allowed) {
@@ -37,76 +24,36 @@ class GeminiVisionService {
     }
 
     try {
-      logger.debug('Analyzing car image with Gemini Vision', { userId });
-      
-      const base64 = await this.fileToBase64(imageFile);
-      
-      const prompt = `
-        Analyze this car image for the Bulgarian car marketplace.
-        
-        Provide accurate information in JSON format:
-        {
-          "make": "car brand (BMW, Mercedes, Toyota, etc.)",
-          "model": "car model (320i, C-Class, Corolla, etc.)",
-          "year": "approximate year or range (2018-2020)",
-          "color": "primary color in English",
-          "condition": "excellent/good/fair/poor",
-          "confidence": 85,
-          "suggestions": ["list of suggestions"]
-        }
-        
-        Be specific and accurate. If unsure, indicate lower confidence.
-      `;
-      
-      const result = await this.model.generateContent([
-        prompt,
-        {
-          inlineData: {
-            data: base64.split(',')[1],
-            mimeType: imageFile.type
-          }
-        }
-      ]);
-      
-      const text = result.response.text();
-      const parsed = this.extractJSON(text);
-      
-      if (!parsed) {
-        throw new Error('Failed to parse AI response');
-      }
-      
-      logger.info('Car image analyzed successfully', { 
-        make: parsed.make, 
-        confidence: parsed.confidence 
+      logger.debug('Analyzing car image via Cloud Function', { userId });
+
+      const base64Full = await this.fileToBase64(imageFile);
+      const base64 = base64Full.split(',')[1];
+      const mimeType = imageFile.type;
+
+      const analyzeCarImageFn = httpsCallable(functions, 'analyzeCarImage');
+      const result = await analyzeCarImageFn({
+        imageBase64: base64,
+        mimeType: mimeType
       });
-      
-      // Track usage
-      if (userId) {
-        await aiQuotaService.trackUsage(userId, 'image_analysis', true, {
-          make: parsed.make,
-          confidence: parsed.confidence
-        });
-      }
-      
+
+      const parsed = result.data as CarAnalysisResult;
+
+      logger.info('Car image analyzed successfully', {
+        make: parsed.make,
+        confidence: parsed.confidence
+      });
+
+      // Note: Usage tracking is now handled validation-side in the Cloud Function
+
       return parsed;
-      
-    } catch (error) {
-      logger.error('Gemini Vision error', error as Error);
-      
-      // Track failed usage
-      if (userId) {
-        await aiQuotaService.trackUsage(userId, 'image_analysis', false);
-      }
-      
+
+    } catch (error: any) {
+      logger.error('Gemini Vision error', error);
       throw new Error('Failed to analyze image. Please try again.');
     }
   }
 
   async analyzeImageQuality(imageFile: File, userId?: string): Promise<ImageQualityAnalysis> {
-    if (!this.isInitialized) {
-      throw new Error('Gemini service not initialized');
-    }
-
     // Check quota
     if (userId) {
       const quotaCheck = await aiQuotaService.canUseFeature(userId, 'image_analysis');
@@ -116,31 +63,20 @@ class GeminiVisionService {
     }
 
     try {
-      const base64 = await this.fileToBase64(imageFile);
-      
-      const prompt = `
-        Analyze the quality of this car photo.
-        
-        Rate each aspect from 0-100 and provide JSON:
-        {
-          "clarity": 85,
-          "lighting": 90,
-          "angle": 75,
-          "overallScore": 83,
-          "suggestions": ["specific improvements"]
-        }
-      `;
-      
-      const result = await this.model.generateContent([
-        prompt,
-        { inlineData: { data: base64.split(',')[1], mimeType: imageFile.type } }
-      ]);
-      
-      const text = result.response.text();
-      return this.extractJSON(text);
-      
-    } catch (error) {
-      logger.error('Image quality analysis error', error as Error);
+      const base64Full = await this.fileToBase64(imageFile);
+      const base64 = base64Full.split(',')[1];
+      const mimeType = imageFile.type;
+
+      const analyzeImageQualityFn = httpsCallable(functions, 'analyzeImageQuality');
+      const result = await analyzeImageQualityFn({
+        imageBase64: base64,
+        mimeType: mimeType
+      });
+
+      return result.data as ImageQualityAnalysis;
+
+    } catch (error: any) {
+      logger.error('Image quality analysis error', error);
       throw error;
     }
   }
@@ -152,22 +88,6 @@ class GeminiVisionService {
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
-  }
-
-  private extractJSON(text: string): any {
-    try {
-      return JSON.parse(text);
-    } catch {
-      const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/) || 
-                       text.match(/\{[\s\S]*\}/);
-      
-      if (jsonMatch) {
-        const jsonStr = jsonMatch[1] || jsonMatch[0];
-        return JSON.parse(jsonStr);
-      }
-      
-      throw new Error('No valid JSON found in response');
-    }
   }
 
   isReady(): boolean {

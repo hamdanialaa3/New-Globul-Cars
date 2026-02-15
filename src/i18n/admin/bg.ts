@@ -16,6 +16,8 @@ export const adminDictBG = {
         actions: 'Действия',
         active: 'Активен',
         inactive: 'Неактивен',
+        free: 'Безплатно',
+        paid: 'Платено',
         pending: 'Чакащ',
         all: 'Всички',
         confirmLogout: 'Сигурни ли сте, че искате да излезете от панела на Супер администратора?',

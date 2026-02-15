@@ -4,9 +4,9 @@
 import algoliasearch from 'algoliasearch/lite';
 import { SearchClient } from 'algoliasearch/lite';
 
-// Use default values if env variables are not set
-// CRA uses process.env.REACT_APP_*, not import.meta.env
-const APP_ID = import.meta.env.VITE_ALGOLIA_APP_ID || 'RTGDK12KTJ';
+// Use environment variables for Algolia configuration
+// SECURITY: No hardcoded fallback keys — all keys must come from .env
+const APP_ID = import.meta.env.VITE_ALGOLIA_APP_ID || '';
 const SEARCH_KEY = import.meta.env.VITE_ALGOLIA_SEARCH_KEY || '';
 
 // Initialize Algolia client

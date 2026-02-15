@@ -2,6 +2,7 @@ import { logger } from '../../../../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { AdminLanguageProvider } from '../../../../contexts/AdminLanguageContext';
 import { RealTimeAnalytics, UserActivity } from '../../../../services/super-admin-types';
 import { firebaseRealDataService } from '../../../../services/firebase-real-data-service';
 import { uniqueOwnerService } from '../../../../services/unique-owner-service';
@@ -407,41 +408,14 @@ const DashboardContent: React.FC = () => {
   );
 };
 
-// Main Export Wraps Content but AdminShell wraps Context
-// Actually AdminShell already wraps context, but we need context INSIDE this component to use hooks.
-// So we must move AdminShell usage UP or wrap DashboardContent.
-// However, AdminShell is designed as a Layout Component.
-// Let's refactor: AdminShell provides the provider, but we need the provider BEFORE we use useAdminLang in DashboardContent.
-// Wait, AdminShell component has <AdminLanguageProvider> inside it.
-// Children of AdminShell can use the context.
-// But DashboardContent is PARENT of AdminShell in the original code structure (it returns AdminShell).
-// So DashboardContent CANNOT use useAdminLang because the provider is inside its child (AdminShell).
-// FIX: We need to wrap SuperAdminDashboard with the Provider, or move logic inside AdminShell.
-
+// SuperAdminDashboard: Wraps DashboardContent with AdminLanguageProvider
+// so that useAdminLang() is available inside DashboardContent and AdminShell.
 const SuperAdminDashboard: React.FC = () => {
-  // We render AdminShell which HAS the provider.
-  // To make this work, we should just let AdminShell handle the layout, 
-  // but if we want to translate "Confirm Logout" here, we need access to context.
-  // Solution: AdminShell should be the ROOTS of the return, but the Provider must be HIGHER.
-  // We will change AdminShell.tsx to export the Provider, or just wrap it here.
-  return (
-    <AdminShell activeTab="overview" onTabChange={() => { }} onLogout={() => { }}>
-      <DashboardContent />
-    </AdminShell>
-  );
-};
-// Correction: The original file has SuperAdminDashboard as the main page.
-// We will modify AdminShell.tsx to export the provider separately or just use it here.
-// Better: Wrap DashboardContent with AdminLanguageProvider here.
-
-import { AdminLanguageProvider } from '../../../../contexts/AdminLanguageContext';
-
-const SuperAdminDashboardWrapped: React.FC = () => {
   return (
     <AdminLanguageProvider>
       <DashboardContent />
     </AdminLanguageProvider>
   );
-}
+};
 
-export default SuperAdminDashboardWrapped;
+export default SuperAdminDashboard;

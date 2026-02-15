@@ -327,7 +327,7 @@ async function fetchAllActiveCars(): Promise<FirestoreCarResult[]> {
             });
             return cars;
         } catch (err) {
-            console.warn(`[SearchService] ⚠️ Error querying ${collectionName}:`, err);
+            logger.warn(`[SearchService] ⚠️ Error querying ${collectionName}:`, err as Error);
             return [];
         }
     });
@@ -336,7 +336,7 @@ async function fetchAllActiveCars(): Promise<FirestoreCarResult[]> {
     results.forEach((cars) => allCars.push(...cars));
 
     const elapsed = performance.now() - startTime;
-    console.log(`[SearchService] Fetched ${allCars.length} active cars across ${VEHICLE_COLLECTIONS.length} collections in ${elapsed.toFixed(0)}ms`);
+    logger.info(`[SearchService] Fetched ${allCars.length} active cars across ${VEHICLE_COLLECTIONS.length} collections in ${elapsed.toFixed(0)}ms`);
 
     return allCars;
 }

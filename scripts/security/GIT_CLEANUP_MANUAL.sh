@@ -93,20 +93,17 @@ cat > "$WORK_DIR/patterns/secrets-to-replace.txt" <<'EOF'
 # Hardcoded secrets to replace with REDACTED placeholder
 # These are regex patterns - match will be replaced
 
-# Google API Keys (7 found)
-AIzaSyBJWvA2rRN6-7emL4DL9jp6SVRuKDYwvCU
-AIzaSyCYxOoD-tViZHLh3XhdbwQo8rRA5Q56NVs
-AIzaSyAchmKCk8ipzv0dDwbQ2xU1Pa6o4CQsEu8
-AIzaSyAUYM_qygK5pUrlXtdDLmEi-_Kh9SyvRmk
-AIzaSyC1YsQz2rpK8z_6cZev9y99rV1kIUVsrFI
+# Google API Keys (REDACTED — check .env files for actual keys)
+# Keys have been removed from this file for security.
+# Use: AIzaSy[A-Za-z0-9_-]{33} as a regex pattern to find any Google API key.
 AIzaSyz[A-Za-z0-9_-]{33}
 
-# Algolia API Key
-47f0015ced4e86add8acc2e35ea01395
+# Algolia API Key (REDACTED)
+# Use regex to find: [0-9a-f]{32}
 [0-9a-f]{32}
 
-# Hardcoded Password
-885688
+# Hardcoded Password (REDACTED)
+# Check .env or secrets manager for actual values
 
 # Admin Emails
 globul.net.m@gmail.com

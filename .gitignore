@@ -11,6 +11,7 @@ Thumbs.db
 *~
 .idea/
 .cursor/
+.gemini/
 .vscode/settings.json
 *.iml
 
@@ -19,6 +20,10 @@ Thumbs.db
 *.env.*
 !*.env.example
 !*.env.template
+.env.local
+.env.production
+.env.development
+.env.test
 firebase-service-account.json
 google-services.json
 GoogleService-Info.plist
@@ -42,12 +47,24 @@ build/
 *.orig
 *.old
 *.ts.backup
+*.csv
 
 # --- Reports & generated ---
 type-errors-all.txt
+type-errors.txt
+type-check-errors.txt
+tsc-errors.txt
+tsc-result.txt
+tsc-check-security.txt
 ts-prune-report.txt
 gitleaks-report.json
 cline_mcp_config.json
+build_output_*.txt
+server-output.txt
+errors.md
+
+# --- DDD (deprecated/deleted dump) ---
+DDD/
 
 # --- Stray lockfiles (only valid in app dirs) ---
 # package-lock.json at root is not valid
@@ -58,6 +75,7 @@ cline_mcp_config.json
 *.7z
 
 server.log
+*.log
 
 # --- Build artifacts in submodules ---
 web/build/

@@ -12,6 +12,8 @@ import * as aiFunctions from './ai-functions';
 export const geminiChat = aiFunctions.geminiChat;
 export const aiQuotaCheck = aiFunctions.aiQuotaCheck;
 export const geminiPriceSuggestion = aiFunctions.geminiPriceSuggestion;
+export const analyzeCarImage = aiFunctions.analyzeCarImage;
+export const analyzeImageQuality = aiFunctions.analyzeImageQuality;
 
 // Notification triggers (legacy)
 export const onNewCarPosted = notifications.onNewCarPosted;

@@ -22,10 +22,10 @@ const AdminLanguageContext = createContext<AdminLanguageContextType | undefined>
 
 const dictionaries: Record<AdminLanguage, AdminDictionary> = {
     en: adminDictEN,
-    bg: adminDictBG as unknown as AdminDictionary, // Temporary cast until all dicts are fully synced
-    tr: adminDictTR as unknown as AdminDictionary,
-    de: adminDictDE as unknown as AdminDictionary,
-    ar: adminDictAR as unknown as AdminDictionary,
+    bg: adminDictBG,
+    tr: adminDictTR,
+    de: adminDictDE,
+    ar: adminDictAR,
 };
 
 export const AdminLanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {

@@ -1,10 +1,17 @@
 /**
  * Create user via Firebase REST API - Direct execution
- * Uses the actual API key from the project
+ * 🔒 SECURITY FIX: API key moved to environment variable
+ * Usage: API_KEY=your_key node scripts/create-user-now.mjs
  */
 
-const API_KEY = 'AIzaSyAUYM_qygK5pUrlXtdDLmEi-_Kh9SyvRmk';
-const PROJECT_ID = 'fire-new-globul';
+const API_KEY = process.env.FIREBASE_API_KEY || process.env.VITE_FIREBASE_API_KEY;
+const PROJECT_ID = process.env.FIREBASE_PROJECT_ID || 'fire-new-globul';
+
+if (!API_KEY) {
+  console.error('❌ Error: FIREBASE_API_KEY environment variable is required');
+  console.error('Usage: FIREBASE_API_KEY=your_key node scripts/create-user-now.mjs');
+  process.exit(1);
+}
 
 // Step 1: Create Auth User
 async function createAuthUser() {

@@ -2,6 +2,7 @@ import React, { Suspense, memo } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { safeLazy } from '../utils/lazyImport';
 import { AuthGuard, NumericIdGuard, RequireCompanyGuard } from '../components/guards';
+import { RoleGuard } from '../components/guards/RoleGuard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import SellRouteRedirect from '../components/SellWorkflow/SellRouteRedirect';
 import InactivityWarning from '../components/InactivityWarning';
@@ -247,9 +248,9 @@ export const MainRoutes: React.FC = () => {
             {/* �👑 SUPER ADMIN ROUTES - THE GOD MODE (Restored Phase 1) */}
             <Route path="/super-admin-login" element={<SuperAdminLoginPage />} />
             <Route path="/super-admin/*" element={
-                <AuthGuard requireAuth={true}>
+                <RoleGuard requireSuperAdmin={true}>
                     <SuperAdminDashboard />
-                </AuthGuard>
+                </RoleGuard>
             } />
 
             {/* 🔢 Strict Numeric Car URLs (Constitution: /car/:sellerNumericId/:carNumericId) */}

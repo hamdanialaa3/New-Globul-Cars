@@ -90,7 +90,7 @@ export function useSearchData() {
                     setError(null);
                 }
             } catch (e: any) {
-                console.error('[useSearchData] Failed to load filter options:', e);
+                logger.error('[useSearchData] Failed to load filter options', e);
                 if (!cancelled) {
                     setError('Failed to load filter options. Please refresh.');
                 }
@@ -109,7 +109,7 @@ export function useSearchData() {
                 const reports = await detectMissingFields();
                 setMissingFieldReports(reports);
                 if (reports.length > 0) {
-                    console.warn('[MISSING_FIELD_REPORTS]', JSON.stringify(reports, null, 2));
+                    logger.warn('[MISSING_FIELD_REPORTS]', undefined, { reports });
                 }
             } catch (e) {
                 // Non-blocking
@@ -157,11 +157,11 @@ export function useSearchData() {
 
                 // Log missing fields if present
                 if (res.missingFieldsReport) {
-                    console.warn('[SearchResult] Missing fields detected:', res.missingFieldsReport);
+                    logger.warn('[SearchResult] Missing fields detected', undefined, { report: res.missingFieldsReport });
                 }
             }
         } catch (e: any) {
-            console.error('[useSearchData] Search failed:', e);
+            logger.error('[useSearchData] Search failed', e);
             if (searchId === searchAbortRef.current) {
                 setError('Search failed. Please try again.');
             }

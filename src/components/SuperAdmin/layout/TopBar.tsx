@@ -206,7 +206,7 @@ const TopBar: React.FC = () => {
 
       // State updates automatically via subscription
     } catch (e) {
-      console.error('Failed to toggle subscription mode', e);
+      logger.error('Failed to toggle subscription mode', e as Error);
     } finally {
       setLoading(false);
     }

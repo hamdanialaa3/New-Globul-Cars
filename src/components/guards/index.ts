@@ -12,6 +12,7 @@
 export { AuthGuard, type AuthGuardProps } from './AuthGuard';
 export { NumericIdGuard } from './NumericIdGuard';
 export { RequireCompanyGuard } from './RequireCompanyGuard';
+export { RoleGuard } from './RoleGuard';
 
 // Re-export for backward compatibility during migration
 export { AuthGuard as default } from './AuthGuard';

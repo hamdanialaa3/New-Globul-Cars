@@ -46,6 +46,16 @@ export interface FavoriteItem {
 
 class FavoritesService {
   private static instance: FavoritesService;
+  // Helper to wait for Firestore to be ready with auth
+  private static async waitForFirestoreReady(maxRetries = 5): Promise<void> {
+    const { auth } = await import('@/firebase/firebase-config');
+    for (let i = 0; i < maxRetries; i++) {
+      await new Promise(resolve => setTimeout(resolve, 50 * (i + 1)));
+      if (auth.currentUser) {
+        return;
+      }
+    }
+  }
 
   private constructor() { }
 

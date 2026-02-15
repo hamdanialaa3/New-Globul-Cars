@@ -16,4 +16,4 @@
  */
 
 // All code migrated to functions/src/triggers/orphaned-data-cleanup.ts
-export {};
+export {};

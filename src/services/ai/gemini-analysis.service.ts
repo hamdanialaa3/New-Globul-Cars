@@ -1,311 +1,132 @@
 /**
  * Gemini Analysis Service
- * AI-powered car analysis using Google Gemini with Smart Retry Fallback
+ * AI-powered car analysis routed through Firebase Cloud Functions
+ *
+ * SECURITY: No API keys on the client side.
+ * All AI calls go through Cloud Functions which hold the Gemini API key server-side.
  *
  * Features:
- * - Car image analysis (brand, model, year, condition)
- * - Price estimation
- * - Equipment/options suggestions
- * - Intelligent model retry: gemini-2.0-flash → gemini-1.5-flash → gemini-1.5-pro → gemini-2.0-pro
- * - Automatic retry on API failure with official Google models
- *
- * API: Free tier with rate limiting
- * Models: Uses Google Gemini v1beta API with OFFICIAL model names
+ * - Car image analysis (brand, model, year, condition) via CF `analyzeCarImage`
+ * - Price estimation via CF `geminiPriceSuggestion`
+ * - Equipment/options suggestions via CF `geminiChat` (structured prompt)
+ * - Quota management handled server-side
  */
 
-import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
+import { httpsCallable } from 'firebase/functions';
+import { functions } from '@/firebase/firebase-config';
 import { logger } from '@/services/logger-service';
 import {
   GeminiCarAnalysisResult,
   PriceEstimate,
   EquipmentSuggestions,
   CarDataForPricing,
-  GeminiRawResponse,
-  GeminiEquipmentResponse
 } from '@/types/ai-analysis.types';
 
-// Prioritized list of available models (best to fallback)
-// Official Google Gemini v1beta API model names from Google's documentation
-const GEMINI_MODELS = {
-  FLASH_2_0: 'gemini-2.0-flash',         // Latest 2.0 generation (best for images)
-  FLASH_1_5: 'gemini-1.5-flash',         // Stable 1.5 flash model
-  PRO_1_5: 'gemini-1.5-pro',             // Stable 1.5 pro model for text
-  PRO_2_0: 'gemini-2.0-pro',             // 2.0 pro model (if available)
-} as const;
-
 class GeminiAnalysisService {
-  private ai: GoogleGenerativeAI | null = null;
-  private isInitialized = false;
-  private currentModel: string = GEMINI_MODELS.FLASH_2_0; // Start with latest 2.0 model
-
-  constructor() {
-    this.initialize();
-  }
-
-  private initialize(): void {
-    // Check for API key in environment
-    const apiKey =
-      import.meta.env.VITE_GEMINI_API_KEY ||
-      import.meta.env.VITE_GOOGLE_GENERATIVE_AI_KEY ||
-      process.env.VITE_GEMINI_API_KEY;
-
-    if (!apiKey) {
-      logger.warn('Gemini API key not found. AI features will be disabled.');
-      return;
-    }
-
-    try {
-      this.ai = new GoogleGenerativeAI(apiKey);
-      this.isInitialized = true;
-      logger.info('Gemini Analysis Service initialized');
-    } catch (error) {
-      logger.error('Failed to initialize Gemini service', error as Error);
-    }
-  }
+  // Cloud Functions are always ready — availability is checked server-side
+  private readonly isInitialized = true;
 
   /**
-   * Check if service is ready
+   * Check if service is ready (always true — Cloud Functions handle availability)
    */
   public isReady(): boolean {
-    return this.isInitialized && this.ai !== null;
+    return this.isInitialized;
   }
 
   /**
-   * Analyze car image and extract information WITH RETRY LOGIC
-   * @param imageBase64 - Base64 encoded image
+   * Analyze car image and extract information via Cloud Functions
+   * @param imageBase64 - Base64 encoded image (without data URL prefix)
    * @returns Analysis result with brand, model, year, etc.
    */
   public async analyzeCarImage(imageBase64: string): Promise<GeminiCarAnalysisResult> {
-    if (!this.isReady()) {
-      throw new Error('Gemini service not initialized. Check API key configuration.');
+    logger.info('Starting car image analysis via Cloud Function');
+
+    try {
+      const analyzeCarImageFn = httpsCallable(functions, 'analyzeCarImage');
+      const result = await analyzeCarImageFn({
+        imageBase64,
+        mimeType: 'image/jpeg'
+      });
+
+      // Adapt Cloud Function response to GeminiCarAnalysisResult format
+      const raw = result.data as Record<string, unknown>;
+      const confidence = (typeof raw.confidence === 'number' ? raw.confidence : 80) / 100;
+
+      const analysisResult: GeminiCarAnalysisResult = {
+        brand: { value: (raw.make as string) || '', confidence },
+        model: { value: (raw.model as string) || '', confidence },
+        yearRange: { value: (raw.year as string) || '', confidence },
+        bodyType: { value: (raw.bodyType as string) || '', confidence: confidence * 0.8 },
+        color: { value: (raw.color as string) || '', confidence },
+        trim: { value: (raw.trim as string) || '', confidence: 0.5 },
+        damage: { value: (raw.condition as string) || 'unknown', confidence: confidence * 0.7 },
+        reasoning: Array.isArray(raw.suggestions) ? (raw.suggestions as string[]).join('. ') : ''
+      };
+
+      logger.info('Car analysis completed via Cloud Function', {
+        brand: analysisResult.brand.value,
+        model: analysisResult.model.value,
+        confidence
+      });
+
+      return analysisResult;
+
+    } catch (error: unknown) {
+      logger.error('Car analysis via Cloud Function failed', error as Error);
+      throw new Error('Failed to analyze car image. Please try again or enter details manually.');
     }
-
-    logger.info('Starting car image analysis');
-
-    // Define response schema for structured output
-    const responseSchema = {
-      type: SchemaType.OBJECT,
-      properties: {
-        brand: {
-          type: SchemaType.OBJECT,
-          properties: {
-            value: { type: SchemaType.STRING },
-            confidence: { type: SchemaType.NUMBER }
-          },
-          required: ['value', 'confidence']
-        },
-        model: {
-          type: SchemaType.OBJECT,
-          properties: {
-            value: { type: SchemaType.STRING },
-            confidence: { type: SchemaType.NUMBER }
-          },
-          required: ['value', 'confidence']
-        },
-        yearRange: {
-          type: SchemaType.OBJECT,
-          properties: {
-            value: { type: SchemaType.STRING },
-            confidence: { type: SchemaType.NUMBER }
-          },
-          required: ['value', 'confidence']
-        },
-        bodyType: {
-          type: SchemaType.OBJECT,
-          properties: {
-            value: { type: SchemaType.STRING },
-            confidence: { type: SchemaType.NUMBER }
-          },
-          required: ['value', 'confidence']
-        },
-        color: {
-          type: SchemaType.OBJECT,
-          properties: {
-            value: { type: SchemaType.STRING },
-            confidence: { type: SchemaType.NUMBER }
-          },
-          required: ['value', 'confidence']
-        },
-        trim: {
-          type: SchemaType.OBJECT,
-          properties: {
-            value: { type: SchemaType.STRING },
-            confidence: { type: SchemaType.NUMBER }
-          },
-          required: ['value', 'confidence']
-        },
-        damage: {
-          type: SchemaType.OBJECT,
-          properties: {
-            value: { type: SchemaType.STRING },
-            confidence: { type: SchemaType.NUMBER }
-          },
-          required: ['value', 'confidence']
-        },
-        reasoning: { type: SchemaType.STRING }
-      },
-      required: ['brand', 'model', 'yearRange']
-    };
-
-    const prompt = `Analyze the following car image and extract key information.
-Return structured JSON with fields: brand, model, yearRange, bodyType, color, trim,
-damage, reasoning. YearRange should be like "2018-2020".
-Focus on real-world recognition based on the image content.`;
-
-    // Try models in order: latest 2.0 first for best compatibility
-    const modelsToTry = [
-      GEMINI_MODELS.FLASH_2_0,       // Primary: Latest generation
-      GEMINI_MODELS.FLASH_1_5,       // Backup: Stable 1.5 flash
-      GEMINI_MODELS.PRO_1_5,         // Backup: Stable 1.5 pro
-      GEMINI_MODELS.PRO_2_0          // Final fallback: 2.0 pro
-    ];
-
-    let lastError: Error | null = null;
-
-    for (const modelName of modelsToTry) {
-      try {
-        logger.info('Trying Gemini model for analysis', { model: modelName });
-        
-        const model = this.ai!.getGenerativeModel({ model: modelName });
-
-        const result = await model.generateContent({
-          contents: [{
-            role: 'user',
-            parts: [
-              { text: prompt },
-              { inlineData: { data: imageBase64, mimeType: 'image/*' } as any }
-            ]
-          }],
-          generationConfig: {
-            responseMimeType: 'application/json',
-            responseSchema: responseSchema as any
-          }
-        });
-
-        const response = await result.response;
-        const text = response.text();
-        const parsed: GeminiRawResponse = JSON.parse(text);
-
-        // Success! Update current model and return
-        this.currentModel = modelName;
-        logger.info('Car analysis completed', {
-          model: modelName,
-          brand: parsed.brand.value,
-          modelValue: parsed.model.value,
-          confidence: parsed.brand.confidence
-        });
-
-        return parsed as GeminiCarAnalysisResult;
-
-      } catch (error) {
-        lastError = error as Error;
-        logger.warn(`Model ${modelName} failed, trying next`, error as Error);
-        continue;
-      }
-    }
-
-    // All models failed
-    logger.error('All Gemini models failed for car analysis', lastError!);
-    throw new Error('Failed to analyze car image. Please try again or enter details manually.');
   }
 
   /**
-   * Estimate car price based on extracted data WITH RETRY LOGIC
+   * Estimate car price via Cloud Functions
    * @param carData - Car information for pricing
-   * @returns Array of price estimates from different sources
+   * @returns Array of price estimates
    */
   public async estimatePrice(carData: CarDataForPricing): Promise<PriceEstimate[]> {
-    if (!this.isReady()) {
-      throw new Error('Gemini service not initialized');
-    }
-
-    logger.info('Estimating car price', {
+    logger.info('Estimating car price via Cloud Function', {
       brand: carData.brand,
       model: carData.model,
       year: carData.year
     });
 
-    const prompt = `Estimate the price for this car in the Bulgarian market:
+    try {
+      const priceSuggestionFn = httpsCallable(functions, 'geminiPriceSuggestion');
+      const result = await priceSuggestionFn({
+        make: carData.brand,
+        model: carData.model,
+        year: carData.year,
+        mileage: carData.mileage || 0,
+        condition: carData.condition || 'good',
+        location: 'Bulgaria'
+      });
 
-Car Details:
-- Brand: ${carData.brand}
-- Model: ${carData.model}
-- Year: ${carData.year}
-${carData.mileage ? `- Mileage: ${carData.mileage} km` : ''}
-${carData.condition ? `- Condition: ${carData.condition}` : ''}
+      // Adapt Cloud Function response to PriceEstimate[] format
+      const raw = result.data as Record<string, unknown>;
 
-Provide 2-3 price estimates based on typical Bulgarian car marketplaces (mobile.bg,
-cars.bg, etc.). Consider:
-- Current market trends in Bulgaria
-- Typical depreciation for this vehicle
-- Popular pricing for similar vehicles
+      const estimates: PriceEstimate[] = [{
+        source: 'Koli One AI Estimate',
+        minPrice: (raw.minPrice as number) || 0,
+        maxPrice: (raw.maxPrice as number) || 0,
+        avgPrice: (raw.avgPrice as number) || 0,
+        currency: 'EUR',
+        reasoning: (raw.reasoning as string) || ''
+      }];
 
-Return JSON array with format:
-[
-  {
-    "source": "mobile.bg typical",
-    "minPrice": 15000,
-    "maxPrice": 18000,
-    "avgPrice": 16500,
-    "currency": "EUR",
-    "reasoning": "Based on similar listings..."
-  }
-]
+      logger.info('Price estimation completed via Cloud Function', {
+        estimates: estimates.length,
+        avgPrice: estimates[0]?.avgPrice
+      });
 
-Prices must be in EUR. Be realistic for Bulgarian market.`;
+      return estimates;
 
-    // Try models in order: latest generation first
-    const modelsToTry = [
-      GEMINI_MODELS.FLASH_2_0,       // Primary: Latest generation
-      GEMINI_MODELS.FLASH_1_5,       // Backup: Stable 1.5 flash
-      GEMINI_MODELS.PRO_1_5,         // Backup: Stable 1.5 pro
-      GEMINI_MODELS.PRO_2_0          // Final fallback: 2.0 pro
-    ];
-
-    let lastError: Error | null = null;
-
-    for (const modelName of modelsToTry) {
-      try {
-        logger.info('Trying Gemini model for price estimation', { model: modelName });
-        
-        const model = this.ai!.getGenerativeModel({ model: modelName });
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
-
-        // Extract JSON from response
-        const jsonMatch = text.match(/\[[\s\S]*\]/) || text.match(/```json\s*([\s\S]*)\s*```/);
-        if (!jsonMatch) {
-          throw new Error('No valid price data in response');
-        }
-
-        const jsonStr = (jsonMatch[1] || jsonMatch[0]).toString();
-        const estimates: PriceEstimate[] = JSON.parse(jsonStr);
-
-        // Success!
-        this.currentModel = modelName;
-        logger.info('Price estimation completed', {
-          model: modelName,
-          estimates: estimates.length,
-          avgPrice: estimates[0]?.avgPrice
-        });
-
-        return estimates;
-
-      } catch (error) {
-        lastError = error as Error;
-        logger.warn(`Model ${modelName} failed for price estimation, trying next`, error as Error);
-        continue;
-      }
+    } catch (error: unknown) {
+      logger.error('Price estimation via Cloud Function failed', error as Error);
+      throw new Error('Failed to estimate price. You can set price manually.');
     }
-
-    // All models failed
-    logger.error('All Gemini models failed for price estimation', lastError!);
-    throw new Error('Failed to estimate price. You can set price manually.');
   }
 
   /**
-   * Suggest equipment/options based on car info WITH RETRY LOGIC
+   * Suggest equipment/options via Cloud Functions (uses geminiChat with structured prompt)
    * @param carInfo - Brand, model, year
    * @returns Equipment suggestions by category
    */
@@ -314,93 +135,49 @@ Prices must be in EUR. Be realistic for Bulgarian market.`;
     model: string;
     year: string;
   }): Promise<EquipmentSuggestions> {
-    if (!this.isReady()) {
-      throw new Error('Gemini service not initialized');
-    }
+    logger.info('Suggesting equipment options via Cloud Function', carInfo);
 
-    logger.info('Suggesting equipment options', carInfo);
+    try {
+      const chatFn = httpsCallable(functions, 'geminiChat');
+      const result = await chatFn({
+        message: `Based on typical equipment for ${carInfo.brand} ${carInfo.model} (${carInfo.year}) in Bulgaria, suggest common equipment options in 3 categories. Return ONLY valid JSON with this exact structure, no other text:
+{"safety":["item1","item2"],"comfort":["item1","item2"],"infotainment":["item1","item2"]}
 
-    const responseSchema = {
-      type: SchemaType.OBJECT,
-      properties: {
-        safety: {
-          type: SchemaType.ARRAY,
-          items: { type: SchemaType.STRING }
-        },
-        comfort: {
-          type: SchemaType.ARRAY,
-          items: { type: SchemaType.STRING }
-        },
-        infotainment: {
-          type: SchemaType.ARRAY,
-          items: { type: SchemaType.STRING }
+Safety: ABS, Airbags, ESP, Parking Sensors, etc.
+Comfort: Climate Control, Leather Seats, Electric Windows, etc.
+Infotainment: Navigation, Bluetooth, Touchscreen, etc.
+
+List 5-10 items per category. Use English names.`
+      });
+
+      const raw = result.data as Record<string, unknown>;
+      const responseText = (raw.message as string) || '';
+
+      // Parse JSON from the chat response
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]) as EquipmentSuggestions;
+        if (parsed.safety && parsed.comfort && parsed.infotainment) {
+          logger.info('Equipment suggestions generated via Cloud Function', {
+            safetyCount: parsed.safety.length,
+            comfortCount: parsed.comfort.length,
+            infotainmentCount: parsed.infotainment.length
+          });
+          return parsed;
         }
-      },
-      required: ['safety', 'comfort', 'infotainment']
-    };
-
-    const prompt = `Based on typical equipment for ${carInfo.brand} ${carInfo.model} (${carInfo.year}) in Bulgaria:
-Suggest common equipment options in 3 categories:
-
-1. Safety: ABS, Airbags, ESP, Parking Sensors, etc.
-2. Comfort: Climate Control, Leather Seats, Electric Windows, etc.
-3. Infotainment: Navigation, Bluetooth, Touchscreen, etc.
-
-Use Bulgarian market standards. List 5-10 items per category.
-Use English names for equipment.
-
-Return ONLY valid JSON matching the schema.`;
-
-    // Try models in order: latest generation first
-    const modelsToTry = [
-      GEMINI_MODELS.FLASH_2_0,       // Primary: Latest generation
-      GEMINI_MODELS.FLASH_1_5,       // Backup: Stable 1.5 flash
-      GEMINI_MODELS.PRO_1_5,         // Backup: Stable 1.5 pro
-      GEMINI_MODELS.PRO_2_0          // Final fallback: 2.0 pro
-    ];
-
-    for (const modelName of modelsToTry) {
-      try {
-        logger.info('Trying Gemini model for equipment suggestions', { model: modelName });
-        
-        const model = this.ai!.getGenerativeModel({ model: modelName });
-
-        const result = await model.generateContent({
-          contents: [{ role: 'user', parts: [{ text: prompt }] }],
-          generationConfig: {
-            responseMimeType: 'application/json',
-            responseSchema: responseSchema as any
-          }
-        });
-
-        const response = await result.response;
-        const text = response.text();
-        const suggestions: GeminiEquipmentResponse = JSON.parse(text);
-
-        // Success!
-        this.currentModel = modelName;
-        logger.info('Equipment suggestions generated', {
-          model: modelName,
-          safetyCount: suggestions.safety.length,
-          comfortCount: suggestions.comfort.length,
-          infotainmentCount: suggestions.infotainment.length
-        });
-
-        return suggestions;
-
-      } catch (error) {
-        logger.warn(`Model ${modelName} failed for equipment suggestions, trying next`, error as Error);
-        continue;
       }
-    }
 
-    // All models failed - return default suggestions as fallback
-    logger.error('All Gemini models failed for equipment suggestions, using defaults');
-    return {
-      safety: ['ABS', 'Airbags', 'ESP'],
-      comfort: ['Air Conditioning', 'Power Windows'],
-      infotainment: ['Radio', 'Bluetooth']
-    };
+      // Couldn't parse — return defaults
+      throw new Error('Could not parse equipment suggestions');
+
+    } catch (error: unknown) {
+      logger.warn('Equipment suggestions via Cloud Function failed, using defaults', error as Error);
+      return {
+        safety: ['ABS', 'Airbags', 'ESP', 'Parking Sensors', 'Traction Control'],
+        comfort: ['Air Conditioning', 'Power Windows', 'Central Locking', 'Power Steering'],
+        infotainment: ['Radio', 'Bluetooth', 'USB', 'Aux Input']
+      };
+    }
   }
 
   /**

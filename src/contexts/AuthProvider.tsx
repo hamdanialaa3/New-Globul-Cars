@@ -47,11 +47,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 
   useEffect(() => {
+    // ✅ isActive guard: prevents stale callbacks after React Strict Mode cleanup
+    let isActive = true;
+
     // Run Firebase health check on mount
     FirebaseHealthCheck.logEnvironmentInfo();
     FirebaseHealthCheck.runFullCheck();
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      // Guard against unmounted/remounted component (React Strict Mode)
+      if (!isActive) return;
 
       try {
         setCurrentUser(user);
@@ -63,17 +68,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               logger.debug('Auto-syncing user to Firestore', { email: user.email });
             }
             await SocialAuthService.createOrUpdateBulgarianProfile(user);
+            if (!isActive) return; // Check again after async operation
             if (process.env.NODE_ENV === 'development') {
               logger.debug('User synced to Firestore successfully', { userId: user.uid });
             }
           } catch (error) {
+            if (!isActive) return;
             logger.warn('Could not sync user to Firestore', { error: (error as Error).message, userId: user.uid });
             // Don't block login if Firestore sync fails
           }
         }
 
+        if (!isActive) return;
         setLoading(false);
       } catch (authError) {
+        if (!isActive) return;
         logger.error('Error in auth state change handler', authError as Error);
         setLoading(false);
       }
@@ -171,6 +180,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     // Cleanup function
     return () => {
+      isActive = false; // ✅ Prevent stale callbacks
       try {
         if (unsubscribe) {
           unsubscribe();

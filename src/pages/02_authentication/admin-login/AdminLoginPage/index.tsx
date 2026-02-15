@@ -98,31 +98,47 @@ const AdminLoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    // Hardcoded credentials check
-    if (username.toLowerCase() === 'hamdanialaa' && password === 'Alaa1983') {
-      setTimeout(() => {
+    try {
+      // 🔒 SECURITY FIX: Use Firebase Authentication instead of hardcoded credentials
+      const { signInWithEmailAndPassword } = await import('firebase/auth');
+      const { auth } = await import('../../../../firebase/firebase-config');
+      
+      // Attempt Firebase login
+      const userCredential = await signInWithEmailAndPassword(auth, username + '@admin.koliOne.com', password);
+      
+      // Check if user has admin role via custom claims
+      const idTokenResult = await userCredential.user.getIdTokenResult();
+      
+      if (idTokenResult.claims.admin === true || idTokenResult.claims.role === 'super_admin') {
         // Store admin session in localStorage
         localStorage.setItem('adminUser', JSON.stringify({
-          username: 'hamdanialaa',
-          email: 'alaa.hamdani@yahoo.com',
-          name: 'Alaa Hamid',
-          role: 'super_admin',
-          permissions: ['all'],
+          uid: userCredential.user.uid,
+          email: userCredential.user.email,
+          username: username,
+          role: idTokenResult.claims.role || 'admin',
+          permissions: idTokenResult.claims.permissions || ['read'],
           loginTime: new Date().toISOString()
         }));
 
         navigate('/admin');
-      }, 800);
-    } else {
-      setTimeout(() => {
-        setError('Incorrect username or password');
-        setLoading(false);
-      }, 500);
+      } else {
+        throw new Error('Access denied: Admin privileges required');
+      }
+    } catch (error: any) {
+      logger.error('Admin login error', error);
+      setError(
+        error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found'
+          ? 'Incorrect username or password'
+          : error.code === 'auth/too-many-requests'
+          ? 'Too many attempts. Please try again later.'
+          : error.message || 'Login failed. Please try again.'
+      );
+      setLoading(false);
     }
   };
 

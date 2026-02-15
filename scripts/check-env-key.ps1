@@ -12,10 +12,10 @@ if (Test-Path $envFile) {
     } else {
         Write-Host "❌ المفتاح غير موجود في .env" -ForegroundColor Red
         Write-Host "أضف هذا السطر إلى ملف .env:" -ForegroundColor Yellow
-        Write-Host "REACT_APP_GOOGLE_MAPS_API_KEY=AIzaSyBNNqHpz4tjaEwbHtPadlS0kk_BUgulmMo" -ForegroundColor Cyan
+        Write-Host "REACT_APP_GOOGLE_MAPS_API_KEY=<YOUR_GOOGLE_MAPS_API_KEY>" -ForegroundColor Cyan
     }
 } else {
     Write-Host "❌ ملف .env غير موجود" -ForegroundColor Red
     Write-Host "أنشئ ملف .env وأضف:" -ForegroundColor Yellow
-    Write-Host "REACT_APP_GOOGLE_MAPS_API_KEY=AIzaSyBNNqHpz4tjaEwbHtPadlS0kk_BUgulmMo" -ForegroundColor Cyan
+    Write-Host "REACT_APP_GOOGLE_MAPS_API_KEY=<YOUR_GOOGLE_MAPS_API_KEY>" -ForegroundColor Cyan
 }
