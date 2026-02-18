@@ -365,6 +365,90 @@ service cloud.firestore {
     }
     
     // ============================================
+    // REPORTS — Authenticated users can create reports
+    // ============================================
+    match /reports/{reportId} {
+      allow read: if request.auth != null && (
+        request.auth.token.admin == true ||
+        resource.data.reporterId == request.auth.uid
+      );
+      allow create: if request.auth != null &&
+        request.resource.data.reporterId == request.auth.uid &&
+        request.resource.data.keys().hasAll(['listingId', 'reason', 'reporterId', 'status']);
+      allow update, delete: if request.auth.token.admin == true;
+    }
+
+    // ============================================
+    // DEALER APPLICATIONS — Auth users can apply
+    // ============================================
+    match /dealer_applications/{appId} {
+      allow read: if request.auth != null && (
+        request.auth.token.admin == true ||
+        resource.data.userId == request.auth.uid
+      );
+      allow create: if request.auth != null &&
+        request.resource.data.userId == request.auth.uid;
+      allow update, delete: if request.auth.token.admin == true;
+    }
+
+    // ============================================
+    // CAMPAIGNS — Owner CRUD
+    // ============================================
+    match /campaigns/{campaignId} {
+      allow read: if request.auth != null && (
+        resource.data.userId == request.auth.uid ||
+        request.auth.token.admin == true
+      );
+      allow create: if request.auth != null &&
+        request.resource.data.userId == request.auth.uid;
+      allow update, delete: if request.auth != null &&
+        resource.data.userId == request.auth.uid;
+    }
+
+    // ============================================
+    // CONSULTATION REQUESTS — Owner read/create
+    // ============================================
+    match /consultation_requests/{reqId} {
+      allow read: if request.auth != null && (
+        resource.data.userId == request.auth.uid ||
+        request.auth.token.admin == true
+      );
+      allow create: if request.auth != null &&
+        request.resource.data.userId == request.auth.uid;
+      allow update, delete: if request.auth.token.admin == true;
+    }
+
+    // ============================================
+    // SOCIAL POSTS — Owner write, public read
+    // ============================================
+    match /social_posts/{postId} {
+      allow read: if true;
+      allow create: if request.auth != null &&
+        request.resource.data.userId == request.auth.uid;
+      allow update, delete: if request.auth != null &&
+        resource.data.userId == request.auth.uid;
+    }
+
+    // ============================================
+    // STORIES — Owner write, public read
+    // ============================================
+    match /stories/{storyId} {
+      allow read: if true;
+      allow create: if request.auth != null &&
+        request.resource.data.creatorId == request.auth.uid;
+      allow update, delete: if request.auth != null &&
+        resource.data.creatorId == request.auth.uid;
+    }
+
+    // ============================================
+    // USER FOLLOWING — Owner only
+    // ============================================
+    match /users/{userId}/following/{targetId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ============================================
     // DEFAULT DENY ALL
     // ============================================
     match /{document=**} {
