@@ -39,15 +39,16 @@ export const generateSitemapXML = (urls: SitemapUrl[]): string => {
 /**
  * Generate sitemap for all active car listings
  * FREE - Query Firestore directly
- * UPDATED: Uses numeric URLs instead of UUIDs
+ * UPDATED: Now uses SEO-friendly slugs (canonicalUrl) with fallback to numeric IDs
+ * Prioritizes listings with slugs (SEO), includes legacy numeric URLs
  */
 export const generateCarListingsSitemap = async (baseUrl: string = 'https://koli.one'): Promise<SitemapUrl[]> => {
   try {
     const carsRef = collection(db, 'cars');
     const q = query(
       carsRef,
-      where('status', '==', 'active'),
-      orderBy('createdAt', 'desc'),
+      where('status', '==', 'published'),
+      orderBy('updatedAt', 'desc'),
       limit(50000) // Google sitemap limit
     );
 
@@ -67,18 +68,26 @@ export const generateCarListingsSitemap = async (baseUrl: string = 'https://koli
           data.createdAt?.toDate?.()?.toISOString() ||
           new Date().toISOString();
 
-        // Use numeric URL format: /car/{sellerNumericId}/{carNumericId}
-        const carUrl = getCarDetailsUrl({
-          sellerNumericId: data.sellerNumericId,
-          carNumericId: data.carNumericId,
-          id: doc.id
-        });
+        // Prefer canonicalUrl (SEO slug) if available
+        // Fallback to numeric URL for listings without slug yet
+        let carUrl: string;
+        if (data.canonicalUrl) {
+          // Use SEO-friendly canonical URL: /car/{listingNumericId}/{slug}
+          carUrl = data.canonicalUrl;
+        } else {
+          // Fallback to numeric URL for legacy listings
+          carUrl = getCarDetailsUrl({
+            sellerNumericId: data.sellerNumericId,
+            carNumericId: data.carNumericId,
+            id: doc.id
+          });
+        }
 
         return {
           loc: `${baseUrl}${carUrl}`,
           lastmod: lastmod.split('T')[0], // YYYY-MM-DD format
-          changefreq: 'daily' as const,
-          priority: 0.8
+          changefreq: 'weekly' as const,
+          priority: data.canonicalUrl ? 0.9 : 0.7 // Prioritize listings with slugs
         };
       })
       .filter(Boolean) as SitemapUrl[]; // Remove null entries
