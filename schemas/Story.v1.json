@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://koli.one/schemas/story.v1.json",
+  "title": "Car Story",
+  "description": "Instagram-style short video story attached to a car listing. 15-second max, expires after 24 hours.",
+  "type": "object",
+  "required": ["id", "carNumericId", "sellerNumericId", "authorId", "type", "videoUrl", "thumbnailUrl", "durationSec", "status"],
+  "properties": {
+    "id": { "type": "string" },
+    "carNumericId": { "type": "integer", "minimum": 1 },
+    "sellerNumericId": { "type": "integer", "minimum": 1 },
+    "authorId": { "type": "string", "description": "Firebase Auth UID" },
+
+    "type": {
+      "type": "string",
+      "enum": ["engine_sound", "interior_360", "exterior_walkaround", "defect_highlight"]
+    },
+    "videoUrl": { "type": "string", "format": "uri" },
+    "thumbnailUrl": { "type": "string", "format": "uri" },
+    "durationSec": { "type": "number", "maximum": 15 },
+
+    "status": { "type": "string", "enum": ["active", "expired", "deleted"] },
+    "visibility": { "type": "string", "enum": ["public", "followers", "close_friends"] },
+
+    "viewCount": { "type": "integer", "minimum": 0 },
+    "viewedBy": { "type": "array", "items": { "type": "string" } },
+    "reactions": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+
+    "authorInfo": {
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string" },
+        "profileImage": { "type": "string", "format": "uri" },
+        "profileType": { "type": "string", "enum": ["private", "dealer", "company"] },
+        "isVerified": { "type": "boolean" }
+      }
+    },
+
+    "order": { "type": "integer" },
+    "createdAt": { "type": "number", "description": "Unix timestamp ms" },
+    "expiresAt": { "type": "number", "description": "Unix timestamp ms (createdAt + 24h)" }
+  },
+  "additionalProperties": false
+}

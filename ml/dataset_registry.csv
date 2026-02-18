@@ -1,0 +1,5 @@
+dataset_id,name,description,source,records,created,updated,format,location
+ds-001,bg-car-brands,Bulgarian car brands and models taxonomy,Internal curated,500+,2026-01-15,2026-02-18,JSON,schemas/taxonomy.v1.json
+ds-002,bg-cities-regions,Bulgarian cities and regions for location picker,Internal + NSI,265 cities + 28 regions,2025-11-01,2026-01-20,JSON,src/data/bulgarian-locations.ts
+ds-003,listing-images,Uploaded car listing images,User uploads,Dynamic,2025-06-01,Ongoing,JPEG/PNG/WebP,Firebase Storage /listings/
+ds-004,search-index,Algolia search index for vehicle listings,Firestore sync,Dynamic,2025-08-01,Ongoing,Algolia records,Algolia dashboard

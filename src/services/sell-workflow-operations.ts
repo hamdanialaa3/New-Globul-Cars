@@ -17,6 +17,7 @@ import { rateLimiter, RATE_LIMIT_CONFIGS } from './rate-limiting/rateLimiter.ser
 import { SellWorkflowCollections } from './sell-workflow-collections';
 import { SellWorkflowTransformers } from './sell-workflow-transformers';
 import { WorkflowData, WorkflowProgress, WorkflowDraft } from './sell-workflow-types';
+import { SlugService } from './slug.service';
 
 export class SellWorkflowOperations {
   /**
@@ -108,6 +109,45 @@ export class SellWorkflowOperations {
         ...transformedUpdates,
         updatedAt: serverTimestamp()
       });
+
+      // Re-assign slug if SEO-relevant fields changed
+      const slugFields = ['make', 'model', 'year', 'title'];
+      const slugFieldsChanged = slugFields.some((f) => f in updates);
+      if (slugFieldsChanged) {
+        try {
+          const snap = await getDoc(docRef);
+          const existing = snap.exists() ? snap.data() : {};
+          const sellerNumericId = existing?.sellerNumericId;
+          const carNumericId = existing?.carNumericId;
+
+          if (sellerNumericId && carNumericId) {
+            const slugResult = await SlugService.assignSlug(
+              docId,
+              sellerNumericId,
+              carNumericId,
+              {
+                make: (updates as any).make ?? existing?.make,
+                model: (updates as any).model ?? existing?.model,
+                year: (updates as any).year ?? existing?.year,
+                title: (updates as any).title ?? existing?.title,
+              },
+              userId,
+              existing?.slug,
+            );
+            if (slugResult.changed) {
+              await updateDoc(docRef, {
+                slug: slugResult.slug,
+                canonicalUrl: slugResult.canonicalUrl,
+              });
+            }
+          }
+        } catch (slugError) {
+          logger.warn('Slug re-assignment failed (non-blocking)', {
+            docId,
+            error: (slugError as Error).message,
+          });
+        }
+      }
 
       logger.info('Workflow data updated', { docId, userId, collection: collectionName });
       return { success: true };

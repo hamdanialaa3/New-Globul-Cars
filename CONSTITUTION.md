@@ -1,126 +1,285 @@
-# 🏛️ دستور المشروع - PROJECT CONSTITUTION
-## Koli One (Koli One) - معايير التطوير الثابتة
+# PROJECT CONSTITUTION
+## Koli One - Development Standards & Governance
 
-## 4️⃣ المعايير المعمارية (Architectural Standards)
+---
 
-### 4.1 نظام Numeric ID (CRITICAL - لا يُمس)
-**❌ NEVER use Firebase UIDs in public URLs**
+## 1. Architecture Overview
 
-#### الأنماط الصحيحة:
-```typescript
-// ✅ User Profile
-/profile/:numericId
-Example: /profile/18
+### 1.1 Tech Stack
+- **Frontend**: React 18 SPA (Vite build, CRACO fallback)
+- **Backend**: Firebase (Firestore, Auth, Cloud Functions, Storage, Hosting)
+- **Search**: Algolia (hybrid Firestore + Algolia)
+- **Messaging**: Firebase Realtime Database v2
+- **Mobile**: Expo Router (React Native) in `mobile_new/`
+- **Deployment**: Firebase Hosting at https://koli.one
 
-// ✅ Car Details (Double ID System)
-/car/:sellerNumericId/:carNumericId
-Example: /car/1/5  // User #1's 5th car
+### 1.2 Folder Structure
+- `src/` -- Web app source (components, services, routes, hooks, types)
+- `src/services/` -- Domain logic (sell workflow, numeric IDs, slugs, messaging, auth)
+- `src/components/` -- Reusable UI components
+- `src/routes/` -- Page-level route components
+- `functions/` -- Firebase Cloud Functions (backend)
+- `mobile_new/` -- Expo Router mobile app
+- `schemas/` -- Versioned JSON Schema definitions
+- `governance/` -- Change approval, release policy
+- `ops/` -- Operational playbooks (deployment, incident response)
+- `ml/` -- ML dataset and model registries
+- `DDD/` -- Deleted files archive (never delete from project)
+- `scripts/` -- Build and utility scripts
 
-// ✅ Edit Car
-/car/:sellerNumericId/:carNumericId/edit
+### 1.3 Data Contracts
+- Canonical schemas live in `schemas/` (Listing, User, Story, Campaign).
+- Vehicle taxonomy in `schemas/taxonomy.v1.json`.
+- All Firestore documents must conform to their corresponding schema.
 
-// ✅ Messages
-/messages/:senderId/:recipientId
-Example: /messages/1/18
+---
+
+## 2. Locale & Regional Standards
+
+| Setting | Value |
+|---------|-------|
+| Country | Bulgaria |
+| Languages | Bulgarian (bg), English (en) |
+| Currency | EUR (always) |
+| Phone prefix | +359 |
+| Coordinate scope | Bulgarian territory |
+
+---
+
+## 3. Code Standards
+
+### 3.1 File Size
+- Maximum **300 lines** per file.
+- If exceeded, split into multiple files with clear imports and JSDoc.
+
+### 3.2 No Console Calls
+- `console.*` is banned in `src/`. Build blocks it via `scripts/ban-console.js`.
+- Use `logger-service.ts` (`logger` for general, `serviceLogger` for services).
+
+### 3.3 No Emoji in Code
+- Unicode emoji characters are prohibited in source files.
+- ASCII art markers like `// ---` or `// ===` are acceptable.
+
+### 3.4 No Deletion
+- Never delete files from the project.
+- Move deprecated files to `DDD/` (acts as recycle bin).
+- Owner reviews `DDD/` manually.
+
+### 3.5 No Duplicate Logic
+- Extract shared logic into services or utilities.
+- Single source of truth for each domain concept.
+
+### 3.6 TypeScript Strict
+- All source must pass `npm run type-check` with zero errors.
+- Use proper types; avoid `any` unless index signatures require it.
+
+### 3.7 Imports
+- Use path aliases (`@/...`) configured in `tsconfig.json`.
+- Avoid deep relative paths (more than 3 levels).
+
+---
+
+## 4. URL & Privacy Standards (CRITICAL)
+
+### 4.1 Numeric ID System (NEVER MODIFY)
+Firebase UIDs must **never** appear in public URLs.
+
+#### Correct URL Patterns:
+```
+/profile/{numericId}                        -- Own profile
+/profile/view/{numericId}                   -- Viewing another user's profile
+/car/{sellerNumericId}/{carNumericId}       -- Car listing
+/car/{sellerNumericId}/{carNumericId}/edit  -- Edit listing
+/messages/{senderId}/{recipientId}          -- Messages
 ```
 
-### 10.2 Dependency Management
+#### Examples:
+```
+/profile/90          -- User #90's own profile (only if logged in as user 90)
+/profile/view/90     -- Anyone viewing user 90's public profile
+/car/90/5            -- User #90's 5th car listing
+/car/90/5/edit       -- Edit that listing (owner only)
+```
+
+#### Strict Access Rules:
+- User N can access `/profile/N` (own profile) when logged in as user N.
+- Visiting another user's profile redirects to `/profile/view/{id}`.
+- No user can access `/profile/{X}` where X is not their own numericId.
+
+### 4.2 SEO Slug System
+- SlugService (`src/services/slug.service.ts`) generates SEO-friendly slugs.
+- Slugs are stored on listing documents as `slug` and `canonicalUrl`.
+- Canonical path format: `/car/{sellerNumericId}/{carNumericId}/{slug}`
+- Slug index collection: `listing_slugs` (collision prevention).
+- Slug history collection: `listing_slug_history` (301 redirects).
+- Slugs are assigned automatically during listing creation and updated on edit.
+
+### 4.3 Numeric ID Implementation Files
+- `src/services/numeric-id-generator.service.ts`
+- `src/services/numeric-id-counter.service.ts`
+- `src/services/numeric-id-profile.service.ts`
+- `src/services/numeric-id-utils.service.ts`
+- `src/services/numeric-car-system.service.ts`
+- `functions/src/triggers/onUserCreated.ts` (assigns numericId on signup)
+
+---
+
+## 5. Security & Privacy
+
+### 5.1 Authentication
+- Firebase Auth with Google, email/password, and guest sign-in.
+- All authenticated routes check `auth.currentUser` before operations.
+- Rate limiting applied to listing creation and messaging.
+
+### 5.2 Firestore Security Rules
+- Defined in `firestore.rules` at project root.
+- Users can only read/write their own documents.
+- Listing ownership verified by `userId` field matching auth UID.
+- Public read for published listings; write restricted to owner.
+
+### 5.3 Data Privacy
+- Firebase UIDs are internal-only; never exposed in URLs or client-visible IDs.
+- Numeric IDs used for all public-facing references.
+- GDPR considerations: user data deletion workflow planned.
+
+---
+
+## 6. Firestore Listeners
+
+### 6.1 isActive Guard Pattern
+All Firestore real-time listeners must use the `isActive` guard to prevent
+state updates after component unmount:
+
+```typescript
+useEffect(() => {
+  let isActive = true;
+
+  const unsubscribe = onSnapshot(docRef, (snapshot) => {
+    if (!isActive) return; // Guard
+    setData(snapshot.data());
+  });
+
+  return () => {
+    isActive = false;
+    unsubscribe();
+  };
+}, []);
+```
+
+---
+
+## 7. Vehicle Data Architecture
+
+### 7.1 Six Collections
+Vehicle data is split across 6 Firestore collections:
+`cars`, `trucks`, `buses`, `trailers`, `caravans`, `agricultural`.
+
+Resolution is handled by `src/services/sell-workflow-collections.ts`.
+
+### 7.2 Sell Workflow (6 Files)
+- `sell-workflow-collections.ts` -- Collection routing by vehicle type
+- `sell-workflow-operations.ts` -- CRUD with rate limiting and slug integration
+- `sell-workflow-transformers.ts` -- Data transformation and normalization
+- `sell-workflow-validation.ts` -- Input validation
+- `sell-workflow-images.ts` -- Image upload handling
+- `sell-workflow-types.ts` -- TypeScript interfaces
+
+---
+
+## 8. Search Architecture
+
+### 8.1 Hybrid Search
+- Primary: Algolia for full-text search with facets and filters.
+- Fallback: Firestore queries for simple lookups.
+- Configuration: `configs/algolia-index-config.json`
+- Services: `src/services/search/*`
+
+---
+
+## 9. Testing Standards
+
+### 9.1 Required Coverage
+- All service files must have corresponding `__tests__/` test files.
+- Provider wrappers required: `ThemeProvider` + `LanguageProvider`.
+- Documentation: `docs/testing/README.md`
+
+### 9.2 Quality Gates
+```bash
+npm run type-check   # Zero TypeScript errors
+npm test             # All suites pass
+npm run build        # Successful production build
+```
+
+---
+
+## 10. Dependency Management
+
+### 10.1 Commands
 ```bash
 npm outdated            # Check for updates
 npm audit               # Security vulnerabilities
 npm dedupe              # Remove duplicates
-
-
-### Algolia
-```bash
-npm run sync-algolia           # Sync Algolia indexes
 ```
 
-## 1️⃣4️⃣ الروابط المهمة (Important Links)
-
-### Production
-- **Live Site:** https://koli.one
-- **Firebase Hosting:** https://fire-new-globul.web.app
-- **GitHub:** https://github.com/hamdanialaa3/New-Globul-Cars
-- **Firebase Console:** https://console.firebase.google.com/project/fire-new-globul
-
+### 10.2 Algolia Sync
+```bash
+npm run sync-algolia    # Sync Algolia indexes
+```
 
 ---
 
+## 11. Governance
 
-**© 2026 Koli One - All Rights Reserved**  
-**Last Updated:** January 4, 2026 by Senior System Architect
+### 11.1 Change Approval
+See `governance/CHANGE_APPROVAL.md` for the PR review process.
 
-نظام :
-### User Profile
-- **Pattern:** `/profile/{userId}`
-- **Example:** `http://localhost:3000/profile/1`
+### 11.2 Release Policy
+See `governance/RELEASE_POLICY.md` for versioning and deployment cadence.
 
-### Vehicle Listing (Hierarchical Structure)
-- **Pattern:** `/car/{userId}/{carLocalId}`
-- **Logic:** The URL contains the User ID followed by the specific Car ID generated by that user.
-- **Example:** `http://localhost:3000/car/1/1` (User 1, Car 1).
+### 11.3 Incident Response
+See `ops/playbooks/incident-response.md` for severity levels and response steps.
 
-### Messaging System
-- **Trigger:** Initiated from a Vehicle Page (`/car/1/1`) or Profile Page (`/profile/2`).
-- **Flow:** When User B (`/profile/2`) visits User A's car (`/car/1/1`) and clicks "Message":
-  - Open a dedicated chat context between User A and User B.
-  - Context must preserve the reference to the specific car.
+---
 
+## 12. Developer Workflows
 
-يعني كألاتي :
+### 12.1 Web Development
+```bash
+cd <project-root>
+npm start               # Dev server
+npm run start:dev       # Dev with extra logging
+npm run type-check      # TypeScript validation
+npm test                # Run tests
+npm run build           # Production build
+```
 
-يدخل الانسان يفتح حساب عن طريق جوجل او الطرق الاخرى من ضمنها يدخل كضيف بمجرد سجل الدخول الاول له سوف يعطيه النظام بروفايل :
-http://localhost:3000/profile/"Number of user"
-هذا الرقم الاخير هو رقم التعداد في قاعدة البيانات الذي يمثل بشكل صارم عدد الناس الذين دخلو وانشئوا حساب او سجلو كضيوف , و هنا يعطيهم النظام رقم من 1-1000000000 .........الخ 
+### 12.2 Firebase Emulators
+```bash
+npm run emulate         # Start all emulators
+```
 
-لنستمر مثلا المستخدم تسلسل 90 صفحته هذه : 
-http://localhost:3000/profile/90
+### 12.3 Mobile Development
+```bash
+cd mobile_new/
+npm start               # Expo dev server (expo start)
+```
 
-الاعلان الخامس الذي اضافه المستخدم رقم 90 هو هذا الرابط :
-http://localhost:3000/car/90/5
+---
 
-رابط تعديل الاعلان رقم 5 الضي اضافه المستخدم رثم 90 هو هذا 
-https://localhost:3000/car/90/5/edit
+## 13. Git & Deployment
 
-انا المستخدم90 الذي رابط المستخدم الخاص بي هو : http://localhost:3000/profile/90 هذا الشيء صحيح ولا  مشكله به يعني انا ادخل الى بروفايلي من خلال هذا الرابط اذا كنت مسجل دخول بالمستخدم80 !!!!! انتبه هذا صحيح , المطلوب عندما انا المستخدم80 و سجلت دخول بنجاح و اريد ان ازور المستخم80 فانه الوضع الحالي يقودني الرابط الى http://localhost:3000/profile/80 لكن يجب ان نغيره !!! انتبه يجب ان تجعله يقود الصفحة الى نظام جديد و هو : http://localhost:3000/profile/view/80 , و ابدا لا يسمح بشكل صارم دخول المستخدم90 اي بروفايل من هذا النوع http://localhost:3000/profile/any ueser number
-  ما عدى بروفايله الذي سجل تسجيل دخول به وهو http://localhost:3000/profile/90
+### 13.1 Repository
+- GitHub: https://github.com/hamdanialaa3/New-Globul-Cars
+- Account: `hamdanialaa3`
 
-الخلاصة انا المستخدم1 , يسمح لي بزيارة بروفايلي: http://localhost:3000/profile/1 فقط بهذه الصيغة , و عندما اريد ان ازور بروفايل المستخدم2 : http://localhost:3000/profile/2 فاجعله تلقائيا يذهب الى الرابط : http://localhost:3000/profile/view/2
-هذا كله بشكل صارم ع !!!!!!!!!!
+### 13.2 Firebase Project
+- Project: `fire-new-globul`
+- Console: https://console.firebase.google.com/project/fire-new-globul
 
-حلل كل هذا الذي كتبته و طبقه على المشروع بشكل صارم و ذكي جدا و اليات برمجية صحيحه , بالمناسبه كان كل شيء في السابق يعمل بشكل صحيح لكن خرب بعد تعديلات قمنا بها 
+### 13.3 Production Domain
+- https://koli.one
+- Alternate: https://fire-new-globul.web.app
 
+---
 
-يتم بناء لالروابط بشكل صارم وهذا دستور لهذا المشروع هكذا بدون اي اخطاء 
-
-فقط ركز دستورنا  في هذا المشروع : 
-الموقع الجغرافي : جمهورية بلغارية 
-اللغات : بلغاري و انكليزي 
-العملة : يورو 
-الملفات البرمجية لا تزيد على 300 سطر و اذا زاد سوف يقسم الكود على اكثر من ملف و مع الدوال الخاصة و الكومنت المناسب والدوال المعنية لربط الملفات 
-لا للتكرار 
-تحليل كل ملف قبل العمل به 
-الايموجيات النصية التي تشبه هذه :📍📞🎯 ❤️⚡⭐🚗 .....الخ ممنوعة ومرفوضة في كامل المشروع 
-
-لكن اجعل كل شيء حقيقي وليس تجريبي 
-يعني كل ما تعمل عليه هو للنشر للناس وللحالة الحقيقية للبيع 
-عند التنظيف ممنوع اي حذف في هذا المشروع وبدلا من ذلك : رمي كل ملف تريد حذفه الى : 
-C:\Users\hamda\Desktop\New Globul Cars\DDD
-هذا المجلد كسلةمهملات ثم انا اتحكم يدويا في وصت لاحق بالملفات 
-
-
-
-التالي عند الحفظ نراعيها وليس دائما 
-حفظ وضع المشروع الحالي يعني :
-التغييرات والاضافات والتطوير من قبلي يدويا 
-التغييرات والاضافات والتطوير من فجول ستوديو النماذج الذكية 
-التغييرات والاضافات والتطوير من كورسر وغيره من قبل النماذج
-الحفظ يحفظ كل ما موجود بدون اي استثناء 
-الدفع الى جيت هوب الربط موجود و جاهز الحساب : hamdanialaa3
-الدفع الى فايربوز جوجل الى المشروع :Fire New Globul
-مرتبط وجاهز فقط دفع و حفط 
-النشر على الدومين : 
-https://koli.one/
-مرتبط و جاهز تعطي انت امر الحفظ و الدفع 
-
+**Last Updated:** February 18, 2026

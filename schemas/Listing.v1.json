@@ -1,0 +1,118 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://koli.one/schemas/listing.v1.json",
+  "title": "Listing (Car / Vehicle)",
+  "description": "Canonical schema for a vehicle listing on Koli One. Source of truth for Firestore documents in cars, trucks, buses, trailers, caravans, agricultural collections.",
+  "type": "object",
+  "required": ["make", "model", "year", "price", "vehicleType", "sellerId", "status"],
+  "properties": {
+    "id": { "type": "string", "description": "Firestore document ID" },
+    "vin": { "type": "string", "maxLength": 17 },
+    "carNumericId": { "type": "integer", "minimum": 1, "description": "Sequential car ID scoped to seller" },
+    "sellerNumericId": { "type": "integer", "minimum": 1, "description": "Seller's sequential numeric ID" },
+    "sellerId": { "type": "string", "description": "Firebase Auth UID (never exposed in public URLs)" },
+
+    "vehicleType": {
+      "type": "string",
+      "enum": ["car", "truck", "bus", "trailer", "caravan", "agricultural"]
+    },
+    "make": { "type": "string" },
+    "model": { "type": "string" },
+    "makeOther": { "type": "string" },
+    "modelOther": { "type": "string" },
+    "variantOther": { "type": "string" },
+    "year": { "type": "integer", "minimum": 1900, "maximum": 2100 },
+    "mileage": { "type": "integer", "minimum": 0 },
+    "fuelType": { "type": "string" },
+    "transmission": { "type": "string" },
+    "power": { "type": "integer", "description": "HP" },
+    "powerKW": { "type": "integer", "description": "kW" },
+    "engineSize": { "type": "number", "description": "cm3" },
+    "color": { "type": "string" },
+    "exteriorColor": { "type": "string" },
+    "interiorColor": { "type": "string" },
+    "interiorMaterial": { "type": "string" },
+    "doors": { "type": "string" },
+    "numberOfDoors": { "type": "integer" },
+    "seats": { "type": "string" },
+    "numberOfSeats": { "type": "integer" },
+    "condition": { "type": "string" },
+    "accidentHistory": { "type": "boolean" },
+    "serviceHistory": { "type": "boolean" },
+    "fullServiceHistory": { "type": "boolean" },
+    "roadworthy": { "type": "boolean" },
+    "description": { "type": "string" },
+
+    "sellerType": { "type": "string", "enum": ["private", "dealer", "company"] },
+    "sellerName": { "type": "string" },
+    "sellerEmail": { "type": "string", "format": "email" },
+    "sellerPhone": { "type": "string" },
+    "companyName": { "type": "string" },
+
+    "location": { "type": "string" },
+    "locationData": {
+      "type": "object",
+      "properties": {
+        "cityName": { "type": "string" },
+        "regionName": { "type": "string" },
+        "cityId": { "type": "integer" },
+        "regionId": { "type": "integer" }
+      }
+    },
+    "city": { "type": "string" },
+    "region": { "type": "string" },
+    "coordinates": {
+      "type": "object",
+      "properties": {
+        "lat": { "type": "number" },
+        "lng": { "type": "number" }
+      }
+    },
+
+    "driveType": { "type": "string" },
+    "fuelConsumption": { "type": "number" },
+    "co2Emissions": { "type": "number" },
+    "euroStandard": { "type": "string" },
+    "weightKg": { "type": "number" },
+
+    "features": { "type": "array", "items": { "type": "string" } },
+    "safetyEquipment": { "type": "array", "items": { "type": "string" } },
+    "comfortEquipment": { "type": "array", "items": { "type": "string" } },
+    "infotainmentEquipment": { "type": "array", "items": { "type": "string" } },
+    "exteriorEquipment": { "type": "array", "items": { "type": "string" } },
+    "interiorEquipment": { "type": "array", "items": { "type": "string" } },
+    "extras": { "type": "array", "items": { "type": "string" } },
+
+    "images": { "type": "array", "items": { "type": "string", "format": "uri" } },
+    "mainImage": { "type": "string", "format": "uri" },
+
+    "price": { "type": "number", "minimum": 0 },
+    "currency": { "type": "string", "const": "EUR" },
+    "priceType": { "type": "string" },
+    "negotiable": { "type": "boolean" },
+    "financing": { "type": "boolean" },
+    "tradeIn": { "type": "boolean" },
+    "warranty": { "type": "boolean" },
+    "warrantyMonths": { "type": "integer" },
+    "paymentMethods": { "type": "array", "items": { "type": "string" } },
+
+    "slug": { "type": "string", "maxLength": 80, "description": "SEO-friendly URL slug (managed by SlugService)" },
+    "canonicalUrl": { "type": "string", "description": "Full canonical path: /car/{sellerNumericId}/{carNumericId}/{slug}" },
+
+    "status": {
+      "type": "string",
+      "enum": ["active", "sold", "draft", "expired", "deleted"]
+    },
+    "isActive": { "type": "boolean" },
+    "isSold": { "type": "boolean" },
+    "isFeatured": { "type": "boolean" },
+    "isUrgent": { "type": "boolean" },
+    "views": { "type": "integer", "minimum": 0 },
+    "favorites": { "type": "integer", "minimum": 0 },
+
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "expiresAt": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": true
+}

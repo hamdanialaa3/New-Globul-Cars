@@ -1,0 +1,35 @@
+{
+  "models": [
+    {
+      "id": "model-001",
+      "name": "listing-price-estimator",
+      "version": "0.0.0",
+      "status": "planned",
+      "description": "ML model to estimate fair market price for a vehicle listing based on make, model, year, mileage, condition, and region in Bulgaria.",
+      "framework": "TBD",
+      "inputFeatures": ["make", "model", "year", "mileage", "fuelType", "transmission", "condition", "region"],
+      "outputFields": ["estimatedPrice", "priceRange", "confidence"],
+      "trainingDataset": "ds-004",
+      "notes": "Requires sufficient listing data volume before training. Target: 10,000+ active listings."
+    },
+    {
+      "id": "model-002",
+      "name": "image-quality-scorer",
+      "version": "0.0.0",
+      "status": "planned",
+      "description": "Scores uploaded listing images for quality (brightness, blur, framing) to encourage better photos.",
+      "framework": "TBD",
+      "inputFeatures": ["imageBlob"],
+      "outputFields": ["qualityScore", "suggestions"],
+      "trainingDataset": "ds-003",
+      "notes": "Could use pre-trained model with transfer learning. Low priority until image volume justifies it."
+    }
+  ],
+  "governanceRules": {
+    "approvalRequired": true,
+    "approver": "project-owner",
+    "monitoringInterval": "weekly",
+    "biasCheck": "Required before production deployment",
+    "explainability": "All models must provide human-readable reasoning for predictions"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://koli.one/schemas/taxonomy.v1.json",
+  "title": "Vehicle Taxonomy v1",
+  "description": "Versioned brand-model-trim hierarchy for Koli One. This file defines the structure; actual brand/model data is maintained in src/data/ and Algolia.",
+  "version": "1.0.0",
+  "lastUpdated": "2026-02-18",
+  "vehicleTypes": [
+    {
+      "id": "car",
+      "labelBG": "Лек автомобил",
+      "labelEN": "Car",
+      "collection": "cars"
+    },
+    {
+      "id": "truck",
+      "labelBG": "Камион",
+      "labelEN": "Truck",
+      "collection": "trucks"
+    },
+    {
+      "id": "bus",
+      "labelBG": "Автобус",
+      "labelEN": "Bus",
+      "collection": "buses"
+    },
+    {
+      "id": "trailer",
+      "labelBG": "Ремарке",
+      "labelEN": "Trailer",
+      "collection": "trailers"
+    },
+    {
+      "id": "caravan",
+      "labelBG": "Каравана",
+      "labelEN": "Caravan",
+      "collection": "caravans"
+    },
+    {
+      "id": "agricultural",
+      "labelBG": "Земеделска техника",
+      "labelEN": "Agricultural",
+      "collection": "agricultural"
+    }
+  ],
+  "brandHierarchy": {
+    "description": "Structure: brand -> models[] -> trims[] -> engines[]. Actual data maintained in src/data/car-brands/ and synced to Algolia.",
+    "example": {
+      "brand": "BMW",
+      "models": [
+        {
+          "name": "3 Series",
+          "generations": ["E90", "F30", "G20"],
+          "trims": ["Base", "Sport Line", "Luxury Line", "M Sport"],
+          "engines": [
+            { "name": "320d", "fuelType": "diesel", "powerHP": 190 },
+            { "name": "330i", "fuelType": "petrol", "powerHP": 258 },
+            { "name": "320e", "fuelType": "hybrid", "powerHP": 204 }
+          ]
+        }
+      ]
+    },
+    "sourceFiles": [
+      "src/data/car-brands/",
+      "src/services/carBrandsService.ts",
+      "configs/algolia-index-config.json"
+    ]
+  },
+  "fuelTypes": [
+    { "id": "petrol", "labelBG": "Бензин", "labelEN": "Petrol" },
+    { "id": "diesel", "labelBG": "Дизел", "labelEN": "Diesel" },
+    { "id": "electric", "labelBG": "Електрически", "labelEN": "Electric" },
+    { "id": "hybrid", "labelBG": "Хибрид", "labelEN": "Hybrid" },
+    { "id": "plugin_hybrid", "labelBG": "Plug-in хибрид", "labelEN": "Plug-in Hybrid" },
+    { "id": "lpg", "labelBG": "Газ/LPG", "labelEN": "LPG" },
+    { "id": "cng", "labelBG": "Метан/CNG", "labelEN": "CNG" },
+    { "id": "hydrogen", "labelBG": "Водород", "labelEN": "Hydrogen" }
+  ],
+  "transmissionTypes": [
+    { "id": "manual", "labelBG": "Ръчна", "labelEN": "Manual" },
+    { "id": "automatic", "labelBG": "Автоматична", "labelEN": "Automatic" },
+    { "id": "semi_automatic", "labelBG": "Полуавтоматична", "labelEN": "Semi-Automatic" }
+  ],
+  "conditionTypes": [
+    { "id": "new", "labelBG": "Нов", "labelEN": "New" },
+    { "id": "used", "labelBG": "Употребяван", "labelEN": "Used" },
+    { "id": "certified", "labelBG": "Сертифициран", "labelEN": "Certified Pre-Owned" },
+    { "id": "damaged", "labelBG": "Повреден", "labelEN": "Damaged" }
+  ]
+}

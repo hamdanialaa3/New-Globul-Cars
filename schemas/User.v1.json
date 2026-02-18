@@ -1,0 +1,129 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://koli.one/schemas/user.v1.json",
+  "title": "User Profile",
+  "description": "Canonical schema for a user profile on Koli One. Covers private, dealer, and company profile types. Stored in Firestore 'users' collection.",
+  "type": "object",
+  "required": ["uid", "email", "displayName", "profileType", "planTier", "isActive"],
+  "properties": {
+    "uid": { "type": "string", "description": "Firebase Auth UID (never exposed in public URLs)" },
+    "email": { "type": "string", "format": "email" },
+    "displayName": { "type": "string" },
+    "firstName": { "type": "string" },
+    "lastName": { "type": "string" },
+    "photoURL": { "type": "string", "format": "uri" },
+    "coverImage": { "type": "string", "format": "uri" },
+    "publicDisplayName": { "type": "string" },
+    "numericId": { "type": "integer", "minimum": 1, "description": "Sequential numeric ID for public URLs: /profile/{numericId}" },
+    "phoneNumber": { "type": "string" },
+    "phoneCountryCode": { "type": "string", "const": "+359" },
+
+    "locationData": {
+      "type": "object",
+      "properties": {
+        "cityName": { "type": "string" },
+        "regionName": { "type": "string" },
+        "address": { "type": "string" },
+        "coordinates": {
+          "type": "object",
+          "properties": {
+            "latitude": { "type": "number" },
+            "longitude": { "type": "number" }
+          }
+        }
+      }
+    },
+
+    "preferredLanguage": { "type": "string", "enum": ["bg", "en"] },
+    "currency": { "type": "string", "const": "EUR" },
+    "profileType": { "type": "string", "enum": ["private", "dealer", "company"] },
+    "planTier": { "type": "string", "enum": ["free", "dealer", "company"] },
+
+    "permissions": {
+      "type": "object",
+      "properties": {
+        "canAddListings": { "type": "boolean" },
+        "maxListings": { "type": "integer" },
+        "maxMonthlyListings": { "type": "integer" },
+        "canEditLockedFields": { "type": "boolean" },
+        "maxFlexEditsPerMonth": { "type": "integer" },
+        "canBulkUpload": { "type": "boolean" },
+        "bulkUploadLimit": { "type": "integer" },
+        "canCloneListing": { "type": "boolean" },
+        "hasAnalytics": { "type": "boolean" },
+        "hasAdvancedAnalytics": { "type": "boolean" },
+        "hasTeam": { "type": "boolean" },
+        "canExportData": { "type": "boolean" },
+        "hasPrioritySupport": { "type": "boolean" }
+      }
+    },
+
+    "verification": {
+      "type": "object",
+      "properties": {
+        "email": { "type": "boolean" },
+        "phone": { "type": "boolean" },
+        "id": { "type": "boolean" },
+        "business": { "type": "boolean" }
+      }
+    },
+
+    "stats": {
+      "type": "object",
+      "properties": {
+        "totalListings": { "type": "integer" },
+        "activeListings": { "type": "integer" },
+        "totalViews": { "type": "integer" },
+        "totalMessages": { "type": "integer" },
+        "trustScore": { "type": "number" },
+        "followersCount": { "type": "integer" },
+        "followingCount": { "type": "integer" }
+      }
+    },
+
+    "socialLinks": {
+      "type": "object",
+      "properties": {
+        "facebook": { "type": "string", "format": "uri" },
+        "instagram": { "type": "string", "format": "uri" },
+        "youtube": { "type": "string", "format": "uri" },
+        "tiktok": { "type": "string", "format": "uri" },
+        "linkedin": { "type": "string", "format": "uri" }
+      }
+    },
+
+    "bio": { "type": "string", "maxLength": 500 },
+    "about": { "type": "string" },
+
+    "dealerSnapshot": {
+      "type": "object",
+      "description": "Present when profileType=dealer",
+      "properties": {
+        "nameBG": { "type": "string" },
+        "nameEN": { "type": "string" },
+        "logo": { "type": "string", "format": "uri" },
+        "status": { "type": "string", "enum": ["pending", "verified", "rejected"] }
+      }
+    },
+
+    "companySnapshot": {
+      "type": "object",
+      "description": "Present when profileType=company",
+      "properties": {
+        "nameBG": { "type": "string" },
+        "nameEN": { "type": "string" },
+        "logo": { "type": "string", "format": "uri" },
+        "status": { "type": "string", "enum": ["pending", "verified", "rejected"] },
+        "vatNumber": { "type": "string" }
+      }
+    },
+
+    "isActive": { "type": "boolean" },
+    "isBanned": { "type": "boolean" },
+    "isVerified": { "type": "boolean" },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "lastLoginAt": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": true
+}

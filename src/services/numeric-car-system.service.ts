@@ -201,15 +201,54 @@ class NumericCarSystemService {
         } as NumericCarData;
       });
 
-      serviceLogger.info('✅ Car created atomically via transaction', {
+      serviceLogger.info('Car created atomically via transaction', {
         carId: result.id,
         userNumericId: result.sellerNumericId,
         carNumericId: result.carNumericId
       });
 
+      // Assign SEO slug (non-blocking, outside transaction)
+      try {
+        const { SlugService } = await import('./slug.service');
+        const { SellWorkflowCollections } = await import('./sell-workflow-collections');
+        const vehicleType = (carData as any).vehicleType || 'car';
+        const colName = SellWorkflowCollections.getCollectionNameForVehicleType(vehicleType);
+
+        const slugResult = await SlugService.assignSlug(
+          result.id,
+          result.sellerNumericId,
+          result.carNumericId,
+          {
+            make: (carData as any).make,
+            model: (carData as any).model,
+            year: (carData as any).year,
+            title: (carData as any).title,
+          },
+          currentUser.uid,
+        );
+
+        // Persist slug and canonicalUrl on the listing document
+        const carDocRef = doc(db, colName, result.id);
+        await updateDoc(carDocRef, {
+          slug: slugResult.slug,
+          canonicalUrl: slugResult.canonicalUrl,
+        });
+
+        serviceLogger.info('Slug assigned for new listing', {
+          carId: result.id,
+          slug: slugResult.slug,
+          canonicalUrl: slugResult.canonicalUrl,
+        });
+      } catch (slugError) {
+        serviceLogger.warn('Slug assignment failed (non-blocking)', {
+          carId: result.id,
+          error: (slugError as Error).message,
+        });
+      }
+
       return result as NumericCarData;
     } catch (error) {
-      serviceLogger.error('❌ Atomic car creation failed', error as Error);
+      serviceLogger.error('Atomic car creation failed', error as Error);
       throw error;
     }
   }
@@ -249,12 +288,44 @@ class NumericCarSystemService {
         updatedAt: serverTimestamp()
       });
 
-      serviceLogger.info('✅ Car created with numeric IDs', {
+      serviceLogger.info('Car created with numeric IDs', {
         carId: docRef.id,
         sellerNumericId: userNumericId,
         carNumericId: carNumericId,
         url: `/car/${userNumericId}/${carNumericId}`
       });
+
+      // Assign SEO slug (non-blocking)
+      try {
+        const { SlugService } = await import('./slug.service');
+        const slugResult = await SlugService.assignSlug(
+          docRef.id,
+          userNumericId,
+          carNumericId,
+          {
+            make: (carData as any).make,
+            model: (carData as any).model,
+            year: (carData as any).year,
+            title: (carData as any).title,
+          },
+          currentUser.uid,
+        );
+
+        await updateDoc(doc(db, 'cars', docRef.id), {
+          slug: slugResult.slug,
+          canonicalUrl: slugResult.canonicalUrl,
+        });
+
+        serviceLogger.info('Slug assigned for listing', {
+          carId: docRef.id,
+          slug: slugResult.slug,
+        });
+      } catch (slugError) {
+        serviceLogger.warn('Slug assignment failed (non-blocking)', {
+          carId: docRef.id,
+          error: (slugError as Error).message,
+        });
+      }
 
       return {
         ...carData,
@@ -356,14 +427,52 @@ class NumericCarSystemService {
         throw new Error('❌ Unauthorized: You do not own this car');
       }
 
-      // 3️⃣ Update car
+      // 3. Update car
       const docRef = doc(db, 'cars', car.id);
       await updateDoc(docRef, {
         ...updates,
         updatedAt: serverTimestamp()
       });
 
-      serviceLogger.info('✅ Car updated', {
+      // 4. Re-assign slug if SEO-relevant fields changed
+      const slugFields = ['make', 'model', 'year', 'title'];
+      const slugFieldsChanged = slugFields.some((f) => f in updates);
+      if (slugFieldsChanged) {
+        try {
+          const { SlugService } = await import('./slug.service');
+          const merged = { ...car, ...updates };
+          const slugResult = await SlugService.assignSlug(
+            car.id,
+            userNumericId,
+            carNumericId,
+            {
+              make: merged.make,
+              model: merged.model,
+              year: merged.year,
+              title: (merged as any).title,
+            },
+            currentUser.uid,
+            (car as any).slug,
+          );
+          if (slugResult.changed) {
+            await updateDoc(docRef, {
+              slug: slugResult.slug,
+              canonicalUrl: slugResult.canonicalUrl,
+            });
+            serviceLogger.info('Slug updated for listing', {
+              carId: car.id,
+              slug: slugResult.slug,
+            });
+          }
+        } catch (slugError) {
+          serviceLogger.warn('Slug re-assignment failed (non-blocking)', {
+            carId: car.id,
+            error: (slugError as Error).message,
+          });
+        }
+      }
+
+      serviceLogger.info('Car updated', {
         userNumericId,
         carNumericId,
         carId: car.id
