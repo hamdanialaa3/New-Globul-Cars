@@ -20,10 +20,8 @@ const NumericCarDetailsPage: React.FC = () => {
         let isMounted = true;
 
         const resolveCarId = async () => {
-            logger.info('🔍 NumericCarDetailsPage: resolving', { sellerNumericId, carNumericId });
             if (!sellerNumericId || !carNumericId) {
                 if (isMounted) {
-                    logger.error('❌ NumericCarDetailsPage: Missing params');
                     setError('Invalid URL parameters');
                     setLoading(false);
                 }
@@ -33,67 +31,52 @@ const NumericCarDetailsPage: React.FC = () => {
             try {
                 const sellerNum = parseInt(sellerNumericId, 10);
                 const carNum = parseInt(carNumericId, 10);
-                logger.info('🔢 NumericCarDetailsPage: Parsed nums', { sellerNum, carNum });
 
                 if (isNaN(sellerNum) || isNaN(carNum)) {
                     if (isMounted) {
-                        logger.error('❌ NumericCarDetailsPage: NaN params');
                         setError('Invalid numeric IDs');
                         setLoading(false);
                     }
                     return;
                 }
 
-                // Resolve car directly by numeric fields across all vehicle collections
-                logger.info('🕵️‍♂️ NumericCarDetailsPage: Calling resolveByNumeric...', { collectionsCount: VEHICLE_COLLECTIONS.length });
-                // VEHICLE_COLLECTIONS is a constant tuple, so length is known at compile time
-
+                // Resolve car by numeric fields across all vehicle collections
                 const found = await resolveByNumeric(sellerNum, carNum);
-                logger.info('✅ NumericCarDetailsPage: resolveByNumeric result', { found: found || 'null' });
 
-                if (!isMounted) return; // Stop if unmounted
+                if (!isMounted) return;
 
                 if (found) {
-                    logger.info('Resolved numeric car URL', { sellerNum, carNum, foundCarId: found.id, collection: found.collection });
+                    logger.info('Resolved numeric car URL', { sellerNum, carNum, carId: found.id, collection: found.collection });
                     setRealCarId(found.id);
                 } else {
-                    logger.info('⚠️ NumericCarDetailsPage: Not found, trying legacy...');
                     // Fallback: support legacy field name `numericId`
                     const legacyFound = await resolveByNumeric(sellerNum, carNum, true);
-                    logger.info('✅ NumericCarDetailsPage: Legacy result', { legacyFound: legacyFound || 'null' });
-
                     if (!isMounted) return;
 
                     if (legacyFound) {
-                        logger.info('Resolved via legacy numericId', { sellerNum, carNum, foundCarId: legacyFound.id, collection: legacyFound.collection });
+                        logger.info('Resolved via legacy numericId', { sellerNum, carNum, carId: legacyFound.id });
                         setRealCarId(legacyFound.id);
                     } else {
-                        logger.warn('⚠️ NumericCarDetailsPage: Not found legacy, attempting repair...');
-                        // ✅ CRITICAL FIX: Attempt to find car by seller numeric ID and repair
-                        logger.warn('NumericCarDetails: Car not found by numeric IDs, attempting repair', { sellerNum, carNum });
+                        // Last resort: find car by seller UID + carNumericId
                         const repairResult = await attemptRepair(sellerNum, carNum);
-                        logger.info('🔧 NumericCarDetailsPage: Repair result', { repairResult: repairResult || 'null' });
-
                         if (!isMounted) return;
 
                         if (repairResult) {
-                            logger.info('Car repaired successfully', { sellerNum, carNum, carId: repairResult });
+                            logger.info('Car resolved via repair', { sellerNum, carNum, carId: repairResult });
                             setRealCarId(repairResult);
                         } else {
-                            logger.error('NumericCarDetails: Car not found and repair failed', { sellerNum, carNum });
+                            logger.warn('Car not found', { sellerNum, carNum });
                             setError('Car not found');
                         }
                     }
                 }
             } catch (err) {
-                logger.error('💥 NumericCarDetailsPage: Error', err as Error);
                 if (isMounted) {
                     logger.error('Error resolving numeric car ID', err as Error);
                     setError('System error resolving car');
                 }
             } finally {
                 if (isMounted) {
-                    logger.info('🏁 NumericCarDetailsPage: Loading finished');
                     setLoading(false);
                 }
             }
@@ -120,11 +103,8 @@ const NumericCarDetailsPage: React.FC = () => {
         return null;
     }
 
-    // Render the actual Details Page but KEEP the URL in the browser as /car/1/1
-    // We pass the resolved ID to the component
-    // Check if we are in edit mode
-    const isEditMode = window.location.pathname.endsWith('/edit');
-    return <CarDetailsPage forcedCarId={realCarId} initialEditMode={isEditMode} />;
+    // Render the actual Details Page, keeping the URL as /car/:sellerNumericId/:carNumericId
+    return <CarDetailsPage forcedCarId={realCarId} />;
 };
 
 export default NumericCarDetailsPage;
@@ -147,7 +127,6 @@ async function attemptRepair(sellerNum: number, carNum: number): Promise<string 
         // Find all cars for this user and check if any match the expected carNumericId
         for (const col of VEHICLE_COLLECTIONS) {
             try {
-                logger.info(`🔍 Repair: Trying collection ${col} for user ${userId}`);
                 const colRef = collection(db, col);
                 const q = query(
                     colRef,
@@ -165,17 +144,15 @@ async function attemptRepair(sellerNum: number, carNum: number): Promise<string 
                 for (const docSnap of snap.docs) {
                     const data = docSnap.data();
                     if (data.carNumericId === carNum || data.carNumericId === String(carNum)) {
-                        logger.info('Found car during repair attempt', { carId: docSnap.id, collection: col });
                         return docSnap.id;
                     }
                 }
             } catch (err) {
-                logger.warn(`⚠️ Repair: Failed/Timeout querying ${col}`, { error: err });
+                logger.warn(`Repair: Failed querying ${col}`, { error: err });
                 continue;
             }
         }
 
-        logger.warn('Repair failed: Car not found for user', { sellerNum, carNum });
         return null;
     } catch (error) {
         logger.error('Error during repair attempt', error as Error);
@@ -188,12 +165,7 @@ async function attemptRepair(sellerNum: number, carNum: number): Promise<string 
  */
 async function resolveByNumeric(sellerNum: number, carNum: number, useLegacyNumericId = false): Promise<{ id: string; collection: string } | null> {
     for (const col of VEHICLE_COLLECTIONS) {
-        // Yield to event loop to prevent UI freeze
-        await new Promise(resolve => setTimeout(resolve, 100));
-
         try {
-            logger.info(`🕵️‍♂️ resolveByNumeric: Checking ${col}...`, { sellerNum, carNum });
-
             const colRef = collection(db, col);
             const numField = useLegacyNumericId ? 'numericId' : 'carNumericId';
             // Primary: numbers
@@ -204,46 +176,29 @@ async function resolveByNumeric(sellerNum: number, carNum: number, useLegacyNume
                 limit(1)
             );
 
-            // Add 2s timeout to avoid hang
-            let snap;
-            try {
-                snap = await Promise.race([
-                    getDocs(q),
-                    new Promise<never>((_, reject) => setTimeout(() => reject(new Error(`Timeout querying ${col}`)), 2000))
-                ]);
-            } catch (timeoutErr) {
-                logger.error(`⏳ Timeout resolving numeric ID in ${col}`, timeoutErr as Error);
-                continue; // skip this collection on timeout
-            }
+            const snap = await Promise.race([
+                getDocs(q),
+                new Promise<never>((_, reject) => setTimeout(() => reject(new Error(`Timeout: ${col}`)), 3000))
+            ]);
 
             if (!snap.empty) {
-                const doc = snap.docs[0];
-                return { id: doc.id, collection: col };
+                return { id: snap.docs[0].id, collection: col };
             }
 
-            // Fallback: some legacy docs may store numeric IDs as strings
+            // Fallback: some legacy docs store numeric IDs as strings
             const qStr = query(
                 colRef,
                 where('sellerNumericId', '==', String(sellerNum)),
                 where(numField, '==', String(carNum)),
                 limit(1)
             );
-            // Add 2s timeout to avoid hang
-            let snapStr;
-            try {
-                snapStr = await Promise.race([
-                    getDocs(qStr),
-                    new Promise<never>((_, reject) => setTimeout(() => reject(new Error(`Timeout querying str ${col}`)), 2000))
-                ]);
-            } catch (timeoutErr) {
-                logger.error(`⏳ Timeout resolving numeric ID (string fallback) in ${col}`, timeoutErr as Error);
-
-                continue;
-            }
+            const snapStr = await Promise.race([
+                getDocs(qStr),
+                new Promise<never>((_, reject) => setTimeout(() => reject(new Error(`Timeout str: ${col}`)), 3000))
+            ]);
 
             if (!snapStr.empty) {
-                const doc = snapStr.docs[0];
-                return { id: doc.id, collection: col };
+                return { id: snapStr.docs[0].id, collection: col };
             }
         } catch (err) {
             logger.error(`Error querying collection ${col}`, err as Error);
