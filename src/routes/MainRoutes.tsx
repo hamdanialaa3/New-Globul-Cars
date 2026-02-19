@@ -118,6 +118,11 @@ const AlgoliaSyncManager = safeLazy(() => import('../pages/06_admin/AlgoliaSyncM
 const AdminCarManagementPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminCarManagementPage'));
 // 🔥 NEW: Car History Report Page - COMPETITIVE ADVANTAGE!
 const CarHistoryPage = safeLazy(() => import('../pages/07_car-details/CarHistoryPage'));
+// 🔗 NEW: Routing with slug support and short links (2026-02-19)
+const ListingSlugRedirectPage = safeLazy(() => import('../pages/01_main-pages/ListingSlugRedirectPage'));
+const UserProfileSlugRedirectPage = safeLazy(() => import('../pages/03_user-pages/UserProfileSlugRedirectPage'));
+const UserSettingsGuardedPage = safeLazy(() => import('../pages/03_user-pages/UserSettingsGuardedPage'));
+import { ShortLinkResolverComponent } from '../hooks/useShortLinkResolver';
 const DeleteMockCarsPage = safeLazy(() => import('../pages/06_admin/DeleteMockCarsPage'));
 // DEAD PAGE: const IoTDashboardPage = safeLazy(() => import('../pages/03_user-pages/IoTDashboardPage'));
 const CarTrackingPage = safeLazy(() => import('../pages/03_user-pages/CarTrackingPage'));
@@ -165,6 +170,10 @@ export const MainRoutes: React.FC = () => {
     return (
         <Routes>
             <Route path="/" element={<HomePage />} />
+            
+            {/* 🔗 SHORT LINKS - Must be early to avoid shadowing by wildcards */}
+            <Route path="/s/:shortCode" element={<ShortLinkResolverComponent />} />
+            
             <Route path="/social" element={<SocialFeedPage />} />
             <Route path="/cars" element={<CarsPage />} />
             <Route path="/search" element={<SearchPage />} />
@@ -253,7 +262,11 @@ export const MainRoutes: React.FC = () => {
                 </RoleGuard>
             } />
 
-            {/* 🔢 Strict Numeric Car URLs (Constitution: /car/:sellerNumericId/:carNumericId) */}
+            {/* � LISTING ROUTES WITH SLUG SUPPORT (2026-02-19) */}
+            {/* Handles: /car/123 and /car/123/toyota-corolla-2020 */}
+            <Route path="/car/:listingNumericId/:slug?" element={<ListingSlugRedirectPage />} />
+
+            {/* �🔢 Strict Numeric Car URLs (Constitution: /car/:sellerNumericId/:carNumericId) */}
             <Route path="/car/:sellerNumericId/:carNumericId" element={<NumericCarDetailsPage />} />
             <Route path="/car/:sellerNumericId/:carNumericId/edit" element={
                 <AuthGuard requireAuth={true}>
@@ -327,7 +340,13 @@ export const MainRoutes: React.FC = () => {
             <Route path="/sell/inserat/:vehicleType/preview" element={<SellRouteRedirect step={5} />} />
             <Route path="/sell/inserat/:vehicleType/submission" element={<SellRouteRedirect step={5} />} />
 
-            {/* 🔢 Numeric ID-based profile routes (world-class URLs) */}
+            {/* � USER PROFILE ROUTES WITH SLUG SUPPORT (2026-02-19) */}
+            {/* Handles: /u/123 and /u/123/john-doe */}
+            <Route path="/u/:userNumericId/:slug?" element={<UserProfileSlugRedirectPage />} />
+            {/* Settings page with access control (owner or admin only) */}
+            <Route path="/profile/:userNumericId/settings" element={<UserSettingsGuardedPage />} />
+
+            {/* �🔢 Numeric ID-based profile routes (world-class URLs) */}
             <Route path="/profile/*" element={<NumericProfileRouter />} />
 
             {/* 🔢 Numeric Car Details Pages */}
