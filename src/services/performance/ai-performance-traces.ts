@@ -12,9 +12,10 @@ export const AI_TRACE_NAMES = {
   geminiInference: 'ai_gemini_infer'
 } as const;
 
-// الحصول على performance إن توفر
+// الحصول على performance إن توفر (production only — 403 in dev without API enabled)
 function safeGetPerformance() {
   try {
+    if (import.meta.env.DEV) return null; // Skip in dev — fireperf API not enabled
     if (!getApps().length) return null;
     return getPerformance(getApp());
   } catch {
