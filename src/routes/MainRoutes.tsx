@@ -45,7 +45,13 @@ const MessagesPage = safeLazy(() => import('../pages/03_user-pages/MessagesPage'
 const RealtimeMessagesPage = safeLazy(() => import('../pages/03_user-pages/RealtimeMessagesPage'));
 const AdminPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminPage'));
 const AdminLoginPage = safeLazy(() => import('../pages/02_authentication/admin-login/AdminLoginPage'));
-const AdminDataFix = safeLazy(() => import('../pages/06_admin/regular-admin/AdminDataFix'));
+// ✅ AUDIT FIX: AdminDataFix.tsx was missing — replaced with fallback (2026-02-19)
+const AdminDataFixFallback: React.FC = () => (
+    <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <h2>🔧 Admin Data Fix</h2>
+        <p>This tool is currently under maintenance. Please check back later.</p>
+    </div>
+);
 const NumericCarDetailsPage = safeLazy(() => import('../pages/01_main-pages/NumericCarDetailsPage'));
 // ❌ REMOVED: const NumericMessagingPage - Legacy system archived (Phase 1 Remediation)
 const NumericProfileRouter = safeLazy(() => import('./NumericProfileRouter'));
@@ -119,7 +125,7 @@ const AdminCarManagementPage = safeLazy(() => import('../pages/06_admin/regular-
 // 🔥 NEW: Car History Report Page - COMPETITIVE ADVANTAGE!
 const CarHistoryPage = safeLazy(() => import('../pages/07_car-details/CarHistoryPage'));
 // 🔗 NEW: Routing with slug support and short links (2026-02-19)
-const ListingSlugRedirectPage = safeLazy(() => import('../pages/01_main-pages/ListingSlugRedirectPage'));
+// ListingSlugRedirectPage removed — conflicted with /car/:sellerNumericId/:carNumericId
 const UserProfileSlugRedirectPage = safeLazy(() => import('../pages/03_user-pages/UserProfileSlugRedirectPage'));
 const UserSettingsGuardedPage = safeLazy(() => import('../pages/03_user-pages/UserSettingsGuardedPage'));
 import { ShortLinkResolverComponent } from '../hooks/useShortLinkResolver';
@@ -170,10 +176,10 @@ export const MainRoutes: React.FC = () => {
     return (
         <Routes>
             <Route path="/" element={<HomePage />} />
-            
+
             {/* 🔗 SHORT LINKS - Must be early to avoid shadowing by wildcards */}
             <Route path="/s/:shortCode" element={<ShortLinkResolverComponent />} />
-            
+
             <Route path="/social" element={<SocialFeedPage />} />
             <Route path="/cars" element={<CarsPage />} />
             <Route path="/search" element={<SearchPage />} />
@@ -262,11 +268,7 @@ export const MainRoutes: React.FC = () => {
                 </RoleGuard>
             } />
 
-            {/* � LISTING ROUTES WITH SLUG SUPPORT (2026-02-19) */}
-            {/* Handles: /car/123 and /car/123/toyota-corolla-2020 */}
-            <Route path="/car/:listingNumericId/:slug?" element={<ListingSlugRedirectPage />} />
-
-            {/* �🔢 Strict Numeric Car URLs (Constitution: /car/:sellerNumericId/:carNumericId) */}
+            {/* 🔢 Strict Numeric Car URLs (Constitution: /car/:sellerNumericId/:carNumericId) */}
             <Route path="/car/:sellerNumericId/:carNumericId" element={<NumericCarDetailsPage />} />
             <Route path="/car/:sellerNumericId/:carNumericId/edit" element={
                 <AuthGuard requireAuth={true}>
@@ -479,7 +481,7 @@ export const MainRoutes: React.FC = () => {
                 path="/admin/data-fix"
                 element={
                     <AuthGuard requireAuth={true} requireAdmin={true}>
-                        <AdminDataFix />
+                        <AdminDataFixFallback />
                     </AuthGuard>
                 }
             />
