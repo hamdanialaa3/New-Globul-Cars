@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { toast } from 'react-toastify';
 import { useParams, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -63,6 +63,17 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
   // ── Auth gate: shows login modal + stores what the user tried to do ──────────
   const [showLoginModal, setShowLoginModal]           = useState(false);
   const [pendingContactAction, setPendingContactAction] = useState<string | null>(null);
+
+  // ── Favorite handler (auth-gated) ──────────────────────────────────────────
+  const handleFavoriteClick = useCallback(() => {
+    if (currentUser) {
+      // Navigate directly to favorites page when logged in
+      navigate('/profile/favorites');
+    } else {
+      setPendingContactAction('favorite');
+      setShowLoginModal(true);
+    }
+  }, [currentUser, navigate]);
   const [showPromoModal, setShowPromoModal] = useState(false);
 
   // ✅ Handle scroll tracking for mobile FAB
@@ -397,7 +408,13 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
     setPendingContactAction(null);
     setShowLoginModal(false);
     // Small delay to let Firebase AuthProvider propagate
-    const timer = setTimeout(() => handleContactClick(action), 100);
+    const timer = setTimeout(() => {
+      if (action === 'favorite') {
+        navigate('/profile/favorites');
+      } else {
+        handleContactClick(action);
+      }
+    }, 100);
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser, pendingContactAction]);
@@ -508,15 +525,25 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
 
   if (!editHook.isEditMode) {
     return (
-      <CarDetailsMobileDEStyle
-        car={car}
-        language={(language as 'bg' | 'en')}
-        onBack={() => navigate(-1)}
-        onEdit={isOwner ? handleEditClick : undefined}
-        onDelete={isOwner ? handleDeleteClick : undefined}
-        isOwner={Boolean(isOwner)}
-        onContact={handleContactClick}
-      />
+      <>
+        <CarDetailsMobileDEStyle
+          car={car}
+          language={(language as 'bg' | 'en')}
+          onBack={() => navigate(-1)}
+          onEdit={isOwner ? handleEditClick : undefined}
+          onDelete={isOwner ? handleDeleteClick : undefined}
+          isOwner={Boolean(isOwner)}
+          onContact={handleContactClick}
+          onFavorite={handleFavoriteClick}
+        />
+        {/* 🔐 Login modal – covers both message & favorite when unauthenticated */}
+        <LoginRequiredModal
+          isOpen={showLoginModal}
+          language={language as 'bg' | 'en'}
+          onLoginSuccess={() => setShowLoginModal(false)}
+          onClose={() => { setShowLoginModal(false); setPendingContactAction(null); }}
+        />
+      </>
     );
   }
 

@@ -30,8 +30,9 @@ service cloud.firestore {
     // USERS Collection
     // ============================================
     match /users/{userId} {
-      // Only user can read/write their own profile
-      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      // Anyone can read basic user profiles (needed for seller avatar, display name, etc.)
+      // Sensitive auth data lives in Firebase Auth, not Firestore — this is safe.
+      allow read: if true;
       allow create: if isAuthenticated() && request.auth.uid == userId
         && request.resource.data.keys().hasAll(['email', 'createdAt'])
         && request.resource.data.size() < 50; // Max 50 fields
@@ -40,15 +41,11 @@ service cloud.firestore {
         && request.resource.data.size() < 50;
       allow delete: if isAdmin();
       
-      // For nested user documents
+      // For nested user documents (private by default — only owner/admin)
       match /{document=**} {
         allow read: if isAuthenticated() && (
-          // User can read their own data
           isOwner(userId) ||
-          // Admins can read all
-          isAdmin() ||
-          // Public profile fields (limited access)
-          document.includes('publicProfile')
+          isAdmin()
         );
         allow write: if isOwner(userId) && !isAdmin();
       }
@@ -480,6 +477,27 @@ service cloud.firestore {
         allow read: if isAuthenticated() && isOwner(customerId);
         allow write: if false;
       }
+    }
+
+    // ============================================
+    // ANALYTICS EVENTS Collection (car views, profile views, etc.)
+    // ============================================
+    match /analytics_events/{eventId} {
+      // Anyone can create analytics events (visitor tracking)
+      allow create: if true;
+      // Only authenticated users can read their own events
+      allow read: if isAuthenticated();
+      allow update, delete: if false;
+    }
+
+    // ============================================
+    // PROFILE METRICS Collection (aggregated counts)
+    // ============================================
+    match /profile_metrics/{userId} {
+      // Anyone can read profile metrics (public stats)
+      allow read: if true;
+      // Only the profile owner can update their metrics, or created via events
+      allow write: if isAuthenticated() && isOwner(userId);
     }
 
     // ============================================

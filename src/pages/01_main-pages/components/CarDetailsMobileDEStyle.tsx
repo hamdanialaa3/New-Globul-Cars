@@ -79,6 +79,7 @@ interface CarDetailsMobileDEStyleProps {
   onDelete?: () => void;
   isOwner: boolean;
   onContact: (method: string) => void;
+  onFavorite?: () => void;
   userProfileType?: 'private' | 'dealer' | 'company';
   monthlyDeletionsUsed?: number;
   activeListingsCount?: number;
@@ -1955,6 +1956,7 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   onDelete,
   isOwner,
   onContact,
+  onFavorite,
   userProfileType = 'private',
   monthlyDeletionsUsed = 0,
   activeListingsCount = 0,
@@ -2479,7 +2481,15 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
             >
               <Printer size={20} />
             </IconButton>
-            <IconButton>
+            <IconButton
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (onFavorite) onFavorite();
+              }}
+              title={language === 'bg' ? 'Запази в любими' : 'Add to favorites'}
+              type="button"
+            >
               <Heart size={20} />
             </IconButton>
             {isOwner && (
