@@ -16,9 +16,6 @@ const NumericCarDetailsPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // 🔍 DEBUG: Log component mount
-    logger.info('🚩 NumericCarDetailsPage: Mounted', { sellerNumericId, carNumericId, rawParams: useParams() });
-
     useEffect(() => {
         let isMounted = true;
 
@@ -109,11 +106,17 @@ const NumericCarDetailsPage: React.FC = () => {
         };
     }, [sellerNumericId, carNumericId]);
 
+    // ✅ CONSTITUTION: Redirect to dedicated CarNotFoundPage with numeric context
+    // Must be in useEffect to avoid setState-in-render on BrowserRouter
+    useEffect(() => {
+        if (!loading && (error || !realCarId)) {
+            navigate(`/car/${sellerNumericId}/${carNumericId}/not-found`, { replace: true });
+        }
+    }, [loading, error, realCarId, navigate, sellerNumericId, carNumericId]);
+
     if (loading) return <div className="flex justify-center items-center h-screen"><LoadingSpinner /></div>;
 
     if (error || !realCarId) {
-        // ✅ CONSTITUTION: Redirect to dedicated CarNotFoundPage with numeric context
-        navigate(`/car/${sellerNumericId}/${carNumericId}/not-found`, { replace: true });
         return null;
     }
 

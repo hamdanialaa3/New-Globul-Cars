@@ -16,7 +16,9 @@ import { db } from '@/firebase/firebase-config';
 import { logger } from '@/services/logger-service';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '');
+// Only initialise Stripe when a real key is configured (avoids "Stripe.js not available" crash)
+const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+const stripePromise = stripeKey ? loadStripe(stripeKey) : Promise.resolve(null);
 
 interface PromotionProduct {
   type: 'vip_badge' | 'top_of_page' | 'instant_refresh';
