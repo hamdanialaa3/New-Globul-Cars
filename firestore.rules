@@ -449,6 +449,40 @@ service cloud.firestore {
     }
 
     // ============================================
+    // NOTIFICATIONS Collection (User notifications)
+    // ============================================
+    match /notifications/{notificationId} {
+      // Users can only read their own notifications
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      // Backend/Cloud Functions create notifications
+      allow create: if false;
+      // Users can mark their own notifications as read
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      // Users can delete their own notifications
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // ============================================
+    // ADMIN NOTIFICATIONS Collection
+    // ============================================
+    match /admin_notifications/{notificationId} {
+      allow read, write: if isAuthenticated() && isAdmin();
+    }
+
+    // ============================================
+    // CUSTOMERS Collection (Stripe subscriptions)
+    // ============================================
+    match /customers/{customerId} {
+      allow read: if isAuthenticated() && isOwner(customerId);
+      allow write: if false; // Managed by Stripe extension
+      
+      match /{document=**} {
+        allow read: if isAuthenticated() && isOwner(customerId);
+        allow write: if false;
+      }
+    }
+
+    // ============================================
     // DEFAULT DENY ALL
     // ============================================
     match /{document=**} {

@@ -203,6 +203,12 @@ export class RealTimeNotificationsService {
             this.notificationCallbacks.forEach(cb => cb(notification));
           }
         });
+      },
+      (error) => {
+        // Gracefully handle permission-denied (non-admin user)
+        if ((error as any).code !== 'permission-denied') {
+          console.error('Admin notifications listener error:', error);
+        }
       }
     );
 

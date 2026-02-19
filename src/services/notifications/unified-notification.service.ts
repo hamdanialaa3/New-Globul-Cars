@@ -84,6 +84,10 @@ export class UnifiedNotificationService {
           ...doc.data()
         } as Notification));
         callback(notifications);
+      }, (error) => {
+        // Gracefully handle permission-denied (e.g., rules not deployed yet)
+        logger.warn('Notification listener error', { code: (error as any).code, message: error.message, userId });
+        callback([]);
       });
 
       this.unsubscribers.set(userId, unsubscribe);
