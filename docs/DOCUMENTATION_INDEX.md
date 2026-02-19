@@ -1,274 +1,66 @@
-# 📑 Koli One - Documentation Index
+# Koli One — Documentation Index
 
-## Quick Navigation
-
-### 📊 Status Reports
-- **[100_COMPLETION_ANSWER.md](100_COMPLETION_ANSWER.md)** - Direct answer to "Why not 100%?"
-- **[STATUS_DASHBOARD.md](STATUS_DASHBOARD.md)** - Visual progress dashboard
-- **[PROJECT_COMPLETION_REPORT.md](PROJECT_COMPLETION_REPORT.md)** - Comprehensive report
-- **[SESSION_SUMMARY.md](SESSION_SUMMARY.md)** - This session's work
-
-### ✅ Checklists & Verification
-- **[LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md)** - Pre-deployment checklist
-- **[COMPLETION_TASKS_MANIFEST.json](COMPLETION_TASKS_MANIFEST.json)** - Task tracking
-
-### 🌍 Multi-Language Documentation
-- **[تقرير_إكمال_المشروع.md](تقرير_إكمال_المشروع.md)** - Arabic completion report
-
-### 🔧 Session Reports
-- **[FINAL_SESSION_REPORT.md](FINAL_SESSION_REPORT.md)** - Session summary
-- **[SYSTEM_DIAGNOSTICS.md](SYSTEM_DIAGNOSTICS.md)** - System status
+*Last updated: February 19, 2026*
 
 ---
 
-## 🎯 What Was Done This Session
+## Project Status: 100% Plan Coverage
 
-### ✨ 5 Critical Tasks Completed
-
-1. **TASK-006: Azure Auth Removal** ✅
-   - Removed broken Azure dependency
-   - Kept Google + Firebase auth only
-   - Files: MobileLoginPage.tsx, LoginPageGlassFixed.tsx
-
-2. **TASK-020: Add-to-Cart Implementation** ✅
-   - Full cartService integration
-   - Quantity management
-   - ProductDetailPage.tsx modified
-
-3. **TASK-021: Billing Service Completion** ✅
-   - getInvoices() method
-   - downloadInvoice() method
-   - retryInvoicePayment() method
-   - Enhanced cancelSubscription()
-
-4. **TASK-019: Forgot Password Route** ✅
-   - Verified already implemented
-   - Route: /forgot-password
-
-5. **TASK-008: Super Admin Operations** ✅
-   - Verified fully implemented
-   - User management, analytics complete
+See **[reports/PLAN_COMPLETION_REPORT_2026-02-18.md](reports/PLAN_COMPLETION_REPORT_2026-02-18.md)** for the full completion report.
 
 ---
 
-## 📊 Current Status: 90% COMPLETE
+## For Developers — Start Here
+
+| Topic | Location |
+|-------|----------|
+| Quick start | **[getting-started/README.md](getting-started/README.md)** |
+| API keys & services | **[QUICK_START_API_SETUP.md](QUICK_START_API_SETUP.md)** |
+| Security | **[SECURITY.md](SECURITY.md)** |
+| Testing guide | **[testing/README.md](testing/README.md)** |
+| Routing integration | **[guides/ROUTING_INTEGRATION_GUIDE.md](guides/ROUTING_INTEGRATION_GUIDE.md)** |
+
+## Architecture & Core Rules
+
+| Topic | Location |
+|-------|----------|
+| Constitution (source of truth) | **[../CONSTITUTION.md](../CONSTITUTION.md)** |
+| Copilot instructions | **[../.github/copilot-instructions.md](../.github/copilot-instructions.md)** |
+| Governance (RBAC, cost, releases) | **[../governance/](../governance/)** |
+| Schemas (User, Listing, Story, Campaign) | **[../schemas/](../schemas/)** |
+| Vehicle taxonomy | **[../taxonomy.v1.json](../taxonomy.v1.json)** |
+| Ops & IaC (Terraform) | **[../ops/](../ops/)** |
+
+## Active Guides
+
+| Guide | Location |
+|-------|----------|
+| Azure deployment | **[azure/](azure/)** |
+| Subscription / Stripe | **[subscription/](subscription/)** |
+| Marketing plan | **[marketing/PROJECT_MARKETING_PLAN.md](marketing/PROJECT_MARKETING_PLAN.md)** |
+| Algolia record template | **[algolia-record-template.json](algolia-record-template.json)** |
+| Google Analytics / Ads | **[guides/](guides/)** |
+
+## Mobile App Docs
+
+Located in **[../documents/mobile/](../documents/mobile/)** — specifications, roadmaps, and gap analysis.
+
+## Historical / Archived Content
+
+All completed plans, old session reports, and executed fix documentation have been moved to:
 
 ```
-32 / 35 Tasks Complete
-████████████████████████████████░░░ 90%
+DDD/post-100-cleanup-2026-02-19/
+├── completed-plans/         ← 0-100 plan (fully executed)
+├── completed-fix-reports/   ← All old fix/audit/status reports
+├── old-session-reports/     ← Archive session reports
+├── old-completion-reports/  ← "90% done" answers (now at 100%)
+├── old-social-media-guides/ ← One-time setup guides
+├── old-ai-history/          ← AI training docs from Jan 2026
+├── outdated-root-docs/      ← Superseded root-level READMEs
+├── one-time-prompts/        ← LLM prompts (not project docs)
+├── root-temp-files/         ← Debug artifacts (ts-errors.txt, etc.)
+└── ...
 ```
 
-### Breakdown
-- ✅ Authentication: 100%
-- ✅ Marketplace: 95%
-- ✅ Payments: 100%
-- ✅ User Management: 95%
-- ✅ Admin Features: 90%
-- ⏳ Advanced Reporting: 0% (Task-033)
-- ⏳ API Documentation: 0% (Task-034)
-- ⏳ Mobile App: 0% (Task-035)
-
----
-
-## 📚 Documentation Organization
-
-### For Decision Makers
-1. Start with: **[100_COMPLETION_ANSWER.md](100_COMPLETION_ANSWER.md)**
-2. Then read: **[STATUS_DASHBOARD.md](STATUS_DASHBOARD.md)**
-3. Review: **[PROJECT_COMPLETION_REPORT.md](PROJECT_COMPLETION_REPORT.md)**
-
-### For Project Managers
-1. **[SESSION_SUMMARY.md](SESSION_SUMMARY.md)** - What was done
-2. **[COMPLETION_TASKS_MANIFEST.json](COMPLETION_TASKS_MANIFEST.json)** - Task tracking
-3. **[LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md)** - Deployment readiness
-
-### For Developers
-1. **[README.md](README.md)** - Setup instructions
-2. **[FINAL_SESSION_REPORT.md](FINAL_SESSION_REPORT.md)** - Code changes
-3. Source code comments - Implementation details
-
-### For Administrators
-1. **[LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md)** - Pre-launch verification
-2. **[PROJECT_COMPLETION_REPORT.md](PROJECT_COMPLETION_REPORT.md)** - Admin features
-3. **[SECURITY.md](SECURITY.md)** - Security configuration
-
-### For Arabic Speakers
-1. **[تقرير_إكمال_المشروع.md](تقرير_إكمال_المشروع.md)** - تقرير العربية
-
----
-
-## 🚀 Deployment Path
-
-### Step 1: Review ✅
-- [ ] Read [100_COMPLETION_ANSWER.md](100_COMPLETION_ANSWER.md)
-- [ ] Review [LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md)
-- [ ] Check [PROJECT_COMPLETION_REPORT.md](PROJECT_COMPLETION_REPORT.md)
-
-### Step 2: Verify ✅
-- [ ] Run: `npm run build`
-- [ ] Run: `npm test`
-- [ ] Check: `firebase deploy --dry-run`
-
-### Step 3: Deploy ✅
-- [ ] Execute: `firebase deploy`
-- [ ] Monitor: Firebase console
-- [ ] Test: Payment flow
-
-### Step 4: Monitor ✅
-- [ ] Watch error logs
-- [ ] Track payment transactions
-- [ ] Monitor performance
-- [ ] Gather user feedback
-
----
-
-## 📈 Key Metrics
-
-### Completion
-```
-Tasks Done:         32 / 35 (91%)
-Critical Path:      100% Complete
-Production Ready:   YES ✅
-```
-
-### Quality
-```
-Code Coverage:      85%+
-TypeScript:         95%
-Lighthouse Score:   92/100
-Security Score:     95/100
-```
-
-### Performance
-```
-Load Time:          < 3 seconds
-Time to Interactive: < 5 seconds
-Mobile Score:       91/100
-```
-
----
-
-## 🔧 What's Included
-
-### Frontend
-- ✅ React.js with TypeScript
-- ✅ Stripe integration
-- ✅ Firestore integration
-- ✅ Google OAuth
-- ✅ Multi-language support
-
-### Backend
-- ✅ Firebase Firestore
-- ✅ Cloud Functions (ready)
-- ✅ Cloud Storage
-- ✅ Authentication
-- ✅ Email service
-
-### Features
-- ✅ Marketplace with products
-- ✅ Shopping cart
-- ✅ Checkout flow
-- ✅ Payment processing
-- ✅ Order management
-- ✅ User profiles
-- ✅ Seller dashboard
-- ✅ Admin panel
-- ✅ Messaging
-- ✅ Analytics
-
----
-
-## ⚠️ Known Limitations
-
-### Acceptable for Launch
-- API documentation pending (Task-034)
-- Advanced reporting pending (Task-033)
-- Mobile app in roadmap (Task-035)
-
-### All Other Systems
-✅ Production ready with no known critical issues
-
----
-
-## 🎯 Why 90% and Not 100%?
-
-**90% Completion = Critical Path Complete** ✅
-
-The remaining 10% consists of:
-- **TASK-033**: Advanced Reporting (8 hours) - Post-launch
-- **TASK-034**: API Documentation (6 hours) - Can wait
-- **TASK-035**: Mobile App (20 hours) - Q2 2025
-
-These don't block launch. Platform works without them.
-
----
-
-## 📞 Support Resources
-
-### Quick Questions
-- **What's the status?** → [STATUS_DASHBOARD.md](STATUS_DASHBOARD.md)
-- **Why only 90%?** → [100_COMPLETION_ANSWER.md](100_COMPLETION_ANSWER.md)
-- **Is it ready?** → [LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md)
-
-### Technical Issues
-- **How to deploy?** → [README.md](README.md)
-- **What changed?** → [FINAL_SESSION_REPORT.md](FINAL_SESSION_REPORT.md)
-- **Code structure?** → Source files + comments
-
-### Business Questions
-- **What features?** → [PROJECT_COMPLETION_REPORT.md](PROJECT_COMPLETION_REPORT.md)
-- **What's included?** → [PROJECT_COMPLETION_REPORT.md](PROJECT_COMPLETION_REPORT.md)
-- **What's pending?** → [SESSION_SUMMARY.md](SESSION_SUMMARY.md)
-
----
-
-## ✅ Sign-Off
-
-**Project Status**: 90% COMPLETE ✅  
-**Production Ready**: YES ✅  
-**Deployment**: READY ✅  
-**Risk Level**: LOW ✅  
-**Recommendation**: LAUNCH NOW ✅  
-
----
-
-## 📋 File Manifest
-
-### Created This Session
-```
-✅ 100_COMPLETION_ANSWER.md
-✅ COMPLETION_TASKS_MANIFEST.json
-✅ PROJECT_COMPLETION_REPORT.md
-✅ تقرير_إكمال_المشروع.md
-✅ LAUNCH_CHECKLIST.md
-✅ FINAL_SESSION_REPORT.md
-✅ SESSION_SUMMARY.md
-✅ STATUS_DASHBOARD.md
-✅ DOCUMENTATION_INDEX.md (this file)
-```
-
-### Modified This Session
-```
-✅ MobileLoginPage.tsx
-✅ LoginPageGlassFixed.tsx
-✅ ProductDetailPage.tsx
-✅ BillingService.ts
-```
-
----
-
-## 🎉 Summary
-
-**Koli One marketplace is production-ready!**
-
-All critical features implemented and tested.
-Platform can handle real transactions and scale.
-Ready for immediate launch.
-
-**Next step**: Review docs and deploy! 🚀
-
----
-
-*Last Updated: January 10, 2025*  
-*Documentation Index v1.0*  
-*Status: FINAL ✅*
+These are preserved per project rule (no deletions) but should not be referenced for current development.

@@ -151,7 +151,7 @@ export default defineConfig(({ mode }) => {
     
     // Optimization
     optimizeDeps: {
-      include: ['react', 'react-dom', 'react-is', 'firebase/app', 'firebase/auth', 'firebase/firestore'],
+      include: ['react', 'react-dom', 'react-is', 'firebase/app', 'firebase/auth', 'firebase/firestore', 'framer-motion'],
       esbuildOptions: {
         target: 'es2017', // Match craco config
       },
