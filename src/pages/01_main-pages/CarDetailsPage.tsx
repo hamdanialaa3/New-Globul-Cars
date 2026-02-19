@@ -37,6 +37,7 @@ import {
 import { CarListing } from '../../types/CarListing';
 import { UnifiedCar } from '../../services/car/unified-car-types';
 import { PromotionPurchaseModal } from '../../components/billing/PromotionPurchaseModal';
+import LoginRequiredModal from '../../components/auth/LoginRequiredModal';
 
 interface CarDetailsPageProps {
   forcedCarId?: string;
@@ -58,6 +59,10 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
 
   // Delete dialog state
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  // ── Auth gate: shows login modal + stores what the user tried to do ──────────
+  const [showLoginModal, setShowLoginModal]           = useState(false);
+  const [pendingContactAction, setPendingContactAction] = useState<string | null>(null);
   const [showPromoModal, setShowPromoModal] = useState(false);
 
   // ✅ Handle scroll tracking for mobile FAB
@@ -280,7 +285,9 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
             }
           }
         } else {
-          toast.warning(language === 'bg' ? 'Моля влезте в профила си, за да изпратите съобщение.' : 'Please log in to send a message.');
+          // User not logged in → open login modal and remember the pending action
+          setPendingContactAction('message');
+          setShowLoginModal(true);
         }
         break;
 
@@ -382,6 +389,18 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
         break;
     }
   }, [car, currentUser, editHook.isEditMode, language, navigate]);
+
+  // ── After login: execute the pending contact action ────────────────────────
+  useEffect(() => {
+    if (!currentUser || !pendingContactAction) return;
+    const action = pendingContactAction;
+    setPendingContactAction(null);
+    setShowLoginModal(false);
+    // Small delay to let Firebase AuthProvider propagate
+    const timer = setTimeout(() => handleContactClick(action), 100);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser, pendingContactAction]);
 
   const handleToggleContact = (fieldKey: keyof CarListing) => {
     editHook.handleInputChange(fieldKey, !editHook.editedCar[fieldKey]);
@@ -718,6 +737,20 @@ const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId, initialEdi
         imageGalleryHeight={800}
         onCall={() => handleContactClick('phone')}
         onChat={() => handleContactClick('message')}
+      />
+
+      {/* 🔐 Login-required modal: shown when unauthenticated user clicks message/chat */}
+      <LoginRequiredModal
+        isOpen={showLoginModal}
+        language={language as 'bg' | 'en'}
+        onLoginSuccess={() => {
+          // pendingContactAction useEffect will fire once currentUser is set
+          setShowLoginModal(false);
+        }}
+        onClose={() => {
+          setShowLoginModal(false);
+          setPendingContactAction(null);
+        }}
       />
     </Container>
   );
