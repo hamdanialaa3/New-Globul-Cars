@@ -108,30 +108,18 @@ export const health = functions.https.onRequest(async (req, res) => {
  * UptimeRobot API Integration (FREE - optional)
  * Use API to create monitors programmatically
  */
+/**
+ * Create a monitor via Cloud Function (API key stored server-side)
+ * 🔒 SECURITY: UptimeRobot API key is never exposed to the client.
+ */
 export const createMonitorViaAPI = async (monitorData: any) => {
-  const API_KEY = import.meta.env.VITE_UPTIMEROBOT_API_KEY; // Get from uptimerobot.com
-  
-  if (!API_KEY) {
-    logger.warn('UptimeRobot API key not configured');
-    return;
-  }
-  
   try {
-    const response = await fetch('https://api.uptimerobot.com/v2/newMonitor', {
+    const response = await fetch('/api/monitoring/createMonitor', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        api_key: API_KEY,
-        format: 'json',
-        type: monitorData.type,
-        url: monitorData.url,
-        friendly_name: monitorData.name,
-        interval: monitorData.interval || '300', // 5 minutes
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(monitorData),
     });
-    
+
     const data = await response.json();
     logger.info('Monitor created:', data);
     return data;
@@ -143,26 +131,16 @@ export const createMonitorViaAPI = async (monitorData: any) => {
 /**
  * Get monitor status via API (FREE)
  */
+/**
+ * Get monitor status via Cloud Function (API key stored server-side)
+ * 🔒 SECURITY: UptimeRobot API key is never exposed to the client.
+ */
 export const getMonitorStatus = async () => {
-  const API_KEY = import.meta.env.VITE_UPTIMEROBOT_API_KEY;
-  
-  if (!API_KEY) {
-    logger.warn('UptimeRobot API key not configured');
-    return;
-  }
-  
   try {
-    const response = await fetch('https://api.uptimerobot.com/v2/getMonitors', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        api_key: API_KEY,
-        format: 'json',
-      }),
+    const response = await fetch('/api/monitoring/getMonitors', {
+      method: 'GET',
     });
-    
+
     const data = await response.json();
     return data.monitors;
   } catch (error) {

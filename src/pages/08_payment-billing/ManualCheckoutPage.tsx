@@ -26,7 +26,7 @@ import { logger } from '../../services/logger-service';
 const ManualCheckoutPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
   const { language } = useLanguage();
 
   const [selectedBank, setSelectedBank] = useState<BankAccountType>('revolut');
@@ -58,7 +58,7 @@ const ManualCheckoutPage: React.FC = () => {
       const result = await activateFreePlan({
         userId: user.uid,
         userEmail: user.email || '',
-        userName: user.displayName || 'Unknown',
+        userName: userProfile?.displayName || user.displayName || 'Unknown',
         planTier,
       });
 
@@ -116,7 +116,7 @@ const ManualCheckoutPage: React.FC = () => {
       const result = await manualPaymentService.createTransaction({
         userId: user.uid,
         userEmail: user.email || '',
-        userName: user.displayName || 'Unknown User',
+        userName: userProfile?.displayName || user.displayName || 'Unknown User',
         amount,
         currency: 'EUR',
         paymentType,

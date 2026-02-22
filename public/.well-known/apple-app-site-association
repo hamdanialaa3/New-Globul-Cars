@@ -1,0 +1,29 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appIDs": ["TEAM_ID.com.hamdani.kolione"],
+        "paths": [
+          "/car/*",
+          "/dealer/*",
+          "/search",
+          "/search/*",
+          "/blog/*",
+          "/profile/*"
+        ],
+        "components": [
+          { "/": "/car/*" },
+          { "/": "/dealer/*" },
+          { "/": "/search" },
+          { "/": "/search/*" },
+          { "/": "/blog/*" },
+          { "/": "/profile/*" }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["TEAM_ID.com.hamdani.kolione"]
+  }
+}

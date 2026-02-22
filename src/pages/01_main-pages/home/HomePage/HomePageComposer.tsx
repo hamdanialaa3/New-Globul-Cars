@@ -470,6 +470,7 @@ const SECTION_MAP: Record<string, React.FC> = {
   visual_search: VisualSearchSlot,
   vehicle_classifications: VehicleClassificationsSlot,
   life_moments: LifeMomentsSlot,
+  categories: () => null, // mobile-only — kept in map to avoid crash if admin toggles it on web
   cars_showcase: CarsShowcaseSlot,
   popular_brands: PopularBrandsSlot,
   most_demanded: MostDemandedCategoriesSlot,

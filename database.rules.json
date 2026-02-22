@@ -13,8 +13,9 @@
       "$channelId": {
         // Read/Write: Only participants of this channel
         // Falls back to auth-only if participants node doesn't exist yet (creation)
-        ".read": "auth != null && (data.child('participants').child(auth.uid).exists() || !data.exists())",
-        ".write": "auth != null && (data.child('participants').child(auth.uid).exists() || !data.exists())",
+        // Backward-compatible: also allows buyerFirebaseId/sellerFirebaseId for old channels without 'participants' node
+        ".read": "auth != null && (data.child('participants').child(auth.uid).exists() || !data.exists() || auth.uid == data.child('buyerFirebaseId').val() || auth.uid == data.child('sellerFirebaseId').val())",
+        ".write": "auth != null && (data.child('participants').child(auth.uid).exists() || !data.exists() || auth.uid == data.child('buyerFirebaseId').val() || auth.uid == data.child('sellerFirebaseId').val())",
         // Unread count per user — only own count
         "unreadCount": {
           "$userNumericId": {
@@ -31,10 +32,12 @@
     "messages": {
       "$channelId": {
         // Read: Only participants of the parent channel
-        ".read": "auth != null && root.child('channels').child($channelId).child('participants').child(auth.uid).exists()",
+        // Backward-compatible: also allows buyerFirebaseId/sellerFirebaseId for old channels
+        ".read": "auth != null && (root.child('channels').child($channelId).child('participants').child(auth.uid).exists() || auth.uid == root.child('channels').child($channelId).child('buyerFirebaseId').val() || auth.uid == root.child('channels').child($channelId).child('sellerFirebaseId').val())",
         "$messageId": {
           // Write: Only participants of the parent channel
-          ".write": "auth != null && root.child('channels').child($channelId).child('participants').child(auth.uid).exists()",
+          // Backward-compatible: also allows buyerFirebaseId/sellerFirebaseId for old channels
+          ".write": "auth != null && (root.child('channels').child($channelId).child('participants').child(auth.uid).exists() || auth.uid == root.child('channels').child($channelId).child('buyerFirebaseId').val() || auth.uid == root.child('channels').child($channelId).child('sellerFirebaseId').val())",
           // Validate message structure on creation
           ".validate": "newData.hasChildren(['senderId', 'content', 'timestamp', 'type'])"
         }
@@ -57,22 +60,24 @@
     "typing": {
       "$channelId": {
         // Read: Channel participants only
-        ".read": "auth != null && root.child('channels').child($channelId).child('participants').child(auth.uid).exists()",
+        // Backward-compatible: also allows buyerFirebaseId/sellerFirebaseId for old channels
+        ".read": "auth != null && (root.child('channels').child($channelId).child('participants').child(auth.uid).exists() || auth.uid == root.child('channels').child($channelId).child('buyerFirebaseId').val() || auth.uid == root.child('channels').child($channelId).child('sellerFirebaseId').val())",
         "$userNumericId": {
-          ".write": "auth != null && root.child('channels').child($channelId).child('participants').child(auth.uid).exists()"
+          ".write": "auth != null && (root.child('channels').child($channelId).child('participants').child(auth.uid).exists() || auth.uid == root.child('channels').child($channelId).child('buyerFirebaseId').val() || auth.uid == root.child('channels').child($channelId).child('sellerFirebaseId').val())"
         }
       }
     },
 
     // ==================== PRESENCE ====================
-    // Path: /presence/{userFirebaseUid}
+    // Path: /presence/{id} — id may be Firebase UID OR numeric user ID
     // 🔒 SECURED: Users can only update their own presence
+    // The service stores uid: auth.uid in the data for validation
     "presence": {
-      "$userUid": {
+      "$userId": {
         // Read: Anyone authenticated (for online status display)
         ".read": "auth != null",
-        // Write: Only the user themselves
-        ".write": "auth != null && auth.uid == $userUid",
+        // Write: Own UID path OR numeric-ID path (validate via uid field in data)
+        ".write": "auth != null && (auth.uid == $userId || newData.child('uid').val() == auth.uid)",
         // Validate presence structure
         ".validate": "newData.hasChildren(['status', 'lastSeen'])"
       }

@@ -750,7 +750,7 @@ const SuperAdminUsersPage: React.FC = () => {
                 </div>
                 <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
                   <ActionButton onClick={() => setIsUserModalOpen(false)}>Close</ActionButton>
-                  <ActionButton $variant="primary" onClick={() => window.open(`/profile/${selectedUser.id}`, '_blank')}>
+                  <ActionButton $variant="primary" onClick={() => window.open(`/profile/view/${selectedUser.numericId || selectedUser.id}`, '_blank')}>
                     <Eye size={16} />
                     View Profile
                   </ActionButton>

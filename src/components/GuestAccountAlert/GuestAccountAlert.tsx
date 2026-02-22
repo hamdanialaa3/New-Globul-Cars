@@ -248,9 +248,9 @@ export const GuestAccountAlert: React.FC<GuestAccountAlertProps> = ({ dismissibl
   const handleCompleteProfile = () => {
     if (userNumericId) {
       navigate(`/profile/${userNumericId}/settings`);
-    } else if (userId) {
-      // Fallback to Firebase UID if numeric ID not available
-      navigate(`/profile/${userId}/settings`);
+    } else {
+      // 🔒 Fallback: use generic profile settings path (ProfilePageWrapper handles redirect)
+      navigate('/profile/settings');
     }
   };
 

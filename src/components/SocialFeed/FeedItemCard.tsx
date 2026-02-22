@@ -9,6 +9,7 @@ import { Video, Trophy, Award, Target, FileText, Play } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useNavigate } from 'react-router-dom';
+import { logger } from '../../services/logger-service';
 import type { FeedItem } from '../../services/social/smart-feed.service';
 
 const CardContainer = styled.div<{ $isDark: boolean }>`
@@ -285,8 +286,9 @@ export const FeedItemCard: React.FC<FeedItemCardProps> = ({ item }) => {
       const userNumericId = (item as any).userNumericId;
       if (userNumericId) {
         navigate(`/profile/view/${userNumericId}`);
-      } else if (item.userId) {
-        navigate(`/profile/view/${item.userId}`);
+      } else {
+        // 🔒 STRICT: Do NOT navigate with Firebase UID — numeric ID is required
+        logger.warn('FeedItemCard: Missing userNumericId for profile navigation', { userId: item.userId });
       }
     }
   };

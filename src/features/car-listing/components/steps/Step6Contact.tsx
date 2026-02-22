@@ -159,7 +159,7 @@ const HintText = styled.span`
 
 export const Step6Contact: React.FC = () => {
   const { language } = useLanguage();
-  const { currentUser } = useAuth();
+  const { currentUser, userProfile } = useAuth();
   const { formData, updateStepData, markStepComplete } = useCarListingStore();
   
   const {
@@ -171,7 +171,7 @@ export const Step6Contact: React.FC = () => {
   } = useForm<Step6Data>({
     resolver: zodResolver(step6Schema),
     defaultValues: formData.step6 || {
-      sellerName: currentUser?.displayName || '',
+      sellerName: userProfile?.displayName || currentUser?.displayName || ''
       sellerEmail: currentUser?.email || '',
       sellerPhone: '',
       city: '',
@@ -193,14 +193,15 @@ export const Step6Contact: React.FC = () => {
   // Auto-fill from user profile
   useEffect(() => {
     if (currentUser) {
-      if (!sellerName && currentUser.displayName) {
-        setValue('sellerName', currentUser.displayName, { shouldValidate: true });
+      const autoName = userProfile?.displayName || currentUser.displayName;
+      if (!sellerName && autoName) {
+        setValue('sellerName', autoName, { shouldValidate: true });
       }
       if (!sellerEmail && currentUser.email) {
         setValue('sellerEmail', currentUser.email, { shouldValidate: true });
       }
     }
-  }, [currentUser, sellerName, sellerEmail, setValue]);
+  }, [currentUser, userProfile, sellerName, sellerEmail, setValue]);
 
   // Auto-update store when form changes
   useEffect(() => {

@@ -300,7 +300,7 @@ const CTAButton = styled.button<{ $tier: PlanTier }>`
 const SubscriptionManager: React.FC = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
-  const { currentUser } = useAuth();
+  const { currentUser, userProfile } = useAuth();
   const isBg = language === 'bg';
   const [interval, setInterval] = useState<'monthly' | 'annual'>('monthly');
 
@@ -315,7 +315,7 @@ const SubscriptionManager: React.FC = () => {
         const result = await activateFreePlan({
           userId: currentUser.uid,
           userEmail: currentUser.email || '',
-          userName: currentUser.displayName || 'Unknown',
+          userName: userProfile?.displayName || currentUser.displayName || 'Unknown',
           planTier: 'free',
         });
         if (result.success) {

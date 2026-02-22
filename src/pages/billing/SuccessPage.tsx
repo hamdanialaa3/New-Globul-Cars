@@ -235,7 +235,7 @@ export const SuccessPage: React.FC = () => {
   };
 
   const handleViewInvoices = () => {
-    navigate('/profile/billing/invoices');
+    navigate('/profile/settings');
   };
 
   if (loading) {

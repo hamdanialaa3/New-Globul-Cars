@@ -312,9 +312,9 @@ export const SellVehicleStep6: React.FC<SellVehicleStep6Props> = ({
           // Set defaults only if fields are empty
           const updates: Partial<UnifiedWorkflowData> = {};
           
-          // Priority: currentUser.displayName > profile.displayName > firstName+lastName > currentUser.email username
+          // Priority: profile.displayName > firstName+lastName > currentUser.displayName > email username
           if (!workflowData.sellerName) {
-            const defaultName = currentUser.displayName || profile.displayName || `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || currentUser.email?.split('@')[0] || '';
+            const defaultName = profile.displayName || `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || currentUser.displayName || currentUser.email?.split('@')[0] || '';
             updates.sellerName = defaultName;
           }
           

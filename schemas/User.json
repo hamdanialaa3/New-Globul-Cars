@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "User Document Schema",
+  "description": "Canonical schema for user documents in Firestore users collection",
+  "type": "object",
+  "required": ["userId", "userNumericId", "email", "createdAt", "roles"],
+  "properties": {
+    "userId": {
+      "type": "string",
+      "description": "Firebase Auth UID (UUID)"
+    },
+    "userNumericId": {
+      "type": "integer",
+      "description": "Unique numeric ID for URL generation, auto-increment or ULID-derived"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "User's email address"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Optional phone number (E.164 format)"
+    },
+    "username": {
+      "type": "string",
+      "description": "Username for display (not necessarily unique)"
+    },
+    "slug": {
+      "type": "string",
+      "description": "URL-friendly slug for public profile (/u/{userNumericId}/{slug}), unique"
+    },
+    "profile": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "description": "Public display name"
+        },
+        "avatar": {
+          "type": "string",
+          "description": "URL to avatar image"
+        },
+        "bio": {
+          "type": "string",
+          "description": "Short bio or description"
+        },
+        "trustScore": {
+          "type": "number",
+          "description": "0-100 score based on verification, reviews, response time",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "listingCount": {
+          "type": "integer",
+          "description": "Count of published listings"
+        },
+        "responseTimeHours": {
+          "type": "number",
+          "description": "Average time to respond to inquiries"
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "properties": {
+        "emailVerified": { "type": "boolean" },
+        "phoneVerified": { "type": "boolean" },
+        "identityVerified": { "type": "boolean" },
+        "dealerBadge": { "type": "boolean" },
+        "dealerBadgeVerifiedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "roles": {
+      "type": "array",
+      "description": "User roles (user, dealer, support, admin, ml_engineer, devops)",
+      "items": {
+        "type": "string",
+        "enum": ["user", "dealer", "support", "admin", "ml_engineer", "devops"]
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp"
+    },
+    "deletedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Soft deletion timestamp (for GDPR right to be forgotten)"
+    }
+  },
+  "example": {
+    "userId": "firebase-uuid-123",
+    "userNumericId": 1,
+    "email": "alaa@example.com",
+    "username": "alaa",
+    "slug": "alaa-al-hamdani",
+    "profile": {
+      "displayName": "Alaa Al-Hamdani",
+      "trustScore": 95,
+      "listingCount": 12
+    },
+    "roles": ["user", "dealer"],
+    "createdAt": "2024-05-01T10:00:00Z",
+    "updatedAt": "2026-02-18T23:30:00Z"
+  }
+}

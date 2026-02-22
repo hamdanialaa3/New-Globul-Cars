@@ -477,7 +477,7 @@ export const ChannelList: React.FC<ChannelListProps> = ({
           </Title>
           <SearchContainer>
             <SearchIcon />
-            <SearchInput placeholder={translations.search} disabled />
+            <SearchInput placeholder={translations.search} value="" disabled />
           </SearchContainer>
         </Header>
         

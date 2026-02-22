@@ -265,7 +265,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
             <button
               className="settings-button"
               onClick={() => {
-                navigate('/profile/notifications');
+                navigate('/notifications');
                 onClose();
               }}
             >

@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Campaign Document Schema",
+  "description": "Canonical schema for marketing and promotional campaigns in Firestore campaigns collection",
+  "type": "object",
+  "required": ["campaignId", "name", "type", "createdAt"],
+  "properties": {
+    "campaignId": {
+      "type": "string",
+      "description": "Unique identifier (UUID)"
+    },
+    "name": {
+      "type": "string",
+      "description": "Campaign name"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["featured-listing", "stories-boost", "ai-premium", "seasonal", "referral"],
+      "description": "Campaign type"
+    },
+    "description": {
+      "type": "string"
+    },
+    "targeting": {
+      "type": "object",
+      "properties": {
+        "userSegments": { "type": "array", "items": { "type": "string" } },
+        "regions": { "type": "array", "items": { "type": "string" } },
+        "vehicleTypes": { "type": "array", "items": { "type": "string" } },
+        "priceRange": {
+          "type": "object",
+          "properties": {
+            "min": { "type": "number" },
+            "max": { "type": "number" }
+          }
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "totalAmount": { "type": "number" },
+        "currency": { "type": "string" },
+        "spent": { "type": "number" },
+        "dailyLimit": { "type": "number" }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "impressions": { "type": "integer" },
+        "clicks": { "type": "integer" },
+        "conversions": { "type": "integer" },
+        "roi": { "type": "number" }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "scheduled", "active", "paused", "completed", "archived"],
+      "description": "Campaign status"
+    },
+    "startDate": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "endDate": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "example": {
+    "campaignId": "campaign-uuid-789",
+    "name": "Valentine's Day Featured Listings",
+    "type": "featured-listing",
+    "status": "active",
+    "budget": {
+      "totalAmount": 5000,
+      "currency": "EUR",
+      "spent": 1200
+    },
+    "createdAt": "2026-02-01T00:00:00Z"
+  }
+}

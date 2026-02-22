@@ -390,8 +390,9 @@ export const PostCard: React.FC<PostCardProps> = ({
     // PostCard author is always another user, so use view path
     if (post.authorNumericId) {
       navigate(`/profile/view/${post.authorNumericId}`);
-    } else if (post.authorId) {
-      navigate(`/profile/view/${post.authorId}`);
+    } else {
+      // 🔒 STRICT: Do NOT navigate with Firebase UID — numeric ID is required
+      logger.warn('PostCard: Missing authorNumericId for profile navigation', { authorId: post.authorId });
     }
   };
   

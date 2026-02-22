@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Story Document Schema",
+  "description": "Canonical schema for user-generated stories/posts in Firestore stories collection",
+  "type": "object",
+  "required": ["storyId", "userId", "type", "createdAt"],
+  "properties": {
+    "storyId": {
+      "type": "string",
+      "description": "Unique identifier (UUID)"
+    },
+    "userId": {
+      "type": "string",
+      "description": "FK to users.userId"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["listing-upgrade", "experience", "review", "tip"],
+      "description": "Story type"
+    },
+    "title": {
+      "type": "string",
+      "description": "Story headline"
+    },
+    "content": {
+      "type": "string",
+      "description": "Story body text (supports markdown)"
+    },
+    "cover": {
+      "type": "string",
+      "description": "Cover image URL"
+    },
+    "media": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Array of media URLs"
+    },
+    "associatedListingId": {
+      "type": "string",
+      "description": "Optional FK to listings, if story is related to a specific listing"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "published", "archived"],
+      "description": "Story visibility status"
+    },
+    "viewCount": {
+      "type": "integer"
+    },
+    "likeCount": {
+      "type": "integer"
+    },
+    "commentCount": {
+      "type": "integer"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "publishedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "example": {
+    "storyId": "story-uuid-456",
+    "userId": "firebase-uuid-1",
+    "type": "review",
+    "title": "First experience buying from Koli One",
+    "content": "Great platform for finding quality vehicles...",
+    "status": "published",
+    "createdAt": "2026-02-18T20:00:00Z"
+  }
+}

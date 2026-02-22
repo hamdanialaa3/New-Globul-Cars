@@ -76,13 +76,12 @@ const SearchPage: React.FC = () => {
 
     const handleCardClick = useCallback(
         (car: FirestoreCarResult) => {
-            // Navigate using numeric IDs if available, otherwise use document ID
+            // Navigate using numeric IDs (required format: /car/{sellerNumericId}/{carNumericId})
             if (car.sellerNumericId && car.carNumericId) {
                 navigate(`/car/${car.sellerNumericId}/${car.carNumericId}`);
-            } else if (car.numericId) {
-                navigate(`/car/${car.numericId}`);
             } else {
-                navigate(`/car/${car.id}`);
+                // 🔒 Fallback to legacy route which auto-resolves to numeric URL
+                navigate(`/car-details/${car.id}`);
             }
         },
         [navigate]

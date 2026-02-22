@@ -22,8 +22,8 @@ export const RequireCompanyGuard: React.FC<RequireCompanyGuardProps> = ({ childr
     }
 
     if (!isCompany) {
-        // Redirect non-company users to upgrade or home
-        return <Navigate to="/profile/upgrade" replace />;
+        // Redirect non-company users to settings page
+        return <Navigate to="/profile/settings" replace />;
     }
 
     return <>{children}</>;

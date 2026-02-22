@@ -20,7 +20,7 @@ import {
   UserCredential
 } from 'firebase/auth';
 import { logger } from '../services/logger-service';
-import { doc, setDoc, getDoc, updateDoc, Timestamp } from 'firebase/firestore';
+import { doc, setDoc, getDoc, getDocFromServer, updateDoc, Timestamp } from 'firebase/firestore';
 import { auth, db, BulgarianFirebaseUtils } from './firebase-config';
 import { TrustLevel, Badge } from '../services/profile/trust-score-service';
 // ✅ Import and re-export from canonical source
@@ -624,7 +624,8 @@ export class BulgarianAuthService {
   }
 
   private async userExists(uid: string): Promise<boolean> {
-    const userDoc = await getDoc(doc(db, 'users', uid));
+    // ✅ Use getDocFromServer to avoid Firestore watch stream bug (ca9) in React Strict Mode
+    const userDoc = await getDocFromServer(doc(db, 'users', uid));
     return userDoc.exists();
   }
 
@@ -634,7 +635,8 @@ export class BulgarianAuthService {
       if (!currentUser) return; // Nothing to do
 
       const userRef = doc(db, 'users', uid);
-      const snapshot = await getDoc(userRef);
+      // ✅ Use getDocFromServer to avoid Firestore watch stream bug (ca9) in React Strict Mode
+      const snapshot = await getDocFromServer(userRef);
 
       if (snapshot.exists()) {
         // Merge only mutable fields; avoid overwriting createdAt or other profile data

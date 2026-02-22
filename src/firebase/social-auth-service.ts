@@ -12,7 +12,7 @@ import {
   User,
   UserCredential
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDocFromServer, setDoc, serverTimestamp } from 'firebase/firestore';
 
 /**
  * Service for handling social authentication
@@ -150,14 +150,16 @@ export class SocialAuthService {
       
       for (let attempt = 0; attempt < 3; attempt++) {
         try {
-          userSnap = await getDoc(userRef);
+          // ✅ Use getDocFromServer (not getDoc) to avoid Firestore internal watch stream
+          // bug triggered by React Strict Mode double-invoke (INTERNAL ASSERTION FAILED: ca9)
+          userSnap = await getDocFromServer(userRef);
           break; // Success, exit retry loop
         } catch (error: any) {
           lastError = error;
           if (error.code === 'permission-denied' && attempt < 2) {
             // Retry on permission-denied (likely due to auth token not being attached yet)
             if (process.env.NODE_ENV === 'development') {
-              logger.debug(`Retrying getDoc after permission-denied (attempt ${attempt + 1}/3)`, {
+              logger.debug(`Retrying getDocFromServer after permission-denied (attempt ${attempt + 1}/3)`, {
                 userId: user.uid
               });
             }
@@ -172,17 +174,21 @@ export class SocialAuthService {
         throw lastError || new Error('Failed to read user document after retries');
       }
 
-      const isNewUser =!userSnap.exists();
+      const isNewUser = !userSnap.exists();
       const userData: Record<string, any> = {
         uid: user.uid,
         email: user.email,
-        displayName: user.displayName || '',
-        photoURL: user.photoURL || '',
         lastLogin: serverTimestamp(),
       };
 
-      // Add default Bulgarian settings only for new users
+      // ✅ FIX: Only write displayName/photoURL for NEW users.
+      // For existing users, the Firestore document is the source of truth for
+      // displayName (user may have changed it via profile edit on mobile or web).
+      // Overwriting it with user.displayName (Firebase Auth object) would revert
+      // any profile edits that updated Firestore but not Auth (e.g., older clients).
       if (isNewUser) {
+        userData.displayName = user.displayName || '';
+        userData.photoURL = user.photoURL || '';
         userData.createdAt = serverTimestamp();
         userData.role = 'user';
         userData.preferences = {

@@ -19,7 +19,7 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 // Lazy load the settings page (if it exists, otherwise placeholder)
 // Update this import path when you have the actual settings component
 const SettingsPage = React.lazy(() => 
-  import('../../pages/03_user-pages/SettingsPage').catch(() => ({
+  import('../../pages/03_user-pages/profile/ProfilePage/SettingsPage').catch(() => ({
     default: () => (
       <div style={{ padding: '2rem', textAlign: 'center' }}>
         <h1>User Settings</h1>

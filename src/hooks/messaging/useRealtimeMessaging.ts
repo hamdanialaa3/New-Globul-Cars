@@ -34,7 +34,7 @@ interface UseRealtimeMessagingReturn {
   error: string | null;
 
   // Actions
-  loadChannels: (userNumericId: number) => Promise<void>;
+  loadChannels: (userFirebaseId: string) => Promise<void>;
   selectChannel: (channelId: string) => Promise<void>;
   sendMessage: (content: string) => Promise<string | null>;
   sendOffer: (amount: number, currency?: string) => Promise<string | null>;
@@ -89,8 +89,8 @@ export function useRealtimeMessaging(
 
   // ==================== LOAD CHANNELS ====================
 
-  const loadChannels = useCallback(async (userNumericId: number) => {
-    if (!userNumericId) return;
+  const loadChannels = useCallback(async (userFirebaseId: string) => {
+    if (!userFirebaseId) return;
 
     setIsLoading(true);
     setError(null);
@@ -103,7 +103,7 @@ export function useRealtimeMessaging(
 
       // Subscribe to real-time updates
       channelsUnsubRef.current = realtimeMessagingService.subscribeToUserChannels(
-        userNumericId,
+        userFirebaseId,
         (updatedChannels) => {
           if (isActiveRef.current) {
             setChannels(updatedChannels);
@@ -112,7 +112,7 @@ export function useRealtimeMessaging(
       );
 
       // Initial load
-      const initialChannels = await realtimeMessagingService.getUserChannels(userNumericId);
+      const initialChannels = await realtimeMessagingService.getUserChannels(userFirebaseId);
       if (isActiveRef.current) {
         setChannels(initialChannels);
       }
@@ -341,8 +341,8 @@ export function useRealtimeMessaging(
       const channel = await realtimeMessagingService.getOrCreateChannel(params);
 
       // Refresh channels list
-      if (currentUserNumericId) {
-        const updatedChannels = await realtimeMessagingService.getUserChannels(currentUserNumericId);
+      if (currentUserFirebaseId) {
+        const updatedChannels = await realtimeMessagingService.getUserChannels(currentUserFirebaseId);
         if (isActiveRef.current) {
           setChannels(updatedChannels);
         }
@@ -354,15 +354,15 @@ export function useRealtimeMessaging(
       setError('Failed to start conversation');
       return null;
     }
-  }, [currentUserNumericId]);
+  }, [currentUserFirebaseId]);
 
   // ==================== AUTO-LOAD CHANNELS ====================
 
   useEffect(() => {
-    if (currentUserNumericId) {
-      loadChannels(currentUserNumericId);
+    if (currentUserFirebaseId) {
+      loadChannels(currentUserFirebaseId);
     }
-  }, [currentUserNumericId, loadChannels]);
+  }, [currentUserFirebaseId, loadChannels]);
 
   // ==================== RETURN ====================
 

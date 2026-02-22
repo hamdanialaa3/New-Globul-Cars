@@ -131,7 +131,7 @@ async function attemptRepair(sellerNum: number, carNum: number): Promise<string 
                 const q = query(
                     colRef,
                     where('sellerId', '==', userId),
-                    limit(100) // Reasonable limit
+                    limit(100) // Get plenty of results to search through
                 );
 
                 // Add 3s timeout to avoid hang
@@ -140,7 +140,7 @@ async function attemptRepair(sellerNum: number, carNum: number): Promise<string 
                     new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000))
                 ]);
 
-                // Check if any car has the expected carNumericId
+                // ✅ FIX: Filter client-side for carNumericId match
                 for (const docSnap of snap.docs) {
                     const data = docSnap.data();
                     if (data.carNumericId === carNum || data.carNumericId === String(carNum)) {
@@ -148,7 +148,7 @@ async function attemptRepair(sellerNum: number, carNum: number): Promise<string 
                     }
                 }
             } catch (err) {
-                logger.warn(`Repair: Failed querying ${col}`, { error: err });
+                logger.warn(`Repair: Failed querying ${col}`, { error: err instanceof Error ? err.message : err });
                 continue;
             }
         }
@@ -162,18 +162,21 @@ async function attemptRepair(sellerNum: number, carNum: number): Promise<string 
 
 /**
  * Resolve car document by sellerNumericId + carNumericId across all vehicle collections
+ * ✅ FIX: Use single where clause + client-side filtering to avoid missing composite indexes
  */
 async function resolveByNumeric(sellerNum: number, carNum: number, useLegacyNumericId = false): Promise<{ id: string; collection: string } | null> {
+    const numField = useLegacyNumericId ? 'numericId' : 'carNumericId';
+    
     for (const col of VEHICLE_COLLECTIONS) {
         try {
             const colRef = collection(db, col);
-            const numField = useLegacyNumericId ? 'numericId' : 'carNumericId';
-            // Primary: numbers
+            
+            // Query by sellerNumericId only (avoids composite index requirement)
+            // Then filter by carNumericId client-side
             const q = query(
                 colRef,
                 where('sellerNumericId', '==', sellerNum),
-                where(numField, '==', carNum),
-                limit(1)
+                limit(50) // Get more results to account for filtering
             );
 
             const snap = await Promise.race([
@@ -181,28 +184,36 @@ async function resolveByNumeric(sellerNum: number, carNum: number, useLegacyNume
                 new Promise<never>((_, reject) => setTimeout(() => reject(new Error(`Timeout: ${col}`)), 3000))
             ]);
 
-            if (!snap.empty) {
-                return { id: snap.docs[0].id, collection: col };
+            // 🔍 Filter client-side for carNumericId match
+            for (const doc of snap.docs) {
+                const data = doc.data();
+                if (data[numField] === carNum) {
+                    return { id: doc.id, collection: col };
+                }
             }
 
             // Fallback: some legacy docs store numeric IDs as strings
             const qStr = query(
                 colRef,
                 where('sellerNumericId', '==', String(sellerNum)),
-                where(numField, '==', String(carNum)),
-                limit(1)
+                limit(50)
             );
+            
             const snapStr = await Promise.race([
                 getDocs(qStr),
                 new Promise<never>((_, reject) => setTimeout(() => reject(new Error(`Timeout str: ${col}`)), 3000))
             ]);
 
-            if (!snapStr.empty) {
-                return { id: snapStr.docs[0].id, collection: col };
+            // 🔍 Filter for string carNumericId
+            for (const doc of snapStr.docs) {
+                const data = doc.data();
+                if (data[numField] === String(carNum) || data[numField] === carNum) {
+                    return { id: doc.id, collection: col };
+                }
             }
         } catch (err) {
-            logger.error(`Error querying collection ${col}`, err as Error);
-            // Continue to next collection
+            logger.warn(`Warning querying collection ${col}`, { error: err instanceof Error ? err.message : err });
+            // Continue to next collection instead of throwing
             continue;
         }
     }

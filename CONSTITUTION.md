@@ -27,10 +27,24 @@
 - `DDD/` -- Deleted files archive (never delete from project)
 - `scripts/` -- Build and utility scripts
 
-### 1.3 Data Contracts
-- Canonical schemas live in `schemas/` (Listing, User, Story, Campaign).
-- Vehicle taxonomy in `schemas/taxonomy.v1.json`.
-- All Firestore documents must conform to their corresponding schema.
+### 1.3 Data Contracts & Schemas
+- **Canonical schemas** live in `schemas/`:
+  - [`schemas/User.json`](schemas/User.json) — User profiles with numeric IDs and slugs
+  - [`schemas/Listing.json`](schemas/Listing.json) — Vehicle listings with SEO-friendly URLs
+  - [`schemas/Story.json`](schemas/Story.json) — User-generated content
+  - [`schemas/Campaign.json`](schemas/Campaign.json) — Marketing campaigns
+- **Vehicle taxonomy**: [`taxonomy.v1.json`](taxonomy.v1.json) — Brands, models, generations, trims
+- **API Contract**: [`api/openapi.yaml`](api/openapi.yaml) — OpenAPI 3.0 specification
+- All Firestore documents must conform to their corresponding schema before insert/update
+- **Migration Policy**: Schema version bumps require CAB approval (see [Governance](#10-governance))
+
+### 1.4 URL Routing & Canonicalization
+- **Canonical listing URL**: `/car/{listingNumericId}/{slug}` (e.g., `/car/540/alaa-320d-sport`)
+- **Legacy support**: `/car/{sellerId}/{listingId}` → 301 redirect to canonical
+- **Canonical user URL**: `/u/{userNumericId}/{userSlug}` (e.g., `/u/1/alaa-al-hamdani`)
+- **Short links**: `/s/{shortCode}` resolves and redirects with click tracking
+- **Redirect hooks**: [`src/hooks/useSlugRedirect.ts`](src/hooks/useSlugRedirect.ts), [`src/hooks/useUserSlugRedirect.ts`](src/hooks/useUserSlugRedirect.ts)
+- **Implementation details**: See [`ops/301_REDIRECT_PLAN.md`](ops/301_REDIRECT_PLAN.md)
 
 ---
 
@@ -228,22 +242,165 @@ npm run sync-algolia    # Sync Algolia indexes
 
 ---
 
-## 11. Governance
+## 11. Governance & Change Management
 
 ### 11.1 Change Approval
-See `governance/CHANGE_APPROVAL.md` for the PR review process.
+See [governance/CHANGE_APPROVAL.md](governance/CHANGE_APPROVAL.md) for the CAB process, PR review requirements, and approval thresholds.
 
 ### 11.2 Release Policy
-See `governance/RELEASE_POLICY.md` for versioning and deployment cadence.
+See [governance/RELEASE_POLICY.md](governance/RELEASE_POLICY.md) for semantic versioning, deployment cadence (weekly production), and hotfix procedures.
 
-### 11.3 Incident Response
-See `ops/playbooks/incident-response.md` for severity levels and response steps.
+### 11.3 RBAC & Access Control
+See [governance/RBAC_MATRIX.md](governance/RBAC_MATRIX.md) for role definitions (Admin, Dealer, User), permission matrix, and MFA requirements.
+
+### 11.4 Data Retention & Privacy
+See [governance/DATA_RETENTION_POLICY.md](governance/DATA_RETENTION_POLICY.md) for GDPR compliance, retention periods (users: 7 years, listings: 2 years), and deletion procedures.
+
+### 11.5 Cost Control & Budgeting
+See [governance/COST_CONTROL.md](governance/COST_CONTROL.md) for monthly budget (EUR 9,000), resource tagging convention, alert thresholds (80%/100%), and quarterly cleanup process.
+
+### 11.6 Third-Party Risk Management
+See [governance/THIRD_PARTY_RISK.md](governance/THIRD_PARTY_RISK.md) for vendor tier classification, vetting checklist (SOC 2, DPA, SLA), exit strategies, and annual review schedule.
+
+### 11.7 Change Log
+See [governance/CHANGELOG.md](governance/CHANGELOG.md) for release notes, breaking changes, and migration guides.
 
 ---
 
-## 12. Developer Workflows
+## 12. Operations & Deployment
 
-### 12.1 Web Development
+### 12.1 Infrastructure as Code
+All GCP resources defined in [ops/infra/main.tf](ops/infra/main.tf):
+- Firestore database (OPTIMISTIC concurrency)
+- Storage buckets (media, backups, functions) with lifecycle policies
+- Cloud Functions (image_processor, pricing_estimator)
+- Redis cache (production only, 5GB standard tier)
+- Monitoring alerts (Firestore quota >80%)
+
+**Deploy**: `terraform init && terraform plan && terraform apply`
+
+### 12.2 Security Rules
+Firestore security rules in [ops/firestore.rules](ops/firestore.rules):
+- RBAC enforcement (isAdmin, isDealer helpers)
+- Seller validation (listings.sellerId == request.auth.uid)
+- MFA checks (request.auth.token.mfa == true)
+- Audit logging for all writes
+
+**Deploy**: `firebase deploy --only firestore:rules`
+
+### 12.3 Testing Strategy
+- **Unit Tests**: Vitest (services, hooks, utils)
+- **Integration Tests**: Firebase Emulator Suite
+- **E2E Tests**: Playwright (critical flows)
+- **Coverage**: Minimum 80% for services, 70% for components
+
+**Commands**:
+```bash
+npm test                    # Run all tests
+npm run test:watch          # Watch mode
+npm run test:coverage       # Generate coverage report
+cd e2e && npm test          # Run Playwright
+```
+
+### 12.4 Observability
+- **Logging**: [src/services/logger-service.ts](src/services/logger-service.ts) (structured logs, no console.*)
+- **Monitoring**: Firebase Performance Monitoring + Google Cloud Monitoring
+- **Alerting**: Alert policy for Firestore quota, Redis memory, Function errors
+- **Tracing**: Cloud Trace for Functions (automatic)
+
+### 12.5 Secrets Management
+- **Development**: `.env.local` (git-ignored, template in [.env.example](.env.example))
+- **Production**: Google Cloud Secret Manager
+- **Rotation**: Secrets rotated quarterly (Q1, Q3)
+
+### 12.6 Offline-First Architecture
+- **Service Worker**: [public/service-worker.js](public/service-worker.js) (caches assets, API responses)
+- **IndexedDB**: Listing drafts, user preferences
+- **Sync Strategy**: Background sync for offline writes
+
+### 12.7 CI/CD Pipeline
+- **GitHub Actions**: `.github/workflows/ci.yml`
+- **Quality Gates**: Type check → Test → Build → Deploy (staging) → Manual approval → Deploy (prod)
+- **Deployment**: Firebase Hosting + Functions + Firestore Rules + Storage Rules
+- **Rollback**: `firebase hosting:rollback` (last 10 versions retained)
+
+### 12.8 Incident Response
+See [ops/playbooks/incident-response.md](ops/playbooks/incident-response.md) for:
+- Severity levels (P0-P3)
+- Escalation paths (on-call rotation)
+- Post-mortem template
+
+---
+
+## 13. ML Governance & AI Operations
+
+### 13.1 Dataset Registry
+See [ml/dataset_registry.csv](ml/dataset_registry.csv) for:
+- Training datasets (source, size, version, last_updated)
+- Validation splits (80/10/10 train/val/test)
+- Data provenance and licensing
+
+### 13.2 Model Registry
+See [ml/model_registry.json](ml/model_registry.json) for:
+- Model name, version, framework (TensorFlow, PyTorch)
+- Accuracy metrics (precision, recall, F1)
+- Rollout percentage (10% → 50% → 100%)
+- Rollback triggers (accuracy drop >5%, latency >500ms)
+
+### 13.3 Feature Flags
+ML features controlled via [src/config/feature-flags.ts](src/config/feature-flags.ts):
+- `ai_pricing_estimator`: 100% (production)
+- `ai_condition_classifier`: 50% (A/B test)
+- `ai_photo_enhancement`: 10% (beta)
+
+### 13.4 AI Quota & Cost Management
+- **Vision API**: 10,000 calls/month (EUR 300 budget)
+- **Vertex AI**: 5,000 predictions/month (EUR 150 budget)
+- **Monitoring**: Track usage in Google Cloud Console → AI Platform → Quotas
+- **Alerts**: Email at 80% quota, block at 100%
+
+---
+
+## 14. Developer Onboarding & Workflows
+
+### 14.1 One-Command Setup
+```bash
+./dev.sh install   # Install deps, setup .env.local, check prerequisites
+./dev.sh start     # Start web dev server + Firebase emulators
+```
+
+**Prerequisites**: Node.js 20+, npm 10+, Java 11+ (for Firebase Emulator)
+
+### 14.2 Dev Container (VSCode)
+Open project in VSCode → "Reopen in Container" (uses [.devcontainer/devcontainer.json](.devcontainer/devcontainer.json)):
+- Node 20 base image
+- Extensions: TypeScript, Prettier, ESLint, Copilot, Playwright, Vitest
+- Ports forwarded: 3000 (web), 4000 (Firebase UI), 5173 (Vite), 9099 (emulator)
+- Post-create: `npm install && npm run setup`
+
+### 14.3 Environment Setup
+Copy [.env.example](.env.example) to `.env.local` and set:
+```bash
+VITE_FIREBASE_API_KEY=...
+VITE_FIREBASE_PROJECT_ID=fire-new-globul
+VITE_ALGOLIA_APP_ID=...
+VITE_ALGOLIA_SEARCH_API_KEY=...
+```
+
+**Emulator Mode**: Set `VITE_USE_FIREBASE_EMULATOR=true` to use local Firestore/Auth.
+
+### 14.4 Project Layout
+- [web/src/services/](web/src/services/): Domain logic (auth, listings, messaging, search)
+- [web/src/components/](web/src/components/): React components (layout, forms, cards)
+- [web/src/routes/](web/src/routes/): React Router routes
+- [web/src/hooks/](web/src/hooks/): Custom React hooks (useSlugRedirect, useShortLinkResolver)
+- [web/src/config/](web/src/config/): App configuration (Firebase, Algolia, feature flags)
+- [docs/](docs/): Architecture, ADRs, API guides
+- [governance/](governance/): Policies (RBAC, change approval, cost control)
+- [ops/](ops/): Infrastructure (Terraform, Firestore rules, playbooks)
+- [schemas/](schemas/): JSON Schemas (User, Listing, Story, Campaign)
+
+### 14.5 Web Development Commands
 ```bash
 cd <project-root>
 npm start               # Dev server
@@ -253,12 +410,12 @@ npm test                # Run tests
 npm run build           # Production build
 ```
 
-### 12.2 Firebase Emulators
+### 14.6 Firebase Emulators
 ```bash
 npm run emulate         # Start all emulators
 ```
 
-### 12.3 Mobile Development
+### 14.7 Mobile Development
 ```bash
 cd mobile_new/
 npm start               # Expo dev server (expo start)
@@ -266,17 +423,17 @@ npm start               # Expo dev server (expo start)
 
 ---
 
-## 13. Git & Deployment
+## 15. Git & Deployment
 
-### 13.1 Repository
+### 15.1 Repository
 - GitHub: https://github.com/hamdanialaa3/New-Globul-Cars
 - Account: `hamdanialaa3`
 
-### 13.2 Firebase Project
+### 15.2 Firebase Project
 - Project: `fire-new-globul`
 - Console: https://console.firebase.google.com/project/fire-new-globul
 
-### 13.3 Production Domain
+### 15.3 Production Domain
 - https://koli.one
 - Alternate: https://fire-new-globul.web.app
 

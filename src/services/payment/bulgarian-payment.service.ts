@@ -4,20 +4,18 @@
  * Location: Bulgaria
  * Currency: EUR
  * 
+ * 🔒 SECURITY FIX: Payment operations are now routed through Cloud Functions.
+ * Secret keys are NEVER stored or accessed in client-side code.
+ * The client only handles redirect URLs and payment status display.
+ * 
  * File: src/services/payment/bulgarian-payment.service.ts
  * Created: February 8, 2026
+ * Secured: February 21, 2026
  */
 
 import { serviceLogger } from '../logger-service';
 
 export type BulgarianPaymentProvider = 'epay' | 'easypay';
-
-export interface PaymentConfig {
-  provider: BulgarianPaymentProvider;
-  merchantId: string;
-  secretKey: string;
-  testMode: boolean;
-}
 
 export interface PaymentRequest {
   amount: number;
@@ -48,12 +46,23 @@ export interface PaymentNotification {
   signature: string;
 }
 
+/**
+ * Bulgarian Payment Service - Client-Side Proxy
+ * 
+ * 🔒 SECURITY: All sensitive payment operations (key management, signature
+ * generation, payment verification) are handled by Cloud Functions.
+ * This client-side service only:
+ * 1. Sends payment requests to the Cloud Function
+ * 2. Receives payment URLs for redirect
+ * 3. Displays payment status
+ */
 class BulgarianPaymentService {
   private static instance: BulgarianPaymentService;
-  private config: Map<BulgarianPaymentProvider, PaymentConfig> = new Map();
+  private readonly cloudFunctionBaseUrl: string;
 
   private constructor() {
-    this.initializeConfig();
+    // Cloud Function endpoint for payment operations
+    this.cloudFunctionBaseUrl = '/api/payments';
   }
 
   static getInstance(): BulgarianPaymentService {
@@ -63,40 +72,44 @@ class BulgarianPaymentService {
     return BulgarianPaymentService.instance;
   }
 
-  private initializeConfig(): void {
-    const epayConfig: PaymentConfig = {
-      provider: 'epay',
-      merchantId: process.env.VITE_EPAY_MERCHANT_ID || '',
-      secretKey: process.env.VITE_EPAY_SECRET_KEY || '',
-      testMode: process.env.NODE_ENV !== 'production'
-    };
-
-    const easypayConfig: PaymentConfig = {
-      provider: 'easypay',
-      merchantId: process.env.VITE_EASYPAY_MERCHANT_ID || '',
-      secretKey: process.env.VITE_EASYPAY_SECRET_KEY || '',
-      testMode: process.env.NODE_ENV !== 'production'
-    };
-
-    this.config.set('epay', epayConfig);
-    this.config.set('easypay', easypayConfig);
-  }
-
+  /**
+   * Create a payment via Cloud Function
+   * The Cloud Function handles secret keys, signature generation, etc.
+   */
   async createPayment(
     provider: BulgarianPaymentProvider,
     request: PaymentRequest
   ): Promise<PaymentResponse> {
     try {
-      const config = this.config.get(provider);
-      if (!config) {
-        throw new Error(`Provider ${provider} not configured`);
+      const response = await fetch(`${this.cloudFunctionBaseUrl}/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          provider,
+          ...request
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Payment API error: ${response.statusText}`);
       }
 
-      if (provider === 'epay') {
-        return await this.createEpayPayment(config, request);
-      } else {
-        return await this.createEasypayPayment(config, request);
-      }
+      const data = await response.json();
+
+      serviceLogger.info('Payment created via Cloud Function', {
+        provider,
+        orderId: request.orderId,
+        amount: request.amount
+      });
+
+      return {
+        success: data.success,
+        paymentUrl: data.paymentUrl,
+        transactionId: data.transactionId,
+        error: data.error
+      };
     } catch (error) {
       serviceLogger.error('Payment creation failed', error as Error, { provider, request });
       return {
@@ -106,127 +119,28 @@ class BulgarianPaymentService {
     }
   }
 
-  private async createEpayPayment(
-    config: PaymentConfig,
-    request: PaymentRequest
-  ): Promise<PaymentResponse> {
-    const baseUrl = config.testMode
-      ? 'https://demo.epay.bg'
-      : 'https://www.epay.bg';
-
-    const params = new URLSearchParams({
-      MIN: config.merchantId,
-      INVOICE: request.orderId,
-      AMOUNT: request.amount.toFixed(2),
-      CURRENCY: request.currency,
-      DESCR: request.description,
-      EMAIL: request.customerEmail,
-      URL_OK: request.successUrl,
-      URL_CANCEL: request.cancelUrl,
-      URL_NOTIFY: request.notifyUrl
-    });
-
-    const checksum = this.generateEpayChecksum(params.toString(), config.secretKey);
-    params.append('CHECKSUM', checksum);
-
-    const paymentUrl = `${baseUrl}/?${params.toString()}`;
-
-    serviceLogger.info('ePay payment created', { orderId: request.orderId, amount: request.amount });
-
-    return {
-      success: true,
-      paymentUrl,
-      transactionId: request.orderId
-    };
-  }
-
-  private async createEasypayPayment(
-    config: PaymentConfig,
-    request: PaymentRequest
-  ): Promise<PaymentResponse> {
-    const baseUrl = config.testMode
-      ? 'https://demo.easypay.bg/checkout'
-      : 'https://www.easypay.bg/checkout';
-
-    const payload = {
-      merchant: config.merchantId,
-      order_id: request.orderId,
-      amount: request.amount,
-      currency: request.currency,
-      description: request.description,
-      email: request.customerEmail,
-      name: request.customerName,
-      success_url: request.successUrl,
-      cancel_url: request.cancelUrl,
-      notify_url: request.notifyUrl,
-      signature: this.generateEasypaySignature(request, config.secretKey)
-    };
-
-    const response = await fetch(`${baseUrl}/api/checkout`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${config.merchantId}`
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (!response.ok) {
-      throw new Error(`EasyPay API error: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-
-    serviceLogger.info('EasyPay payment created', { orderId: request.orderId, amount: request.amount });
-
-    return {
-      success: true,
-      paymentUrl: data.checkout_url,
-      transactionId: data.transaction_id
-    };
-  }
-
-  verifyNotification(
+  /**
+   * Check payment status via Cloud Function
+   */
+  async checkPaymentStatus(
     provider: BulgarianPaymentProvider,
-    notification: PaymentNotification
-  ): boolean {
+    orderId: string
+  ): Promise<{ status: string; paid: boolean }> {
     try {
-      const config = this.config.get(provider);
-      if (!config) return false;
+      const response = await fetch(
+        `${this.cloudFunctionBaseUrl}/status?provider=${provider}&orderId=${orderId}`,
+        { method: 'GET' }
+      );
 
-      if (provider === 'epay') {
-        return this.verifyEpayNotification(notification, config.secretKey);
-      } else {
-        return this.verifyEasypayNotification(notification, config.secretKey);
+      if (!response.ok) {
+        throw new Error(`Payment status check failed: ${response.statusText}`);
       }
+
+      return await response.json();
     } catch (error) {
-      serviceLogger.error('Notification verification failed', error as Error, { provider });
-      return false;
+      serviceLogger.error('Payment status check failed', error as Error, { provider, orderId });
+      return { status: 'error', paid: false };
     }
-  }
-
-  private generateEpayChecksum(data: string, secretKey: string): string {
-    const crypto = require('crypto');
-    return crypto.createHmac('sha1', secretKey).update(data).digest('hex');
-  }
-
-  private generateEasypaySignature(request: PaymentRequest, secretKey: string): string {
-    const crypto = require('crypto');
-    const data = `${request.orderId}${request.amount}${request.currency}${secretKey}`;
-    return crypto.createHash('sha256').update(data).digest('hex');
-  }
-
-  private verifyEpayNotification(notification: PaymentNotification, secretKey: string): boolean {
-    const data = `${notification.orderId}${notification.amount}${notification.status}`;
-    const expectedSignature = this.generateEpayChecksum(data, secretKey);
-    return notification.signature === expectedSignature;
-  }
-
-  private verifyEasypayNotification(notification: PaymentNotification, secretKey: string): boolean {
-    const data = `${notification.transactionId}${notification.orderId}${notification.amount}`;
-    const crypto = require('crypto');
-    const expectedSignature = crypto.createHash('sha256').update(data + secretKey).digest('hex');
-    return notification.signature === expectedSignature;
   }
 }
 

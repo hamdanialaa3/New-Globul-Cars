@@ -697,7 +697,8 @@ const FeaturedShowcase: React.FC = memo(() => {
     if (car.sellerNumericId && car.carNumericId) {
       navigate(`/car/${car.sellerNumericId}/${car.carNumericId}`);
     } else {
-      navigate(`/car/${car.id}`);
+      // 🔒 Fallback to legacy route which auto-resolves to numeric URL
+      navigate(`/car-details/${car.id}`);
     }
   };
 

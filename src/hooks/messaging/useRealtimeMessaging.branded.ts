@@ -50,7 +50,7 @@ interface UseRealtimeMessagingReturn {
   error: string | null;
   
   // Actions (Type-Safe)
-  loadChannels: (userNumericId: NumericUserId) => Promise<void>;
+  loadChannels: (userFirebaseId: FirebaseUid) => Promise<void>;
   selectChannel: (channelId: ChannelId) => Promise<void>;
   sendMessage: (content: string) => Promise<string | null>;
   sendOffer: (amount: number, currency?: string) => Promise<string | null>;
@@ -143,12 +143,12 @@ export function useRealtimeMessaging(
 
   // ==================== LOAD CHANNELS (Type-Safe) ====================
 
-  const loadChannels = useCallback(async (userNumericId: NumericUserId) => {
-    if (!userNumericId) return;
+  const loadChannels = useCallback(async (userFirebaseId: FirebaseUid) => {
+    if (!userFirebaseId) return;
     
     // Runtime validation
-    if (!isNumericUserId(userNumericId)) {
-      logger.error('[useRealtimeMessaging] loadChannels called with invalid NumericUserId', new Error('Invalid ID type'));
+    if (!isFirebaseUid(userFirebaseId)) {
+      logger.error('[useRealtimeMessaging] loadChannels called with invalid FirebaseUid', new Error('Invalid ID type'));
       return;
     }
     
@@ -162,9 +162,9 @@ export function useRealtimeMessaging(
       }
       
       // Subscribe to real-time updates
-      // Note: Service accepts number, but we ensure type-safety at the hook level
+      // Note: Service accepts string (Firebase UID), ensures type-safety at the hook level
       channelsUnsubRef.current = realtimeMessagingService.subscribeToUserChannels(
-        userNumericId as number, // Safe cast after validation
+        userFirebaseId as string, // Safe cast after validation
         (updatedChannels) => {
           if (isActiveRef.current) {
             setChannels(updatedChannels);
@@ -174,7 +174,7 @@ export function useRealtimeMessaging(
       
       // Initial load
       const initialChannels = await realtimeMessagingService.getUserChannels(
-        userNumericId as number
+        userFirebaseId as string
       );
       
       if (isActiveRef.current) {
@@ -182,7 +182,7 @@ export function useRealtimeMessaging(
       }
     } catch (err) {
       logger.error('[useRealtimeMessaging] Failed to load channels', err instanceof Error ? err : undefined, {
-        userNumericId
+        userFirebaseId
       });
       if (isActiveRef.current) {
         setError('Failed to load conversations');
@@ -396,9 +396,9 @@ export function useRealtimeMessaging(
       const channel = await realtimeMessagingService.getOrCreateChannel(params);
       
       // Refresh channels list
-      if (currentUserNumericId) {
+      if (currentUserFirebaseId) {
         const updatedChannels = await realtimeMessagingService.getUserChannels(
-          currentUserNumericId as number
+          currentUserFirebaseId as string
         );
         if (isActiveRef.current) {
           setChannels(updatedChannels);
@@ -411,15 +411,15 @@ export function useRealtimeMessaging(
       setError('Failed to start conversation');
       return null;
     }
-  }, [currentUserNumericId]);
+  }, [currentUserFirebaseId]);
 
   // ==================== AUTO-LOAD CHANNELS ====================
 
   useEffect(() => {
-    if (currentUserNumericId) {
-      loadChannels(currentUserNumericId);
+    if (currentUserFirebaseId) {
+      loadChannels(currentUserFirebaseId);
     }
-  }, [currentUserNumericId, loadChannels]);
+  }, [currentUserFirebaseId, loadChannels]);
 
   // ==================== RETURN ====================
 

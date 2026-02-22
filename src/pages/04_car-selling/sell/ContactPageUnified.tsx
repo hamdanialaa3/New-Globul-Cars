@@ -42,7 +42,7 @@ const ContactPageUnified: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { language } = useLanguage();
-  const { currentUser } = useAuth();
+  const { currentUser, userProfile } = useAuth();
   const isMobile = useIsMobile();
 
   const {
@@ -109,8 +109,9 @@ const ContactPageUnified: React.FC = () => {
 
   useEffect(() => {
     if (!currentUser) return;
-    if (!contactData.sellerName && currentUser.displayName) {
-      handleFieldChange('sellerName', currentUser.displayName);
+    const autoName = userProfile?.displayName || currentUser.displayName;
+    if (!contactData.sellerName && autoName) {
+      handleFieldChange('sellerName', autoName);
     }
     if (!contactData.sellerEmail && currentUser.email) {
       handleFieldChange('sellerEmail', currentUser.email);

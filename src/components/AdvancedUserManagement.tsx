@@ -315,7 +315,7 @@ const EmptyState = styled.div`
 `;
 
 const AdvancedUserManagement: React.FC = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, userProfile } = useAuth();
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -417,7 +417,7 @@ const AdvancedUserManagement: React.FC = () => {
         await auditLoggingService.logUserAction(
           currentUser.uid,
           currentUser.email || 'admin',
-          currentUser.displayName || 'Admin',
+          userProfile?.displayName || currentUser.displayName || 'Admin',
           `USER_${action.toUpperCase()}`,
           'user',
           userId,

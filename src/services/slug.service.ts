@@ -119,7 +119,9 @@ export function buildCanonicalPath(
   carNumericId: number,
   slug: string,
 ): string {
-  return `/car/${sellerNumericId}/${carNumericId}/${slug}`;
+  // 🔒 STRICT: Only use 2-segment format /car/{sellerNumericId}/{carNumericId}
+  // Slug is kept for SEO metadata only, NOT appended to URL path
+  return `/car/${sellerNumericId}/${carNumericId}`;
 }
 
 // ─── Firestore-backed uniqueness ───────────────────────────────────

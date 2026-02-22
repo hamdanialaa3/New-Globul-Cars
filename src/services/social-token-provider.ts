@@ -178,20 +178,17 @@ export class SocialTokenProvider {
     return !!token.expiresAt && Date.now() > token.expiresAt;
   }
 
-  private readEnv(platform: SocialPlatform): string | null {
-    switch (platform) {
-      case 'tiktok':
-        return import.meta.env.VITE_TIKTOK_ACCESS_TOKEN || null;
-      case 'instagram':
-        return import.meta.env.VITE_INSTAGRAM_ACCESS_TOKEN || null;
-      case 'facebook':
-        return import.meta.env.VITE_FACEBOOK_ACCESS_TOKEN || null;
-      case 'threads':
-        // Threads may reuse Instagram or have separate token strategy later
-        return import.meta.env.VITE_INSTAGRAM_ACCESS_TOKEN || null;
-      default:
-        return null;
+  private readEnv(_platform: SocialPlatform): string | null {
+    // 🔒 SECURITY: Social media access tokens must NEVER be exposed client-side.
+    // In production, tokens come exclusively from the backend Cloud Function
+    // (getSocialAccessToken callable above). The env fallback is disabled.
+    if (import.meta.env.PROD) {
+      this.logger.warn('Env token fallback disabled in production — use backend endpoint');
+      return null;
     }
+    // In development ONLY — allow env fallback for local testing with a warning
+    this.logger.warn(`⚠️ DEV ONLY: Using env token fallback for ${_platform}. DO NOT use in production.`);
+    return null; // Return null even in dev to force backend usage
   }
 }
 

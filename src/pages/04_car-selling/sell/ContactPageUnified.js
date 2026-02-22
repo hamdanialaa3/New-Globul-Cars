@@ -35,7 +35,7 @@ const ContactPageUnified = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const { language } = useLanguage();
-    const { currentUser } = useAuth();
+    const { currentUser, userProfile } = useAuth();
     const isMobile = useIsMobile();
     const { contactData, availableRegions, availableCities, handleFieldChange, toggleContactMethod } = useContactForm({ language: language, requireContactFields: false });
     const [showOtherCityInput, setShowOtherCityInput] = useState(false);
@@ -85,8 +85,9 @@ const ContactPageUnified = () => {
     useEffect(() => {
         if (!currentUser)
             return;
-        if (!contactData.sellerName && currentUser.displayName) {
-            handleFieldChange('sellerName', currentUser.displayName);
+        const autoName = userProfile?.displayName || currentUser.displayName;
+        if (!contactData.sellerName && autoName) {
+            handleFieldChange('sellerName', autoName);
         }
         if (!contactData.sellerEmail && currentUser.email) {
             handleFieldChange('sellerEmail', currentUser.email);

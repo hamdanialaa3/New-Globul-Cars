@@ -20,12 +20,12 @@ interface FormData {
 }
 
 const ContactForm: React.FC<ContactFormProps> = ({ dealerId, dealerName }) => {
-  const { currentUser } = useAuth();
+  const { currentUser, userProfile } = useAuth();
   const functions = getFunctions();
 
   const [formData, setFormData] = useState<FormData>({
-    name: currentUser?.displayName || '',
-    email: currentUser?.email || '',
+    name: userProfile?.displayName || currentUser?.displayName || '',
+    email: currentUser?.email || ''
     phone: '',
     message: '',
   });
@@ -67,7 +67,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ dealerId, dealerName }) => {
 
       setSuccess(true);
       setFormData({
-        name: currentUser?.displayName || '',
+        name: userProfile?.displayName || currentUser?.displayName || '',
         email: currentUser?.email || '',
         phone: '',
         message: '',

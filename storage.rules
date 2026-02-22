@@ -12,96 +12,128 @@ service firebase.storage {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
+    // Check file size limit (10MB for images, 50MB for videos)
+    function isImageWithinLimit() {
+      return request.resource.size < 10 * 1024 * 1024; // 10MB
+    }
+
+    function isVideoWithinLimit() {
+      return request.resource.size < 50 * 1024 * 1024; // 50MB
+    }
+
+    // Validate file is an image
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+
+    // Validate file is a video
+    function isVideo() {
+      return request.resource.contentType.matches('video/.*');
+    }
+
+    // Validate file is an image or video
+    function isMediaFile() {
+      return isImage() || isVideo();
+    }
+
+    // Validate file is a document (PDF, etc.)
+    function isDocument() {
+      return request.resource.contentType.matches('application/pdf') ||
+             request.resource.contentType.matches('image/.*');
+    }
+
     // Workflow Images - Used during car listing creation
     // CRITICAL: Must be publicly readable for published car listings
     match /workflow-images/{userId}/{allPaths=**} {
       allow read: if true; // Public read for published car images
-      allow write: if isOwner(userId);
+      allow write: if isOwner(userId) && isImage() && isImageWithinLimit();
     }
 
     // User Profile Pictures & Photos
     match /profile-pictures/{userId}/{allPaths=**} {
       allow read: if true;
-      allow write: if isOwner(userId);
+      allow write: if isOwner(userId) && isImage() && isImageWithinLimit();
     }
     match /profile-photos/{userId}/{allPaths=**} {
       allow read: if true;
-      allow write: if isOwner(userId);
+      allow write: if isOwner(userId) && isImage() && isImageWithinLimit();
     }
     match /users/{userId}/profile/{allPaths=**} {
       allow read: if true;
-      allow write: if isOwner(userId);
+      allow write: if isOwner(userId) && isImage() && isImageWithinLimit();
     }
     match /users/{userId}/cover/{allPaths=**} {
       allow read: if true;
-      allow write: if isOwner(userId);
+      allow write: if isOwner(userId) && isImage() && isImageWithinLimit();
     }
 
     // User Documents & Private Data
     match /users/{userId}/documents/{allPaths=**} {
-      allow read, write: if isOwner(userId);
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId) && isDocument() && request.resource.size < 20 * 1024 * 1024; // 20MB
     }
     match /verification-documents/{userId}/{allPaths=**} {
-      allow read, write: if isOwner(userId);
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId) && isDocument() && request.resource.size < 20 * 1024 * 1024;
     }
     
     // Dealership Documents (Private)
     match /dealerships/{userId}/documents/{allPaths=**} {
-      allow read, write: if isOwner(userId);
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId) && isDocument() && request.resource.size < 20 * 1024 * 1024;
     }
 
     // Dealership Logos (Public Read, Owner Write)
-    // Matches files like dealerships/{userId}/logo-123456
     match /dealerships/{userId}/{filename} {
       allow read: if filename.matches('logo-.*');
-      allow write: if isOwner(userId);
+      allow write: if isOwner(userId) && isImage() && isImageWithinLimit();
     }
 
     // Dealership Media (Public Read)
     match /dealerships/{userId}/media/{allPaths=**} {
       allow read: if true;
-      allow write: if isOwner(userId);
+      allow write: if isOwner(userId) && isMediaFile() && (
+        (isImage() && isImageWithinLimit()) ||
+        (isVideo() && isVideoWithinLimit())
+      );
     }
 
     // Social & Shared Content
     match /stories/{userId}/{allPaths=**} {
       allow read: if true;
-      allow write: if isOwner(userId);
+      allow write: if isOwner(userId) && isMediaFile() && (
+        (isImage() && isImageWithinLimit()) ||
+        (isVideo() && isVideoWithinLimit())
+      );
     }
     match /events/{userId}/{allPaths=**} {
       allow read: if true;
-      allow write: if isOwner(userId);
+      allow write: if isOwner(userId) && isImage() && isImageWithinLimit();
     }
     match /intro-videos/{userId}/{allPaths=**} {
       allow read: if true;
-      allow write: if isOwner(userId);
+      allow write: if isOwner(userId) && isVideo() && isVideoWithinLimit();
     }
 
-    // Car Images — 🔒 SECURED (2026-02-09): Per-user ownership
-    // Path: car-images/{userId}/{allPaths}
-    // Only the owner can upload to their car-images folder
+    // Car Images — 🔒 SECURED: Per-user ownership + file type & size validation
     match /car-images/{userId}/{allPaths=**} {
       allow read: if true;
-      allow write: if isOwner(userId);
+      allow write: if isOwner(userId) && isImage() && isImageWithinLimit();
     }
 
-    // Messages — 🔒 SECURED: Authenticated users only, with path ownership
-    // Path: messages/{chatId}/{allPaths}
+    // Messages — 🔒 SECURED: Authenticated users only, with file type validation
     match /messages/{chatId}/{allPaths=**} {
       allow read: if isAuthenticated();
-      allow write: if isAuthenticated();
+      allow write: if isAuthenticated() && isMediaFile() && (
+        (isImage() && isImageWithinLimit()) ||
+        (isVideo() && isVideoWithinLimit())
+      );
     }
     
-    // ⚠️ SECURITY: Restricted fallback (January 25, 2026)
-    // Previous: Allowed all authenticated writes (permissive)
-    // Current: Block everything not explicitly allowed above
-    // 
-    // All public-read paths (car images, profiles, media) are explicitly allowed above.
-    // Unmatched paths require authentication to prevent unintended data exposure.
-    // DO NOT revert to permissive fallback without security review
+    // ⛔ DEFAULT: Block everything not explicitly allowed above
     match /{allPaths=**} {
-      allow read: if isAuthenticated(); // Auth required for unmatched paths
-      allow write: if false; // ✅ Block all writes except explicit paths above
+      allow read: if false;
+      allow write: if false;
     }
   }
 }

@@ -276,8 +276,8 @@ export const IncompleteProfileAlert: React.FC = () => {
             return;
           }
 
-          // ✅ CHECK 4: No display name
-          const hasNoName = !userData.displayName && !userData.firstName && !currentUser.displayName;
+          // ✅ CHECK 4: No display name (check Firestore profile first, then Auth object)
+          const hasNoName = !userData.displayName && !userData.firstName && !currentUser.displayName && !userData.firstName;
           if (hasNoName) {
             setShowAlert(true);
             return;
@@ -312,7 +312,7 @@ export const IncompleteProfileAlert: React.FC = () => {
     if (userNumericId) {
       navigate(`/profile/${userNumericId}/settings`);
     } else {
-      // Fallback: try to get numeric ID from URL or use default
+      // 🔒 Fallback: use generic profile settings path (ProfilePageWrapper handles redirect)
       navigate('/profile/settings');
     }
   };

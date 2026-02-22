@@ -126,6 +126,7 @@ export interface RealtimeChannel {
     [numericUserId: string]: number;
   };
   hasActiveOffer?: boolean;     // For offer filtering
+  participants?: { [firebaseUid: string]: boolean };  // For Firebase security rules
   status: 'active' | 'archived' | 'blocked';
 }
 
@@ -392,14 +393,21 @@ class RealtimeMessagingService {
         [buyer.numericId]: 0,
         [seller.numericId]: 0,
       },
+      // 🔒 CRITICAL: participants map keyed by Firebase UID — required by database.rules.json
+      // Rules check: data.child('participants').child(auth.uid).exists()
+      participants: {
+        [buyer.firebaseId]: true,
+        [seller.firebaseId]: true,
+      },
       status: 'active',
     };
 
     await set(channelRef, newChannel);
 
     // Also index in user's channel list for fast lookup
-    await this.indexChannelForUser(channelId, buyer.numericId, seller.numericId, car.numericId);
-    await this.indexChannelForUser(channelId, seller.numericId, buyer.numericId, car.numericId);
+    // 🔒 user_channels is keyed by Firebase UID — rules check: auth.uid == $userUid
+    await this.indexChannelForUser(channelId, buyer.firebaseId, seller.numericId, car.numericId);
+    await this.indexChannelForUser(channelId, seller.firebaseId, buyer.numericId, car.numericId);
 
     logger.info('[RealtimeMessaging] Created new channel', { channelId, buyer: buyer.numericId, seller: seller.numericId });
 
@@ -412,11 +420,12 @@ class RealtimeMessagingService {
    */
   private async indexChannelForUser(
     channelId: string,
-    userNumericId: number,
+    userFirebaseId: string,
     otherUserNumericId: number,
     carNumericId: number
   ): Promise<void> {
-    const indexRef = ref(this.db, `user_channels/${userNumericId}/${channelId}`);
+    // 🔒 Path uses Firebase UID — rules require auth.uid == $userUid
+    const indexRef = ref(this.db, `user_channels/${userFirebaseId}/${channelId}`);
     await set(indexRef, {
       channelId,
       otherUserId: otherUserNumericId,
@@ -429,8 +438,9 @@ class RealtimeMessagingService {
    * Get user's channels
    * الحصول على قنوات المستخدم
    */
-  async getUserChannels(userNumericId: number): Promise<RealtimeChannel[]> {
-    const userChannelsRef = ref(this.db, `user_channels/${userNumericId}`);
+  async getUserChannels(userFirebaseId: string): Promise<RealtimeChannel[]> {
+    // 🔒 Path uses Firebase UID — rules require auth.uid == $userUid
+    const userChannelsRef = ref(this.db, `user_channels/${userFirebaseId}`);
     const indexSnapshot = await get(userChannelsRef);
 
     if (!indexSnapshot.exists()) {
@@ -455,7 +465,7 @@ class RealtimeMessagingService {
     channels.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
 
     logger.debug('[RealtimeMessaging] Fetched user channels', {
-      userNumericId,
+      userFirebaseId,
       count: channels.length,
     });
 
@@ -488,11 +498,12 @@ class RealtimeMessagingService {
    * الاشتراك في تحديثات قنوات المستخدم
    */
   subscribeToUserChannels(
-    userNumericId: number,
+    userFirebaseId: string,
     callback: (channels: RealtimeChannel[]) => void
   ): () => void {
-    const userChannelsRef = ref(this.db, `user_channels/${userNumericId}`);
-    const listenerKey = `user_channels_${userNumericId}`;
+    // 🔒 Path uses Firebase UID — rules require auth.uid == $userUid
+    const userChannelsRef = ref(this.db, `user_channels/${userFirebaseId}`);
+    const listenerKey = `user_channels_${userFirebaseId}`;
 
     // Store reference for cleanup
     this.activeListeners.set(listenerKey, userChannelsRef);
@@ -523,7 +534,7 @@ class RealtimeMessagingService {
     return () => {
       off(userChannelsRef);
       this.activeListeners.delete(listenerKey);
-      logger.debug('[RealtimeMessaging] Unsubscribed from user channels', { userNumericId });
+      logger.debug('[RealtimeMessaging] Unsubscribed from user channels', { userFirebaseId });
     };
   }
 
@@ -610,6 +621,8 @@ class RealtimeMessagingService {
       await set(newMessageRef, fullMessage);
 
       // Update channel's last message and updatedAt
+      // 🔧 Self-heal: also write participants map to fix old channels that were created
+      // before the participants-based security rules were introduced
       const channelRef = ref(this.db, `channels/${channelId}`);
       await update(channelRef, {
         updatedAt: now,
@@ -620,6 +633,9 @@ class RealtimeMessagingService {
           type: message.type,
         },
         [`unreadCount/${message.recipientId}`]: (await this.getUnreadCount(channelId, message.recipientId)) + 1,
+        // Self-heal participants node for backward compatibility
+        [`participants/${message.senderFirebaseId}`]: true,
+        [`participants/${message.recipientFirebaseId}`]: true,
       });
 
       logger.info('[RealtimeMessaging] Message sent', {

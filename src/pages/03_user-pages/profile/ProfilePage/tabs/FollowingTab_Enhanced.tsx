@@ -481,7 +481,8 @@ const FollowingTab: React.FC = () => {
   };
 
   const handleViewProfile = (numericId: number) => {
-    navigate(`/profile/${numericId}`);
+    // 🔒 STRICT: Use /profile/view/{numericId} since followed users are always other users
+    navigate(`/profile/view/${numericId}`);
   };
 
   if (isLoading) {

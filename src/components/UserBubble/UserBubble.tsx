@@ -397,17 +397,13 @@ export const UserBubble: React.FC<UserBubbleProps> = ({
       // UserBubble is always for other users, so use view path
       if (user.numericId) {
         navigate(`/profile/view/${user.numericId}`);
-      } else if (user.uid) {
-        // ❌ CRITICAL: Missing numeric ID - This violates CONSTITUTION!
-        logger.error('🚨 CONSTITUTION VIOLATION: UserBubble requires numericId, not Firebase UID!', {
+      } else {
+        // 🔒 STRICT: Do NOT navigate with Firebase UID — numeric ID is required
+        logger.error('🚨 CONSTITUTION VIOLATION: UserBubble requires numericId for navigation', {
           uid: user.uid,
           displayName: user.displayName,
           message: 'User must be assigned a numeric ID before accessing profile.'
         });
-        // Fallback for legacy users - should trigger numeric ID assignment
-        navigate(`/profile/view/${user.uid}`);
-      } else {
-        logger.error('UserBubble: No user ID available for navigation');
       }
     }
   };

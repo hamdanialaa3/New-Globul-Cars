@@ -89,6 +89,14 @@ export const DEFAULT_HOMEPAGE_SECTIONS: HomepageSection[] = [
     category: 'main',
   },
   {
+    key: 'categories',
+    label: 'Categories Section',
+    description: 'Mobile-oriented: vehicle body type categories with cars (web: hidden)',
+    visible: false,
+    order: 8.5,
+    category: 'main',
+  },
+  {
     key: 'cars_showcase',
     label: 'Cars Showcase',
     description: 'Main car listings showcase — UnifiedCarsShowcase',

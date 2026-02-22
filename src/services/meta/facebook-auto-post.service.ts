@@ -1,10 +1,9 @@
 // Facebook Auto-Post Service
-// النشر الأوتوماتيكي على Facebook عند إضافة سيارة
+// 🔒 SECURED: All Facebook API calls routed through Cloud Functions
+// Client-side only prepares data and triggers the Cloud Function
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
-import axios from 'axios';
-
-import { logger } from '../logger-service';
+import { serviceLogger as logger } from '../logger-service';
 
 interface CarPostData {
   carId: string;
@@ -27,75 +26,66 @@ interface FacebookPostResponse {
   error?: string;
 }
 
+/**
+ * Facebook Auto-Post Service (Client-Side Proxy)
+ * 
+ * 🔒 SECURITY FIX: The page access token is NEVER exposed client-side.
+ * All Graph API calls are routed through Cloud Functions which hold
+ * the access token securely via environment variables or Secret Manager.
+ */
 class FacebookAutoPostService {
-  private pageId = import.meta.env.VITE_FACEBOOK_PAGE_ID || '100080260449528';
-  private pageAccessToken = import.meta.env.VITE_FACEBOOK_PAGE_ACCESS_TOKEN || '';
-  
-  private baseUrl = 'https://graph.facebook.com/v18.0';
+  private readonly cloudFunctionBaseUrl = '/api/facebook';
   private siteBaseUrl = import.meta.env.VITE_BASE_URL || 'https://koli.one';
 
-  constructor() {
-    if (!this.pageAccessToken || !this.pageId) {
-      logger.warn('Facebook configuration missing', {
-        hasPageId: !!this.pageId,
-        hasToken: !!this.pageAccessToken
-      } as Record<string, unknown>);
-    }
-  }
-
   /**
-   * Post car as photo to Facebook Page
-   * النشر على Facebook مع صورة
+   * Post car with photo via Cloud Function
    */
   async postCarWithPhoto(car: CarPostData): Promise<FacebookPostResponse> {
     try {
-      // Validate data
       if (!car.images || car.images.length === 0) {
         logger.warn('No images available for Facebook post', { carId: car.carId });
         return { id: '', success: false, error: 'No images' };
       }
 
-      // Generate caption
-      const caption = this.generateCaption(car, 'bg'); // Bulgarian by default
+      const caption = this.generateCaption(car, 'bg');
 
-      // Post photo with caption
-      const postUrl = `${this.baseUrl}/${this.pageId}/photos`;
-      
-      const response = await axios.post(postUrl, {
-        url: car.images[0], // Main image
-        caption,
-        access_token: this.pageAccessToken
+      const response = await fetch(`${this.cloudFunctionBaseUrl}/post`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'photo',
+          imageUrl: car.images[0],
+          caption,
+          carId: car.carId,
+        }),
       });
+
+      if (!response.ok) {
+        throw new Error(`Facebook API error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
 
       logger.info('✅ Car posted to Facebook successfully', {
         carId: car.carId,
-        facebookPostId: response.data.id,
+        facebookPostId: data.id,
         make: car.make,
         model: car.model
       });
 
       return {
-        id: response.data.id,
-        success: true
+        id: data.id || '',
+        success: data.success || false,
+        error: data.error,
       };
-
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { error?: { message?: string } } }; message?: string };
-      
-      // ✅ FIX: Detect CORS/Network errors and return gracefully without logging as critical error
-      const errorMessage = err.response?.data?.error?.message || err.message || 'Unknown error';
-      const isCorsError = errorMessage.includes('Network Error') || errorMessage.includes('CORS');
-      
-      if (isCorsError) {
-        logger.warn('⚠️ Facebook auto-post skipped (CORS - should be called from Cloud Functions)', {
-          carId: car.carId
-        });
-      } else {
-        logger.error('❌ Failed to post car to Facebook', error as Error, {
-          carId: car.carId,
-          errorMessage
-        });
-      }
+      const err = error as { message?: string };
+      const errorMessage = err.message || 'Unknown error';
+
+      logger.error('❌ Failed to post car to Facebook', error as Error, {
+        carId: car.carId,
+        errorMessage
+      });
 
       return {
         id: '',
@@ -106,32 +96,40 @@ class FacebookAutoPostService {
   }
 
   /**
-   * Post car as link (fallback if no images)
-   * النشر كرابط إذا لم تتوفر صور
+   * Post car as link (fallback if no images) via Cloud Function
    */
   async postCarAsLink(car: CarPostData): Promise<FacebookPostResponse> {
     try {
       const message = this.generateCaption(car, 'bg');
       const carUrl = `${this.siteBaseUrl}/car/${car.sellerNumericId}/${car.carNumericId}`;
 
-      const postUrl = `${this.baseUrl}/${this.pageId}/feed`;
-      
-      const response = await axios.post(postUrl, {
-        message,
-        link: carUrl,
-        access_token: this.pageAccessToken
+      const response = await fetch(`${this.cloudFunctionBaseUrl}/post`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'link',
+          message,
+          link: carUrl,
+          carId: car.carId,
+        }),
       });
+
+      if (!response.ok) {
+        throw new Error(`Facebook API error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
 
       logger.info('✅ Car posted to Facebook as link', {
         carId: car.carId,
-        facebookPostId: response.data.id
+        facebookPostId: data.id
       });
 
       return {
-        id: response.data.id,
-        success: true
+        id: data.id || '',
+        success: data.success || false,
+        error: data.error,
       };
-
     } catch (error: unknown) {
       const err = error as { message?: string };
       logger.error('❌ Failed to post car link to Facebook', error as Error, {
@@ -147,8 +145,7 @@ class FacebookAutoPostService {
   }
 
   /**
-   * Generate caption for Facebook post
-   * إنشاء النص المرافق للمنشور
+   * Generate caption for Facebook post (client-side, no secret data)
    */
   private generateCaption(car: CarPostData, language: 'bg' | 'en' = 'bg'): string {
     const carUrl = `${this.siteBaseUrl}/car/${car.sellerNumericId}/${car.carNumericId}`;
@@ -183,60 +180,35 @@ ${carUrl}
   }
 
   /**
-   * Add engagement comment after posting (Algorithm Hack)
-   * إضافة تعليق لزيادة التفاعل
+   * Add engagement comment after posting via Cloud Function
    */
   async addEngagementComment(postId: string, language: 'bg' | 'en' = 'bg'): Promise<void> {
     try {
-      // Wait 30 seconds after post
-      await this.delay(30000);
-
-      const commentText = language === 'bg'
-        ? `🤔 Какво мислите за тази кола?\n\nНапишете в коментарите:\n❤️ Ако ви харесва\n😍 Ако обмисляте да я купите\n💰 Ако цената е добра`
-        : `🤔 What do you think about this car?\n\nWrite in the comments:\n❤️ If you like it\n😍 If you're considering buying it\n💰 If the price is good`;
-
-      const commentUrl = `${this.baseUrl}/${postId}/comments`;
-      
-      await axios.post(commentUrl, {
-        message: commentText,
-        access_token: this.pageAccessToken
+      await fetch(`${this.cloudFunctionBaseUrl}/comment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ postId, language }),
       });
 
       logger.info('✅ Engagement comment added', { postId });
-
     } catch (error) {
       logger.error('Failed to add engagement comment', error as Error, { postId });
     }
   }
 
   /**
-   * Helper: Delay function
-   */
-  private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  /**
-   * Test connection to Facebook API
-   * اختبار الاتصال بـ Facebook API
+   * Test connection to Facebook API via Cloud Function
    */
   async testConnection(): Promise<boolean> {
     try {
-      const testUrl = `${this.baseUrl}/me?access_token=${this.pageAccessToken}`;
-      const response = await axios.get(testUrl);
-      
-      logger.info('✅ Facebook API connection successful', {
-        pageId: response.data.id,
-        pageName: response.data.name
-      });
+      const response = await fetch(`${this.cloudFunctionBaseUrl}/test`, { method: 'GET' });
+      if (!response.ok) throw new Error('Connection test failed');
 
+      const data = await response.json();
+      logger.info('✅ Facebook API connection successful', data);
       return true;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { error?: { message?: string } } }; message?: string };
-      logger.error('❌ Facebook API connection failed', error as Error, {
-        errorMessage: err.response?.data?.error?.message || err.message || 'Unknown error'
-      });
-
+      logger.error('❌ Facebook API connection failed', error as Error);
       return false;
     }
   }

@@ -128,7 +128,7 @@ export function useMessaging(channelId: string | null) {
  * Hook for user's channel list
  * Automatically handles listener cleanup on unmount
  */
-export function useUserChannels(userNumericId: number | null) {
+export function useUserChannels(userFirebaseId: string | null) {
     const [channels, setChannels] = useState<RealtimeChannel[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
@@ -137,7 +137,7 @@ export function useUserChannels(userNumericId: number | null) {
     const unsubscribeRef = useRef<(() => void) | null>(null);
 
     useEffect(() => {
-        if (!userNumericId) {
+        if (!userFirebaseId) {
             setChannels([]);
             setLoading(false);
             return;
@@ -147,8 +147,9 @@ export function useUserChannels(userNumericId: number | null) {
         setError(null);
 
         // Subscribe to user's channels
+        // 🔒 Path uses Firebase UID — rules require auth.uid == $userUid
         const unsubscribe = serviceRef.current.subscribeToUserChannels(
-            userNumericId,
+            userFirebaseId,
             (newChannels) => {
                 setChannels(newChannels);
                 setLoading(false);
@@ -159,7 +160,7 @@ export function useUserChannels(userNumericId: number | null) {
         unsubscribeRef.current = unsubscribe;
 
         // Load initial channels
-        serviceRef.current.getUserChannels(userNumericId)
+        serviceRef.current.getUserChannels(userFirebaseId)
             .then((initialChannels) => {
                 setChannels(initialChannels);
                 setLoading(false);
@@ -177,7 +178,7 @@ export function useUserChannels(userNumericId: number | null) {
                 unsubscribeRef.current = null;
             }
         };
-    }, [userNumericId]);
+    }, [userFirebaseId]);
 
     return {
         channels,

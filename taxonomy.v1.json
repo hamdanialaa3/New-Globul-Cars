@@ -1,0 +1,188 @@
+{
+  "schemaVersion": 1,
+  "lastUpdated": "2026-02-18T23:30:00Z",
+  "description": "Canonical vehicle taxonomy for Koli One. All listings must reference brands, models, generations, and trims from this registry.",
+  "brands": [
+    {
+      "id": "bmw",
+      "name": "BMW",
+      "country": "DE",
+      "aliases": ["BMW", "Bayerische Motoren Werke"]
+    },
+    {
+      "id": "mercedes-benz",
+      "name": "Mercedes-Benz",
+      "country": "DE",
+      "aliases": ["Mercedes", "Mercedes-Benz", "MB"]
+    },
+    {
+      "id": "audi",
+      "name": "Audi",
+      "country": "DE",
+      "aliases": ["Audi", "Audi AG"]
+    },
+    {
+      "id": "volkswagen",
+      "name": "Volkswagen",
+      "country": "DE",
+      "aliases": ["VW", "Volkswagen"]
+    },
+    {
+      "id": "toyota",
+      "name": "Toyota",
+      "country": "JP",
+      "aliases": ["Toyota", "Toyota Motor"]
+    },
+    {
+      "id": "honda",
+      "name": "Honda",
+      "country": "JP",
+      "aliases": ["Honda", "Honda Motor"]
+    },
+    {
+      "id": "ford",
+      "name": "Ford",
+      "country": "US",
+      "aliases": ["Ford", "Ford Motor"]
+    },
+    {
+      "id": "tesla",
+      "name": "Tesla",
+      "country": "US",
+      "aliases": ["Tesla", "Tesla Inc"]
+    }
+  ],
+  "models": [
+    {
+      "id": "3-series",
+      "brandId": "bmw",
+      "name": "3 Series",
+      "type": "sedan",
+      "generations": [
+        {
+          "id": "f30",
+          "name": "F30",
+          "years": [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019],
+          "trims": [
+            { "id": "320i", "name": "320i", "engines": ["N20", "N26"] },
+            { "id": "320d", "name": "320d", "engines": ["N47", "N57"] },
+            { "id": "330i", "name": "330i", "engines": ["N55"] },
+            { "id": "335i", "name": "335i", "engines": ["N54", "N55"] }
+          ]
+        },
+        {
+          "id": "f80",
+          "name": "F80",
+          "years": [2014, 2015, 2016, 2017, 2018, 2019],
+          "trims": [
+            { "id": "m340i", "name": "M340i", "engines": ["B58"] },
+            { "id": "m3", "name": "M3", "engines": ["S55"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c-class",
+      "brandId": "mercedes-benz",
+      "name": "C-Class",
+      "type": "sedan",
+      "generations": [
+        {
+          "id": "w205",
+          "name": "W205",
+          "years": [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021],
+          "trims": [
+            { "id": "c180", "name": "C180", "engines": ["M271"] },
+            { "id": "c200", "name": "C200", "engines": ["M271", "M274"] },
+            { "id": "c220d", "name": "C220d", "engines": ["OM651"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a4",
+      "brandId": "audi",
+      "name": "A4",
+      "type": "sedan",
+      "generations": [
+        {
+          "id": "b9",
+          "name": "B9",
+          "years": [2016, 2017, 2018, 2019, 2020, 2021],
+          "trims": [
+            { "id": "a4-35-tfsi", "name": "A4 35 TFSI", "engines": ["TFSI"] },
+            { "id": "a4-40-tfsi", "name": "A4 40 TFSI", "engines": ["TFSI"] },
+            { "id": "a4-35-tdi", "name": "A4 35 TDI", "engines": ["TDI"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "golf",
+      "brandId": "volkswagen",
+      "name": "Golf",
+      "type": "hatchback",
+      "generations": [
+        {
+          "id": "mk7",
+          "name": "MK7",
+          "years": [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020],
+          "trims": [
+            { "id": "golf-tsi", "name": "Golf TSI", "engines": ["TSI"] },
+            { "id": "golf-tdi", "name": "Golf TDI", "engines": ["TDI"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "corolla",
+      "brandId": "toyota",
+      "name": "Corolla",
+      "type": "sedan",
+      "generations": [
+        {
+          "id": "e170",
+          "name": "E170",
+          "years": [2013, 2014, 2015, 2016, 2017, 2018, 2019],
+          "trims": [
+            { "id": "corolla-1.6", "name": "Corolla 1.6L", "engines": ["4ZR-FE"] },
+            { "id": "corolla-hybrid", "name": "Corolla Hybrid", "engines": ["Hybrid"] }
+          ]
+        }
+      ]
+    }
+  ],
+  "fuelTypes": [
+    { "id": "petrol", "name": "Petrol (Gasoline)" },
+    { "id": "diesel", "name": "Diesel" },
+    { "id": "hybrid", "name": "Hybrid" },
+    { "id": "electric", "name": "Electric" },
+    { "id": "lpg", "name": "LPG" }
+  ],
+  "transmissions": [
+    { "id": "manual", "name": "Manual" },
+    { "id": "automatic-4", "name": "Automatic 4-Speed" },
+    { "id": "automatic-6", "name": "Automatic 6-Speed" },
+    { "id": "automatic-8", "name": "Automatic 8-Speed" },
+    { "id": "automatic-cvt", "name": "CVT Automatic" }
+  ],
+  "conditions": [
+    { "id": "new", "name": "New" },
+    { "id": "like-new", "name": "Like New" },
+    { "id": "excellent", "name": "Excellent" },
+    { "id": "good", "name": "Good" },
+    { "id": "fair", "name": "Fair" },
+    { "id": "salvage", "name": "Salvage/Parts" }
+  ],
+  "bodyTypes": [
+    { "id": "sedan", "name": "Sedan" },
+    { "id": "coupe", "name": "Coupe" },
+    { "id": "suv", "name": "SUV" },
+    { "id": "hatchback", "name": "Hatchback" },
+    { "id": "wagon", "name": "Wagon/Estate" },
+    { "id": "convertible", "name": "Convertible" },
+    { "id": "pickup", "name": "Pickup Truck" },
+    { "id": "van", "name": "Van/MPV" }
+  ],
+  "migrationNotes": "Version 1.0 baseline. Next version (v2) will include deprecation of models and add new EV lineup."
+}

@@ -24,7 +24,7 @@ import { CompanyInfo } from '../../types/company/company.types';
 import { db, storage } from '@/firebase/firebase-config';
 import { userService } from '../../services/user/canonical-user.service';
 import { logger } from '../../services/logger-service';
-import { doc, setDoc, getDoc, updateDoc, serverTimestamp, runTransaction, Transaction } from 'firebase/firestore';
+import { doc, setDoc, getDoc, getDocFromServer, updateDoc, serverTimestamp, runTransaction, Transaction } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export class UnifiedProfileService {
@@ -535,7 +535,8 @@ export class UnifiedProfileService {
 
       // ✅ FIX: Check if user already has numericId BEFORE starting transaction
       // This prevents unnecessary transaction.verify() failures
-      const userSnapshot = await getDoc(userRef);
+      // ✅ Use getDocFromServer to avoid Firestore watch stream bug (ca9) in React Strict Mode
+      const userSnapshot = await getDocFromServer(userRef);
       if (!userSnapshot.exists()) return null;
       
       const existingData = userSnapshot.data();

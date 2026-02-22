@@ -1,5 +1,6 @@
 // hCaptcha Service - Free Alternative to Google reCAPTCHA
-// (Comment removed - was in Arabic)
+// 🔒 SECURED: Secret key verification moved to Cloud Functions (server-side only)
+// Client-side only handles token generation, NOT verification
 
 import { serviceLogger } from './logger-service';
 
@@ -37,33 +38,38 @@ export class BulgarianCaptchaService {
     if (options.language) this.language = options.language;
   }
 
-  // Verify captcha token on server side
+  /**
+   * Verify captcha token via Cloud Function (server-side)
+   * 🔒 SECURITY FIX: The secret key is NEVER exposed to the client.
+   * Instead, we call a Cloud Function that has access to the secret
+   * via environment variables or Secret Manager.
+   */
   async verifyToken(token: string): Promise<CaptchaResult> {
     try {
-      const secretKey = import.meta.env.VITE_HCAPTCHA_SECRET_KEY || '';
-
-      if (!secretKey) {
-        serviceLogger.warn('hCaptcha secret key not configured');
-        return { success: false, error: 'Secret key not configured' };
+      if (!token) {
+        return { success: false, error: 'No captcha token provided' };
       }
 
-      const response = await fetch('https://hcaptcha.com/siteverify', {
+      // Call Cloud Function to verify the token server-side
+      // The Cloud Function has access to the hCaptcha secret key
+      const response = await fetch('/api/verifyCaptcha', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        body: new URLSearchParams({
-          secret: secretKey,
-          response: token,
-        }),
+        body: JSON.stringify({ token }),
       });
+
+      if (!response.ok) {
+        throw new Error(`Verification request failed: ${response.statusText}`);
+      }
 
       const data = await response.json();
 
       return {
         success: data.success,
         token: data.success ? token : undefined,
-        error: data.success ? undefined : data['error-codes']?.join(', ') || 'Verification failed'
+        error: data.success ? undefined : data.error || 'Verification failed'
       };
     } catch (error) {
       serviceLogger.error('Captcha verification error', error as Error);
@@ -124,7 +130,7 @@ export const createCaptchaService = (options: CaptchaOptions): BulgarianCaptchaS
 
 // Default instance
 const defaultCaptchaService = new BulgarianCaptchaService({
-  siteKey: import.meta.env.VITE_HCAPTCHA_SITE_KEY || 'your-hcaptcha-site-key',
+  siteKey: import.meta.env.VITE_HCAPTCHA_SITE_KEY || '',
   theme: 'light',
   size: 'normal',
   language: 'bg'

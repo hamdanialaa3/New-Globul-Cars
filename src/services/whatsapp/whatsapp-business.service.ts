@@ -1,17 +1,9 @@
 // WhatsApp Business Cloud API Service
-// خدمة واتساب للأعمال - أحدث تقنية من Meta 2025
+// 🔒 SECURED: Access token and API calls routed through Cloud Functions
+// Client-side only handles formatting and triggering — NO direct API calls
 // Phone: +359 879 839 671 (Bulgaria)
 
-import axios from 'axios';
-
-import { logger } from '../logger-service';
-
-interface WhatsAppConfig {
-  phoneNumberId: string;
-  businessAccountId: string;
-  accessToken: string;
-  apiVersion: string;
-}
+import { serviceLogger as logger } from '../logger-service';
 
 interface WhatsAppTextMessage {
   to: string;
@@ -44,243 +36,161 @@ interface WhatsAppTemplateMessage {
 }
 
 interface WhatsAppMessageResponse {
-  messaging_product: string;
-  contacts: Array<{ input: string; wa_id: string }>;
-  messages: Array<{ id: string }>;
+  success: boolean;
+  messageId?: string;
+  error?: string;
 }
 
 /**
- * WhatsApp Business Cloud API Service
+ * WhatsApp Business Cloud API Service (Client-Side Proxy)
+ * 
+ * 🔒 SECURITY FIX: All API calls are proxied through Cloud Functions.
+ * The access token is stored in Cloud Functions environment/Secret Manager.
+ * This client-side service NEVER holds or transmits the access token.
  * 
  * Features:
- * - Send text messages
- * - Send images with captions
- * - Send interactive buttons
- * - Send pre-approved templates
- * - Process incoming webhooks
+ * - Send text messages (via Cloud Function)
+ * - Send images with captions (via Cloud Function)
+ * - Send interactive buttons (via Cloud Function)
+ * - Send pre-approved templates (via Cloud Function)
  * 
  * Latest API: v18.0 (2025)
  */
 class WhatsAppBusinessService {
-  private config: WhatsAppConfig;
-  private baseUrl: string;
+  private readonly cloudFunctionBaseUrl: string;
 
   constructor() {
-    this.config = {
-      phoneNumberId: import.meta.env.VITE_WHATSAPP_PHONE_NUMBER_ID || '',
-      businessAccountId: import.meta.env.VITE_WHATSAPP_BUSINESS_ACCOUNT_ID || '',
-      accessToken: import.meta.env.VITE_WHATSAPP_ACCESS_TOKEN || '',
-      apiVersion: import.meta.env.VITE_WHATSAPP_API_VERSION || 'v18.0'
-    };
-
-    this.baseUrl = `https://graph.facebook.com/${this.config.apiVersion}/${this.config.phoneNumberId}`;
-
-    if (!this.config.phoneNumberId || !this.config.accessToken) {
-      logger.warn('WhatsApp configuration missing', {
-        hasPhoneNumberId: !!this.config.phoneNumberId,
-        hasAccessToken: !!this.config.accessToken
-      } as Record<string, unknown>);
-    }
+    this.cloudFunctionBaseUrl = '/api/whatsapp';
   }
 
   /**
-   * Send simple text message
-   * إرسال رسالة نصية بسيطة
+   * Send simple text message via Cloud Function
    */
-  async sendTextMessage(params: WhatsAppTextMessage): Promise<WhatsAppMessageResponse | null> {
+  async sendTextMessage(params: WhatsAppTextMessage): Promise<WhatsAppMessageResponse> {
     try {
-      const response = await axios.post<WhatsAppMessageResponse>(
-        `${this.baseUrl}/messages`,
-        {
-          messaging_product: 'whatsapp',
-          recipient_type: 'individual',
-          to: params.to,
+      const response = await fetch(`${this.cloudFunctionBaseUrl}/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           type: 'text',
-          text: {
-            preview_url: params.previewUrl || false,
-            body: params.text
-          }
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${this.config.accessToken}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-
-      logger.info('✅ WhatsApp text message sent', {
-        messageId: response.data.messages[0].id,
-        to: params.to
+          to: params.to,
+          text: params.text,
+          previewUrl: params.previewUrl || false,
+        }),
       });
 
-      return response.data;
+      if (!response.ok) {
+        throw new Error(`WhatsApp API error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      logger.info('✅ WhatsApp text message sent', { to: params.to, messageId: data.messageId });
+      return data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { error?: { message?: string } } }; message?: string };
-      logger.error('❌ Failed to send WhatsApp text message', error as Error, {
-        to: params.to,
-        errorMessage: err.response?.data?.error?.message || err.message || 'Unknown error'
-      });
-
-      return null;
+      logger.error('❌ Failed to send WhatsApp text message', error as Error, { to: params.to });
+      return { success: false, error: (error as Error).message || 'Unknown error' };
     }
   }
 
   /**
-   * Send image with caption
-   * إرسال صورة مع نص
+   * Send image with caption via Cloud Function
    */
-  async sendImageMessage(params: WhatsAppImageMessage): Promise<WhatsAppMessageResponse | null> {
+  async sendImageMessage(params: WhatsAppImageMessage): Promise<WhatsAppMessageResponse> {
     try {
-      const response = await axios.post<WhatsAppMessageResponse>(
-        `${this.baseUrl}/messages`,
-        {
-          messaging_product: 'whatsapp',
-          recipient_type: 'individual',
-          to: params.to,
+      const response = await fetch(`${this.cloudFunctionBaseUrl}/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           type: 'image',
-          image: {
-            link: params.imageUrl,
-            caption: params.caption || ''
-          }
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${this.config.accessToken}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-
-      logger.info('✅ WhatsApp image message sent', {
-        messageId: response.data.messages[0].id,
-        to: params.to
+          to: params.to,
+          imageUrl: params.imageUrl,
+          caption: params.caption || '',
+        }),
       });
 
-      return response.data;
+      if (!response.ok) {
+        throw new Error(`WhatsApp API error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      logger.info('✅ WhatsApp image message sent', { to: params.to, messageId: data.messageId });
+      return data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { error?: { message?: string } } }; message?: string };
-      logger.error('❌ Failed to send WhatsApp image message', error as Error, {
-        to: params.to,
-        errorMessage: err.response?.data?.error?.message || err.message || 'Unknown error'
-      });
-
-      return null;
+      logger.error('❌ Failed to send WhatsApp image message', error as Error, { to: params.to });
+      return { success: false, error: (error as Error).message || 'Unknown error' };
     }
   }
 
   /**
-   * Send interactive message with buttons
-   * إرسال رسالة تفاعلية مع أزرار
+   * Send interactive message with buttons via Cloud Function
    */
-  async sendButtonMessage(params: WhatsAppButtonMessage): Promise<WhatsAppMessageResponse | null> {
+  async sendButtonMessage(params: WhatsAppButtonMessage): Promise<WhatsAppMessageResponse> {
     try {
-      const response = await axios.post<WhatsAppMessageResponse>(
-        `${this.baseUrl}/messages`,
-        {
-          messaging_product: 'whatsapp',
-          recipient_type: 'individual',
+      const response = await fetch(`${this.cloudFunctionBaseUrl}/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'button',
           to: params.to,
-          type: 'interactive',
-          interactive: {
-            type: 'button',
-            header: params.header ? {
-              type: 'text',
-              text: params.header
-            } : undefined,
-            body: {
-              text: params.bodyText
-            },
-            footer: params.footer ? {
-              text: params.footer
-            } : undefined,
-            action: {
-              buttons: params.buttons.map(btn => ({
-                type: 'reply',
-                reply: {
-                  id: btn.id,
-                  title: btn.title.substring(0, 20) // Max 20 chars
-                }
-              }))
-            }
-          }
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${this.config.accessToken}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-
-      logger.info('✅ WhatsApp button message sent', {
-        messageId: response.data.messages[0].id,
-        to: params.to,
-        buttonCount: params.buttons.length
+          bodyText: params.bodyText,
+          buttons: params.buttons,
+          header: params.header,
+          footer: params.footer,
+        }),
       });
 
-      return response.data;
+      if (!response.ok) {
+        throw new Error(`WhatsApp API error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      logger.info('✅ WhatsApp button message sent', { to: params.to, messageId: data.messageId });
+      return data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { error?: { message?: string } } }; message?: string };
-      logger.error('❌ Failed to send WhatsApp button message', error as Error, {
-        to: params.to,
-        errorMessage: err.response?.data?.error?.message || err.message || 'Unknown error'
-      });
-
-      return null;
+      logger.error('❌ Failed to send WhatsApp button message', error as Error, { to: params.to });
+      return { success: false, error: (error as Error).message || 'Unknown error' };
     }
   }
 
   /**
-   * Send pre-approved template message
-   * إرسال رسالة قالب مُعتمد
+   * Send pre-approved template message via Cloud Function
    */
-  async sendTemplateMessage(params: WhatsAppTemplateMessage): Promise<WhatsAppMessageResponse | null> {
+  async sendTemplateMessage(params: WhatsAppTemplateMessage): Promise<WhatsAppMessageResponse> {
     try {
-      const response = await axios.post<WhatsAppMessageResponse>(
-        `${this.baseUrl}/messages`,
-        {
-          messaging_product: 'whatsapp',
-          to: params.to,
+      const response = await fetch(`${this.cloudFunctionBaseUrl}/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           type: 'template',
-          template: {
-            name: params.templateName,
-            language: {
-              code: params.language
-            },
-            components: params.components || []
-          }
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${this.config.accessToken}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-
-      logger.info('✅ WhatsApp template message sent', {
-        messageId: response.data.messages[0].id,
-        to: params.to,
-        template: params.templateName
+          to: params.to,
+          templateName: params.templateName,
+          language: params.language,
+          components: params.components || [],
+        }),
       });
 
-      return response.data;
+      if (!response.ok) {
+        throw new Error(`WhatsApp API error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      logger.info('✅ WhatsApp template message sent', {
+        to: params.to,
+        template: params.templateName,
+        messageId: data.messageId,
+      });
+      return data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { error?: { message?: string } } }; message?: string };
       logger.error('❌ Failed to send WhatsApp template message', error as Error, {
         to: params.to,
         template: params.templateName,
-        errorMessage: err.response?.data?.error?.message || err.message || 'Unknown error'
       });
-
-      return null;
+      return { success: false, error: (error as Error).message || 'Unknown error' };
     }
   }
 
   /**
-   * Send car listing to WhatsApp
-   * إرسال إعلان سيارة عبر واتساب
+   * Send car listing to WhatsApp via Cloud Function
    */
   async sendCarListing(to: string, car: {
     make: string;
@@ -297,7 +207,6 @@ class WhatsAppBusinessService {
     try {
       const carUrl = `https://koli.one/car/${car.sellerNumericId}/${car.carNumericId}`;
 
-      // Send image with caption
       const caption = `
 🚗 ${car.make} ${car.model} ${car.year}
 💰 €${car.price.toLocaleString('bg-BG')}
@@ -315,11 +224,10 @@ ${carUrl}
         caption
       });
 
-      if (!imageResult) {
+      if (!imageResult.success) {
         return false;
       }
 
-      // Send interactive buttons
       await this.sendButtonMessage({
         to,
         bodyText: 'Какво искате да направите?',
@@ -352,59 +260,41 @@ ${carUrl}
   }
 
   /**
-   * Test WhatsApp API connection
-   * اختبار الاتصال بـ WhatsApp API
+   * Test WhatsApp API connection via Cloud Function
    */
   async testConnection(): Promise<boolean> {
     try {
-      const testUrl = `https://graph.facebook.com/${this.config.apiVersion}/${this.config.phoneNumberId}`;
-      
-      const response = await axios.get(testUrl, {
-        headers: {
-          'Authorization': `Bearer ${this.config.accessToken}`
-        }
+      const response = await fetch(`${this.cloudFunctionBaseUrl}/test`, {
+        method: 'GET',
       });
 
-      logger.info('✅ WhatsApp API connection successful', {
-        phoneNumberId: response.data.id,
-        displayPhoneNumber: response.data.display_phone_number,
-        verifiedName: response.data.verified_name
-      });
+      if (!response.ok) {
+        throw new Error('Connection test failed');
+      }
 
+      const data = await response.json();
+      logger.info('✅ WhatsApp API connection successful', data);
       return true;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { error?: { message?: string } } }; message?: string };
-      logger.error('❌ WhatsApp API connection failed', error as Error, {
-        errorMessage: err.response?.data?.error?.message || err.message || 'Unknown error'
-      });
-
+      logger.error('❌ WhatsApp API connection failed', error as Error);
       return false;
     }
   }
 
   /**
    * Format Bulgarian phone number for WhatsApp
-   * تنسيق رقم هاتف بلغاري لواتساب
    */
   formatBulgarianPhone(phone: string): string {
-    // Remove all non-numeric characters
     let cleaned = phone.replace(/\D/g, '');
-
-    // If starts with 00359, convert to +359
     if (cleaned.startsWith('00359')) {
       cleaned = cleaned.substring(2);
     }
-
-    // If starts with 0, replace with 359
     if (cleaned.startsWith('0')) {
       cleaned = '359' + cleaned.substring(1);
     }
-
-    // If doesn't start with 359, add it
     if (!cleaned.startsWith('359')) {
       cleaned = '359' + cleaned;
     }
-
     return cleaned;
   }
 }
