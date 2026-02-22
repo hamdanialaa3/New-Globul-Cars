@@ -165,7 +165,7 @@ exports.onNewRealtimeMessage = functions
                 notification: {
                     icon: '/icons/notification-icon.png',
                     badge: '/icons/badge-icon.png',
-                    tag: channelId,
+                    tag: channelId, // Group notifications by channel
                     renotify: true,
                 },
                 fcmOptions: {

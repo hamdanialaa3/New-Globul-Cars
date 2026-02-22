@@ -276,10 +276,10 @@ exports.getB2BAnalytics = functions
             activeListings,
             totalUsers,
             averagePrice: activeListings > 0 ? Math.round(totalPrice / activeListings) : 0,
-            priceTrend: 2.5,
+            priceTrend: 2.5, // TODO: Calculate actual trend
             popularMakes,
             locationStats,
-            monthlyStats: [],
+            monthlyStats: [], // TODO: Implement monthly aggregation
             marketInsights: {
                 topPerformingMakes: popularMakes.slice(0, 5).map(m => m.make),
                 priceVolatility: 5.2,

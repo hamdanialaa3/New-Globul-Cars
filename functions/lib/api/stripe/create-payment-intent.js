@@ -18,8 +18,8 @@ const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY || '', {
 });
 // Promotion pricing configuration (in cents, EUR)
 const PROMOTION_PRICES = {
-    vip_badge: 200,
-    top_of_page: 500,
+    vip_badge: 200, // 2.00 EUR
+    top_of_page: 500, // 5.00 EUR
     instant_refresh: 100 // 1.00 EUR
 };
 const PROMOTION_NAMES = {
@@ -231,8 +231,8 @@ exports.onPromotionPaymentSucceeded = functions
         // Calculate promotion end date based on type
         const now = new Date();
         const promotionDurations = {
-            vip_badge: 7 * 24 * 60 * 60 * 1000,
-            top_of_page: 3 * 24 * 60 * 60 * 1000,
+            vip_badge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            top_of_page: 3 * 24 * 60 * 60 * 1000, // 3 days
             instant_refresh: 0 // Instant (no duration)
         };
         const durationMs = promotionDurations[promotionType] || 0;

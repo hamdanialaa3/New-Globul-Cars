@@ -125,7 +125,7 @@ exports.geminiChat = functions.region('europe-west1').https.onCall(async (data, 
             const newQuota = {
                 userId,
                 tier: isAuthenticated ? 'free' : 'guest',
-                dailyChatMessages: isAuthenticated ? 10 : 3,
+                dailyChatMessages: isAuthenticated ? 10 : 3, // Guests: 3 messages/day
                 usedChatMessages: 0,
                 lastResetDate: new Date().toISOString().split('T')[0],
                 totalCost: 0,
@@ -267,7 +267,7 @@ async function checkImageAnalysisQuota(userId, isGuest) {
         const newQuota = {
             userId,
             tier: isGuest ? 'guest' : 'free',
-            dailyImageAnalysis: isGuest ? 2 : 5,
+            dailyImageAnalysis: isGuest ? 2 : 5, // Strict limit for guests (2 per day), 5 for free users
             usedImageAnalysis: 0,
             lastResetDate: new Date().toISOString().split('T')[0],
             createdAt: admin.firestore.Timestamp.now()

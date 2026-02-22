@@ -111,7 +111,7 @@ exports.sendMessageNotificationEmail = functions.firestore
         subject: 'New Message on Koli One 💬',
         template: 'newMessage',
         data: {
-            senderName: 'A User',
+            senderName: 'A User', // We could fetch sender name if needed
             preview: message.text.substring(0, 100) + '...',
         }
     });

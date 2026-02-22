@@ -121,9 +121,9 @@ function mapProductToPlanTier(productId) {
     // These Product IDs are from your Stripe Dashboard
     const productMapping = {
         // Dealer Product IDs (from stripe-extension.config.ts)
-        'prod_TcMRPH1acbKwsJ': 'dealer',
+        'prod_TcMRPH1acbKwsJ': 'dealer', // Mobilebg Cars - Dealer
         // Company Product IDs (from stripe-extension.config.ts)
-        'prod_TcMX8XZcmlddRd': 'company',
+        'prod_TcMX8XZcmlddRd': 'company', // MobileBG Cars - Company
         // Legacy/fallback IDs (if different format)
         'prod_dealer_monthly': 'dealer',
         'prod_dealer_yearly': 'dealer',
@@ -151,7 +151,7 @@ async function handleSubscriptionCreated(subscription) {
     const newProfileType = newTier === 'free' ? 'private' : newTier;
     await userDoc.ref.update({
         planTier: newTier,
-        profileType: newProfileType,
+        profileType: newProfileType, // ✅ Sync profileType
         subscriptionId: subscription.id,
         subscriptionStatus: subscription.status,
         subscriptionStart: admin.firestore.Timestamp.fromMillis(subscription.start_date * 1000),
@@ -188,8 +188,8 @@ async function handleSubscriptionChange(subscription) {
             });
             // ✅ CRITICAL: Sync profileType with planTier
             await userDoc.ref.update({
-                planTier: 'free',
-                profileType: 'private',
+                planTier: 'free', // ✅ Use 'free' instead of 'private' for consistency
+                profileType: 'private', // ✅ Sync profileType
                 subscriptionStatus: status,
                 updatedAt: admin.firestore.FieldValue.serverTimestamp()
             });
@@ -216,7 +216,7 @@ async function handleSubscriptionChange(subscription) {
         const newProfileType = newTier === 'free' ? 'private' : newTier;
         await userDoc.ref.update({
             planTier: newTier,
-            profileType: newProfileType,
+            profileType: newProfileType, // ✅ Sync profileType
             subscriptionStatus: status,
             // Use correct Stripe field: current_period_end
             subscriptionCurrentPeriodEnd: admin.firestore.Timestamp.fromMillis(subscription.current_period_end * 1000),
@@ -242,8 +242,8 @@ async function handleSubscriptionCancelled(subscription) {
     logger.info("Subscription cancelled", { userId, subscriptionId: subscription.id, previousTier });
     // ✅ CRITICAL: Sync profileType with planTier
     await userDoc.ref.update({
-        planTier: 'free',
-        profileType: 'private',
+        planTier: 'free', // ✅ Use 'free' instead of 'private' for consistency
+        profileType: 'private', // ✅ Sync profileType
         subscriptionStatus: 'cancelled',
         subscriptionEndedAt: admin.firestore.FieldValue.serverTimestamp(),
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
@@ -357,8 +357,8 @@ async function handlePaymentFailed(invoice) {
             logger.warn("Auto-downgrading due to multiple payment failures", { userId: userDoc.id });
             // ✅ CRITICAL: Sync profileType with planTier
             await userDoc.ref.update({
-                planTier: 'free',
-                profileType: 'private',
+                planTier: 'free', // ✅ Use 'free' instead of 'private' for consistency
+                profileType: 'private', // ✅ Sync profileType
                 subscriptionStatus: 'past_due',
                 autoDowngradedAt: admin.firestore.FieldValue.serverTimestamp()
             });
@@ -462,8 +462,8 @@ async function deactivateExcessListings(userId, newPlanTier) {
     // - company: -1 (unlimited)
     const planLimits = {
         'private': 3,
-        'free': 3,
-        'dealer': 30,
+        'free': 3, // ✅ Alias for consistency
+        'dealer': 30, // ✅ FIXED: Was 10, now correctly 30 (matches subscription-plans.ts)
         'company': Infinity
     };
     const limit = planLimits[newPlanTier];

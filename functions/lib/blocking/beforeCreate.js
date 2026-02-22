@@ -80,7 +80,7 @@ exports.beforeUserCreated = functions
         // Generate fingerprint
         const fingerprint = generateFingerprint(ipAddress, userAgent);
         functions.logger.info('Registration attempt', {
-            fingerprint: fingerprint.substring(0, 8) + '...',
+            fingerprint: fingerprint.substring(0, 8) + '...', // Log partial for privacy
             email: user.email,
             provider: (_b = (_a = user.providerData) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.providerId
         });

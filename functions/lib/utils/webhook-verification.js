@@ -5,7 +5,12 @@
  * @since February 5, 2026
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.markWebhookProcessed = exports.isWebhookProcessed = exports.generateIdempotencyKey = exports.verifyWebhookTimestamp = exports.verifyRevolutSignature = exports.verifyICardSignature = void 0;
+exports.verifyICardSignature = verifyICardSignature;
+exports.verifyRevolutSignature = verifyRevolutSignature;
+exports.verifyWebhookTimestamp = verifyWebhookTimestamp;
+exports.generateIdempotencyKey = generateIdempotencyKey;
+exports.isWebhookProcessed = isWebhookProcessed;
+exports.markWebhookProcessed = markWebhookProcessed;
 const crypto = require("crypto");
 const admin = require("firebase-admin");
 const logger = require("firebase-functions/logger");
@@ -39,7 +44,6 @@ function verifyICardSignature(payload, signature, secret) {
         return { verified: false, error: error.message };
     }
 }
-exports.verifyICardSignature = verifyICardSignature;
 /**
  * Verify Revolut webhook signature
  * Uses HMAC-SHA256 with secret key
@@ -72,7 +76,6 @@ function verifyRevolutSignature(payload, signature, secret) {
         return { verified: false, error: error.message };
     }
 }
-exports.verifyRevolutSignature = verifyRevolutSignature;
 /**
  * Verify timestamp to prevent replay attacks
  * Rejects webhooks older than 5 minutes
@@ -102,7 +105,6 @@ function verifyWebhookTimestamp(timestamp, maxAgeMinutes = 5) {
         return false;
     }
 }
-exports.verifyWebhookTimestamp = verifyWebhookTimestamp;
 /**
  * Generate idempotency key from transaction details
  * Prevents duplicate processing of same transaction
@@ -113,7 +115,6 @@ function generateIdempotencyKey(provider, transactionId, eventType) {
         .update(`${provider}:${transactionId}:${eventType}`)
         .digest('hex');
 }
-exports.generateIdempotencyKey = generateIdempotencyKey;
 /**
  * Check if webhook has already been processed
  * Returns true if this is a duplicate webhook
@@ -125,7 +126,6 @@ async function isWebhookProcessed(db, idempotencyKey) {
         .get();
     return doc.exists;
 }
-exports.isWebhookProcessed = isWebhookProcessed;
 /**
  * Mark webhook as processed
  * Stores idempotency key with TTL (auto-delete after 7 days)
@@ -138,5 +138,4 @@ async function markWebhookProcessed(db, idempotencyKey, metadata) {
         .doc(idempotencyKey)
         .set(Object.assign({ processed_at: admin.firestore.FieldValue.serverTimestamp(), expires_at: expiresAt }, metadata));
 }
-exports.markWebhookProcessed = markWebhookProcessed;
 //# sourceMappingURL=webhook-verification.js.map

@@ -78,7 +78,7 @@ async function carToAlgoliaRecord(carId, carData) {
         color: carData.color || carData.exteriorColor || '',
         // Location (for geo-search)
         _geoloc: {
-            lat: ((_a = carData.location) === null || _a === void 0 ? void 0 : _a.lat) || 42.6977,
+            lat: ((_a = carData.location) === null || _a === void 0 ? void 0 : _a.lat) || 42.6977, // Sofia coordinates as fallback
             lng: ((_b = carData.location) === null || _b === void 0 ? void 0 : _b.lng) || 23.3219
         },
         city: carData.city || '',

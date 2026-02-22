@@ -25,9 +25,9 @@ function isPrerenderable(url) {
     const prerenderablePatterns = [
         /^\/$/,
         /^\/koli\/?$/,
-        /^\/koli\/[^\/]+$/,
-        /^\/koli\/[^\/]+\/[^\/]+$/,
-        /^\/car\/\d+\/\d+$/,
+        /^\/koli\/[^\/]+$/, // /koli/sofia
+        /^\/koli\/[^\/]+\/[^\/]+$/, // /koli/sofia/bmw
+        /^\/car\/\d+\/\d+$/, // /car/80/5
         /^\/profile\/\d+$/, // /profile/18
     ];
     return prerenderablePatterns.some(pattern => pattern.test(url));

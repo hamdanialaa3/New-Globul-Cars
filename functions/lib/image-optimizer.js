@@ -14,7 +14,8 @@
  * FREE tier: 2M invocations/month (more than enough)
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getResponsiveImageUrl = exports.cleanupOptimizedImages = exports.optimizeImage = void 0;
+exports.cleanupOptimizedImages = exports.optimizeImage = void 0;
+exports.getResponsiveImageUrl = getResponsiveImageUrl;
 const functions = require("firebase-functions/v1");
 const logger = require("firebase-functions/logger");
 const admin = require("firebase-admin");
@@ -32,9 +33,9 @@ const storage = admin.storage();
  * Generated automatically for each upload
  */
 const IMAGE_SIZES = [
-    { suffix: '_thumb', width: 300, height: 200 },
-    { suffix: '_medium', width: 600, height: 400 },
-    { suffix: '_large', width: 1200, height: 800 },
+    { suffix: '_thumb', width: 300, height: 200 }, // Card thumbnails
+    { suffix: '_medium', width: 600, height: 400 }, // Mobile display
+    { suffix: '_large', width: 1200, height: 800 }, // Desktop display
     { suffix: '_hd', width: 1920, height: 1280 } // Full-size viewing
 ];
 /**
@@ -96,11 +97,11 @@ exports.optimizeImage = functions
             // Optimize with Sharp
             await sharp(tempFilePath)
                 .resize(size.width, size.height, {
-                fit: 'inside',
+                fit: 'inside', // Preserve aspect ratio
                 withoutEnlargement: true // Don't upscale small images
             })
                 .webp({
-                quality: 85,
+                quality: 85, // High quality WebP
                 effort: 4 // Balance between size and processing time
             })
                 .toFile(tempOptimizedPath);
@@ -109,7 +110,7 @@ exports.optimizeImage = functions
                 destination: optimizedFilePath,
                 metadata: {
                     contentType: 'image/webp',
-                    cacheControl: 'public, max-age=31536000',
+                    cacheControl: 'public, max-age=31536000', // Cache for 1 year
                     metadata: {
                         optimized: 'true',
                         originalFormat: metadata.format || 'unknown',
@@ -197,7 +198,6 @@ function getResponsiveImageUrl(originalUrl, size = 'medium') {
     // Replace file extension with size suffix + .webp
     return originalUrl.replace(/\.[^.]+$/, `${suffix}.webp`);
 }
-exports.getResponsiveImageUrl = getResponsiveImageUrl;
 exports.default = {
     optimizeImage: exports.optimizeImage,
     cleanupOptimizedImages: exports.cleanupOptimizedImages,

@@ -9,7 +9,8 @@
  * @author SEO Supremacy System
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOptimizedImageUrl = exports.optimizeImage = exports.ImageOptimizerService = void 0;
+exports.optimizeImage = exports.ImageOptimizerService = void 0;
+exports.getOptimizedImageUrl = getOptimizedImageUrl;
 const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 const sharp = require("sharp");
@@ -208,6 +209,5 @@ function getOptimizedImageUrl(imagePath, size = 'medium', format = 'auto') {
     const formatParam = format === 'auto' ? '' : `&format=${format}`;
     return `${baseUrl}/optimizeImage?path=${encodeURIComponent(imagePath)}&size=${size}${formatParam}`;
 }
-exports.getOptimizedImageUrl = getOptimizedImageUrl;
 exports.default = ImageOptimizerService;
 //# sourceMappingURL=image-optimizer.js.map
