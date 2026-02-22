@@ -73,14 +73,14 @@ const COLOR_NAME_TO_HEX: Record<string, string> = {
     'blau': '#0044CC',
     'grün': '#228B22',
     'gelb': '#FFD700',
-    'orange': '#FF8C00',
+    // 'orange' already defined in English section (same word)
     'braun': '#8B4513',
-    'beige': '#F5F5DC',
-    'gold': '#DAA520',
+    // 'beige' already defined in English section (same word)
+    // 'gold' already defined in English section (same word)
     'lila': '#6A0DAD',
     'rosa': '#FF69B4',
-    'bronze': '#CD7F32',
-    'maroon': '#800000',
+    // 'bronze' already defined in English section (same word)
+    // 'maroon' already defined in English section (same word)
     'türkis': '#40E0D0',
 
     // Common Variations
@@ -263,6 +263,7 @@ function mapRawDoc(docData: any, docId: string, collectionName: string): Firesto
     updatedAt = parseDate(docData.updatedAt || docData.createdAt);
 
     return {
+        ...docData, // spread raw data first to preserve any extra fields
         id: docId,
         _collection: collectionName,
         make,
@@ -299,10 +300,6 @@ function mapRawDoc(docData: any, docId: string, collectionName: string): Firesto
         mileageFormatted: `${mileage.toLocaleString('en-US')} km`,
         condition: docData.condition || '',
         description: docData.description,
-        ...docData, // preserve any extra fields
-        // Overwrite with normalized values to ensure type safety
-        make, model, year, price, mileage, fuelType, transmission, power, bodyType, color, city, region, images, mainImage,
-        createdAt, updatedAt, // <--- CRITICAL FIX: Overwrite docData.createdAt with parsed Date
     };
 }
 

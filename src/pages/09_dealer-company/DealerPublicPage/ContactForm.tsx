@@ -25,7 +25,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ dealerId, dealerName }) => {
 
   const [formData, setFormData] = useState<FormData>({
     name: userProfile?.displayName || currentUser?.displayName || '',
-    email: currentUser?.email || ''
+    email: currentUser?.email || '',
     phone: '',
     message: '',
   });
