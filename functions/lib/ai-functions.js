@@ -4,7 +4,7 @@
  * دوال الذكاء الاصطناعي على Firebase
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.geminiPriceSuggestion = exports.geminiChat = exports.aiQuotaCheck = void 0;
+exports.analyzeImageQuality = exports.analyzeCarImage = exports.geminiPriceSuggestion = exports.geminiChat = exports.aiQuotaCheck = void 0;
 const admin = require("firebase-admin");
 const functions = require("firebase-functions/v1");
 const generative_ai_1 = require("@google/generative-ai");
@@ -253,6 +253,194 @@ exports.geminiPriceSuggestion = functions.region('europe-west1').https.onCall(as
     catch (error) {
         console.error('[geminiPriceSuggestion] Error:', error);
         throw new functions.https.HttpsError('internal', 'Price suggestion failed');
+    }
+});
+// ==================== IMAGE ANALYSIS ====================
+/**
+ * Helper: Handle Guest Quota for Image Analysis
+ */
+async function checkImageAnalysisQuota(userId, isGuest) {
+    const quotaRef = db.collection('ai_quotas').doc(userId);
+    let quotaCheck = await quotaRef.get();
+    if (!quotaCheck.exists) {
+        // Auto-initialize quota
+        const newQuota = {
+            userId,
+            tier: isGuest ? 'guest' : 'free',
+            dailyImageAnalysis: isGuest ? 2 : 5,
+            usedImageAnalysis: 0,
+            lastResetDate: new Date().toISOString().split('T')[0],
+            createdAt: admin.firestore.Timestamp.now()
+        };
+        await quotaRef.set(newQuota);
+        quotaCheck = await quotaRef.get();
+    }
+    const quota = quotaCheck.data();
+    const today = new Date().toISOString().split('T')[0];
+    // Reset if new day
+    if (quota.lastResetDate !== today) {
+        await quotaRef.update({
+            usedImageAnalysis: 0,
+            lastResetDate: today
+        });
+        return; // Reset done, usage is 0
+    }
+    const used = quota.usedImageAnalysis || 0;
+    const limit = quota.dailyImageAnalysis || (isGuest ? 2 : 5);
+    if (used >= limit) {
+        throw new functions.https.HttpsError('resource-exhausted', isGuest
+            ? 'Guest limit reached. Please sign in to analyze more cars.'
+            : 'Daily analysis limit reached.');
+    }
+}
+/**
+ * Helper: Track Usage
+ */
+async function trackImageAnalysisUsage(userId, cost) {
+    try {
+        await db.collection('ai_quotas').doc(userId).update({
+            usedImageAnalysis: admin.firestore.FieldValue.increment(1),
+            totalCost: admin.firestore.FieldValue.increment(cost),
+            lastActivity: admin.firestore.FieldValue.serverTimestamp()
+        });
+    }
+    catch (e) {
+        console.error("Error tracking usage:", e);
+    }
+}
+/**
+ * Analyze car image using Gemini Vision
+ */
+exports.analyzeCarImage = functions.region('europe-west1').https.onCall(async (data, context) => {
+    // 1. Authentication & Guest Handling
+    const isAuthenticated = !!context.auth;
+    // Use IP as guest ID if not authenticated
+    const userId = isAuthenticated ? context.auth.uid : `guest_${context.rawRequest.ip || 'unknown'}`;
+    // 2. Strict Quota Check BEFORE processing
+    await checkImageAnalysisQuota(userId, !isAuthenticated);
+    // 3. Input Validation
+    const { imageBase64, mimeType } = data;
+    if (!imageBase64) {
+        throw new functions.https.HttpsError('invalid-argument', 'Image data required');
+    }
+    try {
+        if (!genAI) {
+            throw new functions.https.HttpsError('internal', 'AI service not configured');
+        }
+        // Use Gemini 1.5 Flash for speed/cost effectiveness
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const prompt = `
+      Analyze this car image for the Bulgarian car marketplace.
+      
+      Provide accurate information in JSON format:
+      {
+        "make": "car brand (BMW, Mercedes, Toyota, etc.)",
+        "model": "car model (320i, C-Class, Corolla, etc.)",
+        "year": "approximate year or range (2018-2020)",
+        "color": "primary color in English",
+        "condition": "excellent/good/fair/poor",
+        "confidence": 85,
+        "suggestions": ["list of suggestions"]
+      }
+      
+      Be specific and accurate. If unsure, indicate lower confidence.
+    `;
+        const result = await model.generateContent([
+            prompt,
+            {
+                inlineData: {
+                    data: imageBase64,
+                    mimeType: mimeType || 'image/jpeg'
+                }
+            }
+        ]);
+        const text = result.response.text();
+        // Extract JSON with robust parsing
+        let parsed;
+        try {
+            const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/) || text.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                parsed = JSON.parse(jsonMatch[1] || jsonMatch[0]);
+            }
+            else {
+                parsed = JSON.parse(text);
+            }
+        }
+        catch (e) {
+            console.warn("JSON Parse Error:", text);
+            throw new Error('Failed to parse AI response');
+        }
+        // 4. Track Usage
+        await trackImageAnalysisUsage(userId, 0.005);
+        return parsed;
+    }
+    catch (error) {
+        console.error('[analyzeCarImage] Error:', error);
+        if (error instanceof functions.https.HttpsError)
+            throw error;
+        throw new functions.https.HttpsError('internal', 'Image analysis failed');
+    }
+});
+/**
+ * Analyze image quality
+ */
+exports.analyzeImageQuality = functions.region('europe-west1').https.onCall(async (data, context) => {
+    const isAuthenticated = !!context.auth;
+    const userId = isAuthenticated ? context.auth.uid : `guest_${context.rawRequest.ip || 'unknown'}`;
+    // Strict Quota Check
+    await checkImageAnalysisQuota(userId, !isAuthenticated);
+    const { imageBase64, mimeType } = data;
+    if (!imageBase64) {
+        throw new functions.https.HttpsError('invalid-argument', 'Image data required');
+    }
+    try {
+        if (!genAI) {
+            throw new functions.https.HttpsError('internal', 'AI service not configured');
+        }
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const prompt = `
+      Analyze the quality of this car photo.
+      
+      Rate each aspect from 0-100 and provide JSON:
+      {
+        "clarity": 85,
+        "lighting": 90,
+        "angle": 75,
+        "overallScore": 83,
+        "suggestions": ["specific improvements"]
+      }
+    `;
+        const result = await model.generateContent([
+            prompt,
+            {
+                inlineData: {
+                    data: imageBase64,
+                    mimeType: mimeType || 'image/jpeg'
+                }
+            }
+        ]);
+        const text = result.response.text();
+        let parsed;
+        try {
+            const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/) || text.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                parsed = JSON.parse(jsonMatch[1] || jsonMatch[0]);
+            }
+            else {
+                parsed = JSON.parse(text);
+            }
+        }
+        catch (_a) {
+            throw new Error('Failed to parse AI response');
+        }
+        await trackImageAnalysisUsage(userId, 0.001);
+        return parsed;
+    }
+    catch (error) {
+        console.error('[analyzeImageQuality] Error:', error);
+        if (error instanceof functions.https.HttpsError)
+            throw error;
+        throw new functions.https.HttpsError('internal', 'Quality analysis failed');
     }
 });
 //# sourceMappingURL=ai-functions.js.map
