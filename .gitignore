@@ -40,6 +40,13 @@ build/
 .cache/
 *.bundle
 
+# --- Auto-generated project maps (large, regenerate with scripts) ---
+project_structure.txt
+core_logic.txt
+
+# --- Firebase local cache ---
+.firebase/
+
 # --- Backup/Temp files ---
 *.bak
 *.backup
