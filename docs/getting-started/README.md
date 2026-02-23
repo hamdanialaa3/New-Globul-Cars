@@ -6,8 +6,21 @@
 
 ## 📖 الترتيب الموصى به للقراءة
 
-### 0️⃣ **[LOCAL_COPILOT_SETUP_AR.md](LOCAL_COPILOT_SETUP_AR.md)** 🖥️ جديد
-**ابدأ من هنا إذا كنت تعمل محلياً أو تريد إعداد GitHub Copilot!**
+### 0️⃣ـأ **[COPILOT_AGENT_WORKFLOW_AR.md](COPILOT_AGENT_WORKFLOW_AR.md)** 🤖 جديد
+**اقرأ هنا أولاً إذا كنت تريد إعطاء مهام لـ Copilot Agent!**
+
+- كيف يعمل نظام المهام (Issue → Agent → PR)
+- كيف تكتب مهمة واضحة تحصل على نتيجة دقيقة
+- ما يستطيع الـ Agent فعله وما لا يستطيعه
+- كيف تراجع وتوافق على نتيجة الـ Agent
+
+**وقت القراءة:** 5 دقائق  
+**الأولوية:** ⭐⭐⭐ لمن يريد استخدام Copilot Agent لتنفيذ مهام
+
+---
+
+### 0️⃣ـب **[LOCAL_COPILOT_SETUP_AR.md](LOCAL_COPILOT_SETUP_AR.md)** 🖥️ جديد
+**اقرأ هنا إذا كنت تريد العمل محلياً بنفسك مع VS Code!**
 
 - كيف تُثبّت Git + VS Code + GitHub Copilot
 - كيف تنسخ المشروع وتشغّله محلياً
