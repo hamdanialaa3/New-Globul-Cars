@@ -1,0 +1,285 @@
+{
+    "market_research": {
+        "scanned_competitors": [
+            "mobile.bg",
+            "cars.bg",
+            "auto.bg",
+            "Facebook Marketplace BG"
+        ],
+        "common_dealer_workflows": [
+            "إدخال البيانات يدوياً عبر منصات متعددة (غياب المزامنة الموحدة مع DMS)",
+            "إدارة الصور عبر الهواتف المحمولة مباشرة إلى نماذج الويب",
+            "التفاوض مع العملاء المحتملين عبر الهاتف في الغالب",
+            "استخدام الدفاتر الورقية أو جداول Excel البسيطة كحلول CRM"
+        ],
+        "dealer_pain_points": [
+            "منافسة سعرية شديدة من الواردات الأوروبية المباشرة (أسعار أقل بـ 10-30%)",
+            "ارتفاع تكاليف الاحتفاظ بالمخزون وتقلص هوامش الربح في سوق تنافسية",
+            "انعدام ثقة المستهلك بسبب التلاعب بالمسافات المقطوعة والتاريخ المخفي للمركبات",
+            "الافتقار إلى تكامل API/DMS حديث، مما يؤدي إلى عمل متكرر هائل (Duplicate Data Entry)",
+            "ضعف تصفية العملاء المحتملين (Leads) مما يهدر الوقت على مشترين غير جادين",
+            "رسوم باهظة بناموذج 'الدفع لكل إعلان' على المنصات القديمة مع تجربة مستخدم سيئة (UX)"
+        ],
+        "inventory_sizes": "تجار التجزئة الصغار: 5-20 مركبة، التجار المتوسطون: 20-50، الموزعون الكبار والصالات: 50+ مركبة",
+        "acquisition_channels": "البيع الشخصي، مجموعات الفيسبوك المتخصصة، التوصيات، والمنصات الرئيسية (mobile.bg/cars.bg)"
+    },
+    "competitor_matrix": [
+        {
+            "name": "mobile.bg",
+            "strengths": "قائد السوق الفعلي، يمتلك أكبر قاعدة جماهيرية",
+            "weaknesses": "واجهة مستخدم (UI/UX) قديمة جداً، نماذج تسعير مكلفة لتجار الجملة، أدوات تأهيل عملاء محتملين ضعيفة"
+        },
+        {
+            "name": "cars.bg",
+            "strengths": "حضور قوي على الأجهزة المحمولة، بديل جيد وراسخ",
+            "weaknesses": "واجهة مزدحمة، نماذج تسعير مشابهة جداً لمشكلة mobile.bg"
+        },
+        {
+            "name": "Facebook Marketplace",
+            "strengths": "مجاني تماماً، محادثة مباشرة، وصول اجتماعي ضخم",
+            "weaknesses": "انعدام أدوات التجار (B2B)، ثقة منخفضة جداً، كميات هائلة من رسائل السبام والعملاء غير الجادين"
+        }
+    ],
+    "product_ux_audit": {
+        "current_state_evaluation": "المنصة حالياً مجانية؛ الوظائف الأساسية للإدراج والتقييم والمراسلة تعمل، لكنها تفتقر كلياً لأدوات الأعمال (B2B) الاحترافية للوكلاء مثل: الرفع الجماعي (Bulk Upload)، نظام إدارة علاقات العملاء (CRM) الجماعي، والتحليلات المتقدمة. عملية الـ Onboarding الحالية ليست مخصصة للشركات.",
+        "feature_matrix": [
+            {
+                "feature": "الرفع الجماعي للمركبات (Bulk CSV/XML Upload)",
+                "priority": "must-have",
+                "story": "كتاجر، أريد رفع 50 سيارة دفعة واحدة عبر ملف CSV حتى لا أضيع وقتي في الإدخال اليدوي المتكرر.",
+                "acceptance_criteria": "قدرة النظام على معالجة ملف من 50 سطر في أقل من دقيقة مع عرض تقرير أخطاء التحقق فوراً.",
+                "ui_description": "منطقة سحب وإفلات (Drag-and-drop) في لوحة تحكم التاجر لرفع الملفات مع ملخص لحظي لأخطاء التحقق.",
+                "api_needs": "محلل CSV/XML، طابور مهام (Queue Worker) للإدخالات الجماعية",
+                "effort": "L"
+            },
+            {
+                "feature": "صندوق العملاء ونظام CRM للتاجر (Dealer CRM & Lead Inbox)",
+                "priority": "must-have",
+                "story": "كتاجر، أريد تتبع حالة كل عميل محتمل (جديد، تم الاتصال، مغلق) لكل إعلان على حدة.",
+                "acceptance_criteria": "إمكانية تغيير حالة العميل من 'جديد' إلى 'تم الاتصال' بنقرة واحدة، مع تحديث فوري للواجهة.",
+                "ui_description": "لوحة كانبان (Kanban) أو عرض قائمة داخل علامة تبويب الرسائل، تقوم بتصفية العملاء حسب المرحلة.",
+                "api_needs": "واجهات برمجة التطبيقات لإدارة حالة العميل المحتمل (Lead State Management) وإيصالات القراءة",
+                "effort": "M"
+            },
+            {
+                "feature": "التحقق من هوية الشركات (Business Identity Verification)",
+                "priority": "must-have",
+                "story": "كمنصة، أريد إلزام التجار برفع رقمهم الضريبي (Bulstat/VAT) لمنحهم شارة 'تاجر معتمد' لزيادة ثقة المشترين.",
+                "acceptance_criteria": "لا يمكن تفعيل حساب التاجر كـ 'معتمد' إلا بعد إدخال رقم Bulstat صالح ومراجعته.",
+                "ui_description": "نموذج أثناء الـ Onboarding يطلب اسم الشركة، الرقم الضريبي، والعنوان الفعلي، مع رسالة انتظار التوثيق.",
+                "api_needs": "طاولة تحقق في قاعدة البيانات، وربما التكامل مع API مفتوح للتحقق من الشركات في بلغاريا إن وجد",
+                "effort": "M"
+            },
+            {
+                "feature": "أداة التقييم الفوري كأداة جذب مبادلات (Trade-in generation via Valuation Widget)",
+                "priority": "should-have",
+                "story": "كتاجر، أريد أن يرى المشترون تقديراً فورياً لقيمة سيارتهم القديمة لتشجيعهم على تقديمها كدفعة أولى (Trade-in).",
+                "acceptance_criteria": "عنصر واجهة مستخدم على صفحة التاجر يقبل بيانات السيارة ويعيد تقييماً استناداً إلى Neural Pricing System.",
+                "ui_description": "أداة تفاعلية 'قيّم سيارتك' مدمجة في الصفحة الفرعية للتاجر.",
+                "api_needs": "واجهة برمجة تطبيقات متصلة بنظام Neural Pricing System",
+                "effort": "M"
+            },
+            {
+                "feature": "تكامل واجهة برمجة التطبيقات مع أنظمة الوكلاء (DMS API Integration)",
+                "priority": "nice-to-have",
+                "story": "كوكيل كبير، أريد أن يتزامن نظام المخزون الداخلي الخاص بي (DMS) تلقائياً مع Koli One.",
+                "acceptance_criteria": "توثيق API علني يسمح بإنشاء، قراءة، تحديث، وحذف (CRUD) للإعلانات باستخدام مفتاح API صالح.",
+                "ui_description": "شاشة لتوليد مفاتيح API وإدارة تكوين الـ Webhooks في إعدادات حساب التاجر.",
+                "api_needs": "مصادقة OAuth/API Keys، نظام مبدل الـ Webhooks",
+                "effort": "L"
+            }
+        ]
+    },
+    "monetization_models": [
+        {
+            "model": "نموذج الاشتراكات الطبقية (Freemium to Premium Tiers)",
+            "pricing": "أساسي: مجاني (حتى 5 سيارات)، Pro: 49 يورو/شهر (حتى 20 سيارة + CRM)، Elite: 99 يورو/شهر (مخزون غير محدود + API)",
+            "pros": "إيرادات متكررة يمكن التنبؤ بها (MRR)، يرسخ قيمة الخدمات المضافة.",
+            "cons": "صعوبة إقناع التجار بالدفع مقدماً قبل إثبات العائد على الاستثمار (ROI).",
+            "pilot_metrics": {
+                "Conversion_Rate_Free_To_Pro": "المستهدف: 5% في أول 3 أشهر",
+                "Active_Pro_Accounts_Month_1": "المستهدف: 20 حساب برو مفعل"
+            }
+        },
+        {
+            "model": "الدفع مقابل العميل المحتمل (Pay-per-Lead / CPL)",
+            "pricing": "2 إلى 5 يورو لكل نقرة 'إظهار رقم الهاتف' محققة أو نقرة 'واتساب' (مع آلية منع تكرار النقر)",
+            "pros": "توافق مباشر مع قيمة التاجر؛ المخاطرة صفر للتاجر عند إدراج سياراته.",
+            "cons": "إيرادات غير متوقعة، احتمالية عالية لنزاعات التُجار حول جودة العملاء (سبام/غير جادين).",
+            "pilot_metrics": {
+                "Lead_Dispute_Rate": "المستهدف: أقل من 10٪ من الشكاوى",
+                "Average_Leads_Generated_Per_Listing": "المستهدف: 3 عملاء محتملين لكل إعلان شهرياً"
+            }
+        },
+        {
+            "model": "الظهور المروج (Promoted Visibility / Boosts)",
+            "pricing": "1 إلى 3 يورو في اليوم للمركبة الواحدة للحصول على تصنيف 'أفضل صفقة' أو التثبيت في الأعلى",
+            "pros": "سهل البيع كعنصر إضافي، يستغل مبدأ الـ FOMO (الخوف من تفويت الفرصة) لدى التجار.",
+            "cons": "يمكن أن يفسد تجربة المستخدم (UX) إذا تم استخدامه بكثرة وبشكل سيء؛ يتطلب حركة مرور أولية عالية لبيعه.",
+            "pilot_metrics": {
+                "Boost_Adoption_Rate": "المستهدف: 15% من التجار النشطين يستخدمون الخدمة",
+                "CTR_Boosted_Vs_Normal": "المستهدف: نسبة نقر 3 أضعاف للإعلانات المروجة"
+            }
+        }
+    ],
+    "go_to_market": {
+        "playbook": [
+            "مرحلة 1: إجراء كشط (Scraping) لبيانات منصة mobile.bg لتحديد أفضل 100 تاجر سيارات في العاصمة صوفيا.",
+            "مرحلة 2: إطلاق حملة تواصل باردة (Cold Outreach) موجهة شخصياً للتجار، تعرض عليهم خدمة 'تأهيل الضيافة العليا' (White-Glove Onboarding) — حيث سيقوم فريقنا بنقل سياراتهم يدوياً مجاناً.",
+            "مرحلة 3: عرض باقة 'Elite' مجاناً للمشتركين الأوائل لمدة 3 أشهر، لبناء كتلة حرجة من المخزون المهني على المنصة.",
+            "مرحلة 4: بمجرد تخطي حاجز الـ 1000 مركبة معتمدة، إطلاق حملة B2B محلية مدفوعة عبر Facebook و LinkedIn تستهدف 'أصحاب معارض السيارات' بمنشورات تركز على قلة التكاليف وجودة الخدمة."
+        ],
+        "outreach_scripts": {
+            "english_email": "Subject: Free buyer leads for your [Make] inventory.\nHi [Name], I noticed you have over 15 high-quality cars that are struggling to stand out on mobile.bg's expensive listings. Koli One is a new, modern platform testing a vastly different, risk-free model in Bulgaria. We are willing to import all your cars for free, and give you 3 months of premium visibility at absolutely zero cost. If it works, you keep it. Let's talk?",
+            "bulgarian_email": "Относно: Безплатни клиенти за вашия автопарк от [Марка].\nЗдравейте [Име], Забелязах, че имате над 15 качествени автомобила, които трудно се отличават сред скъпите обяви в mobile.bg. Koli One е нова, модерна платформа, която тества напълно различен модел без риск в България. Готови сме да импортираме всичките ви автомобили безплатно и да ви дадем 3 месеца премиум видимост напълно безплатно. Ако работи за вас - продължаваме. Ще се радвам да поговорим."
+        },
+        "onboarding_funnel_30days": {
+            "Day_1": "التسجيل ورفع الوثائق الضريبية (Activation Event: Account Created)",
+            "Day_3": "استيراد المخزون الأولي للتاجر ومراجعته (Activation Event: >10 listings active)",
+            "Day_7": "جولة تعريفية بلوحة التحكم (CRM/Analytics) والرد على أول رسالة لعميل محتمل",
+            "Day_14": "مكالمة متابعة من فريق الدعم لتصحيح التقييمات والتأكد من جودة الصور",
+            "Day_30": "إرسال تقرير أداء الشهر الأول عبر البريد (X مشاهدات، Y نقرة واتساب) كدليل (Hook) لإبقائهم"
+        }
+    },
+    "technical_requirements": {
+        "backend_features": [
+            "بناء مسار (Pipeline) لاستيراد ملفات CSV/XLSX ضخمة باستخدام طابور رسائل (Message Queue كـ BullMQ/Redis أو GCP PubSub) لمعالجة البيانات وتنزيل الصور في الخلفية.",
+            "دمج شبكة توصيل محتوى صور (Image CDN مثل Cloudinary أو Cloudflare Images) مع دعم التوقيعات لرفع آمن وسريع مباشر من العميل.",
+            "أنماط مزامنة أنظمة الإدارة (DMS Sync Patterns): الاعتماد على Webhooks للدفع المباشر، و Polling لمعالجات ملفات الـ XML القديمة التي يفضلها التجار.",
+            "Webhooks للعملاء المحتملين: إرسال إشعار فوري وتحديث حالة SLA لسرعة رد التاجر.",
+            "الأمن والامتثال: نظام إلزامي للتحقق من بيانات البائع (الرقم الضريبي/Bulstat) وتدقيق سجل النشاطات (Audit logs)."
+        ],
+        "data_models": {
+            "dealer_inventory": {
+                "schema_type": "JSON",
+                "fields": {
+                    "id": "string (UUID)",
+                    "dealer_id": "string (UUID, reference)",
+                    "vin": "string (17 chars)",
+                    "price_eur": "number",
+                    "vehicle_details": {
+                        "make": "string",
+                        "model": "string",
+                        "year": "number",
+                        "mileage": "number"
+                    },
+                    "images": "array[string (URLs)]",
+                    "status": "enum(active, sold, drafting, error)",
+                    "last_dms_sync": "timestamp"
+                }
+            },
+            "lead_object": {
+                "schema_type": "JSON",
+                "fields": {
+                    "id": "string (UUID)",
+                    "buyer_id": "string (UUID, reference or null)",
+                    "listing_id": "string (UUID, reference)",
+                    "dealer_id": "string (UUID, reference)",
+                    "message": "string",
+                    "action_taken": "enum(phone_reveal, whatsapp_click, direct_message)",
+                    "lead_status": "enum(new, contacted, negotiated, closed_won, closed_lost)",
+                    "created_at": "timestamp"
+                }
+            }
+        }
+    },
+    "ux_recommendations": [
+        "1. أضف شارة 'تاجر معتمد' (Verified Dealer) بجوار اسم البائع لزيادة ثقة المشتري.",
+        "2. اجعل إدخال رقم الـ VIN إلزامياً للوكلاء لكي يتم جلب المواصفات تلقائياً لتقليل وقت الإدخال وتحسين جودة البيانات.",
+        "3. اعرض مؤشرات مرئية (Good Price / Fair Price) بناءً على متوسطات السوق لدفع عملية اتخاذ القرار بسرعة.",
+        "4. اجعل أزرار الدعوة للإجراء (CTAs) مثل 'احجز عبر واتساب' أو 'اتصل بالبائع' لاصقة (Sticky) في أسفل شاشة الهاتف دوماً.",
+        "5. توفير تراكب إرشادي (Guidance Overlay) داخل التطبيق عند التقاط صور للمركبة (زوايا، قالب إضاءة) للحصول على جودة موحدة.",
+        "6. بسّط عملية تسجيل التاجر لتكون 3 خطوات فقط: إنشاء حساب -> التحقق من Bulstat -> رفع ملف المخزون.",
+        "7. أضف كاروسيل (Carousel) أفقي أسفل صفحة السيارة بعنوان 'سيارات أخرى من هذا البائع' لزيادة اكتشاف مخزون التاجر.",
+        "8. قم بتطبيق ميزة 'قوالب الرد السريع' للوكلاء للردود الشائعة في صندوق البريد الوارد بضغطة واحدة.",
+        "9. استخدم مؤشرات تحذير مرئية في لوحة تحكم التاجر للإعلانات التي لا تحتوي على صور أو تفتقر إلى التفاصيل.",
+        "10. اعرض للتاجر فوراً مقياس 'الوقت على Koli One' مقارنة بـ 'متوسط الوقت للبيع في السوق' لتحفيزه على إجراء تخفيضات في الأسعار."
+    ],
+    "analytics": {
+        "kpis": [
+            "متوسط الإعلانات النشطة لكل تاجر (Active listings per dealer)",
+            "الوقت المستغرق للحصول على أول عميل محتمل بالساعات (Time-to-first-lead)",
+            "معدل تحويل العملاء للحجوزات/المبيعات عبر صندوق الـ CRM (Lead-to-sale conversion rate)",
+            "متوسط الإيراد الشهري لكل تاجر مدفوع (ARPU - Dealer)",
+            "معدل الاستنزاف للحسابات المجانية والمدفوعة (Churn rate)",
+            "تكلفة الاستحواذ على تاجر جديد (CAC for dealers)"
+        ],
+        "event_taxonomy": {
+            "dealer_signup_step_1": "بدء عملية التسجيل كتاجر",
+            "dealer_vat_verified": "النجاح في توثيق الرقم الضريبي للتاجر",
+            "listing_created_bulk": "نجاح معالجة أمر الرفع الجماعي (يرسل عدد الإعلانات كخصيصة)",
+            "lead_generated": "توليد فرصة مبيعات (نقر اتصال، رسالة)",
+            "boost_purchased": "نجاح شراء ظهور مروج (يرسل السعر والمدة)"
+        }
+    },
+    "risks": [
+        {
+            "risk": "رفض التجار لاستخدام منصة جديدة بسبب ضيق الوقت للتعلم والإدارة",
+            "mitigation": "تطبيق برنامج الاستيراد المجاني بأسلوب الـ White-Glove، بحيث يكون المجهود المطلوب منهم صفراً للبدء."
+        },
+        {
+            "risk": "انخفاض التدفق الأولي للمشترين مما يؤدي لتسرب (Churn) التجار سريعاً",
+            "mitigation": "استثمار مكثف في تحسين محركات البحث للفترات الطويلة (Long-tail SEO) لمراجعات سيارات محددة، وحملات فيسبوك محلية موجهة لمخزون التجار المعينين."
+        },
+        {
+            "risk": "تسجيل حسابات تجار وهمية أو احتيالية لتبييض البيانات",
+            "mitigation": "نظام مصادقة صارم يعتمد على أرقام VAT/Bulstat البلغارية مع دعم مراجعة يدوية دورية للمخالفات."
+        },
+        {
+            "risk": "انهيار الخوادم بسبب الرفع العملاق والعشوائي لملفات XML من أنظمة التجار",
+            "mitigation": "تصميم بنية تحتية تعتمد على تقييد الطلبات (Rate Limiting) وتقسيم المهام وتأخير المعالجة باستخدام قوائم الانتظار الخلفية بشكل أصيل."
+        },
+        {
+            "risk": "مقاومة الدفع بعد انتهاء فترة الـ Pilot (التجريب المجاني)",
+            "mitigation": "شخصنة تقارير توضح بدقة عدد العملاء المتولدين وإثبات التفوق في معدل التحويل (ROI) مقارنة بالمنصات القديمة باستخدام أداة تصدير الإحصائيات قبل طلب أي مبالغ."
+        },
+        {
+            "risk": "عدم دقة محرك التسعير لتسعير موديلات السيارات القديمة النادرة"،","mitigation": "تحديث نموذج التسعير ليعتمد على متوسطات واسعة النطاق لمثل هذه الحالات وإظهار نطاقات ثقة (Confidence Intervals) بدلاً من رقم تسعير قاطع."
+        },
+        {
+            "risk": "صراعات حول الامتثال لضريبة الـ DAC7 في أوروبا",
+            "mitigation": "تم تصميم النظام (Constitutional Coding) لتتبع المبيعات بشكل تلقائي لضمان كمال بيانات التاجر للإقرارات القانونية."
+        },
+        {
+            "risk": "شكاوى مستمرة حول جودة العملاء المحتملين (Leads Spam)",
+            "mitigation": "إلزام المشترين باستخدام ميزة 'التحقق عبر رقم الهاتف' (SMS Verification) قبل السماح لهم بالتواصل المباشر مع الوكلاء."
+        }
+    ],
+    "roadmap": [
+        {
+            "epic": "Epic 1: تدفق المصادقة وهوية التاجر (Dealer Identity & Onboarding Flow)",
+            "owner": "المنتج / التصميم (Product / Design)",
+            "estimate": "أسبوعان (2 weeks)"
+        },
+        {
+            "epic": "Epic 2: محرك الرفع الجماعي للملفات وصور المخزون (Bulk Upload Engine & Media CDN)",
+            "owner": "الهندسة (Engineering)",
+            "estimate": "3 أسابيع (3 weeks)"
+        },
+        {
+            "epic": "Epic 3: لوحة تحكم التاجر ونظام الـ CRM الأولي (Dealer Dashboard V1 & Lead Tracking)",
+            "owner": "الهندسة (Engineering)",
+            "estimate": "3 أسابيع (3 weeks)"
+        },
+        {
+            "epic": "Epic 4: دمج حزمة تحقيق الإيرادات وترقيات الإعلانات المروجة بقواعد الدفع (Monetization & Promoted Boosts)",
+            "owner": "الهندسة (Engineering)",
+            "estimate": "أسبوعان (2+ weeks)"
+        },
+        {
+            "epic": "Epic 5: إطلاق البرنامج التجريبي واستحواذ أول 50 تاجر (GTM Pilot Program Launch)",
+            "owner": "النمو (Growth)",
+            "estimate": "4 أسابيع (4 weeks)"
+        },
+        {
+            "epic": "Epic 6: أدوات التسويق المستمر للشركات والأتمتة (B2B Marketing & Cold Automations)",
+            "owner": "النمو (Growth)",
+            "estimate": "أسبوعان (2 weeks)"
+        }
+    ],
+    "poc_patches": [
+        "--- src/components/layout/Header.tsx\n+++ src/components/layout/Header.tsx\n@@ -45,6 +45,9 @@\n         <nav className=\"header-nav\">\n           <Link to=\"/search\">Find a Car</Link>\n           <Link to=\"/sell\" className=\"btn-primary\">Sell your Car</Link>\n+          <Link to=\"/dealers\" className=\"btn-secondary dealer-cta\">\n+            Are you a Dealer?\n+          </Link>\n         </nav>\n       </div>",
+        "--- src/screens/Profile/ProfileScreen.tsx\n+++ src/screens/Profile/ProfileScreen.tsx\n@@ -82,6 +82,13 @@\n               <UserListings listings={userListings} />\n             </TabPanel>\n             \n+            <TabPanel value=\"dealer\">\n+              <div className=\"dealer-upsell-banner\">\n+                <h3>Manage 10+ Cars?</h3>\n+                <p>Unlock bulk CSV upload, priority support, and CRM tools. <Link to=\"/dealer-pro\">Upgrade to Pro</Link></p>\n+              </div>\n+            </TabPanel>\n+\n             <TabPanel value=\"favorites\">\n               <SavedCars cars={savedCars} />",
+        "--- src/components/messaging/InboxList.tsx\n+++ src/components/messaging/InboxList.tsx\n@@ -25,6 +25,11 @@\n             <div className=\"message-content\">\n               <h4>{thread.buyerName}</h4>\n               <p>{thread.lastMessage}</p>\n+              {thread.isNewLead && (\n+                <span className=\"badge badge-success\">\n+                  New Lead\n+                </span>\n+              )}\n             </div>\n           </div>\n         ))}"
+    ]
+}
