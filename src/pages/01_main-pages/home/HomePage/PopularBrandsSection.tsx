@@ -439,6 +439,8 @@ const PopularBrandsSection: React.FC = () => {
                     src={`/assets/images/professional_car_logos/${brand.logo}`}
                     alt={brand.nameEn}
                     loading="lazy"
+                    width="60"
+                    height="60"
                     onError={(e) => {
                       // Prevent infinite loop
                       if (!e.currentTarget.dataset.errorHandled) {

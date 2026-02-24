@@ -46,13 +46,15 @@ const ModernCarCard: React.FC<ModernCarCardProps> = ({ car }) => {
       style={{ width: '100%', maxWidth: 320, minWidth: 260, margin: '0 auto', display: 'flex', flexDirection: 'column' }}
     >
       {/* Image */}
-      <div className="relative w-full bg-gray-100 overflow-hidden" style={{aspectRatio:'1/1',height:'auto'}}>
+      <div className="relative w-full bg-gray-100 overflow-hidden" style={{ aspectRatio: '1/1', height: 'auto' }}>
         <img
           src={imageError ? CAR_PLACEHOLDER : getCarDisplayImage(car)}
           alt={`${car.brand || car.make} ${car.model}`}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-          style={{aspectRatio:'1/1',width:'100%',height:'100%'}}
+          style={{ aspectRatio: '1/1', width: '100%', height: '100%' }}
           loading="lazy"
+          width="320"
+          height="320"
           onError={() => setImageError(true)}
         />
         {/* Badge */}
@@ -73,9 +75,9 @@ const ModernCarCard: React.FC<ModernCarCardProps> = ({ car }) => {
         </button>
       </div>
       {/* Content */}
-      <div className="p-4 flex flex-col gap-2 flex-1" style={{minHeight:140,justifyContent:'space-between'}}>
+      <div className="p-4 flex flex-col gap-2 flex-1" style={{ minHeight: 140, justifyContent: 'space-between' }}>
         {/* Title */}
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight truncate" style={{marginBottom:2}}>
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight truncate" style={{ marginBottom: 2 }}>
           {(car.brand || car.make) + ' ' + car.model} <span className="text-gray-500">{car.year}</span>
         </h3>
         {/* Price */}
@@ -104,7 +106,7 @@ const ModernCarCard: React.FC<ModernCarCardProps> = ({ car }) => {
         <Link
           to={detailsUrl}
           className="mt-3 w-full block bg-gray-900 text-white py-2 rounded-xl font-semibold hover:bg-gray-800 transition text-center"
-          style={{fontSize:15,marginTop:8}}
+          style={{ fontSize: 15, marginTop: 8 }}
         >
           View Details
         </Link>

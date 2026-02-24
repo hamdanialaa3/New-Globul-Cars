@@ -55,25 +55,25 @@ import LifeMomentsBrowse from './LifeMomentsBrowse';    // ✅ NEW: Emotional Di
 import AIAnalysisBanner from './AIAnalysisBanner';      // ✅ NEW: AI Analysis Banner with explanation
 
 // 3. Car Discovery
-import VehicleClassificationsSection from './VehicleClassificationsSection';
-import UnifiedCarsShowcase from './UnifiedCarsShowcase';
-import FeaturedShowcase from './FeaturedShowcase';
-import PopularBrandsSection from './PopularBrandsSection';
-import MostDemandedCategoriesSection from './MostDemandedCategoriesSection';
-import OurCarsShowcase from './OurCarsShowcase';
+const VehicleClassificationsSection = React.lazy(() => import('./VehicleClassificationsSection'));
+const UnifiedCarsShowcase = React.lazy(() => import('./UnifiedCarsShowcase'));
+const FeaturedShowcase = React.lazy(() => import('./FeaturedShowcase'));
+const PopularBrandsSection = React.lazy(() => import('./PopularBrandsSection'));
+const MostDemandedCategoriesSection = React.lazy(() => import('./MostDemandedCategoriesSection'));
+const OurCarsShowcase = React.lazy(() => import('./OurCarsShowcase'));
 
 // 4. Personalization (Conditional)
-import SmartHeroRecommendations from './SmartHeroRecommendations';
-import RecentBrowsingSection from './RecentBrowsingSection';
+const SmartHeroRecommendations = React.lazy(() => import('./SmartHeroRecommendations'));
+const RecentBrowsingSection = React.lazy(() => import('./RecentBrowsingSection'));
 
 // 5. Selling CTA
-import UnifiedSmartSell from './UnifiedSmartSell';  // ✅ NEW: Merged SmartSellStrip + AISmartSellButton
+const UnifiedSmartSell = React.lazy(() => import('./UnifiedSmartSell'));  // ✅ NEW: Merged SmartSellStrip + AISmartSellButton
 
 // 6. Trust & Social
-import UnifiedDealer from './UnifiedDealer';
-import HomeTrustAndStats from './HomeTrustAndStats';
-import UnifiedSocial from './UnifiedSocial';
-import HomeLoyaltyAndSignup from './HomeLoyaltyAndSignup';
+const UnifiedDealer = React.lazy(() => import('./UnifiedDealer'));
+const HomeTrustAndStats = React.lazy(() => import('./HomeTrustAndStats'));
+const UnifiedSocial = React.lazy(() => import('./UnifiedSocial'));
+const HomeLoyaltyAndSignup = React.lazy(() => import('./HomeLoyaltyAndSignup'));
 
 // 7. Utilities
 import { GridSectionWrapper } from './GridSectionWrapper';
@@ -504,11 +504,11 @@ const HomePageComposer: React.FC = React.memo(() => {
       <SEOHelmet
         title="Koli One - Buy & Sell Cars in Bulgaria | Купи и продай автомобили"
         description="Best car marketplace in Bulgaria. Find your perfect car with AI-powered search, instant valuation, and trusted dealers. Browse thousands of cars for sale. | Най-добрата автомобилна борса в България с AI търсене и моментална оценка."
-        keywords="cars for sale bulgaria, buy car bulgaria, sell car bulgaria, car marketplace, used cars, new cars, автомобили продажба, коли на продажба българия, кола за продан"
-        canonicalUrl="https://koli.one/"
+        keywords={["cars for sale bulgaria", "buy car bulgaria", "sell car bulgaria", "car marketplace", "used cars", "new cars", "автомобили продажба", "коли на продажба българия", "кола за продан"]}
+        canonical="https://koli.one/"
         ogType="website"
         ogImage="https://koli.one/images/og-home.jpg"
-        structuredData={combinedSchemas}
+        schema={combinedSchemas}
       />
       {/* 0. Sticky Search Bar (Floating - appears on scroll > 400px) */}
       {isVisible('sticky_search') && <StickySearchBar />}
