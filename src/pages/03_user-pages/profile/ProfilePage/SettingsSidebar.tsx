@@ -23,7 +23,7 @@ interface SidebarCounts {
 }
 
 const SettingsSidebar: React.FC = () => {
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
   const { language } = useLanguage();
   const [counts, setCounts] = useState<SidebarCounts>({
     messages: 0,
@@ -142,7 +142,7 @@ const SettingsSidebar: React.FC = () => {
             <User size={32} color="#999" />
           )}
         </ProfileAvatar>
-        <ProfileName>{user?.displayName || 'User'}</ProfileName>
+        <ProfileName>{userProfile?.displayName || user?.displayName || 'User'}</ProfileName>
         <EditLink to="/profile">
           <Edit size={12} />
           {text.edit}

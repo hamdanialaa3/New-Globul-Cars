@@ -37,6 +37,10 @@ import { useAuth } from '../../../../contexts/AuthProvider';
 import { useSectionVisibility } from '../../../../hooks/useSectionVisibility';
 import LazySection from '../../../../components/LazySection';
 
+// ✅ SEO imports
+import SEOHelmet from '@/utils/seo/SEOHelmet';
+import { generateOrganizationSchema, generateWebSiteSchema, combineSchemas } from '@/utils/seo/schemas';
+
 // ============================================================================
 // CORE SECTION IMPORTS
 // ============================================================================
@@ -489,8 +493,23 @@ const HomePageComposer: React.FC = React.memo(() => {
   const hasRecentlyBrowsed = typeof window !== 'undefined' && localStorage.getItem('recentBrowsing');
   const { sections, isVisible } = useSectionVisibility();
 
+  // ✅ SEO: Generate structured data schemas
+  const organizationSchema = generateOrganizationSchema();
+  const websiteSchema = generateWebSiteSchema();
+  const combinedSchemas = combineSchemas([organizationSchema, websiteSchema]);
+
   return (
     <ComposerContainer>
+      {/* ✅ SEO: Meta tags + Structured Data */}
+      <SEOHelmet
+        title="Koli One - Buy & Sell Cars in Bulgaria | Купи и продай автомобили"
+        description="Best car marketplace in Bulgaria. Find your perfect car with AI-powered search, instant valuation, and trusted dealers. Browse thousands of cars for sale. | Най-добрата автомобилна борса в България с AI търсене и моментална оценка."
+        keywords="cars for sale bulgaria, buy car bulgaria, sell car bulgaria, car marketplace, used cars, new cars, автомобили продажба, коли на продажба българия, кола за продан"
+        canonicalUrl="https://koli.one/"
+        ogType="website"
+        ogImage="https://koli.one/images/og-home.jpg"
+        structuredData={combinedSchemas}
+      />
       {/* 0. Sticky Search Bar (Floating - appears on scroll > 400px) */}
       {isVisible('sticky_search') && <StickySearchBar />}
 

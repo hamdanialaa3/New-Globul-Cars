@@ -16,12 +16,12 @@ import { logger } from '../../../../services/logger-service';
 import * as S from './ProfileSettingsMobileDe.styles';
 
 const ProfileSettingsMobileDe: React.FC = () => {
-  const { user, currentUser } = useAuth();
+  const { user, currentUser, userProfile } = useAuth();
   const navigate = useNavigate();
   const { t, language } = useLanguage();
   const toast = useToast();
   
-  const userName = user?.displayName || 'User';
+  const userName = userProfile?.displayName || user?.displayName || 'User';
   const [activeSection, setActiveSection] = React.useState('overview');
   const [photoURL, setPhotoURL] = React.useState<string | null>(user?.photoURL || null);
   const [uploading, setUploading] = React.useState(false);

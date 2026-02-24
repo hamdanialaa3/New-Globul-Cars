@@ -19,19 +19,52 @@ admin.initializeApp({
 const db = admin.firestore();
 
 // Base URL
-const BASE_URL = 'https://globulcars.bg';
+const BASE_URL = 'https://koli.one';
 
-// Static pages
+// Static pages - UPDATED with all routes from MainRoutes.tsx
 const STATIC_PAGES = [
+  // Main Pages
   { url: '/', priority: 1.0, changefreq: 'daily', langs: ['bg', 'en'] },
+  { url: '/search', priority: 0.9, changefreq: 'hourly', langs: ['bg', 'en'] },
   { url: '/cars', priority: 0.9, changefreq: 'hourly', langs: ['bg', 'en'] },
-  { url: '/sell', priority: 0.8, changefreq: 'weekly', langs: ['bg', 'en'] },
+  
+  // AI Tools
+  { url: '/advisor', priority: 0.8, changefreq: 'weekly', langs: ['bg', 'en'] },
+  { url: '/valuation', priority: 0.8, changefreq: 'weekly', langs: ['bg', 'en'] },
+  { url: '/history', priority: 0.8, changefreq: 'weekly', langs: ['bg', 'en'] },
+  
+  // Financing
+  { url: '/financing', priority: 0.7, changefreq: 'weekly', langs: ['bg', 'en'] },
+  { url: '/financing/compare', priority: 0.6, changefreq: 'weekly', langs: ['bg', 'en'] },
+  
+  // Marketplace
+  { url: '/marketplace', priority: 0.7, changefreq: 'daily', langs: ['bg', 'en'] },
+  
+  // Blog
+  { url: '/blog', priority: 0.9, changefreq: 'daily', langs: ['bg', 'en'] },
+  { url: '/blog/technical-deep-dive', priority: 1.0, changefreq: 'monthly', langs: ['bg', 'en'] },
+  
+  // Static Info Pages
   { url: '/about', priority: 0.5, changefreq: 'monthly', langs: ['bg', 'en'] },
   { url: '/contact', priority: 0.5, changefreq: 'monthly', langs: ['bg', 'en'] },
-  { url: '/pricing', priority: 0.7, changefreq: 'weekly', langs: ['bg', 'en'] },
-  { url: '/faq', priority: 0.5, changefreq: 'monthly', langs: ['bg', 'en'] },
-  { url: '/privacy', priority: 0.3, changefreq: 'yearly', langs: ['bg', 'en'] },
-  { url: '/terms', priority: 0.3, changefreq: 'yearly', langs: ['bg', 'en'] },
+  { url: '/help', priority: 0.5, changefreq: 'monthly', langs: ['bg', 'en'] },
+  { url: '/why-us', priority: 0.5, changefreq: 'monthly', langs: ['bg', 'en'] },
+  
+  // Legal
+  { url: '/privacy-policy', priority: 0.3, changefreq: 'yearly', langs: ['bg', 'en'] },
+  { url: '/terms-of-service', priority: 0.3, changefreq: 'yearly', langs: ['bg', 'en'] },
+  { url: '/cookie-policy', priority: 0.3, changefreq: 'yearly', langs: ['bg', 'en'] },
+  { url: '/data-deletion', priority: 0.3, changefreq: 'yearly', langs: ['bg', 'en'] },
+  
+  // Browse Pages
+  { url: '/dealers', priority: 0.7, changefreq: 'daily', langs: ['bg', 'en'] },
+  { url: '/top-brands', priority: 0.7, changefreq: 'weekly', langs: ['bg', 'en'] },
+  { url: '/brand-gallery', priority: 0.6, changefreq: 'weekly', langs: ['bg', 'en'] },
+  { url: '/new-cars', priority: 0.7, changefreq: 'daily', langs: ['bg', 'en'] },
+  { url: '/accident-cars', priority: 0.6, changefreq: 'daily', langs: ['bg', 'en'] },
+  
+  // Sitemap
+  { url: '/sitemap', priority: 0.4, changefreq: 'monthly', langs: ['bg', 'en'] },
 ];
 
 /**
@@ -192,14 +225,37 @@ async function generateSitemap() {
  * Generate robots.txt
  */
 function generateRobotsTxt() {
-  const robotsTxt = `# Globul Cars - Robots.txt
+  const robotsTxt = `# Koli One - Bulgarian Car Marketplace
 # Generated: ${new Date().toISOString()}
 
 User-agent: *
 Allow: /
+Allow: /search
+Allow: /cars
+Allow: /bmw-*
+Allow: /audi-*
+Allow: /mercedes-*
+Allow: /volkswagen-*
+
+# Block private/auth pages
 Disallow: /admin
+Disallow: /super-admin
+Disallow: /api
+Disallow: /profile/*/edit
+Disallow: /messages
+Disallow: /my-listings
+Disallow: /my-drafts
 Disallow: /dashboard
-Disallow: /api/
+Disallow: /sell
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /verification
+
+# Block duplicate content
+Disallow: /*?*utm_*
+Disallow: /*?*fbclid=*
+Disallow: /*?*gclid=*
 
 # Sitemap
 Sitemap: ${BASE_URL}/sitemap.xml
