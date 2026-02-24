@@ -119,6 +119,8 @@ const ManualCheckoutPage = safeLazy(() => import('../pages/08_payment-billing/Ma
 const ManualPaymentSuccessPage = safeLazy(() => import('../pages/08_payment-billing/ManualPaymentSuccessPage'));
 const DealerRegistrationPage = safeLazy(() => import('../pages/09_dealer-company/DealerRegistrationPage'));
 const DealerDashboardPage = safeLazy(() => import('../pages/09_dealer-company/DealerDashboardPage'));
+// ✅ NEW: Bulk Upload Panel Route
+const BulkUploadPanel = safeLazy(() => import('../components/Profile/Dealership/BulkUploadPanel').then(module => ({ default: module.BulkUploadPanel })));
 const SubscriptionSelectionPage = safeLazy(() => import('../pages/dealer/SubscriptionSelectionPage'));
 const AlgoliaSyncManager = safeLazy(() => import('../pages/06_admin/AlgoliaSyncManager'));
 const AdminCarManagementPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminCarManagementPage'));
@@ -309,6 +311,14 @@ export const MainRoutes: React.FC = () => {
                 element={
                     <AuthGuard requireAuth={true}>
                         <DealerDashboardPage />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/dealer/bulk-upload"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <BulkUploadPanel />
                     </AuthGuard>
                 }
             />

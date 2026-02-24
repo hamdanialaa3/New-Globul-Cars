@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { Menu, X, User, Settings, Heart, MessageCircle, Calendar, LogOut, Search, Car, ChevronDown, Bell, Map, Code, Gavel } from 'lucide-react';
+import { Menu, X, User, Settings, Heart, MessageCircle, Calendar, LogOut, Search, Car, ChevronDown, Bell, Map, Code, Gavel, Briefcase } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -727,6 +727,10 @@ const UnifiedHeader: React.FC = () => {
             <MainNavButton $isDark={isDark} $primary onClick={() => navigate('/sell')}>
               <Car size={18} />
               <span>{language === 'bg' ? 'Продай кола' : 'Sell Car'}</span>
+            </MainNavButton>
+            <MainNavButton $isDark={isDark} onClick={() => navigate('/dealers')} style={{ borderColor: 'rgba(255, 121, 0, 0.5)' }}>
+              <Briefcase size={18} color="#FF7900" />
+              <span style={{ color: '#FF7900' }}>{language === 'bg' ? 'За дилъри' : 'For Dealers'}</span>
             </MainNavButton>
           </LeftNav>
 

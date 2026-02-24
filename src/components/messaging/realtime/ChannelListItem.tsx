@@ -23,7 +23,7 @@ const styled = styledBase;
 
 // ==================== STYLED COMPONENTS ====================
 
-const ChannelItem = styled(Link)<{ $isActive?: boolean; $hasUnread?: boolean }>`
+const ChannelItem = styled(Link) <{ $isActive?: boolean; $hasUnread?: boolean }>`
   display: flex;
   gap: 12px;
   padding: 16px;
@@ -208,7 +208,7 @@ const formatTimeAgo = (timestamp: number, locale: 'bg' | 'en'): string => {
   if (minutes < 60) return `${minutes}${locale === 'bg' ? 'м' : 'm'}`;
   if (hours < 24) return `${hours}${locale === 'bg' ? 'ч' : 'h'}`;
   if (days < 7) return `${days}${locale === 'bg' ? 'д' : 'd'}`;
-  
+
   return new Date(timestamp).toLocaleDateString(locale === 'bg' ? 'bg-BG' : 'en-US', {
     day: 'numeric',
     month: 'short',
@@ -251,24 +251,24 @@ export const ChannelListItem: React.FC<ChannelListItemProps> = ({
 }) => {
   const { language } = useLanguage();
   const locale = language === 'bg' ? 'bg' : 'en';
-  
+
   // Determine the other participant
   const isBuyer = channel.buyerNumericId === currentUserNumericId;
   const otherUserName = isBuyer ? channel.sellerName : channel.buyerName;
   const otherUserAvatar = isBuyer ? channel.sellerAvatar : channel.buyerAvatar;
   const otherUserNumericId = isBuyer ? channel.sellerNumericId : channel.buyerNumericId;
-  
+
   // Get presence for the other user
   const { isOnline } = useUserPresence(otherUserNumericId);
-  
+
   // Unread count for current user
   const unreadCount = channel.unreadCount?.[currentUserNumericId] || 0;
   const hasUnread = unreadCount > 0;
-  
+
   // Last message info
   const lastMessage = channel.lastMessage;
   const isOwnMessage = lastMessage?.senderId === currentUserNumericId;
-  
+
   return (
     <ChannelItem
       to={`/messages?channel=${channel.id}`}
@@ -285,17 +285,32 @@ export const ChannelListItem: React.FC<ChannelListItemProps> = ({
         )}
         <OnlineIndicator $isOnline={isOnline} />
       </AvatarContainer>
-      
+
       {/* Content */}
       <Content>
         {/* Top row: Name + Time */}
         <TopRow>
-          <UserName>{otherUserName}</UserName>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <UserName>{otherUserName}</UserName>
+            {hasUnread && !isBuyer && (
+              <span style={{
+                background: '#4CAF50',
+                color: 'white',
+                fontSize: '10px',
+                fontWeight: 700,
+                padding: '2px 6px',
+                borderRadius: '8px',
+                marginLeft: '8px'
+              }}>
+                {locale === 'bg' ? 'Нов лийд' : 'New Lead'}
+              </span>
+            )}
+          </div>
           {lastMessage && (
             <TimeStamp>{formatTimeAgo(lastMessage.timestamp, locale)}</TimeStamp>
           )}
         </TopRow>
-        
+
         {/* Middle row: Last message */}
         <MiddleRow>
           {isOwnMessage && (
@@ -303,7 +318,7 @@ export const ChannelListItem: React.FC<ChannelListItemProps> = ({
               {hasUnread ? <Check size={14} /> : <CheckCheck size={14} />}
             </MessageStatus>
           )}
-          
+
           {isTyping ? (
             <TypingIndicator>
               {locale === 'bg' ? 'пише...' : 'typing...'}
@@ -313,18 +328,18 @@ export const ChannelListItem: React.FC<ChannelListItemProps> = ({
               {lastMessage.type === 'offer'
                 ? `💰 ${locale === 'bg' ? 'Ценово предложение' : 'Price offer'}`
                 : lastMessage.type === 'image'
-                ? `📷 ${locale === 'bg' ? 'Снимка' : 'Photo'}`
-                : lastMessage.content}
+                  ? `📷 ${locale === 'bg' ? 'Снимка' : 'Photo'}`
+                  : lastMessage.content}
             </LastMessage>
           ) : (
             <LastMessage>
               {locale === 'bg' ? 'Няма съобщения' : 'No messages'}
             </LastMessage>
           )}
-          
+
           {hasUnread && <UnreadBadge>{unreadCount > 99 ? '99+' : unreadCount}</UnreadBadge>}
         </MiddleRow>
-        
+
         {/* Bottom row: Car info */}
         <BottomRow>
           {channel.carImage && (

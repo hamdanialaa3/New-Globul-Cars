@@ -161,7 +161,7 @@ export const Step6Contact: React.FC = () => {
   const { language } = useLanguage();
   const { currentUser, userProfile } = useAuth();
   const { formData, updateStepData, markStepComplete } = useCarListingStore();
-  
+
   const {
     register,
     handleSubmit,
@@ -171,7 +171,7 @@ export const Step6Contact: React.FC = () => {
   } = useForm<Step6Data>({
     resolver: zodResolver(step6Schema),
     defaultValues: formData.step6 || {
-      sellerName: userProfile?.displayName || currentUser?.displayName || ''
+      sellerName: userProfile?.displayName || currentUser?.displayName || '',
       sellerEmail: currentUser?.email || '',
       sellerPhone: '',
       city: '',
@@ -207,7 +207,7 @@ export const Step6Contact: React.FC = () => {
   useEffect(() => {
     const subscription = watch((data) => {
       updateStepData('step6', data as Partial<Step6Data>);
-      
+
       // Mark complete if required fields are filled
       if (data.sellerName && data.sellerEmail && data.sellerPhone && data.city && data.region) {
         markStepComplete(5);
@@ -221,7 +221,7 @@ export const Step6Contact: React.FC = () => {
     const newMethods = current.includes(method)
       ? current.filter(m => m !== method)
       : [...current, method];
-    
+
     setValue('preferredContact', newMethods, { shouldValidate: true });
   };
 

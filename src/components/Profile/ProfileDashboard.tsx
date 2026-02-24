@@ -231,12 +231,12 @@ const ActionsRow = styled.div`
 
 const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   padding: 8px 16px;
-  background: ${props => props.$variant === 'primary' 
-    ? 'linear-gradient(135deg, #FF7900 0%, #FF8F10 100%)' 
+  background: ${props => props.$variant === 'primary'
+    ? 'linear-gradient(135deg, #FF7900 0%, #FF8F10 100%)'
     : 'rgba(255, 255, 255, 0.1)'};
   color: white;
-  border: ${props => props.$variant === 'primary' 
-    ? 'none' 
+  border: ${props => props.$variant === 'primary'
+    ? 'none'
     : '1px solid rgba(255, 255, 255, 0.2)'};
   border-radius: 8px;
   font-size: 0.85rem;
@@ -255,9 +255,9 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   &:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
-    background: ${props => props.$variant === 'primary' 
-      ? 'linear-gradient(135deg, #e66d00 0%, #e67f00 100%)' 
-      : 'rgba(255, 255, 255, 0.15)'};
+    background: ${props => props.$variant === 'primary'
+    ? 'linear-gradient(135deg, #e66d00 0%, #e67f00 100%)'
+    : 'rgba(255, 255, 255, 0.15)'};
   }
   
   &:disabled {
@@ -443,7 +443,7 @@ interface ProgressRingProps {
 const ProgressRing: React.FC<ProgressRingProps> = ({ percentage, color }) => {
   const circumference = 2 * Math.PI * 45; // radius = 45
   const offset = circumference - (percentage / 100) * circumference;
-  
+
   return (
     <svg width="120" height="120">
       {/* Background circle */}
@@ -491,7 +491,7 @@ const ProgressRing: React.FC<ProgressRingProps> = ({ percentage, color }) => {
 
 const calculateCompletion = (user: UserData | null, profileType: ProfileType): number => {
   if (!user) return 0;
-  
+
   const requiredFields = [
     'firstName',
     'lastName',
@@ -501,27 +501,27 @@ const calculateCompletion = (user: UserData | null, profileType: ProfileType): n
     'location',
     'postalCode'
   ];
-  
+
   const filledFields = requiredFields.filter(field => {
     if (field === 'location') return user.location?.city;
     return user[field as keyof UserData];
   });
-  
+
   return Math.round((filledFields.length / requiredFields.length) * 100);
 };
 
 const getMissingFields = (user: UserData | null, profileType: ProfileType): string[] => {
   if (!user) return [];
-  
+
   const missingFields: string[] = [];
-  
+
   if (!user.firstName) missingFields.push('First Name');
   if (!user.lastName) missingFields.push('Last Name');
   if (!user.phoneNumber) missingFields.push('Phone');
   if (!user.dateOfBirth) missingFields.push('Date of Birth');
   if (!user.location?.city) missingFields.push('City');
   if (!user.postalCode) missingFields.push('Postal Code');
-  
+
   return missingFields;
 };
 
@@ -539,7 +539,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ user: propUser }) =
   const navigate = useNavigate();
   const [completionPercentage, setCompletionPercentage] = useState(0);
   const [syncing, setSyncing] = useState(false);
-  
+
   useEffect(() => {
     if (user) {
       // Convert User to UserData with type assertion
@@ -547,10 +547,10 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ user: propUser }) =
       setCompletionPercentage(calculateCompletion(userData, profileType));
     }
   }, [user, profileType]);
-  
+
   // Convert user for display with type assertion
   const userData: UserData | null = user ? (user as any as UserData) : null;
-  
+
   // Google Sync Handler
   const handleGoogleSync = async () => {
     if (!user) return;
@@ -567,11 +567,53 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ user: propUser }) =
       setSyncing(false);
     }
   };
-  
+
   return (
     <DashboardContainer>
+      {/* Dealer Upsell Banner */}
+      {profileType !== 'dealer' && (
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(255, 121, 0, 0.15) 0%, rgba(255, 143, 16, 0.15) 100%)',
+          border: '1px solid rgba(255, 143, 16, 0.4)',
+          borderRadius: '16px',
+          padding: '24px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          boxShadow: '0 4px 12px rgba(255, 121, 0, 0.2)',
+          flexWrap: 'wrap',
+          gap: '16px'
+        }}>
+          <div>
+            <h3 style={{ margin: '0 0 8px 0', color: '#ffffff', fontSize: '1.25rem', fontWeight: 700 }}>
+              {language === 'bg' ? 'Управлявате 10+ автомобила?' : 'Manage 10+ Cars?'}
+            </h3>
+            <p style={{ margin: 0, color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.95rem' }}>
+              {language === 'bg'
+                ? 'Отключете качване на CSV в насипно състояние, приоритетна поддръжка и CRM инструменти.'
+                : 'Unlock bulk CSV upload, priority support, and CRM tools.'}
+            </p>
+          </div>
+          <button
+            onClick={() => navigate('/dealer-pro')}
+            style={{
+              padding: '10px 20px',
+              background: '#FF7900',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {language === 'bg' ? 'Надстройте до Pro' : 'Upgrade to Pro'}
+          </button>
+        </div>
+      )}
+
       {/* ✅ Profile Completion Card Removed */}
-      
+
       {/* ✅ Activity Stats Removed */}
     </DashboardContainer>
   );
