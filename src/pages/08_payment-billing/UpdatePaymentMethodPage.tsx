@@ -22,11 +22,17 @@ import { useAuth } from '@/contexts/AuthProvider';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { logger } from '@/services/logger-service';
 import { useToast } from '@/components/Toast';
-import { loadStripe } from '@stripe/stripe-js';
+import { loadStripe } from '@stripe/stripe-js/pure';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
-// Initialize Stripe (using public key)
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
+// Initialize Stripe lazily (using public key) – avoids module-level side effect
+let _stripePromise: ReturnType<typeof loadStripe> | null = null;
+const getStripePromise = () => {
+  if (!_stripePromise) {
+    _stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
+  }
+  return _stripePromise;
+};
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -333,7 +339,7 @@ const UpdatePaymentMethodPage: React.FC = () => {
           </Message>
         </div>
 
-        <Elements stripe={stripePromise}>
+        <Elements stripe={getStripePromise()}>
           <PaymentMethodForm onSuccess={handleSuccess} onError={handleError} />
         </Elements>
       </Card>

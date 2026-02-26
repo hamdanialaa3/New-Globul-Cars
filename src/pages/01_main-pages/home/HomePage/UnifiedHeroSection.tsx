@@ -36,7 +36,7 @@ import SearchWidget from './SearchWidget';
 
 const HeroContainer = styled.section<{ $isDark: boolean }>`
   position: relative;
-  overflow: visible; 
+  overflow: hidden; 
   min-height: 500px; /* Increased for better image display */
   display: flex;
   flex-direction: column;
@@ -50,13 +50,6 @@ const HeroContainer = styled.section<{ $isDark: boolean }>`
   border: 1px solid rgba(168, 85, 247, 0.15);
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(168, 85, 247, 0.1), inset 0 0 20px rgba(168, 85, 247, 0.05);
-  
-  /* Background Image - Bulgarian Cars Hero Image */
-  background-image: url('/Gemini_Generated_Image_y67jfey67jfey67j.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   
   /* Fallback background color */
   background-color: ${props => props.$isDark ? '#0f172a' : '#1a1a2e'};
@@ -84,13 +77,23 @@ const HeroContainer = styled.section<{ $isDark: boolean }>`
   @media (max-width: 768px) {
     min-height: 450px;
     padding: 40px 16px;
-    background-attachment: scroll; /* Better performance on mobile */
   }
   
   @media (max-width: 640px) {
     min-height: 400px;
     padding: 32px 16px;
   }
+`;
+
+const HeroBgImage = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
 `;
 
 const ContentWrapper = styled.div`
@@ -133,6 +136,22 @@ const UnifiedHeroSection: React.FC = memo(() => {
 
   return (
     <HeroContainer $isDark={isDark}>
+      <picture>
+        <source
+          media="(max-width: 768px)"
+          srcSet="/hero-bg-mobile.webp"
+          type="image/webp"
+        />
+        <HeroBgImage
+          src="/hero-bg.webp"
+          alt=""
+          width={1920}
+          height={1080}
+          // @ts-ignore - fetchpriority is a valid HTML attribute
+          fetchpriority="high"
+          decoding="sync"
+        />
+      </picture>
       <ContentWrapper>
         <SearchWidget />
       </ContentWrapper>

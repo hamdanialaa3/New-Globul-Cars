@@ -332,7 +332,7 @@ export const GlobalStyles = createGlobalStyle`
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease;
   }
 
   :root {
@@ -354,7 +354,6 @@ export const GlobalStyles = createGlobalStyle`
     line-height: ${bulgarianTypography.lineHeight.tight};
     margin-bottom: ${bulgarianSpacing.md};
     color: var(--text-primary);
-    transition: color 0.3s ease;
   }
 
   h1 { font-size: ${bulgarianTypography.fontSize['4xl']}; }
@@ -368,13 +367,11 @@ export const GlobalStyles = createGlobalStyle`
     margin-bottom: ${bulgarianSpacing.md};
     line-height: ${bulgarianTypography.lineHeight.relaxed};
     color: var(--text-primary);
-    transition: color 0.3s ease;
   }
 
   a {
     color: ${bulgarianColors.primary.dark};
     text-decoration: none;
-    transition: color 0.2s ease-in-out;
     font-weight: ${bulgarianTypography.fontWeight.medium};
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
 

@@ -9,6 +9,7 @@ import { useAuth } from '../../contexts/AuthProvider';
 import { soundService } from '../../services/sound-service';
 import RealisticPaperclipBadge from '../SoldBadge/RealisticPaperclipBadge';
 import { UnifiedCar } from '../../services/car/unified-car-types';
+import { getCarDisplayImage } from '../../utils/getCarDisplayImage';
 import { logger } from '../../services/logger-service';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
@@ -313,14 +314,13 @@ export const PremiumHomeCarCard: React.FC<PremiumHomeCarCardProps> = ({ car }) =
 
   // --- Helpers ---
   const getMainImage = (): string => {
-    if (car.imageUrl) return car.imageUrl;
-    if (car.image) return car.image; // Handle DisplayCar objects
     if (car.images && car.images.length > 0) {
       const featuredIdx = car.featuredImageIndex || 0;
       const img = car.images[featuredIdx] || car.images[0];
-      return typeof img === 'string' ? img : URL.createObjectURL(img);
+      if (typeof img !== 'string') return URL.createObjectURL(img);
     }
-    return '/images/placeholder.png';
+
+    return getCarDisplayImage(car);
   };
 
   const getCarUrl = (): string => {

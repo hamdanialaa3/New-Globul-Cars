@@ -33,7 +33,7 @@
  * );
  */
 
-import React, { Suspense, useMemo } from 'react';
+import React, { Suspense, useMemo, useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
@@ -62,6 +62,7 @@ const ProgressBar = React.lazy(() => import('../components/ProgressBar'));
 
 // Services
 import { logger } from '../services/logger-service';
+import { getConsentPreferences } from '../utils/consent-mode';
 
 /**
  * Props for AppProviders component
@@ -74,10 +75,40 @@ interface AppProvidersProps {
 }
 
 /**
+ * Deferred reCAPTCHA provider – delays loading until after the page is interactive
+ * to avoid blocking LCP/TBT with ~360 KiB of reCAPTCHA script on initial load.
+ */
+const DeferredReCaptcha: React.FC<{ reCaptchaKey: string; children: React.ReactNode }> = ({ reCaptchaKey, children }) => {
+    const [ready, setReady] = useState(false);
+
+    useEffect(() => {
+        if ('requestIdleCallback' in window) {
+            const id = (window as any).requestIdleCallback(() => setReady(true), { timeout: 4000 });
+            return () => (window as any).cancelIdleCallback(id);
+        } else {
+            const id = setTimeout(() => setReady(true), 3000);
+            return () => clearTimeout(id);
+        }
+    }, []);
+
+    if (!ready) {
+        // Render children without reCAPTCHA until interactive
+        return <>{children}</>;
+    }
+
+    return (
+        <GoogleReCaptchaProvider reCaptchaKey={reCaptchaKey}>
+            {children}
+        </GoogleReCaptchaProvider>
+    );
+};
+
+/**
  * Inner component that has access to CustomThemeProvider
  */
 const ThemedApp: React.FC<{ children: React.ReactNode; recaptchaKey: string }> = ({ children, recaptchaKey }) => {
     const { theme: themeMode } = useCustomTheme();
+    const [adsConsentGranted, setAdsConsentGranted] = React.useState(false);
     
     // Create dynamic theme object with current mode
     // Ensure all required properties are present with fallbacks
@@ -105,6 +136,23 @@ const ThemedApp: React.FC<{ children: React.ReactNode; recaptchaKey: string }> =
         return theme;
     }, [themeMode]);
 
+    React.useEffect(() => {
+        const evaluateConsent = () => {
+            const saved = getConsentPreferences();
+            const hasAdsConsent = saved?.ad_storage === 'granted' || saved?.ad_personalization === 'granted';
+            setAdsConsentGranted(Boolean(hasAdsConsent));
+        };
+
+        evaluateConsent();
+
+        const handleConsentUpdate = () => evaluateConsent();
+        window.addEventListener('consent-updated', handleConsentUpdate as EventListener);
+
+        return () => {
+            window.removeEventListener('consent-updated', handleConsentUpdate as EventListener);
+        };
+    }, []);
+
     return (
         <ThemeProvider theme={currentTheme}>
             <GlobalStyles />
@@ -112,13 +160,15 @@ const ThemedApp: React.FC<{ children: React.ReactNode; recaptchaKey: string }> =
                 <AuthProvider>
                         <ProfileTypeProvider>
                             <ToastProvider>
-                                <GoogleReCaptchaProvider reCaptchaKey={recaptchaKey}>
+                                <DeferredReCaptcha reCaptchaKey={recaptchaKey}>
                                     <Router>
                                         <FilterProvider>
-                                            {/* Facebook Pixel - Analytics */}
-                                            <Suspense fallback={<div style={{ height: '0' }} />}>
-                                                <FacebookPixel />
-                                            </Suspense>
+                                            {/* Facebook Pixel - Analytics (load only after ads consent) */}
+                                            {adsConsentGranted && (
+                                                <Suspense fallback={<div style={{ height: '0' }} />}>
+                                                    <FacebookPixel />
+                                                </Suspense>
+                                            )}
 
                                             {/* Skip Navigation - Accessibility */}
                                             <SkipNavigation />
@@ -138,7 +188,7 @@ const ThemedApp: React.FC<{ children: React.ReactNode; recaptchaKey: string }> =
                                             </Suspense>
                                         </FilterProvider>
                                     </Router>
-                                </GoogleReCaptchaProvider>
+                                </DeferredReCaptcha>
                             </ToastProvider>
                         </ProfileTypeProvider>
                 </AuthProvider>

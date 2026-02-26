@@ -280,7 +280,7 @@ html[data-theme="light"] {
 body {
   background-color: var(--bg-primary) !important;
   color: var(--text-primary) !important;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 #root {
@@ -297,7 +297,6 @@ h4,
 h5,
 h6 {
   color: var(--text-primary);
-  transition: color 0.3s ease;
 }
 
 p,
@@ -309,7 +308,6 @@ div {
 /* ─── Links ─── */
 a {
   color: var(--text-link);
-  transition: color 0.2s ease;
 }
 
 a:hover {
@@ -327,7 +325,7 @@ section,
   background-color: var(--bg-card);
   border: 1px solid var(--border-primary);
   color: var(--text-primary);
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 /* ─── Buttons - Primary ─── */
@@ -446,7 +444,7 @@ footer,
   background-color: var(--bg-footer) !important;
   border-top: 1px solid var(--border-secondary);
   color: var(--text-primary);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 /* Footer text colors in light mode */
@@ -656,8 +654,9 @@ section[class*="Section"] {
    ✨ TRANSITIONS & ANIMATIONS
    انتقالات سلسة
    ═══════════════════════════════════════════════════════════════════ */
+/* Only transition compositable properties on theme change */
 * {
-  transition-property: background-color, color, border-color;
+  transition-property: background-color, border-color;
   transition-duration: 0.3s;
   transition-timing-function: ease;
 }

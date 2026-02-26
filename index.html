@@ -39,56 +39,15 @@
         })();
     </script>
 
-    <!-- Google Tag Manager (deferred to prevent layout forced warning) -->
-    <script>
-        window.addEventListener('DOMContentLoaded', function() {
-            var w = window, d = document, l = 'dataLayer', i = 'GTM-MKZSPCNC';
-            w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-            var j = d.createElement('script'), dl = l != 'dataLayer' ? '&l=' + l : '';
-            j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-            d.head.appendChild(j);
-        });
-    </script>
-    <!-- End Google Tag Manager -->
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R8JY5KM421"></script>
-    <script>
-        const analyticsCookieDomain = window.location.hostname || 'koli.one';
-        gtag('js', new Date());
-        gtag('config', 'G-R8JY5KM421', {
-            cookie_domain: analyticsCookieDomain,
-            cookie_flags: 'SameSite=None;Secure',
-            send_page_view: true
-        });
-    </script>
-
-    <!-- Facebook Pixel Code -->
-    <script>
-        !function (f, b, e, v, n, t, s) {
-            if (f.fbq) return; n = f.fbq = function () {
-                n.callMethod ?
-                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
-            };
-            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
-            n.queue = []; t = b.createElement(e); t.async = !0;
-            t.src = v; s = b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t, s)
-        }(window, document, 'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '2026958077871354');
-        fbq('track', 'PageView');
-    </script>
-    <!-- End Facebook Pixel Code -->
 
     <meta charset="utf-8" />
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, private" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <meta http-equiv="Last-Modified" content="0" />
-    <meta name="cache-control" content="no-cache" />
-    <meta name="expires" content="0" />
-    <link rel="stylesheet" href="/styles/koli-one-logo.css" />
+    <!-- Preload LCP hero images (mobile-first) -->
+    <link rel="preload" as="image" type="image/webp" href="/hero-bg-mobile.webp" media="(max-width: 768px)" fetchpriority="high" />
+    <link rel="preload" as="image" type="image/webp" href="/hero-bg.webp" media="(min-width: 769px)" fetchpriority="high" />
+    <!-- Preconnect to critical origins (max 4 for best performance) -->
+    <!-- Logo CSS loaded non-blocking -->
+    <link rel="stylesheet" href="/styles/koli-one-logo.css" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="/styles/koli-one-logo.css" /></noscript>
     <!-- 🎨 Official Koli One Logo - Used Everywhere -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" href="/logo.png" sizes="any" />
@@ -140,18 +99,11 @@
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
     <link rel="manifest" href="/manifest.json" />
-    <link href="https://fonts.cdnfonts.com/css/martica" rel="stylesheet" media="print" onload="this.media='all'" />
-    <noscript><link href="https://fonts.cdnfonts.com/css/martica" rel="stylesheet" /></noscript>
+    
 
     <!-- Print Styles -->
     <link rel="stylesheet" href="/print-only.css" media="print" />
 
-    <!-- Google Maps API with Places library and Bulgarian language -->
-    <!-- Load Google Maps JS API with loading=async parameter for best performance -->
-    <!-- API key injected from VITE_GOOGLE_MAPS_API_KEY environment variable at build time -->
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key=%VITE_GOOGLE_MAPS_API_KEY%&libraries=places&language=bg&loading=async"
-        async defer></script>
 
     <!--
       This HTML file is a template.
@@ -164,16 +116,6 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <title>Koli One - Български автомобили</title>
-    <link rel="preload" as="style"
-        href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;800&family=Playfair+Display:wght@700&display=swap" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;800&family=Playfair+Display:wght@700&display=swap"
-        rel="stylesheet" media="print" onload="this.media='all'" />
-    <link rel="preload" as="style"
-        href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Caveat:wght@400;700&family=Dancing+Script:wght@700&display=swap" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Caveat:wght@400;700&family=Dancing+Script:wght@700&display=swap"
-        rel="stylesheet" media="print" onload="this.media='all'" />
     <style>
         /* --- KOLI ONE GLASS SPHERE LOADER --- */
         #loader-container {
@@ -323,7 +265,7 @@
         <div class="sphere-wrapper">
             <div class="glass-sphere"></div>
             <div class="led-ring"></div>
-            <img src="/koli_one_ai_Icon2.png" class="sphere-logo" alt="Koli One" />
+            <img src="/ai-icon-96.webp" class="sphere-logo" alt="Koli One" width="48" height="48" />
         </div>
         <div class="brand-text">Koli One</div>
     </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { Menu, X, User, Settings, Heart, MessageCircle, Calendar, LogOut, Search, Car, ChevronDown, Bell, Map, Code, Gavel, Briefcase } from 'lucide-react';
+import { Menu, X, User, Settings, Heart, MessageCircle, Calendar, LogOut, Search, Car, ChevronDown, Bell, Map, Code, Gavel, Briefcase, Globe } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -706,12 +706,17 @@ const UnifiedHeader: React.FC = () => {
     }
   };
 
+  const blogUrl = 'https://koli-one.blogspot.com/';
+
   return (
     <>
       <HeaderContainer $isDark={isDark}>
         <HeaderContent>
           <Logo $isDark={isDark} onClick={() => navigate('/')}>
-            <img src="/logo.png" alt={language === 'bg' ? 'Коли-Уан' : 'Koli One'} />
+            <picture>
+              <source srcSet="/logo-40.webp" type="image/webp" />
+              <img src="/logo.png" alt={language === 'bg' ? 'Коли-Уан' : 'Koli One'} width={40} height={40} />
+            </picture>
             <span>{language === 'bg' ? 'Коли-Уан' : 'Koli One'}</span>
           </Logo>
 
@@ -731,6 +736,13 @@ const UnifiedHeader: React.FC = () => {
             <MainNavButton $isDark={isDark} onClick={() => navigate('/dealers')} style={{ borderColor: 'rgba(255, 121, 0, 0.5)' }}>
               <Briefcase size={18} color="#FF7900" />
               <span style={{ color: '#FF7900' }}>{language === 'bg' ? 'За дилъри' : 'For Dealers'}</span>
+            </MainNavButton>
+            <MainNavButton
+              $isDark={isDark}
+              onClick={() => window.open(blogUrl, '_blank', 'noopener,noreferrer')}
+            >
+              <Globe size={18} />
+              <span>{language === 'bg' ? 'Блог' : 'Blog'}</span>
             </MainNavButton>
           </LeftNav>
 
@@ -1055,6 +1067,13 @@ const UnifiedHeader: React.FC = () => {
         </MobileMenuItem>
         <MobileMenuItem $isDark={isDark} onClick={() => navigate('/dealers')}>
           {t('nav.dealers')}
+        </MobileMenuItem>
+        <MobileMenuItem
+          $isDark={isDark}
+          onClick={() => window.open(blogUrl, '_blank', 'noopener,noreferrer')}
+        >
+          <Globe size={20} />
+          {language === 'bg' ? 'Блог' : 'Blog'}
         </MobileMenuItem>
         <MobileMenuItem $isDark={isDark} onClick={() => navigate('/auctions')}>
           <Gavel size={20} />

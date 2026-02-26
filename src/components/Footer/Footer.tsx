@@ -11,6 +11,7 @@ const Footer: React.FC = () => {
   const location = useLocation();
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
   const languageDropdownRef = useRef<HTMLDivElement>(null);
+  const blogUrl = 'https://koli-one.blogspot.com/';
 
   const currentYear = new Date().getFullYear();
 
@@ -49,15 +50,20 @@ const Footer: React.FC = () => {
           {/* Company Info */}
           <div className="footer-section">
             <div className="footer-brand">
-              <img
-                src="/logo.png"
-                alt="Koli One Logo"
-                className="footer-logo"
-                style={{ maxWidth: '150px', width: '100%', height: 'auto', objectFit: 'contain' }}
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/logo.png';
-                }}
-              />
+              <picture>
+                <source srcSet="/logo-40.webp" type="image/webp" />
+                <img
+                  src="/logo.png"
+                  alt="Koli One Logo"
+                  className="footer-logo"
+                  width={40}
+                  height={40}
+                  style={{ objectFit: 'contain' }}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/logo.png';
+                  }}
+                />
+              </picture>
               <h3 className="footer-title">Koli One</h3>
             </div>
             <p className="footer-description">
@@ -84,6 +90,11 @@ const Footer: React.FC = () => {
               <li><a href="/advanced-search">{t('nav.advancedSearch')}</a></li>
               <li><a href="/sell">{t('nav.sell')}</a></li>
               <li><a href="/brand-gallery">{t('nav.brandGallery')}</a></li>
+              <li>
+                <a href={blogUrl} target="_blank" rel="noopener noreferrer">
+                  {language === 'bg' ? 'Блог' : 'Blog'}
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -214,6 +225,9 @@ const Footer: React.FC = () => {
                 <a href="/terms-of-service">{language === 'bg' ? 'Условия за ползване' : 'Terms of Service'}</a>
                 <a href="/cookie-policy">{language === 'bg' ? 'Политика за бисквитки' : 'Cookie Policy'}</a>
                 <a href="/data-deletion">{language === 'bg' ? 'Изтриване на данни' : 'Data Deletion'}</a>
+                <a href={blogUrl} target="_blank" rel="noopener noreferrer">
+                  {language === 'bg' ? 'Блог' : 'Blog'}
+                </a>
               </div>
             </div>
             <div className="footer-bottom-language">

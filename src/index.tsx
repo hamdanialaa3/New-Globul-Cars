@@ -17,7 +17,7 @@ import webVitalsTracker from './utils/webVitals';
 import './firebase/firebase-config';
 
 // Validate environment variables (only in production to avoid breaking development)
-if (process.env.NODE_ENV === 'production') {
+if (import.meta.env.PROD) {
   try {
     const { validateEnvironmentVariables } = require('./config/env-validation');
     validateEnvironmentVariables();
@@ -31,7 +31,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Clear browser cache in development mode
-if (process.env.NODE_ENV === 'development') {
+if (import.meta.env.DEV) {
   // Force clear localStorage cache keys that might cause stale data
   const cacheKeys = ['workflow_draft', 'current_draft_id', 'favorites_cache', 'user_preferences'];
   cacheKeys.forEach(key => {
@@ -67,7 +67,7 @@ root.render(
 
 // Register Service Worker with Workbox (production only)
 // Re-enabled with proper cache strategy
-if (process.env.NODE_ENV === 'production') {
+if (import.meta.env.PROD) {
   registerServiceWorker({
     onSuccess: () => {
       logger.info('✅ Content cached for offline use');
@@ -99,24 +99,10 @@ if (process.env.NODE_ENV === 'production') {
     });
   }
 
-  // Add cache busting query parameter to all script/style tags in development
-  if (typeof window !== 'undefined') {
-    const timestamp = Date.now();
-    const links = document.querySelectorAll('link[rel="stylesheet"]');
-    const scripts = document.querySelectorAll('script[src]');
-
-    links.forEach((link: any) => {
-      if (link.href && !link.href.includes('?v=')) {
-        link.href += `?v=${timestamp}`;
-      }
-    });
-
-    scripts.forEach((script: any) => {
-      if (script.src && !script.src.includes('?v=')) {
-        script.src += `?v=${timestamp}`;
-      }
-    });
-  }
+  // Cache busting removed – Vite handles this via hashed filenames in production
+  // and HMR in development. The old code was running in production due to
+  // vite-plugin-node-polyfills overriding process.env.NODE_ENV, causing CSS
+  // to be re-fetched with ?v= params (doubling network requests).
 }
 
 // Install prompt handled by usePWA hook and InstallPrompt component

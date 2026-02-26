@@ -9,7 +9,7 @@ import { aiQuotaService } from '../../../services/ai/ai-quota.service';
 import { AI_TIER_CONFIGS } from '../../../config/ai-tiers.config';
 import { AIQuotaDisplay, AIPricingModal } from '../../../components/AI';
 import { logger } from '../../../services/logger-service';
-import aiUnifiedIcon from '../../../assets/icons/ai/koli_one_ai_Icon2.png';
+import aiUnifiedIcon from '../../../assets/icons/ai/koli_one_ai_Icon2.webp';
 
 export const AIDashboardPage: React.FC = () => {
   const { user } = useAuth();

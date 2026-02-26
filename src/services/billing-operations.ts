@@ -7,7 +7,7 @@
  */
 
 import { httpsCallable } from 'firebase/functions';
-import { loadStripe, Stripe } from '@stripe/stripe-js';
+import { loadStripe, Stripe } from '@stripe/stripe-js/pure';
 import { functions } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-service';
 import { normalizeError } from '../utils/error-helpers';
@@ -68,12 +68,26 @@ export class StripeClientOperations {
   private static stripe: Stripe | null = null;
   private static stripePromise: Promise<Stripe | null> | null = null;
   private static loadingFailed = false;
+  private static warnedDisabled = false;
 
   /**
    * Get Stripe instance
    * الحصول على مثيل Stripe
    */
   static async getStripeInstance(): Promise<Stripe | null> {
+    // Disable Stripe on homepage for performance; enable only on payment pages
+    const stripeEnabled = import.meta.env.VITE_ENABLE_STRIPE === 'true';
+    const isHomepage = typeof window !== 'undefined' && (window.location.pathname === '/' || window.location.pathname === '');
+    
+    if (!stripeEnabled || isHomepage) {
+      if (!this.warnedDisabled && !stripeEnabled) {
+        serviceLogger.warn('Stripe disabled (VITE_ENABLE_STRIPE not set)');
+        this.warnedDisabled = true;
+      }
+      this.loadingFailed = true;
+      return null;
+    }
+
     // If loading failed before, don't retry
     if (this.loadingFailed) {
       return null;

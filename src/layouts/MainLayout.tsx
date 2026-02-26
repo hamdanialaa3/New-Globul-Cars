@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { safeLazy } from '../utils/lazyImport';
+import Footer from '../components/Footer/Footer';
 import PageTransition from '../components/PageTransition/PageTransition';
 
 // Like AppRoutes.tsx, we define styles inline or use classes. 
@@ -10,7 +11,6 @@ import PageTransition from '../components/PageTransition/PageTransition';
 const Header = safeLazy(() => import('../components/Header/UnifiedHeader'));
 const MobileHeader = safeLazy(() => import('../components/Header/MobileHeader'));
 const MobileBottomNav = safeLazy(() => import('../components/layout/MobileBottomNav'));
-const Footer = safeLazy(() => import('../components/Footer/Footer'));
 const FloatingAddButton = safeLazy(() => import('../components/FloatingAddButton'));
 // ✅ MERGED: RobotChatIcon and AIChatbotWidget merged into UnifiedAIChat
 const UnifiedAIChat = safeLazy(() => import('../components/AI/UnifiedAIChat'));
@@ -22,6 +22,39 @@ export const MainLayout: React.FC = () => {
     const isSellPage = location.pathname === '/sell/auto';
     const isDeleteMockCarsPage = location.pathname === '/admin/delete-mock-cars';
     const hideFooter = isSellPage || isDeleteMockCarsPage;
+
+    const [showDeferredUI, setShowDeferredUI] = React.useState(false);
+
+    React.useEffect(() => {
+        let idleId: number | null = null;
+
+        const scheduleDeferred = () => {
+            if ('requestIdleCallback' in window) {
+                idleId = (window as any).requestIdleCallback(() => {
+                    setShowDeferredUI(true);
+                }, { timeout: 2000 });
+            } else {
+                idleId = window.setTimeout(() => setShowDeferredUI(true), 2000);
+            }
+        };
+
+        if (document.readyState === 'complete') {
+            scheduleDeferred();
+        } else {
+            window.addEventListener('load', scheduleDeferred, { once: true });
+        }
+
+        return () => {
+            window.removeEventListener('load', scheduleDeferred);
+            if (idleId !== null) {
+                if ('cancelIdleCallback' in window) {
+                    (window as any).cancelIdleCallback(idleId);
+                } else {
+                    window.clearTimeout(idleId);
+                }
+            }
+        };
+    }, []);
     
     return (
         <div className="main-layout" style={{
@@ -64,11 +97,11 @@ export const MainLayout: React.FC = () => {
                 role="main"
                 style={{
                     flex: 1,
+                    minHeight: 'calc(100vh - 64px)',
                     paddingTop: isSellPage ? '0' : '0',
                     paddingBottom: isSellPage ? '0' : '0',
                     marginTop: isSellPage ? '0' : '0',
                     backgroundColor: 'transparent',
-                    transition: 'background-color 0.3s ease',
                     position: 'relative',
                     boxSizing: 'border-box',
                     ...(isSellPage && {
@@ -89,7 +122,6 @@ export const MainLayout: React.FC = () => {
 
                 <div className="page-container" style={{
                     backgroundColor: 'transparent',
-                    transition: 'background-color 0.3s ease',
                     ...(isSellPage && {
                         height: '100%',
                         width: '100%',
@@ -106,19 +138,19 @@ export const MainLayout: React.FC = () => {
             </main>
 
             {!hideFooter && (
-                <footer role="contentinfo">
-                    <Suspense fallback={<div style={{ height: '300px' }} />}>
-                        <Footer />
-                    </Suspense>
+                <footer role="contentinfo" style={{ flexShrink: 0, contain: 'layout style paint' }}>
+                    <Footer />
                 </footer>
             )}
 
             {/* MobileBottomNav: always rendered (hides itself on ≥768px via CSS) */}
-            <Suspense fallback={null}>
-                <MobileBottomNav />
-            </Suspense>
+            {showDeferredUI && (
+                <Suspense fallback={null}>
+                    <MobileBottomNav />
+                </Suspense>
+            )}
 
-            {!hideFooter && (
+            {!hideFooter && showDeferredUI && (
                 <>
                     <Suspense fallback={null}>
                         <FloatingAddButton />

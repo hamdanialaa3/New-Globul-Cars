@@ -68,8 +68,9 @@ const LazySection: React.FC<LazySectionProps> = React.memo(({
     <div
       ref={sectionRef}
       style={{
-        minHeight: isVisible ? 'auto' : minHeight,
-        position: 'relative'
+        minHeight: isVisible ? undefined : minHeight,
+        position: 'relative',
+        contain: isVisible ? undefined : 'layout size',
       }}
     >
       {isVisible ? (

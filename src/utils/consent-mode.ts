@@ -117,6 +117,13 @@ export const updateConsent = (settings: Partial<ConsentSettings>): void => {
   // Save to localStorage for persistence
   saveConsentPreferences(settings);
 
+  // Notify listeners about consent change
+  try {
+    window.dispatchEvent(new CustomEvent('consent-updated', { detail: settings }));
+  } catch (error) {
+    logger.error('[Consent Mode] Failed to emit consent update', error as Error);
+  }
+
   // Log update
   if (process.env.NODE_ENV === 'development') {
     logger.debug('[Consent Mode] Updated consent', { settings });

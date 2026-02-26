@@ -8,7 +8,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { loadStripe } from '@stripe/stripe-js';
+import { loadStripe } from '@stripe/stripe-js/pure';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { doc, updateDoc } from 'firebase/firestore';
@@ -16,9 +16,15 @@ import { db } from '@/firebase/firebase-config';
 import { logger } from '@/services/logger-service';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-// Only initialise Stripe when a real key is configured (avoids "Stripe.js not available" crash)
-const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
-const stripePromise = stripeKey ? loadStripe(stripeKey) : Promise.resolve(null);
+// Only initialise Stripe when a real key is configured – lazy to avoid loading on every page
+let _stripePromise: ReturnType<typeof loadStripe> | null = null;
+const getStripePromise = () => {
+  if (!_stripePromise) {
+    const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+    _stripePromise = stripeKey ? loadStripe(stripeKey) : Promise.resolve(null);
+  }
+  return _stripePromise;
+};
 
 interface PromotionProduct {
   type: 'vip_badge' | 'top_of_page' | 'instant_refresh';
@@ -287,7 +293,7 @@ export const PromotionPurchaseModal: React.FC<PromotionPurchaseModalProps> = ({
                 <strong>{selectedPromotion.price}€</strong>
               </div>
             </SelectedProductSummary>
-            <Elements stripe={stripePromise}>
+            <Elements stripe={getStripePromise()}>
               <PaymentForm
                 selectedPromotion={selectedPromotion}
                 listingId={listingId}

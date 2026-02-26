@@ -109,9 +109,10 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: 'build', // Match CRA output directory
       sourcemap: false, // Disabled for production security (from craco config)
+      target: 'es2020', // Modern target - smaller output
+      minify: 'esbuild', // Fast, modern minification
       
-      // Code splitting: only separate Firebase (large & independent)
-      // All other node_modules stay in one bundle to avoid circular deps
+      // Code splitting: granular chunks for better caching & smaller initial load
       rollupOptions: {
         output: {
           manualChunks: (id) => {
@@ -121,8 +122,48 @@ export default defineConfig(({ mode }) => {
               return 'vendor-firebase';
             }
             
+            // React core - rarely changes, cache separately
+            if (id.includes('node_modules/react-dom') ||
+                id.includes('node_modules/react/') ||
+                id.includes('node_modules/react-is') ||
+                id.includes('node_modules/scheduler')) {
+              return 'vendor-react';
+            }
+            
+            // Router - loaded on every page
+            if (id.includes('node_modules/react-router')) {
+              return 'vendor-router';
+            }
+            
+            // Styled-components - used everywhere
+            if (id.includes('node_modules/styled-components') ||
+                id.includes('node_modules/stylis')) {
+              return 'vendor-styled';
+            }
+            
+            // Framer Motion - animation library (large)
+            if (id.includes('node_modules/framer-motion')) {
+              return 'vendor-framer';
+            }
+            
+            // MUI (Material UI) - large, used selectively
+            if (id.includes('node_modules/@mui') ||
+                id.includes('node_modules/@emotion')) {
+              return 'vendor-mui';
+            }
+            
+            // Algolia search
+            if (id.includes('node_modules/algoliasearch') ||
+                id.includes('node_modules/@algolia')) {
+              return 'vendor-algolia';
+            }
+            
+            // Lucide icons
+            if (id.includes('node_modules/lucide-react')) {
+              return 'vendor-icons';
+            }
+            
             // All other node_modules in one bundle
-            // (react, react-is, styled-components, MUI, etc.)
             if (id.includes('node_modules')) {
               return 'vendor';
             }
@@ -153,8 +194,14 @@ export default defineConfig(({ mode }) => {
     optimizeDeps: {
       include: ['react', 'react-dom', 'react-is', 'firebase/app', 'firebase/auth', 'firebase/firestore', 'framer-motion'],
       esbuildOptions: {
-        target: 'es2017', // Match craco config
+        target: 'es2020', // Modern browsers - smaller output, no legacy transforms
       },
+    },
+    
+    // Modern target for smaller output
+    esbuild: {
+      target: 'es2020',
+      drop: mode === 'production' ? ['console', 'debugger'] : [],
     },
   };
 });

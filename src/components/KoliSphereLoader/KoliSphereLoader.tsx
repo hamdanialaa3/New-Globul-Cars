@@ -4,7 +4,7 @@
 
 import React, { memo } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import aiIcon from '../../assets/icons/koli_one_ai_Icon2.png';
+import aiIcon from '../../assets/icons/koli_one_ai_Icon2.webp';
 
 export interface KoliSphereLoaderProps {
   size?: 'small' | 'medium' | 'large';

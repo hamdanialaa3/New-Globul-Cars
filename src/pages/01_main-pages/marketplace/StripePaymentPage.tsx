@@ -9,7 +9,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { CreditCard, Lock, AlertCircle, Loader } from 'lucide-react';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { loadStripe, Stripe } from '@stripe/stripe-js';
+import { loadStripe, Stripe } from '@stripe/stripe-js/pure';
 import styledImport from 'styled-components';
 
 import { useLanguage } from '../../../contexts/LanguageContext';

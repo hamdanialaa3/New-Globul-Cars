@@ -25,6 +25,7 @@ import { UnifiedCar } from '../../../../services/car';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import { useFavorites } from '../../../../hooks/useFavorites';
+import { getCarDisplayImage } from '../../../../utils/getCarDisplayImage';
 
 // ============================================================================
 // STYLED COMPONENTS
@@ -378,14 +379,8 @@ const WeatherStyleCarCard: React.FC<WeatherStyleCarCardProps> = ({ car }) => {
 
   const imageUrl = useMemo(() => {
     if (imageError) return '';
-    if (car.mainImage) return car.mainImage;
-    if (Array.isArray(car.images) && car.images.length > 0) {
-      // Use featuredImageIndex if available, fallback to first image
-      const featuredIdx = car.featuredImageIndex || 0;
-      return car.images[featuredIdx] || car.images[0];
-    }
-    return '';
-  }, [car.images, car.mainImage, car.featuredImageIndex, imageError]);
+    return getCarDisplayImage(car);
+  }, [car, imageError]);
 
   const handleViewDetails = () => {
     // ✅ CONSTITUTION: Use numeric URL pattern
