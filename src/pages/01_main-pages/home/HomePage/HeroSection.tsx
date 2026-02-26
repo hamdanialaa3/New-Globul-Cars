@@ -2,6 +2,7 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../../../contexts/LanguageContext';
+import { sanitizeHTML } from '../../../../utils/sanitize';
 import AdvancedSearchWidget from './AdvancedSearchWidget';
 
 const HeroSection = styled.section`
@@ -122,7 +123,7 @@ const HeroSectionComponent: React.FC = () => {
 
       <HeroContent>
         <HeroTitleWrap>
-          <HeroTitle dangerouslySetInnerHTML={{ __html: t('home.hero.title').replace(/\n/g, '<br/>') }} />
+          <HeroTitle dangerouslySetInnerHTML={{ __html: sanitizeHTML(t('home.hero.title').replace(/\n/g, '<br/>')) }} />
         </HeroTitleWrap>
         <HeroSubtitle>{t('home.hero.subtitle')}</HeroSubtitle>
 

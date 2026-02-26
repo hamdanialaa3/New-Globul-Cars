@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { Network, Info, Zap, Database, Cloud, Cpu, Globe, Lock } from 'lucide-react';
+import { sanitizeHTML } from '../../utils/sanitize';
 
 const ArchitectureSection = styled.div`
   background: #0f1419;
@@ -295,7 +296,7 @@ const ArchitecturePanel: React.FC<ArchitecturePanelProps> = ({ language }) => {
                 </ExplanationTitle>
                 <ExplanationList language={language}>
                     {t.explanationPoints.map((point, index) => (
-                        <li key={index} dangerouslySetInnerHTML={{ __html: point }} />
+                        <li key={index} dangerouslySetInnerHTML={{ __html: sanitizeHTML(point) }} />
                     ))}
                 </ExplanationList>
             </DetailedExplanation>

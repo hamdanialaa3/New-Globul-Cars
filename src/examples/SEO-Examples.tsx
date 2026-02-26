@@ -8,6 +8,7 @@
 import React from 'react';
 import SEOHelmet from '@/utils/seo/SEOHelmet';
 import LazyImage from '@/components/SEO/LazyImage';
+import { sanitizeHTML } from '@/utils/sanitize';
 import {
     generateCarProductSchema,
     generateArticleSchema,
@@ -213,7 +214,7 @@ export const BlogPostPageExample: React.FC<BlogPostExampleProps> = ({ post }) =>
             />
 
             {/* Content */}
-            <div dangerouslySetInnerHTML={{ __html: post.content }} />
+            <div dangerouslySetInnerHTML={{ __html: sanitizeHTML(post.content) }} />
         </>
     );
 };

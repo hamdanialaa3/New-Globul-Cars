@@ -30,6 +30,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import NoSearchResults from '../EmptyStates/NoSearchResults';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import MobileDeCard from './MobileDeCard';
+import { sanitizeHighlight } from '../../utils/sanitize';
 import '../../styles/mobile-de-search.css';
 
 // ============================================================================
@@ -629,7 +630,7 @@ const Hit: React.FC<HitProps> = ({ hit }) => {
 
       <HitContent>
         <HitTitle dangerouslySetInnerHTML={{
-          __html: `${hit._highlightResult?.make?.value || hit.make} ${hit._highlightResult?.model?.value || hit.model}`
+          __html: sanitizeHighlight(`${hit._highlightResult?.make?.value || hit.make} ${hit._highlightResult?.model?.value || hit.model}`)
         }} />
 
         <HitPrice>€{hit.price?.toLocaleString()} <small style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 400 }}>EUR</small></HitPrice>

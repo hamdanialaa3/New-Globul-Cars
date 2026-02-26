@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import styled from 'styled-components';
 import { AdCampaign } from '../types';
 import { useAdTracker } from '../hooks/useAdHooks';
-import { SmartAdSenseUnit } from './SmartAdSenseUnit'; // New Import
+import { SmartAdSenseUnit } from './SmartAdSenseUnit';
 
 const AdWrapper = styled.div`
   display: flex;
@@ -95,11 +95,16 @@ export const AdRenderer: React.FC<AdRendererProps> = ({ ad, placementId, hasCons
     }
 
     if ((ad.type === 'html_js' || ad.type.startsWith('google')) && ad.scriptCode) {
+        // SECURITY: Render ad scripts in a sandboxed iframe to prevent XSS
+        const srcDoc = `<!DOCTYPE html><html><head><style>body{margin:0;overflow:hidden}</style></head><body>${ad.scriptCode}</body></html>`;
         return (
-            <AdWrapper id={`ad-${ad.id}`} className="ad-unit ad-script">
-                <div
-                    dangerouslySetInnerHTML={{ __html: ad.scriptCode }}
-                    onClick={handleClick}
+            <AdWrapper id={`ad-${ad.id}`} className="ad-unit ad-script" onClick={handleClick}>
+                <iframe
+                    srcDoc={srcDoc}
+                    sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
+                    style={{ border: 'none', width: '100%', minHeight: '90px' }}
+                    title={`Ad: ${ad.name || ad.id}`}
+                    loading="lazy"
                 />
             </AdWrapper>
         );

@@ -25,6 +25,17 @@ service cloud.firestore {
     function isReasonableSize() {
       return request.resource.data.keys().size() < 500;
     }
+
+    // SECURITY: Prevent users from setting privileged fields on create/update
+    function noPrivilegedFields() {
+      return !request.resource.data.diff(resource.data).affectedKeys()
+        .hasAny(['isVerified', 'featured', 'trustScore', 'isAdmin', 'adminApproved', 'verifiedAt']);
+    }
+
+    function noPrivilegedFieldsOnCreate() {
+      return !request.resource.data.keys()
+        .hasAny(['isVerified', 'featured', 'trustScore', 'isAdmin', 'adminApproved', 'verifiedAt']);
+    }
     
     // ============================================
     // USERS Collection
@@ -66,12 +77,14 @@ service cloud.firestore {
       // Anyone can read active/published cars
       allow read: if true;
       
-      // Sellers can create cars — must own listing
+      // Sellers can create cars — must own listing, no privileged fields
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
+        && request.auth.uid == request.resource.data.sellerId
+        && noPrivilegedFieldsOnCreate();
       
-      // Only seller can update their own listing
-      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      // Only seller can update their own listing, no privileged fields
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid
+        && noPrivilegedFields();
       
       // Only seller or admin can delete
       allow delete: if isAuthenticated() && (
@@ -86,8 +99,10 @@ service cloud.firestore {
     match /passenger_cars/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
-      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+        && request.auth.uid == request.resource.data.sellerId
+        && noPrivilegedFieldsOnCreate();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid
+        && noPrivilegedFields();
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
       );
@@ -96,8 +111,10 @@ service cloud.firestore {
     match /suvs/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
-      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+        && request.auth.uid == request.resource.data.sellerId
+        && noPrivilegedFieldsOnCreate();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid
+        && noPrivilegedFields();
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
       );
@@ -106,8 +123,10 @@ service cloud.firestore {
     match /vans/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
-      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+        && request.auth.uid == request.resource.data.sellerId
+        && noPrivilegedFieldsOnCreate();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid
+        && noPrivilegedFields();
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
       );
@@ -116,8 +135,10 @@ service cloud.firestore {
     match /motorcycles/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
-      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+        && request.auth.uid == request.resource.data.sellerId
+        && noPrivilegedFieldsOnCreate();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid
+        && noPrivilegedFields();
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
       );
@@ -126,8 +147,10 @@ service cloud.firestore {
     match /trucks/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
-      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+        && request.auth.uid == request.resource.data.sellerId
+        && noPrivilegedFieldsOnCreate();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid
+        && noPrivilegedFields();
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
       );
@@ -136,8 +159,10 @@ service cloud.firestore {
     match /buses/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
-      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+        && request.auth.uid == request.resource.data.sellerId
+        && noPrivilegedFieldsOnCreate();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid
+        && noPrivilegedFields();
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
       );
@@ -146,8 +171,10 @@ service cloud.firestore {
     match /construction_machines/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
-      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+        && request.auth.uid == request.resource.data.sellerId
+        && noPrivilegedFieldsOnCreate();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid
+        && noPrivilegedFields();
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
       );
@@ -156,8 +183,10 @@ service cloud.firestore {
     match /agricultural_machines/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
-      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+        && request.auth.uid == request.resource.data.sellerId
+        && noPrivilegedFieldsOnCreate();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid
+        && noPrivilegedFields();
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
       );
@@ -166,8 +195,10 @@ service cloud.firestore {
     match /trailers/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
-      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+        && request.auth.uid == request.resource.data.sellerId
+        && noPrivilegedFieldsOnCreate();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid
+        && noPrivilegedFields();
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
       );
@@ -176,8 +207,10 @@ service cloud.firestore {
     match /campers/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
-      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+        && request.auth.uid == request.resource.data.sellerId
+        && noPrivilegedFieldsOnCreate();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid
+        && noPrivilegedFields();
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
       );
@@ -476,7 +509,7 @@ service cloud.firestore {
     // 🔒 SECURED: Rate-limit via data size check, immutable after creation
     // ============================================
     match /analytics_events/{eventId} {
-      allow create: if isReasonableSize() && request.resource.data.keys().size() < 20;
+      allow create: if isAuthenticated() && isReasonableSize() && request.resource.data.keys().size() < 20;
       allow read: if isAuthenticated() && isAdmin();
       allow update, delete: if false;
     }
@@ -505,13 +538,13 @@ service cloud.firestore {
     // 🔒 SECURED: Size-limited creates, admin-only read
     // ============================================
     match /searchAnalytics/{eventId} {
-      allow create: if isReasonableSize() && request.resource.data.keys().size() < 15;
+      allow create: if isAuthenticated() && isReasonableSize() && request.resource.data.keys().size() < 15;
       allow read: if isAuthenticated() && isAdmin();
       allow update, delete: if false;
     }
 
     match /searchClicks/{eventId} {
-      allow create: if isReasonableSize() && request.resource.data.keys().size() < 15;
+      allow create: if isAuthenticated() && isReasonableSize() && request.resource.data.keys().size() < 15;
       allow read: if isAuthenticated() && isAdmin();
       allow update, delete: if false;
     }
@@ -526,7 +559,7 @@ service cloud.firestore {
     // 🔒 SECURED: Size-limited creates
     // ============================================
     match /car_views/{eventId} {
-      allow create: if isReasonableSize() && request.resource.data.keys().size() < 15;
+      allow create: if isAuthenticated() && isReasonableSize() && request.resource.data.keys().size() < 15;
       allow read: if isAuthenticated() && isAdmin();
       allow update, delete: if false;
     }
@@ -707,13 +740,13 @@ service cloud.firestore {
     // 🔒 SECURED: Size-limited creates, immutable
     // ============================================
     match /page_views/{docId} {
-      allow create: if isReasonableSize() && request.resource.data.keys().size() < 15;
+      allow create: if isAuthenticated() && isReasonableSize() && request.resource.data.keys().size() < 15;
       allow read: if isAuthenticated() && isAdmin();
       allow update, delete: if false;
     }
 
     match /views/{docId} {
-      allow create: if isReasonableSize() && request.resource.data.keys().size() < 15;
+      allow create: if isAuthenticated() && isReasonableSize() && request.resource.data.keys().size() < 15;
       allow read: if isAuthenticated() && isAdmin();
       allow update, delete: if false;
     }
@@ -773,10 +806,24 @@ service cloud.firestore {
       );
       allow delete: if false;
 
+      // SECURITY: Subcollection access restricted to room participants
+      // Uses get() to check parent document membership
       match /{document=**} {
-        allow read: if isAuthenticated();
-        allow create: if isAuthenticated();
-        allow update: if isAuthenticated();
+        allow read: if isAuthenticated() && (
+          get(/databases/$(database)/documents/chatRooms/$(roomId)).data.participantIds.hasAny([request.auth.uid]) ||
+          get(/databases/$(database)/documents/chatRooms/$(roomId)).data.buyerId == request.auth.uid ||
+          get(/databases/$(database)/documents/chatRooms/$(roomId)).data.sellerId == request.auth.uid
+        );
+        allow create: if isAuthenticated() && (
+          get(/databases/$(database)/documents/chatRooms/$(roomId)).data.participantIds.hasAny([request.auth.uid]) ||
+          get(/databases/$(database)/documents/chatRooms/$(roomId)).data.buyerId == request.auth.uid ||
+          get(/databases/$(database)/documents/chatRooms/$(roomId)).data.sellerId == request.auth.uid
+        );
+        allow update: if isAuthenticated() && (
+          get(/databases/$(database)/documents/chatRooms/$(roomId)).data.participantIds.hasAny([request.auth.uid]) ||
+          get(/databases/$(database)/documents/chatRooms/$(roomId)).data.buyerId == request.auth.uid ||
+          get(/databases/$(database)/documents/chatRooms/$(roomId)).data.sellerId == request.auth.uid
+        );
         allow delete: if false;
       }
     }
@@ -1208,7 +1255,7 @@ service cloud.firestore {
     // 🔒 SECURED: Ownership enforced or Cloud Functions only
     // ============================================
     match /contact_submissions/{docId} {
-      allow create: if isReasonableSize() && request.resource.data.keys().size() < 20;
+      allow create: if isAuthenticated() && isReasonableSize() && request.resource.data.keys().size() < 20;
       allow read: if isAuthenticated() && isAdmin();
       allow update, delete: if false;
     }

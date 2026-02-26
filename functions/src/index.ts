@@ -78,11 +78,25 @@ const getAiService = () => {
 };
 
 export const evaluateCar = functions.https.onCall(async (data, context) => {
-    // 1. Validate Inputs
-    const { imageBase64, price, marketAvg } = data as any;
+    // SECURITY: Require authentication — AI calls are expensive
+    if (!context.auth) {
+        throw new functions.https.HttpsError('unauthenticated', 'Authentication required for car evaluation');
+    }
 
-    if (!imageBase64) {
+    // 1. Validate Inputs
+    const { imageBase64, price, marketAvg } = data as {
+        imageBase64?: string;
+        price?: number;
+        marketAvg?: number;
+    };
+
+    if (!imageBase64 || typeof imageBase64 !== 'string') {
         throw new functions.https.HttpsError('invalid-argument', 'Image is required for analysis (Base64)');
+    }
+
+    // Validate Base64 payload size (max ~5MB encoded)
+    if (imageBase64.length > 7_000_000) {
+        throw new functions.https.HttpsError('invalid-argument', 'Image too large (max 5MB)');
     }
 
     try {
