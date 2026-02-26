@@ -26,28 +26,18 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<BulgarianUser | null>(null);
-  const [loading, setLoading] = useState(true);
+  // If Firebase auth is missing, skip the loading state entirely
+  const [loading, setLoading] = useState(!!auth);
   // Ref to store the Firestore profile unsubscribe function
   const profileUnsubscribeRef = useRef<(() => void) | null>(null);
 
-  // ✅ CRITICAL: Check if Firebase is properly initialized
-  if (!auth) {
-    logger.error('Firebase auth is not initialized');
-    return (
-      <AuthContext.Provider value={{
-        currentUser: null,
-        user: null,
-        loading: false,
-        login: async () => { throw new Error('Firebase not initialized'); },
-        register: async () => { throw new Error('Firebase not initialized'); },
-        logout: async () => { throw new Error('Firebase not initialized'); }
-      }}>
-        {children}
-      </AuthContext.Provider>
-    );
-  }
-
   useEffect(() => {
+    // ✅ Guard: skip auth subscription when Firebase is not initialised
+    if (!auth) {
+      logger.error('Firebase auth is not initialized — AuthProvider is passive');
+      return;
+    }
+
     // ✅ isActive guard: prevents stale callbacks after React Strict Mode cleanup
     let isActive = true;
 
@@ -253,6 +243,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
+    if (!auth) throw new Error('Firebase not initialized');
     try {
       await signInWithEmailAndPassword(auth, email, password);
       logger.info('User logged in successfully', { email });
@@ -263,6 +254,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const register = useCallback(async (email: string, password: string, options?: RegisterOptions) => {
+    if (!auth) throw new Error('Firebase not initialized');
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
@@ -281,6 +273,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const logout = useCallback(async () => {
+    if (!auth) throw new Error('Firebase not initialized');
     try {
       await signOut(auth);
       logger.info('User logged out successfully');

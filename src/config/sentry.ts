@@ -2,19 +2,18 @@
  * Sentry Configuration for Error Tracking and Performance Monitoring
  * 
  * Setup Instructions:
- * 1. Install packages: npm install @sentry/react @sentry/tracing
+ * 1. Install package: npm install @sentry/react
  * 2. Create Sentry account at sentry.io
  * 3. Get DSN from project settings
- * 4. Add REACT_APP_SENTRY_DSN to .env
+ * 4. Add VITE_SENTRY_DSN to .env
  * 5. Import and call initSentry() in index.tsx before ReactDOM.render
  */
 
 import * as Sentry from '@sentry/react';
-import { BrowserTracing } from '@sentry/tracing';
 
 export function initSentry() {
     // Only initialize in production
-    if (process.env.NODE_ENV !== 'production') {
+    if (import.meta.env.MODE !== 'production') {
         // Sentry disabled in development
         return;
     }
@@ -30,19 +29,14 @@ export function initSentry() {
         dsn,
 
         // Set environment
-        environment: process.env.NODE_ENV,
+        environment: import.meta.env.MODE,
 
         // Release version (use git commit hash or package version)
         release: `koli-one@${import.meta.env.VITE_VERSION || '1.0.0'}`,
 
-        // Performance Monitoring
+        // Performance Monitoring — v10 API (replaces deprecated BrowserTracing)
         integrations: [
-            new BrowserTracing({
-                // Trace all routes
-                routingInstrumentation: Sentry.reactRouterV6Instrumentation(
-                    // Will be provided by React Router
-                ),
-            }),
+            Sentry.browserTracingIntegration(),
         ],
 
         // Sample rate for performance monitoring (0.0 to 1.0)
@@ -160,10 +154,10 @@ export function addBreadcrumb(message: string, data?: Record<string, any>) {
 }
 
 /**
- * Start a performance transaction
+ * Start a performance span (v10 API — replaces removed startTransaction)
  */
 export function startTransaction(name: string, op: string) {
-    return Sentry.startTransaction({
+    return Sentry.startInactiveSpan({
         name,
         op,
     });

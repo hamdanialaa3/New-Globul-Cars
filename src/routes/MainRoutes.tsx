@@ -443,7 +443,7 @@ export const MainRoutes: React.FC = () => {
                     </AuthGuard>
                 }
             />
-            <Route path="/analytics" element={<AnalyticsDashboard />} />
+            {/* ✅ STABILITY FIX: Unguarded /analytics removed — B2B portal below requires auth */}
             <Route path="/team" element={<TeamManagement />} />
             <Route path="/users" element={<UsersDirectoryPage />} />
             <Route path="/all-users" element={<UsersDirectoryPage />} />
@@ -498,9 +498,9 @@ export const MainRoutes: React.FC = () => {
             <Route
                 path="/super-admin/finance/manual-payments"
                 element={
-                    <AuthGuard requireAuth={true} requireAdmin={true}>
+                    <RoleGuard requireSuperAdmin={true}>
                         <AdminManualPaymentsDashboard />
-                    </AuthGuard>
+                    </RoleGuard>
                 }
             />
             {/* Moved to Dev Tools Block */},
@@ -566,7 +566,8 @@ export const MainRoutes: React.FC = () => {
 
             <Route path="/my-listings" element={<AuthGuard requireAuth={true}><MyListingsPage /></AuthGuard>} />
             <Route path="/my-drafts" element={<AuthGuard requireAuth={true}><MyDraftsPage /></AuthGuard>} />
-            <Route path="/analytics" element={<AuthGuard requireAuth={true}><B2BAnalyticsPortal /></AuthGuard>} />
+            <Route path="/analytics" element={<AuthGuard requireAuth={true}><AnalyticsDashboard /></AuthGuard>} />
+            <Route path="/analytics/b2b" element={<AuthGuard requireAuth={true}><B2BAnalyticsPortal /></AuthGuard>} />
             {/* DEAD ROUTE: <Route path="/digital-twin" element={<AuthGuard requireAuth={true}><DigitalTwinPage /></AuthGuard>} /> */}
             <Route path="/subscription" element={<AuthGuard requireAuth={true}><SubscriptionPage /></AuthGuard>} />
             <Route path="/migration" element={<AuthGuard requireAuth={true}><MigrationPage /></AuthGuard>} />
@@ -602,13 +603,7 @@ export const MainRoutes: React.FC = () => {
                     return { Component: LaunchOfferPage.default };
                 }}
             />
-            <Route
-                path="/competitive-comparison"
-                lazy={async () => {
-                    const CompetitiveComparisonPage = await import('../pages/10_landing/CompetitiveComparisonPage');
-                    return { Component: CompetitiveComparisonPage.default };
-                }}
-            />
+            {/* ✅ STABILITY FIX: Duplicate lazy /competitive-comparison removed — static route above handles it */}
 
             {/* SEO City-Brand Pages: /bmw-sofia, /audi-plovdiv, etc. */}
             <Route path="/:slug" element={<SEOCityBrandPage />} />

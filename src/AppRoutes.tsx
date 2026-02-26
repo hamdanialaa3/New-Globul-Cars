@@ -1,8 +1,5 @@
 import React, { Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from 'styled-components';
-import { bulgarianTheme, GlobalStyles } from './styles/theme';
-import { useTheme } from './contexts/ThemeContext';
 import { safeLazy } from './utils/lazyImport';
 import SmartLoader from './components/SmartLoaderCSS';
 import InactivityWarning from './components/InactivityWarning';
@@ -18,8 +15,8 @@ const ForgotPasswordPage = safeLazy(() => import('./pages/02_authentication/forg
 const EmailVerificationPage = safeLazy(() => import('./pages/02_authentication/verification/EmailVerificationPage'));
 const OAuthCallback = safeLazy(() => import('./pages/02_authentication/oauth/OAuthCallbackPage'));
 const SuperAdminLogin = safeLazy(() => import('./pages/02_authentication/admin-login/SuperAdminLoginPage'));
-const SuperAdminDashboard = safeLazy(() => import('./pages/06_admin/super-admin/SuperAdminDashboard'));
-const SuperAdminUsersPage = safeLazy(() => import('./pages/06_admin/super-admin/SuperAdminUsersPage'));
+// ✅ STABILITY FIX: Removed unguarded SuperAdminDashboard & SuperAdminUsersPage imports
+// — These routes are handled by MainRoutes with proper RoleGuard
 
 // Modularized Routes & Layout
 import { MainLayout } from './layouts/MainLayout';
@@ -41,18 +38,10 @@ const FullScreenLayout: React.FC<{ children: React.ReactNode }> = ({ children })
 };
 
 // Main AppRoutes Component
+// ✅ STABILITY FIX: Removed duplicate ThemeProvider — AppProviders already provides it
 const AppRoutes: React.FC = () => {
-    const { theme } = useTheme();
-
-    // Create dynamic theme based on mode AND apply bulgarianTheme tokens
-    const dynamicTheme = React.useMemo(() => ({
-        ...bulgarianTheme,
-        mode: theme
-    }), [theme]);
-
     return (
-        <ThemeProvider theme={dynamicTheme}>
-            <GlobalStyles />
+        <>
             <InactivityWarning />
             <Suspense fallback={null}>
                 <GlobalWorkflowTimer />
@@ -91,16 +80,8 @@ const AppRoutes: React.FC = () => {
                             <SuperAdminLogin />
                         </FullScreenLayout>
                     } />
-                    <Route path="/super-admin" element={
-                        <FullScreenLayout>
-                            <SuperAdminDashboard />
-                        </FullScreenLayout>
-                    } />
-                    <Route path="/super-admin/users" element={
-                        <FullScreenLayout>
-                            <SuperAdminUsersPage />
-                        </FullScreenLayout>
-                    } />
+                    {/* ✅ STABILITY FIX: /super-admin and /super-admin/users removed here
+                        — MainRoutes handles them with RoleGuard requireSuperAdmin */}
                     <Route path="/debug/ads" element={
                         <FullScreenLayout>
                             <DebugAdsPage />
@@ -117,7 +98,7 @@ const AppRoutes: React.FC = () => {
                     </Route>
                 </Routes>
             </Suspense>
-        </ThemeProvider>
+        </>
     );
 };
 
