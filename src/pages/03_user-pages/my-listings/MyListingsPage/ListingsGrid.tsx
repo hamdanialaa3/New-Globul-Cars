@@ -65,7 +65,7 @@ const ListingsGridComponent: React.FC<ListingsGridProps> = ({
                 {listing.isUrgent && <div className="urgent-badge">🔥 Urgent</div>}
                 <div className="image-placeholder">
                   {listing.media.images.length > 0 ? (
-                    <img src={listing.media.images[0]} alt={listing.title} />
+                    <img src={listing.media.images[0]} alt={listing.title} loading="lazy" width={120} height={80} />
                   ) : (
                     <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
                       <CarIcon size={48} color="#FF7900" />

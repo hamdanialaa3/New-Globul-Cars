@@ -1,7 +1,7 @@
 // Minimal Service Worker for PWA functionality
 // This is a basic service worker that handles installation and activation
 
-const CACHE_NAME = 'mobilebg-v1';
+const CACHE_NAME = 'koli-one-v1';
 const urlsToCache = [
   '/',
   '/index.html',

@@ -14,10 +14,20 @@ export default defineConfig(({ mode }) => {
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'Permissions-Policy': 'camera=(), microphone=(), geolocation=()'
   };
-  
+
   return {
     plugins: [
-      react(),
+      react({
+        babel: {
+          plugins: [
+            ['babel-plugin-styled-components', {
+              displayName: process.env.NODE_ENV !== 'production',
+              fileName: false,
+              pure: true,
+            }],
+          ],
+        },
+      }),
       nodePolyfills({
         // Node polyfills for browser (from craco config)
         globals: {
@@ -39,12 +49,12 @@ export default defineConfig(({ mode }) => {
         threshold: 1024,
       }),
     ],
-    
+
     resolve: {
       alias: {
         // App src alias (from craco config)
         '@': path.resolve(__dirname, './src'),
-        
+
         // Monorepo packages (from craco config)
         '@globul-cars/core': path.resolve(__dirname, '../packages/core/src'),
         '@globul-cars/ui': path.resolve(__dirname, '../packages/ui/src'),
@@ -57,7 +67,7 @@ export default defineConfig(({ mode }) => {
         '@globul-cars/payments': path.resolve(__dirname, '../packages/payments/src'),
         '@globul-cars/iot': path.resolve(__dirname, '../packages/iot/src'),
         '@globul-cars/services': path.resolve(__dirname, '../packages/services/src'),
-        
+
         // Node polyfills (from craco config)
         'process/browser': 'process/browser',
         process: 'process/browser',
@@ -66,13 +76,13 @@ export default defineConfig(({ mode }) => {
         util: 'util',
       },
     },
-    
+
     server: {
       port: parseInt(env.PORT || '5173', 10),
       host: env.HOST || 'localhost',
       open: false,
       strictPort: false, // 🔧 جرب بورت آخر إذا كان المطلوب مشغول
-      
+
       // Cache control headers (from craco config)
       headers: {
         'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
@@ -81,12 +91,12 @@ export default defineConfig(({ mode }) => {
         'Surrogate-Control': 'no-store',
         ...securityHeaders,
       },
-      
+
       // HMR configuration
       hmr: {
         overlay: false,
       },
-      
+
       // File watching (from craco config)
       watch: {
         ignored: [
@@ -105,91 +115,112 @@ export default defineConfig(({ mode }) => {
         ...securityHeaders,
       },
     },
-    
+
     build: {
       outDir: 'build', // Match CRA output directory
       sourcemap: false, // Disabled for production security (from craco config)
       target: 'es2020', // Modern target - smaller output
       minify: 'esbuild', // Fast, modern minification
-      
+
       // Code splitting: granular chunks for better caching & smaller initial load
       rollupOptions: {
         output: {
           manualChunks: (id) => {
             // Firebase vendor bundle (1MB+, clearly independent)
-            if (id.includes('node_modules/@firebase') || 
-                id.includes('node_modules/firebase')) {
+            if (id.includes('node_modules/@firebase') ||
+              id.includes('node_modules/firebase')) {
               return 'vendor-firebase';
             }
-            
+
             // React core - rarely changes, cache separately
             if (id.includes('node_modules/react-dom') ||
-                id.includes('node_modules/react/') ||
-                id.includes('node_modules/react-is') ||
-                id.includes('node_modules/scheduler')) {
+              id.includes('node_modules/react/') ||
+              id.includes('node_modules/react-is') ||
+              id.includes('node_modules/scheduler')) {
               return 'vendor-react';
             }
-            
+
             // Router - loaded on every page
             if (id.includes('node_modules/react-router')) {
               return 'vendor-router';
             }
-            
+
             // Styled-components - used everywhere
             if (id.includes('node_modules/styled-components') ||
-                id.includes('node_modules/stylis')) {
+              id.includes('node_modules/stylis')) {
               return 'vendor-styled';
             }
-            
+
             // Framer Motion - animation library (large)
             if (id.includes('node_modules/framer-motion')) {
               return 'vendor-framer';
             }
-            
+
             // MUI (Material UI) - large, used selectively
             if (id.includes('node_modules/@mui') ||
-                id.includes('node_modules/@emotion')) {
+              id.includes('node_modules/@emotion')) {
               return 'vendor-mui';
             }
-            
+
             // Algolia search
             if (id.includes('node_modules/algoliasearch') ||
-                id.includes('node_modules/@algolia')) {
+              id.includes('node_modules/@algolia')) {
               return 'vendor-algolia';
             }
-            
+
+            // Sentry error tracking
+            if (id.includes('node_modules/@sentry')) {
+              return 'vendor-sentry';
+            }
+
+            // Stripe payments
+            if (id.includes('node_modules/@stripe')) {
+              return 'vendor-stripe';
+            }
+
+            // Charts (recharts) — only used on analytics pages
+            if (id.includes('node_modules/recharts') ||
+              id.includes('node_modules/d3-')) {
+              return 'vendor-charts';
+            }
+
+            // Maps (leaflet) — only used on map pages
+            if (id.includes('node_modules/leaflet') ||
+              id.includes('node_modules/react-leaflet')) {
+              return 'vendor-maps';
+            }
+
             // Lucide icons
             if (id.includes('node_modules/lucide-react')) {
               return 'vendor-icons';
             }
-            
+
             // All other node_modules in one bundle
             if (id.includes('node_modules')) {
               return 'vendor';
             }
           },
-          
-          // Add timestamp for cache busting (from craco config)
-          chunkFileNames: `assets/[name].[hash].${Date.now().toString(36)}.js`,
-          entryFileNames: `assets/[name].[hash].${Date.now().toString(36)}.js`,
-          assetFileNames: `assets/[name].[hash].[ext]`,
+
+          chunkFileNames: 'assets/[name].[hash].js',
+          entryFileNames: 'assets/[name].[hash].js',
+          assetFileNames: 'assets/[name].[hash].[ext]',
         },
       },
-      
+
       // Chunk size warnings (from craco config maxSize: 244000)
       chunkSizeWarningLimit: 244,
     },
-    
+
     // Environment variable prefix (CRA uses REACT_APP_*, Vite uses VITE_*)
     envPrefix: 'VITE_',
-    
+
     // CSS configuration
     css: {
       modules: {
         localsConvention: 'camelCase',
       },
     },
-    
+
     // Optimization
     optimizeDeps: {
       include: ['react', 'react-dom', 'react-is', 'firebase/app', 'firebase/auth', 'firebase/firestore', 'framer-motion'],
@@ -197,7 +228,7 @@ export default defineConfig(({ mode }) => {
         target: 'es2020', // Modern browsers - smaller output, no legacy transforms
       },
     },
-    
+
     // Modern target for smaller output
     esbuild: {
       target: 'es2020',

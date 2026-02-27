@@ -1,5 +1,5 @@
 // src/components/CarCardGermanStyle.tsx
-import React, { useState, useEffect } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import {
@@ -338,4 +338,4 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
   );
 };
 
-export default CarCardGermanStyle;
+export default memo(CarCardGermanStyle);

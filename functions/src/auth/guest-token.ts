@@ -24,7 +24,7 @@ import * as admin from 'firebase-admin';
 export const getGuestCustomToken = functions
   .region('europe-west1')
   .https
-  .onCall(async (data) => {
+  .onCall(async (data, context) => {
     const { guestUid } = data as { guestUid?: string };
 
     // Validate input
@@ -42,6 +42,14 @@ export const getGuestCustomToken = functions
         'Invalid UID format'
       );
     }
+
+    // SECURITY: Rate limit — max 5 guest token requests per UID per hour
+    const { enforceRateLimit } = await import('../utils/rate-limiter');
+    await enforceRateLimit(guestUid, {
+      collection: 'rate_limits_guest_token',
+      maxCalls: 5,
+      windowSeconds: 3600 // 1 hour
+    });
 
     try {
       const db = admin.firestore();

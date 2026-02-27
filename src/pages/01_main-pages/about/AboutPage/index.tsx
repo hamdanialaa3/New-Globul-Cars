@@ -10,6 +10,8 @@ import { collection, getCountFromServer } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-config';
 import { SellWorkflowCollections } from '@/services/sell-workflow-collections';
 import { serviceLogger } from '@/services/logger-service';
+import FAQSchema from '@/components/seo/FAQSchema';
+import RelatedContent from '@/components/seo/RelatedContent';
 import {
   Car,
   Users,
@@ -386,8 +388,33 @@ const AboutPage: React.FC = () => {
     return n > 0 ? `${n}+` : '—';
   };
 
+  // FAQ data for Schema.org rich results
+  const faqItems = [
+    {
+      question: 'Какво е Koli One?',
+      answer: 'Koli One е водещата AI-базирана платформа за покупка и продажба на автомобили в България. Предлагаме интелигентно търсене, AI оценка на цени и проверени обяви.',
+    },
+    {
+      question: 'Как работи AI оценката на цени?',
+      answer: 'Нашата система анализира данни от 7+ европейски пазара в реално време, сравнява характеристиките на автомобила и предлага справедлива пазарна цена с помощта на машинно обучение.',
+    },
+    {
+      question: 'Безплатно ли е да публикувам обява?',
+      answer: 'Да, публикуването на обява в Koli One е безплатно за частни лица. За дилъри и компании предлагаме професионални планове с допълнителни функции.',
+    },
+    {
+      question: 'В кои градове работи Koli One?',
+      answer: 'Koli One покрива цяла България — София, Пловдив, Варна, Бургас, Русе и всички останали 28 основни града.',
+    },
+    {
+      question: 'Как мога да се свържа с продавач?',
+      answer: 'Можете да изпратите съобщение директно през платформата, да се обадите по телефона или да използвате чат функцията. Всички контакти са защитени и сигурни.',
+    },
+  ];
+
   return (
     <AboutContainer $isDark={isDark}>
+      <FAQSchema items={faqItems} />
       <Container>
         <HeroSection $isDark={isDark}>
           <h1>{t('about.title', 'About Koli One')}</h1>
@@ -531,6 +558,9 @@ const AboutPage: React.FC = () => {
             </ContactItem>
           </ContactInfo>
         </TeamSection>
+
+        {/* Smart Internal Linking for SEO */}
+        <RelatedContent context="home" maxItems={3} />
       </Container>
     </AboutContainer>
   );

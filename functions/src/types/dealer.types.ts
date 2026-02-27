@@ -4,7 +4,7 @@ import { z } from "zod";
 export const initBulkUploadSchema = z.object({
     filename: z.string().min(1, "Filename is required"),
     rowCount: z.number().min(1).max(500, "Maximum 500 rows per upload"),
-    fieldsMapping: z.record(z.string()).optional(),
+    fieldsMapping: z.record(z.string(), z.string()).optional(),
 });
 
 // Single row schema (CSV data row)

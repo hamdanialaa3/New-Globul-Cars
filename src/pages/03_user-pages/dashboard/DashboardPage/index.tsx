@@ -97,7 +97,7 @@ const DashboardPage: React.FC = () => {
                   <S.CarItem key={car.id}>
                     <div className="car-image">
                       {car.imageUrl ? (
-                        <img src={car.imageUrl} alt={car.title} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
+                        <img src={car.imageUrl} alt={car.title} loading="lazy" width={200} height={150} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
                       ) : (
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
                           <Car size={32} color="#adb5bd" />

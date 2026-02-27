@@ -516,11 +516,12 @@ service cloud.firestore {
 
     // ============================================
     // PROFILE METRICS Collection (aggregated counts)
-    // 🔒 SECURED: Owner-only write (was: any authenticated user)
+    // 🔒 SECURED: Read by owner only, write by Cloud Functions only
+    // Metrics are computed server-side to prevent tampering
     // ============================================
     match /profile_metrics/{userId} {
-      allow read: if true;
-      allow write: if isAuthenticated() && isOwner(userId);
+      allow read: if isAuthenticated() && isOwner(userId);
+      allow write: if false; // Cloud Functions only (Admin SDK bypasses rules)
     }
 
     // ============================================
@@ -531,6 +532,17 @@ service cloud.firestore {
     match /counters/{document=**} {
       allow read: if isAuthenticated();
       allow write: if false; // Cloud Functions only — prevents race conditions
+    }
+
+    // ============================================
+    // RATE LIMIT Collections (Cloud Functions only)
+    // 🔒 SECURED: No client access — written/read by Admin SDK
+    // ============================================
+    match /rate_limits_evaluate_car/{document=**} {
+      allow read, write: if false;
+    }
+    match /rate_limits_guest_token/{document=**} {
+      allow read, write: if false;
     }
 
     // ============================================

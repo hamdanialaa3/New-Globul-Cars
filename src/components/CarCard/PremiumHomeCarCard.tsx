@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { memo, useRef, useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import styled, { css, keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
@@ -445,4 +445,4 @@ export const PremiumHomeCarCard: React.FC<PremiumHomeCarCardProps> = ({ car }) =
   );
 };
 
-export default PremiumHomeCarCard;
+export default memo(PremiumHomeCarCard);

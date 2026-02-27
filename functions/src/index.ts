@@ -66,6 +66,10 @@ export const requestIndexing = indexing.requestIndexing;
 export const logSearchEvent = bqAnalytics.logSearchEvent;
 export const prerenderSEO = prerender.prerender;
 
+// 📋 SEO: Content Freshness Monitor (Auto-detect stale articles)
+import * as contentFreshness from './seo/content-freshness-monitor';
+export const contentFreshnessMonitor = contentFreshness.contentFreshnessMonitor;
+
 // Hybrid AI Engine (Phase 2 - Gemini + DeepSeek) 🧠
 import * as functions from "firebase-functions/v1";
 // import { AIService } from "./services/ai-service";
@@ -82,6 +86,14 @@ export const evaluateCar = functions.https.onCall(async (data, context) => {
     if (!context.auth) {
         throw new functions.https.HttpsError('unauthenticated', 'Authentication required for car evaluation');
     }
+
+    // SECURITY: Rate limit — max 10 AI evaluations per user per hour
+    const { enforceRateLimit } = await import('./utils/rate-limiter');
+    await enforceRateLimit(context.auth.uid, {
+        collection: 'rate_limits_evaluate_car',
+        maxCalls: 10,
+        windowSeconds: 3600 // 1 hour
+    });
 
     // 1. Validate Inputs
     const { imageBase64, price, marketAvg } = data as {

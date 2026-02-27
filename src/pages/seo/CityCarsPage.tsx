@@ -185,7 +185,7 @@ const CityCarsPage: React.FC = () => {
   const { city } = useParams<{ city: string }>();
   const { language } = useLanguage();
   const navigate = useNavigate();
-  
+
   const [stats, setStats] = useState({
     totalCars: 0,
     avgPrice: 0,
@@ -210,10 +210,10 @@ const CityCarsPage: React.FC = () => {
 
     try {
       setLoading(true);
-      
+
       // Load cars from all collections
       const allCars: any[] = [];
-      
+
       for (const collectionName of VEHICLE_COLLECTIONS) {
         try {
           const q = query(
@@ -223,7 +223,7 @@ const CityCarsPage: React.FC = () => {
             where('isSold', '==', false),
             limit(20)
           );
-          
+
           const snapshot = await getDocs(q);
           snapshot.forEach(doc => {
             allCars.push({ id: doc.id, ...doc.data() });
@@ -278,7 +278,7 @@ const CityCarsPage: React.FC = () => {
   });
 
   const localTips = LOCAL_TIPS[city.toLowerCase()] || {
-    buyer: language === 'bg' 
+    buyer: language === 'bg'
       ? 'Препоръчваме винаги да проверявате сервизната история внимателно и да правите преглед преди покупка.'
       : 'We recommend always checking the service history carefully and having an inspection before purchase.',
     seller: language === 'bg'
@@ -293,12 +293,16 @@ const CityCarsPage: React.FC = () => {
         <meta name="description" content={seoData.description} />
         <meta name="keywords" content={seoData.keywords.join(', ')} />
         <link rel="canonical" href={seoData.canonicalUrl} />
+        {/* Prevent thin content penalty: noindex pages with 0 results */}
+        {!loading && cars.length === 0 && (
+          <meta name="robots" content="noindex, follow" />
+        )}
       </Helmet>
 
       <PageContainer>
         <HeroSection>
           <CityTitle>
-            {language === 'bg' 
+            {language === 'bg'
               ? `Продажба на коли в ${cityInfo.bg}`
               : `Car Sales in ${cityInfo.bg}`}
           </CityTitle>
@@ -327,7 +331,7 @@ const CityCarsPage: React.FC = () => {
         {/* Bulgarian Content Section */}
         <ContentSection>
           <ContentTitle>
-            {language === 'bg' 
+            {language === 'bg'
               ? `Купувайте и продавайте коли в ${cityInfo.bg} лесно`
               : `Buy and sell cars in ${cityInfo.bg} easily`}
           </ContentTitle>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -108,4 +108,4 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
   );
 };
 
-export default MobileHeader;
+export default memo(MobileHeader);

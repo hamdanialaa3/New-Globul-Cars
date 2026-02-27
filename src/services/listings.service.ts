@@ -56,29 +56,35 @@ export async function getListingById(id: string): Promise<Listing | null> {
   try {
     serviceLogger.info('[listings.service] Fetching listing by ID', { listingId: id });
 
-    // Try each collection until we find the listing
-    for (const collectionName of ALL_VEHICLE_COLLECTIONS) {
-      const docRef = doc(db, collectionName, id);
-      const docSnap = await getDoc(docRef);
+    // PERF: Query all collections in parallel instead of sequential for...of
+    const results = await Promise.all(
+      ALL_VEHICLE_COLLECTIONS.map(async (collectionName) => {
+        const docRef = doc(db, collectionName, id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          return { collectionName, docSnap };
+        }
+        return null;
+      })
+    );
 
-      if (docSnap.exists()) {
-        const car = mapDocToCar(docSnap);
-        const listing: Listing = {
-          ...car,
-          listingId: car.id,
-          listingNumericId: car.carNumericId || car.numericId,
-          // slug is already in UnifiedCar if it exists
-        };
+    const found = results.find(r => r !== null);
+    if (found) {
+      const car = mapDocToCar(found.docSnap);
+      const listing: Listing = {
+        ...car,
+        listingId: car.id,
+        listingNumericId: car.carNumericId || car.numericId,
+      };
 
-        serviceLogger.info('[listings.service] Found listing by ID', {
-          listingId: id,
-          collection: collectionName,
-          numericId: listing.listingNumericId,
-          slug: listing.slug
-        });
+      serviceLogger.info('[listings.service] Found listing by ID', {
+        listingId: id,
+        collection: found.collectionName,
+        numericId: listing.listingNumericId,
+        slug: listing.slug
+      });
 
-        return listing;
-      }
+      return listing;
     }
 
     serviceLogger.warn('[listings.service] Listing not found by ID', { listingId: id });
@@ -106,34 +112,39 @@ export async function getListingByNumericId(numericId: number): Promise<Listing 
   try {
     serviceLogger.info('[listings.service] Fetching listing by numeric ID', { numericId });
 
-    // Search across all collections
-    for (const collectionName of ALL_VEHICLE_COLLECTIONS) {
-      const q = query(
-        collection(db, collectionName),
-        where('carNumericId', '==', numericId),
-        limit(1)
-      );
+    // PERF: Query all collections in parallel
+    const results = await Promise.all(
+      ALL_VEHICLE_COLLECTIONS.map(async (collectionName) => {
+        const q = query(
+          collection(db, collectionName),
+          where('carNumericId', '==', numericId),
+          limit(1)
+        );
+        const snapshot = await getDocs(q);
+        if (!snapshot.empty) {
+          return { collectionName, docSnap: snapshot.docs[0] };
+        }
+        return null;
+      })
+    );
 
-      const snapshot = await getDocs(q);
+    const found = results.find(r => r !== null);
+    if (found) {
+      const car = mapDocToCar(found.docSnap);
+      const listing: Listing = {
+        ...car,
+        listingId: car.id,
+        listingNumericId: car.carNumericId || car.numericId,
+      };
 
-      if (!snapshot.empty) {
-        const docSnap = snapshot.docs[0];
-        const car = mapDocToCar(docSnap);
-        const listing: Listing = {
-          ...car,
-          listingId: car.id,
-          listingNumericId: car.carNumericId || car.numericId,
-        };
+      serviceLogger.info('[listings.service] Found listing by numeric ID', {
+        numericId,
+        listingId: listing.id,
+        collection: found.collectionName,
+        slug: listing.slug
+      });
 
-        serviceLogger.info('[listings.service] Found listing by numeric ID', {
-          numericId,
-          listingId: listing.id,
-          collection: collectionName,
-          slug: listing.slug
-        });
-
-        return listing;
-      }
+      return listing;
     }
 
     serviceLogger.warn('[listings.service] Listing not found by numeric ID', { numericId });
@@ -220,12 +231,15 @@ export async function getActiveListings(limitCount: number = 20): Promise<Listin
 
     const listings: Listing[] = [];
 
+    // PERF: Fetch only ceil(limit / collections) per collection instead of limit per collection
+    const perCollectionLimit = Math.ceil(limitCount / ALL_VEHICLE_COLLECTIONS.length);
+
     const queryPromises = ALL_VEHICLE_COLLECTIONS.map(async (collectionName) => {
       const q = query(
         collection(db, collectionName),
         where('isActive', '==', true),
         where('isSold', '==', false),
-        limit(limitCount)
+        limit(perCollectionLimit)
       );
 
       const snapshot = await getDocs(q);

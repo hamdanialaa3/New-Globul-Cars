@@ -137,7 +137,7 @@ const SettingsSidebar: React.FC = () => {
       <ProfileSection>
         <ProfileAvatar>
           {user?.photoURL ? (
-            <img src={user.photoURL} alt={user.displayName || 'User'} />
+            <img src={user.photoURL} alt={user.displayName || 'User'} loading="lazy" width={48} height={48} />
           ) : (
             <User size={32} color="#999" />
           )}

@@ -41,16 +41,24 @@ exports.GoogleIndexingService = GoogleIndexingService;
 exports.indexingService = new GoogleIndexingService();
 // Callable Function to be triggered from Client
 exports.requestIndexing = functions
-    // .runWith({ secrets: ['GOOGLE_INDEXING_SERVICE_ACCOUNT'] }) // ⚠️ DISABLED: Secret not configured yet
     .https.onCall(async (data, context) => {
-    // Security: Only allow admins or internal services
-    // For now, allowing authenticated users (e.g., sellers posting cars)
+    // SECURITY: Require authentication
     if (!context.auth) {
         throw new functions.https.HttpsError('unauthenticated', 'User must be logged in');
     }
     const { url, type } = data;
-    if (!url) {
+    if (!url || typeof url !== 'string') {
         throw new functions.https.HttpsError('invalid-argument', 'URL is required');
+    }
+    // SECURITY: Only allow indexing of our own domain URLs
+    const allowedDomains = [
+        'https://fire-new-globul.web.app',
+        'https://koli.one',
+        'https://www.koli.one'
+    ];
+    const isAllowed = allowedDomains.some(domain => url.startsWith(domain));
+    if (!isAllowed) {
+        throw new functions.https.HttpsError('permission-denied', 'Only site URLs can be indexed');
     }
     return await exports.indexingService.requestIndexing(url, type || 'URL_UPDATED');
 });

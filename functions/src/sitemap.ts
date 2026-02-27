@@ -48,11 +48,27 @@ async function generateEnhancedSitemap(): Promise<string> {
     const staticPages = [
         { path: '', priority: '1.0', changefreq: 'daily' },
         { path: '/search', priority: '0.9', changefreq: 'hourly' },
+        { path: '/cars', priority: '0.9', changefreq: 'hourly' },
         { path: '/sell', priority: '0.8', changefreq: 'weekly' },
         { path: '/about', priority: '0.5', changefreq: 'monthly' },
         { path: '/contact', priority: '0.5', changefreq: 'monthly' },
-        { path: '/privacy', priority: '0.3', changefreq: 'yearly' },
-        { path: '/terms', priority: '0.3', changefreq: 'yearly' },
+        { path: '/privacy-policy', priority: '0.3', changefreq: 'yearly' },
+        { path: '/terms-of-service', priority: '0.3', changefreq: 'yearly' },
+        // Blog articles (high-value E-E-A-T content) — slugs match MainRoutes.tsx
+        { path: '/blog', priority: '0.7', changefreq: 'weekly' },
+        { path: '/blog/ai-valuation-works', priority: '0.6', changefreq: 'monthly' },
+        { path: '/blog/technical-deep-dive', priority: '0.6', changefreq: 'monthly' },
+        { path: '/blog/neural-pricing', priority: '0.6', changefreq: 'monthly' },
+        { path: '/blog/constitutional-coding', priority: '0.6', changefreq: 'monthly' },
+        { path: '/blog/bulgarian-market-2026', priority: '0.6', changefreq: 'monthly' },
+        { path: '/blog/marketplace-comparison', priority: '0.6', changefreq: 'monthly' },
+        // Tools & Features pages
+        { path: '/valuation', priority: '0.7', changefreq: 'weekly' },
+        { path: '/financing', priority: '0.6', changefreq: 'monthly' },
+        { path: '/financing/compare', priority: '0.6', changefreq: 'monthly' },
+        // Author pages (E-E-A-T)
+        { path: '/author/koli-one-research', priority: '0.4', changefreq: 'monthly' },
+        { path: '/author/koli-one-engineering', priority: '0.4', changefreq: 'monthly' },
     ];
 
     staticPages.forEach(page => {
@@ -86,7 +102,7 @@ async function generateEnhancedSitemap(): Promise<string> {
 
     // Dynamic car listings from Firestore
     const vehicleCollections = ['passenger_cars', 'suvs', 'vans', 'motorcycles', 'trucks', 'buses'];
-    
+
     for (const collection of vehicleCollections) {
         try {
             const snapshot = await db.collection(collection)
@@ -169,7 +185,7 @@ export const sitemap = functions
             res.set('Content-Type', 'application/xml');
             res.set('Cache-Control', 'public, max-age=3600'); // Cache 1 hour
             res.status(200).send(xml);
-            
+
             logger.info('Sitemap generated successfully');
         } catch (error) {
             logger.error('Sitemap generation error:', error);
@@ -187,9 +203,9 @@ export const scheduledSitemapRegeneration = functions.pubsub
     .onRun(async (context) => {
         try {
             logger.info('🗺️ Starting scheduled sitemap regeneration...');
-            
+
             const xml = await generateEnhancedSitemap();
-            
+
             // Store in Firestore cache for quick access
             await db.collection('system').doc('sitemap_cache').set({
                 xml,
@@ -225,9 +241,9 @@ export const manualSitemapRegeneration = functions.https.onCall(async (data, con
 
     try {
         logger.info('🗺️ Manual sitemap regeneration triggered by:', context.auth.uid);
-        
+
         const xml = await generateEnhancedSitemap();
-        
+
         await db.collection('system').doc('sitemap_cache').set({
             xml,
             generatedAt: admin.firestore.FieldValue.serverTimestamp(),

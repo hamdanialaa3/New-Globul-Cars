@@ -1,10 +1,14 @@
 /**
  * Voice AI Service using OpenAI Whisper
  * خدمة الذكاء الاصطناعي الصوتي
+ * 
+ * PERF: Dynamic import — keeps ~600KB openai SDK out of the main bundle.
+ * TODO: Migrate to Cloud Functions proxy to avoid exposing API keys in browser.
  */
 
-import OpenAI from 'openai';
 import { logger } from '@/services/logger-service';
+
+type OpenAIClient = import('openai').default;
 
 interface TranscriptionResult {
   text: string;
@@ -27,15 +31,42 @@ interface VoiceCommandResult {
 
 class WhisperVoiceService {
   private static instance: WhisperVoiceService;
-  private openai: OpenAI;
+  private openai: OpenAIClient | null = null;
   private model = 'whisper-1';
+  private isConfigured: boolean = false;
+  private initPromise: Promise<void> | null = null;
 
   private constructor() {
     const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
     if (!apiKey) {
       logger.warn('OpenAI API Key not configured for Whisper');
+    } else {
+      this.isConfigured = true;
     }
-    this.openai = new OpenAI({ apiKey });
+  }
+
+  /**
+   * Lazily initialize the OpenAI client (dynamic import)
+   */
+  private async ensureClient(): Promise<void> {
+    if (this.openai) return;
+    if (!this.isConfigured) return;
+    if (this.initPromise) { await this.initPromise; return; }
+
+    this.initPromise = (async () => {
+      try {
+        const { default: OpenAI } = await import('openai');
+        this.openai = new OpenAI({
+          apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+          dangerouslyAllowBrowser: true
+        });
+        logger.info('✅ Whisper service initialized (lazy)');
+      } catch (error) {
+        logger.error('Failed to initialize Whisper/OpenAI', error as Error);
+        this.isConfigured = false;
+      }
+    })();
+    await this.initPromise;
   }
 
   static getInstance(): WhisperVoiceService {
@@ -49,6 +80,10 @@ class WhisperVoiceService {
    * Transcribe audio file to text
    */
   async transcribeAudio(audioBlob: Blob, language?: string): Promise<TranscriptionResult> {
+    await this.ensureClient();
+    if (!this.openai) {
+      throw new Error('Whisper service not available - API key not configured');
+    }
     try {
       logger.info('Transcribing audio', {
         size: audioBlob.size,
@@ -92,6 +127,8 @@ class WhisperVoiceService {
    * Transcribe audio with timestamps
    */
   async transcribeWithTimestamps(audioBlob: Blob): Promise<TranscriptionResult> {
+    await this.ensureClient();
+    if (!this.openai) throw new Error('Whisper service not available');
     try {
       logger.info('Transcribing with timestamps', { size: audioBlob.size });
 
@@ -119,6 +156,8 @@ class WhisperVoiceService {
    * Convert text to speech (using TTS)
    */
   async textToSpeech(text: string, voice: 'alloy' | 'echo' | 'fable' | 'onyx' | 'nova' | 'shimmer' = 'nova'): Promise<Blob> {
+    await this.ensureClient();
+    if (!this.openai) throw new Error('Whisper service not available');
     try {
       logger.info('Converting text to speech', { textLength: text.length });
 

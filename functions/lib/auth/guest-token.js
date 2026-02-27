@@ -25,7 +25,7 @@ const admin = require("firebase-admin");
 exports.getGuestCustomToken = functions
     .region('europe-west1')
     .https
-    .onCall(async (data) => {
+    .onCall(async (data, context) => {
     const { guestUid } = data;
     // Validate input
     if (!guestUid || typeof guestUid !== 'string') {
@@ -35,6 +35,13 @@ exports.getGuestCustomToken = functions
     if (guestUid.length > 128 || !/^[a-zA-Z0-9_-]+$/.test(guestUid)) {
         throw new functions.https.HttpsError('invalid-argument', 'Invalid UID format');
     }
+    // SECURITY: Rate limit — max 5 guest token requests per UID per hour
+    const { enforceRateLimit } = await Promise.resolve().then(() => require('../utils/rate-limiter'));
+    await enforceRateLimit(guestUid, {
+        collection: 'rate_limits_guest_token',
+        maxCalls: 5,
+        windowSeconds: 3600 // 1 hour
+    });
     try {
         const db = admin.firestore();
         // Step 1: Verify the UID exists in Firestore as a guest user

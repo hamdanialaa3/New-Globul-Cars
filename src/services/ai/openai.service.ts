@@ -3,8 +3,11 @@
  * OpenAI GPT-4 خدمة التكامل
  */
 
-import OpenAI from 'openai';
+// PERF: Dynamic import — keeps ~600KB openai SDK out of the main bundle.
+// TODO: Migrate all AI calls to Cloud Functions proxy to avoid exposing API keys in browser.
 import { logger } from '@/services/logger-service';
+
+type OpenAIClient = import('openai').default;
 
 interface GPT4Response {
   message: string;
@@ -36,32 +39,48 @@ interface CarAnalysis {
 
 class OpenAIGPT4Service {
   private static instance: OpenAIGPT4Service;
-  private openai: OpenAI | null = null;
+  private openai: OpenAIClient | null = null;
   private model = 'gpt-4-turbo-preview';
   private costPer1kTokens = {
     input: 0.03,
     output: 0.06
   };
   private isConfigured: boolean = false;
+  private initPromise: Promise<void> | null = null;
 
   private constructor() {
+    // Defer OpenAI SDK loading — will be dynamically imported on first use
     const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
     if (!apiKey) {
       logger.warn('⚠️ OpenAI API Key not configured - AI features will be disabled');
       this.isConfigured = false;
     } else {
+      this.isConfigured = true;
+    }
+  }
+
+  /**
+   * Lazily initialize the OpenAI client (dynamic import)
+   */
+  private async ensureClient(): Promise<void> {
+    if (this.openai) return;
+    if (!this.isConfigured) return;
+    if (this.initPromise) { await this.initPromise; return; }
+
+    this.initPromise = (async () => {
       try {
-        this.openai = new OpenAI({ 
-          apiKey,
-          dangerouslyAllowBrowser: true 
+        const { default: OpenAI } = await import('openai');
+        this.openai = new OpenAI({
+          apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+          dangerouslyAllowBrowser: true
         });
-        this.isConfigured = true;
-        logger.info('✅ OpenAI service initialized');
+        logger.info('✅ OpenAI service initialized (lazy)');
       } catch (error) {
         logger.error('Failed to initialize OpenAI', error as Error);
         this.isConfigured = false;
       }
-    }
+    })();
+    await this.initPromise;
   }
 
   static getInstance(): OpenAIGPT4Service {
@@ -82,6 +101,7 @@ class OpenAIGPT4Service {
    * Chat with GPT-4
    */
   async chat(message: string, systemPrompt?: string): Promise<GPT4Response> {
+    await this.ensureClient();
     if (!this.isAvailable()) {
       throw new Error('OpenAI service not available - API key not configured');
     }
@@ -89,7 +109,7 @@ class OpenAIGPT4Service {
     try {
       logger.info('GPT-4 Chat started', { messageLength: message.length });
 
-      const messages: OpenAI.Messages.MessageParam[] = [
+      const messages: Array<{ role: 'user' | 'assistant'; content: string }> = [
         {
           role: 'user',
           content: message
@@ -103,7 +123,7 @@ class OpenAIGPT4Service {
         });
       }
 
-      const response = await this.openai.messages.create({
+      const response = await this.openai!.messages.create({
         model: this.model,
         max_tokens: 1024,
         messages: messages.map(m => ({

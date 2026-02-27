@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.onPassengerCarSold = exports.onBusDeleted = exports.onTruckDeleted = exports.onMotorcycleDeleted = exports.onVanDeleted = exports.onSuvDeleted = exports.onPassengerCarDeleted = exports.exportB2BAnalytics = exports.getB2BAnalytics = exports.exportB2BLeads = exports.cleanupExpiredDrafts = exports.manualArchiveSoldCars = exports.archiveSoldCars = exports.stripeWebhooks = exports.batchSyncAllCarsToAlgolia = exports.syncBusesToAlgolia = exports.syncTrucksToAlgolia = exports.syncMotorcyclesToAlgolia = exports.syncVansToAlgolia = exports.syncSuvsToAlgolia = exports.syncPassengerCarsToAlgolia = exports.evaluateCar = exports.prerenderSEO = exports.logSearchEvent = exports.requestIndexing = exports.syncCarsToFacebookAds = exports.syncCarsToGoogleAds = exports.manualSitemapRegeneration = exports.scheduledSitemapRegeneration = exports.sitemap = exports.cleanupDeletedImages = exports.optimizeUploadedImage = exports.updateMerchantFeedCache = exports.merchantFeedGenerator = exports.merchantFeed = exports.cleanupOldNotifications = exports.notifyFollowersOnNewCar = exports.dailyReminder = exports.onVerificationUpdate = exports.onNewOffer = exports.onNewInquiry = exports.onCarViewed = exports.onNewMessage = exports.onPriceUpdate = exports.onNewCarPosted = exports.analyzeImageQuality = exports.analyzeCarImage = exports.geminiPriceSuggestion = exports.aiQuotaCheck = exports.geminiChat = void 0;
-exports.verifyPaymentStatus = exports.handleEasypayWebhook = exports.handleEpayWebhook = exports.dailyAutoRenewal = exports.cleanupOldPriceAlerts = exports.onCarPriceUpdate = exports.exportReconciliationReport = exports.triggerReconciliation = exports.dailyReconciliation = exports.revolutWebhooks = exports.icardWebhooks = exports.sendMessageNotificationEmail = exports.sendPaymentReceiptEmail = exports.sendAdStatusEmail = exports.sendWelcomeEmail = exports.getGuestCustomToken = exports.getUserNumericId = exports.onUserCreate = exports.beforeUserCreated = exports.manualExpirePayments = exports.onPaymentVerified = exports.sendDailyPaymentSummary = exports.checkExpiredManualPayments = exports.onUserDelete = exports.cleanupExpiredOffers = exports.onOfferStatusChange = exports.onNewRealtimeMessage = exports.cleanupOrphanedData = exports.dailyOrphanedDataCleanup = exports.onDeleteOffer = exports.onDeleteProfile = exports.onDeleteCar = exports.onBusSold = exports.onTruckSold = exports.onMotorcycleSold = exports.onVanSold = exports.onSuvSold = void 0;
+exports.onBusDeleted = exports.onTruckDeleted = exports.onMotorcycleDeleted = exports.onVanDeleted = exports.onSuvDeleted = exports.onPassengerCarDeleted = exports.exportB2BAnalytics = exports.getB2BAnalytics = exports.exportB2BLeads = exports.cleanupExpiredDrafts = exports.manualArchiveSoldCars = exports.archiveSoldCars = exports.stripeWebhooks = exports.batchSyncAllCarsToAlgolia = exports.syncBusesToAlgolia = exports.syncTrucksToAlgolia = exports.syncMotorcyclesToAlgolia = exports.syncVansToAlgolia = exports.syncSuvsToAlgolia = exports.syncPassengerCarsToAlgolia = exports.evaluateCar = exports.contentFreshnessMonitor = exports.prerenderSEO = exports.logSearchEvent = exports.requestIndexing = exports.syncCarsToFacebookAds = exports.syncCarsToGoogleAds = exports.manualSitemapRegeneration = exports.scheduledSitemapRegeneration = exports.sitemap = exports.cleanupDeletedImages = exports.optimizeUploadedImage = exports.updateMerchantFeedCache = exports.merchantFeedGenerator = exports.merchantFeed = exports.cleanupOldNotifications = exports.notifyFollowersOnNewCar = exports.dailyReminder = exports.onVerificationUpdate = exports.onNewOffer = exports.onNewInquiry = exports.onCarViewed = exports.onNewMessage = exports.onPriceUpdate = exports.onNewCarPosted = exports.analyzeImageQuality = exports.analyzeCarImage = exports.geminiPriceSuggestion = exports.aiQuotaCheck = exports.geminiChat = void 0;
+exports.verifyPaymentStatus = exports.handleEasypayWebhook = exports.handleEpayWebhook = exports.dailyAutoRenewal = exports.cleanupOldPriceAlerts = exports.onCarPriceUpdate = exports.exportReconciliationReport = exports.triggerReconciliation = exports.dailyReconciliation = exports.revolutWebhooks = exports.icardWebhooks = exports.sendMessageNotificationEmail = exports.sendPaymentReceiptEmail = exports.sendAdStatusEmail = exports.sendWelcomeEmail = exports.getGuestCustomToken = exports.getUserNumericId = exports.onUserCreate = exports.beforeUserCreated = exports.manualExpirePayments = exports.onPaymentVerified = exports.sendDailyPaymentSummary = exports.checkExpiredManualPayments = exports.onUserDelete = exports.cleanupExpiredOffers = exports.onOfferStatusChange = exports.onNewRealtimeMessage = exports.cleanupOrphanedData = exports.dailyOrphanedDataCleanup = exports.onDeleteOffer = exports.onDeleteProfile = exports.onDeleteCar = exports.onBusSold = exports.onTruckSold = exports.onMotorcycleSold = exports.onVanSold = exports.onSuvSold = exports.onPassengerCarSold = void 0;
 const notifications = require("./notifications");
 const merchantFeedModule = require("./merchant-feed");
 const imageOptimizer = require("./image-optimizer");
@@ -59,6 +59,9 @@ const prerender = require("./seo/prerender");
 exports.requestIndexing = indexing.requestIndexing;
 exports.logSearchEvent = bqAnalytics.logSearchEvent;
 exports.prerenderSEO = prerender.prerender;
+// 📋 SEO: Content Freshness Monitor (Auto-detect stale articles)
+const contentFreshness = require("./seo/content-freshness-monitor");
+exports.contentFreshnessMonitor = contentFreshness.contentFreshnessMonitor;
 // Hybrid AI Engine (Phase 2 - Gemini + DeepSeek) 🧠
 const functions = require("firebase-functions/v1");
 // import { AIService } from "./services/ai-service";
@@ -69,10 +72,25 @@ const getAiService = () => {
     return new AIService();
 };
 exports.evaluateCar = functions.https.onCall(async (data, context) => {
+    // SECURITY: Require authentication — AI calls are expensive
+    if (!context.auth) {
+        throw new functions.https.HttpsError('unauthenticated', 'Authentication required for car evaluation');
+    }
+    // SECURITY: Rate limit — max 10 AI evaluations per user per hour
+    const { enforceRateLimit } = await Promise.resolve().then(() => require('./utils/rate-limiter'));
+    await enforceRateLimit(context.auth.uid, {
+        collection: 'rate_limits_evaluate_car',
+        maxCalls: 10,
+        windowSeconds: 3600 // 1 hour
+    });
     // 1. Validate Inputs
     const { imageBase64, price, marketAvg } = data;
-    if (!imageBase64) {
+    if (!imageBase64 || typeof imageBase64 !== 'string') {
         throw new functions.https.HttpsError('invalid-argument', 'Image is required for analysis (Base64)');
+    }
+    // Validate Base64 payload size (max ~5MB encoded)
+    if (imageBase64.length > 7000000) {
+        throw new functions.https.HttpsError('invalid-argument', 'Image too large (max 5MB)');
     }
     try {
         const aiService = getAiService();

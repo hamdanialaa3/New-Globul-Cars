@@ -310,7 +310,7 @@ const SearchResultsPage: React.FC = () => {
                   onClick={() => navigate(`/marketplace/product/${product.id}`)}
                 >
                   <ProductImage>
-                    <img src={product.images[0] || '/placeholder-product.jpg'} alt={product.title} />
+                    <img src={product.images[0] || '/placeholder-product.jpg'} alt={product.title} loading="lazy" width={300} height={300} />
                   </ProductImage>
                   <ProductInfo>
                     <ProductTitle>{product.title}</ProductTitle>
@@ -341,7 +341,7 @@ const SearchResultsPage: React.FC = () => {
                   onClick={() => navigate(`/marketplace/product/${product.id}`)}
                 >
                   <ListImage>
-                    <img src={product.images[0] || '/placeholder-product.jpg'} alt={product.title} />
+                    <img src={product.images[0] || '/placeholder-product.jpg'} alt={product.title} loading="lazy" width={120} height={120} />
                   </ListImage>
                   <ListInfo>
                     <ListTitle>{product.title}</ListTitle>

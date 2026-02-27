@@ -9,7 +9,7 @@
  * - Integration with FavoritesService
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Heart, MapPin, Fuel, Gauge, Calendar } from 'lucide-react';
@@ -396,4 +396,4 @@ export const CarCardWithFavorites: React.FC<CarCardWithFavoritesProps> = ({
   );
 };
 
-export default CarCardWithFavorites;
+export default memo(CarCardWithFavorites);

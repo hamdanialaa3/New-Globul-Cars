@@ -95,7 +95,7 @@ const BrandCityPage: React.FC = () => {
   const { city, brand } = useParams<{ city: string; brand: string }>();
   const { language } = useLanguage();
   const navigate = useNavigate();
-  
+
   const [stats, setStats] = useState({
     totalCars: 0,
     avgPrice: 0
@@ -120,9 +120,9 @@ const BrandCityPage: React.FC = () => {
 
     try {
       setLoading(true);
-      
+
       const allCars: any[] = [];
-      
+
       for (const collectionName of VEHICLE_COLLECTIONS) {
         try {
           const q = query(
@@ -133,7 +133,7 @@ const BrandCityPage: React.FC = () => {
             where('isSold', '==', false),
             limit(20)
           );
-          
+
           const snapshot = await getDocs(q);
           snapshot.forEach(doc => {
             allCars.push({ id: doc.id, ...doc.data() });
@@ -169,7 +169,7 @@ const BrandCityPage: React.FC = () => {
     : `Find ${brandDisplay} cars in ${cityInfo.bg}. Wide selection of new and used ${brandDisplay} cars at competitive prices. Average price: ${stats.avgPrice} BGN. Bulgarian platform for Bulgarian car enthusiasts. Verified sellers, transparent prices, easy handling.`;
 
   const seoData = {
-    title: language === 'bg' 
+    title: language === 'bg'
       ? `${brandDisplay} в ${cityInfo.bg} - Продажба на коли - Koli One`
       : `${brandDisplay} in ${cityInfo.bg} - Car Sales - Koli One`,
     description: seoDescription,
@@ -193,12 +193,16 @@ const BrandCityPage: React.FC = () => {
         <meta property="og:title" content={seoData.title} />
         <meta property="og:description" content={seoData.description} />
         <meta property="og:locale" content="bg_BG" />
+        {/* Prevent thin content penalty: noindex pages with 0 results */}
+        {!loading && cars.length === 0 && (
+          <meta name="robots" content="noindex, follow" />
+        )}
       </Helmet>
 
       <PageContainer>
         <HeroSection>
           <Title>
-            {language === 'bg' 
+            {language === 'bg'
               ? `${brandDisplay} в ${cityInfo.bg}`
               : `${brandDisplay} in ${cityInfo.bg}`}
           </Title>

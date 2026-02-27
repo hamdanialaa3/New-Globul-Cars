@@ -279,6 +279,9 @@ const ProductDetailPage: React.FC = () => {
               <img
                 src={product.images[selectedImage] || '/placeholder-product.jpg'}
                 alt={product.title}
+                loading="lazy"
+                width={400}
+                height={400}
               />
             </MainImage>
             <ThumbnailGrid>
@@ -288,7 +291,7 @@ const ProductDetailPage: React.FC = () => {
                   $active={selectedImage === idx}
                   onClick={() => setSelectedImage(idx)}
                 >
-                  <img src={img} alt={`${product.title} ${idx + 1}`} />
+                  <img src={img} alt={`${product.title} ${idx + 1}`} loading="lazy" width={80} height={80} />
                 </Thumbnail>
               ))}
             </ThumbnailGrid>

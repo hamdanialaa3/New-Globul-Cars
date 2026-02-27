@@ -203,7 +203,7 @@ const CartPage: React.FC = () => {
             {cartItems.map(item => (
               <CartItemCard key={item.id} $disabled={updating === item.id}>
                 <ItemImage>
-                  <img src={item.image} alt={item.title} />
+                  <img src={item.image} alt={item.title} loading="lazy" width={100} height={100} />
                 </ItemImage>
                 <ItemInfo>
                   <ItemTitle onClick={() => navigate(`/marketplace/product/${item.productId}`)}>

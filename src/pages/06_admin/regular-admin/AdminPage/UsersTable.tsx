@@ -302,7 +302,7 @@ const UsersTable: React.FC = () => {
                             <GlassRow key={user.id}>
                                 <td>
                                     <UserCell>
-                                        <img src={user.photoURL || '/assets/images/default-avatar.svg'} alt={user.displayName} />
+                                        <img src={user.photoURL || '/assets/images/default-avatar.svg'} alt={user.displayName} loading="lazy" width={36} height={36} />
                                         <div className="info">
                                             <span className="name">{user.displayName || 'Unnamed User'}</span>
                                             <span className="email">{user.email}</span>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bg">
 
 <head>
     <!-- Google Consent Mode v2 - MUST BE FIRST -->
@@ -42,12 +42,29 @@
 
     <meta charset="utf-8" />
     <!-- Preload LCP hero images (mobile-first) -->
-    <link rel="preload" as="image" type="image/webp" href="/hero-bg-mobile.webp" media="(max-width: 768px)" fetchpriority="high" />
-    <link rel="preload" as="image" type="image/webp" href="/hero-bg.webp" media="(min-width: 769px)" fetchpriority="high" />
+    <link rel="preload" as="image" type="image/webp" href="/hero-bg-mobile.webp" media="(max-width: 768px)"
+        fetchpriority="high" />
+    <link rel="preload" as="image" type="image/webp" href="/hero-bg.webp" media="(min-width: 769px)"
+        fetchpriority="high" />
     <!-- Preconnect to critical origins (max 4 for best performance) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://firebasestorage.googleapis.com" crossorigin />
+    <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
+    <link rel="dns-prefetch" href="https://us-central1-fire-new-globul.cloudfunctions.net" />
+    <!-- Non-blocking Google Fonts loading -->
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;800&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;800&display=swap"
+        media="print" onload="this.media='all'" />
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;800&display=swap" />
+    </noscript>
     <!-- Logo CSS loaded non-blocking -->
     <link rel="stylesheet" href="/styles/koli-one-logo.css" media="print" onload="this.media='all'" />
-    <noscript><link rel="stylesheet" href="/styles/koli-one-logo.css" /></noscript>
+    <noscript>
+        <link rel="stylesheet" href="/styles/koli-one-logo.css" />
+    </noscript>
     <!-- 🎨 Official Koli One Logo - Used Everywhere -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" href="/logo.png" sizes="any" />
@@ -63,26 +80,28 @@
     <meta name="apple-mobile-web-app-title" content="Koli One" />
     <meta name="description"
         content="Koli One - Български автомобили - Най-добрата платформа за автомобили в България" />
-    
+
     <!-- Open Graph / Facebook Meta Tags -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://koli.one/" />
     <meta property="og:title" content="Koli One - Български автомобили" />
     <meta property="og:description" content="Най-добрата платформа за покупка и продажба на автомобили в България" />
-    <meta property="og:image" content="https://koli.one/logo.png" />
+    <meta property="og:image" content="https://koli.one/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="Koli One" />
     <meta property="og:locale" content="bg_BG" />
     <meta property="fb:app_id" content="2026958077871354" />
-    
+
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://koli.one/" />
     <meta name="twitter:title" content="Koli One - Български автомобили" />
     <meta name="twitter:description" content="Най-добрата платформа за покупка и продажба на автомобили в България" />
-    <meta name="twitter:image" content="https://koli.one/logo.png" />
+    <meta name="twitter:image" content="https://koli.one/og-image.png" />
     <meta name="twitter:site" content="@kolionebg" />
     <meta name="twitter:creator" content="@kolionebg" />
-    
+
     <!-- Social Media Profile Links -->
     <link rel="me" href="https://www.facebook.com/koli.one/" />
     <link rel="me" href="https://www.instagram.com/kolione/" />
@@ -91,7 +110,7 @@
     <link rel="me" href="https://x.com/kolionebg" />
     <link rel="me" href="https://www.tiktok.com/@kolione" />
     <link rel="me" href="https://www.threads.com/@kolione" />
-    
+
     <!-- 🎨 Official Koli One Logo - Apple Devices -->
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
     <!--
@@ -99,7 +118,7 @@
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
     <link rel="manifest" href="/manifest.json" />
-    
+
 
     <!-- Print Styles -->
     <link rel="stylesheet" href="/print-only.css" media="print" />
@@ -149,13 +168,11 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: radial-gradient(
-                circle at 35% 35%,
-                rgba(255, 255, 255, 0.25) 0%,
-                rgba(255, 143, 16, 0.15) 25%,
-                rgba(255, 143, 16, 0.08) 50%,
-                rgba(0, 0, 0, 0.3) 100%
-            );
+            background: radial-gradient(circle at 35% 35%,
+                    rgba(255, 255, 255, 0.25) 0%,
+                    rgba(255, 143, 16, 0.15) 25%,
+                    rgba(255, 143, 16, 0.08) 50%,
+                    rgba(0, 0, 0, 0.3) 100%);
             box-shadow:
                 0 0 25px rgba(255, 143, 16, 0.4),
                 inset 0 -10px 20px rgba(0, 0, 0, 0.4),
@@ -168,29 +185,23 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: conic-gradient(
-                from 0deg,
-                transparent 0deg,
-                #FF8F10 30deg,
-                #FFB366 60deg,
-                #FF8F10 90deg,
-                transparent 100deg,
-                transparent 360deg
-            );
-            mask-image: radial-gradient(
-                circle,
-                transparent 56px,
-                black 56px,
-                black 59px,
-                transparent 59px
-            );
-            -webkit-mask-image: radial-gradient(
-                circle,
-                transparent 56px,
-                black 56px,
-                black 59px,
-                transparent 59px
-            );
+            background: conic-gradient(from 0deg,
+                    transparent 0deg,
+                    #FF8F10 30deg,
+                    #FFB366 60deg,
+                    #FF8F10 90deg,
+                    transparent 100deg,
+                    transparent 360deg);
+            mask-image: radial-gradient(circle,
+                    transparent 56px,
+                    black 56px,
+                    black 59px,
+                    transparent 59px);
+            -webkit-mask-image: radial-gradient(circle,
+                    transparent 56px,
+                    black 56px,
+                    black 59px,
+                    transparent 59px);
             filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.8));
             animation: led-orbit 1.2s linear infinite, led-pulse 2s ease-in-out infinite;
             z-index: 2;
@@ -219,15 +230,19 @@
             from {
                 transform: rotate(0deg);
             }
+
             to {
                 transform: rotate(360deg);
             }
         }
 
         @keyframes led-pulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.8));
             }
+
             50% {
                 filter: drop-shadow(0 0 16px rgba(255, 143, 16, 1));
             }
@@ -237,9 +252,15 @@
             .led-ring {
                 animation: led-pulse 2s ease-in-out infinite;
             }
+
             @keyframes led-orbit {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(0deg); }
+                from {
+                    transform: rotate(0deg);
+                }
+
+                to {
+                    transform: rotate(0deg);
+                }
             }
         }
     </style>
@@ -274,21 +295,21 @@
 
     <!-- Hide loader when React mounts -->
     <script>
-        window.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('DOMContentLoaded', function () {
             var rootEl = document.getElementById('root');
             var loaderEl = document.getElementById('loader-container');
-            
+
             if (rootEl && loaderEl) {
-                var observer = new MutationObserver(function(mutations) {
+                var observer = new MutationObserver(function (mutations) {
                     if (rootEl.children.length > 0) {
                         loaderEl.style.opacity = '0';
-                        setTimeout(function() {
+                        setTimeout(function () {
                             loaderEl.style.display = 'none';
                         }, 500);
                         observer.disconnect();
                     }
                 });
-                
+
                 observer.observe(rootEl, { childList: true, subtree: false });
             }
         });
@@ -296,7 +317,7 @@
 
     <!-- REACT APP ENTRY POINT -->
     <script type="module" src="/src/index.tsx"></script>
-    
+
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

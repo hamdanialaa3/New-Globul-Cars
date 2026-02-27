@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -155,7 +155,7 @@ interface MobileBottomNavProps {
   favoritesBadge?: number;
 }
 
-export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
+export const MobileBottomNav: React.FC<MobileBottomNavProps> = memo(({
   messagesBadge,
   favoritesBadge
 }) => {
@@ -202,4 +202,4 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
       </NavContent>
     </NavWrapper>
   );
-};
+});

@@ -1,5 +1,5 @@
 // Smart Footer Component with Global Translation Support
-import React, { useState, useRef, useEffect } from 'react';
+import React, { memo, useState, useRef, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { MapPin, Phone, Mail, Globe, Facebook, Instagram, Linkedin, Youtube, Twitter, ChevronDown, Share2 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
@@ -290,4 +290,4 @@ const Footer: React.FC = () => {
   );
 };
 
-export default Footer;
+export default memo(Footer);

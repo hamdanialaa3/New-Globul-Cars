@@ -88,6 +88,7 @@ const B2BAnalyticsPortal = safeLazy(() => import('../pages/07_advanced-features/
 // DEAD PAGE: const DigitalTwinPage = safeLazy(() => import('../pages/07_advanced-features/DigitalTwinPage'));
 const SubscriptionPage = safeLazy(() => import('../pages/08_payment-billing/SubscriptionPage'));
 const AboutPage = safeLazy(() => import('../pages/01_main-pages/about/AboutPage'));
+const AuthorPage = safeLazy(() => import('../pages/01_main-pages/author/AuthorPage'));
 const BrandGalleryPage = safeLazy(() => import('../pages/05_search-browse/brand-gallery/BrandGalleryPage'));
 const TopBrandsPage = safeLazy(() => import('../pages/05_search-browse/top-brands/TopBrandsPage'));
 const DealersPage = safeLazy(() => import('../pages/05_search-browse/dealers/DealersPage'));
@@ -577,6 +578,8 @@ export const MainRoutes: React.FC = () => {
             <Route path="/terms-of-service" element={<TermsOfServicePage />} />
             <Route path="/data-deletion" element={<DataDeletionPage />} />
             <Route path="/about" element={<AboutPage />} />
+            {/* 👤 E-E-A-T: Author Pages — Trust Signal for Google */}
+            <Route path="/author/:slug" element={<AuthorPage />} />
             <Route path="/social-hub" element={<SocialHubPage />} />
             <Route path="/competitive-comparison" element={<CompetitiveComparisonPage />} />
             <Route path="/pricing" element={<CarPricingPage />} />
