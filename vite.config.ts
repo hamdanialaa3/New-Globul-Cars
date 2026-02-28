@@ -178,11 +178,9 @@ export default defineConfig(({ mode }) => {
               return 'vendor-stripe';
             }
 
-            // Charts (recharts) — only used on analytics pages
-            if (id.includes('node_modules/recharts') ||
-              id.includes('node_modules/d3-')) {
-              return 'vendor-charts';
-            }
+            // Charts (recharts + d3) — kept in vendor bundle to avoid
+            // d3 ESM circular-dep / init-order crash in separate chunks:
+            // "Uncaught TypeError: undefined is not a function" vendor-charts.js
 
             // Maps (leaflet) — only used on map pages
             if (id.includes('node_modules/leaflet') ||
@@ -223,7 +221,17 @@ export default defineConfig(({ mode }) => {
 
     // Optimization
     optimizeDeps: {
-      include: ['react', 'react-dom', 'react-is', 'firebase/app', 'firebase/auth', 'firebase/firestore', 'framer-motion'],
+      include: [
+        'react', 'react-dom', 'react-is',
+        'firebase/app', 'firebase/auth', 'firebase/firestore',
+        'framer-motion',
+        // recharts 3.x uses ESM d3 modules; pre-bundle to avoid
+        // "undefined is not a function" in production chunks
+        'recharts',
+        'd3-scale', 'd3-shape', 'd3-path', 'd3-color',
+        'd3-interpolate', 'd3-time', 'd3-time-format', 'd3-array',
+        'd3-format', 'd3-ease',
+      ],
       esbuildOptions: {
         target: 'es2020', // Modern browsers - smaller output, no legacy transforms
       },
