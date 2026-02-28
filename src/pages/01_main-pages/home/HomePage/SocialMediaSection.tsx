@@ -162,7 +162,7 @@ const CollapsibleHeader = styled.div<{ $isExpanded: boolean }>`
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 40px rgba(255, 127, 0, 0.3);
+    box-shadow: 0 12px 40px rgba(79, 70, 229, 0.3);
   }
   
   &:active {
@@ -183,11 +183,11 @@ const AnimatedBorder = styled.div<{ $isExpanded: boolean }>`
   bottom: -4px;
   background: conic-gradient(
     from 0deg,
-    #FF7900,
-    #FF8F10,
-    #FFA500,
-    #FFD700,
-    #FF7900
+    #4F46E5,
+    #6366F1,
+    #818CF8,
+    #A5B4FC,
+    #4F46E5
   );
   border-radius: 24px;
   z-index: -1;
@@ -268,7 +268,7 @@ const Title = styled.h2`
   font-weight: 800;
   color: #FFFFFF;
   margin: 0 0 6px 0;
-  background: linear-gradient(90deg, #FFD700, #FFA500, #FF8F10);
+  background: linear-gradient(90deg, #818CF8, #6366F1, #4F46E5);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -310,11 +310,11 @@ const ToggleButton = styled.div`
   overflow: hidden;
   border: none;
 
-  /* Light mode: Orange gradient background, White text */
+  /* Light mode: Indigo gradient background, White text */
   html[data-theme="light"] & {
-    background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFA500 100%) !important;
+    background: linear-gradient(135deg, #4F46E5 0%, #6366F1 50%, #818CF8 100%) !important;
     color: #ffffff !important;
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.35) !important;
   }
 
   /* Dark mode: Yellow gradient background, Black text */
@@ -327,9 +327,9 @@ const ToggleButton = styled.div`
   &:hover {
     transform: translateY(-3px);
     html[data-theme="light"] & {
-      background: linear-gradient(135deg, #FF5722 0%, #FF6B35 50%, #FF8C42 100%) !important;
+      background: linear-gradient(135deg, #3730A3 0%, #4F46E5 50%, #6366F1 100%) !important;
       color: #ffffff !important;
-      box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5) !important;
     }
     html[data-theme="dark"] & {
       background: linear-gradient(135deg, #FFC107 0%, #FFD700 50%, #FFC107 100%) !important;

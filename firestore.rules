@@ -525,6 +525,16 @@ service cloud.firestore {
     }
 
     // ============================================
+    // NUMERIC CAR IDS Lookup Collection
+    // 🔒 SECURED: Read-only for clients, write only via Cloud Functions/Admin SDK
+    // Enables fast numericId -> (collectionName, listingId) resolution
+    // ============================================
+    match /numeric_car_ids/{numericId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // ============================================
     // COUNTERS Collection (Numeric ID assignment)
     // 🔒 SECURED: Only Cloud Functions should manage counters
     // Client reads allowed for ID lookup

@@ -17,6 +17,7 @@ button,
   backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
   border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: inherit !important; /* ✅ FIX: Preserve component-level border-radius (50%, 12px, 8px, etc.) */
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   position: relative;

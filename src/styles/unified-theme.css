@@ -50,24 +50,24 @@ html[data-theme="light"],
   /* نص خافت */
   --text-on-header: #FFFFFF;
   /* نص على الهيدر */
-  --text-link: #FF6B35;
-  /* روابط - برتقالي */
-  --text-link-hover: #E85A28;
+  --text-link: #4F46E5;
+  /* روابط - بنفسجي أنيق */
+  --text-link-hover: #3730A3;
   /* روابط عند التحويم */
 
   /* ─────────────────────────────────────────
      الألوان الرئيسية - Primary Accents
      ───────────────────────────────────────── */
-  --accent-primary: #FF6B35;
-  /* برتقالي دافئ - للأزرار والتميز */
-  --accent-secondary: #FF8C61;
-  /* برتقالي فاتح - hover */
-  --accent-dark: #E85A28;
-  /* برتقالي داكن - active */
-  --accent-light: #FFB399;
-  /* برتقالي شاحب */
-  --accent-orange: #FF6B35;
-  /* برتقالي - متوافق مع المكونات */
+  --accent-primary: #4F46E5;
+  /* بنفسجي أنيق - للأزرار والتميز */
+  --accent-secondary: #6366F1;
+  /* بنفسجي فاتح - hover */
+  --accent-dark: #3730A3;
+  /* بنفسجي داكن - active */
+  --accent-light: #C7D2FE;
+  /* بنفسجي شاحب */
+  --accent-orange: #4F46E5;
+  /* لون التمييز - متوافق مع المكونات */
 
   --blue-primary: #2C5F8D;
   /* أزرق سيارات - للروابط */
@@ -83,7 +83,7 @@ html[data-theme="light"],
   /* حدود رئيسية */
   --border-secondary: #CBD5E0;
   /* حدود ثانوية */
-  --border-accent: #FF6B35;
+  --border-accent: #4F46E5;
   /* حدود مميزة */
   --border-light: #F7FAFC;
   /* حدود خفيفة */
@@ -93,10 +93,10 @@ html[data-theme="light"],
   /* ─────────────────────────────────────────
      الأزرار - Buttons
      ───────────────────────────────────────── */
-  --btn-primary-bg: #FF6B35;
+  --btn-primary-bg: #4F46E5;
   --btn-primary-text: #FFFFFF;
-  --btn-primary-hover: #FF8C61;
-  --btn-primary-active: #E85A28;
+  --btn-primary-hover: #6366F1;
+  --btn-primary-active: #3730A3;
 
   --btn-secondary-bg: #FFFFFF;
   --btn-secondary-text: #1A1D2E;
@@ -104,9 +104,9 @@ html[data-theme="light"],
   --btn-secondary-hover: #F8F9FA;
 
   --btn-outline-bg: transparent;
-  --btn-outline-text: #FF6B35;
-  --btn-outline-border: #FF6B35;
-  --btn-outline-hover-bg: #FFF8F5;
+  --btn-outline-text: #4F46E5;
+  --btn-outline-border: #4F46E5;
+  --btn-outline-hover-bg: #EEF2FF;
 
   /* ─────────────────────────────────────────
      الظلال - Shadows
@@ -116,7 +116,7 @@ html[data-theme="light"],
   --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
   --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.15);
   --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --shadow-button: 0 2px 6px rgba(255, 107, 53, 0.25);
+  --shadow-button: 0 2px 6px rgba(79, 70, 229, 0.25);
   --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.12);
 
   /* ─────────────────────────────────────────
@@ -150,8 +150,8 @@ html[data-theme="dark"],
   /* بطاقات - أزرق رمادي */
   --bg-hover: #252B3A;
   /* تحويم - أزرق أفتح قليلاً */
-  --bg-accent: #2A1810;
-  /* خلفية مميزة - برتقالي داكن جداً */
+  --bg-accent: #1E1B4B;
+  /* خلفية مميزة - بنفسجي داكن */
   --bg-header: #0A0D14;
   /* هيدر أسود نقي */
   --bg-footer: #13161F;
@@ -174,24 +174,24 @@ html[data-theme="dark"],
   /* نص خافت */
   --text-on-header: #FFFFFF;
   /* نص على الهيدر */
-  --text-link: #FF9066;
-  /* روابط - برتقالي فاتح */
-  --text-link-hover: #FFB399;
+  --text-link: #818CF8;
+  /* روابط - بنفسجي ناعم */
+  --text-link-hover: #A5B4FC;
   /* روابط عند التحويم */
 
   /* ─────────────────────────────────────────
      الألوان الرئيسية - Primary Accents
      ───────────────────────────────────────── */
-  --accent-primary: #FF8C61;
-  /* برتقالي محروق - مميز في الداكن */
-  --accent-secondary: #FFA885;
-  /* برتقالي فاتح */
-  --accent-dark: #E8643D;
-  /* برتقالي داكن */
-  --accent-light: #FFCBB3;
-  /* برتقالي شاحب */
-  --accent-orange: #FF8C61;
-  /* برتقالي - متوافق مع المكونات */
+  --accent-primary: #818CF8;
+  /* بنفسجي ناعم - مميز في الداكن */
+  --accent-secondary: #A5B4FC;
+  /* بنفسجي فاتح */
+  --accent-dark: #6366F1;
+  /* بنفسجي داكن */
+  --accent-light: #C7D2FE;
+  /* بنفسجي شاحب */
+  --accent-orange: #818CF8;
+  /* لون التمييز - متوافق مع المكونات */
 
   --blue-primary: #5B9FD8;
   /* أزرق سيارات فاتح */
@@ -207,7 +207,7 @@ html[data-theme="dark"],
   /* حدود رئيسية */
   --border-secondary: #374151;
   /* حدود ثانوية */
-  --border-accent: #FF8C61;
+  --border-accent: #818CF8;
   /* حدود مميزة */
   --border-light: #1F2937;
   /* حدود خفيفة */
@@ -217,10 +217,10 @@ html[data-theme="dark"],
   /* ─────────────────────────────────────────
      الأزرار - Buttons
      ───────────────────────────────────────── */
-  --btn-primary-bg: #FF8C61;
-  --btn-primary-text: #0F1419;
-  --btn-primary-hover: #FFA885;
-  --btn-primary-active: #E8643D;
+  --btn-primary-bg: #6366F1;
+  --btn-primary-text: #FFFFFF;
+  --btn-primary-hover: #818CF8;
+  --btn-primary-active: #4F46E5;
 
   --btn-secondary-bg: #1E2432;
   --btn-secondary-text: #F8FAFC;
@@ -228,9 +228,9 @@ html[data-theme="dark"],
   --btn-secondary-hover: #252B3A;
 
   --btn-outline-bg: transparent;
-  --btn-outline-text: #FF8C61;
-  --btn-outline-border: #FF8C61;
-  --btn-outline-hover-bg: #2A1810;
+  --btn-outline-text: #818CF8;
+  --btn-outline-border: #818CF8;
+  --btn-outline-hover-bg: #1E1B4B;
 
   /* ─────────────────────────────────────────
      الظلال - Shadows
@@ -240,7 +240,7 @@ html[data-theme="dark"],
   --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.7);
   --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.8);
   --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.4);
-  --shadow-button: 0 2px 6px rgba(255, 140, 97, 0.35);
+  --shadow-button: 0 2px 6px rgba(129, 140, 248, 0.35);
   --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.6);
 
   /* ─────────────────────────────────────────
@@ -316,24 +316,36 @@ a:hover {
 }
 
 /* ─── Cards & Containers ─── */
+/* NOTE: [class*="Container"] and [class*="Card"] are intentionally NOT given a
+   `border` here — those selectors match styled-components display names in dev
+   mode (babel-plugin-styled-components displayName:true) which would add
+   unwanted rectangular borders around every AvatarContainer, FloatingButton
+   wrapper, etc.  Only use EXPLICIT class names (.card, .container) for borders. */
 .card,
 .container,
-.paper,
-section,
-[class*="Card"],
-[class*="Container"] {
+.paper {
   background-color: var(--bg-card);
   border: 1px solid var(--border-primary);
   color: var(--text-primary);
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
+/* Section backgrounds without border (border causes layout issues on <section>) */
+section,
+[class*="Card"],
+[class*="Container"] {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease;
+}
+
 /* ─── Buttons - Primary ─── */
-button,
-.btn,
-[role="button"],
-input[type="button"],
-input[type="submit"] {
+/* NOTE: Global button selectors REMOVED — they override all component styles.
+   Use explicit classes (.btn-primary, .btn-secondary) or styled-components instead.
+   Theme variables (--btn-primary-bg etc.) remain available for opt-in use. */
+
+/* Opt-in primary button — use class="btn-theme-primary" when needed */
+.btn-theme-primary {
   background-color: var(--btn-primary-bg);
   color: var(--btn-primary-text);
   border: 1px solid var(--btn-primary-bg);
@@ -343,17 +355,14 @@ input[type="submit"] {
   font-weight: 600;
 }
 
-button:hover,
-.btn:hover,
-[role="button"]:hover {
+.btn-theme-primary:hover {
   background-color: var(--btn-primary-hover);
   border-color: var(--btn-primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(255, 107, 53, 0.35);
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.35);
 }
 
-button:active,
-.btn:active {
+.btn-theme-primary:active {
   background-color: var(--btn-primary-active);
   transform: translateY(0);
 }
@@ -403,7 +412,7 @@ textarea:focus,
 select:focus {
   border-color: var(--accent-primary);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
 }
 
 input::placeholder,
@@ -612,32 +621,11 @@ aside {
   color: var(--text-primary);
 }
 
-/* Force all text elements to use theme colors */
-p,
-span,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-label,
-li,
-td,
-th {
-  color: var(--text-primary) !important;
-}
-
-/* Force all containers to use theme backgrounds */
-div[class*="Container"],
-div[class*="Section"],
-div[class*="Card"],
-section[class*="Container"],
-section[class*="Section"] {
-  background-color: var(--bg-card) !important;
-  color: var(--text-primary) !important;
-  border-color: var(--border-primary) !important;
-}
+/* NOTE: Global text color and container overrides REMOVED — they used !important
+   which broke conditional text colors (errors, active states, branded text) and
+   overrode background colors on ALL divs containing "Container"/"Card"/"Section"
+   in their class names, including every styled-component. Theme colors are
+   inherited via the html[data-theme] CSS variable system instead. */
 
 /* ═══════════════════════════════════════════════════════════════════
    📱 RESPONSIVE ADJUSTMENTS
@@ -654,15 +642,6 @@ section[class*="Section"] {
    ✨ TRANSITIONS & ANIMATIONS
    انتقالات سلسة
    ═══════════════════════════════════════════════════════════════════ */
-/* Only transition compositable properties on theme change */
-* {
-  transition-property: background-color, border-color;
-  transition-duration: 0.3s;
-  transition-timing-function: ease;
-}
-
-button,
-a,
-[role="button"] {
-  transition-duration: 0.2s;
-}
+/* NOTE: Global * transition removed — competed with premium-effects.css and
+   overrode component-specific transition definitions. Components define their
+   own transitions. Theme-switch animation is handled by ThemeProvider. */

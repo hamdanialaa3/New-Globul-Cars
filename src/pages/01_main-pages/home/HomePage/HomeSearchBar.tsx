@@ -22,11 +22,11 @@ const SearchSection = styled.div`
 
 const SearchBarWrapper = styled.div`
   background: ${({ theme }) => theme.mode === 'dark' ? '#000000' : '#ffffff'};
-  border: 2px solid ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+  border: 2px solid ${({ theme }) => theme.mode === 'dark' ? '#818CF8' : '#4F46E5'};
   border-radius: 16px;
   box-shadow: ${({ theme }) => theme.mode === 'dark'
-    ? '0 8px 32px rgba(255, 215, 0, 0.2), 0 0 0 1px rgba(255, 215, 0, 0.1)'
-    : '0 8px 32px rgba(255, 143, 16, 0.15), 0 0 0 1px rgba(255, 143, 16, 0.1)'};
+    ? '0 8px 32px rgba(129, 140, 248, 0.2), 0 0 0 1px rgba(129, 140, 248, 0.1)'
+    : '0 8px 32px rgba(79, 70, 229, 0.15), 0 0 0 1px rgba(79, 70, 229, 0.1)'};
   padding: 2rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   animation: fadeInUp 0.6s ease-out 0.3s both;
@@ -41,8 +41,8 @@ const SearchBarWrapper = styled.div`
     right: 0;
     height: 3px;
     background: ${({ theme }) => theme.mode === 'dark'
-    ? 'linear-gradient(90deg, #FFD700, #FFA500, #FFD700)'
-    : 'linear-gradient(90deg, #FF8F10, #FFD700, #FF8F10)'};
+    ? 'linear-gradient(90deg, #818CF8, #A5B4FC, #818CF8)'
+    : 'linear-gradient(90deg, #4F46E5, #818CF8, #4F46E5)'};
     opacity: 0.8;
   }
   
@@ -106,7 +106,7 @@ const Select = styled.select`
   border: 2px solid ${({ theme }) => theme.mode === 'dark' ? '#333333' : '#e5e7eb'};
   border-radius: 10px;
   background: ${({ theme }) => theme.mode === 'dark' ? '#1a1a1a' : '#ffffff'};
-  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#1a1a1a'};
+  color: ${({ theme }) => theme.mode === 'dark' ? '#F8FAFC' : '#1a1a1a'};
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: 1.5;
@@ -117,19 +117,19 @@ const Select = styled.select`
   min-height: auto;
   
   &:hover {
-    border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+    border-color: ${({ theme }) => theme.mode === 'dark' ? '#818CF8' : '#4F46E5'};
     transform: translateY(-2px);
     box-shadow: ${({ theme }) => theme.mode === 'dark'
-    ? '0 4px 12px rgba(255, 215, 0, 0.2)'
-    : '0 4px 12px rgba(255, 143, 16, 0.15)'};
+    ? '0 4px 12px rgba(129, 140, 248, 0.2)'
+    : '0 4px 12px rgba(79, 70, 229, 0.15)'};
   }
   
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+    border-color: ${({ theme }) => theme.mode === 'dark' ? '#818CF8' : '#4F46E5'};
     box-shadow: ${({ theme }) => theme.mode === 'dark'
-    ? '0 0 0 4px rgba(255, 215, 0, 0.15), 0 4px 12px rgba(255, 215, 0, 0.2)'
-    : '0 0 0 4px rgba(255, 143, 16, 0.15), 0 4px 12px rgba(255, 143, 16, 0.15)'};
+    ? '0 0 0 4px rgba(129, 140, 248, 0.15), 0 4px 12px rgba(129, 140, 248, 0.2)'
+    : '0 0 0 4px rgba(79, 70, 229, 0.15), 0 4px 12px rgba(79, 70, 229, 0.15)'};
     transform: translateY(-2px);
   }
   
@@ -146,8 +146,7 @@ const SelectIcon = styled.div`
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
-  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
-  transition: transform 0.3s ease;
+  color: ${({ theme }) => theme.mode === 'dark' ? 'rgba(165, 180, 252, 0.8)' : '#4F46E5'};
   
   ${SelectWrapper}:hover & {
     transform: translateY(-50%) rotate(180deg);
@@ -177,7 +176,7 @@ const PriceInput = styled.input`
   border: 2px solid ${({ theme }) => theme.mode === 'dark' ? '#333333' : '#e5e7eb'};
   border-radius: 10px;
   background: ${({ theme }) => theme.mode === 'dark' ? '#1a1a1a' : '#ffffff'};
-  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#1a1a1a'};
+  color: ${({ theme }) => theme.mode === 'dark' ? '#F8FAFC' : '#1a1a1a'};
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: 1.5;
@@ -185,16 +184,16 @@ const PriceInput = styled.input`
   min-height: auto;
   
   &:hover {
-    border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+    border-color: ${({ theme }) => theme.mode === 'dark' ? '#818CF8' : '#4F46E5'};
     transform: translateY(-2px);
   }
   
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+    border-color: ${({ theme }) => theme.mode === 'dark' ? '#818CF8' : '#4F46E5'};
     box-shadow: ${({ theme }) => theme.mode === 'dark'
-    ? '0 0 0 4px rgba(255, 215, 0, 0.15), 0 4px 12px rgba(255, 215, 0, 0.2)'
-    : '0 0 0 4px rgba(255, 143, 16, 0.15), 0 4px 12px rgba(255, 143, 16, 0.15)'};
+    ? '0 0 0 4px rgba(129, 140, 248, 0.15), 0 4px 12px rgba(129, 140, 248, 0.2)'
+    : '0 0 0 4px rgba(79, 70, 229, 0.15), 0 4px 12px rgba(79, 70, 229, 0.15)'};
     transform: translateY(-2px);
   }
   
@@ -209,10 +208,7 @@ const PriceInput = styled.input`
 `;
 
 const PriceSeparator = styled.span`
-  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
-  font-weight: 600;
-  font-size: 1rem;
-  padding: 0 0.5rem;
+  color: ${({ theme }) => theme.mode === 'dark' ? '#818CF8' : '#4F46E5'};
   
   @media (max-width: 768px) {
     display: none;
@@ -238,22 +234,22 @@ const SearchButton = styled.button`
   letter-spacing: 0.02em;
   min-height: auto;
   
-  /* Light mode: Glassmorphism with orange glow */
+  /* Light mode: Glassmorphism with indigo glow */
   html[data-theme="light"] & {
-    background: linear-gradient(135deg, rgba(255, 143, 16, 0.3) 0%, rgba(255, 165, 0, 0.25) 100%);
-    color: #000000;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.3) 0%, rgba(99, 102, 241, 0.25) 100%);
+    color: #1a1a2e;
     backdrop-filter: blur(25px) saturate(180%);
     -webkit-backdrop-filter: blur(25px) saturate(180%);
-    box-shadow: 0 8px 32px rgba(255, 143, 16, 0.25), 0 0 0 0px rgba(255, 143, 16, 0), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(79, 70, 229, 0.25), 0 0 0 0px rgba(79, 70, 229, 0), inset 0 1px 0 rgba(255, 255, 255, 0.4);
   }
   
-  /* Dark mode: Glassmorphism with yellow glow */
+  /* Dark mode: Glassmorphism with indigo glow */
   html[data-theme="dark"] & {
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 165, 0, 0.15) 100%);
-    color: #FFD700;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.2) 0%, rgba(99, 102, 241, 0.15) 100%);
+    color: #A5B4FC;
     backdrop-filter: blur(25px) saturate(180%);
     -webkit-backdrop-filter: blur(25px) saturate(180%);
-    box-shadow: 0 8px 32px rgba(255, 215, 0, 0.3), 0 0 0 0px rgba(255, 215, 0, 0), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(79, 70, 229, 0.3), 0 0 0 0px rgba(79, 70, 229, 0), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   }
   
   /* Animated glow ring */
@@ -264,8 +260,8 @@ const SearchButton = styled.button`
     border-radius: 12px;
     padding: 2px;
     background: ${({ theme }) => theme.mode === 'dark'
-    ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.5), rgba(255, 165, 0, 0.3), transparent)'
-    : 'linear-gradient(135deg, rgba(255, 143, 16, 0.4), rgba(255, 165, 0, 0.25), transparent)'};
+    ? 'linear-gradient(135deg, rgba(129, 140, 248, 0.5), rgba(99, 102, 241, 0.3), transparent)'
+    : 'linear-gradient(135deg, rgba(79, 70, 229, 0.4), rgba(99, 102, 241, 0.25), transparent)'};
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
@@ -289,13 +285,13 @@ const SearchButton = styled.button`
     transform: translateY(-3px) scale(1.02);
     
     html[data-theme="light"] & {
-      background: linear-gradient(135deg, rgba(255, 165, 0, 0.4) 0%, rgba(255, 143, 16, 0.35) 100%);
-      box-shadow: 0 12px 48px rgba(255, 143, 16, 0.4), 0 0 0 0px rgba(255, 143, 16, 0), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.4) 0%, rgba(79, 70, 229, 0.35) 100%);
+      box-shadow: 0 12px 48px rgba(79, 70, 229, 0.4), 0 0 0 0px rgba(79, 70, 229, 0), inset 0 1px 0 rgba(255, 255, 255, 0.5);
     }
     
     html[data-theme="dark"] & {
-      background: linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 165, 0, 0.25) 100%);
-      box-shadow: 0 12px 48px rgba(255, 215, 0, 0.45), 0 0 0 0px rgba(255, 215, 0, 0), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(79, 70, 229, 0.25) 100%);
+      box-shadow: 0 12px 48px rgba(99, 102, 241, 0.45), 0 0 0 0px rgba(79, 70, 229, 0), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
     
     &::before {
@@ -338,11 +334,11 @@ const ResetButton = styled.button`
   gap: 0.5rem;
   padding: 0.5rem 1.75rem;
   background: ${({ theme }) => theme.mode === 'dark'
-    ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.08) 100%)'
-    : 'linear-gradient(135deg, rgba(255, 143, 16, 0.15) 0%, rgba(255, 165, 0, 0.12) 100%)'};
+    ? 'linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(99, 102, 241, 0.08) 100%)'
+    : 'linear-gradient(135deg, rgba(79, 70, 229, 0.15) 0%, rgba(99, 102, 241, 0.12) 100%)'};
   border: none;
   border-radius: 12px;
-  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+  color: ${({ theme }) => theme.mode === 'dark' ? '#818CF8' : '#4F46E5'};
   font-size: 0.9375rem;
   font-weight: 600;
   line-height: 1.5;
@@ -355,8 +351,8 @@ const ResetButton = styled.button`
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   box-shadow: ${({ theme }) => theme.mode === 'dark'
-    ? '0 4px 16px rgba(255, 215, 0, 0.2), 0 0 0 0px rgba(255, 215, 0, 0)'
-    : '0 4px 16px rgba(255, 143, 16, 0.15), 0 0 0 0px rgba(255, 143, 16, 0)'};
+    ? '0 4px 16px rgba(79, 70, 229, 0.2), 0 0 0 0px rgba(79, 70, 229, 0)'
+    : '0 4px 16px rgba(79, 70, 229, 0.15), 0 0 0 0px rgba(79, 70, 229, 0)'};
   position: relative;
   overflow: hidden;
   
@@ -368,8 +364,8 @@ const ResetButton = styled.button`
     border-radius: 12px;
     padding: 2px;
     background: ${({ theme }) => theme.mode === 'dark'
-    ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.4), rgba(255, 165, 0, 0.25), transparent)'
-    : 'linear-gradient(135deg, rgba(255, 143, 16, 0.35), rgba(255, 165, 0, 0.2), transparent)'};
+    ? 'linear-gradient(135deg, rgba(129, 140, 248, 0.4), rgba(99, 102, 241, 0.25), transparent)'
+    : 'linear-gradient(135deg, rgba(79, 70, 229, 0.35), rgba(99, 102, 241, 0.2), transparent)'};
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
@@ -391,13 +387,13 @@ const ResetButton = styled.button`
   
   &:hover {
     background: ${({ theme }) => theme.mode === 'dark'
-    ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 165, 0, 0.15) 100%)'
-    : 'linear-gradient(135deg, rgba(255, 143, 16, 0.25) 0%, rgba(255, 165, 0, 0.2) 100%)'};
-    color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+    ? 'linear-gradient(135deg, rgba(79, 70, 229, 0.2) 0%, rgba(99, 102, 241, 0.15) 100%)'
+    : 'linear-gradient(135deg, rgba(79, 70, 229, 0.25) 0%, rgba(99, 102, 241, 0.2) 100%)'};
+    color: ${({ theme }) => theme.mode === 'dark' ? '#A5B4FC' : '#3730A3'};
     transform: translateY(-2px);
     box-shadow: ${({ theme }) => theme.mode === 'dark'
-    ? '0 8px 24px rgba(255, 215, 0, 0.3), 0 0 0 0px rgba(255, 215, 0, 0)'
-    : '0 8px 24px rgba(255, 143, 16, 0.25), 0 0 0 0px rgba(255, 143, 16, 0)'};
+    ? '0 8px 24px rgba(79, 70, 229, 0.3), 0 0 0 0px rgba(79, 70, 229, 0)'
+    : '0 8px 24px rgba(79, 70, 229, 0.25), 0 0 0 0px rgba(79, 70, 229, 0)'};
     
     &::before {
       opacity: 1;
@@ -426,7 +422,7 @@ const ResetButton = styled.button`
 const AdvancedLink = styled.button`
   background: none;
   border: none;
-  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+  color: ${({ theme }) => theme.mode === 'dark' ? '#818CF8' : '#4F46E5'};
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
@@ -443,12 +439,17 @@ const AdvancedLink = styled.button`
     left: 0;
     width: 0;
     height: 2px;
-    background: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+    background: ${({ theme }) => theme.mode === 'dark' ? '#818CF8' : '#4F46E5'};
     transition: width 0.3s ease;
   }
   
   &:hover {
-    color: ${({ theme }) => theme.mode === 'dark' ? '#FFA500' : '#FFA500'};
+    color: ${({ theme }) => theme.mode === 'dark' ? '#A5B4FC' : '#3730A3'};
+    
+    &::after {
+      width: 100%;
+    }
+  }
     
     &::after {
       width: 100%;

@@ -38,8 +38,8 @@ const DemandBar = styled.div<{ $percentage: number; $isDark: boolean }>`
   flex: 1;
   height: 12px;
   background: ${props => props.$isDark 
-    ? 'rgba(255, 140, 97, 0.15)' 
-    : 'rgba(255, 107, 53, 0.15)'};
+    ? 'rgba(129, 140, 248, 0.15)' 
+    : 'rgba(79, 70, 229, 0.15)'};
   border-radius: 10px;
   overflow: hidden;
   position: relative;
@@ -84,7 +84,7 @@ const DemandStats: React.FC<Props> = ({ categoryName, percentage }) => {
     const isDark = theme === 'dark';
     
     // Get accent color based on theme
-    const accentColor = isDark ? '#FF8C61' : '#FF6B35';
+    const accentColor = isDark ? '#818CF8' : '#4F46E5';
     
     return (
         <DemandIndicator $isDark={isDark}>

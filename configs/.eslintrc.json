@@ -28,6 +28,17 @@
   "rules": {
     "react/react-in-jsx-scope": "off",
     "import/order": ["warn", { "newlines-between": "always" }],
-    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }]
+    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/explicit-function-return-types": ["warn", { "allowExpressions": true, "allowTypedFunctionExpressions": true }],
+    "@typescript-eslint/explicit-module-boundary-types": ["warn", { "allowArgumentsExplicitlyTypedAsAny": true }],
+    "complexity": ["warn", { "max": 15 }],
+    "max-depth": ["warn", { "max": 4 }],
+    "max-lines-per-function": ["warn", { "max": 100, "skipComments": true, "skipBlankLines": true }],
+    "no-console": ["off"],
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/consistent-type-definitions": ["warn", "interface"],
+    "no-shadowing": "off",
+    "@typescript-eslint/no-shadow": "warn",
+    "import/no-cycle": "warn"
   }
 }

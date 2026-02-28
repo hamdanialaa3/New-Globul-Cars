@@ -190,7 +190,7 @@ const LoadingState = styled.div`
 
   svg {
     animation: led-orbit 1.2s linear infinite;
-    color: #FF8F10;
+    color: #4F46E5;
   }
 
   @keyframes led-orbit {

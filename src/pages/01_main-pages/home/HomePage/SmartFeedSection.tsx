@@ -445,9 +445,9 @@ const FilterButton = styled.button<{ $active: boolean; $isDark: boolean }>`
   gap: 6px;
   padding: 10px 20px;
   border-radius: 24px;
-  border: 2px solid ${p => p.$active ? '#FF7900' : (p.$isDark ? 'rgba(255,255,255,0.1)' : '#e9ecef')};
-  background: ${p => p.$active ? '#FF7900' : (p.$isDark ? 'rgba(255,255,255,0.05)' : 'white')};
-  color: ${p => p.$active ? '#0f172a' : (p.$isDark ? '#e2e8f0' : '#444')};
+  border: 2px solid ${p => p.$active ? '#4F46E5' : (p.$isDark ? 'rgba(255,255,255,0.1)' : '#e9ecef')};
+  background: ${p => p.$active ? '#4F46E5' : (p.$isDark ? 'rgba(255,255,255,0.05)' : 'white')};
+  color: ${p => p.$active ? '#ffffff' : (p.$isDark ? '#e2e8f0' : '#444')};
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
@@ -459,10 +459,10 @@ const FilterButton = styled.button<{ $active: boolean; $isDark: boolean }>`
   }
   
   &:hover {
-    background: ${p => p.$active ? '#E66D00' : (p.$isDark ? 'rgba(255, 121, 0, 0.12)' : 'rgba(255, 121, 0, 0.08)')};
-    border-color: #FF7900;
+    background: ${p => p.$active ? '#3730A3' : (p.$isDark ? 'rgba(79, 70, 229, 0.12)' : 'rgba(79, 70, 229, 0.08)')};
+    border-color: #4F46E5;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px ${p => p.$isDark ? 'rgba(255, 121, 0, 0.25)' : 'rgba(255, 121, 0, 0.2)'};
+    box-shadow: 0 4px 12px ${p => p.$isDark ? 'rgba(79, 70, 229, 0.25)' : 'rgba(79, 70, 229, 0.2)'};
   }
   
   &:active {
@@ -512,8 +512,8 @@ const CreatePostTrigger = styled.button<{ $isDark: boolean }>`
   transition: all 0.3s ease;
   
   &:hover {
-    border-color: #FF8F10;
-    box-shadow: 0 4px 12px ${p => p.$isDark ? 'rgba(255, 127, 0, 0.25)' : 'rgba(255, 127, 0, 0.1)'};
+    border-color: #4F46E5;
+    box-shadow: 0 4px 12px ${p => p.$isDark ? 'rgba(79, 70, 229, 0.25)' : 'rgba(79, 70, 229, 0.1)'};
   }
 `;
 
@@ -521,13 +521,13 @@ const UserAvatar = styled.div<{ $hasImage: boolean; $imageUrl?: string }>`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 2px solid #FF8F10;
+  border: 2px solid #4F46E5;
   flex-shrink: 0;
   
   ${p => p.$hasImage && p.$imageUrl ? `
     background: url(${p.$imageUrl}) center/cover no-repeat;
   ` : `
-    background: linear-gradient(135deg, #FF8F10, #FF7900);
+    background: linear-gradient(135deg, #4F46E5, #6366F1);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -565,7 +565,7 @@ const ActionButton = styled.div<{ $isDark: boolean }>`
 const LoginPrompt = styled.button<{ $isDark: boolean }>`
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, #FF7900, #FF8F10);
+  background: linear-gradient(135deg, #4F46E5, #6366F1);
   color: white;
   border: none;
   border-radius: 16px;
@@ -596,7 +596,7 @@ const LoadingSpinner = styled.div`
     width: 40px;
     height: 40px;
     border: 4px solid #e9ecef;
-    border-top-color: #FF7900;
+    border-top-color: #4F46E5;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -639,7 +639,7 @@ const EmptyDescription = styled.p<{ $isDark: boolean }>`
 
 const CreateFirstButton = styled.button`
   padding: 12px 24px;
-  background: #FF7900;
+  background: #4F46E5;
   color: white;
   border: none;
   border-radius: 12px;
@@ -649,7 +649,7 @@ const CreateFirstButton = styled.button`
   transition: all 0.3s;
   
   &:hover {
-    background: #FF8F10;
+    background: #6366F1;
     transform: translateY(-2px);
   }
 `;

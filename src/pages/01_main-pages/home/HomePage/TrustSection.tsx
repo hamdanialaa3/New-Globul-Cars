@@ -60,7 +60,7 @@ const TrustIcon = styled.div`
   margin-bottom: 12px;
   display: flex;
   justify-content: center;
-  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+  color: ${({ theme }) => theme.mode === 'dark' ? '#818CF8' : '#4F46E5'};
   
   svg {
     width: 36px;

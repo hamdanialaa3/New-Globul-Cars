@@ -83,20 +83,20 @@ const TrustItem = styled.div<{ $isDark: boolean }>`
 `;
 
 const IconWrapper = styled.div<{ $isDark: boolean }>`
-  color: ${props => props.$isDark ? '#FFD700' : '#FF8F10'};
+  color: ${props => props.$isDark ? '#818CF8' : '#4F46E5'};
   display: flex;
   align-items: center;
   transition: all 0.3s ease;
   filter: ${props => props.$isDark 
-    ? 'drop-shadow(0 2px 4px rgba(255, 215, 0, 0.4))' 
-    : 'drop-shadow(0 2px 4px rgba(255, 143, 16, 0.3))'};
+    ? 'drop-shadow(0 2px 4px rgba(129, 140, 248, 0.4))' 
+    : 'drop-shadow(0 2px 4px rgba(79, 70, 229, 0.3))'};
 
   ${TrustItem}:hover & {
-    color: ${props => props.$isDark ? '#FFA500' : '#FFD700'};
+    color: ${props => props.$isDark ? '#A5B4FC' : '#818CF8'};
     transform: scale(1.1) rotate(5deg);
     filter: ${props => props.$isDark 
-      ? 'drop-shadow(0 4px 8px rgba(255, 215, 0, 0.6))' 
-      : 'drop-shadow(0 4px 8px rgba(255, 143, 16, 0.5))'};
+      ? 'drop-shadow(0 4px 8px rgba(129, 140, 248, 0.6))' 
+      : 'drop-shadow(0 4px 8px rgba(79, 70, 229, 0.5))'};
   }
 `;
 
@@ -105,7 +105,7 @@ const Text = styled.span<{ $isDark: boolean }>`
   font-size: 0.95rem;
   letter-spacing: 0.02em;
   text-shadow: ${props => props.$isDark
-    ? '0 2px 8px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.3)'
+    ? '0 2px 8px rgba(0, 0, 0, 0.5), 0 0 20px rgba(129, 140, 248, 0.3)'
     : '0 2px 8px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 255, 255, 0.2)'};
   transition: all 0.3s ease;
 

@@ -105,13 +105,13 @@ const Tab = styled.button<{ $active: boolean; $isDark: boolean; $tabType?: 'all'
     font-size: 14px;
     border-radius: 20px; /* Pill shape on mobile */
     border: 1px solid ${props => props.$active
-    ? (props.$isDark ? '#38bdf8' : '#FF7900')
+    ? (props.$isDark ? '#38bdf8' : '#4F46E5')
     : (props.$isDark ? '#334155' : '#e2e8f0')};
     background: ${props => props.$active
-    ? (props.$isDark ? 'rgba(56, 189, 248, 0.1)' : '#FFF4EB')
+    ? (props.$isDark ? 'rgba(56, 189, 248, 0.1)' : '#EEF2FF')
     : 'transparent'};
     color: ${props => props.$active
-    ? (props.$isDark ? '#38bdf8' : '#FF7900')
+    ? (props.$isDark ? '#38bdf8' : '#4F46E5')
     : (props.$isDark ? '#94a3b8' : '#64748b')};
     box-shadow: none;
   }
@@ -195,8 +195,8 @@ const Select = styled.select<{ $isDark: boolean }>`
 
   &:focus {
     outline: none;
-    border-color: ${props => props.$isDark ? '#38bdf8' : '#FF7900'};
-    box-shadow: 0 0 0 3px ${props => props.$isDark ? 'rgba(56, 189, 248, 0.1)' : 'rgba(255, 121, 0, 0.1)'};
+    border-color: ${props => props.$isDark ? '#38bdf8' : '#4F46E5'};
+    box-shadow: 0 0 0 3px ${props => props.$isDark ? 'rgba(56, 189, 248, 0.1)' : 'rgba(79, 70, 229, 0.1)'};
   }
 
   /* Mobile Optimization */
@@ -226,19 +226,19 @@ const SearchButton = styled.button<{ $isDark: boolean }>`
   font-weight: 600;
   font-size: 16px;
   color: #ffffff;
-  /* Desktop: Orange gradient */
-  background: linear-gradient(135deg, #FF7900 0%, #FF9433 100%);
+  /* Desktop: Indigo gradient */
+  background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 0 4px 12px rgba(255, 121, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(255, 121, 0, 0.3);
+    box-shadow: 0 8px 16px rgba(79, 70, 229, 0.3);
   }
 
   &:active {
@@ -249,12 +249,12 @@ const SearchButton = styled.button<{ $isDark: boolean }>`
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
-    box-shadow: 0 2px 8px rgba(255, 121, 0, 0.15);
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.15);
   }
 
   &:hover:disabled {
     transform: none;
-    box-shadow: 0 2px 8px rgba(255, 121, 0, 0.15);
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.15);
   }
 
   /* Mobile Optimization */
@@ -264,7 +264,7 @@ const SearchButton = styled.button<{ $isDark: boolean }>`
     font-size: 18px;
     border-radius: 12px;
     margin-top: 16px;
-    box-shadow: 0 8px 20px rgba(255, 121, 0, 0.25);
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.25);
   }
 `;
 

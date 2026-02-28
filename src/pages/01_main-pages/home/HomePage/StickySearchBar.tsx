@@ -69,7 +69,7 @@ const SearchBarInner = styled.div`
 const Logo = styled.div<{ $isDark: boolean }>`
   font-size: 1.25rem;
   font-weight: 700;
-  color: ${props => props.$isDark ? '#38bdf8' : '#FF7900'};
+  color: ${props => props.$isDark ? '#38bdf8' : '#4F46E5'};
   margin-right: 16px;
   white-space: nowrap;
   
@@ -104,10 +104,10 @@ const SearchInputWrapper = styled.div<{ $isDark: boolean }>`
     
     &:focus {
       outline: none;
-      border-color: ${props => props.$isDark ? '#38bdf8' : '#FF7900'};
+      border-color: ${props => props.$isDark ? '#38bdf8' : '#4F46E5'};
       box-shadow: 0 0 0 3px ${props => props.$isDark
         ? 'rgba(56, 189, 248, 0.15)'
-        : 'rgba(255, 121, 0, 0.15)'};
+        : 'rgba(79, 70, 229, 0.15)'};
     }
   }
   
@@ -144,7 +144,7 @@ const SelectWrapper = styled.div<{ $isDark: boolean }>`
     
     &:focus {
       outline: none;
-      border-color: ${props => props.$isDark ? '#38bdf8' : '#FF7900'};
+      border-color: ${props => props.$isDark ? '#38bdf8' : '#4F46E5'};
     }
   }
   
@@ -171,7 +171,7 @@ const SearchButton = styled.button<{ $isDark: boolean }>`
   border: none;
   background: ${props => props.$isDark
     ? 'linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)'
-    : 'linear-gradient(135deg, #FF7900 0%, #FF5500 100%)'};
+    : 'linear-gradient(135deg, #4F46E5 0%, #3730A3 100%)'};
   color: white;
   font-weight: 600;
   font-size: 0.95rem;
@@ -186,7 +186,7 @@ const SearchButton = styled.button<{ $isDark: boolean }>`
     transform: translateY(-1px);
     box-shadow: 0 4px 12px ${props => props.$isDark
       ? 'rgba(56, 189, 248, 0.3)'
-      : 'rgba(255, 121, 0, 0.3)'};
+      : 'rgba(79, 70, 229, 0.3)'};
   }
   
   &:active {

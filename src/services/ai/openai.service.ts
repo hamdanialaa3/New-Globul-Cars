@@ -3,11 +3,9 @@
  * OpenAI GPT-4 خدمة التكامل
  */
 
-// PERF: Dynamic import — keeps ~600KB openai SDK out of the main bundle.
-// TODO: Migrate all AI calls to Cloud Functions proxy to avoid exposing API keys in browser.
+// SECURITY: Client-side OpenAI SDK disabled to avoid exposing API keys in browser bundles.
+// TODO: Route AI calls through Cloud Functions/server-side proxy.
 import { logger } from '@/services/logger-service';
-
-type OpenAIClient = import('openai').default;
 
 interface GPT4Response {
   message: string;
@@ -39,48 +37,21 @@ interface CarAnalysis {
 
 class OpenAIGPT4Service {
   private static instance: OpenAIGPT4Service;
-  private openai: OpenAIClient | null = null;
   private model = 'gpt-4-turbo-preview';
   private costPer1kTokens = {
     input: 0.03,
     output: 0.06
   };
   private isConfigured: boolean = false;
-  private initPromise: Promise<void> | null = null;
 
   private constructor() {
-    // Defer OpenAI SDK loading — will be dynamically imported on first use
     const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    if (!apiKey) {
-      logger.warn('⚠️ OpenAI API Key not configured - AI features will be disabled');
-      this.isConfigured = false;
+    if (apiKey) {
+      logger.warn('⚠️ VITE_OPENAI_API_KEY is set but client-side OpenAI is disabled. Use Cloud Functions proxy.');
     } else {
-      this.isConfigured = true;
+      logger.warn('⚠️ OpenAI client disabled - AI features require server-side proxy.');
     }
-  }
-
-  /**
-   * Lazily initialize the OpenAI client (dynamic import)
-   */
-  private async ensureClient(): Promise<void> {
-    if (this.openai) return;
-    if (!this.isConfigured) return;
-    if (this.initPromise) { await this.initPromise; return; }
-
-    this.initPromise = (async () => {
-      try {
-        const { default: OpenAI } = await import('openai');
-        this.openai = new OpenAI({
-          apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-          dangerouslyAllowBrowser: true
-        });
-        logger.info('✅ OpenAI service initialized (lazy)');
-      } catch (error) {
-        logger.error('Failed to initialize OpenAI', error as Error);
-        this.isConfigured = false;
-      }
-    })();
-    await this.initPromise;
+    this.isConfigured = false;
   }
 
   static getInstance(): OpenAIGPT4Service {
@@ -94,73 +65,18 @@ class OpenAIGPT4Service {
    * Check if OpenAI is available
    */
   isAvailable(): boolean {
-    return this.isConfigured && this.openai !== null;
+    return this.isConfigured;
   }
 
   /**
    * Chat with GPT-4
    */
   async chat(message: string, systemPrompt?: string): Promise<GPT4Response> {
-    await this.ensureClient();
-    if (!this.isAvailable()) {
-      throw new Error('OpenAI service not available - API key not configured');
-    }
-
-    try {
-      logger.info('GPT-4 Chat started', { messageLength: message.length });
-
-      const messages: Array<{ role: 'user' | 'assistant'; content: string }> = [
-        {
-          role: 'user',
-          content: message
-        }
-      ];
-
-      if (systemPrompt) {
-        messages.unshift({
-          role: 'user',
-          content: systemPrompt
-        });
-      }
-
-      const response = await this.openai!.messages.create({
-        model: this.model,
-        max_tokens: 1024,
-        messages: messages.map(m => ({
-          ...m,
-          role: m.role as 'user' | 'assistant'
-        }))
-      });
-
-      const textContent = response.content.find(c => c.type === 'text');
-      if (!textContent || textContent.type !== 'text') {
-        throw new Error('No text content in response');
-      }
-
-      const cost = this.calculateCost(
-        response.usage?.input_tokens || 0,
-        response.usage?.output_tokens || 0
-      );
-
-      logger.info('GPT-4 Chat completed', {
-        tokens: response.usage?.total_tokens,
-        cost
-      });
-
-      return {
-        message: textContent.text,
-        model: this.model,
-        tokens: {
-          prompt: response.usage?.input_tokens || 0,
-          completion: response.usage?.output_tokens || 0,
-          total: response.usage?.total_tokens || 0
-        },
-        cost
-      };
-    } catch (error) {
-      logger.error('GPT-4 chat failed', error as Error, { message });
-      throw error;
-    }
+    logger.warn('GPT-4 chat requested from client while service is disabled', {
+      messageLength: message.length,
+      hasSystemPrompt: Boolean(systemPrompt)
+    });
+    throw new Error('OpenAI client is disabled. Route this call through Cloud Functions.');
   }
 
   /**

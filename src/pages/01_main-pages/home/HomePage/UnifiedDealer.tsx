@@ -82,7 +82,7 @@ const Title = styled.h2<{ $isDark: boolean }>`
   gap: 0.75rem;
 
   svg {
-    color: #ff6b35;
+    color: #4F46E5;
     flex-shrink: 0;
   }
 `;
@@ -145,7 +145,7 @@ const StatItem = styled(motion.div) <{ $isDark: boolean }>`
     ? 'rgba(94, 179, 255, 0.2)'
     : 'rgba(12, 26, 42, 0.08)'};
     border-radius: 10px;
-    color: #ff6b35;
+    color: #4F46E5;
     flex-shrink: 0;
 
     svg {
@@ -187,18 +187,18 @@ const CTASection = styled(motion.div) <{ $isDark: boolean }>`
   gap: 2rem;
   align-items: center;
   padding: 2.5rem;
-  background: linear-gradient(135deg, rgba(255, 107, 53, 0.12), rgba(255, 143, 16, 0.08));
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.12), rgba(99, 102, 241, 0.08));
   border: 2px solid ${props => props.$isDark
-    ? 'rgba(255, 107, 53, 0.25)'
-    : 'rgba(255, 107, 53, 0.15)'};
+    ? 'rgba(99, 102, 241, 0.25)'
+    : 'rgba(79, 70, 229, 0.15)'};
   border-radius: 16px;
   transition: all 300ms ease-out;
 
   &:hover {
     border-color: ${props => props.$isDark
-    ? 'rgba(255, 107, 53, 0.4)'
-    : 'rgba(255, 107, 53, 0.25)'};
-    background: linear-gradient(135deg, rgba(255, 107, 53, 0.18), rgba(255, 143, 16, 0.12));
+    ? 'rgba(99, 102, 241, 0.4)'
+    : 'rgba(79, 70, 229, 0.25)'};
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.18), rgba(99, 102, 241, 0.12));
   }
 
   @media (max-width: 768px) {
@@ -256,15 +256,15 @@ const CTAButton = styled(motion.button) <{ $isDark: boolean }>`
   font-weight: 700;
   font-size: 1.05rem;
   cursor: pointer;
-  background: linear-gradient(135deg, #ff6b35 0%, #ff8f10 100%);
+  background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%);
   color: white;
   white-space: nowrap;
-  box-shadow: 0 8px 16px rgba(255, 107, 53, 0.25);
+  box-shadow: 0 8px 16px rgba(79, 70, 229, 0.25);
   transition: all 200ms ease-out;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 24px rgba(255, 107, 53, 0.35);
+    box-shadow: 0 12px 24px rgba(79, 70, 229, 0.35);
   }
 
   &:active {
@@ -302,7 +302,7 @@ const LoadingFallback = styled.div<{ $isDark: boolean }>`
       background: conic-gradient(
         from 0deg,
         transparent 0deg,
-        #FF8F10 90deg,
+        #4F46E5 90deg,
         transparent 100deg,
         transparent 360deg
       );

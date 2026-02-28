@@ -51,8 +51,8 @@ const float = keyframes`
 `;
 
 const pulse = keyframes`
-  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 143, 16, 0.4); }
-  50% { opacity: 0.9; box-shadow: 0 0 0 15px rgba(255, 143, 16, 0); }
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4); }
+  50% { opacity: 0.9; box-shadow: 0 0 0 15px rgba(79, 70, 229, 0); }
 `;
 
 const shimmer = keyframes`
@@ -79,19 +79,19 @@ const Container = styled.section<{ $isDark: boolean }>`
   
   /* Premium animated gradient background */
   background: ${props => props.$isDark
-    ? 'linear-gradient(135deg, rgba(255, 143, 16, 0.15) 0%, rgba(234, 88, 12, 0.1) 50%, rgba(255, 143, 16, 0.15) 100%)'
-    : 'linear-gradient(135deg, rgba(255, 143, 16, 0.08) 0%, rgba(234, 88, 12, 0.05) 50%, rgba(255, 143, 16, 0.08) 100%)'};
+    ? 'linear-gradient(135deg, rgba(79, 70, 229, 0.15) 0%, rgba(99, 102, 241, 0.1) 50%, rgba(79, 70, 229, 0.15) 100%)'
+    : 'linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, rgba(99, 102, 241, 0.05) 50%, rgba(79, 70, 229, 0.08) 100%)'};
   
   background-size: 200% 200%;
   animation: ${gradientMove} 8s ease infinite;
   
   border: 1px solid ${props => props.$isDark
-    ? 'rgba(255, 143, 16, 0.3)'
-    : 'rgba(255, 143, 16, 0.2)'};
+    ? 'rgba(99, 102, 241, 0.3)'
+    : 'rgba(79, 70, 229, 0.2)'};
   
   box-shadow: 0 20px 60px ${props => props.$isDark
-    ? 'rgba(255, 143, 16, 0.15)'
-    : 'rgba(255, 143, 16, 0.1)'};
+    ? 'rgba(79, 70, 229, 0.15)'
+    : 'rgba(79, 70, 229, 0.1)'};
 
   /* Shimmer overlay */
   &::before {
@@ -101,7 +101,7 @@ const Container = styled.section<{ $isDark: boolean }>`
     background: linear-gradient(
       90deg,
       transparent,
-      ${props => props.$isDark ? 'rgba(255, 143, 16, 0.08)' : 'rgba(255, 143, 16, 0.04)'},
+      ${props => props.$isDark ? 'rgba(99, 102, 241, 0.08)' : 'rgba(79, 70, 229, 0.04)'},
       transparent
     );
     background-size: 200% 100%;
@@ -141,7 +141,7 @@ const Badge = styled(motion.div)`
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
-  background: linear-gradient(135deg, #FF8F10 0%, #ea580c 100%);
+  background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%);
   color: white;
   border-radius: 24px;
   font-size: 0.75rem;
@@ -149,7 +149,7 @@ const Badge = styled(motion.div)`
   text-transform: uppercase;
   letter-spacing: 0.5px;
   width: fit-content;
-  box-shadow: 0 4px 15px rgba(255, 143, 16, 0.4);
+  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
   
   svg {
     width: 14px;
@@ -170,7 +170,7 @@ const Title = styled.h2<{ $isDark: boolean }>`
   margin: 0;
   
   span {
-    color: #FF8F10;
+    color: #4F46E5;
   }
 `;
 
@@ -213,7 +213,7 @@ const BenefitItem = styled.div<{ $isDark: boolean }>`
   svg {
     width: 16px;
     height: 16px;
-    color: #FF8F10;
+    color: #4F46E5;
   }
 `;
 
@@ -255,7 +255,7 @@ const StatCard = styled(motion.div)<{ $isDark: boolean }>`
 const StatValue = styled.span<{ $isDark: boolean }>`
   font-size: 1.5rem;
   font-weight: 800;
-  color: #FF8F10;
+  color: #4F46E5;
   
   @media (max-width: 480px) {
     font-size: 1.25rem;
@@ -292,7 +292,7 @@ const CTAButton = styled(motion.button)`
   font-size: 1.1rem;
   font-weight: 700;
   border-radius: 14px;
-  background: linear-gradient(135deg, #FF8F10 0%, #ea580c 100%);
+  background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%);
   color: white;
   border: none;
   cursor: pointer;
@@ -303,7 +303,7 @@ const CTAButton = styled(motion.button)`
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 35px rgba(255, 143, 16, 0.5);
+    box-shadow: 0 12px 35px rgba(79, 70, 229, 0.5);
   }
   
   svg {
@@ -359,7 +359,7 @@ const SecondaryLink = styled(motion.button)<{ $isDark: boolean }>`
   transition: color 0.2s ease;
   
   &:hover {
-    color: #FF8F10;
+    color: #4F46E5;
   }
   
   svg {

@@ -164,6 +164,8 @@ const SpeedDialItem = styled.button<{ $index: number; $show: boolean }>`
   justify-content: center;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: ${props => props.$show ? 1 : 0};
+  visibility: ${props => props.$show ? 'visible' : 'hidden'}; /* Hides box-shadow when collapsed */
+  pointer-events: ${props => props.$show ? 'auto' : 'none'}; /* Non-interactive when hidden */
   transform: ${props => props.$show ? 'translateX(0) scale(1)' : 'translateX(20px) scale(0.8)'};
   animation: ${props => props.$show ? slideInHorizontal : 'none'} 0.3s ease-out;
   animation-delay: ${props => props.$index * 0.05}s;

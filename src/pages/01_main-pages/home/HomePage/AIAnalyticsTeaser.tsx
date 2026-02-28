@@ -89,11 +89,11 @@ const Button = styled.button`
   position: relative;
   overflow: hidden;
 
-  /* Light mode: Orange gradient background, White text */
+  /* Light mode: Indigo gradient background, White text */
   html[data-theme="light"] & {
-    background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFA500 100%) !important;
+    background: linear-gradient(135deg, #4F46E5 0%, #6366F1 50%, #818CF8 100%) !important;
     color: #ffffff !important;
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.35) !important;
   }
 
   /* Dark mode: Yellow gradient background, Black text */
@@ -106,9 +106,9 @@ const Button = styled.button`
   &:hover {
     transform: translateY(-3px);
     html[data-theme="light"] & {
-      background: linear-gradient(135deg, #FF5722 0%, #FF6B35 50%, #FF8C42 100%) !important;
+      background: linear-gradient(135deg, #3730A3 0%, #4F46E5 50%, #6366F1 100%) !important;
       color: #ffffff !important;
-      box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5) !important;
     }
     html[data-theme="dark"] & {
       background: linear-gradient(135deg, #FFC107 0%, #FFD700 50%, #FFC107 100%) !important;
@@ -120,7 +120,7 @@ const Button = styled.button`
   &:active {
     transform: translateY(-1px);
     html[data-theme="light"] & {
-      background: linear-gradient(135deg, #E64A19 0%, #FF5722 50%, #FF6B35 100%) !important;
+      background: linear-gradient(135deg, #312e81 0%, #3730A3 50%, #4F46E5 100%) !important;
       color: #ffffff !important;
     }
     html[data-theme="dark"] & {

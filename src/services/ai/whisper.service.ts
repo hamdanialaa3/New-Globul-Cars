@@ -2,13 +2,11 @@
  * Voice AI Service using OpenAI Whisper
  * خدمة الذكاء الاصطناعي الصوتي
  * 
- * PERF: Dynamic import — keeps ~600KB openai SDK out of the main bundle.
- * TODO: Migrate to Cloud Functions proxy to avoid exposing API keys in browser.
+ * SECURITY: Client-side Whisper/OpenAI SDK disabled to avoid exposing API keys in browser bundles.
+ * TODO: Route voice AI through Cloud Functions/server-side proxy.
  */
 
 import { logger } from '@/services/logger-service';
-
-type OpenAIClient = import('openai').default;
 
 interface TranscriptionResult {
   text: string;
@@ -31,42 +29,17 @@ interface VoiceCommandResult {
 
 class WhisperVoiceService {
   private static instance: WhisperVoiceService;
-  private openai: OpenAIClient | null = null;
   private model = 'whisper-1';
   private isConfigured: boolean = false;
-  private initPromise: Promise<void> | null = null;
 
   private constructor() {
     const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    if (!apiKey) {
-      logger.warn('OpenAI API Key not configured for Whisper');
+    if (apiKey) {
+      logger.warn('VITE_OPENAI_API_KEY is set but client-side Whisper is disabled. Use Cloud Functions proxy.');
     } else {
-      this.isConfigured = true;
+      logger.warn('Whisper client disabled - voice AI requires server-side proxy.');
     }
-  }
-
-  /**
-   * Lazily initialize the OpenAI client (dynamic import)
-   */
-  private async ensureClient(): Promise<void> {
-    if (this.openai) return;
-    if (!this.isConfigured) return;
-    if (this.initPromise) { await this.initPromise; return; }
-
-    this.initPromise = (async () => {
-      try {
-        const { default: OpenAI } = await import('openai');
-        this.openai = new OpenAI({
-          apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-          dangerouslyAllowBrowser: true
-        });
-        logger.info('✅ Whisper service initialized (lazy)');
-      } catch (error) {
-        logger.error('Failed to initialize Whisper/OpenAI', error as Error);
-        this.isConfigured = false;
-      }
-    })();
-    await this.initPromise;
+    this.isConfigured = false;
   }
 
   static getInstance(): WhisperVoiceService {
@@ -80,101 +53,33 @@ class WhisperVoiceService {
    * Transcribe audio file to text
    */
   async transcribeAudio(audioBlob: Blob, language?: string): Promise<TranscriptionResult> {
-    await this.ensureClient();
-    if (!this.openai) {
-      throw new Error('Whisper service not available - API key not configured');
-    }
-    try {
-      logger.info('Transcribing audio', {
-        size: audioBlob.size,
-        language: language || 'auto'
-      });
-
-      // Create FormData for file upload
-      const formData = new FormData();
-      formData.append('file', audioBlob, 'audio.wav');
-      formData.append('model', this.model);
-      if (language) {
-        formData.append('language', language);
-      }
-
-      const response = await this.openai.audio.transcriptions.create({
-        file: audioBlob,
-        model: this.model,
-        language: language,
-        response_format: 'json'
-      } as any);
-
-      logger.info('Audio transcribed successfully', {
-        textLength: response.text?.length || 0,
-        language
-      });
-
-      return {
-        text: response.text || '',
-        language: language || 'detected',
-        duration: 0, // Would need to calculate from audio
-        confidence: 95, // Whisper doesn't provide confidence, assume high
-        words: [] // Parse text into words
-      };
-    } catch (error) {
-      logger.error('Audio transcription failed', error as Error);
-      throw error;
-    }
+    logger.warn('transcribeAudio requested from client while Whisper is disabled', {
+      size: audioBlob.size,
+      language: language || 'auto',
+      model: this.model
+    });
+    throw new Error('Whisper client is disabled. Route this call through Cloud Functions.');
   }
 
   /**
    * Transcribe audio with timestamps
    */
   async transcribeWithTimestamps(audioBlob: Blob): Promise<TranscriptionResult> {
-    await this.ensureClient();
-    if (!this.openai) throw new Error('Whisper service not available');
-    try {
-      logger.info('Transcribing with timestamps', { size: audioBlob.size });
-
-      const response = await this.openai.audio.transcriptions.create({
-        file: audioBlob,
-        model: this.model,
-        response_format: 'verbose_json',
-        timestamp_granularities: ['word']
-      } as any);
-
-      return {
-        text: response.text || '',
-        language: 'auto',
-        duration: response.duration || 0,
-        confidence: 95,
-        words: response.words || []
-      };
-    } catch (error) {
-      logger.error('Timestamped transcription failed', error as Error);
-      throw error;
-    }
+    logger.warn('transcribeWithTimestamps requested from client while Whisper is disabled', {
+      size: audioBlob.size
+    });
+    throw new Error('Whisper client is disabled. Route this call through Cloud Functions.');
   }
 
   /**
    * Convert text to speech (using TTS)
    */
   async textToSpeech(text: string, voice: 'alloy' | 'echo' | 'fable' | 'onyx' | 'nova' | 'shimmer' = 'nova'): Promise<Blob> {
-    await this.ensureClient();
-    if (!this.openai) throw new Error('Whisper service not available');
-    try {
-      logger.info('Converting text to speech', { textLength: text.length });
-
-      const response = await this.openai.audio.speech.create({
-        input: text,
-        model: 'tts-1',
-        voice: voice,
-        response_format: 'opus'
-      });
-
-      // Convert to blob
-      const arrayBuffer = await response.arrayBuffer();
-      return new Blob([arrayBuffer], { type: 'audio/opus' });
-    } catch (error) {
-      logger.error('Text to speech failed', error as Error);
-      throw error;
-    }
+    logger.warn('textToSpeech requested from client while Whisper is disabled', {
+      textLength: text.length,
+      voice
+    });
+    throw new Error('Whisper client is disabled. Route this call through Cloud Functions.');
   }
 
   /**

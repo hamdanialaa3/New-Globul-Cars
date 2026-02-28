@@ -126,7 +126,7 @@ const Title = styled.h2`
   margin: 0;
   
   svg {
-    color: #FF8F10;
+    color: #4F46E5;
   }
   
   @media (max-width: 768px) {
@@ -145,7 +145,7 @@ const DominantBrandBadge = styled.span`
   align-items: center;
   gap: 4px;
   padding: 4px 10px;
-  background: linear-gradient(135deg, #FF8F10 0%, #FF6B00 100%);
+  background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%);
   color: white;
   font-size: 0.75rem;
   font-weight: 600;
@@ -175,7 +175,7 @@ const RefreshButton = styled.button<{ $loading?: boolean }>`
   
   &:hover:not(:disabled) {
     background: var(--bg-hover);
-    border-color: #FF8F10;
+    border-color: #4F46E5;
   }
   
   &:disabled {
@@ -202,7 +202,7 @@ const ViewAllButton = styled.button`
   align-items: center;
   gap: 4px;
   padding: 8px 16px;
-  background: linear-gradient(135deg, #FF8F10 0%, #FF6B00 100%);
+  background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%);
   border: none;
   border-radius: 8px;
   color: white;
@@ -213,7 +213,7 @@ const ViewAllButton = styled.button`
   
   &:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
   }
   
   svg {
@@ -275,7 +275,7 @@ const LoadingSpinner = styled.div`
   width: 40px;
   height: 40px;
   border: 3px solid var(--border-primary);
-  border-top-color: #FF8F10;
+  border-top-color: #4F46E5;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   
@@ -297,7 +297,7 @@ const EmptyState = styled.div`
 
 const RetryButton = styled.button`
   padding: 10px 24px;
-  background: #FF8F10;
+  background: #4F46E5;
   border: none;
   border-radius: 8px;
   color: white;
@@ -306,7 +306,7 @@ const RetryButton = styled.button`
   transition: all 0.2s ease;
   
   &:hover {
-    background: #FF6B00;
+    background: #3730A3;
   }
 `;
 

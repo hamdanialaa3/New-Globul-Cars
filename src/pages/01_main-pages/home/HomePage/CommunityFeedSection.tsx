@@ -68,9 +68,9 @@ const LoadMoreButton = styled.button`
   transition: all 0.3s ease;
   
   &:hover {
-    border-color: #FF8F10;
-    color: #FF7900;
-    background: rgba(255, 247, 237, 0.5);
+    border-color: #4F46E5;
+    color: #4F46E5;
+    background: rgba(238, 242, 255, 0.5);
   }
   
   &:disabled {

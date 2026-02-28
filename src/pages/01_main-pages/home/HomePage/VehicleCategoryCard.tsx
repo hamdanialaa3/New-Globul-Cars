@@ -41,9 +41,9 @@ const Card = styled.button<{ $active: boolean }>`
   background: ${({ theme, $active }) =>
     $active
       ? `linear-gradient(135deg,
-          rgba(255, 121, 0, ${theme.mode === 'dark' ? 0.28 : 0.18}) 0%,
-          rgba(255, 143, 16, ${theme.mode === 'dark' ? 0.22 : 0.14}) 55%,
-          rgba(255, 185, 0, ${theme.mode === 'dark' ? 0.18 : 0.12}) 100%
+          rgba(79, 70, 229, ${theme.mode === 'dark' ? 0.28 : 0.18}) 0%,
+          rgba(99, 102, 241, ${theme.mode === 'dark' ? 0.22 : 0.14}) 55%,
+          rgba(129, 140, 248, ${theme.mode === 'dark' ? 0.18 : 0.12}) 100%
         )`
       : theme.mode === 'dark'
         ? 'rgba(255, 255, 255, 0.06)'
@@ -54,7 +54,7 @@ const Card = styled.button<{ $active: boolean }>`
 
   border: 1px solid ${({ theme, $active }) =>
     $active
-      ? (theme.mode === 'dark' ? 'rgba(255, 143, 16, 0.55)' : 'rgba(255, 121, 0, 0.35)')
+      ? (theme.mode === 'dark' ? 'rgba(99, 102, 241, 0.55)' : 'rgba(79, 70, 229, 0.35)')
       : (theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.14)' : 'rgba(15, 23, 42, 0.10)')};
   
   cursor: pointer;
@@ -64,8 +64,8 @@ const Card = styled.button<{ $active: boolean }>`
   box-shadow: ${({ theme, $active }) =>
     $active
       ? (theme.mode === 'dark'
-        ? '0 18px 40px rgba(0, 0, 0, 0.45), 0 8px 18px rgba(255, 121, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.10)'
-        : '0 14px 34px rgba(15, 23, 42, 0.12), 0 6px 14px rgba(255, 121, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.35)')
+        ? '0 18px 40px rgba(0, 0, 0, 0.45), 0 8px 18px rgba(79, 70, 229, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.10)'
+        : '0 14px 34px rgba(15, 23, 42, 0.12), 0 6px 14px rgba(79, 70, 229, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.35)')
       : (theme.mode === 'dark'
         ? '0 14px 30px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.06)'
         : '0 10px 26px rgba(15, 23, 42, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.35)')};
@@ -93,21 +93,21 @@ const Card = styled.button<{ $active: boolean }>`
     box-shadow: ${({ theme, $active }) =>
       $active
         ? (theme.mode === 'dark'
-          ? '0 22px 50px rgba(0, 0, 0, 0.52), 0 10px 24px rgba(255, 121, 0, 0.22)'
-          : '0 18px 44px rgba(15, 23, 42, 0.16), 0 10px 22px rgba(255, 121, 0, 0.18)')
+          ? '0 22px 50px rgba(0, 0, 0, 0.52), 0 10px 24px rgba(79, 70, 229, 0.22)'
+          : '0 18px 44px rgba(15, 23, 42, 0.16), 0 10px 22px rgba(79, 70, 229, 0.18)')
         : (theme.mode === 'dark'
           ? '0 18px 38px rgba(0, 0, 0, 0.46)'
           : '0 14px 34px rgba(15, 23, 42, 0.14)')};
     border-color: ${({ theme, $active }) =>
       $active
-        ? (theme.mode === 'dark' ? 'rgba(255, 143, 16, 0.65)' : 'rgba(255, 121, 0, 0.45)')
+        ? (theme.mode === 'dark' ? 'rgba(99, 102, 241, 0.65)' : 'rgba(79, 70, 229, 0.45)')
         : (theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.22)' : 'rgba(15, 23, 42, 0.16)')};
   }
 
   &:active {
     transform: skewX(-8deg) translateY(-2px) scale(0.98);
     box-shadow: ${props => props.$active 
-      ? '0 4px 12px rgba(255, 121, 0, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.2)' 
+      ? '0 4px 12px rgba(79, 70, 229, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.2)' 
       : '0 2px 6px rgba(0, 0, 0, 0.1)'};
   }
 
@@ -151,7 +151,7 @@ const Card = styled.button<{ $active: boolean }>`
     margin-bottom: 12px;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     color: ${({ theme, $active }) =>
-      $active ? '#ffffff' : (theme.mode === 'dark' ? '#FF8F10' : '#FF7900')};
+      $active ? '#ffffff' : (theme.mode === 'dark' ? '#818CF8' : '#4F46E5')};
     filter: ${props => props.$active 
       ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))' 
       : 'none'};
@@ -161,7 +161,7 @@ const Card = styled.button<{ $active: boolean }>`
     transform: scale(1.15) rotate(5deg);
     color: ${props => props.$active 
       ? '#ffffff' 
-      : '#FF7900'};
+      : '#4F46E5'};
   }
 
   @keyframes shine {

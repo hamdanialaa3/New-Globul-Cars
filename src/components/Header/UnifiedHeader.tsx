@@ -57,7 +57,7 @@ const Logo = styled.div<{ $isDark?: boolean }>`
   // Fluid font size: scales between 16px and 22px based on viewport
   font-size: clamp(16px, 2vw, 22px);
   font-weight: 700;
-  color: ${({ $isDark }) => $isDark ? '#f1f5f9' : colors.primary.main};
+  color: ${({ $isDark }) => $isDark ? '#f1f5f9' : '#4F46E5'};
   transition: color 0.3s ease;
   white-space: nowrap; // Prevent wrapping
 
@@ -109,11 +109,11 @@ const MainNavButton = styled.button<{ $isDark?: boolean; $primary?: boolean }>`
   padding: ${spacing.sm} clamp(8px, 1.5vw, ${spacing.lg});
   border: 2px solid ${({ $isDark, $primary }) =>
     $primary
-      ? ($isDark ? 'rgba(255, 107, 53, 0.5)' : colors.primary.main)
+      ? ($isDark ? 'rgba(79, 70, 229, 0.5)' : '#4F46E5')
       : ($isDark ? 'rgba(148, 163, 184, 0.3)' : colors.surface.border)};
   background: ${({ $isDark, $primary }) =>
     $primary
-      ? ($isDark ? 'rgba(255, 107, 53, 0.2)' : colors.primary.main)
+      ? ($isDark ? 'rgba(79, 70, 229, 0.2)' : '#4F46E5')
       : ($isDark ? 'rgba(148, 163, 184, 0.05)' : 'rgba(255, 255, 255, 0.5)')};
   color: ${({ $isDark, $primary }) =>
     $primary
@@ -133,13 +133,13 @@ const MainNavButton = styled.button<{ $isDark?: boolean; $primary?: boolean }>`
     transform: translateY(-2px);
     box-shadow: ${({ $isDark }) =>
     $isDark
-      ? '0 4px 12px rgba(255, 107, 53, 0.3)'
+      ? '0 4px 12px rgba(79, 70, 229, 0.3)'
       : '0 4px 12px rgba(0, 0, 0, 0.15)'};
     border-color: ${({ $isDark }) =>
-    $isDark ? 'rgba(255, 107, 53, 0.8)' : colors.primary.dark};
+    $isDark ? 'rgba(79, 70, 229, 0.8)' : '#3730A3'};
     background: ${({ $isDark, $primary }) =>
     $primary
-      ? ($isDark ? 'rgba(255, 107, 53, 0.4)' : colors.primary.dark)
+      ? ($isDark ? 'rgba(79, 70, 229, 0.4)' : '#3730A3')
       : ($isDark ? 'rgba(148, 163, 184, 0.15)' : 'rgba(255, 255, 255, 0.8)')};
   }
 
@@ -173,7 +173,7 @@ const IconButton = styled.button<{ $isDark?: boolean }>`
 
   &:hover {
     background: ${({ $isDark }) => $isDark ? 'rgba(148, 163, 184, 0.1)' : colors.neutral.gray100};
-    color: ${({ $isDark }) => $isDark ? '#f1f5f9' : colors.primary.main};
+    color: ${({ $isDark }) => $isDark ? '#f1f5f9' : '#4F46E5'};
   }
 
   ${media.maxMobile} {
@@ -215,11 +215,11 @@ const SettingsButton = styled.button<{ $isDark?: boolean }>`
     background: ${({ $isDark }) =>
     $isDark ? 'rgba(148, 163, 184, 0.2)' : 'rgba(255, 255, 255, 0.8)'};
     border-color: ${({ $isDark }) =>
-    $isDark ? 'rgba(255, 107, 53, 0.5)' : colors.primary.main};
+    $isDark ? 'rgba(79, 70, 229, 0.5)' : '#4F46E5'};
     transform: translateY(-2px);
     box-shadow: ${({ $isDark }) =>
     $isDark
-      ? '0 4px 12px rgba(255, 107, 53, 0.2)'
+      ? '0 4px 12px rgba(79, 70, 229, 0.2)'
       : '0 4px 12px rgba(0, 0, 0, 0.1)'};
   }
 
@@ -311,7 +311,7 @@ const SettingsRow = styled.button<{ $isDark?: boolean; $highlight?: boolean }>`
   padding: ${spacing.md} ${spacing.lg};
   background: ${({ $isDark, $highlight }) =>
     $highlight
-      ? ($isDark ? 'rgba(255, 107, 53, 0.1)' : 'rgba(255, 107, 53, 0.05)')
+      ? ($isDark ? 'rgba(79, 70, 229, 0.1)' : 'rgba(79, 70, 229, 0.05)')
       : 'transparent'};
   border: none;
   border-bottom: 1px solid ${({ $isDark }) =>
@@ -340,7 +340,7 @@ const SettingsRow = styled.button<{ $isDark?: boolean; $highlight?: boolean }>`
     top: 0;
     bottom: 0;
     width: 3px;
-    background: ${({ $isDark }) => $isDark ? '#ff6b35' : colors.primary.main};
+    background: ${({ $isDark }) => $isDark ? '#818CF8' : '#4F46E5'};
     transform: scaleY(0);
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -356,11 +356,11 @@ const SettingsRow = styled.button<{ $isDark?: boolean; $highlight?: boolean }>`
 
     .row-icon {
       transform: scale(1.1);
-      color: ${({ $isDark }) => $isDark ? '#ff6b35' : colors.primary.main};
+      color: ${({ $isDark }) => $isDark ? '#818CF8' : '#4F46E5'};
     }
 
     .row-text {
-      color: ${({ $isDark }) => $isDark ? '#f1f5f9' : colors.primary.main};
+      color: ${({ $isDark }) => $isDark ? '#f1f5f9' : '#4F46E5'};
       font-weight: 600;
     }
   }
@@ -427,7 +427,7 @@ const RowBadge = styled.span<{ $isDark?: boolean }>`
   height: 20px;
   padding: 0 6px;
   border-radius: 10px;
-  background: ${({ $isDark }) => $isDark ? '#ff6b35' : colors.primary.main};
+  background: ${({ $isDark }) => $isDark ? '#818CF8' : '#4F46E5'};
   color: white;
   font-size: 0.75rem;
   font-weight: 600;
@@ -441,28 +441,28 @@ const ProfileAvatar = styled.img`
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid ${({ theme }) => theme?.colors?.primary?.main || '#ff6b35'};
+  border: 2px solid ${({ theme }) => theme?.colors?.primary?.main || '#6366F1'};
   background: ${({ theme }) => theme?.colors?.neutral?.gray100 || '#f8f9fa'};
 `;
 
 const ProfileRow = styled(SettingsRow)`
   padding: ${spacing.lg};
   background: ${({ $isDark }) =>
-    $isDark ? 'rgba(255, 107, 53, 0.1)' : 'rgba(255, 107, 53, 0.05)'};
+    $isDark ? 'rgba(79, 70, 229, 0.1)' : 'rgba(79, 70, 229, 0.05)'};
   border-bottom: 2px solid ${({ $isDark }) =>
-    $isDark ? 'rgba(255, 107, 53, 0.2)' : 'rgba(255, 107, 53, 0.15)'};
+    $isDark ? 'rgba(79, 70, 229, 0.2)' : 'rgba(79, 70, 229, 0.15)'};
   margin-bottom: ${spacing.sm};
 
   ${RowIcon} {
     width: 48px;
     height: 48px;
     background: ${({ $isDark }) =>
-    $isDark ? 'rgba(255, 107, 53, 0.2)' : 'rgba(255, 107, 53, 0.15)'};
+    $isDark ? 'rgba(79, 70, 229, 0.2)' : 'rgba(79, 70, 229, 0.15)'};
     
     svg {
       width: 24px;
       height: 24px;
-      color: ${({ $isDark }) => $isDark ? '#ff6b35' : colors.primary.main};
+      color: ${({ $isDark }) => $isDark ? '#818CF8' : '#4F46E5'};
     }
   }
 
@@ -564,7 +564,7 @@ const DevModal = styled.div<{ $isOpen: boolean; $isDark?: boolean }>`
   left: 50%;
   transform: translate(-50%, -50%);
   background: ${({ $isDark }) => $isDark ? 'rgba(15, 23, 42, 0.98)' : 'white'};
-  border: 2px solid ${({ $isDark }) => $isDark ? 'rgba(255, 107, 53, 0.3)' : '#ff6b35'};
+  border: 2px solid ${({ $isDark }) => $isDark ? 'rgba(79, 70, 229, 0.3)' : '#4F46E5'};
   border-radius: 16px;
   padding: 32px;
   z-index: ${zIndex.modal + 1};
@@ -599,15 +599,15 @@ const DevModalInput = styled.input<{ $isDark?: boolean }>`
 
   &:focus {
     outline: none;
-    border-color: #ff6b35;
-    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+    border-color: #4F46E5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
   }
 `;
 
 const DevModalButton = styled.button<{ $isDark?: boolean }>`
   width: 100%;
   padding: 12px 24px;
-  background: #ff6b35;
+  background: #4F46E5;
   color: white;
   border: none;
   border-radius: 8px;
@@ -617,9 +617,9 @@ const DevModalButton = styled.button<{ $isDark?: boolean }>`
   transition: all 0.3s ease;
 
   &:hover {
-    background: #e55a2b;
+    background: #4338CA;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
   }
 
   &:active {
@@ -733,9 +733,9 @@ const UnifiedHeader: React.FC = () => {
               <Car size={18} />
               <span>{language === 'bg' ? 'Продай кола' : 'Sell Car'}</span>
             </MainNavButton>
-            <MainNavButton $isDark={isDark} onClick={() => navigate('/dealers')} style={{ borderColor: 'rgba(255, 121, 0, 0.5)' }}>
-              <Briefcase size={18} color="#FF7900" />
-              <span style={{ color: '#FF7900' }}>{language === 'bg' ? 'За дилъри' : 'For Dealers'}</span>
+            <MainNavButton $isDark={isDark} onClick={() => navigate('/dealers')} style={{ borderColor: 'rgba(79, 70, 229, 0.5)' }}>
+              <Briefcase size={18} color="#4F46E5" />
+              <span style={{ color: '#4F46E5' }}>{language === 'bg' ? 'За дилъри' : 'For Dealers'}</span>
             </MainNavButton>
             <MainNavButton
               $isDark={isDark}

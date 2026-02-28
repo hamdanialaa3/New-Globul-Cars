@@ -67,13 +67,13 @@ const Button = styled.button`
   font-weight: 700;
   white-space: nowrap;
   
-  /* Override colors for theme - Glass orange effect */
+  /* Override colors for theme - Glass indigo effect */
   background: linear-gradient(135deg, 
-    rgba(255, 143, 16, 0.4) 0%, 
-    rgba(255, 143, 16, 0.2) 100%
+    rgba(79, 70, 229, 0.4) 0%, 
+    rgba(79, 70, 229, 0.2) 100%
   );
   color: #fff;
-  border: 1px solid rgba(255, 143, 16, 0.4);
+  border: 1px solid rgba(79, 70, 229, 0.4);
   
   @media (max-width: 480px) {
     font-size: 0.875rem;
@@ -87,13 +87,13 @@ const Button = styled.button`
   
   &:hover {
     background: linear-gradient(135deg, 
-      rgba(255, 143, 16, 0.6) 0%, 
-      rgba(255, 143, 16, 0.3) 100%
+      rgba(79, 70, 229, 0.6) 0%, 
+      rgba(79, 70, 229, 0.3) 100%
     );
-    border-color: rgba(255, 143, 16, 0.6);
+    border-color: rgba(79, 70, 229, 0.6);
     box-shadow: 
-      0 8px 32px 0 rgba(255, 143, 16, 0.5),
-      0 0 20px rgba(255, 143, 16, 0.4);
+      0 8px 32px 0 rgba(79, 70, 229, 0.5),
+      0 0 20px rgba(79, 70, 229, 0.4);
     transform: translateY(-3px);
   }
   

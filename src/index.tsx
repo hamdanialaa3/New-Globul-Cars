@@ -5,7 +5,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import './styles/mobile-responsive.css';  // 📱 Mobile/tablet responsive rules
-import './styles/global-glassmorphism-buttons.css'; // 🌟 تطبيق الأنماط الزجاجية على جميع الأزرار
+// NOTE: global-glassmorphism-buttons.css DISABLED — was applying !important overrides
+// to ALL <button> elements site-wide, destroying component-level styles (border-radius,
+// background, box-shadow). Component-specific glass effects use glassmorphism-buttons.ts mixins.
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { initPerformanceMonitoring } from './utils/performance-monitoring';

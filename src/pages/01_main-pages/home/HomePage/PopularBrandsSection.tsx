@@ -6,7 +6,7 @@ import { useLanguage } from '../../../../contexts/LanguageContext';
 import styled from 'styled-components';
 // ✅ Removed HorizontalScrollContainer - using grid layout instead
 // import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
-import { glassNeutralButton, glassPrimaryButton } from '../../../../styles/glassmorphism-buttons';
+// NOTE: glassmorphism mixins removed — BrandCard defines all its own styles explicitly
 
 // Popular brands configuration with logos
 const POPULAR_BRANDS = [
@@ -147,7 +147,6 @@ const BrandsContainer = styled.div`
 `;
 
 const BrandCard = styled.button`
-  ${glassNeutralButton}
   /* ✅ Fixed size: 142px × 153px (same as Mercedes-Benz) */
   width: 142px;
   height: 153px;
@@ -215,7 +214,7 @@ const BrandCard = styled.button`
     );
     border-color: rgba(255, 255, 255, 0.2);
     box-shadow: 
-      0 8px 32px 0 rgba(31, 38, 135, 0.37),
+      0 4px 20px rgba(0, 0, 0, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
@@ -353,30 +352,30 @@ const ViewAllBrandsButton = styled.button`
   letter-spacing: 0.02em;
   background-color: rgba(205, 24, 24, 0.08);
 
-  /* Light mode: Orange/Yellow gradient */
+  /* Light mode: Indigo gradient */
   html[data-theme="light"] & {
-    background: linear-gradient(135deg, #FF8F10 0%, #FFA500 50%, #FFD700 100%);
-    color: #000000;
-    box-shadow: 0 4px 20px rgba(255, 143, 16, 0.4);
+    background: linear-gradient(135deg, #4F46E5 0%, #6366F1 50%, #818CF8 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 20px rgba(79, 70, 229, 0.4);
   }
 
-  /* Dark mode: Black with yellow text */
+  /* Dark mode: Deep indigo */
   html[data-theme="dark"] & {
-    background: #000000;
-    color: #FFD700;
-    border: 2px solid #FFD700;
-    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+    background: #1E1B4B;
+    color: #A5B4FC;
+    border: 2px solid #6366F1;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
   }
   
   &:hover {
     transform: translateY(-3px) scale(1.02);
     html[data-theme="light"] & {
-      background: linear-gradient(135deg, #FFA500 0%, #FFD700 50%, #FF8F10 100%);
-      box-shadow: 0 8px 30px rgba(255, 143, 16, 0.5);
+      background: linear-gradient(135deg, #6366F1 0%, #818CF8 50%, #4F46E5 100%);
+      box-shadow: 0 8px 30px rgba(79, 70, 229, 0.5);
     }
     html[data-theme="dark"] & {
-      background: #1a1a1a;
-      box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4);
+      background: #2d2a5e;
+      box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
     }
   }
   

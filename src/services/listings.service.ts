@@ -32,6 +32,34 @@ const ALL_VEHICLE_COLLECTIONS = [
   'listings'  // Legacy collection
 ] as const;
 
+type ListingLookupPointer = {
+  collectionName: string;
+  listingId: string;
+};
+
+async function resolveListingPointerByNumericId(numericId: number): Promise<ListingLookupPointer | null> {
+  try {
+    const pointerRef = doc(db, 'numeric_car_ids', String(numericId));
+    const pointerSnap = await getDoc(pointerRef);
+
+    if (!pointerSnap.exists()) {
+      return null;
+    }
+
+    const pointerData = pointerSnap.data() as Partial<ListingLookupPointer>;
+    if (!pointerData.collectionName || !pointerData.listingId) {
+      return null;
+    }
+
+    return {
+      collectionName: pointerData.collectionName,
+      listingId: pointerData.listingId
+    };
+  } catch {
+    return null;
+  }
+}
+
 export interface Listing extends UnifiedCar {
   listingId?: string;           // Alias for id
   listingNumericId?: number;    // Alias for carNumericId
@@ -111,6 +139,30 @@ export async function getListingById(id: string): Promise<Listing | null> {
 export async function getListingByNumericId(numericId: number): Promise<Listing | null> {
   try {
     serviceLogger.info('[listings.service] Fetching listing by numeric ID', { numericId });
+
+    const pointer = await resolveListingPointerByNumericId(numericId);
+    if (pointer) {
+      const docRef = doc(db, pointer.collectionName, pointer.listingId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const car = mapDocToCar(docSnap);
+        const listing: Listing = {
+          ...car,
+          listingId: car.id,
+          listingNumericId: car.carNumericId || car.numericId,
+        };
+
+        serviceLogger.info('[listings.service] Found listing by numeric ID via lookup', {
+          numericId,
+          listingId: listing.id,
+          collection: pointer.collectionName,
+          slug: listing.slug
+        });
+
+        return listing;
+      }
+    }
 
     // PERF: Query all collections in parallel
     const results = await Promise.all(

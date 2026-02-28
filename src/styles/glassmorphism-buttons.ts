@@ -53,14 +53,14 @@ export const glassmorphismBase = css`
 
 /**
  * Primary Glass Button
- * الزر الزجاجي الأساسي - برتقالي
+ * الزر الزجاجي الأساسي - بنفسجي أنيق
  */
 export const glassPrimaryButton = css`
   ${glassmorphismBase}
     background: linear-gradient(
       135deg,
-      rgba(255, 143, 16, 0.3) 0%,
-      rgba(255, 143, 16, 0.15) 100%
+      rgba(79, 70, 229, 0.3) 0%,
+      rgba(79, 70, 229, 0.15) 100%
     );
   
     /* Smart color system - نظام ألوان ذكي */
@@ -71,7 +71,7 @@ export const glassPrimaryButton = css`
       color: #ffffff;
     }
   
-    border: 1px solid rgba(255, 143, 16, 0.3);
+    border: 1px solid rgba(79, 70, 229, 0.3);
   padding: 12px 32px;
   border-radius: 12px;
   font-weight: 600;
@@ -110,13 +110,13 @@ export const glassPrimaryButton = css`
   &:hover {
     background: linear-gradient(
       135deg,
-      rgba(255, 143, 16, 0.5) 0%,
-      rgba(255, 143, 16, 0.25) 100%
+      rgba(99, 102, 241, 0.5) 0%,
+      rgba(99, 102, 241, 0.25) 100%
     );
-    border-color: rgba(255, 143, 16, 0.5);
+    border-color: rgba(99, 102, 241, 0.5);
     box-shadow: 
-      0 8px 32px 0 rgba(255, 143, 16, 0.4),
-      0 0 20px rgba(255, 143, 16, 0.3);
+      0 8px 32px 0 rgba(79, 70, 229, 0.4),
+      0 0 20px rgba(79, 70, 229, 0.3);
     transform: translateY(-2px);
     
     &::before {
@@ -126,7 +126,7 @@ export const glassPrimaryButton = css`
   
   &:active {
     transform: translateY(0);
-    box-shadow: 0 4px 16px 0 rgba(255, 143, 16, 0.3);
+    box-shadow: 0 4px 16px 0 rgba(79, 70, 229, 0.3);
   }
   
   &:disabled {

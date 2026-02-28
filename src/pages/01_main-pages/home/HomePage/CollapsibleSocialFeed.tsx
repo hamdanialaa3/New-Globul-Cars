@@ -114,10 +114,10 @@ const Container = styled.div`
 const Header = styled.div<{ $isExpanded: boolean }>`
   position: relative;
   background: ${p => p.$isExpanded 
-    ? 'linear-gradient(135deg, #FF8F10 0%, #FF7900 100%)'
+    ? 'linear-gradient(135deg, #4F46E5 0%, #6366F1 100%)'
     : 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)'
   };
-  border: 2px solid ${p => p.$isExpanded ? '#FF7900' : '#e9ecef'};
+  border: 2px solid ${p => p.$isExpanded ? '#4F46E5' : '#e9ecef'};
   border-radius: 16px;
   padding: 20px 24px;
   display: flex;
@@ -126,7 +126,7 @@ const Header = styled.div<{ $isExpanded: boolean }>`
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: ${p => p.$isExpanded 
-    ? '0 8px 24px rgba(255, 143, 16, 0.25)'
+    ? '0 8px 24px rgba(79, 70, 229, 0.25)'
     : '0 2px 8px rgba(0, 0, 0, 0.05)'
   };
   overflow: hidden;
@@ -154,7 +154,7 @@ const Header = styled.div<{ $isExpanded: boolean }>`
   &:hover {
     transform: translateY(-2px);
     box-shadow: ${p => p.$isExpanded 
-      ? '0 12px 32px rgba(255, 143, 16, 0.3)'
+      ? '0 12px 32px rgba(79, 70, 229, 0.3)'
       : '0 4px 12px rgba(0, 0, 0, 0.1)'
     };
   }
@@ -244,12 +244,12 @@ const IconWrapper = styled.div`
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: ${p => p.theme?.primary || '#FF8F10'};
+  background: ${p => p.theme?.primary || '#4F46E5'};
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
 
   @media (max-width: 768px) {
     width: 48px;
@@ -333,7 +333,7 @@ const ExpandButton = styled.button<{ $isExpanded: boolean }>`
   padding: 10px 20px;
   background: ${p => p.$isExpanded 
     ? 'rgba(255, 255, 255, 0.25)'
-    : 'linear-gradient(135deg, #FF8F10, #FF7900)'
+    : 'linear-gradient(135deg, #4F46E5, #6366F1)'
   };
   color: ${p => p.$isExpanded ? 'white' : 'white'};
   border: ${p => p.$isExpanded ? '2px solid rgba(255, 255, 255, 0.4)' : 'none'};
@@ -347,7 +347,7 @@ const ExpandButton = styled.button<{ $isExpanded: boolean }>`
     transform: scale(1.05);
     background: ${p => p.$isExpanded 
       ? 'rgba(255, 255, 255, 0.35)'
-      : 'linear-gradient(135deg, #FF7900, #FF6800)'
+      : 'linear-gradient(135deg, #3730A3, #4F46E5)'
     };
   }
 

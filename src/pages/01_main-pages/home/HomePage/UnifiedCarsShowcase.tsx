@@ -410,7 +410,7 @@ const UnifiedCarsShowcase: React.FC = memo(() => {
       labelBg: 'Най-нови',
       labelEn: 'Latest',
       icon: <Clock size={20} />,
-      color: '#FF8F10',
+      color: '#4F46E5',
       description: {
         bg: 'Най-новите обяви във вашия регион',
         en: 'Latest listings in your region'
