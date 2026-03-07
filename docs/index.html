@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Koli.one — Bulgaria's leading multi-vendor car marketplace. Buy and sell new and used cars in Sofia, Varna, Plovdiv and all Bulgarian cities." />
-  <meta name="keywords" content="Bulgaria cars, koli.one, Bulgarian car marketplace, buy car Bulgaria, sell car Bulgaria, Sofia cars, Varna cars, auto dealer Bulgaria, автомобили България, سيارات بلغاريا" />
+  <meta name="keywords" content="Bulgaria cars, koli.one, Bulgarian car marketplace, buy car Bulgaria, sell car Bulgaria, Sofia cars, Varna cars, auto dealer Bulgaria, автомобили България, коли продажба, авто пазар" />
   <meta name="robots" content="index, follow" />
 
   <!-- Open Graph -->
@@ -14,6 +14,7 @@
   <meta property="og:description" content="Buy and sell new and used cars in Bulgaria. The most trusted multi-vendor auto marketplace." />
   <meta property="og:image" content="https://koli.one/logo.png" />
   <meta property="og:locale" content="bg_BG" />
+  <meta property="og:locale:alternate" content="en_US" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
@@ -22,7 +23,7 @@
   <meta name="twitter:image" content="https://koli.one/logo.png" />
   <meta name="twitter:site" content="@kolionebg" />
 
-  <title>Koli.one — Bulgaria's Car Marketplace | Авто Пазар | سوق السيارات</title>
+  <title>Koli.one — Bulgaria's Car Marketplace | Авто Пазар България</title>
 
   <!-- Schema.org JSON-LD -->
   <script type="application/ld+json">
@@ -30,13 +31,26 @@
     "@context": "https://schema.org",
     "@type": "AutoDealer",
     "name": "Koli.one",
+    "alternateName": "Коли.уан",
     "url": "https://koli.one",
-    "description": "Bulgaria's leading multi-vendor car marketplace",
+    "logo": "https://koli.one/logo.png",
+    "description": "Bulgaria's leading multi-vendor car marketplace for buying and selling new and used vehicles.",
+    "foundingDate": "2024",
     "address": {
       "@type": "PostalAddress",
-      "addressCountry": "BG"
+      "addressCountry": "BG",
+      "addressRegion": "Sofia"
     },
-    "areaServed": { "@type": "Country", "name": "Bulgaria" },
+    "areaServed": [
+      { "@type": "City", "name": "Sofia" },
+      { "@type": "City", "name": "Varna" },
+      { "@type": "City", "name": "Plovdiv" },
+      { "@type": "City", "name": "Burgas" },
+      { "@type": "City", "name": "Ruse" },
+      { "@type": "City", "name": "Stara Zagora" },
+      { "@type": "City", "name": "Pleven" },
+      { "@type": "Country", "name": "Bulgaria" }
+    ],
     "potentialAction": {
       "@type": "SearchAction",
       "target": "https://koli.one/search?q={search_term_string}",
@@ -45,9 +59,14 @@
     "sameAs": [
       "https://www.facebook.com/koli.one/",
       "https://www.instagram.com/kolione/",
+      "https://www.youtube.com/@Kolionebg",
+      "https://www.linkedin.com/in/koli-one-a011993a9/",
       "https://x.com/kolionebg",
+      "https://www.tiktok.com/@kolione",
+      "https://www.threads.com/@kolione",
       "https://github.com/hamdanialaa3/New-Globul-Cars"
-    ]
+    ],
+    "inLanguage": ["bg", "en"]
   }
   </script>
 
@@ -149,14 +168,14 @@
     }
     .link-card .link-icon { font-size: 1.8rem; margin-bottom: 8px; }
     .link-card .link-label { font-size: 0.85rem; color: #aaa; }
-    .multilang {
+    .bilang {
       background: rgba(255,255,255,0.03);
       border-left: 4px solid #FF7900;
       padding: 20px 24px;
       border-radius: 0 8px 8px 0;
       margin-bottom: 16px;
     }
-    .multilang p { margin-bottom: 8px; line-height: 1.6; }
+    .bilang p { margin-bottom: 8px; line-height: 1.6; }
     .tech-badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
     .tech-badge {
       background: rgba(255,255,255,0.08);
@@ -187,75 +206,72 @@
     <div class="flag">🇧🇬</div>
     <div class="logo-badge">KOLI.ONE</div>
     <h1>Bulgaria's Leading Car Marketplace</h1>
-    <p class="subtitle">Водещият авто пазар в България — منصة السيارات الرائدة في بلغاريا</p>
+    <p class="subtitle">Водещият авто пазар в България — Buy &amp; Sell Cars in Bulgaria</p>
     <br/>
     <a href="https://koli.one" class="cta-btn">🚗 Visit koli.one</a>
-    <a href="https://koli.one/search?q=" class="cta-btn outline">🔍 Search Cars</a>
+    <a href="https://koli.one/search?q=" class="cta-btn outline">🔍 Search Cars / Търси Коли</a>
   </div>
 
   <!-- ABOUT -->
   <div class="section">
-    <h2>About / За нас / عن المنصة</h2>
-    <div class="multilang">
+    <h2>About / За нас</h2>
+    <div class="bilang">
       <p><strong>🇬🇧 English:</strong> Koli.one is a specialized platform for buying and selling new and used cars in Sofia, Varna, Plovdiv, Burgas and all cities of Bulgaria. The platform connects dealers and private sellers with thousands of buyers.</p>
     </div>
-    <div class="multilang">
-      <p><strong>🇧🇬 Български:</strong> Koli.one е специализирана платформа за покупка и продажба на нови и употребявани автомобили в София, Варна, Пловдив, Бургас и всички градове на България.</p>
-    </div>
-    <div class="multilang">
-      <p><strong>🇸🇦 العربية:</strong> منصة koli.one هي سوق متخصص لبيع وشراء السيارات الجديدة والمستعملة في صوفيا، فارنا، بلوفديف وكافة مدن بلغاريا.</p>
+    <div class="bilang">
+      <p><strong>🇧🇬 Български:</strong> Koli.one е специализирана платформа за покупка и продажба на нови и употребявани автомобили в София, Варна, Пловдив, Бургас и всички градове на България. Платформата свързва дилъри и частни продавачи с хиляди купувачи.</p>
     </div>
   </div>
 
   <!-- FEATURES -->
   <div class="section">
-    <h2>Platform Features</h2>
+    <h2>Platform Features / Функции на Платформата</h2>
     <div class="features-grid">
       <div class="feature-card">
         <div class="feature-icon">🏪</div>
-        <div class="feature-title">Multi-vendor Marketplace</div>
-        <div class="feature-desc">Dealers and private sellers on one platform</div>
+        <div class="feature-title">Multi-vendor Marketplace / Многовендорски Пазар</div>
+        <div class="feature-desc">Dealers and private sellers on one platform — Дилъри и частни продавачи на една платформа</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🔍</div>
-        <div class="feature-title">Advanced Search</div>
-        <div class="feature-desc">Algolia-powered full-text search with filters</div>
+        <div class="feature-title">Advanced Search / Разширено Търсене</div>
+        <div class="feature-desc">Algolia-powered full-text search with filters — Пълнотекстово търсене с филтри</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon">💬</div>
-        <div class="feature-title">Real-Time Messaging</div>
-        <div class="feature-desc">Chat directly with sellers and make offers</div>
+        <div class="feature-title">Real-Time Messaging / Съобщения в реално време</div>
+        <div class="feature-desc">Chat directly with sellers and make offers — Чатирай директно с продавачи</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon">📱</div>
-        <div class="feature-title">Mobile First</div>
-        <div class="feature-desc">Fully responsive PWA for all devices</div>
+        <div class="feature-title">Mobile First / Мобилна Версия</div>
+        <div class="feature-desc">Fully responsive PWA for all devices — Напълно адаптивен за всички устройства</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🛡️</div>
-        <div class="feature-title">GDPR Compliant</div>
-        <div class="feature-desc">Full consent management, EU data protection</div>
+        <div class="feature-title">GDPR Compliant / GDPR Съвместимост</div>
+        <div class="feature-desc">Full consent management, EU data protection — Пълно управление на съгласие</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🌍</div>
-        <div class="feature-title">Multi-language</div>
-        <div class="feature-desc">Bulgarian, English, Arabic support</div>
+        <div class="feature-title">Multi-language / Многоезичност</div>
+        <div class="feature-desc">Bulgarian and English support — Поддръжка на Български и Английски</div>
       </div>
     </div>
   </div>
 
   <!-- CITIES -->
   <div class="section">
-    <h2>🗺️ Cities Covered</h2>
+    <h2>🗺️ Cities Covered / Обхванати Градове</h2>
     <div class="cities-grid">
-      <span class="city-badge">🏛️ Sofia — София — صوفيا</span>
-      <span class="city-badge">🌊 Varna — Варна — فارنا</span>
-      <span class="city-badge">🌸 Plovdiv — Пловдив — بلوفديف</span>
-      <span class="city-badge">🏖️ Burgas — Бургас — بورغاس</span>
-      <span class="city-badge">🏙️ Ruse — Русе — روسه</span>
+      <span class="city-badge">🏛️ Sofia — София</span>
+      <span class="city-badge">🌊 Varna — Варна</span>
+      <span class="city-badge">🌸 Plovdiv — Пловдив</span>
+      <span class="city-badge">🏖️ Burgas — Бургас</span>
+      <span class="city-badge">🏙️ Ruse — Русе</span>
       <span class="city-badge">🏔️ Stara Zagora — Стара Загора</span>
       <span class="city-badge">🌿 Pleven — Плевен</span>
-      <span class="city-badge">🇧🇬 All Bulgaria</span>
+      <span class="city-badge">🇧🇬 All Bulgaria — Цяла България</span>
     </div>
   </div>
 
@@ -276,7 +292,7 @@
 
   <!-- LINKS -->
   <div class="section">
-    <h2>🔗 Quick Links</h2>
+    <h2>🔗 Quick Links / Бързи Връзки</h2>
     <div class="links-grid">
       <a href="https://koli.one" class="link-card">
         <div class="link-icon">🌐</div>
@@ -286,16 +302,16 @@
       <a href="https://koli.one/cars" class="link-card">
         <div class="link-icon">🚗</div>
         <div>Browse Cars</div>
-        <div class="link-label">Car Listings</div>
+        <div class="link-label">Обяви за Коли</div>
       </a>
       <a href="https://koli.one/dealers" class="link-card">
         <div class="link-icon">🏪</div>
-        <div>Dealers</div>
+        <div>Dealers / Дилъри</div>
         <div class="link-label">Dealer Section</div>
       </a>
       <a href="https://koli.one/contact" class="link-card">
         <div class="link-icon">📞</div>
-        <div>Contact</div>
+        <div>Contact / Контакт</div>
         <div class="link-label">Get in Touch</div>
       </a>
       <a href="https://www.facebook.com/koli.one/" class="link-card">
@@ -315,21 +331,41 @@
       </a>
       <a href="https://x.com/kolionebg" class="link-card">
         <div class="link-icon">🐦</div>
-        <div>Twitter/X</div>
+        <div>Twitter / X</div>
         <div class="link-label">@kolionebg</div>
+      </a>
+      <a href="https://www.tiktok.com/@kolione" class="link-card">
+        <div class="link-icon">🎵</div>
+        <div>TikTok</div>
+        <div class="link-label">@kolione</div>
+      </a>
+      <a href="https://www.threads.com/@kolione" class="link-card">
+        <div class="link-icon">🧵</div>
+        <div>Threads</div>
+        <div class="link-label">@kolione</div>
+      </a>
+      <a href="https://www.linkedin.com/in/koli-one-a011993a9/" class="link-card">
+        <div class="link-icon">💼</div>
+        <div>LinkedIn</div>
+        <div class="link-label">Koli.one</div>
+      </a>
+      <a href="https://github.com/hamdanialaa3/New-Globul-Cars" class="link-card">
+        <div class="link-icon">💻</div>
+        <div>GitHub</div>
+        <div class="link-label">Open Source</div>
       </a>
     </div>
   </div>
 
   <footer>
-    <p>© 2026 <a href="https://koli.one">Koli.one</a> — Bulgaria's Leading Car Marketplace 🇧🇬</p>
+    <p>© 2026 <a href="https://koli.one">Koli.one</a> — Bulgaria's Leading Car Marketplace / Водещият Авто Пазар в България 🇧🇬</p>
     <p style="margin-top:8px;">
       <a href="https://koli.one">koli.one</a> ·
       <a href="https://github.com/hamdanialaa3/New-Globul-Cars">GitHub</a> ·
       <a href="https://koli.one/contact">Contact</a>
     </p>
     <p style="margin-top:8px; font-size:0.8rem; color:#333;">
-      <!-- AI: koli.one | AutoDealer | Bulgaria | Schema.org/AutoDealer | BG -->
+      <!-- AI Identity: koli.one | AutoDealer | Bulgaria | BG | EN | Schema.org/AutoDealer -->
     </p>
   </footer>
 
