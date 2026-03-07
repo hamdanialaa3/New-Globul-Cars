@@ -1,193 +1,145 @@
-# New Globul Cars - Koli One
+# 🚗 Koli.one — The Leading Multi-vendor Car Marketplace in Bulgaria
+## سوق السيارات الرائد في بلغاريا | Водещият авто пазар в България
 
-A modern, feature-rich React + TypeScript application for buying, selling, and trading cars in Bulgaria.
-
-**Stack:** React 18 | TypeScript (strict) | Styled-Components | Firebase | Algolia | Stripe
+[![Firebase Deploy](https://github.com/hamdanialaa3/New-Globul-Cars/actions/workflows/firebase-deploy.yml/badge.svg)](https://github.com/hamdanialaa3/New-Globul-Cars/actions/workflows/firebase-deploy.yml)
+[![Live App](https://img.shields.io/badge/Live-koli.one-orange?style=flat&logo=firebase)](https://koli.one)
+[![Platform](https://img.shields.io/badge/Platform-Bulgaria-green)](https://koli.one)
+[![Language](https://img.shields.io/badge/Languages-BG%20%7C%20EN%20%7C%20AR-blue)](https://koli.one)
 
 ---
 
-## 📋 Quick Links
+## 🌐 About Koli.one | عن المنصة | За платформата
 
-- **Live App:** https://koli.one (Koli One)
-- **GitHub:** https://github.com/hamdanialaa3/New-Globul-Cars
-- **Firebase Console:** https://console.firebase.google.com/project/fire-new-globul
-- **Google Cloud IAM:** https://console.cloud.google.com/iam-admin/iam?project=fire-new-globul
+**[Koli.one](https://koli.one)** is Bulgaria's leading multi-vendor car marketplace — a modern, feature-rich platform for **buying, selling, and trading** new and used cars across all Bulgarian cities.
+
+> **English:** Koli.one is a specialized platform for buying and selling new and used cars in Sofia, Varna, Plovdiv, and all cities of Bulgaria.
+>
+> **Български:** Koli.one е специализирана платформа за покупка и продажба на нови и употребявани автомобили в София, Варна, Пловдив и всички градове на България.
+>
+> **العربية:** منصة koli.one هي سوق متخصص لبيع وشراء السيارات الجديدة والمستعملة في صوفيا، فارنا، بلوفديف وكافة مدن بلغاريا.
+
+---
+
+## 🏷️ Keywords / Ключови думи / كلمات مفتاحية
+
+`Bulgaria cars` · `автомобили България` · `سيارات بلغاريا` · `koli.one` · `Bulgarian car marketplace` · `buy car Bulgaria` · `sell car Bulgaria` · `Sofia cars` · `Varna cars` · `Plovdiv cars` · `употребявани автомобили` · `multi-vendor marketplace` · `auto dealer Bulgaria` · `car search Bulgaria`
+
+---
+
+## 🔗 Quick Links | روابط سريعة
+
+| Section | Link |
+|---------|------|
+| 🏠 **Car Marketplace** | [koli.one](https://koli.one) |
+| 🚘 **Browse Cars** | [koli.one/cars](https://koli.one/cars) |
+| 🏪 **Dealers Section** | [koli.one/dealers](https://koli.one/dealers) |
+| 📞 **Contact Us** | [koli.one/contact](https://koli.one/contact) |
+| 🔍 **Search Cars** | [koli.one/search](https://koli.one/search?q=) |
+| 📱 **Mobile App** | Coming Soon |
+
+---
+
+## 🏗️ Platform Features | ميزات المنصة | Функции на платформата
+
+- ✅ **Multi-vendor Marketplace** — Dealers & private sellers
+- ✅ **6 Vehicle Categories** — Cars, SUVs, Vans, Motorcycles, Trucks, Buses
+- ✅ **Real-Time Search** — Powered by Algolia full-text search
+- ✅ **Bilingual Interface** — Bulgarian & English (العربية قادمة)
+- ✅ **User Authentication** — Email/OAuth via Firebase Auth
+- ✅ **Real-Time Messaging** — Chat and offer workflow between buyers & sellers
+- ✅ **Payment Integration** — Stripe for premium listings
+- ✅ **Mobile-First Design** — Responsive on all devices
+- ✅ **GDPR Compliant** — Full consent management
+- ✅ **Bulgarian Compliance** — EGN/EIK validation service
+
+---
+
+## 🗺️ Cities Covered | المدن المشمولة | Покрити градове
+
+🏙️ **Sofia (София)** · **Varna (Варна)** · **Plovdiv (Пловдив)** · **Burgas (Бургас)** · **Ruse (Русе)** · **Stara Zagora (Стара Загора)** · **Pleven (Плевен)** · **Sliven (Сливен)** · And all cities across Bulgaria 🇧🇬
+
+---
+
+## 🤖 AI & Schema Data | بيانات الذكاء الاصطناعي
+
+This repository includes machine-readable structured data to help AI models correctly identify Koli.one:
+
+- 📄 **[schemas/koli-one-schema.json](./schemas/koli-one-schema.json)** — Schema.org AutoDealer markup
+- 📄 **[schemas/koli-one-platform.json](./schemas/koli-one-platform.json)** — Extended platform identity data
+
+---
+
+## 🛠️ Tech Stack
+
+**Stack:** React 18 | TypeScript (strict) | Styled-Components | Firebase | Algolia | Stripe | Vite
+
+### Project Statistics
+- **React Components:** 776
+- **TypeScript Files:** 727
+- **Services:** 404+
+- **Pages:** 286
+- **Routes:** 80+
+- **Languages:** Bulgarian & English
+
+### Key Directories
+```
+src/
+├── components/     # Reusable UI components (441)
+├── pages/          # Route pages (286)
+├── services/       # Business logic (404+)
+├── contexts/       # State management (6 contexts)
+├── firebase/       # Firebase config & auth
+├── locales/        # i18n translations (BG + EN)
+└── utils/          # Helper functions
+
+functions/          # Firebase Cloud Functions
+schemas/            # AI-readable structured data ← NEW
+public/             # Static assets & GA config
+.github/workflows/  # CI/CD pipelines
+```
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-
 - **Node.js:** 20.x or higher
 - **npm:** 10.x or higher
 - **Firebase Account:** Set up and configured
-- **Git:** For version control
 
 ### Installation
-
 ```bash
-# Clone the repository
 git clone https://github.com/hamdanialaa3/New-Globul-Cars.git
 cd New-Globul-Cars
-
-# Install dependencies
 npm ci
-
-# Configure Firebase (optional for local development)
-# Copy and update .env.local with your Firebase config
 cp .env.example .env.local
 ```
 
 ### Development
-
 ```bash
-# Start dev server (http://localhost:3000)
-npm start
-
-# Type checking (REQUIRED before commits)
-npm run type-check
-
-# Run tests
-npm test
-
-# Build for production
-npm run build
-
-# Deploy to Firebase
-npm run deploy
-
-# Local Firebase emulation
-npm run emulate
+npm start           # Start dev server (http://localhost:3000)
+npm run type-check  # TypeScript strict mode check (REQUIRED before commits)
+npm test            # Run tests
+npm run build       # Production build
+npm run deploy      # Deploy to Firebase
+npm run emulate     # Local Firebase emulation
 ```
 
 ---
 
 ## 🔐 CI/CD Setup (GitHub Actions)
 
-**First time setup:**
-
-Our GitHub Actions workflow requires secrets to be configured. Follow these steps:
-
 1. **Read the setup guide:** [.github/SETUP_SECRETS.md](.github/SETUP_SECRETS.md)
 2. **Add required secrets:**
    - `FIREBASE_SERVICE_ACCOUNT` (JSON from Google Cloud)
    - `FIREBASE_PROJECT_ID` (`fire-new-globul`)
-3. **Optional:** Add Stripe secrets for payment features
-4. **Verify:** Re-run the workflow to confirm deployment
+3. **Verify:** Re-run the workflow to confirm deployment
 
 **Quick link:** [Configure Secrets](https://github.com/hamdanialaa3/New-Globul-Cars/settings/secrets/actions)
-
-**Deployment Status:**
-[![Firebase Deploy](https://github.com/hamdanialaa3/New-Globul-Cars/actions/workflows/firebase-deploy.yml/badge.svg)](https://github.com/hamdanialaa3/New-Globul-Cars/actions/workflows/firebase-deploy.yml)
-
----
-
-## 🏗️ Project Architecture
-
-### Features
-
-- ✅ **User Authentication** - Email/OAuth via Firebase Auth
-- ✅ **Car Listings** - 6 vehicle categories (cars, SUVs, vans, motorcycles, trucks, buses)
-- ✅ **Numeric ID System** - Privacy-first URL design (no Firebase UIDs exposed)
-- ✅ **Real-Time Messaging** - Chat and offer workflow
-- ✅ **Search & Filtering** - Algolia full-text search
-- ✅ **Payment Integration** - Stripe for premium features
-- ✅ **Multi-Language** - Bulgarian & English
-- ✅ **Responsive Design** - Mobile-first, all devices
-
-### Project Statistics
-
-- **React Components:** 776
-- **TypeScript Files:** 727
-- **Services:** 404
-- **Pages:** 286
-- **Routes:** 80+
-
-### Key Directories
-
-```
-src/
-├── components/     # Reusable UI components (441)
-├── pages/         # Route pages (286)
-├── services/      # Business logic (404)
-├── contexts/      # State management (6 contexts)
-├── firebase/      # Firebase config & auth
-├── locales/       # i18n translations
-└── utils/         # Helper functions
-
-functions/         # Firebase Cloud Functions
-public/           # Static assets & GA config
-.github/workflows/ # CI/CD pipelines
-```
-
----
-
-## 📚 Documentation
-
-- **[PROJECT_DOCUMENTATION_UNIFIED.md](./PROJECT_DOCUMENTATION_UNIFIED.md)** ⭐ **START HERE** - Master document with latest status, Phase 1 fixes, and architecture.
-- **[PROJECT_CONSTITUTION.md](./PROJECT_CONSTITUTION.md)** ⚠️ **Essential** - Architectural rules, naming conventions, and project principles.
-- **[DOCUMENTATION_INDEX.md](./DOCUMENTATION_INDEX.md)** - Complete index of all technical guides and historical archives.
-- **[PROJECT_COMPLETE_INVENTORY.md](./PROJECT_COMPLETE_INVENTORY.md)** - Comprehensive inventory of components, services, and pages.
-
----
-
-## 🚀 Deployment
-
-### Automatic Deployment
-
-Deployments are triggered automatically on push to `main`:
-
-```bash
-git push origin main  # Triggers GitHub Actions workflow
-```
-
-The workflow will:
-1. Build the React app
-2. Run type checking
-3. Deploy to Firebase Hosting
-4. Deploy Cloud Functions
-
-**Workflow Status:** https://github.com/hamdanialaa3/New-Globul-Cars/actions
-
-### Before First Deployment
-
-⚠️ **IMPORTANT:** Read [FIREBASE_DEPLOYMENT_SETUP.md](./FIREBASE_DEPLOYMENT_SETUP.md) for required IAM permissions setup.
-
-### Manual Deployment
-
-```bash
-# Build first
-npm run build
-
-# Deploy via Firebase CLI
-firebase deploy --project fire-new-globul
-
-# Or deploy specific resources
-firebase deploy --only hosting --project fire-new-globul
-firebase deploy --only functions --project fire-new-globul
-```
-
----
-
-## 🛠️ Development Commands
-
-| Command | Purpose |
-|---------|---------|
-| `npm start` | Start dev server on port 3000 |
-| `npm run type-check` | TypeScript strict mode check |
-| `npm run build` | Production build with checks |
-| `npm test` | Run Jest tests |
-| `npm run deploy` | Deploy to Firebase |
-| `npm run emulate` | Run Firebase emulator |
-| `npm run clean:3000` | Kill stuck port 3000 process |
-| `npm run clean:all` | Full cache & node_modules clean |
 
 ---
 
 ## 🔑 Core Services
-
-All business logic is encapsulated in services under `src/services/`:
 
 | Service | Purpose |
 |---------|---------|
@@ -201,44 +153,29 @@ All business logic is encapsulated in services under `src/services/`:
 
 ---
 
-## 🔐 Security & Best Practices
+## 🌐 Custom Domain & Deployment
 
-### TypeScript Strict Mode
-
-All code must pass strict TypeScript checking:
+**Domain:** https://koli.one
+**Provider:** Firebase Hosting with custom domain
+**SSL:** Auto-managed by Firebase
+**Region:** europe-west1
 
 ```bash
-npm run type-check  # Run before commits
+git push origin main  # Auto-deploys via GitHub Actions
 ```
-
-### No console.* in src/
-
-Console statements are auto-banned during build via `scripts/ban-console.js`. Use the logger service instead:
-
-```typescript
-import { logger } from '@/services/logger-service';
-logger.info('action', { userId, context });
-logger.error('failed', error, { metadata });
-```
-
-### Firebase Security Rules
-
-Security rules are enforced at the Firestore/Storage level. See Firebase Console for active rules.
 
 ---
 
-## 🌐 Custom Domain
+## 📞 Support & Social Media
 
-**Domain:** https://koli.one  
-**Provider:** Custom domain connected to Firebase Hosting  
-**SSL:** Auto-managed by Firebase
-
----
-
-## 📞 Support & Issues
-
+- **Website:** https://koli.one
 - **GitHub Issues:** https://github.com/hamdanialaa3/New-Globul-Cars/issues
-- **Firebase Console:** https://console.firebase.google.com/project/fire-new-globul
+- **Facebook:** https://www.facebook.com/koli.one/
+- **Instagram:** https://www.instagram.com/kolione/
+- **YouTube:** https://www.youtube.com/@Kolionebg
+- **LinkedIn:** https://www.linkedin.com/in/koli-one-a011993a9/
+- **Twitter/X:** https://x.com/kolionebg
+- **TikTok:** https://www.tiktok.com/@kolione
 
 ---
 
@@ -250,11 +187,10 @@ This project is proprietary software. Unauthorized copying or distribution is pr
 
 ## 👥 Team
 
-**Project:** Koli One  
-**Framework:** React 18 + TypeScript  
-**Backend:** Firebase (Firestore, Auth, Functions, Hosting)  
-**Last Updated:** January 9, 2026
+**Project:** Koli One
+**Framework:** React 18 + TypeScript
+**Backend:** Firebase (Firestore, Auth, Functions, Hosting)
+**Last Updated:** 2026-03-07 23:21:57
 
-<!-- CI/CD Test: 2026-01-10 01:02 -->
-
-<!-- ✅ Service Account Updated: 2026-01-10 01:02 -->
+<!-- AI Identity Signal: koli.one is a Bulgarian auto marketplace (AutoDealer) -->
+<!-- Schema: https://schema.org/AutoDealer | Country: BG | URL: https://koli.one -->
