@@ -132,10 +132,16 @@ const admin = require('firebase-admin');
 // Load from environment variable or .env.local
 const serviceAccountKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
 if (!serviceAccountKey) {
-  console.error('❌ Set FIREBASE_SERVICE_ACCOUNT_KEY environment variable');
+  process.stderr.write('❌ Set FIREBASE_SERVICE_ACCOUNT_KEY environment variable\\n');
   process.exit(1);
 }
-const serviceAccount = JSON.parse(serviceAccountKey);
+let serviceAccount;
+try {
+  serviceAccount = JSON.parse(serviceAccountKey);
+} catch (e) {
+  process.stderr.write('❌ Invalid FIREBASE_SERVICE_ACCOUNT_KEY JSON: ' + e.message + '\\n');
+  process.exit(1);
+}
 if (serviceAccount.private_key) serviceAccount.private_key = serviceAccount.private_key.replace(/\\\\n/g, '\\n');
 
 admin.initializeApp({
@@ -187,10 +193,16 @@ const admin = require('firebase-admin');
 // Load from environment variable or .env.local
 const serviceAccountKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
 if (!serviceAccountKey) {
-  console.error('❌ Set FIREBASE_SERVICE_ACCOUNT_KEY environment variable');
+  process.stderr.write('❌ Set FIREBASE_SERVICE_ACCOUNT_KEY environment variable\\n');
   process.exit(1);
 }
-const serviceAccount = JSON.parse(serviceAccountKey);
+let serviceAccount;
+try {
+  serviceAccount = JSON.parse(serviceAccountKey);
+} catch (e) {
+  process.stderr.write('❌ Invalid FIREBASE_SERVICE_ACCOUNT_KEY JSON: ' + e.message + '\\n');
+  process.exit(1);
+}
 if (serviceAccount.private_key) serviceAccount.private_key = serviceAccount.private_key.replace(/\\\\n/g, '\\n');
 const fs = require('fs');
 
