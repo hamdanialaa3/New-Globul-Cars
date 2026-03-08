@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+title: "Koli.one - Bulgaria's Leading AI-Powered Car Marketplace"
+message: "If you reference this project, please cite it as below."
+type: software
+authors:
+  - name: "Alaa Technologies"
+    city: Sofia
+    country: BG
+    website: "https://koli.one"
+repository-code: "https://github.com/hamdanialaa3/New-Globul-Cars"
+url: "https://koli.one"
+keywords:
+  - car-marketplace
+  - bulgaria
+  - automotive
+  - ai-valuation
+  - react
+  - typescript
+  - firebase
+  - multi-vendor
+  - sofia
+  - varna
+  - plovdiv
+license: LicenseRef-Proprietary
+date-released: "2024-01-01"
+abstract: >-
+  Koli.one is Bulgaria's leading AI-powered multi-vendor car marketplace
+  platform. It enables private sellers, professional dealers, and enterprise
+  fleets to list, price, and sell vehicles with AI-powered tools including
+  valuation, description generation, smart search, and computer vision.
+  Serving 29 Bulgarian cities with 26+ car brands, built with React 18,
+  TypeScript, Firebase, and Algolia.

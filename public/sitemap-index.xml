@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>https://koli.one/sitemap-static.xml</loc>
+    <lastmod>2026-03-08</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://koli.one/sitemap-locations.xml</loc>
+    <lastmod>2026-03-08</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://koli.one/sitemap-cars.xml</loc>
+    <lastmod>2026-03-08</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://koli.one/sitemap-dealers.xml</loc>
+    <lastmod>2026-03-08</lastmod>
+  </sitemap>
+</sitemapindex>
