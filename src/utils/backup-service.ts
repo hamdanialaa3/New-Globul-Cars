@@ -129,11 +129,50 @@ export const scheduledFirestoreBackup = functions.pubsub
 export const MANUAL_BACKUP_SCRIPT = `
 // scripts/backup-firestore.js
 const admin = require('firebase-admin');
-const serviceAccount = require('../serviceAccountKey.json');
+const path = require('path');
+const fs = require('fs');
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+function loadServiceAccount() {
+    const envKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+    if (envKey) {
+        try {
+            const sa = JSON.parse(envKey);
+            if (sa.private_key) sa.private_key = sa.private_key.replace(/\\\\n/g, '\\n');
+            return sa;
+        } catch (e) { /* fall through */ }
+    }
+    const envPath = path.resolve(__dirname, '../.env.local');
+    if (fs.existsSync(envPath)) {
+        const content = fs.readFileSync(envPath, 'utf8');
+        const env = {};
+        content.split('\\n').forEach(line => {
+            line = line.trim();
+            if (!line || line.startsWith('#')) return;
+            const idx = line.indexOf('=');
+            if (idx !== -1) {
+                const key = line.substring(0, idx).trim();
+                let val = line.substring(idx + 1).trim();
+                if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) val = val.slice(1, -1);
+                env[key] = val;
+            }
+        });
+        if (env.FIREBASE_SERVICE_ACCOUNT_KEY) {
+            const sa = JSON.parse(env.FIREBASE_SERVICE_ACCOUNT_KEY);
+            if (sa.private_key) sa.private_key = sa.private_key.replace(/\\\\n/g, '\\n');
+            return sa;
+        }
+    }
+    console.error('❌ No service account found! Set FIREBASE_SERVICE_ACCOUNT_KEY in .env.local or as env var.');
+    process.exit(1);
+}
+
+const serviceAccount = loadServiceAccount();
+
+if (!admin.apps.length) {
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+    });
+}
 
 const db = admin.firestore();
 
@@ -177,12 +216,50 @@ backupAllCollections().catch((error) => logger.error('Backup failed', error));
 export const RESTORE_SCRIPT = `
 // scripts/restore-firestore.js
 const admin = require('firebase-admin');
-const serviceAccount = require('../serviceAccountKey.json');
 const fs = require('fs');
+const path = require('path');
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+function loadServiceAccount() {
+    const envKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+    if (envKey) {
+        try {
+            const sa = JSON.parse(envKey);
+            if (sa.private_key) sa.private_key = sa.private_key.replace(/\\\\n/g, '\\n');
+            return sa;
+        } catch (e) { /* fall through */ }
+    }
+    const envPath = path.resolve(__dirname, '../.env.local');
+    if (fs.existsSync(envPath)) {
+        const content = fs.readFileSync(envPath, 'utf8');
+        const env = {};
+        content.split('\\n').forEach(line => {
+            line = line.trim();
+            if (!line || line.startsWith('#')) return;
+            const idx = line.indexOf('=');
+            if (idx !== -1) {
+                const key = line.substring(0, idx).trim();
+                let val = line.substring(idx + 1).trim();
+                if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) val = val.slice(1, -1);
+                env[key] = val;
+            }
+        });
+        if (env.FIREBASE_SERVICE_ACCOUNT_KEY) {
+            const sa = JSON.parse(env.FIREBASE_SERVICE_ACCOUNT_KEY);
+            if (sa.private_key) sa.private_key = sa.private_key.replace(/\\\\n/g, '\\n');
+            return sa;
+        }
+    }
+    console.error('❌ No service account found! Set FIREBASE_SERVICE_ACCOUNT_KEY in .env.local or as env var.');
+    process.exit(1);
+}
+
+const serviceAccount = loadServiceAccount();
+
+if (!admin.apps.length) {
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+    });
+}
 
 const db = admin.firestore();
 

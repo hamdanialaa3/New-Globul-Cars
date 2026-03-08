@@ -50,8 +50,10 @@
   ],
   "exclude": [
     "src/locales/translations.ts",
-    "../DDD/**",
-    "../DEPRECATED_FILES_BACKUP/**",
-    "../dist/**"
+    "DDD/**",
+    "node_modules",
+    "build",
+    "dist",
+    "functions"
   ]
 }

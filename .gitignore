@@ -32,6 +32,8 @@ GoogleService-Info.plist
 *.p12
 *.pfx
 serviceAccountKey.json
+**/serviceAccountKey.json
+*-service-account*.json
 
 # --- Build artifacts ---
 node_modules/
@@ -39,6 +41,10 @@ dist/
 build/
 .cache/
 *.bundle
+.tsbuildinfo
+.firebase/
+project_structure.txt
+core_logic.txt
 
 # --- Backup/Temp files ---
 *.bak
