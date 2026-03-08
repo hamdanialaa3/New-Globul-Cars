@@ -47,11 +47,16 @@ function loadServiceAccount() {
             }
         });
         if (env.FIREBASE_SERVICE_ACCOUNT_KEY) {
-            const sa = JSON.parse(env.FIREBASE_SERVICE_ACCOUNT_KEY);
-            if (sa.private_key) {
-                sa.private_key = sa.private_key.replace(/\\n/g, '\n');
+            try {
+                const sa = JSON.parse(env.FIREBASE_SERVICE_ACCOUNT_KEY);
+                if (sa.private_key) {
+                    sa.private_key = sa.private_key.replace(/\\n/g, '\n');
+                }
+                return sa;
+            } catch (e) {
+                console.error('❌ Invalid FIREBASE_SERVICE_ACCOUNT_KEY JSON in .env.local:', e.message);
+                process.exit(1);
             }
-            return sa;
         }
     }
 
