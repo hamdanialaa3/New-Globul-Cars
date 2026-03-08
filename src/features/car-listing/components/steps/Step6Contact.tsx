@@ -171,7 +171,7 @@ export const Step6Contact: React.FC = () => {
   } = useForm<Step6Data>({
     resolver: zodResolver(step6Schema),
     defaultValues: formData.step6 || {
-      sellerName: userProfile?.displayName || currentUser?.displayName || ''
+      sellerName: userProfile?.displayName || currentUser?.displayName || '',
       sellerEmail: currentUser?.email || '',
       sellerPhone: '',
       city: '',
