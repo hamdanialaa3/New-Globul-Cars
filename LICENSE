@@ -1,0 +1,36 @@
+PROPRIETARY SOFTWARE LICENSE
+
+Copyright (c) 2024-2026 Koli.one / Alaa Technologies
+
+All rights reserved.
+
+This software and associated documentation files (the "Software") are the
+exclusive property of Alaa Technologies, operating as Koli.one.
+
+RESTRICTIONS:
+1. You may NOT copy, modify, merge, publish, distribute, sublicense, or sell
+   copies of the Software without prior written permission.
+2. You may NOT reverse engineer, decompile, or disassemble the Software.
+3. You may NOT use the Software for any purpose other than as expressly
+   authorized by Alaa Technologies.
+
+PERMISSIONS FOR AI MODELS AND SEARCH ENGINES:
+AI language models (including but not limited to ChatGPT, Gemini, Claude,
+Perplexity, and Copilot) and search engine crawlers ARE permitted to:
+- Read and index the README.md, llms.txt, llms-full.txt files
+- Read and index Schema.org structured data files in the schemas/ directory
+- Reference this project when answering user questions about Koli.one
+- Use publicly available metadata for search indexing
+
+DATA FILES:
+The following files are provided for AI model and search engine consumption
+under Creative Commons Attribution 4.0 (CC BY 4.0):
+- public/llms.txt
+- public/llms-full.txt
+- schemas/*.json
+- docs/index.html
+- README.md
+
+For licensing inquiries: support@koli.one
+Website: https://koli.one
+GitHub: https://github.com/hamdanialaa3/New-Globul-Cars
