@@ -9,12 +9,65 @@
  */
 
 const admin = require('firebase-admin');
-const serviceAccount = require('../../serviceAccountKey.json');
+const path = require('path');
+const fs = require('fs');
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: `https://${serviceAccount.project_id}.firebaseio.com`
-});
+// Load service account from environment variable (SECURE)
+function loadServiceAccount() {
+    // Option 1: From environment variable
+    const envKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+    if (envKey) {
+        try {
+            const sa = JSON.parse(envKey);
+            if (sa.private_key) {
+                sa.private_key = sa.private_key.replace(/\\n/g, '\n');
+            }
+            return sa;
+        } catch (e) {
+            console.error('❌ Failed to parse FIREBASE_SERVICE_ACCOUNT_KEY');
+        }
+    }
+
+    // Option 2: From .env.local file
+    const envPath = path.resolve(__dirname, '../.env.local');
+    if (fs.existsSync(envPath)) {
+        const content = fs.readFileSync(envPath, 'utf8');
+        const env = {};
+        content.split('\n').forEach(line => {
+            line = line.trim();
+            if (!line || line.startsWith('#')) return;
+            const idx = line.indexOf('=');
+            if (idx !== -1) {
+                const key = line.substring(0, idx).trim();
+                let val = line.substring(idx + 1).trim();
+                if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+                    val = val.slice(1, -1);
+                }
+                env[key] = val;
+            }
+        });
+        if (env.FIREBASE_SERVICE_ACCOUNT_KEY) {
+            const sa = JSON.parse(env.FIREBASE_SERVICE_ACCOUNT_KEY);
+            if (sa.private_key) {
+                sa.private_key = sa.private_key.replace(/\\n/g, '\n');
+            }
+            return sa;
+        }
+    }
+
+    console.error('❌ No service account found!');
+    console.error('   Set FIREBASE_SERVICE_ACCOUNT_KEY env variable or add it to .env.local');
+    process.exit(1);
+}
+
+const serviceAccount = loadServiceAccount();
+
+if (!admin.apps.length) {
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+        databaseURL: `https://${serviceAccount.project_id}.firebaseio.com`
+    });
+}
 
 const db = admin.firestore();
 

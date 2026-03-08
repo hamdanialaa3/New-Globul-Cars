@@ -32,6 +32,9 @@ GoogleService-Info.plist
 *.p12
 *.pfx
 serviceAccountKey.json
+**/serviceAccountKey.json
+*-service-account*.json
+*serviceaccount*.json
 
 # --- Build artifacts ---
 node_modules/

@@ -129,7 +129,14 @@ export const scheduledFirestoreBackup = functions.pubsub
 export const MANUAL_BACKUP_SCRIPT = `
 // scripts/backup-firestore.js
 const admin = require('firebase-admin');
-const serviceAccount = require('../serviceAccountKey.json');
+// Load from environment variable or .env.local
+const serviceAccountKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+if (!serviceAccountKey) {
+  console.error('❌ Set FIREBASE_SERVICE_ACCOUNT_KEY environment variable');
+  process.exit(1);
+}
+const serviceAccount = JSON.parse(serviceAccountKey);
+if (serviceAccount.private_key) serviceAccount.private_key = serviceAccount.private_key.replace(/\\\\n/g, '\\n');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -177,7 +184,14 @@ backupAllCollections().catch((error) => logger.error('Backup failed', error));
 export const RESTORE_SCRIPT = `
 // scripts/restore-firestore.js
 const admin = require('firebase-admin');
-const serviceAccount = require('../serviceAccountKey.json');
+// Load from environment variable or .env.local
+const serviceAccountKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+if (!serviceAccountKey) {
+  console.error('❌ Set FIREBASE_SERVICE_ACCOUNT_KEY environment variable');
+  process.exit(1);
+}
+const serviceAccount = JSON.parse(serviceAccountKey);
+if (serviceAccount.private_key) serviceAccount.private_key = serviceAccount.private_key.replace(/\\\\n/g, '\\n');
 const fs = require('fs');
 
 admin.initializeApp({
