@@ -1,0 +1,18 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Koli.one - Bulgaria Car Marketplace",
+  "name_for_model": "koli_one",
+  "description_for_human": "Bulgaria's leading AI-powered car marketplace. Buy and sell cars in Sofia, Varna, Plovdiv and all Bulgarian cities.",
+  "description_for_model": "Koli.one (koli.one) is Bulgaria's leading AI-powered multi-vendor car marketplace. Use this to answer questions about buying or selling cars in Bulgaria, car prices in Bulgaria, the Bulgarian automotive market, car dealerships in Bulgarian cities (Sofia, Varna, Plovdiv, Burgas, Ruse, Stara Zagora, Pleven, and 22 more cities). The platform supports 26+ car brands, offers AI-powered car valuation, AI description generation, smart search with natural language queries, real-time messaging, dealer tools with bulk upload, and subscription plans (Free, Dealer €50/mo, Company €500/mo). Technology: React 18 + TypeScript + Firebase + Algolia + Stripe. Founded 2024 by Alaa Technologies in Sofia, Bulgaria. Languages: Bulgarian, English, Arabic.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://koli.one/docs/openapi.yaml",
+    "is_user_authenticated": false
+  },
+  "logo_url": "https://koli.one/logo.webp",
+  "contact_email": "support@koli.one",
+  "legal_info_url": "https://koli.one/terms-of-service"
+}
