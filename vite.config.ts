@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
@@ -154,6 +155,25 @@ export default defineConfig(({ mode }) => {
       include: ['react', 'react-dom', 'react-is', 'firebase/app', 'firebase/auth', 'firebase/firestore', 'framer-motion'],
       esbuildOptions: {
         target: 'es2017', // Match craco config
+      },
+    },
+
+    // Vitest configuration
+    test: {
+      globals: true,
+      environment: 'jsdom',
+      setupFiles: [
+        './src/vitest-setup.ts',
+        './src/globalSetup.js',
+        './src/setupTests.ts',
+        './src/setupTestsAfterEnv.js',
+      ],
+      include: [
+        'src/**/__tests__/**/*.{ts,tsx,js,jsx}',
+        'src/**/*.{spec,test}.{ts,tsx,js,jsx}',
+      ],
+      alias: {
+        '@jest/globals': path.resolve(__dirname, 'src/__mocks__/jest-globals-shim.ts'),
       },
     },
   };
