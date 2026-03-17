@@ -59,11 +59,15 @@ core_logic.txt
 *.ts.backup
 *.csv
 
+# --- TypeScript build cache ---
+*.tsbuildinfo
+
 # --- Reports & generated ---
 type-errors-all.txt
 type-errors.txt
 type-check-errors.txt
 tsc-errors.txt
+ts-errors.txt
 tsc-result.txt
 tsc-check-security.txt
 ts-prune-report.txt
