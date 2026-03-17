@@ -10,12 +10,12 @@
  */
 import React, { useState, useEffect, useCallback } from 'react';
 import { doc, onSnapshot } from 'firebase/firestore';
-import { db } from '../../../../firebase/firebase-config';
-import { useAuth } from '../../../../contexts/AuthProvider';
-import { useProfileType } from '../../../../contexts/ProfileTypeContext';
+import { db } from '@/firebase/firebase-config';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useProfileType } from '@/contexts/ProfileTypeContext';
 import { SettingsTab } from './tabs/SettingsTab';
-import LoadingSpinner from '../../../../components/LoadingSpinner';
-import type { BulgarianUser } from '../../../../types/user/bulgarian-user.types';
+import LoadingSpinner from '@/components/LoadingSpinner';
+import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
 
 const DEFAULT_STATS = {
   totalListings: 0,
@@ -59,9 +59,11 @@ const SettingsPage: React.FC = () => {
     }
 
     const ref = doc(db, 'users', currentUser.uid);
+    let isActive = true;
     const unsub = onSnapshot(
       ref,
       (snap) => {
+        if (!isActive) return;
         if (snap.exists()) {
           setUser(normalise(snap.data(), currentUser.uid));
         } else {
@@ -70,12 +72,13 @@ const SettingsPage: React.FC = () => {
         setLoading(false);
       },
       () => {
+        if (!isActive) return;
         // On error, still hide the spinner so the tab can render with null
         setLoading(false);
       }
     );
 
-    return () => unsub();
+    return () => { isActive = false; unsub(); };
   }, [currentUser?.uid]);
 
   // refresh callback passed down to SettingsTab (re-fetch is handled automatically

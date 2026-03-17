@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { UnifiedCar } from '../../../../services/car';
+import { UnifiedCar } from '@/services/car';
 import { Card } from '../styles';
 import { Eye, EyeOff, Tag, Lock, CheckCircle, Clock } from 'lucide-react';
 

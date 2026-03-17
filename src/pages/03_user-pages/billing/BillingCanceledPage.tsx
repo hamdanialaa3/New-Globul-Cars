@@ -3,7 +3,7 @@
 
 import React, { useEffect } from 'react';
 import CancelPage from '../billing/CancelPage';
-import { analyticsService } from '../../../services/analytics/UnifiedAnalyticsService';
+import { analyticsService } from '@/services/analytics/UnifiedAnalyticsService';
 
 const BillingCanceledPage: React.FC = () => {
   useEffect(() => {

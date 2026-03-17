@@ -32,10 +32,10 @@
 import React, { Suspense } from 'react';
 // eslint-disable-next-line import/no-named-as-default
 import styled from 'styled-components';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useAuth } from '../../../../contexts/AuthProvider';
-import { useSectionVisibility } from '../../../../hooks/useSectionVisibility';
-import LazySection from '../../../../components/LazySection';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useSectionVisibility } from '@/hooks/useSectionVisibility';
+import LazySection from '@/components/LazySection';
 
 // ============================================================================
 // CORE SECTION IMPORTS
@@ -76,7 +76,7 @@ import { GridSectionWrapper } from './GridSectionWrapper';
 import LinkableSection from './LinkableSection';
 
 // 🆕 Smart Strips (mobile.de parity)
-import { HomeHeroStrips } from '../../../../components/home/HomeHeroStrips';
+import { HomeHeroStrips } from '@/components/home/HomeHeroStrips';
 
 // Global components (lazy loaded)
 const AIChatbot = React.lazy(() => import('../../../../components/AI/AIChatbot'));

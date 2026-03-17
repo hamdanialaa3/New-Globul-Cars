@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import { useAuth } from '../../../../contexts/AuthProvider';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { db } from '../../../../firebase/firebase-config';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { db } from '@/firebase/firebase-config';
 import {
   collection,
   query,
@@ -14,7 +14,7 @@ import {
   getDoc,
   serverTimestamp
 } from 'firebase/firestore';
-import { logger } from '../../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 import { toast } from 'react-toastify';
 import {
   AlertTriangle,
@@ -213,7 +213,9 @@ const ReportsView: React.FC = () => {
       orderBy('createdAt', 'desc')
     );
 
+    let isActive = true;
     const unsubscribe = onSnapshot(q, (snapshot) => {
+      if (!isActive) return;
       const reportsData = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
@@ -221,11 +223,12 @@ const ReportsView: React.FC = () => {
       setReports(reportsData);
       setLoading(false);
     }, (error) => {
+      if (!isActive) return;
       logger.error('Error fetching reports:', error);
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => { isActive = false; unsubscribe(); };
   }, []);
 
   const handleDismiss = async (reportId: string) => {

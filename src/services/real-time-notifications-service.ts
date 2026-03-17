@@ -207,7 +207,7 @@ export class RealTimeNotificationsService {
       (error) => {
         // Gracefully handle permission-denied (non-admin user)
         if ((error as any).code !== 'permission-denied') {
-          console.error('Admin notifications listener error:', error);
+          serviceLogger.error('Admin notifications listener error:', error as Error);
         }
       }
     );

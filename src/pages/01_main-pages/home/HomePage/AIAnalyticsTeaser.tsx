@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BarChart2, PieChart, TrendingUp, ArrowRight } from 'lucide-react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Container = styled.section`
   padding: 80px 20px;

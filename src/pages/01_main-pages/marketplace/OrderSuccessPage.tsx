@@ -10,9 +10,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { CheckCircle, Package, CreditCard, Banknote, Truck, Home, ShoppingBag, Loader } from 'lucide-react';
 import styledImport from 'styled-components';
 
-import { useLanguage } from '../../../contexts/LanguageContext';
-import { orderService, Order, PaymentMethod } from '../../../services/marketplace/order.service';
-import { logger } from '../../../services/logger-service';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { orderService, Order, PaymentMethod } from '@/services/marketplace/order.service';
+import { logger } from '@/services/logger-service';
 
 const styled = styledImport;
 

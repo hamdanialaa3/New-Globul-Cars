@@ -3,18 +3,18 @@
 
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../../contexts/LanguageContext';
-import { logger } from '../../../services/logger-service';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { logger } from '@/services/logger-service';
 import styled from 'styled-components';
 import { Car, Truck, Bus, Bike, Caravan, Wrench } from 'lucide-react';
-import SplitScreenLayout from '../../../components/SplitScreenLayout';
-import { useAuth } from '../../../contexts/AuthProvider';
-import { useProfileType } from '../../../contexts/ProfileTypeContext';
+import SplitScreenLayout from '@/components/SplitScreenLayout';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useProfileType } from '@/contexts/ProfileTypeContext';
 import { toast } from 'react-toastify';
-// DEAD SERVICE: import N8nIntegrationService from '../../../services/n8n-integration';
-import { SellWorkflowLayout } from '../../../components/SellWorkflow';
-import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
-import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
+// DEAD SERVICE: import N8nIntegrationService from '@/services/n8n-integration';
+import { SellWorkflowLayout } from '@/components/SellWorkflow';
+import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import { useUnifiedWorkflow } from '@/hooks/useUnifiedWorkflow';
 
 const ContentSection = styled.div`
   display: flex;

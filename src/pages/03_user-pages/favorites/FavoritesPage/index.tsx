@@ -18,10 +18,10 @@ import {
   Zap
 } from 'lucide-react';
 
-import { useFavorites } from '../../../../hooks/useFavorites';
-import { useAuth } from '../../../../contexts/AuthProvider';
-import { logger } from '../../../../services/logger-service';
-import { getCarDetailsUrl } from '../../../../utils/routing-utils';
+import { useFavorites } from '@/hooks/useFavorites';
+import { useAuth } from '@/contexts/AuthProvider';
+import { logger } from '@/services/logger-service';
+import { getCarDetailsUrl } from '@/utils/routing-utils';
 
 // ============================================================================
 // ANIMATIONS

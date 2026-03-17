@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from '../../../../hooks/useTranslation';
+import { useTranslation } from '@/hooks/useTranslation';
 import { useDashboard } from './hooks/useDashboard';
 import { Car, Eye, MessageCircle, Plus, BarChart3, Mail, Edit, Settings, FileText, HelpCircle, Loader } from 'lucide-react';
 import * as S from './styles';

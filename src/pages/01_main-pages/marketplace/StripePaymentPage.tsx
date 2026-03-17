@@ -12,11 +12,11 @@ import { Elements, CardElement, useStripe, useElements } from '@stripe/react-str
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import styledImport from 'styled-components';
 
-import { useLanguage } from '../../../contexts/LanguageContext';
-import { orderService } from '../../../services/marketplace/order.service';
-import { paymentService } from '../../../services/payment-service';
-import { cartService } from '../../../services/marketplace/cart.service';
-import { logger } from '../../../services/logger-service';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { orderService } from '@/services/marketplace/order.service';
+import { paymentService } from '@/services/payment-service';
+import { cartService } from '@/services/marketplace/cart.service';
+import { logger } from '@/services/logger-service';
 
 const styled = styledImport;
 

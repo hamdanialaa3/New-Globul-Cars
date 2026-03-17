@@ -1,13 +1,13 @@
-import { logger } from '../../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 // src/pages/AdminPage/index.tsx
 // Admin Dashboard - Protected Admin-Only Area
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../../../../firebase/firebase-config';
-import { useAuth } from '../../../../contexts/AuthProvider';  /* ⚡ FIXED */
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { db } from '@/firebase/firebase-config';
+import { useAuth } from '@/contexts/AuthProvider';  /* ⚡ FIXED */
+import { useLanguage } from '@/contexts/LanguageContext';
 import VerificationReview from './VerificationReview';
 import UsersManagement from './UsersManagement';
 import ReportsView from './ReportsView';

@@ -1,4 +1,4 @@
-import { logger } from '../../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 // AllCarsPage.tsx - All Cars with Simple Filters
 // ⚡ Compact & Professional Design
 // ✅ CRITICAL FIX: Search across ALL vehicle collections
@@ -6,13 +6,13 @@ import { logger } from '../../../../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { collection, query, getDocs, orderBy, where } from 'firebase/firestore';
-import { db } from '../../../../firebase/firebase-config';
-import CarCardCompact from '../../../../components/CarCard/CarCardCompact';
-import { CarListing } from '../../../../types/CarListing';
+import { db } from '@/firebase/firebase-config';
+import CarCardCompact from '@/components/CarCard/CarCardCompact';
+import { CarListing } from '@/types/CarListing';
 import { Car, Search, Filter, X } from 'lucide-react';
-import { ResponsiveGrid } from '../../../../components/layout/ResponsiveGrid';
+import { ResponsiveGrid } from '@/components/layout/ResponsiveGrid';
 
 // ✅ ALL VEHICLE COLLECTIONS
 const VEHICLE_COLLECTIONS = [

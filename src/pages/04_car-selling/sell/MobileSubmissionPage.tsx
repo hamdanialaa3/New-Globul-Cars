@@ -2,14 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useLanguage } from '../../../contexts/LanguageContext';
-import { useAuth } from '../../../contexts/AuthProvider';
-import { WorkflowPersistenceService } from '../../../services/unified-workflow-persistence.service';
-import { logger } from '../../../services/logger-service';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthProvider';
+import { WorkflowPersistenceService } from '@/services/unified-workflow-persistence.service';
+import { logger } from '@/services/logger-service';
 import { S } from './MobileSubmissionPage.styles';
-import { SellProgressBar } from '../../../components/SellWorkflow';
-import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
-import SellWorkflowService from '../../../services/sell-workflow-service';
+import { SellProgressBar } from '@/components/SellWorkflow';
+import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import SellWorkflowService from '@/services/sell-workflow-service';
 
 const ProgressWrapper = styled.div`
   padding: 0.75rem 1rem 0;

@@ -4,7 +4,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { useTranslation } from '../../../../hooks/useTranslation';
+import { useTranslation } from '@/hooks/useTranslation';
 import {
   Map,
   Home,
@@ -25,7 +25,7 @@ import {
   Zap,
   ChevronRight
 } from 'lucide-react';
-import { useTheme } from '../../../../contexts/ThemeContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 // Styled Components
 const SitemapContainer = styled.div<{ $isDark: boolean }>`

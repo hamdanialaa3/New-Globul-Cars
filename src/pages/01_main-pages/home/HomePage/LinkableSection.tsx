@@ -13,7 +13,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { FiArrowRight, FiArrowLeft } from 'react-icons/fi';
 
 // ============================================================================

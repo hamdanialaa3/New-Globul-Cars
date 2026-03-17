@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { toast } from 'react-toastify';
 import { collection, getDocs, query, orderBy, where, writeBatch, doc } from 'firebase/firestore';
 import { db } from '../../../../firebase';
-import { logger } from '../../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 import { Shield, AlertTriangle, CheckCircle, Loader } from 'lucide-react';
 
 /**

@@ -3,12 +3,12 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { SOCIAL_LINKS } from '../../../../constants/socialLinks';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../../../../firebase/firebase-config';
-import { logger } from '../../../../services/logger-service';
+import { db } from '@/firebase/firebase-config';
+import { logger } from '@/services/logger-service';
 import {
   Mail,
   Phone,

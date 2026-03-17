@@ -26,7 +26,7 @@
 
 import React, { memo } from 'react';
 import styled from 'styled-components';
-import { useTheme } from '../../../../contexts/ThemeContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import SearchWidget from './SearchWidget';
 
 // ============================================================================

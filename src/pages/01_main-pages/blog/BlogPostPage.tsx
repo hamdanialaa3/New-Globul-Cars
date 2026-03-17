@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useTheme } from '../../../contexts/ThemeContext';
-import { useLanguage } from '../../../contexts/LanguageContext';
-import { useAuth } from '../../../hooks/useAuth';
-import { blogService } from '../../../services/blog/blog.service';
-import type { BlogPost } from '../../../types/blog.types';
-import { serviceLogger } from '../../../services/logger-service';
-import LoadingSpinner from '../../../components/LoadingSpinner';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/hooks/useAuth';
+import { blogService } from '@/services/blog/blog.service';
+import type { BlogPost } from '@/types/blog.types';
+import { serviceLogger } from '@/services/logger-service';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { Calendar, Clock, Eye, Heart, Share2, User, ArrowLeft, Tag } from 'lucide-react';
 
 const BlogPostPage: React.FC = () => {

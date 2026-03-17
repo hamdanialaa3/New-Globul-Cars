@@ -6,12 +6,12 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { CreditCard, AlertCircle } from 'lucide-react';
-import { useLanguage } from '../../../contexts/LanguageContext';
-import { useAuth } from '../../../contexts/AuthProvider';
-import { useToast } from '../../../components/Toast';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useToast } from '@/components/Toast';
 import { BANK_DETAILS } from '../../../config/bank-details';
-import { analyticsService } from '../../../services/analytics/UnifiedAnalyticsService';
-import { logger } from '../../../services/logger-service';
+import { analyticsService } from '@/services/analytics/UnifiedAnalyticsService';
+import { logger } from '@/services/logger-service';
 
 const Container = styled.div`
   max-width: 960px;

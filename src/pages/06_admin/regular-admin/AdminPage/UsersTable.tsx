@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useUsers } from '../../../../hooks/useUsers';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useUsers } from '@/hooks/useUsers';
+import { useLanguage } from '@/contexts/LanguageContext';
 import {
     User,
     Search,
@@ -16,9 +16,9 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../../../firebase/firebase-config';
+import { db } from '@/firebase/firebase-config';
 import { toast } from 'react-toastify';
-import { logger } from '../../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 const GlassContainer = styled.div`
   background: rgba(255, 255, 255, 0.7);

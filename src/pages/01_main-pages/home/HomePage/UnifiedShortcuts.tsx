@@ -32,8 +32,8 @@ import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { Grid3X3, Grid2X2, Zap } from 'lucide-react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 // Lazy load the sections
 const VehicleClassificationsSection = React.lazy(() => import('./VehicleClassificationsSection'));

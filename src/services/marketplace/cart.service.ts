@@ -67,6 +67,7 @@ class CartService {
   private cart: Cart = { items: [], updatedAt: Date.now() };
   private listeners: Set<(cart: Cart) => void> = new Set();
   private firestoreUnsubscribe: Unsubscribe | null = null;
+  private cartListenerActive = false;
   private currentUserId: string | null = null;
 
   private constructor() {
@@ -113,6 +114,7 @@ class CartService {
    * Clear user context (called after logout)
    */
   public clearUserContext(): void {
+    this.cartListenerActive = false;
     if (this.firestoreUnsubscribe) {
       this.firestoreUnsubscribe();
       this.firestoreUnsubscribe = null;
@@ -411,9 +413,11 @@ class CartService {
   }
 
   private subscribeToFirestore(userId: string): void {
+    this.cartListenerActive = true;
     this.firestoreUnsubscribe = onSnapshot(
       doc(db, 'carts', userId),
       (snapshot) => {
+        if (!this.cartListenerActive) return;
         if (snapshot.exists()) {
           const data = snapshot.data();
           const firestoreUpdatedAt = data.updatedAt?.toMillis?.() || 0;
@@ -431,6 +435,7 @@ class CartService {
         }
       },
       (error) => {
+        if (!this.cartListenerActive) return;
         logger.error('Firestore cart subscription error', error as Error, { userId });
       }
     );

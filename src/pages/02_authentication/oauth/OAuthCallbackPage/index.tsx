@@ -1,15 +1,15 @@
-import { logger } from '../../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 // OAuth Callback Handler - Receives auth codes from social platforms
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAuth } from '../../../../contexts/AuthProvider';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { CheckCircle, XCircle, Loader } from 'lucide-react';
-import socialMediaService from '../../../../services/social/social-media.service';
-import { SocialPlatform } from '../../../../types/social-media.types';
+import socialMediaService from '@/services/social/social-media.service';
+import { SocialPlatform } from '@/types/social-media.types';
 
 const OAuthCallback: React.FC = () => {
   const navigate = useNavigate();

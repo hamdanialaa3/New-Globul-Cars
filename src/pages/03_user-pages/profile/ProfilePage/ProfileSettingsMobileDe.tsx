@@ -5,14 +5,14 @@ import {
   Calculator, FileText, ShieldCheck, Plus, ChevronRight, User, Loader,
   ArrowUpDown, Filter
 } from 'lucide-react';
-import { useAuth } from '../../../../contexts/AuthProvider';
+import { useAuth } from '@/contexts/AuthProvider';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { ProfileMediaService } from '../../../../services/profile/ProfileMediaService';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { ProfileMediaService } from '@/services/profile/ProfileMediaService';
 import { updateProfile } from 'firebase/auth';
-import { useToast } from '../../../../components/Toast';
-import { unifiedCarService } from '../../../../services/car/unified-car-service';
-import { logger } from '../../../../services/logger-service';
+import { useToast } from '@/components/Toast';
+import { unifiedCarService } from '@/services/car/unified-car-service';
+import { logger } from '@/services/logger-service';
 import * as S from './ProfileSettingsMobileDe.styles';
 
 const ProfileSettingsMobileDe: React.FC = () => {

@@ -16,9 +16,9 @@ import {
     QueryConstraint,
     Timestamp,
 } from 'firebase/firestore';
-import { db } from '../../../firebase/firebase-config';
-import { VEHICLE_COLLECTIONS } from '../../../services/car/unified-car-types';
-import { resolveCanonicalBrand } from '../../../services/brand-normalization';
+import { db } from '@/firebase/firebase-config';
+import { VEHICLE_COLLECTIONS } from '@/services/car/unified-car-types';
+import { resolveCanonicalBrand } from '@/services/brand-normalization';
 
 // ─── Color name → hex mapping (used when colorHex is missing) ───
 const COLOR_NAME_TO_HEX: Record<string, string> = {

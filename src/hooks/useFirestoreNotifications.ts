@@ -37,7 +37,9 @@ export const useFirestoreNotifications = () => {
             limit(50)
         );
 
+        let isActive = true;
         const unsubscribe = onSnapshot(q, (snapshot) => {
+            if (!isActive) return;
             const notifs = snapshot.docs.map((doc: any) => ({
                 id: doc.id,
                 ...doc.data(),
@@ -51,11 +53,12 @@ export const useFirestoreNotifications = () => {
             setUnreadCount(notifs.filter(n => !n.read).length);
             setLoading(false);
         }, (error) => {
+            if (!isActive) return;
             logger.error("Error fetching notifications:", error);
             setLoading(false);
         });
 
-        return () => unsubscribe();
+        return () => { isActive = false; unsubscribe(); };
     }, [user]);
 
     const markAsRead = async (notificationId: string) => {

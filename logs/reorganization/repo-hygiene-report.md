@@ -1,0 +1,147 @@
+# Repository Hygiene Audit
+
+Generated: 2026-03-16T19:21:46.061Z
+Scanned roots: src, mobile_new/src, functions/src, shared
+Scanned files: 2219
+
+## Summary
+- Duplicate groups: 16
+- Duplicate files involved: 37
+- Zombie candidates: 257
+
+## Top Duplicate Groups
+- Hash 9cbea51e6711: 4 files
+  - mobile_new/src/locales/bg/errors.ts
+  - mobile_new/src/shared/locales/bg/errors.ts
+  - shared/src/locales/bg/errors.ts
+  - src/locales/bg/errors.ts
+- Hash 24b4fcf0e936: 4 files
+  - mobile_new/src/locales/en/errors.ts
+  - mobile_new/src/shared/locales/en/errors.ts
+  - shared/src/locales/en/errors.ts
+  - src/locales/en/errors.ts
+- Hash 5fe59378f243: 3 files
+  - src/services/car/__mocks__/firebase-config.ts
+  - src/services/reviews/__mocks__/firebase-config.ts
+  - src/services/social/__mocks__/firebase-config.ts
+- Hash da7f60511d18: 2 files
+  - mobile_new/src/shared/types/car-listing.types.ts
+  - shared/src/types/car-listing.types.ts
+- Hash eaa9ae296e78: 2 files
+  - mobile_new/src/shared/types/ai-quota.types.ts
+  - shared/src/types/ai-quota.types.ts
+- Hash cc2cb1f6ecee: 2 files
+  - mobile_new/src/shared/types/firestore-models.types.ts
+  - shared/src/types/firestore-models.types.ts
+- Hash 326fa072d2f5: 2 files
+  - mobile_new/src/shared/index.ts
+  - shared/src/index.ts
+- Hash c12fa5c77ce8: 2 files
+  - mobile_new/src/shared/constants/vehicle-collections.ts
+  - shared/src/constants/vehicle-collections.ts
+- Hash c9c8fad5ea0b: 2 files
+  - mobile_new/src/shared/types/story.types.ts
+  - shared/src/types/story.types.ts
+- Hash 4bab1a25b750: 2 files
+  - mobile_new/src/shared/types/car-summary.types.ts
+  - shared/src/types/car-summary.types.ts
+- Hash 7ca10f97cc8e: 2 files
+  - src/locales/bg/index.ts
+  - src/locales/en/index.ts
+- Hash 8372ab3186ad: 2 files
+  - mobile_new/src/shared/types/numeric-id.types.ts
+  - shared/src/types/numeric-id.types.ts
+- Hash 05a24b566054: 2 files
+  - mobile_new/src/shared/constants/social-links.ts
+  - shared/src/constants/social-links.ts
+- Hash 4d31d5f6ab25: 2 files
+  - mobile_new/src/locales/bg/index.ts
+  - mobile_new/src/locales/en/index.ts
+- Hash bc38c08a031e: 2 files
+  - mobile_new/src/locales/bg/cars.ts
+  - src/locales/bg/cars.ts
+- Hash ee01228d1d3d: 2 files
+  - mobile_new/src/locales/en/cars.ts
+  - src/locales/en/cars.ts
+
+## Zombie Candidates (Heuristic)
+- functions/src/ai/deepseek-proxy.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/ai/hybrid-ai-proxy.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/analytics/b2b-exports.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/api/stripe/create-payment-intent.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/auth/guest-token.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/facebook-ads-sync.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/google-ads-sync.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/messaging/sync-rtdb-to-firestore.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/notifications/email-triggers.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/notifications/realtime-messaging-notifications.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/notifications/send-message-notification.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/payment-webhooks/icard-webhooks.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/payment-webhooks/revolut-webhooks.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/scheduled/archive-sold-cars.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/seo/indexnow-service.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/seo/search-console-service.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/services/email.service.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/services/payment-reconciliation.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/stripe-webhooks.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/syncCarsToAlgolia.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/triggers/on-user-delete.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- functions/src/triggers/price-drop-alerts.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- mobile_new/src/components/auth/GoogleLoginButton.native.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- mobile_new/src/components/auth/GoogleLoginButton.web.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- mobile_new/src/components/car-details/CarDetailsReviews.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- mobile_new/src/components/common/MapViewWrapper.web.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- mobile_new/src/components/EditScreenInfo.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- mobile_new/src/components/home/MobileDeHome.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- mobile_new/src/components/navigation/CustomTabBar.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- mobile_new/src/components/useClientOnlyValue.web.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- mobile_new/src/components/useColorScheme.web.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- mobile_new/src/constants/SocialLinks.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- mobile_new/src/i18n/sell-translations.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- mobile_new/src/locales/react-i18next-shim.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- mobile_new/src/services/featureFlags.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- mobile_new/src/shims/expo-store-review-shim.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- mobile_new/src/shims/stripe-react-native-shim.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- mobile_new/src/types/search/search-data.types.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- mobile_new/src/types/StoryTypes.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- mobile_new/src/types/subscription.types.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- mobile_new/src/utils/flatlist-perf.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/__mocks__/d3Mock.js: Likely unreferenced module (name appears only in its own file/corpus).
+- src/__mocks__/fileMock.js: Likely unreferenced module (name appears only in its own file/corpus).
+- src/analytics-events.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/components/CarBrandIcons.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- src/components/FirebaseStatusSimple.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- src/components/Forms/StyledFormElements.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- src/components/layout/MobileLayout.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- src/components/SellWorkflow/ModernDesignSystem.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- src/components/ui/ResponsiveCard.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- src/config/email-config.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/config/env-validation.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/config/firebase/firebase-config.lazy.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/config/google-api-keys.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/config/google-cloud.config.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/config/https-config.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/config/monitoring.config.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/config/navigation-links.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/config/profile-themes.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/constants/carData/data.AtoZ.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/data/bulgarian-regions.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/data/car-autocomplete-data.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/features/ads/components/LayoutAds.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- src/features/posts/feed-styles.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/features/pricing/pricing-ai-enhanced.service.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/globalSetup.js: Likely unreferenced module (name appears only in its own file/corpus).
+- src/hooks/messaging/useRealtimeMessaging.branded.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/hooks/useAIImageAnalysis.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/hooks/useCarIoT.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/hooks/useProfilePermissions.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/hooks/useSiteSettings.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/hooks/useSubscriptionListener.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/locales/subscription-translations.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/pages/01_main-pages/auctions/components/AuctionsData.ts: Likely unreferenced module (name appears only in its own file/corpus).
+- src/pages/01_main-pages/auctions/components/AuctionsStyles.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- src/pages/01_main-pages/home/HomePage/HeroSection2.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- src/pages/03_user-pages/my-listings/MyListingsPage/MyListingsIcons.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- src/pages/03_user-pages/profile/components/MatrixUploader.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- src/pages/03_user-pages/profile/ProfilePage/components/BulkUploadWizard.steps.tsx: Likely unreferenced module (name appears only in its own file/corpus).
+- src/pages/03_user-pages/profile/ProfilePage/ProfileSettingsMobileDe.styles.ts: Likely unreferenced module (name appears only in its own file/corpus).

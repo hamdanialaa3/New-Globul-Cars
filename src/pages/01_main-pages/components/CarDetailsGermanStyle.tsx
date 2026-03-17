@@ -40,15 +40,15 @@ import {
   Trash2,
   ZoomIn
 } from 'lucide-react';
-import { CarListing } from '../../../types/CarListing';
-import StaticMapEmbed from '../../../components/StaticMapEmbed';
-import GlobulCarLogo from '../../../components/icons/GlobulCarLogo';
-import { useTheme } from '../../../contexts/ThemeContext';
-import { useAuth } from '../../../contexts/AuthProvider';
-import { logger } from '../../../services/logger-service';
+import { CarListing } from '@/types/CarListing';
+import StaticMapEmbed from '@/components/StaticMapEmbed';
+import GlobulCarLogo from '@/components/icons/GlobulCarLogo';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useAuth } from '@/contexts/AuthProvider';
+import { logger } from '@/services/logger-service';
 import CarSuggestionsList from './CarSuggestionsList';
-import ImageLightbox from '../../../components/common/ImageLightbox/ImageLightbox';
-import { getCarLogoUrl } from '../../../services/car-logo-service';
+import ImageLightbox from '@/components/common/ImageLightbox/ImageLightbox';
+import { getCarLogoUrl } from '@/services/car-logo-service';
 
 interface CarDetailsGermanStyleProps {
   car: CarListing;

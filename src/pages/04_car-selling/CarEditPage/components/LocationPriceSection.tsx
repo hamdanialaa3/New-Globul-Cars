@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, SectionTitle, TwoColumnGrid, FormGroup, Label, Select, Input, PriceWrapper, PriceInput, CurrencySelect, CheckboxGroup, CheckboxLabel } from '../styles';
-import { UnifiedCar } from '../../../../services/car';
+import { UnifiedCar } from '@/services/car';
 
 interface LocationPriceSectionProps {
     formData: Partial<UnifiedCar>;

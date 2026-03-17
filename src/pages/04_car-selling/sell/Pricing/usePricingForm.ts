@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import useSellWorkflow from '../../../../hooks/useSellWorkflow';
+import useSellWorkflow from '@/hooks/useSellWorkflow';
 
 export interface PricingFormState {
   price: string;

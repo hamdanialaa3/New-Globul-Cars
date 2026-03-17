@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MessageCircle, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styled from 'styled-components';
-import { CarListing } from '../../../types/CarListing';
+import { CarListing } from '@/types/CarListing';
 
 interface MobileContactBarProps {
   car: CarListing;

@@ -3,12 +3,12 @@
 
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useAuth } from '../../../contexts/AuthProvider';
-import { useTranslation } from '../../../hooks/useTranslation';
-import { aiQuotaService } from '../../../services/ai/ai-quota.service';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useTranslation } from '@/hooks/useTranslation';
+import { aiQuotaService } from '@/services/ai/ai-quota.service';
 import { AI_TIER_CONFIGS } from '../../../config/ai-tiers.config';
-import { AIQuotaDisplay, AIPricingModal } from '../../../components/AI';
-import { logger } from '../../../services/logger-service';
+import { AIQuotaDisplay, AIPricingModal } from '@/components/AI';
+import { logger } from '@/services/logger-service';
 import aiUnifiedIcon from '../../../assets/icons/ai/koli_one_ai_Icon2.png';
 
 export const AIDashboardPage: React.FC = () => {

@@ -363,7 +363,9 @@ export class BulgarianMessagingService {
       limit(1)
     );
 
+    let isActive = true;
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      if (!isActive) return;
       querySnapshot.docChanges().forEach((change) => {
         if (change.type === 'added') {
           const data = change.doc.data();
@@ -379,8 +381,9 @@ export class BulgarianMessagingService {
       });
     });
 
-    this.listeners.set(`messages_${userId}`, unsubscribe);
-    return unsubscribe;
+    const cleanup = () => { isActive = false; unsubscribe(); };
+    this.listeners.set(`messages_${userId}`, cleanup);
+    return cleanup;
   }
 
   // Stop listening to messages

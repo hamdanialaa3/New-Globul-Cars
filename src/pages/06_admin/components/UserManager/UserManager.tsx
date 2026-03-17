@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { adminService } from '../../../../services/admin/admin-verification.service';
-import { User } from '../../../../types/user/bulgarian-user.types';
+import { adminService } from '@/services/admin/admin-verification.service';
+import { User } from '@/types/user/bulgarian-user.types';
 import { Search, Shield, Lock, Mail, ChevronRight, AlertTriangle } from 'lucide-react';
 import { toast } from 'react-toastify';
 

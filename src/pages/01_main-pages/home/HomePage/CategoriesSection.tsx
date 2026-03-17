@@ -6,11 +6,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { ArrowRight } from 'lucide-react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
-import { unifiedCarService } from '../../../../services/car';
-import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
-import { logger } from '../../../../services/logger-service';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import { unifiedCarService } from '@/services/car';
+import HorizontalScrollContainer from '@/components/HorizontalScrollContainer/HorizontalScrollContainer';
+import { logger } from '@/services/logger-service';
 
 const SectionContainer = styled.section`
   padding: 80px 20px;

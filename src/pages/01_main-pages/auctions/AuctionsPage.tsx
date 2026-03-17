@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useLanguage } from '../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Search, Gavel, Users, Ship, Ghost, Volume2, VolumeX, Star, Trash2 } from 'lucide-react';
 import { LiveTicker } from './components/LiveTicker';
 import { soundService } from '@/services/sound-service';

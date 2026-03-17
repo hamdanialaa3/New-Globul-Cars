@@ -6,15 +6,15 @@ import React, { useState, useEffect, memo } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { MapPin, Calendar, Gauge, TrendingUp, Clock, Heart } from 'lucide-react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { collection, query, orderBy, limit, getDocs, where } from 'firebase/firestore';
-import { db } from '../../../../firebase/firebase-config';
-import { UnifiedCar, VEHICLE_COLLECTIONS, mapDocToCar } from '../../../../services/car';
-import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
-import { logger } from '../../../../services/logger-service';
-import { useFavorites } from '../../../../hooks/useFavorites';
-import RealisticPaperclipBadge from '../../../../components/SoldBadge/RealisticPaperclipBadge';
-import PremiumHomeCarCard from '../../../../components/CarCard/PremiumHomeCarCard';
+import { db } from '@/firebase/firebase-config';
+import { UnifiedCar, VEHICLE_COLLECTIONS, mapDocToCar } from '@/services/car';
+import HorizontalScrollContainer from '@/components/HorizontalScrollContainer/HorizontalScrollContainer';
+import { logger } from '@/services/logger-service';
+import { useFavorites } from '@/hooks/useFavorites';
+import RealisticPaperclipBadge from '@/components/SoldBadge/RealisticPaperclipBadge';
+import PremiumHomeCarCard from '@/components/CarCard/PremiumHomeCarCard';
 
 // Styled Components
 const SectionContainer = styled.section`

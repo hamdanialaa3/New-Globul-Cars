@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { Card, SectionTitle, FormGroup, Label, Select, TwoColumnGrid, InlineHint } from '../styles';
-import BrandModelMarkdownDropdown from '../../../../components/BrandModelMarkdownDropdown/BrandModelMarkdownDropdown';
+import BrandModelMarkdownDropdown from '@/components/BrandModelMarkdownDropdown/BrandModelMarkdownDropdown';
 import { Lock } from 'lucide-react';
-import { UnifiedCar } from '../../../../services/car';
+import { UnifiedCar } from '@/services/car';
 
 interface BasicInfoSectionProps {
     formData: Partial<UnifiedCar>;

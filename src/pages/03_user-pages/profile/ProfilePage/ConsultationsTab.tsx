@@ -1,11 +1,11 @@
-import { logger } from '../../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 // src/pages/ProfilePage/ConsultationsTab.tsx
 // Consultations Tab Component
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   MessageSquare, 
   Star, 
@@ -17,8 +17,8 @@ import {
 import { 
   consultationsService, 
   Consultation 
-} from '../../../../services/social/consultations.service';
-import RequestConsultationModal from '../../../../components/Consultations/RequestConsultationModal';
+} from '@/services/social/consultations.service';
+import RequestConsultationModal from '@/components/Consultations/RequestConsultationModal';
 
 // ==================== STYLED COMPONENTS ====================
 

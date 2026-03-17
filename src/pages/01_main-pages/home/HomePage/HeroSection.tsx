@@ -1,7 +1,7 @@
 // src/pages/HomePage/HeroSection.tsx
 import React, { memo } from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import AdvancedSearchWidget from './AdvancedSearchWidget';
 
 const HeroSection = styled.section`

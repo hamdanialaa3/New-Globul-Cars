@@ -20,15 +20,15 @@ import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { MapPin, Gauge, Fuel, Calendar, ArrowRight, Heart, ShieldCheck, Search, SlidersHorizontal, Globe, Crown, Mountain, Building2 } from 'lucide-react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
-import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
-import { getFeaturedCars } from '../../../../services/car/unified-car-queries';
-import { UnifiedCar } from '../../../../services/car/unified-car-types';
-import { logger } from '../../../../services/logger-service';
-import { useFavorites } from '../../../../hooks/useFavorites';
-import { getCarDisplayImage } from '../../../../utils/getCarDisplayImage';
-import PremiumHomeCarCard from '../../../../components/CarCard/PremiumHomeCarCard';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import HorizontalScrollContainer from '@/components/HorizontalScrollContainer/HorizontalScrollContainer';
+import { getFeaturedCars } from '@/services/car/unified-car-queries';
+import { UnifiedCar } from '@/services/car/unified-car-types';
+import { logger } from '@/services/logger-service';
+import { useFavorites } from '@/hooks/useFavorites';
+import { getCarDisplayImage } from '@/utils/getCarDisplayImage';
+import PremiumHomeCarCard from '@/components/CarCard/PremiumHomeCarCard';
 
 // ============================================================================
 // TYPES

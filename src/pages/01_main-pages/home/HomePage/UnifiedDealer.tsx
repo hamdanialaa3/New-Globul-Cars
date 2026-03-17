@@ -24,13 +24,13 @@
 
 import React, { memo, useState, useEffect, Suspense } from 'react';
 import styled from 'styled-components';
-import { logger } from '../../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 import { motion } from 'framer-motion';
 import { Star, CheckCircle, TrendingUp, Users, Building2 } from 'lucide-react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useNavigate } from 'react-router-dom';
-import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
+import HorizontalScrollContainer from '@/components/HorizontalScrollContainer/HorizontalScrollContainer';
 
 // Lazy load DealerSpotlight
 const DealerSpotlight = React.lazy(() => import('./DealerSpotlight'));

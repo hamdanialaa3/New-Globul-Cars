@@ -3,15 +3,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { logger } from '../../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 import styled from 'styled-components';
-import { useTranslation } from '../../../../hooks/useTranslation';
+import { useTranslation } from '@/hooks/useTranslation';
 import { db } from '../firebase';
 import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { advancedContentManagementService } from '../../../../services/advanced-content-management-service';
-import { permissionManagementService } from '../../../../services/permission-management-service';
-import { adminService } from '../../../../services/admin-permissions.service';
-import { monitoring } from '../../../../services/monitoring-service';
+import { advancedContentManagementService } from '@/services/advanced-content-management-service';
+import { permissionManagementService } from '@/services/permission-management-service';
+import { adminService } from '@/services/admin-permissions.service';
+import { monitoring } from '@/services/monitoring-service';
 
 const AdminContainer = styled.div`
   min-height: 100vh;

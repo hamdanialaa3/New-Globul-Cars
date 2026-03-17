@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Car, Truck, Zap, Shield, Activity, Users, Briefcase, Sun } from 'lucide-react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // Interface for category data
 export interface VehicleCategory {

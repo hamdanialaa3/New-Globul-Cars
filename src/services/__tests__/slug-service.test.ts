@@ -108,12 +108,12 @@ describe('SlugService', () => {
   describe('buildCanonicalPath', () => {
     it('should build correct canonical path', () => {
       const path = buildCanonicalPath(1, 5, 'bmw-x5-2020');
-      expect(path).toBe('/car/1/5/bmw-x5-2020');
+      expect(path).toBe('/car/1/5');
     });
 
     it('should handle large numeric IDs', () => {
       const path = buildCanonicalPath(999, 12345, 'toyota-corolla');
-      expect(path).toBe('/car/999/12345/toyota-corolla');
+      expect(path).toBe('/car/999/12345');
     });
   });
 
@@ -172,7 +172,7 @@ describe('SlugService', () => {
       );
 
       expect(result.slug).toBe('toyota-camry-2022');
-      expect(result.canonicalUrl).toBe('/car/1/5/toyota-camry-2022');
+      expect(result.canonicalUrl).toBe('/car/1/5');
       expect(result.changed).toBe(true);
     });
 

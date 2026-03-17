@@ -17,8 +17,8 @@ import {
     ArrowRight, ArrowLeft, Check, DollarSign,
     Fuel, Settings, Shield, Activity, Leaf
 } from 'lucide-react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface WizardProps {
     onComplete: (data: AdvisorData) => void;

@@ -17,9 +17,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes, css } from 'styled-components';
 import './CarDetailsTheme.css'; // Import theme CSS
-import { useToast } from '../../../components/Toast';
+import { useToast } from '@/components/Toast';
 import { toast } from 'react-toastify';
-import OptimizedImage from '../../../components/OptimizedImage';
+import OptimizedImage from '@/components/OptimizedImage';
 import {
   Calendar,
   Gauge,
@@ -54,20 +54,20 @@ import {
   Printer,
   PlayCircle // NEW
 } from 'lucide-react';
-import { CarListing } from '../../../types/CarListing';
-import { useTheme } from '../../../contexts/ThemeContext';
-import { DescriptionPreview } from '../../../components/SmartDescriptionGenerator/DescriptionPreview';
-import { CarPrintSticker } from '../../../components/CarPrint/CarPrintSticker';
+import { CarListing } from '@/types/CarListing';
+import { useTheme } from '@/contexts/ThemeContext';
+import { DescriptionPreview } from '@/components/SmartDescriptionGenerator/DescriptionPreview';
+import { CarPrintSticker } from '@/components/CarPrint/CarPrintSticker';
 import { SimilarCarsWidget } from './SimilarCarsWidget';
 import { FinancingCalculator } from './FinancingCalculator';
-import CarBrandLogo from '../../../components/CarBrandLogo';
+import CarBrandLogo from '@/components/CarBrandLogo';
 import { ExtendedSellerInfo } from './ExtendedSellerInfo';
 import { Battery, ShieldCheck, Info } from 'lucide-react';
-import RealisticPaperclipBadge from '../../../components/SoldBadge/RealisticPaperclipBadge';
-import { logger } from '../../../services/logger-service';
-import { FacebookSmartButton } from '../../../components/social/FacebookSmartButton';
-import { PrintableWindowCard } from '../../../components/print/PrintableWindowCard';
-import { userService } from '../../../services/user/canonical-user.service';
+import RealisticPaperclipBadge from '@/components/SoldBadge/RealisticPaperclipBadge';
+import { logger } from '@/services/logger-service';
+import { FacebookSmartButton } from '@/components/social/FacebookSmartButton';
+import { PrintableWindowCard } from '@/components/print/PrintableWindowCard';
+import { userService } from '@/services/user/canonical-user.service';
 
 
 

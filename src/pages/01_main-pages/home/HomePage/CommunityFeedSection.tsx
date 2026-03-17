@@ -4,13 +4,13 @@
 
 import React, { useState, useEffect, memo } from 'react';
 import styled from 'styled-components';
-import { useAuth } from '../../../../contexts/AuthProvider';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { TrendingUp } from 'lucide-react';
-import { postsFeedService } from '../../../../services/social/posts-feed.service';
-import { Post } from '../../../../services/social/posts.service';
-import PostCard from '../../../../components/Posts/PostCard';
-import { logger } from '../../../../services/logger-service';
+import { postsFeedService } from '@/services/social/posts-feed.service';
+import { Post } from '@/services/social/posts.service';
+import PostCard from '@/components/Posts/PostCard';
+import { logger } from '@/services/logger-service';
 
 // ==================== STYLED COMPONENTS ====================
 

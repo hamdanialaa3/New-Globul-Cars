@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { collection, query, where, limit, getDocs } from 'firebase/firestore';
-import { db } from '../../../firebase/firebase-config';
-import { CarListing } from '../../../types/CarListing';
-import { VEHICLE_COLLECTIONS } from '../../../services/car/unified-car-types';
-import OptimizedImage from '../../../components/OptimizedImage';
+import { db } from '@/firebase/firebase-config';
+import { CarListing } from '@/types/CarListing';
+import { VEHICLE_COLLECTIONS } from '@/services/car/unified-car-types';
+import OptimizedImage from '@/components/OptimizedImage';
 import { MapPin, Gauge, Fuel, Calendar, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRef } from 'react';
-import { logger } from '../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 interface SimilarCarsWidgetProps {
   currentCar: CarListing;

@@ -3,8 +3,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import SellVehicleModal from '../../../components/SellWorkflow/SellVehicleModal';
-import UnifiedWorkflowPersistenceService from '../../../services/unified-workflow-persistence.service';
+import SellVehicleModal from '@/components/SellWorkflow/SellVehicleModal';
+import UnifiedWorkflowPersistenceService from '@/services/unified-workflow-persistence.service';
 
 const SellModalPage: React.FC = () => {
   const navigate = useNavigate();

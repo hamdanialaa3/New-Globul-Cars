@@ -3,8 +3,8 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useTranslation } from '../../../../hooks/useTranslation';
-import { useTheme } from '../../../../contexts/ThemeContext';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useTheme } from '@/contexts/ThemeContext';
 import { SOCIAL_LINKS } from '../../../../constants/socialLinks';
 import { collection, getCountFromServer } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-config';

@@ -9,12 +9,12 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { AdvisorData } from './AdvisorWizard';
-import { UnifiedCar } from '../../../../services/car/unified-car-types';
-import { searchCars } from '../../../../services/car/unified-car-queries';
+import { UnifiedCar } from '@/services/car/unified-car-types';
+import { searchCars } from '@/services/car/unified-car-queries';
 import ModernCarCard from '../../home/HomePage/ModernCarCard';
-import LoadingSpinner from '../../../../components/LoadingSpinner';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { Sparkles, RefreshCw } from 'lucide-react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { logger } from '@/services/logger-service';
 
 interface ResultsProps {

@@ -2,10 +2,10 @@
 
 import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import styled from 'styled-components';
 // ✅ Removed HorizontalScrollContainer - using grid layout instead
-// import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
+// import HorizontalScrollContainer from '@/components/HorizontalScrollContainer/HorizontalScrollContainer';
 import { glassNeutralButton, glassPrimaryButton } from '../../../../styles/glassmorphism-buttons';
 
 // Popular brands configuration with logos

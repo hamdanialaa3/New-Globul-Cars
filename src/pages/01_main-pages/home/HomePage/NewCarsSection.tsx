@@ -6,11 +6,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Sparkles, Clock, ArrowRight } from 'lucide-react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { unifiedCarService, UnifiedCar } from '../../../../services/car';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { unifiedCarService, UnifiedCar } from '@/services/car';
 import ModernCarCard from './ModernCarCard';
-import PremiumHomeCarCard from '../../../../components/CarCard/PremiumHomeCarCard';
-import { logger } from '../../../../services/logger-service';
+import PremiumHomeCarCard from '@/components/CarCard/PremiumHomeCarCard';
+import { logger } from '@/services/logger-service';
 import { glassSecondaryButton } from '../../../../styles/glassmorphism-buttons';
 
 const Section = styled.section`

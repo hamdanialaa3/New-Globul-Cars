@@ -12,7 +12,7 @@
 	],
 	"settings": {
 		"terminal.integrated.suggest.enabled": true,
-		"extensions.ignoreRecommendations": true,
-		"chat.promptFilesRecommendations": {}
+		"extensions.ignoreRecommendations": false,
+		"chat.commandCenter.enabled": true
 	}
 }

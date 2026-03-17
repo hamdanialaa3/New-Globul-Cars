@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { CarListing } from '../../../types/CarListing';
-import { brandsModelsDataService } from '../../../services/brands-models-data.service';
-import { logger } from '../../../services/logger-service';
-import { BULGARIA_REGIONS, getCitiesByRegion } from '../../../data/bulgaria-locations';
+import { CarListing } from '@/types/CarListing';
+import { brandsModelsDataService } from '@/services/brands-models-data.service';
+import { logger } from '@/services/logger-service';
+import { BULGARIA_REGIONS, getCitiesByRegion } from '@/data/bulgaria-locations';
 import {
   DetailsSection,
   SectionTitle,

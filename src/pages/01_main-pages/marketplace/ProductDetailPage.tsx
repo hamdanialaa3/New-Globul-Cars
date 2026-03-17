@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useTheme } from '../../../contexts/ThemeContext';
-import { useLanguage } from '../../../contexts/LanguageContext';
-import { useAuth } from '../../../hooks/useAuth';
-import { marketplaceProductService } from '../../../services/marketplace/marketplace-product.service';
-import { Product, ProductReview } from '../../../types/marketplace.types';
-import { serviceLogger } from '../../../services/logger-service';
-import LoadingSpinner from '../../../components/LoadingSpinner';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/hooks/useAuth';
+import { marketplaceProductService } from '@/services/marketplace/marketplace-product.service';
+import { Product, ProductReview } from '@/types/marketplace.types';
+import { serviceLogger } from '@/services/logger-service';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { Star, ShoppingCart, Heart, Share2, MapPin, Truck, Shield, Package } from 'lucide-react';
 
 const ProductDetailPage: React.FC = () => {

@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthProvider';
-import { useLanguage } from '../../../contexts/LanguageContext';
-import { useTheme } from '../../../contexts/ThemeContext';
-import { useProfileType } from '../../../contexts/ProfileTypeContext';
-import { unifiedCarService, UnifiedCar } from '../../../services/car';
-import { logger } from '../../../services/logger-service';
-import UnifiedCitiesService from '../../../services/unified-cities-service';
-import { BULGARIA_PROVINCES } from '../../../services/bulgaria-locations.service';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useProfileType } from '@/contexts/ProfileTypeContext';
+import { unifiedCarService, UnifiedCar } from '@/services/car';
+import { logger } from '@/services/logger-service';
+import UnifiedCitiesService from '@/services/unified-cities-service';
+import { BULGARIA_PROVINCES } from '@/services/bulgaria-locations.service';
 import { translations } from './translations';
 import {
   PageWrapper, TopBar, TopBarLeft, TopBarRight, BackButton, SaveButton, CancelButton,

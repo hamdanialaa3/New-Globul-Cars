@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from '../../../../hooks/useTranslation';
-import SocialLogin from '../../../../components/SocialLogin';
-import { FirebaseStatus } from '../../../../components/FirebaseStatusSimple';
+import { useTranslation } from '@/hooks/useTranslation';
+import SocialLogin from '@/components/SocialLogin';
+import { FirebaseStatus } from '@/components/FirebaseStatusSimple';
 import {
   Eye,
   EyeOff,

@@ -12,11 +12,11 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '../../../contexts/LanguageContext';
-import { searchCars } from '../../../services/car/unified-car-queries';
-import { UnifiedCar } from '../../../services/car/unified-car-types';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { searchCars } from '@/services/car/unified-car-queries';
+import { UnifiedCar } from '@/services/car/unified-car-types';
 import { FiGrid, FiList } from 'react-icons/fi';
-import { logger } from '../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 // ============================================================================
 // TYPES

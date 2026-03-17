@@ -3,10 +3,10 @@
 
 import React, { memo, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useAuth } from '../../../../contexts/AuthProvider';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthProvider';
 import { useNavigate } from 'react-router-dom';
-import { analyticsService } from '../../../../services/analytics/UnifiedAnalyticsService';
+import { analyticsService } from '@/services/analytics/UnifiedAnalyticsService';
 import { glassPrimaryButton } from '../../../../styles/glassmorphism-buttons';
 
 const Container = styled.section`

@@ -100,9 +100,11 @@ class NotificationsFirebaseService {
       );
 
       // Subscribe to real-time updates
+      let isActive = true;
       const unsubscribe = onSnapshot(
         q,
         (snapshot) => {
+          if (!isActive) return;
           const notifications: FirebaseNotification[] = snapshot.docs.map((doc: any) => ({
             id: doc.id,
             ...doc.data()
@@ -117,12 +119,13 @@ class NotificationsFirebaseService {
           });
         },
         (error) => {
+          if (!isActive) return;
           logger.error('Notification subscription error', error as Error, { userId });
           callback([]); // Return empty array on error
         }
       );
 
-      return unsubscribe;
+      return () => { isActive = false; unsubscribe(); };
     } catch (error) {
       logger.error('Failed to subscribe to notifications', error as Error, { userId });
       return () => {}; // Return no-op unsubscribe function
@@ -320,18 +323,21 @@ class NotificationsFirebaseService {
         where('read', '==', false)
       );
 
+      let isActive = true;
       const unsubscribe = onSnapshot(
         q,
         (snapshot) => {
+          if (!isActive) return;
           callback(snapshot.size);
         },
         (error) => {
+          if (!isActive) return;
           logger.error('Unread count subscription error', error as Error, { userId });
           callback(0);
         }
       );
 
-      return unsubscribe;
+      return () => { isActive = false; unsubscribe(); };
     } catch (error) {
       logger.error('Failed to subscribe to unread count', error as Error, { userId });
       return () => {};

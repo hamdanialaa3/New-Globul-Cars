@@ -4,9 +4,9 @@
 
 import React, { memo, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
-import { analyticsService } from '../../../../services/analytics/UnifiedAnalyticsService';
+import { analyticsService } from '@/services/analytics/UnifiedAnalyticsService';
 import { glassPrimaryButton } from '../../../../styles/glassmorphism-buttons';
 import { collection, getCountFromServer, query, where } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-config';

@@ -33,8 +33,8 @@ import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
 import { Camera, Upload, Sparkles, Search, Image as ImageIcon, ArrowRight, Zap, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { glassPrimaryButton, glassNeutralButton } from '../../../../styles/glassmorphism-buttons';
 
 // ============================================================================

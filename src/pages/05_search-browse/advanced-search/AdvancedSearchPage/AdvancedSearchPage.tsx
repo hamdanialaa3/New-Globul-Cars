@@ -1,15 +1,15 @@
-import { logger } from '../../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 import React, { useState, useEffect } from 'react';
 import { useAdvancedSearch } from './hooks/useAdvancedSearch';
-import { useSavedSearches } from '../../../../hooks/useSavedSearches';
-import { useAuth } from '../../../../contexts/AuthProvider';
+import { useSavedSearches } from '@/hooks/useSavedSearches';
+import { useAuth } from '@/contexts/AuthProvider';
 import { useSearchParams } from 'react-router-dom';
 import { SearchData } from './types';
-import { searchService } from '../../../../services/search/UnifiedSearchService';
-import { withAiTrace, AI_TRACE_NAMES } from '../../../../services/performance/ai-performance-traces';
-import CarCardCompact from '../../../../components/CarCard/CarCardCompact';
-import { CarListing } from '../../../../types/CarListing';
-import { smartSearchService } from '../../../../services/search/smart-search.service';
+import { searchService } from '@/services/search/UnifiedSearchService';
+import { withAiTrace, AI_TRACE_NAMES } from '@/services/performance/ai-performance-traces';
+import CarCardCompact from '@/components/CarCard/CarCardCompact';
+import { CarListing } from '@/types/CarListing';
+import { smartSearchService } from '@/services/search/smart-search.service';
 import styled from 'styled-components';
 import { Search, Sparkles, X } from 'lucide-react';
 import {

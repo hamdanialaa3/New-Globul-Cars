@@ -3,14 +3,14 @@
 
 import React, { memo, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
-import { analyticsService } from '../../../../services/analytics/UnifiedAnalyticsService';
-import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
+import { analyticsService } from '@/services/analytics/UnifiedAnalyticsService';
+import HorizontalScrollContainer from '@/components/HorizontalScrollContainer/HorizontalScrollContainer';
 import { DealershipRepository } from '../../../../repositories/DealershipRepository';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../../../../firebase/firebase-config';
-import { logger } from '../../../../services/logger-service';
+import { db } from '@/firebase/firebase-config';
+import { logger } from '@/services/logger-service';
 
 interface DealerInfo {
   id: string;

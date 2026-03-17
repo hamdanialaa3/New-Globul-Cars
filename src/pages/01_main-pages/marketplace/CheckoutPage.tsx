@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { useTheme } from '../../../contexts/ThemeContext';
-import { useLanguage } from '../../../contexts/LanguageContext';
-import { useAuth } from '../../../hooks/useAuth';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/hooks/useAuth';
 import { CreditCard, Truck, CheckCircle, Lock, Wallet, AlertCircle, Loader } from 'lucide-react';
-import { cartService, CartSummary } from '../../../services/marketplace/cart.service';
-import { orderService, ShippingAddress, PaymentMethod } from '../../../services/marketplace/order.service';
-import { paymentService } from '../../../services/payment-service';
-import { logger } from '../../../services/logger-service';
+import { cartService, CartSummary } from '@/services/marketplace/cart.service';
+import { orderService, ShippingAddress, PaymentMethod } from '@/services/marketplace/order.service';
+import { paymentService } from '@/services/payment-service';
+import { logger } from '@/services/logger-service';
 
 // Stripe imports (lazy loaded)
 let stripePromise: Promise<any> | null = null;

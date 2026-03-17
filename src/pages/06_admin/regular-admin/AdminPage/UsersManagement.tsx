@@ -2,7 +2,7 @@
 // User management panel (Placeholder - to be implemented in P1)
 
 import React from 'react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import UsersTable from './UsersTable';
 
 const UsersManagement: React.FC = () => {

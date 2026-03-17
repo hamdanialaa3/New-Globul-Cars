@@ -4,7 +4,7 @@
  * Handles: filter options loading, search execution, debouncing, pagination
  */
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useFavorites } from '../../../hooks/useFavorites';
+import { useFavorites } from '@/hooks/useFavorites';
 import {
     getFilterOptions,
     searchCarsFromDB,

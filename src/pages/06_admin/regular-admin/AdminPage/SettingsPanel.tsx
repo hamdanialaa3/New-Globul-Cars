@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthProvider';
 import { siteSettingsService } from '@/services/site-settings.service';
 import type { SiteSettings } from '@/services/site-settings-types';

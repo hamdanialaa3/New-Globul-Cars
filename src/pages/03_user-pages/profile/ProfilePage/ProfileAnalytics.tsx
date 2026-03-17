@@ -1,9 +1,9 @@
 import React from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import ProfileAnalyticsDashboard from '../../../../components/Profile/Analytics/ProfileAnalyticsDashboard';
-import type { BulgarianUser } from '../../../../types/user/bulgarian-user.types';
-import type { ProfileTheme } from '../../../../contexts/ProfileTypeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import ProfileAnalyticsDashboard from '@/components/Profile/Analytics/ProfileAnalyticsDashboard';
+import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
+import type { ProfileTheme } from '@/contexts/ProfileTypeContext';
 import * as S from './styles';
 
 interface OutletContext {

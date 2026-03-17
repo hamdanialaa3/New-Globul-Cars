@@ -3,12 +3,12 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Search, DollarSign, Calculator } from 'lucide-react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { brandsModelsDataService } from '../../../../services/brands-models-data.service';
-import { unifiedCarService } from '../../../../services/car';
-import { logger } from '../../../../services/logger-service';
-import { sanitizeCarMakeModel } from '../../../../utils/inputSanitizer';
-import { useDebounce } from '../../../../hooks/useDebounce';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { brandsModelsDataService } from '@/services/brands-models-data.service';
+import { unifiedCarService } from '@/services/car';
+import { logger } from '@/services/logger-service';
+import { sanitizeCarMakeModel } from '@/utils/inputSanitizer';
+import { useDebounce } from '@/hooks/useDebounce';
 import QuickBrandsSection from './QuickBrandsSection'; // Integrated here now
 
 // --- STYLED COMPONENTS (Mechanical Dashboard) ---

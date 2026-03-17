@@ -2,7 +2,7 @@
 // Brand sorting and categorization logic
 
 import { BrandWithStats } from './types';
-import { FEATURED_BRANDS_ORDER, ELECTRIC_BRANDS } from '../../../../services/featuredBrands';
+import { FEATURED_BRANDS_ORDER, ELECTRIC_BRANDS } from '@/services/featuredBrands';
 
 /**
  * Sort brands intelligently:

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { adminService, PendingVerification } from '../../../../services/admin/admin-verification.service';
-import { logger } from '../../../../services/logger-service';
+import { adminService, PendingVerification } from '@/services/admin/admin-verification.service';
+import { logger } from '@/services/logger-service';
 import { toast } from 'react-toastify';
 import { Check, X, FileText, ExternalLink, RefreshCw } from 'lucide-react';
 

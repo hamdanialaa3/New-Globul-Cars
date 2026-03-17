@@ -1,16 +1,16 @@
-import { logger } from '../../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { brandsModelsDataService } from '../../../../services/brands-models-data.service';
+import { brandsModelsDataService } from '@/services/brands-models-data.service';
 import {
   getVariantsForModel,
   modelHasVariants
-} from '../../../../services/carBrandsService';
-import { resolveCanonicalBrand } from '../../../../services/brand-normalization';
+} from '@/services/carBrandsService';
+import { resolveCanonicalBrand } from '@/services/brand-normalization';
 import structuredBrandsData from '../../../../data/car-brands-structured.json';
 import { VehicleFormData } from './types';
-import { useUnifiedWorkflow } from '../../../../hooks/useUnifiedWorkflow';
-import SellWorkflowStepStateService from '../../../../services/sellWorkflowStepState';
+import { useUnifiedWorkflow } from '@/hooks/useUnifiedWorkflow';
+import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
 
 const defaultForm: VehicleFormData = {
   make: '',

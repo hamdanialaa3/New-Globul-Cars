@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { CarListing } from '../../../../types/CarListing';
+import { CarListing } from '@/types/CarListing';
 import { MapPin, Phone, Mail, Clock, ChevronDown, ChevronUp, ExternalLink, Globe, User } from 'lucide-react';
-import { useTheme } from '../../../contexts/ThemeContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface ExtendedSellerInfoProps {
   car: CarListing;

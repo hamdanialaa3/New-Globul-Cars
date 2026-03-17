@@ -5,8 +5,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { MyListing } from './types';
 import { SectionContainer, ListingsGrid, CardContainer, ListingCard, ListingImage, ListingInfo, ActionButton, ActionBar, EmptyState, LoadingState } from './styles';
-import { CarIcon } from '../../../../components/icons/CarIcon';
-import { getCarDetailsUrl } from '../../../../utils/routing-utils';
+import { CarIcon } from '@/components/icons/CarIcon';
+import { getCarDetailsUrl } from '@/utils/routing-utils';
 
 interface ListingsGridProps {
   listings: MyListing[];

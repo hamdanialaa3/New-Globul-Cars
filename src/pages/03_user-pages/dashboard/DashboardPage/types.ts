@@ -1,7 +1,7 @@
 // Dashboard Page Types
 // TypeScript interfaces and types for the Dashboard Page component
 
-import { DashboardStats, DashboardCar, DashboardMessage, DashboardNotification } from '../../../../services/dashboardService';
+import { DashboardStats, DashboardCar, DashboardMessage, DashboardNotification } from '@/services/dashboardService';
 
 // Formatted stat for display
 export interface FormattedStat {

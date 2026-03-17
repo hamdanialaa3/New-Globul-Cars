@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { blogService } from '../../../services/blog/blog.service';
-import type { BlogPost, BlogCategory } from '../../../types/blog.types';
-import { serviceLogger } from '../../../services/logger-service';
-import LoadingSpinner from '../../../components/LoadingSpinner';
+import { blogService } from '@/services/blog/blog.service';
+import type { BlogPost, BlogCategory } from '@/types/blog.types';
+import { serviceLogger } from '@/services/logger-service';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { Calendar, Clock, Eye, Heart, Tag, User } from 'lucide-react';
 
 const BlogPage: React.FC = () => {

@@ -22,12 +22,12 @@ import {
   TrendingUp, DollarSign, Users, Calendar
 } from 'lucide-react';
 import { toast } from 'react-toastify';
-import { useAuth } from '../../../../contexts/AuthProvider';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { manualPaymentService } from '../../../../services/payment/manual-payment-service';
-import type { ManualPaymentTransaction, PaymentStatus } from '../../../../types/payment.types';
-import { logger } from '../../../../services/logger-service';
-import { AdminService } from '../../../../services/admin-permissions.service';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { manualPaymentService } from '@/services/payment/manual-payment-service';
+import type { ManualPaymentTransaction, PaymentStatus } from '@/types/payment.types';
+import { logger } from '@/services/logger-service';
+import { AdminService } from '@/services/admin-permissions.service';
 import { BANK_DETAILS } from '../../../../config/bank-details';
 
 const AdminManualPaymentsDashboard: React.FC = () => {

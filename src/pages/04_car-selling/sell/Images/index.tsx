@@ -4,15 +4,15 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { logger } from '../../../../services/logger-service';
-import SplitScreenLayout from '../../../../components/SplitScreenLayout';
-import { WorkflowFlow } from '../../../../components/WorkflowVisualization';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { logger } from '@/services/logger-service';
+import SplitScreenLayout from '@/components/SplitScreenLayout';
+import { WorkflowFlow } from '@/components/WorkflowVisualization';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 import * as S from './styles';
-import { SellWorkflowLayout } from '../../../../components/SellWorkflow';
-import SellWorkflowStepStateService from '../../../../services/sellWorkflowStepState';
-import { WorkflowPersistenceService } from '../../../../services/unified-workflow-persistence.service';
+import { SellWorkflowLayout } from '@/components/SellWorkflow';
+import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import { WorkflowPersistenceService } from '@/services/unified-workflow-persistence.service';
 import { useImagesWorkflow } from './useImagesWorkflow';
 import { toast } from 'react-toastify';
 
