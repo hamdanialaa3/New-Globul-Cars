@@ -547,10 +547,10 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
       return;
     }
 
-    // Fallback: Use html2canvas and jsPDF if available
+    // Fallback: Use html2canvas and pdf-lib if available
     try {
       const html2canvas = (await import('html2canvas')).default;
-      const jsPDF = (await import('jspdf')).jsPDF;
+      const { PDFDocument } = await import('pdf-lib');
 
       if (printRef.current) {
         const canvas = await html2canvas(printRef.current, {
@@ -560,31 +560,32 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
         });
 
         const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const imgWidth = 210;
-        const pageHeight = 297;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        let heightLeft = imgHeight;
+        const pdfDoc = await PDFDocument.create();
+        const pngImage = await pdfDoc.embedPng(imgData);
+        const a4Width = 595.28; // A4 width in points
+        const scaledHeight = (pngImage.height * a4Width) / pngImage.width;
+        const page = pdfDoc.addPage([a4Width, scaledHeight]);
+        page.drawImage(pngImage, {
+          x: 0,
+          y: 0,
+          width: a4Width,
+          height: scaledHeight,
+        });
 
-        let position = 0;
-
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-
-        while (heightLeft >= 0) {
-          position = heightLeft - imgHeight;
-          pdf.addPage();
-          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
-        }
-
-        pdf.save(`${car.make}-${car.model}-${car.year}.pdf`);
+        const pdfBytes = await pdfDoc.save();
+        const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${car.make}-${car.model}-${car.year}.pdf`;
+        link.click();
+        URL.revokeObjectURL(url);
       }
     } catch (error) {
       logger.error('PDF generation error', error as Error, { carId: car.id });
       toast.error(language === 'bg'
-        ? 'Моля инсталирайте библиотеките: npm install jspdf html2canvas'
-        : 'Please install libraries: npm install jspdf html2canvas');
+        ? 'Моля инсталирайте библиотеките: npm install pdf-lib html2canvas'
+        : 'Please install libraries: npm install pdf-lib html2canvas');
     }
   };
 
