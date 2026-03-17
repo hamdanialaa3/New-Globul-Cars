@@ -1,0 +1,4 @@
+[submodule "mobile_new"]
+	path = mobile_new
+	url = https://github.com/hamdanialaa3/Koli-One-Mobile.git
+	branch = feat/mobile/full-parity-v2
