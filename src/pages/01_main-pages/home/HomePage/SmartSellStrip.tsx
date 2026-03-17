@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Zap, ArrowRight, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { glassPrimaryButton } from '../../../../styles/glassmorphism-buttons';
 
 const Container = styled.div`

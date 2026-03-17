@@ -17,10 +17,10 @@ import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { X, FileEdit, Clock, ArrowRight } from 'lucide-react';
 
-import { useAuth } from '../../../../hooks/useAuth';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { DraftsService, Draft } from '../../../../services/drafts-service';
-import { logger } from '../../../../services/logger-service';
+import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { DraftsService, Draft } from '@/services/drafts-service';
+import { logger } from '@/services/logger-service';
 
 // Animation for toast entry
 const slideIn = keyframes`

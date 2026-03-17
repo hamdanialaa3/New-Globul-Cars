@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useTheme } from '../../../contexts/ThemeContext';
-import { useLanguage } from '../../../contexts/LanguageContext';
-import { useAuth } from '../../../hooks/useAuth';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/hooks/useAuth';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Loader } from 'lucide-react';
-import { cartService, CartItem } from '../../../services/marketplace/cart.service';
-import { logger } from '../../../services/logger-service';
+import { cartService, CartItem } from '@/services/marketplace/cart.service';
+import { logger } from '@/services/logger-service';
 
 const CartPage: React.FC = () => {
   const { theme } = useTheme();

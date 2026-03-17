@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { brandsModelsDataService } from '../../../../services/brands-models-data.service';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { brandsModelsDataService } from '@/services/brands-models-data.service';
 import BrandIcon from './BrandIcon';
-import { logger } from '../../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 // --- STYLED COMPONENTS (Metallic Pills) ---
 

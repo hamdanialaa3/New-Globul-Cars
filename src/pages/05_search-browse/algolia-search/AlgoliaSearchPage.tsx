@@ -3,7 +3,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import AlgoliaInstantSearch from '../../../components/Search/AlgoliaInstantSearch';
+import AlgoliaInstantSearch from '@/components/Search/AlgoliaInstantSearch';
 
 const PageWrapper = styled.div`
   min-height: 100vh;

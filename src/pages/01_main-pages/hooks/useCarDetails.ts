@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../../../firebase/firebase-config';
-import { unifiedCarService } from '../../../services/car';
-import { CarListing } from '../../../types/CarListing';
-import { logger } from '../../../services/logger-service';
-import { startAiTrace, endAiTrace } from '../../../services/performance/ai-performance-traces';
+import { db } from '@/firebase/firebase-config';
+import { unifiedCarService } from '@/services/car';
+import { CarListing } from '@/types/CarListing';
+import { logger } from '@/services/logger-service';
+import { startAiTrace, endAiTrace } from '@/services/performance/ai-performance-traces';
 
 export const useCarDetails = (carId: string | undefined) => {
   const [car, setCar] = useState<CarListing | null>(null);

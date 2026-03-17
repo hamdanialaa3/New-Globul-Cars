@@ -5,10 +5,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Search, ChevronDown, X } from 'lucide-react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { brandsModelsDataService } from '../../../../services/brands-models-data.service';
-import { logger } from '../../../../services/logger-service';
-import { sanitizeCarMakeModel } from '../../../../utils/inputSanitizer';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { brandsModelsDataService } from '@/services/brands-models-data.service';
+import { logger } from '@/services/logger-service';
+import { sanitizeCarMakeModel } from '@/utils/inputSanitizer';
 
 const SearchSection = styled.div`
   max-width: 1000px;

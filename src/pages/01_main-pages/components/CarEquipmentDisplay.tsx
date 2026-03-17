@@ -1,5 +1,5 @@
 import React from 'react';
-import { CarListing } from '../../../types/CarListing';
+import { CarListing } from '@/types/CarListing';
 import {
   EquipmentSection,
   SectionTitle,

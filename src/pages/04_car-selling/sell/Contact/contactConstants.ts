@@ -1,4 +1,4 @@
-import { ContactIconId } from '../../../../components/icons/contact/ContactMethodIcons';
+import { ContactIconId } from '@/components/icons/contact/ContactMethodIcons';
 
 export interface ContactMethodDefinition {
   id: ContactIconId;

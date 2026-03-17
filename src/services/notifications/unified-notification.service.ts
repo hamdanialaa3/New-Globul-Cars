@@ -78,20 +78,24 @@ export class UnifiedNotificationService {
         limit(maxResults)
       );
 
+      let isActive = true;
       const unsubscribe = onSnapshot(q, (snapshot) => {
+        if (!isActive) return;
         const notifications = snapshot.docs.map((doc: any) => ({
           id: doc.id,
           ...doc.data()
         } as Notification));
         callback(notifications);
       }, (error) => {
+        if (!isActive) return;
         // Gracefully handle permission-denied (e.g., rules not deployed yet)
         logger.warn('Notification listener error', { code: (error as any).code, message: error.message, userId });
         callback([]);
       });
 
-      this.unsubscribers.set(userId, unsubscribe);
-      return unsubscribe;
+      const cleanup = () => { isActive = false; unsubscribe(); };
+      this.unsubscribers.set(userId, cleanup);
+      return cleanup;
     } catch (error) {
       logger.error('Error listening to notifications', error as Error, { userId });
       return () => { };

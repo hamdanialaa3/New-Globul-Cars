@@ -1,5 +1,5 @@
-import { logger } from '../../../../services/logger-service';
-import { UnifiedCar } from '../../../../services/car';
+import { logger } from '@/services/logger-service';
+import { UnifiedCar } from '@/services/car';
 
 // Browsing History Interface
 export interface BrowsingHistoryItem {

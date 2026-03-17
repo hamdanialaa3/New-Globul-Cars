@@ -1,4 +1,4 @@
-import { logger } from '../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 // src/pages/DealerPublicPage/ContactForm.tsx
 // Contact Form for Dealer Public Page
 

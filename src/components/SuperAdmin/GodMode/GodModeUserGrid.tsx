@@ -356,7 +356,7 @@ export const GodModeUserGrid: React.FC<GodModeUserGridProps> = ({ onClose }) => 
               </UserInfo>
 
               <Actions>
-                <ActionButton onClick={() => window.open(`/profile/${user.uid}`, '_blank')}>
+                <ActionButton onClick={() => window.open(`/profile/${user.numericId || user.uid}`, '_blank')}>
                   <Edit size={14} /> EDIT
                 </ActionButton>
                 <ActionButton onClick={() => handleVerify(user.uid, user.isVerified, user.displayName)}>

@@ -4,13 +4,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { unifiedCarService } from '../../../services/car';
-import { CarListing } from '../../../types/CarListing';
-import { UnifiedCar } from '../../../services/car/unified-car-types';
+import { unifiedCarService } from '@/services/car';
+import { CarListing } from '@/types/CarListing';
+import { UnifiedCar } from '@/services/car/unified-car-types';
 import { ChevronRight, Heart } from 'lucide-react';
-import { useTheme } from '../../../contexts/ThemeContext';
-import { serviceLogger } from '../../../services/logger-service';
-import { getCarDetailsUrl } from '../../../utils/routing-utils';
+import { useTheme } from '@/contexts/ThemeContext';
+import { serviceLogger } from '@/services/logger-service';
+import { getCarDetailsUrl } from '@/utils/routing-utils';
 
 interface CarSuggestionsListProps {
   currentCar: CarListing;

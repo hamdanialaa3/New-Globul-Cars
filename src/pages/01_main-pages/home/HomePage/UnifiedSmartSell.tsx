@@ -35,11 +35,11 @@ import {
   Zap, ArrowRight, CheckCircle, TrendingUp, Clock, Shield, 
   Sparkles, Camera, DollarSign, Target, Star
 } from 'lucide-react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
-import { useAuth } from '../../../../contexts/AuthProvider';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useAuth } from '@/contexts/AuthProvider';
 import { glassPrimaryButton } from '../../../../styles/glassmorphism-buttons';
-import { analyticsService } from '../../../../services/analytics/UnifiedAnalyticsService';
+import { analyticsService } from '@/services/analytics/UnifiedAnalyticsService';
 
 // ============================================================================
 // ANIMATIONS

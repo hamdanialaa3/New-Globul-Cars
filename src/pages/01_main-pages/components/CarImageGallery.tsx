@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Crown } from 'lucide-react';
-import { CarIcon } from '../../../components/icons/CarIcon';
-import { CarListing } from '../../../types/CarListing';
+import { CarIcon } from '@/components/icons/CarIcon';
+import { CarListing } from '@/types/CarListing';
 import {
   ImageSection,
   LogoContainer,

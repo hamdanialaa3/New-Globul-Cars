@@ -4,7 +4,7 @@
 import React, { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const LogoCollectionSection = styled.section`
   background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);

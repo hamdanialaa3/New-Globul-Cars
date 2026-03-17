@@ -12,8 +12,8 @@ import {
   Loader,
   KeyRound
 } from 'lucide-react';
-import { useTranslation } from '../../../hooks/useTranslation';
-import { bulgarianAuthService as authService } from '../../../firebase/auth-service';
+import { useTranslation } from '@/hooks/useTranslation';
+import { bulgarianAuthService as authService } from '@/firebase/auth-service';
 
 // Animations
 const fadeIn = keyframes`

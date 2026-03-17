@@ -10,7 +10,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 // ... existing imports
 import { Gauge, Compass, Mountain, Truck, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRef } from 'react';

@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import StaticMapEmbed from '../../../components/StaticMapEmbed';
-import { CarListing } from '../../../types/CarListing';
-import CarSuggestionsList from './CarSuggestionsList';
+import StaticMapEmbed from '@/components/StaticMapEmbed';
+import { CarListing } from '@/types/CarListing';
 import CarSuggestionsList from './CarSuggestionsList';
 
 interface CarDetailsModernViewProps {

@@ -1,4 +1,4 @@
-import { logger } from '../../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 // src/pages/06_admin/regular-admin/ReportsPage/index.tsx
 // صفحة التقارير للمسؤولين
 
@@ -6,8 +6,8 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { Download, Users, Car, FileText, Filter, BarChart3 } from 'lucide-react';
-import { usersReportService, UserReportData } from '../../../../services/reports/users-report-service';
-import { carsReportService, CarReportData } from '../../../../services/reports/cars-report-service';
+import { usersReportService, UserReportData } from '@/services/reports/users-report-service';
+import { carsReportService, CarReportData } from '@/services/reports/cars-report-service';
 
 const ReportsPage: React.FC = () => {
   const [loading, setLoading] = useState(false);

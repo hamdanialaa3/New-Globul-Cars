@@ -6,10 +6,10 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { Search, TrendingUp, DollarSign, Zap } from 'lucide-react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { brandsModelsDataService } from '../../../../services/brands-models-data.service';
-import { logger } from '../../../../services/logger-service';
-import { sanitizeCarMakeModel } from '../../../../utils/inputSanitizer';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { brandsModelsDataService } from '@/services/brands-models-data.service';
+import { logger } from '@/services/logger-service';
+import { sanitizeCarMakeModel } from '@/utils/inputSanitizer';
 
 // Styled Components
 const SearchContainer = styled.div`

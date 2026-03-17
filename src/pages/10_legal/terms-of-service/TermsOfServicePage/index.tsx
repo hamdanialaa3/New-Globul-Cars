@@ -4,7 +4,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { useTranslation } from '../../../../hooks/useTranslation';
+import { useTranslation } from '@/hooks/useTranslation';
 
 const Container = styled.div`
   max-width: 800px;

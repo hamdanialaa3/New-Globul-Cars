@@ -35,7 +35,9 @@ export const usePostEngagement = (item: FeedItem): UsePostEngagementResult => {
         if (item.type !== 'post' || !item.id) return;
 
         const postRef = doc(db, 'posts', item.id);
+        let isActive = true;
         const unsubscribe = onSnapshot(postRef, (snap) => {
+            if (!isActive) return;
             if (snap.exists()) {
                 const data = snap.data();
                 setEngagement(data.engagement || item.engagement);
@@ -47,7 +49,7 @@ export const usePostEngagement = (item: FeedItem): UsePostEngagementResult => {
             }
         });
 
-        return () => unsubscribe();
+        return () => { isActive = false; unsubscribe(); };
     }, [item.id, item.type, item.engagement, user?.uid]);
 
     // Load comments when requested through shouldLoadComments
@@ -61,7 +63,9 @@ export const usePostEngagement = (item: FeedItem): UsePostEngagementResult => {
             limit(20)
         );
 
+        let isActive = true;
         const unsubscribe = onSnapshot(commentsQuery, (snapshot) => {
+            if (!isActive) return;
             const commentsData = snapshot.docs.map((doc: any) => ({
                 id: doc.id,
                 ...doc.data()
@@ -69,7 +73,7 @@ export const usePostEngagement = (item: FeedItem): UsePostEngagementResult => {
             setComments(commentsData);
         });
 
-        return () => unsubscribe();
+        return () => { isActive = false; unsubscribe(); };
     }, [shouldLoadComments, item.id, item.type]);
 
     // Track view on mount

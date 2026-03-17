@@ -389,8 +389,8 @@ import React, { useMemo } from 'react';
 import { FileText } from 'lucide-react';
 import styled from 'styled-components';
 
-import { SmartDescriptionGenerator } from '../../../../components/SmartDescriptionGenerator';
-import { UnifiedCar } from '../../../../services/car';
+import { SmartDescriptionGenerator } from '@/components/SmartDescriptionGenerator';
+import { UnifiedCar } from '@/services/car';
 
 interface DescriptionSectionProps {
   formData: Partial<UnifiedCar>;

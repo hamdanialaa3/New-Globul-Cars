@@ -4,7 +4,7 @@
 import React from 'react';
 import { MyListingsFilters } from './types';
 import { SectionContainer, FiltersBar } from './styles';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface FiltersSectionProps {
   filters: MyListingsFilters;

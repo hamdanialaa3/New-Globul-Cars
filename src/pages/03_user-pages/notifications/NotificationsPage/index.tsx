@@ -1,12 +1,12 @@
 // Professional Notifications Page for Koli One
 import React, { useState, useEffect, useRef } from 'react';
-import { useAuth } from '../../../../hooks/useAuth';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { logger } from '../../../../services/logger-service';
+import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { logger } from '@/services/logger-service';
 import { 
   notificationsFirebaseService, 
   FirebaseNotification 
-} from '../../../../services/notifications/notifications-firebase.service';
+} from '@/services/notifications/notifications-firebase.service';
 import { Timestamp } from 'firebase/firestore';
 import {
   Bell,
@@ -23,8 +23,8 @@ import {
 } from 'lucide-react';
 // 🔴 CRITICAL: Use reusable EmptyState component
 import { NoNotifications } from '@/components/EmptyStates';
-import { usePullToRefresh } from '../../../../hooks/useMobileInteractions';
-import { PullToRefreshIndicator } from '../../../../components/mobile/PullToRefreshIndicator';
+import { usePullToRefresh } from '@/hooks/useMobileInteractions';
+import { PullToRefreshIndicator } from '@/components/mobile/PullToRefreshIndicator';
 import { toast } from 'react-toastify';
 import './NotificationsPage.css';
 

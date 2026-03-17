@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useProfileType } from '../../../../contexts/ProfileTypeContext';
+import { useProfileType } from '@/contexts/ProfileTypeContext';
 import { Wand2, Upload, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 // ==================== MATRIX UPLOADER COMPONENT ====================

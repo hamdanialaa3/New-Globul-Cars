@@ -7,7 +7,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { migrateLegacyCars, verifyMigration } from '../../../scripts/migrate-legacy-cars';
-import { serviceLogger } from '../../../services/logger-service';
+import { serviceLogger } from '@/services/logger-service';
 
 const MigrationPanel = styled.div`
   background: white;

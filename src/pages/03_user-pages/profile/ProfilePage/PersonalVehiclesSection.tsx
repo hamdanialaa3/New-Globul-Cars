@@ -1,8 +1,8 @@
 import React from 'react';
 import { Car, Plus } from 'lucide-react';
 import * as S from './styles';
-import { PersonalVehicle } from '../../../../types/personal-vehicle.types';
-import { PersonalVehicleCard } from '../../../../components/Profile';
+import { PersonalVehicle } from '@/types/personal-vehicle.types';
+import { PersonalVehicleCard } from '@/components/Profile';
 
 type Props = {
   language: 'bg' | 'en';

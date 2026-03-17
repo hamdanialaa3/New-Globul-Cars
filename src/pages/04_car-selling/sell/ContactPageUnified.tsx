@@ -5,34 +5,34 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useLanguage } from '../../../contexts/LanguageContext';
-import { useAuth } from '../../../contexts/AuthProvider';
-import { useIsMobile } from '../../../hooks/useBreakpoint';
-import SplitScreenLayout from '../../../components/SplitScreenLayout';
-import SellWorkflowService from '../../../services/sell-workflow-service';
-import SelectWithOther from '../../../components/shared/SelectWithOther';
-import { CURRENCIES, PRICE_TYPES, AVAILABLE_HOURS } from '../../../data/dropdown-options';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useIsMobile } from '@/hooks/useBreakpoint';
+import SplitScreenLayout from '@/components/SplitScreenLayout';
+import SellWorkflowService from '@/services/sell-workflow-service';
+import SelectWithOther from '@/components/shared/SelectWithOther';
+import { CURRENCIES, PRICE_TYPES, AVAILABLE_HOURS } from '@/data/dropdown-options';
 import { toast } from 'react-toastify';
-import { ErrorMessages, getErrorMessage } from '../../../constants/ErrorMessages';
-import ReviewSummary from '../../../components/ReviewSummary';
-import ImageUploadProgress from '../../../components/ImageUploadProgress';
-import KeyboardShortcutsHelper from '../../../components/KeyboardShortcutsHelper';
-import useDraftAutoSave from '../../../hooks/useDraftAutoSave';
-import { useSellWorkflow } from '../../../hooks/useSellWorkflow';
-import useWorkflowStep from '../../../hooks/useWorkflowStep';
-import { WorkflowPersistenceService } from '../../../services/unified-workflow-persistence.service';
-import ImageUploadService from '../../../services/image-upload-service';
-import { logger } from '../../../services/logger-service';
-import { SellWorkflowLayout } from '../../../components/SellWorkflow';
-import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
+import { ErrorMessages, getErrorMessage } from '@/constants/ErrorMessages';
+import ReviewSummary from '@/components/ReviewSummary';
+import ImageUploadProgress from '@/components/ImageUploadProgress';
+import KeyboardShortcutsHelper from '@/components/KeyboardShortcutsHelper';
+import useDraftAutoSave from '@/hooks/useDraftAutoSave';
+import { useSellWorkflow } from '@/hooks/useSellWorkflow';
+import useWorkflowStep from '@/hooks/useWorkflowStep';
+import { WorkflowPersistenceService } from '@/services/unified-workflow-persistence.service';
+import ImageUploadService from '@/services/image-upload-service';
+import { logger } from '@/services/logger-service';
+import { SellWorkflowLayout } from '@/components/SellWorkflow';
+import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
 import { useContactForm } from './Contact/useContactForm';
 import { CONTACT_METHODS } from './Contact/contactConstants';
-import { ContactIcons } from '../../../components/icons/contact/ContactMethodIcons';
+import { ContactIcons } from '@/components/icons/contact/ContactMethodIcons';
 
 // Mobile Components
-import { MobileContainer, MobileStack } from '../../../components/ui/mobile-index';
-import { MobileHeader } from '../../../components/layout/MobileHeader';
-import { SellProgressBar } from '../../../components/SellWorkflow';
+import { MobileContainer, MobileStack } from '@/components/ui/mobile-index';
+import { MobileHeader } from '@/components/layout/MobileHeader';
+import { SellProgressBar } from '@/components/SellWorkflow';
 
 // Styles - Conditional import based on device
 const MobileContactStyles = React.lazy(() => import('./MobileContactPage.styles'));

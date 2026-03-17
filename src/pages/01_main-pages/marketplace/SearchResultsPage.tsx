@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useTheme } from '../../../contexts/ThemeContext';
-import { useLanguage } from '../../../contexts/LanguageContext';
-import { MarketplaceProductService } from '../../../services/marketplace/marketplace-product.service';
-import { Product, MarketplaceFilters } from '../../../types/marketplace.types';
-import LoadingSpinner from '../../../components/LoadingSpinner';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { MarketplaceProductService } from '@/services/marketplace/marketplace-product.service';
+import { Product, MarketplaceFilters } from '@/types/marketplace.types';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { Search, Filter, Grid, List, Star } from 'lucide-react';
 import { logger } from '@/services/logger-service';
 

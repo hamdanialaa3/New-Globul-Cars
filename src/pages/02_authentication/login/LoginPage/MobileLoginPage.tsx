@@ -6,14 +6,14 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLogin } from '../LoginPage/hooks/useLogin';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import {
   MobileContainer,
   MobileStack,
   MobileCard
-} from '../../../../components/ui/mobile-index';
-import { MobileButton } from '../../../../components/ui/MobileButton';
-import { MobileInput } from '../../../../components/ui/MobileInput';
+} from '@/components/ui/mobile-index';
+import { MobileButton } from '@/components/ui/MobileButton';
+import { MobileInput } from '@/components/ui/MobileInput';
 // Azure Login removed - requires @azure/msal-browser setup
 import {
   mobileColors,

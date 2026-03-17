@@ -1,15 +1,15 @@
-import { logger } from '../../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { LeftSidebar } from './components/LeftSidebar';
 import { RightSidebar } from './components/RightSidebar';
-import { useAuth } from '../../../../contexts/AuthProvider';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
-import { smartFeedService } from '../../../../services/social/smart-feed.service';
-import { EnhancedFeedItemCard } from '../../../../components/SocialFeed/EnhancedFeedItemCard';
-import type { FeedItem } from '../../../../services/social/smart-feed.service';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import { smartFeedService } from '@/services/social/smart-feed.service';
+import { EnhancedFeedItemCard } from '@/components/SocialFeed/EnhancedFeedItemCard';
+import type { FeedItem } from '@/services/social/smart-feed.service';
 
 // Using FeedItem from smart-feed.service instead of Post
 

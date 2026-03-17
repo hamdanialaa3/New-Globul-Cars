@@ -3,11 +3,11 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../../contexts/LanguageContext';
-import { useAuth } from '../../../contexts/AuthProvider';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthProvider';
 import styled from 'styled-components';
-import { MobileContainer, MobileStack } from '../../../components/ui/mobile-index';
-import { MobileHeader } from '../../../components/layout/MobileHeader';
+import { MobileContainer, MobileStack } from '@/components/ui/mobile-index';
+import { MobileHeader } from '@/components/layout/MobileHeader';
 import { 
   mobileColors,
   mobileSpacing,

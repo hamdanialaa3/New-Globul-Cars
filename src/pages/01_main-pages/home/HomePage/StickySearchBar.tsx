@@ -20,9 +20,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, ChevronDown, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
-import { brandsModelsDataService } from '../../../../services/brands-models-data.service';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import { brandsModelsDataService } from '@/services/brands-models-data.service';
 
 // ============================================================================
 // STYLED COMPONENTS

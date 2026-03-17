@@ -1,4 +1,4 @@
-import { logger } from '../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -7,14 +7,14 @@ import {
   MapPin, Calendar, Home, Building, Briefcase, RefreshCw,
   Activity, Car, MessageSquare, Award, UserCheck, X
 } from 'lucide-react';
-import { RoleGuard } from '../../../components/guards/RoleGuard';
+import { RoleGuard } from '@/components/guards/RoleGuard';
 import {
   collection, doc, getDocs, updateDoc, deleteDoc, query,
   where, orderBy, serverTimestamp
 } from 'firebase/firestore';
-import { db } from '../../../firebase/firebase-config';
-import { firebaseRealDataService } from '../../../services/firebase-real-data-service';
-import { auditLoggingService } from '../../../services/audit-logging-service';
+import { db } from '@/firebase/firebase-config';
+import { firebaseRealDataService } from '@/services/firebase-real-data-service';
+import { auditLoggingService } from '@/services/audit-logging-service';
 
 const PageContainer = styled.div`
   min-height: 100vh;

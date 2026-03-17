@@ -3,8 +3,8 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useTranslation } from '../../../../hooks/useTranslation';
-import { useTheme } from '../../../../contexts/ThemeContext';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useTheme } from '@/contexts/ThemeContext';
 import { SOCIAL_LINKS } from '../../../../constants/socialLinks';
 import {
   Search,

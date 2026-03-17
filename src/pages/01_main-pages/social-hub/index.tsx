@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '../../../contexts/LanguageContext';
-import { SOCIAL_PLATFORMS } from '../../../constants/socialLinks';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { SOCIAL_PLATFORMS } from '@/constants/socialLinks';
 import {
     Facebook,
     Instagram,
@@ -11,7 +11,7 @@ import {
     ExternalLink,
     Share2
 } from 'lucide-react';
-import SEOHead from '../../../components/seo/SEOHead';
+import SEOHead from '@/components/seo/SEOHead';
 
 const PageContainer = styled.div`
   min-height: 100vh;

@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useProfile } from './hooks/useProfile';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useProfileType } from '../../../../contexts/ProfileTypeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useProfileType } from '@/contexts/ProfileTypeContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import ProfileDashboard from '../../../../components/Profile/ProfileDashboard';
-import UserPostsFeed from '../../../../components/Profile/UserPostsFeed';
-import CreatePostWidget from '../../../../components/Profile/CreatePostWidget';
-import { GarageCarousel } from '../../../../components/Profile/GarageCarousel';
+import ProfileDashboard from '@/components/Profile/ProfileDashboard';
+import UserPostsFeed from '@/components/Profile/UserPostsFeed';
+import CreatePostWidget from '@/components/Profile/CreatePostWidget';
+import { GarageCarousel } from '@/components/Profile/GarageCarousel';
 import { 
   Briefcase, 
   MapPin, 
@@ -19,7 +19,7 @@ import {
   Edit
 } from 'lucide-react';
 import * as S from './styles';
-import { H2 } from '../../../../components/Typography';
+import { H2 } from '@/components/Typography';
 
 /**
  * Profile Overview Tab - Main profile information

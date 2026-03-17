@@ -2,11 +2,11 @@
 import React, { useState } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { Shield, Briefcase, Building, Check, X, Crown, Info } from 'lucide-react';
-import { useAuth } from '../../../../hooks/useAuth';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../../../../firebase/firebase-config';
-import { logger } from '../../../../services/logger-service';
+import { db } from '@/firebase/firebase-config';
+import { logger } from '@/services/logger-service';
 import { toast } from 'react-toastify';
 
 // Colors & Gradients - CORRECTED to match CONSTITUTION

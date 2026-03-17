@@ -19,7 +19,7 @@ import React, { Suspense, memo } from 'react';
 // eslint-disable-next-line import/no-named-as-default
 import styled from 'styled-components';
 
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 import { GridSectionWrapper } from './GridSectionWrapper';
 

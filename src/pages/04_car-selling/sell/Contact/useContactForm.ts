@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BULGARIA_REGIONS, getCitiesByRegion } from '../../../../data/bulgaria-locations';
 import { getPostalCodesForCity, getStreetsForPostalCode, PostalCodeData } from '../../../../data/bulgaria-postal-codes';
-import useSellWorkflow from '../../../../hooks/useSellWorkflow';
+import useSellWorkflow from '@/hooks/useSellWorkflow';
 import { CONTACT_METHODS } from './contactConstants';
 
 export interface ContactFormState {

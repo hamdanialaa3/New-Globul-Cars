@@ -4,7 +4,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Shield, FileText, History, RefreshCw } from 'lucide-react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const TrustSectionContainer = styled.section`
   margin-top: 100px;

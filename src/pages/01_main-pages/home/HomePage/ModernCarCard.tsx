@@ -2,10 +2,10 @@
 import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, MapPin, Gauge, Calendar, Fuel } from 'lucide-react';
-import { CarListing } from '../../../../types/CarListing';
-import { useFavorites } from '../../../../hooks/useFavorites';
-import { getCarDisplayImage, CAR_PLACEHOLDER } from '../../../../utils/getCarDisplayImage';
-import RealisticPaperclipBadge from '../../../../components/SoldBadge/RealisticPaperclipBadge';
+import { CarListing } from '@/types/CarListing';
+import { useFavorites } from '@/hooks/useFavorites';
+import { getCarDisplayImage, CAR_PLACEHOLDER } from '@/utils/getCarDisplayImage';
+import RealisticPaperclipBadge from '@/components/SoldBadge/RealisticPaperclipBadge';
 
 // ✅ CONSTITUTION: /car/{userId}/{carLocalId}
 const getCarDetailsUrl = (car: any) => {

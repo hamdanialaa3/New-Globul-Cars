@@ -1,4 +1,4 @@
-import { logger } from '../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 /**
  * EventsPage - Browse and discover car events
  * Location: Bulgaria | Languages: BG/EN | Currency: EUR

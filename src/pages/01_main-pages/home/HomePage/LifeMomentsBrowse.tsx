@@ -31,10 +31,10 @@
 import React, { memo, useEffect, useRef, useCallback } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useNavigate } from 'react-router-dom';
-import { analyticsService } from '../../../../services/analytics/UnifiedAnalyticsService';
+import { analyticsService } from '@/services/analytics/UnifiedAnalyticsService';
 import {
   Users, Briefcase, Mountain, Leaf, Building2, Crown,
   Heart, Baby, Compass, Zap, ArrowRight

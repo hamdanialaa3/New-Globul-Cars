@@ -20,10 +20,10 @@ import {
   Loader,
   Check
 } from 'lucide-react';
-import { useTranslation } from '../../../../hooks/useTranslation';
+import { useTranslation } from '@/hooks/useTranslation';
 import { useLogin } from './hooks/useLogin';
-import PhoneAuthModal from '../../../../components/PhoneAuthModal';
-import MFAChallengeModal from '../../../../components/MFAChallengeModal'; // Added MFA Modal
+import PhoneAuthModal from '@/components/PhoneAuthModal';
+import MFAChallengeModal from '@/components/MFAChallengeModal'; // Added MFA Modal
 // Azure Login removed - requires @azure/msal-browser setup
 
 

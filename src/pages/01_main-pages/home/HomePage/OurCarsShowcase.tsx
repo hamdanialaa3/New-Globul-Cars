@@ -17,11 +17,11 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Car, ArrowRight, Loader2 } from 'lucide-react';
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
-import { db } from '../../../../firebase/firebase-config';
-import { UnifiedCar, VEHICLE_COLLECTIONS, mapDocToCar } from '../../../../services/car';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { logger } from '../../../../services/logger-service';
-import PremiumHomeCarCard from '../../../../components/CarCard/PremiumHomeCarCard';
+import { db } from '@/firebase/firebase-config';
+import { UnifiedCar, VEHICLE_COLLECTIONS, mapDocToCar } from '@/services/car';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { logger } from '@/services/logger-service';
+import PremiumHomeCarCard from '@/components/CarCard/PremiumHomeCarCard';
 
 // ============================================================================
 // STYLED COMPONENTS

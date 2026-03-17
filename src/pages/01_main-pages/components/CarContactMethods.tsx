@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { CarListing } from '../../../types/CarListing';
+import { CarListing } from '@/types/CarListing';
 import {
   EquipmentSection,
   SectionTitle,

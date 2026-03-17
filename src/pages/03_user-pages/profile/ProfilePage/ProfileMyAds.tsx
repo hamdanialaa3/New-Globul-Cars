@@ -3,14 +3,14 @@
 
 import React, { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useProfile } from './hooks/useProfile';
-import { useProfileType } from '../../../../contexts/ProfileTypeContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
+import { useProfileType } from '@/contexts/ProfileTypeContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { toast } from 'react-toastify';
-import { UnifiedCar } from '../../../../services/car';
-import { unifiedCarService } from '../../../../services/car/unified-car-service';
-import { logger } from '../../../../services/logger-service';
+import { UnifiedCar } from '@/services/car';
+import { unifiedCarService } from '@/services/car/unified-car-service';
+import { logger } from '@/services/logger-service';
 import { Plus, ArrowUpDown } from 'lucide-react';
 import BulkUploadWizard from './components/BulkUploadWizard';
 

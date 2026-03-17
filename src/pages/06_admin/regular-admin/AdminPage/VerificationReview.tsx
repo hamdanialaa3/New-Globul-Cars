@@ -1,4 +1,4 @@
-import { logger } from '../../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 // src/pages/AdminPage/VerificationReview.tsx
 // Admin panel for reviewing verification requests
 
@@ -14,10 +14,10 @@ import {
   getDocs,
   limit as firestoreLimit 
 } from 'firebase/firestore';
-import { db } from '../../../../firebase/firebase-config';  /* ⚡ FIXED */
+import { db } from '@/firebase/firebase-config';  /* ⚡ FIXED */
 import { httpsCallable } from 'firebase/functions';
-import { functions } from '../../../../firebase/firebase-config';  /* ⚡ FIXED */
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { functions } from '@/firebase/firebase-config';  /* ⚡ FIXED */
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface VerificationDocument {
   type: 'eik' | 'license' | 'vat' | 'insurance' | 'id';
@@ -85,7 +85,9 @@ const VerificationReview: React.FC = () => {
       );
     }
 
+    let isActive = true;
     const unsubscribe = onSnapshot(q, (snapshot) => {
+      if (!isActive) return;
       const loadedRequests: VerificationRequest[] = [];
       
       snapshot.forEach((doc) => {
@@ -99,7 +101,7 @@ const VerificationReview: React.FC = () => {
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => { isActive = false; unsubscribe(); };
   }, [filter]);
 
   // Load statistics

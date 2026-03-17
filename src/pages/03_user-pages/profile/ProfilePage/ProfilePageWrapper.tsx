@@ -1,13 +1,13 @@
 import React from 'react';
 import { Outlet, useNavigate, useParams, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useTranslation } from '../../../../hooks/useTranslation';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useProfile } from './hooks/useProfile';
-import { useProfileType } from '../../../../contexts/ProfileTypeContext';
-import { useAuth } from '../../../../contexts/AuthProvider';
-import { AuthGuard } from '../../../../components/guards/AuthGuard';
-import { auth } from '../../../../firebase/firebase-config';
+import { useProfileType } from '@/contexts/ProfileTypeContext';
+import { useAuth } from '@/contexts/AuthProvider';
+import { AuthGuard } from '@/components/guards/AuthGuard';
+import { auth } from '@/firebase/firebase-config';
 import {
   UserCircle,
   Car,
@@ -25,20 +25,20 @@ import {
 } from 'lucide-react';
 import * as S from './styles';
 import { TabNavigation, TabNavLink, SyncButton, FollowButton } from './TabNavigation.styles';
-import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar, ProfileImageUploader, BusinessGreenHeader } from '../../../../components/Profile';
+import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar, ProfileImageUploader, BusinessGreenHeader } from '@/components/Profile';
 import { ProfileTypeSwitcher } from '../components/ProfileTypeSwitcher'; // Added Import
-import { googleProfileSyncService } from '../../../../services/google/google-profile-sync.service';
-import { usePromotionalOffer } from '../../../../hooks/usePromotionalOffer';
-import { activateFreePlan } from '../../../../services/billing/free-plan-activation.service';
-import { followService } from '../../../../services/social/follow-service';
-import { logger } from '../../../../services/logger-service';
-import { profileStatsService } from '../../../../services/profile/profile-stats.service';
+import { googleProfileSyncService } from '@/services/google/google-profile-sync.service';
+import { usePromotionalOffer } from '@/hooks/usePromotionalOffer';
+import { activateFreePlan } from '@/services/billing/free-plan-activation.service';
+import { followService } from '@/services/social/follow-service';
+import { logger } from '@/services/logger-service';
+import { profileStatsService } from '@/services/profile/profile-stats.service';
 import { ThemeProvider } from 'styled-components';
 import { PROFILE_THEMES } from '../../../../config/profile-themes';
 // 🔴 CRITICAL: Block User Button integration
-import BlockUserButton from '../../../../components/messaging/BlockUserButton';
+import BlockUserButton from '@/components/messaging/BlockUserButton';
 // 🔢 CRITICAL: Numeric ID system
-import { ensureUserNumericId } from '../../../../services/numeric-id-assignment.service';
+import { ensureUserNumericId } from '@/services/numeric-id-assignment.service';
 
 /**
  * Profile Page Wrapper

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, SectionTitle, TwoColumnGrid, FormGroup, Label, Select, Input } from '../styles';
-import { UnifiedCar } from '../../../../services/car';
+import { UnifiedCar } from '@/services/car';
 
 interface TechnicalSpecsSectionProps {
     formData: Partial<UnifiedCar>;

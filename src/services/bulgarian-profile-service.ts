@@ -451,16 +451,20 @@ export class BulgarianProfileService {
 
     const userRef = doc(db, 'users', userId);
 
-    return onSnapshot(userRef, (doc) => {
+    let isActive = true;
+    const unsubscribe = onSnapshot(userRef, (doc) => {
+      if (!isActive) return;
       if (doc.exists()) {
         callback(doc.data() as BulgarianUser);
       } else {
         callback(null);
       }
     }, (error) => {
+      if (!isActive) return;
       serviceLogger.error('[SERVICE] Error in real-time profile listener', error as Error, { userId });
       callback(null);
     });
+    return () => { isActive = false; unsubscribe(); };
   }
 
   /**

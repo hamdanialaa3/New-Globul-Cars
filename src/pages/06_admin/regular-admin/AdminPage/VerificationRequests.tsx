@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useAuth } from '../../../../contexts/AuthProvider';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { idVerificationService, type IDVerificationRequest } from '../../../../services/verification/id-verification-service';
-import { db } from '../../../../firebase/firebase-config';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { idVerificationService, type IDVerificationRequest } from '@/services/verification/id-verification-service';
+import { db } from '@/firebase/firebase-config';
 import { collection, query, where, orderBy, onSnapshot, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
-import { logger } from '../../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 import { toast } from 'react-toastify';
 import {
     CheckCircle,
@@ -195,7 +195,9 @@ const VerificationRequests: React.FC = () => {
             orderBy('submittedAt', 'desc')
         );
 
+        let isActive = true;
         const unsubscribe = onSnapshot(q, (snapshot) => {
+            if (!isActive) return;
             const data = snapshot.docs.map((doc: any) => ({
                 id: doc.id,
                 ...doc.data(),
@@ -207,7 +209,7 @@ const VerificationRequests: React.FC = () => {
             setLoading(false);
         });
 
-        return () => unsubscribe();
+        return () => { isActive = false; unsubscribe(); };
     }, []);
 
     const handleApprove = async (request: any) => {

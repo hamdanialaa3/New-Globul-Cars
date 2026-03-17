@@ -33,8 +33,8 @@ import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, Sparkles, Star, Zap, Car } from 'lucide-react';
 
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 // Lazy load the car sections
 const LatestCarsSection = React.lazy(() => import('./LatestCarsSection'));

@@ -33,8 +33,8 @@ import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Heart, Share2, TrendingUp } from 'lucide-react';
 
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 // Lazy load social sections
 const HomeSocialExperience = React.lazy(() => import('./HomeSocialExperience'));

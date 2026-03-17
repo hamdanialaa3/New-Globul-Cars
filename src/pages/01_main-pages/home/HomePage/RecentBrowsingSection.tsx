@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import PremiumHomeCarCard from '../../../../components/CarCard/PremiumHomeCarCard';
+import PremiumHomeCarCard from '@/components/CarCard/PremiumHomeCarCard';
 import { getBrowsingHistory, clearBrowsingHistory, BrowsingHistoryItem } from './browsingHistory';
 import { History, Clock, Eye, Trash2, Search, ArrowRight } from 'lucide-react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
-import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import HorizontalScrollContainer from '@/components/HorizontalScrollContainer/HorizontalScrollContainer';
 import { glassPrimaryButton, glassDangerButton } from '../../../../styles/glassmorphism-buttons';
 
 // Styled Components

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { TrendingUp } from 'lucide-react';
-import { useTheme } from '../../../../contexts/ThemeContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const DemandIndicator = styled.div<{ $isDark: boolean }>`
   display: flex;

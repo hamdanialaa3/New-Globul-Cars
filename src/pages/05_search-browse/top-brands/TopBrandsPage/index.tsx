@@ -1,16 +1,16 @@
-import { logger } from '../../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 // Top Brands Page - Main Component
 // Displays categorized car brands with smart sorting algorithm
 // Constitution compliant: No emojis, under 300 lines, modular structure
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { unifiedCarService } from '../../../../services/car';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { unifiedCarService } from '@/services/car';
 import brandsData from '../../../../data/car-brands-complete.json';
 import { BrandWithStats } from './types';
 import { calculateBrandStats, categorizeBrands } from './utils';
-import { useTheme } from '../../../../contexts/ThemeContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import CategorySection from './CategorySection';
 import {
   PageContainer,

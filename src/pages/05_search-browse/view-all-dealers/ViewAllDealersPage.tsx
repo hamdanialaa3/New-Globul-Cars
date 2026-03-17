@@ -11,9 +11,9 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { FiMapPin, FiPhone, FiMail, FiStar } from 'react-icons/fi';
-import { logger } from '../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 // ============================================================================
 // TYPES

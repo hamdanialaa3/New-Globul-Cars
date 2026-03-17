@@ -27,15 +27,15 @@ import {
   Star
 } from 'lucide-react';
 
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useAuth } from '../../../../hooks/useAuth';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/hooks/useAuth';
 import { 
   getRecommendations, 
   refreshRecommendations,
   RecommendationResponse
-} from '../../../../services/recommendation';
-import { behaviorService } from '../../../../services/recommendation/behavior.service';
-import PremiumHomeCarCard from '../../../../components/CarCard/PremiumHomeCarCard';
+} from '@/services/recommendation';
+import { behaviorService } from '@/services/recommendation/behavior.service';
+import PremiumHomeCarCard from '@/components/CarCard/PremiumHomeCarCard';
 import { logger } from '@/services/logger-service';
 
 // ============================================================================

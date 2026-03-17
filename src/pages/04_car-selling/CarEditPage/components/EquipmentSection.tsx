@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, SectionTitle, EquipmentSection as StyledEquipmentSection, EquipmentCategory, EquipmentTitle, EquipmentGrid, EquipmentItem } from '../styles';
-import { UnifiedCar } from '../../../../services/car';
+import { UnifiedCar } from '@/services/car';
 import { Check } from 'lucide-react';
 import { SAFETY_EQUIPMENT, COMFORT_EQUIPMENT, INFOTAINMENT_EQUIPMENT, EXTRA_EQUIPMENT } from '../constants';
 

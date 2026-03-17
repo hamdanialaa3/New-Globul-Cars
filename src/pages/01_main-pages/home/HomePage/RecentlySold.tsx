@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { unifiedCarService, UnifiedCar } from '../../../../services/car';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { logger } from '../../../../services/logger-service';
-import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
-import PremiumHomeCarCard from '../../../../components/CarCard/PremiumHomeCarCard';
+import { unifiedCarService, UnifiedCar } from '@/services/car';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { logger } from '@/services/logger-service';
+import HorizontalScrollContainer from '@/components/HorizontalScrollContainer/HorizontalScrollContainer';
+import PremiumHomeCarCard from '@/components/CarCard/PremiumHomeCarCard';
 
 const Container = styled.div`
   padding: 1rem 0;

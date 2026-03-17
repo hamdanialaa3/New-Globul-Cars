@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import RegionCarCountService from '../../../../services/regionCarCountService';
-import GlobulCarLogo from '../../../../components/icons/GlobulCarLogo';
-import { fetchCarsByCity, fetchUsersByCity, cityIdToCoordinates, CarEntity, UserEntity } from '../../../../services/map-entities.service';
+import { useLanguage } from '@/contexts/LanguageContext';
+import RegionCarCountService from '@/services/regionCarCountService';
+import GlobulCarLogo from '@/components/icons/GlobulCarLogo';
+import { fetchCarsByCity, fetchUsersByCity, cityIdToCoordinates, CarEntity, UserEntity } from '@/services/map-entities.service';
 import { BULGARIAN_CITIES } from '../../../../constants/bulgarianCities';
-import { getCarDetailsUrl } from '../../../../utils/routing-utils';
+import { getCarDetailsUrl } from '@/utils/routing-utils';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 

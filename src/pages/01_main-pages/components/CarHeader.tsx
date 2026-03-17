@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, CheckCircle } from 'lucide-react';
 import styled from 'styled-components';
-import { CarListing } from '../../../types/CarListing';
+import { CarListing } from '@/types/CarListing';
 import {
   Header,
   TopBar,

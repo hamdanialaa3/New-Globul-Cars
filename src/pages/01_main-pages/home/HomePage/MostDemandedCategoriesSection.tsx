@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { unifiedCarService, UnifiedCar } from '../../../../services/car';
+import { unifiedCarService, UnifiedCar } from '@/services/car';
 import WeatherStyleCarCard from './WeatherStyleCarCard';
 import DemandStats from './DemandStats';
 import { Bot, ArrowRight, TrendingUp } from 'lucide-react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
-import { logger } from '../../../../services/logger-service';
-import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import { logger } from '@/services/logger-service';
+import HorizontalScrollContainer from '@/components/HorizontalScrollContainer/HorizontalScrollContainer';
 
 // Styled Components
 const SectionContainer = styled.section<{ $isDark: boolean }>`

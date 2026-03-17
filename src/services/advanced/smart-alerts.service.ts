@@ -448,7 +448,9 @@ class SmartAlertsService {
   ): () => void {
     const alertRef = doc(db, this.ALERTS_COLLECTION, alertId);
     
-    return onSnapshot(alertRef, async (snapshot) => {
+    let isActive = true;
+    const unsubscribe = onSnapshot(alertRef, async (snapshot) => {
+      if (!isActive) return;
       if (snapshot.exists()) {
         const alert = {
           id: snapshot.id,
@@ -458,9 +460,10 @@ class SmartAlertsService {
         } as SmartAlert;
 
         const matches = await this.findMatches(alert);
-        callback(matches);
+        if (isActive) callback(matches);
       }
     });
+    return () => { isActive = false; unsubscribe(); };
   }
 }
 

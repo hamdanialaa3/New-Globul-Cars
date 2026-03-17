@@ -22,10 +22,10 @@ jest.mock('../../../../hooks/useTranslation');
 jest.mock('../../../../services/logger-service');
 jest.mock('./hooks/useProfile');
 
-import { useAuth } from '../../../../contexts/AuthProvider';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useProfileType } from '../../../../contexts/ProfileTypeContext';
-import { useTranslation } from '../../../../hooks/useTranslation';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useProfileType } from '@/contexts/ProfileTypeContext';
+import { useTranslation } from '@/hooks/useTranslation';
 import { useProfile } from './hooks/useProfile';
 import ProfilePageWrapper from './ProfilePageWrapper';
 

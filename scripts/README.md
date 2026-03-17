@@ -1,5 +1,48 @@
 # Scripts Guide
-## 🧪 Test Utilities (NEW - Jan 24, 2026!)
+
+## Directory Structure (Reorganized March 2026)
+
+```
+scripts/
+├── build/          # Bundle analysis, image optimization, sitemaps, build runners
+├── cleanup/        # Cache clearing, port cleanup, console log removal
+├── code-quality/   # Linting, console bans, singleton audits, translation coverage
+├── data-tools/     # Firestore data scripts, numeric ID assignment, data analysis
+├── deploy/         # Deployment scripts, CI/CD secret setup, Algolia sync
+├── dev/            # Environment management, API key setup, backup, checkpoint
+├── diagnostics/    # Health checks, connection tests, provider validation
+├── firebase-admin/ # User creation, admin claims, role setup
+├── lib/            # Shared utilities for scripts
+├── maintenance/    # Cache cleanup, cursor cleanup
+├── migrations/     # Import fixes, hotfixes, codemod transforms
+├── phase0-preparation/  # Repo hygiene audit, duplicate detection
+├── rollback/       # Rollback scripts
+├── scrapers/       # Data scrapers
+├── security/       # Secret scanning, security fix verification
+├── tests/          # Test utilities
+└── convert-to-path-aliases.js  # Path alias converter (root-level, used by npm)
+```
+
+## 🧹 Repository Hygiene (NEW - Mar 2026)
+
+### **repo-hygiene-audit.ts** ⭐
+Scans the repository for exact duplicate code blocks (normalized hash) and zombie-file candidates.
+
+```bash
+npm run audit:hygiene
+# or strict roots
+npm run audit:hygiene:strict
+```
+
+**Generates reports:**
+- `logs/reorganization/repo-hygiene-report.json`
+- `logs/reorganization/repo-hygiene-report.md`
+
+**Covers:**
+- Duplicate modules across `src`, `mobile_new/src`, `functions/src`, `shared`
+- Heuristic unreferenced module detection
+- A repeatable baseline for DDD quarantine decisions
+
 
 ### **check-test-structure.js** ⭐
 Advanced test structure analyzer that detects Jest configuration issues.

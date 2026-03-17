@@ -21,10 +21,10 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { Eye, Heart, Calendar, MapPin } from 'lucide-react';
 
-import { UnifiedCar } from '../../../../services/car';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
-import { useFavorites } from '../../../../hooks/useFavorites';
+import { UnifiedCar } from '@/services/car';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useFavorites } from '@/hooks/useFavorites';
 
 // ============================================================================
 // STYLED COMPONENTS

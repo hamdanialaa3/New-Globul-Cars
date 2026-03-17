@@ -12,8 +12,8 @@ jest.mock('../../../services/sellWorkflowService');
 jest.mock('../../../services/brands-models-data.service');
 jest.mock('../../../services/logger-service');
 
-import { LanguageProvider } from '../../../contexts/LanguageContext';
-import { AuthProvider } from '../../../contexts/AuthContext';
+import { LanguageProvider } from '@/contexts/LanguageContext';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 // Test wrapper component
 const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (

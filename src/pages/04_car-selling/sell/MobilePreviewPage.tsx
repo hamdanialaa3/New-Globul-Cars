@@ -4,17 +4,17 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { MoreVertical, Trash2, AlertTriangle } from 'lucide-react';
 import { S } from './MobilePreviewPage.styles';
-import { useLanguage } from '../../../contexts/LanguageContext';
-import { SellProgressBar } from '../../../components/SellWorkflow';
-import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { SellProgressBar } from '@/components/SellWorkflow';
+import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
 import { usePreviewSummary } from './Preview/usePreviewSummary';
-import CarBrandLogo from '../../../components/CarBrandLogo';
-import useSellWorkflow from '../../../hooks/useSellWorkflow';
-import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
-import { useAuth } from '../../../contexts/AuthProvider';
-import DraftsService from '../../../services/drafts-service';
+import CarBrandLogo from '@/components/CarBrandLogo';
+import useSellWorkflow from '@/hooks/useSellWorkflow';
+import { useUnifiedWorkflow } from '@/hooks/useUnifiedWorkflow';
+import { useAuth } from '@/contexts/AuthProvider';
+import DraftsService from '@/services/drafts-service';
 import { toast } from 'react-toastify';
-import { logger } from '../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 const ProgressWrapper = styled.div`
   padding: 0.75rem 1rem 0;

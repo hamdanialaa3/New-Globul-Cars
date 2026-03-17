@@ -6,15 +6,15 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes, css } from 'styled-components';
 import { Crown, TrendingUp, Building2, ChevronRight, Zap, CheckCircle, Sparkles, Car, MessageSquare, Upload, BarChart3, Plug, Link2, Target, Headphones, UserCog, Palette, Award, Gem, Rocket, User } from 'lucide-react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useAuth } from '../../../../contexts/AuthProvider';
-import { useTheme } from '../../../../contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useTheme } from '@/contexts/ThemeContext';
 // ✅ CRITICAL: Import subscription plans for accurate pricing
 import { SUBSCRIPTION_PLANS } from '../../../../config/subscription-plans';
 // ✅ Import centralized settings file
-import subscriptionTheme from '../../../../components/subscription/subscription-theme';
+import subscriptionTheme from '@/components/subscription/subscription-theme';
 // ✅ FREE OFFER: Import promotional offer hook
-import { usePromotionalOffer } from '../../../../hooks/usePromotionalOffer';
+import { usePromotionalOffer } from '@/hooks/usePromotionalOffer';
 
 // SVG icon removal - replaced with Lucide icons for professional look
 

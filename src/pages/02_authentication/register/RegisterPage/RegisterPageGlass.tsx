@@ -21,14 +21,14 @@ import {
   CheckCircle,
   Loader
 } from 'lucide-react';
-import { useTranslation } from '../../../../hooks/useTranslation';
-import { SocialAuthService } from '../../../../firebase/social-auth-service';
+import { useTranslation } from '@/hooks/useTranslation';
+import { SocialAuthService } from '@/firebase/social-auth-service';
 // ⚠️ REMOVED: Client-side numeric ID assignment (now handled by backend trigger)
-// import { ensureUserNumericId } from '../../../../services/numeric-id-assignment.service';
-import PhoneAuthModal from '../../../../components/PhoneAuthModal';
-import BackgroundSlideshow from '../../../../components/BackgroundSlideshow';
-import { useAuth } from '../../../../hooks/useAuth';
-import { logger } from '../../../../services/logger-service';
+// import { ensureUserNumericId } from '@/services/numeric-id-assignment.service';
+import PhoneAuthModal from '@/components/PhoneAuthModal';
+import BackgroundSlideshow from '@/components/BackgroundSlideshow';
+import { useAuth } from '@/hooks/useAuth';
+import { logger } from '@/services/logger-service';
 
 // Premium background images array
 const backgroundImages = [

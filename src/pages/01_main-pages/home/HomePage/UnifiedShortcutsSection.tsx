@@ -34,8 +34,8 @@
 import React, { memo, Suspense } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 // Lazy load section components
 const PopularBrandsSection = React.lazy(() => import('./PopularBrandsSection'));
