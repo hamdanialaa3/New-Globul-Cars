@@ -225,26 +225,157 @@ class SocialMediaContentService {
   }
 
   /**
-   * Schedule post (placeholder - integrate with actual social media APIs)
+   * Schedule / publish post to the actual social media platform
    */
   async schedulePost(post: SocialMediaPost, scheduledTime?: Date): Promise<string> {
     try {
-      serviceLogger.info(`Scheduling ${post.platform} post${scheduledTime ? ` for ${scheduledTime}` : ' immediately'}`);
-      
-      // TODO: Integrate with:
-      // - Facebook Graph API
-      // - Instagram Graph API
-      // - Twitter API v2
-      // - LinkedIn API
-      
-      // For now, just log
-      serviceLogger.info('Post content:', post.content);
-      
-      return 'mock-post-id';
+      serviceLogger.info(`Publishing ${post.platform} post${scheduledTime ? ` scheduled for ${scheduledTime}` : ' immediately'}`);
+
+      switch (post.platform) {
+        case 'facebook':
+          return await this.publishToFacebook(post, scheduledTime);
+        case 'instagram':
+          return await this.publishToInstagram(post);
+        case 'twitter':
+          return await this.publishToTwitter(post);
+        case 'linkedin':
+          return await this.publishToLinkedIn(post);
+        default:
+          throw new Error(`Unsupported platform: ${post.platform}`);
+      }
     } catch (error) {
       serviceLogger.error('Error scheduling post:', error);
       throw new Error('Failed to schedule post');
     }
+  }
+
+  /**
+   * Publish to Facebook via Graph API
+   */
+  private async publishToFacebook(post: SocialMediaPost, scheduledTime?: Date): Promise<string> {
+    const pageToken = import.meta.env.VITE_FACEBOOK_PAGE_TOKEN;
+    const pageId = import.meta.env.VITE_FACEBOOK_PAGE_ID;
+    if (!pageToken || !pageId) {
+      serviceLogger.warn('Facebook credentials not configured');
+      return '';
+    }
+
+    const body: Record<string, unknown> = {
+      message: post.content,
+      access_token: pageToken
+    };
+    if (post.link) body.link = post.link;
+    if (scheduledTime && scheduledTime.getTime() > Date.now()) {
+      body.published = false;
+      body.scheduled_publish_time = Math.floor(scheduledTime.getTime() / 1000);
+    }
+
+    const res = await fetch(`https://graph.facebook.com/v19.0/${pageId}/feed`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || 'Facebook API error');
+    return data.id || '';
+  }
+
+  /**
+   * Publish to Instagram via Graph API (container → publish flow)
+   */
+  private async publishToInstagram(post: SocialMediaPost): Promise<string> {
+    const token = import.meta.env.VITE_INSTAGRAM_ACCESS_TOKEN;
+    const igUserId = import.meta.env.VITE_INSTAGRAM_USER_ID;
+    if (!token || !igUserId) {
+      serviceLogger.warn('Instagram credentials not configured');
+      return '';
+    }
+
+    const containerBody: Record<string, string> = {
+      caption: post.content,
+      access_token: token
+    };
+    if (post.image) containerBody.image_url = post.image;
+
+    // Step 1: Create media container
+    const containerRes = await fetch(`https://graph.facebook.com/v19.0/${igUserId}/media`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(containerBody)
+    });
+    const container = await containerRes.json();
+    if (!containerRes.ok) throw new Error(container.error?.message || 'IG container error');
+
+    // Step 2: Publish
+    const publishRes = await fetch(`https://graph.facebook.com/v19.0/${igUserId}/media_publish`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ creation_id: container.id, access_token: token })
+    });
+    const pub = await publishRes.json();
+    if (!publishRes.ok) throw new Error(pub.error?.message || 'IG publish error');
+    return pub.id || '';
+  }
+
+  /**
+   * Publish to Twitter/X via v2 API
+   */
+  private async publishToTwitter(post: SocialMediaPost): Promise<string> {
+    const bearerToken = import.meta.env.VITE_TWITTER_BEARER_TOKEN;
+    if (!bearerToken) {
+      serviceLogger.warn('Twitter credentials not configured');
+      return '';
+    }
+
+    const res = await fetch('https://api.twitter.com/2/tweets', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${bearerToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ text: post.content.substring(0, 280) })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Twitter API error');
+    return data.data?.id || '';
+  }
+
+  /**
+   * Publish to LinkedIn via v2 API
+   */
+  private async publishToLinkedIn(post: SocialMediaPost): Promise<string> {
+    const accessToken = import.meta.env.VITE_LINKEDIN_ACCESS_TOKEN;
+    const orgId = import.meta.env.VITE_LINKEDIN_ORG_ID;
+    if (!accessToken || !orgId) {
+      serviceLogger.warn('LinkedIn credentials not configured');
+      return '';
+    }
+
+    const res = await fetch('https://api.linkedin.com/v2/ugcPosts', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+        'X-Restli-Protocol-Version': '2.0.0'
+      },
+      body: JSON.stringify({
+        author: `urn:li:organization:${orgId}`,
+        lifecycleState: 'PUBLISHED',
+        specificContent: {
+          'com.linkedin.ugc.ShareContent': {
+            shareCommentary: { text: post.content },
+            shareMediaCategory: post.link ? 'ARTICLE' : 'NONE',
+            ...(post.link ? {
+              media: [{ status: 'READY', originalUrl: post.link }]
+            } : {})
+          }
+        },
+        visibility: { 'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC' }
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'LinkedIn API error');
+    return data.id || '';
   }
 
   /**

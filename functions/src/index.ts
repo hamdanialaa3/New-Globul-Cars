@@ -23,6 +23,8 @@ export const onCarViewed = notifications.onCarViewed;
 export const onNewInquiry = notifications.onNewInquiry;
 export const onNewOffer = notifications.onNewOffer;
 export const onVerificationUpdate = notifications.onVerificationUpdate;
+export const onNewReview = notifications.onNewReview;
+export const onNewFavorite = notifications.onNewFavorite;
 export const dailyReminder = notifications.dailyReminder;
 
 // NEW: Social Notification System (Phase 2)
@@ -78,6 +80,11 @@ const getAiService = () => {
 };
 
 export const evaluateCar = functions.https.onCall(async (data, context) => {
+    // Auth check — only authenticated users can evaluate cars
+    if (!context.auth) {
+        throw new functions.https.HttpsError('unauthenticated', 'Authentication required for car evaluation');
+    }
+
     // 1. Validate Inputs
     const { imageBase64, price, marketAvg } = data as any;
 

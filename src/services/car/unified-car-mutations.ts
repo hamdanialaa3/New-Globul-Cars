@@ -81,11 +81,11 @@ export async function createCar(carData: Partial<UnifiedCar>): Promise<{ id: str
           serviceLogger.warn('Failed to add engagement comment', err);
         });
 
-        // TODO: Save Facebook Post ID to Firestore
-        // await updateDoc(doc(db, collectionName, numericCarData.id), {
-        //   'social.facebookPostId': fbPostResult.id,
-        //   'social.facebookPostedAt': serverTimestamp()
-        // });
+        // Save Facebook Post ID to Firestore for tracking
+        await updateDoc(doc(db, collectionName, numericCarData.id), {
+          'social.facebookPostId': fbPostResult.id,
+          'social.facebookPostedAt': serverTimestamp()
+        });
       } else {
         serviceLogger.warn('Facebook auto-post failed (non-critical)', {
           carId: numericCarData.id,

@@ -4,12 +4,15 @@ import { logger } from '../../services/logger-service';
  * Location: Bulgaria | Languages: BG/EN | Currency: EUR
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { CarEvent } from '../../services/social/events.service';
-import { Calendar, MapPin, Users, Clock } from 'lucide-react';
+import { Calendar, MapPin, Users, Clock, Check } from 'lucide-react';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
+import { doc, getDoc, setDoc, deleteDoc, increment, updateDoc, Timestamp } from 'firebase/firestore';
+import { db } from '../../firebase/firebase-config';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -170,6 +173,21 @@ interface EventCardProps {
 
 const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [isInterested, setIsInterested] = useState(false);
+  const [localInterestedCount, setLocalInterestedCount] = useState(event.interestedCount || 0);
+
+  useEffect(() => {
+    if (!user || !event.id) return;
+    let isActive = true;
+    const checkRsvp = async () => {
+      const rsvpRef = doc(db, 'events', event.id, 'rsvps', user.uid);
+      const rsvpSnap = await getDoc(rsvpRef);
+      if (isActive) setIsInterested(rsvpSnap.exists());
+    };
+    checkRsvp().catch(() => {});
+    return () => { isActive = false; };
+  }, [user, event.id]);
   
   const getEventTypeLabel = (type: CarEvent['eventType']) => {
     const labels = {
@@ -187,10 +205,34 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
     navigate(`/events/${event.id}`);
   };
   
-  const handleInterested = (e: React.MouseEvent) => {
+  const handleInterested = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    // TODO: Handle RSVP
-    logger.info('Interested in event:', event.id);
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    try {
+      const rsvpRef = doc(db, 'events', event.id, 'rsvps', user.uid);
+      const eventRef = doc(db, 'events', event.id);
+
+      if (isInterested) {
+        await deleteDoc(rsvpRef);
+        await updateDoc(eventRef, { interestedCount: increment(-1) });
+        setIsInterested(false);
+        setLocalInterestedCount(prev => Math.max(0, prev - 1));
+      } else {
+        await setDoc(rsvpRef, {
+          userId: user.uid,
+          status: 'interested',
+          createdAt: Timestamp.fromDate(new Date()),
+        });
+        await updateDoc(eventRef, { interestedCount: increment(1) });
+        setIsInterested(true);
+        setLocalInterestedCount(prev => prev + 1);
+      }
+    } catch (error) {
+      logger.error('RSVP toggle failed', error as Error);
+    }
   };
   
   return (
@@ -237,13 +279,13 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
           <AttendeeCount>
             <Users />
             <span className="count">{event.attendeeCount}</span> going
-            {event.interestedCount > 0 && (
-              <span>, {event.interestedCount} interested</span>
+            {localInterestedCount > 0 && (
+              <span>, {localInterestedCount} interested</span>
             )}
           </AttendeeCount>
           
-          <InterestedButton onClick={handleInterested}>
-            Interested
+          <InterestedButton onClick={handleInterested} style={isInterested ? { background: '#FF8F10', color: 'white' } : {}}>
+            {isInterested ? <><Check size={16} /> Going</> : 'Interested'}
           </InterestedButton>
         </Footer>
       </Content>

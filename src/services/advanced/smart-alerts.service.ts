@@ -370,11 +370,11 @@ class SmartAlertsService {
   }
 
   /**
-   * Check price drop alerts
+   * Check price drop alerts and send notifications to matching users
    */
   private async checkPriceDropAlerts(carId: string, dropPercentage: number): Promise<void> {
     try {
-      // Get all active alerts
+      // Get all active alerts matching the drop threshold
       const q = query(
         collection(db, this.ALERTS_COLLECTION),
         where('isActive', '==', true),
@@ -383,11 +383,34 @@ class SmartAlertsService {
 
       const snapshot = await getDocs(q);
       
-      // TODO: Send notifications for matching alerts
-      logger.info('Price drop alerts checked', { 
+      if (snapshot.empty) return;
+
+      // Send a notification for each matching alert
+      for (const alertDoc of snapshot.docs) {
+        const alert = alertDoc.data();
+        try {
+          await addDoc(collection(db, 'notifications'), {
+            userId: alert.userId,
+            type: 'price_drop',
+            title: 'Намаление на цена!',
+            message: `Автомобил, който следите, намали с ${dropPercentage.toFixed(1)}%`,
+            data: {
+              carId,
+              alertId: alertDoc.id,
+              dropPercentage,
+            },
+            isRead: false,
+            createdAt: Timestamp.now(),
+          });
+        } catch (notifError) {
+          logger.warn('Failed to send price drop notification', { alertId: alertDoc.id, notifError });
+        }
+      }
+
+      logger.info('Price drop alerts notified', { 
         carId, 
         dropPercentage, 
-        alertsCount: snapshot.size 
+        alertsNotified: snapshot.size 
       });
 
     } catch (error) {

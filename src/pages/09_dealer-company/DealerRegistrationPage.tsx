@@ -13,7 +13,7 @@ import { UserRepository } from '../../repositories/UserRepository';
 import { Check, Upload, Building, FileText, CreditCard, Send, Briefcase } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { subscriptionService } from '../../services/billing/subscription-service';
-import { SUBSCRIPTION_PLANS, SubscriptionPlan } from '../../config/billing-config';
+import { SUBSCRIPTION_PLANS, type SubscriptionPlan } from '../../config/subscription-plans';
 
 // Type alias for compatibility
 type DealerProfile = DealershipInfo;

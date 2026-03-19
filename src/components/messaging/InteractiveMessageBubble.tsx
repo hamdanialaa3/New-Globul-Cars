@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { format } from 'date-fns';
 import bg from 'date-fns/locale/bg';
@@ -12,6 +12,7 @@ import {
   TimeRow
 } from './messaging-styles';
 import { useLanguage } from '@/contexts';
+import { OfferBubble } from './OfferBubble';
 
 /**
  * Message type
@@ -96,12 +97,11 @@ const InteractiveMessageBubble: React.FC<InteractiveMessageBubbleProps> = ({
         return <TextContent>{message.content}</TextContent>;
       
       case 'offer':
-        // TODO: Use OfferBubble component
         return (
-          <ActionContent>
-            <ActionIcon>💰</ActionIcon>
-            <ActionText>{message.content}</ActionText>
-          </ActionContent>
+          <OfferBubble
+            message={message}
+            isOwn={isOwn}
+          />
         );
       
       case 'action':
@@ -114,14 +114,7 @@ const InteractiveMessageBubble: React.FC<InteractiveMessageBubbleProps> = ({
         );
       
       case 'voice':
-        // TODO: Use VoiceMessageBubble component
-        const { language } = useLanguage();
-        return (
-          <ActionContent>
-            <ActionIcon>🎤</ActionIcon>
-            <ActionText>{language === 'bg' ? 'Гласово съобщение' : 'Voice Message'} ({message.metadata?.duration || '0:00'})</ActionText>
-          </ActionContent>
-        );
+        return <VoiceMessagePlayer message={message} />;
       
       case 'system':
         // System messages (user joined, left, etc.)
@@ -268,6 +261,74 @@ const SystemMessageContainer = styled.div`
   padding: 8px 16px;
   margin: 8px 0;
 `;
+
+// Inline voice message player
+const VoicePlayerWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 200px;
+`;
+
+const PlayButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 22px;
+  padding: 0;
+  line-height: 1;
+`;
+
+const WaveformBar = styled.div`
+  flex: 1;
+  height: 32px;
+  background: rgba(0,0,0,0.05);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+`;
+
+const WaveformProgress = styled.div<{ $pct: number }>`
+  height: 100%;
+  width: ${p => p.$pct}%;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  border-radius: 16px;
+  transition: width 0.1s linear;
+`;
+
+const VoiceDuration = styled.span`
+  font-size: 12px;
+  color: #94a3b8;
+  min-width: 36px;
+`;
+
+const VoiceMessagePlayer: React.FC<{ message: Message }> = ({ message }) => {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [playing, setPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  const toggle = () => {
+    if (!audioRef.current) {
+      if (!message.metadata?.audioUrl) return;
+      audioRef.current = new Audio(message.metadata.audioUrl);
+      audioRef.current.ontimeupdate = () => {
+        const a = audioRef.current!;
+        setProgress(a.duration ? (a.currentTime / a.duration) * 100 : 0);
+      };
+      audioRef.current.onended = () => { setPlaying(false); setProgress(0); };
+    }
+    if (playing) { audioRef.current.pause(); } else { audioRef.current.play(); }
+    setPlaying(!playing);
+  };
+
+  return (
+    <VoicePlayerWrapper>
+      <PlayButton onClick={toggle}>{playing ? '⏸️' : '▶️'}</PlayButton>
+      <WaveformBar><WaveformProgress $pct={progress} /></WaveformBar>
+      <VoiceDuration>{message.metadata?.duration || '0:00'}</VoiceDuration>
+    </VoicePlayerWrapper>
+  );
+};
 
 // Named export for barrel export
 export { InteractiveMessageBubble };

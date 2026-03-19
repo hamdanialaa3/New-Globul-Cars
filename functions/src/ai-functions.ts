@@ -239,6 +239,18 @@ export const geminiPriceSuggestion = functions.region('europe-west1').https.onCa
   const userId = context.auth.uid;
   const { make, model, year, mileage, condition, location } = data as any;
 
+  // Input validation & sanitization
+  if (!make || !model || !year) {
+    throw new functions.https.HttpsError('invalid-argument', 'make, model, and year are required');
+  }
+  const sanitize = (v: unknown): string => String(v ?? '').replace(/[^\w\s,.\-\/а-яА-ЯёЁ()]/gi, '').substring(0, 100);
+  const safeMake = sanitize(make);
+  const safeModel = sanitize(model);
+  const safeYear = Number(year) || 0;
+  const safeMileage = Number(mileage) || 0;
+  const safeCondition = sanitize(condition);
+  const safeLocation = sanitize(location);
+
   try {
     if (!genAI) {
       throw new functions.https.HttpsError('internal', 'AI service not configured');
@@ -248,10 +260,10 @@ export const geminiPriceSuggestion = functions.region('europe-west1').https.onCa
     const prompt = `
     As a Bulgarian car market expert, suggest a fair price for:
     
-    Car: ${make} ${model} ${year}
-    Mileage: ${mileage} km
-    Condition: ${condition}
-    Location: ${location}
+    Car: ${safeMake} ${safeModel} ${safeYear}
+    Mileage: ${safeMileage} km
+    Condition: ${safeCondition}
+    Location: ${safeLocation}
     
     Provide in JSON format:
     {

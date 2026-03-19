@@ -4,6 +4,8 @@ import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { logger } from '../../services/logger-service';
+import { collection, query, orderBy, limit, onSnapshot, doc, updateDoc, where, writeBatch, Timestamp } from 'firebase/firestore';
+import { db } from '../../firebase/firebase-config';
 import {
   Bell,
   MessageCircle,
@@ -14,7 +16,8 @@ import {
   ShoppingCart,
   AlertTriangle,
   X,
-  Settings
+  Settings,
+  CheckCheck
 } from 'lucide-react';
 import './NotificationDropdown.css';
 
@@ -46,11 +49,42 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(false);
 
+  // Real-time Firestore listener for notifications
   useEffect(() => {
-    if (isOpen && user) {
-      loadNotifications();
-    }
-  }, [isOpen, user, language]);
+    if (!user) return;
+    let isActive = true;
+    setLoading(true);
+
+    const notificationsRef = collection(db, 'users', user.uid, 'notifications');
+    const q = query(notificationsRef, orderBy('timestamp', 'desc'), limit(20));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      if (!isActive) return;
+      const notifs: Notification[] = snapshot.docs.map(docSnap => {
+        const data = docSnap.data();
+        return {
+          id: docSnap.id,
+          type: data.type || 'system',
+          title: data.title || '',
+          message: data.message || '',
+          timestamp: data.timestamp?.toDate?.() || new Date(),
+          read: data.read || false,
+          actionUrl: data.actionUrl || undefined,
+        };
+      });
+      setNotifications(notifs);
+      setLoading(false);
+    }, (error) => {
+      if (!isActive) return;
+      logger.error('Error listening to notifications', error as Error);
+      setLoading(false);
+    });
+
+    return () => {
+      isActive = false;
+      unsubscribe();
+    };
+  }, [user]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -68,55 +102,30 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
     };
   }, [isOpen, onClose]);
 
-  const loadNotifications = async () => {
+  const markAsRead = async (notificationId: string) => {
+    if (!user) return;
     try {
-      setLoading(true);
-      // Simulate loading recent notifications from Firebase
-      const mockNotifications: Notification[] = [
-        {
-          id: '1',
-          type: 'message',
-          title: language === 'bg' ? 'Ново съобщение' : 'New Message',
-          message: language === 'bg' ? 'Имате ново съобщение за вашата обява BMW X5' : 'You have a new message about your BMW X5 listing',
-          timestamp: new Date(Date.now() - 1000 * 60 * 30),
-          read: false,
-          actionUrl: '/messages'
-        },
-        {
-          id: '2',
-          type: 'search',
-          title: language === 'bg' ? 'Търсене' : 'Search Alert',
-          message: language === 'bg' ? 'Нови автомобили, съответстващи на вашето търсене за "Audi A4"' : 'New cars matching your search for "Audi A4"',
-          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
-          read: true,
-          actionUrl: '/cars?search=Audi%20A4'
-        },
-        {
-          id: '3',
-          type: 'login',
-          title: language === 'bg' ? 'Сигурност' : 'Security Alert',
-          message: language === 'bg' ? 'Нов вход от Chrome на Windows' : 'New login from Chrome on Windows',
-          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
-          read: true,
-          actionUrl: '/profile/security'
-        }
-      ];
-
-      setNotifications(mockNotifications);
+      const notifRef = doc(db, 'users', user.uid, 'notifications', notificationId);
+      await updateDoc(notifRef, { read: true });
     } catch (error) {
-      logger.error('Error loading notifications (dropdown)', error as Error);
-    } finally {
-      setLoading(false);
+      logger.error('Error marking notification as read', error as Error);
     }
   };
 
-  const markAsRead = async (notificationId: string) => {
-    setNotifications(prev =>
-      prev.map(notif =>
-        notif.id === notificationId ? { ...notif, read: true } : notif
-      )
-    );
-    // TODO: Update in Firebase
+  const markAllAsRead = async () => {
+    if (!user) return;
+    try {
+      const unread = notifications.filter(n => !n.read);
+      if (unread.length === 0) return;
+      const batch = writeBatch(db);
+      unread.forEach(n => {
+        const ref = doc(db, 'users', user.uid, 'notifications', n.id);
+        batch.update(ref, { read: true });
+      });
+      await batch.commit();
+    } catch (error) {
+      logger.error('Error marking all notifications as read', error as Error);
+    }
   };
 
   const getNotificationIcon = (type: string) => {
@@ -192,13 +201,24 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
         <div className="notification-dropdown">
           <div className="dropdown-header">
             <h4>{t('notifications.title')}</h4>
-            <button
-              className="close-button"
-              onClick={onClose}
-              title={t('common.close')}
-            >
-              <X size={16} />
-            </button>
+            <div className="header-actions">
+              {unreadCount > 0 && (
+                <button
+                  className="mark-all-read-button"
+                  onClick={markAllAsRead}
+                  title={language === 'bg' ? 'Маркирай всички като прочетени' : 'Mark all as read'}
+                >
+                  <CheckCheck size={16} />
+                </button>
+              )}
+              <button
+                className="close-button"
+                onClick={onClose}
+                title={t('common.close')}
+              >
+                <X size={16} />
+              </button>
+            </div>
           </div>
 
           <div className="dropdown-content">

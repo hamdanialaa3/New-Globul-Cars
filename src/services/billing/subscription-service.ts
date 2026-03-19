@@ -1,5 +1,5 @@
 import { db, functions } from '../../firebase/firebase-config';
-import { collection, addDoc, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, query, where, getDocs } from 'firebase/firestore';
 import { httpsCallable } from 'firebase/functions';
 import { SUBSCRIPTION_PLANS, PlanTier } from '../../config/subscription-plans';
 import { logger } from '../logger-service';
@@ -99,8 +99,15 @@ class SubscriptionService {
    * Useful for permission checks
    */
   async checkSubscriptionStatus(uid: string): Promise<boolean> {
-    // This logic might be better handled by a real-time listener hook
-    return false;
+    try {
+      const subsRef = collection(db, 'customers', uid, 'subscriptions');
+      const q = query(subsRef, where('status', 'in', ['active', 'trialing']));
+      const snapshot = await getDocs(q);
+      return !snapshot.empty;
+    } catch (error) {
+      logger.error('Error checking subscription status', error as Error, { uid });
+      return false;
+    }
   }
 }
 

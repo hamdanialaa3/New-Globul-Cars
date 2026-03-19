@@ -239,3 +239,54 @@ export const dailyReminder = functions.pubsub
 
     await Promise.all(notifications);
   });
+
+// 9. New Review — notify the seller when they receive a review
+export const onNewReview = functions.firestore
+  .document('reviews/{reviewId}')
+  .onCreate(async (snap) => {
+    const review = snap.data();
+    if (!review || !review.sellerId) return;
+
+    const tokenDoc = await db.collection('userTokens').doc(review.sellerId).get();
+    if (tokenDoc.exists) {
+      const tokenData = tokenDoc.data();
+      if (tokenData && tokenData.token) {
+        const stars = '⭐'.repeat(Math.min(review.rating || 0, 5));
+        await messaging.send({
+          token: tokenData.token,
+          notification: {
+            title: `${stars} Нова рецензия`,
+            body: review.comment ? review.comment.substring(0, 100) : 'Получихте нова оценка!'
+          }
+        });
+      }
+    }
+  });
+
+// 10. New Favorite — notify seller when someone favorites their car
+export const onNewFavorite = functions.firestore
+  .document('favorites/{favoriteId}')
+  .onCreate(async (snap) => {
+    const fav = snap.data();
+    if (!fav || !fav.carId) return;
+
+    const carDoc = await db.collection('cars').doc(fav.carId).get();
+    if (!carDoc.exists) return;
+
+    const car = carDoc.data();
+    if (!car || !car.sellerId) return;
+
+    const tokenDoc = await db.collection('userTokens').doc(car.sellerId).get();
+    if (tokenDoc.exists) {
+      const tokenData = tokenDoc.data();
+      if (tokenData && tokenData.token) {
+        await messaging.send({
+          token: tokenData.token,
+          notification: {
+            title: '❤️ Нов харесан автомобил',
+            body: `Някой хареса ${car.brand || ''} ${car.model || ''}`
+          }
+        });
+      }
+    }
+  });

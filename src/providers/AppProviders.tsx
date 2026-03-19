@@ -49,6 +49,7 @@ import { AuthProvider } from '../contexts/AuthProvider';
 import { ProfileTypeProvider } from '../contexts/ProfileTypeContext';
 import { ToastProvider } from '../components/Toast';
 import { FilterProvider } from '../contexts/FilterContext';
+import { ComparisonProvider } from '../contexts/ComparisonContext';
 // StripeProvider removed - Stripe deprecated, using manual bank transfers
 
 // Components
@@ -59,6 +60,7 @@ import NotificationHandler from '../components/NotificationHandler';
 // Lazy-loaded components
 const FacebookPixel = React.lazy(() => import('../components/FacebookPixel'));
 const ProgressBar = React.lazy(() => import('../components/ProgressBar'));
+const ComparisonFloatingBar = React.lazy(() => import('../components/comparison/ComparisonFloatingBar'));
 
 // Services
 import { logger } from '../services/logger-service';
@@ -115,6 +117,7 @@ const ThemedApp: React.FC<{ children: React.ReactNode; recaptchaKey: string }> =
                                 <GoogleReCaptchaProvider reCaptchaKey={recaptchaKey}>
                                     <Router>
                                         <FilterProvider>
+                                          <ComparisonProvider>
                                             {/* Facebook Pixel - Analytics */}
                                             <Suspense fallback={<div style={{ height: '0' }} />}>
                                                 <FacebookPixel />
@@ -126,6 +129,11 @@ const ThemedApp: React.FC<{ children: React.ReactNode; recaptchaKey: string }> =
                                             {/* Notification Handler - Real-time notifications */}
                                             <NotificationHandler />
 
+                                            {/* Comparison Floating Bar */}
+                                            <Suspense fallback={null}>
+                                                <ComparisonFloatingBar />
+                                            </Suspense>
+
                                             {/* Progress Bar - Loading indicator */}
                                             <Suspense
                                                 fallback={
@@ -136,6 +144,7 @@ const ThemedApp: React.FC<{ children: React.ReactNode; recaptchaKey: string }> =
                                             >
                                                 {children}
                                             </Suspense>
+                                          </ComparisonProvider>
                                         </FilterProvider>
                                     </Router>
                                 </GoogleReCaptchaProvider>

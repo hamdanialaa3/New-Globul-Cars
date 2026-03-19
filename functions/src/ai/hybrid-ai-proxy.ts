@@ -248,6 +248,11 @@ function buildPrompt(vehicleData: HybridAIRequest['vehicleData'], language: stri
  * Hybrid AI Proxy Callable Function (v2 API)
  */
 export const hybridAIProxy = functions.https.onCall(async (data, context) => {
+  // Auth check — only authenticated users can use AI services
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Authentication required to use AI services');
+  }
+
   try {
     const requestData = data as HybridAIRequest;
 

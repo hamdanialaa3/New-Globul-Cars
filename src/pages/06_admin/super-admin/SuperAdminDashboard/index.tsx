@@ -44,7 +44,7 @@ import { GodModeCarGrid } from '@/components/SuperAdmin/GodMode/GodModeCarGrid';
 import { GodModeMessagesGrid } from '@/components/SuperAdmin/GodMode/GodModeMessagesGrid';
 import { GodModeRevenueGrid } from '@/components/SuperAdmin/GodMode/GodModeRevenueGrid';
 import { GodModeViewsGrid } from '@/components/SuperAdmin/GodMode/GodModeViewsGrid';
-import { AdManagerDashboard } from '../../../../features/ads/admin/AdManagerDashboard';
+import { AdManagerDashboard } from '../../../../features/promotions/admin/AdManagerDashboard';
 import SectionControlPanel from '@/components/SuperAdmin/SectionControlPanel';
 import SiteSettingsControl from '@/components/SuperAdmin/SiteSettingsControl';
 import ThemeControl from '@/components/SuperAdmin/ThemeControl';

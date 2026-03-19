@@ -396,26 +396,15 @@ class AIBillingSystem {
         };
       }
 
-      // TODO: تكامل Stripe الفعلي
-      // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-      // const paymentIntent = await stripe.paymentIntents.create({
-      //   amount: Math.round(bill.totalCost * 100),
-      //   currency: bill.currency.toLowerCase(),
-      //   customer: userId,
-      //   payment_method: paymentMethodId,
-      //   confirm: true
-      // });
-
-      // محاكاة الدفع الناجح
+      // Manual bank transfer — create pending transaction for user to pay
       const transaction: PaymentTransaction = {
         userId,
         billId,
         amount: bill.totalCost,
         currency: bill.currency,
-        status: 'completed',
-        // stripePaymentId: paymentIntent.id,
-        createdAt: new Date(),
-        completedAt: new Date()
+        status: 'pending',
+        paymentMethod: 'bank_transfer',
+        createdAt: new Date()
       };
 
       // حفظ المعاملة
@@ -424,7 +413,7 @@ class AIBillingSystem {
         {
           ...transaction,
           createdAt: Timestamp.fromDate(transaction.createdAt),
-          completedAt: Timestamp.fromDate(transaction.completedAt!)
+          ...(transaction.completedAt ? { completedAt: Timestamp.fromDate(transaction.completedAt) } : {})
         }
       );
 

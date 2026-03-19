@@ -195,15 +195,51 @@ class ImageUploadService {
    * التحقق وضغط الصورة قبل الرفع
    */
   async prepareImageForUpload(file: File): Promise<File> {
-    // If image is already small enough, return as is
     if (file.size <= this.MAX_IMAGE_SIZE) {
       return file;
     }
 
-    // TODO: Implement compression using canvas
-    // For now, just validate and throw if too large
     this.validateImage(file);
-    return file;
+
+    // Compress using canvas
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let { width, height } = img;
+        const maxDim = 1920;
+        if (width > maxDim || height > maxDim) {
+          const ratio = Math.min(maxDim / width, maxDim / height);
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) { resolve(file); return; }
+        ctx.drawImage(img, 0, 0, width, height);
+
+        let quality = 0.8;
+        const tryCompress = () => {
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) { resolve(file); return; }
+              if (blob.size > this.MAX_IMAGE_SIZE && quality > 0.3) {
+                quality -= 0.1;
+                tryCompress();
+              } else {
+                resolve(new File([blob], file.name, { type: 'image/jpeg' }));
+              }
+            },
+            'image/jpeg',
+            quality
+          );
+        };
+        tryCompress();
+      };
+      img.onerror = () => reject(new Error('Failed to load image for compression'));
+      img.src = URL.createObjectURL(file);
+    });
   }
 }
 

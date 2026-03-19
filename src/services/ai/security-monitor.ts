@@ -491,19 +491,18 @@ class AISecurityMonitor {
    */
   private async notifyAdmins(event: Omit<SecurityEvent, 'id'>): Promise<void> {
     try {
-      // TODO: إرسال إشعار للمشرفين عبر البريد الإلكتروني أو Slack
       logger.warn('CRITICAL SECURITY EVENT', {
         userId: event.userId,
         eventType: event.eventType,
         description: event.description
       });
 
-      // يمكن إضافة تكامل مع:
-      // - SendGrid للبريد الإلكتروني
-      // - Slack Webhook
-      // - Discord Webhook
-      // - SMS عبر Twilio
-
+      const { alertSecurity } = await import('../admin/admin-alerts.service');
+      await alertSecurity(
+        `Security: ${event.eventType}`,
+        event.description,
+        { userId: event.userId, severity: event.severity, ip: event.ip || 'unknown' }
+      );
     } catch (error) {
       logger.error('Failed to notify admins', error as Error);
     }

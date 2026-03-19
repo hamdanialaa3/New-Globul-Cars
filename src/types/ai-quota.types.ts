@@ -1,7 +1,7 @@
 // AI Quota & Billing System Types
 // نظام الحصص والفوترة للذكاء الاصطناعي
 
-export type AITier = 'free' | 'basic' | 'premium' | 'enterprise';
+export type AITier = 'free' | 'basic' | 'pro' | 'premium' | 'dealer' | 'enterprise';
 
 export interface AIQuota {
   userId: string;

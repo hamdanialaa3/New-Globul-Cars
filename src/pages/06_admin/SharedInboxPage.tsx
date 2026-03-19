@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../contexts/LanguageContext';
-// ❌ DEPRECATED: advanced-messaging-service moved to DDD/deprecated-services/
-// Use useRealtimeMessaging hook instead
-// import { messagingService } from '../../services/messaging/advanced-messaging-service';
-import { Conversation } from '../../services/messaging/advanced-messaging-types';
+import { Conversation } from '../../services/realtime-messaging-types';
 import { useAuth } from '../../contexts/AuthContext';
 import { Loader, MessageSquare, Clock, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { logger } from '../../services/logger-service';
+import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase/firebase-config';
 
 const Container = styled.div`
   padding: 40px;
@@ -128,10 +127,17 @@ const SharedInboxPage: React.FC = () => {
 
     const fetchMessages = async () => {
       try {
-        const data = await messagingService.getUserConversations(currentUser.uid);
-        setConversations(data.sort((a, b) =>
-          (b.lastMessageAt?.seconds || 0) - (a.lastMessageAt?.seconds || 0)
-        ));
+        const convQuery = query(
+          collection(db, 'conversations'),
+          where('participants', 'array-contains', currentUser.uid),
+          orderBy('updatedAt', 'desc')
+        );
+        const snapshot = await getDocs(convQuery);
+        const data = snapshot.docs.map(docSnap => ({
+          id: docSnap.id,
+          ...docSnap.data()
+        })) as Conversation[];
+        setConversations(data);
       } catch (error) {
         logger.error('Failed to fetch conversations', error as Error);
       } finally {
@@ -173,8 +179,11 @@ const SharedInboxPage: React.FC = () => {
                 </Avatar>
                 <Content>
                   <SenderName>
-                    {/* TODO: Fetch other participant name ideally */}
-                    {isBg ? 'Разговор' : 'Conversation'} #{conv.id.substring(0, 6)}
+                    {(() => {
+                      const otherUid = conv.participants?.find((p: string) => p !== currentUser?.uid);
+                      const name = otherUid && conv.participantNames?.[otherUid];
+                      return name || (isBg ? 'Разговор' : 'Conversation') + ' #' + conv.id.substring(0, 6);
+                    })()}
                   </SenderName>
                   <LastMessage>{conv.lastMessage?.text || (isBg ? 'Няма съобщения' : 'No messages')}</LastMessage>
                 </Content>

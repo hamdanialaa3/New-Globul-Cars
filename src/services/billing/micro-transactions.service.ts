@@ -9,7 +9,7 @@
  * Created: January 7, 2026
  */
 
-import { doc, updateDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, updateDoc, getDoc, getDocs, collection, query, where, Timestamp, serverTimestamp, writeBatch } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { logger } from '../logger-service';
 
@@ -309,19 +309,73 @@ export async function calculatePromotionRevenue(
   startDate: Date,
   endDate: Date
 ): Promise<number> {
-  // TODO: Implement analytics query
-  // This would require a separate collection for transactions
-  logger.info('Calculating promotion revenue', { startDate, endDate });
-  return 0;
+  try {
+    const txQuery = query(
+      collection(db, 'micro_transactions'),
+      where('createdAt', '>=', Timestamp.fromDate(startDate)),
+      where('createdAt', '<=', Timestamp.fromDate(endDate)),
+      where('status', '==', 'completed')
+    );
+    const snapshot = await getDocs(txQuery);
+    let total = 0;
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      total += data.amount || 0;
+    });
+    logger.info('Calculated promotion revenue', { startDate, endDate, total });
+    return total;
+  } catch (error) {
+    logger.error('Failed to calculate promotion revenue', error as Error, { startDate, endDate });
+    return 0;
+  }
 }
 
 /**
  * Clean expired promotions (run as Cloud Function scheduled task)
  */
 export async function cleanExpiredPromotions(): Promise<number> {
-  // TODO: Implement cleanup logic
-  // Query all listings with active promotions
-  // Remove expired ones
-  logger.info('Cleaning expired promotions');
-  return 0;
+  try {
+    const listingsQuery = query(
+      collection(db, 'listings'),
+      where('promotions.hasActive', '==', true)
+    );
+    const snapshot = await getDocs(listingsQuery);
+    const now = Timestamp.now();
+    const batch = writeBatch(db);
+    let cleanedCount = 0;
+
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      const activePromotions = data.promotions?.active || {};
+      const updatedPromotions: Record<string, unknown> = {};
+      let hasRemaining = false;
+
+      for (const [type, promo] of Object.entries(activePromotions)) {
+        const expiresAt = (promo as any).expiresAt;
+        if (expiresAt && expiresAt.toMillis() > now.toMillis()) {
+          updatedPromotions[type] = promo;
+          hasRemaining = true;
+        } else {
+          cleanedCount++;
+        }
+      }
+
+      if (Object.keys(updatedPromotions).length < Object.keys(activePromotions).length) {
+        batch.update(docSnap.ref, {
+          'promotions.active': updatedPromotions,
+          'promotions.hasActive': hasRemaining,
+          'promotions.lastCleanedAt': serverTimestamp()
+        });
+      }
+    });
+
+    if (cleanedCount > 0) {
+      await batch.commit();
+    }
+    logger.info('Cleaned expired promotions', { cleanedCount });
+    return cleanedCount;
+  } catch (error) {
+    logger.error('Failed to clean expired promotions', error as Error);
+    return 0;
+  }
 }
