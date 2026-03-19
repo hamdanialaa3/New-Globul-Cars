@@ -5,12 +5,14 @@ import { logger } from '../../services/logger-service';
 
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useAuth } from '../../hooks/useAuth';
 import { postsService, type Post } from '../../services/posts/posts.service';
 import { PostCard } from './PostCard';
 import * as S from './feed-styles';
 
 export const PostsFeedPage: React.FC = () => {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>('all');
@@ -33,8 +35,17 @@ export const PostsFeedPage: React.FC = () => {
   };
 
   const handleLike = async (postId: string) => {
-    // TODO: Implement like functionality
-    logger.info('Like post:', postId);
+    if (!user) return;
+    try {
+      const liked = await postsService.toggleLike(postId, user.uid);
+      setPosts(prev => prev.map(p =>
+        p.id === postId
+          ? { ...p, metrics: { ...p.metrics, likes: p.metrics.likes + (liked ? 1 : -1) } }
+          : p
+      ));
+    } catch (err) {
+      logger.error('Failed to toggle like:', err);
+    }
   };
 
   const handleFlag = async (postId: string) => {

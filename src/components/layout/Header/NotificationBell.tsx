@@ -214,7 +214,7 @@ export const NotificationBell: React.FC = () => {
                       {t.newCarFrom} <strong>{notification.sellerName}</strong>
                     </NotificationText>
                     <NotificationMeta>
-                      {t.priceNow}: <strong>€{notification.carPrice.toLocaleString()}</strong>
+                      {t.priceNow}: <strong>€{notification.carPrice?.toLocaleString() || '0'}</strong>
                       {' • '}
                       {formatTimestamp(notification.createdAt, language)}
                     </NotificationMeta>

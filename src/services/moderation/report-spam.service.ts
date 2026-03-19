@@ -148,7 +148,14 @@ class ReportSpamService {
         contentType,
       });
 
-      // TODO: Send email notification to admins (Cloud Function)
+      // Send admin alerts via all 3 channels
+      import('../admin/admin-alerts.service').then(({ alertSpam }) => {
+        alertSpam(
+          'New Spam Report',
+          `Report #${reportRef.id}: ${reportType} (${contentType}) — Reporter: ${reporterNumericId}, Reported: ${reportedNumericId}. Reason: ${reason.trim()}`,
+          { reportId: reportRef.id, reportType, contentType, reporterNumericId, reportedNumericId }
+        );
+      }).catch(() => {});
 
       return {
         success: true,

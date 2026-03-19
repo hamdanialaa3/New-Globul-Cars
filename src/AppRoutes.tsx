@@ -6,7 +6,7 @@ import { useTheme } from './contexts/ThemeContext';
 import { safeLazy } from './utils/lazyImport';
 import SmartLoader from './components/SmartLoaderCSS';
 import InactivityWarning from './components/InactivityWarning';
-import { DebugAdsPage } from './features/ads/pages/DebugAdsPage';
+import { DebugAdsPage } from './features/promotions/pages/DebugAdsPage';
 
 // Lazy Loaded Components
 const GlobalWorkflowTimer = safeLazy(() => import('./components/GlobalWorkflowTimer'));

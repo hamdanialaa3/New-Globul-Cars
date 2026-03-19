@@ -208,23 +208,86 @@ async function fetchSystemTransactions(
 }
 
 /**
- * Fetch provider transactions (placeholder - to be implemented with actual API)
- * In production, this would call iCard/Revolut/Stripe API to get transaction list
+ * Fetch provider transactions via their APIs
+ * iCard: REST API for transaction history
+ * Revolut: Revolut Business API for transactions
  */
 async function fetchProviderTransactions(
   provider: PaymentProvider,
   startDate: Date,
   endDate: Date
 ): Promise<Array<{ id: string; amount: number; currency: string }>> {
-  // TODO: Implement actual provider API calls
-  // For iCard: Call iCard transaction history API
-  // For Revolut: Call Revolut transactions API
-  // For Stripe: Call Stripe Balance Transactions API
+  if (provider === 'icard') {
+    const apiKey = process.env.ICARD_API_KEY;
+    const merchantId = process.env.ICARD_MERCHANT_ID;
+    if (!apiKey || !merchantId) {
+      logger.warn('iCard API credentials not configured');
+      return [];
+    }
+    try {
+      const response = await fetch('https://api.icard.com/v1/transactions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          merchant_id: merchantId,
+          from_date: startDate.toISOString().split('T')[0],
+          to_date: endDate.toISOString().split('T')[0],
+          currency: 'EUR',
+        }),
+      });
+      if (!response.ok) {
+        logger.error('iCard API error', { status: response.status });
+        return [];
+      }
+      const data = await response.json();
+      return (data.transactions || []).map((tx: any) => ({
+        id: tx.transaction_id || tx.id,
+        amount: parseFloat(tx.amount),
+        currency: tx.currency || 'EUR',
+      }));
+    } catch (error: any) {
+      logger.error('iCard API call failed', { error: error.message });
+      return [];
+    }
+  }
 
-  logger.warn('Using placeholder provider transactions - implement actual API integration', {
-    provider
-  });
+  if (provider === 'revolut') {
+    const apiKey = process.env.REVOLUT_API_KEY;
+    if (!apiKey) {
+      logger.warn('Revolut API credentials not configured');
+      return [];
+    }
+    try {
+      const from = startDate.toISOString();
+      const to = endDate.toISOString();
+      const response = await fetch(
+        `https://b2b.revolut.com/api/1.0/transactions?from=${from}&to=${to}`,
+        {
+          headers: { 'Authorization': `Bearer ${apiKey}` },
+        }
+      );
+      if (!response.ok) {
+        logger.error('Revolut API error', { status: response.status });
+        return [];
+      }
+      const data = await response.json();
+      return (data || [])
+        .filter((tx: any) => tx.state === 'completed')
+        .map((tx: any) => ({
+          id: tx.id,
+          amount: Math.abs(tx.legs?.[0]?.amount || 0),
+          currency: tx.legs?.[0]?.currency || 'EUR',
+        }));
+    } catch (error: any) {
+      logger.error('Revolut API call failed', { error: error.message });
+      return [];
+    }
+  }
 
+  logger.warn('Unknown payment provider', { provider });
   return [];
 }
 
@@ -244,13 +307,58 @@ async function sendReconciliationAlert(report: ReconciliationReport): Promise<vo
       resolved: false
     });
 
-    logger.warn('Reconciliation discrepancy alert created', {
+    const alertMessage = `Payment Reconciliation Discrepancy\nProvider: ${report.provider}\nDiscrepancy: EUR ${report.discrepancy_amount}\nReport: ${report.id}`;
+
+    // Slack notification
+    const slackWebhook = process.env.SLACK_WEBHOOK_URL;
+    if (slackWebhook) {
+      await fetch(slackWebhook, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: `⚠️ ${alertMessage}`,
+          channel: '#payment-alerts',
+        }),
+      }).catch((err: any) => logger.error('Slack alert failed', { error: err.message }));
+    }
+
+    // Telegram notification
+    const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
+    const telegramChat = process.env.TELEGRAM_CHAT_ID;
+    if (telegramToken && telegramChat) {
+      await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: telegramChat,
+          text: `⚠️ ${alertMessage}`,
+        }),
+      }).catch((err: any) => logger.error('Telegram alert failed', { error: err.message }));
+    }
+
+    // SendGrid email
+    const sgApiKey = process.env.SENDGRID_API_KEY;
+    if (sgApiKey) {
+      await fetch('https://api.sendgrid.com/v3/mail/send', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${sgApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          personalizations: [{ to: [{ email: 'admin@koli.one' }, { email: 'tech@koli.one' }] }],
+          from: { email: 'alerts@koli.one', name: 'Koli One Payments' },
+          subject: `[PAYMENT] Reconciliation Discrepancy — ${report.provider}`,
+          content: [{ type: 'text/plain', value: alertMessage }],
+        }),
+      }).catch((err: any) => logger.error('Email alert failed', { error: err.message }));
+    }
+
+    logger.warn('Reconciliation discrepancy alert sent', {
       provider: report.provider,
       discrepancy: report.discrepancy_amount,
       reportId: report.id
     });
-
-    // TODO: Implement email/Slack notification to admins
   } catch (error: any) {
     logger.error('Failed to send reconciliation alert', { error: error.message });
   }

@@ -3,6 +3,7 @@ import { deliveryEngine } from '../delivery-engine';
 import { advancedMessagingService } from '../../advanced-messaging-service';
 import { sendMessage as sendRealtimeMessage } from '@/services/realtime-messaging-operations';
 import { userService } from '../../../user/canonical-user.service';
+import { messagingAnalytics } from '../../analytics/messaging-analytics.service';
 
 /**
  * Message Sender Module
@@ -188,8 +189,7 @@ export class MessageSender {
    */
   private async trackMessageSent(conversationId: string, type: string): Promise<void> {
     try {
-      // TODO: Integrate with messaging-analytics.ts
-      // await messagingAnalytics.trackMessageSent(conversationId, type);
+      await messagingAnalytics.trackMessageSent(conversationId, type);
     } catch (error) {
       logger.warn('[MessageSender] Analytics tracking failed', {
         error: (error as Error).message

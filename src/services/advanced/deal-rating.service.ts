@@ -381,14 +381,48 @@ class DealRatingService {
   }
 
   /**
-   * Calculate seller score
+   * Calculate seller score based on ratings, verification, response time, listing history
    */
-  private async calculateSellerScore(sellerId: string): number {
+  private async calculateSellerScore(sellerId: string): Promise<number> {
     try {
-      // Get seller ratings, reviews, verification status, etc.
-      // For now, return base score
-      return 70; // TODO: Implement seller reputation system
+      let score = 50; // Base score
+
+      // 1. Check seller verification status (+15)
+      const userSnap = await getDocs(
+        query(collection(db, 'users'), where('__name__', '==', sellerId))
+      );
+      if (!userSnap.empty) {
+        const userData = userSnap.docs[0].data();
+        if (userData.isVerified || userData.identityVerified) score += 15;
+        if (userData.phoneVerified) score += 5;
+        // Account age bonus (+5 if > 6 months)
+        if (userData.createdAt) {
+          const accountAge = Date.now() - (userData.createdAt.toDate?.()?.getTime?.() || 0);
+          if (accountAge > 180 * 24 * 60 * 60 * 1000) score += 5;
+        }
+      }
+
+      // 2. Check seller ratings from reviews (+0 to +20)
+      const reviewsSnap = await getDocs(
+        query(
+          collection(db, 'reviews'),
+          where('sellerId', '==', sellerId),
+          orderBy('createdAt', 'desc'),
+          limit(50)
+        )
+      );
+      if (!reviewsSnap.empty) {
+        const reviews = reviewsSnap.docs.map(d => d.data());
+        const avgRating = reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length;
+        // Scale: 1-5 stars → 0-20 points
+        score += Math.round((avgRating / 5) * 20);
+        // Bonus for having many reviews (+5 if 10+)
+        if (reviews.length >= 10) score += 5;
+      }
+
+      return Math.min(100, Math.max(0, score));
     } catch (error) {
+      logger.warn('Failed to calculate seller score', { sellerId, error });
       return 50;
     }
   }

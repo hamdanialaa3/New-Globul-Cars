@@ -32,10 +32,41 @@ import { numericStoryIdService } from './numeric-story-id.service';
 import { logger } from '../logger-service';
 import { CarStory, StoryType } from '../../types/story.types';
 
-// TODO: Import actual plan-limits.service.ts when available
+import { SUBSCRIPTION_PLANS, PlanTier } from '../../config/subscription-plans';
+
+/** Story limits per plan tier (per 24-hour window) */
+const STORY_LIMITS: Record<PlanTier, number> = {
+    free: 3,
+    dealer: 20,
+    company: 100,
+};
+
+/** Check if user can create a new story based on their subscription plan */
 const checkUserPlanLimit = async (userId: string): Promise<boolean> => {
-    // MOCK: Always return true for Phase 1
-    return true;
+    try {
+        // Get user's plan tier
+        const userDoc = await getDoc(doc(db, 'users', userId));
+        const planTier: PlanTier = userDoc.exists()
+            ? (userDoc.data().planTier || 'free')
+            : 'free';
+
+        const maxStories = STORY_LIMITS[planTier] ?? STORY_LIMITS.free;
+
+        // Count stories created in the last 24 hours
+        const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+        const recentSnap = await getDocs(
+            query(
+                collection(db, 'stories'),
+                where('authorId', '==', userId),
+                where('createdAt', '>=', oneDayAgo)
+            )
+        );
+
+        return recentSnap.size < maxStories;
+    } catch {
+        // On error, allow creation to avoid blocking users
+        return true;
+    }
 };
 
 export const storyService = {

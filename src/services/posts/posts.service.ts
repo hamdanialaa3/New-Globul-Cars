@@ -2,7 +2,7 @@
 // CRUD operations for social/market posts feature
 // English/Bulgarian bilingual. No emojis. <300 lines.
 
-import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, limit, Timestamp } from 'firebase/firestore';
+import { collection, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc, setDoc, query, where, orderBy, limit, increment, Timestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
 
 export interface PostContent {
@@ -108,10 +108,29 @@ class PostsService {
 
   async incrementView(postId: string): Promise<void> {
     const ref = doc(db, COLLECTION, postId);
-    const current = (await ref.get()).data();
-    if (current) {
-      await updateDoc(ref, { 'metrics.views': (current.metrics?.views || 0) + 1 });
+    await updateDoc(ref, { 'metrics.views': increment(1) });
+  }
+
+  async toggleLike(postId: string, userId: string): Promise<boolean> {
+    const likeRef = doc(db, COLLECTION, postId, 'likes', userId);
+    const likeSnap = await getDoc(likeRef);
+    const postRef = doc(db, COLLECTION, postId);
+
+    if (likeSnap.exists()) {
+      await deleteDoc(likeRef);
+      await updateDoc(postRef, { 'metrics.likes': increment(-1) });
+      return false;
+    } else {
+      await setDoc(likeRef, { userId, createdAt: Timestamp.fromDate(new Date()) });
+      await updateDoc(postRef, { 'metrics.likes': increment(1) });
+      return true;
     }
+  }
+
+  async hasUserLiked(postId: string, userId: string): Promise<boolean> {
+    const likeRef = doc(db, COLLECTION, postId, 'likes', userId);
+    const likeSnap = await getDoc(likeRef);
+    return likeSnap.exists();
   }
 
   async flag(postId: string, reason: string, moderatorId: string): Promise<void> {

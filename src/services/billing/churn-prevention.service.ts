@@ -8,7 +8,7 @@
  * Created: January 7, 2026
  */
 
-import { doc, updateDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, updateDoc, getDoc, setDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { logger } from '../logger-service';
 import type { PlanTier } from '../../config/subscription-plans';
@@ -295,16 +295,33 @@ export async function applyRetentionOffer(
 
 /**
  * Schedule grace period reminder emails
- * (To be implemented as Cloud Function)
+ * Stores reminder schedule in Firestore for Cloud Functions to pick up
  */
 async function scheduleGracePeriodReminders(userId: string, gracePeriodEnd: Date): Promise<void> {
-  // TODO: Implement with Cloud Scheduler + Cloud Functions
-  // Schedule emails at: 7 days, 3 days, 1 day before end
-  logger.info('Grace period reminders scheduled', { userId, gracePeriodEnd });
+  try {
+    const reminderDays = [7, 3, 1];
+    const reminders = reminderDays
+      .map((daysBefore) => {
+        const sendAt = new Date(gracePeriodEnd.getTime() - daysBefore * 24 * 60 * 60 * 1000);
+        return sendAt > new Date() ? { daysBefore, sendAt: Timestamp.fromDate(sendAt), sent: false } : null;
+      })
+      .filter(Boolean);
+
+    await setDoc(doc(db, 'scheduled_reminders', userId), {
+      userId,
+      type: 'grace_period',
+      gracePeriodEnd: Timestamp.fromDate(gracePeriodEnd),
+      reminders,
+      createdAt: serverTimestamp()
+    });
+    logger.info('Grace period reminders scheduled', { userId, gracePeriodEnd, count: reminders.length });
+  } catch (error) {
+    logger.error('Failed to schedule grace period reminders', error as Error, { userId });
+  }
 }
 
 /**
- * Send cancellation retention email
+ * Send cancellation retention email via SendGrid
  * (To be called when user clicks "Cancel Subscription")
  */
 export async function sendRetentionEmail(
@@ -312,6 +329,41 @@ export async function sendRetentionEmail(
   userEmail: string,
   offers: CancellationOffer[]
 ): Promise<void> {
-  // TODO: Implement email sending
-  logger.info('Retention email sent', { userId, offerCount: offers.length });
+  try {
+    const apiKey = import.meta.env.VITE_SENDGRID_API_KEY;
+    if (!apiKey) {
+      logger.error('SendGrid API key not configured for retention emails');
+      return;
+    }
+
+    const offerRows = offers.map((o) =>
+      `<tr><td style="padding:8px;border:1px solid #ddd">${o.type}</td><td style="padding:8px;border:1px solid #ddd">${o.description}</td></tr>`
+    ).join('');
+
+    await fetch('https://api.sendgrid.com/v3/mail/send', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        personalizations: [{ to: [{ email: userEmail }] }],
+        from: { email: 'noreply@kolione.com', name: 'Koli One' },
+        subject: 'Не искаме да ви загубим! 🚗 Специални оферти за вас',
+        content: [{
+          type: 'text/html',
+          value: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto">
+            <h2>Преди да си тръгнете...</h2>
+            <p>Забелязахме, че обмисляте да анулирате абонамента си. Подготвихме специални оферти за вас:</p>
+            <table style="width:100%;border-collapse:collapse;margin:16px 0">
+              <tr style="background:#f5f5f5"><th style="padding:8px;border:1px solid #ddd">Оферта</th><th style="padding:8px;border:1px solid #ddd">Описание</th></tr>
+              ${offerRows}
+            </table>
+            <p><a href="https://kolione.com/settings/subscription" style="background:#2563eb;color:#fff;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block">Вижте офертите</a></p>
+            <p style="color:#666;font-size:12px">Koli One — №1 автомобилна платформа в България</p>
+          </div>`
+        }]
+      })
+    });
+    logger.info('Retention email sent', { userId, offerCount: offers.length });
+  } catch (error) {
+    logger.error('Failed to send retention email', error as Error, { userId });
+  }
 }

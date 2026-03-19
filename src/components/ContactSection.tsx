@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Phone, Mail, MapPin, MessageSquare } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 import { CarListing } from '../types/CarListing';
 import { logger } from '@/services/logger-service';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface ContactSectionProps {
   car: CarListing;
@@ -12,19 +14,35 @@ interface ContactSectionProps {
 export function ContactSection({ car }: ContactSectionProps) {
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;
-    
+    if (!currentUser) {
+      toast.info('Моля, влезте в профила си / Please log in');
+      navigate('/login');
+      return;
+    }
+
     setIsSending(true);
     try {
-      // TODO: Implement messaging logic
-      logger.info('send_message', { carId: car.id, message });
-      toast.success('Message sent successfully!');
+      const { sendMessage } = await import('@/services/realtime-messaging-operations');
+      const sellerId = (car as any).sellerId || (car as any).userId;
+      if (!sellerId) throw new Error('Seller ID not available');
+
+      await sendMessage({
+        senderId: currentUser.uid,
+        receiverId: sellerId,
+        text: message.trim(),
+        carId: car.id,
+        carTitle: `${(car as any).make || ''} ${(car as any).model || ''} ${(car as any).year || ''}`.trim()
+      });
+      toast.success('Съобщението е изпратено! / Message sent!');
       setMessage('');
     } catch (error) {
       logger.error('send_message_failed', error as Error, { carId: car.id });
-      toast.error('Failed to send message');
+      toast.error('Неуспешно изпращане / Failed to send message');
     } finally {
       setIsSending(false);
     }

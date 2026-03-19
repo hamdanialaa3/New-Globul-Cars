@@ -72,7 +72,6 @@ const EventsPage = safeLazy(() => import('../pages/07_advanced-features/EventsPa
 const CreatePostPage = safeLazy(() => import('../pages/03_user-pages/social/CreatePostPage'));
 const DashboardPage = safeLazy(() => import('../pages/03_user-pages/dashboard/DashboardPage'));
 const AdminDashboard = safeLazy(() => import('../components/AdminDashboard'));
-// DEAD COMPONENT: const FullThemeDemo = safeLazy(() => import('../components/FullThemeDemo'));
 const PrivacyPolicyPage = safeLazy(() => import('../pages/10_legal/privacy-policy/PrivacyPolicyPage'));
 const TermsOfServicePage = safeLazy(() => import('../pages/10_legal/terms-of-service/TermsOfServicePage'));
 const DataDeletionPage = safeLazy(() => import('../pages/10_legal/data-deletion/DataDeletionPage'));
@@ -85,7 +84,6 @@ const MigrationPage = safeLazy(() => import('../pages/06_admin/MigrationPage'));
 const DebugCarsPage = safeLazy(() => import('../pages/06_admin/DebugCarsPage'));
 const EditCarPage = safeLazy(() => import('../pages/04_car-selling/EditCarPage'));
 const B2BAnalyticsPortal = safeLazy(() => import('../pages/07_advanced-features/B2BAnalyticsPortal'));
-// DEAD PAGE: const DigitalTwinPage = safeLazy(() => import('../pages/07_advanced-features/DigitalTwinPage'));
 const SubscriptionPage = safeLazy(() => import('../pages/08_payment-billing/SubscriptionPage'));
 const AboutPage = safeLazy(() => import('../pages/01_main-pages/about/AboutPage'));
 const BrandGalleryPage = safeLazy(() => import('../pages/05_search-browse/brand-gallery/BrandGalleryPage'));
@@ -130,7 +128,6 @@ const UserProfileSlugRedirectPage = safeLazy(() => import('../pages/03_user-page
 const UserSettingsGuardedPage = safeLazy(() => import('../pages/03_user-pages/UserSettingsGuardedPage'));
 import { ShortLinkResolverComponent } from '../hooks/useShortLinkResolver';
 const DeleteMockCarsPage = safeLazy(() => import('../pages/06_admin/DeleteMockCarsPage'));
-// DEAD PAGE: const IoTDashboardPage = safeLazy(() => import('../pages/03_user-pages/IoTDashboardPage'));
 const CarTrackingPage = safeLazy(() => import('../pages/03_user-pages/CarTrackingPage'));
 const IoTAnalyticsPage = safeLazy(() => import('../pages/03_user-pages/IoTAnalyticsPage'));
 const AIDashboardPage = safeLazy(() => import('../pages/03_user-pages/ai-dashboard/AIDashboardPage'));
@@ -521,8 +518,6 @@ export const MainRoutes: React.FC = () => {
                 path="/dashboard"
                 element={<AuthGuard requireAuth={true}><DashboardPage /></AuthGuard>}
             />
-            {/* DEAD ROUTE: <Route path="/full-demo" element={<FullThemeDemo />} /> */}
-            {/* DEAD ROUTE: <Route path="/iot-dashboard" element={<AuthGuard requireAuth={true}><IoTDashboardPage /></AuthGuard>} /> */}
             <Route path="/car-tracking" element={<AuthGuard requireAuth={true}><CarTrackingPage /></AuthGuard>} />
             <Route path="/iot-analytics" element={<AuthGuard requireAuth={true}><IoTAnalyticsPage /></AuthGuard>} />
             <Route path="/ai-dashboard" element={<AuthGuard requireAuth={true}><AIDashboardPage /></AuthGuard>} />
@@ -557,7 +552,6 @@ export const MainRoutes: React.FC = () => {
             <Route path="/my-listings" element={<AuthGuard requireAuth={true}><MyListingsPage /></AuthGuard>} />
             <Route path="/my-drafts" element={<AuthGuard requireAuth={true}><MyDraftsPage /></AuthGuard>} />
             <Route path="/analytics" element={<AuthGuard requireAuth={true}><B2BAnalyticsPortal /></AuthGuard>} />
-            {/* DEAD ROUTE: <Route path="/digital-twin" element={<AuthGuard requireAuth={true}><DigitalTwinPage /></AuthGuard>} /> */}
             <Route path="/subscription" element={<AuthGuard requireAuth={true}><SubscriptionPage /></AuthGuard>} />
             <Route path="/migration" element={<AuthGuard requireAuth={true}><MigrationPage /></AuthGuard>} />
             {/* Moved to Dev Tools Block */}
@@ -570,6 +564,14 @@ export const MainRoutes: React.FC = () => {
             <Route path="/competitive-comparison" element={<CompetitiveComparisonPage />} />
             <Route path="/pricing" element={<CarPricingPage />} />
             <Route path="/ai-analysis" element={<AIAnalysisPage />} />
+            <Route path="/visual-search" lazy={async () => {
+                const { VisualSearchPage } = await import('../pages/VisualSearchPage');
+                return { Component: VisualSearchPage };
+            }} />
+            <Route path="/architecture" lazy={async () => {
+                const mod = await import('../pages/ArchitectureDiagramPage');
+                return { Component: mod.default };
+            }} />
             <Route path="/map" element={<MapAnalyticsPage />} />
             <Route path="/auctions" element={<AuctionsPage />} />
             <Route path="/top-brands" element={<TopBrandsPage />} />
@@ -592,16 +594,23 @@ export const MainRoutes: React.FC = () => {
                     return { Component: LaunchOfferPage.default };
                 }}
             />
-            <Route
-                path="/competitive-comparison"
-                lazy={async () => {
-                    const CompetitiveComparisonPage = await import('../pages/10_landing/CompetitiveComparisonPage');
-                    return { Component: CompetitiveComparisonPage.default };
-                }}
-            />
 
             {/* SEO City-Brand Pages: /bmw-sofia, /audi-plovdiv, etc. */}
             <Route path="/:slug" element={<SEOCityBrandPage />} />
+
+            {/* Error Pages */}
+            <Route path="/500" lazy={async () => {
+                const mod = await import('../pages/02_error-pages/ServerErrorPage');
+                return { Component: mod.default };
+            }} />
+            <Route path="/offline" lazy={async () => {
+                const mod = await import('../pages/02_error-pages/OfflinePage');
+                return { Component: mod.default };
+            }} />
+            <Route path="/403" lazy={async () => {
+                const mod = await import('../pages/02_error-pages/ForbiddenPage');
+                return { Component: mod.default };
+            }} />
 
             <Route path="*" element={<Suspense fallback={<LoadingSpinner size="medium" />}><NotFoundPage /></Suspense>} />
         </Routes>

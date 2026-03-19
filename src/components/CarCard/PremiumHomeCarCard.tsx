@@ -2,10 +2,11 @@ import React, { useRef, useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import styled, { css, keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
-import { Heart, MapPin, Calendar, Gauge, Fuel, User } from 'lucide-react';
+import { Heart, MapPin, Calendar, Gauge, Fuel, User, ArrowRightLeft } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useFavorites } from '../../hooks/useFavorites';
 import { useAuth } from '../../contexts/AuthProvider';
+import { useComparison } from '../../contexts/ComparisonContext';
 import { soundService } from '../../services/sound-service';
 import RealisticPaperclipBadge from '../SoldBadge/RealisticPaperclipBadge';
 import { UnifiedCar } from '../../services/car/unified-car-types';
@@ -170,6 +171,41 @@ const HeartButton = styled.button<{ $active: boolean }>`
   `}
 `;
 
+const CompareBtn = styled.button<{ $active: boolean }>`
+  position: absolute;
+  top: 12px;
+  right: 56px;
+  z-index: 10;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: ${props => props.$active ? 'rgba(204, 0, 0, 0.85)' : 'rgba(255, 255, 255, 0.1)'};
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+
+  svg {
+    width: 16px;
+    height: 16px;
+    transition: all 0.3s ease;
+  }
+
+  &:hover {
+    transform: scale(1.1);
+    background: ${props => props.$active ? 'rgba(204, 0, 0, 1)' : 'rgba(255, 255, 255, 0.25)'};
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+`;
+
 const ContentWrapper = styled.div`
   padding: 16px;
   flex: 1;
@@ -270,6 +306,7 @@ export const PremiumHomeCarCard: React.FC<PremiumHomeCarCardProps> = ({ car }) =
   const { language } = useLanguage();
   const { currentUser } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
+  const { addCar, removeCar, isSelected, isFull } = useComparison();
   const [isHearted, setIsHearted] = useState(false);
   const cardRef = useRef<HTMLAnchorElement>(null);
 
@@ -393,6 +430,31 @@ export const PremiumHomeCarCard: React.FC<PremiumHomeCarCardProps> = ({ car }) =
   const region = getBrandRegion(car.make || car.makeOther);
   const isSold = car.status === 'sold' || car.isSold;
   const imageSrc = getMainImage();
+  const isInComparison = isSelected(car.id);
+
+  const handleCompareClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isInComparison) {
+      removeCar(car.id);
+    } else {
+      if (isFull) {
+        toast.info(language === 'bg' ? 'Максимум 3 коли за сравнение' : 'Max 3 cars for comparison');
+        return;
+      }
+      addCar({
+        id: car.id,
+        numericId: car.carNumericId || car.numericId,
+        make: car.make || car.makeOther || '',
+        model: car.model || car.modelOther || '',
+        year: car.year,
+        price: car.price,
+        image: getMainImage(),
+        mileage: car.mileage,
+        fuelType: car.fuelType || car.fuel,
+      });
+    }
+  };
 
   return (
     <CardContainer
@@ -409,6 +471,16 @@ export const PremiumHomeCarCard: React.FC<PremiumHomeCarCardProps> = ({ car }) =
       >
         <Heart />
       </HeartButton>
+
+      <CompareBtn
+        $active={isInComparison}
+        onClick={handleCompareClick}
+        title={isInComparison
+          ? (language === 'bg' ? 'Премахни от сравнение' : 'Remove from comparison')
+          : (language === 'bg' ? 'Добави за сравнение' : 'Add to comparison')}
+      >
+        <ArrowRightLeft />
+      </CompareBtn>
 
       <ImageWrapper>
         {isSold && <RealisticPaperclipBadge text={t.sold} language={language as 'bg' | 'en'} variant="red" />}

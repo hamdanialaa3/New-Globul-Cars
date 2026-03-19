@@ -4,7 +4,7 @@ import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { useAuth } from './useAuth';
 import { useProfileType } from '../contexts/ProfileTypeContext';
 import { logger } from '../services/logger-service';
-import { SUBSCRIPTION_PLANS } from '../config/billing-config';
+import { SUBSCRIPTION_PLANS } from '../config/subscription-plans';
 import { toast } from 'react-toastify';
 
 export const useSubscriptionListener = () => {

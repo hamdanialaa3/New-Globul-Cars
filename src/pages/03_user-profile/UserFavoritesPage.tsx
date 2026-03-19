@@ -483,8 +483,12 @@ export const UserFavoritesPage: React.FC = () => {
 
       // Check if numeric ID matches current user
       if (numericId && user.uid) {
-        // TODO: Validate numericId matches user's numeric ID
-        // For now, just load favorites for current user
+        const { getNumericIdByFirebaseUid } = await import('../../services/numeric-id-lookup.service');
+        const userNumericId = await getNumericIdByFirebaseUid(user.uid);
+        if (userNumericId && String(userNumericId) !== String(numericId)) {
+          navigate('/favorites');
+          return;
+        }
       }
 
       try {

@@ -309,35 +309,60 @@ export class MetricsTracker {
   private async sendAlert(severity: 'warning' | 'critical', message: string): Promise<void> {
     logger.warn(`[ALERT ${severity.toUpperCase()}] ${message}`);
 
-    // إرسال إلى Slack (محاكاة)
+    // Slack webhook
     if (monitoringConfig.alerts.slack.webhookUrl) {
       try {
-        // TODO: Implement actual Slack webhook
-        logger.info('Slack alert sent', { severity, message });
+        await fetch(monitoringConfig.alerts.slack.webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            channel: monitoringConfig.alerts.slack.channel,
+            username: 'Koli AI Monitor',
+            text: `${severity === 'critical' ? '🚨' : '⚠️'} *[${severity.toUpperCase()}]* ${message}`,
+          }),
+        });
       } catch (error) {
         logger.error('Failed to send Slack alert', error as Error);
       }
     }
 
-    // إرسال إلى Telegram (محاكاة)
+    // Telegram bot
     if (monitoringConfig.alerts.telegram.botToken) {
       try {
-        // TODO: Implement actual Telegram bot
-        logger.info('Telegram alert sent', { severity, message });
+        const url = `https://api.telegram.org/bot${monitoringConfig.alerts.telegram.botToken}/sendMessage`;
+        await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: monitoringConfig.alerts.telegram.chatId,
+            text: `${severity === 'critical' ? '🚨' : '⚠️'} [${severity.toUpperCase()}]\n${message}`,
+            parse_mode: 'Markdown',
+          }),
+        });
       } catch (error) {
         logger.error('Failed to send Telegram alert', error as Error);
       }
     }
 
-    // إرسال إلى Email (محاكاة)
+    // Email via SendGrid
     if (monitoringConfig.alerts.email.length > 0) {
       try {
-        // TODO: Implement actual email sending
-        logger.info('Email alert sent', { 
-          severity, 
-          message, 
-          recipients: monitoringConfig.alerts.email 
-        });
+        const sgApiKey = import.meta.env.VITE_SENDGRID_API_KEY;
+        if (sgApiKey) {
+          await fetch('https://api.sendgrid.com/v3/mail/send', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${sgApiKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              personalizations: [{ to: monitoringConfig.alerts.email.map(email => ({ email })) }],
+              from: { email: 'alerts@koli.one', name: 'Koli AI Monitor' },
+              subject: `[${severity.toUpperCase()}] AI Alert — Koli One`,
+              content: [{ type: 'text/plain', value: message }],
+            }),
+          });
+        }
       } catch (error) {
         logger.error('Failed to send email alert', error as Error);
       }

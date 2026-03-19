@@ -43,6 +43,13 @@ export interface Notification {
   // ✅ CONSTITUTION: Numeric ID fields for strict URL generation
   sellerNumericId?: number;
   carNumericId?: number;
+  
+  // Extension properties
+  carMake?: string;
+  carModel?: string;
+  sellerName?: string;
+  carPrice?: number;
+  carImage?: string;
 }
 
 export class UnifiedNotificationService {
@@ -138,6 +145,45 @@ export class UnifiedNotificationService {
       logger.error('Error getting unread count', error as Error);
       return 0;
     }
+  }
+
+  async markAllAsRead(userId: string): Promise<void> {
+    try {
+      const q = query(
+        collection(db, 'notifications'),
+        where('userId', '==', userId),
+        where('isRead', '==', false)
+      );
+      const snapshot = await getDocs(q);
+      
+      const batch = writeBatch(db);
+      snapshot.docs.forEach((docSnap) => {
+        batch.update(docSnap.ref, { isRead: true });
+      });
+      await batch.commit();
+    } catch (error) {
+      logger.error('Error marking all notifications as read', error as Error);
+    }
+  }
+
+  async deleteNotification(notificationId: string): Promise<void> {
+    try {
+      const ref = doc(db, 'notifications', notificationId);
+      await deleteDoc(ref);
+    } catch (error) {
+      logger.error('Error deleting notification', error as Error);
+    }
+  }
+
+  getCarUrl(notification: Notification): string {
+    if (notification.link) return notification.link;
+    if (notification.carNumericId && notification.sellerNumericId) {
+      return `/cars/${notification.sellerNumericId}/${notification.carNumericId}`;
+    }
+    if (notification.carId) {
+      return `/car/${notification.carId}`;
+    }
+    return '/';
   }
 
   /**
