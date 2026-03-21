@@ -2,7 +2,6 @@
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import compression from 'vite-plugin-compression';
 
 // CRA → Vite Migration (TASK-15)
@@ -13,20 +12,18 @@ export default defineConfig(({ mode }) => {
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'DENY',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
-    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()'
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
   };
-  
+
   return {
+    // Inject Buffer and process globals directly — no vite-plugin-node-polyfills
+    // needed (avoids elliptic transitive dep, GHSA-848j-6mx2-7j84).
+    define: {
+      global: 'globalThis',
+    },
+
     plugins: [
       react(),
-      nodePolyfills({
-        // Node polyfills for browser (from craco config)
-        globals: {
-          Buffer: true,
-          process: true,
-        },
-        protocolImports: true,
-      }),
       // Gzip compression for production builds
       compression({
         algorithm: 'gzip',
@@ -40,25 +37,40 @@ export default defineConfig(({ mode }) => {
         threshold: 1024,
       }),
     ],
-    
+
     resolve: {
       alias: {
         // App src alias (from craco config)
         '@': path.resolve(__dirname, './src'),
-        
+
         // Monorepo packages (from craco config)
         '@globul-cars/core': path.resolve(__dirname, '../packages/core/src'),
         '@globul-cars/ui': path.resolve(__dirname, '../packages/ui/src'),
         '@globul-cars/auth': path.resolve(__dirname, '../packages/auth/src'),
         '@globul-cars/cars': path.resolve(__dirname, '../packages/cars/src'),
-        '@globul-cars/profile': path.resolve(__dirname, '../packages/profile/src'),
-        '@globul-cars/messaging': path.resolve(__dirname, '../packages/messaging/src'),
-        '@globul-cars/social': path.resolve(__dirname, '../packages/social/src'),
+        '@globul-cars/profile': path.resolve(
+          __dirname,
+          '../packages/profile/src'
+        ),
+        '@globul-cars/messaging': path.resolve(
+          __dirname,
+          '../packages/messaging/src'
+        ),
+        '@globul-cars/social': path.resolve(
+          __dirname,
+          '../packages/social/src'
+        ),
         '@globul-cars/admin': path.resolve(__dirname, '../packages/admin/src'),
-        '@globul-cars/payments': path.resolve(__dirname, '../packages/payments/src'),
+        '@globul-cars/payments': path.resolve(
+          __dirname,
+          '../packages/payments/src'
+        ),
         '@globul-cars/iot': path.resolve(__dirname, '../packages/iot/src'),
-        '@globul-cars/services': path.resolve(__dirname, '../packages/services/src'),
-        
+        '@globul-cars/services': path.resolve(
+          __dirname,
+          '../packages/services/src'
+        ),
+
         // Node polyfills (from craco config)
         'process/browser': 'process/browser',
         process: 'process/browser',
@@ -67,27 +79,28 @@ export default defineConfig(({ mode }) => {
         util: 'util',
       },
     },
-    
+
     server: {
       port: parseInt(env.PORT || '5173', 10),
       host: env.HOST || 'localhost',
       open: false,
       strictPort: false, // 🔧 جرب بورت آخر إذا كان المطلوب مشغول
-      
+
       // Cache control headers (from craco config)
       headers: {
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
-        'Pragma': 'no-cache',
-        'Expires': '0',
+        'Cache-Control':
+          'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+        Pragma: 'no-cache',
+        Expires: '0',
         'Surrogate-Control': 'no-store',
         ...securityHeaders,
       },
-      
+
       // HMR configuration
       hmr: {
         overlay: false,
       },
-      
+
       // File watching (from craco config)
       watch: {
         ignored: [
@@ -106,53 +119,63 @@ export default defineConfig(({ mode }) => {
         ...securityHeaders,
       },
     },
-    
+
     build: {
       outDir: 'build', // Match CRA output directory
       sourcemap: false, // Disabled for production security (from craco config)
-      
+
       // Code splitting: only separate Firebase (large & independent)
       // All other node_modules stay in one bundle to avoid circular deps
       rollupOptions: {
         output: {
-          manualChunks: (id) => {
+          manualChunks: id => {
             // Firebase vendor bundle (1MB+, clearly independent)
-            if (id.includes('node_modules/@firebase') || 
-                id.includes('node_modules/firebase')) {
+            if (
+              id.includes('node_modules/@firebase') ||
+              id.includes('node_modules/firebase')
+            ) {
               return 'vendor-firebase';
             }
-            
+
             // All other node_modules in one bundle
             // (react, react-is, styled-components, MUI, etc.)
             if (id.includes('node_modules')) {
               return 'vendor';
             }
           },
-          
+
           // Add timestamp for cache busting (from craco config)
           chunkFileNames: `assets/[name].[hash].${Date.now().toString(36)}.js`,
           entryFileNames: `assets/[name].[hash].${Date.now().toString(36)}.js`,
           assetFileNames: `assets/[name].[hash].[ext]`,
         },
       },
-      
+
       // Chunk size warnings (from craco config maxSize: 244000)
       chunkSizeWarningLimit: 244,
     },
-    
+
     // Environment variable prefix (CRA uses REACT_APP_*, Vite uses VITE_*)
     envPrefix: 'VITE_',
-    
+
     // CSS configuration
     css: {
       modules: {
         localsConvention: 'camelCase',
       },
     },
-    
+
     // Optimization
     optimizeDeps: {
-      include: ['react', 'react-dom', 'react-is', 'firebase/app', 'firebase/auth', 'firebase/firestore', 'framer-motion'],
+      include: [
+        'react',
+        'react-dom',
+        'react-is',
+        'firebase/app',
+        'firebase/auth',
+        'firebase/firestore',
+        'framer-motion',
+      ],
       esbuildOptions: {
         target: 'es2017', // Match craco config
       },
@@ -173,7 +196,10 @@ export default defineConfig(({ mode }) => {
         'src/**/*.{spec,test}.{ts,tsx,js,jsx}',
       ],
       alias: {
-        '@jest/globals': path.resolve(__dirname, 'src/__mocks__/jest-globals-shim.ts'),
+        '@jest/globals': path.resolve(
+          __dirname,
+          'src/__mocks__/jest-globals-shim.ts'
+        ),
       },
     },
   };
