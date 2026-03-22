@@ -14,12 +14,12 @@ const db = admin.firestore();
 // Budget Limits (Monthly in USD)
 const BUDGET_LIMITS = {
     gemini: 50.0,
-    deepseek: 30.0
+    deepseek: 30.0,
 };
 // Cost Per Request
 const COSTS = {
     gemini: 0.002,
-    deepseek: 0.0004
+    deepseek: 0.0004,
 };
 /**
  * Check current budget status
@@ -33,12 +33,18 @@ async function checkBudgetStatus() {
             geminiExceeded: false,
             deepseekExceeded: false,
             geminiRemaining: BUDGET_LIMITS.gemini,
-            deepseekRemaining: BUDGET_LIMITS.deepseek
+            deepseekRemaining: BUDGET_LIMITS.deepseek,
         };
     }
     const data = statsDoc.data();
-    const geminiData = data.gemini || { monthlySpent: 0, lastReset: currentMonth };
-    const deepseekData = data.deepseek || { monthlySpent: 0, lastReset: currentMonth };
+    const geminiData = data.gemini || {
+        monthlySpent: 0,
+        lastReset: currentMonth,
+    };
+    const deepseekData = data.deepseek || {
+        monthlySpent: 0,
+        lastReset: currentMonth,
+    };
     // Auto-reset if new month
     const geminiSpent = geminiData.lastReset === currentMonth ? geminiData.monthlySpent : 0;
     const deepseekSpent = deepseekData.lastReset === currentMonth ? deepseekData.monthlySpent : 0;
@@ -46,7 +52,7 @@ async function checkBudgetStatus() {
         geminiExceeded: geminiSpent >= BUDGET_LIMITS.gemini,
         deepseekExceeded: deepseekSpent >= BUDGET_LIMITS.deepseek,
         geminiRemaining: Math.max(0, BUDGET_LIMITS.gemini - geminiSpent),
-        deepseekRemaining: Math.max(0, BUDGET_LIMITS.deepseek - deepseekSpent)
+        deepseekRemaining: Math.max(0, BUDGET_LIMITS.deepseek - deepseekSpent),
     };
 }
 /**
@@ -58,7 +64,7 @@ function selectProvider(operationType, userType, budget) {
         return {
             provider: 'deepseek',
             reason: 'Both budgets exceeded, using cheaper provider',
-            estimatedCost: COSTS.deepseek
+            estimatedCost: COSTS.deepseek,
         };
     }
     // If one exceeded, use the other
@@ -66,14 +72,14 @@ function selectProvider(operationType, userType, budget) {
         return {
             provider: 'deepseek',
             reason: 'Gemini budget exceeded',
-            estimatedCost: COSTS.deepseek
+            estimatedCost: COSTS.deepseek,
         };
     }
     if (budget.deepseekExceeded) {
         return {
             provider: 'gemini',
             reason: 'DeepSeek budget exceeded',
-            estimatedCost: COSTS.gemini
+            estimatedCost: COSTS.gemini,
         };
     }
     // For complex operations, prefer Gemini; for bulk, prefer DeepSeek
@@ -81,7 +87,7 @@ function selectProvider(operationType, userType, budget) {
         return {
             provider: 'deepseek',
             reason: 'Bulk operation - cost-optimized',
-            estimatedCost: COSTS.deepseek
+            estimatedCost: COSTS.deepseek,
         };
     }
     // Default: alternate to balance costs
@@ -89,7 +95,7 @@ function selectProvider(operationType, userType, budget) {
     return {
         provider: isOddMinute ? 'gemini' : 'deepseek',
         reason: 'Load balanced',
-        estimatedCost: isOddMinute ? COSTS.gemini : COSTS.deepseek
+        estimatedCost: isOddMinute ? COSTS.gemini : COSTS.deepseek,
     };
 }
 /**
@@ -102,7 +108,7 @@ async function callGemini(prompt, language) {
     }
     const { GoogleGenerativeAI } = require('@google/generative-ai');
     const ai = new GoogleGenerativeAI(API_KEY);
-    const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = ai.getGenerativeModel({ model: 'gemini-2.0-flash' });
     const result = await model.generateContent(`[Language: ${language}] ${prompt}`);
     const response = result.response;
     return response.text();
@@ -119,16 +125,19 @@ async function callDeepSeek(prompt, language) {
     const response = await axios_1.default.post('https://api.deepseek.com/chat/completions', {
         model: 'deepseek-chat',
         messages: [
-            { role: 'system', content: `You are an automotive expert. Respond in ${language === 'bg' ? 'Bulgarian' : 'English'}.` },
-            { role: 'user', content: prompt }
+            {
+                role: 'system',
+                content: `You are an automotive expert. Respond in ${language === 'bg' ? 'Bulgarian' : 'English'}.`,
+            },
+            { role: 'user', content: prompt },
         ],
         temperature: 0.7,
-        max_tokens: 500
+        max_tokens: 500,
     }, {
         headers: {
-            'Authorization': `Bearer ${API_KEY}`,
-            'Content-Type': 'application/json'
-        }
+            Authorization: `Bearer ${API_KEY}`,
+            'Content-Type': 'application/json',
+        },
     });
     return ((_b = (_a = response.data.choices[0]) === null || _a === void 0 ? void 0 : _a.message) === null || _b === void 0 ? void 0 : _b.content) || 'No response';
 }
@@ -143,14 +152,14 @@ async function trackCost(provider, cost) {
     await statsRef.set({
         [providerKey]: admin.firestore.FieldValue.increment(cost),
         [resetKey]: currentMonth,
-        lastUpdated: new Date().toISOString()
+        lastUpdated: new Date().toISOString(),
     }, { merge: true });
 }
 /**
  * Build prompt from vehicle data
  */
 function buildPrompt(vehicleData, language) {
-    const { make, model, year, fuelType, transmission, mileage, engineSize, power, equipment, condition, color } = vehicleData;
+    const { make, model, year, fuelType, transmission, mileage, engineSize, power, equipment, condition, color, } = vehicleData;
     let prompt = language === 'bg' ? `Напиши описание на:\n` : `Write a description for:\n`;
     prompt += `${make} ${model} (${year})\n`;
     if (color)
@@ -169,7 +178,7 @@ function buildPrompt(vehicleData, language) {
         prompt += `Condition: ${condition}\n`;
     if (equipment && equipment.length > 0) {
         prompt += `Equipment:\n`;
-        equipment.forEach((item) => prompt += `• ${item}\n`);
+        equipment.forEach((item) => (prompt += `• ${item}\n`));
     }
     prompt += `\nThe description should:\n`;
     prompt += `- Be in ${language === 'bg' ? 'Bulgarian' : 'English'}\n`;
@@ -183,15 +192,23 @@ function buildPrompt(vehicleData, language) {
  * Hybrid AI Proxy Callable Function (v2 API)
  */
 exports.hybridAIProxy = functions.https.onCall(async (data, context) => {
+    // Auth check — only authenticated users can use AI services
+    if (!context.auth) {
+        throw new functions.https.HttpsError('unauthenticated', 'Authentication required to use AI services');
+    }
     try {
         const requestData = data;
         const { vehicleData, options } = requestData;
-        const { language = 'bg', userType = 'private', operationType = 'single', forceProvider } = options;
+        const { language = 'bg', userType = 'private', operationType = 'single', forceProvider, } = options;
         // Check budget status
         const budgetStatus = await checkBudgetStatus();
         // Select provider
         const decision = forceProvider
-            ? { provider: forceProvider, reason: 'Manually forced', estimatedCost: COSTS[forceProvider] }
+            ? {
+                provider: forceProvider,
+                reason: 'Manually forced',
+                estimatedCost: COSTS[forceProvider],
+            }
             : selectProvider(operationType, userType, budgetStatus);
         console.log('[hybridAIProxy] Routing Decision:', decision);
         // Build prompt
@@ -228,9 +245,11 @@ exports.hybridAIProxy = functions.https.onCall(async (data, context) => {
             cost: decision.estimatedCost,
             generatedBy: 'ai',
             budgetStatus: {
-                geminiRemaining: budgetStatus.geminiRemaining - (decision.provider === 'gemini' ? decision.estimatedCost : 0),
-                deepseekRemaining: budgetStatus.deepseekRemaining - (decision.provider === 'deepseek' ? decision.estimatedCost : 0)
-            }
+                geminiRemaining: budgetStatus.geminiRemaining -
+                    (decision.provider === 'gemini' ? decision.estimatedCost : 0),
+                deepseekRemaining: budgetStatus.deepseekRemaining -
+                    (decision.provider === 'deepseek' ? decision.estimatedCost : 0),
+            },
         };
     }
     catch (error) {

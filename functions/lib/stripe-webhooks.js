@@ -26,18 +26,18 @@ const stripe = stripeKey ? new stripe_1.default(stripeKey) : null;
  * @since January 6, 2026 - Enhanced with refunds and proper logging
  */
 exports.stripeWebhooks = functions
-    .region("europe-west1")
+    .region('europe-west1')
     .https.onRequest(async (req, res) => {
-    const sig = req.headers["stripe-signature"];
-    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
+    const sig = req.headers['stripe-signature'];
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
     if (!sig || !webhookSecret) {
-        logger.error("Missing Stripe signature or webhook secret");
-        res.status(400).send("Missing signature or secret");
+        logger.error('Missing Stripe signature or webhook secret');
+        res.status(400).send('Missing signature or secret');
         return;
     }
     if (!stripe) {
-        logger.error("Stripe is not configured - missing STRIPE_SECRET_KEY");
-        res.status(503).send("Stripe not configured");
+        logger.error('Stripe is not configured - missing STRIPE_SECRET_KEY');
+        res.status(503).send('Stripe not configured');
         return;
     }
     let event;
@@ -45,72 +45,83 @@ exports.stripeWebhooks = functions
         event = stripe.webhooks.constructEvent(req.rawBody, sig, webhookSecret);
     }
     catch (err) {
-        logger.error("Webhook signature verification failed", { error: err.message });
+        logger.error('Webhook signature verification failed', {
+            error: err.message,
+        });
         res.status(400).send(`Webhook Error: ${err.message}`);
         return;
     }
     try {
-        logger.info("Processing Stripe event", { type: event.type, id: event.id });
+        logger.info('Processing Stripe event', {
+            type: event.type,
+            id: event.id,
+        });
         switch (event.type) {
             // ===== SUBSCRIPTION EVENTS =====
-            case "customer.subscription.created": {
+            case 'customer.subscription.created': {
                 const subscription = event.data.object;
                 await handleSubscriptionCreated(subscription);
                 break;
             }
-            case "customer.subscription.updated": {
+            case 'customer.subscription.updated': {
                 const subscription = event.data.object;
                 await handleSubscriptionChange(subscription);
                 break;
             }
-            case "customer.subscription.deleted": {
+            case 'customer.subscription.deleted': {
                 const subscription = event.data.object;
                 await handleSubscriptionCancelled(subscription);
                 break;
             }
-            case "customer.subscription.paused": {
+            case 'customer.subscription.paused': {
                 const subscription = event.data.object;
                 await handleSubscriptionPaused(subscription);
                 break;
             }
             // ===== PAYMENT EVENTS =====
-            case "invoice.payment_succeeded": {
+            case 'invoice.payment_succeeded': {
                 const invoice = event.data.object;
                 await handlePaymentSucceeded(invoice);
                 break;
             }
-            case "invoice.payment_failed": {
+            case 'invoice.payment_failed': {
                 const invoice = event.data.object;
                 await handlePaymentFailed(invoice);
                 break;
             }
             // ===== REFUND EVENTS =====
-            case "charge.refunded": {
+            case 'charge.refunded': {
                 const charge = event.data.object;
                 await handleRefund(charge);
                 break;
             }
-            case "charge.dispute.created": {
+            case 'charge.dispute.created': {
                 const dispute = event.data.object;
                 await handleDispute(dispute);
                 break;
             }
             default:
-                logger.info("Unhandled Stripe event type", { type: event.type });
+                logger.info('Unhandled Stripe event type', { type: event.type });
         }
         res.json({ received: true });
     }
     catch (error) {
-        logger.error("Error handling Stripe webhook", { error, eventType: event.type });
-        res.status(500).send("Internal Server Error");
+        logger.error('Error handling Stripe webhook', {
+            error,
+            eventType: event.type,
+        });
+        res.status(500).send('Internal Server Error');
     }
 });
 // ===== HELPER: Find User by Stripe Customer ID =====
 async function findUserByStripeId(customerId) {
-    const usersRef = db.collection("users");
-    const snapshot = await usersRef.where("stripeId", "==", customerId).limit(1).get();
+    const usersRef = db.collection('users');
+    const snapshot = await usersRef
+        .where('stripeId', '==', customerId)
+        .limit(1)
+        .get();
     if (snapshot.empty) {
-        logger.warn("No user found for Stripe Customer", { customerId });
+        logger.warn('No user found for Stripe Customer', { customerId });
         return null;
     }
     return snapshot.docs[0];
@@ -121,17 +132,17 @@ function mapProductToPlanTier(productId) {
     // These Product IDs are from your Stripe Dashboard
     const productMapping = {
         // Dealer Product IDs (from stripe-extension.config.ts)
-        'prod_TcMRPH1acbKwsJ': 'dealer', // Mobilebg Cars - Dealer
+        prod_TcMRPH1acbKwsJ: 'dealer', // Mobilebg Cars - Dealer
         // Company Product IDs (from stripe-extension.config.ts)
-        'prod_TcMX8XZcmlddRd': 'company', // MobileBG Cars - Company
+        prod_TcMX8XZcmlddRd: 'company', // MobileBG Cars - Company
         // Legacy/fallback IDs (if different format)
-        'prod_dealer_monthly': 'dealer',
-        'prod_dealer_yearly': 'dealer',
-        'prod_company_monthly': 'company',
-        'prod_company_yearly': 'company',
+        prod_dealer_monthly: 'dealer',
+        prod_dealer_yearly: 'dealer',
+        prod_company_monthly: 'company',
+        prod_company_yearly: 'company',
     };
     // ✅ Return 'free' instead of 'private' for consistency with planTier
-    return productId ? (productMapping[productId] || 'free') : 'free';
+    return productId ? productMapping[productId] || 'free' : 'free';
 }
 // ===== SUBSCRIPTION HANDLERS =====
 async function handleSubscriptionCreated(subscription) {
@@ -142,10 +153,10 @@ async function handleSubscriptionCreated(subscription) {
         return;
     const productId = (_b = (_a = subscription.items.data[0]) === null || _a === void 0 ? void 0 : _a.price) === null || _b === void 0 ? void 0 : _b.product;
     const newTier = mapProductToPlanTier(productId);
-    logger.info("New subscription created", {
+    logger.info('New subscription created', {
         userId: userDoc.id,
         tier: newTier,
-        subscriptionId: subscription.id
+        subscriptionId: subscription.id,
     });
     // ✅ CRITICAL: Sync profileType with planTier
     const newProfileType = newTier === 'free' ? 'private' : newTier;
@@ -157,7 +168,7 @@ async function handleSubscriptionCreated(subscription) {
         subscriptionStart: admin.firestore.Timestamp.fromMillis(subscription.start_date * 1000),
         // Use correct Stripe field: current_period_end
         subscriptionCurrentPeriodEnd: admin.firestore.Timestamp.fromMillis(subscription.current_period_end * 1000),
-        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
     // Send welcome notification
     await createNotification(userDoc.id, {
@@ -165,7 +176,7 @@ async function handleSubscriptionCreated(subscription) {
         title: 'Вашият абонамент е активиран! 🎉',
         titleEn: 'Your subscription is now active! 🎉',
         message: `Вие сте ${newTier === 'dealer' ? 'Дилър' : 'Компания'} план.`,
-        messageEn: `You are now on the ${newTier} plan.`
+        messageEn: `You are now on the ${newTier} plan.`,
     });
 }
 async function handleSubscriptionChange(subscription) {
@@ -180,18 +191,18 @@ async function handleSubscriptionChange(subscription) {
     // If subscription is no longer active, downgrade to free
     if (status !== 'active' && status !== 'trialing') {
         if (currentTier !== 'private') {
-            logger.info("Downgrading user due to subscription status", {
+            logger.info('Downgrading user due to subscription status', {
                 userId: userDoc.id,
                 from: currentTier,
                 to: 'private',
-                reason: status
+                reason: status,
             });
             // ✅ CRITICAL: Sync profileType with planTier
             await userDoc.ref.update({
                 planTier: 'free', // ✅ Use 'free' instead of 'private' for consistency
                 profileType: 'private', // ✅ Sync profileType
                 subscriptionStatus: status,
-                updatedAt: admin.firestore.FieldValue.serverTimestamp()
+                updatedAt: admin.firestore.FieldValue.serverTimestamp(),
             });
             // 🔴 CRITICAL: Deactivate excess listings on downgrade
             await deactivateExcessListings(userDoc.id, 'free'); // ✅ Use 'free' for consistency
@@ -200,7 +211,7 @@ async function handleSubscriptionChange(subscription) {
                 title: 'Абонаментът ви е прекратен',
                 titleEn: 'Your subscription has been downgraded',
                 message: 'Моля, подновете плащането за да възстановите достъпа.',
-                messageEn: 'Please renew your payment to restore access.'
+                messageEn: 'Please renew your payment to restore access.',
             });
         }
     }
@@ -209,7 +220,12 @@ async function handleSubscriptionChange(subscription) {
         const productId = (_b = (_a = subscription.items.data[0]) === null || _a === void 0 ? void 0 : _a.price) === null || _b === void 0 ? void 0 : _b.product;
         const newTier = mapProductToPlanTier(productId);
         // Check if this is a downgrade (e.g., company -> dealer)
-        const tierPriority = { 'free': 0, 'private': 0, 'dealer': 1, 'company': 2 };
+        const tierPriority = {
+            free: 0,
+            private: 0,
+            dealer: 1,
+            company: 2,
+        };
         const normalize = (t) => (t === 'private' ? 'free' : t);
         const isDowngrade = tierPriority[normalize(newTier)] < tierPriority[normalize(currentTier)];
         // ✅ CRITICAL: Sync profileType with planTier
@@ -220,11 +236,15 @@ async function handleSubscriptionChange(subscription) {
             subscriptionStatus: status,
             // Use correct Stripe field: current_period_end
             subscriptionCurrentPeriodEnd: admin.firestore.Timestamp.fromMillis(subscription.current_period_end * 1000),
-            updatedAt: admin.firestore.FieldValue.serverTimestamp()
+            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
         });
         // 🔴 CRITICAL: Handle tier downgrade (e.g., company -> dealer)
         if (isDowngrade) {
-            logger.info("Plan tier downgrade detected", { userId: userDoc.id, from: currentTier, to: newTier });
+            logger.info('Plan tier downgrade detected', {
+                userId: userDoc.id,
+                from: currentTier,
+                to: newTier,
+            });
             // ✅ Use correct tier (newTier can be 'free', 'dealer', or 'company')
             const targetTier = newTier === 'free' ? 'free' : newTier;
             await deactivateExcessListings(userDoc.id, targetTier);
@@ -239,14 +259,18 @@ async function handleSubscriptionCancelled(subscription) {
         return;
     const userId = userDoc.id;
     const previousTier = ((_a = userDoc.data()) === null || _a === void 0 ? void 0 : _a.planTier) || 'dealer';
-    logger.info("Subscription cancelled", { userId, subscriptionId: subscription.id, previousTier });
+    logger.info('Subscription cancelled', {
+        userId,
+        subscriptionId: subscription.id,
+        previousTier,
+    });
     // ✅ CRITICAL: Sync profileType with planTier
     await userDoc.ref.update({
         planTier: 'free', // ✅ Use 'free' instead of 'private' for consistency
         profileType: 'private', // ✅ Sync profileType
         subscriptionStatus: 'cancelled',
         subscriptionEndedAt: admin.firestore.FieldValue.serverTimestamp(),
-        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
     // 🔴 CRITICAL: Deactivate excess listings on downgrade
     if (previousTier !== 'free' && previousTier !== 'private') {
@@ -257,7 +281,7 @@ async function handleSubscriptionCancelled(subscription) {
         title: 'Абонаментът ви е отменен',
         titleEn: 'Your subscription has been cancelled',
         message: 'Благодарим ви, че използвахте нашата платформа!',
-        messageEn: 'Thank you for using our platform!'
+        messageEn: 'Thank you for using our platform!',
     });
 }
 async function handleSubscriptionPaused(subscription) {
@@ -265,17 +289,17 @@ async function handleSubscriptionPaused(subscription) {
     const userDoc = await findUserByStripeId(customerId);
     if (!userDoc)
         return;
-    logger.info("Subscription paused", { userId: userDoc.id });
+    logger.info('Subscription paused', { userId: userDoc.id });
     await userDoc.ref.update({
         subscriptionStatus: 'paused',
-        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
     await createNotification(userDoc.id, {
         type: 'subscription_paused',
         title: 'Абонаментът ви е на пауза',
         titleEn: 'Your subscription is paused',
         message: 'Можете да го възстановите по всяко време.',
-        messageEn: 'You can resume it at any time.'
+        messageEn: 'You can resume it at any time.',
     });
 }
 // ===== PAYMENT HANDLERS =====
@@ -285,27 +309,27 @@ async function handlePaymentSucceeded(invoice) {
     if (!userDoc)
         return;
     const amountPaid = (invoice.amount_paid || 0) / 100; // Convert cents to EUR
-    logger.info("Payment succeeded", {
+    logger.info('Payment succeeded', {
         userId: userDoc.id,
         amount: amountPaid,
-        invoiceId: invoice.id
+        invoiceId: invoice.id,
     });
     // Record payment in history
-    await db.collection("payments").add({
+    await db.collection('payments').add({
         userId: userDoc.id,
         stripeCustomerId: customerId,
         invoiceId: invoice.id,
         amount: amountPaid,
         currency: invoice.currency,
         status: 'succeeded',
-        timestamp: admin.firestore.FieldValue.serverTimestamp()
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
     });
     await createNotification(userDoc.id, {
         type: 'payment_succeeded',
         title: 'Плащането е успешно ✅',
         titleEn: 'Payment successful ✅',
         message: `Получихме €${amountPaid.toFixed(2)} за вашия абонамент.`,
-        messageEn: `We received €${amountPaid.toFixed(2)} for your subscription.`
+        messageEn: `We received €${amountPaid.toFixed(2)} for your subscription.`,
     });
 }
 async function handlePaymentFailed(invoice) {
@@ -315,13 +339,13 @@ async function handlePaymentFailed(invoice) {
     if (!userDoc)
         return;
     const attemptCount = invoice.attempt_count || 1;
-    logger.warn("Payment failed", {
+    logger.warn('Payment failed', {
         userId: userDoc.id,
         invoiceId: invoice.id,
-        attemptCount
+        attemptCount,
     });
     // Record failed payment
-    await db.collection("payments").add({
+    await db.collection('payments').add({
         userId: userDoc.id,
         stripeCustomerId: customerId,
         invoiceId: invoice.id,
@@ -329,13 +353,13 @@ async function handlePaymentFailed(invoice) {
         currency: invoice.currency,
         status: 'failed',
         attemptCount,
-        timestamp: admin.firestore.FieldValue.serverTimestamp()
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
     });
     // Update user record
     await userDoc.ref.update({
         paymentFailedAt: admin.firestore.FieldValue.serverTimestamp(),
         paymentFailedCount: admin.firestore.FieldValue.increment(1),
-        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
     // Notify user with urgency based on attempt count
     const urgency = attemptCount >= 3 ? '🚨' : '⚠️';
@@ -348,19 +372,21 @@ async function handlePaymentFailed(invoice) {
             : 'Моля, проверете платежните си данни.',
         messageEn: attemptCount >= 3
             ? 'Please update your payment method immediately!'
-            : 'Please check your payment details.'
+            : 'Please check your payment details.',
     });
     // If 3+ failed attempts, downgrade immediately
     if (attemptCount >= 3) {
         const currentTier = (_a = userDoc.data()) === null || _a === void 0 ? void 0 : _a.planTier;
         if (currentTier !== 'private') {
-            logger.warn("Auto-downgrading due to multiple payment failures", { userId: userDoc.id });
+            logger.warn('Auto-downgrading due to multiple payment failures', {
+                userId: userDoc.id,
+            });
             // ✅ CRITICAL: Sync profileType with planTier
             await userDoc.ref.update({
                 planTier: 'free', // ✅ Use 'free' instead of 'private' for consistency
                 profileType: 'private', // ✅ Sync profileType
                 subscriptionStatus: 'past_due',
-                autoDowngradedAt: admin.firestore.FieldValue.serverTimestamp()
+                autoDowngradedAt: admin.firestore.FieldValue.serverTimestamp(),
             });
         }
     }
@@ -371,21 +397,21 @@ async function handleRefund(charge) {
     const customerId = charge.customer;
     const refundAmount = (charge.amount_refunded || 0) / 100;
     const userDoc = await findUserByStripeId(customerId);
-    logger.info("Processing refund", {
+    logger.info('Processing refund', {
         customerId,
         amount: refundAmount,
         chargeId: charge.id,
-        userId: userDoc === null || userDoc === void 0 ? void 0 : userDoc.id
+        userId: userDoc === null || userDoc === void 0 ? void 0 : userDoc.id,
     });
     // Record refund
-    await db.collection("refunds").add({
+    await db.collection('refunds').add({
         userId: (userDoc === null || userDoc === void 0 ? void 0 : userDoc.id) || 'unknown',
         stripeCustomerId: customerId,
         chargeId: charge.id,
         amount: refundAmount,
         currency: charge.currency,
         reason: ((_b = (_a = charge.refunds) === null || _a === void 0 ? void 0 : _a.data[0]) === null || _b === void 0 ? void 0 : _b.reason) || 'requested_by_customer',
-        timestamp: admin.firestore.FieldValue.serverTimestamp()
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
     });
     if (userDoc) {
         await createNotification(userDoc.id, {
@@ -393,40 +419,40 @@ async function handleRefund(charge) {
             title: 'Възстановяване на сума ✅',
             titleEn: 'Refund processed ✅',
             message: `€${refundAmount.toFixed(2)} бяха възстановени във вашата сметка.`,
-            messageEn: `€${refundAmount.toFixed(2)} has been refunded to your account.`
+            messageEn: `€${refundAmount.toFixed(2)} has been refunded to your account.`,
         });
     }
 }
 async function handleDispute(dispute) {
     const chargeId = dispute.charge;
-    logger.error("Payment dispute created - REQUIRES ATTENTION", {
+    logger.error('Payment dispute created - REQUIRES ATTENTION', {
         disputeId: dispute.id,
         chargeId,
         amount: dispute.amount / 100,
-        reason: dispute.reason
+        reason: dispute.reason,
     });
     // Record dispute for admin review
-    await db.collection("disputes").add({
+    await db.collection('disputes').add({
         disputeId: dispute.id,
         chargeId,
         amount: dispute.amount / 100,
         currency: dispute.currency,
         reason: dispute.reason,
         status: dispute.status,
-        createdAt: admin.firestore.FieldValue.serverTimestamp()
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
     // Notify admins (you should have an admin notification system)
-    await db.collection("admin_alerts").add({
+    await db.collection('admin_alerts').add({
         type: 'payment_dispute',
         severity: 'high',
         message: `New payment dispute: €${dispute.amount / 100} - ${dispute.reason}`,
         disputeId: dispute.id,
-        createdAt: admin.firestore.FieldValue.serverTimestamp()
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 }
 async function createNotification(userId, data) {
     try {
-        await db.collection("notifications").add({
+        await db.collection('notifications').add({
             userId,
             type: data.type,
             title: data.title,
@@ -434,12 +460,12 @@ async function createNotification(userId, data) {
             message: data.message,
             messageEn: data.messageEn,
             read: false,
-            createdAt: admin.firestore.FieldValue.serverTimestamp()
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
         });
-        logger.info("Notification created", { userId, type: data.type });
+        logger.info('Notification created', { userId, type: data.type });
     }
     catch (error) {
-        logger.error("Failed to create notification", { userId, error });
+        logger.error('Failed to create notification', { userId, error });
     }
 }
 // ===== LISTING VISIBILITY ENFORCEMENT =====
@@ -457,29 +483,41 @@ async function createNotification(userId, data) {
 async function deactivateExcessListings(userId, newPlanTier) {
     // ✅ CRITICAL: Use correct limits matching SUBSCRIPTION_PLANS
     // Limits from subscription-plans.ts:
-    // - free/private: 3 listings
-    // - dealer: 30 listings (✅ FIXED: Was 10, now correctly 30)
+    // - free/private: 10 listings
+    // - dealer: 100 listings
     // - company: -1 (unlimited)
     const planLimits = {
-        'private': 3,
-        'free': 3, // ✅ Alias for consistency
-        'dealer': 30, // ✅ FIXED: Was 10, now correctly 30 (matches subscription-plans.ts)
-        'company': Infinity
+        private: 10,
+        free: 10,
+        dealer: 100,
+        company: Infinity,
     };
     const limit = planLimits[newPlanTier];
     if (limit === Infinity) {
-        logger.info("No listing limit for company plan", { userId });
+        logger.info('No listing limit for company plan', { userId });
         return;
     }
-    logger.info("Checking listing limits on downgrade", { userId, newPlanTier, limit });
+    logger.info('Checking listing limits on downgrade', {
+        userId,
+        newPlanTier,
+        limit,
+    });
     // Vehicle collections to check
-    const vehicleCollections = ['passenger_cars', 'suvs', 'vans', 'motorcycles', 'trucks', 'buses'];
+    const vehicleCollections = [
+        'passenger_cars',
+        'suvs',
+        'vans',
+        'motorcycles',
+        'trucks',
+        'buses',
+    ];
     let totalActiveListings = 0;
     const allActiveListings = [];
     // Gather all active listings across all collections
     for (const collection of vehicleCollections) {
         try {
-            const snapshot = await db.collection(collection)
+            const snapshot = await db
+                .collection(collection)
                 .where('sellerId', '==', userId)
                 .where('isActive', '==', true)
                 .where('status', '==', 'active')
@@ -487,7 +525,7 @@ async function deactivateExcessListings(userId, newPlanTier) {
             snapshot.docs.forEach(doc => {
                 allActiveListings.push({
                     ref: doc.ref,
-                    createdAt: doc.data().createdAt || admin.firestore.Timestamp.now()
+                    createdAt: doc.data().createdAt || admin.firestore.Timestamp.now(),
                 });
             });
             totalActiveListings += snapshot.size;
@@ -496,9 +534,17 @@ async function deactivateExcessListings(userId, newPlanTier) {
             logger.error(`Error checking ${collection} listings`, { userId, error });
         }
     }
-    logger.info("Current active listings", { userId, totalActiveListings, limit });
+    logger.info('Current active listings', {
+        userId,
+        totalActiveListings,
+        limit,
+    });
     if (totalActiveListings <= limit) {
-        logger.info("No excess listings to deactivate", { userId, totalActiveListings, limit });
+        logger.info('No excess listings to deactivate', {
+            userId,
+            totalActiveListings,
+            limit,
+        });
         return;
     }
     // Sort by createdAt (oldest first) - deactivate newest ones
@@ -507,11 +553,11 @@ async function deactivateExcessListings(userId, newPlanTier) {
     });
     // Keep the oldest ones (up to limit), deactivate the rest
     const listingsToDeactivate = allActiveListings.slice(limit);
-    logger.info("Deactivating excess listings", {
+    logger.info('Deactivating excess listings', {
         userId,
         totalActive: totalActiveListings,
         limit,
-        toDeactivate: listingsToDeactivate.length
+        toDeactivate: listingsToDeactivate.length,
     });
     // Batch deactivate
     const BATCH_SIZE = 500;
@@ -523,7 +569,7 @@ async function deactivateExcessListings(userId, newPlanTier) {
             status: 'deactivated_plan_downgrade',
             deactivatedAt: admin.firestore.FieldValue.serverTimestamp(),
             previousStatus: 'active',
-            deactivationReason: 'plan_downgrade'
+            deactivationReason: 'plan_downgrade',
         });
         batchCount++;
         if (batchCount >= BATCH_SIZE) {
@@ -536,9 +582,9 @@ async function deactivateExcessListings(userId, newPlanTier) {
     if (batchCount > 0) {
         await batch.commit();
     }
-    logger.info("Excess listings deactivated successfully", {
+    logger.info('Excess listings deactivated successfully', {
         userId,
-        deactivatedCount: listingsToDeactivate.length
+        deactivatedCount: listingsToDeactivate.length,
     });
     // Notify user about deactivated listings
     await createNotification(userId, {
@@ -546,7 +592,7 @@ async function deactivateExcessListings(userId, newPlanTier) {
         title: `${listingsToDeactivate.length} обяви бяха деактивирани`,
         titleEn: `${listingsToDeactivate.length} listings have been deactivated`,
         message: `Поради промяна на плана, ${listingsToDeactivate.length} от вашите обяви бяха временно скрити. Можете да ги активирате отново, като изберете кои да запазите.`,
-        messageEn: `Due to plan change, ${listingsToDeactivate.length} of your listings have been temporarily hidden. You can reactivate them by choosing which ones to keep.`
+        messageEn: `Due to plan change, ${listingsToDeactivate.length} of your listings have been temporarily hidden. You can reactivate them by choosing which ones to keep.`,
     });
 }
 //# sourceMappingURL=stripe-webhooks.js.map

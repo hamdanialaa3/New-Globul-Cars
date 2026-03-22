@@ -3,20 +3,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.syncCarsToGoogleAds = void 0;
 const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
-// import { GoogleAdsApi, Customer } from 'google-ads-api';
-/*
-const client = new GoogleAdsApi({
-    client_id: process.env.GOOGLE_ADS_CLIENT_ID || '',
-    client_secret: process.env.GOOGLE_ADS_CLIENT_SECRET || '',
-    developer_token: process.env.GOOGLE_ADS_DEVELOPER_TOKEN || '',
-});
-*/
+// Google Ads API: install `google-ads-api` when credentials are ready
+// import { GoogleAdsApi } from 'google-ads-api';
 exports.syncCarsToGoogleAds = functions
     .runWith({ memory: '1GB', timeoutSeconds: 540 })
     .pubsub.schedule('every 6 hours')
     .onRun(async () => {
     try {
-        if (!process.env.GOOGLE_ADS_CLIENT_ID) {
+        const clientId = process.env.GOOGLEADS_CLIENT_ID;
+        const clientSecret = process.env.GOOGLEADS_CLIENT_SECRET;
+        const developerToken = process.env.GOOGLEADS_DEVELOPER_TOKEN;
+        const customerId = process.env.GOOGLEADS_CUSTOMER_ID;
+        const refreshToken = process.env.GOOGLEADS_REFRESH_TOKEN;
+        if (!clientId || !developerToken) {
             functions.logger.warn('Google Ads credentials missing, skipping sync.');
             return;
         }
@@ -28,16 +27,9 @@ exports.syncCarsToGoogleAds = functions
         const snapshot = await carsRef.get();
         if (snapshot.empty)
             return;
-        /*
-        const _customer: Customer = client.Customer({
-            customer_id: process.env.GOOGLE_ADS_CUSTOMER_ID || '',
-            refresh_token: process.env.GOOGLE_ADS_REFRESH_TOKEN || '',
-        });
-        */
         const ads = snapshot.docs.map(doc => {
             var _a, _b;
             const car = doc.data();
-            // Skip legacy cars without numeric IDs
             if (!car.sellerNumericId || !car.carNumericId)
                 return null;
             return {
@@ -48,13 +40,20 @@ exports.syncCarsToGoogleAds = functions
                 finalUrl: `https://koli.one/car/${car.sellerNumericId}/${car.carNumericId}`,
                 imageUrl: ((_b = car.images) === null || _b === void 0 ? void 0 : _b[0]) || car.mainImage,
             };
-        }).filter(Boolean); // Remove nulls
-        if (ads.length > 0) {
-            // This is a simplified example. In reality, you'd batch these to specific ad groups.
-            // API placeholder
-            // await customer.adGroups.adGroupAds.create(ads);
-            functions.logger.info(`✅ Would sync ${ads.length} cars to Google Ads`);
+        }).filter(Boolean);
+        if (ads.length === 0)
+            return;
+        // Store prepared ads for Google Ads sync processing
+        const batch = db.batch();
+        for (const ad of ads) {
+            const ref = db.collection('google_ads_queue').doc();
+            batch.set(ref, Object.assign(Object.assign({}, ad), { status: 'pending', createdAt: admin.firestore.FieldValue.serverTimestamp() }));
         }
+        await batch.commit();
+        functions.logger.info(`✅ Queued ${ads.length} car ads for Google Ads sync`, {
+            customerId,
+            hasCredentials: !!(clientId && clientSecret && refreshToken)
+        });
     }
     catch (error) {
         functions.logger.error('Google Ads sync error:', error);
