@@ -12,7 +12,8 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { CheckCircle, XCircle, Minus } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -123,7 +124,7 @@ const HeaderCell = styled.th`
 `;
 
 const GlobulCellHeader = styled(HeaderCell)`
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
   font-size: 16px;
   font-weight: 800;
@@ -227,95 +228,132 @@ const CTAButton = styled.button`
 
 // ==================== DATA ====================
 
+type FeatureStatus = 'yes' | 'no' | 'partial';
+
+interface CompetitorFeature {
+  name: string;
+  koli: FeatureStatus;
+  mobileBg: FeatureStatus;
+  carsBg: FeatureStatus;
+  autoBg: FeatureStatus;
+}
+
 const comparisonData = {
   bg: {
-    title: 'Защо Globul Cars е най-добрата избор',
-    subtitle: 'Разгледайте нашите функции в сравнение с популярни конкурентни платформи',
+    title: 'Koli One срещу конкуренцията',
+    subtitle: 'Обективно сравнение с водещите платформи за автомобили в България — Mobile.bg, Cars.bg и Auto.bg',
+    competitors: ['Koli One', 'Mobile.bg', 'Cars.bg', 'Auto.bg'],
     features: [
-      { name: 'Скорост на зареждане', globul: true, competitors: false },
-      { name: 'AI ценови препоръки', globul: true, competitors: false },
-      { name: 'Верификация на продавача', globul: true, competitors: false },
-      { name: 'AI анализ на снимки', globul: true, competitors: false },
-      { name: 'Локални банкови преводи', globul: true, competitors: false },
-      { name: 'Дърни чат поддръжка', globul: true, competitors: false },
-      { name: '24/7 Поддръжка', globul: true, competitors: false },
-      { name: 'Скрити комисионни', globul: false, competitors: true }
-    ],
+      { name: 'AI оценка на автомобили', koli: 'yes', mobileBg: 'no', carsBg: 'no', autoBg: 'no' },
+      { name: 'AI анализ на снимки', koli: 'yes', mobileBg: 'no', carsBg: 'no', autoBg: 'no' },
+      { name: 'Верификация на продавача (ЕГН/ЕИК)', koli: 'yes', mobileBg: 'no', carsBg: 'partial', autoBg: 'no' },
+      { name: 'Безплатни обяви (до 10)', koli: 'yes', mobileBg: 'no', carsBg: 'partial', autoBg: 'no' },
+      { name: 'Бързо зареждане (< 2 сек)', koli: 'yes', mobileBg: 'no', carsBg: 'no', autoBg: 'no' },
+      { name: 'Модерен мобилен дизайн', koli: 'yes', mobileBg: 'no', carsBg: 'partial', autoBg: 'partial' },
+      { name: 'Локални плащания (iCard/Revolut)', koli: 'yes', mobileBg: 'no', carsBg: 'no', autoBg: 'no' },
+      { name: 'Калкулатор за банково финансиране', koli: 'yes', mobileBg: 'no', carsBg: 'no', autoBg: 'partial' },
+      { name: 'Реално време съобщения', koli: 'yes', mobileBg: 'partial', carsBg: 'partial', autoBg: 'partial' },
+      { name: 'Голяма база от обяви', koli: 'no', mobileBg: 'yes', carsBg: 'yes', autoBg: 'yes' },
+      { name: 'Скрити комисионни', koli: 'no', mobileBg: 'yes', carsBg: 'yes', autoBg: 'yes' },
+    ] as CompetitorFeature[],
     details: [
       {
-        title: 'Най-бързата платформа',
-        text: 'Всички страници се зареждат за под 2 секунди. Конкурентите имат 5-7 секунди средно.'
+        title: 'AI технология, която няма аналог',
+        text: 'Единствената платформа в България с AI оценка на автомобили (Gemini + DeepSeek). Безплатно, без регистрация, с 85-95% точност. Mobile.bg и Cars.bg нямат такава функционалност.'
       },
       {
-        title: 'Интелигентна ценова система',
-        text: 'AI препоръчва оптимална цена на базата на пазарния анализ. Други платформи изискват ръчно поставяне на цена.'
+        title: 'Прозрачност без скрити такси',
+        text: 'Koli One предлага до 10 безплатни обяви. На Mobile.bg всяка обява е платена (от 3 до 30 лв.). Cars.bg също събира такси за промотиране.'
       },
       {
-        title: 'Верифициран пазар',
-        text: 'Всеки продавач преминава чрез EGN/EIK верификация. Други позволяват анонимни продажби.'
+        title: 'Модерен дизайн vs. интерфейс от 2010',
+        text: 'Сайтовете на Mobile.bg и Cars.bg не са променяни значително от 2010 г. Koli One е изградена с React и зарежда под 2 секунди.'
       },
       {
-        title: 'Локални платежи',
-        text: 'iCard и Revolut без скрити такси. Конкурентите събират комисионни от всяка транзакция.'
+        title: 'Верифицирани продавачи',
+        text: 'Всеки продавач в Koli One преминава ЕГН/ЕИК верификация. Mobile.bg позволява напълно анонимни обяви, което улеснява измамите.'
       }
     ],
-    detailsTitle: 'Защо сме различни',
+    detailsTitle: 'Какво прави Koli One различна',
     cta: {
-      title: 'Готови да почнете?',
-      subtitle: 'Присъединете се към хиляди продавачи и купувачи на Globul Cars',
-      button: 'Начинете сега'
+      title: 'Опитайте Koli One безплатно',
+      subtitle: 'Безплатна AI оценка, до 10 обяви без такси, модерна платформа.',
+      button: 'Започнете сега'
     }
   },
   en: {
-    title: 'Why Globul Cars is the Best Choice',
-    subtitle: 'See our features compared to popular competing platforms',
+    title: 'Koli One vs. The Competition',
+    subtitle: 'Objective comparison with Bulgaria\'s leading car platforms — Mobile.bg, Cars.bg, and Auto.bg',
+    competitors: ['Koli One', 'Mobile.bg', 'Cars.bg', 'Auto.bg'],
     features: [
-      { name: 'Page Load Speed', globul: true, competitors: false },
-      { name: 'AI Price Suggestions', globul: true, competitors: false },
-      { name: 'Seller Verification', globul: true, competitors: false },
-      { name: 'AI Image Analysis', globul: true, competitors: false },
-      { name: 'Local Bank Transfers', globul: true, competitors: false },
-      { name: '24/7 Live Support', globul: true, competitors: false },
-      { name: 'Arabic/Bulgarian Support', globul: true, competitors: false },
-      { name: 'Hidden Fees', globul: false, competitors: true }
-    ],
+      { name: 'AI Car Valuation', koli: 'yes', mobileBg: 'no', carsBg: 'no', autoBg: 'no' },
+      { name: 'AI Image Analysis', koli: 'yes', mobileBg: 'no', carsBg: 'no', autoBg: 'no' },
+      { name: 'Seller Verification (EGN/EIK)', koli: 'yes', mobileBg: 'no', carsBg: 'partial', autoBg: 'no' },
+      { name: 'Free Listings (up to 10)', koli: 'yes', mobileBg: 'no', carsBg: 'partial', autoBg: 'no' },
+      { name: 'Fast Load Speed (< 2s)', koli: 'yes', mobileBg: 'no', carsBg: 'no', autoBg: 'no' },
+      { name: 'Modern Mobile Design', koli: 'yes', mobileBg: 'no', carsBg: 'partial', autoBg: 'partial' },
+      { name: 'Local Payments (iCard/Revolut)', koli: 'yes', mobileBg: 'no', carsBg: 'no', autoBg: 'no' },
+      { name: 'Bank Financing Calculator', koli: 'yes', mobileBg: 'no', carsBg: 'no', autoBg: 'partial' },
+      { name: 'Real-time Messaging', koli: 'yes', mobileBg: 'partial', carsBg: 'partial', autoBg: 'partial' },
+      { name: 'Large Listing Database', koli: 'no', mobileBg: 'yes', carsBg: 'yes', autoBg: 'yes' },
+      { name: 'Hidden Commissions', koli: 'no', mobileBg: 'yes', carsBg: 'yes', autoBg: 'yes' },
+    ] as CompetitorFeature[],
     details: [
       {
-        title: 'Fastest Platform',
-        text: 'All pages load in under 2 seconds. Competitors average 5-7 seconds.'
+        title: 'AI Technology Without Analogue',
+        text: 'The only platform in Bulgaria with AI car valuation (Gemini + DeepSeek). Free, no registration, 85-95% accuracy. Mobile.bg and Cars.bg have no such functionality.'
       },
       {
-        title: 'Smart Pricing System',
-        text: 'AI recommends optimal price based on market analysis. Other platforms require manual pricing.'
+        title: 'Transparency Without Hidden Fees',
+        text: 'Koli One offers up to 10 free listings. On Mobile.bg every listing is paid (3-30 BGN). Cars.bg also charges promotion fees.'
       },
       {
-        title: 'Verified Marketplace',
-        text: 'Every seller passes EGN/EIK verification. Competitors allow anonymous sales.'
+        title: 'Modern Design vs. 2010 Interface',
+        text: 'Mobile.bg and Cars.bg haven\'t significantly changed since 2010. Koli One is built with React and loads in under 2 seconds.'
       },
       {
-        title: 'Local Payments',
-        text: 'iCard and Revolut with no hidden fees. Competitors charge commissions on every transaction.'
+        title: 'Verified Sellers',
+        text: 'Every seller on Koli One passes EGN/EIK verification. Mobile.bg allows completely anonymous listings, facilitating scams.'
       }
     ],
-    detailsTitle: 'What Makes Us Different',
+    detailsTitle: 'What Makes Koli One Different',
     cta: {
-      title: 'Ready to Get Started?',
-      subtitle: 'Join thousands of sellers and buyers on Globul Cars',
+      title: 'Try Koli One for Free',
+      subtitle: 'Free AI valuation, up to 10 listings with no fees, modern platform.',
       button: 'Start Now'
     }
   }
 };
+
+// ==================== HELPERS ====================
+
+const StatusIcon: React.FC<{ status: FeatureStatus; lang: string }> = ({ status, lang }) => {
+  if (status === 'yes') return <><CheckCircle size={18} /> {lang === 'bg' ? 'Да' : 'Yes'}</>;
+  if (status === 'partial') return <><Minus size={18} /> {lang === 'bg' ? 'Частично' : 'Partial'}</>;
+  return <><XCircle size={18} /> {lang === 'bg' ? 'Не' : 'No'}</>;
+};
+
+const statusColor = (s: FeatureStatus) => s === 'yes' ? '#10b981' : s === 'partial' ? '#f59e0b' : '#ef4444';
 
 // ==================== MAIN COMPONENT ====================
 
 export const CompetitiveComparisonPage: React.FC = () => {
   const { language } = useLanguage();
   const navigate = useNavigate();
+  const isBg = language === 'bg';
 
-  const data = language === 'bg' ? comparisonData.bg : comparisonData.en;
+  const data = isBg ? comparisonData.bg : comparisonData.en;
 
   return (
     <PageContainer>
+      <Helmet>
+        <title>{isBg ? 'Koli One срещу Mobile.bg, Cars.bg, Auto.bg — Сравнение' : 'Koli One vs Mobile.bg, Cars.bg, Auto.bg — Comparison'}</title>
+        <meta name="description" content={data.subtitle} />
+        <meta property="og:title" content={data.title} />
+        <meta property="og:description" content={data.subtitle} />
+        <link rel="canonical" href="https://koli.one/competitive-comparison" />
+      </Helmet>
+
       <Header>
         <Title>{data.title}</Title>
         <Subtitle>{data.subtitle}</Subtitle>
@@ -326,40 +364,28 @@ export const CompetitiveComparisonPage: React.FC = () => {
         <Table>
           <thead>
             <tr>
-              <HeaderCell>{language === 'bg' ? 'Функция' : 'Feature'}</HeaderCell>
-              <GlobulCellHeader>Globul Cars</GlobulCellHeader>
-              <HeaderCell>{language === 'bg' ? 'Конкуренти' : 'Competitors'}</HeaderCell>
+              <HeaderCell>{isBg ? 'Функция' : 'Feature'}</HeaderCell>
+              <GlobulCellHeader>Koli One</GlobulCellHeader>
+              <HeaderCell>Mobile.bg</HeaderCell>
+              <HeaderCell>Cars.bg</HeaderCell>
+              <HeaderCell>Auto.bg</HeaderCell>
             </tr>
           </thead>
           <tbody>
             {data.features.map((feature, idx) => (
               <tr key={idx}>
                 <FeatureCell>{feature.name}</FeatureCell>
-                <IconCell $hasFeature={feature.globul}>
-                  {feature.globul ? (
-                    <>
-                      <CheckCircle size={20} />
-                      {language === 'bg' ? 'Да' : 'Yes'}
-                    </>
-                  ) : (
-                    <>
-                      <XCircle size={20} />
-                      {language === 'bg' ? 'Не' : 'No'}
-                    </>
-                  )}
+                <IconCell $hasFeature={feature.koli === 'yes'} style={{ color: statusColor(feature.koli) }}>
+                  <StatusIcon status={feature.koli} lang={language} />
                 </IconCell>
-                <IconCell $hasFeature={feature.competitors}>
-                  {feature.competitors ? (
-                    <>
-                      <CheckCircle size={20} />
-                      {language === 'bg' ? 'Да' : 'Yes'}
-                    </>
-                  ) : (
-                    <>
-                      <XCircle size={20} />
-                      {language === 'bg' ? 'Не' : 'No'}
-                    </>
-                  )}
+                <IconCell $hasFeature={feature.mobileBg === 'yes'} style={{ color: statusColor(feature.mobileBg) }}>
+                  <StatusIcon status={feature.mobileBg} lang={language} />
+                </IconCell>
+                <IconCell $hasFeature={feature.carsBg === 'yes'} style={{ color: statusColor(feature.carsBg) }}>
+                  <StatusIcon status={feature.carsBg} lang={language} />
+                </IconCell>
+                <IconCell $hasFeature={feature.autoBg === 'yes'} style={{ color: statusColor(feature.autoBg) }}>
+                  <StatusIcon status={feature.autoBg} lang={language} />
                 </IconCell>
               </tr>
             ))}
@@ -387,7 +413,7 @@ export const CompetitiveComparisonPage: React.FC = () => {
       <CTAContainer>
         <CTATitle>{data.cta.title}</CTATitle>
         <CTASubtitle>{data.cta.subtitle}</CTASubtitle>
-        <CTAButton onClick={() => navigate('/browse')}>
+        <CTAButton onClick={() => navigate('/valuation')}>
           {data.cta.button}
         </CTAButton>
       </CTAContainer>

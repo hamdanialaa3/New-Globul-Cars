@@ -186,6 +186,7 @@ export const MainRoutes: React.FC = () => {
 
             {/* 💰 AI Car Valuation */}
             <Route path="/valuation" element={<AIValuationPage />} />
+            <Route path="/valuation/:brand" element={<AIValuationPage />} />
 
             {/* 📜 AI Car History */}
             <Route path="/history" element={<AIHistoryPage />} />
