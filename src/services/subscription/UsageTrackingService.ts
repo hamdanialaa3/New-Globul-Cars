@@ -5,7 +5,7 @@
 import { doc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { serviceLogger } from '../logger-service';
-import { permissionsService } from '../profile/permissions-service';
+import PermissionsService from '../profile/PermissionsService';
 import type { ProfileType, PlanTier, ProfilePermissions } from '../../types/user/bulgarian-user.types';
 
 // ==================== TYPES ====================
@@ -90,7 +90,7 @@ class UsageTrackingService {
       const planTier: PlanTier = userData.planTier || 'free';
 
       // Get permissions for current plan
-      const permissions = permissionsService.getPermissions(profileType, planTier);
+      const permissions = PermissionsService.getPermissions(profileType, planTier);
 
       // Get current usage from stats
       const stats = userData.stats || {};
