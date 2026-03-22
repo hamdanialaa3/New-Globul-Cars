@@ -10,6 +10,11 @@
 
 /* 2️⃣ Typography Imports */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;700;800;900&family=Dancing+Script:wght@400;500;600;700&display=swap');
+@import './styles/typography-improved.css';
+
+/* 2.5️⃣ Premium Glassmorphism & Effects */
+@import './styles/global-glassmorphism-buttons.css';
+@import './styles/premium-effects.css';
 
 /* 3️⃣ Base Reset & Tailwind-like Utilities (Minimal) */
 body {

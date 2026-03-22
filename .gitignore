@@ -40,6 +40,7 @@ serviceAccountKey.json
 node_modules/
 dist/
 build/
+functions/lib/
 .cache/
 *.bundle
 
