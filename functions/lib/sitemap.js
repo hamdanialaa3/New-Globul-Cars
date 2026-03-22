@@ -198,10 +198,10 @@ exports.manualSitemapRegeneration = functions.https.onCall(async (data, context)
     if (!context.auth) {
         throw new functions.https.HttpsError('unauthenticated', 'Authentication required');
     }
-    // Optionally check for admin claim
-    // if (!context.auth.token.admin) {
-    //     throw new functions.https.HttpsError('permission-denied', 'Admin access required');
-    // }
+    // Check for admin claim
+    if (!context.auth.token.admin) {
+        throw new functions.https.HttpsError('permission-denied', 'Admin access required');
+    }
     try {
         logger.info('🗺️ Manual sitemap regeneration triggered by:', context.auth.uid);
         const xml = await generateEnhancedSitemap();

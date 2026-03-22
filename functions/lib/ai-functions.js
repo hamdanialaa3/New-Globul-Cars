@@ -34,7 +34,9 @@ if (!genAI) {
 /**
  * Check AI quota for user
  */
-exports.aiQuotaCheck = functions.region('europe-west1').https.onCall(async (data, context) => {
+exports.aiQuotaCheck = functions
+    .region('europe-west1')
+    .https.onCall(async (data, context) => {
     if (!context.auth) {
         throw new functions.https.HttpsError('unauthenticated', 'User not authenticated');
     }
@@ -62,10 +64,13 @@ exports.aiQuotaCheck = functions.region('europe-west1').https.onCall(async (data
                 usedSentimentAnalysis: 0,
                 lastResetDate: new Date().toISOString().split('T')[0],
                 totalCost: 0,
-                lastBillingDate: new Date().toISOString().split('T')[0]
+                lastBillingDate: new Date().toISOString().split('T')[0],
             };
             await quotaRef.set(newQuota);
-            return { allowed: true, remaining: newQuota[`daily${feature}`] };
+            return {
+                allowed: true,
+                remaining: newQuota[`daily${feature}`],
+            };
         }
         const quota = quotaSnap.data();
         const today = new Date().toISOString().split('T')[0];
@@ -75,7 +80,7 @@ exports.aiQuotaCheck = functions.region('europe-west1').https.onCall(async (data
             const usedKey = `used${feature}`;
             await quotaRef.update({
                 [usedKey]: 0,
-                lastResetDate: today
+                lastResetDate: today,
             });
             return { allowed: true, remaining: quota[featureKey] };
         }
@@ -101,15 +106,21 @@ exports.aiQuotaCheck = functions.region('europe-west1').https.onCall(async (data
  * Chat with Gemini AI - Main entry point
  * Supports both authenticated users and guests
  */
-exports.geminiChat = functions.region('europe-west1').https.onCall(async (data, context) => {
+exports.geminiChat = functions
+    .region('europe-west1')
+    .https.onCall(async (data, context) => {
     var _a, _b, _c, _d;
     // Support both authenticated users and guests
     const isAuthenticated = !!context.auth;
-    const userId = isAuthenticated ? context.auth.uid : `guest_${context.rawRequest.ip || 'unknown'}`;
+    const userId = isAuthenticated
+        ? context.auth.uid
+        : `guest_${context.rawRequest.ip || 'unknown'}`;
     const { message, context: _userContext } = data;
     try {
         // Validate input
-        if (!message || typeof message !== 'string' || message.trim().length === 0) {
+        if (!message ||
+            typeof message !== 'string' ||
+            message.trim().length === 0) {
             throw new functions.https.HttpsError('invalid-argument', 'Message is required');
         }
         // Check API key availability
@@ -129,7 +140,7 @@ exports.geminiChat = functions.region('europe-west1').https.onCall(async (data, 
                 usedChatMessages: 0,
                 lastResetDate: new Date().toISOString().split('T')[0],
                 totalCost: 0,
-                createdAt: admin.firestore.Timestamp.now()
+                createdAt: admin.firestore.Timestamp.now(),
             };
             await quotaRef.set(newQuota);
             quotaCheck = await quotaRef.get();
@@ -140,7 +151,7 @@ exports.geminiChat = functions.region('europe-west1').https.onCall(async (data, 
         if ((quota === null || quota === void 0 ? void 0 : quota.lastResetDate) !== today) {
             await quotaRef.update({
                 usedChatMessages: 0,
-                lastResetDate: today
+                lastResetDate: today,
             });
         }
         // Check quota limit
@@ -161,7 +172,7 @@ exports.geminiChat = functions.region('europe-west1').https.onCall(async (data, 
         // Update quota
         await quotaRef.update({
             usedChatMessages: admin.firestore.FieldValue.increment(1),
-            totalCost: admin.firestore.FieldValue.increment(0.001)
+            totalCost: admin.firestore.FieldValue.increment(0.001),
         });
         // Log usage
         await db.collection('ai_usage_logs').add({
@@ -171,13 +182,13 @@ exports.geminiChat = functions.region('europe-west1').https.onCall(async (data, 
             timestamp: Date.now(),
             cost: 0.001,
             tier: (quota === null || quota === void 0 ? void 0 : quota.tier) || (isAuthenticated ? 'free' : 'guest'),
-            success: true
+            success: true,
         });
         const quotaRemaining = dailyLimit - (usedToday + 1);
         console.log('[geminiChat] Success - quota remaining:', quotaRemaining);
         return {
             message: response,
-            quotaRemaining: quotaRemaining
+            quotaRemaining: quotaRemaining,
         };
     }
     catch (error) {
@@ -189,7 +200,9 @@ exports.geminiChat = functions.region('europe-west1').https.onCall(async (data, 
         else if (error.code === 'invalid-argument') {
             throw error;
         }
-        else if (((_a = error.message) === null || _a === void 0 ? void 0 : _a.includes('API')) || ((_b = error.message) === null || _b === void 0 ? void 0 : _b.includes('key')) || ((_c = error.message) === null || _c === void 0 ? void 0 : _c.includes('401'))) {
+        else if (((_a = error.message) === null || _a === void 0 ? void 0 : _a.includes('API')) ||
+            ((_b = error.message) === null || _b === void 0 ? void 0 : _b.includes('key')) ||
+            ((_c = error.message) === null || _c === void 0 ? void 0 : _c.includes('401'))) {
             console.error('[geminiChat] API Configuration Error:', error.message);
             throw new functions.https.HttpsError('internal', 'AI service configuration error');
         }
@@ -207,12 +220,27 @@ exports.geminiChat = functions.region('europe-west1').https.onCall(async (data, 
 /**
  * Suggest price for car using Gemini
  */
-exports.geminiPriceSuggestion = functions.region('europe-west1').https.onCall(async (data, context) => {
+exports.geminiPriceSuggestion = functions
+    .region('europe-west1')
+    .https.onCall(async (data, context) => {
     if (!context.auth) {
         throw new functions.https.HttpsError('unauthenticated', 'User not authenticated');
     }
     const userId = context.auth.uid;
     const { make, model, year, mileage, condition, location } = data;
+    // Input validation & sanitization
+    if (!make || !model || !year) {
+        throw new functions.https.HttpsError('invalid-argument', 'make, model, and year are required');
+    }
+    const sanitize = (v) => String(v !== null && v !== void 0 ? v : '')
+        .replace(/[^\w\s,.\-\/а-яА-ЯёЁ()]/gi, '')
+        .substring(0, 100);
+    const safeMake = sanitize(make);
+    const safeModel = sanitize(model);
+    const safeYear = Number(year) || 0;
+    const safeMileage = Number(mileage) || 0;
+    const safeCondition = sanitize(condition);
+    const safeLocation = sanitize(location);
     try {
         if (!genAI) {
             throw new functions.https.HttpsError('internal', 'AI service not configured');
@@ -221,10 +249,10 @@ exports.geminiPriceSuggestion = functions.region('europe-west1').https.onCall(as
         const prompt = `
     As a Bulgarian car market expert, suggest a fair price for:
     
-    Car: ${make} ${model} ${year}
-    Mileage: ${mileage} km
-    Condition: ${condition}
-    Location: ${location}
+    Car: ${safeMake} ${safeModel} ${safeYear}
+    Mileage: ${safeMileage} km
+    Condition: ${safeCondition}
+    Location: ${safeLocation}
     
     Provide in JSON format:
     {
@@ -244,9 +272,12 @@ exports.geminiPriceSuggestion = functions.region('europe-west1').https.onCall(as
         }
         const suggestion = JSON.parse(jsonMatch[0]);
         // Update quota
-        await db.collection('ai_quotas').doc(userId).update({
+        await db
+            .collection('ai_quotas')
+            .doc(userId)
+            .update({
             usedPriceSuggestions: admin.firestore.FieldValue.increment(1),
-            totalCost: admin.firestore.FieldValue.increment(0.002)
+            totalCost: admin.firestore.FieldValue.increment(0.002),
         });
         return suggestion;
     }
@@ -270,7 +301,7 @@ async function checkImageAnalysisQuota(userId, isGuest) {
             dailyImageAnalysis: isGuest ? 2 : 5, // Strict limit for guests (2 per day), 5 for free users
             usedImageAnalysis: 0,
             lastResetDate: new Date().toISOString().split('T')[0],
-            createdAt: admin.firestore.Timestamp.now()
+            createdAt: admin.firestore.Timestamp.now(),
         };
         await quotaRef.set(newQuota);
         quotaCheck = await quotaRef.get();
@@ -281,7 +312,7 @@ async function checkImageAnalysisQuota(userId, isGuest) {
     if (quota.lastResetDate !== today) {
         await quotaRef.update({
             usedImageAnalysis: 0,
-            lastResetDate: today
+            lastResetDate: today,
         });
         return; // Reset done, usage is 0
     }
@@ -298,24 +329,31 @@ async function checkImageAnalysisQuota(userId, isGuest) {
  */
 async function trackImageAnalysisUsage(userId, cost) {
     try {
-        await db.collection('ai_quotas').doc(userId).update({
+        await db
+            .collection('ai_quotas')
+            .doc(userId)
+            .update({
             usedImageAnalysis: admin.firestore.FieldValue.increment(1),
             totalCost: admin.firestore.FieldValue.increment(cost),
-            lastActivity: admin.firestore.FieldValue.serverTimestamp()
+            lastActivity: admin.firestore.FieldValue.serverTimestamp(),
         });
     }
     catch (e) {
-        console.error("Error tracking usage:", e);
+        console.error('Error tracking usage:', e);
     }
 }
 /**
  * Analyze car image using Gemini Vision
  */
-exports.analyzeCarImage = functions.region('europe-west1').https.onCall(async (data, context) => {
+exports.analyzeCarImage = functions
+    .region('europe-west1')
+    .https.onCall(async (data, context) => {
     // 1. Authentication & Guest Handling
     const isAuthenticated = !!context.auth;
     // Use IP as guest ID if not authenticated
-    const userId = isAuthenticated ? context.auth.uid : `guest_${context.rawRequest.ip || 'unknown'}`;
+    const userId = isAuthenticated
+        ? context.auth.uid
+        : `guest_${context.rawRequest.ip || 'unknown'}`;
     // 2. Strict Quota Check BEFORE processing
     await checkImageAnalysisQuota(userId, !isAuthenticated);
     // 3. Input Validation
@@ -327,8 +365,8 @@ exports.analyzeCarImage = functions.region('europe-west1').https.onCall(async (d
         if (!genAI) {
             throw new functions.https.HttpsError('internal', 'AI service not configured');
         }
-        // Use Gemini 1.5 Flash for speed/cost effectiveness
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        // Use Gemini 2.0 Flash for speed/cost effectiveness
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
         const prompt = `
       Analyze this car image for the Bulgarian car marketplace.
       
@@ -350,9 +388,9 @@ exports.analyzeCarImage = functions.region('europe-west1').https.onCall(async (d
             {
                 inlineData: {
                     data: imageBase64,
-                    mimeType: mimeType || 'image/jpeg'
-                }
-            }
+                    mimeType: mimeType || 'image/jpeg',
+                },
+            },
         ]);
         const text = result.response.text();
         // Extract JSON with robust parsing
@@ -367,7 +405,7 @@ exports.analyzeCarImage = functions.region('europe-west1').https.onCall(async (d
             }
         }
         catch (e) {
-            console.warn("JSON Parse Error:", text);
+            console.warn('JSON Parse Error:', text);
             throw new Error('Failed to parse AI response');
         }
         // 4. Track Usage
@@ -384,9 +422,13 @@ exports.analyzeCarImage = functions.region('europe-west1').https.onCall(async (d
 /**
  * Analyze image quality
  */
-exports.analyzeImageQuality = functions.region('europe-west1').https.onCall(async (data, context) => {
+exports.analyzeImageQuality = functions
+    .region('europe-west1')
+    .https.onCall(async (data, context) => {
     const isAuthenticated = !!context.auth;
-    const userId = isAuthenticated ? context.auth.uid : `guest_${context.rawRequest.ip || 'unknown'}`;
+    const userId = isAuthenticated
+        ? context.auth.uid
+        : `guest_${context.rawRequest.ip || 'unknown'}`;
     // Strict Quota Check
     await checkImageAnalysisQuota(userId, !isAuthenticated);
     const { imageBase64, mimeType } = data;
@@ -397,7 +439,7 @@ exports.analyzeImageQuality = functions.region('europe-west1').https.onCall(asyn
         if (!genAI) {
             throw new functions.https.HttpsError('internal', 'AI service not configured');
         }
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
         const prompt = `
       Analyze the quality of this car photo.
       
@@ -415,9 +457,9 @@ exports.analyzeImageQuality = functions.region('europe-west1').https.onCall(asyn
             {
                 inlineData: {
                     data: imageBase64,
-                    mimeType: mimeType || 'image/jpeg'
-                }
-            }
+                    mimeType: mimeType || 'image/jpeg',
+                },
+            },
         ]);
         const text = result.response.text();
         let parsed;

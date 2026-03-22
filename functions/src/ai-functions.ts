@@ -5,7 +5,7 @@
 
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions/v1';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Firebase Admin is already initialized in index.ts - no need to initialize again
 const db = admin.firestore();
@@ -36,77 +36,85 @@ if (!genAI) {
 /**
  * Check AI quota for user
  */
-export const aiQuotaCheck = functions.region('europe-west1').https.onCall(async (data, context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User not authenticated');
-  }
-
-  const userId = context.auth.uid;
-  const { feature } = data as any;
-
-  try {
-    const quotaRef = db.collection('ai_quotas').doc(userId);
-    const quotaSnap = await quotaRef.get();
-
-    if (!quotaSnap.exists) {
-      // Create new quota
-      const newQuota = {
-        userId,
-        tier: 'free',
-        dailyImageAnalysis: 5,
-        dailyPriceSuggestions: 3,
-        dailyChatMessages: 10,
-        dailyProfileAnalysis: 2,
-        dailyVoiceMessages: 2,
-        dailySentimentAnalysis: 5,
-        usedImageAnalysis: 0,
-        usedPriceSuggestions: 0,
-        usedChatMessages: 0,
-        usedProfileAnalysis: 0,
-        usedVoiceMessages: 0,
-        usedSentimentAnalysis: 0,
-        lastResetDate: new Date().toISOString().split('T')[0],
-        totalCost: 0,
-        lastBillingDate: new Date().toISOString().split('T')[0]
-      };
-      await quotaRef.set(newQuota);
-      return { allowed: true, remaining: (newQuota as any)[`daily${feature}`] };
+export const aiQuotaCheck = functions
+  .region('europe-west1')
+  .https.onCall(async (data, context) => {
+    if (!context.auth) {
+      throw new functions.https.HttpsError(
+        'unauthenticated',
+        'User not authenticated'
+      );
     }
 
-    const quota = quotaSnap.data() as any;
-    const today = new Date().toISOString().split('T')[0];
+    const userId = context.auth.uid;
+    const { feature } = data as any;
 
-    // Reset if new day
-    if (quota.lastResetDate !== today) {
-      const featureKey = `daily${feature}`;
+    try {
+      const quotaRef = db.collection('ai_quotas').doc(userId);
+      const quotaSnap = await quotaRef.get();
+
+      if (!quotaSnap.exists) {
+        // Create new quota
+        const newQuota = {
+          userId,
+          tier: 'free',
+          dailyImageAnalysis: 5,
+          dailyPriceSuggestions: 3,
+          dailyChatMessages: 10,
+          dailyProfileAnalysis: 2,
+          dailyVoiceMessages: 2,
+          dailySentimentAnalysis: 5,
+          usedImageAnalysis: 0,
+          usedPriceSuggestions: 0,
+          usedChatMessages: 0,
+          usedProfileAnalysis: 0,
+          usedVoiceMessages: 0,
+          usedSentimentAnalysis: 0,
+          lastResetDate: new Date().toISOString().split('T')[0],
+          totalCost: 0,
+          lastBillingDate: new Date().toISOString().split('T')[0],
+        };
+        await quotaRef.set(newQuota);
+        return {
+          allowed: true,
+          remaining: (newQuota as any)[`daily${feature}`],
+        };
+      }
+
+      const quota = quotaSnap.data() as any;
+      const today = new Date().toISOString().split('T')[0];
+
+      // Reset if new day
+      if (quota.lastResetDate !== today) {
+        const featureKey = `daily${feature}`;
+        const usedKey = `used${feature}`;
+
+        await quotaRef.update({
+          [usedKey]: 0,
+          lastResetDate: today,
+        });
+
+        return { allowed: true, remaining: quota[featureKey] };
+      }
+
       const usedKey = `used${feature}`;
+      const dailyKey = `daily${feature}`;
+      const used = quota[usedKey] || 0;
+      const limit = quota[dailyKey] || -1;
+      if (limit === -1) {
+        return { allowed: true, remaining: -1 }; // Unlimited
+      }
 
-      await quotaRef.update({
-        [usedKey]: 0,
-        lastResetDate: today
-      });
+      if (used >= limit) {
+        return { allowed: false, remaining: 0, reason: 'Daily limit exceeded' };
+      }
 
-      return { allowed: true, remaining: quota[featureKey] };
+      return { allowed: true, remaining: limit - used };
+    } catch (error: any) {
+      console.error('[aiQuotaCheck] Error:', error);
+      throw new functions.https.HttpsError('internal', 'Error checking quota');
     }
-
-    const usedKey = `used${feature}`;
-    const dailyKey = `daily${feature}`;
-    const used = quota[usedKey] || 0;
-    const limit = quota[dailyKey] || -1;
-    if (limit === -1) {
-      return { allowed: true, remaining: -1 }; // Unlimited
-    }
-
-    if (used >= limit) {
-      return { allowed: false, remaining: 0, reason: 'Daily limit exceeded' };
-    }
-
-    return { allowed: true, remaining: limit - used };
-  } catch (error: any) {
-    console.error('[aiQuotaCheck] Error:', error);
-    throw new functions.https.HttpsError('internal', 'Error checking quota');
-  }
-});
+  });
 
 // ==================== GEMINI CHAT ====================
 
@@ -114,150 +122,203 @@ export const aiQuotaCheck = functions.region('europe-west1').https.onCall(async 
  * Chat with Gemini AI - Main entry point
  * Supports both authenticated users and guests
  */
-export const geminiChat = functions.region('europe-west1').https.onCall(async (data, context) => {
-  // Support both authenticated users and guests
-  const isAuthenticated = !!context.auth;
-  const userId = isAuthenticated ? context.auth!.uid : `guest_${context.rawRequest.ip || 'unknown'}`;
-  const { message, context: _userContext } = data as any;
+export const geminiChat = functions
+  .region('europe-west1')
+  .https.onCall(async (data, context) => {
+    // Support both authenticated users and guests
+    const isAuthenticated = !!context.auth;
+    const userId = isAuthenticated
+      ? context.auth!.uid
+      : `guest_${context.rawRequest.ip || 'unknown'}`;
+    const { message, context: _userContext } = data as any;
 
-  try {
-    // Validate input
-    if (!message || typeof message !== 'string' || message.trim().length === 0) {
-      throw new functions.https.HttpsError('invalid-argument', 'Message is required');
-    }
+    try {
+      // Validate input
+      if (
+        !message ||
+        typeof message !== 'string' ||
+        message.trim().length === 0
+      ) {
+        throw new functions.https.HttpsError(
+          'invalid-argument',
+          'Message is required'
+        );
+      }
 
-    // Check API key availability
-    if (!apiKey || apiKey === 'MISSING_KEY') {
-      console.error('[geminiChat] API key not configured');
-      throw new functions.https.HttpsError('internal', 'AI service not configured');
-    }
+      // Check API key availability
+      if (!apiKey || apiKey === 'MISSING_KEY') {
+        console.error('[geminiChat] API key not configured');
+        throw new functions.https.HttpsError(
+          'internal',
+          'AI service not configured'
+        );
+      }
 
-    // Check and initialize quota (stricter limits for guests)
-    const quotaRef = db.collection('ai_quotas').doc(userId);
-    let quotaCheck = await quotaRef.get();
+      // Check and initialize quota (stricter limits for guests)
+      const quotaRef = db.collection('ai_quotas').doc(userId);
+      let quotaCheck = await quotaRef.get();
 
-    if (!quotaCheck.exists) {
-      // Auto-initialize quota for new user/guest
-      const newQuota = {
-        userId,
-        tier: isAuthenticated ? 'free' : 'guest',
-        dailyChatMessages: isAuthenticated ? 10 : 3, // Guests: 3 messages/day
-        usedChatMessages: 0,
-        lastResetDate: new Date().toISOString().split('T')[0],
-        totalCost: 0,
-        createdAt: admin.firestore.Timestamp.now()
-      };
-      await quotaRef.set(newQuota);
-      quotaCheck = await quotaRef.get();
-    }
+      if (!quotaCheck.exists) {
+        // Auto-initialize quota for new user/guest
+        const newQuota = {
+          userId,
+          tier: isAuthenticated ? 'free' : 'guest',
+          dailyChatMessages: isAuthenticated ? 10 : 3, // Guests: 3 messages/day
+          usedChatMessages: 0,
+          lastResetDate: new Date().toISOString().split('T')[0],
+          totalCost: 0,
+          createdAt: admin.firestore.Timestamp.now(),
+        };
+        await quotaRef.set(newQuota);
+        quotaCheck = await quotaRef.get();
+      }
 
-    const quota = quotaCheck.data() as any;
-    const today = new Date().toISOString().split('T')[0];
+      const quota = quotaCheck.data() as any;
+      const today = new Date().toISOString().split('T')[0];
 
-    // Reset quota if new day
-    if (quota?.lastResetDate !== today) {
+      // Reset quota if new day
+      if (quota?.lastResetDate !== today) {
+        await quotaRef.update({
+          usedChatMessages: 0,
+          lastResetDate: today,
+        });
+      }
+
+      // Check quota limit
+      const usedToday = quota?.usedChatMessages || 0;
+      const dailyLimit = quota?.dailyChatMessages || (isAuthenticated ? 10 : 3);
+      if (usedToday >= dailyLimit) {
+        throw new functions.https.HttpsError(
+          'resource-exhausted',
+          'Chat quota exceeded for today. Sign in for more messages.'
+        );
+      }
+
+      // Call Gemini
+      console.log(
+        `[geminiChat] Calling Gemini (${isAuthenticated ? 'authenticated' : 'guest'}) with message:`,
+        message.substring(0, 50) + '...'
+      );
+
+      if (!genAI) {
+        throw new functions.https.HttpsError(
+          'internal',
+          'AI service not configured'
+        );
+      }
+      const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+      const result = await model.generateContent(message.trim());
+      const response = result.response.text();
+
+      console.log(
+        '[geminiChat] Gemini response received, length:',
+        response.length
+      );
+
+      // Update quota
       await quotaRef.update({
-        usedChatMessages: 0,
-        lastResetDate: today
+        usedChatMessages: admin.firestore.FieldValue.increment(1),
+        totalCost: admin.firestore.FieldValue.increment(0.001),
       });
+
+      // Log usage
+      await db.collection('ai_usage_logs').add({
+        userId,
+        isAuthenticated,
+        feature: 'chat',
+        timestamp: Date.now(),
+        cost: 0.001,
+        tier: quota?.tier || (isAuthenticated ? 'free' : 'guest'),
+        success: true,
+      });
+
+      const quotaRemaining = dailyLimit - (usedToday + 1);
+      console.log('[geminiChat] Success - quota remaining:', quotaRemaining);
+
+      return {
+        message: response,
+        quotaRemaining: quotaRemaining,
+      };
+    } catch (error: any) {
+      console.error('[geminiChat] Error:', error);
+
+      // Return specific error messages for debugging
+      if (error.code === 'resource-exhausted') {
+        throw error;
+      } else if (error.code === 'invalid-argument') {
+        throw error;
+      } else if (
+        error.message?.includes('API') ||
+        error.message?.includes('key') ||
+        error.message?.includes('401')
+      ) {
+        console.error('[geminiChat] API Configuration Error:', error.message);
+        throw new functions.https.HttpsError(
+          'internal',
+          'AI service configuration error'
+        );
+      } else if (error.message?.includes('PERMISSION_DENIED')) {
+        console.error('[geminiChat] Permission Denied:', error.message);
+        throw new functions.https.HttpsError(
+          'permission-denied',
+          'Access denied to AI service'
+        );
+      } else {
+        console.error('[geminiChat] Unexpected error:', error.message || error);
+        throw new functions.https.HttpsError(
+          'internal',
+          'Failed to generate response'
+        );
+      }
     }
-
-    // Check quota limit
-    const usedToday = quota?.usedChatMessages || 0;
-    const dailyLimit = quota?.dailyChatMessages || (isAuthenticated ? 10 : 3);
-    if (usedToday >= dailyLimit) {
-      throw new functions.https.HttpsError('resource-exhausted', 'Chat quota exceeded for today. Sign in for more messages.');
-    }
-
-    // Call Gemini
-    console.log(`[geminiChat] Calling Gemini (${isAuthenticated ? 'authenticated' : 'guest'}) with message:`, message.substring(0, 50) + '...');
-
-    if (!genAI) {
-      throw new functions.https.HttpsError('internal', 'AI service not configured');
-    }
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-    const result = await model.generateContent(message.trim());
-    const response = result.response.text();
-
-    console.log('[geminiChat] Gemini response received, length:', response.length);
-
-    // Update quota
-    await quotaRef.update({
-      usedChatMessages: admin.firestore.FieldValue.increment(1),
-      totalCost: admin.firestore.FieldValue.increment(0.001)
-    });
-
-    // Log usage
-    await db.collection('ai_usage_logs').add({
-      userId,
-      isAuthenticated,
-      feature: 'chat',
-      timestamp: Date.now(),
-      cost: 0.001,
-      tier: quota?.tier || (isAuthenticated ? 'free' : 'guest'),
-      success: true
-    });
-
-    const quotaRemaining = dailyLimit - (usedToday + 1);
-    console.log('[geminiChat] Success - quota remaining:', quotaRemaining);
-
-    return {
-      message: response,
-      quotaRemaining: quotaRemaining
-    };
-  } catch (error: any) {
-    console.error('[geminiChat] Error:', error);
-
-    // Return specific error messages for debugging
-    if (error.code === 'resource-exhausted') {
-      throw error;
-    } else if (error.code === 'invalid-argument') {
-      throw error;
-    } else if (error.message?.includes('API') || error.message?.includes('key') || error.message?.includes('401')) {
-      console.error('[geminiChat] API Configuration Error:', error.message);
-      throw new functions.https.HttpsError('internal', 'AI service configuration error');
-    } else if (error.message?.includes('PERMISSION_DENIED')) {
-      console.error('[geminiChat] Permission Denied:', error.message);
-      throw new functions.https.HttpsError('permission-denied', 'Access denied to AI service');
-    } else {
-      console.error('[geminiChat] Unexpected error:', error.message || error);
-      throw new functions.https.HttpsError('internal', 'Failed to generate response');
-    }
-  }
-});
+  });
 
 // ==================== PRICE SUGGESTION ====================
 
 /**
  * Suggest price for car using Gemini
  */
-export const geminiPriceSuggestion = functions.region('europe-west1').https.onCall(async (data, context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User not authenticated');
-  }
-
-  const userId = context.auth.uid;
-  const { make, model, year, mileage, condition, location } = data as any;
-
-  // Input validation & sanitization
-  if (!make || !model || !year) {
-    throw new functions.https.HttpsError('invalid-argument', 'make, model, and year are required');
-  }
-  const sanitize = (v: unknown): string => String(v ?? '').replace(/[^\w\s,.\-\/а-яА-ЯёЁ()]/gi, '').substring(0, 100);
-  const safeMake = sanitize(make);
-  const safeModel = sanitize(model);
-  const safeYear = Number(year) || 0;
-  const safeMileage = Number(mileage) || 0;
-  const safeCondition = sanitize(condition);
-  const safeLocation = sanitize(location);
-
-  try {
-    if (!genAI) {
-      throw new functions.https.HttpsError('internal', 'AI service not configured');
+export const geminiPriceSuggestion = functions
+  .region('europe-west1')
+  .https.onCall(async (data, context) => {
+    if (!context.auth) {
+      throw new functions.https.HttpsError(
+        'unauthenticated',
+        'User not authenticated'
+      );
     }
-    const modelObj = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-    const prompt = `
+    const userId = context.auth.uid;
+    const { make, model, year, mileage, condition, location } = data as any;
+
+    // Input validation & sanitization
+    if (!make || !model || !year) {
+      throw new functions.https.HttpsError(
+        'invalid-argument',
+        'make, model, and year are required'
+      );
+    }
+    const sanitize = (v: unknown): string =>
+      String(v ?? '')
+        .replace(/[^\w\s,.\-\/а-яА-ЯёЁ()]/gi, '')
+        .substring(0, 100);
+    const safeMake = sanitize(make);
+    const safeModel = sanitize(model);
+    const safeYear = Number(year) || 0;
+    const safeMileage = Number(mileage) || 0;
+    const safeCondition = sanitize(condition);
+    const safeLocation = sanitize(location);
+
+    try {
+      if (!genAI) {
+        throw new functions.https.HttpsError(
+          'internal',
+          'AI service not configured'
+        );
+      }
+      const modelObj = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+
+      const prompt = `
     As a Bulgarian car market expert, suggest a fair price for:
     
     Car: ${safeMake} ${safeModel} ${safeYear}
@@ -275,36 +336,45 @@ export const geminiPriceSuggestion = functions.region('europe-west1').https.onCa
     }
     `;
 
-    const result = await modelObj.generateContent(prompt);
-    const text = result.response.text();
+      const result = await modelObj.generateContent(prompt);
+      const text = result.response.text();
 
-    // Extract JSON
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error('Failed to parse price suggestion');
+      // Extract JSON
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        throw new Error('Failed to parse price suggestion');
+      }
+
+      const suggestion = JSON.parse(jsonMatch[0]);
+
+      // Update quota
+      await db
+        .collection('ai_quotas')
+        .doc(userId)
+        .update({
+          usedPriceSuggestions: admin.firestore.FieldValue.increment(1),
+          totalCost: admin.firestore.FieldValue.increment(0.002),
+        });
+
+      return suggestion;
+    } catch (error: any) {
+      console.error('[geminiPriceSuggestion] Error:', error);
+      throw new functions.https.HttpsError(
+        'internal',
+        'Price suggestion failed'
+      );
     }
-
-    const suggestion = JSON.parse(jsonMatch[0]);
-
-    // Update quota
-    await db.collection('ai_quotas').doc(userId).update({
-      usedPriceSuggestions: admin.firestore.FieldValue.increment(1),
-      totalCost: admin.firestore.FieldValue.increment(0.002)
-    });
-
-    return suggestion;
-  } catch (error: any) {
-    console.error('[geminiPriceSuggestion] Error:', error);
-    throw new functions.https.HttpsError('internal', 'Price suggestion failed');
-  }
-});
+  });
 
 // ==================== IMAGE ANALYSIS ====================
 
 /**
  * Helper: Handle Guest Quota for Image Analysis
  */
-async function checkImageAnalysisQuota(userId: string, isGuest: boolean): Promise<void> {
+async function checkImageAnalysisQuota(
+  userId: string,
+  isGuest: boolean
+): Promise<void> {
   const quotaRef = db.collection('ai_quotas').doc(userId);
   let quotaCheck = await quotaRef.get();
 
@@ -316,7 +386,7 @@ async function checkImageAnalysisQuota(userId: string, isGuest: boolean): Promis
       dailyImageAnalysis: isGuest ? 2 : 5, // Strict limit for guests (2 per day), 5 for free users
       usedImageAnalysis: 0,
       lastResetDate: new Date().toISOString().split('T')[0],
-      createdAt: admin.firestore.Timestamp.now()
+      createdAt: admin.firestore.Timestamp.now(),
     };
     await quotaRef.set(newQuota);
     quotaCheck = await quotaRef.get();
@@ -329,7 +399,7 @@ async function checkImageAnalysisQuota(userId: string, isGuest: boolean): Promis
   if (quota.lastResetDate !== today) {
     await quotaRef.update({
       usedImageAnalysis: 0,
-      lastResetDate: today
+      lastResetDate: today,
     });
     return; // Reset done, usage is 0
   }
@@ -338,7 +408,8 @@ async function checkImageAnalysisQuota(userId: string, isGuest: boolean): Promis
   const limit = quota.dailyImageAnalysis || (isGuest ? 2 : 5);
 
   if (used >= limit) {
-    throw new functions.https.HttpsError('resource-exhausted',
+    throw new functions.https.HttpsError(
+      'resource-exhausted',
       isGuest
         ? 'Guest limit reached. Please sign in to analyze more cars.'
         : 'Daily analysis limit reached.'
@@ -351,43 +422,56 @@ async function checkImageAnalysisQuota(userId: string, isGuest: boolean): Promis
  */
 async function trackImageAnalysisUsage(userId: string, cost: number) {
   try {
-    await db.collection('ai_quotas').doc(userId).update({
-      usedImageAnalysis: admin.firestore.FieldValue.increment(1),
-      totalCost: admin.firestore.FieldValue.increment(cost),
-      lastActivity: admin.firestore.FieldValue.serverTimestamp()
-    });
+    await db
+      .collection('ai_quotas')
+      .doc(userId)
+      .update({
+        usedImageAnalysis: admin.firestore.FieldValue.increment(1),
+        totalCost: admin.firestore.FieldValue.increment(cost),
+        lastActivity: admin.firestore.FieldValue.serverTimestamp(),
+      });
   } catch (e) {
-    console.error("Error tracking usage:", e);
+    console.error('Error tracking usage:', e);
   }
 }
 
 /**
  * Analyze car image using Gemini Vision
  */
-export const analyzeCarImage = functions.region('europe-west1').https.onCall(async (data, context) => {
-  // 1. Authentication & Guest Handling
-  const isAuthenticated = !!context.auth;
-  // Use IP as guest ID if not authenticated
-  const userId = isAuthenticated ? context.auth!.uid : `guest_${context.rawRequest.ip || 'unknown'}`;
+export const analyzeCarImage = functions
+  .region('europe-west1')
+  .https.onCall(async (data, context) => {
+    // 1. Authentication & Guest Handling
+    const isAuthenticated = !!context.auth;
+    // Use IP as guest ID if not authenticated
+    const userId = isAuthenticated
+      ? context.auth!.uid
+      : `guest_${context.rawRequest.ip || 'unknown'}`;
 
-  // 2. Strict Quota Check BEFORE processing
-  await checkImageAnalysisQuota(userId, !isAuthenticated);
+    // 2. Strict Quota Check BEFORE processing
+    await checkImageAnalysisQuota(userId, !isAuthenticated);
 
-  // 3. Input Validation
-  const { imageBase64, mimeType } = data as any;
-  if (!imageBase64) {
-    throw new functions.https.HttpsError('invalid-argument', 'Image data required');
-  }
-
-  try {
-    if (!genAI) {
-      throw new functions.https.HttpsError('internal', 'AI service not configured');
+    // 3. Input Validation
+    const { imageBase64, mimeType } = data as any;
+    if (!imageBase64) {
+      throw new functions.https.HttpsError(
+        'invalid-argument',
+        'Image data required'
+      );
     }
 
-    // Use Gemini 1.5 Flash for speed/cost effectiveness
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    try {
+      if (!genAI) {
+        throw new functions.https.HttpsError(
+          'internal',
+          'AI service not configured'
+        );
+      }
 
-    const prompt = `
+      // Use Gemini 2.0 Flash for speed/cost effectiveness
+      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+
+      const prompt = `
       Analyze this car image for the Bulgarian car marketplace.
       
       Provide accurate information in JSON format:
@@ -404,68 +488,78 @@ export const analyzeCarImage = functions.region('europe-west1').https.onCall(asy
       Be specific and accurate. If unsure, indicate lower confidence.
     `;
 
-    const result = await model.generateContent([
-      prompt,
-      {
-        inlineData: {
-          data: imageBase64,
-          mimeType: mimeType || 'image/jpeg'
+      const result = await model.generateContent([
+        prompt,
+        {
+          inlineData: {
+            data: imageBase64,
+            mimeType: mimeType || 'image/jpeg',
+          },
+        },
+      ]);
+
+      const text = result.response.text();
+
+      // Extract JSON with robust parsing
+      let parsed;
+      try {
+        const jsonMatch =
+          text.match(/```json\s*([\s\S]*?)\s*```/) || text.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          parsed = JSON.parse(jsonMatch[1] || jsonMatch[0]);
+        } else {
+          parsed = JSON.parse(text);
         }
+      } catch (e) {
+        console.warn('JSON Parse Error:', text);
+        throw new Error('Failed to parse AI response');
       }
-    ]);
 
-    const text = result.response.text();
+      // 4. Track Usage
+      await trackImageAnalysisUsage(userId, 0.005);
 
-    // Extract JSON with robust parsing
-    let parsed;
-    try {
-      const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/) || text.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        parsed = JSON.parse(jsonMatch[1] || jsonMatch[0]);
-      } else {
-        parsed = JSON.parse(text);
-      }
-    } catch (e) {
-      console.warn("JSON Parse Error:", text);
-      throw new Error('Failed to parse AI response');
+      return parsed;
+    } catch (error: any) {
+      console.error('[analyzeCarImage] Error:', error);
+      if (error instanceof functions.https.HttpsError) throw error;
+      throw new functions.https.HttpsError('internal', 'Image analysis failed');
     }
-
-    // 4. Track Usage
-    await trackImageAnalysisUsage(userId, 0.005);
-
-    return parsed;
-
-  } catch (error: any) {
-    console.error('[analyzeCarImage] Error:', error);
-    if (error instanceof functions.https.HttpsError) throw error;
-    throw new functions.https.HttpsError('internal', 'Image analysis failed');
-  }
-});
+  });
 
 /**
  * Analyze image quality
  */
-export const analyzeImageQuality = functions.region('europe-west1').https.onCall(async (data, context) => {
-  const isAuthenticated = !!context.auth;
-  const userId = isAuthenticated ? context.auth!.uid : `guest_${context.rawRequest.ip || 'unknown'}`;
+export const analyzeImageQuality = functions
+  .region('europe-west1')
+  .https.onCall(async (data, context) => {
+    const isAuthenticated = !!context.auth;
+    const userId = isAuthenticated
+      ? context.auth!.uid
+      : `guest_${context.rawRequest.ip || 'unknown'}`;
 
-  // Strict Quota Check
-  await checkImageAnalysisQuota(userId, !isAuthenticated);
+    // Strict Quota Check
+    await checkImageAnalysisQuota(userId, !isAuthenticated);
 
-  const { imageBase64, mimeType } = data as any;
+    const { imageBase64, mimeType } = data as any;
 
-  if (!imageBase64) {
-    throw new functions.https.HttpsError('invalid-argument', 'Image data required');
-  }
-
-  try {
-    if (!genAI) {
-      throw new functions.https.HttpsError('internal', 'AI service not configured');
+    if (!imageBase64) {
+      throw new functions.https.HttpsError(
+        'invalid-argument',
+        'Image data required'
+      );
     }
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    try {
+      if (!genAI) {
+        throw new functions.https.HttpsError(
+          'internal',
+          'AI service not configured'
+        );
+      }
 
-    const prompt = `
+      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+
+      const prompt = `
       Analyze the quality of this car photo.
       
       Rate each aspect from 0-100 and provide JSON:
@@ -478,37 +572,40 @@ export const analyzeImageQuality = functions.region('europe-west1').https.onCall
       }
     `;
 
-    const result = await model.generateContent([
-      prompt,
-      {
-        inlineData: {
-          data: imageBase64,
-          mimeType: mimeType || 'image/jpeg'
+      const result = await model.generateContent([
+        prompt,
+        {
+          inlineData: {
+            data: imageBase64,
+            mimeType: mimeType || 'image/jpeg',
+          },
+        },
+      ]);
+
+      const text = result.response.text();
+
+      let parsed;
+      try {
+        const jsonMatch =
+          text.match(/```json\s*([\s\S]*?)\s*```/) || text.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          parsed = JSON.parse(jsonMatch[1] || jsonMatch[0]);
+        } else {
+          parsed = JSON.parse(text);
         }
+      } catch {
+        throw new Error('Failed to parse AI response');
       }
-    ]);
 
-    const text = result.response.text();
+      await trackImageAnalysisUsage(userId, 0.001);
 
-    let parsed;
-    try {
-      const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/) || text.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        parsed = JSON.parse(jsonMatch[1] || jsonMatch[0]);
-      } else {
-        parsed = JSON.parse(text);
-      }
-    } catch {
-      throw new Error('Failed to parse AI response');
+      return parsed;
+    } catch (error: any) {
+      console.error('[analyzeImageQuality] Error:', error);
+      if (error instanceof functions.https.HttpsError) throw error;
+      throw new functions.https.HttpsError(
+        'internal',
+        'Quality analysis failed'
+      );
     }
-
-    await trackImageAnalysisUsage(userId, 0.001);
-
-    return parsed;
-
-  } catch (error: any) {
-    console.error('[analyzeImageQuality] Error:', error);
-    if (error instanceof functions.https.HttpsError) throw error;
-    throw new functions.https.HttpsError('internal', 'Quality analysis failed');
-  }
-});
+  });
