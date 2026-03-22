@@ -1,10 +1,10 @@
 // Visual Search Page
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../contexts/LanguageContext';
-import { VisualSearchUpload } from '../../components/visual-search/VisualSearchUpload';
-import { VisualSearchResult } from '../../services/advanced/visual-search.service';
-import { AIEvaluationWidget } from '../../components/ai/AIEvaluationWidget';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { VisualSearchUpload } from '@/components/visual-search/VisualSearchUpload';
+import { VisualSearchResult } from '@/services/advanced/visual-search.service';
+import { AIEvaluationWidget } from '@/components/AI/AIEvaluationWidget';
 import * as S from './VisualSearchPage.styles';
 
 export const VisualSearchPage: React.FC = () => {

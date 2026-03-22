@@ -5,6 +5,7 @@
   "homepage": "/",
   "dependencies": {
     "@algolia/autocomplete-js": "^1.19.4",
+    "@datadog/browser-rum": "^6.31.0",
     "@google/generative-ai": "^0.24.1",
     "@hcaptcha/react-hcaptcha": "^1.12.1",
     "@react-google-maps/api": "^2.20.7",
@@ -15,6 +16,7 @@
     "algoliasearch": "^4.25.2",
     "axios": "^1.13.2",
     "browser-image-compression": "^2.0.2",
+    "d3": "^7.9.0",
     "date-fns": "^4.1.0",
     "firebase": "^12.3.0",
     "framer-motion": "^12.23.26",
@@ -39,7 +41,6 @@
     "react-virtuoso": "^4.6.2",
     "recharts": "^3.2.1",
     "styled-components": "^6.1.19",
-    "three": "^0.183.0",
     "web-vitals": "^2.1.4",
     "zod": "^3.25.76"
   },
@@ -68,7 +69,7 @@
     "serve": "firebase serve --only hosting",
     "emulate": "firebase emulators:start",
     "migrate:legacy-cars": "node scripts/migrations/run-migration.js",
-    "type-check": "cross-env NODE_OPTIONS=--max_old_space_size=8192 tsc --noEmit",
+    "type-check": "cross-env NODE_OPTIONS=--max_old_space_size=12288 tsc --noEmit --skipLibCheck",
     "audit:hygiene": "tsx scripts/phase0-preparation/repo-hygiene-audit.ts",
     "audit:hygiene:strict": "tsx scripts/phase0-preparation/repo-hygiene-audit.ts src mobile_new/src functions/src shared",
     "train-ai": "node scripts/dev/train-ai-on-project.js",

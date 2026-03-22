@@ -145,8 +145,16 @@
           "name": "E170",
           "years": [2013, 2014, 2015, 2016, 2017, 2018, 2019],
           "trims": [
-            { "id": "corolla-1.6", "name": "Corolla 1.6L", "engines": ["4ZR-FE"] },
-            { "id": "corolla-hybrid", "name": "Corolla Hybrid", "engines": ["Hybrid"] }
+            {
+              "id": "corolla-1.6",
+              "name": "Corolla 1.6L",
+              "engines": ["4ZR-FE"]
+            },
+            {
+              "id": "corolla-hybrid",
+              "name": "Corolla Hybrid",
+              "engines": ["Hybrid"]
+            }
           ]
         }
       ]
@@ -184,5 +192,5 @@
     { "id": "pickup", "name": "Pickup Truck" },
     { "id": "van", "name": "Van/MPV" }
   ],
-  "migrationNotes": "Version 1.0 baseline. Next version (v2) will include deprecation of models and add new EV lineup."
+  "migrationNotes": "Version 1.0 baseline — design reference only. Runtime data lives in public/data/cars_brands_models_complete.md (173+ brands). Next version (v2) will include deprecation of models and add new EV lineup."
 }

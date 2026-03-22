@@ -155,6 +155,7 @@ export const AIAnalyzingStep: React.FC<AIAnalyzingStepProps> = ({
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [progressStage, setProgressStage] = useState(0);
+  const [retryCount, setRetryCount] = useState(0);
 
   const stages = {
     bg: [
@@ -194,6 +195,9 @@ export const AIAnalyzingStep: React.FC<AIAnalyzingStepProps> = ({
   };
 
   useEffect(() => {
+    let isActive = true;
+    let progressInterval: ReturnType<typeof setInterval> | null = null;
+
     if (!geminiAnalysisService.isReady()) {
       const errorMsg = currentLanguage === 'bg' 
         ? 'AI услугата не е налична. Моля, въведете данните ръчно.'
@@ -202,17 +206,18 @@ export const AIAnalyzingStep: React.FC<AIAnalyzingStepProps> = ({
       setIsAnalyzing(false);
       onError(errorMsg);
       logger.error('Gemini service not initialized');
-      return;
+      return () => { isActive = false; };
     }
 
     const analyze = async () => {
       try {
+        if (!isActive) return;
         setIsAnalyzing(true);
         setError(null);
         logger.info('Starting AI analysis', { fileName: image.name });
 
         // Progress simulation
-        const progressInterval = setInterval(() => {
+        progressInterval = setInterval(() => {
           setProgressStage(prev => {
             const stagesArray = stages[currentLanguage as 'bg' | 'en'] || stages.en;
             const next = prev + 1;
@@ -226,7 +231,8 @@ export const AIAnalyzingStep: React.FC<AIAnalyzingStepProps> = ({
         // Analyze with Gemini
         const result = await geminiAnalysisService.analyzeCarImage(base64);
         
-        clearInterval(progressInterval);
+        if (progressInterval) clearInterval(progressInterval);
+        if (!isActive) return;
         
         logger.info('AI analysis completed', {
           brand: result.brand.value,
@@ -236,10 +242,13 @@ export const AIAnalyzingStep: React.FC<AIAnalyzingStepProps> = ({
 
         // Small delay before advancing
         setTimeout(() => {
-          onComplete(result);
+          if (isActive) onComplete(result);
         }, 500);
 
       } catch (err) {
+        if (progressInterval) clearInterval(progressInterval);
+        if (!isActive) return;
+
         logger.error('AI analysis failed', err as Error);
         
         const errorMsg = currentLanguage === 'bg'
@@ -253,14 +262,21 @@ export const AIAnalyzingStep: React.FC<AIAnalyzingStepProps> = ({
     };
 
     analyze();
-  }, [image, currentLanguage, onComplete, onError]);
+
+    return () => {
+      isActive = false;
+      if (progressInterval) clearInterval(progressInterval);
+    };
+  // onComplete and onError are stable during analysis phase; retryCount triggers re-runs
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [image, currentLanguage, retryCount]);
 
   const handleRetry = () => {
     setProgressStage(0);
     setError(null);
     setIsAnalyzing(true);
-    // Re-run analysis by resetting component
-    window.location.reload();
+    // Increment retryCount to re-trigger the useEffect
+    setRetryCount(prev => prev + 1);
   };
 
   if (error) {

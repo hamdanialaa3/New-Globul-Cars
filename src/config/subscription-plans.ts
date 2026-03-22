@@ -1,10 +1,10 @@
 /**
  * Subscription Plans Configuration
  * Single Source of Truth for all plan limits and features
- * 
+ *
  * ⚠️ CRITICAL: This is the ONLY file that defines plan limits.
  * All other services MUST import from here.
- * 
+ *
  * File: src/config/subscription-plans.ts
  * Created: January 7, 2026
  */
@@ -16,33 +16,33 @@ export interface PlanFeatures {
   maxListings: number; // -1 = unlimited
   maxTeamMembers: number;
   maxCampaigns: number;
-  
+
   // Features
   canBulkUpload: boolean;
   canFeatureListings: boolean;
   canExportData: boolean;
   canImportData: boolean;
   canBulkEdit: boolean;
-  
+
   // Analytics
   hasBasicAnalytics: boolean;
   hasAdvancedAnalytics: boolean;
   canExportAnalytics: boolean;
-  
+
   // API & Integration
   canUseAPI: boolean;
   hasWebhooks: boolean;
   apiRateLimitPerHour: number;
-  
+
   // Marketing
   canCreateCampaigns: boolean;
   canUseEmailMarketing: boolean;
-  
+
   // Support
   hasPrioritySupport: boolean;
   hasAccountManager: boolean;
   canRequestConsultations: boolean;
-  
+
   // Branding
   canCustomizeBranding: boolean;
   hasFeaturedBadge: boolean;
@@ -84,23 +84,23 @@ export const SUBSCRIPTION_PLANS: Record<PlanTier, SubscriptionPlan> = {
     tier: 'free',
     name: {
       bg: 'Безплатен',
-      en: 'Free'
+      en: 'Free',
     },
     description: {
       bg: 'Перфектен за частни продавачи',
-      en: 'Perfect for private sellers'
+      en: 'Perfect for private sellers',
     },
     price: {
       monthly: 0,
       annual: 0,
-      currency: 'EUR'
+      currency: 'EUR',
     },
     stripePriceIds: {
       monthly: '',
-      annual: ''
+      annual: '',
     },
     features: {
-      maxListings: 3,
+      maxListings: 10,
       maxTeamMembers: 0,
       maxCampaigns: 0,
       canBulkUpload: false,
@@ -120,31 +120,31 @@ export const SUBSCRIPTION_PLANS: Record<PlanTier, SubscriptionPlan> = {
       hasAccountManager: false,
       canRequestConsultations: false,
       canCustomizeBranding: false,
-      hasFeaturedBadge: false
+      hasFeaturedBadge: false,
     },
     isActive: true,
-    displayOrder: 1
+    displayOrder: 1,
   },
-  
+
   dealer: {
     id: 'plan_dealer',
     tier: 'dealer',
     name: {
       bg: 'Професионален Търговец',
-      en: 'Professional Dealer'
+      en: 'Professional Dealer',
     },
     description: {
       bg: 'Идеален за автокъщи и дилъри',
-      en: 'Ideal for car dealerships'
+      en: 'Ideal for car dealerships',
     },
     price: {
-      monthly: 50,
-      annual: 480,
-      currency: 'EUR'
+      monthly: 15,
+      annual: 144,
+      currency: 'EUR',
     },
     stripePriceIds: {
-      monthly: 'price_dealer_monthly_50eur',
-      annual: 'price_dealer_annual_480eur'
+      monthly: 'price_dealer_monthly_15eur',
+      annual: 'price_dealer_annual_144eur',
     },
     features: {
       maxListings: 100,
@@ -167,31 +167,31 @@ export const SUBSCRIPTION_PLANS: Record<PlanTier, SubscriptionPlan> = {
       hasAccountManager: false,
       canRequestConsultations: true,
       canCustomizeBranding: false,
-      hasFeaturedBadge: true
+      hasFeaturedBadge: true,
     },
     isActive: true,
-    displayOrder: 2
+    displayOrder: 2,
   },
-  
+
   company: {
     id: 'plan_company',
     tier: 'company',
     name: {
       bg: 'Корпоративен',
-      en: 'Enterprise'
+      en: 'Enterprise',
     },
     description: {
       bg: 'За големи автомобилни компании',
-      en: 'For large automotive companies'
+      en: 'For large automotive companies',
     },
     price: {
       monthly: 500,
       annual: 4800,
-      currency: 'EUR'
+      currency: 'EUR',
     },
     stripePriceIds: {
       monthly: 'price_enterprise_monthly_500eur',
-      annual: 'price_enterprise_annual_4800eur'
+      annual: 'price_enterprise_annual_4800eur',
     },
     features: {
       maxListings: -1,
@@ -214,11 +214,11 @@ export const SUBSCRIPTION_PLANS: Record<PlanTier, SubscriptionPlan> = {
       hasAccountManager: true,
       canRequestConsultations: true,
       canCustomizeBranding: true,
-      hasFeaturedBadge: true
+      hasFeaturedBadge: true,
     },
-    isActive: true,
-    displayOrder: 3
-  }
+    isActive: false,
+    displayOrder: 3,
+  },
 };
 
 /**
@@ -262,7 +262,10 @@ export function comparePlans(tierA: PlanTier, tierB: PlanTier): number {
 /**
  * Check if upgrade is available
  */
-export function canUpgradeTo(currentTier: PlanTier, targetTier: PlanTier): boolean {
+export function canUpgradeTo(
+  currentTier: PlanTier,
+  targetTier: PlanTier
+): boolean {
   return comparePlans(targetTier, currentTier) > 0;
 }
 

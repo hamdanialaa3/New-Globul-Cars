@@ -268,12 +268,15 @@ export const AIAnalysisModal: React.FC<AIAnalysisModalProps> = ({
         equipmentSuggestions: data.equipmentSuggestions,
         uploadedImages
       });
+      // In page mode, onComplete handles navigation — don't also call handleClose
+      // which would trigger navigate(-1) and undo the navigation
+      if (mode !== 'page') {
+        setTimeout(() => { handleClose(); }, 500);
+      }
+    } else {
+      // No onComplete handler — just close
+      setTimeout(() => { handleClose(); }, 500);
     }
-
-    // Close modal after completion
-    setTimeout(() => {
-      handleClose();
-    }, 500);
   };
 
   const handleClose = () => {

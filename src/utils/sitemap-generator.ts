@@ -4,13 +4,27 @@ import { logger } from '../services/logger-service';
 // UPDATED: Now uses numeric URLs for all car listings
 
 import { db } from '../firebase';
-import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  orderBy,
+  limit,
+} from 'firebase/firestore';
 import { getCarDetailsUrl } from './routing-utils';
 
 interface SitemapUrl {
   loc: string;
   lastmod?: string;
-  changefreq?: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
+  changefreq?:
+    | 'always'
+    | 'hourly'
+    | 'daily'
+    | 'weekly'
+    | 'monthly'
+    | 'yearly'
+    | 'never';
   priority?: number;
 }
 
@@ -19,17 +33,22 @@ interface SitemapUrl {
  * FREE - No external service needed
  */
 export const generateSitemapXML = (urls: SitemapUrl[]): string => {
-  const header = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+  const header =
+    '<?xml version="1.0" encoding="UTF-8"?>\n' +
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
-  const urlsXML = urls.map(url => {
-    let entry = `  <url>\n    <loc>${url.loc}</loc>\n`;
-    if (url.lastmod) entry += `    <lastmod>${url.lastmod}</lastmod>\n`;
-    if (url.changefreq) entry += `    <changefreq>${url.changefreq}</changefreq>\n`;
-    if (url.priority !== undefined) entry += `    <priority>${url.priority}</priority>\n`;
-    entry += '  </url>\n';
-    return entry;
-  }).join('');
+  const urlsXML = urls
+    .map(url => {
+      let entry = `  <url>\n    <loc>${url.loc}</loc>\n`;
+      if (url.lastmod) entry += `    <lastmod>${url.lastmod}</lastmod>\n`;
+      if (url.changefreq)
+        entry += `    <changefreq>${url.changefreq}</changefreq>\n`;
+      if (url.priority !== undefined)
+        entry += `    <priority>${url.priority}</priority>\n`;
+      entry += '  </url>\n';
+      return entry;
+    })
+    .join('');
 
   const footer = '</urlset>';
 
@@ -42,7 +61,9 @@ export const generateSitemapXML = (urls: SitemapUrl[]): string => {
  * UPDATED: Now uses SEO-friendly slugs (canonicalUrl) with fallback to numeric IDs
  * Prioritizes listings with slugs (SEO), includes legacy numeric URLs
  */
-export const generateCarListingsSitemap = async (baseUrl: string = 'https://koli.one'): Promise<SitemapUrl[]> => {
+export const generateCarListingsSitemap = async (
+  baseUrl: string = 'https://koli.one'
+): Promise<SitemapUrl[]> => {
   try {
     const carsRef = collection(db, 'cars');
     const q = query(
@@ -60,11 +81,14 @@ export const generateCarListingsSitemap = async (baseUrl: string = 'https://koli
 
         // Skip cars without numeric IDs (legacy data)
         if (!data.sellerNumericId || !data.carNumericId) {
-          logger.warn(`Car ${doc.id} missing numeric IDs, skipping from sitemap`);
+          logger.warn(
+            `Car ${doc.id} missing numeric IDs, skipping from sitemap`
+          );
           return null;
         }
 
-        const lastmod = data.updatedAt?.toDate?.()?.toISOString() ||
+        const lastmod =
+          data.updatedAt?.toDate?.()?.toISOString() ||
           data.createdAt?.toDate?.()?.toISOString() ||
           new Date().toISOString();
 
@@ -79,7 +103,7 @@ export const generateCarListingsSitemap = async (baseUrl: string = 'https://koli
           carUrl = getCarDetailsUrl({
             sellerNumericId: data.sellerNumericId,
             carNumericId: data.carNumericId,
-            id: doc.id
+            id: doc.id,
           });
         }
 
@@ -87,7 +111,7 @@ export const generateCarListingsSitemap = async (baseUrl: string = 'https://koli
           loc: `${baseUrl}${carUrl}`,
           lastmod: lastmod.split('T')[0], // YYYY-MM-DD format
           changefreq: 'weekly' as const,
-          priority: data.canonicalUrl ? 0.9 : 0.7 // Prioritize listings with slugs
+          priority: data.canonicalUrl ? 0.9 : 0.7, // Prioritize listings with slugs
         };
       })
       .filter(Boolean) as SitemapUrl[]; // Remove null entries
@@ -101,30 +125,111 @@ export const generateCarListingsSitemap = async (baseUrl: string = 'https://koli
  * Generate static pages sitemap
  * FREE - Hardcoded static routes
  */
-export const generateStaticPagesSitemap = (baseUrl: string = 'https://koli.one'): SitemapUrl[] => {
+export const generateStaticPagesSitemap = (
+  baseUrl: string = 'https://koli.one'
+): SitemapUrl[] => {
   const today = new Date().toISOString().split('T')[0];
 
   return [
     { loc: `${baseUrl}/`, changefreq: 'daily', priority: 1.0, lastmod: today },
-    { loc: `${baseUrl}/cars`, changefreq: 'hourly', priority: 0.9, lastmod: today },
-    { loc: `${baseUrl}/sell`, changefreq: 'monthly', priority: 0.8, lastmod: today },
-    { loc: `${baseUrl}/about`, changefreq: 'monthly', priority: 0.5, lastmod: today },
-    { loc: `${baseUrl}/contact`, changefreq: 'monthly', priority: 0.5, lastmod: today },
-    { loc: `${baseUrl}/privacy`, changefreq: 'yearly', priority: 0.3, lastmod: today },
-    { loc: `${baseUrl}/terms`, changefreq: 'yearly', priority: 0.3, lastmod: today },
-    { loc: `${baseUrl}/faq`, changefreq: 'monthly', priority: 0.6, lastmod: today },
+    {
+      loc: `${baseUrl}/cars`,
+      changefreq: 'hourly',
+      priority: 0.9,
+      lastmod: today,
+    },
+    {
+      loc: `${baseUrl}/sell`,
+      changefreq: 'monthly',
+      priority: 0.8,
+      lastmod: today,
+    },
+    {
+      loc: `${baseUrl}/valuation`,
+      changefreq: 'weekly',
+      priority: 0.8,
+      lastmod: today,
+    },
+    {
+      loc: `${baseUrl}/about`,
+      changefreq: 'monthly',
+      priority: 0.5,
+      lastmod: today,
+    },
+    {
+      loc: `${baseUrl}/contact`,
+      changefreq: 'monthly',
+      priority: 0.5,
+      lastmod: today,
+    },
+    {
+      loc: `${baseUrl}/privacy`,
+      changefreq: 'yearly',
+      priority: 0.3,
+      lastmod: today,
+    },
+    {
+      loc: `${baseUrl}/terms`,
+      changefreq: 'yearly',
+      priority: 0.3,
+      lastmod: today,
+    },
+    {
+      loc: `${baseUrl}/faq`,
+      changefreq: 'monthly',
+      priority: 0.6,
+      lastmod: today,
+    },
+    // Brand valuation SEO pages
+    ...[
+      'bmw',
+      'mercedes-benz',
+      'audi',
+      'volkswagen',
+      'toyota',
+      'opel',
+      'ford',
+      'renault',
+      'skoda',
+      'volvo',
+      'porsche',
+      'hyundai',
+      'mazda',
+      'peugeot',
+      'citroen',
+      'fiat',
+      'nissan',
+      'honda',
+      'dacia',
+      'kia',
+      'seat',
+      'suzuki',
+      'mitsubishi',
+      'jeep',
+      'mini',
+      'alfa-romeo',
+      'land-rover',
+      'chevrolet',
+    ].map(brand => ({
+      loc: `${baseUrl}/valuation/${brand}`,
+      changefreq: 'weekly' as const,
+      priority: 0.7,
+      lastmod: today,
+    })),
   ];
 };
 
 /**
  * Generate complete sitemap (static + dynamic)
  * FREE - Combines all URLs
- * 
+ *
  * @example
  * const xml = await generateCompleteSitemap();
  * // Save to public/sitemap.xml or serve dynamically
  */
-export const generateCompleteSitemap = async (baseUrl: string = 'https://koli.one'): Promise<string> => {
+export const generateCompleteSitemap = async (
+  baseUrl: string = 'https://koli.one'
+): Promise<string> => {
   const staticUrls = generateStaticPagesSitemap(baseUrl);
   const carUrls = await generateCarListingsSitemap(baseUrl);
 
@@ -137,18 +242,26 @@ export const generateCompleteSitemap = async (baseUrl: string = 'https://koli.on
  * Generate sitemap index (for large sites with multiple sitemaps)
  * FREE - Splits into multiple files if needed
  */
-export const generateSitemapIndex = (sitemapUrls: string[], baseUrl: string = 'https://koli.one'): string => {
+export const generateSitemapIndex = (
+  sitemapUrls: string[],
+  baseUrl: string = 'https://koli.one'
+): string => {
   const today = new Date().toISOString().split('T')[0];
 
-  const header = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+  const header =
+    '<?xml version="1.0" encoding="UTF-8"?>\n' +
     '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
-  const sitemaps = sitemapUrls.map(url => {
-    return `  <sitemap>\n` +
-      `    <loc>${url}</loc>\n` +
-      `    <lastmod>${today}</lastmod>\n` +
-      `  </sitemap>\n`;
-  }).join('');
+  const sitemaps = sitemapUrls
+    .map(url => {
+      return (
+        `  <sitemap>\n` +
+        `    <loc>${url}</loc>\n` +
+        `    <lastmod>${today}</lastmod>\n` +
+        `  </sitemap>\n`
+      );
+    })
+    .join('');
 
   const footer = '</sitemapindex>';
 
@@ -183,5 +296,5 @@ export default {
   generateCarListingsSitemap,
   generateStaticPagesSitemap,
   generateCompleteSitemap,
-  generateSitemapIndex
+  generateSitemapIndex,
 };

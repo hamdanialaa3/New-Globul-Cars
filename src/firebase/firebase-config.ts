@@ -3,11 +3,22 @@
 
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { initializeFirestore, persistentLocalCache, memoryLocalCache, enableIndexedDbPersistence } from 'firebase/firestore';
+import {
+  initializeFirestore,
+  persistentLocalCache,
+  memoryLocalCache,
+  enableIndexedDbPersistence,
+} from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getFunctions } from 'firebase/functions';
 import { getAnalytics, Analytics } from 'firebase/analytics';
-import { getDatabase, ref as rtdbRef, onValue, goOnline, goOffline } from 'firebase/database';
+import {
+  getDatabase,
+  ref as rtdbRef,
+  onValue,
+  goOnline,
+  goOffline,
+} from 'firebase/database';
 // import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'; // Disabled to prevent auth errors
 import { BULGARIAN_CONFIG } from '../config/bulgarian-config';
 import { logger } from '../services/logger-service';
@@ -32,19 +43,23 @@ const firebaseConfig = {
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
-  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
 };
 
 // Validate Firebase config
 if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
-  throw new Error('❌ CRITICAL: Firebase configuration incomplete. Check .env file.');
+  throw new Error(
+    '❌ CRITICAL: Firebase configuration incomplete. Check .env file.'
+  );
 }
 
 // Initialize Firebase
 let app: any;
 try {
   app = initializeApp(firebaseConfig);
-  logger.info('Firebase app initialized successfully', { projectId: firebaseConfig.projectId });
+  logger.info('Firebase app initialized successfully', {
+    projectId: firebaseConfig.projectId,
+  });
 } catch (error) {
   logger.error('Failed to initialize Firebase app', error as Error);
   throw error;
@@ -52,16 +67,28 @@ try {
 
 // Initialize App Check - ENABLED ONLY IN PRODUCTION for security
 let appCheck: any = null;
-if (process.env.NODE_ENV === 'production' && import.meta.env.VITE_RECAPTCHA_SITE_KEY) {
+if (
+  process.env.NODE_ENV === 'production' &&
+  import.meta.env.VITE_RECAPTCHA_SITE_KEY
+) {
   try {
-    const { initializeAppCheck, ReCaptchaV3Provider } = require('firebase/app-check');
+    const {
+      initializeAppCheck,
+      ReCaptchaV3Provider,
+    } = require('firebase/app-check');
     appCheck = initializeAppCheck(app, {
-      provider: new ReCaptchaV3Provider(import.meta.env.VITE_RECAPTCHA_SITE_KEY),
-      isTokenAutoRefreshEnabled: true
+      provider: new ReCaptchaV3Provider(
+        import.meta.env.VITE_RECAPTCHA_SITE_KEY
+      ),
+      isTokenAutoRefreshEnabled: true,
     });
-    logger.info('Firebase App Check initialized successfully (production only)');
+    logger.info(
+      'Firebase App Check initialized successfully (production only)'
+    );
   } catch (error) {
-    logger.warn('App Check initialization failed (non-critical)', { error: (error as Error)?.message });
+    logger.warn('App Check initialization failed (non-critical)', {
+      error: (error as Error)?.message,
+    });
   }
 } else {
   // ✅ FIX: Activate Debug Token for Localhost to bypass "invalid-app-credential"
@@ -89,7 +116,7 @@ export { auth };
 let db: any;
 try {
   db = initializeFirestore(app, {
-    localCache: memoryLocalCache?.() || undefined // In-memory cache only (no persistence)
+    localCache: memoryLocalCache?.() || undefined, // In-memory cache only (no persistence)
   });
 
   logger.info('Firestore initialized (cache settings applied: memory/default)');
@@ -109,16 +136,18 @@ export const realtimeDb = getDatabase(app);
 // Keep user channels synced (requires numericId to be set dynamically)
 /**
  * Enable Realtime Database offline persistence
- * 
+ *
  * ⚠️ NOTE: keepSynced() is NOT available in Firebase JavaScript SDK
  * It only exists in Android/iOS SDKs
- * 
+ *
  * For Web: RTDB automatically caches data when listeners are active
  * Just keep onValue listeners alive and data will be cached
- * 
+ *
  * @param userNumericId - User's numeric ID
  */
-export function enableRealtimeMessagingPersistence(userNumericId: number): void {
+export function enableRealtimeMessagingPersistence(
+  userNumericId: number
+): void {
   if (!userNumericId) {
     logger.warn('Cannot enable RTDB persistence: Missing numericId');
     return;
@@ -129,9 +158,13 @@ export function enableRealtimeMessagingPersistence(userNumericId: number): void 
   try {
     goOnline(realtimeDb);
 
-    logger.info('RTDB online mode enabled (auto-caching active)', { userNumericId });
+    logger.info('RTDB online mode enabled (auto-caching active)', {
+      userNumericId,
+    });
   } catch (error) {
-    logger.error('Failed to enable RTDB online mode', error as Error, { userNumericId });
+    logger.error('Failed to enable RTDB online mode', error as Error, {
+      userNumericId,
+    });
   }
 }
 
@@ -149,16 +182,19 @@ export function setRealtimeDatabaseOffline(): void {
 export { appCheck };
 
 // Initialize Analytics (only in production and if measurement ID is provided)
-const analytics: Analytics | null = (typeof window !== 'undefined' && process.env.VITE_FIREBASE_MEASUREMENT_ID)
-  ? (() => {
-    try {
-      return getAnalytics(app);
-    } catch (error) {
-      logger.warn('Analytics initialization failed', { error: (error as Error)?.message });
-      return null;
-    }
-  })()
-  : null;
+const analytics: Analytics | null =
+  typeof window !== 'undefined' && import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+    ? (() => {
+        try {
+          return getAnalytics(app);
+        } catch (error) {
+          logger.warn('Analytics initialization failed', {
+            error: (error as Error)?.message,
+          });
+          return null;
+        }
+      })()
+    : null;
 export { analytics };
 
 // Bulgarian Firebase Utilities
@@ -169,7 +205,7 @@ export class BulgarianFirebaseUtils {
       style: 'currency',
       currency: BULGARIAN_CONFIG.currency,
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      maximumFractionDigits: 0,
     }).format(amount);
   }
 
@@ -210,7 +246,7 @@ export class BulgarianFirebaseUtils {
     return new Intl.DateTimeFormat(BULGARIAN_CONFIG.locale, {
       year: 'numeric',
       month: '2-digit',
-      day: '2-digit'
+      day: '2-digit',
     }).format(date);
   }
 
@@ -221,7 +257,7 @@ export class BulgarianFirebaseUtils {
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     }).format(date);
   }
 

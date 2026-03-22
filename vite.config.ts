@@ -20,6 +20,8 @@ export default defineConfig(({ mode }) => {
     // needed (avoids elliptic transitive dep, GHSA-848j-6mx2-7j84).
     define: {
       global: 'globalThis',
+      'process.env.NODE_ENV': JSON.stringify(mode),
+      'process.env': '{}',
     },
 
     plugins: [
@@ -137,8 +139,12 @@ export default defineConfig(({ mode }) => {
               return 'vendor-firebase';
             }
 
+            // Framer Motion (large animation library, ~150KB)
+            if (id.includes('node_modules/framer-motion')) {
+              return 'vendor-animations';
+            }
+
             // All other node_modules in one bundle
-            // (react, react-is, styled-components, MUI, etc.)
             if (id.includes('node_modules')) {
               return 'vendor';
             }
