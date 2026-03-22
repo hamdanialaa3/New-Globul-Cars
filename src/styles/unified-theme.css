@@ -138,122 +138,124 @@ html[data-theme="light"],
    Modern, Elegant, Professional Dark Design
    ═══════════════════════════════════════════════════════════════════ */
 html[data-theme="dark"],
-.dark-theme {
+.dark-theme,
+:root { /* Default to Midnight Premium */
   /* ─────────────────────────────────────────
-     الخلفيات - Backgrounds
+     الخلفيات - Backgrounds (Midnight Premium)
      ───────────────────────────────────────── */
-  --bg-primary: #0F1419;
-  /* خلفية رئيسية - أسود مزرق عميق */
-  --bg-secondary: #1A1F2E;
-  /* خلفية ثانوية - أزرق داكن */
-  --bg-card: #1E2432;
-  /* بطاقات - أزرق رمادي */
-  --bg-hover: #252B3A;
-  /* تحويم - أزرق أفتح قليلاً */
-  --bg-accent: #2A1810;
-  /* خلفية مميزة - برتقالي داكن جداً */
-  --bg-header: #0A0D14;
-  /* هيدر أسود نقي */
-  --bg-footer: #13161F;
-  /* فوتر داكن */
-  --bg-overlay: rgba(15, 20, 25, 0.95);
-  /* طبقة شفافة */
+  --bg-primary: #0B0E14;
+  /* خلفية رئيسية - Midnight Charcoal */
+  --bg-secondary: #121822;
+  /* خلفية ثانوية - Deep Sea Blue */
+  --bg-card: rgba(22, 28, 40, 0.65);
+  /* بطاقات - Frosted Glass Dark */
+  --bg-hover: rgba(30, 38, 55, 0.8);
+  /* تحويم - Dark Glass Hover */
+  --bg-accent: #192033;
+  /* خلفية مميزة - Midnight Accent */
+  --bg-header: rgba(11, 14, 20, 0.75);
+  /* هيدر زجاجي */
+  --bg-footer: #0A0D12;
+  /* فوتر داكن جداً */
+  --bg-overlay: rgba(11, 14, 20, 0.85);
+  /* طبقة شفافة زجاجية */
 
   /* ─────────────────────────────────────────
      النصوص - Text Colors
      ───────────────────────────────────────── */
-  --text-primary: #F8FAFC;
-  /* نص رئيسي - أبيض ناصع */
-  --text-secondary: #CBD5E1;
-  /* نص ثانوي - رمادي فاتح */
-  --text-tertiary: #94A3B8;
+  --text-primary: #FFFFFF;
+  /* نص رئيسي - ناصع */
+  --text-secondary: #B0BEC5;
+  /* نص ثانوي - رمادي مزرق */
+  --text-tertiary: #78909C;
   /* نص خفيف - رمادي */
-  --text-inverse: #0F1419;
-  /* نص عكسي - داكن */
-  --text-muted: #64748B;
+  --text-inverse: #0B0E14;
+  /* نص عكسي */
+  --text-muted: #546E7A;
   /* نص خافت */
   --text-on-header: #FFFFFF;
   /* نص على الهيدر */
-  --text-link: #FF9066;
-  /* روابط - برتقالي فاتح */
-  --text-link-hover: #FFB399;
+  --text-link: #00E676;
+  /* روابط - Neon Green */
+  --text-link-hover: #69F0AE;
   /* روابط عند التحويم */
 
   /* ─────────────────────────────────────────
      الألوان الرئيسية - Primary Accents
      ───────────────────────────────────────── */
-  --accent-primary: #FF8C61;
-  /* برتقالي محروق - مميز في الداكن */
-  --accent-secondary: #FFA885;
+  --accent-primary: #FF7900;
+  /* برتقالي لامع (Signature) */
+  --accent-secondary: #FFA733;
   /* برتقالي فاتح */
-  --accent-dark: #E8643D;
+  --accent-dark: #CC6000;
   /* برتقالي داكن */
-  --accent-light: #FFCBB3;
-  /* برتقالي شاحب */
-  --accent-orange: #FF8C61;
-  /* برتقالي - متوافق مع المكونات */
+  --accent-light: rgba(255, 121, 0, 0.15);
+  /* برتقالي شفاف */
+  --accent-orange: #FF7900;
+  /* برتقالي */
 
-  --blue-primary: #5B9FD8;
-  /* أزرق سيارات فاتح */
-  --blue-light: #7BB5E8;
-  /* أزرق فاتح جداً */
-  --blue-dark: #3A7AB8;
-  /* أزرق داكن */
+  --blue-primary: #00D4AA;
+  /* أكوا - Neon Cyan */
+  --blue-light: #33DDBC;
+  /* أكوا فاتح */
+  --blue-dark: #00A988;
+  /* أكوا داكن */
 
   /* ─────────────────────────────────────────
-     الحدود والفواصل - Borders
+     الحدود والفواصل - Borders (Glassmorphism)
      ───────────────────────────────────────── */
-  --border-primary: #2D3748;
-  /* حدود رئيسية */
-  --border-secondary: #374151;
+  --border-primary: rgba(255, 255, 255, 0.08);
+  /* حدود زجاجية رئيسية */
+  --border-secondary: rgba(255, 255, 255, 0.04);
   /* حدود ثانوية */
-  --border-accent: #FF8C61;
+  --border-accent: rgba(255, 121, 0, 0.5);
   /* حدود مميزة */
-  --border-light: #1F2937;
+  --border-light: rgba(255, 255, 255, 0.02);
   /* حدود خفيفة */
-  --border-hover: #475569;
+  --border-hover: rgba(255, 255, 255, 0.15);
   /* حدود عند التحويم */
 
   /* ─────────────────────────────────────────
      الأزرار - Buttons
      ───────────────────────────────────────── */
-  --btn-primary-bg: #FF8C61;
-  --btn-primary-text: #0F1419;
-  --btn-primary-hover: #FFA885;
-  --btn-primary-active: #E8643D;
+  --btn-primary-bg: #FF7900;
+  --btn-primary-text: #FFFFFF;
+  --btn-primary-hover: #FFA733;
+  --btn-primary-active: #CC6000;
 
-  --btn-secondary-bg: #1E2432;
-  --btn-secondary-text: #F8FAFC;
-  --btn-secondary-border: #2D3748;
-  --btn-secondary-hover: #252B3A;
+  --btn-secondary-bg: rgba(255, 255, 255, 0.05);
+  --btn-secondary-text: #FFFFFF;
+  --btn-secondary-border: rgba(255, 255, 255, 0.1);
+  --btn-secondary-hover: rgba(255, 255, 255, 0.1);
 
   --btn-outline-bg: transparent;
-  --btn-outline-text: #FF8C61;
-  --btn-outline-border: #FF8C61;
-  --btn-outline-hover-bg: #2A1810;
+  --btn-outline-text: #00D4AA;
+  --btn-outline-border: #00D4AA;
+  --btn-outline-hover-bg: rgba(0, 212, 170, 0.1);
 
   /* ─────────────────────────────────────────
-     الظلال - Shadows
+     الظلال و تأثيرات الزجاج - Shadows & Blur
      ───────────────────────────────────────── */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.7);
-  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.8);
-  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.4);
-  --shadow-button: 0 2px 6px rgba(255, 140, 97, 0.35);
-  --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.6);
+  --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.6);
+  --shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.7);
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --shadow-button: 0 4px 14px rgba(255, 121, 0, 0.4);
+  --shadow-hover: 0 12px 24px rgba(255, 121, 0, 0.2);
+  --glass-blur: blur(12px);
 
   /* ─────────────────────────────────────────
      حالات - Status Colors
      ───────────────────────────────────────── */
-  --success: #34D399;
-  --success-light: #064E3B;
-  --warning: #FBBF24;
-  --warning-light: #78350F;
-  --error: #F87171;
-  --error-light: #7F1D1D;
-  --info: #60A5FA;
-  --info-light: #1E3A8A;
+  --success: #00E676;
+  --success-light: rgba(0, 230, 118, 0.1);
+  --warning: #FFD600;
+  --warning-light: rgba(255, 214, 0, 0.1);
+  --error: #FF1744;
+  --error-light: rgba(255, 23, 68, 0.1);
+  --info: #00E5FF;
+  --info-light: rgba(0, 229, 255, 0.1);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
