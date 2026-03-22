@@ -39,7 +39,8 @@ function Set-Secret {
     $Value | gh secret set $Name --repo $Repo
     if ($LASTEXITCODE -eq 0) {
         Write-Host "  [OK] $Name" -ForegroundColor Green
-    } else {
+    }
+    else {
         Write-Host "  [FAIL] $Name" -ForegroundColor Red
     }
 }
@@ -63,9 +64,11 @@ $saPath = Read-Host "Paste the full path to your service-account JSON file (or p
 if ($saPath -and (Test-Path $saPath)) {
     $saJson = Get-Content $saPath -Raw
     Set-Secret "FIREBASE_SERVICE_ACCOUNT" $saJson
-} elseif ($saPath) {
+}
+elseif ($saPath) {
     Write-Host "  File not found: $saPath — skipping FIREBASE_SERVICE_ACCOUNT" -ForegroundColor Yellow
-} else {
+}
+else {
     Write-Host "  Skipped FIREBASE_SERVICE_ACCOUNT (set it manually later)" -ForegroundColor Yellow
 }
 
