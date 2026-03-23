@@ -1,261 +1,171 @@
 /* ═══════════════════════════════════════════════════════════════════
    🚗 UNIFIED CAR MARKETPLACE THEME SYSTEM
-   نظام الثيم الموحد لسوق السيارات
+   Single Source of Truth — synced with design-system.ts
    
-   الملف الوحيد المتحكم بجميع ألوان وتفاصيل الموقع
-   Inspired by: BMW M Sport, Mercedes-AMG, Audi RS
+   Palette: AutoScout24 clean engineering + Bulgarian identity
+   Primary: #E65100 (warm automotive orange)
+   Secondary: #1A237E (deep European indigo)
    ═══════════════════════════════════════════════════════════════════ */
 
 /* ═══════════════════════════════════════════════════════════════════
-   🌅 LIGHT MODE - الوضع النهاري
-   Modern, Clean, Professional Design
+   🌅 LIGHT MODE — Clean, Professional, Trust-Building
    ═══════════════════════════════════════════════════════════════════ */
 :root,
 html[data-theme="light"],
 .light-theme {
-  /* ─────────────────────────────────────────
-     الخلفيات - Backgrounds
-     ───────────────────────────────────────── */
-  --bg-primary: #c7c0b9;
-  /* صفحة رئيسية - بيج واضح */
-  --bg-secondary: #b4b1aa;
-  /* بطاقات وأقسام - بيج فاتح جداً */
-  --bg-card: #a09090;
-  /* بطاقات السيارات - أبيض */
-  --bg-hover: #9ea7b5;
-  /* تحويم - رمادي فاتح */
-  --bg-accent: #eed0c3;
-  /* خلفية مميزة - برتقالي فاتح جداً */
-  --bg-header: #1A1D2E;
-  /* هيدر داكن ثابت */
-  --bg-footer: #F4F1EA;
-  /* فوتر بيج واضح */
+  /* ─── Backgrounds ─── */
+  --bg-primary: #FAFBFC;
+  --bg-secondary: #F1F5F9;
+  --bg-card: #FFFFFF;
+  --bg-hover: #F1F5F9;
+  --bg-accent: #FFF3E0;
+  --bg-header: #FFFFFF;
+  --bg-footer: #F8FAFC;
   --bg-overlay: rgba(255, 255, 255, 0.95);
-  /* طبقة شفافة */
-  --bg-section-light: #F4F1EA;
-  /* خلفية الأقسام - بيج واضح */
+  --bg-section-light: #F8FAFC;
 
-  /* ─────────────────────────────────────────
-     النصوص - Text Colors
-     ───────────────────────────────────────── */
-  --text-primary: #1A1D2E;
-  /* نص رئيسي - أزرق داكن جداً */
-  --text-secondary: #4A5568;
-  /* نص ثانوي - رمادي */
-  --text-tertiary: #718096;
-  /* نص خفيف - رمادي فاتح */
+  /* ─── Text Colors ─── */
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-tertiary: #64748B;
   --text-inverse: #FFFFFF;
-  /* نص عكسي - أبيض */
-  --text-muted: #A0AEC0;
-  /* نص خافت */
-  --text-on-header: #FFFFFF;
-  /* نص على الهيدر */
-  --text-link: #FF6B35;
-  /* روابط - برتقالي */
-  --text-link-hover: #E85A28;
-  /* روابط عند التحويم */
+  --text-muted: #94A3B8;
+  --text-on-header: #0F172A;
+  --text-link: #E65100;
+  --text-link-hover: #BF4400;
 
-  /* ─────────────────────────────────────────
-     الألوان الرئيسية - Primary Accents
-     ───────────────────────────────────────── */
-  --accent-primary: #FF6B35;
-  /* برتقالي دافئ - للأزرار والتميز */
-  --accent-secondary: #FF8C61;
-  /* برتقالي فاتح - hover */
-  --accent-dark: #E85A28;
-  /* برتقالي داكن - active */
-  --accent-light: #FFB399;
-  /* برتقالي شاحب */
-  --accent-orange: #FF6B35;
-  /* برتقالي - متوافق مع المكونات */
+  /* ─── Primary Accents ─── */
+  --accent-primary: #E65100;
+  --accent-secondary: #1A237E;
+  --accent-dark: #BF4400;
+  --accent-light: rgba(230, 81, 0, 0.1);
+  --accent-orange: #E65100;
 
-  --blue-primary: #2C5F8D;
-  /* أزرق سيارات - للروابط */
-  --blue-light: #4A90E2;
-  /* أزرق فاتح */
-  --blue-dark: #1A3A5C;
-  /* أزرق داكن */
+  --blue-primary: #1A237E;
+  --blue-light: #3949AB;
+  --blue-dark: #0D1452;
 
-  /* ─────────────────────────────────────────
-     الحدود والفواصل - Borders
-     ───────────────────────────────────────── */
+  /* ─── Borders ─── */
   --border-primary: #E2E8F0;
-  /* حدود رئيسية */
-  --border-secondary: #CBD5E0;
-  /* حدود ثانوية */
-  --border-accent: #FF6B35;
-  /* حدود مميزة */
-  --border-light: #F7FAFC;
-  /* حدود خفيفة */
-  --border-hover: #CBD5E0;
-  /* حدود عند التحويم */
+  --border-secondary: #CBD5E1;
+  --border-accent: #E65100;
+  --border-light: #F1F5F9;
+  --border-hover: #CBD5E1;
 
-  /* ─────────────────────────────────────────
-     الأزرار - Buttons
-     ───────────────────────────────────────── */
-  --btn-primary-bg: #FF6B35;
+  /* ─── Buttons ─── */
+  --btn-primary-bg: linear-gradient(135deg, #E65100 0%, #FF7B33 100%);
   --btn-primary-text: #FFFFFF;
-  --btn-primary-hover: #FF8C61;
-  --btn-primary-active: #E85A28;
+  --btn-primary-hover: linear-gradient(135deg, #BF4400 0%, #E65100 100%);
+  --btn-primary-active: linear-gradient(135deg, #993700 0%, #BF4400 100%);
 
   --btn-secondary-bg: #FFFFFF;
-  --btn-secondary-text: #1A1D2E;
+  --btn-secondary-text: #0F172A;
   --btn-secondary-border: #E2E8F0;
-  --btn-secondary-hover: #F8F9FA;
+  --btn-secondary-hover: #F8FAFC;
 
   --btn-outline-bg: transparent;
-  --btn-outline-text: #FF6B35;
-  --btn-outline-border: #FF6B35;
-  --btn-outline-hover-bg: #FFF8F5;
+  --btn-outline-text: #E65100;
+  --btn-outline-border: #E65100;
+  --btn-outline-hover-bg: rgba(230, 81, 0, 0.05);
 
-  /* ─────────────────────────────────────────
-     الظلال - Shadows
-     ───────────────────────────────────────── */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
-  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.15);
-  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --shadow-button: 0 2px 6px rgba(255, 107, 53, 0.25);
-  --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.12);
+  /* ─── Shadows ─── */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.12);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-button: 0 2px 6px rgba(230, 81, 0, 0.2);
+  --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.1);
 
-  /* ─────────────────────────────────────────
-     حالات - Status Colors
-     ───────────────────────────────────────── */
-  --success: #10B981;
-  --success-light: #D1FAE5;
-  --warning: #F59E0B;
-  --warning-light: #FEF3C7;
-  --error: #EF4444;
-  --error-light: #FEE2E2;
-  --info: #3B82F6;
-  --info-light: #DBEAFE;
+  /* ─── Status Colors ─── */
+  --success: #00C853;
+  --success-light: #E8F5E9;
+  --warning: #FFD600;
+  --warning-light: #FFFDE7;
+  --error: #FF1744;
+  --error-light: #FFEBEE;
+  --info: #2979FF;
+  --info-light: #E3F2FD;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   🌙 DARK MODE - الوضع الليلي
-   Luxury Dark Theme - BMW M / Mercedes-AMG Inspired
-   Modern, Elegant, Professional Dark Design
+   🌙 DARK MODE — Premium Glassmorphism, Elegant
    ═══════════════════════════════════════════════════════════════════ */
 html[data-theme="dark"],
-.dark-theme,
-:root { /* Default to Midnight Premium */
-  /* ─────────────────────────────────────────
-     الخلفيات - Backgrounds (Midnight Premium)
-     ───────────────────────────────────────── */
+.dark-theme {
+  /* ─── Backgrounds ─── */
   --bg-primary: #0B0E14;
-  /* خلفية رئيسية - Midnight Charcoal */
   --bg-secondary: #121822;
-  /* خلفية ثانوية - Deep Sea Blue */
-  --bg-card: rgba(22, 28, 40, 0.65);
-  /* بطاقات - Frosted Glass Dark */
+  --bg-card: rgba(22, 28, 40, 0.85);
   --bg-hover: rgba(30, 38, 55, 0.8);
-  /* تحويم - Dark Glass Hover */
   --bg-accent: #192033;
-  /* خلفية مميزة - Midnight Accent */
-  --bg-header: rgba(11, 14, 20, 0.75);
-  /* هيدر زجاجي */
+  --bg-header: rgba(11, 14, 20, 0.85);
   --bg-footer: #0A0D12;
-  /* فوتر داكن جداً */
   --bg-overlay: rgba(11, 14, 20, 0.85);
-  /* طبقة شفافة زجاجية */
 
-  /* ─────────────────────────────────────────
-     النصوص - Text Colors
-     ───────────────────────────────────────── */
-  --text-primary: #FFFFFF;
-  /* نص رئيسي - ناصع */
+  /* ─── Text Colors ─── */
+  --text-primary: #F1F5F9;
   --text-secondary: #B0BEC5;
-  /* نص ثانوي - رمادي مزرق */
   --text-tertiary: #78909C;
-  /* نص خفيف - رمادي */
   --text-inverse: #0B0E14;
-  /* نص عكسي */
   --text-muted: #546E7A;
-  /* نص خافت */
-  --text-on-header: #FFFFFF;
-  /* نص على الهيدر */
-  --text-link: #00E676;
-  /* روابط - Neon Green */
-  --text-link-hover: #69F0AE;
-  /* روابط عند التحويم */
+  --text-on-header: #F1F5F9;
+  --text-link: #FF7B33;
+  --text-link-hover: #FF9B66;
 
-  /* ─────────────────────────────────────────
-     الألوان الرئيسية - Primary Accents
-     ───────────────────────────────────────── */
-  --accent-primary: #FF7900;
-  /* برتقالي لامع (Signature) */
-  --accent-secondary: #FFA733;
-  /* برتقالي فاتح */
-  --accent-dark: #CC6000;
-  /* برتقالي داكن */
-  --accent-light: rgba(255, 121, 0, 0.15);
-  /* برتقالي شفاف */
-  --accent-orange: #FF7900;
-  /* برتقالي */
+  /* ─── Primary Accents ─── */
+  --accent-primary: #FF7B33;
+  --accent-secondary: #3949AB;
+  --accent-dark: #E65100;
+  --accent-light: rgba(230, 81, 0, 0.15);
+  --accent-orange: #FF7B33;
 
-  --blue-primary: #00D4AA;
-  /* أكوا - Neon Cyan */
-  --blue-light: #33DDBC;
-  /* أكوا فاتح */
-  --blue-dark: #00A988;
-  /* أكوا داكن */
+  --blue-primary: #3949AB;
+  --blue-light: #5C6BC0;
+  --blue-dark: #1A237E;
 
-  /* ─────────────────────────────────────────
-     الحدود والفواصل - Borders (Glassmorphism)
-     ───────────────────────────────────────── */
+  /* ─── Borders (Glassmorphism) ─── */
   --border-primary: rgba(255, 255, 255, 0.08);
-  /* حدود زجاجية رئيسية */
   --border-secondary: rgba(255, 255, 255, 0.04);
-  /* حدود ثانوية */
-  --border-accent: rgba(255, 121, 0, 0.5);
-  /* حدود مميزة */
+  --border-accent: rgba(230, 81, 0, 0.5);
   --border-light: rgba(255, 255, 255, 0.02);
-  /* حدود خفيفة */
   --border-hover: rgba(255, 255, 255, 0.15);
-  /* حدود عند التحويم */
 
-  /* ─────────────────────────────────────────
-     الأزرار - Buttons
-     ───────────────────────────────────────── */
-  --btn-primary-bg: #FF7900;
+  /* ─── Buttons ─── */
+  --btn-primary-bg: linear-gradient(135deg, #E65100 0%, #FF7B33 100%);
   --btn-primary-text: #FFFFFF;
-  --btn-primary-hover: #FFA733;
-  --btn-primary-active: #CC6000;
+  --btn-primary-hover: linear-gradient(135deg, #BF4400 0%, #E65100 100%);
+  --btn-primary-active: linear-gradient(135deg, #993700 0%, #BF4400 100%);
 
   --btn-secondary-bg: rgba(255, 255, 255, 0.05);
-  --btn-secondary-text: #FFFFFF;
+  --btn-secondary-text: #F1F5F9;
   --btn-secondary-border: rgba(255, 255, 255, 0.1);
   --btn-secondary-hover: rgba(255, 255, 255, 0.1);
 
   --btn-outline-bg: transparent;
-  --btn-outline-text: #00D4AA;
-  --btn-outline-border: #00D4AA;
-  --btn-outline-hover-bg: rgba(0, 212, 170, 0.1);
+  --btn-outline-text: #FF7B33;
+  --btn-outline-border: #FF7B33;
+  --btn-outline-hover-bg: rgba(230, 81, 0, 0.1);
 
-  /* ─────────────────────────────────────────
-     الظلال و تأثيرات الزجاج - Shadows & Blur
-     ───────────────────────────────────────── */
+  /* ─── Shadows & Glass ─── */
   --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.6);
   --shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.7);
   --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --shadow-button: 0 4px 14px rgba(255, 121, 0, 0.4);
-  --shadow-hover: 0 12px 24px rgba(255, 121, 0, 0.2);
+  --shadow-button: 0 4px 14px rgba(230, 81, 0, 0.3);
+  --shadow-hover: 0 12px 24px rgba(230, 81, 0, 0.15);
   --glass-blur: blur(12px);
 
-  /* ─────────────────────────────────────────
-     حالات - Status Colors
-     ───────────────────────────────────────── */
+  /* ─── Status Colors ─── */
   --success: #00E676;
   --success-light: rgba(0, 230, 118, 0.1);
   --warning: #FFD600;
   --warning-light: rgba(255, 214, 0, 0.1);
   --error: #FF1744;
   --error-light: rgba(255, 23, 68, 0.1);
-  --info: #00E5FF;
-  --info-light: rgba(0, 229, 255, 0.1);
+  --info: #448AFF;
+  --info-light: rgba(68, 138, 255, 0.1);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -333,32 +243,33 @@ section,
 }
 
 /* ─── Buttons - Primary ─── */
-button,
 .btn,
-[role="button"],
-input[type="button"],
+.btn-primary,
+button.primary,
+input[type="button"].primary,
 input[type="submit"] {
-  background-color: var(--btn-primary-bg);
+  background: var(--btn-primary-bg);
   color: var(--btn-primary-text);
-  border: 1px solid var(--btn-primary-bg);
+  border: none;
   box-shadow: var(--shadow-button);
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: 600;
 }
 
-button:hover,
 .btn:hover,
-[role="button"]:hover {
-  background-color: var(--btn-primary-hover);
-  border-color: var(--btn-primary-hover);
+.btn-primary:hover,
+button.primary:hover {
+  background: var(--btn-primary-hover);
+  border: none;
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(255, 107, 53, 0.35);
 }
 
-button:active,
-.btn:active {
-  background-color: var(--btn-primary-active);
+.btn:active,
+.btn-primary:active,
+button.primary:active {
+  background: var(--btn-primary-active);
   transform: translateY(0);
 }
 
@@ -438,9 +349,6 @@ header:not(.mobile-de-header):not([class*="HeaderContainer"]),
 }
 
 /* Exception: Mobile DE Header uses glassmorphism - handled in Header.css */
-.mobile-de-header {
-  /* Glassmorphism styles are in Header.css */
-}
 
 footer,
 .footer,
@@ -527,9 +435,7 @@ html[data-theme="light"] [class*="ContentContainer"] {
 }
 
 /* ─── Hover States ─── */
-*:hover:not(button):not(a):not(input) {
-  /* Reserved for specific component hovers */
-}
+/* Reserved for specific component hovers over *:hover:not(button):not(a):not(input) */
 
 /* ─── Status Badges ─── */
 .badge-success,
@@ -598,6 +504,32 @@ html[data-theme="light"] [class*="ContentContainer"] {
 /* Force all styled-components to use theme variables */
 * {
   color: inherit;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ACCESSIBILITY — Focus Indicators (WCAG 2.1 AA)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Visible focus ring for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid var(--accent-primary, #E65100);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Remove focus ring for mouse/touch — only show for keyboard */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Enhanced focus for buttons and interactive elements */
+button:focus-visible,
+a:focus-visible,
+[role="tab"]:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--accent-primary, #E65100);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(230, 81, 0, 0.15);
 }
 
 /* Ensure body and html use theme */

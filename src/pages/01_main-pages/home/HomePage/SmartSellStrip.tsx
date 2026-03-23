@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import styled from 'styled-components';
 import { Zap, ArrowRight, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +7,7 @@ import { glassPrimaryButton } from '../../../../styles/glassmorphism-buttons';
 
 const Container = styled.div`
   padding: 40px 20px;
-  background: linear-gradient(90deg, rgba(79, 70, 229, 0.11) 37%, rgba(124, 58, 237, 0.66) 100%);
+  background: var(--btn-primary-bg);
   color: white;
   display: flex;
   align-items: center;
@@ -68,10 +68,7 @@ const Button = styled.button`
   white-space: nowrap;
   
   /* Override colors for theme - Glass orange effect */
-  background: linear-gradient(135deg, 
-    rgba(255, 143, 16, 0.4) 0%, 
-    rgba(255, 143, 16, 0.2) 100%
-  );
+  background: var(--btn-primary-bg);
   color: #fff;
   border: 1px solid rgba(255, 143, 16, 0.4);
   
@@ -86,10 +83,7 @@ const Button = styled.button`
   }
   
   &:hover {
-    background: linear-gradient(135deg, 
-      rgba(255, 143, 16, 0.6) 0%, 
-      rgba(255, 143, 16, 0.3) 100%
-    );
+    background: var(--btn-primary-bg);
     border-color: rgba(255, 143, 16, 0.6);
     box-shadow: 
       0 8px 32px 0 rgba(255, 143, 16, 0.5),

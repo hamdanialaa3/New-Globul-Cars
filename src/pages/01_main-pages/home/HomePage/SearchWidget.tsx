@@ -1,4 +1,4 @@
-
+﻿
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -105,13 +105,13 @@ const Tab = styled.button<{ $active: boolean; $isDark: boolean; $tabType?: 'all'
     font-size: 14px;
     border-radius: 20px; /* Pill shape on mobile */
     border: 1px solid ${props => props.$active
-    ? (props.$isDark ? '#38bdf8' : '#FF7900')
+    ? (props.$isDark ? '#38bdf8' : 'var(--accent-primary)')
     : (props.$isDark ? '#334155' : '#e2e8f0')};
     background: ${props => props.$active
     ? (props.$isDark ? 'rgba(56, 189, 248, 0.1)' : '#FFF4EB')
     : 'transparent'};
     color: ${props => props.$active
-    ? (props.$isDark ? '#38bdf8' : '#FF7900')
+    ? (props.$isDark ? '#38bdf8' : 'var(--accent-primary)')
     : (props.$isDark ? '#94a3b8' : '#64748b')};
     box-shadow: none;
   }
@@ -195,7 +195,7 @@ const Select = styled.select<{ $isDark: boolean }>`
 
   &:focus {
     outline: none;
-    border-color: ${props => props.$isDark ? '#38bdf8' : '#FF7900'};
+    border-color: ${props => props.$isDark ? '#38bdf8' : 'var(--accent-primary)'};
     box-shadow: 0 0 0 3px ${props => props.$isDark ? 'rgba(56, 189, 248, 0.1)' : 'rgba(255, 121, 0, 0.1)'};
   }
 
@@ -227,7 +227,7 @@ const SearchButton = styled.button<{ $isDark: boolean }>`
   font-size: 16px;
   color: #ffffff;
   /* Desktop: Orange gradient */
-  background: linear-gradient(135deg, #FF7900 0%, #FF9433 100%);
+  background: var(--btn-primary-bg);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -433,12 +433,14 @@ const SearchWidget: React.FC = () => {
 
   return (
     <WidgetContainer $isDark={isDark}>
-      <TabsContainer $isDark={isDark}>
+      <TabsContainer $isDark={isDark} role="tablist" aria-label={language === 'bg' ? 'Тип автомобили' : 'Car type filter'}>
         <Tab
           $active={activeTab === 'all'}
           $isDark={isDark}
           $tabType="all"
           onClick={() => setActiveTab('all')}
+          role="tab"
+          aria-selected={activeTab === 'all'}
           aria-label={language === 'bg' ? tabLabels.all.bg : tabLabels.all.en}
         >
           <Car size={16} />
@@ -450,6 +452,8 @@ const SearchWidget: React.FC = () => {
           $isDark={isDark}
           $tabType="used"
           onClick={() => setActiveTab('used')}
+          role="tab"
+          aria-selected={activeTab === 'used'}
           aria-label={language === 'bg' ? tabLabels.used.bg : tabLabels.used.en}
         >
           <CheckCircle size={16} />
@@ -461,6 +465,8 @@ const SearchWidget: React.FC = () => {
           $isDark={isDark}
           $tabType="new"
           onClick={() => setActiveTab('new')}
+          role="tab"
+          aria-selected={activeTab === 'new'}
           aria-label={language === 'bg' ? tabLabels.new.bg : tabLabels.new.en}
         >
           <Sparkles size={16} />

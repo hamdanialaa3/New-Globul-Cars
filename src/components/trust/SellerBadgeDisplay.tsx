@@ -168,10 +168,10 @@ function getBadgeColor(type: BadgeType) {
       shadow: 'rgba(239, 68, 68, 0.2)'
     },
     'top_seller': {
-      bg: 'rgba(168, 85, 247, 0.1)',
-      text: '#a855f7',
+      bg: 'rgba(230, 81, 0, 0.1)',
+      text: '#E65100',
       border: '#e9d5ff',
-      shadow: 'rgba(168, 85, 247, 0.2)'
+      shadow: 'rgba(230, 81, 0, 0.2)'
     },
     'trusted_dealer': {
       bg: 'rgba(34, 197, 94, 0.1)',

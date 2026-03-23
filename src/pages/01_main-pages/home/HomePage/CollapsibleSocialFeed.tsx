@@ -1,4 +1,4 @@
-// Collapsible Social Feed Component
+﻿// Collapsible Social Feed Component
 // Wraps SmartFeedSection + CommunityFeedSection in a collapsible panel
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -114,10 +114,10 @@ const Container = styled.div`
 const Header = styled.div<{ $isExpanded: boolean }>`
   position: relative;
   background: ${p => p.$isExpanded 
-    ? 'linear-gradient(135deg, #FF8F10 0%, #FF7900 100%)'
-    : 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)'
+    ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(147, 51, 234, 0.35) 100%)'
+    : 'linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(147, 51, 234, 0.35) 100%)'
   };
-  border: 2px solid ${p => p.$isExpanded ? '#FF7900' : '#e9ecef'};
+  border: 2px solid ${p => p.$isExpanded ? 'var(--accent-primary)' : '#e9ecef'};
   border-radius: 16px;
   padding: 20px 24px;
   display: flex;
@@ -138,7 +138,7 @@ const Header = styled.div<{ $isExpanded: boolean }>`
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: #FFFFFF;
+    background: var(--btn-primary-bg);
     box-shadow: 
       0 0 30px 10px currentColor,
       0 0 60px 20px currentColor,
@@ -201,7 +201,7 @@ const Header = styled.div<{ $isExpanded: boolean }>`
   @keyframes bulgariaColorChange {
     /* White LED (Бяло) - Top edge */
     0%, 33.33% {
-      background: #FFFFFF;
+      background: var(--btn-primary-bg);
       color: #FFFFFF;
       box-shadow: 
         0 0 30px 10px rgba(255, 255, 255, 1),
@@ -244,7 +244,7 @@ const IconWrapper = styled.div`
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: ${p => p.theme?.primary || '#FF8F10'};
+  background: ${p => p.theme?.primary || 'var(--btn-primary-bg)'};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -333,7 +333,7 @@ const ExpandButton = styled.button<{ $isExpanded: boolean }>`
   padding: 10px 20px;
   background: ${p => p.$isExpanded 
     ? 'rgba(255, 255, 255, 0.25)'
-    : 'linear-gradient(135deg, #FF8F10, #FF7900)'
+    : 'linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(147, 51, 234, 0.35) 100%)'
   };
   color: ${p => p.$isExpanded ? 'white' : 'white'};
   border: ${p => p.$isExpanded ? '2px solid rgba(255, 255, 255, 0.4)' : 'none'};
@@ -347,7 +347,7 @@ const ExpandButton = styled.button<{ $isExpanded: boolean }>`
     transform: scale(1.05);
     background: ${p => p.$isExpanded 
       ? 'rgba(255, 255, 255, 0.35)'
-      : 'linear-gradient(135deg, #FF7900, #FF6800)'
+      : 'linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(147, 51, 234, 0.35) 100%)'
     };
   }
 

@@ -2,10 +2,14 @@
 // نظام الطباعة الموحد - سوق السيارات البلغاري
 
 export const typography = {
-  // Font Family
+  // Font Family — Inter (body) + Exo 2 (headings)
   fontFamily: {
-    primary: "'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-    secondary: "'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+    primary:
+      "'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+    heading:
+      "'Exo 2', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+    secondary:
+      "'Exo 2', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
     mono: "'Courier New', 'Courier', monospace",
   },
 
@@ -13,61 +17,61 @@ export const typography = {
   fontSize: {
     // Headings
     h1: {
-      desktop: '2rem',      // 32px - Page Titles
-      tablet: '1.75rem',    // 28px
-      mobile: '1.5rem',     // 24px
+      desktop: '2rem', // 32px - Page Titles
+      tablet: '1.75rem', // 28px
+      mobile: '1.5rem', // 24px
     },
     h2: {
-      desktop: '1.75rem',   // 28px - Section Titles
-      tablet: '1.5rem',     // 24px
-      mobile: '1.375rem',   // 22px
+      desktop: '1.75rem', // 28px - Section Titles
+      tablet: '1.5rem', // 24px
+      mobile: '1.375rem', // 22px
     },
     h3: {
-      desktop: '1.5rem',    // 24px - Subsection Titles
-      tablet: '1.375rem',   // 22px
-      mobile: '1.25rem',    // 20px
+      desktop: '1.5rem', // 24px - Subsection Titles
+      tablet: '1.375rem', // 22px
+      mobile: '1.25rem', // 20px
     },
     h4: {
-      desktop: '1.25rem',   // 20px - Card Titles
-      tablet: '1.125rem',   // 18px
-      mobile: '1.125rem',   // 18px
+      desktop: '1.25rem', // 20px - Card Titles
+      tablet: '1.125rem', // 18px
+      mobile: '1.125rem', // 18px
     },
     h5: {
-      desktop: '1.125rem',  // 18px - Small Headings
-      tablet: '1rem',       // 16px
-      mobile: '1rem',       // 16px
+      desktop: '1.125rem', // 18px - Small Headings
+      tablet: '1rem', // 16px
+      mobile: '1rem', // 16px
     },
     h6: {
-      desktop: '1rem',      // 16px - Micro Headings
-      tablet: '0.9375rem',  // 15px
-      mobile: '0.9375rem',  // 15px
+      desktop: '1rem', // 16px - Micro Headings
+      tablet: '0.9375rem', // 15px
+      mobile: '0.9375rem', // 15px
     },
 
     // Body Text
     body: {
-      large: '1.125rem',    // 18px - Feature Text
-      normal: '1rem',       // 16px - Default Body
-      small: '0.875rem',    // 14px - Secondary Text
-      tiny: '0.75rem',      // 12px - Captions
+      large: '1.125rem', // 18px - Feature Text
+      normal: '1rem', // 16px - Default Body
+      small: '0.875rem', // 14px - Secondary Text
+      tiny: '0.75rem', // 12px - Captions
     },
 
     // UI Elements
     button: {
-      large: '1rem',        // 16px
-      normal: '0.875rem',   // 14px
-      small: '0.75rem',     // 12px
+      large: '1rem', // 16px
+      normal: '0.875rem', // 14px
+      small: '0.75rem', // 12px
     },
 
     // Form Elements
     input: {
-      large: '1.125rem',    // 18px
-      normal: '1rem',       // 16px
-      small: '0.875rem',    // 14px
+      large: '1.125rem', // 18px
+      normal: '1rem', // 16px
+      small: '0.875rem', // 14px
     },
 
     label: {
-      normal: '0.875rem',   // 14px
-      small: '0.75rem',     // 12px
+      normal: '0.875rem', // 14px
+      small: '0.75rem', // 12px
     },
   },
 
@@ -83,10 +87,10 @@ export const typography = {
 
   // Line Heights - Optimal Readability
   lineHeight: {
-    tight: 1.2,      // Headings
-    normal: 1.5,     // Body Text
-    relaxed: 1.75,   // Long-form Content
-    loose: 2,        // Spacious Content
+    tight: 1.2, // Headings
+    normal: 1.5, // Body Text
+    relaxed: 1.75, // Long-form Content
+    loose: 2, // Spacious Content
   },
 
   // Letter Spacing
@@ -298,17 +302,25 @@ export const responsiveFontSize = (
 ) => `
   font-size: ${desktop};
   
-  ${tablet ? `
+  ${
+    tablet
+      ? `
     @media (max-width: 768px) {
       font-size: ${tablet};
     }
-  ` : ''}
+  `
+      : ''
+  }
   
-  ${mobile ? `
+  ${
+    mobile
+      ? `
     @media (max-width: 480px) {
       font-size: ${mobile};
     }
-  ` : ''}
+  `
+      : ''
+  }
 `;
 
 export default typography;

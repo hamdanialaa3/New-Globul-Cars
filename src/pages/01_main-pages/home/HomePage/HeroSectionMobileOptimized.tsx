@@ -1,4 +1,4 @@
-// src/pages/HomePage/HeroSectionMobileOptimized.tsx
+﻿// src/pages/HomePage/HeroSectionMobileOptimized.tsx
 // Mobile-optimized Hero section with responsive design
 
 import React, { memo } from 'react';
@@ -9,10 +9,7 @@ import { Button } from '@/components/ui';
 import { Container } from '@/components/layout';
 
 const HeroWrapper = styled.section`
-  background: linear-gradient(135deg, 
-    ${props => props.theme.colors.primary?.main || '#007bff'} 0%, 
-    ${props => props.theme.colors.primary?.dark || '#0056b3'} 100%
-  );
+  background: var(--btn-primary-bg);
   color: white;
   padding: 60px 0 50px;
   position: relative;

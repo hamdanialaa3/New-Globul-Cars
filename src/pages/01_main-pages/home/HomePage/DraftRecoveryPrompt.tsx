@@ -1,4 +1,4 @@
-/**
+﻿/**
  * DraftRecoveryPrompt Component
  * Restore incomplete drafts
  * 
@@ -60,7 +60,7 @@ const ToastContainer = styled.div<{ $isExiting: boolean }>`
   width: calc(100% - 32px);
   
   padding: 16px 20px;
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  background: var(--btn-primary-bg);
   color: white;
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(59, 130, 246, 0.35);

@@ -140,8 +140,12 @@
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
     <link rel="manifest" href="/manifest.json" />
-    <link href="https://fonts.cdnfonts.com/css/martica" rel="stylesheet" media="print" onload="this.media='all'" />
-    <noscript><link href="https://fonts.cdnfonts.com/css/martica" rel="stylesheet" /></noscript>
+    <!-- Fonts: Inter (body) + Exo 2 (headings) — unified font stack -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Exo+2:wght@300;600;700;800&display=swap"
+        rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Exo+2:wght@300;600;700;800&display=swap" rel="stylesheet" /></noscript>
 
     <!-- Print Styles -->
     <link rel="stylesheet" href="/print-only.css" media="print" />
@@ -164,16 +168,6 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <title>Koli One - Български автомобили</title>
-    <link rel="preload" as="style"
-        href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;800&family=Playfair+Display:wght@700&display=swap" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;800&family=Playfair+Display:wght@700&display=swap"
-        rel="stylesheet" media="print" onload="this.media='all'" />
-    <link rel="preload" as="style"
-        href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Caveat:wght@400;700&family=Dancing+Script:wght@700&display=swap" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Caveat:wght@400;700&family=Dancing+Script:wght@700&display=swap"
-        rel="stylesheet" media="print" onload="this.media='all'" />
     <style>
         /* --- KOLI ONE GLASS SPHERE LOADER --- */
         #loader-container {

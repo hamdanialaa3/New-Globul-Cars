@@ -1,4 +1,4 @@
-// src/pages/01_main-pages/home/HomePage/AdvancedSearchWidget.tsx
+﻿// src/pages/01_main-pages/home/HomePage/AdvancedSearchWidget.tsx
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -271,7 +271,7 @@ const FormSelect = styled.select`
 const SearchBtn = styled.button`
   height: 55px;
   padding: 0 40px;
-  background: linear-gradient(135deg, #00ccff, #0066ff);
+  background: var(--btn-primary-bg);
   border: none;
   border-radius: 10px;
   color: #fff;
@@ -309,7 +309,7 @@ const SearchBtn = styled.button`
       position: absolute;
       top: 0; left: -100%;
       width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      background: var(--btn-primary-bg);
       transition: left 0.5s;
   }
 

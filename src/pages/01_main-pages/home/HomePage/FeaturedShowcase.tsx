@@ -118,9 +118,9 @@ const Section = styled.section<{ $isDark: boolean }>`
   overflow: hidden;
   background: ${props => props.$isDark ? '#0f172a' : '#f8fafc'};
   /* 🟣 Light purple border */
-  border-top: 1px solid rgba(168, 85, 247, 0.1);
-  border-bottom: 1px solid rgba(168, 85, 247, 0.1);
-  box-shadow: inset 0 2px 8px rgba(168, 85, 247, 0.04);
+  border-top: 1px solid rgba(230, 81, 0, 0.1);
+  border-bottom: 1px solid rgba(230, 81, 0, 0.1);
+  box-shadow: inset 0 2px 8px rgba(230, 81, 0, 0.04);
 
   @media (max-width: 768px) {
     padding: 3rem 0;
@@ -178,7 +178,7 @@ const Title = styled(motion.h2) <{ $isDark: boolean }>`
   line-height: 1.3; /* mobile.de standard */
   margin: 0 0 1rem;
   background: ${props => props.$isDark
-    ? 'linear-gradient(135deg, #60a5fa 0%, #ffffff 50%, #60a5fa 100%)'
+    ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(147, 51, 234, 0.35) 100%)'
     : 'linear-gradient(135deg, #2563eb 0%, #1e40af 50%, #2563eb 100%)'};
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -578,14 +578,14 @@ const SearchButton = styled(Link) <{ $variant?: 'primary' | 'secondary' }>`
 
   /* Light mode: Orange gradient background, White text */
   html[data-theme="light"] & {
-    background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFA500 100%) !important;
+    background: var(--btn-primary-bg);
     color: #ffffff !important;
     box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
   }
 
   /* Dark mode: Yellow gradient background, Black text */
   html[data-theme="dark"] & {
-    background: linear-gradient(135deg, #FFD700 0%, #FFC107 50%, #FFA000 100%) !important;
+    background: var(--btn-primary-bg);
     color: #000000 !important;
     box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
   }
@@ -598,12 +598,12 @@ const SearchButton = styled(Link) <{ $variant?: 'primary' | 'secondary' }>`
   &:hover {
     transform: translateY(-3px);
     html[data-theme="light"] & {
-      background: linear-gradient(135deg, #FF5722 0%, #FF6B35 50%, #FF8C42 100%) !important;
+      background: var(--btn-primary-bg);
       color: #ffffff !important;
       box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
     }
     html[data-theme="dark"] & {
-      background: linear-gradient(135deg, #FFC107 0%, #FFD700 50%, #FFC107 100%) !important;
+      background: var(--btn-primary-bg);
       color: #000000 !important;
       box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
     }
@@ -612,11 +612,11 @@ const SearchButton = styled(Link) <{ $variant?: 'primary' | 'secondary' }>`
   &:active {
     transform: translateY(-1px);
     html[data-theme="light"] & {
-      background: linear-gradient(135deg, #E64A19 0%, #FF5722 50%, #FF6B35 100%) !important;
+      background: var(--btn-primary-bg);
       color: #ffffff !important;
     }
     html[data-theme="dark"] & {
-      background: linear-gradient(135deg, #FFA000 0%, #FFC107 50%, #FFD700 100%) !important;
+      background: var(--btn-primary-bg);
       color: #000000 !important;
     }
   }

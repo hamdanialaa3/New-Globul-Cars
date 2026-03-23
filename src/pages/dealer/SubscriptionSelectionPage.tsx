@@ -27,9 +27,9 @@ const float = keyframes`
 `;
 
 const glowPulse = keyframes`
-  0% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.2); }
-  50% { box-shadow: 0 0 40px rgba(168, 85, 247, 0.5); }
-  100% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.2); }
+  0% { box-shadow: 0 0 20px rgba(230, 81, 0, 0.2); }
+  50% { box-shadow: 0 0 40px rgba(230, 81, 0, 0.5); }
+  100% { box-shadow: 0 0 20px rgba(230, 81, 0, 0.2); }
 `;
 
 // ==================== COMPONENT ====================
@@ -335,7 +335,7 @@ const PopularBadge = styled.div`
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+  box-shadow: 0 4px 12px rgba(230, 81, 0, 0.4);
 `;
 
 const CardHeader = styled.div`
@@ -465,15 +465,15 @@ const PaymentOption = styled.div<{ $selected: boolean }>`
   align-items: center;
   gap: 1rem;
   padding: 1.5rem;
-  background: ${p => p.$selected ? 'rgba(168, 85, 247, 0.1)' : 'rgba(255, 255, 255, 0.05)'};
-  border: 1px solid ${p => p.$selected ? '#a855f7' : 'rgba(255, 255, 255, 0.1)'};
+  background: ${p => p.$selected ? 'rgba(230, 81, 0, 0.1)' : 'rgba(255, 255, 255, 0.05)'};
+  border: 1px solid ${p => p.$selected ? '#E65100' : 'rgba(255, 255, 255, 0.1)'};
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    border-color: #a855f7;
-    background: rgba(168, 85, 247, 0.05);
+    border-color: #E65100;
+    background: rgba(230, 81, 0, 0.05);
   }
 `;
 
@@ -481,7 +481,7 @@ const RadioButton = styled.div<{ $checked: boolean }>`
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 2px solid ${p => p.$checked ? '#a855f7' : 'rgba(255, 255, 255, 0.4)'};
+  border: 2px solid ${p => p.$checked ? '#E65100' : 'rgba(255, 255, 255, 0.4)'};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -491,7 +491,7 @@ const RadioButton = styled.div<{ $checked: boolean }>`
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background: #a855f7;
+    background: #E65100;
     opacity: ${p => p.$checked ? 1 : 0};
     transition: opacity 0.2s;
   }

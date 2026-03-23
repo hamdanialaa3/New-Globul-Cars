@@ -1,4 +1,4 @@
-/**
+﻿/**
  * VisualSearchTeaser.tsx
  * Визуално търсене - Тийзър секция / Visual Search Teaser Section
  * 
@@ -91,12 +91,7 @@ const Container = styled.section<{ $isDark: boolean }>`
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      ${props => props.$isDark ? 'rgba(147, 51, 234, 0.1)' : 'rgba(59, 130, 246, 0.05)'},
-      transparent
-    );
+    background: var(--btn-primary-bg);
     background-size: 200% 100%;
     animation: ${shimmer} 3s linear infinite;
     pointer-events: none;
@@ -134,7 +129,7 @@ const Badge = styled(motion.div)<{ $isDark: boolean }>`
   align-items: center;
   gap: 6px;
   padding: 6px 14px;
-  background: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%);
+  background: var(--btn-primary-bg);
   color: white;
   border-radius: 20px;
   font-size: 0.75rem;
@@ -164,7 +159,7 @@ const Title = styled.h2<{ $isDark: boolean }>`
   margin: 0;
   
   span {
-    background: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%);
+    background: var(--btn-primary-bg);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -257,7 +252,7 @@ const UploadIcon = styled(motion.div)<{ $isDark: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%);
+  background: var(--btn-primary-bg);
   box-shadow: 0 8px 25px rgba(147, 51, 234, 0.35);
   animation: ${float} 3s ease-in-out infinite;
   
@@ -311,7 +306,7 @@ const PrimaryButton = styled(motion.button)`
   font-size: 0.9rem;
   font-weight: 600;
   border-radius: 12px;
-  background: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%);
+  background: var(--btn-primary-bg);
   color: white;
   border: none;
   cursor: pointer;

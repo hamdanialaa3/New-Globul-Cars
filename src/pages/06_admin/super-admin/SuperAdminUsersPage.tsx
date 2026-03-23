@@ -286,7 +286,7 @@ const ProfileTypeBadge = styled.span<{ $type: string }>`
       case 'private':
         return `background: rgba(59, 130, 246, 0.2); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3);`;
       case 'dealer':
-        return `background: rgba(168, 85, 247, 0.2); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.3);`;
+        return `background: rgba(230, 81, 0, 0.2); color: #E65100; border: 1px solid rgba(230, 81, 0, 0.3);`;
       case 'company':
         return `background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3);`;
       default:

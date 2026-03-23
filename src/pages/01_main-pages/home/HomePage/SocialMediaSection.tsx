@@ -1,4 +1,4 @@
-// Social Media Section - Collapsible Social Feed
+﻿// Social Media Section - Collapsible Social Feed
 // قسم التواصل الاجتماعي - القابل للطي
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -268,7 +268,7 @@ const Title = styled.h2`
   font-weight: 800;
   color: #FFFFFF;
   margin: 0 0 6px 0;
-  background: linear-gradient(90deg, #FFD700, #FFA500, #FF8F10);
+  background: var(--btn-primary-bg);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -312,14 +312,14 @@ const ToggleButton = styled.div`
 
   /* Light mode: Orange gradient background, White text */
   html[data-theme="light"] & {
-    background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFA500 100%) !important;
+    background: var(--btn-primary-bg);
     color: #ffffff !important;
     box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
   }
 
   /* Dark mode: Yellow gradient background, Black text */
   html[data-theme="dark"] & {
-    background: linear-gradient(135deg, #FFD700 0%, #FFC107 50%, #FFA000 100%) !important;
+    background: var(--btn-primary-bg);
     color: #000000 !important;
     box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
   }
@@ -327,12 +327,12 @@ const ToggleButton = styled.div`
   &:hover {
     transform: translateY(-3px);
     html[data-theme="light"] & {
-      background: linear-gradient(135deg, #FF5722 0%, #FF6B35 50%, #FF8C42 100%) !important;
+      background: var(--btn-primary-bg);
       color: #ffffff !important;
       box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
     }
     html[data-theme="dark"] & {
-      background: linear-gradient(135deg, #FFC107 0%, #FFD700 50%, #FFC107 100%) !important;
+      background: var(--btn-primary-bg);
       color: #000000 !important;
       box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
     }

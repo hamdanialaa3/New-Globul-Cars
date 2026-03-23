@@ -63,7 +63,7 @@ const Tab = styled.button<{ $active?: boolean }>`
   padding: 0.75rem 1rem;
   border: none;
   border-radius: 6px;
-  background: ${props => props.$active ? 'var(--accent-primary)' : 'transparent'};
+  background: ${props => props.$active ? 'var(--btn-primary-bg)' : 'transparent'};
   color: ${props => props.$active ? '#ffffff' : 'var(--text-secondary)'};
   font-weight: ${props => props.$active ? '600' : '400'};
   cursor: pointer;
@@ -71,7 +71,7 @@ const Tab = styled.button<{ $active?: boolean }>`
   font-size: 0.9rem;
 
   &:hover {
-    background: ${props => props.$active ? 'var(--accent-primary)' : 'var(--bg-hover)'};
+    background: ${props => props.$active ? 'var(--btn-primary-bg)' : 'var(--bg-hover)'};
   }
 
   @media (max-width: 768px) {
@@ -172,7 +172,7 @@ const SearchButton = styled.button`
   padding: 0.875rem 2rem;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  background: var(--btn-primary-bg);
   color: #ffffff;
   font-weight: 600;
   font-size: 1rem;
@@ -222,7 +222,7 @@ const FilterChip = styled.button`
 
   &:hover {
     border-color: var(--accent-primary);
-    background: var(--accent-primary);
+    background: var(--btn-primary-bg);
     color: #ffffff;
   }
 

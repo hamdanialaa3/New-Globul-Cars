@@ -1,4 +1,4 @@
-/**
+﻿/**
  * UnifiedDealer.tsx (v2.0 - Trust-Centric Design)
  * Обединени търговци и дилъри - Витрина с фокус върху доверието
  * Unified Dealers & Showrooms - Trust-Focused Showcase
@@ -187,7 +187,7 @@ const CTASection = styled(motion.div) <{ $isDark: boolean }>`
   gap: 2rem;
   align-items: center;
   padding: 2.5rem;
-  background: linear-gradient(135deg, rgba(255, 107, 53, 0.12), rgba(255, 143, 16, 0.08));
+  background: var(--btn-primary-bg);
   border: 2px solid ${props => props.$isDark
     ? 'rgba(255, 107, 53, 0.25)'
     : 'rgba(255, 107, 53, 0.15)'};
@@ -198,7 +198,7 @@ const CTASection = styled(motion.div) <{ $isDark: boolean }>`
     border-color: ${props => props.$isDark
     ? 'rgba(255, 107, 53, 0.4)'
     : 'rgba(255, 107, 53, 0.25)'};
-    background: linear-gradient(135deg, rgba(255, 107, 53, 0.18), rgba(255, 143, 16, 0.12));
+    background: var(--btn-primary-bg);
   }
 
   @media (max-width: 768px) {
@@ -256,7 +256,7 @@ const CTAButton = styled(motion.button) <{ $isDark: boolean }>`
   font-weight: 700;
   font-size: 1.05rem;
   cursor: pointer;
-  background: linear-gradient(135deg, #ff6b35 0%, #ff8f10 100%);
+  background: var(--btn-primary-bg);
   color: white;
   white-space: nowrap;
   box-shadow: 0 8px 16px rgba(255, 107, 53, 0.25);

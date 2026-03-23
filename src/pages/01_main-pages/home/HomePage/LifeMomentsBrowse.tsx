@@ -1,4 +1,4 @@
-/**
+﻿/**
  * LifeMomentsBrowse.tsx
  * Преживявания и моменти - Life Moments Browse Section
  * 
@@ -119,7 +119,7 @@ const Section = styled.section<{ $isDark: boolean }>`
   position: relative;
   background: ${props => props.$isDark
     ? 'linear-gradient(135deg, #0F1419 0%, #1A1F2E 100%)'
-    : 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)'};
+    : 'linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(147, 51, 234, 0.35) 100%)'};
   border: 1px solid ${props => props.$isDark
     ? '#2d3748'
     : 'rgba(0, 0, 0, 0.06)'};
@@ -152,7 +152,7 @@ const Badge = styled.div`
   justify-content: center;
   gap: 8px;
   padding: 8px 18px;
-  background: linear-gradient(135deg, #FF8C61 0%, #FF5C00 100%);
+  background: var(--btn-primary-bg);
   color: #ffffff;
   border-radius: 30px;
   font-size: 11px;

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * HomeCarsShowcase.tsx
  * Витрина за автомобили - HomePage Cars Showcase
  * 
@@ -73,19 +73,19 @@ const Tab = styled.button<{ $active: boolean }>`
   transition: all 0.3s ease;
   white-space: nowrap;
   background: ${props => props.$active 
-    ? 'var(--accent-orange)'
+    ? 'var(--accent-primary)'
     : 'var(--bg-card)'};
   color: ${props => props.$active
     ? 'white'
     : 'var(--text-secondary)'};
   border-color: ${props => props.$active
-    ? 'var(--accent-orange)'
+    ? 'var(--accent-primary)'
     : 'var(--border-primary)'};
 
   &:hover {
     border-color: var(--accent-orange);
     background: ${props => props.$active
-      ? 'var(--accent-orange)'
+      ? 'var(--accent-primary)'
       : 'var(--bg-secondary)'};
     transform: translateY(-2px);
   }

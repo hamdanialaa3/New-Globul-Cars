@@ -10,7 +10,7 @@ export const breakpoints = {
   md: 768,
   lg: 1024,
   xl: 1280,
-  xxl: 1920
+  xxl: 1920,
 } as const;
 
 // MEDIA QUERIES
@@ -22,7 +22,7 @@ export const media = {
   xl: `@media (min-width: ${breakpoints.xl}px)`,
   xxl: `@media (min-width: ${breakpoints.xxl}px)`,
   maxMobile: `@media (max-width: ${breakpoints.md - 1}px)`,
-  maxTablet: `@media (max-width: ${breakpoints.lg - 1}px)`
+  maxTablet: `@media (max-width: ${breakpoints.lg - 1}px)`,
 } as const;
 
 // SPACING
@@ -37,70 +37,76 @@ export const spacing = {
   xxxl: '40px',
   touchMin: '44px',
   touchComfortable: '48px',
-  touchLarge: '56px'
+  touchLarge: '56px',
 } as const;
 
-// COLORS
+// ═══════════════════════════════════════════════════════════════════
+// COLORS — THE SINGLE SOURCE OF TRUTH
+// Inspired by AutoScout24 (clean German engineering) + Bulgarian identity
+// ═══════════════════════════════════════════════════════════════════
 export const colors = {
   primary: {
-    main: '#FF7900',
-    dark: '#E56D00',
-    light: '#FF9433',
-    pale: '#FFF4EB'
+    main: '#E65100', // Warm automotive orange — matches mobile
+    dark: '#BF4400',
+    light: '#FF7B33',
+    pale: '#FFF3E0',
   },
   secondary: {
-    main: '#003366',
-    dark: '#002244',
-    light: '#0066CC',
-    pale: '#E6F2FF'
+    main: '#1A237E', // Deep indigo — European premium
+    dark: '#0D1452',
+    light: '#3949AB',
+    pale: '#E8EAF6',
   },
   success: {
-    main: '#28A745',
-    light: '#D4EDDA',
-    dark: '#1E7E34'
+    main: '#00C853',
+    light: '#B9F6CA',
+    dark: '#009624',
   },
   error: {
-    main: '#DC3545',
-    light: '#F8D7DA',
-    dark: '#C82333'
+    main: '#FF1744',
+    light: '#FF8A80',
+    dark: '#D50000',
   },
   warning: {
-    main: '#FFC107',
-    light: '#FFF3CD',
-    dark: '#D39E00'
+    main: '#FFD600',
+    light: '#FFF9C4',
+    dark: '#F9A825',
   },
   info: {
-    main: '#17A2B8',
-    light: '#D1ECF1',
-    dark: '#117A8B'
+    main: '#2979FF',
+    light: '#BBDEFB',
+    dark: '#1565C0',
   },
   neutral: {
     white: '#FFFFFF',
     black: '#000000',
-    gray50: '#F8F9FA',
-    gray100: '#F1F3F5',
-    gray200: '#E9ECEF',
-    gray300: '#DEE2E6',
-    gray400: '#CED4DA',
-    gray500: '#ADB5BD',
-    gray600: '#6C757D',
-    gray700: '#495057',
-    gray800: '#343A40',
-    gray900: '#212529'
+    gray50: '#FAFBFC',
+    gray100: '#F1F5F9',
+    gray200: '#E2E8F0',
+    gray300: '#CBD5E1',
+    gray400: '#94A3B8',
+    gray500: '#64748B',
+    gray600: '#475569',
+    gray700: '#334155',
+    gray800: '#1E293B',
+    gray900: '#0F172A',
   },
   surface: {
-    background: '#FFFFFF',
-    backgroundAlt: '#F8F9FA',
+    background: '#FAFBFC',
+    backgroundAlt: '#F1F5F9',
     card: '#FFFFFF',
+    cardDark: 'rgba(22, 28, 40, 0.85)',
     overlay: 'rgba(0, 0, 0, 0.5)',
-    border: '#DEE2E6',
-    divider: '#E9ECEF'
-  }
+    border: '#E2E8F0',
+    divider: '#F1F5F9',
+  },
 } as const;
 
-// TYPOGRAPHY
+// TYPOGRAPHY — Unified: Inter (body) + Exo 2 (headings)
 export const typography = {
-  fontFamily: "'Martica', 'Arial', sans-serif",
+  fontFamily:
+    "'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+  fontFamilyHeading: "'Exo 2', 'Inter', system-ui, sans-serif",
   fontSize: {
     xs: '12px',
     sm: '14px',
@@ -111,20 +117,20 @@ export const typography = {
     '2xl': '24px',
     '3xl': '30px',
     '4xl': '36px',
-    '5xl': '48px'
+    '5xl': '48px',
   },
   fontWeight: {
     light: 300,
     normal: 400,
     medium: 500,
     semibold: 600,
-    bold: 700
+    bold: 700,
   },
   lineHeight: {
     tight: 1.2,
     normal: 1.5,
-    relaxed: 1.75
-  }
+    relaxed: 1.75,
+  },
 } as const;
 
 // SHADOWS
@@ -137,7 +143,7 @@ export const shadows = {
   card: '0 2px 8px rgba(0, 0, 0, 0.08)',
   cardHover: '0 4px 12px rgba(0, 0, 0, 0.12)',
   sticky: '0 2px 8px rgba(0, 0, 0, 0.1)',
-  modal: '0 12px 32px rgba(0, 0, 0, 0.2)'
+  modal: '0 12px 32px rgba(0, 0, 0, 0.2)',
 } as const;
 
 // BORDER RADIUS
@@ -148,7 +154,7 @@ export const borderRadius = {
   lg: '12px',
   xl: '16px',
   xxl: '20px',
-  full: '9999px'
+  full: '9999px',
 } as const;
 
 // Z-INDEX
@@ -161,7 +167,7 @@ export const zIndex = {
   modal: 1050,
   popover: 1060,
   tooltip: 1070,
-  toast: 1080
+  toast: 1080,
 } as const;
 
 // ANIMATIONS
@@ -169,17 +175,17 @@ export const animations = {
   duration: {
     fast: '200ms',
     normal: '300ms',
-    slow: '400ms'
+    slow: '400ms',
   },
   easing: {
     easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
     easeOut: 'cubic-bezier(0, 0, 0.2, 1)',
-    easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)'
+    easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
   },
   transitions: {
     default: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
-    fast: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
-  }
+    fast: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+  },
 } as const;
 
 // MIXINS
@@ -216,7 +222,7 @@ export const mixins = {
     &::-webkit-scrollbar {
       display: none;
     }
-  `
+  `,
 };
 
 export type Breakpoint = keyof typeof breakpoints;

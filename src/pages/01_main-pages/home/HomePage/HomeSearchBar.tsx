@@ -1,4 +1,4 @@
-// HomeSearchBar Component - Main Search Bar for Homepage
+﻿// HomeSearchBar Component - Main Search Bar for Homepage
 // شريط البحث الرئيسي للصفحة الرئيسية
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -22,7 +22,7 @@ const SearchSection = styled.div`
 
 const SearchBarWrapper = styled.div`
   background: ${({ theme }) => theme.mode === 'dark' ? '#000000' : '#ffffff'};
-  border: 2px solid ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+  border: 2px solid ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : 'var(--accent-primary)'};
   border-radius: 16px;
   box-shadow: ${({ theme }) => theme.mode === 'dark'
     ? '0 8px 32px rgba(255, 215, 0, 0.2), 0 0 0 1px rgba(255, 215, 0, 0.1)'
@@ -41,8 +41,8 @@ const SearchBarWrapper = styled.div`
     right: 0;
     height: 3px;
     background: ${({ theme }) => theme.mode === 'dark'
-    ? 'linear-gradient(90deg, #FFD700, #FFA500, #FFD700)'
-    : 'linear-gradient(90deg, #FF8F10, #FFD700, #FF8F10)'};
+    ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(147, 51, 234, 0.35) 100%)'
+    : 'linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(147, 51, 234, 0.35) 100%)'};
     opacity: 0.8;
   }
   
@@ -117,7 +117,7 @@ const Select = styled.select`
   min-height: auto;
   
   &:hover {
-    border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+    border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : 'var(--accent-primary)'};
     transform: translateY(-2px);
     box-shadow: ${({ theme }) => theme.mode === 'dark'
     ? '0 4px 12px rgba(255, 215, 0, 0.2)'
@@ -126,7 +126,7 @@ const Select = styled.select`
   
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+    border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : 'var(--accent-primary)'};
     box-shadow: ${({ theme }) => theme.mode === 'dark'
     ? '0 0 0 4px rgba(255, 215, 0, 0.15), 0 4px 12px rgba(255, 215, 0, 0.2)'
     : '0 0 0 4px rgba(255, 143, 16, 0.15), 0 4px 12px rgba(255, 143, 16, 0.15)'};
@@ -146,7 +146,7 @@ const SelectIcon = styled.div`
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
-  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : 'var(--accent-primary)'};
   transition: transform 0.3s ease;
   
   ${SelectWrapper}:hover & {
@@ -185,13 +185,13 @@ const PriceInput = styled.input`
   min-height: auto;
   
   &:hover {
-    border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+    border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : 'var(--accent-primary)'};
     transform: translateY(-2px);
   }
   
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+    border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : 'var(--accent-primary)'};
     box-shadow: ${({ theme }) => theme.mode === 'dark'
     ? '0 0 0 4px rgba(255, 215, 0, 0.15), 0 4px 12px rgba(255, 215, 0, 0.2)'
     : '0 0 0 4px rgba(255, 143, 16, 0.15), 0 4px 12px rgba(255, 143, 16, 0.15)'};
@@ -209,7 +209,7 @@ const PriceInput = styled.input`
 `;
 
 const PriceSeparator = styled.span`
-  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : 'var(--accent-primary)'};
   font-weight: 600;
   font-size: 1rem;
   padding: 0 0.5rem;
@@ -240,7 +240,7 @@ const SearchButton = styled.button`
   
   /* Light mode: Glassmorphism with orange glow */
   html[data-theme="light"] & {
-    background: linear-gradient(135deg, rgba(255, 143, 16, 0.3) 0%, rgba(255, 165, 0, 0.25) 100%);
+    background: var(--btn-primary-bg);
     color: #000000;
     backdrop-filter: blur(25px) saturate(180%);
     -webkit-backdrop-filter: blur(25px) saturate(180%);
@@ -249,7 +249,7 @@ const SearchButton = styled.button`
   
   /* Dark mode: Glassmorphism with yellow glow */
   html[data-theme="dark"] & {
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 165, 0, 0.15) 100%);
+    background: var(--btn-primary-bg);
     color: #FFD700;
     backdrop-filter: blur(25px) saturate(180%);
     -webkit-backdrop-filter: blur(25px) saturate(180%);
@@ -281,7 +281,7 @@ const SearchButton = styled.button`
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    background: var(--btn-primary-bg);
     transition: left 0.6s ease;
   }
   
@@ -289,12 +289,12 @@ const SearchButton = styled.button`
     transform: translateY(-3px) scale(1.02);
     
     html[data-theme="light"] & {
-      background: linear-gradient(135deg, rgba(255, 165, 0, 0.4) 0%, rgba(255, 143, 16, 0.35) 100%);
+      background: var(--btn-primary-bg);
       box-shadow: 0 12px 48px rgba(255, 143, 16, 0.4), 0 0 0 0px rgba(255, 143, 16, 0), inset 0 1px 0 rgba(255, 255, 255, 0.5);
     }
     
     html[data-theme="dark"] & {
-      background: linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 165, 0, 0.25) 100%);
+      background: var(--btn-primary-bg);
       box-shadow: 0 12px 48px rgba(255, 215, 0, 0.45), 0 0 0 0px rgba(255, 215, 0, 0), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
     
@@ -342,7 +342,7 @@ const ResetButton = styled.button`
     : 'linear-gradient(135deg, rgba(255, 143, 16, 0.15) 0%, rgba(255, 165, 0, 0.12) 100%)'};
   border: none;
   border-radius: 12px;
-  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : 'var(--accent-primary)'};
   font-size: 0.9375rem;
   font-weight: 600;
   line-height: 1.5;
@@ -385,7 +385,7 @@ const ResetButton = styled.button`
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background: var(--btn-primary-bg);
     transition: left 0.6s ease;
   }
   
@@ -393,7 +393,7 @@ const ResetButton = styled.button`
     background: ${({ theme }) => theme.mode === 'dark'
     ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 165, 0, 0.15) 100%)'
     : 'linear-gradient(135deg, rgba(255, 143, 16, 0.25) 0%, rgba(255, 165, 0, 0.2) 100%)'};
-    color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+    color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : 'var(--accent-primary)'};
     transform: translateY(-2px);
     box-shadow: ${({ theme }) => theme.mode === 'dark'
     ? '0 8px 24px rgba(255, 215, 0, 0.3), 0 0 0 0px rgba(255, 215, 0, 0)'
@@ -426,7 +426,7 @@ const ResetButton = styled.button`
 const AdvancedLink = styled.button`
   background: none;
   border: none;
-  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : 'var(--accent-primary)'};
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
@@ -443,7 +443,7 @@ const AdvancedLink = styled.button`
     left: 0;
     width: 0;
     height: 2px;
-    background: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+    background: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : 'var(--btn-primary-bg)'};
     transition: width 0.3s ease;
   }
   

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * OurCarsShowcase.tsx
  * Нашите коли / Our Cars — All Real User-Added Listings
  *
@@ -59,7 +59,7 @@ const IconWrap = styled.span`
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary, #6366f1));
+  background: var(--btn-primary-bg);
   color: #fff;
   flex-shrink: 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -111,7 +111,7 @@ const ViewAllLink = styled(Link)`
   white-space: nowrap;
 
   &:hover {
-    background: var(--accent-primary);
+    background: var(--btn-primary-bg);
     color: #fff;
     border-color: var(--accent-primary);
     transform: translateY(-1px);
@@ -172,7 +172,7 @@ const CountBadge = styled.span`
   height: 28px;
   padding: 0 8px;
   border-radius: 14px;
-  background: var(--accent-primary);
+  background: var(--btn-primary-bg);
   color: #fff;
   font-size: 0.75rem;
   font-weight: 700;

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * UnifiedSmartSell.tsx
  * Обединен модул за умна продажба - Unified Smart Sell Section
  * 
@@ -98,12 +98,7 @@ const Container = styled.section<{ $isDark: boolean }>`
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      ${props => props.$isDark ? 'rgba(255, 143, 16, 0.08)' : 'rgba(255, 143, 16, 0.04)'},
-      transparent
-    );
+    background: var(--btn-primary-bg);
     background-size: 200% 100%;
     animation: ${shimmer} 4s linear infinite;
     pointer-events: none;
@@ -141,7 +136,7 @@ const Badge = styled(motion.div)`
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
-  background: linear-gradient(135deg, #FF8F10 0%, #ea580c 100%);
+  background: var(--btn-primary-bg);
   color: white;
   border-radius: 24px;
   font-size: 0.75rem;
@@ -292,7 +287,7 @@ const CTAButton = styled(motion.button)`
   font-size: 1.1rem;
   font-weight: 700;
   border-radius: 14px;
-  background: linear-gradient(135deg, #FF8F10 0%, #ea580c 100%);
+  background: var(--btn-primary-bg);
   color: white;
   border: none;
   cursor: pointer;

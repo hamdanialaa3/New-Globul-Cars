@@ -1,4 +1,4 @@
-// src/pages/HomePage/LogoCollectionSection.tsx
+﻿// src/pages/HomePage/LogoCollectionSection.tsx
 // Logo collection section component for HomePage
 
 import React, { lazy, Suspense } from 'react';
@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const LogoCollectionSection = styled.section`
-  background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+  background: var(--btn-primary-bg);
   padding: 4rem 0;
   position: relative;
   z-index: 1;

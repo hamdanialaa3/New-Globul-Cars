@@ -1,4 +1,4 @@
-// src/pages/HomePage/CommunityFeedSection.tsx
+﻿// src/pages/HomePage/CommunityFeedSection.tsx
 // Community Feed Section for HomePage
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -15,7 +15,7 @@ import { logger } from '@/services/logger-service';
 // ==================== STYLED COMPONENTS ====================
 
 const Section = styled.section`
-  background: linear-gradient(135deg, #fafbfc 0%, #f5f7fa 100%);
+  background: var(--btn-primary-bg);
   padding: 4rem 0;
   position: relative;
 `;

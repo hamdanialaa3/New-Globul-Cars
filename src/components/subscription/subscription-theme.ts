@@ -25,7 +25,7 @@ export const subscriptionTheme = {
       accent: '#c084fc',    // Purple 400
     },
     primary: {
-      main: '#a855f7',
+      main: '#E65100',
       light: '#c084fc',
       dark: '#7e22ce',
     },
@@ -38,7 +38,7 @@ export const subscriptionTheme = {
   // Gradients for Plans & UI
   gradients: {
     // 🟣 Dealer: Purple to Pink
-    dealer: 'linear-gradient(135deg, #a855f7 0%, #ec4899 100%)',
+    dealer: 'linear-gradient(135deg, #E65100 0%, #ec4899 100%)',
     dealerHover: 'linear-gradient(135deg, #9333ea 0%, #db2777 100%)',
 
     // 🔵 Company: Blue to Cyan
@@ -55,7 +55,7 @@ export const subscriptionTheme = {
   // Shadows
   shadows: {
     card: '0 8px 32px 0 rgba(0, 0, 0, 0.3)',
-    glow: '0 0 20px rgba(168, 85, 247, 0.4)',
+    glow: '0 0 20px rgba(230, 81, 0, 0.4)',
     button: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
   },
 
@@ -72,11 +72,11 @@ export const subscriptionTheme = {
 
 export const legacyTheme = {
   primary: {
-    main: '#a855f7',
+    main: '#E65100',
     light: '#c084fc',
     dark: '#7e22ce',
     gradient: subscriptionTheme.gradients.dealer,
-    gradientWithMiddle: 'linear-gradient(135deg, #a855f7 0%, #d946ef 50%, #ec4899 100%)',
+    gradientWithMiddle: 'linear-gradient(135deg, #E65100 0%, #d946ef 50%, #ec4899 100%)',
   },
   secondary: {
     main: '#0ea5e9',
@@ -84,18 +84,18 @@ export const legacyTheme = {
     dark: '#0284c7',
   },
   shadows: {
-    small: 'rgba(168, 85, 247, 0.2)',
-    medium: 'rgba(168, 85, 247, 0.3)',
-    large: 'rgba(168, 85, 247, 0.4)',
-    hover: 'rgba(168, 85, 247, 0.5)',
+    small: 'rgba(230, 81, 0, 0.2)',
+    medium: 'rgba(230, 81, 0, 0.3)',
+    large: 'rgba(230, 81, 0, 0.4)',
+    hover: 'rgba(230, 81, 0, 0.5)',
   },
   borders: {
     primary: subscriptionTheme.colors.border.subtle,
     secondary: subscriptionTheme.colors.border.highlight,
-    highlight: '#a855f7',
+    highlight: '#E65100',
   },
   backgrounds: {
-    overlay: 'rgba(168, 85, 247, 0.1)',
+    overlay: 'rgba(230, 81, 0, 0.1)',
     hover: 'rgba(255, 255, 255, 0.05)',
     active: 'rgba(255, 255, 255, 0.1)',
   },
@@ -113,7 +113,7 @@ export function getPrimaryGradientWithMiddle(): string {
 }
 
 export function getShadowColor(opacity: number = 0.35): string {
-  return `rgba(168, 85, 247, ${opacity})`;
+  return `rgba(230, 81, 0, ${opacity})`;
 }
 
 export function getBorderColor(type: 'primary' | 'secondary' | 'highlight' = 'primary'): string {

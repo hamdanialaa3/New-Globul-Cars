@@ -3,25 +3,26 @@
 
 import { createGlobalStyle, DefaultTheme } from 'styled-components';
 
-// Bulgarian Color Palette - Inspired by mobile.de
+// Color Palette — Aligned with design-system.ts (THE source of truth)
+// Inspired by AutoScout24 + Bulgarian automotive identity
 export const bulgarianColors = {
   primary: {
-    main: '#003366',        // Dark Blue (header)
-    light: '#0066CC',       // Light Blue (links)
-    dark: '#002244',        // Darker Blue
-    contrastText: '#ffffff' // White text
+    main: '#E65100', // Warm automotive orange
+    light: '#FF7B33', // Light orange
+    dark: '#BF4400', // Darker orange
+    contrastText: '#ffffff',
   },
   secondary: {
-    main: '#CC0000',        // Red (main buttons)
-    light: '#FF3333',       // Light Red
-    dark: '#990000',        // Dark Red
-    contrastText: '#ffffff'
+    main: '#1A237E', // Deep indigo — European premium
+    light: '#3949AB', // Light indigo
+    dark: '#0D1452', // Dark indigo
+    contrastText: '#ffffff',
   },
   accent: {
-    main: '#0066CC',        // Blue for links/accents
-    light: '#3399FF',       // Lighter Blue
-    dark: '#004499',        // Darker Blue
-    contrastText: '#ffffff'
+    main: '#1A237E', // Indigo accent
+    light: '#3949AB', // Light indigo
+    dark: '#0D1452', // Dark indigo
+    contrastText: '#ffffff',
   },
 
   grey: {
@@ -34,130 +35,130 @@ export const bulgarianColors = {
     600: '#475569',
     700: '#334155',
     800: '#1E293B',
-    900: '#0F172A'
+    900: '#0F172A',
   },
 
   success: {
-    main: '#28A745',
-    light: '#51CF66',
-    dark: '#1E7E34',
-    contrastText: '#ffffff'
+    main: '#00C853',
+    light: '#B9F6CA',
+    dark: '#009624',
+    contrastText: '#ffffff',
   },
   warning: {
-    main: '#FFC107',
-    light: '#FFCA2C',
-    dark: '#D39E00',
-    contrastText: '#000000'
+    main: '#FFD600',
+    light: '#FFF9C4',
+    dark: '#F9A825',
+    contrastText: '#000000',
   },
   error: {
-    main: '#CC0000',
-    light: '#FF3333',
-    dark: '#990000',
-    contrastText: '#ffffff'
+    main: '#FF1744',
+    light: '#FF8A80',
+    dark: '#D50000',
+    contrastText: '#ffffff',
   },
   info: {
-    main: '#0066CC',
-    light: '#3399FF',
-    dark: '#004499',
-    contrastText: '#ffffff'
+    main: '#2979FF',
+    light: '#BBDEFB',
+    dark: '#1565C0',
+    contrastText: '#ffffff',
   },
 
   background: {
-    default: '#f4f4f4',       // Light Grey/Beige
-    paper: '#ffffff',         // White for cards
-    dark: '#f0f0f0',          // Light grey for secondary items
-    semiDark: 'rgba(0, 51, 102, 0.85)',
+    default: '#FAFBFC', // Clean light background
+    paper: '#ffffff', // White for cards
+    dark: '#F1F5F9', // Light grey for secondary items
+    semiDark: 'rgba(26, 35, 126, 0.85)',
     lightOverlay: 'rgba(255, 255, 255, 0.95)',
-    darkOverlay: 'rgba(0, 51, 102, 0.7)'
+    darkOverlay: 'rgba(26, 35, 126, 0.7)',
   },
 
   text: {
-    primary: '#333333',     // Dark Grey
-    secondary: '#666666',   // Medium Grey
-    onDark: '#ffffff',      // White
-    onLight: '#333333',     // Dark Grey
+    primary: '#333333', // Dark Grey
+    secondary: '#666666', // Medium Grey
+    onDark: '#ffffff', // White
+    onLight: '#333333', // Dark Grey
     disabled: '#999999',
-    hint: '#CCCCCC'
+    hint: '#CCCCCC',
   },
 
   border: {
-    default: '#E2E8F0',     // Light grey border
-    muted: '#CBD5E1',       // Softer border
-    strong: '#94A3B8',      // Stronger border
-    focus: '#0066CC',       // Focus state
+    default: '#E2E8F0', // Light grey border
+    muted: '#CBD5E1', // Softer border
+    strong: '#94A3B8', // Stronger border
+    focus: '#0066CC', // Focus state
     // Aliases for design-system components
-    light: '#E2E8F0',       // alias of default
-    medium: '#CBD5E1',      // alias of muted
-    dark: '#94A3B8',        // alias of strong
-    error: '#CC0000',       // error border
-    success: '#28A745'      // success border
+    light: '#E2E8F0', // alias of default
+    medium: '#CBD5E1', // alias of muted
+    dark: '#94A3B8', // alias of strong
+    error: '#CC0000', // error border
+    success: '#28A745', // success border
   },
 
   // Derived groups to support design-system components
   interactive: {
-    primary: '#003366',        // maps to primary.main
-    primaryHover: '#0066CC',   // maps to primary.light
-    primaryActive: '#002244'   // maps to primary.dark
+    primary: '#E65100', // maps to primary.main
+    primaryHover: '#FF7B33', // maps to primary.light
+    primaryActive: '#BF4400', // maps to primary.dark
   },
 
   content: {
-    primary: '#333333',  // maps to text.primary
-    inverse: '#ffffff',  // maps to text.onDark
-    heading: '#333333',  // maps to text.primary
+    primary: '#333333', // maps to text.primary
+    inverse: '#ffffff', // maps to text.onDark
+    heading: '#333333', // maps to text.primary
     placeholder: '#999999', // for input placeholders
-    tertiary: '#666666'     // for secondary text
+    tertiary: '#666666', // for secondary text
   },
 
   surface: {
-    card: '#ffffff',     // maps to background.paper
-    hover: '#f4f4f4',    // maps to background.default
+    card: '#ffffff', // maps to background.paper
+    hover: '#f4f4f4', // maps to background.default
     selected: '#f0f0f0', // maps to background.dark
-    elevated: '#ffffff'  // alias for elevated surfaces
+    elevated: '#ffffff', // alias for elevated surfaces
   },
 
   brand: {
-    main: '#0066CC',     // maps to accent.main
-    light: '#3399FF',    // maps to accent.light
-    dark: '#004499'      // maps to accent.dark
+    main: '#E65100', // maps to primary.main
+    light: '#FF7B33', // maps to primary.light
+    dark: '#BF4400', // maps to primary.dark
   },
 
   feedback: {
     error: {
-      main: '#CC0000',   // maps to error.main
-      dark: '#990000',   // maps to error.dark
-      light: '#FF3333'   // maps to error.light
+      main: '#FF1744', // maps to error.main
+      dark: '#D50000', // maps to error.dark
+      light: '#FF8A80', // maps to error.light
     },
     success: {
-      main: '#28A745',   // maps to success.main
-      light: '#51CF66'   // maps to success.light
-    }
-  }
+      main: '#00C853', // maps to success.main
+      light: '#B9F6CA', // maps to success.light
+    },
+  },
 };
 
-// Bulgarian Typography - Enhanced for Readability
+// Typography — Inter (body) + Exo 2 (headings)
 export const bulgarianTypography = {
   fontFamily: {
-    primary: "'Martica', 'Arial', sans-serif",
-    secondary: "'Martica', 'Arial', sans-serif",
-    accent: "'Martica', 'Arial', sans-serif",
+    primary:
+      "'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+    secondary: "'Exo 2', 'Inter', system-ui, sans-serif",
+    accent: "'Exo 2', 'Inter', system-ui, sans-serif",
     mono: "'Courier New', 'Courier', monospace",
-    // Alias for components expecting fontFamily.base
-    base: "'Martica', 'Arial', sans-serif"
+    base: "'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
   },
 
   // Font Sizes
   fontSize: {
-    xs: '0.75rem',      // 12px
-    sm: '0.875rem',     // 14px
-    base: '1rem',       // 16px
-    md: '1.0625rem',    // 17px
-    lg: '1.125rem',     // 18px
-    xl: '1.25rem',      // 20px
-    '2xl': '1.5rem',    // 24px
-    '3xl': '1.875rem',  // 30px
-    '4xl': '2.25rem',   // 36px
-    '5xl': '3rem',      // 48px
-    '6xl': '3.75rem',   // 60px
+    xs: '0.75rem', // 12px
+    sm: '0.875rem', // 14px
+    base: '1rem', // 16px
+    md: '1.0625rem', // 17px
+    lg: '1.125rem', // 18px
+    xl: '1.25rem', // 20px
+    '2xl': '1.5rem', // 24px
+    '3xl': '1.875rem', // 30px
+    '4xl': '2.25rem', // 36px
+    '5xl': '3rem', // 48px
+    '6xl': '3.75rem', // 60px
 
     button: {
       sm: '0.8125rem',
@@ -174,7 +175,7 @@ export const bulgarianTypography = {
     label: {
       sm: '0.75rem',
       md: '0.875rem',
-    }
+    },
   },
 
   fontWeight: {
@@ -184,7 +185,7 @@ export const bulgarianTypography = {
     semibold: 600,
     bold: 700,
     extrabold: 800,
-    black: 900
+    black: 900,
   },
 
   lineHeight: {
@@ -192,7 +193,7 @@ export const bulgarianTypography = {
     snug: 1.375,
     normal: 1.5,
     relaxed: 1.75,
-    loose: 2
+    loose: 2,
   },
 
   letterSpacing: {
@@ -201,21 +202,21 @@ export const bulgarianTypography = {
     normal: '0',
     wide: '0.025em',
     wider: '0.05em',
-    widest: '0.1em'
-  }
+    widest: '0.1em',
+  },
 };
 
 // Bulgarian Spacing Scale
 export const bulgarianSpacing = {
-  xs: '0.25rem',   // 4px
-  sm: '0.5rem',    // 8px
-  md: '1rem',      // 16px
-  lg: '1.5rem',    // 24px
-  xl: '2rem',      // 32px
-  '2xl': '3rem',   // 48px
-  '3xl': '4rem',   // 64px
-  '4xl': '6rem',   // 96px
-  '5xl': '8rem'    // 128px
+  xs: '0.25rem', // 4px
+  sm: '0.5rem', // 8px
+  md: '1rem', // 16px
+  lg: '1.5rem', // 24px
+  xl: '2rem', // 32px
+  '2xl': '3rem', // 48px
+  '3xl': '4rem', // 64px
+  '4xl': '6rem', // 96px
+  '5xl': '8rem', // 128px
 };
 
 // Bulgarian Breakpoints
@@ -224,7 +225,7 @@ export const bulgarianBreakpoints = {
   sm: '600px',
   md: '960px',
   lg: '1280px',
-  xl: '1920px'
+  xl: '1920px',
 };
 
 // Bulgarian Shadows
@@ -239,22 +240,24 @@ export const bulgarianShadows = {
   inner: 'inset 0 2px 4px 0 rgba(0, 51, 102, 0.06)',
   outline: '0 0 0 3px rgba(0, 102, 204, 0.5)',
   // Aliases for design-system components
-  button: '0 4px 6px -1px rgba(0, 51, 102, 0.1), 0 2px 4px -1px rgba(0, 51, 102, 0.06)', // md
-  hover: '0 10px 15px -3px rgba(0, 51, 102, 0.1), 0 4px 6px -2px rgba(0, 51, 102, 0.05)'   // lg
-  , card: '0 1px 2px 0 rgba(0, 51, 102, 0.05)'
+  button:
+    '0 4px 6px -1px rgba(0, 51, 102, 0.1), 0 2px 4px -1px rgba(0, 51, 102, 0.06)', // md
+  hover:
+    '0 10px 15px -3px rgba(0, 51, 102, 0.1), 0 4px 6px -2px rgba(0, 51, 102, 0.05)', // lg
+  card: '0 1px 2px 0 rgba(0, 51, 102, 0.05)',
 };
 
 // Bulgarian Border Radius
 export const bulgarianBorderRadius = {
   none: '0',
-  sm: '0.25rem',    // 4px
+  sm: '0.25rem', // 4px
   base: '0.375rem', // 6px
-  md: '0.5rem',     // 8px
-  lg: '0.75rem',    // 12px
-  xl: '1rem',       // 16px
-  '2xl': '1.5rem',  // 24px
-  '3xl': '2rem',    // 32px
-  full: '9999px'
+  md: '0.5rem', // 8px
+  lg: '0.75rem', // 12px
+  xl: '1rem', // 16px
+  '2xl': '1.5rem', // 24px
+  '3xl': '2rem', // 32px
+  full: '9999px',
 };
 
 // Bulgarian Theme
@@ -280,8 +283,8 @@ export const bulgarianTheme: DefaultTheme = {
       border: `2px solid ${bulgarianColors.secondary.main}`,
       '&:hover': {
         backgroundColor: bulgarianColors.secondary.dark,
-        borderColor: bulgarianColors.secondary.dark
-      }
+        borderColor: bulgarianColors.secondary.dark,
+      },
     },
     input: {
       borderRadius: bulgarianBorderRadius.sm,
@@ -293,17 +296,17 @@ export const bulgarianTheme: DefaultTheme = {
       transition: 'border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
       '&:focus': {
         borderColor: bulgarianColors.primary.main,
-        boxShadow: `0 0 0 2px rgba(0, 102, 204, 0.2)`
-      }
+        boxShadow: `0 0 0 2px rgba(0, 102, 204, 0.2)`,
+      },
     },
     card: {
       borderRadius: bulgarianBorderRadius.sm,
       boxShadow: bulgarianShadows.sm,
       border: `1px solid #E0E0E0`,
       backgroundColor: bulgarianColors.background.paper,
-      color: bulgarianColors.text.primary
-    }
-  }
+      color: bulgarianColors.text.primary,
+    },
+  },
 };
 
 // Global Styles
@@ -323,6 +326,7 @@ export const GlobalStyles = createGlobalStyle`
     font-size: 16px;
     line-height: ${bulgarianTypography.lineHeight.normal};
     -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
   }
 
   body {
@@ -349,7 +353,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Exo 2', 'Inter', system-ui, -apple-system, sans-serif;
     font-weight: ${bulgarianTypography.fontWeight.bold};
     line-height: ${bulgarianTypography.lineHeight.tight};
     margin-bottom: ${bulgarianSpacing.md};

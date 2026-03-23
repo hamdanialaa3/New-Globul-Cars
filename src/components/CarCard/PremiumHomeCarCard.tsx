@@ -44,60 +44,26 @@ const CardContainer = styled(Link) <{ $region: string }>`
   flex-direction: column;
   width: 100%;
   max-width: 320px;
-  min-height: 400px; /* Match existing */
+  min-height: 400px;
   border-radius: 16px;
   text-decoration: none;
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.05); /* Glass feel */
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  overflow: visible; /* Needed for 3D effect spillover if any, but hidden usually safer */
-  transition: transform 0.1s ease-out, box-shadow 0.3s ease;
-  transform-style: preserve-3d;
-  perspective: 1000px;
-  
-  /* Chameleon Glows */
-  ${props => {
-    switch (props.$region) {
-      case 'de': return css`--glow-color: rgba(255, 215, 0, 0.15); --border-active: rgba(221, 51, 51, 0.4);`; // Black/Red/Gold
-      case 'jp': return css`--glow-color: rgba(255, 0, 0, 0.1); --border-active: rgba(255, 255, 255, 0.5);`; // Red/White
-      case 'usa': return css`--glow-color: rgba(0, 51, 153, 0.15); --border-active: rgba(191, 10, 48, 0.4);`; // Blue/Red
-      case 'eu': return css`--glow-color: rgba(0, 51, 153, 0.15); --border-active: rgba(255, 215, 0, 0.4);`; // Blue/Gold
-      default: return css`--glow-color: rgba(255, 255, 255, 0.1); --border-active: rgba(255, 255, 255, 0.3);`;
-    }
-  }}
-
-  /* Apply 3D Rotation from CSS Variables */
-  transform: 
-    perspective(1000px)
-    rotateX(var(--rotate-x, 0deg))
-    rotateY(var(--rotate-y, 0deg))
-    scale3d(1, 1, 1);
-
-  &::after {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: 16px;
-    padding: 1px;
-    background: linear-gradient(135deg, transparent, var(--border-active), transparent);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0.5;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-  }
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-primary, rgba(0, 0, 0, 0.08));
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
-    z-index: 10;
-    box-shadow: 
-      0 15px 35px -5px rgba(0, 0, 0, 0.3),
-      0 0 20px var(--glow-color); 
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.15);
+  }
+
+  html[data-theme='dark'] & {
+    background: rgba(22, 28, 40, 0.85);
+    border-color: rgba(148, 163, 184, 0.12);
     
-    &::after {
-      opacity: 1;
+    &:hover {
+      box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.4);
     }
   }
 `;
@@ -211,15 +177,8 @@ const ContentWrapper = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: var(--bg-card); /* Fallback */
-  html[data-theme='dark'] & {
-    background: rgba(30, 41, 59, 0.6);
-  }
-  html[data-theme='light'] & {
-    background: rgba(255, 255, 255, 0.8);
-  }
+  background: var(--bg-card, #ffffff);
   border-radius: 0 0 16px 16px;
-  backdrop-filter: blur(10px);
 `;
 
 const HeaderRow = styled.div`
@@ -319,34 +278,8 @@ export const PremiumHomeCarCard: React.FC<PremiumHomeCarCardProps> = ({ car }) =
     setIsHearted(isFavorite(car.id));
   }, [car.id, isFavorite]);
 
-  // --- 3D Tilt Logic ---
-  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (cardRef.current) {
-      const rect = cardRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-
-      // Calculate rotation (divided by 15 for subtle premium feel)
-      const rotateX = (y - centerY) / 15;
-      const rotateY = (centerX - x) / 15;
-
-      cardRef.current.style.setProperty("--rotate-x", `${rotateX}deg`);
-      cardRef.current.style.setProperty("--rotate-y", `${rotateY}deg`);
-    }
-
-    // Play subtle hover sound
-    soundService.playHover();
-  };
-
-  const handleMouseLeave = () => {
-    if (cardRef.current) {
-      cardRef.current.style.setProperty("--rotate-x", `0deg`);
-      cardRef.current.style.setProperty("--rotate-y", `0deg`);
-    }
-  };
+  // --- 3D Tilt removed (v4.0 — clean card design) ---
+  // Brand region kept for potential future use but no visual effect
 
   // --- Helpers ---
   const getMainImage = (): string => {
@@ -461,8 +394,6 @@ export const PremiumHomeCarCard: React.FC<PremiumHomeCarCardProps> = ({ car }) =
       ref={cardRef}
       to={getCarUrl()}
       $region={region}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
     >
       <HeartButton
         $active={isHearted}

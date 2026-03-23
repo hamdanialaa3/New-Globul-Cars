@@ -328,9 +328,6 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
       cardRef.current.style.setProperty("--rotate-x", `${rotateX}deg`);
       cardRef.current.style.setProperty("--rotate-y", `${rotateY}deg`);
     }
-    
-    // Play subtle hover sound (debounced in service)
-    soundService.playHover();
   };
 
   const handleMouseLeave = () => {

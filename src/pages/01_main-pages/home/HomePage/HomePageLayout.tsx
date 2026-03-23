@@ -1,4 +1,4 @@
-/**
+﻿/**
  * HomePageLayout.tsx
  * 
  * Компонент за оформление на началната страница
@@ -58,12 +58,7 @@ const SectionWrapper = styled.section<{ $spacing?: 'small' | 'medium' | 'large' 
 
 const SectionDivider = styled.div`
   height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    var(--border-primary) 50%,
-    transparent 100%
-  );
+  background: var(--btn-primary-bg);
   opacity: 0.3;
   margin: 20px 0;
 `;

@@ -65,7 +65,7 @@ const SectionSubtitle = styled.p`
 `;
 
 const ViewAllLink = styled(Link)`
-  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : 'var(--accent-primary)'};
   text-decoration: none;
   font-weight: 600;
   display: flex;
@@ -103,7 +103,7 @@ const CarCard = styled.div`
   
   &:hover {
     transform: translateY(-5px);
-    border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+    border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : 'var(--accent-primary)'};
   }
 `;
 
@@ -176,7 +176,7 @@ const CardCount = styled.span`
 
 const CardPrice = styled.div`
   font-weight: 800;
-  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : 'var(--accent-primary)'};
   font-size: 1.1rem;
 `;
 
@@ -313,12 +313,12 @@ const CategoriesSection: React.FC = () => {
       <svg width="0" height="0" style={{ position: 'absolute' }}>
         <defs>
           <linearGradient id="frameGradientDark" x1="0%" y1="100%" x2="100%" y2="0%">
-            <stop offset="0%" style={{ stopColor: '#FFD700', stopOpacity: 1 }} />
-            <stop offset="100%" style={{ stopColor: '#FFA500', stopOpacity: 1 }} />
+            <stop offset="0%" style={{ stopColor: '#8B5CF6', stopOpacity: 1 }} />
+            <stop offset="100%" style={{ stopColor: '#3B82F6', stopOpacity: 1 }} />
           </linearGradient>
           <linearGradient id="frameGradientLight" x1="0%" y1="100%" x2="100%" y2="0%">
-            <stop offset="0%" style={{ stopColor: '#FF8F10', stopOpacity: 1 }} />
-            <stop offset="100%" style={{ stopColor: '#FFD700', stopOpacity: 1 }} />
+            <stop offset="0%" style={{ stopColor: 'var(--accent-primary)', stopOpacity: 1 }} />
+            <stop offset="100%" style={{ stopColor: '#00F2FE', stopOpacity: 1 }} />
           </linearGradient>
         </defs>
       </svg>

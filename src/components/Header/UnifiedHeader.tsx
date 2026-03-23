@@ -19,19 +19,17 @@ const HeaderContainer = styled.header<{ $isDark?: boolean }>`
   left: 0;
   right: 0;
   background: ${({ $isDark }) =>
-    $isDark ? 'rgba(15, 23, 42, 0.25)' : 'rgba(255, 255, 255, 0.25)'} !important;
-  backdrop-filter: blur(25px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+    $isDark ? 'rgba(11, 14, 20, 0.85)' : 'rgba(255, 255, 255, 0.92)'} !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
   border-bottom: 1px solid ${({ $isDark }) =>
-    $isDark ? 'rgba(148, 163, 184, 0.12)' : 'rgba(0, 0, 0, 0.06)'} !important;
-  /* 🟣 Purple LED strip */
-  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3), inset 0 -2px 4px rgba(168, 85, 247, 0.2) !important;
+    $isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(0, 0, 0, 0.06)'} !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
   z-index: ${zIndex.sticky};
   transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   
-  /* Override any global header styles */
   background-color: ${({ $isDark }) =>
-    $isDark ? 'rgba(15, 23, 42, 0.25)' : 'rgba(255, 255, 255, 0.25)'} !important;
+    $isDark ? 'rgba(11, 14, 20, 0.85)' : 'rgba(255, 255, 255, 0.92)'} !important;
 `;
 
 const HeaderContent = styled.div`
@@ -69,7 +67,7 @@ const Logo = styled.div<{ $isDark?: boolean }>`
     transition: filter 0.3s ease;
     // Light mode: add contrast + dark outline so logo is visible on white bg
     filter: ${({ $isDark }) => $isDark
-      ? 'drop-shadow(0 0 6px rgba(168, 85, 247, 0.5))'
+      ? 'drop-shadow(0 1px 2px rgba(0,0,0,0.4))'
       : 'drop-shadow(0 1px 2px rgba(0,0,0,0.3)) drop-shadow(0 0 1px rgba(0,0,0,0.15)) contrast(1.15) brightness(0.92)'
     };
   }

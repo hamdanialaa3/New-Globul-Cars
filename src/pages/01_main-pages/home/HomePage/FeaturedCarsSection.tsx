@@ -1,4 +1,4 @@
-// src/pages/HomePage/FeaturedCarsSection.tsx
+﻿// src/pages/HomePage/FeaturedCarsSection.tsx
 // Featured cars section component for HomePage
 
 import React, { Suspense, memo } from 'react';
@@ -108,14 +108,14 @@ const SearchButton = styled(Link) <{ $variant?: 'primary' | 'secondary' }>`
 
   /* Light mode: Orange gradient background, White text */
   html[data-theme="light"] & {
-    background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFA500 100%) !important;
+    background: var(--btn-primary-bg);
     color: #ffffff !important;
     box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
   }
 
   /* Dark mode: Yellow gradient background, Black text */
   html[data-theme="dark"] & {
-    background: linear-gradient(135deg, #FFD700 0%, #FFC107 50%, #FFA000 100%) !important;
+    background: var(--btn-primary-bg);
     color: #000000 !important;
     box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
   }
@@ -128,12 +128,12 @@ const SearchButton = styled(Link) <{ $variant?: 'primary' | 'secondary' }>`
   &:hover {
     transform: translateY(-3px);
     html[data-theme="light"] & {
-      background: linear-gradient(135deg, #FF5722 0%, #FF6B35 50%, #FF8C42 100%) !important;
+      background: var(--btn-primary-bg);
       color: #ffffff !important;
       box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
     }
     html[data-theme="dark"] & {
-      background: linear-gradient(135deg, #FFC107 0%, #FFD700 50%, #FFC107 100%) !important;
+      background: var(--btn-primary-bg);
       color: #000000 !important;
       box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
     }
@@ -142,11 +142,11 @@ const SearchButton = styled(Link) <{ $variant?: 'primary' | 'secondary' }>`
   &:active {
     transform: translateY(-1px);
     html[data-theme="light"] & {
-      background: linear-gradient(135deg, #E64A19 0%, #FF5722 50%, #FF6B35 100%) !important;
+      background: var(--btn-primary-bg);
       color: #ffffff !important;
     }
     html[data-theme="dark"] & {
-      background: linear-gradient(135deg, #FFA000 0%, #FFC107 50%, #FFD700 100%) !important;
+      background: var(--btn-primary-bg);
       color: #000000 !important;
     }
   }
@@ -176,7 +176,7 @@ const ViewAllFeaturedButton = styled(Link)`
 
   /* Light mode: Orange/Yellow gradient */
   html[data-theme="light"] & {
-    background: linear-gradient(135deg, #FF8F10 0%, #FFA500 50%, #FFD700 100%);
+    background: var(--btn-primary-bg);
     color: #000000;
     box-shadow: 0 4px 20px rgba(255, 143, 16, 0.4);
   }
@@ -192,7 +192,7 @@ const ViewAllFeaturedButton = styled(Link)`
   &:hover {
     transform: translateY(-3px) scale(1.02);
     html[data-theme="light"] & {
-      background: linear-gradient(135deg, #FFA500 0%, #FFD700 50%, #FF8F10 100%);
+      background: var(--btn-primary-bg);
       box-shadow: 0 8px 30px rgba(255, 143, 16, 0.5);
     }
     html[data-theme="dark"] & {
