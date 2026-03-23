@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import PremiumHomeCarCard from '@/components/CarCard/PremiumHomeCarCard';
@@ -35,7 +35,7 @@ const SmartBadge = styled.div`
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  background: var(--btn-primary-bg);
   color: white;
   padding: 8px 20px;
   border-radius: 30px;
@@ -137,18 +137,12 @@ const BrowseButton = styled.button`
   font-weight: 700;
   
   /* Orange glass effect */
-  background: linear-gradient(135deg, 
-    rgba(245, 158, 11, 0.4) 0%, 
-    rgba(217, 119, 6, 0.2) 100%
-  );
+  background: var(--btn-primary-bg);
   border: 1px solid rgba(245, 158, 11, 0.4);
   color: #fff;
 
   &:hover {
-    background: linear-gradient(135deg, 
-      rgba(245, 158, 11, 0.6) 0%, 
-      rgba(217, 119, 6, 0.3) 100%
-    );
+    background: var(--btn-primary-bg);
     box-shadow: 
       0 8px 32px 0 rgba(245, 158, 11, 0.5),
       0 0 20px rgba(245, 158, 11, 0.4);
@@ -223,7 +217,7 @@ const ViewCountBadge = styled.div`
   position: absolute;
   bottom: 16px;
   right: 16px;
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  background: var(--btn-primary-bg);
   color: white;
   padding: 6px 14px;
   border-radius: 20px;

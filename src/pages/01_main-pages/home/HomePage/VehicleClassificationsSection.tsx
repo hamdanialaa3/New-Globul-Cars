@@ -20,10 +20,10 @@ const SectionContainer = styled.section<{ $isDark: boolean }>`
   overflow: hidden;
   transition: background 0.3s ease;
   /* 🟣 Light purple border */
-  border: 1px solid rgba(168, 85, 247, 0.12);
+  border: 1px solid rgba(230, 81, 0, 0.12);
   border-radius: 8px;
   margin: 0 12px;
-  box-shadow: inset 0 0 8px rgba(168, 85, 247, 0.06);
+  box-shadow: inset 0 0 8px rgba(230, 81, 0, 0.06);
 
   @media (max-width: 768px) {
     padding: 50px 16px;
@@ -167,7 +167,7 @@ const SmartLabel = styled.div`
   font-size: 1.125rem;
   font-weight: 700;
   margin-bottom: 6px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--btn-primary-bg);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

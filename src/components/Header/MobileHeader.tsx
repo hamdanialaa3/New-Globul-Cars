@@ -35,8 +35,8 @@ const HeaderContainer = styled.header`
   display: flex;
   align-items: center;
   padding: 0 16px;
-  /* 🟣 Purple LED strip */
-  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3), inset 0 -2px 4px rgba(168, 85, 247, 0.2);
+  /* Clean professional shadow */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 `;
 
@@ -98,7 +98,7 @@ const Logo = styled.div`
   }
 
   .dark-theme & img {
-    filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.5));
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
   }
 
   .light-theme & img,

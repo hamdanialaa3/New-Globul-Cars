@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import styled from 'styled-components';
 import { BarChart2, PieChart, TrendingUp, ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -91,14 +91,14 @@ const Button = styled.button`
 
   /* Light mode: Orange gradient background, White text */
   html[data-theme="light"] & {
-    background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFA500 100%) !important;
+    background: var(--btn-primary-bg);
     color: #ffffff !important;
     box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
   }
 
   /* Dark mode: Yellow gradient background, Black text */
   html[data-theme="dark"] & {
-    background: linear-gradient(135deg, #FFD700 0%, #FFC107 50%, #FFA000 100%) !important;
+    background: var(--btn-primary-bg);
     color: #000000 !important;
     box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
   }
@@ -106,12 +106,12 @@ const Button = styled.button`
   &:hover {
     transform: translateY(-3px);
     html[data-theme="light"] & {
-      background: linear-gradient(135deg, #FF5722 0%, #FF6B35 50%, #FF8C42 100%) !important;
+      background: var(--btn-primary-bg);
       color: #ffffff !important;
       box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
     }
     html[data-theme="dark"] & {
-      background: linear-gradient(135deg, #FFC107 0%, #FFD700 50%, #FFC107 100%) !important;
+      background: var(--btn-primary-bg);
       color: #000000 !important;
       box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
     }
@@ -120,11 +120,11 @@ const Button = styled.button`
   &:active {
     transform: translateY(-1px);
     html[data-theme="light"] & {
-      background: linear-gradient(135deg, #E64A19 0%, #FF5722 50%, #FF6B35 100%) !important;
+      background: var(--btn-primary-bg);
       color: #ffffff !important;
     }
     html[data-theme="dark"] & {
-      background: linear-gradient(135deg, #FFA000 0%, #FFC107 50%, #FFD700 100%) !important;
+      background: var(--btn-primary-bg);
       color: #000000 !important;
     }
   }

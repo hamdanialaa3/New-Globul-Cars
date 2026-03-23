@@ -1,4 +1,4 @@
-/**
+﻿/**
  * AIAnalysisBanner.tsx
  * شريط ترويجي جذاب لتحليل السيارات بالذكاء الاصطناعي
  * 
@@ -175,12 +175,7 @@ const BannerContainer = styled(motion.section)<{ $isDark: boolean }>`
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.1),
-      transparent
-    );
+    background: var(--btn-primary-bg);
     background-size: 200% 100%;
     animation: ${shimmer} 4s infinite;
     pointer-events: none;
@@ -423,7 +418,7 @@ const CTAButton = styled(motion.button)`
   align-items: center;
   gap: 12px;
   padding: 16px 40px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: var(--btn-primary-bg);
   border: none;
   border-radius: 16px;
   color: white;
@@ -440,7 +435,7 @@ const CTAButton = styled(motion.button)`
   }
   
   &:hover {
-    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    background: var(--btn-primary-bg);
     box-shadow: 0 12px 40px rgba(16, 185, 129, 0.5);
     
     svg:last-child {

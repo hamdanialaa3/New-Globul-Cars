@@ -158,7 +158,7 @@ const AuthUsersPage = safeLazy(() => import('../pages/06_admin/AuthUsersPage'));
 const SharedInboxPage = safeLazy(() => import('../pages/06_admin/SharedInboxPage'));
 const StripeSetupPage = safeLazy(() => import('../pages/09_dealer-company/StripeSetupPage'));
 const AdminManualPaymentsDashboard = safeLazy(() => import('../pages/06_admin/finance/manual-payments/AdminManualPaymentsDashboard'));
-const AuctionsPage = safeLazy(() => import('../pages/01_main-pages/auctions/AuctionsPage'));
+const AuctionsPage = safeLazy(() => import('../pages/01_main-pages/auctions/AuctionsPage'));const DevelopmentToolsPage = safeLazy(() => import('../pages/11_test-pages/DevelopmentToolsPage'));
 
 
 
@@ -541,6 +541,7 @@ export const MainRoutes: React.FC = () => {
                     <Route path="/dealer/stripe-setup" element={<AuthGuard requireAuth={true}><StripeSetupPage /></AuthGuard>} />
                     <Route path="/admin/delete-mock-cars" element={<AuthGuard requireAuth={true} requireAdmin={true}><DeleteMockCarsPage /></AuthGuard>} />
                     <Route path="/debug-cars" element={<AuthGuard requireAuth={true}><DebugCarsPage /></AuthGuard>} />
+                    <Route path="/development-tools" element={<DevelopmentToolsPage />} />
                 </>
             )}
 

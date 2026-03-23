@@ -1,4 +1,4 @@
-/**
+﻿/**
  * DriveTypeShowcaseSection.tsx
  * قسم عرض السيارات حسب نوع الدفع
  * Drive Type Showcase Section
@@ -61,7 +61,7 @@ const IconWrapper = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom: 1.5rem;
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  background: var(--btn-primary-bg);
   
   svg {
     width: 32px;
@@ -296,7 +296,7 @@ const DriveTypeCard = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: var(--btn-primary-bg);
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: 0;

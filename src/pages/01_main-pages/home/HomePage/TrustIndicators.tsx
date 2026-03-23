@@ -1,4 +1,4 @@
-
+﻿
 import React from 'react';
 import styled from 'styled-components';
 import { ShieldCheck, Users, Clock, Award } from 'lucide-react';
@@ -50,7 +50,7 @@ const TrustItem = styled.div<{ $isDark: boolean }>`
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: var(--btn-primary-bg);
     transition: left 0.6s ease;
   }
 
@@ -83,7 +83,7 @@ const TrustItem = styled.div<{ $isDark: boolean }>`
 `;
 
 const IconWrapper = styled.div<{ $isDark: boolean }>`
-  color: ${props => props.$isDark ? '#FFD700' : '#FF8F10'};
+  color: ${props => props.$isDark ? '#FFD700' : 'var(--accent-primary)'};
   display: flex;
   align-items: center;
   transition: all 0.3s ease;

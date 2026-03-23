@@ -56,7 +56,7 @@ export const SectionHeader = styled.div`
 export const ViewAllButton = styled.a`
   display: inline-block;
   padding: 1rem 2rem;
-  background: var(--accent-orange, #FF8F10);
+  background: var(--btn-primary-bg, linear-gradient(135deg, #FF6B35, #F54B64));
   color: white;
   text-decoration: none;
   font-weight: 700;
@@ -66,9 +66,9 @@ export const ViewAllButton = styled.a`
   text-align: center;
 
   &:hover {
-    background: var(--accent-orange-dark, #FF7700);
+    background: var(--btn-primary-hover, linear-gradient(135deg, #FF8F6B, #FE7084));
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+    box-shadow: 0 4px 12px rgba(245, 75, 100, 0.3);
   }
 
   @media (max-width: 768px) {

@@ -1,4 +1,4 @@
-// Trust Section - Why Choose Us (Competitive Edge)
+﻿// Trust Section - Why Choose Us (Competitive Edge)
 // قسم الثقة - لماذا تختارنا (ميزة تنافسية)
 
 import React from 'react';
@@ -60,7 +60,7 @@ const TrustIcon = styled.div`
   margin-bottom: 12px;
   display: flex;
   justify-content: center;
-  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : 'var(--accent-primary)'};
   
   svg {
     width: 36px;

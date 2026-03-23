@@ -1,4 +1,4 @@
-// src/pages/home/HomePage/SubscriptionBanner.tsx
+﻿// src/pages/home/HomePage/SubscriptionBanner.tsx
 // Subscription Banner for HomePage - Promote Plans
 // ✅ Card design copied from /subscription page
 
@@ -69,7 +69,7 @@ const Banner = styled.section`
 const Container = styled.div<{ $isDark: boolean }>`
   background: ${p => p.$isDark
     ? 'linear-gradient(135deg, rgba(15,23,42,0.92) 0%, rgba(30,41,59,0.9) 50%, rgba(15,23,42,0.88) 100%)'
-    : 'linear-gradient(135deg, #FF8F10 0%, #fb923c 50%, #FFA500 100%)'};
+    : 'linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(147, 51, 234, 0.35) 100%)'};
   border-radius: 24px;
   padding: 30px 40px;
   position: relative;
@@ -221,12 +221,7 @@ const PlanCard = styled.div<{ $highlight?: boolean; $isDark: boolean; $free?: bo
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.15),
-        transparent
-      );
+      background: var(--btn-primary-bg);
       animation: ${shimmer} 3s infinite;
       z-index: 2;
       pointer-events: none;
@@ -274,7 +269,7 @@ const PopularBadge = styled.div`
   position: absolute;
   top: 20px;
   right: -35px;
-  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  background: var(--btn-primary-bg);
   color: white;
   padding: 0.5rem 3rem;
   font-weight: 700;
@@ -346,7 +341,7 @@ const PlanName = styled.h3`
 // ─── FREE OFFER: Red strikethrough + badge ───
 
 const FreeOfferBanner = styled.div`
-  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  background: var(--btn-primary-bg);
   color: #fff;
   padding: 0.5rem 1.25rem;
   border-radius: 24px;
@@ -391,7 +386,7 @@ const FreeBadge = styled.div`
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  background: linear-gradient(135deg, #16a34a, #22c55e);
+  background: var(--btn-primary-bg);
   color: #fff;
   padding: 0.4rem 1.25rem;
   border-radius: 20px;
@@ -419,7 +414,7 @@ const Price = styled.div<{ $free?: boolean }>`
     height: 100%;
     background: ${p => p.$free
     ? 'linear-gradient(135deg, #6b7280 0%, #9ca3af 100%)'
-    : `linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)`
+    : `linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(147, 51, 234, 0.35) 100%) 0%, var(--accent-secondary) 100%)`
   };
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -449,7 +444,7 @@ const Price = styled.div<{ $free?: boolean }>`
     font-weight: 600;
     background: ${p => p.$free
     ? 'linear-gradient(135deg, #6b7280 0%, #9ca3af 100%)'
-    : `linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)`
+    : `linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(147, 51, 234, 0.35) 100%) 0%, var(--accent-secondary) 100%)`
   };
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -461,7 +456,7 @@ const Price = styled.div<{ $free?: boolean }>`
     font-weight: 900;
     background: ${p => p.$free
     ? 'linear-gradient(135deg, #6b7280 0%, #9ca3af 100%)'
-    : `linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffd700 100%)`
+    : `linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(147, 51, 234, 0.35) 100%)`
   };
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -497,7 +492,7 @@ const FeaturesList = styled.ul<{ $free?: boolean }>`
 const LastDigitSpan = styled.span`
   font-size: 4.5rem;
   font-weight: 900;
-  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffd700 100%);
+  background: var(--btn-primary-bg);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -558,7 +553,7 @@ const CTAButton = styled.button<{ $variant: 'primary' | 'secondary' | 'premium';
     switch (p.$variant) {
       case 'premium':
         return `
-          background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+          background: var(--btn-primary-bg);
           color: white;
           box-shadow: 0 4px 16px rgba(255, 143, 16, 0.4);
 
@@ -569,7 +564,7 @@ const CTAButton = styled.button<{ $variant: 'primary' | 'secondary' | 'premium';
         `;
       case 'primary':
         return `
-          background: linear-gradient(135deg, #FF8F10 0%, #FFA500 100%);
+          background: var(--btn-primary-bg);
           color: white;
           box-shadow: 0 4px 16px rgba(255, 143, 16, 0.3);
 
@@ -581,7 +576,7 @@ const CTAButton = styled.button<{ $variant: 'primary' | 'secondary' | 'premium';
       case 'secondary':
         return `
           background: ${p.$isDark ? 'rgba(255,255,255,0.06)' : 'white'};
-          color: ${p.$isDark ? '#f8fbff' : '#FF8F10'};
+          color: ${p.$isDark ? '#f8fbff' : 'var(--accent-primary)'};
           border: 2px solid ${p.$isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 143, 16, 0.3)'};
 
           &:hover {
@@ -613,7 +608,7 @@ const SubscriptionBanner: React.FC = () => {
     {
       id: 'private',
       icon: User, // Changed from Crown to User for "Private/Individual"
-      iconColor: 'linear-gradient(135deg, #FF8F10 0%, #fb923c 100%)',
+      iconColor: 'linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(147, 51, 234, 0.35) 100%)',
       name: isBg ? 'Личен' : 'Private',
       price: isBg ? 'Безплатно' : 'Free',
       originalPrice: '€9.99', // Added for strikethrough effect

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * AI Smart Sell Button
  * Prominent CTA button for AI-powered car listing
  * 
@@ -68,11 +68,7 @@ const StyledButton = styled.button`
   gap: 0.75rem;
   font-family: inherit;
   color: white;
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.9) 0%,
-    rgba(147, 51, 234, 0.9) 100%
-  );
+  background: var(--btn-primary-bg);
   box-shadow: 
     0 12px 40px rgba(59, 130, 246, 0.4),
     0 6px 20px rgba(147, 51, 234, 0.3),
@@ -82,11 +78,7 @@ const StyledButton = styled.button`
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
   &:hover {
-    background: linear-gradient(
-      135deg,
-      rgba(59, 130, 246, 1) 0%,
-      rgba(147, 51, 234, 1) 100%
-    );
+    background: var(--btn-primary-bg);
     box-shadow: 
       0 16px 56px rgba(59, 130, 246, 0.5),
       0 8px 28px rgba(147, 51, 234, 0.4),
@@ -106,12 +98,7 @@ const StyledButton = styled.button`
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.3),
-      transparent
-    );
+    background: var(--btn-primary-bg);
     animation: ${shimmer} 3s infinite;
   }
   
@@ -175,7 +162,7 @@ const Badge = styled.span`
   position: absolute;
   top: -8px;
   right: -8px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: var(--btn-primary-bg);
   color: white;
   font-size: 0.75rem;
   font-weight: 700;

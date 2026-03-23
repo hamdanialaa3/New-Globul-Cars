@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import styled from 'styled-components';
 import { TrendingUp } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -53,7 +53,7 @@ const DemandBar = styled.div<{ $percentage: number; $isDark: boolean }>`
     left: 0;
     height: 100%;
     width: ${props => props.$percentage}%;
-    background: linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+    background: var(--btn-primary-bg);
     border-radius: 10px;
     transition: width 1s ease-out, background 0.3s ease;
   }
@@ -67,7 +67,7 @@ const DemandBar = styled.div<{ $percentage: number; $isDark: boolean }>`
 const DemandPercentage = styled.div`
   font-size: 1.25rem;
   font-weight: 900;
-  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  background: var(--btn-primary-bg);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

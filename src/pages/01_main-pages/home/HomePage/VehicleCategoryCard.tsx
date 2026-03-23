@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import styled from 'styled-components';
 import { Car, Truck, Zap, Shield, Activity, Users, Briefcase, Sun } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -120,12 +120,7 @@ const Card = styled.button<{ $active: boolean }>`
       left: -50%;
       width: 200%;
       height: 200%;
-      background: linear-gradient(
-        45deg,
-        transparent 30%,
-        rgba(255, 255, 255, 0.15) 50%,
-        transparent 70%
-      );
+      background: var(--btn-primary-bg);
       transform: rotate(45deg);
       animation: shine 3s infinite;
     }
@@ -136,13 +131,7 @@ const Card = styled.button<{ $active: boolean }>`
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.22) 0%,
-      rgba(255, 255, 255, 0.10) 25%,
-      rgba(255, 255, 255, 0.05) 55%,
-      rgba(255, 255, 255, 0.00) 100%
-    );
+    background: var(--btn-primary-bg);
     opacity: ${({ theme }) => (theme.mode === 'dark' ? 0.16 : 0.22)};
     pointer-events: none;
   }
@@ -151,7 +140,7 @@ const Card = styled.button<{ $active: boolean }>`
     margin-bottom: 12px;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     color: ${({ theme, $active }) =>
-      $active ? '#ffffff' : (theme.mode === 'dark' ? '#FF8F10' : '#FF7900')};
+      $active ? '#ffffff' : (theme.mode === 'dark' ? 'var(--accent-primary)' : 'var(--accent-primary)')};
     filter: ${props => props.$active 
       ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))' 
       : 'none'};
@@ -161,7 +150,7 @@ const Card = styled.button<{ $active: boolean }>`
     transform: scale(1.15) rotate(5deg);
     color: ${props => props.$active 
       ? '#ffffff' 
-      : '#FF7900'};
+      : 'var(--accent-primary)'};
   }
 
   @keyframes shine {

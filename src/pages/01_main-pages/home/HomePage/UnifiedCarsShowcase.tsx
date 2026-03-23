@@ -72,10 +72,10 @@ const Container = styled.section<{ $isDark: boolean }>`
   padding: 3rem 0;
   overflow: hidden;
   /* 🟣 Light purple border */
-  border: 1px solid rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(230, 81, 0, 0.1);
   border-radius: 12px;
   margin: 0 12px;
-  box-shadow: inset 0 0 12px rgba(168, 85, 247, 0.05);
+  box-shadow: inset 0 0 12px rgba(230, 81, 0, 0.05);
 
   @media (max-width: 768px) {
     padding: 2.5rem 0;
@@ -410,7 +410,7 @@ const UnifiedCarsShowcase: React.FC = memo(() => {
       labelBg: 'Най-нови',
       labelEn: 'Latest',
       icon: <Clock size={20} />,
-      color: '#FF8F10',
+      color: 'var(--accent-primary)',
       description: {
         bg: 'Най-новите обяви във вашия регион',
         en: 'Latest listings in your region'

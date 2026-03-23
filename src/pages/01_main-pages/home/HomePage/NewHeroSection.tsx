@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -141,7 +141,7 @@ const HighlightCard = styled.div<{ $isDark: boolean }>`
   position: relative;
   padding: 1.6rem;
   border-radius: 18px;
-  background: ${props => props.$isDark ? 'linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))' : 'linear-gradient(145deg, #ffffff, #f4f7fb)'};
+  background: ${props => props.$isDark ? 'linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))' : 'linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(147, 51, 234, 0.35) 100%)'};
   border: 1px solid ${props => props.$isDark ? 'rgba(255,255,255,0.1)' : 'rgba(12,26,42,0.08)'};
   box-shadow: ${props => props.$isDark ? '0 10px 40px rgba(0,0,0,0.35)' : '0 18px 48px rgba(15,23,42,0.08)'};
 `;

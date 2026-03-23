@@ -148,12 +148,7 @@ export const scaleInAnimation = (delay = 0) => css`
  * تأثير التلميع للتحميل
  */
 export const shimmerEffect = css`
-  background: linear-gradient(
-    90deg,
-    #f0f0f0 0%,
-    #e0e0e0 50%,
-    #f0f0f0 100%
-  );
+  background: linear-gradient(90deg, #f0f0f0 0%, #e0e0e0 50%, #f0f0f0 100%);
   background-size: 1000px 100%;
   animation: ${shimmer} 2s infinite linear;
 `;
@@ -174,14 +169,42 @@ export const smoothTransition = (properties: string[] = ['all']) => css`
  */
 export const hoverLift = css`
   transition: all 0.3s ease;
-  
+
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
   }
-  
+
   &:active {
     transform: translateY(-2px);
+  }
+`;
+
+// ==================== ACCESSIBILITY: REDUCED MOTION ====================
+
+/**
+ * Wraps animation CSS so it only applies when the user has NOT requested reduced motion.
+ * Usage: ${safeAnimation(css`animation: ${fadeIn} 0.3s ease-out;`)}
+ */
+export const safeAnimation = (animationCss: ReturnType<typeof css>) => css`
+  @media (prefers-reduced-motion: no-preference) {
+    ${animationCss}
+  }
+`;
+
+/**
+ * Reduced-motion-safe global wrapper.
+ * Apply to GlobalStyles or parent containers.
+ */
+export const reducedMotionStyles = css`
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 `;
 
@@ -195,7 +218,7 @@ export const animations = {
   pulse,
   spin,
   shimmer,
-  bounce
+  bounce,
 };
 
 export const mixins = {
@@ -204,10 +227,10 @@ export const mixins = {
   scaleInAnimation,
   shimmerEffect,
   smoothTransition,
-  hoverLift
+  hoverLift,
 };
 
 export default {
   animations,
-  mixins
+  mixins,
 };

@@ -1,4 +1,4 @@
-import { logger } from '@/services/logger-service';
+﻿import { logger } from '@/services/logger-service';
 // Smart Feed Section - AI-Powered Community Feed (Third Section)
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -408,7 +408,7 @@ const FeedSection = styled.section<{ $isDark: boolean }>`
   width: 100%;
   background: ${p => p.$isDark
     ? 'linear-gradient(135deg, rgba(8, 12, 20, 0.9), rgba(12, 26, 42, 0.82))'
-    : 'linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)'};
+    : 'linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(147, 51, 234, 0.35) 100%)'};
   padding: 60px 0;
   position: relative;
   border-top: 1px solid ${p => p.$isDark ? 'rgba(255,255,255,0.05)' : 'rgba(12,26,42,0.06)'};
@@ -445,8 +445,8 @@ const FilterButton = styled.button<{ $active: boolean; $isDark: boolean }>`
   gap: 6px;
   padding: 10px 20px;
   border-radius: 24px;
-  border: 2px solid ${p => p.$active ? '#FF7900' : (p.$isDark ? 'rgba(255,255,255,0.1)' : '#e9ecef')};
-  background: ${p => p.$active ? '#FF7900' : (p.$isDark ? 'rgba(255,255,255,0.05)' : 'white')};
+  border: 2px solid ${p => p.$active ? 'var(--accent-primary)' : (p.$isDark ? 'rgba(255,255,255,0.1)' : '#e9ecef')};
+  background: ${p => p.$active ? 'var(--btn-primary-bg)' : (p.$isDark ? 'rgba(255,255,255,0.05)' : 'white')};
   color: ${p => p.$active ? '#0f172a' : (p.$isDark ? '#e2e8f0' : '#444')};
   font-size: 0.9rem;
   font-weight: 600;
@@ -527,7 +527,7 @@ const UserAvatar = styled.div<{ $hasImage: boolean; $imageUrl?: string }>`
   ${p => p.$hasImage && p.$imageUrl ? `
     background: url(${p.$imageUrl}) center/cover no-repeat;
   ` : `
-    background: linear-gradient(135deg, #FF8F10, #FF7900);
+    background: var(--btn-primary-bg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -565,7 +565,7 @@ const ActionButton = styled.div<{ $isDark: boolean }>`
 const LoginPrompt = styled.button<{ $isDark: boolean }>`
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, #FF7900, #FF8F10);
+  background: var(--btn-primary-bg);
   color: white;
   border: none;
   border-radius: 16px;
@@ -639,7 +639,7 @@ const EmptyDescription = styled.p<{ $isDark: boolean }>`
 
 const CreateFirstButton = styled.button`
   padding: 12px 24px;
-  background: #FF7900;
+  background: var(--btn-primary-bg);
   color: white;
   border: none;
   border-radius: 12px;
@@ -649,7 +649,7 @@ const CreateFirstButton = styled.button`
   transition: all 0.3s;
   
   &:hover {
-    background: #FF8F10;
+    background: var(--btn-primary-bg);
     transform: translateY(-2px);
   }
 `;

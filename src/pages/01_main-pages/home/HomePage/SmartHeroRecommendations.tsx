@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🚗 Smart Hero Recommendations Component
  * Personalized car recommendations for homepage
  * 
@@ -145,7 +145,7 @@ const DominantBrandBadge = styled.span`
   align-items: center;
   gap: 4px;
   padding: 4px 10px;
-  background: linear-gradient(135deg, #FF8F10 0%, #FF6B00 100%);
+  background: var(--btn-primary-bg);
   color: white;
   font-size: 0.75rem;
   font-weight: 600;
@@ -202,7 +202,7 @@ const ViewAllButton = styled.button`
   align-items: center;
   gap: 4px;
   padding: 8px 16px;
-  background: linear-gradient(135deg, #FF8F10 0%, #FF6B00 100%);
+  background: var(--btn-primary-bg);
   border: none;
   border-radius: 8px;
   color: white;
@@ -297,7 +297,7 @@ const EmptyState = styled.div`
 
 const RetryButton = styled.button`
   padding: 10px 24px;
-  background: #FF8F10;
+  background: var(--btn-primary-bg);
   border: none;
   border-radius: 8px;
   color: white;
@@ -306,7 +306,7 @@ const RetryButton = styled.button`
   transition: all 0.2s ease;
   
   &:hover {
-    background: #FF6B00;
+    background: var(--btn-primary-bg);
   }
 `;
 

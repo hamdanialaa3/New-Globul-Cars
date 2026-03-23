@@ -19,10 +19,10 @@ const SectionContainer = styled.section<{ $isDark: boolean }>`
     ? 'linear-gradient(135deg, rgba(5, 15, 35, 0.95) 0%, rgba(10, 25, 50, 0.95) 50%, rgba(15, 35, 65, 0.95) 100%)'
     : 'linear-gradient(135deg, rgba(240, 248, 255, 0.95) 0%, rgba(230, 240, 255, 0.95) 100%)'};
   /* 🟣 Light purple border */
-  border: 1px solid rgba(168, 85, 247, 0.12);
+  border: 1px solid rgba(230, 81, 0, 0.12);
   border-radius: 8px;
   margin: 0 12px;
-  box-shadow: inset 0 0 12px rgba(168, 85, 247, 0.06);
+  box-shadow: inset 0 0 12px rgba(230, 81, 0, 0.06);
 
   /* Futuristic Grid Background with Dotted Lines */
   &::before {
@@ -127,12 +127,7 @@ const AIBadge = styled.div`
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(
-      45deg,
-      transparent 30%,
-      rgba(255, 255, 255, 0.2) 50%,
-      transparent 70%
-    );
+    background: var(--btn-primary-bg);
     animation: shine 3s infinite;
     transform: rotate(45deg);
   }
@@ -180,7 +175,7 @@ const AIBadge = styled.div`
 const SectionTitle = styled.h2`
   font-size: 2.75rem;
   font-weight: 900;
-  background: linear-gradient(135deg, #00f3ff 0%, #00d4ff 30%, #ff00ff 70%, #ff0066 100%);
+  background: var(--btn-primary-bg);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -258,12 +253,7 @@ const ViewAllButton = styled.button<{ $isDark: boolean }>`
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(
-      45deg,
-      transparent 30%,
-      rgba(255, 255, 255, 0.4) 50%,
-      transparent 70%
-    );
+    background: var(--btn-primary-bg);
     transform: rotate(45deg);
     transition: transform 0.6s;
     opacity: 0;
@@ -316,7 +306,7 @@ const RankBadge = styled.span<{ $rank: number; $active: boolean; $isDark: boolea
   background: ${props => {
     if (props.$rank === 1) return props.$isDark
       ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 165, 0, 0.3) 100%)'
-      : 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)';
+      : 'linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(147, 51, 234, 0.35) 100%)';
     if (props.$rank === 2) return props.$isDark
       ? 'linear-gradient(135deg, rgba(192, 192, 192, 0.3) 0%, rgba(168, 168, 168, 0.3) 100%)'
       : 'linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%)';
@@ -409,12 +399,7 @@ const CategoryTab = styled.button<{ $active: boolean; $rank?: number; $isDark: b
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(
-      135deg,
-      transparent 30%,
-      rgba(255, 255, 255, 0.3) 50%,
-      transparent 70%
-    );
+    background: var(--btn-primary-bg);
     opacity: ${props => props.$active ? 1 : 0};
     transition: opacity 0.4s ease;
     transform: rotate(45deg);

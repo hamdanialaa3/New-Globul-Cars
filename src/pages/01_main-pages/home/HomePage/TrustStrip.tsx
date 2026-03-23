@@ -1,4 +1,4 @@
-// TrustStrip.tsx
+﻿// TrustStrip.tsx
 // Lightweight trust & marketplace pulse strip displayed near top of homepage
 // Shows key marketplace statistics to build confidence and conversion.
 
@@ -73,7 +73,7 @@ const ActionButton = styled.button`
   gap: 6px;
 
   &:hover {
-    background: var(--accent-primary-active);
+    background: var(--btn-primary-bg);
   }
 `;
 

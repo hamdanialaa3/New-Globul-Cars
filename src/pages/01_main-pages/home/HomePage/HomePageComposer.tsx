@@ -38,45 +38,39 @@ import { useSectionVisibility } from '@/hooks/useSectionVisibility';
 import LazySection from '@/components/LazySection';
 
 // ============================================================================
-// CORE SECTION IMPORTS
+// CORE SECTION IMPORTS (v4.1 — Balanced 14-Section Layout)
 // ============================================================================
 
 // 1. Hero & Search
 import UnifiedHeroSection from './UnifiedHeroSection';
 import StickySearchBar from './StickySearchBar';
 
-// 2. 🆕 UNIQUE FEATURES (Competitive Advantage)
-import VisualSearchTeaser from './VisualSearchTeaser';  // ✅ NEW: Visual Search - NO COMPETITOR HAS THIS!
-import LifeMomentsBrowse from './LifeMomentsBrowse';    // ✅ NEW: Emotional Discovery
-import AIAnalysisBanner from './AIAnalysisBanner';      // ✅ NEW: AI Analysis Banner with explanation
+// 2. AI Feature
+import AIAnalysisBanner from './AIAnalysisBanner';
 
 // 3. Car Discovery
-import VehicleClassificationsSection from './VehicleClassificationsSection';
-import UnifiedCarsShowcase from './UnifiedCarsShowcase';
 import FeaturedShowcase from './FeaturedShowcase';
 import PopularBrandsSection from './PopularBrandsSection';
 import MostDemandedCategoriesSection from './MostDemandedCategoriesSection';
 import OurCarsShowcase from './OurCarsShowcase';
+import UnifiedCarsShowcase from './UnifiedCarsShowcase';
+import VehicleClassificationsSection from './VehicleClassificationsSection';
+import VisualSearchTeaser from './VisualSearchTeaser';
+import LifeMomentsBrowse from './LifeMomentsBrowse';
 
 // 4. Personalization (Conditional)
 import SmartHeroRecommendations from './SmartHeroRecommendations';
 import RecentBrowsingSection from './RecentBrowsingSection';
 
 // 5. Selling CTA
-import UnifiedSmartSell from './UnifiedSmartSell';  // ✅ NEW: Merged SmartSellStrip + AISmartSellButton
+import UnifiedSmartSell from './UnifiedSmartSell';
 
-// 6. Trust & Social
+// 6. Trust & Dealers
 import UnifiedDealer from './UnifiedDealer';
 import HomeTrustAndStats from './HomeTrustAndStats';
-import UnifiedSocial from './UnifiedSocial';
-import HomeLoyaltyAndSignup from './HomeLoyaltyAndSignup';
 
 // 7. Utilities
-import { GridSectionWrapper } from './GridSectionWrapper';
 import LinkableSection from './LinkableSection';
-
-// 🆕 Smart Strips (mobile.de parity)
-import { HomeHeroStrips } from '@/components/home/HomeHeroStrips';
 
 // Global components (lazy loaded)
 const AIChatbot = React.lazy(() => import('../../../../components/AI/AIChatbot'));
@@ -141,34 +135,20 @@ const LoadingFallback = styled.div`
 `;
 
 // ============================================================================
-// SECTION SLOTS - GOLDEN ORDER (February 3, 2026)
+// SECTION SLOTS — FOCUSED 9-SECTION LAYOUT (v4.0)
 // ============================================================================
 
 /**
  * Slot 1: Hero Section
- * Strong entry with search / Силен вход с търсене
+ * h1 tagline + search widget + trust strip
  */
 const HeroSlot: React.FC = () => (
   <UnifiedHeroSection />
 );
 
 /**
- * Slot 2: 🆕 AI Analysis Banner
- * Eye-catching banner explaining AI car analysis flow
- * AI car analysis explanation banner
- */
-const AIAnalysisBannerSlot: React.FC = () => (
-  <LazySection rootMargin="50px">
-    <Suspense fallback={null}>
-      <AIAnalysisBanner />
-    </Suspense>
-  </LazySection>
-);
-
-/**
- * Slot: 🆕 Our Cars Showcase (Нашите коли)
+ * Slot 2: Our Cars Showcase (Нашите коли)
  * All real user-added listings — 4×3 grid on desktop
- * Display all real user listings
  */
 const OurCarsSlot: React.FC = () => {
   const { t } = useLanguage();
@@ -183,120 +163,8 @@ const OurCarsSlot: React.FC = () => {
 };
 
 /**
- * Slot 3: 🆕 Visual Search Teaser
- * UNIQUE COMPETITIVE ADVANTAGE - No competitor has this!
- * Visual Search - exclusive feature!
- */
-const VisualSearchSlot: React.FC = () => (
-  <LazySection rootMargin="50px">
-    <Suspense fallback={null}>
-      <VisualSearchTeaser />
-    </Suspense>
-  </LazySection>
-);
-
-/**
- * Slot 4: Vehicle Classifications
- * Body types + Drive types combined
- */
-const VehicleClassificationsSlot: React.FC = () => {
-  const { t } = useLanguage();
-
-  return (
-    <LazySection rootMargin="100px">
-      <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
-        <VehicleClassificationsSection />
-      </Suspense>
-    </LazySection>
-  );
-};
-
-/**
- * Slot 5: 🆕 Life Moments Browse
- * Emotional car discovery - Find car for your life moment
- * Discover cars by life moments
- */
-const LifeMomentsSlot: React.FC = () => (
-  <LazySection rootMargin="100px">
-    <Suspense fallback={null}>
-      <LifeMomentsBrowse />
-    </Suspense>
-  </LazySection>
-);
-
-/**
- * Slot 6: Cars Showcase (Main Content)
- * Car showcase (Latest/Featured/New) - with tabs
- * Main cars showcase
- */
-const CarsShowcaseSlot: React.FC = () => {
-  const { t } = useLanguage();
-
-  return (
-    <LinkableSection
-      title="Latest Cars"
-      titleAr="Latest Cars"
-      viewAllLink="/cars"
-      viewAllText="View All"
-      viewAllTextAr="View All"
-    >
-      <LazySection rootMargin="100px">
-        <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
-          <UnifiedCarsShowcase />
-        </Suspense>
-      </LazySection>
-    </LinkableSection>
-  );
-};
-
-/**
- * Slot 6: Popular Brands
- * Popular brands
- */
-const PopularBrandsSlot: React.FC = () => {
-  const { t } = useLanguage();
-
-  return (
-    <LazySection rootMargin="100px">
-      <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
-        <PopularBrandsSection />
-      </Suspense>
-    </LazySection>
-  );
-};
-
-/**
- * Slot 7: Most Demanded Categories
- * Most demanded categories (AI Trending)
- */
-const MostDemandedCategoriesSlot: React.FC = () => {
-  const { t } = useLanguage();
-
-  return (
-    <LazySection rootMargin="100px">
-      <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
-        <MostDemandedCategoriesSection />
-      </Suspense>
-    </LazySection>
-  );
-};
-
-/**
- * Slot 8: Featured Showcase (VIP Cars)
- * Premium featured cars / VIP
- */
-const FeaturedShowcaseSlot: React.FC = () => (
-  <LazySection rootMargin="100px">
-    <Suspense fallback={null}>
-      <FeaturedShowcase />
-    </Suspense>
-  </LazySection>
-);
-
-/**
- * Slot 9: Smart Hero Recommendations (For Logged-in Users)
+ * Slot 3: Smart Recommendations (For Logged-in Users)
  * AI-powered personalized recommendations
- * Shows only for authenticated users
  */
 const SmartHeroSlot: React.FC = () => {
   const { t } = useLanguage();
@@ -311,9 +179,49 @@ const SmartHeroSlot: React.FC = () => {
 };
 
 /**
- * Slot 10: 🆕 Unified Smart Sell (Merged CTA)
- * Combined SmartSellStrip + AISmartSellButton
- * Unified Smart Sell CTA
+ * Slot 4: AI Analysis Banner
+ * Eye-catching banner explaining AI car analysis flow
+ */
+const AIAnalysisBannerSlot: React.FC = () => (
+  <LazySection rootMargin="50px">
+    <Suspense fallback={null}>
+      <AIAnalysisBanner />
+    </Suspense>
+  </LazySection>
+);
+
+/**
+ * Slot 5: Popular Brands
+ */
+const PopularBrandsSlot: React.FC = () => {
+  const { t } = useLanguage();
+
+  return (
+    <LazySection rootMargin="100px">
+      <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
+        <PopularBrandsSection />
+      </Suspense>
+    </LazySection>
+  );
+};
+
+/**
+ * Slot 6: Most Demanded Categories (AI Trending)
+ */
+const MostDemandedCategoriesSlot: React.FC = () => {
+  const { t } = useLanguage();
+
+  return (
+    <LazySection rootMargin="100px">
+      <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
+        <MostDemandedCategoriesSection />
+      </Suspense>
+    </LazySection>
+  );
+};
+
+/**
+ * Slot 7: Unified Smart Sell (Sell CTA)
  */
 const UnifiedSmartSellSlot: React.FC = () => (
   <LazySection rootMargin="100px">
@@ -324,7 +232,7 @@ const UnifiedSmartSellSlot: React.FC = () => (
 );
 
 /**
- * Slot 11: Dealer Spotlight
+ * Slot 8: Dealer Spotlight
  * Certified dealers + Trust Badges
  */
 const DealersSlot: React.FC = () => {
@@ -348,8 +256,7 @@ const DealersSlot: React.FC = () => {
 };
 
 /**
- * Slot 12: Trust & Stats (Compact)
- * Trust & Stats - compact
+ * Slot 9: Trust & Stats (Compact)
  */
 const TrustSlot: React.FC = () => {
   const { t } = useLanguage();
@@ -364,50 +271,91 @@ const TrustSlot: React.FC = () => {
 };
 
 /**
- * Slot 13: Social Experience
- * Social proof and reviews
+ * Slot CONDITIONAL: Recent Browsing
+ * Shows only for returning users
  */
-const SocialSlot: React.FC = () => {
-  const { t } = useLanguage();
+const RecentBrowsingSlot: React.FC = () => (
+  <LazySection rootMargin="100px" minHeight="200px">
+    <Suspense fallback={null}>
+      <RecentBrowsingSection />
+    </Suspense>
+  </LazySection>
+);
 
+/**
+ * Slot: Featured Showcase
+ * Premium/featured listings — key revenue driver
+ */
+const FeaturedShowcaseSlot: React.FC = () => {
+  const { t } = useLanguage();
   return (
     <LazySection rootMargin="100px">
       <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
-        <UnifiedSocial />
+        <FeaturedShowcase />
       </Suspense>
     </LazySection>
   );
 };
 
 /**
- * Slot 14: Loyalty & Signup
- * Subscriptions + Loyalty program
+ * Slot: Vehicle Classifications
+ * Browse by vehicle type (SUV, Sedan, Hatchback, etc.)
  */
-const LoyaltySlot: React.FC = () => (
-  <LazySection rootMargin="200px">
+const VehicleClassificationsSlot: React.FC = () => {
+  const { t } = useLanguage();
+  return (
+    <LazySection rootMargin="100px">
+      <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
+        <VehicleClassificationsSection />
+      </Suspense>
+    </LazySection>
+  );
+};
+
+/**
+ * Slot: Unified Cars Showcase
+ * Main car browsing showcase grid
+ */
+const UnifiedCarsShowcaseSlot: React.FC = () => {
+  const { t } = useLanguage();
+  return (
+    <LazySection rootMargin="100px">
+      <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
+        <UnifiedCarsShowcase />
+      </Suspense>
+    </LazySection>
+  );
+};
+
+/**
+ * Slot: Visual Search Teaser
+ * AI-powered visual search — unique differentiator
+ */
+const VisualSearchTeaserSlot: React.FC = () => (
+  <LazySection rootMargin="100px">
     <Suspense fallback={null}>
-      <HomeLoyaltyAndSignup />
+      <VisualSearchTeaser />
     </Suspense>
   </LazySection>
 );
 
 /**
- * Slot CONDITIONAL: Recent Browsing
- * Shows only for returning users
+ * Slot: Life Moments Browse
+ * Emotional discovery — browse by life situation
  */
-const RecentBrowsingSlot: React.FC = () => (
-  <GridSectionWrapper intensity="light" variant="modern">
-    <LazySection rootMargin="100px" minHeight="200px">
-      <Suspense fallback={null}>
-        <RecentBrowsingSection />
+const LifeMomentsBrowseSlot: React.FC = () => {
+  const { t } = useLanguage();
+  return (
+    <LazySection rootMargin="100px">
+      <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
+        <LifeMomentsBrowse />
       </Suspense>
     </LazySection>
-  </GridSectionWrapper>
-);
+  );
+};
 
 /**
  * Floating: AI Chatbot
- * Floating AI assistant
  */
 const AIChatbotSlot: React.FC = () => (
   <Suspense fallback={null}>
@@ -417,7 +365,6 @@ const AIChatbotSlot: React.FC = () => (
 
 /**
  * Floating: Draft Recovery Prompt
- * ✅ REVENUE FIX: Recover abandoned sell workflow drafts
  */
 const DraftRecoverySlot: React.FC = () => (
   <Suspense fallback={null}>
@@ -426,65 +373,56 @@ const DraftRecoverySlot: React.FC = () => (
 );
 
 // ============================================================================
-// MAIN COMPOSER - GOLDEN ORDER (February 3, 2026)
+// MAIN COMPOSER — BALANCED 14-SECTION LAYOUT (v4.1)
 // ============================================================================
 
 /**
  * HomePageComposer
- * Композитор на началната страница - HomePage Composer
- * HomePage Composer - Combines all sections in optimized order
+ * Layout orchestrator — balanced, content-rich homepage
  * 
- * 🏆 GOLDEN ORDER (February 3, 2026) - Competitive Edge:
+ * v4.1 BALANCED LAYOUT:
  * 
  * ┌─────────────────────────────────────────────────────────────┐
  * │  0. StickySearchBar (Floating on scroll)                   │
- * │  1. Hero Section (Main search entry)                       │
- * │  2. 🆕 Visual Search Teaser (UNIQUE - No competitor!)      │
- * │  3. Vehicle Classifications (Body types + Drive)           │
- * │  4. 🆕 Life Moments Browse (Emotional discovery)           │
- * │  5. Cars Showcase (Main content - Latest/New/Featured)     │
- * │  6. Popular Brands                                         │
- * │  7. Most Demanded Categories (AI Trending)                 │
- * │  8. Featured Showcase (VIP Cars)                           │
- * │  9. Smart Recommendations (For logged-in users)            │
- * │ 10. 🆕 Unified Smart Sell (Merged CTA)                     │
- * │ 11. Dealers Spotlight                                      │
- * │ 12. Trust & Stats (Compact)                                │
- * │ 13. Social Experience                                      │
- * │ 14. Loyalty & Signup                                       │
- * │ CONDITIONAL: Recent Browsing (Returning users only)        │
+ * │  1. Hero (h1 tagline + search + trust strip)               │
+ * │  2. Our Cars (real user listings — 4×3)                    │
+ * │  3. Featured Showcase (premium/featured listings)          │
+ * │  4. Smart Recommendations (personalized — logged-in)       │
+ * │  5. AI Analysis Banner (feature explanation)               │
+ * │  6. Vehicle Classifications (SUV, Sedan, etc.)             │
+ * │  7. Popular Brands                                         │
+ * │  8. Most Demanded Categories (AI Trending)                 │
+ * │  9. Visual Search Teaser (AI visual search)                │
+ * │ 10. Cars Showcase (main browsing grid)                     │
+ * │ 11. Life Moments (emotional discovery)                     │
+ * │ 12. Smart Sell (CTA)                                       │
+ * │ 13. Dealers                                                │
+ * │ 14. Trust & Stats                                          │
+ * │ CONDITIONAL: Recent Browsing (returning users only)        │
  * │ FLOATING: AI Chatbot + Draft Recovery                      │
  * └─────────────────────────────────────────────────────────────┘
  * 
  * @clean no business logic, only layout arrangement
- * @flexible easy to reorder sections
- * @performance optimized lazy loading
- * @competitive unique features highlighted at top
+ * @performance all sections lazy loaded
  */
 const SECTION_MAP: Record<string, React.FC> = {
   hero: HeroSlot,
   our_cars: OurCarsSlot,
+  featured_showcase: FeaturedShowcaseSlot,
   smart_recommendations: SmartHeroSlot,
   ai_analysis_banner: AIAnalysisBannerSlot,
-  hero_strips: HomeHeroStrips,
-  visual_search: VisualSearchSlot,
   vehicle_classifications: VehicleClassificationsSlot,
-  life_moments: LifeMomentsSlot,
-  categories: () => null, // mobile-only — kept in map to avoid crash if admin toggles it on web
-  cars_showcase: CarsShowcaseSlot,
   popular_brands: PopularBrandsSlot,
   most_demanded: MostDemandedCategoriesSlot,
-  featured_showcase: FeaturedShowcaseSlot,
+  visual_search: VisualSearchTeaserSlot,
+  cars_showcase: UnifiedCarsShowcaseSlot,
+  life_moments: LifeMomentsBrowseSlot,
   smart_sell: UnifiedSmartSellSlot,
   dealers: DealersSlot,
   trust_stats: TrustSlot,
-  social: SocialSlot,
-  loyalty: LoyaltySlot,
-  // Conditional sections handled separately
 };
 
 const HomePageComposer: React.FC = React.memo(() => {
-  // Check if user is authenticated for conditional sections
   const { user } = useAuth();
   const hasRecentlyBrowsed = typeof window !== 'undefined' && localStorage.getItem('recentBrowsing');
   const { sections, isVisible } = useSectionVisibility();
@@ -512,31 +450,26 @@ const HomePageComposer: React.FC = React.memo(() => {
               );
             })
         ) : (
-          /* Fallback while loading config or if empty - Default Order */
+          /* Fallback — Balanced 14-Section Default Order */
           <>
             <HeroSlot /><SectionSpacer />
             <OurCarsSlot /><SectionSpacer />
+            <FeaturedShowcaseSlot /><SectionSpacer />
             <SmartHeroSlot /><SectionSpacer />
             <AIAnalysisBannerSlot /><SectionSpacer />
-            <HomeHeroStrips /><SectionSpacer />
-            <VisualSearchSlot /><SectionSpacer />
             <VehicleClassificationsSlot /><SectionSpacer />
-            <LifeMomentsSlot /><SectionSpacer />
-            <CarsShowcaseSlot /><SectionSpacer />
             <PopularBrandsSlot /><SectionSpacer />
             <MostDemandedCategoriesSlot /><SectionSpacer />
-            <FeaturedShowcaseSlot /><SectionSpacer />
+            <VisualSearchTeaserSlot /><SectionSpacer />
+            <UnifiedCarsShowcaseSlot /><SectionSpacer />
+            <LifeMomentsBrowseSlot /><SectionSpacer />
             <UnifiedSmartSellSlot /><SectionSpacer />
             <DealersSlot /><SectionSpacer />
-            <TrustSlot /><SectionSpacer />
-            <SocialSlot /><SectionSpacer />
-            <LoyaltySlot />
+            <TrustSlot />
           </>
         )}
 
-        {/* CONDITIONAL: RECENT BROWSING                                    */}
-        {/* Shows only for returning users with browsing history            */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
+        {/* CONDITIONAL: RECENT BROWSING (returning users only) */}
         {isVisible('recent_browsing') && hasRecentlyBrowsed && (
           <>
             <SectionSpacer />
@@ -545,14 +478,8 @@ const HomePageComposer: React.FC = React.memo(() => {
         )}
       </ContentContainer>
 
-      {/* ═══════════════════════════════════════════════════════════════ */}
-      {/* FLOATING COMPONENTS                                             */}
-      {/* ═══════════════════════════════════════════════════════════════ */}
-
-      {/* AI Chatbot */}
+      {/* FLOATING COMPONENTS */}
       {isVisible('ai_chatbot') && <AIChatbotSlot />}
-
-      {/* Draft Recovery Prompt (Floating Toast) */}
       {isVisible('draft_recovery') && <DraftRecoverySlot />}
     </ComposerContainer>
   );

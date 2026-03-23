@@ -48,9 +48,9 @@ const SectionContainer = styled.section`
   transition: background-color 0.3s ease;
   background: transparent;
   /* 🟣 Light purple border */
-  border: 1px solid rgba(168, 85, 247, 0.12);
+  border: 1px solid rgba(230, 81, 0, 0.12);
   border-radius: 8px;
-  box-shadow: inset 0 0 8px rgba(168, 85, 247, 0.06);
+  box-shadow: inset 0 0 8px rgba(230, 81, 0, 0.06);
   
   /* ✅ Removed background image and overlay */
   
@@ -157,11 +157,7 @@ const BrandCard = styled.button`
   max-height: 153px;
   
   /* 🌟 Glass Metallic Effect - modern glass metallic style */
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.25) 0%,
-    rgba(255, 255, 255, 0.15) 50%,
-    rgba(255, 255, 255, 0.25) 100%
-  );
+  background: var(--btn-primary-bg);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(10px);
   border: 2px solid rgba(200, 200, 200, 0.4);
@@ -208,11 +204,7 @@ const BrandCard = styled.button`
   }
 
   html[data-theme="dark"] & {
-    background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.12) 0%,
-      rgba(255, 255, 255, 0.06) 50%,
-      rgba(255, 255, 255, 0.12) 100%
-    );
+    background: var(--btn-primary-bg);
     border-color: rgba(255, 255, 255, 0.2);
     box-shadow: 
       0 8px 32px 0 rgba(31, 38, 135, 0.37),
@@ -227,12 +219,7 @@ const BrandCard = styled.button`
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(
-      45deg,
-      transparent 30%,
-      rgba(255, 255, 255, 0.3) 50%,
-      transparent 70%
-    );
+    background: var(--btn-primary-bg);
     opacity: 0;
     transition: opacity 0.5s ease, transform 0.5s ease;
     transform: rotate(45deg) translateX(-100%);
@@ -251,11 +238,7 @@ const BrandCard = styled.button`
     left: 0;
     right: 0;
     height: 40%;
-    background: linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.2) 0%,
-      transparent 100%
-    );
+    background: var(--btn-primary-bg);
     border-radius: 16px 16px 0 0;
     pointer-events: none;
   }
@@ -268,13 +251,7 @@ const BrandCard = styled.button`
       inset 0 -1px 0 rgba(0, 0, 0, 0.15);
     border-color: rgba(220, 220, 220, 0.5);
     border-top: 2px solid rgba(255, 255, 255, 0.7);
-    background: linear-gradient(135deg, 
-      #F0F0F0 0%,      /* Very light silver */
-      #E0E0E0 25%,    /* Light silver */
-      #D0D0D0 50%,    /* Silver */
-      #E0E0E0 75%,    /* Light silver */
-      #F0F0F0 100%    /* Very light silver */
-    );
+    background: var(--btn-primary-bg);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
   }
@@ -286,13 +263,7 @@ const BrandCard = styled.button`
       inset 0 -1px 0 rgba(0, 0, 0, 0.4);
     border-color: rgba(180, 180, 180, 0.4);
     border-top: 2px solid rgba(220, 220, 220, 0.5);
-    background: linear-gradient(135deg, 
-      #5A5A5A 0%,      /* Light dark gray */
-      #4A4A4A 25%,     /* Dark gray */
-      #3A3A3A 50%,     /* Dark gray */
-      #4A4A4A 75%,     /* Dark gray */
-      #5A5A5A 100%     /* Light dark gray */
-    );
+    background: var(--btn-primary-bg);
   }
   
   &:active { 
@@ -355,7 +326,7 @@ const ViewAllBrandsButton = styled.button`
 
   /* Light mode: Orange/Yellow gradient */
   html[data-theme="light"] & {
-    background: linear-gradient(135deg, #FF8F10 0%, #FFA500 50%, #FFD700 100%);
+    background: var(--btn-primary-bg);
     color: #000000;
     box-shadow: 0 4px 20px rgba(255, 143, 16, 0.4);
   }
@@ -371,7 +342,7 @@ const ViewAllBrandsButton = styled.button`
   &:hover {
     transform: translateY(-3px) scale(1.02);
     html[data-theme="light"] & {
-      background: linear-gradient(135deg, #FFA500 0%, #FFD700 50%, #FF8F10 100%);
+      background: var(--btn-primary-bg);
       box-shadow: 0 8px 30px rgba(255, 143, 16, 0.5);
     }
     html[data-theme="dark"] & {

@@ -1,4 +1,4 @@
-// src/pages/HomePage/HeroSection.tsx
+﻿// src/pages/HomePage/HeroSection.tsx
 import React, { memo } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -90,7 +90,7 @@ const HeroTitle = styled.h1`
   margin-bottom: 15px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  background: linear-gradient(to right, #fff, #00ccff);
+  background: var(--btn-primary-bg);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 0 30px rgba(0, 204, 255, 0.2);

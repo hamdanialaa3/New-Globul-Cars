@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -27,14 +27,7 @@ const VideoBackground = styled.div`
   z-index: 0;
   
   /* Animated gradient background - replaces video for better performance */
-  background: linear-gradient(
-    135deg,
-    ${MobileBGTheme.brand.dark} 0%,
-    ${MobileBGTheme.brand.primary} 25%,
-    ${MobileBGTheme.brand.secondary} 50%,
-    ${MobileBGTheme.brand.primary} 75%,
-    ${MobileBGTheme.brand.dark} 100%
-  );
+  background: var(--btn-primary-bg);
   background-size: 400% 400%;
   animation: gradientShift 20s ease infinite;
   
@@ -72,11 +65,7 @@ const VideoBackground = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-      to bottom, 
-      rgba(0,0,0,0.4), 
-      ${MobileBGTheme.brand.dark}
-    );
+    background: var(--btn-primary-bg);
   }
 `;
 
@@ -97,7 +86,7 @@ const Title = styled(motion.h1)`
   text-shadow: 0 4px 12px rgba(0,0,0,0.5);
 
    span {
-    background: linear-gradient(135deg, ${MobileBGTheme.brand.primary}, ${MobileBGTheme.brand.secondary});
+    background: var(--btn-primary-bg);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }

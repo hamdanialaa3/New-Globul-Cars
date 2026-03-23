@@ -132,7 +132,7 @@ const IconWrapper = styled.div`
   color: ${adminTheme.colors.accent.secondary};
   
   svg {
-    filter: drop-shadow(0 0 3px rgba(168, 85, 247, 0.4));
+    filter: drop-shadow(0 0 3px rgba(230, 81, 0, 0.4));
   }
 `;
 

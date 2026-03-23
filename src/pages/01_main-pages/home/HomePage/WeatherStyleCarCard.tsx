@@ -1,4 +1,4 @@
-/**
+﻿/**
  * WeatherStyleCarCard.tsx
  * Карта за кола със стил на времето - Weather Style Car Card
  * Car Card with Weather-Inspired Design
@@ -79,7 +79,7 @@ const BackgroundDesign = styled.div<{ $primaryColor: string; $secondaryColor: st
   position: absolute;
   height: 100%;
   width: 100%;
-  background: linear-gradient(135deg, ${props => props.$primaryColor} 0%, ${props => props.$secondaryColor} 100%);
+  background: var(--btn-primary-bg);
   overflow: hidden;
   z-index: 0;
 `;
@@ -130,9 +130,7 @@ const ImageFallback = styled.div<{ $accentColor: string }>`
 const ImageOverlay = styled.div<{ $primaryColor: string }>`
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.45) 60%, rgba(0, 0, 0, 0.6) 100%),
-    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.08), transparent 50%),
-    radial-gradient(circle at 80% 70%, ${props => props.$primaryColor}33, transparent 60%);
+  background: var(--btn-primary-bg);
   pointer-events: none;
 `;
 
