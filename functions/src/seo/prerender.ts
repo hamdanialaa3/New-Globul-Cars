@@ -32,6 +32,14 @@ function isPrerenderable(url: string): boolean {
     /^\/koli\/[^\/]+\/[^\/]+$/, // /koli/sofia/bmw
     /^\/car\/\d+\/\d+$/, // /car/80/5
     /^\/profile\/\d+$/, // /profile/18
+    /^\/marka\/[^\/]+$/, // /marka/bmw
+    /^\/search\/?$/, // /search
+    /^\/sell\/?$/, // /sell
+    /^\/about\/?$/, // /about
+    /^\/contact\/?$/, // /contact
+    /^\/privacy\/?$/, // /privacy
+    /^\/terms\/?$/, // /terms
+    /^\/financing\/?$/, // /financing
   ];
 
   return prerenderablePatterns.some(pattern => pattern.test(url));
@@ -47,7 +55,8 @@ async function fetchPageData(url: string): Promise<any> {
       return {
         type: 'homepage',
         title: 'Koli One - Продажба на коли в България',
-        description: 'Намерете идеалния автомобил в България. Над 10,000 обяви от частни лица, автосалони и компании.',
+        description:
+          'Намерете идеалния автомобил в България. Над 10,000 обяви от частни лица, автосалони и компании.',
       };
     }
 
@@ -77,7 +86,10 @@ async function fetchPageData(url: string): Promise<any> {
     const carMatch = url.match(/^\/car\/(\d+)\/(\d+)$/);
     if (carMatch) {
       const [, sellerNumericId, carNumericId] = carMatch;
-      const carData = await getCarPageData(parseInt(sellerNumericId), parseInt(carNumericId));
+      const carData = await getCarPageData(
+        parseInt(sellerNumericId),
+        parseInt(carNumericId)
+      );
       return {
         type: 'car',
         ...carData,
@@ -92,6 +104,71 @@ async function fetchPageData(url: string): Promise<any> {
       return {
         type: 'profile',
         ...profileData,
+      };
+    }
+
+    // Brand page: /marka/bmw
+    const markaMatch = url.match(/^\/marka\/([^\/]+)$/);
+    if (markaMatch) {
+      const brandSlug = markaMatch[1];
+      const brand =
+        brandSlug.charAt(0).toUpperCase() + brandSlug.slice(1).toLowerCase();
+      return {
+        type: 'brand',
+        title: `${brand} коли в България - Продажба на ${brand} автомобили | Koli One`,
+        description: `Намерете ${brand} автомобили за продажба в България. Нови и употребявани ${brand} коли от частни продавачи и автосалони на Koli One.`,
+        brand,
+        brandSlug,
+      };
+    }
+
+    // Static pages with SEO content
+    const staticPages: Record<string, { title: string; description: string }> =
+      {
+        '/search': {
+          title:
+            'Търсене на коли в България - Филтриране по марка, цена, град | Koli One',
+          description:
+            'Търсете перфектния автомобил в България. Филтрирайте по марка, модел, цена, година, гориво, местоположение и много други на Koli One.',
+        },
+        '/sell': {
+          title: 'Продайте колата си безплатно в България | Koli One',
+          description:
+            'Публикувайте безплатна обява за продажба на вашия автомобил. Достигнете до хиляди купувачи в София, Пловдив, Варна, Бургас и цяла България.',
+        },
+        '/about': {
+          title: 'За нас - Koli One | Българска платформа за автомобили',
+          description:
+            'Koli One е водещата българска онлайн платформа за покупка и продажба на автомобили. Свързваме купувачи и продавачи в цяла България.',
+        },
+        '/contact': {
+          title: 'Контакти - Koli One | Свържете се с нас',
+          description:
+            'Свържете се с екипа на Koli One. Помощ при покупка, продажба или въпроси за платформата. Бърза поддръжка за всички потребители.',
+        },
+        '/privacy': {
+          title: 'Политика за поверителност | Koli One',
+          description:
+            'Научете как Koli One защитава вашите лични данни. Политика за поверителност и обработка на данни съгласно GDPR.',
+        },
+        '/terms': {
+          title: 'Общи условия | Koli One',
+          description:
+            'Общи условия за ползване на платформата Koli One за покупка и продажба на автомобили в България.',
+        },
+        '/financing': {
+          title: 'Финансиране на автомобили в България | Koli One',
+          description:
+            'Информация за финансиране и кредитиране при покупка на автомобил в България. Лизинг, банков кредит и други опции.',
+        },
+      };
+
+    const normalized = url.replace(/\/$/, '') || '/';
+    const staticPage = staticPages[normalized];
+    if (staticPage) {
+      return {
+        type: 'static',
+        ...staticPage,
       };
     }
 
@@ -111,6 +188,33 @@ async function getCityPageData(citySlug: string): Promise<any> {
     plovdiv: { bg: 'Пловдив', region: 'Пловдив' },
     varna: { bg: 'Варна', region: 'Варна' },
     burgas: { bg: 'Бургас', region: 'Бургас' },
+    'stara-zagora': { bg: 'Стара Загора', region: 'Стара Загора' },
+    ruse: { bg: 'Русе', region: 'Русе' },
+    pleven: { bg: 'Плевен', region: 'Плевен' },
+    sliven: { bg: 'Сливен', region: 'Сливен' },
+    dobrich: { bg: 'Добрич', region: 'Добрич' },
+    shumen: { bg: 'Шумен', region: 'Шумен' },
+    pernik: { bg: 'Перник', region: 'Перник' },
+    haskovo: { bg: 'Хасково', region: 'Хасково' },
+    yambol: { bg: 'Ямбол', region: 'Ямбол' },
+    pazardzhik: { bg: 'Пазарджик', region: 'Пазарджик' },
+    blagoevgrad: { bg: 'Благоевград', region: 'Благоевград' },
+    'veliko-tarnovo': { bg: 'Велико Търново', region: 'Велико Търново' },
+    vratsa: { bg: 'Враца', region: 'Враца' },
+    gabrovo: { bg: 'Габрово', region: 'Габрово' },
+    asenovgrad: { bg: 'Асеновград', region: 'Пловдив' },
+    vidin: { bg: 'Видин', region: 'Видин' },
+    kazanlak: { bg: 'Казанлък', region: 'Стара Загора' },
+    kyustendil: { bg: 'Кюстендил', region: 'Кюстендил' },
+    montana: { bg: 'Монтана', region: 'Монтана' },
+    dimitrovgrad: { bg: 'Димитровград', region: 'Хасково' },
+    lovech: { bg: 'Ловеч', region: 'Ловеч' },
+    silistra: { bg: 'Силистра', region: 'Силистра' },
+    targovishte: { bg: 'Търговище', region: 'Търговище' },
+    dupnitsa: { bg: 'Дупница', region: 'Кюстендил' },
+    razgrad: { bg: 'Разград', region: 'Разград' },
+    kardzhali: { bg: 'Кърджали', region: 'Кърджали' },
+    smolyan: { bg: 'Смолян', region: 'Смолян' },
   };
 
   const cityInfo = cityMap[citySlug.toLowerCase()];
@@ -123,7 +227,8 @@ async function getCityPageData(citySlug: string): Promise<any> {
   }
 
   // Get car count for city (simplified - should query Firestore)
-  const carsSnapshot = await db.collection('cars')
+  const carsSnapshot = await db
+    .collection('cars')
     .where('location', '==', cityInfo.bg)
     .where('isActive', '==', true)
     .limit(1)
@@ -144,16 +249,47 @@ async function getCityPageData(citySlug: string): Promise<any> {
 /**
  * Get brand in city page data
  */
-async function getBrandCityPageData(citySlug: string, brandSlug: string): Promise<any> {
+async function getBrandCityPageData(
+  citySlug: string,
+  brandSlug: string
+): Promise<any> {
   const cityMap: Record<string, { bg: string }> = {
     sofia: { bg: 'София' },
     plovdiv: { bg: 'Пловдив' },
     varna: { bg: 'Варна' },
     burgas: { bg: 'Бургас' },
+    'stara-zagora': { bg: 'Стара Загора' },
+    ruse: { bg: 'Русе' },
+    pleven: { bg: 'Плевен' },
+    sliven: { bg: 'Сливен' },
+    dobrich: { bg: 'Добрич' },
+    shumen: { bg: 'Шумен' },
+    pernik: { bg: 'Перник' },
+    haskovo: { bg: 'Хасково' },
+    yambol: { bg: 'Ямбол' },
+    pazardzhik: { bg: 'Пазарджик' },
+    blagoevgrad: { bg: 'Благоевград' },
+    'veliko-tarnovo': { bg: 'Велико Търново' },
+    vratsa: { bg: 'Враца' },
+    gabrovo: { bg: 'Габрово' },
+    asenovgrad: { bg: 'Асеновград' },
+    vidin: { bg: 'Видин' },
+    kazanlak: { bg: 'Казанлък' },
+    kyustendil: { bg: 'Кюстендил' },
+    montana: { bg: 'Монтана' },
+    dimitrovgrad: { bg: 'Димитровград' },
+    lovech: { bg: 'Ловеч' },
+    silistra: { bg: 'Силистра' },
+    targovishte: { bg: 'Търговище' },
+    dupnitsa: { bg: 'Дупница' },
+    razgrad: { bg: 'Разград' },
+    kardzhali: { bg: 'Кърджали' },
+    smolyan: { bg: 'Смолян' },
   };
 
   const cityInfo = cityMap[citySlug.toLowerCase()];
-  const brand = brandSlug.charAt(0).toUpperCase() + brandSlug.slice(1).toLowerCase();
+  const brand =
+    brandSlug.charAt(0).toUpperCase() + brandSlug.slice(1).toLowerCase();
 
   return {
     title: `${brand} в ${cityInfo?.bg || citySlug} - Продажба на коли`,
@@ -168,10 +304,14 @@ async function getBrandCityPageData(citySlug: string, brandSlug: string): Promis
 /**
  * Get car detail page data
  */
-async function getCarPageData(sellerNumericId: number, carNumericId: number): Promise<any> {
+async function getCarPageData(
+  sellerNumericId: number,
+  carNumericId: number
+): Promise<any> {
   try {
     // Find user by numeric ID
-    const usersSnapshot = await db.collection('users')
+    const usersSnapshot = await db
+      .collection('users')
       .where('numericId', '==', sellerNumericId)
       .limit(1)
       .get();
@@ -184,10 +324,19 @@ async function getCarPageData(sellerNumericId: number, carNumericId: number): Pr
     const userData = usersSnapshot.docs[0].data();
 
     // Find car by numeric ID
-    const collections = ['cars', 'passenger_cars', 'suvs', 'vans', 'motorcycles', 'trucks', 'buses'];
+    const collections = [
+      'cars',
+      'passenger_cars',
+      'suvs',
+      'vans',
+      'motorcycles',
+      'trucks',
+      'buses',
+    ];
 
     for (const collectionName of collections) {
-      const carsSnapshot = await db.collection(collectionName)
+      const carsSnapshot = await db
+        .collection(collectionName)
         .where('sellerId', '==', userId)
         .where('carNumericId', '==', carNumericId)
         .limit(1)
@@ -221,7 +370,8 @@ async function getCarPageData(sellerNumericId: number, carNumericId: number): Pr
  */
 async function getProfilePageData(numericId: number): Promise<any> {
   try {
-    const usersSnapshot = await db.collection('users')
+    const usersSnapshot = await db
+      .collection('users')
       .where('numericId', '==', numericId)
       .limit(1)
       .get();
@@ -256,8 +406,7 @@ function generatePrerenderedHTML(data: any): string {
   const structuredData = generateBulgarianStructuredData(data);
   const baseUrl = 'https://koli.one';
   const canonicalUrl = `${baseUrl}${data.url || ''}`;
-  const enUrl = `${baseUrl}/en${data.url || ''}`;
-  const ogImage = data.image || `${baseUrl}/og-image.jpg`;
+  const ogImage = data.image || `${baseUrl}/og-image.png`;
 
   return `<!DOCTYPE html>
 <html lang="bg">
@@ -271,8 +420,12 @@ function generatePrerenderedHTML(data: any): string {
   <!-- Canonical & hreflang -->
   <link rel="canonical" href="${canonicalUrl}">
   <link rel="alternate" hreflang="bg" href="${canonicalUrl}">
-  <link rel="alternate" hreflang="en" href="${enUrl}">
   <link rel="alternate" hreflang="x-default" href="${canonicalUrl}">
+  
+  <!-- Geo-targeting -->
+  <meta name="geo.region" content="BG">
+  <meta name="geo.placename" content="Bulgaria">
+  <meta http-equiv="content-language" content="bg">
   
   <!-- OpenGraph -->
   <meta property="og:type" content="${data.type === 'car' ? 'product' : 'website'}">
@@ -282,7 +435,6 @@ function generatePrerenderedHTML(data: any): string {
   <meta property="og:image" content="${ogImage}">
   <meta property="og:site_name" content="Koli One">
   <meta property="og:locale" content="bg_BG">
-  <meta property="og:locale:alternate" content="en_US">
   
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
@@ -291,10 +443,14 @@ function generatePrerenderedHTML(data: any): string {
   <meta name="twitter:image" content="${ogImage}">
   
   <!-- Price for products -->
-  ${data.price ? `
+  ${
+    data.price
+      ? `
   <meta property="product:price:amount" content="${data.price}">
   <meta property="product:price:currency" content="BGN">
-  ` : ''}
+  `
+      : ''
+  }
   
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -311,7 +467,6 @@ function generatePrerenderedHTML(data: any): string {
 </body>
 </html>`;
 }
-
 
 /**
  * Generate Bulgarian Structured Data
@@ -402,6 +557,15 @@ export const prerender = functions
   })
   .https.onRequest(async (req, res): Promise<void> => {
     try {
+      // 301 redirect from mobilebg.eu to koli.one
+      const host = req.hostname || req.headers.host || '';
+      if (host.includes('mobilebg.eu')) {
+        const targetUrl = `https://koli.one${req.originalUrl || req.url || '/'}`;
+        res.set('Location', targetUrl);
+        res.status(301).send(`Redirecting to ${targetUrl}`);
+        return;
+      }
+
       const url = (req.query.url as string) || req.path;
 
       // Check cache
@@ -467,4 +631,3 @@ export const prerender = functions
       res.status(500).send('Error generating prerendered HTML');
     }
   });
-

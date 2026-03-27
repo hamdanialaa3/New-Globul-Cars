@@ -100,6 +100,34 @@
         "function": "prerenderSEO"
       },
       {
+        "source": "/search",
+        "function": "prerenderSEO"
+      },
+      {
+        "source": "/sell",
+        "function": "prerenderSEO"
+      },
+      {
+        "source": "/about",
+        "function": "prerenderSEO"
+      },
+      {
+        "source": "/contact",
+        "function": "prerenderSEO"
+      },
+      {
+        "source": "/privacy",
+        "function": "prerenderSEO"
+      },
+      {
+        "source": "/terms",
+        "function": "prerenderSEO"
+      },
+      {
+        "source": "/financing",
+        "function": "prerenderSEO"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
