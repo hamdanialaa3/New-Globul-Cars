@@ -18,6 +18,7 @@ const mockLimit = jest.fn();
 // Mock Firebase Firestore
 jest.mock('firebase/firestore', () => ({
   initializeFirestore: jest.fn(() => ({})),
+  memoryLocalCache: jest.fn(() => ({})),
   collection: mockCollection,
   doc: mockDoc,
   getDoc: mockGetDoc,
@@ -36,10 +37,28 @@ jest.mock('firebase/firestore', () => ({
   },
   CACHE_SIZE_UNLIMITED: -1,
   onSnapshot: jest.fn((ref, callback) => {
-    callback({ docs: [], empty: true, size: 0 });
+    // Provide both doc and collection snapshot properties so it works for either use case
+    callback({ docs: [], empty: true, size: 0, exists: jest.fn(() => false), data: jest.fn(() => ({})) });
     return jest.fn(); // unsubscribe
   }),
   addDoc: jest.fn(() => Promise.resolve({ id: 'mock-doc-id' })),
+}));
+
+// Mock Firebase Auth
+jest.mock('firebase/auth', () => ({
+  getAuth: jest.fn(() => ({})),
+  onAuthStateChanged: jest.fn((auth, callback) => {
+    // Fire callback with null (unauthenticated) so AuthProvider sets loading=false
+    callback(null);
+    return jest.fn(); // unsubscribe
+  }),
+  signInWithEmailAndPassword: jest.fn(() => Promise.resolve({ user: { uid: 'mock-uid' } })),
+  createUserWithEmailAndPassword: jest.fn(() => Promise.resolve({ user: { uid: 'mock-uid' } })),
+  signOut: jest.fn(() => Promise.resolve()),
+  updateProfile: jest.fn(() => Promise.resolve()),
+  signInWithPopup: jest.fn(() => Promise.resolve({ user: { uid: 'mock-uid' } })),
+  GoogleAuthProvider: jest.fn(),
+  FacebookAuthProvider: jest.fn(),
 }));
 
 // Mock Firebase Storage
@@ -87,11 +106,21 @@ const mockMatchMedia = jest.fn().mockImplementation(query => ({
 
 window.matchMedia = mockMatchMedia;
 
-// Mock IntersectionObserver
+// Mock IntersectionObserver — immediately fires callback with isIntersecting: true
+// so that LazySection and similar components render their children in tests.
 global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
+  private callback: IntersectionObserverCallback;
+  constructor(callback: IntersectionObserverCallback) {
+    this.callback = callback;
+  }
   disconnect() {}
-  observe() {}
+  observe(target: Element) {
+    // Immediately report the element as intersecting
+    this.callback(
+      [{ isIntersecting: true, target, intersectionRatio: 1 } as IntersectionObserverEntry],
+      this as unknown as globalThis.IntersectionObserver
+    );
+  }
   takeRecords() {
     return [];
   }
