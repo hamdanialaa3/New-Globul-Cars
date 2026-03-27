@@ -263,7 +263,7 @@ const AiValuationDeepDive: React.FC = () => {
             "name": "Koli One",
             "logo": {
                 "@type": "ImageObject",
-                "url": "https://koli.one/logo.png"
+                "url": "https://koli.one/logo.webp"
             }
         },
         "mainEntityOfPage": {

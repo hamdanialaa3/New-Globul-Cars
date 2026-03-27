@@ -98,7 +98,7 @@ Value: { [cityId]: { workshops, showrooms, dealers } }
 **Users** - Blue markers (#1d4ed8)
 **Workshops** - Green circles (#16a34a)
 **Showrooms** - Indigo circles (#6366f1)
-**Dealers** - Amber circles (#ff8f10)
+**Dealers** - Amber circles (#3b82f6)
 
 ### Marker Strategy / استراتيجية العلامات
 
@@ -260,3 +260,4 @@ mapPage: {
 **Last Updated:** November 21, 2025  
 **Version:** 1.0.0  
 **Author:** Copilot + Development Team
+

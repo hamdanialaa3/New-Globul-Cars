@@ -68,11 +68,11 @@ const WidgetContainer = styled.div<{
     if (props.$variant === 'hero') {
       return props.$isDark
         ? '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 215, 0, 0.1)'
-        : '0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 143, 16, 0.1)';
+        : '0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(139, 92, 246, 0.1)';
     }
     return props.$isDark 
       ? '0 8px 32px rgba(255, 215, 0, 0.2)' 
-      : '0 8px 32px rgba(255, 143, 16, 0.15)';
+      : '0 8px 32px rgba(139, 92, 246, 0.15)';
   }};
   
   padding: ${props => props.$mode === 'compact' ? '0' : '2rem'};
@@ -86,7 +86,7 @@ const WidgetContainer = styled.div<{
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   ${props => props.$variant === 'header' && `
-    border: 2px solid ${props.$isDark ? '#FFD700' : '#FF8F10'};
+    border: 2px solid ${props.$isDark ? '#FFD700' : '#3B82F6'};
     
     &::before {
       content: '';
@@ -97,7 +97,7 @@ const WidgetContainer = styled.div<{
       height: 3px;
       background: ${props.$isDark 
         ? 'linear-gradient(90deg, #FFD700, #FFA500, #FFD700)' 
-        : 'linear-gradient(90deg, #FF8F10, #FFD700, #FF8F10)'};
+        : 'linear-gradient(90deg, #3B82F6, #FFD700, #3B82F6)'};
       opacity: 0.8;
     }
   `}
@@ -115,7 +115,7 @@ const TabsContainer = styled.div<{ $isDark: boolean }>`
     : 'linear-gradient(180deg, rgba(241, 245, 249, 0.9) 0%, rgba(226, 232, 240, 0.9) 100%)'};
   border-bottom: ${props => props.$isDark 
     ? '1px solid rgba(255, 215, 0, 0.15)' 
-    : '1px solid rgba(255, 143, 16, 0.15)'};
+    : '1px solid rgba(139, 92, 246, 0.15)'};
   backdrop-filter: blur(10px);
   padding: 0.25rem;
   gap: 0.25rem;
@@ -150,7 +150,7 @@ const Tab = styled.button<{ $active: boolean; $isDark: boolean }>`
   &:hover {
     background: ${props => props.$isDark 
       ? 'rgba(255, 215, 0, 0.08)' 
-      : 'rgba(255, 143, 16, 0.05)'};
+      : 'rgba(139, 92, 246, 0.05)'};
   }
 
   @media (max-width: 768px) {
@@ -215,10 +215,10 @@ const Select = styled.select<{ $isDark: boolean }>`
 
   &:focus {
     outline: none;
-    border-color: ${props => props.$isDark ? '#FFD700' : '#FF8F10'};
+    border-color: ${props => props.$isDark ? '#FFD700' : '#3B82F6'};
     box-shadow: ${props => props.$isDark 
       ? '0 0 0 3px rgba(255, 215, 0, 0.1)' 
-      : '0 0 0 3px rgba(255, 143, 16, 0.1)'};
+      : '0 0 0 3px rgba(139, 92, 246, 0.1)'};
   }
 
   &:disabled {
@@ -249,7 +249,7 @@ const SearchButton = styled.button<{ $isDark: boolean }>`
   border-radius: 12px;
   background: ${props => props.$isDark 
     ? 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)' 
-    : 'linear-gradient(135deg, #FF8F10 0%, #FF6B35 100%)'};
+    : 'linear-gradient(135deg, #3B82F6 0%, #6366F1 100%)'};
   color: ${props => props.$isDark ? '#000000' : '#ffffff'};
   cursor: pointer;
   transition: all 0.3s ease;
@@ -259,13 +259,13 @@ const SearchButton = styled.button<{ $isDark: boolean }>`
   gap: 0.5rem;
   box-shadow: ${props => props.$isDark 
     ? '0 4px 16px rgba(255, 215, 0, 0.3)' 
-    : '0 4px 16px rgba(255, 143, 16, 0.3)'};
+    : '0 4px 16px rgba(139, 92, 246, 0.3)'};
 
   &:hover {
     transform: translateY(-2px);
     box-shadow: ${props => props.$isDark 
       ? '0 6px 20px rgba(255, 215, 0, 0.4)' 
-      : '0 6px 20px rgba(255, 143, 16, 0.4)'};
+      : '0 6px 20px rgba(139, 92, 246, 0.4)'};
   }
 
   &:active {
@@ -282,7 +282,7 @@ const AdvancedLink = styled.button<{ $isDark: boolean }>`
   grid-column: 1 / -1;
   background: none;
   border: none;
-  color: ${props => props.$isDark ? '#FFD700' : '#FF8F10'};
+  color: ${props => props.$isDark ? '#FFD700' : '#3B82F6'};
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
@@ -292,7 +292,7 @@ const AdvancedLink = styled.button<{ $isDark: boolean }>`
   transition: all 0.2s ease;
 
   &:hover {
-    color: ${props => props.$isDark ? '#FFA500' : '#FF6B35'};
+    color: ${props => props.$isDark ? '#FFA500' : '#6366F1'};
     text-decoration: underline;
   }
 `;
@@ -518,3 +518,5 @@ export default React.memo(UnifiedSearchBar);
 // Export for backward compatibility
 export { UnifiedSearchBar as SearchWidget };
 export { UnifiedSearchBar as HomeSearchBar };
+
+

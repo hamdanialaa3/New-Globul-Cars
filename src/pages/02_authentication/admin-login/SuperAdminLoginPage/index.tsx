@@ -4,9 +4,6 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Lock, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react';
 import { uniqueOwnerService } from '@/services/unique-owner-service';
-import { auth } from '@/firebase/firebase-config';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { signOut } from 'firebase/auth';
 
 // Styled Components - Professional Minimal Design
 // Styled Components - Professional Minimal Design
@@ -277,29 +274,55 @@ const SuperAdminLogin: React.FC = () => {
     setLoading(true);
     setMessage(null);
 
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
+    const normalizedEmail = email.trim().toLowerCase();
+    const authResult = uniqueOwnerService.validateOwnerCredentials(
+      normalizedEmail,
+      password
+    );
 
-      const user = auth.currentUser;
-      if (!user) {
-        throw new Error('Missing authenticated user session');
+    if (!authResult.success) {
+      if (authResult.locked) {
+        setMessage({
+          type: 'error',
+          text: `Account locked due to too many failed attempts. Try again in ${authResult.remainingMinutes} minute(s).`,
+        });
+      } else {
+        setMessage({
+          type: 'error',
+          text: 'Access denied. Only owner credentials are allowed for this page.',
+        });
       }
+      setLoading(false);
+      return;
+    }
 
-      const isAdmin = await uniqueOwnerService.startAdminSession(user);
-      if (!isAdmin) {
-        await signOut(auth);
-        setMessage({ type: 'error', text: 'Access denied. Admin role is required.' });
+    try {
+      const isLocalAdmin = await uniqueOwnerService.startLocalAdminSession(
+        normalizedEmail
+      );
+      if (!isLocalAdmin) {
+        setMessage({
+          type: 'error',
+          text: 'Access denied. Owner session could not be established.',
+        });
         setLoading(false);
         return;
       }
 
-      setMessage({ type: 'success', text: 'Admin authenticated. Redirecting to Super Admin dashboard…' });
+      setMessage({
+        type: 'success',
+        text: 'Owner authenticated. Redirecting to Super Admin dashboard…',
+      });
       setTimeout(() => {
         navigate('/super-admin');
-      }, 1000);
+      }, 700);
     } catch (error) {
-      logger.error('Authentication error:', error as Error);
-      setMessage({ type: 'error', text: 'Authentication failed. Please check your credentials.' });
+      logger.error('Owner local authentication error:', error as Error);
+      setMessage({
+        type: 'error',
+        text: 'Authentication failed. Please try again.',
+      });
+    } finally {
       setLoading(false);
     }
   };
@@ -308,7 +331,7 @@ const SuperAdminLogin: React.FC = () => {
   useEffect(() => {
     const checkExistingSession = async () => {
       const isValid = await uniqueOwnerService.validateCurrentSession();
-      if (isValid) {
+      if (isValid && !uniqueOwnerService.isSessionTimedOut()) {
         navigate('/super-admin');
       }
     };

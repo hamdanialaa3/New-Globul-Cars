@@ -25,13 +25,13 @@ const CoverContainer = styled.div<{ $themeColor?: string }>`
   /* 🎨 Dynamic glassmorphic background for empty state */
   background: ${props => props.$themeColor
     ? `linear-gradient(135deg, ${props.$themeColor}40 0%, ${props.$themeColor}59 30%, ${props.$themeColor}73 60%, ${props.$themeColor}80 100%)`
-    : 'linear-gradient(135deg, rgba(255, 175, 64, 0.25) 0%, rgba(255, 159, 42, 0.35) 30%, rgba(255, 143, 16, 0.45) 60%, rgba(255, 121, 0, 0.5) 100%)'};
+    : 'linear-gradient(135deg, rgba(255, 175, 64, 0.25) 0%, rgba(255, 159, 42, 0.35) 30%, rgba(139, 92, 246, 0.45) 60%, rgba(99, 102, 241, 0.5) 100%)'};
   backdrop-filter: blur(12px) saturate(160%);
   
   /* Subtle border */
   border: ${props => props.$themeColor ? `2px solid ${props.$themeColor}4D` : '2px solid rgba(255, 215, 0, 0.3)'};
   box-shadow: 
-    ${props => props.$themeColor ? `0 8px 28px ${props.$themeColor}33` : '0 8px 28px rgba(255, 143, 16, 0.2)'},
+    ${props => props.$themeColor ? `0 8px 28px ${props.$themeColor}33` : '0 8px 28px rgba(139, 92, 246, 0.2)'},
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
   
   margin-bottom: 0;
@@ -372,7 +372,7 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
   currentImageUrl,
   onUploadSuccess,
   onUploadError,
-  themeColor = '#FF7900'
+  themeColor = '#2563EB'
 }) => {
   const { language } = useLanguage();
   const { user } = useAuth();
@@ -658,3 +658,5 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
 };
 
 export default CoverImageUploader;
+
+

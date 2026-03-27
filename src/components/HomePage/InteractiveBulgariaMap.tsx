@@ -59,13 +59,13 @@ const CityMarker = styled.g<{ $isSelected: boolean; $hasCards: boolean }>`
 
   circle {
     fill: ${props => 
-      props.$isSelected ? '#ff8f10' : 
+      props.$isSelected ? '#3b82f6' : 
       props.$hasCards ? '#005ca9' : '#94a3b8'};
     stroke: white;
     stroke-width: 3;
     filter: ${props => 
       props.$isSelected 
-        ? 'drop-shadow(0 0 12px #ff8f10)' 
+        ? 'drop-shadow(0 0 12px #3b82f6)' 
         : props.$hasCards 
           ? 'drop-shadow(0 0 8px rgba(0, 92, 169, 0.5))'
           : 'drop-shadow(0 0 4px rgba(0, 0, 0, 0.2))'};
@@ -74,8 +74,8 @@ const CityMarker = styled.g<{ $isSelected: boolean; $hasCards: boolean }>`
 
   &:hover circle {
     r: 14;
-    fill: #ff8f10;
-    filter: drop-shadow(0 0 18px #ff8f10);
+    fill: #3b82f6;
+    filter: drop-shadow(0 0 18px #3b82f6);
   }
 
   text {
@@ -297,5 +297,6 @@ const InteractiveBulgariaMap: React.FC<InteractiveBulgariaMapProps> = ({
 };
 
 export default InteractiveBulgariaMap;
+
 
 

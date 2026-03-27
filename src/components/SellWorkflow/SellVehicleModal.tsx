@@ -95,7 +95,7 @@ const ModalContainer = styled.div<{ $isClosing: boolean }>`
     left: 0;
     right: 0;
     height: 300px;
-    background: radial-gradient(circle at 50% 0%, rgba(255, 107, 53, 0.08) 0%, transparent 70%);
+    background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
     pointer-events: none;
     z-index: 0;
   }
@@ -111,12 +111,12 @@ const ModalContainer = styled.div<{ $isClosing: boolean }>`
   }
   
   &::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #FF6B35 0%, #FF8C61 100%);
+    background: linear-gradient(180deg, #6366F1 0%, #8B5CF6 100%);
     border-radius: 10px;
     border: 2px solid ${({ theme }) => theme.mode === 'dark' ? '#0f172a' : '#ffffff'};
     
     &:hover {
-      background: linear-gradient(180deg, #FF8C61 0%, #FFA07A 100%);
+      background: linear-gradient(180deg, #8B5CF6 0%, #FFA07A 100%);
     }
   }
 `;
@@ -269,3 +269,4 @@ export const SellVehicleModal: React.FC<SellVehicleModalProps> = ({
 };
 
 export default SellVehicleModal;
+

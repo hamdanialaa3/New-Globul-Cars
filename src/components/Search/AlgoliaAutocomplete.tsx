@@ -27,8 +27,8 @@ const AutocompleteWrapper = styled.div`
     transition: all 0.3s ease;
 
     &:focus-within {
-      border-color: #FF8F10;
-      box-shadow: 0 0 0 4px rgba(255, 143, 16, 0.1);
+      border-color: #3B82F6;
+      box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
     }
   }
 
@@ -62,7 +62,7 @@ const AutocompleteWrapper = styled.div`
     color: var(--text-primary);
 
     &[aria-selected="true"] {
-      background: rgba(255, 143, 16, 0.1);
+      background: rgba(139, 92, 246, 0.1);
     }
 
     &:hover {
@@ -102,7 +102,7 @@ const HitContent = styled.div`
 
 const HitPrice = styled.div`
   font-weight: 700;
-  color: #FF8F10;
+  color: #3B82F6;
   font-size: 1.1rem;
 `;
 
@@ -180,7 +180,7 @@ const AlgoliaAutocomplete: React.FC<AlgoliaAutocompleteProps> = ({
                       ${item.year} • ${item.fuel} • ${item.mileage?.toLocaleString()} km
                     </div>
                   </div>
-                  <div style="font-weight: 700; color: #FF8F10; font-size: 1.1rem;">
+                  <div style="font-weight: 700; color: #3B82F6; font-size: 1.1rem;">
                     €${item.price?.toLocaleString()}
                   </div>
                 </div>
@@ -222,4 +222,6 @@ const AlgoliaAutocomplete: React.FC<AlgoliaAutocompleteProps> = ({
 };
 
 export default AlgoliaAutocomplete;
+
+
 

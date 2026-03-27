@@ -54,7 +54,7 @@ const Header = styled.section<{ $isDark: boolean }>`
     font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 800;
     margin-bottom: 16px;
-    color: ${props => props.$isDark ? '#FF8C61' : 'white'};
+    color: ${props => props.$isDark ? '#8B5CF6' : 'white'};
     text-transform: uppercase;
     letter-spacing: 1px;
   }
@@ -112,7 +112,7 @@ const ContactItem = styled.div<{ $isDark: boolean }>`
     width: 60px;
     height: 60px;
     background: ${props => props.$isDark
-    ? 'linear-gradient(135deg, #FF8C61 0%, #FF5C00 100%)'
+    ? 'linear-gradient(135deg, #8B5CF6 0%, #FF5C00 100%)'
     : 'linear-gradient(135deg, #3b82f6, #1e40af)'};
     border-radius: 12px;
     display: flex;
@@ -120,7 +120,7 @@ const ContactItem = styled.div<{ $isDark: boolean }>`
     justify-content: center;
     color: white;
     flex-shrink: 0;
-    box-shadow: ${props => props.$isDark ? '0 4px 15px rgba(255, 140, 97, 0.3)' : 'none'};
+    box-shadow: ${props => props.$isDark ? '0 4px 15px rgba(139, 92, 246, 0.3)' : 'none'};
   }
 
   .content {
@@ -160,7 +160,7 @@ const ContactSocialIcon = styled.a<{ $color?: string; $isDark?: boolean }>`
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
   &:hover {
-    background: ${props => props.$color || (props.$isDark ? '#FF8C61' : '#3b82f6')};
+    background: ${props => props.$color || (props.$isDark ? '#8B5CF6' : '#3b82f6')};
     color: white;
     transform: translateY(-5px) scale(1.1);
     box-shadow: ${props => props.$isDark ? '0 10px 20px rgba(0,0,0,0.4)' : '0 5px 15px rgba(0, 0, 0, 0.1)'};
@@ -178,7 +178,7 @@ const ContactForm = styled.form<{ $isDark: boolean }>`
   h2 {
     font-size: 1.8rem;
     font-weight: 800;
-    color: ${props => props.$isDark ? '#FF8C61' : '#1e40af'};
+    color: ${props => props.$isDark ? '#8B5CF6' : '#1e40af'};
     margin-bottom: 32px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -210,8 +210,8 @@ const FormGroup = styled.div<{ $isDark?: boolean }>`
 
     &:focus {
       outline: none;
-      border-color: ${props => props.$isDark ? '#FF8C61' : '#3b82f6'};
-      box-shadow: ${props => props.$isDark ? '0 0 10px rgba(255, 140, 97, 0.2)' : '0 0 10px rgba(59, 130, 246, 0.1)'};
+      border-color: ${props => props.$isDark ? '#8B5CF6' : '#3b82f6'};
+      box-shadow: ${props => props.$isDark ? '0 0 10px rgba(139, 92, 246, 0.2)' : '0 0 10px rgba(59, 130, 246, 0.1)'};
     }
 
     &::placeholder {
@@ -227,7 +227,7 @@ const FormGroup = styled.div<{ $isDark?: boolean }>`
 
 const SubmitButton = styled.button<{ $isDark: boolean }>`
   background: ${props => props.$isDark
-    ? 'linear-gradient(135deg, #FF8C61 0%, #FF5C00 100%)'
+    ? 'linear-gradient(135deg, #8B5CF6 0%, #FF5C00 100%)'
     : 'linear-gradient(135deg, #3b82f6, #1e40af)'};
   color: white;
   border: none;
@@ -241,7 +241,7 @@ const SubmitButton = styled.button<{ $isDark: boolean }>`
   justify-content: center;
   gap: 12px;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: ${props => props.$isDark ? '0 4px 15px rgba(255, 140, 97, 0.3)' : '0 4px 10px rgba(59, 130, 246, 0.2)'};
+  box-shadow: ${props => props.$isDark ? '0 4px 15px rgba(139, 92, 246, 0.3)' : '0 4px 10px rgba(59, 130, 246, 0.2)'};
   text-transform: uppercase;
   letter-spacing: 0.5px;
   width: 100%;
@@ -279,7 +279,7 @@ const FAQSection = styled.section<{ $isDark: boolean }>`
   h2 {
     font-size: 2.2rem;
     font-weight: 800;
-    color: ${props => props.$isDark ? '#FF8C61' : '#1e40af'};
+    color: ${props => props.$isDark ? '#8B5CF6' : '#1e40af'};
     margin-bottom: 32px;
     text-align: center;
     text-transform: uppercase;
@@ -295,7 +295,7 @@ const FAQItem = styled.div<{ $isDark: boolean }>`
   transition: all 0.3s ease;
 
   &:hover {
-    border-color: ${props => props.$isDark ? '#FF8C61' : '#3b82f6'};
+    border-color: ${props => props.$isDark ? '#8B5CF6' : '#3b82f6'};
   }
 
   .question {
@@ -422,10 +422,10 @@ const ContactPage: React.FC = () => {
               <div className="content">
                 <h3>{t('contact.info.email.title')}</h3>
                 <p>
-                  <strong>{t('contact.info.email.general')}: </strong> <a href="mailto:support@koli.one" style={{ color: isDark ? '#FF8C61' : '#3b82f6', textDecoration: 'none' }}>support@koli.one</a><br />
-                  <strong>{t('contact.info.email.sales')}: </strong> <a href="mailto:sales@koli.one" style={{ color: isDark ? '#FF8C61' : '#3b82f6', textDecoration: 'none' }}>sales@koli.one</a><br />
-                  <strong>{t('contact.info.email.ai')}: </strong> <a href="mailto:ai@koli.one" style={{ color: isDark ? '#FF8C61' : '#3b82f6', textDecoration: 'none' }}>ai@koli.one</a><br />
-                  <strong>{t('contact.info.email.gdpr')}: </strong> <a href="mailto:support@koli.one" style={{ color: isDark ? '#FF8C61' : '#3b82f6', textDecoration: 'none' }}>support@koli.one</a>
+                  <strong>{t('contact.info.email.general')}: </strong> <a href="mailto:support@koli.one" style={{ color: isDark ? '#8B5CF6' : '#3b82f6', textDecoration: 'none' }}>support@koli.one</a><br />
+                  <strong>{t('contact.info.email.sales')}: </strong> <a href="mailto:sales@koli.one" style={{ color: isDark ? '#8B5CF6' : '#3b82f6', textDecoration: 'none' }}>sales@koli.one</a><br />
+                  <strong>{t('contact.info.email.ai')}: </strong> <a href="mailto:ai@koli.one" style={{ color: isDark ? '#8B5CF6' : '#3b82f6', textDecoration: 'none' }}>ai@koli.one</a><br />
+                  <strong>{t('contact.info.email.gdpr')}: </strong> <a href="mailto:support@koli.one" style={{ color: isDark ? '#8B5CF6' : '#3b82f6', textDecoration: 'none' }}>support@koli.one</a>
                 </p>
               </div>
             </ContactItem>
@@ -441,7 +441,7 @@ const ContactPage: React.FC = () => {
             </ContactItem>
 
             <div style={{ marginTop: '2rem' }}>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: isDark ? '#FF8C61' : '#1e40af', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: isDark ? '#8B5CF6' : '#1e40af', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                 {t('contact.social.title')}
               </h3>
               <ContactSocials>
@@ -451,7 +451,7 @@ const ContactPage: React.FC = () => {
                 <ContactSocialIcon href={SOCIAL_LINKS.instagram} target="_blank" $color="#E4405F" title="Instagram" $isDark={isDark}>
                   <Instagram size={20} />
                 </ContactSocialIcon>
-                <ContactSocialIcon href={SOCIAL_LINKS.tiktok} target="_blank" $color={isDark ? '#FF8C61' : '#000000'} title="TikTok" $isDark={isDark}>
+                <ContactSocialIcon href={SOCIAL_LINKS.tiktok} target="_blank" $color={isDark ? '#8B5CF6' : '#000000'} title="TikTok" $isDark={isDark}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
                   </svg>
@@ -462,7 +462,7 @@ const ContactPage: React.FC = () => {
                 <ContactSocialIcon href={SOCIAL_LINKS.linkedin} target="_blank" $color="#0077B5" title="LinkedIn" $isDark={isDark}>
                   <Linkedin size={20} />
                 </ContactSocialIcon>
-                <ContactSocialIcon href={SOCIAL_LINKS.twitter} target="_blank" $color={isDark ? '#FF8C61' : '#000000'} title="X (Twitter)" $isDark={isDark}>
+                <ContactSocialIcon href={SOCIAL_LINKS.twitter} target="_blank" $color={isDark ? '#8B5CF6' : '#000000'} title="X (Twitter)" $isDark={isDark}>
                   <Twitter size={20} />
                 </ContactSocialIcon>
               </ContactSocials>
@@ -604,3 +604,4 @@ const ContactPage: React.FC = () => {
 };
 
 export default ContactPage;
+

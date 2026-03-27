@@ -9,7 +9,7 @@ const Button = styled.button<{ hasActiveFilters: boolean }>`
   width: 56px;
   height: 56px;
   background: ${props => props.hasActiveFilters 
-    ? props.theme.colors.primary?.main || '#FF7900'
+    ? props.theme.colors.primary?.main || '#2563EB'
     : 'white'};
   color: ${props => props.hasActiveFilters ? 'white' : '#1f2937'};
   border: ${props => props.hasActiveFilters ? 'none' : '2px solid #e5e7eb'};
@@ -80,3 +80,4 @@ export const MobileFilterButton: React.FC<MobileFilterButtonProps> = ({
     </Button>
   );
 };
+

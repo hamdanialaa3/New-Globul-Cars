@@ -1,4 +1,4 @@
-﻿
+
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -196,7 +196,7 @@ const Select = styled.select<{ $isDark: boolean }>`
   &:focus {
     outline: none;
     border-color: ${props => props.$isDark ? '#38bdf8' : 'var(--accent-primary)'};
-    box-shadow: 0 0 0 3px ${props => props.$isDark ? 'rgba(56, 189, 248, 0.1)' : 'rgba(255, 121, 0, 0.1)'};
+    box-shadow: 0 0 0 3px ${props => props.$isDark ? 'rgba(56, 189, 248, 0.1)' : 'rgba(99, 102, 241, 0.1)'};
   }
 
   /* Mobile Optimization */
@@ -234,11 +234,11 @@ const SearchButton = styled.button<{ $isDark: boolean }>`
   justify-content: center;
   gap: 8px;
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 0 4px 12px rgba(255, 121, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(255, 121, 0, 0.3);
+    box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
   }
 
   &:active {
@@ -249,12 +249,12 @@ const SearchButton = styled.button<{ $isDark: boolean }>`
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
-    box-shadow: 0 2px 8px rgba(255, 121, 0, 0.15);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
   }
 
   &:hover:disabled {
     transform: none;
-    box-shadow: 0 2px 8px rgba(255, 121, 0, 0.15);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
   }
 
   /* Mobile Optimization */
@@ -264,7 +264,7 @@ const SearchButton = styled.button<{ $isDark: boolean }>`
     font-size: 18px;
     border-radius: 12px;
     margin-top: 16px;
-    box-shadow: 0 8px 20px rgba(255, 121, 0, 0.25);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
   }
 `;
 
@@ -573,3 +573,4 @@ const SearchWidget: React.FC = () => {
 };
 
 export default SearchWidget;
+

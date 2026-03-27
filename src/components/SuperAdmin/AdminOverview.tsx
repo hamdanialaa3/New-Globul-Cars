@@ -98,7 +98,7 @@ const IconWrapper = styled.div`
   border: 1px solid ${adminTheme.colors.border.light};
 
   svg {
-    filter: drop-shadow(0 0 2px rgba(230, 81, 0, 0.5));
+    filter: drop-shadow(0 0 2px rgba(37, 99, 235, 0.5));
   }
 `;
 
@@ -405,3 +405,4 @@ const AdminOverview: React.FC<AdminOverviewProps> = ({
 };
 
 export default AdminOverview;
+

@@ -8,19 +8,19 @@ import type { PlanTier } from '../config/subscription-plans';
 import { logger } from '../services/logger-service';
 import { getMaxListings, hasUnlimitedListings } from '../config/subscription-plans';
 
-// ⚠️ DEPRECATED: Plan limits now defined in subscription-plans.ts
-// This ensures consistency across the entire application
+// Plan limits now use Single Source of Truth from subscription-plans.ts
 
-// Plan limits mapping (for getPlanLimit backward compatibility)
-const PLAN_LIMITS: Record<string, number> = {
-  free: 3,
-  dealer: 30,
-  company: Infinity
-};
+/**
+ * Get plan limit for a specific tier (backward-compatible wrapper)
+ * @param planTier - Plan tier
+ * @returns number - -1 for unlimited
+ */
+export function getPlanLimit(planTier: PlanTier): number {
+  return getMaxListings(planTier);
+}
 
 /**
  * Check if user can add another listing
- * ✅ CRITICAL FIX: Now uses planTier directly (not plan.tier) for consistency
  * 
  * @param userId - User ID
  * @returns Promise<boolean> - true if user can add listing, false otherwise
@@ -102,14 +102,5 @@ export async function getRemainingListings(userId: string): Promise<number> {
     logger.error('Error getting remaining listings', error as Error, { userId });
     return 0;
   }
-}
-
-/**
- * Get plan limit for a specific tier
- * @param planTier - Plan tier
- * @returns number - -1 for unlimited
- */
-export function getPlanLimit(planTier: PlanTier): number {
-  return PLAN_LIMITS[planTier] || 3;
 }
 

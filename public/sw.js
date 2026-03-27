@@ -1,7 +1,7 @@
-// Minimal Service Worker for PWA functionality
-// This is a basic service worker that handles installation and activation
+// Service Worker for PWA functionality
+// Handles caching, offline support, and push notifications
 
-const CACHE_NAME = 'mobilebg-v1';
+const CACHE_NAME = 'koli-one-v2';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -13,15 +13,12 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('Service Worker: Cache opened');
-        return cache.addAll(urlsToCache).catch((error) => {
-          console.warn('Service Worker: Some files failed to cache', error);
+        return cache.addAll(urlsToCache).catch(() => {
           // Don't fail the entire installation if some files can't be cached
           return Promise.resolve();
         });
       })
       .then(() => {
-        console.log('Service Worker: Installation complete');
         // Force the waiting service worker to become the active service worker
         return self.skipWaiting();
       })
@@ -36,14 +33,12 @@ self.addEventListener('activate', (event) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
             if (cacheName !== CACHE_NAME) {
-              console.log('Service Worker: Clearing old cache:', cacheName);
               return caches.delete(cacheName);
             }
           })
         );
       })
       .then(() => {
-        console.log('Service Worker: Activation complete');
         // Claim all clients immediately
         return self.clients.claim();
       })

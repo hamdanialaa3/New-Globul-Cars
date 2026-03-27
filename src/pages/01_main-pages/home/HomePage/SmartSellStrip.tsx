@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Zap, ArrowRight, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -70,7 +70,7 @@ const Button = styled.button`
   /* Override colors for theme - Glass orange effect */
   background: var(--btn-primary-bg);
   color: #fff;
-  border: 1px solid rgba(255, 143, 16, 0.4);
+  border: 1px solid rgba(139, 92, 246, 0.4);
   
   @media (max-width: 480px) {
     font-size: 0.875rem;
@@ -84,10 +84,10 @@ const Button = styled.button`
   
   &:hover {
     background: var(--btn-primary-bg);
-    border-color: rgba(255, 143, 16, 0.6);
+    border-color: rgba(139, 92, 246, 0.6);
     box-shadow: 
-      0 8px 32px 0 rgba(255, 143, 16, 0.5),
-      0 0 20px rgba(255, 143, 16, 0.4);
+      0 8px 32px 0 rgba(139, 92, 246, 0.5),
+      0 0 20px rgba(139, 92, 246, 0.4);
     transform: translateY(-3px);
   }
   
@@ -121,3 +121,4 @@ const SmartSellStrip: React.FC = () => {
 };
 
 export default SmartSellStrip;
+

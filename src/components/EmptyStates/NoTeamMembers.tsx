@@ -71,13 +71,13 @@ const Button = styled.button`
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #fb923c 100%);
   color: white;
   border: none;
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
   }
 `;
 
@@ -116,3 +116,5 @@ const NoTeamMembers: React.FC<NoTeamMembersProps> = ({ onInviteMember, isCompany
 };
 
 export default NoTeamMembers;
+
+

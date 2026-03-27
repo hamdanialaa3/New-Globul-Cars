@@ -82,7 +82,7 @@ const Icon = styled.div`
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: #FF7900;
+  background: #2563EB;
   border-radius: 50%;
   color: white;
   flex-shrink: 0;
@@ -128,4 +128,5 @@ const Number = styled.span`
 `;
 
 export default CustomerNumberBadge;
+
 

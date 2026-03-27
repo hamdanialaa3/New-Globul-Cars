@@ -71,9 +71,11 @@ import HomeTrustAndStats from './HomeTrustAndStats';
 
 // 7. Utilities
 import LinkableSection from './LinkableSection';
+import KATServicesHero from './KATServicesHero';
 
 // Global components (lazy loaded)
 const AIChatbot = React.lazy(() => import('../../../../components/AI/AIChatbot'));
+const PricingSlotWrapper = React.lazy(() => import('../../../../components/subscription/PricingSlotWrapper'));
 
 // ✅ REVENUE FIX: Draft Recovery Prompt (January 6, 2026)
 const DraftRecoveryPrompt = React.lazy(() => import('./DraftRecoveryPrompt'));
@@ -144,6 +146,15 @@ const LoadingFallback = styled.div`
  */
 const HeroSlot: React.FC = () => (
   <UnifiedHeroSection />
+);
+
+/**
+ * Slot: KAT Official Services (New)
+ */
+const KATServicesSlot: React.FC = () => (
+  <LazySection rootMargin="100px">
+    <KATServicesHero />
+  </LazySection>
 );
 
 /**
@@ -405,6 +416,17 @@ const DraftRecoverySlot: React.FC = () => (
  * @clean no business logic, only layout arrangement
  * @performance all sections lazy loaded
  */
+/**
+ * Slot: Pricing Plans & Subscriptions
+ */
+const PricingSlot: React.FC = () => (
+  <LazySection rootMargin="100px" minHeight="500px">
+    <Suspense fallback={null}>
+      <PricingSlotWrapper />
+    </Suspense>
+  </LazySection>
+);
+
 const SECTION_MAP: Record<string, React.FC> = {
   hero: HeroSlot,
   our_cars: OurCarsSlot,
@@ -420,6 +442,8 @@ const SECTION_MAP: Record<string, React.FC> = {
   smart_sell: UnifiedSmartSellSlot,
   dealers: DealersSlot,
   trust_stats: TrustSlot,
+  pricing_plans: PricingSlot,
+  kat_services: KATServicesSlot,
 };
 
 const HomePageComposer: React.FC = React.memo(() => {
@@ -453,6 +477,7 @@ const HomePageComposer: React.FC = React.memo(() => {
           /* Fallback — Balanced 14-Section Default Order */
           <>
             <HeroSlot /><SectionSpacer />
+            <KATServicesSlot /><SectionSpacer />
             <OurCarsSlot /><SectionSpacer />
             <FeaturedShowcaseSlot /><SectionSpacer />
             <SmartHeroSlot /><SectionSpacer />
@@ -465,7 +490,8 @@ const HomePageComposer: React.FC = React.memo(() => {
             <LifeMomentsBrowseSlot /><SectionSpacer />
             <UnifiedSmartSellSlot /><SectionSpacer />
             <DealersSlot /><SectionSpacer />
-            <TrustSlot />
+            <TrustSlot /><SectionSpacer />
+            <PricingSlot />
           </>
         )}
 

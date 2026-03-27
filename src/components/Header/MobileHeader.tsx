@@ -803,7 +803,10 @@ const MobileHeader: React.FC = () => {
           </MenuButton>
 
           <Logo onClick={() => navigate('/')}>
-            <img src="/logo.png" alt="Koli One" />
+            <picture>
+              <source srcSet="/logo.webp" type="image/webp" />
+              <img src="/logo.webp" alt="Koli One" width="36" height="36" style={{ objectFit: 'contain' }} />
+            </picture>
           </Logo>
 
           <UserSection ref={settingsRef}>

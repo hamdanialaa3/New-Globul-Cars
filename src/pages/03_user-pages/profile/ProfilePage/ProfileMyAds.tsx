@@ -66,7 +66,7 @@ const AddButton = styled.button<{ $isDark?: boolean }>`
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: #ff8f10;
+  background: #3b82f6;
   color: #ffffff;
   border: none;
   border-radius: 12px;
@@ -74,12 +74,12 @@ const AddButton = styled.button<{ $isDark?: boolean }>`
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 
   &:hover {
-    background: #ff7900;
+    background: #2563eb;
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(255, 143, 16, 0.4);
+    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
   }
 
   &:active {
@@ -164,7 +164,7 @@ const ViewModeButton = styled.button<{ $active: boolean; $isDark?: boolean }>`
   padding: 0.5rem 1rem;
   background: ${({ $active, $isDark }) =>
     $active
-      ? ($isDark ? '#475569' : '#ff8f10')
+      ? ($isDark ? '#475569' : '#3b82f6')
       : 'transparent'};
   color: ${({ $active }) => $active ? '#ffffff' : '#64748b'};
   border: none;
@@ -443,3 +443,5 @@ const ProfileMyAds: React.FC = () => {
 };
 
 export default ProfileMyAds;
+
+

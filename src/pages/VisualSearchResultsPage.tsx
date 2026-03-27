@@ -208,7 +208,7 @@ namespace S {
       background: conic-gradient(
         from 0deg,
         transparent 0deg,
-        #FF8F10 90deg,
+        #3B82F6 90deg,
         transparent 100deg,
         transparent 360deg
       );
@@ -466,3 +466,4 @@ namespace S {
     font-size: 18px;
   `;
 }
+

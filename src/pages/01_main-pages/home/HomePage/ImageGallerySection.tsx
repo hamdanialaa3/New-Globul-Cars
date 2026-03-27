@@ -1,4 +1,4 @@
-﻿// src/pages/HomePage/ImageGallerySection.tsx
+// src/pages/HomePage/ImageGallerySection.tsx
 // Image gallery section component for HomePage with auto-rotating slideshow
 
 import React, { useState, useEffect, memo } from 'react';
@@ -80,7 +80,7 @@ const ViewGalleryButton = styled(Link)`
   html[data-theme="light"] & {
     background: var(--btn-primary-bg);
     color: #ffffff !important;
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35) !important;
   }
 
   /* Dark mode: Yellow gradient background, Black text */
@@ -95,7 +95,7 @@ const ViewGalleryButton = styled(Link)`
     html[data-theme="light"] & {
       background: var(--btn-primary-bg);
       color: #ffffff !important;
-      box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5) !important;
     }
     html[data-theme="dark"] & {
       background: var(--btn-primary-bg);
@@ -151,9 +151,9 @@ const NavButton = styled.button`
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255, 143, 16, 0.25);
+  background: rgba(139, 92, 246, 0.25);
   color: var(--accent-primary);
-  border: 2px solid rgba(255, 143, 16, 0.5);
+  border: 2px solid rgba(139, 92, 246, 0.5);
   width: 50px;
   height: 50px;
   min-width: 50px;
@@ -167,7 +167,7 @@ const NavButton = styled.button`
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 10;
-  box-shadow: 0 4px 16px rgba(255, 143, 16, 0.2);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
   backdrop-filter: blur(8px);
 
   svg {
@@ -179,10 +179,10 @@ const NavButton = styled.button`
   }
 
   &:hover {
-    background: rgba(255, 143, 16, 0.4);
+    background: rgba(139, 92, 246, 0.4);
     color: var(--accent-primary);
     border-color: var(--accent-primary);
-    box-shadow: 0 6px 24px rgba(255, 143, 16, 0.3);
+    box-shadow: 0 6px 24px rgba(139, 92, 246, 0.3);
     
     svg {
       transform: translateX(0);
@@ -215,7 +215,7 @@ const NavButton = styled.button`
 
   &:active {
     transform: translateY(-50%) scale(0.95);
-    box-shadow: 0 2px 8px rgba(255, 143, 16, 0.25);
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);
   }
 
   @media (max-width: 768px) {

@@ -20,10 +20,10 @@ const SectionContainer = styled.section<{ $isDark: boolean }>`
   overflow: hidden;
   transition: background 0.3s ease;
   /* 🟣 Light purple border */
-  border: 1px solid rgba(230, 81, 0, 0.12);
+  border: 1px solid rgba(37, 99, 235, 0.12);
   border-radius: 8px;
   margin: 0 12px;
-  box-shadow: inset 0 0 8px rgba(230, 81, 0, 0.06);
+  box-shadow: inset 0 0 8px rgba(37, 99, 235, 0.06);
 
   @media (max-width: 768px) {
     padding: 50px 16px;
@@ -366,3 +366,4 @@ const VehicleClassificationsSection: React.FC = () => {
 };
 
 export default VehicleClassificationsSection;
+

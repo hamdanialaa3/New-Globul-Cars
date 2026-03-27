@@ -96,7 +96,7 @@ const Avatar = styled.div<{ $imageUrl?: string }>`
   border-radius: 50%;
   background: ${p => p.$imageUrl
     ? `url(${p.$imageUrl}) center/cover`
-    : 'linear-gradient(135deg, #FF8F10, #FF7900)'};
+    : 'linear-gradient(135deg, #3B82F6, #2563EB)'};
   border: 2px solid white;
 `;
 
@@ -406,3 +406,4 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ story, onClose }) => {
 };
 
 export default StoryViewer;
+

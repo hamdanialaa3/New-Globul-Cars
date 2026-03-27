@@ -87,8 +87,8 @@ const FormGroup = styled.div`
     
     &:focus {
       outline: none;
-      border-color: #FF8F10;
-      box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.1);
+      border-color: #3B82F6;
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
     }
   }
   
@@ -141,11 +141,11 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   
   ${p => p.$variant === 'primary' 
     ? `
-      background: linear-gradient(135deg, #FF7900 0%, #FF9533 100%);
+      background: linear-gradient(135deg, #2563EB 0%, #FF9533 100%);
       color: white;
       &:hover {
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
       }
     `
     : `
@@ -330,7 +330,7 @@ export const RequestConsultationModal: React.FC<RequestConsultationModalProps> =
             </UrgencyButton>
             <UrgencyButton 
               $active={urgency === 'high'}
-              $color="#FF5722"
+              $color="#8B5CF6"
               onClick={() => setUrgency('high')}
             >
               {t('high')}
@@ -363,4 +363,6 @@ export const RequestConsultationModal: React.FC<RequestConsultationModalProps> =
 };
 
 export default RequestConsultationModal;
+
+
 

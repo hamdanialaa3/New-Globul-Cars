@@ -1,4 +1,4 @@
-﻿import { logger } from '@/services/logger-service';
+import { logger } from '@/services/logger-service';
 // Smart Feed Section - AI-Powered Community Feed (Third Section)
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -459,10 +459,10 @@ const FilterButton = styled.button<{ $active: boolean; $isDark: boolean }>`
   }
   
   &:hover {
-    background: ${p => p.$active ? '#E66D00' : (p.$isDark ? 'rgba(255, 121, 0, 0.12)' : 'rgba(255, 121, 0, 0.08)')};
-    border-color: #FF7900;
+    background: ${p => p.$active ? '#E66D00' : (p.$isDark ? 'rgba(99, 102, 241, 0.12)' : 'rgba(99, 102, 241, 0.08)')};
+    border-color: #2563EB;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px ${p => p.$isDark ? 'rgba(255, 121, 0, 0.25)' : 'rgba(255, 121, 0, 0.2)'};
+    box-shadow: 0 4px 12px ${p => p.$isDark ? 'rgba(99, 102, 241, 0.25)' : 'rgba(99, 102, 241, 0.2)'};
   }
   
   &:active {
@@ -512,7 +512,7 @@ const CreatePostTrigger = styled.button<{ $isDark: boolean }>`
   transition: all 0.3s ease;
   
   &:hover {
-    border-color: #FF8F10;
+    border-color: #3B82F6;
     box-shadow: 0 4px 12px ${p => p.$isDark ? 'rgba(255, 127, 0, 0.25)' : 'rgba(255, 127, 0, 0.1)'};
   }
 `;
@@ -521,7 +521,7 @@ const UserAvatar = styled.div<{ $hasImage: boolean; $imageUrl?: string }>`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 2px solid #FF8F10;
+  border: 2px solid #3B82F6;
   flex-shrink: 0;
   
   ${p => p.$hasImage && p.$imageUrl ? `
@@ -596,7 +596,7 @@ const LoadingSpinner = styled.div`
     width: 40px;
     height: 40px;
     border: 4px solid #e9ecef;
-    border-top-color: #FF7900;
+    border-top-color: #2563EB;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -655,4 +655,6 @@ const CreateFirstButton = styled.button`
 `;
 
 export default SmartFeedSection;
+
+
 

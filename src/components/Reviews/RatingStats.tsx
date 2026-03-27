@@ -152,7 +152,7 @@ const RatingStats: React.FC<RatingStatsProps> = ({ stats }) => {
     { stars: 5, count: stats.ratingDistribution[5], color: '#4caf50' },
     { stars: 4, count: stats.ratingDistribution[4], color: '#8bc34a' },
     { stars: 3, count: stats.ratingDistribution[3], color: '#ff9800' },
-    { stars: 2, count: stats.ratingDistribution[2], color: '#ff5722' },
+    { stars: 2, count: stats.ratingDistribution[2], color: '#8b5cf6' },
     { stars: 1, count: stats.ratingDistribution[1], color: '#f44336' }
   ];
 
@@ -218,3 +218,4 @@ const RatingStats: React.FC<RatingStatsProps> = ({ stats }) => {
 };
 
 export default RatingStats;
+

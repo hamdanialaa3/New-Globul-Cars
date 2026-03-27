@@ -74,7 +74,7 @@ const HeroSection = styled.section<{ $isDark: boolean }>`
     z-index: 1;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: ${props => props.$isDark ? '#FF8C61' : 'white'};
+    color: ${props => props.$isDark ? '#8B5CF6' : 'white'};
   }
 
   p {
@@ -112,7 +112,7 @@ const StatCard = styled.div<{ $isDark: boolean }>`
     width: 64px;
     height: 64px;
     background: ${props => props.$isDark
-    ? 'linear-gradient(135deg, #FF8C61 0%, #FF5C00 100%)'
+    ? 'linear-gradient(135deg, #8B5CF6 0%, #FF5C00 100%)'
     : 'linear-gradient(135deg, #3b82f6, #1e40af)'};
     border-radius: 50%;
     display: flex;
@@ -120,7 +120,7 @@ const StatCard = styled.div<{ $isDark: boolean }>`
     justify-content: center;
     margin: 0 auto 20px;
     color: white;
-    box-shadow: ${props => props.$isDark ? '0 4px 15px rgba(255, 140, 97, 0.3)' : 'none'};
+    box-shadow: ${props => props.$isDark ? '0 4px 15px rgba(139, 92, 246, 0.3)' : 'none'};
   }
 
   .number {
@@ -147,7 +147,7 @@ const ContentSection = styled.section<{ $isDark: boolean }>`
   h2 {
     font-size: 2.2rem;
     font-weight: 800;
-    color: ${props => props.$isDark ? '#FF8C61' : '#1e40af'};
+    color: ${props => props.$isDark ? '#8B5CF6' : '#1e40af'};
     margin-bottom: 24px;
     display: flex;
     align-items: center;
@@ -177,7 +177,7 @@ const ValueCard = styled.div<{ $isDark: boolean }>`
   padding: 32px;
   border-radius: 20px;
   box-shadow: ${props => props.$isDark ? '0 10px 30px rgba(0, 0, 0, 0.4)' : '0 4px 20px rgba(0, 0, 0, 0.1)'};
-  border-left: 6px solid ${props => props.$isDark ? '#FF8C61' : '#3b82f6'};
+  border-left: 6px solid ${props => props.$isDark ? '#8B5CF6' : '#3b82f6'};
   border-top: 1px solid ${props => props.$isDark ? '#2d3748' : 'transparent'};
   border-right: 1px solid ${props => props.$isDark ? '#2d3748' : 'transparent'};
   border-bottom: 1px solid ${props => props.$isDark ? '#2d3748' : 'transparent'};
@@ -192,7 +192,7 @@ const ValueCard = styled.div<{ $isDark: boolean }>`
     width: 56px;
     height: 56px;
     background: ${props => props.$isDark
-    ? 'linear-gradient(135deg, #FF8C61 0%, #FF5C00 100%)'
+    ? 'linear-gradient(135deg, #8B5CF6 0%, #FF5C00 100%)'
     : 'linear-gradient(135deg, #3b82f6, #1e40af)'};
     border-radius: 12px;
     display: flex;
@@ -200,7 +200,7 @@ const ValueCard = styled.div<{ $isDark: boolean }>`
     justify-content: center;
     margin-bottom: 20px;
     color: white;
-    box-shadow: ${props => props.$isDark ? '0 4px 15px rgba(255, 140, 97, 0.2)' : 'none'};
+    box-shadow: ${props => props.$isDark ? '0 4px 15px rgba(139, 92, 246, 0.2)' : 'none'};
   }
 
   h3 {
@@ -231,7 +231,7 @@ const TeamSection = styled.section<{ $isDark: boolean }>`
   h2 {
     font-size: 2.5rem;
     font-weight: 800;
-    color: ${props => props.$isDark ? '#FF8C61' : '#1e40af'};
+    color: ${props => props.$isDark ? '#8B5CF6' : '#1e40af'};
     margin-bottom: 16px;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -269,7 +269,7 @@ const SocialIconButton = styled.a<{ $color?: string; $isDark?: boolean }>`
   
   &:hover {
     transform: translateY(-8px) scale(1.1);
-    background: ${props => props.$color || (props.$isDark ? '#FF8C61' : '#3b82f6')};
+    background: ${props => props.$color || (props.$isDark ? '#8B5CF6' : '#3b82f6')};
     color: white;
     box-shadow: ${props => props.$isDark
     ? `0 10px 25px ${props.$color}55`
@@ -297,20 +297,20 @@ const ContactItem = styled.div<{ $isDark: boolean }>`
   transition: all 0.3s ease;
 
   &:hover {
-    border-color: ${props => props.$isDark ? '#FF8C61' : '#3b82f6'};
+    border-color: ${props => props.$isDark ? '#8B5CF6' : '#3b82f6'};
     transform: scale(1.02);
   }
 
   .icon {
     width: 44px;
     height: 44px;
-    background: ${props => props.$isDark ? '#FF8C61' : '#3b82f6'};
+    background: ${props => props.$isDark ? '#8B5CF6' : '#3b82f6'};
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    box-shadow: ${props => props.$isDark ? '0 2px 10px rgba(255, 140, 97, 0.3)' : 'none'};
+    box-shadow: ${props => props.$isDark ? '0 2px 10px rgba(139, 92, 246, 0.3)' : 'none'};
   }
 
   .content {
@@ -537,3 +537,4 @@ const AboutPage: React.FC = () => {
 };
 
 export default AboutPage;
+

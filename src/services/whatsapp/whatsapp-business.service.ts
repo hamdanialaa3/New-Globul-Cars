@@ -60,7 +60,11 @@ class WhatsAppBusinessService {
   private readonly cloudFunctionBaseUrl: string;
 
   constructor() {
-    this.cloudFunctionBaseUrl = '/api/whatsapp';
+    // Determine the environment and set the appropriate Cloud Functions URL
+    // In production, it points to the live Firebase Cloud Function
+    this.cloudFunctionBaseUrl = import.meta.env?.PROD 
+        ? 'https://us-central1-fire-new-globul.cloudfunctions.net/whatsappApi' 
+        : 'https://us-central1-fire-new-globul.cloudfunctions.net/whatsappApi';
   }
 
   /**

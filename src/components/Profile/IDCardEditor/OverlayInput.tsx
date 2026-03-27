@@ -133,8 +133,8 @@ const InputContainer = styled.div<{
     inset: -2px;
     border: 2px solid ${props => {
       if (props.$hasError) return '#dc3545';
-      if (props.$isFocused) return '#FF7900';
-      if (props.$isHovered) return 'rgba(255, 121, 0, 0.4)';
+      if (props.$isFocused) return '#2563EB';
+      if (props.$isHovered) return 'rgba(99, 102, 241, 0.4)';
       return 'transparent';
     }};
     border-radius: 4px;
@@ -142,7 +142,7 @@ const InputContainer = styled.div<{
     transition: all 0.2s ease;
     box-shadow: ${props => {
       if (props.$hasError) return '0 0 0 4px rgba(220, 53, 69, 0.1)';
-      if (props.$isFocused) return '0 0 0 4px rgba(255, 121, 0, 0.2)';
+      if (props.$isFocused) return '0 0 0 4px rgba(99, 102, 241, 0.2)';
       if (props.$isValid && props.$isHovered) return '0 0 0 4px rgba(22, 163, 74, 0.1)';
       return 'none';
     }};
@@ -298,4 +298,6 @@ const ErrorTooltip = styled.div`
 `;
 
 export default OverlayInput;
+
+
 

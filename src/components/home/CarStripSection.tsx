@@ -57,7 +57,7 @@ const Subtitle = styled.p`
 const ShowAll = styled.a`
   font-size: 14px;
   font-weight: 600;
-  color: var(--accent-primary, #FF6B35);
+  color: var(--accent-primary, #6366F1);
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
@@ -219,3 +219,4 @@ export const CarStripSection: React.FC<Props> = ({
     </Section>
   );
 };
+

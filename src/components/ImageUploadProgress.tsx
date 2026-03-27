@@ -110,7 +110,7 @@ const ImageInfo = styled.div`
 
 const PercentageText = styled.div`
   font-weight: 700;
-  color: #ff8f10;
+  color: #3b82f6;
   font-size: 1rem;
 `;
 
@@ -126,7 +126,7 @@ const ProgressBar = styled.div`
 const ProgressFill = styled.div<{ $progress: number }>`
   width: ${props => props.$progress}%;
   height: 100%;
-  background: linear-gradient(90deg, #ff8f10, #005ca9);
+  background: linear-gradient(90deg, #3b82f6, #005ca9);
   border-radius: 100px;
   transition: width 0.3s ease;
   position: relative;
@@ -239,11 +239,11 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
       `;
     }
     return `
-      background: linear-gradient(135deg, #ff8f10, #005ca9);
+      background: linear-gradient(135deg, #3b82f6, #005ca9);
       color: white;
       &:hover {
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
       }
     `;
   }}
@@ -297,7 +297,7 @@ const ImageUploadProgress: React.FC<ImageUploadProgressProps> = ({
               </>
             ) : (
               <>
-                <SpinningIcon size={24} color="#ff8f10" />
+                <SpinningIcon size={24} color="#3b82f6" />
                 Uploading Images
               </>
             )}
@@ -384,4 +384,6 @@ const ImageUploadProgress: React.FC<ImageUploadProgressProps> = ({
 };
 
 export default ImageUploadProgress;
+
+
 

@@ -373,7 +373,7 @@ const UploadButton = styled.button<{ $uploading: boolean }>`
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(135deg, #FF7900, #FF8F10);
+  background: linear-gradient(135deg, #2563EB, #3B82F6);
   color: white;
   border: none;
   border-radius: 8px;
@@ -386,7 +386,7 @@ const UploadButton = styled.button<{ $uploading: boolean }>`
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
   }
 
   .spin {
@@ -445,4 +445,6 @@ const DeleteButton = styled.button`
 `;
 
 export default ProfilePhotoCard;
+
+
 

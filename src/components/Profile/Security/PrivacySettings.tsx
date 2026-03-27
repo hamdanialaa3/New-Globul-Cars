@@ -63,8 +63,8 @@ const SettingItem = styled.div`
   transition: all 0.2s ease;
   
   &:hover {
-    border-color: #FF7900;
-    box-shadow: 0 2px 8px rgba(255, 121, 0, 0.1);
+    border-color: #2563EB;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
   }
 `;
 
@@ -88,7 +88,7 @@ const SettingInfo = styled.div`
 const Toggle = styled.button<{ $active: boolean }>`
   width: 56px;
   height: 28px;
-  background: ${props => props.$active ? '#FF7900' : '#dee2e6'};
+  background: ${props => props.$active ? '#2563EB' : '#dee2e6'};
   border: none;
   border-radius: 14px;
   cursor: pointer;
@@ -120,8 +120,8 @@ const Select = styled.select`
   
   &:focus {
     outline: none;
-    border-color: #FF7900;
-    box-shadow: 0 0 0 3px rgba(255, 121, 0, 0.1);
+    border-color: #2563EB;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
   }
 `;
 
@@ -161,7 +161,7 @@ const Button = styled.button<{ $variant?: 'primary' | 'danger' }>`
       transform: translateY(-1px);
     }
   ` : `
-    background: #FF7900;
+    background: #2563EB;
     color: white;
     
     &:hover {
@@ -395,7 +395,7 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ userId }) => {
   return (
     <Container>
       <Header>
-        <Shield size={28} color="#FF7900" />
+        <Shield size={28} color="#2563EB" />
         <h2>{t('title')}</h2>
       </Header>
 
@@ -559,4 +559,6 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ userId }) => {
 };
 
 export default PrivacySettings;
+
+
 

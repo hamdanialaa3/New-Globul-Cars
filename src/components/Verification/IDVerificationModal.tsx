@@ -81,7 +81,7 @@ const Step = styled.div<{ $active: boolean; $completed: boolean }>`
   border-radius: 6px;
   background: ${props => 
     props.$completed ? '#4caf50' : 
-    props.$active ? '#FF7900' : '#e0e0e0'};
+    props.$active ? '#2563EB' : '#e0e0e0'};
   transition: all 0.3s ease;
 `;
 
@@ -98,7 +98,7 @@ const InfoBox = styled.div<{ $type: 'info' | 'warning' | 'success' | 'error' }>`
       case 'info':
         return `background: #e3f2fd; color: #1565c0;`;
       case 'warning':
-        return `background: #fff3e0; color: #e65100;`;
+        return `background: #fff3e0; color: #2563eb;`;
       case 'success':
         return `background: #e8f5e9; color: #2e7d32;`;
       case 'error':
@@ -147,12 +147,12 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
     color: #666;
     &:hover { background: #e0e0e0; }
   ` : `
-    background: #FF7900;
+    background: #2563EB;
     color: white;
     &:hover { 
       background: #ff8c1a;
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
     }
   `}
   
@@ -401,3 +401,5 @@ const IDVerificationModal: React.FC<IDVerificationModalProps> = ({
 };
 
 export default IDVerificationModal;
+
+

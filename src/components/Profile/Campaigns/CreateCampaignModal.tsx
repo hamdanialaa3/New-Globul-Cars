@@ -564,7 +564,7 @@ const StepNumber = styled.div<{ $active: boolean; $completed: boolean }>`
   font-weight: 700;
   font-size: 16px;
   background: ${props => 
-    props.$active ? 'linear-gradient(135deg, #FF8F10 0%, #FF6B35 100%)' :
+    props.$active ? 'linear-gradient(135deg, #3B82F6 0%, #6366F1 100%)' :
     props.$completed ? '#10b981' : '#e5e7eb'
   };
   color: ${props => props.$active || props.$completed ? 'white' : '#6b7280'};
@@ -619,15 +619,15 @@ const TypeGrid = styled.div`
 const TypeCard = styled.div<{ $selected: boolean }>`
   padding: 20px;
   border-radius: 12px;
-  border: 2px solid ${props => props.$selected ? '#FF8F10' : '#e5e7eb'};
+  border: 2px solid ${props => props.$selected ? '#3B82F6' : '#e5e7eb'};
   background: ${props => props.$selected ? '#fff7ed' : 'white'};
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: #FF8F10;
+    border-color: #3B82F6;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 143, 16, 0.1);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
   }
 `;
 
@@ -669,7 +669,7 @@ const Input = styled.input<{ $error?: boolean }>`
 
   &:focus {
     outline: none;
-    border-color: ${props => props.$error ? '#ef4444' : '#FF8F10'};
+    border-color: ${props => props.$error ? '#ef4444' : '#3B82F6'};
   }
 
   &::placeholder {
@@ -690,7 +690,7 @@ const TextArea = styled.textarea`
 
   &:focus {
     outline: none;
-    border-color: #FF8F10;
+    border-color: #3B82F6;
   }
 
   &::placeholder {
@@ -776,9 +776,9 @@ const RegionChip = styled.div<{ $selected: boolean }>`
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  background: ${props => props.$selected ? '#FF8F10' : '#f3f4f6'};
+  background: ${props => props.$selected ? '#3B82F6' : '#f3f4f6'};
   color: ${props => props.$selected ? 'white' : '#6b7280'};
-  border: 2px solid ${props => props.$selected ? '#FF8F10' : 'transparent'};
+  border: 2px solid ${props => props.$selected ? '#3B82F6' : 'transparent'};
 
   &:hover {
     background: ${props => props.$selected ? '#ff7a00' : '#e5e7eb'};
@@ -848,17 +848,17 @@ const PrimaryButton = styled.button`
   padding: 12px 28px;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(135deg, #FF8F10 0%, #FF6B35 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
   color: white;
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 143, 16, 0.4);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
   }
 
   &:disabled {
@@ -869,3 +869,5 @@ const PrimaryButton = styled.button`
 `;
 
 export default CreateCampaignModal;
+
+

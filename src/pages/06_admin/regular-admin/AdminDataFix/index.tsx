@@ -89,7 +89,7 @@ const AdminDataFix: React.FC = () => {
     <PageContainer>
       <Container>
         <Header>
-          <Shield size={48} color="#FF7900" />
+          <Shield size={48} color="#2563EB" />
           <h1>Admin Data Fix Tool</h1>
           <p>أداة تصحيح بيانات النظام - System Data Fix Tool</p>
         </Header>
@@ -182,7 +182,7 @@ const Header = styled.div`
     font-size: 2.5rem;
     font-weight: 800;
     margin: 20px 0 12px 0;
-    background: linear-gradient(135deg, #FF8F10 0%, #FF7900 100%);
+    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -262,13 +262,13 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   transition: all 0.2s ease;
   
   ${p => p.$variant === 'primary' ? `
-    background: linear-gradient(135deg, #FF7900, #FF8F10);
+    background: linear-gradient(135deg, #2563EB, #3B82F6);
     color: white;
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.25);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
     
     &:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(255, 121, 0, 0.35);
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
     }
   ` : `
     background: white;
@@ -342,3 +342,5 @@ const InfoBox = styled.div`
 `;
 
 export default AdminDataFix;
+
+

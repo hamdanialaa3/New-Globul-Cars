@@ -7,7 +7,7 @@ import styled from 'styled-components';
 // System Colors
 export const MessagingColors = {
   // Sender messages
-  senderBg: '#FF8F10',      // Bulgarian orange
+  senderBg: '#3B82F6',      // Bulgarian orange
   senderText: '#FFFFFF',
   
   // Receiver messages
@@ -231,13 +231,13 @@ export const ButtonBase = styled.button<{ $variant?: 'primary' | 'secondary' | '
   background-color: ${props => {
     switch (props.$variant) {
       case 'primary':
-        return '#FF8F10';
+        return '#3B82F6';
       case 'secondary':
         return '#F5F5F5';
       case 'danger':
         return '#DC2626';
       default:
-        return '#FF8F10';
+        return '#3B82F6';
     }
   }};
   
@@ -270,8 +270,8 @@ export const InputBase = styled.input`
   
   &:focus {
     outline: none;
-    border-color: #FF8F10;
-    box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.1);
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
   }
   
   &::placeholder {
@@ -318,7 +318,7 @@ export const Spinner = styled.div`
     background: conic-gradient(
       from 0deg,
       transparent 0deg,
-      #FF8F10 90deg,
+      #3B82F6 90deg,
       transparent 100deg,
       transparent 360deg
     );
@@ -330,3 +330,5 @@ export const Spinner = styled.div`
     to { transform: rotate(360deg); }
   }
 `;
+
+

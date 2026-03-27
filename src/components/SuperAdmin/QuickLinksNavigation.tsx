@@ -18,16 +18,16 @@ import {
 // Styled Components
 const NavigationContainer = styled.div`
   background: #0a0d14;
-  border: 2px solid #ff8c61;
+  border: 2px solid #8B5CF6;
   border-radius: 12px;
   margin: 20px;
   margin-top: 40px;
   padding: 32px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 140, 97, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(139, 92, 246, 0.1);
 `;
 
 const Title = styled.h2`
-  color: #ff8c61;
+  color: #8B5CF6;
   text-align: center;
   margin-bottom: 24px;
   font-size: 20px;
@@ -53,11 +53,11 @@ const CategoryHeader = styled.div<{ $isOpen: boolean }>`
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 1px solid ${props => props.$isOpen ? '#ff8c61' : '#2d3748'};
+  border: 1px solid ${props => props.$isOpen ? '#8B5CF6' : '#2d3748'};
 
   &:hover {
     background: #1e2432;
-    border-color: #ff8c61;
+    border-color: #8B5CF6;
   }
 `;
 
@@ -72,12 +72,12 @@ const CategoryTitle = styled.div`
   svg {
     width: 20px;
     height: 20px;
-    color: #ff8c61;
+    color: #8B5CF6;
   }
 `;
 
 const CategoryBadge = styled.span`
-  background: #ff8c61;
+  background: #8B5CF6;
   color: #0f1419;
   padding: 2px 10px;
   border-radius: 12px;
@@ -113,11 +113,11 @@ const LinkButton = styled.button<{ $protected?: boolean; $admin?: boolean }>`
     width: 14px;
     height: 14px;
     flex-shrink: 0;
-    color: #ff8c61;
+    color: #8B5CF6;
   }
 
   &:hover {
-    border-color: #ff8c61;
+    border-color: #8B5CF6;
     color: #f8fafc;
     background: #252b3a;
     transform: translateX(4px);
@@ -159,9 +159,9 @@ const SearchInput = styled.input`
   }
 
   &:focus {
-    border-color: #ff8c61;
+    border-color: #8B5CF6;
     background: #1e2432;
-    box-shadow: 0 0 15px rgba(255, 140, 97, 0.15);
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);
   }
 `;
 
@@ -170,7 +170,7 @@ const SearchIcon = styled(Search)`
   right: 18px;
   top: 50%;
   transform: translateY(-50%);
-  color: #ff8c61;
+  color: #8B5CF6;
   width: 18px;
   height: 18px;
 `;
@@ -409,4 +409,5 @@ const QuickLinksNavigation: React.FC = () => {
 };
 
 export default QuickLinksNavigation;
+
 

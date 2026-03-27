@@ -1,4 +1,4 @@
-﻿/**
+/**
  * OurCarsShowcase.tsx
  * Нашите коли / Our Cars — All Real User-Added Listings
  *
@@ -190,7 +190,7 @@ const LoadingState = styled.div`
 
   svg {
     animation: led-orbit 1.2s linear infinite;
-    color: #FF8F10;
+    color: #3B82F6;
   }
 
   @keyframes led-orbit {
@@ -401,3 +401,4 @@ const OurCarsShowcase: React.FC = () => {
 OurCarsShowcase.displayName = 'OurCarsShowcase';
 
 export default memo(OurCarsShowcase);
+

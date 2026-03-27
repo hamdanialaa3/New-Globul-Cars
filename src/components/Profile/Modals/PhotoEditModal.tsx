@@ -236,7 +236,7 @@ const ModalTitle = styled.h2`
   gap: 12px;
 
   svg {
-    color: #FF8F10;
+    color: #3B82F6;
   }
 `;
 
@@ -262,7 +262,7 @@ const PreviewContainer = styled.div`
   margin: 0 auto 24px;
   border-radius: 50%;
   overflow: hidden;
-  border: 4px solid #FF8F10;
+  border: 4px solid #3B82F6;
 `;
 
 const PreviewImage = styled.img`
@@ -297,7 +297,7 @@ const ButtonGroup = styled.div`
 const UploadButton = styled.button`
   flex: 1;
   padding: 12px 24px;
-  background: #FF8F10;
+  background: #3B82F6;
   border: none;
   border-radius: 6px;
   font-size: 1rem;
@@ -375,7 +375,7 @@ const CancelButton = styled.button`
 const SaveButton = styled.button`
   flex: 1;
   padding: 12px 24px;
-  background: #FF8F10;
+  background: #3B82F6;
   border: none;
   border-radius: 6px;
   font-size: 1rem;
@@ -393,3 +393,4 @@ const SaveButton = styled.button`
     cursor: not-allowed;
   }
 `;
+

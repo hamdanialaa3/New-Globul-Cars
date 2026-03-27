@@ -274,7 +274,7 @@ const Spinner = styled.div`
   width: 48px;
   height: 48px;
   border: 4px solid #f3f4f6;
-  border-top-color: #FF8F10;
+  border-top-color: #3B82F6;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 
@@ -374,9 +374,9 @@ const FilterContainer = styled.div`
 
 const FilterButton = styled.button<{ $active: boolean }>`
   padding: 8px 16px;
-  border: 2px solid ${props => props.$active ? '#FF8F10' : '#e5e7eb'};
+  border: 2px solid ${props => props.$active ? '#3B82F6' : '#e5e7eb'};
   border-radius: 20px;
-  background: ${props => props.$active ? '#FF8F10' : 'white'};
+  background: ${props => props.$active ? '#3B82F6' : 'white'};
   color: ${props => props.$active ? 'white' : '#6b7280'};
   font-size: 13px;
   font-weight: 600;
@@ -385,7 +385,7 @@ const FilterButton = styled.button<{ $active: boolean }>`
 
   &:hover {
     background: ${props => props.$active ? '#ff7a00' : '#f9fafb'};
-    border-color: #FF8F10;
+    border-color: #3B82F6;
   }
 `;
 
@@ -396,18 +396,18 @@ const CreateButton = styled.button`
   padding: 12px 24px;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(135deg, #FF8F10 0%, #FF6B35 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
   color: white;
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
   white-space: nowrap;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 143, 16, 0.4);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
   }
 
   &:active {
@@ -455,3 +455,5 @@ const EmptyText = styled.p`
 `;
 
 export default CampaignsList;
+
+

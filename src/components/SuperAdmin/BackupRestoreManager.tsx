@@ -31,7 +31,7 @@ const Header = styled.div`
 const Title = styled.h2`
   font-size: 24px;
   font-weight: 700;
-  color: #ff8c61;
+  color: #8B5CF6;
   margin: 0 0 8px 0;
   display: flex;
   align-items: center;
@@ -66,7 +66,7 @@ const ActionCard = styled.div<{ $variant?: 'primary' | 'success' | 'warning' }>`
     border-color: ${props => {
       if (props.$variant === 'success') return '#10b981';
       if (props.$variant === 'warning') return '#f59e0b';
-      return '#ff8c61';
+      return '#8B5CF6';
     }};
     transform: translateY(-2px);
   }
@@ -88,7 +88,7 @@ const CardIcon = styled.div<{ $variant?: 'primary' | 'success' | 'warning' }>`
   color: ${props => {
     if (props.$variant === 'success') return '#6ee7b7';
     if (props.$variant === 'warning') return '#fcd34d';
-    return '#ff8c61';
+    return '#8B5CF6';
   }};
 `;
 
@@ -140,7 +140,7 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' | 'danger' }>`
       `;
     }
     return `
-      background: #ff8c61;
+      background: #8B5CF6;
       color: #0f1419;
       &:hover {
         background: #ff7a47;
@@ -294,7 +294,7 @@ const StatIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ff8c61;
+  color: #8B5CF6;
 `;
 
 const StatContent = styled.div`
@@ -608,3 +608,4 @@ const BackupRestoreManager: React.FC = () => {
 };
 
 export default BackupRestoreManager;
+

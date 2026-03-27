@@ -37,14 +37,14 @@ const IconWrapper = styled.div`
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(255, 143, 16, 0.1) 0%, rgba(255, 143, 16, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 24px;
   
   svg {
-    color: #FF8F10;
+    color: #3B82F6;
     opacity: 0.7;
   }
 `;
@@ -66,7 +66,7 @@ const Description = styled.p`
 
 const QueryText = styled.span`
   font-weight: 600;
-  color: #FF8F10;
+  color: #3B82F6;
 `;
 
 const ButtonGroup = styled.div`
@@ -88,13 +88,13 @@ const Button = styled.button<{ $primary?: boolean }>`
   gap: 8px;
   
   ${props => props.$primary ? `
-    background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+    background: linear-gradient(135deg, #3B82F6 0%, #fb923c 100%);
     color: white;
     border: none;
     
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
     }
   ` : `
     background: white;
@@ -166,3 +166,5 @@ const NoSearchResults: React.FC<NoSearchResultsProps> = ({
 };
 
 export default NoSearchResults;
+
+

@@ -167,7 +167,7 @@ const TestDriveTitle = styled.h4`
 
 const TestDriveIcon = styled.span`
   font-size: 18px;
-  color: #FF8F10;
+  color: #3B82F6;
   display: flex;
   align-items: center;
 `;
@@ -292,4 +292,5 @@ const ViewOnlyMessage = styled.div`
   align-items: center;
   gap: 8px;
 `;
+
 

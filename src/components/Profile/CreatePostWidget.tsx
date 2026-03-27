@@ -122,13 +122,13 @@ const UserAvatar = styled.div<{ $hasImage: boolean; $imageUrl?: string }>`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 2px solid #FF7900;
+  border: 2px solid #2563EB;
   flex-shrink: 0;
   
   ${p => p.$hasImage && p.$imageUrl ? `
     background: url(${p.$imageUrl}) center/cover no-repeat;
   ` : `
-    background: linear-gradient(135deg, #FF7900, #FF8F10);
+    background: linear-gradient(135deg, #2563EB, #3B82F6);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -216,5 +216,6 @@ const ActionButton = styled.button`
 `;
 
 export default CreatePostWidget;
+
 
 

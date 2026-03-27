@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { useAuth } from '../../contexts/AuthProvider';
 import { eventsService, CarEvent } from '../../services/social/events.service';
 import EventCard from '../../components/Events/EventCard';
+import CreateEventModal from '../../components/Events/CreateEventModal';
 import { Calendar, Plus, Filter, MapPin } from 'lucide-react';
 
 // ==================== STYLED COMPONENTS ====================
@@ -56,7 +57,7 @@ const CreateButton = styled.button`
   padding: 12px 24px;
   border-radius: 24px;
   border: none;
-  background: linear-gradient(135deg, #FF8F10, #FF7900);
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
   color: white;
   font-size: 1rem;
   font-weight: 700;
@@ -68,7 +69,7 @@ const CreateButton = styled.button`
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(255, 143, 16, 0.3);
+    box-shadow: 0 8px 16px rgba(139, 92, 246, 0.3);
   }
   
   svg {
@@ -92,8 +93,8 @@ const FilterButton = styled.button`
   transition: all 0.2s;
   
   &:hover {
-    border-color: #FF8F10;
-    color: #FF8F10;
+    border-color: #3B82F6;
+    color: #3B82F6;
   }
   
   svg {
@@ -112,17 +113,17 @@ const Filters = styled.div`
 const FilterChip = styled.button<{ $active: boolean }>`
   padding: 8px 16px;
   border-radius: 20px;
-  border: 2px solid ${p => p.$active ? '#FF8F10' : '#dee2e6'};
-  background: ${p => p.$active ? 'rgba(255, 143, 16, 0.1)' : 'white'};
-  color: ${p => p.$active ? '#FF8F10' : '#6c757d'};
+  border: 2px solid ${p => p.$active ? '#3B82F6' : '#dee2e6'};
+  background: ${p => p.$active ? 'rgba(139, 92, 246, 0.1)' : 'white'};
+  color: ${p => p.$active ? '#3B82F6' : '#6c757d'};
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   
   &:hover {
-    border-color: #FF8F10;
-    color: #FF8F10;
+    border-color: #3B82F6;
+    color: #3B82F6;
   }
 `;
 
@@ -177,41 +178,37 @@ const EventsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState<CarEvent['eventType'] | 'all'>('all');
   const [cityFilter, setCityFilter] = useState<string>('');
+  const [showCreateModal, setShowCreateModal] = useState(false);
   
   // ==================== EFFECTS ====================
   
   useEffect(() => {
-    loadEvents();
+    let isActive = true;
+    loadEvents(isActive);
+    return () => { isActive = false; };
   }, [cityFilter]);
   
   // ==================== HANDLERS ====================
   
-  const loadEvents = async () => {
+  const loadEvents = async (isActive: boolean) => {
     try {
       setLoading(true);
       const loadedEvents = await eventsService.getUpcomingEvents(cityFilter || undefined);
-      setEvents(loadedEvents);
+      if (isActive) setEvents(loadedEvents);
     } catch (error) {
       logger.error('Failed to load events:', error);
     } finally {
-      setLoading(false);
+      if (isActive) setLoading(false);
     }
   };
   
   const handleCreateEvent = () => {
-    // ✅ DONE: Open event creator modal
-    const modal = document.createElement('div');
-    modal.innerHTML = `
-      <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
-        <div style="background: white; padding: 32px; border-radius: 16px; max-width: 500px; width: 90%;">
-          <h2 style="margin: 0 0 16px 0; color: #212529;">Create New Event</h2>
-          <p style="color: #6c757d; margin: 0 0 24px 0;">Event creation is not yet available. Stay tuned for updates!</p>
-          <button onclick="this.closest('div').remove()" style="background: #FF8F10; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer;">Close</button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modal);
-    logger.info('Create event clicked');
+    if (!user) return;
+    setShowCreateModal(true);
+  };
+  
+  const handleEventCreated = () => {
+    loadEvents(true);
   };
   
   const filteredEvents = filterType === 'all' 
@@ -280,8 +277,18 @@ const EventsPage: React.FC = () => {
           </CreateButton>
         </EmptyState>
       )}
+
+      {showCreateModal && user && (
+        <CreateEventModal
+          userId={user.uid}
+          onClose={() => setShowCreateModal(false)}
+          onCreated={handleEventCreated}
+        />
+      )}
     </Container>
   );
 };
 
 export default EventsPage;
+
+

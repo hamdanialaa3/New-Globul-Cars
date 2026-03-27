@@ -110,12 +110,12 @@ const UserCard = styled.div`
   }
 
   &:hover {
-    background: rgba(255, 143, 16, 0.1);
+    background: rgba(139, 92, 246, 0.1);
     border-color: var(--accent-primary);
     box-shadow: 
-      0 8px 32px rgba(255, 143, 16, 0.2),
-      0 0 20px rgba(255, 143, 16, 0.1),
-      inset 0 0 20px rgba(255, 143, 16, 0.05);
+      0 8px 32px rgba(139, 92, 246, 0.2),
+      0 0 20px rgba(139, 92, 246, 0.1),
+      inset 0 0 20px rgba(139, 92, 246, 0.05);
     transform: translateY(-8px);
   }
 
@@ -125,10 +125,10 @@ const UserCard = styled.div`
 
   [data-theme="dark"] & {
     background: rgba(50, 50, 60, 0.5);
-    border-color: rgba(255, 143, 16, 0.3);
+    border-color: rgba(139, 92, 246, 0.3);
 
     &:hover {
-      background: rgba(255, 143, 16, 0.15);
+      background: rgba(139, 92, 246, 0.15);
     }
   }
 `;
@@ -336,7 +336,7 @@ const ActionButtons = styled.div`
       color: white;
 
       &:hover {
-        box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
         transform: translateY(-2px);
       }
     }
@@ -621,3 +621,4 @@ const FollowingTab: React.FC = () => {
 };
 
 export default FollowingTab;
+

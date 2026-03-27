@@ -23,6 +23,9 @@ export * from './types/numeric-id.types';
 export * from './constants/social-links';
 export * from './constants/vehicle-collections';
 
+// SDK — Unified service interfaces and shared business logic
+export * from './sdk';
+
 // Locales (canonical source — synced to mobile via scripts/sync-shared.js)
 export { errors as errorsEn } from './locales/en/errors';
 export { errors as errorsBg } from './locales/bg/errors';

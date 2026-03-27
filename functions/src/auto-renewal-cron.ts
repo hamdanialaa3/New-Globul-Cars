@@ -33,10 +33,10 @@ export const dailyAutoRenewal = functions
     const results: RenewalResult[] = [];
 
     try {
-      console.log('Starting daily auto-renewal job');
+      functions.logger.info('Starting daily auto-renewal job');
 
       const expiredCars = await findExpiredListings();
-      console.log(`Found ${expiredCars.length} expired listings`);
+      functions.logger.info(`Found ${expiredCars.length} expired listings`);
 
       for (const car of expiredCars) {
         const result = await renewListing(car);
@@ -50,7 +50,7 @@ export const dailyAutoRenewal = functions
       await saveRenewalReport(results);
 
       const duration = Date.now() - startTime;
-      console.log('Auto-renewal completed', {
+      functions.logger.info('Auto-renewal completed', {
         totalProcessed: results.length,
         totalRenewed: results.filter(r => r.success).length,
         totalFailed: results.filter(r => !r.success).length,
@@ -59,7 +59,7 @@ export const dailyAutoRenewal = functions
 
       return null;
     } catch (error) {
-      console.error('Auto-renewal cron failed:', error);
+      functions.logger.error('Auto-renewal cron failed:', error);
       throw error;
     }
   });
@@ -95,7 +95,7 @@ async function findExpiredListings(): Promise<any[]> {
         });
       });
     } catch (error) {
-      console.error(`Error querying ${collectionName}:`, error);
+      functions.logger.error(`Error querying ${collectionName}:`, error);
     }
   }
 
@@ -149,7 +149,7 @@ async function renewListing(car: any): Promise<RenewalResult> {
       isActive: true
     });
 
-    console.log('Listing renewed:', { userId, carId: car.id });
+    functions.logger.info('Listing renewed:', { userId, carId: car.id });
 
     return {
       userId,
@@ -173,7 +173,7 @@ async function sendRenewalNotification(userId: string, carId: string): Promise<v
     const userSnapshot = await db.collection('users').where('uid', '==', userId).get();
 
     if (userSnapshot.empty) {
-      console.error('User not found for notification:', userId);
+      functions.logger.error('User not found for notification:', userId);
       return;
     }
 
@@ -181,7 +181,7 @@ async function sendRenewalNotification(userId: string, carId: string): Promise<v
     const email = userData.email;
 
     if (!email) {
-      console.error('No email found for user:', userId);
+      functions.logger.error('No email found for user:', userId);
       return;
     }
 
@@ -198,9 +198,9 @@ async function sendRenewalNotification(userId: string, carId: string): Promise<v
       }
     });
 
-    console.log('Renewal notification sent:', { userId, carId, email });
+    functions.logger.info('Renewal notification sent:', { userId, carId, email });
   } catch (error) {
-    console.error('Failed to send renewal notification:', error);
+    functions.logger.error('Failed to send renewal notification:', error);
   }
 }
 
@@ -215,8 +215,8 @@ async function saveRenewalReport(results: RenewalResult[]): Promise<void> {
     };
 
     await db.collection('renewal_reports').add(report);
-    console.log('Renewal report saved');
+    functions.logger.info('Renewal report saved');
   } catch (error) {
-    console.error('Failed to save renewal report:', error);
+    functions.logger.error('Failed to save renewal report:', error);
   }
 }

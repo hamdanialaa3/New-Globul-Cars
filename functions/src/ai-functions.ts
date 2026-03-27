@@ -14,7 +14,7 @@ const db = admin.firestore();
 const getApiKey = (): string | undefined => {
   const envKey = process.env.GOOGLE_GENERATIVE_AI_KEY;
   if (envKey) {
-    console.log('[ai-functions] API key loaded, length:', envKey.length);
+    functions.logger.info('[ai-functions] API key loaded', { length: envKey.length });
     return envKey.trim();
   }
   return undefined;
@@ -22,13 +22,13 @@ const getApiKey = (): string | undefined => {
 
 const apiKey = getApiKey();
 if (!apiKey) {
-  console.error('[ai-functions] GOOGLE_GENERATIVE_AI_KEY is not configured');
+  functions.logger.error('[ai-functions] GOOGLE_GENERATIVE_AI_KEY is not configured');
 } else {
-  console.log('[ai-functions] API key successfully loaded');
+  functions.logger.info('[ai-functions] API key successfully loaded');
 }
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 if (!genAI) {
-  console.warn('[ai-functions] Gemini AI is disabled - no API key configured');
+  functions.logger.warn('[ai-functions] Gemini AI is disabled - no API key configured');
 }
 
 // ==================== AI QUOTA MANAGEMENT ====================
@@ -111,7 +111,7 @@ export const aiQuotaCheck = functions
 
       return { allowed: true, remaining: limit - used };
     } catch (error: any) {
-      console.error('[aiQuotaCheck] Error:', error);
+      functions.logger.error('[aiQuotaCheck] Error', { error });
       throw new functions.https.HttpsError('internal', 'Error checking quota');
     }
   });
@@ -147,7 +147,7 @@ export const geminiChat = functions
 
       // Check API key availability
       if (!apiKey || apiKey === 'MISSING_KEY') {
-        console.error('[geminiChat] API key not configured');
+        functions.logger.error('[geminiChat] API key not configured');
         throw new functions.https.HttpsError(
           'internal',
           'AI service not configured'
@@ -195,10 +195,10 @@ export const geminiChat = functions
       }
 
       // Call Gemini
-      console.log(
-        `[geminiChat] Calling Gemini (${isAuthenticated ? 'authenticated' : 'guest'}) with message:`,
-        message.substring(0, 50) + '...'
-      );
+      functions.logger.info('[geminiChat] Calling Gemini', {
+        mode: isAuthenticated ? 'authenticated' : 'guest',
+        messagePreview: message.substring(0, 50),
+      });
 
       if (!genAI) {
         throw new functions.https.HttpsError(
@@ -210,10 +210,7 @@ export const geminiChat = functions
       const result = await model.generateContent(message.trim());
       const response = result.response.text();
 
-      console.log(
-        '[geminiChat] Gemini response received, length:',
-        response.length
-      );
+      functions.logger.info('[geminiChat] Gemini response received', { length: response.length });
 
       // Update quota
       await quotaRef.update({
@@ -233,14 +230,14 @@ export const geminiChat = functions
       });
 
       const quotaRemaining = dailyLimit - (usedToday + 1);
-      console.log('[geminiChat] Success - quota remaining:', quotaRemaining);
+      functions.logger.info('[geminiChat] Success', { quotaRemaining });
 
       return {
         message: response,
         quotaRemaining: quotaRemaining,
       };
     } catch (error: any) {
-      console.error('[geminiChat] Error:', error);
+      functions.logger.error('[geminiChat] Error', { error });
 
       // Return specific error messages for debugging
       if (error.code === 'resource-exhausted') {
@@ -252,19 +249,19 @@ export const geminiChat = functions
         error.message?.includes('key') ||
         error.message?.includes('401')
       ) {
-        console.error('[geminiChat] API Configuration Error:', error.message);
+        functions.logger.error('[geminiChat] API Configuration Error', { message: error.message });
         throw new functions.https.HttpsError(
           'internal',
           'AI service configuration error'
         );
       } else if (error.message?.includes('PERMISSION_DENIED')) {
-        console.error('[geminiChat] Permission Denied:', error.message);
+        functions.logger.error('[geminiChat] Permission Denied', { message: error.message });
         throw new functions.https.HttpsError(
           'permission-denied',
           'Access denied to AI service'
         );
       } else {
-        console.error('[geminiChat] Unexpected error:', error.message || error);
+        functions.logger.error('[geminiChat] Unexpected error', { message: error.message });
         throw new functions.https.HttpsError(
           'internal',
           'Failed to generate response'
@@ -358,7 +355,7 @@ export const geminiPriceSuggestion = functions
 
       return suggestion;
     } catch (error: any) {
-      console.error('[geminiPriceSuggestion] Error:', error);
+      functions.logger.error('[geminiPriceSuggestion] Error', { error });
       throw new functions.https.HttpsError(
         'internal',
         'Price suggestion failed'
@@ -431,7 +428,7 @@ async function trackImageAnalysisUsage(userId: string, cost: number) {
         lastActivity: admin.firestore.FieldValue.serverTimestamp(),
       });
   } catch (e) {
-    console.error('Error tracking usage:', e);
+    functions.logger.error('Error tracking usage', { error: e });
   }
 }
 
@@ -511,7 +508,7 @@ export const analyzeCarImage = functions
           parsed = JSON.parse(text);
         }
       } catch (e) {
-        console.warn('JSON Parse Error:', text);
+        functions.logger.warn('JSON Parse Error', { text: text.substring(0, 200) });
         throw new Error('Failed to parse AI response');
       }
 
@@ -520,7 +517,7 @@ export const analyzeCarImage = functions
 
       return parsed;
     } catch (error: any) {
-      console.error('[analyzeCarImage] Error:', error);
+      functions.logger.error('[analyzeCarImage] Error', { error });
       if (error instanceof functions.https.HttpsError) throw error;
       throw new functions.https.HttpsError('internal', 'Image analysis failed');
     }
@@ -601,7 +598,7 @@ export const analyzeImageQuality = functions
 
       return parsed;
     } catch (error: any) {
-      console.error('[analyzeImageQuality] Error:', error);
+      functions.logger.error('[analyzeImageQuality] Error', { error });
       if (error instanceof functions.https.HttpsError) throw error;
       throw new functions.https.HttpsError(
         'internal',

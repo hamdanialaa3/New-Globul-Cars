@@ -204,7 +204,7 @@ const ActionButtons = styled.div`
 const ActionButton = styled.button<{ $variant?: 'view' | 'edit' | 'delete' }>`
   background: ${props => {
     if (props.$variant === 'delete') return '#e74c3c';
-    if (props.$variant === 'edit') return '#FF7900';
+    if (props.$variant === 'edit') return '#2563EB';
     return '#667eea';
   }};
   color: white;
@@ -436,7 +436,7 @@ const MyListingsPage: React.FC = () => {
         {/* Empty State */}
         {!loading && !error && listings.length === 0 && (
           <EmptyState>
-            <CarIcon size={64} color="#FF7900" style={{ marginBottom: '16px', opacity: 0.6 }} />
+            <CarIcon size={64} color="#2563EB" style={{ marginBottom: '16px', opacity: 0.6 }} />
             <h3>{language === 'bg' ? 'Нямате обяви' : 'No listings yet'}</h3>
             <p>
               {language === 'bg'
@@ -510,3 +510,4 @@ const MyListingsPage: React.FC = () => {
 };
 
 export default MyListingsPage;
+

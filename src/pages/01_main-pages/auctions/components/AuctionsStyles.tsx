@@ -328,7 +328,7 @@ export const SoundToggleButton = styled.button<{ $active: boolean }>`
     border: 1px solid ${props => props.theme.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
     background: ${props => props.theme.mode === 'dark' ? 'rgba(15, 23, 42, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
     backdrop-filter: blur(10px);
-    color: ${props => props.$active ? (props.theme.colors.primary.main || '#FF7900') : props.theme.colors.text.secondary};
+    color: ${props => props.$active ? (props.theme.colors.primary.main || '#2563EB') : props.theme.colors.text.secondary};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -467,7 +467,7 @@ export const StarButton = styled.button<{ $active?: boolean }>`
     top: 15px;
     right: 15px;
     background: ${props => props.$active 
-        ? (props.theme.colors.primary.main || '#FF7900') 
+        ? (props.theme.colors.primary.main || '#2563EB') 
         : 'rgba(0, 0, 0, 0.4)'};
     border: none;
     border-radius: 50%;
@@ -485,7 +485,7 @@ export const StarButton = styled.button<{ $active?: boolean }>`
     &:hover {
         transform: scale(1.15) rotate(15deg);
         background: ${props => props.$active 
-            ? (props.theme.colors.primary.main || '#FF7900') 
+            ? (props.theme.colors.primary.main || '#2563EB') 
             : 'rgba(0, 0, 0, 0.6)'};
     }
 
@@ -605,4 +605,5 @@ export const GarageCard = styled.div`
         opacity: 1;
     }
 `;
+
 

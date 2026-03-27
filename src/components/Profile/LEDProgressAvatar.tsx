@@ -174,7 +174,7 @@ const DEFAULT_SHAPES: Record<ProfileType, 'circle' | 'square'> = {
 
 // Default LED Colors by Profile Type
 const DEFAULT_LED_COLORS: Record<ProfileType, string> = {
-  private: '#FF8F10',   // Orange
+  private: '#3B82F6',   // Orange
   dealer: '#16a34a',    // Green
   company: '#1d4ed8'    // Blue
 };
@@ -295,4 +295,5 @@ export const LEDProgressAvatar: React.FC<LEDProgressAvatarProps> = ({
 
 // Export default
 export default LEDProgressAvatar;
+
 

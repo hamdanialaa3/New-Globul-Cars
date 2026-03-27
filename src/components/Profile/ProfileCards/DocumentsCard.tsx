@@ -267,8 +267,8 @@ const DownloadButton = styled.button`
   flex-shrink: 0;
 
   &:hover {
-    background: #FF7900;
-    border-color: #FF7900;
+    background: #2563EB;
+    border-color: #2563EB;
     color: white;
   }
 
@@ -324,4 +324,5 @@ const EmptyText = styled.p`
 `;
 
 export default DocumentsCard;
+
 

@@ -49,11 +49,13 @@ import SectionControlPanel from '@/components/SuperAdmin/SectionControlPanel';
 import SiteSettingsControl from '@/components/SuperAdmin/SiteSettingsControl';
 import ThemeControl from '@/components/SuperAdmin/ThemeControl';
 import FeaturedContentManager from '@/components/SuperAdmin/FeaturedContentManager';
+import HomepageControlManager from '@/components/SuperAdmin/HomepageControlManager';
 import SEOControl from '@/components/SuperAdmin/SEOControl';
 import AnnouncementManager from '@/components/SuperAdmin/AnnouncementManager';
 import BackupRestoreManager from '@/components/SuperAdmin/BackupRestoreManager';
 import QuickActionsPanel from '@/components/SuperAdmin/QuickActionsPanel';
 import PlatformStatusDashboard from '@/components/SuperAdmin/PlatformStatusDashboard';
+import PageBuilderManager from '@/components/SuperAdmin/PageBuilderManager';
 import { Users } from 'lucide-react';
 
 // Loading State Styles
@@ -337,9 +339,14 @@ const DashboardContent: React.FC = () => {
         </>
       )}
 
+      {activeTab === 'page-builder' && (
+        <PageBuilderManager />
+      )}
+
       {activeTab === 'content' && (
         <>
           <AdvancedContentManagement />
+          <HomepageControlManager />
           <FeaturedContentManager />
           <AnnouncementManager />
           <SectionControlPanel />

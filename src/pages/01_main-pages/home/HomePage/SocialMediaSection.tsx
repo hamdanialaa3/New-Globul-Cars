@@ -1,4 +1,4 @@
-﻿// Social Media Section - Collapsible Social Feed
+// Social Media Section - Collapsible Social Feed
 // قسم التواصل الاجتماعي - القابل للطي
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -183,11 +183,11 @@ const AnimatedBorder = styled.div<{ $isExpanded: boolean }>`
   bottom: -4px;
   background: conic-gradient(
     from 0deg,
-    #FF7900,
-    #FF8F10,
+    #2563EB,
+    #3B82F6,
     #FFA500,
     #FFD700,
-    #FF7900
+    #2563EB
   );
   border-radius: 24px;
   z-index: -1;
@@ -314,7 +314,7 @@ const ToggleButton = styled.div`
   html[data-theme="light"] & {
     background: var(--btn-primary-bg);
     color: #ffffff !important;
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35) !important;
   }
 
   /* Dark mode: Yellow gradient background, Black text */
@@ -329,7 +329,7 @@ const ToggleButton = styled.div`
     html[data-theme="light"] & {
       background: var(--btn-primary-bg);
       color: #ffffff !important;
-      box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5) !important;
     }
     html[data-theme="dark"] & {
       background: var(--btn-primary-bg);
@@ -370,4 +370,6 @@ const LoadingState = styled.div`
 `;
 
 export default SocialMediaSection;
+
+
 

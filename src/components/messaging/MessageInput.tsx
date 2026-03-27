@@ -96,7 +96,7 @@ const TextInput = styled.textarea`
   
   &:focus {
     outline: none;
-    border-color: #FF7900;
+    border-color: #2563EB;
   }
   
   &::placeholder {
@@ -114,7 +114,7 @@ const ActionButton = styled.button<{ $primary?: boolean }>`
   height: 44px;
   border-radius: 50%;
   border: none;
-  background: ${props => props.$primary ? '#FF7900' : '#f0f0f0'};
+  background: ${props => props.$primary ? '#2563EB' : '#f0f0f0'};
   color: ${props => props.$primary ? 'white' : '#666'};
   display: flex;
   align-items: center;
@@ -301,3 +301,4 @@ const MessageInput: React.FC<MessageInputProps> = ({
 };
 
 export default MessageInput;
+

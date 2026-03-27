@@ -157,8 +157,8 @@ export const TabButton = styled.button<{ $active: boolean; $themeColor?: string 
         )`
       : `linear-gradient(135deg,
           rgba(255, 159, 42, 0.98) 0%,
-          rgba(255, 143, 16, 1) 30%,
-          rgba(255, 121, 0, 1) 60%,
+          rgba(139, 92, 246, 1) 30%,
+          rgba(99, 102, 241, 1) 60%,
           rgba(255, 102, 0, 0.98) 100%
         )`
     };
@@ -170,8 +170,8 @@ export const TabButton = styled.button<{ $active: boolean; $themeColor?: string 
     box-shadow: 
       0 1px 0 rgba(255, 255, 255, 0.4) inset,
       0 -1px 0 rgba(0, 0, 0, 0.1) inset,
-      ${$themeColor ? `0 8px 24px ${$themeColor}59` : '0 8px 24px rgba(255, 143, 16, 0.35)'},
-      ${$themeColor ? `0 3px 8px ${$themeColor}40` : '0 3px 8px rgba(255, 121, 0, 0.25)'},
+      ${$themeColor ? `0 8px 24px ${$themeColor}59` : '0 8px 24px rgba(139, 92, 246, 0.35)'},
+      ${$themeColor ? `0 3px 8px ${$themeColor}40` : '0 3px 8px rgba(99, 102, 241, 0.25)'},
       ${$themeColor ? `0 0 0 1px ${$themeColor}4D` : '0 0 0 1px rgba(255, 215, 0, 0.3)'};
     
     /* Shimmer Animation */
@@ -252,28 +252,28 @@ export const TabButton = styled.button<{ $active: boolean; $themeColor?: string 
         : `linear-gradient(135deg,
             rgba(255, 175, 64, 1) 0%,
             rgba(255, 159, 42, 1) 30%,
-            rgba(255, 143, 16, 1) 60%,
-            rgba(255, 121, 0, 1) 100%
+            rgba(139, 92, 246, 1) 60%,
+            rgba(99, 102, 241, 1) 100%
           )`
       };
       transform: translateY(-2px) scale(1.02);
       box-shadow: 
         0 1px 0 rgba(255, 255, 255, 0.5) inset,
         0 -1px 0 rgba(0, 0, 0, 0.15) inset,
-        ${$themeColor ? `0 12px 32px ${$themeColor}73` : '0 12px 32px rgba(255, 143, 16, 0.45)'},
-        ${$themeColor ? `0 4px 12px ${$themeColor}4D` : '0 4px 12px rgba(255, 121, 0, 0.3)'},
+        ${$themeColor ? `0 12px 32px ${$themeColor}73` : '0 12px 32px rgba(139, 92, 246, 0.45)'},
+        ${$themeColor ? `0 4px 12px ${$themeColor}4D` : '0 4px 12px rgba(99, 102, 241, 0.3)'},
         ${$themeColor ? `0 0 0 1px ${$themeColor}80` : '0 0 0 1px rgba(255, 215, 0, 0.5)'};
     ` : `
       background: linear-gradient(135deg,
         rgba(255, 255, 255, 0.7) 0%,
         rgba(255, 248, 240, 0.6) 100%
       );
-      border-color: ${$themeColor ? `${$themeColor}59` : 'rgba(255, 143, 16, 0.35)'};
+      border-color: ${$themeColor ? `${$themeColor}59` : 'rgba(139, 92, 246, 0.35)'};
       color: #495057;
       transform: translateY(-1px);
       box-shadow: 
         0 1px 0 rgba(255, 255, 255, 0.8) inset,
-        ${$themeColor ? `0 6px 16px ${$themeColor}1A` : '0 6px 16px rgba(255, 143, 16, 0.1)'},
+        ${$themeColor ? `0 6px 16px ${$themeColor}1A` : '0 6px 16px rgba(139, 92, 246, 0.1)'},
         0 2px 6px rgba(0, 0, 0, 0.06);
   `}
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -283,7 +283,7 @@ export const TabButton = styled.button<{ $active: boolean; $themeColor?: string 
     outline: none;
     box-shadow: 
       0 0 0 4px rgba(255, 215, 0, 0.4),
-      0 8px 24px rgba(255, 143, 16, 0.3);
+      0 8px 24px rgba(139, 92, 246, 0.3);
   }
   
   /* ACTIVE (PRESSED) STATE */
@@ -411,12 +411,12 @@ export const SyncButton = styled.button`
       rgba(255, 248, 240, 0.8) 0%,
       rgba(255, 243, 224, 0.7) 100%
     );
-    border-color: rgba(255, 143, 16, 0.4);
+    border-color: rgba(139, 92, 246, 0.4);
     color: #212529;
     transform: translateY(-2px);
     box-shadow: 
       0 1px 0 rgba(255, 255, 255, 0.9) inset,
-      0 6px 18px rgba(255, 143, 16, 0.15),
+      0 6px 18px rgba(139, 92, 246, 0.15),
       0 2px 6px rgba(0, 0, 0, 0.08);
   }
   
@@ -481,8 +481,8 @@ export const FollowButton = styled.button<{ $following: boolean }>`
     /* Not Following State (Orange Glass) */
     background: linear-gradient(135deg,
       rgba(255, 159, 42, 0.95) 0%,
-      rgba(255, 143, 16, 1) 30%,
-      rgba(255, 121, 0, 1) 70%,
+      rgba(139, 92, 246, 1) 30%,
+      rgba(99, 102, 241, 1) 70%,
       rgba(255, 102, 0, 0.98) 100%
     );
     background-size: 200% auto;
@@ -493,7 +493,7 @@ export const FollowButton = styled.button<{ $following: boolean }>`
     box-shadow: 
       0 1px 0 rgba(255, 255, 255, 0.4) inset,
       0 -1px 0 rgba(0, 0, 0, 0.1) inset,
-      0 6px 20px rgba(255, 143, 16, 0.4),
+      0 6px 20px rgba(139, 92, 246, 0.4),
       0 2px 6px rgba(0, 0, 0, 0.1);
     
     /* Shimmer Effect */
@@ -537,15 +537,15 @@ export const FollowButton = styled.button<{ $following: boolean }>`
       background: linear-gradient(135deg,
         rgba(255, 175, 64, 1) 0%,
         rgba(255, 159, 42, 1) 30%,
-        rgba(255, 143, 16, 1) 70%,
-        rgba(255, 121, 0, 1) 100%
+        rgba(139, 92, 246, 1) 70%,
+        rgba(99, 102, 241, 1) 100%
       );
       transform: translateY(-3px) scale(1.02);
       box-shadow: 
         0 1px 0 rgba(255, 255, 255, 0.5) inset,
         0 -1px 0 rgba(0, 0, 0, 0.15) inset,
-        0 10px 28px rgba(255, 143, 16, 0.5),
-        0 4px 10px rgba(255, 121, 0, 0.3);
+        0 10px 28px rgba(139, 92, 246, 0.5),
+        0 4px 10px rgba(99, 102, 241, 0.3);
     `}
   }
   
@@ -670,14 +670,14 @@ export const TabNavLink = styled(NavLink)<{ $themeColor?: string }>`
   &.active {
     background: ${props => props.$themeColor ? 
       `linear-gradient(135deg, ${props.$themeColor}20 0%, ${props.$themeColor}10 100%)` :
-      'linear-gradient(135deg, rgba(255, 143, 16, 0.12) 0%, rgba(255, 185, 0, 0.06) 100%)'
+      'linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(255, 185, 0, 0.06) 100%)'
     };
     box-shadow: 
-      inset 0 2px 6px ${props => props.$themeColor ? `${props.$themeColor}15` : 'rgba(255, 143, 16, 0.08)'},
+      inset 0 2px 6px ${props => props.$themeColor ? `${props.$themeColor}15` : 'rgba(139, 92, 246, 0.08)'},
       inset 0 -2px 4px rgba(255, 255, 255, 0.6),
-      0 0 0 2px ${props => props.$themeColor ? `${props.$themeColor}40` : 'rgba(255, 143, 16, 0.25)'},
-      0 4px 12px ${props => props.$themeColor ? `${props.$themeColor}20` : 'rgba(255, 143, 16, 0.12)'};
-    color: ${props => props.$themeColor || '#FF8F10'};
+      0 0 0 2px ${props => props.$themeColor ? `${props.$themeColor}40` : 'rgba(139, 92, 246, 0.25)'},
+      0 4px 12px ${props => props.$themeColor ? `${props.$themeColor}20` : 'rgba(139, 92, 246, 0.12)'};
+    color: ${props => props.$themeColor || '#3B82F6'};
     font-weight: 600;
     transform: translateY(-1px);
   }
@@ -686,16 +686,16 @@ export const TabNavLink = styled(NavLink)<{ $themeColor?: string }>`
   html[data-theme="dark"] &.active {
     background: ${props => props.$themeColor ? 
       `linear-gradient(135deg, ${props.$themeColor}30 0%, ${props.$themeColor}20 100%)` :
-      'linear-gradient(135deg, rgba(255, 143, 16, 0.25) 0%, rgba(255, 185, 0, 0.15) 100%)'
+      'linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(255, 185, 0, 0.15) 100%)'
     };
     box-shadow: 
-      inset 0 2px 6px ${props => props.$themeColor ? `${props.$themeColor}25` : 'rgba(255, 143, 16, 0.15)'},
+      inset 0 2px 6px ${props => props.$themeColor ? `${props.$themeColor}25` : 'rgba(139, 92, 246, 0.15)'},
       inset 0 -2px 4px rgba(0, 0, 0, 0.3),
-      0 0 0 2px ${props => props.$themeColor ? `${props.$themeColor}60` : 'rgba(255, 143, 16, 0.4)'},
-      0 4px 12px ${props => props.$themeColor ? `${props.$themeColor}30` : 'rgba(255, 143, 16, 0.2)'},
-      0 0 20px ${props => props.$themeColor ? `${props.$themeColor}20` : 'rgba(255, 143, 16, 0.1)'};
-    color: ${props => props.$themeColor || '#FF8F10'};
-    border-color: ${props => props.$themeColor ? `${props.$themeColor}50` : 'rgba(255, 143, 16, 0.3)'};
+      0 0 0 2px ${props => props.$themeColor ? `${props.$themeColor}60` : 'rgba(139, 92, 246, 0.4)'},
+      0 4px 12px ${props => props.$themeColor ? `${props.$themeColor}30` : 'rgba(139, 92, 246, 0.2)'},
+      0 0 20px ${props => props.$themeColor ? `${props.$themeColor}20` : 'rgba(139, 92, 246, 0.1)'};
+    color: ${props => props.$themeColor || '#3B82F6'};
+    border-color: ${props => props.$themeColor ? `${props.$themeColor}50` : 'rgba(139, 92, 246, 0.3)'};
   }
   
   /* Hover - Light Mode */
@@ -745,10 +745,10 @@ export const TabNavLink = styled(NavLink)<{ $themeColor?: string }>`
     &.active {
       /* Stronger active indicator (Facebook pattern) - Light Mode */
       box-shadow: 
-        inset 0 3px 8px ${props => props.$themeColor ? `${props.$themeColor}20` : 'rgba(255, 143, 16, 0.12)'},
+        inset 0 3px 8px ${props => props.$themeColor ? `${props.$themeColor}20` : 'rgba(139, 92, 246, 0.12)'},
         inset 0 -2px 4px rgba(255, 255, 255, 0.7),
-        0 0 0 2.5px ${props => props.$themeColor ? `${props.$themeColor}50` : 'rgba(255, 143, 16, 0.3)'},
-        0 6px 16px ${props => props.$themeColor ? `${props.$themeColor}25` : 'rgba(255, 143, 16, 0.15)'};
+        0 0 0 2.5px ${props => props.$themeColor ? `${props.$themeColor}50` : 'rgba(139, 92, 246, 0.3)'},
+        0 6px 16px ${props => props.$themeColor ? `${props.$themeColor}25` : 'rgba(139, 92, 246, 0.15)'};
       
       transform: translateY(-2px);
       
@@ -761,11 +761,11 @@ export const TabNavLink = styled(NavLink)<{ $themeColor?: string }>`
     /* Dark Mode - Mobile Active */
     html[data-theme="dark"] &.active {
       box-shadow: 
-        inset 0 3px 8px ${props => props.$themeColor ? `${props.$themeColor}30` : 'rgba(255, 143, 16, 0.2)'},
+        inset 0 3px 8px ${props => props.$themeColor ? `${props.$themeColor}30` : 'rgba(139, 92, 246, 0.2)'},
         inset 0 -2px 4px rgba(0, 0, 0, 0.4),
-        0 0 0 2.5px ${props => props.$themeColor ? `${props.$themeColor}70` : 'rgba(255, 143, 16, 0.5)'},
-        0 6px 16px ${props => props.$themeColor ? `${props.$themeColor}35` : 'rgba(255, 143, 16, 0.25)'},
-        0 0 24px ${props => props.$themeColor ? `${props.$themeColor}25` : 'rgba(255, 143, 16, 0.15)'};
+        0 0 0 2.5px ${props => props.$themeColor ? `${props.$themeColor}70` : 'rgba(139, 92, 246, 0.5)'},
+        0 6px 16px ${props => props.$themeColor ? `${props.$themeColor}35` : 'rgba(139, 92, 246, 0.25)'},
+        0 0 24px ${props => props.$themeColor ? `${props.$themeColor}25` : 'rgba(139, 92, 246, 0.15)'};
     }
     
     /* Hover on touch devices (light touch) - Light Mode */
@@ -780,4 +780,6 @@ export const TabNavLink = styled(NavLink)<{ $themeColor?: string }>`
     }
   }
 `;
+
+
 

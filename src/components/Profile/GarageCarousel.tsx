@@ -41,7 +41,7 @@ const CarouselContainer = styled.div`
   border-radius: 16px;
   padding: 20px;
   margin-bottom: 24px;
-  border: 2px solid rgba(255, 143, 16, 0.15);
+  border: 2px solid rgba(139, 92, 246, 0.15);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 `;
 
@@ -51,7 +51,7 @@ const CarouselHeader = styled.div`
   align-items: center;
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 2px solid rgba(255, 143, 16, 0.1);
+  border-bottom: 2px solid rgba(139, 92, 246, 0.1);
 `;
 
 const HeaderLeft = styled.div`
@@ -63,12 +63,12 @@ const HeaderLeft = styled.div`
 const GarageIconWrapper = styled.div`
   width: 44px;
   height: 44px;
-  background: linear-gradient(135deg, #FF7900 0%, #FF8F10 100%);
+  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(255, 121, 0, 0.25);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
   
   svg {
     color: white;
@@ -83,7 +83,7 @@ const HeaderTitle = styled.div`
     color: #212529;
     
     span {
-      color: #FF7900;
+      color: #2563EB;
       margin-left: 8px;
     }
   }
@@ -97,7 +97,7 @@ const HeaderTitle = styled.div`
 
 const ViewAllButton = styled.button`
   padding: 8px 16px;
-  background: linear-gradient(135deg, #FF7900 0%, #FF8F10 100%);
+  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -105,11 +105,11 @@ const ViewAllButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(255, 121, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
   }
   
   &:active {
@@ -139,7 +139,7 @@ const CarouselTrack = styled.div`
   }
   
   &::-webkit-scrollbar-thumb {
-    background: #FF7900;
+    background: #2563EB;
     border-radius: 3px;
   }
   
@@ -159,8 +159,8 @@ const CircularCarCard = styled.div<{ $status?: string }>`
     transform: translateY(-4px) scale(1.05);
     
     .car-circle {
-      box-shadow: 0 8px 24px rgba(255, 121, 0, 0.3);
-      border-color: #FF7900;
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+      border-color: #2563EB;
     }
   }
 `;
@@ -175,7 +175,7 @@ const CarCircle = styled.div<{ $imageUrl?: string }>`
   };
   background-size: cover;
   background-position: center;
-  border: 4px solid rgba(255, 143, 16, 0.2);
+  border: 4px solid rgba(139, 92, 246, 0.2);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   transition: all 0.3s ease;
   display: flex;
@@ -271,7 +271,7 @@ const CarName = styled.div`
 const CarPrice = styled.div`
   font-size: 1rem;
   font-weight: 700;
-  color: #FF7900;
+  color: #2563EB;
   margin-bottom: 4px;
 `;
 
@@ -304,7 +304,7 @@ const EmptyGarage = styled.div`
 
 const AddCarButton = styled.button`
   padding: 10px 20px;
-  background: linear-gradient(135deg, #FF7900 0%, #FF8F10 100%);
+  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -315,11 +315,11 @@ const AddCarButton = styled.button`
   align-items: center;
   gap: 8px;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(255, 121, 0, 0.25);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(255, 121, 0, 0.35);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
   }
   
   &:active {
@@ -338,15 +338,15 @@ const ScrollButton = styled.button<{ $direction: 'left' | 'right' }>`
   min-height: 50px;
   max-width: 50px;
   max-height: 50px;
-  background: rgba(255, 143, 16, 0.25);
-  border: 2px solid rgba(255, 143, 16, 0.5);
+  background: rgba(139, 92, 246, 0.25);
+  border: 2px solid rgba(139, 92, 246, 0.5);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 16px rgba(255, 143, 16, 0.2);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
   backdrop-filter: blur(8px);
   z-index: 10;
   
@@ -361,10 +361,10 @@ const ScrollButton = styled.button<{ $direction: 'left' | 'right' }>`
   }
   
   &:hover {
-    background: rgba(255, 143, 16, 0.4);
+    background: rgba(139, 92, 246, 0.4);
     border-color: var(--accent-primary);
     transform: translateY(-50%) translateX(${props => props.$direction === 'left' ? '-4px' : '4px'});
-    box-shadow: 0 6px 24px rgba(255, 143, 16, 0.3);
+    box-shadow: 0 6px 24px rgba(139, 92, 246, 0.3);
     
     svg {
       color: var(--accent-primary);
@@ -374,7 +374,7 @@ const ScrollButton = styled.button<{ $direction: 'left' | 'right' }>`
   
   &:active {
     transform: translateY(-50%) scale(0.95);
-    box-shadow: 0 2px 8px rgba(255, 143, 16, 0.25);
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);
   }
   
   @media (max-width: 768px) {
@@ -544,13 +544,13 @@ export const GarageCarousel: React.FC<GarageCarouselProps> = ({
             <CircularCarCard onClick={onAddNew}>
               <CarCircle style={{ 
                 background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
-                border: '4px dashed rgba(255, 143, 16, 0.4)'
+                border: '4px dashed rgba(139, 92, 246, 0.4)'
               }}>
-                <Plus size={48} style={{ color: '#FF7900' }} />
+                <Plus size={48} style={{ color: '#2563EB' }} />
               </CarCircle>
               
               <CarInfo>
-                <CarName style={{ color: '#FF7900' }}>
+                <CarName style={{ color: '#2563EB' }}>
                   {language === 'bg' ? 'Добави кола' : 'Add Car'}
                 </CarName>
               </CarInfo>
@@ -563,4 +563,6 @@ export const GarageCarousel: React.FC<GarageCarouselProps> = ({
 };
 
 export default GarageCarousel;
+
+
 

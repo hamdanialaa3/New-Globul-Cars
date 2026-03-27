@@ -118,9 +118,9 @@ const Section = styled.section<{ $isDark: boolean }>`
   overflow: hidden;
   background: ${props => props.$isDark ? '#0f172a' : '#f8fafc'};
   /* 🟣 Light purple border */
-  border-top: 1px solid rgba(230, 81, 0, 0.1);
-  border-bottom: 1px solid rgba(230, 81, 0, 0.1);
-  box-shadow: inset 0 2px 8px rgba(230, 81, 0, 0.04);
+  border-top: 1px solid rgba(37, 99, 235, 0.1);
+  border-bottom: 1px solid rgba(37, 99, 235, 0.1);
+  box-shadow: inset 0 2px 8px rgba(37, 99, 235, 0.04);
 
   @media (max-width: 768px) {
     padding: 3rem 0;
@@ -580,7 +580,7 @@ const SearchButton = styled(Link) <{ $variant?: 'primary' | 'secondary' }>`
   html[data-theme="light"] & {
     background: var(--btn-primary-bg);
     color: #ffffff !important;
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35) !important;
   }
 
   /* Dark mode: Yellow gradient background, Black text */
@@ -600,7 +600,7 @@ const SearchButton = styled(Link) <{ $variant?: 'primary' | 'secondary' }>`
     html[data-theme="light"] & {
       background: var(--btn-primary-bg);
       color: #ffffff !important;
-      box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5) !important;
     }
     html[data-theme="dark"] & {
       background: var(--btn-primary-bg);
@@ -632,7 +632,7 @@ const SearchButton = styled(Link) <{ $variant?: 'primary' | 'secondary' }>`
 // ============================================================================
 
 const FeaturedShowcase: React.FC = memo(() => {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const isBg = language === 'bg';
@@ -709,8 +709,8 @@ const FeaturedShowcase: React.FC = memo(() => {
     : 'Discover the best carefully selected cars suitable for our roads, from the Rhodope Mountains to the Black Sea coast.';
   const viewAllText = isBg ? 'Покажи всички обяви в България' : 'View All Listings in Bulgaria';
   const priceLabel = isBg ? 'Цена' : 'Price';
-  const loadingText = isBg ? 'Зареждане...' : 'Loading...';
-  const noCarsText = isBg ? 'Няма намерени автомобили' : 'No cars found';
+  const loadingText = t('common.loading');
+  const noCarsText = t('cars.noResults');
 
   // Loading skeleton
   if (loading) {

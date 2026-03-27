@@ -45,7 +45,7 @@ export const handleEpayWebhook = functions
       const notification = parseEpayNotification(req.body, EPAY_SECRET_KEY);
 
       if (!verifyEpaySignature(req.body, EPAY_SECRET_KEY)) {
-        console.error('Invalid ePay.bg signature');
+        functions.logger.error('Invalid ePay.bg signature');
         res.status(401).json({ error: 'Invalid signature' });
         return;
       }
@@ -54,7 +54,7 @@ export const handleEpayWebhook = functions
 
       res.status(200).json({ success: true });
     } catch (error) {
-      console.error('ePay webhook error:', error);
+      functions.logger.error('ePay webhook error:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   });
@@ -74,7 +74,7 @@ export const handleEasypayWebhook = functions
       }
 
       if (!verifyEasypaySignature(req.body, EASYPAY_SECRET_KEY)) {
-        console.error('Invalid EasyPay signature');
+        functions.logger.error('Invalid EasyPay signature');
         res.status(401).json({ error: 'Invalid signature' });
         return;
       }
@@ -84,7 +84,7 @@ export const handleEasypayWebhook = functions
 
       res.status(200).json({ success: true });
     } catch (error) {
-      console.error('EasyPay webhook error:', error);
+      functions.logger.error('EasyPay webhook error:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   });
@@ -104,7 +104,7 @@ function verifyEpaySignature(body: any, secretKey: string): boolean {
 
     return hash === checksum;
   } catch (error) {
-    console.error('ePay signature verification failed:', error);
+    functions.logger.error('ePay signature verification failed:', error);
     return false;
   }
 }
@@ -121,7 +121,7 @@ function verifyEasypaySignature(body: any, secretKey: string): boolean {
 
     return hash === signature;
   } catch (error) {
-    console.error('EasyPay signature verification failed:', error);
+    functions.logger.error('EasyPay signature verification failed:', error);
     return false;
   }
 }
@@ -171,10 +171,10 @@ function parseEasypayNotification(body: any): PaymentNotification {
 }
 
 async function processPayment(notification: PaymentNotification): Promise<void> {
-  console.log('Processing payment:', notification);
+  functions.logger.info('Processing payment:', notification);
 
   if (notification.status !== 'success') {
-    console.warn('Payment not successful:', notification.status);
+    functions.logger.warn('Payment not successful:', notification.status);
     return;
   }
 
@@ -229,9 +229,9 @@ async function processPayment(notification: PaymentNotification): Promise<void> 
 
     await sendConfirmationEmail(userId, userData?.email, planTier, notification.amount);
 
-    console.log('Payment processed successfully:', { userId, planTier, amount: notification.amount });
+    functions.logger.info('Payment processed successfully:', { userId, planTier, amount: notification.amount });
   } catch (error) {
-    console.error('Failed to process payment:', error);
+    functions.logger.error('Failed to process payment:', error);
 
     await logPayment({
       userId: userId,
@@ -253,7 +253,7 @@ async function logPayment(paymentData: any): Promise<void> {
   try {
     await db.collection('payment_logs').add(paymentData);
   } catch (error) {
-    console.error('Failed to log payment:', error);
+    functions.logger.error('Failed to log payment:', error);
   }
 }
 
@@ -265,7 +265,7 @@ async function sendConfirmationEmail(
 ): Promise<void> {
   try {
     if (!email) {
-      console.warn('No email found for user:', userId);
+      functions.logger.warn('No email found for user:', userId);
       return;
     }
 
@@ -285,9 +285,9 @@ async function sendConfirmationEmail(
       }
     });
 
-    console.log('Confirmation email queued:', { userId, email });
+    functions.logger.info('Confirmation email queued:', { userId, email });
   } catch (error) {
-    console.error('Failed to send confirmation email:', error);
+    functions.logger.error('Failed to send confirmation email:', error);
   }
 }
 
@@ -322,7 +322,7 @@ export const verifyPaymentStatus = functions
         timestamp: payment.timestamp
       };
     } catch (error) {
-      console.error('Error verifying payment status:', error);
+      functions.logger.error('Error verifying payment status:', error);
       throw new functions.https.HttpsError('internal', 'Failed to verify payment status');
     }
   });

@@ -25,7 +25,7 @@ const PanelContainer = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-  color: #ff8c61;
+  color: #8B5CF6;
   font-size: 18px;
   font-weight: 700;
   margin: 0 0 24px 0;
@@ -52,7 +52,7 @@ const MetricCard = styled.div`
   transition: all 0.2s ease;
   
   &:hover {
-    border-color: #ff8c61;
+    border-color: #8B5CF6;
     transform: translateY(-4px);
     background: #252b3a;
   }
@@ -60,7 +60,7 @@ const MetricCard = styled.div`
 
 const MetricIcon = styled.div`
   background: #252b3a;
-  color: #ff8c61;
+  color: #8B5CF6;
   width: 48px;
   height: 48px;
   border-radius: 12px;
@@ -95,7 +95,7 @@ const ChartSection = styled.div`
 `;
 
 const ChartTitle = styled.h3`
-  color: #ff8c61;
+  color: #8B5CF6;
   font-size: 15px;
   font-weight: 700;
   margin: 0 0 20px 0;
@@ -344,4 +344,5 @@ const ProjectInfoPanel: React.FC = () => {
 };
 
 export default ProjectInfoPanel;
+
 

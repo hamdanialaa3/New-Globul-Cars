@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { bulgarianTheme, GlobalStyles } from './styles/theme';
 import { useTheme } from './contexts/ThemeContext';
@@ -7,6 +7,7 @@ import { safeLazy } from './utils/lazyImport';
 import SmartLoader from './components/SmartLoaderCSS';
 import InactivityWarning from './components/InactivityWarning';
 import { DebugAdsPage } from './features/promotions/pages/DebugAdsPage';
+import { AuthGuard } from './components/guards/AuthGuard';
 
 // Lazy Loaded Components
 const GlobalWorkflowTimer = safeLazy(() => import('./components/GlobalWorkflowTimer'));
@@ -36,6 +37,66 @@ const FullScreenLayout: React.FC<{ children: React.ReactNode }> = ({ children })
             >
                 {children}
             </main>
+        </div>
+    );
+};
+
+const AdminDataFixPage: React.FC = () => {
+    const navigate = useNavigate();
+    return (
+        <div style={{
+            minHeight: '100vh',
+            background: '#f0f2f5',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+        }}>
+            <div style={{
+                background: '#ffffff',
+                borderRadius: '12px',
+                padding: '48px',
+                width: '100%',
+                maxWidth: '480px',
+                border: '1px solid #e0e0e0',
+                boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+                textAlign: 'center',
+            }}>
+                <div style={{
+                    width: '56px',
+                    height: '56px',
+                    background: '#000000',
+                    borderRadius: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 24px',
+                    fontSize: '24px',
+                }}>🔧</div>
+                <h1 style={{ color: '#000000', fontSize: '22px', fontWeight: 700, margin: '0 0 12px' }}>
+                    Admin Data Fix Tools
+                </h1>
+                <p style={{ color: '#555555', fontSize: '15px', lineHeight: 1.6, margin: '0 0 32px' }}>
+                    This tool is currently under maintenance. Please check back later or use the Super Admin dashboard.
+                </p>
+                <button
+                    onClick={() => navigate('/super-admin')}
+                    style={{
+                        background: '#000000',
+                        color: '#ffffff',
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '14px 28px',
+                        fontSize: '15px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        width: '100%',
+                    }}
+                >
+                    ← Go to Super Admin
+                </button>
+            </div>
         </div>
     );
 };
@@ -104,6 +165,13 @@ const AppRoutes: React.FC = () => {
                     <Route path="/debug/ads" element={
                         <FullScreenLayout>
                             <DebugAdsPage />
+                        </FullScreenLayout>
+                    } />
+                    <Route path="/admin/data-fix" element={
+                        <FullScreenLayout>
+                            <AuthGuard requireAuth={true} requireAdmin={true} redirectTo="/super-admin-login" showMessage={false}>
+                                <AdminDataFixPage />
+                            </AuthGuard>
                         </FullScreenLayout>
                     } />
 

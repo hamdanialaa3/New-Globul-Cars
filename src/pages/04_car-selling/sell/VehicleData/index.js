@@ -118,9 +118,9 @@ const VehicleDataPageNew = () => {
                                             }
                                         }, children: [_jsx("option", { value: "", children: language === 'bg' ? 'Изберете марка' : 'Select Make' }), availableBrands.map(brand => (_jsx("option", { value: brand, style: isFeaturedBrand(brand) ? {
                                                     fontWeight: '700',
-                                                    color: '#ff8f10',
-                                                    backgroundColor: 'rgba(255, 143, 16, 0.05)'
-                                                } : {}, children: isFeaturedBrand(brand) ? `● ${brand}` : brand }, brand))), _jsx("option", { value: "__other__", children: language === 'bg' ? '◆ Друга марка (въведете ръчно)' : '◆ Other make (enter manually)' })] }), formData.make === '__other__' && (_jsx(S.Input, { type: "text", value: formData.makeOther || '', onChange: (e) => handleInputChange('makeOther', e.target.value), placeholder: language === 'bg' ? 'Въведете марка ръчно' : 'Enter make manually', style: { marginTop: '0.75rem' } })), _jsxs(S.HintText, { style: { display: 'flex', alignItems: 'center', gap: '0.5rem' }, children: [_jsx(Star, { size: 14, color: "#ff8f10" }), language === 'bg'
+                                                    color: '#3b82f6',
+                                                    backgroundColor: 'rgba(139, 92, 246, 0.05)'
+                                                } : {}, children: isFeaturedBrand(brand) ? `● ${brand}` : brand }, brand))), _jsx("option", { value: "__other__", children: language === 'bg' ? '◆ Друга марка (въведете ръчно)' : '◆ Other make (enter manually)' })] }), formData.make === '__other__' && (_jsx(S.Input, { type: "text", value: formData.makeOther || '', onChange: (e) => handleInputChange('makeOther', e.target.value), placeholder: language === 'bg' ? 'Въведете марка ръчно' : 'Enter make manually', style: { marginTop: '0.75rem' } })), _jsxs(S.HintText, { style: { display: 'flex', alignItems: 'center', gap: '0.5rem' }, children: [_jsx(Star, { size: 14, color: "#3b82f6" }), language === 'bg'
                                                 ? 'Най-популярни марки в България показани отгоре'
                                                 : 'Most popular brands in Bulgaria shown first'] })] }), _jsxs(S.FormGroup, { children: [_jsxs(S.Label, { htmlFor: "year", "$required": true, children: [language === 'bg' ? 'Година' : 'Year', ' ', _jsx(Tooltip, { content: CarSellingTooltips[language].year })] }), _jsxs(S.Select, { id: "year", "aria-label": language === 'bg' ? 'Година' : 'Year', title: language === 'bg' ? 'Година' : 'Year', value: formData.year, onChange: (e) => handleInputChange('year', e.target.value), children: [_jsx("option", { value: "", children: language === 'bg' ? 'Изберете' : 'Select' }), CAR_YEARS.map(option => (_jsx("option", { value: option.value, children: language === 'bg' ? option.label : option.labelEn || option.label }, option.value)))] })] })] }), _jsx(S.FormGrid, { children: _jsxs(S.FormGroup, { children: [_jsx(S.Label, { htmlFor: "model", children: language === 'bg' ? 'Модел' : 'Model' }), formData.make === '__other__' ? (_jsx(S.Input, { id: "model", type: "text", value: formData.modelOther || formData.model || '', onChange: (e) => {
                                         // If make is __other__, save to modelOther
@@ -200,3 +200,5 @@ const VehicleDataPageNew = () => {
                 }, children: ["\uD83D\uDCBE ", getErrorMessage('AUTO_SAVED', language)] }))] }));
 };
 export default VehicleDataPageNew;
+
+

@@ -76,7 +76,7 @@ const CTAButton = styled(motion.button) <{ $isDark?: boolean }>`
   align-items: center;
   gap: 0.5rem;
   padding: 1rem 2rem;
-  background: #FF8C61;
+  background: #8B5CF6;
   color: #ffffff;
   border: none;
   border-radius: 12px;
@@ -84,12 +84,12 @@ const CTAButton = styled(motion.button) <{ $isDark?: boolean }>`
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 
   &:hover {
-    background: #ff7900;
+    background: #2563eb;
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(255, 143, 16, 0.4);
+    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
   }
 
   &:active {
@@ -121,8 +121,8 @@ const ClearFiltersButton = styled.button<{ $isDark?: boolean }>`
 
   &:hover {
     background: ${({ $isDark }) => $isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'};
-    border-color: #FF8C61;
-    color: #FF8C61;
+    border-color: #8B5CF6;
+    color: #8B5CF6;
   }
 `;
 
@@ -142,7 +142,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   isFiltered = false,
   onClearFilters
 }) => {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
 
   if (isFiltered) {
     return (
@@ -156,7 +156,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           <Car size={64} />
         </IconContainer>
         <Title $isDark={isDark}>
-          {language === 'bg' ? 'Няма резултати' : 'No Results'}
+          {t('common.noResults')}
         </Title>
         <Subtitle $isDark={isDark}>
           {language === 'bg'
@@ -208,4 +208,6 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
     </EmptyContainer>
   );
 };
+
+
 

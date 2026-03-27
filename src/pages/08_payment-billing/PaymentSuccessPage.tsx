@@ -89,9 +89,9 @@ const ButtonGroup = styled.div`
 const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   background: ${props => props.variant === 'secondary' 
     ? 'white' 
-    : 'linear-gradient(135deg, #FF7900, #ff8c1a)'};
-  color: ${props => props.variant === 'secondary' ? '#FF7900' : 'white'};
-  border: ${props => props.variant === 'secondary' ? '2px solid #FF7900' : 'none'};
+    : 'linear-gradient(135deg, #2563EB, #ff8c1a)'};
+  color: ${props => props.variant === 'secondary' ? '#2563EB' : 'white'};
+  border: ${props => props.variant === 'secondary' ? '2px solid #2563EB' : 'none'};
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   font-size: 1rem;
@@ -104,7 +104,7 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
   }
 `;
 
@@ -168,3 +168,5 @@ const PaymentSuccessPage: React.FC = () => {
 };
 
 export default PaymentSuccessPage;
+
+

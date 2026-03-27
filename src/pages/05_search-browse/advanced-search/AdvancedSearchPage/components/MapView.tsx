@@ -58,7 +58,7 @@ export const MapView: React.FC<MapViewProps> = ({ cars, onCarClick, t }) => {
       className: 'custom-car-marker',
       html: `
         <div style="
-          background: #FF8F10;
+          background: #3B82F6;
           color: white;
           border-radius: 50%;
           width: 32px;
@@ -95,7 +95,7 @@ export const MapView: React.FC<MapViewProps> = ({ cars, onCarClick, t }) => {
             <div style="margin-top: 6px; color: #666; font-size: 13px;">
               ${car.year} • ${car.mileage?.toLocaleString('bg-BG')} km
             </div>
-            <div style="margin-top: 6px; font-size: 15px; font-weight: 600; color: #FF8F10;">
+            <div style="margin-top: 6px; font-size: 15px; font-weight: 600; color: #3B82F6;">
               €${car.price.toLocaleString('bg-BG')}
             </div>
             ${car.images && car.images.length > 0 ? `
@@ -111,7 +111,7 @@ export const MapView: React.FC<MapViewProps> = ({ cars, onCarClick, t }) => {
                 width: 100%;
                 margin-top: 8px;
                 padding: 8px;
-                background: #FF8F10;
+                background: #3B82F6;
                 color: white;
                 border: none;
                 border-radius: 4px;
@@ -198,3 +198,4 @@ const EmptyText = styled.p`
   font-size: 16px;
   color: #666;
 `;
+

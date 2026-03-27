@@ -54,9 +54,9 @@ const DraftCard = styled.div`
   cursor: pointer;
 
   &:hover {
-    border-color: #ff8f10;
+    border-color: #3b82f6;
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(255, 143, 16, 0.15);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.15);
   }
 `;
 
@@ -78,7 +78,7 @@ const DraftTitle = styled.h3`
 const ProgressBadge = styled.div<{ $percentage: number }>`
   background: ${props => 
     props.$percentage === 100 ? '#10b981' :
-    props.$percentage >= 50 ? '#ff8f10' : '#64748b'
+    props.$percentage >= 50 ? '#3b82f6' : '#64748b'
   };
   color: white;
   padding: 0.25rem 0.75rem;
@@ -141,11 +141,11 @@ const Button = styled.button<{ $variant?: 'primary' | 'danger' }>`
       `;
     }
     return `
-      background: linear-gradient(135deg, #ff8f10, #005ca9);
+      background: linear-gradient(135deg, #3b82f6, #005ca9);
       color: white;
       &:hover {
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
       }
     `;
   }}
@@ -182,7 +182,7 @@ const EmptyText = styled.p`
 `;
 
 const StartButton = styled.button`
-  background: linear-gradient(135deg, #ff8f10, #005ca9);
+  background: linear-gradient(135deg, #3b82f6, #005ca9);
   color: white;
   border: none;
   padding: 1rem 2rem;
@@ -194,7 +194,7 @@ const StartButton = styled.button`
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(255, 143, 16, 0.3);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
   }
 `;
 
@@ -289,7 +289,7 @@ const MyDraftsPage: React.FC = () => {
     return (
       <Container>
         <LoadingState>
-          <RefreshCw size={48} className="animate-spin" color="#ff8f10" />
+          <RefreshCw size={48} className="animate-spin" color="#3b82f6" />
           <p>{language === 'bg' ? 'Зареждане...' : 'Loading...'}</p>
         </LoadingState>
       </Container>
@@ -370,4 +370,6 @@ const MyDraftsPage: React.FC = () => {
 };
 
 export default MyDraftsPage;
+
+
 

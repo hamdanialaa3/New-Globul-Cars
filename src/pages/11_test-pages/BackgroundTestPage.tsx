@@ -35,7 +35,7 @@ const Title = styled.h1`
   font-size: 3.5rem;
   font-weight: 900;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, #fff 0%, #ff8c61 100%);
+  background: linear-gradient(135deg, #fff 0%, #8B5CF6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-transform: uppercase;
@@ -57,9 +57,9 @@ const ControlsGrid = styled.div`
 `;
 
 const ControlButton = styled.button<{ $active?: boolean }>`
-  background: ${props => props.$active ? 'rgba(255, 140, 97, 0.2)' : 'rgba(255, 255, 255, 0.05)'};
-  border: 1px solid ${props => props.$active ? '#ff8c61' : 'rgba(255, 255, 255, 0.1)'};
-  color: ${props => props.$active ? '#ff8c61' : 'white'};
+  background: ${props => props.$active ? 'rgba(139, 92, 246, 0.2)' : 'rgba(255, 255, 255, 0.05)'};
+  border: 1px solid ${props => props.$active ? '#8B5CF6' : 'rgba(255, 255, 255, 0.1)'};
+  color: ${props => props.$active ? '#8B5CF6' : 'white'};
   padding: 12px;
   border-radius: 15px;
   display: flex;
@@ -160,3 +160,4 @@ const BackgroundTestPage: React.FC = () => {
 };
 
 export default BackgroundTestPage;
+

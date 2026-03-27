@@ -20,7 +20,7 @@ const shimmer = keyframes`
 
 const ProgressBar: React.FC<ProgressBarProps> = ({
   duration = 2000,
-  color = '#FF8F10', // Orange theme color
+  color = '#3B82F6', // Orange theme color
   size = 50,
 }) => {
   const location = useLocation();
@@ -118,8 +118,8 @@ const BarTrack = styled.div`
 const BarFill = styled.div<{ $progress: number; $color: string }>`
   height: 100%;
   width: ${({ $progress }) => `${Math.max(3, $progress)}%`};
-  background: linear-gradient(90deg, #C8741A 0%, #FF8F10 45%, #FFB35C 100%);
-  box-shadow: 0 0 10px rgba(255, 143, 16, 0.55), 0 0 20px rgba(255, 143, 16, 0.35);
+  background: linear-gradient(90deg, #C8741A 0%, #3B82F6 45%, #FFB35C 100%);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.55), 0 0 20px rgba(139, 92, 246, 0.35);
   border-radius: 999px;
   position: relative;
   transition: width 220ms ease-out;
@@ -137,4 +137,6 @@ const BarFill = styled.div<{ $progress: number; $color: string }>`
     filter: blur(2px);
   }
 `;
+
+
 

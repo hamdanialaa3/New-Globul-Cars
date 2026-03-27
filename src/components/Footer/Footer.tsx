@@ -49,15 +49,17 @@ const Footer: React.FC = () => {
           {/* Company Info */}
           <div className="footer-section">
             <div className="footer-brand">
-              <img
-                src="/logo.png"
-                alt="Koli One Logo"
-                className="footer-logo"
-                style={{ maxWidth: '150px', width: '100%', height: 'auto', objectFit: 'contain' }}
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/logo.png';
-                }}
-              />
+              <picture>
+                <source srcSet="/logo.webp" type="image/webp" />
+                <img
+                  src="/logo.webp"
+                  alt="Koli One Logo"
+                  className="footer-logo"
+                  width="150"
+                  height="150"
+                  style={{ maxWidth: '150px', width: '100%', height: 'auto', objectFit: 'contain' }}
+                />
+              </picture>
               <h3 className="footer-title">Koli One</h3>
             </div>
             <p className="footer-description">

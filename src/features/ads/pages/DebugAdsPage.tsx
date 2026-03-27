@@ -24,7 +24,7 @@ const Section = styled.section`
     margin-bottom: 24px; 
     border-bottom: 1px solid #2d3748; 
     padding-bottom: 12px; 
-    color: #ff8c61;
+    color: #8B5CF6;
     text-transform: uppercase;
     font-size: 18px;
     letter-spacing: 1px;
@@ -54,7 +54,7 @@ const Label = styled.div`
 export const DebugAdsPage = () => {
     return (
         <Page>
-            <h1 style={{ color: '#ff8c61', textTransform: 'uppercase', letterSpacing: '2px', fontSize: '28px', marginBottom: '8px' }}>
+            <h1 style={{ color: '#8B5CF6', textTransform: 'uppercase', letterSpacing: '2px', fontSize: '28px', marginBottom: '8px' }}>
                 Ads System Debugger
             </h1>
             <p style={{ color: '#cbd5e1', marginBottom: '40px', fontSize: '14px' }}>
@@ -80,7 +80,7 @@ export const DebugAdsPage = () => {
                 <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '16px' }}>
                     This slot forces a `google_smart` ad type to test the new component.
                 </p>
-                <div style={{ border: '1px dashed #ff8c61', padding: '10px' }}>
+                <div style={{ border: '1px dashed #8B5CF6', padding: '10px' }}>
                     <AdRenderer
                         ad={{
                             id: 'debug-smart-1',
@@ -122,7 +122,7 @@ export const DebugAdsPage = () => {
                     ))}
                     <div style={{ gridColumn: '1 / -1', margin: '12px 0' }}>
                         <Label>listing_infeed (Simulated)</Label>
-                        <AdSlot placementId="listing_infeed" debug className="my-class" style={{ border: '2px dashed #ff8c61' }} />
+                        <AdSlot placementId="listing_infeed" debug className="my-class" style={{ border: '2px dashed #8B5CF6' }} />
                     </div>
                     {[6, 7].map(i => (
                         <div key={i} style={{
@@ -173,3 +173,4 @@ export const DebugAdsPage = () => {
         </Page>
     );
 };
+

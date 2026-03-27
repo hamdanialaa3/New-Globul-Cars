@@ -27,9 +27,9 @@ const float = keyframes`
 `;
 
 const glowPulse = keyframes`
-  0% { box-shadow: 0 0 20px rgba(230, 81, 0, 0.2); }
-  50% { box-shadow: 0 0 40px rgba(230, 81, 0, 0.5); }
-  100% { box-shadow: 0 0 20px rgba(230, 81, 0, 0.2); }
+  0% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.2); }
+  50% { box-shadow: 0 0 40px rgba(37, 99, 235, 0.5); }
+  100% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.2); }
 `;
 
 // ==================== COMPONENT ====================
@@ -58,13 +58,13 @@ export const SubscriptionSelectionPage: React.FC = () => {
       id: 'epay',
       name: 'ePay.bg',
       description: 'Bulgarian payment gateway - HMAC-SHA1 secure',
-      logo: 'https://www.epay.bg/logo.png'
+      logo: 'https://www.epay.bg/logo.webp'
     },
     {
       id: 'easypay',
       name: 'EasyPay',
       description: 'Bulgarian payment API - SHA256 secure',
-      logo: 'https://www.easypay.bg/logo.png'
+      logo: 'https://www.easypay.bg/logo.webp'
     }
   ];
 
@@ -335,7 +335,7 @@ const PopularBadge = styled.div`
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  box-shadow: 0 4px 12px rgba(230, 81, 0, 0.4);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
 `;
 
 const CardHeader = styled.div`
@@ -465,15 +465,15 @@ const PaymentOption = styled.div<{ $selected: boolean }>`
   align-items: center;
   gap: 1rem;
   padding: 1.5rem;
-  background: ${p => p.$selected ? 'rgba(230, 81, 0, 0.1)' : 'rgba(255, 255, 255, 0.05)'};
-  border: 1px solid ${p => p.$selected ? '#E65100' : 'rgba(255, 255, 255, 0.1)'};
+  background: ${p => p.$selected ? 'rgba(37, 99, 235, 0.1)' : 'rgba(255, 255, 255, 0.05)'};
+  border: 1px solid ${p => p.$selected ? '#2563EB' : 'rgba(255, 255, 255, 0.1)'};
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    border-color: #E65100;
-    background: rgba(230, 81, 0, 0.05);
+    border-color: #2563EB;
+    background: rgba(37, 99, 235, 0.05);
   }
 `;
 
@@ -481,7 +481,7 @@ const RadioButton = styled.div<{ $checked: boolean }>`
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 2px solid ${p => p.$checked ? '#E65100' : 'rgba(255, 255, 255, 0.4)'};
+  border: 2px solid ${p => p.$checked ? '#2563EB' : 'rgba(255, 255, 255, 0.4)'};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -491,7 +491,7 @@ const RadioButton = styled.div<{ $checked: boolean }>`
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background: #E65100;
+    background: #2563EB;
     opacity: ${p => p.$checked ? 1 : 0};
     transition: opacity 0.2s;
   }
@@ -574,3 +574,5 @@ const SecurityNote = styled.div`
   font-size: 0.9rem;
   text-align: center;
 `;
+
+

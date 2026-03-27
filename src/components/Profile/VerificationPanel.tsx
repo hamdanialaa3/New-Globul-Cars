@@ -42,7 +42,7 @@ const PanelContainer = styled.div<{ $themeColor?: string }>`
   backdrop-filter: blur(14px) saturate(160%);
   
   /* Subtle theme border */
-  border: ${props => props.$themeColor ? `2px solid ${props.$themeColor}26` : '2px solid rgba(255, 143, 16, 0.15)'};
+  border: ${props => props.$themeColor ? `2px solid ${props.$themeColor}26` : '2px solid rgba(139, 92, 246, 0.15)'};
   
   box-shadow: 
     0 1px 0 rgba(255, 255, 255, 0.8) inset,
@@ -63,7 +63,7 @@ const PanelHeader = styled.div<{ $themeColor?: string }>`
     linear-gradient(white, white),
     ${props => props.$themeColor 
       ? `linear-gradient(90deg, rgba(200, 200, 200, 0.2) 0%, ${props.$themeColor}80 30%, ${props.$themeColor}CC 50%, ${props.$themeColor}80 70%, rgba(200, 200, 200, 0.2) 100%)`
-      : 'linear-gradient(90deg, rgba(200, 200, 200, 0.2) 0%, rgba(255, 143, 16, 0.5) 30%, rgba(255, 215, 0, 0.8) 50%, rgba(255, 143, 16, 0.5) 70%, rgba(200, 200, 200, 0.2) 100%)'};
+      : 'linear-gradient(90deg, rgba(200, 200, 200, 0.2) 0%, rgba(139, 92, 246, 0.5) 30%, rgba(255, 215, 0, 0.8) 50%, rgba(139, 92, 246, 0.5) 70%, rgba(200, 200, 200, 0.2) 100%)'};
   background-origin: border-box;
   background-clip: padding-box, border-box;
   
@@ -82,7 +82,7 @@ const PanelHeader = styled.div<{ $themeColor?: string }>`
   svg {
     filter: ${props => props.$themeColor 
       ? `drop-shadow(0 2px 4px ${props.$themeColor}4D)`
-      : 'drop-shadow(0 2px 4px rgba(255, 143, 16, 0.3))'};
+      : 'drop-shadow(0 2px 4px rgba(139, 92, 246, 0.3))'};
   }
 `;
 
@@ -248,12 +248,12 @@ const StatusBadge = styled.div<{ $status: 'verified' | 'pending' | 'unverified' 
         return `
           background: linear-gradient(135deg,
             rgba(255, 152, 0, 0.95) 0%,
-            rgba(255, 143, 16, 1) 100%
+            rgba(139, 92, 246, 1) 100%
           );
           color: white;
           border: 1px solid rgba(255, 215, 0, 0.5);
           box-shadow: 
-            0 4px 12px rgba(255, 143, 16, 0.3),
+            0 4px 12px rgba(139, 92, 246, 0.3),
             inset 0 1px 0 rgba(255, 255, 255, 0.3);
         `;
       case 'unverified':
@@ -359,7 +359,7 @@ const VerificationPanel: React.FC<VerificationPanelProps> = ({
   idVerified,
   businessVerified,
   onVerifyClick,
-  themeColor = '#FF7900'
+  themeColor = '#2563EB'
 }) => {
   const { language } = useLanguage();
   const [showEmailModal, setShowEmailModal] = useState(false);
@@ -498,3 +498,4 @@ const VerificationPanel: React.FC<VerificationPanelProps> = ({
 };
 
 export default VerificationPanel;
+

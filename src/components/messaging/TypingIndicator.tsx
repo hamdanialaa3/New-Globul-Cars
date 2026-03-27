@@ -39,7 +39,7 @@ const Dot = styled.div<{ $delay: number }>`
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #FF7900;
+  background: #2563EB;
   animation: ${bounce} 1.4s infinite ease-in-out;
   animation-delay: ${props => props.$delay}s;
 `;
@@ -71,3 +71,4 @@ const TypingIndicator: React.FC<TypingIndicatorProps> = ({
 };
 
 export default TypingIndicator;
+

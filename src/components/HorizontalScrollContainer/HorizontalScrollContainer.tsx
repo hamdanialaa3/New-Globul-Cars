@@ -22,7 +22,7 @@ const ScrollContainer = styled.div`
   scrollbar-width: thin;
   scrollbar-color: ${({ theme }) => theme.mode === 'dark' 
     ? 'rgba(255, 215, 0, 0.3) transparent' 
-    : 'rgba(255, 143, 16, 0.3) transparent'};
+    : 'rgba(139, 92, 246, 0.3) transparent'};
   
   &::-webkit-scrollbar {
     height: 6px;
@@ -35,13 +35,13 @@ const ScrollContainer = styled.div`
   &::-webkit-scrollbar-thumb {
     background: ${({ theme }) => theme.mode === 'dark' 
       ? 'rgba(255, 215, 0, 0.3)' 
-      : 'rgba(255, 143, 16, 0.3)'};
+      : 'rgba(139, 92, 246, 0.3)'};
     border-radius: 3px;
     
     &:hover {
       background: ${({ theme }) => theme.mode === 'dark' 
         ? 'rgba(255, 215, 0, 0.5)' 
-        : 'rgba(255, 143, 16, 0.5)'};
+        : 'rgba(139, 92, 246, 0.5)'};
     }
   }
   
@@ -70,11 +70,11 @@ const ScrollButton = styled.button<{ $position: 'left' | 'right'; $visible: bool
   border-radius: 50%;
   background: ${({ theme }) => theme.mode === 'dark' 
     ? 'rgba(255, 215, 0, 0.25)' 
-    : 'rgba(255, 143, 16, 0.25)'};
+    : 'rgba(139, 92, 246, 0.25)'};
   border: 2px solid ${({ theme }) => theme.mode === 'dark' 
     ? 'rgba(255, 215, 0, 0.5)' 
-    : 'rgba(255, 143, 16, 0.5)'};
-  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+    : 'rgba(139, 92, 246, 0.5)'};
+  color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#3B82F6'};
   display: ${props => props.$visible ? 'flex' : 'none'};
   align-items: center;
   justify-content: center;
@@ -83,19 +83,19 @@ const ScrollButton = styled.button<{ $position: 'left' | 'right'; $visible: bool
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: ${({ theme }) => theme.mode === 'dark' 
     ? '0 4px 12px rgba(255, 215, 0, 0.2)' 
-    : '0 4px 12px rgba(255, 143, 16, 0.2)'};
+    : '0 4px 12px rgba(139, 92, 246, 0.2)'};
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   
   &:hover {
     background: ${({ theme }) => theme.mode === 'dark' 
       ? 'rgba(255, 215, 0, 0.4)' 
-      : 'rgba(255, 143, 16, 0.4)'};
-    border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
+      : 'rgba(139, 92, 246, 0.4)'};
+    border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#3B82F6'};
     transform: translateY(-50%) scale(1.1);
     box-shadow: ${({ theme }) => theme.mode === 'dark' 
       ? '0 6px 16px rgba(255, 215, 0, 0.3)' 
-      : '0 6px 16px rgba(255, 143, 16, 0.3)'};
+      : '0 6px 16px rgba(139, 92, 246, 0.3)'};
   }
   
   &:active {
@@ -254,3 +254,5 @@ const HorizontalScrollContainer: React.FC<HorizontalScrollContainerProps> = ({
 };
 
 export default HorizontalScrollContainer;
+
+

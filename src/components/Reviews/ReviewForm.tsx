@@ -78,7 +78,7 @@ const Input = styled.input`
   
   &:focus {
     outline: none;
-    border-color: #FF7900;
+    border-color: #2563EB;
   }
 `;
 
@@ -95,7 +95,7 @@ const TextArea = styled.textarea`
   
   &:focus {
     outline: none;
-    border-color: #FF7900;
+    border-color: #2563EB;
   }
 `;
 
@@ -160,7 +160,7 @@ const SubmitButton = styled.button`
   padding: 14px;
   border: none;
   border-radius: 8px;
-  background: #FF7900;
+  background: #2563EB;
   color: white;
   font-size: 1rem;
   font-weight: 600;
@@ -174,7 +174,7 @@ const SubmitButton = styled.button`
   &:hover:not(:disabled) {
     background: #ff8c1a;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
   }
   
   &:disabled {
@@ -361,3 +361,5 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
 };
 
 export default ReviewForm;
+
+

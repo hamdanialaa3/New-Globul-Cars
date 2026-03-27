@@ -234,7 +234,7 @@ const PrintTitle = styled.h1`
 const PrintPrice = styled.div`
   font-size: clamp(20px, 6vw, 36px);
   font-weight: 900;
-  color: #FF8F10;
+  color: #3B82F6;
   text-align: right;
 `;
 
@@ -277,11 +277,11 @@ const PrintSection = styled.div`
 const SectionTitle = styled.h3`
   font-size: 14px;
   font-weight: 900;
-  color: #FF8F10;
+  color: #3B82F6;
   text-transform: uppercase;
   margin: 0;
   padding-bottom: 0.35rem;
-  border-bottom: 2px solid #FF8F10;
+  border-bottom: 2px solid #3B82F6;
 `;
 
 const SectionContent = styled.div`
@@ -371,7 +371,7 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   justify-content: center;
   gap: 0.75rem;
   transition: all 0.3s;
-  background: ${props => props.$variant === 'primary' ? '#FF8F10' : '#fff'};
+  background: ${props => props.$variant === 'primary' ? '#3B82F6' : '#fff'};
   color: ${props => props.$variant === 'primary' ? '#fff' : '#000'};
   border: ${props => props.$variant === 'primary' ? 'none' : '2px solid #fff'};
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
@@ -384,7 +384,7 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   &:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-    background: ${props => props.$variant === 'primary' ? '#FF7900' : '#f0f0f0'};
+    background: ${props => props.$variant === 'primary' ? '#2563EB' : '#f0f0f0'};
   }
 
   &:active {
@@ -863,4 +863,5 @@ export const CarPrintSticker: React.FC<CarPrintStickerProps> = ({
     document.body
   );
 };
+
 

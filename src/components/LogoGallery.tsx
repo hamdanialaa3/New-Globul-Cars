@@ -4,7 +4,7 @@
 import React from 'react';
 import './LogoGallery.css';
 
-const mainLogo = '/logo.png';
+const mainLogo = '/logo.webp';
 
 interface LogoGalleryProps {
   variant?: 'hero' | 'footer' | 'sidebar' | 'header' | 'showcase';

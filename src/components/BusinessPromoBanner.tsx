@@ -67,14 +67,14 @@ const neonOff = keyframes`
 const BannerContainer = styled.div`
   width: 100%;
   background: linear-gradient(135deg, 
-    #FF8F10 0%,
+    #3B82F6 0%,
     #FF6B00 50%,
-    #FF8F10 100%
+    #3B82F6 100%
   );
   padding: 0;
   margin: 0;
   box-shadow: 
-    0 8px 32px rgba(255, 143, 16, 0.4),
+    0 8px 32px rgba(139, 92, 246, 0.4),
     0 2px 12px rgba(0, 0, 0, 0.2),
     inset 0 1px 2px rgba(255, 255, 255, 0.3);
   position: relative;
@@ -188,7 +188,7 @@ const IconCircle = styled.div`
   svg {
     position: relative;
     z-index: 1;
-    filter: drop-shadow(0 2px 4px rgba(255, 143, 16, 0.3));
+    filter: drop-shadow(0 2px 4px rgba(139, 92, 246, 0.3));
   }
   
   @media (max-width: 768px) {
@@ -784,3 +784,5 @@ const BusinessPromoBanner: React.FC = () => {
 };
 
 export default memo(BusinessPromoBanner);
+
+

@@ -42,8 +42,8 @@ const ImagePreview = styled.div<{ $hasImage: boolean }>`
     ? 'transparent' 
     : `linear-gradient(135deg,
         rgba(255, 159, 42, 0.35) 0%,
-        rgba(255, 143, 16, 0.45) 50%,
-        rgba(255, 121, 0, 0.55) 100%
+        rgba(139, 92, 246, 0.45) 50%,
+        rgba(99, 102, 241, 0.55) 100%
       )`
   };
   backdrop-filter: ${props => props.$hasImage ? 'none' : 'blur(8px) saturate(150%)'};
@@ -64,7 +64,7 @@ const ImagePreview = styled.div<{ $hasImage: boolean }>`
     transform: scale(1.05);
     box-shadow: ${props => props.$hasImage
       ? '0 6px 20px rgba(0, 0, 0, 0.2)'
-      : '0 8px 24px rgba(255, 143, 16, 0.35), 0 0 0 2px rgba(255, 215, 0, 0.3)'
+      : '0 8px 24px rgba(139, 92, 246, 0.35), 0 0 0 2px rgba(255, 215, 0, 0.3)'
     };
   }
 
@@ -505,3 +505,4 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
 };
 
 export default ProfileImageUploader;
+

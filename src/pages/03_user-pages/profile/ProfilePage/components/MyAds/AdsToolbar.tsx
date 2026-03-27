@@ -84,12 +84,12 @@ const Select = styled.select<{ $isDark?: boolean }>`
 
   &:focus {
     outline: none;
-    border-color: #ff8f10;
-    box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.1);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
   }
 
   &:hover {
-    border-color: #ff8f10;
+    border-color: #3b82f6;
   }
 
   option {
@@ -115,7 +115,7 @@ const ViewModeButton = styled.button<{ $active: boolean; $isDark?: boolean }>`
   padding: 0.625rem 1rem;
   background: ${({ $active, $isDark }) => 
     $active 
-      ? ($isDark ? '#475569' : '#ff8f10')
+      ? ($isDark ? '#475569' : '#3b82f6')
       : 'transparent'};
   color: ${({ $active, $isDark }) => 
     $active 
@@ -130,7 +130,7 @@ const ViewModeButton = styled.button<{ $active: boolean; $isDark?: boolean }>`
   &:hover {
     background: ${({ $active, $isDark }) => 
       $active 
-        ? ($isDark ? '#475569' : '#ff8f10')
+        ? ($isDark ? '#475569' : '#3b82f6')
         : ($isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)')};
   }
 
@@ -220,4 +220,6 @@ export const AdsToolbar: React.FC<AdsToolbarProps> = ({
     </ToolbarContainer>
   );
 };
+
+
 

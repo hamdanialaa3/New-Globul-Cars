@@ -52,7 +52,7 @@ const GuardContainer = styled.div`
   justify-content: center;
   background: ${({ theme }) => theme.mode === 'dark'
     ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%)'
-    : 'linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(255, 140, 97, 0.08) 100%)'
+    : 'linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.08) 100%)'
   };
   backdrop-filter: blur(10px);
   padding: 2rem;
@@ -78,7 +78,7 @@ const GuardContainer = styled.div`
     left: 0;
     right: 0;
     height: 400px;
-    background: radial-gradient(circle at 50% 0%, rgba(255, 107, 53, 0.15) 0%, transparent 70%);
+    background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
     pointer-events: none;
     z-index: 0;
   }
@@ -118,7 +118,7 @@ const MessageCard = styled.div`
     content: '';
     position: absolute;
     inset: -2px;
-    background: linear-gradient(135deg, rgba(255, 107, 53, 0.3), rgba(255, 140, 97, 0.3));
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3));
     border-radius: 32px;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -173,13 +173,13 @@ const IconWrapper = styled.div<{ $variant?: 'error' | 'warning' | 'info' }>`
       case 'error': return 'var(--error, #EF4444)';
       case 'warning': return 'var(--warning, #F59E0B)';
       case 'info': return 'var(--info, #3B82F6)';
-      default: return 'var(--accent-primary, #FF6B35)';
+      default: return 'var(--accent-primary, #6366F1)';
     }
   }};
   display: flex;
   justify-content: center;
   animation: float 3s ease-in-out infinite;
-  filter: drop-shadow(0 4px 12px rgba(255, 107, 53, 0.3));
+  filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.3));
   
   @keyframes float {
     0%, 100% {
@@ -192,7 +192,7 @@ const IconWrapper = styled.div<{ $variant?: 'error' | 'warning' | 'info' }>`
 `;
 
 const Title = styled.h2`
-  background: linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%);
+  background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -202,7 +202,7 @@ const Title = styled.h2`
   letter-spacing: -0.02em;
   
   [data-theme="dark"] &, .dark-theme & {
-    background: linear-gradient(135deg, #FF8C61 0%, #FFA07A 100%);
+    background: linear-gradient(135deg, #8B5CF6 0%, #FFA07A 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -223,7 +223,7 @@ const Message = styled.p`
   line-height: 1.8;
   
   strong {
-    background: linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%);
+    background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -251,7 +251,7 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   background: ${({ $variant }) =>
     $variant === 'secondary'
       ? 'rgba(255, 255, 255, 0.1)'
-      : 'linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%)'
+      : 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)'
   };
   color: ${({ $variant }) =>
     $variant === 'secondary'
@@ -260,7 +260,7 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   };
   border: ${({ $variant }) =>
     $variant === 'secondary'
-      ? '2px solid rgba(255, 107, 53, 0.2)'
+      ? '2px solid rgba(99, 102, 241, 0.2)'
       : 'none'
   };
   padding: 1rem 2rem;
@@ -271,7 +271,7 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: ${({ $variant }) =>
     $variant === 'primary'
-      ? '0 4px 12px rgba(255, 107, 53, 0.25), 0 2px 6px rgba(255, 107, 53, 0.15)'
+      ? '0 4px 12px rgba(99, 102, 241, 0.25), 0 2px 6px rgba(99, 102, 241, 0.15)'
       : '0 2px 6px rgba(0, 0, 0, 0.08)'
   };
   overflow: hidden;
@@ -297,13 +297,13 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
     transform: translateY(-3px) scale(1.02);
     box-shadow: ${({ $variant }) =>
     $variant === 'primary'
-      ? '0 8px 24px rgba(255, 107, 53, 0.35), 0 4px 12px rgba(255, 107, 53, 0.2)'
+      ? '0 8px 24px rgba(99, 102, 241, 0.35), 0 4px 12px rgba(99, 102, 241, 0.2)'
       : '0 4px 12px rgba(0, 0, 0, 0.12)'
   };
     background: ${({ $variant }) =>
     $variant === 'secondary'
-      ? 'rgba(255, 107, 53, 0.1)'
-      : 'linear-gradient(135deg, #FF8C61 0%, #FFA07A 100%)'
+      ? 'rgba(99, 102, 241, 0.1)'
+      : 'linear-gradient(135deg, #8B5CF6 0%, #FFA07A 100%)'
   };
   }
   
@@ -351,8 +351,8 @@ const LoadingContainer = styled.div`
 const LoadingSpinner = styled.div`
   width: 40px;
   height: 40px;
-  border: 4px solid rgba(255, 107, 53, 0.2);
-  border-top-color: var(--accent-primary, #FF6B35);
+  border: 4px solid rgba(99, 102, 241, 0.2);
+  border-top-color: var(--accent-primary, #6366F1);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   
@@ -618,7 +618,14 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
   // ==========================================
   if (requireAdmin) {
     const isFirebaseAdmin = currentUser && (currentUser as any).role === 'admin';
-    if (!isFirebaseAdmin && !isLocalAdmin) {
+    const email = currentUser?.email?.toLowerCase() || '';
+    const isOwnerEmail = 
+      email === 'alaa.hamdani@yahoo.com' || 
+      email === 'globulinternet@gmail.com' || 
+      email === 'hamdanialaa@gmail.com' || 
+      email === 'hamdanialaa@gmile.com';
+
+    if (!isFirebaseAdmin && !isLocalAdmin && !isOwnerEmail) {
       if (showMessage) {
         return <AdminRequiredMessage />;
       }
@@ -645,3 +652,4 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
 };
 
 export default AuthGuard;
+

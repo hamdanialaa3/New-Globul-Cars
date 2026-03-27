@@ -54,7 +54,7 @@ const Header = styled.div`
 const Title = styled.h1`
   font-size: 24px;
   font-weight: 700;
-  color: #ff8c61;
+  color: #8B5CF6;
   margin-bottom: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -81,7 +81,7 @@ const ServiceCard = styled.div`
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: #ff8c61;
+    border-color: #8B5CF6;
   }
 `;
 
@@ -101,7 +101,7 @@ const ServiceInfo = styled.div`
 const ServiceName = styled.h3`
   font-size: 18px;
   font-weight: 700;
-  color: #ff8c61;
+  color: #8B5CF6;
   margin: 0 0 8px 0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -171,8 +171,8 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #ff8c61;
-    box-shadow: 0 0 0 3px rgba(255, 140, 97, 0.1);
+    border-color: #8B5CF6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
   }
 
   &::placeholder {
@@ -196,7 +196,7 @@ const ToggleButton = styled.button`
   padding: 4px;
 
   &:hover {
-    color: #ff8c61;
+    color: #8B5CF6;
   }
 `;
 
@@ -231,7 +231,7 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' | 'outline' }>
     switch (p.$variant) {
       case 'primary':
         return `
-          background: #ff8c61;
+          background: #8B5CF6;
           color: #0f1419;
           border: none;
           &:hover { 
@@ -252,10 +252,10 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' | 'outline' }>
       case 'outline':
         return `
           background: transparent;
-          color: #ff8c61;
-          border: 1px solid #ff8c61;
+          color: #8B5CF6;
+          border: 1px solid #8B5CF6;
           &:hover { 
-            background: rgba(255, 140, 97, 0.1);
+            background: rgba(139, 92, 246, 0.1);
             transform: translateY(-1px);
           }
         `;

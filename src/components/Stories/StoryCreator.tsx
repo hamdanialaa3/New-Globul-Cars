@@ -97,7 +97,7 @@ const MediaButtons = styled.div`
 const MediaButton = styled.button<{ $variant?: 'image' | 'video' }>`
   padding: 16px;
   border-radius: 12px;
-  border: 2px dashed ${p => p.$variant === 'image' ? '#FF8F10' : '#1d4ed8'};
+  border: 2px dashed ${p => p.$variant === 'image' ? '#3B82F6' : '#1d4ed8'};
   background: rgba(255, 255, 255, 0.05);
   color: white;
   cursor: pointer;
@@ -164,7 +164,7 @@ const CaptionInput = styled.textarea`
   
   &:focus {
     outline: none;
-    border-color: #FF8F10;
+    border-color: #3B82F6;
   }
 `;
 
@@ -181,17 +181,17 @@ const VisibilityButton = styled.button<{ $active: boolean }>`
   flex: 1;
   padding: 12px;
   border-radius: 12px;
-  border: 2px solid ${p => p.$active ? '#FF8F10' : 'rgba(255, 255, 255, 0.2)'};
-  background: ${p => p.$active ? 'rgba(255, 143, 16, 0.1)' : 'transparent'};
-  color: ${p => p.$active ? '#FF8F10' : 'rgba(255, 255, 255, 0.7)'};
+  border: 2px solid ${p => p.$active ? '#3B82F6' : 'rgba(255, 255, 255, 0.2)'};
+  background: ${p => p.$active ? 'rgba(139, 92, 246, 0.1)' : 'transparent'};
+  color: ${p => p.$active ? '#3B82F6' : 'rgba(255, 255, 255, 0.7)'};
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 600;
   transition: all 0.2s;
   
   &:hover {
-    border-color: #FF8F10;
-    color: #FF8F10;
+    border-color: #3B82F6;
+    color: #3B82F6;
   }
 `;
 
@@ -208,7 +208,7 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   border-radius: 12px;
   border: none;
   background: ${p => p.$variant === 'primary'
-    ? 'linear-gradient(135deg, #FF8F10, #FF7900)'
+    ? 'linear-gradient(135deg, #3B82F6, #2563EB)'
     : 'rgba(255, 255, 255, 0.1)'};
   color: white;
   font-size: 1rem;
@@ -218,7 +218,7 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
   }
   
   &:disabled {
@@ -402,3 +402,5 @@ const StoryCreator: React.FC<StoryCreatorProps> = ({ onClose, onSuccess }) => {
 };
 
 export default StoryCreator;
+
+

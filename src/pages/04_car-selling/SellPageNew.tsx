@@ -69,7 +69,7 @@ const HeaderCard = styled.div`
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   padding: 2.5rem;
-  border: 1px solid rgba(255, 143, 16, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.1);
   position: relative;
   overflow: hidden;
 
@@ -80,7 +80,7 @@ const HeaderCard = styled.div`
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #ff8f10, #005ca9);
+    background: linear-gradient(90deg, #3b82f6, #005ca9);
   }
 `;
 
@@ -89,7 +89,7 @@ const Title = styled.h1`
   font-weight: 700;
   color: #2c3e50;
   margin: 0 0 0.75rem 0;
-  background: linear-gradient(135deg, #ff8f10, #005ca9);
+  background: linear-gradient(135deg, #3b82f6, #005ca9);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -105,7 +105,7 @@ const Title = styled.h1`
   gap: 0.5rem;
 
   &:hover {
-  background: linear - gradient(135deg, #ff8f10, #005ca9);
+  background: linear - gradient(135deg, #3b82f6, #005ca9);
   color: white;
 }
 
@@ -140,12 +140,12 @@ background: white;
 border - radius: 12px;
 padding: 1.25rem;
 box - shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-border: 1px solid rgba(255, 143, 16, 0.1);
+border: 1px solid rgba(139, 92, 246, 0.1);
 transition: all 0.3s ease;
 
   &:hover {
   transform: translateY(-3px);
-  box - shadow: 0 8px 25px rgba(255, 143, 16, 0.15);
+  box - shadow: 0 8px 25px rgba(139, 92, 246, 0.15);
 }
 `;
 
@@ -214,9 +214,9 @@ gap: 0.65rem;
 const BrandChip = styled.button<{ $active: boolean }>`
 padding: 0.65rem 1.2rem;
 border - radius: 999px;
-border: 1px solid ${({ $active }) => ($active ? '#ff8f10' : 'rgba(20, 30, 55, 0.12)')};
+border: 1px solid ${({ $active }) => ($active ? '#3b82f6' : 'rgba(20, 30, 55, 0.12)')};
 background: ${({ $active }) =>
-    $active ? 'rgba(255, 143, 16, 0.12)' : 'rgba(255, 255, 255, 0.9)'
+    $active ? 'rgba(139, 92, 246, 0.12)' : 'rgba(255, 255, 255, 0.9)'
   };
 color: ${({ $active }) => ($active ? '#d26b00' : '#1f2b3c')};
 font - weight: 600;
@@ -224,7 +224,7 @@ cursor: pointer;
 transition: all 0.2s ease;
 
   &:hover {
-  border - color: #ff8f10;
+  border - color: #3b82f6;
   color: #d26b00;
 }
 `;
@@ -240,8 +240,8 @@ cursor: pointer;
 transition: all 0.2s ease;
 
   &:hover {
-  border - color: #ff8f10;
-  color: #ff8f10;
+  border - color: #3b82f6;
+  color: #3b82f6;
 }
 `;
 
@@ -309,8 +309,8 @@ transition: border 0.2s ease;
 
   &:focus {
   outline: none;
-  border - color: #ff8f10;
-  box - shadow: 0 0 0 3px rgba(255, 143, 16, 0.15);
+  border - color: #3b82f6;
+  box - shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
 }
 `;
 
@@ -326,8 +326,8 @@ transition: border 0.2s ease;
 
   &:focus {
   outline: none;
-  border-color: #ff8f10;
-  box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.15);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
 }
 `;
 
@@ -396,8 +396,8 @@ const OptionPills = styled.div`
 
 const PillButton = styled.button<{ $active: boolean }>`
   border-radius: 999px;
-  border: 1px solid ${({ $active }) => ($active ? '#ff8f10' : 'rgba(15, 23, 42, 0.15)')};
-  background: ${({ $active }) => ($active ? 'rgba(255, 143, 16, 0.15)' : 'white')};
+  border: 1px solid ${({ $active }) => ($active ? '#3b82f6' : 'rgba(15, 23, 42, 0.15)')};
+  background: ${({ $active }) => ($active ? 'rgba(139, 92, 246, 0.15)' : 'white')};
   padding: 0.55rem 1.1rem;
   font-weight: 600;
   color: ${({ $active }) => ($active ? '#d26900' : '#1f2b3c')};
@@ -1174,4 +1174,6 @@ const SellPageNew: React.FC = () => {
 };
 
 export default SellPageNew;
+
+
 

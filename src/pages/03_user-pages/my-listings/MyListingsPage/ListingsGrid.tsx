@@ -68,7 +68,7 @@ const ListingsGridComponent: React.FC<ListingsGridProps> = ({
                     <img src={listing.media.images[0]} alt={listing.title} />
                   ) : (
                     <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                      <CarIcon size={48} color="#FF7900" />
+                      <CarIcon size={48} color="#2563EB" />
                     </span>
                   )}
                   {listing.media.images.length > 1 && (

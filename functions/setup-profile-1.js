@@ -20,7 +20,8 @@ async function cleanupAndSetup() {
     const db = admin.firestore();
     const auth = admin.auth();
 
-    const targetEmail = 'hamdanialaa@gmail.com';
+    const targetEmail = 'hamdanialaa@gmile.com'; // Primary owner email
+    const legacyEmail = 'hamdanialaa@gmail.com'; // Supported for migration
     const targetNumericId = 1;
     const oldNumericId = 170;
 

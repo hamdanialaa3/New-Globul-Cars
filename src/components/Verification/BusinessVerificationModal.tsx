@@ -82,7 +82,7 @@ const Step = styled.div<{ $active: boolean; $completed: boolean }>`
   width: ${props => props.$active ? '40px' : '12px'};
   height: 12px;
   border-radius: 6px;
-  background: ${props => props.$completed ? '#0d7a3f' : props.$active ? '#FF7900' : '#e0e0e0'};
+  background: ${props => props.$completed ? '#0d7a3f' : props.$active ? '#2563EB' : '#e0e0e0'};
   transition: all 0.3s ease;
 `;
 
@@ -178,7 +178,7 @@ const RequiredBadge = styled.span<{ $optional?: boolean }>`
   font-size: 0.75rem;
   padding: 2px 8px;
   border-radius: 12px;
-  background: ${props => props.$optional ? '#e0e0e0' : '#ff7900'};
+  background: ${props => props.$optional ? '#e0e0e0' : '#2563eb'};
   color: ${props => props.$optional ? '#666' : 'white'};
   font-weight: 600;
 `;
@@ -198,7 +198,7 @@ const ButtonGroup = styled.div`
 const SubmitButton = styled.button<{ $disabled?: boolean }>`
   flex: 1;
   padding: 12px 24px;
-  background: ${props => props.$disabled ? '#ccc' : 'linear-gradient(135deg, #FF7900 0%, #FF9500 100%)'};
+  background: ${props => props.$disabled ? '#ccc' : 'linear-gradient(135deg, #2563EB 0%, #FF9500 100%)'};
   color: white;
   border: none;
   border-radius: 8px;
@@ -213,7 +213,7 @@ const SubmitButton = styled.button<{ $disabled?: boolean }>`
   
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
   }
 `;
 
@@ -410,7 +410,7 @@ const BusinessVerificationModal: React.FC<BusinessVerificationModalProps> = ({
       <ModalContainer onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
           <h3>
-            <Building2 color="#FF7900" />
+            <Building2 color="#2563EB" />
             {language === 'bg' ? 'Потвърждение на бизнес' : 'Business Verification'}
           </h3>
           <CloseButton onClick={onClose}>
@@ -445,7 +445,7 @@ const BusinessVerificationModal: React.FC<BusinessVerificationModalProps> = ({
                 <DocumentItem>
                   <DocumentHeader>
                     <DocumentTitle>
-                      <FileText size={18} color="#FF7900" />
+                      <FileText size={18} color="#2563EB" />
                       <h5>
                         {language === 'bg' ? 'Удостоверение за регистрация' : 'Business Registration Certificate'}
                       </h5>
@@ -481,7 +481,7 @@ const BusinessVerificationModal: React.FC<BusinessVerificationModalProps> = ({
                 <DocumentItem>
                   <DocumentHeader>
                     <DocumentTitle>
-                      <FileText size={18} color="#FF7900" />
+                      <FileText size={18} color="#2563EB" />
                       <h5>
                         {language === 'bg' ? 'Удостоверение за ДДС' : 'VAT Certificate'}
                       </h5>
@@ -517,7 +517,7 @@ const BusinessVerificationModal: React.FC<BusinessVerificationModalProps> = ({
                 <DocumentItem>
                   <DocumentHeader>
                     <DocumentTitle>
-                      <FileText size={18} color="#FF7900" />
+                      <FileText size={18} color="#2563EB" />
                       <h5>
                         {language === 'bg' ? 'Извлечение от Търговския регистър' : 'Trade Register Extract'}
                       </h5>
@@ -602,4 +602,6 @@ const BusinessVerificationModal: React.FC<BusinessVerificationModalProps> = ({
 };
 
 export default BusinessVerificationModal;
+
+
 

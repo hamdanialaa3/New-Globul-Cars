@@ -311,7 +311,7 @@ const ModalContainer = styled.div`
   box-shadow: 
     0 25px 50px rgba(0, 0, 0, 0.3),
     0 10px 20px rgba(0, 0, 0, 0.15);
-  border: 2px solid rgba(255, 143, 16, 0.3);
+  border: 2px solid rgba(139, 92, 246, 0.3);
   animation: slideUp 0.3s ease;
 
   @keyframes slideUp {
@@ -357,20 +357,20 @@ const CloseButton = styled.button`
 const Header = styled.div`
   text-align: center;
   padding: 40px 50px 35px; /* ✅ Increased padding for spacious feel */
-  border-bottom: 2px solid rgba(255, 143, 16, 0.1);
+  border-bottom: 2px solid rgba(139, 92, 246, 0.1);
 `;
 
 const IconWrapper = styled.div`
   width: 90px; /* ✅ Increased from 80px */
   height: 90px; /* ✅ Increased from 80px */
   margin: 0 auto 24px; /* ✅ More space below icon */
-  background: linear-gradient(135deg, #FF8F10 0%, #FFDF00 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #FFDF00 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  box-shadow: 0 8px 24px rgba(255, 143, 16, 0.3);
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
 `;
 
 const Title = styled.h2`
@@ -409,7 +409,7 @@ const SectionTitle = styled.h3`
   gap: 12px; /* ✅ Increased gap */
 
   svg {
-    color: #FF8F10;
+    color: #3B82F6;
     width: 22px; /* ✅ Larger icon */
     height: 22px;
   }
@@ -439,7 +439,7 @@ const ListItem = styled.li`
     content: '•';
     position: absolute;
     left: 12px;
-    color: #FF8F10;
+    color: #3B82F6;
     font-size: 1.2rem;
     font-weight: bold;
   }
@@ -471,8 +471,8 @@ const WarningText = styled.p`
 `;
 
 const AgreementBox = styled.div`
-  background: rgba(255, 143, 16, 0.05);
-  border: 2px solid rgba(255, 143, 16, 0.2);
+  background: rgba(139, 92, 246, 0.05);
+  border: 2px solid rgba(139, 92, 246, 0.2);
   border-radius: 16px;
   padding: 20px;
   margin-top: 25px;
@@ -602,7 +602,7 @@ const Footer = styled.div`
   display: flex;
   gap: 15px;
   justify-content: flex-end;
-  border-top: 2px solid rgba(255, 143, 16, 0.1);
+  border-top: 2px solid rgba(139, 92, 246, 0.1);
 
   @media (max-width: 768px) {
     padding: 20px;
@@ -636,13 +636,13 @@ const CancelButton = styled(Button)`
 `;
 
 const ConfirmButton = styled(Button)`
-  background: linear-gradient(135deg, #FF8F10 0%, #FF7900 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
   color: white;
-  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(255, 143, 16, 0.4);
+    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
   }
 
   &:disabled {
@@ -653,4 +653,6 @@ const ConfirmButton = styled(Button)`
 `;
 
 export default ProfileTypeConfirmModal;
+
+
 

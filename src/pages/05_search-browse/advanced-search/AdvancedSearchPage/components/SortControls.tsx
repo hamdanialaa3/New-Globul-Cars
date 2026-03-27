@@ -110,16 +110,18 @@ const SortSelect = styled.select`
   appearance: none;
 
   &:hover {
-    border-color: #FF8F10;
+    border-color: #3B82F6;
   }
 
   &:focus {
     outline: none;
-    border-color: #FF8F10;
-    box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.1);
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
   }
 
   @media (max-width: 768px) {
     flex: 1;
   }
 `;
+
+

@@ -17,11 +17,11 @@ interface BladeStepperProps {
 const pulse = keyframes`
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7);
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
   }
   50% {
     transform: scale(1.05);
-    box-shadow: 0 0 0 8px rgba(255, 107, 53, 0);
+    box-shadow: 0 0 0 8px rgba(99, 102, 241, 0);
   }
 `;
 
@@ -109,7 +109,7 @@ const StepIndicatorText = styled.div`
   gap: 0.5rem;
 
   span {
-    background: linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%);
+    background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -130,7 +130,7 @@ const ProgressPercent = styled.div`
   font-family: 'Inter', sans-serif;
   font-size: 1.75rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #FF6B35 0%, #004E89 100%);
+  background: linear-gradient(135deg, #6366F1 0%, #004E89 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -141,7 +141,7 @@ const ProgressPercent = styled.div`
   svg {
     width: 20px;
     height: 20px;
-    color: #FF6B35;
+    color: #6366F1;
     animation: ${float} 3s ease-in-out infinite;
   }
   
@@ -192,15 +192,15 @@ const Glider = styled.div<{ $width: number; $left: number }>`
   width: ${props => props.$width}px;
   left: ${props => props.$left}px;
   background: linear-gradient(135deg, 
-    rgba(255, 107, 53, 0.15) 0%,
-    rgba(255, 140, 97, 0.15) 100%
+    rgba(99, 102, 241, 0.15) 0%,
+    rgba(139, 92, 246, 0.15) 100%
   );
   backdrop-filter: blur(10px);
   border-radius: 14px;
-  border: 1.5px solid rgba(255, 107, 53, 0.3);
+  border: 1.5px solid rgba(99, 102, 241, 0.3);
   transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow: 
-    0 4px 16px rgba(255, 107, 53, 0.2),
+    0 4px 16px rgba(99, 102, 241, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
   
   @media (max-width: 768px) {
@@ -215,10 +215,10 @@ const ProgressLine = styled.div<{ $width: number }>`
   bottom: 0;
   left: 0;
   height: 4px;
-  background: linear-gradient(90deg, #FF6B35 0%, #FF8C61 100%);
+  background: linear-gradient(90deg, #6366F1 0%, #8B5CF6 100%);
   width: ${props => props.$width}%;
   transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 0 12px rgba(255, 107, 53, 0.6);
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.6);
   z-index: 10;
   border-radius: 0 0 16px 16px;
   
@@ -265,7 +265,7 @@ const StepItem = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
     background: ${({ theme }) =>
       theme.mode === 'dark' 
         ? 'rgba(255, 255, 255, 0.05)' 
-        : 'rgba(255, 107, 53, 0.05)'
+        : 'rgba(99, 102, 241, 0.05)'
     };
   }
   
@@ -275,7 +275,7 @@ const StepItem = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
   `}
   
   color: ${props => {
-    if (props.$isActive) return '#FF6B35';
+    if (props.$isActive) return '#6366F1';
     if (props.$isCompleted) return '#10B981';
     return ({ theme }) => theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.4)' : '#9CA3AF';
   }};
@@ -310,9 +310,9 @@ const StepIcon = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
   
   /* Active State - Orange */
   ${props => props.$isActive && !props.$isCompleted && css`
-    background: linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%);
+    background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
     color: white;
-    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.5);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5);
     animation: ${pulse} 2s ease-in-out infinite;
     
     svg {
@@ -372,7 +372,7 @@ const StepLabel = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
   
   /* Gradient text for active state */
   ${props => props.$isActive && css`
-    background: linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%);
+    background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -485,3 +485,4 @@ const BladeStepper: React.FC<BladeStepperProps> = ({ currentStep, totalSteps, on
 };
 
 export default BladeStepper;
+

@@ -47,7 +47,7 @@ const StatCard = styled.div`
   transition: all 0.3s;
 
   &:hover {
-    border-color: var(--accent-primary, #ff6b35);
+    border-color: var(--accent-primary, #6366F1);
     transform: translateY(-2px);
   }
 `;
@@ -102,7 +102,7 @@ const ProgressTrack = styled.div`
 const ProgressFill = styled.div<{ $percentage: number }>`
   height: 100%;
   width: ${props => props.$percentage}%;
-  background: linear-gradient(90deg, #ff6b35 0%, #f7931e 100%);
+  background: linear-gradient(90deg, #6366F1 0%, #f7931e 100%);
   transition: width 0.3s ease;
 `;
 
@@ -173,3 +173,4 @@ export const AIUsageAnalytics: React.FC = () => {
 };
 
 export default AIUsageAnalytics;
+

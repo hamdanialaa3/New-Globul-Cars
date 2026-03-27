@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 🚗 Smart Hero Recommendations Component
  * Personalized car recommendations for homepage
  * 
@@ -126,7 +126,7 @@ const Title = styled.h2`
   margin: 0;
   
   svg {
-    color: #FF8F10;
+    color: #3B82F6;
   }
   
   @media (max-width: 768px) {
@@ -175,7 +175,7 @@ const RefreshButton = styled.button<{ $loading?: boolean }>`
   
   &:hover:not(:disabled) {
     background: var(--bg-hover);
-    border-color: #FF8F10;
+    border-color: #3B82F6;
   }
   
   &:disabled {
@@ -213,7 +213,7 @@ const ViewAllButton = styled.button`
   
   &:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
   }
   
   svg {
@@ -275,7 +275,7 @@ const LoadingSpinner = styled.div`
   width: 40px;
   height: 40px;
   border: 3px solid var(--border-primary);
-  border-top-color: #FF8F10;
+  border-top-color: #3B82F6;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   
@@ -476,3 +476,5 @@ const SmartHeroRecommendations: React.FC = () => {
 };
 
 export default React.memo(SmartHeroRecommendations);
+
+

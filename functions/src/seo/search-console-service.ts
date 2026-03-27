@@ -127,7 +127,7 @@ export class SearchConsoleService {
                 message: `Indexing requested for ${fullUrl}`,
             };
         } catch (error: any) {
-            console.error('Indexing request failed:', error);
+            functions.logger.error('Indexing request failed:', error);
             return {
                 success: false,
                 message: error.message,
@@ -192,7 +192,7 @@ export class SearchConsoleService {
                 position: row.position,
             }));
         } catch (error: any) {
-            console.error('Failed to get search performance:', error);
+            functions.logger.error('Failed to get search performance:', error);
             return [];
         }
     }
@@ -226,7 +226,7 @@ export class SearchConsoleService {
                 position: row.position,
             }));
         } catch (error: any) {
-            console.error('Failed to get top queries:', error);
+            functions.logger.error('Failed to get top queries:', error);
             return [];
         }
     }
@@ -260,7 +260,7 @@ export class SearchConsoleService {
                 position: row.position,
             }));
         } catch (error: any) {
-            console.error('Failed to get top pages:', error);
+            functions.logger.error('Failed to get top pages:', error);
             return [];
         }
     }
@@ -293,7 +293,7 @@ export class SearchConsoleService {
                 position: row.position,
             }));
         } catch (error: any) {
-            console.error('Failed to get country performance:', error);
+            functions.logger.error('Failed to get country performance:', error);
             return [];
         }
     }
@@ -325,7 +325,7 @@ export class SearchConsoleService {
                 position: row.position,
             }));
         } catch (error: any) {
-            console.error('Failed to get device performance:', error);
+            functions.logger.error('Failed to get device performance:', error);
             return [];
         }
     }
@@ -398,9 +398,9 @@ export const onCarCreatedIndexing = functions.firestore
 
         try {
             await SearchConsoleService.requestIndexing(carUrl);
-            console.log(`Indexing requested for new car: ${carUrl}`);
+            functions.logger.info(`Indexing requested for new car: ${carUrl}`);
         } catch (error) {
-            console.error('Failed to request indexing:', error);
+            functions.logger.error('Failed to request indexing:', error);
         }
     });
 
@@ -420,9 +420,9 @@ export const onCarSold = functions.firestore
             try {
                 // Don't remove, just update to show "sold"
                 await SearchConsoleService.requestIndexing(carUrl);
-                console.log(`Re-indexing requested for sold car: ${carUrl}`);
+                functions.logger.info(`Re-indexing requested for sold car: ${carUrl}`);
             } catch (error) {
-                console.error('Failed to request re-indexing:', error);
+                functions.logger.error('Failed to request re-indexing:', error);
             }
         }
     });

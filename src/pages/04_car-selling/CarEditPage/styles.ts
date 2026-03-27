@@ -218,8 +218,8 @@ export const ImageNavButton = styled.button<{ $position: 'left' | 'right'; $isDa
   max-width: 50px;
   max-height: 50px;
   border-radius: 50%;
-  background: ${p => p.$isDark ? 'rgba(255, 215, 0, 0.25)' : 'rgba(255, 143, 16, 0.25)'};
-  border: 2px solid ${p => p.$isDark ? 'rgba(255, 215, 0, 0.5)' : 'rgba(255, 143, 16, 0.5)'};
+  background: ${p => p.$isDark ? 'rgba(255, 215, 0, 0.25)' : 'rgba(139, 92, 246, 0.25)'};
+  border: 2px solid ${p => p.$isDark ? 'rgba(255, 215, 0, 0.5)' : 'rgba(139, 92, 246, 0.5)'};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -229,10 +229,10 @@ export const ImageNavButton = styled.button<{ $position: 'left' | 'right'; $isDa
   backdrop-filter: blur(8px);
   box-shadow: ${p => p.$isDark
     ? '0 4px 12px rgba(255, 215, 0, 0.2)'
-    : '0 4px 12px rgba(255, 143, 16, 0.2)'};
+    : '0 4px 12px rgba(139, 92, 246, 0.2)'};
 
   svg { 
-    color: ${p => p.$isDark ? '#FFD700' : '#FF8F10'}; 
+    color: ${p => p.$isDark ? '#FFD700' : '#3B82F6'}; 
     width: 24px;
     height: 24px;
     flex-shrink: 0;
@@ -240,12 +240,12 @@ export const ImageNavButton = styled.button<{ $position: 'left' | 'right'; $isDa
   }
 
   &:hover {
-    background: ${p => p.$isDark ? 'rgba(255, 215, 0, 0.4)' : 'rgba(255, 143, 16, 0.4)'};
-    border-color: ${p => p.$isDark ? '#FFD700' : '#FF8F10'};
+    background: ${p => p.$isDark ? 'rgba(255, 215, 0, 0.4)' : 'rgba(139, 92, 246, 0.4)'};
+    border-color: ${p => p.$isDark ? '#FFD700' : '#3B82F6'};
     box-shadow: ${p => p.$isDark
     ? '0 6px 16px rgba(255, 215, 0, 0.3)'
-    : '0 6px 16px rgba(255, 143, 16, 0.3)'};
-    svg { color: ${p => p.$isDark ? '#FFD700' : '#FF8F10'}; }
+    : '0 6px 16px rgba(139, 92, 246, 0.3)'};
+    svg { color: ${p => p.$isDark ? '#FFD700' : '#3B82F6'}; }
   }
 `;
 
@@ -581,3 +581,5 @@ export const LoadingCard = styled(Card)`
   align-items: center;
   gap: 0.75rem;
 `;
+
+

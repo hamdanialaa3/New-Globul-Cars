@@ -94,23 +94,23 @@ const CompletionBadge = styled.div`
   align-items: center;
   justify-content: center;
   padding: 12px 16px;
-  background: linear-gradient(135deg, rgba(255, 121, 0, 0.15) 0%, rgba(255, 143, 16, 0.15) 100%);
-  border: 2px solid rgba(255, 143, 16, 0.4);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+  border: 2px solid rgba(139, 92, 246, 0.4);
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(255, 121, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
   transition: all 0.3s ease;
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(255, 121, 0, 0.3);
-    border-color: rgba(255, 143, 16, 0.6);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3);
+    border-color: rgba(139, 92, 246, 0.6);
   }
 `;
 
 const CompletionPercentage = styled.div`
   font-size: 1.5rem;
   font-weight: 700;
-  color: #FF7900;
+  color: #2563EB;
   line-height: 1;
   margin-bottom: 2px;
 `;
@@ -182,7 +182,7 @@ const DetailItem = styled.div`
   color: rgba(255, 255, 255, 0.7);
   
   svg {
-    color: #FF7900;
+    color: #2563EB;
     flex-shrink: 0;
     width: 14px;
     height: 14px;
@@ -208,7 +208,7 @@ const StatItem = styled.div`
 const StatNumber = styled.div`
   font-size: 1.25rem;
   font-weight: 700;
-  color: #FF7900;
+  color: #2563EB;
   line-height: 1;
 `;
 
@@ -232,7 +232,7 @@ const ActionsRow = styled.div`
 const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   padding: 8px 16px;
   background: ${props => props.$variant === 'primary' 
-    ? 'linear-gradient(135deg, #FF7900 0%, #FF8F10 100%)' 
+    ? 'linear-gradient(135deg, #2563EB 0%, #3B82F6 100%)' 
     : 'rgba(255, 255, 255, 0.1)'};
   color: white;
   border: ${props => props.$variant === 'primary' 
@@ -254,7 +254,7 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
     background: ${props => props.$variant === 'primary' 
       ? 'linear-gradient(135deg, #e66d00 0%, #e67f00 100%)' 
       : 'rgba(255, 255, 255, 0.15)'};
@@ -578,3 +578,5 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ user: propUser }) =
 };
 
 export default ProfileDashboard;
+
+

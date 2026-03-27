@@ -98,7 +98,7 @@ const PageContainer = styled.div`
 
 // Hero Header with Premium Design
 const HeroHeader = styled.header`
-  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 50%, #FF8F10 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #fb923c 50%, #3B82F6 100%);
   background-size: 200% 200%;
   animation: ${shimmer} 8s linear infinite;
   padding: 4rem 0 6rem;
@@ -131,7 +131,7 @@ const HeroHeader = styled.header`
   }
 
   @media (prefers-color-scheme: dark) {
-    background: linear-gradient(135deg, #d97706 0%, #FF8F10 50%, #d97706 100%);
+    background: linear-gradient(135deg, #d97706 0%, #3B82F6 50%, #d97706 100%);
   }
 `;
 
@@ -282,19 +282,19 @@ const TrustBadge = styled.div`
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1.5rem;
-  background: rgba(255, 143, 16, 0.05);
+  background: rgba(139, 92, 246, 0.05);
   border-radius: 50px;
   transition: all 0.3s ease;
 
   &:hover {
-    background: rgba(255, 143, 16, 0.1);
+    background: rgba(139, 92, 246, 0.1);
     transform: translateY(-2px);
   }
 
   svg {
     width: 24px;
     height: 24px;
-    color: #FF8F10;
+    color: #3B82F6;
   }
 
   span {
@@ -346,7 +346,7 @@ const SectionSubtitle = styled.p`
 const ComparisonSection = styled.section`
   margin: 5rem 0;
   padding: 4rem 0;
-  background: linear-gradient(135deg, rgba(255, 143, 16, 0.03) 0%, transparent 100%);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.03) 0%, transparent 100%);
   border-radius: 30px;
   animation: ${fadeIn} 1s ease;
 `;
@@ -369,7 +369,7 @@ const TableHeader = styled.div`
   grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 1rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #fb923c 100%);
   font-weight: 700;
   color: white;
   font-size: 1.1rem;
@@ -390,11 +390,11 @@ const TableRow = styled.div<{ $highlight?: boolean }>`
   align-items: center;
 
   ${p => p.$highlight && `
-    background: rgba(255, 143, 16, 0.05);
+    background: rgba(139, 92, 246, 0.05);
   `}
 
   &:hover {
-    background: rgba(255, 143, 16, 0.08);
+    background: rgba(139, 92, 246, 0.08);
   }
 
   @media (prefers-color-scheme: dark) {
@@ -417,7 +417,7 @@ const FeatureCell = styled.div`
   svg {
     width: 20px;
     height: 20px;
-    color: #FF8F10;
+    color: #3B82F6;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -489,7 +489,7 @@ const TestimonialCard = styled.div`
 const QuoteIcon = styled.div`
   width: 50px;
   height: 50px;
-  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #fb923c 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -525,7 +525,7 @@ const AuthorAvatar = styled.div`
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #fb923c 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -588,7 +588,7 @@ const FAQItem = styled.div<{ $isOpen: boolean }>`
   transition: all 0.3s ease;
 
   ${p => p.$isOpen && `
-    box-shadow: 0 4px 20px rgba(255, 143, 16, 0.15);
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15);
   `}
 
   @media (prefers-color-scheme: dark) {
@@ -612,14 +612,14 @@ const FAQQuestion = styled.button`
   transition: all 0.3s ease;
 
   &:hover {
-    color: #FF8F10;
+    color: #3B82F6;
   }
 
   svg {
     width: 24px;
     height: 24px;
     transition: transform 0.3s ease;
-    color: #FF8F10;
+    color: #3B82F6;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -642,7 +642,7 @@ const FAQAnswer = styled.div<{ $isOpen: boolean }>`
 
 // CTA Section
 const CTASection = styled.section`
-  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #fb923c 100%);
   padding: 4rem 2rem;
   border-radius: 30px;
   text-align: center;
@@ -691,7 +691,7 @@ const CTAText = styled.p`
 const CTAButton = styled.button`
   padding: 1.25rem 3rem;
   background: white;
-  color: #FF8F10;
+  color: #3B82F6;
   border: none;
   border-radius: 50px;
   font-size: 1.1rem;
@@ -1046,3 +1046,5 @@ const SubscriptionPage: React.FC = () => {
 };
 
 export default SubscriptionPage;
+
+

@@ -16,6 +16,23 @@ import webVitalsTracker from './utils/webVitals';
 // Import Firebase configuration
 import './firebase/firebase-config';
 
+// ============================================
+// GLOBAL ERROR HANDLERS — Catch unhandled errors/rejections
+// ============================================
+window.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
+  logger.error('Unhandled Promise rejection', event.reason instanceof Error ? event.reason : new Error(String(event.reason)));
+  event.preventDefault();
+});
+
+window.onerror = (message, source, lineno, colno, error) => {
+  logger.error('Uncaught script error', error || new Error(String(message)), {
+    source: String(source || ''),
+    line: lineno ?? 0,
+    col: colno ?? 0,
+  });
+  return true; // prevent default browser error reporting
+};
+
 // Validate environment variables (only in production to avoid breaking development)
 if (process.env.NODE_ENV === 'production') {
   try {

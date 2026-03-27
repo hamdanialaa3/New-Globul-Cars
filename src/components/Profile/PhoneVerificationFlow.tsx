@@ -111,7 +111,7 @@ const Step = styled.div<{ $active: boolean; $completed: boolean }>`
     props.$completed 
       ? '#22C55E' 
       : props.$active 
-        ? '#FF7900' 
+        ? '#2563EB' 
         : 'rgba(255, 255, 255, 0.2)'};
   transition: all 0.3s ease;
 `;
@@ -140,9 +140,9 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #FF7900;
+    border-color: #2563EB;
     background: rgba(255, 255, 255, 0.12);
-    box-shadow: 0 0 0 3px rgba(255, 121, 0, 0.1);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
   }
 
   &::placeholder {
@@ -188,7 +188,7 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   background: ${props => 
     props.$variant === 'secondary' 
       ? 'rgba(255, 255, 255, 0.1)' 
-      : 'linear-gradient(135deg, #FF7900, #FF8F10)'};
+      : 'linear-gradient(135deg, #2563EB, #3B82F6)'};
   color: white;
   border: none;
   border-radius: 12px;
@@ -202,7 +202,7 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
     box-shadow: 0 4px 12px ${props => 
       props.$variant === 'secondary' 
         ? 'rgba(255, 255, 255, 0.2)' 
-        : 'rgba(255, 121, 0, 0.4)'};
+        : 'rgba(99, 102, 241, 0.4)'};
   }
 
   &:disabled {
@@ -580,4 +580,6 @@ const PhoneVerificationFlow: React.FC<PhoneVerificationFlowProps> = ({
 };
 
 export default PhoneVerificationFlow;
+
+
 

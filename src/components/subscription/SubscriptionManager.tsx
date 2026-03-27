@@ -15,9 +15,9 @@ import { Check, Sparkles, Zap, Award, ShieldCheck } from 'lucide-react';
 // ==================== ANIMATIONS ====================
 
 const glowPulse = keyframes`
-  0% { box-shadow: 0 0 20px rgba(230, 81, 0, 0.2); }
-  50% { box-shadow: 0 0 40px rgba(230, 81, 0, 0.5); }
-  100% { box-shadow: 0 0 20px rgba(230, 81, 0, 0.2); }
+  0% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.2); }
+  50% { box-shadow: 0 0 40px rgba(37, 99, 235, 0.5); }
+  100% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.2); }
 `;
 
 const float = keyframes`
@@ -157,7 +157,7 @@ const PopularBadge = styled.div`
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  box-shadow: 0 4px 12px rgba(230, 81, 0, 0.4);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -449,3 +449,4 @@ const SubscriptionManager: React.FC = () => {
 };
 
 export default SubscriptionManager;
+

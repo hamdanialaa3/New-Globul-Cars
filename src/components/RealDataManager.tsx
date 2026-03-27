@@ -33,7 +33,7 @@ const TabsContainer = styled.div`
 
 const Tab = styled.button<{ active: boolean }>`
   padding: 0.75rem 1.5rem;
-  background: ${props => props.active ? '#FF6B35' : 'rgba(255, 255, 255, 0.1)'};
+  background: ${props => props.active ? '#6366F1' : 'rgba(255, 255, 255, 0.1)'};
   color: white;
   border: none;
   border-radius: 8px;
@@ -41,7 +41,7 @@ const Tab = styled.button<{ active: boolean }>`
   transition: all 0.3s ease;
 
   &:hover {
-    background: ${props => props.active ? '#FF6B35' : 'rgba(255, 255, 255, 0.2)'};
+    background: ${props => props.active ? '#6366F1' : 'rgba(255, 255, 255, 0.2)'};
   }
 `;
 
@@ -81,7 +81,7 @@ const ActionButton = styled.button<{ variant?: 'edit' | 'delete' | 'save' | 'can
       case 'delete': return '#f44336';
       case 'save': return '#2196F3';
       case 'cancel': return '#757575';
-      default: return '#FF6B35';
+      default: return '#6366F1';
     }
   }};
   color: white;
@@ -107,7 +107,7 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #FF6B35;
+    border-color: #6366F1;
   }
 `;
 

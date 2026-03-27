@@ -12,10 +12,26 @@ export class GoogleIndexingService {
     private jwtClient: any;
 
     constructor() {
-        // Uses Google Application Default Credentials (ADC) automatically on Cloud Functions
-        this.jwtClient = new google.auth.GoogleAuth({
-            scopes: SCOPES
-        });
+        // Uses the newly created SEO Indexing Service Account from .env
+        const clientEmail = process.env.GSC_CLIENT_EMAIL;
+        const privateKey = process.env.GSC_PRIVATE_KEY?.replace(/\\n/g, '\n');
+
+        if (clientEmail && privateKey) {
+            this.jwtClient = new google.auth.GoogleAuth({
+                credentials: {
+                    client_email: clientEmail,
+                    private_key: privateKey
+                },
+                scopes: SCOPES
+            });
+            logger.info('✅ Google Indexing Service Auth configured with custom SEO keys');
+        } else {
+            // Fallback to Application Default Credentials (ADC)
+            this.jwtClient = new google.auth.GoogleAuth({
+                scopes: SCOPES
+            });
+            logger.warn('⚠️ Google Indexing Service Auth falling back to ADC');
+        }
     }
 
     /**

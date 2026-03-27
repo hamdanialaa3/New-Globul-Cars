@@ -55,7 +55,7 @@ const ToggleButton = styled.button<{ active: boolean }>`
   border: none;
   border-radius: 4px;
   background: ${props => props.active ? '#ffffff' : 'transparent'};
-  color: ${props => props.active ? '#FF8F10' : '#666'};
+  color: ${props => props.active ? '#3B82F6' : '#666'};
   font-size: 14px;
   font-weight: ${props => props.active ? '600' : '500'};
   cursor: pointer;
@@ -100,3 +100,4 @@ const MapIcon = () => (
     <line x1="15" y1="6" x2="15" y2="21" />
   </svg>
 );
+

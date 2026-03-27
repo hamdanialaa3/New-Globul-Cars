@@ -1,4 +1,4 @@
-﻿// HomeSearchBar Component - Main Search Bar for Homepage
+// HomeSearchBar Component - Main Search Bar for Homepage
 // شريط البحث الرئيسي للصفحة الرئيسية
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -26,7 +26,7 @@ const SearchBarWrapper = styled.div`
   border-radius: 16px;
   box-shadow: ${({ theme }) => theme.mode === 'dark'
     ? '0 8px 32px rgba(255, 215, 0, 0.2), 0 0 0 1px rgba(255, 215, 0, 0.1)'
-    : '0 8px 32px rgba(255, 143, 16, 0.15), 0 0 0 1px rgba(255, 143, 16, 0.1)'};
+    : '0 8px 32px rgba(139, 92, 246, 0.15), 0 0 0 1px rgba(139, 92, 246, 0.1)'};
   padding: 2rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   animation: fadeInUp 0.6s ease-out 0.3s both;
@@ -121,7 +121,7 @@ const Select = styled.select`
     transform: translateY(-2px);
     box-shadow: ${({ theme }) => theme.mode === 'dark'
     ? '0 4px 12px rgba(255, 215, 0, 0.2)'
-    : '0 4px 12px rgba(255, 143, 16, 0.15)'};
+    : '0 4px 12px rgba(139, 92, 246, 0.15)'};
   }
   
   &:focus {
@@ -129,7 +129,7 @@ const Select = styled.select`
     border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : 'var(--accent-primary)'};
     box-shadow: ${({ theme }) => theme.mode === 'dark'
     ? '0 0 0 4px rgba(255, 215, 0, 0.15), 0 4px 12px rgba(255, 215, 0, 0.2)'
-    : '0 0 0 4px rgba(255, 143, 16, 0.15), 0 4px 12px rgba(255, 143, 16, 0.15)'};
+    : '0 0 0 4px rgba(139, 92, 246, 0.15), 0 4px 12px rgba(139, 92, 246, 0.15)'};
     transform: translateY(-2px);
   }
   
@@ -194,7 +194,7 @@ const PriceInput = styled.input`
     border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : 'var(--accent-primary)'};
     box-shadow: ${({ theme }) => theme.mode === 'dark'
     ? '0 0 0 4px rgba(255, 215, 0, 0.15), 0 4px 12px rgba(255, 215, 0, 0.2)'
-    : '0 0 0 4px rgba(255, 143, 16, 0.15), 0 4px 12px rgba(255, 143, 16, 0.15)'};
+    : '0 0 0 4px rgba(139, 92, 246, 0.15), 0 4px 12px rgba(139, 92, 246, 0.15)'};
     transform: translateY(-2px);
   }
   
@@ -244,7 +244,7 @@ const SearchButton = styled.button`
     color: #000000;
     backdrop-filter: blur(25px) saturate(180%);
     -webkit-backdrop-filter: blur(25px) saturate(180%);
-    box-shadow: 0 8px 32px rgba(255, 143, 16, 0.25), 0 0 0 0px rgba(255, 143, 16, 0), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.25), 0 0 0 0px rgba(139, 92, 246, 0), inset 0 1px 0 rgba(255, 255, 255, 0.4);
   }
   
   /* Dark mode: Glassmorphism with yellow glow */
@@ -265,7 +265,7 @@ const SearchButton = styled.button`
     padding: 2px;
     background: ${({ theme }) => theme.mode === 'dark'
     ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.5), rgba(255, 165, 0, 0.3), transparent)'
-    : 'linear-gradient(135deg, rgba(255, 143, 16, 0.4), rgba(255, 165, 0, 0.25), transparent)'};
+    : 'linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(255, 165, 0, 0.25), transparent)'};
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
@@ -290,7 +290,7 @@ const SearchButton = styled.button`
     
     html[data-theme="light"] & {
       background: var(--btn-primary-bg);
-      box-shadow: 0 12px 48px rgba(255, 143, 16, 0.4), 0 0 0 0px rgba(255, 143, 16, 0), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+      box-shadow: 0 12px 48px rgba(139, 92, 246, 0.4), 0 0 0 0px rgba(139, 92, 246, 0), inset 0 1px 0 rgba(255, 255, 255, 0.5);
     }
     
     html[data-theme="dark"] & {
@@ -339,7 +339,7 @@ const ResetButton = styled.button`
   padding: 0.5rem 1.75rem;
   background: ${({ theme }) => theme.mode === 'dark'
     ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.08) 100%)'
-    : 'linear-gradient(135deg, rgba(255, 143, 16, 0.15) 0%, rgba(255, 165, 0, 0.12) 100%)'};
+    : 'linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(255, 165, 0, 0.12) 100%)'};
   border: none;
   border-radius: 12px;
   color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : 'var(--accent-primary)'};
@@ -356,7 +356,7 @@ const ResetButton = styled.button`
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   box-shadow: ${({ theme }) => theme.mode === 'dark'
     ? '0 4px 16px rgba(255, 215, 0, 0.2), 0 0 0 0px rgba(255, 215, 0, 0)'
-    : '0 4px 16px rgba(255, 143, 16, 0.15), 0 0 0 0px rgba(255, 143, 16, 0)'};
+    : '0 4px 16px rgba(139, 92, 246, 0.15), 0 0 0 0px rgba(139, 92, 246, 0)'};
   position: relative;
   overflow: hidden;
   
@@ -369,7 +369,7 @@ const ResetButton = styled.button`
     padding: 2px;
     background: ${({ theme }) => theme.mode === 'dark'
     ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.4), rgba(255, 165, 0, 0.25), transparent)'
-    : 'linear-gradient(135deg, rgba(255, 143, 16, 0.35), rgba(255, 165, 0, 0.2), transparent)'};
+    : 'linear-gradient(135deg, rgba(139, 92, 246, 0.35), rgba(255, 165, 0, 0.2), transparent)'};
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
@@ -392,12 +392,12 @@ const ResetButton = styled.button`
   &:hover {
     background: ${({ theme }) => theme.mode === 'dark'
     ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 165, 0, 0.15) 100%)'
-    : 'linear-gradient(135deg, rgba(255, 143, 16, 0.25) 0%, rgba(255, 165, 0, 0.2) 100%)'};
+    : 'linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(255, 165, 0, 0.2) 100%)'};
     color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : 'var(--accent-primary)'};
     transform: translateY(-2px);
     box-shadow: ${({ theme }) => theme.mode === 'dark'
     ? '0 8px 24px rgba(255, 215, 0, 0.3), 0 0 0 0px rgba(255, 215, 0, 0)'
-    : '0 8px 24px rgba(255, 143, 16, 0.25), 0 0 0 0px rgba(255, 143, 16, 0)'};
+    : '0 8px 24px rgba(139, 92, 246, 0.25), 0 0 0 0px rgba(139, 92, 246, 0)'};
     
     &::before {
       opacity: 1;
@@ -695,3 +695,4 @@ const HomeSearchBar: React.FC = () => {
 };
 
 export default HomeSearchBar;
+

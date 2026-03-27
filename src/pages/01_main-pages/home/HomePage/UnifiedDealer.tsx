@@ -1,4 +1,4 @@
-﻿/**
+/**
  * UnifiedDealer.tsx (v2.0 - Trust-Centric Design)
  * Обединени търговци и дилъри - Витрина с фокус върху доверието
  * Unified Dealers & Showrooms - Trust-Focused Showcase
@@ -82,7 +82,7 @@ const Title = styled.h2<{ $isDark: boolean }>`
   gap: 0.75rem;
 
   svg {
-    color: #ff6b35;
+    color: #6366F1;
     flex-shrink: 0;
   }
 `;
@@ -145,7 +145,7 @@ const StatItem = styled(motion.div) <{ $isDark: boolean }>`
     ? 'rgba(94, 179, 255, 0.2)'
     : 'rgba(12, 26, 42, 0.08)'};
     border-radius: 10px;
-    color: #ff6b35;
+    color: #6366F1;
     flex-shrink: 0;
 
     svg {
@@ -189,15 +189,15 @@ const CTASection = styled(motion.div) <{ $isDark: boolean }>`
   padding: 2.5rem;
   background: var(--btn-primary-bg);
   border: 2px solid ${props => props.$isDark
-    ? 'rgba(255, 107, 53, 0.25)'
-    : 'rgba(255, 107, 53, 0.15)'};
+    ? 'rgba(99, 102, 241, 0.25)'
+    : 'rgba(99, 102, 241, 0.15)'};
   border-radius: 16px;
   transition: all 300ms ease-out;
 
   &:hover {
     border-color: ${props => props.$isDark
-    ? 'rgba(255, 107, 53, 0.4)'
-    : 'rgba(255, 107, 53, 0.25)'};
+    ? 'rgba(99, 102, 241, 0.4)'
+    : 'rgba(99, 102, 241, 0.25)'};
     background: var(--btn-primary-bg);
   }
 
@@ -259,12 +259,12 @@ const CTAButton = styled(motion.button) <{ $isDark: boolean }>`
   background: var(--btn-primary-bg);
   color: white;
   white-space: nowrap;
-  box-shadow: 0 8px 16px rgba(255, 107, 53, 0.25);
+  box-shadow: 0 8px 16px rgba(99, 102, 241, 0.25);
   transition: all 200ms ease-out;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 24px rgba(255, 107, 53, 0.35);
+    box-shadow: 0 12px 24px rgba(99, 102, 241, 0.35);
   }
 
   &:active {
@@ -302,7 +302,7 @@ const LoadingFallback = styled.div<{ $isDark: boolean }>`
       background: conic-gradient(
         from 0deg,
         transparent 0deg,
-        #FF8F10 90deg,
+        #3B82F6 90deg,
         transparent 100deg,
         transparent 360deg
       );
@@ -480,3 +480,5 @@ const UnifiedDealer: React.FC = memo(() => {
 UnifiedDealer.displayName = 'UnifiedDealer';
 
 export default UnifiedDealer;
+
+

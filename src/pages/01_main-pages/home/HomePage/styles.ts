@@ -56,7 +56,7 @@ export const SectionHeader = styled.div`
 export const ViewAllButton = styled.a`
   display: inline-block;
   padding: 1rem 2rem;
-  background: var(--btn-primary-bg, linear-gradient(135deg, #FF6B35, #F54B64));
+  background: var(--btn-primary-bg, linear-gradient(135deg, #6366F1, #F54B64));
   color: white;
   text-decoration: none;
   font-weight: 700;

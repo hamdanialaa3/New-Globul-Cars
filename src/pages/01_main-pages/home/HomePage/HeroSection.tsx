@@ -1,4 +1,4 @@
-﻿// src/pages/HomePage/HeroSection.tsx
+// src/pages/HomePage/HeroSection.tsx
 import React, { memo } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '@/contexts/LanguageContext';

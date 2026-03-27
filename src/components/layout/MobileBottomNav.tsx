@@ -49,13 +49,13 @@ const NavItem = styled.button<{ $isActive: boolean }>`
   align-items: center;
   justify-content: center;
   gap: 2px;
-  background: ${props => props.$isActive ? 'rgba(230, 81, 0, 0.1)' : 'transparent'};
+  background: ${props => props.$isActive ? 'rgba(37, 99, 235, 0.1)' : 'transparent'};
   border: none;
   padding: 6px 4px;
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-  color: ${props => props.$isActive ? 'var(--accent-primary, #E65100)' : 'var(--text-secondary, #6b7280)'};
+  color: ${props => props.$isActive ? 'var(--accent-primary, #2563EB)' : 'var(--text-secondary, #6b7280)'};
   flex: 1;
   min-height: 48px;
   max-width: 72px;
@@ -65,7 +65,7 @@ const NavItem = styled.button<{ $isActive: boolean }>`
   
   &:active {
     transform: scale(0.92);
-    background: ${props => props.$isActive ? 'rgba(230, 81, 0, 0.18)' : 'rgba(0, 0, 0, 0.05)'};
+    background: ${props => props.$isActive ? 'rgba(37, 99, 235, 0.18)' : 'rgba(0, 0, 0, 0.05)'};
   }
   
   svg {
@@ -203,3 +203,5 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
     </NavWrapper>
   );
 };
+
+

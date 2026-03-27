@@ -38,14 +38,14 @@ const PlanCard = styled.div<{ popular?: boolean; current?: boolean }>`
   
   ${p => p.popular && `
     transform: scale(1.05);
-    box-shadow: 0 12px 32px rgba(255, 143, 16, 0.15);
-    border: 2px solid #FF8F10;
+    box-shadow: 0 12px 32px rgba(139, 92, 246, 0.15);
+    border: 2px solid #3B82F6;
   `}
   
   &:hover {
     transform: translateY(-8px) ${p => p.popular ? 'scale(1.05)' : 'scale(1.02)'};
-    box-shadow: 0 16px 40px rgba(255, 143, 16, 0.15);
-    border-color: ${p => p.current ? '#16a34a' : '#FF8F10'};
+    box-shadow: 0 16px 40px rgba(139, 92, 246, 0.15);
+    border-color: ${p => p.current ? '#16a34a' : '#3B82F6'};
   }
 `;
 
@@ -63,7 +63,7 @@ const Badge = styled.div<{ type: 'popular' | 'current' }>`
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   
   ${p => p.type === 'popular' ? `
-    background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+    background: linear-gradient(135deg, #3B82F6 0%, #fb923c 100%);
     color: white;
   ` : `
     background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
@@ -104,7 +104,7 @@ const PlanDescription = styled.p`
 const PlanPrice = styled.div`
   font-size: 3rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #fb923c 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -182,14 +182,14 @@ const SelectButton = styled.button<{ selected?: boolean }>`
       border-color: #475569;
     }
   ` : `
-    background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+    background: linear-gradient(135deg, #3B82F6 0%, #fb923c 100%);
     color: white;
-    box-shadow: 0 4px 16px rgba(255, 143, 16, 0.25);
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25);
     
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(255, 143, 16, 0.35);
-      background: linear-gradient(135deg, #fb923c 0%, #FF8F10 100%);
+      box-shadow: 0 8px 24px rgba(139, 92, 246, 0.35);
+      background: linear-gradient(135deg, #fb923c 0%, #3B82F6 100%);
     }
 
     &:active {
@@ -197,10 +197,10 @@ const SelectButton = styled.button<{ selected?: boolean }>`
     }
     
     @media (prefers-color-scheme: dark) {
-      box-shadow: 0 4px 16px rgba(255, 143, 16, 0.4);
+      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
       
       &:hover {
-        box-shadow: 0 8px 24px rgba(255, 143, 16, 0.5);
+        box-shadow: 0 8px 24px rgba(139, 92, 246, 0.5);
       }
     }
   `}
@@ -325,4 +325,6 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
 };
 
 export default SubscriptionPlans;
+
+
 

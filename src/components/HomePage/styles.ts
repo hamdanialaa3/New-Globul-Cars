@@ -190,7 +190,7 @@ export const CityCard = styled.div<{ $isActive?: boolean }>`
   
   /* 🔮 Glass Border - Gradient Glass Effect */
   border: 3px solid ${props => props.$isActive 
-    ? 'rgba(255, 143, 16, 0.5)' 
+    ? 'rgba(139, 92, 246, 0.5)' 
     : 'rgba(255, 255, 255, 0.6)'};
   
   /* 🎨 3D Shadow Layers - Multiple shadows for depth */
@@ -241,7 +241,7 @@ export const CityCard = styled.div<{ $isActive?: boolean }>`
     height: 40%;
     background: radial-gradient(
       circle at 60% 60%,
-      rgba(255, 143, 16, 0.25) 0%,
+      rgba(139, 92, 246, 0.25) 0%,
       rgba(255, 215, 0, 0.15) 40%,
       transparent 75%
     );
@@ -255,7 +255,7 @@ export const CityCard = styled.div<{ $isActive?: boolean }>`
   &:hover::after {
     background: radial-gradient(
       circle at 60% 60%,
-      rgba(255, 143, 16, 0.4) 0%,
+      rgba(139, 92, 246, 0.4) 0%,
       rgba(255, 215, 0, 0.25) 40%,
       transparent 75%
     );
@@ -267,12 +267,12 @@ export const CityCard = styled.div<{ $isActive?: boolean }>`
     transform: translateY(-12px) scale(1.1) rotateX(5deg);
     box-shadow: 
       inset 0 0 25px rgba(255, 255, 255, 1),
-      inset -5px -5px 20px rgba(255, 143, 16, 0.15),
+      inset -5px -5px 20px rgba(139, 92, 246, 0.15),
       inset 5px 5px 20px rgba(255, 255, 255, 1),
-      0 15px 45px rgba(255, 143, 16, 0.3),
+      0 15px 45px rgba(139, 92, 246, 0.3),
       0 8px 25px rgba(0, 92, 169, 0.2),
       0 25px 60px rgba(0, 0, 0, 0.15);
-    border-color: rgba(255, 143, 16, 0.8);
+    border-color: rgba(139, 92, 246, 0.8);
     background: linear-gradient(
       145deg,
       rgba(255, 255, 255, 0.98) 0%,
@@ -581,3 +581,4 @@ export const ShowMoreButton = styled.button`
     transform: translateY(2px);
   }
 `;
+

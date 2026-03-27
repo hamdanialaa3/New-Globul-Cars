@@ -64,7 +64,7 @@ const StatCard = styled.div`
 const StatValue = styled.div`
   font-size: 2rem;
   font-weight: 700;
-  color: #FF7900;
+  color: #2563EB;
   margin-bottom: 0.5rem;
 `;
 
@@ -93,7 +93,7 @@ const BULGARIAN_CITIES: Record<string, { bg: string; region: string }> = {
 
 const BrandCityPage: React.FC = () => {
   const { city, brand } = useParams<{ city: string; brand: string }>();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const navigate = useNavigate();
   
   const [stats, setStats] = useState({
@@ -222,7 +222,7 @@ const BrandCityPage: React.FC = () => {
 
         {loading ? (
           <div style={{ textAlign: 'center', padding: '3rem' }}>
-            {language === 'bg' ? 'Зареждане...' : 'Loading...'}
+            {t('common.loading')}
           </div>
         ) : (
           <CarsGrid>
@@ -237,4 +237,5 @@ const BrandCityPage: React.FC = () => {
 };
 
 export default BrandCityPage;
+
 

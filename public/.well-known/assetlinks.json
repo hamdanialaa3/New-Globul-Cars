@@ -3,9 +3,9 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.hamdani.kolione",
+      "package_name": "app.kolione",
       "sha256_cert_fingerprints": [
-        "REPLACE_WITH_SHA256_FINGERPRINT"
+        "1C:5B:36:93:FC:F6:5A:B0:AF:BD:CD:45:26:47:F6:47:2D:16:22:54:E8:FD:59:99:40:CF:99:BC:1F:FE:8F:EF"
       ]
     }
   }

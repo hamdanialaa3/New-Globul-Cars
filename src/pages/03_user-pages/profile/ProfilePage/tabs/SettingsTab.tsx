@@ -431,7 +431,7 @@ const SidebarItem = styled.button<{ $active?: boolean; $isDark?: boolean }>`
   width: 100%;
   padding: 12px 16px;
   background: ${props => props.$active
-    ? (props.$isDark ? 'rgba(255, 140, 97, 0.2)' : 'rgba(255, 107, 53, 0.15)')
+    ? (props.$isDark ? 'rgba(139, 92, 246, 0.2)' : 'rgba(99, 102, 241, 0.15)')
     : 'transparent'};
   border: 2px solid ${props => props.$active
     ? (props.$isDark ? 'var(--accent-primary)' : 'var(--accent-primary)')
@@ -448,7 +448,7 @@ const SidebarItem = styled.button<{ $active?: boolean; $isDark?: boolean }>`
 
   &:hover {
     background: ${props => props.$active
-    ? (props.$isDark ? 'rgba(255, 140, 97, 0.25)' : 'rgba(255, 107, 53, 0.2)')
+    ? (props.$isDark ? 'rgba(139, 92, 246, 0.25)' : 'rgba(99, 102, 241, 0.2)')
     : (props.$isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)')};
     transform: translateX(4px);
     color: var(--accent-primary);
@@ -1603,7 +1603,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
                 flex: 1,
                 minWidth: '200px',
                 padding: '12px 20px',
-                background: 'linear-gradient(135deg, #FF7900, #FF8F10)',
+                background: 'linear-gradient(135deg, #2563EB, #3B82F6)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '12px',
@@ -1627,7 +1627,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
                 flex: 1,
                 minWidth: '200px',
                 padding: '12px 20px',
-                background: 'linear-gradient(135deg, #FF7900, #FF8F10)',
+                background: 'linear-gradient(135deg, #2563EB, #3B82F6)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '12px',
@@ -1845,7 +1845,7 @@ const UnifiedAccountSection: React.FC<UnifiedAccountSectionProps> = ({
               ))}
             </select>
             {!userInfo.region && (
-              <HelpText $gray style={{ color: '#ff6b35', fontSize: '0.75rem', marginTop: '4px' }}>
+              <HelpText $gray style={{ color: '#6366F1', fontSize: '0.75rem', marginTop: '4px' }}>
                 {isBg ? 'Моля, първо изберете област' : 'Please select a region first'}
               </HelpText>
             )}
@@ -1964,7 +1964,7 @@ const FormSection = styled.div`
 const FormTitle = styled.h4`
   font-size: 1.1rem;
   font-weight: 600;
-  color: #FF8F10;
+  color: #3B82F6;
   margin: 0 0 20px 0;
   padding-bottom: 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -3683,3 +3683,5 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
 };
 
 export default SettingsTab;
+
+

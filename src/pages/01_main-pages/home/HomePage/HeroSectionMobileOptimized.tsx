@@ -1,4 +1,4 @@
-﻿// src/pages/HomePage/HeroSectionMobileOptimized.tsx
+// src/pages/HomePage/HeroSectionMobileOptimized.tsx
 // Mobile-optimized Hero section with responsive design
 
 import React, { memo } from 'react';

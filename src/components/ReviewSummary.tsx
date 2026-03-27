@@ -64,7 +64,7 @@ const Section = styled.div`
   padding: 1.25rem;
   background: #f8fafc;
   border-radius: 12px;
-  border-left: 4px solid #ff8f10;
+  border-left: 4px solid #3b82f6;
 `;
 
 const SectionHeader = styled.div`
@@ -127,7 +127,7 @@ const Tag = styled.span`
 const PriceDisplay = styled.div`
   font-size: 2rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #ff8f10, #005ca9);
+  background: linear-gradient(135deg, #3b82f6, #005ca9);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -211,7 +211,7 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({
       {/* Vehicle Information */}
       <Section>
         <SectionHeader>
-          <Car size={24} color="#ff8f10" />
+          <Car size={24} color="#3b82f6" />
           <SectionTitle>{t('Автомобил', 'Vehicle')}</SectionTitle>
         </SectionHeader>
         
@@ -399,4 +399,5 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({
 };
 
 export default ReviewSummary;
+
 

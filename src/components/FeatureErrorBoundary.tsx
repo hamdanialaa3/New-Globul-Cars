@@ -149,7 +149,7 @@ const FeatureErrorText = styled.p`
 
 const FeatureRetryButton = styled.button`
   padding: 0.5rem 1.5rem;
-  background: linear-gradient(135deg, #FF7900, #FF8F10);
+  background: linear-gradient(135deg, #2563EB, #3B82F6);
   color: white;
   border: none;
   border-radius: 8px;
@@ -163,7 +163,8 @@ const FeatureRetryButton = styled.button`
   }
 
   &:focus-visible {
-    outline: 2px solid #FF7900;
+    outline: 2px solid #2563EB;
     outline-offset: 2px;
   }
 `;
+

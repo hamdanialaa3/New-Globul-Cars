@@ -22,7 +22,7 @@ const SectionHeader = styled.div`
 `;
 
 const Title = styled.h2<{ language: string }>`
-  color: #ff8c61;
+  color: #8B5CF6;
   font-size: 18px;
   font-weight: 700;
   display: flex;
@@ -34,7 +34,7 @@ const Title = styled.h2<{ language: string }>`
 `;
 
 const ViewButton = styled.button`
-  background: #ff8c61;
+  background: #8B5CF6;
   color: #0f1419;
   border: none;
   padding: 10px 24px;
@@ -52,7 +52,7 @@ const ViewButton = styled.button`
   &:hover {
     background: #ffa885;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 140, 97, 0.3);
+    box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
   }
 `;
 
@@ -81,7 +81,7 @@ const FeatureCard = styled.div`
 
   &:hover {
     background: #252b3a;
-    border-color: #ff8c61;
+    border-color: #8B5CF6;
     transform: translateY(-4px);
   }
 `;
@@ -95,7 +95,7 @@ const FeatureIcon = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom: 16px;
-  color: #ff8c61;
+  color: #8B5CF6;
   border: 1px solid #2d3748;
 `;
 
@@ -121,12 +121,12 @@ const DetailedExplanation = styled.div<{ language: string }>`
   border-radius: 12px;
   padding: 24px;
   margin-top: 32px;
-  border-left: 4px solid #ff8c61;
+  border-left: 4px solid #8B5CF6;
   direction: ${props => props.language === 'bg' ? 'ltr' : 'rtl'};
 `;
 
 const ExplanationTitle = styled.h3<{ language: string }>`
-  color: #ff8c61;
+  color: #8B5CF6;
   font-size: 16px;
   font-weight: 700;
   margin-bottom: 16px;
@@ -304,3 +304,4 @@ const ArchitecturePanel: React.FC<ArchitecturePanelProps> = ({ language }) => {
 };
 
 export default ArchitecturePanel;
+

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * HomeCarsShowcase.tsx
  * Витрина за автомобили - HomePage Cars Showcase
  * 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bg">
 
 <head>
     <!-- Google Consent Mode v2 - MUST BE FIRST -->
@@ -97,7 +97,7 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="theme-color" content="#FF7900" />
+    <meta name="theme-color" content="#2563EB" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -204,12 +204,12 @@
             background: radial-gradient(
                 circle at 35% 35%,
                 rgba(255, 255, 255, 0.25) 0%,
-                rgba(255, 143, 16, 0.15) 25%,
-                rgba(255, 143, 16, 0.08) 50%,
+                rgba(37, 99, 235, 0.2) 25%,
+                rgba(139, 92, 246, 0.14) 50%,
                 rgba(0, 0, 0, 0.3) 100%
             );
             box-shadow:
-                0 0 25px rgba(255, 143, 16, 0.4),
+                0 0 25px rgba(99, 102, 241, 0.45),
                 inset 0 -10px 20px rgba(0, 0, 0, 0.4),
                 inset 0 10px 20px rgba(255, 255, 255, 0.1);
             z-index: 1;
@@ -223,9 +223,10 @@
             background: conic-gradient(
                 from 0deg,
                 transparent 0deg,
-                #FF8F10 30deg,
-                #FFB366 60deg,
-                #FF8F10 90deg,
+                #1D4ED8 24deg,
+                #2563EB 48deg,
+                #6366F1 72deg,
+                #8B5CF6 96deg,
                 transparent 100deg,
                 transparent 360deg
             );
@@ -243,7 +244,7 @@
                 black 59px,
                 transparent 59px
             );
-            filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.8));
+            filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.85));
             animation: led-orbit 1.2s linear infinite, led-pulse 2s ease-in-out infinite;
             z-index: 2;
         }
@@ -264,7 +265,7 @@
             letter-spacing: 2px;
             text-transform: uppercase;
             color: #ffffff;
-            text-shadow: 0 0 15px rgba(255, 143, 16, 0.6);
+            text-shadow: 0 0 15px rgba(139, 92, 246, 0.65);
         }
 
         @keyframes led-orbit {
@@ -278,10 +279,10 @@
 
         @keyframes led-pulse {
             0%, 100% {
-                filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.8));
+                filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.85));
             }
             50% {
-                filter: drop-shadow(0 0 16px rgba(255, 143, 16, 1));
+                filter: drop-shadow(0 0 16px rgba(139, 92, 246, 1));
             }
         }
 

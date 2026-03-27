@@ -28,7 +28,7 @@ const SkipToContent = styled.a`
   transform: translateX(-50%);
   z-index: 10000;
   padding: 0.75rem 1.5rem;
-  background: #FF7900;
+  background: #2563EB;
   color: #fff;
   font-weight: 600;
   border-radius: 0 0 8px 8px;
@@ -95,8 +95,8 @@ const App: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <SkipToContent href="#main-content">
-        Преминете към съдържанието
+      <SkipToContent href="#main-content" aria-label="Skip to main content">
+        Преминете към съдържанието / Skip to content
       </SkipToContent>
       <AppProviders>
         <AppContent />

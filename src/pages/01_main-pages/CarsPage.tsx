@@ -1204,7 +1204,7 @@ const CarsPage: React.FC = () => {
         {/* Error State */}
         {error && !loading && (
           <EmptyState>
-            <h3>⚠️ {language === 'bg' ? 'Грешка' : 'Error'}</h3>
+            <h3>⚠️ {t('common.error') || (language === 'bg' ? 'Грешка' : 'Error')}</h3>
             <p>{error}</p>
           </EmptyState>
         )}
@@ -1213,7 +1213,7 @@ const CarsPage: React.FC = () => {
         {!loading && !error && cars.length === 0 && (
           <EmptyState>
             <CarIcon size={64} color={PALETTE.accent} style={{ marginBottom: '16px', opacity: 0.65 }} />
-            <h3>{language === 'bg' ? 'Няма намерени автомобили' : 'No cars found'}</h3>
+            <h3>{t('cars.noResults')}</h3>
             <p>
               {cityData && makeParam
                 ? (language === 'bg'

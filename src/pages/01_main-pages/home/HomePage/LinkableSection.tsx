@@ -40,15 +40,15 @@ const SectionContainer = styled.section`
   margin: 0 auto;
   padding: 40px 20px;
   /* 🟣 Light purple border */
-  border: 1px solid rgba(230, 81, 0, 0.15);
+  border: 1px solid rgba(37, 99, 235, 0.15);
   border-radius: 16px;
-  background: rgba(230, 81, 0, 0.02);
+  background: rgba(37, 99, 235, 0.02);
   transition: all 0.3s ease;
   
   &:hover {
-    border-color: rgba(230, 81, 0, 0.25);
-    background: rgba(230, 81, 0, 0.04);
-    box-shadow: inset 0 0 12px rgba(230, 81, 0, 0.1);
+    border-color: rgba(37, 99, 235, 0.25);
+    background: rgba(37, 99, 235, 0.04);
+    box-shadow: inset 0 0 12px rgba(37, 99, 235, 0.1);
   }
   
   @media (max-width: 768px) {
@@ -191,3 +191,4 @@ const LinkableSection: React.FC<LinkableSectionProps> = ({
 };
 
 export default LinkableSection;
+

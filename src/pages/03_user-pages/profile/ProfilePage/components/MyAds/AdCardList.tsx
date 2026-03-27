@@ -38,7 +38,7 @@ const ListCard = styled(motion.div)<{ $isDark?: boolean }>`
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border-color: #ff8f10;
+    border-color: #3b82f6;
   }
 
   @media (max-width: 1200px) {
@@ -238,7 +238,7 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary'; $isDark
   padding: 0.5rem 0.75rem;
   background: ${({ $variant, $isDark }) => 
     $variant === 'primary' 
-      ? '#ff8f10'
+      ? '#3b82f6'
       : ($isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)')};
   color: ${({ $variant, $isDark }) => 
     $variant === 'primary' 
@@ -257,8 +257,8 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary'; $isDark
   &:hover {
     background: ${({ $variant }) => 
       $variant === 'primary' 
-        ? '#ff7900'
-        : 'rgba(255, 143, 16, 0.1)'};
+        ? '#2563eb'
+        : 'rgba(139, 92, 246, 0.1)'};
     transform: translateY(-1px);
   }
 
@@ -487,4 +487,6 @@ export const AdCardList: React.FC<AdCardListProps> = ({
     </ListContainer>
   );
 };
+
+
 

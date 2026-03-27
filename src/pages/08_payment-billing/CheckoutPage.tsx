@@ -30,7 +30,7 @@ const Header = styled.div`
 const BackButton = styled.button`
   background: none;
   border: none;
-  color: #FF7900;
+  color: #2563EB;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -99,7 +99,7 @@ const TotalRow = styled(SummaryRow)`
 
 const PaymentButton = styled.button`
   width: 100%;
-  background: linear-gradient(135deg, #FF7900, #ff8c1a);
+  background: linear-gradient(135deg, #2563EB, #ff8c1a);
   color: white;
   border: none;
   padding: 1rem 2rem;
@@ -116,7 +116,7 @@ const PaymentButton = styled.button`
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
   }
 
   &:disabled {
@@ -393,3 +393,5 @@ const CheckoutPage: React.FC = () => {
 };
 
 export default CheckoutPage;
+
+

@@ -12,7 +12,7 @@ const PromptContainer = styled.div`
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(135deg, #FF7900, #ff8c1a);
+  background: linear-gradient(135deg, #2563EB, #ff8c1a);
   color: white;
   padding: 16px 24px;
   border-radius: 12px;
@@ -92,7 +92,7 @@ const Actions = styled.div`
 
 const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   background: ${props => props.variant === 'secondary' ? 'rgba(255, 255, 255, 0.2)' : 'white'};
-  color: ${props => props.variant === 'secondary' ? 'white' : '#FF7900'};
+  color: ${props => props.variant === 'secondary' ? 'white' : '#2563EB'};
   border: none;
   padding: 8px 16px;
   border-radius: 8px;
@@ -197,3 +197,4 @@ export const InstallPrompt: React.FC = () => {
 };
 
 export default InstallPrompt;
+

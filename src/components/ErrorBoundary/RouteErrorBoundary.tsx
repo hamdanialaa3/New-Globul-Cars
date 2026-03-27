@@ -150,7 +150,7 @@ const Button = styled.button<{ primary?: boolean }>`
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   border: ${props => props.primary ? 'none' : '1px solid #d1d5db'};
-  background: ${props => props.primary ? '#FF8F10' : '#fff'};
+  background: ${props => props.primary ? '#3B82F6' : '#fff'};
   color: ${props => props.primary ? '#fff' : '#374151'};
   font-size: 1rem;
   cursor: pointer;
@@ -184,4 +184,5 @@ const DebugContent = styled.pre`
 `;
 
 export default RouteErrorBoundary;
+
 

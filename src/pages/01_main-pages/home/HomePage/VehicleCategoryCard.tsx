@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Car, Truck, Zap, Shield, Activity, Users, Briefcase, Sun } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -41,9 +41,10 @@ const Card = styled.button<{ $active: boolean }>`
   background: ${({ theme, $active }) =>
     $active
       ? `linear-gradient(135deg,
-          rgba(255, 121, 0, ${theme.mode === 'dark' ? 0.28 : 0.18}) 0%,
-          rgba(255, 143, 16, ${theme.mode === 'dark' ? 0.22 : 0.14}) 55%,
-          rgba(255, 185, 0, ${theme.mode === 'dark' ? 0.18 : 0.12}) 100%
+          rgba(29, 78, 216, ${theme.mode === 'dark' ? 0.30 : 0.18}) 0%,
+          rgba(37, 99, 235, ${theme.mode === 'dark' ? 0.26 : 0.16}) 35%,
+          rgba(99, 102, 241, ${theme.mode === 'dark' ? 0.24 : 0.15}) 68%,
+          rgba(139, 92, 246, ${theme.mode === 'dark' ? 0.20 : 0.12}) 100%
         )`
       : theme.mode === 'dark'
         ? 'rgba(255, 255, 255, 0.06)'
@@ -54,7 +55,7 @@ const Card = styled.button<{ $active: boolean }>`
 
   border: 1px solid ${({ theme, $active }) =>
     $active
-      ? (theme.mode === 'dark' ? 'rgba(255, 143, 16, 0.55)' : 'rgba(255, 121, 0, 0.35)')
+      ? (theme.mode === 'dark' ? 'rgba(139, 92, 246, 0.55)' : 'rgba(99, 102, 241, 0.35)')
       : (theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.14)' : 'rgba(15, 23, 42, 0.10)')};
   
   cursor: pointer;
@@ -64,8 +65,8 @@ const Card = styled.button<{ $active: boolean }>`
   box-shadow: ${({ theme, $active }) =>
     $active
       ? (theme.mode === 'dark'
-        ? '0 18px 40px rgba(0, 0, 0, 0.45), 0 8px 18px rgba(255, 121, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.10)'
-        : '0 14px 34px rgba(15, 23, 42, 0.12), 0 6px 14px rgba(255, 121, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.35)')
+        ? '0 18px 40px rgba(0, 0, 0, 0.45), 0 8px 18px rgba(99, 102, 241, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.10)'
+        : '0 14px 34px rgba(15, 23, 42, 0.12), 0 6px 14px rgba(99, 102, 241, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.35)')
       : (theme.mode === 'dark'
         ? '0 14px 30px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.06)'
         : '0 10px 26px rgba(15, 23, 42, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.35)')};
@@ -93,21 +94,21 @@ const Card = styled.button<{ $active: boolean }>`
     box-shadow: ${({ theme, $active }) =>
       $active
         ? (theme.mode === 'dark'
-          ? '0 22px 50px rgba(0, 0, 0, 0.52), 0 10px 24px rgba(255, 121, 0, 0.22)'
-          : '0 18px 44px rgba(15, 23, 42, 0.16), 0 10px 22px rgba(255, 121, 0, 0.18)')
+          ? '0 22px 50px rgba(0, 0, 0, 0.52), 0 10px 24px rgba(99, 102, 241, 0.22)'
+          : '0 18px 44px rgba(15, 23, 42, 0.16), 0 10px 22px rgba(99, 102, 241, 0.18)')
         : (theme.mode === 'dark'
           ? '0 18px 38px rgba(0, 0, 0, 0.46)'
           : '0 14px 34px rgba(15, 23, 42, 0.14)')};
     border-color: ${({ theme, $active }) =>
       $active
-        ? (theme.mode === 'dark' ? 'rgba(255, 143, 16, 0.65)' : 'rgba(255, 121, 0, 0.45)')
+        ? (theme.mode === 'dark' ? 'rgba(139, 92, 246, 0.65)' : 'rgba(99, 102, 241, 0.45)')
         : (theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.22)' : 'rgba(15, 23, 42, 0.16)')};
   }
 
   &:active {
     transform: skewX(-8deg) translateY(-2px) scale(0.98);
     box-shadow: ${props => props.$active 
-      ? '0 4px 12px rgba(255, 121, 0, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.2)' 
+      ? '0 4px 12px rgba(99, 102, 241, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.2)' 
       : '0 2px 6px rgba(0, 0, 0, 0.1)'};
   }
 
@@ -247,3 +248,4 @@ const VehicleCategoryCard: React.FC<Props> = ({ category, isActive, onClick }) =
 };
 
 export default VehicleCategoryCard;
+

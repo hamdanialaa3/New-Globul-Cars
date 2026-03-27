@@ -436,7 +436,7 @@ const Header = styled.div<{ $isDark: boolean }>`
   margin-bottom: 32px;
   
   svg {
-    color: #FF8F10;
+    color: #3B82F6;
     flex-shrink: 0;
   }
 `;
@@ -445,7 +445,7 @@ const Title = styled.h2<{ $isDark: boolean }>`
   margin: 0 0 4px 0;
   font-size: 24px;
   font-weight: 700;
-  color: #FF8F10;
+  color: #3B82F6;
 `;
 
 const Subtitle = styled.p<{ $isDark: boolean }>`
@@ -478,27 +478,27 @@ const VisibilityOption = styled.div<{ $active: boolean; $isDark: boolean }>`
   align-items: center;
   gap: 12px;
   padding: 16px;
-  border: 2px solid ${props => props.$active ? '#FF8F10' : props.$isDark ? '#334155' : '#e0e0e0'};
+  border: 2px solid ${props => props.$active ? '#3B82F6' : props.$isDark ? '#334155' : '#e0e0e0'};
   border-radius: 12px;
   background: ${props => {
-    if (props.$active) return 'rgba(255, 143, 16, 0.1)';
+    if (props.$active) return 'rgba(139, 92, 246, 0.1)';
     return props.$isDark ? '#1E293B' : '#fff';
   }};
   cursor: pointer;
   transition: all 0.3s ease;
   
   svg {
-    color: ${props => props.$active ? '#FF8F10' : props.$isDark ? '#94A3B8' : '#6c757d'};
+    color: ${props => props.$active ? '#3B82F6' : props.$isDark ? '#94A3B8' : '#6c757d'};
   }
   
   span {
     font-weight: ${props => props.$active ? '600' : '400'};
-    color: ${props => props.$active ? '#FF8F10' : props.$isDark ? '#E2E8F0' : '#333'};
+    color: ${props => props.$active ? '#3B82F6' : props.$isDark ? '#E2E8F0' : '#333'};
   }
   
   &:hover {
-    border-color: #FF8F10;
-    background: rgba(255, 143, 16, 0.05);
+    border-color: #3B82F6;
+    background: rgba(139, 92, 246, 0.05);
   }
 `;
 
@@ -535,7 +535,7 @@ const ToggleSwitch = styled.button<{ $active: boolean }>`
   justify-content: center;
   width: 48px;
   height: 28px;
-  background: ${props => props.$active ? '#FF8F10' : '#ccc'};
+  background: ${props => props.$active ? '#3B82F6' : '#ccc'};
   border: none;
   border-radius: 14px;
   cursor: pointer;
@@ -561,7 +561,7 @@ const SaveButton = styled.button`
   gap: 8px;
   width: 100%;
   padding: 14px 24px;
-  background: linear-gradient(135deg, #FF8F10, #FF6B35);
+  background: linear-gradient(135deg, #3B82F6, #6366F1);
   color: white;
   border: none;
   border-radius: 8px;
@@ -572,7 +572,7 @@ const SaveButton = styled.button`
   
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 143, 16, 0.4);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
   }
   
   &:disabled {
@@ -598,7 +598,7 @@ const Spinner = styled.div`
   width: 40px;
   height: 40px;
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #FF8F10;
+  border-top: 4px solid #3B82F6;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   
@@ -609,3 +609,5 @@ const Spinner = styled.div`
 `;
 
 export default PrivacySettingsManager;
+
+

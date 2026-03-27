@@ -8,18 +8,18 @@ const Button = styled.button`
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: linear-gradient(135deg, #FF7900 0%, #FF9433 100%);
+  background: linear-gradient(135deg, #2563EB 0%, #FF9433 100%);
   color: white;
   border: none;
   border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
   transition: all 0.3s;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(255, 121, 0, 0.4);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
   }
 
   &:active {
@@ -66,3 +66,5 @@ export const InstallButton: React.FC = () => {
     </Button>
   );
 };
+
+

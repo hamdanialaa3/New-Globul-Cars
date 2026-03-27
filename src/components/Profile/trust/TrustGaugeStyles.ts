@@ -35,9 +35,9 @@ export const TrustContainer = styled.div`
     linear-gradient(rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98)),
     linear-gradient(135deg,
       rgba(192, 192, 192, 0.5) 0%,
-      rgba(255, 143, 16, 0.7) 25%,
+      rgba(139, 92, 246, 0.7) 25%,
       rgba(255, 215, 0, 1) 50%,
-      rgba(255, 143, 16, 0.7) 75%,
+      rgba(139, 92, 246, 0.7) 75%,
       rgba(192, 192, 192, 0.5) 100%
     );
   background-origin: border-box;
@@ -61,7 +61,7 @@ export const TrustContainer = styled.div`
     width: 200%;
     height: 200%;
     background: radial-gradient(circle,
-      rgba(255, 143, 16, 0.08) 0%,
+      rgba(139, 92, 246, 0.08) 0%,
       transparent 60%
     );
     /* ⚡ OPTIMIZED: Static radial gradient - no rotation */
@@ -88,9 +88,9 @@ export const GaugeTitle = styled.h4`
   
   /* Orange-Yellow Gradient Text */
   background: linear-gradient(90deg,
-    rgba(255, 143, 16, 0.9) 0%,
+    rgba(139, 92, 246, 0.9) 0%,
     rgba(255, 215, 0, 1) 50%,
-    rgba(255, 143, 16, 0.9) 100%
+    rgba(139, 92, 246, 0.9) 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -123,11 +123,11 @@ export const GaugeOuter = styled.div`
     0 0 0 7px rgba(110, 110, 110, 0.4),
     0 0 0 9px rgba(140, 140, 140, 0.25),
     /* Orange-yellow glow rings */
-    0 0 0 12px rgba(255, 143, 16, 0.25),
+    0 0 0 12px rgba(139, 92, 246, 0.25),
     0 0 0 14px rgba(255, 215, 0, 0.2),
     /* Inner depth */
     inset 0 4px 22px rgba(0, 0, 0, 0.9),
-    inset 0 -4px 22px rgba(255, 143, 16, 0.08),
+    inset 0 -4px 22px rgba(139, 92, 246, 0.08),
     /* Outer shadow */
     0 23px 45px rgba(0, 0, 0, 0.5);
   
@@ -239,7 +239,7 @@ export const DigitalDisplay = styled.div`
     inset 0 2px 5px rgba(0, 0, 0, 0.9),
     /* Outer shadow */
     0 4px 9px rgba(0, 0, 0, 0.8),
-    0 0 14px rgba(255, 143, 16, 0.2);
+    0 0 14px rgba(139, 92, 246, 0.2);
   
   /* Yellow bottom glow */
   position: relative;
@@ -292,9 +292,9 @@ export const LevelLabel = styled.div`
   
   /* Yellow-orange gradient */
   background: linear-gradient(90deg,
-    rgba(255, 143, 16, 0.7) 0%,
+    rgba(139, 92, 246, 0.7) 0%,
     rgba(255, 215, 0, 0.9) 50%,
-    rgba(255, 143, 16, 0.7) 100%
+    rgba(139, 92, 246, 0.7) 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -311,9 +311,9 @@ export const TrustText = styled.div`
   
   /* Yellow-orange gradient */
   background: linear-gradient(90deg,
-    rgba(255, 143, 16, 0.6) 0%,
+    rgba(139, 92, 246, 0.6) 0%,
     rgba(255, 215, 0, 0.8) 50%,
-    rgba(255, 143, 16, 0.6) 100%
+    rgba(139, 92, 246, 0.6) 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -333,9 +333,9 @@ export const SpeedoText = styled.div`
   
   /* Yellow-orange gradient */
   background: linear-gradient(90deg,
-    rgba(255, 143, 16, 0.6) 0%,
+    rgba(139, 92, 246, 0.6) 0%,
     rgba(255, 215, 0, 0.8) 50%,
-    rgba(255, 143, 16, 0.6) 100%
+    rgba(139, 92, 246, 0.6) 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -354,7 +354,7 @@ export const NeedleContainer = styled.div<{ $score: number }>`
     rgba(20, 20, 20, 1) 0%,
     rgba(50, 50, 50, 1) 10%,
     rgba(255, 102, 0, 1) 20%,   /* Dark orange */
-    rgba(255, 143, 16, 1) 50%,  /* Orange */
+    rgba(139, 92, 246, 1) 50%,  /* Orange */
     rgba(255, 215, 0, 1) 100%   /* Yellow tip */
   );
   
@@ -363,8 +363,8 @@ export const NeedleContainer = styled.div<{ $score: number }>`
   transition: transform 2.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   
   box-shadow: 
-    0 0 20px rgba(255, 143, 16, 0.8),
-    0 0 40px rgba(255, 143, 16, 0.4),
+    0 0 20px rgba(139, 92, 246, 0.8),
+    0 0 40px rgba(139, 92, 246, 0.4),
     inset 1px 0 0 rgba(255, 255, 255, 0.3);
   
   border-radius: 2px;
@@ -399,7 +399,7 @@ export const NeedleContainer = styled.div<{ $score: number }>`
     background: 
       radial-gradient(circle at 35% 35%, 
         rgba(255, 215, 0, 1) 0%,      /* Yellow center */
-        rgba(255, 143, 16, 1) 40%,    /* Orange */
+        rgba(139, 92, 246, 1) 40%,    /* Orange */
         rgba(204, 85, 0, 1) 100%      /* Dark orange */
       );
     
@@ -494,7 +494,7 @@ export const BadgeItem = styled.div<{ $level?: TrustLevel }>`
   /* Glassmorphic badge */
   background: linear-gradient(135deg,
     rgba(255, 255, 255, 0.08) 0%,
-    rgba(255, 143, 16, 0.12) 100%
+    rgba(139, 92, 246, 0.12) 100%
   );
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 215, 0, 0.2);
@@ -507,13 +507,13 @@ export const BadgeItem = styled.div<{ $level?: TrustLevel }>`
   
   &:hover {
     background: linear-gradient(135deg,
-      rgba(255, 143, 16, 0.2) 0%,
+      rgba(139, 92, 246, 0.2) 0%,
       rgba(255, 215, 0, 0.15) 100%
     );
     border-color: rgba(255, 215, 0, 0.4);
     transform: translateY(-2px);
     box-shadow: 
-      0 4px 12px rgba(255, 143, 16, 0.3),
+      0 4px 12px rgba(139, 92, 246, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.15);
   }
   
@@ -551,3 +551,4 @@ export const EmptyBadges = styled.div`
   
   color: rgba(255, 215, 0, 0.5);
 `;
+

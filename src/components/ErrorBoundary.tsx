@@ -42,7 +42,7 @@ const ErrorMessage = styled.p`
 
 const RetryButton = styled.button`
   padding: 0.75rem 2rem;
-  background: linear-gradient(135deg, #FF7900, #FF8F10);
+  background: linear-gradient(135deg, #2563EB, #3B82F6);
   color: white;
   border: none;
   border-radius: 12px;
@@ -54,7 +54,7 @@ const RetryButton = styled.button`
   &:hover {
     background: linear-gradient(135deg, #e67e00, #e67e00);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.4);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
   }
 `;
 
@@ -160,3 +160,4 @@ class ErrorBoundary extends Component<Props, State> {
 // Provide both named and default exports for flexibility in imports
 export { ErrorBoundary };
 export default ErrorBoundary;
+

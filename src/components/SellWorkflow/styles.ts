@@ -89,7 +89,7 @@ export const WizardContainer = styled.div`
     right: -100px;
     width: 300px;
     height: 300px;
-    background: radial-gradient(circle, rgba(255, 107, 53, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
     z-index: 0;
@@ -140,7 +140,7 @@ export const StepContent = styled.div<{ $direction: 'forward' | 'backward' }>`
 export const StepTitle = styled.h3`
   font-size: 1.75rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #FF6B35 0%, #004E89 100%);
+  background: linear-gradient(135deg, #6366F1 0%, #004E89 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -183,7 +183,7 @@ export const NavigationButtons = styled.div`
     left: 0;
     width: 100px;
     height: 2px;
-    background: linear-gradient(90deg, #FF6B35, transparent);
+    background: linear-gradient(90deg, #6366F1, transparent);
     border-radius: 2px;
     animation: ${fadeIn} 0.6s ease-out;
   }
@@ -531,20 +531,20 @@ export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   
   /* Primary Variant - Orange Gradient */
   ${props => props.$variant === 'primary' && `
-    background: linear-gradient(135deg, #FF6B35 0%, #FF8C61 50%, #FFA07A 100%);
+    background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #FFA07A 100%);
     background-size: 200% 100%;
     color: white;
     box-shadow: 
-      0 4px 14px rgba(255, 107, 53, 0.35),
-      0 2px 6px rgba(255, 107, 53, 0.2),
+      0 4px 14px rgba(99, 102, 241, 0.35),
+      0 2px 6px rgba(99, 102, 241, 0.2),
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
     
     &:hover:not(:disabled) {
       background-position: 100% 0;
       transform: translateY(-3px) scale(1.02);
       box-shadow: 
-        0 12px 28px rgba(255, 107, 53, 0.45),
-        0 4px 12px rgba(255, 107, 53, 0.3),
+        0 12px 28px rgba(99, 102, 241, 0.45),
+        0 4px 12px rgba(99, 102, 241, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.4);
       
       svg {
@@ -576,15 +576,15 @@ export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
     
     &:hover:not(:disabled) {
-      border-color: #FF6B35;
+      border-color: #6366F1;
       background: ${(p: any) =>
         p.theme?.mode === 'dark'
-          ? 'rgba(255, 107, 53, 0.15)'
-          : 'rgba(255, 107, 53, 0.08)'
+          ? 'rgba(99, 102, 241, 0.15)'
+          : 'rgba(99, 102, 241, 0.08)'
       };
       transform: translateY(-3px);
       box-shadow: 
-        0 12px 28px rgba(255, 107, 53, 0.2),
+        0 12px 28px rgba(99, 102, 241, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
       
       svg {
@@ -742,3 +742,4 @@ export const DraftBadge = styled.div`
     }
   }
 `;
+

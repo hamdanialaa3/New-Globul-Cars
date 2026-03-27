@@ -135,7 +135,7 @@ const AlertSubtext = styled.p<{ $theme: string }>`
   margin: 0;
   font-size: 10px;
   font-weight: 500;
-  color: ${props => props.$theme === 'dark' ? '#FF9800' : '#E65100'};
+  color: ${props => props.$theme === 'dark' ? '#FF9800' : '#2563EB'};
   line-height: 1.3;
 
   @media (max-width: 768px) {
@@ -182,7 +182,7 @@ const CompleteButton = styled.button`
   animation: ${pulse} 2s ease-in-out infinite;
 
   &:hover {
-    background: linear-gradient(135deg, #F57C00 0%, #E65100 100%);
+    background: linear-gradient(135deg, #F57C00 0%, #2563EB 100%);
     transform: translateY(-2px) scale(1.02);
     box-shadow: 0 4px 15px rgba(255, 152, 0, 0.5);
   }
@@ -365,3 +365,4 @@ export const IncompleteProfileAlert: React.FC = () => {
 };
 
 export default IncompleteProfileAlert;
+

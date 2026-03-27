@@ -40,13 +40,13 @@ const NodeCircle = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
   
   background: ${props => {
     if (props.$isCompleted) return 'linear-gradient(135deg, #27ae60, #229954)';
-    if (props.$isActive) return 'linear-gradient(135deg, #ff8f10, #005ca9)';
+    if (props.$isActive) return 'linear-gradient(135deg, #3b82f6, #005ca9)';
     return '#e9ecef';
   }};
   
   box-shadow: ${props => {
     if (props.$isCompleted) return '0 4px 15px rgba(39, 174, 96, 0.4)';
-    if (props.$isActive) return '0 4px 20px rgba(255, 143, 16, 0.5), 0 0 0 4px rgba(255, 143, 16, 0.2)';
+    if (props.$isActive) return '0 4px 20px rgba(139, 92, 246, 0.5), 0 0 0 4px rgba(139, 92, 246, 0.2)';
     return '0 2px 8px rgba(0, 0, 0, 0.1)';
   }};
 
@@ -62,10 +62,10 @@ const NodeCircle = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
     
     @keyframes pulse {
       0%, 100% {
-        box-shadow: 0 4px 20px rgba(255, 143, 16, 0.5), 0 0 0 4px rgba(255, 143, 16, 0.2);
+        box-shadow: 0 4px 20px rgba(139, 92, 246, 0.5), 0 0 0 4px rgba(139, 92, 246, 0.2);
       }
       50% {
-        box-shadow: 0 4px 25px rgba(255, 143, 16, 0.7), 0 0 0 8px rgba(255, 143, 16, 0.1);
+        box-shadow: 0 4px 25px rgba(139, 92, 246, 0.7), 0 0 0 8px rgba(139, 92, 246, 0.1);
       }
     }
   `}
@@ -102,4 +102,6 @@ const WorkflowNode: React.FC<WorkflowNodeProps> = ({
 };
 
 export default WorkflowNode;
+
+
 

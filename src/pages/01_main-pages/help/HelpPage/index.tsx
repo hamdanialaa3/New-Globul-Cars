@@ -56,7 +56,7 @@ const Header = styled.section<{ $isDark: boolean }>`
     font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 800;
     margin-bottom: 16px;
-    color: ${props => props.$isDark ? '#FF8C61' : 'white'};
+    color: ${props => props.$isDark ? '#8B5CF6' : 'white'};
     text-transform: uppercase;
     letter-spacing: 1px;
   }
@@ -88,7 +88,7 @@ const SearchBox = styled.div<{ $isDark: boolean }>`
 
     &:focus {
       outline: none;
-      border-color: ${props => props.$isDark ? '#FF8C61' : '#3b82f6'};
+      border-color: ${props => props.$isDark ? '#8B5CF6' : '#3b82f6'};
     }
   }
 
@@ -97,7 +97,7 @@ const SearchBox = styled.div<{ $isDark: boolean }>`
     left: 16px;
     top: 50%;
     transform: translateY(-50%);
-    color: ${props => props.$isDark ? '#FF8C61' : '#64748b'};
+    color: ${props => props.$isDark ? '#8B5CF6' : '#64748b'};
   }
 `;
 
@@ -124,7 +124,7 @@ const CategoriesSidebar = styled.div<{ $isDark: boolean }>`
   h3 {
     font-size: 1.3rem;
     font-weight: 800;
-    color: ${props => props.$isDark ? '#FF8C61' : '#1e40af'};
+    color: ${props => props.$isDark ? '#8B5CF6' : '#1e40af'};
     margin-bottom: 24px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -141,19 +141,19 @@ const CategoryItem = styled.div<{ $active: boolean; $isDark: boolean }>`
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   background: ${props =>
     props.$active
-      ? (props.$isDark ? 'rgba(255, 140, 97, 0.15)' : '#f1f5f9')
+      ? (props.$isDark ? 'rgba(139, 92, 246, 0.15)' : '#f1f5f9')
       : 'transparent'
   };
   color: ${props =>
     props.$active
-      ? (props.$isDark ? '#FF8C61' : '#1e40af')
+      ? (props.$isDark ? '#8B5CF6' : '#1e40af')
       : (props.$isDark ? '#94a3b8' : '#64748b')
   };
   font-weight: ${props => props.$active ? '700' : '500'};
 
   &:hover {
-    background: ${props => props.$isDark ? 'rgba(255, 140, 97, 0.1)' : '#f1f5f9'};
-    color: ${props => props.$isDark ? '#FF8C61' : '#1e40af'};
+    background: ${props => props.$isDark ? 'rgba(139, 92, 246, 0.1)' : '#f1f5f9'};
+    color: ${props => props.$isDark ? '#8B5CF6' : '#1e40af'};
     transform: translateX(5px);
   }
 
@@ -175,7 +175,7 @@ const FAQSection = styled.div<{ $isDark: boolean }>`
   h2 {
     font-size: 1.8rem;
     font-weight: 800;
-    color: ${props => props.$isDark ? '#FF8C61' : '#1e40af'};
+    color: ${props => props.$isDark ? '#8B5CF6' : '#1e40af'};
     margin-bottom: 24px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -190,7 +190,7 @@ const FAQItem = styled.div<{ $isOpen: boolean; $isDark: boolean }>`
   transition: all 0.3s ease;
 
   &:hover {
-    border-color: ${props => props.$isDark ? '#FF8C61' : '#3b82f6'};
+    border-color: ${props => props.$isDark ? '#8B5CF6' : '#3b82f6'};
   }
 
   .question {
@@ -238,7 +238,7 @@ const ContactSupport = styled.div<{ $isDark: boolean }>`
   h2 {
     font-size: 2.2rem;
     font-weight: 800;
-    color: ${props => props.$isDark ? '#FF8C61' : '#1e40af'};
+    color: ${props => props.$isDark ? '#8B5CF6' : '#1e40af'};
     margin-bottom: 16px;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -278,10 +278,10 @@ const SupportButton = styled.button<{ $isDark: boolean }>`
   letter-spacing: 0.5px;
 
   &:hover {
-    border-color: ${props => props.$isDark ? '#FF8C61' : '#3b82f6'};
+    border-color: ${props => props.$isDark ? '#8B5CF6' : '#3b82f6'};
     transform: translateY(-5px);
     box-shadow: ${props => props.$isDark ? '0 10px 20px rgba(0, 0, 0, 0.4)' : '0 4px 20px rgba(0, 0, 0, 0.1)'};
-    color: ${props => props.$isDark ? '#FF8C61' : '#3b82f6'};
+    color: ${props => props.$isDark ? '#8B5CF6' : '#3b82f6'};
   }
 
   .icon {
@@ -484,43 +484,43 @@ const HelpPage: React.FC = () => {
           </SupportButtons>
 
           <div style={{ marginTop: '2rem', padding: '2rem', background: isDark ? '#141A26' : 'rgba(59, 130, 246, 0.1)', borderRadius: '12px', textAlign: 'left', border: isDark ? '1px solid #2d3748' : 'none' }}>
-            <h3 style={{ marginBottom: '1.5rem', textAlign: 'center', fontSize: '1.4rem', color: isDark ? '#FF8C61' : '#1e40af', textTransform: 'uppercase', letterSpacing: '1px' }}>
+            <h3 style={{ marginBottom: '1.5rem', textAlign: 'center', fontSize: '1.4rem', color: isDark ? '#8B5CF6' : '#1e40af', textTransform: 'uppercase', letterSpacing: '1px' }}>
               {t('help.contact.departments', 'Contact by Department')}
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
               <div>
                 <strong style={{ color: isDark ? '#f8fafc' : '#333' }}>📧 {t('help.contact.general', 'General Inquiries')}:</strong><br />
-                <a href="mailto:info@koli.one" style={{ color: isDark ? '#FF8C61' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>info@koli.one</a>
+                <a href="mailto:info@koli.one" style={{ color: isDark ? '#8B5CF6' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>info@koli.one</a>
               </div>
               <div>
                 <strong style={{ color: isDark ? '#f8fafc' : '#333' }}>🛠️ {t('help.contact.technical', 'Technical Support')}:</strong><br />
-                <a href="mailto:support@koli.one" style={{ color: isDark ? '#FF8C61' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>support@koli.one</a>
+                <a href="mailto:support@koli.one" style={{ color: isDark ? '#8B5CF6' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>support@koli.one</a>
               </div>
               <div>
                 <strong style={{ color: isDark ? '#f8fafc' : '#333' }}>💼 {t('help.contact.sales', 'Sales')}:</strong><br />
-                <a href="mailto:sales@koli.one" style={{ color: isDark ? '#FF8C61' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>sales@koli.one</a>
+                <a href="mailto:sales@koli.one" style={{ color: isDark ? '#8B5CF6' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>sales@koli.one</a>
               </div>
               <div>
                 <strong style={{ color: isDark ? '#f8fafc' : '#333' }}>🤖 {t('help.contact.ai', 'AI Services')}:</strong><br />
-                <a href="mailto:ai@koli.one" style={{ color: isDark ? '#FF8C61' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>ai@koli.one</a>
+                <a href="mailto:ai@koli.one" style={{ color: isDark ? '#8B5CF6' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>ai@koli.one</a>
               </div>
               <div>
                 <strong style={{ color: isDark ? '#f8fafc' : '#333' }}>⚙️ {t('help.contact.service', 'Services')}:</strong><br />
-                <a href="mailto:service@koli.one" style={{ color: isDark ? '#FF8C61' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>service@koli.one</a>
+                <a href="mailto:service@koli.one" style={{ color: isDark ? '#8B5CF6' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>service@koli.one</a>
               </div>
               <div>
                 <strong style={{ color: isDark ? '#f8fafc' : '#333' }}>💳 {t('help.contact.payments', 'Payments')}:</strong><br />
-                <a href="mailto:payments@koli.one" style={{ color: isDark ? '#FF8C61' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>payments@koli.one</a>
+                <a href="mailto:payments@koli.one" style={{ color: isDark ? '#8B5CF6' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>payments@koli.one</a>
               </div>
               <div>
                 <strong style={{ color: isDark ? '#f8fafc' : '#333' }}>👔 {t('help.contact.management', 'Management')}:</strong><br />
-                <a href="mailto:management@koli.one" style={{ color: isDark ? '#FF8C61' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>management@koli.one</a>
+                <a href="mailto:management@koli.one" style={{ color: isDark ? '#8B5CF6' : '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>management@koli.one</a>
               </div>
             </div>
           </div>
 
-          <div style={{ marginTop: '32px', padding: '32px', background: isDark ? 'linear-gradient(135deg, rgba(255, 140, 97, 0.1), rgba(0, 0, 0, 0.2))' : 'linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15))', borderRadius: '24px', textAlign: 'center', border: isDark ? '1px solid #2d3748' : 'none' }}>
-            <h3 style={{ marginBottom: '16px', fontSize: '1.5rem', fontWeight: '800', color: isDark ? '#FF8C61' : '#1e40af', textTransform: 'uppercase', letterSpacing: '1px' }}>
+          <div style={{ marginTop: '32px', padding: '32px', background: isDark ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(0, 0, 0, 0.2))' : 'linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15))', borderRadius: '24px', textAlign: 'center', border: isDark ? '1px solid #2d3748' : 'none' }}>
+            <h3 style={{ marginBottom: '16px', fontSize: '1.5rem', fontWeight: '800', color: isDark ? '#8B5CF6' : '#1e40af', textTransform: 'uppercase', letterSpacing: '1px' }}>
               {t('help.contact.followUs', 'Follow Us')}
             </h3>
             <p style={{ marginBottom: '24px', opacity: 0.9, fontSize: '1rem', color: isDark ? '#cbd5e1' : '#475569', fontWeight: 500 }}>
@@ -565,7 +565,7 @@ const HelpPage: React.FC = () => {
           <div style={{ marginTop: '32px', padding: '24px', background: isDark ? '#0F1419' : 'rgba(148, 163, 184, 0.1)', borderRadius: '16px', textAlign: 'center', fontSize: '1rem', color: isDark ? '#94a3b8' : '#475569', fontWeight: 600, border: isDark ? '1px solid #2d3748' : 'none' }}>
             <strong style={{ color: isDark ? '#f8fafc' : '#1F2937', fontSize: '1.1rem' }}>Alaa Technologies</strong><br />
             {t('help.contact.address', '77 Tsar Simeon Blvd, Sofia, Bulgaria')} |
-            📞 <strong style={{ color: isDark ? '#FF8C61' : '#3b82f6' }}>+359 87 983 9671</strong> ({t('help.contact.textOnly', 'Text messages only')})<br />
+            📞 <strong style={{ color: isDark ? '#8B5CF6' : '#3b82f6' }}>+359 87 983 9671</strong> ({t('help.contact.textOnly', 'Text messages only')})<br />
             <span style={{ fontSize: '0.9rem', opacity: 0.8, fontWeight: 500 }}>
               {t('help.contact.jurisdiction', 'Operating under Bulgarian and EU law (GDPR compliant)')}
             </span>
@@ -577,3 +577,4 @@ const HelpPage: React.FC = () => {
 };
 
 export default HelpPage;
+

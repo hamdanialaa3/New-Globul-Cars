@@ -36,9 +36,9 @@ if (!admin.apps.length) {
 }
 
 const logger = functions.logger;
-const db = admin.firestore();
-const rtdb = admin.database();
-const storage = admin.storage();
+const getDb = () => admin.firestore();
+const getRtdb = () => admin.database();
+const getStorage = () => admin.storage();
 
 /**
  * Vehicle Collections (CONSTITUTION Section 4.2 - Multi-collection Pattern)
@@ -69,7 +69,7 @@ export const onUserDelete = functions.auth.user().onDelete(async (user: UserReco
     // Step 1: Get user's numeric ID before deleting user document
     let userNumericId: number | null = null;
     try {
-      const userDoc = await db.doc(`users/${userId}`).get();
+      const userDoc = await getDb().doc(`users/${userId}`).get();
       if (userDoc.exists) {
         userNumericId = userDoc.data()?.numericId || null;
         logger.info('User numeric ID found', { userId, numericId: userNumericId });
@@ -83,19 +83,19 @@ export const onUserDelete = functions.auth.user().onDelete(async (user: UserReco
     logger.info('Deleting car listings across collections', { userId });
     for (const collectionName of VEHICLE_COLLECTIONS) {
       try {
-        const carsQuery = db.collection(collectionName).where('sellerId', '==', userId);
+        const carsQuery = getDb().collection(collectionName).where('sellerId', '==', userId);
         const carsSnapshot = await carsQuery.get();
 
         if (!carsSnapshot.empty) {
           // Use batch for atomic deletion (max 500 operations per batch)
           const batches: admin.firestore.WriteBatch[] = [];
-          let currentBatch = db.batch();
+          let currentBatch = getDb().batch();
           let operationCount = 0;
 
           carsSnapshot.docs.forEach((carDoc) => {
             if (operationCount >= 500) {
               batches.push(currentBatch);
-              currentBatch = db.batch();
+              currentBatch = getDb().batch();
               operationCount = 0;
             }
             currentBatch.delete(carDoc.ref);
@@ -125,7 +125,7 @@ export const onUserDelete = functions.auth.user().onDelete(async (user: UserReco
         logger.info('Deleting Realtime Database channels', { userId, numericId: userNumericId });
         
         // Find all channels where user is buyer or seller
-        const channelsRef = rtdb.ref('channels');
+        const channelsRef = getRtdb().ref('channels');
         const channelsSnapshot = await channelsRef.once('value');
         
         if (channelsSnapshot.exists()) {
@@ -138,7 +138,7 @@ export const onUserDelete = functions.auth.user().onDelete(async (user: UserReco
             if (channel.buyerFirebaseId === userId || channel.sellerFirebaseId === userId) {
               // Delete entire channel (includes messages sub-path)
               deletePromises.push(
-                rtdb.ref(`channels/${channelId}`).remove()
+                getRtdb().ref(`channels/${channelId}`).remove()
                   .then(() => {
                     logger.debug('Channel deleted', { channelId, userId });
                   })
@@ -155,21 +155,21 @@ export const onUserDelete = functions.auth.user().onDelete(async (user: UserReco
 
         // Delete user_channels index
         try {
-          await rtdb.ref(`user_channels/${userNumericId}`).remove();
+          await getRtdb().ref(`user_channels/${userNumericId}`).remove();
         } catch (error) {
           logger.warn('Could not delete user_channels index', { numericId: userNumericId, error });
         }
 
         // Delete presence
         try {
-          await rtdb.ref(`presence/${userNumericId}`).remove();
+          await getRtdb().ref(`presence/${userNumericId}`).remove();
         } catch (error) {
           logger.warn('Could not delete presence', { numericId: userNumericId, error });
         }
 
         // Delete typing indicators (scan all channels)
         try {
-          const typingRef = rtdb.ref('typing');
+          const typingRef = getRtdb().ref('typing');
           const typingSnapshot = await typingRef.once('value');
           
           if (typingSnapshot.exists()) {
@@ -180,7 +180,7 @@ export const onUserDelete = functions.auth.user().onDelete(async (user: UserReco
               const channel = channelTyping as Record<string, unknown>;
               if (channel[String(userNumericId)]) {
                 typingDeletePromises.push(
-                  rtdb.ref(`typing/${channelId}/${userNumericId}`).remove()
+                  getRtdb().ref(`typing/${channelId}/${userNumericId}`).remove()
                 );
               }
             }
@@ -231,18 +231,18 @@ export const onUserDelete = functions.auth.user().onDelete(async (user: UserReco
         
         for (const fieldName of userIdFields) {
           try {
-            const dataQuery = db.collection(collectionName).where(fieldName, '==', userId);
+            const dataQuery = getDb().collection(collectionName).where(fieldName, '==', userId);
             const dataSnapshot = await dataQuery.get();
 
             if (!dataSnapshot.empty) {
               const batches: admin.firestore.WriteBatch[] = [];
-              let currentBatch = db.batch();
+              let currentBatch = getDb().batch();
               let operationCount = 0;
 
               dataSnapshot.docs.forEach((doc) => {
                 if (operationCount >= 500) {
                   batches.push(currentBatch);
-                  currentBatch = db.batch();
+                  currentBatch = getDb().batch();
                   operationCount = 0;
                 }
                 currentBatch.delete(doc.ref);
@@ -274,7 +274,7 @@ export const onUserDelete = functions.auth.user().onDelete(async (user: UserReco
 
     // Step 5: Delete comments and likes in posts (sub-collections)
     try {
-      const postsQuery = db.collection('posts').where('userId', '==', userId);
+      const postsQuery = getDb().collection('posts').where('userId', '==', userId);
       const postsSnapshot = await postsQuery.get();
 
       for (const postDoc of postsSnapshot.docs) {
@@ -282,14 +282,14 @@ export const onUserDelete = functions.auth.user().onDelete(async (user: UserReco
           // Delete comments sub-collection
           const commentsRef = postDoc.ref.collection('comments');
           const commentsSnapshot = await commentsRef.get();
-          const commentsBatch = db.batch();
+          const commentsBatch = getDb().batch();
           commentsSnapshot.docs.forEach(commentDoc => commentsBatch.delete(commentDoc.ref));
           await commentsBatch.commit();
 
           // Delete likes sub-collection
           const likesRef = postDoc.ref.collection('likes');
           const likesSnapshot = await likesRef.get();
-          const likesBatch = db.batch();
+          const likesBatch = getDb().batch();
           likesSnapshot.docs.forEach(likeDoc => likesBatch.delete(likeDoc.ref));
           await likesBatch.commit();
         } catch (error) {
@@ -304,18 +304,18 @@ export const onUserDelete = functions.auth.user().onDelete(async (user: UserReco
     // Step 6: Delete team memberships (if Company account)
     try {
       // Delete as team member in other companies
-      const teamMembersQuery = db.collectionGroup('team_members').where('linkedUserId', '==', userId);
+      const teamMembersQuery = getDb().collectionGroup('team_members').where('linkedUserId', '==', userId);
       const teamMembersSnapshot = await teamMembersQuery.get();
 
       if (!teamMembersSnapshot.empty) {
         const batches: admin.firestore.WriteBatch[] = [];
-        let currentBatch = db.batch();
+        let currentBatch = getDb().batch();
         let operationCount = 0;
 
         teamMembersSnapshot.docs.forEach((doc) => {
           if (operationCount >= 500) {
             batches.push(currentBatch);
-            currentBatch = db.batch();
+            currentBatch = getDb().batch();
             operationCount = 0;
           }
           currentBatch.delete(doc.ref);
@@ -331,11 +331,11 @@ export const onUserDelete = functions.auth.user().onDelete(async (user: UserReco
       }
 
       // Delete team invitations
-      const invitationsQuery = db.collection('team_invitations').where('userId', '==', userId);
+      const invitationsQuery = getDb().collection('team_invitations').where('userId', '==', userId);
       const invitationsSnapshot = await invitationsQuery.get();
       
       if (!invitationsSnapshot.empty) {
-        const invitationsBatch = db.batch();
+        const invitationsBatch = getDb().batch();
         invitationsSnapshot.docs.forEach(doc => invitationsBatch.delete(doc.ref));
         await invitationsBatch.commit();
         deletedCollections.push(`team_invitations (${invitationsSnapshot.size} invitations)`);
@@ -348,7 +348,7 @@ export const onUserDelete = functions.auth.user().onDelete(async (user: UserReco
     // Step 7: Delete counters (numeric ID counter)
     try {
       if (userNumericId) {
-        await db.doc(`counters/${userId}/cars`).delete();
+        await getDb().doc(`counters/${userId}/cars`).delete();
         deletedCollections.push('counters');
       }
     } catch (error) {
@@ -358,7 +358,7 @@ export const onUserDelete = functions.auth.user().onDelete(async (user: UserReco
 
     // Step 8: Delete profile pictures from Storage
     try {
-      const bucket = storage.bucket();
+      const bucket = getStorage().bucket();
       const prefix = `profile-pictures/${userId}/`;
       const [files] = await bucket.getFiles({ prefix });
 
@@ -377,7 +377,7 @@ export const onUserDelete = functions.auth.user().onDelete(async (user: UserReco
 
     // Step 9: Delete user document (must be last, after all references are cleaned)
     try {
-      await db.doc(`users/${userId}`).delete();
+      await getDb().doc(`users/${userId}`).delete();
       deletedCollections.push('users');
       logger.info('User document deleted', { userId });
     } catch (error) {
@@ -387,9 +387,9 @@ export const onUserDelete = functions.auth.user().onDelete(async (user: UserReco
 
     // Step 10: Delete dealer profile if exists
     try {
-      const dealerDoc = await db.doc(`dealers/${userId}`).get();
+      const dealerDoc = await getDb().doc(`dealers/${userId}`).get();
       if (dealerDoc.exists) {
-        await db.doc(`dealers/${userId}`).delete();
+        await getDb().doc(`dealers/${userId}`).delete();
         deletedCollections.push('dealers');
       }
     } catch (error) {
@@ -408,7 +408,7 @@ export const onUserDelete = functions.auth.user().onDelete(async (user: UserReco
 
     // Create compliance log
     try {
-      await db.collection('compliance_logs').add({
+      await getDb().collection('compliance_logs').add({
         action: 'GDPR_USER_DELETED',
         userId,
         userEmail,
@@ -433,7 +433,7 @@ export const onUserDelete = functions.auth.user().onDelete(async (user: UserReco
 
     // Still try to log the failure
     try {
-      await db.collection('compliance_logs').add({
+      await getDb().collection('compliance_logs').add({
         action: 'GDPR_USER_DELETE_FAILED',
         userId,
         userEmail,

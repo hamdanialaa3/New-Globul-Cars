@@ -130,8 +130,8 @@ const Feature = styled.li`
 `;
 
 const RequirementsList = styled.div`
-  background: rgba(255, 143, 16, 0.1);
-  border: 1px solid rgba(255, 143, 16, 0.3);
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.3);
   border-radius: 8px;
   padding: 12px;
   margin: 16px 0;
@@ -140,7 +140,7 @@ const RequirementsList = styled.div`
 const RequirementTitle = styled.div`
   font-size: 0.875rem;
   font-weight: 600;
-  color: #FF8F10;
+  color: #3B82F6;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
@@ -205,7 +205,7 @@ export const ProfileTypeSwitcher: React.FC<ProfileTypeSwitcherProps> = ({
     {
       type: 'private' as ProfileType,
       icon: <User size={24} />,
-      color: '#FF8F10',
+      color: '#3B82F6',
       nameBG: 'Частен',
       nameEN: 'Private',
       descriptionBG: 'За физически лица, продаващи лични автомобили',
@@ -359,4 +359,6 @@ export const ProfileTypeSwitcher: React.FC<ProfileTypeSwitcherProps> = ({
 };
 
 export default ProfileTypeSwitcher;
+
+
 

@@ -24,7 +24,7 @@ const Section = styled.div`
 `;
 
 const SectionTitle = styled.h3`
-  color: #FF7900;
+  color: #2563EB;
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
@@ -59,7 +59,7 @@ const CarCard = styled.div`
 
   &:hover {
     transform: translateY(-2px);
-    border-color: #FF7900;
+    border-color: #2563EB;
   }
 `;
 
@@ -79,7 +79,7 @@ const CarTitle = styled.div`
 `;
 
 const CarPrice = styled.div`
-  color: #FF7900;
+  color: #2563EB;
   font-weight: 700;
   font-size: 1.1rem;
 `;
@@ -167,3 +167,4 @@ const PrivateProfile: React.FC<PrivateProfileProps> = ({ user, userCars, isOwner
 };
 
 export default PrivateProfile;
+

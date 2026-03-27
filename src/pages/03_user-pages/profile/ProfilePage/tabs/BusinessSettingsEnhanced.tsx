@@ -68,9 +68,9 @@ const SettingButton = styled.button<{ $isSelected?: boolean }>`
 
   &:hover {
     border-color: var(--accent-primary);
-    background: rgba(255, 143, 16, 0.05);
+    background: rgba(139, 92, 246, 0.05);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 143, 16, 0.15);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
   }
 
   &:active {
@@ -137,7 +137,7 @@ const SettingsGrid = styled.div`
 const Section = styled.div`
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 143, 16, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.1);
   border-radius: 16px;
   padding: 1.75rem;
   display: flex;
@@ -147,15 +147,15 @@ const Section = styled.div`
 
   &:hover {
     border-color: var(--accent-primary);
-    background: rgba(255, 143, 16, 0.05);
+    background: rgba(139, 92, 246, 0.05);
   }
 
   [data-theme="dark"] & {
     background: rgba(50, 50, 60, 0.3);
-    border-color: rgba(255, 143, 16, 0.2);
+    border-color: rgba(139, 92, 246, 0.2);
 
     &:hover {
-      background: rgba(255, 143, 16, 0.08);
+      background: rgba(139, 92, 246, 0.08);
     }
   }
 `;
@@ -228,8 +228,8 @@ const SuccessMessage = styled.div`
 `;
 
 const InfoBox = styled.div`
-  background: rgba(255, 143, 16, 0.1);
-  border: 1px solid rgba(255, 143, 16, 0.3);
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.3);
   border-radius: 10px;
   padding: 1rem 1.25rem;
   display: flex;
@@ -245,8 +245,8 @@ const InfoBox = styled.div`
   }
 
   [data-theme="dark"] & {
-    background: rgba(255, 143, 16, 0.1);
-    border-color: rgba(255, 143, 16, 0.4);
+    background: rgba(139, 92, 246, 0.1);
+    border-color: rgba(139, 92, 246, 0.4);
   }
 `;
 
@@ -470,3 +470,4 @@ const BusinessSettingsEnhanced: React.FC = () => {
 };
 
 export default BusinessSettingsEnhanced;
+

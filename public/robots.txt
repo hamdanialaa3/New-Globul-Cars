@@ -5,11 +5,8 @@
 User-agent: *
 Allow: /
 
-# Sitemap Locations
+# Sitemap Location
 Sitemap: https://koli.one/sitemap.xml
-Sitemap: https://koli.one/sitemap-cars.xml
-Sitemap: https://koli.one/sitemap-locations.xml
-Sitemap: https://koli.one/sitemap-dealers.xml
 
 # Block Development Pages
 Disallow: /development-tools
@@ -30,13 +27,9 @@ Allow: /assets/
 Allow: /images/
 Allow: /car-logos/
 
-# Crawl-delay for bots (optional, Google ignores this)
-Crawl-delay: 1
-
 # Specific rules for GoogleBot (fast crawling)
 User-agent: Googlebot
 Allow: /
-Crawl-delay: 0
 
 # Specific rules for Googlebot-Image
 User-agent: Googlebot-Image

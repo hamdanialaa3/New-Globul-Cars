@@ -224,5 +224,34 @@ export const adminDictEN = {
         moveUp: 'Move Up',
         moveDown: 'Move Down',
         save: 'Saving...',
+        labels: {
+            sticky_search: 'Sticky Search Bar',
+            hero: 'Hero Section',
+            kat_services: 'KAT Official Services',
+            our_cars: 'Our Cars Showcase',
+            smart_recommendations: 'Smart Recommendations',
+            ai_analysis_banner: 'AI Analysis Banner',
+            hero_strips: 'Hero Strips',
+            visual_search: 'Visual Search Teaser',
+            vehicle_classifications: 'Vehicle Classifications',
+            life_moments: 'Life Moments Browse',
+            categories: 'Categories Section',
+            cars_showcase: 'Cars Showcase',
+            popular_brands: 'Popular Brands',
+            most_demanded: 'Most Demanded Categories',
+            featured_showcase: 'Featured Showcase (VIP)',
+            smart_sell: 'Unified Smart Sell',
+            dealers: 'Dealers Spotlight',
+            trust_stats: 'Trust & Stats',
+            social: 'Social Experience',
+            loyalty: 'Loyalty & Signup',
+            pricing_plans: 'Subscriptions & Pricing',
+            recent_browsing: 'Recent Browsing',
+            ai_chatbot: 'AI Chatbot',
+            draft_recovery: 'Draft Recovery Prompt'
+        },
+        descriptions: {
+            kat_services: 'Bilateral registration links & Official Bulgarian government services'
+        }
     }
 };

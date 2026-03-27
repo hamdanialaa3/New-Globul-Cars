@@ -10,10 +10,10 @@ import styled, { keyframes, css } from 'styled-components';
 export const colors = {
   // Primary Colors - Automotive Theme
   primary: {
-    main: '#FF6B35',      // Vibrant Orange (Car theme)
-    light: '#FF8C61',
+    main: '#6366F1',      // Vibrant Orange (Car theme)
+    light: '#8B5CF6',
     dark: '#E5512A',
-    gradient: 'linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%)',
+    gradient: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
   },
   secondary: {
     main: '#004E89',      // Deep Blue (Trust & Reliability)
@@ -103,10 +103,10 @@ export const shimmer = keyframes`
 // Pulse Glow Effect
 export const pulseGlow = keyframes`
   0%, 100% {
-    box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
   }
   50% {
-    box-shadow: 0 0 40px rgba(255, 107, 53, 0.6);
+    box-shadow: 0 0 40px rgba(99, 102, 241, 0.6);
   }
 `;
 
@@ -191,11 +191,11 @@ export const ModernButton = styled.button<ButtonProps>`
   ${props => props.$variant === 'primary' && css`
     background: ${colors.primary.gradient};
     color: white;
-    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
     
     &:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4);
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
     }
     
     &:active:not(:disabled) {
@@ -384,7 +384,7 @@ export const ModernInput = styled.input<InputWrapperProps>`
     box-shadow: 0 0 0 4px ${props =>
       props.$hasError 
         ? 'rgba(239, 68, 68, 0.1)' 
-        : 'rgba(255, 107, 53, 0.1)'
+        : 'rgba(99, 102, 241, 0.1)'
     };
   }
   
@@ -455,7 +455,7 @@ export const ModernSelect = styled.select<InputWrapperProps>`
     box-shadow: 0 0 0 4px ${props =>
       props.$hasError 
         ? 'rgba(239, 68, 68, 0.1)' 
-        : 'rgba(255, 107, 53, 0.1)'
+        : 'rgba(99, 102, 241, 0.1)'
     };
   }
 `;
@@ -543,7 +543,7 @@ export const StepCircle = styled.div<StepItemProps>`
   ${props => props.$active && !props.$completed && css`
     background: ${colors.primary.gradient};
     color: white;
-    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
     animation: ${pulseGlow} 2s ease-in-out infinite;
   `}
   
@@ -761,3 +761,4 @@ export const SkeletonLoader = styled.div`
   height: 20px;
   width: 100%;
 `;
+

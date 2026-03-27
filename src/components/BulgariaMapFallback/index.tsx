@@ -9,7 +9,13 @@ import { Car } from 'lucide-react';
 
 const MapContainer = styled.div`
   width: 100%;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(29, 78, 216, 0.14) 0%,
+    rgba(37, 99, 235, 0.14) 35%,
+    rgba(99, 102, 241, 0.14) 68%,
+    rgba(139, 92, 246, 0.14) 100%
+  );
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 8px 30px rgba(0, 92, 169, 0.15);
@@ -30,7 +36,7 @@ const MapSVG = styled.svg`
 
 const CityMarker = styled.circle<{ $isActive: boolean; $hasCards: boolean }>`
   fill: ${props => 
-    props.$isActive ? '#FF7900' : 
+    props.$isActive ? '#2563EB' : 
     props.$hasCards ? '#005ca9' : 
     '#ccc'};
   stroke: white;
@@ -39,9 +45,9 @@ const CityMarker = styled.circle<{ $isActive: boolean; $hasCards: boolean }>`
   transition: all 0.3s ease;
 
   &:hover {
-    fill: #FF7900;
+    fill: #2563EB;
     r: 8;
-    filter: drop-shadow(0 0 6px rgba(255, 121, 0, 0.6));
+    filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.6));
   }
 `;
 
@@ -92,7 +98,13 @@ const TooltipInfo = styled.div`
 const TooltipButton = styled.button`
   width: 100%;
   padding: 0.5rem;
-  background: linear-gradient(135deg, #005ca9, #0066cc);
+  background: linear-gradient(
+    135deg,
+    rgba(29, 78, 216, 0.95) 0%,
+    rgba(37, 99, 235, 0.95) 35%,
+    rgba(99, 102, 241, 0.95) 68%,
+    rgba(139, 92, 246, 0.95) 100%
+  );
   color: white;
   border: none;
   border-radius: 6px;
@@ -103,18 +115,24 @@ const TooltipButton = styled.button`
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 92, 169, 0.3);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
   }
 `;
 
 const InfoBanner = styled.div`
-  background: rgba(255, 121, 0, 0.1);
-  border: 2px solid rgba(255, 121, 0, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(29, 78, 216, 0.12) 0%,
+    rgba(37, 99, 235, 0.12) 35%,
+    rgba(99, 102, 241, 0.12) 68%,
+    rgba(139, 92, 246, 0.12) 100%
+  );
+  border: 2px solid rgba(99, 102, 241, 0.35);
   border-radius: 10px;
   padding: 1rem 1.5rem;
   margin-bottom: 1.5rem;
   text-align: center;
-  color: #FF7900;
+  color: #4F46E5;
   font-weight: 600;
 `;
 
@@ -283,4 +301,6 @@ const BulgariaMapFallback: React.FC<BulgariaMapFallbackProps> = ({
 };
 
 export default BulgariaMapFallback;
+
+
 

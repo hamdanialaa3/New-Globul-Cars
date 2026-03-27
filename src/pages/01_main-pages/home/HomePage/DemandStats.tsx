@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { TrendingUp } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -38,8 +38,8 @@ const DemandBar = styled.div<{ $percentage: number; $isDark: boolean }>`
   flex: 1;
   height: 12px;
   background: ${props => props.$isDark 
-    ? 'rgba(255, 140, 97, 0.15)' 
-    : 'rgba(255, 107, 53, 0.15)'};
+    ? 'rgba(139, 92, 246, 0.15)' 
+    : 'rgba(99, 102, 241, 0.15)'};
   border-radius: 10px;
   overflow: hidden;
   position: relative;
@@ -84,7 +84,7 @@ const DemandStats: React.FC<Props> = ({ categoryName, percentage }) => {
     const isDark = theme === 'dark';
     
     // Get accent color based on theme
-    const accentColor = isDark ? '#FF8C61' : '#FF6B35';
+    const accentColor = isDark ? '#8B5CF6' : '#6366F1';
     
     return (
         <DemandIndicator $isDark={isDark}>
@@ -102,3 +102,4 @@ const DemandStats: React.FC<Props> = ({ categoryName, percentage }) => {
 };
 
 export default DemandStats;
+

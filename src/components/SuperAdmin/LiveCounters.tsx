@@ -132,7 +132,7 @@ const IconWrapper = styled.div`
   color: ${adminTheme.colors.accent.secondary};
   
   svg {
-    filter: drop-shadow(0 0 3px rgba(230, 81, 0, 0.4));
+    filter: drop-shadow(0 0 3px rgba(37, 99, 235, 0.4));
   }
 `;
 
@@ -310,3 +310,4 @@ const LiveCounters: React.FC<LiveCountersProps> = ({ stats, onAction }) => {
 };
 
 export default LiveCounters;
+

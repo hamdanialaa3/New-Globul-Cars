@@ -91,7 +91,7 @@ export const CarIcon: React.FC<CarIconProps> = ({
  */
 export const CarIconFilled: React.FC<CarIconProps> = ({ 
   size = 24, 
-  color = '#FF7900',
+  color = '#2563EB',
   className = '',
   style = {}
 }) => {
@@ -152,4 +152,5 @@ export const CarIconSimple: React.FC<CarIconProps> = ({
 };
 
 export default CarIcon;
+
 

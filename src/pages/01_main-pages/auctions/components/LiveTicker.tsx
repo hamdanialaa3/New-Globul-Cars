@@ -40,7 +40,7 @@ const TickerContent = styled.div`
   animation: ${slideUp} 4s ease-in-out infinite;
   
   strong {
-    color: ${props => props.theme.colors.primary.main || '#FF7900'};
+    color: ${props => props.theme.colors.primary.main || '#2563EB'};
   }
 `;
 
@@ -105,3 +105,4 @@ export const LiveTicker: React.FC = () => {
         </TickerWrapper>
     );
 };
+

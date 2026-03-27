@@ -75,8 +75,8 @@ const CardElementWrapper = styled.div`
   background: white;
   
   &:focus-within {
-    border-color: #FF8F10;
-    box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.1);
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
   }
 `;
 
@@ -96,13 +96,13 @@ const Button = styled.button<{ $primary?: boolean; $disabled?: boolean }>`
   ${props => {
     if (props.$primary) {
       return `
-        background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+        background: linear-gradient(135deg, #3B82F6 0%, #fb923c 100%);
         color: white;
         border: none;
         
         &:hover:not(:disabled) {
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+          box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
         }
       `;
     } else {
@@ -342,3 +342,5 @@ const UpdatePaymentMethodPage: React.FC = () => {
 };
 
 export default UpdatePaymentMethodPage;
+
+

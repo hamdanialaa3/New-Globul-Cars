@@ -34,7 +34,7 @@ const Card = styled.article`
   
   &:hover {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-    border-color: #FF8F10;
+    border-color: #3B82F6;
   }
 `;
 
@@ -51,10 +51,10 @@ const Avatar = styled.div<{ $url?: string; $initial: string }>`
   border-radius: 50%;
   background: ${p => p.$url 
     ? `url(${p.$url})` 
-    : 'linear-gradient(135deg, #FF8F10, #FF7900)'};
+    : 'linear-gradient(135deg, #3B82F6, #2563EB)'};
   background-size: cover;
   background-position: center;
-  border: 2px solid #FF8F10;
+  border: 2px solid #3B82F6;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -97,7 +97,7 @@ const Badge = styled.span<{ $type: string }>`
     switch (p.$type) {
       case 'dealer': return 'linear-gradient(135deg, #16a34a, #22c55e)';
       case 'company': return 'linear-gradient(135deg, #1d4ed8, #3b82f6)';
-      default: return 'linear-gradient(135deg, #FF8F10, #FF7900)';
+      default: return 'linear-gradient(135deg, #3B82F6, #2563EB)';
     }
   }};
   color: white;
@@ -134,7 +134,7 @@ const PostContent = styled.div`
     margin-top: 12px;
     
     span {
-      color: #FF7900;
+      color: #2563EB;
       font-weight: 600;
       cursor: pointer;
       font-size: 0.875rem;
@@ -181,8 +181,8 @@ const TextOverMap = styled.div`
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    background: rgba(255, 121, 0, 0.1);
-    color: #FF7900;
+    background: rgba(99, 102, 241, 0.1);
+    color: #2563EB;
     padding: 4px 10px;
     border-radius: 12px;
     font-size: 0.85rem;
@@ -214,8 +214,8 @@ const ActionButton = styled.button<{ $active?: boolean }>`
   gap: 6px;
   padding: 8px 12px;
   border: none;
-  background: ${p => p.$active ? 'rgba(255, 121, 0, 0.1)' : 'transparent'};
-  color: ${p => p.$active ? '#FF7900' : '#6c757d'};
+  background: ${p => p.$active ? 'rgba(99, 102, 241, 0.1)' : 'transparent'};
+  color: ${p => p.$active ? '#2563EB' : '#6c757d'};
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
@@ -223,8 +223,8 @@ const ActionButton = styled.button<{ $active?: boolean }>`
   transition: all 0.2s ease;
   
   &:hover {
-    background: rgba(255, 121, 0, 0.1);
-    color: #FF7900;
+    background: rgba(99, 102, 241, 0.1);
+    color: #2563EB;
     transform: translateY(-1px);
   }
   
@@ -291,7 +291,7 @@ const LocationMap: React.FC<LocationMapProps> = ({ location, text }) => {
       animation: google.maps.Animation.DROP,
       icon: {
         path: google.maps.SymbolPath.CIRCLE,
-        fillColor: '#FF7900',
+        fillColor: '#2563EB',
         fillOpacity: 1,
         strokeColor: '#ffffff',
         strokeWeight: 3,
@@ -503,4 +503,6 @@ export const PostCard: React.FC<PostCardProps> = ({
 };
 
 export default PostCard;
+
+
 

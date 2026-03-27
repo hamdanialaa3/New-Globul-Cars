@@ -1,4 +1,4 @@
-﻿// src/pages/home/HomePage/SubscriptionBanner.tsx
+// src/pages/home/HomePage/SubscriptionBanner.tsx
 // Subscription Banner for HomePage - Promote Plans
 // ✅ Card design copied from /subscription page
 
@@ -74,7 +74,7 @@ const Container = styled.div<{ $isDark: boolean }>`
   padding: 30px 40px;
   position: relative;
   overflow: hidden;
-  box-shadow: ${p => p.$isDark ? '0 20px 60px rgba(0,0,0,0.35)' : '0 20px 60px rgba(255, 143, 16, 0.3)'};
+  box-shadow: ${p => p.$isDark ? '0 20px 60px rgba(0,0,0,0.35)' : '0 20px 60px rgba(139, 92, 246, 0.3)'};
 
   @media (max-width: 768px) {
     padding: 24px 20px;
@@ -180,7 +180,7 @@ const PlanCard = styled.div<{ $highlight?: boolean; $isDark: boolean; $free?: bo
       ? `0 20px 60px ${() => subscriptionTheme.shadows.small}`
       : 'var(--shadow-lg)';
     const lightBorder = p.$highlight
-      ? 'inset 0 0 0 1px rgba(255, 143, 16, 0.6), 0 0 0 1px rgba(255, 215, 0, 0.4)'
+      ? 'inset 0 0 0 1px rgba(139, 92, 246, 0.6), 0 0 0 1px rgba(255, 215, 0, 0.4)'
       : 'inset 0 0 0 1px rgba(255, 255, 255, 0.1)';
     return `${baseShadow}, ${lightBorder}`;
   }};
@@ -248,7 +248,7 @@ const PlanCard = styled.div<{ $highlight?: boolean; $isDark: boolean; $free?: bo
       ? `0 25px 70px ${() => subscriptionTheme.shadows.small}`
       : 'var(--shadow-xl)';
     const lightBorder = p.$highlight
-      ? 'inset 0 0 0 1px rgba(255, 143, 16, 0.6), 0 0 0 1px rgba(255, 215, 0, 0.4)'
+      ? 'inset 0 0 0 1px rgba(139, 92, 246, 0.6), 0 0 0 1px rgba(255, 215, 0, 0.4)'
       : 'inset 0 0 0 1px rgba(255, 255, 255, 0.1)';
     return `${baseShadow}, ${lightBorder}`;
   }};
@@ -302,7 +302,7 @@ const IconWrapper = styled.div<{ $color: string }>`
   margin: 0 auto 1.5rem;
   box-shadow: 
     0 8px 25px ${() => subscriptionTheme.shadows.small},
-    0 0 20px rgba(255, 143, 16, 0.3);
+    0 0 20px rgba(139, 92, 246, 0.3);
   animation: ${rotateIn} 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -320,7 +320,7 @@ const IconWrapper = styled.div<{ $color: string }>`
     animation: ${float} 2s ease-in-out infinite;
     box-shadow: 
       0 12px 35px ${() => subscriptionTheme.shadows.medium},
-      0 0 30px rgba(255, 143, 16, 0.5);
+      0 0 30px rgba(139, 92, 246, 0.5);
     transform: scale(1.05);
     
     svg {
@@ -461,7 +461,7 @@ const Price = styled.div<{ $free?: boolean }>`
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: 0 0 20px rgba(255, 143, 16, 0.3);
+    text-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
     animation: ${pulse} 3s ease-in-out infinite;
     letter-spacing: -2px;
   }
@@ -496,7 +496,7 @@ const LastDigitSpan = styled.span`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-shadow: 0 0 20px rgba(255, 143, 16, 0.4);
+  text-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
   animation: ${pulse} 2s ease-in-out infinite;
 `;
 
@@ -523,12 +523,12 @@ const FeatureItem = styled.li<{ $highlight?: boolean; $free?: boolean }>`
     flex-shrink: 0;
     margin-top: 1px;
     transition: all 0.3s ease;
-    filter: drop-shadow(0 0 6px rgba(255, 143, 16, 0.4)) blur(0.5px);
+    filter: drop-shadow(0 0 6px rgba(139, 92, 246, 0.4)) blur(0.5px);
     opacity: 0.85;
   }
 
   &:hover svg {
-    filter: drop-shadow(0 0 10px rgba(255, 143, 16, 0.6)) blur(0.3px);
+    filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.6)) blur(0.3px);
     opacity: 1;
     transform: scale(1.1);
   }
@@ -555,10 +555,10 @@ const CTAButton = styled.button<{ $variant: 'primary' | 'secondary' | 'premium';
         return `
           background: var(--btn-primary-bg);
           color: white;
-          box-shadow: 0 4px 16px rgba(255, 143, 16, 0.4);
+          box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
 
           &:hover {
-            box-shadow: 0 8px 24px rgba(255, 143, 16, 0.5);
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.5);
             transform: translateY(-2px);
           }
         `;
@@ -566,10 +566,10 @@ const CTAButton = styled.button<{ $variant: 'primary' | 'secondary' | 'premium';
         return `
           background: var(--btn-primary-bg);
           color: white;
-          box-shadow: 0 4px 16px rgba(255, 143, 16, 0.3);
+          box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
 
           &:hover {
-            box-shadow: 0 8px 24px rgba(255, 143, 16, 0.4);
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
             transform: translateY(-2px);
           }
         `;
@@ -577,7 +577,7 @@ const CTAButton = styled.button<{ $variant: 'primary' | 'secondary' | 'premium';
         return `
           background: ${p.$isDark ? 'rgba(255,255,255,0.06)' : 'white'};
           color: ${p.$isDark ? '#f8fbff' : 'var(--accent-primary)'};
-          border: 2px solid ${p.$isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 143, 16, 0.3)'};
+          border: 2px solid ${p.$isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(139, 92, 246, 0.3)'};
 
           &:hover {
             background: ${p.$isDark ? 'rgba(255,255,255,0.12)' : '#f8fafc'};
@@ -795,3 +795,4 @@ const SubscriptionBanner: React.FC = () => {
 };
 
 export default SubscriptionBanner;
+

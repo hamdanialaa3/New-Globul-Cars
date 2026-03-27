@@ -64,9 +64,9 @@ const TypeButton = styled.button<{ $active: boolean }>`
   align-items: center;
   gap: 6px;
   padding: 8px 14px;
-  background: ${p => p.$active ? 'linear-gradient(135deg, #FF7900, #FF8F10)' : 'white'};
+  background: ${p => p.$active ? 'linear-gradient(135deg, #2563EB, #3B82F6)' : 'white'};
   color: ${p => p.$active ? 'white' : '#495057'};
-  border: 2px solid ${p => p.$active ? '#FF7900' : '#e9ecef'};
+  border: 2px solid ${p => p.$active ? '#2563EB' : '#e9ecef'};
   border-radius: 8px;
   font-size: 0.85rem;
   font-weight: ${p => p.$active ? 600 : 500};
@@ -74,15 +74,15 @@ const TypeButton = styled.button<{ $active: boolean }>`
   transition: all 0.2s;
   white-space: nowrap;
   flex-shrink: 0;
-  box-shadow: ${p => p.$active ? '0 2px 8px rgba(255, 121, 0, 0.2)' : 'none'};
+  box-shadow: ${p => p.$active ? '0 2px 8px rgba(99, 102, 241, 0.2)' : 'none'};
   
   svg {
     flex-shrink: 0;
   }
   
   &:hover {
-    background: ${p => p.$active ? 'linear-gradient(135deg, #FF6800, #FF7900)' : '#f8f9fa'};
-    border-color: ${p => p.$active ? '#FF6800' : '#FF8F10'};
+    background: ${p => p.$active ? 'linear-gradient(135deg, #FF6800, #2563EB)' : '#f8f9fa'};
+    border-color: ${p => p.$active ? '#FF6800' : '#3B82F6'};
     transform: translateY(-1px);
   }
   
@@ -92,4 +92,6 @@ const TypeButton = styled.button<{ $active: boolean }>`
 `;
 
 export default PostTypeSelector;
+
+
 

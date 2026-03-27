@@ -1,4 +1,4 @@
-﻿/**
+/**
  * WeatherStyleCarCard.tsx
  * Карта за кола със стил на времето - Weather Style Car Card
  * Car Card with Weather-Inspired Design

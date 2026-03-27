@@ -49,7 +49,7 @@ const ProfileTypeSwitcher: React.FC = () => {
     <SwitcherContainer>
       <TypeButton
         $active={profileType === 'private'}
-        $color="#FF8F10"
+        $color="#3B82F6"
         onClick={() => handleTypeClick('private')}
         disabled={isLoading}
         title={t('profileTypes.private')}
@@ -217,3 +217,4 @@ const TypeButton = styled.button<{ $active: boolean; $color: string }>`
 `;
 
 export default ProfileTypeSwitcher;
+

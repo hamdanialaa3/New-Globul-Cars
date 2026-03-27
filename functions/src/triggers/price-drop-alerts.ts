@@ -118,12 +118,12 @@ async function sendExpoPushNotification(
         });
 
         if (!response.ok) {
-            console.error('Expo push notification failed:', await response.text());
+            functions.logger.error('Expo push notification failed:', await response.text());
         } else {
-            console.log('Expo push notification sent successfully');
+            functions.logger.info('Expo push notification sent successfully');
         }
     } catch (error) {
-        console.error('Error sending Expo push notification:', error);
+        functions.logger.error('Error sending Expo push notification:', error);
     }
 }
 
@@ -160,7 +160,7 @@ export const onCarPriceUpdate = functions.firestore
             return null;
         }
 
-        console.log(`[Price Drop] ${collectionName}/${carId}: €${oldPrice} → €${newPrice}`);
+        functions.logger.info(`[Price Drop] ${collectionName}/${carId}: €${oldPrice} → €${newPrice}`);
 
         const discount = oldPrice - newPrice;
         const discountPercent = Math.round((discount / oldPrice) * 100);
@@ -173,7 +173,7 @@ export const onCarPriceUpdate = functions.firestore
             .get();
 
         if (savedSearchesSnapshot.empty) {
-            console.log('No active saved searches with notifications enabled');
+            functions.logger.info('No active saved searches with notifications enabled');
             return null;
         }
 
@@ -188,7 +188,7 @@ export const onCarPriceUpdate = functions.firestore
                 continue;
             }
 
-            console.log(`[Match] User ${search.userId} - Search ${searchDoc.id}`);
+            functions.logger.info(`[Match] User ${search.userId} - Search ${searchDoc.id}`);
 
             // Get user's expo push token
             const userDoc = await db.collection('users').doc(search.userFirebaseId).get();
@@ -198,7 +198,7 @@ export const onCarPriceUpdate = functions.firestore
             const expoPushToken = userData?.expoPushToken;
 
             if (!expoPushToken || !expoPushToken.startsWith('ExponentPushToken[')) {
-                console.log(`[Skip] No valid Expo token for user ${search.userId}`);
+                functions.logger.info(`[Skip] No valid Expo token for user ${search.userId}`);
                 continue;
             }
 
@@ -251,7 +251,7 @@ export const onCarPriceUpdate = functions.firestore
         // Execute all notifications and alerts in parallel
         await Promise.all([...notificationPromises, ...alertPromises]);
 
-        console.log(`[Complete] Sent ${notificationPromises.length} notifications`);
+        functions.logger.info(`[Complete] Sent ${notificationPromises.length} notifications`);
         return null;
     });
 
@@ -277,6 +277,6 @@ export const cleanupOldPriceAlerts = functions.pubsub
         });
 
         await batch.commit();
-        console.log(`[Cleanup] Deleted ${oldAlertsSnapshot.size} old price alerts`);
+        functions.logger.info(`[Cleanup] Deleted ${oldAlertsSnapshot.size} old price alerts`);
         return null;
     });

@@ -66,7 +66,7 @@ const GlassWrapper = styled.div`
   border-radius: 24px;
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.3),
-    0 4px 16px rgba(255, 143, 16, 0.1);
+    0 4px 16px rgba(139, 92, 246, 0.1);
   padding: 40px;
   z-index: 10;
   animation: ${fadeIn} 0.6s ease-out;
@@ -76,7 +76,7 @@ const GlassWrapper = styled.div`
     border-color: rgba(148, 163, 184, 0.3);
     box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.6),
-      0 4px 16px rgba(255, 143, 16, 0.2);
+      0 4px 16px rgba(139, 92, 246, 0.2);
   }
   transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 
@@ -101,11 +101,11 @@ const IconCircle = styled.div`
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #FF8F10 0%, #ff6b00 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #ff6b00 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 20px rgba(255, 143, 16, 0.4);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
   
   svg {
     color: white;
@@ -187,9 +187,9 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #FF8F10;
-    background: rgba(255, 143, 16, 0.05);
-    box-shadow: 0 0 20px rgba(255, 143, 16, 0.2);
+    border-color: #3B82F6;
+    background: rgba(139, 92, 246, 0.05);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
   }
 
   &:disabled {
@@ -208,9 +208,9 @@ const Input = styled.input`
     }
 
     &:focus {
-      border-color: #FF8F10;
-      background: rgba(255, 143, 16, 0.1);
-      box-shadow: 0 0 20px rgba(255, 143, 16, 0.3);
+      border-color: #3B82F6;
+      background: rgba(139, 92, 246, 0.1);
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
     }
 
     &:disabled {
@@ -240,7 +240,7 @@ const InputIcon = styled.div`
 const SubmitButton = styled.button`
   width: 100%;
   height: 52px;
-  background: linear-gradient(135deg, #FF8F10 0%, #ff6b00 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #ff6b00 100%);
   border: none;
   border-radius: 50px;
   color: white;
@@ -252,12 +252,12 @@ const SubmitButton = styled.button`
   justify-content: center;
   gap: 8px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(255, 143, 16, 0.3);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
   margin-bottom: 20px;
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 143, 16, 0.4);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
   }
 
   &:active:not(:disabled) {
@@ -291,14 +291,14 @@ const BackLink = styled(Link)`
   transition: color 0.3s ease;
 
   &:hover {
-    color: #FF8F10;
+    color: #3B82F6;
   }
 
   html[data-theme="dark"] & {
     color: #94a3b8;
     
     &:hover {
-      color: #FF8F10;
+      color: #3B82F6;
     }
   }
 `;
@@ -527,3 +527,5 @@ const ForgotPasswordPage: React.FC = () => {
 };
 
 export default ForgotPasswordPage;
+
+

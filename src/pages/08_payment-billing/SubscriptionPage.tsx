@@ -116,7 +116,7 @@ const HeroSection = styled.header`
     transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle, rgba(230, 81, 0, 0.08) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, transparent 70%);
     z-index: -1;
     filter: blur(40px);
   }
@@ -127,8 +127,8 @@ const Badge = styled.div`
   align-items: center;
   gap: 0.5rem;
   padding: 0.35rem 1rem;
-  background: rgba(230, 81, 0, 0.1);
-  border: 1px solid rgba(230, 81, 0, 0.2);
+  background: rgba(37, 99, 235, 0.1);
+  border: 1px solid rgba(37, 99, 235, 0.2);
   border-radius: 99px;
   color: #d8b4fe;
   font-size: 0.85rem;
@@ -201,7 +201,7 @@ const MarqueeContainer = styled.div`
     color: white;
     font-size: 1.1rem;
     
-    svg { color: #E65100; }
+    svg { color: #2563EB; }
   }
 `;
 
@@ -258,7 +258,7 @@ const Td = styled.td`
   }
 
   svg {
-    color: #E65100;
+    color: #2563EB;
     width: 20px;
     height: 20px;
   }
@@ -295,8 +295,8 @@ const AccordionItem = styled.div<{ $isOpen: boolean }>`
 
   ${p => p.$isOpen && css`
     background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(230, 81, 0, 0.3);
-    box-shadow: 0 0 20px rgba(230, 81, 0, 0.05);
+    border-color: rgba(37, 99, 235, 0.3);
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.05);
   `}
 `;
 
@@ -469,3 +469,5 @@ const SubscriptionPage: React.FC = () => {
 };
 
 export default SubscriptionPage;
+
+

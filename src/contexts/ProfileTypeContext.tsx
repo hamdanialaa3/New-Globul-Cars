@@ -59,10 +59,10 @@ const ProfileTypeContext = createContext<ProfileTypeContextState | undefined>(un
 // 🟦 Company = BLUE
 const THEMES: Record<ProfileType, ProfileTheme> = {
   private: {
-    primary: '#FF8F10',     // Orange
+    primary: '#3B82F6',     // Orange
     secondary: '#FFDF00',   // Yellow
-    accent: '#FF7900',      // Dark Orange
-    gradient: 'linear-gradient(135deg, #FF8F10 0%, #FF7900 100%)'  // Orange gradient
+    accent: '#2563EB',      // Dark Orange
+    gradient: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)'  // Orange gradient
   },
   dealer: {
     primary: '#16a34a',     // Green
@@ -390,4 +390,5 @@ export const useProfileType = (): ProfileTypeContextState => {
 
 // Export Context for testing
 export { ProfileTypeContext };
+
 

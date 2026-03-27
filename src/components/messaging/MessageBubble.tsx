@@ -27,7 +27,7 @@ const Bubble = styled.div<{ $isOwn: boolean }>`
   max-width: 70%;
   padding: 12px 16px;
   border-radius: 18px;
-  background: ${props => props.$isOwn ? '#FF7900' : '#f0f0f0'};
+  background: ${props => props.$isOwn ? '#2563EB' : '#f0f0f0'};
   color: ${props => props.$isOwn ? 'white' : '#333'};
   position: relative;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -232,3 +232,4 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
 };
 
 export default MessageBubble;
+

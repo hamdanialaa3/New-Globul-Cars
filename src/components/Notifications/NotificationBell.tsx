@@ -21,7 +21,7 @@ const BellButton = styled.button`
   transition: all 0.2s ease;
   
   &:hover {
-    background: rgba(255, 121, 0, 0.1);
+    background: rgba(99, 102, 241, 0.1);
   }
   
   svg {
@@ -79,7 +79,7 @@ const DropdownHeader = styled.div`
 const MarkAllRead = styled.button`
   background: none;
   border: none;
-  color: #FF7900;
+  color: #2563EB;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -211,3 +211,5 @@ export const NotificationBell: React.FC<NotificationBellProps> = () => {
 };
 
 export default NotificationBell;
+
+

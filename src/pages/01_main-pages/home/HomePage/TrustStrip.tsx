@@ -1,4 +1,4 @@
-﻿// TrustStrip.tsx
+// TrustStrip.tsx
 // Lightweight trust & marketplace pulse strip displayed near top of homepage
 // Shows key marketplace statistics to build confidence and conversion.
 

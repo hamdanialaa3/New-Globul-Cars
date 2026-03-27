@@ -24,7 +24,7 @@ const RingWrapper = styled.div<{ $viewed: boolean }>`
   padding: 3px;
   background: ${p => p.$viewed
     ? '#dee2e6'
-    : 'linear-gradient(45deg, #f77737, #ff5722, #ff8a00, #ffb700)'};
+    : 'linear-gradient(45deg, #f77737, #8b5cf6, #ff8a00, #ffb700)'};
   margin-bottom: 8px;
   transition: transform 0.2s;
   
@@ -39,7 +39,7 @@ const Avatar = styled.div<{ $imageUrl?: string }>`
   border-radius: 50%;
   background: ${p => p.$imageUrl
     ? `url(${p.$imageUrl}) center/cover`
-    : 'linear-gradient(135deg, #FF8F10, #FF7900)'};
+    : 'linear-gradient(135deg, #3B82F6, #2563EB)'};
   border: 3px solid white;
   display: flex;
   align-items: center;
@@ -104,3 +104,4 @@ const StoryRing: React.FC<StoryRingProps> = ({ story, onClick, currentUserId }) 
 };
 
 export default StoryRing;
+
