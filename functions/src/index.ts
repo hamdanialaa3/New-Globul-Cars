@@ -49,15 +49,15 @@ export const syncCarsToGoogleAds = googleAdsSync.syncCarsToGoogleAds;
 export const syncCarsToFacebookAds = facebookAdsSync.syncCarsToFacebookAds;
 
 // AI Services (DeepSeek Integration - Legacy)
-// TEMPORARILY DISABLED - CPU conflict with v2 API cache
-// import * as deepSeekProxy from './ai/deepseek-proxy';
-// export const aiGenerateText = deepSeekProxy.aiGenerateText;
-// export const aiGenerateCarDescription = deepSeekProxy.aiGenerateCarDescription;
+// ACTIVATED FOR PRODUCTION - CPU conflict noted but acceptable for live service
+import * as deepSeekProxy from './ai/deepseek-proxy';
+export const aiGenerateText = deepSeekProxy.aiGenerateText;
+export const aiGenerateCarDescription = deepSeekProxy.aiGenerateCarDescription;
 
 // AI Services (Hybrid System - Phase 4.1.2 - NEW) ✅
-// TEMPORARILY DISABLED - CPU conflict with v2 API cache
-// import * as hybridAI from './ai/hybrid-ai-proxy';
-// export const hybridAIProxy = hybridAI.hybridAIProxy;
+// ACTIVATED FOR PRODUCTION - CPU conflict noted but acceptable for live service
+import * as hybridAI from './ai/hybrid-ai-proxy';
+export const hybridAIProxy = hybridAI.hybridAIProxy;
 
 // SEO & Analytics Strategy (Phase 1 Fixes)
 import * as indexing from './seo/indexing-service';
@@ -67,6 +67,22 @@ import * as prerender from './seo/prerender';
 export const requestIndexing = indexing.requestIndexing;
 export const logSearchEvent = bqAnalytics.logSearchEvent;
 export const prerenderSEO = prerender.prerender;
+
+// 🚀 NEW: Google Search Console Auto-Indexing Triggers (March 2026)
+import * as seoIndexing from './seo/indexing-triggers';
+export const onPassengerCarCreatedIndexing = seoIndexing.onPassengerCarCreatedIndexing;
+export const onSuvCreatedIndexing = seoIndexing.onSuvCreatedIndexing;
+export const onVanCreatedIndexing = seoIndexing.onVanCreatedIndexing;
+export const onMotorcycleCreatedIndexing = seoIndexing.onMotorcycleCreatedIndexing;
+export const onTruckCreatedIndexing = seoIndexing.onTruckCreatedIndexing;
+export const onBusCreatedIndexing = seoIndexing.onBusCreatedIndexing;
+
+export const onPassengerCarSoldIndexing = seoIndexing.onPassengerCarSoldIndexing;
+export const onSuvSoldIndexing = seoIndexing.onSuvSoldIndexing;
+export const onVanSoldIndexing = seoIndexing.onVanSoldIndexing;
+export const onMotorcycleSoldIndexing = seoIndexing.onMotorcycleSoldIndexing;
+export const onTruckSoldIndexing = seoIndexing.onTruckSoldIndexing;
+export const onBusSoldIndexing = seoIndexing.onBusSoldIndexing;
 
 // Hybrid AI Engine (Phase 2 - Gemini + DeepSeek) 🧠
 import * as functions from "firebase-functions/v1";
@@ -94,11 +110,11 @@ export const evaluateCar = functions.https.onCall(async (data, context) => {
 
     try {
         const aiService = getAiService();
-        console.log("[evaluateCar] Starting Hybrid AI Analysis...");
+        functions.logger.info("[evaluateCar] Starting Hybrid AI Analysis...");
 
         // 2. Phase 1: Gemini (Vision)
         const visualData = await aiService.analyzeImage(imageBase64);
-        console.log("[evaluateCar] Visual Analysis Complete:", visualData);
+        functions.logger.info("[evaluateCar] Visual Analysis Complete", { visualData });
 
         // Merge price with extracted data
         const carFullData = { ...visualData, price };
@@ -106,7 +122,7 @@ export const evaluateCar = functions.https.onCall(async (data, context) => {
         // 3. Phase 2: DeepSeek (Logic)
         // Usng marketAvg provided by client or fallback
         const logicVerdict = await aiService.analyzeMarketLogic(carFullData, marketAvg || 50000);
-        console.log("[evaluateCar] Logic Analysis Complete:", logicVerdict);
+        functions.logger.info("[evaluateCar] Logic Analysis Complete", { logicVerdict });
 
         // 4. Return Full Report
         return {
@@ -116,7 +132,7 @@ export const evaluateCar = functions.https.onCall(async (data, context) => {
         };
 
     } catch (error: any) {
-        console.error("[evaluateCar] Error:", error);
+        functions.logger.error("[evaluateCar] Error", { error });
         throw new functions.https.HttpsError('internal', 'AI Analysis Failed');
     }
 });
@@ -190,6 +206,15 @@ export const manualExpirePayments = manualPayments.manualExpirePayments;
 import * as authBlocking from './blocking/beforeCreate';
 export const beforeUserCreated = authBlocking.beforeUserCreated;
 
+// ✅ Subscription Tier Enforcement — Server-side listing limit checks
+import * as listingLimits from './subscription/enforce-listing-limits';
+export const enforcePassengerCarsLimit = listingLimits.enforcePassengerCarsLimit;
+export const enforceSuvsLimit = listingLimits.enforceSuvsLimit;
+export const enforceVansLimit = listingLimits.enforceVansLimit;
+export const enforceMotorcyclesLimit = listingLimits.enforceMotorcyclesLimit;
+export const enforceTrucksLimit = listingLimits.enforceTrucksLimit;
+export const enforceBusesLimit = listingLimits.enforceBusesLimit;
+
 // ⚠️ SECURITY: Backend Numeric ID Assignment (January 25, 2026)
 import * as userCreateTrigger from './triggers/onUserCreate';
 export const onUserCreate = userCreateTrigger.onUserCreate;
@@ -232,3 +257,16 @@ import * as paymentWebhook from './payment-webhook';
 export const handleEpayWebhook = paymentWebhook.handleEpayWebhook;
 export const handleEasypayWebhook = paymentWebhook.handleEasypayWebhook;
 export const verifyPaymentStatus = paymentWebhook.verifyPaymentStatus;
+
+// 📲 NEW: Social Media Automation - Facebook Multi-Page Publisher (March 2026)
+import * as facebookPublisher from './social/facebook-publisher';
+export const autoPublishToFacebookPages = facebookPublisher.autoPublishToFacebookPages;
+
+// 🛒 NEW: Meta Automotive Inventory Catalog Feed
+import * as facebookFeed from './social/facebook-catalog-feed';
+export const facebookCatalogFeed = facebookFeed.facebookCatalogFeed;
+
+// 🟢 NEW: WhatsApp Business Cloud API & Webhook (March 2026)
+import * as whatsappService from './social/whatsapp-api';
+export const whatsappApi = whatsappService.whatsappApi;
+export const whatsappWebhook = whatsappService.whatsappWebhook;
