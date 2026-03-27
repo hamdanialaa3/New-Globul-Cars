@@ -63,31 +63,36 @@
         });
     </script>
 
-    <!-- Facebook Pixel Code -->
+    <!-- Facebook Pixel Code (deferred for page speed) -->
     <script>
-        !function (f, b, e, v, n, t, s) {
-            if (f.fbq) return; n = f.fbq = function () {
-                n.callMethod ?
-                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
-            };
-            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
-            n.queue = []; t = b.createElement(e); t.async = !0;
-            t.src = v; s = b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t, s)
-        }(window, document, 'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '2026958077871354');
-        fbq('track', 'PageView');
+        window.addEventListener('DOMContentLoaded', function() {
+            !function (f, b, e, v, n, t, s) {
+                if (f.fbq) return; n = f.fbq = function () {
+                    n.callMethod ?
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+                };
+                if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+                n.queue = []; t = b.createElement(e); t.async = !0;
+                t.src = v; s = b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t, s)
+            }(window, document, 'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '2026958077871354');
+            fbq('track', 'PageView');
+        });
     </script>
     <!-- End Facebook Pixel Code -->
 
     <meta charset="utf-8" />
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, private" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <meta http-equiv="Last-Modified" content="0" />
-    <meta name="cache-control" content="no-cache" />
-    <meta name="expires" content="0" />
+    <!-- SEO: Canonical URL (prevents duplicate content across domains) -->
+    <link rel="canonical" href="https://koli.one/" />
+    
+    <!-- SEO: Geo-targeting for Bulgaria -->
+    <meta name="geo.region" content="BG" />
+    <meta name="geo.placename" content="Bulgaria" />
+    <meta name="content-language" content="bg" />
+    <meta name="geo.position" content="42.6977;23.3219" />
+    <meta name="ICBM" content="42.6977, 23.3219" />
     <link rel="stylesheet" href="/styles/koli-one-logo.css" />
     <!-- 🎨 Official Koli One Logo - Used Everywhere -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -103,14 +108,18 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Koli One" />
     <meta name="description"
-        content="Koli One - Български автомобили - Най-добрата платформа за автомобили в България" />
+        content="Koli One - Продажба на коли в България. Най-голямата платформа за покупка и продажба на нови и употребявани автомобили. Обяви от частни лица и автосалони в София, Пловдив, Варна, Бургас." />
+    <meta name="keywords" content="коли, автомобили, продажба, кола, България, продажба на коли, втора ръка, автосалони, коли софия, коли пловдив, коли варна, buy car bulgaria, used cars bulgaria, koli, cars bg" />
     
     <!-- Open Graph / Facebook Meta Tags -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://koli.one/" />
     <meta property="og:title" content="Koli One - Български автомобили" />
-    <meta property="og:description" content="Най-добрата платформа за покупка и продажба на автомобили в България" />
-    <meta property="og:image" content="https://koli.one/logo.png" />
+    <meta property="og:description" content="Продажба на коли в България. Обяви от частни лица и автосалони в София, Пловдив, Варна, Бургас. Нови и употребявани автомобили." />
+    <meta property="og:image" content="https://koli.one/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Koli One - Купи и продай кола в България" />
     <meta property="og:site_name" content="Koli One" />
     <meta property="og:locale" content="bg_BG" />
     <meta property="fb:app_id" content="2026958077871354" />
@@ -119,8 +128,8 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://koli.one/" />
     <meta name="twitter:title" content="Koli One - Български автомобили" />
-    <meta name="twitter:description" content="Най-добрата платформа за покупка и продажба на автомобили в България" />
-    <meta name="twitter:image" content="https://koli.one/logo.png" />
+    <meta name="twitter:description" content="Продажба на коли в България. Обяви от частни лица и автосалони в София, Пловдив, Варна, Бургас." />
+    <meta name="twitter:image" content="https://koli.one/og-image.png" />
     <meta name="twitter:site" content="@kolionebg" />
     <meta name="twitter:creator" content="@kolionebg" />
     
@@ -150,12 +159,8 @@
     <!-- Print Styles -->
     <link rel="stylesheet" href="/print-only.css" media="print" />
 
-    <!-- Google Maps API with Places library and Bulgarian language -->
-    <!-- Load Google Maps JS API with loading=async parameter for best performance -->
-    <!-- API key injected from VITE_GOOGLE_MAPS_API_KEY environment variable at build time -->
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key=%VITE_GOOGLE_MAPS_API_KEY%&libraries=places&language=bg&loading=async"
-        async defer></script>
+    <!-- Google Maps API: Lazy-loaded only when needed (SEO page speed optimization) -->
+    <!-- Moved to dynamic import in components that actually use Maps -->
 
     <!--
       This HTML file is a template.
@@ -167,7 +172,60 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-    <title>Koli One - Български автомобили</title>
+    <title>Koli One - Продажба на коли в България | Нови и втора ръка автомобили</title>
+    
+    <!-- JSON-LD: WebSite Schema (enables sitelinks search box in Google) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Koli One",
+      "alternateName": "Коли Уан",
+      "url": "https://koli.one",
+      "inLanguage": "bg",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://koli.one/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    
+    <!-- JSON-LD: Organization Schema (builds Knowledge Panel) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Koli One",
+      "alternateName": "Коли Уан",
+      "url": "https://koli.one",
+      "logo": "https://koli.one/logo.png",
+      "description": "Най-голямата платформа за покупка и продажба на автомобили в България",
+      "foundingDate": "2025",
+      "areaServed": {
+        "@type": "Country",
+        "name": "Bulgaria",
+        "identifier": "BG"
+      },
+      "sameAs": [
+        "https://www.facebook.com/koli.one/",
+        "https://www.instagram.com/kolione/",
+        "https://www.youtube.com/@Kolionebg",
+        "https://www.linkedin.com/in/koli-one-a011993a9/",
+        "https://x.com/kolionebg",
+        "https://www.tiktok.com/@kolione",
+        "https://www.threads.com/@kolione"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "availableLanguage": ["Bulgarian", "English"]
+      }
+    }
+    </script>
     <style>
         /* --- KOLI ONE GLASS SPHERE LOADER --- */
         #loader-container {

@@ -70,7 +70,7 @@ export interface SEOHelmetProps {
 
 const SITE_NAME = 'Koli One';
 const SITE_URL = 'https://koli.one';
-const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.jpg`;
+const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
 const TWITTER_HANDLE = '@kolioneauto';
 
 // ============================================================================
@@ -135,6 +135,11 @@ export const SEOHelmet: React.FC<SEOHelmetProps> = ({
                 name="robots"
                 content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}
             />
+
+            {/* Geo-targeting */}
+            <meta name="geo.region" content="BG" />
+            <meta name="geo.placename" content="Bulgaria" />
+            <meta httpEquiv="content-language" content="bg" />
 
             {/* Canonical */}
             <link rel="canonical" href={canonicalUrl} />

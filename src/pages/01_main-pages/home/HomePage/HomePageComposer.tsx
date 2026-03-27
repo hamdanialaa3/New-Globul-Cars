@@ -77,6 +77,12 @@ import KATServicesHero from './KATServicesHero';
 const AIChatbot = React.lazy(() => import('../../../../components/AI/AIChatbot'));
 const PricingSlotWrapper = React.lazy(() => import('../../../../components/subscription/PricingSlotWrapper'));
 
+// SEO components
+const FAQSchema = React.lazy(() => import('../../../../components/seo/FAQSchema'));
+const SEOFooterLinks = React.lazy(() => import('../../../../components/seo/SEOFooterLinks'));
+
+import { HOMEPAGE_FAQS } from '../../../../components/seo/FAQSchema';
+
 // ✅ REVENUE FIX: Draft Recovery Prompt (January 6, 2026)
 const DraftRecoveryPrompt = React.lazy(() => import('./DraftRecoveryPrompt'));
 
@@ -503,6 +509,16 @@ const HomePageComposer: React.FC = React.memo(() => {
           </>
         )}
       </ContentContainer>
+
+      {/* SEO: FAQ Schema (visible accordion + JSON-LD) */}
+      <Suspense fallback={null}>
+        <FAQSchema faqs={HOMEPAGE_FAQS} visible />
+      </Suspense>
+
+      {/* SEO: Internal linking footer */}
+      <Suspense fallback={null}>
+        <SEOFooterLinks />
+      </Suspense>
 
       {/* FLOATING COMPONENTS */}
       {isVisible('ai_chatbot') && <AIChatbotSlot />}

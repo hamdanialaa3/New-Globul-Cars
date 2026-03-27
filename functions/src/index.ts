@@ -28,14 +28,17 @@ export const onNewFavorite = notifications.onNewFavorite;
 export const dailyReminder = notifications.dailyReminder;
 
 // NEW: Social Notification System (Phase 2)
-export const notifyFollowersOnNewCar = newCarNotifications.notifyFollowersOnNewCar;
-export const cleanupOldNotifications = newCarNotifications.cleanupOldNotifications;
+export const notifyFollowersOnNewCar =
+  newCarNotifications.notifyFollowersOnNewCar;
+export const cleanupOldNotifications =
+  newCarNotifications.cleanupOldNotifications;
 
 // Google Merchant Center Feed (for Google Shopping)
 // Expose expected function name for hosting rewrite
 export const merchantFeed = merchantFeedModule.merchantFeed;
 export const merchantFeedGenerator = merchantFeedModule.merchantFeed;
-export const updateMerchantFeedCache = merchantFeedModule.updateMerchantFeedCache;
+export const updateMerchantFeedCache =
+  merchantFeedModule.updateMerchantFeedCache;
 
 // Image Optimization (automatic WebP conversion & responsive sizes)
 export const optimizeUploadedImage = imageOptimizer.optimizeImage;
@@ -43,7 +46,9 @@ export const cleanupDeletedImages = imageOptimizer.cleanupOptimizedImages;
 
 // Marketing / SEO
 export const sitemap = sitemapFunc.sitemap;
-export const scheduledSitemapRegeneration = sitemapFunc.scheduledSitemapRegeneration;
+export const sitemapRegenerate = sitemapFunc.sitemapRegenerate;
+export const scheduledSitemapRegeneration =
+  sitemapFunc.scheduledSitemapRegeneration;
 export const manualSitemapRegeneration = sitemapFunc.manualSitemapRegeneration;
 export const syncCarsToGoogleAds = googleAdsSync.syncCarsToGoogleAds;
 export const syncCarsToFacebookAds = facebookAdsSync.syncCarsToFacebookAds;
@@ -70,14 +75,17 @@ export const prerenderSEO = prerender.prerender;
 
 // 🚀 NEW: Google Search Console Auto-Indexing Triggers (March 2026)
 import * as seoIndexing from './seo/indexing-triggers';
-export const onPassengerCarCreatedIndexing = seoIndexing.onPassengerCarCreatedIndexing;
+export const onPassengerCarCreatedIndexing =
+  seoIndexing.onPassengerCarCreatedIndexing;
 export const onSuvCreatedIndexing = seoIndexing.onSuvCreatedIndexing;
 export const onVanCreatedIndexing = seoIndexing.onVanCreatedIndexing;
-export const onMotorcycleCreatedIndexing = seoIndexing.onMotorcycleCreatedIndexing;
+export const onMotorcycleCreatedIndexing =
+  seoIndexing.onMotorcycleCreatedIndexing;
 export const onTruckCreatedIndexing = seoIndexing.onTruckCreatedIndexing;
 export const onBusCreatedIndexing = seoIndexing.onBusCreatedIndexing;
 
-export const onPassengerCarSoldIndexing = seoIndexing.onPassengerCarSoldIndexing;
+export const onPassengerCarSoldIndexing =
+  seoIndexing.onPassengerCarSoldIndexing;
 export const onSuvSoldIndexing = seoIndexing.onSuvSoldIndexing;
 export const onVanSoldIndexing = seoIndexing.onVanSoldIndexing;
 export const onMotorcycleSoldIndexing = seoIndexing.onMotorcycleSoldIndexing;
@@ -85,61 +93,74 @@ export const onTruckSoldIndexing = seoIndexing.onTruckSoldIndexing;
 export const onBusSoldIndexing = seoIndexing.onBusSoldIndexing;
 
 // Hybrid AI Engine (Phase 2 - Gemini + DeepSeek) 🧠
-import * as functions from "firebase-functions/v1";
+import * as functions from 'firebase-functions/v1';
 // import { AIService } from "./services/ai-service";
 
 const getAiService = () => {
-    const { AIService } = require("./services/ai-service");
-    // Simple singleton pattern could be implemented here if needed, 
-    // but safe dynamic import is key for preventing cold-start crashes.
-    return new AIService();
+  const { AIService } = require('./services/ai-service');
+  // Simple singleton pattern could be implemented here if needed,
+  // but safe dynamic import is key for preventing cold-start crashes.
+  return new AIService();
 };
 
 export const evaluateCar = functions.https.onCall(async (data, context) => {
-    // Auth check — only authenticated users can evaluate cars
-    if (!context.auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'Authentication required for car evaluation');
-    }
+  // Auth check — only authenticated users can evaluate cars
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+      'unauthenticated',
+      'Authentication required for car evaluation'
+    );
+  }
 
-    // 1. Validate Inputs
-    const { imageBase64, price, marketAvg } = data as any;
+  // 1. Validate Inputs
+  const { imageBase64, price, marketAvg } = data as any;
 
-    if (!imageBase64) {
-        throw new functions.https.HttpsError('invalid-argument', 'Image is required for analysis (Base64)');
-    }
+  if (!imageBase64) {
+    throw new functions.https.HttpsError(
+      'invalid-argument',
+      'Image is required for analysis (Base64)'
+    );
+  }
 
-    try {
-        const aiService = getAiService();
-        functions.logger.info("[evaluateCar] Starting Hybrid AI Analysis...");
+  try {
+    const aiService = getAiService();
+    functions.logger.info('[evaluateCar] Starting Hybrid AI Analysis...');
 
-        // 2. Phase 1: Gemini (Vision)
-        const visualData = await aiService.analyzeImage(imageBase64);
-        functions.logger.info("[evaluateCar] Visual Analysis Complete", { visualData });
+    // 2. Phase 1: Gemini (Vision)
+    const visualData = await aiService.analyzeImage(imageBase64);
+    functions.logger.info('[evaluateCar] Visual Analysis Complete', {
+      visualData,
+    });
 
-        // Merge price with extracted data
-        const carFullData = { ...visualData, price };
+    // Merge price with extracted data
+    const carFullData = { ...visualData, price };
 
-        // 3. Phase 2: DeepSeek (Logic)
-        // Usng marketAvg provided by client or fallback
-        const logicVerdict = await aiService.analyzeMarketLogic(carFullData, marketAvg || 50000);
-        functions.logger.info("[evaluateCar] Logic Analysis Complete", { logicVerdict });
+    // 3. Phase 2: DeepSeek (Logic)
+    // Usng marketAvg provided by client or fallback
+    const logicVerdict = await aiService.analyzeMarketLogic(
+      carFullData,
+      marketAvg || 50000
+    );
+    functions.logger.info('[evaluateCar] Logic Analysis Complete', {
+      logicVerdict,
+    });
 
-        // 4. Return Full Report
-        return {
-            carDetails: visualData,
-            marketAnalysis: logicVerdict,
-            timestamp: new Date().toISOString()
-        };
-
-    } catch (error: any) {
-        functions.logger.error("[evaluateCar] Error", { error });
-        throw new functions.https.HttpsError('internal', 'AI Analysis Failed');
-    }
+    // 4. Return Full Report
+    return {
+      carDetails: visualData,
+      marketAnalysis: logicVerdict,
+      timestamp: new Date().toISOString(),
+    };
+  } catch (error: any) {
+    functions.logger.error('[evaluateCar] Error', { error });
+    throw new functions.https.HttpsError('internal', 'AI Analysis Failed');
+  }
 });
 
 // ✅ NEW: Algolia Real-Time Sync (December 2025)
 import * as algoliaSync from './syncCarsToAlgolia';
-export const syncPassengerCarsToAlgolia = algoliaSync.syncPassengerCarsToAlgolia;
+export const syncPassengerCarsToAlgolia =
+  algoliaSync.syncPassengerCarsToAlgolia;
 export const syncSuvsToAlgolia = algoliaSync.syncSuvsToAlgolia;
 export const syncVansToAlgolia = algoliaSync.syncVansToAlgolia;
 export const syncMotorcyclesToAlgolia = algoliaSync.syncMotorcyclesToAlgolia;
@@ -182,14 +203,18 @@ import * as orphanedCleanup from './triggers/orphaned-data-cleanup';
 export const onDeleteCar = orphanedCleanup.onDeleteCar;
 export const onDeleteProfile = orphanedCleanup.onDeleteProfile;
 export const onDeleteOffer = orphanedCleanup.onDeleteOffer;
-export const dailyOrphanedDataCleanup = orphanedCleanup.dailyOrphanedDataCleanup;
+export const dailyOrphanedDataCleanup =
+  orphanedCleanup.dailyOrphanedDataCleanup;
 export const cleanupOrphanedData = orphanedCleanup.cleanupOrphanedData;
 
 // ✅ NEW: Realtime Messaging Push Notifications (January 8, 2026)
 import * as realtimeMessagingNotifications from './notifications/realtime-messaging-notifications';
-export const onNewRealtimeMessage = realtimeMessagingNotifications.onNewRealtimeMessage;
-export const onOfferStatusChange = realtimeMessagingNotifications.onOfferStatusChange;
-export const cleanupExpiredOffers = realtimeMessagingNotifications.cleanupExpiredOffers;
+export const onNewRealtimeMessage =
+  realtimeMessagingNotifications.onNewRealtimeMessage;
+export const onOfferStatusChange =
+  realtimeMessagingNotifications.onOfferStatusChange;
+export const cleanupExpiredOffers =
+  realtimeMessagingNotifications.cleanupExpiredOffers;
 
 // 🔴 CRITICAL: Firebase Auth User Deletion Trigger (January 2026 - GDPR Compliance)
 import { onUserDelete } from './triggers/on-user-delete';
@@ -197,7 +222,8 @@ export { onUserDelete };
 
 // ✅ NEW: Manual Payment System (January 9, 2026)
 const manualPayments = require('../lib/manual-payment-expiration');
-export const checkExpiredManualPayments = manualPayments.checkExpiredManualPayments;
+export const checkExpiredManualPayments =
+  manualPayments.checkExpiredManualPayments;
 export const sendDailyPaymentSummary = manualPayments.sendDailyPaymentSummary;
 export const onPaymentVerified = manualPayments.onPaymentVerified;
 export const manualExpirePayments = manualPayments.manualExpirePayments;
@@ -208,7 +234,8 @@ export const beforeUserCreated = authBlocking.beforeUserCreated;
 
 // ✅ Subscription Tier Enforcement — Server-side listing limit checks
 import * as listingLimits from './subscription/enforce-listing-limits';
-export const enforcePassengerCarsLimit = listingLimits.enforcePassengerCarsLimit;
+export const enforcePassengerCarsLimit =
+  listingLimits.enforcePassengerCarsLimit;
 export const enforceSuvsLimit = listingLimits.enforceSuvsLimit;
 export const enforceVansLimit = listingLimits.enforceVansLimit;
 export const enforceMotorcyclesLimit = listingLimits.enforceMotorcyclesLimit;
@@ -229,7 +256,8 @@ import * as emailTriggers from './notifications/email-triggers';
 export const sendWelcomeEmail = emailTriggers.sendWelcomeEmail;
 export const sendAdStatusEmail = emailTriggers.sendAdStatusEmail;
 export const sendPaymentReceiptEmail = emailTriggers.sendPaymentReceiptEmail;
-export const sendMessageNotificationEmail = emailTriggers.sendMessageNotificationEmail;
+export const sendMessageNotificationEmail =
+  emailTriggers.sendMessageNotificationEmail;
 
 // 💳 NEW: Payment Webhooks - iCard, Revolut (February 5, 2026)
 import * as icardPayments from './payment-webhooks/icard-webhooks';
@@ -240,8 +268,10 @@ export const revolutWebhooks = revolutPayments.revolutWebhooks;
 // 📊 NEW: Payment Reconciliation & Monitoring (February 5, 2026)
 import * as paymentReconciliation from './services/payment-reconciliation';
 export const dailyReconciliation = paymentReconciliation.dailyReconciliation;
-export const triggerReconciliation = paymentReconciliation.triggerReconciliation;
-export const exportReconciliationReport = paymentReconciliation.exportReconciliationReport;
+export const triggerReconciliation =
+  paymentReconciliation.triggerReconciliation;
+export const exportReconciliationReport =
+  paymentReconciliation.exportReconciliationReport;
 
 // 🔔 NEW: Price Drop Alerts System (February 7, 2026 - TASK-07)
 import * as priceDropAlerts from './triggers/price-drop-alerts';
@@ -260,7 +290,8 @@ export const verifyPaymentStatus = paymentWebhook.verifyPaymentStatus;
 
 // 📲 NEW: Social Media Automation - Facebook Multi-Page Publisher (March 2026)
 import * as facebookPublisher from './social/facebook-publisher';
-export const autoPublishToFacebookPages = facebookPublisher.autoPublishToFacebookPages;
+export const autoPublishToFacebookPages =
+  facebookPublisher.autoPublishToFacebookPages;
 
 // 🛒 NEW: Meta Automotive Inventory Catalog Feed
 import * as facebookFeed from './social/facebook-catalog-feed';
