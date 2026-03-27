@@ -321,7 +321,7 @@ export const hybridAIProxy = functions.https.onCall(async (data, context) => {
         }
       : selectProvider(operationType, userType, budgetStatus);
 
-    console.log('[hybridAIProxy] Routing Decision:', decision);
+    functions.logger.info('[hybridAIProxy] Routing Decision:', decision);
 
     // Build prompt
     const prompt = buildPrompt(vehicleData, language);
@@ -335,7 +335,7 @@ export const hybridAIProxy = functions.https.onCall(async (data, context) => {
         description = await callDeepSeek(prompt, language);
       }
     } catch (error: any) {
-      console.error(
+      functions.logger.error(
         `[hybridAIProxy] ${decision.provider} API failed:`,
         error.message
       );
@@ -343,7 +343,7 @@ export const hybridAIProxy = functions.https.onCall(async (data, context) => {
       // Fallback to other provider
       const fallbackProvider =
         decision.provider === 'gemini' ? 'deepseek' : 'gemini';
-      console.log(`[hybridAIProxy] Falling back to ${fallbackProvider}`);
+      functions.logger.info(`[hybridAIProxy] Falling back to ${fallbackProvider}`);
 
       if (fallbackProvider === 'gemini') {
         description = await callGemini(prompt, language);
@@ -373,7 +373,7 @@ export const hybridAIProxy = functions.https.onCall(async (data, context) => {
       },
     };
   } catch (error: any) {
-    console.error('[hybridAIProxy] Error:', error);
+    functions.logger.error('[hybridAIProxy] Error:', error);
     throw new functions.https.HttpsError('internal', error.message);
   }
 });

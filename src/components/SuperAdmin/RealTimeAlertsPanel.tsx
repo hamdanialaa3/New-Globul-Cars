@@ -24,7 +24,7 @@ const PanelContainer = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-  color: #ff8c61;
+  color: #8B5CF6;
   font-size: 18px;
   font-weight: 700;
   margin: 0 0 24px 0;
@@ -41,9 +41,9 @@ const SectionTitle = styled.h2`
 `;
 
 const RefreshButton = styled.button`
-  background: #ff8c61;
+  background: #8B5CF6;
   color: #0f1419;
-  border: 1px solid #ff8c61;
+  border: 1px solid #8B5CF6;
   border-radius: 6px;
   padding: 8px 16px;
   font-size: 12px;
@@ -57,7 +57,7 @@ const RefreshButton = styled.button`
   &:hover {
     background: #ffa885;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(255, 140, 97, 0.3);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
   }
 `;
 
@@ -96,7 +96,7 @@ const AlertCard = styled.div<{ $severity: string }>`
   }
 
   &:hover {
-    border-color: #ff8c61;
+    border-color: #8B5CF6;
     background: #252b3a;
     transform: translateX(6px);
     
@@ -349,3 +349,4 @@ const RealTimeAlertsPanel: React.FC = () => {
 };
 
 export default RealTimeAlertsPanel;
+

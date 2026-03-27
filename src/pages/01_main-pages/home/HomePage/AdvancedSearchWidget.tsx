@@ -1,4 +1,4 @@
-﻿// src/pages/01_main-pages/home/HomePage/AdvancedSearchWidget.tsx
+// src/pages/01_main-pages/home/HomePage/AdvancedSearchWidget.tsx
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';

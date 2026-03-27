@@ -253,7 +253,7 @@ const Header = styled.div`
   margin-bottom: 24px;
 
   svg {
-    color: #FF8F10;
+    color: #3B82F6;
   }
 
   h1 {
@@ -275,7 +275,7 @@ const CreateButton = styled.button`
   align-items: center;
   gap: 8px;
   padding: 12px 20px;
-  background: linear-gradient(135deg, #FF8F10, #FF6B35);
+  background: linear-gradient(135deg, #3B82F6, #6366F1);
   color: white;
   border: none;
   border-radius: 10px;
@@ -287,7 +287,7 @@ const CreateButton = styled.button`
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
   }
 `;
 
@@ -380,8 +380,8 @@ const FilterButtons = styled.div`
 
 const FilterButton = styled.button<{ $active: boolean }>`
   padding: 10px 18px;
-  border: 1.5px solid ${p => p.$active ? '#FF8F10' : '#e0e0e0'};
-  background: ${p => p.$active ? '#FF8F10' : 'white'};
+  border: 1.5px solid ${p => p.$active ? '#3B82F6' : '#e0e0e0'};
+  background: ${p => p.$active ? '#3B82F6' : 'white'};
   color: ${p => p.$active ? 'white' : '#666'};
   border-radius: 8px;
   font-size: 0.85rem;
@@ -391,8 +391,8 @@ const FilterButton = styled.button<{ $active: boolean }>`
   white-space: nowrap;
 
   &:hover {
-    border-color: #FF8F10;
-    background: ${p => p.$active ? '#FF8F10' : 'rgba(255, 143, 16, 0.1)'};
+    border-color: #3B82F6;
+    background: ${p => p.$active ? '#3B82F6' : 'rgba(139, 92, 246, 0.1)'};
   }
 `;
 
@@ -435,4 +435,6 @@ const EmptyState = styled.div`
     color: #999;
   }
 `;
+
+
 

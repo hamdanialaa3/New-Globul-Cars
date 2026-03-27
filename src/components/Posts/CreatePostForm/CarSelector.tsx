@@ -113,9 +113,9 @@ const SelectedCar = styled.div`
   gap: 10px;
   padding: 10px;
   background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%);
-  border: 2px solid #FF8F10;
+  border: 2px solid #3B82F6;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(255, 143, 16, 0.15);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.15);
 `;
 
 const CarsList = styled.div`
@@ -153,7 +153,7 @@ const CarOption = styled.div`
   transition: all 0.2s;
   
   &:hover {
-    border-color: #FF8F10;
+    border-color: #3B82F6;
     background: white;
     transform: translateX(2px);
   }
@@ -231,4 +231,6 @@ const EmptyText = styled.span`
 `;
 
 export default CarSelector;
+
+
 

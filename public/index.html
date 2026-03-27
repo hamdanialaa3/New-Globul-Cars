@@ -92,10 +92,13 @@
     <meta name="cache-control" content="no-cache" />
     <meta name="expires" content="0" />
     <link rel="stylesheet" href="/styles/koli-one-logo.css" />
-    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <!-- Preload critical logo for LCP -->
+    <link rel="preload" as="image" href="/logo.webp" type="image/webp" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="theme-color" content="#FF7900" />
+    <meta name="theme-color" content="#2563EB" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -108,7 +111,9 @@
     <meta property="og:url" content="https://koli.one/" />
     <meta property="og:title" content="Koli One - Български автомобили" />
     <meta property="og:description" content="Най-добрата платформа за покупка и продажба на автомобили в България" />
-    <meta property="og:image" content="https://koli.one/logo.png" />
+    <meta property="og:image" content="https://mobilebg.eu/logo.webp" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
     <meta property="og:site_name" content="Koli One" />
     <meta property="og:locale" content="bg_BG" />
     <meta property="fb:app_id" content="2026958077871354" />
@@ -118,7 +123,7 @@
     <meta name="twitter:url" content="https://koli.one/" />
     <meta name="twitter:title" content="Koli One - Български автомобили" />
     <meta name="twitter:description" content="Най-добрата платформа за покупка и продажба на автомобили в България" />
-    <meta name="twitter:image" content="https://koli.one/logo.png" />
+    <meta name="twitter:image" content="https://mobilebg.eu/logo.webp" />
     <meta name="twitter:site" content="@kolionebg" />
     <meta name="twitter:creator" content="@kolionebg" />
     
@@ -131,7 +136,7 @@
     <link rel="me" href="https://www.tiktok.com/@mobilebg.eu" />
     <link rel="me" href="https://www.threads.com/@kolione" />
     
-    <link rel="apple-touch-icon" href="/logo.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-optimized.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/

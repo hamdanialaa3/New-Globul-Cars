@@ -121,10 +121,17 @@ service firebase.storage {
       allow write: if isOwner(userId) && isImage() && isImageWithinLimit();
     }
 
-    // Messages — 🔒 SECURED: Authenticated users only, with file type validation
+    // Messages — 🔒 SECURED: Only channel participants can access chat files
+    // Participants must be verified via chatId structure (msg_{seller}_{buyer}_car_{car})
     match /messages/{chatId}/{allPaths=**} {
-      allow read: if isAuthenticated();
-      allow write: if isAuthenticated() && isMediaFile() && (
+      allow read: if isAuthenticated() && (
+        request.auth.uid in chatId ||
+        firestore.exists(/databases/(default)/documents/message_participants/$(chatId)/members/$(request.auth.uid))
+      );
+      allow write: if isAuthenticated() && (
+        request.auth.uid in chatId ||
+        firestore.exists(/databases/(default)/documents/message_participants/$(chatId)/members/$(request.auth.uid))
+      ) && isMediaFile() && (
         (isImage() && isImageWithinLimit()) ||
         (isVideo() && isVideoWithinLimit())
       );

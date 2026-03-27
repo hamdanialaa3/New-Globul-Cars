@@ -113,13 +113,13 @@ const Button = styled.button<{ $variant: string; $size: string; $isBlocked: bool
         `;
       case 'primary':
         return `
-          background: ${props.theme.colors.primary || '#FF8F10'};
+          background: ${props.theme.colors.primary || '#3B82F6'};
           color: white;
           
           &:hover {
             background: ${props.theme.colors.primaryDark || '#FF7A00'};
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
           }
         `;
       default:
@@ -428,3 +428,5 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
 };
 
 export default BlockUserButton;
+
+

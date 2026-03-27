@@ -47,7 +47,7 @@ const Label = styled.label`
   margin-bottom: 0.75rem;
   
   span {
-    color: #ff8f10;
+    color: #3b82f6;
   }
 `;
 
@@ -344,4 +344,5 @@ export const Step5Pricing: React.FC = () => {
     </StepContainer>
   );
 };
+
 

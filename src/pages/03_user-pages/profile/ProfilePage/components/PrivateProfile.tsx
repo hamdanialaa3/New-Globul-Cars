@@ -48,7 +48,7 @@ const SectionTitle = styled.h2`
   svg {
     width: 24px;
     height: 24px;
-    color: #FF8F10;
+    color: #3B82F6;
   }
 `;
 
@@ -67,7 +67,7 @@ const CarCard = styled.div`
   
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 4px 16px rgba(255, 143, 16, 0.3);
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
   }
 `;
 
@@ -91,7 +91,7 @@ const CarTitle = styled.h3`
 const CarPrice = styled.div`
   font-size: 1.25rem;
   font-weight: bold;
-  color: #FF8F10;
+  color: #3B82F6;
   margin: 0.5rem 0;
 `;
 
@@ -115,7 +115,7 @@ const EmptyMessage = styled.div`
 /**
  * Private Profile Component
  * For individual/private sellers
- * Theme: Orange (#FF8F10)
+ * Theme: Orange (#3B82F6)
  * Features: Basic listing, contact info, trust score
  */
 export const PrivateProfile: React.FC<PrivateProfileProps> = ({
@@ -186,4 +186,6 @@ export const PrivateProfile: React.FC<PrivateProfileProps> = ({
 };
 
 export default PrivateProfile;
+
+
 

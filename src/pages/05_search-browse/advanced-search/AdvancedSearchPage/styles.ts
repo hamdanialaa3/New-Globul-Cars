@@ -5,14 +5,14 @@ import styled from 'styled-components';
 
 // 🎨 ألوان افتراضية قابلة لإعادة الاستخدام
 export const defaultColors = {
-  primary: 'var(--accent-primary, #FF8F10)',
+  primary: 'var(--accent-primary, #3B82F6)',
   secondary: 'var(--bg-secondary, #1A1F2E)',
   text: 'var(--text-primary, #1A1D2E)',
   textSecondary: 'var(--text-secondary, #6b7280)',
   background: 'var(--bg-primary, #FAFBFC)',
   card: 'var(--bg-card, #FFFFFF)',
   border: 'var(--border-primary, #E2E8F0)',
-  accent: 'var(--accent-orange, #FF8F10)',
+  accent: 'var(--accent-orange, #3B82F6)',
   muted: 'var(--bg-hover, #F5F7FA)',
   success: 'var(--success, #10B981)',
   error: 'var(--error, #EF4444)'

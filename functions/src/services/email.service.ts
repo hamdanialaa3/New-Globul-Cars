@@ -1,3 +1,4 @@
+import * as functions from 'firebase-functions/v1';
 import * as nodemailer from 'nodemailer';
 
 // Simple types for email data
@@ -26,7 +27,7 @@ export class EmailService {
     };
 
     if (!smtpConfig.host || !smtpConfig.auth.user) {
-      console.warn('⚠️ SMTP Configuration missing. Emails will not be sent (or will dry-run). Set SMTP_HOST, SMTP_USER, etc.');
+      functions.logger.warn('⚠️ SMTP Configuration missing. Emails will not be sent (or will dry-run). Set SMTP_HOST, SMTP_USER, etc.');
       // Fallback for development/testing without credentials
       this.transporter = nodemailer.createTransport({
         jsonTransport: true // Just logs the output
@@ -51,9 +52,9 @@ export class EmailService {
         html,
       });
 
-      console.log(`📧 Email sent: ${email.template} to ${email.to}`, info.messageId || info);
+      functions.logger.info(`📧 Email sent: ${email.template} to ${email.to}`, info.messageId || info);
     } catch (error) {
-      console.error(`❌ Failed to send email: ${email.template} to ${email.to}`, error);
+      functions.logger.error(`❌ Failed to send email: ${email.template} to ${email.to}`, error);
       // We don't throw here to ensure other operations don't fail just because email failed
     }
   }

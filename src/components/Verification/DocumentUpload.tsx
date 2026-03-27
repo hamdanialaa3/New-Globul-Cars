@@ -23,7 +23,7 @@ const UploadBox = styled.div<{ $hasFile: boolean }>`
   background: ${props => props.$hasFile ? '#f1f8e9' : '#fafafa'};
   
   &:hover {
-    border-color: ${props => props.$hasFile ? '#4caf50' : '#FF7900'};
+    border-color: ${props => props.$hasFile ? '#4caf50' : '#2563EB'};
     background: ${props => props.$hasFile ? '#f1f8e9' : '#fff5e6'};
   }
 `;
@@ -36,7 +36,7 @@ const IconWrapper = styled.div<{ $hasFile: boolean }>`
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: ${props => props.$hasFile ? '#4caf50' : '#FF7900'};
+  background: ${props => props.$hasFile ? '#4caf50' : '#2563EB'};
   color: white;
   transition: all 0.3s ease;
 `;
@@ -211,3 +211,4 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({
 };
 
 export default DocumentUpload;
+

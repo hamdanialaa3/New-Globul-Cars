@@ -459,10 +459,10 @@ const ImageNavButton = styled.button<{ $position: 'left' | 'right'; $isDark: boo
   border-radius: 50%;
   background: ${props => props.$isDark
     ? 'rgba(255, 215, 0, 0.25)'
-    : 'rgba(255, 143, 16, 0.25)'};
+    : 'rgba(139, 92, 246, 0.25)'};
   border: 2px solid ${props => props.$isDark
     ? 'rgba(255, 215, 0, 0.5)'
-    : 'rgba(255, 143, 16, 0.5)'};
+    : 'rgba(139, 92, 246, 0.5)'};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -472,10 +472,10 @@ const ImageNavButton = styled.button<{ $position: 'left' | 'right'; $isDark: boo
   backdrop-filter: blur(8px);
   box-shadow: ${props => props.$isDark
     ? '0 4px 16px rgba(255, 215, 0, 0.2)'
-    : '0 4px 16px rgba(255, 143, 16, 0.2)'};
+    : '0 4px 16px rgba(139, 92, 246, 0.2)'};
 
   svg {
-    color: ${props => props.$isDark ? '#FFD700' : '#FF8F10'};
+    color: ${props => props.$isDark ? '#FFD700' : '#3B82F6'};
     width: 24px !important;
     height: 24px !important;
     flex-shrink: 0;
@@ -486,15 +486,15 @@ const ImageNavButton = styled.button<{ $position: 'left' | 'right'; $isDark: boo
   &:hover {
     background: ${props => props.$isDark
     ? 'rgba(255, 215, 0, 0.4)'
-    : 'rgba(255, 143, 16, 0.4)'};
+    : 'rgba(139, 92, 246, 0.4)'};
     border-color: var(--accent-primary);
     transform: translateY(-50%) translateX(${props => props.$position === 'left' ? '-4px' : '4px'});
     box-shadow: ${props => props.$isDark
     ? '0 6px 24px rgba(255, 215, 0, 0.3)'
-    : '0 6px 24px rgba(255, 143, 16, 0.3)'};
+    : '0 6px 24px rgba(139, 92, 246, 0.3)'};
     
     svg {
-      color: ${props => props.$isDark ? '#FFD700' : '#FF8F10'};
+      color: ${props => props.$isDark ? '#FFD700' : '#3B82F6'};
       transform: translateX(${props => props.$position === 'left' ? '-2px' : '2px'});
     }
   }
@@ -2682,4 +2682,6 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
 };
 
 export default CarDetailsGermanStyle;
+
+
 

@@ -54,9 +54,9 @@ const StatsContainer = styled.div`
     linear-gradient(rgba(255, 255, 255, 0.88), rgba(252, 253, 254, 0.85)),
     linear-gradient(135deg,
       rgba(192, 192, 192, 0.3) 0%,
-      rgba(255, 143, 16, 0.4) 30%,
+      rgba(139, 92, 246, 0.4) 30%,
       rgba(255, 215, 0, 0.7) 50%,
-      rgba(255, 143, 16, 0.4) 70%,
+      rgba(139, 92, 246, 0.4) 70%,
       rgba(192, 192, 192, 0.3) 100%
     );
   background-origin: border-box;
@@ -66,7 +66,7 @@ const StatsContainer = styled.div`
   box-shadow: 
     0 1px 0 rgba(255, 255, 255, 0.9) inset,
     0 -1px 0 rgba(0, 0, 0, 0.03) inset,
-    0 8px 28px rgba(255, 143, 16, 0.1),
+    0 8px 28px rgba(139, 92, 246, 0.1),
     0 2px 8px rgba(0, 0, 0, 0.04);
 
   /* Yellow Glowing Bottom Stripe */
@@ -123,7 +123,7 @@ const StatCard = styled.div`
   backdrop-filter: blur(10px) saturate(140%);
   
   /* Subtle Border */
-  border: 1.5px solid rgba(255, 143, 16, 0.15);
+  border: 1.5px solid rgba(139, 92, 246, 0.15);
   
   box-shadow: 
     0 1px 0 rgba(255, 255, 255, 0.7) inset,
@@ -150,10 +150,10 @@ const StatCard = styled.div`
   
   &:hover {
     transform: translateY(-3px) scale(1.02);
-    border-color: rgba(255, 143, 16, 0.3);
+    border-color: rgba(139, 92, 246, 0.3);
     box-shadow: 
       0 1px 0 rgba(255, 255, 255, 0.85) inset,
-      0 8px 20px rgba(255, 143, 16, 0.15),
+      0 8px 20px rgba(139, 92, 246, 0.15),
       0 2px 6px rgba(0, 0, 0, 0.08);
     
     svg {
@@ -179,11 +179,11 @@ const StatIcon = styled.div<{ $color: string }>`
   );
   
   /* Orange icons get special treatment */
-  ${props => props.$color === '#FF7900' && `
+  ${props => props.$color === '#2563EB' && `
     background: linear-gradient(135deg,
       rgba(255, 159, 42, 0.95) 0%,
-      rgba(255, 143, 16, 1) 50%,
-      rgba(255, 121, 0, 0.98) 100%
+      rgba(139, 92, 246, 1) 50%,
+      rgba(99, 102, 241, 0.98) 100%
     );
   `}
   
@@ -197,7 +197,7 @@ const StatIcon = styled.div<{ $color: string }>`
     inset 0 -1px 0 rgba(0, 0, 0, 0.15);
   
   /* Yellow Bottom Accent for Orange icons */
-  ${props => props.$color === '#FF7900' && `
+  ${props => props.$color === '#2563EB' && `
     &::after {
       content: '';
       position: absolute;
@@ -234,16 +234,16 @@ const StatValue = styled.div`
   
   /* Orange Gradient Text */
   background: linear-gradient(135deg, 
-    #FF8F10 0%, 
+    #3B82F6 0%, 
     #FFAD33 50%, 
-    #FF7900 100%
+    #2563EB 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   
-  filter: drop-shadow(0 1px 2px rgba(255, 143, 16, 0.2));
+  filter: drop-shadow(0 1px 2px rgba(139, 92, 246, 0.2));
   ${css`animation: ${gradientShift} 5s ease  /* ⚡ OPTIMIZED: Removed infinite */;`}
   
   @media (max-width: 768px) {
@@ -300,7 +300,7 @@ const ProfileStats: React.FC<ProfileStatsProps> = ({
       icon: Car,
       value: carsListed,
       label: language === 'bg' ? 'Обяви' : 'Listings',
-      color: '#FF7900'  // Orange
+      color: '#2563EB'  // Orange
     },
     {
       icon: ShoppingCart,
@@ -354,3 +354,5 @@ const ProfileStats: React.FC<ProfileStatsProps> = ({
 };
 
 export default ProfileStats;
+
+

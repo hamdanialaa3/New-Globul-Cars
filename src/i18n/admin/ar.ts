@@ -224,5 +224,34 @@ export const adminDictAR = {
         moveUp: 'تحريك لأعلى',
         moveDown: 'تحريك لأسفل',
         save: 'جاري الحفظ...',
+        labels: {
+            sticky_search: 'شريط البحث المثبت',
+            hero: 'قسم البانر الرئيسي (Hero)',
+            kat_services: 'خدمات المرور البلغارية (KAT)',
+            our_cars: 'معرض سياراتنا (Нашите коли)',
+            smart_recommendations: 'توصيات الذكاء الاصطناعي',
+            ai_analysis_banner: 'بنر تحليل الذكاء الاصطناعي',
+            hero_strips: 'شرائط التنقل الأفقية',
+            visual_search: 'البحث المرئي بالصور',
+            vehicle_classifications: 'تصنيفات المركبات',
+            life_moments: 'التصفح حسب نمط الحياة',
+            categories: 'أقسام الفئات (موبايل)',
+            cars_showcase: 'معرض السيارات العام',
+            popular_brands: 'الماركات الشائعة',
+            most_demanded: 'الفئات الأكثر طلباً',
+            featured_showcase: 'المعرض المميز (VIP)',
+            smart_sell: 'قسم البيع الذكي',
+            dealers: 'تسليط الضوء على الوكلاء',
+            trust_stats: 'الثقة والإحصائيات',
+            social: 'التواصل الاجتماعي',
+            loyalty: 'نظام الولاء والتسجيل',
+            pricing_plans: 'خطط الأسعار والاشتراكات',
+            recent_browsing: 'تمت مشاهدته مؤخراً',
+            ai_chatbot: 'مساعد الذكاء الاصطناعي',
+            draft_recovery: 'استعادة المسودات'
+        },
+        descriptions: {
+            kat_services: 'روابط تسجيل السيارات الرسمية والخدمات الحكومية البلغارية'
+        }
     }
 };

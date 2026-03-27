@@ -25,27 +25,41 @@ const SEOCityBrandPage: React.FC = () => {
 
   useEffect(() => {
     if (!metadata) return;
+    let isActive = true;
 
     const fetchListings = async () => {
       try {
         const { collection, query, where, limit, getDocs } = await import('firebase/firestore');
         const { db } = await import('@/firebase/firebase-config');
-        const q = query(
-          collection(db, 'passenger_cars'),
-          where('make', '==', metadata.brand),
-          where('city', '==', metadata.city),
-          where('status', '==', 'active'),
-          limit(20)
-        );
-        const snap = await getDocs(q);
-        setListings(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+        
+        const vehicleCollections = [
+          'passenger_cars', 'suvs', 'vans', 'motorcycles', 'trucks', 'buses'
+        ];
+        
+        const allResults: any[] = [];
+        
+        await Promise.all(vehicleCollections.map(async (col) => {
+          const q = query(
+            collection(db, col),
+            where('make', '==', metadata.brand),
+            where('city', '==', metadata.city),
+            where('status', '==', 'active'),
+            limit(6)
+          );
+          const snap = await getDocs(q);
+          snap.docs.forEach(d => allResults.push({ id: d.id, ...d.data() }));
+        }));
+        
+        if (!isActive) return;
+        setListings(allResults.slice(0, 20));
       } catch {
         // Silent fail - SEO page still renders with metadata
       } finally {
-        setLoading(false);
+        if (isActive) setLoading(false);
       }
     };
     fetchListings();
+    return () => { isActive = false; };
   }, [metadata]);
 
   if (!metadata) {

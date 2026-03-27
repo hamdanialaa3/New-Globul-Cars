@@ -253,7 +253,7 @@ export const ContactIcon = styled.div<{ $isActive: boolean }>`
   &:hover img,
   &:hover svg {
     filter: ${props => props.$isActive 
-      ? 'drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25)) drop-shadow(0 3px 6px rgba(0, 0, 0, 0.18)) drop-shadow(0 10px 20px rgba(255, 121, 0, 0.2))'
+      ? 'drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25)) drop-shadow(0 3px 6px rgba(0, 0, 0, 0.18)) drop-shadow(0 10px 20px rgba(99, 102, 241, 0.2))'
       : 'none'
     };
     transform: ${props => props.$isActive ? 'scale(1.1)' : 'none'};
@@ -298,3 +298,4 @@ export const ContactItem = styled.div<{ $isActive: boolean }>`
     color: ${props => props.$isActive ? 'var(--accent-primary)' : 'var(--text-muted)'};
   }
 `;
+

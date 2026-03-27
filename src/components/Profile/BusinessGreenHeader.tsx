@@ -24,10 +24,10 @@ import { SUBSCRIPTION_PLANS } from '../../config/subscription-plans';
 // 🟦 Company = BLUE
 const HEADER_COLORS = {
   private: {
-    light: 'linear-gradient(135deg, rgba(255, 143, 16, 0.98) 0%, rgba(255, 159, 42, 0.95) 50%, rgba(255, 121, 0, 0.98) 100%)',
-    dark: 'radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 0%, rgba(255, 143, 16, 0.9) 28%)',
-    border: 'rgba(255, 143, 16, 0.6)',
-    shadow: 'rgba(255, 143, 16, 0.2)',
+    light: 'linear-gradient(135deg, rgba(139, 92, 246, 0.98) 0%, rgba(255, 159, 42, 0.95) 50%, rgba(99, 102, 241, 0.98) 100%)',
+    dark: 'radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 0%, rgba(139, 92, 246, 0.9) 28%)',
+    border: 'rgba(139, 92, 246, 0.6)',
+    shadow: 'rgba(139, 92, 246, 0.2)',
   },
   dealer: {
     light: 'linear-gradient(135deg, rgba(16, 163, 74, 0.98) 0%, rgba(34, 197, 94, 0.95) 50%, rgba(22, 163, 74, 0.98) 100%)',
@@ -225,7 +225,7 @@ const AccountTypeBadge = styled.div<{ $isDark: boolean; $profileType?: 'private'
   /* Dynamic background based on profile type */
   background: ${props => {
     const colors = {
-      private: 'linear-gradient(90deg, rgba(255, 143, 16, 0.15) 0%, rgba(255, 121, 0, 0.25) 50%, rgba(255, 143, 16, 0.15) 100%)',
+      private: 'linear-gradient(90deg, rgba(139, 92, 246, 0.15) 0%, rgba(99, 102, 241, 0.25) 50%, rgba(139, 92, 246, 0.15) 100%)',
       dealer: 'linear-gradient(90deg, rgba(34, 197, 94, 0.15) 0%, rgba(22, 163, 74, 0.25) 50%, rgba(34, 197, 94, 0.15) 100%)',
       company: 'linear-gradient(90deg, rgba(59, 130, 246, 0.15) 0%, rgba(29, 78, 216, 0.25) 50%, rgba(59, 130, 246, 0.15) 100%)'
     };
@@ -234,14 +234,14 @@ const AccountTypeBadge = styled.div<{ $isDark: boolean; $profileType?: 'private'
   
   /* LED Strip Border */
   border: 2px solid ${props => {
-    const colors = { private: '#FF8F10', dealer: '#22c55e', company: '#3b82f6' };
+    const colors = { private: '#3B82F6', dealer: '#22c55e', company: '#3b82f6' };
     return colors[props.$profileType || 'private'];
   }};
   border-radius: 25px;
   
   /* LED Glow Color */
   color: ${props => {
-    const colors = { private: '#FF8F10', dealer: '#22c55e', company: '#3b82f6' };
+    const colors = { private: '#3B82F6', dealer: '#22c55e', company: '#3b82f6' };
     return colors[props.$profileType || 'private'];
   }};
   
@@ -262,7 +262,7 @@ const AccountTypeBadge = styled.div<{ $isDark: boolean; $profileType?: 'private'
     bottom: 0;
     border-radius: 25px;
     background: ${props => {
-      const colors = { private: '#FF8F10', dealer: '#22c55e', company: '#3b82f6' };
+      const colors = { private: '#3B82F6', dealer: '#22c55e', company: '#3b82f6' };
       const color = colors[props.$profileType || 'private'];
       return `linear-gradient(90deg, transparent 0%, ${color}40 50%, transparent 100%)`;
     }};
@@ -280,7 +280,7 @@ const AccountTypeBadge = styled.div<{ $isDark: boolean; $profileType?: 'private'
     right: 10%;
     height: 2px;
     background: ${props => {
-      const colors = { private: '#FF8F10', dealer: '#22c55e', company: '#3b82f6' };
+      const colors = { private: '#3B82F6', dealer: '#22c55e', company: '#3b82f6' };
       const color = colors[props.$profileType || 'private'];
       return `linear-gradient(90deg, transparent, ${color}, transparent)`;
     }};
@@ -303,7 +303,7 @@ const BadgeIcon = styled.div<{ $profileType?: 'private' | 'dealer' | 'company' }
   align-items: center;
   justify-content: center;
   color: ${props => {
-    const colors = { private: '#FF8F10', dealer: '#22c55e', company: '#3b82f6' };
+    const colors = { private: '#3B82F6', dealer: '#22c55e', company: '#3b82f6' };
     return colors[props.$profileType || 'private'];
   }};
   filter: drop-shadow(0 0 4px currentColor);
@@ -321,7 +321,7 @@ const BadgeTitle = styled.span<{ $profileType?: 'private' | 'dealer' | 'company'
   text-transform: uppercase;
   letter-spacing: 1px;
   color: ${props => {
-    const colors = { private: '#FF8F10', dealer: '#22c55e', company: '#3b82f6' };
+    const colors = { private: '#3B82F6', dealer: '#22c55e', company: '#3b82f6' };
     return colors[props.$profileType || 'private'];
   }};
   text-shadow: 0 0 10px currentColor;
@@ -751,7 +751,7 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
                 }}
                 accentColor={
                   userProfileType === 'company' ? '#1d4ed8' : 
-                  userProfileType === 'dealer' ? '#16a34a' : '#FF8F10'
+                  userProfileType === 'dealer' ? '#16a34a' : '#3B82F6'
                 }
               />
             </FollowButtonWrapper>
@@ -783,3 +783,5 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
 };
 
 export default BusinessGreenHeader;
+
+

@@ -206,7 +206,7 @@ const CardContainer = styled.div`
 
     &:hover {
       box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
-      border-color: rgba(255, 143, 16, 0.5);
+      border-color: rgba(139, 92, 246, 0.5);
     }
   }
 `;
@@ -434,7 +434,7 @@ const Price = styled.div`
   }
 
   html[data-theme="dark"] & {
-    color: #ff8f10;
+    color: #3b82f6;
   }
 `;
 
@@ -456,13 +456,15 @@ const ViewLink = styled(Link)`
   }
 
   html[data-theme="dark"] & {
-    color: #ff8f10;
+    color: #3b82f6;
     &:hover {
-      background: #ff8f10;
+      background: #3b82f6;
       color: #0f172a;
     }
   }
 `;
 
 export default CompactCarCard;
+
+
 

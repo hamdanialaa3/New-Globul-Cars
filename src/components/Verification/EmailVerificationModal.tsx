@@ -81,7 +81,7 @@ const EmailDisplay = styled.div`
   margin-bottom: 16px;
   
   svg {
-    color: #FF7900;
+    color: #2563EB;
   }
   
   p {
@@ -137,7 +137,7 @@ const ButtonGroup = styled.div`
 const SendButton = styled.button<{ $disabled?: boolean }>`
   flex: 1;
   padding: 12px 24px;
-  background: ${props => props.$disabled ? '#ccc' : 'linear-gradient(135deg, #FF7900 0%, #FF9500 100%)'};
+  background: ${props => props.$disabled ? '#ccc' : 'linear-gradient(135deg, #2563EB 0%, #FF9500 100%)'};
   color: white;
   border: none;
   border-radius: 8px;
@@ -152,7 +152,7 @@ const SendButton = styled.button<{ $disabled?: boolean }>`
   
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
   }
   
   &:disabled {
@@ -164,8 +164,8 @@ const CheckButton = styled.button`
   flex: 1;
   padding: 12px 24px;
   background: white;
-  color: #FF7900;
-  border: 2px solid #FF7900;
+  color: #2563EB;
+  border: 2px solid #2563EB;
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
@@ -383,7 +383,7 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
       <ModalContainer onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
           <h3>
-            <Mail color="#FF7900" />
+            <Mail color="#2563EB" />
             {language === 'bg' ? 'Потвърждение на имейл' : 'Email Verification'}
           </h3>
           <CloseButton onClick={onClose}>
@@ -507,4 +507,6 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
 };
 
 export default EmailVerificationModal;
+
+
 

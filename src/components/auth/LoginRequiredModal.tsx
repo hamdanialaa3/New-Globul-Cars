@@ -124,7 +124,7 @@ const Input = styled.input<{ $hasError?: boolean }>`
   transition: border-color 0.2s;
   box-sizing: border-box;
   &::placeholder { color: var(--text-tertiary, #64748b); }
-  &:focus { border-color: var(--accent-primary, #ff8f10); }
+  &:focus { border-color: var(--accent-primary, #3b82f6); }
 `;
 
 const ErrorMessage = styled.p`
@@ -139,7 +139,7 @@ const SubmitButton = styled.button`
   padding: 0.85rem;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(135deg, #ff8f10, #ff7900);
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
   color: #fff;
   font-size: 1rem;
   font-weight: 700;
@@ -171,7 +171,7 @@ const FooterLinks = styled.div`
   flex-wrap: wrap;
 
   a {
-    color: var(--accent-primary, #ff8f10);
+    color: var(--accent-primary, #3b82f6);
     text-decoration: none;
     font-weight: 600;
     &:hover { text-decoration: underline; }
@@ -309,3 +309,4 @@ const LoginRequiredModal: React.FC<LoginRequiredModalProps> = ({
 };
 
 export default LoginRequiredModal;
+

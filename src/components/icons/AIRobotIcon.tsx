@@ -10,7 +10,7 @@
 
 import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import aiUnifiedIcon from '@/assets/icons/ai/koli_one_ai_Icon2.png';
+import aiUnifiedIcon from '@/assets/icons/ai/koli_one_ai_Icon2.webp';
 
 interface AIRobotIconProps {
   size?: number;

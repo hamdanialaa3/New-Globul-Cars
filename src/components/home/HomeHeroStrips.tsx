@@ -46,7 +46,7 @@ const Spinner = styled.div`
   width: 32px;
   height: 32px;
   border: 3px solid var(--border-primary, #e2e8f0);
-  border-top-color: var(--accent-primary, #FF6B35);
+  border-top-color: var(--accent-primary, #6366F1);
   border-radius: 50%;
   animation: ${spin} 0.7s linear infinite;
 `;
@@ -125,3 +125,4 @@ export const HomeHeroStrips: React.FC = () => {
     </Wrapper>
   );
 };
+

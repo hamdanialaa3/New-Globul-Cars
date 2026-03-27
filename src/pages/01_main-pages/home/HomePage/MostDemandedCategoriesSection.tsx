@@ -19,10 +19,10 @@ const SectionContainer = styled.section<{ $isDark: boolean }>`
     ? 'linear-gradient(135deg, rgba(5, 15, 35, 0.95) 0%, rgba(10, 25, 50, 0.95) 50%, rgba(15, 35, 65, 0.95) 100%)'
     : 'linear-gradient(135deg, rgba(240, 248, 255, 0.95) 0%, rgba(230, 240, 255, 0.95) 100%)'};
   /* 🟣 Light purple border */
-  border: 1px solid rgba(230, 81, 0, 0.12);
+  border: 1px solid rgba(37, 99, 235, 0.12);
   border-radius: 8px;
   margin: 0 12px;
-  box-shadow: inset 0 0 12px rgba(230, 81, 0, 0.06);
+  box-shadow: inset 0 0 12px rgba(37, 99, 235, 0.06);
 
   /* Futuristic Grid Background with Dotted Lines */
   &::before {
@@ -633,3 +633,4 @@ const MostDemandedCategoriesSection: React.FC = () => {
 };
 
 export default MostDemandedCategoriesSection;
+

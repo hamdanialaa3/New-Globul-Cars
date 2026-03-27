@@ -80,17 +80,17 @@ const GlassWrapper = styled.div`
   border-radius: 24px;
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.3),
-    0 4px 16px rgba(255, 143, 16, 0.1);
+    0 4px 16px rgba(139, 92, 246, 0.1);
   padding: 40px;
   z-index: 10;
   animation: ${fadeIn} 0.6s ease;
 
   @media (prefers-color-scheme: dark) {
     background: rgba(26, 32, 44, 0.98);
-    border: 2px solid rgba(255, 143, 16, 0.3);
+    border: 2px solid rgba(139, 92, 246, 0.3);
     box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.6),
-      0 4px 16px rgba(255, 143, 16, 0.2);
+      0 4px 16px rgba(139, 92, 246, 0.2);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -182,9 +182,9 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #FF8F10;
+    border-color: #3B82F6;
     background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 0 20px rgba(255, 143, 16, 0.2);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
   }
 
   @media (prefers-color-scheme: dark) {
@@ -198,7 +198,7 @@ const Input = styled.input`
 
     &:focus {
       background: rgba(45, 55, 72, 0.9);
-      border-color: #FF8F10;
+      border-color: #3B82F6;
     }
   }
 
@@ -224,7 +224,7 @@ const InputIcon = styled.div`
     color: rgba(255, 255, 255, 0.6);
 
     &:hover {
-      color: #FF8F10;
+      color: #3B82F6;
     }
   }
 `;
@@ -232,7 +232,7 @@ const InputIcon = styled.div`
 const SubmitButton = styled.button`
   width: 100%;
   height: 52px;
-  background: #FF8F10;
+  background: #3B82F6;
   border: none;
   border-radius: 50px;
   font-size: 16px;
@@ -240,7 +240,7 @@ const SubmitButton = styled.button`
   color: #ffffff;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(255, 143, 16, 0.3);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -250,7 +250,7 @@ const SubmitButton = styled.button`
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 143, 16, 0.4);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
     background: #e67e00;
   }
 
@@ -264,12 +264,12 @@ const SubmitButton = styled.button`
   }
 
   @media (prefers-color-scheme: dark) {
-    background: #FF8F10;
+    background: #3B82F6;
     color: #1a202c;
 
     &:hover:not(:disabled) {
       background: #ffa43d;
-      box-shadow: 0 6px 20px rgba(255, 143, 16, 0.5);
+      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
     }
   }
 
@@ -366,7 +366,7 @@ const SocialButton = styled.button`
 
     &:hover:not(:disabled) {
       background: rgba(45, 55, 72, 0.6);
-      border-color: rgba(255, 143, 16, 0.5);
+      border-color: rgba(139, 92, 246, 0.5);
     }
   }
 
@@ -409,7 +409,7 @@ const LoginLink = styled.div`
 
     &:hover {
       text-decoration: underline;
-      color: #FF8F10;
+      color: #3B82F6;
     }
   }
 
@@ -417,7 +417,7 @@ const LoginLink = styled.div`
     color: rgba(255, 255, 255, 0.7);
 
     a {
-      color: #FF8F10;
+      color: #3B82F6;
 
       &:hover {
         color: #ffa43d;
@@ -771,4 +771,6 @@ const RegisterPageGlassFixed: React.FC = () => {
 };
 
 export default RegisterPageGlassFixed;
+
+
 

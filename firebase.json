@@ -4,11 +4,7 @@
   },
   "hosting": {
     "public": "build",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "headers": [
       {
         "source": "**",
@@ -72,7 +68,7 @@
         "destination": "/llms-full.txt"
       },
       {
-        "source": "/.well-known/**",
+        "source": "/.well-known/ai-plugin.json",
         "destination": "/.well-known/ai-plugin.json"
       },
       {
@@ -118,9 +114,7 @@
   },
   "functions": {
     "source": "functions",
-    "predeploy": [
-      "npm --prefix \"$RESOURCE_DIR\" run build"
-    ]
+    "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run build"]
   },
   "emulators": {
     "auth": {

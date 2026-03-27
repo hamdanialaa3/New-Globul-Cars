@@ -27,7 +27,7 @@ const Title = styled.h1`
   gap: 0.75rem;
 
   svg {
-    color: #FF8F10;
+    color: #3B82F6;
   }
 `;
 
@@ -45,7 +45,7 @@ const ActionCard = styled.div`
   transition: all 0.3s ease;
 
   &:hover {
-    border-color: #FF8F10;
+    border-color: #3B82F6;
     box-shadow: var(--shadow-md);
   }
 `;
@@ -59,7 +59,7 @@ const ActionHeader = styled.div`
   svg {
     width: 24px;
     height: 24px;
-    color: #FF8F10;
+    color: #3B82F6;
   }
 
   h3 {
@@ -91,19 +91,19 @@ const Button = styled.button<{ $variant?: 'primary' | 'danger' }>`
 
   background: ${p => p.$variant === 'danger' 
     ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
-    : 'linear-gradient(135deg, #FF8F10 0%, #fb923c 100%)'
+    : 'linear-gradient(135deg, #3B82F6 0%, #fb923c 100%)'
   };
   color: white;
   box-shadow: ${p => p.$variant === 'danger'
     ? '0 4px 15px rgba(239, 68, 68, 0.3)'
-    : '0 4px 15px rgba(255, 143, 16, 0.3)'
+    : '0 4px 15px rgba(139, 92, 246, 0.3)'
   };
 
   &:hover {
     transform: translateY(-2px);
     box-shadow: ${p => p.$variant === 'danger'
       ? '0 6px 20px rgba(239, 68, 68, 0.4)'
-      : '0 6px 20px rgba(255, 143, 16, 0.4)'
+      : '0 6px 20px rgba(139, 92, 246, 0.4)'
     };
   }
 
@@ -292,4 +292,6 @@ const AlgoliaAdminPanel: React.FC = () => {
 };
 
 export default AlgoliaAdminPanel;
+
+
 

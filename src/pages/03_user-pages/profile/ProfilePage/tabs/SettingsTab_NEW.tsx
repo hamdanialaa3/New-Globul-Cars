@@ -36,10 +36,10 @@ const Container = styled.div`
 
 const Title = styled.h1`
   font-size: 4rem;
-  color: #FF8F10;
+  color: #3B82F6;
   margin-bottom: 20px;
   font-weight: 900;
-  text-shadow: 0 6px 20px rgba(255, 143, 16, 0.6);
+  text-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
 `;
 
 const UpdateTime = styled.p`
@@ -73,3 +73,5 @@ const InfoText = styled.p`
 `;
 
 export default SettingsTab;
+
+

@@ -15,8 +15,8 @@ const float = keyframes`
 `;
 
 const pulse = keyframes`
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 143, 16, 0.7); }
-  50% { box-shadow: 0 0 0 20px rgba(255, 143, 16, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7); }
+  50% { box-shadow: 0 0 0 20px rgba(139, 92, 246, 0); }
 `;
 
 // Horizontal slide-in (left expansion)
@@ -79,14 +79,14 @@ const FloatingButton = styled.button<{ $isOpen: boolean }>`
   border: none;
   
   background: linear-gradient(135deg, 
-    rgba(255, 143, 16, 0.9) 0%, 
-    rgba(255, 121, 0, 0.85) 100%
+    rgba(139, 92, 246, 0.9) 0%, 
+    rgba(99, 102, 241, 0.85) 100%
   );
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   
   box-shadow: 
-    0 8px 32px rgba(255, 143, 16, 0.4),
+    0 8px 32px rgba(139, 92, 246, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
   
   cursor: pointer;
@@ -107,7 +107,7 @@ const FloatingButton = styled.button<{ $isOpen: boolean }>`
   &:hover {
     transform: translateY(-4px) scale(1.1);
     box-shadow: 
-      0 12px 48px rgba(255, 143, 16, 0.5),
+      0 12px 48px rgba(139, 92, 246, 0.5),
       inset 0 1px 0 rgba(255, 255, 255, 0.4);
   }
   
@@ -172,7 +172,7 @@ const SpeedDialItem = styled.button<{ $index: number; $show: boolean }>`
   &:hover {
     transform: translateX(0) scale(1.1);
     box-shadow: 
-      0 8px 32px rgba(255, 143, 16, 0.4),
+      0 8px 32px rgba(139, 92, 246, 0.4),
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
   
@@ -404,4 +404,5 @@ const FloatingAddButton: React.FC = () => {
 };
 
 export default FloatingAddButton;
+
 

@@ -21,8 +21,9 @@ if (!admin.apps.length) {
   admin.initializeApp();
 }
 
-const db = admin.firestore();
-const rtdb = admin.database();
+// Lazy initialization to prevent deployment parsing crashes
+const getDb = () => admin.firestore();
+const getRtdb = () => admin.database();
 
 // ==================== INTERFACES ====================
 
@@ -61,7 +62,7 @@ interface FCMTokenDoc {
  */
 async function getFCMToken(userFirebaseId: string): Promise<string | null> {
   try {
-    const tokenDoc = await db.collection('fcm_tokens').doc(userFirebaseId).get();
+    const tokenDoc = await getDb().collection('fcm_tokens').doc(userFirebaseId).get();
     
     if (!tokenDoc.exists) {
       functions.logger.info('No FCM token found for user', { userFirebaseId });
@@ -81,7 +82,7 @@ async function getFCMToken(userFirebaseId: string): Promise<string | null> {
  */
 async function getUserDisplayName(userFirebaseId: string): Promise<string> {
   try {
-    const userDoc = await db.collection('users').doc(userFirebaseId).get();
+    const userDoc = await getDb().collection('users').doc(userFirebaseId).get();
     if (userDoc.exists) {
       const data = userDoc.data();
       return data?.displayName || data?.name || data?.fullName || 'Потребител';
@@ -98,7 +99,7 @@ async function getUserDisplayName(userFirebaseId: string): Promise<string> {
  */
 async function getChannelInfo(channelId: string): Promise<{ carTitle?: string; carImage?: string } | null> {
   try {
-    const channelSnapshot = await rtdb.ref(`channels/${channelId}`).get();
+    const channelSnapshot = await getRtdb().ref(`channels/${channelId}`).get();
     if (channelSnapshot.exists()) {
       const data = channelSnapshot.val();
       return {
@@ -258,7 +259,7 @@ export const onNewRealtimeMessage = functions
         functions.logger.warn('Invalid FCM token, removing', {
           recipientFirebaseId: message.recipientFirebaseId,
         });
-        await db.collection('fcm_tokens').doc(message.recipientFirebaseId).delete();
+        await getDb().collection('fcm_tokens').doc(message.recipientFirebaseId).delete();
       } else {
         functions.logger.error('Failed to send push notification', { error });
       }
@@ -295,7 +296,7 @@ export const onOfferStatusChange = functions
     
     try {
       // Get the full message to find the original sender (who should be notified)
-      const messageSnapshot = await rtdb.ref(`/messages/${channelId}/${messageId}`).get();
+      const messageSnapshot = await getRtdb().ref(`/messages/${channelId}/${messageId}`).get();
       
       if (!messageSnapshot.exists()) {
         return null;
@@ -401,7 +402,7 @@ export const cleanupExpiredOffers = functions
     
     try {
       // Get all channels
-      const channelsSnapshot = await rtdb.ref('/channels').get();
+      const channelsSnapshot = await getRtdb().ref('/channels').get();
       
       if (!channelsSnapshot.exists()) {
         return null;
@@ -412,7 +413,7 @@ export const cleanupExpiredOffers = functions
       
       for (const channelId of Object.keys(channels)) {
         // Get messages for this channel
-        const messagesSnapshot = await rtdb
+        const messagesSnapshot = await getRtdb()
           .ref(`/messages/${channelId}`)
           .orderByChild('type')
           .equalTo('offer')
@@ -432,7 +433,7 @@ export const cleanupExpiredOffers = functions
             msg.metadata.offerExpiresAt < now
           ) {
             // Mark as expired
-            await rtdb
+            await getRtdb()
               .ref(`/messages/${channelId}/${messageId}/metadata/offerStatus`)
               .set('expired');
             

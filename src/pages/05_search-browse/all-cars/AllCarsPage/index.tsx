@@ -274,7 +274,7 @@ const Header = styled.div`
   margin-bottom: 24px;
 
   svg {
-    color: #FF8F10;
+    color: #3B82F6;
   }
 
   h1 {
@@ -387,13 +387,13 @@ const FilterSelect = styled.select`
   transition: all 0.15s ease;
 
   &:hover {
-    border-color: #FF8F10;
+    border-color: #3B82F6;
   }
 
   &:focus {
     outline: none;
-    border-color: #FF8F10;
-    box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.1);
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
   }
 
   option {
@@ -443,4 +443,6 @@ const EmptyState = styled.div`
     transition: color 0.3s ease;
   }
 `;
+
+
 

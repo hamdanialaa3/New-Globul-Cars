@@ -242,7 +242,7 @@ const Header = styled.div`
 
 const RefreshButton = styled.button`
   padding: 10px 20px;
-  background: #FF8F10;
+  background: #3B82F6;
   color: white;
   border: none;
   border-radius: 5px;
@@ -348,7 +348,7 @@ const AlertCard = styled.div<{ severity: string; acknowledged: boolean }>`
   border: 2px solid ${props => {
     const colors: Record<string, string> = {
       critical: '#F44336',
-      high: '#FF5722',
+      high: '#8B5CF6',
       medium: '#FF9800',
       low: '#4CAF50',
     };
@@ -375,7 +375,7 @@ const AlertSeverityBadge = styled.span<{ severity: string }>`
   background: ${props => {
     const colors: Record<string, string> = {
       critical: '#F44336',
-      high: '#FF5722',
+      high: '#8B5CF6',
       medium: '#FF9800',
       low: '#4CAF50',
     };
@@ -408,7 +408,7 @@ const AlertMessage = styled.p`
 `;
 
 const AlertUrl = styled.a`
-  color: #FF8F10;
+  color: #3B82F6;
   text-decoration: none;
   font-size: 14px;
   display: inline-block;
@@ -453,7 +453,7 @@ const ExternalLinks = styled.div`
 const ExternalLink = styled.a`
   display: inline-block;
   padding: 12px 20px;
-  background: #FF8F10;
+  background: #3B82F6;
   color: white;
   text-decoration: none;
   border-radius: 5px;
@@ -473,3 +473,4 @@ const ErrorMessage = styled.div`
 `;
 
 export default MonitoringDashboard;
+

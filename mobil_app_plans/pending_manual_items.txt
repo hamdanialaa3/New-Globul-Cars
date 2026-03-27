@@ -1,0 +1,22 @@
+Pending Manual Items for Complete UI Audit
+
+These items require running the app and capturing real UI screens from emulator/device:
+- home.png
+- search_results.png
+- car_detail.png
+- create_listing.png
+- seller_dashboard.png
+- auth_login.png
+- auth_register.png
+
+Quick capture commands (Android emulator):
+- adb exec-out screencap -p > home.png
+- adb exec-out screencap -p > search_results.png
+- adb exec-out screencap -p > car_detail.png
+- adb exec-out screencap -p > create_listing.png
+- adb exec-out screencap -p > seller_dashboard.png
+- adb exec-out screencap -p > auth_login.png
+- adb exec-out screencap -p > auth_register.png
+
+Place all captured files in:
+C:\Users\hamda\Desktop\Koli_One_Root\mobil_app_plans

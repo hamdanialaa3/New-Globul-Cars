@@ -92,7 +92,7 @@ const SitemapSection = styled.div<{ $isDark: boolean }>`
   h2 {
     font-size: 1.25rem;
     font-weight: 700;
-    color: ${props => props.$isDark ? '#FF8C61' : '#1e40af'};
+    color: ${props => props.$isDark ? '#8B5CF6' : '#1e40af'};
     margin-bottom: 24px;
     display: flex;
     align-items: center;
@@ -131,8 +131,8 @@ const SitemapLink = styled(Link) <{ $isDark: boolean }>`
   font-size: 0.95rem;
 
   &:hover {
-    background: ${props => props.$isDark ? 'rgba(255, 140, 97, 0.1)' : '#f1f5f9'};
-    color: ${props => props.$isDark ? '#FF8C61' : '#1e40af'};
+    background: ${props => props.$isDark ? 'rgba(139, 92, 246, 0.1)' : '#f1f5f9'};
+    color: ${props => props.$isDark ? '#8B5CF6' : '#1e40af'};
     transform: translateX(8px);
     
     .chevron {
@@ -158,7 +158,7 @@ const SitemapLink = styled(Link) <{ $isDark: boolean }>`
     opacity: 0;
     transform: translateX(-5px);
     transition: all 0.3s ease;
-    color: ${props => props.$isDark ? '#FF8C61' : '#1e40af'};
+    color: ${props => props.$isDark ? '#8B5CF6' : '#1e40af'};
   }
 `;
 
@@ -228,14 +228,14 @@ const InfoSection = styled.section<{ $isDark: boolean }>`
     transition: all 0.3s ease;
 
     &:hover {
-      border-color: ${props => props.$isDark ? '#FF8C61' : '#3b82f6'};
+      border-color: ${props => props.$isDark ? '#8B5CF6' : '#3b82f6'};
       transform: translateY(-5px);
     }
 
     .number {
       font-size: 2rem;
       font-weight: 800;
-      color: ${props => props.$isDark ? '#FF8C61' : '#1e40af'};
+      color: ${props => props.$isDark ? '#8B5CF6' : '#1e40af'};
       margin-bottom: 8px;
     }
 
@@ -651,4 +651,5 @@ const SitemapPage: React.FC = () => {
 };
 
 export default SitemapPage;
+
 

@@ -59,7 +59,7 @@ const SimpleChart = styled.div`
 const Bar = styled.div<{ height: number; color?: string }>`
   flex: 1;
   height: ${props => props.height}%;
-  background: ${props => props.color || 'linear-gradient(135deg, #FF6B35 0%, #F7931E 100%)'};
+  background: ${props => props.color || 'linear-gradient(135deg, #6366F1 0%, #F7931E 100%)'};
   border-radius: 4px 4px 0 0;
   display: flex;
   align-items: end;
@@ -221,7 +221,7 @@ const AdvancedCharts: React.FC = () => {
           <ChartLegend>
             {chartData.usersByMonth.map((item, index) => (
               <LegendItem key={index}>
-                <LegendColor color="#FF6B35" />
+                <LegendColor color="#6366F1" />
                 <span>{item.month || item.label}</span>
               </LegendItem>
             ))}

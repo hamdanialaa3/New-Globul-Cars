@@ -10,7 +10,7 @@ export const sendWelcomeEmail = functions.auth.user().onCreate(async (user) => {
   const name = user.displayName || 'User';
 
   if (!email) {
-    console.log('No email for user', user.uid);
+    functions.logger.info('No email for user', user.uid);
     return;
   }
 
@@ -111,7 +111,7 @@ export const sendMessageNotificationEmail = functions.firestore
     const now = new Date();
     // Cooldown: 15 minutes
     if (lastNotif && (now.getTime() - lastNotif.getTime() < 15 * 60 * 1000)) {
-      console.log('Skipping email notification due to cooldown');
+      functions.logger.info('Skipping email notification due to cooldown');
       return;
     }
 

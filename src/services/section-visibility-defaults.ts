@@ -33,6 +33,14 @@ export const DEFAULT_HOMEPAGE_SECTIONS: HomepageSection[] = [
     category: 'main',
   },
   {
+    key: 'kat_services',
+    label: 'KAT Official Services',
+    description: 'Bilateral registration links & Official Bulgarian government services',
+    visible: true,
+    order: 2.1,
+    category: 'main',
+  },
+  {
     key: 'our_cars',
     label: 'Our Cars Showcase',
     description: 'All real user-added listings grid — OurCarsShowcase (Нашите коли)',
@@ -166,6 +174,14 @@ export const DEFAULT_HOMEPAGE_SECTIONS: HomepageSection[] = [
     description: 'Loyalty program + signup CTA — HomeLoyaltyAndSignup',
     visible: true,
     order: 17,
+    category: 'main',
+  },
+  {
+    key: 'pricing_plans',
+    label: 'Subscriptions & Pricing',
+    description: 'Premium subscription plans with details and payment options',
+    visible: true,
+    order: 17.5,
     category: 'main',
   },
 

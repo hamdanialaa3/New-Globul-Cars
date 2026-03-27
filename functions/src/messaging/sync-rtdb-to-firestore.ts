@@ -36,7 +36,7 @@ export const syncMessageToFirestore = functions
     const message = snapshot.val();
     
     if (!message) {
-      console.warn(`Empty message data for ${channelId}/${messageId}`);
+      functions.logger.warn(`Empty message data for ${channelId}/${messageId}`);
       return null;
     }
     
@@ -49,7 +49,7 @@ export const syncMessageToFirestore = functions
       const channel = channelSnapshot.val();
       
       if (!channel) {
-        console.error(`Channel not found: ${channelId}`);
+        functions.logger.error(`Channel not found: ${channelId}`);
         return null;
       }
       
@@ -113,11 +113,11 @@ export const syncMessageToFirestore = functions
       
       await batch.commit();
       
-      console.log(`Message synced: ${channelId}/${messageId}`);
+      functions.logger.info(`Message synced: ${channelId}/${messageId}`);
       return null;
       
     } catch (error) {
-      console.error(`Error syncing message ${channelId}/${messageId}:`, error);
+      functions.logger.error(`Error syncing message ${channelId}/${messageId}:`, error);
       return null;
     }
   });
@@ -146,7 +146,7 @@ export const sendMessageNotification = functions
       const userData = userDoc.data();
       
       if (!userData || !userData.fcmTokens || userData.fcmTokens.length === 0) {
-        console.log(`No FCM tokens for user ${userId}`);
+        functions.logger.info(`No FCM tokens for user ${userId}`);
         return null;
       }
       
@@ -207,14 +207,14 @@ export const sendMessageNotification = functions
         await firestoreDb.collection('users').doc(userId).update({
           fcmTokens: admin.firestore.FieldValue.arrayRemove(...invalidTokens)
         });
-        console.log(`Removed ${invalidTokens.length} invalid FCM tokens for user ${userId}`);
+        functions.logger.info(`Removed ${invalidTokens.length} invalid FCM tokens for user ${userId}`);
       }
       
-      console.log(`Sent FCM to ${userData.fcmTokens.length - invalidTokens.length} devices`);
+      functions.logger.info(`Sent FCM to ${userData.fcmTokens.length - invalidTokens.length} devices`);
       return null;
       
     } catch (error) {
-      console.error(`Error sending FCM for notification ${notificationId}:`, error);
+      functions.logger.error(`Error sending FCM for notification ${notificationId}:`, error);
       return null;
     }
   });
@@ -247,7 +247,7 @@ export const syncReadStatusToFirestore = functions
       const message = messageSnapshot.val();
       
       if (!message) {
-        console.warn(`Message not found: ${channelId}/${messageId}`);
+        functions.logger.warn(`Message not found: ${channelId}/${messageId}`);
         return null;
       }
       
@@ -259,7 +259,7 @@ export const syncReadStatusToFirestore = functions
       const channel = channelSnapshot.val();
       
       if (!channel) {
-        console.error(`Channel not found: ${channelId}`);
+        functions.logger.error(`Channel not found: ${channelId}`);
         return null;
       }
       
@@ -280,11 +280,11 @@ export const syncReadStatusToFirestore = functions
         }
       }, { merge: true });
       
-      console.log(`Read status synced: ${channelId}/${messageId}`);
+      functions.logger.info(`Read status synced: ${channelId}/${messageId}`);
       return null;
       
     } catch (error) {
-      console.error(`Error syncing read status ${channelId}/${messageId}:`, error);
+      functions.logger.error(`Error syncing read status ${channelId}/${messageId}:`, error);
       return null;
     }
   });
@@ -331,11 +331,11 @@ export const cleanOldNotifications = functions
         deletedCount += notificationsSnapshot.size;
       }
       
-      console.log(`Cleaned ${deletedCount} old notifications`);
+      functions.logger.info(`Cleaned ${deletedCount} old notifications`);
       return null;
       
     } catch (error) {
-      console.error('Error cleaning notifications:', error);
+      functions.logger.error('Error cleaning notifications:', error);
       return null;
     }
   });

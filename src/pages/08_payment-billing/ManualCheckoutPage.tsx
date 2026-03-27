@@ -560,8 +560,8 @@ const InfoBox = styled.div`
   display: flex;
   gap: 12px;
   padding: 16px;
-  background: rgba(230, 81, 0, 0.1);
-  border: 1px solid rgba(230, 81, 0, 0.3);
+  background: rgba(37, 99, 235, 0.1);
+  border: 1px solid rgba(37, 99, 235, 0.3);
   border-radius: 12px;
   margin-bottom: 24px;
   color: ${subscriptionTheme.colors.text.accent};
@@ -669,3 +669,4 @@ const FreeActivateButton = styled.button`
     animation: spin 1s linear infinite;
   }
 `;
+

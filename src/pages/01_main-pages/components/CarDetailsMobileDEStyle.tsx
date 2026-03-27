@@ -1890,7 +1890,7 @@ const ShareMenuDropdown = styled.div<{ $isOpen: boolean }>`
 const ShareMenuHeader = styled.div`
   padding: 1rem;
   border-bottom: 1px solid var(--border-primary);
-  background: linear-gradient(135deg, rgba(255, 143, 16, 0.05) 0%, rgba(255, 107, 53, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
 `;
 
 const ShareMenuTitle = styled.h4`
@@ -3386,3 +3386,4 @@ const VideoMiniButton = styled.button`
 `;
 
 export default CarDetailsMobileDEStyle;
+

@@ -61,9 +61,9 @@ const Textarea = styled.textarea`
   
   &:focus {
     outline: none;
-    border-color: #FF8F10;
+    border-color: #3B82F6;
     background: white;
-    box-shadow: 0 0 0 4px rgba(255, 143, 16, 0.1);
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
   }
   
   &::placeholder {
@@ -81,4 +81,6 @@ const HashtagsHint = styled.div`
 `;
 
 export default TextEditor;
+
+
 

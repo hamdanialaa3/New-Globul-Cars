@@ -1,4 +1,4 @@
-﻿// src/pages/HomePage/FeaturedCarsSection.tsx
+// src/pages/HomePage/FeaturedCarsSection.tsx
 // Featured cars section component for HomePage
 
 import React, { Suspense, memo } from 'react';
@@ -110,7 +110,7 @@ const SearchButton = styled(Link) <{ $variant?: 'primary' | 'secondary' }>`
   html[data-theme="light"] & {
     background: var(--btn-primary-bg);
     color: #ffffff !important;
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35) !important;
   }
 
   /* Dark mode: Yellow gradient background, Black text */
@@ -130,7 +130,7 @@ const SearchButton = styled(Link) <{ $variant?: 'primary' | 'secondary' }>`
     html[data-theme="light"] & {
       background: var(--btn-primary-bg);
       color: #ffffff !important;
-      box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5) !important;
     }
     html[data-theme="dark"] & {
       background: var(--btn-primary-bg);
@@ -178,7 +178,7 @@ const ViewAllFeaturedButton = styled(Link)`
   html[data-theme="light"] & {
     background: var(--btn-primary-bg);
     color: #000000;
-    box-shadow: 0 4px 20px rgba(255, 143, 16, 0.4);
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
   }
 
   /* Dark mode: Black with yellow text */
@@ -193,7 +193,7 @@ const ViewAllFeaturedButton = styled(Link)`
     transform: translateY(-3px) scale(1.02);
     html[data-theme="light"] & {
       background: var(--btn-primary-bg);
-      box-shadow: 0 8px 30px rgba(255, 143, 16, 0.5);
+      box-shadow: 0 8px 30px rgba(139, 92, 246, 0.5);
     }
     html[data-theme="dark"] & {
       background: #1a1a1a;

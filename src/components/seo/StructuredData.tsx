@@ -91,7 +91,7 @@ interface OrganizationStructuredDataProps {
 export const OrganizationStructuredData: React.FC<OrganizationStructuredDataProps> = ({
     name = "Koli One",
     url = "https://koli.one",
-    logo = "https://koli.one/logo.png"
+    logo = "https://koli.one/logo.webp"
 }) => {
     const schema = {
         "@context": "https://schema.org",

@@ -472,15 +472,15 @@ const CopyButton = styled.button`
   justify-content: center;
   width: 32px;
   height: 32px;
-  background: rgba(230, 81, 0, 0.2);
-  border: 1px solid rgba(230, 81, 0, 0.5);
+  background: rgba(37, 99, 235, 0.2);
+  border: 1px solid rgba(37, 99, 235, 0.5);
   border-radius: 6px;
   color: ${subscriptionTheme.colors.text.accent};
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(230, 81, 0, 0.3);
+    background: rgba(37, 99, 235, 0.3);
     transform: scale(1.1);
   }
 `;
@@ -534,7 +534,7 @@ const UploadIconWrapper = styled.div`
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: rgba(230, 81, 0, 0.2);
+    background: rgba(37, 99, 235, 0.2);
     color: ${subscriptionTheme.colors.text.accent};
     display: flex;
     align-items: center;
@@ -652,8 +652,8 @@ const InfoBox = styled.div`
   display: flex;
   gap: 16px;
   padding: 24px;
-  background: rgba(230, 81, 0, 0.1);
-  border: 1px solid rgba(230, 81, 0, 0.3);
+  background: rgba(37, 99, 235, 0.1);
+  border: 1px solid rgba(37, 99, 235, 0.3);
   border-radius: 20px;
   margin-bottom: 24px;
   color: ${subscriptionTheme.colors.text.accent};
@@ -711,8 +711,8 @@ const ContactButton = styled.a`
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: rgba(230, 81, 0, 0.1);
-  border: 1px solid rgba(230, 81, 0, 0.3);
+  background: rgba(37, 99, 235, 0.1);
+  border: 1px solid rgba(37, 99, 235, 0.3);
   border-radius: 12px;
   color: ${subscriptionTheme.colors.text.accent};
   text-decoration: none;
@@ -721,7 +721,7 @@ const ContactButton = styled.a`
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(230, 81, 0, 0.2);
+    background: rgba(37, 99, 235, 0.2);
     transform: translateY(-2px);
   }
 `;
@@ -779,3 +779,4 @@ const SecondaryButton = styled.button`
     transform: translateY(-2px);
   }
 `;
+

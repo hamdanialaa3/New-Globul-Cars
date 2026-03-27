@@ -22,4 +22,5 @@ export { messaging } from './messaging';
 export { help } from './help';
 export { cookiePolicy } from './cookiePolicy';
 export { contact } from './contact';
+export { kat } from './kat';
 

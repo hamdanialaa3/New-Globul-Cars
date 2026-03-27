@@ -151,7 +151,7 @@ export const Step2VehicleData = () => {
       className={isFeaturedBrand(brand) ? 'popular-brand' : ''}
       style={isFeaturedBrand(brand) ? {
         fontWeight: '700',
-        color: '#ff8f10', // ✅ اللون البرتقالي
+        color: '#3b82f6', // ✅ اللون البرتقالي
         backgroundColor: 'rgba(255, 143, 16, 0.05)'
       } : {}}
     >
@@ -247,4 +247,5 @@ const price = formData.step5?.price;
 
 **تم الإنشاء:** 2025-01-26  
 **الحالة:** 🚧 قيد التنفيذ
+
 

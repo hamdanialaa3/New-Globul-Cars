@@ -40,7 +40,20 @@ class SectionVisibilityService {
       }
 
       const data = snap.data() as HomepageSectionsConfig;
-      return [...data.sections].sort((a, b) => a.order - b.order);
+      let sections = [...data.sections];
+      
+      // Auto-merge: Check if any default sections are missing from the Firestore data
+      const existingKeys = new Set(sections.map(s => s.key));
+      const missingDefaults = DEFAULT_HOMEPAGE_SECTIONS.filter(s => !existingKeys.has(s.key));
+      
+      if (missingDefaults.length > 0) {
+        serviceLogger.info(`[SectionVisibility] Merging ${missingDefaults.length} new default sections`);
+        sections = [...sections, ...missingDefaults].sort((a, b) => a.order - b.order);
+        // Note: We don't auto-update Firestore here to avoid write loops, 
+        // it will be saved next time an admin toggles or reorders.
+      }
+
+      return sections.sort((a, b) => a.order - b.order);
     } catch (error) {
       serviceLogger.error('[SectionVisibility] Failed to getAll:', error);
       // Fallback: return defaults with everything visible

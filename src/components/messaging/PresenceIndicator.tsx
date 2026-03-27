@@ -302,7 +302,7 @@ const AvatarPlaceholder = styled.div`
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: linear-gradient(135deg, #FF8F10 0%, #FF6B35 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -328,3 +328,5 @@ export { PresenceIndicator, PresenceWithAvatar };
 
 // Export default for backward compatibility
 export default PresenceIndicator;
+
+

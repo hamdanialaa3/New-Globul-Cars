@@ -55,7 +55,7 @@ const Textarea = styled.textarea`
   
   &:focus {
     outline: none;
-    border-color: #FF7900;
+    border-color: #2563EB;
   }
   
   &::placeholder {
@@ -64,7 +64,7 @@ const Textarea = styled.textarea`
 `;
 
 const SubmitButton = styled.button`
-  background: linear-gradient(135deg, #FF7900 0%, #FF6600 100%);
+  background: linear-gradient(135deg, #2563EB 0%, #FF6600 100%);
   color: white;
   border: none;
   padding: 12px 32px;
@@ -76,7 +76,7 @@ const SubmitButton = styled.button`
   
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
   }
   
   &:disabled {
@@ -241,4 +241,6 @@ const ReviewComposer: React.FC<ReviewComposerProps> = ({
 };
 
 export default ReviewComposer;
+
+
 

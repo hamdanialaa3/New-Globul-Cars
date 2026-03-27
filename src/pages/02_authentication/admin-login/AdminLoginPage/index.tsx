@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 // Styled Components
 const LoginContainer = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #FF7900 0%, #FF8F10 100%);
+  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -57,15 +57,15 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #FF7900;
-    box-shadow: 0 0 0 3px rgba(255, 121, 0, 0.1);
+    border-color: #2563EB;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
   }
 `;
 
 const LoginButton = styled.button<{ $disabled?: boolean }>`
   width: 100%;
   padding: 16px;
-  background: ${props => props.$disabled ? '#e4e6ea' : '#FF7900'};
+  background: ${props => props.$disabled ? '#e4e6ea' : '#2563EB'};
   color: ${props => props.$disabled ? '#bcc0c4' : 'white'};
   border: none;
   border-radius: 8px;
@@ -183,3 +183,4 @@ const AdminLoginPage: React.FC = () => {
 };
 
 export default AdminLoginPage;
+

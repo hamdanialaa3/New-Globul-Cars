@@ -1,4 +1,4 @@
-﻿/**
+/**
  * VisualSearchTeaser.tsx
  * Визуално търсене - Тийзър секция / Visual Search Teaser Section
  * 

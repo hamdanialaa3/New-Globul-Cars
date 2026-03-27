@@ -46,12 +46,6 @@ const RealtimeMessagesPage = safeLazy(() => import('../pages/03_user-pages/Realt
 const AdminPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminPage'));
 const AdminLoginPage = safeLazy(() => import('../pages/02_authentication/admin-login/AdminLoginPage'));
 // ✅ AUDIT FIX: AdminDataFix.tsx was missing — replaced with fallback (2026-02-19)
-const AdminDataFixFallback: React.FC = () => (
-    <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <h2>🔧 Admin Data Fix</h2>
-        <p>This tool is currently under maintenance. Please check back later.</p>
-    </div>
-);
 const NumericCarDetailsPage = safeLazy(() => import('../pages/01_main-pages/NumericCarDetailsPage'));
 // ❌ REMOVED: const NumericMessagingPage - Legacy system archived (Phase 1 Remediation)
 const NumericProfileRouter = safeLazy(() => import('./NumericProfileRouter'));
@@ -120,6 +114,7 @@ const DealerDashboardPage = safeLazy(() => import('../pages/09_dealer-company/De
 const SubscriptionSelectionPage = safeLazy(() => import('../pages/dealer/SubscriptionSelectionPage'));
 const AlgoliaSyncManager = safeLazy(() => import('../pages/06_admin/AlgoliaSyncManager'));
 const AdminCarManagementPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminCarManagementPage'));
+const ContentModerationPage = safeLazy(() => import('../components/AdvancedContentManagement'));
 // 🔥 NEW: Car History Report Page - COMPETITIVE ADVANTAGE!
 const CarHistoryPage = safeLazy(() => import('../pages/07_car-details/CarHistoryPage'));
 // 🔗 NEW: Routing with slug support and short links (2026-02-19)
@@ -158,7 +153,9 @@ const AuthUsersPage = safeLazy(() => import('../pages/06_admin/AuthUsersPage'));
 const SharedInboxPage = safeLazy(() => import('../pages/06_admin/SharedInboxPage'));
 const StripeSetupPage = safeLazy(() => import('../pages/09_dealer-company/StripeSetupPage'));
 const AdminManualPaymentsDashboard = safeLazy(() => import('../pages/06_admin/finance/manual-payments/AdminManualPaymentsDashboard'));
-const AuctionsPage = safeLazy(() => import('../pages/01_main-pages/auctions/AuctionsPage'));const DevelopmentToolsPage = safeLazy(() => import('../pages/11_test-pages/DevelopmentToolsPage'));
+const AuctionsPage = safeLazy(() => import('../pages/01_main-pages/auctions/AuctionsPage'));
+const KATServicesPage = safeLazy(() => import('../pages/07_advanced-features/KATServicesPage'));
+const DevelopmentToolsPage = safeLazy(() => import('../pages/11_test-pages/DevelopmentToolsPage'));
 
 
 
@@ -173,6 +170,7 @@ export const MainRoutes: React.FC = () => {
     return (
         <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/KAT-R-BG" element={<KATServicesPage />} />
 
             {/* 🔗 SHORT LINKS - Must be early to avoid shadowing by wildcards */}
             <Route path="/s/:shortCode" element={<ShortLinkResolverComponent />} />
@@ -476,10 +474,10 @@ export const MainRoutes: React.FC = () => {
                 }
             />
             <Route
-                path="/admin/data-fix"
+                path="/admin/moderation"
                 element={
                     <AuthGuard requireAuth={true} requireAdmin={true}>
-                        <AdminDataFixFallback />
+                        <ContentModerationPage />
                     </AuthGuard>
                 }
             />

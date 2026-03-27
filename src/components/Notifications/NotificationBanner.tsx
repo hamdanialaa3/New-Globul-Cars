@@ -8,11 +8,11 @@ const Banner = styled.div<{ $show: boolean }>`
   bottom: ${props => props.$show ? '20px' : '-100px'};
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(135deg, #FF7900 0%, #FF9433 100%);
+  background: linear-gradient(135deg, #2563EB 0%, #FF9433 100%);
   color: white;
   padding: 16px 24px;
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(255, 121, 0, 0.4);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
   display: flex;
   align-items: center;
   gap: 16px;
@@ -43,7 +43,7 @@ const Message = styled.div`
 
 const Button = styled.button`
   background: white;
-  color: #FF7900;
+  color: #2563EB;
   border: none;
   padding: 8px 16px;
   border-radius: 8px;
@@ -97,7 +97,7 @@ export const NotificationBanner: React.FC = () => {
       // Show success message
       new Notification('🎉 Enabled!', {
         body: 'We will send you notifications about new cars',
-        icon: '/logo.png'
+        icon: '/logo.webp'
       });
     }
   };
@@ -125,3 +125,5 @@ export const NotificationBanner: React.FC = () => {
     </Banner>
   );
 };
+
+

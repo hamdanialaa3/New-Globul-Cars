@@ -79,8 +79,8 @@ const TextArea = styled.textarea`
   
   &:focus {
     outline: none;
-    border-color: #FF8F10;
-    box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.1);
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
   }
   
   &::placeholder {
@@ -102,9 +102,9 @@ const OptionButton = styled.button<{ $active?: boolean }>`
   align-items: center;
   gap: 6px;
   padding: 8px 14px;
-  border: 1.5px solid ${p => p.$active ? '#FF8F10' : '#dee2e6'};
-  background: ${p => p.$active ? 'rgba(255, 143, 16, 0.1)' : 'white'};
-  color: ${p => p.$active ? '#FF7900' : '#6c757d'};
+  border: 1.5px solid ${p => p.$active ? '#3B82F6' : '#dee2e6'};
+  background: ${p => p.$active ? 'rgba(139, 92, 246, 0.1)' : 'white'};
+  color: ${p => p.$active ? '#2563EB' : '#6c757d'};
   border-radius: 8px;
   font-size: 0.875rem;
   font-weight: 600;
@@ -112,8 +112,8 @@ const OptionButton = styled.button<{ $active?: boolean }>`
   transition: all 0.2s ease;
   
   &:hover {
-    border-color: #FF8F10;
-    background: rgba(255, 143, 16, 0.05);
+    border-color: #3B82F6;
+    background: rgba(139, 92, 246, 0.05);
   }
   
   svg {
@@ -143,7 +143,7 @@ const VisibilitySelector = styled.div`
     
     &:focus {
       outline: none;
-      border-color: #FF8F10;
+      border-color: #3B82F6;
     }
   }
 `;
@@ -167,12 +167,12 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   
   ${p => p.$variant === 'primary' 
     ? `
-      background: linear-gradient(135deg, #FF7900 0%, #FF9533 100%);
+      background: linear-gradient(135deg, #2563EB 0%, #FF9533 100%);
       color: white;
       &:hover {
         background: linear-gradient(135deg, #e66d00 0%, #e68429 100%);
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
       }
     `
     : `
@@ -407,4 +407,6 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
 };
 
 export default CreatePostModal;
+
+
 

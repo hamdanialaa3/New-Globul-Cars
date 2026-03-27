@@ -142,8 +142,8 @@ class PushNotificationService {
         if ('Notification' in window && Notification.permission === 'granted') {
             new Notification(title, {
                 body,
-                icon: icon || '/logo.png',
-                badge: '/logo.png',
+                icon: icon || '/logo.webp',
+                badge: '/logo.webp',
                 tag: 'messaging',
                 requireInteraction: false
             });

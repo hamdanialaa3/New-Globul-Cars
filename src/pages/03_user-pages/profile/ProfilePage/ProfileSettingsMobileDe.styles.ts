@@ -651,7 +651,7 @@ export const FilterSelect = styled.select`
   &:focus {
     outline: none;
     border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.1);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
   }
   
   option {
@@ -855,3 +855,4 @@ export const VehicleYear = styled.div`
   color: var(--text-secondary);
   white-space: nowrap;
 `;
+

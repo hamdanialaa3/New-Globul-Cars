@@ -106,8 +106,8 @@ const Select = styled.select<{ $hasValue?: boolean }>`
   /* ✅ Featured brands styling - preserve colors */
   option.featured-brand {
     font-weight: 700;
-    color: #ff8f10;
-    background: rgba(255, 143, 16, 0.05);
+    color: #3b82f6;
+    background: rgba(139, 92, 246, 0.05);
   }
   
   option.other-option {
@@ -269,7 +269,7 @@ export const Step2VehicleData: React.FC = () => {
             {language === 'bg' ? 'Марка и модел' : 'Brand & Model'} *
             {make && (
               <HintText>
-                <Star size={14} color="#ff8f10" />
+                <Star size={14} color="#3b82f6" />
                 {isFeaturedBrand(make) && (language === 'bg' ? 'Популярна марка' : 'Popular brand')}
               </HintText>
             )}
@@ -541,4 +541,6 @@ export const Step2VehicleData: React.FC = () => {
     </StepContainer>
   );
 };
+
+
 

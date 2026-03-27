@@ -1,4 +1,4 @@
-﻿/**
+/**
  * DriveTypeShowcaseSection.tsx
  * قسم عرض السيارات حسب نوع الدفع
  * Drive Type Showcase Section

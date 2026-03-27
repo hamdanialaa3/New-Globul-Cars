@@ -67,17 +67,17 @@ const Container = styled.div<{
     content: '';
     position: absolute;
     inset: 0;
-    background-color: rgba(255, 143, 16, 0.03);
+    background-color: rgba(139, 92, 246, 0.03);
     animation: skeleton-pulse 1.5s ease-in-out infinite;
   }
   
   @keyframes skeleton-pulse {
     0%, 100% {
-      background-color: rgba(255, 143, 16, 0.03);
+      background-color: rgba(139, 92, 246, 0.03);
       opacity: 0.6;
     }
     50% {
-      background-color: rgba(255, 143, 16, 0.08);
+      background-color: rgba(139, 92, 246, 0.08);
       opacity: 1;
     }
   }
@@ -85,7 +85,7 @@ const Container = styled.div<{
   @media (prefers-reduced-motion: reduce) {
     &::before {
       animation: none;
-      background-color: rgba(255, 143, 16, 0.05);
+      background-color: rgba(139, 92, 246, 0.05);
     }
   }
 `;
@@ -159,23 +159,23 @@ const SkeletonPulse = styled.div<{ $width?: string; $height?: string; $borderRad
   width: ${props => props.$width || '100%'};
   height: ${props => props.$height || '20px'};
   border-radius: ${props => props.$borderRadius || '4px'};
-  background-color: rgba(255, 143, 16, 0.03);
+  background-color: rgba(139, 92, 246, 0.03);
   animation: skeleton-pulse 1.5s ease-in-out infinite;
   
   @keyframes skeleton-pulse {
     0%, 100% {
-      background-color: rgba(255, 143, 16, 0.03);
+      background-color: rgba(139, 92, 246, 0.03);
       opacity: 0.6;
     }
     50% {
-      background-color: rgba(255, 143, 16, 0.08);
+      background-color: rgba(139, 92, 246, 0.08);
       opacity: 1;
     }
   }
   
   @media (prefers-reduced-motion: reduce) {
     animation: none;
-    background-color: rgba(255, 143, 16, 0.05);
+    background-color: rgba(139, 92, 246, 0.05);
   }
 `;
 
@@ -255,3 +255,4 @@ export const DealerCardSkeleton: React.FC<{ className?: string }> = ({ className
 
 export { SkeletonPulse };
 export default AspectRatioBox;
+

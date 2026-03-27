@@ -50,8 +50,8 @@ const CreatePostTrigger = styled.div`
   
   &:hover {
     background: #fff;
-    border-color: #FF7900;
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.1);
+    border-color: #2563EB;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
   }
 `;
 
@@ -60,12 +60,12 @@ const Avatar = styled.div<{ $url?: string }>`
   height: 40px;
   border-radius: 50%;
   flex-shrink: 0;
-  border: 2px solid #FF8F10;
+  border: 2px solid #3B82F6;
   
   ${p => p.$url ? `
     background: url(${p.$url}) center/cover no-repeat;
   ` : `
-    background: linear-gradient(135deg, #FF8F10, #FF7900);
+    background: linear-gradient(135deg, #3B82F6, #2563EB);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -108,8 +108,8 @@ const ActionButton = styled.button`
   
   &:hover {
     background: #f8f9fa;
-    border-color: #FF7900;
-    color: #FF7900;
+    border-color: #2563EB;
+    color: #2563EB;
   }
   
   svg {
@@ -148,7 +148,7 @@ const CreateButton = styled.button`
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: linear-gradient(135deg, #FF7900 0%, #E66D00 100%);
+  background: linear-gradient(135deg, #2563EB 0%, #E66D00 100%);
   color: white;
   border: none;
   border-radius: 24px;
@@ -156,11 +156,11 @@ const CreateButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(255, 121, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(255, 121, 0, 0.3);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3);
   }
   
   &:active {
@@ -287,5 +287,7 @@ const CommunityFeedWidget: React.FC<CommunityFeedWidgetProps> = ({ userId }) => 
 };
 
 export default CommunityFeedWidget;
+
+
 
 

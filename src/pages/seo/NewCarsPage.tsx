@@ -92,7 +92,7 @@ const StatCard = styled.div`
 const StatValue = styled.div`
   font-size: 2rem;
   font-weight: 700;
-  color: #FF7900;
+  color: #2563EB;
   margin-bottom: 0.5rem;
 `;
 
@@ -102,7 +102,7 @@ const StatLabel = styled.div`
 `;
 
 const NewCarsPage: React.FC = () => {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [cars, setCars] = useState<any[]>([]);
   const [stats, setStats] = useState({
@@ -243,7 +243,7 @@ const NewCarsPage: React.FC = () => {
 
           {loading ? (
             <div style={{ textAlign: 'center', padding: '3rem' }}>
-              {language === 'bg' ? 'Зареждане...' : 'Loading...'}
+              {t('common.loading')}
             </div>
           ) : cars.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '3rem', color: '#7f8c8d' }}>
@@ -263,4 +263,5 @@ const NewCarsPage: React.FC = () => {
 };
 
 export default NewCarsPage;
+
 

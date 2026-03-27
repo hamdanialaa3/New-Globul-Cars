@@ -46,9 +46,9 @@ export const spacing = {
 // ═══════════════════════════════════════════════════════════════════
 export const colors = {
   primary: {
-    main: '#E65100', // Warm automotive orange — matches mobile
-    dark: '#BF4400',
-    light: '#FF7B33',
+    main: '#2563EB', // Warm automotive orange — matches mobile
+    dark: '#8B5CF6',
+    light: '#6366F1',
     pale: '#FFF3E0',
   },
   secondary: {
@@ -228,3 +228,4 @@ export const mixins = {
 export type Breakpoint = keyof typeof breakpoints;
 export type Spacing = keyof typeof spacing;
 export type Color = keyof typeof colors;
+

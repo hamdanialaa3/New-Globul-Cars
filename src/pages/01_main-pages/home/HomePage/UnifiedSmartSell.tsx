@@ -1,4 +1,4 @@
-﻿/**
+/**
  * UnifiedSmartSell.tsx
  * Обединен модул за умна продажба - Unified Smart Sell Section
  * 
@@ -51,8 +51,8 @@ const float = keyframes`
 `;
 
 const pulse = keyframes`
-  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 143, 16, 0.4); }
-  50% { opacity: 0.9; box-shadow: 0 0 0 15px rgba(255, 143, 16, 0); }
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+  50% { opacity: 0.9; box-shadow: 0 0 0 15px rgba(139, 92, 246, 0); }
 `;
 
 const shimmer = keyframes`
@@ -79,19 +79,19 @@ const Container = styled.section<{ $isDark: boolean }>`
   
   /* Premium animated gradient background */
   background: ${props => props.$isDark
-    ? 'linear-gradient(135deg, rgba(255, 143, 16, 0.15) 0%, rgba(234, 88, 12, 0.1) 50%, rgba(255, 143, 16, 0.15) 100%)'
-    : 'linear-gradient(135deg, rgba(255, 143, 16, 0.08) 0%, rgba(234, 88, 12, 0.05) 50%, rgba(255, 143, 16, 0.08) 100%)'};
+    ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(234, 88, 12, 0.1) 50%, rgba(139, 92, 246, 0.15) 100%)'
+    : 'linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(234, 88, 12, 0.05) 50%, rgba(139, 92, 246, 0.08) 100%)'};
   
   background-size: 200% 200%;
   animation: ${gradientMove} 8s ease infinite;
   
   border: 1px solid ${props => props.$isDark
-    ? 'rgba(255, 143, 16, 0.3)'
-    : 'rgba(255, 143, 16, 0.2)'};
+    ? 'rgba(139, 92, 246, 0.3)'
+    : 'rgba(139, 92, 246, 0.2)'};
   
   box-shadow: 0 20px 60px ${props => props.$isDark
-    ? 'rgba(255, 143, 16, 0.15)'
-    : 'rgba(255, 143, 16, 0.1)'};
+    ? 'rgba(139, 92, 246, 0.15)'
+    : 'rgba(139, 92, 246, 0.1)'};
 
   /* Shimmer overlay */
   &::before {
@@ -144,7 +144,7 @@ const Badge = styled(motion.div)`
   text-transform: uppercase;
   letter-spacing: 0.5px;
   width: fit-content;
-  box-shadow: 0 4px 15px rgba(255, 143, 16, 0.4);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
   
   svg {
     width: 14px;
@@ -165,7 +165,7 @@ const Title = styled.h2<{ $isDark: boolean }>`
   margin: 0;
   
   span {
-    color: #FF8F10;
+    color: #3B82F6;
   }
 `;
 
@@ -208,7 +208,7 @@ const BenefitItem = styled.div<{ $isDark: boolean }>`
   svg {
     width: 16px;
     height: 16px;
-    color: #FF8F10;
+    color: #3B82F6;
   }
 `;
 
@@ -250,7 +250,7 @@ const StatCard = styled(motion.div)<{ $isDark: boolean }>`
 const StatValue = styled.span<{ $isDark: boolean }>`
   font-size: 1.5rem;
   font-weight: 800;
-  color: #FF8F10;
+  color: #3B82F6;
   
   @media (max-width: 480px) {
     font-size: 1.25rem;
@@ -298,7 +298,7 @@ const CTAButton = styled(motion.button)`
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 35px rgba(255, 143, 16, 0.5);
+    box-shadow: 0 12px 35px rgba(139, 92, 246, 0.5);
   }
   
   svg {
@@ -354,7 +354,7 @@ const SecondaryLink = styled(motion.button)<{ $isDark: boolean }>`
   transition: color 0.2s ease;
   
   &:hover {
-    color: #FF8F10;
+    color: #3B82F6;
   }
   
   svg {
@@ -549,3 +549,5 @@ const UnifiedSmartSell: React.FC = memo(() => {
 UnifiedSmartSell.displayName = 'UnifiedSmartSell';
 
 export default UnifiedSmartSell;
+
+

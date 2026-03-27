@@ -1,4 +1,4 @@
-﻿/**
+/**
  * DraftRecoveryPrompt Component
  * Restore incomplete drafts
  * 

@@ -4,7 +4,7 @@ import { useSearchParams, useNavigate, useParams } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { bg } from 'date-fns/locale/bg';
 import { enUS } from 'date-fns/locale/en-US';
-import { Send, Image, DollarSign, ArrowLeft } from 'lucide-react';
+import { Send, Image, DollarSign, ArrowLeft, RefreshCw } from 'lucide-react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 
 import { useTranslation } from '../../hooks/useTranslation';
@@ -13,7 +13,8 @@ import { logger } from '../../services/logger-service';
 import { useRealtimeMessaging } from '../../hooks/messaging/useRealtimeMessaging';
 import {
   RealtimeChannel,
-  RealtimeMessage
+  RealtimeMessage,
+  realtimeMessagingService
 } from '../../services/messaging/realtime';
 import { userService } from '../../services/user/canonical-user.service';
 import { Avatar } from '../../components/design-system/Avatar';
@@ -26,7 +27,6 @@ import Header from '../../components/Header/UnifiedHeader';
 import { db } from '../../firebase/firebase-config';
 import { toast } from 'react-toastify';
 import { usePullToRefresh } from '../../hooks/useMobileInteractions';
-import { PullToRefreshIndicator } from '../../components/mobile/PullToRefreshIndicator';
 
 const MessagesContainer = styled.div`
   position: fixed;
@@ -132,6 +132,50 @@ const SidebarHeader = styled.div`
     ? 'rgba(30, 41, 59, 0.4)'
     : 'rgba(255, 255, 255, 0.6)'};
   backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.md};
+`;
+
+const HeaderTopRow = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+  align-items: center;
+`;
+
+const ClearCacheButton = styled.button`
+  padding: 8px 12px;
+  background: ${({ theme }) => theme.mode === 'dark'
+    ? 'rgba(239, 68, 68, 0.1)'
+    : 'rgba(239, 68, 68, 0.08)'};
+  border: 1px solid ${({ theme }) => theme.mode === 'dark'
+    ? 'rgba(239, 68, 68, 0.3)'
+    : 'rgba(239, 68, 68, 0.2)'};
+  border-radius: 6px;
+  color: ${({ theme }) => theme.mode === 'dark' ? '#ef4444' : '#dc2626'};
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  
+  &:hover {
+    background: ${({ theme }) => theme.mode === 'dark'
+    ? 'rgba(239, 68, 68, 0.2)'
+    : 'rgba(239, 68, 68, 0.15)'};
+    transform: scale(1.05);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+  
+  svg {
+    width: 14px;
+    height: 14px;
+  }
 `;
 
 const SearchInput = styled.input`
@@ -520,6 +564,7 @@ const MessagesPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [, forceUpdate] = useState({});
+  const [isClearing, setIsClearing] = useState(false);
 
   // 🔄 Force re-render when theme changes
   useEffect(() => {
@@ -530,6 +575,76 @@ const MessagesPage: React.FC = () => {
   const [newMessage, setNewMessage] = useState('');
   const [showSettings, setShowSettings] = useState(false);
 
+  // ==================== CACHE CLEARING FUNCTION ====================
+  const handleClearCache = async () => {
+    setIsClearing(true);
+    try {
+      logger.info('🧹 Starting cache clear operation...');
+      
+      // 1. Clear messaging service listeners
+      realtimeMessagingService.cleanup();
+      logger.info('✅ Cleared messaging service listeners');
+      
+      // 2. Force reload channels - pass the current user's Firebase ID
+      if (currentUser?.uid) {
+        // Add a small delay to ensure listeners are fully unsubscribed
+        await new Promise(resolve => setTimeout(resolve, 500));
+        await loadChannels(currentUser.uid as any);
+        logger.info('✅ Reloaded channels from database');
+      }
+      
+      // 3. Clear browser cache if available
+      if ('caches' in window) {
+        const cacheNames = await caches.keys();
+        await Promise.all(
+          cacheNames.map(cacheName => caches.delete(cacheName))
+        );
+        logger.info('✅ Cleared browser caches', { count: cacheNames.length });
+      }
+      
+      // 4. Clear localStorage messaging data
+      const messagingKeys = Object.keys(localStorage).filter(key => 
+        key.includes('msg') || key.includes('messaging') || key.includes('chat')
+      );
+      messagingKeys.forEach(key => localStorage.removeItem(key));
+      logger.info('✅ Cleared localStorage messaging data', { count: messagingKeys.length });
+      
+      toast.success(
+        language === 'bg'
+          ? '✅ تم تنظيف الذاكرة المؤقتة بنجاح'
+          : '✅ Cache cleared successfully'
+      );
+      
+      logger.info('🎉 Cache clear operation completed successfully');
+      
+    } catch (error) {
+      logger.error('❌ Failed to clear cache', error as Error);
+      toast.error(
+        language === 'bg'
+          ? '❌ فشل تنظيف الذاكرة المؤقتة'
+          : '❌ Failed to clear cache'
+      );
+    } finally {
+      setIsClearing(false);
+    }
+  };
+
+  // ✅ Pull-to-Refresh: Refresh function
+  const handleRefreshConversations = async () => {
+    if (!currentUser) return;
+
+    try {
+      logger.info('🔄 Pull-to-refresh: Refreshing conversations', { userId: currentUser.uid });
+      
+      // Clear cache and reload
+      await handleClearCache();
+
+      logger.info('✅ Pull-to-refresh: Conversations refreshed successfully');
+    } catch (error) {
+      logger.error('❌ Pull-to-refresh: Failed to refresh', error as Error);
+    }
+  };
+
   // Filter channels based on search query
   const filteredChannels = realtimeChannels.filter(conv => {
     const name = (conv.buyerNumericId === (currentUser as any)?.numericId ? conv.sellerName : conv.buyerName) || '';
@@ -539,39 +654,27 @@ const MessagesPage: React.FC = () => {
   });
 
   // ✅ Pull-to-Refresh: Container ref
-  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const pullToRefreshContainerRef = usePullToRefresh({
+    onRefresh: handleRefreshConversations,
+    threshold: 60
+  });
+
+  // End message ref for auto-scroll
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // ✅ Pull-to-Refresh: Refresh function
-  const handleRefreshConversations = async () => {
-    if (!currentUser) return;
-
-    try {
-      logger.info('🔄 Pull-to-refresh: Refreshing conversations', { userId: currentUser.uid });
-      await loadChannels();
-
-      toast.success(
-        language === 'bg'
-          ? 'Съобщенията са актуализирани'
-          : 'Messages refreshed'
-      );
-
-      logger.info('✅ Pull-to-refresh: Conversations refreshed successfully');
-    } catch (error) {
-      logger.error('❌ Pull-to-refresh: Failed to refresh', error as Error);
-    }
-  };
-
-  // ✅ Pull-to-Refresh: Hook
-  const { pulling, refreshing } = usePullToRefresh(
-    messagesContainerRef,
-    handleRefreshConversations
-  );
 
   // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [realtimeMessages]);
+
+  // ==================== CLEANUP ON UNMOUNT ====================
+  useEffect(() => {
+    return () => {
+      // Cleanup listeners on unmount
+      realtimeMessagingService.cleanup();
+      logger.info('✅ Cleanup: Messaging service cleaned up');
+    };
+  }, []);
 
   useEffect(() => {
     // Hide Header/Footer
@@ -625,26 +728,27 @@ const MessagesPage: React.FC = () => {
   return (
     <>
       <Header />
-      <MessagesContainer ref={messagesContainerRef}>
-        {/* Pull-to-Refresh Indicator */}
-        <PullToRefreshIndicator
-          pulling={pulling}
-          refreshing={refreshing}
-          pullingText={language === 'bg' ? 'Издърпайте за опресняване' : 'Pull to refresh'}
-          refreshingText={language === 'bg' ? 'Опресняване...' : 'Refreshing...'}
-          position="top"
-        />
-
+      <MessagesContainer ref={pullToRefreshContainerRef}>
         <PageContainer>
           <Sidebar $visible={showSidebar}>
             <SidebarHeader>
-              <div style={{ position: 'relative' }}>
-                <SearchInput
-                  placeholder={t('messages.search', 'Search messages...')}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
+              <HeaderTopRow>
+                <div style={{ position: 'relative', flex: 1 }}>
+                  <SearchInput
+                    placeholder={t('messages.search', 'Search messages...')}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                <ClearCacheButton 
+                  onClick={handleClearCache}
+                  disabled={isClearing}
+                  title={t('messages.clearCache', 'Clear cache')}
+                >
+                  <RefreshCw />
+                  {isClearing ? 'Clearing...' : 'Clear'}
+                </ClearCacheButton>
+              </HeaderTopRow>
             </SidebarHeader>
 
             <ConversationList>

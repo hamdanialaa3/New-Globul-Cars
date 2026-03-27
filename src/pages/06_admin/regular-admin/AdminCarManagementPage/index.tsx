@@ -213,7 +213,7 @@ const LoadingState = styled.div`
 const AdminCarManagementPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [cars, setCars] = useState<CarListing[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -395,7 +395,7 @@ const AdminCarManagementPage: React.FC = () => {
                   <CarImageThumbnail src={car.images[0] as any} alt={`${car.make} ${car.model}`} />
                 ) : (
                   <div style={{ width: '60px', height: '60px', background: '#f1f3f5', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <CarIcon size={36} color="#FF7900" />
+                    <CarIcon size={36} color="#2563EB" />
                   </div>
                 )}
               </Td>
@@ -438,7 +438,7 @@ const AdminCarManagementPage: React.FC = () => {
       {filteredCars.length === 0 && (
         <div style={{ textAlign: 'center', padding: '4rem', background: 'white', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }}>
           <p style={{ color: '#7f8c8d', fontSize: '1.2rem' }}>
-            {language === 'bg' ? 'Няма намерени автомобили' : 'No cars found'}
+            {t('cars.noResults')}
           </p>
         </div>
       )}
@@ -447,4 +447,5 @@ const AdminCarManagementPage: React.FC = () => {
 };
 
 export default AdminCarManagementPage;
+
 

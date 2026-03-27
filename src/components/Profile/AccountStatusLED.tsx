@@ -16,11 +16,11 @@ interface AccountStatusLEDProps {
 const pulseOrange = keyframes`
   0%, 100% {
     opacity: 0.6;
-    box-shadow: 0 0 8px rgba(255, 121, 0, 0.4);
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.4);
   }
   50% {
     opacity: 1;
-    box-shadow: 0 0 16px rgba(255, 121, 0, 0.8), 0 0 24px rgba(255, 121, 0, 0.4);
+    box-shadow: 0 0 16px rgba(99, 102, 241, 0.8), 0 0 24px rgba(99, 102, 241, 0.4);
   }
 `;
 
@@ -42,11 +42,11 @@ const LEDContainer = styled.div<{ $isGuest: boolean; $isVerified: boolean }>`
   padding: 16px 20px;
   background: ${props => 
     props.$isGuest 
-      ? 'rgba(255, 121, 0, 0.08)' 
+      ? 'rgba(99, 102, 241, 0.08)' 
       : 'rgba(34, 197, 94, 0.08)'};
   border: 2px solid ${props => 
     props.$isGuest 
-      ? 'rgba(255, 121, 0, 0.3)' 
+      ? 'rgba(99, 102, 241, 0.3)' 
       : 'rgba(34, 197, 94, 0.3)'};
   border-radius: 12px;
   backdrop-filter: blur(8px);
@@ -59,11 +59,11 @@ const LEDIndicator = styled.div<{ $isGuest: boolean; $isVerified: boolean }>`
   border-radius: 50%;
   background: ${props => 
     props.$isGuest 
-      ? '#FF7900' 
+      ? '#2563EB' 
       : '#22C55E'};
   box-shadow: ${props => 
     props.$isGuest 
-      ? '0 0 12px rgba(255, 121, 0, 0.6)' 
+      ? '0 0 12px rgba(99, 102, 241, 0.6)' 
       : '0 0 12px rgba(34, 197, 94, 0.6)'};
   animation: ${props => 
     props.$isGuest 
@@ -104,7 +104,7 @@ const StatusTitle = styled.div<{ $isGuest: boolean }>`
   font-weight: 600;
   color: ${props => 
     props.$isGuest 
-      ? '#FF7900' 
+      ? '#2563EB' 
       : '#22C55E'};
 `;
 
@@ -160,4 +160,6 @@ const AccountStatusLED: React.FC<AccountStatusLEDProps> = ({
 };
 
 export default AccountStatusLED;
+
+
 

@@ -184,7 +184,7 @@ const ProfileOverview: React.FC = () => {
                   {language === 'bg' ? 'Уебсайт:' : 'Website:'}
                 </InfoLabel>
                 <InfoValue>
-                  <a href={hasBusinessInfo.website} target="_blank" rel="noopener noreferrer" style={{ color: '#FF7900' }}>
+                  <a href={hasBusinessInfo.website} target="_blank" rel="noopener noreferrer" style={{ color: '#2563EB' }}>
                     {hasBusinessInfo.website}
                   </a>
                 </InfoValue>
@@ -293,7 +293,7 @@ const ProfileOverview: React.FC = () => {
                   {language === 'bg' ? 'Уебсайт:' : 'Website:'}
                 </InfoLabel>
                 <InfoValue>
-                  <a href={user.website} target="_blank" rel="noopener noreferrer" style={{ color: '#FF7900' }}>
+                  <a href={user.website} target="_blank" rel="noopener noreferrer" style={{ color: '#2563EB' }}>
                     {user.website}
                   </a>
                 </InfoValue>
@@ -385,7 +385,7 @@ const SectionTitle = styled.h3`
   margin: 0;
   
   svg {
-    color: #FF7900;
+    color: #2563EB;
     flex-shrink: 0;
   }
   
@@ -414,8 +414,8 @@ const EditButton = styled.button`
   
   &:hover {
     background: #e9ecef;
-    border-color: #FF7900;
-    color: #FF7900;
+    border-color: #2563EB;
+    color: #2563EB;
   }
   
   @media (max-width: 480px) {
@@ -452,7 +452,7 @@ const InfoLabel = styled.div`
   letter-spacing: 0.5px;
   
   svg {
-    color: #FF7900;
+    color: #2563EB;
     flex-shrink: 0;
   }
 `;
@@ -486,4 +486,5 @@ const VerifiedBadge = styled.div`
 `;
 
 export default ProfileOverview;
+
 

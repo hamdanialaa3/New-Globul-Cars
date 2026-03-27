@@ -147,13 +147,15 @@ const UploadButton = styled.button`
   transition: all 0.2s;
   
   &:hover {
-    border-color: #FF8F10;
-    color: #FF7900;
+    border-color: #3B82F6;
+    color: #2563EB;
     background: #fff5e6;
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(255, 143, 16, 0.15);
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.15);
   }
 `;
 
 export default MediaUploader;
+
+
 

@@ -19,7 +19,7 @@ const SwitcherContainer = styled.div`
 `;
 
 const LangBtn = styled.button<{ $active: boolean }>`
-  background: ${props => props.$active ? 'linear-gradient(135deg, #ff8c61 0%, #ff5e3a 100%)' : 'transparent'};
+  background: ${props => props.$active ? 'linear-gradient(135deg, #8B5CF6 0%, #ff5e3a 100%)' : 'transparent'};
   color: ${props => props.$active ? 'white' : '#666'};
   border: none;
   padding: 6px 16px;
@@ -33,7 +33,7 @@ const LangBtn = styled.button<{ $active: boolean }>`
   gap: 6px;
 
   &:hover {
-    background: ${props => props.$active ? 'linear-gradient(135deg, #ff8c61 0%, #ff5e3a 100%)' : 'rgba(255, 255, 255, 0.1)'};
+    background: ${props => props.$active ? 'linear-gradient(135deg, #8B5CF6 0%, #ff5e3a 100%)' : 'rgba(255, 255, 255, 0.1)'};
     color: ${props => props.$active ? 'white' : '#1a1a1a'};
     transform: scale(1.05);
   }
@@ -58,3 +58,4 @@ const CentralLangSwitcher: React.FC = () => {
 };
 
 export default CentralLangSwitcher;
+

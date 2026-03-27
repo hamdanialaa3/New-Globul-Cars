@@ -20,7 +20,7 @@
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "theme_color": "#FF7900",
+  "theme_color": "#2563EB",
   "background_color": "#ffffff",
   "categories": ["automotive", "shopping", "marketplace"],
   "lang": "bg",

@@ -132,7 +132,7 @@ const StatLabel = styled.div`
 `;
 
 const AccidentCarsPage: React.FC = () => {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [cars, setCars] = useState<any[]>([]);
   const [stats, setStats] = useState({
@@ -286,7 +286,7 @@ const AccidentCarsPage: React.FC = () => {
 
           {loading ? (
             <div style={{ textAlign: 'center', padding: '3rem' }}>
-              {language === 'bg' ? 'Зареждане...' : 'Loading...'}
+              {t('common.loading')}
             </div>
           ) : cars.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '3rem', color: '#7f8c8d' }}>

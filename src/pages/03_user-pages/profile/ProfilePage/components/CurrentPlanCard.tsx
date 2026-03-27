@@ -257,7 +257,7 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({ profileType })
       },
       premium: {
         icon: Crown,
-        color: 'linear-gradient(135deg, #FF8F10 0%, #fb923c 100%)',
+        color: 'linear-gradient(135deg, #3B82F6 0%, #fb923c 100%)',
         name: 'Premium',
         nameBg: 'Премиум',
       },
@@ -399,3 +399,4 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({ profileType })
 };
 
 export default CurrentPlanCard;
+

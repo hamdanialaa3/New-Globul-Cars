@@ -113,7 +113,7 @@ const ShortcutItem = styled.div`
   padding: 1rem;
   background: #f8fafc;
   border-radius: 8px;
-  border-left: 3px solid #ff8f10;
+  border-left: 3px solid #3b82f6;
 `;
 
 const ShortcutDesc = styled.div`
@@ -282,4 +282,5 @@ const KeyboardShortcutsHelper: React.FC<KeyboardShortcutsHelperProps> = ({
 };
 
 export default KeyboardShortcutsHelper;
+
 

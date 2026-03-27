@@ -229,7 +229,7 @@ export const FilterSelect = styled.select`
 
   &:focus {
     border-color: var(--accent-primary) !important;
-    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.12) !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12) !important;
   }
 `;
 
@@ -249,7 +249,7 @@ export const FilterInput = styled.input`
 
   &:focus {
     border-color: var(--accent-primary) !important;
-    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.12) !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12) !important;
   }
 
   &:hover {
@@ -749,7 +749,7 @@ export const Badge = styled.span<{ $variant?: string }>`
         switch ($variant) {
             case 'Top Offer':
                 return css`
-          background: linear-gradient(135deg, #ff6b35cc, #e8561ecc);
+          background: linear-gradient(135deg, #6366F1cc, #e8561ecc);
           color: #fff !important;
         `;
             case 'Like New':
@@ -986,7 +986,7 @@ export const SearchBarInput = styled.input`
     border-color: var(--accent-primary) !important;
     background: ${({ theme }) =>
         theme.mode === 'dark' ? '#0d1117' : '#fff'} !important;
-    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1) !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
   }
 
   &:hover {
@@ -1017,12 +1017,12 @@ export const FilterApplyButton = styled.button`
     color: #fff !important;
     border: none !important;
     cursor: pointer;
-    box-shadow: 0 4px 16px rgba(255, 107, 53, 0.3) !important;
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3) !important;
     transform: none;
 
     &:hover {
       transform: none;
-      box-shadow: 0 4px 16px rgba(255, 107, 53, 0.3) !important;
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3) !important;
     }
   }
 `;
@@ -1043,3 +1043,4 @@ export const SkeletonCard = styled.div`
   background-size: 600px 100%;
   animation: ${shimmer} 1.5s infinite linear;
 `;
+

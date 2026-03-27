@@ -24,7 +24,7 @@ const TooltipTrigger = styled.div`
   transition: color 0.2s;
 
   &:hover {
-    color: #ff8f10;
+    color: #3b82f6;
   }
 `;
 
@@ -199,4 +199,5 @@ export const CarSellingTooltips = {
     images: 'Upload at least 5 photos from different angles for better visibility'
   }
 };
+
 

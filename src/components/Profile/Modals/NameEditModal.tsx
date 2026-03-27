@@ -191,7 +191,7 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #FF8F10;
+    border-color: #3B82F6;
   }
 
   &::placeholder {
@@ -226,7 +226,7 @@ const CancelButton = styled.button`
 const SaveButton = styled.button`
   flex: 1;
   padding: 12px 24px;
-  background: #FF8F10;
+  background: #3B82F6;
   border: none;
   border-radius: 6px;
   font-size: 1rem;
@@ -244,3 +244,4 @@ const SaveButton = styled.button`
     cursor: not-allowed;
   }
 `;
+

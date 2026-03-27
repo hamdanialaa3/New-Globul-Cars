@@ -107,11 +107,11 @@ const MainNavButton = styled.button<{ $isDark?: boolean; $primary?: boolean }>`
   padding: ${spacing.sm} clamp(8px, 1.5vw, ${spacing.lg});
   border: 2px solid ${({ $isDark, $primary }) =>
     $primary
-      ? ($isDark ? 'rgba(255, 107, 53, 0.5)' : colors.primary.main)
+      ? ($isDark ? 'rgba(99, 102, 241, 0.5)' : colors.primary.main)
       : ($isDark ? 'rgba(148, 163, 184, 0.3)' : colors.surface.border)};
   background: ${({ $isDark, $primary }) =>
     $primary
-      ? ($isDark ? 'rgba(255, 107, 53, 0.2)' : colors.primary.main)
+      ? ($isDark ? 'rgba(99, 102, 241, 0.2)' : colors.primary.main)
       : ($isDark ? 'rgba(148, 163, 184, 0.05)' : 'rgba(255, 255, 255, 0.5)')};
   color: ${({ $isDark, $primary }) =>
     $primary
@@ -131,13 +131,13 @@ const MainNavButton = styled.button<{ $isDark?: boolean; $primary?: boolean }>`
     transform: translateY(-2px);
     box-shadow: ${({ $isDark }) =>
     $isDark
-      ? '0 4px 12px rgba(255, 107, 53, 0.3)'
+      ? '0 4px 12px rgba(99, 102, 241, 0.3)'
       : '0 4px 12px rgba(0, 0, 0, 0.15)'};
     border-color: ${({ $isDark }) =>
-    $isDark ? 'rgba(255, 107, 53, 0.8)' : colors.primary.dark};
+    $isDark ? 'rgba(99, 102, 241, 0.8)' : colors.primary.dark};
     background: ${({ $isDark, $primary }) =>
     $primary
-      ? ($isDark ? 'rgba(255, 107, 53, 0.4)' : colors.primary.dark)
+      ? ($isDark ? 'rgba(99, 102, 241, 0.4)' : colors.primary.dark)
       : ($isDark ? 'rgba(148, 163, 184, 0.15)' : 'rgba(255, 255, 255, 0.8)')};
   }
 
@@ -213,11 +213,11 @@ const SettingsButton = styled.button<{ $isDark?: boolean }>`
     background: ${({ $isDark }) =>
     $isDark ? 'rgba(148, 163, 184, 0.2)' : 'rgba(255, 255, 255, 0.8)'};
     border-color: ${({ $isDark }) =>
-    $isDark ? 'rgba(255, 107, 53, 0.5)' : colors.primary.main};
+    $isDark ? 'rgba(99, 102, 241, 0.5)' : colors.primary.main};
     transform: translateY(-2px);
     box-shadow: ${({ $isDark }) =>
     $isDark
-      ? '0 4px 12px rgba(255, 107, 53, 0.2)'
+      ? '0 4px 12px rgba(99, 102, 241, 0.2)'
       : '0 4px 12px rgba(0, 0, 0, 0.1)'};
   }
 
@@ -309,7 +309,7 @@ const SettingsRow = styled.button<{ $isDark?: boolean; $highlight?: boolean }>`
   padding: ${spacing.md} ${spacing.lg};
   background: ${({ $isDark, $highlight }) =>
     $highlight
-      ? ($isDark ? 'rgba(255, 107, 53, 0.1)' : 'rgba(255, 107, 53, 0.05)')
+      ? ($isDark ? 'rgba(99, 102, 241, 0.1)' : 'rgba(99, 102, 241, 0.05)')
       : 'transparent'};
   border: none;
   border-bottom: 1px solid ${({ $isDark }) =>
@@ -338,7 +338,7 @@ const SettingsRow = styled.button<{ $isDark?: boolean; $highlight?: boolean }>`
     top: 0;
     bottom: 0;
     width: 3px;
-    background: ${({ $isDark }) => $isDark ? '#ff6b35' : colors.primary.main};
+    background: ${({ $isDark }) => $isDark ? '#6366F1' : colors.primary.main};
     transform: scaleY(0);
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -354,7 +354,7 @@ const SettingsRow = styled.button<{ $isDark?: boolean; $highlight?: boolean }>`
 
     .row-icon {
       transform: scale(1.1);
-      color: ${({ $isDark }) => $isDark ? '#ff6b35' : colors.primary.main};
+      color: ${({ $isDark }) => $isDark ? '#6366F1' : colors.primary.main};
     }
 
     .row-text {
@@ -425,7 +425,7 @@ const RowBadge = styled.span<{ $isDark?: boolean }>`
   height: 20px;
   padding: 0 6px;
   border-radius: 10px;
-  background: ${({ $isDark }) => $isDark ? '#ff6b35' : colors.primary.main};
+  background: ${({ $isDark }) => $isDark ? '#6366F1' : colors.primary.main};
   color: white;
   font-size: 0.75rem;
   font-weight: 600;
@@ -439,28 +439,28 @@ const ProfileAvatar = styled.img`
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid ${({ theme }) => theme?.colors?.primary?.main || '#ff6b35'};
+  border: 2px solid ${({ theme }) => theme?.colors?.primary?.main || '#6366F1'};
   background: ${({ theme }) => theme?.colors?.neutral?.gray100 || '#f8f9fa'};
 `;
 
 const ProfileRow = styled(SettingsRow)`
   padding: ${spacing.lg};
   background: ${({ $isDark }) =>
-    $isDark ? 'rgba(255, 107, 53, 0.1)' : 'rgba(255, 107, 53, 0.05)'};
+    $isDark ? 'rgba(99, 102, 241, 0.1)' : 'rgba(99, 102, 241, 0.05)'};
   border-bottom: 2px solid ${({ $isDark }) =>
-    $isDark ? 'rgba(255, 107, 53, 0.2)' : 'rgba(255, 107, 53, 0.15)'};
+    $isDark ? 'rgba(99, 102, 241, 0.2)' : 'rgba(99, 102, 241, 0.15)'};
   margin-bottom: ${spacing.sm};
 
   ${RowIcon} {
     width: 48px;
     height: 48px;
     background: ${({ $isDark }) =>
-    $isDark ? 'rgba(255, 107, 53, 0.2)' : 'rgba(255, 107, 53, 0.15)'};
+    $isDark ? 'rgba(99, 102, 241, 0.2)' : 'rgba(99, 102, 241, 0.15)'};
     
     svg {
       width: 24px;
       height: 24px;
-      color: ${({ $isDark }) => $isDark ? '#ff6b35' : colors.primary.main};
+      color: ${({ $isDark }) => $isDark ? '#6366F1' : colors.primary.main};
     }
   }
 
@@ -562,7 +562,7 @@ const DevModal = styled.div<{ $isOpen: boolean; $isDark?: boolean }>`
   left: 50%;
   transform: translate(-50%, -50%);
   background: ${({ $isDark }) => $isDark ? 'rgba(15, 23, 42, 0.98)' : 'white'};
-  border: 2px solid ${({ $isDark }) => $isDark ? 'rgba(255, 107, 53, 0.3)' : '#ff6b35'};
+  border: 2px solid ${({ $isDark }) => $isDark ? 'rgba(99, 102, 241, 0.3)' : '#6366F1'};
   border-radius: 16px;
   padding: 32px;
   z-index: ${zIndex.modal + 1};
@@ -597,15 +597,15 @@ const DevModalInput = styled.input<{ $isDark?: boolean }>`
 
   &:focus {
     outline: none;
-    border-color: #ff6b35;
-    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+    border-color: #6366F1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
   }
 `;
 
 const DevModalButton = styled.button<{ $isDark?: boolean }>`
   width: 100%;
   padding: 12px 24px;
-  background: #ff6b35;
+  background: #6366F1;
   color: white;
   border: none;
   border-radius: 8px;
@@ -617,7 +617,7 @@ const DevModalButton = styled.button<{ $isDark?: boolean }>`
   &:hover {
     background: #e55a2b;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
   }
 
   &:active {
@@ -709,7 +709,10 @@ const UnifiedHeader: React.FC = () => {
       <HeaderContainer $isDark={isDark}>
         <HeaderContent>
           <Logo $isDark={isDark} onClick={() => navigate('/')}>
-            <img src="/logo.png" alt={language === 'bg' ? 'Коли-Уан' : 'Koli One'} />
+            <picture>
+              <source srcSet="/logo.webp" type="image/webp" />
+              <img src="/logo.webp" alt={language === 'bg' ? 'Коли-Уан' : 'Koli One'} width="40" height="40" style={{ objectFit: 'contain' }} />
+            </picture>
             <span>{language === 'bg' ? 'Коли-Уан' : 'Koli One'}</span>
           </Logo>
 
@@ -1084,3 +1087,4 @@ const UnifiedHeader: React.FC = () => {
 };
 
 export default UnifiedHeader;
+

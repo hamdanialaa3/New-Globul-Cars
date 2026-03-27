@@ -50,11 +50,11 @@ const CityMarker = styled.g<{ $isSelected?: boolean; $isActive?: boolean }>`
   transition: all 0.3s ease;
 
   circle {
-    fill: ${props => props.$isSelected ? '#ff8f10' : props.$isActive ? '#0066cc' : '#005ca9'};
+    fill: ${props => props.$isSelected ? '#3b82f6' : props.$isActive ? '#0066cc' : '#005ca9'};
     stroke: white;
     stroke-width: 2;
     filter: ${props => props.$isSelected 
-      ? 'drop-shadow(0 0 10px #ff8f10)' 
+      ? 'drop-shadow(0 0 10px #3b82f6)' 
       : props.$isActive 
         ? 'drop-shadow(0 0 8px #0066cc)'
         : 'drop-shadow(0 0 4px rgba(0, 92, 169, 0.3))'};
@@ -63,8 +63,8 @@ const CityMarker = styled.g<{ $isSelected?: boolean; $isActive?: boolean }>`
 
   &:hover circle {
     r: 8;
-    fill: #ff8f10;
-    filter: drop-shadow(0 0 15px #ff8f10);
+    fill: #3b82f6;
+    filter: drop-shadow(0 0 15px #3b82f6);
   }
 
   text {
@@ -261,5 +261,6 @@ const BulgariaMap: React.FC<BulgariaMapProps> = ({
 };
 
 export default BulgariaMap;
+
 
 

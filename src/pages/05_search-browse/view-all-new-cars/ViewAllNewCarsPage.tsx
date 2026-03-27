@@ -270,7 +270,7 @@ const EmptyState = styled.div`
 
 const ViewAllNewCarsPage: React.FC = () => {
   const { currentLanguage, t } = useLanguage();
-  const isRTL = currentLanguage === 'ar';
+  const isBg = currentLanguage === 'bg';
   
   const [cars, setCars] = useState<UnifiedCar[]>([]);
   const [loading, setLoading] = useState(true);
@@ -314,15 +314,15 @@ const ViewAllNewCarsPage: React.FC = () => {
   };
   
   return (
-    <PageContainer dir={isRTL ? 'rtl' : 'ltr'}>
+    <PageContainer>
       <ContentWrapper>
         <PageHeader>
           <PageTitle>
-            {isRTL ? '???? ???????? ???????' : 'All New Cars'}
+            {isBg ? 'Всички нови автомобили' : 'All New Cars'}
           </PageTitle>
           <PageDescription>
-            {isRTL 
-              ? '???? ???? ???????? ???????? ??? ??????'
+            {isBg 
+              ? 'Разгледайте най-новите автомобили в платформата'
               : 'Browse the latest cars available on our platform'
             }
           </PageDescription>
@@ -350,21 +350,21 @@ const ViewAllNewCarsPage: React.FC = () => {
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value as SortOption)}
           >
-            <option value="newest">{isRTL ? '??????' : 'Newest'}</option>
-            <option value="price-asc">{isRTL ? '?????: ?? ????? ??????' : 'Price: Low to High'}</option>
-            <option value="price-desc">{isRTL ? '?????: ?? ?????? ?????' : 'Price: High to Low'}</option>
-            <option value="year-desc">{isRTL ? '?????: ?????? ?????' : 'Year: Newest First'}</option>
+            <option value="newest">{isBg ? 'Най-нови' : 'Newest'}</option>
+            <option value="price-asc">{isBg ? 'Цена: от ниска към висока' : 'Price: Low to High'}</option>
+            <option value="price-desc">{isBg ? 'Цена: от висока към ниска' : 'Price: High to Low'}</option>
+            <option value="year-desc">{isBg ? 'Година: новите първо' : 'Year: Newest First'}</option>
           </SortSelect>
         </ControlsBar>
         
         {loading ? (
           <LoadingContainer>
-            {isRTL ? '???? ???????...' : 'Loading...'}
+            {t('common.loading')}
           </LoadingContainer>
         ) : cars.length === 0 ? (
           <EmptyState>
-            <h3>{isRTL ? '?? ???? ??????' : 'No Cars Found'}</h3>
-            <p>{isRTL ? '?? ????? ?? ?????? ??? ?? ?????? ?? ????? ??????' : 'We couldn\'t find any cars at the moment'}</p>
+            <h3>{t('cars.noResults')}</h3>
+            <p>{t('common.noResultsDesc')}</p>
           </EmptyState>
         ) : (
           <CarsGrid $viewMode={viewMode}>

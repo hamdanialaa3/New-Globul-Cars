@@ -34,7 +34,7 @@ const TestHeader = styled.div`
 `;
 
 const TestTitle = styled.h2`
-  color: #ff8c61;
+  color: #8B5CF6;
   font-size: 18px;
   font-weight: 700;
   margin: 0;
@@ -81,7 +81,7 @@ const TestButton = styled.button<{ $variant: 'primary' | 'success' | 'danger' }>
         `;
       default:
         return `
-          background: #ff8c61;
+          background: #8B5CF6;
           color: #0f1419;
           &:hover { 
             background: #ffa885;
@@ -299,3 +299,4 @@ const FirebaseConnectionTest: React.FC = () => {
 };
 
 export default FirebaseConnectionTest;
+

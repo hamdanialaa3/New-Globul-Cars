@@ -14,7 +14,7 @@ const LEDContainer = styled.div`
   padding: 1.5rem;
   background: transparent; /* transparent background */
   border-radius: 15px;
-  border: 2px solid rgba(255, 143, 16, 0.15); /* light border */
+  border: 2px solid rgba(139, 92, 246, 0.15); /* light border */
   position: relative;
   overflow: hidden;
 
@@ -25,7 +25,7 @@ const LEDContainer = styled.div`
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, #ff8f10, #005ca9);
+    background: linear-gradient(90deg, #3b82f6, #005ca9);
   }
 `;
 
@@ -42,21 +42,21 @@ const LEDTitle = styled.div`
 `;
 
 const ProgressPercentage = styled.span`
-  color: #ff8f10;
+  color: #3b82f6;
   font-size: 1.25rem; /* 20px */
   font-weight: 700;
   line-height: 1.2;
   font-feature-settings: 'tnum';
-  text-shadow: 0 0 10px rgba(255, 143, 16, 0.3);
+  text-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
 `;
 
 const LEDStrip = styled.div`
   display: flex;
   gap: 0.3rem;
   padding: 0.75rem;
-  background: rgba(255, 143, 16, 0.03); /* very light orange background */
+  background: rgba(139, 92, 246, 0.03); /* very light orange background */
   border-radius: 10px;
-  border: 1px solid rgba(255, 143, 16, 0.15); /* light border */
+  border: 1px solid rgba(139, 92, 246, 0.15); /* light border */
   box-shadow: none; /* remove inner shadow */
 `;
 
@@ -65,14 +65,14 @@ const LEDSegment = styled.div<{ $isActive: boolean; $index: number }>`
   height: 12px;
   border-radius: 6px;
   background: ${props => props.$isActive 
-    ? 'linear-gradient(135deg, #ff8f10, #ffb347)' 
+    ? 'linear-gradient(135deg, #3b82f6, #ffb347)' 
     : 'rgba(200, 200, 200, 0.25)' /* light gray instead of white */
   };
   
   ${props => props.$isActive && `
     box-shadow: 
-      0 0 10px rgba(255, 143, 16, 0.8),
-      0 0 20px rgba(255, 143, 16, 0.4),
+      0 0 10px rgba(139, 92, 246, 0.8),
+      0 0 20px rgba(139, 92, 246, 0.4),
       inset 0 1px 3px rgba(255, 255, 255, 0.5);
     animation: glow 1.5s ease-in-out infinite;
     animation-delay: ${props.$index * 0.05}s;
@@ -83,14 +83,14 @@ const LEDSegment = styled.div<{ $isActive: boolean; $index: number }>`
   @keyframes glow {
     0%, 100% {
       box-shadow: 
-        0 0 10px rgba(255, 143, 16, 0.8),
-        0 0 20px rgba(255, 143, 16, 0.4),
+        0 0 10px rgba(139, 92, 246, 0.8),
+        0 0 20px rgba(139, 92, 246, 0.4),
         inset 0 1px 3px rgba(255, 255, 255, 0.5);
     }
     50% {
       box-shadow: 
-        0 0 15px rgba(255, 143, 16, 1),
-        0 0 30px rgba(255, 143, 16, 0.6),
+        0 0 15px rgba(139, 92, 246, 1),
+        0 0 30px rgba(139, 92, 246, 0.6),
         inset 0 1px 3px rgba(255, 255, 255, 0.7);
     }
   }
@@ -136,4 +136,6 @@ const ProgressLED: React.FC<ProgressLEDProps> = ({ progress, totalSteps, current
 };
 
 export default ProgressLED;
+
+
 

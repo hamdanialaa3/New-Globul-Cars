@@ -21,10 +21,10 @@ interface Theme {
 
 const THEMES: Record<ProfileType, Theme> = {
   private: {
-    primary: '#FF8F10',
+    primary: '#3B82F6',
     primaryDark: '#FF6B00',
     primaryLight: '#FFB84D',
-    gradient: 'linear-gradient(135deg, #FF8F10, #FF6B00)'
+    gradient: 'linear-gradient(135deg, #3B82F6, #FF6B00)'
   },
   dealer: {
     primary: '#2196F3',
@@ -221,3 +221,4 @@ const ThemeChangeToast: React.FC<ThemeChangeToastProps> = ({ fromType, toType })
 };
 
 export default ThemeChangeToast;
+

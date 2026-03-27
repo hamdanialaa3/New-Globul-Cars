@@ -47,7 +47,7 @@ const TabsContainer = styled.div`
   }
   
   &::-webkit-scrollbar-thumb {
-    background: rgba(255, 143, 16, 0.3);
+    background: rgba(139, 92, 246, 0.3);
     border-radius: 2px;
   }
   
@@ -146,4 +146,5 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({ theme, currentTab,
 };
 
 export default TabNavigation;
+
 

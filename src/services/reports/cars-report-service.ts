@@ -242,7 +242,7 @@ export class CarsReportService {
         <style>
           table { border-collapse: collapse; width: 100%; }
           th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 12px; }
-          th { background-color: #FF6B35; color: white; font-weight: bold; }
+          th { background-color: #6366F1; color: white; font-weight: bold; }
           tr:nth-child(even) { background-color: #f2f2f2; }
           .sold { background-color: #ffebee; }
           .active { background-color: #e8f5e9; }
@@ -330,4 +330,5 @@ export class CarsReportService {
 }
 
 export const carsReportService = CarsReportService.getInstance();
+
 

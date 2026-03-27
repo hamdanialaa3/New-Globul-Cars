@@ -67,9 +67,9 @@ const PeriodSelector = styled.div`
 
 const PeriodButton = styled.button<{ $active: boolean }>`
   padding: 8px 16px;
-  background: ${props => props.$active ? '#FF7900' : 'white'};
+  background: ${props => props.$active ? '#2563EB' : 'white'};
   color: ${props => props.$active ? 'white' : '#6c757d'};
-  border: 1px solid ${props => props.$active ? '#FF7900' : '#dee2e6'};
+  border: 1px solid ${props => props.$active ? '#2563EB' : '#dee2e6'};
   border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 500;
@@ -77,19 +77,19 @@ const PeriodButton = styled.button<{ $active: boolean }>`
   transition: all 0.2s ease;
   
   &:hover {
-    border-color: #FF7900;
+    border-color: #2563EB;
     background: ${props => props.$active ? '#e66d00' : '#f8f9fa'};
   }
   
   /* Dark Mode Support */
   html[data-theme="dark"] & {
-    background: ${props => props.$active ? '#FF7900' : 'rgba(30, 41, 59, 0.8)'};
+    background: ${props => props.$active ? '#2563EB' : 'rgba(30, 41, 59, 0.8)'};
     color: ${props => props.$active ? 'white' : '#cbd5e1'};
-    border-color: ${props => props.$active ? '#FF7900' : 'rgba(148, 163, 184, 0.3)'};
+    border-color: ${props => props.$active ? '#2563EB' : 'rgba(148, 163, 184, 0.3)'};
     
     &:hover {
       background: ${props => props.$active ? '#e66d00' : 'rgba(51, 65, 85, 0.9)'};
-      border-color: #FF7900;
+      border-color: #2563EB;
     }
   }
 `;
@@ -110,8 +110,8 @@ const StatCard = styled.div`
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.15);
-    border-color: rgba(255, 121, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.3);
   }
   
   /* Dark Mode Support */
@@ -120,8 +120,8 @@ const StatCard = styled.div`
     border-color: rgba(148, 163, 184, 0.2);
     
     &:hover {
-      box-shadow: 0 4px 12px rgba(255, 121, 0, 0.25);
-      border-color: rgba(255, 121, 0, 0.4);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+      border-color: rgba(99, 102, 241, 0.4);
     }
   }
 `;
@@ -459,7 +459,7 @@ export const ProfileAnalyticsDashboard: React.FC<ProfileAnalyticsDashboardProps>
       <Container>
         <Header>
           <h2>
-            <BarChart3 size={28} color="#FF7900" />
+            <BarChart3 size={28} color="#2563EB" />
             {t('title')}
           </h2>
         </Header>
@@ -478,7 +478,7 @@ export const ProfileAnalyticsDashboard: React.FC<ProfileAnalyticsDashboardProps>
       <Container>
         <Header>
           <h2>
-            <BarChart3 size={28} color="#FF7900" />
+            <BarChart3 size={28} color="#2563EB" />
             {t('title')}
           </h2>
         </Header>
@@ -493,7 +493,7 @@ export const ProfileAnalyticsDashboard: React.FC<ProfileAnalyticsDashboardProps>
     <Container>
       <Header>
         <h2>
-          <BarChart3 size={28} color="#FF7900" />
+          <BarChart3 size={28} color="#2563EB" />
           {t('title')}
           <LiveDataBadge>
             ✅ LIVE DATA
@@ -523,7 +523,7 @@ export const ProfileAnalyticsDashboard: React.FC<ProfileAnalyticsDashboardProps>
 
       <StatsGrid>
         <StatCard>
-          <StatIcon $color="#FF7900">
+          <StatIcon $color="#2563EB">
             <Eye size={24} />
           </StatIcon>
           <StatValue>{analytics.profileViews.toLocaleString()}</StatValue>
@@ -609,7 +609,7 @@ export const ProfileAnalyticsDashboard: React.FC<ProfileAnalyticsDashboardProps>
               <Bar
                 key={day}
                 $height={(value / getMaxValue()) * 100}
-                $color="#FF7900"
+                $color="#2563EB"
                 data-value={value}
                 title={`${day}: ${value}`}
               />
@@ -649,4 +649,6 @@ export const ProfileAnalyticsDashboard: React.FC<ProfileAnalyticsDashboardProps>
 };
 
 export default ProfileAnalyticsDashboard;
+
+
 

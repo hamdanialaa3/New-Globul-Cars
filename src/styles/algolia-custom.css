@@ -2,7 +2,7 @@
 /* Koli One Theme */
 
 :root {
-  --aa-primary-color: #FF8F10;
+  --aa-primary-color: #3B82F6;
   --aa-text-color: var(--text-primary);
   --aa-background-color: var(--bg-card);
   --aa-input-border-color: var(--border-primary);
@@ -32,14 +32,14 @@
 
 .ais-SearchBox-input:focus {
   outline: none;
-  border-color: #FF8F10;
-  box-shadow: 0 0 0 4px rgba(255, 143, 16, 0.1);
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
 }
 
 .ais-SearchBox-submit,
 .ais-SearchBox-reset {
   padding: 0.75rem;
-  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #fb923c 100%);
   border: none;
   border-radius: 50%;
   cursor: pointer;
@@ -52,7 +52,7 @@
 .ais-SearchBox-submit:hover,
 .ais-SearchBox-reset:hover {
   transform: scale(1.1);
-  box-shadow: 0 4px 15px rgba(255, 143, 16, 0.4);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
 }
 
 .ais-SearchBox-submitIcon,
@@ -104,7 +104,7 @@
 }
 
 .ais-RefinementList-label:hover {
-  color: #FF8F10;
+  color: #3B82F6;
 }
 
 .ais-RefinementList-checkbox {
@@ -117,8 +117,8 @@
 }
 
 .ais-RefinementList-checkbox:checked {
-  background: #FF8F10;
-  border-color: #FF8F10;
+  background: #3B82F6;
+  border-color: #3B82F6;
 }
 
 .ais-RefinementList-labelText {
@@ -127,8 +127,8 @@
 
 .ais-RefinementList-count {
   margin-left: auto;
-  background: rgba(255, 143, 16, 0.1);
-  color: #FF8F10;
+  background: rgba(139, 92, 246, 0.1);
+  color: #3B82F6;
   padding: 0.15rem 0.5rem;
   border-radius: 12px;
   font-size: 0.8rem;
@@ -142,15 +142,15 @@
   padding: 0.4rem 0.8rem;
   margin-top: 0.5rem;
   cursor: pointer;
-  color: #FF8F10;
+  color: #3B82F6;
   font-weight: 600;
   font-size: 0.85rem;
   transition: all 0.3s ease;
 }
 
 .ais-RefinementList-showMore:hover {
-  background: rgba(255, 143, 16, 0.1);
-  border-color: #FF8F10;
+  background: rgba(139, 92, 246, 0.1);
+  border-color: #3B82F6;
 }
 
 /* RangeInput */
@@ -173,8 +173,8 @@
 
 .ais-RangeInput-input:focus {
   outline: none;
-  border-color: #FF8F10;
-  box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.1);
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
 }
 
 .ais-RangeInput-separator {
@@ -184,7 +184,7 @@
 
 .ais-RangeInput-submit {
   padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #fb923c 100%);
   color: white;
   border: none;
   border-radius: 6px;
@@ -196,7 +196,7 @@
 
 .ais-RangeInput-submit:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(255, 143, 16, 0.4);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
 }
 
 /* Pagination */
@@ -220,8 +220,8 @@
 }
 
 .ais-Pagination-item--selected {
-  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
-  border-color: #FF8F10;
+  background: linear-gradient(135deg, #3B82F6 0%, #fb923c 100%);
+  border-color: #3B82F6;
 }
 
 .ais-Pagination-item--selected .ais-Pagination-link {
@@ -288,15 +288,15 @@
 }
 
 .ais-CurrentRefinements-item {
-  background: rgba(255, 143, 16, 0.1);
-  border: 1px solid #FF8F10;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid #3B82F6;
   border-radius: 20px;
   padding: 0.4rem 0.8rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 0.85rem;
-  color: #FF8F10;
+  color: #3B82F6;
   font-weight: 600;
 }
 
@@ -329,18 +329,18 @@
 
 .ais-SortBy-select:focus {
   outline: none;
-  border-color: #FF8F10;
-  box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.1);
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
 }
 
 .ais-SortBy-select:hover {
-  border-color: #FF8F10;
+  border-color: #3B82F6;
 }
 
 /* Highlight */
 mark {
-  background: rgba(255, 143, 16, 0.2);
-  color: #FF8F10;
+  background: rgba(139, 92, 246, 0.2);
+  color: #3B82F6;
   font-weight: 700;
   padding: 0 2px;
 }
@@ -356,4 +356,6 @@ mark {
     flex-wrap: wrap;
   }
 }
+
+
 

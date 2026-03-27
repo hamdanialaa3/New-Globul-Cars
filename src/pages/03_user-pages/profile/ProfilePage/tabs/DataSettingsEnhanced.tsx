@@ -55,7 +55,7 @@ const Subtitle = styled.p`
 const Section = styled.div`
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 143, 16, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.1);
   border-radius: 16px;
   padding: 1.75rem;
   display: flex;
@@ -65,15 +65,15 @@ const Section = styled.div`
 
   &:hover {
     border-color: var(--accent-primary);
-    background: rgba(255, 143, 16, 0.05);
+    background: rgba(139, 92, 246, 0.05);
   }
 
   [data-theme="dark"] & {
     background: rgba(50, 50, 60, 0.3);
-    border-color: rgba(255, 143, 16, 0.2);
+    border-color: rgba(139, 92, 246, 0.2);
 
     &:hover {
-      background: rgba(255, 143, 16, 0.08);
+      background: rgba(139, 92, 246, 0.08);
       border-color: var(--accent-primary);
     }
   }
@@ -138,7 +138,7 @@ const DataItem = styled.div`
 
   &:hover {
     border-color: var(--accent-primary);
-    box-shadow: 0 4px 12px rgba(255, 143, 16, 0.15);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
   }
 
   [data-theme="dark"] & {
@@ -199,7 +199,7 @@ const ActionButtons = styled.div`
       color: white;
 
       &:hover {
-        box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
         transform: translateY(-2px);
       }
 
@@ -745,3 +745,4 @@ const DataSettingsEnhanced: React.FC = () => {
 };
 
 export default DataSettingsEnhanced;
+

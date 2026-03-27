@@ -13,10 +13,10 @@ import { toast } from 'react-toastify';
 // 🟧 Private (Personal) = ORANGE
 // 🟩 Dealer = GREEN  
 // 🟦 Company = BLUE
-const gradientPrivate = 'linear-gradient(135deg, #FF8F10 0%, #FF7900 100%)';  // Orange
+const gradientPrivate = 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)';  // Orange
 const gradientDealer = 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)';   // Green
 const gradientCompany = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';  // Blue
-const colorPrivate = '#FF8F10';
+const colorPrivate = '#3B82F6';
 const colorDealer = '#16a34a';
 const colorCompany = '#3b82f6';
 const glassBg = 'rgba(255, 255, 255, 0.7)';
@@ -31,9 +31,9 @@ const fadeIn = keyframes`
 `;
 
 const pulse = keyframes`
-  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.4); }
-  70% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(255, 107, 53, 0); }
-  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 53, 0); }
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+  70% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
 `;
 
 // Styled Components
@@ -195,7 +195,7 @@ const SelectButton = styled.button<{ $isActive: boolean; $type: 'private' | 'dea
   &:hover {
     background: ${({ $isActive, $type }) =>
         $isActive
-            ? ($type === 'private' ? '#FF7900' : $type === 'dealer' ? '#15803d' : '#2563eb')
+            ? ($type === 'private' ? '#2563EB' : $type === 'dealer' ? '#15803d' : '#2563eb')
             : 'rgba(148, 163, 184, 0.2)'};
     color: ${({ $isActive }) => $isActive ? 'white' : '#475569'};
   }
@@ -423,3 +423,5 @@ export const ProfileTypeSwitcher = () => {
         </Container>
     );
 };
+
+

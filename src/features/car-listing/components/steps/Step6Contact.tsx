@@ -68,7 +68,7 @@ const Label = styled.label<{ $hasValue?: boolean }>`
   gap: 0.5rem;
   
   span {
-    color: #ff8f10;
+    color: #3b82f6;
   }
 `;
 
@@ -376,4 +376,5 @@ export const Step6Contact: React.FC = () => {
     </StepContainer>
   );
 };
+
 

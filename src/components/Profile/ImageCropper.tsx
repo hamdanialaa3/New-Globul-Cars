@@ -84,7 +84,7 @@ const ControlButton = styled.button<{ $variant?: 'primary' | 'danger' }>`
     color: white;
     &:hover { background: #e53935; }
   ` : props.$variant === 'primary' ? `
-    background: #FF7900;
+    background: #2563EB;
     color: white;
     &:hover { background: #ff8c1a; }
   ` : `
@@ -116,7 +116,7 @@ const SliderContainer = styled.div`
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      background: #FF7900;
+      background: #2563EB;
       cursor: pointer;
     }
   }
@@ -263,3 +263,4 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
 };
 
 export default ImageCropper;
+

@@ -1,22 +1,24 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+/**
+ * QuickActionsPanel — FULLY REAL PRODUCTION VERSION
+ * ===================================================
+ * Every button triggers a real Firestore/Firebase operation.
+ * No mocks. No fake timeouts. Zero pretend logic.
+ */
+
+import React, { useState, useEffect } from 'react';
+import styled, { keyframes } from 'styled-components';
 import {
-  Zap,
-  Trash2,
-  Database,
-  Download,
-  Upload,
-  RefreshCw,
-  Bell,
-  FileText,
-  HardDrive,
-  AlertCircle,
-  CheckCircle,
-  Loader,
-  Settings,
-  Package,
-  BarChart3
+  Zap, Trash2, Database, Download, RefreshCw,
+  Bell, FileText, HardDrive, AlertCircle, CheckCircle,
+  Loader, Settings, BarChart3, ShieldAlert, ToggleLeft,
+  ToggleRight, Heart, Activity, Globe, Lock, Unlock
 } from 'lucide-react';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/firebase/firebase-config';
+import { adminOperationsService } from '@/services/admin-operations-service';
+import { logger } from '@/services/logger-service';
+
+const spin = keyframes`from { transform: rotate(0deg); } to { transform: rotate(360deg); }`;
 
 const Container = styled.div`
   background: #0f1419;
@@ -27,796 +29,560 @@ const Container = styled.div`
 `;
 
 const Header = styled.div`
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 `;
 
 const Title = styled.h2`
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
-  color: #ff8c61;
-  margin: 0 0 8px 0;
+  color: #8B5CF6;
+  margin: 0 0 6px 0;
   display: flex;
   align-items: center;
   gap: 10px;
 `;
 
 const Subtitle = styled.p`
-  font-size: 14px;
+  font-size: 13px;
   color: #9ca3af;
   margin: 0;
 `;
 
+const LiveBadge = styled.span`
+  font-size: 11px;
+  font-weight: 700;
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+`;
+
+const StatusBar = styled.div`
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  background: #111827;
+  border: 1px solid #1e2d3d;
+  border-radius: 10px;
+  margin-bottom: 24px;
+`;
+
+const StatusItem = styled.div<{ $ok: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: ${p => p.$ok ? '#86efac' : '#fca5a5'};
+`;
+
 const ActionsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
   gap: 16px;
 `;
 
-const ActionCard = styled.div<{ $variant?: 'danger' | 'warning' | 'success' }>`
+const ActionCard = styled.div<{ $variant?: 'danger' | 'warning' | 'success' | 'info' }>`
   background: #1a1f2e;
-  border-radius: 8px;
-  padding: 20px;
-  border: 1px solid #2d3748;
+  border-radius: 10px;
+  padding: 18px;
+  border: 1px solid ${p =>
+    p.$variant === 'danger' ? '#7f1d1d' :
+    p.$variant === 'warning' ? '#78350f' :
+    p.$variant === 'success' ? '#064e3b' :
+    p.$variant === 'info' ? '#1e3a8a' : '#2d3748'
+  };
   transition: all 0.2s;
-
-  ${props => {
-    if (props.$variant === 'danger') {
-      return `
-        border-color: #7f1d1d;
-        &:hover {
-          border-color: #991b1b;
-          background: #1a0e0e;
-        }
-      `;
-    }
-    if (props.$variant === 'warning') {
-      return `
-        border-color: #78350f;
-        &:hover {
-          border-color: #92400e;
-          background: #1a1410;
-        }
-      `;
-    }
-    if (props.$variant === 'success') {
-      return `
-        border-color: #064e3b;
-        &:hover {
-          border-color: #065f46;
-          background: #0a1712;
-        }
-      `;
-    }
-    return `
-      &:hover {
-        border-color: #374151;
-        background: #1e2432;
-      }
-    `;
-  }}
+  &:hover {
+    border-color: ${p =>
+      p.$variant === 'danger' ? '#ef4444' :
+      p.$variant === 'warning' ? '#f59e0b' :
+      p.$variant === 'success' ? '#10b981' :
+      p.$variant === 'info' ? '#3b82f6' : '#6366f1'
+    };
+    background: #1e2432;
+  }
 `;
 
 const ActionHeader = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 `;
 
-const ActionIcon = styled.div<{ $variant?: 'danger' | 'warning' | 'success' }>`
-  width: 40px;
-  height: 40px;
+const ActionIcon = styled.div<{ $variant?: 'danger' | 'warning' | 'success' | 'info' }>`
+  width: 38px;
+  height: 38px;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  
-  ${props => {
-    if (props.$variant === 'danger') {
-      return `
-        background: #7f1d1d;
-        color: #fca5a5;
-      `;
-    }
-    if (props.$variant === 'warning') {
-      return `
-        background: #78350f;
-        color: #fcd34d;
-      `;
-    }
-    if (props.$variant === 'success') {
-      return `
-        background: #064e3b;
-        color: #6ee7b7;
-      `;
-    }
-    return `
-      background: #374151;
-      color: #e5e7eb;
-    `;
-  }}
+  background: ${p =>
+    p.$variant === 'danger' ? 'rgba(239,68,68,0.15)' :
+    p.$variant === 'warning' ? 'rgba(245,158,11,0.15)' :
+    p.$variant === 'success' ? 'rgba(16,185,129,0.15)' :
+    p.$variant === 'info' ? 'rgba(59,130,246,0.15)' : 'rgba(139,92,246,0.15)'
+  };
+  color: ${p =>
+    p.$variant === 'danger' ? '#f87171' :
+    p.$variant === 'warning' ? '#fbbf24' :
+    p.$variant === 'success' ? '#34d399' :
+    p.$variant === 'info' ? '#60a5fa' : '#a78bfa'
+  };
 `;
 
 const ActionTitle = styled.div`
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: #e5e7eb;
+  flex: 1;
 `;
 
 const ActionDescription = styled.div`
-  font-size: 13px;
-  color: #9ca3af;
+  font-size: 12px;
+  color: #6b7280;
   line-height: 1.5;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 `;
 
-const ActionButton = styled.button<{ $variant?: 'danger' | 'warning' | 'success' | 'primary' }>`
-  width: 100%;
-  padding: 10px 16px;
-  border: none;
+const ResultBadge = styled.div<{ $ok: boolean }>`
+  font-size: 11px;
+  color: ${p => p.$ok ? '#86efac' : '#fca5a5'};
+  background: ${p => p.$ok ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)'};
+  border: 1px solid ${p => p.$ok ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'};
+  padding: 4px 8px;
   border-radius: 6px;
-  font-size: 13px;
+  margin-bottom: 10px;
+  word-break: break-word;
+`;
+
+const ActionButton = styled.button<{ $variant?: 'danger' | 'warning' | 'success' | 'primary' | 'info' }>`
+  width: 100%;
+  padding: 9px 14px;
+  border: none;
+  border-radius: 7px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   justify-content: center;
-
-  ${props => {
-    if (props.$variant === 'danger') {
-      return `
-        background: #ef4444;
-        color: #fff;
-        &:hover {
-          background: #dc2626;
-        }
-      `;
-    }
-    if (props.$variant === 'warning') {
-      return `
-        background: #f59e0b;
-        color: #fff;
-        &:hover {
-          background: #d97706;
-        }
-      `;
-    }
-    if (props.$variant === 'success') {
-      return `
-        background: #10b981;
-        color: #fff;
-        &:hover {
-          background: #059669;
-        }
-      `;
-    }
-    return `
-      background: #ff8c61;
-      color: #0f1419;
-      &:hover {
-        background: #ff7a47;
-      }
-    `;
-  }}
-
+  background: ${p =>
+    p.$variant === 'danger' ? '#ef4444' :
+    p.$variant === 'warning' ? '#f59e0b' :
+    p.$variant === 'success' ? '#10b981' :
+    p.$variant === 'info' ? '#3b82f6' : '#8B5CF6'
+  };
+  color: #fff;
+  &:hover:not(:disabled) {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+  }
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: none;
   }
 `;
 
-const Message = styled.div<{ $type: 'success' | 'error' | 'info' }>`
-  padding: 12px 16px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  ${props => {
-    if (props.$type === 'success') {
-      return `
-        background: #064e3b;
-        color: #6ee7b7;
-        border: 1px solid #047857;
-      `;
-    }
-    if (props.$type === 'error') {
-      return `
-        background: #7f1d1d;
-        color: #fca5a5;
-        border: 1px solid #b91c1c;
-      `;
-    }
-    return `
-      background: #1e3a8a;
-      color: #93c5fd;
-      border: 1px solid #1e40af;
-    `;
-  }}
+const SpinIcon = styled(Loader)`
+  animation: ${spin} 1s linear infinite;
 `;
 
-const ConfirmDialog = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #1a1f2e;
-  border: 2px solid #374151;
-  border-radius: 12px;
-  padding: 24px;
-  z-index: 1000;
-  max-width: 400px;
-  width: 90%;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-`;
-
-const DialogOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 999;
-`;
-
-const DialogTitle = styled.div`
-  font-size: 18px;
+const SectionDivider = styled.div`
+  grid-column: 1 / -1;
+  padding: 8px 0 4px;
+  font-size: 11px;
   font-weight: 700;
-  color: #e5e7eb;
-  margin-bottom: 12px;
+  color: #4b5563;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-bottom: 1px solid #1e2432;
+  margin-bottom: 4px;
+`;
+
+const ToggleRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
-`;
-
-const DialogMessage = styled.div`
-  font-size: 14px;
-  color: #9ca3af;
-  margin-bottom: 20px;
-  line-height: 1.6;
-`;
-
-const DialogButtons = styled.div`
-  display: flex;
+  justify-content: space-between;
   gap: 12px;
+  margin-bottom: 12px;
 `;
+
+const ToggleLabel = styled.span`
+  font-size: 13px;
+  color: #e5e7eb;
+  font-weight: 500;
+`;
+
+const ToggleStatus = styled.span<{ $active: boolean }>`
+  font-size: 11px;
+  color: ${p => p.$active ? '#f87171' : '#86efac'};
+  font-weight: 700;
+`;
+
+// ─── COMPONENT ───────────────────────────────────────────────────────────────
 
 const QuickActionsPanel: React.FC = () => {
-  const [message, setMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
   const [processing, setProcessing] = useState<string | null>(null);
-  const [confirmAction, setConfirmAction] = useState<{
-    title: string;
-    message: string;
-    action: () => void;
-  } | null>(null);
+  const [results, setResults] = useState<Record<string, { ok: boolean; msg: string }>>({});
+  const [health, setHealth] = useState<Record<string, boolean>>({});
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [freeMode, setFreeMode] = useState(false);
+  const [loadingState, setLoadingState] = useState(true);
 
-  const showMessage = (type: 'success' | 'error' | 'info', text: string) => {
-    setMessage({ type, text });
-    setTimeout(() => setMessage(null), 4000);
-  };
-
-  const handleAction = async (
-    actionId: string,
-    actionFn: () => Promise<void>,
-    requireConfirm?: { title: string; message: string }
-  ) => {
-    if (requireConfirm) {
-      setConfirmAction({
-        title: requireConfirm.title,
-        message: requireConfirm.message,
-        action: async () => {
-          setConfirmAction(null);
-          await executeAction(actionId, actionFn);
+  // Load initial platform state
+  useEffect(() => {
+    let isActive = true;
+    const init = async () => {
+      try {
+        const settingsSnap = await getDoc(doc(db, 'app_settings', 'site_settings'));
+        if (isActive && settingsSnap.exists()) {
+          const data = settingsSnap.data();
+          setMaintenanceMode(data?.maintenanceMode ?? false);
+          setFreeMode(data?.pricing?.subscriptionMode === 'free');
         }
-      });
-    } else {
-      await executeAction(actionId, actionFn);
-    }
-  };
 
-  const executeAction = async (actionId: string, actionFn: () => Promise<void>) => {
+        // Run quick health check
+        const healthResult = await adminOperationsService.getPlatformHealth();
+        if (isActive) setHealth(healthResult.details || {});
+      } catch (e) {
+        logger.warn('[QuickActions] Initial load error', { error: String(e) });
+      } finally {
+        if (isActive) setLoadingState(false);
+      }
+    };
+    init();
+    return () => { isActive = false; };
+  }, []);
+
+  const run = async (id: string, fn: () => Promise<{ success: boolean; message: string }>) => {
+    setProcessing(id);
     try {
-      setProcessing(actionId);
-      await actionFn();
-    } catch (error) {
-      showMessage('error', 'An error occurred while executing the operation');
+      const result = await fn();
+      setResults(prev => ({ ...prev, [id]: { ok: result.success, msg: result.message } }));
+    } catch (e: any) {
+      setResults(prev => ({ ...prev, [id]: { ok: false, msg: `❌ ${e.message}` } }));
     } finally {
       setProcessing(null);
     }
   };
 
-  // ═══════════════════════════════════════════════════════════
-  //  ACTION HANDLERS
-  // ═══════════════════════════════════════════════════════════
-
-  const clearCache = async () => {
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    localStorage.clear();
-    sessionStorage.clear();
-    showMessage('success', '✅ Cache cleared successfully');
+  const handleToggleMaintenance = async () => {
+    const next = !maintenanceMode;
+    if (!window.confirm(next ? '⚠️ Enable MAINTENANCE MODE? This will block all users!' : '✅ Disable maintenance mode?')) return;
+    await run('maintenance', async () => {
+      const result = await adminOperationsService.toggleMaintenanceMode(next);
+      if (result.success) setMaintenanceMode(next);
+      return result;
+    });
   };
 
-  const seedDemoData = async () => {
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    showMessage('success', '✅ Demo data added successfully');
+  const handleToggleFreeMode = async () => {
+    const next = !freeMode;
+    if (!window.confirm(next ? '🎁 Make ALL subscriptions FREE for everyone?' : '💰 Restore PAID subscriptions?')) return;
+    await run('freeMode', async () => {
+      const { doc: d, updateDoc, serverTimestamp } = await import('firebase/firestore');
+      const { db: database } = await import('@/firebase/firebase-config');
+      const ref = d(database, 'app_settings', 'site_settings');
+      await updateDoc(ref, {
+        'pricing.subscriptionMode': next ? 'free' : 'paid',
+        updatedAt: serverTimestamp(),
+      });
+      setFreeMode(next);
+      return { success: true, message: `✅ Subscription mode set to ${next ? 'FREE' : 'PAID'}.` };
+    });
   };
 
-  const exportAllData = async () => {
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    showMessage('success', '✅ Downloading export file...');
-  };
-
-  const cleanupDatabase = async () => {
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    showMessage('success', '✅ Database cleaned successfully');
-  };
-
-  const rebuildIndexes = async () => {
-    await new Promise(resolve => setTimeout(resolve, 4000));
-    showMessage('success', '✅ Indexes rebuilt successfully');
-  };
-
-  const sendTestNotification = async () => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    showMessage('success', '✅ Test notification sent');
-  };
-
-  const generateReports = async () => {
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    showMessage('success', '✅ Reports generated successfully');
-  };
-
-  const backupDatabase = async () => {
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    showMessage('success', '✅ Backup created successfully');
-  };
-
-  const optimizeImages = async () => {
-    await new Promise(resolve => setTimeout(resolve, 2500));
-    showMessage('success', '✅ Images optimized successfully');
-  };
-
-  const syncAlgolia = async () => {
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    showMessage('success', '✅ Algolia synced successfully');
-  };
-
-  const clearOldLogs = async () => {
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    showMessage('success', '✅ Old logs cleared');
-  };
-
-  const refreshStatistics = async () => {
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    showMessage('success', '✅ Statistics refreshed');
-  };
+  const btn = (id: string, label: string, icon: React.ReactNode, spinner: string) => (
+    processing === id
+      ? <><SpinIcon size={13} />{spinner}</>
+      : <>{icon}{label}</>
+  );
 
   return (
     <Container>
       <Header>
         <Title>
-          <Zap size={24} />
+          <Zap size={22} />
           Quick Actions
+          <LiveBadge>● LIVE PRODUCTION</LiveBadge>
         </Title>
-        <Subtitle>
-          One-click platform maintenance and management operations
-        </Subtitle>
+        <Subtitle>All operations connect directly to Firebase — zero mocks, instant real-world effect.</Subtitle>
       </Header>
 
-      {message && (
-        <Message $type={message.type}>
-          {message.type === 'success' && <CheckCircle size={16} />}
-          {message.type === 'error' && <AlertCircle size={16} />}
-          {message.type === 'info' && <AlertCircle size={16} />}
-          {message.text}
-        </Message>
+      {/* Platform Health */}
+      {!loadingState && (
+        <StatusBar>
+          <StatusItem $ok={!!health.firestore}>
+            <Database size={12} /> Firestore: {health.firestore ? 'OK' : 'ERROR'}
+          </StatusItem>
+          <StatusItem $ok={!!health.auth}>
+            <Lock size={12} /> Auth: {health.auth ? 'OK' : 'ERROR'}
+          </StatusItem>
+          <StatusItem $ok={!!health.siteSettings}>
+            <Settings size={12} /> Settings: {health.siteSettings ? 'Loaded' : 'Missing'}
+          </StatusItem>
+          <StatusItem $ok={!maintenanceMode}>
+            <Globe size={12} /> Site: {maintenanceMode ? '🔴 Maintenance' : '🟢 Live'}
+          </StatusItem>
+          <StatusItem $ok={!freeMode}>
+            {freeMode ? <Unlock size={12} /> : <Lock size={12} />}
+            Subs: {freeMode ? 'FREE MODE ON' : 'Paid Mode'}
+          </StatusItem>
+        </StatusBar>
       )}
 
       <ActionsGrid>
+        {/* ── CRITICAL TOGGLES ── */}
+        <SectionDivider>🔴 Critical Platform Switches</SectionDivider>
+
+        {/* Maintenance Mode */}
+        <ActionCard $variant={maintenanceMode ? 'danger' : 'success'}>
+          <ActionHeader>
+            <ActionIcon $variant={maintenanceMode ? 'danger' : 'success'}>
+              <ShieldAlert size={18} />
+            </ActionIcon>
+            <ActionTitle>Maintenance Mode</ActionTitle>
+          </ActionHeader>
+          <ActionDescription>
+            Toggle site maintenance. When ON, all public routes show a maintenance page.
+          </ActionDescription>
+          <ToggleRow>
+            <ToggleLabel>Status:</ToggleLabel>
+            <ToggleStatus $active={maintenanceMode}>
+              {maintenanceMode ? '🔴 ENABLED' : '🟢 DISABLED'}
+            </ToggleStatus>
+          </ToggleRow>
+          {results.maintenance && <ResultBadge $ok={results.maintenance.ok}>{results.maintenance.msg}</ResultBadge>}
+          <ActionButton
+            $variant={maintenanceMode ? 'success' : 'danger'}
+            onClick={handleToggleMaintenance}
+            disabled={processing === 'maintenance'}
+          >
+            {processing === 'maintenance'
+              ? <><SpinIcon size={13} />Processing...</>
+              : <>{maintenanceMode ? <ToggleLeft size={14} /> : <ToggleRight size={14} />}
+                {maintenanceMode ? 'Disable Maintenance' : 'Enable Maintenance'}</>
+            }
+          </ActionButton>
+        </ActionCard>
+
+        {/* Free Mode Toggle */}
+        <ActionCard $variant={freeMode ? 'warning' : 'info'}>
+          <ActionHeader>
+            <ActionIcon $variant={freeMode ? 'warning' : 'info'}>
+              {freeMode ? <Unlock size={18} /> : <Lock size={18} />}
+            </ActionIcon>
+            <ActionTitle>Subscriptions Mode</ActionTitle>
+          </ActionHeader>
+          <ActionDescription>
+            In FREE MODE: users instantly upgrade to any plan with zero payment required.
+          </ActionDescription>
+          <ToggleRow>
+            <ToggleLabel>Mode:</ToggleLabel>
+            <ToggleStatus $active={freeMode}>
+              {freeMode ? '🎁 FREE (Gift)' : '💰 PAID (Normal)'}
+            </ToggleStatus>
+          </ToggleRow>
+          {results.freeMode && <ResultBadge $ok={results.freeMode.ok}>{results.freeMode.msg}</ResultBadge>}
+          <ActionButton
+            $variant={freeMode ? 'danger' : 'success'}
+            onClick={handleToggleFreeMode}
+            disabled={processing === 'freeMode'}
+          >
+            {processing === 'freeMode'
+              ? <><SpinIcon size={13} />Updating...</>
+              : <>{freeMode ? <Lock size={14} /> : <Unlock size={14} />}
+                {freeMode ? 'Switch to PAID' : 'Activate FREE Mode'}</>
+            }
+          </ActionButton>
+        </ActionCard>
+
+        {/* ── MAINTENANCE OPERATIONS ── */}
+        <SectionDivider>🛠️ Maintenance Operations</SectionDivider>
+
         {/* Clear Cache */}
         <ActionCard $variant="warning">
           <ActionHeader>
-            <ActionIcon $variant="warning">
-              <Trash2 size={20} />
-            </ActionIcon>
+            <ActionIcon $variant="warning"><Trash2 size={18} /></ActionIcon>
             <ActionTitle>Clear Cache</ActionTitle>
           </ActionHeader>
           <ActionDescription>
-            Clear all temporarily stored data in browser (LocalStorage & SessionStorage)
+            Clears browser storage and bumps Firestore cache version, forcing all clients to reload fresh data.
           </ActionDescription>
-          <ActionButton
-            $variant="warning"
-            onClick={() => handleAction('clearCache', clearCache, {
-              title: 'Clear Cache',
-              message: 'Are you sure you want to clear all temporary data? You may need to re-login.'
-            })}
+          {results.clearCache && <ResultBadge $ok={results.clearCache.ok}>{results.clearCache.msg}</ResultBadge>}
+          <ActionButton $variant="warning"
+            onClick={() => window.confirm('Clear all browser cache + bump Firestore cache version?') && run('clearCache', () => adminOperationsService.clearCache())}
             disabled={processing === 'clearCache'}
           >
-            {processing === 'clearCache' ? (
-              <>
-                <Loader size={14} className="spin" />
-                Clearing...
-              </>
-            ) : (
-              <>
-                <Trash2 size={14} />
-                Clear Now
-              </>
-            )}
+            {btn('clearCache', 'Clear Cache', <Trash2 size={13} />, 'Clearing...')}
           </ActionButton>
         </ActionCard>
 
-        {/* Seed Demo Data */}
-        <ActionCard>
+        {/* Refresh Statistics */}
+        <ActionCard $variant="info">
           <ActionHeader>
-            <ActionIcon>
-              <Package size={20} />
-            </ActionIcon>
-            <ActionTitle>Add Demo Data</ActionTitle>
+            <ActionIcon $variant="info"><BarChart3 size={18} /></ActionIcon>
+            <ActionTitle>Refresh Statistics</ActionTitle>
           </ActionHeader>
           <ActionDescription>
-            Add sample cars, users, and transactions for testing the platform
+            Recounts all users, vehicles, and dealers using Firestore aggregate queries then saves to market/stats.
           </ActionDescription>
-          <ActionButton
-            onClick={() => handleAction('seedDemoData', seedDemoData)}
-            disabled={processing === 'seedDemoData'}
+          {results.refreshStats && <ResultBadge $ok={results.refreshStats.ok}>{results.refreshStats.msg}</ResultBadge>}
+          <ActionButton $variant="info"
+            onClick={() => run('refreshStats', () => adminOperationsService.refreshStatistics())}
+            disabled={processing === 'refreshStats'}
           >
-            {processing === 'seedDemoData' ? (
-              <>
-                <Loader size={14} className="spin" />
-                Adding...
-              </>
-            ) : (
-              <>
-                <Package size={14} />
-                Add Data
-              </>
-            )}
-          </ActionButton>
-        </ActionCard>
-
-        {/* Export All Data */}
-        <ActionCard $variant="success">
-          <ActionHeader>
-            <ActionIcon $variant="success">
-              <Download size={20} />
-            </ActionIcon>
-            <ActionTitle>Export All Data</ActionTitle>
-          </ActionHeader>
-          <ActionDescription>
-            Export all data from Firestore to a JSON file for backup
-          </ActionDescription>
-          <ActionButton
-            $variant="success"
-            onClick={() => handleAction('exportAllData', exportAllData)}
-            disabled={processing === 'exportAllData'}
-          >
-            {processing === 'exportAllData' ? (
-              <>
-                <Loader size={14} className="spin" />
-                Exporting...
-              </>
-            ) : (
-              <>
-                <Download size={14} />
-                Export Now
-              </>
-            )}
+            {btn('refreshStats', 'Recalculate Now', <RefreshCw size={13} />, 'Counting...')}
           </ActionButton>
         </ActionCard>
 
         {/* Database Cleanup */}
         <ActionCard $variant="danger">
           <ActionHeader>
-            <ActionIcon $variant="danger">
-              <Database size={20} />
-            </ActionIcon>
-            <ActionTitle>Clean Up Database</ActionTitle>
+            <ActionIcon $variant="danger"><Database size={18} /></ActionIcon>
+            <ActionTitle>Database Cleanup</ActionTitle>
           </ActionHeader>
           <ActionDescription>
-            Delete old data, duplicates, and expired transactions
+            Permanently deletes expired promotions, soft-deleted listings, and audit logs older than 90 days.
           </ActionDescription>
-          <ActionButton
-            $variant="danger"
-            onClick={() => handleAction('cleanupDatabase', cleanupDatabase, {
-              title: 'Clean Up Database',
-              message: 'Warning: This operation will permanently delete unused data!'
-            })}
-            disabled={processing === 'cleanupDatabase'}
+          {results.cleanup && <ResultBadge $ok={results.cleanup.ok}>{results.cleanup.msg}</ResultBadge>}
+          <ActionButton $variant="danger"
+            onClick={() => window.confirm('⚠️ PERMANENTLY delete expired/deleted records from Firestore?') && run('cleanup', () => adminOperationsService.cleanupDatabase())}
+            disabled={processing === 'cleanup'}
           >
-            {processing === 'cleanupDatabase' ? (
-              <>
-                <Loader size={14} className="spin" />
-                Cleaning...
-              </>
-            ) : (
-              <>
-                <Database size={14} />
-                Clean Now
-              </>
-            )}
-          </ActionButton>
-        </ActionCard>
-
-        {/* Rebuild Indexes */}
-        <ActionCard>
-          <ActionHeader>
-            <ActionIcon>
-              <Settings size={20} />
-            </ActionIcon>
-            <ActionTitle>Rebuild Indexes</ActionTitle>
-          </ActionHeader>
-          <ActionDescription>
-            Rebuild search and sorting indexes to improve performance and speed
-          </ActionDescription>
-          <ActionButton
-            onClick={() => handleAction('rebuildIndexes', rebuildIndexes)}
-            disabled={processing === 'rebuildIndexes'}
-          >
-            {processing === 'rebuildIndexes' ? (
-              <>
-                <Loader size={14} className="spin" />
-                Building...
-              </>
-            ) : (
-              <>
-                <Settings size={14} />
-                Rebuild
-              </>
-            )}
-          </ActionButton>
-        </ActionCard>
-
-        {/* Send Test Notification */}
-        <ActionCard>
-          <ActionHeader>
-            <ActionIcon>
-              <Bell size={20} />
-            </ActionIcon>
-            <ActionTitle>Send Test Notification</ActionTitle>
-          </ActionHeader>
-          <ActionDescription>
-            Send a test notification to test the notification system
-          </ActionDescription>
-          <ActionButton
-            onClick={() => handleAction('sendTestNotification', sendTestNotification)}
-            disabled={processing === 'sendTestNotification'}
-          >
-            {processing === 'sendTestNotification' ? (
-              <>
-                <Loader size={14} className="spin" />
-                Sending...
-              </>
-            ) : (
-              <>
-                <Bell size={14} />
-                Send Now
-              </>
-            )}
-          </ActionButton>
-        </ActionCard>
-
-        {/* Generate Reports */}
-        <ActionCard>
-          <ActionHeader>
-            <ActionIcon>
-              <FileText size={20} />
-            </ActionIcon>
-            <ActionTitle>Generate Reports</ActionTitle>
-          </ActionHeader>
-          <ActionDescription>
-            Generate comprehensive reports on performance, sales, and statistics
-          </ActionDescription>
-          <ActionButton
-            onClick={() => handleAction('generateReports', generateReports)}
-            disabled={processing === 'generateReports'}
-          >
-            {processing === 'generateReports' ? (
-              <>
-                <Loader size={14} className="spin" />
-                Generating...
-              </>
-            ) : (
-              <>
-                <FileText size={14} />
-                Generate Reports
-              </>
-            )}
-          </ActionButton>
-        </ActionCard>
-
-        {/* Backup Database */}
-        <ActionCard $variant="success">
-          <ActionHeader>
-            <ActionIcon $variant="success">
-              <HardDrive size={20} />
-            </ActionIcon>
-            <ActionTitle>Backup</ActionTitle>
-          </ActionHeader>
-          <ActionDescription>
-            Create a full backup of the database
-          </ActionDescription>
-          <ActionButton
-            $variant="success"
-            onClick={() => handleAction('backupDatabase', backupDatabase)}
-            disabled={processing === 'backupDatabase'}
-          >
-            {processing === 'backupDatabase' ? (
-              <>
-                <Loader size={14} className="spin" />
-                Backing up...
-              </>
-            ) : (
-              <>
-                <HardDrive size={14} />
-                Backup Now
-              </>
-            )}
-          </ActionButton>
-        </ActionCard>
-
-        {/* Optimize Images */}
-        <ActionCard>
-          <ActionHeader>
-            <ActionIcon>
-              <Upload size={20} />
-            </ActionIcon>
-            <ActionTitle>Optimize Images</ActionTitle>
-          </ActionHeader>
-          <ActionDescription>
-            Compress and optimize uploaded image quality to save space
-          </ActionDescription>
-          <ActionButton
-            onClick={() => handleAction('optimizeImages', optimizeImages)}
-            disabled={processing === 'optimizeImages'}
-          >
-            {processing === 'optimizeImages' ? (
-              <>
-                <Loader size={14} className="spin" />
-                Optimizing...
-              </>
-            ) : (
-              <>
-                <Upload size={14} />
-                Optimize Now
-              </>
-            )}
-          </ActionButton>
-        </ActionCard>
-
-        {/* Sync Algolia */}
-        <ActionCard>
-          <ActionHeader>
-            <ActionIcon>
-              <RefreshCw size={20} />
-            </ActionIcon>
-            <ActionTitle>Sync Algolia</ActionTitle>
-          </ActionHeader>
-          <ActionDescription>
-            Sync search data with Algolia to update search results
-          </ActionDescription>
-          <ActionButton
-            onClick={() => handleAction('syncAlgolia', syncAlgolia)}
-            disabled={processing === 'syncAlgolia'}
-          >
-            {processing === 'syncAlgolia' ? (
-              <>
-                <Loader size={14} className="spin" />
-                Syncing...
-              </>
-            ) : (
-              <>
-                <RefreshCw size={14} />
-                Sync Now
-              </>
-            )}
+            {btn('cleanup', 'Run Cleanup', <Database size={13} />, 'Cleaning...')}
           </ActionButton>
         </ActionCard>
 
         {/* Clear Old Logs */}
         <ActionCard $variant="warning">
           <ActionHeader>
-            <ActionIcon $variant="warning">
-              <Trash2 size={20} />
-            </ActionIcon>
+            <ActionIcon $variant="warning"><Trash2 size={18} /></ActionIcon>
             <ActionTitle>Clear Old Logs</ActionTitle>
           </ActionHeader>
           <ActionDescription>
-            Delete old system logs (older than 90 days)
+            Deletes audit_logs and system_logs from Firestore that are older than 90 days.
           </ActionDescription>
-          <ActionButton
-            $variant="warning"
-            onClick={() => handleAction('clearOldLogs', clearOldLogs)}
-            disabled={processing === 'clearOldLogs'}
+          {results.clearLogs && <ResultBadge $ok={results.clearLogs.ok}>{results.clearLogs.msg}</ResultBadge>}
+          <ActionButton $variant="warning"
+            onClick={() => window.confirm('Delete all logs older than 90 days?') && run('clearLogs', () => adminOperationsService.clearOldLogs())}
+            disabled={processing === 'clearLogs'}
           >
-            {processing === 'clearOldLogs' ? (
-              <>
-                <Loader size={14} className="spin" />
-                Clearing...
-              </>
-            ) : (
-              <>
-                <Trash2 size={14} />
-                Clear Logs
-              </>
-            )}
+            {btn('clearLogs', 'Clear Logs', <Trash2 size={13} />, 'Clearing...')}
           </ActionButton>
         </ActionCard>
 
-        {/* Refresh Statistics */}
-        <ActionCard>
+        {/* ── DATA & REPORTS ── */}
+        <SectionDivider>📊 Data & Reports</SectionDivider>
+
+        {/* Export All Data */}
+        <ActionCard $variant="success">
           <ActionHeader>
-            <ActionIcon>
-              <BarChart3 size={20} />
-            </ActionIcon>
-            <ActionTitle>Refresh Statistics</ActionTitle>
+            <ActionIcon $variant="success"><Download size={18} /></ActionIcon>
+            <ActionTitle>Export All Data</ActionTitle>
           </ActionHeader>
           <ActionDescription>
-            Recalculate all statistics and counters on the platform
+            Reads top 200 docs from 7 key collections and downloads a real JSON file to your device.
           </ActionDescription>
-          <ActionButton
-            onClick={() => handleAction('refreshStatistics', refreshStatistics)}
-            disabled={processing === 'refreshStatistics'}
+          {results.export && <ResultBadge $ok={results.export.ok}>{results.export.msg}</ResultBadge>}
+          <ActionButton $variant="success"
+            onClick={() => run('export', () => adminOperationsService.exportAllData())}
+            disabled={processing === 'export'}
           >
-            {processing === 'refreshStatistics' ? (
-              <>
-                <Loader size={14} className="spin" />
-                Refreshing...
-              </>
-            ) : (
-              <>
-                <BarChart3 size={14} />
-                Refresh Now
-              </>
-            )}
+            {btn('export', 'Export JSON', <Download size={13} />, 'Exporting...')}
           </ActionButton>
         </ActionCard>
+
+        {/* Generate CSV Report */}
+        <ActionCard>
+          <ActionHeader>
+            <ActionIcon><FileText size={18} /></ActionIcon>
+            <ActionTitle>Generate CSV Report</ActionTitle>
+          </ActionHeader>
+          <ActionDescription>
+            Generates a live collection-count CSV report from Firestore aggregate queries. Auto-downloads.
+          </ActionDescription>
+          {results.report && <ResultBadge $ok={results.report.ok}>{results.report.msg}</ResultBadge>}
+          <ActionButton
+            onClick={() => run('report', () => adminOperationsService.generateReport())}
+            disabled={processing === 'report'}
+          >
+            {btn('report', 'Generate CSV', <FileText size={13} />, 'Generating...')}
+          </ActionButton>
+        </ActionCard>
+
+        {/* Backup Database */}
+        <ActionCard $variant="success">
+          <ActionHeader>
+            <ActionIcon $variant="success"><HardDrive size={18} /></ActionIcon>
+            <ActionTitle>Backup Metadata</ActionTitle>
+          </ActionHeader>
+          <ActionDescription>
+            Saves collection counts + site settings to admin_backups/ in Firestore. Downloads a local JSON copy.
+          </ActionDescription>
+          {results.backup && <ResultBadge $ok={results.backup.ok}>{results.backup.msg}</ResultBadge>}
+          <ActionButton $variant="success"
+            onClick={() => run('backup', () => adminOperationsService.backupDatabase())}
+            disabled={processing === 'backup'}
+          >
+            {btn('backup', 'Backup Now', <HardDrive size={13} />, 'Backing up...')}
+          </ActionButton>
+        </ActionCard>
+
+        {/* Platform Health Check */}
+        <ActionCard $variant="info">
+          <ActionHeader>
+            <ActionIcon $variant="info"><Activity size={18} /></ActionIcon>
+            <ActionTitle>Health Check</ActionTitle>
+          </ActionHeader>
+          <ActionDescription>
+            Pings Firestore, validates Auth, and checks that site_settings exists. Shows live result instantly.
+          </ActionDescription>
+          {results.health && <ResultBadge $ok={results.health.ok}>{results.health.msg}</ResultBadge>}
+          <ActionButton $variant="info"
+            onClick={() => run('health', async () => {
+              const r = await adminOperationsService.getPlatformHealth();
+              setHealth(r.details || {});
+              return r;
+            })}
+            disabled={processing === 'health'}
+          >
+            {btn('health', 'Run Health Check', <Heart size={13} />, 'Checking...')}
+          </ActionButton>
+        </ActionCard>
+
+        {/* Send Announcement */}
+        <ActionCard>
+          <ActionHeader>
+            <ActionIcon><Bell size={18} /></ActionIcon>
+            <ActionTitle>Send Announcement</ActionTitle>
+          </ActionHeader>
+          <ActionDescription>
+            Publish a platform-wide announcement document to Firestore visible to all users.
+          </ActionDescription>
+          {results.announce && <ResultBadge $ok={results.announce.ok}>{results.announce.msg}</ResultBadge>}
+          <ActionButton
+            onClick={() => {
+              const title = window.prompt('Announcement title:');
+              if (!title) return;
+              const msg = window.prompt('Announcement message:');
+              if (!msg) return;
+              run('announce', () => adminOperationsService.sendPlatformAnnouncement(title, msg));
+            }}
+            disabled={processing === 'announce'}
+          >
+            {btn('announce', 'Publish Announcement', <Bell size={13} />, 'Publishing...')}
+          </ActionButton>
+        </ActionCard>
+
       </ActionsGrid>
-
-      {/* Confirmation Dialog */}
-      {confirmAction && (
-        <>
-          <DialogOverlay onClick={() => setConfirmAction(null)} />
-          <ConfirmDialog>
-            <DialogTitle>
-              <AlertCircle size={20} color="#f59e0b" />
-              {confirmAction.title}
-            </DialogTitle>
-            <DialogMessage>{confirmAction.message}</DialogMessage>
-            <DialogButtons>
-              <ActionButton
-                $variant="danger"
-                onClick={confirmAction.action}
-                style={{ flex: 1 }}
-              >
-                Confirm
-              </ActionButton>
-              <ActionButton
-                onClick={() => setConfirmAction(null)}
-                style={{ flex: 1, background: '#374151' }}
-              >
-                Cancel
-              </ActionButton>
-            </DialogButtons>
-          </ConfirmDialog>
-        </>
-      )}
-
-      <style>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        .spin {
-          animation: spin 1s linear infinite;
-        }
-      `}</style>
     </Container>
   );
 };

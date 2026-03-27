@@ -415,10 +415,10 @@ const ProfilePageWrapper: React.FC = () => {
   // This ensures theme matches the profile being viewed
   const DYNAMIC_THEMES = {
     private: {
-      primary: '#FF8F10',     // Orange
+      primary: '#3B82F6',     // Orange
       secondary: '#FFDF00',
-      accent: '#FF7900',
-      gradient: 'linear-gradient(135deg, #FF8F10 0%, #FF7900 100%)'
+      accent: '#2563EB',
+      gradient: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)'
     },
     dealer: {
       primary: '#16a34a',     // Green
@@ -671,22 +671,22 @@ const ProfilePageWrapper: React.FC = () => {
 
         <S.PageContainer>
           {/* Tab Navigation */}
-          <TabNavigation $themeColor={theme?.primary || '#FF8F10'}>
-            <TabNavLink to={basePath} end $themeColor={theme?.primary || '#FF8F10'}>
+          <TabNavigation $themeColor={theme?.primary || '#3B82F6'}>
+            <TabNavLink to={basePath} end $themeColor={theme?.primary || '#3B82F6'}>
               <UserCircle size={16} />
               {language === 'bg' ? 'Профил' : 'Profile'}
             </TabNavLink>
             {!isOwnProfile && (
               <>
-                <TabNavLink to={`${basePath}/my-ads`} $themeColor={theme?.primary || '#FF8F10'}>
+                <TabNavLink to={`${basePath}/my-ads`} $themeColor={theme?.primary || '#3B82F6'}>
                   <Car size={16} />
                   {language === 'bg' ? 'Обяви' : 'Listings'}
                 </TabNavLink>
-                <TabNavLink to={`${basePath}/favorites`} $themeColor={theme?.primary || '#FF8F10'}>
+                <TabNavLink to={`${basePath}/favorites`} $themeColor={theme?.primary || '#3B82F6'}>
                   <Heart size={16} />
                   {language === 'bg' ? 'Любими' : 'Favorites'}
                 </TabNavLink>
-                <TabNavLink to={`${basePath}/following`} $themeColor={theme?.primary || '#FF8F10'}>
+                <TabNavLink to={`${basePath}/following`} $themeColor={theme?.primary || '#3B82F6'}>
                   <Users size={16} />
                   {language === 'bg' ? 'Следвани' : 'Following'}
                 </TabNavLink>
@@ -694,27 +694,27 @@ const ProfilePageWrapper: React.FC = () => {
             )}
             {isOwnProfile && (
               <>
-                <TabNavLink to={`${basePath}/my-ads`} $themeColor={theme?.primary || '#FF8F10'}>
+                <TabNavLink to={`${basePath}/my-ads`} $themeColor={theme?.primary || '#3B82F6'}>
                   <Car size={16} />
                   {language === 'bg' ? 'Моите обяви' : 'My Ads'}
                 </TabNavLink>
-                <TabNavLink to={`${basePath}/campaigns`} $themeColor={theme?.primary || '#FF8F10'}>
+                <TabNavLink to={`${basePath}/campaigns`} $themeColor={theme?.primary || '#3B82F6'}>
                   <Megaphone size={16} />
                   {language === 'bg' ? 'Реклами' : 'Campaigns'}
                 </TabNavLink>
-                <TabNavLink to={`${basePath}/analytics`} $themeColor={theme?.primary || '#FF8F10'}>
+                <TabNavLink to={`${basePath}/analytics`} $themeColor={theme?.primary || '#3B82F6'}>
                   <BarChart3 size={16} />
                   {language === 'bg' ? 'Статистика' : 'Analytics'}
                 </TabNavLink>
-                <TabNavLink to={`${basePath}/settings`} $themeColor={theme?.primary || '#FF8F10'}>
+                <TabNavLink to={`${basePath}/settings`} $themeColor={theme?.primary || '#3B82F6'}>
                   <Shield size={16} />
                   {language === 'bg' ? 'Настройки' : 'Settings'}
                 </TabNavLink>
-                <TabNavLink to={`${basePath}/consultations`} $themeColor={theme?.primary || '#FF8F10'}>
+                <TabNavLink to={`${basePath}/consultations`} $themeColor={theme?.primary || '#3B82F6'}>
                   <MessageCircle size={18} />
                   {language === 'bg' ? 'Консултации' : 'Consultations'}
                 </TabNavLink>
-                <TabNavLink to={`${basePath}/following`} $themeColor={theme?.primary || '#FF8F10'}>
+                <TabNavLink to={`${basePath}/following`} $themeColor={theme?.primary || '#3B82F6'}>
                   <Users size={16} />
                   {language === 'bg' ? 'Следвани' : 'Following'}
                 </TabNavLink>
@@ -729,7 +729,7 @@ const ProfilePageWrapper: React.FC = () => {
               {/* Cover Image */}
               <CoverImageUploader
                 currentImageUrl={activeProfile.coverImage}
-                themeColor={theme?.primary || '#FF8F10'}
+                themeColor={theme?.primary || '#3B82F6'}
                 onUploadSuccess={(url) => {
                   setUser(prev => prev ? {
                     ...prev,
@@ -823,4 +823,5 @@ const ProfilePageWrapper: React.FC = () => {
 
 
 export default ProfilePageWrapper;
+
 

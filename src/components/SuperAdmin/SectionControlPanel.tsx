@@ -26,7 +26,7 @@ const PanelHeader = styled.div`
 const Title = styled.h2`
   font-size: 20px;
   font-weight: 700;
-  color: #ff8c61;
+  color: #8B5CF6;
   margin: 0 0 8px 0;
 `;
 
@@ -60,7 +60,7 @@ const SectionRow = styled.div<{ $visible: boolean }>`
   opacity: ${(p) => (p.$visible ? 1 : 0.6)};
 
   &:hover {
-    border-color: #ff8c61;
+    border-color: #8B5CF6;
   }
 `;
 
@@ -75,7 +75,7 @@ const GripHandle = styled.div`
   color: #475569;
   cursor: grab;
   &:hover {
-    color: #ff8c61;
+    color: #8B5CF6;
   }
 `;
 
@@ -124,8 +124,8 @@ const ArrowButton = styled.button<{ $disabled: boolean }>`
 
   &:hover {
     background: ${p => p.$disabled ? '#1e2432' : '#2d3748'};
-    color: ${p => p.$disabled ? '#475569' : '#ff8c61'};
-    border-color: ${p => p.$disabled ? '#2d3748' : '#ff8c61'};
+    color: ${p => p.$disabled ? '#475569' : '#8B5CF6'};
+    border-color: ${p => p.$disabled ? '#2d3748' : '#8B5CF6'};
   }
 `;
 
@@ -189,7 +189,7 @@ const StatItem = styled.div`
   color: #94a3b8;
   span {
     font-weight: 700;
-    color: #ff8c61;
+    color: #8B5CF6;
   }
 `;
 
@@ -198,7 +198,7 @@ const SeedButton = styled.button`
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
-  background: #ff8c61;
+  background: #8B5CF6;
   color: #0f1419;
   border: none;
   border-radius: 6px;
@@ -238,7 +238,7 @@ const FreeOfferTitle = styled.div`
   gap: 10px;
   font-size: 16px;
   font-weight: 700;
-  color: #ff8c61;
+  color: #8B5CF6;
 `;
 
 const FreeOfferDesc = styled.p`
@@ -618,8 +618,8 @@ const SectionControlPanel: React.FC = () => {
               <GripVertical size={16} />
             </GripHandle>
             <SectionText>
-              <SectionLabel>{s.label}</SectionLabel>
-              <SectionDescription>{s.description}</SectionDescription>
+              <SectionLabel>{(t.sections as any).labels?.[s.key] || s.label}</SectionLabel>
+              <SectionDescription>{(t.sections as any).descriptions?.[s.key] || s.description}</SectionDescription>
               <SectionKey>key: {s.key} | order: {s.order}</SectionKey>
             </SectionText>
           </SectionInfo>
@@ -674,8 +674,8 @@ const SectionControlPanel: React.FC = () => {
               <GripVertical size={16} />
             </GripHandle>
             <SectionText>
-              <SectionLabel>{s.label}</SectionLabel>
-              <SectionDescription>{s.description}</SectionDescription>
+              <SectionLabel>{(t.sections as any).labels?.[s.key] || s.label}</SectionLabel>
+              <SectionDescription>{(t.sections as any).descriptions?.[s.key] || s.description}</SectionDescription>
               <SectionKey>key: {s.key} | order: {s.order}</SectionKey>
             </SectionText>
           </SectionInfo>
@@ -730,8 +730,8 @@ const SectionControlPanel: React.FC = () => {
               <GripVertical size={16} />
             </GripHandle>
             <SectionText>
-              <SectionLabel>{s.label}</SectionLabel>
-              <SectionDescription>{s.description}</SectionDescription>
+              <SectionLabel>{(t.sections as any).labels?.[s.key] || s.label}</SectionLabel>
+              <SectionDescription>{(t.sections as any).descriptions?.[s.key] || s.description}</SectionDescription>
               <SectionKey>key: {s.key} | order: {s.order}</SectionKey>
             </SectionText>
           </SectionInfo>
@@ -778,3 +778,4 @@ const SectionControlPanel: React.FC = () => {
 };
 
 export default SectionControlPanel;
+

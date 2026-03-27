@@ -64,7 +64,7 @@ const GlassWrapper = styled.div`
   border-radius: 24px;
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.3),
-    0 4px 16px rgba(255, 143, 16, 0.1);
+    0 4px 16px rgba(139, 92, 246, 0.1);
   padding: 40px;
   z-index: 10;
   /* animation removed */
@@ -75,7 +75,7 @@ const GlassWrapper = styled.div`
     border-color: rgba(148, 163, 184, 0.3);
     box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.6),
-      0 4px 16px rgba(255, 143, 16, 0.2);
+      0 4px 16px rgba(139, 92, 246, 0.2);
   }
   transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 
@@ -185,8 +185,8 @@ const Input = styled.input<{ $verified?: boolean }>`
   &:focus {
     outline: none;
     border-color: ${props => props.$verified ? '#ced4da' : '#5010ffff'};
-    background: ${props => props.$verified ? '#e9ecef' : 'rgba(255, 143, 16, 0.05)'};
-    box-shadow: ${props => props.$verified ? 'none' : '0 0 20px rgba(255, 143, 16, 0.2)'};
+    background: ${props => props.$verified ? '#e9ecef' : 'rgba(139, 92, 246, 0.05)'};
+    box-shadow: ${props => props.$verified ? 'none' : '0 0 20px rgba(139, 92, 246, 0.2)'};
   }
 
   &:disabled {
@@ -206,9 +206,9 @@ const Input = styled.input<{ $verified?: boolean }>`
     }
 
     &:focus {
-      border-color: ${props => props.$verified ? '#475569' : '#FF8F10'};
-      background: ${props => props.$verified ? '#334155' : 'rgba(255, 143, 16, 0.1)'};
-      box-shadow: ${props => props.$verified ? 'none' : '0 0 20px rgba(255, 143, 16, 0.3)'};
+      border-color: ${props => props.$verified ? '#475569' : '#3B82F6'};
+      background: ${props => props.$verified ? '#334155' : 'rgba(139, 92, 246, 0.1)'};
+      box-shadow: ${props => props.$verified ? 'none' : '0 0 20px rgba(139, 92, 246, 0.3)'};
     }
 
     &:disabled {
@@ -348,11 +348,11 @@ const CustomCheckbox = styled.div<{ $checked: boolean }>`
 `;
 
 const ForgotLink = styled(Link)`
-  color: #FF8F10;
+  color: #3B82F6;
   text-decoration: none;
 
   &:hover {
-    color: #ff7900;
+    color: #2563eb;
     text-decoration: underline;
   }
 `;
@@ -360,7 +360,7 @@ const ForgotLink = styled(Link)`
 const SubmitButton = styled.button`
   width: 100%;
   height: 52px;
-  background: linear-gradient(135deg, #FF8F10 0%, #ff7900 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #2563eb 100%);
   border: none;
   border-radius: 50px;
   font-size: 16px;
@@ -368,7 +368,7 @@ const SubmitButton = styled.button`
   color: #fff;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(255, 143, 16, 0.3);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -385,8 +385,8 @@ const SubmitButton = styled.button`
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 143, 16, 0.4);
-    background: linear-gradient(135deg, #ff7900 0%, #e66d00 100%);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+    background: linear-gradient(135deg, #2563eb 0%, #e66d00 100%);
   }
   
   &:active:not(:disabled) {
@@ -492,15 +492,15 @@ const SocialButton = styled.button`
   user-select: none;
 
   &:hover:not(:disabled) {
-    background: rgba(255, 143, 16, 0.1);
-    border-color: #FF8F10;
-    color: #ff7900;
+    background: rgba(139, 92, 246, 0.1);
+    border-color: #3B82F6;
+    color: #2563eb;
     transform: translateY(-2px);
   }
   
   &:active:not(:disabled) {
     transform: translateY(0) scale(0.98);
-    background: rgba(255, 143, 16, 0.15);
+    background: rgba(139, 92, 246, 0.15);
   }
 
   &:disabled {
@@ -515,13 +515,13 @@ const SocialButton = styled.button`
     color: #cbd5e1;
 
     &:hover:not(:disabled) {
-      background: rgba(255, 143, 16, 0.15);
-      border-color: #FF8F10;
-      color: #FF8F10;
+      background: rgba(139, 92, 246, 0.15);
+      border-color: #3B82F6;
+      color: #3B82F6;
     }
 
     &:active:not(:disabled) {
-      background: rgba(255, 143, 16, 0.2);
+      background: rgba(139, 92, 246, 0.2);
     }
   }
 
@@ -534,38 +534,38 @@ const SocialButton = styled.button`
 
 const GuestButton = styled(SocialButton)`
   grid-column: 1 / -1;
-  background: rgba(255, 143, 16, 0.1);
-  border-color: #FF8F10;
-  color: #ff7900;
+  background: rgba(139, 92, 246, 0.1);
+  border-color: #3B82F6;
+  color: #2563eb;
   font-weight: 600;
   
   /* CRITICAL FIX: Ensure guest button is clickable */
   z-index: 11;
 
   &:hover:not(:disabled) {
-    background: rgba(255, 143, 16, 0.2);
-    border-color: #ff7900;
+    background: rgba(139, 92, 246, 0.2);
+    border-color: #2563eb;
   }
   
   &:active:not(:disabled) {
     transform: scale(0.98);
-    background: rgba(255, 143, 16, 0.25);
+    background: rgba(139, 92, 246, 0.25);
   }
 
   /* Dark Mode Support */
   html[data-theme="dark"] & {
-    background: rgba(255, 143, 16, 0.15);
-    border-color: #FF8F10;
-    color: #FF8F10;
+    background: rgba(139, 92, 246, 0.15);
+    border-color: #3B82F6;
+    color: #3B82F6;
 
     &:hover:not(:disabled) {
-      background: rgba(255, 143, 16, 0.25);
+      background: rgba(139, 92, 246, 0.25);
       border-color: #ffa647;
       color: #ffa647;
     }
 
     &:active:not(:disabled) {
-      background: rgba(255, 143, 16, 0.3);
+      background: rgba(139, 92, 246, 0.3);
     }
   }
 `;
@@ -578,13 +578,13 @@ const RegisterLink = styled.div`
   /* animation removed */
 
   a {
-    color: #FF8F10;
+    color: #3B82F6;
     text-decoration: none;
     font-weight: 600;
     margin-left: 5px;
 
     &:hover {
-      color: #ff7900;
+      color: #2563eb;
       text-decoration: underline;
     }
   }
@@ -594,7 +594,7 @@ const RegisterLink = styled.div`
     color: #cbd5e1;
 
     a {
-      color: #FF8F10;
+      color: #3B82F6;
 
       &:hover {
         color: #ffa647;
@@ -862,4 +862,6 @@ const LoginPageGlassFixed: React.FC = () => {
 };
 
 export default LoginPageGlassFixed;
+
+
 

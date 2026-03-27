@@ -243,8 +243,8 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #FF7900;
-    box-shadow: 0 0 0 3px rgba(255, 121, 0, 0.1);
+    border-color: #2563EB;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
   }
 `;
 
@@ -291,7 +291,7 @@ const CancelButton = styled.button`
 const SubmitButton = styled.button`
   flex: 1;
   padding: 12px 24px;
-  background: linear-gradient(135deg, #FF7900, #FF8F10);
+  background: linear-gradient(135deg, #2563EB, #3B82F6);
   color: white;
   border: none;
   border-radius: 8px;
@@ -301,7 +301,7 @@ const SubmitButton = styled.button`
 
   &:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
   }
 
   &:disabled {
@@ -311,4 +311,6 @@ const SubmitButton = styled.button`
 `;
 
 export default PasswordChangeModal;
+
+
 

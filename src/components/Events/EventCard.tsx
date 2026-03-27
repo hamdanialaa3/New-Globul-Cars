@@ -35,7 +35,7 @@ const CoverImage = styled.div<{ $imageUrl?: string }>`
   height: 200px;
   background: ${p => p.$imageUrl 
     ? `url(${p.$imageUrl}) center/cover` 
-    : 'linear-gradient(135deg, #FF8F10, #FF7900)'};
+    : 'linear-gradient(135deg, #3B82F6, #2563EB)'};
   position: relative;
 `;
 
@@ -117,7 +117,7 @@ const InfoItem = styled.div`
   svg {
     width: 18px;
     height: 18px;
-    color: #FF8F10;
+    color: #3B82F6;
   }
 `;
 
@@ -151,16 +151,16 @@ const AttendeeCount = styled.div`
 const InterestedButton = styled.button`
   padding: 8px 20px;
   border-radius: 20px;
-  border: 2px solid #FF8F10;
+  border: 2px solid #3B82F6;
   background: white;
-  color: #FF8F10;
+  color: #3B82F6;
   font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
   
   &:hover {
-    background: #FF8F10;
+    background: #3B82F6;
     color: white;
   }
 `;
@@ -284,7 +284,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
             )}
           </AttendeeCount>
           
-          <InterestedButton onClick={handleInterested} style={isInterested ? { background: '#FF8F10', color: 'white' } : {}}>
+          <InterestedButton onClick={handleInterested} style={isInterested ? { background: '#3B82F6', color: 'white' } : {}}>
             {isInterested ? <><Check size={16} /> Going</> : 'Interested'}
           </InterestedButton>
         </Footer>
@@ -294,3 +294,4 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
 };
 
 export default EventCard;
+

@@ -31,7 +31,7 @@ export class DeepSeekProxy {
         const userDoc = await db.collection('users').doc(userId).get();
 
         if (!userDoc.exists) {
-            console.warn(`[checkQuota] User ${userId} not found in Firestore. assuming private.`);
+            functions.logger.warn(`[checkQuota] User ${userId} not found in Firestore. assuming private.`);
         }
 
         const userData = userDoc.data();
@@ -180,7 +180,7 @@ export const aiGenerateText = functions.https.onCall(async (data, context) => {
             success: true
         };
     } catch (error: any) {
-        console.error('[aiGenerateText]', error);
+        functions.logger.error('[aiGenerateText]', error);
 
         // Log error
         await db.collection('ai_errors').add({
@@ -257,7 +257,7 @@ export const aiGenerateCarDescription = functions.https.onCall(async (data, cont
             success: true
         };
     } catch (error: any) {
-        console.error('[aiGenerateCarDescription]', error);
+        functions.logger.error('[aiGenerateCarDescription]', error);
 
         throw new functions.https.HttpsError('internal', error.message || 'Failed to generate description');
     }
@@ -318,7 +318,7 @@ export const aiComplexQuery = functions.https.onCall(async (data, context) => {
             success: true
         };
     } catch (error: any) {
-        console.error('[aiComplexQuery]', error);
+        functions.logger.error('[aiComplexQuery]', error);
         throw new functions.https.HttpsError('internal', error.message || 'Query processing failed');
     }
 });

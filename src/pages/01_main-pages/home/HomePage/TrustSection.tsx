@@ -1,4 +1,4 @@
-﻿// Trust Section - Why Choose Us (Competitive Edge)
+// Trust Section - Why Choose Us (Competitive Edge)
 // قسم الثقة - لماذا تختارنا (ميزة تنافسية)
 
 import React from 'react';

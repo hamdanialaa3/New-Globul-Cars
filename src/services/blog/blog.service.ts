@@ -55,7 +55,7 @@ const STATIC_POSTS: BlogPost[] = [
       id: 'koli-one',
       name: 'Koli One Team',
       role: 'Official',
-      avatar: 'https://koli.one/logo.png'
+      avatar: 'https://koli.one/logo.webp'
     },
     coverImage: 'https://koli.one/blog/images/ai-valuation-cover.jpg',
     images: [],
@@ -93,7 +93,7 @@ const STATIC_POSTS: BlogPost[] = [
       id: 'koli-one-research',
       name: 'Koli One Research',
       role: 'Official',
-      avatar: 'https://koli.one/logo.png'
+      avatar: 'https://koli.one/logo.webp'
     },
     coverImage: 'https://koli.one/blog/images/market-2026-cover.jpg',
     images: [],
@@ -131,7 +131,7 @@ const STATIC_POSTS: BlogPost[] = [
       id: 'koli-one-insights',
       name: 'Koli One Insights',
       role: 'Official',
-      avatar: 'https://koli.one/logo.png'
+      avatar: 'https://koli.one/logo.webp'
     },
     coverImage: 'https://koli.one/blog/images/comparison-2026-cover.jpg',
     images: [],
@@ -169,7 +169,7 @@ const STATIC_POSTS: BlogPost[] = [
       id: 'koli-one-engineering',
       name: 'Koli One Engineering',
       role: 'Official',
-      avatar: 'https://koli.one/logo.png'
+      avatar: 'https://koli.one/logo.webp'
     },
     coverImage: 'https://koli.one/blog/images/hybrid-search-cover.jpg',
     images: [],
@@ -207,7 +207,7 @@ const STATIC_POSTS: BlogPost[] = [
       id: 'koli-one-research',
       name: 'Koli One Research',
       role: 'Official',
-      avatar: 'https://koli.one/logo.png'
+      avatar: 'https://koli.one/logo.webp'
     },
     coverImage: 'https://koli.one/blog/images/neural-pricing-cover.jpg',
     images: [],
@@ -245,7 +245,7 @@ const STATIC_POSTS: BlogPost[] = [
       id: 'koli-one-engineering',
       name: 'Koli One Engineering',
       role: 'Official',
-      avatar: 'https://koli.one/logo.png'
+      avatar: 'https://koli.one/logo.webp'
     },
     coverImage: 'https://koli.one/blog/images/constitution-cover.jpg',
     images: [],

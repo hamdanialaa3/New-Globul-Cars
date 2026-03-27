@@ -9,7 +9,7 @@ import { BULGARIAN_CITIES } from '../../constants/bulgarianCities';
 // Mobile.de color system - exact colors
 const colors = {
   primary: {
-    orange: '#FF7900',
+    orange: '#2563EB',
     blue: '#0066CC',
     darkBlue: '#003D79'
   },
@@ -1044,3 +1044,4 @@ const SharedCarForm: React.FC<SharedCarFormProps> = ({
 };
 
 export default SharedCarForm;
+

@@ -124,7 +124,7 @@ const LoaderContainer = styled.div`
   height: 100vh;
   background: 
     radial-gradient(circle at 20% 50%, rgba(0, 150, 255, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 40% 20%, rgba(138, 43, 226, 0.1) 0%, transparent 50%),
     linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #2a2f4a 100%);
   display: flex;
@@ -175,7 +175,7 @@ const AmbientLight2 = styled.div`
   right: 20%;
   width: 350px;
   height: 350px;
-  background: radial-gradient(circle, rgba(255, 107, 53, 0.25) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
   border-radius: 50%;
   filter: blur(50px);
   animation: ${floatSphere} 8s ease-in-out infinite reverse;
@@ -236,7 +236,7 @@ const GlassSphere = styled.div`
     /* Inner reflections */
     inset 0 0 100px rgba(255, 255, 255, 0.1),
     inset -50px -50px 100px rgba(0, 150, 255, 0.15),
-    inset 50px 50px 100px rgba(255, 107, 53, 0.1),
+    inset 50px 50px 100px rgba(99, 102, 241, 0.1),
     /* Depth shadows */
     0 20px 60px rgba(0, 0, 0, 0.4),
     0 40px 120px rgba(0, 0, 0, 0.3);
@@ -560,7 +560,7 @@ const SmartLoaderCSS: React.FC<SmartLoaderCSSProps> = ({
         <SphereContent>
           <SpinnerRing>
             <LogoContainer>
-              <ProjectLogo src="/logo.png" alt="Logo" />
+              <ProjectLogo src="/logo.webp" alt="Logo" />
             </LogoContainer>
           </SpinnerRing>
           <LoadingText $phase={phase}>{message}</LoadingText>
@@ -575,3 +575,4 @@ const SmartLoaderCSS: React.FC<SmartLoaderCSSProps> = ({
 };
 
 export default SmartLoaderCSS;
+

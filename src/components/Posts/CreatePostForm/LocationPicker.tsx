@@ -292,7 +292,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange }) => {
         </AddLocationButton>
       ) : (
         <SelectedLocation>
-          <MapPin size={14} color="#FF7900" />
+          <MapPin size={14} color="#2563EB" />
           <span>{value.displayName}</span>
           <ClearButton onClick={handleClear}>
             <X size={14} />
@@ -399,8 +399,8 @@ const AddLocationButton = styled.button`
   
   &:hover {
     background: #e9ecef;
-    border-color: #FF8F10;
-    color: #FF7900;
+    border-color: #3B82F6;
+    color: #2563EB;
   }
 `;
 
@@ -511,7 +511,7 @@ const SearchBar = styled.div`
   margin-bottom: 12px;
   
   &:focus-within {
-    border-color: #FF8F10;
+    border-color: #3B82F6;
     background: white;
   }
 `;
@@ -536,7 +536,7 @@ const CurrentLocationButton = styled.button`
   gap: 8px;
   width: 100%;
   padding: 12px;
-  background: linear-gradient(135deg, #FF7900, #FF8F10);
+  background: linear-gradient(135deg, #2563EB, #3B82F6);
   color: white;
   border: none;
   border-radius: 10px;
@@ -587,7 +587,7 @@ const ResultItem = styled.button`
   svg {
     margin-top: 2px;
     flex-shrink: 0;
-    color: #FF7900;
+    color: #2563EB;
   }
   
   .main {
@@ -657,7 +657,7 @@ const CancelButton = styled.button`
 const ConfirmButton = styled.button`
   flex: 1;
   padding: 12px;
-  background: linear-gradient(135deg, #FF7900, #FF8F10);
+  background: linear-gradient(135deg, #2563EB, #3B82F6);
   color: white;
   border: none;
   border-radius: 10px;
@@ -682,4 +682,5 @@ const ConfirmButton = styled.button`
 `;
 
 export default LocationPicker;
+
 

@@ -75,7 +75,7 @@ const Step = styled.div<{ $active: boolean }>`
   width: ${props => props.$active ? '40px' : '12px'};
   height: 12px;
   border-radius: 6px;
-  background: ${props => props.$active ? '#FF7900' : '#e0e0e0'};
+  background: ${props => props.$active ? '#2563EB' : '#e0e0e0'};
   transition: all 0.3s ease;
 `;
 
@@ -99,7 +99,7 @@ const FormGroup = styled.div`
     
     &:focus {
       outline: none;
-      border-color: #FF7900;
+      border-color: #2563EB;
     }
   }
 `;
@@ -122,7 +122,7 @@ const OTPInput = styled.input`
   
   &:focus {
     outline: none;
-    border-color: #FF7900;
+    border-color: #2563EB;
   }
 `;
 
@@ -145,12 +145,12 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
     color: #666;
     &:hover { background: #e0e0e0; }
   ` : `
-    background: #FF7900;
+    background: #2563EB;
     color: white;
     &:hover { 
       background: #ff8c1a;
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
     }
   `}
   
@@ -356,3 +356,5 @@ const PhoneVerificationModal: React.FC<PhoneVerificationModalProps> = ({
 };
 
 export default PhoneVerificationModal;
+
+

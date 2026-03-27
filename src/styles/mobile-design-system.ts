@@ -146,7 +146,7 @@ export const mobileTypography = {
 export const mobileColors = {
   // Primary actions
   primary: {
-    main: '#FF7900',
+    main: '#2563EB',
     dark: '#E56D00',
     light: '#FF9433',
     pale: '#FFF4EB'
@@ -444,3 +444,4 @@ export const mobilePatterns = {
 export type MobileBreakpoint = keyof typeof mobileBreakpoints;
 export type MobileSpacing = keyof typeof mobileSpacing;
 export type MobileColor = keyof typeof mobileColors;
+

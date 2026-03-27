@@ -1,11 +1,23 @@
-import { doc, getDoc, setDoc, updateDoc, onSnapshot, Unsubscribe } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  onSnapshot,
+  Unsubscribe,
+} from 'firebase/firestore';
 import { db as firestore } from '@/firebase/firebase-config';
-import type { SiteSettings, ThemeSettings, FeaturedContent } from './site-settings-types';
+import type {
+  SiteSettings,
+  ThemeSettings,
+  FeaturedContent,
+} from './site-settings-types';
 import {
   SITE_SETTINGS_PATH,
   DEFAULT_SITE_SETTINGS,
   DEFAULT_THEME_SETTINGS,
-  DEFAULT_FEATURED_CONTENT
+  DEFAULT_FEATURED_CONTENT,
+  DEFAULT_HOMEPAGE_HERO,
 } from './site-settings-defaults';
 import { serviceLogger } from './logger-service';
 
@@ -15,13 +27,34 @@ import { serviceLogger } from './logger-service';
 class SiteSettingsService {
   private static instance: SiteSettingsService;
 
-  private constructor() { }
+  private constructor() {}
 
   public static getInstance(): SiteSettingsService {
     if (!SiteSettingsService.instance) {
       SiteSettingsService.instance = new SiteSettingsService();
     }
     return SiteSettingsService.instance;
+  }
+
+  private normalizeFeaturedContent(
+    content?: Partial<FeaturedContent> | null
+  ): FeaturedContent {
+    const hero = content?.homepageHero;
+
+    return {
+      ...DEFAULT_FEATURED_CONTENT,
+      ...content,
+      homepageHero: {
+        ...DEFAULT_HOMEPAGE_HERO,
+        ...hero,
+        trustItems: hero?.trustItems?.length
+          ? hero.trustItems
+          : DEFAULT_HOMEPAGE_HERO.trustItems,
+      },
+      homepageBanners: content?.homepageBanners?.length
+        ? content.homepageBanners
+        : DEFAULT_FEATURED_CONTENT.homepageBanners,
+    };
   }
 
   // ═══════════════════════════════════════════════════════════
@@ -41,7 +74,10 @@ class SiteSettingsService {
       const docSnap = await getDoc(docRef);
 
       if (!docSnap.exists()) {
-        serviceLogger.info('SiteSettingsService', 'Site settings not found, returning defaults');
+        serviceLogger.info(
+          'SiteSettingsService',
+          'Site settings not found, returning defaults'
+        );
         return DEFAULT_SITE_SETTINGS;
       }
 
@@ -73,14 +109,14 @@ class SiteSettingsService {
       const updateData = {
         ...settings,
         updatedAt: new Date().toISOString(),
-        updatedBy
+        updatedBy,
       };
 
       await setDoc(docRef, updateData, { merge: true });
 
       serviceLogger.info('SiteSettingsService', 'Site settings updated', {
         updatedBy,
-        fields: Object.keys(settings)
+        fields: Object.keys(settings),
       });
     } catch (error) {
       serviceLogger.error(
@@ -106,14 +142,14 @@ class SiteSettingsService {
 
     return onSnapshot(
       docRef,
-      (snapshot) => {
+      snapshot => {
         if (snapshot.exists()) {
           callback(snapshot.data() as SiteSettings);
         } else {
           callback(DEFAULT_SITE_SETTINGS);
         }
       },
-      (error) => {
+      error => {
         serviceLogger.error(
           'SiteSettingsService',
           'Site settings subscription error',
@@ -141,7 +177,10 @@ class SiteSettingsService {
       const docSnap = await getDoc(docRef);
 
       if (!docSnap.exists()) {
-        serviceLogger.info('SiteSettingsService', 'Theme settings not found, returning defaults');
+        serviceLogger.info(
+          'SiteSettingsService',
+          'Theme settings not found, returning defaults'
+        );
         return DEFAULT_THEME_SETTINGS;
       }
 
@@ -173,13 +212,13 @@ class SiteSettingsService {
       const updateData = {
         ...settings,
         updatedAt: new Date().toISOString(),
-        updatedBy
+        updatedBy,
       };
 
       await setDoc(docRef, updateData, { merge: true });
 
       serviceLogger.info('SiteSettingsService', 'Theme settings updated', {
-        updatedBy
+        updatedBy,
       });
     } catch (error) {
       serviceLogger.error(
@@ -205,14 +244,14 @@ class SiteSettingsService {
 
     return onSnapshot(
       docRef,
-      (snapshot) => {
+      snapshot => {
         if (snapshot.exists()) {
           callback(snapshot.data() as ThemeSettings);
         } else {
           callback(DEFAULT_THEME_SETTINGS);
         }
       },
-      (error) => {
+      error => {
         serviceLogger.error(
           'SiteSettingsService',
           'Theme settings subscription error',
@@ -240,11 +279,16 @@ class SiteSettingsService {
       const docSnap = await getDoc(docRef);
 
       if (!docSnap.exists()) {
-        serviceLogger.info('SiteSettingsService', 'Featured content not found, returning defaults');
+        serviceLogger.info(
+          'SiteSettingsService',
+          'Featured content not found, returning defaults'
+        );
         return DEFAULT_FEATURED_CONTENT;
       }
 
-      return docSnap.data() as FeaturedContent;
+      return this.normalizeFeaturedContent(
+        docSnap.data() as Partial<FeaturedContent>
+      );
     } catch (error) {
       serviceLogger.error(
         'SiteSettingsService',
@@ -272,13 +316,13 @@ class SiteSettingsService {
       const updateData = {
         ...content,
         updatedAt: new Date().toISOString(),
-        updatedBy
+        updatedBy,
       };
 
       await setDoc(docRef, updateData, { merge: true });
 
       serviceLogger.info('SiteSettingsService', 'Featured content updated', {
-        updatedBy
+        updatedBy,
       });
     } catch (error) {
       serviceLogger.error(
@@ -304,14 +348,18 @@ class SiteSettingsService {
 
     return onSnapshot(
       docRef,
-      (snapshot) => {
+      snapshot => {
         if (snapshot.exists()) {
-          callback(snapshot.data() as FeaturedContent);
+          callback(
+            this.normalizeFeaturedContent(
+              snapshot.data() as Partial<FeaturedContent>
+            )
+          );
         } else {
           callback(DEFAULT_FEATURED_CONTENT);
         }
       },
-      (error) => {
+      error => {
         serviceLogger.error(
           'SiteSettingsService',
           'Featured content subscription error',
@@ -334,20 +382,23 @@ class SiteSettingsService {
       const promises = [
         this.updateSiteSettings(DEFAULT_SITE_SETTINGS, updatedBy),
         this.updateThemeSettings(DEFAULT_THEME_SETTINGS, updatedBy),
-        this.updateFeaturedContent(DEFAULT_FEATURED_CONTENT, updatedBy)
+        this.updateFeaturedContent(DEFAULT_FEATURED_CONTENT, updatedBy),
       ];
 
       await Promise.all(promises);
 
-      serviceLogger.info('SiteSettingsService', 'All settings seeded with defaults', {
-        updatedBy
-      });
-    } catch (error) {
-      serviceLogger.error(
+      serviceLogger.info(
         'SiteSettingsService',
-        'Failed to seed defaults',
-        { error, updatedBy }
+        'All settings seeded with defaults',
+        {
+          updatedBy,
+        }
       );
+    } catch (error) {
+      serviceLogger.error('SiteSettingsService', 'Failed to seed defaults', {
+        error,
+        updatedBy,
+      });
       throw error;
     }
   }

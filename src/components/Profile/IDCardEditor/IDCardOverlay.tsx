@@ -746,8 +746,8 @@ const Tab = styled.button<{ $active: boolean; $isDark?: boolean }>`
   &:hover {
     color: var(--accent-primary);
     background: ${props => props.$isDark 
-      ? 'rgba(255, 140, 97, 0.1)' 
-      : 'rgba(255, 107, 53, 0.05)'};
+      ? 'rgba(139, 92, 246, 0.1)' 
+      : 'rgba(99, 102, 241, 0.05)'};
   }
   
   @media (max-width: 768px) {
@@ -1216,7 +1216,7 @@ const Input = styled.input<{ $hasError?: boolean }>`
     border-color: ${props => props.$hasError ? 'var(--error)' : 'var(--accent-primary)'};
     box-shadow: 0 0 0 3px ${props => props.$hasError 
       ? 'rgba(248, 113, 113, 0.1)' 
-      : 'rgba(255, 107, 53, 0.1)'};
+      : 'rgba(99, 102, 241, 0.1)'};
   }
   
   &::placeholder {
@@ -1248,7 +1248,7 @@ const Select = styled.select`
   &:focus {
     outline: none;
     border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
   }
   
   option {
@@ -1333,4 +1333,5 @@ const ReferenceImage = styled.img`
 `;
 
 export default IDCardOverlay;
+
 

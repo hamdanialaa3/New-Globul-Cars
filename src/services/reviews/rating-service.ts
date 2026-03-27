@@ -103,7 +103,7 @@ export class RatingService {
     } else if (rating >= 1.5) {
       return {
         level: 'poor',
-        color: '#ff5722',
+        color: '#8b5cf6',
         label_bg: 'Слаб',
         label_en: 'Poor'
       };
@@ -341,3 +341,4 @@ export class RatingService {
 // Export singleton instance
 export const ratingService = RatingService.getInstance();
 export const bulgarianRatingService = RatingService.getInstance();
+

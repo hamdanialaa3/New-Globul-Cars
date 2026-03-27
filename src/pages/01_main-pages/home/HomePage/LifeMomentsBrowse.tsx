@@ -1,4 +1,4 @@
-﻿/**
+/**
  * LifeMomentsBrowse.tsx
  * Преживявания и моменти - Life Moments Browse Section
  * 
@@ -161,7 +161,7 @@ const Badge = styled.div`
   letter-spacing: 1px;
   width: fit-content;
   margin: 0 auto 0.5rem;
-  box-shadow: 0 8px 20px rgba(255, 140, 97, 0.4);
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
 `;
 
 const Title = styled.h2<{ $isDark: boolean }>`
@@ -442,3 +442,4 @@ const LifeMomentsBrowse: React.FC = memo(() => {
 LifeMomentsBrowse.displayName = 'LifeMomentsBrowse';
 
 export default LifeMomentsBrowse;
+

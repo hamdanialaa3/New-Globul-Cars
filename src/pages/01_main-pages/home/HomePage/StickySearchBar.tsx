@@ -1,4 +1,4 @@
-﻿/**
+/**
  * StickySearchBar.tsx
  * Лепкава лента за търсене - Sticky Search Bar
  * 
@@ -107,7 +107,7 @@ const SearchInputWrapper = styled.div<{ $isDark: boolean }>`
       border-color: ${props => props.$isDark ? '#38bdf8' : 'var(--accent-primary)'};
       box-shadow: 0 0 0 3px ${props => props.$isDark
         ? 'rgba(56, 189, 248, 0.15)'
-        : 'rgba(255, 121, 0, 0.15)'};
+        : 'rgba(99, 102, 241, 0.15)'};
     }
   }
   
@@ -186,7 +186,7 @@ const SearchButton = styled.button<{ $isDark: boolean }>`
     transform: translateY(-1px);
     box-shadow: 0 4px 12px ${props => props.$isDark
       ? 'rgba(56, 189, 248, 0.3)'
-      : 'rgba(255, 121, 0, 0.3)'};
+      : 'rgba(99, 102, 241, 0.3)'};
   }
   
   &:active {
@@ -359,3 +359,4 @@ const StickySearchBar: React.FC = memo(() => {
 StickySearchBar.displayName = 'StickySearchBar';
 
 export default StickySearchBar;
+

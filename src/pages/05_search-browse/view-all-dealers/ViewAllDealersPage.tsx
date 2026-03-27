@@ -11,15 +11,18 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { FiMapPin, FiPhone, FiMail, FiStar } from 'react-icons/fi';
 import { logger } from '@/services/logger-service';
+import { DealershipRepository } from '@/repositories/DealershipRepository';
+import type { DealershipInfo } from '@/types/dealership/dealership.types';
 
 // ============================================================================
 // TYPES
 // ============================================================================
 
-interface Dealer {
+interface DealerDisplay {
   id: string;
   name: string;
   location: string;
@@ -245,52 +248,50 @@ const EmptyState = styled.div`
 // ============================================================================
 
 const ViewAllDealersPage: React.FC = () => {
-  const { currentLanguage } = useLanguage();
+  const { currentLanguage, t } = useLanguage();
+  const navigate = useNavigate();
   const isRTL = currentLanguage === 'ar';
   
-  const [dealers, setDealers] = useState<Dealer[]>([]);
+  const [dealers, setDealers] = useState<DealerDisplay[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   
   useEffect(() => {
-    loadDealers();
+    let isActive = true;
+    loadDealers(isActive);
+    return () => { isActive = false; };
   }, []);
   
-  const loadDealers = async () => {
+  const loadDealers = async (isActive: boolean) => {
     try {
       setLoading(true);
       
-      // Mock data for demonstration
-      // In production, replace with actual API call
-      const mockDealers: Dealer[] = [
-        {
-          id: '1',
-          name: 'Premium Auto Sofia',
-          location: 'Sofia, Bulgaria',
-          phone: '+359 2 123 4567',
-          email: 'info@premiumauto.bg',
-          rating: 4.8,
-          image: '/placeholder-dealer.jpg',
-          totalCars: 45
-        },
-        {
-          id: '2',
-          name: 'Varna Motors',
-          location: 'Varna, Bulgaria',
-          phone: '+359 52 987 654',
-          email: 'contact@varnamotors.bg',
-          rating: 4.6,
-          image: '/placeholder-dealer.jpg',
-          totalCars: 32
-        },
-        // Add more mock dealers as needed
-      ];
+      const verifiedDealerships = await DealershipRepository.getVerified(100);
       
-      setDealers(mockDealers);
+      if (!isActive) return;
+      
+      const mapped: DealerDisplay[] = verifiedDealerships.map((d: DealershipInfo) => ({
+        id: d.uid,
+        name: currentLanguage === 'bg' 
+          ? d.dealershipNameBG 
+          : (d.dealershipNameEN || d.dealershipNameBG),
+        location: d.address 
+          ? `${d.address.city}, ${d.address.region || 'Bulgaria'}` 
+          : 'Bulgaria',
+        phone: d.contact?.phone 
+          ? `${d.contact.phoneCountryCode || '+359'} ${d.contact.phone}` 
+          : '',
+        email: d.contact?.email || '',
+        rating: 0,
+        image: d.media?.logo || d.media?.coverImage || '/images/default-dealer.png',
+        totalCars: 0,
+      }));
+      
+      setDealers(mapped);
     } catch (error) {
       logger.error('Error loading dealers', error as Error);
     } finally {
-      setLoading(false);
+      if (isActive) setLoading(false);
     }
   };
   
@@ -304,11 +305,11 @@ const ViewAllDealersPage: React.FC = () => {
       <ContentWrapper>
         <PageHeader>
           <PageTitle>
-            {isRTL ? 'All Featured Dealers' : 'All Featured Dealers'}
+            {currentLanguage === 'bg' ? 'Всички дилъри' : 'All Featured Dealers'}
           </PageTitle>
           <PageDescription>
-            {isRTL 
-              ? 'Browse our network of certified dealers across Bulgaria'
+            {currentLanguage === 'bg'
+              ? 'Разгледайте мрежата от сертифицирани дилъри в България'
               : 'Browse our network of certified dealers across Bulgaria'
             }
           </PageDescription>
@@ -317,7 +318,7 @@ const ViewAllDealersPage: React.FC = () => {
         <SearchBar>
           <SearchInput
             type="text"
-            placeholder={isRTL ? 'Search for dealer or location...' : 'Search for dealer or location...'}
+            placeholder={currentLanguage === 'bg' ? 'Търсене по дилър или локация...' : 'Search for dealer or location...'}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -325,28 +326,32 @@ const ViewAllDealersPage: React.FC = () => {
         
         {loading ? (
           <LoadingContainer>
-            {isRTL ? 'Loading...' : 'Loading...'}
+            {t('common.loading')}
           </LoadingContainer>
         ) : filteredDealers.length === 0 ? (
           <EmptyState>
-            <h3>{isRTL ? 'No Results Found' : 'No Results Found'}</h3>
-            <p>{isRTL ? 'Try a different search term' : 'Try a different search term'}</p>
+            <h3>{t('common.noResults')}</h3>
+            <p>{t('common.noResultsDesc')}</p>
           </EmptyState>
         ) : (
           <DealersGrid>
             {filteredDealers.map((dealer) => (
-              <DealerCard key={dealer.id}>
+              <DealerCard key={dealer.id} onClick={() => navigate(`/dealer/${dealer.id}`)}>
                 <DealerImage $image={dealer.image}>
-                  <DealerBadge>
-                    {dealer.totalCars} {isRTL ? 'Cars' : 'Cars'}
-                  </DealerBadge>
+                  {dealer.totalCars > 0 && (
+                    <DealerBadge>
+                      {dealer.totalCars} {isRTL ? 'Cars' : 'Cars'}
+                    </DealerBadge>
+                  )}
                 </DealerImage>
                 <DealerInfo>
                   <DealerName>{dealer.name}</DealerName>
-                  <DealerRating>
-                    <FiStar />
-                    {dealer.rating}
-                  </DealerRating>
+                  {dealer.rating > 0 && (
+                    <DealerRating>
+                      <FiStar />
+                      {dealer.rating}
+                    </DealerRating>
+                  )}
                   <DealerDetails>
                     <DealerDetail>
                       <FiMapPin />

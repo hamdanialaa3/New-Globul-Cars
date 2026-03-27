@@ -39,7 +39,7 @@ const NavigationTabs = styled.div`
   border: 1px solid #2d3748;
   overflow-x: auto;
   scrollbar-width: thin;
-  scrollbar-color: #ff8c61 #0f1419;
+  scrollbar-color: #8B5CF6 #0f1419;
   
   &::-webkit-scrollbar {
     height: 4px;
@@ -56,7 +56,7 @@ const NavigationTabs = styled.div`
   }
   
   &::-webkit-scrollbar-thumb:hover {
-    background: #ff8c61;
+    background: #8B5CF6;
   }
 `;
 
@@ -75,7 +75,7 @@ const TabButton = styled.button<{ $active: boolean }>`
   min-width: fit-content;
   
   ${props => props.$active ? `
-    background: #ff8c61;
+    background: #8B5CF6;
     color: #0f1419;
     font-weight: 700;
   ` : `
@@ -84,7 +84,7 @@ const TabButton = styled.button<{ $active: boolean }>`
     border-color: transparent;
     &:hover {
       background: #2d3748;
-      color: #ff8c61;
+      color: #8B5CF6;
     }
   `}
 `;
@@ -136,3 +136,4 @@ const AdminNavigation: React.FC<AdminNavigationProps> = ({ activeTab, onTabChang
 };
 
 export default AdminNavigation;
+

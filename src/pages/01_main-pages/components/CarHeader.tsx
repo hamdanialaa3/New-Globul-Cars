@@ -75,9 +75,9 @@ const SellerTypeBadge = styled.div<{ $type: 'dealer' | 'private' }>`
   
   ${props => props.$type === 'dealer' 
     ? `
-      color: #E65100;
-      background: rgba(230, 81, 0, 0.1);
-      border-color: rgba(230, 81, 0, 0.3);
+      color: #2563EB;
+      background: rgba(37, 99, 235, 0.1);
+      border-color: rgba(37, 99, 235, 0.3);
     ` 
     : `
       color: #6b7280;
@@ -234,4 +234,6 @@ export const CarHeader: React.FC<CarHeaderProps> = ({
     </Header>
   );
 };
+
+
 

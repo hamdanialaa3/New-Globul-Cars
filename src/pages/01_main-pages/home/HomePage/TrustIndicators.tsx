@@ -1,4 +1,4 @@
-﻿
+
 import React from 'react';
 import styled from 'styled-components';
 import { ShieldCheck, Users, Clock, Award } from 'lucide-react';
@@ -89,14 +89,14 @@ const IconWrapper = styled.div<{ $isDark: boolean }>`
   transition: all 0.3s ease;
   filter: ${props => props.$isDark 
     ? 'drop-shadow(0 2px 4px rgba(255, 215, 0, 0.4))' 
-    : 'drop-shadow(0 2px 4px rgba(255, 143, 16, 0.3))'};
+    : 'drop-shadow(0 2px 4px rgba(139, 92, 246, 0.3))'};
 
   ${TrustItem}:hover & {
     color: ${props => props.$isDark ? '#FFA500' : '#FFD700'};
     transform: scale(1.1) rotate(5deg);
     filter: ${props => props.$isDark 
       ? 'drop-shadow(0 4px 8px rgba(255, 215, 0, 0.6))' 
-      : 'drop-shadow(0 4px 8px rgba(255, 143, 16, 0.5))'};
+      : 'drop-shadow(0 4px 8px rgba(139, 92, 246, 0.5))'};
   }
 `;
 
@@ -148,3 +148,4 @@ const TrustIndicators: React.FC = () => {
 };
 
 export default TrustIndicators;
+

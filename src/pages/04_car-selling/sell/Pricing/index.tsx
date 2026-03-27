@@ -94,7 +94,7 @@ const PricingPageNew: React.FC = () => {
       <S.FormCard>
         <S.Label>
           {language === 'bg' ? 'Цена (EUR)' : 'Price (EUR)'}
-          <span style={{ color: '#ff8f10', marginLeft: '0.25rem' }}>*</span>
+          <span style={{ color: '#3b82f6', marginLeft: '0.25rem' }}>*</span>
         </S.Label>
         
         <S.PriceInputWrapper>
@@ -158,4 +158,5 @@ const PricingPageNew: React.FC = () => {
 };
 
 export default PricingPageNew;
+
 

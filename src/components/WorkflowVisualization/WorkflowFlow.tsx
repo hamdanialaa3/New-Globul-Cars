@@ -21,7 +21,7 @@ const FlowContainer = styled.div`
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 143, 16, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.1);
   position: sticky;
   top: 2rem;
 `;
@@ -76,4 +76,5 @@ const WorkflowFlow: React.FC<WorkflowFlowProps> = ({
 };
 
 export default WorkflowFlow;
+
 

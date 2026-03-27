@@ -233,7 +233,7 @@ const ReportCard = styled.div`
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: #ff8c61;
+    border-color: #8B5CF6;
     background: #252b3a;
   }
 `;
@@ -264,9 +264,9 @@ const ExportBtn = styled.button`
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
-  background: #ff8c61;
+  background: #8B5CF6;
   color: #0f1419;
-  border: 1px solid #ff8c61;
+  border: 1px solid #8B5CF6;
   border-radius: 4px;
   font-size: 12px;
   font-weight: 700;
@@ -275,8 +275,9 @@ const ExportBtn = styled.button`
 
   &:hover {
     background: #ffa885;
-    box-shadow: 0 4px 10px rgba(255, 140, 97, 0.4);
+    box-shadow: 0 4px 10px rgba(139, 92, 246, 0.4);
   }
 `;
 
 export default ReportsLinks;
+

@@ -85,8 +85,8 @@ const FeatureCard = styled.div`
   transition: all 0.3s;
 
   &:hover {
-    border-color: var(--accent-primary, #ff6b35);
-    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+    border-color: var(--accent-primary, #6366F1);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
     transform: translateY(-2px);
   }
 `;
@@ -95,7 +95,7 @@ const FeatureIcon = styled.div`
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  background: linear-gradient(135deg, #6366F1 0%, #f7931e 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -197,3 +197,4 @@ export const AIFeaturesModal: React.FC<AIFeaturesModalProps> = ({ isOpen, onClos
 };
 
 export default AIFeaturesModal;
+

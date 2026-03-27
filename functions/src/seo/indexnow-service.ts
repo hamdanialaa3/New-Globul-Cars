@@ -133,7 +133,7 @@ export const onCarCreated = functions.firestore
         const carData = snap.data();
 
         if (!carData.sellerNumericId || !carData.carNumericId) {
-            console.log('Skipping IndexNow: Missing numeric IDs');
+            functions.logger.info('Skipping IndexNow: Missing numeric IDs');
             return;
         }
 
@@ -141,9 +141,9 @@ export const onCarCreated = functions.firestore
 
         try {
             const results = await IndexNowService.submitUrl(carUrl);
-            console.log('IndexNow submission results:', results);
+            functions.logger.info('IndexNow submission results:', results);
         } catch (error) {
-            console.error('IndexNow submission failed:', error);
+            functions.logger.error('IndexNow submission failed:', error);
         }
     });
 

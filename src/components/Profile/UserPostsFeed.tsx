@@ -142,7 +142,7 @@ const SectionTitle = styled.h3`
   margin: 0;
   
   svg {
-    color: #FF7900;
+    color: #2563EB;
     flex-shrink: 0;
   }
   
@@ -158,7 +158,7 @@ const PostCount = styled.span`
   min-width: 28px;
   height: 28px;
   padding: 0 8px;
-  background: linear-gradient(135deg, #FF7900, #FF8F10);
+  background: linear-gradient(135deg, #2563EB, #3B82F6);
   color: white;
   border-radius: 14px;
   font-size: 0.875rem;
@@ -180,7 +180,7 @@ const LoadingContainer = styled.div`
   padding: 60px 20px;
   
   .spinner {
-    color: #FF7900;
+    color: #2563EB;
     animation: spin 1s linear infinite;
   }
   
@@ -220,4 +220,5 @@ const EmptyDescription = styled.p`
 `;
 
 export default UserPostsFeed;
+
 

@@ -22,7 +22,7 @@ export const PageHeader = styled.div<{ $isDark?: boolean }>`
 export const PageTitle = styled.h1<{ $isDark?: boolean }>`
   font-size: clamp(2rem, 5vw, 2.5rem);
   font-weight: 800;
-  color: ${props => props.$isDark ? '#FF8C61' : '#005ca9'};
+  color: ${props => props.$isDark ? '#8B5CF6' : '#005ca9'};
   margin-bottom: 16px;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -63,7 +63,7 @@ export const CategorySection = styled.section<{ $isDark?: boolean }>`
 export const CategoryHeader = styled.div<{ $isDark?: boolean }>`
   margin-bottom: 32px;
   padding-bottom: 16px;
-  border-bottom: 3px solid ${props => props.$isDark ? '#FF8C61' : '#005ca9'};
+  border-bottom: 3px solid ${props => props.$isDark ? '#8B5CF6' : '#005ca9'};
 `;
 
 export const CategoryTitle = styled.h2<{ $isDark?: boolean }>`
@@ -109,7 +109,7 @@ export const BrandsGrid = styled.div`
 
 export const BrandCard = styled.div<{ featured?: boolean; $isDark?: boolean }>`
   background: ${props => {
-    if (props.featured) return 'linear-gradient(135deg, #FF8C61 0%, #FF5C00 100%)';
+    if (props.featured) return 'linear-gradient(135deg, #8B5CF6 0%, #FF5C00 100%)';
     return props.$isDark ? '#0F1419' : 'white';
   }};
   border: ${props => {
@@ -129,7 +129,7 @@ export const BrandCard = styled.div<{ featured?: boolean; $isDark?: boolean }>`
   &:hover {
     transform: translateY(-8px);
     box-shadow: ${props => props.$isDark ? '0 20px 40px rgba(0, 0, 0, 0.5)' : '0 12px 30px rgba(0, 0, 0, 0.12)'};
-    border-color: ${props => props.featured ? 'transparent' : (props.$isDark ? '#FF8C61' : '#005ca9')};
+    border-color: ${props => props.featured ? 'transparent' : (props.$isDark ? '#8B5CF6' : '#005ca9')};
   }
 `;
 
@@ -198,7 +198,7 @@ export const StatItem = styled.div<{ featured?: boolean; $isDark?: boolean }>`
     font-weight: 800;
     color: ${props => {
     if (props.featured) return 'white';
-    return props.$isDark ? '#FF8C61' : '#005ca9';
+    return props.$isDark ? '#8B5CF6' : '#005ca9';
   }};
   }
 `;
@@ -255,4 +255,5 @@ export const LoadingContainer = styled.div<{ $isDark?: boolean }>`
   color: ${props => props.$isDark ? '#94a3b8' : '#6c757d'};
   font-weight: 600;
 `;
+
 

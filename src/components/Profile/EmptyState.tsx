@@ -48,7 +48,7 @@ const Description = styled.p`
 
 const ActionButton = styled.button`
   padding: 12px 24px;
-  background: #FF7900;
+  background: #2563EB;
   color: white;
   border: none;
   border-radius: 8px;
@@ -60,7 +60,7 @@ const ActionButton = styled.button`
   &:hover {
     background: #ff8c1a;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
   }
   
   &:active {
@@ -177,3 +177,5 @@ const EmptyState: React.FC<EmptyStateProps> = ({ type, onAction }) => {
 };
 
 export default EmptyState;
+
+

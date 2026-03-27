@@ -264,8 +264,8 @@ const VehicleDataPageNew: React.FC = () => {
                   value={brand}
                   style={isFeaturedBrand(brand) ? {
                     fontWeight: '700',
-                    color: '#ff8f10',
-                    backgroundColor: 'rgba(255, 143, 16, 0.05)'
+                    color: '#3b82f6',
+                    backgroundColor: 'rgba(139, 92, 246, 0.05)'
                   } : {}}
                 >
                   {isFeaturedBrand(brand) ? `● ${brand}` : brand}
@@ -283,7 +283,7 @@ const VehicleDataPageNew: React.FC = () => {
               />
             )}
             <S.HintText style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Star size={14} color="#ff8f10" />
+              <Star size={14} color="#3b82f6" />
               {language === 'bg' 
                 ? 'Най-популярни марки в България показани отгоре' 
                 : 'Most popular brands in Bulgaria shown first'}
@@ -803,4 +803,6 @@ const VehicleDataPageNew: React.FC = () => {
 };
 
 export default VehicleDataPageNew;
+
+
 

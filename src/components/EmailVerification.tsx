@@ -30,7 +30,7 @@ const VerificationIcon = styled.div<{ $status: 'pending' | 'verified' | 'error' 
     switch (props.$status) {
       case 'verified': return 'linear-gradient(135deg, #4caf50, #66bb6a)';
       case 'error': return 'linear-gradient(135deg, #f44336, #ef5350)';
-      default: return 'linear-gradient(135deg, #FF7900, #ff8c1a)';
+      default: return 'linear-gradient(135deg, #2563EB, #ff8c1a)';
     }
   }};
   color: white;
@@ -84,11 +84,11 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
       border-color: #ccc;
     }
   ` : `
-    background: linear-gradient(135deg, #FF7900, #ff8c1a);
+    background: linear-gradient(135deg, #2563EB, #ff8c1a);
     color: white;
     &:hover:not(:disabled) {
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
     }
   `}
   
@@ -345,3 +345,4 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
 };
 
 export default EmailVerification;
+

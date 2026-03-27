@@ -32,7 +32,7 @@ const Header = styled.div`
 const Title = styled.h2`
   font-size: 24px;
   font-weight: 700;
-  color: #ff8c61;
+  color: #8B5CF6;
   margin: 0 0 8px 0;
   display: flex;
   align-items: center;
@@ -88,7 +88,7 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' | 'danger' }>`
       `;
     }
     return `
-      background: #ff8c61;
+      background: #8B5CF6;
       color: #0f1419;
       &:hover {
         background: #ff7a47;
@@ -279,7 +279,7 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #ff8c61;
+    border-color: #8B5CF6;
   }
 `;
 
@@ -297,7 +297,7 @@ const TextArea = styled.textarea`
 
   &:focus {
     outline: none;
-    border-color: #ff8c61;
+    border-color: #8B5CF6;
   }
 `;
 
@@ -313,7 +313,7 @@ const Select = styled.select`
 
   &:focus {
     outline: none;
-    border-color: #ff8c61;
+    border-color: #8B5CF6;
   }
 `;
 
@@ -680,3 +680,4 @@ const AnnouncementManager: React.FC = () => {
 };
 
 export default AnnouncementManager;
+

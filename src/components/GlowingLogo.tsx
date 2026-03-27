@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
-const mainLogo = '/logo.png';
+const mainLogo = '/logo.webp';
 
 // (Comment removed - was in Arabic)
 const glowRotation = keyframes`

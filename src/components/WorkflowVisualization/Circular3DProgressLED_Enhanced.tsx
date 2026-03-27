@@ -101,7 +101,7 @@ const Container = styled.div`
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #ff8f10, #005ca9);
+    background: linear-gradient(90deg, #3b82f6, #005ca9);
     opacity: 0.8;
   }
 
@@ -109,7 +109,7 @@ const Container = styled.div`
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 50% 0%, rgba(255, 143, 16, 0.05), transparent 70%);
+    background: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.05), transparent 70%);
     pointer-events: none;
   }
 `;
@@ -202,7 +202,7 @@ const InnerCircle = styled.div`
     background: conic-gradient(
       from 0deg,
       transparent 0%,
-      rgba(255, 143, 16, 0.1) 25%,
+      rgba(139, 92, 246, 0.1) 25%,
       transparent 50%,
       rgba(0, 92, 169, 0.1) 75%,
       transparent 100%
@@ -225,7 +225,7 @@ const GlassyOrbit = styled.div<{ $show: boolean }>`
   border: 2px solid rgba(255, 255, 255, 0.15);
   background: 
     radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), transparent 50%),
-    radial-gradient(circle at 70% 70%, rgba(255, 143, 16, 0.05), transparent 50%);
+    radial-gradient(circle at 70% 70%, rgba(139, 92, 246, 0.05), transparent 50%);
   box-shadow: 
     0 0 20px rgba(255, 255, 255, 0.1),
     inset 0 0 20px rgba(255, 255, 255, 0.05);
@@ -254,8 +254,8 @@ const GlassyOrbit = styled.div<{ $show: boolean }>`
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: radial-gradient(circle, #fff, #ff8f10);
-    box-shadow: 0 0 10px #ff8f10, 0 0 20px #ff8f10;
+    background: radial-gradient(circle, #fff, #3b82f6);
+    box-shadow: 0 0 10px #3b82f6, 0 0 20px #3b82f6;
   }
 `;
 
@@ -296,7 +296,7 @@ const CarLogoContainer = styled.div<{ $show: boolean }>`
       21% 79%, 10% 71%, 8% 58%, 0% 50%, 8% 42%, 
       10% 29%, 21% 21%, 29% 8%, 39% 10%
     );
-    background: radial-gradient(circle, transparent 40%, rgba(255, 143, 16, 0.15) 100%);
+    background: radial-gradient(circle, transparent 40%, rgba(139, 92, 246, 0.15) 100%);
     animation: ${pulse} 3s ease-in-out infinite;
   }
 `;
@@ -557,7 +557,7 @@ const LoadingBarSpan = styled.span<{ $i: number; $color: string }>`
 
 const getProgressColor = (progress: number): string => {
   if (progress < 25) return '#e74c3c';
-  if (progress < 50) return '#ff8f10';
+  if (progress < 50) return '#3b82f6';
   if (progress < 75) return '#f39c12';
   if (progress < 90) return '#27ae60';
   return '#16a085';
@@ -786,4 +786,6 @@ const Circular3DProgressLEDEnhanced: React.FC<Circular3DProgressLEDEnhancedProps
 };
 
 export default Circular3DProgressLEDEnhanced;
+
+
 

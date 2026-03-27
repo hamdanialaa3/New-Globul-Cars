@@ -48,9 +48,9 @@ const SectionContainer = styled.section`
   transition: background-color 0.3s ease;
   background: transparent;
   /* 🟣 Light purple border */
-  border: 1px solid rgba(230, 81, 0, 0.12);
+  border: 1px solid rgba(37, 99, 235, 0.12);
   border-radius: 8px;
-  box-shadow: inset 0 0 8px rgba(230, 81, 0, 0.06);
+  box-shadow: inset 0 0 8px rgba(37, 99, 235, 0.06);
   
   /* ✅ Removed background image and overlay */
   
@@ -328,7 +328,7 @@ const ViewAllBrandsButton = styled.button`
   html[data-theme="light"] & {
     background: var(--btn-primary-bg);
     color: #000000;
-    box-shadow: 0 4px 20px rgba(255, 143, 16, 0.4);
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
   }
 
   /* Dark mode: Black with yellow text */
@@ -343,7 +343,7 @@ const ViewAllBrandsButton = styled.button`
     transform: translateY(-3px) scale(1.02);
     html[data-theme="light"] & {
       background: var(--btn-primary-bg);
-      box-shadow: 0 8px 30px rgba(255, 143, 16, 0.5);
+      box-shadow: 0 8px 30px rgba(139, 92, 246, 0.5);
     }
     html[data-theme="dark"] & {
       background: #1a1a1a;

@@ -23,7 +23,7 @@ import {
 
 const TopBrandsPage: React.FC = () => {
   const navigate = useNavigate();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const [brandsWithStats, setBrandsWithStats] = useState<BrandWithStats[]>([]);
@@ -83,7 +83,7 @@ const TopBrandsPage: React.FC = () => {
     return (
       <PageContainer $isDark={isDark}>
         <LoadingContainer $isDark={isDark}>
-          {language === 'bg' ? 'Зареждане...' : 'Loading...'}
+          {t('common.loading')}
         </LoadingContainer>
       </PageContainer>
     );

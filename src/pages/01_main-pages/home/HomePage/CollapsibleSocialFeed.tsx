@@ -1,4 +1,4 @@
-﻿// Collapsible Social Feed Component
+// Collapsible Social Feed Component
 // Wraps SmartFeedSection + CommunityFeedSection in a collapsible panel
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -126,7 +126,7 @@ const Header = styled.div<{ $isExpanded: boolean }>`
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: ${p => p.$isExpanded 
-    ? '0 8px 24px rgba(255, 143, 16, 0.25)'
+    ? '0 8px 24px rgba(139, 92, 246, 0.25)'
     : '0 2px 8px rgba(0, 0, 0, 0.05)'
   };
   overflow: hidden;
@@ -154,7 +154,7 @@ const Header = styled.div<{ $isExpanded: boolean }>`
   &:hover {
     transform: translateY(-2px);
     box-shadow: ${p => p.$isExpanded 
-      ? '0 12px 32px rgba(255, 143, 16, 0.3)'
+      ? '0 12px 32px rgba(139, 92, 246, 0.3)'
       : '0 4px 12px rgba(0, 0, 0, 0.1)'
     };
   }
@@ -249,7 +249,7 @@ const IconWrapper = styled.div`
   align-items: center;
   justify-content: center;
   color: white;
-  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 
   @media (max-width: 768px) {
     width: 48px;
@@ -393,4 +393,5 @@ const LoadingFallback = styled.div`
 `;
 
 export default CollapsibleSocialFeed;
+
 

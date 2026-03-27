@@ -24,7 +24,7 @@ const AdminToolbar = styled.div`
 
 const SessionInfo = styled.div`
   background: #1e2432;
-  color: #ff8c61;
+  color: #8B5CF6;
   padding: 6px 12px;
   border-radius: 4px;
   font-size: 12px;
@@ -52,7 +52,7 @@ const DashboardHeader = styled.div`
 
 const ControlButton = styled.button<{ $variant: 'primary' | 'danger' }>`
   padding: 6px 14px;
-  border: 1px solid ${props => props.$variant === 'danger' ? '#ef4444' : '#ff8c61'};
+  border: 1px solid ${props => props.$variant === 'danger' ? '#ef4444' : '#8B5CF6'};
   border-radius: 4px;
   font-size: 11px;
   font-weight: 700;
@@ -63,7 +63,7 @@ const ControlButton = styled.button<{ $variant: 'primary' | 'danger' }>`
   gap: 6px;
   white-space: nowrap;
   
-  background: ${props => props.$variant === 'danger' ? '#ef4444' : '#ff8c61'};
+  background: ${props => props.$variant === 'danger' ? '#ef4444' : '#8B5CF6'};
   color: ${props => props.$variant === 'danger' ? '#ffffff' : '#0f1419'};
 
   &:hover { 
@@ -74,7 +74,7 @@ const ControlButton = styled.button<{ $variant: 'primary' | 'danger' }>`
 `;
 
 const HeaderTitle = styled.h1`
-  color: #ff8c61; /* Accent Color */
+  color: #8B5CF6; /* Accent Color */
   font-size: 18px;
   font-weight: 700;
   margin: 0 0 6px 0;
@@ -138,3 +138,4 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ session, onLogout }) => {
 };
 
 export default AdminHeader;
+

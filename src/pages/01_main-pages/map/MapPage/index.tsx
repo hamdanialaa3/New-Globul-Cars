@@ -68,8 +68,8 @@ const ToggleButton = styled.button<{ $active?: boolean }>`
   gap: 0.55rem;
   padding: 0.55rem 0.9rem 0.55rem 0.7rem;
   border-radius: 12px;
-  border: 1px solid ${({ $active }) => $active ? 'var(--accent, #ff8f10)' : 'rgba(255,255,255,0.08)'};
-  background: ${({ $active }) => $active ? 'linear-gradient(135deg,#ff9f30,#ff8f10 60%)' : 'rgba(255,255,255,0.04)'};
+  border: 1px solid ${({ $active }) => $active ? 'var(--accent, #3b82f6)' : 'rgba(255,255,255,0.08)'};
+  background: ${({ $active }) => $active ? 'linear-gradient(135deg,#ff9f30,#3b82f6 60%)' : 'rgba(255,255,255,0.04)'};
   color: ${({ $active }) => $active ? '#111' : 'var(--text-secondary)'};
   font-size: 0.7rem;
   font-weight: 600;
@@ -79,17 +79,17 @@ const ToggleButton = styled.button<{ $active?: boolean }>`
   min-width: 118px;
   justify-content: flex-start;
   transition: background .25s,border-color .25s,color .25s,transform .25s;
-  box-shadow: ${({ $active }) => $active ? '0 4px 10px -2px rgba(255,143,16,0.35)' : 'inset 0 0 0 0 rgba(0,0,0,0)'};
+  box-shadow: ${({ $active }) => $active ? '0 4px 10px -2px rgba(139, 92, 246, 0.35)' : 'inset 0 0 0 0 rgba(0,0,0,0)'};
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  &:hover { background: ${({ $active }) => $active ? 'linear-gradient(135deg,#ffa84a,#ff8f10 60%)' : 'rgba(255,255,255,0.07)'}; }
+  &:hover { background: ${({ $active }) => $active ? 'linear-gradient(135deg,#ffa84a,#3b82f6 60%)' : 'rgba(255,255,255,0.07)'}; }
   &:active { transform: translateY(1px); }
-  &:focus-visible { box-shadow: 0 0 0 2px #ff8f10, 0 0 0 5px rgba(255,143,16,0.4); }
+  &:focus-visible { box-shadow: 0 0 0 2px #3b82f6, 0 0 0 5px rgba(139, 92, 246, 0.4); }
   &[data-layer="users"][data-active="true"] { background: linear-gradient(135deg,#3b82f6,#1d4ed8 65%); color:#fff; border-color:#1d4ed8; box-shadow:0 4px 10px -2px rgba(29,78,216,0.35); }
   &[data-layer="cars"][data-active="true"] { background: linear-gradient(135deg,#f97316,#e36414 65%); color:#111; }
   &[data-layer="workshops"][data-active="true"] { background: linear-gradient(135deg,#22c55e,#16a34a 65%); color:#062; }
   &[data-layer="showrooms"][data-active="true"] { background: linear-gradient(135deg,#6366f1,#4338ca 65%); color:#fff; }
-  &[data-layer="dealers"][data-active="true"] { background: linear-gradient(135deg,#ffd54a,#ff8f10 65%); color:#222; }
+  &[data-layer="dealers"][data-active="true"] { background: linear-gradient(135deg,#ffd54a,#3b82f6 65%); color:#222; }
 `;
 
 const MapWrapper = styled.div`
@@ -142,7 +142,7 @@ const DetailsPanel = styled.div<{ $show: boolean }>`
   backdrop-filter: blur(12px);
   color: #fff;
   padding: ${props => props.$show ? '1.5rem 1.5rem 2rem' : '0 1.5rem'};
-  border-top: 3px solid var(--accent, #ff8f10);
+  border-top: 3px solid var(--accent, #3b82f6);
   max-height: ${props => props.$show ? '65vh' : '0'};
   overflow-y: auto;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -156,7 +156,7 @@ const DetailsPanel = styled.div<{ $show: boolean }>`
     background: rgba(255,255,255,0.05);
   }
   &::-webkit-scrollbar-thumb {
-    background: var(--accent, #ff8f10);
+    background: var(--accent, #3b82f6);
     border-radius: 4px;
   }
 `;
@@ -174,7 +174,7 @@ const DetailsPanelTitle = styled.h3`
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
-  color: var(--accent, #ff8f10);
+  color: var(--accent, #3b82f6);
 `;
 
 const CloseButton = styled.button`
@@ -207,9 +207,9 @@ const ItemCard = styled.div`
   
   &:hover {
     background: rgba(255,255,255,0.08);
-    border-color: var(--accent, #ff8f10);
+    border-color: var(--accent, #3b82f6);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255,143,16,0.2);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
   }
 `;
 
@@ -226,7 +226,7 @@ const CardIcon = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 8px;
-  background: var(--accent, #ff8f10);
+  background: var(--accent, #3b82f6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -247,8 +247,8 @@ const CardBadge = styled.span`
   border-radius: 4px;
   font-size: 0.7rem;
   font-weight: 600;
-  background: rgba(255,143,16,0.2);
-  color: var(--accent, #ff8f10);
+  background: rgba(139, 92, 246, 0.2);
+  color: var(--accent, #3b82f6);
 `;
 
 const CardBody = styled.div`
@@ -270,7 +270,7 @@ const CardLabel = styled.span`
 
 const CardValue = styled.span`
   font-weight: 600;
-  color: var(--accent, #ff8f10);
+  color: var(--accent, #3b82f6);
 `;
 
 const CardFooter = styled.div`
@@ -284,9 +284,9 @@ const CardFooter = styled.div`
 const CardButton = styled.button`
   flex: 1;
   padding: 0.5rem;
-  border: 1px solid var(--accent, #ff8f10);
+  border: 1px solid var(--accent, #3b82f6);
   background: transparent;
-  color: var(--accent, #ff8f10);
+  color: var(--accent, #3b82f6);
   border-radius: 6px;
   font-size: 0.8rem;
   font-weight: 600;
@@ -294,12 +294,12 @@ const CardButton = styled.button`
   transition: all 0.2s;
   
   &:hover {
-    background: var(--accent, #ff8f10);
+    background: var(--accent, #3b82f6);
     color: #000;
   }
   
   &.primary {
-    background: var(--accent, #ff8f10);
+    background: var(--accent, #3b82f6);
     color: #000;
     &:hover {
       background: #ff9f30;
@@ -514,7 +514,7 @@ const MapAnalyticsPage: React.FC = () => {
           weight: 1,
           opacity: 0.85,
           fillOpacity: 0.6,
-          fillColor: '#ff8f10',
+          fillColor: '#3b82f6',
           className: 'fade-in-marker'
         });
         marker.on('click', () => {
@@ -564,7 +564,7 @@ const MapAnalyticsPage: React.FC = () => {
         let value = 0; let color = '#e36414'; let itemType: 'workshop' | 'showroom' | 'dealer' = 'workshop';
         if (activeLayer === 'workshops') { value = point.workshops; color = '#16a34a'; itemType = 'workshop'; }
         if (activeLayer === 'showrooms') { value = point.showrooms; color = '#6366f1'; itemType = 'showroom'; }
-        if (activeLayer === 'dealers') { value = point.dealers; color = '#ff8f10'; itemType = 'dealer'; }
+        if (activeLayer === 'dealers') { value = point.dealers; color = '#3b82f6'; itemType = 'dealer'; }
         if (value < 0) value = 0; // لم يتم التحميل بعد
         const radius = Math.min(46, Math.max(10, Math.sqrt(value || 1) * 2.8));
         const circle = L.circleMarker([point.lat, point.lng], {
@@ -650,7 +650,7 @@ const MapAnalyticsPage: React.FC = () => {
           {activeLayer === 'users' && <LegendItem><span style={{ width: 12, height: 12, background: '#1d4ed8', borderRadius: 4 }} /> {t('mapPage.layerUsers')} ({usersEntities.length})</LegendItem>}
           {activeLayer === 'workshops' && <LegendItem><span style={{ width: 12, height: 12, background: '#16a34a', borderRadius: 4 }} /> {t('mapPage.layerWorkshops')}</LegendItem>}
           {activeLayer === 'showrooms' && <LegendItem><span style={{ width: 12, height: 12, background: '#6366f1', borderRadius: 4 }} /> {t('mapPage.layerShowrooms')}</LegendItem>}
-          {activeLayer === 'dealers' && <LegendItem><span style={{ width: 12, height: 12, background: '#ff8f10', borderRadius: 4 }} /> {t('mapPage.layerDealers')}</LegendItem>}
+          {activeLayer === 'dealers' && <LegendItem><span style={{ width: 12, height: 12, background: '#3b82f6', borderRadius: 4 }} /> {t('mapPage.layerDealers')}</LegendItem>}
           <UpdatedTag>{t('mapPage.lastUpdated')}: {updatedTimeStr}</UpdatedTag>
         </Legend>
 
@@ -781,3 +781,4 @@ const MapAnalyticsPage: React.FC = () => {
 };
 
 export default MapAnalyticsPage;
+

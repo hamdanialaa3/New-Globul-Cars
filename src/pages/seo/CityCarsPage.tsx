@@ -67,7 +67,7 @@ const StatCard = styled.div`
 const StatValue = styled.div`
   font-size: 2rem;
   font-weight: 700;
-  color: #FF7900;
+  color: #2563EB;
   margin-bottom: 0.5rem;
 `;
 
@@ -110,7 +110,7 @@ const TipCard = styled.div`
   background: ${({ theme }) => theme.mode === 'dark' ? 'rgba(15, 23, 42, 0.8)' : '#f8f9fa'};
   border-radius: 10px;
   padding: 1.5rem;
-  border-left: 4px solid #FF7900;
+  border-left: 4px solid #2563EB;
 `;
 
 const TipHeader = styled.div`
@@ -121,7 +121,7 @@ const TipHeader = styled.div`
 `;
 
 const TipIcon = styled.div`
-  color: #FF7900;
+  color: #2563EB;
   display: flex;
   align-items: center;
 `;
@@ -183,7 +183,7 @@ const LOCAL_TIPS: Record<string, { buyer: string; seller: string }> = {
 
 const CityCarsPage: React.FC = () => {
   const { city } = useParams<{ city: string }>();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const navigate = useNavigate();
   
   const [stats, setStats] = useState({
@@ -375,7 +375,7 @@ const CityCarsPage: React.FC = () => {
           </ContentTitle>
           {loading ? (
             <div style={{ textAlign: 'center', padding: '3rem' }}>
-              {language === 'bg' ? 'Зареждане...' : 'Loading...'}
+              {t('common.loading')}
             </div>
           ) : cars.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '3rem', color: '#7f8c8d' }}>
@@ -395,3 +395,4 @@ const CityCarsPage: React.FC = () => {
 };
 
 export default CityCarsPage;
+

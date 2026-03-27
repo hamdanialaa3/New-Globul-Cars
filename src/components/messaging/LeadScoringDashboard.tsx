@@ -163,7 +163,7 @@ const ScoreCircle = styled.div<{ $score?: number }>`
   border-radius: 50%;
   background: ${props => 
     props.$score && props.$score >= 70 ? 'linear-gradient(135deg, #f44336 0%, #e91e63 100%)' :
-    props.$score && props.$score >= 40 ? 'linear-gradient(135deg, #ff9800 0%, #ff5722 100%)' :
+    props.$score && props.$score >= 40 ? 'linear-gradient(135deg, #ff9800 0%, #8b5cf6 100%)' :
     'linear-gradient(135deg, #2196f3 0%, #00bcd4 100%)'
   };
   display: flex;
@@ -430,7 +430,7 @@ const LeadScoringDashboard: React.FC<Props> = ({ language = 'bg' }) => {
             <StatValue>{stats.hot || 0}</StatValue>
           </StatCard>
 
-          <StatCard $color="linear-gradient(135deg, #ff9800 0%, #ff5722 100%)">
+          <StatCard $color="linear-gradient(135deg, #ff9800 0%, #8b5cf6 100%)">
             <StatLabel>{language === 'bg' ? 'Топли' : 'Warm'}</StatLabel>
             <StatValue>{stats.warm || 0}</StatValue>
           </StatCard>
@@ -597,3 +597,4 @@ const LeadScoringDashboard: React.FC<Props> = ({ language = 'bg' }) => {
 };
 
 export default LeadScoringDashboard;
+

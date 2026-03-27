@@ -95,7 +95,7 @@ const LinkCard = styled.div`
   text-align: center;
 
   &:hover {
-    border-color: #ff8c61;
+    border-color: #8B5CF6;
     background: #252b3a;
     transform: translateY(-2px);
   }
@@ -104,7 +104,7 @@ const LinkCard = styled.div`
 const LinkIcon = styled.div`
   font-size: 24px;
   margin-bottom: 8px;
-  color: #ff8c61;
+  color: #8B5CF6;
 `;
 
 const LinkName = styled.div`
@@ -120,3 +120,4 @@ const LinkDesc = styled.div`
 `;
 
 export default AIManagementLinks;
+

@@ -34,9 +34,9 @@ export const CompletionContainer = styled.div`
     linear-gradient(rgba(45, 55, 72, 0.96), rgba(26, 32, 44, 0.98)),
     linear-gradient(135deg,
       rgba(192, 192, 192, 0.5) 0%,
-      rgba(255, 143, 16, 0.7) 25%,
+      rgba(139, 92, 246, 0.7) 25%,
       rgba(255, 215, 0, 1) 50%,
-      rgba(255, 143, 16, 0.7) 75%,
+      rgba(139, 92, 246, 0.7) 75%,
       rgba(192, 192, 192, 0.5) 100%
     );
   background-origin: border-box;
@@ -61,7 +61,7 @@ export const CompletionContainer = styled.div`
     height: 200%;
     background: radial-gradient(circle,
       rgba(255, 215, 0, 0.06) 0%,
-      rgba(255, 143, 16, 0.04) 40%,
+      rgba(139, 92, 246, 0.04) 40%,
       transparent 70%
     );
     /* ⚡ OPTIMIZED: Static radial gradient - no rotation */
@@ -88,11 +88,11 @@ export const GaugeTitle = styled.h4`
   
   /* Orange-Yellow Gradient Text */
   background: linear-gradient(90deg,
-    rgba(255, 143, 16, 0.85) 0%,
+    rgba(139, 92, 246, 0.85) 0%,
     rgba(255, 215, 0, 1) 30%,
     rgba(255, 235, 59, 1) 50%,
     rgba(255, 215, 0, 1) 70%,
-    rgba(255, 143, 16, 0.85) 100%
+    rgba(139, 92, 246, 0.85) 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -137,11 +137,11 @@ export const GaugeOuter = styled.div`
     0 0 0 8px rgba(110, 110, 110, 0.4),
     0 0 0 10px rgba(140, 140, 140, 0.25),
     /* Orange-yellow glow rings */
-    0 0 0 12px rgba(255, 143, 16, 0.25),
+    0 0 0 12px rgba(139, 92, 246, 0.25),
     0 0 0 14px rgba(255, 215, 0, 0.2),
     /* Inner depth */
     inset 0 4px 22px rgba(0, 0, 0, 0.9),
-    inset 0 -4px 22px rgba(255, 143, 16, 0.08),
+    inset 0 -4px 22px rgba(139, 92, 246, 0.08),
     /* Outer shadow */
     0 25px 50px rgba(0, 0, 0, 0.5);
   
@@ -213,7 +213,7 @@ export const DigitalDisplay = styled.div`
   /* Premium LCD Display Shadow */
   box-shadow: 
     inset 0 2px 10px rgba(0, 0, 0, 0.9),
-    inset 0 -2px 10px rgba(255, 143, 16, 0.1),
+    inset 0 -2px 10px rgba(139, 92, 246, 0.1),
     0 4px 18px rgba(0, 0, 0, 0.7),
     0 0 0 1px rgba(255, 215, 0, 0.15);
   
@@ -276,9 +276,9 @@ export const PercentageLabel = styled.div`
   
   /* Yellow-orange gradient */
   background: linear-gradient(90deg,
-    rgba(255, 143, 16, 0.7) 0%,
+    rgba(139, 92, 246, 0.7) 0%,
     rgba(255, 215, 0, 0.9) 50%,
-    rgba(255, 143, 16, 0.7) 100%
+    rgba(139, 92, 246, 0.7) 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -297,9 +297,9 @@ export const SpeedoText = styled.div`
   
   /* Yellow-orange gradient */
   background: linear-gradient(90deg,
-    rgba(255, 143, 16, 0.6) 0%,
+    rgba(139, 92, 246, 0.6) 0%,
     rgba(255, 215, 0, 0.85) 50%,
-    rgba(255, 143, 16, 0.6) 100%
+    rgba(139, 92, 246, 0.6) 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -320,7 +320,7 @@ export const NeedleContainer = styled.div<{ $percentage: number }>`
     rgba(25, 25, 25, 1) 0%,
     rgba(60, 60, 60, 1) 8%,
     rgba(255, 102, 0, 1) 18%,   /* Dark orange base */
-    rgba(255, 143, 16, 1) 40%,  /* Orange middle */
+    rgba(139, 92, 246, 1) 40%,  /* Orange middle */
     rgba(255, 159, 42, 1) 70%,  /* Light orange */
     rgba(255, 215, 0, 1) 100%   /* Gold tip */
   );
@@ -331,8 +331,8 @@ export const NeedleContainer = styled.div<{ $percentage: number }>`
   
   /* Multi-layer Glow */
   box-shadow: 
-    0 0 16px rgba(255, 143, 16, 0.9),
-    0 0 32px rgba(255, 143, 16, 0.5),
+    0 0 16px rgba(139, 92, 246, 0.9),
+    0 0 32px rgba(139, 92, 246, 0.5),
     0 0 48px rgba(255, 215, 0, 0.3),
     inset 1px 0 0 rgba(255, 255, 255, 0.35);
   
@@ -369,7 +369,7 @@ export const NeedleContainer = styled.div<{ $percentage: number }>`
       radial-gradient(circle at 35% 35%, 
         rgba(255, 235, 59, 1) 0%,     /* Bright yellow center */
         rgba(255, 215, 0, 1) 20%,     /* Gold */
-        rgba(255, 143, 16, 1) 50%,    /* Orange */
+        rgba(139, 92, 246, 1) 50%,    /* Orange */
         rgba(204, 85, 0, 1) 100%      /* Dark orange edge */
       );
     
@@ -501,8 +501,9 @@ export const ChecklistItem = styled.div<{ $completed: boolean }>`
     opacity: 1;
     background: ${props => props.$completed
       ? 'linear-gradient(135deg, rgba(76, 175, 80, 0.22) 0%, rgba(67, 160, 71, 0.15) 100%)'
-      : 'linear-gradient(135deg, rgba(255, 143, 16, 0.08) 0%, rgba(255, 215, 0, 0.05) 100%)'
+      : 'linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(255, 215, 0, 0.05) 100%)'
     };
     transform: translateX(3px);
   }
 `;
+

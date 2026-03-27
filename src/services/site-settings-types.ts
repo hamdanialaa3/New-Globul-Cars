@@ -102,10 +102,30 @@ export interface ThemeSettings {
   updatedBy: string;
 }
 
+export type HomepageHeroIcon = 'brain' | 'search' | 'shield' | 'smartphone';
+
+export interface HomepageHeroTrustItem {
+  id: string;
+  icon: HomepageHeroIcon;
+  labelBg: string;
+  labelEn: string;
+}
+
+export interface HomepageHeroContent {
+  ariaLabelBg: string;
+  ariaLabelEn: string;
+  titleBg: string;
+  titleEn: string;
+  subtitleBg: string;
+  subtitleEn: string;
+  trustItems: HomepageHeroTrustItem[];
+}
+
 export interface FeaturedContent {
   featuredCars: string[]; // Array of car IDs
   featuredDealers: string[]; // Array of dealer IDs
   featuredBrands: string[]; // Array of brand names
+  homepageHero: HomepageHeroContent;
   homepageBanners: Array<{
     id: string;
     image: string;

@@ -241,8 +241,8 @@ const ConsultationFooter = styled.div`
     
     &:hover {
       background: #f8f9fa;
-      border-color: #FF8F10;
-      color: #FF7900;
+      border-color: #3B82F6;
+      color: #2563EB;
     }
   }
 `;
@@ -411,4 +411,5 @@ const ConsultationsTab: React.FC<ConsultationsTabProps> = ({
 };
 
 export default ConsultationsTab;
+
 

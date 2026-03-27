@@ -83,23 +83,23 @@ const NavButton = styled.button<{ $position: 'left' | 'right' }>`
   max-width: 50px;
   max-height: 50px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 143, 16, 0.5);
-  background: rgba(255, 143, 16, 0.25);
-  color: #FF8F10;
+  border: 2px solid rgba(139, 92, 246, 0.5);
+  background: rgba(139, 92, 246, 0.25);
+  color: #3B82F6;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.2);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
   transition: all 0.2s;
   z-index: 2;
   backdrop-filter: blur(8px);
   
   &:hover {
-    background: rgba(255, 143, 16, 0.4);
-    border-color: #FF8F10;
+    background: rgba(139, 92, 246, 0.4);
+    border-color: #3B82F6;
     transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 6px 16px rgba(255, 143, 16, 0.3);
+    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.3);
   }
   
   &:disabled {
@@ -140,7 +140,7 @@ const AddIconWrapper = styled.div`
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #FF8F10, #FF7900);
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -338,3 +338,5 @@ const StoriesCarousel: React.FC = () => {
 };
 
 export default StoriesCarousel;
+
+

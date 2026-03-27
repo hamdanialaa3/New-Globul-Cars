@@ -25,7 +25,7 @@ const GlowRing = styled.div`
   width: 128px;
   height: 128px;
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(255, 143, 16, 0.4), transparent 70%);
+  background: radial-gradient(closest-side, rgba(139, 92, 246, 0.4), transparent 70%);
   animation: ${pulse} 1.8s ease-in-out infinite;
 `;
 
@@ -34,14 +34,14 @@ const Wheel = styled.div`
   width: 90px;
   height: 90px;
   border-radius: 50%;
-  border: 8px solid rgba(255, 143, 16, 0.55);
-  border-top-color: rgba(255, 143, 16, 0.18);
-  border-left-color: rgba(255, 143, 16, 0.32);
+  border: 8px solid rgba(139, 92, 246, 0.55);
+  border-top-color: rgba(139, 92, 246, 0.18);
+  border-left-color: rgba(139, 92, 246, 0.32);
   backdrop-filter: blur(6px);
   animation: ${spin} 1.4s ease-in-out infinite;
   display: grid;
   place-items: center;
-  box-shadow: 0 14px 32px rgba(255, 143, 16, 0.25);
+  box-shadow: 0 14px 32px rgba(139, 92, 246, 0.25);
   background: rgba(0, 0, 0, 0.2);
 `;
 
@@ -49,7 +49,7 @@ const Logo = styled.img`
   width: 46px;
   height: 46px;
   object-fit: contain;
-  filter: drop-shadow(0 0 12px rgba(255, 143, 16, 0.6));
+  filter: drop-shadow(0 0 12px rgba(139, 92, 246, 0.6));
   opacity: 0.92;
 `;
 
@@ -66,4 +66,5 @@ export const WheelHeaderLoader: React.FC = () => (
 );
 
 export default WheelHeaderLoader;
+
 

@@ -86,7 +86,7 @@ const BubbleAvatar = styled.div<{
   border-radius: 50%;
   background: ${props => props.$imageUrl
     ? `url(${props.$imageUrl})`
-    : 'linear-gradient(135deg, #FF8F10 0%, #FF7900 50%, #FF6600 100%)'
+    : 'linear-gradient(135deg, #3B82F6 0%, #2563EB 50%, #FF6600 100%)'
   };
   background-size: cover;
   background-position: center;
@@ -188,9 +188,9 @@ const HoverCard = styled.div`
   border-radius: 16px;
   padding: 24px; /* ✅ More padding */
   box-shadow: 
-    0 0 0 1px rgba(255, 143, 16, 0.12), /* ✅ Orange subtle border */
+    0 0 0 1px rgba(139, 92, 246, 0.12), /* ✅ Orange subtle border */
     0 12px 48px rgba(0, 0, 0, 0.25), /* ✅ Stronger shadow */
-    0 0 80px rgba(255, 143, 16, 0.15); /* ✅ Orange glow */
+    0 0 80px rgba(139, 92, 246, 0.15); /* ✅ Orange glow */
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -228,10 +228,10 @@ const HoverAvatar = styled.div<{ $url?: string; $initial: string }>`
   border-radius: 50%;
   background: ${p => p.$url
     ? `url(${p.$url})`
-    : 'linear-gradient(135deg, #FF8F10, #FF7900)'};
+    : 'linear-gradient(135deg, #3B82F6, #2563EB)'};
   background-size: cover;
   background-position: center;
-  border: 2px solid #FF8F10;
+  border: 2px solid #3B82F6;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -276,7 +276,7 @@ const HoverCardStats = styled.div`
     .value {
       font-size: 1.1rem;
       font-weight: 700;
-      color: #FF7900;
+      color: #2563EB;
     }
     
     .label {
@@ -309,7 +309,7 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   
   ${p => p.$variant === 'primary'
     ? `
-      background: linear-gradient(135deg, #FF7900 0%, #FF9533 100%);
+      background: linear-gradient(135deg, #2563EB 0%, #FF9533 100%);
       color: white;
       &:hover {
         background: linear-gradient(135deg, #e66d00 0%, #e68429 100%);
@@ -362,7 +362,7 @@ const SIZES = {
 };
 
 const BORDER_COLORS = {
-  private: '#FF8F10',
+  private: '#3B82F6',
   dealer: '#16a34a',
   company: '#1d4ed8',
   default: '#dee2e6'
@@ -503,4 +503,6 @@ export const UserBubble: React.FC<UserBubbleProps> = ({
 };
 
 export default UserBubble;
+
+
 

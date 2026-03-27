@@ -19,10 +19,13 @@
  * @accessible semantic HTML with h1
  */
 
-import React, { memo } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { siteSettingsService } from '@/services/site-settings.service';
+import { DEFAULT_HOMEPAGE_HERO } from '@/services/site-settings-defaults';
+import type { HomepageHeroContent, HomepageHeroIcon } from '@/services/site-settings-types';
 import { Search, Brain, Shield, Smartphone } from 'lucide-react';
 import SearchWidget from './SearchWidget';
 
@@ -63,7 +66,7 @@ const HeroContainer = styled.section<{ $isDark: boolean }>`
     position: absolute;
     inset: 0;
     background: 
-      radial-gradient(circle at 20% 80%, rgba(230, 81, 0, 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 20% 80%, rgba(37, 99, 235, 0.15) 0%, transparent 50%),
       radial-gradient(circle at 80% 20%, rgba(26, 35, 126, 0.2) 0%, transparent 50%);
     z-index: 1;
   }
@@ -155,7 +158,7 @@ const TrustItem = styled.div`
   svg {
     width: 18px;
     height: 18px;
-    color: #FF7B33;
+    color: #6366F1;
     flex-shrink: 0;
   }
 
@@ -165,48 +168,68 @@ const TrustItem = styled.div`
   }
 `;
 
+const getHeroIcon = (icon: HomepageHeroIcon) => {
+  switch (icon) {
+    case 'brain':
+      return <Brain aria-hidden="true" />;
+    case 'search':
+      return <Search aria-hidden="true" />;
+    case 'shield':
+      return <Shield aria-hidden="true" />;
+    case 'smartphone':
+      return <Smartphone aria-hidden="true" />;
+    default:
+      return <Shield aria-hidden="true" />;
+  }
+};
+
 // ═══ Component ═══
 const UnifiedHeroSection: React.FC = memo(() => {
   const { theme } = useTheme();
   const { language } = useLanguage();
   const isDark = theme === 'dark';
   const isBg = language === 'bg';
+  const [heroContent, setHeroContent] = useState<HomepageHeroContent>(DEFAULT_HOMEPAGE_HERO);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const unsubscribe = siteSettingsService.subscribeFeaturedContent((content) => {
+      if (!isActive) {
+        return;
+      }
+
+      setHeroContent(content.homepageHero || DEFAULT_HOMEPAGE_HERO);
+    });
+
+    return () => {
+      isActive = false;
+      unsubscribe();
+    };
+  }, []);
+
+  const title = isBg ? heroContent.titleBg : heroContent.titleEn;
+  const subtitle = isBg ? heroContent.subtitleBg : heroContent.subtitleEn;
+  const ariaLabel = isBg ? heroContent.ariaLabelBg : heroContent.ariaLabelEn;
+  const trustItems = heroContent.trustItems?.length ? heroContent.trustItems : DEFAULT_HOMEPAGE_HERO.trustItems;
 
   return (
-    <HeroContainer $isDark={isDark} aria-label={isBg ? 'Главен раздел' : 'Hero section'}>
+    <HeroContainer $isDark={isDark} aria-label={ariaLabel}>
       <ContentWrapper>
-        <HeroTitle>
-          {isBg
-            ? 'Най-умният начин да купиш или продадеш кола в България'
-            : 'The Smartest Way to Buy or Sell a Car in Bulgaria'}
-        </HeroTitle>
-        <HeroSubtitle>
-          {isBg
-            ? 'AI анализ, реални цени, верифицирани продавачи — всичко на едно място.'
-            : 'AI analysis, real prices, verified sellers — all in one place.'}
-        </HeroSubtitle>
+        <HeroTitle>{title}</HeroTitle>
+        <HeroSubtitle>{subtitle}</HeroSubtitle>
 
         <SearchWrapper>
           <SearchWidget />
         </SearchWrapper>
 
         <TrustStrip>
-          <TrustItem>
-            <Brain aria-hidden="true" />
-            <span>{isBg ? 'AI анализ' : 'AI Analysis'}</span>
-          </TrustItem>
-          <TrustItem>
-            <Search aria-hidden="true" />
-            <span>{isBg ? 'Безплатна оценка' : 'Free Valuation'}</span>
-          </TrustItem>
-          <TrustItem>
-            <Shield aria-hidden="true" />
-            <span>TrustShield</span>
-          </TrustItem>
-          <TrustItem>
-            <Smartphone aria-hidden="true" />
-            <span>{isBg ? 'Една платформа' : 'One Platform'}</span>
-          </TrustItem>
+          {trustItems.map((item) => (
+            <TrustItem key={item.id}>
+              {getHeroIcon(item.icon)}
+              <span>{isBg ? item.labelBg : item.labelEn}</span>
+            </TrustItem>
+          ))}
         </TrustStrip>
       </ContentWrapper>
     </HeroContainer>
@@ -216,3 +239,5 @@ const UnifiedHeroSection: React.FC = memo(() => {
 UnifiedHeroSection.displayName = 'UnifiedHeroSection';
 
 export default UnifiedHeroSection;
+
+

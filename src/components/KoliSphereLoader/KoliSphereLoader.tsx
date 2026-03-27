@@ -4,7 +4,7 @@
 
 import React, { memo } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import aiIcon from '../../assets/icons/koli_one_ai_Icon2.png';
+import aiIcon from '../../assets/icons/koli_one_ai_Icon2.webp';
 
 export interface KoliSphereLoaderProps {
   size?: 'small' | 'medium' | 'large';
@@ -17,10 +17,10 @@ export interface KoliSphereLoaderProps {
 // LED glow pulse animation
 const ledPulse = keyframes`
   0%, 100% {
-    filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.3));
+    filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.3));
   }
   50% {
-    filter: drop-shadow(0 0 16px rgba(255, 143, 16, 0.6));
+    filter: drop-shadow(0 0 16px rgba(139, 92, 246, 0.6));
   }
 `;
 
@@ -49,13 +49,13 @@ const sphereEntrance = keyframes`
 // LED complete flash
 const ledComplete = keyframes`
   0% {
-    filter: drop-shadow(0 0 24px rgba(255, 143, 16, 1));
+    filter: drop-shadow(0 0 24px rgba(139, 92, 246, 1));
   }
   50% {
-    filter: drop-shadow(0 0 32px rgba(255, 143, 16, 1));
+    filter: drop-shadow(0 0 32px rgba(139, 92, 246, 1));
   }
   100% {
-    filter: drop-shadow(0 0 8px rgba(255, 143, 16, 0.3));
+    filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.3));
   }
 `;
 
@@ -149,9 +149,9 @@ const LEDRing = styled.div<{
         return `conic-gradient(
           from 0deg,
           transparent 0deg,
-          #FF8F10 30deg,
-          #FFB366 60deg,
-          #FF8F10 90deg,
+          #3B82F6 30deg,
+          #A78BFA 60deg,
+          #3B82F6 90deg,
           transparent 100deg,
           transparent 360deg
         )`;
@@ -160,9 +160,9 @@ const LEDRing = styled.div<{
         const progressDeg = (props.$progress / 100) * 360;
         return `conic-gradient(
           from -90deg,
-          #FF8F10 0deg,
-          #FFB366 ${progressDeg / 2}deg,
-          #FF8F10 ${progressDeg}deg,
+          #3B82F6 0deg,
+          #A78BFA ${progressDeg / 2}deg,
+          #3B82F6 ${progressDeg}deg,
           transparent ${progressDeg}deg
         )`;
       }
@@ -225,9 +225,9 @@ const ProgressBar = styled.div`
 
 const ProgressBarFill = styled.div<{ $progress: number }>`
   height: 100%;
-  background: linear-gradient(to right, #FF8F10, #FFB366);
+  background: linear-gradient(to right, #3B82F6, #A78BFA);
   transition: width 200ms ease-out;
-  box-shadow: 0 0 8px rgba(255, 143, 16, 0.5);
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
   width: ${props => props.$progress}%;
 `;
 
@@ -286,3 +286,5 @@ export const KoliSphereLoader: React.FC<KoliSphereLoaderProps> = memo(({
 });
 
 KoliSphereLoader.displayName = 'KoliSphereLoader';
+
+

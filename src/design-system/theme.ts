@@ -1,7 +1,7 @@
 export const MobileBGTheme = {
     // Brand Colors
     brand: {
-        primary: '#FF7900',      // Signature Orange
+        primary: '#2563EB',      // Signature Orange
         secondary: '#00D4AA',    // Tech Green
         accent: '#7B61FF',       // Modern Purple
         dark: '#1A1D29',         // Premium Dark Background
@@ -41,3 +41,4 @@ export const MobileBGTheme = {
         wide: '1200px',
     }
 };
+

@@ -40,7 +40,7 @@ const MetricCard = styled.div`
 const MetricValue = styled.div`
   font-size: 2rem;
   font-weight: bold;
-  color: #FF8F10;
+  color: #3B82F6;
   margin: 0.5rem 0;
 `;
 
@@ -62,7 +62,7 @@ const LoadingSpinner = styled.div`
   align-items: center;
   justify-center;
   min-height: 200px;
-  color: #FF8F10;
+  color: #3B82F6;
 `;
 
 interface UserAnalytics {
@@ -164,4 +164,5 @@ export const PrivateDashboard: React.FC = () => {
 };
 
 export default PrivateDashboard;
+
 

@@ -222,7 +222,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
         return (
           <ActionForm $theme={theme.mode}>
             <FormTitle $theme={theme.mode}>
-              <ModernDollar size={20} color={theme.mode === 'dark' ? '#60a5fa' : '#FF8F10'} />
+              <ModernDollar size={20} color={theme.mode === 'dark' ? '#60a5fa' : '#3B82F6'} />
               {language === 'bg' ? 'Изпрати оферта' : 'Send Offer'}
             </FormTitle>
             <Divider />
@@ -285,7 +285,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
         return (
           <ActionForm $theme={theme.mode}>
             <FormTitle $theme={theme.mode}>
-              <ModernCalendar size={20} color={theme.mode === 'dark' ? '#60a5fa' : '#FF8F10'} />
+              <ModernCalendar size={20} color={theme.mode === 'dark' ? '#60a5fa' : '#3B82F6'} />
               {language === 'bg' ? 'Запази среща за оглед' : 'Book Viewing Appointment'}
             </FormTitle>
             <Divider />
@@ -373,7 +373,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
             <ActionsGrid>
               <ActionCard $theme={theme.mode} onClick={() => setActiveAction('offer')}>
                 <ActionIcon>
-                  <ModernDollar size={32} color={theme.mode === 'dark' ? '#60a5fa' : '#FF8F10'} />
+                  <ModernDollar size={32} color={theme.mode === 'dark' ? '#60a5fa' : '#3B82F6'} />
                 </ActionIcon>
                 <ActionTitle $theme={theme.mode}>
                   {language === 'bg' ? 'Изпрати оферта' : 'Send Offer'}
@@ -385,7 +385,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
 
               <ActionCard $theme={theme.mode} onClick={() => setActiveAction('appointment')}>
                 <ActionIcon>
-                  <ModernCalendar size={32} color={theme.mode === 'dark' ? '#60a5fa' : '#FF8F10'} />
+                  <ModernCalendar size={32} color={theme.mode === 'dark' ? '#60a5fa' : '#3B82F6'} />
                 </ActionIcon>
                 <ActionTitle $theme={theme.mode}>
                   {language === 'bg' ? 'Запази среща' : 'Book Appointment'}
@@ -397,7 +397,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
 
               <ActionCard $theme={theme.mode} onClick={handleShareLocation}>
                 <ActionIcon>
-                  <ModernMapPin size={32} color={theme.mode === 'dark' ? '#60a5fa' : '#FF8F10'} />
+                  <ModernMapPin size={32} color={theme.mode === 'dark' ? '#60a5fa' : '#3B82F6'} />
                 </ActionIcon>
                 <ActionTitle $theme={theme.mode}>
                   {language === 'bg' ? 'Сподели местоположение' : 'Share Location'}
@@ -409,7 +409,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
 
               <ActionCard $theme={theme.mode} onClick={handleRequestInspection}>
                 <ActionIcon>
-                  <ModernWrench size={32} color={theme.mode === 'dark' ? '#60a5fa' : '#FF8F10'} />
+                  <ModernWrench size={32} color={theme.mode === 'dark' ? '#60a5fa' : '#3B82F6'} />
                 </ActionIcon>
                 <ActionTitle $theme={theme.mode}>
                   {language === 'bg' ? 'Поискай доклад' : 'Request Report'}
@@ -437,7 +437,7 @@ const Container = styled.div`
 const ToggleButton = styled.button`
   width: 100%;
   padding: 12px 16px;
-  background: linear-gradient(135deg, #FF8F10 0%, #FF6B35 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
   color: white;
   border: none;
   border-radius: 12px;
@@ -448,11 +448,11 @@ const ToggleButton = styled.button`
   font-weight: 600;
   font-size: 14px;
   transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(255, 143, 16, 0.3);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 143, 16, 0.4);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
   }
 
   &:active {
@@ -577,8 +577,8 @@ const StyledTextarea = styled.textarea<{ $theme?: string }>`
 
   &:focus {
     outline: none;
-    border-color: ${({ $theme }) => $theme === 'dark' ? '#60a5fa' : '#FF8F10'};
-    box-shadow: 0 0 0 3px ${({ $theme }) => $theme === 'dark' ? 'rgba(96,165,250,0.1)' : 'rgba(255, 143, 16, 0.1)'};
+    border-color: ${({ $theme }) => $theme === 'dark' ? '#60a5fa' : '#3B82F6'};
+    box-shadow: 0 0 0 3px ${({ $theme }) => $theme === 'dark' ? 'rgba(96,165,250,0.1)' : 'rgba(139, 92, 246, 0.1)'};
   }
 
   &::placeholder {
@@ -615,3 +615,5 @@ export { QuickActionsPanel };
 
 // Default export for backward compatibility
 export default QuickActionsPanel;
+
+

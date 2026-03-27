@@ -88,7 +88,7 @@ const Header = styled.div`
     font-size: 2.5rem;
     font-weight: 800;
     margin: 0 0 12px 0;
-    background: linear-gradient(135deg, #FF8F10 0%, #FFAD33 50%, #FF7900 100%);
+    background: linear-gradient(135deg, #3B82F6 0%, #FFAD33 50%, #2563EB 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -128,7 +128,7 @@ const ViewModeButton = styled.button<{ $active: boolean }>`
   padding: 8px 16px;
   border: none;
   background: ${p => p.$active ? 'white' : 'transparent'};
-  color: ${p => p.$active ? '#FF7900' : '#6c757d'};
+  color: ${p => p.$active ? '#2563EB' : '#6c757d'};
   border-radius: 8px;
   font-size: 0.875rem;
   font-weight: 600;
@@ -138,7 +138,7 @@ const ViewModeButton = styled.button<{ $active: boolean }>`
   
   &:hover {
     background: white;
-    color: #FF7900;
+    color: #2563EB;
   }
   
   svg {
@@ -162,7 +162,7 @@ const FilterGroup = styled.div`
     gap: 6px;
     
     svg {
-      color: #FF7900;
+      color: #2563EB;
     }
   }
 `;
@@ -170,7 +170,7 @@ const FilterGroup = styled.div`
 const Input = styled.input`
   width: 100%;
   padding: 12px 16px;
-  border: 1.5px solid rgba(255, 143, 16, 0.2);
+  border: 1.5px solid rgba(139, 92, 246, 0.2);
   border-radius: 10px;
   font-size: 0.95rem;
   background: rgba(255, 255, 255, 0.8);
@@ -178,7 +178,7 @@ const Input = styled.input`
   
   &:focus {
     outline: none;
-    border-color: rgba(255, 143, 16, 0.6);
+    border-color: rgba(139, 92, 246, 0.6);
     box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.25);
     background: rgba(255, 247, 237, 0.5);
   }
@@ -187,7 +187,7 @@ const Input = styled.input`
 const Select = styled.select`
   width: 100%;
   padding: 12px 16px;
-  border: 1.5px solid rgba(255, 143, 16, 0.2);
+  border: 1.5px solid rgba(139, 92, 246, 0.2);
   border-radius: 10px;
   font-size: 0.95rem;
   background: rgba(255, 255, 255, 0.8);
@@ -196,7 +196,7 @@ const Select = styled.select`
   
   &:focus {
     outline: none;
-    border-color: rgba(255, 143, 16, 0.6);
+    border-color: rgba(139, 92, 246, 0.6);
     box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.25);
     background: rgba(255, 247, 237, 0.5);
   }
@@ -234,7 +234,7 @@ const LoadingState = styled.div`
   padding: 80px 20px;
   
   svg {
-    color: #FF7900;
+    color: #2563EB;
     animation: spin 1s linear infinite;
   }
   
@@ -299,7 +299,7 @@ const ListItem = styled.div`
   background: white;
   border-radius: 12px;
   padding: 20px 24px;
-  border: 1.5px solid rgba(255, 143, 16, 0.12);
+  border: 1.5px solid rgba(139, 92, 246, 0.12);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
@@ -311,8 +311,8 @@ const ListItem = styled.div`
   
   &:hover {
     transform: translateX(8px);
-    border-color: rgba(255, 143, 16, 0.4);
-    box-shadow: 0 6px 24px rgba(255, 143, 16, 0.18);
+    border-color: rgba(139, 92, 246, 0.4);
+    box-shadow: 0 6px 24px rgba(139, 92, 246, 0.18);
     z-index: 10; /* ✅ Bring to front on hover */
   }
   
@@ -328,12 +328,12 @@ const ListAvatar = styled.div<{ $imageUrl?: string; $initial: string; $borderCol
   border-radius: 50%;
   background: ${props => props.$imageUrl 
     ? `url(${props.$imageUrl})` 
-    : 'linear-gradient(135deg, #FF8F10 0%, #FF7900 50%, #FF6600 100%)'
+    : 'linear-gradient(135deg, #3B82F6 0%, #2563EB 50%, #FF6600 100%)'
   };
   background-size: cover;
   background-position: center;
   border: 3px solid ${p => p.$borderColor};
-  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.25);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -367,9 +367,9 @@ const ListUserName = styled.h3`
     padding: 4px 10px;
     border-radius: 12px;
     font-weight: 600;
-    background: linear-gradient(135deg, #FF8F10 0%, #FF7900 100%);
+    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
     color: white;
-    box-shadow: 0 2px 6px rgba(255, 143, 16, 0.3);
+    box-shadow: 0 2px 6px rgba(139, 92, 246, 0.3);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -394,7 +394,7 @@ const ListUserMeta = styled.div`
     gap: 6px;
     
     svg {
-      color: #FF7900;
+      color: #2563EB;
       flex-shrink: 0;
     }
   }
@@ -404,7 +404,7 @@ const ListUserStats = styled.div`
   display: flex;
   gap: 24px;
   padding: 12px 16px;
-  background: linear-gradient(135deg, rgba(255, 143, 16, 0.08) 0%, rgba(255, 215, 0, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(255, 215, 0, 0.05) 100%);
   border-radius: 10px;
   margin-top: 12px;
   
@@ -417,7 +417,7 @@ const ListUserStats = styled.div`
     .value {
       font-size: 1.2rem;
       font-weight: 800;
-      color: #FF7900;
+      color: #2563EB;
       line-height: 1;
     }
     
@@ -463,14 +463,14 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   
   ${p => p.$variant === 'primary' 
     ? `
-      background: linear-gradient(135deg, #FF7900 0%, #FF9533 100%);
+      background: linear-gradient(135deg, #2563EB 0%, #FF9533 100%);
       color: white;
-      box-shadow: 0 2px 8px rgba(255, 121, 0, 0.25);
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
       
       &:hover {
         background: linear-gradient(135deg, #e66d00 0%, #e68429 100%);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(255, 121, 0, 0.35);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
       }
       
       &:active {
@@ -484,8 +484,8 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
       
       &:hover {
         background: #f8f9fa;
-        border-color: #FF7900;
-        color: #FF7900;
+        border-color: #2563EB;
+        color: #2563EB;
       }
     `
   }
@@ -506,15 +506,15 @@ const UserCard = styled.div`
   background: white;
   border-radius: 16px;
   padding: 24px;
-  border: 2px solid rgba(255, 143, 16, 0.12);
+  border: 2px solid rgba(139, 92, 246, 0.12);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   
   &:hover {
     transform: translateY(-4px);
-    border-color: rgba(255, 143, 16, 0.3);
-    box-shadow: 0 10px 32px rgba(255, 143, 16, 0.15);
+    border-color: rgba(139, 92, 246, 0.3);
+    box-shadow: 0 10px 32px rgba(139, 92, 246, 0.15);
   }
 `;
 
@@ -531,12 +531,12 @@ const Avatar = styled.div<{ $imageUrl?: string; $initial: string }>`
   border-radius: 50%;
   background: ${props => props.$imageUrl 
     ? `url(${props.$imageUrl})` 
-    : 'linear-gradient(135deg, #FF8F10, #FF7900)'
+    : 'linear-gradient(135deg, #3B82F6, #2563EB)'
   };
   background-size: cover;
   background-position: center;
   border: 3px solid rgba(255, 215, 0, 0.4);
-  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.25);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -569,9 +569,9 @@ const UserName = styled.h3`
     padding: 3px 8px;
     border-radius: 12px;
     font-weight: 600;
-    background: linear-gradient(135deg, #FF8F10 0%, #FF7900 100%);
+    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
     color: white;
-    box-shadow: 0 2px 6px rgba(255, 143, 16, 0.3);
+    box-shadow: 0 2px 6px rgba(139, 92, 246, 0.3);
   }
 `;
 
@@ -589,7 +589,7 @@ const UserLocation = styled.div`
   gap: 6px;
   
   svg {
-    color: #FF7900;
+    color: #2563EB;
   }
 `;
 
@@ -602,7 +602,7 @@ const LoadMoreContainer = styled.div`
 
 const LoadMoreButton = styled.button`
   padding: 14px 32px;
-  background: linear-gradient(135deg, #FF8F10 0%, #FF7900 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -610,11 +610,11 @@ const LoadMoreButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.25);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(255, 143, 16, 0.35);
+    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.35);
   }
 
   &:active:not(:disabled) {
@@ -654,7 +654,7 @@ const StatCard = styled.div<{ $highlight?: boolean }>`
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-    border-color: #FF7900;
+    border-color: #2563EB;
   }
 `;
 
@@ -665,7 +665,7 @@ const StatHeader = styled.div`
   margin-bottom: 12px;
   
   svg {
-    color: #FF7900;
+    color: #2563EB;
   }
 `;
 
@@ -1156,7 +1156,7 @@ const UsersDirectoryPage: React.FC = () => {
               itemContent={(index, user) => {
                 const borderColor = user.profileType === 'dealer' ? '#16a34a' 
                                   : user.profileType === 'company' ? '#1d4ed8' 
-                                  : '#FF8F10';
+                                  : '#3B82F6';
                 const isVerified = user.verification?.emailVerified || user.verification?.phoneVerified;
                 
                 return (
@@ -1291,5 +1291,7 @@ const UsersDirectoryPage: React.FC = () => {
 };
 
 export default UsersDirectoryPage;
+
+
 
 

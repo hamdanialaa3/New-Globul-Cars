@@ -1,4 +1,4 @@
-﻿// src/pages/HomePage/LogoCollectionSection.tsx
+// src/pages/HomePage/LogoCollectionSection.tsx
 // Logo collection section component for HomePage
 
 import React, { lazy, Suspense } from 'react';

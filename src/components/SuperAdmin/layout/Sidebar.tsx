@@ -235,6 +235,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, onLogout }) =
     { id: 'users', label: t.common.users, icon: Users },
     { id: 'dealers', label: t.navigation.dealers, icon: Shield },
     { id: 'cars', label: t.navigation.cars, icon: Car },
+    { id: 'page-builder', label: 'Pages & Sections', icon: LayoutDashboard },
     { id: 'content', label: t.navigation.content, icon: FileText },
   ];
 

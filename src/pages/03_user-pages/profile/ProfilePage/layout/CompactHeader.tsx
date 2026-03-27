@@ -33,7 +33,7 @@ const HeaderContainer = styled.div<{ $themeColor?: string }>`
   justify-content: space-between;
   gap: 16px;
   
-  border-left: 4px solid ${props => props.$themeColor || '#FF8F10'};
+  border-left: 4px solid ${props => props.$themeColor || '#3B82F6'};
   
   @media (max-width: 768px) {
     flex-direction: column;
@@ -48,8 +48,8 @@ const ProfileImageSmall = styled.img<{ $themeColor?: string }>`
   border-radius: 50%;
   object-fit: cover;
   
-  border: 3px solid ${props => props.$themeColor || '#FF8F10'};
-  box-shadow: 0 0 15px ${props => props.$themeColor || '#FF8F10'}40;
+  border: 3px solid ${props => props.$themeColor || '#3B82F6'};
+  box-shadow: 0 0 15px ${props => props.$themeColor || '#3B82F6'}40;
   
   @media (max-width: 768px) {
     width: 50px;
@@ -92,7 +92,7 @@ const QuickActionsContainer = styled.div`
 
 const QuickActionButton = styled.button<{ $variant?: 'primary' | 'secondary' | 'success' }>`
   background: ${props => 
-    props.$variant === 'primary' ? 'linear-gradient(135deg, #FF8F10 0%, #FF7900 100%)' :
+    props.$variant === 'primary' ? 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)' :
     props.$variant === 'success' ? 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)' :
     'linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%)'
   };
@@ -182,4 +182,5 @@ export const CompactHeader: React.FC<CompactHeaderProps> = ({
 };
 
 export default CompactHeader;
+
 

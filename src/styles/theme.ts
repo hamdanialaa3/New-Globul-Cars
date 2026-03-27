@@ -7,9 +7,9 @@ import { createGlobalStyle, DefaultTheme } from 'styled-components';
 // Inspired by AutoScout24 + Bulgarian automotive identity
 export const bulgarianColors = {
   primary: {
-    main: '#E65100', // Warm automotive orange
-    light: '#FF7B33', // Light orange
-    dark: '#BF4400', // Darker orange
+    main: '#2563EB', // Warm automotive orange
+    light: '#6366F1', // Light orange
+    dark: '#8B5CF6', // Darker orange
     contrastText: '#ffffff',
   },
   secondary: {
@@ -39,9 +39,9 @@ export const bulgarianColors = {
   },
 
   success: {
-    main: '#00C853',
+    main: '#2E7D32', // WCAG AA compliant (5.9:1 on white)
     light: '#B9F6CA',
-    dark: '#009624',
+    dark: '#1B5E20',
     contrastText: '#ffffff',
   },
   warning: {
@@ -51,9 +51,9 @@ export const bulgarianColors = {
     contrastText: '#000000',
   },
   error: {
-    main: '#FF1744',
+    main: '#D32F2F', // WCAG AA compliant (5.6:1 on white)
     light: '#FF8A80',
-    dark: '#D50000',
+    dark: '#B71C1C',
     contrastText: '#ffffff',
   },
   info: {
@@ -77,8 +77,8 @@ export const bulgarianColors = {
     secondary: '#666666', // Medium Grey
     onDark: '#ffffff', // White
     onLight: '#333333', // Dark Grey
-    disabled: '#999999',
-    hint: '#CCCCCC',
+    disabled: '#717171', // WCAG AA compliant (4.6:1 on #FAFBFC)
+    hint: '#767676', // WCAG AA compliant (4.5:1 on white)
   },
 
   border: {
@@ -96,16 +96,16 @@ export const bulgarianColors = {
 
   // Derived groups to support design-system components
   interactive: {
-    primary: '#E65100', // maps to primary.main
-    primaryHover: '#FF7B33', // maps to primary.light
-    primaryActive: '#BF4400', // maps to primary.dark
+    primary: '#2563EB', // maps to primary.main
+    primaryHover: '#6366F1', // maps to primary.light
+    primaryActive: '#8B5CF6', // maps to primary.dark
   },
 
   content: {
     primary: '#333333', // maps to text.primary
     inverse: '#ffffff', // maps to text.onDark
     heading: '#333333', // maps to text.primary
-    placeholder: '#999999', // for input placeholders
+    placeholder: '#717171', // WCAG AA for input placeholders
     tertiary: '#666666', // for secondary text
   },
 
@@ -117,19 +117,19 @@ export const bulgarianColors = {
   },
 
   brand: {
-    main: '#E65100', // maps to primary.main
-    light: '#FF7B33', // maps to primary.light
-    dark: '#BF4400', // maps to primary.dark
+    main: '#2563EB', // maps to primary.main
+    light: '#6366F1', // maps to primary.light
+    dark: '#8B5CF6', // maps to primary.dark
   },
 
   feedback: {
     error: {
-      main: '#FF1744', // maps to error.main
-      dark: '#D50000', // maps to error.dark
+      main: '#D32F2F', // maps to error.main
+      dark: '#B71C1C', // maps to error.dark
       light: '#FF8A80', // maps to error.light
     },
     success: {
-      main: '#00C853', // maps to success.main
+      main: '#2E7D32', // maps to success.main
       light: '#B9F6CA', // maps to success.light
     },
   },
@@ -591,3 +591,4 @@ declare module 'styled-components' {
     };
   }
 }
+

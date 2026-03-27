@@ -355,16 +355,16 @@ const Tab = styled.button<{ active: boolean }>`
   align-items: center;
   gap: 0.5rem;
   padding: 1rem 1.5rem;
-  background: ${props => props.active ? '#FF6B35' : 'transparent'};
+  background: ${props => props.active ? '#6366F1' : 'transparent'};
   color: ${props => props.active ? 'white' : '#666'};
   border: none;
-  border-bottom: 3px solid ${props => props.active ? '#FF6B35' : 'transparent'};
+  border-bottom: 3px solid ${props => props.active ? '#6366F1' : 'transparent'};
   cursor: pointer;
   font-weight: ${props => props.active ? 'bold' : 'normal'};
   transition: all 0.3s;
   
   &:hover {
-    background: ${props => props.active ? '#FF6B35' : '#f5f5f5'};
+    background: ${props => props.active ? '#6366F1' : '#f5f5f5'};
   }
 `;
 
@@ -410,7 +410,7 @@ const FilterGroup = styled.div`
     
     &:focus {
       outline: none;
-      border-color: #FF6B35;
+      border-color: #6366F1;
     }
   }
 `;
@@ -456,7 +456,7 @@ const ExportButton = styled.button`
   align-items: center;
   gap: 0.5rem;
   padding: 1rem 1.5rem;
-  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+  background: linear-gradient(135deg, #6366F1 0%, #F7931E 100%);
   color: white;
   border: none;
   border-radius: 12px;
@@ -509,4 +509,5 @@ const ResultsTable = styled.table`
 `;
 
 export default ReportsPage;
+
 

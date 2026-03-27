@@ -149,7 +149,7 @@ const ValueCell = styled.div<{ $highlight?: boolean }>`
   font-size: 1.125rem;
   font-weight: ${props => props.$highlight ? 700 : 500};
   color: ${props => props.$highlight 
-    ? props.theme.colors.primary || '#FF8F10'
+    ? props.theme.colors.primary || '#3B82F6'
     : props.theme.text?.primary || props.theme.colors.text.primary};
   text-align: center;
 `;
@@ -360,4 +360,5 @@ const BattleModeComparison: React.FC<BattleModeComparisonProps> = ({
 };
 
 export default BattleModeComparison;
+
 

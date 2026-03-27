@@ -427,7 +427,7 @@ const DealerDashboardPage: React.FC = () => {
 
       <StatsOverview>
         <StatCard>
-          <StatIcon color="#FF7900">
+          <StatIcon color="#2563EB">
             <Package size={24} />
           </StatIcon>
           <StatContent>
@@ -497,3 +497,4 @@ const DealerDashboardPage: React.FC = () => {
 };
 
 export default DealerDashboardPage;
+

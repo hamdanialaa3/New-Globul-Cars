@@ -52,7 +52,7 @@ export const MainLayout: React.FC = () => {
                     e.currentTarget.style.width = 'auto';
                     e.currentTarget.style.height = 'auto';
                     e.currentTarget.style.padding = '12px 24px';
-                    e.currentTarget.style.background = '#E65100';
+                    e.currentTarget.style.background = '#2563EB';
                     e.currentTarget.style.color = '#FFFFFF';
                     e.currentTarget.style.fontWeight = '700';
                     e.currentTarget.style.borderRadius = '8px';
@@ -174,3 +174,4 @@ export const MainLayout: React.FC = () => {
 };
 
 export default MainLayout;
+

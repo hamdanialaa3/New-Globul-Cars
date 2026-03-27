@@ -29,7 +29,7 @@ const PanelTitle = styled.h2`
   gap: 12px;
   font-size: 18px;
   font-weight: 700;
-  color: #ff8c61;
+  color: #8B5CF6;
   text-transform: uppercase;
   letter-spacing: 1px;
 `;
@@ -39,7 +39,7 @@ const RefreshButton = styled.button`
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background: #ff8c61;
+  background: #8B5CF6;
   color: #0f1419;
   border: none;
   border-radius: 6px;
@@ -76,7 +76,7 @@ const StatCard = styled.div`
   transition: all 0.2s ease;
   
   &:hover {
-    border-color: #ff8c61;
+    border-color: #8B5CF6;
     background: #252b3a;
     transform: translateY(-4px);
   }
@@ -98,7 +98,7 @@ const StatCard = styled.div`
   }
   
   .stat-icon {
-    color: #ff8c61;
+    color: #8B5CF6;
     opacity: 1;
   }
 `;
@@ -106,7 +106,7 @@ const StatCard = styled.div`
 const SectionTitle = styled.h3`
   font-size: 15px;
   font-weight: 700;
-  color: #ff8c61;
+  color: #8B5CF6;
   margin-bottom: 16px;
   display: flex;
   align-items: center;
@@ -136,7 +136,7 @@ const QuickLinkButton = styled.a`
   
   &:hover {
     background: #1e2432;
-    border-color: #ff8c61;
+    border-color: #8B5CF6;
     color: #f8fafc;
     transform: translateY(-2px);
   }
@@ -392,4 +392,5 @@ const FacebookAdminPanel: React.FC<FacebookAdminPanelProps> = ({ language }) => 
 };
 
 export default FacebookAdminPanel;
+
 

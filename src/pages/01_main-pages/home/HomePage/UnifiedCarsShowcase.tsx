@@ -72,10 +72,10 @@ const Container = styled.section<{ $isDark: boolean }>`
   padding: 3rem 0;
   overflow: hidden;
   /* 🟣 Light purple border */
-  border: 1px solid rgba(230, 81, 0, 0.1);
+  border: 1px solid rgba(37, 99, 235, 0.1);
   border-radius: 12px;
   margin: 0 12px;
-  box-shadow: inset 0 0 12px rgba(230, 81, 0, 0.05);
+  box-shadow: inset 0 0 12px rgba(37, 99, 235, 0.05);
 
   @media (max-width: 768px) {
     padding: 2.5rem 0;
@@ -578,3 +578,4 @@ const UnifiedCarsShowcase: React.FC = memo(() => {
 UnifiedCarsShowcase.displayName = 'UnifiedCarsShowcase';
 
 export default UnifiedCarsShowcase;
+

@@ -478,7 +478,7 @@ const LegacyLogoContainer = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 24px;
-  background: radial-gradient(circle at top, rgba(255, 121, 0, 0.25), transparent 68%);
+  background: radial-gradient(circle at top, rgba(99, 102, 241, 0.25), transparent 68%);
 `;
 
 const LegacyLogoGlow = styled.div`
@@ -486,7 +486,7 @@ const LegacyLogoGlow = styled.div`
   width: 140px;
   height: 140px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 121, 0, 0.6), transparent 70%);
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.6), transparent 70%);
   filter: blur(12px);
   opacity: 0.8;
 `;
@@ -1010,4 +1010,5 @@ const CarDetailsModernView: React.FC<CarDetailsModernViewProps> = ({
 };
 
 export default CarDetailsModernView;
+
 

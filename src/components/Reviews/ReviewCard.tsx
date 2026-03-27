@@ -40,7 +40,7 @@ const Avatar = styled.div`
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #FF7900, #ff8c1a);
+  background: linear-gradient(135deg, #2563EB, #ff8c1a);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -140,10 +140,10 @@ const ActionButtons = styled.div`
 
 const ActionButton = styled.button<{ $active?: boolean }>`
   padding: 8px 16px;
-  border: 1px solid ${props => props.$active ? '#FF7900' : '#e0e0e0'};
+  border: 1px solid ${props => props.$active ? '#2563EB' : '#e0e0e0'};
   border-radius: 8px;
   background: ${props => props.$active ? '#fff5e6' : 'white'};
-  color: ${props => props.$active ? '#FF7900' : '#666'};
+  color: ${props => props.$active ? '#2563EB' : '#666'};
   font-size: 0.875rem;
   display: flex;
   align-items: center;
@@ -152,9 +152,9 @@ const ActionButton = styled.button<{ $active?: boolean }>`
   transition: all 0.2s ease;
   
   &:hover {
-    border-color: #FF7900;
+    border-color: #2563EB;
     background: #fff5e6;
-    color: #FF7900;
+    color: #2563EB;
   }
 `;
 
@@ -289,11 +289,11 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
           padding: '16px',
           background: '#f9f9f9',
           borderRadius: '8px',
-          borderLeft: '4px solid #FF7900'
+          borderLeft: '4px solid #2563EB'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-            <MessageSquare size={16} color="#FF7900" />
-            <strong style={{ color: '#FF7900' }}>
+            <MessageSquare size={16} color="#2563EB" />
+            <strong style={{ color: '#2563EB' }}>
               {language === 'bg' ? 'Отговор от продавача' : 'Seller Response'}
             </strong>
           </div>
@@ -307,3 +307,4 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
 };
 
 export default ReviewCard;
+

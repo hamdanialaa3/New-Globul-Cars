@@ -22,7 +22,7 @@ const HelperContainer = styled.div<{ $collapsed: boolean }>`
   transition: all 0.3s ease;
   overflow: hidden;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 121, 0, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.1);
   
   @media (max-width: 1200px) {
     display: none; /* Hide on smaller screens */
@@ -31,7 +31,7 @@ const HelperContainer = styled.div<{ $collapsed: boolean }>`
 
 const HelperHeader = styled.div`
   padding: 10px 12px;
-  background: linear-gradient(135deg, #FF7900, #ff8c1a);
+  background: linear-gradient(135deg, #2563EB, #ff8c1a);
   color: white;
   display: flex;
   justify-content: space-between;
@@ -62,7 +62,7 @@ const HelperContent = styled.div<{ $show: boolean }>`
   }
   
   &::-webkit-scrollbar-thumb {
-    background: #FF7900;
+    background: #2563EB;
     border-radius: 2px;
   }
 `;
@@ -94,17 +94,17 @@ const HighlightOverlay = styled.div<{ $active: boolean; $position: { top: string
   left: ${props => props.$position.left};
   width: ${props => props.$position.width};
   height: ${props => props.$position.height};
-  border: 3px solid #FF7900;
+  border: 3px solid #2563EB;
   border-radius: 4px;
-  background: rgba(255, 121, 0, 0.1);
+  background: rgba(99, 102, 241, 0.1);
   opacity: ${props => props.$active ? 1 : 0};
   transition: opacity 0.3s ease;
   pointer-events: none;
   animation: ${props => props.$active ? 'pulse 2s  /* ⚡ OPTIMIZED: Removed infinite */' : 'none'};
   
   @keyframes pulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 121, 0, 0.7); }
-    50% { box-shadow: 0 0 0 8px rgba(255, 121, 0, 0); }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
+    50% { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
   }
 `;
 
@@ -117,14 +117,14 @@ const FieldMappingItem = styled.div<{ $active: boolean }>`
   padding: 8px 10px;
   margin-bottom: 6px;
   background: ${props => props.$active ? '#fff5e6' : '#f9f9f9'};
-  border-left: 2px solid ${props => props.$active ? '#FF7900' : 'transparent'};
+  border-left: 2px solid ${props => props.$active ? '#2563EB' : 'transparent'};
   border-radius: 4px;
   font-size: 0.7rem;
   transition: all 0.2s ease;
   
   &:hover {
     background: #fff5e6;
-    border-left-color: #FF7900;
+    border-left-color: #2563EB;
   }
   
   .field-name {
@@ -158,7 +158,7 @@ const ToggleButton = styled.button`
   
   &:hover {
     background: #f0f0f0;
-    color: #FF7900;
+    color: #2563EB;
   }
 `;
 
@@ -280,3 +280,5 @@ const IDReferenceHelper: React.FC<IDReferenceHelperProps> = ({
 };
 
 export default IDReferenceHelper;
+
+

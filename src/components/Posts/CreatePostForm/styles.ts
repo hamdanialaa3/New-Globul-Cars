@@ -104,7 +104,7 @@ export const CharacterCount = styled.span<{ $error?: boolean }>`
 
 export const SubmitButton = styled.button`
   padding: 10px 24px;
-  background: linear-gradient(135deg, #FF7900, #FF8F10);
+  background: linear-gradient(135deg, #2563EB, #3B82F6);
   color: white;
   border: none;
   border-radius: 8px;
@@ -130,7 +130,7 @@ export const UploadProgressContainer = styled.div`
   border-radius: 12px;
   padding: 16px;
   margin-top: 12px;
-  border: 2px solid #FF8F10;
+  border: 2px solid #3B82F6;
   animation: slideIn 0.3s ease-out;
   
   @keyframes slideIn {
@@ -156,7 +156,7 @@ export const ProgressBar = styled.div`
 
 export const ProgressFill = styled.div`
   height: 100%;
-  background: linear-gradient(90deg, #FF7900, #FF8F10, #FFA500);
+  background: linear-gradient(90deg, #2563EB, #3B82F6, #FFA500);
   background-size: 200% 100%;
   border-radius: 4px;
   transition: width 0.3s ease;
@@ -172,7 +172,7 @@ export const ProgressText = styled.div`
   text-align: center;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #FF7900;
+  color: #2563EB;
   margin-bottom: 12px;
 `;
 
@@ -206,4 +206,5 @@ export const FileProgressText = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
+
 

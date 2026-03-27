@@ -231,7 +231,7 @@ const CreateButton = styled.button`
 
 const RefreshButton = styled.button`
   padding: 10px 20px;
-  background: #FF8F10;
+  background: #3B82F6;
   color: white;
   border: none;
   border-radius: 5px;
@@ -289,7 +289,7 @@ const BackupCard = styled.div`
   align-items: center;
   
   &:hover {
-    border-color: #FF8F10;
+    border-color: #3B82F6;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
 `;
@@ -323,7 +323,7 @@ const BackupActions = styled.div`
 
 const RestoreButton = styled.button`
   padding: 10px 20px;
-  background: #FF5722;
+  background: #8B5CF6;
   color: white;
   border: none;
   border-radius: 5px;
@@ -358,7 +358,7 @@ const WarningText = styled.div`
   line-height: 1.8;
   
   strong {
-    color: #E65100;
+    color: #2563EB;
   }
 `;
 
@@ -380,7 +380,7 @@ const ErrorMessage = styled.div`
 
 const RetryButton = styled.button`
   padding: 10px 20px;
-  background: #FF8F10;
+  background: #3B82F6;
   color: white;
   border: none;
   border-radius: 5px;
@@ -395,3 +395,4 @@ const RetryButton = styled.button`
 `;
 
 export default BackupManagement;
+
