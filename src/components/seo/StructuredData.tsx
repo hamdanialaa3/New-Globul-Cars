@@ -123,7 +123,7 @@ export const OrganizationStructuredData: React.FC<OrganizationStructuredDataProp
         "sameAs": [
             "https://www.facebook.com/koli.one/",
             "https://www.instagram.com/kolione/",
-            "https://www.tiktok.com/@kolione",
+            "https://www.tiktok.com/@koli.one",
             "https://www.threads.com/@kolione",
             "https://www.youtube.com/@Kolionebg",
             "https://www.linkedin.com/in/koli-one-a011993a9/",

@@ -1,5 +1,7 @@
 # 🚗 Koli.one — Водещият Авто Пазар в България
+
 # 🚗 Koli.one — The Leading Multi-vendor Car Marketplace in Bulgaria
+
 # 🚗 Koli.one — منصة السيارات الرائدة في بلغاريا
 
 [![Firebase Deploy](https://github.com/hamdanialaa3/New-Globul-Cars/actions/workflows/firebase-deploy.yml/badge.svg)](https://github.com/hamdanialaa3/New-Globul-Cars/actions/workflows/firebase-deploy.yml)
@@ -27,13 +29,13 @@
 
 ## 🔗 Quick Links / Бързи Връзки / روابط سريعة
 
-| Link | Description |
-|------|-------------|
-| 🌐 **[koli.one](https://koli.one)** | Live Platform |
-| 🚘 **[koli.one/cars](https://koli.one/cars)** | Car Marketplace |
-| 🏪 **[koli.one/dealers](https://koli.one/dealers)** | Dealers Section |
-| 📞 **[koli.one/contact](https://koli.one/contact)** | Contact Us |
-| 🔍 **[koli.one/search](https://koli.one/search?q=)** | Search Cars |
+| Link                                                 | Description     |
+| ---------------------------------------------------- | --------------- |
+| 🌐 **[koli.one](https://koli.one)**                  | Live Platform   |
+| 🚘 **[koli.one/cars](https://koli.one/cars)**        | Car Marketplace |
+| 🏪 **[koli.one/dealers](https://koli.one/dealers)**  | Dealers Section |
+| 📞 **[koli.one/contact](https://koli.one/contact)**  | Contact Us      |
+| 🔍 **[koli.one/search](https://koli.one/search?q=)** | Search Cars     |
 
 ---
 
@@ -48,7 +50,7 @@
 **Vehicle Categories:** Cars, SUVs, Vans, Motorcycles, Trucks, Buses  
 **Languages:** Bulgarian, English, Arabic  
 **Founded:** 2024 | **Status:** 🟢 Production Active  
-**Schema:** https://schema.org/AutoDealer  
+**Schema:** https://schema.org/AutoDealer
 
 ---
 
@@ -64,15 +66,15 @@
 
 **Stack:** React 18 | TypeScript (strict) | Firebase | Algolia | Stripe | Vite
 
-| Technology | Purpose |
-|-----------|---------|
-| React 18 + TypeScript | Frontend SPA |
-| Firebase Firestore | Database |
-| Firebase Auth | Authentication |
-| Firebase Hosting | Deployment |
-| Algolia | Full-text car search |
-| Stripe | Premium payments |
-| Google Maps API | Location services |
+| Technology            | Purpose              |
+| --------------------- | -------------------- |
+| React 18 + TypeScript | Frontend SPA         |
+| Firebase Firestore    | Database             |
+| Firebase Auth         | Authentication       |
+| Firebase Hosting      | Deployment           |
+| Algolia               | Full-text car search |
+| Stripe                | Premium payments     |
+| Google Maps API       | Location services    |
 
 ---
 
@@ -91,12 +93,12 @@
 
 ## 📊 Project Statistics
 
-| Metric | Count |
-|--------|-------|
-| React Components | 776 |
-| TypeScript Files | 727 |
-| Services | 404 |
-| Pages / Routes | 286 / 80+ |
+| Metric           | Count     |
+| ---------------- | --------- |
+| React Components | 776       |
+| TypeScript Files | 727       |
+| Services         | 404       |
+| Pages / Routes   | 286 / 80+ |
 
 ---
 
@@ -120,21 +122,21 @@ npm start
 
 ## 🌐 Social Media
 
-| Platform | Link |
-|----------|------|
-| 📘 Facebook | [facebook.com/koli.one](https://www.facebook.com/koli.one/) |
-| 📸 Instagram | [instagram.com/kolione](https://www.instagram.com/kolione/) |
-| 🎬 YouTube | [youtube.com/@Kolionebg](https://www.youtube.com/@Kolionebg) |
-| 💼 LinkedIn | [linkedin.com/in/koli-one](https://www.linkedin.com/in/koli-one-a011993a9/) |
-| 🐦 X/Twitter | [@kolionebg](https://x.com/kolionebg) |
-| 🎵 TikTok | [@kolione](https://www.tiktok.com/@kolione) |
+| Platform     | Link                                                                        |
+| ------------ | --------------------------------------------------------------------------- |
+| 📘 Facebook  | [facebook.com/koli.one](https://www.facebook.com/koli.one/)                 |
+| 📸 Instagram | [instagram.com/kolione](https://www.instagram.com/kolione/)                 |
+| 🎬 YouTube   | [youtube.com/@Kolionebg](https://www.youtube.com/@Kolionebg)                |
+| 💼 LinkedIn  | [linkedin.com/in/koli-one](https://www.linkedin.com/in/koli-one-a011993a9/) |
+| 🐦 X/Twitter | [@kolionebg](https://x.com/kolionebg)                                       |
+| 🎵 TikTok    | [@kolione](https://www.tiktok.com/@koli.one)                                |
 
 ---
 
 ## 🌐 Domain & Hosting
 
 **Domain:** https://koli.one  
-**Provider:** Firebase Hosting | **Region:** europe-west1 | **SSL:** Auto  
+**Provider:** Firebase Hosting | **Region:** europe-west1 | **SSL:** Auto
 
 ---
 

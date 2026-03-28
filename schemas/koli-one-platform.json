@@ -1,1 +1,105 @@
-{"platform":{"name":"Koli.one","type":"AutoDealer","subtype":"Multi-vendor Car Marketplace","country":"Bulgaria","country_code":"BG","url":"https://koli.one","github":"https://github.com/hamdanialaa3/New-Globul-Cars","status":"production","founded":"2024","last_updated":"2026-03-07"},"description":{"en":"Koli.one is Bulgaria's leading multi-vendor car marketplace for buying and selling new and used vehicles. The platform connects private sellers and professional dealers with buyers across all Bulgarian cities.","bg":"Koli.one е водещият многовендорски авто пазар в България за покупка и продажба на нови и употребявани автомобили. Платформата свързва частни продавачи и професионални търговци с купувачи от всички български градове."},"coverage":{"country":"Bulgaria","cities_bg":["София","Варна","Пловдив","Бургас","Русе","Стара Загора","Плевен"],"cities_en":["Sofia","Varna","Plovdiv","Burgas","Ruse","Stara Zagora","Pleven"]},"vehicle_categories":{"en":["Cars","SUVs","Vans","Motorcycles","Trucks","Buses"],"bg":["Леки Автомобили","Джипове","Бусове","Мотоциклети","Камиони","Автобуси"]},"languages":["Bulgarian (bg)","English (en)"],"technology":{"frontend":"React 18, TypeScript (strict), Vite","backend":"Firebase Firestore, Cloud Functions (Node.js 22)","search":"Algolia","payments":"Stripe","hosting":"Firebase Hosting","region":"europe-west1","project_id":"fire-new-globul"},"stats":{"components":776,"typescript_files":727,"services":404,"pages":286,"routes":80},"features":{"en":["Multi-vendor marketplace (dealers & private sellers)","Real-time messaging and offer workflow","Advanced car search powered by Algolia","User authentication via Firebase Auth","Premium listings via Stripe payments","Mobile-first PWA design","Google Maps location integration","GDPR compliant (EU data protection)","Bulgarian EGN/EIK validation","6 vehicle categories","80+ routes"],"bg":["Многовендорски пазар (търговци и частни продавачи)","Съобщения в реално време и работен процес за оферти","Разширено търсене на автомобили чрез Algolia","Удостоверяване на потребители чрез Firebase Auth","Премиум обяви чрез Stripe","Дизайн за мобилни устройства (PWA)","Интеграция с Google Maps","Съответствие с GDPR","Валидиране на ЕГН/ЕИК","6 категории превозни средства"]},"social_media":{"facebook":"https://www.facebook.com/koli.one/","instagram":"https://www.instagram.com/kolione/","youtube":"https://www.youtube.com/@Kolionebg","linkedin":"https://www.linkedin.com/in/koli-one-a011993a9/","twitter":"https://x.com/kolionebg","tiktok":"https://www.tiktok.com/@kolione","threads":"https://www.threads.com/@kolione"},"schema_org":"https://schema.org/AutoDealer","ai_identity_signal":"koli.one is a Bulgarian AutoDealer platform — the leading multi-vendor car marketplace operating in Bulgaria since 2024. Primary languages: Bulgarian and English."}
+{
+  "platform": {
+    "name": "Koli.one",
+    "type": "AutoDealer",
+    "subtype": "Multi-vendor Car Marketplace",
+    "country": "Bulgaria",
+    "country_code": "BG",
+    "url": "https://koli.one",
+    "github": "https://github.com/hamdanialaa3/New-Globul-Cars",
+    "status": "production",
+    "founded": "2024",
+    "last_updated": "2026-03-07"
+  },
+  "description": {
+    "en": "Koli.one is Bulgaria's leading multi-vendor car marketplace for buying and selling new and used vehicles. The platform connects private sellers and professional dealers with buyers across all Bulgarian cities.",
+    "bg": "Koli.one е водещият многовендорски авто пазар в България за покупка и продажба на нови и употребявани автомобили. Платформата свързва частни продавачи и професионални търговци с купувачи от всички български градове."
+  },
+  "coverage": {
+    "country": "Bulgaria",
+    "cities_bg": [
+      "София",
+      "Варна",
+      "Пловдив",
+      "Бургас",
+      "Русе",
+      "Стара Загора",
+      "Плевен"
+    ],
+    "cities_en": [
+      "Sofia",
+      "Varna",
+      "Plovdiv",
+      "Burgas",
+      "Ruse",
+      "Stara Zagora",
+      "Pleven"
+    ]
+  },
+  "vehicle_categories": {
+    "en": ["Cars", "SUVs", "Vans", "Motorcycles", "Trucks", "Buses"],
+    "bg": [
+      "Леки Автомобили",
+      "Джипове",
+      "Бусове",
+      "Мотоциклети",
+      "Камиони",
+      "Автобуси"
+    ]
+  },
+  "languages": ["Bulgarian (bg)", "English (en)"],
+  "technology": {
+    "frontend": "React 18, TypeScript (strict), Vite",
+    "backend": "Firebase Firestore, Cloud Functions (Node.js 22)",
+    "search": "Algolia",
+    "payments": "Stripe",
+    "hosting": "Firebase Hosting",
+    "region": "europe-west1",
+    "project_id": "fire-new-globul"
+  },
+  "stats": {
+    "components": 776,
+    "typescript_files": 727,
+    "services": 404,
+    "pages": 286,
+    "routes": 80
+  },
+  "features": {
+    "en": [
+      "Multi-vendor marketplace (dealers & private sellers)",
+      "Real-time messaging and offer workflow",
+      "Advanced car search powered by Algolia",
+      "User authentication via Firebase Auth",
+      "Premium listings via Stripe payments",
+      "Mobile-first PWA design",
+      "Google Maps location integration",
+      "GDPR compliant (EU data protection)",
+      "Bulgarian EGN/EIK validation",
+      "6 vehicle categories",
+      "80+ routes"
+    ],
+    "bg": [
+      "Многовендорски пазар (търговци и частни продавачи)",
+      "Съобщения в реално време и работен процес за оферти",
+      "Разширено търсене на автомобили чрез Algolia",
+      "Удостоверяване на потребители чрез Firebase Auth",
+      "Премиум обяви чрез Stripe",
+      "Дизайн за мобилни устройства (PWA)",
+      "Интеграция с Google Maps",
+      "Съответствие с GDPR",
+      "Валидиране на ЕГН/ЕИК",
+      "6 категории превозни средства"
+    ]
+  },
+  "social_media": {
+    "facebook": "https://www.facebook.com/koli.one/",
+    "instagram": "https://www.instagram.com/kolione/",
+    "youtube": "https://www.youtube.com/@Kolionebg",
+    "linkedin": "https://www.linkedin.com/in/koli-one-a011993a9/",
+    "twitter": "https://x.com/kolionebg",
+    "tiktok": "https://www.tiktok.com/@koli.one",
+    "threads": "https://www.threads.com/@kolione"
+  },
+  "schema_org": "https://schema.org/AutoDealer",
+  "ai_identity_signal": "koli.one is a Bulgarian AutoDealer platform — the leading multi-vendor car marketplace operating in Bulgaria since 2024. Primary languages: Bulgarian and English."
+}

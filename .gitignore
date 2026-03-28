@@ -94,3 +94,5 @@ server.log
 
 # --- Build artifacts in submodules ---
 web/build/
+build-output.txt
+build-output2.txt
