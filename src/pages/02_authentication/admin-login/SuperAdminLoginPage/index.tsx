@@ -334,6 +334,8 @@ const SuperAdminLogin: React.FC = () => {
     const checkExistingSession = async () => {
       const isValid = await uniqueOwnerService.validateCurrentSession();
       if (isValid && !uniqueOwnerService.isSessionTimedOut()) {
+        // Ensure Firebase Auth session exists (may have expired or never been established)
+        await uniqueOwnerService.connectFirebaseAuth().catch(() => {});
         navigate('/super-admin');
       }
     };

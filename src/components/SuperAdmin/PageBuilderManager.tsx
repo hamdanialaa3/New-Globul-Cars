@@ -545,7 +545,24 @@ const PageBuilderManager: React.FC = () => {
       
       setConfig({ ...config, sections: sortedSections });
       showMessage('success', `Page layout securely published to '${config.pageName}' globally!`);
-    } catch (e) {
+    } catch (e: any) {
+      // If permission denied, try reconnecting Firebase Auth and retry once
+      if (e?.code === 'permission-denied' || e?.message?.includes('permissions')) {
+        try {
+          const { uniqueOwnerService } = await import('@/services/unique-owner-service');
+          await uniqueOwnerService.connectFirebaseAuth();
+          // Retry the save after reconnecting
+          const retryRef = doc(db, 'app_settings', `page_builder_${config.pageId}`);
+          const retrySections = [...config.sections].map((sec, idx) => ({ ...sec, order: idx + 1 }));
+          await setDoc(retryRef, { ...config, sections: retrySections, updatedAt: serverTimestamp() });
+          setConfig({ ...config, sections: retrySections });
+          showMessage('success', `Page layout published after re-authentication!`);
+          setSaving(false);
+          return;
+        } catch (retryErr) {
+          logger.error('Retry after re-auth also failed', retryErr as Error);
+        }
+      }
       logger.error('Failed to save page layout', e as Error);
       showMessage('error', 'Failed to publish settings globally.');
     } finally {
