@@ -216,7 +216,7 @@ export const SUBSCRIPTION_PLANS: Record<PlanTier, SubscriptionPlan> = {
       canCustomizeBranding: true,
       hasFeaturedBadge: true,
     },
-    isActive: false,
+    isActive: true,
     displayOrder: 3,
   },
 };

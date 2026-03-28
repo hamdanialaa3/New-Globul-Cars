@@ -71,7 +71,7 @@ export interface SEOHelmetProps {
 const SITE_NAME = 'Koli One';
 const SITE_URL = 'https://koli.one';
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
-const TWITTER_HANDLE = '@kolioneauto';
+const TWITTER_HANDLE = '@kolionebg';
 
 // ============================================================================
 // COMPONENT

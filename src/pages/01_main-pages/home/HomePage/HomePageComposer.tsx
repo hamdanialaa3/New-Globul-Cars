@@ -73,6 +73,11 @@ import HomeTrustAndStats from './HomeTrustAndStats';
 import LinkableSection from './LinkableSection';
 import KATServicesHero from './KATServicesHero';
 
+// 8. Orphaned Sections — now wired
+import { HomeHeroStrips } from '@/components/home/HomeHeroStrips';
+import UnifiedSocial from './UnifiedSocial';
+import HomeLoyaltyAndSignup from './HomeLoyaltyAndSignup';
+
 // Global components (lazy loaded)
 const AIChatbot = React.lazy(() => import('../../../../components/AI/AIChatbot'));
 const PricingSlotWrapper = React.lazy(() => import('../../../../components/subscription/PricingSlotWrapper'));
@@ -381,6 +386,33 @@ const AIChatbotSlot: React.FC = () => (
 );
 
 /**
+ * Slot: Hero Strips
+ */
+const HomeHeroStripsSlot: React.FC = () => (
+  <LazySection rootMargin="100px">
+    <Suspense fallback={null}><HomeHeroStrips /></Suspense>
+  </LazySection>
+);
+
+/**
+ * Slot: Social Proof
+ */
+const SocialSlot: React.FC = () => (
+  <LazySection rootMargin="100px">
+    <Suspense fallback={null}><UnifiedSocial /></Suspense>
+  </LazySection>
+);
+
+/**
+ * Slot: Loyalty & Signup
+ */
+const LoyaltySlot: React.FC = () => (
+  <LazySection rootMargin="100px">
+    <Suspense fallback={null}><HomeLoyaltyAndSignup /></Suspense>
+  </LazySection>
+);
+
+/**
  * Floating: Draft Recovery Prompt
  */
 const DraftRecoverySlot: React.FC = () => (
@@ -450,6 +482,9 @@ const SECTION_MAP: Record<string, React.FC> = {
   trust_stats: TrustSlot,
   pricing_plans: PricingSlot,
   kat_services: KATServicesSlot,
+  hero_strips: HomeHeroStripsSlot,
+  social: SocialSlot,
+  loyalty: LoyaltySlot,
 };
 
 const HomePageComposer: React.FC = React.memo(() => {
@@ -497,6 +532,9 @@ const HomePageComposer: React.FC = React.memo(() => {
             <UnifiedSmartSellSlot /><SectionSpacer />
             <DealersSlot /><SectionSpacer />
             <TrustSlot /><SectionSpacer />
+            <SocialSlot /><SectionSpacer />
+            <LoyaltySlot /><SectionSpacer />
+            <HomeHeroStripsSlot /><SectionSpacer />
             <PricingSlot />
           </>
         )}

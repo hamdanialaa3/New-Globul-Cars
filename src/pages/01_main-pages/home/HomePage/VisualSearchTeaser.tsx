@@ -371,7 +371,7 @@ const translations = {
     features: {
       ai: 'AI Recognition',
       instant: 'Instant Results',
-      accurate: '95% Accuracy',
+      accurate: 'AI Powered',
     },
     upload: {
       title: 'Drop your image here',
@@ -391,7 +391,7 @@ const translations = {
     features: {
       ai: 'AI разпознаване',
       instant: 'Мигновени резултати',
-      accurate: '95% точност',
+      accurate: 'AI базирано',
     },
     upload: {
       title: 'Пуснете вашата снимка тук',

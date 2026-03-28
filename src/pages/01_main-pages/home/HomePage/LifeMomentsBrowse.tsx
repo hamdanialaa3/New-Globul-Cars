@@ -49,8 +49,17 @@ interface LifeMomentItem {
   icon: React.ReactNode;
   gradient: string;
   shadowColor: string;
-  emoji: string;
 }
+
+/** Direct CarsPage routes — skip /browse redirect hop */
+const MOMENT_FILTERS: Record<string, string> = {
+  family: '/cars?bodyType=SUV',
+  work: '/cars?bodyType=sedan',
+  adventure: '/cars?bodyType=SUV&fuelType=diesel',
+  eco: '/cars?fuelType=electric',
+  city: '/cars?bodyType=hatchback',
+  luxury: '/cars?priceMin=30000',
+};
 
 const MOMENTS: LifeMomentItem[] = [
   {
@@ -58,42 +67,36 @@ const MOMENTS: LifeMomentItem[] = [
     icon: <Users />,
     gradient: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
     shadowColor: 'rgba(249, 115, 22, 0.4)',
-    emoji: '👨‍👩‍👧‍👦'
   },
   {
     key: 'work',
     icon: <Briefcase />,
     gradient: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
     shadowColor: 'rgba(59, 130, 246, 0.4)',
-    emoji: '💼'
   },
   {
     key: 'adventure',
     icon: <Mountain />,
     gradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
     shadowColor: 'rgba(16, 185, 129, 0.4)',
-    emoji: '🏔️'
   },
   {
     key: 'eco',
     icon: <Leaf />,
     gradient: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
     shadowColor: 'rgba(34, 197, 94, 0.4)',
-    emoji: '🌱'
   },
   {
     key: 'city',
     icon: <Building2 />,
     gradient: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
     shadowColor: 'rgba(139, 92, 246, 0.4)',
-    emoji: '🏙️'
   },
   {
     key: 'luxury',
     icon: <Crown />,
     gradient: 'linear-gradient(135deg, #eab308 0%, #ca8a04 100%)',
     shadowColor: 'rgba(234, 179, 8, 0.4)',
-    emoji: '👑'
   }
 ];
 
@@ -330,7 +333,7 @@ const ArrowIcon = styled(ArrowRight) <{ $isDark: boolean }>`
 
 const translations = {
   en: {
-    badge: '✨ Lifestyle Discovery',
+    badge: 'Lifestyle Discovery',
     title: 'Find Your Perfect Car',
     subtitle: 'Choose based on your lifestyle and let us recommend the best options',
     moments: {
@@ -343,7 +346,7 @@ const translations = {
     },
   },
   bg: {
-    badge: '✨ Открий стила си',
+    badge: 'Открий стила си',
     title: 'Намери перфектната кола',
     subtitle: 'Изберете според вашия начин на живот и ние ще препоръчаме най-добрите опции',
     moments: {
@@ -397,7 +400,7 @@ const LifeMomentsBrowse: React.FC = memo(() => {
     analyticsService.trackEvent('home_lifemoments_click', {
       momentKey,
     });
-    navigate(`/browse?moment=${momentKey}`);
+    navigate(MOMENT_FILTERS[momentKey] || '/cars');
   }, [navigate]);
 
   return (

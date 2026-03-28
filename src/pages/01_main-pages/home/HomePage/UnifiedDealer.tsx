@@ -419,7 +419,7 @@ const UnifiedDealer: React.FC = memo(() => {
           <div className="stat-icon">
             <CheckCircle size={24} />
           </div>
-          <div className="stat-value">100%</div>
+          <div className="stat-value">✓</div>
           <div className="stat-label">{isBg ? 'Верифицирани' : 'Verified'}</div>
         </StatItem>
 
@@ -431,8 +431,8 @@ const UnifiedDealer: React.FC = memo(() => {
           <div className="stat-icon">
             <Star size={24} />
           </div>
-          <div className="stat-value">4.8</div>
-          <div className="stat-label">{isBg ? 'Рейтинг' : 'Rating'}</div>
+          <div className="stat-value">{isBg ? 'Топ' : 'Top'}</div>
+          <div className="stat-label">{isBg ? 'Качество' : 'Quality'}</div>
         </StatItem>
       </StatsBar>
 
