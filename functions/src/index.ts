@@ -251,6 +251,10 @@ export const getUserNumericId = userCreateTrigger.getUserNumericId;
 import * as guestToken from './auth/guest-token';
 export const getGuestCustomToken = guestToken.getGuestCustomToken;
 
+// Super Admin Firebase Auth Token (Page Builder write access)
+import * as superAdminToken from './admin/superAdminToken';
+export const getSuperAdminToken = superAdminToken.getSuperAdminToken;
+
 // Email Notifications System
 import * as emailTriggers from './notifications/email-triggers';
 export const sendWelcomeEmail = emailTriggers.sendWelcomeEmail;

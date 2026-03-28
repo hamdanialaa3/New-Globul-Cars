@@ -272,6 +272,33 @@ const Message = styled.div<{ $type: 'success' | 'error' }>`
   gap: 8px;
 `;
 
+const SubscriptionModeWrap = styled.div`
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+`;
+
+const SubscriptionModeButton = styled.button<{ $active?: boolean }>`
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid ${props => props.$active ? '#22c55e' : '#334155'};
+  background: ${props => props.$active ? 'rgba(34, 197, 94, 0.16)' : '#0b1220'};
+  color: ${props => props.$active ? '#86efac' : '#cbd5e1'};
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:hover {
+    border-color: #22c55e;
+    color: #86efac;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
+
 const PAGE_OPTIONS = [
   { id: 'home', title: 'الرئيسية (Home)' },
   { id: 'search', title: 'مستكشف السيارات (Search)' },
@@ -382,11 +409,17 @@ const PageBuilderManager: React.FC = () => {
   const [config, setConfig] = useState<PageBuilderConfig | null>(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [subscriptionMode, setSubscriptionMode] = useState<'free' | 'paid'>('paid');
+  const [subscriptionSaving, setSubscriptionSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   useEffect(() => {
     loadConfig(selectedPageId);
   }, [selectedPageId]);
+
+  useEffect(() => {
+    loadSubscriptionMode();
+  }, []);
 
   const showMessage = (type: 'success' | 'error', text: string) => {
     setMessage({ type, text });
@@ -418,6 +451,45 @@ const PageBuilderManager: React.FC = () => {
       showMessage('error', 'Failed to load page configuration from cloud.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadSubscriptionMode = async () => {
+    try {
+      const siteSettingsRef = doc(db, 'app_settings', 'site_settings');
+      const snap = await getDoc(siteSettingsRef);
+      if (!snap.exists()) {
+        setSubscriptionMode('paid');
+        return;
+      }
+      const data = snap.data() as { pricing?: { subscriptionMode?: 'free' | 'paid' } };
+      setSubscriptionMode(data?.pricing?.subscriptionMode === 'free' ? 'free' : 'paid');
+    } catch (e) {
+      logger.error('Failed to load subscription mode', e as Error);
+    }
+  };
+
+  const saveSubscriptionMode = async (mode: 'free' | 'paid') => {
+    try {
+      setSubscriptionSaving(true);
+      const siteSettingsRef = doc(db, 'app_settings', 'site_settings');
+      await setDoc(siteSettingsRef, {
+        pricing: {
+          subscriptionMode: mode,
+        },
+        updatedAt: serverTimestamp(),
+        updatedBy: 'god-mode-page-builder',
+      }, { merge: true });
+
+      setSubscriptionMode(mode);
+      showMessage('success', mode === 'free'
+        ? 'Subscription mode switched to FREE globally.'
+        : 'Subscription mode switched to PAID globally.');
+    } catch (e) {
+      logger.error('Failed to save subscription mode', e as Error);
+      showMessage('error', 'Failed to update subscription mode.');
+    } finally {
+      setSubscriptionSaving(false);
     }
   };
 
@@ -546,6 +618,36 @@ const PageBuilderManager: React.FC = () => {
           ))}
         </Select>
       </SelectWrap>
+
+      {selectedPageId === 'home' && (
+        <Card style={{ marginBottom: '24px' }}>
+          <CardTitle><Settings2 size={18} /> Subscription Mode Control</CardTitle>
+          <Label>Global Pricing Mode (Pricing section in homepage)</Label>
+          <SubscriptionModeWrap>
+            <SubscriptionModeButton
+              type="button"
+              $active={subscriptionMode === 'free'}
+              disabled={subscriptionSaving || saving || loading}
+              onClick={() => saveSubscriptionMode('free')}
+              title="جعل الاشتراكات مجانية"
+            >
+              مجاني
+            </SubscriptionModeButton>
+            <SubscriptionModeButton
+              type="button"
+              $active={subscriptionMode === 'paid'}
+              disabled={subscriptionSaving || saving || loading}
+              onClick={() => saveSubscriptionMode('paid')}
+              title="تفعيل الاشتراكات المدفوعة"
+            >
+              مدفوع
+            </SubscriptionModeButton>
+          </SubscriptionModeWrap>
+          <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
+            This writes to app_settings/site_settings.pricing.subscriptionMode and instantly affects Pricing plans behavior.
+          </p>
+        </Card>
+      )}
 
       {config && (
         <Grid>

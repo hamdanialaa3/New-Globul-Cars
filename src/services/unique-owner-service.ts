@@ -10,6 +10,8 @@ import {
 import { db } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-service';
 import { getAuth, getIdTokenResult, signOut, User } from 'firebase/auth';
+import { signInWithCustomToken } from 'firebase/auth';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 
 export interface UniqueOwnerSession {
   email: string;
@@ -47,8 +49,12 @@ export class UniqueOwnerService {
   private static readonly LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes lockout
   private static readonly ADMIN_EMAILS: string[] = (
     import.meta.env.VITE_ADMIN_EMAILS || ''
-  ).split(',').map((e: string) => e.trim().toLowerCase()).filter(Boolean);
-  private static readonly OWNER_SECRET: string = import.meta.env.VITE_OWNER_SECRET || '';
+  )
+    .split(',')
+    .map((e: string) => e.trim().toLowerCase())
+    .filter(Boolean);
+  private static readonly OWNER_SECRET: string =
+    import.meta.env.VITE_OWNER_SECRET || '';
   private currentSession: UniqueOwnerSession | null = null;
   private idleTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -178,21 +184,36 @@ export class UniqueOwnerService {
   }
 
   // تحقق من بيانات دخول المالك الثابتة
-  public validateOwnerCredentials(email: string, password: string): { success: boolean; locked?: boolean; remainingMinutes?: number } {
+  public validateOwnerCredentials(
+    email: string,
+    password: string
+  ): { success: boolean; locked?: boolean; remainingMinutes?: number } {
     // Check lockout first
     const lockStatus = this.checkLockout();
     if (lockStatus.locked) {
-      return { success: false, locked: true, remainingMinutes: lockStatus.remainingMinutes };
+      return {
+        success: false,
+        locked: true,
+        remainingMinutes: lockStatus.remainingMinutes,
+      };
     }
 
     const normalizedEmail = email.trim().toLowerCase();
-    const isOwnerEmail = UniqueOwnerService.ADMIN_EMAILS.includes(normalizedEmail);
-    const valid = isOwnerEmail && UniqueOwnerService.OWNER_SECRET !== '' && password === UniqueOwnerService.OWNER_SECRET;
+    const isOwnerEmail =
+      UniqueOwnerService.ADMIN_EMAILS.includes(normalizedEmail);
+    const valid =
+      isOwnerEmail &&
+      UniqueOwnerService.OWNER_SECRET !== '' &&
+      password === UniqueOwnerService.OWNER_SECRET;
 
     if (!valid) {
       this.recordFailedAttempt(normalizedEmail);
       const afterLock = this.checkLockout();
-      return { success: false, locked: afterLock.locked, remainingMinutes: afterLock.remainingMinutes };
+      return {
+        success: false,
+        locked: afterLock.locked,
+        remainingMinutes: afterLock.remainingMinutes,
+      };
     }
 
     // Reset attempts on success
@@ -213,13 +234,17 @@ export class UniqueOwnerService {
 
       // If max attempts reached, set lockout
       const recentAttempts = data.attempts.filter(
-        (a: { timestamp: number }) => Date.now() - a.timestamp < UniqueOwnerService.LOCKOUT_DURATION_MS
+        (a: { timestamp: number }) =>
+          Date.now() - a.timestamp < UniqueOwnerService.LOCKOUT_DURATION_MS
       );
       if (recentAttempts.length >= UniqueOwnerService.MAX_LOGIN_ATTEMPTS) {
         data.lockedUntil = Date.now() + UniqueOwnerService.LOCKOUT_DURATION_MS;
       }
 
-      localStorage.setItem(UniqueOwnerService.LOGIN_ATTEMPTS_KEY, JSON.stringify(data));
+      localStorage.setItem(
+        UniqueOwnerService.LOGIN_ATTEMPTS_KEY,
+        JSON.stringify(data)
+      );
 
       this.logSecurityEvent('failed_login_attempt', {
         email,
@@ -286,7 +311,8 @@ export class UniqueOwnerService {
   // إنشاء جلسة أدمن محلية لا تعتمد على Firebase Auth
   public async startLocalAdminSession(email: string): Promise<boolean> {
     const normalizedEmail = email.trim().toLowerCase();
-    const isOwnerEmail = UniqueOwnerService.ADMIN_EMAILS.includes(normalizedEmail);
+    const isOwnerEmail =
+      UniqueOwnerService.ADMIN_EMAILS.includes(normalizedEmail);
 
     if (!isOwnerEmail) {
       await this.logSecurityEvent('failed_authentication', {
@@ -327,6 +353,38 @@ export class UniqueOwnerService {
       mode: 'local-admin-session',
     });
     return true;
+  }
+
+  /**
+   * Signs the locally-authenticated admin into Firebase Auth using a server-issued
+   * custom token (admin: true claim). This grants Firestore write access for
+   * app_settings and other admin-gated collections. Best-effort — local session
+   * still works even if Firebase Auth sign-in fails.
+   */
+  public async connectFirebaseAuth(): Promise<void> {
+    const adminSecret = UniqueOwnerService.OWNER_SECRET;
+    if (!adminSecret) return;
+    try {
+      const functions = getFunctions(undefined, 'europe-west1');
+      const getToken = httpsCallable<
+        { adminSecret: string },
+        { token: string }
+      >(functions, 'getSuperAdminToken');
+      const result = await getToken({ adminSecret });
+      const firebaseCustomToken = result.data?.token;
+      if (!firebaseCustomToken) return;
+      const auth = getAuth();
+      await signInWithCustomToken(auth, firebaseCustomToken);
+      serviceLogger.info(
+        'Super admin connected to Firebase Auth (admin: true claim)'
+      );
+    } catch (err) {
+      // Best-effort — local session still works, Firestore writes will fail gracefully
+      serviceLogger.warn(
+        'Failed to connect Firebase Auth for super admin (non-fatal)',
+        { err }
+      );
+    }
   }
 
   // الحصول على الجلسة الحالية
