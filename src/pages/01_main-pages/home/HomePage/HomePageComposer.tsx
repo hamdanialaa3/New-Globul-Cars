@@ -29,12 +29,13 @@
  * @clean no complex business logic
  */
 
-import React, { Suspense } from 'react';
+import React, { Suspense, useMemo } from 'react';
 // eslint-disable-next-line import/no-named-as-default
 import styled from 'styled-components';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useSectionVisibility } from '@/hooks/useSectionVisibility';
+import { DEFAULT_HOMEPAGE_SECTIONS } from '@/services/section-visibility-defaults';
 import LazySection from '@/components/LazySection';
 
 // ============================================================================
@@ -492,6 +493,17 @@ const HomePageComposer: React.FC = React.memo(() => {
   const hasRecentlyBrowsed = typeof window !== 'undefined' && localStorage.getItem('recentBrowsing');
   const { sections, isVisible } = useSectionVisibility();
 
+  // Merge Firestore sections with defaults so newly-added sections
+  // (e.g. kat_services) always appear even if Firestore is stale.
+  const mergedSections = useMemo(() => {
+    if (sections.length === 0) return [];
+    const firestoreKeys = new Set(sections.map(s => s.key));
+    return [
+      ...sections,
+      ...DEFAULT_HOMEPAGE_SECTIONS.filter(d => !firestoreKeys.has(d.key)),
+    ];
+  }, [sections]);
+
   return (
     <ComposerContainer>
       {/* 0. Sticky Search Bar (Floating - appears on scroll > 400px) */}
@@ -499,9 +511,9 @@ const HomePageComposer: React.FC = React.memo(() => {
 
       {/* Content Container (Max Width 1400px) */}
       <ContentContainer>
-        {sections.length > 0 ? (
+        {mergedSections.length > 0 ? (
           /* Dynamic Rendering based on sorted 'main' sections */
-          sections
+          mergedSections
             .filter(section => section.category === 'main' && section.visible)
             .sort((a, b) => a.order - b.order)
             .map(section => {
