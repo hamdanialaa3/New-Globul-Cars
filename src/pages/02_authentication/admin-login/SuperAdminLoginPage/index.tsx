@@ -263,7 +263,7 @@ const SecurityBadge = styled.div`
 
 const SuperAdminLogin: React.FC = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -274,9 +274,9 @@ const SuperAdminLogin: React.FC = () => {
     setLoading(true);
     setMessage(null);
 
-    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedUsername = username.trim().toLowerCase();
     const authResult = uniqueOwnerService.validateOwnerCredentials(
-      normalizedEmail,
+      normalizedUsername,
       password
     );
 
@@ -298,7 +298,7 @@ const SuperAdminLogin: React.FC = () => {
 
     try {
       const isLocalAdmin = await uniqueOwnerService.startLocalAdminSession(
-        normalizedEmail
+        normalizedUsername
       );
       if (!isLocalAdmin) {
         setMessage({
@@ -313,9 +313,11 @@ const SuperAdminLogin: React.FC = () => {
         type: 'success',
         text: 'Owner authenticated. Redirecting to Super Admin dashboard…',
       });
-      setTimeout(() => {
-        navigate('/super-admin');
-      }, 700);
+       // Connect Firebase Auth for Firestore write permissions (best-effort, non-blocking)
+       await uniqueOwnerService.connectFirebaseAuth().catch(() => {});
+       setTimeout(() => {
+         navigate('/super-admin');
+       }, 300);
     } catch (error) {
       logger.error('Owner local authentication error:', error as Error);
       setMessage({
@@ -355,14 +357,15 @@ const SuperAdminLogin: React.FC = () => {
 
         <form onSubmit={handleLogin}>
           <FormGroup>
-            <Label>Owner Email Address</Label>
+            <Label>Username</Label>
             <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter owner email"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter username"
               required
               disabled={loading}
+              autoComplete="username"
             />
           </FormGroup>
 
@@ -420,8 +423,8 @@ const SuperAdminLogin: React.FC = () => {
               <AdminInfoValue>{import.meta.env.VITE_OWNER_NAME || 'Alaa Hamid'}</AdminInfoValue>
             </AdminInfoItem>
             <AdminInfoItem>
-              <AdminInfoLabel>Email</AdminInfoLabel>
-              <AdminInfoValue>{email || 'Enter admin email'}</AdminInfoValue>
+              <AdminInfoLabel>Username</AdminInfoLabel>
+              <AdminInfoValue>{username || '—'}</AdminInfoValue>
             </AdminInfoItem>
             <AdminInfoItem>
               <AdminInfoLabel>Phone</AdminInfoLabel>
