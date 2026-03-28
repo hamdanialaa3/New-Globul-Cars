@@ -322,7 +322,8 @@ service cloud.firestore {
     match /messages/{messageId} {
       allow read: if isAuthenticated() && (
         resource.data.senderId == request.auth.uid ||
-        resource.data.receiverId == request.auth.uid
+        resource.data.receiverId == request.auth.uid ||
+        isAdmin()
       );
       
       allow create: if isAuthenticated()
@@ -337,6 +338,14 @@ service cloud.firestore {
       );
     }
     
+    // ============================================
+    // PROMOTIONS Collection
+    // ============================================
+    match /promotions/{promotionId} {
+      allow read: if isAuthenticated() && isAdmin();
+      allow write: if isAuthenticated() && isAdmin();
+    }
+
     // ============================================
     // FAVORITES Collection
     // ============================================
@@ -899,7 +908,8 @@ service cloud.firestore {
     match /orders/{orderId} {
       allow read: if isAuthenticated() && (
         resource.data.buyerId == request.auth.uid ||
-        resource.data.sellerId == request.auth.uid
+        resource.data.sellerId == request.auth.uid ||
+        isAdmin()
       );
       allow write: if false; // Cloud Functions only — financial data
     }
