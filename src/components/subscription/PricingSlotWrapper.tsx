@@ -75,7 +75,7 @@ const PricingSlotWrapper: React.FC = () => {
         // 2. PAID MODE (NORMAL OPERATION)
         // Redirect to the Checkout Page properly
         logger.info('Redirecting to checkout', { planId, interval });
-        navigate(`/manual-checkout?plan=${planId}&interval=${interval}`);
+        navigate(`/billing/manual-checkout?plan=${planId}&interval=${interval}`);
       }
 
     } catch (error) {

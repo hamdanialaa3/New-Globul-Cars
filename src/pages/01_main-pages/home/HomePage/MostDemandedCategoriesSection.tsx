@@ -526,7 +526,7 @@ const MostDemandedCategoriesSection: React.FC = () => {
         // Calculate demand based on actual listing ratio
         const totalCount = result.length || 1;
         const matchCount = filteredCars.length;
-        const demand = totalCount > 0 ? Math.min(98, Math.round((matchCount / totalCount) * 100) + 60) : 0;
+        const demand = totalCount > 0 ? Math.min(98, Math.round((matchCount / totalCount) * 100)) : 0;
         setDemandPercentage(demand);
 
       } catch (error) {

@@ -47,13 +47,13 @@ const translations = {
     step2: 'AI Анализ',
     step2Desc: 'Gemini AI разпознава марка, модел, състояние',
     step3: 'Пазарна цена',
-    step3Desc: 'Сравнение с 10,000+ обяви в реално време',
+    step3Desc: 'Сравнение с реални обяви в реално време',
     step4: 'Готова обява',
     step4Desc: 'Публикувай с един клик',
     cta: 'Започни AI Анализ',
     free: 'Безплатно',
-    accurate: '95% точност',
-    fast: '30 сек'
+    accurate: 'AI Gemini',
+    fast: 'Бърз резултат'
   },
   en: {
     badge: 'AI Technology',
@@ -64,13 +64,13 @@ const translations = {
     step2: 'AI Analysis',
     step2Desc: 'Gemini AI recognizes make, model, condition',
     step3: 'Market Price',
-    step3Desc: 'Comparison with 10,000+ listings in real-time',
+    step3Desc: 'Comparison with real listings in real-time',
     step4: 'Ready Listing',
     step4Desc: 'Publish with one click',
     cta: 'Start AI Analysis',
     free: 'Free',
-    accurate: '95% accurate',
-    fast: '30 sec'
+    accurate: 'AI Gemini',
+    fast: 'Fast result'
   }
 };
 

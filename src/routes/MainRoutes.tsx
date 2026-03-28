@@ -1,5 +1,5 @@
 import React, { Suspense, memo } from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes, Navigate, useParams, useSearchParams } from 'react-router-dom';
 import { safeLazy } from '../utils/lazyImport';
 import { AuthGuard, NumericIdGuard, RequireCompanyGuard } from '../components/guards';
 import { RoleGuard } from '../components/guards/RoleGuard';
@@ -8,6 +8,26 @@ import SellRouteRedirect from '../components/SellWorkflow/SellRouteRedirect';
 import InactivityWarning from '../components/InactivityWarning';
 
 const IS_DEV = process.env.NODE_ENV === 'development';
+
+/** Redirect /browse and /browse/:brandId to /cars with proper query params */
+const MOMENT_FILTERS: Record<string, string> = {
+  family: '/cars?bodyType=SUV',
+  work: '/cars?bodyType=sedan',
+  adventure: '/cars?bodyType=SUV&fuelType=diesel',
+  eco: '/cars?fuelType=electric',
+  city: '/cars?bodyType=hatchback',
+  luxury: '/cars?priceMin=30000',
+};
+const BrowseRedirect: React.FC = () => {
+  const { brandId } = useParams<{ brandId?: string }>();
+  const [searchParams] = useSearchParams();
+  if (brandId) {
+    return <Navigate to={`/cars?make=${encodeURIComponent(brandId)}`} replace />;
+  }
+  const moment = searchParams.get('moment');
+  const target = (moment && MOMENT_FILTERS[moment]) || '/cars';
+  return <Navigate to={target} replace />;
+};
 
 
 // Lazy Loaded Components
@@ -594,6 +614,10 @@ export const MainRoutes: React.FC = () => {
                     return { Component: LaunchOfferPage.default };
                 }}
             />
+
+            {/* Browse redirects — LifeMoments + brand links → CarsPage */}
+            <Route path="/browse/:brandId" element={<BrowseRedirect />} />
+            <Route path="/browse" element={<BrowseRedirect />} />
 
             {/* SEO City-Brand Pages: /bmw-sofia, /audi-plovdiv, etc. */}
             <Route path="/:slug" element={<SEOCityBrandPage />} />

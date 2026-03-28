@@ -12,11 +12,13 @@ import styled, { keyframes, css } from 'styled-components';
 import { 
   Crown, Zap, Building2, Check, Star, TrendingUp, Users, 
   Shield, Sparkles, Clock, Gift, ArrowRight, ChevronDown,
-  Award, Rocket, Heart, MessageCircle, Eye, Phone, Calendar
+  Award, Rocket, Heart, MessageCircle, Eye, Phone, Calendar,
+  Gem, Car, Banknote
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthProvider';
 import { logger } from '@/services/logger-service';
+import { useHomepageStats } from '@/hooks/useHomepageStats';
 // ✅ CRITICAL: Import subscription plans for accurate pricing
 import { SUBSCRIPTION_PLANS } from '@/config/subscription-plans';
 
@@ -114,6 +116,9 @@ const StatItem = styled.div`
 
 const StatIcon = styled.span`
   font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   animation: ${float} 3s ease-in-out infinite;
 `;
 
@@ -561,6 +566,10 @@ const TrialContent = styled.div`
 const TrialIcon = styled.div`
   font-size: 3rem;
   margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #10b981;
 `;
 
 const TrialTitle = styled.h3`
@@ -886,6 +895,7 @@ export const PricingPageEnhanced: React.FC<PricingPageEnhancedProps> = ({
 }) => {
   const { language } = useLanguage();
   const { currentUser } = useAuth();
+  const { stats: realStats } = useHomepageStats();
   const [billingInterval, setBillingInterval] = useState<'monthly' | 'annual'>('monthly');
   const [showComparison, setShowComparison] = useState(false);
   
@@ -897,8 +907,12 @@ export const PricingPageEnhanced: React.FC<PricingPageEnhancedProps> = ({
   });
   
   useEffect(() => {
-    // Animate stats on mount
-    const targets = { cars: 15847, dealers: 2534, sold: 1247 };
+    // Animate stats on mount — use real data from Firestore
+    const targets = {
+      cars: realStats?.totalActiveCars || 0,
+      dealers: realStats?.totalDealers || 0,
+      sold: realStats?.carsListedThisWeek || 0
+    };
     const duration = 2000;
     const steps = 60;
     const stepTime = duration / steps;
@@ -919,31 +933,31 @@ export const PricingPageEnhanced: React.FC<PricingPageEnhancedProps> = ({
     }, stepTime);
     
     return () => clearInterval(timer);
-  }, []);
+  }, [realStats]);
 
   const t = {
     bg: {
-      mainTitle: '💎 Изберете Вашия Перфектен План',
-      subtitle: 'Присъединете се към 2,500+ дилъри, които продават успешно',
+      mainTitle: 'Изберете Вашия Перфектен План',
+      subtitle: `Присъединете се към ${realStats?.totalDealers || '...'} дилъри, които продават успешно`,
       monthly: 'Месечно',
       annual: 'Годишно',
       save20: 'Спести 20%',
       carsListed: 'коли обявени',
       activeDealers: 'активни дилъри',
       soldThisWeek: 'продадени тази седмица',
-      trialTitle: '🎁 Пробвайте Dealer план БЕЗПЛАТНО за 14 дни',
+      trialTitle: 'Пробвайте Dealer план БЕЗПЛАТНО за 14 дни',
       trialDesc: 'Всички функции отключени. Без кредитна карта. Автоматично преминаване към безплатен план след изтичане.',
       noCreditCard: 'Без кредитна карта',
       allFeatures: 'Всички функции',
       autoDowngrade: 'Автоматично преминаване',
       startTrial: 'Започни безплатен пробен период',
       compareFeatures: 'Сравни всички функции',
-      guaranteeTitle: '🛡️ 30-дневна гаранция за връщане на парите',
+      guaranteeTitle: '30-дневна гаранция за връщане на парите',
       guaranteeText: 'Ако не сте доволни от нашата услуга през първите 30 дни, ще ви върнем парите без въпроси.',
       subscribe: 'Абонирай се',
       currentPlan: 'Текущ план',
       bestValue: 'Най-добра стойност',
-      popular: '✨ Най-популярен',
+      popular: 'Най-популярен',
       freePlan: 'Безплатен',
       dealerPlan: 'Професионален Дилър',
       companyPlan: 'Компания',
@@ -953,30 +967,30 @@ export const PricingPageEnhanced: React.FC<PricingPageEnhancedProps> = ({
       perMonth: '/месец',
       listings: 'обяви',
       unlimited: 'Неограничено',
-      testimonials: '⭐ Какво казват нашите клиенти'
+      testimonials: 'Какво казват нашите клиенти'
     },
     en: {
-      mainTitle: '💎 Choose Your Perfect Plan',
-      subtitle: 'Join 2,500+ dealers selling successfully',
+      mainTitle: 'Choose Your Perfect Plan',
+      subtitle: `Join ${realStats?.totalDealers || '...'} dealers selling successfully`,
       monthly: 'Monthly',
       annual: 'Annual',
       save20: 'Save 20%',
       carsListed: 'cars listed',
       activeDealers: 'active dealers',
       soldThisWeek: 'sold this week',
-      trialTitle: '🎁 Try Dealer plan FREE for 14 days',
+      trialTitle: 'Try Dealer plan FREE for 14 days',
       trialDesc: 'All features unlocked. No credit card required. Auto-downgrades to free after expiry.',
       noCreditCard: 'No credit card',
       allFeatures: 'All features',
       autoDowngrade: 'Auto downgrade',
       startTrial: 'Start free trial',
       compareFeatures: 'Compare all features',
-      guaranteeTitle: '🛡️ 30-Day Money Back Guarantee',
+      guaranteeTitle: '30-Day Money Back Guarantee',
       guaranteeText: "If you're not satisfied with our service in the first 30 days, we'll refund you, no questions asked.",
       subscribe: 'Subscribe',
       currentPlan: 'Current Plan',
       bestValue: 'Best Value',
-      popular: '✨ Most Popular',
+      popular: 'Most Popular',
       freePlan: 'Free',
       dealerPlan: 'Professional Dealer',
       companyPlan: 'Company',
@@ -986,7 +1000,7 @@ export const PricingPageEnhanced: React.FC<PricingPageEnhancedProps> = ({
       perMonth: '/month',
       listings: 'listings',
       unlimited: 'Unlimited',
-      testimonials: '⭐ What our customers say'
+      testimonials: 'What our customers say'
     }
   };
   
@@ -1097,17 +1111,17 @@ export const PricingPageEnhanced: React.FC<PricingPageEnhancedProps> = ({
         {/* Live Stats Bar */}
         <StatsBar>
           <StatItem>
-            <StatIcon>🚗</StatIcon>
+            <StatIcon><Car size={20} /></StatIcon>
             <StatValue>{stats.cars.toLocaleString()}</StatValue>
             <StatLabel>{text.carsListed}</StatLabel>
           </StatItem>
           <StatItem>
-            <StatIcon>👥</StatIcon>
+            <StatIcon><Users size={20} /></StatIcon>
             <StatValue>{stats.dealers.toLocaleString()}</StatValue>
             <StatLabel>{text.activeDealers}</StatLabel>
           </StatItem>
           <StatItem>
-            <StatIcon>💰</StatIcon>
+            <StatIcon><Banknote size={20} /></StatIcon>
             <StatValue>{stats.sold.toLocaleString()}</StatValue>
             <StatLabel>{text.soldThisWeek}</StatLabel>
           </StatItem>
@@ -1140,7 +1154,7 @@ export const PricingPageEnhanced: React.FC<PricingPageEnhancedProps> = ({
             </TrustBadge>
             <TrustBadge>
               <Users size={18} />
-              <span>{language === 'bg' ? '2500+ дилъри' : '2500+ dealers'}</span>
+              <span>{language === 'bg' ? `${realStats?.totalDealers || '...'}+ дилъри` : `${realStats?.totalDealers || '...'}+ dealers`}</span>
             </TrustBadge>
           </TrustBadges>
         </Header>
@@ -1227,7 +1241,7 @@ export const PricingPageEnhanced: React.FC<PricingPageEnhancedProps> = ({
         {/* Trial Banner */}
         <TrialBanner>
           <TrialContent>
-            <TrialIcon>🎁</TrialIcon>
+            <TrialIcon><Gift size={20} /></TrialIcon>
             <TrialTitle>{text.trialTitle}</TrialTitle>
             <TrialDescription>{text.trialDesc}</TrialDescription>
             <TrialFeatures>

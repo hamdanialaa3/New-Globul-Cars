@@ -690,7 +690,8 @@ const SubscriptionBanner: React.FC = () => {
           {/* ✅ FREE OFFER BANNER — Professional and clean */}
           {isFreeOffer && (
             <FreeOfferBanner>
-              {isBg ? '🎉 Специална оферта — Всички планове са отключени' : '🎉 Special Offer — All Plans Unlocked'}
+              <Sparkles size={16} style={{marginRight: 6}} />
+              {isBg ? 'Специална оферта — Всички планове са отключени' : 'Special Offer — All Plans Unlocked'}
             </FreeOfferBanner>
           )}
         </Content>

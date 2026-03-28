@@ -31,7 +31,7 @@
 import React, { memo, useState, Suspense } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Heart, Share2, TrendingUp } from 'lucide-react';
+import { MessageSquare, Heart, Share2, TrendingUp, BookOpen } from 'lucide-react';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -328,13 +328,7 @@ const UnifiedSocial: React.FC = memo(() => {
       icon: <TrendingUp size={18} />,
       color: '#f59e0b',
     },
-    {
-      id: 'community',
-      labelBg: 'История',
-      labelEn: 'Stories',
-      icon: <Heart size={18} />,
-      color: '#ec4899',
-    },
+    // TODO: Implement community stories feature
   ];
 
   const getViewLabel = (view: SocialViewConfig): string => {
@@ -359,7 +353,7 @@ const UnifiedSocial: React.FC = memo(() => {
       case 'community':
         return (
           <ComingSoonBadge $isDark={isDark}>
-            <h3>{isBg ? '📖 История' : '📖 Stories'}</h3>
+            <h3>{isBg ? 'История' : 'Stories'}</h3>
             <p>{isBg ? 'Прочетете истории от нашата общност на собственици' : 'Read stories from our community of car owners'}</p>
           </ComingSoonBadge>
         );

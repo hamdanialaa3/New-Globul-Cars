@@ -86,6 +86,9 @@ const Footer: React.FC = () => {
               <li><a href="/advanced-search">{t('nav.advancedSearch')}</a></li>
               <li><a href="/sell">{t('nav.sell')}</a></li>
               <li><a href="/brand-gallery">{t('nav.brandGallery')}</a></li>
+              <li><a href="/dealers">{language === 'bg' ? 'Дилъри' : 'Dealers'}</a></li>
+              <li><a href="/blog">{language === 'bg' ? 'Блог' : 'Blog'}</a></li>
+              <li><a href="/map">{language === 'bg' ? 'Карта' : 'Map'}</a></li>
             </ul>
           </div>
 
@@ -97,6 +100,8 @@ const Footer: React.FC = () => {
               <li><a href="/financing">{language === 'bg' ? 'Калкулатор за финансиране' : 'Financing Calculator'}</a></li>
               <li><a href="/verification">{t('home.features.verified.title')}</a></li>
               <li><a href="/support">{t('footer.support')}</a></li>
+              <li><a href="/help">{language === 'bg' ? 'Помощ / FAQ' : 'Help / FAQ'}</a></li>
+              <li><a href="/about">{language === 'bg' ? 'За нас' : 'About Us'}</a></li>
             </ul>
           </div>
 
