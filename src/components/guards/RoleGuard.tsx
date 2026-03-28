@@ -24,62 +24,71 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({
     useEffect(() => {
         if (loading) return;
 
-        if (!currentUser) {
-            logger.warn('RoleGuard: No user logged in', { path: location.pathname });
-            setIsAuthorized(false);
-            return;
-        }
-
         const checkAuthorization = async () => {
-            try {
-                // 1. Check Firebase custom claims first
-                const tokenResult = await getIdTokenResult(currentUser, true);
-                if (tokenResult.claims.admin === true || tokenResult.claims.role === 'super_admin') {
-                    setIsAuthorized(true);
-                    return;
-                }
-
-                // 2. Fallback: check Firestore user document role
-                const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
-                if (userDoc.exists()) {
-                    const userData = userDoc.data();
-                    if (userData?.role === 'super_admin' || userData?.role === 'admin') {
+            // Path 1: Firebase Auth user exists — check claims / Firestore role
+            if (currentUser) {
+                try {
+                    const tokenResult = await getIdTokenResult(currentUser, true);
+                    if (tokenResult.claims.admin === true || tokenResult.claims.role === 'super_admin') {
                         setIsAuthorized(true);
                         return;
                     }
-                }
 
-                logger.warn('RoleGuard: User lacks admin privileges', {
-                    uid: currentUser.uid,
-                    email: currentUser.email
-                });
-                setIsAuthorized(false);
-            } catch (error) {
-                logger.error('RoleGuard: Authorization check failed', { error });
-                setIsAuthorized(false);
+                    const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        if (userData?.role === 'super_admin' || userData?.role === 'admin') {
+                            setIsAuthorized(true);
+                            return;
+                        }
+                    }
+
+                    logger.warn('RoleGuard: User lacks admin privileges', {
+                        uid: currentUser.uid,
+                        email: currentUser.email
+                    });
+                    setIsAuthorized(false);
+                } catch (error) {
+                    logger.error('RoleGuard: Authorization check failed', { error });
+                    setIsAuthorized(false);
+                }
+                return;
             }
+
+            // Path 2: No Firebase Auth user — check local super admin session
+            // and try to establish Firebase Auth in the background
+            try {
+                const { uniqueOwnerService } = await import('@/services/unique-owner-service');
+                const hasLocalSession = await uniqueOwnerService.validateCurrentSession();
+                if (hasLocalSession && !uniqueOwnerService.isSessionTimedOut()) {
+                    // Authorize immediately so the dashboard renders
+                    setIsAuthorized(true);
+                    // Establish Firebase Auth in background for Firestore writes
+                    uniqueOwnerService.connectFirebaseAuth().catch(() => {});
+                    return;
+                }
+            } catch {
+                // Local session check failed — fall through to unauthorized
+            }
+
+            logger.warn('RoleGuard: No user logged in', { path: location.pathname });
+            setIsAuthorized(false);
         };
 
         if (requireSuperAdmin) {
             checkAuthorization();
         } else {
-            // Non-admin roles: for now allow authenticated users
             setIsAuthorized(true);
         }
 
     }, [currentUser, loading, requireSuperAdmin, location.pathname]);
 
     if (loading || isAuthorized === null) {
-        // You might want a better loading spinner here
         return <div className="p-10 text-center">Verifying permissions...</div>;
     }
 
-    if (!currentUser) {
-        return <Navigate to="/super-admin-login" state={{ from: location }} replace />;
-    }
-
     if (!isAuthorized) {
-        return <Navigate to="/" replace />;
+        return <Navigate to="/super-admin-login" state={{ from: location }} replace />;
     }
 
     return <>{children}</>;
