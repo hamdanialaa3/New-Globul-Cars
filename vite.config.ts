@@ -131,7 +131,7 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: id => {
-            // Firebase vendor bundle (1MB+, clearly independent)
+            // Firebase vendor bundle (1MB+, no React dependency)
             if (
               id.includes('node_modules/@firebase') ||
               id.includes('node_modules/firebase')
@@ -139,26 +139,7 @@ export default defineConfig(({ mode }) => {
               return 'vendor-firebase';
             }
 
-            // Framer Motion (large animation library, ~150KB)
-            if (id.includes('node_modules/framer-motion')) {
-              return 'vendor-animations';
-            }
-
-            // Algolia search (loaded only on search pages)
-            if (
-              id.includes('node_modules/algoliasearch') ||
-              id.includes('node_modules/@algolia') ||
-              id.includes('node_modules/react-instantsearch')
-            ) {
-              return 'vendor-algolia';
-            }
-
-            // Stripe (loaded only on payment pages)
-            if (id.includes('node_modules/@stripe')) {
-              return 'vendor-stripe';
-            }
-
-            // PDF generation (loaded only when generating documents)
+            // PDF generation (no React dependency)
             if (
               id.includes('node_modules/jspdf') ||
               id.includes('node_modules/html2canvas')
@@ -166,7 +147,8 @@ export default defineConfig(({ mode }) => {
               return 'vendor-pdf';
             }
 
-            // All other node_modules in one bundle
+            // All other node_modules (including React-dependent libs)
+            // in one bundle to avoid createContext/forwardRef errors
             if (id.includes('node_modules')) {
               return 'vendor';
             }
