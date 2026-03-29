@@ -172,7 +172,10 @@ const KATServicesHero: React.FC = () => {
         <HeroImage 
           src="/assets/images/home/kat-hero.webp" 
           alt="KAT Bulgaria Services"
-          loading="lazy"
+          loading="eager"
+          fetchPriority="high"
+          width={800}
+          height={450}
         />
         <Overlay>
           <Badge>

@@ -19,13 +19,13 @@ scripts/
 ├── rollback/       # Rollback scripts
 ├── scrapers/       # Data scrapers
 ├── security/       # Secret scanning, security fix verification
-├── tests/          # Test utilities
-└── convert-to-path-aliases.js  # Path alias converter (root-level, used by npm)
+└── tests/          # Test utilities
 ```
 
 ## 🧹 Repository Hygiene (NEW - Mar 2026)
 
 ### **repo-hygiene-audit.ts** ⭐
+
 Scans the repository for exact duplicate code blocks (normalized hash) and zombie-file candidates.
 
 ```bash
@@ -35,16 +35,18 @@ npm run audit:hygiene:strict
 ```
 
 **Generates reports:**
+
 - `logs/reorganization/repo-hygiene-report.json`
 - `logs/reorganization/repo-hygiene-report.md`
 
 **Covers:**
+
 - Duplicate modules across `src`, `mobile_new/src`, `functions/src`, `shared`
 - Heuristic unreferenced module detection
 - A repeatable baseline for DDD quarantine decisions
 
-
 ### **check-test-structure.js** ⭐
+
 Advanced test structure analyzer that detects Jest configuration issues.
 
 ```bash
@@ -54,6 +56,7 @@ node scripts/check-test-structure.js
 ```
 
 **Detects:**
+
 - ❌ jest.mock() after imports (CRITICAL)
 - ❌ jest.spyOn(console) without cleanup (MEDIUM)
 - ❌ Missing jest import from @jest/globals (HIGH)
@@ -62,6 +65,7 @@ node scripts/check-test-structure.js
 - ❌ global.console mocks without restore (MEDIUM)
 
 **Output Example:**
+
 ```
 ═══════════════════════════════════════════════════════════
    Test Structure Checker - فاحص بنية الاختبارات
@@ -79,6 +83,7 @@ Summary: 2 errors, 1 warnings, 0 info
 ```
 
 ### **fix-jest-mocks.js** ⚙️
+
 Automatic Jest configuration fixer - applies fixes to all detected issues.
 
 ```bash
@@ -88,6 +93,7 @@ node scripts/fix-jest-mocks.js
 ```
 
 **Auto-Fixes:**
+
 - ✅ Moves jest.mock() before imports
 - ✅ Adds jest import from @jest/globals
 - ✅ Reorders imports correctly
@@ -95,6 +101,7 @@ node scripts/fix-jest-mocks.js
 - ✅ Removes duplicate imports
 
 **Output Example:**
+
 ```
 ✅ FIXED (10):
   1. src/services/social/__tests__/follow.service.test.ts
@@ -109,9 +116,11 @@ Summary: 10 files fixed, 0 errors
 ```
 
 ---
+
 ## � GitHub Secrets Setup (NEW!)
 
 ### **setup-github-secrets.ps1** ⭐
+
 Automated wizard to add Firebase secrets to GitHub.
 
 ```powershell
@@ -119,6 +128,7 @@ pwsh scripts/setup-github-secrets.ps1
 ```
 
 **Features:**
+
 - ✅ Auto-reads project ID from `.firebaserc`
 - ✅ Validates Firebase service account key
 - ✅ Adds secrets via GitHub CLI (or shows manual steps)
@@ -126,6 +136,7 @@ pwsh scripts/setup-github-secrets.ps1
 - ✅ Interactive and user-friendly
 
 **Prerequisites:**
+
 ```powershell
 # Option 1: Full automation (recommended)
 winget install GitHub.cli
@@ -136,10 +147,12 @@ gh auth login
 ```
 
 **Required File:**
+
 - `firebase-service-account.json` (download from Firebase Console)
 - Get it from: https://console.firebase.google.com/project/fire-new-globul/settings/serviceaccounts/adminsdk
 
 **Troubleshooting:**
+
 - "Service account not found" → Download from Firebase Console
 - "GitHub CLI not found" → Script will show manual instructions
 - "Not authenticated" → Run `gh auth login`
@@ -149,15 +162,20 @@ gh auth login
 ## �🚀 Development Scripts
 
 ### **START_DEV_HOT_RELOAD.bat**
+
 Start development server with hot module reloading.
+
 ```bash
 ./scripts/START_DEV_HOT_RELOAD.bat
 ```
+
 - Opens on: http://localhost:3000
 - Auto-refreshes on file changes
 
 ### **START_SERVER.bat**
+
 Standard development server startup.
+
 ```bash
 ./scripts/START_SERVER.bat
 ```
@@ -165,7 +183,9 @@ Standard development server startup.
 ## 🔨 Build Scripts
 
 ### **QUICK_REBUILD.bat**
+
 Fast production build (clears cache first).
+
 ```bash
 ./scripts/QUICK_REBUILD.bat
 ```
@@ -173,10 +193,13 @@ Fast production build (clears cache first).
 ## 🛠️ Utility Scripts
 
 ### **RESTART_SERVER.bat**
+
 Kill port 3000 process and restart server.
+
 ```bash
 ./scripts/RESTART_SERVER.bat
 ```
+
 - Useful when port is blocked
 - Automatically starts dev server after cleanup
 
@@ -187,18 +210,21 @@ Kill port 3000 process and restart server.
 Available in `package.json`:
 
 ### Development
+
 ```bash
 npm start              # Start dev server
 npm run dev:vite       # Vite dev server (alternative)
 ```
 
 ### Production
+
 ```bash
 npm run build          # Production build
 npm run build:analyze  # Build + bundle analysis
 ```
 
 ### Testing
+
 ```bash
 npm test               # Run tests
 npm run test:ci        # CI mode (coverage)
@@ -206,6 +232,7 @@ npm run type-check     # TypeScript validation
 ```
 
 ### Deployment
+
 ```bash
 npm run deploy         # Build + deploy to Firebase
 npm run deploy:hosting # Deploy hosting only
@@ -213,6 +240,7 @@ npm run deploy:functions # Deploy functions only
 ```
 
 ### Utilities
+
 ```bash
 npm run lint           # Code linting (disabled)
 npm run train-ai       # Train AI on project structure
@@ -223,16 +251,19 @@ npm run train-ai       # Train AI on project structure
 ## ⚠️ Troubleshooting
 
 **Port 3000 already in use?**
+
 ```bash
 ./scripts/RESTART_SERVER.bat
 ```
 
 **Build failing?**
+
 ```bash
 ./scripts/QUICK_REBUILD.bat
 ```
 
 **Firebase deployment issues?**
+
 ```bash
 npm run build          # Ensure build succeeds first
 firebase login         # Re-authenticate if needed

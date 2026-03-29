@@ -178,6 +178,10 @@ export const archiveSoldCars = archiveJobs.archiveSoldCars;
 export const manualArchiveSoldCars = archiveJobs.manualArchiveSoldCars;
 export const cleanupExpiredDrafts = archiveJobs.cleanupExpiredDrafts;
 
+// ✅ Scheduled Firestore Backup (daily 2 AM)
+import { scheduledFirestoreBackup as _scheduledFirestoreBackup } from './scheduled/firestore-backup';
+export const scheduledFirestoreBackup = _scheduledFirestoreBackup;
+
 // ✅ NEW: B2B Analytics & Lead Export (January 6, 2026) - Revenue Fix
 import * as b2bExports from './analytics/b2b-exports';
 export const exportB2BLeads = b2bExports.exportB2BLeads;
@@ -254,6 +258,10 @@ export const getGuestCustomToken = guestToken.getGuestCustomToken;
 // Super Admin Firebase Auth Token (Page Builder write access)
 import * as superAdminToken from './admin/superAdminToken';
 export const getSuperAdminToken = superAdminToken.getSuperAdminToken;
+
+// Admin User Management (secure server-side user creation)
+import * as managedUser from './admin/createManagedUser';
+export const createManagedUser = managedUser.createManagedUser;
 
 // Email Notifications System
 import * as emailTriggers from './notifications/email-triggers';

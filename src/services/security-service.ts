@@ -4,6 +4,7 @@
 import { errorHandler } from './error-handling-service';
 import { rateLimiter } from './rate-limiting-service';
 import { serviceLogger } from './logger-service';
+import { sanitizeHTML as purify } from '@/utils/sanitize-html';
 
 export interface SecurityConfig {
   enableCSRFProtection: boolean;
@@ -14,7 +15,12 @@ export interface SecurityConfig {
 }
 
 export interface SecurityThreat {
-  type: 'xss' | 'sql_injection' | 'csrf' | 'brute_force' | 'suspicious_activity';
+  type:
+    | 'xss'
+    | 'sql_injection'
+    | 'csrf'
+    | 'brute_force'
+    | 'suspicious_activity';
   severity: 'low' | 'medium' | 'high' | 'critical';
   source: string;
   timestamp: Date;
@@ -44,9 +50,7 @@ export class SecurityService {
    * Sanitize HTML to prevent XSS
    */
   public sanitizeHTML(html: string): string {
-    const div = document.createElement('div');
-    div.textContent = html;
-    return div.innerHTML;
+    return purify(html);
   }
 
   /**
@@ -61,7 +65,7 @@ export class SecurityService {
       /<object/gi,
       /<embed/gi,
       /eval\(/gi,
-      /expression\(/gi
+      /expression\(/gi,
     ];
 
     return xssPatterns.some(pattern => pattern.test(input));
@@ -76,7 +80,7 @@ export class SecurityService {
       /(UNION\s+SELECT)/gi,
       /(OR\s+1\s*=\s*1)/gi,
       /(AND\s+1\s*=\s*1)/gi,
-      /('|"|;|--|\*|\/\*|\*\/)/g
+      /('|"|;|--|\*|\/\*|\*\/)/g,
     ];
 
     return sqlPatterns.some(pattern => pattern.test(input));
@@ -88,7 +92,9 @@ export class SecurityService {
   public generateCSRFToken(): string {
     const array = new Uint8Array(32);
     crypto.getRandomValues(array);
-    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join(
+      ''
+    );
   }
 
   /**
@@ -113,7 +119,7 @@ export class SecurityService {
     errorHandler.logError(new Error(`Security threat: ${threat.type}`), {
       action: 'security_threat',
       severity: threat.severity,
-      additionalData: threat
+      additionalData: threat,
     });
 
     // Track suspicious IPs
@@ -146,7 +152,10 @@ export class SecurityService {
   /**
    * Validate input for security threats
    */
-  public validateInput(input: string, source: string = 'unknown'): {
+  public validateInput(
+    input: string,
+    source: string = 'unknown'
+  ): {
     isValid: boolean;
     threats: string[];
   } {
@@ -159,7 +168,7 @@ export class SecurityService {
         severity: 'high',
         source,
         timestamp: new Date(),
-        details: { input: input.substring(0, 100) }
+        details: { input: input.substring(0, 100) },
       });
     }
 
@@ -170,13 +179,13 @@ export class SecurityService {
         severity: 'critical',
         source,
         timestamp: new Date(),
-        details: { input: input.substring(0, 100) }
+        details: { input: input.substring(0, 100) },
       });
     }
 
     return {
       isValid: threats.length === 0,
-      threats
+      threats,
     };
   }
 
@@ -196,7 +205,8 @@ export class SecurityService {
 
     this.threats.forEach(threat => {
       threatsByType[threat.type] = (threatsByType[threat.type] || 0) + 1;
-      threatsBySeverity[threat.severity] = (threatsBySeverity[threat.severity] || 0) + 1;
+      threatsBySeverity[threat.severity] =
+        (threatsBySeverity[threat.severity] || 0) + 1;
     });
 
     return {
@@ -205,7 +215,7 @@ export class SecurityService {
       threatsBySeverity,
       blockedIPs: this.blockedIPs.size,
       suspiciousIPs: this.suspiciousIPs.size,
-      recentThreats: this.threats.slice(0, 10)
+      recentThreats: this.threats.slice(0, 10),
     };
   }
 
@@ -220,7 +230,7 @@ export class SecurityService {
       { name: 'X-Content-Type-Options', content: 'nosniff' },
       { name: 'X-Frame-Options', content: 'SAMEORIGIN' },
       { name: 'X-XSS-Protection', content: '1; mode=block' },
-      { name: 'Referrer-Policy', content: 'strict-origin-when-cross-origin' }
+      { name: 'Referrer-Policy', content: 'strict-origin-when-cross-origin' },
     ];
 
     metaTags.forEach(tag => {
@@ -248,7 +258,9 @@ export class SecurityService {
   public generateSecureRandom(length: number = 32): string {
     const array = new Uint8Array(length);
     crypto.getRandomValues(array);
-    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join(
+      ''
+    );
   }
 }
 

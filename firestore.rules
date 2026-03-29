@@ -95,7 +95,10 @@ service cloud.firestore {
     match /passenger_cars/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
+        && request.auth.uid == request.resource.data.sellerId
+        && request.resource.data.keys().hasAll(['sellerId', 'make', 'model', 'price', 'createdAt'])
+        && request.resource.data.price is number
+        && request.resource.data.price > 0;
       allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
@@ -105,7 +108,10 @@ service cloud.firestore {
     match /suvs/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
+        && request.auth.uid == request.resource.data.sellerId
+        && request.resource.data.keys().hasAll(['sellerId', 'make', 'model', 'price', 'createdAt'])
+        && request.resource.data.price is number
+        && request.resource.data.price > 0;
       allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
@@ -115,7 +121,10 @@ service cloud.firestore {
     match /vans/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
+        && request.auth.uid == request.resource.data.sellerId
+        && request.resource.data.keys().hasAll(['sellerId', 'make', 'model', 'price', 'createdAt'])
+        && request.resource.data.price is number
+        && request.resource.data.price > 0;
       allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
@@ -125,7 +134,10 @@ service cloud.firestore {
     match /motorcycles/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
+        && request.auth.uid == request.resource.data.sellerId
+        && request.resource.data.keys().hasAll(['sellerId', 'make', 'model', 'price', 'createdAt'])
+        && request.resource.data.price is number
+        && request.resource.data.price > 0;
       allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
@@ -135,7 +147,10 @@ service cloud.firestore {
     match /trucks/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
+        && request.auth.uid == request.resource.data.sellerId
+        && request.resource.data.keys().hasAll(['sellerId', 'make', 'model', 'price', 'createdAt'])
+        && request.resource.data.price is number
+        && request.resource.data.price > 0;
       allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
@@ -145,7 +160,10 @@ service cloud.firestore {
     match /buses/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
+        && request.auth.uid == request.resource.data.sellerId
+        && request.resource.data.keys().hasAll(['sellerId', 'make', 'model', 'price', 'createdAt'])
+        && request.resource.data.price is number
+        && request.resource.data.price > 0;
       allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
@@ -155,7 +173,10 @@ service cloud.firestore {
     match /construction_machines/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
+        && request.auth.uid == request.resource.data.sellerId
+        && request.resource.data.keys().hasAll(['sellerId', 'make', 'model', 'price', 'createdAt'])
+        && request.resource.data.price is number
+        && request.resource.data.price > 0;
       allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
@@ -165,7 +186,10 @@ service cloud.firestore {
     match /agricultural_machines/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
+        && request.auth.uid == request.resource.data.sellerId
+        && request.resource.data.keys().hasAll(['sellerId', 'make', 'model', 'price', 'createdAt'])
+        && request.resource.data.price is number
+        && request.resource.data.price > 0;
       allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
@@ -175,7 +199,10 @@ service cloud.firestore {
     match /trailers/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
+        && request.auth.uid == request.resource.data.sellerId
+        && request.resource.data.keys().hasAll(['sellerId', 'make', 'model', 'price', 'createdAt'])
+        && request.resource.data.price is number
+        && request.resource.data.price > 0;
       allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
@@ -185,7 +212,10 @@ service cloud.firestore {
     match /campers/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
+        && request.auth.uid == request.resource.data.sellerId
+        && request.resource.data.keys().hasAll(['sellerId', 'make', 'model', 'price', 'createdAt'])
+        && request.resource.data.price is number
+        && request.resource.data.price > 0;
       allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
@@ -195,7 +225,10 @@ service cloud.firestore {
     match /forklifts/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
+        && request.auth.uid == request.resource.data.sellerId
+        && request.resource.data.keys().hasAll(['sellerId', 'make', 'model', 'price', 'createdAt'])
+        && request.resource.data.price is number
+        && request.resource.data.price > 0;
       allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
@@ -205,7 +238,10 @@ service cloud.firestore {
     match /boats/{carId} {
       allow read: if true;
       allow create: if isAuthenticated()
-        && request.auth.uid == request.resource.data.sellerId;
+        && request.auth.uid == request.resource.data.sellerId
+        && request.resource.data.keys().hasAll(['sellerId', 'make', 'model', 'price', 'createdAt'])
+        && request.resource.data.price is number
+        && request.resource.data.price > 0;
       allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
@@ -494,7 +530,7 @@ service cloud.firestore {
     // 🔒 SECURED: Rate-limit via data size check, immutable after creation
     // ============================================
     match /analytics_events/{eventId} {
-      allow create: if isReasonableSize() && request.resource.data.keys().size() < 20;
+      allow create: if isAuthenticated() && isReasonableSize() && request.resource.data.keys().size() < 20;
       allow read: if isAuthenticated() && isAdmin();
       allow update, delete: if false;
     }

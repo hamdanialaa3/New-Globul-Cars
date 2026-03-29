@@ -8,8 +8,7 @@
 /* 1️⃣ Core Theme & Variables */
 @import './styles/unified-theme.css';
 
-/* 2️⃣ Typography Imports */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;700;800;900&family=Dancing+Script:wght@400;500;600;700&display=swap');
+/* 2️⃣ Typography Imports — fonts loaded non-blocking in index.html */
 @import './styles/typography-improved.css';
 
 /* 2.5️⃣ Premium Glassmorphism & Effects */

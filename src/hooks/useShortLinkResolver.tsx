@@ -49,8 +49,33 @@ export function useShortLinkResolver() {
           targetUrl,
         });
 
+        // Validate URL before redirect — block javascript:, data:, vbscript: schemes
+        // and restrict to same-origin or whitelisted domains
+        const isValidRedirectUrl = (url: string): boolean => {
+          try {
+            // Allow relative paths
+            if (url.startsWith('/')) return true;
+            const parsed = new URL(url);
+            // Block dangerous schemes
+            if (['javascript:', 'data:', 'vbscript:'].includes(parsed.protocol)) return false;
+            // Allow only koli.one domain
+            const allowedHosts = ['koli.one', 'www.koli.one'];
+            return allowedHosts.includes(parsed.hostname);
+          } catch {
+            return false;
+          }
+        };
+
+        if (!isValidRedirectUrl(targetUrl)) {
+          serviceLogger.warn('Blocked suspicious redirect URL', {
+            shortCode: params.shortCode,
+            targetUrl,
+          });
+          navigate('/not-found');
+          return;
+        }
+
         // Use window.location for hard redirect (SEO-friendly 302/301)
-        // Alternatively, use navigate() for SPA routing
         window.location.href = targetUrl;
       } catch (err) {
         serviceLogger.error('Error resolving short link', {

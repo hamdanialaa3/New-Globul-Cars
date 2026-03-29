@@ -9,12 +9,18 @@ export class SellWorkflowCollections {
    */
   static getCollectionNameForVehicleType(vehicleType: string): string {
     const typeMap: Record<string, string> = {
-      'car': 'passenger_cars',           // Passenger Car / Personal use
-      'suv': 'suvs',                      // SUV/Jeep / Off-road
-      'van': 'vans',                      // Van / Cargo/Combi
-      'motorcycle': 'motorcycles',        // Motorcycle / Two-wheeled
-      'truck': 'trucks',                  // Truck / Cargo
-      'bus': 'buses'                      // Bus / Passenger
+      car: 'passenger_cars', // Passenger Car / Personal use
+      suv: 'suvs', // SUV/Jeep / Off-road
+      van: 'vans', // Van / Cargo/Combi
+      motorcycle: 'motorcycles', // Motorcycle / Two-wheeled
+      truck: 'trucks', // Truck / Cargo
+      bus: 'buses', // Bus / Passenger
+      construction_machine: 'construction_machines', // Construction Equipment
+      agricultural_machine: 'agricultural_machines', // Agricultural Equipment
+      trailer: 'trailers', // Trailers
+      camper: 'campers', // Campers / Motorhomes
+      forklift: 'forklifts', // Forklifts
+      boat: 'boats', // Boats / Watercraft
     };
 
     // Default to 'cars' if type not found (backward compatibility)
@@ -54,9 +60,15 @@ export class SellWorkflowCollections {
       'motorcycles',
       'trucks',
       'buses',
+      'construction_machines',
+      'agricultural_machines',
+      'trailers',
+      'campers',
+      'forklifts',
+      'boats',
       'workflow_drafts',
       'workflow_progress',
-      'workflow_images'
+      'workflow_images',
     ];
 
     return validCollections.includes(collectionName);
@@ -73,7 +85,13 @@ export class SellWorkflowCollections {
       'vans',
       'motorcycles',
       'trucks',
-      'buses'
+      'buses',
+      'construction_machines',
+      'agricultural_machines',
+      'trailers',
+      'campers',
+      'forklifts',
+      'boats',
     ];
   }
 
@@ -82,13 +100,19 @@ export class SellWorkflowCollections {
    */
   static getCollectionDisplayName(collectionName: string): string {
     const displayNames: Record<string, string> = {
-      'cars': 'All Vehicles',
-      'passenger_cars': 'Passenger Cars',
-      'suvs': 'SUVs & Jeeps',
-      'vans': 'Vans & Combis',
-      'motorcycles': 'Motorcycles',
-      'trucks': 'Trucks',
-      'buses': 'Buses'
+      cars: 'All Vehicles',
+      passenger_cars: 'Passenger Cars',
+      suvs: 'SUVs & Jeeps',
+      vans: 'Vans & Combis',
+      motorcycles: 'Motorcycles',
+      trucks: 'Trucks',
+      buses: 'Buses',
+      construction_machines: 'Construction Machines',
+      agricultural_machines: 'Agricultural Machines',
+      trailers: 'Trailers',
+      campers: 'Campers & Motorhomes',
+      forklifts: 'Forklifts',
+      boats: 'Boats & Watercraft',
     };
 
     return displayNames[collectionName] || collectionName;

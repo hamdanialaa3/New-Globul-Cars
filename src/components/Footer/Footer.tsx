@@ -57,6 +57,8 @@ const Footer: React.FC = () => {
                   className="footer-logo"
                   width="150"
                   height="150"
+                  loading="lazy"
+                  decoding="async"
                   style={{ maxWidth: '150px', width: '100%', height: 'auto', objectFit: 'contain' }}
                 />
               </picture>
