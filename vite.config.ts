@@ -166,14 +166,6 @@ export default defineConfig(({ mode }) => {
               return 'vendor-pdf';
             }
 
-            // Chart/visualization libs
-            if (
-              id.includes('node_modules/recharts') ||
-              id.includes('node_modules/d3')
-            ) {
-              return 'vendor-charts';
-            }
-
             // All other node_modules in one bundle
             if (id.includes('node_modules')) {
               return 'vendor';
