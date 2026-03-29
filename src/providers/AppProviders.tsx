@@ -50,7 +50,7 @@ import { ProfileTypeProvider } from '../contexts/ProfileTypeContext';
 import { ToastProvider } from '../components/Toast';
 import { FilterProvider } from '../contexts/FilterContext';
 import { ComparisonProvider } from '../contexts/ComparisonContext';
-// StripeProvider removed - Stripe deprecated, using manual bank transfers
+// Stripe active for marketplace/subscriptions; Manual bank transfers (Revolut/iCard) for dealer plans
 
 // Components
 import ErrorBoundary from '../components/ErrorBoundary';

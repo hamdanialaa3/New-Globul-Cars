@@ -42,7 +42,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
           cache: 'npm'
 
       - name: Setup Google Cloud
@@ -79,6 +79,7 @@ jobs:
         id: firebase-test
         run: |
           cd mobile_new
+          set +e
           gcloud firebase test android run \
             --app=dist/koli-one-test.apk \
             --test-type robo \
@@ -89,9 +90,15 @@ jobs:
             --locales=en,ar \
             --orientations=portrait \
             2>&1 | tee firebase-test.log
-          
-          # Capture test result
-          echo "status=passed" >> $GITHUB_OUTPUT
+          rc=${PIPESTATUS[0]}
+          set -e
+
+          if [ $rc -eq 0 ]; then
+            echo "status=passed" >> $GITHUB_OUTPUT
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+            exit $rc
+          fi
 
       - name: Download test results
         if: always()
@@ -145,7 +152,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
@@ -154,16 +161,22 @@ jobs:
           npm ci --legacy-peer-deps
 
       - name: Run Jest tests
+        id: jest
         run: |
           cd mobile_new
           npx jest --coverage --bail=false
         continue-on-error: true
 
       - name: Type check
+        id: tsc
         run: |
           cd mobile_new
           npx tsc --noEmit
         continue-on-error: true
+
+      - name: Fail if local checks failed
+        if: steps.jest.outcome == 'failure' || steps.tsc.outcome == 'failure'
+        run: exit 1
 
       - name: Upload coverage
         uses: codecov/codecov-action@v3

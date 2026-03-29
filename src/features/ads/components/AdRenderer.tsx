@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import DOMPurify from 'dompurify';
 import { AdCampaign } from '../types';
 import { useAdTracker } from '../hooks/useAdHooks';
 import { SmartAdSenseUnit } from './SmartAdSenseUnit'; // New Import
@@ -98,7 +99,7 @@ export const AdRenderer: React.FC<AdRendererProps> = ({ ad, placementId, hasCons
         return (
             <AdWrapper id={`ad-${ad.id}`} className="ad-unit ad-script">
                 <div
-                    dangerouslySetInnerHTML={{ __html: ad.scriptCode }}
+                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(ad.scriptCode, { ADD_TAGS: ['script', 'iframe'], ADD_ATTR: ['allow', 'allowfullscreen'] }) }}
                     onClick={handleClick}
                 />
             </AdWrapper>

@@ -144,6 +144,36 @@ export default defineConfig(({ mode }) => {
               return 'vendor-animations';
             }
 
+            // Algolia search (loaded only on search pages)
+            if (
+              id.includes('node_modules/algoliasearch') ||
+              id.includes('node_modules/@algolia') ||
+              id.includes('node_modules/react-instantsearch')
+            ) {
+              return 'vendor-algolia';
+            }
+
+            // Stripe (loaded only on payment pages)
+            if (id.includes('node_modules/@stripe')) {
+              return 'vendor-stripe';
+            }
+
+            // PDF generation (loaded only when generating documents)
+            if (
+              id.includes('node_modules/jspdf') ||
+              id.includes('node_modules/html2canvas')
+            ) {
+              return 'vendor-pdf';
+            }
+
+            // Chart/visualization libs
+            if (
+              id.includes('node_modules/recharts') ||
+              id.includes('node_modules/d3')
+            ) {
+              return 'vendor-charts';
+            }
+
             // All other node_modules in one bundle
             if (id.includes('node_modules')) {
               return 'vendor';

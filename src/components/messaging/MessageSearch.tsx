@@ -13,6 +13,7 @@ import { Search, X, Clock, MessageCircle, ArrowRight } from 'lucide-react';
 import { ref, get, query, orderByChild } from 'firebase/database';
 import { getDatabase } from 'firebase/database';
 import { logger } from '@/services/logger-service';
+import { sanitizeHighlight } from '@/utils/sanitize-html';
 
 /**
  * Search result interface
@@ -312,7 +313,7 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
                     
                     <ResultText
                       dangerouslySetInnerHTML={{
-                        __html: result.highlightedContent || result.content
+                        __html: sanitizeHighlight(result.highlightedContent || result.content)
                       }}
                     />
                   </ResultContent>

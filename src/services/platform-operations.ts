@@ -6,7 +6,6 @@
 import { logger } from './logger-service';
 import { geminiVisionService } from './ai/gemini-vision.service';
 import { stripeService } from './billing-service';
-import { iotService } from './iotService';
 import { analyticsService } from './analytics/UnifiedAnalyticsService';
 import {
   AIAnalysisResult,
@@ -16,7 +15,7 @@ import {
   BehaviorAnalysis,
   SecurityRulesResult,
   SearchFilters,
-  PaymentIntent
+  PaymentIntent,
 } from './platform-types';
 import {
   MARKET_THRESHOLDS,
@@ -25,7 +24,7 @@ import {
   DEFAULT_MARKET_TRENDS,
   RECOMMENDATION_REASONS,
   EVENT_NAMES,
-  BULGARIAN_POPULAR_BRANDS
+  BULGARIAN_POPULAR_BRANDS,
 } from './platform-data';
 
 /**
@@ -37,11 +36,17 @@ export class PlatformOperations {
    * Analyze car images using AI services
    * تحليل صور السيارة باستخدام خدمات الذكاء الاصطناعي
    */
-  static async analyzeCarImages(images: File[], userId?: string): Promise<AIAnalysisResult[]> {
+  static async analyzeCarImages(
+    images: File[],
+    userId?: string
+  ): Promise<AIAnalysisResult[]> {
     const aiAnalysisPromises = images.map(async (image, index) => {
       try {
         // Gemini Vision Analysis
-        const geminiResult = await geminiVisionService.analyzeCarImage(image, userId);
+        const geminiResult = await geminiVisionService.analyzeCarImage(
+          image,
+          userId
+        );
 
         // AWS Rekognition (to be added later)
         // const rekognitionResult = await awsServices.rekognition?.detectLabels(image);
@@ -67,7 +72,9 @@ export class PlatformOperations {
    * Analyze market conditions
    * تحليل ظروف السوق
    */
-  static async analyzeMarketConditions(carData?: Record<string, unknown>): Promise<MarketAnalysis> {
+  static async analyzeMarketConditions(
+    carData?: Record<string, unknown>
+  ): Promise<MarketAnalysis> {
     try {
       // Simple market analysis - to be enhanced later with real data
       const demandScore = Math.floor(Math.random() * 100);
@@ -77,14 +84,14 @@ export class PlatformOperations {
       return {
         demandScore,
         priceRecommendation,
-        competitorCount
+        competitorCount,
       };
     } catch (error) {
       logger.error('Market analysis failed', error as Error);
       return {
         demandScore: 50,
         priceRecommendation: 15000,
-        competitorCount: 20
+        competitorCount: 20,
       };
     }
   }
@@ -110,7 +117,9 @@ export class PlatformOperations {
       if (marketData.demandScore > MARKET_THRESHOLDS.HIGH_DEMAND_SCORE) {
         tags.push(SEARCH_TAGS.HIGH_DEMAND);
       }
-      if (marketData.competitorCount < MARKET_THRESHOLDS.RARE_COMPETITOR_COUNT) {
+      if (
+        marketData.competitorCount < MARKET_THRESHOLDS.RARE_COMPETITOR_COUNT
+      ) {
         tags.push(SEARCH_TAGS.RARE);
       }
     }
@@ -119,17 +128,11 @@ export class PlatformOperations {
   }
 
   /**
-   * Get car telemetry data
-   * الحصول على بيانات القياس عن بعد للسيارة
+   * Get car telemetry data (IoT archived — returns null)
    */
   static async getCarTelemetry(carId: string) {
-    try {
-      const telemetryData = await iotService.getCarTelemetry(carId);
-      return telemetryData;
-    } catch (error) {
-      logger.debug('No IoT data available for car', { carId });
-      return null;
-    }
+    logger.debug('IoT service archived — telemetry not available', { carId });
+    return null;
   }
 
   /**
@@ -143,7 +146,9 @@ export class PlatformOperations {
     try {
       await analyticsService.trackEvent(eventName, properties);
     } catch (error) {
-      logger.warn('Failed to track analytics event', error as Error, { eventName });
+      logger.warn('Failed to track analytics event', error as Error, {
+        eventName,
+      });
     }
   }
 
@@ -158,7 +163,7 @@ export class PlatformOperations {
       return {
         preferredBrands: BULGARIAN_POPULAR_BRANDS.slice(0, 3),
         priceRange: { min: 10000, max: 30000 },
-        searchHistory: ['sedan', 'automatic', 'diesel']
+        searchHistory: ['sedan', 'automatic', 'diesel'],
       };
     } catch (error) {
       logger.error('User behavior analysis failed', error as Error, { userId });
@@ -170,12 +175,14 @@ export class PlatformOperations {
    * Get Algolia recommendations based on user behavior
    * الحصول على توصيات Algolia بناءً على سلوك المستخدم
    */
-  static async getAlgoliaRecommendations(userBehavior: UserBehavior): Promise<unknown[]> {
+  static async getAlgoliaRecommendations(
+    userBehavior: UserBehavior
+  ): Promise<unknown[]> {
     try {
       // Build search filters based on user behavior
       const filters: SearchFilters = {
         priceMin: userBehavior.priceRange.min,
-        priceMax: userBehavior.priceRange.max
+        priceMax: userBehavior.priceRange.max,
       };
 
       // Search for cars matching user preferences
@@ -207,7 +214,10 @@ export class PlatformOperations {
    * Enhance search results with AI
    * تحسين نتائج البحث بالذكاء الاصطناعي
    */
-  static async enhanceSearchResults(results: unknown[], userId?: string): Promise<unknown[]> {
+  static async enhanceSearchResults(
+    results: unknown[],
+    userId?: string
+  ): Promise<unknown[]> {
     try {
       // AI enhancement of search results - to be implemented
       // This could include personalization, ranking optimization, etc.
@@ -228,24 +238,26 @@ export class PlatformOperations {
     buyerId: string
   ): Promise<PaymentIntent> {
     try {
-      const paymentIntent = await stripeService.createPaymentIntent(carId, amount, buyerId);
+      const paymentIntent = await stripeService.createPaymentIntent(
+        carId,
+        amount,
+        buyerId
+      );
       return paymentIntent;
     } catch (error) {
-      logger.error('Payment intent creation failed', error as Error, { carId, buyerId });
+      logger.error('Payment intent creation failed', error as Error, {
+        carId,
+        buyerId,
+      });
       throw error;
     }
   }
 
   /**
-   * Notify car sale via IoT
-   * إشعار بيع السيارة عبر IoT
+   * Notify car sale via IoT (archived — no-op)
    */
   static async notifyCarSale(carId: string): Promise<void> {
-    try {
-      await iotService.notifyCarSale(carId);
-    } catch (error) {
-      logger.debug('Car not IoT enabled', { carId });
-    }
+    logger.debug('IoT service archived — sale notification skipped', { carId });
   }
 
   /**
@@ -263,13 +275,13 @@ export class PlatformOperations {
         suspicious: false,
         score: 0,
         patterns: [],
-        anomalies: []
+        anomalies: [],
       };
     } catch (error) {
       logger.error('Behavior analysis failed', error as Error, { userId });
       return {
         suspicious: false,
-        score: 0
+        score: 0,
       };
     }
   }
@@ -297,14 +309,14 @@ export class PlatformOperations {
         safe,
         risks,
         recommendations,
-        violations: behaviorAnalysis.anomalies
+        violations: behaviorAnalysis.anomalies,
       };
     } catch (error) {
       logger.error('Security rules application failed', error as Error);
       return {
         safe: false,
         risks: ['Security check failed'],
-        recommendations: ['Contact support']
+        recommendations: ['Contact support'],
       };
     }
   }

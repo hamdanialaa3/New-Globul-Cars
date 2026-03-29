@@ -13,10 +13,12 @@ import {
   where,
   orderBy,
   limit,
-  serverTimestamp
+  serverTimestamp,
 } from 'firebase/firestore';
-import { createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from 'firebase/auth';
+import { sendPasswordResetEmail } from 'firebase/auth';
+import { httpsCallable } from 'firebase/functions';
 import { db, auth } from '@/firebase/index';
+import { functions as firebaseFunctions } from '@/firebase/index';
 import { serviceLogger } from '@/services/logger-service';
 
 import {
@@ -27,18 +29,22 @@ import {
   CreateUserData,
   UpdateUserData,
   CreateRoleData,
-  SystemStats
+  SystemStats,
 } from './advanced-user-management-types';
 import {
   DEFAULT_USER_PREFERENCES,
-  ACTIVITY_ACTIONS
+  ACTIVITY_ACTIONS,
 } from './advanced-user-management-data';
 
 // Generate a strong temporary password so the account is secure until the reset email is completed.
 const generateStrongTempPassword = (length: number = 20): string => {
-  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=';
+  const alphabet =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=';
   const getRandomValues = (buffer: Uint32Array) => {
-    if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+    if (
+      typeof crypto !== 'undefined' &&
+      typeof crypto.getRandomValues === 'function'
+    ) {
       crypto.getRandomValues(buffer);
     } else {
       // Fallback for non-browser environments (tests)
@@ -58,30 +64,33 @@ const generateStrongTempPassword = (length: number = 20): string => {
 
 // User CRUD operations
 export class UserOperations {
-  // Create new user
+  // Create new user via Cloud Function (prevents admin session switch)
   static async createUser(
     userData: CreateUserData,
     createdBy: string
   ): Promise<AdvancedUser> {
     try {
-      // Create Firebase Auth user with a strong temporary password (never exposed to the user)
-      const temporaryPassword = generateStrongTempPassword();
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        userData.email,
-        temporaryPassword
-      );
+      const createManagedUser = httpsCallable<
+        {
+          email: string;
+          displayName: string;
+          phoneNumber?: string;
+          roles?: string[];
+        },
+        { success: boolean; uid: string; email: string; displayName: string }
+      >(firebaseFunctions, 'createManagedUser');
 
-      const user = userCredential.user;
-      const userId = user.uid;
-
-      // Update Firebase Auth profile
-      await updateProfile(user, {
-        displayName: userData.displayName
+      const result = await createManagedUser({
+        email: userData.email,
+        displayName: userData.displayName,
+        phoneNumber: userData.phoneNumber,
+        roles: userData.roles?.map(r =>
+          typeof r === 'string' ? r : String(r)
+        ),
       });
 
-      // Create user document in Firestore
-      const userRef = doc(db, 'users', userId);
+      const { uid: userId } = result.data;
+
       const newUser: AdvancedUser = {
         id: userId,
         email: userData.email,
@@ -94,20 +103,24 @@ export class UserOperations {
         createdAt: new Date(),
         updatedAt: new Date(),
         lastModifiedBy: createdBy,
-        preferences: userData.preferences || DEFAULT_USER_PREFERENCES
+        preferences: userData.preferences || DEFAULT_USER_PREFERENCES,
       };
 
-      await setDoc(userRef, newUser);
-
-      // Force a secure password reset so the end-user chooses their own password
-      await sendPasswordResetEmail(auth, userData.email);
-
-      await ActivityOperations.logUserActivity(createdBy, ACTIVITY_ACTIONS.USER_CREATED, 'user', userId,
-        `User created: ${userData.displayName}`, true);
+      await ActivityOperations.logUserActivity(
+        createdBy,
+        ACTIVITY_ACTIONS.USER_CREATED,
+        'user',
+        userId,
+        `User created: ${userData.displayName}`,
+        true
+      );
 
       return newUser;
     } catch (error) {
-      serviceLogger.error('Error creating user', error as Error, { email: userData.email, createdBy });
+      serviceLogger.error('Error creating user', error as Error, {
+        email: userData.email,
+        createdBy,
+      });
       throw error;
     }
   }
@@ -123,7 +136,9 @@ export class UserOperations {
       }
       return null;
     } catch (error) {
-      serviceLogger.error('Error getting user by ID', error as Error, { userId });
+      serviceLogger.error('Error getting user by ID', error as Error, {
+        userId,
+      });
       return null;
     }
   }
@@ -137,9 +152,13 @@ export class UserOperations {
         limit(limitCount)
       );
       const snapshot = await getDocs(q);
-      return snapshot.docs.map((doc: any) => ({ ...doc.data(), id: doc.id } as AdvancedUser));
+      return snapshot.docs.map(
+        (doc: any) => ({ ...doc.data(), id: doc.id }) as AdvancedUser
+      );
     } catch (error) {
-      serviceLogger.error('Error getting users', error as Error, { limitCount });
+      serviceLogger.error('Error getting users', error as Error, {
+        limitCount,
+      });
       return [];
     }
   }
@@ -155,13 +174,22 @@ export class UserOperations {
       await updateDoc(userRef, {
         ...updateData,
         updatedAt: serverTimestamp(),
-        lastModifiedBy: updatedBy
+        lastModifiedBy: updatedBy,
       });
 
-      await ActivityOperations.logUserActivity(updatedBy, ACTIVITY_ACTIONS.USER_UPDATED, 'user', userId,
-        `User updated: ${Object.keys(updateData).join(', ')}`, true);
+      await ActivityOperations.logUserActivity(
+        updatedBy,
+        ACTIVITY_ACTIONS.USER_UPDATED,
+        'user',
+        userId,
+        `User updated: ${Object.keys(updateData).join(', ')}`,
+        true
+      );
     } catch (error) {
-      serviceLogger.error('Error updating user', error as Error, { userId, updatedBy });
+      serviceLogger.error('Error updating user', error as Error, {
+        userId,
+        updatedBy,
+      });
       throw error;
     }
   }
@@ -172,10 +200,19 @@ export class UserOperations {
       const userRef = doc(db, 'users', userId);
       await deleteDoc(userRef);
 
-      await ActivityOperations.logUserActivity(deletedBy, ACTIVITY_ACTIONS.USER_DELETED, 'user', userId,
-        'User deleted', true);
+      await ActivityOperations.logUserActivity(
+        deletedBy,
+        ACTIVITY_ACTIONS.USER_DELETED,
+        'user',
+        userId,
+        'User deleted',
+        true
+      );
     } catch (error) {
-      serviceLogger.error('Error deleting user', error as Error, { userId, deletedBy });
+      serviceLogger.error('Error deleting user', error as Error, {
+        userId,
+        deletedBy,
+      });
       throw error;
     }
   }
@@ -183,14 +220,13 @@ export class UserOperations {
   // Get user's cars
   static async getUserCars(userId: string): Promise<any[]> {
     try {
-      const q = query(
-        collection(db, 'cars'),
-        where('userId', '==', userId)
-      );
+      const q = query(collection(db, 'cars'), where('userId', '==', userId));
       const snapshot = await getDocs(q);
       return snapshot.docs.map((doc: any) => ({ ...doc.data(), id: doc.id }));
     } catch (error) {
-      serviceLogger.error('Error getting user cars', error as Error, { userId });
+      serviceLogger.error('Error getting user cars', error as Error, {
+        userId,
+      });
       return [];
     }
   }
@@ -207,7 +243,9 @@ export class UserOperations {
       const snapshot = await getDocs(q);
       return snapshot.docs.map((doc: any) => ({ ...doc.data(), id: doc.id }));
     } catch (error) {
-      serviceLogger.error('Error getting user messages', error as Error, { userId });
+      serviceLogger.error('Error getting user messages', error as Error, {
+        userId,
+      });
       return [];
     }
   }
@@ -230,17 +268,26 @@ export class RoleOperations {
         isSystemRole: roleData.isSystemRole || false,
         createdBy,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       };
 
       await setDoc(roleRef, newRole);
 
-      await ActivityOperations.logUserActivity(createdBy, ACTIVITY_ACTIONS.ROLE_CREATED, 'role', roleId,
-        `Role created: ${roleData.name}`, true);
+      await ActivityOperations.logUserActivity(
+        createdBy,
+        ACTIVITY_ACTIONS.ROLE_CREATED,
+        'role',
+        roleId,
+        `Role created: ${roleData.name}`,
+        true
+      );
 
       return newRole;
     } catch (error) {
-      serviceLogger.error('Error creating role', error as Error, { roleName: roleData.name, createdBy });
+      serviceLogger.error('Error creating role', error as Error, {
+        roleName: roleData.name,
+        createdBy,
+      });
       throw error;
     }
   }
@@ -250,7 +297,9 @@ export class RoleOperations {
     try {
       const q = query(collection(db, 'roles'), orderBy('createdAt', 'desc'));
       const snapshot = await getDocs(q);
-      return snapshot.docs.map((doc: any) => ({ ...doc.data(), id: doc.id } as UserRole));
+      return snapshot.docs.map(
+        (doc: any) => ({ ...doc.data(), id: doc.id }) as UserRole
+      );
     } catch (error) {
       serviceLogger.error('Error getting roles', error as Error);
       return [];
@@ -287,13 +336,16 @@ export class PermissionOperations {
       allPermissions.push(...userData.customPermissions);
 
       // Remove duplicates
-      const uniquePermissions = allPermissions.filter((permission, index, self) =>
-        index === self.findIndex(p => p.id === permission.id)
+      const uniquePermissions = allPermissions.filter(
+        (permission, index, self) =>
+          index === self.findIndex(p => p.id === permission.id)
       );
 
       return uniquePermissions;
     } catch (error) {
-      serviceLogger.error('Error getting user permissions', error as Error, { userId });
+      serviceLogger.error('Error getting user permissions', error as Error, {
+        userId,
+      });
       return [];
     }
   }
@@ -307,13 +359,19 @@ export class PermissionOperations {
   ): Promise<boolean> {
     try {
       const permissions = await this.getUserPermissions(userId);
-      return permissions.some(permission =>
-        permission.resource === resource &&
-        permission.action === action &&
-        permission.level === level
+      return permissions.some(
+        permission =>
+          permission.resource === resource &&
+          permission.action === action &&
+          permission.level === level
       );
     } catch (error) {
-      serviceLogger.error('Error checking permission', error as Error, { userId, resource, action, level });
+      serviceLogger.error('Error checking permission', error as Error, {
+        userId,
+        resource,
+        action,
+        level,
+      });
       return false;
     }
   }
@@ -335,9 +393,14 @@ export class ActivityOperations {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map((doc: any) => ({ ...doc.data(), id: doc.id } as UserActivityLog));
+      return snapshot.docs.map(
+        (doc: any) => ({ ...doc.data(), id: doc.id }) as UserActivityLog
+      );
     } catch (error) {
-      serviceLogger.error('Error getting user activity logs', error as Error, { userId, limitCount });
+      serviceLogger.error('Error getting user activity logs', error as Error, {
+        userId,
+        limitCount,
+      });
       return [];
     }
   }
@@ -362,12 +425,16 @@ export class ActivityOperations {
         ipAddress: 'N/A', // In production, get from request
         userAgent: navigator.userAgent,
         timestamp: serverTimestamp() as any,
-        success
+        success,
       };
 
       await setDoc(logRef, logEntry);
     } catch (error) {
-      serviceLogger.error('Error logging user activity', error as Error, { userId, action, resource });
+      serviceLogger.error('Error logging user activity', error as Error, {
+        userId,
+        action,
+        resource,
+      });
     }
   }
 }
@@ -386,13 +453,24 @@ export class SystemOperations {
       await updateDoc(userRef, {
         status,
         updatedAt: serverTimestamp(),
-        lastModifiedBy: changedBy
+        lastModifiedBy: changedBy,
       });
 
-      await ActivityOperations.logUserActivity(userId, ACTIVITY_ACTIONS.STATUS_CHANGED, 'user', userId,
-        `Status changed to ${status} by ${changedBy}. Reason: ${reason}`, true);
+      await ActivityOperations.logUserActivity(
+        userId,
+        ACTIVITY_ACTIONS.STATUS_CHANGED,
+        'user',
+        userId,
+        `Status changed to ${status} by ${changedBy}. Reason: ${reason}`,
+        true
+      );
     } catch (error) {
-      serviceLogger.error('Error changing user status', error as Error, { userId, status, reason, changedBy });
+      serviceLogger.error('Error changing user status', error as Error, {
+        userId,
+        status,
+        reason,
+        changedBy,
+      });
       throw error;
     }
   }
@@ -402,10 +480,12 @@ export class SystemOperations {
     try {
       const [usersSnapshot, rolesSnapshot] = await Promise.all([
         getDocs(collection(db, 'users')),
-        getDocs(collection(db, 'roles'))
+        getDocs(collection(db, 'roles')),
       ]);
 
-      const users = usersSnapshot.docs.map((doc: any) => doc.data() as AdvancedUser);
+      const users = usersSnapshot.docs.map(
+        (doc: any) => doc.data() as AdvancedUser
+      );
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
@@ -416,7 +496,7 @@ export class SystemOperations {
         bannedUsers: users.filter(u => u.status === 'banned').length,
         newUsersToday: users.filter(u => u.createdAt >= today).length,
         totalRoles: rolesSnapshot.docs.length,
-        totalPermissions: 0 // Calculate from roles
+        totalPermissions: 0, // Calculate from roles
       };
     } catch (error) {
       serviceLogger.error('Error getting system stats', error as Error);
@@ -427,7 +507,7 @@ export class SystemOperations {
         bannedUsers: 0,
         newUsersToday: 0,
         totalRoles: 0,
-        totalPermissions: 0
+        totalPermissions: 0,
       };
     }
   }

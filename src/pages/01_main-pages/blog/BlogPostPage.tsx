@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { blogService } from '@/services/blog/blog.service';
 import type { BlogPost } from '@/types/blog.types';
 import { serviceLogger } from '@/services/logger-service';
+import { sanitizeHTML } from '@/utils/sanitize-html';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { Calendar, Clock, Eye, Heart, Share2, User, ArrowLeft, Tag } from 'lucide-react';
 
@@ -202,7 +203,7 @@ const BlogPostPage: React.FC = () => {
 
         <CoverImage src={post.coverImage} alt={language === 'bg' ? post.title.bg : post.title.en} />
 
-        <Content dangerouslySetInnerHTML={{ __html: language === 'bg' ? post.content.bg : post.content.en }} />
+        <Content dangerouslySetInnerHTML={{ __html: sanitizeHTML(language === 'bg' ? post.content.bg : post.content.en) }} />
 
         {post.tags.length > 0 && (
           <TagsSection>
