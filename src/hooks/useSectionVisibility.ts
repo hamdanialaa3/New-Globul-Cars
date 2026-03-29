@@ -1,8 +1,14 @@
 import { useEffect, useState, useCallback } from 'react';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-config';
-import { SECTION_VISIBILITY_PATH } from '@/services/section-visibility-defaults';
-import type { HomepageSectionsConfig, HomepageSection } from '@/services/section-visibility-types';
+import {
+  SECTION_VISIBILITY_PATH,
+  DEFAULT_HOMEPAGE_SECTIONS,
+} from '@/services/section-visibility-defaults';
+import type {
+  HomepageSectionsConfig,
+  HomepageSection,
+} from '@/services/section-visibility-types';
 
 /**
  * Hook for reading homepage section visibility in real-time.
@@ -11,9 +17,15 @@ import type { HomepageSectionsConfig, HomepageSection } from '@/services/section
  *
  * IMPORTANT: Must follow the isActive guard pattern to avoid
  * state updates after unmount (per project rules).
+ *
+ * Initialised with DEFAULT_HOMEPAGE_SECTIONS so the first render
+ * uses the dynamic code-path (same as after Firestore loads).
+ * This prevents the fallback→dynamic re-render that caused CLS.
  */
 export function useSectionVisibility() {
-  const [sections, setSections] = useState<HomepageSection[]>([]);
+  const [sections, setSections] = useState<HomepageSection[]>(
+    DEFAULT_HOMEPAGE_SECTIONS
+  );
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -27,7 +39,7 @@ export function useSectionVisibility() {
 
     const unsub = onSnapshot(
       ref,
-      (snap) => {
+      snap => {
         if (!isActive) return; // Guard against unmount
 
         if (!snap.exists()) {
@@ -42,7 +54,7 @@ export function useSectionVisibility() {
         setSections(sorted);
         setIsLoaded(true);
       },
-      (error) => {
+      error => {
         if (!isActive) return;
         // On error, fail open — show everything
         setSections([]);
@@ -66,7 +78,7 @@ export function useSectionVisibility() {
   const isVisible = useCallback(
     (key: string): boolean => {
       if (sections.length === 0) return true; // No config or loading — show all
-      const section = sections.find((s) => s.key === key);
+      const section = sections.find(s => s.key === key);
       return section ? section.visible : true; // Unknown key — show by default
     },
     [sections]

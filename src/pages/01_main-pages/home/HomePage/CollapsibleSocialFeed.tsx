@@ -143,9 +143,10 @@ const Header = styled.div<{ $isExpanded: boolean }>`
       0 0 30px 10px currentColor,
       0 0 60px 20px currentColor,
       0 0 90px 30px rgba(255, 255, 255, 0.3);
-    animation: 
-      bulgariaBorderLED 9s linear infinite,
-      bulgariaColorChange 9s step-end infinite;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: bulgariaColorChange 9s step-end infinite;
     z-index: 10;
     filter: brightness(2);
     color: #FFFFFF;
@@ -163,38 +164,6 @@ const Header = styled.div<{ $isExpanded: boolean }>`
     flex-direction: column;
     gap: 16px;
     padding: 16px;
-  }
-
-  /* LED Light Path Animation - Simple circular motion around border */
-  @keyframes bulgariaBorderLED {
-    /* Top edge - White LED */
-    0%, 25% {
-      top: -8px;
-      left: calc(-8px + (100% + 16px) * ((min(max((100 * var(--t, 0) / 25), 0), 1))));
-      bottom: auto;
-      right: auto;
-    }
-    /* Right edge - Green LED */
-    25.01%, 50% {
-      top: calc(-8px + (100% + 16px) * ((min(max(((100 * var(--t, 25) - 25) / 25), 0), 1))));
-      left: auto;
-      right: -8px;
-      bottom: auto;
-    }
-    /* Bottom edge - Red LED */
-    50.01%, 75% {
-      top: auto;
-      left: auto;
-      right: calc(-8px + (100% + 16px) * ((min(max(((100 * var(--t, 50) - 50) / 25), 0), 1))));
-      bottom: -8px;
-    }
-    /* Left edge - Back to White */
-    75.01%, 100% {
-      top: auto;
-      left: -8px;
-      right: auto;
-      bottom: calc(-8px + (100% + 16px) * ((min(max(((100 * var(--t, 75) - 75) / 25), 0), 1))));
-    }
   }
 
   /* LED Color Change - Bulgarian Flag Colors (White → Green → Red) */

@@ -39,33 +39,36 @@
         })();
     </script>
 
-    <!-- Google Tag Manager (deferred to prevent layout forced warning) -->
+    <!-- Google Tag Manager + gtag: deferred 3.5s after load to unblock LCP -->
     <script>
-        window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
             var w = window, d = document, l = 'dataLayer', i = 'GTM-MKZSPCNC';
             w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
             var j = d.createElement('script'), dl = l != 'dataLayer' ? '&l=' + l : '';
             j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
             d.head.appendChild(j);
-        });
-    </script>
-    <!-- End Google Tag Manager -->
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R8JY5KM421"></script>
-    <script>
-        const analyticsCookieDomain = window.location.hostname || 'koli.one';
-        gtag('js', new Date());
-        gtag('config', 'G-R8JY5KM421', {
-            cookie_domain: analyticsCookieDomain,
-            cookie_flags: 'SameSite=None;Secure',
-            send_page_view: true
-        });
+            // gtag.js
+            var g = d.createElement('script');
+            g.async = true;
+            g.src = 'https://www.googletagmanager.com/gtag/js?id=G-R8JY5KM421';
+            g.onload = function() {
+                var cd = w.location.hostname || 'koli.one';
+                gtag('js', new Date());
+                gtag('config', 'G-R8JY5KM421', {
+                    cookie_domain: cd,
+                    cookie_flags: 'SameSite=None;Secure',
+                    send_page_view: true
+                });
+            };
+            d.head.appendChild(g);
+        }, 3500);
     </script>
+    <!-- End Google Tag Manager + gtag -->
 
-    <!-- Facebook Pixel Code (deferred for page speed) -->
+    <!-- Facebook Pixel Code (deferred 4s for page speed) -->
     <script>
-        window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
             !function (f, b, e, v, n, t, s) {
                 if (f.fbq) return; n = f.fbq = function () {
                     n.callMethod ?
@@ -79,7 +82,7 @@
                 'https://connect.facebook.net/en_US/fbevents.js');
             fbq('init', '2026958077871354');
             fbq('track', 'PageView');
-        });
+        }, 4000);
     </script>
     <!-- End Facebook Pixel Code -->
 
@@ -93,7 +96,16 @@
     <meta name="content-language" content="bg" />
     <meta name="geo.position" content="42.6977;23.3219" />
     <meta name="ICBM" content="42.6977, 23.3219" />
-    <link rel="stylesheet" href="/styles/koli-one-logo.css" />
+    <!-- koli-one-logo.css inlined to remove render-blocking request -->
+    <style>
+    img[src*="koli-one"],img[src*="Logo.png"],img[src*="Logo1.png"]{background:transparent!important;min-width:120px;max-width:200px;height:auto;object-fit:contain;object-position:center;image-rendering:-webkit-optimize-contrast;image-rendering:crisp-edges;padding:0;margin:0;mix-blend-mode:normal}
+    header img[src*="koli-one"],header img[src*="Logo"]{min-width:140px;max-width:220px;height:auto}
+    footer img[src*="koli-one"],footer img[src*="Logo"]{min-width:120px;max-width:180px;height:auto}
+    @media(max-width:768px){img[src*="koli-one"],img[src*="Logo.png"],img[src*="Logo1.png"]{min-width:100px;max-width:150px}header img[src*="koli-one"],header img[src*="Logo"]{min-width:110px;max-width:160px}}
+    .loader img[src*="koli-one"],.splash img[src*="koli-one"]{min-width:150px;max-width:250px;height:auto}
+    *[class*="logo" i],*[class*="Logo" i]{background:transparent!important}
+    .notification img[src*="koli-one"],.notification-icon[src*="koli-one"]{width:48px;height:48px;object-fit:contain}
+    </style>
     <!-- 🎨 Official Koli One Logo - Used Everywhere -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" href="/logo.png" sizes="any" />
@@ -152,18 +164,16 @@
     <!-- Fonts: Inter (body) + Exo 2 (headings) + Outfit + Dancing Script — unified font stack -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Preconnects: Firebase + third-party services (saves ~700ms on LCP) -->
+    <!-- Preconnects: Firebase (max 4 total including fonts above) -->
     <link rel="preconnect" href="https://firebase.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
-    <link rel="preconnect" href="https://firebaseinstallations.googleapis.com" crossorigin />
-    <link rel="preconnect" href="https://m.stripe.com" crossorigin />
-    <link rel="preconnect" href="https://flagcdn.com" />
     <!-- Preload LCP image (KATServicesHero) -->
     <link rel="preload" as="image" type="image/webp" href="/assets/images/home/kat-hero.webp" fetchpriority="high" />
-    <!-- Font CSS: render-blocking intentionally to register @font-face early and reduce CLS -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Exo+2:wght@300;600;700;800&family=Outfit:wght@300;400;500;700;800;900&family=Dancing+Script:wght@400;500;600;700&display=swap"
-        rel="stylesheet" />
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Exo+2:wght@300;600;700;800&family=Outfit:wght@300;400;500;700;800;900&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet" /></noscript>
+    <!-- Font CSS: async + display=optional (no render-blocking, no font-swap CLS) -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Exo+2:wght@300;600;700;800&family=Outfit:wght@300;400;500;700;800;900&family=Dancing+Script:wght@400;500;600;700&display=optional" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Exo+2:wght@300;600;700;800&family=Outfit:wght@300;400;500;700;800;900&family=Dancing+Script:wght@400;500;600;700&display=optional"
+        rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Exo+2:wght@300;600;700;800&family=Outfit:wght@300;400;500;700;800;900&family=Dancing+Script:wght@400;500;600;700&display=optional" rel="stylesheet" /></noscript>
 
 
     <!-- Print Styles -->

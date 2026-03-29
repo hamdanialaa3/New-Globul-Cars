@@ -94,8 +94,8 @@ const ViewAllButton = styled.button<{ $isRTL: boolean }>`
   font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
-  background: rgba(var(--primary-rgb), 0.1);
-  border: 2px solid var(--primary-color);
+  background: rgba(37, 99, 235, 0.1);
+  border: 2px solid var(--primary-color, #2563EB);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -111,10 +111,10 @@ const ViewAllButton = styled.button<{ $isRTL: boolean }>`
   `}
   
   &:hover {
-    background: var(--primary-color);
+    background: var(--primary-color, #2563EB);
     color: white;
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(var(--primary-rgb), 0.3);
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
   }
   
   &:active {
