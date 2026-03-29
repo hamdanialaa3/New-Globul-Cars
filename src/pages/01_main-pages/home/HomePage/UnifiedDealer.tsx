@@ -31,6 +31,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import HorizontalScrollContainer from '@/components/HorizontalScrollContainer/HorizontalScrollContainer';
+import { DealershipRepository } from '@/repositories/DealershipRepository';
 
 // Lazy load DealerSpotlight
 const DealerSpotlight = React.lazy(() => import('./DealerSpotlight'));
