@@ -162,11 +162,10 @@ const HeroSlot: React.FC = () => (
 
 /**
  * Slot: KAT Official Services (New)
+ * NOT lazy-loaded: this is the LCP element (kat-hero.webp)
  */
 const KATServicesSlot: React.FC = () => (
-  <LazySection rootMargin="100px">
-    <KATServicesHero />
-  </LazySection>
+  <KATServicesHero />
 );
 
 /**

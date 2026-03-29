@@ -478,9 +478,10 @@ const SearchWidget: React.FC = () => {
       <FormGrid $isDark={isDark}>
         {/* Make Select */}
         <FieldGroup>
-          <Label $isDark={isDark}>{t('Make', 'Марка')}</Label>
+          <Label htmlFor="search-make" $isDark={isDark}>{t('Make', 'Марка')}</Label>
           <SelectWrapper>
             <Select
+              id="search-make"
               $isDark={isDark}
               value={make}
               onChange={(e) => setMake(sanitizeCarMakeModel(e.target.value))}
@@ -496,9 +497,10 @@ const SearchWidget: React.FC = () => {
 
         {/* Model Select */}
         <FieldGroup>
-          <Label $isDark={isDark}>{t('Model', 'Модел')}</Label>
+          <Label htmlFor="search-model" $isDark={isDark}>{t('Model', 'Модел')}</Label>
           <SelectWrapper>
             <Select
+              id="search-model"
               $isDark={isDark}
               value={model}
               onChange={(e) => setModel(sanitizeCarMakeModel(e.target.value))}
@@ -515,9 +517,10 @@ const SearchWidget: React.FC = () => {
 
         {/* Year Select */}
         <FieldGroup>
-          <Label $isDark={isDark}>{t('First Reg.', 'Година от')}</Label>
+          <Label htmlFor="search-year" $isDark={isDark}>{t('First Reg.', 'Година от')}</Label>
           <SelectWrapper>
             <Select
+              id="search-year"
               $isDark={isDark}
               value={year}
               onChange={(e) => setYear(e.target.value)}
@@ -533,9 +536,10 @@ const SearchWidget: React.FC = () => {
 
         {/* Price Select */}
         <FieldGroup>
-          <Label $isDark={isDark}>{t('Price up to', 'Цена до')}</Label>
+          <Label htmlFor="search-price" $isDark={isDark}>{t('Price up to', 'Цена до')}</Label>
           <SelectWrapper>
             <Select
+              id="search-price"
               $isDark={isDark}
               value={priceMax}
               onChange={(e) => setPriceMax(e.target.value)}

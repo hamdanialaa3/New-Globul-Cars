@@ -111,7 +111,7 @@ const MainNavButton = styled.button<{ $isDark?: boolean; $primary?: boolean }>`
       : ($isDark ? 'rgba(148, 163, 184, 0.3)' : colors.surface.border)};
   background: ${({ $isDark, $primary }) =>
     $primary
-      ? ($isDark ? 'rgba(99, 102, 241, 0.2)' : colors.primary.main)
+      ? ($isDark ? 'rgba(99, 102, 241, 0.35)' : '#1d4ed8')
       : ($isDark ? 'rgba(148, 163, 184, 0.05)' : 'rgba(255, 255, 255, 0.5)')};
   color: ${({ $isDark, $primary }) =>
     $primary

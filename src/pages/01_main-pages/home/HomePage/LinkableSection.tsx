@@ -131,8 +131,9 @@ const ViewAllButton = styled.button<{ $isRTL: boolean }>`
   }
   
   @media (max-width: 768px) {
-    padding: 10px 20px;
+    padding: 12px 20px;
     font-size: 14px;
+    min-height: 48px;
     
     svg {
       font-size: 18px;

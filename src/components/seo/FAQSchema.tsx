@@ -50,7 +50,12 @@ const FAQSchema: React.FC<FAQSchemaProps> = ({ faqs, visible = false }) => {
               itemProp="mainEntity"
               itemType="https://schema.org/Question"
             >
-              <summary itemProp="name">{faq.question}</summary>
+              <summary
+                itemProp="name"
+                style={{ padding: '12px 0', minHeight: '48px', cursor: 'pointer', lineHeight: '1.6' }}
+              >
+                {faq.question}
+              </summary>
               <div
                 itemScope
                 itemProp="acceptedAnswer"

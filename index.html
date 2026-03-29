@@ -152,10 +152,17 @@
     <!-- Fonts: Inter (body) + Exo 2 (headings) + Outfit + Dancing Script — unified font stack -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://firebase.googleapis.com" />
-    <link rel="preconnect" href="https://firestore.googleapis.com" />
+    <!-- Preconnects: Firebase + third-party services (saves ~700ms on LCP) -->
+    <link rel="preconnect" href="https://firebase.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://firebaseinstallations.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://m.stripe.com" crossorigin />
+    <link rel="preconnect" href="https://flagcdn.com" />
+    <!-- Preload LCP image (KATServicesHero) -->
+    <link rel="preload" as="image" type="image/webp" href="/assets/images/home/kat-hero.webp" fetchpriority="high" />
+    <!-- Font CSS: render-blocking intentionally to register @font-face early and reduce CLS -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Exo+2:wght@300;600;700;800&family=Outfit:wght@300;400;500;700;800;900&family=Dancing+Script:wght@400;500;600;700&display=swap"
-        rel="stylesheet" media="print" onload="this.media='all'" />
+        rel="stylesheet" />
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Exo+2:wght@300;600;700;800&family=Outfit:wght@300;400;500;700;800;900&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet" /></noscript>
 
 

@@ -319,7 +319,6 @@ export const GlobalStyles = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 
   html {
@@ -388,9 +387,7 @@ export const GlobalStyles = createGlobalStyle`
     }
   }
 
-  li, ul, ol, label, input, select, textarea, button, small, strong, em, span, div {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  }
+  /* Font family inherited from body for all elements */
 
   /* Global smart text handling for long words (e.g., Bulgarian) */
   .text-smart {
@@ -591,4 +588,3 @@ declare module 'styled-components' {
     };
   }
 }
-
