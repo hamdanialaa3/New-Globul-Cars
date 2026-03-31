@@ -219,7 +219,9 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
     toStatus: subscription.status,
     metadata: { subscriptionId: subscription.id },
   });
-}(subscription: Stripe.Subscription) {
+}
+
+async function handleSubscriptionChange(subscription: Stripe.Subscription) {
   const customerId = subscription.customer as string;
   const status = subscription.status;
   const userDoc = await findUserByStripeId(customerId);
@@ -426,7 +428,9 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
   await logSubscriptionEvent(userDoc.id, 'payment_succeeded', {
     metadata: { invoiceId: invoice.id, amount: amountPaid, currency: invoice.currency },
   });
-}(invoice: Stripe.Invoice) {
+}
+
+async function handlePaymentFailed(invoice: Stripe.Invoice) {
   const customerId = invoice.customer as string;
   const userDoc = await findUserByStripeId(customerId);
 
