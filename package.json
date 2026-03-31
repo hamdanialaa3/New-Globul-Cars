@@ -166,7 +166,13 @@
     "qs": ">=6.15.0",
     "serialize-javascript": ">=7.0.3",
     "tar": ">=7.5.11",
-    "@tootallnate/once": ">=3.0.1"
+    "@tootallnate/once": ">=3.0.1",
+    "picomatch": ">=4.0.4",
+    "node-forge": ">=1.4.0",
+    "nodemailer": ">=8.0.4",
+    "brace-expansion": ">=2.0.3",
+    "path-to-regexp": ">=0.1.13",
+    "yaml": ">=2.8.3"
   },
   "browserslist": {
     "production": [
