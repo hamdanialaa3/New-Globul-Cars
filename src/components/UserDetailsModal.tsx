@@ -54,7 +54,7 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: var(--admin-glass-card-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -63,15 +63,15 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  border: 2px solid #ffd700;
+  background: var(--admin-bg-primary);
+  border: 2px solid var(--admin-accent-primary);
   border-radius: 15px;
   padding: 30px;
   max-width: 800px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   box-shadow: 0 20px 40px rgba(255, 215, 0, 0.3);
 `;
 
@@ -81,11 +81,11 @@ const ModalHeader = styled.div`
   align-items: center;
   margin-bottom: 30px;
   padding-bottom: 20px;
-  border-bottom: 2px solid #ffd700;
+  border: 2px solid var(--admin-accent-primary);
 `;
 
 const ModalTitle = styled.h2`
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   font-size: 24px;
   font-weight: 700;
   margin: 0;
@@ -93,17 +93,17 @@ const ModalTitle = styled.h2`
 `;
 
 const CloseButton = styled.button`
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  background: var(--admin-bg-primary);
   border: 2px solid #ff6b6b;
   border-radius: 8px;
-  color: white;
+  color: var(--admin-text-primary);
   padding: 8px 12px;
   cursor: pointer;
   font-size: 16px;
   transition: all 0.3s ease;
   
   &:hover {
-    background: linear-gradient(135deg, #ee5a52 0%, #ff6b6b 100%);
+    background: var(--admin-bg-primary);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
   }
@@ -117,15 +117,15 @@ const UserInfoGrid = styled.div`
 `;
 
 const InfoCard = styled.div`
-  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-  border: 2px solid #ffd700;
+  background: var(--admin-bg-primary);
+  border: 2px solid var(--admin-accent-primary);
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
 `;
 
 const InfoTitle = styled.h3`
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   font-size: 1.1rem;
   font-weight: 600;
   margin: 0 0 15px 0;
@@ -139,7 +139,7 @@ const InfoItem = styled.div`
   align-items: center;
   gap: 10px;
   margin-bottom: 10px;
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   font-size: 0.85rem;
 `;
 
@@ -153,7 +153,7 @@ const InfoLabel = styled.span`
 `;
 
 const InfoValue = styled.span`
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   font-size: 0.9rem;
   font-weight: 500;
 `;
@@ -166,7 +166,7 @@ const StatsGrid = styled.div`
 `;
 
 const StatCard = styled.div`
-  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  background: var(--admin-bg-primary);
   color: #000000;
   border-radius: 8px;
   padding: 15px;
@@ -191,7 +191,7 @@ const LoadingSpinner = styled.div`
   justify-content: center;
   align-items: center;
   height: 200px;
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   font-size: 18px;
 `;
 

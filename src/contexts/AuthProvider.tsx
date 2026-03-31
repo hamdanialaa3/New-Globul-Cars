@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { User, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile, getAuth } from 'firebase/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { auth, db } from '../firebase/firebase-config';
+import { analyticsService } from '../firebase/analytics-service';
 import { SocialAuthService } from '../firebase/social-auth-service';
 import { logger } from '../services/logger-service';
 import { FirebaseHealthCheck } from '../utils/firebase-health-check';
@@ -37,6 +38,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       <AuthContext.Provider value={{
         currentUser: null,
         user: null,
+        userProfile: null,
+        displayName: null,
         loading: false,
         login: async () => { throw new Error('Firebase not initialized'); },
         register: async () => { throw new Error('Firebase not initialized'); },
@@ -69,6 +72,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
 
         if (user) {
+          // ─── SET GOOGLE ANALYTICS USER PROPS ─────────────────────────────
+          analyticsService.setUserProperties(user.uid, {
+            email: user.email,
+            emailVerified: user.emailVerified
+          });
+
+          // ─── DAILY LOGIN EVENT (fire-and-forget) ─────────────────────────
+          import('@/services/profile/profile-event-bus').then(({ emitProfileEvent }) =>
+            emitProfileEvent({ type: 'daily_login', userId: user.uid })
+          ).catch(() => {});
+
           // ─── REAL-TIME PROFILE LISTENER ──────────────────────────────────
           // Listens to Firestore users/{uid} so any device's profile edit
           // (displayName, photoURL, etc.) is reflected here immediately.
@@ -255,6 +269,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = useCallback(async (email: string, password: string) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      analyticsService.trackAuthEvent('login', 'email');
       logger.info('User logged in successfully', { email });
     } catch (error) {
       logger.error('Login failed', error as Error, { email });
@@ -273,6 +288,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         });
       }
 
+      analyticsService.trackAuthEvent('register', 'email');
       logger.info('User registered successfully', { email, hasDisplayName: !!options?.displayName });
     } catch (error) {
       logger.error('Registration failed', error as Error, { email });
@@ -283,6 +299,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = useCallback(async () => {
     try {
       await signOut(auth);
+      analyticsService.trackAuthEvent('logout');
       logger.info('User logged out successfully');
     } catch (error) {
       logger.error('Logout failed', error as Error);

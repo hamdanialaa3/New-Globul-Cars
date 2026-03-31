@@ -7,13 +7,14 @@
  * Based on: AutoScout24, AutoTrader UK, Cars.com best practices
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { 
   Crown, Zap, Building2, Check, Star, TrendingUp, Users, 
   Shield, Sparkles, Clock, Gift, ArrowRight, ChevronDown,
   Award, Rocket, Heart, MessageCircle, Eye, Phone, Calendar,
-  Gem, Car, Banknote
+  Gem, Car, Banknote, HelpCircle, X as XIcon, ChevronRight,
+  Bot, Upload, FileSpreadsheet, BarChart3, Headphones
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthProvider';
@@ -662,7 +663,7 @@ const ComparisonTable = styled.div<{ $expanded: boolean }>`
   border-radius: 20px;
   overflow: hidden;
   border: 2px solid var(--border-primary);
-  max-height: ${p => p.$expanded ? '2000px' : '0'};
+  max-height: ${p => p.$expanded ? '5000px' : '0'};
   opacity: ${p => p.$expanded ? 1 : 0};
   transition: all 0.5s ease;
 `;
@@ -671,6 +672,9 @@ const TableHeader = styled.div`
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr;
   background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  position: sticky;
+  top: 0;
+  z-index: 10;
   
   @media (max-width: 768px) {
     display: none;
@@ -884,6 +888,149 @@ const GuaranteeText = styled.p`
   line-height: 1.7;
 `;
 
+// ==================== FAQ SECTION ====================
+
+const FAQSection = styled.div`
+  margin-bottom: 4rem;
+  animation: ${fadeInUp} 0.8s ease-out 0.9s both;
+`;
+
+const FAQTitle = styled.h2`
+  font-size: 1.75rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+`;
+
+const FAQList = styled.div`
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+`;
+
+const FAQItem = styled.div`
+  background: var(--bg-card);
+  border: 2px solid var(--border-primary);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: var(--accent-primary);
+  }
+`;
+
+const FAQQuestion = styled.button`
+  width: 100%;
+  padding: 1.25rem 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: left;
+
+  svg {
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+    color: var(--accent-primary);
+  }
+`;
+
+const FAQAnswer = styled.div<{ $expanded: boolean }>`
+  max-height: ${p => p.$expanded ? '500px' : '0'};
+  opacity: ${p => p.$expanded ? 1 : 0};
+  overflow: hidden;
+  transition: all 0.3s ease;
+  padding: ${p => p.$expanded ? '0 1.5rem 1.25rem' : '0 1.5rem'};
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+`;
+
+// ==================== MOBILE PLAN TABS ====================
+
+const MobileTabsWrapper = styled.div`
+  display: none;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--bg-primary);
+  padding: 0.75rem 0;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--border-primary);
+
+  @media (max-width: 768px) {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+`;
+
+const MobileTab = styled.button<{ $active: boolean }>`
+  padding: 0.625rem 1.25rem;
+  border: 2px solid ${p => p.$active ? 'var(--accent-primary)' : 'var(--border-primary)'};
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: ${p => p.$active 
+    ? 'linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)'
+    : 'var(--bg-card)'
+  };
+  color: ${p => p.$active ? 'white' : 'var(--text-secondary)'};
+`;
+
+// ==================== COMPARISON TABLE SECTIONS ====================
+
+const ComparisonSectionHeader = styled.div`
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  background: rgba(102, 126, 234, 0.08);
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid var(--border-secondary);
+
+  &:hover {
+    background: rgba(102, 126, 234, 0.12);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const SectionHeaderCell = styled.div`
+  padding: 0.875rem 1.5rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  svg {
+    transition: transform 0.3s ease;
+  }
+
+  @media (max-width: 768px) {
+    &:not(:first-child) { display: none; }
+  }
+`;
+
 // ==================== MAIN COMPONENT ====================
 
 interface PricingPageEnhancedProps {
@@ -898,6 +1045,8 @@ export const PricingPageEnhanced: React.FC<PricingPageEnhancedProps> = ({
   const { stats: realStats } = useHomepageStats();
   const [billingInterval, setBillingInterval] = useState<'monthly' | 'annual'>('monthly');
   const [showComparison, setShowComparison] = useState(false);
+  const [openFAQ, setOpenFAQ] = useState<number | null>(null);
+  const [mobileSelectedPlan, setMobileSelectedPlan] = useState<string>('dealer');
   
   // Animated counters
   const [stats, setStats] = useState({
@@ -961,13 +1110,34 @@ export const PricingPageEnhanced: React.FC<PricingPageEnhancedProps> = ({
       freePlan: 'Безплатен',
       dealerPlan: 'Професионален Дилър',
       companyPlan: 'Компания',
-      freeDesc: 'Перфектен за частни продавачи',
-      dealerDesc: 'Идеален за автокъщи и дилъри',
-      companyDesc: 'За големи компании с неограничени нужди',
+      freeDesc: 'За хора, които продават личната си кола',
+      dealerDesc: 'За независими търговци и малки автокъщи',
+      companyDesc: 'За компании и големи автокъщи с неограничени нужди',
       perMonth: '/месец',
       listings: 'обяви',
       unlimited: 'Неограничено',
-      testimonials: 'Какво казват нашите клиенти'
+      testimonials: 'Какво казват нашите клиенти',
+      // Smart CTAs
+      ctaFree: 'Започни безплатно',
+      ctaDealer: 'Започни 14-дневен пробен период',
+      ctaCompany: 'Започни сега',
+      // FAQ
+      faqTitle: 'Често задавани въпроси',
+      faq: [
+        { q: 'Как мога да сменя плана си?', a: 'Можете да смените плана си по всяко време от настройките на акаунта. При ъпгрейд промените влизат в сила веднага. При даунгрейд промените влизат в сила в края на текущия платен период.' },
+        { q: 'Какво става с обявите ми ако намаля плана?', a: 'При намаляване на плана, обявите надвишаващи новия лимит ще бъдат автоматично деактивирани, но няма да бъдат изтрити. Можете да ги активирате отново при ъпгрейд.' },
+        { q: 'Как работи безплатният пробен период?', a: '14-дневният пробен период ви дава пълен достъп до всички функции на Dealer плана. Не е необходима кредитна карта. След изтичане на периода акаунтът ви автоматично преминава към безплатния план.' },
+        { q: 'Какви са наличните начини на плащане?', a: 'Приемаме банкови преводи чрез Revolut (IBAN: LT44 3250 0419 1285 4116) и iCard (IBAN: BG98INTF40012039023344). След превод, изпратете потвърждение и ние ще активираме акаунта ви до 24 часа.' },
+        { q: 'Мога ли да анулирам по всяко време?', a: 'Да, можете да анулирате плана си по всяко време. Ще продължите да имате достъп до платените функции до края на текущия платен период.' },
+        { q: 'Какво е гаранцията за връщане на парите?', a: 'Предлагаме 30-дневна гаранция за връщане на парите. Ако не сте доволни от услугата през първите 30 дни, ще ви върнем парите без въпроси.' },
+        { q: 'Какви са AI функциите?', a: 'AI анализ на автомобили автоматично оценява стойността на автомобила, открива потенциални проблеми и генерира оптимизирани описания. AI чатботът помага на клиентите ви 24/7. Тези функции са достъпни за Dealer и Company плановете.' },
+        { q: 'Как работи VIP значката?', a: 'VIP значката показва до профила ви и обявите ви, маркирайки ви като проверен професионален дилър. Това повишава доверието на купувачите и увеличава кликовете върху обявите ви.' },
+      ],
+      // Comparison sections
+      sectionBasic: 'Основни функции',
+      sectionAI: 'AI инструменти',
+      sectionSupport: 'Поддръжка и услуги',
+      sectionReports: 'Отчети и данни',
     },
     en: {
       mainTitle: 'Choose Your Perfect Plan',
@@ -994,33 +1164,61 @@ export const PricingPageEnhanced: React.FC<PricingPageEnhancedProps> = ({
       freePlan: 'Free',
       dealerPlan: 'Professional Dealer',
       companyPlan: 'Company',
-      freeDesc: 'Perfect for private sellers',
-      dealerDesc: 'Ideal for car dealerships',
-      companyDesc: 'For large companies with unlimited needs',
+      freeDesc: 'For individuals selling their personal car',
+      dealerDesc: 'For independent dealers and small car lots',
+      companyDesc: 'For companies and large dealerships with unlimited needs',
       perMonth: '/month',
       listings: 'listings',
       unlimited: 'Unlimited',
-      testimonials: 'What our customers say'
+      testimonials: 'What our customers say',
+      // Smart CTAs
+      ctaFree: 'Start Free',
+      ctaDealer: 'Start 14-Day Free Trial',
+      ctaCompany: 'Get Started',
+      // FAQ
+      faqTitle: 'Frequently Asked Questions',
+      faq: [
+        { q: 'How can I change my plan?', a: 'You can change your plan at any time from your account settings. Upgrades take effect immediately. Downgrades take effect at the end of your current billing period.' },
+        { q: 'What happens to my listings if I downgrade?', a: 'When downgrading, listings exceeding the new limit will be automatically deactivated but not deleted. You can reactivate them upon upgrading.' },
+        { q: 'How does the free trial work?', a: 'The 14-day free trial gives you full access to all Dealer plan features. No credit card required. After the trial ends, your account automatically downgrades to the free plan.' },
+        { q: 'What payment methods are available?', a: 'We accept bank transfers via Revolut (IBAN: LT44 3250 0419 1285 4116) and iCard (IBAN: BG98INTF40012039023344). After transferring, send us confirmation and we will activate your account within 24 hours.' },
+        { q: 'Can I cancel at any time?', a: 'Yes, you can cancel your plan at any time. You will continue to have access to paid features until the end of your current billing period.' },
+        { q: 'What is the money-back guarantee?', a: 'We offer a 30-day money-back guarantee. If you are not satisfied with the service within the first 30 days, we will refund you, no questions asked.' },
+        { q: 'What are the AI features?', a: 'AI car analysis automatically evaluates vehicle value, detects potential issues, and generates optimized descriptions. The AI chatbot helps your customers 24/7. These features are available for Dealer and Company plans.' },
+        { q: 'How does the VIP badge work?', a: 'The VIP badge appears next to your profile and listings, marking you as a verified professional dealer. This increases buyer trust and boosts clicks on your listings.' },
+      ],
+      // Comparison sections
+      sectionBasic: 'Core Features',
+      sectionAI: 'AI Tools',
+      sectionSupport: 'Support & Services',
+      sectionReports: 'Reports & Data',
     }
   };
   
   const text = t[language] || t.en;
   
   // ✅ CRITICAL: Use SUBSCRIPTION_PLANS as single source of truth
+  // ✅ 9A: Price Anchoring — Company (most expensive) first, Free last
   const plans = [
     {
-      id: 'free',
-      name: text.freePlan,
-      description: text.freeDesc,
-      icon: <Zap />,
-      iconColor: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
-      price: SUBSCRIPTION_PLANS.free.price, // ✅ { monthly: 0, annual: 0 }
-      listings: SUBSCRIPTION_PLANS.free.features.maxListings, // ✅ 3
+      id: 'company',
+      name: text.companyPlan,
+      description: text.companyDesc,
+      icon: <Building2 />,
+      iconColor: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+      price: SUBSCRIPTION_PLANS.company.price,
+      listings: SUBSCRIPTION_PLANS.company.features.maxListings, // -1 (unlimited)
       featured: false,
+      cta: text.ctaCompany,
       features: [
-        { text: `${SUBSCRIPTION_PLANS.free.features.maxListings} ${text.listings}`, highlighted: true },
-        { text: language === 'bg' ? 'Основни функции' : 'Basic features' },
-        { text: language === 'bg' ? 'Стандартна поддръжка' : 'Standard support' }
+        { text: text.unlimited + ' ' + text.listings, highlighted: true },
+        { text: language === 'bg' ? 'Всичко от Dealer' : 'Everything from Dealer' },
+        { text: language === 'bg' ? 'Тعديل марка/модел' : 'Edit Make/Model' },
+        { text: language === 'bg' ? 'Масово качване (Bulk Upload)' : 'Bulk Upload' },
+        { text: language === 'bg' ? 'API достъп' : 'API access' },
+        { text: language === 'bg' ? 'Персонален мениджър' : 'Dedicated manager' },
+        { text: `${SUBSCRIPTION_PLANS.company.features.maxTeamMembers} ${language === 'bg' ? 'членове на екип' : 'team members'}` },
+        { text: language === 'bg' ? 'Персонализиран брандинг' : 'Custom branding' }
       ]
     },
     {
@@ -1029,34 +1227,34 @@ export const PricingPageEnhanced: React.FC<PricingPageEnhancedProps> = ({
       description: text.dealerDesc,
       icon: <Crown />,
       iconColor: 'linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)',
-      price: SUBSCRIPTION_PLANS.dealer.price, // ✅ { monthly: 27.78, annual: 278 }
-      listings: SUBSCRIPTION_PLANS.dealer.features.maxListings, // ✅ 30
+      price: SUBSCRIPTION_PLANS.dealer.price,
+      listings: SUBSCRIPTION_PLANS.dealer.features.maxListings, // 20
       featured: true,
+      cta: text.ctaDealer,
       features: [
         { text: `${SUBSCRIPTION_PLANS.dealer.features.maxListings} ${text.listings}`, highlighted: true },
         { text: language === 'bg' ? 'VIP значка' : 'VIP badge', highlighted: true },
+        { text: language === 'bg' ? 'AI анализ на коли' : 'AI car analysis' },
+        { text: language === 'bg' ? 'AI чатбот' : 'AI chatbot' },
         { text: language === 'bg' ? 'Приоритетна поддръжка' : 'Priority support' },
         { text: language === 'bg' ? 'Разширена аналитика' : 'Advanced analytics' },
-        { text: language === 'bg' ? 'Bulk качване' : 'Bulk upload' },
         { text: `${SUBSCRIPTION_PLANS.dealer.features.maxTeamMembers} ${language === 'bg' ? 'членове на екип' : 'team members'}` }
       ]
     },
     {
-      id: 'company',
-      name: text.companyPlan,
-      description: text.companyDesc,
-      icon: <Building2 />,
-      iconColor: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
-      price: SUBSCRIPTION_PLANS.company.price, // ✅ { monthly: 137.88, annual: 1288 }
-      listings: SUBSCRIPTION_PLANS.company.features.maxListings, // ✅ -1 (unlimited)
+      id: 'free',
+      name: text.freePlan,
+      description: text.freeDesc,
+      icon: <Zap />,
+      iconColor: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
+      price: SUBSCRIPTION_PLANS.free.price, // { monthly: 0, annual: 0 }
+      listings: SUBSCRIPTION_PLANS.free.features.maxListings, // 3
       featured: false,
+      cta: text.ctaFree,
       features: [
-        { text: text.unlimited + ' ' + text.listings, highlighted: true },
-        { text: language === 'bg' ? 'Всичко от Dealer' : 'Everything from Dealer' },
-        { text: language === 'bg' ? 'API достъп' : 'API access' },
-        { text: language === 'bg' ? 'Персонален мениджър' : 'Dedicated manager' },
-        { text: `${SUBSCRIPTION_PLANS.company.features.maxTeamMembers} ${language === 'bg' ? 'членове на екип' : 'team members'}` },
-        { text: language === 'bg' ? 'Персонализиран брандинг' : 'Custom branding' }
+        { text: `${SUBSCRIPTION_PLANS.free.features.maxListings} ${text.listings}`, highlighted: true },
+        { text: language === 'bg' ? 'Основни функции' : 'Basic features' },
+        { text: language === 'bg' ? 'Стандартна поддръжка' : 'Standard support' }
       ]
     }
   ];
@@ -1231,7 +1429,7 @@ export const PricingPageEnhanced: React.FC<PricingPageEnhancedProps> = ({
                 $primary={plan.featured}
                 onClick={() => handleSelectPlan(plan.id)}
               >
-                {text.subscribe}
+                {plan.cta}
                 <ArrowRight size={20} />
               </SubscribeButton>
             </PricingCard>
@@ -1274,43 +1472,170 @@ export const PricingPageEnhanced: React.FC<PricingPageEnhancedProps> = ({
               style={{ transform: showComparison ? 'rotate(180deg)' : 'rotate(0)' }}
             />
           </ComparisonTitle>
+
+          {/* Mobile Plan Tabs for comparison */}
+          {showComparison && (
+            <MobileTabsWrapper>
+              <MobileTab 
+                $active={mobileSelectedPlan === 'company'} 
+                onClick={() => setMobileSelectedPlan('company')}
+              >
+                {text.companyPlan}
+              </MobileTab>
+              <MobileTab 
+                $active={mobileSelectedPlan === 'dealer'} 
+                onClick={() => setMobileSelectedPlan('dealer')}
+              >
+                {text.dealerPlan}
+              </MobileTab>
+              <MobileTab 
+                $active={mobileSelectedPlan === 'free'} 
+                onClick={() => setMobileSelectedPlan('free')}
+              >
+                {text.freePlan}
+              </MobileTab>
+            </MobileTabsWrapper>
+          )}
+
           <ComparisonTable $expanded={showComparison}>
             <TableHeader>
               <TableHeaderCell>{language === 'bg' ? 'Функция' : 'Feature'}</TableHeaderCell>
-              <TableHeaderCell>{text.freePlan}</TableHeaderCell>
-              <TableHeaderCell>{text.dealerPlan}</TableHeaderCell>
               <TableHeaderCell>{text.companyPlan}</TableHeaderCell>
+              <TableHeaderCell>{text.dealerPlan}</TableHeaderCell>
+              <TableHeaderCell>{text.freePlan}</TableHeaderCell>
             </TableHeader>
+
+            {/* Section: Core Features */}
+            <ComparisonSectionHeader>
+              <SectionHeaderCell>
+                <Zap size={16} />
+                {text.sectionBasic}
+              </SectionHeaderCell>
+              <SectionHeaderCell />
+              <SectionHeaderCell />
+              <SectionHeaderCell />
+            </ComparisonSectionHeader>
+
             {[
-              { feature: language === 'bg' ? 'Брой обяви' : 'Listings', free: '3', dealer: '30', company: '∞' },
-              { feature: language === 'bg' ? 'VIP значка' : 'VIP Badge', free: false, dealer: true, company: true },
-              { feature: language === 'bg' ? 'Аналитика' : 'Analytics', free: false, dealer: true, company: true },
-              { feature: language === 'bg' ? 'API достъп' : 'API Access', free: false, dealer: false, company: true },
-              { feature: language === 'bg' ? 'Приоритетна поддръжка' : 'Priority Support', free: false, dealer: true, company: true },
-              { feature: language === 'bg' ? 'Персонален мениджър' : 'Account Manager', free: false, dealer: false, company: true },
+              { feature: language === 'bg' ? 'Брой обяви' : 'Listings', company: '∞', dealer: '20', free: '3' },
+              { feature: language === 'bg' ? 'VIP значка' : 'VIP Badge', company: true, dealer: true, free: false },
+              { feature: language === 'bg' ? 'Обяви с приоритет' : 'Featured Listings', company: true, dealer: true, free: false },
+              { feature: language === 'bg' ? 'Тعديل марка/модел' : 'Edit Make/Model', company: true, dealer: false, free: false },
+              { feature: language === 'bg' ? 'Масово качване' : 'Bulk Upload', company: true, dealer: false, free: false },
             ].map((row, i) => (
-              <TableRow key={i} $highlighted={i % 2 === 0}>
+              <TableRow key={`basic-${i}`} $highlighted={i % 2 === 0}>
                 <TableCell $feature data-label="">{row.feature}</TableCell>
-                <TableCell data-label={text.freePlan}>
-                  {typeof row.free === 'boolean' ? (
-                    <CheckMark $included={row.free}>
-                      <Check />
-                    </CheckMark>
-                  ) : row.free}
+                <TableCell data-label={text.companyPlan}>
+                  {typeof row.company === 'boolean' ? (
+                    <CheckMark $included={row.company}><Check /></CheckMark>
+                  ) : row.company}
                 </TableCell>
                 <TableCell data-label={text.dealerPlan}>
                   {typeof row.dealer === 'boolean' ? (
-                    <CheckMark $included={row.dealer}>
-                      <Check />
-                    </CheckMark>
+                    <CheckMark $included={row.dealer}><Check /></CheckMark>
                   ) : row.dealer}
                 </TableCell>
+                <TableCell data-label={text.freePlan}>
+                  {typeof row.free === 'boolean' ? (
+                    <CheckMark $included={row.free}><Check /></CheckMark>
+                  ) : row.free}
+                </TableCell>
+              </TableRow>
+            ))}
+
+            {/* Section: AI Tools */}
+            <ComparisonSectionHeader>
+              <SectionHeaderCell>
+                <Bot size={16} />
+                {text.sectionAI}
+              </SectionHeaderCell>
+              <SectionHeaderCell />
+              <SectionHeaderCell />
+              <SectionHeaderCell />
+            </ComparisonSectionHeader>
+
+            {[
+              { feature: language === 'bg' ? 'AI анализ на коли' : 'AI Car Analysis', company: true, dealer: true, free: false },
+              { feature: language === 'bg' ? 'AI чатбот' : 'AI Chatbot', company: true, dealer: true, free: false },
+              { feature: language === 'bg' ? 'Бързи отговори' : 'Quick Replies', company: true, dealer: true, free: false },
+            ].map((row, i) => (
+              <TableRow key={`ai-${i}`} $highlighted={i % 2 === 0}>
+                <TableCell $feature data-label="">{row.feature}</TableCell>
+                <TableCell data-label={text.companyPlan}>
+                  <CheckMark $included={row.company}><Check /></CheckMark>
+                </TableCell>
+                <TableCell data-label={text.dealerPlan}>
+                  <CheckMark $included={row.dealer}><Check /></CheckMark>
+                </TableCell>
+                <TableCell data-label={text.freePlan}>
+                  <CheckMark $included={row.free}><Check /></CheckMark>
+                </TableCell>
+              </TableRow>
+            ))}
+
+            {/* Section: Support & Services */}
+            <ComparisonSectionHeader>
+              <SectionHeaderCell>
+                <Headphones size={16} />
+                {text.sectionSupport}
+              </SectionHeaderCell>
+              <SectionHeaderCell />
+              <SectionHeaderCell />
+              <SectionHeaderCell />
+            </ComparisonSectionHeader>
+
+            {[
+              { feature: language === 'bg' ? 'Приоритетна поддръжка' : 'Priority Support', company: true, dealer: true, free: false },
+              { feature: language === 'bg' ? 'Персонален мениджър' : 'Account Manager', company: true, dealer: false, free: false },
+              { feature: language === 'bg' ? 'Членове на екип' : 'Team Members', company: `${SUBSCRIPTION_PLANS.company.features.maxTeamMembers}`, dealer: `${SUBSCRIPTION_PLANS.dealer.features.maxTeamMembers}`, free: '1' },
+            ].map((row, i) => (
+              <TableRow key={`support-${i}`} $highlighted={i % 2 === 0}>
+                <TableCell $feature data-label="">{row.feature}</TableCell>
                 <TableCell data-label={text.companyPlan}>
                   {typeof row.company === 'boolean' ? (
-                    <CheckMark $included={row.company}>
-                      <Check />
-                    </CheckMark>
+                    <CheckMark $included={row.company}><Check /></CheckMark>
                   ) : row.company}
+                </TableCell>
+                <TableCell data-label={text.dealerPlan}>
+                  {typeof row.dealer === 'boolean' ? (
+                    <CheckMark $included={row.dealer}><Check /></CheckMark>
+                  ) : row.dealer}
+                </TableCell>
+                <TableCell data-label={text.freePlan}>
+                  {typeof row.free === 'boolean' ? (
+                    <CheckMark $included={row.free}><Check /></CheckMark>
+                  ) : row.free}
+                </TableCell>
+              </TableRow>
+            ))}
+
+            {/* Section: Reports & Data */}
+            <ComparisonSectionHeader>
+              <SectionHeaderCell>
+                <BarChart3 size={16} />
+                {text.sectionReports}
+              </SectionHeaderCell>
+              <SectionHeaderCell />
+              <SectionHeaderCell />
+              <SectionHeaderCell />
+            </ComparisonSectionHeader>
+
+            {[
+              { feature: language === 'bg' ? 'Разширена аналитика' : 'Advanced Analytics', company: true, dealer: true, free: false },
+              { feature: language === 'bg' ? 'Тصدير CSV' : 'CSV Export', company: true, dealer: false, free: false },
+              { feature: language === 'bg' ? 'API достъп' : 'API Access', company: true, dealer: false, free: false },
+              { feature: language === 'bg' ? 'Персонализиран брандинг' : 'Custom Branding', company: true, dealer: false, free: false },
+            ].map((row, i) => (
+              <TableRow key={`reports-${i}`} $highlighted={i % 2 === 0}>
+                <TableCell $feature data-label="">{row.feature}</TableCell>
+                <TableCell data-label={text.companyPlan}>
+                  <CheckMark $included={row.company as boolean}><Check /></CheckMark>
+                </TableCell>
+                <TableCell data-label={text.dealerPlan}>
+                  <CheckMark $included={row.dealer as boolean}><Check /></CheckMark>
+                </TableCell>
+                <TableCell data-label={text.freePlan}>
+                  <CheckMark $included={row.free as boolean}><Check /></CheckMark>
                 </TableCell>
               </TableRow>
             ))}
@@ -1340,6 +1665,30 @@ export const PricingPageEnhanced: React.FC<PricingPageEnhancedProps> = ({
             ))}
           </TestimonialsGrid>
         </TestimonialsSection>
+
+        {/* FAQ Section — 9D */}
+        <FAQSection>
+          <FAQTitle>
+            <HelpCircle size={24} />
+            {text.faqTitle}
+          </FAQTitle>
+          <FAQList>
+            {text.faq.map((item, i) => (
+              <FAQItem key={i}>
+                <FAQQuestion onClick={() => setOpenFAQ(openFAQ === i ? null : i)}>
+                  {item.q}
+                  <ChevronDown 
+                    size={20} 
+                    style={{ transform: openFAQ === i ? 'rotate(180deg)' : 'rotate(0)' }}
+                  />
+                </FAQQuestion>
+                <FAQAnswer $expanded={openFAQ === i}>
+                  {item.a}
+                </FAQAnswer>
+              </FAQItem>
+            ))}
+          </FAQList>
+        </FAQSection>
 
         {/* Guarantee Section */}
         <GuaranteeSection>

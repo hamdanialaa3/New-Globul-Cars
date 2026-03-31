@@ -34,14 +34,14 @@ interface ServiceStatus {
 
 const Dashboard = styled.div`
   padding: 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--admin-bg-primary);
   min-height: 100vh;
 `;
 
 const Header = styled.div`
   text-align: center;
   margin-bottom: 32px;
-  color: white;
+  color: var(--admin-text-primary);
 `;
 
 const Title = styled.h1`
@@ -163,7 +163,7 @@ const ActionButton = styled.button`
   margin-top: 16px;
   padding: 8px 16px;
   background: #667eea;
-  color: white;
+  color: var(--admin-text-primary);
   border: none;
   border-radius: 6px;
   font-size: 0.9rem;

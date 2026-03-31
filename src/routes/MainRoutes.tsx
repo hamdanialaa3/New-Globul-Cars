@@ -93,6 +93,7 @@ const AdvancedSearchPage = safeLazy(() => import('../pages/05_search-browse/adva
 const AlgoliaSearchPage = safeLazy(() => import('../pages/05_search-browse/algolia-search/AlgoliaSearchPage'));
 const MyListingsPage = safeLazy(() => import('../pages/03_user-pages/my-listings/MyListingsPage'));
 const MyDraftsPage = safeLazy(() => import('../pages/03_user-pages/my-drafts/MyDraftsPage'));
+const GaragePage = safeLazy(() => import('../pages/03_user-pages/garage/GaragePage'));
 const AcceptInvitePage = safeLazy(() => import('../pages/03_user-pages/AcceptInvitePage'));
 const MigrationPage = safeLazy(() => import('../pages/06_admin/MigrationPage'));
 const DebugCarsPage = safeLazy(() => import('../pages/06_admin/DebugCarsPage'));
@@ -132,6 +133,7 @@ const ManualPaymentSuccessPage = safeLazy(() => import('../pages/08_payment-bill
 const DealerRegistrationPage = safeLazy(() => import('../pages/09_dealer-company/DealerRegistrationPage'));
 const DealerDashboardPage = safeLazy(() => import('../pages/09_dealer-company/DealerDashboardPage'));
 const SubscriptionSelectionPage = safeLazy(() => import('../pages/dealer/SubscriptionSelectionPage'));
+const BulkReviewPage = safeLazy(() => import('../pages/09_dealer-company/BulkReviewPage'));
 const AlgoliaSyncManager = safeLazy(() => import('../pages/06_admin/AlgoliaSyncManager'));
 const AdminCarManagementPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminCarManagementPage'));
 const ContentModerationPage = safeLazy(() => import('../components/AdvancedContentManagement'));
@@ -325,6 +327,14 @@ export const MainRoutes: React.FC = () => {
                 element={
                     <AuthGuard requireAuth={true}>
                         <DealerDashboardPage />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/dealer/bulk-review/:batchId"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <BulkReviewPage />
                     </AuthGuard>
                 }
             />
@@ -571,6 +581,7 @@ export const MainRoutes: React.FC = () => {
 
             <Route path="/my-listings" element={<AuthGuard requireAuth={true}><MyListingsPage /></AuthGuard>} />
             <Route path="/my-drafts" element={<AuthGuard requireAuth={true}><MyDraftsPage /></AuthGuard>} />
+            <Route path="/my-garage" element={<AuthGuard requireAuth={true}><GaragePage /></AuthGuard>} />
             <Route path="/analytics" element={<AuthGuard requireAuth={true}><B2BAnalyticsPortal /></AuthGuard>} />
             <Route path="/subscription" element={<AuthGuard requireAuth={true}><SubscriptionPage /></AuthGuard>} />
             <Route path="/migration" element={<AuthGuard requireAuth={true}><MigrationPage /></AuthGuard>} />

@@ -8,6 +8,18 @@
   "properties": {
     "id": { "type": "string", "description": "Firestore document ID" },
     "vin": { "type": "string", "maxLength": 17 },
+    "vinVerification": {
+      "type": "object",
+      "properties": {
+        "isVerified": { "type": "boolean" },
+        "hasFlags": { "type": "boolean" },
+        "provider": { "type": "string" },
+        "reportedMileage": { "type": "integer" },
+        "verifiedAt": { "type": "string", "format": "date-time" },
+        "reportId": { "type": "string" },
+        "flagsSummary": { "type": "array", "items": { "type": "string" } }
+      }
+    },
     "carNumericId": { "type": "integer", "minimum": 1, "description": "Sequential car ID scoped to seller" },
     "sellerNumericId": { "type": "integer", "minimum": 1, "description": "Seller's sequential numeric ID" },
     "sellerId": { "type": "string", "description": "Firebase Auth UID (never exposed in public URLs)" },

@@ -50,10 +50,8 @@ const GuardContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: ${({ theme }) => theme.mode === 'dark'
-    ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%)'
-    : 'linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.08) 100%)'
-  };
+  /* Light mode: solid opaque background (default) */
+  background: linear-gradient(135deg, #f0f2f8 0%, #e8ebf4 50%, #f3f1fa 100%);
   backdrop-filter: blur(10px);
   padding: 2rem;
   text-align: center;
@@ -63,13 +61,19 @@ const GuardContainer = styled.div`
   width: 100vw;
   height: 100vh;
   min-height: 100vh;
-  
+
+  /* Dark mode via data-theme attribute */
+  [data-theme="dark"] &,
+  .dark-theme & {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%);
+  }
+
   /* Ensure content is visible */
   & > * {
     position: relative;
     z-index: 1;
   }
-  
+
   /* Decorative gradient overlay */
   &::before {
     content: '';
@@ -82,7 +86,7 @@ const GuardContainer = styled.div`
     pointer-events: none;
     z-index: 0;
   }
-  
+
   @media (max-width: 768px) {
     padding: 1rem;
   }
@@ -90,24 +94,24 @@ const GuardContainer = styled.div`
 
 const MessageCard = styled.div`
   position: relative;
-  background: ${({ theme }) => theme.mode === 'dark'
-    ? 'rgba(30, 41, 59, 0.95)'
-    : 'rgba(255, 255, 255, 0.95)'
-  };
+  /* Light mode defaults */
+  background: #ffffff;
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid ${({ theme }) => theme.mode === 'dark'
-    ? 'rgba(148, 163, 184, 0.2)'
-    : 'rgba(255, 255, 255, 0.5)'
-  };
+  border: 1px solid rgba(99, 102, 241, 0.12);
   padding: 3rem 2rem;
   border-radius: 24px;
   max-width: 600px;
   width: 100%;
-  box-shadow: 
-    0 20px 60px rgba(0, 0, 0, 0.3),
-    0 8px 32px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 60px rgba(99, 102, 241, 0.08), 0 8px 32px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+
+  /* Dark mode */
+  [data-theme="dark"] &,
+  .dark-theme & {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: rgba(148, 163, 184, 0.2);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
   animation: scaleInBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 1;
   margin: 2rem;
@@ -214,13 +218,15 @@ const Title = styled.h2`
 `;
 
 const Message = styled.p`
-  color: ${({ theme }) => theme.mode === 'dark' 
-    ? 'rgba(255, 255, 255, 0.85)' 
-    : 'var(--text-secondary, #4A5568)'
-  };
+  color: var(--text-secondary, #4A5568);
   margin-bottom: 2rem;
   font-size: 1.125rem;
   line-height: 1.8;
+
+  [data-theme="dark"] &,
+  .dark-theme & {
+    color: rgba(255, 255, 255, 0.85);
+  }
   
   strong {
     background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);

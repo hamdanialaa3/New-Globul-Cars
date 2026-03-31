@@ -2,17 +2,17 @@
  * Permissions Service - Calculate and manage user permissions
  * Phase 2A: Core Service Layer
  * ✅ FIXED January 7, 2026: Now uses subscription-plans.ts as single source of truth
- * 
+ *
  * This service calculates permissions based on profile type and plan tier.
  * All permission checks should go through this service.
- * 
+ *
  * File: src/services/profile/PermissionsService.ts
  */
 
-import type { 
-  ProfileType, 
+import type {
+  ProfileType,
   PlanTier,
-  ProfilePermissions as BaseProfilePermissions
+  ProfilePermissions as BaseProfilePermissions,
 } from '../../types/user/bulgarian-user.types';
 import { SUBSCRIPTION_PLANS } from '../../config/subscription-plans';
 
@@ -23,37 +23,37 @@ export interface ProfilePermissions extends BaseProfilePermissions {
   maxListings: number; // -1 = unlimited
   canFeatureListings: boolean;
   canBulkUpload: boolean;
-  
+
   // Analytics permissions
   hasAnalytics: boolean;
   hasAdvancedAnalytics: boolean;
   hasExportAnalytics: boolean;
-  
+
   // Team permissions
   hasTeam: boolean;
   maxTeamMembers: number;
   canAssignRoles: boolean;
-  
+
   // Data permissions
   canExportData: boolean;
   canImportData: boolean;
   canBulkEdit: boolean;
-  
+
   // API & Integration
   canUseAPI: boolean;
   hasWebhooks: boolean;
   apiRateLimitPerHour: number;
-  
+
   // Marketing & Campaigns
   canCreateCampaigns: boolean;
   maxCampaigns: number;
   canUseEmailMarketing: boolean;
-  
+
   // Support & Services
   hasPrioritySupport: boolean;
   hasAccountManager: boolean;
   canRequestConsultations: boolean;
-  
+
   // Display & Branding
   canCustomizeBranding: boolean;
   canHideCompetitors: boolean;
@@ -64,17 +64,20 @@ export class PermissionsService {
   /**
    * Get complete permissions for a profile type and plan tier
    */
-  static getPermissions(profileType: ProfileType, planTier: PlanTier): ProfilePermissions {
+  static getPermissions(
+    profileType: ProfileType,
+    planTier: PlanTier
+  ): ProfilePermissions {
     // Base permissions by tier
     const tierPermissions = this.getTierPermissions(planTier);
-    
+
     // Type-specific permissions
     const typePermissions = this.getTypePermissions(profileType);
-    
+
     // Merge permissions
     return {
       ...tierPermissions,
-      ...typePermissions
+      ...typePermissions,
     };
   }
 
@@ -85,14 +88,19 @@ export class PermissionsService {
   private static getTierPermissions(planTier: PlanTier): ProfilePermissions {
     const plan = SUBSCRIPTION_PLANS[planTier];
     const features = plan.features;
-    
+
     switch (planTier) {
       case 'free':
         return {
           canAddListings: true,
           maxListings: features.maxListings, // 3
+          maxMonthlyListings: 3,
+          canEditLockedFields: false,
+          maxFlexEditsPerMonth: 0,
           canFeatureListings: features.canFeatureListings,
           canBulkUpload: features.canBulkUpload,
+          bulkUploadLimit: 0,
+          canCloneListing: false,
           hasAnalytics: features.hasBasicAnalytics,
           hasAdvancedAnalytics: features.hasAdvancedAnalytics,
           hasExportAnalytics: features.canExportAnalytics,
@@ -113,15 +121,23 @@ export class PermissionsService {
           canRequestConsultations: features.canRequestConsultations,
           canCustomizeBranding: features.canCustomizeBranding,
           canHideCompetitors: false,
-          hasFeaturedBadge: features.hasFeaturedBadge
+          hasFeaturedBadge: features.hasFeaturedBadge,
+          canUseQuickReplies: false,
+          canImportCSV: false,
+          themeMode: 'standard',
         };
 
       case 'dealer':
         return {
           canAddListings: true,
           maxListings: features.maxListings, // ✅ Now correctly 30 (was 10)
+          maxMonthlyListings: 30,
+          canEditLockedFields: true,
+          maxFlexEditsPerMonth: 5,
           canFeatureListings: features.canFeatureListings,
           canBulkUpload: features.canBulkUpload,
+          bulkUploadLimit: features.maxBulkUploadSize, // 50
+          canCloneListing: true,
           hasAnalytics: features.hasBasicAnalytics,
           hasAdvancedAnalytics: features.hasAdvancedAnalytics,
           hasExportAnalytics: features.canExportAnalytics,
@@ -142,15 +158,23 @@ export class PermissionsService {
           canRequestConsultations: features.canRequestConsultations,
           canCustomizeBranding: features.canCustomizeBranding,
           canHideCompetitors: false,
-          hasFeaturedBadge: features.hasFeaturedBadge
+          hasFeaturedBadge: features.hasFeaturedBadge,
+          canUseQuickReplies: true,
+          canImportCSV: true,
+          themeMode: 'dealer-led',
         };
 
       case 'company':
         return {
           canAddListings: true,
           maxListings: features.maxListings, // -1 (Unlimited)
+          maxMonthlyListings: 200,
+          canEditLockedFields: true,
+          maxFlexEditsPerMonth: -1,
           canFeatureListings: features.canFeatureListings,
           canBulkUpload: features.canBulkUpload,
+          bulkUploadLimit: features.maxBulkUploadSize, // -1 (unlimited)
+          canCloneListing: true,
           hasAnalytics: features.hasBasicAnalytics,
           hasAdvancedAnalytics: features.hasAdvancedAnalytics,
           hasExportAnalytics: features.canExportAnalytics,
@@ -171,7 +195,10 @@ export class PermissionsService {
           canRequestConsultations: features.canRequestConsultations,
           canCustomizeBranding: features.canCustomizeBranding,
           canHideCompetitors: true,
-          hasFeaturedBadge: features.hasFeaturedBadge
+          hasFeaturedBadge: features.hasFeaturedBadge,
+          canUseQuickReplies: true,
+          canImportCSV: true,
+          themeMode: 'company-led',
         };
 
       default:
@@ -183,7 +210,9 @@ export class PermissionsService {
   /**
    * Get additional permissions based on profile type
    */
-  private static getTypePermissions(profileType: ProfileType): Partial<ProfilePermissions> {
+  private static getTypePermissions(
+    profileType: ProfileType
+  ): Partial<ProfilePermissions> {
     switch (profileType) {
       case 'private':
         return {
@@ -193,13 +222,13 @@ export class PermissionsService {
       case 'dealer':
         return {
           // Dealers get enhanced listing features
-          canFeatureListings: true
+          canFeatureListings: true,
         };
 
       case 'company':
         return {
           // Companies get enhanced team features
-          hasTeam: true
+          hasTeam: true,
         };
 
       default:
@@ -250,7 +279,10 @@ export class PermissionsService {
   /**
    * Get campaign limit
    */
-  static getCampaignLimit(profileType: ProfileType, planTier: PlanTier): number {
+  static getCampaignLimit(
+    profileType: ProfileType,
+    planTier: PlanTier
+  ): number {
     const permissions = this.getPermissions(profileType, planTier);
     return permissions.maxCampaigns;
   }
@@ -266,11 +298,14 @@ export class PermissionsService {
   /**
    * Get plan tier name for display
    */
-  static getPlanDisplayName(planTier: PlanTier, language: 'bg' | 'en' = 'bg'): string {
+  static getPlanDisplayName(
+    planTier: PlanTier,
+    language: 'bg' | 'en' = 'bg'
+  ): string {
     const names: Record<PlanTier, { bg: string; en: string }> = {
       free: { bg: 'Безплатен', en: 'Free' },
       dealer: { bg: 'Дилър', en: 'Dealer' },
-      company: { bg: 'Компания', en: 'Company' }
+      company: { bg: 'Компания', en: 'Company' },
     };
 
     return names[planTier]?.[language] || planTier;
@@ -283,7 +318,7 @@ export class PermissionsService {
     const tierRanking: Record<PlanTier, number> = {
       free: 0,
       dealer: 1,
-      company: 2
+      company: 2,
     };
 
     return tierRanking[tier1] > tierRanking[tier2];
@@ -301,22 +336,14 @@ export class PermissionsService {
     if (currentTier === 'free') {
       suggestions.push({
         tier: 'dealer',
-        benefits: [
-          '10 активни обяви',
-          'Аналитика',
-          'Приоритетна поддръжка'
-        ]
+        benefits: ['10 активни обяви', 'Аналитика', 'Приоритетна поддръжка'],
       });
     }
 
     if (currentTier === 'dealer') {
       suggestions.push({
         tier: 'company',
-        benefits: [
-          'Неограничени обяви',
-          'API достъп',
-          'Персонален мениджър'
-        ]
+        benefits: ['Неограничени обяви', 'API достъп', 'Персонален мениджър'],
       });
     }
 
@@ -325,4 +352,3 @@ export class PermissionsService {
 }
 
 export default PermissionsService;
-

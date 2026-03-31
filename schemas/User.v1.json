@@ -54,7 +54,8 @@
         "hasAdvancedAnalytics": { "type": "boolean" },
         "hasTeam": { "type": "boolean" },
         "canExportData": { "type": "boolean" },
-        "hasPrioritySupport": { "type": "boolean" }
+        "hasPrioritySupport": { "type": "boolean" },
+        "hasSmartGarage": { "type": "boolean" }
       }
     },
 

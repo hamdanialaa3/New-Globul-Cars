@@ -11,14 +11,14 @@ import { useAdminLang } from '../contexts/AdminLanguageContext';
 
 const Container = styled.div`
   padding: 2rem;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  background: var(--admin-bg-primary);
   border-radius: 16px;
   margin: 1rem;
-  color: white;
+  color: var(--admin-text-primary);
 `;
 
 const Title = styled.h2`
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   margin-bottom: 2rem;
   display: flex;
   align-items: center;
@@ -34,7 +34,7 @@ const TabsContainer = styled.div`
 const Tab = styled.button<{ active: boolean }>`
   padding: 0.75rem 1.5rem;
   background: ${props => props.active ? '#6366F1' : 'rgba(255, 255, 255, 0.1)'};
-  color: white;
+  color: var(--admin-text-primary);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -46,7 +46,7 @@ const Tab = styled.button<{ active: boolean }>`
 `;
 
 const DataTable = styled.div`
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--admin-bg-hover);
   border-radius: 12px;
   overflow: hidden;
 `;
@@ -56,7 +56,7 @@ const TableHeader = styled.div`
   grid-template-columns: 1fr 1fr 1fr auto;
   gap: 1rem;
   padding: 1rem;
-  background: rgba(255, 215, 0, 0.1);
+  background: var(--admin-accent-primary);
   font-weight: bold;
 `;
 
@@ -69,7 +69,7 @@ const TableRow = styled.div`
   transition: background 0.3s ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--admin-bg-hover);
   }
 `;
 
@@ -84,7 +84,7 @@ const ActionButton = styled.button<{ variant?: 'edit' | 'delete' | 'save' | 'can
       default: return '#6366F1';
     }
   }};
-  color: white;
+  color: var(--admin-text-primary);
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -99,15 +99,15 @@ const ActionButton = styled.button<{ variant?: 'edit' | 'delete' | 'save' | 'can
 
 const Input = styled.input`
   padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: var(--admin-bg-hover);
+  border: 1px solid var(--admin-border-light);
   border-radius: 6px;
-  color: white;
+  color: var(--admin-text-primary);
   width: 100%;
 
   &:focus {
     outline: none;
-    border-color: #6366F1;
+    border-color: var(--admin-accent-primary);
   }
 `;
 
@@ -116,8 +116,8 @@ const AddButton = styled.button`
   align-items: center;
   gap: 0.5rem;
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-  color: white;
+  background: var(--admin-bg-primary);
+  color: var(--admin-text-primary);
   border: none;
   border-radius: 8px;
   cursor: pointer;

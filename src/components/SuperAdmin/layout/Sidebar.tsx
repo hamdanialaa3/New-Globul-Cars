@@ -179,7 +179,7 @@ const UserCard = styled.div`
   cursor: pointer;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--admin-bg-hover);
   }
 `;
 
@@ -191,7 +191,7 @@ const Avatar = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--admin-text-primary);
   font-weight: 700;
   font-size: 0.9rem;
   box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);

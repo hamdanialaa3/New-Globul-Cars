@@ -243,7 +243,7 @@ const Header = styled.div`
 const RefreshButton = styled.button`
   padding: 10px 20px;
   background: #3B82F6;
-  color: white;
+  color: var(--admin-text-primary);
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -371,7 +371,7 @@ const AlertSeverityBadge = styled.span<{ severity: string }>`
   border-radius: 5px;
   font-size: 12px;
   font-weight: bold;
-  color: white;
+  color: var(--admin-text-primary);
   background: ${props => {
     const colors: Record<string, string> = {
       critical: '#F44336',
@@ -422,7 +422,7 @@ const AlertUrl = styled.a`
 const AcknowledgeButton = styled.button`
   padding: 8px 16px;
   background: #4CAF50;
-  color: white;
+  color: var(--admin-text-primary);
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -454,7 +454,7 @@ const ExternalLink = styled.a`
   display: inline-block;
   padding: 12px 20px;
   background: #3B82F6;
-  color: white;
+  color: var(--admin-text-primary);
   text-decoration: none;
   border-radius: 5px;
   font-size: 14px;

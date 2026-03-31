@@ -17,9 +17,9 @@ import {
 } from 'lucide-react';
 
 const Container = styled.div`
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border-radius: 12px;
-  border: 1px solid #1e2432;
+  border: 1px solid var(--admin-border-subtle);
   padding: 24px;
   margin: 20px;
 `;
@@ -40,7 +40,7 @@ const Title = styled.h2`
 
 const Subtitle = styled.p`
   font-size: 14px;
-  color: #9ca3af;
+  color: var(--admin-text-secondary);
   margin: 0;
 `;
 
@@ -101,7 +101,7 @@ const CardTitle = styled.h3`
 
 const CardDescription = styled.p`
   font-size: 13px;
-  color: #9ca3af;
+  color: var(--admin-text-secondary);
   margin: 0 0 16px 0;
   line-height: 1.5;
 `;
@@ -203,7 +203,7 @@ const BackupMeta = styled.div`
   display: flex;
   gap: 16px;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--admin-text-secondary);
 `;
 
 const BackupActions = styled.div`
@@ -311,7 +311,7 @@ const StatValue = styled.div`
 
 const StatLabel = styled.div`
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--admin-text-secondary);
 `;
 
 const StatsGrid = styled.div`

@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useNavigate } from 'react-router-dom';
 import { dealerDashboardService, DealerDashboardData } from '../../services/dealer/dealer-dashboard.service';
 import {
   PerformanceOverviewWidget,
@@ -15,6 +16,7 @@ import {
   InventoryWidget
 } from '../../components/dealer';
 import { BulkUploadModal } from '../../components/dealer/BulkUploadModal';
+import { SubscriptionDashboard } from '../../components/subscription/SubscriptionDashboard';
 import { Package, TrendingUp, Upload, Crown, AlertCircle } from 'lucide-react';
 import { logger } from '../../services/logger-service';
 import { SUBSCRIPTION_PLANS } from '../../config/subscription-plans';
@@ -235,6 +237,7 @@ const ErrorContainer = styled.div`
 const DealerDashboardPage: React.FC = () => {
   const { currentUser } = useAuth();
   const { language } = useLanguage();
+  const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState<DealerDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -390,12 +393,12 @@ const DealerDashboardPage: React.FC = () => {
                 <UsageFill
                   percentage={getUsagePercentage(
                     dashboardData.stats.activeListings,
-                    SUBSCRIPTION_PLANS[userPlan as any]?.maxListings || 10
+                    SUBSCRIPTION_PLANS[userPlan as any]?.features?.maxListings || 10
                   )}
                 />
               </UsageBar>
               <UsageText>
-                {dashboardData.stats.activeListings} / {SUBSCRIPTION_PLANS[userPlan as any]?.maxListings || 10} listings
+                {dashboardData.stats.activeListings} / {SUBSCRIPTION_PLANS[userPlan as any]?.features?.maxListings || 10} listings
               </UsageText>
             </>
           )}
@@ -416,11 +419,15 @@ const DealerDashboardPage: React.FC = () => {
         </LimitWarning>
       )}
 
-      {(userPlan === 'dealer' || userPlan === 'company') && (
+      {userPlan === 'company' && (
         <HeaderActions>
           <BulkUploadButton onClick={() => setBulkUploadModalOpen(true)}>
             <Upload size={18} />
             {language === 'bg' ? 'Групово качване' : 'Bulk Upload'}
+          </BulkUploadButton>
+          <BulkUploadButton onClick={() => navigate('/dealer/bulk-review/pending')}>
+            <Package size={18} />
+            {language === 'bg' ? 'Табло за преглед' : 'Review Dashboard'}
           </BulkUploadButton>
         </HeaderActions>
       )}
@@ -466,6 +473,12 @@ const DealerDashboardPage: React.FC = () => {
           </StatContent>
         </StatCard>
       </StatsOverview>
+
+      <SubscriptionDashboard
+        onUpgrade={() => navigate('/pricing')}
+        onCancel={() => subscriptionService.getPortalLink().then(url => { window.location.href = url; })}
+        onManagePayment={() => subscriptionService.getPortalLink().then(url => { window.location.href = url; })}
+      />
 
       <WidgetsGrid>
         <FullWidthWidget>

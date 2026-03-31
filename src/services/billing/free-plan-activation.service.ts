@@ -1,7 +1,7 @@
 /**
  * Free Plan Activation Service
  *
- * Activates a dealer or company plan for a user WITHOUT requiring payment,
+ * Activates a plan for a user WITHOUT requiring payment,
  * used when the admin has enabled the promotional "Free Offer" toggle.
  *
  * Safety checks:
@@ -15,7 +15,13 @@
  * @since February 2026
  */
 
-import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  serverTimestamp,
+} from 'firebase/firestore';
 import { db } from '../../firebase';
 import { logger } from '../logger-service';
 import type { PlanTier } from '../../types/user/bulgarian-user.types';
@@ -26,7 +32,7 @@ export interface FreePlanActivationRequest {
   userId: string;
   userEmail: string;
   userName: string;
-  planTier: 'dealer' | 'company';
+  planTier: 'free' | 'dealer' | 'company';
 }
 
 export interface FreePlanActivationResult {
@@ -54,24 +60,46 @@ export async function activateFreePlan(
     return { success: false, error: 'Missing userId or planTier' };
   }
 
-  if (!['dealer', 'company'].includes(planTier)) {
+  if (!['free', 'dealer', 'company'].includes(planTier)) {
     return { success: false, error: `Invalid plan tier: ${planTier}` };
   }
 
   try {
     // ─── 2. Server-side check: is free offer still active? ───
-    const promoRef = doc(db, 'app_settings', 'promotional_offer');
-    const promoSnap = await getDoc(promoRef);
+    // The base free plan is always available — no promo check needed.
+    // Dealer/company tiers can also be activated freely when the whole site
+    // is switched to free subscription mode from admin settings.
+    let promoData: Record<string, unknown> | undefined;
+    let source = 'free_plan';
+    if (planTier !== 'free') {
+      const promoRef = doc(db, 'app_settings', 'promotional_offer');
+      const siteSettingsRef = doc(db, 'app_settings', 'site_settings');
+      const [promoSnap, siteSettingsSnap] = await Promise.all([
+        getDoc(promoRef),
+        getDoc(siteSettingsRef),
+      ]);
+      const promoActive =
+        promoSnap.exists() && Boolean(promoSnap.data()?.isActive);
+      const siteWideFreeMode =
+        siteSettingsSnap.exists() &&
+        siteSettingsSnap.data()?.pricing?.subscriptionMode === 'free';
 
-    if (!promoSnap.exists() || !promoSnap.data()?.isActive) {
-      logger.warn('Free plan activation rejected — offer no longer active', {
-        userId,
-        planTier,
-      });
-      return {
-        success: false,
-        error: 'FREE_OFFER_EXPIRED',
-      };
+      if (!promoActive && !siteWideFreeMode) {
+        logger.warn('Free plan activation rejected — offer no longer active', {
+          userId,
+          planTier,
+        });
+        return {
+          success: false,
+          error: 'FREE_OFFER_EXPIRED',
+        };
+      }
+
+      if (promoActive) {
+        promoData = promoSnap.data() as Record<string, unknown>;
+      }
+
+      source = siteWideFreeMode ? 'free_site_mode' : 'free_promotional_offer';
     }
 
     // ─── 3. Verify user exists ───
@@ -83,12 +111,15 @@ export async function activateFreePlan(
     }
 
     // ─── 4. Update user profile ───
-    const profileType = planTier; // 'dealer' or 'company' maps 1:1 to profileType
+    const profileType = planTier === 'free' ? 'private' : planTier;
     await updateDoc(userRef, {
       profileType,
       planTier,
+      plan: {
+        tier: planTier,
+      },
       subscriptionStatus: 'active',
-      subscriptionSource: 'free_promotional_offer',
+      subscriptionSource: source,
       subscriptionActivatedAt: new Date().toISOString(),
       updatedAt: new Date(),
     });
@@ -104,16 +135,21 @@ export async function activateFreePlan(
         userName,
         planTier,
         profileType,
+        activationSource: source,
         activatedAt: new Date().toISOString(),
-        promoSnapshot: promoSnap.data(),
+        ...(promoData ? { promoSnapshot: promoData } : {}),
       });
     } catch (auditError) {
       // Audit log failure should NOT block the user's activation
-      logger.warn('Free plan audit log write failed (activation still succeeded)', auditError as Error, {
-        activationId,
-        userId,
-        planTier,
-      });
+      logger.warn(
+        'Free plan audit log write failed (activation still succeeded)',
+        auditError as Error,
+        {
+          activationId,
+          userId,
+          planTier,
+        }
+      );
     }
 
     logger.info('Free plan activated successfully', {

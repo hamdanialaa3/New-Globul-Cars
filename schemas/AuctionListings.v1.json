@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AuctionListing",
+  "description": "Schema for Koli.one Local Live Reverse Auctions",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the auction (Firestore assigned)"
+    },
+    "sellerId": {
+      "type": "string",
+      "description": "User ID of the seller"
+    },
+    "carId": {
+      "type": "string",
+      "description": "Link to the full car details in passenger_cars or others"
+    },
+    "carDetails": {
+      "type": "object",
+      "properties": {
+        "make": { "type": "string" },
+        "model": { "type": "string" },
+        "year": { "type": "number" },
+        "mileage": { "type": "number" },
+        "fuelType": { "type": "string" },
+        "imageUrl": { "type": "string" }
+      },
+      "required": ["make", "model", "year", "imageUrl"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "pending_payment", "completed", "cancelled"],
+      "default": "active"
+    },
+    "pricing": {
+      "type": "object",
+      "properties": {
+        "startPrice": { "type": "number", "description": "Starting bid amount" },
+        "currentBid": { "type": "number", "description": "Current highest bid" },
+        "winningBidderId": { "type": "string", "description": "Dealer ID holding the highest bid" }
+      },
+      "required": ["startPrice", "currentBid"]
+    },
+    "timing": {
+      "type": "object",
+      "properties": {
+        "startTime": { "type": "string", "format": "date-time" },
+        "endTime": { "type": "string", "format": "date-time" }
+      },
+      "required": ["startTime", "endTime"]
+    },
+    "bidsCount": {
+      "type": "number",
+      "default": 0
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["sellerId", "carId", "carDetails", "status", "pricing", "timing", "createdAt", "updatedAt"]
+}

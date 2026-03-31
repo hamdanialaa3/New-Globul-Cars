@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Network, Info, Zap, Database, Cloud, Cpu, Globe, Lock } from 'lucide-react';
 
 const ArchitectureSection = styled.div`
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border-radius: 12px;
   padding: 32px;
   margin: 0 20px 32px 20px;
@@ -73,7 +73,7 @@ const FeaturesGrid = styled.div`
 `;
 
 const FeatureCard = styled.div`
-  background: #1e2432;
+  background: var(--admin-bg-secondary);
   border: 1px solid #2d3748;
   border-radius: 12px;
   padding: 24px;
@@ -100,7 +100,7 @@ const FeatureIcon = styled.div`
 `;
 
 const FeatureTitle = styled.h3<{ language: string }>`
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   font-size: 15px;
   font-weight: 700;
   margin-bottom: 8px;
@@ -109,7 +109,7 @@ const FeatureTitle = styled.h3<{ language: string }>`
 `;
 
 const FeatureDesc = styled.p<{ language: string }>`
-  color: #94a3b8;
+  color: var(--admin-text-secondary);
   font-size: 12px;
   line-height: 1.5;
   direction: ${props => props.language === 'bg' ? 'ltr' : 'rtl'};

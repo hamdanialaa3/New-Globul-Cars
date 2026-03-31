@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { Facebook, MessageCircle, TrendingUp, Users, DollarSign, AlertCircle, ExternalLink, RefreshCw } from 'lucide-react';
 
 const PanelContainer = styled.div`
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border-radius: 12px;
   padding: 32px;
   border: 1px solid #2d3748;
@@ -68,8 +68,8 @@ const StatsGrid = styled.div`
 `;
 
 const StatCard = styled.div`
-  background: #1e2432;
-  color: #f8fafc;
+  background: var(--admin-bg-secondary);
+  color: var(--admin-text-primary);
   padding: 24px;
   border-radius: 12px;
   border: 1px solid #2d3748;
@@ -93,7 +93,7 @@ const StatCard = styled.div`
   .stat-value {
     font-size: 26px;
     font-weight: 700;
-    color: #f8fafc;
+    color: var(--admin-text-primary);
     margin-bottom: 4px;
   }
   
@@ -135,9 +135,9 @@ const QuickLinkButton = styled.a`
   transition: all 0.2s ease;
   
   &:hover {
-    background: #1e2432;
+    background: var(--admin-bg-secondary);
     border-color: #8B5CF6;
-    color: #f8fafc;
+    color: var(--admin-text-primary);
     transform: translateY(-2px);
   }
   
@@ -195,8 +195,8 @@ const DataTable = styled.table`
   }
 
   tr:hover td {
-    background: #1e2432;
-    color: #f8fafc;
+    background: var(--admin-bg-secondary);
+    color: var(--admin-text-primary);
   }
 `;
 

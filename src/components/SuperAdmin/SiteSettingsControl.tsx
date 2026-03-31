@@ -30,9 +30,9 @@ import type { SiteSettings } from '@/services/site-settings-types';
 import { DEFAULT_SITE_SETTINGS } from '@/services/site-settings-defaults';
 
 const Container = styled.div`
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border-radius: 12px;
-  border: 1px solid #1e2432;
+  border: 1px solid var(--admin-border-subtle);
   padding: 24px;
   margin: 20px;
 `;
@@ -53,7 +53,7 @@ const Title = styled.h2`
 
 const Subtitle = styled.p`
   font-size: 14px;
-  color: #9ca3af;
+  color: var(--admin-text-secondary);
   margin: 0;
 `;
 
@@ -105,7 +105,7 @@ const SettingLabel = styled.div`
 
 const SettingDescription = styled.div`
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--admin-text-secondary);
 `;
 
 const ToggleButton = styled.button<{ $active: boolean }>`
@@ -120,13 +120,13 @@ const ToggleButton = styled.button<{ $active: boolean }>`
 
   ${props => props.$active ? `
     background: #10b981;
-    color: #fff;
+    color: var(--admin-text-primary);
     &:hover {
       background: #059669;
     }
   ` : `
     background: #6b7280;
-    color: #fff;
+    color: var(--admin-text-primary);
     &:hover {
       background: #4b5563;
     }
@@ -139,7 +139,7 @@ const ToggleButton = styled.button<{ $active: boolean }>`
 `;
 
 const InputField = styled.input`
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border: 1px solid #374151;
   border-radius: 6px;
   padding: 8px 12px;
@@ -159,7 +159,7 @@ const InputField = styled.input`
 `;
 
 const TextArea = styled.textarea`
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border: 1px solid #374151;
   border-radius: 6px;
   padding: 8px 12px;
@@ -205,7 +205,7 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' | 'danger' }>`
     if (props.$variant === 'danger') {
       return `
         background: #ef4444;
-        color: #fff;
+        color: var(--admin-text-primary);
         &:hover {
           background: #dc2626;
         }

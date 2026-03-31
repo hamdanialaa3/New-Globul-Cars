@@ -3,7 +3,7 @@
  * Parses and validates car data from CSV/Excel files
  * Location: Bulgaria
  * Currency: EUR
- * 
+ *
  * File: src/services/dealer/csv-parser.service.ts
  * Created: February 8, 2026
  */
@@ -24,6 +24,8 @@ export interface ParsedCarData {
   color: string;
   description: string;
   location: string;
+  vin?: string;
+  folderName?: string;
   images?: string[];
 }
 
@@ -52,7 +54,7 @@ class CSVParserService {
     'price',
     'mileage',
     'fuelType',
-    'transmission'
+    'transmission',
   ];
 
   private readonly FUEL_TYPES = [
@@ -61,7 +63,7 @@ class CSVParserService {
     'electric',
     'hybrid',
     'lpg',
-    'cng'
+    'cng',
   ];
 
   private readonly TRANSMISSIONS = ['manual', 'automatic', 'semi-automatic'];
@@ -90,11 +92,11 @@ class CSVParserService {
             row: 0,
             field: 'file',
             message: error instanceof Error ? error.message : 'Unknown error',
-            value: null
-          }
+            value: null,
+          },
         ],
         totalRows: 0,
-        validRows: 0
+        validRows: 0,
       };
     }
   }
@@ -139,11 +141,11 @@ class CSVParserService {
             row: 0,
             field: 'file',
             message: error instanceof Error ? error.message : 'Unknown error',
-            value: null
-          }
+            value: null,
+          },
         ],
         totalRows: 0,
-        validRows: 0
+        validRows: 0,
       };
     }
   }
@@ -169,20 +171,20 @@ class CSVParserService {
       data,
       errors,
       totalRows: rows.length,
-      validRows: data.length
+      validRows: data.length,
     };
   }
 
   private validateRow(row: any, rowNumber: number): ValidationError[] {
     const errors: ValidationError[] = [];
 
-    this.REQUIRED_FIELDS.forEach((field) => {
+    this.REQUIRED_FIELDS.forEach(field => {
       if (!row[field] || String(row[field]).trim() === '') {
         errors.push({
           row: rowNumber,
           field,
           message: `${field} is required`,
-          value: row[field]
+          value: row[field],
         });
       }
     });
@@ -195,7 +197,7 @@ class CSVParserService {
           row: rowNumber,
           field: 'year',
           message: `Year must be between 1900 and ${currentYear + 1}`,
-          value: row.year
+          value: row.year,
         });
       }
     }
@@ -207,7 +209,7 @@ class CSVParserService {
           row: rowNumber,
           field: 'price',
           message: 'Price must be a positive number in EUR',
-          value: row.price
+          value: row.price,
         });
       }
     }
@@ -219,7 +221,7 @@ class CSVParserService {
           row: rowNumber,
           field: 'mileage',
           message: 'Mileage must be a non-negative number',
-          value: row.mileage
+          value: row.mileage,
         });
       }
     }
@@ -231,7 +233,7 @@ class CSVParserService {
           row: rowNumber,
           field: 'fuelType',
           message: `Fuel type must be one of: ${this.FUEL_TYPES.join(', ')}`,
-          value: row.fuelType
+          value: row.fuelType,
         });
       }
     }
@@ -243,7 +245,7 @@ class CSVParserService {
           row: rowNumber,
           field: 'transmission',
           message: `Transmission must be one of: ${this.TRANSMISSIONS.join(', ')}`,
-          value: row.transmission
+          value: row.transmission,
         });
       }
     }
@@ -266,7 +268,13 @@ class CSVParserService {
       color: row.color ? String(row.color).trim() : '',
       description: row.description ? String(row.description).trim() : '',
       location: row.location ? String(row.location).trim() : 'Bulgaria',
-      images: row.images ? String(row.images).split('|').map(url => url.trim()) : []
+      vin: row.vin ? String(row.vin).trim().toUpperCase() : undefined,
+      folderName: row.folder_name ? String(row.folder_name).trim() : undefined,
+      images: row.images
+        ? String(row.images)
+            .split('|')
+            .map(url => url.trim())
+        : [],
     };
   }
 
@@ -285,7 +293,9 @@ class CSVParserService {
       'color',
       'description',
       'location',
-      'images'
+      'vin',
+      'folder_name',
+      'images',
     ];
 
     const sampleData = [
@@ -303,7 +313,9 @@ class CSVParserService {
         'Black',
         'Premium sedan in excellent condition',
         'Sofia',
-        'https://example.com/img1.jpg|https://example.com/img2.jpg'
+        'WDBUF56X98B123456',
+        'fleet-001',
+        'https://example.com/img1.jpg|https://example.com/img2.jpg',
       ],
       [
         'BMW',
@@ -319,11 +331,16 @@ class CSVParserService {
         'White',
         'Sport package, leather interior',
         'Plovdiv',
-        ''
-      ]
+        'WBA8E9G50GNU12345',
+        'fleet-002',
+        '',
+      ],
     ];
 
-    const csv = [headers.join(','), ...sampleData.map(row => row.join(','))].join('\n');
+    const csv = [
+      headers.join(','),
+      ...sampleData.map(row => row.join(',')),
+    ].join('\n');
 
     return csv;
   }

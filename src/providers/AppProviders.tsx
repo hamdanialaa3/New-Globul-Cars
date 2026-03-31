@@ -56,6 +56,7 @@ import { ComparisonProvider } from '../contexts/ComparisonContext';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { SkipNavigation } from '../components/Accessibility';
 import NotificationHandler from '../components/NotificationHandler';
+import AnalyticsTracker from '../components/AnalyticsTracker';
 
 // Lazy-loaded components
 const FacebookPixel = React.lazy(() => import('../components/FacebookPixel'));
@@ -122,6 +123,9 @@ const ThemedApp: React.FC<{ children: React.ReactNode; recaptchaKey: string }> =
                                             <Suspense fallback={<div style={{ height: '0' }} />}>
                                                 <FacebookPixel />
                                             </Suspense>
+
+                                            {/* Google Analytics GA4 Route Tracker */}
+                                            <AnalyticsTracker />
 
                                             {/* Skip Navigation - Accessibility */}
                                             <SkipNavigation />

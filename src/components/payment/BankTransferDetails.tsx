@@ -20,6 +20,11 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { BANK_DETAILS, generatePaymentReference, PAYMENT_INSTRUCTIONS } from '../../config/bank-details';
 import type { BankAccountType } from '../../types/payment.types';
 
+// ─── Official Payment Provider Brand Assets ───────────────────────────────────
+// Logos via Clearbit Logo API — serves each company's canonical registered logo
+const REVOLUT_LOGO_URL = 'https://logo.clearbit.com/revolut.com';
+const ICARD_LOGO_URL   = 'https://logo.clearbit.com/icard.com';
+
 interface BankTransferDetailsProps {
   amount: number;
   currency?: 'EUR' | 'BGN';
@@ -40,6 +45,7 @@ const BankTransferDetails: React.FC<BankTransferDetailsProps> = ({
   const { language } = useLanguage();
   const [selectedBank, setSelectedBank] = useState<BankAccountType>('revolut');
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [logoError, setLogoError] = useState<Record<string, boolean>>({});
 
   const referenceNumber = generatePaymentReference(paymentType, itemId);
   const bankDetails = selectedBank === 'revolut' ? BANK_DETAILS.revolut : BANK_DETAILS.icard;
@@ -74,28 +80,54 @@ const BankTransferDetails: React.FC<BankTransferDetailsProps> = ({
       {/* Bank Selection Tabs */}
       <BankTabs>
         <BankTab
-          active={selectedBank === 'revolut'}
+          $active={selectedBank === 'revolut'}
+          $bank="revolut"
           onClick={() => handleBankSwitch('revolut')}
         >
-          <CreditCard size={20} />
+          {logoError['revolut-tab'] ? (
+            <CreditCard size={22} />
+          ) : (
+            <BankTabLogo
+              src={REVOLUT_LOGO_URL}
+              alt="Revolut"
+              onError={() => setLogoError(prev => ({ ...prev, 'revolut-tab': true }))}
+            />
+          )}
           <span>Revolut</span>
-          <Badge color="#0075EB">{language === 'bg' ? 'Моментален' : 'Instant'}</Badge>
+          <Badge $color="#0075EB">{language === 'bg' ? 'Моментален' : 'Instant'}</Badge>
         </BankTab>
         <BankTab
-          active={selectedBank === 'icard'}
+          $active={selectedBank === 'icard'}
+          $bank="icard"
           onClick={() => handleBankSwitch('icard')}
         >
-          <Building2 size={20} />
+          {logoError['icard-tab'] ? (
+            <Building2 size={22} />
+          ) : (
+            <BankTabLogo
+              src={ICARD_LOGO_URL}
+              alt="iCard"
+              onError={() => setLogoError(prev => ({ ...prev, 'icard-tab': true }))}
+            />
+          )}
           <span>iCard</span>
-          <Badge color="#00A651">{language === 'bg' ? 'Местен' : 'Local'}</Badge>
+          <Badge $color="#00A651">{language === 'bg' ? 'Местен' : 'Local'}</Badge>
         </BankTab>
       </BankTabs>
 
       {/* Bank Details Card */}
-      <BankCard>
+      <BankCard $bank={selectedBank}>
         <CardHeader>
-          <BankLogo>
-            {selectedBank === 'revolut' ? <CreditCard size={32} /> : <Building2 size={32} />}
+          <BankLogo $bank={selectedBank}>
+            {logoError[`${selectedBank}-card`] ? (
+              selectedBank === 'revolut' ? <CreditCard size={32} color="#0075EB" /> : <Building2 size={32} color="#00A651" />
+            ) : (
+              <img
+                src={selectedBank === 'revolut' ? REVOLUT_LOGO_URL : ICARD_LOGO_URL}
+                alt={selectedBank === 'revolut' ? 'Revolut' : 'iCard'}
+                onError={() => setLogoError(prev => ({ ...prev, [`${selectedBank}-card`]: true }))}
+              />
+            )}
           </BankLogo>
           <BankInfo>
             <BankName>{bankDetails.bankName}</BankName>
@@ -119,7 +151,7 @@ const BankTransferDetails: React.FC<BankTransferDetailsProps> = ({
         <DetailRow>
           <DetailLabel>IBAN</DetailLabel>
           <DetailValue>
-            <ValueText selectable>{bankDetails.iban}</ValueText>
+            <ValueText $selectable>{bankDetails.iban}</ValueText>
             <CopyButton onClick={() => handleCopy(bankDetails.iban, 'iban')}>
               {copiedField === 'iban' ? <Check size={16} /> : <Copy size={16} />}
             </CopyButton>
@@ -130,7 +162,7 @@ const BankTransferDetails: React.FC<BankTransferDetailsProps> = ({
         <DetailRow>
           <DetailLabel>BIC/SWIFT</DetailLabel>
           <DetailValue>
-            <ValueText selectable>{bankDetails.bic}</ValueText>
+            <ValueText $selectable>{bankDetails.bic}</ValueText>
             <CopyButton onClick={() => handleCopy(bankDetails.bic, 'bic')}>
               {copiedField === 'bic' ? <Check size={16} /> : <Copy size={16} />}
             </CopyButton>
@@ -141,7 +173,7 @@ const BankTransferDetails: React.FC<BankTransferDetailsProps> = ({
         <DetailRow>
           <DetailLabel>{language === 'bg' ? 'Получател' : 'Beneficiary'}</DetailLabel>
           <DetailValue>
-            <ValueText selectable>{bankDetails.beneficiary}</ValueText>
+            <ValueText $selectable>{bankDetails.beneficiary}</ValueText>
             <CopyButton onClick={() => handleCopy(bankDetails.beneficiary, 'beneficiary')}>
               {copiedField === 'beneficiary' ? <Check size={16} /> : <Copy size={16} />}
             </CopyButton>
@@ -155,8 +187,8 @@ const BankTransferDetails: React.FC<BankTransferDetailsProps> = ({
             {language === 'bg' ? 'Референтен номер (ЗАДЪЛЖИТЕЛНО)' : 'Reference Number (REQUIRED)'}
           </ReferenceLabel>
           <ReferenceValue>
-            <ReferenceText selectable>{referenceNumber}</ReferenceText>
-            <CopyButton primary onClick={() => handleCopy(referenceNumber, 'reference')}>
+            <ReferenceText $selectable>{referenceNumber}</ReferenceText>
+            <CopyButton $primary onClick={() => handleCopy(referenceNumber, 'reference')}>
               {copiedField === 'reference' ? <Check size={18} /> : <Copy size={18} />}
             </CopyButton>
           </ReferenceValue>
@@ -241,24 +273,30 @@ const BankTabs = styled.div`
   border: 1px solid rgba(255, 255, 255, 0.1);
 `;
 
-const BankTab = styled.button<{ active: boolean }>`
+const BankTab = styled.button<{ $active: boolean; $bank: 'revolut' | 'icard' }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 16px 24px;
-  background: ${props => props.active 
-    ? 'linear-gradient(135deg, rgba(0, 117, 235, 0.2), rgba(0, 166, 81, 0.2))'
-    : 'transparent'};
-  border: 2px solid ${props => props.active 
-    ? 'rgba(0, 117, 235, 0.5)'
-    : 'rgba(255, 255, 255, 0.1)'};
+  gap: 10px;
+  padding: 14px 20px;
+  background: ${({ $active, $bank }) =>
+    !$active
+      ? 'rgba(255,255,255,0.04)'
+      : $bank === 'revolut'
+      ? 'linear-gradient(135deg, rgba(0,117,235,0.28) 0%, rgba(0,40,110,0.22) 100%)'
+      : 'linear-gradient(135deg, rgba(0,166,81,0.28) 0%, rgba(0,70,36,0.22) 100%)'};
+  border: 2px solid ${({ $active, $bank }) =>
+    !$active
+      ? 'rgba(255,255,255,0.1)'
+      : $bank === 'revolut'
+      ? '#0075EB'
+      : '#00A651'};
   border-radius: 12px;
-  color: ${props => props.active ? '#fff' : 'rgba(255, 255, 255, 0.7)'};
-  font-size: 16px;
-  font-weight: ${props => props.active ? '600' : '500'};
+  color: ${({ $active }) => ($active ? '#fff' : 'rgba(255,255,255,0.65)')};
+  font-size: 15px;
+  font-weight: ${({ $active }) => ($active ? '600' : '500')};
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   position: relative;
   overflow: hidden;
 
@@ -266,18 +304,19 @@ const BankTab = styled.button<{ active: boolean }>`
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    opacity: ${props => props.active ? 1 : 0};
-    transition: opacity 0.3s ease;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.07), transparent);
+    opacity: ${({ $active }) => ($active ? 1 : 0)};
+    transition: opacity 0.25s ease;
   }
 
   &:hover {
-    border-color: rgba(0, 117, 235, 0.7);
+    border-color: ${({ $bank }) =>
+      $bank === 'revolut' ? 'rgba(0,117,235,0.8)' : 'rgba(0,166,81,0.8)'};
     transform: translateY(-2px);
-  }
-
-  svg {
-    flex-shrink: 0;
+    background: ${({ $bank }) =>
+      $bank === 'revolut'
+        ? 'linear-gradient(135deg, rgba(0,117,235,0.35) 0%, rgba(0,40,110,0.28) 100%)'
+        : 'linear-gradient(135deg, rgba(0,166,81,0.35) 0%, rgba(0,70,36,0.28) 100%)'};
   }
 
   span {
@@ -286,29 +325,41 @@ const BankTab = styled.button<{ active: boolean }>`
   }
 `;
 
-const Badge = styled.span<{ color: string }>`
+const BankTabLogo = styled.img`
+  height: 28px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 6px;
+`;
+
+const Badge = styled.span<{ $color: string }>`
   padding: 4px 12px;
-  background: ${props => props.color}22;
-  border: 1px solid ${props => props.color};
+  background: ${props => props.$color}22;
+  border: 1px solid ${props => props.$color};
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
-  color: ${props => props.color};
+  color: ${props => props.$color};
   white-space: nowrap;
 `;
 
-const BankCard = styled.div`
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.12) 0%,
-    rgba(255, 255, 255, 0.08) 100%
-  );
+const BankCard = styled.div<{ $bank: 'revolut' | 'icard' }>`
+  background: ${({ $bank }) =>
+    $bank === 'revolut'
+      ? 'linear-gradient(145deg, rgba(0, 7, 24, 0.94) 0%, rgba(0, 117, 235, 0.18) 55%, rgba(0, 5, 20, 0.96) 100%)'
+      : 'linear-gradient(145deg, rgba(0, 12, 6, 0.92) 0%, rgba(0, 166, 81, 0.20) 55%, rgba(0, 10, 5, 0.96) 100%)'};
   backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid ${({ $bank }) =>
+    $bank === 'revolut' ? 'rgba(0, 117, 235, 0.30)' : 'rgba(0, 166, 81, 0.30)'};
   border-radius: 24px;
   padding: 32px;
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 0 0 1px ${({ $bank }) =>
+      $bank === 'revolut' ? 'rgba(0, 117, 235, 0.15)' : 'rgba(0, 166, 81, 0.15)'};
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 `;
 
 const CardHeader = styled.div`
@@ -318,16 +369,29 @@ const CardHeader = styled.div`
   margin-bottom: 24px;
 `;
 
-const BankLogo = styled.div`
+const BankLogo = styled.div<{ $bank: 'revolut' | 'icard' }>`
   width: 64px;
   height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(0, 117, 235, 0.2), rgba(0, 166, 81, 0.2));
+  background: ${({ $bank }) =>
+    $bank === 'revolut'
+      ? 'rgba(0,117,235,0.18)'
+      : 'rgba(0,166,81,0.18)'};
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
+  border: 2px solid ${({ $bank }) =>
+    $bank === 'revolut' ? 'rgba(0,117,235,0.55)' : 'rgba(0,166,81,0.55)'};
+  box-shadow: 0 0 16px ${({ $bank }) =>
+    $bank === 'revolut' ? 'rgba(0,117,235,0.25)' : 'rgba(0,166,81,0.25)'};
+  overflow: hidden;
+
+  img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    border-radius: 8px;
+  }
 `;
 
 const BankInfo = styled.div`
@@ -408,26 +472,26 @@ const DetailValue = styled.div`
   flex: 1;
 `;
 
-const ValueText = styled.span<{ selectable?: boolean }>`
+const ValueText = styled.span<{ $selectable?: boolean }>`
   font-size: 16px;
   font-weight: 500;
   color: #fff;
   font-family: 'Courier New', monospace;
-  user-select: ${props => props.selectable ? 'all' : 'none'};
-  cursor: ${props => props.selectable ? 'text' : 'default'};
+  user-select: ${props => props.$selectable ? 'all' : 'none'};
+  cursor: ${props => props.$selectable ? 'text' : 'default'};
   flex: 1;
 `;
 
-const CopyButton = styled.button<{ primary?: boolean }>`
+const CopyButton = styled.button<{ $primary?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 36px;
   height: 36px;
-  background: ${props => props.primary 
+  background: ${props => props.$primary 
     ? 'linear-gradient(135deg, #0075EB, #00A651)'
     : 'rgba(255, 255, 255, 0.1)'};
-  border: 1px solid ${props => props.primary 
+  border: 1px solid ${props => props.$primary 
     ? 'rgba(0, 117, 235, 0.5)'
     : 'rgba(255, 255, 255, 0.2)'};
   border-radius: 8px;
@@ -437,7 +501,7 @@ const CopyButton = styled.button<{ primary?: boolean }>`
 
   &:hover {
     transform: scale(1.1);
-    background: ${props => props.primary 
+    background: ${props => props.$primary 
       ? 'linear-gradient(135deg, #0085FF, #00B65E)'
       : 'rgba(255, 255, 255, 0.2)'};
   }
@@ -474,7 +538,7 @@ const ReferenceValue = styled.div`
   margin-bottom: 12px;
 `;
 
-const ReferenceText = styled.span<{ selectable?: boolean }>`
+const ReferenceText = styled.span<{ $selectable?: boolean }>`
   font-size: 18px;
   font-weight: 700;
   color: #fff;

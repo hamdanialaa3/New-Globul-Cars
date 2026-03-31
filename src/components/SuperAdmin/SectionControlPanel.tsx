@@ -32,7 +32,7 @@ const Title = styled.h2`
 
 const Subtitle = styled.p`
   font-size: 13px;
-  color: #94a3b8;
+  color: var(--admin-text-secondary);
   margin: 0;
 `;
 
@@ -41,7 +41,7 @@ const CategoryLabel = styled.div`
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  color: #64748b;
+  color: var(--admin-text-secondary);
   margin: 20px 0 10px 0;
   padding-bottom: 6px;
   border-bottom: 1px solid #2d3748;
@@ -91,7 +91,7 @@ const SectionLabel = styled.div`
 
 const SectionDescription = styled.div`
   font-size: 11px;
-  color: #64748b;
+  color: var(--admin-text-secondary);
   margin-top: 2px;
 `;
 
@@ -111,7 +111,7 @@ const OrderButtons = styled.div`
 
 const ArrowButton = styled.button<{ $disabled: boolean }>`
   padding: 4px;
-  background: #1e2432;
+  background: var(--admin-bg-secondary);
   border: 1px solid #2d3748;
   border-radius: 4px;
   color: ${p => p.$disabled ? '#475569' : '#94a3b8'};
@@ -159,7 +159,7 @@ const ToggleButton = styled.button<{ $visible: boolean; $saving: boolean }>`
 const LoadingState = styled.div`
   text-align: center;
   padding: 40px;
-  color: #64748b;
+  color: var(--admin-text-secondary);
   font-size: 14px;
 `;
 
@@ -178,7 +178,7 @@ const StatsBar = styled.div`
   gap: 16px;
   margin-bottom: 20px;
   padding: 12px 16px;
-  background: #1e2432;
+  background: var(--admin-bg-secondary);
   border-radius: 8px;
   border: 1px solid #2d3748;
   flex-wrap: wrap;
@@ -186,7 +186,7 @@ const StatsBar = styled.div`
 
 const StatItem = styled.div`
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--admin-text-secondary);
   span {
     font-weight: 700;
     color: #8B5CF6;
@@ -243,7 +243,7 @@ const FreeOfferTitle = styled.div`
 
 const FreeOfferDesc = styled.p`
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--admin-text-secondary);
   margin: 0 0 4px 0;
   line-height: 1.5;
 `;
@@ -272,11 +272,11 @@ const FreeOfferToggle = styled.button<{ $active: boolean; $saving: boolean }>`
 
   ${p => p.$active ? `
     background: #dc2626;
-    color: #fff;
+    color: var(--admin-text-primary);
     &:hover { background: #b91c1c; }
   ` : `
     background: #16a34a;
-    color: #fff;
+    color: var(--admin-text-primary);
     &:hover { background: #15803d; }
   `}
 `;

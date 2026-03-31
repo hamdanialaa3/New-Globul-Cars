@@ -2,10 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { adminTheme } from '../styles/admin-theme';
-import { Search, Bell, HelpCircle, Loader2 } from 'lucide-react';
+import { Search, Bell, HelpCircle, Loader2, Sun, Moon } from 'lucide-react';
 import AdminLanguageSwitcher from './AdminLanguageSwitcher';
+import { useAdminTheme } from '../../../contexts/AdminThemeContext';
 import { useAdminLang } from '../../../contexts/AdminLanguageContext';
 import { siteSettingsService } from '../../../services/site-settings.service';
+import { logger } from '../../../services/logger-service';
 
 const TopBarContainer = styled.header`
   height: ${adminTheme.layout.headerHeight};
@@ -87,7 +89,7 @@ const ActionButton = styled.button`
   position: relative;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--admin-bg-hover);
     color: ${adminTheme.colors.text.primary};
   }
 
@@ -113,7 +115,7 @@ const ToggleContainer = styled.button<{ $mode: 'free' | 'paid' }>`
   display: flex;
   align-items: center;
   background: ${props => props.$mode === 'free' ? '#10b981' : '#6366f1'};
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid var(--admin-border-light);
   border-radius: 20px;
   padding: 4px;
   cursor: pointer;
@@ -175,6 +177,7 @@ const ToggleSlider = styled.div<{ $mode: 'free' | 'paid' }>`
 
 const TopBar: React.FC = () => {
   const { t } = useAdminLang();
+  const { mode, toggleTheme } = useAdminTheme();
   const [subscriptionMode, setSubscriptionMode] = useState<'free' | 'paid'>('paid');
   const [loading, setLoading] = useState(false);
 
@@ -233,6 +236,10 @@ const TopBar: React.FC = () => {
         </ToggleContainer>
 
         <AdminLanguageSwitcher />
+
+        <ActionButton onClick={toggleTheme} title={mode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {mode === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+        </ActionButton>
 
         <ActionButton>
           <HelpCircle size={20} />

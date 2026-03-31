@@ -13,10 +13,10 @@ import { toast } from 'react-toastify';
 // 🟧 Private (Personal) = ORANGE
 // 🟩 Dealer = GREEN  
 // 🟦 Company = BLUE
-const gradientPrivate = 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)';  // Orange
-const gradientDealer = 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)';   // Green
-const gradientCompany = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';  // Blue
-const colorPrivate = '#3B82F6';
+const gradientPrivate = 'linear-gradient(135deg, #FF9F2A 0%, #FF7A2D 60%, #E5631A 100%)';
+const gradientDealer = 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)';
+const gradientCompany = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
+const colorPrivate = '#FF7A2D';
 const colorDealer = '#16a34a';
 const colorCompany = '#3b82f6';
 const glassBg = 'rgba(255, 255, 255, 0.7)';
@@ -57,7 +57,7 @@ const Container = styled.div<{ $isDark?: boolean }>`
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #10b981, #f59e0b, #3b82f6);
+        background: linear-gradient(90deg, #ff7a2d, #16a34a, #3b82f6);
   }
 `;
 
@@ -195,7 +195,7 @@ const SelectButton = styled.button<{ $isActive: boolean; $type: 'private' | 'dea
   &:hover {
     background: ${({ $isActive, $type }) =>
         $isActive
-            ? ($type === 'private' ? '#2563EB' : $type === 'dealer' ? '#15803d' : '#2563eb')
+                        ? ($type === 'private' ? '#E5631A' : $type === 'dealer' ? '#15803d' : '#2563eb')
             : 'rgba(148, 163, 184, 0.2)'};
     color: ${({ $isActive }) => $isActive ? 'white' : '#475569'};
   }

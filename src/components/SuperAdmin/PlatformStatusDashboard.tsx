@@ -24,9 +24,9 @@ import { getAuth } from 'firebase/auth';
 import { logger } from '@/services/logger-service';
 
 const Container = styled.div`
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border-radius: 12px;
-  border: 1px solid #1e2432;
+  border: 1px solid var(--admin-border-subtle);
   padding: 24px;
   margin: 20px;
 `;
@@ -56,7 +56,7 @@ const Title = styled.h2`
 
 const Subtitle = styled.p`
   font-size: 14px;
-  color: #9ca3af;
+  color: var(--admin-text-secondary);
   margin: 0;
 `;
 
@@ -159,7 +159,7 @@ const MetricRow = styled.div`
 `;
 
 const MetricLabel = styled.span`
-  color: #9ca3af;
+  color: var(--admin-text-secondary);
 `;
 
 const MetricValue = styled.span`
@@ -194,7 +194,7 @@ const StatsGrid2 = styled.div`
 `;
 
 const StatCard2 = styled.div`
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border: 1px solid #374151;
   border-radius: 8px;
   padding: 16px;
@@ -212,7 +212,7 @@ const StatValue = styled.div`
 
 const StatLabel = styled.div`
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--admin-text-secondary);
   margin-bottom: 8px;
 `;
 

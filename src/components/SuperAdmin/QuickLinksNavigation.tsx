@@ -56,7 +56,7 @@ const CategoryHeader = styled.div<{ $isOpen: boolean }>`
   border: 1px solid ${props => props.$isOpen ? '#8B5CF6' : '#2d3748'};
 
   &:hover {
-    background: #1e2432;
+    background: var(--admin-bg-secondary);
     border-color: #8B5CF6;
   }
 `;
@@ -65,7 +65,7 @@ const CategoryTitle = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   font-size: 15px;
   font-weight: 600;
 
@@ -98,7 +98,7 @@ const LinkButton = styled.button<{ $protected?: boolean; $admin?: boolean }>`
   align-items: center;
   gap: 8px;
   padding: 10px 14px;
-  background: #1e2432;
+  background: var(--admin-bg-secondary);
   color: #cbd5e1;
   border: 1px solid #2d3748;
   border-radius: 6px;
@@ -118,7 +118,7 @@ const LinkButton = styled.button<{ $protected?: boolean; $admin?: boolean }>`
 
   &:hover {
     border-color: #8B5CF6;
-    color: #f8fafc;
+    color: var(--admin-text-primary);
     background: #252b3a;
     transform: translateX(4px);
   }
@@ -149,18 +149,18 @@ const SearchInput = styled.input`
   background: #141a21;
   border: 1px solid #2d3748;
   border-radius: 8px;
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   font-size: 14px;
   outline: none;
   transition: all 0.3s ease;
 
   &::placeholder {
-    color: #64748b;
+    color: var(--admin-text-secondary);
   }
 
   &:focus {
     border-color: #8B5CF6;
-    background: #1e2432;
+    background: var(--admin-bg-secondary);
     box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);
   }
 `;

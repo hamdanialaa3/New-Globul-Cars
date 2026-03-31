@@ -7,6 +7,7 @@ Allow: /
 
 # Sitemap Location
 Sitemap: https://koli.one/sitemap.xml
+Sitemap: https://koli.one/sitemap-cars.xml
 
 # Block Development Pages
 Disallow: /development-tools

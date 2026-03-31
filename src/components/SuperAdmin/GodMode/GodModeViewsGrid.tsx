@@ -29,21 +29,21 @@ const Overlay = styled.div`
 `;
 
 const Container = styled.div`
-  background: #1a1a1a;
+  background: var(--admin-bg-secondary);
   border-radius: 16px;
   width: 100%;
   max-width: 1400px;
   height: 90vh;
   display: flex;
   flex-direction: column;
-  border: 1px solid #333;
+  border: 1px solid var(--admin-border-subtle);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
   overflow: hidden;
 `;
 
 const Header = styled.div`
   padding: 24px;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--admin-border-subtle);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -51,7 +51,7 @@ const Header = styled.div`
 `;
 
 const Title = styled.h2`
-  color: #fff;
+  color: var(--admin-text-primary);
   font-size: 24px;
   font-weight: 700;
   display: flex;
@@ -62,7 +62,7 @@ const Title = styled.h2`
 
 const Badge = styled.span`
   background: #3498db;
-  color: #fff;
+  color: var(--admin-text-primary);
   font-size: 11px;
   padding: 4px 8px;
   border-radius: 4px;
@@ -88,7 +88,7 @@ const CloseButton = styled.button`
   
   &:hover {
     background: #333;
-    color: #fff;
+    color: var(--admin-text-primary);
   }
 `;
 
@@ -117,7 +117,7 @@ const Card = styled.div`
   background: #222;
   border-radius: 12px;
   padding: 20px;
-  border: 1px solid #333;
+  border: 1px solid var(--admin-border-subtle);
   transition: all 0.2s;
   position: relative;
   display: flex;
@@ -140,7 +140,7 @@ const CardHeader = styled.div`
 const ViewCount = styled.div`
   font-size: 32px;
   font-weight: 800;
-  color: #fff;
+  color: var(--admin-text-primary);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -153,7 +153,7 @@ const ViewCount = styled.div`
 
 const ItemTitle = styled.div`
   font-size: 14px;
-  color: #ccc;
+  color: var(--admin-text-secondary);
   font-weight: 600;
   margin-bottom: 4px;
   white-space: nowrap;
@@ -170,7 +170,7 @@ const Actions = styled.div`
   display: flex;
   gap: 8px;
   margin-top: auto;
-  border-top: 1px solid #333;
+  border-top: 1px solid var(--admin-border-subtle);
   padding-top: 16px;
 `;
 

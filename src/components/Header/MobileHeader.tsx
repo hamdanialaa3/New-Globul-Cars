@@ -710,6 +710,16 @@ const UsersIcon = () => (
   </svg>
 );
 
+const GarageIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 14v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7" />
+    <path d="M22 9 12 2 2 9" />
+    <path d="M12 22V9" />
+    <path d="M6 15h4v7" />
+    <path d="M14 15h4v7" />
+  </svg>
+);
+
 // ========================================
 // COMPONENT
 // ========================================
@@ -919,6 +929,10 @@ const MobileHeader: React.FC = () => {
               <MenuItem type="button" onClick={handleMenuItemClick('/profile')}>
                 <UserIcon size={20} />
                 <MenuItemText>{language === 'bg' ? 'Профил' : 'Profile'}</MenuItemText>
+              </MenuItem>
+              <MenuItem type="button" onClick={handleMenuItemClick('/my-garage')}>
+                <GarageIcon />
+                <MenuItemText>{language === 'bg' ? 'Моят Гараж' : 'My Garage'}</MenuItemText>
               </MenuItem>
               <MenuItem type="button" onClick={handleMenuItemClick('/dashboard')}>
                 <DashboardIcon />

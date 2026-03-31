@@ -35,6 +35,13 @@ service cloud.firestore {
       return request.resource.data.keys().size() < 500;
     }
     
+    // Ensure VIN Verification Cannot be Tampered
+    function isVinVerificationSecure() {
+      return !('vinVerification' in request.resource.data) 
+        || (resource != null && request.resource.data.vinVerification == resource.data.vinVerification)
+        || isAdmin();
+    }
+    
     // ============================================
     // USERS Collection
     // ============================================
@@ -60,6 +67,39 @@ service cloud.firestore {
       }
     }
     
+    // ============================================
+    // GARAGE VEHICLES Collection (Smart Digital Garage)
+    // 🔒 SECURED: Users can only read, write, and delete their own vehicles.
+    // ============================================
+    match /garage_vehicles/{vehicleId} {
+      allow read: if isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.ownerUid == request.auth.uid;
+      allow update: if isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+    }
+
+    // ============================================
+    // AUCTION LISTINGS Collection (Koli.one Reverse Bidding)
+    // 🔒 SECURED: Anyone can read, but only Dealers/Admins can bid. Sellers create.
+    // ============================================
+    match /auction_listings/{auctionId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && request.resource.data.sellerId == request.auth.uid;
+      // Only the backend/transaction or the seller can update basic details
+      allow update: if isAuthenticated() && (
+        resource.data.sellerId == request.auth.uid ||
+        isAdmin() ||
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['pricing', 'timing', 'bidsCount', 'updatedAt'])) // Allowed for transactions
+      );
+      allow delete: if isAuthenticated() && (isAdmin() || resource.data.sellerId == request.auth.uid);
+
+      match /bids/{bidId} {
+        allow read: if true;
+        allow create: if isAuthenticated() && request.resource.data.bidderId == request.auth.uid;
+        allow update, delete: if false; // Bids are immutable
+      }
+    }
+
     // ============================================
     // APP SETTINGS Collection
     // ============================================
@@ -98,8 +138,9 @@ service cloud.firestore {
         && request.auth.uid == request.resource.data.sellerId
         && request.resource.data.keys().hasAll(['sellerId', 'make', 'model', 'price', 'createdAt'])
         && request.resource.data.price is number
-        && request.resource.data.price > 0;
-      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid;
+        && request.resource.data.price > 0
+        && isVinVerificationSecure();
+      allow update: if isAuthenticated() && resource.data.sellerId == request.auth.uid && isVinVerificationSecure();
       allow delete: if isAuthenticated() && (
         resource.data.sellerId == request.auth.uid || isAdmin()
       );

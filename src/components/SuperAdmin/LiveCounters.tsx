@@ -93,7 +93,7 @@ const CounterCard = styled.div<{ $interactive?: boolean }>`
   position: relative;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  background: rgba(15, 23, 42, 0.4);
+  background: var(--admin-glass-card-bg);
   backdrop-filter: blur(10px);
   cursor: ${props => props.$interactive ? 'pointer' : 'default'};
 
@@ -108,7 +108,7 @@ const CounterCard = styled.div<{ $interactive?: boolean }>`
   &:hover {
     transform: translateY(-5px) scale(1.02);
     box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3), 0 0 15px rgba(99, 102, 241, 0.1);
-    background: rgba(30, 41, 59, 0.5);
+    background: var(--admin-bg-hover);
     border-color: ${adminTheme.colors.accent.primary};
 
     .icon-bg {
@@ -122,7 +122,7 @@ const IconWrapper = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  background: rgba(30, 41, 59, 0.6);
+  background: var(--admin-glass-panel-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -139,7 +139,7 @@ const IconWrapper = styled.div`
 const CounterValue = styled.div`
   font-size: 1.75rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--admin-text-primary);
   margin-bottom: 4px;
   font-family: ${adminTheme.typography.fontFamily.mono};
   letter-spacing: -1px;
@@ -161,7 +161,7 @@ const ActionBadge = styled.div`
   transform: translateX(10px);
   transition: all 0.3s ease;
   background: ${adminTheme.colors.accent.primary};
-  color: white;
+  color: var(--admin-text-primary);
   padding: 4px 8px;
   border-radius: 6px;
   font-size: 0.65rem;

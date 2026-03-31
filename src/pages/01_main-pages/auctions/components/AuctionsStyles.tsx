@@ -80,7 +80,7 @@ export const SearchWrapper = styled.div`
 
   .search-icon {
     position: absolute;
-    left: 15px;
+    left: -40px;
     top: 50%;
     transform: translateY(-50%);
     color: ${props => props.theme.colors.text.hint || '#94a3b8'};
@@ -91,7 +91,7 @@ export const SearchWrapper = styled.div`
 
 export const SearchInput = styled.input`
   width: 100%;
-  padding: 12px 12px 12px 45px;
+  padding: 12px 20px;
   background: ${props => props.theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'};
   border: 1px solid ${props => props.theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
   border-radius: 30px;

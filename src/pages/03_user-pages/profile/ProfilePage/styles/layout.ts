@@ -8,13 +8,16 @@ const styled = defaultStyled;
 
 // ==================== MAIN LAYOUT CONTAINERS ====================
 
-export const ProfilePageContainer = styled.div<{ $isBusinessMode?: boolean; $profileType?: ProfileType }>`
+export const ProfilePageContainer = styled.div<{
+  $isBusinessMode?: boolean;
+  $profileType?: ProfileType;
+}>`
   position: relative;
   padding-top: 2rem;
   padding-bottom: 4rem;
   background: var(--bg-primary);
   color: var(--text-primary);
-  
+
   /* ✅ LED theme variables by profile type */
   ${({ $profileType }) => {
     if ($profileType === 'dealer') {
@@ -30,11 +33,11 @@ export const ProfilePageContainer = styled.div<{ $isBusinessMode?: boolean; $pro
       `;
     }
     return css`
-      --led-color: transparent;
-      --led-glow: transparent;
+      --led-color: #ff7a2d;
+      --led-glow: rgba(255, 122, 45, 0.35);
     `;
   }}
-  
+
   html[data-theme="dark"] & {
     background: #0f172a;
     color: #f8fafc;
@@ -43,17 +46,19 @@ export const ProfilePageContainer = styled.div<{ $isBusinessMode?: boolean; $pro
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
   box-sizing: border-box;
   overflow-x: hidden;
-  
+
   @media (max-width: 768px) {
     padding-top: 0;
     padding-bottom: 80px;
     background: var(--bg-primary);
     max-width: 100%;
   }
-  
+
   @media (max-width: 480px) {
     padding-bottom: 70px;
   }
@@ -68,19 +73,21 @@ export const PageContainer = styled.div`
   overflow-x: hidden;
   background: transparent;
   color: var(--text-primary);
-  
-  html[data-theme="dark"] & {
+
+  html[data-theme='dark'] & {
     background: transparent;
     color: #f8fafc;
   }
-  
-  transition: background-color 0.3s ease, color 0.3s ease;
-  
+
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+
   @media (max-width: 768px) {
     padding: 0 12px;
     max-width: 100%;
   }
-  
+
   @media (max-width: 480px) {
     padding: 0 8px;
   }
@@ -95,11 +102,11 @@ export const ProfileGrid = styled.div`
   @media (max-width: 960px) {
     grid-template-columns: 1fr;
   }
-  
+
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
     gap: 0;
-    
+
     > aside {
       display: none;
     }
@@ -116,7 +123,7 @@ export const ProfileHeader = styled.header`
   padding-bottom: 2rem;
   border-bottom: 1px solid var(--border-primary);
   flex-wrap: wrap;
-  
+
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: stretch;
@@ -131,11 +138,11 @@ export const ProfileHeader = styled.header`
   }
 
   @media (max-width: 768px) {
-    html[data-theme="dark"] & {
+    html[data-theme='dark'] & {
       background: #1e293b;
     }
   }
-  
+
   @media (max-width: 480px) {
     border-radius: 12px;
     margin-bottom: 0.75rem;
@@ -147,7 +154,7 @@ export const ProfileLeftSection = styled.div`
   align-items: center;
   gap: 24px;
   flex-shrink: 0;
-  
+
   @media (max-width: 768px) {
     flex-direction: column;
     gap: 16px;
@@ -157,12 +164,12 @@ export const ProfileLeftSection = styled.div`
 export const ProfileImageContainer = styled.div`
   position: relative;
   flex-shrink: 0;
-  
+
   @media (max-width: 768px) {
     margin: -44px auto 16px;
     z-index: 2;
   }
-  
+
   @media (max-width: 480px) {
     margin-top: -40px;
   }
@@ -175,19 +182,19 @@ export const ProfileImage = styled.img`
   border: 4px solid ${({ theme }) => theme.colors.primary.main};
   object-fit: cover;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  
+
   @media (max-width: 768px) {
     width: 88px;
     height: 88px;
     border: 4px solid white;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
-  
+
   @media (max-width: 480px) {
     width: 80px;
     height: 80px;
   }
-  
+
   @media (max-width: 380px) {
     width: 72px;
     height: 72px;
@@ -197,12 +204,12 @@ export const ProfileImage = styled.img`
 
 export const ProfileInfo = styled.div`
   flex-grow: 1;
-  
+
   @media (max-width: 768px) {
     text-align: center;
     padding: 16px 20px 0;
   }
-  
+
   @media (max-width: 480px) {
     padding: 12px 16px 0;
   }
@@ -216,7 +223,7 @@ export const ProfileName = styled.h1`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  
+
   @media (max-width: 768px) {
     font-size: 1.375rem;
     font-weight: 700;
@@ -224,11 +231,11 @@ export const ProfileName = styled.h1`
     line-height: 1.3;
     margin-bottom: 4px;
   }
-  
+
   @media (max-width: 480px) {
     font-size: 1.25rem;
   }
-  
+
   @media (max-width: 380px) {
     font-size: 1.125rem;
   }
@@ -239,7 +246,7 @@ export const ProfileBio = styled.p`
   color: ${({ theme }) => theme.colors.text.secondary};
   margin-top: 0.5rem;
   max-width: 600px;
-  
+
   @media (max-width: 768px) {
     font-size: 0.875rem;
     line-height: 1.4;
@@ -251,7 +258,7 @@ export const ProfileBio = styled.p`
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  
+
   @media (max-width: 480px) {
     font-size: 0.8125rem;
     -webkit-line-clamp: 2;
@@ -260,11 +267,16 @@ export const ProfileBio = styled.p`
 
 // ==================== SIDEBAR ====================
 
-export const ProfileSidebar = styled.aside<{ $isBusinessMode: boolean; $themeColor: string }>`
-  background: ${({ theme }) => theme.colors.background?.paper || theme.colors.background.default};
+export const ProfileSidebar = styled.aside<{
+  $isBusinessMode: boolean;
+  $themeColor: string;
+}>`
+  background: ${({ theme }) =>
+    theme.colors.background?.paper || theme.colors.background.default};
   padding: 1.5rem;
   border-radius: 12px;
-  border: 1px solid ${({ theme }) => theme.colors.grey?.[200] || 'rgba(0, 0, 0, 0.1)'};
+  border: 1px solid
+    ${({ theme }) => theme.colors.grey?.[200] || 'rgba(0, 0, 0, 0.1)'};
   align-self: start;
   position: sticky;
   ${ledFrame}
@@ -274,13 +286,13 @@ export const ProfileSidebar = styled.aside<{ $isBusinessMode: boolean; $themeCol
   align-items: center;
   gap: 1rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  
-  html[data-theme="dark"] & {
+
+  html[data-theme='dark'] & {
     background: #1e293b;
     border-color: rgba(255, 255, 255, 0.1);
     box-shadow: none;
   }
-  
+
   @media (max-width: 768px) {
     display: none;
   }
@@ -300,36 +312,41 @@ export const ProfileActions = styled.div`
 
 export const ProfileContent = styled.main`
   margin-top: 2rem;
-  
+
   @media (max-width: 768px) {
     margin-top: 0;
     width: 100%;
   }
 `;
 
-export const ContentSection = styled.section<{ $themeColor?: string; $isBusinessMode?: boolean }>`
-  background: ${({ theme }) => theme.colors.background?.paper || theme.colors.background.default};
+export const ContentSection = styled.section<{
+  $themeColor?: string;
+  $isBusinessMode?: boolean;
+}>`
+  background: ${({ theme }) =>
+    theme.colors.background?.paper || theme.colors.background.default};
   padding: 2rem;
   border-radius: 12px;
   margin-bottom: 2rem;
-  border: 1px solid ${({ theme }) => theme.colors.grey?.[200] || 'rgba(0, 0, 0, 0.1)'};
+  border: 1px solid
+    ${({ theme }) => theme.colors.grey?.[200] || 'rgba(0, 0, 0, 0.1)'};
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   ${ledFrame}
-  
+
   html[data-theme="dark"] & {
     background: #1e293b;
     border-color: rgba(255, 255, 255, 0.1);
     box-shadow: none;
   }
-  
+
   @media (min-width: 961px) {
     margin-top: 1rem;
-    
+
     &:first-of-type {
       margin-top: 1rem;
     }
   }
-  
+
   @media (max-width: 768px) {
     padding: 16px;
     border-radius: 0;
@@ -339,31 +356,31 @@ export const ContentSection = styled.section<{ $themeColor?: string; $isBusiness
     border-bottom: 1px solid var(--border-primary);
     box-shadow: none;
     margin-top: 140px;
-    
+
     &:first-of-type {
       border-radius: 0;
       margin-top: 140px;
     }
-    
+
     &:last-of-type {
       border-radius: 0;
       margin-bottom: 16px;
     }
   }
-  
+
   @media (max-width: 480px) {
     padding: 12px;
     margin-bottom: 6px;
     margin-top: 135px;
-    
+
     &:first-of-type {
       margin-top: 135px;
     }
   }
-  
+
   @media (max-width: 380px) {
     margin-top: 130px;
-    
+
     &:first-of-type {
       margin-top: 130px;
     }
@@ -382,12 +399,18 @@ export const SectionHeader = styled.div`
     margin: 0;
     font-size: 1.5rem;
     color: var(--text-primary);
-    text-shadow: 0 0 10px rgba(76, 175, 80, 0.6), 0 0 20px rgba(76, 175, 80, 0.4);
+    text-shadow:
+      0 0 10px rgba(76, 175, 80, 0.6),
+      0 0 20px rgba(76, 175, 80, 0.4);
   }
 
   .edit-btn {
     padding: 8px 16px;
-    background: linear-gradient(135deg,rgb(16, 255, 100) 0%,rgb(0, 255, 26) 100%);
+    background: linear-gradient(
+      135deg,
+      rgb(16, 255, 100) 0%,
+      rgb(0, 255, 26) 100%
+    );
     color: white;
     border: none;
     border-radius: 8px;
@@ -403,7 +426,11 @@ export const SectionHeader = styled.div`
     white-space: nowrap;
 
     &:hover {
-      background: linear-gradient(135deg,rgb(42, 255, 42) 0%,rgb(26, 255, 102) 100%);
+      background: linear-gradient(
+        135deg,
+        rgb(42, 255, 42) 0%,
+        rgb(26, 255, 102) 100%
+      );
       transform: translateY(-2px);
       box-shadow: 0 4px 10px rgba(16, 255, 68, 0.4);
     }
@@ -417,34 +444,34 @@ export const SectionHeader = styled.div`
       pointer-events: none;
     }
   }
-  
+
   @media (max-width: 768px) {
     margin-bottom: 12px;
     padding-bottom: 12px;
     border-bottom: 1px solid var(--border-primary);
-    
+
     h2 {
       font-size: 1.125rem;
       font-weight: 700;
     }
-    
+
     .edit-btn {
       padding: 6px 12px;
       font-size: 0.8125rem;
       border-radius: 6px;
       min-height: 32px;
-      
+
       &:active {
         transform: scale(0.95);
       }
     }
   }
-  
+
   @media (max-width: 480px) {
     h2 {
       font-size: 1rem;
     }
-    
+
     .edit-btn {
       padding: 6px 10px;
       font-size: 0.75rem;
@@ -459,7 +486,7 @@ export const SectionTitle = styled.h2`
   padding-bottom: 0.5rem;
   border-bottom: 2px solid ${({ theme }) => theme.colors.primary.main};
   display: inline-block;
-  
+
   @media (max-width: 768px) {
     font-size: 1.125rem;
     font-weight: 700;
@@ -468,7 +495,7 @@ export const SectionTitle = styled.h2`
     border-bottom: 2px solid var(--accent-primary);
     width: 100%;
   }
-  
+
   @media (max-width: 480px) {
     font-size: 1rem;
     margin-bottom: 10px;
@@ -481,12 +508,12 @@ export const CoverAndProfileWrapper = styled.div`
   position: relative;
   margin-bottom: -75px;
   z-index: 5;
-  
+
   @media (min-width: 961px) {
     margin-bottom: 0;
     padding-bottom: 1rem;
   }
-  
+
   @media (max-width: 960px) {
     margin-bottom: 0 !important;
     padding-bottom: 0;
@@ -499,9 +526,9 @@ export const CenteredProfileImageWrapper = styled.div`
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
-  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.12)) 
-          drop-shadow(0 3px 6px rgba(0,0,0,0.08));
-  
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.12))
+    drop-shadow(0 3px 6px rgba(0, 0, 0, 0.08));
+
   @media (max-width: 960px) {
     position: relative !important;
     bottom: auto !important;
@@ -510,8 +537,8 @@ export const CenteredProfileImageWrapper = styled.div`
     margin: -60px auto 1rem !important;
     width: fit-content;
     z-index: 0;
-    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
-    
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+
     &::before,
     &::after {
       display: none;
@@ -536,24 +563,27 @@ export const UserInfoBar = styled.div`
   border: 1px solid var(--border-primary);
   z-index: 0;
   color: var(--text-primary);
-  
+
   @media (min-width: 961px) {
     margin-top: 1rem;
   }
-  
-  html[data-theme="dark"] & {
+
+  html[data-theme='dark'] & {
     background: #1e293b;
     border-color: rgba(255, 255, 255, 0.1);
     color: #f8fafc;
     box-shadow: none;
   }
-  
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-  
+
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+
   @media (min-width: 961px) {
     margin-top: 1.5rem;
   }
-  
+
   @media (max-width: 960px) {
     flex-direction: column;
     gap: 1.5rem;
@@ -571,13 +601,13 @@ export const UserInfoLeft = styled.div`
   gap: 4px;
   text-align: left;
   color: var(--text-primary);
-  
-  html[data-theme="dark"] & {
+
+  html[data-theme='dark'] & {
     color: #f8fafc;
   }
-  
+
   transition: color 0.3s ease;
-  
+
   @media (max-width: 960px) {
     align-items: center;
     text-align: center;
@@ -588,19 +618,19 @@ export const UserInfoLeft = styled.div`
 export const UserInfoCenter = styled.div`
   display: flex;
   gap: 32px;
-  
-  html[data-theme="dark"] & {
+
+  html[data-theme='dark'] & {
     color: #f8fafc;
   }
-  
+
   @media (max-width: 960px) {
     width: 100%;
     justify-content: center;
     padding: 16px 0;
     border-top: 1px solid var(--border-secondary);
     border-bottom: 1px solid var(--border-secondary);
-    
-    html[data-theme="dark"] & {
+
+    html[data-theme='dark'] & {
       border-top-color: rgba(255, 255, 255, 0.1);
       border-bottom-color: rgba(255, 255, 255, 0.1);
     }
@@ -611,11 +641,11 @@ export const UserInfoRight = styled.div`
   display: flex;
   align-items: center;
   gap: 24px;
-  
-  html[data-theme="dark"] & {
+
+  html[data-theme='dark'] & {
     color: #f8fafc;
   }
-  
+
   @media (max-width: 960px) {
     width: 100%;
     justify-content: space-between;
@@ -628,11 +658,11 @@ export const UserInfoStatsContainer = styled.div`
   display: flex;
   gap: 32px;
   align-items: center;
-  
-  html[data-theme="dark"] & {
+
+  html[data-theme='dark'] & {
     color: #f8fafc;
   }
-  
+
   @media (max-width: 960px) {
     gap: 16px;
     flex-wrap: wrap;
@@ -649,13 +679,13 @@ export const UserName = styled.h1`
   align-items: center;
   gap: 8px;
   justify-content: flex-start;
-  
-  html[data-theme="dark"] & {
+
+  html[data-theme='dark'] & {
     color: #f8fafc;
   }
-  
+
   transition: color 0.3s ease;
-  
+
   @media (max-width: 960px) {
     justify-content: flex-start;
     font-size: 1.5rem;
@@ -665,10 +695,10 @@ export const UserName = styled.h1`
 export const UserEmail = styled.div`
   color: var(--text-secondary);
   font-size: 0.95rem;
-  
-  html[data-theme="dark"] & {
+
+  html[data-theme='dark'] & {
     color: #cbd5e1;
   }
-  
+
   transition: color 0.3s ease;
 `;

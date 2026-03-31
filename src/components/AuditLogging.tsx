@@ -8,11 +8,11 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { 
-  FileText, 
-  Search, 
-  Filter, 
-  Download, 
+import {
+  FileText,
+  Search,
+  Filter,
+  Download,
   AlertTriangle,
   CheckCircle,
   XCircle,
@@ -31,14 +31,14 @@ import { toast } from 'react-toastify';
 
 const Container = styled.div`
   padding: 2rem;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  background: var(--admin-bg-primary);
   border-radius: 16px;
   margin: 1rem;
-  color: white;
+  color: var(--admin-text-primary);
 `;
 
 const Title = styled.h2`
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   margin-bottom: 2rem;
   display: flex;
   align-items: center;
@@ -49,22 +49,22 @@ const TabsContainer = styled.div`
   display: flex;
   gap: 1rem;
   margin-bottom: 2rem;
-  border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+  border: 2px solid var(--admin-border-light);
 `;
 
 const TabButton = styled.button<{ $active: boolean }>`
   padding: 0.75rem 1.5rem;
-  background: ${props => props.$active ? 'linear-gradient(135deg, #667eea, #764ba2)' : 'transparent'};
-  color: ${props => props.$active ? 'white' : '#aaa'};
+  background: ${props => props.$active ? 'linear-gradient(135deg, var(--admin-accent-primary), var(--admin-accent-secondary))' : 'transparent'};
+  color: ${props => props.$active ? 'var(--admin-text-primary)' : 'var(--admin-text-secondary)'};
   border: none;
-  border-bottom: 2px solid ${props => props.$active ? '#ffd700' : 'transparent'};
+  border-bottom: 2px solid ${props => props.$active ? 'var(--admin-accent-primary)' : 'transparent'};
   cursor: pointer;
   font-weight: ${props => props.$active ? '600' : '400'};
   transition: all 0.3s ease;
   
   &:hover {
-    color: white;
-    background: ${props => props.$active ? 'linear-gradient(135deg, #667eea, #764ba2)' : 'rgba(255, 215, 0, 0.1)'};
+    color: var(--admin-text-primary);
+    background: ${props => props.$active ? 'linear-gradient(135deg, var(--admin-accent-primary), var(--admin-accent-secondary))' : 'var(--admin-bg-hover)'};
   }
 `;
 
@@ -74,7 +74,7 @@ const FiltersContainer = styled.div`
   gap: 1rem;
   margin-bottom: 2rem;
   padding: 1.5rem;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--admin-glass-card-bg);
   border-radius: 12px;
 `;
 
@@ -85,42 +85,42 @@ const FilterGroup = styled.div`
 `;
 
 const FilterLabel = styled.label`
-  color: #aaa;
+  color: var(--admin-text-secondary);
   font-size: 0.875rem;
   font-weight: 500;
 `;
 
 const FilterInput = styled.input`
   padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  background: var(--admin-bg-hover);
+  border: 1px solid var(--admin-border-light);
   border-radius: 6px;
-  color: white;
+  color: var(--admin-text-primary);
   font-size: 0.875rem;
   
   &:focus {
     outline: none;
-    border-color: #ffd700;
+    border-color: var(--admin-accent-primary);
   }
 `;
 
 const FilterSelect = styled.select`
   padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  background: var(--admin-bg-hover);
+  border: 1px solid var(--admin-border-light);
   border-radius: 6px;
-  color: white;
+  color: var(--admin-text-primary);
   font-size: 0.875rem;
   cursor: pointer;
   
   &:focus {
     outline: none;
-    border-color: #ffd700;
+    border-color: var(--admin-accent-primary);
   }
   
   option {
-    background: #2d2d2d;
-    color: white;
+    background: var(--admin-bg-tertiary);
+    color: var(--admin-text-primary);
   }
 `;
 
@@ -135,8 +135,8 @@ const ActionButton = styled.button`
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
+  background: linear-gradient(135deg, var(--admin-accent-primary), var(--admin-accent-secondary));
+  color: var(--admin-text-primary);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -156,7 +156,7 @@ const ActionButton = styled.button`
 
 const TableContainer = styled.div`
   overflow-x: auto;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--admin-glass-card-bg);
   border-radius: 12px;
   padding: 1rem;
 `;
@@ -164,19 +164,19 @@ const TableContainer = styled.div`
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
-  color: white;
+  color: var(--admin-text-primary);
 `;
 
 const TableHeader = styled.thead`
-  background: rgba(255, 215, 0, 0.1);
+  background: var(--admin-accent-primary);
 `;
 
 const TableHeaderCell = styled.th`
   padding: 1rem;
   text-align: left;
   font-weight: 600;
-  color: #ffd700;
-  border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+  color: var(--admin-accent-primary);
+  border: 2px solid var(--admin-border-light);
   white-space: nowrap;
 `;
 
@@ -187,13 +187,13 @@ const TableRow = styled.tr`
   transition: background 0.2s ease;
   
   &:hover {
-    background: rgba(255, 215, 0, 0.05);
+    background: var(--admin-accent-primary);
   }
 `;
 
 const TableCell = styled.td`
   padding: 1rem;
-  color: #ccc;
+  color: var(--admin-text-secondary);
   font-size: 0.875rem;
 `;
 
@@ -215,24 +215,24 @@ const Badge = styled.span<{ $severity?: string; $success?: boolean }>`
       return colors[props.$severity] || colors.low;
     }
     if (props.$success !== undefined) {
-      return props.$success 
+      return props.$success
         ? 'background: rgba(34, 197, 94, 0.2); color: #22c55e;'
         : 'background: rgba(239, 68, 68, 0.2); color: #ef4444;';
     }
-    return 'background: rgba(100, 116, 139, 0.2); color: #94a3b8;';
+    return 'background: rgba(100, 116, 139, 0.2); color: var(--admin-text-secondary);';
   }}
 `;
 
 const LoadingState = styled.div`
   padding: 3rem;
   text-align: center;
-  color: #aaa;
+  color: var(--admin-text-secondary);
 `;
 
 const EmptyState = styled.div`
   padding: 3rem;
   text-align: center;
-  color: #aaa;
+  color: var(--admin-text-secondary);
 `;
 
 const StatsContainer = styled.div`
@@ -244,19 +244,19 @@ const StatsContainer = styled.div`
 
 const StatCard = styled.div`
   padding: 1.5rem;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--admin-glass-card-bg);
   border-radius: 12px;
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  border: 1px solid var(--admin-border-light);
 `;
 
 const StatLabel = styled.div`
-  color: #aaa;
+  color: var(--admin-text-secondary);
   font-size: 0.875rem;
   margin-bottom: 0.5rem;
 `;
 
 const StatValue = styled.div`
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   font-size: 1.5rem;
   font-weight: 600;
 `;
@@ -267,7 +267,7 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: var(--admin-glass-card-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -275,14 +275,14 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  background: var(--admin-bg-primary);
   border-radius: 16px;
   padding: 2rem;
   max-width: 600px;
   width: 90%;
   max-height: 80vh;
   overflow-y: auto;
-  color: white;
+  color: var(--admin-text-primary);
 `;
 
 const ModalHeader = styled.div`
@@ -290,19 +290,19 @@ const ModalHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
-  border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+  border: 2px solid var(--admin-border-light);
   padding-bottom: 1rem;
 `;
 
 const ModalTitle = styled.h3`
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   margin: 0;
 `;
 
 const CloseButton = styled.button`
   background: transparent;
   border: none;
-  color: #aaa;
+  color: var(--admin-text-secondary);
   cursor: pointer;
   font-size: 1.5rem;
   padding: 0;
@@ -314,17 +314,17 @@ const CloseButton = styled.button`
   border-radius: 50%;
   
   &:hover {
-    background: rgba(255, 215, 0, 0.1);
-    color: white;
+    background: var(--admin-accent-primary);
+    color: var(--admin-text-primary);
   }
 `;
 
 const ModalBody = styled.div`
-  color: #ccc;
+  color: var(--admin-text-secondary);
   line-height: 1.6;
   
   pre {
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--admin-glass-card-bg);
     padding: 1rem;
     border-radius: 8px;
     overflow-x: auto;
@@ -344,7 +344,7 @@ const AuditLogging: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<SecurityEvent | null>(null);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
-  
+
   // Filters
   const [filters, setFilters] = useState({
     userId: '',
@@ -369,7 +369,7 @@ const AuditLogging: React.FC = () => {
   const loadData = async () => {
     try {
       setLoading(true);
-      
+
       if (activeTab === 'audit') {
         const result = await auditLoggingService.getAuditLogs(page, 50, {
           userId: filters.userId || undefined,
@@ -380,7 +380,7 @@ const AuditLogging: React.FC = () => {
           dateTo: filters.dateTo ? new Date(filters.dateTo) : undefined,
           success: filters.success !== '' ? filters.success === 'true' : undefined
         });
-        
+
         setAuditLogs(result.logs);
         setHasMore(result.hasMore);
       } else {
@@ -389,7 +389,7 @@ const AuditLogging: React.FC = () => {
           severity: eventFilters.severity as any || undefined,
           resolved: eventFilters.resolved !== '' ? eventFilters.resolved === 'true' : undefined
         });
-        
+
         setSecurityEvents(result.events);
         setHasMore(result.hasMore);
       }
@@ -405,9 +405,9 @@ const AuditLogging: React.FC = () => {
     try {
       const dateFrom = filters.dateFrom ? new Date(filters.dateFrom) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
       const dateTo = filters.dateTo ? new Date(filters.dateTo) : new Date();
-      
+
       const data = await auditLoggingService.exportAuditLogs(dateFrom, dateTo, format);
-      
+
       const blob = new Blob([data], { type: format === 'json' ? 'application/json' : 'text/csv' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -417,7 +417,7 @@ const AuditLogging: React.FC = () => {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      
+
       toast.success(`Audit logs exported as ${format.toUpperCase()}`);
     } catch (error) {
       logger.error('Error exporting audit logs', error as Error);
@@ -427,7 +427,7 @@ const AuditLogging: React.FC = () => {
 
   const handleResolveEvent = async (eventId: string, resolution: string) => {
     if (!currentUser) return;
-    
+
     try {
       await auditLoggingService.resolveSecurityEvent(eventId, currentUser.uid, resolution);
       toast.success('Security event resolved');

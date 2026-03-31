@@ -5,7 +5,7 @@
 
 import { writeFileSync } from 'fs';
 import { join } from 'path';
-import { generateSitemapXML, generateRobotsTxt } from '../utils/seo-sitemap';
+import { generateSitemapXML } from '../utils/seo-sitemap';
 import { logger } from '@/services/logger-service';
 
 const OUTPUT_DIR = join(process.cwd(), 'build'); // Vite outputs to 'build' folder
@@ -23,11 +23,8 @@ function main() {
   const urlCount = (sitemap.match(/<url>/g) || []).length;
   logger.debug(`📊 Total URLs: ${urlCount}`);
 
-  // Generate robots.txt
-  const robots = generateRobotsTxt();
-  const robotsPath = join(OUTPUT_DIR, 'robots.txt');
-  writeFileSync(robotsPath, robots, 'utf-8');
-  logger.debug(`✅ Generated: ${robotsPath}`);
+  // Removed robots.txt generation so it explicitly respects the `public/robots.txt`
+  // file containing AI directives during the Vite build process.
 
   logger.debug('✨ SEO files generated successfully!');
 }

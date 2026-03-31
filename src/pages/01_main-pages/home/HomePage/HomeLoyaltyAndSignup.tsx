@@ -1,12 +1,13 @@
 /**
  * HomeLoyaltyAndSignup.tsx
  * 
- * Unified Banners Component / Обединен компонент за банери
- * Combines / Комбинира:
- * - SubscriptionBanner
- * - LoyaltyBanner
+ * Loyalty Banner Component / Компонент за банер за лоялност
+ * Renders:
+ * - LoyaltyBanner (rewards program)
  * 
- * @benefit Unifies 2 separate banners / Обединява 2 отделни банера
+ * NOTE: SubscriptionBanner was removed — subscription pricing is handled
+ * exclusively by PricingSlotWrapper in the pricing_plans slot of HomePageComposer.
+ * 
  * @placement Right before Footer / Точно преди Footer
  */
 
@@ -17,7 +18,6 @@ import styled from 'styled-components';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 // Lazy imports
-const SubscriptionBanner = React.lazy(() => import('./SubscriptionBanner'));
 const LoyaltyBanner = React.lazy(() => import('./LoyaltyBanner'));
 
 // ============================================================================
@@ -54,28 +54,16 @@ const LoadingFallback = styled.div`
 
 /**
  * HomeLoyaltyAndSignup
- * Лоялност и регистрация - Loyalty and Signup
+ * Лоялност - Loyalty
  * 
- * Displays CTA (Call To Action) banners / Показва банери за призив към действие:
- * 1. Subscription - Paid plan / Абонамент - Платен план
- * 2. Loyalty - Rewards program / Лоялност - Програма за награди
- * 
- * Benefits / Ползи:
- * - Unified interface for invitations / Обединен интерфейс за покани
- * - Appears at page end (best performance) / Показва се в края на страницата (най-добра производителност)
- * - Lazy loading for performance / Мързеливо зареждане за производителност
- * - إجمالي ارتفاع قليل جداً
+ * Displays Loyalty rewards banner.
+ * Subscription pricing is handled by PricingSlotWrapper in HomePageComposer.
  */
 const HomeLoyaltyAndSignup: React.FC = memo(() => {
   const { t } = useLanguage();
   return (
     <BannersContainer>
-      {/* 1. Subscription Banner - Premium Plans */}
-      <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
-        <SubscriptionBanner />
-      </Suspense>
-
-      {/* 2. Loyalty Banner - Rewards Program */}
+      {/* Loyalty Banner - Rewards Program */}
       <Suspense fallback={<LoadingFallback>{t('common.loading')}</LoadingFallback>}>
         <LoyaltyBanner />
       </Suspense>

@@ -212,7 +212,7 @@ const Actions = styled.div`
 const CreateButton = styled.button`
   padding: 10px 20px;
   background: #4CAF50;
-  color: white;
+  color: var(--admin-text-primary);
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -232,7 +232,7 @@ const CreateButton = styled.button`
 const RefreshButton = styled.button`
   padding: 10px 20px;
   background: #3B82F6;
-  color: white;
+  color: var(--admin-text-primary);
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -324,7 +324,7 @@ const BackupActions = styled.div`
 const RestoreButton = styled.button`
   padding: 10px 20px;
   background: #8B5CF6;
-  color: white;
+  color: var(--admin-text-primary);
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -381,7 +381,7 @@ const ErrorMessage = styled.div`
 const RetryButton = styled.button`
   padding: 10px 20px;
   background: #3B82F6;
-  color: white;
+  color: var(--admin-text-primary);
   border: none;
   border-radius: 5px;
   cursor: pointer;

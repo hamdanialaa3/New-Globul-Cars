@@ -10,19 +10,16 @@
 
 import * as functions from 'firebase-functions/v1';
 import * as admin from 'firebase-admin';
+import {
+  getPlanMaxListings,
+  normalizePlanTier,
+} from '../constants/plan-limits';
 
 if (!admin.apps.length) {
   admin.initializeApp();
 }
 
 const db = admin.firestore();
-
-// Plan limits — must match src/config/subscription-plans.ts (SSOT)
-const PLAN_MAX_LISTINGS: Record<string, number> = {
-  free: 10,
-  dealer: 100,
-  company: -1, // unlimited
-};
 
 const VEHICLE_COLLECTIONS = [
   'passenger_cars',
@@ -38,7 +35,7 @@ const VEHICLE_COLLECTIONS = [
  */
 async function countActiveListings(sellerId: string): Promise<number> {
   const counts = await Promise.all(
-    VEHICLE_COLLECTIONS.map(async (col) => {
+    VEHICLE_COLLECTIONS.map(async col => {
       const snap = await db
         .collection(col)
         .where('sellerId', '==', sellerId)
@@ -46,7 +43,7 @@ async function countActiveListings(sellerId: string): Promise<number> {
         .count()
         .get();
       return snap.data().count;
-    }),
+    })
   );
   return counts.reduce((sum, c) => sum + c, 0);
 }
@@ -57,30 +54,36 @@ async function countActiveListings(sellerId: string): Promise<number> {
  */
 async function enforceLimit(
   snap: functions.firestore.QueryDocumentSnapshot,
-  context: functions.EventContext,
+  context: functions.EventContext
 ): Promise<void> {
   const data = snap.data();
   const sellerId: string | undefined = data?.sellerId;
   const collectionId = context.params.collection || snap.ref.parent.id;
 
   if (!sellerId) {
-    functions.logger.warn('Listing created without sellerId — skipping enforcement', {
-      docId: snap.id,
-      collection: collectionId,
-    });
+    functions.logger.warn(
+      'Listing created without sellerId — skipping enforcement',
+      {
+        docId: snap.id,
+        collection: collectionId,
+      }
+    );
     return;
   }
 
   // Look up user's plan tier
   const userDoc = await db.collection('users').doc(sellerId).get();
   if (!userDoc.exists) {
-    functions.logger.warn('User not found for listing enforcement', { sellerId });
+    functions.logger.warn('User not found for listing enforcement', {
+      sellerId,
+    });
     return;
   }
 
   const userData = userDoc.data()!;
-  const planTier: string = userData.planTier || userData.plan?.tier || 'free';
-  const maxListings = PLAN_MAX_LISTINGS[planTier] ?? PLAN_MAX_LISTINGS.free;
+  const rawTier = userData.planTier || userData.plan?.tier || 'free';
+  const planTier = normalizePlanTier(rawTier);
+  const maxListings = getPlanMaxListings(planTier);
 
   // Unlimited plans always pass
   if (maxListings === -1) return;
@@ -88,13 +91,16 @@ async function enforceLimit(
   const activeCount = await countActiveListings(sellerId);
 
   if (activeCount > maxListings) {
-    functions.logger.warn('Listing limit exceeded — deactivating newest listing', {
-      sellerId,
-      planTier,
-      activeCount,
-      maxListings,
-      deactivatedDoc: snap.id,
-    });
+    functions.logger.warn(
+      'Listing limit exceeded — deactivating newest listing',
+      {
+        sellerId,
+        planTier,
+        activeCount,
+        maxListings,
+        deactivatedDoc: snap.id,
+      }
+    );
 
     // Deactivate the newly created listing
     await snap.ref.update({

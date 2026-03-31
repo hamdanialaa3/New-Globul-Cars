@@ -6,6 +6,10 @@ import * as googleAdsSync from './google-ads-sync';
 import * as facebookAdsSync from './facebook-ads-sync';
 import * as newCarNotifications from './notifications/onNewCarPost';
 import * as carLifecycle from './triggers/car-lifecycle';
+import * as bulkProcess from './bulk/processBulkUpload';
+import * as bulkGrouping from './bulk/groupBulkImages';
+import * as bulkVin from './bulk/extractVIN';
+import * as bulkCloudSync from './bulk/syncCloudFolders';
 
 // AI Services (Gemini Chat - NEW) ✅
 import * as aiFunctions from './ai-functions';
@@ -53,6 +57,12 @@ export const manualSitemapRegeneration = sitemapFunc.manualSitemapRegeneration;
 export const syncCarsToGoogleAds = googleAdsSync.syncCarsToGoogleAds;
 export const syncCarsToFacebookAds = facebookAdsSync.syncCarsToFacebookAds;
 
+// Enterprise Bulk Upload Pipeline
+export const processBulkUpload = bulkProcess.processBulkUpload;
+export const groupBulkImages = bulkGrouping.groupBulkImages;
+export const extractVIN = bulkVin.extractVIN;
+export const syncCloudFolders = bulkCloudSync.syncCloudFolders;
+
 // AI Services (DeepSeek Integration - Legacy)
 // ACTIVATED FOR PRODUCTION - CPU conflict noted but acceptable for live service
 import * as deepSeekProxy from './ai/deepseek-proxy';
@@ -72,6 +82,9 @@ import * as prerender from './seo/prerender';
 export const requestIndexing = indexing.requestIndexing;
 export const logSearchEvent = bqAnalytics.logSearchEvent;
 export const prerenderSEO = prerender.prerender;
+
+import * as dynamicSitemap from './seo/sitemap-generator';
+export const sitemapDynamic = dynamicSitemap.sitemapDynamic;
 
 // 🚀 NEW: Google Search Console Auto-Indexing Triggers (March 2026)
 import * as seoIndexing from './seo/indexing-triggers';

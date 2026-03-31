@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://koli.one/schemas/garage_vehicle.v1.json",
+  "title": "Garage Vehicle",
+  "description": "Schema for a user's personal vehicle saved in their Digital Garage. Used to track MOT, insurance, and service history.",
+  "type": "object",
+  "required": ["id", "ownerUid", "vin", "make", "model", "year"],
+  "properties": {
+    "id": { "type": "string", "description": "Unique identifier for the garage vehicle record" },
+    "ownerUid": { "type": "string", "description": "Firebase Auth UID of the owner" },
+    "vin": { "type": "string", "description": "Vehicle Identification Number" },
+    "licensePlate": { "type": "string", "description": "License plate number for tracking local BG records" },
+    "make": { "type": "string" },
+    "model": { "type": "string" },
+    "generation": { "type": "string" },
+    "year": { "type": "integer" },
+    "color": { "type": "string" },
+    "mileage": { "type": "integer", "description": "Current mileage in KM" },
+    
+    "documents": {
+      "type": "object",
+      "properties": {
+        "motExpiry": { "type": "string", "format": "date", "description": "ГТП expiry date" },
+        "insuranceExpiry": { "type": "string", "format": "date", "description": "Гражданска отговорност expiry date" },
+        "vignetteExpiry": { "type": "string", "format": "date", "description": "Винетка expiry date" }
+      }
+    },
+
+    "serviceHistory": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": { "type": "string", "format": "date" },
+          "type": { "type": "string", "enum": ["oil_change", "repair", "tires", "maintenance"] },
+          "description": { "type": "string" },
+          "cost": { "type": "number", "description": "Cost in EUR" },
+          "mileageAtService": { "type": "integer" },
+          "shopName": { "type": "string" }
+        }
+      }
+    },
+
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}

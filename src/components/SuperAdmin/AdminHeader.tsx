@@ -23,7 +23,7 @@ const AdminToolbar = styled.div`
 `;
 
 const SessionInfo = styled.div`
-  background: #1e2432;
+  background: var(--admin-bg-secondary);
   color: #8B5CF6;
   padding: 6px 12px;
   border-radius: 4px;
@@ -39,14 +39,14 @@ const HeaderControls = styled.div`
 `;
 
 const DashboardHeader = styled.div`
-  background: #1e2432;
+  background: var(--admin-bg-secondary);
   border: 1px solid #2d3748;
   border-radius: 8px;
   padding: 24px;
   margin: 20px;
   margin-bottom: 24px;
   text-align: center;
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 `;
 

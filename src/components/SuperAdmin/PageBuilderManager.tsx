@@ -19,9 +19,9 @@ import { logger } from '@/services/logger-service';
 import { PageBuilderConfig, PageHeroConfig, PageSectionConfig } from '@/hooks/usePageBuilder';
 
 const Container = styled.div`
-  background: #0f1419;
+  background: var(--admin-bg-primary);
   border-radius: 12px;
-  border: 1px solid #1e2432;
+  border: 1px solid var(--admin-border-subtle);
   padding: 24px;
 `;
 
@@ -55,7 +55,7 @@ const Title = styled.h2`
 
 const Subtitle = styled.p`
   font-size: 14px;
-  color: #9ca3af;
+  color: var(--admin-text-secondary);
   margin: 0;
   max-width: 720px;
   line-height: 1.6;
@@ -90,18 +90,18 @@ const Label = styled.label`
 
 const Select = styled.select`
   width: 100%;
-  background: #111827;
-  border: 1px solid #334155;
+  background: var(--admin-bg-secondary);
+  border: 1px solid var(--admin-border-light);
   border-radius: 8px;
   padding: 12px;
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
 
   &:focus {
     outline: none;
-    border-color: #8b5cf6;
+    border-color: var(--admin-accent-primary);
     box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
   }
 `;
@@ -117,8 +117,8 @@ const Grid = styled.div`
 `;
 
 const Card = styled.div`
-  background: #111827;
-  border: 1px solid #243041;
+  background: var(--admin-glass-card-bg);
+  border: 1px solid var(--admin-border-subtle);
   border-radius: 12px;
   padding: 20px;
   display: flex;
@@ -128,7 +128,7 @@ const Card = styled.div`
 
 const CardTitle = styled.h3`
   margin: 0;
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   font-size: 16px;
   font-weight: 700;
   display: flex;
@@ -144,16 +144,16 @@ const FieldRow = styled.div`
 
 const Input = styled.input`
   width: 100%;
-  background: #0b1220;
-  border: 1px solid #334155;
+  background: var(--admin-bg-tertiary);
+  border: 1px solid var(--admin-border-light);
   border-radius: 8px;
   padding: 10px 12px;
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   font-size: 13px;
 
   &:focus {
     outline: none;
-    border-color: #6366f1;
+    border-color: var(--admin-accent-primary);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
   }
 `;
@@ -169,13 +169,13 @@ const SectionItem = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 12px;
-  background: #0b1220;
-  border: 1px solid #334155;
+  background: var(--admin-bg-tertiary);
+  border: 1px solid var(--admin-border-light);
   border-radius: 8px;
   transition: all 0.2s;
   
   &:hover {
-    border-color: #6366f1;
+    border-color: var(--admin-accent-primary);
   }
 `;
 
@@ -186,13 +186,13 @@ const SectionInfo = styled.div`
 `;
 
 const SectionName = styled.span`
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   font-weight: 600;
   font-size: 14px;
 `;
 
 const SectionOrder = styled.span`
-  color: #94a3b8;
+  color: var(--admin-text-secondary);
   font-size: 12px;
 `;
 
@@ -215,7 +215,7 @@ const IconButton = styled.button<{ $active?: boolean, $danger?: boolean }>`
   cursor: pointer;
   
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--admin-bg-hover);
   }
   
   &:disabled {
@@ -249,7 +249,7 @@ const Button = styled.button<{ $primary?: boolean }>`
   &:hover {
     transform: translateY(-2px);
     box-shadow: ${props => props.$primary ? '0 4px 12px rgba(99, 102, 241, 0.4)' : 'none'};
-    color: #fff;
+    color: var(--admin-text-primary);
     border-color: ${props => !props.$primary && '#6366f1'};
   }
   

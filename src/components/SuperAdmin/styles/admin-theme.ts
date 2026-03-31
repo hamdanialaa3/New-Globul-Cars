@@ -2,42 +2,42 @@
 
 export const adminTheme = {
     colors: {
-        // Backgrounds - Deep Space
+        // Backgrounds - Dynamic via CSS Variables
         bg: {
-            primary: '#030712',   // Deepest black-blue
-            secondary: '#0f172a', // Slate 900
-            tertiary: '#1e293b',  // Slate 800
-            glass: 'rgba(15, 23, 42, 0.7)', // For glassmorphism
-            hover: 'rgba(30, 41, 59, 0.5)',
+            primary: 'var(--admin-bg-primary)',
+            secondary: 'var(--admin-bg-secondary)',
+            tertiary: 'var(--admin-bg-tertiary)',
+            glass: 'var(--admin-bg-glass)',
+            hover: 'var(--admin-bg-hover)',
         },
         // Text
         text: {
-            primary: '#f8fafc',   // Slate 50
-            secondary: '#94a3b8', // Slate 400
-            accent: '#e2e8f0',    // Slate 200
-            muted: '#64748b',     // Slate 500
+            primary: 'var(--admin-text-primary)',
+            secondary: 'var(--admin-text-secondary)',
+            accent: 'var(--admin-text-accent)',
+            muted: 'var(--admin-text-muted)',
         },
-        // Accents - Neon Nebula
+        // Accents
         accent: {
-            primary: '#6366f1',   // Indigo 500
-            secondary: '#a855f7', // Purple 500
-            tertiary: '#ec4899',  // Pink 500
-            cyan: '#06b6d4',      // Cyan 500
-            gradient: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
-            glow: '0 0 20px rgba(99, 102, 241, 0.5)',
+            primary: 'var(--admin-accent-primary)',
+            secondary: 'var(--admin-accent-secondary)',
+            tertiary: 'var(--admin-accent-tertiary)',
+            cyan: 'var(--admin-accent-cyan)',
+            gradient: 'linear-gradient(135deg, var(--admin-accent-primary) 0%, var(--admin-accent-secondary) 100%)',
+            glow: 'var(--admin-accent-glow)',
         },
         // Status
         status: {
-            success: '#10b981',   // Emerald 500
-            warning: '#f59e0b',   // Amber 500
-            error: '#ef4444',     // Red 500
-            info: '#3b82f6',      // Blue 500
+            success: 'var(--admin-status-success)',
+            warning: 'var(--admin-status-warning)',
+            error: 'var(--admin-status-error)',
+            info: 'var(--admin-status-info)',
         },
         // Borders
         border: {
-            subtle: 'rgba(148, 163, 184, 0.1)',
-            light: 'rgba(148, 163, 184, 0.2)',
-            active: 'rgba(99, 102, 241, 0.5)',
+            subtle: 'var(--admin-border-subtle)',
+            light: 'var(--admin-border-light)',
+            active: 'var(--admin-border-active)',
         }
     },
     typography: {
@@ -59,22 +59,22 @@ export const adminTheme = {
         sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
         md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
         lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-        glow: '0 0 15px rgba(99, 102, 241, 0.3)',
-        neon: '0 0 5px #6366f1, 0 0 10px #6366f1, 0 0 20px #6366f1',
+        glow: 'var(--admin-accent-glow)',
+        neon: 'var(--admin-accent-glow)',
     },
     glass: {
         panel: `
-      background: rgba(30, 41, 59, 0.4);
+      background: var(--admin-glass-panel-bg);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(148, 163, 184, 0.1);
+      border: 1px solid var(--admin-border-subtle);
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     `,
         card: `
-      background: rgba(15, 23, 42, 0.6);
+      background: var(--admin-glass-card-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(148, 163, 184, 0.08);
+      border: 1px solid var(--admin-border-light);
     `,
     },
     layout: {

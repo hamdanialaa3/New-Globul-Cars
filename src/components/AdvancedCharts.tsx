@@ -7,14 +7,14 @@ import { BarChart3, PieChart, TrendingUp, Calendar } from 'lucide-react';
 
 const Container = styled.div`
   padding: 2rem;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  background: var(--admin-bg-primary);
   border-radius: 16px;
   margin: 1rem;
-  color: white;
+  color: var(--admin-text-primary);
 `;
 
 const Title = styled.h2`
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   margin-bottom: 2rem;
   display: flex;
   align-items: center;
@@ -28,20 +28,20 @@ const ChartsGrid = styled.div`
 `;
 
 const ChartCard = styled.div`
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  background: var(--admin-bg-hover);
+  border: 1px solid var(--admin-border-light);
   border-radius: 12px;
   padding: 1.5rem;
   transition: all 0.3s ease;
 
   &:hover {
-    border-color: rgba(255, 215, 0, 0.6);
+    border-color: var(--admin-border-light);
     transform: translateY(-2px);
   }
 `;
 
 const ChartTitle = styled.h3`
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
@@ -64,7 +64,7 @@ const Bar = styled.div<{ height: number; color?: string }>`
   display: flex;
   align-items: end;
   justify-content: center;
-  color: white;
+  color: var(--admin-text-primary);
   font-size: 0.8rem;
   font-weight: bold;
   padding-bottom: 0.5rem;

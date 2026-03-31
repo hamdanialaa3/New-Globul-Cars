@@ -8,12 +8,14 @@
  * @author Senior System Architect
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import { useOutletContext } from 'react-router-dom';
 import { useLanguage } from '../../../../../contexts/LanguageContext';
 import { useTheme } from '../../../../../contexts/ThemeContext';
 import { logger } from '../../../../../services/logger-service';
+import { trustNetworkService } from '../../../../../services/profile/trust-network.service';
+import { emitProfileEvent } from '../../../../../services/profile/profile-event-bus';
 import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
 import type { ProfileCar } from '../types';
 import { PublicProfileHero } from './components/PublicProfileHero';
@@ -42,6 +44,33 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({
   const handleFollow = outletContext?.handleFollow || (() => {});
   const handleMessage = outletContext?.handleMessage || (() => {});
   const [activeTab, setActiveTab] = useState<'inventory' | 'about' | 'feed' | 'following'>('inventory');
+  const [connectLoading, setConnectLoading] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+
+  // Check existing trust connection on mount
+  useEffect(() => {
+    if (!viewer?.uid || !user?.uid || viewer.uid === user.uid) return;
+    let isActive = true;
+    trustNetworkService.getConnection(viewer.uid, user.uid).then((conn) => {
+      if (isActive && conn) setIsConnected(true);
+    }).catch(() => {});
+    return () => { isActive = false; };
+  }, [viewer?.uid, user?.uid]);
+
+  const handleConnect = useCallback(async () => {
+    if (!viewer?.uid || !user?.uid || connectLoading || isConnected) return;
+    setConnectLoading(true);
+    try {
+      await trustNetworkService.createConnection(viewer.uid, user.uid, 'partner');
+      setIsConnected(true);
+      emitProfileEvent({ type: 'trust_connection_made', userId: viewer.uid });
+      logger.info('Trust connection created', { from: viewer.uid, to: user.uid });
+    } catch (error) {
+      logger.error('Failed to create trust connection', { error });
+    } finally {
+      setConnectLoading(false);
+    }
+  }, [viewer?.uid, user?.uid, connectLoading, isConnected]);
 
   const profileType = user.profileType || 'private';
   const isPrivate = profileType === 'private';
@@ -68,6 +97,9 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({
           followLoading={followLoading}
           onFollow={handleFollow}
           onMessage={handleMessage}
+          onConnect={handleConnect}
+          connectLoading={connectLoading}
+          isConnected={isConnected}
           onBlockChanged={(isBlocked) => {
             logger.info('Block status changed', {
               targetUserId: user.uid,

@@ -12,7 +12,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { User, Building2, Briefcase, ArrowRight, Check, X, AlertCircle } from 'lucide-react';
 import { useProfileType } from '../../contexts/ProfileTypeContext';
-import { ProfileService } from '../../services/profile/ProfileService';
 import { PermissionsService } from '../../services/profile/PermissionsService';
 import { useToast } from '../Toast';
 import type { ProfileType } from '../../types/user/bulgarian-user.types';

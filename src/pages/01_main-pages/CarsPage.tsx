@@ -272,6 +272,7 @@ const SearchInputContainer = styled.div`
   position: relative;
   display: flex;
   align-items: stretch;
+  margin-left: 45px; // Space for icon outside
   background: ${({ theme }) =>
     theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.92)'};
   border: 1px solid
@@ -299,7 +300,9 @@ const SearchInputContainer = styled.div`
 const SearchIconWrapper = styled.div`
   display: flex;
   align-items: center;
-  padding: 0 1.25rem;
+  position: absolute;
+  left: -45px;
+  height: 100%;
   color: ${({ theme }) =>
     theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.75)' : theme.colors.text.secondary};
   
@@ -314,7 +317,7 @@ const SearchInput = styled.input`
   border: none;
   outline: none;
   font-size: 1.05rem;
-  padding: 1.25rem 0.5rem;
+  padding: 1.25rem 1rem;
   font-weight: 500;
   background: transparent;
   color: ${({ theme }) => (theme.mode === 'dark' ? '#f8fbff' : theme.colors.text.primary)};

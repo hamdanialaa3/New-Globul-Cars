@@ -15,13 +15,13 @@ import { projectAnalysisService, ProjectMetrics } from '../../services/project-a
 import { logger } from '../../services/logger-service';
 
 const PanelContainer = styled.div`
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border: 1px solid #2d3748;
   border-radius: 12px;
   padding: 32px;
   margin: 0 20px 20px 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  color: #f8fafc;
+  color: var(--admin-text-primary);
 `;
 
 const SectionTitle = styled.h2`
@@ -44,7 +44,7 @@ const MetricsGrid = styled.div`
 `;
 
 const MetricCard = styled.div`
-  background: #1e2432;
+  background: var(--admin-bg-secondary);
   border: 1px solid #2d3748;
   border-radius: 12px;
   padding: 24px;
@@ -74,7 +74,7 @@ const MetricIcon = styled.div`
 const MetricValue = styled.div`
   font-size: 26px;
   font-weight: 700;
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   margin-bottom: 8px;
 `;
 
@@ -87,7 +87,7 @@ const MetricLabel = styled.div`
 `;
 
 const ChartSection = styled.div`
-  background: #1e2432;
+  background: var(--admin-bg-secondary);
   border: 1px solid #2d3748;
   border-radius: 12px;
   padding: 24px;
@@ -136,7 +136,7 @@ const ProgressFill = styled.div<{ $percentage: number; $color: string }>`
 `;
 
 const ViolationsSection = styled.div<{ $hasViolations: boolean }>`
-  background: #1e2432;
+  background: var(--admin-bg-secondary);
   border: 2px solid ${props => props.$hasViolations ? '#fbbf24' : '#10b981'};
   border-radius: 12px;
   padding: 24px;
@@ -145,7 +145,7 @@ const ViolationsSection = styled.div<{ $hasViolations: boolean }>`
 const ViolationTitle = styled.div`
   font-size: 14px;
   font-weight: 700;
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   margin-bottom: 16px;
   display: flex;
   align-items: center;
@@ -171,7 +171,7 @@ const ViolationItem = styled.li`
   transition: all 0.2s ease;
 
   &:hover {
-    background: #1e2432;
+    background: var(--admin-bg-secondary);
     transform: translateX(4px);
   }
 `;
@@ -181,7 +181,7 @@ const LoadingSpinner = styled.div`
   justify-content: center;
   align-items: center;
   height: 300px;
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   font-size: 18px;
 `;
 

@@ -15,13 +15,13 @@ import { firebaseConnectionTestService } from '../../services/firebase-connectio
 import { logger } from '../../services/logger-service';
 
 const TestContainer = styled.div`
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border: 1px solid #2d3748;
   border-radius: 12px;
   padding: 32px;
   margin: 0 20px 20px 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  color: #f8fafc;
+  color: var(--admin-text-primary);
 `;
 
 const TestHeader = styled.div`
@@ -64,7 +64,7 @@ const TestButton = styled.button<{ $variant: 'primary' | 'success' | 'danger' }>
       case 'success':
         return `
           background: #10b981;
-          color: #ffffff;
+          color: var(--admin-text-primary);
           &:hover { 
             background: #059669;
             transform: translateY(-1px);
@@ -73,7 +73,7 @@ const TestButton = styled.button<{ $variant: 'primary' | 'success' | 'danger' }>
       case 'danger':
         return `
           background: #ef4444;
-          color: #ffffff;
+          color: var(--admin-text-primary);
           &:hover { 
             background: #dc2626;
             transform: translateY(-1px);
@@ -98,7 +98,7 @@ const TestResults = styled.div`
 `;
 
 const TestResult = styled.div<{ $success: boolean }>`
-  background: #1e2432;
+  background: var(--admin-bg-secondary);
   border: 1px solid ${props => props.$success ? '#10b981' : '#ef4444'};
   border-radius: 12px;
   padding: 24px;
@@ -116,7 +116,7 @@ const TestIcon = styled.div<{ $success: boolean }>`
   align-items: center;
   justify-content: center;
   background: ${props => props.$success ? '#10b981' : '#ef4444'};
-  color: #ffffff;
+  color: var(--admin-text-primary);
   font-size: 20px;
 `;
 
@@ -127,7 +127,7 @@ const TestInfo = styled.div`
 const TestName = styled.div`
   font-size: 15px;
   font-weight: 700;
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   margin-bottom: 4px;
 `;
 
@@ -139,7 +139,7 @@ const TestMessage = styled.div`
 
 const TestData = styled.div`
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--admin-text-secondary);
   margin-top: 8px;
   font-weight: 500;
 `;
@@ -149,7 +149,7 @@ const LoadingSpinner = styled.div`
   justify-content: center;
   align-items: center;
   height: 200px;
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   font-size: 18px;
   gap: 10px;
 `;
@@ -250,7 +250,7 @@ const FirebaseConnectionTest: React.FC = () => {
         <>
           {lastTestTime && (
             <div style={{
-              color: '#ffd700',
+              color: 'var(--admin-accent-primary)',
               fontSize: '14px',
               marginBottom: '20px',
               textAlign: 'center',
@@ -284,7 +284,7 @@ const FirebaseConnectionTest: React.FC = () => {
           {testResults.length === 0 && (
             <div style={{
               textAlign: 'center',
-              color: '#ffd700',
+              color: 'var(--admin-accent-primary)',
               fontSize: '18px',
               padding: '40px'
             }}>

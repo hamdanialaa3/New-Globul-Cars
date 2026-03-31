@@ -66,13 +66,13 @@ const Section = styled.div`
   padding: 24px 16px;
   margin-bottom: 24px;
   border-bottom: 1px solid #2d3748;
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border-radius: 8px;
 `;
 
 const SectionTitle = styled.h3`
   font-size: 16px;
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   text-align: center;
   margin-bottom: 16px;
   font-weight: 600;
@@ -91,7 +91,7 @@ const LinksGrid = styled.div`
 `;
 
 const LinkCard = styled.div`
-  background: #1e2432;
+  background: var(--admin-bg-secondary);
   border: 1px solid #2d3748;
   border-radius: 8px;
   padding: 20px;
@@ -114,14 +114,14 @@ const LinkIcon = styled.div`
 
 const LinkName = styled.div`
   font-size: 13px;
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   font-weight: 600;
   margin-bottom: 4px;
 `;
 
 const LinkDesc = styled.div`
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--admin-text-secondary);
 `;
 
 export default IoTManagementLinks;

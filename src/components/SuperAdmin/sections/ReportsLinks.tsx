@@ -205,13 +205,13 @@ const Section = styled.div`
   padding: 24px 16px;
   margin-bottom: 24px;
   border-bottom: 1px solid #2d3748;
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border-radius: 8px;
 `;
 
 const SectionTitle = styled.h3`
   font-size: 16px;
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   text-align: center;
   margin-bottom: 16px;
   font-weight: 600;
@@ -226,7 +226,7 @@ const ReportsGrid = styled.div`
 `;
 
 const ReportCard = styled.div`
-  background: #1e2432;
+  background: var(--admin-bg-secondary);
   border: 1px solid #2d3748;
   border-radius: 8px;
   padding: 24px;
@@ -246,7 +246,7 @@ const ReportIcon = styled.div`
 
 const ReportName = styled.div`
   font-size: 13px;
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   text-align: center;
   margin-bottom: 16px;
   font-weight: 600;

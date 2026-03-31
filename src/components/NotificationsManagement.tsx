@@ -8,8 +8,8 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { 
-  Bell, 
+import {
+  Bell,
   RefreshCw,
   Filter,
   CheckCircle,
@@ -31,14 +31,14 @@ import { format } from 'date-fns';
 
 const Container = styled.div`
   padding: 2rem;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  background: var(--admin-bg-primary);
   border-radius: 16px;
   margin: 1rem;
-  color: white;
+  color: var(--admin-text-primary);
 `;
 
 const Title = styled.h2`
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   margin-bottom: 2rem;
   display: flex;
   align-items: center;
@@ -54,14 +54,14 @@ const StatsGrid = styled.div`
 `;
 
 const StatCard = styled.div`
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  background: var(--admin-glass-card-bg);
+  border: 1px solid var(--admin-border-light);
   border-radius: 12px;
   padding: 1.5rem;
   transition: all 0.3s ease;
   
   &:hover {
-    border-color: rgba(255, 215, 0, 0.5);
+    border-color: var(--admin-border-light);
     transform: translateY(-2px);
   }
 `;
@@ -69,12 +69,12 @@ const StatCard = styled.div`
 const StatValue = styled.div`
   font-size: 2rem;
   font-weight: 700;
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   margin-bottom: 0.5rem;
 `;
 
 const StatLabel = styled.div`
-  color: #aaa;
+  color: var(--admin-text-secondary);
   font-size: 0.875rem;
 `;
 
@@ -84,21 +84,21 @@ const FiltersContainer = styled.div`
   gap: 1rem;
   margin-bottom: 2rem;
   padding: 1.5rem;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--admin-glass-card-bg);
   border-radius: 12px;
 `;
 
 const SearchInput = styled.input`
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  background: var(--admin-bg-hover);
+  border: 1px solid var(--admin-border-light);
   border-radius: 8px;
-  color: white;
+  color: var(--admin-text-primary);
   font-size: 0.875rem;
   
   &:focus {
     outline: none;
-    border-color: #ffd700;
+    border-color: var(--admin-accent-primary);
   }
   
   &::placeholder {
@@ -108,21 +108,21 @@ const SearchInput = styled.input`
 
 const FilterSelect = styled.select`
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  background: var(--admin-bg-hover);
+  border: 1px solid var(--admin-border-light);
   border-radius: 8px;
-  color: white;
+  color: var(--admin-text-primary);
   font-size: 0.875rem;
   cursor: pointer;
   
   &:focus {
     outline: none;
-    border-color: #ffd700;
+    border-color: var(--admin-accent-primary);
   }
   
   option {
-    background: #2d2d2d;
-    color: white;
+    background: var(--admin-bg-tertiary);
+    color: var(--admin-text-primary);
   }
 `;
 
@@ -131,8 +131,8 @@ const ActionButton = styled.button`
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
+  background: linear-gradient(135deg, var(--admin-accent-primary), var(--admin-accent-secondary));
+  color: var(--admin-text-primary);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -151,7 +151,7 @@ const ActionButton = styled.button`
 `;
 
 const NotificationsList = styled.div`
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--admin-glass-card-bg);
   border-radius: 12px;
   padding: 1rem;
   max-height: 600px;
@@ -196,7 +196,7 @@ const NotificationHeader = styled.div`
 
 const NotificationTitle = styled.div`
   font-weight: 600;
-  color: #ffffff;
+  color: var(--admin-text-primary);
   font-size: 1rem;
   display: flex;
   align-items: center;
@@ -204,7 +204,7 @@ const NotificationTitle = styled.div`
 `;
 
 const NotificationMessage = styled.div`
-  color: #aaa;
+  color: var(--admin-text-secondary);
   font-size: 0.875rem;
   margin-bottom: 0.5rem;
 `;
@@ -230,7 +230,7 @@ const Badge = styled.span<{ $type?: string }>`
       system_alert: 'background: rgba(234, 179, 8, 0.2); color: #eab308;',
       security_breach: 'background: rgba(239, 68, 68, 0.2); color: #ef4444;',
       content_report: 'background: rgba(249, 115, 22, 0.2); color: #f97316;',
-      revenue_update: 'background: rgba(102, 126, 234, 0.2); color: #667eea;',
+      revenue_update: 'background: rgba(102, 126, 234, 0.2); color: var(--admin-accent-primary);',
       low: 'background: rgba(34, 197, 94, 0.2); color: #22c55e;',
       medium: 'background: rgba(234, 179, 8, 0.2); color: #eab308;',
       high: 'background: rgba(249, 115, 22, 0.2); color: #f97316;',
@@ -262,7 +262,7 @@ const IconButton = styled.button<{ $variant?: 'success' | 'danger' | 'default' }
     }
   }};
   border-radius: 6px;
-  color: white;
+  color: var(--admin-text-primary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -271,25 +271,25 @@ const IconButton = styled.button<{ $variant?: 'success' | 'danger' | 'default' }
   
   &:hover {
     background: ${props => {
-      switch (props.$variant) {
-        case 'success': return 'rgba(34, 197, 94, 0.3)';
-        case 'danger': return 'rgba(239, 68, 68, 0.3)';
-        default: return 'rgba(255, 215, 0, 0.2)';
-      }
-    }};
+    switch (props.$variant) {
+      case 'success': return 'rgba(34, 197, 94, 0.3)';
+      case 'danger': return 'rgba(239, 68, 68, 0.3)';
+      default: return 'rgba(255, 215, 0, 0.2)';
+    }
+  }};
   }
 `;
 
 const LoadingState = styled.div`
   padding: 3rem;
   text-align: center;
-  color: #aaa;
+  color: var(--admin-text-secondary);
 `;
 
 const EmptyState = styled.div`
   padding: 3rem;
   text-align: center;
-  color: #aaa;
+  color: var(--admin-text-secondary);
 `;
 
 const getTypeIcon = (type: Notification['type']) => {
@@ -326,7 +326,7 @@ const NotificationsManagement: React.FC = () => {
 
   useEffect(() => {
     loadData();
-    
+
     // Subscribe to real-time notifications
     const unsubscribe = realTimeNotificationsService.subscribeToNotifications((notification) => {
       setNotifications(prev => [notification, ...prev]);
@@ -390,7 +390,7 @@ const NotificationsManagement: React.FC = () => {
 
   const handleClearRead = async () => {
     if (!window.confirm('Are you sure you want to clear all read notifications?')) return;
-    
+
     try {
       await realTimeNotificationsService.clearReadNotifications();
       setNotifications(prev => prev.filter(n => !n.read));
@@ -406,9 +406,9 @@ const NotificationsManagement: React.FC = () => {
     if (priorityFilter !== 'all' && notification.priority !== priorityFilter) return false;
     if (statusFilter === 'read' && !notification.read) return false;
     if (statusFilter === 'unread' && notification.read) return false;
-    if (searchQuery && 
-        !notification.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !notification.message.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    if (searchQuery &&
+      !notification.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      !notification.message.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     return true;
   });
 
@@ -489,8 +489,8 @@ const NotificationsManagement: React.FC = () => {
       ) : (
         <NotificationsList>
           {filteredNotifications.map((notification) => (
-            <NotificationItem 
-              key={notification.id} 
+            <NotificationItem
+              key={notification.id}
               $read={notification.read}
               $priority={notification.priority}
             >
@@ -536,9 +536,9 @@ const NotificationsManagement: React.FC = () => {
               </NotificationMeta>
               {notification.actionUrl && (
                 <div style={{ marginTop: '0.5rem' }}>
-                  <a 
-                    href={notification.actionUrl} 
-                    style={{ color: '#667eea', textDecoration: 'underline' }}
+                  <a
+                    href={notification.actionUrl}
+                    style={{ color: 'var(--admin-accent-primary)', textDecoration: 'underline' }}
                   >
                     View Details →
                   </a>

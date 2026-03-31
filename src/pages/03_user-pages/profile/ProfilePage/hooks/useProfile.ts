@@ -9,13 +9,12 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import { auth, db } from '../../../../../firebase/firebase-config';
 import { unifiedCarService } from '../../../../../services/car';
 import { logger } from '../../../../../services/logger-service';
-import { getUserByNumericId, getFirebaseUidByNumericId } from '../../../../../services/numeric-id-lookup.service';
-import { ensureUserNumericId } from '../../../../../services/numeric-id-assignment.service';
 import {
-  ProfileFormData,
-  ProfileCar,
-  UseProfileReturn
-} from '../types';
+  getUserByNumericId,
+  getFirebaseUidByNumericId,
+} from '../../../../../services/numeric-id-lookup.service';
+import { ensureUserNumericId } from '../../../../../services/numeric-id-assignment.service';
+import { ProfileFormData, ProfileCar, UseProfileReturn } from '../types';
 
 const DEFAULT_STATS = {
   totalListings: 0,
@@ -24,17 +23,23 @@ const DEFAULT_STATS = {
   totalMessages: 0,
   trustScore: 0,
   followersCount: 0,
-  followingCount: 0
+  followingCount: 0,
 };
 
 const DEFAULT_VERIFICATION = {
   email: false,
   phone: false,
   id: false,
-  business: false
+  business: false,
 };
 
-const RESERVED_ROUTES = ['settings', 'my-ads', 'campaigns', 'analytics', 'consultations'];
+const RESERVED_ROUTES = [
+  'settings',
+  'my-ads',
+  'campaigns',
+  'analytics',
+  'consultations',
+];
 
 const normalizeUser = (raw: any): BulgarianUser | null => {
   if (!raw) return null;
@@ -43,7 +48,7 @@ const normalizeUser = (raw: any): BulgarianUser | null => {
     profileType: raw.profileType ?? 'private',
     planTier: raw.planTier ?? 'free',
     stats: { ...DEFAULT_STATS, ...raw.stats },
-    verification: { ...DEFAULT_VERIFICATION, ...raw.verification }
+    verification: { ...DEFAULT_VERIFICATION, ...raw.verification },
   } as BulgarianUser;
 };
 
@@ -101,7 +106,7 @@ const buildFormData = (profile: BulgarianUser | null): ProfileFormData => {
     city: profile?.location?.city || extended?.city || '',
     postalCode: extended?.postalCode || '',
     bio: profile?.bio || '',
-    preferredLanguage: profile?.preferredLanguage || 'bg'
+    preferredLanguage: profile?.preferredLanguage || 'bg',
   };
 };
 
@@ -113,12 +118,18 @@ const mapListingsToCars = (listings: unknown[]): ProfileCar[] =>
     model: car.model || '',
     year: car.year || 0,
     price: car.price || 0,
-    imageUrl: (car.images && car.images.length > 0)
-      ? (typeof car.images[0] === 'string' ? car.images[0] : '')
-      : '',
-    mainImage: (car.images && car.images.length > 0)
-      ? (typeof car.images[0] === 'string' ? car.images[0] : '')
-      : '',
+    imageUrl:
+      car.images && car.images.length > 0
+        ? typeof car.images[0] === 'string'
+          ? car.images[0]
+          : ''
+        : '',
+    mainImage:
+      car.images && car.images.length > 0
+        ? typeof car.images[0] === 'string'
+          ? car.images[0]
+          : ''
+        : '',
     mileage: car.mileage,
     fuelType: car.fuelType,
     status: (car.status as 'active' | 'sold' | 'pending' | 'draft') || 'active',
@@ -126,7 +137,7 @@ const mapListingsToCars = (listings: unknown[]): ProfileCar[] =>
     views: car.views || 0,
     inquiries: 0,
     sellerNumericId: car.sellerNumericId,
-    carNumericId: car.carNumericId
+    carNumericId: car.carNumericId,
   }));
 
 export const useProfile = (targetUserId?: string): UseProfileReturn => {
@@ -141,7 +152,9 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
   const [editing, setEditing] = useState(false);
   const [isOwnProfile, setIsOwnProfile] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [formData, setFormData] = useState<ProfileFormData>(buildFormData(null));
+  const [formData, setFormData] = useState<ProfileFormData>(
+    buildFormData(null)
+  );
 
   const effectiveTargetId = useMemo(() => {
     if (!targetUserId || RESERVED_ROUTES.includes(targetUserId)) {
@@ -150,23 +163,35 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
     return targetUserId;
   }, [targetUserId]);
 
-  const loadCarsForProfile = useCallback(async (profile: BulgarianUser | null) => {
-    // ✅ CRITICAL FIX: Stronger validation
-    if (!profile || !profile.uid || typeof profile.uid !== 'string' || profile.uid.trim() === '') {
-      logger.warn('loadCarsForProfile: invalid profile', { profile: profile?.uid });
-      setUserCars([]);
-      return;
-    }
+  const loadCarsForProfile = useCallback(
+    async (profile: BulgarianUser | null) => {
+      // ✅ CRITICAL FIX: Stronger validation
+      if (
+        !profile ||
+        !profile.uid ||
+        typeof profile.uid !== 'string' ||
+        profile.uid.trim() === ''
+      ) {
+        logger.warn('loadCarsForProfile: invalid profile', {
+          profile: profile?.uid,
+        });
+        setUserCars([]);
+        return;
+      }
 
-    try {
-      // Use unified service
-      const cars = await unifiedCarService.getUserCars(profile.uid);
-      setUserCars(mapListingsToCars(cars || []));
-    } catch (error) {
-      logger.error('Error loading cars for profile', error as Error, { userId: profile.uid });
-      setUserCars([]);
-    }
-  }, []);
+      try {
+        // Use unified service
+        const cars = await unifiedCarService.getUserCars(profile.uid);
+        setUserCars(mapListingsToCars(cars || []));
+      } catch (error) {
+        logger.error('Error loading cars for profile', error as Error, {
+          userId: profile.uid,
+        });
+        setUserCars([]);
+      }
+    },
+    []
+  );
 
   const loadUserData = useCallback(async () => {
     try {
@@ -179,15 +204,22 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
       // Case 1: No targetUserId = viewing own profile
       // Case 2: targetUserId is the current user's Firebase UID
       // Case 3: targetUserId is the current user's numeric ID
-      let viewingOwn = !effectiveTargetId || effectiveTargetId === authUser?.uid;
+      let viewingOwn =
+        !effectiveTargetId || effectiveTargetId === authUser?.uid;
 
       // If not matching UID, check if it's the user's numeric ID
-      if (!viewingOwn && authUser && effectiveTargetId && /^\d+$/.test(effectiveTargetId)) {
+      if (
+        !viewingOwn &&
+        authUser &&
+        effectiveTargetId &&
+        /^\d+$/.test(effectiveTargetId)
+      ) {
         // effectiveTargetId looks like a numeric ID, get current user's numeric ID to compare
         try {
           const currentUserNumericId = authUser.uid; // We'll check this below
           // Load current user first to get their numeric ID
-          const currentUserDoc = await bulgarianAuthService.getCurrentUserProfile();
+          const currentUserDoc =
+            await bulgarianAuthService.getCurrentUserProfile();
           if (currentUserDoc?.numericId === parseInt(effectiveTargetId, 10)) {
             viewingOwn = true;
           }
@@ -214,7 +246,7 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
           targetUserId,
           effectiveTargetId,
           viewerId: authUser?.uid,
-          viewingOwn
+          viewingOwn,
         });
       }
 
@@ -228,29 +260,48 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
         targetPromise = viewerPromise;
       } else if (/^\d+$/.test(effectiveTargetId!)) {
         // It's a numeric ID - convert to Firebase UID first
-        logger.debug('Numeric ID detected, converting to Firebase UID', { numericId: effectiveTargetId });
-        const firebaseUid = await getFirebaseUidByNumericId(parseInt(effectiveTargetId!, 10));
-        logger.debug('Firebase UID conversion result', { numericId: effectiveTargetId, firebaseUid });
+        logger.debug('Numeric ID detected, converting to Firebase UID', {
+          numericId: effectiveTargetId,
+        });
+        const firebaseUid = await getFirebaseUidByNumericId(
+          parseInt(effectiveTargetId!, 10)
+        );
+        logger.debug('Firebase UID conversion result', {
+          numericId: effectiveTargetId,
+          firebaseUid,
+        });
         if (firebaseUid) {
           logger.debug('Fetching profile with Firebase UID', { firebaseUid });
           targetPromise = bulgarianAuthService.getUserProfileById(firebaseUid);
         } else {
-          logger.warn('Could not convert numeric ID to Firebase UID - user may not exist', { numericId: effectiveTargetId });
+          logger.warn(
+            'Could not convert numeric ID to Firebase UID - user may not exist',
+            { numericId: effectiveTargetId }
+          );
           targetPromise = Promise.resolve(null);
         }
       } else {
         // It's a Firebase UID
-        logger.debug('Firebase UID detected, fetching profile', { firebaseUid: effectiveTargetId });
-        targetPromise = bulgarianAuthService.getUserProfileById(effectiveTargetId!);
+        logger.debug('Firebase UID detected, fetching profile', {
+          firebaseUid: effectiveTargetId,
+        });
+        targetPromise = bulgarianAuthService.getUserProfileById(
+          effectiveTargetId!
+        );
       }
 
-      const [viewerRaw, targetRaw] = await Promise.all([viewerPromise, targetPromise]);
+      const [viewerRaw, targetRaw] = await Promise.all([
+        viewerPromise,
+        targetPromise,
+      ]);
       let normalizedViewer = normalizeUser(viewerRaw);
       let normalizedTarget = normalizeUser(targetRaw ?? viewerRaw ?? null);
 
       // ⚡ AUTO-ASSIGN: Ensure viewer (logged-in user) has a numeric ID
       if (normalizedViewer && !normalizedViewer.numericId) {
-        logger.info('Viewer missing numeric ID, assigning...', { uid: normalizedViewer.uid });
+        logger.info('Viewer missing numeric ID, assigning...', {
+          uid: normalizedViewer.uid,
+        });
         const numericId = await ensureUserNumericId(normalizedViewer.uid);
         if (numericId) {
           normalizedViewer = { ...normalizedViewer, numericId };
@@ -263,7 +314,9 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
 
       // ⚡ AUTO-ASSIGN: Ensure target user has a numeric ID (if viewing someone else)
       if (normalizedTarget && !viewingOwn && !normalizedTarget.numericId) {
-        logger.info('Target user missing numeric ID, assigning...', { uid: normalizedTarget.uid });
+        logger.info('Target user missing numeric ID, assigning...', {
+          uid: normalizedTarget.uid,
+        });
         const numericId = await ensureUserNumericId(normalizedTarget.uid);
         if (numericId) {
           normalizedTarget = { ...normalizedTarget, numericId };
@@ -286,7 +339,10 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
         }
       }
     } catch (err) {
-      logger.error('Error loading user profile', err as Error, { targetUserId, effectiveTargetId });
+      logger.error('Error loading user profile', err as Error, {
+        targetUserId,
+        effectiveTargetId,
+      });
       const message = t('profile.load_user_error_generic');
       setError(message);
       // ⚡ FIX: Only show toast if user is logged in
@@ -311,7 +367,9 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
 
     const userId = target.uid;
     if (typeof userId !== 'string' || userId.trim() === '') {
-      logger.warn('[useProfile] invalid userId for realtime listener', { userId });
+      logger.warn('[useProfile] invalid userId for realtime listener', {
+        userId,
+      });
       return;
     }
 
@@ -323,7 +381,7 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
         doc(db, 'users', userId),
         snapshot => {
           if (!isActive) return; // Ignore updates after cleanup
-          
+
           if (!snapshot.exists()) return;
           const data = snapshot.data();
           setTarget(prev => {
@@ -331,7 +389,7 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
               ...(prev ?? { uid: userId }),
               ...data,
               uid: userId,
-              email: data.email || prev?.email || ''
+              email: data.email || prev?.email || '',
             } as BulgarianUser);
             setFormData(buildFormData(merged));
             return merged;
@@ -342,7 +400,9 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
         }
       );
     } catch (error) {
-      logger.error('Error setting up profile listener', error as Error, { userId });
+      logger.error('Error setting up profile listener', error as Error, {
+        userId,
+      });
     }
 
     return () => {
@@ -353,18 +413,31 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
         } catch (cleanupError) {
           logger.warn('Error cleaning up profile listener', {
             error: (cleanupError as Error).message,
-            userId
+            userId,
           });
         }
       }
     };
   }, [target?.uid, isOwnProfile]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  // Snapshot of form data at edit start — used to diff and send only changed fields
+  const [originalFormData, setOriginalFormData] =
+    useState<ProfileFormData | null>(null);
+
+  const startEditing = useCallback(() => {
+    setOriginalFormData({ ...formData });
+    setEditing(true);
+  }, [formData]);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -379,65 +452,105 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
         return;
       }
 
-      const updateData: Record<string, unknown> = {
-        uid: target.uid,
-        displayName: formData.accountType === 'business'
+      // Build update with only changed fields to avoid overwriting existing data
+      const updateData: Record<string, unknown> = { uid: target.uid };
+
+      // displayName is always derived
+      updateData.displayName =
+        formData.accountType === 'business'
           ? formData.businessName
-          : `${formData.firstName} ${formData.lastName}`.trim(),
-        phoneNumber: formData.phoneNumber || '',
-        bio: formData.bio || '',
-        locationData: {
+          : `${formData.firstName} ${formData.lastName}`.trim();
+
+      const orig = originalFormData ?? formData;
+
+      // Simple scalar fields — only include if changed
+      const scalarFields: (keyof ProfileFormData)[] = [
+        'phoneNumber',
+        'bio',
+        'preferredLanguage',
+        'accountType',
+        'firstName',
+        'lastName',
+        'middleName',
+        'dateOfBirth',
+        'placeOfBirth',
+        'address',
+        'businessName',
+        'bulstat',
+        'vatNumber',
+        'businessType',
+        'registrationNumber',
+        'businessAddress',
+        'businessCity',
+        'businessPostalCode',
+        'website',
+        'businessPhone',
+        'businessEmail',
+        'workingHours',
+        'businessDescription',
+      ];
+
+      for (const key of scalarFields) {
+        if (formData[key] !== orig[key]) {
+          updateData[key] = formData[key];
+        }
+      }
+
+      // Location fields — only include if any location field changed
+      const locationChanged =
+        formData.city !== orig.city ||
+        formData.postalCode !== orig.postalCode ||
+        formData.address !== orig.address;
+      if (locationChanged) {
+        updateData.locationData = {
           cityId: '',
-          cityName: {
-            bg: formData.city || '',
-            en: formData.city || ''
-          },
+          cityName: { bg: formData.city, en: formData.city },
           coordinates: { lat: 0, lng: 0 },
           region: '',
-          postalCode: formData.postalCode || '',
-          address: formData.address || ''
-        },
-        location: {
-          city: formData.city || '',
+          postalCode: formData.postalCode,
+          address: formData.address,
+        };
+        updateData.location = {
+          city: formData.city,
           region: '',
-          postalCode: formData.postalCode || ''
-        },
-        preferredLanguage: formData.preferredLanguage as 'bg' | 'en',
-        accountType: formData.accountType,
-        firstName: formData.firstName || '',
-        lastName: formData.lastName || '',
-        middleName: formData.middleName || '',
-        dateOfBirth: formData.dateOfBirth || '',
-        placeOfBirth: formData.placeOfBirth || '',
-        address: formData.address || '',
-        businessName: formData.businessName || '',
-        bulstat: formData.bulstat || '',
-        vatNumber: formData.vatNumber || '',
-        businessType: formData.businessType || '',
-        registrationNumber: formData.registrationNumber || '',
-        businessAddress: formData.businessAddress || '',
-        businessCity: formData.businessCity || '',
-        businessPostalCode: formData.businessPostalCode || '',
-        website: formData.website || '',
-        businessPhone: formData.businessPhone || '',
-        businessEmail: formData.businessEmail || '',
-        workingHours: formData.workingHours || '',
-        businessDescription: formData.businessDescription || ''
-      };
+          postalCode: formData.postalCode,
+        };
+      }
 
       await bulgarianAuthService.updateUserProfile(updateData);
+
+      // Check profile completeness and emit event (fire-and-forget)
+      const requiredFields = [
+        'firstName',
+        'lastName',
+        'phoneNumber',
+        'bio',
+        'city',
+      ];
+      const allFilled = requiredFields.every(
+        f => !!formData[f as keyof ProfileFormData]
+      );
+      if (allFilled && target?.uid) {
+        import('@/services/profile/profile-event-bus')
+          .then(({ emitProfileEvent }) =>
+            emitProfileEvent({ type: 'profile_completed', userId: target.uid })
+          )
+          .catch(() => {});
+      }
 
       toast.success(
         'Profile updated successfully! / Профилът е обновен успешно!',
         'Success / Успех'
       );
+      setOriginalFormData(null);
       setEditing(false);
       await loadUserData();
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
       logger.error('Error updating profile', error);
       toast.error(
-        (error as Error).message || 'Failed to update profile / Грешка при обновяване на профила',
+        (error as Error).message ||
+          'Failed to update profile / Грешка при обновяване на профила',
         'Error / Грешка'
       );
     }
@@ -445,6 +558,7 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
 
   const handleCancelEdit = () => {
     setFormData(buildFormData(target));
+    setOriginalFormData(null);
     setEditing(false);
   };
 
@@ -479,8 +593,8 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
     handleSaveProfile,
     handleCancelEdit,
     handleLogout,
-    setEditing,
+    setEditing: startEditing,
     setUser: setTarget,
-    loadUserCars: loadUserData
+    loadUserCars: loadUserData,
   };
 };

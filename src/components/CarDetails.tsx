@@ -8,6 +8,7 @@ import MessageButton from './messaging/MessageButton';
 import { useAuth } from '../contexts/AuthProvider';
 import { useLanguage } from '../contexts/LanguageContext';
 import { addToBrowsingHistory } from '../pages/01_main-pages/home/HomePage/RecentBrowsingSection';
+import { VinVerificationBadge } from './trust/VinVerificationBadge';
 
 // Mock car data for demonstration
 const mockCarData = [
@@ -29,6 +30,8 @@ const mockCarData = [
     description: 'Отличен автомобил в перфектно състояние. Нисък пробег, пълен сервиз.',
     features: ['Климатроник', 'Навигация', 'Камера за обратно виждане', 'LED фарове'],
     images: ['/images/placeholder.png'],
+    vin: 'WBAX320D000AAAAAA',
+    vinData: { isVerified: true, hasFlags: false, provider: 'EUCARIS-Mock', verifiedAt: { toMillis: () => Date.now() } },
     seller: {
       id: 'seller1',
       name: 'Автокъща София',
@@ -53,6 +56,8 @@ const mockCarData = [
     description: 'Луксозен седан с всички екстри. Перфектно състояние.',
     features: ['Панорамен покрив', 'Масажни седалки', '360° камера', 'Адаптивен круиз контрол'],
     images: ['/images/placeholder.png'],
+    vin: 'WDD2050000BBBBBBX',
+    vinData: { isVerified: true, hasFlags: true, reportedMileage: 345000, provider: 'carVertical' },
     seller: {
       id: 'seller2',
       name: 'Мерцедес Център',
@@ -426,7 +431,10 @@ const CarDetails: React.FC = () => {
         <BackButton onClick={() => navigate('/cars')}>
           ← Обратно към колите
         </BackButton>
-        <Title>{car.make} {car.model} {car.year}</Title>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
+          <Title>{car.make} {car.model} {car.year}</Title>
+          {car.vin && <VinVerificationBadge vinData={car.vinData} vin={car.vin} size="large" />}
+        </div>
       </Header>
 
       <Price>{car.price.toLocaleString()} €</Price>

@@ -59,10 +59,10 @@ const ProfileTypeContext = createContext<ProfileTypeContextState | undefined>(un
 // 🟦 Company = BLUE
 const THEMES: Record<ProfileType, ProfileTheme> = {
   private: {
-    primary: '#3B82F6',     // Orange
+    primary: '#FF7A2D',     // Orange
     secondary: '#FFDF00',   // Yellow
-    accent: '#2563EB',      // Dark Orange
-    gradient: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)'  // Orange gradient
+    accent: '#E5631A',      // Dark Orange
+    gradient: 'linear-gradient(135deg, #FF7A2D 0%, #E5631A 100%)'  // Orange gradient
   },
   dealer: {
     primary: '#16a34a',     // Green
@@ -110,6 +110,11 @@ function getPermissions(profileType: ProfileType, planTier: PlanTier): ProfilePe
     canImportCSV: false,
     canUseAPI: false,
 
+    // AI & Intelligence
+    canUseAI: false,
+    canUseChatbot: false,
+    canEditMakeModel: false,
+
     // Visuals
     themeMode: 'standard'
   };
@@ -118,18 +123,23 @@ function getPermissions(profileType: ProfileType, planTier: PlanTier): ProfilePe
   if (profileType === 'dealer' || planTier === 'dealer') {
     return {
       ...base,
-      // Limits: 30 cars/mo
-      maxListings: 30,
-      maxMonthlyListings: 30,
+      // Limits: 20 cars/mo
+      maxListings: 20,
+      maxMonthlyListings: 20,
 
-      // Flex-Edit: 10/mo allowance for mistakes
-      canEditLockedFields: false, // UI checks quota before enabling
-      maxFlexEditsPerMonth: 10,
+      // Make/Model locked — no flex-edits for dealers
+      canEditLockedFields: false,
+      maxFlexEditsPerMonth: 0,
+      canEditMakeModel: false,
 
-      // Power Tools: Matrix Grid (5 rows) & Cloning
-      canBulkUpload: true,
-      bulkUploadLimit: 5,
+      // Power Tools: Cloning only (Bulk Upload is Company-only)
+      canBulkUpload: false,
+      bulkUploadLimit: 0,
       canCloneListing: true,
+
+      // AI & Intelligence
+      canUseAI: true,
+      canUseChatbot: true,
 
       // Analytics
       hasAnalytics: true,
@@ -155,6 +165,7 @@ function getPermissions(profileType: ProfileType, planTier: PlanTier): ProfilePe
       // Unrestricted Editing (Trust-based)
       canEditLockedFields: true,
       maxFlexEditsPerMonth: 999,
+      canEditMakeModel: true,
 
       // Power Tools: Matrix Grid (20 rows) & Cloning
       canBulkUpload: true,
@@ -162,6 +173,10 @@ function getPermissions(profileType: ProfileType, planTier: PlanTier): ProfilePe
       canCloneListing: true,
       canImportCSV: true,
       canUseAPI: true,
+
+      // AI & Intelligence
+      canUseAI: true,
+      canUseChatbot: true,
 
       // Analytics & Team
       hasAnalytics: true,
@@ -267,12 +282,9 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
               setUserData(data);
 
               // Get profileType (default to 'private' if not set)
-              const type = data.profileType || 'private';
-              setProfileType(type);
-
-              // Get plan tier (default to 'free' if not set)
-              // ✅ FIX: Use 'data' from snapshot, not 'userData' state
               const tier = data.plan?.tier || data.planTier || 'free';
+              const type = tier === 'free' ? 'private' : (data.profileType || 'private');
+              setProfileType(type);
               setPlanTier(tier);
             } else {
               // User document doesn't exist yet - set defaults

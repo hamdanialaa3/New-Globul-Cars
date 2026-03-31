@@ -1,5 +1,12 @@
 import { db, functions } from '../../firebase/firebase-config';
-import { collection, addDoc, onSnapshot, query, where, getDocs } from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  query,
+  where,
+  getDocs,
+} from 'firebase/firestore';
 import { httpsCallable } from 'firebase/functions';
 import { SUBSCRIPTION_PLANS, PlanTier } from '../../config/subscription-plans';
 import { logger } from '../logger-service';
@@ -24,7 +31,9 @@ class SubscriptionService {
    * Writes to `customers/{uid}/checkout_sessions`
    * Triggers the Firebase Extension to create a Stripe Checkout Session
    */
-  async createCheckoutSession(params: CreateCheckoutSessionInput): Promise<CheckoutSession> {
+  async createCheckoutSession(
+    params: CreateCheckoutSessionInput
+  ): Promise<CheckoutSession> {
     const { userId, planId, interval, successUrl, cancelUrl } = params;
 
     if (!userId) throw new Error('User ID is required');
@@ -39,7 +48,12 @@ class SubscriptionService {
       throw new Error('Missing Stripe price id for selected interval');
     }
 
-    const sessionsRef = collection(db, 'customers', userId, 'checkout_sessions');
+    const sessionsRef = collection(
+      db,
+      'customers',
+      userId,
+      'checkout_sessions'
+    );
 
     // Create the checkout session doc (Stripe Extension listens and injects url/sessionId)
     const docRef = await addDoc(sessionsRef, {
@@ -56,7 +70,7 @@ class SubscriptionService {
     });
 
     return await new Promise<CheckoutSession>((resolve, reject) => {
-      const unsubscribe = onSnapshot(docRef, (snap) => {
+      const unsubscribe = onSnapshot(docRef, snap => {
         const data = snap.data();
         if (data?.error) {
           unsubscribe();
@@ -80,7 +94,10 @@ class SubscriptionService {
    * Calls `ext-firestore-stripe-payments-createPortalLink`
    */
   async getPortalLink(): Promise<string> {
-    const functionRef = httpsCallable(functions, 'ext-firestore-stripe-payments-createPortalLink');
+    const functionRef = httpsCallable(
+      functions,
+      'ext-firestore-stripe-payments-createPortalLink'
+    );
 
     try {
       const { data } = await functionRef({
@@ -105,8 +122,30 @@ class SubscriptionService {
       const snapshot = await getDocs(q);
       return !snapshot.empty;
     } catch (error) {
-      logger.error('Error checking subscription status', error as Error, { uid });
+      logger.error('Error checking subscription status', error as Error, {
+        uid,
+      });
       return false;
+    }
+  }
+
+  /**
+   * Gets the user's current plan tier from their active subscription metadata
+   */
+  async getUserPlan(uid: string): Promise<PlanTier> {
+    try {
+      const subsRef = collection(db, 'customers', uid, 'subscriptions');
+      const q = query(subsRef, where('status', 'in', ['active', 'trialing']));
+      const snapshot = await getDocs(q);
+      if (!snapshot.empty) {
+        const subData = snapshot.docs[0].data();
+        const tier = subData.metadata?.plan_tier as PlanTier;
+        if (tier && SUBSCRIPTION_PLANS[tier]) return tier;
+      }
+      return 'free';
+    } catch (error) {
+      logger.error('Error getting user plan', error as Error, { uid });
+      return 'free';
     }
   }
 }

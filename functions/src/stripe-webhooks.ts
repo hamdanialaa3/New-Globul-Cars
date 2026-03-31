@@ -2,6 +2,7 @@ import * as functions from 'firebase-functions/v1';
 import * as admin from 'firebase-admin';
 import Stripe from 'stripe';
 import * as logger from 'firebase-functions/logger';
+import { logSubscriptionEvent } from './services/subscription-audit.service';
 
 // Initialize Admin SDK once per instance
 if (!admin.apps.length) {
@@ -211,9 +212,14 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
     message: `Вие сте ${newTier === 'dealer' ? 'Дилър' : 'Компания'} план.`,
     messageEn: `You are now on the ${newTier} plan.`,
   });
-}
 
-async function handleSubscriptionChange(subscription: Stripe.Subscription) {
+  // Audit log
+  await logSubscriptionEvent(userDoc.id, 'created', {
+    toTier: newTier,
+    toStatus: subscription.status,
+    metadata: { subscriptionId: subscription.id },
+  });
+}(subscription: Stripe.Subscription) {
   const customerId = subscription.customer as string;
   const status = subscription.status;
   const userDoc = await findUserByStripeId(customerId);
@@ -250,6 +256,15 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
         titleEn: 'Your subscription has been downgraded',
         message: 'Моля, подновете плащането за да възстановите достъпа.',
         messageEn: 'Please renew your payment to restore access.',
+      });
+
+      // Audit log
+      await logSubscriptionEvent(userDoc.id, 'downgraded', {
+        fromTier: currentTier,
+        toTier: 'free',
+        fromStatus: currentData?.subscriptionStatus,
+        toStatus: status,
+        reason: `subscription status changed to ${status}`,
       });
     }
   } else {
@@ -293,6 +308,15 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
       const targetTier = newTier === 'free' ? 'free' : newTier;
       await deactivateExcessListings(userDoc.id, targetTier);
     }
+
+    // Audit log
+    const eventType = isDowngrade ? 'downgraded' : 'upgraded';
+    await logSubscriptionEvent(userDoc.id, eventType, {
+      fromTier: currentTier,
+      toTier: newTier,
+      toStatus: status,
+      metadata: { subscriptionId: subscription.id },
+    });
   }
 }
 
@@ -331,6 +355,14 @@ async function handleSubscriptionCancelled(subscription: Stripe.Subscription) {
     titleEn: 'Your subscription has been cancelled',
     message: 'Благодарим ви, че използвахте нашата платформа!',
     messageEn: 'Thank you for using our platform!',
+  });
+
+  // Audit log
+  await logSubscriptionEvent(userId, 'cancelled', {
+    fromTier: previousTier,
+    toTier: 'free',
+    toStatus: 'cancelled',
+    metadata: { subscriptionId: subscription.id },
   });
 }
 
@@ -389,9 +421,12 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
     message: `Получихме €${amountPaid.toFixed(2)} за вашия абонамент.`,
     messageEn: `We received €${amountPaid.toFixed(2)} for your subscription.`,
   });
-}
 
-async function handlePaymentFailed(invoice: Stripe.Invoice) {
+  // Audit log
+  await logSubscriptionEvent(userDoc.id, 'payment_succeeded', {
+    metadata: { invoiceId: invoice.id, amount: amountPaid, currency: invoice.currency },
+  });
+}(invoice: Stripe.Invoice) {
   const customerId = invoice.customer as string;
   const userDoc = await findUserByStripeId(customerId);
 
@@ -455,6 +490,15 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
         profileType: 'private', // ✅ Sync profileType
         subscriptionStatus: 'past_due',
         autoDowngradedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+
+      // Audit log
+      await logSubscriptionEvent(userDoc.id, 'auto_downgraded', {
+        fromTier: currentTier,
+        toTier: 'free',
+        toStatus: 'past_due',
+        reason: `${attemptCount} consecutive payment failures`,
+        metadata: { invoiceId: invoice.id, attemptCount },
       });
     }
   }

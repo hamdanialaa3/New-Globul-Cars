@@ -14,13 +14,13 @@ import { logger } from '../../services/logger-service';
 import { useAdminLang } from '../../contexts/AdminLanguageContext';
 
 const PanelContainer = styled.div`
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border: 1px solid #2d3748;
   border-radius: 12px;
   padding: 32px;
   margin: 0 20px 20px 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  color: #f8fafc;
+  color: var(--admin-text-primary);
 `;
 
 const SectionTitle = styled.h2`
@@ -67,7 +67,7 @@ const AlertsGrid = styled.div`
 `;
 
 const AlertCard = styled.div<{ $severity: string }>`
-  background: #1e2432;
+  background: var(--admin-bg-secondary);
   border: 1px solid #2d3748;
   border-left: 6px solid ${props => {
     switch (props.$severity) {
@@ -120,7 +120,7 @@ const AlertTitleSection = styled.div`
 `;
 
 const AlertTitle = styled.h3`
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   font-size: 15px;
   font-weight: 700;
   margin: 0;
@@ -169,7 +169,7 @@ const AlertFooter = styled.div`
 `;
 
 const AlertTimestamp = styled.div`
-  color: #94a3b8;
+  color: var(--admin-text-secondary);
   font-size: 11px;
   display: flex;
   align-items: center;
@@ -179,7 +179,7 @@ const AlertTimestamp = styled.div`
 
 const ResolveButton = styled.button`
   background: #10b981;
-  color: #ffffff;
+  color: var(--admin-text-primary);
   border: none;
   border-radius: 6px;
   padding: 6px 14px;
@@ -218,7 +218,7 @@ const LoadingState = styled.div`
   justify-content: center;
   align-items: center;
   height: 200px;
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   font-size: 16px;
 `;
 

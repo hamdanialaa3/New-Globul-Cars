@@ -7,15 +7,16 @@
  */
 
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
-import { MessageCircle, UserPlus, UserCheck, Shield, Phone as PhoneIcon, RefreshCw, Crown } from 'lucide-react';
+import { MessageCircle, UserPlus, UserCheck, Shield, Phone as PhoneIcon, RefreshCw, Crown, ChevronDown, Handshake } from 'lucide-react';
 import BlockUserButton from '../messaging/BlockUserButton';
 import { FollowButton as StyledFollowButton } from '../../pages/03_user-pages/profile/ProfilePage/TabNavigation.styles';
 import FollowButton from '../social/FollowButton';
 import type { BulgarianUser } from '../../types/user/bulgarian-user.types';
 import { usePromotionalOffer } from '../../hooks/usePromotionalOffer';
+import { useSiteSettings } from '../../hooks/useSiteSettings';
 import { SUBSCRIPTION_PLANS } from '../../config/subscription-plans';
 
 // ==================== COLOR CONFIGURATIONS ====================
@@ -24,10 +25,10 @@ import { SUBSCRIPTION_PLANS } from '../../config/subscription-plans';
 // 🟦 Company = BLUE
 const HEADER_COLORS = {
   private: {
-    light: 'linear-gradient(135deg, rgba(139, 92, 246, 0.98) 0%, rgba(255, 159, 42, 0.95) 50%, rgba(99, 102, 241, 0.98) 100%)',
-    dark: 'radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 0%, rgba(139, 92, 246, 0.9) 28%)',
-    border: 'rgba(139, 92, 246, 0.6)',
-    shadow: 'rgba(139, 92, 246, 0.2)',
+    light: 'linear-gradient(135deg, rgba(255, 122, 45, 0.98) 0%, rgba(229, 99, 26, 0.95) 50%, rgba(255, 159, 42, 0.98) 100%)',
+    dark: 'radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 0%, rgba(255, 122, 45, 0.9) 28%)',
+    border: 'rgba(255, 122, 45, 0.6)',
+    shadow: 'rgba(255, 122, 45, 0.2)',
   },
   dealer: {
     light: 'linear-gradient(135deg, rgba(16, 163, 74, 0.98) 0%, rgba(34, 197, 94, 0.95) 50%, rgba(22, 163, 74, 0.98) 100%)',
@@ -48,6 +49,14 @@ const HEADER_COLORS = {
 const GreenHeaderContainer = styled.div<{ $isDark: boolean; $profileType?: 'private' | 'dealer' | 'company' }>`
   position: relative;
   width: 100%;
+  --accent-rgb: ${props => {
+    const colors = {
+      private: '255, 122, 45',
+      dealer: '34, 197, 94',
+      company: '59, 130, 246',
+    };
+    return colors[props.$profileType || 'dealer'];
+  }};
   background: ${props => {
     const colors = HEADER_COLORS[props.$profileType || 'dealer'];
     return props.$isDark ? colors.dark : colors.light;
@@ -225,7 +234,7 @@ const AccountTypeBadge = styled.div<{ $isDark: boolean; $profileType?: 'private'
   /* Dynamic background based on profile type */
   background: ${props => {
     const colors = {
-      private: 'linear-gradient(90deg, rgba(139, 92, 246, 0.15) 0%, rgba(99, 102, 241, 0.25) 50%, rgba(139, 92, 246, 0.15) 100%)',
+      private: 'linear-gradient(90deg, rgba(255, 159, 42, 0.15) 0%, rgba(255, 122, 45, 0.25) 50%, rgba(255, 159, 42, 0.15) 100%)',
       dealer: 'linear-gradient(90deg, rgba(34, 197, 94, 0.15) 0%, rgba(22, 163, 74, 0.25) 50%, rgba(34, 197, 94, 0.15) 100%)',
       company: 'linear-gradient(90deg, rgba(59, 130, 246, 0.15) 0%, rgba(29, 78, 216, 0.25) 50%, rgba(59, 130, 246, 0.15) 100%)'
     };
@@ -234,14 +243,14 @@ const AccountTypeBadge = styled.div<{ $isDark: boolean; $profileType?: 'private'
   
   /* LED Strip Border */
   border: 2px solid ${props => {
-    const colors = { private: '#3B82F6', dealer: '#22c55e', company: '#3b82f6' };
+    const colors = { private: '#FF7A2D', dealer: '#22c55e', company: '#3b82f6' };
     return colors[props.$profileType || 'private'];
   }};
   border-radius: 25px;
   
   /* LED Glow Color */
   color: ${props => {
-    const colors = { private: '#3B82F6', dealer: '#22c55e', company: '#3b82f6' };
+    const colors = { private: '#FF7A2D', dealer: '#22c55e', company: '#3b82f6' };
     return colors[props.$profileType || 'private'];
   }};
   
@@ -262,7 +271,7 @@ const AccountTypeBadge = styled.div<{ $isDark: boolean; $profileType?: 'private'
     bottom: 0;
     border-radius: 25px;
     background: ${props => {
-      const colors = { private: '#3B82F6', dealer: '#22c55e', company: '#3b82f6' };
+      const colors = { private: '#FF7A2D', dealer: '#22c55e', company: '#3b82f6' };
       const color = colors[props.$profileType || 'private'];
       return `linear-gradient(90deg, transparent 0%, ${color}40 50%, transparent 100%)`;
     }};
@@ -280,7 +289,7 @@ const AccountTypeBadge = styled.div<{ $isDark: boolean; $profileType?: 'private'
     right: 10%;
     height: 2px;
     background: ${props => {
-      const colors = { private: '#3B82F6', dealer: '#22c55e', company: '#3b82f6' };
+      const colors = { private: '#FF7A2D', dealer: '#22c55e', company: '#3b82f6' };
       const color = colors[props.$profileType || 'private'];
       return `linear-gradient(90deg, transparent, ${color}, transparent)`;
     }};
@@ -303,7 +312,7 @@ const BadgeIcon = styled.div<{ $profileType?: 'private' | 'dealer' | 'company' }
   align-items: center;
   justify-content: center;
   color: ${props => {
-    const colors = { private: '#3B82F6', dealer: '#22c55e', company: '#3b82f6' };
+    const colors = { private: '#FF7A2D', dealer: '#22c55e', company: '#3b82f6' };
     return colors[props.$profileType || 'private'];
   }};
   filter: drop-shadow(0 0 4px currentColor);
@@ -321,7 +330,7 @@ const BadgeTitle = styled.span<{ $profileType?: 'private' | 'dealer' | 'company'
   text-transform: uppercase;
   letter-spacing: 1px;
   color: ${props => {
-    const colors = { private: '#3B82F6', dealer: '#22c55e', company: '#3b82f6' };
+    const colors = { private: '#FF7A2D', dealer: '#22c55e', company: '#3b82f6' };
     return colors[props.$profileType || 'private'];
   }};
   text-shadow: 0 0 10px currentColor;
@@ -371,10 +380,10 @@ const StatItem = styled.div<{ $isDark: boolean }>`
   min-width: 90px;
   padding: 12px 16px;
   background: ${props => props.$isDark 
-    ? 'rgba(34, 197, 94, 0.15)' 
+    ? 'rgba(var(--accent-rgb), 0.15)' 
     : 'rgba(255, 255, 255, 0.15)'};
   border: 1px solid ${props => props.$isDark 
-    ? 'rgba(34, 197, 94, 0.3)' 
+    ? 'rgba(var(--accent-rgb), 0.3)' 
     : 'rgba(255, 255, 255, 0.25)'};
   border-radius: 12px;
   backdrop-filter: blur(10px);
@@ -452,6 +461,227 @@ const ActionsSection = styled.div`
   }
 `;
 
+// ==================== PLAN SELECTOR – PRECISION CONTROL PANEL ====================
+
+const ledGlow = keyframes`
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+`;
+
+const PLAN_ACCENTS: Record<'private' | 'dealer' | 'company', { hex: string; rgb: string }> = {
+  private: { hex: '#FF7A2D', rgb: '255, 122, 45' },
+  dealer:  { hex: '#22c55e', rgb: '34, 197, 94' },
+  company: { hex: '#3b82f6', rgb: '59, 130, 246' },
+};
+
+const RAIL_POSITIONS: Record<'private' | 'dealer' | 'company', number> = {
+  private: 16.67, dealer: 50, company: 83.33,
+};
+
+/* Outer chassis — machined aluminum bezel */
+const PlanDock = styled.div<{ $isDark: boolean }>`
+  min-width: 320px;
+  max-width: 460px;
+  padding: 3px;
+  border-radius: 18px;
+  background: ${p => p.$isDark
+    ? 'linear-gradient(174deg, #2e3240 0%, #1f222b 50%, #181a22 100%)'
+    : 'linear-gradient(174deg, #e4e9f0 0%, #d6dce6 50%, #cbd3df 100%)'};
+  box-shadow:
+    0 4px 20px rgba(0,0,0,${p => p.$isDark ? '0.5' : '0.12'}),
+    0 1px 3px rgba(0,0,0,${p => p.$isDark ? '0.3' : '0.08'}),
+    inset 0 1px 0 ${p => p.$isDark ? 'rgba(255,255,255,0.09)' : 'rgba(255,255,255,0.7)'},
+    inset 0 -1px 0 ${p => p.$isDark ? 'rgba(0,0,0,0.35)' : 'rgba(0,0,0,0.06)'};
+
+  @media (max-width: 768px) {
+    min-width: 100%;
+    max-width: 100%;
+  }
+`;
+
+/* Inner recessed panel area */
+const DockInner = styled.div<{ $isDark: boolean }>`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 10px 10px;
+  border-radius: 15px;
+  background: ${p => p.$isDark
+    ? 'linear-gradient(180deg, #14161c 0%, #181b22 100%)'
+    : 'linear-gradient(180deg, #f2f5f9 0%, #e9edf3 100%)'};
+  box-shadow:
+    inset 0 2px 6px ${p => p.$isDark ? 'rgba(0,0,0,0.55)' : 'rgba(0,0,0,0.05)'},
+    inset 0 -1px 0 ${p => p.$isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.75)'};
+`;
+
+/* Engraved header label */
+const DockLabel = styled.div<{ $isDark: boolean }>`
+  font-size: 0.56rem;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  text-align: center;
+  padding-bottom: 4px;
+  color: ${p => p.$isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.26)'};
+  text-shadow: ${p => p.$isDark
+    ? '0 1px 0 rgba(255,255,255,0.04)'
+    : '0 1px 0 rgba(255,255,255,0.8)'};
+`;
+
+/* 3-column grid for the pushbutton modules */
+const PlanModules = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+`;
+
+/* Individual pushbutton — physical press-in / raised states */
+const PlanModule = styled.button<{
+  $isDark: boolean;
+  $active: boolean;
+  $accentHex: string;
+  $accentRgb: string;
+}>`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 14px 4px 10px;
+  border-radius: 11px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+
+  ${p => p.$active ? css`
+    background: ${p.$isDark
+      ? `linear-gradient(174deg, rgba(${p.$accentRgb}, 0.15) 0%, rgba(${p.$accentRgb}, 0.05) 100%)`
+      : `linear-gradient(174deg, rgba(${p.$accentRgb}, 0.12) 0%, rgba(${p.$accentRgb}, 0.03) 100%)`};
+    box-shadow:
+      inset 0 2px 8px rgba(0,0,0,${p.$isDark ? '0.5' : '0.06'}),
+      inset 0 0 0 1.5px rgba(${p.$accentRgb}, 0.4),
+      0 0 18px rgba(${p.$accentRgb}, 0.1);
+    transform: scale(0.97) translateY(1px);
+  ` : css`
+    background: ${p.$isDark
+      ? 'linear-gradient(174deg, #242830 0%, #1e2128 100%)'
+      : 'linear-gradient(174deg, #ffffff 0%, #f5f7fa 100%)'};
+    box-shadow:
+      0 2px 6px rgba(0,0,0,${p.$isDark ? '0.32' : '0.07'}),
+      inset 0 1px 0 ${p.$isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.9)'},
+      inset 0 -1px 0 ${p.$isDark ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.03)'};
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 6px 18px rgba(0,0,0,${p.$isDark ? '0.45' : '0.12'}),
+        inset 0 1px 0 ${p.$isDark ? 'rgba(255,255,255,0.09)' : 'rgba(255,255,255,0.95)'};
+    }
+    &:active { transform: scale(0.97) translateY(1px); }
+  `}
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+`;
+
+/* Status LED — glowing dot for the active module */
+const ModuleLED = styled.div<{ $active: boolean; $color: string }>`
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: ${p => p.$active ? p.$color : 'rgba(128,128,128,0.2)'};
+  box-shadow: ${p => p.$active
+    ? `0 0 4px ${p.$color}, 0 0 12px ${p.$color}55`
+    : 'inset 0 1px 2px rgba(0,0,0,0.3)'};
+  transition: all 0.4s ease;
+  ${p => p.$active && css`animation: ${ledGlow} 2.8s ease-in-out infinite;`}
+`;
+
+/* Icon wrapper — scales up when active */
+const ModuleIcon = styled.div<{ $active: boolean; $color: string; $isDark: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${p => p.$active
+    ? p.$color
+    : (p.$isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.16)')};
+  transition: color 0.4s ease, transform 0.4s ease;
+  ${p => p.$active && 'transform: scale(1.12);'}
+`;
+
+/* Plan name — bold uppercase label */
+const ModuleName = styled.div<{ $active: boolean; $isDark: boolean }>`
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: ${p => p.$active
+    ? (p.$isDark ? '#f0f4f8' : '#1a1f2e')
+    : (p.$isDark ? 'rgba(255,255,255,0.28)' : 'rgba(0,0,0,0.26)')};
+  transition: color 0.4s ease;
+`;
+
+/* Price & listing count */
+const ModuleMeta = styled.div<{ $active: boolean; $isDark: boolean }>`
+  font-size: 0.56rem;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.35;
+  color: ${p => p.$active
+    ? (p.$isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.45)')
+    : (p.$isDark ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.14)')};
+  transition: color 0.4s ease;
+`;
+
+/* Groove rail connecting the three modules */
+const PlanRail = styled.div<{ $isDark: boolean }>`
+  position: relative;
+  height: 3px;
+  margin: 2px 24px 0;
+  border-radius: 2px;
+  background: ${p => p.$isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.05)'};
+  box-shadow: inset 0 1px 2px ${p => p.$isDark ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.04)'};
+`;
+
+/* Sliding rail cursor — follows the active module with spring physics */
+const RailCursor = styled.div<{ $pos: number; $color: string }>`
+  position: absolute;
+  top: 50%;
+  left: ${p => `${p.$pos}%`};
+  width: 22px;
+  height: 5px;
+  border-radius: 3px;
+  background: ${p => p.$color};
+  transform: translate(-50%, -50%);
+  transition:
+    left 0.55s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 0.4s ease;
+  box-shadow:
+    0 0 6px ${p => `${p.$color}99`},
+    0 0 18px ${p => `${p.$color}33`};
+`;
+
+/* LCD readout — monospace terminal display for status messages */
+const DockReadout = styled.div<{ $isDark: boolean }>`
+  font-size: 0.68rem;
+  line-height: 1.5;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: ${p => p.$isDark
+    ? 'linear-gradient(180deg, #0c0e13 0%, #10121a 100%)'
+    : 'linear-gradient(180deg, #eaeff5 0%, #e1e6ee 100%)'};
+  color: ${p => p.$isDark ? 'rgba(130, 210, 170, 0.8)' : 'rgba(30, 60, 45, 0.72)'};
+  box-shadow:
+    inset 0 1px 4px ${p => p.$isDark ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.04)'},
+    inset 0 -1px 0 ${p => p.$isDark ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.6)'};
+  font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', ui-monospace, monospace;
+  letter-spacing: 0.01em;
+`;
+
 const ActionButton = styled.button<{ $variant: 'primary' | 'secondary' | 'danger'; $isDark: boolean }>`
   display: flex;
   align-items: center;
@@ -490,16 +720,16 @@ const ActionButton = styled.button<{ $variant: 'primary' | 'secondary' | 'danger
     if (props.$variant === 'secondary') {
       return css`
         background: ${props.$isDark 
-          ? 'rgba(34, 197, 94, 0.2)' 
+          ? 'rgba(var(--accent-rgb), 0.2)' 
           : 'rgba(255, 255, 255, 0.15)'};
         color: ${props.$isDark ? '#dcfce7' : '#ffffff'};
         border: 1px solid ${props.$isDark 
-          ? 'rgba(34, 197, 94, 0.4)' 
+          ? 'rgba(var(--accent-rgb), 0.4)' 
           : 'rgba(255, 255, 255, 0.3)'};
         
         &:hover {
           background: ${props.$isDark 
-            ? 'rgba(34, 197, 94, 0.3)' 
+            ? 'rgba(var(--accent-rgb), 0.3)' 
             : 'rgba(255, 255, 255, 0.25)'};
           transform: translateY(-2px);
         }
@@ -573,6 +803,9 @@ interface BusinessGreenHeaderProps {
   onProfileSwitch?: (newType: 'private' | 'dealer' | 'company') => void;
   onGoogleSync?: () => void;
   onBlockChanged?: (isBlocked: boolean) => void;
+  onConnect?: () => void;
+  connectLoading?: boolean;
+  isConnected?: boolean;
 }
 
 export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
@@ -586,12 +819,18 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
   onMessage,
   onProfileSwitch,
   onGoogleSync,
-  onBlockChanged
+  onBlockChanged,
+  onConnect,
+  connectLoading = false,
+  isConnected = false
 }) => {
   const { language } = useLanguage();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const { isFreeOffer } = usePromotionalOffer();
+  const { settings } = useSiteSettings();
+  const subscriptionMode = settings.pricing?.subscriptionMode === 'free' ? 'free' : 'paid';
+  const canActivateWithoutPayment = subscriptionMode === 'free';
 
   // Dynamic plan labels based on free offer state
   const dealerPrice = `€${SUBSCRIPTION_PLANS.dealer.price.monthly}`;
@@ -606,7 +845,7 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
   const personalName = `${userAny.firstName || ''} ${userAny.lastName || ''}`.trim();
   const displayName = personalName || user.displayName || (language === 'bg' ? 'Анонимен' : 'Anonymous');
   const email = user.email || '';
-  const userProfileType = (user.profileType as 'private' | 'dealer' | 'company') || 'private';
+  const userProfileType = ((user.planTier === 'free' ? 'private' : user.profileType) as 'private' | 'dealer' | 'company') || 'private';
   
   // 🎨 Dynamic account type labels
   const accountTypeLabels = {
@@ -633,6 +872,14 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
     followers: (user.stats as any)?.followersCount || 0,
     following: (user.stats as any)?.followingCount || 0
   };
+
+  const switcherHint = canActivateWithoutPayment
+    ? (language === 'bg'
+      ? 'Изборът на Търговец или Компания ще активира плана веднага без плащане, докато режимът за безплатни абонаменти е активен.'
+      : 'Choosing Dealer or Company will activate the plan instantly without payment while free subscriptions mode is active.')
+    : (language === 'bg'
+      ? 'Изборът на Търговец или Компания ще ви пренасочи към плащане. Връщането към Личен профил остава безплатно.'
+      : 'Choosing Dealer or Company will redirect you to payment. Switching back to Personal remains free.');
 
   return (
     <GreenHeaderContainer $isDark={isDark} $profileType={userProfileType}>
@@ -693,41 +940,76 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
       <ActionsSection>
         {isOwnProfile ? (
           <>
-            <div style={{ position: 'relative', display: 'flex', alignItems: 'center', marginRight: '8px' }}>
-              <Crown size={14} style={{ position: 'absolute', left: '10px', zIndex: 1, pointerEvents: 'none', color: '#fbbf24' }} />
-              <select
-                value={user.profileType || 'private'}
-                onChange={(e) => onProfileSwitch?.(e.target.value as 'private' | 'dealer' | 'company')}
-                disabled={syncing}
-                style={{
-                  appearance: 'none',
-                  padding: '6px 12px 6px 28px',
-                  borderRadius: '8px',
-                  border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.4)'}`,
-                  background: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.2)',
-                  color: isDark ? '#f0fdf4' : '#ffffff',
-                  fontSize: '0.8125rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  backdropFilter: 'blur(8px)',
-                  outline: 'none'
-                }}
-              >
-                <option value="private" style={{ backgroundColor: isDark ? '#1e293b' : '#ffffff', color: isDark ? '#f0fdf4' : '#1a1a1a' }}>
-                  {language === 'bg' ? 'Частен (Безплатен, 3 обяви)' : 'Private (Free, 3 cars)'}
-                </option>
-                <option value="dealer" style={{ backgroundColor: isDark ? '#1e293b' : '#ffffff', color: isDark ? '#f0fdf4' : '#1a1a1a' }}>
-                  {isFreeOffer
-                    ? (language === 'bg' ? `Търговец (БЕЗПЛАТНО ✨, ${dealerListings} обяви)` : `Dealer (FREE ✨, ${dealerListings} cars)`)
-                    : (language === 'bg' ? `Търговец (${dealerPrice}/мес, ${dealerListings} обяви)` : `Dealer (${dealerPrice}/mo, ${dealerListings} cars)`)}
-                </option>
-                <option value="company" style={{ backgroundColor: isDark ? '#1e293b' : '#ffffff', color: isDark ? '#f0fdf4' : '#1a1a1a' }}>
-                  {isFreeOffer
-                    ? (language === 'bg' ? `Компания (БЕЗПЛАТНО ✨, ${companyListings} обяви)` : `Company (FREE ✨, ${companyListings} cars)`)
-                    : (language === 'bg' ? `Компания (${companyPrice}/мес, ${companyListings} обяви)` : `Company (${companyPrice}/mo, ${companyListings} cars)`)}
-                </option>
-              </select>
-            </div>
+            <PlanDock $isDark={isDark}>
+              <DockInner $isDark={isDark}>
+                <DockLabel $isDark={isDark}>
+                  {language === 'bg' ? 'ТИП АКАУНТ' : 'ACCOUNT TYPE'}
+                </DockLabel>
+
+                <PlanModules>
+                  {([
+                    {
+                      type: 'private' as const,
+                      icon: <Shield size={18} />,
+                      name: language === 'bg' ? 'Личен' : 'Personal',
+                      meta: language === 'bg' ? 'Безплатно · 3 обяви' : 'Free · 3 cars',
+                    },
+                    {
+                      type: 'dealer' as const,
+                      icon: <Shield size={18} />,
+                      name: language === 'bg' ? 'Търговец' : 'Dealer',
+                      meta: canActivateWithoutPayment
+                        ? (language === 'bg' ? `Активирай · ${dealerListings} обяви` : `Activate · ${dealerListings} cars`)
+                        : (language === 'bg' ? `${dealerPrice}/мес · ${dealerListings} обяви` : `${dealerPrice}/mo · ${dealerListings} cars`),
+                    },
+                    {
+                      type: 'company' as const,
+                      icon: <Crown size={18} />,
+                      name: language === 'bg' ? 'Компания' : 'Company',
+                      meta: canActivateWithoutPayment
+                        ? (language === 'bg' ? `Активирай · ${companyListings} обяви` : `Activate · ${companyListings} cars`)
+                        : (language === 'bg' ? `${companyPrice}/мес · ${companyListings} обяви` : `${companyPrice}/mo · ${companyListings} cars`),
+                    },
+                  ]).map(plan => {
+                    const accent = PLAN_ACCENTS[plan.type];
+                    const isActive = userProfileType === plan.type;
+                    return (
+                      <PlanModule
+                        key={plan.type}
+                        $isDark={isDark}
+                        $active={isActive}
+                        $accentHex={accent.hex}
+                        $accentRgb={accent.rgb}
+                        onClick={() => onProfileSwitch?.(plan.type)}
+                        disabled={syncing}
+                      >
+                        <ModuleLED $active={isActive} $color={accent.hex} />
+                        <ModuleIcon $active={isActive} $color={accent.hex} $isDark={isDark}>
+                          {plan.icon}
+                        </ModuleIcon>
+                        <ModuleName $active={isActive} $isDark={isDark}>
+                          {plan.name}
+                        </ModuleName>
+                        <ModuleMeta $active={isActive} $isDark={isDark}>
+                          {plan.meta}
+                        </ModuleMeta>
+                      </PlanModule>
+                    );
+                  })}
+                </PlanModules>
+
+                <PlanRail $isDark={isDark}>
+                  <RailCursor
+                    $pos={RAIL_POSITIONS[userProfileType]}
+                    $color={PLAN_ACCENTS[userProfileType].hex}
+                  />
+                </PlanRail>
+
+                <DockReadout $isDark={isDark}>
+                  {switcherHint}
+                </DockReadout>
+              </DockInner>
+            </PlanDock>
 
             <ActionButton 
               $variant="secondary" 
@@ -751,7 +1033,7 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
                 }}
                 accentColor={
                   userProfileType === 'company' ? '#1d4ed8' : 
-                  userProfileType === 'dealer' ? '#16a34a' : '#3B82F6'
+                  userProfileType === 'dealer' ? '#16a34a' : '#FF7A2D'
                 }
               />
             </FollowButtonWrapper>
@@ -764,6 +1046,22 @@ export const BusinessGreenHeader: React.FC<BusinessGreenHeaderProps> = ({
               <PhoneIcon size={16} />
               {language === 'bg' ? 'Съобщение' : 'Message'}
             </ActionButton>
+
+            {onConnect && (
+              <ActionButton
+                $variant={isConnected ? 'secondary' : 'primary'}
+                $isDark={isDark}
+                onClick={onConnect}
+                disabled={connectLoading || isConnected}
+              >
+                <Handshake size={16} />
+                {connectLoading
+                  ? (language === 'bg' ? 'Свързване...' : 'Connecting...')
+                  : isConnected
+                    ? (language === 'bg' ? 'Свързани' : 'Connected')
+                    : (language === 'bg' ? 'Свържи се' : 'Connect')}
+              </ActionButton>
+            )}
             
             {viewer?.uid && user?.uid && viewer.uid !== user.uid && (
               <BlockUserButton

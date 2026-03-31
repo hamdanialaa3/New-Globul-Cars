@@ -697,9 +697,9 @@ const ProfilePage: React.FC = () => {
 
   return (
     <>
-      <S.ProfilePageContainer $isBusinessMode={isBusinessMode}>
-        {/* Business Background - Only for Business Accounts */}
-        <BusinessBackground isBusinessAccount={isBusinessMode} />
+      <S.ProfilePageContainer $isBusinessMode={isBusinessMode} $profileType={profileType as any}>
+        {/* Themed profile background for all account types */}
+        <BusinessBackground isBusinessAccount={true} profileType={profileType as any} />
 
         <S.PageContainer>
           {/* Tab Navigation - 🎨 DYNAMIC Theme Colors with React Router NavLinks */}

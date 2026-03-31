@@ -48,7 +48,7 @@ const StatCard = styled.div`
   position: relative;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: rgba(15, 23, 42, 0.6);
+  background: var(--admin-glass-card-bg);
 
   &::before {
     content: '';
@@ -89,7 +89,7 @@ const IconWrapper = styled.div`
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: rgba(30, 41, 59, 0.5);
+  background: var(--admin-glass-panel-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -118,7 +118,7 @@ const TrendBadge = styled.div<{ $positive: boolean }>`
 const StatValue = styled.div`
   font-size: 2.5rem;
   font-weight: 800;
-  color: #fff;
+  color: var(--admin-text-primary);
   letter-spacing: -1px;
   margin-bottom: 4px;
   text-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
@@ -150,7 +150,7 @@ const LiveIndicator = styled.div`
 const SectionTitle = styled.h3`
   font-size: 1.25rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--admin-text-primary);
   letter-spacing: -0.5px;
   display: flex;
   align-items: center;
@@ -168,7 +168,7 @@ const TableHeader = styled.div`
   display: grid;
   grid-template-columns: 2fr 1fr 1.5fr 1.5fr 2fr;
   padding: 16px 24px;
-  background: rgba(15, 23, 42, 0.8);
+  background: var(--admin-bg-secondary);
   border-bottom: 1px solid ${adminTheme.colors.border.subtle};
   color: ${adminTheme.colors.text.muted};
   font-size: 0.75rem;
@@ -191,7 +191,7 @@ const TableRow = styled.div`
 
     ${IconWrapper} {
       background: ${adminTheme.colors.accent.primary};
-      color: white;
+      color: var(--admin-text-primary);
     }
   }
 

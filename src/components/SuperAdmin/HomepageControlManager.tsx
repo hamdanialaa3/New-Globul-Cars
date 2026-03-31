@@ -33,9 +33,9 @@ import { DEFAULT_HOMEPAGE_SECTIONS, SECTION_VISIBILITY_PATH } from '@/services/s
 import type { HomepageSection, HomepageSectionsConfig } from '@/services/section-visibility-types';
 
 const Container = styled.div`
-  background: #0f1419;
+  background: var(--admin-bg-primary);
   border-radius: 12px;
-  border: 1px solid #1e2432;
+  border: 1px solid var(--admin-border-subtle);
   padding: 24px;
   margin: 20px;
 `;
@@ -70,7 +70,7 @@ const Title = styled.h2`
 
 const Subtitle = styled.p`
   font-size: 14px;
-  color: #9ca3af;
+  color: var(--admin-text-secondary);
   margin: 0;
   max-width: 720px;
   line-height: 1.6;
@@ -100,22 +100,22 @@ const Grid = styled.div`
 `;
 
 const Card = styled.section`
-  background: #111827;
-  border: 1px solid #243041;
+  background: var(--admin-glass-card-bg);
+  border: 1px solid var(--admin-border-subtle);
   border-radius: 12px;
   padding: 20px;
 `;
 
 const CardTitle = styled.h3`
   margin: 0 0 8px;
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   font-size: 16px;
   font-weight: 700;
 `;
 
 const CardDescription = styled.p`
   margin: 0 0 18px;
-  color: #94a3b8;
+  color: var(--admin-text-secondary);
   font-size: 13px;
   line-height: 1.6;
 `;
@@ -144,16 +144,16 @@ const FieldLabel = styled.label`
 
 const TextInput = styled.input`
   width: 100%;
-  background: #0b1220;
-  border: 1px solid #334155;
+  background: var(--admin-bg-tertiary);
+  border: 1px solid var(--admin-border-light);
   border-radius: 8px;
   padding: 10px 12px;
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   font-size: 13px;
 
   &:focus {
     outline: none;
-    border-color: #6366f1;
+    border-color: var(--admin-accent-primary);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
   }
 `;
@@ -162,33 +162,33 @@ const TextArea = styled.textarea`
   width: 100%;
   min-height: 92px;
   resize: vertical;
-  background: #0b1220;
-  border: 1px solid #334155;
+  background: var(--admin-bg-tertiary);
+  border: 1px solid var(--admin-border-light);
   border-radius: 8px;
   padding: 10px 12px;
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   font-size: 13px;
   line-height: 1.5;
 
   &:focus {
     outline: none;
-    border-color: #6366f1;
+    border-color: var(--admin-accent-primary);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
   }
 `;
 
 const Select = styled.select`
   width: 100%;
-  background: #0b1220;
-  border: 1px solid #334155;
+  background: var(--admin-bg-tertiary);
+  border: 1px solid var(--admin-border-light);
   border-radius: 8px;
   padding: 10px 12px;
-  color: #f8fafc;
+  color: var(--admin-text-primary);
   font-size: 13px;
 
   &:focus {
     outline: none;
-    border-color: #6366f1;
+    border-color: var(--admin-accent-primary);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
   }
 `;
@@ -201,8 +201,8 @@ const TrustList = styled.div`
 `;
 
 const TrustItemCard = styled.div`
-  background: #0b1220;
-  border: 1px solid #243041;
+  background: var(--admin-bg-secondary);
+  border: 1px solid var(--admin-border-subtle);
   border-radius: 10px;
   padding: 14px;
 `;
@@ -241,7 +241,7 @@ const MiniButton = styled.button<{ $danger?: boolean }>`
 
   &:hover {
     border-color: ${props => (props.$danger ? '#ef4444' : '#6366f1')};
-    color: #ffffff;
+    color: var(--admin-text-primary);
   }
 
   &:disabled {
@@ -264,17 +264,17 @@ const AddButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    border-color: #6366f1;
-    color: #ffffff;
+    border-color: var(--admin-accent-primary);
+    color: var(--admin-text-primary);
   }
 `;
 
 const Preview = styled.div`
-  background: linear-gradient(160deg, #0b0e14 0%, #121822 50%, #192033 100%);
+  background: var(--admin-bg-primary);
   border-radius: 14px;
   border: 1px solid rgba(99, 102, 241, 0.22);
   padding: 24px;
-  color: #ffffff;
+  color: var(--admin-text-primary);
   position: relative;
   overflow: hidden;
 
@@ -337,8 +337,8 @@ const SectionStatusRow = styled.div`
   gap: 12px;
   padding: 12px 14px;
   border-radius: 10px;
-  border: 1px solid #243041;
-  background: #0b1220;
+  border: 1px solid var(--admin-border-subtle);
+  background: var(--admin-bg-secondary);
 `;
 
 const SectionMeta = styled.div`
@@ -354,7 +354,7 @@ const SectionName = styled.div`
 `;
 
 const SectionHint = styled.div`
-  color: #94a3b8;
+  color: var(--admin-text-secondary);
   font-size: 11px;
 `;
 
@@ -398,7 +398,7 @@ const ActionButton = styled.button<{ $secondary?: boolean }>`
   border-radius: 10px;
   border: 1px solid ${props => (props.$secondary ? '#334155' : 'transparent')};
   background: ${props => (props.$secondary ? '#172033' : 'linear-gradient(135deg, #2563eb, #6366f1 58%, #8b5cf6)')};
-  color: #ffffff;
+  color: var(--admin-text-primary);
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
@@ -411,7 +411,7 @@ const ActionButton = styled.button<{ $secondary?: boolean }>`
 
 const HelperText = styled.p`
   margin: 18px 0 0;
-  color: #94a3b8;
+  color: var(--admin-text-secondary);
   font-size: 12px;
   line-height: 1.6;
 `;

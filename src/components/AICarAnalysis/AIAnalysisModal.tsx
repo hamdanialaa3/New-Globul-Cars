@@ -14,6 +14,7 @@ import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useLanguage } from '../../contexts';
+import { useProfileType } from '../../contexts/ProfileTypeContext';
 import { AIAnalysisStep, GeminiCarAnalysisResult, PriceEstimate, EquipmentSuggestions } from '@/types/ai-analysis.types';
 import { logger } from '@/services/logger-service';
 
@@ -208,12 +209,54 @@ export const AIAnalysisModal: React.FC<AIAnalysisModalProps> = ({
   mode = 'modal'
 }) => {
   const { language } = useLanguage();
+  const { permissions } = useProfileType();
   const lang = language === 'bg' ? 'bg' : 'en';
   const [currentStep, setCurrentStep] = useState<AIAnalysisStep>('upload');
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const [analysisResult, setAnalysisResult] = useState<GeminiCarAnalysisResult | null>(null);
   const [priceEstimates, setPriceEstimates] = useState<PriceEstimate[]>([]);
   const [equipmentSuggestions, setEquipmentSuggestions] = useState<EquipmentSuggestions | null>(null);
+
+  // AI gating — only dealer/company with canUseAI can access
+  if (!permissions.canUseAI) {
+    const gateMsg = {
+      bg: 'AI анализът е достъпен само за Професионален и Корпоративен план. Надградете плана си за достъп.',
+      en: 'AI Analysis is available only for Professional Dealer and Enterprise plans. Upgrade your plan to access this feature.'
+    };
+
+    const gateContent = (
+      <ModalContainer
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Header>
+          <HeaderTitle>{t.title[lang]}</HeaderTitle>
+          <CloseButton onClick={onClose} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+            <X />
+          </CloseButton>
+        </Header>
+        <Content>
+          <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔒</div>
+            <p style={{ fontSize: '1.1rem', lineHeight: 1.6, opacity: 0.85 }}>{gateMsg[lang]}</p>
+          </div>
+        </Content>
+      </ModalContainer>
+    );
+
+    if (mode === 'page') return <PageWrapper>{gateContent}</PageWrapper>;
+    if (!isOpen) return null;
+    return (
+      <AnimatePresence>
+        <Overlay initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
+          {gateContent}
+        </Overlay>
+      </AnimatePresence>
+    );
+  }
 
   const t = {
     title: {

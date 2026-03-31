@@ -94,6 +94,32 @@ class SoundService {
         });
     }
 
+    public playError() {
+        if (this.isMuted) return;
+        this.init();
+        if (!this.context) return;
+
+        const t = this.context.currentTime;
+        
+        // Dissonant low chord for error/warning
+        [200, 215].forEach((freq, i) => {
+            const osc = this.context!.createOscillator();
+            const gain = this.context!.createGain();
+            
+            osc.frequency.value = freq;
+            osc.type = 'sawtooth';
+            
+            osc.connect(gain);
+            gain.connect(this.context!.destination);
+            
+            gain.gain.setValueAtTime(0.08, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+            
+            osc.start(t + i * 0.02);
+            osc.stop(t + 0.4);
+        });
+    }
+
     public playWhoosh() {
          if (this.isMuted) return;
         this.init();

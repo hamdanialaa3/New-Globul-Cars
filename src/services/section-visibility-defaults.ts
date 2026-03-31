@@ -35,7 +35,8 @@ export const DEFAULT_HOMEPAGE_SECTIONS: HomepageSection[] = [
   {
     key: 'kat_services',
     label: 'KAT Official Services',
-    description: 'Bilateral registration links & Official Bulgarian government services',
+    description:
+      'Bilateral registration links & Official Bulgarian government services',
     visible: true,
     order: 2.1,
     category: 'main',
@@ -43,7 +44,8 @@ export const DEFAULT_HOMEPAGE_SECTIONS: HomepageSection[] = [
   {
     key: 'our_cars',
     label: 'Our Cars Showcase',
-    description: 'All real user-added listings grid — OurCarsShowcase (Нашите коли)',
+    description:
+      'All real user-added listings grid — OurCarsShowcase (Нашите коли)',
     visible: true,
     order: 2.5,
     category: 'main',
@@ -99,7 +101,8 @@ export const DEFAULT_HOMEPAGE_SECTIONS: HomepageSection[] = [
   {
     key: 'categories',
     label: 'Categories Section',
-    description: 'Mobile-oriented: vehicle body type categories with cars (web: hidden)',
+    description:
+      'Mobile-oriented: vehicle body type categories with cars (web: hidden)',
     visible: false,
     order: 8.5,
     category: 'main',
@@ -189,7 +192,8 @@ export const DEFAULT_HOMEPAGE_SECTIONS: HomepageSection[] = [
   {
     key: 'recent_browsing',
     label: 'Recent Browsing',
-    description: 'Recently viewed cars (only shows if user has browsing history)',
+    description:
+      'Recently viewed cars (only shows if user has browsing history)',
     visible: true,
     order: 18,
     category: 'conditional',

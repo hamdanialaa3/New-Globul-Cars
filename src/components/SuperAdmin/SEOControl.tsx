@@ -18,9 +18,9 @@ import type { SiteSettings } from '@/services/site-settings-types';
 import { DEFAULT_SITE_SETTINGS } from '@/services/site-settings-defaults';
 
 const Container = styled.div`
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border-radius: 12px;
-  border: 1px solid #1e2432;
+  border: 1px solid var(--admin-border-subtle);
   padding: 24px;
   margin: 20px;
 `;
@@ -41,7 +41,7 @@ const Title = styled.h2`
 
 const Subtitle = styled.p`
   font-size: 14px;
-  color: #9ca3af;
+  color: var(--admin-text-secondary);
   margin: 0;
 `;
 
@@ -74,7 +74,7 @@ const FieldLabel = styled.label`
 `;
 
 const InputField = styled.input`
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border: 1px solid #374151;
   border-radius: 6px;
   padding: 10px 12px;
@@ -95,7 +95,7 @@ const InputField = styled.input`
 `;
 
 const TextArea = styled.textarea`
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border: 1px solid #374151;
   border-radius: 6px;
   padding: 10px 12px;
@@ -139,7 +139,7 @@ const KeywordTag = styled.div`
 const RemoveKeywordBtn = styled.button`
   background: transparent;
   border: none;
-  color: #9ca3af;
+  color: var(--admin-text-secondary);
   cursor: pointer;
   padding: 0;
   display: flex;
@@ -180,7 +180,7 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' | 'danger' }>`
     if (props.$variant === 'danger') {
       return `
         background: #ef4444;
-        color: #fff;
+        color: var(--admin-text-primary);
         &:hover {
           background: #dc2626;
         }
@@ -232,7 +232,7 @@ const Message = styled.div<{ $type: 'success' | 'error' }>`
 `;
 
 const PreviewBox = styled.div`
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border: 1px solid #374151;
   border-radius: 8px;
   padding: 16px;
@@ -241,7 +241,7 @@ const PreviewBox = styled.div`
 
 const PreviewTitle = styled.div`
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--admin-text-secondary);
   margin-bottom: 8px;
   font-weight: 600;
 `;

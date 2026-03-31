@@ -118,29 +118,31 @@ const companyTheme: ProfileThemeConfig = {
 const standardTheme: ProfileThemeConfig = {
     mode: 'standard',
     colors: {
-        primary: '#3B82F6',     // Koli One Orange (Brand Color)
-        secondary: '#FFDF00',   // Yellow
+        primary: '#FF7A2D',     // Warm Orange (Personal Brand)
+        secondary: '#FFDF00',   // Gold/Yellow accent
         background: '#ffffff',
         surface: '#ffffff',
-        border: '#e5e7eb',      // Gray-200
+        border: '#FDDCB5',      // Soft peach border
         text: '#1f2937',        // Gray-800
         textSecondary: '#6b7280',
         success: '#22c55e',
         warning: '#f59e0b',
     },
     effects: {
-        glow: 'none',
+        glow: '0 0 10px rgba(255, 122, 45, 0.3), 0 0 20px rgba(255, 122, 45, 0.15)',
         glass: 'rgba(255, 255, 255, 0.9)',
     },
     components: {
-        cardBorder: '1px solid #f3f4f6', // Very soft
+        cardBorder: '1px solid #FDDCB5',
         buttonStyle: `
-      background: #3B82F6;
-      border-radius: 9999px; // Pill shape for friendliness
+      background: linear-gradient(135deg, #FF7A2D 0%, #E5631A 100%);
+      border-radius: 9999px;
       color: white;
-      font-weight: 500;
+      font-weight: 600;
+      box-shadow: 0 4px 14px rgba(255, 122, 45, 0.35);
       &:hover {
-        background: #2563EB;
+        box-shadow: 0 6px 20px rgba(255, 122, 45, 0.5);
+        transform: translateY(-1px);
       }
     `,
     },

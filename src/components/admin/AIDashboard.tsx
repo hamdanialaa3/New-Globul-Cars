@@ -40,7 +40,7 @@ const CardHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #64748b;
+  color: var(--admin-text-secondary);
   font-size: 14px;
   font-weight: 500;
 `;

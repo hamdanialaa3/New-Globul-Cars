@@ -21,9 +21,9 @@ import { logger } from '@/services/logger-service';
 const spin = keyframes`from { transform: rotate(0deg); } to { transform: rotate(360deg); }`;
 
 const Container = styled.div`
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border-radius: 12px;
-  border: 1px solid #1e2432;
+  border: 1px solid var(--admin-border-subtle);
   padding: 24px;
   margin: 20px;
 `;
@@ -44,7 +44,7 @@ const Title = styled.h2`
 
 const Subtitle = styled.p`
   font-size: 13px;
-  color: #9ca3af;
+  color: var(--admin-text-secondary);
   margin: 0;
 `;
 
@@ -64,7 +64,7 @@ const StatusBar = styled.div`
   gap: 16px;
   flex-wrap: wrap;
   padding: 12px 16px;
-  background: #111827;
+  background: var(--admin-bg-secondary);
   border: 1px solid #1e2d3d;
   border-radius: 10px;
   margin-bottom: 24px;
@@ -102,7 +102,7 @@ const ActionCard = styled.div<{ $variant?: 'danger' | 'warning' | 'success' | 'i
       p.$variant === 'success' ? '#10b981' :
       p.$variant === 'info' ? '#3b82f6' : '#6366f1'
     };
-    background: #1e2432;
+    background: var(--admin-bg-secondary);
   }
 `;
 
@@ -178,7 +178,7 @@ const ActionButton = styled.button<{ $variant?: 'danger' | 'warning' | 'success'
     p.$variant === 'success' ? '#10b981' :
     p.$variant === 'info' ? '#3b82f6' : '#8B5CF6'
   };
-  color: #fff;
+  color: var(--admin-text-primary);
   &:hover:not(:disabled) {
     filter: brightness(1.1);
     transform: translateY(-1px);
@@ -202,7 +202,7 @@ const SectionDivider = styled.div`
   color: #4b5563;
   letter-spacing: 1px;
   text-transform: uppercase;
-  border-bottom: 1px solid #1e2432;
+  border-bottom: 1px solid var(--admin-border-subtle);
   margin-bottom: 4px;
 `;
 

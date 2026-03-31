@@ -4,14 +4,14 @@ import { TrendingUp } from 'lucide-react';
 
 const Container = styled.div`
   padding: 2rem;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  background: var(--admin-bg-primary);
   border-radius: 16px;
   margin: 1rem;
-  color: white;
+  color: var(--admin-text-primary);
 `;
 
 const Title = styled.h2`
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   margin-bottom: 2rem;
   display: flex;
   align-items: center;

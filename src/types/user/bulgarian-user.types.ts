@@ -1,10 +1,10 @@
 /**
  * CANONICAL Bulgarian User Types
  * المصدر القياسي الوحيد لتعريف المستخدم
- * 
+ *
  * ⚠️ DO NOT create other BulgarianUser interfaces!
  * ⚠️ All imports MUST use this file only!
- * 
+ *
  * File: src/types/user/bulgarian-user.types.ts
  * Created: November 2025
  * Phase: -1 (Code Audit - Type Unification)
@@ -98,8 +98,8 @@ export interface BaseProfile {
   // Essential for enforcing monthly limits and Flex-Edit quotas
   quotaStats?: {
     listingsCreatedThisMonth: number; // Resets monthly
-    flexEditsUsedThisMonth: number;   // Resets monthly
-    lastMonthReset: string;           // Format: "YYYY-MM"
+    flexEditsUsedThisMonth: number; // Resets monthly
+    lastMonthReset: string; // Format: "YYYY-MM"
   };
 
   // Social Links
@@ -171,7 +171,7 @@ export interface PrivateProfile extends BaseProfile {
   planTier: 'free' | 'dealer' | 'company'; // Aligned with PlanTier type
 
   // Private-specific
-  egn?: string;  // Bulgarian personal ID (optional)
+  egn?: string; // Bulgarian personal ID (optional)
 }
 
 // ==================== COMPANY PROFILE ====================
@@ -206,10 +206,7 @@ export interface CompanyProfile extends BaseProfile {
  * Main BulgarianUser type
  * Use this for all user-related operations
  */
-export type BulgarianUser =
-  | PrivateProfile
-  | DealerProfile
-  | CompanyProfile;
+export type BulgarianUser = PrivateProfile | DealerProfile | CompanyProfile;
 
 // ==================== SUPPORTING TYPES ====================
 /**
@@ -279,6 +276,11 @@ export interface ProfilePermissions {
   canImportCSV: boolean;
   canUseAPI: boolean; // For Companies (ERP integration)
 
+  // --- AI & INTELLIGENCE ---
+  canUseAI: boolean;
+  canUseChatbot: boolean;
+  canEditMakeModel: boolean;
+
   // --- VISUAL IDENTITY ---
   themeMode: 'standard' | 'dealer-led' | 'company-led';
 }
@@ -309,7 +311,9 @@ export function isPrivateProfile(user: BulgarianUser): user is PrivateProfile {
 /**
  * Type guard to check if a user is a business (dealer or company)
  */
-export function isBusinessProfile(user: BulgarianUser): user is DealerProfile | CompanyProfile {
+export function isBusinessProfile(
+  user: BulgarianUser
+): user is DealerProfile | CompanyProfile {
   return user.profileType === 'dealer' || user.profileType === 'company';
 }
 
@@ -320,7 +324,9 @@ export type ProfileStatus = 'pending' | 'verified' | 'rejected';
 /**
  * Partial update type for user profiles
  */
-export type BulgarianUserUpdate = Partial<Omit<BulgarianUser, 'uid' | 'createdAt'>>;
+export type BulgarianUserUpdate = Partial<
+  Omit<BulgarianUser, 'uid' | 'createdAt'>
+>;
 
 /**
  * Creation data for new users (without generated fields)
@@ -332,4 +338,3 @@ export type BulgarianUserCreateData = Omit<
   stats?: Partial<BaseProfile['stats']>;
   verification?: Partial<BaseProfile['verification']>;
 };
-

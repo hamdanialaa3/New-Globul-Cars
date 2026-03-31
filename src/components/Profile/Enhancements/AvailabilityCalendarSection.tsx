@@ -4,9 +4,9 @@ import { logger } from '../../../services/logger-service';
  * Displays and manages user availability calendar
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { Calendar, Clock, Edit2, Check, X } from 'lucide-react';
+import { Calendar, Clock, Edit2, Check, X, Save } from 'lucide-react';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { availabilityCalendarService } from '../../../services/profile/availability-calendar.service';
@@ -124,6 +124,67 @@ interface AvailabilityCalendarSectionProps {
   isOwnProfile: boolean;
 }
 
+const DAY_LABELS = {
+  bg: ['Нед', 'Пон', 'Вто', 'Сря', 'Чет', 'Пет', 'Съб'],
+  en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+};
+
+const EditButton = styled.button<{ $isDark: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid ${props => props.$isDark ? '#475569' : '#cbd5e1'};
+  background: transparent;
+  color: ${props => props.$isDark ? '#94a3b8' : '#64748b'};
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  &:hover { background: ${props => props.$isDark ? '#334155' : '#f1f5f9'}; }
+`;
+
+const SaveButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: none;
+  background: #16a34a;
+  color: white;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+  &:hover:not(:disabled) { background: #15803d; }
+`;
+
+const WeekEditor = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+`;
+
+const DayToggle = styled.button<{ $isDark: boolean; $active: boolean }>`
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 2px solid ${props => props.$active ? '#22c55e' : (props.$isDark ? '#334155' : '#e2e8f0')};
+  background: ${props => props.$active
+    ? (props.$isDark ? 'rgba(34,197,94,0.2)' : 'rgba(34,197,94,0.1)')
+    : 'transparent'};
+  color: ${props => props.$active
+    ? '#22c55e'
+    : (props.$isDark ? '#94a3b8' : '#64748b')};
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  &:hover { border-color: #22c55e; }
+`;
+
 export const AvailabilityCalendarSection: React.FC<AvailabilityCalendarSectionProps> = ({
   userId,
   isOwnProfile
@@ -133,27 +194,66 @@ export const AvailabilityCalendarSection: React.FC<AvailabilityCalendarSectionPr
   const isDark = theme === 'dark';
   const [calendar, setCalendar] = useState<AvailabilityCalendar | null>(null);
   const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [editDays, setEditDays] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     if (!userId) {
       setLoading(false);
       return;
     }
+    let isActive = true;
 
     const loadCalendar = async () => {
       try {
         const cal = await availabilityCalendarService.getCalendar(userId);
-        setCalendar(cal);
+        if (isActive) setCalendar(cal);
       } catch (error) {
         logger.error('Error loading calendar:', error);
-        setCalendar(null);
+        if (isActive) setCalendar(null);
       } finally {
-        setLoading(false);
+        if (isActive) setLoading(false);
       }
     };
 
     loadCalendar();
+    return () => { isActive = false; };
   }, [userId]);
+
+  const startEditing = useCallback(() => {
+    const current: Record<number, boolean> = {};
+    for (let d = 0; d < 7; d++) {
+      current[d] = calendar?.defaultAvailability[d]?.isAvailable ?? false;
+    }
+    setEditDays(current);
+    setEditing(true);
+  }, [calendar]);
+
+  const toggleDay = useCallback((dayOfWeek: number) => {
+    setEditDays(prev => ({ ...prev, [dayOfWeek]: !prev[dayOfWeek] }));
+  }, []);
+
+  const handleSave = useCallback(async () => {
+    if (!userId || saving) return;
+    setSaving(true);
+    try {
+      const defaultSlots = [{ start: '09:00', end: '18:00', available: true }];
+      for (let d = 0; d < 7; d++) {
+        await availabilityCalendarService.updateDefaultAvailability(
+          userId, d, editDays[d] ?? false,
+          editDays[d] ? defaultSlots : []
+        );
+      }
+      const updated = await availabilityCalendarService.getCalendar(userId);
+      setCalendar(updated);
+      setEditing(false);
+    } catch (error) {
+      logger.error('Error saving calendar:', error);
+    } finally {
+      setSaving(false);
+    }
+  }, [userId, editDays, saving]);
 
   const getDaysInMonth = () => {
     const now = new Date();
@@ -218,9 +318,44 @@ export const AvailabilityCalendarSection: React.FC<AvailabilityCalendarSectionPr
           <Calendar size={20} />
           {language === 'bg' ? 'Свободни часове' : 'Availability Calendar'}
         </SectionTitle>
+        {isOwnProfile && !editing && (
+          <EditButton $isDark={isDark} onClick={startEditing}>
+            <Edit2 size={14} />
+            {language === 'bg' ? 'Редактирай' : 'Edit'}
+          </EditButton>
+        )}
+        {isOwnProfile && editing && (
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <EditButton $isDark={isDark} onClick={() => setEditing(false)}>
+              <X size={14} />
+              {language === 'bg' ? 'Откажи' : 'Cancel'}
+            </EditButton>
+            <SaveButton onClick={handleSave} disabled={saving}>
+              <Save size={14} />
+              {saving
+                ? (language === 'bg' ? 'Записване...' : 'Saving...')
+                : (language === 'bg' ? 'Запази' : 'Save')}
+            </SaveButton>
+          </div>
+        )}
       </SectionHeader>
 
-      {!calendar ? (
+      {editing && (
+        <WeekEditor>
+          {DAY_LABELS[language === 'bg' ? 'bg' : 'en'].map((label, idx) => (
+            <DayToggle
+              key={idx}
+              $isDark={isDark}
+              $active={editDays[idx] ?? false}
+              onClick={() => toggleDay(idx)}
+            >
+              {label}
+            </DayToggle>
+          ))}
+        </WeekEditor>
+      )}
+
+      {!calendar && !editing ? (
         <EmptyState $isDark={isDark}>
           <Calendar size={48} style={{ opacity: 0.5, marginBottom: '16px' }} />
           <p style={{ fontSize: '0.875rem', color: isDark ? '#94a3b8' : '#64748b', margin: 0 }}>
@@ -228,6 +363,12 @@ export const AvailabilityCalendarSection: React.FC<AvailabilityCalendarSectionPr
               ? 'Все още няма настройки за наличност'
               : 'No availability settings yet'}
           </p>
+          {isOwnProfile && (
+            <EditButton $isDark={isDark} onClick={startEditing} style={{ margin: '12px auto 0' }}>
+              <Edit2 size={14} />
+              {language === 'bg' ? 'Настрой часовете' : 'Set up hours'}
+            </EditButton>
+          )}
         </EmptyState>
       ) : (
         <>

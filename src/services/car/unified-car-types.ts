@@ -28,6 +28,8 @@ export interface UnifiedCar {
   sellerNumericId?: number;
   carNumericId?: number;
   numericId?: number;
+  vin?: string;
+  vinVerification?: import('../../types/vin.types').VinVerification;
   [key: string]: any;
 }
 

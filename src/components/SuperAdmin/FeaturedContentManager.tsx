@@ -22,9 +22,9 @@ import { DEFAULT_FEATURED_CONTENT } from '@/services/site-settings-defaults';
 import { useAdminLang } from '@/contexts/AdminLanguageContext';
 
 const Container = styled.div`
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border-radius: 12px;
-  border: 1px solid #1e2432;
+  border: 1px solid var(--admin-border-subtle);
   padding: 24px;
   margin: 20px;
 `;
@@ -45,7 +45,7 @@ const Title = styled.h2`
 
 const Subtitle = styled.p`
   font-size: 14px;
-  color: #9ca3af;
+  color: var(--admin-text-secondary);
   margin: 0;
 `;
 
@@ -79,7 +79,7 @@ const ItemRow = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   padding: 12px;
   border-radius: 6px;
   border: 1px solid #374151;
@@ -142,7 +142,7 @@ const AddButton = styled.button`
   border: 1px dashed #4b5563;
   border-radius: 6px;
   background: transparent;
-  color: #9ca3af;
+  color: var(--admin-text-secondary);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -167,7 +167,7 @@ const AddButton = styled.button`
 `;
 
 const BannerCard = styled.div`
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border: 1px solid #374151;
   border-radius: 8px;
   padding: 16px;
@@ -202,7 +202,7 @@ const BannerFields = styled.div`
 
 const FieldLabel = styled.label`
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--admin-text-secondary);
   display: block;
   margin-bottom: 6px;
 `;
@@ -238,7 +238,7 @@ const ToggleSwitch = styled.label<{ $active: boolean }>`
       width: 18px;
       left: ${props => props.$active ? '26px' : '3px'};
       bottom: 3px;
-      background-color: white;
+      background-color: var(--admin-text-primary);
       transition: 0.3s;
       border-radius: 50%;
     }
@@ -283,7 +283,7 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' | 'danger' }>`
     if (props.$variant === 'danger') {
       return `
         background: #ef4444;
-        color: #fff;
+        color: var(--admin-text-primary);
         &:hover {
           background: #dc2626;
         }
@@ -341,7 +341,7 @@ const SearchContainer = styled.div`
 
 const SearchInput = styled.input`
   width: 100%;
-  background: #0f1419;
+  background: var(--admin-bg-secondary);
   border: 1px solid #374151;
   border-radius: 6px;
   padding: 10px 36px 10px 12px;

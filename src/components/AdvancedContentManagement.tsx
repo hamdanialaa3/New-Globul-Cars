@@ -8,8 +8,8 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { 
-  FileText, 
+import {
+  FileText,
   AlertTriangle,
   Search,
   RefreshCw,
@@ -34,14 +34,14 @@ import { format } from 'date-fns';
 
 const Container = styled.div`
   padding: 2rem;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  background: var(--admin-bg-primary);
   border-radius: 16px;
   margin: 1rem;
-  color: white;
+  color: var(--admin-text-primary);
 `;
 
 const Title = styled.h2`
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   margin-bottom: 2rem;
   display: flex;
   align-items: center;
@@ -53,22 +53,22 @@ const TabsContainer = styled.div`
   display: flex;
   gap: 1rem;
   margin-bottom: 2rem;
-  border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+  border: 2px solid var(--admin-border-light);
 `;
 
 const TabButton = styled.button<{ $active: boolean }>`
   padding: 0.75rem 1.5rem;
-  background: ${props => props.$active ? 'linear-gradient(135deg, #667eea, #764ba2)' : 'transparent'};
-  color: ${props => props.$active ? 'white' : '#aaa'};
+  background: ${props => props.$active ? 'linear-gradient(135deg, var(--admin-accent-primary), var(--admin-accent-secondary))' : 'transparent'};
+  color: ${props => props.$active ? 'var(--admin-text-primary)' : 'var(--admin-text-secondary)'};
   border: none;
-  border-bottom: 2px solid ${props => props.$active ? '#ffd700' : 'transparent'};
+  border-bottom: 2px solid ${props => props.$active ? 'var(--admin-accent-primary)' : 'transparent'};
   cursor: pointer;
   font-weight: ${props => props.$active ? '600' : '400'};
   transition: all 0.3s ease;
   
   &:hover {
-    color: white;
-    background: ${props => props.$active ? 'linear-gradient(135deg, #667eea, #764ba2)' : 'rgba(255, 215, 0, 0.1)'};
+    color: var(--admin-text-primary);
+    background: ${props => props.$active ? 'linear-gradient(135deg, var(--admin-accent-primary), var(--admin-accent-secondary))' : 'var(--admin-bg-hover)'};
   }
 `;
 
@@ -80,14 +80,14 @@ const StatsGrid = styled.div`
 `;
 
 const StatCard = styled.div`
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  background: var(--admin-glass-card-bg);
+  border: 1px solid var(--admin-border-light);
   border-radius: 12px;
   padding: 1.5rem;
   transition: all 0.3s ease;
   
   &:hover {
-    border-color: rgba(255, 215, 0, 0.5);
+    border-color: var(--admin-border-light);
     transform: translateY(-2px);
   }
 `;
@@ -95,12 +95,12 @@ const StatCard = styled.div`
 const StatValue = styled.div`
   font-size: 2rem;
   font-weight: 700;
-  color: #ffd700;
+  color: var(--admin-accent-primary);
   margin-bottom: 0.5rem;
 `;
 
 const StatLabel = styled.div`
-  color: #aaa;
+  color: var(--admin-text-secondary);
   font-size: 0.875rem;
 `;
 
@@ -110,21 +110,21 @@ const FiltersContainer = styled.div`
   gap: 1rem;
   margin-bottom: 2rem;
   padding: 1.5rem;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--admin-glass-card-bg);
   border-radius: 12px;
 `;
 
 const SearchInput = styled.input`
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  background: var(--admin-bg-hover);
+  border: 1px solid var(--admin-border-light);
   border-radius: 8px;
-  color: white;
+  color: var(--admin-text-primary);
   font-size: 0.875rem;
   
   &:focus {
     outline: none;
-    border-color: #ffd700;
+    border-color: var(--admin-accent-primary);
   }
   
   &::placeholder {
@@ -134,21 +134,21 @@ const SearchInput = styled.input`
 
 const FilterSelect = styled.select`
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  background: var(--admin-bg-hover);
+  border: 1px solid var(--admin-border-light);
   border-radius: 8px;
-  color: white;
+  color: var(--admin-text-primary);
   font-size: 0.875rem;
   cursor: pointer;
   
   &:focus {
     outline: none;
-    border-color: #ffd700;
+    border-color: var(--admin-accent-primary);
   }
   
   option {
-    background: #2d2d2d;
-    color: white;
+    background: var(--admin-bg-tertiary);
+    color: var(--admin-text-primary);
   }
 `;
 
@@ -157,8 +157,8 @@ const ActionButton = styled.button`
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
+  background: linear-gradient(135deg, var(--admin-accent-primary), var(--admin-accent-secondary));
+  color: var(--admin-text-primary);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -178,7 +178,7 @@ const ActionButton = styled.button`
 
 const TableContainer = styled.div`
   overflow-x: auto;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--admin-glass-card-bg);
   border-radius: 12px;
   padding: 1rem;
 `;
@@ -186,19 +186,19 @@ const TableContainer = styled.div`
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
-  color: white;
+  color: var(--admin-text-primary);
 `;
 
 const TableHeader = styled.thead`
-  background: rgba(255, 215, 0, 0.1);
+  background: var(--admin-accent-primary);
 `;
 
 const TableHeaderCell = styled.th`
   padding: 1rem;
   text-align: left;
   font-weight: 600;
-  color: #ffd700;
-  border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+  color: var(--admin-accent-primary);
+  border: 2px solid var(--admin-border-light);
   white-space: nowrap;
 `;
 
@@ -209,13 +209,13 @@ const TableRow = styled.tr`
   transition: background 0.2s ease;
   
   &:hover {
-    background: rgba(255, 215, 0, 0.05);
+    background: var(--admin-accent-primary);
   }
 `;
 
 const TableCell = styled.td`
   padding: 1rem;
-  color: #ccc;
+  color: var(--admin-text-secondary);
   font-size: 0.875rem;
 `;
 
@@ -232,12 +232,12 @@ const Badge = styled.span<{ $type?: string }>`
       pending: 'background: rgba(234, 179, 8, 0.2); color: #eab308;',
       reviewed: 'background: rgba(34, 197, 94, 0.2); color: #22c55e;',
       resolved: 'background: rgba(34, 197, 94, 0.2); color: #22c55e;',
-      dismissed: 'background: rgba(100, 116, 139, 0.2); color: #94a3b8;',
+      dismissed: 'background: rgba(100, 116, 139, 0.2); color: var(--admin-text-secondary);',
       low: 'background: rgba(34, 197, 94, 0.2); color: #22c55e;',
       medium: 'background: rgba(234, 179, 8, 0.2); color: #eab308;',
       high: 'background: rgba(249, 115, 22, 0.2); color: #f97316;',
       critical: 'background: rgba(239, 68, 68, 0.2); color: #ef4444;',
-      car: 'background: rgba(102, 126, 234, 0.2); color: #667eea;',
+      car: 'background: rgba(102, 126, 234, 0.2); color: var(--admin-accent-primary);',
       user: 'background: rgba(234, 179, 8, 0.2); color: #eab308;',
       message: 'background: rgba(249, 115, 22, 0.2); color: #f97316;',
       review: 'background: rgba(34, 197, 94, 0.2); color: #22c55e;'
@@ -268,7 +268,7 @@ const IconButton = styled.button<{ $variant?: 'success' | 'danger' | 'default' }
     }
   }};
   border-radius: 6px;
-  color: white;
+  color: var(--admin-text-primary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -277,25 +277,25 @@ const IconButton = styled.button<{ $variant?: 'success' | 'danger' | 'default' }
   
   &:hover {
     background: ${props => {
-      switch (props.$variant) {
-        case 'success': return 'rgba(34, 197, 94, 0.3)';
-        case 'danger': return 'rgba(239, 68, 68, 0.3)';
-        default: return 'rgba(255, 215, 0, 0.2)';
-      }
-    }};
+    switch (props.$variant) {
+      case 'success': return 'rgba(34, 197, 94, 0.3)';
+      case 'danger': return 'rgba(239, 68, 68, 0.3)';
+      default: return 'rgba(255, 215, 0, 0.2)';
+    }
+  }};
   }
 `;
 
 const LoadingState = styled.div`
   padding: 3rem;
   text-align: center;
-  color: #aaa;
+  color: var(--admin-text-secondary);
 `;
 
 const EmptyState = styled.div`
   padding: 3rem;
   text-align: center;
-  color: #aaa;
+  color: var(--admin-text-secondary);
 `;
 
 type TabType = 'reports' | 'stats' | 'search';
@@ -318,7 +318,7 @@ const AdvancedContentManagement: React.FC = () => {
   const loadData = async () => {
     try {
       setLoading(true);
-      
+
       if (activeTab === 'reports') {
         if (statusFilter === 'pending') {
           const pendingReports = await advancedContentManagementService.getPendingReports(100);
@@ -341,7 +341,7 @@ const AdvancedContentManagement: React.FC = () => {
 
   const handleReviewReport = async (reportId: string, action: 'approve' | 'dismiss') => {
     if (!currentUser) return;
-    
+
     try {
       await advancedContentManagementService.reviewReport(
         reportId,
@@ -363,7 +363,7 @@ const AdvancedContentManagement: React.FC = () => {
     action: 'hide' | 'delete' | 'flag' | 'restore'
   ) => {
     if (!currentUser) return;
-    
+
     try {
       await advancedContentManagementService.applyContentAction(
         contentId,
@@ -383,7 +383,7 @@ const AdvancedContentManagement: React.FC = () => {
   const handleExport = async (format: 'json' | 'csv') => {
     try {
       const data = await advancedContentManagementService.exportContentData('cars', format);
-      
+
       const blob = new Blob([data], { type: format === 'json' ? 'application/json' : 'text/csv' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -393,7 +393,7 @@ const AdvancedContentManagement: React.FC = () => {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      
+
       toast.success(`Content exported as ${format.toUpperCase()}`);
     } catch (error) {
       logger.error('Error exporting content', error as Error);
@@ -409,7 +409,7 @@ const AdvancedContentManagement: React.FC = () => {
     if (priorityFilter !== 'all' && report.priority !== priorityFilter) return false;
     if (contentTypeFilter !== 'all' && report.contentType !== contentTypeFilter) return false;
     if (searchQuery && !report.description.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !report.reason.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+      !report.reason.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     return true;
   });
 
@@ -547,21 +547,21 @@ const AdvancedContentManagement: React.FC = () => {
                       <TableCell>
                         {report.status === 'pending' && (
                           <ActionButtons>
-                            <IconButton 
-                              onClick={() => handleReviewReport(report.id, 'approve')} 
+                            <IconButton
+                              onClick={() => handleReviewReport(report.id, 'approve')}
                               title="Approve Report"
                               $variant="success"
                             >
                               <CheckCircle size={16} />
                             </IconButton>
-                            <IconButton 
-                              onClick={() => handleReviewReport(report.id, 'dismiss')} 
+                            <IconButton
+                              onClick={() => handleReviewReport(report.id, 'dismiss')}
                               title="Dismiss Report"
                               $variant="danger"
                             >
                               <XCircle size={16} />
                             </IconButton>
-                            <IconButton 
+                            <IconButton
                               onClick={() => handleContentAction(report.contentId, report.contentType, 'hide')}
                               title="Hide Content"
                             >
@@ -621,7 +621,7 @@ const AdvancedContentManagement: React.FC = () => {
           ) : (
             <EmptyState>No statistics available</EmptyState>
           )}
-          
+
           <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem' }}>
             <ActionButton onClick={() => handleExport('json')}>
               <Download size={16} />

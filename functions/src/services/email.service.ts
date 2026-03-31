@@ -5,7 +5,19 @@ import * as nodemailer from 'nodemailer';
 interface EmailData {
   to: string;
   subject: string;
-  template: 'welcome' | 'adPending' | 'adApproved' | 'adRejected' | 'paymentReceipt' | 'newMessage' | 'subscriptionActivated';
+  template:
+    | 'welcome'
+    | 'adPending'
+    | 'adApproved'
+    | 'adRejected'
+    | 'paymentReceipt'
+    | 'newMessage'
+    | 'subscriptionActivated'
+    | 'renewalReminder'
+    | 'gracePeriodStarted'
+    | 'gracePeriodEnding'
+    | 'upgradeConfirmation'
+    | 'paymentFailed';
   data: any;
 }
 
@@ -27,10 +39,12 @@ export class EmailService {
     };
 
     if (!smtpConfig.host || !smtpConfig.auth.user) {
-      functions.logger.warn('⚠️ SMTP Configuration missing. Emails will not be sent (or will dry-run). Set SMTP_HOST, SMTP_USER, etc.');
+      functions.logger.warn(
+        '⚠️ SMTP Configuration missing. Emails will not be sent (or will dry-run). Set SMTP_HOST, SMTP_USER, etc.'
+      );
       // Fallback for development/testing without credentials
       this.transporter = nodemailer.createTransport({
-        jsonTransport: true // Just logs the output
+        jsonTransport: true, // Just logs the output
       });
     } else {
       this.transporter = nodemailer.createTransport(smtpConfig);
@@ -52,9 +66,15 @@ export class EmailService {
         html,
       });
 
-      functions.logger.info(`📧 Email sent: ${email.template} to ${email.to}`, info.messageId || info);
+      functions.logger.info(
+        `📧 Email sent: ${email.template} to ${email.to}`,
+        info.messageId || info
+      );
     } catch (error) {
-      functions.logger.error(`❌ Failed to send email: ${email.template} to ${email.to}`, error);
+      functions.logger.error(
+        `❌ Failed to send email: ${email.template} to ${email.to}`,
+        error
+      );
       // We don't throw here to ensure other operations don't fail just because email failed
     }
   }
@@ -157,7 +177,7 @@ export class EmailService {
           <p>Thank you for your business!</p>
         `;
         break;
-        
+
       case 'newMessage':
         content = `
           <h2 style="color: #1a1a1a;">New Message 💬</h2>
@@ -167,6 +187,76 @@ export class EmailService {
           </blockquote>
           <p style="text-align: center; margin-top: 24px;">
             <a href="https://koli.one/messages" style="display: inline-block; background-color: #1a1a1a; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">Reply Now</a>
+          </p>
+        `;
+        break;
+
+      case 'renewalReminder':
+        content = `
+          <h2 style="color: #FF9800;">Reminder: Subscription Renewal 🔄</h2>
+          <p>Hi ${data.name || 'there'},</p>
+          <p>Your <strong>${data.plan}</strong> subscription will renew in <strong>${data.daysLeft} days</strong> (on ${data.renewalDate}).</p>
+          <p><strong>Amount:</strong> €${data.amount}</p>
+          <p>If you wish to make changes to your plan or cancel, please do so before the renewal date.</p>
+          <p style="text-align: center; margin-top: 24px;">
+            <a href="https://koli.one/subscription" style="display: inline-block; background-color: #FF9800; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">Manage Subscription</a>
+          </p>
+        `;
+        break;
+
+      case 'gracePeriodStarted':
+        content = `
+          <h2 style="color: #f44336;">Payment Overdue — Grace Period Started ⏳</h2>
+          <p>Hi ${data.name || 'there'},</p>
+          <p>We were unable to process your subscription payment for the <strong>${data.plan}</strong> plan.</p>
+          <p>You have a <strong>${data.graceDays}-day grace period</strong> to update your payment method. During this time, your account features remain active.</p>
+          <p><strong>Grace period ends:</strong> ${data.graceEndDate}</p>
+          <p>If payment is not received by then, your account will be downgraded to the Free plan.</p>
+          <p style="text-align: center; margin-top: 24px;">
+            <a href="https://koli.one/subscription" style="display: inline-block; background-color: #f44336; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">Update Payment Method</a>
+          </p>
+        `;
+        break;
+
+      case 'gracePeriodEnding':
+        content = `
+          <h2 style="color: #d32f2f;">🚨 Final Warning: Grace Period Ending Tomorrow</h2>
+          <p>Hi ${data.name || 'there'},</p>
+          <p>This is your <strong>last day</strong> to update your payment method for the <strong>${data.plan}</strong> plan.</p>
+          <p>If payment is not received by <strong>${data.graceEndDate}</strong>, your account will be automatically downgraded to the Free plan and excess listings will be deactivated.</p>
+          <p style="text-align: center; margin-top: 24px;">
+            <a href="https://koli.one/subscription" style="display: inline-block; background-color: #d32f2f; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">Update Payment Now</a>
+          </p>
+        `;
+        break;
+
+      case 'upgradeConfirmation':
+        content = `
+          <h2 style="color: #2e7d32;">Plan Upgraded Successfully! 🚀</h2>
+          <p>Hi ${data.name || 'there'},</p>
+          <p>Congratulations! Your plan has been upgraded from <strong>${data.fromPlan}</strong> to <strong>${data.toPlan}</strong>.</p>
+          <p>Your new features are now active:</p>
+          <ul>
+            <li>${data.newLimit === -1 ? 'Unlimited' : data.newLimit} Active Listings</li>
+            ${data.hasAI ? '<li>AI Car Analysis & Smart Chatbot</li>' : ''}
+            ${data.hasAdvancedAnalytics ? '<li>Advanced Market Analytics</li>' : ''}
+            ${data.hasTeam ? '<li>Team Management</li>' : ''}
+          </ul>
+          <p style="text-align: center; margin-top: 24px;">
+            <a href="https://koli.one/dealer-dashboard" style="display: inline-block; background-color: #2e7d32; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">Go to Dashboard</a>
+          </p>
+        `;
+        break;
+
+      case 'paymentFailed':
+        content = `
+          <h2 style="color: #f44336;">Payment Failed ⚠️</h2>
+          <p>Hi ${data.name || 'there'},</p>
+          <p>We were unable to process your payment of <strong>€${data.amount}</strong> for the <strong>${data.plan}</strong> plan.</p>
+          <p><strong>Attempt:</strong> ${data.attemptCount} of 3</p>
+          <p>Please update your payment method to avoid service interruption.</p>
+          <p style="text-align: center; margin-top: 24px;">
+            <a href="https://koli.one/subscription" style="display: inline-block; background-color: #f44336; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">Update Payment Method</a>
           </p>
         `;
         break;

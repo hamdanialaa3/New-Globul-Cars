@@ -241,8 +241,8 @@ const ConsultationFooter = styled.div`
     
     &:hover {
       background: #f8f9fa;
-      border-color: #3B82F6;
-      color: #2563EB;
+      border-color: #FF7A2D;
+      color: #E5631A;
     }
   }
 `;

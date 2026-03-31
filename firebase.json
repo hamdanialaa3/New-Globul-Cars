@@ -80,6 +80,10 @@
         "function": "sitemap"
       },
       {
+        "source": "/sitemap-cars.xml",
+        "function": "sitemapDynamic"
+      },
+      {
         "source": "/feed/products.xml",
         "function": "merchantFeed"
       },

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, useNavigate, useParams, useLocation } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -29,6 +29,7 @@ import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar, ProfileIma
 import { ProfileTypeSwitcher } from '../components/ProfileTypeSwitcher'; // Added Import
 import { googleProfileSyncService } from '@/services/google/google-profile-sync.service';
 import { usePromotionalOffer } from '@/hooks/usePromotionalOffer';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { activateFreePlan } from '@/services/billing/free-plan-activation.service';
 import { followService } from '@/services/social/follow-service';
 import { logger } from '@/services/logger-service';
@@ -37,8 +38,7 @@ import { ThemeProvider } from 'styled-components';
 import { PROFILE_THEMES } from '../../../../config/profile-themes';
 // 🔴 CRITICAL: Block User Button integration
 import BlockUserButton from '@/components/messaging/BlockUserButton';
-// 🔢 CRITICAL: Numeric ID system
-import { ensureUserNumericId } from '@/services/numeric-id-assignment.service';
+import { useTargetUserId, useConstitutionEnforcement, useNumericIdRedirect, useProfileBasePath } from './hooks/useProfileRouting';
 
 /**
  * Profile Page Wrapper
@@ -52,57 +52,14 @@ import { ensureUserNumericId } from '@/services/numeric-id-assignment.service';
 const ProfilePageWrapper: React.FC = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { settings, isLoaded: siteSettingsLoaded } = useSiteSettings();
   const navigate = useNavigate();
   const location = useLocation();
-  const params = useParams<{ userId?: string }>();
   const { profileType: contextProfileType, theme: contextTheme } = useProfileType();
   const { currentUser } = useAuth();
 
-  // 🔒 Get target user ID from URL route parameter
-  // Handle both /profile/{userId} and /profile/view/{userId}
-  const RESERVED_ROUTES = ['settings', 'my-ads', 'campaigns', 'analytics', 'consultations', 'favorites', 'following', 'view'];
-  const targetUserId = React.useMemo(() => {
-    // Check if path is /profile/view/{userId}
-    const viewMatch = location.pathname.match(/^\/profile\/view\/(\d+)/);
-    if (viewMatch) {
-      const numericId = viewMatch[1];
-      // ✅ Validate it's a numeric ID (only digits)
-      if (/^\d+$/.test(numericId)) {
-        return numericId;
-      }
-      // ❌ Invalid: Firebase UID or other non-numeric ID detected
-      logger.error('🔒 REJECTED: Non-numeric ID in /profile/view/ path', { 
-        path: location.pathname, 
-        invalidId: numericId 
-      });
-      return undefined; // Will trigger redirect to /profile
-    }
-    
-    // Check /profile/{userId} format
-    const profileMatch = location.pathname.match(/^\/profile\/([^/]+)/);
-    if (profileMatch) {
-      const userId = profileMatch[1];
-      // Skip reserved routes
-      if (RESERVED_ROUTES.includes(userId)) {
-        return undefined;
-      }
-      // ✅ Validate it's a numeric ID (only digits)
-      if (/^\d+$/.test(userId)) {
-        return userId;
-      }
-      // ❌ Invalid: Firebase UID detected in URL!
-      logger.error('🔒 REJECTED: Non-numeric ID (Firebase UID?) in profile URL', { 
-        path: location.pathname, 
-        invalidId: userId,
-        reason: 'Only numeric IDs are allowed in profile URLs'
-      });
-      // Redirect to /profile (will then redirect to correct numeric URL)
-      navigate('/profile', { replace: true });
-      return undefined;
-    }
-    
-    return undefined;
-  }, [location.pathname, navigate]);
+  // 🔒 Get target user ID from URL route parameter (extracted to useProfileRouting)
+  const targetUserId = useTargetUserId();
 
   // Check if user is trying to access their own profile without being logged in
   const isAccessingOwnProfile = !targetUserId;
@@ -132,241 +89,26 @@ const ProfilePageWrapper: React.FC = () => {
   // 🔢 Get current user's numeric ID from viewer (most reliable source)
   const currentUserNumericId = viewer?.numericId;
 
-  // 🔒 CRITICAL: Check if accessing /profile/{numericId} for other user - redirect to /profile/view/{numericId}
-  // 🔒 CRITICAL: Constitution Enforced Routing Rules
-  // ⚡ LOADING GUARD: Track if validation data is ready
-  const [isValidationReady, setIsValidationReady] = React.useState(false);
-  
-  React.useEffect(() => {
-    // ⚡ STRICT VALIDATION: Must have all required data before routing logic
-    if (!currentUser || !targetUserId) {
-      logger.debug('Routing check skipped - missing required data', {
-        hasCurrentUser: !!currentUser,
-        hasTargetUserId: !!targetUserId,
-      });
-      setIsValidationReady(false);
-      return;
-    }
+  // 🔒 Constitution enforcement + validation (extracted to useProfileRouting)
+  const isValidationReady = useConstitutionEnforcement(targetUserId, viewer, activeProfile);
 
-    // 🚨 GUEST USER BYPASS: Guest users (isAnonymous) don't have numericId, allow access
-    if (currentUser.isAnonymous) {
-      logger.info('✅ Guest user detected - allowing profile access without numericId validation', {
-        uid: currentUser.uid,
-        targetUserId
-      });
-      setIsValidationReady(true);
-      return;
-    }
+  // 🔢 Ensure numeric ID + auto-redirects (extracted to useProfileRouting)
+  useNumericIdRedirect(isAccessingOwnProfile, currentUserNumericId, isOwnProfile, loading, refresh);
 
-    // ⚡ For regular users: Require numeric IDs
-    if (!viewer?.numericId || !activeProfile?.numericId) {
-      logger.debug('Routing check skipped - missing numeric IDs', {
-        hasViewerNumericId: !!viewer?.numericId,
-        hasActiveProfileNumericId: !!activeProfile?.numericId
-      });
-      setIsValidationReady(false);
-      return;
-    }
-
-    // ✅ All validation data is ready
-    setIsValidationReady(true);
-
-    // ⚡ Convert to numbers for accurate comparison
-    const viewerNumericId = Number(viewer.numericId);
-    const targetNumericId = Number(activeProfile.numericId);
-
-    // ⚡ Validate numeric IDs
-    if (isNaN(viewerNumericId) || isNaN(targetNumericId)) {
-      logger.error('🔒 INVALID NUMERIC IDs - Cannot proceed with routing', {
-        viewerNumericId,
-        targetNumericId,
-        targetUserId
-      });
-      return;
-    }
-
-    // ⚡ Check if this is NOT own profile
-    const isOtherUserProfile = viewerNumericId !== targetNumericId;
-
-    logger.debug('🔒 Profile routing check', {
-      path: location.pathname,
-      viewerNumericId,
-      targetNumericId,
-      isOtherUserProfile,
-      targetUserId
-    });
-
-    // 🏛️ CONSTITUTION ENFORCEMENT - STRICT RULES
-    // ========================================
-    // RULE 1: Same user (Owner) -> /profile/{id} ONLY
-    // RULE 2: Different user (Visitor) -> /profile/view/{id} ONLY
-    // ========================================
-
-    if (viewerNumericId === targetNumericId) {
-      // ✅ SAME USER - Must use private format: /profile/{id}
-      if (location.pathname.startsWith(`/profile/view/${targetUserId}`)) {
-        const redirectPath = location.pathname.replace(
-          `/profile/view/${targetUserId}`,
-          `/profile/${targetUserId}`
-        );
-        logger.warn('🏛️ CONSTITUTION ENFORCED: Owner must use private format', {
-          from: location.pathname,
-          to: redirectPath,
-          numericId: viewerNumericId,
-          rule: 'Owner can ONLY access /profile/{own_id}'
-        });
-        navigate(redirectPath, { replace: true });
-        return;
-      }
-    } else {
-      // ❌ DIFFERENT USER - Must use public view format: /profile/view/{id}
-      if (location.pathname.startsWith(`/profile/${targetUserId}`) && 
-          !location.pathname.startsWith(`/profile/view/${targetUserId}`)) {
-        const redirectPath = location.pathname.replace(
-          `/profile/${targetUserId}`,
-          `/profile/view/${targetUserId}`
-        );
-        logger.error('🏛️ CONSTITUTION VIOLATION: Unauthorized private access blocked', {
-          from: location.pathname,
-          to: redirectPath,
-          viewerNumericId,
-          targetNumericId,
-          rule: 'Non-owner CANNOT access /profile/{other_id}',
-          violation: 'Attempted to access another user\'s private profile'
-        });
-        navigate(redirectPath, { replace: true });
-        return;
-      }
-    }
-  }, [currentUser, targetUserId, viewer, activeProfile, location.pathname, navigate, setIsValidationReady]);
-
-  // ⚡ CRITICAL: Ensure current user has numeric ID
-  React.useEffect(() => {
-    const ensureNumericId = async () => {
-      // 🚨 FIX: Skip numeric ID assignment for guest users (no Firestore write permissions)
-      if (!currentUser?.uid || !isAccessingOwnProfile) return;
-      if (currentUser.isAnonymous) {
-        logger.warn('⚠️ Guest user detected - skipping numeric ID assignment (no write permissions)', { uid: currentUser.uid });
-        return;
-      }
-      if (currentUserNumericId) return; // Already has numeric ID
-      
-      try {
-        logger.info('🔢 Ensuring numeric ID for current user', { uid: currentUser.uid });
-        const numericId = await ensureUserNumericId(currentUser.uid);
-        if (numericId) {
-          logger.info('✅ Numeric ID assigned/retrieved', { uid: currentUser.uid, numericId });
-          // Refresh profile to get updated data
-          refresh();
-        }
-      } catch (error) {
-        logger.error('❌ Failed to ensure numeric ID', error as Error, { uid: currentUser.uid });
-      }
-    };
-    ensureNumericId();
-  }, [currentUser?.uid, currentUser?.isAnonymous, currentUserNumericId, isAccessingOwnProfile, refresh]);
-
-  // ⚡ AUTO-REDIRECT: Redirect /profile to /profile/{numericId} for logged-in users
-  React.useEffect(() => {
-    const currentPath = location.pathname;
-    
-    // Check if we're at /profile or /profile/ (base path)
-    const isBasePath = currentPath === '/profile' || currentPath === '/profile/';
-    
-    if (isBasePath) {
-      if (!currentUser) {
-        // Not logged in, redirect to login
-        logger.warn('🔒 Unauthorized: Redirecting to login', { from: currentPath });
-        navigate('/login', { replace: true, state: { from: currentPath } });
-        return;
-      }
-      
-      // User is logged in, check for numeric ID
-      if (currentUserNumericId) {
-        // We have numeric ID from viewer, redirect immediately
-        const expectedPath = `/profile/${currentUserNumericId}`;
-        logger.info('⚡ Auto-redirecting to numeric ID profile', {
-          from: currentPath,
-          to: expectedPath,
-          numericId: currentUserNumericId
-        });
-        navigate(expectedPath, { replace: true });
-      } else if (!loading) {
-        // Finished loading but no numeric ID - this shouldn't happen
-        // but as a fallback, wait a bit and try again
-        logger.warn('⚠️ User logged in but no numeric ID available after loading', {
-          uid: currentUser.uid,
-          loading
-        });
-      }
-      // If still loading, just wait
-    }
-  }, [location.pathname, currentUser, currentUserNumericId, loading, navigate]);
-  
-  // 🔒 CRITICAL: Prevent rendering if user doesn't have numeric ID yet
-  // This prevents showing /profile or invalid URLs
-  React.useEffect(() => {
-    const currentPath = location.pathname;
-    const isBasePath = currentPath === '/profile' || currentPath === '/profile/';
-    
-    // If at base path, auto-redirect effect will handle it
-    if (isBasePath) return;
-    
-    // If viewing own profile and no numeric ID available, redirect to base
-    if (isOwnProfile && currentUser && !currentUserNumericId && !loading) {
-      logger.warn('🔒 Own profile accessed without numeric ID - redirecting to base', {
-        uid: currentUser.uid,
-        currentPath
-      });
-      navigate('/profile', { replace: true });
-    }
-  }, [location.pathname, isOwnProfile, currentUser, currentUserNumericId, loading, navigate]);
-
-  const basePath = React.useMemo(() => {
-    // 🔒 CRITICAL: Always use numeric IDs for basePath
-    if (isOwnProfile) {
-      // Own profile: Use currentUserNumericId (from viewer) or activeProfile.numericId
-      const numericId = currentUserNumericId || activeProfile?.numericId;
-      if (numericId) {
-        return `/profile/${numericId}`;
-      }
-      // Fallback: /profile (will trigger auto-redirect)
-      return '/profile';
-    }
-    
-    // Other user's profile: Must have numeric ID
-    if (activeProfile?.numericId) {
-      return `/profile/view/${activeProfile.numericId}`;
-    }
-    
-    // If still loading, return a temporary path
-    if (loading) {
-      return '/profile';
-    }
-    
-    // ⚠️ No numeric ID available yet - this can happen during initial load
-    // Only log if we have activeProfile but no numericId (indicates data issue)
-    if (activeProfile?.uid && !activeProfile?.numericId) {
-      logger.warn('⚠️ basePath: Profile loaded but no numeric ID', {
-        uid: activeProfile?.uid,
-        isOwnProfile
-      });
-    }
-    
-    // Fallback to /profile (will trigger redirect or error)
-    return '/profile';
-  }, [activeProfile?.uid, activeProfile?.numericId, currentUserNumericId, isOwnProfile, loading]);
+  // 🔗 Compute basePath for tab navigation (extracted to useProfileRouting)
+  const basePath = useProfileBasePath(isOwnProfile, currentUserNumericId, activeProfile, loading);
 
   const [syncing, setSyncing] = React.useState(false);
   const [showTypeSwitcher, setShowTypeSwitcher] = React.useState(false); // Added State
 
   // ⚡ AUTO-UPDATE PROFILE STATS: Update stats when profile loads
-  // ✅ CRITICAL FIX: Only update stats for own profile (to avoid permission errors)
+  // ✅ CRITICAL FIX: Only update stats for own profile, throttle to once per 15 min
+  const lastStatsUpdateRef = React.useRef<Record<string, number>>({});
+  const STATS_THROTTLE_MS = 15 * 60 * 1000; // 15 minutes
+
   React.useEffect(() => {
     if (!activeProfile?.uid || !viewer?.uid) return;
     
-    // ✅ FIX: Only update stats if viewing own profile
-    // Other users' profiles will have permission denied errors
     const isOwnProfile = viewer.uid === activeProfile.uid;
     if (!isOwnProfile) {
       logger.debug('Skipping stats update for other user profile', { 
@@ -376,20 +118,25 @@ const ProfilePageWrapper: React.FC = () => {
       return;
     }
 
+    // Throttle: skip if updated less than 15 min ago
+    const now = Date.now();
+    const lastUpdate = lastStatsUpdateRef.current[activeProfile.uid] ?? 0;
+    if (now - lastUpdate < STATS_THROTTLE_MS) {
+      logger.debug('Skipping stats update — throttled', { userId: activeProfile.uid });
+      return;
+    }
+
     let cancelled = false;
 
-    // Update stats silently in the background
     profileStatsService.updateUserStats(activeProfile.uid)
       .then(() => {
         if (!cancelled) {
+          lastStatsUpdateRef.current[activeProfile.uid] = Date.now();
           logger.info('Profile stats updated', { userId: activeProfile.uid });
-          // Optionally refresh user data to reflect updated stats
-          refresh();
         }
       })
       .catch(error => {
         if (!cancelled) {
-          // ✅ GRACEFUL: Don't log permission errors as errors (expected for other users)
           const errorMessage = (error as Error).message;
           if (errorMessage.includes('permission') || errorMessage.includes('Permission')) {
             logger.debug('Profile stats update permission denied (expected)', { 
@@ -402,23 +149,26 @@ const ProfilePageWrapper: React.FC = () => {
       });
 
     return () => { cancelled = true; };
-  }, [activeProfile?.uid, viewer?.uid, refresh]);
+  }, [activeProfile?.uid, viewer?.uid]);
 
   // ⚡ FIX: Follow state MUST be before early return!
   const [isFollowing, setIsFollowing] = React.useState(false);
   const [followLoading, setFollowLoading] = React.useState(false);
 
   // Business mode check
-  const isBusinessMode = activeProfile?.profileType === 'dealer' || activeProfile?.profileType === 'company';
+  const activeProfileType = ((activeProfile?.planTier === 'free'
+    ? 'private'
+    : activeProfile?.profileType) as 'private' | 'dealer' | 'company') || 'private';
+  const isBusinessMode = activeProfileType === 'dealer' || activeProfileType === 'company';
 
   // 🎨 DYNAMIC THEME: Based on activeProfile.profileType (not logged-in user's type)
   // This ensures theme matches the profile being viewed
   const DYNAMIC_THEMES = {
     private: {
-      primary: '#3B82F6',     // Orange
+      primary: '#FF7A2D',
       secondary: '#FFDF00',
-      accent: '#2563EB',
-      gradient: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)'
+      accent: '#E5631A',
+      gradient: 'linear-gradient(135deg, #FF7A2D 0%, #E5631A 100%)'
     },
     dealer: {
       primary: '#16a34a',     // Green
@@ -434,7 +184,6 @@ const ProfilePageWrapper: React.FC = () => {
     }
   };
   
-  const activeProfileType = (activeProfile?.profileType as 'private' | 'dealer' | 'company') || 'private';
   const theme = DYNAMIC_THEMES[activeProfileType] || DYNAMIC_THEMES.private;
 
   // ⚡ FIX: Check if following - with cleanup for promise
@@ -476,11 +225,18 @@ const ProfilePageWrapper: React.FC = () => {
 
   // ─── Promotional Offer Hook ───
   const { isFreeOffer } = usePromotionalOffer();
+  const subscriptionMode = settings.pricing?.subscriptionMode === 'free' ? 'free' : 'paid';
+  const canActivateWithoutPayment = subscriptionMode === 'free';
 
   // ⚡ PAYMENT & SWITCH LOGIC
   const handleProfileSwitch = async (newType: 'private' | 'dealer' | 'company') => {
     if (!user) return;
     const currentType = user.profileType || 'private';
+
+    if (!siteSettingsLoaded) {
+      toast.info(language === 'bg' ? 'Изчакайте зареждането на настройките...' : 'Please wait for settings to load...');
+      return;
+    }
 
     if (newType === currentType) return;
 
@@ -494,6 +250,9 @@ const ProfilePageWrapper: React.FC = () => {
         await updateDoc(userRef, {
           profileType: 'private',
           planTier: 'free',
+          plan: {
+            tier: 'free',
+          },
           updatedAt: serverTimestamp()
         });
         setUser(prev => prev ? { ...prev, profileType: 'private', planTier: 'free' as any } : null);
@@ -508,11 +267,13 @@ const ProfilePageWrapper: React.FC = () => {
     }
 
     // ─── Upgrade to Dealer/Company ───
-    if (isFreeOffer) {
-      // 🎉 FREE OFFER ACTIVE: activate directly without payment
+    if (canActivateWithoutPayment) {
+      // Activate directly when the whole site is in free mode or a promo is active.
       setSyncing(true);
       try {
-        toast.info(language === 'bg' ? 'Активиране на безплатен план...' : 'Activating free plan...');
+        toast.info(language === 'bg'
+          ? 'Активиране на плана без плащане...'
+          : 'Activating the plan without payment...');
         const result = await activateFreePlan({
           userId: user.uid,
           userEmail: user.email || '',
@@ -524,15 +285,22 @@ const ProfilePageWrapper: React.FC = () => {
           // Update local state
           setUser(prev => prev ? { ...prev, profileType: newType, planTier: newType as any } : null);
           toast.success(language === 'bg'
-            ? `🎉 План ${newType === 'dealer' ? 'Търговец' : 'Компания'} е активиран безплатно!`
-            : `🎉 ${newType === 'dealer' ? 'Dealer' : 'Company'} plan activated for free!`
+            ? `🎉 План ${newType === 'dealer' ? 'Търговец' : 'Компания'} е активиран успешно!`
+            : `🎉 ${newType === 'dealer' ? 'Dealer' : 'Company'} plan activated successfully!`
           );
         } else if (result.error === 'FREE_OFFER_EXPIRED') {
-          toast.warning(language === 'bg'
-            ? 'Безплатната оферта изтече. Пренасочване към плащане...'
-            : 'Free offer expired. Redirecting to payment...'
-          );
-          navigate(`/billing/manual-checkout?plan=${newType}&interval=monthly&type=subscription`);
+          if (subscriptionMode === 'paid') {
+            toast.warning(language === 'bg'
+              ? 'Безплатната оферта изтече. Пренасочване към плащане...'
+              : 'Free offer expired. Redirecting to payment...'
+            );
+            navigate(`/billing/manual-checkout?plan=${newType}&interval=monthly&type=subscription`);
+          } else {
+            toast.error(language === 'bg'
+              ? 'Неуспешно активиране на плана. Опитайте отново.'
+              : 'Plan activation failed. Please try again.'
+            );
+          }
         } else {
           toast.error(language === 'bg' ? 'Грешка при активиране' : 'Activation failed');
         }
@@ -665,28 +433,28 @@ const ProfilePageWrapper: React.FC = () => {
     <ThemeProvider theme={(PROFILE_THEMES[activeProfileType] || PROFILE_THEMES['private']) as any}>
       <S.ProfilePageContainer
         $isBusinessMode={isBusinessMode}
-        $profileType={(activeProfile?.profileType as any) ?? 'private'}
+        $profileType={activeProfileType}
       >
-        <BusinessBackground isBusinessAccount={isBusinessMode} />
+        <BusinessBackground isBusinessAccount={true} profileType={activeProfileType} />
 
         <S.PageContainer>
           {/* Tab Navigation */}
-          <TabNavigation $themeColor={theme?.primary || '#3B82F6'}>
-            <TabNavLink to={basePath} end $themeColor={theme?.primary || '#3B82F6'}>
+          <TabNavigation $themeColor={theme?.primary || '#FF7A2D'}>
+            <TabNavLink to={basePath} end $themeColor={theme?.primary || '#FF7A2D'}>
               <UserCircle size={16} />
               {language === 'bg' ? 'Профил' : 'Profile'}
             </TabNavLink>
             {!isOwnProfile && (
               <>
-                <TabNavLink to={`${basePath}/my-ads`} $themeColor={theme?.primary || '#3B82F6'}>
+                <TabNavLink to={`${basePath}/my-ads`} $themeColor={theme?.primary || '#FF7A2D'}>
                   <Car size={16} />
                   {language === 'bg' ? 'Обяви' : 'Listings'}
                 </TabNavLink>
-                <TabNavLink to={`${basePath}/favorites`} $themeColor={theme?.primary || '#3B82F6'}>
+                <TabNavLink to={`${basePath}/favorites`} $themeColor={theme?.primary || '#FF7A2D'}>
                   <Heart size={16} />
                   {language === 'bg' ? 'Любими' : 'Favorites'}
                 </TabNavLink>
-                <TabNavLink to={`${basePath}/following`} $themeColor={theme?.primary || '#3B82F6'}>
+                <TabNavLink to={`${basePath}/following`} $themeColor={theme?.primary || '#FF7A2D'}>
                   <Users size={16} />
                   {language === 'bg' ? 'Следвани' : 'Following'}
                 </TabNavLink>
@@ -694,27 +462,27 @@ const ProfilePageWrapper: React.FC = () => {
             )}
             {isOwnProfile && (
               <>
-                <TabNavLink to={`${basePath}/my-ads`} $themeColor={theme?.primary || '#3B82F6'}>
+                <TabNavLink to={`${basePath}/my-ads`} $themeColor={theme?.primary || '#FF7A2D'}>
                   <Car size={16} />
                   {language === 'bg' ? 'Моите обяви' : 'My Ads'}
                 </TabNavLink>
-                <TabNavLink to={`${basePath}/campaigns`} $themeColor={theme?.primary || '#3B82F6'}>
+                <TabNavLink to={`${basePath}/campaigns`} $themeColor={theme?.primary || '#FF7A2D'}>
                   <Megaphone size={16} />
                   {language === 'bg' ? 'Реклами' : 'Campaigns'}
                 </TabNavLink>
-                <TabNavLink to={`${basePath}/analytics`} $themeColor={theme?.primary || '#3B82F6'}>
+                <TabNavLink to={`${basePath}/analytics`} $themeColor={theme?.primary || '#FF7A2D'}>
                   <BarChart3 size={16} />
                   {language === 'bg' ? 'Статистика' : 'Analytics'}
                 </TabNavLink>
-                <TabNavLink to={`${basePath}/settings`} $themeColor={theme?.primary || '#3B82F6'}>
+                <TabNavLink to={`${basePath}/settings`} $themeColor={theme?.primary || '#FF7A2D'}>
                   <Shield size={16} />
                   {language === 'bg' ? 'Настройки' : 'Settings'}
                 </TabNavLink>
-                <TabNavLink to={`${basePath}/consultations`} $themeColor={theme?.primary || '#3B82F6'}>
+                <TabNavLink to={`${basePath}/consultations`} $themeColor={theme?.primary || '#FF7A2D'}>
                   <MessageCircle size={18} />
                   {language === 'bg' ? 'Консултации' : 'Consultations'}
                 </TabNavLink>
-                <TabNavLink to={`${basePath}/following`} $themeColor={theme?.primary || '#3B82F6'}>
+                <TabNavLink to={`${basePath}/following`} $themeColor={theme?.primary || '#FF7A2D'}>
                   <Users size={16} />
                   {language === 'bg' ? 'Следвани' : 'Following'}
                 </TabNavLink>
@@ -729,7 +497,7 @@ const ProfilePageWrapper: React.FC = () => {
               {/* Cover Image */}
               <CoverImageUploader
                 currentImageUrl={activeProfile.coverImage}
-                themeColor={theme?.primary || '#3B82F6'}
+                themeColor={theme?.primary || '#FF7A2D'}
                 onUploadSuccess={(url) => {
                   setUser(prev => prev ? {
                     ...prev,

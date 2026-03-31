@@ -1,18 +1,13 @@
-/**
- * Bulk Upload Modal - Part 1 (UI Component)
- * Allows dealers to upload multiple listings via CSV/Excel
- * Location: Bulgaria
- * 
- * File: src/components/dealer/BulkUploadModal.tsx
- * Created: February 8, 2026
- */
-
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { X, Upload, FileText, AlertCircle, CheckCircle, Download } from 'lucide-react';
+import { X, Upload, FileText, AlertCircle, CheckCircle, Download, Cloud } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { csvParserService, type ParseResult } from '../../services/dealer/csv-parser.service';
 import { bulkUploadService } from '../../services/dealer/bulk-upload.service';
+import { zipProcessorService } from '../../services/dealer/zip-processor.service';
+import { cloudSyncService } from '../../services/dealer/cloud-sync.service';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useAuth } from '../../contexts/AuthProvider';
 import { toast } from 'react-toastify';
 import { logger } from '@/services/logger-service';
 
@@ -27,16 +22,32 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
   onClose,
   onUploadComplete
 }) => {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
+  const [mode, setMode] = useState<'csv' | 'zip' | 'smart' | 'cloud'>('csv');
   const [file, setFile] = useState<File | null>(null);
+  const [zipFile, setZipFile] = useState<File | null>(null);
+  const [smartImages, setSmartImages] = useState<FileList | null>(null);
   const [parseResult, setParseResult] = useState<ParseResult | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadComplete, setUploadComplete] = useState(false);
+  // Cloud sync form state
+  const [cloudProvider, setCloudProvider] = useState<'google_drive' | 'dropbox'>('google_drive');
+  const [cloudFolderUrl, setCloudFolderUrl] = useState('');
+  const [cloudAutoProcess, setCloudAutoProcess] = useState(true);
 
   if (!isOpen) return null;
 
-  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const modeTitle = useMemo(() => {
+    if (mode === 'zip') return 'ZIP + CSV + Images';
+    if (mode === 'smart') return 'Smart Image Upload';
+    if (mode === 'cloud') return 'Cloud Sync';
+    return 'CSV / Excel Upload';
+  }, [mode]);
+
+  const handleDataFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (!selectedFile) return;
 
@@ -65,23 +76,112 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
     }
   };
 
+  const handleZipSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = event.target.files?.[0] || null;
+    setZipFile(selected);
+    if (selected && !selected.name.toLowerCase().endsWith('.zip')) {
+      toast.error(language === 'bg' ? 'Качете ZIP файл' : 'Please upload a ZIP file');
+      setZipFile(null);
+    }
+  };
+
+  const handleSmartImagesSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSmartImages(event.target.files || null);
+  };
+
   const handleUpload = async () => {
-    if (!parseResult || parseResult.data.length === 0) return;
+    const hasRows = parseResult && parseResult.data.length > 0;
+    if ((mode === 'csv' || mode === 'zip') && !hasRows) return;
 
     setUploading(true);
     setUploadProgress(0);
 
     try {
-      await bulkUploadService.uploadCars(
-        parseResult.data,
-        (progress) => setUploadProgress(progress)
-      );
+      if (mode === 'csv') {
+        await bulkUploadService.uploadCars(
+          parseResult!.data,
+          (progress) => setUploadProgress(progress),
+          'csv'
+        );
+      }
+
+      if (mode === 'zip') {
+        if (!currentUser?.uid) throw new Error('Authentication required');
+        if (zipFile) {
+          const job = await bulkUploadService.createUploadJob(currentUser.uid, parseResult?.data.length ?? 0, 'zip');
+          await zipProcessorService.stageZipForBackgroundProcessing(
+            zipFile,
+            currentUser.uid,
+            job.id,
+            (pct) => setUploadProgress(pct * 0.5)
+          );
+          await bulkUploadService.uploadCars(
+            parseResult?.data ?? [],
+            (p) => setUploadProgress(50 + p * 0.5),
+            'zip',
+            job.id
+          );
+        } else {
+          await bulkUploadService.uploadCars(
+            parseResult!.data,
+            (progress) => setUploadProgress(progress),
+            'zip'
+          );
+        }
+      }
+
+      if (mode === 'smart') {
+        if (!currentUser?.uid) {
+          throw new Error('Authentication required for smart upload');
+        }
+        const count = smartImages?.length || 0;
+        const job = await bulkUploadService.createUploadJob(
+          currentUser.uid,
+          count,
+          'smart_images'
+        );
+        navigate(`/dealer/bulk-review/${job.id}`);
+      }
+
+      if (mode === 'cloud') {
+        if (!currentUser?.uid) {
+          throw new Error('Authentication required for cloud sync');
+        }
+        if (!cloudFolderUrl.trim()) {
+          toast.error(language === 'bg' ? 'Въведете URL на папката' : 'Please enter a folder URL');
+          setUploading(false);
+          return;
+        }
+        // Extract folder ID from URL (Google Drive share links)
+        const folderIdMatch = cloudFolderUrl.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+        const folderId = folderIdMatch ? folderIdMatch[1] : cloudFolderUrl.trim();
+
+        await cloudSyncService.saveSyncConfig(currentUser.uid, {
+          provider: cloudProvider,
+          folderId,
+          folderName: folderId,
+          autoProcessing: cloudAutoProcess,
+          syncFrequency: 'hourly',
+          fileFilter: ['image/jpeg', 'image/png', 'image/webp'],
+        });
+
+        const job = await bulkUploadService.createUploadJob(
+          currentUser.uid,
+          0,
+          'cloud_sync'
+        );
+        toast.success(language === 'bg' ? 'Облачната синхронизация е настроена!' : 'Cloud sync configured!');
+        navigate(`/dealer/bulk-review/${job.id}`);
+      }
 
       setUploadComplete(true);
-      setTimeout(() => {
-        onUploadComplete();
-        handleClose();
-      }, 2000);
+      onUploadComplete();
+
+      if (mode === 'csv' || mode === 'zip') {
+        setTimeout(() => {
+          handleClose();
+        }, 1500);
+      }
     } catch (error) {
       logger.error('Upload error:', error);
       toast.error(language === 'bg' ? 'Качването не бе успешно. Моля, опитайте отново.' : 'Upload failed. Please try again.');
@@ -91,10 +191,15 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
   };
 
   const handleClose = () => {
+    setMode('csv');
     setFile(null);
+    setZipFile(null);
+    setSmartImages(null);
     setParseResult(null);
     setUploadProgress(0);
     setUploadComplete(false);
+    setCloudFolderUrl('');
+    setCloudAutoProcess(true);
     onClose();
   };
 
@@ -113,25 +218,95 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
     <Overlay>
       <Modal>
         <Header>
-          <Title>Bulk Upload Listings</Title>
+          <Title>{modeTitle}</Title>
           <CloseButton onClick={handleClose}>
             <X size={24} />
           </CloseButton>
         </Header>
 
         <Content>
-          {!file && (
+          <ModeTabs>
+            <ModeTabButton $active={mode === 'csv'} onClick={() => setMode('csv')}>CSV</ModeTabButton>
+            <ModeTabButton $active={mode === 'zip'} onClick={() => setMode('zip')}>ZIP</ModeTabButton>
+            <ModeTabButton $active={mode === 'smart'} onClick={() => setMode('smart')}>Smart</ModeTabButton>
+            <ModeTabButton $active={mode === 'cloud'} onClick={() => setMode('cloud')}>Cloud</ModeTabButton>
+          </ModeTabs>
+
+          {mode === 'cloud' && (
+            <UploadSection>
+              <UploadIcon>
+                <Cloud size={48} />
+              </UploadIcon>
+              <Instructions>
+                {language === 'bg'
+                  ? 'Свържете Google Drive или Dropbox за автоматична синхронизация на снимки'
+                  : 'Connect Google Drive or Dropbox for automatic media sync'}
+              </Instructions>
+
+              <CloudForm>
+                <CloudLabel>
+                  {language === 'bg' ? 'Доставчик' : 'Provider'}
+                </CloudLabel>
+                <CloudSelect
+                  value={cloudProvider}
+                  onChange={e => setCloudProvider(e.target.value as 'google_drive' | 'dropbox')}
+                >
+                  <option value="google_drive">Google Drive</option>
+                  <option value="dropbox">Dropbox</option>
+                </CloudSelect>
+
+                <CloudLabel>
+                  {language === 'bg' ? 'URL на споделена папка' : 'Shared folder URL or ID'}
+                </CloudLabel>
+                <CloudInput
+                  type="text"
+                  placeholder={cloudProvider === 'google_drive'
+                    ? 'https://drive.google.com/drive/folders/...'
+                    : 'https://www.dropbox.com/sh/...'}
+                  value={cloudFolderUrl}
+                  onChange={e => setCloudFolderUrl(e.target.value)}
+                />
+
+                <CloudCheckboxRow>
+                  <input
+                    type="checkbox"
+                    id="auto-process"
+                    checked={cloudAutoProcess}
+                    onChange={e => setCloudAutoProcess(e.target.checked)}
+                  />
+                  <label htmlFor="auto-process">
+                    {language === 'bg' ? 'Автоматична обработка при нови файлове' : 'Auto-process when new files arrive'}
+                  </label>
+                </CloudCheckboxRow>
+              </CloudForm>
+
+              <Actions>
+                <UploadButton
+                  onClick={handleUpload}
+                  disabled={uploading || uploadComplete || !cloudFolderUrl.trim()}
+                >
+                  {uploading
+                    ? (language === 'bg' ? 'Опазване...' : 'Saving...')
+                    : (language === 'bg' ? 'Свържи и синхронизирай' : 'Connect & Sync')}
+                </UploadButton>
+              </Actions>
+            </UploadSection>
+          )}
+
+          {(mode === 'csv' || mode === 'zip' || mode === 'smart') && !file && mode !== 'smart' && (
             <UploadSection>
               <UploadIcon>
                 <Upload size={48} />
               </UploadIcon>
               <Instructions>
-                Upload a CSV or Excel file with your car listings (max 50 cars per upload)
+                {mode === 'zip'
+                  ? 'Upload CSV/Excel first, then optional ZIP archive for staged background processing'
+                  : 'Upload a CSV or Excel file with your car listings'}
               </Instructions>
               <FileInput
                 type="file"
                 accept=".csv,.xlsx,.xls"
-                onChange={handleFileSelect}
+                onChange={handleDataFileSelect}
                 id="bulk-upload-input"
               />
               <UploadButton as="label" htmlFor="bulk-upload-input">
@@ -141,10 +316,56 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
                 <Download size={16} />
                 Download Sample CSV
               </SampleLink>
+
+              {mode === 'zip' && (
+                <>
+                  <FileInput
+                    type="file"
+                    accept=".zip"
+                    onChange={handleZipSelect}
+                    id="zip-upload-input"
+                  />
+                  <UploadButton as="label" htmlFor="zip-upload-input">
+                    {zipFile ? `ZIP: ${zipFile.name}` : 'Attach ZIP (Optional)'}
+                  </UploadButton>
+                </>
+              )}
             </UploadSection>
           )}
 
-          {file && parseResult && (
+          {mode === 'smart' && (
+            <UploadSection>
+              <UploadIcon>
+                <Upload size={48} />
+              </UploadIcon>
+              <Instructions>
+                {language === 'bg'
+                  ? 'Качете много снимки. AI ще ги групира автоматично по автомобили.'
+                  : 'Upload many images. AI will auto-group them into car clusters.'}
+              </Instructions>
+              <FileInput
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleSmartImagesSelect}
+                id="smart-images-input"
+              />
+              <UploadButton as="label" htmlFor="smart-images-input">
+                {smartImages?.length ? `${smartImages.length} images selected` : 'Select Images'}
+              </UploadButton>
+
+              <Actions>
+                <UploadButton
+                  onClick={handleUpload}
+                  disabled={!smartImages?.length || uploading || uploadComplete}
+                >
+                  {uploading ? 'Queuing...' : 'Queue Smart Processing'}
+                </UploadButton>
+              </Actions>
+            </UploadSection>
+          )}
+
+          {(mode === 'csv' || mode === 'zip') && file && parseResult && (
             <ResultsSection>
               <FileName>
                 <FileText size={20} />
@@ -209,7 +430,11 @@ export const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
                   onClick={handleUpload}
                   disabled={parseResult.validRows === 0 || uploading || uploadComplete}
                 >
-                  {uploading ? 'Uploading...' : `Upload ${parseResult.validRows} Cars`}
+                  {uploading
+                    ? 'Uploading...'
+                    : mode === 'zip'
+                      ? `Upload ${parseResult.validRows} Cars + ZIP`
+                      : `Upload ${parseResult.validRows} Cars`}
                 </UploadButton>
               </Actions>
             </ResultsSection>
@@ -273,6 +498,21 @@ const Content = styled.div`
   overflow-y: auto;
 `;
 
+const ModeTabs = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+`;
+
+const ModeTabButton = styled.button<{ $active: boolean }>`
+  border: 1px solid ${props => (props.$active ? '#2563eb' : '#d1d5db')};
+  background: ${props => (props.$active ? '#dbeafe' : '#ffffff')};
+  color: #111827;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+`;
+
 const UploadSection = styled.div`
   display: flex;
   flex-direction: column;
@@ -321,6 +561,56 @@ const SampleLink = styled.button`
   gap: 8px;
   &:hover {
     text-decoration: underline;
+  }
+`;
+
+const CloudForm = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 440px;
+  text-align: left;
+`;
+
+const CloudLabel = styled.label`
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+`;
+
+const CloudSelect = styled.select`
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+  color: #111827;
+`;
+
+const CloudInput = styled.input`
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #111827;
+  background: #fff;
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+`;
+
+const CloudCheckboxRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #374151;
+
+  input[type='checkbox'] {
+    width: 16px;
+    height: 16px;
   }
 `;
 

@@ -774,8 +774,7 @@ const MapAnalyticsPage: React.FC = () => {
           )}
         </DetailsPanel>
       </MapWrapper>
-      {/* Analytics events: mapPage_view, mapPage_toggle_layer */}
-      <AnalyticsTracker pageView="mapPage_view" />
+      {/* Analytics events are now handled globally via the router */}
     </PageContainer>
   );
 };

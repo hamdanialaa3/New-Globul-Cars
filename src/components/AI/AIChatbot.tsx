@@ -7,6 +7,7 @@ import { getFunctions, httpsCallable } from 'firebase/functions';
 import { AIChatMessage, AIChatContext } from '../../types/ai.types';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useProfileType } from '../../contexts/ProfileTypeContext';
 import { logger } from '../../services/logger-service';
 import { X } from 'lucide-react';
 import { AIRobotIcon } from '../icons/AIRobotIcon';
@@ -34,12 +35,18 @@ export const AIChatbot: React.FC<Props> = ({
 }) => {
   const { user } = useAuth();
   const { language } = useLanguage();
+  const { permissions } = useProfileType();
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
   const [messages, setMessages] = useState<AIChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // AI Chatbot gating — only dealer/company with canUseChatbot
+  if (!permissions.canUseChatbot) {
+    return null;
+  }
 
   useEffect(() => {
     if (isOpen && messages.length === 0) {

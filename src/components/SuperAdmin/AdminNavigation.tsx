@@ -32,7 +32,7 @@ interface AdminNavigationProps {
 const NavigationTabs = styled.div`
   display: flex;
   gap: 6px;
-  background: #1e2432;
+  background: var(--admin-bg-secondary);
   padding: 6px;
   border-radius: 8px;
   margin: 0 20px 24px 20px;
@@ -46,7 +46,7 @@ const NavigationTabs = styled.div`
   }
   
   &::-webkit-scrollbar-track {
-    background: #0f1419;
+    background: var(--admin-bg-secondary);
     border-radius: 2px;
   }
   

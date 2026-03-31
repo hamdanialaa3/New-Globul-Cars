@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
+import styled from 'styled-components';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Search, Gavel, Users, Ship, Ghost, Volume2, VolumeX, Star, Trash2 } from 'lucide-react';
+import { Search, Gavel, Users, Ship, Ghost, Volume2, VolumeX, Star, Trash2, Zap } from 'lucide-react';
 import { LiveTicker } from './components/LiveTicker';
 import { soundService } from '@/services/sound-service';
+import { LocalAuctionsFeed } from './components/LocalAuctionsFeed';
+import { LiveBiddingRoom } from './LiveBiddingRoom';
+import { AuctionListing } from '@/services/auctions/auction-types';
 import { 
     AuctionsWrapper, AuctionsContainer, AuctionsHeader, SearchContainer, SearchWrapper, SearchInput,
     LiveStatsContainer, StatsBar, StatItem, StatIcon, StatContent, StatNumber, StatLabel, LiveDot,
@@ -11,6 +15,39 @@ import {
     GarageSection, GarageHeader, EmptyGarage, SoundToggleButton, StarButton, GarageGrid, GarageCard
 } from './components/AuctionsStyles';
 import { AUCTIONS_DATA, AUCTION_TRANSLATIONS, Lang, AuctionItem } from './components/AuctionsData';
+
+// --- Tab Styled Components ---
+const TabsWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 30px 0;
+`;
+
+const TabButton = styled.button<{ $active: boolean }>`
+  background: ${props => props.$active ? 'var(--accent-primary)' : 'var(--bg-secondary)'};
+  color: ${props => props.$active ? 'var(--text-inverse)' : 'var(--text-secondary)'};
+  border: 1px solid ${props => props.$active ? 'transparent' : 'var(--border-primary)'};
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: ${props => props.$active ? '0 10px 20px rgba(49, 130, 206, 0.3)' : 'none'};
+
+  &:hover {
+    transform: translateY(-2px);
+    background: ${props => props.$active ? 'var(--accent-primary)' : 'var(--bg-hover)'};
+  }
+
+  svg {
+    stroke-width: 2.5px;
+  }
+`;
 
 // --- Auction Card Component ---
 interface AuctionCardProps {
@@ -92,6 +129,8 @@ const AuctionsPage: React.FC = () => {
     const { language } = useLanguage(); 
     
     // State
+    const [activeTab, setActiveTab] = useState<'local' | 'global'>('local');
+    const [selectedAuction, setSelectedAuction] = useState<AuctionListing | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [isSoundEnabled, setIsSoundEnabled] = useState(true);
     const [watchlist, setWatchlist] = useState<AuctionItem[]>([]);
@@ -239,12 +278,47 @@ const AuctionsPage: React.FC = () => {
                     </StatsBar>
                 </LiveStatsContainer>
 
-                {/* Dynamic Sections */}
-                {renderSection('usa', 'usa_title', 'https://flagcdn.com/w80/us.png')}
-                {renderSection('de', 'de_title', 'https://flagcdn.com/w80/de.png')}
-                {renderSection('eu', 'eu_title', 'https://flagcdn.com/w80/eu.png')}
-                {renderSection('jp', 'jp_title', 'https://flagcdn.com/w80/jp.png')}
-                {renderSection('global', 'global_title', 'https://flagcdn.com/w80/kr.png')}
+                {/* Dynamic Sections - Tabs */}
+                <TabsWrapper>
+                    <TabButton 
+                        $active={activeTab === 'local'} 
+                        onClick={() => { setActiveTab('local'); soundService.playClick(); }}
+                    >
+                        <Zap size={20} />
+                        {language === 'bg' ? 'Koli.one Търгове На Живо' : 'Koli.one Live Auctions'}
+                    </TabButton>
+                    <TabButton 
+                        $active={activeTab === 'global'} 
+                        onClick={() => { setActiveTab('global'); soundService.playClick(); }}
+                    >
+                        <Ship size={20} />
+                        {language === 'bg' ? 'Глобални Партньори' : 'Global Partners'}
+                    </TabButton>
+                </TabsWrapper>
+
+                {/* Local Reverse Auctions FEED */}
+                {activeTab === 'local' && (
+                    <LocalAuctionsFeed onSelectAuction={(auction) => setSelectedAuction(auction)} />
+                )}
+
+                {/* Global Static Links FEED */}
+                {activeTab === 'global' && (
+                    <>
+                        {renderSection('usa', 'usa_title', 'https://flagcdn.com/w80/us.png')}
+                        {renderSection('de', 'de_title', 'https://flagcdn.com/w80/de.png')}
+                        {renderSection('eu', 'eu_title', 'https://flagcdn.com/w80/eu.png')}
+                        {renderSection('jp', 'jp_title', 'https://flagcdn.com/w80/jp.png')}
+                        {renderSection('global', 'global_title', 'https://flagcdn.com/w80/kr.png')}
+
+                        {/* Empty State for Global */}
+                        {filteredAuctions.length === 0 && (
+                            <div style={{textAlign: 'center', padding: '50px', color: '#94a3b8'}}>
+                                <Ghost size={48} style={{ marginBottom: '15px', opacity: 0.5 }} />
+                                <p>No partner auctions found matching "{searchTerm}"</p>
+                            </div>
+                        )}
+                    </>
+                )}
 
                 {/* Virtual Garage (Watchlist) */}
                 <GarageSection>
@@ -277,14 +351,15 @@ const AuctionsPage: React.FC = () => {
                     )}
                 </GarageSection>
 
-                {/* Empty State */}
-                {filteredAuctions.length === 0 && (
-                    <div style={{textAlign: 'center', padding: '50px', color: '#94a3b8'}}>
-                        <Ghost size={48} style={{ marginBottom: '15px', opacity: 0.5 }} />
-                        <p>No auctions found matching "{searchTerm}"</p>
-                    </div>
-                )}
             </AuctionsContainer>
+
+            {/* Live Bidding Modal Room */}
+            {selectedAuction && (
+                <LiveBiddingRoom 
+                    auctionId={selectedAuction.id} 
+                    onClose={() => setSelectedAuction(null)} 
+                />
+            )}
         </AuctionsWrapper>
     );
 };

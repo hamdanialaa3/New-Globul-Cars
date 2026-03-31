@@ -29,21 +29,21 @@ const Overlay = styled.div`
 `;
 
 const Container = styled.div`
-  background: #1a1a1a;
+  background: var(--admin-bg-secondary);
   border-radius: 16px;
   width: 100%;
   max-width: 1400px;
   height: 90vh;
   display: flex;
   flex-direction: column;
-  border: 1px solid #333;
+  border: 1px solid var(--admin-border-subtle);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
   overflow: hidden;
 `;
 
 const Header = styled.div`
   padding: 24px;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--admin-border-subtle);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -51,7 +51,7 @@ const Header = styled.div`
 `;
 
 const Title = styled.h2`
-  color: #fff;
+  color: var(--admin-text-primary);
   font-size: 24px;
   font-weight: 700;
   display: flex;
@@ -62,7 +62,7 @@ const Title = styled.h2`
 
 const Badge = styled.span`
   background: #27ae60;
-  color: #fff;
+  color: var(--admin-text-primary);
   font-size: 11px;
   padding: 4px 8px;
   border-radius: 4px;
@@ -79,8 +79,8 @@ const Controls = styled.div`
 
 const SearchInput = styled.input`
   background: #333;
-  border: 1px solid #444;
-  color: #fff;
+  border: 1px solid var(--admin-border-subtle);
+  color: var(--admin-text-primary);
   padding: 10px 16px;
   border-radius: 8px;
   width: 300px;
@@ -103,7 +103,7 @@ const CloseButton = styled.button`
   
   &:hover {
     background: #333;
-    color: #fff;
+    color: var(--admin-text-primary);
   }
 `;
 
@@ -132,7 +132,7 @@ const Card = styled.div`
   background: #222;
   border-radius: 12px;
   padding: 20px;
-  border: 1px solid #333;
+  border: 1px solid var(--admin-border-subtle);
   transition: all 0.2s;
   position: relative;
   display: flex;
@@ -167,13 +167,13 @@ const StatusPill = styled.span<{ status: string }>`
             default: return '#7f8c8d';
         }
     }};
-  color: #fff;
+  color: var(--admin-text-primary);
 `;
 
 const Amount = styled.div`
   font-size: 24px;
   font-weight: 700;
-  color: #fff;
+  color: var(--admin-text-primary);
   margin-bottom: 4px;
 `;
 
@@ -193,7 +193,7 @@ const DetailRow = styled.div`
   border-bottom: 1px dashed #333;
 
   strong {
-    color: #aaa;
+    color: var(--admin-text-secondary);
   }
 `;
 
@@ -201,7 +201,7 @@ const Actions = styled.div`
   display: flex;
   gap: 8px;
   margin-top: auto;
-  border-top: 1px solid #333;
+  border-top: 1px solid var(--admin-border-subtle);
   padding-top: 16px;
 `;
 

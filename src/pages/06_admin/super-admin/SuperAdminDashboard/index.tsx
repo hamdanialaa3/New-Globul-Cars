@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { AdminLanguageProvider } from '@/contexts/AdminLanguageContext';
+import { AdminThemeProvider } from '@/contexts/AdminThemeContext';
 import { RealTimeAnalytics, UserActivity } from '@/services/super-admin-types';
 import { firebaseRealDataService } from '@/services/firebase-real-data-service';
 import { uniqueOwnerService } from '@/services/unique-owner-service';
@@ -69,7 +70,7 @@ const LoadingState = styled.div`
   font-size: 16px;
   font-weight: 500;
   gap: 12px;
-  background: #030712; /* Deep Space from Theme */
+  background: var(--admin-bg-primary);
 `;
 
 const LoadingMessage = styled.div`
@@ -82,7 +83,7 @@ const LoadingMessage = styled.div`
 
 // Keep for compatibility inside tabs if needed, or replace with theme buttons later
 const ActionButton = styled.button`
-  background: #6366f1;
+  background: var(--admin-accent-primary);
   color: #ffffff;
   border: none;
   padding: 10px 20px;
@@ -94,9 +95,9 @@ const ActionButton = styled.button`
   margin-top: 8px;
 
   &:hover {
-    background: #4f46e5;
+    background: var(--admin-accent-secondary);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    box-shadow: var(--admin-accent-glow);
   }
 `;
 
@@ -312,8 +313,8 @@ const DashboardContent: React.FC = () => {
       {/* 2. MANAGEMENT: Users, Dealers, Cars, Content */}
       {activeTab === 'users' && (
         <>
-          <div style={{ textAlign: 'center', padding: '2rem', background: 'rgba(30, 41, 59, 0.4)', borderRadius: '8px', marginBottom: '20px' }}>
-            <h2 style={{ color: '#f8fafc', marginBottom: '1rem', fontSize: '18px', fontWeight: '600' }}>{t.common.users} {t.navigation.management}</h2>
+          <div style={{ textAlign: 'center', padding: '2rem', background: 'var(--admin-glass-panel-bg)', borderRadius: '8px', marginBottom: '20px', border: '1px solid var(--admin-border-subtle)' }}>
+            <h2 style={{ color: 'var(--admin-text-primary)', marginBottom: '1rem', fontSize: '18px', fontWeight: '600' }}>{t.common.users} {t.navigation.management}</h2>
             <ActionButton onClick={() => navigate('/super-admin/users')} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
               <Users size={16} /> {t.common.openUserMgmt}
             </ActionButton>
@@ -324,8 +325,8 @@ const DashboardContent: React.FC = () => {
       )}
 
       {activeTab === 'dealers' && (
-        <div style={{ padding: '20px', color: '#94a3b8', textAlign: 'center' }}>
-          <h3>{t.common.dealerMgmt}</h3>
+        <div style={{ padding: '20px', color: 'var(--admin-text-secondary)', textAlign: 'center' }}>
+          <h3 style={{ color: 'var(--admin-text-primary)' }}>{t.common.dealerMgmt}</h3>
           <p>{t.common.dealerDesc}</p>
           <ActionButton onClick={() => navigate('/super-admin/users?filter=dealer')}>{t.common.goToDealers}</ActionButton>
         </div>
@@ -419,9 +420,11 @@ const DashboardContent: React.FC = () => {
 // so that useAdminLang() is available inside DashboardContent and AdminShell.
 const SuperAdminDashboard: React.FC = () => {
   return (
-    <AdminLanguageProvider>
-      <DashboardContent />
-    </AdminLanguageProvider>
+    <AdminThemeProvider>
+      <AdminLanguageProvider>
+        <DashboardContent />
+      </AdminLanguageProvider>
+    </AdminThemeProvider>
   );
 };
 

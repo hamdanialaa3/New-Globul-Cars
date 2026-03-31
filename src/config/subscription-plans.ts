@@ -16,6 +16,7 @@ export interface PlanFeatures {
   maxListings: number; // -1 = unlimited
   maxTeamMembers: number;
   maxCampaigns: number;
+  maxBulkUploadSize: number; // -1 = unlimited
 
   // Features
   canBulkUpload: boolean;
@@ -23,6 +24,11 @@ export interface PlanFeatures {
   canExportData: boolean;
   canImportData: boolean;
   canBulkEdit: boolean;
+
+  // AI & Intelligence
+  canUseAI: boolean;
+  canUseChatbot: boolean;
+  canEditMakeModel: boolean;
 
   // Analytics
   hasBasicAnalytics: boolean;
@@ -33,6 +39,8 @@ export interface PlanFeatures {
   canUseAPI: boolean;
   hasWebhooks: boolean;
   apiRateLimitPerHour: number;
+  canCloudSync: boolean;
+  canSmartUpload: boolean;
 
   // Marketing
   canCreateCampaigns: boolean;
@@ -73,11 +81,6 @@ export interface SubscriptionPlan {
   displayOrder: number;
 }
 
-/**
- * ✅ FIXED: Dealer plan now correctly supports 30 listings
- * Previously: dealer had 10 listings (BUG)
- * Now: dealer has 30 listings (CORRECT)
- */
 export const SUBSCRIPTION_PLANS: Record<PlanTier, SubscriptionPlan> = {
   free: {
     id: 'plan_free',
@@ -100,20 +103,26 @@ export const SUBSCRIPTION_PLANS: Record<PlanTier, SubscriptionPlan> = {
       annual: '',
     },
     features: {
-      maxListings: 10,
+      maxListings: 3,
       maxTeamMembers: 0,
       maxCampaigns: 0,
+      maxBulkUploadSize: 0,
       canBulkUpload: false,
       canFeatureListings: false,
       canExportData: false,
       canImportData: false,
       canBulkEdit: false,
+      canUseAI: false,
+      canUseChatbot: false,
+      canEditMakeModel: false,
       hasBasicAnalytics: false,
       hasAdvancedAnalytics: false,
       canExportAnalytics: false,
       canUseAPI: false,
       hasWebhooks: false,
       apiRateLimitPerHour: 0,
+      canCloudSync: false,
+      canSmartUpload: false,
       canCreateCampaigns: false,
       canUseEmailMarketing: false,
       hasPrioritySupport: false,
@@ -135,32 +144,38 @@ export const SUBSCRIPTION_PLANS: Record<PlanTier, SubscriptionPlan> = {
     },
     description: {
       bg: 'Идеален за автокъщи и дилъри',
-      en: 'Ideal for car dealerships',
+      en: 'Ideal for car dealerships and independent traders',
     },
     price: {
-      monthly: 15,
-      annual: 144,
+      monthly: 19,
+      annual: 182.4,
       currency: 'EUR',
     },
     stripePriceIds: {
-      monthly: 'price_dealer_monthly_15eur',
-      annual: 'price_dealer_annual_144eur',
+      monthly: 'price_dealer_monthly_19eur',
+      annual: 'price_dealer_annual_182eur',
     },
     features: {
-      maxListings: 100,
+      maxListings: 20,
       maxTeamMembers: 3,
       maxCampaigns: 10,
+      maxBulkUploadSize: 50,
       canBulkUpload: true,
       canFeatureListings: true,
       canExportData: true,
       canImportData: true,
       canBulkEdit: true,
+      canUseAI: true,
+      canUseChatbot: true,
+      canEditMakeModel: false,
       hasBasicAnalytics: true,
       hasAdvancedAnalytics: false,
       canExportAnalytics: true,
       canUseAPI: false,
       hasWebhooks: false,
       apiRateLimitPerHour: 100,
+      canCloudSync: false,
+      canSmartUpload: false,
       canCreateCampaigns: true,
       canUseEmailMarketing: false,
       hasPrioritySupport: true,
@@ -185,29 +200,35 @@ export const SUBSCRIPTION_PLANS: Record<PlanTier, SubscriptionPlan> = {
       en: 'For large automotive companies',
     },
     price: {
-      monthly: 500,
-      annual: 4800,
+      monthly: 177,
+      annual: 1699.2,
       currency: 'EUR',
     },
     stripePriceIds: {
-      monthly: 'price_enterprise_monthly_500eur',
-      annual: 'price_enterprise_annual_4800eur',
+      monthly: 'price_enterprise_monthly_177eur',
+      annual: 'price_enterprise_annual_1699eur',
     },
     features: {
       maxListings: -1,
       maxTeamMembers: 20,
       maxCampaigns: -1,
+      maxBulkUploadSize: -1,
       canBulkUpload: true,
       canFeatureListings: true,
       canExportData: true,
       canImportData: true,
       canBulkEdit: true,
+      canUseAI: true,
+      canUseChatbot: true,
+      canEditMakeModel: true,
       hasBasicAnalytics: true,
       hasAdvancedAnalytics: true,
       canExportAnalytics: true,
       canUseAPI: true,
       hasWebhooks: true,
       apiRateLimitPerHour: 5000,
+      canCloudSync: true,
+      canSmartUpload: true,
       canCreateCampaigns: true,
       canUseEmailMarketing: true,
       hasPrioritySupport: true,
@@ -233,6 +254,13 @@ export function getPlanByTier(tier: PlanTier): SubscriptionPlan {
  */
 export function getMaxListings(tier: PlanTier): number {
   return SUBSCRIPTION_PLANS[tier].features.maxListings;
+}
+
+/**
+ * Get max bulk upload size for a plan tier
+ */
+export function getMaxBulkUploadSize(tier: PlanTier): number {
+  return SUBSCRIPTION_PLANS[tier].features.maxBulkUploadSize;
 }
 
 /**

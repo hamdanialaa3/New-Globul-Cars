@@ -14,6 +14,7 @@ import { ArrowLeft, CheckCircle, AlertCircle, Loader, Gift } from 'lucide-react'
 import { toast } from 'react-toastify';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import BankTransferDetails from '../../components/payment/BankTransferDetails';
 import { manualPaymentService } from '../../services/payment/manual-payment-service';
 import { activateFreePlan } from '../../services/billing/free-plan-activation.service';
@@ -28,6 +29,8 @@ const ManualCheckoutPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const { user, userProfile } = useAuth();
   const { language } = useLanguage();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   const [selectedBank, setSelectedBank] = useState<BankAccountType>('revolut');
   const [confirmedTransfer, setConfirmedTransfer] = useState(false);
@@ -36,7 +39,8 @@ const ManualCheckoutPage: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   // Get payment details from URL params
-  const planTier = (searchParams.get('plan') as 'dealer' | 'company') || 'dealer';
+  const requestedPlan = searchParams.get('plan');
+  const planTier = requestedPlan === 'dealer' || requestedPlan === 'company' ? requestedPlan : 'free';
   const interval = (searchParams.get('interval') as 'monthly' | 'annual') || 'monthly';
   const paymentType = (searchParams.get('type') as PaymentType) || 'subscription';
   const isPromoFromUrl = searchParams.get('promo') === 'free';
@@ -44,9 +48,10 @@ const ManualCheckoutPage: React.FC = () => {
   const plan = SUBSCRIPTION_PLANS[planTier];
   const amount = interval === 'monthly' ? plan.price.monthly : plan.price.annual;
 
-  // ✅ Promotional free offer
+  // ✅ Free plan always skips payment; promo offer also allows free activation for paid tiers
   const { isFreeOffer, isLoaded: promoLoaded } = usePromotionalOffer();
-  const effectiveFreeOffer = isFreeOffer || isPromoFromUrl;
+  const isBasicFreePlan = planTier === 'free';
+  const effectiveFreeOffer = isBasicFreePlan || (isFreeOffer && isPromoFromUrl);
   const [freeActivating, setFreeActivating] = useState(false);
 
   // ──── FREE OFFER: auto-activate plan without payment ────
@@ -168,42 +173,42 @@ const ManualCheckoutPage: React.FC = () => {
   }
 
   // ──── FREE OFFER UI ────
-  if (effectiveFreeOffer && promoLoaded) {
+  if (effectiveFreeOffer && (isBasicFreePlan || promoLoaded)) {
     return (
-      <PageContainer>
+      <PageContainer $isDark={isDark}>
         <ContentWrapper>
           <Header>
-            <BackButton onClick={() => navigate(-1)}>
+            <BackButton $isDark={isDark} onClick={() => navigate(-1)}>
               <ArrowLeft size={20} />
               {language === 'bg' ? 'Назад' : 'Back'}
             </BackButton>
-            <Title>{language === 'bg' ? '🎉 Безплатна активация' : '🎉 Free Activation'}</Title>
+            <Title $isDark={isDark}>{language === 'bg' ? '🎉 Безплатна активация' : '🎉 Free Activation'}</Title>
           </Header>
 
-          <OrderSummary>
-            <SummaryTitle>{language === 'bg' ? 'Безплатна оферта' : 'Free Offer'}</SummaryTitle>
-            <SummaryRow>
-              <SummaryLabel>{language === 'bg' ? 'План:' : 'Plan:'}</SummaryLabel>
-              <SummaryValue>{plan.name[language]}</SummaryValue>
+          <OrderSummary $isDark={isDark}>
+            <SummaryTitle $isDark={isDark}>{language === 'bg' ? 'Безплатна оферта' : 'Free Offer'}</SummaryTitle>
+            <SummaryRow $isDark={isDark}>
+              <SummaryLabel $isDark={isDark}>{language === 'bg' ? 'План:' : 'Plan:'}</SummaryLabel>
+              <SummaryValue $isDark={isDark}>{plan.name[language]}</SummaryValue>
             </SummaryRow>
-            <SummaryRow>
-              <SummaryLabel>{language === 'bg' ? 'Цена:' : 'Price:'}</SummaryLabel>
-              <SummaryValue style={{ textDecoration: 'line-through', color: '#999' }}>
+            <SummaryRow $isDark={isDark}>
+              <SummaryLabel $isDark={isDark}>{language === 'bg' ? 'Цена:' : 'Price:'}</SummaryLabel>
+              <SummaryValue $isDark={isDark} style={{ textDecoration: 'line-through', color: '#999' }}>
                 €{amount.toFixed(2)}
               </SummaryValue>
             </SummaryRow>
-            <Divider />
+            <Divider $isDark={isDark} />
             <TotalRow>
-              <TotalLabel>{language === 'bg' ? 'Ваша цена:' : 'Your Price:'}</TotalLabel>
+              <TotalLabel $isDark={isDark}>{language === 'bg' ? 'Ваша цена:' : 'Your Price:'}</TotalLabel>
               <TotalValue style={{ color: '#27ae60' }}>
                 {language === 'bg' ? 'БЕЗПЛАТНО' : 'FREE'} €0.00
               </TotalValue>
             </TotalRow>
           </OrderSummary>
 
-          <FreeActivationBox>
+          <FreeActivationBox $isDark={isDark}>
             <Gift size={40} color="#27ae60" />
-            <FreeActivationText>
+            <FreeActivationText $isDark={isDark}>
               {language === 'bg'
                 ? 'Специална промоционална оферта! Кликнете бутона по-долу, за да активирате планът си безплатно.'
                 : 'Special promotional offer! Click the button below to activate your plan for free.'}
@@ -231,40 +236,40 @@ const ManualCheckoutPage: React.FC = () => {
   }
 
   return (
-    <PageContainer>
+    <PageContainer $isDark={isDark}>
       <ContentWrapper>
         <Header>
-          <BackButton onClick={() => navigate(-1)}>
+          <BackButton $isDark={isDark} onClick={() => navigate(-1)}>
             <ArrowLeft size={20} />
             {language === 'bg' ? 'Назад' : 'Back'}
           </BackButton>
-          <Title>{language === 'bg' ? 'Плащане с банков превод' : 'Bank Transfer Payment'}</Title>
+          <Title $isDark={isDark}>{language === 'bg' ? 'Плащане с банков превод' : 'Bank Transfer Payment'}</Title>
         </Header>
 
         {/* Order Summary */}
-        <OrderSummary>
-          <SummaryTitle>{language === 'bg' ? 'Обобщение на поръчката' : 'Order Summary'}</SummaryTitle>
-          <SummaryRow>
-            <SummaryLabel>{language === 'bg' ? 'План:' : 'Plan:'}</SummaryLabel>
-            <SummaryValue>{plan.name[language]}</SummaryValue>
+        <OrderSummary $isDark={isDark}>
+          <SummaryTitle $isDark={isDark}>{language === 'bg' ? 'Обобщение на поръчката' : 'Order Summary'}</SummaryTitle>
+          <SummaryRow $isDark={isDark}>
+            <SummaryLabel $isDark={isDark}>{language === 'bg' ? 'План:' : 'Plan:'}</SummaryLabel>
+            <SummaryValue $isDark={isDark}>{plan.name[language]}</SummaryValue>
           </SummaryRow>
-          <SummaryRow>
-            <SummaryLabel>{language === 'bg' ? 'Период:' : 'Billing Period:'}</SummaryLabel>
-            <SummaryValue>
+          <SummaryRow $isDark={isDark}>
+            <SummaryLabel $isDark={isDark}>{language === 'bg' ? 'Период:' : 'Billing Period:'}</SummaryLabel>
+            <SummaryValue $isDark={isDark}>
               {interval === 'monthly'
                 ? (language === 'bg' ? 'Месечен' : 'Monthly')
                 : (language === 'bg' ? 'Годишен (20% отстъпка)' : 'Annual (20% discount)')}
             </SummaryValue>
           </SummaryRow>
-          <Divider />
+          <Divider $isDark={isDark} />
           <TotalRow>
-            <TotalLabel>{language === 'bg' ? 'Обща сума:' : 'Total Amount:'}</TotalLabel>
+            <TotalLabel $isDark={isDark}>{language === 'bg' ? 'Обща сума:' : 'Total Amount:'}</TotalLabel>
             <TotalValue>{amount.toFixed(2)} EUR</TotalValue>
           </TotalRow>
         </OrderSummary>
 
         {/* Bank Transfer Details */}
-        <BankTransferContainer>
+        <BankTransferContainer $isDark={isDark}>
           <BankTransferDetails
             amount={amount}
             currency="EUR"
@@ -276,8 +281,8 @@ const ManualCheckoutPage: React.FC = () => {
         </BankTransferContainer>
 
         {/* User Confirmation Form */}
-        <ConfirmationForm>
-          <FormTitle>{language === 'bg' ? 'Потвърждение на превода' : 'Transfer Confirmation'}</FormTitle>
+        <ConfirmationForm $isDark={isDark}>
+          <FormTitle $isDark={isDark}>{language === 'bg' ? 'Потвърждение на превода' : 'Transfer Confirmation'}</FormTitle>
 
           <FormField>
             <Checkbox
@@ -286,7 +291,7 @@ const ManualCheckoutPage: React.FC = () => {
               checked={confirmedTransfer}
               onChange={(e) => setConfirmedTransfer(e.target.checked)}
             />
-            <CheckboxLabel htmlFor="confirm">
+            <CheckboxLabel $isDark={isDark} htmlFor="confirm">
               {language === 'bg'
                 ? 'Потвърждавам, че извърших банков превод на посочената сума'
                 : 'I confirm that I have sent a bank transfer for the specified amount'}
@@ -294,8 +299,9 @@ const ManualCheckoutPage: React.FC = () => {
           </FormField>
 
           <FormField>
-            <Label>{language === 'bg' ? 'Вашият референтен номер (ако е различен):' : 'Your reference number (if different):'}</Label>
+            <Label $isDark={isDark}>{language === 'bg' ? 'Вашият референтен номер (ако е различен):' : 'Your reference number (if different):'}</Label>
             <Input
+              $isDark={isDark}
               type="text"
               placeholder={language === 'bg' ? 'По избор' : 'Optional'}
               value={userReference}
@@ -304,8 +310,9 @@ const ManualCheckoutPage: React.FC = () => {
           </FormField>
 
           <FormField>
-            <Label>{language === 'bg' ? 'Допълнителни бележки:' : 'Additional notes:'}</Label>
-            <TextArea
+            <Label $isDark={isDark}>{language === 'bg' ? 'Допълнителни бележки:' : 'Additional notes:'}</Label>
+            <StyledTextArea
+              $isDark={isDark}
               placeholder={language === 'bg'
                 ? 'Напр: Превел съм на DD/MM/YYYY от банка XYZ'
                 : 'E.g: Transfer made on DD/MM/YYYY from XYZ bank'}
@@ -315,9 +322,9 @@ const ManualCheckoutPage: React.FC = () => {
             />
           </FormField>
 
-          <InfoBox>
+          <InfoBox $isDark={isDark}>
             <AlertCircle size={20} />
-            <InfoText>
+            <InfoText $isDark={isDark}>
               {language === 'bg'
                 ? 'Вашият абонамент ще бъде активиран до 1-2 часа след като потвърдим превода.'
                 : 'Your subscription will be activated within 1-2 hours after we confirm the transfer.'}
@@ -350,15 +357,20 @@ export default ManualCheckoutPage;
 
 // ==================== STYLED COMPONENTS ====================
 
-const PageContainer = styled.div`
+interface DarkProp {
+  $isDark: boolean;
+}
+
+const PageContainer = styled.div<DarkProp>`
   min-height: 100vh;
-  background-color: ${subscriptionTheme.colors.bg.primary};
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(124, 58, 237, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.15) 0px, transparent 50%);
-  color: ${subscriptionTheme.colors.text.primary};
+  background-color: ${p => p.$isDark ? '#0f172a' : '#f1f5f9'};
+  background-image: ${p => p.$isDark
+    ? 'radial-gradient(at 0% 0%, rgba(124, 58, 237, 0.15) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.15) 0px, transparent 50%)'
+    : 'radial-gradient(at 0% 0%, rgba(124, 58, 237, 0.06) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.06) 0px, transparent 50%)'};
+  color: ${p => p.$isDark ? '#f8fafc' : '#1e293b'};
   padding: 40px 20px;
   font-family: 'Inter', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 `;
 
 const ContentWrapper = styled.div`
@@ -370,70 +382,71 @@ const Header = styled.div`
   margin-bottom: 32px;
 `;
 
-const BackButton = styled.button`
+const BackButton = styled.button<DarkProp>`
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: ${p => p.$isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'};
+  border: 1px solid ${p => p.$isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.12)'};
   border-radius: 99px;
-  color: ${subscriptionTheme.colors.text.primary};
+  color: ${p => p.$isDark ? '#f8fafc' : '#334155'};
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
   margin-bottom: 16px;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: ${p => p.$isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.08)'};
     transform: translateX(-4px);
   }
 `;
 
-const Title = styled.h1`
+const Title = styled.h1<DarkProp>`
   font-size: 2rem;
   font-weight: 700;
-  color: white;
+  color: ${p => p.$isDark ? '#ffffff' : '#0f172a'};
   margin: 0;
 `;
 
-const OrderSummary = styled.div`
-  background: rgba(30, 41, 59, 0.6);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+const OrderSummary = styled.div<DarkProp>`
+  background: ${p => p.$isDark ? 'rgba(30, 41, 59, 0.6)' : '#ffffff'};
+  backdrop-filter: ${p => p.$isDark ? 'blur(16px)' : 'none'};
+  border: 1px solid ${p => p.$isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0'};
   border-radius: 20px;
   padding: 24px;
   margin-bottom: 24px;
+  box-shadow: ${p => p.$isDark ? 'none' : '0 1px 3px rgba(0,0,0,0.06)'};
 `;
 
-const SummaryTitle = styled.h3`
+const SummaryTitle = styled.h3<DarkProp>`
   font-size: 1.1rem;
   font-weight: 600;
-  color: white;
+  color: ${p => p.$isDark ? '#ffffff' : '#0f172a'};
   margin: 0 0 16px 0;
 `;
 
-const SummaryRow = styled.div`
+const SummaryRow = styled.div<DarkProp>`
   display: flex;
   justify-content: space-between;
   padding: 12px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid ${p => p.$isDark ? 'rgba(255, 255, 255, 0.05)' : '#f1f5f9'};
 `;
 
-const SummaryLabel = styled.span`
+const SummaryLabel = styled.span<DarkProp>`
   font-size: 0.95rem;
-  color: ${subscriptionTheme.colors.text.secondary};
+  color: ${p => p.$isDark ? '#94a3b8' : '#64748b'};
 `;
 
-const SummaryValue = styled.span`
+const SummaryValue = styled.span<DarkProp>`
   font-size: 0.95rem;
-  color: white;
+  color: ${p => p.$isDark ? '#ffffff' : '#0f172a'};
   font-weight: 500;
 `;
 
-const Divider = styled.div`
+const Divider = styled.div<DarkProp>`
   height: 1px;
-  background: rgba(255, 255, 255, 0.1);
+  background: ${p => p.$isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0'};
   margin: 12px 0;
 `;
 
@@ -443,45 +456,46 @@ const TotalRow = styled.div`
   padding: 16px 0 0 0;
 `;
 
-const TotalLabel = styled.span`
+const TotalLabel = styled.span<DarkProp>`
   font-size: 1.1rem;
   font-weight: 700;
-  color: white;
+  color: ${p => p.$isDark ? '#ffffff' : '#0f172a'};
 `;
 
 const TotalValue = styled.span`
   font-size: 1.5rem;
   font-weight: 700;
-  color: ${subscriptionTheme.colors.primary.light};
+  color: ${subscriptionTheme.colors.primary.main};
 `;
 
-const BankTransferContainer = styled.div`
-  background: rgba(30, 41, 59, 0.6);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+const BankTransferContainer = styled.div<DarkProp>`
+  background: ${p => p.$isDark ? 'rgba(30, 41, 59, 0.6)' : '#ffffff'};
+  backdrop-filter: ${p => p.$isDark ? 'blur(16px)' : 'none'};
+  border: 1px solid ${p => p.$isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0'};
   border-radius: 20px;
   padding: 2rem;
   margin-bottom: 24px;
-  /* Ensure children inherit white text */
-  color: white;
-  
-  h3 { color: white; margin-bottom: 1rem; }
-  p { color: ${subscriptionTheme.colors.text.secondary}; }
+  color: ${p => p.$isDark ? '#ffffff' : '#1e293b'};
+  box-shadow: ${p => p.$isDark ? 'none' : '0 1px 3px rgba(0,0,0,0.06)'};
+
+  h3 { color: ${p => p.$isDark ? '#ffffff' : '#0f172a'}; margin-bottom: 1rem; }
+  p { color: ${p => p.$isDark ? '#94a3b8' : '#64748b'}; }
 `;
 
-const ConfirmationForm = styled.div`
-  background: rgba(30, 41, 59, 0.6);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+const ConfirmationForm = styled.div<DarkProp>`
+  background: ${p => p.$isDark ? 'rgba(30, 41, 59, 0.6)' : '#ffffff'};
+  backdrop-filter: ${p => p.$isDark ? 'blur(16px)' : 'none'};
+  border: 1px solid ${p => p.$isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0'};
   border-radius: 20px;
   padding: 32px;
   margin-top: 24px;
+  box-shadow: ${p => p.$isDark ? 'none' : '0 1px 3px rgba(0,0,0,0.06)'};
 `;
 
-const FormTitle = styled.h3`
+const FormTitle = styled.h3<DarkProp>`
   font-size: 1.25rem;
   font-weight: 600;
-  color: white;
+  color: ${p => p.$isDark ? '#ffffff' : '#0f172a'};
   margin: 0 0 24px 0;
 `;
 
@@ -496,50 +510,51 @@ const Checkbox = styled.input`
   accent-color: ${subscriptionTheme.colors.primary.main};
 `;
 
-const CheckboxLabel = styled.label`
+const CheckboxLabel = styled.label<DarkProp>`
   margin-left: 12px;
   font-size: 0.95rem;
-  color: white;
+  color: ${p => p.$isDark ? '#ffffff' : '#1e293b'};
   cursor: pointer;
   user-select: none;
 `;
 
-const Label = styled.label`
+const Label = styled.label<DarkProp>`
   display: block;
   font-size: 0.9rem;
   font-weight: 500;
-  color: ${subscriptionTheme.colors.text.secondary};
+  color: ${p => p.$isDark ? '#94a3b8' : '#64748b'};
   margin-bottom: 8px;
 `;
 
-const Input = styled.input`
+const Input = styled.input<DarkProp>`
   width: 100%;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: ${p => p.$isDark ? 'rgba(255, 255, 255, 0.05)' : '#f8fafc'};
+  border: 1px solid ${p => p.$isDark ? 'rgba(255, 255, 255, 0.15)' : '#cbd5e1'};
   border-radius: 8px;
-  color: white;
+  color: ${p => p.$isDark ? '#ffffff' : '#0f172a'};
   font-size: 1rem;
   transition: all 0.2s ease;
 
   &:focus {
     outline: none;
     border-color: ${subscriptionTheme.colors.primary.main};
-    background: rgba(255, 255, 255, 0.08);
+    background: ${p => p.$isDark ? 'rgba(255, 255, 255, 0.08)' : '#ffffff'};
+    box-shadow: 0 0 0 3px ${p => p.$isDark ? 'rgba(37, 99, 235, 0.25)' : 'rgba(37, 99, 235, 0.15)'};
   }
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.3);
+    color: ${p => p.$isDark ? 'rgba(255, 255, 255, 0.3)' : '#94a3b8'};
   }
 `;
 
-const TextArea = styled.textarea`
+const StyledTextArea = styled.textarea<DarkProp>`
   width: 100%;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: ${p => p.$isDark ? 'rgba(255, 255, 255, 0.05)' : '#f8fafc'};
+  border: 1px solid ${p => p.$isDark ? 'rgba(255, 255, 255, 0.15)' : '#cbd5e1'};
   border-radius: 8px;
-  color: white;
+  color: ${p => p.$isDark ? '#ffffff' : '#0f172a'};
   font-size: 1rem;
   font-family: inherit;
   resize: vertical;
@@ -548,30 +563,31 @@ const TextArea = styled.textarea`
   &:focus {
     outline: none;
     border-color: ${subscriptionTheme.colors.primary.main};
-    background: rgba(255, 255, 255, 0.08);
+    background: ${p => p.$isDark ? 'rgba(255, 255, 255, 0.08)' : '#ffffff'};
+    box-shadow: 0 0 0 3px ${p => p.$isDark ? 'rgba(37, 99, 235, 0.25)' : 'rgba(37, 99, 235, 0.15)'};
   }
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.3);
+    color: ${p => p.$isDark ? 'rgba(255, 255, 255, 0.3)' : '#94a3b8'};
   }
 `;
 
-const InfoBox = styled.div`
+const InfoBox = styled.div<DarkProp>`
   display: flex;
   gap: 12px;
   padding: 16px;
-  background: rgba(37, 99, 235, 0.1);
-  border: 1px solid rgba(37, 99, 235, 0.3);
+  background: ${p => p.$isDark ? 'rgba(37, 99, 235, 0.1)' : 'rgba(37, 99, 235, 0.06)'};
+  border: 1px solid ${p => p.$isDark ? 'rgba(37, 99, 235, 0.3)' : 'rgba(37, 99, 235, 0.2)'};
   border-radius: 12px;
   margin-bottom: 24px;
-  color: ${subscriptionTheme.colors.text.accent};
+  color: ${p => p.$isDark ? '#93c5fd' : '#2563eb'};
   align-items: center;
 `;
 
-const InfoText = styled.p`
+const InfoText = styled.p<DarkProp>`
   margin: 0;
   font-size: 0.9rem;
-  color: white;
+  color: ${p => p.$isDark ? '#e2e8f0' : '#334155'};
   line-height: 1.5;
 `;
 
@@ -618,23 +634,23 @@ const SubmitButton = styled.button`
 
 // ── Free Offer Styled Components ──
 
-const FreeActivationBox = styled.div`
+const FreeActivationBox = styled.div<DarkProp>`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  background: rgba(39, 174, 96, 0.15);
-  border: 1px solid rgba(39, 174, 96, 0.4);
+  background: ${p => p.$isDark ? 'rgba(39, 174, 96, 0.15)' : 'rgba(39, 174, 96, 0.07)'};
+  border: 1px solid ${p => p.$isDark ? 'rgba(39, 174, 96, 0.4)' : 'rgba(39, 174, 96, 0.25)'};
   border-radius: 20px;
   padding: 40px 32px;
   margin-top: 24px;
   text-align: center;
 `;
 
-const FreeActivationText = styled.p`
+const FreeActivationText = styled.p<DarkProp>`
   margin: 0;
   font-size: 1.1rem;
-  color: white;
+  color: ${p => p.$isDark ? '#ffffff' : '#1e293b'};
   line-height: 1.6;
   max-width: 500px;
 `;
