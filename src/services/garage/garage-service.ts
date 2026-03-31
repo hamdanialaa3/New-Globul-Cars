@@ -11,7 +11,7 @@ import {
   Timestamp,
   orderBy
 } from 'firebase/firestore';
-import { db } from '../../firebase/config';
+import { db } from '../../firebase/firebase-config';
 import { GarageVehicle } from './garage-types';
 import { logger } from '../logger-service';
 

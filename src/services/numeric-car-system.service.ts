@@ -224,7 +224,7 @@ class NumericCarSystemService {
       });
 
       // Emit profile event for points/achievements (fire-and-forget)
-      import('../profile/profile-event-bus')
+      import('./profile/profile-event-bus')
         .then(({ emitProfileEvent }) =>
           emitProfileEvent({ type: 'listing_created', userId: currentUser.uid })
         )
