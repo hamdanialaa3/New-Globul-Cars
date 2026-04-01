@@ -9,7 +9,6 @@
 
 import * as functions from 'firebase-functions/v1';
 import * as admin from 'firebase-admin';
-import * as fetch from 'node-fetch';
 
 if (!admin.apps.length) {
   admin.initializeApp();
@@ -17,15 +16,8 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
-/**
- * CarVertical API Configuration
- * https://www.carvertical.com/
- */
-const CARVERTICAL_CONFIG = {
-  apiUrl: 'https://api.carvertical.com/v1',
-  maxRetries: 3,
-  retryDelayMs: 1000,
-};
+// CarVertical API URL for production use
+// const CARVERTICAL_API_URL = 'https://api.carvertical.com/v1';
 
 interface VINVerificationRequest {
   vin: string;
@@ -78,7 +70,7 @@ export const verifyVINExternal = functions
       );
     }
 
-    const { vin, licensePlate, mileageKm } = data;
+    const { vin } = data;
     const userId = context.auth.uid;
 
     try {
@@ -98,18 +90,21 @@ export const verifyVINExternal = functions
         .get();
 
       if (cacheSnap.exists) {
-        const cached = cacheSnap.data();
-        const cacheAge = Date.now() - new Date(cached.cachedAt).getTime();
-        const cacheValidityMs = 30 * 24 * 60 * 60 * 1000; // 30 days
+        const cached = cacheSnap.data() as { cachedAt?: string; data?: unknown } | undefined;
 
-        if (cacheAge < cacheValidityMs) {
-          functions.logger.info(`[vin-verify] Cache hit for VIN: ${vin}`);
-          return {
-            success: true,
-            source: 'cache',
-            data: cached.data,
-            cacheAge: (cacheAge / 1000 / 60).toFixed(0) + ' minutes old',
-          };
+        if (cached?.cachedAt && cached.data !== undefined) {
+          const cacheAge = Date.now() - new Date(cached.cachedAt).getTime();
+          const cacheValidityMs = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+          if (cacheAge < cacheValidityMs) {
+            functions.logger.info(`[vin-verify] Cache hit for VIN: ${vin}`);
+            return {
+              success: true,
+              source: 'cache',
+              data: cached.data,
+              cacheAge: (cacheAge / 1000 / 60).toFixed(0) + ' minutes old',
+            };
+          }
         }
       }
 
@@ -201,9 +196,6 @@ function decodeVINLocally(vin: string): VINDecodingResult {
 
   // VDS (Vehicle Descriptor Section) - chars 4-9
   const vds = vin.substring(3, 9).toUpperCase();
-
-  // VIS (Vehicle Identifier Section) - chars 10-17
-  const vis = vin.substring(9, 17).toUpperCase();
 
   // Year decoding (10th character)
   const yearChar = vin.charAt(9).toUpperCase();

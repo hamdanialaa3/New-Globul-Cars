@@ -120,7 +120,7 @@ export const processLoanApplication = functions
       if (!scoreValidation.valid) {
         throw new functions.https.HttpsError(
           'invalid-argument',
-          scoreValidation.error
+          scoreValidation.error || 'Invalid credit score.'
         );
       }
 
@@ -181,7 +181,7 @@ export const processLoanApplication = functions
           email: data.personalInfo.email,
           phone: data.personalInfo.phone,
           // Never store raw EGN
-          egn_hash: hashEGN(data.personalInfo.egn),
+          egn_hash: data.personalInfo.egn ? hashEGN(data.personalInfo.egn) : '',
         },
         createdAt: new Date().toISOString(),
         expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(), // 15 min expiry

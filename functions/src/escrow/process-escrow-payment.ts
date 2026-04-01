@@ -83,14 +83,14 @@ export const processEscrowPayment = functions
     }
 
     const {
-      userId,
       buyerId,
+      sellerId,
       transactionAmount,
       platformFeePercentage = 2.5,
     } = data;
 
     // Verify authenticated user is either buyer or seller
-    if (context.auth.uid !== buyerId && context.auth.uid !== data.sellerId) {
+    if (context.auth.uid !== buyerId && context.auth.uid !== sellerId) {
       throw new functions.https.HttpsError(
         'permission-denied',
         'You do not have permission to initiate this escrow transaction.'
@@ -118,7 +118,7 @@ export const processEscrowPayment = functions
       }
 
       // 3. Create escrow transaction
-      const transactionId = `esc_${buyerId.substr(0, 8)}_${sellerId.substr(0, 8)}_${Date.now()}`;
+      const transactionId = `esc_${buyerId.substring(0, 8)}_${sellerId.substring(0, 8)}_${Date.now()}`;
       const platformFee =
         Math.round(transactionAmount * (platformFeePercentage / 100) * 100) /
         100;
@@ -135,7 +135,7 @@ export const processEscrowPayment = functions
       const escrowTransaction: EscrowTransaction = {
         transactionId,
         buyerId,
-        sellerId: data.sellerId,
+        sellerId,
         carId: data.carId,
         status: EscrowState.INITIATED,
         amounts: {
@@ -166,7 +166,7 @@ export const processEscrowPayment = functions
         `[escrow] Transaction initiated: ${transactionId}`,
         {
           buyerId,
-          sellerId: data.sellerId,
+          sellerId,
           amount: transactionAmount,
         }
       );
