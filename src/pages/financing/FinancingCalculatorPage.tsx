@@ -23,6 +23,7 @@ import {
 import { financingCalculatorService, FinancingCalculation } from '../../services/financing/financing-calculator.service';
 import { getActiveBanks, getInterestRateForBank } from '../../config/banking-partners';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { isFeatureEnabled } from '@/config/feature-flags';
 import { serviceLogger } from '../../services/logger-service';
 
 export const FinancingCalculatorPage: React.FC = () => {
@@ -487,6 +488,13 @@ Interest Rate: ${interestRate}%
               <BarChart3 size={18} />
               Compare All Banks
             </CompareButton>
+
+            {isFeatureEnabled('ENABLE_OPEN_BANKING') && (
+              <InstantApprovalButton onClick={() => navigate('/financing/instant')}>
+                <Percent size={18} />
+                Instant Pre-Approval (Open Banking)
+              </InstantApprovalButton>
+            )}
           </ResultsSection>
         )}
       </MainGrid>
@@ -882,6 +890,28 @@ const CompareButton = styled.button`
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+  }
+`;
+
+const InstantApprovalButton = styled.button`
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(16, 185, 129, 0.35);
   }
 `;
 

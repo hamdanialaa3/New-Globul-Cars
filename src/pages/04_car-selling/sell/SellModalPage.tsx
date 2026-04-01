@@ -3,6 +3,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import styled from 'styled-components';
+import { isFeatureEnabled } from '@/config/feature-flags';
 import SellVehicleModal from '@/components/SellWorkflow/SellVehicleModal';
 import UnifiedWorkflowPersistenceService from '@/services/unified-workflow-persistence.service';
 
@@ -59,14 +61,47 @@ const SellModalPage: React.FC = () => {
   };
 
   return (
-    <SellVehicleModal
-      isOpen={isOpen}
-      onClose={handleClose}
-      onComplete={handleComplete}
-      initialStep={initialStep}
-      initialVehicleType={initialVehicleType}
-    />
+    <>
+      {isFeatureEnabled('ENABLE_OMNI_SCAN_AI') && (
+        <QuickActionBar>
+          <QuickScanButton onClick={() => navigate('/sell/scan')}>
+            Try Omni-Scan VIN (15s)
+          </QuickScanButton>
+        </QuickActionBar>
+      )}
+
+      <SellVehicleModal
+        isOpen={isOpen}
+        onClose={handleClose}
+        onComplete={handleComplete}
+        initialStep={initialStep}
+        initialVehicleType={initialVehicleType}
+      />
+    </>
   );
 };
+
+const QuickActionBar = styled.div`
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 12000;
+`;
+
+const QuickScanButton = styled.button`
+  border: none;
+  background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+`;
 
 export default SellModalPage;

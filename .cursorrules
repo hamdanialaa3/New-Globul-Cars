@@ -1,10 +1,12 @@
 # 🏛️ Bulgarian Car Marketplace - Cursor Rules
 ## Context & Architecture Guide for AI Assistant
 
+> **📖 Complete Project Knowledge**: For full understanding of every service (140+), hook (40+), page (290), Cloud Function (24+), and workflow, read [`CODEBASE.md`](CODEBASE.md). It is the single source of truth.
+
 > **Project:** Koli One (Коли-Уан)  
 > **Version:** 0.4.0  
-> **Status:** Production Active (mobilebg.eu)  
-> **Last Updated:** January 2026
+> **Status:** Production Active  
+> **Last Updated:** March 2026
 
 ---
 

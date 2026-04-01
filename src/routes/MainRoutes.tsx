@@ -110,6 +110,9 @@ const MapAnalyticsPage = safeLazy(() => import('../pages/01_main-pages/map/MapPa
 const FinancePage = safeLazy(() => import('../pages/05_search-browse/finance/FinancePage'));
 const FinancingCalculatorPage = safeLazy(() => import('../pages/financing/FinancingCalculatorPage'));
 const FinancingComparisonPage = safeLazy(() => import('../pages/financing/FinancingComparisonPage'));
+const OpenBankingInstantPage = safeLazy(() => import('../pages/07_advanced-features/OpenBankingInstantPage'));
+const CrossBorderEscrowPage = safeLazy(() => import('../pages/07_advanced-features/CrossBorderEscrowPage'));
+const OmniScanSellPage = safeLazy(() => import('../pages/07_advanced-features/OmniScanSellPage'));
 const ContactPage = safeLazy(() => import('../pages/01_main-pages/contact/ContactPage'));
 const HelpPage = safeLazy(() => import('../pages/01_main-pages/help/HelpPage'));
 const CookiePolicyPage = safeLazy(() => import('../pages/10_legal/cookie-policy/CookiePolicyPage'));
@@ -214,6 +217,34 @@ export const MainRoutes: React.FC = () => {
             {/* 💳 Financing Calculator */}
             <Route path="/financing" element={<FinancingCalculatorPage />} />
             <Route path="/financing/compare" element={<FinancingComparisonPage />} />
+            <Route
+                path="/financing/instant"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <OpenBankingInstantPage />
+                    </AuthGuard>
+                }
+            />
+
+            {/* 🌍 Cross-Border Import Escrow */}
+            <Route
+                path="/import/escrow"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <CrossBorderEscrowPage />
+                    </AuthGuard>
+                }
+            />
+
+            {/* 📸 Omni-Scan AI Sell Flow */}
+            <Route
+                path="/sell/scan"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <OmniScanSellPage />
+                    </AuthGuard>
+                }
+            />
 
             {/* 🛒 Marketplace - Parts & Accessories */}
             <Route path="/marketplace" element={<MarketplacePage />} />

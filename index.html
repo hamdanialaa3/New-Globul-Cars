@@ -69,6 +69,10 @@
     <!-- Facebook Pixel Code (deferred 4s for page speed) -->
     <script>
         setTimeout(function() {
+            if (['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)) {
+                return;
+            }
+
             !function (f, b, e, v, n, t, s) {
                 if (f.fbq) return; n = f.fbq = function () {
                     n.callMethod ?
@@ -167,8 +171,6 @@
     <!-- Preconnects: Firebase (max 4 total including fonts above) -->
     <link rel="preconnect" href="https://firebase.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
-    <!-- Preload LCP image (KATServicesHero) -->
-    <link rel="preload" as="image" type="image/webp" href="/assets/images/home/kat-hero.webp" fetchpriority="high" />
     <!-- Font CSS: async + display=optional (no render-blocking, no font-swap CLS) -->
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Exo+2:wght@300;600;700;800&family=Outfit:wght@300;400;500;700;800;900&family=Dancing+Script:wght@400;500;600;700&display=optional" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Exo+2:wght@300;600;700;800&family=Outfit:wght@300;400;500;700;800;900&family=Dancing+Script:wght@400;500;600;700&display=optional"

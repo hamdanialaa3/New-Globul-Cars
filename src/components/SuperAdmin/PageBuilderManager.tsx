@@ -278,19 +278,74 @@ const SubscriptionModeWrap = styled.div`
   flex-wrap: wrap;
 `;
 
-const SubscriptionModeButton = styled.button<{ $active?: boolean }>`
-  padding: 10px 14px;
+const ledPulse = `
+  @keyframes ledPulseGreen {
+    0%, 100% { box-shadow: 0 0 4px 1px rgba(34, 197, 94, 0.5), 0 0 8px 2px rgba(34, 197, 94, 0.25); }
+    50% { box-shadow: 0 0 6px 2px rgba(34, 197, 94, 0.8), 0 0 12px 4px rgba(34, 197, 94, 0.4); }
+  }
+  @keyframes ledPulseRed {
+    0%, 100% { box-shadow: 0 0 4px 1px rgba(239, 68, 68, 0.5), 0 0 8px 2px rgba(239, 68, 68, 0.25); }
+    50% { box-shadow: 0 0 6px 2px rgba(239, 68, 68, 0.8), 0 0 12px 4px rgba(239, 68, 68, 0.4); }
+  }
+`;
+
+const LedDot = styled.span<{ $color: 'green' | 'red'; $active: boolean }>`
+  ${ledPulse}
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: ${props => {
+    if (!props.$active) return props.$color === 'green' ? '#1a3a2a' : '#3a1a1a';
+    return props.$color === 'green'
+      ? 'radial-gradient(circle at 35% 35%, #86efac, #22c55e 60%, #16a34a)'
+      : 'radial-gradient(circle at 35% 35%, #fca5a5, #ef4444 60%, #dc2626)';
+  }};
+  border: 1px solid ${props => {
+    if (!props.$active) return props.$color === 'green' ? '#2d4a3a' : '#4a2d2d';
+    return props.$color === 'green' ? '#22c55e' : '#ef4444';
+  }};
+  box-shadow: ${props => {
+    if (!props.$active) return 'none';
+    return props.$color === 'green'
+      ? '0 0 4px 1px rgba(34, 197, 94, 0.5), 0 0 8px 2px rgba(34, 197, 94, 0.25)'
+      : '0 0 4px 1px rgba(239, 68, 68, 0.5), 0 0 8px 2px rgba(239, 68, 68, 0.25)';
+  }};
+  animation: ${props => {
+    if (!props.$active) return 'none';
+    return props.$color === 'green' ? 'ledPulseGreen 2s ease-in-out infinite' : 'ledPulseRed 2s ease-in-out infinite';
+  }};
+  transition: all 0.4s ease;
+`;
+
+const SubscriptionModeButton = styled.button<{ $active?: boolean; $mode?: 'free' | 'paid' }>`
+  padding: 10px 16px;
   border-radius: 8px;
-  border: 1px solid ${props => props.$active ? '#22c55e' : '#334155'};
-  background: ${props => props.$active ? 'rgba(34, 197, 94, 0.16)' : '#0b1220'};
-  color: ${props => props.$active ? '#86efac' : '#cbd5e1'};
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid ${props => {
+    if (!props.$active) return '#334155';
+    return props.$mode === 'free' ? '#22c55e' : '#ef4444';
+  }};
+  background: ${props => {
+    if (!props.$active) return '#0b1220';
+    return props.$mode === 'free' ? 'rgba(34, 197, 94, 0.12)' : 'rgba(239, 68, 68, 0.12)';
+  }};
+  color: ${props => {
+    if (!props.$active) return '#cbd5e1';
+    return props.$mode === 'free' ? '#86efac' : '#fca5a5';
+  }};
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.3s ease;
 
   &:hover {
-    border-color: #22c55e;
-    color: #86efac;
+    border-color: ${props => props.$mode === 'free' ? '#22c55e' : '#ef4444'};
+    color: ${props => props.$mode === 'free' ? '#86efac' : '#fca5a5'};
+    background: ${props => props.$mode === 'free' ? 'rgba(34, 197, 94, 0.08)' : 'rgba(239, 68, 68, 0.08)'};
   }
 
   &:disabled {
@@ -644,19 +699,23 @@ const PageBuilderManager: React.FC = () => {
             <SubscriptionModeButton
               type="button"
               $active={subscriptionMode === 'free'}
+              $mode="free"
               disabled={subscriptionSaving || saving || loading}
               onClick={() => saveSubscriptionMode('free')}
               title="جعل الاشتراكات مجانية"
             >
+              <LedDot $color="green" $active={subscriptionMode === 'free'} />
               مجاني
             </SubscriptionModeButton>
             <SubscriptionModeButton
               type="button"
               $active={subscriptionMode === 'paid'}
+              $mode="paid"
               disabled={subscriptionSaving || saving || loading}
               onClick={() => saveSubscriptionMode('paid')}
               title="تفعيل الاشتراكات المدفوعة"
             >
+              <LedDot $color="red" $active={subscriptionMode === 'paid'} />
               مدفوع
             </SubscriptionModeButton>
           </SubscriptionModeWrap>

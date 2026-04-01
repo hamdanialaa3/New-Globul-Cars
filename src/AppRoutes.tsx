@@ -6,7 +6,7 @@ import { useTheme } from './contexts/ThemeContext';
 import { safeLazy } from './utils/lazyImport';
 import SmartLoader from './components/SmartLoaderCSS';
 import InactivityWarning from './components/InactivityWarning';
-import { DebugAdsPage } from './features/promotions/pages/DebugAdsPage';
+import { DebugAdsPage } from './features/campaigns/pages/CampaignDebugPage';
 import { AuthGuard } from './components/guards/AuthGuard';
 
 // Lazy Loaded Components
@@ -163,6 +163,11 @@ const AppRoutes: React.FC = () => {
                         </FullScreenLayout>
                     } />
                     <Route path="/debug/ads" element={
+                        <FullScreenLayout>
+                            <DebugAdsPage />
+                        </FullScreenLayout>
+                    } />
+                    <Route path="/debug/campaigns" element={
                         <FullScreenLayout>
                             <DebugAdsPage />
                         </FullScreenLayout>

@@ -5,41 +5,41 @@
 // NEW: AI Pipeline System (Feb 2026)
 // نظام خط الأنابيب الذكي - إصلاح جذري
 // ============================================
-export { 
-  runAdGenerationPipeline, 
+export {
+  runAdGenerationPipeline,
   validateExistingOutput,
-  getPipelineHealth 
+  getPipelineHealth,
 } from './ai-pipeline.service';
 
-export { 
-  validateAdOutput, 
-  validateAndFix, 
-  isValidAdOutput 
+export {
+  validateAdOutput,
+  validateAndFix,
+  isValidAdOutput,
 } from './validators/ad-schema.validator';
 
-export { 
-  preCheckAllMedia, 
-  checkMedia, 
-  hasValidMedia, 
-  filterValidMedia 
+export {
+  preCheckAllMedia,
+  checkMedia,
+  hasValidMedia,
+  filterValidMedia,
 } from './media-precheck.service';
 
-export { 
-  withSmartRetry, 
-  retry, 
-  classifyError, 
-  isRetryableError, 
+export {
+  withSmartRetry,
+  retry,
+  classifyError,
+  isRetryableError,
   shouldEscalate,
-  createCircuitBreaker 
+  createCircuitBreaker,
 } from './smart-retry.service';
 
-export { 
-  buildCompletePrompt, 
-  buildAdGenerationPrompt, 
+export {
+  buildCompletePrompt,
+  buildAdGenerationPrompt,
   SYSTEM_PROMPTS,
   REFERENCE_DOCS,
   estimateTokens,
-  validatePromptSize 
+  validatePromptSize,
 } from './prompt-templates.service';
 
 export { aiMetrics, printMetricsReport } from './ai-metrics.service';
@@ -73,40 +73,39 @@ export { aiBillingSystem } from './billing-system';
 export { aiSecurityMonitor } from './security-monitor';
 export { marketDataFetcher } from './market-data-fetcher';
 
+// V.2.0 Engine 8: Omni-Scan AI
+export { omniScanService } from './omni-scan.service';
+
 // Type Exports
-export type { 
+export type {
   GeminiVisionResponse,
   ImageAnalysisResult,
-  QualityScore
+  QualityScore,
 } from './gemini-vision.service';
 
 export type {
   ChatMessage,
   ChatResponse,
-  ProfileAnalysisResult
+  ProfileAnalysisResult,
 } from './gemini-chat.service';
 
-export type {
-  QuotaStatus,
-  QuotaTier,
-  QuotaUsage
-} from './ai-quota.service';
+export type { QuotaStatus, QuotaTier, QuotaUsage } from './ai-quota.service';
 
 export type {
   GPT4Response,
   PriceEstimate,
-  CarAnalysis
+  CarAnalysis,
 } from './openai.service';
 
 export type {
   TranscriptionResult,
-  VoiceCommandResult
+  VoiceCommandResult,
 } from './whisper.service';
 
 export type {
   SentimentScore,
   DetailedSentimentAnalysis,
-  UserInteractionSentiment
+  UserInteractionSentiment,
 } from './sentiment-analysis.service';
 
 export type {
@@ -114,68 +113,85 @@ export type {
   CarDamageAssessment,
   PlateNumberDetection,
   CarModelDetection,
-  ImageQualityAssessment
+  ImageQualityAssessment,
 } from './vision-advanced.service';
 
 export type {
   UserPreferences,
   CarRecommendation,
   UserBehavior,
-  CollaborativeFilteringResult
+  CollaborativeFilteringResult,
 } from './recommendation-advanced.service';
 
 export type {
   LanguageDetectionResult,
   TranslationResult,
   IntentAnalysis,
-  SentenceSimplification
+  SentenceSimplification,
 } from './nlu-multilingual.service';
 
 /**
  * AI Services Status
  * Check which AI services are available
  */
-export function getAIServicesStatus(): Record<string, { available: boolean; status: string }> {
+export function getAIServicesStatus(): Record<
+  string,
+  { available: boolean; status: string }
+> {
   return {
     geminiVision: {
       available: !!import.meta.env.VITE_GEMINI_API_KEY,
-      status: import.meta.env.VITE_GEMINI_API_KEY ? '✅ Ready' : '⚠️ Not configured'
+      status: import.meta.env.VITE_GEMINI_API_KEY
+        ? '✅ Ready'
+        : '⚠️ Not configured',
     },
     geminiChat: {
       available: !!import.meta.env.VITE_GEMINI_API_KEY,
-      status: import.meta.env.VITE_GEMINI_API_KEY ? '✅ Ready' : '⚠️ Not configured'
+      status: import.meta.env.VITE_GEMINI_API_KEY
+        ? '✅ Ready'
+        : '⚠️ Not configured',
     },
     openAI_GPT4: {
       available: !!import.meta.env.VITE_OPENAI_API_KEY,
-      status: import.meta.env.VITE_OPENAI_API_KEY ? '✅ Ready' : '⚠️ Not configured'
+      status: import.meta.env.VITE_OPENAI_API_KEY
+        ? '✅ Ready'
+        : '⚠️ Not configured',
     },
     whisper_VoiceAI: {
       available: !!import.meta.env.VITE_OPENAI_API_KEY,
-      status: import.meta.env.VITE_OPENAI_API_KEY ? '✅ Ready' : '⚠️ Not configured'
+      status: import.meta.env.VITE_OPENAI_API_KEY
+        ? '✅ Ready'
+        : '⚠️ Not configured',
     },
     sentimentAnalysis: {
       available: true,
-      status: '✅ Ready (Local)'
+      status: '✅ Ready (Local)',
     },
     computerVision_Advanced: {
       available: !!import.meta.env.VITE_GOOGLE_GENERATIVE_AI_KEY,
-      status: import.meta.env.VITE_GOOGLE_GENERATIVE_AI_KEY ? '✅ Ready' : '⚠️ Not configured'
+      status: import.meta.env.VITE_GOOGLE_GENERATIVE_AI_KEY
+        ? '✅ Ready'
+        : '⚠️ Not configured',
     },
     recommendations: {
       available: true,
-      status: '✅ Ready (Local)'
+      status: '✅ Ready (Local)',
     },
     multiLanguageNLU: {
       available: !!import.meta.env.VITE_GOOGLE_GENERATIVE_AI_KEY,
-      status: import.meta.env.VITE_GOOGLE_GENERATIVE_AI_KEY ? '✅ Ready' : '⚠️ Not configured'
+      status: import.meta.env.VITE_GOOGLE_GENERATIVE_AI_KEY
+        ? '✅ Ready'
+        : '⚠️ Not configured',
     },
     projectKnowledge: {
       available: true,
-      status: '✅ Ready (RAG System)'
+      status: '✅ Ready (RAG System)',
     },
     firebaseFunctions: {
       available: !!import.meta.env.VITE_FIREBASE_PROJECT_ID,
-      status: import.meta.env.VITE_FIREBASE_PROJECT_ID ? '✅ Ready' : '⚠️ Not configured'
-    }
+      status: import.meta.env.VITE_FIREBASE_PROJECT_ID
+        ? '✅ Ready'
+        : '⚠️ Not configured',
+    },
   };
 }

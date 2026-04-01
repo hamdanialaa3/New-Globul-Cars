@@ -19,6 +19,23 @@ export const geminiPriceSuggestion = aiFunctions.geminiPriceSuggestion;
 export const analyzeCarImage = aiFunctions.analyzeCarImage;
 export const analyzeImageQuality = aiFunctions.analyzeImageQuality;
 
+// 🆕 V2.0 Engine Functions (April 2026)
+// Engine 4: Open Banking Instant Pre-Approval
+import * as financingFunctions from './financing/process-loan-application';
+export const processLoanApplication = financingFunctions.processLoanApplication;
+
+// Engine 3: Cross-Border Escrow Payment
+import * as escrowFunctions from './escrow/process-escrow-payment';
+export const processEscrowPayment = escrowFunctions.processEscrowPayment;
+export const recordInspectionAndRelease =
+  escrowFunctions.recordInspectionAndRelease;
+export const expireOldEscrowTransactions =
+  escrowFunctions.expireOldEscrowTransactions;
+
+// Engine 8: Omni-Scan VIN Verification
+import * as vinFunctions from './ai/vin-verification/verify-vin-external';
+export const verifyVINExternal = vinFunctions.verifyVINExternal;
+
 // Notification triggers (legacy)
 export const onNewCarPosted = notifications.onNewCarPosted;
 export const onPriceUpdate = notifications.onPriceUpdate;

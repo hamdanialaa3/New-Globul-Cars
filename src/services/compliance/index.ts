@@ -1,13 +1,13 @@
 /**
  * Bulgarian Compliance Services - Barrel Export
- * 
+ *
  * Unified export for all compliance-related services:
  * - GDPR compliance (data protection, deletion, export)
  * - Financial compliance (VAT, taxes, accounting)
  * - Business registration (legal entities, Commercial Register)
- * 
+ *
  * ✅ ARCHITECTURE FIX: Split from 616-line monolithic file
- * 
+ *
  * @compliance EU GDPR, Bulgarian Tax Law, Bulgarian Commercial Act
  * @location Bulgaria (EU)
  */
@@ -16,6 +16,7 @@
 export * from './gdpr.service';
 export * from './financial.service';
 export * from './business-registration.service';
+export * from './dac7-reporting.service';
 
 // Service instances (for backward compatibility)
 import { gdprService } from './gdpr.service';
@@ -25,7 +26,7 @@ import { businessRegistrationService } from './business-registration.service';
 /**
  * Legacy unified compliance service (for backward compatibility)
  * Maps to new modular services
- * 
+ *
  * @deprecated Use individual services (gdprService, financialComplianceService, businessRegistrationService)
  */
 export class BulgarianComplianceService {
@@ -61,7 +62,10 @@ export class BulgarianComplianceService {
   }
 
   async updateFinancialCompliance(data: any, updatedBy: string) {
-    return financialComplianceService.updateFinancialCompliance(data, updatedBy);
+    return financialComplianceService.updateFinancialCompliance(
+      data,
+      updatedBy
+    );
   }
 
   validateVATNumber(vatNumber: string) {
@@ -78,11 +82,15 @@ export class BulgarianComplianceService {
   }
 
   async updateBusinessRegistration(data: any, updatedBy: string) {
-    return businessRegistrationService.updateBusinessRegistration(data, updatedBy);
+    return businessRegistrationService.updateBusinessRegistration(
+      data,
+      updatedBy
+    );
   }
 }
 
-export const bulgarianComplianceService = BulgarianComplianceService.getInstance();
+export const bulgarianComplianceService =
+  BulgarianComplianceService.getInstance();
 
 // Direct exports for modern usage
 export { gdprService, financialComplianceService, businessRegistrationService };

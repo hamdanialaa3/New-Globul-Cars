@@ -19,14 +19,20 @@ interface FacebookPixelProps {
 let pendingEvents: Array<{ eventName: string; parameters?: Record<string, any> }> = [];
 let pixelReady = false;
 
+const isLocalRuntime = () => {
+  if (typeof window === 'undefined') return false;
+
+  return ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
+};
+
 const getPixelConfig = () => {
   const id = import.meta.env.VITE_FACEBOOK_PIXEL_ID;
   const isExplicitlyEnabled = import.meta.env.VITE_ENABLE_PIXEL === 'true';
-  const isProduction = process.env.NODE_ENV === 'production';
+  const isProduction = import.meta.env.PROD;
 
   return {
     id,
-    enabled: Boolean(id && (isProduction || isExplicitlyEnabled))
+    enabled: Boolean(id && !isLocalRuntime() && (isProduction || isExplicitlyEnabled))
   };
 };
 
@@ -51,8 +57,8 @@ const FacebookPixel: React.FC<FacebookPixelProps> = ({ pixelId }) => {
   
   const defaultPixelId = pixelId || import.meta.env.VITE_FACEBOOK_PIXEL_ID;
   const isExplicitlyEnabled = import.meta.env.VITE_ENABLE_PIXEL === 'true';
-  const isProduction = process.env.NODE_ENV === 'production';
-  const isPixelEnabled = Boolean(defaultPixelId && (isProduction || isExplicitlyEnabled));
+  const isProduction = import.meta.env.PROD;
+  const isPixelEnabled = Boolean(defaultPixelId && !isLocalRuntime() && (isProduction || isExplicitlyEnabled));
 
   useEffect(() => {
     if (!isPixelEnabled) {
