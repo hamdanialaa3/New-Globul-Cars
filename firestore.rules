@@ -457,7 +457,9 @@ service cloud.firestore {
     match /transactions/{transactionId} {
       allow read: if isAuthenticated() && (
         resource.data.buyerId == request.auth.uid ||
-        resource.data.sellerId == request.auth.uid
+        resource.data.sellerId == request.auth.uid ||
+        resource.data.userId == request.auth.uid ||
+        isAdmin()
       );
       allow write: if false;
     }
@@ -723,7 +725,11 @@ service cloud.firestore {
 
     match /userPoints/{userId} {
       allow read: if true;
-      allow write: if false; // Cloud Functions only — prevent point manipulation
+      // Allow frontend to initialize/update own points securely (no decrementing)
+      // Switch to false/Cloud-Functions-only once backend logic is fully migrated
+      allow create: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      allow update: if isAuthenticated() && (isOwner(userId) || isAdmin())
+                    && request.resource.data.totalPoints >= resource.data.totalPoints;
     }
 
     match /userInterests/{userId} {
@@ -1359,6 +1365,70 @@ service cloud.firestore {
         resource.data.inviteeEmail == request.auth.token.email
       );
       allow delete: if isAuthenticated() && resource.data.inviterId == request.auth.uid;
+    }
+
+    // ============================================
+    // NEW PROFILE ENHANCEMENTS (Groups, Trust, Stories, etc.)
+    // ============================================
+    match /userGroups/{docId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+      allow delete: if isAdmin();
+    }
+    match /groupMemberships/{docId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && (
+        !('userId' in request.resource.data) || request.resource.data.userId == request.auth.uid || isAdmin()
+      );
+    }
+    match /trustConnections/{docId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+    match /successStories/{docId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && isAdmin();
+    }
+    match /leaderboards/{docId} {
+      allow read: if true;
+      allow write: if false; // Cloud Functions only
+    }
+    match /introVideos/{docId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && (docId == request.auth.uid || isAdmin());
+    }
+    match /carStories/{docId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+    match /availabilityCalendars/{docId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && (docId == request.auth.uid || isAdmin());
+    }
+    match /monthlyChallenges/{docId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && isAdmin();
+    }
+    match /userChallengeProgress/{docId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    match /savedSearches/{docId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && (request.resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    // ============================================
+    // SYSTEM COUNTERS (used for generating numeric IDs)
+    // ============================================
+    match /counters/users {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+    match /counters/cars/sellers/{userId} {
+      allow read, write: if isAuthenticated() && (userId == request.auth.uid || isAdmin());
     }
 
     // ============================================

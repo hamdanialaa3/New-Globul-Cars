@@ -173,7 +173,6 @@ const KATServicesHero: React.FC = () => {
           src="/assets/images/home/kat-hero.webp" 
           alt="KAT Bulgaria Services"
           loading="eager"
-          fetchPriority="high"
           width={800}
           height={450}
         />

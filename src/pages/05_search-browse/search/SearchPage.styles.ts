@@ -93,7 +93,8 @@ export const FilterSidebarInner = styled.div`
         theme.mode === 'dark'
             ? '0 4px 24px rgba(0,0,0,0.4)'
             : '0 2px 12px rgba(0,0,0,0.06)'};
-  overflow: hidden;
+  /* overflow:visible so suggestion dropdowns are not clipped */
+  overflow: visible;
 
   @media (max-width: 960px) {
     border-radius: 0;
@@ -114,6 +115,9 @@ export const FilterHeader = styled.div`
         theme.mode === 'dark'
             ? 'linear-gradient(90deg, #1c2333 0%, #212a3a 100%)'
             : 'linear-gradient(90deg, #f8f9fa 0%, #eef1f5 100%)'};
+  /* clip the header's gradient background to the parent's top rounded corners */
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
 `;
 
 export const FilterHeaderTitle = styled.h2`
@@ -950,6 +954,8 @@ export const SearchBarContainer = styled.div`
   padding: 14px 18px;
   border-bottom: 1px solid
     ${({ theme }) => (theme.mode === 'dark' ? '#252d3d' : '#e9ecef')};
+  position: relative;
+  z-index: 10;
 `;
 
 export const SearchBarInputWrapper = styled.div`
@@ -1024,6 +1030,63 @@ export const FilterApplyButton = styled.button`
       transform: none;
       box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3) !important;
     }
+  }
+`;
+
+/* ─── Autocomplete suggestions dropdown ─── */
+export const SuggestionsDropdown = styled.ul`
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: ${({ theme }) =>
+        theme.mode === 'dark' ? '#1a2030' : '#ffffff'};
+  border: 1px solid
+    ${({ theme }) => (theme.mode === 'dark' ? '#2d3748' : '#dee2e6')};
+  border-radius: 10px;
+  box-shadow: ${({ theme }) =>
+        theme.mode === 'dark'
+            ? '0 8px 24px rgba(0,0,0,0.5)'
+            : '0 8px 24px rgba(0,0,0,0.12)'};
+  max-height: 280px;
+  overflow-y: auto;
+  z-index: 1025;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) =>
+        theme.mode === 'dark' ? '#3a4558' : '#c4cdd5'};
+    border-radius: 10px;
+  }
+`;
+
+export const SuggestionItem = styled.li`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  color: ${({ theme }) =>
+        theme.mode === 'dark' ? '#e2e8f0' : '#212529'};
+  transition: background 0.15s;
+  user-select: none;
+
+  &:hover {
+    background: ${({ theme }) =>
+        theme.mode === 'dark' ? '#212a3a' : '#f0f2f5'};
+  }
+
+  &:first-child {
+    border-radius: 8px 8px 0 0;
+  }
+
+  &:last-child {
+    border-radius: 0 0 8px 8px;
   }
 `;
 

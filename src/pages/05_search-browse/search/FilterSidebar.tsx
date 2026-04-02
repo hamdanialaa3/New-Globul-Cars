@@ -15,6 +15,8 @@ import {
     SearchBarContainer,
     SearchBarInputWrapper,
     SearchBarInput,
+    SuggestionsDropdown,
+    SuggestionItem,
     MobileFilterClose,
     FilterApplyButton,
 } from './SearchPage.styles';
@@ -119,6 +121,45 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
 
     const [searchText, setSearchText] = useState('');
     const [showCustomColor, setShowCustomColor] = useState(false);
+    const [suggestions, setSuggestions] = useState<{ type: 'make' | 'model'; value: string }[]>([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+
+    const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearchText(value);
+        if (value.trim().length >= 1 && filterOptions) {
+            const q = value.toLowerCase().trim();
+            const makeSuggs = filterOptions.makes
+                .filter(m => m.toLowerCase().includes(q))
+                .slice(0, 5)
+                .map(m => ({ type: 'make' as const, value: m }));
+            const modelSuggs = filterOptions.models
+                .filter(m => m.toLowerCase().includes(q))
+                .slice(0, 3)
+                .map(m => ({ type: 'model' as const, value: m }));
+            const combined = [...makeSuggs, ...modelSuggs].slice(0, 7);
+            setSuggestions(combined);
+            setShowSuggestions(combined.length > 0);
+        } else {
+            setSuggestions([]);
+            setShowSuggestions(false);
+            // Smart exact-match: if text clears to a valid make, apply it
+            if (filterOptions && !value.trim()) {
+                // user cleared the input — leave the existing make filter untouched
+            }
+        }
+    };
+
+    const handleSuggestionSelect = (s: { type: 'make' | 'model'; value: string }) => {
+        if (s.type === 'make') {
+            onChange('make', s.value);
+        } else {
+            onChange('model', s.value);
+        }
+        setSearchText(s.value);
+        setShowSuggestions(false);
+        setSuggestions([]);
+    };
 
     // Year options from DB range
     const yearOptions = () => {
@@ -176,17 +217,42 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                         <SearchBarInput
                             placeholder="Search make, model..."
                             value={searchText}
-                            onChange={(e) => {
-                                setSearchText(e.target.value);
-                                // Smart: if text matches a make, set it
-                                if (filterOptions) {
-                                    const match = filterOptions.makes.find(
-                                        m => m.toLowerCase() === e.target.value.toLowerCase().trim()
-                                    );
-                                    if (match) onChange('make', match);
-                                }
+                            onChange={handleSearchInput}
+                            onFocus={() => {
+                                if (suggestions.length > 0) setShowSuggestions(true);
+                            }}
+                            onBlur={() => {
+                                // Delay so suggestion click registers before hide
+                                setTimeout(() => setShowSuggestions(false), 180);
                             }}
                         />
+                        {showSuggestions && suggestions.length > 0 && (
+                            <SuggestionsDropdown>
+                                {suggestions.map((s, i) => (
+                                    <SuggestionItem
+                                        key={`${s.type}-${s.value}-${i}`}
+                                        onMouseDown={(e) => {
+                                            e.preventDefault();
+                                            handleSuggestionSelect(s);
+                                        }}
+                                    >
+                                        <span style={{ fontSize: 15, flexShrink: 0 }}>
+                                            {s.type === 'make' ? '🚗' : '🔧'}
+                                        </span>
+                                        <span style={{ flex: 1 }}>{s.value}</span>
+                                        <span style={{
+                                            fontSize: 10,
+                                            opacity: 0.5,
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.5px',
+                                            flexShrink: 0,
+                                        }}>
+                                            {s.type}
+                                        </span>
+                                    </SuggestionItem>
+                                ))}
+                            </SuggestionsDropdown>
+                        )}
                     </SearchBarInputWrapper>
                 </SearchBarContainer>
 
