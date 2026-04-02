@@ -86,6 +86,10 @@ import * as deepSeekProxy from './ai/deepseek-proxy';
 export const aiGenerateText = deepSeekProxy.aiGenerateText;
 export const aiGenerateCarDescription = deepSeekProxy.aiGenerateCarDescription;
 
+// Price Rating (mobile.de-style market comparison)
+import * as priceRating from './ai/price-rating';
+export const calculatePriceRating = priceRating.calculatePriceRating;
+
 // AI Services (Hybrid System - Phase 4.1.2 - NEW) ✅
 // ACTIVATED FOR PRODUCTION - CPU conflict noted but acceptable for live service
 import * as hybridAI from './ai/hybrid-ai-proxy';
