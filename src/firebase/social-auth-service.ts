@@ -3,6 +3,7 @@ import { auth, db } from './firebase-config';
 import {
   GoogleAuthProvider,
   FacebookAuthProvider,
+  OAuthProvider,
   signInWithPopup,
   signInWithPhoneNumber,
   signInAnonymously,
