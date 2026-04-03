@@ -41,7 +41,8 @@
   height: 100%;
   background: var(--toggle-track-color);
   border-radius: 20px;
-  transition: background 0.4s ease-in-out;
+  transition: background 0.25s ease-in-out;
+  will-change: background;
   box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
@@ -59,7 +60,8 @@
   background: var(--toggle-thumb-color);
   border-radius: 50%;
   transform: translateX(0);
-  transition: transform 0.4s cubic-bezier(0.3, 1.5, 0.7, 1);
+  transition: transform 0.25s cubic-bezier(0.3, 1.5, 0.7, 1);
+  will-change: transform;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
 }
 
@@ -83,7 +85,7 @@
   -webkit-mask-position: center;
   mask-size: cover;
   -webkit-mask-size: cover;
-  transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+  transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out;
   opacity: 1;
   z-index: 3;
   pointer-events: none;
@@ -110,7 +112,7 @@
     5px 0 0 0 rgba(255, 255, 255, 0.6),
     0 -5px 0 0 rgba(255, 255, 255, 0.6),
     0 5px 0 0 rgba(255, 255, 255, 0.6);
-  transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+  transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out;
   opacity: 0;
   z-index: 2;
   pointer-events: none;
@@ -130,7 +132,7 @@
   height: 7px;  /* أصغر */
   border-radius: 50%;
   background: radial-gradient(circle at 70% 70%, var(--toggle-thumb-glow-color), transparent);
-  transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+  transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out;
   opacity: 0.3;
   z-index: 1;
   pointer-events: none;
@@ -159,14 +161,14 @@
 
 .toggle-label-on {
   opacity: 0;
-  transition: opacity 0.4s ease-in-out;
+  transition: opacity 0.25s ease-in-out;
   color: var(--toggle-label-active-color);
   margin-left: 4px;
 }
 
 .toggle-label-off {
   opacity: 1;
-  transition: opacity 0.4s ease-in-out;
+  transition: opacity 0.25s ease-in-out;
   color: var(--toggle-label-color);
   margin-right: 4px;
 }

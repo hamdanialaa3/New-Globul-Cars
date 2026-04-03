@@ -204,6 +204,9 @@ export const ProfileImage = styled.img`
 
 export const ProfileInfo = styled.div`
   flex-grow: 1;
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 
   @media (max-width: 768px) {
     text-align: center;
@@ -223,6 +226,9 @@ export const ProfileName = styled.h1`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  min-width: 0;
 
   @media (max-width: 768px) {
     font-size: 1.375rem;

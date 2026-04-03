@@ -1,6 +1,6 @@
 import { logger } from '../services/logger-service';
 // ThemeContext.tsx - نظام الثيم المركزي للتبديل بين الوضع الليلي والنهاري
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, ReactNode } from 'react';
 
 export type ThemeMode = 'light' | 'dark';
 
@@ -48,57 +48,55 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
   // 2️⃣ تطبيق الثيم على الـ HTML root
   useEffect(() => {
-    const root = document.documentElement;
-    const body = document.body;
+    const rafId = requestAnimationFrame(() => {
+      const root = document.documentElement;
+      const body = document.body;
 
-    // إزالة الثيم القديم
-    root.classList.remove('light-theme', 'dark-theme');
-    body.classList.remove('light-theme', 'dark-theme');
+      // إزالة الثيم القديم
+      root.classList.remove('light-theme', 'dark-theme');
+      body.classList.remove('light-theme', 'dark-theme');
 
-    // إضافة الثيم الجديد
-    root.classList.add(`${theme}-theme`);
-    body.classList.add(`${theme}-theme`);
+      // إضافة الثيم الجديد
+      root.classList.add(`${theme}-theme`);
+      body.classList.add(`${theme}-theme`);
 
-    // حفظ في localStorage
-    localStorage.setItem('theme', theme);
+      // حفظ في localStorage
+      localStorage.setItem('theme', theme);
 
-    // تحديث الـ data attribute للاستخدام في CSS
-    root.setAttribute('data-theme', theme);
-    body.setAttribute('data-theme', theme);
+      // تحديث الـ data attribute للاستخدام في CSS
+      root.setAttribute('data-theme', theme);
+      body.setAttribute('data-theme', theme);
 
-    // Force apply theme colors immediately with inline styles (highest priority)
-    const darkBg = '#0F1419';
-    const lightBg = '#FAFBFC';
-    const darkText = '#F8FAFC';
-    const lightText = '#1A1D2E';
-    
-    const bgColor = theme === 'dark' ? darkBg : lightBg;
-    const textColor = theme === 'dark' ? darkText : lightText;
-    
-    root.style.backgroundColor = bgColor;
-    body.style.backgroundColor = bgColor;
-    root.style.color = textColor;
-    body.style.color = textColor;
-    
-    // Also set .main-layout if it exists
-    const mainLayout = document.querySelector('.main-layout') as HTMLElement;
-    if (mainLayout) {
-      mainLayout.style.backgroundColor = bgColor;
-    }
+      // Force apply theme colors immediately with inline styles (highest priority)
+      const darkBg = '#0F1419';
+      const lightBg = '#FAFBFC';
+      const darkText = '#F8FAFC';
+      const lightText = '#1A1D2E';
+      
+      const bgColor = theme === 'dark' ? darkBg : lightBg;
+      const textColor = theme === 'dark' ? darkText : lightText;
+      
+      root.style.backgroundColor = bgColor;
+      body.style.backgroundColor = bgColor;
+      root.style.color = textColor;
+      body.style.color = textColor;
+      
+      // Also set .main-layout if it exists
+      const mainLayout = document.querySelector('.main-layout') as HTMLElement;
+      if (mainLayout) {
+        mainLayout.style.backgroundColor = bgColor;
+      }
 
-    // تحديث meta theme-color للموبايل
-    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-    if (metaThemeColor) {
-      metaThemeColor.setAttribute('content', theme === 'dark' ? '#0F1419' : '#F8F9FA');
-    }
+      // تحديث meta theme-color للموبايل
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+      if (metaThemeColor) {
+        metaThemeColor.setAttribute('content', theme === 'dark' ? '#0F1419' : '#F8F9FA');
+      }
 
-    // Debug log (remove in production)
-    logger.info(`🌙 Theme applied: ${theme}`, {
-      'data-theme': root.getAttribute('data-theme'),
-      'classList': root.classList.toString(),
-      'bg-primary': getComputedStyle(root).getPropertyValue('--bg-primary'),
-      'text-primary': getComputedStyle(root).getPropertyValue('--text-primary')
+      logger.info(`🌙 Theme applied: ${theme}`);
     });
+
+    return () => cancelAnimationFrame(rafId);
   }, [theme]);
 
   // 3️⃣ الاستماع لتغييرات تفضيل النظام
@@ -135,16 +133,18 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     }
   }, []);
 
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     setThemeState((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
-  };
+  }, []);
 
-  const setTheme = (newTheme: ThemeMode) => {
+  const setTheme = useCallback((newTheme: ThemeMode) => {
     setThemeState(newTheme);
-  };
+  }, []);
+
+  const contextValue = useMemo(() => ({ theme, toggleTheme, setTheme }), [theme, toggleTheme, setTheme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
+    <ThemeContext.Provider value={contextValue}>
       {children}
     </ThemeContext.Provider>
   );

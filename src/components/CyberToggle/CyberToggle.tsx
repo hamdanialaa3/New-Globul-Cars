@@ -1,11 +1,19 @@
 // CyberToggle.tsx - زر التبديل بين الوضع الليلي والنهاري بتصميم Cyber
-import React from 'react';
+import React, { useRef, useCallback } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import './CyberToggle.css';
 
 const CyberToggle: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === 'dark';
+  const transitioning = useRef(false);
+
+  const handleToggle = useCallback(() => {
+    if (transitioning.current) return;
+    transitioning.current = true;
+    toggleTheme();
+    setTimeout(() => { transitioning.current = false; }, 300);
+  }, [toggleTheme]);
 
   return (
     <div className="cyber-toggle-wrapper">
@@ -14,7 +22,7 @@ const CyberToggle: React.FC = () => {
         className="cyber-toggle-checkbox" 
         id="cyber-toggle"
         checked={isDark}
-        onChange={toggleTheme}
+        onChange={handleToggle}
         aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
       />
       <label htmlFor="cyber-toggle" className="cyber-toggle-label">

@@ -26,6 +26,7 @@ import {
 import * as S from './styles';
 import { TabNavigation, TabNavLink, SyncButton, FollowButton } from './TabNavigation.styles';
 import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar, ProfileImageUploader, BusinessGreenHeader } from '@/components/Profile';
+import ProfileLoadingSkeleton from '@/components/Profile/ProfileLoadingSkeleton';
 import { ProfileTypeSwitcher } from '../components/ProfileTypeSwitcher'; // Added Import
 import { googleProfileSyncService } from '@/services/google/google-profile-sync.service';
 import { usePromotionalOffer } from '@/hooks/usePromotionalOffer';
@@ -361,11 +362,7 @@ const ProfilePageWrapper: React.FC = () => {
   }
 
   if (loading) {
-    return (
-      <div style={{ padding: '40px', textAlign: 'center' }}>
-        {language === 'bg' ? 'Зареждане...' : 'Loading...'}
-      </div>
-    );
+    return <ProfileLoadingSkeleton />;
   }
 
   if (error && !activeProfile) {

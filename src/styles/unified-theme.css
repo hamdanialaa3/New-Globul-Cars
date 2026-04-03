@@ -635,3 +635,19 @@ a,
 [role="button"] {
   transition-duration: 0.2s;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   📱 MOBILE PERFORMANCE - تحسين الأداء على الموبايل
+   ═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  * {
+    transition-duration: 0.15s;
+    transition-property: background-color, color;
+  }
+
+  button,
+  a,
+  [role="button"] {
+    transition-duration: 0.1s;
+  }
+}

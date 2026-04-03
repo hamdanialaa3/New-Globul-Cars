@@ -145,6 +145,7 @@ export const TabButton = styled.button<{
   overflow: hidden;
   z-index: 2;
   white-space: nowrap;
+  text-overflow: ellipsis;
   
   /* 📱 Tablet & Mobile: 3 أزرار في كل صف */
   @media (max-width: 1024px) {
@@ -619,6 +620,7 @@ export const TabNavLink = styled(NavLink)<{ $themeColor?: string }>`
   position: relative;
   overflow: hidden;
   white-space: nowrap;
+  text-overflow: ellipsis;
   text-decoration: none;
   color: inherit;
 

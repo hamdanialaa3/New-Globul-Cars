@@ -22,19 +22,19 @@ export interface ProfileFormData {
   placeOfBirth?: string;
 
   // Business Information - For Business
-  businessName?: string;           // Име на фирмата (Required for business)
-  bulstat?: string;                 // БУЛСТАТ/ЕИК (Bulgarian Company Registration)
-  vatNumber?: string;               // ДДС номер (VAT Number)
-  businessType?: BusinessType;      // Тип на бизнеса
-  registrationNumber?: string;      // Търговски регистър
-  businessAddress?: string;         // Адрес на фирмата
-  businessCity?: string;            // Град
-  businessPostalCode?: string;      // Пощенски код
-  website?: string;                 // Уебсайт
-  businessPhone?: string;           // Телефон на фирмата
-  businessEmail?: string;           // Имейл на фирмата
-  workingHours?: string;            // Работно време
-  businessDescription?: string;     // Описание на бизнеса
+  businessName?: string; // Име на фирмата (Required for business)
+  bulstat?: string; // БУЛСТАТ/ЕИК (Bulgarian Company Registration)
+  vatNumber?: string; // ДДС номер (VAT Number)
+  businessType?: BusinessType; // Тип на бизнеса
+  registrationNumber?: string; // Търговски регистър
+  businessAddress?: string; // Адрес на фирмата
+  businessCity?: string; // Град
+  businessPostalCode?: string; // Пощенски код
+  website?: string; // Уебсайт
+  businessPhone?: string; // Телефон на фирмата
+  businessEmail?: string; // Имейл на фирмата
+  workingHours?: string; // Работно време
+  businessDescription?: string; // Описание на бизнеса
 
   // Optional contact & location (from ID card back)
   phoneNumber?: string;
@@ -100,7 +100,11 @@ export interface ProfileState {
 // Profile Actions Interface
 export interface ProfileActions {
   loadUserData: () => Promise<void>;
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
+  handleInputChange: (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => void;
   handleSaveProfile: () => Promise<void>;
   handleCancelEdit: () => void;
   handleLogout: () => Promise<void>;
@@ -108,8 +112,17 @@ export interface ProfileActions {
   setUser: React.Dispatch<React.SetStateAction<BulgarianUser | null>>;
 }
 
+// Loading phase for skeleton UI
+export type LoadingPhase =
+  | 'auth'
+  | 'resolving-id'
+  | 'loading-profile'
+  | 'loading-cars'
+  | 'ready';
+
 // Combined Profile Hook Return Type
 export interface UseProfileReturn extends ProfileState, ProfileActions {
+  loadingPhase: LoadingPhase;
   loadUserCars?: () => void;
   /**
    * Alias for the target profile to make the API explicit during the migration.
@@ -141,6 +154,16 @@ export interface UseProfileReturn extends ProfileState, ProfileActions {
     canImportCSV: boolean;
     canUseAPI: boolean;
   };
-  planTier?: 'free' | 'dealer' | 'company' | 'premium' | 'dealer_basic' | 'dealer_pro' | 'dealer_enterprise' |
-  'company_starter' | 'company_pro' | 'company_enterprise' | 'custom';
+  planTier?:
+    | 'free'
+    | 'dealer'
+    | 'company'
+    | 'premium'
+    | 'dealer_basic'
+    | 'dealer_pro'
+    | 'dealer_enterprise'
+    | 'company_starter'
+    | 'company_pro'
+    | 'company_enterprise'
+    | 'custom';
 }

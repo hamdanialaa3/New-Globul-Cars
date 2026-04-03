@@ -190,6 +190,9 @@ const StyledButton = styled.button<{
   text-align: center;
   text-decoration: none;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
   
   border-radius: ${({ theme }) => theme.colors.border.defaultRadius.sm};
   cursor: pointer;

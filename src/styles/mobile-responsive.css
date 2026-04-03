@@ -280,5 +280,58 @@
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   TEXT OVERFLOW SAFETY - حماية النص من الخروج عن الحدود
+   ═══════════════════════════════════════════════════════════════════ */
 
+@media (max-width: 480px) {
+  body {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  button,
+  [role="button"],
+  a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  h1, h2, h3, h4, h5, h6,
+  p, span, label {
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   EXTRA SMALL SCREENS (≤380px) - شاشات صغيرة جداً
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 380px) {
+  body {
+    font-size: 13px;
+  }
+
+  button,
+  [role="button"] {
+    font-size: 0.8125rem;
+    padding-inline: 8px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   REDUCED MOTION - احترام تفضيلات إمكانية الوصول
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 

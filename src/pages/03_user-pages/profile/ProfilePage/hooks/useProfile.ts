@@ -14,7 +14,12 @@ import {
   getFirebaseUidByNumericId,
 } from '../../../../../services/numeric-id-lookup.service';
 import { ensureUserNumericId } from '../../../../../services/numeric-id-assignment.service';
-import { ProfileFormData, ProfileCar, UseProfileReturn } from '../types';
+import {
+  ProfileFormData,
+  ProfileCar,
+  UseProfileReturn,
+  LoadingPhase,
+} from '../types';
 
 const DEFAULT_STATS = {
   totalListings: 0,
@@ -149,6 +154,7 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
   const [target, setTarget] = useState<BulgarianUser | null>(null);
   const [userCars, setUserCars] = useState<ProfileCar[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingPhase, setLoadingPhase] = useState<LoadingPhase>('auth');
   const [editing, setEditing] = useState(false);
   const [isOwnProfile, setIsOwnProfile] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -196,6 +202,7 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
   const loadUserData = useCallback(async () => {
     try {
       setLoading(true);
+      setLoadingPhase('auth');
       setError(null);
 
       const authUser = auth.currentUser;
@@ -250,6 +257,8 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
         });
       }
 
+      setLoadingPhase('resolving-id');
+
       const viewerPromise = authUser
         ? bulgarianAuthService.getCurrentUserProfile()
         : Promise.resolve(null);
@@ -290,6 +299,8 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
         );
       }
 
+      setLoadingPhase('loading-profile');
+
       const [viewerRaw, targetRaw] = await Promise.all([
         viewerPromise,
         targetPromise,
@@ -326,6 +337,7 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
       setViewer(normalizedViewer);
       setTarget(normalizedTarget);
       setFormData(buildFormData(normalizedTarget));
+      setLoadingPhase('loading-cars');
       await loadCarsForProfile(normalizedTarget);
 
       // ⚡ FIX: Only show error if user is logged in and trying to access their own profile
@@ -353,6 +365,7 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
       }
     } finally {
       setLoading(false);
+      setLoadingPhase('ready');
     }
   }, [effectiveTargetId, loadCarsForProfile, t, targetUserId, toast]);
 
@@ -577,6 +590,7 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
     viewer,
     userCars,
     loading,
+    loadingPhase,
     editing,
     formData,
     isOwnProfile,

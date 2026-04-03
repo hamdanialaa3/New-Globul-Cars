@@ -95,11 +95,15 @@ const StyledButton = styled.button<{
   justify-content: center;
   gap: ${spacing.sm};
   width: ${props => props.$fullWidth ? '100%' : 'auto'};
+  max-width: 100%;
   font-weight: 600;
   border-radius: ${borderRadius.md};
   cursor: pointer;
   user-select: none;
   transition: ${animations.transitions.default};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   
   ${props => variantStyles[props.$variant]}
   ${props => sizeStyles[props.$size]}
