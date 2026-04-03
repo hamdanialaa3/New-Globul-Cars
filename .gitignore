@@ -96,3 +96,6 @@ server.log
 web/build/
 build-output.txt
 build-output2.txt
+
+# Apple Auth private key
+*.p8

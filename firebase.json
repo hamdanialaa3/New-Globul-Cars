@@ -4,7 +4,13 @@
   },
   "hosting": {
     "public": "build",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "ignore": [
+      "firebase.json",
+      "**/.git/**",
+      "**/.DS_Store",
+      "**/.env*",
+      "**/node_modules/**"
+    ],
     "headers": [
       {
         "source": "**",

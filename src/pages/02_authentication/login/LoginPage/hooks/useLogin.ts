@@ -4,7 +4,12 @@ import { useTranslation } from '../../../../../hooks/useTranslation';
 import { useAuth } from '../../../../../hooks/useAuth';
 import { SocialAuthService } from '../../../../../firebase/social-auth-service';
 import { bulgarianAuthService } from '../../../../../firebase';
-import { LoginFormData, LoginState, LoginActions, UseLoginReturn } from '../types';
+import {
+  LoginFormData,
+  LoginState,
+  LoginActions,
+  UseLoginReturn,
+} from '../types';
 import { logger } from '../../../../../services/logger-service';
 import { useProfileIntent } from '../../../../../hooks/useProfileIntent';
 import { twoFactorAuthService } from '../../../../../services/security/two-factor-auth.service';
@@ -20,14 +25,16 @@ export const useLogin = (): UseLoginReturn => {
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
     password: '',
-    rememberMe: false
+    rememberMe: false,
   });
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
   const [mfaRequired, setMfaRequired] = useState(false); // MFA State
 
   // Get redirect URL from multiple sources with priority
@@ -45,7 +52,9 @@ export const useLogin = (): UseLoginReturn => {
     }
 
     // Priority 3: Check location state (from Navigate component)
-    const locationState = location.state as { from?: { pathname: string } } | null;
+    const locationState = location.state as {
+      from?: { pathname: string };
+    } | null;
     if (locationState?.from?.pathname) {
       return locationState.from.pathname;
     }
@@ -61,7 +70,7 @@ export const useLogin = (): UseLoginReturn => {
     error,
     success,
     validationErrors,
-    mfaRequired // Include in state
+    mfaRequired, // Include in state
   };
 
   // Redirect if user is already logged in
@@ -84,7 +93,10 @@ export const useLogin = (): UseLoginReturn => {
     if (!formData.password) {
       errors.password = t('auth.passwordRequired', 'Password is required');
     } else if (formData.password.length < 6) {
-      errors.password = t('auth.passwordTooShort', 'Password must be at least 6 characters');
+      errors.password = t(
+        'auth.passwordTooShort',
+        'Password must be at least 6 characters'
+      );
     }
 
     setValidationErrors(errors);
@@ -95,14 +107,14 @@ export const useLogin = (): UseLoginReturn => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : value,
     }));
 
     // (Comment removed - was in Arabic)
     if (validationErrors[name]) {
       setValidationErrors(prev => ({
         ...prev,
-        [name]: ''
+        [name]: '',
       }));
     }
     setError(null);
@@ -134,7 +146,8 @@ export const useLogin = (): UseLoginReturn => {
           // We assume a container with ID 'recaptcha-container' exists in the UI
           twoFactorAuthService.initializeRecaptcha('recaptcha-container');
 
-          const mfaResult = await twoFactorAuthService.handleMFAChallenge(result);
+          const mfaResult =
+            await twoFactorAuthService.handleMFAChallenge(result);
           if (mfaResult.success) {
             setMfaRequired(true);
           } else {
@@ -169,9 +182,18 @@ export const useLogin = (): UseLoginReturn => {
         return;
       }
 
-      logger.error('Login error:', err instanceof Error ? err : new Error(String(err)));
+      logger.error(
+        'Login error:',
+        err instanceof Error ? err : new Error(String(err))
+      );
       // Use the error message from handleAuthError (already translated to Bulgarian)
-      const errorMessage = err instanceof Error ? err.message : t('auth.unexpectedError', 'An unexpected error occurred. Please try again.');
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : t(
+              'auth.unexpectedError',
+              'An unexpected error occurred. Please try again.'
+            );
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -203,12 +225,20 @@ export const useLogin = (): UseLoginReturn => {
       }, 1000);
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
-      const errorWithCode = error as Error & { code?: string; message?: string };
+      const errorWithCode = error as Error & {
+        code?: string;
+        message?: string;
+      };
 
       // Handle redirect case (especially for Cursor browser)
-      if (error.message === 'REDIRECT_INITIATED' || (error as Error).message.includes('REDIRECT')) {
+      if (
+        error.message === 'REDIRECT_INITIATED' ||
+        (error as Error).message.includes('REDIRECT')
+      ) {
         if (process.env.NODE_ENV === 'development') {
-          logger.debug('OAuth redirect initiated - waiting for redirect result');
+          logger.debug(
+            'OAuth redirect initiated - waiting for redirect result'
+          );
         }
         setSuccess(t('auth.redirecting', 'Redirecting to login...'));
         setLoading(true); // Keep loading state during redirect
@@ -222,11 +252,16 @@ export const useLogin = (): UseLoginReturn => {
         protocol: window.location.protocol,
         host: window.location.host,
         hasApiKey: !!import.meta.env.VITE_FIREBASE_API_KEY,
-        hasAuthDomain: !!import.meta.env.VITE_FIREBASE_AUTH_DOMAIN
+        hasAuthDomain: !!import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
       });
 
       // User-friendly error message
-      const userMessage = errorWithCode?.message || t('auth.googleLoginError', 'An error occurred during Google login. Please try again.');
+      const userMessage =
+        errorWithCode?.message ||
+        t(
+          'auth.googleLoginError',
+          'An error occurred during Google login. Please try again.'
+        );
       setError(userMessage);
       setLoading(false);
     }
@@ -257,9 +292,19 @@ export const useLogin = (): UseLoginReturn => {
       }, 1000);
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
-      const errorWithCode = error as Error & { code?: string; message?: string };
-      logger.error('Facebook login error', error, { errorCode: errorWithCode?.code });
-      const userMessage = errorWithCode?.message || t('auth.facebookLoginError', 'An error occurred during Facebook login. Please try again.');
+      const errorWithCode = error as Error & {
+        code?: string;
+        message?: string;
+      };
+      logger.error('Facebook login error', error, {
+        errorCode: errorWithCode?.code,
+      });
+      const userMessage =
+        errorWithCode?.message ||
+        t(
+          'auth.facebookLoginError',
+          'An error occurred during Facebook login. Please try again.'
+        );
       setError(userMessage);
     } finally {
       setLoading(false);
@@ -280,7 +325,16 @@ export const useLogin = (): UseLoginReturn => {
       const intentRedirectPath = getRedirectPath();
       sessionStorage.setItem('auth_redirect_url', intentRedirectPath);
 
-      const result = await SocialAuthService.signInWithApple();
+      const appleLoginFn = (
+        SocialAuthService as unknown as {
+          signInWithApple?: () => Promise<{ user: { uid: string } }>;
+        }
+      ).signInWithApple;
+      const result =
+        typeof appleLoginFn === 'function'
+          ? await appleLoginFn.call(SocialAuthService)
+          : await bulgarianAuthService.signInWithApple();
+
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Apple login successful', { userId: result.user.uid });
       }
@@ -293,7 +347,12 @@ export const useLogin = (): UseLoginReturn => {
       const error = err instanceof Error ? err : new Error(String(err));
       const errorWithCode = error as Error & { message?: string };
       logger.error('❌ Apple login error:', error);
-      const userMessage = errorWithCode?.message || t('auth.appleLoginError', 'An error occurred during Apple login. Please try again.');
+      const userMessage =
+        errorWithCode?.message ||
+        t(
+          'auth.appleLoginError',
+          'An error occurred during Apple login. Please try again.'
+        );
       setError(userMessage);
     } finally {
       setLoading(false);
@@ -315,7 +374,9 @@ export const useLogin = (): UseLoginReturn => {
       logger.info('👤 Initiating anonymous login...');
       const result = await SocialAuthService.signInAnonymously();
       logger.info('✅ Anonymous login successful:', result.user);
-      setSuccess(t('auth.loginSuccess', 'Guest login successful! Redirecting...'));
+      setSuccess(
+        t('auth.loginSuccess', 'Guest login successful! Redirecting...')
+      );
       const redirectPath = getRedirectPath();
       setTimeout(() => {
         navigate(redirectPath, { replace: true });
@@ -324,7 +385,12 @@ export const useLogin = (): UseLoginReturn => {
       const error = err instanceof Error ? err : new Error(String(err));
       const errorWithCode = error as Error & { message?: string };
       logger.error('❌ Anonymous login error:', error);
-      const userMessage = errorWithCode?.message || t('auth.anonymousLoginError', 'An error occurred during guest login. Please try again.');
+      const userMessage =
+        errorWithCode?.message ||
+        t(
+          'auth.anonymousLoginError',
+          'An error occurred during guest login. Please try again.'
+        );
       setError(userMessage);
     } finally {
       setLoading(false);
@@ -351,11 +417,11 @@ export const useLogin = (): UseLoginReturn => {
     handlePhoneLogin,
     handleAnonymousLogin,
     handleSocialLoginError,
-    validateForm
+    validateForm,
   };
 
   return {
     state,
-    actions
+    actions,
   };
 };

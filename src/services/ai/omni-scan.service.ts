@@ -266,12 +266,11 @@ const BG_PLATE_REGIONS: Record<string, { en: string; bg: string }> = {
   К: { en: 'Kardzhali', bg: 'Кърджали' },
   КН: { en: 'Kyustendil', bg: 'Кюстендил' },
   М: { en: 'Pleven', bg: 'Плевен' },
-  Р: { en: 'Pernik', bg: 'Перник' },
+  ПК: { en: 'Pernik', bg: 'Перник' },
   РК: { en: 'Pazardzhik', bg: 'Пазарджик' },
   СН: { en: 'Sliven', bg: 'Сливен' },
   СМ: { en: 'Smolyan', bg: 'Смолян' },
   СС: { en: 'Silistra', bg: 'Силистра' },
-  ОВ: { en: 'Lovech', bg: 'Ловеч' },
   У: { en: 'Yambol', bg: 'Ямбол' },
 };
 
