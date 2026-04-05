@@ -79,6 +79,7 @@ const UsersDirectoryPage = safeLazy(() => import('../pages/03_user-pages/users-d
 const AllPostsPage = safeLazy(() => import('../pages/03_user-pages/social/AllPostsPage'));
 const AllCarsPage = safeLazy(() => import('../pages/05_search-browse/all-cars/AllCarsPage'));
 const SearchPage = safeLazy(() => import('../pages/05_search-browse/SearchPage'));
+const UserSearchPage = safeLazy(() => import('../pages/01_main-pages/search/UserSearchPage'));
 const CompetitiveComparisonPage = safeLazy(() => import('../pages/10_landing/CompetitiveComparisonPage'));
 const CarPricingPage = safeLazy(() => import('../features/pricing/CarPricingPage'));
 const AIAnalysisPage = safeLazy(() => import('../pages/01_main-pages/ai-analysis/AIAnalysisPage'));
@@ -154,6 +155,7 @@ const AIDashboardPage = safeLazy(() => import('../pages/03_user-pages/ai-dashboa
 const AIQuotaManager = safeLazy(() => import('../pages/06_admin/AIQuotaManager'));
 const IntegrationStatusDashboard = safeLazy(() => import('../components/admin/IntegrationStatusDashboard'));
 const QuickSetupPage = safeLazy(() => import('../pages/06_admin/QuickSetupPage'));
+const ReviewModerationPage = safeLazy(() => import('../pages/06_admin/ReviewModerationPage'));
 const CloudServicesManager = safeLazy(() => import('../pages/06_admin/CloudServicesManager'));
 const CityCarsPage = safeLazy(() => import('../pages/seo/CityCarsPage'));
 const CityCarsLandingPage = safeLazy(() => import('../pages/seo/CityCarsLandingPage'));
@@ -203,6 +205,7 @@ export const MainRoutes: React.FC = () => {
             <Route path="/social" element={<SocialFeedPage />} />
             <Route path="/cars" element={<CarsPage />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/search/users" element={<UserSearchPage />} />
 
             {/* 🤖 AI Car Advisor */}
             <Route path="/advisor" element={<AIAdvisorPage />} />
@@ -586,6 +589,7 @@ export const MainRoutes: React.FC = () => {
             <Route path="/admin/setup" element={<AuthGuard requireAuth={true}><QuickSetupPage /></AuthGuard>} />
             <Route path="/admin/cloud-services" element={<AuthGuard requireAuth={true}><CloudServicesManager /></AuthGuard>} />
             <Route path="/admin/algolia-sync" element={<AuthGuard requireAuth={true} requireAdmin={true}><AlgoliaSyncManager /></AuthGuard>} />
+            <Route path="/admin/review-moderation" element={<AuthGuard requireAuth={true} requireAdmin={true}><ReviewModerationPage /></AuthGuard>} />
 
 
             {/* Development Tools Routes - ONLY AVAILABLE IN DEV */}

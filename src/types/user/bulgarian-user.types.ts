@@ -21,6 +21,12 @@ export interface BaseProfile {
   firstName?: string;
   lastName?: string;
   photoURL?: string;
+  /** Alias for photoURL – used in some UI components */
+  profileImage?: string;
+  /** Alias for profileType – used in some legacy UI components */
+  accountType?: 'private' | 'dealer' | 'company';
+  /** Business/dealer display name used in UI components */
+  businessName?: string;
   coverImage?: string;
 
   // ✅ NEW: Public Display Name - Shows as main name in profiles
@@ -31,6 +37,28 @@ export interface BaseProfile {
 
   // ✅ NEW: Numeric ID for clean URLs (e.g. /profile/18)
   numericId?: number;
+  isOnline?: boolean;
+
+  // Legacy snapshot compatibility used in profile and directory UIs
+  dealerSnapshot?: {
+    nameBG?: string;
+    nameEN?: string;
+    logo?: string;
+    status?: 'pending' | 'verified' | 'rejected';
+    address?: string;
+    phone?: string;
+    website?: string;
+  };
+  companySnapshot?: {
+    nameBG?: string;
+    nameEN?: string;
+    logo?: string;
+    status?: 'pending' | 'verified' | 'rejected';
+    address?: string;
+    phone?: string;
+    website?: string;
+    vatNumber?: string;
+  };
 
   // Contact
   phoneNumber?: string;

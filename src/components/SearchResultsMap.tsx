@@ -1,5 +1,5 @@
 // Note: Using @react-google-maps/api Marker component which wraps google.maps.Marker
-// TODO: Migrate to AdvancedMarkerElement when @react-google-maps/api adds support
+// AdvancedMarkerElement migration is deferred until library support is stable in this stack.
 
 import React, { useState , memo} from 'react';
 import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';

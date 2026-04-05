@@ -68,6 +68,8 @@ import { logger } from '@/services/logger-service';
 import { FacebookSmartButton } from '@/components/social/FacebookSmartButton';
 import { PrintableWindowCard } from '@/components/print/PrintableWindowCard';
 import { userService } from '@/services/user/canonical-user.service';
+import { presenceService } from '@/services/messaging/realtime';
+import { postSaleReviewService } from '@/services/review/post-sale-review.service';
 
 
 
@@ -1537,6 +1539,45 @@ const EquipmentItem = styled.div`
   }
 `;
 
+// LED pulse animation for online/offline indicator
+const ledPulse = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 currentColor, 0 0 6px 2px currentColor; }
+  50% { box-shadow: 0 0 0 3px transparent, 0 0 10px 4px currentColor; }
+`;
+
+// Wrapper that provides the coloured ring + glow around seller avatar
+const SellerAvatarRing = styled.div<{ $online: boolean | null }>`
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  padding: 2px;
+  background: ${({ $online }) =>
+    $online === true ? '#22c55e' : $online === false ? '#ef4444' : 'var(--border-primary)'};
+  color: ${({ $online }) =>
+    $online === true ? '#22c55e' : $online === false ? '#ef4444' : 'transparent'};
+  cursor: pointer;
+  flex-shrink: 0;
+  ${({ $online }) =>
+    $online !== null &&
+    css`
+      animation: ${ledPulse} 2s ease-in-out infinite;
+    `}
+`;
+
+const OnlineStatusDot = styled.span<{ $online: boolean | null }>`
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: ${({ $online }) =>
+    $online === true ? '#22c55e' : $online === false ? '#ef4444' : '#9ca3af'};
+  border: 2px solid var(--bg-card);
+  z-index: 1;
+`;
+
 // Seller Info Card
 const SellerCard = styled.div`
   background: var(--bg-card);
@@ -1556,17 +1597,17 @@ const SellerHeader = styled.div`
 `;
 
 const SellerLogo = styled.div`
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
   background: var(--bg-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--accent-primary);
-  border: 2px solid var(--border-primary);
+  overflow: hidden;
 `;
 
 const SellerInfo = styled.div`
@@ -1578,6 +1619,11 @@ const SellerName = styled.div`
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 0.25rem;
+  cursor: pointer;
+  &:hover {
+    color: var(--accent-primary);
+    text-decoration: underline;
+  }
 `;
 
 const SellerInfoRow = styled.div`
@@ -1968,6 +2014,33 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
   const toast = useToast();
 
   const [fetchedSellerAvatar, setFetchedSellerAvatar] = useState<string | null>(null);
+  const [isSellerOnline, setIsSellerOnline] = useState<boolean | null>(null);
+  const [sellerRating, setSellerRating] = useState<{ overall: number; count: number }>({ overall: 0, count: 0 });
+
+  // Fetch seller rating
+  useEffect(() => {
+    const sellerId = car.sellerId;
+    if (!sellerId || car.sellerType === 'private') return;
+    let isActive = true;
+    postSaleReviewService.getUserAverageRating(sellerId, 'seller').then(data => {
+      if (isActive) setSellerRating({ overall: data.overall, count: data.count });
+    }).catch(() => {});
+    return () => { isActive = false; };
+  }, [car.sellerId, car.sellerType]);
+
+  // Subscribe to seller presence (online/offline status)
+  useEffect(() => {
+    const sellerNumericId = car.sellerNumericId;
+    if (!sellerNumericId) return;
+    const isActive = { current: true };
+    const unsubscribe = presenceService.subscribeToPresence(sellerNumericId, (online) => {
+      if (isActive.current) setIsSellerOnline(online);
+    });
+    return () => {
+      isActive.current = false;
+      unsubscribe();
+    };
+  }, [car.sellerNumericId]);
 
   // Fetch seller avatar if missing from car object
   useEffect(() => {
@@ -2921,47 +2994,56 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
             <SellerCard>
               <SectionTitle>{t.sellerInformation}</SectionTitle>
               <SellerHeader>
-                <SellerLogo
+                <SellerAvatarRing
+                  $online={isSellerOnline}
                   onClick={() => {
-                    // 🔒 STRICT: Use /profile/{numericId} for own profile, /profile/view/{numericId} for others
-                    if (car.sellerNumericId) {
-                      if (isOwner) {
-                        // Own profile
-                        navigate(`/profile/${car.sellerNumericId}`);
-                      } else {
-                        // Other user's profile
-                        navigate(`/profile/view/${car.sellerNumericId}`);
-                      }
+                    if (car.sellerNumericId != null && Number(car.sellerNumericId) > 0) {
+                      navigate(isOwner ? `/profile/${car.sellerNumericId}` : `/profile/view/${car.sellerNumericId}`);
                     } else if (car.sellerId) {
-                      // Fallback to legacy ID - always use view path for other users
                       navigate(`/profile/view/${car.sellerId}`);
                     }
                   }}
-                  style={{ cursor: 'pointer' }}
                   title={language === 'bg' ? 'Виж профила на продавача' : 'View seller profile'}
                 >
-                  {(car as any).sellerAvatarUrl || (car as any).user?.photoURL || fetchedSellerAvatar ? (
-                    <img
-                      src={(car as any).sellerAvatarUrl || (car as any).user?.photoURL || fetchedSellerAvatar}
-                      alt="Seller"
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '6px' }}
-                    />
-                  ) : (
-                    car.sellerName ? car.sellerName.charAt(0).toUpperCase() : <User />
-                  )}
-                </SellerLogo>
+                  <SellerLogo>
+                    {(car as any).sellerAvatarUrl || (car as any).user?.photoURL || fetchedSellerAvatar ? (
+                      <img
+                        src={(car as any).sellerAvatarUrl || (car as any).user?.photoURL || fetchedSellerAvatar}
+                        alt="Seller"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                      />
+                    ) : (
+                      car.sellerName ? car.sellerName.charAt(0).toUpperCase() : <User />
+                    )}
+                  </SellerLogo>
+                  <OnlineStatusDot
+                    $online={isSellerOnline}
+                    title={isSellerOnline === true
+                      ? (language === 'bg' ? 'Онлайн' : 'Online')
+                      : (language === 'bg' ? 'Офлайн' : 'Offline')}
+                  />
+                </SellerAvatarRing>
                 <SellerInfo>
-                  <SellerName>{car.sellerName || t.notSpecified}</SellerName>
+                  <SellerName
+                    onClick={() => {
+                      if (car.sellerNumericId != null && Number(car.sellerNumericId) > 0) {
+                        navigate(isOwner ? `/profile/${car.sellerNumericId}` : `/profile/view/${car.sellerNumericId}`);
+                      } else if (car.sellerId) {
+                        navigate(`/profile/view/${car.sellerId}`);
+                      }
+                    }}
+                    title={language === 'bg' ? 'Виж профила на продавача' : 'View seller profile'}
+                  >{car.sellerName || t.notSpecified}</SellerName>
 
                   {/* Dealer Rating Badge */}
-                  {car.sellerType !== 'private' && (
+                  {car.sellerType !== 'private' && sellerRating.count > 0 && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '8px' }}>
                       <div style={{ display: 'flex', color: '#fbbf24' }}>
                         {[1, 2, 3, 4, 5].map(i => (
-                          <Star key={i} size={14} fill={i <= 4 ? "#fbbf24" : "none"} />
+                          <Star key={i} size={14} fill={i <= Math.round(sellerRating.overall) ? "#fbbf24" : "none"} />
                         ))}
                       </div>
-                      <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>(34 reviews)</span>
+                      <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>({sellerRating.count} {t.reviews})</span>
                     </div>
                   )}
 
@@ -2981,9 +3063,9 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
               {car.sellerType === 'dealer' && (
                 <SellerStats>
                   <SellerStat>
-                    <StatValue>4.8</StatValue>
+                    <StatValue>{sellerRating.overall > 0 ? sellerRating.overall.toFixed(1) : '—'}</StatValue>
                     <StatLabel>
-                      <Star size={12} style={{ display: 'inline' }} /> {t.reviews}
+                      <Star size={12} style={{ display: 'inline' }} /> {sellerRating.count > 0 ? `${sellerRating.count} ${t.reviews}` : t.reviews}
                     </StatLabel>
                   </SellerStat>
                   <SellerStat>
@@ -3333,7 +3415,8 @@ const CarDetailsMobileDEStyle: React.FC<CarDetailsMobileDEStyleProps> = ({
 // Sticky Mobile Action Bar Styles
 const StickyMobileAction = styled.div`
   position: fixed;
-  bottom: 0;
+  /* Sit above MobileBottomNav (z-index: 9999, height: ~56px) */
+  bottom: 56px;
   left: 0;
   right: 0;
   padding: 16px;
@@ -3342,9 +3425,14 @@ const StickyMobileAction = styled.div`
   border-top: 1px solid rgba(0,0,0,0.1);
   display: flex;
   gap: 12px;
-  z-index: 1000;
+  z-index: 10000;
   box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
   
+  /* Safe-area aware offset above mobile nav */
+  @supports (padding: max(0px)) {
+    bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  }
+
   @media (min-width: 769px) {
     display: none;
   }

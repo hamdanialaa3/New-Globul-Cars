@@ -2,9 +2,7 @@
 // SEO Component for Meta Tags and Structured Data
 
 import React from 'react';
-
-// Simple SEO component without react-helmet dependency
-// Using direct DOM manipulation for meta tags
+import { Helmet } from 'react-helmet-async';
 
 export interface SEOProps {
   title: string;
@@ -20,7 +18,7 @@ export interface SEOProps {
   price?: number;
   currency?: string;
   availability?: 'instock' | 'outofstock' | 'preorder';
-  structuredData?: any;
+  structuredData?: object;
 }
 
 export const SEOHead: React.FC<SEOProps> = ({
@@ -28,7 +26,7 @@ export const SEOHead: React.FC<SEOProps> = ({
   description,
   keywords = [],
   image = 'https://koli.one/og-image.jpg',
-  url = window.location.href,
+  url,
   type = 'website',
   locale = 'bg_BG',
   author,
@@ -42,14 +40,14 @@ export const SEOHead: React.FC<SEOProps> = ({
   const siteName = 'Koli One';
   const fullTitle = `${title} | ${siteName}`;
   const twitterHandle = '@kolionebg';
+  const canonicalUrl = url ?? (typeof window !== 'undefined' ? window.location.href : '');
 
-  // Generate structured data for rich snippets
   const defaultStructuredData = {
     '@context': 'https://schema.org',
     '@type': type === 'product' ? 'Product' : 'WebSite',
     name: title,
     description,
-    url,
+    url: canonicalUrl,
     ...(type === 'website' && {
       potentialAction: {
         '@type': 'SearchAction',
@@ -60,7 +58,7 @@ export const SEOHead: React.FC<SEOProps> = ({
         'query-input': 'required name=search_term_string'
       }
     }),
-    ...(type === 'product' && price && {
+    ...(type === 'product' && price !== undefined && {
       offers: {
         '@type': 'Offer',
         price,
@@ -70,76 +68,43 @@ export const SEOHead: React.FC<SEOProps> = ({
     })
   };
 
-  const finalStructuredData = structuredData || defaultStructuredData;
+  const finalStructuredData = structuredData ?? defaultStructuredData;
 
-  // Update meta tags using useEffect
-  React.useEffect(() => {
-    // Update title
-    document.title = fullTitle;
+  return (
+    <Helmet>
+      <title>{fullTitle}</title>
+      <meta name="description" content={description} />
+      {keywords.length > 0 && <meta name="keywords" content={keywords.join(', ')} />}
+      <meta name="author" content={author ?? siteName} />
+      <meta name="robots" content="index, follow" />
+      <meta name="googlebot" content="index, follow" />
+      {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
 
-    // Helper function to update or create meta tag
-    const updateMetaTag = (name: string, content: string, isProperty: boolean = false) => {
-      const attr = isProperty ? 'property' : 'name';
-      let meta = document.querySelector(`meta[${attr}="${name}"]`) as HTMLMetaElement;
+      {/* Open Graph */}
+      <meta property="og:type" content={type} />
+      {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+      <meta property="og:title" content={fullTitle} />
+      <meta property="og:description" content={description} />
+      <meta property="og:image" content={image} />
+      <meta property="og:site_name" content={siteName} />
+      <meta property="og:locale" content={locale} />
+      {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+      {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
 
-      if (!meta) {
-        meta = document.createElement('meta');
-        meta.setAttribute(attr, name);
-        document.head.appendChild(meta);
-      }
+      {/* Twitter Card */}
+      <meta name="twitter:card" content="summary_large_image" />
+      {canonicalUrl && <meta name="twitter:url" content={canonicalUrl} />}
+      <meta name="twitter:title" content={fullTitle} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={image} />
+      <meta name="twitter:site" content={twitterHandle} />
 
-      meta.content = content;
-    };
-
-    // Basic meta tags
-    updateMetaTag('description', description);
-    if (keywords && keywords.length > 0) {
-      updateMetaTag('keywords', keywords.join(', '));
-    }
-    updateMetaTag('author', author || siteName);
-
-    // Open Graph tags
-    updateMetaTag('og:type', type, true);
-    updateMetaTag('og:url', url, true);
-    updateMetaTag('og:title', fullTitle, true);
-    updateMetaTag('og:description', description, true);
-    updateMetaTag('og:image', image, true);
-    updateMetaTag('og:site_name', siteName, true);
-    updateMetaTag('og:locale', locale, true);
-
-    // Twitter Card tags
-    updateMetaTag('twitter:card', 'summary_large_image');
-    updateMetaTag('twitter:url', url);
-    updateMetaTag('twitter:title', fullTitle);
-    updateMetaTag('twitter:description', description);
-    updateMetaTag('twitter:image', image);
-    updateMetaTag('twitter:site', twitterHandle);
-
-    // Additional SEO tags
-    updateMetaTag('robots', 'index, follow');
-    updateMetaTag('googlebot', 'index, follow');
-
-    // Update canonical link
-    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
-    if (!canonical) {
-      canonical = document.createElement('link');
-      canonical.rel = 'canonical';
-      document.head.appendChild(canonical);
-    }
-    canonical.href = url;
-
-    // Update structured data
-    let script = document.querySelector('script[type="application/ld+json"]') as HTMLScriptElement;
-    if (!script) {
-      script = document.createElement('script');
-      script.type = 'application/ld+json';
-      document.head.appendChild(script);
-    }
-    script.textContent = JSON.stringify(finalStructuredData);
-
-  }, [title, description, keywords, image, url, type, locale, author, price, currency, availability, structuredData]);
-
-  return null;
+      {/* JSON-LD Structured Data */}
+      <script type="application/ld+json">
+        {JSON.stringify(finalStructuredData)}
+      </script>
+    </Helmet>
+  );
 };
 
 export default SEOHead;

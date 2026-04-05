@@ -55,16 +55,15 @@ const StyledButton = styled.button<{
   border-radius: 20px;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1.5px solid ${props => props.$accentColor};
-  
-  background: ${props => props.$isFollowing ? 'transparent' : props.$accentColor};
-  color: ${props => props.$isFollowing ? props.$accentColor : 'white'};
+  border: 1.5px solid var(--accent-primary, #2B7BFF);
+  background: ${props => props.$isFollowing ? 'transparent' : 'var(--accent-primary, #2B7BFF)'};
+  color: ${props => props.$isFollowing ? 'var(--accent-primary, #2B7BFF)' : 'white'};
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px ${props => props.$accentColor}40;
-    background: ${props => props.$isFollowing ? props.$accentColor + '10' : props.$accentColor};
-    filter: brightness(1.05);
+    box-shadow: 0 4px 12px rgba(43, 123, 255, 0.25);
+    background: ${props => props.$isFollowing ? 'rgba(43, 123, 255, 0.1)' : 'var(--accent-primary, #2B7BFF)'};
+    filter: brightness(1.1);
   }
 
   &:active {

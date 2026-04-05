@@ -277,7 +277,7 @@ const NearbyCarsFinder: React.FC = () => {
       };
 
       const carsWithDistance = await Promise.all(
-        allCars.map(async (car: CarListing): Promise<CarWithDistance | null> => {
+        allCars.map(async (car: any): Promise<CarWithDistance | null> => {
           try {
             // Geocode car location if needed
             let carCoords = car.coordinates;
@@ -406,7 +406,7 @@ const NearbyCarsFinder: React.FC = () => {
         <StatCard>
           <StatValue>
             {nearbyCars.length > 0 
-              ? googleMapsService.formatDistance(nearbyCars[0].distance.value, language)
+              ? googleMapsService.formatDistance(nearbyCars[0]?.distance?.value || 0, language)
               : '-'}
           </StatValue>
           <StatLabel>
@@ -431,7 +431,7 @@ const NearbyCarsFinder: React.FC = () => {
                 </Price>
                 <Distance>
                   <TrendingUp />
-                  {googleMapsService.formatDistance(car.distance.value, language)}
+                  {googleMapsService.formatDistance(car.distance?.value || 0, language)}
                 </Distance>
               </CarDetails>
             </CarCard>

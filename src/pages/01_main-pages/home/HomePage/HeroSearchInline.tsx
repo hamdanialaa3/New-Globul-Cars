@@ -333,8 +333,27 @@ const HeroSearchInline: React.FC = () => {
   };
 
   const handleQuickFilter = (filter: string) => {
-    // TODO: Navigate to search with preset filters
-    navigate(`/search?filter=${filter}`);
+    const params = new URLSearchParams();
+
+    switch (filter) {
+      case 'latest':
+        params.set('sortBy', 'createdAt');
+        params.set('sortOrder', 'desc');
+        break;
+      case 'featured':
+        params.set('featured', 'true');
+        params.set('sortBy', 'priority');
+        break;
+      case 'cheapest':
+        params.set('sortBy', 'price');
+        params.set('sortOrder', 'asc');
+        break;
+      default:
+        params.set('filter', filter);
+        break;
+    }
+
+    navigate(`/search?${params.toString()}`);
   };
 
   const translations = {

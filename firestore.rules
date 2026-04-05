@@ -377,12 +377,20 @@ service cloud.firestore {
     // REVIEWS Collection
     // ============================================
     match /reviews/{reviewId} {
-      allow read: if resource.data.published == true;
+      allow read: if resource.data.published == true 
+        || resource.data.status == 'approved'
+        || (isAuthenticated() && resource.data.reviewerId == request.auth.uid)
+        || isAdmin();
       
       allow create: if isAuthenticated()
         && request.auth.uid == request.resource.data.reviewerId
         && request.resource.data.rating >= 1 && request.resource.data.rating <= 5
-        && request.resource.data.keys().hasAll(['reviewerId', 'rating', 'createdAt']);
+        && request.resource.data.keys().hasAll(['reviewerId', 'rating', 'createdAt'])
+        // Anti-fraud: cannot review yourself
+        && (
+          !request.resource.data.keys().hasAny(['targetUserId']) 
+          || request.auth.uid != request.resource.data.targetUserId
+        );
       
       allow update: if isAuthenticated() && (
         resource.data.reviewerId == request.auth.uid || isAdmin()

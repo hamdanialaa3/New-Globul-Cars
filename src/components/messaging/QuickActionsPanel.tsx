@@ -266,7 +266,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
                 onClick={handleSendOffer}
                 disabled={isLoading || !offerAmount}
               >
-                <ModernSend size={16} style={{ marginRight: '6px' }} />
+                <span style={{ marginRight: '6px', display: 'inline-flex' }}><ModernSend size={16} /></span>
                 {language === 'bg' ? 'Изпрати' : 'Send'}
               </ActionButton>
               <ActionButton
@@ -336,7 +336,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
                 onClick={handleSendAppointment}
                 disabled={isLoading || !appointmentDate || !appointmentTime}
               >
-                <ModernSend size={16} style={{ marginRight: '6px' }} />
+                <span style={{ marginRight: '6px', display: 'inline-flex' }}><ModernSend size={16} /></span>
                 {language === 'bg' ? 'Изпрати заявка' : 'Send Request'}
               </ActionButton>
               <ActionButton

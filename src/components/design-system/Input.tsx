@@ -19,7 +19,7 @@ import styled, { css } from 'styled-components';
 export type InputSize = 'sm' | 'md' | 'lg';
 export type InputVariant = 'default' | 'filled' | 'outline';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   /** Input size */
   size?: InputSize;
   

@@ -69,9 +69,7 @@ export const NeoButton: React.FC<NeoButtonProps> = ({
         <ButtonContainer
             $variant={variant}
             $glowColor={finalColor}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            {...props}
+          {...(props as any)}
         >
             {children}
         </ButtonContainer>

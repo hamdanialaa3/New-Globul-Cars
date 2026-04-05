@@ -56,7 +56,7 @@ export async function queryAllCollections<T = DocumentData>(
           
           return docs;
         } catch (error) {
-          logger.warn(`Error querying ${collectionName}:`, error);
+          logger.warn(`Error querying ${collectionName}:`, { error: error as Error });
           return [];
         }
       })
@@ -94,7 +94,7 @@ export async function countAllVehicles(): Promise<number> {
           const snapshot = await getDocs(collection(db, collectionName));
           return snapshot.size;
         } catch (error) {
-          logger.warn(`Error counting ${collectionName}:`, error);
+          logger.warn(`Error counting ${collectionName}:`, { error: error as Error });
           return 0;
         }
       })
@@ -132,7 +132,7 @@ export async function querySpecificCollections<T = DocumentData>(
             ...doc.data()
           } as T & { id: string; _collection?: string }));
         } catch (error) {
-          logger.warn(`Error querying ${collectionName}:`, error);
+          logger.warn(`Error querying ${collectionName}:`, { error: error as Error });
           return [];
         }
       })

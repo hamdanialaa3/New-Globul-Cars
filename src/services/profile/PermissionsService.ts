@@ -124,6 +124,9 @@ export class PermissionsService {
           hasFeaturedBadge: features.hasFeaturedBadge,
           canUseQuickReplies: false,
           canImportCSV: false,
+          canUseAI: false,
+          canUseChatbot: false,
+          canEditMakeModel: false,
           themeMode: 'standard',
         };
 
@@ -161,6 +164,9 @@ export class PermissionsService {
           hasFeaturedBadge: features.hasFeaturedBadge,
           canUseQuickReplies: true,
           canImportCSV: true,
+          canUseAI: true,
+          canUseChatbot: true,
+          canEditMakeModel: true,
           themeMode: 'dealer-led',
         };
 
@@ -198,6 +204,9 @@ export class PermissionsService {
           hasFeaturedBadge: features.hasFeaturedBadge,
           canUseQuickReplies: true,
           canImportCSV: true,
+          canUseAI: true,
+          canUseChatbot: true,
+          canEditMakeModel: true,
           themeMode: 'company-led',
         };
 

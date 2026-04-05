@@ -110,9 +110,13 @@ export const FirebaseStatus: React.FC = () => {
         testResult: result.user ? 'Anonymous: PASS' : 'Anonymous: FAIL'
       }));
     } catch (error: unknown) {
+      const code =
+        typeof error === 'object' && error !== null && 'code' in error
+          ? String((error as { code?: string }).code || 'Unknown error')
+          : 'Unknown error';
       setStatus(prev => ({
         ...prev,
-        testResult: `Test failed: ${error.code || 'Unknown error'}`
+        testResult: `Test failed: ${code}`
       }));
     } finally {
       setTesting(false);

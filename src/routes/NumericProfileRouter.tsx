@@ -71,6 +71,40 @@ const TabLoadingFallback: React.FC = () => (
 export const NumericProfileRouter: React.FC = () => {
   return (
     <Routes>
+      {/* ✅ PUBLIC: View other users' profiles — no auth required */}
+      <Route path="view/:userId" element={<ProfilePageWrapper />}>
+        {/* Other user's profile overview */}
+        <Route index element={
+          <Suspense fallback={<TabLoadingFallback />}>
+            <ProfileOverview />
+          </Suspense>
+        } />
+        
+        {/* Other user's public tabs (read-only) */}
+        <Route path="my-ads" element={
+          <Suspense fallback={<TabLoadingFallback />}>
+            <ProfileMyAds />
+          </Suspense>
+        } />
+        <Route path="favorites" element={
+          <Suspense fallback={<TabLoadingFallback />}>
+            <UserFavoritesPage />
+          </Suspense>
+        } />
+        <Route path="following" element={
+          <Suspense fallback={<TabLoadingFallback />}>
+            <FollowingTab />
+          </Suspense>
+        } />
+        
+        {/* Car routes for other users */}
+        <Route path="car/:id" element={
+          <Suspense fallback={<TabLoadingFallback />}>
+            <CarDetailsPage />
+          </Suspense>
+        } />
+      </Route>
+
       {/* ✅ PROTECTED: Main profile page with nested routes */}
       <Route path="" element={
         <ProtectedRoute>
@@ -178,40 +212,6 @@ export const NumericProfileRouter: React.FC = () => {
               <EditCarPage />
             </Suspense>
           } />
-          <Route path="car/:id" element={
-            <Suspense fallback={<TabLoadingFallback />}>
-              <CarDetailsPage />
-            </Suspense>
-          } />
-        </Route>
-
-        {/* 🔒 VIEW OTHER USERS' PROFILES: /profile/view/{numericId} */}
-        <Route path="view/:userId">
-          {/* Other user's profile overview */}
-          <Route index element={
-            <Suspense fallback={<TabLoadingFallback />}>
-              <ProfileOverview />
-            </Suspense>
-          } />
-          
-          {/* Other user's public tabs (read-only) */}
-          <Route path="my-ads" element={
-            <Suspense fallback={<TabLoadingFallback />}>
-              <ProfileMyAds />
-            </Suspense>
-          } />
-          <Route path="favorites" element={
-            <Suspense fallback={<TabLoadingFallback />}>
-              <UserFavoritesPage />
-            </Suspense>
-          } />
-          <Route path="following" element={
-            <Suspense fallback={<TabLoadingFallback />}>
-              <FollowingTab />
-            </Suspense>
-          } />
-          
-          {/* Car routes for other users */}
           <Route path="car/:id" element={
             <Suspense fallback={<TabLoadingFallback />}>
               <CarDetailsPage />

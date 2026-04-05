@@ -11,9 +11,14 @@ import {
   ConfirmationResult,
   getRedirectResult,
   User,
-  UserCredential
+  UserCredential,
 } from 'firebase/auth';
-import { doc, getDocFromServer, setDoc, serverTimestamp } from 'firebase/firestore';
+import {
+  doc,
+  getDocFromServer,
+  setDoc,
+  serverTimestamp,
+} from 'firebase/firestore';
 
 /**
  * Service for handling social authentication
@@ -40,7 +45,10 @@ export class SocialAuthService {
 
       if (process.env.NODE_ENV === 'development') {
         const user = result.user;
-        logger.debug('Google sign-in successful', { uid: user.uid, email: user.email });
+        logger.debug('Google sign-in successful', {
+          uid: user.uid,
+          email: user.email,
+        });
       }
 
       return result;
@@ -71,18 +79,66 @@ export class SocialAuthService {
 
       if (process.env.NODE_ENV === 'development') {
         const user = result.user;
-        logger.debug('Facebook sign-in successful', { uid: user.uid, email: user.email });
+        logger.debug('Facebook sign-in successful', {
+          uid: user.uid,
+          email: user.email,
+        });
       }
 
       return result;
     } catch (error: any) {
       if (error.code === 'auth/popup-closed-by-user') {
         logger.warn('Facebook sign-in cancelled by user');
-      } else if (error.code === 'auth/account-exists-with-different-credential') {
+      } else if (
+        error.code === 'auth/account-exists-with-different-credential'
+      ) {
         logger.warn('Account exists with different credential');
-        throw new Error('An account already exists with the same email address but different sign-in credentials. Sign in using a Google account.');
+        throw new Error(
+          'An account already exists with the same email address but different sign-in credentials. Sign in using a Google account.'
+        );
       } else {
         logger.error('Facebook sign-in error', error as Error);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Sign in with Apple
+   */
+  static async signInWithApple() {
+    try {
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Starting Apple sign-in...');
+      }
+
+      const provider = new OAuthProvider('apple.com');
+      provider.addScope('email');
+      provider.addScope('name');
+
+      const result = await signInWithPopup(auth, provider);
+
+      if (process.env.NODE_ENV === 'development') {
+        const user = result.user;
+        logger.debug('Apple sign-in successful', {
+          uid: user.uid,
+          email: user.email,
+        });
+      }
+
+      return result;
+    } catch (error: any) {
+      if (error.code === 'auth/popup-closed-by-user') {
+        logger.warn('Apple sign-in cancelled by user');
+      } else if (
+        error.code === 'auth/account-exists-with-different-credential'
+      ) {
+        logger.warn('Account exists with different credential');
+        throw new Error(
+          'An account already exists with the same email address but different sign-in credentials.'
+        );
+      } else {
+        logger.error('Apple sign-in error', error as Error);
       }
       throw error;
     }
@@ -96,7 +152,9 @@ export class SocialAuthService {
       const result = await getRedirectResult(auth);
       if (result) {
         if (process.env.NODE_ENV === 'development') {
-          logger.debug('Redirect result handled successfully', { uid: result.user.uid });
+          logger.debug('Redirect result handled successfully', {
+            uid: result.user.uid,
+          });
         }
         return result;
       }
@@ -115,7 +173,7 @@ export class SocialAuthService {
     for (let i = 0; i < maxRetries; i++) {
       // Small delay to let Firestore attach auth token
       await new Promise(resolve => setTimeout(resolve, 50 * (i + 1)));
-      
+
       // Firestore will be ready once it has the auth token
       // We can verify by checking if auth is properly initialized
       if (auth.currentUser) {
@@ -133,7 +191,9 @@ export class SocialAuthService {
     // Prevent concurrent calls (React Strict Mode double-invoke)
     if (SocialAuthService._syncInProgress) {
       if (process.env.NODE_ENV === 'development') {
-        logger.debug('Profile sync already in progress, skipping duplicate call');
+        logger.debug(
+          'Profile sync already in progress, skipping duplicate call'
+        );
       }
       return;
     }
@@ -144,11 +204,11 @@ export class SocialAuthService {
       await SocialAuthService.waitForFirestoreReady();
 
       const userRef = doc(db, 'users', user.uid);
-      
+
       // Retry logic for getDoc in case of temporary permission-denied
       let userSnap: any = null;
       let lastError: Error | null = null;
-      
+
       for (let attempt = 0; attempt < 3; attempt++) {
         try {
           // ✅ Use getDocFromServer (not getDoc) to avoid Firestore internal watch stream
@@ -160,11 +220,16 @@ export class SocialAuthService {
           if (error.code === 'permission-denied' && attempt < 2) {
             // Retry on permission-denied (likely due to auth token not being attached yet)
             if (process.env.NODE_ENV === 'development') {
-              logger.debug(`Retrying getDocFromServer after permission-denied (attempt ${attempt + 1}/3)`, {
-                userId: user.uid
-              });
+              logger.debug(
+                `Retrying getDocFromServer after permission-denied (attempt ${attempt + 1}/3)`,
+                {
+                  userId: user.uid,
+                }
+              );
             }
-            await new Promise(resolve => setTimeout(resolve, 100 * (attempt + 1)));
+            await new Promise(resolve =>
+              setTimeout(resolve, 100 * (attempt + 1))
+            );
             continue;
           }
           throw error; // Re-throw on non-permission-denied errors
@@ -172,7 +237,9 @@ export class SocialAuthService {
       }
 
       if (!userSnap) {
-        throw lastError || new Error('Failed to read user document after retries');
+        throw (
+          lastError || new Error('Failed to read user document after retries')
+        );
       }
 
       const isNewUser = !userSnap.exists();
@@ -192,17 +259,24 @@ export class SocialAuthService {
         userData.photoURL = user.photoURL || '';
         userData.createdAt = serverTimestamp();
         userData.role = 'user';
+        // ✅ STRICT: Every new user starts as 'private' (free personal seller)
+        userData.profileType = 'private';
+        userData.accountType = 'private';
+        userData.planTier = 'free';
+        userData.isActive = true;
+        userData.isVerified = false;
         userData.preferences = {
           language: 'bg',
           currency: 'BGN',
-          notifications: true
+          notifications: true,
         };
       }
 
       await setDoc(userRef, userData, { merge: true });
 
       // ✅ SELF-HEALING: Ensure numeric ID is assigned immediately
-      const { profileService } = await import('../services/profile/UnifiedProfileService');
+      const { profileService } =
+        await import('../services/profile/UnifiedProfileService');
       await profileService.ensureNumericId(user.uid);
     } catch (error) {
       logger.error('Error syncing user profile to Firestore', error as Error);
@@ -240,14 +314,14 @@ export class SocialAuthService {
         },
         'expired-callback': () => {
           logger.warn('reCAPTCHA expired');
-        }
+        },
       });
 
       // Store in window for global access/cleanup if needed
       window.recaptchaVerifier = recaptchaVerifier;
 
       // Render immediately to ensure it's ready
-      recaptchaVerifier.render().then((widgetId) => {
+      recaptchaVerifier.render().then(widgetId => {
         logger.debug('reCAPTCHA rendered', { widgetId });
       });
 
@@ -271,9 +345,15 @@ export class SocialAuthService {
       }
 
       // Ensure phone number starts with country code
-      const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber : `+359${phoneNumber}`;
+      const formattedPhone = phoneNumber.startsWith('+')
+        ? phoneNumber
+        : `+359${phoneNumber}`;
 
-      const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, recaptchaVerifier);
+      const confirmationResult = await signInWithPhoneNumber(
+        auth,
+        formattedPhone,
+        recaptchaVerifier
+      );
 
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Verification code sent successfully');
@@ -308,7 +388,7 @@ export class SocialAuthService {
 
   /**
    * Sign in anonymously (Guest Mode)
-   * 
+   *
    * Persistent Guest Identity:
    * 1. Check Cookie/localStorage for existing guest UID
    * 2. If found -> restore via custom token (same account)
@@ -320,20 +400,25 @@ export class SocialAuthService {
       logger.info('[Guest] Initiating guest sign-in...');
 
       // Step 1: Check for existing guest identity
-      const { guestIdentityService } = await import('../services/guest-identity.service');
+      const { guestIdentityService } =
+        await import('../services/guest-identity.service');
       const storedUid = guestIdentityService.getStoredUid();
 
       if (storedUid) {
         // Step 2: Try to restore existing guest account
         try {
-          const restored = await SocialAuthService.restoreGuestAccount(storedUid);
+          const restored =
+            await SocialAuthService.restoreGuestAccount(storedUid);
           if (restored) {
-            logger.info('[Guest] Restored existing account', { uid: storedUid });
+            logger.info('[Guest] Restored existing account', {
+              uid: storedUid,
+            });
             return restored;
           }
         } catch (restoreErr) {
           logger.warn('[Guest] Failed to restore, creating new account', {
-            storedUid, error: String(restoreErr)
+            storedUid,
+            error: String(restoreErr),
           });
           // Clear stale identity and fall through to create new
           guestIdentityService.clearIdentity();
@@ -357,7 +442,9 @@ export class SocialAuthService {
 
       const { doc, setDoc } = await import('firebase/firestore');
       const { db } = await import('./index');
-      await setDoc(doc(db, 'users', result.user.uid), guestProfile, { merge: true });
+      await setDoc(doc(db, 'users', result.user.uid), guestProfile, {
+        merge: true,
+      });
 
       // Step 4: Save identity for future visits
       guestIdentityService.saveIdentity(result.user.uid);
@@ -384,7 +471,8 @@ export class SocialAuthService {
 
     const response = await getToken({ guestUid });
     const { token, numericId } = response.data as {
-      token: string; numericId: number | null
+      token: string;
+      numericId: number | null;
     };
 
     if (!token) return null;
@@ -393,7 +481,8 @@ export class SocialAuthService {
     const credential = await signInWithCustomToken(auth, token);
 
     // Update stored identity with numericId if available
-    const { guestIdentityService } = await import('../services/guest-identity.service');
+    const { guestIdentityService } =
+      await import('../services/guest-identity.service');
     guestIdentityService.saveIdentity(guestUid, numericId ?? undefined);
 
     return credential;

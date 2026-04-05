@@ -17,21 +17,21 @@ export function useTranslation() {
     } catch {}
   }, [language]);
 
-  const t = useCallback((key: string): string => {
+  const t = useCallback((key: string, fallback?: string): string => {
     const parts = key.split('.');
     let current: Record<string, unknown> = translations[language as Language];
     for (const p of parts) {
       if (current && typeof current === 'object' && p in current) {
-        current = current[p];
+        current = current[p] as Record<string, unknown>;
       } else {
-        return key; // fallback show key
+        return fallback ?? key; // fallback string or show key
       }
     }
     if (Array.isArray(current)) {
       // allow array index access like key.0
       return current.join('\n');
     }
-    return typeof current === 'string' ? current : key;
+    return typeof current === 'string' ? current : (fallback ?? key);
   }, [language]);
 
   const setLanguage = (lang: Language) => setLang(lang);

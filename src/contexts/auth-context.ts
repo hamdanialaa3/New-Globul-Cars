@@ -36,6 +36,8 @@ export interface AuthContextType {
    */
   displayName: string | null;
   loading: boolean;
+  isLoading: boolean;
+  isGuest: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, options?: RegisterOptions) => Promise<void>;
   logout: () => Promise<void>;

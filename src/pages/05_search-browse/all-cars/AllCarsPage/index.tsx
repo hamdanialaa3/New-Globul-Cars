@@ -70,7 +70,7 @@ const AllCarsPage: React.FC = () => {
           logger.debug(`Found ${carsData.length} cars in ${collectionName}`);
           return carsData;
         } catch (error) {
-          logger.warn(`Error querying ${collectionName}:`, error);
+          logger.warn(`Error querying ${collectionName}:`, { error: error as Error });
           return [];
         }
       });

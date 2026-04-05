@@ -109,7 +109,7 @@ class PersonalizationService {
 
     // Location
     if (post.location?.city) {
-      const city = post.locationData?.cityName;
+      const city = post.location.city;
       interests.locations.set(
         city,
         (interests.locations.get(city) || 0) + weight
@@ -162,7 +162,7 @@ class PersonalizationService {
 
     // Location bonus (max +3)
     if (post.location?.city) {
-      const locationInterest = interests.locations.get(post.locationData?.cityName) || 0;
+      const locationInterest = interests.locations.get(post.location.city) || 0;
       bonus += Math.min(locationInterest * 0.2, 3);
     }
 

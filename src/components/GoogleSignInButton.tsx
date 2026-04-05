@@ -89,19 +89,20 @@ const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSuccess, onEr
       
     } catch (error: unknown) {
       logger.error('Google sign-in error', error as Error);
-      
-      if (error.message === 'REDIRECT_INITIATED') {
+      const err = error as { message?: string; code?: string };
+
+      if (err.message === 'REDIRECT_INITIATED') {
         setRedirecting(true);
         // Don't call onError for redirect, as it's not really an error
         return;
       }
       
-      if (error.code === 'auth/popup-blocked') {
+      if (err.code === 'auth/popup-blocked') {
         setShowPopupWarning(true);
         setShowInstructions(true);
       }
       
-      onError?.(error.message || 'Google sign-in failed');
+      onError?.(err.message || 'Google sign-in failed');
     } finally {
       setLoading(false);
     }

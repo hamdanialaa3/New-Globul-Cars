@@ -7,8 +7,8 @@ import { useLocation } from 'react-router-dom';
 
 declare global {
   interface Window {
-    fbq: any;
-    _fbq: any;
+    fbq?: any;
+    _fbq?: any;
   }
 }
 

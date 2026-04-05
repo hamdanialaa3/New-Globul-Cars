@@ -452,10 +452,12 @@ export class BulgarianTrustService {
 
         // Keep lightweight recent list (up to 10)
         recent.push({
+          id: docSnap.id,
           rating,
           comment: data.comment || '',
           createdAt: data.createdAt,
-          reviewerId: data.reviewerId || ''
+          reviewerId: data.reviewerId || '',
+          reviewerName: data.reviewerName || 'Anonymous'
         });
       });
 

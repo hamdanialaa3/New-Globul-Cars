@@ -179,7 +179,8 @@ class SocialMediaService {
       }
     } catch (error: unknown) {
       logger.error('Token exchange failed', error as Error, { platform });
-      throw new Error(error.message || 'Failed to exchange token');
+      const message = error instanceof Error ? error.message : 'Failed to exchange token';
+      throw new Error(message);
     }
   }
 

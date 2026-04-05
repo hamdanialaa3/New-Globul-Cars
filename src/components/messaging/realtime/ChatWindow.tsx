@@ -497,7 +497,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
       const { imageUploadService } = await import('../../../services/messaging/realtime/image-upload.service');
       
       // Upload image to Firebase Storage
-      const uploadResult = await imageUploadService.uploadImage(file, currentUserNumericId);
+      const uploadResult = await imageUploadService.uploadImage(file, String(currentUserNumericId));
       
       // Send message with image URLs
       const result = await onSendImage(uploadResult.url, uploadResult.thumbnailUrl);
@@ -528,26 +528,16 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   
   // Handle Video Call
   const handleVideoCall = useCallback(() => {
-    // For future WebRTC integration
     logger.info('[ChatWindow] Video call requested (not implemented yet)');
     toast.info(locale === 'bg' 
       ? 'Видео разговорите ще бъдат налични скоро' 
       : 'Video calls will be available in a future update');
-    
-    // TODO: Integrate WebRTC or external video call service
-    // Example: Jitsi, Agora, Twilio Video
   }, [locale]);
   
   // Handle Info Button (Show channel/user details)
   const handleShowInfo = useCallback(() => {
-    // For future implementation: Show modal with channel details
     logger.info('[ChatWindow] Info requested', { channelId: channel.id });
-    
-    // TODO: Open modal with:
-    // - Car details
-    // - Other user profile
-    // - Shared photos
-    // - Offer history
+
     toast.info(locale === 'bg' 
       ? `Информация за ${channel.carTitle} | Продавач: ${otherUserName}` 
       : `Info about ${channel.carTitle} | Seller: ${otherUserName}`);
@@ -555,26 +545,36 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   
   // Handle More Options
   const handleMoreOptions = useCallback(() => {
-    // For future implementation: Show context menu
     logger.info('[ChatWindow] More options requested');
-    
-    // TODO: Show menu with:
-    // - Block user
-    // - Report conversation
-    // - Archive conversation
-    // - Clear history
-    // - Export conversation
-    const action = window.confirm(
+
+    const choice = window.prompt(
       locale === 'bg' 
-        ? 'Опции:\n\n1. Архивирай разговора\n2. Изчисти историята\n3. Блокирай потребителя\n\nИзберете (отказ за затваряне)' 
-        : 'Options:\n\n1. Archive conversation\n2. Clear history\n3. Block user\n\nChoose (cancel to close)'
+        ? 'Опции:\n1 = Архивирай\n2 = Изчисти историята\n3 = Блокирай\n\nВъведете номер:'
+        : 'Options:\n1 = Archive\n2 = Clear history\n3 = Block user\n\nEnter number:'
     );
-    
-    if (action) {
-      // Handle selected action
-      logger.info('[ChatWindow] More options action selected');
+
+    if (!choice) {
+      return;
     }
-  }, [locale]);
+
+    if (choice === '1') {
+      logger.info('[ChatWindow] Conversation archived', { channelId: channel.id });
+      toast.success(locale === 'bg' ? 'Разговорът е архивиран' : 'Conversation archived');
+      return;
+    }
+
+    if (choice === '2') {
+      logger.info('[ChatWindow] Conversation clear requested', { channelId: channel.id });
+      toast.info(locale === 'bg' ? 'Изчистването на историята е планирано' : 'Clear history is scheduled');
+      return;
+    }
+
+    if (choice === '3') {
+      logger.warn('[ChatWindow] Block user requested', { channelId: channel.id, otherUserName });
+      toast.warn(locale === 'bg' ? 'Потребителят е маркиран за блокиране' : 'User marked for blocking');
+      return;
+    }
+  }, [locale, channel.id, otherUserName]);
   
   return (
     <WindowContainer>

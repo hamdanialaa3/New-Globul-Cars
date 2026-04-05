@@ -239,7 +239,7 @@ export const useAdvancedSearch = () => {
       priceTo: filters.priceTo || prev.priceTo,
       firstRegistrationFrom: filters.yearFrom || prev.firstRegistrationFrom,
       firstRegistrationTo: filters.yearTo || prev.firstRegistrationTo,
-      city: filters.city || filters.locationData?.cityName || prev.city || '',
+      city: filters.city || prev.city || '',
       fuelType: filters.fuelType || prev.fuelType,
       transmission: filters.transmission || prev.transmission,
       searchDescription: filters.text || prev.searchDescription
@@ -253,7 +253,7 @@ export const useAdvancedSearch = () => {
     setIsSearching(true);
 
     try {
-      logger.info('🔍 Starting Algolia search with filters:', searchData);
+      logger.info('🔍 Starting Algolia search with filters:', searchData as Record<string, unknown>);
       
       // Use Algolia search service with sorting
       const response = await algoliaSearchService.searchCars(searchData, {

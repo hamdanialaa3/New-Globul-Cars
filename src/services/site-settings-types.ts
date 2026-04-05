@@ -26,6 +26,7 @@ export interface SiteSettings {
     favorites: boolean;
     comparisons: boolean;
     priceAlerts: boolean;
+    userSearch: boolean;
   };
 
   // ─── Upload Limits ───

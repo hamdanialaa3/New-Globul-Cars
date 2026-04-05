@@ -54,7 +54,7 @@ const ImageOptimizer: React.FC<ImageOptimizerProps> = ({
           setOptimizedSrc(src);
         }
       } catch (error) {
-        logger.warn('Image optimization failed, using original:', error);
+        logger.warn('Image optimization failed, using original', { error });
         setOptimizedSrc(src);
       }
     };
@@ -67,11 +67,11 @@ const ImageOptimizer: React.FC<ImageOptimizerProps> = ({
   };
 
   const handleError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    const error = e.currentTarget.error;
+    const errorEvent = e.nativeEvent as ErrorEvent | undefined;
     logger.warn('Image load error:', {
       src: optimizedSrc,
       originalSrc: src,
-      errorType: error?.message || 'Unknown error'
+      errorType: errorEvent?.message || 'Unknown error'
     });
     
     // Fallback to original image if optimization fails

@@ -2,11 +2,26 @@
  * Billing Service
  * خدمة الفوترة
  *
- * This module provides the main orchestrator for the billing system using the singleton pattern.
- * يوفر هذا الوحدة المنسق الرئيسي لنظام الفوترة باستخدام نمط الـ singleton.
+ * @deprecated This module is the legacy billing orchestrator and will be removed
+ * in a future release. Migrate to the new modular billing services:
+ *
+ * - Subscriptions  → `src/services/billing/subscription-service.ts`
+ * - Micro-transactions / promotions → `src/services/billing/micro-transactions.service.ts`
+ * - Churn prevention → `src/services/billing/churn-prevention.service.ts`
+ * - Free-plan activation → `src/services/billing/free-plan-activation.service.ts`
+ *
+ * See `MIGRATION_GUIDE.md` for step-by-step migration instructions.
+ *
+ * يوفر هذا الوحدة المنسق الرئيسي للفوترة (legacy) — يُرجى الترحيل إلى الخدمات الجديدة المذكورة أعلاه.
  */
 
-import { StripeClientOperations, SubscriptionOperations, StripeConnectOperations, InvoiceOperations, UtilityOperations } from './billing-operations';
+import {
+  StripeClientOperations,
+  SubscriptionOperations,
+  StripeConnectOperations,
+  InvoiceOperations,
+  UtilityOperations,
+} from './billing-operations';
 import { BILLING_TIERS } from './billing-data';
 import {
   BillingTier,
@@ -70,7 +85,10 @@ class UnifiedBillingService {
    * تأكيد دفع البطاقة
    */
   async confirmCardPayment(clientSecret: string, paymentDetails: any) {
-    return StripeClientOperations.confirmCardPayment(clientSecret, paymentDetails);
+    return StripeClientOperations.confirmCardPayment(
+      clientSecret,
+      paymentDetails
+    );
   }
 
   /**
@@ -87,8 +105,18 @@ class UnifiedBillingService {
    * Create checkout session
    * إنشاء جلسة دفع
    */
-  async createCheckoutSession(tierId: string, userId: string, successUrl: string, cancelUrl: string) {
-    return SubscriptionOperations.createCheckoutSession(tierId, userId, successUrl, cancelUrl);
+  async createCheckoutSession(
+    tierId: string,
+    userId: string,
+    successUrl: string,
+    cancelUrl: string
+  ) {
+    return SubscriptionOperations.createCheckoutSession(
+      tierId,
+      userId,
+      successUrl,
+      cancelUrl
+    );
   }
 
   /**
@@ -142,7 +170,11 @@ class UnifiedBillingService {
     businessName?: string,
     businessType: BusinessType = 'individual'
   ) {
-    return StripeConnectOperations.createSellerAccount(email, businessName, businessType);
+    return StripeConnectOperations.createSellerAccount(
+      email,
+      businessName,
+      businessType
+    );
   }
 
   /**
@@ -202,7 +234,9 @@ class UnifiedBillingService {
  * Generate invoice
  * إنشاء فاتورة
  */
-export const generateInvoice = async (data: InvoiceGenerationParams): Promise<InvoiceResponse> => {
+export const generateInvoice = async (
+  data: InvoiceGenerationParams
+): Promise<InvoiceResponse> => {
   return InvoiceOperations.generateInvoice(data);
 };
 
@@ -210,7 +244,9 @@ export const generateInvoice = async (data: InvoiceGenerationParams): Promise<In
  * Get invoices
  * الحصول على الفواتير
  */
-export const getInvoices = async (params?: InvoiceQueryParams): Promise<InvoicesResponse> => {
+export const getInvoices = async (
+  params?: InvoiceQueryParams
+): Promise<InvoicesResponse> => {
   return InvoiceOperations.getInvoices(params);
 };
 
@@ -218,7 +254,9 @@ export const getInvoices = async (params?: InvoiceQueryParams): Promise<Invoices
  * Get invoice
  * الحصول على فاتورة
  */
-export const getInvoice = async (invoiceId: string): Promise<InvoiceResponse> => {
+export const getInvoice = async (
+  invoiceId: string
+): Promise<InvoiceResponse> => {
   return InvoiceOperations.getInvoice(invoiceId);
 };
 
@@ -267,7 +305,10 @@ export const calculateInvoiceTotal = (items: any[]) => {
  * Format currency for invoices
  * تنسيق العملة للفواتير
  */
-export const formatCurrency = (amount: number, currency: 'BGN' | 'EUR' = 'BGN'): string => {
+export const formatCurrency = (
+  amount: number,
+  currency: 'BGN' | 'EUR' = 'BGN'
+): string => {
   return UtilityOperations.formatInvoiceCurrency(amount, currency);
 };
 
@@ -291,17 +332,33 @@ export const getInvoiceStatusColor = (status: string): string => {
  * Get invoice status text
  * الحصول على نص حالة الفاتورة
  */
-export const getInvoiceStatusText = (status: string, language: 'bg' | 'en' = 'bg'): string => {
+export const getInvoiceStatusText = (
+  status: string,
+  language: 'bg' | 'en' = 'bg'
+): string => {
   return UtilityOperations.getInvoiceStatusText(status, language);
 };
 
 // ==================== EXPORTS ====================
 
+/**
+ * @deprecated Use `subscriptionService` from `@/services/billing/subscription-service` instead.
+ */
 export const unifiedBillingService = UnifiedBillingService.getInstance();
 
-// Legacy exports for backward compatibility
+/**
+ * @deprecated Use `subscriptionService` from `@/services/billing/subscription-service` instead.
+ */
 export const stripeService = unifiedBillingService;
+/**
+ * @deprecated Use `subscriptionService` from `@/services/billing/subscription-service` instead.
+ */
 export const stripeClientService = unifiedBillingService;
-export const getStripeInstance = () => unifiedBillingService.getStripeInstance();
+/**
+ * @deprecated Use `subscriptionService` from `@/services/billing/subscription-service` instead.
+ */
+export const getStripeInstance = () =>
+  unifiedBillingService.getStripeInstance();
 
+/** @deprecated */
 export default unifiedBillingService;

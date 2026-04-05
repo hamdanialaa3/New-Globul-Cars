@@ -1,7 +1,7 @@
 // AI Chatbot Component
 // مساعد الذكاء الاصطناعي للمحادثة
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { AIChatMessage, AIChatContext } from '../../types/ai.types';
@@ -43,22 +43,11 @@ export const AIChatbot: React.FC<Props> = ({
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // AI Chatbot gating — only dealer/company with canUseChatbot
-  if (!permissions.canUseChatbot) {
-    return null;
-  }
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
 
-  useEffect(() => {
-    if (isOpen && messages.length === 0) {
-      addWelcomeMessage();
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const addWelcomeMessage = () => {
+  const addWelcomeMessage = useCallback(() => {
     const welcomeMessages = {
       bg: 'Здравейте! Как мога да ви помогна днес? Попитайте ме за коли, цени или каквото и да е друго!',
       en: 'Hello! How can I help you today? Ask me about cars, prices, or anything else!'
@@ -69,11 +58,22 @@ export const AIChatbot: React.FC<Props> = ({
       content: welcomeMessages[language as keyof typeof welcomeMessages] || welcomeMessages.en,
       timestamp: Date.now()
     }]);
-  };
+  }, [language]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  useEffect(() => {
+    if (isOpen && messages.length === 0) {
+      addWelcomeMessage();
+    }
+  }, [isOpen, addWelcomeMessage]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
+
+  // AI Chatbot gating — only dealer/company with canUseChatbot
+  if (!permissions.canUseChatbot) {
+    return null;
+  }
 
   const handleSend = async () => {
     if (!input.trim() || loading) return;

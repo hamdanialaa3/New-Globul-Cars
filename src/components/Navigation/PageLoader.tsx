@@ -25,7 +25,7 @@ const PageLoader: React.FC = () => {
     setVisible(true);
     setProgress(0);
 
-    logger.debug('[PageLoader] Started for route:', location.pathname);
+    logger.debug('[PageLoader] Started for route', { pathname: location.pathname });
 
     let currentProgress = 0;
     const interval = setInterval(() => {
@@ -41,7 +41,7 @@ const PageLoader: React.FC = () => {
         // Hide loader with slight delay for smooth transition
         setTimeout(() => {
           setVisible(false);
-          logger.debug('[PageLoader] Completed for route:', location.pathname);
+          logger.debug('[PageLoader] Completed for route', { pathname: location.pathname });
         }, 200);
       } else {
         setProgress(currentProgress);

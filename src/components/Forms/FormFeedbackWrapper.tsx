@@ -11,7 +11,7 @@
 import React, { ReactNode, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { logger } from '@/services/logger-service';
-import { Toast } from '@/components/Toast';
+import { toast } from 'react-toastify';
 
 // ============================================================================
 // TYPES
@@ -197,7 +197,7 @@ export const FormFeedbackWrapper: React.FC<FormFeedbackWrapperProps> = ({
         logger.info('Form submitted successfully', { duration: successDuration });
 
         // Show success toast
-        Toast.success(successMessage);
+        toast.success(successMessage);
         onSuccess?.();
 
         // Auto-reset after duration
@@ -218,7 +218,7 @@ export const FormFeedbackWrapper: React.FC<FormFeedbackWrapperProps> = ({
         });
 
         // Show error toast
-        Toast.error(errorMessage);
+        toast.error(errorMessage);
         onError?.(error);
       }
     },

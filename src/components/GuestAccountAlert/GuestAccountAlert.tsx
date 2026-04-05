@@ -210,7 +210,7 @@ export const GuestAccountAlert: React.FC<GuestAccountAlertProps> = ({ dismissibl
         return;
       }
 
-      logger.debug('[GuestAlert] Checking guest status for user:', currentUser.uid);
+      logger.debug('[GuestAlert] Checking guest status for user', { uid: currentUser.uid });
 
       // Check if user is anonymous (Firebase guest)
       if (currentUser.isAnonymous) {

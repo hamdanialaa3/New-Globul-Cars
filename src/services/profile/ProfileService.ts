@@ -416,6 +416,9 @@ export class ProfileService {
         canBulkEdit: false,
         canImportCSV: false,
         canUseAPI: false,
+        canUseAI: false,
+        canUseChatbot: false,
+        canEditMakeModel: false,
         themeMode: 'standard'
       };
 

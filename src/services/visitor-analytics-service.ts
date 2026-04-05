@@ -110,6 +110,7 @@ class VisitorAnalyticsService {
         return {
           path: data.path || '/',
           sessionId: data.sessionId || 'unknown',
+          userAgent: data.userAgent || '',
           deviceType: data.deviceType || 'desktop',
           referrer: data.referrer || 'direct',
           geoLocation: data.geoLocation,

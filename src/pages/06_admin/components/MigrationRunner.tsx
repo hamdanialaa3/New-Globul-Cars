@@ -115,7 +115,7 @@ export const MigrationRunner: React.FC = () => {
       serviceLogger.info('Starting migration from Admin Panel');
       const stats = await migrateLegacyCars();
       setResult(stats);
-      serviceLogger.info('Migration completed', stats);
+      serviceLogger.info('Migration completed', stats as Record<string, unknown>);
     } catch (err) {
       const errorMessage = (err as Error).message;
       setError(errorMessage);

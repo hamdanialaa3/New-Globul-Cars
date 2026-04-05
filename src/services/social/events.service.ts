@@ -138,8 +138,8 @@ class EventsService {
         location: {
           ...eventData.location,
           coordinates: new GeoPoint(
-            eventData.locationData?.coordinates.lat,
-            eventData.locationData?.coordinates.lng
+            eventData.location.coordinates.lat,
+            eventData.location.coordinates.lng
           )
         },
         startDate: Timestamp.fromDate(eventData.startDate),
@@ -187,7 +187,7 @@ class EventsService {
         q = query(
           collection(db, this.collectionName),
           where('status', '==', 'upcoming'),
-          where('locationData.cityId', '==', cityFilter),
+          where('location.city', '==', cityFilter),
           where('startDate', '>', Timestamp.fromDate(now)),
           orderBy('startDate', 'asc'),
           limit(limitCount)
@@ -341,7 +341,7 @@ class EventsService {
     
     if (Object.keys(updates).length > 0) {
       updates.updatedAt = serverTimestamp();
-      await updateDoc(eventRef, updates);
+      await updateDoc(eventRef, updates as Record<string, any>);
     }
   }
 

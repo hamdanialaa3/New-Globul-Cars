@@ -483,7 +483,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   const handleEmojiSelect = useCallback((emoji: CarEmoji) => {
     const IconComponent = emoji.icon;
     // Insert emoji as icon name in brackets, e.g., [Car] or [Fuel]
-    const emojiText = `[${emoji.labelBg}] `;
+    const emojiText = `[${emoji.label}] `;
     setMessage(prev => prev + emojiText);
     
     // Focus back on input

@@ -90,7 +90,9 @@ export const verifyVINExternal = functions
         .get();
 
       if (cacheSnap.exists) {
-        const cached = cacheSnap.data() as { cachedAt?: string; data?: unknown } | undefined;
+        const cached = cacheSnap.data() as
+          | { cachedAt?: string; data?: unknown }
+          | undefined;
 
         if (cached?.cachedAt && cached.data !== undefined) {
           const cacheAge = Date.now() - new Date(cached.cachedAt).getTime();
@@ -232,6 +234,8 @@ function decodeVINLocally(vin: string): VINDecodingResult {
 
   // Simplified make/model lookup from WMI + VDS
   const makeModel = getMakeModelFromWMI(wmi);
+  const engineCode = vds.charAt(5);
+  const estimatedEngineCC = inferEngineCCFromCode(engineCode, vds);
 
   return {
     isValid: true,
@@ -240,9 +244,29 @@ function decodeVINLocally(vin: string): VINDecodingResult {
     year,
     bodyType: vds.charAt(2) === 'S' ? 'Sedan' : 'Other',
     engineType: vds.charAt(3) === 'P' ? 'Petrol' : 'Diesel',
-    engineCC: 2000, // Placeholder
+    engineCC: estimatedEngineCC,
     fuelType: vds.charAt(4) === 'E' ? 'Electric' : 'ICE',
   };
+}
+
+function inferEngineCCFromCode(engineCode: string, vds: string): number {
+  if (/E/i.test(vds)) {
+    return 0; // EV
+  }
+
+  const map: Record<string, number> = {
+    A: 1000,
+    B: 1200,
+    C: 1400,
+    D: 1600,
+    E: 1800,
+    F: 2000,
+    G: 2200,
+    H: 2500,
+    J: 3000,
+  };
+
+  return map[engineCode?.toUpperCase?.() || ''] || 1800;
 }
 
 /**

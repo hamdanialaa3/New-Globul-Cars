@@ -266,7 +266,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
           
           <InfoItem>
             <MapPin />
-            {event.locationData?.cityName}
+            {event.location?.city}
           </InfoItem>
           
           <InfoItem>

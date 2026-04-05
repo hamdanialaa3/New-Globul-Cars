@@ -2,9 +2,11 @@
 // Main profile overview tab
 // Phase 0 Day 2: Extracted from index.tsx
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import styled from 'styled-components';
+
+const RatingSummary = React.lazy(() => import('../../../../../components/review/RatingSummary'));
 import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
 import type { ProfileTheme } from '../../../../../contexts/ProfileTypeContext';
 import ProfileDashboard from '../../../../../components/Profile/ProfileDashboard';
@@ -119,6 +121,11 @@ export const ProfileOverview: React.FC<ProfileOverviewProps> = (props) => {
       <CarStorySection userId={user.uid} isOwnProfile={isOwnProfile} />
       <SuccessStoriesSection userId={user.uid} isOwnProfile={isOwnProfile} />
       <TrustNetworkSection userId={user.uid} isOwnProfile={isOwnProfile} />
+
+      {/* My Reviews Summary */}
+      <Suspense fallback={null}>
+        <RatingSummary userId={user.uid} />
+      </Suspense>
 
       {/* Profile Enhancements - Phase 2 */}
       <GroupsSection userId={user.uid} isOwnProfile={isOwnProfile} />

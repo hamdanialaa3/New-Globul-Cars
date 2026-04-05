@@ -68,7 +68,8 @@ const serviceAccount = loadServiceAccount();
 if (!admin.apps.length) {
     admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
-        databaseURL: `https://${serviceAccount.project_id}.firebaseio.com`
+        // European region RTDB URL format — us-central1 would use .firebaseio.com
+        databaseURL: `https://${serviceAccount.project_id}-default-rtdb.europe-west1.firebasedatabase.app`
     });
 }
 

@@ -191,7 +191,7 @@ const DistanceIndicator: React.FC<DistanceIndicatorProps> = ({
       let carCoords = carLocation.coordinates;
       if (!carCoords) {
         // Geocode the city name
-        const address = `${carLocation.locationData?.cityName}, ${carLocation.region || ''}, Bulgaria`;
+        const address = `${carLocation.city}, ${carLocation.region || ''}, Bulgaria`;
         const geocoded = await googleMapsService.geocodeAddress(address);
         carCoords = geocoded || undefined;
       }

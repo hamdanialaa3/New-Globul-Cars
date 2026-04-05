@@ -14,7 +14,7 @@ import {
   Car, DollarSign, Clock, Users, BarChart3, PieChart,
   ArrowUpRight, ArrowDownRight, Calendar, ChevronRight,
   Lightbulb, AlertCircle, CheckCircle, RefreshCw, Target,
-  Award, Zap, Crown, Activity
+  Award, Zap, Crown, Activity, Trophy
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 

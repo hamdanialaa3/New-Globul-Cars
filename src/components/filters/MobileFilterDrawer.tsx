@@ -522,11 +522,11 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
 
           {/* Region */}
           <FilterSection>
-            <SectionTitle>{t('filters.locationData?.regionName')}</SectionTitle>
+            <SectionTitle>{t('filters.region')}</SectionTitle>
             <Input
               type="text"
               placeholder={t('filters.selectRegion')}
-              value={filters.locationData?.regionName || ''}
+              value={filters.region || ''}
               onChange={(e) => handleChange('region', e.target.value)}
             />
           </FilterSection>

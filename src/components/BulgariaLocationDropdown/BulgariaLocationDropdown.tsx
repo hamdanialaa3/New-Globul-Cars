@@ -295,7 +295,10 @@ export const BulgariaLocationDropdown: React.FC<BulgariaLocationDropdownProps> =
       logger.info('[BulgariaLocationDropdown] Starting to load provinces...');
       setIsLoadingProvinces(true);
       const allProvinces = await bulgariaLocationsService.getAllProvinces();
-      logger.info('[BulgariaLocationDropdown] Loaded provinces:', allProvinces.length, allProvinces);
+      logger.info('[BulgariaLocationDropdown] Loaded provinces', {
+        count: allProvinces.length,
+        provinces: allProvinces,
+      });
       setProvinces(allProvinces);
     } catch (error) {
       logger.error('[BulgariaLocationDropdown] Failed to load provinces:', error);

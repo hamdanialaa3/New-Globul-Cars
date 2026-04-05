@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "types": ["vitest/globals", "@testing-library/jest-dom"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -27,6 +23,7 @@
     "paths": {
       "@/services/*": ["services/*"],
       "@/components/*": ["components/*"],
+      "@/contexts": ["contexts/index"],
       "@/contexts/*": ["contexts/*"],
       "@/config/*": ["config/*"],
       "@/utils/*": ["utils/*"],
@@ -44,12 +41,13 @@
       "@globul-cars/services/*": ["../packages/services/src/*"]
     }
   },
-  "include": [
-    "src",
-    "src/types"
-  ],
+  "include": ["src", "src/types"],
   "exclude": [
     "src/locales/translations.ts",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/__tests__/**",
+    "src/**/__mocks__/**",
     "../DDD/**",
     "../DEPRECATED_FILES_BACKUP/**",
     "../dist/**"

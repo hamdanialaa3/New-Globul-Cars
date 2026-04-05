@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { formatDistanceToNow } from 'date-fns';
-import bg from 'date-fns/locale/bg';
+import { bg } from 'date-fns/locale';
 import { MessagingColors, OnlineDot, TypingDot } from './messaging-styles';
 import { presenceMonitor } from '@/services/messaging/core';
 import { logger } from '@/services/logger-service';

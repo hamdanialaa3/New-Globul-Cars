@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { adminService } from '@/services/admin/admin-verification.service';
-import { User } from '@/types/user/bulgarian-user.types';
+import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
 import { Search, Shield, Lock, Mail, ChevronRight, AlertTriangle } from 'lucide-react';
 import { toast } from 'react-toastify';
 
@@ -12,6 +12,8 @@ const Container = styled.div`
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border-secondary);
 `;
+
+type User = BulgarianUser;
 
 const SearchBar = styled.div`
   display: flex;

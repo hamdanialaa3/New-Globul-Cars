@@ -46,7 +46,7 @@ export class UsersReportService {
       }
 
       if (filters?.city) {
-        q = query(q, where('city', '==', filters.locationData?.cityName));
+        q = query(q, where('city', '==', filters.city));
       }
 
       if (filters?.verifiedOnly) {

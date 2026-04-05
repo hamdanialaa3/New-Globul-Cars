@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { ArrowRight, CheckCircle, Info } from 'lucide-react';
-import type { ProfileType } from '../../contexts/ProfileTypeContext';
+import type { ProfileType } from '../../types/user/bulgarian-user.types';
 
 // ==================== TYPES ====================
 

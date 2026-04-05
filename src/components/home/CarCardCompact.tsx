@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import { MapPin, Heart } from 'lucide-react';
 import { CarSummary } from '../../types/car';
 import { getCarDetailsUrl } from '../../utils/routing-utils';
+import { useFavorites } from '../../hooks/useFavorites';
 
 // ============================================================================
 // STYLED COMPONENTS
@@ -219,6 +220,8 @@ interface Props {
 }
 
 export const CarCardCompact: React.FC<Props> = ({ car }) => {
+  const { isFavorite, toggleFavorite } = useFavorites();
+
   // Constitution-compliant URL: /car/{sellerNumericId}/{carNumericId}
   const href = (car.sellerNumericId && car.carNumericId)
     ? getCarDetailsUrl({ sellerNumericId: car.sellerNumericId, carNumericId: car.carNumericId })
@@ -257,8 +260,28 @@ export const CarCardCompact: React.FC<Props> = ({ car }) => {
   const handleFav = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    // TODO: integrate with useFavorites hook
+
+    const [make = '', model = ''] = car.title.split(' ');
+    const year = Number((car.firstRegistration || '').slice(0, 4)) || new Date().getFullYear();
+    const price = car.priceTotal || car.priceMonthly || 0;
+
+    if (!car.sellerNumericId || !car.carNumericId) {
+      return;
+    }
+
+    void toggleFavorite(car.id, {
+      make,
+      model,
+      year,
+      price,
+      currency: car.priceCurrency,
+      sellerNumericId: car.sellerNumericId,
+      carNumericId: car.carNumericId,
+      primaryImage: car.imageUrl,
+    });
   };
+
+  const isSaved = isFavorite(car.id);
 
   return (
     <Card to={href}>
@@ -267,7 +290,7 @@ export const CarCardCompact: React.FC<Props> = ({ car }) => {
         <Image src={car.imageUrl} alt={car.title} loading="lazy" />
         {renderImageBadge()}
         <FavBtn onClick={handleFav} aria-label="Save to favorites">
-          <Heart size={16} />
+          <Heart size={16} fill={isSaved ? 'currentColor' : 'none'} />
         </FavBtn>
       </ImageWrap>
 

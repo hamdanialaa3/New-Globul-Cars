@@ -5,10 +5,17 @@
 
 import { logger } from './logger-service';
 import { socialMediaCache } from './cache-service';
+import type { FirebaseApp } from 'firebase/app';
+import type { Functions, HttpsCallable } from 'firebase/functions';
 
 // Lightweight verifier for opaque ephemeral tokens issued by backend
 // Full cryptographic verification intentionally server-side; client only parses base64 segment for exp & platform to fail-fast.
-interface ParsedEphemeral { platform?: string; exp?: number; iat?: number; ops?: string[]; }
+interface ParsedEphemeral {
+  platform?: string;
+  exp?: number;
+  iat?: number;
+  ops?: string[];
+}
 function parseEphemeral(token: string): ParsedEphemeral | null {
   try {
     const parts = token.split('.');
@@ -31,8 +38,17 @@ function parseEphemeral(token: string): ParsedEphemeral | null {
   }
 }
 // Lazy import firebase functions to avoid hard dependency during SSR or build phases
-let functionsModule: Record<string, unknown> = null;
-let httpsCallable: Record<string, unknown> = null;
+let functionsModule:
+  | {
+      getFunctions: (app?: FirebaseApp, regionOrCustomDomain?: string) => Functions;
+    }
+  | null = null;
+let httpsCallable:
+  | (<RequestData = unknown, ResponseData = unknown>(
+      functionsInstance: Functions,
+      name: string
+    ) => HttpsCallable<RequestData, ResponseData>)
+  | null = null;
 async function loadFunctions() {
   if (!functionsModule) {
     try {
@@ -63,6 +79,15 @@ export interface SocialToken {
   wrapped?: boolean;
 }
 
+interface BackendTokenPayload {
+  token?: string;
+  issuedAt?: number;
+  expiresIn?: number;
+  ops?: string[];
+  wrapped?: boolean;
+  rawIncluded?: boolean;
+}
+
 /**
  * SocialTokenProvider
  * Phase 0/1 abstraction layer. Currently uses environment variables as fallback.
@@ -86,7 +111,7 @@ export class SocialTokenProvider {
 
   /**
    * Acquire token for a platform with caching.
-   * Strategy order: memory -> cache -> backend (TODO) -> env fallback.
+   * Strategy order: memory -> cache -> backend callable -> env fallback.
    */
   async getToken(opts: TokenAcquisitionOptions): Promise<SocialToken | null> {
     const { platform, forceRefresh } = opts;
@@ -112,27 +137,38 @@ export class SocialTokenProvider {
         if (app) {
           const f = functionsModule.getFunctions(app, regionFn);
           const callable = httpsCallable(f, 'getSocialAccessToken');
-          const result: Record<string, unknown> = await callable({ platform });
-          if (result?.data?.token) {
+          const result = (await callable({ platform })) as {
+            data?: BackendTokenPayload;
+          };
+          const payload = result?.data;
+          if (payload?.token) {
             const backendToken: SocialToken = {
               platform,
-              token: result.data.token,
-              issuedAt: result.data.issuedAt || Date.now(),
-              expiresAt: result.data.expiresIn ? Date.now() + result.data.expiresIn * 1000 : undefined,
+              token: payload.token,
+              issuedAt: payload.issuedAt || Date.now(),
+              expiresAt: payload.expiresIn
+                ? Date.now() + payload.expiresIn * 1000
+                : undefined,
               source: 'backend',
-              ops: result.data.ops,
-              wrapped: !!result.data.wrapped
+              ops: payload.ops,
+              wrapped: !!payload.wrapped,
             };
 
             // If wrapped & raw hidden, attempt lightweight structural/expiry validation
-            if (backendToken.wrapped && result.data.rawIncluded === false) {
+            if (backendToken.wrapped && payload.rawIncluded === false) {
               const parsed = parseEphemeral(backendToken.token);
               if (parsed?.exp && Date.now() > parsed.exp) {
-                this.logger.warn('Received already expired ephemeral token (client reject)', { platform });
+                this.logger.warn(
+                  'Received already expired ephemeral token (client reject)',
+                  { platform }
+                );
                 throw new Error('Expired ephemeral token');
               }
               if (parsed?.platform && parsed.platform !== platform) {
-                this.logger.warn('Ephemeral token platform mismatch', { expected: platform, got: parsed.platform });
+                this.logger.warn('Ephemeral token platform mismatch', {
+                  expected: platform,
+                  got: parsed.platform,
+                });
                 throw new Error('Platform mismatch');
               }
               if (!parsed?.ops || parsed.ops.length === 0) {
@@ -140,20 +176,29 @@ export class SocialTokenProvider {
               } else {
                 backendToken.ops = parsed.ops;
               }
-            } else if (backendToken.wrapped && result.data.rawIncluded) {
+            } else if (backendToken.wrapped && payload.rawIncluded) {
               // Misconfiguration if HIDE_RAW_TOKENS expected in production
               if (process.env.NODE_ENV === 'production') {
-                this.logger.error('Security warning: wrapped token delivered with rawIncluded=true in production');
+                this.logger.error(
+                  'Security warning: wrapped token delivered with rawIncluded=true in production'
+                );
               }
             }
             this.inMemory.set(platform, backendToken);
-            socialMediaCache.set(cacheKey, backendToken, (result.data.expiresIn || 600) * 1000);
+            socialMediaCache.set(
+              cacheKey,
+              backendToken,
+              (payload.expiresIn || 600) * 1000
+            );
             return backendToken;
           }
         }
       }
     } catch (e) {
-      this.logger.debug('Backend token callable unavailable, falling back to env', { platform });
+      this.logger.debug(
+        'Backend token callable unavailable, falling back to env',
+        { platform }
+      );
     }
 
     const envToken = this.readEnv(platform);
@@ -162,7 +207,7 @@ export class SocialTokenProvider {
         platform,
         token: envToken,
         issuedAt: Date.now(),
-        source: 'env'
+        source: 'env',
       };
       this.inMemory.set(platform, token);
       // short cache TTL (5 min) to allow rotation
@@ -183,11 +228,15 @@ export class SocialTokenProvider {
     // In production, tokens come exclusively from the backend Cloud Function
     // (getSocialAccessToken callable above). The env fallback is disabled.
     if (import.meta.env.PROD) {
-      this.logger.warn('Env token fallback disabled in production — use backend endpoint');
+      this.logger.warn(
+        'Env token fallback disabled in production — use backend endpoint'
+      );
       return null;
     }
     // In development ONLY — allow env fallback for local testing with a warning
-    this.logger.warn(`⚠️ DEV ONLY: Using env token fallback for ${_platform}. DO NOT use in production.`);
+    this.logger.warn(
+      `⚠️ DEV ONLY: Using env token fallback for ${_platform}. DO NOT use in production.`
+    );
     return null; // Return null even in dev to force backend usage
   }
 }

@@ -217,6 +217,13 @@ export const AIAnalysisModal: React.FC<AIAnalysisModalProps> = ({
   const [priceEstimates, setPriceEstimates] = useState<PriceEstimate[]>([]);
   const [equipmentSuggestions, setEquipmentSuggestions] = useState<EquipmentSuggestions | null>(null);
 
+  const t = {
+    title: {
+      bg: 'AI Анализ на Автомобил',
+      en: 'AI Car Analysis'
+    }
+  };
+
   // AI gating — only dealer/company with canUseAI can access
   if (!permissions.canUseAI) {
     const gateMsg = {
@@ -257,13 +264,6 @@ export const AIAnalysisModal: React.FC<AIAnalysisModalProps> = ({
       </AnimatePresence>
     );
   }
-
-  const t = {
-    title: {
-      bg: 'AI Анализ на Автомобил',
-      en: 'AI Car Analysis'
-    }
-  };
 
   const handleUploadComplete = (images: File[]) => {
     setUploadedImages(images);

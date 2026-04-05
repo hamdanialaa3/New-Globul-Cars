@@ -40,20 +40,23 @@ export async function findComparableSales(
     const comparables: MarketComparable[] = [];
 
     comparableSnapshot.forEach((doc) => {
-      const soldCar = doc.data();
-      const similarity = calculateSimilarity(car, soldCar);
+      const soldCar = doc.data() as Record<string, unknown>;
+      const similarity = calculateSimilarity(
+        car,
+        soldCar as { year: number; mileage: number; price?: number }
+      );
 
       if (similarity > SIMILARITY_THRESHOLDS.MIN_SIMILARITY) {
         comparables.push({
           id: doc.id,
-          make: soldCar.make,
-          model: soldCar.model,
-          year: soldCar.year,
-          mileage: soldCar.mileage,
-          price: soldCar.salePrice,
-          saleDate: soldCar.saleDate,
-          location: soldCar.location || 'Bulgaria',
-          condition: soldCar.condition,
+          make: String(soldCar.make || ''),
+          model: String(soldCar.model || ''),
+          year: Number(soldCar.year || 0),
+          mileage: Number(soldCar.mileage || 0),
+          price: Number(soldCar.salePrice || 0),
+          saleDate: soldCar.saleDate as Timestamp,
+          location: String(soldCar.location || 'Bulgaria'),
+          condition: String(soldCar.condition || 'used'),
           similarity
         });
       }
@@ -78,7 +81,7 @@ export function calculateMarketValue(
   comparables: MarketComparable[]
 ): number {
   if (comparables.length === 0) {
-    return calculateBaseMarketValue(car as { make: string; model: string; year: number });
+    return calculateBaseMarketValue({ make: 'Unknown', model: 'Unknown', year: car.year });
   }
 
   let totalWeightedPrice = 0;

@@ -77,6 +77,6 @@ export async function deleteAccount(options?: ReauthOptions): Promise<{ success:
     if (firebaseError?.code === 'REAUTH_REQUIRED' || firebaseError?.code === 'auth/requires-recent-login') {
       return { success: false, reauthNeeded: true, error: firebaseError?.message || 'Unknown error' };
     }
-    return { success: false, error: err?.message || 'Unknown error' };
+    return { success: false, error: firebaseError?.message || 'Unknown error' };
   }
 }

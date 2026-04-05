@@ -2,7 +2,7 @@
  * ProfileLocationMap Component
  * خريطة موقع المستخدم في البروفايل العام
  * تعرض الموقع التقريبي إذا كان متوفراً، أو بلغاريا كاملة إذا لم يكن
- * يستخدم StaticMapEmbed مثل صفحة الإعلان
+ * يستخدم OpenStreetMap (مجاني - لا يحتاج API key)
  */
 
 import React, { useState, useEffect } from 'react';
@@ -11,7 +11,6 @@ import { useLanguage } from '../../../../../../contexts/LanguageContext';
 import { useTheme } from '../../../../../../contexts/ThemeContext';
 import { logger } from '../../../../../../services/logger-service';
 import StaticMapEmbed from '../../../../../../components/StaticMapEmbed';
-import { GeocodingService } from '../../../../../../services/geocoding-service';
 import type { BulgarianUser } from '../../../../../../types/user/bulgarian-user.types';
 
 interface ProfileLocationMapProps {
@@ -28,7 +27,23 @@ export const ProfileLocationMap: React.FC<ProfileLocationMapProps> = ({ user }) 
     coordinates?: { lat: number; lng: number };
   } | null>(null);
   const [loading, setLoading] = useState(true);
-  const geocodingService = new GeocodingService();
+
+  /** Nominatim geocoding — free, no API key */
+  const nominatimGeocode = async (query: string): Promise<{ lat: number; lng: number } | null> => {
+    try {
+      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=bg`;
+      const res = await fetch(url, {
+        headers: { 'Accept-Language': 'en', 'User-Agent': 'KoliOne/1.0 (koli.one)' }
+      });
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+      }
+    } catch (err) {
+      logger.error('Nominatim geocoding failed', err as Error);
+    }
+    return null;
+  };
 
   useEffect(() => {
     loadLocation();
@@ -61,15 +76,11 @@ export const ProfileLocationMap: React.FC<ProfileLocationMapProps> = ({ user }) 
 
       // If we have an address, try to geocode it
       if (address) {
-        const geocoded = await geocodingService.geocodeAddress(`${address}, Bulgaria`);
-        if (geocoded && geocoded.latitude && geocoded.longitude) {
+        const geocoded = await nominatimGeocode(`${address}, Bulgaria`);
+        if (geocoded) {
           setLocationData({
-            city: geocoded.city || address,
-            region: geocoded.region,
-            coordinates: {
-              lat: geocoded.latitude,
-              lng: geocoded.longitude
-            }
+            city: address,
+            coordinates: geocoded
           });
           setLoading(false);
           return;
@@ -79,26 +90,16 @@ export const ProfileLocationMap: React.FC<ProfileLocationMapProps> = ({ user }) 
       // Check if user has city information
       if (user.location?.city || user.locationData?.cityName) {
         const cityName = user.location?.city || user.locationData?.cityName || '';
-        const cityAddress = `${cityName}, ${user.location?.region || ''}, Bulgaria`;
-        const geocoded = await geocodingService.geocodeAddress(cityAddress);
-        if (geocoded && geocoded.latitude && geocoded.longitude) {
+        const geocoded = await nominatimGeocode(`${cityName}, Bulgaria`);
+        if (geocoded) {
           setLocationData({
             city: cityName,
-            region: user.location?.region || geocoded.region,
-            coordinates: {
-              lat: geocoded.latitude,
-              lng: geocoded.longitude
-            }
+            region: user.location?.region,
+            coordinates: geocoded
           });
-          setLoading(false);
-          return;
+        } else {
+          setLocationData({ city: cityName, region: user.location?.region });
         }
-        
-        // Even if geocoding fails, use city name
-        setLocationData({
-          city: cityName,
-          region: user.location?.region
-        });
         setLoading(false);
         return;
       }

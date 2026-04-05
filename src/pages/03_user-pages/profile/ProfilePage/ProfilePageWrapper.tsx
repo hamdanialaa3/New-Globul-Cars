@@ -21,7 +21,8 @@ import {
   Mail,
   Phone as PhoneIcon,
   Crown,
-  Heart
+  Heart,
+  Search
 } from 'lucide-react';
 import * as S from './styles';
 import { TabNavigation, TabNavLink, SyncButton, FollowButton } from './TabNavigation.styles';
@@ -91,7 +92,7 @@ const ProfilePageWrapper: React.FC = () => {
   const currentUserNumericId = viewer?.numericId;
 
   // 🔒 Constitution enforcement + validation (extracted to useProfileRouting)
-  const isValidationReady = useConstitutionEnforcement(targetUserId, viewer, activeProfile);
+  const isValidationReady = useConstitutionEnforcement(targetUserId, viewer, activeProfile, loading);
 
   // 🔢 Ensure numeric ID + auto-redirects (extracted to useProfileRouting)
   useNumericIdRedirect(isAccessingOwnProfile, currentUserNumericId, isOwnProfile, loading, refresh);
@@ -455,6 +456,10 @@ const ProfilePageWrapper: React.FC = () => {
                   <Users size={16} />
                   {language === 'bg' ? 'Следвани' : 'Following'}
                 </TabNavLink>
+                <TabNavLink to="/search/users" $themeColor={theme?.primary || '#FF7A2D'}>
+                  <Search size={16} />
+                  {language === 'bg' ? 'Търси хора' : 'Find Users'}
+                </TabNavLink>
               </>
             )}
             {isOwnProfile && (
@@ -482,6 +487,10 @@ const ProfilePageWrapper: React.FC = () => {
                 <TabNavLink to={`${basePath}/following`} $themeColor={theme?.primary || '#FF7A2D'}>
                   <Users size={16} />
                   {language === 'bg' ? 'Следвани' : 'Following'}
+                </TabNavLink>
+                <TabNavLink to="/search/users" $themeColor={theme?.primary || '#FF7A2D'}>
+                  <Search size={16} />
+                  {language === 'bg' ? 'Търси хора' : 'Find Users'}
                 </TabNavLink>
               </>
             )}

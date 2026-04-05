@@ -1,6 +1,6 @@
 // Google Maps Interactive Section for Bulgarian Cities
 // Note: Using @react-google-maps/api Marker component which wraps google.maps.Marker
-// TODO: Migrate to AdvancedMarkerElement when @react-google-maps/api adds support
+// AdvancedMarkerElement migration is deferred until library support is stable in this stack.
 
 import React, { useState, useCallback } from 'react';
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api';

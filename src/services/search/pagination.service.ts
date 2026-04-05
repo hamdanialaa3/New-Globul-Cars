@@ -20,6 +20,12 @@ export interface PaginationState {
   hasPreviousPage: boolean;
   lastDoc: DocumentSnapshot | null;
   firstDoc: DocumentSnapshot | null;
+  /** Alias for currentPage * pageSize offset – used by some components */
+  offset?: number;
+  /** Alias for pageSize – used by some components */
+  limit?: number;
+  /** Alias for totalResults – used by some components */
+  totalItems?: number;
 }
 
 export interface PaginationConfig {

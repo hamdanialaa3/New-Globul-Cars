@@ -31,7 +31,7 @@
 import React, { memo, useState, Suspense } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Heart, Share2, TrendingUp, BookOpen } from 'lucide-react';
+import { MessageSquare, Heart, Share2, TrendingUp, BookOpen, Users } from 'lucide-react';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -328,7 +328,13 @@ const UnifiedSocial: React.FC = memo(() => {
       icon: <TrendingUp size={18} />,
       color: '#f59e0b',
     },
-    // TODO: Implement community stories feature
+    {
+      id: 'community',
+      labelBg: 'Общност',
+      labelEn: 'Community',
+      icon: <Users size={18} />,
+      color: '#8b5cf6',
+    },
   ];
 
   const getViewLabel = (view: SocialViewConfig): string => {

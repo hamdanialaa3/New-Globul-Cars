@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { format } from 'date-fns';
-import bg from 'date-fns/locale/bg';
+import { bg } from 'date-fns/locale';
 import { 
   MessageContainer, 
   BubbleBase, 
@@ -99,8 +99,9 @@ const InteractiveMessageBubble: React.FC<InteractiveMessageBubbleProps> = ({
       case 'offer':
         return (
           <OfferBubble
-            message={message}
-            isOwn={isOwn}
+            offer={(message.metadata?.offer as any) || (message as any)}
+            canRespond={!isSender}
+            isReceiver={!isSender}
           />
         );
       

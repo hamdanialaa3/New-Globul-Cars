@@ -22,6 +22,7 @@ import { collection, getCountFromServer, doc, getDoc, setDoc, serverTimestamp } 
 import { db } from '@/firebase/firebase-config';
 import { getAuth } from 'firebase/auth';
 import { logger } from '@/services/logger-service';
+import { marketingStatusService } from '@/services/marketing-status.service';
 
 const Container = styled.div`
   background: var(--admin-bg-secondary);
@@ -304,12 +305,38 @@ const PlatformStatusDashboard: React.FC = () => {
         latencyMs: latency,
       }, { merge: true });
 
+      // 3b. Check Cloud Functions health via marketing-status service
+      let cfStatus: 'online' | 'warning' | 'offline' = 'online';
+      let cfExtra = 'fire-new-globul';
+      try {
+        const mktStatus = await marketingStatusService.getMarketingStatus();
+        const worstLevel = [
+          mktStatus.sitemap.status,
+          mktStatus.merchantFeed.status,
+          mktStatus.prerender.status,
+        ].reduce<'ok' | 'warning' | 'error' | 'unknown'>((acc, s) => {
+          if (s === 'error') return 'error';
+          if (s === 'warning' && acc !== 'error') return 'warning';
+          return acc;
+        }, 'ok');
+        if (worstLevel === 'error') { cfStatus = 'offline'; cfExtra = 'Functions degraded'; }
+        else if (worstLevel === 'warning') { cfStatus = 'warning'; cfExtra = 'Functions warning'; }
+        else { cfStatus = 'online'; cfExtra = 'All functions healthy'; }
+      } catch (_err) {
+        // Non-critical — keep previous value
+      }
+
       // 4. Update service statuses with real data
       setServices([
         { id: 'firestore', name: 'Firebase Firestore', status: 'online', latency: `${latency}ms`, extra: 'Connected' },
         { id: 'auth', name: 'Firebase Auth', status: getAuth().currentUser ? 'online' : 'warning', latency: '—', extra: getAuth().currentUser?.email || 'No session' },
         { id: 'hosting', name: 'Firebase Hosting', status: 'online', extra: 'koli.one → Live' },
-        { id: 'functions', name: 'Cloud Functions', status: 'online', extra: 'fire-new-globul' },
+        {
+          id: 'functions',
+          name: 'Cloud Functions',
+          status: cfStatus,
+          extra: cfExtra,
+        },
         { id: 'settings', name: 'Site Settings', status: settingsSnap.exists() ? 'online' : 'warning', extra: settingsSnap.exists() ? 'Loaded OK' : 'Missing!' },
         { id: 'rules', name: 'Security Rules', status: 'online', extra: 'v2 Deployed' },
       ]);

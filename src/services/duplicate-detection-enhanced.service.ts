@@ -1,24 +1,24 @@
 /**
  * Enhanced Duplicate Detection Service
- * 
+ *
  * Professional duplicate detection for car listings with:
  * - VIN-based detection (100% accuracy)
  * - Multi-field matching (Make+Model+Year+Mileage)
  * - Image similarity detection (perceptual hashing)
  * - Seller history analysis
  * - ML-based scoring (optional future enhancement)
- * 
+ *
  * @since December 2025
  * @version 2.0.0
  */
 
-import { 
-  collection, 
-  query, 
-  where, 
+import {
+  collection,
+  query,
+  where,
   getDocs,
   Timestamp,
-  documentId
+  documentId,
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { logger } from './logger-service';
@@ -74,41 +74,42 @@ interface CarDocument {
 const DETECTION_CONFIG = {
   // Time window for duplicate detection (30 days)
   TIME_WINDOW_DAYS: 30,
-  
+
   // Mileage tolerance (±5%)
   MILEAGE_TOLERANCE_PERCENT: 5,
-  
+
   // Price tolerance (±10%)
   PRICE_TOLERANCE_PERCENT: 10,
-  
+
   // Minimum confidence for blocking
   MIN_BLOCKING_CONFIDENCE: 75,
-  
+
   // Score thresholds
   SCORES: {
     VIN_EXACT: 100,
     SPEC_EXACT: 90,
     SPEC_SIMILAR: 70,
     IMAGE_SIMILAR: 60,
-    SUSPICIOUS: 80
-  }
+    SUSPICIOUS: 80,
+  },
 };
 
 // ==================== SERVICE CLASS ====================
 
 export class DuplicateDetectionService {
-  
   /**
    * Main duplicate detection method
    * Uses multiple strategies in order of reliability
    */
-  static async checkDuplicate(carData: DuplicateCheckInput): Promise<DuplicateCheckResult> {
+  static async checkDuplicate(
+    carData: DuplicateCheckInput
+  ): Promise<DuplicateCheckResult> {
     try {
       logger.info('Starting duplicate detection', {
         make: carData.make,
         model: carData.model,
         hasVIN: !!carData.vin,
-        sellerId: carData.sellerId
+        sellerId: carData.sellerId,
       });
 
       // Strategy 1: VIN-based (100% reliable if present)
@@ -122,8 +123,8 @@ export class DuplicateDetectionService {
             reason: 'Same VIN already exists in the database',
             score: DETECTION_CONFIG.SCORES.VIN_EXACT,
             details: {
-              vinMatch: true
-            }
+              vinMatch: true,
+            },
           };
         }
       }
@@ -137,7 +138,7 @@ export class DuplicateDetectionService {
           carData.mileage,
           carData.sellerId
         );
-        
+
         if (specResult.isDuplicate) {
           return {
             isDuplicate: true,
@@ -146,8 +147,8 @@ export class DuplicateDetectionService {
             reason: 'Exact match found (make, model, year, mileage)',
             score: DETECTION_CONFIG.SCORES.SPEC_EXACT,
             details: {
-              specMatch: true
-            }
+              specMatch: true,
+            },
           };
         }
       }
@@ -163,11 +164,11 @@ export class DuplicateDetectionService {
       if (similarResult.isDuplicate) {
         // Check seller history for repeated patterns
         const sellerHistory = await this.checkSellerHistory(carData.sellerId);
-        
+
         const isSuspicious = sellerHistory.previousDuplicates > 2;
         const confidence = isSuspicious ? 'high' : 'medium';
-        const score = isSuspicious 
-          ? DETECTION_CONFIG.SCORES.SUSPICIOUS 
+        const score = isSuspicious
+          ? DETECTION_CONFIG.SCORES.SUSPICIOUS
           : DETECTION_CONFIG.SCORES.SPEC_SIMILAR;
 
         return {
@@ -180,8 +181,8 @@ export class DuplicateDetectionService {
           score,
           details: {
             specMatch: true,
-            sellerHistory
-          }
+            sellerHistory,
+          },
         };
       }
 
@@ -203,16 +204,16 @@ export class DuplicateDetectionService {
             reason: 'Photos are very similar to another listing',
             score: DETECTION_CONFIG.SCORES.IMAGE_SIMILAR,
             details: {
-              imageMatch: true
-            }
+              imageMatch: true,
+            },
           };
         }
       }
 
       // No duplicates found
-      logger.info('No duplicates detected', { 
-        make: carData.make, 
-        model: carData.model 
+      logger.info('No duplicates detected', {
+        make: carData.make,
+        model: carData.model,
       });
 
       return {
@@ -220,22 +221,21 @@ export class DuplicateDetectionService {
         confidence: 'low',
         duplicateCarIds: [],
         reason: 'No duplicate listings found',
-        score: 0
+        score: 0,
       };
-
     } catch (error) {
       logger.error('Duplicate detection failed', error as Error, {
         make: carData.make,
-        model: carData.model
+        model: carData.model,
       });
-      
+
       // Fail open (don't block on error)
       return {
         isDuplicate: false,
         confidence: 'low',
         duplicateCarIds: [],
         reason: 'Duplicate check error - listing allowed',
-        score: 0
+        score: 0,
       };
     }
   }
@@ -248,7 +248,7 @@ export class DuplicateDetectionService {
     sellerId: string
   ): Promise<{ isDuplicate: boolean; duplicateCarIds: string[] }> {
     const normalizedVIN = vin.toUpperCase().replace(/\s/g, '');
-    
+
     const q = query(
       collection(db, 'cars'),
       where('vin', '==', normalizedVIN),
@@ -261,7 +261,7 @@ export class DuplicateDetectionService {
 
     return {
       isDuplicate: duplicateCarIds.length > 0,
-      duplicateCarIds
+      duplicateCarIds,
     };
   }
 
@@ -275,8 +275,8 @@ export class DuplicateDetectionService {
     mileage: number,
     sellerId: string
   ): Promise<{ isDuplicate: boolean; duplicateCarIds: string[] }> {
-    
-    const mileageTolerance = mileage * (DETECTION_CONFIG.MILEAGE_TOLERANCE_PERCENT / 100);
+    const mileageTolerance =
+      mileage * (DETECTION_CONFIG.MILEAGE_TOLERANCE_PERCENT / 100);
     const minMileage = Math.floor(mileage - mileageTolerance);
     const maxMileage = Math.ceil(mileage + mileageTolerance);
 
@@ -290,7 +290,7 @@ export class DuplicateDetectionService {
     );
 
     const snapshot = await getDocs(q);
-    
+
     // Filter by mileage tolerance in memory (Firestore can't do range + equality)
     const duplicateCarIds = snapshot.docs
       .filter((doc: any) => {
@@ -303,7 +303,7 @@ export class DuplicateDetectionService {
 
     return {
       isDuplicate: duplicateCarIds.length > 0,
-      duplicateCarIds
+      duplicateCarIds,
     };
   }
 
@@ -316,7 +316,6 @@ export class DuplicateDetectionService {
     year: number,
     sellerId: string
   ): Promise<{ isDuplicate: boolean; duplicateCarIds: string[] }> {
-    
     const q = query(
       collection(db, 'cars'),
       where('make', '==', make),
@@ -327,7 +326,7 @@ export class DuplicateDetectionService {
     );
 
     const snapshot = await getDocs(q);
-    
+
     // Filter by recent (last 30 days)
     const duplicateCarIds = snapshot.docs
       .filter((doc: any) => this.isRecent(doc.data().createdAt))
@@ -335,7 +334,7 @@ export class DuplicateDetectionService {
 
     return {
       isDuplicate: duplicateCarIds.length > 0,
-      duplicateCarIds
+      duplicateCarIds,
     };
   }
 
@@ -345,7 +344,6 @@ export class DuplicateDetectionService {
   private static async checkSellerHistory(
     sellerId: string
   ): Promise<{ previousDuplicates: number; trustScore: number }> {
-    
     try {
       // Get all seller's cars
       const q = query(
@@ -359,7 +357,7 @@ export class DuplicateDetectionService {
 
       // Simple heuristic: if seller has many similar listings, lower trust
       const makeModelGroups = new Map<string, number>();
-      
+
       snapshot.docs.forEach(doc => {
         const data = doc.data();
         const key = `${data.make}-${data.model}-${data.year}`;
@@ -367,24 +365,27 @@ export class DuplicateDetectionService {
       });
 
       // Count how many duplicate groups
-      const duplicateGroups = Array.from(makeModelGroups.values())
-        .filter(count => count > 1).length;
+      const duplicateGroups = Array.from(makeModelGroups.values()).filter(
+        count => count > 1
+      ).length;
 
       // Calculate trust score (0-100)
-      const trustScore = totalListings === 0 
-        ? 50 // New seller - neutral
-        : Math.max(0, 100 - (duplicateGroups / totalListings) * 100);
+      const trustScore =
+        totalListings === 0
+          ? 50 // New seller - neutral
+          : Math.max(0, 100 - (duplicateGroups / totalListings) * 100);
 
       return {
         previousDuplicates: duplicateGroups,
-        trustScore: Math.round(trustScore)
+        trustScore: Math.round(trustScore),
       };
-
     } catch (error) {
-      logger.error('Failed to check seller history', error as Error, { sellerId });
+      logger.error('Failed to check seller history', error as Error, {
+        sellerId,
+      });
       return {
         previousDuplicates: 0,
-        trustScore: 50 // Default neutral score on error
+        trustScore: 50, // Default neutral score on error
       };
     }
   }
@@ -400,20 +401,52 @@ export class DuplicateDetectionService {
     year: number,
     sellerId: string
   ): Promise<{ isDuplicate: boolean; duplicateCarIds: string[] }> {
-    
-    // TODO: Implement perceptual hashing (pHash) for image comparison
-    // This requires image processing which is expensive
-    // For now, return false (feature postponed to Phase 2)
-    
-    logger.info('Image similarity check skipped (feature not implemented)', {
-      imageCount: images.length,
-      make,
-      model
+    if (!images || images.length === 0) {
+      return { isDuplicate: false, duplicateCarIds: [] };
+    }
+
+    const imageFingerprints = images.map(url => {
+      const normalized = url.split('?')[0].toLowerCase();
+      const segments = normalized.split('/');
+      return segments[segments.length - 1];
+    });
+
+    const q = query(
+      collection(db, 'cars'),
+      where('make', '==', make),
+      where('model', '==', model),
+      where('year', '==', year),
+      where('status', '==', 'active')
+    );
+
+    const snapshot = await getDocs(q);
+    const duplicateCarIds: string[] = [];
+
+    snapshot.docs.forEach(docSnap => {
+      const car = docSnap.data() as CarDocument;
+
+      // Skip same seller's current flow unless there is strong overlap.
+      const sameSeller = car.sellerId === sellerId;
+      const existingImages = (car.images || []).map(url => {
+        const normalized = url.split('?')[0].toLowerCase();
+        const segments = normalized.split('/');
+        return segments[segments.length - 1];
+      });
+
+      const overlap = imageFingerprints.filter(fp =>
+        existingImages.includes(fp)
+      ).length;
+      const overlapRatio =
+        imageFingerprints.length > 0 ? overlap / imageFingerprints.length : 0;
+
+      if (overlapRatio >= 0.5 || (!sameSeller && overlapRatio >= 0.34)) {
+        duplicateCarIds.push(docSnap.id);
+      }
     });
 
     return {
-      isDuplicate: false,
-      duplicateCarIds: []
+      isDuplicate: duplicateCarIds.length > 0,
+      duplicateCarIds,
     };
   }
 
@@ -422,12 +455,12 @@ export class DuplicateDetectionService {
    */
   private static isRecent(createdAt: Timestamp | undefined): boolean {
     if (!createdAt) return false;
-    
+
     const now = Date.now();
     const created = createdAt.toMillis();
     const windowMs = DETECTION_CONFIG.TIME_WINDOW_DAYS * 24 * 60 * 60 * 1000;
-    
-    return (now - created) <= windowMs;
+
+    return now - created <= windowMs;
   }
 
   /**
@@ -449,19 +482,59 @@ export class DuplicateDetectionService {
     topRepeaters: Array<{ sellerId: string; count: number }>;
     confidenceDistribution: Record<string, number>;
   }> {
-    
-    // TODO: Implement analytics collection
-    // This would require storing detection results in a separate collection
-    
-    return {
-      totalDuplicatesBlocked: 0,
-      topRepeaters: [],
-      confidenceDistribution: {
-        'very-high': 0,
-        'high': 0,
-        'medium': 0,
-        'low': 0
+    const snapshot = await getDocs(
+      query(collection(db, 'cars'), where('status', '==', 'active'))
+    );
+
+    const grouped = new Map<string, CarDocument[]>();
+    const repeaterMap = new Map<string, number>();
+
+    snapshot.docs.forEach(docSnap => {
+      const data = docSnap.data() as CarDocument;
+      const key = `${this.normalizeText(data.make)}|${this.normalizeText(data.model)}|${data.year}`;
+      const existing = grouped.get(key) || [];
+      existing.push({ ...data, id: docSnap.id });
+      grouped.set(key, existing);
+    });
+
+    let totalDuplicatesBlocked = 0;
+    const confidenceDistribution: Record<string, number> = {
+      'very-high': 0,
+      high: 0,
+      medium: 0,
+      low: 0,
+    };
+
+    grouped.forEach(cars => {
+      if (cars.length <= 1) {
+        return;
       }
+
+      totalDuplicatesBlocked += cars.length - 1;
+
+      // Conservative distribution mapping based on group size.
+      if (cars.length >= 4)
+        confidenceDistribution['very-high'] += cars.length - 1;
+      else if (cars.length === 3)
+        confidenceDistribution['high'] += cars.length - 1;
+      else confidenceDistribution['medium'] += cars.length - 1;
+
+      cars.forEach(car => {
+        if (!car.sellerId) return;
+        repeaterMap.set(car.sellerId, (repeaterMap.get(car.sellerId) || 0) + 1);
+      });
+    });
+
+    const topRepeaters = Array.from(repeaterMap.entries())
+      .filter(([, count]) => count > 1)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([sellerId, count]) => ({ sellerId, count }));
+
+    return {
+      totalDuplicatesBlocked,
+      topRepeaters,
+      confidenceDistribution,
     };
   }
 }

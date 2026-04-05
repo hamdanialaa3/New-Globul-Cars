@@ -1,5 +1,28 @@
 import React from 'react';
-import { Car } from '@/types/car.types';
+
+/** Minimal car fields needed for Schema.org structured data output. */
+interface Car {
+    make?: string;
+    brand?: string;  // legacy alias – prefer make
+    model: string;
+    year: number;
+    price: number;
+    mileage?: number;
+    fuelType?: string;
+    transmission?: string;
+    color?: string;
+    variant?: string;
+    condition?: string;
+    isSold?: boolean;
+    images?: string[];
+    description?: string;
+    doors?: string | number;
+    engineSize?: number;
+    // Constitution-compliant numeric IDs (no Firebase UIDs in URLs)
+    sellerNumericId?: number;
+    carNumericId?: number;
+    numericId?: number;
+}
 
 interface CarStructuredDataProps {
     car: Car;
@@ -19,10 +42,10 @@ export const CarStructuredData: React.FC<CarStructuredDataProps> = ({
     const schema = {
         "@context": "https://schema.org/",
         "@type": "Car",
-        "name": `${car.brand} ${car.model} ${car.year}`,
+        "name": `${car.make ?? car.brand} ${car.model} ${car.year}`,
         "brand": {
             "@type": "Brand",
-            "name": car.brand
+            "name": car.make ?? car.brand
         },
         "model": car.model,
         "vehicleModelDate": car.year,
@@ -52,7 +75,9 @@ export const CarStructuredData: React.FC<CarStructuredDataProps> = ({
                     }
                 })
             } : undefined,
-            "url": `https://koli.one/car/${car.sellerId}/${car.numericId}`
+            "url": car.sellerNumericId && (car.carNumericId ?? car.numericId)
+                ? `https://koli.one/car/${car.sellerNumericId}/${car.carNumericId ?? car.numericId}`
+                : undefined
         },
         "image": car.images && car.images.length > 0 ? car.images : undefined,
         "description": car.description,

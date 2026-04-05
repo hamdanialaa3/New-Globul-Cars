@@ -1,9 +1,9 @@
 /**
  * Google Analytics Data Deletion Service
  * خدمة حذف بيانات PII من Google Analytics
- * 
+ *
  * Links to: https://analytics.google.com/analytics/web/?authuser=1#/a368904922p507597643/admin/piidatadeletion/table
- * 
+ *
  * Account ID: 368904922
  * Property ID: 507597643
  */
@@ -26,22 +26,28 @@ export interface GADataDeletionResponse {
 
 class GoogleAnalyticsDataDeletionService {
   private static instance: GoogleAnalyticsDataDeletionService;
-  
+
   // Google Analytics Configuration
-  // TODO: Update these values with your actual Google Analytics account information
-  // يرجى تحديث هذه القيم بمعلومات حساب Google Analytics الفعلية
-  private readonly ACCOUNT_ID = import.meta.env.VITE_GA_ACCOUNT_ID || '368904922';
-  private readonly PROPERTY_ID = import.meta.env.VITE_GA_PROPERTY_ID || '507597643';
-  private readonly MEASUREMENT_ID = import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || import.meta.env.VITE_GA4_MEASUREMENT_ID || 'G-R8JY5KM421';
-  
+  // Values are driven by environment variables with safe project defaults.
+  private readonly ACCOUNT_ID =
+    import.meta.env.VITE_GA_ACCOUNT_ID || '368904922';
+  private readonly PROPERTY_ID =
+    import.meta.env.VITE_GA_PROPERTY_ID || '507597643';
+  private readonly MEASUREMENT_ID =
+    import.meta.env.VITE_FIREBASE_MEASUREMENT_ID ||
+    import.meta.env.VITE_GA4_MEASUREMENT_ID ||
+    'G-R8JY5KM421';
+
   // Data Deletion API Endpoint
-  private readonly DELETION_API_URL = 'https://www.googleapis.com/analytics/admin/v1beta';
-  
+  private readonly DELETION_API_URL =
+    'https://www.googleapis.com/analytics/admin/v1beta';
+
   private constructor() {}
-  
+
   public static getInstance(): GoogleAnalyticsDataDeletionService {
     if (!GoogleAnalyticsDataDeletionService.instance) {
-      GoogleAnalyticsDataDeletionService.instance = new GoogleAnalyticsDataDeletionService();
+      GoogleAnalyticsDataDeletionService.instance =
+        new GoogleAnalyticsDataDeletionService();
     }
     return GoogleAnalyticsDataDeletionService.instance;
   }
@@ -49,7 +55,7 @@ class GoogleAnalyticsDataDeletionService {
   /**
    * Request deletion of user PII data from Google Analytics
    * طلب حذف بيانات PII للمستخدم من Google Analytics
-   * 
+   *
    * This should be called when a user requests data deletion (GDPR Article 17)
    */
   public async requestDataDeletion(
@@ -62,18 +68,18 @@ class GoogleAnalyticsDataDeletionService {
         userId,
         userEmail,
         accountId: this.ACCOUNT_ID,
-        propertyId: this.PROPERTY_ID
+        propertyId: this.PROPERTY_ID,
       });
 
       // Method 1: Use Google Analytics Data Deletion API (requires OAuth)
       // Note: This requires server-side implementation with service account
       // For now, we'll use the manual deletion request method
-      
+
       const deletionRequest: GADataDeletionRequest = {
         userId,
         userEmail,
         deletionReason: reason,
-        requestedAt: new Date()
+        requestedAt: new Date(),
       };
 
       // Store deletion request in Firestore for tracking
@@ -82,26 +88,30 @@ class GoogleAnalyticsDataDeletionService {
       // Method 2: Manual deletion via Google Analytics Admin API
       // This requires backend implementation with proper authentication
       // For client-side, we'll prepare the request and log it
-      
+
       const response: GADataDeletionResponse = {
         success: true,
         requestId: `GA_DEL_${Date.now()}_${userId}`,
-        message: 'Data deletion request logged. Will be processed within 24-48 hours.',
-        estimatedCompletionTime: '24-48 hours'
+        message:
+          'Data deletion request logged. Will be processed within 24-48 hours.',
+        estimatedCompletionTime: '24-48 hours',
       };
 
       logger.info('✅ Google Analytics deletion request logged', {
         requestId: response.requestId,
-        userId
+        userId,
       });
 
       return response;
-
     } catch (error) {
-      logger.error('❌ Failed to request Google Analytics data deletion', error as Error, {
-        userId,
-        userEmail
-      });
+      logger.error(
+        '❌ Failed to request Google Analytics data deletion',
+        error as Error,
+        {
+          userId,
+          userEmail,
+        }
+      );
 
       return {
         success: false,
@@ -113,9 +123,12 @@ class GoogleAnalyticsDataDeletionService {
   /**
    * Log deletion request to Firestore for tracking
    */
-  private async logDeletionRequest(request: GADataDeletionRequest): Promise<void> {
+  private async logDeletionRequest(
+    request: GADataDeletionRequest
+  ): Promise<void> {
     try {
-      const { collection, doc, setDoc, Timestamp } = await import('firebase/firestore');
+      const { collection, doc, setDoc, Timestamp } =
+        await import('firebase/firestore');
       const { db } = await import('../../firebase/firebase-config');
 
       const requestRef = doc(
@@ -130,10 +143,12 @@ class GoogleAnalyticsDataDeletionService {
         propertyId: this.PROPERTY_ID,
         measurementId: this.MEASUREMENT_ID,
         status: 'pending',
-        createdAt: Timestamp.now()
+        createdAt: Timestamp.now(),
       });
 
-      logger.debug('Deletion request logged to Firestore', { userId: request.userId });
+      logger.debug('Deletion request logged to Firestore', {
+        userId: request.userId,
+      });
     } catch (error) {
       logger.error('Failed to log deletion request', error as Error);
       // Don't throw - logging failure shouldn't block the request
@@ -148,7 +163,8 @@ class GoogleAnalyticsDataDeletionService {
     completedAt?: Date;
   }> {
     try {
-      const { collection, query, where, getDocs, orderBy, limit } = await import('firebase/firestore');
+      const { collection, query, where, getDocs, orderBy, limit } =
+        await import('firebase/firestore');
       const { db } = await import('../../firebase/firebase-config');
 
       const requestsRef = collection(db, 'ga_data_deletion_requests');
@@ -167,7 +183,7 @@ class GoogleAnalyticsDataDeletionService {
       const requestData = snapshot.docs[0].data();
       return {
         status: requestData.status || 'pending',
-        completedAt: requestData.completedAt?.toDate()
+        completedAt: requestData.completedAt?.toDate(),
       };
     } catch (error) {
       logger.error('Failed to get deletion status', error as Error);
@@ -185,13 +201,13 @@ class GoogleAnalyticsDataDeletionService {
         // Clear user ID
         (window as any).gtag('config', this.MEASUREMENT_ID, {
           user_id: null,
-          user_properties: null
+          user_properties: null,
         });
 
         // Clear custom dimensions
         (window as any).gtag('set', {
           user_id: null,
-          user_properties: null
+          user_properties: null,
         });
 
         logger.info('✅ User tracking cleared from Google Analytics');
@@ -225,10 +241,11 @@ class GoogleAnalyticsDataDeletionService {
       bigQueryExportUrl: `https://analytics.google.com/analytics/web/?authuser=1#/a${this.ACCOUNT_ID}p${this.PROPERTY_ID}/admin/bigquery`,
       accountName: 'New Globul Cars AD',
       gtmContainerId: 'GTM-MKZSPCNC',
-      gtmUrl: 'https://tagmanager.google.com/?authuser=1#/container/accounts/6331834008/containers/239485180/workspaces/2',
+      gtmUrl:
+        'https://tagmanager.google.com/?authuser=1#/container/accounts/6331834008/containers/239485180/workspaces/2',
       googleAdsCustomerId: '425-581-1541',
       googleAdsAccountName: 'Glo Bul G AD',
-      googleAdsLinkUrl: `https://analytics.google.com/analytics/web/?authuser=1#/a${this.ACCOUNT_ID}p${this.PROPERTY_ID}/admin/linkedaccounts`
+      googleAdsLinkUrl: `https://analytics.google.com/analytics/web/?authuser=1#/a${this.ACCOUNT_ID}p${this.PROPERTY_ID}/admin/linkedaccounts`,
     };
   }
 
@@ -241,7 +258,8 @@ class GoogleAnalyticsDataDeletionService {
     location: string;
     bigQueryConsoleUrl: string;
   } {
-    const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID || 'fire-new-globul';
+    const projectId =
+      import.meta.env.VITE_FIREBASE_PROJECT_ID || 'fire-new-globul';
     const datasetId = process.env.BIGQUERY_DATASET || 'car_market_analytics';
     const location = process.env.BIGQUERY_LOCATION || 'EU';
 
@@ -249,14 +267,14 @@ class GoogleAnalyticsDataDeletionService {
       projectId,
       datasetId,
       location,
-      bigQueryConsoleUrl: `https://console.cloud.google.com/bigquery?project=${projectId}&ws=!1m5!1m4!4m3!1s${projectId}!2s${datasetId}!3s`
+      bigQueryConsoleUrl: `https://console.cloud.google.com/bigquery?project=${projectId}&ws=!1m5!1m4!4m3!1s${projectId}!2s${datasetId}!3s`,
     };
   }
 }
 
 // Export singleton instance
-export const gaDataDeletionService = GoogleAnalyticsDataDeletionService.getInstance();
+export const gaDataDeletionService =
+  GoogleAnalyticsDataDeletionService.getInstance();
 
 // Export for use in GDPR service
 export default gaDataDeletionService;
-

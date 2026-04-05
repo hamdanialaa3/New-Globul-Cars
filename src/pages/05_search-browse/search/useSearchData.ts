@@ -15,6 +15,7 @@ import {
     SearchResponse,
     FirestoreCarResult,
 } from './searchService';
+import { logger } from '@/services/logger-service';
 
 // ─── Filter State ───
 export interface SearchFiltersState {
@@ -90,7 +91,7 @@ export function useSearchData() {
                     setError(null);
                 }
             } catch (e: any) {
-                logger.error('[useSearchData] Failed to load filter options', e);
+                logger.error('[useSearchData] Failed to load filter options', e as Error);
                 if (!cancelled) {
                     setError('Failed to load filter options. Please refresh.');
                 }
@@ -109,7 +110,7 @@ export function useSearchData() {
                 const reports = await detectMissingFields();
                 setMissingFieldReports(reports);
                 if (reports.length > 0) {
-                    logger.warn('[MISSING_FIELD_REPORTS]', undefined, { reports });
+                    logger.warn('[MISSING_FIELD_REPORTS]', { reports });
                 }
             } catch (e) {
                 // Non-blocking
@@ -157,11 +158,11 @@ export function useSearchData() {
 
                 // Log missing fields if present
                 if (res.missingFieldsReport) {
-                    logger.warn('[SearchResult] Missing fields detected', undefined, { report: res.missingFieldsReport });
+                    logger.warn('[SearchResult] Missing fields detected', { report: res.missingFieldsReport });
                 }
             }
         } catch (e: any) {
-            logger.error('[useSearchData] Search failed', e);
+            logger.error('[useSearchData] Search failed', e as Error);
             if (searchId === searchAbortRef.current) {
                 setError('Search failed. Please try again.');
             }

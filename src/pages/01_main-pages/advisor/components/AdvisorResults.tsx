@@ -95,7 +95,7 @@ const AdvisorResults: React.FC<ResultsProps> = ({ data, onReset }) => {
                 filters.transmission = data.transmission;
             }
 
-            // TODO: Implement more complex AI logic here calling a specialized backend or robust client-side filtering
+            // Local scoring strategy (priority-based ranking) used until specialized advisor backend is enabled.
 
             try {
                 const cars = await searchCars(filters, 12);

@@ -127,7 +127,7 @@ class SuperAdminCarsService {
       }
       
       if (filters?.city) {
-        carsQuery = query(carsQuery, where('city', '==', filters.locationData?.cityName));
+        carsQuery = query(carsQuery, where('city', '==', filters.city));
       }
 
       const snapshot = await getDocs(carsQuery);
@@ -242,13 +242,13 @@ class SuperAdminCarsService {
 
       const activeCars = cars.filter((car: any) => car.status === 'active').length;
       const soldCars = cars.filter((car: any) => car.status === 'sold').length;
-      const activePosts = posts.filter(post => post.status === 'active').length;
+      const activePosts = posts.filter((post: any) => post.status === 'active').length;
       
-      const totalViews = cars.reduce((sum, car) => sum + (car.views || 0), 0) +
-                        posts.reduce((sum, post) => sum + (post.views || 0), 0);
+      const totalViews = cars.reduce((sum: number, car: any) => sum + (car.views || 0), 0) +
+            posts.reduce((sum: number, post: any) => sum + (post.views || 0), 0);
       
-      const totalLikes = posts.reduce((sum, post) => sum + (post.likes || 0), 0);
-      const totalComments = posts.reduce((sum, post) => sum + (post.comments || 0), 0);
+      const totalLikes = posts.reduce((sum: number, post: any) => sum + (post.likes || 0), 0);
+      const totalComments = posts.reduce((sum: number, post: any) => sum + (post.comments || 0), 0);
 
       return {
         totalCars: cars.length,
@@ -408,7 +408,7 @@ class SuperAdminCarsService {
   }> {
     try {
       const [carsSnapshot, postsSnapshot, usersSnapshot] = await Promise.all([
-        queryAllCollections(),
+        getDocs(collection(db, 'cars')),
         getDocs(collection(db, 'posts')),
         getDocs(collection(db, 'users'))
       ]);
@@ -421,13 +421,13 @@ class SuperAdminCarsService {
       const soldCars = cars.filter((car: any) => car.status === 'sold').length;
       const suspendedCars = cars.filter((car: any) => car.status === 'suspended').length;
       
-      const activePosts = posts.filter(post => post.status === 'active').length;
-      const reportedPosts = posts.filter(post => post.reportCount > 0).length;
+      const activePosts = posts.filter((post: any) => post.status === 'active').length;
+      const reportedPosts = posts.filter((post: any) => post.reportCount > 0).length;
       
       const activeUsers = users.filter((user: any) => user.status === 'active').length;
       
-      const totalViews = cars.reduce((sum, car) => sum + (car.views || 0), 0) +
-                        posts.reduce((sum, post) => sum + (post.views || 0), 0);
+      const totalViews = cars.reduce((sum: number, car: any) => sum + (car.views || 0), 0) +
+            posts.reduce((sum: number, post: any) => sum + (post.views || 0), 0);
 
       return {
         totalCars: cars.length,
@@ -469,7 +469,7 @@ class SuperAdminCarsService {
       const results = { cars: [] as CarListing[], posts: [] as PostData[] };
       
       if (type === 'cars' || type === 'all') {
-        const carsSnapshot = await queryAllCollections();
+        const carsSnapshot = await getDocs(collection(db, 'cars'));
         const cars = carsSnapshot.docs.map((doc: any) => ({
           id: doc.id,
           ...doc.data(),

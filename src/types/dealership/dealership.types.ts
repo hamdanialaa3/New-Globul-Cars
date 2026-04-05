@@ -69,6 +69,16 @@ export interface DealershipInfo {
   verifiedBy?: string;
   featuredDealer?: boolean;
   
+  // Flat contact fields – legacy form compatibility
+  primaryPhone?: string;
+  secondaryPhone?: string;
+  officialEmail?: string;
+  website?: string;
+  /** Vehicle type classification */
+  vehicleTypes?: string;
+  /** Car categories offered */
+  carCategories?: CarCategory[];
+  
   // Timestamps
   createdAt: Timestamp;
   updatedAt: Timestamp;
@@ -87,6 +97,8 @@ export interface DealershipAddress {
     longitude: number;
   };
   mapUrl?: string; // Google Maps URL
+  /** Street number – separate field used in some forms */
+  number?: string;
   locationData?: import('../LocationData').LocationData; // Optional unified location data
 }
 
@@ -171,6 +183,13 @@ export interface DealershipServices {
   // Specializations
   specializations: string[]; // e.g., ['BMW', 'Mercedes', 'Luxury Cars']
   brands: string[]; // Brands they specialize in
+  
+  /** Import on demand service */
+  importOnDemand?: boolean;
+  /** Vehicle registration assistance */
+  registration?: boolean;
+  /** Delivery service */
+  delivery?: boolean;
   
   // Legacy compatibility
   servicesOffered?: string[];
@@ -299,7 +318,41 @@ export interface PrivacySettings {
   showWorkingHours: boolean;
   allowDirectMessages: boolean;
   allowCalls: boolean;
+  /** Profile visibility setting */
+  profileVisibility?: 'public' | 'registered' | 'registered_only' | 'private';
+  /** Whether to show full name publicly */
+  showFullName?: boolean;
+  /** Whether to show phone number (alias for showPhoneNumber) */
+  showPhone?: boolean;
+  showDateOfBirth?: boolean;
+  showPlaceOfBirth?: boolean;
+  showDealershipName?: boolean;
+  showLegalForm?: boolean;
+  showVATNumber?: boolean;
+  showCompanyRegNumber?: boolean;
+  showDealershipAddress?: boolean;
+  showWebsite?: boolean;
+  showSocialMedia?: boolean;
+  showManager?: boolean;
+  showServices?: boolean;
+  showCertifications?: boolean;
+  showGallery?: boolean;
+  showTotalCars?: boolean;
+  showTrustScore?: boolean;
+  showReviews?: boolean;
 }
+
+export const DEFAULT_PRIVACY_SETTINGS: PrivacySettings = {
+  showPhoneNumber: true,
+  showEmail: false,
+  showAddress: true,
+  showWorkingHours: true,
+  allowDirectMessages: true,
+  allowCalls: true,
+  profileVisibility: 'public',
+  showFullName: true,
+  showPhone: true,
+};
 
 // ==================== UPDATE TYPES ====================
 

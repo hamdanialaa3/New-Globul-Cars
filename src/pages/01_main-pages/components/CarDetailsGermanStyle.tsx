@@ -16,7 +16,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import {
   Calendar,
@@ -49,6 +49,9 @@ import { logger } from '@/services/logger-service';
 import CarSuggestionsList from './CarSuggestionsList';
 import ImageLightbox from '@/components/common/ImageLightbox/ImageLightbox';
 import { getCarLogoUrl } from '@/services/car-logo-service';
+import { presenceService } from '@/services/messaging/realtime';
+import { postSaleReviewService } from '@/services/review/post-sale-review.service';
+import { userService } from '@/services/user/canonical-user.service';
 
 interface CarDetailsGermanStyleProps {
   car: CarListing;
@@ -1114,6 +1117,56 @@ const DescriptionText = styled.div<{ $isDark: boolean }>`
   }
 `;
 
+// LED animation for seller avatar ring
+const ledPulseGerman = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 currentColor, 0 0 6px 2px currentColor; }
+  50% { box-shadow: 0 0 0 3px transparent, 0 0 10px 4px currentColor; }
+`;
+
+const SellerAvatarRingGerman = styled.div<{ $online: boolean | null }>`
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  padding: 2px;
+  background: ${({ $online }) =>
+    $online === true ? '#22c55e' : $online === false ? '#ef4444' : 'var(--border-primary)'};
+  color: ${({ $online }) =>
+    $online === true ? '#22c55e' : $online === false ? '#ef4444' : 'transparent'};
+  cursor: pointer;
+  flex-shrink: 0;
+  ${({ $online }) =>
+    $online !== null &&
+    css`animation: ${ledPulseGerman} 2s ease-in-out infinite;`}
+`;
+
+const SellerAvatarInner = styled.div`
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent-primary);
+  overflow: hidden;
+`;
+
+const SellerOnlineDot = styled.span<{ $online: boolean | null }>`
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: ${({ $online }) =>
+    $online === true ? '#22c55e' : $online === false ? '#ef4444' : '#9ca3af'};
+  border: 2px solid var(--bg-card, #fff);
+  z-index: 1;
+`;
+
 const DealerSection = styled(Card) <{ $isDark: boolean }>`
   background: ${props => props.$isDark ? '#1e293b' : '#fff'};
   border: ${props => props.$isDark ? '1px solid #334155' : 'none'};
@@ -1719,6 +1772,47 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showAllFeatures, setShowAllFeatures] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [fetchedSellerAvatar, setFetchedSellerAvatar] = useState<string | null>(null);
+  const [isSellerOnline, setIsSellerOnline] = useState<boolean | null>(null);
+  const [sellerRating, setSellerRating] = useState<{ overall: number; count: number }>({ overall: 0, count: 0 });
+
+  // Fetch seller rating
+  useEffect(() => {
+    const sellerId = car.sellerId;
+    if (!sellerId) return;
+    let isActive = true;
+    postSaleReviewService.getUserAverageRating(sellerId, 'seller').then(data => {
+      if (isActive) setSellerRating({ overall: data.overall, count: data.count });
+    }).catch(() => {});
+    return () => { isActive = false; };
+  }, [car.sellerId]);
+
+  // Subscribe to seller presence
+  useEffect(() => {
+    const sellerNumericId = car.sellerNumericId;
+    if (!sellerNumericId) return;
+    const isActive = { current: true };
+    const unsubscribe = presenceService.subscribeToPresence(sellerNumericId, (online) => {
+      if (isActive.current) setIsSellerOnline(online);
+    });
+    return () => {
+      isActive.current = false;
+      unsubscribe();
+    };
+  }, [car.sellerNumericId]);
+
+  // Fetch seller avatar if not in car object
+  useEffect(() => {
+    const hasAvatar = (car as any).sellerAvatarUrl || (car as any).user?.photoURL;
+    if (hasAvatar) return;
+    const fetchId = car.sellerId || (car.sellerNumericId ? String(car.sellerNumericId) : undefined);
+    if (!fetchId) return;
+    const isActive = { current: true };
+    userService.getUserProfile(fetchId).then(profile => {
+      if (profile?.photoURL && isActive.current) setFetchedSellerAvatar(profile.photoURL);
+    }).catch(() => {});
+    return () => { isActive.current = false; };
+  }, [car.sellerId, car.sellerNumericId, (car as any).sellerAvatarUrl, (car as any).user?.photoURL]);
 
   // ✅ FIX: Add previewUrlsRef for File objects
   const previewUrlsRef = useRef<Map<number, string>>(new Map());
@@ -2528,8 +2622,8 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
                         <StarIcon key={star} size={18} />
                       ))}
                     </RatingStars>
-                    <RatingValue $isDark={isDark}>4.7</RatingValue>
-                    <RatingCount $isDark={isDark}>(119 {t.reviews})</RatingCount>
+                    <RatingValue $isDark={isDark}>{sellerRating.overall > 0 ? sellerRating.overall.toFixed(1) : '—'}</RatingValue>
+                    <RatingCount $isDark={isDark}>({sellerRating.count > 0 ? sellerRating.count : 0} {t.reviews})</RatingCount>
                   </DealerRating>
                   
                   {/* Brand Logo and Name */}
@@ -2551,18 +2645,41 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
                     </BrandInfo>
                   )}
                   
-                  <DealerName $isDark={isDark} onClick={handleProfileClick}>
-                    {sellerId && (
-                      <User size={20} style={{ flexShrink: 0 }} />
-                    )}
-                    <ProfileLink
-                      $isDark={isDark}
-                      href={car.sellerNumericId ? `/profile/view/${car.sellerNumericId}` : (sellerId ? `/profile/view/${sellerId}` : '#')}
+                  {/* Seller avatar with LED online/offline ring */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                    <SellerAvatarRingGerman
+                      $online={isSellerOnline}
                       onClick={handleProfileClick}
+                      title={language === 'bg' ? 'Виж профила на продавача' : 'View seller profile'}
                     >
-                      {car.sellerName || car.companyName || 'Dealer'}
-                    </ProfileLink>
-                  </DealerName>
+                      <SellerAvatarInner>
+                        {(car as any).sellerAvatarUrl || (car as any).user?.photoURL || fetchedSellerAvatar ? (
+                          <img
+                            src={(car as any).sellerAvatarUrl || (car as any).user?.photoURL || fetchedSellerAvatar}
+                            alt="Seller"
+                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                          />
+                        ) : (
+                          car.sellerName ? car.sellerName.charAt(0).toUpperCase() : <User size={22} />
+                        )}
+                      </SellerAvatarInner>
+                      <SellerOnlineDot
+                        $online={isSellerOnline}
+                        title={isSellerOnline === true
+                          ? (language === 'bg' ? 'Онлайн' : 'Online')
+                          : (language === 'bg' ? 'Офлайн' : 'Offline')}
+                      />
+                    </SellerAvatarRingGerman>
+                    <DealerName $isDark={isDark} onClick={handleProfileClick}>
+                      <ProfileLink
+                        $isDark={isDark}
+                        href={car.sellerNumericId ? `/profile/view/${car.sellerNumericId}` : (sellerId ? `/profile/view/${sellerId}` : '#')}
+                        onClick={handleProfileClick}
+                      >
+                        {car.sellerName || car.companyName || 'Dealer'}
+                      </ProfileLink>
+                    </DealerName>
+                  </div>
                 </DealerInfo>
                 <DealerButtons>
                   <DealerButton $isDark={isDark} onClick={handleReviews}>

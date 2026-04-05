@@ -75,17 +75,17 @@ class ValidationService {
     }
 
     // Email validation
-    if (rules.email && !this.isValidEmail(value)) {
+    if (rules.email && !this.isValidEmail(String(value))) {
       return this.getErrorMessage('email', language);
     }
 
     // Phone validation (Bulgarian)
-    if (rules.phone && !this.isValidBulgarianPhone(value)) {
+    if (rules.phone && !this.isValidBulgarianPhone(String(value))) {
       return this.getErrorMessage('phone', language);
     }
 
     // URL validation
-    if (rules.url && !this.isValidURL(value)) {
+    if (rules.url && !this.isValidURL(String(value))) {
       return this.getErrorMessage('url', language);
     }
 
@@ -105,7 +105,7 @@ class ValidationService {
     }
 
     // VIN validation (17 characters)
-    if (rules.vin && !this.isValidVIN(value)) {
+    if (rules.vin && !this.isValidVIN(String(value))) {
       return this.getErrorMessage('vin', language);
     }
 

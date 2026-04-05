@@ -121,7 +121,7 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
       try {
         // Load trust score
         const trustScore = await trustScoreService.getUserTrustScore(car.sellerId);
-        setSellerTrustData(trustScore);
+        setSellerTrustData(trustScore as unknown as TrustSystem);
 
         // Load seller profile for stories and photo
         const sellerDoc = await getDoc(doc(db, 'users', car.sellerId));

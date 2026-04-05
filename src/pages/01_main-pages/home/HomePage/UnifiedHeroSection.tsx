@@ -26,7 +26,9 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { siteSettingsService } from '@/services/site-settings.service';
 import { DEFAULT_HOMEPAGE_HERO } from '@/services/site-settings-defaults';
 import type { HomepageHeroContent, HomepageHeroIcon } from '@/services/site-settings-types';
-import { Search, Brain, Shield, Smartphone } from 'lucide-react';
+import { Search, Brain, Shield, Smartphone, Users } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 import SearchWidget from './SearchWidget';
 
 // ═══ Animations ═══
@@ -130,6 +132,36 @@ const SearchWrapper = styled.div`
   }
 `;
 
+const FindUsersLink = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  padding: 8px 20px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: #ffffff;
+    transform: translateY(-1px);
+  }
+
+  svg { flex-shrink: 0; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ${fadeUp} 0.5s ease-out 0.4s both;
+  }
+`;
+
 const TrustStrip = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -187,6 +219,8 @@ const getHeroIcon = (icon: HomepageHeroIcon) => {
 const UnifiedHeroSection: React.FC = memo(() => {
   const { theme } = useTheme();
   const { language } = useLanguage();
+  const navigate = useNavigate();
+  const { isFeatureEnabled } = useSiteSettings();
   const isDark = theme === 'dark';
   const isBg = language === 'bg';
   const [heroContent, setHeroContent] = useState<HomepageHeroContent>(DEFAULT_HOMEPAGE_HERO);
@@ -222,6 +256,13 @@ const UnifiedHeroSection: React.FC = memo(() => {
         <SearchWrapper>
           <SearchWidget />
         </SearchWrapper>
+
+        {isFeatureEnabled('userSearch') && (
+          <FindUsersLink onClick={() => navigate('/search/users')}>
+            <Users size={16} />
+            {isBg ? 'Намери потребители и дилъри' : 'Find Users & Dealers'}
+          </FindUsersLink>
+        )}
 
         <TrustStrip>
           {trustItems.map((item) => (

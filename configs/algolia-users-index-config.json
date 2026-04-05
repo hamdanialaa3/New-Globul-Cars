@@ -1,0 +1,69 @@
+{
+  "indexName": "users",
+  "searchableAttributes": [
+    "displayName",
+    "businessName",
+    "unordered(description)",
+    "unordered(city)",
+    "unordered(region)"
+  ],
+  "attributesForFaceting": [
+    "filterOnly(accountType)",
+    "filterOnly(city)",
+    "filterOnly(region)",
+    "filterOnly(isVerified)",
+    "searchable(displayName)",
+    "searchable(businessName)"
+  ],
+  "numericAttributesForFiltering": [
+    "rating",
+    "reviewsCount",
+    "listingsCount",
+    "lastActiveAt"
+  ],
+  "customRanking": [
+    "desc(rating)",
+    "desc(listingsCount)",
+    "desc(lastActiveAt)"
+  ],
+  "ranking": [
+    "typo",
+    "words",
+    "filters",
+    "proximity",
+    "attribute",
+    "exact",
+    "custom"
+  ],
+  "attributesToRetrieve": [
+    "objectID",
+    "numericId",
+    "displayName",
+    "businessName",
+    "accountType",
+    "avatarUrl",
+    "city",
+    "region",
+    "rating",
+    "reviewsCount",
+    "listingsCount",
+    "isVerified",
+    "isOnline",
+    "lastActiveAt",
+    "description",
+    "createdAt"
+  ],
+  "attributesToHighlight": ["displayName", "businessName"],
+  "highlightPreTag": "<mark>",
+  "highlightPostTag": "</mark>",
+  "hitsPerPage": 20,
+  "maxValuesPerFacet": 100,
+  "typoTolerance": true,
+  "allowTyposOnNumericTokens": false,
+  "ignorePlurals": true,
+  "removeStopWords": false,
+  "queryType": "prefixLast",
+  "advancedSyntax": false,
+  "distinct": 1,
+  "attributeForDistinct": "numericId"
+}

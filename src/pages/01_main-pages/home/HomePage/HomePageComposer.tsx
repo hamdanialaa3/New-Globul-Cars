@@ -35,6 +35,7 @@ import styled from 'styled-components';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useSectionVisibility } from '@/hooks/useSectionVisibility';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { DEFAULT_HOMEPAGE_SECTIONS } from '@/services/section-visibility-defaults';
 import LazySection from '@/components/LazySection';
 
@@ -74,7 +75,10 @@ import HomeTrustAndStats from './HomeTrustAndStats';
 import LinkableSection from './LinkableSection';
 import KATServicesHero from './KATServicesHero';
 
-// 8. Orphaned Sections — now wired
+// 8. User Search
+const UserSearchAutocomplete = React.lazy(() => import('../../../../components/search/UserSearchAutocomplete'));
+
+// 9. Orphaned Sections — now wired
 import { HomeHeroStrips } from '@/components/home/HomeHeroStrips';
 import UnifiedSocial from './UnifiedSocial';
 import HomeLoyaltyAndSignup from './HomeLoyaltyAndSignup';
@@ -413,6 +417,17 @@ const LoyaltySlot: React.FC = () => (
 );
 
 /**
+ * Slot: User Search (Find Dealers & Sellers)
+ */
+const UserSearchSlot: React.FC = () => (
+  <LazySection rootMargin="100px">
+    <Suspense fallback={null}>
+      <UserSearchAutocomplete />
+    </Suspense>
+  </LazySection>
+);
+
+/**
  * Floating: Draft Recovery Prompt
  */
 const DraftRecoverySlot: React.FC = () => (
@@ -485,12 +500,15 @@ const SECTION_MAP: Record<string, React.FC> = {
   hero_strips: HomeHeroStripsSlot,
   social: SocialSlot,
   loyalty: LoyaltySlot,
+  user_search: UserSearchSlot,
 };
 
 const HomePageComposer: React.FC = React.memo(() => {
   const { user } = useAuth();
   const hasRecentlyBrowsed = typeof window !== 'undefined' && localStorage.getItem('recentBrowsing');
   const { sections, isVisible } = useSectionVisibility();
+  const { isFeatureEnabled } = useSiteSettings();
+  const showUserSearch = isFeatureEnabled('userSearch');
 
   // Merge Firestore sections with defaults so newly-added sections
   // (e.g. kat_services) always appear even if Firestore is stale.
@@ -514,6 +532,7 @@ const HomePageComposer: React.FC = React.memo(() => {
           /* Dynamic Rendering based on sorted 'main' sections */
           mergedSections
             .filter(section => section.category === 'main' && section.visible)
+            .filter(section => section.key !== 'user_search' || showUserSearch)
             .sort((a, b) => a.order - b.order)
             .map(section => {
               const Component = SECTION_MAP[section.key];
@@ -542,6 +561,7 @@ const HomePageComposer: React.FC = React.memo(() => {
             <LifeMomentsBrowseSlot /><SectionSpacer />
             <UnifiedSmartSellSlot /><SectionSpacer />
             <DealersSlot /><SectionSpacer />
+            {showUserSearch && <><UserSearchSlot /><SectionSpacer /></>}
             <TrustSlot /><SectionSpacer />
             <SocialSlot /><SectionSpacer />
             <LoyaltySlot /><SectionSpacer />

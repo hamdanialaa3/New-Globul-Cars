@@ -19,7 +19,7 @@ const Container = styled.div`
 const Title = styled.h2`
   font-size: 1.5rem;
   font-weight: 700;
-  color: ${props => props.theme.colors.textPrimary || '#1a1a1b'};
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -28,8 +28,8 @@ const Title = styled.h2`
   span {
     font-size: 1rem;
     font-weight: 400;
-    color: #666;
-    background: #f0f2f5;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
     padding: 0.2rem 0.6rem;
     border-radius: 12px;
   }
@@ -46,8 +46,8 @@ const UserGrid = styled.div`
 `;
 
 const UserCard = styled.div`
-  background: white;
-  border: 1px solid #e1e4e8;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
   border-radius: 16px;
   padding: 1.25rem;
   display: flex;
@@ -57,9 +57,9 @@ const UserCard = styled.div`
   cursor: pointer;
 
   &:hover {
-    border-color: #2b7bff;
+    border-color: var(--accent-primary);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    background: #f8fbff;
+    background: var(--bg-secondary);
   }
 `;
 
@@ -68,19 +68,19 @@ const Avatar = styled.img`
   height: 60px;
   border-radius: 50%;
   object-fit: cover;
-  background: #f0f2f5;
+  background: var(--bg-secondary);
 `;
 
 const AvatarPlaceholder = styled.div`
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: #f0f2f5;
+  background: var(--bg-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  color: #999;
+  color: var(--text-muted);
 `;
 
 const UserInfo = styled.div`
@@ -93,13 +93,13 @@ const UserInfo = styled.div`
 const UserName = styled.h3`
   font-size: 1rem;
   font-weight: 600;
-  color: #1a1a1b;
+  color: var(--text-primary);
   margin: 0;
 `;
 
 const UserType = styled.span`
   font-size: 0.75rem;
-  color: #666;
+  color: var(--text-secondary);
   text-transform: capitalize;
 `;
 
@@ -111,24 +111,24 @@ const ActionWrapper = styled.div`
 const EmptyState = styled.div`
   text-align: center;
   padding: 4rem 2rem;
-  background: #f8f9fa;
+  background: var(--bg-secondary);
   border-radius: 20px;
-  border: 2px dashed #dee2e6;
+  border: 2px dashed var(--border-primary);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  color: #666;
+  color: var(--text-secondary);
 
   svg {
     width: 48px;
     height: 48px;
-    color: #ced4da;
+    color: var(--text-tertiary, #ced4da);
   }
 
   h3 {
     margin: 0;
-    color: #343a40;
+    color: var(--text-primary);
   }
 `;
 
@@ -136,7 +136,7 @@ const LoadingWrapper = styled.div`
   display: flex;
   justify-content: center;
   padding: 4rem;
-  color: #2b7bff;
+  color: var(--accent-primary);
 
   svg {
     animation: spin 1s linear infinite;
@@ -267,7 +267,7 @@ export const FollowingTab: React.FC = () => {
                   // For better UX, let's keep it but the button will show "Follow"
                 }}
               />
-              <ArrowRight size={18} style={{ marginLeft: '0.5rem', color: '#ccc' }} />
+              <ArrowRight size={18} style={{ marginLeft: '0.5rem', color: 'var(--text-tertiary, #ccc)' }} />
             </ActionWrapper>
           </UserCard>
         ))}

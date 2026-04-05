@@ -363,14 +363,17 @@ const CarDetails: React.FC = () => {
 
       // Create or get conversation for this car
       const conversationId = `car_${car.id}`;
-      const receiverId = car.sellerId || 'unknown';
+      const receiverId = Number((car as any).sellerNumericId || 0);
+      if (!receiverId) {
+        throw new Error('Seller numeric ID is required for realtime messaging');
+      }
 
-      await realtimeMessagingService.sendMessage(
-        conversationId,
-        user.uid,
-        receiverId,
-        message
-      );
+      await realtimeMessagingService.sendMessage(conversationId, {
+        senderId: user.uid,
+        recipientId: receiverId,
+        content: message,
+        type: 'text',
+      });
 
       setMessage('');
       toast.success(language === 'bg'

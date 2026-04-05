@@ -1,13 +1,11 @@
-import { logger } from '../../services/logger-service';
 // Static Map Embed Component
-// مكون الخريطة الثابتة المدمجة باستخدام Maps Embed API
+// مكون الخريطة الثابتة المدمجة باستخدام OpenStreetMap (مجاني - لا يحتاج API key)
 
 import React from 'react';
 import styled from 'styled-components';
 import { MapPin, ExternalLink } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import googleMapsService from '../../services/google-maps-enhanced.service';
-import { GOOGLE_MAPS_API_KEY } from '../../services/maps-config';
+import { logger } from '../../services/logger-service';
 
 const Container = styled.div`
   border-radius: 15px;
@@ -174,6 +172,29 @@ interface StaticMapEmbedProps {
   showHeader?: boolean;
 }
 
+/** Use Nominatim (OpenStreetMap) to geocode a city name — no API key required */
+async function nominatimGeocode(query: string): Promise<{ lat: number; lng: number } | null> {
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=bg`;
+    const res = await fetch(url, {
+      headers: { 'Accept-Language': 'en', 'User-Agent': 'KoliOne/1.0 (koli.one)' }
+    });
+    const data = await res.json();
+    if (Array.isArray(data) && data.length > 0) {
+      return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+    }
+  } catch (err) {
+    logger.error('Nominatim geocoding failed', err);
+  }
+  return null;
+}
+
+/** Build the OSM embed iframe URL from coordinates */
+function buildOsmEmbedUrl(lat: number, lng: number, zoom: number): string {
+  const offset = zoom <= 7 ? 2 : zoom <= 10 ? 0.5 : 0.025;
+  return `https://www.openstreetmap.org/export/embed.html?bbox=${lng - offset},${lat - offset},${lng + offset},${lat + offset}&layer=mapnik&marker=${lat},${lng}`;
+}
+
 const StaticMapEmbed: React.FC<StaticMapEmbedProps> = ({
   location,
   zoom = 13,
@@ -182,50 +203,45 @@ const StaticMapEmbed: React.FC<StaticMapEmbedProps> = ({
   const { language } = useLanguage();
   const [loading, setLoading] = React.useState(true);
   const [mapUrl, setMapUrl] = React.useState<string>('');
+  const [resolvedCoords, setResolvedCoords] = React.useState<{ lat: number; lng: number } | null>(null);
 
   React.useEffect(() => {
     loadMap();
-  }, [location]);
+  }, [location]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadMap = async () => {
     setLoading(true);
-
     try {
       let coords = location.coordinates;
 
       if (!coords) {
-        // Geocode the location
-        googleMapsService.initialize();
-        const address = `${location.locationData?.cityName || location.city}, ${location.region || ''}, Bulgaria`;
-        const geocoded = await googleMapsService.geocodeAddress(address);
-        coords = geocoded || undefined;
+        const query = location.locationData?.cityName || location.city || 'Bulgaria';
+        coords = await nominatimGeocode(`${query}, Bulgaria`) ?? undefined;
       }
 
       if (coords) {
-        const url = googleMapsService.getStaticMapUrl(coords.lat, coords.lng, zoom);
-        setMapUrl(url);
+        setResolvedCoords(coords);
+        setMapUrl(buildOsmEmbedUrl(coords.lat, coords.lng, zoom));
       } else {
-        // Fallback: Use Maps Embed API with query string instead of coordinates
-        const query = location.locationData?.cityName || location.city || 'Bulgaria';
-        const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(query + ', Bulgaria')}&zoom=${zoom}`;
-        setMapUrl(embedUrl);
+        // Full-country view of Bulgaria as fallback
+        setResolvedCoords({ lat: 42.7339, lng: 25.4858 });
+        setMapUrl(buildOsmEmbedUrl(42.7339, 25.4858, 7));
       }
     } catch (error) {
-      logger.error('Error loading map:', error);
-      // Fallback to basic embed URL
-      const query = location.locationData?.cityName || location.city || 'Bulgaria';
-      const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(query + ', Bulgaria')}&zoom=${zoom}`;
-      setMapUrl(embedUrl);
+      logger.error('Error loading OSM map:', error);
+      setResolvedCoords({ lat: 42.7339, lng: 25.4858 });
+      setMapUrl(buildOsmEmbedUrl(42.7339, 25.4858, 7));
     } finally {
       setLoading(false);
     }
   };
 
-  const getGoogleMapsUrl = () => {
-    if (location.coordinates) {
-      return `https://www.google.com/maps/search/?api=1&query=${location.coordinates.lat},${location.coordinates.lng}`;
+  const getOpenStreetMapUrl = () => {
+    if (resolvedCoords) {
+      return `https://www.openstreetmap.org/?mlat=${resolvedCoords.lat}&mlon=${resolvedCoords.lng}&zoom=${zoom}`;
     }
-    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.locationData?.cityName + ', Bulgaria')}`;
+    const query = location.locationData?.cityName || location.city || 'Bulgaria';
+    return `https://www.openstreetmap.org/search?query=${encodeURIComponent(query + ', Bulgaria')}`;
   };
 
   return (
@@ -243,12 +259,12 @@ const StaticMapEmbed: React.FC<StaticMapEmbedProps> = ({
             </LocationText>
           </div>
           <OpenMapButton
-            href={getGoogleMapsUrl()}
+            href={getOpenStreetMapUrl()}
             target="_blank"
             rel="noopener noreferrer"
           >
             <ExternalLink />
-            {language === 'bg' ? 'Отвори в Google Maps' : 'Open in Google Maps'}
+            {language === 'bg' ? 'Отвори в OpenStreetMap' : 'Open in OpenStreetMap'}
           </OpenMapButton>
         </Header>
       )}
@@ -264,13 +280,8 @@ const StaticMapEmbed: React.FC<StaticMapEmbedProps> = ({
           referrerPolicy="no-referrer-when-downgrade"
           title={`Map of ${location.locationData?.cityName || location.city}`}
           onError={(e) => {
-            logger.error('Google Maps iframe failed to load', { 
-              error: e, 
-              url: mapUrl,
-              apiKeyConfigured: !!(import.meta.env.VITE_GOOGLE_MAPS_API_KEY || import.meta.env.VITE_GOOGLE_BROWSER_KEY)
-            });
+            logger.error('OSM iframe failed to load', { error: e, url: mapUrl });
             setLoading(false);
-            // Show error message
             setMapUrl('');
           }}
         />
@@ -279,16 +290,6 @@ const StaticMapEmbed: React.FC<StaticMapEmbedProps> = ({
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>⚠️</div>
             <div>{language === 'bg' ? 'Грешка при зареждане на картата' : 'Error loading map'}</div>
-            <div style={{ fontSize: '0.8rem', marginTop: '0.5rem', opacity: 0.7 }}>
-              {language === 'bg' 
-                ? 'Google Maps API ключът е невалиден или липсва. Моля, проверете настройките.' 
-                : 'Google Maps API key is invalid or missing. Please check your settings.'}
-            </div>
-            <div style={{ fontSize: '0.75rem', marginTop: '0.5rem', opacity: 0.6 }}>
-              {language === 'bg' 
-                ? 'Добавете REACT_APP_GOOGLE_MAPS_API_KEY в .env файла' 
-                : 'Add REACT_APP_GOOGLE_MAPS_API_KEY to .env file'}
-            </div>
           </div>
         </LoadingState>
       )}

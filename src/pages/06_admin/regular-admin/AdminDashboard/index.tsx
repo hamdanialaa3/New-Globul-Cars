@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { logger } from '@/services/logger-service';
 import styled from 'styled-components';
 import { useTranslation } from '@/hooks/useTranslation';
-import { db } from '../firebase';
+import { db } from '@/firebase/firebase-config';
 import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { advancedContentManagementService } from '@/services/advanced-content-management-service';
 import { permissionManagementService } from '@/services/permission-management-service';
@@ -314,7 +314,10 @@ const AdminDashboard: React.FC = () => {
     }
     if (activeTab === 'reports') {
       setLoadingTab('reports');
-      advancedContentManagementService.getAllReports(100).then(setReports).finally(() => setLoadingTab(''));
+      advancedContentManagementService
+        .getAllReports(100)
+        .then((items) => setReports(items as unknown as ReportItem[]))
+        .finally(() => setLoadingTab(''));
     }
     if (activeTab === 'permissions') {
       setLoadingTab('permissions');

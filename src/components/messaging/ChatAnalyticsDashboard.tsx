@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { format } from 'date-fns';
-import bg from 'date-fns/locale/bg';
+import { bg } from 'date-fns/locale';
 import { CardBase, MessagingColors, Divider } from './messaging-styles';
 import { messagingAnalytics } from '@/services/messaging/core';
 import { logger } from '@/services/logger-service';
@@ -67,8 +67,8 @@ const ChatAnalyticsDashboard: React.FC<ChatAnalyticsDashboardProps> = ({
           const dayStats = await messagingAnalytics.getDailyStats(dateStr);
           stats.push({
             date: format(date, 'dd MMM', { locale: bg }),
-            messages: dayStats.messagesSent || 0,
-            offers: dayStats.offersSent || 0
+            messages: dayStats.totalMessages || 0,
+            offers: dayStats.totalOffers || 0
           });
         }
         
@@ -238,7 +238,7 @@ const ChatAnalyticsDashboard: React.FC<ChatAnalyticsDashboardProps> = ({
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) => `${name} ${(((percent || 0) as number) * 100).toFixed(0)}%`}
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"

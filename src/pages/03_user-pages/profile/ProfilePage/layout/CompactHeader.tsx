@@ -62,12 +62,17 @@ const UserInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
 `;
 
 const UserName = styled.div`
   font-size: 1.25rem;
   font-weight: 700;
   color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
   
   @media (max-width: 768px) {
     font-size: 1.1rem;

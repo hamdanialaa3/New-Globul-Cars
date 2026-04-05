@@ -28,96 +28,96 @@ export class ErrorHandlingService {
     // Authentication errors
     'auth/user-not-found': {
       bg: 'Потребителят не е намерен',
-      en: 'User not found'
+      en: 'User not found',
     },
     'auth/wrong-password': {
       bg: 'Грешна парола',
-      en: 'Wrong password'
+      en: 'Wrong password',
     },
     'auth/email-already-in-use': {
       bg: 'Имейл адресът вече се използва',
-      en: 'Email address is already in use'
+      en: 'Email address is already in use',
     },
     'auth/weak-password': {
       bg: 'Паролата е твърде слаба',
-      en: 'Password is too weak'
+      en: 'Password is too weak',
     },
     'auth/invalid-email': {
       bg: 'Невалиден имейл адрес',
-      en: 'Invalid email address'
+      en: 'Invalid email address',
     },
     'auth/user-disabled': {
       bg: 'Акаунтът е деактивиран',
-      en: 'Account has been disabled'
+      en: 'Account has been disabled',
     },
     'auth/too-many-requests': {
       bg: 'Твърде много заявки. Моля, опитайте по-късно',
-      en: 'Too many requests. Please try again later'
+      en: 'Too many requests. Please try again later',
     },
     'auth/network-request-failed': {
       bg: 'Грешка в мрежата. Проверете връзката си',
-      en: 'Network error. Please check your connection'
+      en: 'Network error. Please check your connection',
     },
     'auth/requires-recent-login': {
       bg: 'Необходимо е ново влизане за тази операция',
-      en: 'Recent login required for this operation'
+      en: 'Recent login required for this operation',
     },
 
     // Email verification errors
     'auth/expired-action-code': {
       bg: 'Линкът за потвърждение е изтекъл',
-      en: 'Verification link has expired'
+      en: 'Verification link has expired',
     },
     'auth/invalid-action-code': {
       bg: 'Невалиден линк за потвърждение',
-      en: 'Invalid verification link'
+      en: 'Invalid verification link',
     },
 
     // Firestore errors
     'firestore/permission-denied': {
       bg: 'Нямате разрешение за тази операция',
-      en: 'Permission denied for this operation'
+      en: 'Permission denied for this operation',
     },
     'firestore/unavailable': {
       bg: 'Сервисът е временно недостъпен',
-      en: 'Service is temporarily unavailable'
+      en: 'Service is temporarily unavailable',
     },
     'firestore/deadline-exceeded': {
       bg: 'Операцията отне твърде много време',
-      en: 'Operation took too long'
+      en: 'Operation took too long',
     },
 
     // Storage errors
     'storage/unauthorized': {
       bg: 'Нямате разрешение за качване на файлове',
-      en: 'Unauthorized to upload files'
+      en: 'Unauthorized to upload files',
     },
     'storage/canceled': {
       bg: 'Качването е отменено',
-      en: 'Upload was canceled'
+      en: 'Upload was canceled',
     },
     'storage/unknown': {
       bg: 'Неизвестна грешка при качване',
-      en: 'Unknown upload error'
+      en: 'Unknown upload error',
     },
 
     // Generic errors
     'generic/validation-error': {
       bg: 'Грешка в валидацията на данните',
-      en: 'Data validation error'
+      en: 'Data validation error',
     },
     'generic/server-error': {
       bg: 'Грешка в сървъра. Моля, опитайте по-късно',
-      en: 'Server error. Please try again later'
+      en: 'Server error. Please try again later',
     },
     'generic/network-error': {
       bg: 'Грешка в мрежата',
-      en: 'Network error'
+      en: 'Network error',
     },
     'generic/unknown-error': {
       bg: 'Неизвестна грешка',
-      en: 'Unknown error'
-    }
+      en: 'Unknown error',
+    },
   };
 
   private constructor() {}
@@ -132,12 +132,15 @@ export class ErrorHandlingService {
   /**
    * Log an error with context
    */
-  public logError(error: Error | any, context?: {
-    userId?: string;
-    action?: string;
-    severity?: 'low' | 'medium' | 'high' | 'critical';
-    additionalData?: Record<string, any>;
-  }): void {
+  public logError(
+    error: Error | any,
+    context?: {
+      userId?: string;
+      action?: string;
+      severity?: 'low' | 'medium' | 'high' | 'critical';
+      additionalData?: Record<string, any>;
+    }
+  ): void {
     const errorDetails: ErrorDetails = {
       code: (error as any).code || error.name || 'unknown',
       message: (error as Error).message || 'Unknown error',
@@ -145,7 +148,7 @@ export class ErrorHandlingService {
       userId: context?.userId,
       action: context?.action,
       severity: context?.severity || 'medium',
-      context: context?.additionalData
+      context: context?.additionalData,
     };
 
     // Add to log
@@ -156,12 +159,34 @@ export class ErrorHandlingService {
       this.errorLog = this.errorLog.slice(0, this.MAX_LOG_SIZE);
     }
 
-    // Console logging based on severity
-    const logLevel = this.getLogLevel(errorDetails.severity);
-    console[logLevel](`[${errorDetails.severity.toUpperCase()}] ${errorDetails.code}:`, errorDetails.message, errorDetails.context);
+    // Structured logging based on severity
+    const logMessage = `[${errorDetails.severity.toUpperCase()}] ${errorDetails.code}: ${errorDetails.message}`;
+    if (
+      errorDetails.severity === 'critical' ||
+      errorDetails.severity === 'high'
+    ) {
+      serviceLogger.error(
+        logMessage,
+        new Error(errorDetails.message),
+        errorDetails.context as Record<string, unknown> | undefined
+      );
+    } else if (errorDetails.severity === 'medium') {
+      serviceLogger.warn(
+        logMessage,
+        errorDetails.context as Record<string, unknown> | undefined
+      );
+    } else {
+      serviceLogger.info(
+        logMessage,
+        errorDetails.context as Record<string, unknown> | undefined
+      );
+    }
 
-    // TODO: Send to external monitoring service (Sentry, etc.) for production
-    if (errorDetails.severity === 'critical' || errorDetails.severity === 'high') {
+    // Persist critical/high errors for monitoring handoff.
+    if (
+      errorDetails.severity === 'critical' ||
+      errorDetails.severity === 'high'
+    ) {
       this.sendToMonitoringService(errorDetails);
     }
   }
@@ -169,25 +194,32 @@ export class ErrorHandlingService {
   /**
    * Get localized error message
    */
-  public getLocalizedError(errorCode: string, language: 'bg' | 'en' = 'bg'): string {
+  public getLocalizedError(
+    errorCode: string,
+    language: 'bg' | 'en' = 'bg'
+  ): string {
     const errorMessage = ErrorHandlingService.ERROR_MESSAGES[errorCode];
     if (errorMessage) {
       return errorMessage[language];
     }
 
     // Fallback to generic error
-    const fallbackError = ErrorHandlingService.ERROR_MESSAGES['generic/unknown-error'];
+    const fallbackError =
+      ErrorHandlingService.ERROR_MESSAGES['generic/unknown-error'];
     return fallbackError[language];
   }
 
   /**
    * Handle Firebase Auth errors
    */
-  public handleAuthError(error: Error & { code?: string }, language: 'bg' | 'en' = 'bg'): string {
+  public handleAuthError(
+    error: Error & { code?: string },
+    language: 'bg' | 'en' = 'bg'
+  ): string {
     this.logError(error, {
       action: 'authentication',
       severity: 'medium',
-      additionalData: { errorCode: (error as any).code }
+      additionalData: { errorCode: (error as any).code },
     });
 
     return this.getLocalizedError(error.code, language);
@@ -196,11 +228,14 @@ export class ErrorHandlingService {
   /**
    * Handle Firestore errors
    */
-  public handleFirestoreError(error: Error & { code?: string }, language: 'bg' | 'en' = 'bg'): string {
+  public handleFirestoreError(
+    error: Error & { code?: string },
+    language: 'bg' | 'en' = 'bg'
+  ): string {
     this.logError(error, {
       action: 'firestore',
       severity: 'medium',
-      additionalData: { errorCode: (error as any).code }
+      additionalData: { errorCode: (error as any).code },
     });
 
     return this.getLocalizedError(error.code, language);
@@ -209,11 +244,14 @@ export class ErrorHandlingService {
   /**
    * Handle Storage errors
    */
-  public handleStorageError(error: Error & { code?: string }, language: 'bg' | 'en' = 'bg'): string {
+  public handleStorageError(
+    error: Error & { code?: string },
+    language: 'bg' | 'en' = 'bg'
+  ): string {
     this.logError(error, {
       action: 'storage',
       severity: 'medium',
-      additionalData: { errorCode: (error as any).code }
+      additionalData: { errorCode: (error as any).code },
     });
 
     return this.getLocalizedError(error.code, language);
@@ -222,16 +260,21 @@ export class ErrorHandlingService {
   /**
    * Handle validation errors
    */
-  public handleValidationError(errors: Record<string, string>, language: 'bg' | 'en' = 'bg'): string {
+  public handleValidationError(
+    errors: Record<string, string>,
+    language: 'bg' | 'en' = 'bg'
+  ): string {
     const firstError = Object.values(errors)[0];
-    
+
     this.logError(new Error(`Validation failed: ${firstError}`), {
       action: 'validation',
       severity: 'low',
-      additionalData: { validationErrors: errors }
+      additionalData: { validationErrors: errors },
     });
 
-    return firstError || this.getLocalizedError('generic/validation-error', language);
+    return (
+      firstError || this.getLocalizedError('generic/validation-error', language)
+    );
   }
 
   /**
@@ -251,7 +294,9 @@ export class ErrorHandlingService {
   /**
    * Get errors by severity
    */
-  public getErrorsBySeverity(severity: 'low' | 'medium' | 'high' | 'critical'): ErrorDetails[] {
+  public getErrorsBySeverity(
+    severity: 'low' | 'medium' | 'high' | 'critical'
+  ): ErrorDetails[] {
     return this.errorLog.filter(error => error.severity === severity);
   }
 
@@ -273,9 +318,11 @@ export class ErrorHandlingService {
     recentErrors: number;
   } {
     const recentErrors = this.getRecentErrors(1); // Last hour
-    const criticalErrors = recentErrors.filter(e => e.severity === 'critical').length;
+    const criticalErrors = recentErrors.filter(
+      e => e.severity === 'critical'
+    ).length;
     const highErrors = recentErrors.filter(e => e.severity === 'high').length;
-    
+
     const issues: string[] = [];
     let healthy = true;
 
@@ -298,20 +345,8 @@ export class ErrorHandlingService {
       healthy,
       issues,
       criticalErrors,
-      recentErrors: recentErrors.length
+      recentErrors: recentErrors.length,
     };
-  }
-
-  private getLogLevel(severity: string): 'log' | 'warn' | 'error' {
-    switch (severity) {
-      case 'critical':
-      case 'high':
-        return 'error';
-      case 'medium':
-        return 'warn';
-      default:
-        return 'log';
-    }
   }
 
   private sendToMonitoringService(errorDetails: ErrorDetails): void {
@@ -320,21 +355,28 @@ export class ErrorHandlingService {
     try {
       const CRITICAL_ERRORS_KEY = 'critical_errors_queue';
       const existingErrorsJson = localStorage.getItem(CRITICAL_ERRORS_KEY);
-      let errors: ErrorDetails[] = existingErrorsJson ? JSON.parse(existingErrorsJson) : [];
-      
+      let errors: ErrorDetails[] = existingErrorsJson
+        ? JSON.parse(existingErrorsJson)
+        : [];
+
       // Add new error
       errors.push(errorDetails);
-      
+
       // Keep only last 20 critical errors to avoid storage overflow
       if (errors.length > 20) {
         errors = errors.slice(-20);
       }
-      
+
       localStorage.setItem(CRITICAL_ERRORS_KEY, JSON.stringify(errors));
-      serviceLogger.info('Critical error persisted to offline storage', { errorId: errorDetails.code });
+      serviceLogger.info('Critical error persisted to offline storage', {
+        errorId: errorDetails.code,
+      });
     } catch (storageError) {
       // Fallback if localStorage fails (e.g. quota exceeded)
-      serviceLogger.error('Failed to persist critical error', storageError as Error);
+      serviceLogger.error(
+        'Failed to persist critical error',
+        storageError as Error
+      );
     }
   }
 }
@@ -343,16 +385,22 @@ export class ErrorHandlingService {
 export const errorHandler = ErrorHandlingService.getInstance();
 
 // Helper functions for common error scenarios
-export const handleError = (error: Error, context?: {
-  userId?: string;
-  action?: string;
-  severity?: 'low' | 'medium' | 'high' | 'critical';
-  additionalData?: Record<string, string | number | boolean>;
-}): void => {
+export const handleError = (
+  error: Error,
+  context?: {
+    userId?: string;
+    action?: string;
+    severity?: 'low' | 'medium' | 'high' | 'critical';
+    additionalData?: Record<string, string | number | boolean>;
+  }
+): void => {
   errorHandler.logError(error, context);
 };
 
-export const getErrorMessage = (errorCode: string, language: 'bg' | 'en' = 'bg'): string => {
+export const getErrorMessage = (
+  errorCode: string,
+  language: 'bg' | 'en' = 'bg'
+): string => {
   return errorHandler.getLocalizedError(errorCode, language);
 };
 

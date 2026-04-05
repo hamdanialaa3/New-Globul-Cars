@@ -52,12 +52,13 @@ import ThemeControl from '@/components/SuperAdmin/ThemeControl';
 import FeaturedContentManager from '@/components/SuperAdmin/FeaturedContentManager';
 import HomepageControlManager from '@/components/SuperAdmin/HomepageControlManager';
 import SEOControl from '@/components/SuperAdmin/SEOControl';
+import MarketingStatusPanel from '@/components/SuperAdmin/MarketingStatusPanel';
 import AnnouncementManager from '@/components/SuperAdmin/AnnouncementManager';
 import BackupRestoreManager from '@/components/SuperAdmin/BackupRestoreManager';
 import QuickActionsPanel from '@/components/SuperAdmin/QuickActionsPanel';
 import PlatformStatusDashboard from '@/components/SuperAdmin/PlatformStatusDashboard';
 import PageBuilderManager from '@/components/SuperAdmin/PageBuilderManager';
-import { Users } from 'lucide-react';
+import { Users, Shield } from 'lucide-react';
 
 // Loading State Styles
 const LoadingState = styled.div`
@@ -334,6 +335,12 @@ const DashboardContent: React.FC = () => {
 
       {activeTab === 'cars' && (
         <>
+          <div style={{ textAlign: 'center', padding: '2rem', background: 'var(--admin-glass-panel-bg)', borderRadius: '8px', marginBottom: '20px', border: '1px solid var(--admin-border-subtle)' }}>
+            <h2 style={{ color: 'var(--admin-text-primary)', marginBottom: '1rem', fontSize: '18px', fontWeight: '600' }}>Car Moderation</h2>
+            <ActionButton onClick={() => navigate('/super-admin/moderation')} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <Shield size={16} /> Open Moderation Queue
+            </ActionButton>
+          </div>
           <RealDataDisplay />
           <RealDataManager />
           <AdvancedCharts />
@@ -393,6 +400,7 @@ const DashboardContent: React.FC = () => {
           <SiteSettingsControl />
           <ThemeControl />
           <SEOControl />
+          <MarketingStatusPanel />
           <BackupRestoreManager />
           <ProjectInfoPanel />
           <ArchitecturePanel language="en" />

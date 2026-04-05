@@ -73,7 +73,7 @@ export const RegionalPriceChart: React.FC<RegionalPriceChartProps> = ({ data }) 
           fontSize={12}
         />
         <Tooltip
-          formatter={(value: number | undefined) => [formatCurrency(value || 0), 'Средна цена']}
+          formatter={((value: number | undefined) => [formatCurrency(value || 0), 'Средна цена']) as any}
           labelStyle={{ color: '#000' }}
         />
         <Legend />
@@ -104,13 +104,13 @@ export const MarketTrendsChart: React.FC<MarketTrendsChartProps> = ({ data }) =>
           fontSize={12}
         />
         <Tooltip
-          formatter={(value: number | string, name: string): [string, string] => {
+          formatter={((value: number | string, name: string): [string, string] => {
             const numValue = typeof value === 'number' ? value : 0;
             return [
               name === 'searchCount' ? `${numValue} търсения` : String(value),
               name === 'searchCount' ? 'Търсения' : 'Средна цена'
             ];
-          }}
+          }) as any}
           labelStyle={{ color: '#000' }}
         />
         <Legend />
@@ -140,13 +140,13 @@ export const SalesPeakChart: React.FC<SalesPeakChartProps> = ({ data }) => {
         />
         <YAxis fontSize={12} />
         <Tooltip
-          formatter={(value: number | string, name: string): [string, string] => {
+          formatter={((value: number | string, name: string): [string, string] => {
             const numValue = typeof value === 'number' ? value : 0;
             return [
               name === 'salesCount' ? `${numValue} продажби` : String(value),
               name === 'salesCount' ? 'Продажби' : 'Средна цена'
             ];
-          }}
+          }) as any}
           labelFormatter={(hour) => `Час: ${formatHour(hour)}`}
           labelStyle={{ color: '#000' }}
         />
@@ -193,10 +193,10 @@ export const PriceDistributionChart: React.FC<PriceDistributionProps> = ({ data 
           ))}
         </Pie>
         <Tooltip
-          formatter={(value: number | string, name: string): [string, string] => {
+          formatter={((value: number | string, name: string): [string, string] => {
             const numValue = typeof value === 'number' ? value : 0;
             return [`${numValue} обяви`, String(name)];
-          }}
+          }) as any}
           labelStyle={{ color: '#000' }}
         />
       </PieChart>

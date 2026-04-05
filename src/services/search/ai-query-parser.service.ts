@@ -118,16 +118,8 @@ Important:
 
       logger.debug('🤖 Parsing query with AI', { userQuery });
 
-      const response = await openAIService.chat([
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userQuery }
-      ], {
-        model: 'gpt-4o-mini',
-        temperature: 0.2,
-        max_tokens: 500
-      });
-
-      const parsed = JSON.parse(response.content);
+      const response = await openAIService.chat(userQuery, systemPrompt);
+      const parsed = JSON.parse(response.message);
       logger.info('✅ AI Query Parsed', { userQuery, parsed });
       
       return parsed;

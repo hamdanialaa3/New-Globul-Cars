@@ -38,6 +38,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
     favorites: true,
     comparisons: true,
     priceAlerts: true,
+    userSearch: true,
   },
 
   // Upload Limits

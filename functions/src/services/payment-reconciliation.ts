@@ -7,7 +7,11 @@
 import * as functions from 'firebase-functions/v1';
 import * as admin from 'firebase-admin';
 import * as logger from 'firebase-functions/logger';
-import { PaymentProvider, PaymentRecord, ReconciliationReport } from '../types/payment-types';
+import {
+  PaymentProvider,
+  PaymentRecord,
+  ReconciliationReport,
+} from '../types/payment-types';
 
 if (!admin.apps.length) {
   admin.initializeApp();
@@ -22,7 +26,7 @@ export const dailyReconciliation = functions
   .region('europe-west1')
   .pubsub.schedule('0 2 * * *')
   .timeZone('Europe/Sofia')
-  .onRun(async (context) => {
+  .onRun(async context => {
     logger.info('Starting daily payment reconciliation');
 
     try {
@@ -35,7 +39,7 @@ export const dailyReconciliation = functions
 
       // Generate reports for each provider
       const providers: PaymentProvider[] = ['icard', 'revolut', 'stripe'];
-      
+
       for (const provider of providers) {
         await generateReconciliationReport(provider, yesterday, today);
       }
@@ -79,7 +83,7 @@ export const triggerReconciliation = functions
         provider,
         startDate: start.toISOString(),
         endDate: end.toISOString(),
-        triggeredBy: context.auth.uid
+        triggeredBy: context.auth.uid,
       });
 
       const report = await generateReconciliationReport(provider, start, end);
@@ -91,8 +95,8 @@ export const triggerReconciliation = functions
           matched: report.matched_transactions,
           unmatched_system: report.unmatched_system.length,
           unmatched_provider: report.unmatched_provider.length,
-          discrepancy_amount: report.discrepancy_amount
-        }
+          discrepancy_amount: report.discrepancy_amount,
+        },
       };
     } catch (error: any) {
       logger.error('Manual reconciliation failed', { error: error.message });
@@ -109,11 +113,18 @@ async function generateReconciliationReport(
   endDate: Date
 ): Promise<ReconciliationReport> {
   // Fetch system transactions
-  const systemTransactions = await fetchSystemTransactions(provider, startDate, endDate);
+  const systemTransactions = await fetchSystemTransactions(
+    provider,
+    startDate,
+    endDate
+  );
 
-  // In production, you would fetch provider transactions from their API
-  // For now, we'll use a placeholder
-  const providerTransactions = await fetchProviderTransactions(provider, startDate, endDate);
+  // Fetch provider transactions from the configured provider API integrations.
+  const providerTransactions = await fetchProviderTransactions(
+    provider,
+    startDate,
+    endDate
+  );
 
   // Match transactions
   const matched: Set<string> = new Set();
@@ -146,8 +157,10 @@ async function generateReconciliationReport(
     .filter(tx => tx.status === 'succeeded')
     .reduce((sum, tx) => sum + tx.amount, 0);
 
-  const totalAmountProvider = providerTransactions
-    .reduce((sum, tx) => sum + tx.amount, 0);
+  const totalAmountProvider = providerTransactions.reduce(
+    (sum, tx) => sum + tx.amount,
+    0
+  );
 
   const discrepancy = Math.abs(totalAmountSystem - totalAmountProvider);
 
@@ -166,7 +179,7 @@ async function generateReconciliationReport(
     total_amount_provider: totalAmountProvider,
     discrepancy_amount: discrepancy,
     status: 'draft',
-    generated_at: admin.firestore.Timestamp.now()
+    generated_at: admin.firestore.Timestamp.now(),
   };
 
   // Save report
@@ -178,11 +191,12 @@ async function generateReconciliationReport(
     matched: matched.size,
     unmatchedSystem: unmatchedSystem.length,
     unmatchedProvider: unmatchedProvider.length,
-    discrepancy
+    discrepancy,
   });
 
   // Send alert if discrepancy is significant
-  if (discrepancy > 100) { // More than €100 discrepancy
+  if (discrepancy > 100) {
+    // More than €100 discrepancy
     await sendReconciliationAlert(report);
   }
 
@@ -228,7 +242,7 @@ async function fetchProviderTransactions(
       const response = await fetch('https://api.icard.com/v1/transactions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${apiKey}`,
+          Authorization: `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -266,7 +280,7 @@ async function fetchProviderTransactions(
       const response = await fetch(
         `https://b2b.revolut.com/api/1.0/transactions?from=${from}&to=${to}`,
         {
-          headers: { 'Authorization': `Bearer ${apiKey}` },
+          headers: { Authorization: `Bearer ${apiKey}` },
         }
       );
       if (!response.ok) {
@@ -294,7 +308,9 @@ async function fetchProviderTransactions(
 /**
  * Send alert for reconciliation discrepancies
  */
-async function sendReconciliationAlert(report: ReconciliationReport): Promise<void> {
+async function sendReconciliationAlert(
+  report: ReconciliationReport
+): Promise<void> {
   try {
     // Store alert in Firestore
     await db.collection('admin_alerts').add({
@@ -304,7 +320,7 @@ async function sendReconciliationAlert(report: ReconciliationReport): Promise<vo
       discrepancy_amount: report.discrepancy_amount,
       report_id: report.id,
       created_at: admin.firestore.FieldValue.serverTimestamp(),
-      resolved: false
+      resolved: false,
     });
 
     const alertMessage = `Payment Reconciliation Discrepancy\nProvider: ${report.provider}\nDiscrepancy: EUR ${report.discrepancy_amount}\nReport: ${report.id}`;
@@ -319,7 +335,9 @@ async function sendReconciliationAlert(report: ReconciliationReport): Promise<vo
           text: `⚠️ ${alertMessage}`,
           channel: '#payment-alerts',
         }),
-      }).catch((err: any) => logger.error('Slack alert failed', { error: err.message }));
+      }).catch((err: any) =>
+        logger.error('Slack alert failed', { error: err.message })
+      );
     }
 
     // Telegram notification
@@ -333,7 +351,9 @@ async function sendReconciliationAlert(report: ReconciliationReport): Promise<vo
           chat_id: telegramChat,
           text: `⚠️ ${alertMessage}`,
         }),
-      }).catch((err: any) => logger.error('Telegram alert failed', { error: err.message }));
+      }).catch((err: any) =>
+        logger.error('Telegram alert failed', { error: err.message })
+      );
     }
 
     // SendGrid email
@@ -342,25 +362,31 @@ async function sendReconciliationAlert(report: ReconciliationReport): Promise<vo
       await fetch('https://api.sendgrid.com/v3/mail/send', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${sgApiKey}`,
+          Authorization: `Bearer ${sgApiKey}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          personalizations: [{ to: [{ email: 'admin@koli.one' }, { email: 'tech@koli.one' }] }],
+          personalizations: [
+            { to: [{ email: 'admin@koli.one' }, { email: 'tech@koli.one' }] },
+          ],
           from: { email: 'alerts@koli.one', name: 'Koli One Payments' },
           subject: `[PAYMENT] Reconciliation Discrepancy — ${report.provider}`,
           content: [{ type: 'text/plain', value: alertMessage }],
         }),
-      }).catch((err: any) => logger.error('Email alert failed', { error: err.message }));
+      }).catch((err: any) =>
+        logger.error('Email alert failed', { error: err.message })
+      );
     }
 
     logger.warn('Reconciliation discrepancy alert sent', {
       provider: report.provider,
       discrepancy: report.discrepancy_amount,
-      reportId: report.id
+      reportId: report.id,
     });
   } catch (error: any) {
-    logger.error('Failed to send reconciliation alert', { error: error.message });
+    logger.error('Failed to send reconciliation alert', {
+      error: error.message,
+    });
   }
 }
 
@@ -382,11 +408,17 @@ export const exportReconciliationReport = functions
     const { reportId } = data;
 
     if (!reportId) {
-      throw new functions.https.HttpsError('invalid-argument', 'Missing reportId');
+      throw new functions.https.HttpsError(
+        'invalid-argument',
+        'Missing reportId'
+      );
     }
 
     try {
-      const reportDoc = await db.collection('reconciliation_reports').doc(reportId).get();
+      const reportDoc = await db
+        .collection('reconciliation_reports')
+        .doc(reportId)
+        .get();
 
       if (!reportDoc.exists) {
         throw new functions.https.HttpsError('not-found', 'Report not found');
@@ -400,7 +432,7 @@ export const exportReconciliationReport = functions
       return {
         success: true,
         csv,
-        filename: `reconciliation_${report.provider}_${report.period_start.toDate().toISOString().split('T')[0]}.csv`
+        filename: `reconciliation_${report.provider}_${report.period_start.toDate().toISOString().split('T')[0]}.csv`,
       };
     } catch (error: any) {
       logger.error('Failed to export report', { error: error.message });
@@ -417,7 +449,9 @@ function generateReconciliationCSV(report: ReconciliationReport): string {
   // Header
   lines.push('Reconciliation Report');
   lines.push(`Provider,${report.provider}`);
-  lines.push(`Period,${report.period_start.toDate().toISOString()} to ${report.period_end.toDate().toISOString()}`);
+  lines.push(
+    `Period,${report.period_start.toDate().toISOString()} to ${report.period_end.toDate().toISOString()}`
+  );
   lines.push(`Generated,${report.generated_at.toDate().toISOString()}`);
   lines.push('');
 

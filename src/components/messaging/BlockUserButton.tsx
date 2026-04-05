@@ -278,8 +278,7 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
           toast.success(
             isBg
               ? `✅ ${targetUserName} е разблокиран`
-              : `✅ ${targetUserName} has been unblocked`,
-            { duration: 3000 }
+              : `✅ ${targetUserName} has been unblocked`
           );
           onBlockChanged?.(false);
         } else if (!result.notBlocked) {
@@ -292,8 +291,7 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
           toast.error(
             isBg
               ? `❌ Грешка при разблокирането: ${result.error || 'Unknown error'}`
-              : `❌ Error unblocking: ${result.error || 'Unknown error'}`,
-            { duration: 5000 }
+              : `❌ Error unblocking: ${result.error || 'Unknown error'}`
           );
         }
       } else {
@@ -333,8 +331,7 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
           toast.success(
             isBg
               ? `✅ ${targetUserName} е блокиран`
-              : `✅ ${targetUserName} has been blocked`,
-            { duration: 3000 }
+              : `✅ ${targetUserName} has been blocked`
           );
           onBlockChanged?.(true);
         } else if (!result.alreadyBlocked) {
@@ -347,8 +344,7 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
           toast.error(
             isBg
               ? `❌ Грешка при блокирането: ${result.error || 'Unknown error'}`
-              : `❌ Error blocking: ${result.error || 'Unknown error'}`,
-            { duration: 5000 }
+              : `❌ Error blocking: ${result.error || 'Unknown error'}`
           );
         }
       }
@@ -369,8 +365,7 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
       toast.error(
         isBg
           ? '❌ Грешка при обработката'
-          : '❌ Processing error',
-        { duration: 5000 }
+          : '❌ Processing error'
       );
     } finally {
       setIsProcessing(false);

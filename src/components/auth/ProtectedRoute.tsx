@@ -31,12 +31,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requireAuth = true,
   redirectTo = '/auth/login',
 }) => {
-  const { user, isLoading } = useAuth();
+  const { user, loading } = useAuth();
   const location = useLocation();
   const { saveIntent } = useProfileIntent();
 
   // Wait for auth state to load
-  if (isLoading) {
+  if (loading) {
     return (
       <div style={{
         display: 'flex',
@@ -54,14 +54,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   // If user is not logged in
   if (requireAuth && !user) {
     // Save intent (current path + data)
-    saveIntent({
-      action: 'view_profile',
-      returnUrl: location.pathname + location.search,
-      metadata: {
-        timestamp: Date.now(),
-        referrer: document.referrer,
-      },
-    });
+    saveIntent(location.pathname + location.search);
 
     logger.info('[ProtectedRoute] User not authenticated, redirecting to login', {
       intendedPath: location.pathname,

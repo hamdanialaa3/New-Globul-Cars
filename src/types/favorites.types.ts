@@ -31,6 +31,9 @@ export interface FavoriteItem {
   
   /** Cached car preview data (updated periodically) */
   carPreview: FavoriteCarPreview;
+  
+  /** Alias for carPreview – used in some UI components */
+  carData?: FavoriteCarPreview & { title?: string };
 }
 
 /**

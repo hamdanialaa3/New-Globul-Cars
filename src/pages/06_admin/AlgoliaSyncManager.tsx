@@ -204,7 +204,7 @@ const StatCard = styled.div`
   background: ${({ theme }) => theme.colors.background.tertiary};
   padding: 1.25rem;
   border-radius: 12px;
-  border: 1px solid ${({ theme }) => theme.colors.border.primary};
+  border: 1px solid ${({ theme }) => theme.colors.border.default};
   
   h4 {
     font-size: 0.875rem;
@@ -237,7 +237,7 @@ const CollectionItem = styled.div<{ $status?: 'synced' | 'pending' | 'skipped' }
   padding: 1rem 1.25rem;
   background: ${({ theme }) => theme.colors.background.tertiary};
   border-radius: 10px;
-  border: 1px solid ${({ theme }) => theme.colors.border.primary};
+  border: 1px solid ${({ theme }) => theme.colors.border.default};
   
   .collection-name {
     font-weight: 600;
@@ -320,7 +320,7 @@ const AlgoliaSyncManager: React.FC = () => {
 
       const result = await bulkSyncFunction();
       
-      logger.info('✅ Bulk sync completed:', result.data);
+      logger.info('✅ Bulk sync completed:', result.data as Record<string, unknown>);
       setSyncResult(result.data);
     } catch (err: any) {
       logger.error('❌ Bulk sync failed:', err);
@@ -347,7 +347,7 @@ const AlgoliaSyncManager: React.FC = () => {
 
       const result = await clearFunction();
       
-      logger.info('All indices cleared:', result.data);
+      logger.info('All indices cleared:', { data: result.data as unknown });
       toast.success('All indices cleared successfully');
     } catch (err: any) {
       logger.error('❌ Clear failed:', err);

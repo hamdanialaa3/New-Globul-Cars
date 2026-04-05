@@ -119,15 +119,15 @@ const AdminManualPaymentsDashboard: React.FC = () => {
   const loadTransactions = async () => {
     try {
       setLoading(true);
-      const allTransactions = await manualPaymentService.getAllTransactions();
+      const allTransactions = await manualPaymentService.getPendingTransactions();
       setTransactions(allTransactions);
 
       // Calculate statistics
-      const pending = allTransactions.filter(t => t.status === 'pending_manual_verification').length;
-      const verified = allTransactions.filter(t => t.status === 'verified').length;
-      const rejected = allTransactions.filter(t => t.status === 'rejected').length;
+      const pending = allTransactions.filter((t) => t.status === 'pending_manual_verification').length;
+      const verified = allTransactions.filter((t) => t.status === 'verified').length;
+      const rejected = allTransactions.filter((t) => t.status === 'rejected').length;
       const totalAmount = allTransactions
-        .filter(t => t.status === 'verified' || t.status === 'completed')
+        .filter((t) => t.status === 'verified' || t.status === 'completed')
         .reduce((sum, t) => sum + t.amount, 0);
 
       setStats({ pending, verified, rejected, totalAmount });

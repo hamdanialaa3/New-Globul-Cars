@@ -339,7 +339,6 @@ const DynamicCarShowcase: React.FC<DynamicCarShowcaseProps> = ({ pageType }) => 
             <ModernCarCard
               key={car.id}
               car={car}
-              onClick={() => handleCarClick(car)}
             />
           ))}
         </CarsGrid>

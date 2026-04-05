@@ -459,11 +459,11 @@ const Section = styled.div`
   margin-bottom: 32px;
 `;
 
-const SectionTitle = styled.h3<{ $isDark: boolean }>`
+const SectionTitle = styled.h3<{ $isDark?: boolean }>`
   margin: 0 0 16px 0;
   font-size: 18px;
   font-weight: 600;
-  color: ${props => props.$isDark ? '#F8FAFC' : '#333'};
+  color: ${props => props.$isDark === true ? '#F8FAFC' : '#333'};
   transition: color 0.3s ease;
 `;
 
@@ -508,24 +508,24 @@ const SettingsList = styled.div`
   gap: 12px;
 `;
 
-const SettingItem = styled.div<{ $isDark: boolean }>`
+const SettingItem = styled.div<{ $isDark?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: ${props => props.$isDark ? '#1E293B' : '#f8f9fa'};
+  background: ${props => props.$isDark === true ? '#1E293B' : '#f8f9fa'};
   border-radius: 8px;
-  border: 1px solid ${props => props.$isDark ? '#334155' : 'transparent'};
+  border: 1px solid ${props => props.$isDark === true ? '#334155' : 'transparent'};
   transition: all 0.2s ease;
   
   &:hover {
-    background: ${props => props.$isDark ? '#334155' : '#e9ecef'};
+    background: ${props => props.$isDark === true ? '#334155' : '#e9ecef'};
   }
 `;
 
-const SettingLabel = styled.span<{ $isDark: boolean }>`
+const SettingLabel = styled.span<{ $isDark?: boolean }>`
   font-size: 14px;
-  color: ${props => props.$isDark ? '#E2E8F0' : '#333'};
+  color: ${props => props.$isDark === true ? '#E2E8F0' : '#333'};
   transition: color 0.3s ease;
 `;
 

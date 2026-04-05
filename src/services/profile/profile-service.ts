@@ -221,14 +221,14 @@ class ProfileService {
       logger.info(`[Profile] Fetching cars for seller: ${sellerId}`);
 
       // Dynamic import to avoid circular dependencies
-      const { UnifiedCarService } = await import('@/services/car/unified-car-service');
+      const { unifiedCarService } = await import('@/services/car/unified-car-service');
       
-      if (!UnifiedCarService) {
+      if (!unifiedCarService) {
         logger.warn('[Profile] UnifiedCarService not available');
         return [];
       }
 
-      const cars = await UnifiedCarService.getUserCars(sellerId);
+      const cars = await unifiedCarService.getUserCars(sellerId);
       return cars.slice(0, limit);
     } catch (err) {
       logger.error('[Profile] Error fetching seller cars:', err);

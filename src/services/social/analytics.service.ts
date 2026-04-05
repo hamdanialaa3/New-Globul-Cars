@@ -374,9 +374,10 @@ class AnalyticsService {
     const dailyEngagement = new Map<string, { views: number; interactions: number }>();
 
     posts.forEach(post => {
-      const date = post.createdAt?.toDate?.()?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0];
-      const views = post.views || 0;
-      const interactions = (post.likes || 0) + (post.comments || 0);
+      const safePost = post as Record<string, any>;
+      const date = safePost.createdAt?.toDate?.()?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0];
+      const views = safePost.views || 0;
+      const interactions = (safePost.likes || 0) + (safePost.comments || 0);
 
       const existing = dailyEngagement.get(date) || { views: 0, interactions: 0 };
       dailyEngagement.set(date, {

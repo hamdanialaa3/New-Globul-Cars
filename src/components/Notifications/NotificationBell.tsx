@@ -4,8 +4,7 @@ import { Bell } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useFirestoreNotifications } from '../../hooks/useFirestoreNotifications';
 import { formatDistanceToNow } from 'date-fns';
-import bg from 'date-fns/locale/bg';
-import enUS from 'date-fns/locale/en-US';
+import { bg, enUS } from 'date-fns/locale';
 
 const BellContainer = styled.div`
   position: relative;

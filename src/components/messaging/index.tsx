@@ -27,5 +27,5 @@ export { AIChatbotWidget } from './AIChatbotWidget';
 export { default as QuickActions } from './QuickActionsPanel';
 export { default as Analytics } from './ChatAnalyticsDashboard';
 export { default as MessageBubble } from './InteractiveMessageBubble';
-export { default as Offer } from './OfferBubble';
+export { default as OfferComponent } from './OfferBubble';
 export { default as Presence } from './PresenceIndicator';

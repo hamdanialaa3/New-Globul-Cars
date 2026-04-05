@@ -39,7 +39,7 @@ const ScrollToTop: React.FC = () => {
       }
 
       if (process.env.NODE_ENV === 'development') {
-        logger.debug('[ScrollToTop] Scrolled to top for route:', pathname);
+        logger.debug('[ScrollToTop] Scrolled to top for route', { pathname });
       }
     } catch (error) {
       // Fallback for browsers that don't support smooth scroll

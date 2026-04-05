@@ -7,7 +7,7 @@ import { User, Building2 } from 'lucide-react';
 import { useProfileType } from '../../contexts/ProfileTypeContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import ProfileTypeConfirmModal from '../Profile/ProfileTypeConfirmModal';
-import type { ProfileType } from '../../contexts/ProfileTypeContext';
+import type { ProfileType } from '../../types/user/bulgarian-user.types';
 
 const ProfileTypeSwitcher: React.FC = () => {
   const { profileType, switchProfileType } = useProfileType();

@@ -315,6 +315,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // This is what all UI components should use instead of currentUser.displayName.
     displayName: userProfile?.displayName || currentUser?.displayName || null,
     loading,
+    isLoading: loading,
+    isGuest: !!currentUser?.isAnonymous,
     login,
     register,
     logout,

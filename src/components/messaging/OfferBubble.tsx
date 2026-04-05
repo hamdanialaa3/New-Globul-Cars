@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { format, differenceInHours, differenceInDays } from 'date-fns';
-import bg from 'date-fns/locale/bg';
+import { bg } from 'date-fns/locale';
 import { MessagingColors, ButtonBase, Divider, Spinner } from './messaging-styles';
 import { logger } from '@/services/logger-service';
 import { useLanguage } from '@/contexts';

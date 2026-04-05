@@ -47,7 +47,7 @@ export const HCaptchaComponent = forwardRef<any, HCaptchaComponentProps>(
         size={size}
         languageOverride={language}
         onVerify={(token) => {
-          logger.info('Captcha verified:', token);
+          logger.info('Captcha verified', { token });
           onVerify(token);
         }}
         onError={(error) => {

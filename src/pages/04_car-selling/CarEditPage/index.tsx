@@ -307,6 +307,7 @@ const CarEditPage: React.FC<{ carId?: string }> = ({ carId: propCarId }) => {
             previewUrlsRef={previewUrlsRef}
             t={t}
             isDark={theme === 'dark'}
+            carLabel={[formData.make, formData.model, formData.year].filter(Boolean).join(' ') || 'Car'}
           />
 
           <BasicInfoSection

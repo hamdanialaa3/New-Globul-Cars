@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { FiMapPin, FiPhone, FiMail, FiStar } from 'react-icons/fi';
 import { logger } from '@/services/logger-service';
-import { DealershipRepository } from '@/repositories/DealershipRepository';
+import { DealershipRepository } from '../../../repositories/DealershipRepository';
 import type { DealershipInfo } from '@/types/dealership/dealership.types';
 
 // ============================================================================
@@ -248,7 +248,7 @@ const EmptyState = styled.div`
 // ============================================================================
 
 const ViewAllDealersPage: React.FC = () => {
-  const { currentLanguage, t } = useLanguage();
+  const { language: currentLanguage, t } = useLanguage();
   const navigate = useNavigate();
   const isRTL = currentLanguage === 'ar';
   

@@ -86,7 +86,7 @@ export const useCarSearch = (initialFilters: Partial<FiltersType> = {}) => {
 
   const searchCars = useCallback(() => {
     // (Comment removed - was in Arabic)
-    logger.info('Searching with filters:', filters);
+    logger.info('Searching with filters', { filters: filters as unknown as Record<string, unknown> });
     // (Comment removed - was in Arabic)
   }, [filters]);
 

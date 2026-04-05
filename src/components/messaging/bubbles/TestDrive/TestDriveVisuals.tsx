@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { format } from 'date-fns';
-import bg from 'date-fns/locale/bg';
+import { bg } from 'date-fns/locale';
 import { FiCalendar, FiMapPin, FiFileText, FiClock } from 'react-icons/fi';
 import { MessagingColors, Divider } from '../../messaging-styles';
 import type { TestDriveRequest } from './TestDriveBubble';
@@ -117,7 +117,7 @@ export const TestDriveVisuals: React.FC<TestDriveVisualsProps> = ({
 };
 
 // View Only Message Component
-TestDriveVisuals.ViewOnlyMessage = ({ language }: { language: 'bg' | 'en' }) => (
+export const TestDriveViewOnlyMessage: React.FC<{ language: 'bg' | 'en' }> = ({ language }) => (
   <ViewOnlyMessage>
     <InfoIcon>
       <FiFileText />

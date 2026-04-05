@@ -15,6 +15,7 @@ interface CarImagesProps {
     previewUrlsRef: React.MutableRefObject<Map<number, string>>;
     t: any;
     isDark: boolean;
+    carLabel?: string;
 }
 
 export const CarImages: React.FC<CarImagesProps> = ({
@@ -26,7 +27,8 @@ export const CarImages: React.FC<CarImagesProps> = ({
     handleRemoveImage,
     previewUrlsRef,
     t,
-    isDark
+    isDark,
+    carLabel = 'Car'
 }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -44,7 +46,7 @@ export const CarImages: React.FC<CarImagesProps> = ({
                 <MainImageContainer $isDark={isDark}>
                     {currentImageUrl ? (
                         <>
-                            <MainImage src={currentImageUrl} alt="Car Preview" />
+                            <MainImage src={currentImageUrl} alt={`${carLabel} - photo ${selectedImageIndex + 1}`} />
                             {images.length > 1 && (
                                 <>
                                     <ImageNavButton $isDark={isDark} $position="left" onClick={() => setSelectedImageIndex((selectedImageIndex - 1 + images.length) % images.length)}>
@@ -72,7 +74,7 @@ export const CarImages: React.FC<CarImagesProps> = ({
                             $isActive={index === selectedImageIndex}
                             onClick={() => setSelectedImageIndex(index)}
                         >
-                            <img src={getImageUrl(img, index)} alt={`Thumbnail ${index + 1}`} />
+                            <img src={getImageUrl(img, index)} alt={`${carLabel} - photo ${index + 1}`} />
                             <RemoveImageButton $isDark={isDark} onClick={(e) => { e.stopPropagation(); handleRemoveImage(index); }}>
                                 <Trash2 size={14} />
                             </RemoveImageButton>

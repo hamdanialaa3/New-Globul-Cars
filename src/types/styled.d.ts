@@ -45,6 +45,11 @@ declare module 'styled-components' {
         default: string;
         paper: string;
         dark: string;
+        light?: string;
+        lighter?: string;
+        primary?: string;
+        secondary?: string;
+        tertiary?: string;
         semiDark: string;
         lightOverlay: string;
         darkOverlay: string;
@@ -105,18 +110,44 @@ declare module 'styled-components' {
         light: string;
         medium: string;
         dark: string;
+        defaultRadius: {
+          none: string;
+          sm: string;
+          base: string;
+          md: string;
+          lg: string;
+          xl: string;
+          '2xl': string;
+          '3xl': string;
+          full: string;
+        };
       };
+      successDark?: string;
+      errorDark?: string;
+      primaryDark?: string;
+      backgroundHover?: string;
+      borderHover?: string;
+      /** Shortcut for text.primary – used by some components */
+      textPrimary?: string;
+      /** Shortcut for text.secondary – used by some components */
+      textSecondary?: string;
+      /** Hover background color – used by some components */
+      hover?: string;
       [key: string]: any;
     };
     // Root-level text mirror used by some components
-    text?: {
+    text: {
       primary: string;
       secondary: string;
       onDark?: string;
       onLight?: string;
       disabled?: string;
       hint?: string;
+      tertiary?: string;
     };
+
+    danger?: string;
+    dangerHover?: string;
 
     typography: {
       fontFamily: {
@@ -201,5 +232,6 @@ declare module 'styled-components' {
       input: any;
       card: any;
     };
+    [key: string]: any;
   }
 }

@@ -8,7 +8,7 @@
  * @author Senior System Architect
  */
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, Suspense } from 'react';
 import styled from 'styled-components';
 import { useOutletContext } from 'react-router-dom';
 import { useLanguage } from '../../../../../contexts/LanguageContext';
@@ -25,6 +25,11 @@ import { ProfileLocationMap } from './components/ProfileLocationMap';
 import { BusinessGreenHeader } from '../../../../../components/Profile/BusinessGreenHeader';
 import FollowingTab from './FollowingTab';
 import { HorizontalContactSection } from './components/HorizontalContactSection';
+
+// Review components
+const RatingSummary = React.lazy(() => import('../../../../../components/review/RatingSummary'));
+const ReviewsList = React.lazy(() => import('../../../../../components/review/ReviewsList'));
+const ReviewComposerModal = React.lazy(() => import('../../../../../components/review/ReviewComposerModal'));
 
 interface PublicProfileViewProps {
   user: BulgarianUser;
@@ -43,9 +48,10 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({
   const followLoading = outletContext?.followLoading || false;
   const handleFollow = outletContext?.handleFollow || (() => {});
   const handleMessage = outletContext?.handleMessage || (() => {});
-  const [activeTab, setActiveTab] = useState<'inventory' | 'about' | 'feed' | 'following'>('inventory');
+  const [activeTab, setActiveTab] = useState<'inventory' | 'about' | 'feed' | 'following' | 'reviews'>('inventory');
   const [connectLoading, setConnectLoading] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  const [showReviewComposer, setShowReviewComposer] = useState(false);
 
   // Check existing trust connection on mount
   useEffect(() => {
@@ -85,7 +91,11 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({
   return (
     <ViewContainer $isDark={isDark}>
       {/* Hero Section */}
-      <PublicProfileHero user={user} />
+      <PublicProfileHero
+        user={user}
+        canRate={!!(viewer && viewer.uid !== user.uid)}
+        onRateClick={() => setShowReviewComposer(true)}
+      />
 
       {/* Green Header Bar - Under Profile Image */}
       {viewer && (
@@ -155,6 +165,14 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({
             >
               {language === 'bg' ? 'Следвани' : 'Following'}
             </TabButton>
+            <TabButton 
+              $active={activeTab === 'reviews'} 
+              onClick={() => setActiveTab('reviews')}
+              $profileType={profileType}
+              $isDark={isDark}
+            >
+              {language === 'bg' ? 'Отзиви' : 'Reviews'}
+            </TabButton>
           </TabNavigation>
 
           {/* Tab Content */}
@@ -189,6 +207,29 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({
             <div style={{ background: isDark ? '#1E293B' : 'white', borderRadius: '16px', padding: '20px' }}>
               <FollowingTab />
             </div>
+          )}
+
+          {activeTab === 'reviews' && (
+            <ReviewsSection $isDark={isDark}>
+              <Suspense fallback={<div style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>}>
+                <RatingSummary
+                  userId={user.uid}
+                  onWriteReview={viewer && viewer.uid !== user.uid ? () => setShowReviewComposer(true) : undefined}
+                />
+                <ReviewsList userId={user.uid} />
+              </Suspense>
+
+              {showReviewComposer && viewer && (
+                <Suspense fallback={null}>
+                  <ReviewComposerModal
+                    targetUserId={user.uid}
+                    targetUserName={user.displayName || ''}
+                    onClose={() => setShowReviewComposer(false)}
+                    onSuccess={() => setShowReviewComposer(false)}
+                  />
+                </Suspense>
+              )}
+            </ReviewsSection>
           )}
         </section>
       </ContentWrapper>
@@ -322,4 +363,19 @@ const SocialFeedPlaceholder = styled.div<{ $isDark: boolean }>`
   font-size: 16px;
   border: 1px solid ${props => props.$isDark ? '#334155' : '#E2E8F0'};
   transition: all 0.3s ease;
+`;
+
+const ReviewsSection = styled.section<{ $isDark: boolean }>`
+  background: ${props => props.$isDark ? '#1E293B' : 'white'};
+  border-radius: 16px;
+  padding: 32px;
+  border: 1px solid ${props => props.$isDark ? '#334155' : '#E2E8F0'};
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  transition: all 0.3s ease;
+
+  @media (max-width: 768px) {
+    padding: 20px;
+  }
 `;

@@ -111,7 +111,7 @@ const StatCard = styled.div`
 
 interface CarDebugData extends CarListing {
   id: string;
-  location?: { cityId?: string };
+  location?: string;
   city?: string;
   locationData?: { cityNameId?: string; cityId?: string };
 }

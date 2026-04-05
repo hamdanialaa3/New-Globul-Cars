@@ -11,8 +11,8 @@ import { CheckCircle, XCircle, File, User, Building2, AlertCircle, ExternalLink 
 import verificationService from './VerificationService';
 import { VerificationRequest } from './types';
 import { formatDistance } from 'date-fns';
-import { bg } from 'date-fns/locale/bg';
-import { enUS } from 'date-fns/locale/en-US';
+import { bg, enUS } from 'date-fns/locale';
+import { verifyEIK, validateEIKFormat, cleanEIK } from '../../services/verification/eik-verification-service';
 
 // Styled Components
 const Container = styled.div`
@@ -320,11 +320,14 @@ export const AdminApprovalQueue: React.FC = () => {
 
   // Handle verify EIK (Bulgarian Trade Registry API integration)
   const handleVerifyEIK = async (bulstat: string) => {
-    if (!bulstat || bulstat.trim() === '') {
+    const cleanBulstat = cleanEIK(bulstat || '');
+    const validation = validateEIKFormat(cleanBulstat);
+
+    if (!validation.valid) {
       toast.error(
         language === 'bg' 
-          ? 'Моля, въведете валиден БУЛСТАТ номер'
-          : 'Please enter a valid BULSTAT number'
+          ? validation.error || 'Моля, въведете валиден БУЛСТАТ номер'
+          : validation.error || 'Please enter a valid BULSTAT number'
       );
       return;
     }
@@ -337,43 +340,21 @@ export const AdminApprovalQueue: React.FC = () => {
           : 'Verifying BULSTAT...'
       );
 
-      // Call Bulgarian Trade Registry API
-      // Note: This requires a backend Cloud Function to securely call the API
-      // For now, we'll use a placeholder that can be replaced with actual API call
-      const response = await fetch(`https://api.egov.bg/api/v1/trade-registry/verify?bulstat=${bulstat}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
+      const result = await verifyEIK(cleanBulstat);
       toast.dismiss(loadingToast);
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.valid) {
-          toast.success(
-            language === 'bg' 
-              ? `БУЛСТАТ ${bulstat} е валиден`
-              : `BULSTAT ${bulstat} is valid`,
-            { autoClose: 5000 }
-          );
-          // Update verification status in Firestore
-          // This would be handled by the verification service
-        } else {
-          toast.error(
-            language === 'bg' 
-              ? `БУЛСТАТ ${bulstat} не е валиден`
-              : `BULSTAT ${bulstat} is not valid`,
-            { autoClose: 5000 }
-          );
-        }
-      } else {
-        // If API is not available, show info message
-        toast.info(
+      if (result.valid) {
+        toast.success(
           language === 'bg' 
-            ? 'API за проверка на БУЛСТАТ не е наличен. Моля, проверете ръчно.'
-            : 'BULSTAT verification API is not available. Please verify manually.',
+            ? `БУЛСТАТ ${cleanBulstat} е валиден`
+            : `BULSTAT ${cleanBulstat} is valid`,
+          { autoClose: 5000 }
+        );
+      } else {
+        toast.error(
+          language === 'bg' 
+            ? result.message || `БУЛСТАТ ${cleanBulstat} не е валиден`
+            : result.message || `BULSTAT ${cleanBulstat} is not valid`,
           { autoClose: 5000 }
         );
       }
@@ -480,7 +461,17 @@ export const AdminApprovalQueue: React.FC = () => {
           <ActionButtons>
             <Button 
               variant="verify" 
-              onClick={() => handleVerifyEIK('placeholder')}
+              onClick={() => {
+                const eikInput = window.prompt(
+                  language === 'bg'
+                    ? 'Въведете ЕИК/БУЛСТАТ за проверка'
+                    : 'Enter EIK/BULSTAT to verify',
+                  ''
+                );
+                if (eikInput) {
+                  void handleVerifyEIK(eikInput);
+                }
+              }}
             >
               <Building2 />
               {language === 'bg' ? 'Провери ЕИК' : 'Verify EIK'}

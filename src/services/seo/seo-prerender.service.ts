@@ -64,10 +64,12 @@ export class SEOPrerenderService {
       '@context': 'https://schema.org',
       '@type': 'Car',
       name: `${car.make} ${car.model} ${car.year}`,
-      description: car.description || `${car.make} ${car.model} ${car.year} - Продажба в България`,
+      description:
+        car.description ||
+        `${car.make} ${car.model} ${car.year} - Продажба в България`,
       brand: {
         '@type': 'Brand',
-        name: car.make
+        name: car.make,
       },
       model: car.model,
       productionDate: `${car.year}-01-01`,
@@ -77,29 +79,29 @@ export class SEOPrerenderService {
         address: {
           '@type': 'PostalAddress',
           addressCountry: 'BG',
-          addressLocality: car.location
-        }
+          addressLocality: car.location,
+        },
       },
       offers: {
         '@type': 'Offer',
         price: car.price,
-        priceCurrency: 'BGN',
+        priceCurrency: 'EUR',
         availability: 'https://schema.org/InStock',
-        url: `https://koli.one/car/${car.make.toLowerCase()}/${car.model.toLowerCase()}`
+        url: `https://koli.one`, // Canonical URL requires numeric IDs; use site root as fallback
       },
       ...(car.imageUrl && {
-        image: car.imageUrl
+        image: car.imageUrl,
       }),
       ...(car.fuelType && {
-        fuelType: this.mapFuelTypeToSchema(car.fuelType)
+        fuelType: this.mapFuelTypeToSchema(car.fuelType),
       }),
       ...(car.mileage && {
         mileageFromOdometer: {
           '@type': 'QuantitativeValue',
           value: car.mileage,
-          unitCode: 'KMT'
-        }
-      })
+          unitCode: 'KMT',
+        },
+      }),
     };
   }
 
@@ -122,9 +124,9 @@ export class SEOPrerenderService {
           position: index + 1,
           item: {
             '@type': 'Product',
-            name: brand
-          }
-        }))
+            name: brand,
+          },
+        })),
       },
       about: {
         '@type': 'Place',
@@ -133,9 +135,9 @@ export class SEOPrerenderService {
           '@type': 'PostalAddress',
           addressCountry: 'BG',
           addressRegion: cityData.region,
-          addressLocality: cityData.cityBg
-        }
-      }
+          addressLocality: cityData.cityBg,
+        },
+      },
     };
   }
 
@@ -146,27 +148,27 @@ export class SEOPrerenderService {
   generateCityPageSEO(cityData: CityPageData): SEOPrerenderData {
     const title = `Продажба на коли в ${cityData.cityBg} - Koli One`;
     const description = `Намерете идеалния автомобил в ${cityData.cityBg}. Над ${cityData.totalCars} обяви от частни лица, автосалони и компании. Средна цена: ${cityData.avgPrice} лв. Българска платформа за българските автомобилисти. Проверени продавачи, прозрачни цени, лесно справяне.`;
-    
+
     const keywords = [
       `коли ${cityData.cityBg}`,
       `продажба коли ${cityData.cityBg}`,
       `автомобили ${cityData.cityBg}`,
       'коли втора употреба',
       'автокъща българия',
-      ...cityData.popularBrands.map(brand => `${brand} ${cityData.cityBg}`)
+      ...cityData.popularBrands.map(brand => `${brand} ${cityData.cityBg}`),
     ];
 
     const structuredData = this.generateCityPageStructuredData(cityData);
-    
+
     const htmlContent = this.generateCityPageHTML(cityData);
-    
+
     return {
       title,
       description,
       keywords,
       structuredData,
       htmlContent,
-      canonicalUrl: `https://koli.one/koli/${cityData.city.toLowerCase()}`
+      canonicalUrl: `https://koli.one/koli/${cityData.city.toLowerCase()}`,
     };
   }
 
@@ -180,9 +182,9 @@ export class SEOPrerenderService {
       '/car/',
       '/avtosalon',
       '/blog/',
-      '/ceni-na-koli'
+      '/ceni-na-koli',
     ];
-    
+
     return prerenderablePatterns.some(pattern => url.includes(pattern));
   }
 
@@ -192,7 +194,7 @@ export class SEOPrerenderService {
    */
   generateMetaTagsHTML(data: SEOPrerenderData): string {
     const keywordsString = data.keywords.join(', ');
-    
+
     return `
       <title>${data.title}</title>
       <meta name="description" content="${data.description}" />
@@ -254,7 +256,7 @@ export class SEOPrerenderService {
       diesel: 'https://schema.org/DieselFuel',
       electric: 'https://schema.org/Electric',
       hybrid: 'https://schema.org/Electric',
-      lpg: 'https://schema.org/Gasoline'
+      lpg: 'https://schema.org/Gasoline',
     };
     return mapping[fuelType.toLowerCase()] || 'https://schema.org/Gasoline';
   }
@@ -262,4 +264,3 @@ export class SEOPrerenderService {
 
 // Export singleton instance
 export const seoPrerenderService = SEOPrerenderService.getInstance();
-

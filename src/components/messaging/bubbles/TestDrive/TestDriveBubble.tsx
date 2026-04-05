@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
-import bg from 'date-fns/locale/bg';
+import { bg } from 'date-fns/locale';
 import { logger } from '@/services/logger-service';
 import { useLanguage } from '@/contexts';
-import { TestDriveVisuals } from './TestDriveVisuals';
+import { TestDriveVisuals, TestDriveViewOnlyMessage } from './TestDriveVisuals';
 import { TestDriveActions } from './TestDriveActions';
 
 /**
@@ -194,7 +194,7 @@ const TestDriveBubble: React.FC<TestDriveBubbleProps> = ({
       )}
 
       {!canRespond && request.status === 'pending' && (
-        <TestDriveVisuals.ViewOnlyMessage language={language} />
+        <TestDriveViewOnlyMessage language={language} />
       )}
     </TestDriveVisuals>
   );

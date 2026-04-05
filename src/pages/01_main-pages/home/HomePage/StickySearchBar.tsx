@@ -17,12 +17,14 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ChevronDown, X } from 'lucide-react';
+import { Search, ChevronDown, X, Car, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { brandsModelsDataService } from '@/services/brands-models-data.service';
+
+type SearchMode = 'cars' | 'users';
 
 // ============================================================================
 // STYLED COMPONENTS
@@ -226,12 +228,50 @@ const CloseButton = styled.button<{ $isDark: boolean }>`
 // COMPONENT
 // ============================================================================
 
+const ModeToggle = styled.div<{ $isDark: boolean }>`
+  display: flex;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid ${props => props.$isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)'};
+`;
+
+const ModeButton = styled.button<{ $isDark: boolean; $active: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  background: ${props => props.$active
+    ? (props.$isDark ? 'rgba(56,189,248,0.2)' : 'rgba(59,130,246,0.12)')
+    : 'transparent'};
+  color: ${props => props.$active
+    ? (props.$isDark ? '#38bdf8' : '#3b82f6')
+    : (props.$isDark ? '#94a3b8' : '#64748b')};
+
+  &:hover {
+    background: ${props => props.$isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)'};
+  }
+
+  svg { width: 14px; height: 14px; }
+
+  @media (max-width: 768px) {
+    padding: 6px 8px;
+    span { display: none; }
+  }
+`;
+
 const StickySearchBar: React.FC = memo(() => {
   const [isVisible, setIsVisible] = useState(false);
   const [isManuallyHidden, setIsManuallyHidden] = useState(false);
   const [keyword, setKeyword] = useState('');
   const [selectedMake, setSelectedMake] = useState('');
   const [brands, setBrands] = useState<string[]>([]);
+  const [searchMode, setSearchMode] = useState<SearchMode>('cars');
   
   const { language } = useLanguage();
   const { theme } = useTheme();
@@ -280,12 +320,18 @@ const StickySearchBar: React.FC = memo(() => {
   }, [isVisible]);
 
   const handleSearch = useCallback(() => {
+    if (searchMode === 'users') {
+      const params = new URLSearchParams();
+      if (keyword.trim()) params.set('q', keyword.trim());
+      navigate(`/search/users?${params.toString()}`);
+      return;
+    }
     const params = new URLSearchParams();
     if (keyword.trim()) params.set('q', keyword.trim());
     if (selectedMake) params.set('make', selectedMake);
     
     navigate(`/cars?${params.toString()}`);
-  }, [keyword, selectedMake, navigate]);
+  }, [keyword, selectedMake, searchMode, navigate]);
 
   const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -310,12 +356,23 @@ const StickySearchBar: React.FC = memo(() => {
         >
           <SearchBarInner>
             <Logo $isDark={isDarkMode}>Koli One</Logo>
+
+            <ModeToggle $isDark={isDarkMode}>
+              <ModeButton $isDark={isDarkMode} $active={searchMode === 'cars'} onClick={() => setSearchMode('cars')}>
+                <Car /><span>{language === 'bg' ? 'Коли' : 'Cars'}</span>
+              </ModeButton>
+              <ModeButton $isDark={isDarkMode} $active={searchMode === 'users'} onClick={() => setSearchMode('users')}>
+                <Users /><span>{language === 'bg' ? 'Потребители' : 'Users'}</span>
+              </ModeButton>
+            </ModeToggle>
             
             <SearchInputWrapper $isDark={isDarkMode}>
               <Search />
               <input
                 type="text"
-                placeholder={language === 'bg' ? 'Търси модел, ключова дума...' : 'Search model, keyword...'}
+                placeholder={searchMode === 'users'
+                  ? (language === 'bg' ? 'Търси потребител, дилър...' : 'Search user, dealer...')
+                  : (language === 'bg' ? 'Търси модел, ключова дума...' : 'Search model, keyword...')}
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
                 onKeyPress={handleKeyPress}
@@ -323,7 +380,8 @@ const StickySearchBar: React.FC = memo(() => {
               />
             </SearchInputWrapper>
             
-            <SelectWrapper $isDark={isDarkMode}>
+            {searchMode === 'cars' && (
+              <SelectWrapper $isDark={isDarkMode}>
               <select
                 value={selectedMake}
                 onChange={(e) => setSelectedMake(e.target.value)}
@@ -336,6 +394,7 @@ const StickySearchBar: React.FC = memo(() => {
               </select>
               <ChevronDown />
             </SelectWrapper>
+            )}
             
             <SearchButton $isDark={isDarkMode} onClick={handleSearch}>
               <Search size={18} />

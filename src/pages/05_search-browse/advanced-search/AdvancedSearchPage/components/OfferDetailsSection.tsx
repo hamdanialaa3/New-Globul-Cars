@@ -85,7 +85,7 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
                         type: 'checkbox',
                         checked: e.target.checked
                       }
-                    } as React.ChangeEvent<HTMLInputElement>;
+                    } as unknown as React.ChangeEvent<HTMLInputElement>;
                     onChange(event);
                   }}
                 />
@@ -109,7 +109,7 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
                         type: 'checkbox',
                         checked: e.target.checked
                       }
-                    } as React.ChangeEvent<HTMLInputElement>;
+                    } as unknown as React.ChangeEvent<HTMLInputElement>;
                     onChange(event);
                   }}
                 />
@@ -133,7 +133,7 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
                         type: 'checkbox',
                         checked: e.target.checked
                       }
-                    } as React.ChangeEvent<HTMLInputElement>;
+                    } as unknown as React.ChangeEvent<HTMLInputElement>;
                     onChange(event);
                   }}
                 />
@@ -157,7 +157,7 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
                         type: 'checkbox',
                         checked: e.target.checked
                       }
-                    } as React.ChangeEvent<HTMLInputElement>;
+                    } as unknown as React.ChangeEvent<HTMLInputElement>;
                     onChange(event);
                   }}
                 />
@@ -181,7 +181,7 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
                         type: 'checkbox',
                         checked: e.target.checked
                       }
-                    } as React.ChangeEvent<HTMLInputElement>;
+                    } as unknown as React.ChangeEvent<HTMLInputElement>;
                     onChange(event);
                   }}
                 />
@@ -205,7 +205,7 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
                         type: 'checkbox',
                         checked: e.target.checked
                       }
-                    } as React.ChangeEvent<HTMLInputElement>;
+                    } as unknown as React.ChangeEvent<HTMLInputElement>;
                     onChange(event);
                   }}
                 />

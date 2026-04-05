@@ -54,7 +54,7 @@ export class CarsReportService {
 
       // City filter
       if (filters?.city) {
-        q = query(q, where('location', '==', filters.locationData?.cityName));
+        q = query(q, where('location', '==', filters.city));
       }
 
       // Status filter

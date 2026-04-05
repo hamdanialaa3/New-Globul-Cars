@@ -216,7 +216,7 @@ class SocialMediaContentService {
   async generatePostsForNewListing(carId: string, carData: CarPostData): Promise<SocialMediaPost[]> {
     try {
       const posts = this.generateCarPosts(carData, 'bg');
-      serviceLogger.info('Generated social media posts for car:', carId);
+      serviceLogger.info('Generated social media posts for car', { carId });
       return posts;
     } catch (error) {
       serviceLogger.error('Error generating social media posts:', error);

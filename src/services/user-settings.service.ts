@@ -370,7 +370,7 @@ class UserSettingsService {
       const settings = await this.getUserSettings(userId);
 
       const [carsSnapshot, favoritesSnapshot, messagesSent, messagesReceived, notificationsSnapshot, reviewsSnapshot] = await Promise.all([
-        queryAllCollections(where('sellerId', '==', userId)).catch(() => ({ docs: [] })),
+        queryAllCollections(where('sellerId', '==', userId)).catch(() => [] as any[]),
         getDocs(query(collection(db, 'favorites'), where('userId', '==', userId))).catch(() => ({ docs: [] })),
         getDocs(query(collection(db, 'messages'), where('senderId', '==', userId))).catch(() => ({ docs: [] })),
         getDocs(query(collection(db, 'messages'), where('recipientId', '==', userId))).catch(() => ({ docs: [] })),
@@ -380,7 +380,9 @@ class UserSettingsService {
 
       const exportData = {
         settings,
-        listings: carsSnapshot.docs?.map((doc: any) => ({ id: doc.id, ...doc.data() })) || [],
+        listings: (Array.isArray(carsSnapshot)
+          ? carsSnapshot.map((doc: any) => ({ id: doc.id, ...doc }))
+          : []),
         favorites: favoritesSnapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })),
         messages: [
           ...messagesSent.docs.map((doc: any) => ({ id: doc.id, direction: 'sent', ...doc.data() })),

@@ -3,7 +3,18 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
-import { CarListingFormData, carListingSchema, formatZodErrors, Step1Data, Step2Data, Step3Data, Step4Data, Step5Data, Step6Data } from '../schemas/car-listing.schema';
+import {
+  CarListingFormData,
+  carListingSchema,
+  formatZodErrors,
+  Step1Data,
+  Step2Data,
+  Step3Data,
+  Step4Data,
+  Step5Data,
+  Step6Data,
+} from '../schemas/car-listing.schema';
+import { unifiedCarService } from '../../../services/car/unified-car-service';
 
 interface CarListingState {
   // Navigation
@@ -11,7 +22,7 @@ interface CarListingState {
   completedSteps: Set<number>;
   totalSteps: number;
   direction: 'forward' | 'backward';
-  
+
   // Form Data - Structured by step
   formData: Partial<{
     step1: Step1Data;
@@ -21,42 +32,49 @@ interface CarListingState {
     step5: Step5Data;
     step6: Step6Data;
   }>;
-  
+
   // UI State
   isSubmitting: boolean;
   isDraftSaving: boolean;
   errors: Record<string, string>;
   fieldErrors: Record<string, string>;
-  
+
   // Image State
   imageFiles: File[];
   imageUploadProgress: Record<string, number>;
-  
+
   // Actions - Navigation
   setCurrentStep: (step: number) => void;
   goToNextStep: () => void;
   goToPreviousStep: () => void;
   goToStep: (step: number) => void;
   setDirection: (direction: 'forward' | 'backward') => void;
-  
+
   // Actions - Form Data
-  updateStepData: <T extends keyof CarListingState['formData']>(step: T, data: Partial<CarListingState['formData'][T]>) => void;
+  updateStepData: <T extends keyof CarListingState['formData']>(
+    step: T,
+    data: Partial<CarListingState['formData'][T]>
+  ) => void;
   validateStep: (step: number) => Promise<boolean>;
   markStepComplete: (step: number) => void;
-  
+
   // Actions - Images
   addImages: (files: File[]) => Promise<void>;
   removeImage: (index: number) => void;
   reorderImages: (fromIndex: number, toIndex: number) => void;
   setMainImage: (index: number) => void;
-  
+
   // Actions - Submission
-  submitListing: () => Promise<{ success: boolean; carId?: string; error?: string }>;
-  
+  submitListing: () => Promise<{
+    success: boolean;
+    carId?: string;
+    error?: string;
+  }>;
+
   // Actions - Reset
   reset: () => void;
   clearDraft: () => void;
-  
+
   // Actions - Legacy compatibility (for migration)
   getWorkflowData: () => any; // Returns data in old format for compatibility
   updateWorkflowData: (updates: any, currentStep?: string) => void; // Legacy method
@@ -91,58 +109,63 @@ export const useCarListingStore = create<CarListingState>()(
     persist(
       immer((set, get) => ({
         ...getInitialState(),
-        
+
         // Navigation Actions
-        setCurrentStep: (step) => set((state) => {
-          if (step >= 0 && step < TOTAL_STEPS) {
-            state.currentStep = step;
-          }
-        }),
-        
-        goToNextStep: () => set((state) => {
-          if (state.currentStep < TOTAL_STEPS - 1) {
-            state.direction = 'forward';
-            state.currentStep += 1;
-          }
-        }),
-        
-        goToPreviousStep: () => set((state) => {
-          if (state.currentStep > 0) {
-            state.direction = 'backward';
-            state.currentStep -= 1;
-          }
-        }),
-        
-        goToStep: (step) => {
+        setCurrentStep: step =>
+          set(state => {
+            if (step >= 0 && step < TOTAL_STEPS) {
+              state.currentStep = step;
+            }
+          }),
+
+        goToNextStep: () =>
+          set(state => {
+            if (state.currentStep < TOTAL_STEPS - 1) {
+              state.direction = 'forward';
+              state.currentStep += 1;
+            }
+          }),
+
+        goToPreviousStep: () =>
+          set(state => {
+            if (state.currentStep > 0) {
+              state.direction = 'backward';
+              state.currentStep -= 1;
+            }
+          }),
+
+        goToStep: step => {
           const { setCurrentStep, completedSteps } = get();
           // Allow going to completed steps or next step
           if (completedSteps.has(step) || step === get().currentStep + 1) {
             setCurrentStep(step);
           }
         },
-        
-        setDirection: (direction) => set((state) => {
-          state.direction = direction;
-        }),
-        
+
+        setDirection: direction =>
+          set(state => {
+            state.direction = direction;
+          }),
+
         // Form Data Actions
-        updateStepData: (step, data) => set((state) => {
-          if (!state.formData[step]) {
-            state.formData[step] = {} as any;
-          }
-          Object.assign(state.formData[step], data);
-          state.isDraftSaving = true;
-          
-          // Auto-save draft after 500ms debounce
-          setTimeout(() => {
-            set((state) => {
-              state.isDraftSaving = false;
-            });
-          }, 500);
-        }),
-        
+        updateStepData: (step, data) =>
+          set(state => {
+            if (!state.formData[step]) {
+              state.formData[step] = {} as any;
+            }
+            Object.assign(state.formData[step], data);
+            state.isDraftSaving = true;
+
+            // Auto-save draft after 500ms debounce
+            setTimeout(() => {
+              set(state => {
+                state.isDraftSaving = false;
+              });
+            }, 500);
+          }),
+
         // Validation
-        validateStep: async (step) => {
+        validateStep: async step => {
           const { formData } = get();
           const stepSchemas = {
             0: carListingSchema.shape.step1,
@@ -152,150 +175,205 @@ export const useCarListingStore = create<CarListingState>()(
             4: carListingSchema.shape.step5,
             5: carListingSchema.shape.step6,
           };
-          
+
           const schema = stepSchemas[step as keyof typeof stepSchemas];
           if (!schema) return false;
-          
+
           const stepKey = `step${step + 1}` as keyof typeof formData;
           const stepData = formData[stepKey];
-          
+
           if (!stepData) {
-            set((state) => {
+            set(state => {
               state.errors[`step${step}`] = 'Step data is missing';
             });
             return false;
           }
-          
+
           const result = schema.safeParse(stepData);
-          
+
           if (!result.success) {
             const errors = formatZodErrors(result.error);
-            
-            set((state) => {
+
+            set(state => {
               state.errors[`step${step}`] = 'Validation failed';
               state.fieldErrors = errors;
             });
             return false;
           }
-          
-          set((state) => {
+
+          set(state => {
             state.errors[`step${step}`] = '';
             state.fieldErrors = {};
           });
-          
+
           return true;
         },
-        
-        markStepComplete: (step) => set((state) => {
-          state.completedSteps.add(step);
-        }),
-        
+
+        markStepComplete: step =>
+          set(state => {
+            state.completedSteps.add(step);
+          }),
+
         // Image Actions
-        addImages: async (files) => {
+        addImages: async files => {
           const { imageFiles, updateStepData } = get();
           const currentMainIndex = get().formData.step4?.mainImageIndex ?? 0;
           const newFiles = [...imageFiles, ...files].slice(0, 20); // Max 20 images
-          
-          set((state) => {
+
+          set(state => {
             state.imageFiles = newFiles;
           });
-          
+
           // Update form data - preserve the user's main image selection
           updateStepData('step4', {
             images: newFiles,
             mainImageIndex: currentMainIndex,
           } as Partial<Step4Data>);
         },
-        
-        removeImage: (index) => set((state) => {
-          const currentMain = get().formData.step4?.mainImageIndex ?? 0;
-          state.imageFiles = state.imageFiles.filter((_, i) => i !== index);
-          const { updateStepData } = get();
-          if (state.imageFiles.length > 0) {
-            // Correctly adjust mainImageIndex relative to removed image
-            let newMain = currentMain;
-            if (index < currentMain) {
-              newMain = currentMain - 1; // shift down
-            } else if (index === currentMain) {
-              newMain = 0; // reset to first if main was deleted
+
+        removeImage: index =>
+          set(state => {
+            const currentMain = get().formData.step4?.mainImageIndex ?? 0;
+            state.imageFiles = state.imageFiles.filter((_, i) => i !== index);
+            const { updateStepData } = get();
+            if (state.imageFiles.length > 0) {
+              // Correctly adjust mainImageIndex relative to removed image
+              let newMain = currentMain;
+              if (index < currentMain) {
+                newMain = currentMain - 1; // shift down
+              } else if (index === currentMain) {
+                newMain = 0; // reset to first if main was deleted
+              }
+              newMain = Math.min(newMain, state.imageFiles.length - 1);
+              updateStepData('step4', {
+                images: state.imageFiles,
+                mainImageIndex: newMain,
+              } as Partial<Step4Data>);
             }
-            newMain = Math.min(newMain, state.imageFiles.length - 1);
+          }),
+
+        reorderImages: (fromIndex, toIndex) =>
+          set(state => {
+            const newFiles = [...state.imageFiles];
+            const [removed] = newFiles.splice(fromIndex, 1);
+            newFiles.splice(toIndex, 0, removed);
+            state.imageFiles = newFiles;
+
+            const { updateStepData } = get();
             updateStepData('step4', {
-              images: state.imageFiles,
-              mainImageIndex: newMain,
+              images: newFiles,
             } as Partial<Step4Data>);
-          }
-        }),
-        
-        reorderImages: (fromIndex, toIndex) => set((state) => {
-          const newFiles = [...state.imageFiles];
-          const [removed] = newFiles.splice(fromIndex, 1);
-          newFiles.splice(toIndex, 0, removed);
-          state.imageFiles = newFiles;
-          
-          const { updateStepData } = get();
-          updateStepData('step4', {
-            images: newFiles,
-          } as Partial<Step4Data>);
-        }),
-        
-        setMainImage: (index) => {
+          }),
+
+        setMainImage: index => {
           const { updateStepData } = get();
           updateStepData('step4', {
             mainImageIndex: index,
           } as Partial<Step4Data>);
         },
-        
+
         // Submission
         submitListing: async () => {
           const { formData, imageFiles, validateStep } = get();
-          
-          set((state) => {
+
+          set(state => {
             state.isSubmitting = true;
             state.errors = {};
           });
-          
+
           try {
             // Validate all steps
             for (let i = 0; i < TOTAL_STEPS; i++) {
               const isValid = await validateStep(i);
               if (!isValid) {
-                set((state) => {
+                set(state => {
                   state.isSubmitting = false;
                   state.errors.submission = `Step ${i + 1} validation failed`;
                 });
-                return { success: false, error: `Step ${i + 1} validation failed` };
+                return {
+                  success: false,
+                  error: `Step ${i + 1} validation failed`,
+                };
               }
             }
-            
-            // TODO: Call actual API service
-            // const response = await carListingService.createListing(payload);
-            
-            set((state) => {
+
+            const payload = {
+              type: formData.step1?.vehicleType || 'car',
+              make: formData.step2?.make || '',
+              model: formData.step2?.model || '',
+              year: formData.step2?.year || new Date().getFullYear(),
+              mileage: formData.step2?.mileage,
+              fuelType: formData.step2?.fuelType,
+              transmission: formData.step2?.transmission,
+              bodyType: formData.step2?.bodyType,
+              color: formData.step2?.color,
+              power: formData.step2?.power,
+              condition: formData.step2?.condition,
+              hasAccidentHistory: formData.step2?.hasAccidentHistory,
+              hasServiceHistory: formData.step2?.hasServiceHistory,
+              equipment: {
+                safety: formData.step3?.safetyEquipment || [],
+                comfort: formData.step3?.comfortEquipment || [],
+                infotainment: formData.step3?.infotainmentEquipment || [],
+                extras: formData.step3?.extrasEquipment || [],
+              },
+              // Image upload pipeline is handled elsewhere; keep metadata aligned.
+              images: [],
+              imageCount: imageFiles.length,
+              mainImageIndex: formData.step4?.mainImageIndex || 0,
+              price: formData.step5?.price || 0,
+              currency: formData.step5?.currency || 'EUR',
+              negotiable: formData.step5?.negotiable,
+              financing: formData.step5?.financing,
+              tradeIn: formData.step5?.tradeIn,
+              warranty: formData.step5?.warranty,
+              warrantyMonths: formData.step5?.warrantyMonths,
+              vatDeductible: formData.step5?.vatDeductible,
+              sellerName: formData.step6?.sellerName,
+              sellerEmail: formData.step6?.sellerEmail,
+              sellerPhone: formData.step6?.sellerPhone,
+              additionalPhone: formData.step6?.additionalPhone,
+              city: formData.step6?.city,
+              region: formData.step6?.region,
+              postalCode: formData.step6?.postalCode,
+              description: formData.step6?.description,
+              preferredContact: formData.step6?.preferredContact || ['phone'],
+              availableHours: formData.step6?.availableHours,
+              status: 'active' as const,
+            };
+
+            const response = await unifiedCarService.createCar(payload as any);
+
+            set(state => {
               state.isSubmitting = false;
             });
-            
-            return { success: true, carId: 'mock-id' };
+
+            return { success: true, carId: response.id };
           } catch (error: any) {
-            set((state) => {
+            set(state => {
               state.isSubmitting = false;
-              state.errors.submission = (error as Error).message || 'Submission failed';
+              state.errors.submission =
+                (error as Error).message || 'Submission failed';
             });
-            return { success: false, error: (error as Error).message || 'Submission failed' };
+            return {
+              success: false,
+              error: (error as Error).message || 'Submission failed',
+            };
           }
         },
-        
+
         // Reset
-        reset: () => set((state) => {
-          const initialState = getInitialState();
-          Object.assign(state, initialState);
-        }),
-        
+        reset: () =>
+          set(state => {
+            const initialState = getInitialState();
+            Object.assign(state, initialState);
+          }),
+
         clearDraft: () => {
           get().reset();
           localStorage.removeItem('car-listing-storage');
         },
-        
+
         // Legacy compatibility methods (for gradual migration)
         getWorkflowData: () => {
           const { formData } = get();
@@ -331,26 +409,28 @@ export const useCarListingStore = create<CarListingState>()(
             description: formData.step6?.description,
           };
         },
-        
+
         updateWorkflowData: (updates, currentStep = 'vehicle-data') => {
           const { updateStepData } = get();
           const { currentStep: step } = get();
-          
+
           // Map old structure to new structure
           const stepMapping: Record<string, number> = {
             'vehicle-selection': 0,
             'vehicle-data': 1,
-            'equipment': 2,
-            'images': 3,
-            'pricing': 4,
-            'contact': 5,
+            equipment: 2,
+            images: 3,
+            pricing: 4,
+            contact: 5,
           };
-          
+
           const targetStep = stepMapping[currentStep] ?? step;
-          
+
           // Convert updates to step-specific data
           if (targetStep === 0) {
-            updateStepData('step1', { vehicleType: updates.vehicleType } as Step1Data);
+            updateStepData('step1', {
+              vehicleType: updates.vehicleType,
+            } as Step1Data);
           } else if (targetStep === 1) {
             updateStepData('step2', {
               make: updates.make,
@@ -395,7 +475,7 @@ export const useCarListingStore = create<CarListingState>()(
       })),
       {
         name: 'car-listing-storage',
-        partialize: (state) => ({
+        partialize: state => ({
           formData: state.formData,
           currentStep: state.currentStep,
           completedSteps: Array.from(state.completedSteps),
@@ -408,8 +488,11 @@ export const useCarListingStore = create<CarListingState>()(
 );
 
 // Selectors for performance optimization
-export const useCarListingFormData = () => useCarListingStore((state) => state.formData);
-export const useCarListingCurrentStep = () => useCarListingStore((state) => state.currentStep);
-export const useCarListingIsSubmitting = () => useCarListingStore((state) => state.isSubmitting);
-export const useCarListingDirection = () => useCarListingStore((state) => state.direction);
-
+export const useCarListingFormData = () =>
+  useCarListingStore(state => state.formData);
+export const useCarListingCurrentStep = () =>
+  useCarListingStore(state => state.currentStep);
+export const useCarListingIsSubmitting = () =>
+  useCarListingStore(state => state.isSubmitting);
+export const useCarListingDirection = () =>
+  useCarListingStore(state => state.direction);

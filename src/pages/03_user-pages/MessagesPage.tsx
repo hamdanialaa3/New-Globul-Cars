@@ -2,8 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { useSearchParams, useNavigate, useParams } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { bg } from 'date-fns/locale/bg';
-import { enUS } from 'date-fns/locale/en-US';
+import { bg, enUS } from 'date-fns/locale';
 import { Send, Image, DollarSign, ArrowLeft, RefreshCw } from 'lucide-react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 

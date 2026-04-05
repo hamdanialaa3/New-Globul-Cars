@@ -660,7 +660,7 @@ export const AdvancedBulgariaMap: React.FC<AdvancedBulgariaMapProps> = ({
             visible={tooltipData.visible}
           >
             <TooltipTitle>
-              {language === 'bg' ? tooltipData.locationData?.regionName.name.bg : tooltipData.locationData?.regionName.name.en}
+              {tooltipData.locationData?.regionName}
             </TooltipTitle>
             <TooltipStats>
               {language === 'bg' ? 'Налични автомобили' : 'Available Cars'}

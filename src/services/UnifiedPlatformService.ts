@@ -124,7 +124,7 @@ class UnifiedPlatformService {
           damages: aiResults[0]?.gemini?.damages || [],
           marketValue: marketAnalysis.priceRecommendation
         },
-        telemetry: telemetryData,
+        telemetry: telemetryData || undefined,
         searchTags,
         marketInsights: marketAnalysis
       };

@@ -14,9 +14,9 @@
  */
 
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
-import { MapPin, Phone, CheckCircle, Shield, Star, Calendar, Users } from 'lucide-react';
+import { MapPin, Phone, CheckCircle, Shield, Star, Calendar, Users, Sparkles } from 'lucide-react';
 
 import { useLanguage } from '../../../../../../contexts/LanguageContext';
 import { useTheme } from '../../../../../../contexts/ThemeContext';
@@ -24,6 +24,8 @@ import type { BulgarianUser } from '../../../../../../types/user/bulgarian-user.
 
 interface PublicProfileHeroProps {
   user: BulgarianUser;
+  canRate?: boolean;
+  onRateClick?: () => void;
 }
 
 // Theme colors based on profile type
@@ -45,7 +47,7 @@ const getThemeGradient = (type: string): string => {
   }
 };
 
-export const PublicProfileHero: React.FC<PublicProfileHeroProps> = ({ user }) => {
+export const PublicProfileHero: React.FC<PublicProfileHeroProps> = ({ user, canRate, onRateClick }) => {
   const { language } = useLanguage();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -139,7 +141,7 @@ export const PublicProfileHero: React.FC<PublicProfileHeroProps> = ({ user }) =>
           </AvatarContainer>
 
           {/* Name and Info */}
-          <InfoSection>
+          <InfoSection $canRate={canRate}>
             <NameRow>
               <BusinessName $isDark={isDark}>
                 {businessName || 'Anonymous Seller'}
@@ -209,7 +211,32 @@ export const PublicProfileHero: React.FC<PublicProfileHeroProps> = ({ user }) =>
               </BioSection>
             )}
           </InfoSection>
-        </ProfileInfoContainer>
+          {/* ⭐ Rating CTA — only for visitors */}
+          {canRate && onRateClick && (
+            <RatingCTA $profileType={profileType} $isDark={isDark} onClick={onRateClick}>
+              <StarPulse $profileType={profileType}>
+                <Star size={32} fill="currentColor" strokeWidth={0} />
+              </StarPulse>
+              <RatingCTABody>
+                <RatingCTATitle $isDark={isDark}>
+                  {language === 'bg' ? 'Оцени продавача' : 'Rate this Seller'}
+                </RatingCTATitle>
+                <RatingCTASub $isDark={isDark}>
+                  {language === 'bg'
+                    ? 'Помогни на другите с твоя опит'
+                    : 'Help others with your experience'}
+                </RatingCTASub>
+                <StarRow>
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <Star key={s} size={14} fill="#FCD34D" strokeWidth={0} />
+                  ))}
+                </StarRow>
+              </RatingCTABody>
+              <RatingCTAArrow $profileType={profileType}>
+                <Sparkles size={18} />
+              </RatingCTAArrow>
+            </RatingCTA>
+          )}        </ProfileInfoContainer>
       </ProfileInfoSection>
     </HeroWrapper>
   );
@@ -346,7 +373,7 @@ const VerifiedBadge = styled.div<{ $profileType: string }>`
   }
 `;
 
-const InfoSection = styled.div`
+const InfoSection = styled.div<{ $canRate?: boolean }>`
   flex: 1;
   padding-top: 16px;
   min-width: 0;
@@ -354,6 +381,131 @@ const InfoSection = styled.div`
   @media (max-width: 768px) {
     padding-top: 12px;
     width: 100%;
+  }
+`;
+
+const pulseGlow = keyframes`
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.5)); }
+  50% { transform: scale(1.15); filter: drop-shadow(0 0 14px rgba(251, 191, 36, 0.85)); }
+`;
+
+const shimmer = keyframes`
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+`;
+
+const RatingCTA = styled.button<{ $profileType: string; $isDark: boolean }>`
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  margin-top: 12px;
+  background: ${props => props.$isDark
+    ? 'linear-gradient(135deg, rgba(30,41,59,0.95) 0%, rgba(15,23,42,0.98) 100%)'
+    : 'linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%)'
+  };
+  border: 2px solid ${props => props.$isDark ? 'rgba(251,191,36,0.35)' : 'rgba(251,191,36,0.6)'};
+  border-radius: 20px;
+  cursor: pointer;
+  width: 220px;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: ${props => props.$isDark
+    ? '0 4px 24px rgba(251,191,36,0.12), 0 1px 4px rgba(0,0,0,0.4)'
+    : '0 4px 24px rgba(251,191,36,0.25), 0 1px 4px rgba(0,0,0,0.06)'
+  };
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(251,191,36,0.18) 50%,
+      transparent 100%
+    );
+    background-size: 200% auto;
+    animation: ${shimmer} 3s linear infinite;
+    border-radius: 18px;
+  }
+
+  &:hover {
+    transform: translateY(-3px) scale(1.02);
+    border-color: #F59E0B;
+    box-shadow: ${props => props.$isDark
+      ? '0 12px 40px rgba(251,191,36,0.22), 0 4px 12px rgba(0,0,0,0.5)'
+      : '0 12px 40px rgba(251,191,36,0.38), 0 4px 12px rgba(0,0,0,0.1)'
+    };
+  }
+
+  &:active {
+    transform: translateY(-1px) scale(0.99);
+  }
+
+  @media (max-width: 1024px) {
+    width: 200px;
+    padding: 14px 16px;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    margin-top: 4px;
+    padding: 14px 18px;
+  }
+`;
+
+const StarPulse = styled.div<{ $profileType: string }>`
+  flex-shrink: 0;
+  color: #F59E0B;
+  animation: ${pulseGlow} 2.4s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const RatingCTABody = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+`;
+
+const RatingCTATitle = styled.span<{ $isDark: boolean }>`
+  font-size: 14px;
+  font-weight: 700;
+  color: ${props => props.$isDark ? '#FDE68A' : '#92400E'};
+  line-height: 1.2;
+  white-space: nowrap;
+`;
+
+const RatingCTASub = styled.span<{ $isDark: boolean }>`
+  font-size: 11px;
+  font-weight: 400;
+  color: ${props => props.$isDark ? '#94A3B8' : '#78350F'};
+  line-height: 1.3;
+  opacity: 0.85;
+`;
+
+const StarRow = styled.div`
+  display: flex;
+  gap: 2px;
+  margin-top: 2px;
+`;
+
+const RatingCTAArrow = styled.div<{ $profileType: string }>`
+  flex-shrink: 0;
+  color: #F59E0B;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.2s;
+
+  ${RatingCTA}:hover & {
+    opacity: 1;
+    transform: rotate(20deg);
   }
 `;
 

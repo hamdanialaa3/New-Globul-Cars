@@ -35,7 +35,7 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({
     setTimeout(() => setIsAnimating(false), 600);
 
     // Toggle favorite
-    await toggleFavorite(carId, carData);
+    await toggleFavorite(carId, carData as any);
   };
 
   return (

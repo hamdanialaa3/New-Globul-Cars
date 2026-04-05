@@ -1,15 +1,26 @@
 /**
  * Micro-Transactions (Pay-to-Promote) System
  * One-time payments for listing promotions
- * 
+ *
  * 🚀 NEW FEATURE: Turbo Boost System
  * Allows users to pay for temporary listing enhancements
- * 
+ *
  * File: src/services/billing/micro-transactions.service.ts
  * Created: January 7, 2026
  */
 
-import { doc, updateDoc, getDoc, getDocs, collection, query, where, Timestamp, serverTimestamp, writeBatch } from 'firebase/firestore';
+import {
+  doc,
+  updateDoc,
+  getDoc,
+  getDocs,
+  collection,
+  query,
+  where,
+  Timestamp,
+  serverTimestamp,
+  writeBatch,
+} from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { logger } from '../logger-service';
 
@@ -45,11 +56,11 @@ export const PROMOTION_PRODUCTS: Record<PromotionType, PromotionConfig> = {
     id: 'vip_badge',
     name: {
       bg: 'VIP Значка',
-      en: 'VIP Badge'
+      en: 'VIP Badge',
     },
     description: {
       bg: 'Златна VIP значка на обявата ви',
-      en: 'Golden VIP badge on your listing'
+      en: 'Golden VIP badge on your listing',
     },
     price: 2, // EUR
     duration: 168, // 7 days (1 week)
@@ -61,26 +72,26 @@ export const PROMOTION_PRODUCTS: Record<PromotionType, PromotionConfig> = {
         'Златна VIP значка',
         'Визуално отличаване',
         'Увеличено доверие от купувачи',
-        'Активна 7 дни'
+        'Активна 7 дни',
       ],
       en: [
         'Golden VIP badge',
         'Visual distinction',
         'Increased buyer trust',
-        'Active for 7 days'
-      ]
-    }
+        'Active for 7 days',
+      ],
+    },
   },
-  
+
   top_of_page: {
     id: 'top_of_page',
     name: {
       bg: 'Топ Позиция',
-      en: 'Top Position'
+      en: 'Top Position',
     },
     description: {
       bg: 'Вашата кола първа в резултатите',
-      en: 'Your car first in search results'
+      en: 'Your car first in search results',
     },
     price: 5, // EUR
     duration: 72, // 3 days
@@ -93,27 +104,27 @@ export const PROMOTION_PRODUCTS: Record<PromotionType, PromotionConfig> = {
         'Максимална видимост',
         'Над всички органични резултати',
         'Активна 3 дни',
-        '+300% повече прегледи'
+        '+300% повече прегледи',
       ],
       en: [
         'Pinned position in search',
         'Maximum visibility',
         'Above all organic results',
         'Active for 3 days',
-        '+300% more views'
-      ]
-    }
+        '+300% more views',
+      ],
+    },
   },
-  
+
   instant_refresh: {
     id: 'instant_refresh',
     name: {
       bg: 'Моментално Обновяване',
-      en: 'Instant Refresh'
+      en: 'Instant Refresh',
     },
     description: {
       bg: 'Обновете обявата като нова',
-      en: 'Refresh listing as brand new'
+      en: 'Refresh listing as brand new',
     },
     price: 1, // EUR
     duration: 0, // Instant (updates timestamp)
@@ -125,17 +136,61 @@ export const PROMOTION_PRODUCTS: Record<PromotionType, PromotionConfig> = {
         'Обновява датата на публикуване',
         'Обявата изглежда нова',
         'Се показва отгоре в "Нови"',
-        'Моментален ефект'
+        'Моментален ефект',
       ],
       en: [
         'Updates publication date',
         'Listing appears brand new',
         'Shows at top in "New"',
-        'Instant effect'
-      ]
+        'Instant effect',
+      ],
+    },
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Runtime validation: catch placeholder price IDs before they reach Stripe
+// ---------------------------------------------------------------------------
+
+const PLACEHOLDER_PRICE_ID_PATTERN = /^price_[a-z_]+$/; // real IDs look like price_1ABC...
+
+/**
+ * Assert that all PROMOTION_PRODUCTS have real Stripe price IDs in production.
+ * Logs a loud error but does NOT throw, so dev/staging environments still work.
+ */
+function validateStripePriceIds(): void {
+  if (
+    typeof import.meta !== 'undefined' &&
+    (import.meta as Record<string, unknown>).env
+  ) {
+    const env = (import.meta as Record<string, unknown>).env as Record<
+      string,
+      string
+    >;
+    if (env['MODE'] !== 'production') return;
+  }
+
+  const invalid: string[] = [];
+  for (const [type, cfg] of Object.entries(PROMOTION_PRODUCTS)) {
+    if (PLACEHOLDER_PRICE_ID_PATTERN.test(cfg.stripePriceId)) {
+      invalid.push(`${type}: "${cfg.stripePriceId}"`);
     }
   }
-};
+
+  if (invalid.length > 0) {
+    logger.error(
+      '[micro-transactions] Placeholder Stripe price IDs detected in production! ' +
+        'Replace them with real price_XXXX IDs from the Stripe Dashboard.',
+      new Error('PlaceholderStripePriceIds'),
+      { invalid }
+    );
+  }
+}
+
+// Fire once at module load
+validateStripePriceIds();
+
+// ---------------------------------------------------------------------------
 
 export interface ActivePromotion {
   type: PromotionType;
@@ -157,7 +212,9 @@ export async function purchasePromotion(
   try {
     const promotion = PROMOTION_PRODUCTS[promotionType];
     const now = new Date();
-    const expiresAt = new Date(now.getTime() + promotion.duration * 60 * 60 * 1000);
+    const expiresAt = new Date(
+      now.getTime() + promotion.duration * 60 * 60 * 1000
+    );
 
     // Get listing document
     const listingRef = doc(db, 'listings', listingId); // Adjust collection path as needed
@@ -168,7 +225,7 @@ export async function purchasePromotion(
     }
 
     const listingData = listingSnap.data();
-    
+
     // Verify ownership
     if (listingData.userId !== userId) {
       return { success: false, error: 'Unauthorized' };
@@ -181,13 +238,17 @@ export async function purchasePromotion(
         lastRefreshedAt: serverTimestamp(),
         'promotions.lastRefresh': {
           date: serverTimestamp(),
-          transactionId: paymentIntentId
+          transactionId: paymentIntentId,
         },
-        updatedAt: serverTimestamp()
+        updatedAt: serverTimestamp(),
       });
 
-      logger.info('Instant refresh applied', { userId, listingId, paymentIntentId });
-      
+      logger.info('Instant refresh applied', {
+        userId,
+        listingId,
+        paymentIntentId,
+      });
+
       return { success: true, expiresAt: now }; // Instant, no expiry
     }
 
@@ -197,7 +258,7 @@ export async function purchasePromotion(
       startedAt: now,
       expiresAt,
       price: promotion.price,
-      transactionId: paymentIntentId
+      transactionId: paymentIntentId,
     };
 
     await updateDoc(listingRef, {
@@ -209,26 +270,26 @@ export async function purchasePromotion(
           purchasedAt: now,
           expiresAt,
           price: promotion.price,
-          transactionId: paymentIntentId
-        }
+          transactionId: paymentIntentId,
+        },
       ],
-      updatedAt: serverTimestamp()
+      updatedAt: serverTimestamp(),
     });
 
-    logger.info('Promotion purchased', { 
-      userId, 
-      listingId, 
-      promotionType, 
+    logger.info('Promotion purchased', {
+      userId,
+      listingId,
+      promotionType,
       expiresAt,
-      paymentIntentId 
+      paymentIntentId,
     });
 
     return { success: true, expiresAt };
   } catch (error) {
-    logger.error('Failed to purchase promotion', error as Error, { 
-      userId, 
-      listingId, 
-      promotionType 
+    logger.error('Failed to purchase promotion', error as Error, {
+      userId,
+      listingId,
+      promotionType,
     });
     return { success: false, error: 'Failed to apply promotion' };
   }
@@ -261,7 +322,10 @@ export async function hasActivePromotion(
 
     return expiresAt > now;
   } catch (error) {
-    logger.error('Failed to check active promotion', error as Error, { listingId, promotionType });
+    logger.error('Failed to check active promotion', error as Error, {
+      listingId,
+      promotionType,
+    });
     return false;
   }
 }
@@ -269,7 +333,9 @@ export async function hasActivePromotion(
 /**
  * Get all active promotions for a listing
  */
-export async function getActivePromotions(listingId: string): Promise<ActivePromotion[]> {
+export async function getActivePromotions(
+  listingId: string
+): Promise<ActivePromotion[]> {
   try {
     const listingRef = doc(db, 'listings', listingId);
     const listingSnap = await getDoc(listingRef);
@@ -290,14 +356,16 @@ export async function getActivePromotions(listingId: string): Promise<ActiveProm
           startedAt: (data as any).startedAt.toDate(),
           expiresAt,
           price: (data as any).price,
-          transactionId: (data as any).transactionId
+          transactionId: (data as any).transactionId,
         });
       }
     }
 
     return active;
   } catch (error) {
-    logger.error('Failed to get active promotions', error as Error, { listingId });
+    logger.error('Failed to get active promotions', error as Error, {
+      listingId,
+    });
     return [];
   }
 }
@@ -318,14 +386,17 @@ export async function calculatePromotionRevenue(
     );
     const snapshot = await getDocs(txQuery);
     let total = 0;
-    snapshot.forEach((docSnap) => {
+    snapshot.forEach(docSnap => {
       const data = docSnap.data();
       total += data.amount || 0;
     });
     logger.info('Calculated promotion revenue', { startDate, endDate, total });
     return total;
   } catch (error) {
-    logger.error('Failed to calculate promotion revenue', error as Error, { startDate, endDate });
+    logger.error('Failed to calculate promotion revenue', error as Error, {
+      startDate,
+      endDate,
+    });
     return 0;
   }
 }
@@ -344,7 +415,7 @@ export async function cleanExpiredPromotions(): Promise<number> {
     const batch = writeBatch(db);
     let cleanedCount = 0;
 
-    snapshot.forEach((docSnap) => {
+    snapshot.forEach(docSnap => {
       const data = docSnap.data();
       const activePromotions = data.promotions?.active || {};
       const updatedPromotions: Record<string, unknown> = {};
@@ -360,11 +431,14 @@ export async function cleanExpiredPromotions(): Promise<number> {
         }
       }
 
-      if (Object.keys(updatedPromotions).length < Object.keys(activePromotions).length) {
+      if (
+        Object.keys(updatedPromotions).length <
+        Object.keys(activePromotions).length
+      ) {
         batch.update(docSnap.ref, {
           'promotions.active': updatedPromotions,
           'promotions.hasActive': hasRemaining,
-          'promotions.lastCleanedAt': serverTimestamp()
+          'promotions.lastCleanedAt': serverTimestamp(),
         });
       }
     });

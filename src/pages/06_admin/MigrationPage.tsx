@@ -147,7 +147,7 @@ const MigrationPage: React.FC = () => {
       setMigrating(true);
       const migrationResult = await migrateCarLocations(true);
       setResult(migrationResult);
-      logger.info('Dry run complete', migrationResult);
+      logger.info('Dry run complete', migrationResult as Record<string, unknown>);
     } catch (error) {
       logger.error('Dry run failed', error as Error);
       toast.error('Dry run simulation failed');
@@ -165,7 +165,7 @@ const MigrationPage: React.FC = () => {
       setMigrating(true);
       const migrationResult = await migrateCarLocations(false);
       setResult(migrationResult);
-      logger.info('Migration complete', migrationResult);
+      logger.info('Migration complete', migrationResult as Record<string, unknown>);
       
       toast.success(`Migration complete! Migrated: ${migrationResult.migrated}, Skipped: ${migrationResult.skipped}, Errors: ${migrationResult.errors}`);
       

@@ -35,8 +35,10 @@ import { MobileHeader } from '@/components/layout/MobileHeader';
 import { SellProgressBar } from '@/components/SellWorkflow';
 
 // Styles - Conditional import based on device
-const MobileContactStyles = React.lazy(() => import('./MobileContactPage.styles'));
-const UnifiedContactStyles = React.lazy(() => import('./UnifiedContactStyles'));
+import * as MobileContactStylesModule from './MobileContactPage.styles';
+import * as UnifiedContactStylesModule from './UnifiedContactStyles';
+const MobileContactStyles = { default: MobileContactStylesModule };
+const UnifiedContactStyles = { default: UnifiedContactStylesModule };
 
 const ContactPageUnified: React.FC = () => {
   const navigate = useNavigate();

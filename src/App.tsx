@@ -54,25 +54,44 @@ if (process.env.NODE_ENV === 'development') {
  * This component is wrapped by AppProviders, so it can use useAuth safely
  */
 const AppContent: React.FC = () => {
-  // ✅ NOW SAFE: useInitialLoad can access useAuth because we're inside AppProviders
-  const isReady = useInitialLoad();
+  // ✅ useInitialLoad waits for Auth + ProfileType before showing UI
+  const { isReady, progress } = useInitialLoad();
 
-  // Effect to handle the loader DOM element
+  // Effect to handle the loader DOM element + progress display
   React.useEffect(() => {
-    if (isReady) {
-      const loader = document.getElementById('loader-container');
-      if (loader) {
-        // Start fade out
-        loader.style.opacity = '0';
+    const loader = document.getElementById('loader-container');
+    if (!loader) return;
 
-        // Remove after transition finishes
+    // Update progress percentage in the loader
+    const progressEl = document.getElementById('loader-progress');
+    if (progressEl) {
+      progressEl.textContent = `${progress}%`;
+    }
+    const barEl = document.getElementById('loader-bar-fill');
+    if (barEl) {
+      barEl.style.width = `${progress}%`;
+    }
+
+    if (isReady) {
+      // Final 100% flash, then fade out
+      if (progressEl) progressEl.textContent = '100%';
+      if (barEl) barEl.style.width = '100%';
+
+      setTimeout(() => {
+        loader.style.opacity = '0';
         setTimeout(() => {
           loader.remove();
           logger.info('[App] Loader removed - App Ready');
-        }, 500); // 500ms matches CSS transition duration
-      }
+        }, 500);
+      }, 300); // Brief pause at 100% so user sees completion
     }
-  }, [isReady]);
+  }, [isReady, progress]);
+
+  // Don't render the component tree until auth + profile are ready
+  // This prevents hooks violations in child components that depend on permissions
+  if (!isReady) {
+    return null;
+  }
 
   return (
     <>

@@ -262,6 +262,40 @@
                 opacity: 1;
             }
         }
+
+        .loader-progress-container {
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 200px;
+        }
+
+        .loader-bar {
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .loader-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #0088cc 0%, #00ccff 50%, #66e0ff 100%);
+            border-radius: 4px;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 12px rgba(0, 204, 255, 0.6);
+        }
+
+        .loader-progress-text {
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.5);
+            font-variant-numeric: tabular-nums;
+        }
     </style>
 </head>
 
@@ -287,11 +321,34 @@
             <div class="text-container">
                 <div class="brand-text">Koli One</div>
                 <div class="status-text">INITIALIZING SYSTEMS...</div>
+                <div class="loader-progress-container">
+                    <div class="loader-bar">
+                        <div class="loader-bar-fill" id="loader-bar-fill"></div>
+                    </div>
+                    <div class="loader-progress-text" id="loader-progress">0%</div>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="root"></div>
+
+    <!-- Pre-React progress animation -->
+    <script>
+        (function() {
+            var progress = 0;
+            var progressEl = document.getElementById('loader-progress');
+            var barEl = document.getElementById('loader-bar-fill');
+            var interval = setInterval(function() {
+                if (progress >= 15) { clearInterval(interval); return; }
+                progress += 0.3;
+                var rounded = Math.round(progress);
+                if (progressEl) progressEl.textContent = rounded + '%';
+                if (barEl) barEl.style.width = rounded + '%';
+            }, 80);
+            window.__loaderInterval = interval;
+        })();
+    </script>
 
     <!-- THREE.JS LOADER MODULE -->
     <script type="importmap">

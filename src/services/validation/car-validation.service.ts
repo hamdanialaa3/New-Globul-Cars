@@ -350,7 +350,7 @@ class CarValidationService {
     });
 
     // Color Fields (10 points total - 5 each)
-    if (carData.color || carData.exteriorColor) {
+    if (carData.exteriorColor) {
       maxScore += 5;
       score += 5;
     }

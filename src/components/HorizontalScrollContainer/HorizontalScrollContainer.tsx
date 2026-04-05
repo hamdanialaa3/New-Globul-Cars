@@ -10,7 +10,7 @@ const ScrollWrapper = styled.div`
   width: 100%;
 `;
 
-const ScrollContainer = styled.div`
+const ScrollContainer = styled.div<{ $gap?: string; $padding?: string }>`
   display: flex;
   overflow-x: auto;
   overflow-y: hidden;

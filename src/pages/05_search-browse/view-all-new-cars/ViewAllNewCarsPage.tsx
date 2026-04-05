@@ -269,7 +269,7 @@ const EmptyState = styled.div`
 // ============================================================================
 
 const ViewAllNewCarsPage: React.FC = () => {
-  const { currentLanguage, t } = useLanguage();
+  const { language: currentLanguage, t } = useLanguage();
   const isBg = currentLanguage === 'bg';
   
   const [cars, setCars] = useState<UnifiedCar[]>([]);

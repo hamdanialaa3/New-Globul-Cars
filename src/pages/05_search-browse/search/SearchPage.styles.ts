@@ -435,6 +435,7 @@ export const ResultsHeader = styled.div`
 export const ResultsCount = styled.div`
   font-size: 15px;
   font-weight: 600;
+  min-width: 0;
   color: ${({ theme }) =>
     theme.mode === 'dark' ? '#e2e8f0' : '#212529'} !important;
 
@@ -688,6 +689,12 @@ export const CardPrice = styled.div`
   color: ${({ theme }) =>
     theme.mode === 'dark' ? '#ff9a6c' : '#e8561e'} !important;
   margin-top: 4px;
+  overflow-wrap: break-word;
+  word-break: break-word;
+
+  @media (max-width: 480px) {
+    font-size: 17px;
+  }
 `;
 
 export const CardMonthlyPrice = styled.span`

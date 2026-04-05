@@ -31,7 +31,7 @@ interface LogEntry {
   level: LogLevel;
   message: string;
   timestamp: Date;
-  context?: LogContext;
+  context?: unknown;
   error?: Error;
   userId?: string;
   sessionId?: string;
@@ -42,21 +42,23 @@ interface LogEntry {
 export function sendToErrorTracking(
   message: string,
   error?: Error,
-  context?: Record<string, unknown>,
+  context?: unknown,
   extra?: Record<string, unknown>
 ) {
   try {
+    const safeContext =
+      context && typeof context === 'object' ? (context as Record<string, unknown>) : undefined;
     if (typeof window !== 'undefined' && (window as any).Sentry) {
       const Sentry = (window as any).Sentry;
       if (error) {
         Sentry.captureException(error, {
-          tags: { logger: 'custom', ...(context || {}) },
+          tags: { logger: 'custom', ...(safeContext || {}) },
           extra: extra || {},
         });
       } else {
         Sentry.captureMessage(message, {
           level: 'error',
-          tags: context,
+          tags: safeContext,
           extra: extra || {},
         });
       }
@@ -114,38 +116,83 @@ export function clearStoredLogs() {
 // ==================== SERVICE LOGGER WRAPPER ====================
 
 export const serviceLogger = {
+  parseArgs: (
+    messageOrScope: string,
+    maybeMessageOrContext?: unknown,
+    maybeContext?: unknown
+  ): { message: string; context?: unknown } => {
+    if (typeof maybeMessageOrContext === 'string') {
+      return {
+        message: `[${messageOrScope}] ${maybeMessageOrContext}`,
+        context: maybeContext,
+      };
+    }
+
+    return {
+      message: messageOrScope,
+      context: maybeMessageOrContext,
+    };
+  },
+
   /**
    * Log error - Always logged
    */
-  error: (message: string, error?: Error | unknown, context?: Record<string, any>) => {
+  error: (message: string, error?: Error | unknown, context?: unknown) => {
     logger.error(message, error, context);
   },
 
   /**
    * Log info - Production safe
    */
-  info: (message: string, context?: Record<string, any>) => {
+  info: (
+    messageOrScope: string,
+    maybeMessageOrContext?: unknown,
+    maybeContext?: unknown
+  ) => {
+    const { message, context } = serviceLogger.parseArgs(
+      messageOrScope,
+      maybeMessageOrContext,
+      maybeContext
+    );
     logger.info(message, context);
   },
 
   /**
    * Log warning - Production safe
    */
-  warn: (message: string, context?: Record<string, any>) => {
+  warn: (
+    messageOrScope: string,
+    maybeMessageOrContext?: unknown,
+    maybeContext?: unknown
+  ) => {
+    const { message, context } = serviceLogger.parseArgs(
+      messageOrScope,
+      maybeMessageOrContext,
+      maybeContext
+    );
     logger.warn(message, context);
   },
 
   /**
    * Log debug - Development only
    */
-  debug: (message: string, context?: Record<string, any>) => {
+  debug: (
+    messageOrScope: string,
+    maybeMessageOrContext?: unknown,
+    maybeContext?: unknown
+  ) => {
+    const { message, context } = serviceLogger.parseArgs(
+      messageOrScope,
+      maybeMessageOrContext,
+      maybeContext
+    );
     logger.debug(message, context);
   },
 
   /**
    * Log fatal - Critical errors
    */
-  fatal: (message: string, error?: Error, context?: Record<string, any>) => {
+  fatal: (message: string, error?: Error, context?: unknown) => {
     logger.fatal(message, error, context);
   },
 };
@@ -199,7 +246,7 @@ class LoggerService {
   /**
    * Debug level - development only
    */
-  debug(message: string, context?: LogContext) {
+  debug(message: string, context?: unknown) {
     if (this.isDevelopment) {
       this.log('debug', message, undefined, context);
     }
@@ -208,21 +255,21 @@ class LoggerService {
   /**
    * Info level - general information
    */
-  info(message: string, context?: LogContext) {
+  info(message: string, context?: unknown) {
     this.log('info', message, undefined, context);
   }
 
   /**
    * Warning level - something unexpected but not critical
    */
-  warn(message: string, context?: LogContext) {
+  warn(message: string, context?: unknown) {
     this.log('warn', message, undefined, context);
   }
 
   /**
    * Error level - errors that need attention
    */
-  error(message: string, error?: Error | unknown, context?: LogContext) {
+  error(message: string, error?: Error | unknown, context?: unknown) {
     const normalizedError = this.normalizeError(error);
     this.log('error', message, normalizedError, context);
     // Send to error tracking service (Sentry)
@@ -232,11 +279,18 @@ class LoggerService {
   /**
    * Fatal level - critical errors that stop execution
    */
-  fatal(message: string, error?: Error, context?: LogContext) {
+  fatal(message: string, error?: Error, context?: unknown) {
     const normalizedError = this.normalizeError(error);
     this.log('fatal', message, normalizedError, context);
     // Send to error tracking service with high priority
-    sendToErrorTracking(message, normalizedError, { ...context, severity: 'fatal' }, { userId: this.userId || undefined, sessionId: this.sessionId });
+    sendToErrorTracking(
+      message,
+      normalizedError,
+      context && typeof context === 'object'
+        ? { ...(context as Record<string, unknown>), severity: 'fatal' }
+        : { severity: 'fatal' },
+      { userId: this.userId || undefined, sessionId: this.sessionId }
+    );
   }
 
   /**
@@ -246,7 +300,7 @@ class LoggerService {
     level: LogLevel,
     message: string,
     error?: Error,
-    context?: LogContext
+    context?: unknown
   ) {
     const entry: LogEntry = {
       level,

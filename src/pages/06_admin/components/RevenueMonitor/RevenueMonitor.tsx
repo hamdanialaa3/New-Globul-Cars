@@ -125,8 +125,8 @@ export const RevenueMonitor: React.FC = () => {
     const calculateMRR = (subs: Subscriber[]) => {
         return subs.reduce((total, sub) => {
             if (sub.status !== 'active') return total;
-            if (sub.planTier === 'dealer') return total + SUBSCRIPTION_PLANS.dealer.price;
-            if (sub.planTier === 'company') return total + SUBSCRIPTION_PLANS.company.price;
+            if (sub.planTier === 'dealer') return total + SUBSCRIPTION_PLANS.dealer.price.monthly;
+            if (sub.planTier === 'company') return total + SUBSCRIPTION_PLANS.company.price.monthly;
             return total;
         }, 0);
     };

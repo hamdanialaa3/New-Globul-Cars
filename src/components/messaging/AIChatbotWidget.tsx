@@ -327,7 +327,7 @@ export const AIChatbotWidget: React.FC = () => {
       try {
         const response = await getAIReplyWithFailover(
           content,
-          { page: 'messages', language, userType: user?.profileType || 'visitor' },
+          { page: 'messages', language, userType: user?.isAnonymous ? 'guest' : user ? 'registered' : 'visitor' },
           user?.uid,
           undefined
         );

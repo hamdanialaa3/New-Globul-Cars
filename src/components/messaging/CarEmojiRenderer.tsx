@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 
 // Map emoji labels to Lucide icons
-const emojiIconMap: Record<string, React.ComponentType<{ size?: number }>> = {
+const emojiIconMap: Record<string, React.ComponentType<any>> = {
   'Car': Car,
   'Truck': Truck,
   'Bus': Bus,

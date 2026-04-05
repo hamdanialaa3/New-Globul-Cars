@@ -341,7 +341,7 @@ export const NotificationSettings: React.FC<Props> = ({ isOpen, onClose }) => {
     <ModalBackdrop $isOpen={isOpen} onClick={handleBackdropClick}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
-          <h3>{t('settings.notifications', 'Notification Settings')}</h3>
+          <h3>{t('settings.notifications') || 'Notification Settings'}</h3>
           <CloseButton onClick={onClose}>
             <ModernClose size={20} />
           </CloseButton>
@@ -351,8 +351,8 @@ export const NotificationSettings: React.FC<Props> = ({ isOpen, onClose }) => {
           <SettingInfo>
             {soundEnabled ? <ModernVolume size={20} /> : <ModernVolumeX size={20} />}
             <div>
-              <h4>{t('settings.soundNotifications', 'Sound Notifications')}</h4>
-              <p>{t('settings.soundDescription', 'Play a sound when you receive a new message')}</p>
+              <h4>{t('settings.soundNotifications') || 'Sound Notifications'}</h4>
+              <p>{t('settings.soundDescription') || 'Play a sound when you receive a new message'}</p>
             </div>
             <ToggleSwitch>
               <ToggleInput type="checkbox" checked={soundEnabled} onChange={handleToggleSound} />
@@ -378,8 +378,8 @@ export const NotificationSettings: React.FC<Props> = ({ isOpen, onClose }) => {
           <TestButton onClick={handleTestSound} disabled={!soundEnabled || testing}>
             <ModernPlay size={16} />
             {testing
-              ? t('settings.testing', 'Testing...')
-              : t('settings.testSound', 'Test Sound')}
+              ? t('settings.testing') || 'Testing...'
+              : t('settings.testSound') || 'Test Sound'}
           </TestButton>
         </SettingItem>
       </ModalContent>

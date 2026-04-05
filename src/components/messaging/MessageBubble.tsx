@@ -10,9 +10,27 @@ import {
   ModernDownload,
   ModernImage
 } from './icons/ModernIcons';
-import type { Message } from '../../services/realtimeMessaging';
 import { TestDriveBubble, type TestDriveRequest } from './bubbles/TestDrive';
 import { useAuth } from '@/contexts/AuthProvider';
+
+interface MessageAttachment {
+  id: string;
+  type: string;
+  name: string;
+  size: number;
+  url: string;
+}
+
+interface Message {
+  id: string;
+  text?: string;
+  content?: string;
+  type: string;
+  status?: 'sending' | 'sent' | 'delivered' | 'read' | string;
+  createdAt: Date;
+  metadata?: Record<string, unknown> & { testDriveData?: unknown };
+  attachments?: MessageAttachment[];
+}
 
 // ==================== STYLED COMPONENTS ====================
 

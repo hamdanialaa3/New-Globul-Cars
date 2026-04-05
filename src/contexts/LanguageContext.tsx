@@ -9,7 +9,7 @@ interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   toggleLanguage: () => void;
-  t: (key: string) => string;
+  t: (key: string, fallback?: string) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -52,7 +52,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   });
 
   // Translation function - gets value from nested object using dot notation
-  const t = useCallback((key: string): string => {
+  const t = useCallback((key: string, fallback?: string): string => {
     if (!key || typeof key !== 'string') {
       logger.warn('[Translation] Invalid key:', key);
       return key || '';
@@ -62,7 +62,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     const langObj = translations[language];
     if (!langObj) {
       logger.error('[Translation] Language object not found for:', language);
-      return key;
+      return fallback ?? key;
     }
     
     // Try to get the translation for current language
@@ -87,7 +87,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     
     // If all else fails, log and return the key itself
     logger.warn(`[Translation] Missing translation for key: "${key}" in language: ${language}`);
-    return key;
+    return fallback ?? key;
   }, [language]);
 
   const setLanguage = useCallback((lang: Language) => {

@@ -15,7 +15,7 @@ export function useSiteSettings() {
   useEffect(() => {
     let isActive = true;
 
-    const unsubscribe = siteSettingsService.subscribeSiteSettings((data) => {
+    const unsubscribe = siteSettingsService.subscribeSiteSettings(data => {
       if (isActive) {
         setSettings(data);
         setIsLoaded(true);
@@ -35,7 +35,7 @@ export function useSiteSettings() {
     isMaintenanceMode: settings.maintenanceMode,
     isRegistrationEnabled: settings.registrationEnabled,
     isFeatureEnabled: (feature: keyof SiteSettings['features']) => {
-      return settings.features[feature] ?? true; // Fail-open
-    }
+      return settings.features?.[feature] ?? true; // Fail-open
+    },
   };
 }

@@ -24,6 +24,13 @@ export const bulgarianColors = {
     dark: '#0D1452', // Dark indigo
     contrastText: '#ffffff',
   },
+  neutral: {
+    main: '#64748B',
+    light: '#CBD5E1',
+    dark: '#334155',
+    gray100: '#F1F5F9',
+    contrastText: '#ffffff',
+  },
 
   grey: {
     50: '#F8FAFC',
@@ -67,6 +74,11 @@ export const bulgarianColors = {
     default: '#FAFBFC', // Clean light background
     paper: '#ffffff', // White for cards
     dark: '#F1F5F9', // Light grey for secondary items
+    light: '#ffffff',
+    lighter: '#FAFBFC',
+    primary: '#FAFBFC',
+    secondary: '#F1F5F9',
+    tertiary: '#E2E8F0',
     semiDark: 'rgba(26, 35, 126, 0.85)',
     lightOverlay: 'rgba(255, 255, 255, 0.95)',
     darkOverlay: 'rgba(26, 35, 126, 0.7)',
@@ -92,6 +104,17 @@ export const bulgarianColors = {
     dark: '#94A3B8', // alias of strong
     error: '#CC0000', // error border
     success: '#28A745', // success border
+    defaultRadius: {
+      none: '0',
+      sm: '0.25rem',
+      base: '0.375rem',
+      md: '0.5rem',
+      lg: '0.75rem',
+      xl: '1rem',
+      '2xl': '1.5rem',
+      '3xl': '2rem',
+      full: '9999px',
+    },
   },
 
   // Derived groups to support design-system components
@@ -133,6 +156,13 @@ export const bulgarianColors = {
       light: '#B9F6CA', // maps to success.light
     },
   },
+
+  // Legacy flat aliases still used in old components
+  successDark: '#1B5E20',
+  errorDark: '#B71C1C',
+  primaryDark: '#8B5CF6',
+  backgroundHover: '#F1F5F9',
+  borderHover: '#CBD5E1',
 };
 
 // Typography — Inter (body) + Exo 2 (headings)
@@ -265,6 +295,9 @@ export const bulgarianTheme: DefaultTheme = {
   colors: bulgarianColors,
   // Root-level text mirror for components expecting theme.text
   text: bulgarianColors.text,
+  // Legacy root aliases used in older styled blocks
+  danger: bulgarianColors.error.main,
+  dangerHover: bulgarianColors.error.dark,
   typography: bulgarianTypography,
   spacing: bulgarianSpacing,
   breakpoints: bulgarianBreakpoints,

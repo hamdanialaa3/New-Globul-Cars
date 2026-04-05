@@ -185,9 +185,10 @@ const AlgoliaAdminPanel: React.FC = () => {
       });
     } catch (error: unknown) {
       serviceLogger.error('Sync error', error as Error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       setMessage({ 
         type: 'error', 
-        text: `❌ Sync failed: ${error.message}` 
+        text: `❌ Sync failed: ${errorMessage}` 
       });
     } finally {
       setSyncing(false);
@@ -218,9 +219,10 @@ const AlgoliaAdminPanel: React.FC = () => {
       });
     } catch (error: unknown) {
       serviceLogger.error('Clear error', error as Error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       setMessage({ 
         type: 'error', 
-        text: `Failed to clear: ${error.message}` 
+        text: `Failed to clear: ${errorMessage}` 
       });
     } finally {
       setClearing(false);

@@ -112,7 +112,7 @@ const fetchCandidateCars = async (
     });
     
     // Transform to CarMetadata
-    return cars.map((car: Record<string, unknown>) => {
+    return cars.map((car: any) => {
       const images = car.images as string[] | undefined;
       const description = car.description as string | undefined;
       const createdAtValue = car.createdAt as { toMillis?: () => number } | number | undefined;
@@ -148,7 +148,9 @@ const fetchCandidateCars = async (
         priceDropped: (car.priceDropped || false) as boolean,
         priceDropAmount: car.priceDropAmount as number | undefined,
         priceDropDate: car.priceDropDate as number | undefined,
-        marketPriceComparison: car.marketPriceComparison as number | undefined,
+        marketPriceComparison: ['above', 'below', 'average'].includes(car.marketPriceComparison)
+          ? (car.marketPriceComparison as 'above' | 'below' | 'average')
+          : undefined,
         sellerId: (car.sellerId || car.userId || '') as string,
         sellerNumericId: (car.sellerNumericId || car.ownerNumericId) as number | undefined,
         carNumericId: (car.carNumericId || car.numericId) as number | undefined,

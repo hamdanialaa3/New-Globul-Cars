@@ -348,6 +348,42 @@
             text-shadow: 0 0 15px rgba(139, 92, 246, 0.65);
         }
 
+        .loader-progress-container {
+            margin-top: 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 200px;
+        }
+
+        .loader-bar {
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loader-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #2563EB 0%, #6366F1 50%, #8B5CF6 100%);
+            border-radius: 4px;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.6);
+        }
+
+        .loader-progress-text {
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.5);
+            font-variant-numeric: tabular-nums;
+            transition: color 0.3s ease;
+        }
+
         @keyframes led-orbit {
             from {
                 transform: rotate(0deg);
@@ -401,12 +437,34 @@
             <img src="/koli_one_ai_Icon2.png" class="sphere-logo" alt="Koli One" />
         </div>
         <div class="brand-text">Koli One</div>
+        <div class="loader-progress-container">
+            <div class="loader-bar">
+                <div class="loader-bar-fill" id="loader-bar-fill"></div>
+            </div>
+            <div class="loader-progress-text" id="loader-progress">0%</div>
+        </div>
     </div>
 
     <div id="root"></div>
 
     <!-- Hide loader when React mounts -->
     <script>
+        // Pre-React progress animation: slowly count up to ~15% while JS bundles load
+        (function() {
+            var progress = 0;
+            var progressEl = document.getElementById('loader-progress');
+            var barEl = document.getElementById('loader-bar-fill');
+            var interval = setInterval(function() {
+                if (progress >= 15) { clearInterval(interval); return; }
+                progress += 0.3;
+                var rounded = Math.round(progress);
+                if (progressEl) progressEl.textContent = rounded + '%';
+                if (barEl) barEl.style.width = rounded + '%';
+            }, 80);
+            // Store interval so React can clear it
+            window.__loaderInterval = interval;
+        })();
+
         window.addEventListener('DOMContentLoaded', function() {
             var rootEl = document.getElementById('root');
             var loaderEl = document.getElementById('loader-container');
@@ -414,10 +472,8 @@
             if (rootEl && loaderEl) {
                 var observer = new MutationObserver(function(mutations) {
                     if (rootEl.children.length > 0) {
-                        loaderEl.style.opacity = '0';
-                        setTimeout(function() {
-                            loaderEl.style.display = 'none';
-                        }, 500);
+                        // React is now driving the progress — stop pre-React animation
+                        if (window.__loaderInterval) clearInterval(window.__loaderInterval);
                         observer.disconnect();
                     }
                 });

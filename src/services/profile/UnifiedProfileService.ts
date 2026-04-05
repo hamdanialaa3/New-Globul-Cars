@@ -1,30 +1,49 @@
 /**
  * UNIFIED PROFILE SERVICE
- * 
+ *
  * Consolidates 3 duplicate profile services into one canonical source:
  * - bulgarian-profile-service.ts (558 lines) → DDD
  * - dealership.service.ts (474 lines) → DDD
  * - ProfileService.ts → Merged here
- * 
+ *
  * Total Lines Saved: 1,032 duplicate lines
- * 
+ *
  * This is the SOLE SOURCE for all profile and dealership operations.
- * 
+ *
  * @example
  * import { profileService } from '../../services/profile/UnifiedProfileService';
  * await profileService.setupDealerProfile(userId, dealerData);
- * 
+ *
  * @since 2025-11-03 (Phase 1.2)
  * @version 1.0.0
  */
 
-import { BulgarianUser, BulgarianUserUpdate, DealerProfile, CompanyProfile, isDealerProfile, isCompanyProfile } from '../../types/user/bulgarian-user.types';
-import { DealershipInfo, PrivacySettings } from '../../types/dealership/dealership.types';
+import {
+  BulgarianUser,
+  BulgarianUserUpdate,
+  DealerProfile,
+  CompanyProfile,
+  isDealerProfile,
+  isCompanyProfile,
+} from '../../types/user/bulgarian-user.types';
+import {
+  DealershipInfo,
+  PrivacySettings,
+} from '../../types/dealership/dealership.types';
 import { CompanyInfo } from '../../types/company/company.types';
 import { db, storage } from '@/firebase/firebase-config';
 import { userService } from '../../services/user/canonical-user.service';
 import { logger } from '../../services/logger-service';
-import { doc, setDoc, getDoc, getDocFromServer, updateDoc, serverTimestamp, runTransaction, Transaction } from 'firebase/firestore';
+import {
+  doc,
+  setDoc,
+  getDoc,
+  getDocFromServer,
+  updateDoc,
+  serverTimestamp,
+  runTransaction,
+  Transaction,
+} from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export class UnifiedProfileService {
@@ -46,12 +65,12 @@ export class UnifiedProfileService {
    * Creates a dealership document and updates user profile to dealer type
    * Merges functionality from bulgarian-profile-service.setupDealerProfile()
    * and dealership.service.saveDealershipInfo()
-   * 
+   *
    * @param userId - Firebase UID of the user
    * @param dealershipData - Dealership information (name, address, license, etc.)
    * @returns Promise that resolves when setup is complete
    * @throws Error if validation fails or database write fails
-   * 
+   *
    * @example
    * await profileService.setupDealerProfile('user-123', {
    *   dealershipNameBG: 'Автосалон БГ',
@@ -60,7 +79,10 @@ export class UnifiedProfileService {
    *   licenseNumber: 'BG-12345'
    * });
    */
-  async setupDealerProfile(userId: string, dealershipData: DealershipInfo): Promise<void> {
+  async setupDealerProfile(
+    userId: string,
+    dealershipData: DealershipInfo
+  ): Promise<void> {
     try {
       logger.info('Setting up dealer profile', { userId });
 
@@ -68,33 +90,39 @@ export class UnifiedProfileService {
       const dealershipRef = doc(db, 'dealerships', userId);
       // uid is in dealershipData usually, but safer to merge cleanly or ensure it matches
       const { uid: _, ...restDealerData } = dealershipData as any;
-      await setDoc(dealershipRef, {
-        uid: userId,
-        ownerId: userId,
-        ...restDealerData,
-        status: 'pending',
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
-      }, { merge: true });
+      await setDoc(
+        dealershipRef,
+        {
+          uid: userId,
+          ownerId: userId,
+          ...restDealerData,
+          status: 'pending',
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true }
+      );
 
       // 2. Update user profile to dealer type
       const userUpdate: Partial<DealerProfile> = {
         profileType: 'dealer',
+        accountType: 'dealer',
         dealershipRef: `dealerships/${userId}`,
         dealerSnapshot: {
           nameBG: dealershipData.dealershipNameBG || '',
           nameEN: dealershipData.dealershipNameEN || '',
           logo: dealershipData.media?.logo,
-          status: 'pending'
-        }
+          status: 'pending',
+        },
       };
 
       await userService.updateUserProfile(userId, userUpdate as any);
 
       logger.info('Dealer profile setup complete', { userId });
-
     } catch (error) {
-      logger.error('Error setting up dealer profile', error as Error, { userId });
+      logger.error('Error setting up dealer profile', error as Error, {
+        userId,
+      });
       throw error;
     }
   }
@@ -103,18 +131,20 @@ export class UnifiedProfileService {
    * Get dealership information
    * Retrieves dealership data from the dealerships collection
    * Merged from dealership.service.getDealershipInfo()
-   * 
+   *
    * @param dealershipId - Firebase UID of the dealership owner
    * @returns Promise resolving to dealership info or null if not found
    * @throws Error if database query fails
-   * 
+   *
    * @example
    * const dealer = await profileService.getDealershipInfo('user-123');
    * if (dealer) {
    *   logger.info(`Dealership: ${dealer.dealershipNameBG}`);
    * }
    */
-  async getDealershipInfo(dealershipId: string): Promise<DealershipInfo | null> {
+  async getDealershipInfo(
+    dealershipId: string
+  ): Promise<DealershipInfo | null> {
     try {
       const dealershipRef = doc(db, 'dealerships', dealershipId);
       const dealershipDoc = await getDoc(dealershipRef);
@@ -125,9 +155,10 @@ export class UnifiedProfileService {
       }
 
       return dealershipDoc.data() as DealershipInfo;
-
     } catch (error) {
-      logger.error('Error fetching dealership info', error as Error, { dealershipId });
+      logger.error('Error fetching dealership info', error as Error, {
+        dealershipId,
+      });
       throw error;
     }
   }
@@ -136,12 +167,12 @@ export class UnifiedProfileService {
    * Update dealership information
    * Updates dealership document and syncs changes to user profile snapshot
    * Merged from dealership.service.saveDealershipInfo()
-   * 
+   *
    * @param dealershipId - Firebase UID of the dealership owner
    * @param updates - Partial dealership data to update
    * @returns Promise that resolves when update is complete
    * @throws Error if dealership not found or database write fails
-   * 
+   *
    * @example
    * await profileService.updateDealershipInfo('user-123', {
    *   dealershipNameBG: 'Ново име',
@@ -157,27 +188,34 @@ export class UnifiedProfileService {
       const dealershipRef = doc(db, 'dealerships', dealershipId);
       await updateDoc(dealershipRef, {
         ...updates,
-        updatedAt: serverTimestamp()
+        updatedAt: serverTimestamp(),
       });
 
       // Sync snapshot to user profile
       const user = await userService.getUserProfile(dealershipId);
-      if (user && isDealerProfile(user) && user.dealershipRef === `dealerships/${dealershipId}`) {
+      if (
+        user &&
+        isDealerProfile(user) &&
+        user.dealershipRef === `dealerships/${dealershipId}`
+      ) {
         const userUpdate: Partial<DealerProfile> = {
           dealerSnapshot: {
-            nameBG: updates.dealershipNameBG || user.dealerSnapshot?.nameBG || '',
-            nameEN: updates.dealershipNameEN || user.dealerSnapshot?.nameEN || '',
+            nameBG:
+              updates.dealershipNameBG || user.dealerSnapshot?.nameBG || '',
+            nameEN:
+              updates.dealershipNameEN || user.dealerSnapshot?.nameEN || '',
             logo: updates.media?.logo || user.dealerSnapshot?.logo,
-            status: user.dealerSnapshot?.status || 'pending'
-          }
+            status: user.dealerSnapshot?.status || 'pending',
+          },
         };
         await userService.updateUserProfile(dealershipId, userUpdate as any);
       }
 
       logger.info('Dealership info updated', { dealershipId });
-
     } catch (error) {
-      logger.error('Error updating dealership info', error as Error, { dealershipId });
+      logger.error('Error updating dealership info', error as Error, {
+        dealershipId,
+      });
       throw error;
     }
   }
@@ -186,12 +224,12 @@ export class UnifiedProfileService {
    * Upload profile picture
    * Uploads a user's profile picture to Firebase Storage and updates profile
    * Merged from bulgarian-profile-service.uploadProfilePicture()
-   * 
+   *
    * @param userId - Firebase UID of the user
    * @param file - Image file to upload (max 5MB, must be image type)
    * @returns Promise resolving to the download URL of the uploaded image
    * @throws Error if file validation fails, upload fails, or profile update fails
-   * 
+   *
    * @example
    * const url = await profileService.uploadProfilePicture('user-123', imageFile);
    * logger.info(`Profile picture URL: ${url}`);
@@ -208,7 +246,10 @@ export class UnifiedProfileService {
       }
 
       // Create storage reference
-      const imageRef = ref(storage, `profile-pictures/${userId}/${Date.now()}-${file.name}`);
+      const imageRef = ref(
+        storage,
+        `profile-pictures/${userId}/${Date.now()}-${file.name}`
+      );
 
       // Upload file
       const snapshot = await uploadBytes(imageRef, file);
@@ -219,17 +260,21 @@ export class UnifiedProfileService {
 
       logger.info('Profile picture uploaded', { userId });
       return downloadURL;
-
     } catch (error) {
-      logger.error('Error uploading profile picture', error as Error, { userId });
+      logger.error('Error uploading profile picture', error as Error, {
+        userId,
+      });
       throw error;
     }
   }
 
   /**
-  * Upload dealership logo
-  */
-  async uploadDealershipLogo(dealershipId: string, file: File): Promise<string> {
+   * Upload dealership logo
+   */
+  async uploadDealershipLogo(
+    dealershipId: string,
+    file: File
+  ): Promise<string> {
     try {
       // Validate file
       if (!file.type.startsWith('image/')) {
@@ -241,7 +286,10 @@ export class UnifiedProfileService {
       }
 
       // Create storage reference
-      const logoRef = ref(storage, `dealerships/${dealershipId}/logo-${Date.now()}`);
+      const logoRef = ref(
+        storage,
+        `dealerships/${dealershipId}/logo-${Date.now()}`
+      );
 
       // Upload file
       const snapshot = await uploadBytes(logoRef, file);
@@ -261,14 +309,15 @@ export class UnifiedProfileService {
       const currentMedia = current?.media || {};
 
       await this.updateDealershipInfo(dealershipId, {
-        media: { ...currentMedia, logo: downloadURL }
+        media: { ...currentMedia, logo: downloadURL },
       });
 
       logger.info('Dealership logo uploaded', { dealershipId });
       return downloadURL;
-
     } catch (error) {
-      logger.error('Error uploading dealership logo', error as Error, { dealershipId });
+      logger.error('Error uploading dealership logo', error as Error, {
+        dealershipId,
+      });
       throw error;
     }
   }
@@ -276,7 +325,11 @@ export class UnifiedProfileService {
   /**
    * Upload dealer document (license, VAT, etc.)
    */
-  async uploadDealerDocument(userId: string, file: File, type: 'license' | 'vat'): Promise<string> {
+  async uploadDealerDocument(
+    userId: string,
+    file: File,
+    type: 'license' | 'vat'
+  ): Promise<string> {
     try {
       // Validate file
       if (file.size > 10 * 1024 * 1024) {
@@ -284,7 +337,10 @@ export class UnifiedProfileService {
       }
 
       const docPath = type === 'license' ? 'licenses' : 'vat-docs';
-      const docRef = ref(storage, `dealerships/${userId}/documents/${docPath}/${Date.now()}-${file.name}`);
+      const docRef = ref(
+        storage,
+        `dealerships/${userId}/documents/${docPath}/${Date.now()}-${file.name}`
+      );
 
       const snapshot = await uploadBytes(docRef, file);
       const downloadURL = await getDownloadURL(snapshot.ref);
@@ -292,7 +348,7 @@ export class UnifiedProfileService {
       // Update dealership record with document URL
       // We need to store this somewhere in DealershipInfo.
       // Looking at DealershipInfo, we have 'certifications.dealerLicense', maybe there?
-      // Or we can add it to a generic documents field if it exists. 
+      // Or we can add it to a generic documents field if it exists.
       // DealershipInfo has 'certifications.dealerLicense.documentUrl' (BrandCertification) but for general license?
       // Let's assume we update the 'certifications' or 'verification' notes for now or specific fields if they existed.
       // The Type definition shows `licenseNumber` but not explicitly `licenseDocumentUrl`.
@@ -301,20 +357,25 @@ export class UnifiedProfileService {
       // Actually, I'll update `verification` notes with the URL.
 
       const current = await this.getDealershipInfo(userId);
-      const currentVerification = current?.verification || { status: 'pending' };
+      const currentVerification = current?.verification || {
+        status: 'pending',
+      };
 
       await this.updateDealershipInfo(userId, {
         verification: {
           ...currentVerification,
-          notes: (currentVerification.notes || '') + `\n[${type.toUpperCase()}] Document: ${downloadURL}`
-        }
+          notes:
+            (currentVerification.notes || '') +
+            `\n[${type.toUpperCase()}] Document: ${downloadURL}`,
+        },
       });
 
       logger.info(`Dealer ${type} document uploaded`, { userId });
       return downloadURL;
-
     } catch (error) {
-      logger.error(`Error uploading dealer ${type} document`, error as Error, { userId });
+      logger.error(`Error uploading dealer ${type} document`, error as Error, {
+        userId,
+      });
       throw error;
     }
   }
@@ -322,12 +383,16 @@ export class UnifiedProfileService {
   /**
    * Setup company profile (similar to dealer but for companies)
    */
-  async setupCompanyProfile(userId: string, companyData: CompanyInfo): Promise<void> {
+  async setupCompanyProfile(
+    userId: string,
+    companyData: CompanyInfo
+  ): Promise<void> {
     try {
       // Similar to dealer setup but for companies
       const userUpdate: Partial<CompanyProfile> = {
         profileType: 'company',
-        companyRef: `companies/${userId}`
+        accountType: 'company',
+        companyRef: `companies/${userId}`,
       };
 
       await userService.updateUserProfile(userId, userUpdate as any);
@@ -339,13 +404,14 @@ export class UnifiedProfileService {
         uid: userId,
         ...restCompanyData,
         createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
+        updatedAt: serverTimestamp(),
       });
 
       logger.info('Company profile setup complete', { userId });
-
     } catch (error) {
-      logger.error('Error setting up company profile', error as Error, { userId });
+      logger.error('Error setting up company profile', error as Error, {
+        userId,
+      });
       throw error;
     }
   }
@@ -376,15 +442,22 @@ export class UnifiedProfileService {
       } else if (newType === 'private') {
         await userService.updateUserProfile(userId, {
           profileType: 'private',
+          accountType: 'private',
           dealershipRef: undefined,
-          companyRef: undefined
+          companyRef: undefined,
         } as any);
       }
 
-      logger.info('Profile type switched', { userId, from: currentProfile.profileType, to: newType });
-
+      logger.info('Profile type switched', {
+        userId,
+        from: currentProfile.profileType,
+        to: newType,
+      });
     } catch (error) {
-      logger.error('Error switching profile type', error as Error, { userId, newType });
+      logger.error('Error switching profile type', error as Error, {
+        userId,
+        newType,
+      });
       throw error;
     }
   }
@@ -406,10 +479,16 @@ export class UnifiedProfileService {
    * Wrapper around userService.updateUserProfile for consistency
    * Merged from ProfileService.updateUserProfile()
    */
-  async updateUserProfile(userId: string, updates: BulgarianUserUpdate): Promise<void> {
+  async updateUserProfile(
+    userId: string,
+    updates: BulgarianUserUpdate
+  ): Promise<void> {
     try {
       await userService.updateUserProfile(userId, updates as any);
-      logger.info('User profile updated via UnifiedProfileService', { userId, fields: Object.keys(updates) });
+      logger.info('User profile updated via UnifiedProfileService', {
+        userId,
+        fields: Object.keys(updates),
+      });
     } catch (error) {
       logger.error('Error updating user profile', error as Error, { userId });
       throw error;
@@ -475,7 +554,10 @@ export class UnifiedProfileService {
    * Save dealership info (alias for updateDealershipInfo for backward compatibility)
    * Merged from dealership.service.saveDealershipInfo()
    */
-  async saveDealershipInfo(userId: string, dealershipData: Partial<DealershipInfo>): Promise<void> {
+  async saveDealershipInfo(
+    userId: string,
+    dealershipData: Partial<DealershipInfo>
+  ): Promise<void> {
     return this.updateDealershipInfo(userId, dealershipData);
   }
 
@@ -491,7 +573,9 @@ export class UnifiedProfileService {
       }
       return dealership.settings.privacySettings || null;
     } catch (error) {
-      logger.error('Error getting privacy settings', error as Error, { userId });
+      logger.error('Error getting privacy settings', error as Error, {
+        userId,
+      });
       return null;
     }
   }
@@ -500,22 +584,32 @@ export class UnifiedProfileService {
    * Save privacy settings
    * Merged from dealership.service.savePrivacySettings()
    */
-  async savePrivacySettings(userId: string, privacySettings: PrivacySettings): Promise<void> {
+  async savePrivacySettings(
+    userId: string,
+    privacySettings: PrivacySettings
+  ): Promise<void> {
     try {
       // Privacy settings are in DealershipInfo.settings.privacySettings
       const current = await this.getDealershipInfo(userId);
-      const currentSettings = current?.settings || {
-        displayLanguages: ['bg'],
-        currency: 'EUR',
-        notifications: { newInquiries: true, newReviews: true, weeklyReport: true, monthlyReport: true },
-        businessRules: { autoReplyEnabled: false }
-      } as any;
+      const currentSettings =
+        current?.settings ||
+        ({
+          displayLanguages: ['bg'],
+          currency: 'EUR',
+          notifications: {
+            newInquiries: true,
+            newReviews: true,
+            weeklyReport: true,
+            monthlyReport: true,
+          },
+          businessRules: { autoReplyEnabled: false },
+        } as any);
 
       await this.updateDealershipInfo(userId, {
         settings: {
           ...currentSettings,
-          privacySettings: privacySettings
-        }
+          privacySettings: privacySettings,
+        },
       });
 
       logger.info('Privacy settings saved', { userId });
@@ -538,54 +632,70 @@ export class UnifiedProfileService {
       // ✅ Use getDocFromServer to avoid Firestore watch stream bug (ca9) in React Strict Mode
       const userSnapshot = await getDocFromServer(userRef);
       if (!userSnapshot.exists()) return null;
-      
+
       const existingData = userSnapshot.data();
       if (existingData.numericId) {
-        logger.debug('User already has numeric ID, skipping transaction', { 
-          userId, 
-          numericId: existingData.numericId 
+        logger.debug('User already has numeric ID, skipping transaction', {
+          userId,
+          numericId: existingData.numericId,
         });
         return existingData.numericId;
       }
 
       // User needs numericId - Start transaction
-      const result = await runTransaction(db, async (transaction: Transaction) => {
-        const userDoc = await transaction.get(userRef);
+      const result = await runTransaction(
+        db,
+        async (transaction: Transaction) => {
+          const userDoc = await transaction.get(userRef);
 
-        if (!userDoc.exists()) return null;
+          if (!userDoc.exists()) return null;
 
-        const userData = userDoc.data();
-        // Double-check inside transaction in case another process assigned it
-        if (userData.numericId) return userData.numericId;
+          const userData = userDoc.data();
+          // Double-check inside transaction in case another process assigned it
+          if (userData.numericId) return userData.numericId;
 
-        // Missing ID - Assign one
-        const counterRef = doc(db, 'counters', 'users');
-        const counterDoc = await transaction.get(counterRef);
+          // Missing ID - Assign one
+          const counterRef = doc(db, 'counters', 'users');
+          const counterDoc = await transaction.get(counterRef);
 
-        let currentCount = 0;
-        if (counterDoc.exists()) {
-          currentCount = counterDoc.data()?.count || 0;
+          let currentCount = 0;
+          if (counterDoc.exists()) {
+            currentCount = counterDoc.data()?.count || 0;
+          }
+          const numericId = currentCount + 1;
+
+          // Update counter and user
+          // 🚨 FIX: Use set() with merge instead of update() to avoid precondition failures
+          transaction.set(
+            counterRef,
+            { count: numericId, updatedAt: serverTimestamp() },
+            { merge: true }
+          );
+          transaction.set(
+            userRef,
+            {
+              numericId,
+              numericIdAssignedAt: serverTimestamp(),
+              updatedAt: serverTimestamp(),
+            },
+            { merge: true }
+          ); // ✅ merge: true prevents precondition errors
+
+          return numericId;
         }
-        const numericId = currentCount + 1;
-
-        // Update counter and user
-        // 🚨 FIX: Use set() with merge instead of update() to avoid precondition failures
-        transaction.set(counterRef, { count: numericId, updatedAt: serverTimestamp() }, { merge: true });
-        transaction.set(userRef, {
-          numericId,
-          numericIdAssignedAt: serverTimestamp(),
-          updatedAt: serverTimestamp()
-        }, { merge: true }); // ✅ merge: true prevents precondition errors
-
-        return numericId;
-      });
+      );
 
       if (result) {
-        logger.info('✨ Self-healed numeric ID for user', { userId, numericId: result });
+        logger.info('✨ Self-healed numeric ID for user', {
+          userId,
+          numericId: result,
+        });
       }
       return result;
     } catch (error) {
-      logger.error('❌ Failed to ensure numeric ID', error as Error, { userId });
+      logger.error('❌ Failed to ensure numeric ID', error as Error, {
+        userId,
+      });
       return null;
     }
   }
@@ -596,10 +706,13 @@ export const profileService = UnifiedProfileService.getInstance();
 
 // Backward compatibility exports
 /** @deprecated Use profileService.setupDealerProfile() */
-export const setupDealerProfile = profileService.setupDealerProfile.bind(profileService);
+export const setupDealerProfile =
+  profileService.setupDealerProfile.bind(profileService);
 
 /** @deprecated Use profileService.getDealershipInfo() */
-export const getDealershipInfo = profileService.getDealershipInfo.bind(profileService);
+export const getDealershipInfo =
+  profileService.getDealershipInfo.bind(profileService);
 
 /** @deprecated Use profileService.updateDealershipInfo() */
-export const updateDealershipInfo = profileService.updateDealershipInfo.bind(profileService);
+export const updateDealershipInfo =
+  profileService.updateDealershipInfo.bind(profileService);

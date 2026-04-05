@@ -112,7 +112,7 @@ class UsersDirectoryService {
   sanitizeUserForDisplay(user: BulgarianUser, viewerId?: string): Partial<BulgarianUser> {
     const isOwnProfile = viewerId === user.uid;
 
-    const sanitized: Partial<BulgarianUser> = {
+    const sanitized: Record<string, unknown> = {
       uid: user.uid,
       displayName: user.displayName,
       photoURL: user.photoURL,
@@ -140,7 +140,7 @@ class UsersDirectoryService {
       sanitized.companySnapshot = (user as any).companySnapshot;
     }
 
-    return sanitized;
+    return sanitized as Partial<BulgarianUser>;
   }
 }
 

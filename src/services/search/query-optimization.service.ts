@@ -175,7 +175,7 @@ class QueryOptimizationService {
     // ✅ FIX: Remove duplicate cars by ID to prevent repeated listings
     const uniqueCarsMap = new Map<string, CarListing>();
     allCars.forEach(car => {
-      if (!uniqueCarsMap.has(car.id)) {
+      if (car.id && !uniqueCarsMap.has(car.id)) {
         uniqueCarsMap.set(car.id, car);
       }
     });
@@ -183,8 +183,8 @@ class QueryOptimizationService {
 
     // ترتيب النتائج حسب التاريخ (الأحدث أولاً)
     uniqueCars.sort((a, b) => {
-      const dateA = a.createdAt?.toDate?.() || new Date(0);
-      const dateB = b.createdAt?.toDate?.() || new Date(0);
+      const dateA = a.createdAt || new Date(0);
+      const dateB = b.createdAt || new Date(0);
       return dateB.getTime() - dateA.getTime();
     });
 
@@ -284,7 +284,7 @@ class QueryOptimizationService {
       // isActive filter - treat missing isActive as true (for legacy cars)
       if (filters.isActive !== false) {
         // Show active cars only - legacy cars without isActive field are treated as active
-        const isActive = car.isActive !== false && car.status !== 'sold' && car.status !== 'deleted';
+        const isActive = car.status !== 'sold' && car.status !== 'deleted';
         if (!isActive) return false;
       }
 

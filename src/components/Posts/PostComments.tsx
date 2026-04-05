@@ -9,8 +9,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthProvider';
 import { Comment, commentsService } from '../../services/social/comments.service';
 import { formatDistanceToNow } from 'date-fns';
-import bg from 'date-fns/locale/bg';
-import enUS from 'date-fns/locale/en-US';
+import { bg, enUS } from 'date-fns/locale';
 
 interface PostCommentsProps {
   postId: string;

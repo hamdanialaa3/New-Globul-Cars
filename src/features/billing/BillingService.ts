@@ -4,9 +4,24 @@ import { subscriptionService } from '../../services/billing/subscription-service
 // Billing Service - Stripe Integration via Extension
 
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { doc, getDoc, updateDoc, collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  Timestamp,
+} from 'firebase/firestore';
 import { db } from '../../firebase';
-import { Plan, Subscription, Invoice, PlanTier, BillingInterval } from './types';
+import {
+  Plan,
+  Subscription,
+  Invoice,
+  PlanTier,
+  BillingInterval,
+} from './types';
 import { SUBSCRIPTION_PLANS } from '../../config/subscription-plans';
 
 const functions = getFunctions();
@@ -15,16 +30,18 @@ class BillingService {
   /**
    * Get all available plans
    * Updated: January 2026 - Accurate pricing from SUBSCRIPTION_PLANS
-   * 
+   *
    * 3 Plans:
    * 1. Free (Private Seller) - 3 cars/month, basic features
    * 2. Dealer - €27.78/month or €278/year, 30 cars/month
    * 3. Company - €137.88/month or €1288/year, unlimited cars
-   * 
+   *
    * ✅ CRITICAL: Prices are imported from subscription-plans.ts (single source of truth)
    */
   getAvailablePlans(): Plan[] {
-    const featureKeys = (planFeatures: typeof SUBSCRIPTION_PLANS[keyof typeof SUBSCRIPTION_PLANS]['features']): string[] => {
+    const featureKeys = (
+      planFeatures: (typeof SUBSCRIPTION_PLANS)[keyof typeof SUBSCRIPTION_PLANS]['features']
+    ): string[] => {
       const keys: string[] = [];
       if (planFeatures.canBulkUpload) keys.push('bulk_upload');
       if (planFeatures.canFeatureListings) keys.push('featured_badge');
@@ -44,7 +61,7 @@ class BillingService {
     return Object.values(SUBSCRIPTION_PLANS)
       .filter(plan => plan.isActive)
       .sort((a, b) => a.displayOrder - b.displayOrder)
-      .map<Plan>((plan) => ({
+      .map<Plan>(plan => ({
         id: plan.tier,
         name: plan.name,
         description: plan.description,
@@ -79,18 +96,16 @@ class BillingService {
         userId,
         planId: plan.tier,
         status: plan.status,
-        interval: 'monthly',  // Default
+        interval: 'monthly', // Default
         currentPeriodStart: new Date(),
         currentPeriodEnd: plan.renewsAt?.toDate() || new Date(),
-        cancelAtPeriodEnd: false
+        cancelAtPeriodEnd: false,
       };
     } catch (error) {
       logger.error('Error getting subscription:', error as Error);
       return null;
     }
   }
-
-
 
   // ... (keep existing imports)
 
@@ -109,7 +124,7 @@ class BillingService {
         planId,
         interval,
         successUrl: `${window.location.origin}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancelUrl: `${window.location.origin}/billing/canceled`
+        cancelUrl: `${window.location.origin}/billing/canceled`,
       });
 
       return {
@@ -118,7 +133,9 @@ class BillingService {
       };
     } catch (error: unknown) {
       logger.error('Error creating checkout session', error as Error);
-      throw new Error((error as Error).message || 'Failed to create checkout session');
+      throw new Error(
+        (error as Error).message || 'Failed to create checkout session'
+      );
     }
   }
 
@@ -135,13 +152,19 @@ class BillingService {
       });
 
       // Call Stripe Extension Cloud Function to handle Stripe-side cancellation
-      const cancelSubscription = httpsCallable(functions, 'ext-firestore-stripe-payments-cancelSubscription');
-      
+      const cancelSubscription = httpsCallable(
+        functions,
+        'ext-firestore-stripe-payments-cancelSubscription'
+      );
+
       try {
         await cancelSubscription({ userId });
       } catch (stripeError) {
         // Log Stripe cancellation error but continue - Firestore is already updated
-        logger.warn('Stripe cancellation failed (Firestore updated):', stripeError as Error);
+        logger.warn(
+          'Stripe cancellation failed (Firestore updated):',
+          stripeError as Error
+        );
       }
 
       logger.info('Subscription canceled for user:', { userId });
@@ -161,24 +184,26 @@ class BillingService {
         invoicesCollection,
         where('status', '!=', 'draft')
       );
-      
+
       const invoiceSnaps = await getDocs(invoicesQuery);
-      
-      return invoiceSnaps.docs.map(doc => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          userId,
-          planId: data.planId,
-          amount: data.amount,
-          currency: data.currency || 'BGN',
-          status: data.status || 'paid',
-          issuedAt: data.issuedAt?.toDate() || new Date(),
-          dueDate: data.dueDate?.toDate() || new Date(),
-          pdfUrl: data.pdfUrl || '',
-          description: data.description || '',
-        };
-      }).sort((a, b) => b.issuedAt.getTime() - a.issuedAt.getTime());
+
+      return invoiceSnaps.docs
+        .map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            userId,
+            planId: data.planId,
+            amount: data.amount,
+            currency: data.currency || 'BGN',
+            status: data.status || 'paid',
+            issuedAt: data.issuedAt?.toDate() || new Date(),
+            dueDate: data.dueDate?.toDate() || new Date(),
+            pdfUrl: data.pdfUrl || '',
+            description: data.description || '',
+          };
+        })
+        .sort((a, b) => b.issuedAt.getTime() - a.issuedAt.getTime());
     } catch (error) {
       logger.error('Error fetching invoices:', error as Error);
       return [];
@@ -190,8 +215,10 @@ class BillingService {
    */
   async downloadInvoice(userId: string, invoiceId: string): Promise<void> {
     try {
-      const invoiceDoc = await getDoc(doc(db, 'users', userId, 'invoices', invoiceId));
-      
+      const invoiceDoc = await getDoc(
+        doc(db, 'users', userId, 'invoices', invoiceId)
+      );
+
       if (!invoiceDoc.exists()) {
         throw new Error('Invoice not found');
       }
@@ -211,23 +238,28 @@ class BillingService {
   /**
    * Retry failed payment for invoice
    */
-  async retryInvoicePayment(userId: string, invoiceId: string): Promise<{ url: string; sessionId: string }> {
+  async retryInvoicePayment(
+    userId: string,
+    invoiceId: string
+  ): Promise<{ url: string; sessionId: string }> {
     try {
-      const invoiceDoc = await getDoc(doc(db, 'users', userId, 'invoices', invoiceId));
-      
+      const invoiceDoc = await getDoc(
+        doc(db, 'users', userId, 'invoices', invoiceId)
+      );
+
       if (!invoiceDoc.exists()) {
         throw new Error('Invoice not found');
       }
 
       const invoiceData = invoiceDoc.data();
-      
+
       // Create a new checkout session for the invoice
       const result = await subscriptionService.createCheckoutSession({
         userId,
         planId: invoiceData.planId,
         interval: invoiceData.interval || 'monthly',
         successUrl: `${window.location.origin}/billing/success?session_id={CHECKOUT_SESSION_ID}&invoice_id=${invoiceId}`,
-        cancelUrl: `${window.location.origin}/billing/invoices`
+        cancelUrl: `${window.location.origin}/billing/invoices`,
       });
 
       return {
@@ -243,13 +275,35 @@ class BillingService {
   /**
    * Update payment method
    */
-  async updatePaymentMethod(userId: string, paymentMethodId: string): Promise<void> {
-    // TODO: Update in Stripe
-    logger.info('Payment method updated:', { userId, paymentMethodId });
+  async updatePaymentMethod(
+    userId: string,
+    paymentMethodId: string
+  ): Promise<void> {
+    try {
+      const userBillingRef = doc(db, 'users', userId, 'billing', 'profile');
+      await updateDoc(userBillingRef, {
+        preferredPaymentMethodId: paymentMethodId,
+        updatedAt: Timestamp.now(),
+      });
+
+      const updatePaymentMethodFn = httpsCallable(
+        functions,
+        'updatePaymentMethod'
+      );
+      await updatePaymentMethodFn({ userId, paymentMethodId });
+
+      logger.info('Payment method updated in Firestore and Stripe callable', {
+        userId,
+      });
+    } catch (error) {
+      logger.error('Error updating payment method:', error as Error, {
+        userId,
+      });
+      throw error;
+    }
   }
 }
 
 // Export singleton instance
 export const billingService = new BillingService();
 export default billingService;
-

@@ -20,7 +20,10 @@ export const logger = {
    */
   warn: (message: string, error?: unknown, context?: any) => {
     const normalizedError = error ? normalizeError(error) : undefined;
-    return baseLogger.warn(message, normalizedError, context);
+    return baseLogger.warn(message, {
+      ...(context || {}),
+      ...(normalizedError ? { error: normalizedError } : {}),
+    });
   },
   
   /**

@@ -669,7 +669,8 @@ export const WorkflowPersistenceService = {
       6: 'contact',
       7: 'preview'
     };
-    const currentStep = stepMap[data.currentStep] || 'vehicle-data';
+    const stepKey = typeof data.currentStep === 'number' ? data.currentStep : 1;
+    const currentStep = stepMap[stepKey] || 'vehicle-data';
 
     return {
       data: data as Record<string, any>,
@@ -752,6 +753,9 @@ export const WorkflowPersistenceService = {
       6: 'contact',
       7: 'preview'
     };
+    if (typeof step !== 'number') {
+      return 'vehicle-data';
+    }
     return stepMap[step] || 'vehicle-data';
   },
 

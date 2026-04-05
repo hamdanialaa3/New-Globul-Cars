@@ -14,7 +14,7 @@ import {
   orderBy,
   limit,
   serverTimestamp,
-  writeBatch
+  writeBatch,
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-service';
@@ -24,7 +24,7 @@ import {
   ModerationLog,
   ContentDeletion,
   ContentBackup,
-  ContentSearchOptions
+  ContentSearchOptions,
 } from './content-management-types';
 import {
   CONTENT_MANAGEMENT_COLLECTIONS,
@@ -32,7 +32,7 @@ import {
   CONTENT_STATUSES,
   REPORT_STATUSES,
   DEFAULT_CONTENT_STATS,
-  ERROR_MESSAGES
+  ERROR_MESSAGES,
 } from './content-management-data';
 
 /**
@@ -44,9 +44,14 @@ export class ContentManagementOperations {
    * Fetch pending reports from Firebase
    * جلب التقارير المعلقة من Firebase
    */
-  static async fetchPendingReports(limitCount: number = QUERY_LIMITS.PENDING_REPORTS): Promise<ContentReport[]> {
+  static async fetchPendingReports(
+    limitCount: number = QUERY_LIMITS.PENDING_REPORTS
+  ): Promise<ContentReport[]> {
     try {
-      const reportsRef = collection(db, CONTENT_MANAGEMENT_COLLECTIONS.CONTENT_REPORTS);
+      const reportsRef = collection(
+        db,
+        CONTENT_MANAGEMENT_COLLECTIONS.CONTENT_REPORTS
+      );
       const q = query(
         reportsRef,
         where('status', '==', REPORT_STATUSES.PENDING),
@@ -55,13 +60,18 @@ export class ContentManagementOperations {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map((doc: any) => ({
-        id: doc.id,
-        ...doc.data(),
-        timestamp: doc.data().timestamp?.toDate() || new Date()
-      } as ContentReport));
+      return snapshot.docs.map(
+        (doc: any) =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+            timestamp: doc.data().timestamp?.toDate() || new Date(),
+          }) as ContentReport
+      );
     } catch (error) {
-      serviceLogger.error('Error fetching pending reports', error as Error, { limitCount });
+      serviceLogger.error('Error fetching pending reports', error as Error, {
+        limitCount,
+      });
       return [];
     }
   }
@@ -70,9 +80,14 @@ export class ContentManagementOperations {
    * Fetch all reports from Firebase
    * جلب جميع التقارير من Firebase
    */
-  static async fetchAllReports(limitCount: number = QUERY_LIMITS.ALL_REPORTS): Promise<ContentReport[]> {
+  static async fetchAllReports(
+    limitCount: number = QUERY_LIMITS.ALL_REPORTS
+  ): Promise<ContentReport[]> {
     try {
-      const reportsRef = collection(db, CONTENT_MANAGEMENT_COLLECTIONS.CONTENT_REPORTS);
+      const reportsRef = collection(
+        db,
+        CONTENT_MANAGEMENT_COLLECTIONS.CONTENT_REPORTS
+      );
       const q = query(
         reportsRef,
         orderBy('timestamp', 'desc'),
@@ -80,13 +95,18 @@ export class ContentManagementOperations {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map((doc: any) => ({
-        id: doc.id,
-        ...doc.data(),
-        timestamp: doc.data().timestamp?.toDate() || new Date()
-      } as ContentReport));
+      return snapshot.docs.map(
+        (doc: any) =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+            timestamp: doc.data().timestamp?.toDate() || new Date(),
+          }) as ContentReport
+      );
     } catch (error) {
-      serviceLogger.error('Error fetching all reports', error as Error, { limitCount });
+      serviceLogger.error('Error fetching all reports', error as Error, {
+        limitCount,
+      });
       return [];
     }
   }
@@ -102,18 +122,29 @@ export class ContentManagementOperations {
     notes?: string
   ): Promise<void> {
     try {
-      const reportRef = doc(db, CONTENT_MANAGEMENT_COLLECTIONS.CONTENT_REPORTS, reportId);
+      const reportRef = doc(
+        db,
+        CONTENT_MANAGEMENT_COLLECTIONS.CONTENT_REPORTS,
+        reportId
+      );
       const updateData: Record<string, unknown> = {
-        status: action === 'approve' ? REPORT_STATUSES.REVIEWED : REPORT_STATUSES.DISMISSED,
+        status:
+          action === 'approve'
+            ? REPORT_STATUSES.REVIEWED
+            : REPORT_STATUSES.DISMISSED,
         reviewedBy: moderatorId,
         reviewedAt: serverTimestamp(),
         action,
-        notes
+        notes,
       };
 
       await updateDoc(reportRef, updateData);
     } catch (error) {
-      serviceLogger.error('Error updating report status', error as Error, { reportId, action, moderatorId });
+      serviceLogger.error('Error updating report status', error as Error, {
+        reportId,
+        action,
+        moderatorId,
+      });
       throw error;
     }
   }
@@ -136,12 +167,14 @@ export class ContentManagementOperations {
         return {
           id: reportDoc.docs[0].id,
           ...data,
-          timestamp: data.timestamp?.toDate() || new Date()
+          timestamp: data.timestamp?.toDate() || new Date(),
         } as ContentReport;
       }
       return null;
     } catch (error) {
-      serviceLogger.error('Error getting report by ID', error as Error, { reportId });
+      serviceLogger.error('Error getting report by ID', error as Error, {
+        reportId,
+      });
       return null;
     }
   }
@@ -161,32 +194,50 @@ export class ContentManagementOperations {
       const batch = writeBatch(db);
 
       // Update content status
-      const contentRef = doc(db, contentType === 'car' ? CONTENT_MANAGEMENT_COLLECTIONS.CARS : CONTENT_MANAGEMENT_COLLECTIONS.USERS, contentId);
+      const contentRef = doc(
+        db,
+        contentType === 'car'
+          ? CONTENT_MANAGEMENT_COLLECTIONS.CARS
+          : CONTENT_MANAGEMENT_COLLECTIONS.USERS,
+        contentId
+      );
       const moderationData: Record<string, unknown> = {
-        status: action === 'delete' ? CONTENT_STATUSES.DELETED :
-                action === 'hide' ? CONTENT_STATUSES.HIDDEN :
-                action === 'flag' ? CONTENT_STATUSES.FLAGGED : CONTENT_STATUSES.ACTIVE,
+        status:
+          action === 'delete'
+            ? CONTENT_STATUSES.DELETED
+            : action === 'hide'
+              ? CONTENT_STATUSES.HIDDEN
+              : action === 'flag'
+                ? CONTENT_STATUSES.FLAGGED
+                : CONTENT_STATUSES.ACTIVE,
         moderatedAt: serverTimestamp(),
         moderatedBy: moderatorId,
-        moderationReason: reason
+        moderationReason: reason,
       };
 
       batch.update(contentRef, moderationData);
 
       // Create moderation log
-      const moderationRef = doc(collection(db, CONTENT_MANAGEMENT_COLLECTIONS.CONTENT_MODERATION));
+      const moderationRef = doc(
+        collection(db, CONTENT_MANAGEMENT_COLLECTIONS.CONTENT_MODERATION)
+      );
       batch.set(moderationRef, {
         contentId,
         contentType,
         action,
         moderatorId,
         reason,
-        timestamp: serverTimestamp()
+        timestamp: serverTimestamp(),
       });
 
       await batch.commit();
     } catch (error) {
-      serviceLogger.error('Error applying moderation action', error as Error, { contentId, contentType, action, moderatorId });
+      serviceLogger.error('Error applying moderation action', error as Error, {
+        contentId,
+        contentType,
+        action,
+        moderatorId,
+      });
       throw error;
     }
   }
@@ -205,7 +256,13 @@ export class ContentManagementOperations {
       const batch = writeBatch(db);
 
       // Delete main content
-      const contentRef = doc(db, contentType === 'car' ? CONTENT_MANAGEMENT_COLLECTIONS.CARS : CONTENT_MANAGEMENT_COLLECTIONS.USERS, contentId);
+      const contentRef = doc(
+        db,
+        contentType === 'car'
+          ? CONTENT_MANAGEMENT_COLLECTIONS.CARS
+          : CONTENT_MANAGEMENT_COLLECTIONS.USERS,
+        contentId
+      );
       batch.delete(contentRef);
 
       // Delete related content if car
@@ -228,18 +285,24 @@ export class ContentManagementOperations {
       }
 
       // Create deletion log
-      const deletionRef = doc(collection(db, CONTENT_MANAGEMENT_COLLECTIONS.CONTENT_DELETIONS));
+      const deletionRef = doc(
+        collection(db, CONTENT_MANAGEMENT_COLLECTIONS.CONTENT_DELETIONS)
+      );
       batch.set(deletionRef, {
         contentId,
         contentType,
         deletedBy: moderatorId,
         reason,
-        timestamp: serverTimestamp()
+        timestamp: serverTimestamp(),
       });
 
       await batch.commit();
     } catch (error) {
-      serviceLogger.error('Error permanently deleting content', error as Error, { contentId, contentType, moderatorId });
+      serviceLogger.error(
+        'Error permanently deleting content',
+        error as Error,
+        { contentId, contentType, moderatorId }
+      );
       throw error;
     }
   }
@@ -255,15 +318,25 @@ export class ContentManagementOperations {
     reason: string
   ): Promise<void> {
     try {
-      const contentRef = doc(db, contentType === 'car' ? CONTENT_MANAGEMENT_COLLECTIONS.CARS : CONTENT_MANAGEMENT_COLLECTIONS.USERS, contentId);
+      const contentRef = doc(
+        db,
+        contentType === 'car'
+          ? CONTENT_MANAGEMENT_COLLECTIONS.CARS
+          : CONTENT_MANAGEMENT_COLLECTIONS.USERS,
+        contentId
+      );
       await updateDoc(contentRef, {
         status: CONTENT_STATUSES.ACTIVE,
         restoredAt: serverTimestamp(),
         restoredBy: moderatorId,
-        restoreReason: reason
+        restoreReason: reason,
       });
     } catch (error) {
-      serviceLogger.error('Error restoring content', error as Error, { contentId, contentType, moderatorId });
+      serviceLogger.error('Error restoring content', error as Error, {
+        contentId,
+        contentType,
+        moderatorId,
+      });
       throw error;
     }
   }
@@ -274,14 +347,17 @@ export class ContentManagementOperations {
    */
   static async calculateContentStats(): Promise<ContentStats> {
     try {
-      // Note: queryAllCollections is assumed to be imported from another service
-      // For now, we'll use a placeholder
-      const [carsSnapshot, usersSnapshot, reportsSnapshot, moderationSnapshot] = await Promise.all([
-        getDocs(collection(db, CONTENT_MANAGEMENT_COLLECTIONS.CARS)),
-        getDocs(collection(db, CONTENT_MANAGEMENT_COLLECTIONS.USERS)),
-        getDocs(collection(db, CONTENT_MANAGEMENT_COLLECTIONS.CONTENT_REPORTS)),
-        getDocs(collection(db, CONTENT_MANAGEMENT_COLLECTIONS.CONTENT_MODERATION))
-      ]);
+      const [carsSnapshot, usersSnapshot, reportsSnapshot, moderationSnapshot] =
+        await Promise.all([
+          getDocs(collection(db, CONTENT_MANAGEMENT_COLLECTIONS.CARS)),
+          getDocs(collection(db, CONTENT_MANAGEMENT_COLLECTIONS.USERS)),
+          getDocs(
+            collection(db, CONTENT_MANAGEMENT_COLLECTIONS.CONTENT_REPORTS)
+          ),
+          getDocs(
+            collection(db, CONTENT_MANAGEMENT_COLLECTIONS.CONTENT_MODERATION)
+          ),
+        ]);
 
       const cars = carsSnapshot.docs.map((doc: any) => doc.data());
       const users = usersSnapshot.docs.map((doc: any) => doc.data());
@@ -290,13 +366,22 @@ export class ContentManagementOperations {
 
       return {
         totalContent: cars.length + users.length,
-        activeContent: cars.filter(c => c.status === CONTENT_STATUSES.ACTIVE).length + users.filter(u => !u.isBanned).length,
-        hiddenContent: cars.filter(c => c.status === CONTENT_STATUSES.HIDDEN).length,
-        deletedContent: cars.filter(c => c.status === CONTENT_STATUSES.DELETED).length,
-        flaggedContent: cars.filter(c => c.status === CONTENT_STATUSES.FLAGGED).length,
-        pendingReports: reports.filter(r => r.status === REPORT_STATUSES.PENDING).length,
-        resolvedReports: reports.filter(r => r.status === REPORT_STATUSES.RESOLVED).length,
-        moderationActions: moderation.length
+        activeContent:
+          cars.filter(c => c.status === CONTENT_STATUSES.ACTIVE).length +
+          users.filter(u => !u.isBanned).length,
+        hiddenContent: cars.filter(c => c.status === CONTENT_STATUSES.HIDDEN)
+          .length,
+        deletedContent: cars.filter(c => c.status === CONTENT_STATUSES.DELETED)
+          .length,
+        flaggedContent: cars.filter(c => c.status === CONTENT_STATUSES.FLAGGED)
+          .length,
+        pendingReports: reports.filter(
+          r => r.status === REPORT_STATUSES.PENDING
+        ).length,
+        resolvedReports: reports.filter(
+          r => r.status === REPORT_STATUSES.RESOLVED
+        ).length,
+        moderationActions: moderation.length,
       };
     } catch (error) {
       serviceLogger.error('Error calculating content stats', error as Error);
@@ -308,13 +393,15 @@ export class ContentManagementOperations {
    * Search content with filters
    * البحث في المحتوى مع الفلاتر
    */
-  static async searchContent(options: ContentSearchOptions): Promise<Array<{ id: string; [key: string]: unknown }>> {
+  static async searchContent(
+    options: ContentSearchOptions
+  ): Promise<Array<{ id: string; [key: string]: unknown }>> {
     try {
       const {
         searchQuery,
         contentType = 'cars',
         status,
-        limitCount = QUERY_LIMITS.SEARCH_RESULTS
+        limitCount = QUERY_LIMITS.SEARCH_RESULTS,
       } = options;
 
       let contentRef = collection(db, contentType);
@@ -327,7 +414,7 @@ export class ContentManagementOperations {
       const snapshot = await getDocs(q);
       const results = snapshot.docs.map((doc: any) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
 
       // Filter results by search query (simple text search simulation)
@@ -348,9 +435,14 @@ export class ContentManagementOperations {
    * Get moderation history for content
    * الحصول على تاريخ الإشراف للمحتوى
    */
-  static async getModerationHistory(contentId: string): Promise<Array<{ id: string; [key: string]: unknown; timestamp: Date }>> {
+  static async getModerationHistory(
+    contentId: string
+  ): Promise<Array<{ id: string; [key: string]: unknown; timestamp: Date }>> {
     try {
-      const moderationRef = collection(db, CONTENT_MANAGEMENT_COLLECTIONS.CONTENT_MODERATION);
+      const moderationRef = collection(
+        db,
+        CONTENT_MANAGEMENT_COLLECTIONS.CONTENT_MODERATION
+      );
       const q = query(
         moderationRef,
         where('contentId', '==', contentId),
@@ -361,10 +453,12 @@ export class ContentManagementOperations {
       return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
-        timestamp: doc.data().timestamp?.toDate() || new Date()
+        timestamp: doc.data().timestamp?.toDate() || new Date(),
       }));
     } catch (error) {
-      serviceLogger.error('Error getting moderation history', error as Error, { contentId });
+      serviceLogger.error('Error getting moderation history', error as Error, {
+        contentId,
+      });
       return [];
     }
   }
@@ -382,7 +476,7 @@ export class ContentManagementOperations {
       const snapshot = await getDocs(contentRef);
       const data = snapshot.docs.map((doc: any) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
 
       if (format === 'json') {
@@ -393,15 +487,18 @@ export class ContentManagementOperations {
         const csvContent = [
           headers.join(','),
           ...data.map((row: Record<string, unknown>) =>
-            headers.map(header =>
-              JSON.stringify((row[header] ?? '') || '')
-            ).join(',')
-          )
+            headers
+              .map(header => JSON.stringify((row[header] ?? '') || ''))
+              .join(',')
+          ),
         ].join('\n');
         return csvContent;
       }
     } catch (error) {
-      serviceLogger.error('Error exporting content data', error as Error, { contentType, format });
+      serviceLogger.error('Error exporting content data', error as Error, {
+        contentType,
+        format,
+      });
       throw error;
     }
   }
@@ -416,18 +513,28 @@ export class ContentManagementOperations {
         name: backupName,
         timestamp: serverTimestamp(),
         collections: {
-          cars: await this.exportContentData(CONTENT_MANAGEMENT_COLLECTIONS.CARS),
-          users: await this.exportContentData(CONTENT_MANAGEMENT_COLLECTIONS.USERS),
-          reports: await this.exportContentData(CONTENT_MANAGEMENT_COLLECTIONS.CONTENT_REPORTS)
-        }
+          cars: await this.exportContentData(
+            CONTENT_MANAGEMENT_COLLECTIONS.CARS
+          ),
+          users: await this.exportContentData(
+            CONTENT_MANAGEMENT_COLLECTIONS.USERS
+          ),
+          reports: await this.exportContentData(
+            CONTENT_MANAGEMENT_COLLECTIONS.CONTENT_REPORTS
+          ),
+        },
       };
 
-      const backupRef = doc(collection(db, CONTENT_MANAGEMENT_COLLECTIONS.BACKUPS));
+      const backupRef = doc(
+        collection(db, CONTENT_MANAGEMENT_COLLECTIONS.BACKUPS)
+      );
       await updateDoc(backupRef, backupData);
 
       return backupRef.id;
     } catch (error) {
-      serviceLogger.error('Error creating backup', error as Error, { backupName });
+      serviceLogger.error('Error creating backup', error as Error, {
+        backupName,
+      });
       throw error;
     }
   }

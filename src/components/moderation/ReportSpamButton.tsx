@@ -127,15 +127,13 @@ const ReportSpamButton: React.FC<ReportSpamButtonProps> = ({
         toast.success(
           isBg
             ? '✅ Благодарим за доклада. Ще го прегледаме възможно най-скоро.'
-            : '✅ Thank you for your report. We will review it as soon as possible.',
-          { duration: 5000 }
+            : '✅ Thank you for your report. We will review it as soon as possible.'
         );
       } else {
         toast.error(
           isBg
             ? `❌ Грешка: ${result.error || 'Unknown error'}`
-            : `❌ Error: ${result.error || 'Unknown error'}`,
-          { duration: 5000 }
+            : `❌ Error: ${result.error || 'Unknown error'}`
         );
       }
     } catch (error) {
@@ -146,8 +144,7 @@ const ReportSpamButton: React.FC<ReportSpamButtonProps> = ({
       toast.error(
         isBg
           ? '❌ Грешка при изпращане на доклада'
-          : '❌ Error submitting report',
-        { duration: 5000 }
+          : '❌ Error submitting report'
       );
     } finally {
       setIsSubmitting(false);

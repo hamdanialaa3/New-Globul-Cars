@@ -241,7 +241,7 @@ export class ProfileMigrationService {
         }
       }
 
-      logger.info('Batch migration complete', result);
+      logger.info('Batch migration complete', { ...result });
       return result;
     } catch (error) {
       logger.error('Error in batch migration', error as Error);
@@ -315,7 +315,7 @@ export class ProfileMigrationService {
         }
       }
 
-      logger.info('Batch cleanup complete', result);
+      logger.info('Batch cleanup complete', { ...result });
       return result;
     } catch (error) {
       logger.error('Error in batch cleanup', error as Error);

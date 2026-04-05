@@ -73,7 +73,8 @@ export function useTargetUserId() {
 export function useConstitutionEnforcement(
   targetUserId: string | undefined,
   viewer: UserProfile | null | undefined,
-  activeProfile: UserProfile | null | undefined
+  activeProfile: UserProfile | null | undefined,
+  profileLoading?: boolean
 ) {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
@@ -81,12 +82,21 @@ export function useConstitutionEnforcement(
   const [isValidationReady, setIsValidationReady] = React.useState(false);
 
   React.useEffect(() => {
-    if (!currentUser || !targetUserId) {
-      logger.debug('Routing check skipped - missing required data', {
+    if (!targetUserId) {
+      logger.debug('Routing check skipped - missing targetUserId', {
         hasCurrentUser: !!currentUser,
-        hasTargetUserId: !!targetUserId,
+        hasTargetUserId: false,
       });
       setIsValidationReady(false);
+      return;
+    }
+
+    // Unauthenticated user viewing another's profile — allow public access
+    if (!currentUser) {
+      logger.info('✅ Unauthenticated user - allowing public profile view', {
+        targetUserId,
+      });
+      setIsValidationReady(true);
       return;
     }
 
@@ -103,13 +113,26 @@ export function useConstitutionEnforcement(
       return;
     }
 
-    // For regular users: Require numeric IDs
+    // For regular users: Redirect enforcement requires numeric IDs.
+    // If loading is still in progress, wait. If loading is done but IDs are
+    // absent (older accounts without numericId), allow access and skip redirects.
     if (!viewer?.numericId || !activeProfile?.numericId) {
-      logger.debug('Routing check skipped - missing numeric IDs', {
-        hasViewerNumericId: !!viewer?.numericId,
-        hasActiveProfileNumericId: !!activeProfile?.numericId,
-      });
-      setIsValidationReady(false);
+      if (profileLoading !== false) {
+        logger.debug('Routing check pending - profile data still loading', {
+          hasViewerNumericId: !!viewer?.numericId,
+          hasActiveProfileNumericId: !!activeProfile?.numericId,
+        });
+        setIsValidationReady(false);
+        return;
+      }
+      logger.warn(
+        '⚠️ Numeric IDs unavailable after load — allowing access without redirect enforcement',
+        {
+          hasViewerNumericId: !!viewer?.numericId,
+          hasActiveProfileNumericId: !!activeProfile?.numericId,
+        }
+      );
+      setIsValidationReady(true);
       return;
     }
 
@@ -183,6 +206,7 @@ export function useConstitutionEnforcement(
     targetUserId,
     viewer,
     activeProfile,
+    profileLoading,
     location.pathname,
     navigate,
   ]);

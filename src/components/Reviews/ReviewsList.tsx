@@ -11,8 +11,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { reviewService as reviewsService, Review } from '../../services/reviews/review-service';
 import { Star, User } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { bg } from 'date-fns/locale/bg';
-import { enUS } from 'date-fns/locale/en-US';
+import { bg, enUS } from 'date-fns/locale';
 
 const Container = styled.div`
   width: 100%;

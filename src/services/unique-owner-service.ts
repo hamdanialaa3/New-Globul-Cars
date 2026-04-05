@@ -477,7 +477,7 @@ export class UniqueOwnerService {
       if (!isOwnerEmail) return null;
 
       return {
-        email: parsed.email,
+        email: parsedEmail,
         name: 'Alaa Hamid',
         role: 'admin',
         permissions: ['all'],

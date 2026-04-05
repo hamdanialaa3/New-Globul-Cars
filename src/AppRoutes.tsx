@@ -8,6 +8,7 @@ import SmartLoader from './components/SmartLoaderCSS';
 import InactivityWarning from './components/InactivityWarning';
 import { DebugAdsPage } from './features/campaigns/pages/CampaignDebugPage';
 import { AuthGuard } from './components/guards/AuthGuard';
+import { SuperAdminAuthGuard } from './components/guards/SuperAdminAuthGuard';
 
 // Lazy Loaded Components
 const GlobalWorkflowTimer = safeLazy(() => import('./components/GlobalWorkflowTimer'));
@@ -21,6 +22,7 @@ const OAuthCallback = safeLazy(() => import('./pages/02_authentication/oauth/OAu
 const SuperAdminLogin = safeLazy(() => import('./pages/02_authentication/admin-login/SuperAdminLoginPage'));
 const SuperAdminDashboard = safeLazy(() => import('./pages/06_admin/super-admin/SuperAdminDashboard'));
 const SuperAdminUsersPage = safeLazy(() => import('./pages/06_admin/super-admin/SuperAdminUsersPage'));
+const CarModerationPage = safeLazy(() => import('./pages/06_admin/CarModerationPage'));
 
 // Modularized Routes & Layout
 import { MainLayout } from './layouts/MainLayout';
@@ -154,12 +156,23 @@ const AppRoutes: React.FC = () => {
                     } />
                     <Route path="/super-admin" element={
                         <FullScreenLayout>
-                            <SuperAdminDashboard />
+                            <SuperAdminAuthGuard>
+                                <SuperAdminDashboard />
+                            </SuperAdminAuthGuard>
                         </FullScreenLayout>
                     } />
                     <Route path="/super-admin/users" element={
                         <FullScreenLayout>
-                            <SuperAdminUsersPage />
+                            <SuperAdminAuthGuard>
+                                <SuperAdminUsersPage />
+                            </SuperAdminAuthGuard>
+                        </FullScreenLayout>
+                    } />
+                    <Route path="/super-admin/moderation" element={
+                        <FullScreenLayout>
+                            <SuperAdminAuthGuard>
+                                <CarModerationPage />
+                            </SuperAdminAuthGuard>
                         </FullScreenLayout>
                     } />
                     <Route path="/debug/ads" element={

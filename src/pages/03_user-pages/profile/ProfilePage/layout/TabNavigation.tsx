@@ -70,6 +70,7 @@ const TabButton = styled(NavLink)<{ $theme: ProfileTheme }>`
   transition: all 0.3s ease;
   text-decoration: none;
   white-space: nowrap;
+  flex-shrink: 0;
   
   display: flex;
   align-items: center;
@@ -109,6 +110,24 @@ const TabButton = styled(NavLink)<{ $theme: ProfileTheme }>`
     svg {
       width: 16px;
       height: 16px;
+    }
+    
+    span {
+      max-width: 80px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  
+  @media (max-width: 380px) {
+    padding: 8px 10px;
+    font-size: 0.8125rem;
+    gap: 4px;
+    
+    span {
+      max-width: 60px;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 `;

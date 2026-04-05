@@ -201,9 +201,7 @@ const MessageButtonComponent: React.FC<MessageButtonProps> = ({
         
         // Show user-friendly error
         setError(
-          language === 'bg' 
-            ? 'Грешка при зареждане на профилите. Моля презаредете страницата.'
-            : 'Error loading profiles. Please refresh the page.'
+          t('messaging.profileLoadError', 'Error loading profiles. Please refresh the page.')
         );
         return;
       }

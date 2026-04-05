@@ -47,9 +47,6 @@ const CentralLangSwitcher: React.FC = () => {
             <LangBtn $active={language === 'en'} onClick={() => setLanguage('en')}>
                 <Globe size={14} /> EN
             </LangBtn>
-            <LangBtn $active={language === 'ar'} onClick={() => setLanguage('ar')}>
-                AR Arabic
-            </LangBtn>
             <LangBtn $active={language === 'bg'} onClick={() => setLanguage('bg')}>
                 BG Български
             </LangBtn>

@@ -153,7 +153,7 @@ const Badge = styled.span<{ type: string }>`
 
 const AuthUsersPage: React.FC = () => {
   const { language } = useLanguage();
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<BulgarianUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const isBg = language === 'bg';

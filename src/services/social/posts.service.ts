@@ -49,6 +49,7 @@ export interface CreatePostData {
 export interface Post {
   id: string;
   authorId: string;
+  authorNumericId?: number;
   authorInfo: {
     displayName: string;
     profileImage?: string;

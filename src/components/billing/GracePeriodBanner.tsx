@@ -9,16 +9,10 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { getGracePeriodStatus, getRetentionOffers } from '@/services/billing/churn-prevention.service';
+import type { GracePeriodStatus } from '@/services/billing/churn-prevention.service';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthProvider';
 import { logger } from '@/services/logger-service';
-
-interface GracePeriodStatus {
-  isActive: boolean;
-  remainingDays: number;
-  endsAt: Date;
-  reason: string;
-}
 
 export const GracePeriodBanner: React.FC = () => {
   const { currentUser } = useAuth();
@@ -52,26 +46,28 @@ export const GracePeriodBanner: React.FC = () => {
     return null;
   }
 
-  const isUrgent = gracePeriod.remainingDays <= 3;
-  const isCritical = gracePeriod.remainingDays <= 1;
+  const remainingDays = gracePeriod.remainingDays ?? gracePeriod.daysRemaining ?? 0;
+
+  const isUrgent = remainingDays <= 3;
+  const isCritical = remainingDays <= 1;
 
   const getMessage = () => {
     if (language === 'bg') {
       if (isCritical) {
-        return `🚨 КРИТИЧНО: Абонаментът ви изтича след ${gracePeriod.remainingDays} ден!`;
+        return `🚨 КРИТИЧНО: Абонаментът ви изтича след ${remainingDays} ден!`;
       }
       if (isUrgent) {
-        return `⚠️ ВАЖНО: Абонаментът ви изтича след ${gracePeriod.remainingDays} дни`;
+        return `⚠️ ВАЖНО: Абонаментът ви изтича след ${remainingDays} дни`;
       }
-      return `ℹ️ Абонаментът ви изтича след ${gracePeriod.remainingDays} дни`;
+      return `ℹ️ Абонаментът ви изтича след ${remainingDays} дни`;
     } else {
       if (isCritical) {
-        return `🚨 CRITICAL: Your subscription expires in ${gracePeriod.remainingDays} day!`;
+        return `🚨 CRITICAL: Your subscription expires in ${remainingDays} day!`;
       }
       if (isUrgent) {
-        return `⚠️ IMPORTANT: Your subscription expires in ${gracePeriod.remainingDays} days`;
+        return `⚠️ IMPORTANT: Your subscription expires in ${remainingDays} days`;
       }
-      return `ℹ️ Your subscription expires in ${gracePeriod.remainingDays} days`;
+      return `ℹ️ Your subscription expires in ${remainingDays} days`;
     }
   };
 
@@ -110,7 +106,7 @@ export const GracePeriodBanner: React.FC = () => {
 
         <CountdownCircle>
           <CountdownNumber severity={isCritical ? 'critical' : isUrgent ? 'urgent' : 'info'}>
-            {gracePeriod.remainingDays}
+            {remainingDays}
           </CountdownNumber>
           <CountdownLabel>
             {language === 'bg' ? 'дни' : 'days'}

@@ -32,11 +32,17 @@ export function ContactSection({ car }: ContactSectionProps) {
       if (!sellerId) throw new Error('Seller ID not available');
 
       await sendMessage({
+        conversationId: `car_${car.id}`,
         senderId: currentUser.uid,
+        senderName: currentUser.displayName || 'User',
         receiverId: sellerId,
+        receiverName: sellerName,
+        content: message.trim(),
         text: message.trim(),
         carId: car.id,
-        carTitle: `${(car as any).make || ''} ${(car as any).model || ''} ${(car as any).year || ''}`.trim()
+        carTitle: `${(car as any).make || ''} ${(car as any).model || ''} ${(car as any).year || ''}`.trim(),
+        messageType: 'text',
+        isRead: false,
       });
       toast.success('Съобщението е изпратено! / Message sent!');
       setMessage('');

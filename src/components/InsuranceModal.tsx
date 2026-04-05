@@ -300,7 +300,8 @@ const InsuranceModal: React.FC<InsuranceModalProps> = ({
       onClose();
 
     } catch (error: unknown) {
-      setError(error.message || 'Възникна грешка при изпращане на заявката');
+      const message = error instanceof Error ? error.message : 'Възникна грешка при изпращане на заявката';
+      setError(message);
     } finally {
       setIsSubmitting(false);
     }

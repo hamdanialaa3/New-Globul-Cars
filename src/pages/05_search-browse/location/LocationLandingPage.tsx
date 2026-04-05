@@ -74,7 +74,7 @@ const PRICE_RANGES: Record<string, { max: number; label: { bg: string; en: strin
 // ============================================================================
 
 const LocationLandingPage: React.FC = () => {
-    const params = useParams<LocationParams>();
+    const params = useParams() as LocationParams;
     const { language } = useLanguage();
     const [cars, setCars] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);

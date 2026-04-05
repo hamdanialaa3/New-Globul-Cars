@@ -8,7 +8,17 @@ const mockTranslate = async (text: string, options: { from?: string; to: string 
   // Simple mock - just return the original text with a note
   return {
     text: `[Translated to ${options.to}] ${text}`,
-    from: options.from || 'auto',
+    from: {
+      language: {
+        didYouMean: false,
+        iso: options.from || 'auto'
+      },
+      text: {
+        autoCorrected: false,
+        value: text,
+        didYouMean: false
+      }
+    },
     raw: ''
   };
 };
